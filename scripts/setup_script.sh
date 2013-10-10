@@ -25,3 +25,11 @@ if [ $? -ne 0 ]
 else
     echo "... found."
 fi
+
+ls $MAINDIR/output > /dev/null
+
+if [ $? -ne 0 ]
+    then
+    mkdir $MAINDIR/output
+    echo "First time running code: making output directory....."
+fi    
