@@ -158,18 +158,9 @@ void Analyzer::SetEvtN(Long64_t events) {
 
 void Analyzer::Loop() {
 
-  snu::KParticle part;
-  snu::KJet jet;
-  snu::KMuon muon;
+  vector<snu::KMuon> all_muons = snu_muons_conf->GetAllMuons();
   
-  //  std::vector<double> mu_eta = *MuonEta;
-
-  //for (UInt_t ilep=0; ilep<MuonEta->size(); ilep++) {
-    
-    //double muonpt = MuonPt->at(ilep);
-
-    //    part.SetPtEtaPhiE(*MuonPt[ilep],MuonEta[ilep], MuonPhi[ilep], MuonEnergy[ilep]);
-  //  }
+  return;
 
   cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
   
