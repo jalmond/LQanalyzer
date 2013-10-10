@@ -1,4 +1,4 @@
-#include "LeptonSelection.h"
+#include "include/LeptonSelection.h"
 
 Lep::Lep() {}
 
@@ -44,16 +44,16 @@ void Lep::SetChiNdof(Double_t ChiNdofMIN, Double_t ChiNdof) {
   ChiNdof ? chiNdof_cut=ChiNdof : chiNdof_cut=100.0;
 }
 
-void Lep::SetBSdxy(Double_t dxy) {
-   dxy ? dxy_cut=dxy : dxy_cut=2.0;
+void Lep::SetBSdxy(Double_t set_dxy) {
+  set_dxy ? dxy_cut=set_dxy : dxy_cut=2.0;
    dxyMIN_cut=0.0;
 }
 
-void Lep::SetBSdxy(Double_t dxyMIN, Double_t dxy) {
+void Lep::SetBSdxy(Double_t dxyMIN, Double_t set_dxy) {
    dxyMIN ? dxyMIN_cut=dxyMIN : dxyMIN_cut=0.0;
-   dxy ? dxy_cut=dxy : dxy_cut=2.0;
+   set_dxy ? dxy_cut=dxy : dxy_cut=2.0;
 }
 
-void Lep::SetBSdz(Double_t dz) {
-   dz ? dz_cut=dz : dz_cut=2.0;
+void Lep::SetBSdz(Double_t set_dz) {
+  set_dz ? dz_cut=set_dz : dz_cut=2.0;
 }

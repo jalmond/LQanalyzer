@@ -15,6 +15,8 @@
 #include "SignalPlots.h"
 #include "Reweight.cc"
 #include "KParticle.h"
+#include "KJet.h"
+#include "KMuon.h"
 
 class Analyzer : public Data {
 

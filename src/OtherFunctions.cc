@@ -1,4 +1,4 @@
-#include "OtherFunctions.h"
+#include "include/OtherFunctions.h"
 
 int nthdigit(int x, int n) {
   static int powersof10[] = {1, 10, 100, 1000, 10000, 100000};
@@ -60,18 +60,18 @@ void getFakerate(TH1F* h1, TH1F* h2, TH1F* out, int nbinX) {
 
 void DoubleANDSinglebkg(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vector<Lepton>& leptonCollj, UInt_t &jlep, Double_t *****fakeN, UInt_t &type) {
 /*
-  double arrayeta[] = {0.0,1.0,1.479,2.0,2.5};
+  double _arrayeta[] = {0.0,1.0,1.479,2.0,2.5};
   if (pT35) 
-    double arraypT [] = {10.,15.,20.,25.,35.,45.,60.,80.,100.};
+    double _arraypT [] = {10.,15.,20.,25.,35.,45.,60.,80.,100.};
   else {
-    arraypT = new double [nintpT+1];
-    arraypT[0] = 10.;
-    arraypT[1] = 15.;
-    arraypT[2] = 20.;
-    arraypT[3] = 25.;
-    arraypT[4] = minbin;
+    _arraypT = new double [nintpT+1];
+    _arraypT[0] = 10.;
+    _arraypT[1] = 15.;
+    _arraypT[2] = 20.;
+    _arraypT[3] = 25.;
+    _arraypT[4] = minbin;
     for (UInt_t i=0; i+5<nintpT+1; i++) 
-      arraypT[i+5] = minbin + binwidh * exp (i);
+      _arraypT[i+5] = minbin + binwidh * exp (i);
   }
 */
   int i0=1; int j0=1;
@@ -86,28 +86,28 @@ void DoubleANDSinglebkg(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vec
   if (Pt1<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt1<<endl; Pt1=10.0;}
 
   while(1) {
-    if( arrayeta[(i0-1)%(ninteta+1)]<=eta0 && arrayeta[i0%(ninteta+1)]>eta0 )
+    if( _arrayeta[(i0-1)%(ninteta+1)]<=eta0 && _arrayeta[i0%(ninteta+1)]>eta0 )
       break;
     i0++;
   }
-  if (Pt0>=arraypT[nintpT]) j0=nintpT;
+  if (Pt0>=_arraypT[nintpT]) j0=nintpT;
   else {
     while(1) {
-      if( arraypT[(j0-1)%(nintpT+1)]<=Pt0 && arraypT[j0%(nintpT+1)]>Pt0 )
+      if( _arraypT[(j0-1)%(nintpT+1)]<=Pt0 && _arraypT[j0%(nintpT+1)]>Pt0 )
         break;
       j0++;
     }
   }
 
   while(1) {
-    if( arrayeta[(i1-1)%(ninteta+1)]<=eta1 && arrayeta[i1%(ninteta+1)]>eta1 )
+    if( _arrayeta[(i1-1)%(ninteta+1)]<=eta1 && _arrayeta[i1%(ninteta+1)]>eta1 )
       break;
     i1++;
   }
-  if (Pt1>=arraypT[nintpT]) j1=nintpT;
+  if (Pt1>=_arraypT[nintpT]) j1=nintpT;
   else {
     while(1) {
-      if( arraypT[(j1-1)%(nintpT+1)]<=Pt1 && arraypT[j1%(nintpT+1)]>Pt1 )
+      if( _arraypT[(j1-1)%(nintpT+1)]<=Pt1 && _arraypT[j1%(nintpT+1)]>Pt1 )
         break;
       j1++;
     }
@@ -131,28 +131,28 @@ double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   if (Pt1<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt1<<endl; Pt1=10.0;}
 
   while(1) {
-    if( arrayeta[(i0-1)%(ninteta+1)]<=eta0 && eta0<arrayeta[i0%(ninteta+1)] ) 
+    if( _arrayeta[(i0-1)%(ninteta+1)]<=eta0 && eta0<_arrayeta[i0%(ninteta+1)] ) 
       break;
     i0++;
   }
-  if (Pt0>=arraypT[nintpT]) j0=nintpT;
+  if (Pt0>=_arraypT[nintpT]) j0=nintpT;
   else {
     while(1) {
-      if( arraypT[(j0-1)%(nintpT+1)]<=Pt0 && Pt0<arraypT[j0%(nintpT+1)] )
+      if( _arraypT[(j0-1)%(nintpT+1)]<=Pt0 && Pt0<_arraypT[j0%(nintpT+1)] )
 	break;
       j0++;
     }
   }
 
   while(1) {
-    if( arrayeta[(i1-1)%(ninteta+1)]<=eta1 && eta1<arrayeta[i1%(ninteta+1)] )
+    if( _arrayeta[(i1-1)%(ninteta+1)]<=eta1 && eta1<_arrayeta[i1%(ninteta+1)] )
       break;
     i1++;
   }
-  if (Pt1>=arraypT[nintpT]) j1=nintpT;
+  if (Pt1>=_arraypT[nintpT]) j1=nintpT;
   else {
     while(1) {
-      if( arraypT[(j1-1)%(nintpT+1)]<=Pt1 && Pt1<arraypT[j1%(nintpT+1)] )
+      if( _arraypT[(j1-1)%(nintpT+1)]<=Pt1 && Pt1<_arraypT[j1%(nintpT+1)] )
 	break;
       j1++;
     }
@@ -182,14 +182,14 @@ double SinglebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   if (Pt<20.0) {cout<<"CACCHIO Pt!!!! "<<Pt<<endl; Pt=10.0;}
 
   while(1) {
-    if( arrayeta[(i-1)%(ninteta+1)]<=eta && eta<arrayeta[i%(ninteta+1)] )
+    if( _arrayeta[(i-1)%(ninteta+1)]<=eta && eta<_arrayeta[i%(ninteta+1)] )
       break;
     i++;
   }
-  if (Pt>=arraypT[nintpT]) j=nintpT;
+  if (Pt>=_arraypT[nintpT]) j=nintpT;
   else {
     while(1) {
-      if( arraypT[(j-1)%(nintpT+1)]<=Pt && Pt<arraypT[j%(nintpT+1)] ) 
+      if( _arraypT[(j-1)%(nintpT+1)]<=Pt && Pt<_arraypT[j%(nintpT+1)] ) 
 	break;
       j++;
     }
@@ -218,28 +218,28 @@ double DoubleTOSinglebkg(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t
   if (Pt1<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt1<<endl; Pt1=10.0;}
 
   while(1) {
-    if( arrayeta[(i0-1)%(ninteta+1)]<=eta0 && eta0<arrayeta[i0%(ninteta+1)] ) 
+    if( _arrayeta[(i0-1)%(ninteta+1)]<=eta0 && eta0<_arrayeta[i0%(ninteta+1)] ) 
       break;
     i0++;
   }
-  if (Pt0>=arraypT[nintpT]) j0=nintpT;
+  if (Pt0>=_arraypT[nintpT]) j0=nintpT;
   else {
     while(1) {
-      if( arraypT[(j0-1)%(nintpT+1)]<=Pt0 && Pt0<arraypT[j0%(nintpT+1)] )
+      if( _arraypT[(j0-1)%(nintpT+1)]<=Pt0 && Pt0<_arraypT[j0%(nintpT+1)] )
 	break;
       j0++;
     }
   }
 
   while(1) {
-    if( arrayeta[(i1-1)%(ninteta+1)]<=eta1 && eta1<arrayeta[i1%(ninteta+1)] )
+    if( _arrayeta[(i1-1)%(ninteta+1)]<=eta1 && eta1<_arrayeta[i1%(ninteta+1)] )
       break;
     i1++;
   }
-  if (Pt1>=arraypT[nintpT]) j1=nintpT;
+  if (Pt1>=_arraypT[nintpT]) j1=nintpT;
   else {
     while(1) {
-      if( arraypT[(j1-1)%(nintpT+1)]<=Pt1 && Pt1<arraypT[j1%(nintpT+1)] )
+      if( _arraypT[(j1-1)%(nintpT+1)]<=Pt1 && Pt1<_arraypT[j1%(nintpT+1)] )
 	break;
       j1++;
     }

@@ -1,4 +1,4 @@
-#include "SignalPlots.h"
+#include "include/SignalPlots.h"
 
 SignalPlots::SignalPlots(TString name) {
   h_jjmass =         new TH1F("h_dijetsmass_"    + name,"Invariant mass of the two leading jets",100,0,1000);

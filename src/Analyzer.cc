@@ -1,4 +1,4 @@
-#include "Analyzer.h"
+#include "include/Analyzer.h"
 #include <stdio.h>  
 #include <stdlib.h>     /* getenv */
 
@@ -158,7 +158,9 @@ void Analyzer::SetEvtN(Long64_t events) {
 
 void Analyzer::Loop() {
 
-  //snu::KParticle part;
+  snu::KParticle part;
+  snu::KJet jet;
+  snu::KMuon muon;
 
   cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
   

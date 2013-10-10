@@ -10,7 +10,7 @@ class EffCalculator : public Analyzer {
   static const Int_t nintpT=6;
   static const Double_t minbin = 10.0;
   static const Double_t binwidh = 2.0;
-  Double_t *arraypT;
+  //Double_t *arraypT;
   static const Int_t ninteta=4;
   //Double_t *arrayeta;
   

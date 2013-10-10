@@ -1,7 +1,9 @@
 {
-  string includedir = getenv("INCLUDEDIR");
   string maindir = getenv("MAINDIR");
+  string includedir = getenv("INCLUDEDIR");
+  string includedir_snu = getenv("INCLUDEDIR_snu");
   gSystem->AddIncludePath(("-I" + includedir).c_str());
+  gSystem->AddIncludePath(("-I" + includedir_snu).c_str());
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
   gROOT->ProcessLine(".L Reweight.cc+g");
   gROOT->ProcessLine(".L Data.cc+g");
@@ -11,6 +13,7 @@
   gSystem->ChangeDirectory((maindir+ "/SNUTree/src/").c_str());  
   gROOT->ProcessLine(".L KParticle.cc+g");
   gROOT->ProcessLine(".L KJet.cc+g");
+  gROOT->ProcessLine(".L KMuon.cc+g");
 
   /// Selection Code compilation
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
@@ -41,24 +44,24 @@
   //////////////////////////////////////////////////////////
   //                          MC                          //
   //////////////////////////////////////////////////////////
-
+  
 /// Signal samples
-if (1) {
+  if (1) {
     
   // Create Chains
-  //TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
-  TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_100_mm.txt");
+    TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
+    //TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));
     //  TChain* chain200 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_200_mm.txt");
     //   TChain* chain700 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_700_mm.txt");
     
     
     Analyzer Pippo; /// create analyzer class object
-  
-  Pippo.Init(chain50);
-  Pippo.SetName("Majorana_50",1);
-  Pippo.SetWeight(1071.1, 49994);
-  std::cout << "Majorana50\n";
-  Pippo.Loop();
+    
+    Pippo.Init(chain50);
+    Pippo.SetName("Majorana_50",1);
+    Pippo.SetWeight(1071.1, 49994);
+    std::cout << "Majorana50\n";
+    Pippo.Loop();
 	/*
         Pippo.Init(chain100);
         Pippo.SetName("Majorana_100",1);
@@ -76,14 +79,14 @@ if (1) {
         Pippo.SetName("Majorana_700",1);
         Pippo.SetWeight(0.00038312, 49996);
         std::cout << "Majorana700\n";  Pippo.Loop();*/
-    }
+  }
         
     
 
 ////     Electro Weak samples
 
-
-if (0) {
+    
+    if (0) {
         TChain* chain = ChainMaker("/data/HN_data/SampleList/MC/mc_zz.txt");
         Analyzer Pippo; Pippo.Init(chain); Pippo.SetName("ZZ_inclusive",11); Pippo.SetWeight(17.654, 9799908);
         std::cout << "ZZ\n";  Pippo.Loop();
@@ -168,7 +171,7 @@ if (0) {
         Pippo.SetName("DoubleEm_periodA",1);
         Pippo.Loop();
     }
-    
+
     
 }
-
+       

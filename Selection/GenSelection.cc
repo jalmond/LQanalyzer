@@ -1,4 +1,4 @@
-#include "GenSelection.h"
+#include "include/GenSelection.h"
 
 GenSel::GenSel() {};
 

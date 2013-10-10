@@ -9,7 +9,7 @@ class FRCalculator_Ele : public Analyzer_Ele {
   static const Int_t nintpT=9;
   static const Double_t minbin = 35.0;
   static const Double_t binwidh = 5.0;
-  Double_t *arraypT;
+  //Double_t *arraypT_fake_el;
   static const Int_t ninteta=4;
   //Double_t *arrayeta;
   

@@ -1,7 +1,11 @@
 # Ignore for commits
 *.[oa]
+*.root
+*/*.root
+*/*/*.root
 */*.[oa]
 *~
 */*~
 */*.d
 */*.so
+SNUTree/
