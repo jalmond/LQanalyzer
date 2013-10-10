@@ -3,7 +3,7 @@
 ### setup paths to be used in analysis code
 export MAINDIR=$PWD/../
 export ANALYSISDIR=$PWD/../src/
-export INCLUDEDIR=$PWD/../
+export INCLUDEDIR=$PWD/../include/
 export INCLUDEDIR_snu=$PWD/../SNUTree/include/
 export OUTDIR=$PWD/../output/
 

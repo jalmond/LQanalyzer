@@ -1,4 +1,4 @@
-#include "include/Analyzer.h"
+#include "Analyzer.h"
 #include <stdio.h>  
 #include <stdlib.h>     /* getenv */
 
