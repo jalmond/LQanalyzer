@@ -161,6 +161,15 @@ void Analyzer::Loop() {
   snu::KParticle part;
   snu::KJet jet;
   snu::KMuon muon;
+  
+  //  std::vector<double> mu_eta = *MuonEta;
+
+  //for (UInt_t ilep=0; ilep<MuonEta->size(); ilep++) {
+    
+    //double muonpt = MuonPt->at(ilep);
+
+    //    part.SetPtEtaPhiE(*MuonPt[ilep],MuonEta[ilep], MuonPhi[ilep], MuonEnergy[ilep]);
+  //  }
 
   cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
   
