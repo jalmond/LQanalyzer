@@ -1,4 +1,4 @@
-#include "include/OtherFunctions.h"
+#include "OtherFunctions.h"
 
 int nthdigit(int x, int n) {
   static int powersof10[] = {1, 10, 100, 1000, 10000, 100000};
