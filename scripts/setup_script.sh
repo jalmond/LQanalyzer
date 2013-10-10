@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 ### setup paths to be used in analysis code
 export MAINDIR=$PWD/../
 export ANALYSISDIR=$PWD/../src/
