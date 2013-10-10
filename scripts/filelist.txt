@@ -1,0 +1,8 @@
+/data/HN_data/Signal/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
+/data/HN_data/Signal/Majorana200/RootTupleMakerV2_MNtoMuMu_MN_200_ALL.root
+/data/HN_data/Signal/Majorana50/RootTupleMakerV2_MNtoMuMu_MN_50_ALL.root
+/data/HN_data/Signal/Majorana700/RootTupleMakerV2_MNtoMuMu_MN_700_ALL.root
+/data/HN_data/Signal/Majorana_ee_100/RootTupleMakerV2ee_m100_ALL.root
+/data/HN_data/Signal/Majorana_ee_150/RootTupleMakerV2ee_m150_All.root
+/data/HN_data/Signal/Majorana_ee_200/RootTupleMakerV2ee_m200_All.root
+/data/HN_data/Signal/Majorana_ee_50/RootTupleMakerV2ee_m50_All.root

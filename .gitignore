@@ -1,0 +1,7 @@
+# Ignore for commits
+*.[oa]
+*/*.[oa]
+*~
+*/*~
+*/*.d
+*/*.so
