@@ -34,12 +34,14 @@
   gROOT->ProcessLine(".L SignalPlots.cc+g");
   
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
+  gROOT->ProcessLine(".L SNUTreeMuonFiller.cc+g");
   gROOT->ProcessLine(".L Analyzer.cc+g");
   gROOT->ProcessLine(".L Analyzer_Ele.cc+g");
   gROOT->ProcessLine(".L FakeRateCalculator.cc+g");
   gROOT->ProcessLine(".L FakeRateCalculator_Ele.cc+g");
   gROOT->ProcessLine(".L EfficiencyCalculator.cc+g");
   gROOT->ProcessLine(".L ChainMaker.C+g");
+
 
   //////////////////////////////////////////////////////////
   //                          MC                          //
