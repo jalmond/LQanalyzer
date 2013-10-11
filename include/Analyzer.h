@@ -2,7 +2,7 @@
 #define Analyzer_h
 
 #include <set>
-#include "Data.h"
+//#include "Data.h"
 #include "ElectronSelection.h"
 #include "MuonSelection.h"
 #include "JetSelection.h"
@@ -20,7 +20,7 @@
 #include "KMuon.h"
 #include "SNUTreeMuonFiller.h"
 
-class Analyzer : public Data {
+class Analyzer : public SNUTreeMuonFiller {
 
   static const Bool_t debug = false; 
   static const Double_t integratedlumi = 19762.501;
@@ -47,7 +47,7 @@ class Analyzer : public Data {
  public:
   static const Bool_t MC_pu = false; 
 
-  SNUTreeMuonFiller* snu_muons_conf;
+//SNUTreeMuonFiller* snu_muons_conf;
 
   ReweightPU *reweightPU;
   TH1F *h_nvtx_norw, *h_nvtx_rw;

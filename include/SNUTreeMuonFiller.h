@@ -1,6 +1,7 @@
 #ifndef SNUTreeMuonFiller_h
 #define SNUTreeMuonFiller_h
 
+#include <set>
 #include "Data.h"
 
 // SNUTree
@@ -13,8 +14,10 @@ class SNUTreeMuonFiller : public Data {
   SNUTreeMuonFiller();
   ~SNUTreeMuonFiller();
 
-  std::vector<snu::KMuon> GetAllMuons();
-    
+std::vector<snu::KMuon> GetAllMuons(int ivertex);
+
+
+
   
 };
 
