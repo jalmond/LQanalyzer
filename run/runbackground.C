@@ -51,8 +51,8 @@
   if (1) {
     
   // Create Chains
-    TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
-    //TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));
+    //TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
+    TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));
     //  TChain* chain200 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_200_mm.txt");
     //   TChain* chain700 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_700_mm.txt");
     

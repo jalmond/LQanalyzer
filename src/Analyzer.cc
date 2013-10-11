@@ -158,15 +158,11 @@ void Analyzer::SetEvtN(Long64_t events) {
 
 void Analyzer::Loop() {
 
-  vector<snu::KMuon> all_muons = snu_muons_conf->GetAllMuons();
-  
-  return;
-
-  cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
-  
   if(entrieslimit!=-1)cout << "Running over " << nentries << "/" << entrieslimit << endl;
   if (debug) cout<<  "loop begins" <<endl;
   
+  cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
+
   Double_t SingleFake=0; Double_t DoubleFake=0; Double_t Single_Double=0;
   Int_t nSingleFake=0; Int_t nDoubleFake=0;
   
@@ -261,8 +257,10 @@ void Analyzer::Loop() {
     if (!(jentry % 1000))   cout << "Processing entry " << jentry << endl;
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
-    
-      
+  
+
+
+       
     /// Initial event cuts
     if (isTrackingFailure || passTrackingFailureFilter) continue;
     if (!passBeamHaloFilterLoose) continue;
@@ -297,6 +295,13 @@ void Analyzer::Loop() {
       }
     }
  
+    vector<snu::KMuon> all_muons = GetAllMuons(VertexN);
+
+    if(all_muons.size()>1){
+      cout << "Muon 1 has charge " << all_muons.at(0).Charge() << endl;
+      cout << "Muon 2 has charge " << all_muons.at(1).Charge() << endl;
+    }
+
     ///// STARTING WITH PHYSICS OBJECTS COLLECTIONS /////
 
     if (debug) cout<< "Event number " <<jentry<<endl;
