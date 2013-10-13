@@ -10,3 +10,4 @@
 */*.so
 SNUTree/
 !output/
+*/*#*
