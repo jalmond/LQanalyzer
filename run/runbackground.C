@@ -15,6 +15,9 @@
   gROOT->ProcessLine(".L KJet.cc+g");
   gROOT->ProcessLine(".L KMuon.cc+g");
 
+  gSystem->ChangeDirectory((maindir + "/src/").c_str());
+  gROOT->ProcessLine(".L SNUTreeMuonFiller.cc+g");
+
   /// Selection Code compilation
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
   gROOT->ProcessLine(".L SelectionFunctions.cc+g");
@@ -34,7 +37,6 @@
   gROOT->ProcessLine(".L SignalPlots.cc+g");
   
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
-  gROOT->ProcessLine(".L SNUTreeMuonFiller.cc+g");
   gROOT->ProcessLine(".L Analyzer.cc+g");
   gROOT->ProcessLine(".L Analyzer_Ele.cc+g");
   gROOT->ProcessLine(".L FakeRateCalculator.cc+g");
@@ -63,7 +65,9 @@
     Pippo.SetName("Majorana_50",1);
     Pippo.SetWeight(1071.1, 49994);
     std::cout << "Majorana50\n";
-    Pippo.Loop();
+    Pippo.TestLoop();
+    //Pippo.Loop();
+    std::cout << "OUT OF LOOP" << std::endl;
 	/*
         Pippo.Init(chain100);
         Pippo.SetName("Majorana_100",1);
@@ -174,6 +178,5 @@ if (0) {
         Pippo.Loop();
     }
 
-    
 }
        

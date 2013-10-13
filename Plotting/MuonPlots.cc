@@ -24,6 +24,8 @@ MuonPlots::MuonPlots(TString name) : StdPlots(name) {
   h_GlbChi2            = new TH1F("h_"+name+"_GlbChi2",name+" Global #chi^{2} per #DoF",120,0.,12.);
   h_dxy                = new TH1F("h_"+name+"_dxy",name+" transverse IP",300,0.0,0.3);
   h_dz                 = new TH1F("h_"+name+"_dz",name+" longitudinal IP",100,0.0,1.0);
+  h_d0                 = new TH1F("h_"+name+"_d0",name+" d0 IP",100,0.0,1.0);
+  h_d0sig                 = new TH1F("h_"+name+"_d0sig",name+" d0sig IP",100,-20.0,20.0);
 }
 
 MuonPlots::~MuonPlots() {
@@ -45,7 +47,34 @@ MuonPlots::~MuonPlots() {
   delete h_GlbChi2;
   delete h_dxy;
   delete h_dz;
+  delete h_d0;
+  delete h_d0sig;
 }
+
+void MuonPlots::Fill(Double_t weight, std::vector<snu::KMuon> muons){
+  int imu(0);
+  for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit!=muons.end(); muit++,imu++){
+    StdPlots::Fill(weight, muons.size(), muit->Pt(), muit->Eta(), muit->Phi());
+    h_charge->Fill(muit->Charge(), weight);
+    
+    if (muit->Pt()>0.01) {
+      h_photonIso->Fill(muit->IsoR03ph()/muit->Pt(), weight);
+      h_chargedHadronIso->Fill(muit->IsoR03ch()/muit->Pt(), weight);
+      h_neutralHadronIso->Fill(muit->IsoR03nh()/muit->Pt(), weight);
+      h_PUpt->Fill(muit->PFPUIsoR03()/muit->Pt(), weight);
+      h_PF_RelIso->Fill( (muit->IsoR03ch() + muit->IsoR03nh() + muit->IsoR03ph() )/ muit->Pt() , weight);
+      h_PF_RelIso_beta->Fill( (muit->IsoR03ch() + max(0.0, muit->IsoR03nh() + muit->IsoR03ph())- 0.5*muit->PFPUIsoR03())/ muit->Pt() , weight);
+    }
+    
+    h_GlbChi2->Fill(muit->GlobalChi2(), weight);
+    h_dxy->Fill(muit->dXY(), weight);
+    h_dz->Fill(muit->dZ(), weight);
+    h_d0->Fill(muit->D0(),weight);
+    h_d0sig->Fill(muit->D0()/muit->D0Err(),weight);
+    
+  }
+}
+
 
 void MuonPlots::Fill(Double_t weight, Int_t N, Double_t pt, Double_t eta, Double_t phi, Int_t charge, Double_t trkIso, Double_t eCalIso, Double_t hCalIso, Double_t eCalIsoDeposit, Double_t hCalIsoDeposit, Double_t photonIso, Double_t chargedHadronIso, Double_t neutralHadronIso, Double_t Muon_GlobalChi2, Double_t dxy, Double_t dz, Double_t PUpt, Double_t rho) { 
 
@@ -122,4 +151,6 @@ void MuonPlots::Write() {
   h_GlbChi2->Write();
   h_dxy->Write();
   h_dz->Write();
+  h_d0->Write();
+  h_d0sig->Write();
 }

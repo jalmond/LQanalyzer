@@ -14,11 +14,11 @@ SNUTreeMuonFiller::~SNUTreeMuonFiller() {};
 std::vector<KMuon> SNUTreeMuonFiller::GetAllMuons(int iVertex){
   
   std::vector<KMuon> muons;
-  
+
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
-    muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
 
+    muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
     

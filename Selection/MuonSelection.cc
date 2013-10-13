@@ -1,9 +1,40 @@
 #include "MuonSelection.h"
 
+using namespace snu;
+
 MuonSel::MuonSel() {};
 
-
 MuonSel::~MuonSel() {};
+
+void MuonSel::MuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& leptonColl) {
+  
+  for (UInt_t ilep=0; ilep<allmuons.size(); ilep++) {
+    
+    LeptonchiNdof = allmuons.at(ilep).GlobalChi2(); 
+
+    dz =  allmuons.at(ilep).dZ();
+    dxy = allmuons.at(ilep).dXY();
+    D0 = fabs( allmuons.at(ilep).D0());
+    D0Error = allmuons.at(ilep).D0Err();
+   
+    if (allmuons.at(ilep).Pt() > 0.01)      
+      LeptonRelIso = allmuons.at(ilep).IsoTerm()/allmuons.at(ilep).Pt();
+    else LeptonRelIso = 9999.;
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;    
+    if (D0Error < 1E-6) D0Error = 1E-6;
+
+
+    (allmuons.at(ilep).IsPF()==1 && allmuons.at(ilep).IsGlobal()==1 && allmuons.at(ilep).validHits() >0 && allmuons.at(ilep).validPixHits()>0 && allmuons.at(ilep).validStations()>1 && allmuons.at(ilep).ActiveLayer() >5) ? individual = true :individual = false;
+    
+    (allmuons.at(ilep).IsoHcalVeto() < HCalDeposit_max && allmuons.at(ilep).IsoEcalVeto() < ECalDeposit_max && ( allmuons.at(ilep).IsoHcalVeto() >= HCalDeposit_min || allmuons.at(ilep).IsoEcalVeto() >= ECalDeposit_min) ) ? DepositVeto=true : DepositVeto=false;
+
+    (fabs(allmuons.at(ilep).Eta()) < eta_cut && allmuons.at(ilep).Pt() >= pt_cut_min && allmuons.at(ilep).Pt() < pt_cut_max && allmuons.at(ilep).PtError()/allmuons.at(ilep).Pt()<=0.10) ? etaPt=true : etaPt =false;
+
+    if (etaPt  && DepositVeto && individual)
+      leptonColl.push_back(allmuons.at(ilep));    
+  }
+  
+}
 
 void MuonSel::MuonSelection(std::vector<Int_t> IsPF, std::vector<Int_t> IsGlobal, std::vector<Double_t> Eta, std::vector<Double_t> Phi, std::vector<Double_t> Pt, std::vector<Double_t> PtErr, std::vector<Double_t> E, std::vector<Double_t> TrkIso, std::vector<Double_t> ECalIso, std::vector<Double_t> HCalIso, std::vector<Double_t> ECalIsoDeposit, std::vector<Double_t> HCalIsoDeposit, std::vector<Int_t> Charge, std::vector<Int_t> ValidHits, std::vector<Int_t> PixelValidHits, std::vector<Int_t> ValidStations, std::vector<Int_t> LayersWithMeasurement, std::vector<Double_t> GlobalChi2, std::vector<Double_t> Trkdx, std::vector<Double_t> Trkdy, std::vector<Double_t> Trkdz, std::vector<Double_t> TrkIPToolsIP, std::vector<Double_t> TrkIPToolsIPError, Double_t Vertex_X, Double_t Vertex_Y, Double_t Vertex_Z, std::vector<Double_t> PUpt, std::vector<Lepton>& leptonColl) {
 
@@ -49,7 +80,8 @@ void MuonSel::MuonSelection(std::vector<Int_t> IsPF, std::vector<Int_t> IsGlobal
       else if ( nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 4 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 4 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 4)
         fakeType = Lepton::cjet;
 
-      else if (nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 1 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 1 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 1
+
+	  else if (nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 1 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 1 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 1
             || nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 2 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 2 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 2
             || nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 3 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 3 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 3 )
         fakeType = Lepton::jet;
@@ -84,6 +116,9 @@ void MuonSel::MuonSelection(std::vector<Int_t> IsPF, std::vector<Int_t> IsGlobal
   std::sort( leptonColl.begin(), leptonColl.end(), LeptonPTSorter );
   
 }
+
+
+
 
 void MuonSel::LooseMuonSelection(std::vector<Int_t> IsPF, std::vector<Int_t> IsTracker, vector<Int_t> IsGlobal, std::vector<Double_t> Eta, std::vector<Double_t> Phi, std::vector<Double_t> Pt, std::vector<Double_t> PtErr, std::vector<Double_t> E, std::vector<Double_t> TrkIso, std::vector<Double_t> ECalIso, std::vector<Double_t> HCalIso, std::vector<Double_t> ECalIsoDeposit, std::vector<Double_t> HCalIsoDeposit, std::vector<Int_t> Charge, std::vector<Int_t> ValidHits, std::vector<Int_t> PixelValidHits, std::vector<Int_t> ValidStations, std::vector<Int_t> LayersWithMeasurement, std::vector<Double_t> GlobalChi2, std::vector<Double_t> Trkdx, std::vector<Double_t> Trkdy, std::vector<Double_t> Trkdz, std::vector<Double_t> TrkIPToolsIP, std::vector<Double_t> TrkIPToolsIPError, Double_t Vertex_X, Double_t Vertex_Y, Double_t Vertex_Z, std::vector<Double_t> PUpt, std::vector<Lepton>& leptonColl) {
 

@@ -89,6 +89,7 @@ class Analyzer : public SNUTreeMuonFiller {
   Analyzer();
   ~Analyzer();
   void Loop();
+  void TestLoop();
   void SetWeight(Double_t CrossSection, Double_t nevents);
   void SetName(TString name, Int_t version);
   void SetEvtN(Long64_t events);
