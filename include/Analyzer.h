@@ -18,9 +18,9 @@
 #include "KParticle.h"
 #include "KJet.h"
 #include "KMuon.h"
-#include "SNUTreeMuonFiller.h"
+#include "SNUTreeFiller.h"
 
-class Analyzer : public SNUTreeMuonFiller {
+class Analyzer : public SNUTreeFiller {
 
   static const Bool_t debug = false; 
   static const Double_t integratedlumi = 19762.501;
@@ -46,8 +46,6 @@ class Analyzer : public SNUTreeMuonFiller {
 
  public:
   static const Bool_t MC_pu = false; 
-
-//SNUTreeMuonFiller* snu_muons_conf;
 
   ReweightPU *reweightPU;
   TH1F *h_nvtx_norw, *h_nvtx_rw;

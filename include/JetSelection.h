@@ -8,6 +8,7 @@ using namespace std;
 #include <vector>
 #include "Jet.h"
 #include "Lepton.h"
+#include "KJet.h"
 
 class JJ {
 
@@ -19,6 +20,8 @@ class JJ {
   JJ();
   ~JJ();
  
+  void JetSelection (std::vector<snu::KJet> alljets, std::vector<snu::KJet>& jetColl);
+
   void JetSelection(std::vector<Int_t> Jet_Id_loose, std::vector<Double_t> Jet_Eta, std::vector<Double_t> Jet_Phi, std::vector<Double_t> Jet_Pt, std::vector<Double_t> Jet_E, std::vector<Double_t> Jet_neutralEmEnergyFraction, std::vector<Double_t> Jet_neutralHadronEnergyFraction, std::vector<Double_t> Jet_chargedEmEnergyFraction, std::vector<Double_t> Jet_chargedHadronEnergyFraction, std::vector<Int_t> Jet_chargedMultiplicity, std::vector<Int_t> Jet_NConstituents, std::vector<Double_t> Jet_BTag, std::vector<Double_t> Jet_threeD, std::vector<Jet>& jetColl);
   
   void JetSelectionLeptonVeto(std::vector<Int_t> Jet_Id_loose, std::vector<Double_t> Jet_Eta, std::vector<Double_t> Jet_Phi, std::vector<Double_t> Jet_Pt, std::vector<Double_t> Jet_E, std::vector<Double_t> Jet_neutralEmEnergyFraction, std::vector<Double_t> Jet_neutralHadronEnergyFraction, std::vector<Double_t> Jet_chargedEmEnergyFraction, std::vector<Double_t> Jet_chargedHadronEnergyFraction, std::vector<Int_t> Jet_chargedMultiplicity, std::vector<Int_t> Jet_NConstituents, std::vector<Double_t> Jet_BTag, std::vector<Double_t> Jet_threeD, std::vector<Lepton>& leptonColl1, std::vector<Lepton>& leptonColl2, std::vector<Jet>& jetColl);

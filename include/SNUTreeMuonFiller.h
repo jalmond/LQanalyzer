@@ -1,20 +1,22 @@
-#ifndef SNUTreeMuonFiller_h
-#define SNUTreeMuonFiller_h
+#ifndef SNUTreeFiller_h
+#define SNUTreeFiller_h
 
 #include <set>
 #include "Data.h"
 
 // SNUTree
 #include "KMuon.h"
+#include "KJet.h"
 
-class SNUTreeMuonFiller : public Data {
+class SNUTreeFiller : public Data {
 
 
  public:
-  SNUTreeMuonFiller();
-  ~SNUTreeMuonFiller();
+  SNUTreeFiller();
+  ~SNUTreeFiller();
 
 std::vector<snu::KMuon> GetAllMuons(int ivertex);
+std::vector<snu::KMuon> GetAllJets();
 
 
 

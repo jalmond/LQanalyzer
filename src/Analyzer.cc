@@ -144,9 +144,12 @@ void Analyzer::TestLoop() {
     /// Method 1 : calls function from filler class
     /// returns vector of all muons(in ntuple) in event
     vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
+    vector<snu::KJet> all_jets = GetAllJets();    
     
     /// or use selection code (which returns a vector of muons with selected cuts)
-    vector<snu::KMuon> muonColl;
+    //// Need to pt order at some point
+
+    std::vector<snu::KMuon> muonColl;
     MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4);
     MuonTight.SetRelIso(0.10);
@@ -156,9 +159,17 @@ void Analyzer::TestLoop() {
     MuonTight.SetDeposits(4.0,6.0);    
     MuonTight.MuonSelection(all_muons,muonColl);
    
-    ///// SOME STANDARD PLOTS /////
+    std::vector<snu::KJet> jetColl;
+    //// List of cuts
+    JetsVeto.SetPt(20); 
+    JetsVeto.SetEta(2.5);
+    JetsVeto.JetSelection(all_jets, jetColl);
+
+     ///// SOME STANDARD PLOTS /////
     if (muonColl.size() > 0) h_muons->Fill(weight, muonColl);
+    if (jetColl.size() > 0) h_jets->Fill(weight, jetColl);
     
+
     
   }
   
@@ -170,6 +181,11 @@ void Analyzer::TestLoop() {
   outfile->cd( Dir->GetName() );
   h_muons->Write();
   outfile->cd();
+  Dir = outfile->mkdir("Jets");
+  outfile->cd( Dir->GetName() );
+  h_jets->Write();
+  outfile->cd();
+  
 
   outfile->Close();
 

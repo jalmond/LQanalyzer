@@ -1,7 +1,26 @@
 #include "JetSelection.h"
 
+using namespace snu;
+
 JJ::JJ() { }
 JJ::~JJ() { }
+
+
+void JJ::JetSelection (std::vector<KJet> alljets, std::vector<KJet>& jetColl) {
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+    if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
+	 fabs(jit->Eta()) < eta_cut
+	 && jit->PassLooseID()
+	 && jit->NeutralHEF() < 0.99
+	 && jit->NeutralEmEF() < 0.99
+	 && jit->Nconstituents() > 1
+	 && ( fabs( jit->Eta() ) > 2.4 || ( jit->ChargedHEF() > 0. && jit->ChargedMult() > 0. && jit->ChargedEmEF() < 0.99 ) ) ) { 
+      
+      jetColl.push_back(*jit);
+    }
+  }
+}
 
 void JJ::JetSelection (std::vector<Int_t> Jet_Id_loose, std::vector<Double_t> Jet_Eta, std::vector<Double_t> Jet_Phi, std::vector<Double_t> Jet_Pt, std::vector<Double_t> Jet_E, std::vector<Double_t> Jet_neutralEmEnergyFraction, std::vector<Double_t> Jet_neutralHadronEnergyFraction, std::vector<Double_t> Jet_chargedEmEnergyFraction, std::vector<Double_t> Jet_chargedHadronEnergyFraction, std::vector<Int_t> Jet_chargedMultiplicity, std::vector<Int_t> Jet_NConstituents, std::vector<Double_t> Jet_BTag, std::vector<Double_t> Jet_threeD, std::vector<Jet>& jetColl) {
 

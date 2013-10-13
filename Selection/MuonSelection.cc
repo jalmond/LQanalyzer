@@ -8,30 +8,31 @@ MuonSel::~MuonSel() {};
 
 void MuonSel::MuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& leptonColl) {
   
-  for (UInt_t ilep=0; ilep<allmuons.size(); ilep++) {
+  //for (UInt_t ilep=0; ilep<allmuons.size(); ilep++) {
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
     
-    LeptonchiNdof = allmuons.at(ilep).GlobalChi2(); 
+    LeptonchiNdof = muit->GlobalChi2(); 
 
-    dz =  allmuons.at(ilep).dZ();
-    dxy = allmuons.at(ilep).dXY();
-    D0 = fabs( allmuons.at(ilep).D0());
-    D0Error = allmuons.at(ilep).D0Err();
+    dz =  muit->dZ();
+    dxy = muit->dXY();
+    D0 = fabs( muit->D0());
+    D0Error = muit->D0Err();
    
-    if (allmuons.at(ilep).Pt() > 0.01)      
-      LeptonRelIso = allmuons.at(ilep).IsoTerm()/allmuons.at(ilep).Pt();
+    if (muit->Pt() > 0.01)      
+      LeptonRelIso = muit->IsoTerm()/muit->Pt();
     else LeptonRelIso = 9999.;
     if (LeptonRelIso<0) LeptonRelIso=0.0001;    
     if (D0Error < 1E-6) D0Error = 1E-6;
 
 
-    (allmuons.at(ilep).IsPF()==1 && allmuons.at(ilep).IsGlobal()==1 && allmuons.at(ilep).validHits() >0 && allmuons.at(ilep).validPixHits()>0 && allmuons.at(ilep).validStations()>1 && allmuons.at(ilep).ActiveLayer() >5) ? individual = true :individual = false;
+    (muit->IsPF()==1 && muit->IsGlobal()==1 && muit->validHits() >0 && muit->validPixHits()>0 && muit->validStations()>1 && muit->ActiveLayer() >5) ? individual = true :individual = false;
     
-    (allmuons.at(ilep).IsoHcalVeto() < HCalDeposit_max && allmuons.at(ilep).IsoEcalVeto() < ECalDeposit_max && ( allmuons.at(ilep).IsoHcalVeto() >= HCalDeposit_min || allmuons.at(ilep).IsoEcalVeto() >= ECalDeposit_min) ) ? DepositVeto=true : DepositVeto=false;
+    (muit->IsoHcalVeto() < HCalDeposit_max && muit->IsoEcalVeto() < ECalDeposit_max && ( muit->IsoHcalVeto() >= HCalDeposit_min || muit->IsoEcalVeto() >= ECalDeposit_min) ) ? DepositVeto=true : DepositVeto=false;
 
-    (fabs(allmuons.at(ilep).Eta()) < eta_cut && allmuons.at(ilep).Pt() >= pt_cut_min && allmuons.at(ilep).Pt() < pt_cut_max && allmuons.at(ilep).PtError()/allmuons.at(ilep).Pt()<=0.10) ? etaPt=true : etaPt =false;
+    (fabs(muit->Eta()) < eta_cut && muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max && muit->PtError()/muit->Pt()<=0.10) ? etaPt=true : etaPt =false;
 
     if (etaPt  && DepositVeto && individual)
-      leptonColl.push_back(allmuons.at(ilep));    
+      leptonColl.push_back(*muit);    
   }
   
 }
