@@ -1,21 +1,7 @@
 #include "FakeRateCalculator.h"
 
 FRCalculator::FRCalculator() {
-/*  
-  arraypT = new Double_t [nintpT+1];
-  arraypT[0] = 10.;
-  arraypT[1] = 15.;
-  arraypT[2] = 20.;
-  arraypT[3] = 25.;
-  arraypT[4] = 30.;
-  arraypT[5] = minbin;
-
-  for (UInt_t i=0; i+6<nintpT+1; i++) {
-    //arraypT[i+6] = minbin + binwidh * exp (i);
-    arraypT[i+6] = minbin + binwidh * (i+1);
-    cout << arraypT[i+6] <<endl;
-  }
-*/  
+  
   Double_t arrayeta [] = {0.0,1.0,1.479,2.0,2.5};
   Double_t arraypT [] = {10.,15.,20.,25.,30.,35.,45.,60.,80.,100.};
 

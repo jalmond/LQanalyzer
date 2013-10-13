@@ -1,14 +1,7 @@
 #include "EfficiencyCalculator.h"
 
 EffCalculator::EffCalculator() {
-  /*
-  arraypT = new Double_t [nintpT+1];
-  arraypT[0] = minbin;
-  for (UInt_t i=1; i<nintpT+1; i++) {
-    arraypT[i] = minbin + binwidh * exp (i);
-    cout << arraypT[i] <<endl;
-  }
-  */
+
   Double_t arrayeta [] = {0.0,1.0,1.479,2.0,2.5};
   Double_t arraypT [] = {10.,15.,20.,25.,35.};
 
@@ -207,7 +200,7 @@ void EffCalculator::LoopEff() {
       h_nVertex1->Fill(numberVertices, weight);
       for (UInt_t iii=0; iii<muonTightColl.size(); iii++) {
         h_nEvents->Fill(fabs(muonTightColl[iii].eta()),muonTightColl[iii].lorentzVec().Pt(), weight);
-        UInt_t index=muonTightColl[iii].ilepton();
+
         index=muonTightColl[iii].ilepton();
         h_TLnum->Fill(weight, (Int_t) muonTightColl.size(), muonTightColl[iii].lorentzVec().Pt(), muonTightColl[iii].eta(), muonTightColl[iii].lorentzVec().Phi(), muonTightColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonTightColl[iii].chiNdof(), muonTightColl[iii].dxy_BS(), muonTightColl[iii].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
       }
