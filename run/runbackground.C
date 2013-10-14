@@ -14,6 +14,7 @@
   gROOT->ProcessLine(".L KParticle.cc+g");
   gROOT->ProcessLine(".L KJet.cc+g");
   gROOT->ProcessLine(".L KMuon.cc+g");
+  gROOT->ProcessLine(".L KElectron.cc+g");
 
 
 

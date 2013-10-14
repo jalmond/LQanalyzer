@@ -2,6 +2,8 @@
 #include <stdio.h>  
 #include <stdlib.h>     /* getenv */
 
+using namespace::snu;
+
 Analyzer::Analyzer() {
 
   if (debug) cout<<"inizio"<<endl;
@@ -115,7 +117,6 @@ void Analyzer::TestLoop() {
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
     
-    
     /// Initial event cuts
     if (isTrackingFailure || passTrackingFailureFilter) continue;
     if (!passBeamHaloFilterLoose) continue;
@@ -144,8 +145,9 @@ void Analyzer::TestLoop() {
     /// Method 1 : calls function from filler class
     /// returns vector of all muons(in ntuple) in event
     vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
-    vector<snu::KJet> all_jets = GetAllJets();    
-    
+    vector<snu::KElectron> all_electrons = GetAllElectrons(VertexN); /// NULL AT MOMENT    
+    vector<snu::KJet> all_jets = GetAllJets();        
+
     /// or use selection code (which returns a vector of muons with selected cuts)
     //// Need to pt order at some point
 
@@ -164,13 +166,16 @@ void Analyzer::TestLoop() {
     JetsVeto.SetPt(20); 
     JetsVeto.SetEta(2.5);
     JetsVeto.JetSelection(all_jets, jetColl);
-
+    
      ///// SOME STANDARD PLOTS /////
-    if (muonColl.size() > 0) h_muons->Fill(weight, muonColl);
-    if (jetColl.size() > 0) h_jets->Fill(weight, jetColl);
-    
-
-    
+    if (muonColl.size() == 2) {      
+      KParticle Z = muonColl.at(0) + muonColl.at(1);
+      if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
+	h_prova->Fill(Z.M(), weight);	 /// Plots Z peak
+	h_muons->Fill(weight, muonColl);      
+	h_jets->Fill(weight, jetColl);
+      }    
+    }
   }
   
   outfile->cd();
