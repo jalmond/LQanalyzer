@@ -69,6 +69,7 @@ class Analyzer : public SNUTreeFiller {
   Double_t METx, METy, MET, dr, MCweight, weight;
   UInt_t VertexN;
   Int_t prescaler;
+  Bool_t isData;
 
   MuonSel MuonTight, MuonLooseButNOTight, MuonLoose, MuonVeto;
   GenSel GenTight;
@@ -94,6 +95,9 @@ class Analyzer : public SNUTreeFiller {
   void SetName(TString name, Int_t version);
   void SetEvtN(Long64_t events);
   void NEvents(float n_events);
+  void MakeHistograms();
+  void MakeCleverHistograms();
+  bool PassBasicEventCuts();
 
 };
 #endif

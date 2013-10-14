@@ -7,66 +7,14 @@ using namespace::snu;
 Analyzer::Analyzer() {
 
   if (debug) cout<<"inizio"<<endl;
-    
-    //// Additional plots to make
-    h_nsignal = new TH1F("h_signal","number of signal events ",5,-1,4);
-    h_cutflow = new TH1F("h_cutflow","number of signal events in cut flow",4,0,4);
-    h_singlefake = new TH2F("h_singlefake","number of single fakes ",4,0,4,4,-1,3);
-    h_doublefake = new TH2F("h_doublefake","number of double fakes ",4,0,4,4,-1,3);
-    h_MET = new TH1F("h_MET","Missing Et",300,0.0,300.0);
-    h_MET->SetDefaultSumw2(true);
-    h_METsign = new TH1F("h_METsign","Missing Et significance",50,0.0,50.0);
-    h_MuonMissCharge = new TH1F("h_MuonMissCharge","Miss Charge for muons",6,0,6);
-    h_EventFakeType = new TH1F("h_EventFakeType","Event fake type",3,0,3);
-    h_LeptvsVert = new TH2I("h_LeptvsVert","Leptons per Vertex",50,0,50,5,0,5);
-    h_dRvsbTag = new TH2F("h_dRvsbTag","#deltaR vs b-tag discriminant",100,0.0,10.0,100,-5,14);
 
-    h_nVertex= new TH1F("h_nVertex","number of verteces",50,0,50);
-    h_nVertex0= new TH1F("h_nVertex0","number of verteces t0",50,0,50);
-    h_nVertex1= new TH1F("h_nVertex1","number of verteces t1",50,0,50);
-    h_nVertex2= new TH1F("h_nVertex2","number of verteces t2",50,0,50);
-  
-    h_nvtx_norw = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
-    h_nvtx_rw = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
-
-    h_prova = new TH1F("h_prova","Di-Muon Mass (GeV)",200,0,200);
-    h_RelIsoFR = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
-
-    //// ELECTRON PLOTs
-    h_electrons = new ElectronPlots("electrons");
-    h_electronsLoose = new ElectronPlots("loose electrons");
-
-  //// MUON PLOTs
-  h_muons = new MuonPlots("muons");
-  h_muonsLoose = new MuonPlots("loose_muons");
-  h_LnotT = new MuonPlots("loose_not_tight");
+  /// Initialise histograms
+  MakeHistograms();
+  MakeCleverHistograms();
   
 
-  /// JET PLOTs
-  h_jets = new JetPlots("jets");
-  h_jets_veto = new JetPlots("jets_w_veto");
-
-  //// SIGNAL PLOTs
-  h_signal = new SignalPlots("signal");
-  h_WZcontrol = new SignalPlots("WZcontrol");
-  h_signalMET50 = new SignalPlots("signal_MET50");
-  h_signalbTag = new SignalPlots("signal_bTag");
-  h_signalTOT = new SignalPlots("signal_TOT");
-  h_singlefakes = new SignalPlots("sf");
-  h_doublefakes = new SignalPlots("df");
-  h_totalfakes = new SignalPlots("tf");
-  h_singlefakesMET50 = new SignalPlots("sf_MET50");
-  h_doublefakesMET50 = new SignalPlots("df_MET50");
-  h_totalfakesMET50 = new SignalPlots("tf_MET50");
-  h_singlefakesbTag = new SignalPlots("sf_bTag");
-  h_doublefakesbTag = new SignalPlots("df_bTag");
-  h_totalfakesbTag = new SignalPlots("tf_bTag");
-  h_singlefakesTOT = new SignalPlots("sf_TOT");
-  h_doublefakesTOT = new SignalPlots("df_TOT");
-  h_totalfakesTOT = new SignalPlots("tf_TOT");
-  
-  string analysisdir = getenv("FILEDIR");
-  
+  //// FakeRate Input file
+  string analysisdir = getenv("FILEDIR");  
   TFile *infile = new TFile((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
   infile->cd();
   TDirectory *dir=gDirectory;             
@@ -80,30 +28,30 @@ Analyzer::Analyzer() {
 }
 
 
-
-
 //  TEST loop for Z to mumu 
-
 void Analyzer::TestLoop() {
 
   //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
   
-  if(entrieslimit!=-1)cout << "Running over " << nentries << "/" << entrieslimit << endl;  
-  cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
-
-  
   /// Event weights :   
-  if(!MCweight) MCweight=1; 
+  if(!MCweight) {
+    MCweight=1; 
+    isData=true;
+  }
+  
   weight=MCweight;
   if (fChain == 0)  cout << "GoodBye!" << endl;
+  
+  if(!isData&&(entrieslimit!=-1)) weight *= (nentries/entrieslimit);
+  if(!isData&&(entrieslimit!=-1)) cout << "Running over " << entrieslimit << "/" << nentries << endl;  
+  cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
 
-  /// Set number of events in runbackground.C
+ /// Set number of events in runbackground.C
   if (entrieslimit != -1){
     nentries=entrieslimit;
-    entrieslimit = 1000000;
   }
-
-
+  
+  cout << nentries << endl;
   ///////////////////////////////////////////////////////////////////////
   ///
   ///  START OF EVENT LOOP
@@ -111,44 +59,40 @@ void Analyzer::TestLoop() {
   ///////////////////////////////////////////////////////////////////////////
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
     
-    //// Setup event in TChain
-    if (debug) cout<<"begin loop"<<endl;
     if (!(jentry % 1000))  cout << "Processing entry " << jentry << " weight = " << weight << endl;      
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
     
     /// Initial event cuts
-    if (isTrackingFailure || passTrackingFailureFilter) continue;
-    if (!passBeamHaloFilterLoose) continue;
-    if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) continue;
-    if (!passHBHENoiseFilter) continue; // || passHcalLaserEventFilter) continue;
-
+    if(!PassBasicEventCuts()) return; 
+    
     /// Trigger List (specific to muons channel)
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
     
     if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
 
+
+    if (MC_pu)  weight *= reweightPU->GetWeight(PileUpInteractionsTrue->at(0));
     
     numberVertices = VertexNDF->size();
     goodVerticies = new Bool_t [numberVertices];
     h_nVertex->Fill(numberVertices, weight);
     if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) continue;
-
     for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
       if(goodVerticies[vv]) {
-        VertexN=vv;
+        VertexN=vv; /// VertexN = index of event vertex
         break;
       }
     }
  
-    /// Method 1 : calls function from filler class
-    /// returns vector of all muons(in ntuple) in event
+
+    /// Create vector of kmuon objects :
     vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
     vector<snu::KElectron> all_electrons = GetAllElectrons(VertexN); /// NULL AT MOMENT    
     vector<snu::KJet> all_jets = GetAllJets();        
 
-    /// or use selection code (which returns a vector of muons with selected cuts)
+    ///  use selection code (which returns a similar class vector with selected cuts)
     //// Need to pt order at some point
 
     std::vector<snu::KMuon> muonColl;
@@ -836,4 +780,81 @@ void Analyzer::SetWeight(Double_t CrossSection, Double_t nevents) {
 void Analyzer::SetEvtN(Long64_t events) {
   events ? entrieslimit=events :  entrieslimit=-1;
   cout<<"Analyser::Loop || events "<<events<<endl<<"entrieslimit "<<entrieslimit<<endl;
+}
+
+
+void Analyzer::MakeCleverHistograms(){
+
+//// ELECTRON PLOTs
+  h_electrons = new ElectronPlots("electrons");
+  h_electronsLoose = new ElectronPlots("loose electrons");
+  
+  //// MUON PLOTs
+  h_muons = new MuonPlots("muons");
+  h_muonsLoose = new MuonPlots("loose_muons");
+  h_LnotT = new MuonPlots("loose_not_tight");
+  
+
+  /// JET PLOTs
+  h_jets = new JetPlots("jets");
+  h_jets_veto = new JetPlots("jets_w_veto");
+
+  //// SIGNAL PLOTs
+  h_signal = new SignalPlots("signal");
+  h_WZcontrol = new SignalPlots("WZcontrol");
+  h_signalMET50 = new SignalPlots("signal_MET50");
+  h_signalbTag = new SignalPlots("signal_bTag");
+  h_signalTOT = new SignalPlots("signal_TOT");
+  h_singlefakes = new SignalPlots("sf");
+  h_doublefakes = new SignalPlots("df");
+  h_totalfakes = new SignalPlots("tf");
+  h_singlefakesMET50 = new SignalPlots("sf_MET50");
+  h_doublefakesMET50 = new SignalPlots("df_MET50");
+  h_totalfakesMET50 = new SignalPlots("tf_MET50");
+  h_singlefakesbTag = new SignalPlots("sf_bTag");
+  h_doublefakesbTag = new SignalPlots("df_bTag");
+  h_totalfakesbTag = new SignalPlots("tf_bTag");
+  h_singlefakesTOT = new SignalPlots("sf_TOT");
+  h_doublefakesTOT = new SignalPlots("df_TOT");
+  h_totalfakesTOT = new SignalPlots("tf_TOT");
+  
+  return;
+}
+
+void Analyzer::MakeHistograms(){
+ //// Additional plots to make
+    h_nsignal = new TH1F("h_signal","number of signal events ",5,-1,4);
+    h_cutflow = new TH1F("h_cutflow","number of signal events in cut flow",4,0,4);
+    h_singlefake = new TH2F("h_singlefake","number of single fakes ",4,0,4,4,-1,3);
+    h_doublefake = new TH2F("h_doublefake","number of double fakes ",4,0,4,4,-1,3);
+    h_MET = new TH1F("h_MET","Missing Et",300,0.0,300.0);
+    h_MET->SetDefaultSumw2(true);
+    h_METsign = new TH1F("h_METsign","Missing Et significance",50,0.0,50.0);
+    h_MuonMissCharge = new TH1F("h_MuonMissCharge","Miss Charge for muons",6,0,6);
+    h_EventFakeType = new TH1F("h_EventFakeType","Event fake type",3,0,3);
+    h_LeptvsVert = new TH2I("h_LeptvsVert","Leptons per Vertex",50,0,50,5,0,5);
+    h_dRvsbTag = new TH2F("h_dRvsbTag","#deltaR vs b-tag discriminant",100,0.0,10.0,100,-5,14);
+
+    h_nVertex= new TH1F("h_nVertex","number of verteces",50,0,50);
+    h_nVertex0= new TH1F("h_nVertex0","number of verteces t0",50,0,50);
+    h_nVertex1= new TH1F("h_nVertex1","number of verteces t1",50,0,50);
+    h_nVertex2= new TH1F("h_nVertex2","number of verteces t2",50,0,50);
+  
+    h_nvtx_norw = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
+    h_nvtx_rw = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
+
+    h_prova = new TH1F("h_prova","Di-Muon Mass (GeV)",200,0,200);
+    h_RelIsoFR = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
+    return;
+}
+
+
+bool Analyzer::PassBasicEventCuts(){
+  
+  bool pass (true);
+  if (isTrackingFailure || passTrackingFailureFilter) pass = false;
+  if (!passBeamHaloFilterLoose) pass = false;
+  if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) pass = false;
+  if (!passHBHENoiseFilter) pass = false; // || passHcalLaserEventFilter) continue;
+  return pass;
 }

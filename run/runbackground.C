@@ -58,37 +58,15 @@
     
   // Create Chains
     //TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
-    TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));
-    //  TChain* chain200 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_200_mm.txt");
-    //   TChain* chain700 = ChainMaker("/data/HN_data/SampleList/Signal/signal_mn_700_mm.txt");
-    
-    
-    Analyzer Pippo; /// create analyzer class object
-    
+    TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));    
+   
+    Analyzer Pippo; /// create analyzer class object    
     Pippo.Init(chain50);
     Pippo.SetName("Majorana_50",1);
+    Pippo.SetIntegratedLumi(887.501);
     Pippo.SetWeight(1071.1, 49994);
-    std::cout << "Majorana50\n";
     Pippo.TestLoop();
-    //Pippo.Loop();
-    std::cout << "OUT OF LOOP" << std::endl;
-	/*
-        Pippo.Init(chain100);
-        Pippo.SetName("Majorana_100",1);
-        Pippo.SetWeight(3.5618, 49996);
-        std::cout << "Majorana100\n";  Pippo.Loop();
-    
-        Pippo.Init(chain200);
-        Pippo.SetName("Majorana_200",1);
-        Pippo.SetWeight(0.13127, 49994);
-        std::cout << "Majorana200\n";
-        Pippo.Loop();
 
-
-        Pippo.Init(chain700);
-        Pippo.SetName("Majorana_700",1);
-        Pippo.SetWeight(0.00038312, 49996);
-        std::cout << "Majorana700\n";  Pippo.Loop();*/
   }
         
     
