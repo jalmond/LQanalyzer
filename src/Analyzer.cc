@@ -113,7 +113,7 @@ void Analyzer::TestLoop() {
     
     //// Setup event in TChain
     if (debug) cout<<"begin loop"<<endl;
-    if (!(jentry % 1000))   cout << "Processing entry " << jentry << endl;
+    if (!(jentry % 1000))  cout << "Processing entry " << jentry << " weight = " << weight << endl;      
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
     
@@ -818,6 +818,12 @@ void Analyzer::SetName(TString name, Int_t version) {
   completename += ".root";
   outfile = new TFile(completename,"RECREATE");
 }
+
+
+void Analyzer::SetIntegratedLumi(Double_t lumi ){
+  integratedlumi = lumi;
+}
+
 
 void Analyzer::SetWeight(Double_t CrossSection, Double_t nevents) {
 

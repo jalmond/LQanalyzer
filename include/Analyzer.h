@@ -23,7 +23,7 @@
 class Analyzer : public SNUTreeFiller {
 
   static const Bool_t debug = false; 
-  static const Double_t integratedlumi = 19762.501;
+  
 //  static const Double_t integratedlumi = 1.927196301; HLT_Mu5,8
 //  static const Double_t integratedlumi =  1.483873; HLT_Mu12
 //  static const Double_t integratedlumi = 22.945019; HLT_Mu17
@@ -61,6 +61,7 @@ class Analyzer : public SNUTreeFiller {
   TH1F *h_MET, *h_METsign, *h_MuonMissCharge, *h_EventFakeType;
   TH2F *FRhisto, *h_dRvsbTag;
   TH2I *h_LeptvsVert;
+  Double_t integratedlumi ;//= 19762.501;
 
   TFile *outfile;
 
@@ -89,6 +90,7 @@ class Analyzer : public SNUTreeFiller {
   void Loop();
   void TestLoop();
   void SetWeight(Double_t CrossSection, Double_t nevents);
+  void SetIntegratedLumi(Double_t lumi);
   void SetName(TString name, Int_t version);
   void SetEvtN(Long64_t events);
   void NEvents(float n_events);
