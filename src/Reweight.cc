@@ -17,6 +17,7 @@ class ReweightPU {
       fileMC_ = 0;
       fileData_ = 0;
 
+
       fileMC_   = new TFile(filenameMC, "READ");
       fileData_ = new TFile(filenameData, "READ");
 
@@ -28,8 +29,8 @@ class ReweightPU {
       h_Data_ = 0;
 
       //h_MC_ = (TH1F*)fileMC_->Get("h_nvtx_norw");
-      h_Data_ = (TH1D*)fileData_->Get("pileup");
-
+      h_Data_ = (TH1D*)fileData_->Get("pileup");      
+      
       //if (!h_MC_) cout << "Can't open PU mc reweight histo";
       if (!h_Data_) cout << "Can't open PU data reweight histo";
 
@@ -95,7 +96,7 @@ class ReweightPU {
                          2.322E-05,
                          1.570E-05,
                          5.005E-06};
-
+ 
       h_MCmod_ = (TH1D*)h_Data_->Clone("h_MCmod_");
       for (Int_t i = 1; i < 61; i++) {
         //h_MCmod_->SetBinContent(i, PoissonOneXDist[i-1]);
@@ -125,7 +126,6 @@ class ReweightPU {
     }
 
     double GetWeight(int nvtx) {
-
       return h_Data_->GetBinContent( nvtx + 1 );
 
     }

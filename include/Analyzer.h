@@ -45,7 +45,7 @@ class Analyzer : public SNUTreeFiller {
   Bool_t VETO, SINGLEFAKE, DOUBLEFAKE, b_found, muonbad;
 
  public:
-  static const Bool_t MC_pu = false; 
+  static const Bool_t MC_pu = true; 
 
   ReweightPU *reweightPU;
   TH1F *h_nvtx_norw, *h_nvtx_rw;

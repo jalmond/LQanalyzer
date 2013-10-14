@@ -32,26 +32,30 @@ Analyzer::Analyzer() {
 void Analyzer::TestLoop() {
 
   //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
-  
+  cout << "In test loop " << endl;
   /// Event weights :   
   if(!MCweight) {
     MCweight=1; 
     isData=true;
   }
-  
-  weight=MCweight;
+
   if (fChain == 0)  cout << "GoodBye!" << endl;
   
-  if(!isData&&(entrieslimit!=-1)) weight *= (nentries/entrieslimit);
+  if(!isData&&(entrieslimit!=-1)) MCweight *= (nentries/entrieslimit);
   if(!isData&&(entrieslimit!=-1)) cout << "Running over " << entrieslimit << "/" << nentries << endl;  
   cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
-
- /// Set number of events in runbackground.C
+  
+  /// Set number of events in runbackground.C
   if (entrieslimit != -1){
     nentries=entrieslimit;
   }
   
-  cout << nentries << endl;
+  
+  string analysisdir = getenv("FILEDIR");
+  reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str(),(analysisdir + "MyDataPileupHistogram.root").c_str());
+
+  weight=MCweight;
+
   ///////////////////////////////////////////////////////////////////////
   ///
   ///  START OF EVENT LOOP
@@ -64,17 +68,15 @@ void Analyzer::TestLoop() {
     fChain->GetEntry(jentry);
     
     /// Initial event cuts
-    if(!PassBasicEventCuts()) return; 
-    
+    if(!PassBasicEventCuts()) continue; 
+
     /// Trigger List (specific to muons channel)
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
     
     if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
 
-
-    if (MC_pu)  weight *= reweightPU->GetWeight(PileUpInteractionsTrue->at(0));
-    
+    if (MC_pu)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
     numberVertices = VertexNDF->size();
     goodVerticies = new Bool_t [numberVertices];
     h_nVertex->Fill(numberVertices, weight);
