@@ -6,6 +6,7 @@
 
 // SNUTree
 #include "KMuon.h"
+#include "KElectron.h"
 #include "KJet.h"
 
 class SNUTreeFiller : public Data {
@@ -16,7 +17,8 @@ class SNUTreeFiller : public Data {
   ~SNUTreeFiller();
 
 std::vector<snu::KMuon> GetAllMuons(int ivertex);
-std::vector<snu::KMuon> GetAllJets();
+std::vector<snu::KElectron> GetAllElectrons(int ivertex);
+std::vector<snu::KJet> GetAllJets();
 
 
 
