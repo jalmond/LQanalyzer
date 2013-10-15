@@ -14,3 +14,4 @@ SNUTree/
 *.pdf
 */*.pdf
 */*/*.pdf
+run/log/*.log
