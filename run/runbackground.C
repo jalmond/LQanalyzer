@@ -1,4 +1,5 @@
-void runbackground(string inputfile, double targetlumi, double nevents){
+//void runbackground(string inputfile, double targetlumi, double nevents){
+{
   string maindir = getenv("MAINDIR");
   string includedir = getenv("INCLUDEDIR");
   string includedir_snu = getenv("INCLUDEDIR_snu");
@@ -15,21 +16,24 @@ void runbackground(string inputfile, double targetlumi, double nevents){
   gROOT->ProcessLine(".L KJet.cc+g");
   gROOT->ProcessLine(".L KMuon.cc+g");
   gROOT->ProcessLine(".L KElectron.cc+g");
+  gROOT->ProcessLine(".L KEvent.cc+g");
 
-
+  gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
+  gROOT->ProcessLine(".L SelectionFunctions.cc+g");  
 
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
   gROOT->ProcessLine(".L SNUTreeFiller.cc+g");
 
   /// Selection Code compilation
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
-  gROOT->ProcessLine(".L SelectionFunctions.cc+g");
+  //gROOT->ProcessLine(".L SelectionFunctions.cc+g");
   gROOT->ProcessLine(".L LeptonSelection.cc+g");
   gROOT->ProcessLine(".L ElectronSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelectionProbe.cc+g");
   gROOT->ProcessLine(".L JetSelection.cc+g");
   gROOT->ProcessLine(".L GenSelection.cc+g");
+
 
   gSystem->ChangeDirectory((maindir +("/Plotting/")).c_str());
   /// Plotting code compilation

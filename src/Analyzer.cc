@@ -78,23 +78,19 @@ void Analyzer::TestLoop() {
     
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
 
-    numberVertices = VertexNDF->size();
-    goodVerticies = new Bool_t [numberVertices];
-    h_nVertex->Fill(numberVertices, weight);
-    if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) continue;
-    for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
-      if(goodVerticies[vv]) {
-        VertexN=vv; /// VertexN = index of event vertex
-        break;
-      }
-    }
-    
+   
 
     /// Create vector of kmuon objects :
     vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
-    vector<snu::KElectron> all_electrons = GetAllElectrons(VertexN); /// NULL AT MOMENT    
+    vector<snu::KElectron> all_electrons = GetAllElectrons();
     vector<snu::KJet> all_jets = GetAllJets();        
+    snu::KEvent event_info = GetEventInfo();
 
+    
+    numberVertices = event_info.nVertices();
+    if (!event_info.IsGoodEvent()) continue; //// Make cut on event wrt vertex
+    
+        
     ///  use selection code (which returns a similar class vector with selected cuts)
     //// Need to pt order at some point
 
@@ -248,20 +244,14 @@ void Analyzer::Loop() {
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
   
-     
-    /// Initial event cuts
-    if (isTrackingFailure || passTrackingFailureFilter) continue;
-    if (!passBeamHaloFilterLoose) continue;
-    if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) continue;
-    if (!passHBHENoiseFilter) continue; // || passHcalLaserEventFilter) continue;
-
+     /// Initial event cuts
+    if(!PassBasicEventCuts()) continue; 
     
     /// Trigger List (specific to muons channel)
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
 
     if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
-
     
     if (MC_pu) {
       /// ***PU reweghting*** ///
@@ -272,12 +262,12 @@ void Analyzer::Loop() {
 
     
     numberVertices = VertexNDF->size();
-    goodVerticies = new Bool_t [numberVertices];
+    goodVerticiesB = new Bool_t [numberVertices];
     h_nVertex->Fill(numberVertices, weight);
-    if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) continue;
+    if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticiesB) ) continue;
 
     for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
-      if(goodVerticies[vv]) {
+      if(goodVerticiesB[vv]) {
         VertexN=vv;
         break;
       }
@@ -296,7 +286,7 @@ void Analyzer::Loop() {
     }
     
     
-
+    
     std::vector<Lepton> muonTightColl;
     MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4);

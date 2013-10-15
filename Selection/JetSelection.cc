@@ -15,7 +15,7 @@ void JJ::JetSelection (std::vector<KJet> alljets, std::vector<KJet>& jetColl) {
 	 && jit->NeutralHEF() < 0.99
 	 && jit->NeutralEmEF() < 0.99
 	 && jit->Nconstituents() > 1
-	 && ( fabs( jit->Eta() ) > 2.4 || ( jit->ChargedHEF() > 0. && jit->ChargedMult() > 0. && jit->ChargedEmEF() < 0.99 ) ) ) { 
+	 && ( fabs( jit->Eta() ) > 2.4 || ( jit->ChargedHEF() > 0. && jit->ChargedMultiplicity() > 0. && jit->ChargedEmEF() < 0.99 ) ) ) { 
       
       jetColl.push_back(*jit);
     }

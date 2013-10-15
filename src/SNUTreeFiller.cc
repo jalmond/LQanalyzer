@@ -11,17 +11,67 @@ SNUTreeFiller::SNUTreeFiller() {};
 
 SNUTreeFiller::~SNUTreeFiller() {};
 
+KEvent SNUTreeFiller::GetEventInfo(){
+  
+  snu::KEvent kevent;
+  kevent.SetMET( PFMETType01XYCor->at(0));
+  int nVertices = VertexNDF->size();
+  kevent.SetNVertices(nVertices);
+  goodVerticies = new Bool_t [nVertices];
+  
+  if ( !isGoodEvent(nVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) kevent.SetIsGoodEvent(false);
+  else  kevent.SetIsGoodEvent(true);
+  
+  for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
+    if(goodVerticies[vv]) {
+      VertexN=vv;
+      break;
+    }
+  }
+    
+  kevent.SetVertexX(VertexX->at(VertexN));
+  kevent.SetVertexY(VertexY->at(VertexN));
+  kevent.SetVertexZ(VertexZ->at(VertexN));  
+  kevent.SetVertexIsFake(VertexIsFake->at(VertexN));
+  
+  return kevent;
+}
 
-std::vector<KElectron> SNUTreeFiller::GetAllElectrons(int nVertex){
+std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
   
   std::vector<KElectron> electrons;
   for (UInt_t iel=0; iel< ElectronEta->size(); iel++) {
     KElectron el;
     
+    el.SetisEB(ElectronIsEB->at(iel));
+    el.SetisEE(ElectronIsEE->at(iel));
+    el.SetTrackerDrivenSeed(ElectronHasTrackerDrivenSeed->at(iel));
+    el.SetEcalDrivenSeed(ElectronHasEcalDrivenSeed->at(iel));
+    el.SetPtEtaPhiE(ElectronPt->at(iel),ElectronEta->at(iel),ElectronPhi->at(iel),ElectronEnergy->at(iel));
+    el.SetTrkIso(ElectronPFPhotonIso03->at(iel));
+    el.SetECalIso(ElectronPFNeutralHadronIso03->at(iel));
+    el.SetHCalIso(ElectronPFChargedHadronIso03->at(iel));
+    el.SetCharge(ElectronCharge->at(iel));
+    el.SetChargeConsistency(ElectronGsfCtfScPixCharge->at(iel));
+    el.SetMissingHits(ElectronMissingHitsEG->at(iel));
+    el.SetHasMatchedConvPhot(ElectronHasMatchedConvPhot->at(iel));
+    el.SetDeltaEtaTrkSC(ElectronDeltaEtaTrkSC->at(iel));
+    el.SetDeltaPhiTrkSC(ElectronDeltaPhiTrkSC->at(iel));
+    el.SetSigmaIEtaIEta(ElectronSigmaIEtaIEta->at(iel));
+    el.SetHoE(ElectronHoE->at(iel));
+    el.SetcaloEnergy(ElectronCaloEnergy->at(iel));
+    el.SuperClusterOverP(ElectronESuperClusterOverP->at(iel));
+    el.Trkdx(ElectronTrackVx->at(iel));
+    el.Trkdy(ElectronTrackVy->at(iel));
+    el.Trkdz(ElectronTrackVz->at(iel));
+
     /// Need to add filling code
     electrons.push_back(el);
   }
   
+  std::sort( electrons.begin(), electrons.end(), isHigherPt );
+
+
   return electrons;
 }
 
@@ -47,6 +97,7 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
     jets.push_back(jet);
   }// end of jet 
   
+  std::sort( jets.begin(), jets.end(), isHigherPt );
   return jets;
 }
 
@@ -116,8 +167,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(int iVertex){
     muons.push_back(muon);
   }
   
-
-  //std::sort( leptonColl.begin(), leptonColl.end(), LeptonPTSorter );
+  std::sort( muons.begin(), muons.end(), isHigherPt );
   return muons;
 }
 

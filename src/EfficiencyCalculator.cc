@@ -71,12 +71,12 @@ void EffCalculator::LoopEff() {
     h_nvtx_rw->Fill(PileUpInteractionsTrue->at(0), weight);
 */
     numberVertices = VertexNDF->size();
-    goodVerticies = new Bool_t [numberVertices];
+    goodVerticiesB = new Bool_t [numberVertices];
     h_nVertex->Fill(numberVertices, weight);
-    if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) continue;
+    if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticiesB) ) continue;
 
     for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
-      if(goodVerticies[vv]) {
+      if(goodVerticiesB[vv]) {
         VertexN=vv;
         break;
       }

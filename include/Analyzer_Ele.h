@@ -47,7 +47,7 @@ class Analyzer_Ele : public Data {
   UInt_t numberVertices;
   TString completename;
 
-  Bool_t *goodVerticies;
+  Bool_t *goodVerticiesB;
   TDirectory *Dir;
   TH1F *h_prova, *h_RelIsoFR;
   TH1F *h_nVertex, *h_nVertex0, *h_nVertex1, *h_nVertex2;

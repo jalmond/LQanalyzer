@@ -44,7 +44,7 @@ void JetPlots::Fill(Double_t weight, std::vector<snu::KJet> jets){
     
     h_TCHPT->Fill(jit->PFJetTrackCountingHighPurBTag(), weight);
     h_JP->Fill(jit->BtagProb(), weight);
-    h_CSV->Fill(jit->SecVertexBtag() , weight);
+    h_CSV->Fill(jit->CombinedSecVertexBtag() , weight);
     h_dxy->Fill(jit->ClosestXYsep(), weight);
     h_dz->Fill(jit->ClosestZsep(), weight);
     h_threeD->Fill(jit->JetRho(), weight);

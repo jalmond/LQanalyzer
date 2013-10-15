@@ -52,7 +52,7 @@ class Analyzer : public SNUTreeFiller {
   UInt_t numberVertices;
   TString completename;
 
-  Bool_t *goodVerticies;
+  Bool_t *goodVerticiesB;
   TDirectory *Dir;
   TH1F *h_zpeak, *h_RelIsoFR;
   TH1F *h_nVertex, *h_nVertex0, *h_nVertex1, *h_nVertex2;
@@ -67,7 +67,6 @@ class Analyzer : public SNUTreeFiller {
 
   Long64_t entrieslimit;
   Double_t METx, METy, MET, dr, MCweight, weight;
-  UInt_t VertexN;
   Int_t prescaler;
 
   MuonSel MuonTight, MuonLooseButNOTight, MuonLoose, MuonVeto;
