@@ -122,7 +122,7 @@ void EffCalculator::LoopEff() {
       h_MT->Fill( sqrt(2.*muonTightColl[0].lorentzVec().Pt()*PFMET->at(0)* (1 - cos(muonTightColl[0].lorentzVec().Phi()-PFMETPhi->at(0))) ), weight);
     }
     if (muonTightColl.size()==2) {
-      h_prova->Fill( ( muonTightColl[0].lorentzVec() + muonTightColl[1].lorentzVec() ).M(), weight);
+      h_zpeak->Fill( ( muonTightColl[0].lorentzVec() + muonTightColl[1].lorentzVec() ).M(), weight);
     }
 
     std::vector<Lepton> electronTightColl;
@@ -225,7 +225,7 @@ void EffCalculator::LoopEff() {
   outfile->cd();
   h_nvtx_norw->Write();
   h_nvtx_rw->Write();
-  h_prova->Write();
+  h_zpeak->Write();
   h_MT->Write();
   h_MET->Write();
   h_METsign->Write();

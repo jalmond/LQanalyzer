@@ -80,6 +80,7 @@
     Pippo.SetName("DYLowMass",1);
     Pippo.SetTargetLumi(887.5);
     Pippo.SetEffectiveLumi(3424.0);
+    Pippo.NEents(1000000);
     Pippo.TestLoop();
   }
 }
