@@ -1,4 +1,4 @@
-{
+void runbackground(string inputfile, double targetlumi, double nevents){
   string maindir = getenv("MAINDIR");
   string includedir = getenv("INCLUDEDIR");
   string includedir_snu = getenv("INCLUDEDIR_snu");
@@ -63,7 +63,7 @@
     Analyzer Pippo; /// create analyzer class object    
     Pippo.Init(chain50);
     Pippo.SetName("Majorana_50",1);
-    Pippo.SetIntegratedLumi(887.501);
+    Pippo.SetTargetLumi(887.501);
     Pippo.SetWeight(1071.1, 49994);
     Pippo.TestLoop();
 
