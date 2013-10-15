@@ -11,3 +11,6 @@
 SNUTree/
 !output/
 */*#*
+*.pdf
+*/*.pdf
+*/*/*.pdf

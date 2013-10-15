@@ -34,11 +34,11 @@ void Analyzer::TestLoop() {
   //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
   cout << "In test loop " << endl;
   /// Event weights :   
-  if(!MCweight) {
-    MCweight=1; 
+  if((MCweight ==1.&& target_lumi ==1.) || !MCweight) {
+    MCweight=1.; 
     isData=true;
   }
-
+  if(isData) cout << "Running on data" << endl;
   if (fChain == 0)  cout << "GoodBye!" << endl;
   
   if(!isData&&(entrieslimit!=-1)) MCweight *= (nentries/entrieslimit);
@@ -49,12 +49,13 @@ void Analyzer::TestLoop() {
   if (entrieslimit != -1){
     nentries=entrieslimit;
   }
-  
+  weight=MCweight;  
+
   
   string analysisdir = getenv("FILEDIR");
-  reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str(),(analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str(),(analysisdir + "MyDataPileupHistogram.root").c_str());
 
-  weight=MCweight;
+
 
   ///////////////////////////////////////////////////////////////////////
   ///
@@ -66,7 +67,6 @@ void Analyzer::TestLoop() {
     if (!(jentry % 1000))  cout << "Processing entry " << jentry << " weight = " << weight << endl;      
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
-    
     /// Initial event cuts
     if(!PassBasicEventCuts()) continue; 
 
@@ -75,8 +75,9 @@ void Analyzer::TestLoop() {
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
     
     if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
+    
+    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
 
-    if (MC_pu)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
     numberVertices = VertexNDF->size();
     goodVerticies = new Bool_t [numberVertices];
     h_nVertex->Fill(numberVertices, weight);
@@ -87,7 +88,7 @@ void Analyzer::TestLoop() {
         break;
       }
     }
- 
+    
 
     /// Create vector of kmuon objects :
     vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
@@ -117,17 +118,17 @@ void Analyzer::TestLoop() {
     if (muonColl.size() == 2) {      
       KParticle Z = muonColl.at(0) + muonColl.at(1);
       if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
-	h_prova->Fill(Z.M(), weight);	 /// Plots Z peak
+	h_zpeak->Fill(Z.M(), weight);	 /// Plots Z peak
 	h_muons->Fill(weight, muonColl);      
 	h_jets->Fill(weight, jetColl);
       }    
     }
-  }
+  }// End of event loop
   
   outfile->cd();
 
-  h_prova->Write();
-
+  h_zpeak->Write();
+  
   Dir = outfile->mkdir("Muons");
   outfile->cd( Dir->GetName() );
   h_muons->Write();
@@ -439,7 +440,7 @@ void Analyzer::Loop() {
     Double_t masslow=999.9;
     if (muonLooseColl.size() >= 2) {
       masslow = (muonLooseColl[0].lorentzVec() + muonLooseColl[1].lorentzVec()).M();
-      h_prova->Fill(masslow, weight);
+      h_zpeak->Fill(masslow, weight);
     }
     if (masslow < 10.0) continue;
     Double_t mass3rd=999.9;
@@ -626,7 +627,7 @@ void Analyzer::Loop() {
   outfile->cd();
   h_nvtx_norw->Write();
   h_nvtx_rw->Write();
-  h_prova->Write();
+  h_zpeak->Write();
   h_MET->Write();
   h_METsign->Write();
   h_nVertex->Write();
@@ -715,7 +716,7 @@ Analyzer::~Analyzer() {
   delete h_nvtx_norw;
   delete h_nvtx_rw; 
 
-  delete h_prova; 
+  delete h_zpeak; 
   delete h_RelIsoFR;
 
   delete h_electrons;
@@ -763,17 +764,22 @@ void Analyzer::SetName(TString name, Int_t version) {
   completename += version;
   completename += ".root";
   outfile = new TFile(completename,"RECREATE");
+  return;
 }
 
 
-void Analyzer::SetIntegratedLumi(Double_t lumi ){
-  integratedlumi = lumi;
+void Analyzer::SetEffectiveLumi(Double_t efflumi){
+  MCweight = target_lumi / efflumi;
+  return;
+}
+void Analyzer::SetTargetLumi(Double_t lumi ){
+  target_lumi = lumi;
 }
 
 
 void Analyzer::SetWeight(Double_t CrossSection, Double_t nevents) {
 
-  MCweight = integratedlumi * CrossSection / nevents;
+  MCweight = target_lumi * CrossSection / nevents;
   cout << "Analyser::SetWeight ||  Running on MC: \nAnalyser::SetWeight ||  weight = (lumi *  cs(pb) * gen filter efficiency) / MCevents " << endl;  
   cout<<"Analyser::SetWeight ||  mc weight = "<<MCweight<<endl;
  
@@ -845,7 +851,7 @@ void Analyzer::MakeHistograms(){
     h_nvtx_norw = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
     h_nvtx_rw = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
 
-    h_prova = new TH1F("h_prova","Di-Muon Mass (GeV)",200,0,200);
+    h_zpeak = new TH1F("h_zpeak","Di-Muon Mass (GeV)",200,0,200);
     h_RelIsoFR = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
     return;
 }

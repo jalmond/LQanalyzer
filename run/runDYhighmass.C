@@ -53,39 +53,34 @@
   //                          MC                          //
   //////////////////////////////////////////////////////////
   
-/// Signal samples
-  if (1) {
 
-    TChain* chain = ChainMaker( "/data/HN_data/SampleList/MC/mc_DY10to50.txt");
-    Analyzer Pippo; /// create analyzer class object    
-    Pippo.Init(chain);
-    Pippo.SetName("DYLowMass",1);
-    Pippo.SetIntegratedLumi(887.5);
-    Pippo.SetWeight(3424.0, 16452672); // Effective Lumi , nevents
-    Pippo.TestLoop();
-  }
-  
-  if(0){
+  // example
+  /*
+    if(0/1){
+                                                                                    
+    TChain* chain = ChainMaker( "path/to/txtfile/with/input/paths");/
+    Analyzer Pippo; /// create analyzer class object                            
+    Pippo.Init(chain);                                                          
+    Pippo.SetName("outputname",version);                                                
+    Pippo.SetTargetLumi(TargetLuminosity);  == lumi of data
+    Pippo.SetWeight(xesc, nevents); // Effective Lumi , nevents               
+    or
+    Pippo.SetEffectiveLumi(effLumi); effLumi = num/xsec
+    // get these numbers from https://docs.google.com/spreadsheet/ccc?key=0Aq8wOqg_Kam2dE5GOWVMcVFfTGdDZVg1cDFVUzNWY3c&usp=sharing#gid=3
+    Pippo.TestLoop();    
+
+    }
+  */
+
+  if(1){
     TChain* chain = ChainMaker( "/data/HN_data/SampleList/MC/mc_DY50plus.txt");    Analyzer Pippo; /// create analyzer class object                                                                                                                       
     Pippo.Init(chain);
-    Pippo.SetIntegratedLumi(887.5);
     Pippo.SetName("DYhighMass",1);
-    Pippo.SetWeight(8693.5,27806582);
+    Pippo.SetTargetLumi(887.5);
+    Pippo.SetEffectiveLumi(8693.5);
     Pippo.TestLoop();   
   }
-			       	
-
-  //Data 
-  if (0) {
-      TChain* chain = ChainMaker("/data/HN_data/SampleList/Data/data_muon_periodA.txt");
-      //887.501 (pb)^-1
-      Analyzer Pippo;
-      Pippo.Init(chain);
-      Pippo.SetName("DoubleMu_periodA",1);
-      Pippo.SetIntegratedLumi(1.);
-      Pippo.SetWeight(1.0,1.); // Data
-      Pippo.TestLoop();
-  }
+  
 
 }
        

@@ -42,7 +42,7 @@ class Analyzer : public SNUTreeFiller {
   UInt_t dataType;
   Double_t Wcand_tmp, Wcand, METcut;
 
-  Bool_t VETO, SINGLEFAKE, DOUBLEFAKE, b_found, muonbad;
+  Bool_t VETO, SINGLEFAKE, DOUBLEFAKE, b_found, muonbad , isData;
 
  public:
   static const Bool_t MC_pu = true; 
@@ -54,14 +54,14 @@ class Analyzer : public SNUTreeFiller {
 
   Bool_t *goodVerticies;
   TDirectory *Dir;
-  TH1F *h_prova, *h_RelIsoFR;
+  TH1F *h_zpeak, *h_RelIsoFR;
   TH1F *h_nVertex, *h_nVertex0, *h_nVertex1, *h_nVertex2;
   TH1F *h_nsignal, *h_cutflow;
   TH2F *h_singlefake, *h_doublefake;
   TH1F *h_MET, *h_METsign, *h_MuonMissCharge, *h_EventFakeType;
   TH2F *FRhisto, *h_dRvsbTag;
   TH2I *h_LeptvsVert;
-  Double_t integratedlumi ;//= 19762.501;
+  Double_t target_lumi  ;//= 19762.501;
 
   TFile *outfile;
 
@@ -69,7 +69,6 @@ class Analyzer : public SNUTreeFiller {
   Double_t METx, METy, MET, dr, MCweight, weight;
   UInt_t VertexN;
   Int_t prescaler;
-  Bool_t isData;
 
   MuonSel MuonTight, MuonLooseButNOTight, MuonLoose, MuonVeto;
   GenSel GenTight;
@@ -91,7 +90,8 @@ class Analyzer : public SNUTreeFiller {
   void Loop();
   void TestLoop();
   void SetWeight(Double_t CrossSection, Double_t nevents);
-  void SetIntegratedLumi(Double_t lumi);
+  void SetTargetLumi(Double_t lumi);
+  void SetEffectiveLumi(Double_t lumi);
   void SetName(TString name, Int_t version);
   void SetEvtN(Long64_t events);
   void NEvents(float n_events);
