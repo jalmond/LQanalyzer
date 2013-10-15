@@ -168,6 +168,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(int iVertex){
   }
   
   std::sort( muons.begin(), muons.end(), isHigherPt );
+
   return muons;
 }
 

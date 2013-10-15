@@ -78,19 +78,15 @@ void Analyzer::TestLoop() {
     
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
 
-   
-
     /// Create vector of kmuon objects :
     vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
     vector<snu::KElectron> all_electrons = GetAllElectrons();
     vector<snu::KJet> all_jets = GetAllJets();        
     snu::KEvent event_info = GetEventInfo();
-
     
     numberVertices = event_info.nVertices();
     if (!event_info.IsGoodEvent()) continue; //// Make cut on event wrt vertex
     
-        
     ///  use selection code (which returns a similar class vector with selected cuts)
     //// Need to pt order at some point
 

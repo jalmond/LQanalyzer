@@ -15,7 +15,10 @@
   gROOT->ProcessLine(".L KJet.cc+g");
   gROOT->ProcessLine(".L KMuon.cc+g");
   gROOT->ProcessLine(".L KElectron.cc+g");
+  gROOT->ProcessLine(".L KEvent.cc+g");
 
+  gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
+  gROOT->ProcessLine(".L SelectionFunctions.cc+g");  
 
 
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
@@ -23,7 +26,7 @@
 
   /// Selection Code compilation
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
-  gROOT->ProcessLine(".L SelectionFunctions.cc+g");
+  //gROOT->ProcessLine(".L SelectionFunctions.cc+g");
   gROOT->ProcessLine(".L LeptonSelection.cc+g");
   gROOT->ProcessLine(".L ElectronSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelection.cc+g");
