@@ -11,31 +11,64 @@ void MuonSel::MuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& lep
   //for (UInt_t ilep=0; ilep<allmuons.size(); ilep++) {
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
     
-    LeptonchiNdof = muit->GlobalChi2(); 
-
-    dz =  muit->dZ();
-    dxy = muit->dXY();
     D0 = fabs( muit->D0());
     D0Error = muit->D0Err();
-   
+    
     if (muit->Pt() > 0.01)      
       LeptonRelIso = muit->IsoTerm()/muit->Pt();
     else LeptonRelIso = 9999.;
     if (LeptonRelIso<0) LeptonRelIso=0.0001;    
     if (D0Error < 1E-6) D0Error = 1E-6;
-
-
+    
+    /// TIGHT MUON frmo muon POG
     (muit->IsPF()==1 && muit->IsGlobal()==1 && muit->validHits() >0 && muit->validPixHits()>0 && muit->validStations()>1 && muit->ActiveLayer() >5) ? individual = true :individual = false;
     
+    /// ENERGY DEPOSIT
     (muit->IsoHcalVeto() < HCalDeposit_max && muit->IsoEcalVeto() < ECalDeposit_max && ( muit->IsoHcalVeto() >= HCalDeposit_min || muit->IsoEcalVeto() >= ECalDeposit_min) ) ? DepositVeto=true : DepositVeto=false;
-
+    ///// ETA and pt cut
     (fabs(muit->Eta()) < eta_cut && muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max && muit->PtError()/muit->Pt()<=0.10) ? etaPt=true : etaPt =false;
 
-    if (etaPt  && DepositVeto && individual)
+    
+    (muit->GlobalChi2() <chiNdof_cut && LeptonRelIso < relIso_cut && fabs(muit->dZ())<dz_cut && fabs(muit->dXY())<dxy_cut && ( LeptonRelIso >= relIsoMIN_cut || muit->GlobalChi2()  >=chiNdofMIN_cut || fabs(muit->dXY())>=dxyMIN_cut) ) ? RelIsod0Chi2=true : RelIsod0Chi2=false;
+
+    if (etaPt  && DepositVeto && individual &&RelIsod0Chi2)
       leptonColl.push_back(*muit);    
   }
   
 }
+
+void MuonSel::TightMuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& leptonColl) {
+  
+  //for (UInt_t ilep=0; ilep<allmuons.size(); ilep++) {
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
+    
+    D0 = fabs( muit->D0());
+    D0Error = muit->D0Err();
+    
+    if (muit->Pt() > 0.01)      
+      LeptonRelIso = muit->IsoTerm()/muit->Pt();
+    else LeptonRelIso = 9999.;
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;    
+    if (D0Error < 1E-6) D0Error = 1E-6;
+    
+    /// TIGHT MUON frmo muon POG
+    (muit->IsPF()==1 && muit->IsGlobal()==1 && muit->validHits() >0 && muit->validPixHits()>0 && muit->validStations()>1 && muit->ActiveLayer() >5) ? individual = true :individual = false;
+    
+    /// ENERGY DEPOSIT
+    (muit->IsoHcalVeto() < HCalDeposit_max && muit->IsoEcalVeto() < ECalDeposit_max && ( muit->IsoHcalVeto() >= HCalDeposit_min || muit->IsoEcalVeto() >= ECalDeposit_min) ) ? DepositVeto=true : DepositVeto=false;
+    ///// ETA and pt cut
+    (fabs(muit->Eta()) < eta_cut && muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max && muit->PtError()/muit->Pt()<=0.10) ? etaPt=true : etaPt =false;
+
+    
+    (muit->GlobalChi2() <chiNdof_cut && LeptonRelIso < relIso_cut && fabs(muit->dZ())<dz_cut && fabs(muit->dXY())<dxy_cut && ( LeptonRelIso >= relIsoMIN_cut || muit->GlobalChi2()  >=chiNdofMIN_cut || fabs(muit->dXY())>=dxyMIN_cut) ) ? RelIsod0Chi2=true : RelIsod0Chi2=false;
+
+    if (etaPt  && DepositVeto && individual &&RelIsod0Chi2)
+      leptonColl.push_back(*muit);    
+  }
+  
+}
+
+
 
 void MuonSel::MuonSelection(std::vector<Int_t> IsPF, std::vector<Int_t> IsGlobal, std::vector<Double_t> Eta, std::vector<Double_t> Phi, std::vector<Double_t> Pt, std::vector<Double_t> PtErr, std::vector<Double_t> E, std::vector<Double_t> TrkIso, std::vector<Double_t> ECalIso, std::vector<Double_t> HCalIso, std::vector<Double_t> ECalIsoDeposit, std::vector<Double_t> HCalIsoDeposit, std::vector<Int_t> Charge, std::vector<Int_t> ValidHits, std::vector<Int_t> PixelValidHits, std::vector<Int_t> ValidStations, std::vector<Int_t> LayersWithMeasurement, std::vector<Double_t> GlobalChi2, std::vector<Double_t> Trkdx, std::vector<Double_t> Trkdy, std::vector<Double_t> Trkdz, std::vector<Double_t> TrkIPToolsIP, std::vector<Double_t> TrkIPToolsIPError, Double_t Vertex_X, Double_t Vertex_Y, Double_t Vertex_Z, std::vector<Double_t> PUpt, std::vector<Lepton>& leptonColl) {
 

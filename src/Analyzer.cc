@@ -70,8 +70,8 @@ void Analyzer::TestLoop() {
     if (!event_info.HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
     
     ///  use selection code (which returns a similar class vector with selected cuts)
-    //// Need to pt order at some point
-
+    
+    //// want to add more selection options ( )
     std::vector<snu::KMuon> muonColl;
     MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4);
@@ -87,6 +87,16 @@ void Analyzer::TestLoop() {
     JetsVeto.SetPt(20); 
     JetsVeto.SetEta(2.5);
     JetsVeto.JetSelection(all_jets, jetColl);
+
+    std::vector<snu::KElectron> electronColl;
+    ElectronTight.SetPt(20); 
+    ElectronTight.SetEta(2.5); 
+    ElectronTight.SetRelIso(0.15); 
+    ElectronTight.SetBSdxy(0.02); 
+    ElectronTight.SetBSdz(0.10);
+    ElectronTight.ElectronSelection(all_electrons,electronColl, rhoJets); 
+
+    
     
      ///// SOME STANDARD PLOTS /////
     if (muonColl.size() == 2) {      
@@ -99,9 +109,9 @@ void Analyzer::TestLoop() {
     }
   }// End of event loop
   
-  OpenPutputFile();
+  OpenPutputFile();  
   
-  h_zpeak->Write();
+  h_zpeak->Write();  // FOR test only
   
   Dir = outfile->mkdir("Muons");
   outfile->cd( Dir->GetName() );

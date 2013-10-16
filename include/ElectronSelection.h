@@ -2,6 +2,8 @@
 #define ElectronSelection_h
 
 #include "LeptonSelection.h"
+#include "KElectron.h"
+
 
 class ElectronSel : public Lep {
   
@@ -15,6 +17,9 @@ class ElectronSel : public Lep {
  public:
   ElectronSel();
   ~ElectronSel();
+  
+  void ElectronSelection(std::vector<snu::KElectron> allelectrons, std::vector<snu::KElectron>& leptonColl, double rho);
+  //void TightElectronSelection(std::vector<snu::KElectron> allelectrons, std::vector<snu::KElectron>& leptonColl, double rho) ;
 
   void ElectronSelection(std::vector<Bool_t> isEB, std::vector<Bool_t> isEE, std::vector<Bool_t> TrackerDrivenSeed, std::vector<Bool_t> EcalDrivenSeed, std::vector<Double_t> Eta, std::vector<Double_t> Phi, std::vector<Double_t> Pt, std::vector<Double_t> E, std::vector<Double_t> TrkIso, std::vector<Double_t> ECalIso, std::vector<Double_t> HCalIso, std::vector<Int_t> Charge, std::vector<Bool_t> ChargeConsistency, std::vector<Int_t> MissingHits, std::vector<Bool_t> HasMatchedConvPhot, std::vector<Double_t> DeltaEtaTrkSC, std::vector<Double_t> DeltaPhiTrkSC, std::vector<Double_t> SigmaIEtaIEta, std::vector<Double_t> HoE, std::vector<Double_t> caloEnergy, std::vector<Double_t> SuperClusterOverP, std::vector<Double_t> Trkdx, std::vector<Double_t> Trkdy, std::vector<Double_t> Trkdz, Double_t Vertex_X, Double_t Vertex_Y, Double_t Vertex_Z, Double_t rho, std::vector<Lepton>& leptonColl); 
 

@@ -1,10 +1,72 @@
 #include "ElectronSelection.h"
 
-ElectronSel::ElectronSel() {};
+using namespace snu;
 
+ElectronSel::ElectronSel() {};
 
 ElectronSel::~ElectronSel() {};
 
+
+void ElectronSel::ElectronSelection(std::vector<KElectron> allelectrons, std::vector<KElectron>& leptonColl,  Double_t rho) {
+  
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+    
+    if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
+    if ( el->caloEnergy()==0 ) continue;
+    
+    ElectronID = false;
+    if (el->isEB()) {
+      if (el->DeltaEtaTrkSC() < 0.004 &&
+	  el->DeltaPhiTrkSC() < 0.06 &&
+	  el->SigmaIEtaIEta() < 0.01 &&
+	  el->HoE() < 0.12 &&
+	  el->MissingHits() == 0 &&
+	  fabs( (1 - el->SuperClusterOverP())/el->caloEnergy() ) < 0.05 &&
+	  !el->HasMatchedConvPhot())
+	ElectronID = true;
+    }
+    else if (el->isEE()) {
+      if (el->DeltaEtaTrkSC() < 0.007 &&
+	  el->DeltaPhiTrkSC() < 0.03 &&
+	  el->SigmaIEtaIEta() < 0.03 &&
+	  el->HoE() < 0.10 &&
+	  el->MissingHits() == 0 &&
+	  fabs( (1 - el->SuperClusterOverP())/el->caloEnergy() ) < 0.05 &&
+	  !el->HasMatchedConvPhot())
+	ElectronID = true;
+    }
+    else
+      cout<< "something wrong with electron ID" <<endl;
+    
+    
+    //// ISOLATION (AREA CORERECTION)
+    if (fabs(el->Eta()) < 1.0) ifid = 0;
+    else if (fabs(el->Eta()) < 1.479) ifid = 1;
+    else if (fabs(el->Eta()) < 2.0) ifid = 2;
+    else if (fabs(el->Eta()) < 2.2) ifid = 3;
+    else if (fabs(el->Eta()) < 2.3) ifid = 4;
+    else if (fabs(el->Eta()) < 2.4) ifid = 5;
+    else ifid = 6;
+    
+    if (el->Pt() > 0.01)
+      LeptonRelIso = ( el->HCalIso() + max( el->ECalIso() + el->TrkIso() - rho * PHONH[ifid], 0.) ) / el->Pt();
+    else LeptonRelIso = 9999.;
+    
+    
+    (el->ChargeConsistency()) ? individual = true : individual = false;
+ 
+    (fabs(el->Eta()) < eta_cut && el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max) ? etaPt=true : etaPt =false;
+    
+    (el->dz()<dz_cut && el->dxy() <dxy_cut && LeptonRelIso < relIso_cut && LeptonRelIso >= relIsoMIN_cut) ? RelIsod0=true : RelIsod0=false;
+    
+    if (ElectronID && individual && etaPt && RelIsod0 ) {
+      leptonColl.push_back(*el);
+    }
+    
+  }// end of el loop
+  
+  return;
+}
 
 void ElectronSel::ElectronSelection(std::vector<Bool_t> isEB, std::vector<Bool_t> isEE, std::vector<Bool_t> TrackerDrivenSeed, std::vector<Bool_t> EcalDrivenSeed, std::vector<Double_t> Eta, std::vector<Double_t> Phi, std::vector<Double_t> Pt, std::vector<Double_t> E, std::vector<Double_t> TrkIso, std::vector<Double_t> ECalIso, std::vector<Double_t> HCalIso, std::vector<Int_t> Charge, std::vector<Bool_t> ChargeConsistency, std::vector<Int_t> MissingHits, std::vector<Bool_t> HasMatchedConvPhot, std::vector<Double_t> DeltaEtaTrkSC, std::vector<Double_t> DeltaPhiTrkSC, std::vector<Double_t> SigmaIEtaIEta, std::vector<Double_t> HoE, std::vector<Double_t> caloEnergy, std::vector<Double_t> SuperClusterOverP, std::vector<Double_t> Trkdx, std::vector<Double_t> Trkdy, std::vector<Double_t> Trkdz, Double_t Vertex_X, Double_t Vertex_Y, Double_t Vertex_Z, Double_t rho, std::vector<Lepton>& leptonColl) {
 
@@ -89,7 +151,6 @@ void ElectronSel::ElectronSelection(std::vector<Bool_t> isEB, std::vector<Bool_t
     dz = fabs(Trkdz[ilep] - Vertex_Z);
     dxy = sqrt(pow(Trkdx[ilep]-Vertex_X,2)+pow(Trkdy[ilep]-Vertex_Y,2));
 
-    //    (TrackerDrivenSeed[ilep] && EcalDrivenSeed[ilep] && 
     (ChargeConsistency[ilep]) ? individual = true : individual = false;
  
     (fabs(Eta[ilep]) < eta_cut && Pt[ilep] >= pt_cut_min && Pt[ilep] < pt_cut_max) ? etaPt=true : etaPt =false;
