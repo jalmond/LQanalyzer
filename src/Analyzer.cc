@@ -117,8 +117,8 @@ void Analyzer::TestLoop() {
     }
   }// End of event loop
   
-  outfile->cd();
-
+  OpenPutputFile();
+  
   h_zpeak->Write();
   
   Dir = outfile->mkdir("Muons");
@@ -610,7 +610,8 @@ void Analyzer::Loop() {
   cout<<"Single_Double "<<Single_Double<<endl;
   cout<<"totale "<<realtotal[0]<<", of which : "<<realsingle[0]<<" single and "<<realdouble[0]<<" double"<<endl;
   
-  outfile->cd();
+  OpenPutputFile();
+
   h_nvtx_norw->Write();
   h_nvtx_rw->Write();
   h_zpeak->Write();
@@ -749,10 +750,14 @@ void Analyzer::SetName(TString name, Int_t version) {
   completename = TString(out_dir) + name + "_";
   completename += version;
   completename += ".root";
-  outfile = new TFile(completename,"RECREATE");
+  
   return;
 }
 
+void Analyzer::OpenPutputFile(){
+  outfile = new TFile(completename,"RECREATE");
+  outfile->cd();
+}
 
 void Analyzer::SetEffectiveLumi(Double_t efflumi){
   MCweight = target_lumi / efflumi;

@@ -64,7 +64,7 @@ class Analyzer : public SNUTreeFiller {
   Double_t target_lumi  ;//= 19762.501;
 
   TFile *outfile;
-
+  
   Long64_t entrieslimit;
   Double_t METx, METy, MET, dr, MCweight, weight;
   Int_t prescaler;
@@ -86,8 +86,12 @@ class Analyzer : public SNUTreeFiller {
 
   Analyzer();
   ~Analyzer();
+
+  /// Main Event Loops
   void Loop();
   void TestLoop();
+  
+  void OpenPutputFile();
   void SetWeight(Double_t CrossSection, Double_t nevents);
   void SetTargetLumi(Double_t lumi);
   void SetEffectiveLumi(Double_t lumi);
