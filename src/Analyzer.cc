@@ -33,42 +33,24 @@ void Analyzer::TestLoop() {
 
   //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
   cout << "In test loop " << endl;
-  /// Event weights :   
-  if((MCweight ==1.&& target_lumi ==1.) || !MCweight) {
-    MCweight=1.; 
-    isData=true;
-  }
-  if(isData) cout << "Running on data" << endl;
-  if (fChain == 0)  cout << "GoodBye!" << endl;
-  
-  if(!isData&&(entrieslimit!=-1)) MCweight *= (nentries/entrieslimit);
-  if(!isData&&(entrieslimit!=-1)) cout << "Running over " << entrieslimit << "/" << nentries << endl;  
-  cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
-  
-  /// Set number of events in runbackground.C
-  if (entrieslimit != -1){
-    nentries=entrieslimit;
-  }
-  weight=MCweight;  
+
+  weight= SetEventWeight();  
 
   
   string analysisdir = getenv("FILEDIR");
-  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str(),(analysisdir + "MyDataPileupHistogram.root").c_str());
-
-
-
+  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
+  
+  
   ///////////////////////////////////////////////////////////////////////
-  ///
   ///  START OF EVENT LOOP
-  ///
   ///////////////////////////////////////////////////////////////////////////
+
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
-    
-    if (!(jentry % 1000))  cout << "Processing entry " << jentry << " weight = " << weight << endl;      
-    if (!fChain) cout<<"Problem with fChain"<<endl;
-    fChain->GetEntry(jentry);
-    /// Initial event cuts
-    if(!PassBasicEventCuts()) continue; 
+        
+    snu::KEvent event_info = SetUpEvent(jentry); 
+
+    if(!PassBasicEventCuts()) continue;     /// Initial event cuts
+
 
     /// Trigger List (specific to muons channel)
     std::vector<TString> triggerslist;
@@ -76,16 +58,16 @@ void Analyzer::TestLoop() {
     
     if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
     
+    /// Correct MC for pileup
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
-
+    
     /// Create vector of kmuon objects :
-    vector<snu::KMuon> all_muons = GetAllMuons(VertexN);    
+    vector<snu::KMuon> all_muons = GetAllMuons();    
     vector<snu::KElectron> all_electrons = GetAllElectrons();
     vector<snu::KJet> all_jets = GetAllJets();        
-    snu::KEvent event_info = GetEventInfo();
     
     numberVertices = event_info.nVertices();
-    if (!event_info.IsGoodEvent()) continue; //// Make cut on event wrt vertex
+    if (!event_info.HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
     
     ///  use selection code (which returns a similar class vector with selected cuts)
     //// Need to pt order at some point
@@ -149,7 +131,7 @@ void Analyzer::Loop() {
   Int_t nSingleFake=0; Int_t nDoubleFake=0;
   
   string analysisdir = getenv("FILEDIR");
-  reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str(),(analysisdir + "MyDataPileupHistogram.root").c_str());
+  reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
 
   /// Setup doubles for fake background
   UInt_t nbinX=FRhisto->GetNbinsX(); UInt_t nbinY=FRhisto->GetNbinsY(); UInt_t nSplit=4;
@@ -856,4 +838,44 @@ bool Analyzer::PassBasicEventCuts(){
   if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) pass = false;
   if (!passHBHENoiseFilter) pass = false; // || passHcalLaserEventFilter) continue;
   return pass;
+}
+
+
+double Analyzer::SetEventWeight(){
+  
+  /// Event weights :   
+  if((MCweight ==1.&& target_lumi ==1.) || !MCweight) {
+    MCweight=1.; 
+    isData=true;
+  }
+  if(isData) cout << "Running on data" << endl;
+  if (fChain == 0)  cout << "GoodBye!" << endl;
+  
+  if(!isData&&(entrieslimit!=-1)) MCweight *= (nentries/entrieslimit);
+  if(!isData&&(entrieslimit!=-1)) cout << "Running over " << entrieslimit << "/" << nentries << endl;  
+  cout << "Analyser::Loop || Total number of entries in sample = " <<nentries<<endl;
+  
+  /// Set number of events in runbackground.C
+  if (entrieslimit != -1){
+    nentries=entrieslimit;
+  }
+
+  double e_weight = MCweight;
+  return e_weight;
+}
+
+void Analyzer::OutPutEventInfo(int entry, int step){
+
+  if (!(entry % step))  cout << "Processing entry " << entry << " weight = " << weight << endl;      
+  
+  return;
+}
+
+snu::KEvent Analyzer::SetUpEvent(int kentry){
+
+  OutPutEventInfo(kentry, 1000); /// output event info every X events wil running
+  if (!fChain) cout<<"Problem with fChain"<<endl;
+  fChain->GetEntry(kentry);
+  
+  return GetEventInfo();
 }

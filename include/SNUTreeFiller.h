@@ -18,7 +18,7 @@ class SNUTreeFiller : public Data {
   SNUTreeFiller();
   ~SNUTreeFiller();
 
-  std::vector<snu::KMuon> GetAllMuons(int ivertex);
+  std::vector<snu::KMuon> GetAllMuons();
   std::vector<snu::KElectron> GetAllElectrons();
   std::vector<snu::KJet> GetAllJets();
   snu::KEvent GetEventInfo();

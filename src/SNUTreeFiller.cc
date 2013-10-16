@@ -6,12 +6,14 @@
 using namespace snu;
 using namespace std;
 
-SNUTreeFiller::SNUTreeFiller() {};
+SNUTreeFiller::SNUTreeFiller() {
+  VertexN = -999; //// set event vertex to dummy number 
+};
 
 
 SNUTreeFiller::~SNUTreeFiller() {};
 
-KEvent SNUTreeFiller::GetEventInfo(){
+snu::KEvent SNUTreeFiller::GetEventInfo(){
   
   snu::KEvent kevent;
   kevent.SetMET( PFMETType01XYCor->at(0));
@@ -28,7 +30,12 @@ KEvent SNUTreeFiller::GetEventInfo(){
       break;
     }
   }
-    
+
+  
+  kevent.SetVertexIndex(VertexN); /// setting event vertex
+  kevent.SetIsData(isData);
+  kevent.SetRunNumber(run);
+  kevent.SetEventNumber(event);
   kevent.SetVertexX(VertexX->at(VertexN));
   kevent.SetVertexY(VertexY->at(VertexN));
   kevent.SetVertexZ(VertexZ->at(VertexN));  
@@ -60,11 +67,20 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
     el.SetSigmaIEtaIEta(ElectronSigmaIEtaIEta->at(iel));
     el.SetHoE(ElectronHoE->at(iel));
     el.SetcaloEnergy(ElectronCaloEnergy->at(iel));
-    el.SuperClusterOverP(ElectronESuperClusterOverP->at(iel));
-    el.Trkdx(ElectronTrackVx->at(iel));
-    el.Trkdy(ElectronTrackVy->at(iel));
-    el.Trkdz(ElectronTrackVz->at(iel));
-
+    el.SetSuperClusterOverP(ElectronESuperClusterOverP->at(iel));
+    el.SetTrkVx(ElectronTrackVx->at(iel));
+    el.SetTrkVy(ElectronTrackVy->at(iel));
+    el.SetTrkVz(ElectronTrackVz->at(iel));
+    if(VertexN != -999){
+      el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
+      el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
+    }
+    else{
+      snu::KEvent ev = SNUTreeFiller::GetEventInfo();
+      el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(ev.VertexIndex()));
+      el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ev.VertexIndex()),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ev.VertexIndex()),2)));
+    }
+  
     /// Need to add filling code
     electrons.push_back(el);
   }
@@ -102,7 +118,7 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
 }
 
 
-std::vector<KMuon> SNUTreeFiller::GetAllMuons(int iVertex){
+std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
   
   std::vector<KMuon> muons;
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
@@ -133,8 +149,17 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(int iVertex){
     muon.SetTrackVx(MuonTrkVx->at(ilep));
     muon.SetTrackVy(MuonTrkVy->at(ilep));
     muon.SetTrackVz(MuonTrkVz->at(ilep));
-    muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(iVertex));
-    muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(iVertex),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(iVertex),2)));
+
+    if(VertexN != -999){
+      muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));
+      muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(VertexN),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(VertexN),2)));
+    }
+    else{
+      cout << "WARNING creating vector of KMuon or KElectrons without setting up KEvent " << endl;
+      snu::KEvent ev = SNUTreeFiller::GetEventInfo();
+      muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(ev.VertexIndex()));
+      muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(ev.VertexIndex()),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(ev.VertexIndex()),2)));      
+    }
     muon.SetD0( MuonTrkD0->at(ilep));
     muon.SetD0Error (MuonTrkD0Error->at(ilep));
     

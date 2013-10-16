@@ -21,7 +21,7 @@ void EffCalculator::LoopEff() {
 
   cout << "total number of entries " <<nentries<<endl;
  
-  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MC_pu.root", "/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MyDataPileupHistogram.root");
+  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MC_pu.root");
 
   if(!MCweight) MCweight=1;
 

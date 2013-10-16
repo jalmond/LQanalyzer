@@ -18,6 +18,7 @@
 #include "KParticle.h"
 #include "KJet.h"
 #include "KMuon.h"
+#include "KEvent.h"
 #include "SNUTreeFiller.h"
 
 class Analyzer : public SNUTreeFiller {
@@ -92,6 +93,7 @@ class Analyzer : public SNUTreeFiller {
   void TestLoop();
   
   void OpenPutputFile();
+  double SetEventWeight();
   void SetWeight(Double_t CrossSection, Double_t nevents);
   void SetTargetLumi(Double_t lumi);
   void SetEffectiveLumi(Double_t lumi);
@@ -101,6 +103,8 @@ class Analyzer : public SNUTreeFiller {
   void MakeHistograms();
   void MakeCleverHistograms();
   bool PassBasicEventCuts();
+  void OutPutEventInfo(int entry, int step);
+  snu::KEvent SetUpEvent(int kentry);
 
 };
 #endif

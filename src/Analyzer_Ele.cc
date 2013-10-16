@@ -91,7 +91,7 @@ void Analyzer_Ele::Loop() {
   Double_t SingleFake=0; Double_t DoubleFake=0; Double_t Single_Double=0;
   Int_t nSingleFake=0; Int_t nDoubleFake=0;
 
-  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MC_pu.root", "/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/MyDataPileupHistogram.root");
+  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MC_pu.root");
 
   UInt_t nbinX=FRhisto->GetNbinsX(); UInt_t nbinY=FRhisto->GetNbinsY(); UInt_t nSplit=4;
 
