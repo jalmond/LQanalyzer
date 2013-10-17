@@ -11,7 +11,7 @@ if [[ $1 == --h* ]]
 
     
 else
-    if [[ $1  == "-all" ]] 
+    if [[ $1  == "all" ]] 
         then 
         
         function_remove $MAINDIR/src/
