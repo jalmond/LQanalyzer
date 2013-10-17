@@ -171,12 +171,32 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetPixelValidHits(  MuonTrkPixelHits->at(ilep));
     muon.SetValidStations( MuonStationMatches->at(ilep));
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
-    
 
+
+    ///// ADD prompt definition for MC
+    /*
+    if ( isPrompt((long)Gen_Mother[ilep]) ) {
+      if ( Charge[ilep]*Gen_Mother[ilep] == -24 || Charge[ilep]*Gen_Mother[ilep] == 15 )
+        fakeType = Lepton::chargemisid;
+      else
+        fakeType = Lepton::notfake;
+    }
+    else {
+      if ( nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 5 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 5 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 5)
+        fakeType = Lepton::bjet;
+
+      else if ( nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 4 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 4 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 4)
+        fakeType = Lepton::cjet;
+      	  else if (nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 1 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 1 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 1
+            || nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 2 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 2 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 2
+            || nthdigit( abs((long)Gen_Mother[ilep]),0 ) == 3 || nthdigit( abs((long)Gen_Mother[ilep]),1 ) == 3 || nthdigit( abs((long)Gen_Mother[ilep]),2 ) == 3 )
+        fakeType = Lepton::jet;
+    }
+      
     //fakeType = Lepton::unknown;
     //looseTight = Lepton::Other;
     //leptonType = Lepton::Muon;
-  
+    */
 
     
     double reliso = (MuonPFIsoR03ChargedHadron->at(ilep) + std::max(0.0, MuonPFIsoR03NeutralHadron->at(ilep) + MuonPFIsoR03Photon->at(ilep) - 0.5*MuonPFIsoR03PU->at(ilep)))/MuonPt->at(ilep);
@@ -197,3 +217,28 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
   return muons;
 }
 
+
+
+std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
+
+  std::vector<snu::KTruth> vtruth;
+  for (UInt_t it=0; it< GenParticleEta->size(); it++) {
+    snu::KTruth truthp;
+    truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(0), GenParticleEnergy->at(it));
+    truthp.SetParticlePx(GenParticlePx->at(it));
+    truthp.SetParticlePy(GenParticlePy->at(it));
+    truthp.SetParticlePz(GenParticlePz->at(it));
+    truthp.SetParticleVx(GenParticleVX->at(it));
+    truthp.SetParticleVy(GenParticleVY->at(it));
+    truthp.SetParticleVz(GenParticleVZ->at(it));
+    truthp.SetParticlePdgId(GenParticlePdgId->at(it));
+    truthp.SetParticleStatus(GenParticleStatus->at(it));
+
+    truthp.SetParticleIndexDaughter(GenParticleNumDaught->at(it));
+    truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
+            
+    vtruth.push_back(truthp);
+  }/// end of filling loop
+  
+  return vtruth;
+}

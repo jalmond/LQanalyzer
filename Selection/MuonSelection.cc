@@ -100,6 +100,7 @@ void MuonSel::MuonSelection(std::vector<Int_t> IsPF, std::vector<Int_t> IsGlobal
     fakeType = Lepton::unknown;
     looseTight = Lepton::Other;
     leptonType = Lepton::Muon;
+
     /*
     if ( isPrompt((long)Gen_Mother[ilep]) ) {
       if ( Charge[ilep]*Gen_Mother[ilep] == -24 || Charge[ilep]*Gen_Mother[ilep] == 15 )

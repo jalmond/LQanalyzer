@@ -22,11 +22,6 @@ void GenSel::GenSelection(std::vector<Double_t> Eta, std::vector<Double_t> Pt, s
    
     vLepton.SetPxPyPzE(Px[ilep], Py[ilep], Pz[ilep], E[ilep]);
 
-    fakeType = GenParticle::unknown;
-    looseTight = GenParticle::Other;
-    leptonType = GenParticle::Muon;
-
-//    if ( fabs(pdgId[mother[ilep]])!=24 || status[ilep]!=3 || pdgId[mother[mother[ilep]]]!=90 ) continue;
     if ( fabs(pdgId[ilep]==13) && fabs(pdgId[mother[ilep]])==24 || status[ilep]==3 || fabs(pdgId[mother[ilep]])==23 ) continue;
   //  cout << "idx "<< ilep << " pdgID  " << pdgId[ilep] << "  madre " << mother[ilep] << "  stato " << status[ilep]<< "  ndaug " <<ndaug[ilep]<<endl;
  

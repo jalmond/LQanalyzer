@@ -9,7 +9,9 @@
 #include "KElectron.h"
 #include "KJet.h"
 #include "KEvent.h"
+#include "KTruth.h"
 #include "SelectionFunctions.h"
+#include "OtherFunctions.h"
 
 class SNUTreeFiller : public Data {
 
@@ -22,9 +24,9 @@ class SNUTreeFiller : public Data {
   std::vector<snu::KElectron> GetAllElectrons();
   std::vector<snu::KJet> GetAllJets();
   snu::KEvent GetEventInfo();
- 
+  std::vector<snu::KTruth>  GetTruthParticles();
 
- UInt_t VertexN;
+ Int_t VertexN;
  Bool_t *goodVerticies;
 
 

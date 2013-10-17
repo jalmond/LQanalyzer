@@ -7,12 +7,13 @@ int nthdigit(int x, int n) {
 
 bool isPrompt(long pdgid) {
   pdgid = abs(pdgid);
-  /*if (pdgid >= 1000001 && pdgid <= 1000006) return true; // SUSY squarks
+  if (pdgid >= 1000001 && pdgid <= 1000006) return true; // SUSY squarks
   else if (pdgid >= 1000011 && pdgid <= 1000016) return true; // SUSY sleptons sneutrinos
   else if (pdgid >= 2000001 && pdgid <= 2000006) return true; // SUSY squarks
   else if (pdgid >= 2000011 && pdgid <= 2000015) return true; // SUSY sleptons
   else if (pdgid >= 1000021 && pdgid <= 1000025) return true; // SUSY gluino chargino neutralinos
   else if (pdgid >= 1000035 && pdgid <= 1000039) return true; // SUSY neutralinos charginos gravitino*/
+  
   if (pdgid == 24) return true; // Z
   else if (pdgid == 23) return true; // W
   else if (pdgid == 15) return true; // taus
