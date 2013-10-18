@@ -749,6 +749,7 @@ void Analyzer::SetName(TString name, Int_t version) {
 void Analyzer::OpenPutputFile(){
   outfile = new TFile(completename,"RECREATE");
   outfile->cd();
+  cout << "Opening output root file " << completename << endl;
 }
 
 void Analyzer::SetEffectiveLumi(Double_t efflumi){
