@@ -1,4 +1,4 @@
-B1;2c#!/bin/sh
+#!/bin/sh
 
 echo "Runninh DY and DiMuon period A samples" 
 
