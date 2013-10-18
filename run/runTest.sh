@@ -6,6 +6,8 @@ root -l -q -b compile.C
 
 function runCode(){    
     nohup root -l -q -b $1 &> log/$2 &
+    echo "running script runDataDiMuonPeriodA.C. . Output log to " log/$2 
+ 
 }
 
 runCode runDataDiMuonPeriodA.C dimuon_data.log 
