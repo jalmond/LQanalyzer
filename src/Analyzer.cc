@@ -65,10 +65,10 @@ void Analyzer::TestLoop() {
     vector<snu::KMuon> all_muons = GetAllMuons();    
     vector<snu::KElectron> all_electrons = GetAllElectrons();
     vector<snu::KJet> all_jets = GetAllJets();        
+    vector<snu::KTau> all_taus = GetAllTaus();        
     
     numberVertices = event_info.nVertices();
     if (!event_info.HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
-    
     ///  use selection code (which returns a similar class vector with selected cuts)
     
     //// want to add more selection options ( )

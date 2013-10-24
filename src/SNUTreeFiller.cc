@@ -44,6 +44,23 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
   return kevent;
 }
 
+
+std::vector<KTau> SNUTreeFiller::GetAllTaus(){
+  
+  std::vector<KTau> taus;
+  for(UInt_t itau = 0; itau < HPSTauPhi->size(); itau++){
+
+    KTau tau;
+    tau.SetCharge(HPSTauCharge->at(itau));
+    tau.SetPtEtaPhiE(HPSTauPt->at(itau),HPSTauEta->at(itau), HPSTauPhi->at(itau), (HPSTauEt->at(itau)));
+    tau.SetIsPF(HPSTauIsPFTau->at(itau));
+
+    taus.push_back(tau);
+  }
+  
+  return taus;
+}
+
 std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
   
   std::vector<KElectron> electrons;
@@ -127,7 +144,8 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
-    
+
+    muon.SetMuonVtxIndex(MuonVtxIndex->at(ilep));    
     
     /// Isolation
     muon.SetISOR03ChargedHad(MuonPFIsoR03ChargedHadron->at(ilep));
