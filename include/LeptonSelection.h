@@ -36,6 +36,7 @@ class Lep {
   Lep();
   ~Lep();
 
+  void reset();
   void SetPt(Double_t minPt, Double_t maxPt);
   void SetPt(Double_t minPt);
   void SetEta(Double_t Eta);

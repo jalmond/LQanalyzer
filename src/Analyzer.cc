@@ -36,10 +36,8 @@ void Analyzer::TestLoop() {
 
   weight= SetEventWeight();  
 
-  
   string analysisdir = getenv("FILEDIR");
   if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
-  
   
   ///////////////////////////////////////////////////////////////////////
   ///  START OF EVENT LOOP
@@ -73,15 +71,19 @@ void Analyzer::TestLoop() {
     
     //// want to add more selection options ( )
     std::vector<snu::KMuon> muonColl;
-    MuonTight.SetPt(20); 
+    std::vector<snu::KMuon> muonCollIso;
+    MuonTight.reset();
+    MuonTight.SetPt(15); 
     MuonTight.SetEta(2.4);
-    MuonTight.SetRelIso(0.10);
+    MuonTight.MuonSelection(all_muons,muonColl);
+    MuonTight.SetRelIso(0.1);
     MuonTight.SetChiNdof(10); 
     MuonTight.SetBSdxy(0.005);
     MuonTight.SetBSdz(0.10);
     MuonTight.SetDeposits(4.0,6.0);    
-    MuonTight.MuonSelection(all_muons,muonColl);
+    MuonTight.MuonSelection(all_muons,muonCollIso);
    
+
     std::vector<snu::KJet> jetColl;
     //// List of cuts
     JetsVeto.SetPt(20); 
@@ -101,12 +103,23 @@ void Analyzer::TestLoop() {
      ///// SOME STANDARD PLOTS /////
     if (muonColl.size() == 2) {      
       KParticle Z = muonColl.at(0) + muonColl.at(1);
-      if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
+      if(muonColl.at(0).Charge() == muonColl.at(1).Charge()){      
 	h_zpeak->Fill(Z.M(), weight);	 /// Plots Z peak
-	h_muons->Fill(weight, muonColl);      
-	h_jets->Fill(weight, jetColl);
-      }    
+	h_muonsLoose->Fill(weight, muonColl);      
+	h_signal->Fill(ev_info.MET(), muonColl, jetColl, weight, true, false);
+      } 
     }
+    
+    if (muonCollIso.size() == 2) {
+
+      if(muonCollIso.at(0).Charge() == muonCollIso.at(1).Charge()){	
+	h_muons->Fill(weight, muonCollIso);
+	h_jets->Fill(weight, jetColl);
+      }
+    }
+    
+
+
   }// End of event loop
   
   OpenPutputFile();  
@@ -117,11 +130,23 @@ void Analyzer::TestLoop() {
   outfile->cd( Dir->GetName() );
   h_muons->Write();
   outfile->cd();
+
+  Dir = outfile->mkdir("MuonsLoose");
+  outfile->cd( Dir->GetName() );
+  h_muonsLoose->Write();
+  outfile->cd();
+
   Dir = outfile->mkdir("Jets");
   outfile->cd( Dir->GetName() );
   h_jets->Write();
   outfile->cd();
   
+
+  Dir = outfile->mkdir("Signal");
+  outfile->cd( Dir->GetName() );
+  h_signal->Write();
+  outfile->cd();
+
 
   outfile->Close();
 
@@ -868,7 +893,7 @@ double Analyzer::SetEventWeight(){
   
   /// Set number of events in runbackground.C
   if (entrieslimit != -1){
-    nentries=entrieslimit;
+    if(entrieslimit < nentries) nentries=entrieslimit;
   }
 
   double e_weight = MCweight;

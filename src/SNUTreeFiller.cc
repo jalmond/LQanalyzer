@@ -74,6 +74,7 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
     if(VertexN != -999){
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
+
     }
     else{
       snu::KEvent ev = SNUTreeFiller::GetEventInfo();
@@ -153,6 +154,8 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     if(VertexN != -999){
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));
       muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(VertexN),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(VertexN),2)));
+      muon.Setdxy_pat( MuonPrimaryVertexDXY->at(ilep));
+      muon.Setdxyerr_pat( MuonPrimaryVertexDXYError->at(ilep));
     }
     else{
       cout << "WARNING creating vector of KMuon or KElectrons without setting up KEvent " << endl;

@@ -4,6 +4,20 @@ Lep::Lep() {}
 
 Lep::~Lep() {}
 
+void Lep::reset(){
+  dz_cut = 1000000.;
+  pt_cut_max = 1000000.;
+  pt_cut_min = 0.;
+  eta_cut_min = -10.;
+  eta_cut = 10.;
+  relIso_cut  = 100000.;
+  relIsoMIN_cut = 0.;
+  chiNdof_cut = 10000.;
+  chiNdofMIN_cut = 0.;
+  dxy_cut = 100000.;
+  dxyMIN_cut = -1000000.;
+}
+
 void Lep::SetPt(Double_t minPt) {
   minPt ? pt_cut_min=minPt : pt_cut_min=0.0;
   pt_cut_max=10000.0;

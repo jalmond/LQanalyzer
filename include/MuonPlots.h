@@ -6,7 +6,7 @@
 
 class MuonPlots : public StdPlots{
  public:
-  TH1F *h_charge, *h_HCalIso, *h_ECalIso, *h_TrkIso, *h_Detector_RelIso, *h_Detector_RelIsorho, *h_HCalIsoDeposit, *h_ECalIsoDeposit, *h_photonIso, *h_chargedHadronIso, *h_neutralHadronIso, *h_PF_RelIso, *h_PF_RelIso_beta, *h_PUpt, *h_GlbChi2, *h_dxy, *h_dz,*h_d0,*h_d0sig;
+  TH1F *h_charge, *h_HCalIso, *h_ECalIso, *h_TrkIso, *h_Detector_RelIso, *h_Detector_RelIsorho, *h_HCalIsoDeposit, *h_ECalIsoDeposit, *h_photonIso, *h_chargedHadronIso, *h_neutralHadronIso, *h_PF_RelIso, *h_PF_RelIso_beta, *h_PUpt, *h_GlbChi2, *h_dxy, *h_dz,*h_d0,*h_d0sig,*h_d0sig2,*h_dxysig,*h_dxypatsig;
   MuonPlots(TString name);
   ~MuonPlots();
 
