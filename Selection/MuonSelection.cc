@@ -14,11 +14,10 @@ void MuonSel::MuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& lep
     D0 = fabs( muit->D0());
     D0Error = muit->D0Err();
     
-    if (muit->Pt() > 0.01)      
-      LeptonRelIso = muit->IsoTerm()/muit->Pt();
+    if (muit->Pt() > 0.01)      LeptonRelIso = muit->IsoTerm()/muit->Pt();
     else LeptonRelIso = 9999.;
     if (LeptonRelIso<0) LeptonRelIso=0.0001;    
-    if (D0Error < 1E-6) D0Error = 1E-6;
+
     
     /// TIGHT MUON frmo muon POG
     (muit->IsPF()==1 && muit->IsGlobal()==1 && muit->validHits() >0 && muit->validPixHits()>0 && muit->validStations()>1 && muit->ActiveLayer() >5) ? individual = true :individual = false;
@@ -30,11 +29,12 @@ void MuonSel::MuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& lep
 
     
     (muit->GlobalChi2() <chiNdof_cut && LeptonRelIso < relIso_cut && fabs(muit->dZ())<dz_cut && fabs(muit->dXY())<dxy_cut && ( LeptonRelIso >= relIsoMIN_cut || muit->GlobalChi2()  >=chiNdofMIN_cut || fabs(muit->dXY())>=dxyMIN_cut) ) ? RelIsod0Chi2=true : RelIsod0Chi2=false;
-
-    if (etaPt  && DepositVeto && individual &&RelIsod0Chi2)
+    
+    if (etaPt  && DepositVeto && individual &&RelIsod0Chi2){
       leptonColl.push_back(*muit);    
+    }
   }
-  
+    
 }
 
 void MuonSel::TightMuonSelection(std::vector<KMuon> allmuons, std::vector<KMuon>& leptonColl) {

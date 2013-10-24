@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 
-
 MuonPlots::MuonPlots(TString name) : StdPlots(name) {
 
   h_charge             = new TH1F("h_"+name+"_charge","Charge of "+name,5,-2,3);
@@ -22,10 +21,13 @@ MuonPlots::MuonPlots(TString name) : StdPlots(name) {
   h_HCalIsoDeposit     = new TH1F("h_"+name+"_HCalIsoDeposit",name+" HCal Iso Deposit",100,0.,10.);
   h_ECalIsoDeposit     = new TH1F("h_"+name+"_ECalIsoDeposit",name+" ECal Iso Deposit",100,0.,10.);
   h_GlbChi2            = new TH1F("h_"+name+"_GlbChi2",name+" Global #chi^{2} per #DoF",120,0.,12.);
-  h_dxy                = new TH1F("h_"+name+"_dxy",name+" transverse IP",300,0.0,0.3);
+  h_dxy                = new TH1F("h_"+name+"_dxy",name+" transverse IP",200,0.0,0.05);
   h_dz                 = new TH1F("h_"+name+"_dz",name+" longitudinal IP",100,0.0,1.0);
-  h_d0                 = new TH1F("h_"+name+"_d0",name+" d0 IP",100,0.0,1.0);
-  h_d0sig                 = new TH1F("h_"+name+"_d0sig",name+" d0sig IP",100,-20.0,20.0);
+  h_d0                 = new TH1F("h_"+name+"_d0",name+" d0 IP",100,0.0,0.2);
+  h_d0sig                 = new TH1F("h_"+name+"_d0sig",name+" d0sig IP",100,-10.,10.0);
+  h_d0sig2                 = new TH1F("h_"+name+"_d0sig2",name+" d0sig IP",100,-20000.,20000.0);
+  h_dxysig                 = new TH1F("h_"+name+"_dxysig",name+" d0sig IP",100,-10.,10.0);
+  h_dxypatsig                 = new TH1F("h_"+name+"_dxypatsig",name+" d0sig IP",100,-10.,10.0);
 }
 
 MuonPlots::~MuonPlots() {
@@ -49,6 +51,9 @@ MuonPlots::~MuonPlots() {
   delete h_dz;
   delete h_d0;
   delete h_d0sig;
+  delete h_d0sig2;
+  delete h_dxysig;
+  delete h_dxypatsig;
 }
 
 void MuonPlots::Fill(Double_t weight, std::vector<snu::KMuon> muons){
@@ -65,13 +70,18 @@ void MuonPlots::Fill(Double_t weight, std::vector<snu::KMuon> muons){
       h_PF_RelIso->Fill( (muit->IsoR03ch() + muit->IsoR03nh() + muit->IsoR03ph() )/ muit->Pt() , weight);
       h_PF_RelIso_beta->Fill( (muit->IsoR03ch() + max(0.0, muit->IsoR03nh() + muit->IsoR03ph())- 0.5*muit->PFPUIsoR03())/ muit->Pt() , weight);
     }
+
+    h_HCalIsoDeposit->Fill(muit->IsoHcalVeto(), weight);
+    h_ECalIsoDeposit->Fill(muit->IsoEcalVeto(), weight);
     
     h_GlbChi2->Fill(muit->GlobalChi2(), weight);
     h_dxy->Fill(muit->dXY(), weight);
     h_dz->Fill(muit->dZ(), weight);
     h_d0->Fill(muit->D0(),weight);
-    h_d0sig->Fill(muit->D0()/muit->D0Err(),weight);
-    
+    h_d0sig2->Fill((muit->D0()/pow(muit->D0Err(),2.)),weight);
+    h_d0sig->Fill((muit->D0()/muit->D0Err()),weight);
+    h_dxysig->Fill((muit->dXY()/muit->D0Err()),weight);
+    h_dxypatsig->Fill((muit->dXYPat()/muit->dXYErrPat()),weight);
   }
 }
 
@@ -152,5 +162,8 @@ void MuonPlots::Write() {
   h_dxy->Write();
   h_dz->Write();
   h_d0->Write();
+  h_dxysig->Write();
+  h_dxypatsig->Write();
   h_d0sig->Write();
+  h_d0sig2->Write();
 }
