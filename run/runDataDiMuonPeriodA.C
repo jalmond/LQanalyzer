@@ -17,6 +17,7 @@
   gROOT->ProcessLine(".L KElectron.cc+g");
   gROOT->ProcessLine(".L KEvent.cc+g");
   gROOT->ProcessLine(".L KTruth.cc+g");
+  gROOT->ProcessLine(".L KTau.cc+g");
 
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
   gROOT->ProcessLine(".L SelectionFunctions.cc+g");  

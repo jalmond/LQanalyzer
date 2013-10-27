@@ -12,7 +12,9 @@ Analyzer::Analyzer() {
   MakeHistograms();
   MakeCleverHistograms();
   
-
+  i_dimu_vertexmismatch=0;
+  i_dimu=0;
+  
   //// FakeRate Input file
   string analysisdir = getenv("FILEDIR");  
   TFile *infile = new TFile((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
@@ -42,7 +44,11 @@ void Analyzer::TestLoop() {
   ///////////////////////////////////////////////////////////////////////
   ///  START OF EVENT LOOP
   ///////////////////////////////////////////////////////////////////////////
-
+  int i_dimu_evNmv=0;
+  i_dimu=0;
+  i_dimu_vertexmismatch=0;
+  int i_dimu_faild0sig=0;
+  int i_dimu_tight=0;
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
         
     snu::KEvent event_info = SetUpEvent(jentry); 
@@ -68,27 +74,95 @@ void Analyzer::TestLoop() {
     numberVertices = event_info.nVertices();
     if (!event_info.HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
     ///  use selection code (which returns a similar class vector with selected cuts)
+
     
+
+     
+    if(event_info.MET() > 50) continue;
     //// want to add more selection options ( )
     std::vector<snu::KMuon> muonColl;
     std::vector<snu::KMuon> muonCollIso;
     MuonTight.reset();
-    MuonTight.SetPt(15); 
+    //MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4);
     MuonTight.MuonSelection(all_muons,muonColl);
-    MuonTight.SetRelIso(0.1);
-    MuonTight.SetChiNdof(10); 
-    MuonTight.SetBSdxy(0.005);
+    MuonTight.SetRelIso(1000.);
+    MuonTight.SetChiNdof(1000); 
+    MuonTight.SetBSdxy(0.01);
     MuonTight.SetBSdz(0.10);
-    MuonTight.SetDeposits(4.0,6.0);    
+    MuonTight.SetDeposits(40.0,60.00);    
     MuonTight.MuonSelection(all_muons,muonCollIso);
-   
+    
 
     std::vector<snu::KJet> jetColl;
-    //// List of cuts
-    JetsVeto.SetPt(20); 
+    //// List of cuts                                                                                                                                                                
+    JetsVeto.SetPt(20);
     JetsVeto.SetEta(2.5);
     JetsVeto.JetSelection(all_jets, jetColl);
+
+
+
+
+
+    if(muonColl.size() ==2){
+      
+      if(muonColl.at(0).Charge() == muonColl.at(1).Charge()){
+	i_dimu++;
+
+	if(muonCollIso.size()==2) i_dimu_tight++;
+	//	cout << "Same Sign Dimuon event (tight selection) " << endl;
+	//cout << "Number of jets  = " << jetColl.size() << endl;
+	for(int m=0; m < muonColl.size() ; m++){
+	  double minmujetdR=1000000.;
+	  double jetpt = 0.;
+	  int nclose=0;
+	  for(int j=0; j < jetColl.size() ; j++){
+	    if(muonColl.at(m).DeltaR(jetColl.at(j)) < 0.4){
+	      if(muonColl.at(m).DeltaR(jetColl.at(j)) < minmujetdR ){
+		minmujetdR = muonColl.at(m).DeltaR(jetColl.at(j));
+		jetpt =  jetColl.at(j).Pt();
+		nclose += 1;
+	      }
+	    }
+	  }
+	  if(nclose> 1){
+	    cout << "Muon has " << nclose << " jets within 0.4 dR " << endl;
+	    cout << "Muon " << m << " has dR with jet = " << minmujetdR << endl;
+	    cout << "Muon pt = " << muonColl.at(m).Pt() << " jet pt = " <<  jetpt << endl;
+	  }
+	}
+	  
+	
+	//cout << "muon 1 dxy = " << muonCollIso.at(0).dXY() <<  "  vertex dist =  " << muonCollIso.at(0).VertexDistXY()<<endl;
+	//cout << "muon 2 dxy = " << muonCollIso.at(1).dXY() << "  vertex dist =  " << muonCollIso.at(1).VertexDistXY()<< endl;
+	
+	
+	if(muonColl.at(0).MuonVertexIndex() != event_info.VertexIndex()) i_dimu_evNmv++;
+	if(muonColl.at(0).MuonVertexIndex() != muonColl.at(1).MuonVertexIndex()){
+	  
+	  i_dimu_vertexmismatch++;
+	  cout << "\n " << endl;
+	  cout << "Event Summary " << endl;
+	  cout << "Vertex Index = " << event_info.VertexIndex() << endl;
+	  cout << "Vertex X = " << event_info.VertexX() << endl;
+	  cout << "Vertex Y = " << event_info.VertexY() << endl;
+	  cout << "Vertex Z = " << event_info.VertexZ() << endl;
+	  
+	  cout << "Muon 1 vertex Index = " << muonColl.at(0).MuonVertexIndex() << endl;
+	  cout << "Muon 2 vertex Index = " << muonColl.at(1).MuonVertexIndex() << endl;
+	}
+	if((muonColl.at(0).dXY()/muonColl.at(0).D0Err()) > 3.0 || (muonColl.at(1).dXY()/muonColl.at(1).D0Err()) > 3.0) i_dimu_faild0sig++;
+	
+	
+	cout << "Number of muon removed with tight vertex cut = " << i_dimu_tight << " " << i_dimu << endl;
+	cout << "Number of muon removed with same vertex cut = " << i_dimu_vertexmismatch << " " << i_dimu << endl;
+	cout << "Number of muon removed with d0sig cut = " << i_dimu_faild0sig  << " " << i_dimu << endl;
+	cout << "Number of events where  muon vertex is not from event vertex = " << i_dimu_evNmv << " " << i_dimu << endl;
+      }//    if(!event_info.IsPrimaryVertex()) cout << "NOT PRIMARY VERTEX" << endl;
+    }
+    
+    continue;
+
 
     std::vector<snu::KElectron> electronColl;
     ElectronTight.SetPt(20); 
@@ -106,7 +180,7 @@ void Analyzer::TestLoop() {
       if(muonColl.at(0).Charge() == muonColl.at(1).Charge()){      
 	h_zpeak->Fill(Z.M(), weight);	 /// Plots Z peak
 	h_muonsLoose->Fill(weight, muonColl);      
-	h_signal->Fill(ev_info.MET(), muonColl, jetColl, weight, true, false);
+	h_signal->Fill(event_info.MET(), muonColl, jetColl, weight, true, false);
       } 
     }
     
@@ -253,7 +327,7 @@ void Analyzer::Loop() {
     
     //// Setup event in TChain
     if (debug) cout<<"begin loop"<<endl;
-    if (!(jentry % 1000))   cout << "Processing entry " << jentry << endl;
+    if (!(jentry % 10000))   cout << "Processing entry " << jentry << endl;
     if (!fChain) cout<<"Problem with fChain"<<endl;
     fChain->GetEntry(jentry);
   
@@ -909,7 +983,7 @@ void Analyzer::OutPutEventInfo(int entry, int step){
 
 snu::KEvent Analyzer::SetUpEvent(int kentry){
 
-  OutPutEventInfo(kentry, 1000); /// output event info every X events wil running
+  OutPutEventInfo(kentry, 100000); /// output event info every X events wil running
   if (!fChain) cout<<"Problem with fChain"<<endl;
   fChain->GetEntry(kentry);
   

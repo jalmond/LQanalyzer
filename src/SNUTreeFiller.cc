@@ -145,7 +145,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
-
+    
     muon.SetMuonVtxIndex(MuonVtxIndex->at(ilep));    
     
     /// Isolation
@@ -168,6 +168,8 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetTrackVx(MuonTrkVx->at(ilep));
     muon.SetTrackVy(MuonTrkVy->at(ilep));
     muon.SetTrackVz(MuonTrkVz->at(ilep));
+
+    muon.SetVertexDistXY(MuonVtxDistXY->at(ilep));
 
     if(VertexN != -999){
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));

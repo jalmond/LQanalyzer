@@ -8,6 +8,9 @@
 #include "Lepton.h"
 #include "Jet.h"
 #include <iostream>
+#include "KMuon.h"
+#include "KJet.h"
+
 class SignalPlots {
  
   Double_t dijetmass_tmp, dijetmass;
@@ -25,6 +28,8 @@ class SignalPlots {
 
   SignalPlots(TString name);
   ~SignalPlots();
+
+  void Fill(Double_t MET, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok);
   void Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok);
   void Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lepton>& muonsloose, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok);
   void Write();

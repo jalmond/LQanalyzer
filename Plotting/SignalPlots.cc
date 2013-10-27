@@ -50,6 +50,15 @@ SignalPlots::~SignalPlots() {
   delete h_MuonJetdR;
 }
 
+
+void SignalPlots::Fill(Double_t MET, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok) {
+
+  return;
+}
+
+
+
+
 void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok) {
   dijetmass_tmp=dijetmass=9999.9;
   UInt_t m,n;

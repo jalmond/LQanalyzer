@@ -48,6 +48,8 @@ class Analyzer : public SNUTreeFiller {
  public:
   static const Bool_t MC_pu = true; 
 
+  int i_dimu_vertexmismatch,i_dimu;
+
   ReweightPU *reweightPU;
   TH1F *h_nvtx_norw, *h_nvtx_rw;
   UInt_t numberVertices;
