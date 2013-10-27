@@ -30,12 +30,12 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
       break;
     }
   }
-
   
   kevent.SetVertexIndex(VertexN); /// setting event vertex
   kevent.SetIsData(isData);
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
+  kevent.SetIsPrimaryVertex(isPrimaryVertex);
   kevent.SetVertexX(VertexX->at(VertexN));
   kevent.SetVertexY(VertexY->at(VertexN));
   kevent.SetVertexZ(VertexZ->at(VertexN));  
