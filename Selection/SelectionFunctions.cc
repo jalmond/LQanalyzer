@@ -27,7 +27,8 @@ Bool_t isGoodEvent(Int_t nVertex, std::vector<Bool_t> Vertex_Fake, std::vector<D
     for (Int_t i=0; i<nVertex; i++) {
       if ( Vertex_Ndof[i]>4 && fabs(Vertex_Z[i])<=24 && sqrt(pow(Vertex_X[i],2)+pow(Vertex_Y[i],2))<=2 && !Vertex_Fake[i] ) {
         goodVerticies[i] = true;
-        return true;
+	//if(i!=0 ) cout << "GOOD VERTEX NOT 0 vertex" << endl;
+	return true;
       }
       else {
         goodVerticies[i] = false;
