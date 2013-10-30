@@ -40,6 +40,9 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
   kevent.SetVertexY(VertexY->at(VertexN));
   kevent.SetVertexZ(VertexZ->at(VertexN));  
   kevent.SetVertexIsFake(VertexIsFake->at(VertexN));
+
+  kevent.SetJetRho(rhoJets);
+  
   
   return kevent;
 }

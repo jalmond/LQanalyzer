@@ -31,7 +31,6 @@ class SNUTreeFiller : public Data {
  Int_t VertexN;
  Bool_t *goodVerticies;
 
-
   
 };
 

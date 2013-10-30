@@ -33,45 +33,21 @@ FRCalculator_Ele::~FRCalculator_Ele() {}
 
 void FRCalculator_Ele::LoopFR() {
 
-  cout << "total number of entries " <<nentries<<endl;
+ weight= SetEventWeight();  
 
-  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MC_pu.root");
- 
-  if(!MCweight) MCweight=1;
-
-  weight=MCweight;
-
+  string analysisdir = getenv("FILEDIR");
+  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
+  
   if (fChain == 0) 
     cout << "Ciao!" << endl;
-
-//  cout << "Do you want limited events?" <<endl;
-//  cin >> entrieslimit;
-//  if (entrieslimit != -1)
-//    nentries=entrieslimit;
-//  nentries = 1000;
-
-  if (debug) cout<< "at the loop" <<endl;
 
   std::set<int> runs;
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
 
-    if (!(jentry % 1000))
-      cout << jentry <<endl;
-    /*
-    if ( runs.find(EventAux_run) == runs.end() ) {
-      cout << EventAux_run <<endl;
-      runs.insert(EventAux_run);
-    }
-    */
-    fChain->GetEntry(jentry);
 
-    if (isTrackingFailure || passTrackingFailureFilter) continue;
-
-    if (!passBeamHaloFilterLoose) continue;
-
-    if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) continue;
-
-    if (!passHBHENoiseFilter) continue; // || passHcalLaserEventFilter) continue;
+    snu::KEvent event_info = SetUpEvent(jentry); 
+    
+    if(!PassBasicEventCuts()) continue;     /// Initial event cuts
 
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
@@ -81,40 +57,33 @@ void FRCalculator_Ele::LoopFR() {
 
     if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
 
-    if (MC_pu) {
-      /// ***PU reweghting*** ///
-      //weight_ = noreweight_;// mc weight;
-      h_nvtx_norw->Fill(PileUpInteractionsTrue->at(0), MCweight);
-      weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
-      h_nvtx_rw->Fill(PileUpInteractionsTrue->at(0), weight);
-    }
 
-    numberVertices = VertexNDF->size();
-    goodVerticiesB = new Bool_t [numberVertices];
-    h_nVertex->Fill(numberVertices, weight);
-    if ( !isGoodEvent(numberVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticiesB) ) continue;
+    /// Correct MC for pileup
+    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
 
-    for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
-      if(goodVerticiesB[vv]) {
-        VertexN=vv;
-        break;
-      }
-    } 
-
-    if (debug) cout<< "good vertex found" <<endl;
+    
+      /// Create vector of kmuon objects :
+    vector<snu::KMuon> all_muons = GetAllMuons();    
+    vector<snu::KElectron> all_electrons = GetAllElectrons();
+    vector<snu::KJet> all_jets = GetAllJets();        
+    vector<snu::KTau> all_taus = GetAllTaus();        
+    
+    numberVertices = event_info.nVertices();
+    if (!event_info.HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
+    ///  use selection code (which returns a similar class vector with selected cuts)
 
 
-    std::vector<Lepton> electronLooseColl;
+    std::vector<snu::KElectron> electronLooseColl;
     ElectronLoose.SetPt(20);
     ElectronLoose.SetEta(2.4);
     ElectronLoose.SetRelIso(0.40);
     ElectronLoose.SetBSdxy(0.20);
     ElectronLoose.SetBSdz(0.10);
-    ElectronLoose.ElectronSelection(*ElectronIsEB, *ElectronIsEE, *ElectronHasTrackerDrivenSeed, *ElectronHasEcalDrivenSeed, *ElectronEta, *ElectronPhi, *ElectronPt, *ElectronEnergy, *ElectronPFPhotonIso03, *ElectronPFNeutralHadronIso03, *ElectronPFChargedHadronIso03, *ElectronCharge, *ElectronGsfCtfScPixCharge, *ElectronMissingHitsEG, *ElectronHasMatchedConvPhot, *ElectronDeltaEtaTrkSC, *ElectronDeltaPhiTrkSC, *ElectronSigmaIEtaIEta, *ElectronHoE, *ElectronCaloEnergy, *ElectronESuperClusterOverP, *ElectronTrackVx, *ElectronTrackVy, *ElectronTrackVz, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), rhoJets, electronLooseColl);
+    ElectronLoose.ElectronSelection(all_electrons,electronLooseColl);
 
     if (debug) cout<< "Event number " <<jentry<<endl;
     
-    std::vector<Lepton> muonTightColl;
+    std::vector<snu::KMuon> muonTightColl;
     MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4); 
     MuonTight.SetRelIso(0.12); 
@@ -122,20 +91,20 @@ void FRCalculator_Ele::LoopFR() {
     MuonTight.SetBSdxy(0.005); 
     MuonTight.SetBSdz(0.10);
     MuonTight.SetDeposits(4.0,6.0);
-    MuonTight.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonTightColl);
+    MuonTight.MuonSelection(all_muons, muonTightColl);
 
-    std::vector<Lepton> electronTightColl;
+    std::vector<snu::KElectron> electronTightColl;
     ElectronTight.SetPt(20); 
     ElectronTight.SetEta(2.4); 
     ElectronTight.SetRelIso(0.15); 
     ElectronTight.SetBSdxy(0.01); 
     ElectronTight.SetBSdz(0.10);
-    ElectronTight.ElectronSelection(*ElectronIsEB, *ElectronIsEE, *ElectronHasTrackerDrivenSeed, *ElectronHasEcalDrivenSeed, *ElectronEta, *ElectronPhi, *ElectronPt, *ElectronEnergy, *ElectronPFPhotonIso03, *ElectronPFNeutralHadronIso03, *ElectronPFChargedHadronIso03, *ElectronCharge, *ElectronGsfCtfScPixCharge, *ElectronMissingHitsEG, *ElectronHasMatchedConvPhot, *ElectronDeltaEtaTrkSC, *ElectronDeltaPhiTrkSC, *ElectronSigmaIEtaIEta, *ElectronHoE, *ElectronCaloEnergy, *ElectronESuperClusterOverP, *ElectronTrackVx, *ElectronTrackVy, *ElectronTrackVz, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), rhoJets, electronTightColl);
+    ElectronTight.ElectronSelection(all_electrons, electronTightColl);
     
-    std::vector<Jet> jetVetoColl;
+    std::vector<snu::KJet> jetVetoColl;
     JetsVeto.SetPt(60); 
     JetsVeto.SetEta(2.4);
-    JetsVeto.JetSelectionLeptonVeto(*PFJetPassLooseID, *PFJetEta, *PFJetPhi, *PFJetPt, *PFJetEnergy, *PFJetNeutralEmEnergyFraction, *PFJetNeutralHadronEnergyFraction, *PFJetChargedEmEnergyFraction, *PFJetChargedHadronEnergyFraction, *PFJetChargedMultiplicity, *PFJetNConstituents, *PFJetCombinedSecondaryVertexBTag, *PFJetClosestVertexWeighted3DSeparation, electronTightColl, muonTightColl, jetVetoColl);
+    JetsVeto.JetSelectionLeptonVeto(all_jets,jetVetoColl);
 
     if (debug) cout<< "done selecting collections" <<endl;
 

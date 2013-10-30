@@ -1386,10 +1386,12 @@ void Data::Show(Long64_t entry)
 
 Int_t Data::Cut(Long64_t entry)
 {
-// This function may be called from Loop.
-// returns  1 if entry is accepted.
-// returns -1 otherwise.
-   return 1;
+  fChain->GetEntry(entry);
+  
+  // This function may be called from Loop.
+  // returns  1 if entry is accepted.
+  // returns -1 otherwise.
+  return 1;
 }
 
 #endif

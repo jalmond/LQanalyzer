@@ -23,19 +23,23 @@
 
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
   gROOT->ProcessLine(".L SelectionFunctions.cc+g");  
+  gROOT->ProcessLine(".L EventBase.cc+g");  
+
 
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
   gROOT->ProcessLine(".L SNUTreeFiller.cc+g");
 
   /// Selection Code compilation
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
-  gROOT->ProcessLine(".L LeptonSelection.cc+g");
+  gROOT->ProcessLine(".L BaseSelection.cc+g");
   gROOT->ProcessLine(".L ElectronSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelection.cc+g");
+  gROOT->ProcessLine(".L TauSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelectionProbe.cc+g");
   gROOT->ProcessLine(".L JetSelection.cc+g");
   gROOT->ProcessLine(".L GenSelection.cc+g");
-
+  gROOT->ProcessLine(".L EventSelection.cc+g");
+  gROOT->ProcessLine(".L SelectionBase.cc+g");  
 
   gSystem->ChangeDirectory((maindir +("/Plotting/")).c_str());
   /// Plotting code compilation
@@ -48,10 +52,10 @@
   
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
   gROOT->ProcessLine(".L Analyzer.cc+g");
-  gROOT->ProcessLine(".L Analyzer_Ele.cc+g");
-  gROOT->ProcessLine(".L FakeRateCalculator.cc+g");
-  gROOT->ProcessLine(".L FakeRateCalculator_Ele.cc+g");
-  gROOT->ProcessLine(".L EfficiencyCalculator.cc+g");
+  //  gROOT->ProcessLine(".L Analyzer_Ele.cc+g");
+  //gROOT->ProcessLine(".L FakeRateCalculator.cc+g");
+  //gROOT->ProcessLine(".L FakeRateCalculator_Ele.cc+g");
+  //gROOT->ProcessLine(".L EfficiencyCalculator.cc+g");
   gROOT->ProcessLine(".L ChainMaker.C+g");
 
 
@@ -71,6 +75,7 @@
     Pippo.SetName("Majorana_50",1);
     Pippo.SetTargetLumi(887.501);
     Pippo.SetWeight(1071.1, 49994);
+    Pippo.NEvents(10000);
     Pippo.TestLoop();
 
   }
@@ -154,7 +159,6 @@ if (0) {
       Analyzer Pippo;
       Pippo.Init(chain);
       Pippo.SetName("DoubleMu_periodA",1);
-      Pippo.NEvents(100000);
       Pippo.Loop();
   }
 

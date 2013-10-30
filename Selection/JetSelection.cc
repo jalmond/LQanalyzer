@@ -2,11 +2,17 @@
 
 using namespace snu;
 
-JJ::JJ() { }
-JJ::~JJ() { }
+JJ::JJ() {}
 
+JJ::~JJ() {}
 
-void JJ::JetSelection (std::vector<KJet> alljets, std::vector<KJet>& jetColl) {
+//// This code is used to make selection cuts to vectors of KJets
+
+void JJ::JetSelection(std::vector<KJet>& jetColl) {
+  
+  //// This is a basic set of cuts on jets
+ 
+  std::vector<KJet> alljets = k_event_base.GetBaseJets();
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
@@ -22,65 +28,39 @@ void JJ::JetSelection (std::vector<KJet> alljets, std::vector<KJet>& jetColl) {
   }
 }
 
-void JJ::JetSelection (std::vector<Int_t> Jet_Id_loose, std::vector<Double_t> Jet_Eta, std::vector<Double_t> Jet_Phi, std::vector<Double_t> Jet_Pt, std::vector<Double_t> Jet_E, std::vector<Double_t> Jet_neutralEmEnergyFraction, std::vector<Double_t> Jet_neutralHadronEnergyFraction, std::vector<Double_t> Jet_chargedEmEnergyFraction, std::vector<Double_t> Jet_chargedHadronEnergyFraction, std::vector<Int_t> Jet_chargedMultiplicity, std::vector<Int_t> Jet_NConstituents, std::vector<Double_t> Jet_BTag, std::vector<Double_t> Jet_threeD, std::vector<Jet>& jetColl) {
 
-  for (UInt_t ijet = 0; ijet < Jet_Pt.size(); ++ijet) {
-
-    if (Jet_Pt[ijet] >= pt_cut_min && Jet_Pt[ijet] < pt_cut_max && 
-	fabs(Jet_Eta[ijet]) < eta_cut
-        && Jet_Id_loose[ijet]
-        && Jet_neutralHadronEnergyFraction[ijet] < 0.99
-        && Jet_neutralEmEnergyFraction[ijet] < 0.99
-	&& Jet_NConstituents[ijet] > 1
-	&& ( fabs( Jet_Eta[ijet] ) > 2.4 || ( Jet_chargedHadronEnergyFraction[ijet] > 0. && Jet_chargedMultiplicity[ijet] > 0. && Jet_chargedEmEnergyFraction[ijet] < 0.99 ) ) ) {
-      //std::cout << "                             PASS\n";
-      vJet.SetPtEtaPhiE(Jet_Pt[ijet], Jet_Eta[ijet], Jet_Phi[ijet], Jet_E[ijet]);
-      jetColl.push_back( Jet(vJet, Jet_Eta[ijet], Jet_BTag[ijet], Jet_threeD[ijet], ijet) );
-    }
-  }
-  std::sort( jetColl.begin(), jetColl.end(), JetPTSorter );
-}
-
-void JJ::JetSelectionLeptonVeto(std::vector<Int_t> Jet_Id_loose, std::vector<Double_t> Jet_Eta, std::vector<Double_t> Jet_Phi, std::vector<Double_t> Jet_Pt, std::vector<Double_t> Jet_E, std::vector<Double_t> Jet_neutralEmEnergyFraction, std::vector<Double_t> Jet_neutralHadronEnergyFraction, std::vector<Double_t> Jet_chargedEmEnergyFraction, std::vector<Double_t> Jet_chargedHadronEnergyFraction, std::vector<Int_t> Jet_chargedMultiplicity, std::vector<Int_t> Jet_NConstituents, std::vector<Double_t> Jet_BTag, std::vector<Double_t> Jet_threeD, std::vector<Lepton>& leptonColl1, std::vector<Lepton>& leptonColl2, std::vector<Jet>& jetColl) {
-  std::vector<Jet> pre_jetColl;
-
-  for (UInt_t ijet = 0; ijet < Jet_Pt.size(); ijet++) {
-
-    if (Jet_Pt[ijet] >= pt_cut_min && Jet_Pt[ijet] < pt_cut_max && 
-	fabs(Jet_Eta[ijet]) < eta_cut
-	&& Jet_Id_loose[ijet]
-	&& Jet_neutralHadronEnergyFraction[ijet] < 0.99
-	&& Jet_neutralEmEnergyFraction[ijet] < 0.99
-	&& Jet_NConstituents[ijet] > 1
-	&& ( fabs( Jet_Eta[ijet] ) > 2.4 || ( Jet_chargedHadronEnergyFraction[ijet] > 0. && Jet_chargedMultiplicity[ijet] > 0. && Jet_chargedEmEnergyFraction[ijet] < 0.99 ) ) ) {
-      vJet.SetPtEtaPhiE(Jet_Pt[ijet], Jet_Eta[ijet], Jet_Phi[ijet], Jet_E[ijet]);
-      pre_jetColl.push_back( Jet(vJet, Jet_Eta[ijet], Jet_BTag[ijet], Jet_threeD[ijet], ijet) );
-    }
-  }
-
+void JJ::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
+  
+  //// This is a basic set of cuts on jets
+  ///  + the jets are removed that are close to leptons
+  
+  std::vector<KJet> pre_jetColl;
+  JetSelection(pre_jetColl);
+  
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
     jetIsOK = true;
-    for (UInt_t ilep = 0; ilep < leptonColl1.size(); ilep++) {
-      //      if (leptonColl1[ilep].leptonType()==Lepton::Muon)
-	if (leptonColl1[ilep].lorentzVec().DeltaR( pre_jetColl[ijet].lorentzVec() ) < 0.4) {
-	  jetIsOK = false;
-	  ilep = leptonColl1.size();
-	}
-    }
-    for (UInt_t ilep = 0; ilep < leptonColl2.size(); ilep++) {
-      //      if (leptonColl2[ilep].leptonType()==Lepton::Electron)
-	if (leptonColl2[ilep].lorentzVec().DeltaR( pre_jetColl[ijet].lorentzVec() ) < 0.4 ) {
-	  jetIsOK = false;
-	  ilep = leptonColl2.size();
-	}
-    }
+    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4) {
+	jetIsOK = false;
+	ilep = muonColl.size();
+      }
+    }/// End of muon loop
     
-    //if (jetIsOK)
-    jetColl.push_back( pre_jetColl[ijet] );
-  }
-    std::sort( jetColl.begin(), jetColl.end(), JetPTSorter );
+    
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4 ) {
+	jetIsOK = false;
+	ilep = electronColl.size();
+      }
+    }/// End of electron loop
+    
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
+  } /// End of Jet loop
+  
 }
 
+
+//// Functions to set cuts on jet variables
 void JJ::SetPt(Double_t minPt) {
   minPt ? pt_cut_min=minPt : pt_cut_min=0.0;
   pt_cut_max=10000.0;

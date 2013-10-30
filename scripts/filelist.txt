@@ -1,1 +1,1 @@
-/Users/John/CMS_HNanalysis/test_mac/RootTupleMakerV2_QCD_mumu_104_1_uV4.root
+/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root

@@ -21,20 +21,21 @@
 #include "KEvent.h"
 #include "SNUTreeFiller.h"
 
+#include "EventBase.h"
+#include "SelectionBase.h"
+
 class Analyzer : public SNUTreeFiller {
 
   static const Bool_t debug = false; 
   
-//  static const Double_t integratedlumi = 1.927196301; HLT_Mu5,8
-//  static const Double_t integratedlumi =  1.483873; HLT_Mu12
-//  static const Double_t integratedlumi = 22.945019; HLT_Mu17
-//  static const Double_t integratedlumi = 83.483; HLT_Mu24
-//  static const Double_t integratedlumi = 123.9391;
+  //  static const Double_t integratedlumi = 1.927196301; HLT_Mu5,8
+  //  static const Double_t integratedlumi =  1.483873; HLT_Mu12
+  //  static const Double_t integratedlumi = 22.945019; HLT_Mu17
+  //  static const Double_t integratedlumi = 83.483; HLT_Mu24
+  //  static const Double_t integratedlumi = 123.9391;
   static const Double_t Mass_Z = 91.1876;
   static const Double_t Mass_W = 80.398;
-  static const Double_t trigeff = 0.94;
-  static const Double_t mu1scale = 0.927;
-  static const Double_t mu2scale = 0.992;
+
 
   Double_t *****doubleFake; Double_t ***singleFake; Double_t *****doubleANDsingleFake;
   Double_t *finalbkg1, *finalbkgerror1, *finalbkg2, *finalbkgerror2, *realsingle, *realsingleerror, *realdouble, *realtotal, *doubletosingle, *errdoubletosingle;
@@ -47,8 +48,6 @@ class Analyzer : public SNUTreeFiller {
 
  public:
   static const Bool_t MC_pu = true; 
-
-  int i_dimu_vertexmismatch,i_dimu;
 
   ReweightPU *reweightPU;
   TH1F *h_nvtx_norw, *h_nvtx_rw;
@@ -70,13 +69,9 @@ class Analyzer : public SNUTreeFiller {
   
   Long64_t entrieslimit;
   Double_t METx, METy, MET, dr, MCweight, weight;
-  Int_t prescaler;
+  Int_t prescale;
+  
 
-  MuonSel MuonTight, MuonLooseButNOTight, MuonLoose, MuonVeto;
-  GenSel GenTight;
-  ElectronSel ElectronTight, ElectronLoose;
-  JJ  JetsVeto, Jets; 
-  //  std::vector<Lepton> lepton;
   ElectronPlots *h_electrons, *h_electronsLoose;
   MuonPlots *h_muons, *h_muonsLoose, *h_LnotT;// *h_muonCharge;
   JetPlots *h_jets, *h_jets_veto;
@@ -96,6 +91,7 @@ class Analyzer : public SNUTreeFiller {
   
   void OpenPutputFile();
   double SetEventWeight();
+  bool PassTrigger(std::vector<TString> list, int& prescale);
   void SetWeight(Double_t CrossSection, Double_t nevents);
   void SetTargetLumi(Double_t lumi);
   void SetEffectiveLumi(Double_t lumi);
@@ -106,7 +102,7 @@ class Analyzer : public SNUTreeFiller {
   void MakeCleverHistograms();
   bool PassBasicEventCuts();
   void OutPutEventInfo(int entry, int step);
-  snu::KEvent SetUpEvent(int kentry);
+  SelectionBase SetUpEvent(int kentry);
 
 };
 #endif
