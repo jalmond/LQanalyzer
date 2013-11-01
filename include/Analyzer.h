@@ -24,8 +24,14 @@
 #include "EventBase.h"
 #include "SelectionBase.h"
 
+
 class Analyzer : public SNUTreeFiller {
 
+ public:
+  enum histtype  {muhist, elhist, jethist, sighist};
+  enum jobtype {ZTest};
+
+ private:
   static const Bool_t debug = false; 
   
   //  static const Double_t integratedlumi = 1.927196301; HLT_Mu5,8
@@ -37,6 +43,7 @@ class Analyzer : public SNUTreeFiller {
   static const Double_t Mass_W = 80.398;
 
 
+ public:
   Double_t *****doubleFake; Double_t ***singleFake; Double_t *****doubleANDsingleFake;
   Double_t *finalbkg1, *finalbkgerror1, *finalbkg2, *finalbkgerror2, *realsingle, *realsingleerror, *realdouble, *realtotal, *doubletosingle, *errdoubletosingle;
   Double_t jets2mass, triggerweight;
@@ -49,22 +56,18 @@ class Analyzer : public SNUTreeFiller {
  public:
   static const Bool_t MC_pu = true; 
 
+
   ReweightPU *reweightPU;
-  TH1F *h_nvtx_norw, *h_nvtx_rw;
   UInt_t numberVertices;
   TString completename;
 
   Bool_t *goodVerticiesB;
   TDirectory *Dir;
-  TH1F *h_zpeak, *h_RelIsoFR;
-  TH1F *h_nVertex, *h_nVertex0, *h_nVertex1, *h_nVertex2;
-  TH1F *h_nsignal, *h_cutflow;
-  TH2F *h_singlefake, *h_doublefake;
-  TH1F *h_MET, *h_METsign, *h_MuonMissCharge, *h_EventFakeType;
-  TH2F *FRhisto, *h_dRvsbTag;
-  TH2I *h_LeptvsVert;
-  Double_t target_lumi  ;//= 19762.501;
+  
+  map<TString, TH1*> maphist;
+  TH1F* FRHist;
 
+  Double_t target_lumi  ;//= 19762.501;
   TFile *outfile;
   
   Long64_t entrieslimit;
@@ -72,24 +75,39 @@ class Analyzer : public SNUTreeFiller {
   Int_t prescale;
   
 
-  ElectronPlots *h_electrons, *h_electronsLoose;
-  MuonPlots *h_muons, *h_muonsLoose, *h_LnotT;// *h_muonCharge;
-  JetPlots *h_jets, *h_jets_veto;
-  //SignalPlots *h_signal3;
-  SignalPlots *h_signal, *h_signalMET50, *h_signalbTag, *h_signalTOT, *h_WZcontrol;
-  SignalPlots *h_singlefakes, *h_doublefakes, *h_totalfakes;
-  SignalPlots *h_singlefakesMET50, *h_doublefakesMET50, *h_totalfakesMET50;
-  SignalPlots *h_singlefakesbTag, *h_doublefakesbTag, *h_totalfakesbTag;
-  SignalPlots *h_singlefakesTOT, *h_doublefakesTOT, *h_totalfakesTOT;
 
+  //// Making cleaver hist maps
+  map<TString, SignalPlots*> mapCLhistSig;
+  map<TString, ElectronPlots*> mapCLhistEl;
+  map<TString, MuonPlots*> mapCLhistMu;
+  map<TString, JetPlots*> mapCLhistJet;
+
+  //// constructors
   Analyzer();
+  Analyzer(jobtype jtype);
   ~Analyzer();
 
+  
   /// Main Event Loops
   void Loop();
   void TestLoop();
+  void HNmmLoop();
+ 
+ 
+  TH1* GetHist(TString hname);
+  TH2* Get2Hist(TString hname);
   
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double rho, double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
+
+  void MakeCleverHistograms(histtype type, TString clhistname );
   void OpenPutputFile();
+  void WriteHists();
+  void WriteCLHists();
   double SetEventWeight();
   bool PassTrigger(std::vector<TString> list, int& prescale);
   void SetWeight(Double_t CrossSection, Double_t nevents);
@@ -99,7 +117,6 @@ class Analyzer : public SNUTreeFiller {
   void SetEvtN(Long64_t events);
   void NEvents(float n_events);
   void MakeHistograms();
-  void MakeCleverHistograms();
   bool PassBasicEventCuts();
   void OutPutEventInfo(int entry, int step);
   SelectionBase SetUpEvent(int kentry);

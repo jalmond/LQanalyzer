@@ -51,7 +51,20 @@ SignalPlots::~SignalPlots() {
 }
 
 
-void SignalPlots::Fill(Double_t MET, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok) {
+void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight) {
+  
+  return;
+}
+
+
+void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight) {
+
+  return;
+}
+
+
+
+void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight){
 
   return;
 }

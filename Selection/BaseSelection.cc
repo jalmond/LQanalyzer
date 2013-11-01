@@ -61,7 +61,7 @@ void BaseSel::SetChiNdof(Double_t ChiNdofMIN, Double_t ChiNdof) {
 
 void BaseSel::SetBSdxy(Double_t set_dxy) {
   set_dxy ? dxy_cut=set_dxy : dxy_cut=2.0;
-   dxyMIN_cut=0.0;
+  dxyMIN_cut=0.0;
 }
 
 void BaseSel::SetBSdxy(Double_t dxyMIN, Double_t set_dxy) {

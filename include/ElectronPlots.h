@@ -3,16 +3,27 @@
 
 #include "StdPlots.h"
 #include "Data.h"
+#include "KElectron.h"
+
 
 class ElectronPlots : public StdPlots{
 
  public:
-  TH1F *h_charge, *h_HCalIso, *h_ECalIso, *h_TrkIso, *h_Detector_RelIso, *h_Detector_RelIsorho, *h_dxy, *h_dz, *h_photonIso, *h_chargedHadronIso, *h_neutralHadronIso, *h_PF_RelIso;
+  ElectronPlots();
   ElectronPlots(TString name);
+
+  ElectronPlots(const ElectronPlots& ep);
   ~ElectronPlots();
-  void Fill(Double_t weight, Int_t N, Double_t pt, Double_t eta, Double_t phi, Double_t charge, Double_t trkIso, Double_t eCalIso, Double_t hCalIso, Double_t eCalIsoDeposit, Double_t hCalIsoDeposit, Double_t photonIso, Double_t chargedHadronIso, Double_t neutralHadronIso, Double_t rho);
-  void Fill(Double_t weight, Int_t N, Double_t pt, Double_t eta, Double_t phi, Double_t charge, Double_t trkIso, Double_t eCalIso, Double_t hCalIso, Double_t dxy, Double_t dz, Double_t rho);
+  ElectronPlots& operator=(const ElectronPlots& obj);
+  
+  inline std::map<TString, TH1*> GetMap() const{return map_el;}
+
+  void Fill(TString name, Double_t value, Double_t weight);
+  void Fill(Double_t weight, std::vector<snu::KElectron> el, double rho);
   void Write();
+
+ private:
+  std::map<TString, TH1*> map_el; 
 
 };
 

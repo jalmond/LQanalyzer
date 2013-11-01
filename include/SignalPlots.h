@@ -10,11 +10,13 @@
 #include <iostream>
 #include "KMuon.h"
 #include "KJet.h"
+#include "KElectron.h"
+#include "KEvent.h"
 
 class SignalPlots {
  
   Double_t dijetmass_tmp, dijetmass;
-  static const Double_t Mass_W = 80.398;
+  static const Double_t Mass_W= 80.398;
  
  public:
   TH1F *h_jjmass, *h_llmass, *h_l1jjmass, *h_l2jjmass, *h_lljjmass, *h_MET, *h_bTag;
@@ -29,7 +31,9 @@ class SignalPlots {
   SignalPlots(TString name);
   ~SignalPlots();
 
-  void Fill(Double_t MET, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok);
+  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight);
+  void Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
+  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
   void Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok);
   void Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lepton>& muonsloose, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok);
   void Write();

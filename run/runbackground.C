@@ -35,9 +35,9 @@
   gROOT->ProcessLine(".L ElectronSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelection.cc+g");
   gROOT->ProcessLine(".L TauSelection.cc+g");
-  gROOT->ProcessLine(".L MuonSelectionProbe.cc+g");
+  //gROOT->ProcessLine(".L MuonSelectionProbe.cc+g");
   gROOT->ProcessLine(".L JetSelection.cc+g");
-  gROOT->ProcessLine(".L GenSelection.cc+g");
+  //gROOT->ProcessLine(".L GenSelection.cc+g");
   gROOT->ProcessLine(".L EventSelection.cc+g");
   gROOT->ProcessLine(".L SelectionBase.cc+g");  
 
@@ -69,8 +69,9 @@
   // Create Chains
     //TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
     TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));    
-   
-    Analyzer Pippo; /// create analyzer class object    
+    
+
+    Analyzer Pippo(Analyzer::ZTest); /// create analyzer class object    
     Pippo.Init(chain50);
     Pippo.SetName("Majorana_50",1);
     Pippo.SetTargetLumi(887.501);

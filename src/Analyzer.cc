@@ -4,25 +4,37 @@
 
 using namespace::snu;
 
+
 Analyzer::Analyzer() {
 
-  if (debug) cout<<"inizio"<<endl;
+}
 
+Analyzer::Analyzer(jobtype jtype) {
+
+  if (debug) cout<<"inizio"<<endl;
+  
   /// Initialise histograms
   MakeHistograms();
-  MakeCleverHistograms();
   
+  if(jtype== ZTest){
+    cout << "Making clever hists" << endl;
+    MakeCleverHistograms(muhist, "Zmuons");
+    MakeCleverHistograms(elhist, "Zelectrons");
+  }
+  else {
+    cout << "No type set for histogram maker" << endl;
+  }
+
   //// FakeRate Input file
   string analysisdir = getenv("FILEDIR");  
   TFile *infile = new TFile((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
   infile->cd();
   TDirectory *dir=gDirectory;             
-  dir->GetObject("h_FOrate3",FRhisto);
+  dir->GetObject("h_FOrate3",FRHist);
   if (debug) cout<<"fine"<<endl;
     
   ////  Inital settings for running on sample
   entrieslimit = -1; /// Set default to all events
-    
 }
 
 
@@ -35,12 +47,102 @@ Analyzer::Analyzer() {
 /// FakeRatem
 
 
-//  TEST loop for Z to mumu 
+//  TEST loop for Z to mumu/ee/tautau 
 void Analyzer::TestLoop() {
 
   //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
-  cout << "In test loop " << endl;
+  weight= SetEventWeight();  
 
+  string analysisdir = getenv("FILEDIR");
+  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
+  
+  ///////////////////////////////////////////////////////////////////////
+  ///  START OF EVENT LOOP
+  ///////////////////////////////////////////////////////////////////////////
+
+  for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
+    
+    /// Class has all information for event
+    SelectionBase eventbase = SetUpEvent(jentry); 
+    
+    if(!PassBasicEventCuts()) continue;     /// Initial event cuts
+    
+    /// Trigger List (specific to muons channel)
+    std::vector<TString> triggerslist;
+    triggerslist.push_back("HLT_Mu17_TkMu8_v");
+    if(!PassTrigger(triggerslist, prescale)) continue;
+      
+    /// Correct MC for pileup
+    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
+
+    numberVertices = eventbase.GetBaseEvent().nVertices();
+    if (!eventbase.GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
+
+    ///  use selection code (which returns a similar class vector with selected cuts)     
+    if(eventbase.GetBaseEvent().MET() > 50) continue;
+
+    //// want to add more selection options ( )
+    std::vector<snu::KMuon> muonColl;
+    eventbase.GetMuonSel().SetPt(20);  //// add bools to set true
+    eventbase.GetMuonSel().SetEta(2.4);
+    eventbase.GetMuonSel().SetRelIso(1000.);
+    eventbase.GetMuonSel().SetChiNdof(1000); 
+    eventbase.GetMuonSel().SetBSdxy(0.01);
+    eventbase.GetMuonSel().SetBSdz(0.10);
+    eventbase.GetMuonSel().SetDeposits(40.0,60.00);    
+    eventbase.GetMuonSel().MuonSelection(muonColl);
+
+    std::vector<snu::KJet> jetColl;
+    eventbase.GetJetSel().SetPt(20);
+    eventbase.GetJetSel().SetEta(2.5);
+    eventbase.GetJetSel().JetSelection(jetColl);
+
+    
+    std::vector<snu::KElectron> electronColl;
+    eventbase.GetElectronSel().SetPt(20); 
+    eventbase.GetElectronSel().SetEta(2.5); 
+    eventbase.GetElectronSel().SetRelIso(0.15); 
+    eventbase.GetElectronSel().SetBSdxy(0.02); 
+    eventbase.GetElectronSel().SetBSdz(0.10);
+    eventbase.GetElectronSel().ElectronSelection(electronColl); 
+
+    
+    ///// SOME STANDARD PLOTS /////
+    ////  Z-> mumu            //////
+    if (muonColl.size() == 2) {      
+      KParticle Z = muonColl.at(0) + muonColl.at(1);
+      if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
+	GetHist("zpeak_mumu")->Fill(Z.M(), weight);	 /// Plots Z peak
+	FillCLHist(muhist, "Zmuons", muonColl, weight);
+      } 
+    }
+
+    
+    ///// SOME STANDARD PLOTS /////
+    ////  Z-> ee              //////
+    if (electronColl.size() == 2) {      
+      KParticle Z = electronColl.at(0) + electronColl.at(1);
+      if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
+	GetHist("zpeak_ee")->Fill(Z.M(), weight);	 /// Plots Z peak
+	FillCLHist(elhist, "Zelectrons", electronColl, eventbase.GetBaseEvent().JetRho(), weight);
+      } 
+    }
+
+  }// End of event loop
+  
+  
+  OpenPutputFile();  
+  WriteHists();/// writes all outputs in maphist
+  WriteCLHists(); /// writes all hists set with MakeCleverHistograms
+  
+  outfile->Close();
+
+}
+
+//  TEST loop for Z to mumu 
+void Analyzer::HNmmLoop() {
+
+  //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
   weight= SetEventWeight();  
 
   string analysisdir = getenv("FILEDIR");
@@ -160,17 +262,12 @@ void Analyzer::TestLoop() {
     if (muonColl.size() == 2) {      
       KParticle Z = muonColl.at(0) + muonColl.at(1);
       if(muonColl.at(0).Charge() == muonColl.at(1).Charge()){      
-	h_zpeak->Fill(Z.M(), weight);	 /// Plots Z peak
-	h_muonsLoose->Fill(weight, muonColl);      
-	h_signal->Fill(eventbase.GetBaseEvent().MET(), muonColl, jetColl, weight, true, false);
       } 
     }
     
     if (muonCollIso.size() == 2) {
 
       if(muonCollIso.at(0).Charge() == muonCollIso.at(1).Charge()){	
-	h_muons->Fill(weight, muonCollIso);
-	h_jets->Fill(weight, jetColl);
       }
     }
     
@@ -180,33 +277,13 @@ void Analyzer::TestLoop() {
   
   OpenPutputFile();  
   
-  h_zpeak->Write();  // FOR test only
-  
-  Dir = outfile->mkdir("Muons");
-  outfile->cd( Dir->GetName() );
-  h_muons->Write();
-  outfile->cd();
-
-  Dir = outfile->mkdir("MuonsLoose");
-  outfile->cd( Dir->GetName() );
-  h_muonsLoose->Write();
-  outfile->cd();
-
-  Dir = outfile->mkdir("Jets");
-  outfile->cd( Dir->GetName() );
-  h_jets->Write();
-  outfile->cd();
-  
-
-  Dir = outfile->mkdir("Signal");
-  outfile->cd( Dir->GetName() );
-  h_signal->Write();
-  outfile->cd();
-
+  WriteHists();
+  WriteCLHists();
 
   outfile->Close();
 
 }
+
 
 
 ///  START OF HNmuon loop
@@ -220,55 +297,31 @@ void Analyzer::Loop() {
 
 Analyzer::~Analyzer() {
 
+  for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
+    delete it->second;
+  }
+  maphist.clear();
+  
+  for(map<TString, MuonPlots*>::iterator it = mapCLhistMu.begin(); it != mapCLhistMu.end(); it++){
+    delete it->second;
+  }
+  mapCLhistMu.clear();
 
-  delete h_MET ;
-  delete h_METsign;
-  delete h_MuonMissCharge; 
-  delete h_EventFakeType;
-  delete h_LeptvsVert; 
-  delete h_dRvsbTag; 
-
-  delete h_nVertex;
-  delete h_nVertex0;
-  delete h_nVertex1;
-  delete h_nVertex2;
-
-  delete h_nvtx_norw;
-  delete h_nvtx_rw; 
-
-  delete h_zpeak; 
-  delete h_RelIsoFR;
-
-  delete h_electrons;
-  delete h_electronsLoose;
-  delete h_muons; 
-  delete h_muonsLoose;
-  delete h_LnotT; 
-
-
-  delete h_jets;
-  delete h_jets_veto;
-  delete h_signal; 
-  delete h_WZcontrol; 
-  delete h_signalMET50;
-  delete h_signalbTag;
-  delete h_signalTOT; 
-  delete h_singlefakes;
-  delete h_doublefakes;
-  delete h_totalfakes; 
-  delete h_singlefakesMET50;
-  delete h_doublefakesMET50;
-  delete h_totalfakesMET50; 
-  delete h_doublefakesbTag; 
-  delete h_totalfakesbTag; 
-  delete h_singlefakesTOT;
-  delete h_doublefakesTOT;
-  delete h_totalfakesTOT; 
-  delete h_nsignal; 
-  delete h_cutflow; 
-  delete h_singlefake;
-  delete h_doublefake;
-
+  for(map<TString, JetPlots*>::iterator it = mapCLhistJet.begin(); it != mapCLhistJet.end(); it++){
+    //delete it->second;
+  }
+  mapCLhistJet.clear();
+  
+  for(map<TString, ElectronPlots*>::iterator it = mapCLhistEl.begin(); it != mapCLhistEl.end(); it++){
+    //delete it->second;
+  }
+  mapCLhistEl.clear();
+  
+  for(map<TString, SignalPlots*>::iterator it = mapCLhistSig.begin(); it != mapCLhistSig.end(); it++){
+    //delete it->second;
+  }
+  mapCLhistSig.clear();
+  
  }
 
 void Analyzer::NEvents(float n_events){
@@ -324,69 +377,50 @@ void Analyzer::SetEvtN(Long64_t events) {
 }
 
 
-void Analyzer::MakeCleverHistograms(){
+void Analyzer::MakeCleverHistograms(histtype type, TString clhistname ){
 
-//// ELECTRON PLOTs
-  h_electrons = new ElectronPlots("electrons");
-  h_electronsLoose = new ElectronPlots("loose electrons");
-  
+  //// ELECTRON PLOTs
+  if(type==elhist) mapCLhistEl[clhistname] = new ElectronPlots(clhistname);
   //// MUON PLOTs
-  h_muons = new MuonPlots("muons");
-  h_muonsLoose = new MuonPlots("loose_muons");
-  h_LnotT = new MuonPlots("loose_not_tight");
-  
-
+  if(type==muhist) mapCLhistMu[clhistname] = new MuonPlots(clhistname);
   /// JET PLOTs
-  h_jets = new JetPlots("jets");
-  h_jets_veto = new JetPlots("jets_w_veto");
+  if(type==jethist) mapCLhistJet[clhistname] = new JetPlots(clhistname);
+  /// Signal plots
+  if(type==sighist) mapCLhistSig[clhistname] = new SignalPlots(clhistname);
 
-  //// SIGNAL PLOTs
-  h_signal = new SignalPlots("signal");
-  h_WZcontrol = new SignalPlots("WZcontrol");
-  h_signalMET50 = new SignalPlots("signal_MET50");
-  h_signalbTag = new SignalPlots("signal_bTag");
-  h_signalTOT = new SignalPlots("signal_TOT");
-  h_singlefakes = new SignalPlots("sf");
-  h_doublefakes = new SignalPlots("df");
-  h_totalfakes = new SignalPlots("tf");
-  h_singlefakesMET50 = new SignalPlots("sf_MET50");
-  h_doublefakesMET50 = new SignalPlots("df_MET50");
-  h_totalfakesMET50 = new SignalPlots("tf_MET50");
-  h_singlefakesbTag = new SignalPlots("sf_bTag");
-  h_doublefakesbTag = new SignalPlots("df_bTag");
-  h_totalfakesbTag = new SignalPlots("tf_bTag");
-  h_singlefakesTOT = new SignalPlots("sf_TOT");
-  h_doublefakesTOT = new SignalPlots("df_TOT");
-  h_totalfakesTOT = new SignalPlots("tf_TOT");
-  
   return;
 }
 
 void Analyzer::MakeHistograms(){
- //// Additional plots to make
-    h_nsignal = new TH1F("h_signal","number of signal events ",5,-1,4);
-    h_cutflow = new TH1F("h_cutflow","number of signal events in cut flow",4,0,4);
-    h_singlefake = new TH2F("h_singlefake","number of single fakes ",4,0,4,4,-1,3);
-    h_doublefake = new TH2F("h_doublefake","number of double fakes ",4,0,4,4,-1,3);
-    h_MET = new TH1F("h_MET","Missing Et",300,0.0,300.0);
-    h_MET->SetDefaultSumw2(true);
-    h_METsign = new TH1F("h_METsign","Missing Et significance",50,0.0,50.0);
-    h_MuonMissCharge = new TH1F("h_MuonMissCharge","Miss Charge for muons",6,0,6);
-    h_EventFakeType = new TH1F("h_EventFakeType","Event fake type",3,0,3);
-    h_LeptvsVert = new TH2I("h_LeptvsVert","Leptons per Vertex",50,0,50,5,0,5);
-    h_dRvsbTag = new TH2F("h_dRvsbTag","#deltaR vs b-tag discriminant",100,0.0,10.0,100,-5,14);
-
-    h_nVertex= new TH1F("h_nVertex","number of verteces",50,0,50);
-    h_nVertex0= new TH1F("h_nVertex0","number of verteces t0",50,0,50);
-    h_nVertex1= new TH1F("h_nVertex1","number of verteces t1",50,0,50);
-    h_nVertex2= new TH1F("h_nVertex2","number of verteces t2",50,0,50);
+  //// Additional plots to make
   
-    h_nvtx_norw = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
-    h_nvtx_rw = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
-
-    h_zpeak = new TH1F("h_zpeak","Di-Muon Mass (GeV)",200,0,200);
-    h_RelIsoFR = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
-    return;
+  maphist.clear();
+  maphist["h_nsignal"] = new TH1F("h_signal","number of signal events",5,-1,4);
+  maphist["h_cutflow"] = new TH1F("h_cutflow","number of signal events in cut flow",4,0,4);
+  maphist["h_singlefake"] = new TH2F("h_singlefake","number of single fakes",4,0,4,4,-1,3);
+  maphist["h_doublefake"] = new TH2F("h_doublefake","number of double fakes",4,0,4,4,-1,3);
+  maphist["h_MET"] = new TH1F("h_MET","Missing Et",300,0.0,300.0);
+  maphist["h_MET"]->SetDefaultSumw2(true);
+  maphist["h_METsign"] = new TH1F("h_METsign","Missing Et significance",50,0.0,50.0);
+  maphist["h_MuonMissCharge"] = new TH1F("h_MuonMissCharge","Miss Charge for muons",6,0,6);
+  maphist["h_EventFakeType"] = new TH1F("h_EventFakeType","Event fake type",3,0,3);
+  maphist["h_LeptvsVert"] = new TH2I("h_LeptvsVert","Leptons per Vertex",50,0,50,5,0,5);
+  maphist["h_dRvsbTag"] = new TH2F("h_dRvsbTag","#deltaR vs b-tag discriminant",100,0.0,10.0,100,-5,14);
+  
+  maphist["h_nVertex"]= new TH1F("h_nVertex","number of verteces",50,0,50);
+  maphist["h_nVertex0"]= new TH1F("h_nVertex0","number of verteces t0",50,0,50);
+  maphist["h_nVertex1"]= new TH1F("h_nVertex1","number of verteces t1",50,0,50);
+  maphist["h_nVertex2"]= new TH1F("h_nVertex2","number of verteces t2",50,0,50);
+  
+  maphist["h_nvtx_norw"] = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
+  maphist["h_nvtx_rw"] = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
+  
+  maphist["zpeak_mumu"] =  new TH1F("h_zpeak_mumu","Di-Muon Mass (GeV)",200,0,200);
+  maphist["zpeak_ee"] =  new TH1F("h_zpeak_ee","Di-Muon Mass (GeV)",200,0,200);
+  maphist["zpeak_tautau"] =  new TH1F("h_zpeak_tautau","Di-Muon Mass (GeV)",200,0,200);
+  
+  maphist["h_RelIsoFR"] = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
+  return;
 }
 
 
@@ -422,6 +456,132 @@ double Analyzer::SetEventWeight(){
 
   double e_weight = MCweight;
   return e_weight;
+}
+
+TH2* Analyzer::Get2Hist(TString hname){
+  
+  
+}
+
+
+void Analyzer::FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons, double w){
+
+  if(type==muhist){
+    map<TString, MuonPlots*>::iterator mupit = mapCLhistMu.find(hist);
+    if(mupit != mapCLhistMu.end()) mupit->second->Fill(w,muons);
+    else cout << hist << " not found in mapCLhistMu" << endl;
+  }
+  else  cout << "Type not set to muhist, is this a mistake?" << endl;
+  
+}
+
+
+void Analyzer::FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons, double rho, double w){
+  
+  if(type==elhist){
+    map<TString, ElectronPlots*>::iterator elpit = mapCLhistEl.find(hist);
+    if(elpit !=mapCLhistEl.end()) elpit->second->Fill(w,electrons,rho);
+    else cout << hist << " not found in mapCLhistEl" <<endl;
+  }
+  else  cout << "Type not set to elhist, is this a mistake?" << endl;
+}
+
+void Analyzer::FillCLHist(histtype type, TString hist, vector<snu::KJet> jets, double w){
+
+  if(type==jethist){
+    map<TString, JetPlots*>::iterator jetpit = mapCLhistJet.find(hist);
+    if(jetpit !=mapCLhistJet.end()) jetpit->second->Fill(w,jets);
+    else cout << hist << " not found in mapCLhistJet" <<endl;
+  } 
+  else  cout <<"Type not set to jethist, is this a mistake?" << endl;
+ 
+}
+
+
+void Analyzer::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
+  
+  if(type==sighist){
+    map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w);
+    else cout << hist << " not found in mapCLhistSig" <<endl;
+  }
+  else  cout <<"Type not set to sighist, is this a mistake?" << endl;
+}
+
+  
+void Analyzer::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double w){
+
+  if(type==sighist){
+    map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill( ev, muons,jets, w);
+    else cout << hist << " not found in mapCLhistSig" <<endl;
+  }
+  else  cout <<"Type not set to sighist, is this a mistake?" << endl;
+}
+
+
+void Analyzer::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
+
+  if(type==sighist){
+    map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w);
+    else cout << hist << " not found in mapCLhistSig" <<endl;
+  }
+  else  cout <<"Type not set to sighist, is this a mistake?" << endl;
+}
+
+
+
+
+void Analyzer::WriteCLHists(){
+  
+  for(map<TString, MuonPlots*>::iterator mupit = mapCLhistMu.begin(); mupit != mapCLhistMu.end(); mupit++){
+    Dir = outfile->mkdir(mupit->first);
+    outfile->cd( Dir->GetName() );
+    mupit->second->Write();
+    outfile->cd();
+  }
+
+  for(map<TString, ElectronPlots*>::iterator elpit = mapCLhistEl.begin(); elpit != mapCLhistEl.end(); elpit++){
+    Dir = outfile->mkdir(elpit->first);
+    outfile->cd( Dir->GetName() );
+    elpit->second->Write();
+    outfile->cd();
+  }
+  
+  for(map<TString, JetPlots*>::iterator jetpit = mapCLhistJet.begin(); jetpit != mapCLhistJet.end(); jetpit++){
+    Dir = outfile->mkdir(jetpit->first);
+    outfile->cd( Dir->GetName() );
+    jetpit->second->Write();
+    outfile->cd();
+  }
+
+  for(map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.begin(); sigpit != mapCLhistSig.end(); sigpit++){
+    Dir = outfile->mkdir(sigpit->first);
+    outfile->cd( Dir->GetName() );
+    sigpit->second->Write();
+    outfile->cd();
+  }
+
+  return;
+}
+
+void Analyzer::WriteHists(){
+
+  for(map<TString, TH1*>::iterator mapit = maphist.begin(); mapit != maphist.end(); mapit++){
+    mapit->second->Write();
+  }
+  return;
+}
+
+TH1* Analyzer::GetHist(TString hname){
+
+  TH1* h = NULL;
+  std::map<TString, TH1*>::iterator mapit = maphist.find(hname);
+  if(mapit != maphist.end()) return mapit->second;
+  else cout << hname << " was not found in map" << endl;
+  
+  return h;
 }
 
 void Analyzer::OutPutEventInfo(int entry, int step){

@@ -1,5 +1,8 @@
 #include "StdPlots.h"
 
+StdPlots::StdPlots() {  
+}
+
 StdPlots::StdPlots(TString name) {  
 
   h_particles = new TH1F("h_N_"+name,      "Number of "+name,   50,0,50);
@@ -7,6 +10,25 @@ StdPlots::StdPlots(TString name) {
   h_eta       = new TH1F("h_"+name+"_eta", name+" #eta",        100,-5,5);
   h_phi       = new TH1F("h_"+name+"_phi", name+" #phi",        100,-3.1415926535,3.1415926535);
 
+}
+
+StdPlots::StdPlots(const StdPlots& s){
+  
+  h_particles=s.h_particles;
+  h_pt=s.h_pt;
+  h_eta=s.h_eta;
+  h_phi=s.h_phi;
+}
+
+StdPlots& StdPlots::operator= (const StdPlots& p)
+{
+  if (this != &p) {
+    h_particles =p.h_particles;
+    h_pt        =p.h_pt;
+    h_eta       =p.h_eta;
+    h_phi       =p.h_phi;
+  }
+  return *this;
 }
 
 StdPlots::~StdPlots() {
@@ -29,4 +51,5 @@ void StdPlots::Write() {
  h_eta->Write();
  h_phi->Write();
 }
+
 

@@ -5,34 +5,18 @@
 
 JetPlots::JetPlots(TString name) : StdPlots(name) {
 
-  h_TCHPT              = new TH1F("h_"+name+"_TCHPT","Track Counting High Purity "+name,100,-3,5);
-  h_JP                 = new TH1F("h_"+name+"_JP",name+" Jet Probability",100,0,3);
-  h_CSV                = new TH1F("h_"+name+"_CSV",name+" Combined Seconday Vertex",100,-1,2);
-  h_dxy                = new TH1F("h_"+name+"_dxy",name+" transverse IP",100,0.0,0.5);
-  h_dz                 = new TH1F("h_"+name+"_dz",name+" longitudinal IP",100,0.0,1.0);
-  h_threeD             = new TH1F("h_"+name+"_threeD",name+" threeD vertex distance",100,0.,1.0);
+  map_jet["h_TCHPT"]              = new TH1F("h_"+name+"_TCHPT","Track Counting High Purity "+name,100,-3,5);
+  map_jet["h_JP"]                 = new TH1F("h_"+name+"_JP",name+" Jet Probability",100,0,3);
+  map_jet["h_CSV"]                = new TH1F("h_"+name+"_CSV",name+" Combined Seconday Vertex",100,-1,2);
+  map_jet["h_dxy"]                = new TH1F("h_"+name+"_dxy",name+" transverse IP",100,0.0,0.5);
+  map_jet["h_dz"]                 = new TH1F("h_"+name+"_dz",name+" longitudinal IP",100,0.0,1.0);
+  map_jet["h_threeD"]             = new TH1F("h_"+name+"_threeD",name+" threeD vertex distance",100,0.,1.0);
 }
 
 JetPlots::~JetPlots() {
-  // ~StdPlots();
-  delete h_TCHPT;
-  delete h_JP;
-  delete h_CSV;
-  delete h_dxy;
-  delete h_dz;
-  delete h_threeD;
-}
-
-void JetPlots::Fill(Double_t weight, Int_t N, Double_t pt, Double_t eta, Double_t phi, Double_t TCHPT, Double_t JP, Double_t CSV, Double_t dxy, Double_t dz, Double_t threeD) {
-  
- StdPlots::Fill(weight, N, pt, eta, phi);
- 
-  h_TCHPT->Fill(TCHPT, weight);
-  h_JP->Fill(JP, weight);
-  h_CSV->Fill(CSV, weight);
-  h_dxy->Fill(dxy, weight);
-  h_dz->Fill(dz, weight);
-  h_threeD->Fill(threeD, weight);
+  for(std::map<TString, TH1*>::iterator mit = map_jet.begin(); mit != map_jet.end() ; mit++){
+    delete mit->second ;
+  }
 }
 
 
@@ -42,22 +26,54 @@ void JetPlots::Fill(Double_t weight, std::vector<snu::KJet> jets){
   for(std::vector<snu::KJet>::iterator jit = jets.begin(); jit!=jets.end(); jit++,ijet++){
     StdPlots::Fill(weight, jets.size(), jit->Pt(), jit->Eta(), jit->Phi());
     
-    h_TCHPT->Fill(jit->PFJetTrackCountingHighPurBTag(), weight);
-    h_JP->Fill(jit->BtagProb(), weight);
-    h_CSV->Fill(jit->CombinedSecVertexBtag() , weight);
-    h_dxy->Fill(jit->ClosestXYsep(), weight);
-    h_dz->Fill(jit->ClosestZsep(), weight);
-    h_threeD->Fill(jit->JetRho(), weight);
+    Fill("h_TCHPT",jit->PFJetTrackCountingHighPurBTag(), weight);
+    Fill("h_JP",jit->BtagProb(), weight);
+    Fill("h_CSV",jit->CombinedSecVertexBtag() , weight);
+    Fill("h_dxy",jit->ClosestXYsep(), weight);
+    Fill("h_dz",jit->ClosestZsep(), weight);
+    Fill("h_threeD",jit->JetRho(), weight);
   }
 }
 
 void JetPlots::Write() {
-  StdPlots::Write();
-  h_TCHPT->Write();
-  h_JP->Write();
-  h_CSV->Write();
-  h_dxy->Write();
-  h_dz->Write();
-  h_threeD->Write();
+  StdPlots::Write(); 
+  for(map<TString, TH1*>::iterator it = map_jet.begin(); it != map_jet.end(); it++){
+    it->second->Write();
+  }
 }
 
+
+JetPlots::JetPlots() : StdPlots() {
+}
+
+
+/**
+ * Copy constructor.
+ */
+JetPlots::JetPlots(const JetPlots& jp): StdPlots(jp)
+{
+  for(std::map<TString, TH1*>::iterator mit = map_jet.begin(); mit != map_jet.end() ; mit++){
+    std::map<TString, TH1*>::iterator mit2 = jp.GetMap().find(mit->first);
+    mit->second = mit2->second;
+  }
+}
+
+
+JetPlots& JetPlots::operator= (const JetPlots& jp)
+{
+  if (this != &jp) {
+
+    for(std::map<TString, TH1*>::iterator mit = map_jet.begin(); mit != map_jet.end() ; mit++){
+      std::map<TString, TH1*>::iterator mit2 = jp.GetMap().find(mit->first);
+      mit->second = mit2->second;
+    }
+  }
+  return *this;
+}
+
+void JetPlots::Fill(TString name, double value, double w){
+  std::map<TString, TH1*>::iterator it = map_jet.find(name);
+  if(it!= map_jet.end()) it->second->Fill(value, w);
+  else cout << name << " not found in map_el" << endl;
+  return;
+}
