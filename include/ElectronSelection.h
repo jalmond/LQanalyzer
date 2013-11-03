@@ -2,6 +2,7 @@
 #define ElectronSelection_h
 
 #include "KElectron.h"
+#include "LQEvent.h"
 #include "BaseSelection.h" 
 
 class ElectronSel : public BaseSel {
@@ -14,7 +15,7 @@ class ElectronSel : public BaseSel {
   static const Double_t PHONH[7];
 
  public:
-  ElectronSel();
+  ElectronSel(LQEvent ev);
   ~ElectronSel();
 
   

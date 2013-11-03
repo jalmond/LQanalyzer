@@ -7,7 +7,7 @@ GenSel::~GenSel() {};
 
 void GenSel::GenSelection(std::vector<Double_t> Eta, std::vector<Double_t> Pt, std::vector<Double_t> Px, std::vector<Double_t> Py, std::vector<Double_t> Pz, std::vector<Double_t> E, std::vector<Double_t> Trkdx, std::vector<Double_t> Trkdy, std::vector<Double_t> Trkdz, Double_t Vertex_X, Double_t Vertex_Y, Double_t Vertex_Z, std::vector<Int_t> pdgId, std::vector<Int_t> status, std::vector<Int_t> ndaug, std::vector<Int_t> mother, std::vector<GenParticle>& genColl) {
 
-  dz_cut=1.0;
+  /*dz_cut=1.0;
 
   for (UInt_t ilep=0; ilep<Pt.size(); ilep++) {
 
@@ -31,7 +31,7 @@ void GenSel::GenSelection(std::vector<Double_t> Eta, std::vector<Double_t> Pt, s
   }
 
   std::sort( genColl.begin(), genColl.end(), GenPTSorter );
-  
+  */
 }
 
 

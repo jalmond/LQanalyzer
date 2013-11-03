@@ -1,35 +1,43 @@
 #ifndef Analyzer_h
 #define Analyzer_h
 
+/// standard includes
 #include <set>
-//#include "Data.h"
+
+
+/// local includes
+// Selection
 #include "ElectronSelection.h"
 #include "MuonSelection.h"
 #include "JetSelection.h"
 #include "GenSelection.h"
 #include "SelectionFunctions.h"
+
+// Plotting
 #include "OtherFunctions.h"
 #include "ElectronPlots.h"
 #include "MuonPlots.h"
 #include "JetPlots.h"
 #include "SignalPlots.h"
-#include "Reweight.cc"
 
+// SNUTree
 #include "KParticle.h"
 #include "KJet.h"
 #include "KMuon.h"
 #include "KEvent.h"
-#include "SNUTreeFiller.h"
 
+// other
+#include "Reweight.cc"
+#include "SNUTreeFiller.h"
 #include "EventBase.h"
-#include "SelectionBase.h"
+#include "LQEvent.h"
 
 
 class Analyzer : public SNUTreeFiller {
 
  public:
   enum histtype  {muhist, elhist, jethist, sighist};
-  enum jobtype {ZTest};
+  enum jobtype {ZTest,HNee, HNmm, HNFakeBkgmm, HNFakeBkgee};
 
  private:
   static const Bool_t debug = false; 
@@ -39,8 +47,8 @@ class Analyzer : public SNUTreeFiller {
   //  static const Double_t integratedlumi = 22.945019; HLT_Mu17
   //  static const Double_t integratedlumi = 83.483; HLT_Mu24
   //  static const Double_t integratedlumi = 123.9391;
-  static const Double_t Mass_Z = 91.1876;
-  static const Double_t Mass_W = 80.398;
+  const Double_t Mass_Z;
+  const Double_t Mass_W;
 
 
  public:
@@ -56,7 +64,8 @@ class Analyzer : public SNUTreeFiller {
  public:
   static const Bool_t MC_pu = true; 
 
-
+  EventBase* eventbase;
+  
   ReweightPU *reweightPU;
   UInt_t numberVertices;
   TString completename;
@@ -88,26 +97,34 @@ class Analyzer : public SNUTreeFiller {
   ~Analyzer();
 
   
+  /// global variable to set in constructor to tell code which Loop to run and which variables to set.
+  jobtype _jtype;
+  
   /// Main Event Loops
+  void Run();
   void Loop();
   void TestLoop();
   void HNmmLoop();
  
- 
+  //// Plotting
   TH1* GetHist(TString hname);
-  TH2* Get2Hist(TString hname);
-  
+  //  TH2* Get2Hist(TString hname);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double rho, double weight);
-  void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
-
+  void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);  
   void MakeCleverHistograms(histtype type, TString clhistname );
+  void MakeHistograms(jobtype jtype);
+
+  /// File related
   void OpenPutputFile();
   void WriteHists();
   void WriteCLHists();
+
+  //// Event related
+  void EndEvent();
   double SetEventWeight();
   bool PassTrigger(std::vector<TString> list, int& prescale);
   void SetWeight(Double_t CrossSection, Double_t nevents);
@@ -116,10 +133,9 @@ class Analyzer : public SNUTreeFiller {
   void SetName(TString name, Int_t version);
   void SetEvtN(Long64_t events);
   void NEvents(float n_events);
-  void MakeHistograms();
   bool PassBasicEventCuts();
   void OutPutEventInfo(int entry, int step);
-  SelectionBase SetUpEvent(int kentry);
+  void SetUpEvent(int kentry);
 
 };
 #endif

@@ -2,7 +2,8 @@
 
 using namespace snu;
 
-EventSel::EventSel() {};
+EventSel::EventSel() {
+};
 
 EventSel::~EventSel() {};
 

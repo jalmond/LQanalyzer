@@ -2,7 +2,9 @@
 
 using namespace snu;
 
-JJ::JJ() {}
+JJ::JJ(LQEvent ev) {
+  k_lqevent = ev;
+}
 
 JJ::~JJ() {}
 
@@ -12,7 +14,7 @@ void JJ::JetSelection(std::vector<KJet>& jetColl) {
   
   //// This is a basic set of cuts on jets
  
-  std::vector<KJet> alljets = k_event_base.GetBaseJets();
+  std::vector<KJet> alljets = k_lqevent.GetBaseJets();
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
@@ -60,17 +62,3 @@ void JJ::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vector<KMuon> m
 }
 
 
-//// Functions to set cuts on jet variables
-void JJ::SetPt(Double_t minPt) {
-  minPt ? pt_cut_min=minPt : pt_cut_min=0.0;
-  pt_cut_max=10000.0;
-}
-
-void JJ::SetPt(Double_t minPt, Double_t maxPt) {
-  minPt ? pt_cut_min=minPt : pt_cut_min=0.0;
-  maxPt ? pt_cut_max=maxPt : pt_cut_max=10000.0;
-}
-
-void JJ::SetEta(Double_t Eta) {
-  Eta ? eta_cut=Eta : eta_cut=3.0;
-}

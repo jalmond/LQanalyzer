@@ -23,7 +23,7 @@
 
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
   gROOT->ProcessLine(".L SelectionFunctions.cc+g");  
-  gROOT->ProcessLine(".L EventBase.cc+g");  
+  gROOT->ProcessLine(".L LQEvent.cc+g");  
 
 
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
@@ -39,7 +39,7 @@
   gROOT->ProcessLine(".L JetSelection.cc+g");
   //gROOT->ProcessLine(".L GenSelection.cc+g");
   gROOT->ProcessLine(".L EventSelection.cc+g");
-  gROOT->ProcessLine(".L SelectionBase.cc+g");  
+  gROOT->ProcessLine(".L EventBase.cc+g");  
 
   gSystem->ChangeDirectory((maindir +("/Plotting/")).c_str());
   /// Plotting code compilation
@@ -70,14 +70,13 @@
     //TChain* chain50 = ChainMaker("/data/HN_data/SampleList/Signal/signal_all.txt");
     TChain* chain50 = ChainMaker((maindir + "/scripts/filelist.txt"));    
     
-
     Analyzer Pippo(Analyzer::ZTest); /// create analyzer class object    
     Pippo.Init(chain50);
     Pippo.SetName("Majorana_50",1);
     Pippo.SetTargetLumi(887.501);
     Pippo.SetWeight(1071.1, 49994);
     Pippo.NEvents(10000);
-    Pippo.TestLoop();
+    Pippo.Run();
 
   }
         

@@ -2,15 +2,17 @@
 
 using namespace snu;
 
-ElectronSel::ElectronSel() {};
+ElectronSel::ElectronSel(LQEvent ev) {
+  k_lqevent = ev;
+};
 
 ElectronSel::~ElectronSel() {};
 
 
 void ElectronSel::ElectronSelection(std::vector<KElectron>& leptonColl) {
   
-  std::vector<KElectron> allelectrons = k_event_base.GetBaseElectrons();
-  double rho = k_event_base.GetBaseEvent().JetRho(); 
+  std::vector<KElectron> allelectrons = k_lqevent.GetBaseElectrons();
+  double rho = k_lqevent.GetBaseEvent().JetRho(); 
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     

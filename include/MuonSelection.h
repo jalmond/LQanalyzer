@@ -13,14 +13,18 @@ class MuonSel : public BaseSel {
   static const Double_t AreaHcalMu[5];
 
  public:
-  MuonSel();
+  MuonSel(LQEvent ev);
   ~MuonSel();
 
   
+  //// General Selection
   void MuonSelection(std::vector<snu::KMuon>& leptonColl);
-  void TightMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
 
+  //// HN analysis selection
+  void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
+  void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
 
+  //// General 
   void SetDeposits(Double_t ECalDeposit, Double_t HCalDeposit);
   void SetDeposits(Double_t ECalDeposit1 , Double_t HCalDeposit1, Double_t ECalDeposit2 , Double_t HCalDeposit2);
 

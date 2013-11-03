@@ -1,9 +1,12 @@
 #include "StdPlots.h"
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 
-StdPlots::StdPlots() {  
+StdPlots::StdPlots():  Mass_W(80.398) {  
 }
 
-StdPlots::StdPlots(TString name) {  
+StdPlots::StdPlots(TString name): Mass_W(80.398) {  
 
   h_particles = new TH1F("h_N_"+name,      "Number of "+name,   50,0,50);
   h_pt        = new TH1F("h_"+name+"_pt",  name+" p_{t} (GeV)", 500,0,500);
@@ -12,7 +15,7 @@ StdPlots::StdPlots(TString name) {
 
 }
 
-StdPlots::StdPlots(const StdPlots& s){
+StdPlots::StdPlots(const StdPlots& s): Mass_W(80.398){
   
   h_particles=s.h_particles;
   h_pt=s.h_pt;

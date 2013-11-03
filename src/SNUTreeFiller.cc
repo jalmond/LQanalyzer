@@ -140,11 +140,11 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
 
 
 std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
-  
+
   std::vector<KMuon> muons;
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
-
+    
     muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
@@ -198,6 +198,10 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetValidStations( MuonStationMatches->at(ilep));
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
 
+    /// truth info
+    muon.SetMuonMatchedGenParticleEta(MuonMatchedGenParticleEta->at(ilep));
+    muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
+    muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
 
     ///// ADD prompt definition for MC
     /*

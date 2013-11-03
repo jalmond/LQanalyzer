@@ -2,9 +2,9 @@
 #define MuonSelection_h
 
 #include "GenParticle.h"
-#include "LeptonSelection.h"
+#include "BaseSelection.h"
 
-class GenSel : public Lep {
+class GenSel : BaseSel {
   Int_t numVer, leptoni;
 
   GenParticle::FakeType fakeType;

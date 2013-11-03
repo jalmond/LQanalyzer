@@ -17,7 +17,7 @@ class JetPlots : public StdPlots{
   ~JetPlots();
 
   /// copy constructor
-  JetPlots(const JetPlots& mp);  ///Copy constructor
+  JetPlots(const JetPlots& jp);  ///Copy constructor
   /// assigment operator
   JetPlots& operator=(const JetPlots& obj);
 

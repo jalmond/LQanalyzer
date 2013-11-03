@@ -1,57 +1,49 @@
-#include "../include/EventBase.h"
+#include "EventBase.h"
 
 using namespace snu;
-using namespace std;
-
-
-EventBase::EventBase(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KTau> taus, std::vector<snu::KJet> jets, snu::KEvent ev) {
-
-  k_muons = muons;
-  k_electrons = el;
-  k_jets = jets;
-  k_taus = taus;
-  k_event= ev;
-  
-}
 
 EventBase::EventBase() {
-  k_muons.clear();
-  k_electrons.clear();
-  k_jets.clear();
-  k_taus.clear();
-  k_event.Reset();
-  
 }
 
-EventBase::~EventBase() {}
+EventBase::EventBase(LQEvent kbase) {
+  k_LQevent = kbase;
+  k_muonsel = new MuonSel(kbase);
+  k_jetsel = new JJ(kbase);
+  k_electronsel = new ElectronSel(kbase);
+  k_tausel = new TauSel();
+  k_eventsel = new EventSel();
 
-void EventBase::reset(){
-  k_muons.clear();
-  k_electrons.clear();
-  k_jets.clear();
-  k_taus.clear();
-  k_event.Reset();
+}
+EventBase::~EventBase() {
+  delete k_muonsel;
+  delete k_jetsel;
+  delete k_electronsel;
+  delete k_tausel;
+  delete k_eventsel;
+
 }
 
-
-EventBase::EventBase(const EventBase& evb){ 
-  
-  k_muons = evb.GetBaseMuons();
-  k_electrons = evb.GetBaseElectrons();
-  k_jets = evb.GetBaseJets();
-  k_taus = evb.GetBaseTaus();
-  k_event = evb.GetBaseEvent();
+EventBase::EventBase(EventBase& b){
+  k_LQevent = b.GetEventBase();
+  k_muonsel = b.GetMuonSel();
+  k_electronsel = b.GetElectronSel();
+  k_tausel = b.GetTauSel();
+  k_eventsel = b.GetEventSel();
+  k_jetsel = b.GetJetSel();
 }
 
-
-EventBase& EventBase::operator= (const EventBase& evb)
-{
-  if (this != &evb) {
-    k_muons = evb.GetBaseMuons();
-    k_electrons = evb.GetBaseElectrons();
-    k_jets = evb.GetBaseJets();
-    k_taus = evb.GetBaseTaus();
-    k_event = evb.GetBaseEvent();
-  }  
+EventBase& EventBase::operator= (const EventBase& b){
+  if(this != & b){
+    k_LQevent = b.GetEventBase();
+    k_muonsel = b.GetMuonSel();
+    k_electronsel = b.GetElectronSel();
+    k_tausel = b.GetTauSel();
+    k_eventsel = b.GetEventSel();
+    k_jetsel = b.GetJetSel();
+  }
   return *this;
 }
+
+
+
+

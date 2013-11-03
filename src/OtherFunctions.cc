@@ -59,8 +59,9 @@ void getFakerate(TH1F* h1, TH1F* h2, TH1F* out, int nbinX) {
    }
 }
 
-void DoubleANDSinglebkg(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vector<Lepton>& leptonCollj, UInt_t &jlep, Double_t *****fakeN, UInt_t &type) {
-/*
+void DoubleANDSinglebkg(std::vector<snu::KParticle>& leptonColli, UInt_t &ilep, std::vector<snu::KParticle>& leptonCollj, UInt_t &jlep, Double_t *****fakeN, UInt_t &type) {
+
+  /*
   double _arrayeta[] = {0.0,1.0,1.479,2.0,2.5};
   if (pT35) 
     double _arraypT [] = {10.,15.,20.,25.,35.,45.,60.,80.,100.};
@@ -77,10 +78,10 @@ void DoubleANDSinglebkg(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vec
 */
   int i0=1; int j0=1;
   int i1=1; int j1=1;
-  double eta0= fabs(leptonColli[ilep].eta());
-  double Pt0 = leptonColli[ilep].lorentzVec().Pt();
-  double eta1= fabs(leptonCollj[jlep].eta());
-  double Pt1 = leptonCollj[jlep].lorentzVec().Pt();
+  double eta0= fabs(leptonColli[ilep].Eta());
+  double Pt0 = leptonColli[ilep].Pt();
+  double eta1= fabs(leptonCollj[jlep].Eta());
+  double Pt1 = leptonCollj[jlep].Pt();
   if (eta0<0.0 || eta0>=2.5) {cout<<"CACCHIO eta!!!! "<<eta0<<endl; eta0<0.0 ? eta0=0.0 : eta0=2.49;} 
   if (Pt0<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt0<<endl; Pt0=10.0;}
   if (eta1<0.0 || eta1>=2.5) {cout<<"CACCHIO eta!!!! "<<eta1<<endl; eta1<0.0 ? eta1=0.0 : eta1=2.49;}
@@ -117,15 +118,15 @@ void DoubleANDSinglebkg(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vec
   fakeN[type][i1-1][j1-1][i0-1][j0-1]+=1;
 }
 
-double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, UInt_t &jlep, Double_t *****fakeN, UInt_t &type, Double_t weight) {
+double DoublebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, UInt_t &jlep, Double_t *****fakeN, UInt_t &type, Double_t weight) {
   double bkg=0;
 
   int i0=1; int j0=1;
   int i1=1; int j1=1;
-  double eta0= fabs(leptonColl[ilep].eta());
-  double Pt0 = leptonColl[ilep].lorentzVec().Pt();
-  double eta1= fabs(leptonColl[jlep].eta());
-  double Pt1 = leptonColl[jlep].lorentzVec().Pt();
+  double eta0= fabs(leptonColl[ilep].Eta());
+  double Pt0 = leptonColl[ilep].Pt();
+  double eta1= fabs(leptonColl[jlep].Eta());
+  double Pt1 = leptonColl[jlep].Pt();
   if (eta0<0.0 || eta0>=2.5) {cout<<"CACCHIO eta!!!! "<<eta0<<endl; eta0<0.0 ? eta0=0.0 : eta0=2.49;}
   if (Pt0<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt0<<endl; Pt0=10.0;}
   if (eta1<0.0 || eta1>=2.5) {cout<<"CACCHIO eta!!!! "<<eta1<<endl; eta1<0.0 ? eta1=0.0 : eta1=2.49;}
@@ -173,12 +174,12 @@ double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   return bkg;
 }
 
-double SinglebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, Double_t ***fakeN, UInt_t &type, Double_t weight) {
+double SinglebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, Double_t ***fakeN, UInt_t &type, Double_t weight) {
   double bkg=0;
   
   int i=1; int j=1;
-  double eta= fabs(leptonColl[ilep].eta());
-  double Pt = leptonColl[ilep].lorentzVec().Pt();
+  double eta= fabs(leptonColl[ilep].Eta());
+  double Pt = leptonColl[ilep].Pt();
   if (eta<0.0 || eta>=2.5) {cout<<"CACCHIO eta!!!! "<<eta<<endl; eta<0.0 ? eta=0.0 : eta=2.49;}
   if (Pt<20.0) {cout<<"CACCHIO Pt!!!! "<<Pt<<endl; Pt=10.0;}
 
@@ -204,15 +205,15 @@ double SinglebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   return bkg; 
 }
 
-double DoubleTOSinglebkg(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, UInt_t &jlep) {
+double DoubleTOSinglebkg(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, UInt_t &jlep) {
   double bkg=0;
 
   int i0=1; int j0=1;
   int i1=1; int j1=1;
-  double eta0= fabs(leptonColl[ilep].eta());
-  double Pt0 = leptonColl[ilep].lorentzVec().Pt();
-  double eta1= fabs(leptonColl[jlep].eta());
-  double Pt1 = leptonColl[jlep].lorentzVec().Pt();
+  double eta0= fabs(leptonColl[ilep].Eta());
+  double Pt0 = leptonColl[ilep].Pt();
+  double eta1= fabs(leptonColl[jlep].Eta());
+  double Pt1 = leptonColl[jlep].Pt();
   if (eta0<0.0 || eta0>=2.5) {cout<<"CACCHIO eta!!!! "<<eta0<<endl; eta0<0.0 ? eta0=0.0 : eta0=2.49;}
   if (Pt0<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt0<<endl; Pt0=10.0;}
   if (eta1<0.0 || eta1>=2.5) {cout<<"CACCHIO eta!!!! "<<eta1<<endl; eta1<0.0 ? eta1=0.0 : eta1=2.49;}

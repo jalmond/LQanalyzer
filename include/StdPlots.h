@@ -10,14 +10,15 @@ class StdPlots {
 
  public:
   TH1F *h_particles, *h_pt, *h_eta, *h_phi;
-  
+  const Double_t Mass_W;
+    
  protected:
   StdPlots();
   StdPlots(TString name);
   
  private:
   StdPlots& operator= (const StdPlots& obj);
-
+  
  public:
   virtual ~StdPlots();
   StdPlots(const StdPlots& p);

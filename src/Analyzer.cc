@@ -5,56 +5,75 @@
 using namespace::snu;
 
 
-Analyzer::Analyzer() {
-
-}
-
-Analyzer::Analyzer(jobtype jtype) {
-
-  if (debug) cout<<"inizio"<<endl;
+Analyzer::Analyzer(jobtype jtype): Mass_Z(91.1876), Mass_W(80.398) {
   
+  _jtype = jtype;
   /// Initialise histograms
-  MakeHistograms();
-  
-  if(jtype== ZTest){
-    cout << "Making clever hists" << endl;
+  MakeHistograms(jtype);
+  if(jtype== ZTest){    
+    cout << "Making clever hists for Z ->ll test code" << endl;
+    //// Initialise Plotting class functions
+    /// jtype sets which histograms to make    
     MakeCleverHistograms(muhist, "Zmuons");
     MakeCleverHistograms(elhist, "Zelectrons");
+  }
+  else if(jtype == HNmm){
+    MakeCleverHistograms(muhist, "TightMuons");
+    MakeCleverHistograms(jethist, "AnalysisJets");
+    MakeCleverHistograms(sighist, "Signal");
   }
   else {
     cout << "No type set for histogram maker" << endl;
   }
 
+  ///////////////////////////////////////////////////////////////////////
+  //////// For HN analysis  /////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
   //// FakeRate Input file
+  //////////////////////////////////////////////////////////////////////
   string analysisdir = getenv("FILEDIR");  
   TFile *infile = new TFile((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
   infile->cd();
   TDirectory *dir=gDirectory;             
   dir->GetObject("h_FOrate3",FRHist);
   if (debug) cout<<"fine"<<endl;
-    
-  ////  Inital settings for running on sample
+
+
+  ///////////////////////////////////////////////////////////////////////
+  ////  Inital settings for running on samples
   entrieslimit = -1; /// Set default to all events
+  ///////////////////////////////////////////////////////////////////////
 }
 
 
+//////////////////////////////////////////////////////////////////////
 //// List of several loops to call
-
-/// Test Loop runs basic Z->ee, Z->mm, Z->tautau code
+////////////////////////////////////////////// ////////////////////////
+/// Jobs set with enum jobtype:
+/// enum jobtype {ZTest,HNee, HNmm, HNFakeBkgmm, HNFakeBkgee};
+/// TestLoop runs basic Z->ee, Z->mm, Z->tautau code
 /// HNmmLoop runs HN MM channel results
 /// HNeeLoop runs HN MM channel results
-/// FakeRateee
-/// FakeRatem
+/// HNFakeBkgee
+/// HNFakeBkgmm
+/////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
+void Analyzer::Run(){
+  
+  if(_jtype == ZTest) TestLoop();
+  else if(_jtype == HNmm) HNmmLoop();
+  else cout << "Error in setting Job Type in Analyzer constructor; " << endl;
+}
 
 //  TEST loop for Z to mumu/ee/tautau 
 void Analyzer::TestLoop() {
 
   //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
   weight= SetEventWeight();  
-
+  
   string analysisdir = getenv("FILEDIR");
-  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!isData) reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
   
   ///////////////////////////////////////////////////////////////////////
   ///  START OF EVENT LOOP
@@ -63,7 +82,7 @@ void Analyzer::TestLoop() {
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
     
     /// Class has all information for event
-    SelectionBase eventbase = SetUpEvent(jentry); 
+    SetUpEvent(jentry); 
     
     if(!PassBasicEventCuts()) continue;     /// Initial event cuts
     
@@ -71,44 +90,63 @@ void Analyzer::TestLoop() {
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
     if(!PassTrigger(triggerslist, prescale)) continue;
-      
     /// Correct MC for pileup
+
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
-
-    numberVertices = eventbase.GetBaseEvent().nVertices();
-    if (!eventbase.GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
-
-    ///  use selection code (which returns a similar class vector with selected cuts)     
-    if(eventbase.GetBaseEvent().MET() > 50) continue;
-
+    
+    numberVertices = eventbase->GetBaseEvent().nVertices();
+    if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
+    
+    if(eventbase->GetBaseEvent().MET() > 50) continue;
+    
     //// want to add more selection options ( )
     std::vector<snu::KMuon> muonColl;
-    eventbase.GetMuonSel().SetPt(20);  //// add bools to set true
-    eventbase.GetMuonSel().SetEta(2.4);
-    eventbase.GetMuonSel().SetRelIso(1000.);
-    eventbase.GetMuonSel().SetChiNdof(1000); 
-    eventbase.GetMuonSel().SetBSdxy(0.01);
-    eventbase.GetMuonSel().SetBSdz(0.10);
-    eventbase.GetMuonSel().SetDeposits(40.0,60.00);    
-    eventbase.GetMuonSel().MuonSelection(muonColl);
-
+    eventbase->GetMuonSel()->SetPt(20); 
+    eventbase->GetMuonSel()->SetEta(2.4);
+    //eventbase->GetMuonSel().SetRelIso(1000.);
+    //eventbase->GetMuonSel().SetChiNdof(1000); 
+    //eventbase->GetMuonSel().SetBSdxy(0.01);
+    //eventbase->GetMuonSel().SetBSdz(0.10);
+    //eventbase->GetMuonSel().SetDeposits(40.0,60.00);    
+    eventbase->GetMuonSel()->MuonSelection(muonColl);
     std::vector<snu::KJet> jetColl;
-    eventbase.GetJetSel().SetPt(20);
-    eventbase.GetJetSel().SetEta(2.5);
-    eventbase.GetJetSel().JetSelection(jetColl);
+    eventbase->GetJetSel()->SetPt(20);
+    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->JetSelection(jetColl);
 
     
     std::vector<snu::KElectron> electronColl;
-    eventbase.GetElectronSel().SetPt(20); 
-    eventbase.GetElectronSel().SetEta(2.5); 
-    eventbase.GetElectronSel().SetRelIso(0.15); 
-    eventbase.GetElectronSel().SetBSdxy(0.02); 
-    eventbase.GetElectronSel().SetBSdz(0.10);
-    eventbase.GetElectronSel().ElectronSelection(electronColl); 
+    eventbase->GetElectronSel()->SetPt(20); 
+    eventbase->GetElectronSel()->SetEta(2.5); 
+    eventbase->GetElectronSel()->SetRelIso(0.15); 
+    eventbase->GetElectronSel()->SetBSdxy(0.02); 
+    eventbase->GetElectronSel()->SetBSdz(0.10);
+    eventbase->GetElectronSel()->ElectronSelection(electronColl); 
+    
+    
+    for(vector<snu::KMuon>::iterator it = muonColl.begin(); it!= muonColl.end(); it++){
+      cout <<  "Muon pt = " << it->Pt() << endl;
+      cout << " Eta ="  << it->Eta() << " " << it->Phi() << endl;
+      
+      for(unsigned int g =0; g < GenParticleP->size(); g++){
+	if( it->MuonMatchedGenParticleEta() != -999){
+	  if((fabs(it->MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.1) && (fabs(it->MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.1)) {
+	    cout << "Matched particle has pt = " << GenParticlePt->at(g) << " and has pdgid = " << GenParticlePdgId->at(g) << " and has mother with pdgid = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g))<<  endl;	  
+	  }
+	}
+	else{
+	  if((fabs( GenParticleEta->at(g) - it->Eta() ) < 0.1) && (fabs(GenParticlePhi->at(g) - it->Phi() ) < 0.1)) {
+	    cout << "particle has pt = " << GenParticlePt->at(g) << " and has pdgid = " << GenParticlePdgId->at(g) << endl;	  
+	  }
+	}
+      }      
+    }
+
 
     
     ///// SOME STANDARD PLOTS /////
     ////  Z-> mumu            //////
+
     if (muonColl.size() == 2) {      
       KParticle Z = muonColl.at(0) + muonColl.at(1);
       if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
@@ -124,10 +162,11 @@ void Analyzer::TestLoop() {
       KParticle Z = electronColl.at(0) + electronColl.at(1);
       if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
 	GetHist("zpeak_ee")->Fill(Z.M(), weight);	 /// Plots Z peak
-	FillCLHist(elhist, "Zelectrons", electronColl, eventbase.GetBaseEvent().JetRho(), weight);
+	FillCLHist(elhist, "Zelectrons", electronColl, eventbase->GetBaseEvent().JetRho(), weight);
       } 
     }
 
+    EndEvent();
   }// End of event loop
   
   
@@ -155,7 +194,7 @@ void Analyzer::HNmmLoop() {
   int i_dimu_evNmv(0), i_dimu(0), i_dimu_vertexmismatch(0), i_dimu_faild0sig(0), i_dimu_tight(0);
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
     
-    SelectionBase eventbase = SetUpEvent(jentry); 
+    SetUpEvent(jentry); 
 
     if(!PassBasicEventCuts()) continue;     /// Initial event cuts
     
@@ -167,31 +206,31 @@ void Analyzer::HNmmLoop() {
     /// Correct MC for pileup
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
 
-    numberVertices = eventbase.GetBaseEvent().nVertices();
-    if (!eventbase.GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
+    numberVertices = eventbase->GetBaseEvent().nVertices();
+    if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
 
     ///  use selection code (which returns a similar class vector with selected cuts)     
-    if(eventbase.GetBaseEvent().MET() > 50) continue;
+    if(eventbase->GetBaseEvent().MET() > 50) continue;
 
     //// want to add more selection options ( )
     std::vector<snu::KMuon> muonColl;
     std::vector<snu::KMuon> muonCollIso;
-    eventbase.GetMuonSel().SetPt(20); 
-    eventbase.GetMuonSel().SetEta(2.4);
-    eventbase.GetMuonSel().MuonSelection(muonColl);
-    eventbase.GetMuonSel().SetRelIso(1000.);
-    eventbase.GetMuonSel().SetChiNdof(1000); 
-    eventbase.GetMuonSel().SetBSdxy(0.01);
-    eventbase.GetMuonSel().SetBSdz(0.10);
-    eventbase.GetMuonSel().SetDeposits(40.0,60.00);    
-    eventbase.GetMuonSel().MuonSelection(muonCollIso);
+    eventbase->GetMuonSel()->SetPt(20); 
+    eventbase->GetMuonSel()->SetEta(2.4);
+    eventbase->GetMuonSel()->MuonSelection(muonColl);
+    eventbase->GetMuonSel()->SetRelIso(1000.);
+    eventbase->GetMuonSel()->SetChiNdof(1000); 
+    eventbase->GetMuonSel()->SetBSdxy(0.01);
+    eventbase->GetMuonSel()->SetBSdz(0.10);
+    eventbase->GetMuonSel()->SetDeposits(40.0,60.00);    
+    eventbase->GetMuonSel()->MuonSelection(muonCollIso);
 
 
     std::vector<snu::KJet> jetColl;
     //// List of cuts                                                                                                                                                                
-    eventbase.GetJetSel().SetPt(20);
-    eventbase.GetJetSel().SetEta(2.5);
-    eventbase.GetJetSel().JetSelection(jetColl);
+    eventbase->GetJetSel()->SetPt(20);
+    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->JetSelection(jetColl);
 
     if(muonColl.size() ==2){
       if(muonColl.at(0).Charge() == muonColl.at(1).Charge()){
@@ -223,16 +262,16 @@ void Analyzer::HNmmLoop() {
 	//cout << "muon 2 dxy = " << muonCollIso.at(1).dXY() << "  vertex dist =  " << muonCollIso.at(1).VertexDistXY()<< endl;
 	
 	
-	if(muonColl.at(0).MuonVertexIndex() != eventbase.GetBaseEvent().VertexIndex()) i_dimu_evNmv++;
+	if(muonColl.at(0).MuonVertexIndex() != eventbase->GetBaseEvent().VertexIndex()) i_dimu_evNmv++;
 	if(muonColl.at(0).MuonVertexIndex() != muonColl.at(1).MuonVertexIndex()){
 	  
 	  i_dimu_vertexmismatch++;
 	  cout << "\n " << endl;
 	  cout << "Event Summary " << endl;
-	  cout << "Vertex Index = " << eventbase.GetBaseEvent().VertexIndex() << endl;
-	  cout << "Vertex X = " << eventbase.GetBaseEvent().VertexX() << endl;
-	  cout << "Vertex Y = " << eventbase.GetBaseEvent().VertexY() << endl;
-	  cout << "Vertex Z = " << eventbase.GetBaseEvent().VertexZ() << endl;
+	  cout << "Vertex Index = " << eventbase->GetBaseEvent().VertexIndex() << endl;
+	  cout << "Vertex X = " << eventbase->GetBaseEvent().VertexX() << endl;
+	  cout << "Vertex Y = " << eventbase->GetBaseEvent().VertexY() << endl;
+	  cout << "Vertex Z = " << eventbase->GetBaseEvent().VertexZ() << endl;
 	  
 	  cout << "Muon 1 vertex Index = " << muonColl.at(0).MuonVertexIndex() << endl;
 	  cout << "Muon 2 vertex Index = " << muonColl.at(1).MuonVertexIndex() << endl;
@@ -249,12 +288,12 @@ void Analyzer::HNmmLoop() {
     
     
     std::vector<snu::KElectron> electronColl;
-    eventbase.GetElectronSel().SetPt(20); 
-    eventbase.GetElectronSel().SetEta(2.5); 
-    eventbase.GetElectronSel().SetRelIso(0.15); 
-    eventbase.GetElectronSel().SetBSdxy(0.02); 
-    eventbase.GetElectronSel().SetBSdz(0.10);
-    eventbase.GetElectronSel().ElectronSelection(electronColl); 
+    eventbase->GetElectronSel()->SetPt(20); 
+    eventbase->GetElectronSel()->SetEta(2.5); 
+    eventbase->GetElectronSel()->SetRelIso(0.15); 
+    eventbase->GetElectronSel()->SetBSdxy(0.02); 
+    eventbase->GetElectronSel()->SetBSdz(0.10);
+    eventbase->GetElectronSel()->ElectronSelection(electronColl); 
 
     
     
@@ -271,8 +310,8 @@ void Analyzer::HNmmLoop() {
       }
     }
     
-
-
+    
+    EndEvent();
   }// End of event loop
   
   OpenPutputFile();  
@@ -289,6 +328,7 @@ void Analyzer::HNmmLoop() {
 ///  START OF HNmuon loop
 
 void Analyzer::Loop() {
+  
   
   return;
 
@@ -391,35 +431,45 @@ void Analyzer::MakeCleverHistograms(histtype type, TString clhistname ){
   return;
 }
 
-void Analyzer::MakeHistograms(){
+void Analyzer::MakeHistograms(jobtype job){
   //// Additional plots to make
   
+  
   maphist.clear();
-  maphist["h_nsignal"] = new TH1F("h_signal","number of signal events",5,-1,4);
-  maphist["h_cutflow"] = new TH1F("h_cutflow","number of signal events in cut flow",4,0,4);
-  maphist["h_singlefake"] = new TH2F("h_singlefake","number of single fakes",4,0,4,4,-1,3);
-  maphist["h_doublefake"] = new TH2F("h_doublefake","number of double fakes",4,0,4,4,-1,3);
-  maphist["h_MET"] = new TH1F("h_MET","Missing Et",300,0.0,300.0);
-  maphist["h_MET"]->SetDefaultSumw2(true);
-  maphist["h_METsign"] = new TH1F("h_METsign","Missing Et significance",50,0.0,50.0);
-  maphist["h_MuonMissCharge"] = new TH1F("h_MuonMissCharge","Miss Charge for muons",6,0,6);
-  maphist["h_EventFakeType"] = new TH1F("h_EventFakeType","Event fake type",3,0,3);
-  maphist["h_LeptvsVert"] = new TH2I("h_LeptvsVert","Leptons per Vertex",50,0,50,5,0,5);
-  maphist["h_dRvsbTag"] = new TH2F("h_dRvsbTag","#deltaR vs b-tag discriminant",100,0.0,10.0,100,-5,14);
-  
-  maphist["h_nVertex"]= new TH1F("h_nVertex","number of verteces",50,0,50);
-  maphist["h_nVertex0"]= new TH1F("h_nVertex0","number of verteces t0",50,0,50);
-  maphist["h_nVertex1"]= new TH1F("h_nVertex1","number of verteces t1",50,0,50);
-  maphist["h_nVertex2"]= new TH1F("h_nVertex2","number of verteces t2",50,0,50);
-  
-  maphist["h_nvtx_norw"] = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
-  maphist["h_nvtx_rw"] = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
-  
-  maphist["zpeak_mumu"] =  new TH1F("h_zpeak_mumu","Di-Muon Mass (GeV)",200,0,200);
-  maphist["zpeak_ee"] =  new TH1F("h_zpeak_ee","Di-Muon Mass (GeV)",200,0,200);
-  maphist["zpeak_tautau"] =  new TH1F("h_zpeak_tautau","Di-Muon Mass (GeV)",200,0,200);
-  
-  maphist["h_RelIsoFR"] = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
+
+  if(job==HNmm){
+    maphist["h_nsignal"] = new TH1F("h_signal","number of signal events",5,-1,4);
+    maphist["h_cutflow"] = new TH1F("h_cutflow","number of signal events in cut flow",4,0,4);
+    maphist["h_singlefake"] = new TH2F("h_singlefake","number of single fakes",4,0,4,4,-1,3);
+    maphist["h_doublefake"] = new TH2F("h_doublefake","number of double fakes",4,0,4,4,-1,3);
+    maphist["h_MET"] = new TH1F("h_MET","Missing Et",300,0.0,300.0);
+    maphist["h_MET"]->SetDefaultSumw2(true);
+    maphist["h_METsign"] = new TH1F("h_METsign","Missing Et significance",50,0.0,50.0);
+    maphist["h_MuonMissCharge"] = new TH1F("h_MuonMissCharge","Miss Charge for muons",6,0,6);
+    maphist["h_EventFakeType"] = new TH1F("h_EventFakeType","Event fake type",3,0,3);
+    maphist["h_LeptvsVert"] = new TH2I("h_LeptvsVert","Leptons per Vertex",50,0,50,5,0,5);
+    maphist["h_dRvsbTag"] = new TH2F("h_dRvsbTag","#deltaR vs b-tag discriminant",100,0.0,10.0,100,-5,14);
+    
+    maphist["h_nVertex"]= new TH1F("h_nVertex","number of verteces",50,0,50);
+    maphist["h_nVertex0"]= new TH1F("h_nVertex0","number of verteces t0",50,0,50);
+    maphist["h_nVertex1"]= new TH1F("h_nVertex1","number of verteces t1",50,0,50);
+    maphist["h_nVertex2"]= new TH1F("h_nVertex2","number of verteces t2",50,0,50);
+    
+    maphist["h_nvtx_norw"] = new TH1F("h_nvtx_norw","Nvtx per bunch crossing at BX = 0 noreweight",60,0.0,60.0);
+    maphist["h_nvtx_rw"] = new TH1F("h_nvtx_rw","Nvtx per bunch crossing at BX = 0 reweight",60,0.0,60.0);
+    maphist["h_RelIsoFR"] = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
+  }
+  else if(job == HNee) ;
+  else if(job == HNFakeBkgmm);
+  else if(job == HNFakeBkgee);
+  else if(job == ZTest){
+    maphist["zpeak_mumu"] =  new TH1F("h_zpeak_mumu","Di-Muon Mass (GeV)",200,0,200);
+    maphist["zpeak_ee"] =  new TH1F("h_zpeak_ee","Di-Muon Mass (GeV)",200,0,200);
+    maphist["zpeak_tautau"] =  new TH1F("h_zpeak_tautau","Di-Muon Mass (GeV)",200,0,200);
+  }
+
+
+    
   return;
 }
 
@@ -437,11 +487,15 @@ bool Analyzer::PassBasicEventCuts(){
 
 double Analyzer::SetEventWeight(){
   
+  //// IsData is only set temp here. In order to avoid making PUweight obj for data
+  
   /// Event weights :   
   if((MCweight ==1.&& target_lumi ==1.) || !MCweight) {
     MCweight=1.; 
     isData=true;
   }
+  else isData=false;
+  
   if(isData) cout << "Running on data" << endl;
   if (fChain == 0)  cout << "GoodBye!" << endl;
   
@@ -456,11 +510,6 @@ double Analyzer::SetEventWeight(){
 
   double e_weight = MCweight;
   return e_weight;
-}
-
-TH2* Analyzer::Get2Hist(TString hname){
-  
-  
 }
 
 
@@ -591,16 +640,29 @@ void Analyzer::OutPutEventInfo(int entry, int step){
   return;
 }
 
-SelectionBase Analyzer::SetUpEvent(int kentry){
+void Analyzer::EndEvent(){
+  
+  delete eventbase;
+
+}
+
+void Analyzer::SetUpEvent(int kentry){
 
   OutPutEventInfo(kentry, 1000); /// output event info every X events wil running
   if (!fChain) cout<<"Problem with fChain"<<endl;
   fChain->GetEntry(kentry);
   
   snu::KEvent eventinfo = GetEventInfo();
-  EventBase evb(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), eventinfo);
+
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), eventinfo);
+
+  isData = eventinfo.IsData();
+  eventbase = new EventBase(lqevent);
   
-  SelectionBase sbase(evb);
-  
-  return sbase;
+  return;
+}
+
+
+Analyzer::Analyzer(): Mass_Z(91.1876),Mass_W(80.398) {
+
 }
