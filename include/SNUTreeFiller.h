@@ -13,10 +13,9 @@
 #include "KTruth.h"
 #include "KTau.h"
 #include "SelectionFunctions.h"
-#include "OtherFunctions.h"
+#include "AnalysisBase.h"
 
-class SNUTreeFiller : public Data {
-
+class SNUTreeFiller : public Data, public AnalysisBase {
 
  public:
   SNUTreeFiller();

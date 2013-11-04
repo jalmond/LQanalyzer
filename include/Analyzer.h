@@ -14,7 +14,7 @@
 #include "SelectionFunctions.h"
 
 // Plotting
-#include "OtherFunctions.h"
+#include "AnalysisBase.h"
 #include "ElectronPlots.h"
 #include "MuonPlots.h"
 #include "JetPlots.h"
@@ -42,14 +42,6 @@ class Analyzer : public SNUTreeFiller {
  private:
   static const Bool_t debug = false; 
   
-  //  static const Double_t integratedlumi = 1.927196301; HLT_Mu5,8
-  //  static const Double_t integratedlumi =  1.483873; HLT_Mu12
-  //  static const Double_t integratedlumi = 22.945019; HLT_Mu17
-  //  static const Double_t integratedlumi = 83.483; HLT_Mu24
-  //  static const Double_t integratedlumi = 123.9391;
-  const Double_t Mass_Z;
-  const Double_t Mass_W;
-
 
  public:
   Double_t *****doubleFake; Double_t ***singleFake; Double_t *****doubleANDsingleFake;

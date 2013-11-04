@@ -15,7 +15,7 @@ using namespace std;
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TH3F.h"
-#include "OtherFunctions.h"
+#include "AnalysisBase.h"
 #include "LQEvent.h"
 
 class BaseSel {

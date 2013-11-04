@@ -1,11 +1,24 @@
-#include "OtherFunctions.h"
+#include "AnalysisBase.h"
 
-int nthdigit(int x, int n) {
+static const double _arrayeta[] = {0.0,1.0,1.479,2.0,2.5};
+static const double _arraypT[]  = {10.,15.,20.,25.,30.,35.,45.,60.,80.,100.};
+static const Int_t nintpT=7;
+static const Int_t ninteta=4;
+
+AnalysisBase::AnalysisBase(): Mass_Z(91.1876), Mass_W(80.398){
+}
+
+AnalysisBase::~AnalysisBase(){
+
+}
+
+
+int AnalysisBase::nthdigit(int x, int n) {
   static int powersof10[] = {1, 10, 100, 1000, 10000, 100000};
   return ((x / powersof10[n]) % 10);
 }
 
-bool isPrompt(long pdgid) {
+bool AnalysisBase::isPrompt(long pdgid) {
   pdgid = abs(pdgid);
   if (pdgid >= 1000001 && pdgid <= 1000006) return true; // SUSY squarks
   else if (pdgid >= 1000011 && pdgid <= 1000016) return true; // SUSY sleptons sneutrinos
@@ -24,7 +37,7 @@ bool isPrompt(long pdgid) {
 }
 
 
-void getFakerate(TH2F* h1, TH2F* h2, TH2F* out, int nbinX, int nbinY) {
+void AnalysisBase::getFakerate(TH2F* h1, TH2F* h2, TH2F* out, int nbinX, int nbinY) {
    double frate,ferr;
    for (int i=1; i<nbinX+1; i++)
       for (int j=1; j<nbinY+1; j++){
@@ -42,7 +55,7 @@ void getFakerate(TH2F* h1, TH2F* h2, TH2F* out, int nbinX, int nbinY) {
    }
 }
 
-void getFakerate(TH1F* h1, TH1F* h2, TH1F* out, int nbinX) {
+void AnalysisBase::getFakerate(TH1F* h1, TH1F* h2, TH1F* out, int nbinX) {
    double frate,ferr;
    for (int i=1; i<nbinX+1; i++) {
      double a = h1->GetBinContent(i);
@@ -59,7 +72,7 @@ void getFakerate(TH1F* h1, TH1F* h2, TH1F* out, int nbinX) {
    }
 }
 
-void DoubleANDSinglebkg(std::vector<snu::KParticle>& leptonColli, UInt_t &ilep, std::vector<snu::KParticle>& leptonCollj, UInt_t &jlep, Double_t *****fakeN, UInt_t &type) {
+void AnalysisBase::DoubleANDSinglebkg(std::vector<snu::KParticle>& leptonColli, UInt_t &ilep, std::vector<snu::KParticle>& leptonCollj, UInt_t &jlep, Double_t *****fakeN, UInt_t &type) {
 
   /*
   double _arrayeta[] = {0.0,1.0,1.479,2.0,2.5};
@@ -118,7 +131,7 @@ void DoubleANDSinglebkg(std::vector<snu::KParticle>& leptonColli, UInt_t &ilep, 
   fakeN[type][i1-1][j1-1][i0-1][j0-1]+=1;
 }
 
-double DoublebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, UInt_t &jlep, Double_t *****fakeN, UInt_t &type, Double_t weight) {
+double AnalysisBase::DoublebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, UInt_t &jlep, Double_t *****fakeN, UInt_t &type, Double_t weight) {
   double bkg=0;
 
   int i0=1; int j0=1;
@@ -174,7 +187,7 @@ double DoublebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl,
   return bkg;
 }
 
-double SinglebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, Double_t ***fakeN, UInt_t &type, Double_t weight) {
+double AnalysisBase::SinglebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, Double_t ***fakeN, UInt_t &type, Double_t weight) {
   double bkg=0;
   
   int i=1; int j=1;
@@ -205,7 +218,7 @@ double SinglebackGround(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl,
   return bkg; 
 }
 
-double DoubleTOSinglebkg(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, UInt_t &jlep) {
+double AnalysisBase::DoubleTOSinglebkg(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl, UInt_t &ilep, UInt_t &jlep) {
   double bkg=0;
 
   int i0=1; int j0=1;
@@ -256,7 +269,7 @@ double DoubleTOSinglebkg(TH2F* fakerate, std::vector<snu::KParticle>& leptonColl
 }
 
 
-void BackGroundEstimate(TH2F* fakerate,  Double_t ***fakeN1, Double_t *****prova, Double_t *****fakeN2, Double_t *singolo, Double_t *errsingolo, Double_t *doppio, Double_t *errdoppio, Double_t *singoloreale, Double_t *errsingoloreale, Double_t *doppioreale, Double_t *totale, Double_t *doubletosingle, Double_t *errdoubletosingle) {
+void AnalysisBase::BackGroundEstimate(TH2F* fakerate,  Double_t ***fakeN1, Double_t *****prova, Double_t *****fakeN2, Double_t *singolo, Double_t *errsingolo, Double_t *doppio, Double_t *errdoppio, Double_t *singoloreale, Double_t *errsingoloreale, Double_t *doppioreale, Double_t *totale, Double_t *doubletosingle, Double_t *errdoubletosingle) {
   UInt_t nbinX=fakerate->GetNbinsX(); UInt_t nbinY=fakerate->GetNbinsY();
   Double_t tmperrsingolo, tmperrdoppio, tmperrsingoloreale, tmpdoubletosinglerr;
   for (UInt_t z=0; z<4; z++) {
@@ -306,7 +319,7 @@ void BackGroundEstimate(TH2F* fakerate,  Double_t ***fakeN1, Double_t *****prova
   }
 }
 
-void WeigthedMean(std::vector<double>& value, std::vector<double>& error, double &mean, double &stddev) {
+void AnalysisBase::WeigthedMean(std::vector<double>& value, std::vector<double>& error, double &mean, double &stddev) {
 if (value.size()>0) {
   double DEN=0; double NUM=0; double weight;
   for(UInt_t iii=0; iii<value.size(); iii++) {

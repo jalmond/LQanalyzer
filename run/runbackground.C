@@ -5,10 +5,12 @@
   string includedir_snu = getenv("INCLUDEDIR_snu");
   gSystem->AddIncludePath(("-I" + includedir).c_str());
   gSystem->AddIncludePath(("-I" + includedir_snu).c_str());
+
+  gSystem->ChangeDirectory((maindir + "/core/").c_str());
+  gROOT->ProcessLine(".L Data.cc+g");
   gSystem->ChangeDirectory((maindir + "/src/").c_str());
   gROOT->ProcessLine(".L Reweight.cc+g");
-  gROOT->ProcessLine(".L Data.cc+g");
-  gROOT->ProcessLine(".L OtherFunctions.cc+g");
+  gROOT->ProcessLine(".L AnalysisBase.cc+g");
   
 
   gSystem->ChangeDirectory((maindir+ "/SNUTree/src/").c_str());  
@@ -23,10 +25,9 @@
 
   gSystem->ChangeDirectory((maindir+ "/Selection/").c_str());
   gROOT->ProcessLine(".L SelectionFunctions.cc+g");  
+
+  gSystem->ChangeDirectory((maindir + "/core/").c_str());
   gROOT->ProcessLine(".L LQEvent.cc+g");  
-
-
-  gSystem->ChangeDirectory((maindir + "/src/").c_str());
   gROOT->ProcessLine(".L SNUTreeFiller.cc+g");
 
   /// Selection Code compilation
@@ -36,9 +37,10 @@
   gROOT->ProcessLine(".L ElectronSelection.cc+g");
   gROOT->ProcessLine(".L MuonSelection.cc+g");
   gROOT->ProcessLine(".L TauSelection.cc+g");
-  //gROOT->ProcessLine(".L MuonSelectionProbe.cc+g");
   gROOT->ProcessLine(".L JetSelection.cc+g");
   gROOT->ProcessLine(".L EventSelection.cc+g");
+
+  gSystem->ChangeDirectory((maindir + "/core/").c_str());
   gROOT->ProcessLine(".L EventBase.cc+g");  
 
   gSystem->ChangeDirectory((maindir +("/Plotting/")).c_str());
@@ -56,6 +58,7 @@
   //gROOT->ProcessLine(".L FakeRateCalculator.cc+g");
   //gROOT->ProcessLine(".L FakeRateCalculator_Ele.cc+g");
   //gROOT->ProcessLine(".L EfficiencyCalculator.cc+g");
+  gSystem->ChangeDirectory((maindir + "/core/").c_str());
   gROOT->ProcessLine(".L ChainMaker.C+g");
 
 

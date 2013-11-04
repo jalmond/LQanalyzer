@@ -5,7 +5,7 @@
 using namespace::snu;
 
 
-Analyzer::Analyzer(jobtype jtype): Mass_Z(91.1876), Mass_W(80.398) {
+Analyzer::Analyzer(jobtype jtype) {
   
   _jtype = jtype;
   /// Initialise histograms
@@ -646,6 +646,6 @@ void Analyzer::SetUpEvent(int kentry){
 }
 
 
-Analyzer::Analyzer(): Mass_Z(91.1876),Mass_W(80.398) {
+Analyzer::Analyzer() {
 
 }
