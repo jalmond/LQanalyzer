@@ -74,3 +74,15 @@ void ElectronSel::ElectronSelection(std::vector<KElectron>& leptonColl) {
 }
 
 
+
+ElectronSel& ElectronSel::operator= (const ElectronSel& ms) {
+  if(this != &ms){    
+    k_lqevent = ms.k_lqevent;  
+  }
+  return *this;
+};
+
+ElectronSel::ElectronSel(const ElectronSel& ms){
+  k_lqevent = ms.k_lqevent;  
+};
+

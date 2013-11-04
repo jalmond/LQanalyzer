@@ -143,3 +143,16 @@ void MuonSel::SetDeposits(Double_t ECalDeposit1 , Double_t HCalDeposit1, Double_
     ECalDeposit2 ? ECalDeposit_max = ECalDeposit2 : ECalDeposit_max=4.0;
     HCalDeposit2 ? HCalDeposit_max = HCalDeposit2 : HCalDeposit_max=6.0;
 }
+
+
+MuonSel& MuonSel::operator= (const MuonSel& ms) {
+  if(this != &ms){    
+    k_lqevent = ms.k_lqevent;  
+  }
+  return *this;
+};
+
+MuonSel::MuonSel(const MuonSel& ms){
+  k_lqevent = ms.k_lqevent;  
+};
+

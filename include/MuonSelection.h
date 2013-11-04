@@ -5,7 +5,6 @@
 #include "KMuon.h"
 
 class MuonSel : public BaseSel {
-  Int_t numVer, leptoni;
   Double_t ECalDeposit_max, HCalDeposit_max, ECalDeposit_min, HCalDeposit_min;
 
   static const Double_t AreaTrackerMu[5];
@@ -15,6 +14,9 @@ class MuonSel : public BaseSel {
  public:
   MuonSel(LQEvent ev);
   ~MuonSel();
+  
+  MuonSel& operator= (const MuonSel& obj);
+  MuonSel(const MuonSel& bs);
 
   
   //// General Selection
@@ -27,7 +29,7 @@ class MuonSel : public BaseSel {
   //// General 
   void SetDeposits(Double_t ECalDeposit, Double_t HCalDeposit);
   void SetDeposits(Double_t ECalDeposit1 , Double_t HCalDeposit1, Double_t ECalDeposit2 , Double_t HCalDeposit2);
-
+  
 };
 
 #endif

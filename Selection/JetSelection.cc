@@ -62,3 +62,16 @@ void JJ::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vector<KMuon> m
 }
 
 
+JJ& JJ::operator= (const JJ& ms) {
+  if(this != &ms){    
+    k_lqevent = ms.k_lqevent;  
+  }
+  return *this;
+};
+
+JJ::JJ(const JJ& ms){
+  k_lqevent = ms.k_lqevent;  
+};
+
+
+

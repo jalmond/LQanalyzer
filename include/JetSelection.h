@@ -18,6 +18,10 @@ class JJ : public BaseSel {
  public:
   JJ(LQEvent ev);
   ~JJ();
+
+  JJ& operator= (const JJ& obj);
+  JJ(const JJ& bs);
+
  
   void JetSelection (std::vector<snu::KJet>& jetColl);
   void JetSelectionLeptonVeto(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);

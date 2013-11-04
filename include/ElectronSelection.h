@@ -8,7 +8,6 @@
 class ElectronSel : public BaseSel {
   
   Bool_t ElectronID;
-  Double_t ElTkIso, ElEcalIso, ElHcalIso;
   static const Double_t AreaTrackerEle[2];
   static const Double_t AreaEcalEle[2];
   static const Double_t AreaHcalEle[2];
@@ -18,6 +17,8 @@ class ElectronSel : public BaseSel {
   ElectronSel(LQEvent ev);
   ~ElectronSel();
 
+  ElectronSel& operator= (const ElectronSel& obj);
+  ElectronSel(const ElectronSel& bs);
   
   void ElectronSelection(std::vector<snu::KElectron>& leptonColl);
 

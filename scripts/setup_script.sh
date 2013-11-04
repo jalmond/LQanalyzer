@@ -8,7 +8,7 @@ export INCLUDEDIR_snu=$PWD/../SNUTree/include/
 export OUTDIR=$PWD/../output/
 
 dir=rootfiles/
-export FILEDIR=$ANALYSISDIR/$dir
+export FILEDIR=$MAINDIR/$dir
 
 echo "Running analysis from" $HOSTNAME " in directory " $ANALYSISDIR
 source setup_rootfiles.sh 

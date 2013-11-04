@@ -5,6 +5,7 @@
 #include "Data.h"
 
 // SNUTree
+#include "KParticle.h"
 #include "KMuon.h"
 #include "KElectron.h"
 #include "KJet.h"
@@ -28,8 +29,10 @@ class SNUTreeFiller : public Data {
   snu::KEvent GetEventInfo();
   std::vector<snu::KTruth>  GetTruthParticles();
 
- Int_t VertexN;
- Bool_t *goodVerticies;
+  snu::KParticle::PartType partType;
+  
+  Int_t VertexN;
+  Bool_t *goodVerticies;
 
   
 };

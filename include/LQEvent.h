@@ -17,12 +17,13 @@ using namespace std;
 #include "KElectron.h"
 #include "KJet.h"
 #include "KTau.h"
+#include "KTruth.h"
 #include "KEvent.h"
 
 class LQEvent {
 
  public:
-  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KTau> taus, std::vector<snu::KJet> jets, snu::KEvent ev);
+  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KTau> taus, std::vector<snu::KJet> jets, std::vector<snu::KTruth> truth, snu::KEvent ev);
 
   ///Copy constructor
   LQEvent(const LQEvent& evb);
@@ -35,6 +36,7 @@ class LQEvent {
   inline std::vector<snu::KMuon> GetBaseMuons() const {return k_muons;}
   inline std::vector<snu::KElectron> GetBaseElectrons() const {return k_electrons;}
   inline std::vector<snu::KTau> GetBaseTaus() const {return k_taus;}
+  inline std::vector<snu::KTruth> GetBaseTruth() const {return k_truth;}
   inline std::vector<snu::KJet> GetBaseJets() const {return k_jets;}
   inline snu::KEvent GetBaseEvent() const {return k_event;}
   
@@ -44,6 +46,7 @@ class LQEvent {
   std::vector<snu::KMuon> k_muons;
   std::vector<snu::KElectron> k_electrons;
   std::vector<snu::KTau> k_taus;
+  std::vector<snu::KTruth> k_truth;
   std::vector<snu::KJet> k_jets;
   snu::KEvent k_event;
 

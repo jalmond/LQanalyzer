@@ -99,7 +99,10 @@ void Analyzer::TestLoop() {
     
     if(eventbase->GetBaseEvent().MET() > 50) continue;
     
-    //// want to add more selection options ( )
+    //////////////////////////////////////////////////////
+    //////////// Select objetcs
+    //////////////////////////////////////////////////////    
+
     std::vector<snu::KMuon> muonColl;
     eventbase->GetMuonSel()->SetPt(20); 
     eventbase->GetMuonSel()->SetEta(2.4);
@@ -109,11 +112,11 @@ void Analyzer::TestLoop() {
     //eventbase->GetMuonSel().SetBSdz(0.10);
     //eventbase->GetMuonSel().SetDeposits(40.0,60.00);    
     eventbase->GetMuonSel()->MuonSelection(muonColl);
+
     std::vector<snu::KJet> jetColl;
     eventbase->GetJetSel()->SetPt(20);
     eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->JetSelection(jetColl);
-
     
     std::vector<snu::KElectron> electronColl;
     eventbase->GetElectronSel()->SetPt(20); 
@@ -123,26 +126,6 @@ void Analyzer::TestLoop() {
     eventbase->GetElectronSel()->SetBSdz(0.10);
     eventbase->GetElectronSel()->ElectronSelection(electronColl); 
     
-    
-    for(vector<snu::KMuon>::iterator it = muonColl.begin(); it!= muonColl.end(); it++){
-      cout <<  "Muon pt = " << it->Pt() << endl;
-      cout << " Eta ="  << it->Eta() << " " << it->Phi() << endl;
-      
-      for(unsigned int g =0; g < GenParticleP->size(); g++){
-	if( it->MuonMatchedGenParticleEta() != -999){
-	  if((fabs(it->MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.1) && (fabs(it->MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.1)) {
-	    cout << "Matched particle has pt = " << GenParticlePt->at(g) << " and has pdgid = " << GenParticlePdgId->at(g) << " and has mother with pdgid = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g))<<  endl;	  
-	  }
-	}
-	else{
-	  if((fabs( GenParticleEta->at(g) - it->Eta() ) < 0.1) && (fabs(GenParticlePhi->at(g) - it->Phi() ) < 0.1)) {
-	    cout << "particle has pt = " << GenParticlePt->at(g) << " and has pdgid = " << GenParticlePdgId->at(g) << endl;	  
-	  }
-	}
-      }      
-    }
-
-
     
     ///// SOME STANDARD PLOTS /////
     ////  Z-> mumu            //////
@@ -654,7 +637,7 @@ void Analyzer::SetUpEvent(int kentry){
   
   snu::KEvent eventinfo = GetEventInfo();
 
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), eventinfo);
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
 
   isData = eventinfo.IsData();
   eventbase = new EventBase(lqevent);
