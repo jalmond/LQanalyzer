@@ -1,12 +1,1 @@
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
-/Users/John/CMS_HNanalysis/data/Majorana100/RootTupleMakerV2_MN100toMuMu_MN_ALL.root
+/data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/RootTupleMakerV2_output_DATA_100_1_Ith.root
