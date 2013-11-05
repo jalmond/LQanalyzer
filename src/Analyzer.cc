@@ -80,10 +80,9 @@ void Analyzer::TestLoop() {
   ///////////////////////////////////////////////////////////////////////////
 
   for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
-    
+
     /// Class has all information for event
     SetUpEvent(jentry); 
-    
     if(!PassBasicEventCuts()) continue;     /// Initial event cuts
     
     /// Trigger List (specific to muons channel)
@@ -92,8 +91,7 @@ void Analyzer::TestLoop() {
     if(!PassTrigger(triggerslist, prescale)) continue;
     /// Correct MC for pileup
 
-    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
-    
+    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
     numberVertices = eventbase->GetBaseEvent().nVertices();
     if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
     
@@ -101,7 +99,7 @@ void Analyzer::TestLoop() {
     
     //////////////////////////////////////////////////////
     //////////// Select objetcs
-    //////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////   
 
     std::vector<snu::KMuon> muonColl;
     eventbase->GetMuonSel()->SetPt(20); 
@@ -126,7 +124,6 @@ void Analyzer::TestLoop() {
     eventbase->GetElectronSel()->SetBSdz(0.10);
     eventbase->GetElectronSel()->ElectronSelection(electronColl); 
     
-    
     ///// SOME STANDARD PLOTS /////
     ////  Z-> mumu            //////
 
@@ -138,7 +135,6 @@ void Analyzer::TestLoop() {
       } 
     }
 
-    
     ///// SOME STANDARD PLOTS /////
     ////  Z-> ee              //////
     if (electronColl.size() == 2) {      
@@ -187,8 +183,9 @@ void Analyzer::HNmmLoop() {
     if(!PassTrigger(triggerslist, prescale)) continue;
       
     /// Correct MC for pileup
-    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(PileUpInteractionsTrue->at(0))*MCweight;
-
+    cout << int(PileUpInteractionsTrue->at(0)) << " " << PileUpInteractionsTrue->at(0) << endl;
+    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
+    
     numberVertices = eventbase->GetBaseEvent().nVertices();
     if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
 
@@ -347,7 +344,7 @@ Analyzer::~Analyzer() {
   
  }
 
-void Analyzer::NEvents(float n_events){
+void Analyzer::NEvents(Long64_t n_events){
   entrieslimit =  n_events;
   return;
 }
@@ -635,11 +632,13 @@ void Analyzer::SetUpEvent(int kentry){
   if (!fChain) cout<<"Problem with fChain"<<endl;
   fChain->GetEntry(kentry);
   
+
   snu::KEvent eventinfo = GetEventInfo();
 
   LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
-
+  
   isData = eventinfo.IsData();
+  
   eventbase = new EventBase(lqevent);
   
   return;

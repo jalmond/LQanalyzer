@@ -76,9 +76,9 @@
     Analyzer Pippo(Analyzer::ZTest); /// create analyzer class object    
     Pippo.Init(chain50);
     Pippo.SetName("Majorana_50",1);
-    Pippo.SetTargetLumi(887.501);
-    Pippo.SetWeight(1071.1, 49994);
-    Pippo.NEvents(10000);
+    Pippo.SetTargetLumi(1.);
+    Pippo.SetWeight(1., 1.);
+    //    Pippo.NEvents(10000);
     Pippo.Run();
 
   }

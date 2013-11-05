@@ -124,7 +124,7 @@ class Analyzer : public SNUTreeFiller {
   void SetEffectiveLumi(Double_t lumi);
   void SetName(TString name, Int_t version);
   void SetEvtN(Long64_t events);
-  void NEvents(float n_events);
+  void NEvents(Long64_t n_events);
   bool PassBasicEventCuts();
   void OutPutEventInfo(int entry, int step);
   void SetUpEvent(int kentry);

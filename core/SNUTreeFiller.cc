@@ -200,60 +200,62 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
 
     /// truth info
-    muon.SetMuonMatchedGenParticleEta(MuonMatchedGenParticleEta->at(ilep));
-    muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
-    muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
-
-    bool nomatched_muon(false);
-    int iMother(-999),iDaughter(-999), ipdgid(-999), truemu_index(-999);
-    ///// ADD prompt definition for MC
-    for(unsigned int g =0; g < GenParticleP->size(); g++){
-      if((GenParticleStatus->at(g) == 3) &&fabs(GenParticlePdgId->at(g))==13){
-	if( muon.MuonMatchedGenParticleEta() != -999){
-	  if((fabs(muon.MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.2) && (fabs(muon.MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.2)) {
-	    if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
-	      iMother = GenParticleMotherIndex->at(g);
-	      iDaughter = GenParticleNumDaught->at(g);
-	      ipdgid =  GenParticlePdgId->at(g);
-	      truemu_index = g;
+    if(!isData){
+      muon.SetMuonMatchedGenParticleEta(MuonMatchedGenParticleEta->at(ilep));
+      muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
+      muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
+      
+      bool nomatched_muon(false);
+      int iMother(-999),iDaughter(-999), ipdgid(-999), truemu_index(-999);
+      ///// ADD prompt definition for MC
+      for(unsigned int g =0; g < GenParticleP->size(); g++){
+	if((GenParticleStatus->at(g) == 3) &&fabs(GenParticlePdgId->at(g))==13){
+	  if( muon.MuonMatchedGenParticleEta() != -999){
+	    if((fabs(muon.MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.2) && (fabs(muon.MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.2)) {
+	      if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
+		iMother = GenParticleMotherIndex->at(g);
+		iDaughter = GenParticleNumDaught->at(g);
+		ipdgid =  GenParticlePdgId->at(g);
+		truemu_index = g;
+	      }
 	    }
 	  }
-	}
-	else if ((fabs( GenParticleEta->at(g) - muon.Eta() ) < 0.2) && (fabs(GenParticlePhi->at(g) - muon.Phi() ) < 0.2)) {
+	  else if ((fabs( GenParticleEta->at(g) - muon.Eta() ) < 0.2) && (fabs(GenParticlePhi->at(g) - muon.Phi() ) < 0.2)) {
 	    iMother = GenParticleMotherIndex->at(g);
 	    iDaughter = GenParticleNumDaught->at(g);      	  
 	    ipdgid =  GenParticlePdgId->at(g);
 	    truemu_index = g;
-	} else nomatched_muon = true;
-      }      
-    }/// end gen loop    
-    
-    
-    int MotherPdgId(-999);
-    if(!nomatched_muon){
-      MotherPdgId =  GenParticlePdgId->at(iMother);
+	  } else nomatched_muon = true;
+	}      
+      }/// end gen loop    
+      
+      
+      int MotherPdgId(-999);
+      if(!nomatched_muon){
+	MotherPdgId =  GenParticlePdgId->at(iMother);
+      }
+      
+      if (isPrompt( MotherPdgId)){
+	if ( MuonCharge->at(ilep)*MotherPdgId  == -24 || MuonCharge->at(ilep)*MotherPdgId  == 15 )
+	  partType = KParticle::chargemisid;
+	else partType = KParticle::notfake;
+      }
+      else {
+	if ( nthdigit( abs(MotherPdgId ),0 ) == 5 || nthdigit( abs(MotherPdgId ),1 ) == 5 || nthdigit( abs(MotherPdgId ),2 ) == 5) partType = KParticle::bjet;    
+	else if ( nthdigit( abs(MotherPdgId ),0 ) == 4 || nthdigit( abs(MotherPdgId ),1 ) == 4 || nthdigit( abs(MotherPdgId ),2 ) == 4) partType = KParticle::cjet;
+	else if
+	  (nthdigit( abs(MotherPdgId ),0 ) == 1 || nthdigit( abs(MotherPdgId ),1 ) == 1 || nthdigit( abs(MotherPdgId ),2 ) == 1
+	   || nthdigit( abs(MotherPdgId ),0 ) == 2 || nthdigit( abs(MotherPdgId ),1 ) == 2 || nthdigit( abs(MotherPdgId ),2 ) == 2
+	   || nthdigit( abs(MotherPdgId ),0 ) == 3 || nthdigit( abs(MotherPdgId ),1 ) == 3 || nthdigit( abs(MotherPdgId ),2 ) == 3 )	
+	  partType = KParticle::jet;
+      }
+      
+      muon.SetType(partType);
+      muon.SetTruthParticleIndex(truemu_index);
+      muon.SetMotherIndex(iMother);
+      muon.SetDaughterIndex(iDaughter);
     }
-    
-    if (isPrompt( MotherPdgId)){
-      if ( MuonCharge->at(ilep)*MotherPdgId  == -24 || MuonCharge->at(ilep)*MotherPdgId  == 15 )
-      partType = KParticle::chargemisid;
-      else partType = KParticle::notfake;
-    }
-    else {
-      if ( nthdigit( abs(MotherPdgId ),0 ) == 5 || nthdigit( abs(MotherPdgId ),1 ) == 5 || nthdigit( abs(MotherPdgId ),2 ) == 5) partType = KParticle::bjet;    
-      else if ( nthdigit( abs(MotherPdgId ),0 ) == 4 || nthdigit( abs(MotherPdgId ),1 ) == 4 || nthdigit( abs(MotherPdgId ),2 ) == 4) partType = KParticle::cjet;
-      else if
-	(nthdigit( abs(MotherPdgId ),0 ) == 1 || nthdigit( abs(MotherPdgId ),1 ) == 1 || nthdigit( abs(MotherPdgId ),2 ) == 1
-	 || nthdigit( abs(MotherPdgId ),0 ) == 2 || nthdigit( abs(MotherPdgId ),1 ) == 2 || nthdigit( abs(MotherPdgId ),2 ) == 2
-	 || nthdigit( abs(MotherPdgId ),0 ) == 3 || nthdigit( abs(MotherPdgId ),1 ) == 3 || nthdigit( abs(MotherPdgId ),2 ) == 3 )	
-	partType = KParticle::jet;
-    }
-    
-    muon.SetType(partType);
-    muon.SetTruthParticleIndex(truemu_index);
-    muon.SetMotherIndex(iMother);
-    muon.SetDaughterIndex(iDaughter);
-    
+
     double reliso = (MuonPFIsoR03ChargedHadron->at(ilep) + std::max(0.0, MuonPFIsoR03NeutralHadron->at(ilep) + MuonPFIsoR03Photon->at(ilep) - 0.5*MuonPFIsoR03PU->at(ilep)))/MuonPt->at(ilep);
     if(reliso < 0) reliso = 0.0001;
     muon.SetRelIso(reliso);

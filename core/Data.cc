@@ -722,7 +722,6 @@ void Data::Init(TTree *tree)
    fChain->SetBranchAddress("PtHat", &PtHat, &b_PtHat);
    fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
    fChain->SetBranchAddress("CaloMET", &CaloMET, &b_CaloMET);
-   fChain->SetBranchAddress("CaloMETUncorr", &CaloMETUncorr, &b_CaloMETUncorr);
    fChain->SetBranchAddress("CaloSumET", &CaloSumET, &b_CaloSumET);
 
    fChain->SetBranchAddress("CaloMETPhiType1Cor", &CaloMETPhiType1Cor, &b_CaloMETPhiType1Cor);

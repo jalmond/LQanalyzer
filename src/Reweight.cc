@@ -216,7 +216,7 @@ class Reweight {
     }
 */
     double GetWeightBC(double costheta) {
-      Int_t bin = 10 * (costheta + 1.)/2. + 1;
+      Int_t bin = int(10 * (costheta + 1.)/2. + 1);
       if (!file_) {
         cout << "\n\ncostheta weight file not found!\n\n"<<endl<<endl;
         return -1.;
@@ -229,7 +229,7 @@ class Reweight {
     }
 
     double GetWeightAD(double costheta) {
-      Int_t bin = 10 * (costheta + 1.)/2. + 1;
+      Int_t bin = int(10 * (costheta + 1.)/2. + 1);
       if (!file_) {
         cout << "\n\ncostheta weight file not found!\n\n"<<endl<<endl;
         return -1.;
@@ -242,7 +242,7 @@ class Reweight {
     }
 
     double GetWeightBCboost(double boost) {
-      Int_t bin = 50. * (boost)/1.2 + 1;
+      Int_t bin = int(50. * (boost)/1.2 + 1);
       if (!file_) {
         std::cout << "\n\ncostheta weight file not found!\n\n";
         return -1.;
@@ -255,7 +255,7 @@ class Reweight {
     }
 
     double GetWeightADboost(double boost) {
-      Int_t bin = 50. * (boost)/1.2 + 1;
+      Int_t bin = int(50. * (boost)/1.2 + 1);
       if (!file_) {
         cout << "\n\ncostheta weight file not found!\n\n";
         return -1.;
@@ -269,7 +269,7 @@ class Reweight {
 
 
     double GetWeightBCeta(double eta) {
-      Int_t bin = 20. * (eta)/4. + 1; // 40 bins rebinned down to 20 bins;
+      Int_t bin = int(20. * (eta)/4. + 1); // 40 bins rebinned down to 20 bins;
       if (!file_) {
         cout << "\n\ncostheta weight file not found!\n\n";
         return -1.;
@@ -282,7 +282,7 @@ class Reweight {
     }
 
     double GetWeightADeta(double eta) {
-      Int_t bin = 20. * (eta)/4. + 1; // 40 bins rebinned down to 20 bins
+      Int_t bin = int(20. * (eta)/4. + 1); // 40 bins rebinned down to 20 bins
       if (!file_) {
         cout << "\n\ncostheta weight file not found!\n\n";
         return -1.;
