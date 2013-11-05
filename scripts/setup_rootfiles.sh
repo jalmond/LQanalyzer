@@ -9,6 +9,14 @@ function setup_rootfile(){
     done
 }
 
+function make_clean(){
+    export currentdir = $PWD
+    cd $MAINDIR/scripts/
+    source cleanup.sh -a
+    cd $currentdir   
+
+}
+
 function setup_rootfile_manual(){
     
     wget http://www.hep.man.ac.uk/u/john/CMS/rootfiles/MyDataPileupHistogram.root
