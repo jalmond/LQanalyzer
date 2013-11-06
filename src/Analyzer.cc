@@ -84,13 +84,12 @@ void Analyzer::TestLoop() {
     /// Class has all information for event
     SetUpEvent(jentry); 
     if(!PassBasicEventCuts()) continue;     /// Initial event cuts
-    
     /// Trigger List (specific to muons channel)
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
     if(!PassTrigger(triggerslist, prescale)) continue;
     /// Correct MC for pileup
-
+    
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
     numberVertices = eventbase->GetBaseEvent().nVertices();
     if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
@@ -183,7 +182,6 @@ void Analyzer::HNmmLoop() {
     if(!PassTrigger(triggerslist, prescale)) continue;
       
     /// Correct MC for pileup
-    cout << int(PileUpInteractionsTrue->at(0)) << " " << PileUpInteractionsTrue->at(0) << endl;
     if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
     
     numberVertices = eventbase->GetBaseEvent().nVertices();
