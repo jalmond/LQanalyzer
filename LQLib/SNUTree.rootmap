@@ -1,0 +1,2 @@
+Library.snu@@KParticle: libSNUTree.so libPhysics.so
+Library.snu@@KEvent: libSNUTree.so
