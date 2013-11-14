@@ -365,9 +365,10 @@ bool Analyzer::PassTrigger(vector<TString> list, int& prescaler){
 
 
 
-void Analyzer::SetName(TString name, Int_t version) {
+void Analyzer::SetName(TString name, Int_t version, TString dir) {
 
   string out_dir = getenv("LQANALYZER_OUTPUT_PATH");
+  if(!dir.Contains("NULL")) out_dir = dir;
   completename = TString(out_dir) + name + "_";
   completename += version;
   completename += ".root";

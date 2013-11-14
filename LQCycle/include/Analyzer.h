@@ -122,7 +122,7 @@ class Analyzer : public SNUTreeFiller {
   void SetWeight(Double_t CrossSection, Double_t nevents);
   void SetTargetLumi(Double_t lumi);
   void SetEffectiveLumi(Double_t lumi);
-  void SetName(TString name, Int_t version);
+  void SetName(TString name, Int_t versio, TString dir="NULL");
   void SetEvtN(Long64_t events);
   void NEvents(Long64_t n_events);
   bool PassBasicEventCuts();
