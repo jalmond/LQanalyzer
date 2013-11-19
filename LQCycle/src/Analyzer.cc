@@ -14,10 +14,8 @@ using namespace::snu;
 
 Analyzer::Analyzer(jobtype jtype) {
   _jtype = jtype;
-  std::getchar();
   Initialise(jtype);
   std::cout << "Initialised" << std::endl;
-  std::getchar();
 }
 
 
@@ -27,7 +25,6 @@ void Analyzer::Initialise(jobtype jtype){
   MakeHistograms(jtype);
 
   std::cout << "Made histograms" << std::endl;
-  std::getchar();
   if(jtype== ZTest){    
     cout << "Making clever hists for Z ->ll test code" << endl;
     //// Initialise Plotting class functions
@@ -45,8 +42,6 @@ void Analyzer::Initialise(jobtype jtype){
     cout << "No type set for histogram maker" << endl;
   }
   
-  std::cout << "Made new hists" << std::endl;
-  std::getchar();
 
   TDirectory* origDir = gDirectory;
  
@@ -94,14 +89,11 @@ void Analyzer::Run(){
   /// Initialise event cycle :
   /// sets weight and loads all necessary rootfiles
   InitialiseCycle();
-  std::cout << "Initialised cycle" << std::endl;
-  std::getchar();
 
   /// Decide which Cycle to run
   if(_jtype == ZTest) TestLoop();
   else if(_jtype == HNmm) HNmmLoop();
   else cout << "Error in setting Job Type in Analyzer constructor; " << endl;
-
   
   EndCycle();
   
@@ -119,25 +111,15 @@ void Analyzer::TestLoop() {
   ///  START OF EVENT LOOP                                                                                                                                        
   ///////////////////////////////////////////////////////////////////////////        
     for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {    
-      if(jentry ==0) std::cout << "setting up event Chain" << std::endl;
-      if(jentry ==0) std::getchar();
       SetUpEvent(jentry);
-      if(jentry ==0)std::cout << "Setup event" << std::endl;
-      if(jentry ==0)std::getchar();
       ExecuteEvent();
-      if(jentry ==0) std::cout << "executed event" << std::endl;
-      if(jentry ==0)std::getchar();
       EndEvent();
-      if(jentry ==0) std::cout << "finished event" << std::endl;
-      if(jentry ==0)std::getchar();
-      if(jentry ==50000)std::getchar();
-      if(jentry ==100000)std::getchar();
-      if(jentry ==200000)std::getchar();
   } 
 }
 
 void Analyzer::ExecuteEvent(){
-  
+ 
+  return;
   if(!PassBasicEventCuts()) return;     /// Initial event cuts
     
   /// Trigger List (specific to muons channel)
@@ -742,7 +724,8 @@ void Analyzer::OutPutEventInfo(int entry, int step){
 }
 
 void Analyzer::EndEvent(){
-  delete eventbase;
+
+ delete eventbase;
 
 }
 
@@ -750,11 +733,11 @@ void Analyzer::SetUpEvent(int kentry){
 
   OutPutEventInfo(kentry, 1000); /// output event info every X events wil running
   if (!fChain) cout<<"Problem with fChain"<<endl;
-  
-  int nbytes = fChain->GetEntry(kentry,0);
-  //cout << "Get Entry =  " << nbytes << endl;
 
-  snu::KEvent eventinfo = GetEventInfo();  
+
+  int nbytes = fChain->GetEntry(kentry,0); 
+
+  snu::KEvent eventinfo = GetEventInfo(); 
   LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);  
   isData = eventinfo.IsData();
   

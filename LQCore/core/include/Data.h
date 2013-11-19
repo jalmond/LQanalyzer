@@ -34,7 +34,21 @@ public :
    void     Show(Long64_t entry = -1); //remove if possible
 
    void setBranchStatus(void);
+   /// Connect an input variable                                                
+   template< typename T >
+     bool ConnectVariable(  const char* branchName,
+			    T& variable , TBranch* br);
+   /// Specialisation for object pointers                                                                                                                                      
+   template< typename T >
+     bool ConnectVariable(const char* branchName,
+			  T*& variable , TBranch* br);
+
+
    
+
+   void Reset();
+   void ConnectVariables(Bool_t setall);
+
    Long64_t nentries;
 
    // Declaration of leaf types

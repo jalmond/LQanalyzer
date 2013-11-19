@@ -4,7 +4,7 @@
 InputDir="/data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/"
 sample="periodAelectron"
 number_of_cores=1
-number_of_events_per_job=200000
+number_of_events_per_job=-1
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
 ### configure run
