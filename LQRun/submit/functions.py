@@ -1,4 +1,4 @@
-def makeConfigFile(job, input, sample, ver, output):
+def makeConfigFile(job, input, sample, ver, output, nevents):
 
     config='{\n'
     config+='  string maindir = getenv("LQANALYZER_DIR");\n'   
@@ -25,6 +25,9 @@ def makeConfigFile(job, input, sample, ver, output):
     config+='  SNUanal.SetName("'+ sample +'",'+ str(ver) +',"'+ output +'");\n'
     config+='  SNUanal.SetTargetLumi(1.);\n'
     config+='  SNUanal.SetWeight(1., 1.);\n'
+
+    if not nevents ==-1 : 
+        config+='  SNUanal.NEvents(' + str(nevents) + ');\n'
     config+='  SNUanal.Run();\n'
     config+='  \n}'
 
@@ -33,4 +36,4 @@ def makeConfigFile(job, input, sample, ver, output):
 #Import date
 def now():
     from datetime import datetime
-    return str(datetime.now().hour)+str(datetime.now().minute)
+    return str(datetime.now().month) + str(datetime.now().day)+ str(datetime.now().hour)+str(datetime.now().minute)

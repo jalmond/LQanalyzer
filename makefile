@@ -7,13 +7,16 @@
  #                                                                         #
  ###########################################################################
 
-all: snutree core plotting selection cycle 
+all: snutree core AnalysisCore plotting selection cycle 
 
 snutree::
 	(cd SNUTree; make)
 
 core::
 	(cd LQCore/core; make)
+
+AnalysisCore:  
+	(cd LQCore/AnalysisCore; make)
 
 plotting::
 	(cd LQCore/Plotting; make)

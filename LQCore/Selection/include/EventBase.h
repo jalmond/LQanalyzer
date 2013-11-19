@@ -39,20 +39,20 @@ class EventBase {
   inline GenSelection* GetTruthSel() const {return k_truthsel;}
   inline EventSelection* GetEventSel() const {return k_eventsel;}
 
-  inline std::vector<snu::KMuon> GetBaseMuons() const {return k_LQevent.GetBaseMuons();}
-  inline std::vector<snu::KElectron> GetBaseElectrons() const {return k_LQevent.GetBaseElectrons();}
-  inline std::vector<snu::KJet> GetBaseJets() const {return k_LQevent.GetBaseJets();}
-  inline std::vector<snu::KTau> GetBaseTaus() const {return k_LQevent.GetBaseTaus();}
-  inline std::vector<snu::KTruth> GetBaseTruth() const {return k_LQevent.GetBaseTruth();}
-  inline snu::KEvent GetBaseEvent() const {return k_LQevent.GetBaseEvent();}
+  inline std::vector<snu::KMuon> GetBaseMuons() const {return k_LQevent->GetBaseMuons();}
+  inline std::vector<snu::KElectron> GetBaseElectrons() const {return k_LQevent->GetBaseElectrons();}
+  inline std::vector<snu::KJet> GetBaseJets() const {return k_LQevent->GetBaseJets();}
+  inline std::vector<snu::KTau> GetBaseTaus() const {return k_LQevent->GetBaseTaus();}
+  inline std::vector<snu::KTruth> GetBaseTruth() const {return k_LQevent->GetBaseTruth();}
+  inline snu::KEvent GetBaseEvent() const {return k_LQevent->GetBaseEvent();}
 
-
+  
   ///Copy constructor
   EventBase(const EventBase& sb);
-
-  inline LQEvent GetEventBase() const {return k_LQevent;}
   
-  LQEvent k_LQevent;
+  LQEvent* GetEventBase() const {return k_LQevent;}
+
+  LQEvent* k_LQevent;
   MuonSelection* k_muonsel;
   ElectronSelection* k_electronsel;
   JetSelection* k_jetsel;

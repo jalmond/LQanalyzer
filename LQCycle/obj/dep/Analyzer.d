@@ -88,8 +88,8 @@ Analyzer.o: src/Analyzer.cc include/Analyzer.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KJet.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KMuon.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KEvent.h \
-  /home/jalmond/LQanalyzer/LQCore/core/include/Reweight.h \
-  /programs/root/include/TH1D.h \
+  /home/jalmond/LQanalyzer/LQCore/AnalysisCore/include/Reweight.h \
+  /programs/root/include/TH1D.h /programs/root/include/TH1F.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/SNUTreeFiller.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/AnalysisBase.h \
   /home/jalmond/LQanalyzer/LQCore/Selection/include/EventBase.h \
@@ -101,4 +101,5 @@ Analyzer.o: src/Analyzer.cc include/Analyzer.h \
   /home/jalmond/LQanalyzer/LQCore/Selection/include/GenSelection.h \
   /home/jalmond/LQanalyzer/LQCore/Selection/include/EventSelection.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KEvent.h \
-  /home/jalmond/LQanalyzer/LQCore/core/include/LQEvent.h
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQEvent.h \
+  /programs/root/include/TDirectory.h

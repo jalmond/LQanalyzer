@@ -1,19 +1,38 @@
 #include "Analyzer.h"
+
+// STL include(s):
 #include <stdio.h>  
 #include <stdlib.h>     /* getenv */
+#include <stdexcept>
+#include <sstream>
+#include <iostream>
+
+// ROOT include(s): 
+#include "TDirectory.h"
 
 using namespace::snu;
 
-
 Analyzer::Analyzer(jobtype jtype) {
-  
   _jtype = jtype;
+  std::getchar();
+  Initialise(jtype);
+  std::cout << "Initialised" << std::endl;
+  std::getchar();
+}
+
+
+void Analyzer::Initialise(jobtype jtype){
+    
   /// Initialise histograms
   MakeHistograms(jtype);
+
+  std::cout << "Made histograms" << std::endl;
+  std::getchar();
   if(jtype== ZTest){    
     cout << "Making clever hists for Z ->ll test code" << endl;
     //// Initialise Plotting class functions
     /// jtype sets which histograms to make    
+
     MakeCleverHistograms(muhist, "Zmuons");
     MakeCleverHistograms(elhist, "Zelectrons");
   }
@@ -25,24 +44,35 @@ Analyzer::Analyzer(jobtype jtype) {
   else {
     cout << "No type set for histogram maker" << endl;
   }
+  
+  std::cout << "Made new hists" << std::endl;
+  std::getchar();
 
+  TDirectory* origDir = gDirectory;
+ 
   ///////////////////////////////////////////////////////////////////////
   //////// For HN analysis  /////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////
   //// FakeRate Input file
   //////////////////////////////////////////////////////////////////////
   string analysisdir = getenv("FILEDIR");  
-  TFile *infile = new TFile((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
-  infile->cd();
-  TDirectory *dir=gDirectory;             
-  dir->GetObject("h_FOrate3",FRHist);
-  if (debug) cout<<"fine"<<endl;
-
-
+  
+  // Create a unique directory in memory to hold the histograms: 
+  TFile *infile = TFile::Open((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
+  CheckFile(infile);
+  
+  TDirectory* tempDir = GetTemporaryDirectory();
+  tempDir->cd();  
+  FRHist = dynamic_cast<TH2F*> (( infile->Get("h_FOrate3"))->Clone());  
+  infile->Close();
+  delete infile;
+  origDir->cd();
   ///////////////////////////////////////////////////////////////////////
   ////  Inital settings for running on samples
   entrieslimit = -1; /// Set default to all events
   ///////////////////////////////////////////////////////////////////////
+
+  return;
 }
 
 
@@ -60,110 +90,121 @@ Analyzer::Analyzer(jobtype jtype) {
 //////////////////////////////////////////////////////////////////////
 
 void Analyzer::Run(){
-  
+
+  /// Initialise event cycle :
+  /// sets weight and loads all necessary rootfiles
+  InitialiseCycle();
+  std::cout << "Initialised cycle" << std::endl;
+  std::getchar();
+
+  /// Decide which Cycle to run
   if(_jtype == ZTest) TestLoop();
   else if(_jtype == HNmm) HNmmLoop();
   else cout << "Error in setting Job Type in Analyzer constructor; " << endl;
+
+  
+  EndCycle();
+  
 }
 
+
 //  TEST loop for Z to mumu/ee/tautau 
-void Analyzer::TestLoop() {
-
-  //// This is a loop for running over Drell Yan MC OR data events and plotting invariant mass of mass peak
-  weight= SetEventWeight();  
+void Analyzer::TestLoop() {  
   
-  string analysisdir = getenv("FILEDIR");
-  if(!isData) reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
-  
-  ///////////////////////////////////////////////////////////////////////
-  ///  START OF EVENT LOOP
-  ///////////////////////////////////////////////////////////////////////////
-
-  vector<snu::KMuon> kmuons; 
+  //vector<snu::KMuon> kmuons; 
   //TTree * tree = new TTree("SKTree","test");
   //  tree->Branch("TestMuons", "vector<snu::KMuon>" &kmuons);
   
-  
-  for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {
-
-    /// Class has all information for event
-    SetUpEvent(jentry); 
-    if(!PassBasicEventCuts()) continue;     /// Initial event cuts
-    /// Trigger List (specific to muons channel)
-    std::vector<TString> triggerslist;
-    triggerslist.push_back("HLT_Mu17_TkMu8_v");
-    if(!PassTrigger(triggerslist, prescale)) continue;
-    /// Correct MC for pileup
-    
-    if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
-    numberVertices = eventbase->GetBaseEvent().nVertices();
-    if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) continue; //// Make cut on event wrt vertex
-    
-    if(eventbase->GetBaseEvent().MET() > 50) continue;
-    
-    //////////////////////////////////////////////////////
-    //////////// Select objetcs
-    //////////////////////////////////////////////////////   
-
-    std::vector<snu::KMuon> muonColl;
-    eventbase->GetMuonSel()->SetPt(20); 
-    eventbase->GetMuonSel()->SetEta(2.4);
-    //eventbase->GetMuonSel().SetRelIso(1000.);
-    //eventbase->GetMuonSel().SetChiNdof(1000); 
-    //eventbase->GetMuonSel().SetBSdxy(0.01);
-    //eventbase->GetMuonSel().SetBSdz(0.10);
-    //eventbase->GetMuonSel().SetDeposits(40.0,60.00);    
-    eventbase->GetMuonSel()->Selection(muonColl);
-
-    std::vector<snu::KJet> jetColl;
-    eventbase->GetJetSel()->SetPt(20);
-    eventbase->GetJetSel()->SetEta(2.5);
-    eventbase->GetJetSel()->Selection(jetColl);
-    
-    std::vector<snu::KElectron> electronColl;
-    eventbase->GetElectronSel()->SetPt(20); 
-    eventbase->GetElectronSel()->SetEta(2.5); 
-    eventbase->GetElectronSel()->SetRelIso(0.15); 
-    eventbase->GetElectronSel()->SetBSdxy(0.02); 
-    eventbase->GetElectronSel()->SetBSdz(0.10);
-    eventbase->GetElectronSel()->Selection(electronColl); 
-    
-    ///// SOME STANDARD PLOTS /////
-    ////  Z-> mumu            //////
-
-    if (muonColl.size() == 2) {      
-      KParticle Z = muonColl.at(0) + muonColl.at(1);
-      if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
-	GetHist("zpeak_mumu")->Fill(Z.M(), weight);	 /// Plots Z peak
-	FillCLHist(muhist, "Zmuons", muonColl, weight);
-      } 
-    }
-
-    ///// SOME STANDARD PLOTS /////
-    ////  Z-> ee              //////
-    if (electronColl.size() == 2) {      
-      KParticle Z = electronColl.at(0) + electronColl.at(1);
-      if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
-	GetHist("zpeak_ee")->Fill(Z.M(), weight);	 /// Plots Z peak
-	FillCLHist(elhist, "Zelectrons", electronColl, eventbase->GetBaseEvent().JetRho(), weight);
-      } 
-    }
-    
-    //tree->Fill();
-    EndEvent();
-  }// End of event loop
-  
-  //outfile = new TFile(completename,"RECREATE");
-  //outfile->cd();
-  //  tree->Write();
-  //outfile->Write();
-  OpenPutputFile();  
-  WriteHists();/// writes all outputs in maphist
-  WriteCLHists(); /// writes all hists set with MakeCleverHistograms
-  
-  outfile->Close();
-
+  ///////////////////////////////////////////////////////////////////////                                                                                                   
+  ///  START OF EVENT LOOP                                                                                                                                        
+  ///////////////////////////////////////////////////////////////////////////        
+    for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {    
+      if(jentry ==0) std::cout << "setting up event Chain" << std::endl;
+      if(jentry ==0) std::getchar();
+      SetUpEvent(jentry);
+      if(jentry ==0)std::cout << "Setup event" << std::endl;
+      if(jentry ==0)std::getchar();
+      ExecuteEvent();
+      if(jentry ==0) std::cout << "executed event" << std::endl;
+      if(jentry ==0)std::getchar();
+      EndEvent();
+      if(jentry ==0) std::cout << "finished event" << std::endl;
+      if(jentry ==0)std::getchar();
+      if(jentry ==50000)std::getchar();
+      if(jentry ==100000)std::getchar();
+      if(jentry ==200000)std::getchar();
+  } 
 }
+
+void Analyzer::ExecuteEvent(){
+  
+  if(!PassBasicEventCuts()) return;     /// Initial event cuts
+    
+  /// Trigger List (specific to muons channel)
+  std::vector<TString> triggerslist;
+  triggerslist.push_back("HLT_Mu17_TkMu8_v");
+  if(!PassTrigger(triggerslist, prescale)) return;
+  /// Correct MC for pileup
+  
+  if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
+  numberVertices = eventbase->GetBaseEvent().nVertices();
+  if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+  
+  if(eventbase->GetBaseEvent().MET() > 50) return;
+  
+  //////////////////////////////////////////////////////
+  //////////// Select objetcs
+  //////////////////////////////////////////////////////   
+  
+
+  std::vector<snu::KMuon> muonColl;
+  eventbase->GetMuonSel()->SetPt(20); 
+  eventbase->GetMuonSel()->SetEta(2.4);
+  //eventbase->GetMuonSel().SetRelIso(1000.);
+  //eventbase->GetMuonSel().SetChiNdof(1000); 
+  //eventbase->GetMuonSel().SetBSdxy(0.01);
+  //eventbase->GetMuonSel().SetBSdz(0.10);
+  //eventbase->GetMuonSel().SetDeposits(40.0,60.00);    
+  eventbase->GetMuonSel()->Selection(muonColl);
+  
+  std::vector<snu::KJet> jetColl;
+  eventbase->GetJetSel()->SetPt(20);
+  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->Selection(jetColl);
+  
+  std::vector<snu::KElectron> electronColl;
+  eventbase->GetElectronSel()->SetPt(20); 
+  eventbase->GetElectronSel()->SetEta(2.5); 
+  eventbase->GetElectronSel()->SetRelIso(0.15); 
+  eventbase->GetElectronSel()->SetBSdxy(0.02); 
+  eventbase->GetElectronSel()->SetBSdz(0.10);
+  eventbase->GetElectronSel()->Selection(electronColl); 
+  
+  ///// SOME STANDARD PLOTS /////
+  ////  Z-> mumu            //////
+  
+
+  if (muonColl.size() == 2) {      
+    KParticle Z = muonColl.at(0) + muonColl.at(1);
+    if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
+      FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
+      FillCLHist(muhist, "Zmuons", muonColl, weight);
+    } 
+  }
+  
+  ///// SOME STANDARD PLOTS /////
+  ////  Z-> ee              //////
+  if (electronColl.size() == 2) {      
+    KParticle Z = electronColl.at(0) + electronColl.at(1);
+    if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
+      FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
+      FillCLHist(elhist, "Zelectrons", electronColl, eventbase->GetBaseEvent().JetRho(), weight);
+    } 
+  }
+  
+  return;
+}// End of execute event loop
+  
 
 //  TEST loop for Z to mumu 
 void Analyzer::HNmmLoop() {
@@ -172,7 +213,7 @@ void Analyzer::HNmmLoop() {
   weight= SetEventWeight();  
 
   string analysisdir = getenv("FILEDIR");
-  if(!isData)reweightPU = new ReweightPU((analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!isData)reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
   
   ///////////////////////////////////////////////////////////////////////
   ///  START OF EVENT LOOP
@@ -311,6 +352,25 @@ void Analyzer::HNmmLoop() {
 }
 
 
+void Analyzer::EndCycle(){
+  
+  OpenPutputFile();
+  WriteHists();/// writes all outputs in maphist
+  WriteCLHists(); /// writes all hists set with MakeCleverHistograms       
+  outfile->Close();
+}
+
+void Analyzer::InitialiseCycle(){
+  
+  cout << "Initilising Cycle : " << _jtype<< endl;
+  weight= SetEventWeight();
+  
+  string analysisdir = getenv("FILEDIR");  
+  if(!isData) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
+
+  return;
+}
+
 
 ///  START OF HNmuon loop
 
@@ -321,6 +381,21 @@ void Analyzer::Loop() {
 
 }
 
+
+void Analyzer::Run(TTree* tree){
+
+  Data* a= new Data();
+  a->Init(tree);
+
+  for(Long64_t i=0; i < 500000; i++){
+    if (!(i % 1000))cout << "Entry "  << i << endl;
+    a->GetEntry(i);
+  }
+
+  delete a;
+
+  return;
+}
 
 Analyzer::~Analyzer() {
 
@@ -349,6 +424,9 @@ Analyzer::~Analyzer() {
   }
   mapCLhistSig.clear();
   
+  if(!isData)delete reweightPU;
+  delete outfile;
+
  }
 
 void Analyzer::NEvents(Long64_t n_events){
@@ -357,12 +435,43 @@ void Analyzer::NEvents(Long64_t n_events){
 }
 
 
+void Analyzer::CheckFile(TFile* file){
+  
+  if(file) cout << "Analyzer: File " << file->GetName() << " was found." << endl;
+  else cout << "Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << endl;
+  
+  if(!file) exit(0);
+  return;
+}
+
 bool Analyzer::PassTrigger(vector<TString> list, int& prescaler){
   
   return TriggerSelector(list, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler);
   
 }
 
+TDirectory* Analyzer::GetTemporaryDirectory(void) const
+{
+  gROOT->cd();
+  TDirectory* tempDir = 0;
+  int counter = 0;
+  while (not tempDir) {
+    // First, let's find a directory name that doesn't exist yet:
+    std::stringstream dirname;
+    dirname << "WRHNCommonLeptonFakes_%i" << counter;
+    if (gROOT->GetDirectory((dirname.str()).c_str())) {
+      ++counter;
+      continue;
+    }
+    // Let's try to make this directory:
+    tempDir = gROOT->mkdir((dirname.str()).c_str());
+
+  }
+
+  return tempDir;
+
+}
+  
 
 
 void Analyzer::SetName(TString name, Int_t version, TString dir) {
@@ -421,8 +530,7 @@ void Analyzer::MakeCleverHistograms(histtype type, TString clhistname ){
 
 void Analyzer::MakeHistograms(jobtype job){
   //// Additional plots to make
-  
-  
+    
   maphist.clear();
 
   if(job==HNmm){
@@ -454,10 +562,7 @@ void Analyzer::MakeHistograms(jobtype job){
     maphist["zpeak_mumu"] =  new TH1F("h_zpeak_mumu","Di-Muon Mass (GeV)",200,0,200);
     maphist["zpeak_ee"] =  new TH1F("h_zpeak_ee","Di-Muon Mass (GeV)",200,0,200);
     maphist["zpeak_tautau"] =  new TH1F("h_zpeak_tautau","Di-Muon Mass (GeV)",200,0,200);
-  }
-
-
-    
+  }    
   return;
 }
 
@@ -498,6 +603,14 @@ double Analyzer::SetEventWeight(){
 
   double e_weight = MCweight;
   return e_weight;
+}
+
+
+void Analyzer::FillHist(TString histname, float value, float w ){
+  
+  if(GetHist(histname)) GetHist(histname)->Fill(value, w);  /// Plots Z peak    
+  else std::cout << histname << " was NOT found" << std::endl;
+  return;
 }
 
 
@@ -629,7 +742,6 @@ void Analyzer::OutPutEventInfo(int entry, int step){
 }
 
 void Analyzer::EndEvent(){
-  
   delete eventbase;
 
 }
@@ -638,17 +750,16 @@ void Analyzer::SetUpEvent(int kentry){
 
   OutPutEventInfo(kentry, 1000); /// output event info every X events wil running
   if (!fChain) cout<<"Problem with fChain"<<endl;
-  fChain->GetEntry(kentry);
   
+  int nbytes = fChain->GetEntry(kentry,0);
+  //cout << "Get Entry =  " << nbytes << endl;
 
-  snu::KEvent eventinfo = GetEventInfo();
-
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
-  
+  snu::KEvent eventinfo = GetEventInfo();  
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);  
   isData = eventinfo.IsData();
   
-  eventbase = new EventBase(lqevent);
-  
+  eventbase = new EventBase(lqevent); 
+
   return;
 }
 

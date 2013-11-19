@@ -38,4 +38,6 @@ Data.o: src/Data.cc include/Data.h /programs/root/include/TROOT.h \
   /programs/root/include/TVirtualPad.h /programs/root/include/TAttPad.h \
   /programs/root/include/TVirtualX.h /programs/root/include/GuiTypes.h \
   /programs/root/include/Buttons.h /programs/root/include/TQObject.h \
-  /programs/root/include/TAttCanvas.h /programs/root/include/TCanvasImp.h
+  /programs/root/include/TAttCanvas.h /programs/root/include/TCanvasImp.h \
+  /programs/root/include/TList.h /programs/root/include/TFriendElement.h \
+  /programs/root/include/TVirtualIndex.h

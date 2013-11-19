@@ -6,7 +6,7 @@ EventBase::EventBase() {
 }
 
 EventBase::EventBase(LQEvent kbase) {
-  k_LQevent = kbase;
+  k_LQevent = new LQEvent(kbase);
   k_muonsel = new MuonSelection(kbase);
   k_jetsel = new JetSelection(kbase);
   k_electronsel = new ElectronSelection(kbase);
@@ -16,6 +16,7 @@ EventBase::EventBase(LQEvent kbase) {
 
 }
 EventBase::~EventBase() {
+  delete k_LQevent;
   delete k_muonsel;
   delete k_jetsel;
   delete k_electronsel;

@@ -58,7 +58,7 @@ class Analyzer : public SNUTreeFiller {
 
   EventBase* eventbase;
   
-  ReweightPU *reweightPU;
+  Reweight *reweightPU;
   UInt_t numberVertices;
   TString completename;
 
@@ -66,7 +66,7 @@ class Analyzer : public SNUTreeFiller {
   TDirectory *Dir;
   
   map<TString, TH1*> maphist;
-  TH1F* FRHist;
+  TH2F* FRHist;
 
   Double_t target_lumi  ;//= 19762.501;
   TFile *outfile;
@@ -93,13 +93,21 @@ class Analyzer : public SNUTreeFiller {
   jobtype _jtype;
   
   /// Main Event Loops
+  void Run(TTree* tree);
   void Run();
   void Loop();
   void TestLoop();
   void HNmmLoop();
- 
+  void ExecuteEvent();
+  void InitialiseCycle();
+  void EndCycle();
+  void Initialise(jobtype jtype);
+  TDirectory* GetTemporaryDirectory(void) const;
+  void CheckFile(TFile* file);
+
   //// Plotting
   TH1* GetHist(TString hname);
+  void FillHist(TString histname, float value, float w );
   //  TH2* Get2Hist(TString hname);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);

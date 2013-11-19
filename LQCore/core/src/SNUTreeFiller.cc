@@ -20,7 +20,6 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
   int nVertices = VertexNDF->size();
   kevent.SetNVertices(nVertices);
   goodVerticies = new Bool_t [nVertices];
-  
 
   if ( !isGoodEvent(nVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) kevent.SetIsGoodEvent(false);
   else  kevent.SetIsGoodEvent(true);
@@ -115,8 +114,10 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
 
 std::vector<KJet> SNUTreeFiller::GetAllJets(){
   std::vector<KJet> jets;
+ 
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
     KJet jet;
+
     jet.SetPtEtaPhiE(PFJetPt->at(ijet), PFJetEta->at(ijet), PFJetPhi->at(ijet), PFJetEnergy->at(ijet));
     jet.SetPassLooseID(PFJetPassLooseID->at(ijet));    
     jet.SetNeutralEmEF(PFJetNeutralEmEnergyFraction->at(ijet));
