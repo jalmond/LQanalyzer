@@ -20,28 +20,15 @@ int main( int argc, char** argv ) {
     return 1;
   }
   if( (argc == 1)){
-    filename = "/var/tmp/jalmond/periodAelectron_111638/Job_1/periodAelectron_1.txt";
+    filename = "/var/tmp/jalmond/periodAelectron_11202043/Job_1/periodAelectron_1.txt";
   }
 
-  std::cout << "START" << std::endl;
-  std::getchar();
   TChain* chain = ChainMaker(filename);
-  std::cout << "Made Chain" << std::endl;
-  std::getchar();
-
   Analyzer* SNUanal= new Analyzer(Analyzer::ZTest);
-  std::cout << "Called constructor" << std::endl;
-  std::getchar();
-
   SNUanal->Init(chain);
-  std::cout << "Called Init" << std::endl;
-  std::getchar();
   SNUanal->SetName("periodAelectron",1,"/var/tmp/jalmond/periodAelectron_111638/output/");
   SNUanal->SetTargetLumi(1.);
   SNUanal->SetWeight(1., 1.);
-  SNUanal->NEvents(100000);
-  std::cout << "About to run cycle" << std::endl;
-  std::getchar();
   SNUanal->Run();
   delete SNUanal;
 }

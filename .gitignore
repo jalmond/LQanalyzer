@@ -1,6 +1,10 @@
 # Ignore for commits
 bin/run_lqanalyzer
 test*
+*.out
+*/*.out
+*/*/*.out
+*/*/*/*.out
 */*.pyc
 */*/*.pyc
 */*/*/*.pyc

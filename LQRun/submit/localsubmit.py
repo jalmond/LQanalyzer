@@ -1,20 +1,22 @@
 ####################################################################
-# Settings for User
+# Job settings for User
 ####################################################################
 InputDir="/data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/"
 sample="periodAelectron"
-number_of_cores=1
+number_of_cores=100
 number_of_events_per_job=-1
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
+#################################################################### 
 ### configure run
-timeWait=20#
+#################################################################### 
+timeWait=60#
 
 ###################################################
 ### Make Input File
 ###################################################
 from functions import *
-import os,getpass
+import os,getpass,sys
 os.system("ls " + InputDir + "/*.root > inputlist.txt")
 isfile = os.path.isfile
 join = os.path.join
@@ -24,19 +26,28 @@ number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir
 print str(number_of_files) + " files to process"
 
 #import numpy as np
-nfilesperjobs=0
-for i in range(0,number_of_files):
+nfilesperjobs= 0
+for i in range(1,number_of_files):
     if not i%number_of_cores:
         nfilesperjobs+=1
+    if number_of_cores == 1:
+        nfilesperjobs = number_of_files
+files_torun = (nfilesperjobs*number_of_cores)
+remainder = number_of_files - (nfilesperjobs*number_of_cores)
+
+print "Each job will process at most " + str(nfilesperjobs+1) + " files"
 
 
-
-print "Each job will process at most " + str(nfilesperjobs) + " files"
 ###################################################
 ## counters
 ###################################################
 nfiles=0
 count=1
+total_nsamples=0
+filesprocessed=0
+nfiles_file=0
+n_remainder_files=0
+check_array = []
 
 ###################################################
 # Setup work area
@@ -58,78 +69,116 @@ if(os.path.exists(outputdir)):
               
 if not (os.path.exists(outputdir)):
         os.system("mkdir " + outputdir)
-        
 
+
+printedworkdir =  output + "Job_[" + str(1) + "-" + str(number_of_cores) + "]/"
 for i in range(1,number_of_cores+1):
     workdir =  output + "Job_" + str(i) + "/"
+
     if not (os.path.exists(workdir)):
             os.system("mkdir " + workdir)
             if i==1:
-                print "making sub work directory " + workdir
-            elif i==number_of_cores:
-                print "making sub work directory " + workdir
-            elif i==2:
-                print "......."
+                print "making sub work directories " + printedworkdir
 
 ####################################################
 ## Creat separate input lists/macros for each subjob
 ####################################################
 fr = open('inputlist.txt', 'r')
 
-filesprocessed=0
-nfiles_file=0
+printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
 for line in fr:
-    nfiles+=1        
-    runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
-    filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
-
-#    print "Input File[" + str(nfiles) + "] : " + line + " --> " + filelist 
-
-    if nfiles == 1 :        
-        runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
-        filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
-        fwrite = open(filelist, 'w')
-        configfile=open(runscript,'w')
-        configfile.write(makeConfigFile("ZTest", filelist, sample, count, outputdir, number_of_events_per_job)) #job, input, sample, ver, output
-        print "Making file : " + runscript
     
-
-    if not nfiles % nfilesperjobs:
-        if not nfiles == number_of_files :
-            print "File " + filelist + " contains " + str(nfiles_file) + " files"
-            # set counters
-            nfiles_file=0
-            count+=1        
-            # close files
-            configfile.close()
-            fwrite.close()
-            ### Make next set of scripts
+    # Deal with remaining files
+    if nfiles < files_torun :
+        if nfiles == 0 :        
             runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile("ZTest", filelist, sample, count, outputdir, number_of_events_per_job))
+            configfile.write(makeConfigFile("ZTest", filelist, sample, count, outputdir, number_of_events_per_job)) #job, input, sample, ver, output
+            configfile.close()
+            print "Making file : " + printedrunscript
             fwrite.write(line)
             filesprocessed+=1
-            nfiles_file+=1
+            nfiles_file+=1            
+            nfiles+=1
+            continue
+
+        #End of file
+        if not nfiles % nfilesperjobs:
+            if not nfiles == number_of_files :
+                # set counters
+                nfiles_file=0
+                count+=1        
+                # close files
+                fwrite.close()
+                ### Make next set of scripts
+                runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
+                filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
+                fwrite = open(filelist, 'w')
+                configfile=open(runscript,'w')
+                configfile.write(makeConfigFile("ZTest", filelist, sample, count, outputdir, number_of_events_per_job))
+                configfile.close()
+                fwrite.write(line)
+                filesprocessed+=1
+                nfiles_file+=1
+            else:
+                fwrite.write(line)
+                filesprocessed+=1
+                nfiles_file+=1
+                print "File " + filelist + " contains " + str(nfiles_file) + " files"            
+                
         else:
             fwrite.write(line)
             filesprocessed+=1
             nfiles_file+=1
-            print "File " + filelist + " contains " + str(nfiles_file) + " files"            
             
+        if nfiles == number_of_files :
+            print "Completed " + str(nfiles) + "/" + str(number_of_files)        
+            fwrite.close()
+
     else:
+        n_remainder_files+=1
+        filelist = output+ "Job_" + str(n_remainder_files) + "/" + sample + "_%s" % (n_remainder_files) + ".txt"
+        fwrite = open(filelist, 'a')
         fwrite.write(line)
         filesprocessed+=1
-        nfiles_file+=1
-
-    if nfiles == number_of_files :
-        print "File " + filelist + " contains " + str(nfiles_file) + " files"
-        print "Completed " + str(nfiles) + "/" + str(number_of_files)        
-        configfile.close()
-        fwrite.close()
+        fwrite.close()        
+        
+    nfiles+=1        
 fr.close()
 
+#################################################################### 
+### Check Final input files have no duplicates
+#################################################################### 
+
+for check in range(1, number_of_cores+1):
+    filelist = output+ "Job_" + str(check) + "/" + sample + "_%s" % (check) + ".txt"
+    fcheck = open(filelist, 'r')
+    nsamples=0
+    for line in fcheck:
+        nsamples+=1
+        total_nsamples+=1
+        no_duplicate= True
+        for s in check_array:
+            if s == line :
+                print "DUPLICATE file : " + s
+                no_duplicate=False
+                sys.exit()
+        check_array.append(list)
+    print  "File " + filelist + " contains " + str(nsamples) + " files"
+    fcheck.close()
+print "Total Number of input files = " + str(total_nsamples)     
+
+if no_duplicate:
+    print "Checking for duplicates: "
+    print "Checking for duplicates:...... "
+    print "Checking for duplicates: NONE found"
+else:
+     print "Checking for duplicates: "
+     print "Checking for duplicates:...... "
+     print "Checking for duplicates: Duplicate files found. Check script "
+            
 print "Total number of files processed = " + str(filesprocessed) + " check this is correct"
 
 ###################################################
@@ -142,7 +191,7 @@ print "Running LQAnalyzer jobs for: " + getpass.getuser()
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
-    runcommand = "nohup root -q -b " +  script + "&> " +  log + "&"
+    runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
     os.system(runcommand)   
     if i==1:
         print "Running " + script + " . Log file --->  " + log 
