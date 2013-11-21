@@ -3,7 +3,7 @@
 ####################################################################
 InputDir="/data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/"
 sample="periodAelectron"
-number_of_cores=100
+number_of_cores=1
 number_of_events_per_job=-1
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
@@ -15,8 +15,59 @@ timeWait=60#
 ###################################################
 ### Make Input File
 ###################################################
+
+import os, getpass, sys
 from functions import *
-import os,getpass,sys
+from optparse import OptionParser
+
+
+
+#Import parser to get options
+parser = OptionParser()
+parser.add_option("-p", "--period", dest="period", default="A",help="which data period")
+parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
+parser.add_option("-j", "--jobs", dest="jobs", default="", help="Which data channel- ee,or mumu?")
+(options, args) = parser.parse_args()
+
+number_of_cores = int(options.jobs)
+sample = options.period
+stream = options.stream
+
+data="data"
+mc = len(sample)>1
+if mc:
+    data="mc"
+
+list = []
+import re
+
+if ("*" in sample) and mc:
+    print "ADD code"
+else:
+    list.append(sample)
+    
+
+#Find the DS name 
+inDS = ""
+mcLumi = 1.0
+
+if not mc:
+    period = "period"+sample
+    filename = 'txt/datasets.txt'
+    for line in open(filename, 'r'):
+        if not line.startswith("#"):
+            entries = line.split()
+            if len(entries)==3:
+                if stream ==entries[0] and sample == entries[1]:
+                    inDS = entries[2]
+                
+else:
+    print "ADD code"
+    
+InputDir = inDS    
+print InputDir
+
+    
 os.system("ls " + InputDir + "/*.root > inputlist.txt")
 isfile = os.path.isfile
 join = os.path.join
