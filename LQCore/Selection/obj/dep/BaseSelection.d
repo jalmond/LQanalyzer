@@ -50,6 +50,7 @@ BaseSelection.o: src/BaseSelection.cc include/BaseSelection.h \
   /programs/root/include/TH1F.h /programs/root/include/TH2F.h \
   /programs/root/include/TH3F.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/Data.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQBaseNTuple.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KParticle.h \
   /programs/root/include/TLorentzVector.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/SelectionFunctions.h \

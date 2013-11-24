@@ -1,5 +1,9 @@
 #include "Analyzer.h"
 
+// System include(s):                                                           
+#include <cxxabi.h>
+#include <cstdlib>
+
 // STL include(s):
 #include <stdio.h>  
 #include <stdlib.h>     /* getenv */
@@ -88,13 +92,18 @@ void Analyzer::Run(){
 
   /// Initialise event cycle :
   /// sets weight and loads all necessary rootfiles
+  cout << "initialise cycle" << endl;
+  getchar();
   InitialiseCycle();
+  getchar();
 
   /// Decide which Cycle to run
   if(_jtype == ZTest) TestLoop();
   else if(_jtype == HNmm) HNmmLoop();
   else cout << "Error in setting Job Type in Analyzer constructor; " << endl;
   
+  cout << "End Cycle" << endl;
+  getchar();
   EndCycle();
   
 }
@@ -107,25 +116,31 @@ void Analyzer::TestLoop() {
   //TTree * tree = new TTree("SKTree","test");
   //  tree->Branch("TestMuons", "vector<snu::KMuon>" &kmuons);
   
+  ClearOutputVectors();
+
   ///////////////////////////////////////////////////////////////////////                                                                                                   
   ///  START OF EVENT LOOP                                                                                                                                        
   ///////////////////////////////////////////////////////////////////////////        
     for (Long64_t jentry = 0; jentry < nentries; jentry++ ) {    
+      if(jentry==0)getchar();
       SetUpEvent(jentry);
-      ExecuteEvent();
+      if(jentry==0)getchar();
+      ExecuteEvent();      
+      if(jentry==0)getchar();
       EndEvent();
+      if(jentry==0)getchar();
+      if(jentry==990000)getchar();
   } 
 }
 
 void Analyzer::ExecuteEvent(){
- 
-  return;
+  
   if(!PassBasicEventCuts()) return;     /// Initial event cuts
     
   /// Trigger List (specific to muons channel)
   std::vector<TString> triggerslist;
   triggerslist.push_back("HLT_Mu17_TkMu8_v");
-  if(!PassTrigger(triggerslist, prescale)) return;
+  //if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
   
   if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
@@ -147,8 +162,8 @@ void Analyzer::ExecuteEvent(){
   //eventbase->GetMuonSel().SetBSdxy(0.01);
   //eventbase->GetMuonSel().SetBSdz(0.10);
   //eventbase->GetMuonSel().SetDeposits(40.0,60.00);    
-  eventbase->GetMuonSel()->Selection(muonColl);
-  
+  eventbase->GetMuonSel()->Selection(out_muons);
+    
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
@@ -160,8 +175,8 @@ void Analyzer::ExecuteEvent(){
   eventbase->GetElectronSel()->SetRelIso(0.15); 
   eventbase->GetElectronSel()->SetBSdxy(0.02); 
   eventbase->GetElectronSel()->SetBSdz(0.10);
-  eventbase->GetElectronSel()->Selection(electronColl); 
-  
+  eventbase->GetElectronSel()->Selection(out_electrons); 
+
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
@@ -329,7 +344,7 @@ void Analyzer::HNmmLoop() {
   WriteHists();
   WriteCLHists();
 
-  outfile->Close();
+  //outfile->Close();
 
 }
 
@@ -339,7 +354,7 @@ void Analyzer::EndCycle(){
   OpenPutputFile();
   WriteHists();/// writes all outputs in maphist
   WriteCLHists(); /// writes all hists set with MakeCleverHistograms       
-  outfile->Close();
+  CloseFiles();
 }
 
 void Analyzer::InitialiseCycle(){
@@ -350,8 +365,52 @@ void Analyzer::InitialiseCycle(){
   string analysisdir = getenv("FILEDIR");  
   if(!isData) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
 
+  MakeOutPutFile(completename, "LQTree");
+  
+  DeclareVariable(out_muons, "Signal_Muons", "LQTree");
+  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  
   return;
+
 }
+
+template < class T >
+TBranch* Analyzer::DeclareVariable( T& obj, const char* name,
+				const char* treeName ) {
+  output_tree = 0;
+  TBranch* branch = 0;
+
+  if( treeName ) {
+    output_tree = GetOutputTree( treeName );
+  }
+  
+  branch = output_tree->GetBranch( name );
+  
+  if( ! branch ) {
+    
+    const char* type_name = typeid( obj ).name();
+
+    if( strlen( type_name ) == 1 ) {
+      // This is a simple variable:      
+      std::ostringstream leaflist;
+      leaflist << name << "/" << RootType( type_name );
+      branch = output_tree->Branch( name, &obj, leaflist.str().c_str() );
+    }
+    else {
+      int status;
+      char* real_type_name = abi::__cxa_demangle( type_name, 0, 0, &status );
+      T* pointer = &obj;
+      m_outputVarPointers.push_back( pointer );
+      branch = output_tree->Bronch( name, real_type_name, &m_outputVarPointers.back() );      
+      free( real_type_name );
+      
+    }
+  }
+  return branch;
+}
+
+
+
 
 
 ///  START OF HNmuon loop
@@ -407,7 +466,9 @@ Analyzer::~Analyzer() {
   mapCLhistSig.clear();
   
   if(!isData)delete reweightPU;
-  delete outfile;
+
+  //CloseFiles();
+  //delete outfile;
 
  }
 
@@ -467,9 +528,18 @@ void Analyzer::SetName(TString name, Int_t version, TString dir) {
   return;
 }
 
+void Analyzer::CloseFiles(){
+  m_outputFile->SaveSelf( kTRUE );   
+  m_outputFile->Close();   
+  delete m_outputFile; 
+  m_outputFile = 0;  
+}
+
 void Analyzer::OpenPutputFile(){
-  outfile = new TFile(completename,"RECREATE");
-  outfile->cd();
+
+  SaveOutputTrees(m_outputFile);
+  m_outputFile->cd();
+
   cout << "Opening output root file " << completename << endl;
 }
 
@@ -668,31 +738,31 @@ void Analyzer::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu
 void Analyzer::WriteCLHists(){
   
   for(map<TString, MuonPlots*>::iterator mupit = mapCLhistMu.begin(); mupit != mapCLhistMu.end(); mupit++){
-    Dir = outfile->mkdir(mupit->first);
-    outfile->cd( Dir->GetName() );
+    Dir = m_outputFile->mkdir(mupit->first);
+    m_outputFile->cd( Dir->GetName() );
     mupit->second->Write();
-    outfile->cd();
+    m_outputFile->cd();
   }
 
   for(map<TString, ElectronPlots*>::iterator elpit = mapCLhistEl.begin(); elpit != mapCLhistEl.end(); elpit++){
-    Dir = outfile->mkdir(elpit->first);
-    outfile->cd( Dir->GetName() );
+    Dir = m_outputFile->mkdir(elpit->first);
+    m_outputFile->cd( Dir->GetName() );
     elpit->second->Write();
-    outfile->cd();
+    m_outputFile->cd();
   }
   
   for(map<TString, JetPlots*>::iterator jetpit = mapCLhistJet.begin(); jetpit != mapCLhistJet.end(); jetpit++){
-    Dir = outfile->mkdir(jetpit->first);
-    outfile->cd( Dir->GetName() );
+    Dir = m_outputFile->mkdir(jetpit->first);
+    m_outputFile->cd( Dir->GetName() );
     jetpit->second->Write();
-    outfile->cd();
+    m_outputFile->cd();
   }
 
   for(map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.begin(); sigpit != mapCLhistSig.end(); sigpit++){
-    Dir = outfile->mkdir(sigpit->first);
-    outfile->cd( Dir->GetName() );
+    Dir = m_outputFile->mkdir(sigpit->first);
+    m_outputFile->cd( Dir->GetName() );
     sigpit->second->Write();
-    outfile->cd();
+    m_outputFile->cd();
   }
 
   return;
@@ -725,19 +795,29 @@ void Analyzer::OutPutEventInfo(int entry, int step){
 
 void Analyzer::EndEvent(){
 
- delete eventbase;
+  FillOutTree();
+  delete eventbase;
 
 }
 
+void Analyzer::ClearOutputVectors(){
+  
+  out_muons.clear();
+  out_electrons.clear();
+}
+
+
 void Analyzer::SetUpEvent(int kentry){
+
+  ClearOutputVectors();
 
   OutPutEventInfo(kentry, 1000); /// output event info every X events wil running
   if (!fChain) cout<<"Problem with fChain"<<endl;
 
-
   int nbytes = fChain->GetEntry(kentry,0); 
 
   snu::KEvent eventinfo = GetEventInfo(); 
+
   LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);  
   isData = eventinfo.IsData();
   

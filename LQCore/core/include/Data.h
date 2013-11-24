@@ -8,20 +8,24 @@
 #ifndef DATA_h
 #define DATA_h
 
-#include <TROOT.h>
-#include <TChain.h>
-#include <TFile.h>
-
-// Header file for the classes stored in the TTree if any.
+// STL include(s):
 #include <string>
 #include <vector>
+#include <list>
 
-// Fixed size dimensions of array or collections stored in the TTree if any.
+#include <TROOT.h>
+#include "LQBaseNTuple.h"
 
-class Data {
+// Forward declaration(s):
+class TTree;
+class TBranch;
+
+class Data : public LQBaseNTuple {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+
+   TTree          *output_tree;
 
    Data();
    ~Data();
@@ -34,6 +38,8 @@ public :
    void     Show(Long64_t entry = -1); //remove if possible
 
    void setBranchStatus(void);
+
+
    /// Connect an input variable                                                
    template< typename T >
      bool ConnectVariable(  const char* branchName,
@@ -41,13 +47,22 @@ public :
    /// Specialisation for object pointers                                                                                                                                      
    template< typename T >
      bool ConnectVariable(const char* branchName,
-			  T*& variable , TBranch* br);
-
-
-   
+			  T*& variable , TBranch* br);   
 
    void Reset();
    void ConnectVariables(Bool_t setall);
+
+   void ConnectEvent();
+   void ConnectMuons();
+   void ConnectElectrons();
+   void ConnectPFJets();
+   void ConnectCaloJets();
+   //ConnectPhotons();                                                                                                                                                           
+   void ConnectTaus();
+   void ConnectTruth();
+   void ConnectTrigger();
+   void ConnectAllBranches();
+   void ConnectMET();
 
    Long64_t nentries;
 
@@ -711,6 +726,14 @@ public :
    std::vector<int>     *VertexNTracks;
    std::vector<int>     *VertexNTracksW05;
    std::vector<std::vector<int> > *HLTFilterObjId;
+
+   std::vector<double>  *CaloJetEnergy;
+   std::vector<double>  *CaloJetEta;
+   std::vector<double>  *CaloJetPt;
+   std::vector<double>  *CaloJetPhi;
+   std::vector<int>     *CaloJetPassLooseID;
+   std::vector<int>     *CaloJetPassTightID;
+
    UInt_t          bunch;
    UInt_t          event;
    UInt_t          ls;
@@ -1385,6 +1408,15 @@ public :
    TBranch        *b_run;   //!
    TBranch        *b_ProcessID;   //!
 
+   TBranch        *b_CaloJetEnergy;   //!       
+   TBranch        *b_CaloJetEta;   //!    
+   TBranch        *b_CaloJetPt;   //! 
+   TBranch        *b_CaloJetPhi;   //! 
+   TBranch        *b_CaloJetPassLooseID;   //!                                                                   
+   TBranch        *b_CaloJetPassTightID;   //!   
+
+
+   
 };
 
 #endif

@@ -5,7 +5,7 @@ source functions.sh
 declare -a periods=( "A")
 
 stream="egamma"
-njobs=10
+njobs=50
 
 ############################################################
 ################# Do not change anything after this line
@@ -15,8 +15,6 @@ if [ -z ${LQANALYZER_DIR} ]
     then 
     setupLQANALYZER
 fi
-
-
 
 stream=$(makeParseVariable 's' ${stream})
 njobs=$(makeParseVariable 'j' ${njobs})

@@ -7,6 +7,7 @@
 #pragma link C++ nestedclass;
 
 #pragma link C++ class AnalysisBase+;
+#pragma link C++ class LQBaseNTuple+;
 #pragma link C++ class Data+;
 #pragma link C++ class LQEvent+;
 #pragma link C++ class SelectionFunctions+;

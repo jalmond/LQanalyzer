@@ -1,1 +1,4 @@
 egamma A /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/
+egamma B /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
+egamma C /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
+egamma D /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/

@@ -20,7 +20,7 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 
 $(LQANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)
 	@echo "Linking " $@
-	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lcore -lSNUTree -lSelection -lPlotting -lHist -lLQCycle -lAnalysisCore \
+	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lcore -lSNUTree -lSelection -lPlotting -lHist  -lAnalysisCore -lLQCycle  \
                 $(ROOTLIBS) -lPyROOT -o $@
 
 run_lqanalyzer.o: app/run_lqanalyzer.cxx 

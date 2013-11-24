@@ -60,5 +60,6 @@ ElectronSelection.o: src/ElectronSelection.cc include/ElectronSelection.h \
   /programs/root/include/TH1F.h /programs/root/include/TH2F.h \
   /programs/root/include/TH3F.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/Data.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQBaseNTuple.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KParticle.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/SelectionFunctions.h

@@ -1,10 +1,12 @@
 #include "SNUTreeFiller.h"
 #include <stdio.h>  
+
 #include <stdlib.h>
 #include <iostream>
 
 using namespace snu;
 using namespace std;
+
 
 SNUTreeFiller::SNUTreeFiller() {
   VertexN = -999; //// set event vertex to dummy number 
@@ -106,13 +108,14 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
     electrons.push_back(el);
   }
   
-  //  std::sort( electrons.begin(), electrons.end(), isHigherPt );
+  std::sort( electrons.begin(), electrons.end(), isHigherPt );
 
 
   return electrons;
 }
 
 std::vector<KJet> SNUTreeFiller::GetAllJets(){
+
   std::vector<KJet> jets;
  
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
@@ -136,7 +139,7 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
     jets.push_back(jet);
   }// end of jet 
   
-  //  std::sort( jets.begin(), jets.end(), isHigherPt );
+  std::sort( jets.begin(), jets.end(), isHigherPt );
   return jets;
 }
 
@@ -271,7 +274,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muons.push_back(muon);
   }
   
-  //  std::sort( muons.begin(), muons.end(), isHigherPt );
+  std::sort( muons.begin(), muons.end(), isHigherPt );
 
   return muons;
 }
@@ -303,3 +306,7 @@ std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
   
   return vtruth;
 }
+
+
+
+ 

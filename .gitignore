@@ -1,6 +1,10 @@
 # Ignore for commits
 bin/run_lqanalyzer
 test*
+*_Dict.*
+*/*_Dict.*
+*/*/*_Dict.*
+*/*/*/*_Dict.*
 *.out
 */*.out
 */*/*.out

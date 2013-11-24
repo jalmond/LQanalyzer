@@ -44,6 +44,7 @@ class Analyzer : public SNUTreeFiller {
   
 
  public:
+  
   Double_t *****doubleFake; Double_t ***singleFake; Double_t *****doubleANDsingleFake;
   Double_t *finalbkg1, *finalbkgerror1, *finalbkg2, *finalbkgerror2, *realsingle, *realsingleerror, *realdouble, *realtotal, *doubletosingle, *errdoubletosingle;
   Double_t jets2mass, triggerweight;
@@ -52,6 +53,10 @@ class Analyzer : public SNUTreeFiller {
   Double_t Wcand_tmp, Wcand, METcut;
 
   Bool_t VETO, SINGLEFAKE, DOUBLEFAKE, b_found, muonbad , isData;
+
+  /// Vectors for output objetcs
+  std::vector<snu::KMuon> out_muons;
+  std::vector<snu::KElectron> out_electrons;
 
  public:
   static const Bool_t MC_pu = true; 
@@ -75,7 +80,7 @@ class Analyzer : public SNUTreeFiller {
   Double_t METx, METy, MET, dr, MCweight, weight;
   Int_t prescale;
   
-
+  double testdouble;
 
   //// Making cleaver hist maps
   map<TString, SignalPlots*> mapCLhistSig;
@@ -89,6 +94,13 @@ class Analyzer : public SNUTreeFiller {
   ~Analyzer();
 
   
+  // special function
+
+  /// Declare an output variable                                                                                                                                               
+  template< class T >
+     TBranch* DeclareVariable( T& obj, const char* name,
+                               const char* treeName = 0 ) ;
+
   /// global variable to set in constructor to tell code which Loop to run and which variables to set.
   jobtype _jtype;
   
@@ -96,6 +108,7 @@ class Analyzer : public SNUTreeFiller {
   void Run(TTree* tree);
   void Run();
   void Loop();
+  void CloseFiles();
   void TestLoop();
   void HNmmLoop();
   void ExecuteEvent();
@@ -104,7 +117,7 @@ class Analyzer : public SNUTreeFiller {
   void Initialise(jobtype jtype);
   TDirectory* GetTemporaryDirectory(void) const;
   void CheckFile(TFile* file);
-
+  void ClearOutputVectors();
   //// Plotting
   TH1* GetHist(TString hname);
   void FillHist(TString histname, float value, float w );

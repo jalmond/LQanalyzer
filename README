@@ -1,3 +1,13 @@
-Development uses LQanalyzer_Deveolpment branch
-LQanalyzer_00-03 is latest stable branch
+//###########################
+//   Author John Almond
+//###########################
+
+Steps to run analysis:
+1) Download LQanalyzer and SKTree.
+
+2) in LQanalyzer main directory do
+
+$ source setup.sh
+
+
 
