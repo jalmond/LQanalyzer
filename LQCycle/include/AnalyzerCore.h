@@ -1,0 +1,108 @@
+#ifndef AnalyzerCore_H
+#define AnalyzerCore_H
+
+//forward declarations                                                                                                                                            
+class Reweight;
+class EventBase;
+class MuonPlots;
+class ElectronPlots;
+class JetPlots;
+class SignalPlots;
+class EventBase;
+
+#include "LQCycleBase.h"
+
+class AnalyzerCore : public LQCycleBase {
+  
+ public:
+  
+  // Default constructor
+  AnalyzerCore();
+
+  //destructor
+  virtual ~AnalyzerCore();
+  
+  enum histtype {muhist, elhist, jethist, sighist};
+  enum jobtype {ZTest,HNee, HNmm, HNFakeBkgmm, HNFakeBkgee};
+
+
+  
+  //
+  // Useful message function 
+  //
+  void Message(TString message, LQMsgType type=INFO);
+  
+  /// Bool to tell if event is data or MC
+  Bool_t isData;
+  
+  /// Pileup Reweighting class
+  static const Bool_t MC_pu = true;
+  Reweight *reweightPU;
+
+  //// Event base pointer. Used to get all objects for analysis
+  EventBase* eventbase;
+  
+  UInt_t numberVertices;
+  Bool_t *goodVerticiesB;
+
+  TDirectory *Dir;
+  map<TString, TH1*> maphist;
+  TH2F* FRHist;
+  
+  Double_t MCweight, weight;
+  Int_t prescale;
+  
+  //// Making cleaver hist maps
+  map<TString, SignalPlots*> mapCLhistSig;
+  map<TString, ElectronPlots*> mapCLhistEl;
+  map<TString, MuonPlots*> mapCLhistMu;
+  map<TString, JetPlots*> mapCLhistJet;
+  
+  //
+  // Function that closes rootfile
+  //
+  void CloseFiles();
+  
+
+  //
+  // Make Histograms and fill maphist
+  //
+  void MakeHistograms();
+  //
+  // Makes temporary dir
+  //
+  TDirectory* GetTemporaryDirectory(void) const;                                                                                                                                 
+  //
+  // Checks if a file exists
+  //
+  void CheckFile(TFile* file);
+  
+  //// Plotting 
+  TH1* GetHist(TString hname);
+
+  /// Fills hist in maphist
+  void FillHist(TString histname, float value, float w );
+  /// Fills clever hists
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double rho, double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
+
+  // Makes clever histograms
+  void MakeCleverHistograms(histtype type, TString clhistname );
+
+  /// File related                                                                                                                                                
+  void OpenPutputFile();
+  void WriteHists();
+  void WriteCLHists();
+
+  //// Event related                                                                                                                                              
+  double SetEventWeight(float w);
+  bool PassTrigger(std::vector<TString> list, int& prescale);
+  void SetWeight(Double_t CrossSection, Double_t nevents);
+  bool PassBasicEventCuts();
+  void OutPutEventInfo(int entry, int step);
+};
+#endif

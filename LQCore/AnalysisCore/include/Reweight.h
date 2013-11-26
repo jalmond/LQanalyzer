@@ -1,13 +1,11 @@
 #ifndef Reweight_h
 #define Reweight_h
 
-#include <stdio.h>
-#include <iostream>
-
-#include "TFile.h"
-#include "TH1D.h"
-#include "TH1F.h"
-
+class TFile;
+class TH1D;
+class TString;
+class TH1F;
+class TDirectory;
 
 class Reweight {
 

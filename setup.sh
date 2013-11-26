@@ -49,8 +49,6 @@ if [ $? -ne 0 ]
     $(setup_rootfile_manual $FILEDIR)
     echo "Made directory "  $FILEDIR " and copied necessary rootfiles for running cms analysis"
     echo ""
-else
-    echo "... found."
 fi
 
 

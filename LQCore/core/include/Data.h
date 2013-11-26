@@ -14,16 +14,21 @@
 #include <list>
 
 #include <TROOT.h>
-#include "LQBaseNTuple.h"
+
+
+#include "LQCycleBaseNTuple.h"
 
 // Forward declaration(s):
 class TTree;
 class TBranch;
 
-class Data : public LQBaseNTuple {
+class Data : public LQCycleBaseNTuple {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+
+
+   Long64_t GetNEntries();
 
    TTree          *output_tree;
 

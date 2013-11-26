@@ -14,7 +14,19 @@ SNUTreeFiller.o: src/SNUTreeFiller.cc include/SNUTreeFiller.h \
   /programs/root/include/TSeqCollection.h \
   /programs/root/include/TCollection.h /programs/root/include/TIterator.h \
   /programs/root/include/TDatime.h /programs/root/include/TUUID.h \
-  include/LQBaseNTuple.h \
+  include/LQCycleBaseNTuple.h include/LQError.h include/LQCycleBaseBase.h \
+  /programs/root/include/TObject.h include/LQLogger.h include/LQMsgType.h \
+  include/LQLogWriter.h include/LQCycleBaseNTuple.icc \
+  /programs/root/include/TTree.h /programs/root/include/TBranch.h \
+  /programs/root/include/TObjArray.h /programs/root/include/TAttFill.h \
+  /programs/root/include/TDataType.h /programs/root/include/TDictionary.h \
+  /programs/root/include/Property.h /programs/root/include/TAttLine.h \
+  /programs/root/include/TAttMarker.h /programs/root/include/TArrayD.h \
+  /programs/root/include/TArray.h /programs/root/include/TArrayI.h \
+  /programs/root/include/TClass.h /programs/root/include/TObjString.h \
+  /programs/root/include/TVirtualTreePlayer.h \
+  /programs/root/include/TBranch.h /programs/root/include/TLeaf.h \
+  /programs/root/include/TString.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KParticle.h \
   /programs/root/include/TLorentzVector.h /programs/root/include/TMath.h \
   /programs/root/include/TError.h /programs/root/include/TVector3.h \
@@ -37,14 +49,12 @@ SNUTreeFiller.o: src/SNUTreeFiller.cc include/SNUTreeFiller.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KEvent.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KTruth.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KTau.h \
-  include/SelectionFunctions.h include/AnalysisBase.h \
-  /programs/root/include/TH1F.h /programs/root/include/TH1.h \
-  /programs/root/include/TAxis.h /programs/root/include/TAttAxis.h \
-  /programs/root/include/TArrayD.h /programs/root/include/TArray.h \
-  /programs/root/include/TAttLine.h /programs/root/include/TAttFill.h \
-  /programs/root/include/TAttMarker.h /programs/root/include/TArrayC.h \
-  /programs/root/include/TArrayS.h /programs/root/include/TArrayI.h \
-  /programs/root/include/TArrayF.h /programs/root/include/Foption.h \
-  /programs/root/include/TFitResultPtr.h /programs/root/include/TH2F.h \
-  /programs/root/include/TH2.h /programs/root/include/TH3F.h \
-  /programs/root/include/TH3.h /programs/root/include/TAtt3D.h
+  /home/jalmond/LQanalyzer/LQCore/AnalysisCore/include/SelectionFunctions.h \
+  include/AnalysisBase.h /programs/root/include/TH1F.h \
+  /programs/root/include/TH1.h /programs/root/include/TAxis.h \
+  /programs/root/include/TAttAxis.h /programs/root/include/TArrayC.h \
+  /programs/root/include/TArrayS.h /programs/root/include/TArrayF.h \
+  /programs/root/include/Foption.h /programs/root/include/TFitResultPtr.h \
+  /programs/root/include/TH2F.h /programs/root/include/TH2.h \
+  /programs/root/include/TH3F.h /programs/root/include/TH3.h \
+  /programs/root/include/TAtt3D.h

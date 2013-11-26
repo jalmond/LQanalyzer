@@ -50,10 +50,16 @@ BaseSelection.o: src/BaseSelection.cc include/BaseSelection.h \
   /programs/root/include/TH1F.h /programs/root/include/TH2F.h \
   /programs/root/include/TH3F.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/Data.h \
-  /home/jalmond/LQanalyzer/LQCore/core/include/LQBaseNTuple.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQCycleBaseNTuple.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQError.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQCycleBaseBase.h \
+  /programs/root/include/TObject.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQLogger.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQMsgType.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQLogWriter.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KParticle.h \
   /programs/root/include/TLorentzVector.h \
-  /home/jalmond/LQanalyzer/LQCore/core/include/SelectionFunctions.h \
+  /home/jalmond/LQanalyzer/LQCore/AnalysisCore/include/SelectionFunctions.h \
   /home/jalmond/LQanalyzer/LQCore/core/include/LQEvent.h \
   /programs/root/include/TLorentzVector.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KMuon.h \

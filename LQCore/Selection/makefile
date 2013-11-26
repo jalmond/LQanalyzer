@@ -9,4 +9,5 @@ INCDIR  = include
 include $(LQANALYZER_DIR)/Makefile.common
 
 INCLUDES += -I$(LQANALYZER_DIR)/SNUTree/include/
+INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/core/include/

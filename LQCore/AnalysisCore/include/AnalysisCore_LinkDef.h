@@ -7,6 +7,6 @@
 #pragma link C++ nestedclass;
 
 #pragma link C++ class Reweight+;
-
+#pragma link C++ SelectionFunctions+;
 
 #endif // __CINT__

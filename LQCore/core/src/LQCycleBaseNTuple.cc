@@ -8,19 +8,24 @@
 #include <iostream>
 
 //local  includes
-#include "include/LQBaseNTuple.h"
+#include "LQCycleBaseNTuple.h"
 
-LQBaseNTuple::LQBaseNTuple(){
+ClassImp( LQCycleBaseNTuple);
 
-}
-
-
-LQBaseNTuple::~LQBaseNTuple(){
+LQCycleBaseNTuple::LQCycleBaseNTuple(){
 
 }
 
-void LQBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString title){
+
+LQCycleBaseNTuple::~LQCycleBaseNTuple(){
+
+}
+
+void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString title){
   
+
+  m_logger << INFO  << "Creating Output Trees" << LQLogger::endmsg;
+
   // Clear the vector of output trees:
   m_outputTrees.clear();
   
@@ -50,14 +55,16 @@ void LQBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString ti
   return;
 }
 
-void LQBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
-    
+void LQCycleBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
+  
+  m_logger << INFO << "Creating " << outfile << LQLogger::endmsg;  
   m_outputFile = TFile::Open(outfile, "RECREATE");
+  std::getchar();
   CreateOutputTrees(m_outputFile, treename , "");
   
 }
 
-void LQBaseNTuple::FillOutTree(){
+void LQCycleBaseNTuple::FillOutTree(){
 
   int nbytes = 0;
   for( std::vector< TTree* >::iterator tree = m_outputTrees.begin();
@@ -75,7 +82,7 @@ void LQBaseNTuple::FillOutTree(){
 
 }
 
-void LQBaseNTuple::GetMemoryConsumption(){
+void LQCycleBaseNTuple::GetMemoryConsumption(){
   // Print memory consumption after initialising the analysis:
   ProcInfo_t procinfo;
   gSystem->GetProcInfo( &procinfo );
@@ -88,7 +95,7 @@ void LQBaseNTuple::GetMemoryConsumption(){
 }
 
 
-void LQBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
+void LQCycleBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
 
   // Remember which directory we were in:                                                                  
   TDirectory* savedir = gDirectory;
@@ -110,10 +117,11 @@ void LQBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
   return;
 }
 
-TTree* LQBaseNTuple::GetOutputTree( const char* treeName ) const{
+TTree* LQCycleBaseNTuple::GetOutputTree( const char* treeName ) const{
   
   // Look for such output tree:                                                
   //                                                                           
+  m_logger << INFO << "Getting output Tree " << LQLogger::endmsg;
   TString tname( treeName );
   for( std::vector< TTree* >::const_iterator it = m_outputTrees.begin();
        it != m_outputTrees.end(); ++it ) {
@@ -127,7 +135,7 @@ TTree* LQBaseNTuple::GetOutputTree( const char* treeName ) const{
 }
 
 
-const char* LQBaseNTuple::RootType( const char* typeid_type ){
+const char* LQCycleBaseNTuple::RootType( const char* typeid_type ){
 
   switch( typeid_type[ 0 ] ) {
 

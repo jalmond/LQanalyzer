@@ -6,7 +6,8 @@
 
 #pragma link C++ nestedclass;
 
+#pragma link C++ class AnalyzerCore+;
 #pragma link C++ class Analyzer+;
-
+#pragma link C++ class HNCycle+;
 
 #endif // __CINT__

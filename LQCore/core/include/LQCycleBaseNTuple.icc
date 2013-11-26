@@ -1,0 +1,57 @@
+#ifndef LQCycleBaseNTuple_ICC
+#define LQCycleBaseNTuple_ICC
+
+
+// System include(s):
+#include <string.h>
+#include <cxxabi.h>
+#include <cstdlib>
+
+// STL include(s):
+#include <sstream>
+#include <typeinfo>
+
+// ROOT include(s):
+#include <TTree.h>
+#include <TBranch.h>
+#include <TLeaf.h>
+#include <TString.h>
+
+
+
+template < class T >
+TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
+                                const char* treeName )throw( LQError ) {
+  TTree*  output_tree = 0;
+  TBranch* branch = 0;
+
+  if( treeName ) {
+    output_tree = GetOutputTree( treeName );
+  }
+  
+  branch = output_tree->GetBranch( name );
+  
+  if( ! branch ) {
+    
+    const char* type_name = typeid( obj ).name();
+
+    if( strlen( type_name ) == 1 ) {
+      // This is a simple variable:      
+      std::ostringstream leaflist;
+      leaflist << name << "/" << RootType( type_name );
+      branch = output_tree->Branch( name, &obj, leaflist.str().c_str() );
+    }
+    else {
+      int status;
+      char* real_type_name = abi::__cxa_demangle( type_name, 0, 0, &status );
+      T* pointer = &obj;
+      m_outputVarPointers.push_back( pointer );
+      branch = output_tree->Bronch( name, real_type_name, &m_outputVarPointers.back() );      
+      free( real_type_name );
+      m_logger << INFO << "Added " << name << " to output Tree" << LQLogger::endmsg;
+    }
+  }
+  return branch;
+}
+
+#endif 

@@ -6,7 +6,7 @@ SRCDIR  = src
 INCDIR  = include
 
 # Overwrite the default rule defined in Makefile.common                                                                                                                      
-coredefault: default $(LQANALYZER_BIN_PATH)/run_lqanalyzer
+#coredefault: default $(LQANALYZER_BIN_PATH)/run_lqanalyzer
 
 # Include the generic compilation rules
 include $(LQANALYZER_DIR)/Makefile.common
@@ -18,12 +18,12 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 
 
-$(LQANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)
-	@echo "Linking " $@
-	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lcore -lSNUTree -lSelection -lPlotting -lHist  -lAnalysisCore -lLQCycle  \
-                $(ROOTLIBS) -lPyROOT -o $@
+#$(LQANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)
+#	@echo "Linking " $@
+#	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lcore -lSNUTree -lSelection -lPlotting -lHist  -lAnalysisCore -lLQCycle  \
+#                $(ROOTLIBS) -lPyROOT  -o $@
 
-run_lqanalyzer.o: app/run_lqanalyzer.cxx 
-	@echo "Compiling $<"
-	@mkdir -p $(OBJDIR)
-	@$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
+#run_lqanalyzer.o: app/run_lqanalyzer.cxx 
+#	@echo "Compiling $<"
+#	@mkdir -p $(OBJDIR)
+#	@$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)

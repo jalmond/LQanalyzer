@@ -28,7 +28,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQBaseNTuple()
+Data::Data() 
 {
 
 }
@@ -120,6 +120,10 @@ void Data::Init(TTree *tree)
 
   return;
 
+}
+
+Long64_t  Data::GetNEntries(){
+  return nentries;
 }
  
 void Data::Reset(){
@@ -762,6 +766,7 @@ void Data::ConnectEvent(){
   ConnectVariable("isPhysDeclared", isPhysDeclared, b_isPhysDeclared);
   ConnectVariable("isPrimaryVertex", isPrimaryVertex, b_isPrimaryVertex);
   ConnectVariable("isTrackingFailure", isTrackingFailure, b_isTrackingFailure);
+  ConnectVariable("passHBHENoiseFilter", passHBHENoiseFilter, b_passHBHENoiseFilter);
   ConnectVariable("passBadEESupercrystalFilter", passBadEESupercrystalFilter, b_passBadEESupercrystalFilter);
   ConnectVariable("passBeamHaloFilterLoose", passBeamHaloFilterLoose, b_passBeamHaloFilterLoose);
   ConnectVariable("passEcalDeadCellBoundaryEnergyFilter", passEcalDeadCellBoundaryEnergyFilter, b_passEcalDeadCellBoundaryEnergyFilter);
@@ -1096,7 +1101,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("passBeamHaloFilterTight", passBeamHaloFilterTight, b_passBeamHaloFilterTight);
   ConnectVariable("passCaloBoundaryDRFilter", passCaloBoundaryDRFilter, b_passCaloBoundaryDRFilter);
   ConnectVariable("passEcalMaskedCellDRFilter", passEcalMaskedCellDRFilter, b_passEcalMaskedCellDRFilter);
-  ConnectVariable("passHBHENoiseFilter", passHBHENoiseFilter, b_passHBHENoiseFilter);
   ConnectVariable("passLogErrorTooManyClusters", passLogErrorTooManyClusters, b_passLogErrorTooManyClusters);
   ConnectVariable("passManyStripClus53X", passManyStripClus53X, b_passManyStripClus53X);
   ConnectVariable("passTooManyStripClus53X", passTooManyStripClus53X, b_passTooManyStripClus53X);

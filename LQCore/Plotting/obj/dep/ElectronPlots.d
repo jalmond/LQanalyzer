@@ -25,7 +25,13 @@ ElectronPlots.o: src/ElectronPlots.cc include/ElectronPlots.h \
   /programs/root/include/TList.h /programs/root/include/TSeqCollection.h \
   /programs/root/include/TCollection.h /programs/root/include/TIterator.h \
   /programs/root/include/TDatime.h /programs/root/include/TUUID.h \
-  /home/jalmond/LQanalyzer/LQCore/core/include/LQBaseNTuple.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQCycleBaseNTuple.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQError.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQCycleBaseBase.h \
+  /programs/root/include/TObject.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQLogger.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQMsgType.h \
+  /home/jalmond/LQanalyzer/LQCore/core/include/LQLogWriter.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KElectron.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KParticle.h \
   /programs/root/include/TLorentzVector.h /programs/root/include/TMath.h \
