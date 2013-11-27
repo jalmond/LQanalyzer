@@ -59,14 +59,27 @@ fi
 
 if [[ `which root-config` == "" ]]; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
-    
-    source /programs/root/bin/thisroot.sh
+
     if [[ `which root-config` == "" ]]; then
-	echo echo "Error: ROOT environment cannot be configured!"
+	echo  "Error: ROOT environment cannot be configured!"
     else echo "Setup root enviroment " 
     fi
 fi
 
+if [ -z ${ROOTSYS} ] ; then
+      echo "Warning: ROOT environment doesn't seem to be configured!"
+      echo "Add these lines to your ~/.bashrc file to remove this warning in future."
+      echo ""
+      echo "source /usr/local/bin/thisroot.sh"
+      echo ""
+      export ROOTSYS=/usr/local
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib/root:
+      source /usr/local/bin/thisroot.sh
+      if [ -z ${ROOTSYS} ] ; then
+	  echo "Error: ROOT environment cannot be configured!"
+      else echo "Setup root enviroment for user."
+      fi
+fi
 
 if [[ `root-config --platform` == "macosx" ]]; then
 
@@ -77,7 +90,7 @@ if [[ `root-config --platform` == "macosx" ]]; then
 else    
     
     if [ ! $LD_LIBRARY_PATH ]; then
-        echo "Warning: so far you haven't setup your ROOT enviroment properly (no LD_LIBRARY_PATH): SFrame will not work"
+        echo "Warning: so far you haven't setup your ROOT enviroment properly (no LD_LIBRARY_PATH): FrameWork will not work"
     fi
     
     export LD_LIBRARY_PATH=${LQANALYZER_LIB_PATH}:${LD_LIBRARY_PATH}
@@ -86,5 +99,4 @@ fi
 
 export PATH=${LQANALYZER_BIN_PATH}:${PATH}
 export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
-
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}

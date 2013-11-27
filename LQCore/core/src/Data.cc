@@ -39,6 +39,10 @@ Data::~Data()
   delete fChain->GetCurrentFile();
 }
 
+TTree* Data::GetInputTree(){
+  return fChain;
+}
+
 Int_t Data::GetEntry(Long64_t entry)
 {
 // Read contents of entry.

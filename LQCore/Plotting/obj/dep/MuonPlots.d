@@ -1,35 +1,36 @@
 MuonPlots.o: src/MuonPlots.cc include/MuonPlots.h include/StdPlots.h \
-  /programs/root/include/TH1F.h /programs/root/include/TH1.h \
-  /programs/root/include/TAxis.h /programs/root/include/TNamed.h \
-  /programs/root/include/TObject.h /programs/root/include/Rtypes.h \
-  /programs/root/include/RConfig.h /programs/root/include/RVersion.h \
-  /programs/root/include/DllImport.h /programs/root/include/Rtypeinfo.h \
-  /programs/root/include/snprintf.h /programs/root/include/strlcpy.h \
-  /programs/root/include/TGenericClassInfo.h \
-  /programs/root/include/TSchemaHelper.h \
-  /programs/root/include/TStorage.h \
-  /programs/root/include/TVersionCheck.h /programs/root/include/Riosfwd.h \
-  /programs/root/include/TBuffer.h /programs/root/include/TString.h \
-  /programs/root/include/TMathBase.h /programs/root/include/TAttAxis.h \
-  /programs/root/include/TArrayD.h /programs/root/include/TArray.h \
-  /programs/root/include/TAttLine.h /programs/root/include/TAttFill.h \
-  /programs/root/include/TAttMarker.h /programs/root/include/TArrayC.h \
-  /programs/root/include/TArrayS.h /programs/root/include/TArrayI.h \
-  /programs/root/include/TArrayF.h /programs/root/include/Foption.h \
-  /programs/root/include/TVectorFfwd.h \
-  /programs/root/include/TVectorDfwd.h \
-  /programs/root/include/TFitResultPtr.h \
+  /usr/local/include/root/TH1F.h /usr/local/include/root/TH1.h \
+  /usr/local/include/root/TAxis.h /usr/local/include/root/TNamed.h \
+  /usr/local/include/root/TObject.h /usr/local/include/root/Rtypes.h \
+  /usr/local/include/root/RConfig.h /usr/local/include/root/RVersion.h \
+  /usr/local/include/root/DllImport.h /usr/local/include/root/Rtypeinfo.h \
+  /usr/local/include/root/snprintf.h /usr/local/include/root/strlcpy.h \
+  /usr/local/include/root/TGenericClassInfo.h \
+  /usr/local/include/root/TSchemaHelper.h \
+  /usr/local/include/root/TStorage.h \
+  /usr/local/include/root/TVersionCheck.h \
+  /usr/local/include/root/Riosfwd.h /usr/local/include/root/TBuffer.h \
+  /usr/local/include/root/TString.h /usr/local/include/root/TMathBase.h \
+  /usr/local/include/root/TAttAxis.h /usr/local/include/root/TArrayD.h \
+  /usr/local/include/root/TArray.h /usr/local/include/root/TAttLine.h \
+  /usr/local/include/root/TAttFill.h /usr/local/include/root/TAttMarker.h \
+  /usr/local/include/root/TArrayC.h /usr/local/include/root/TArrayS.h \
+  /usr/local/include/root/TArrayI.h /usr/local/include/root/TArrayF.h \
+  /usr/local/include/root/Foption.h /usr/local/include/root/TVectorFfwd.h \
+  /usr/local/include/root/TVectorDfwd.h \
+  /usr/local/include/root/TFitResultPtr.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KMuon.h \
   /home/jalmond/LQanalyzer/SNUTree/include/KParticle.h \
-  /programs/root/include/TLorentzVector.h /programs/root/include/TMath.h \
-  /programs/root/include/TError.h /programs/root/include/TVector3.h \
-  /programs/root/include/TVector2.h /programs/root/include/TMatrix.h \
-  /programs/root/include/TMatrixF.h /programs/root/include/TMatrixT.h \
-  /programs/root/include/TMatrixTBase.h \
-  /programs/root/include/TMatrixFBasefwd.h \
-  /programs/root/include/TMatrixDBasefwd.h \
-  /programs/root/include/TMatrixTUtils.h \
-  /programs/root/include/TMatrixFfwd.h \
-  /programs/root/include/TMatrixFUtils.h \
-  /programs/root/include/TMatrixFUtilsfwd.h \
-  /programs/root/include/TRotation.h
+  /usr/local/include/root/TLorentzVector.h \
+  /usr/local/include/root/TMath.h /usr/local/include/root/TError.h \
+  /usr/local/include/root/TVector3.h /usr/local/include/root/TVector2.h \
+  /usr/local/include/root/TMatrix.h /usr/local/include/root/TMatrixF.h \
+  /usr/local/include/root/TMatrixT.h \
+  /usr/local/include/root/TMatrixTBase.h \
+  /usr/local/include/root/TMatrixFBasefwd.h \
+  /usr/local/include/root/TMatrixDBasefwd.h \
+  /usr/local/include/root/TMatrixTUtils.h \
+  /usr/local/include/root/TMatrixFfwd.h \
+  /usr/local/include/root/TMatrixFUtils.h \
+  /usr/local/include/root/TMatrixFUtilsfwd.h \
+  /usr/local/include/root/TRotation.h

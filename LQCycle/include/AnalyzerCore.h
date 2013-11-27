@@ -21,19 +21,18 @@ class AnalyzerCore : public LQCycleBase {
 
   //destructor
   virtual ~AnalyzerCore();
-  
-  enum histtype {muhist, elhist, jethist, sighist};
-  enum jobtype {ZTest,HNee, HNmm, HNFakeBkgmm, HNFakeBkgee};
 
+  // SetUpEvent CORE function: accesses event in ntuple
+  virtual void SetUpEvent(Long64_t entry)throw( LQError );
+  
+  // enum for plotting functions/classes
+  enum histtype {muhist, elhist, jethist, sighist};
 
   
   //
   // Useful message function 
   //
   void Message(TString message, LQMsgType type=INFO);
-  
-  /// Bool to tell if event is data or MC
-  Bool_t isData;
   
   /// Pileup Reweighting class
   static const Bool_t MC_pu = true;
@@ -49,7 +48,10 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   TH2F* FRHist;
   
+  /// Event weights
   Double_t MCweight, weight;
+
+  // used to get trigger prescale
   Int_t prescale;
   
   //// Making cleaver hist maps
@@ -75,7 +77,7 @@ class AnalyzerCore : public LQCycleBase {
   //
   // Checks if a file exists
   //
-  void CheckFile(TFile* file);
+  void CheckFile(TFile* file) throw( LQError );
   
   //// Plotting 
   TH1* GetHist(TString hname);
@@ -99,10 +101,8 @@ class AnalyzerCore : public LQCycleBase {
   void WriteCLHists();
 
   //// Event related                                                                                                                                              
-  double SetEventWeight(float w);
   bool PassTrigger(std::vector<TString> list, int& prescale);
-  void SetWeight(Double_t CrossSection, Double_t nevents);
   bool PassBasicEventCuts();
-  void OutPutEventInfo(int entry, int step);
+
 };
 #endif

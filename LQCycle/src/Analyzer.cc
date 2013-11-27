@@ -1,42 +1,31 @@
-#include "Analyzer.h"
-
-// System include(s):                                                           
-#include <cxxabi.h>
-#include <cstdlib>
-
-// STL include(s):
-#include <stdio.h>  
-#include <stdlib.h>     /* getenv */
-#include <stdexcept>
-#include <sstream>
-#include <iostream>
-
-// ROOT include(s): 
-
-#include "TDirectory.h"
-#include "TROOT.h"
-#include "TClass.h"
-
+// $Id: Analyzer.cc 1 2013-11-26 10:23:10Z jalmond $
+/***************************************************************************
+ * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Package: LQCycles
+ *
+ * @author John Almond       <jalmond@cern.ch>           - SNU
+ *
+ ***************************************************************************/
 
 /// Local includes
-//Plotting
-#include "MuonPlots.h"
-#include "ElectronPlots.h"
-#include "JetPlots.h"
-#include "SignalPlots.h"
-//Core
+#include "Analyzer.h"
+
+//Core includes
 #include "Reweight.h"
-#include "EventBase.h"
+#include "EventBase.h"                                                                                                                           
 
 
 //// Needed to allow inheritance for use in LQCore/core classes
 ClassImp (Analyzer);
 
 
-Analyzer::Analyzer() :  AnalyzerCore() {
+/**
+ *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
+ *
+ */
+Analyzer::Analyzer() :  AnalyzerCore(), out_muons(0), out_electrons(0) {
   
   Message("In Analyzer constructor", INFO);
-  
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
@@ -48,57 +37,23 @@ Analyzer::Analyzer() :  AnalyzerCore() {
 
 void Analyzer::InitialiseAnalysis() throw( LQError ) {
   
-  jobtype jtype = ZTest;
   /// Initialise histograms
   MakeHistograms();
   
-  Message("Made histograms", INFO);
+  //
+  // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
+  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  //
+
   Message("Making clever hists for Z ->ll test code", INFO);
   
   //// Initialise Plotting class functions
-  /// jtype sets which histograms to make    
-  
+  /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
   MakeCleverHistograms(muhist, "Zmuons");
   MakeCleverHistograms(elhist, "Zelectrons");
-  
-
-  TDirectory* origDir = gDirectory;
- 
-  ///////////////////////////////////////////////////////////////////////
-  //////// For HN analysis  /////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////
-  //// FakeRate Input file
-  //////////////////////////////////////////////////////////////////////
-  string analysisdir = getenv("FILEDIR");  
-  
-  // Create a unique directory in memory to hold the histograms: 
-  TFile *infile = TFile::Open((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
-  CheckFile(infile);
-  
-  TDirectory* tempDir = GetTemporaryDirectory();
-  tempDir->cd();  
-  FRHist = dynamic_cast<TH2F*> (( infile->Get("h_FOrate3"))->Clone());  
-  infile->Close();
-  delete infile;
-  origDir->cd();
-  
+    
   return;
 }
-
-
-void Analyzer::BeginEvent(float w)throw( LQError ) {  
-
-  Message("In BeginEvent() " , INFO);
-  //
-  /// Set up weight for cycle (uses input luminosity or cross section if MC samples)
-  //
-  weight= SetEventWeight(w);
-  ///
-  // clear all output variable vectors
-  //
-  ClearOutputVectors();
-}
-
 
 
 void Analyzer::ExecuteEvents()throw( LQError ){
@@ -110,7 +65,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   //triggerslist.push_back("HLT_Mu17_TkMu8_v");
   //if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
-  if (MC_pu&&!isData)  weight = reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))*MCweight;
+  if (MC_pu&&!isData)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
   numberVertices = eventbase->GetBaseEvent().nVertices();
 
   if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
@@ -150,7 +105,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   
 
   if (muonColl.size() == 2) {      
-    KParticle Z = muonColl.at(0) + muonColl.at(1);
+    snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
       FillCLHist(muhist, "Zmuons", muonColl, weight);
@@ -161,7 +116,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   ///// SOME STANDARD PLOTS /////
   ////  Z-> ee              //////
   if (electronColl.size() == 2) {      
-    KParticle Z = electronColl.at(0) + electronColl.at(1);
+    snu::KParticle Z = electronColl.at(0) + electronColl.at(1);
     if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
 
       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
@@ -181,7 +136,7 @@ void Analyzer::EndCycle()throw( LQError ){
   // This function opens output root file and saves output trees
   //
   SaveOutputTrees(m_outputFile);
-  m_outputFile->cd();
+
   m_logger<< INFO << "Opening output root file " << m_outputFile->GetName() << LQLogger::endmsg;
   //
   // All histograms are output into m_outputFile
@@ -194,23 +149,33 @@ void Analyzer::EndCycle()throw( LQError ){
   CloseFiles();
 }
 
+
 void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
   //
-  // This function is called before the ExecuteEvents. It sets up necessary enviroment/root files
+  // To clear output variables if running multiple cycles
   //
+  ClearOutputVectors();
+
   string analysisdir = getenv("FILEDIR");  
   if(!isData) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
 
   //
   // Open the out put file if any output Tree variables are  specified
   //
-  MakeOutPutFile(output_file_name, "LQTree");
+  MakeOutPutFile(output_file_name); 
+  /// can specify output tree by chaging line to  MakeOutPutFile(output_file_name, treename); This will change default name for DeclareVariable()
   
-  //DeclareVariable(out_muons, "Signal_Muons", "LQTree");
-  m_logger << INFO << "Added Branch " << DeclareVariable(out_electrons, "Signal_Electrons", "LQTree") << LQLogger::endmsg;
+  //
+  //If you wish to output variables to output file use DeclareVariable
+  // clear these variables in ::ClearOutputVectors function
+  //DeclareVariable(obj, label, treename );
+  //DeclareVariable(obj, label ); //-> will use default treename: LQTree
+  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  DeclareVariable(out_muons, "Signal_Muons");
+
   
   return;
   
@@ -218,33 +183,7 @@ void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
 
 Analyzer::~Analyzer() {
   
-  delete FRHist;
- 
-  for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
-    delete it->second;
-  }
-  maphist.clear();
-  
-  for(map<TString, MuonPlots*>::iterator it = mapCLhistMu.begin(); it != mapCLhistMu.end(); it++){
-    delete it->second;
-  }
-  mapCLhistMu.clear();
-
-  for(map<TString, JetPlots*>::iterator it = mapCLhistJet.begin(); it != mapCLhistJet.end(); it++){
-    delete it->second;
-  }
-  mapCLhistJet.clear();
-  
-  for(map<TString, ElectronPlots*>::iterator it = mapCLhistEl.begin(); it != mapCLhistEl.end(); it++){
-    delete it->second;
-  }
-  mapCLhistEl.clear();
-  
-  for(map<TString, SignalPlots*>::iterator it = mapCLhistSig.begin(); it != mapCLhistSig.end(); it++){
-    delete it->second;
-  }
-  mapCLhistSig.clear();
-  
+  Message("In Analyzer Destructor" , INFO);
   if(!isData)delete reweightPU;
 
  }
@@ -256,7 +195,7 @@ void Analyzer::MakeHistograms(){
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
-  
+  Message("Made histograms", INFO);
   /**
    *  Remove//Overide this AnalyzerCore::MakeHistograms() to make new hists for your analysis
    **/
@@ -272,27 +211,41 @@ void Analyzer::EndEvent()throw( LQError ){
 }
 
 void Analyzer::ClearOutputVectors(){
-  
+  //
+  // Reset all variables declared in Declare Variable
+  //
   out_muons.clear();
   out_electrons.clear();
 }
 
 
-void Analyzer::SetUpEvent(Long64_t kentry)throw( LQError ){
+
+void Analyzer::BeginEvent(float ev_weight )throw( LQError ){
   
+  Message("In BeginEvent() " , DEBUG);
   ClearOutputVectors();
-  OutPutEventInfo(kentry, 10000); /// output event info every X events wil running
-  if (!fChain) cout<<"Problem with fChain"<<endl;
 
-  int nbytes = fChain->GetEntry(kentry,0); 
+  if(isData){
+    if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
+    MCweight=1.;
+    weight = 1.;
+  }
+  else  {
+    MCweight = 1.; //Get MC weight here FIX ME
+    weight = ev_weight;
+  }
 
-  snu::KEvent eventinfo = GetEventInfo(); 
+  snu::KEvent eventinfo = GetEventInfo();
+  //                  
+  // creates object that stores all SKTree classes                                                                               
+  // 
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
 
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);  
-  isData = eventinfo.IsData();
   
-  eventbase = new EventBase(lqevent); 
-
+  //  eventbase is master class to use in analysis 
+  //                                                                                                                                                                            
+  eventbase = new EventBase(lqevent);
+  
   return;
 }
 

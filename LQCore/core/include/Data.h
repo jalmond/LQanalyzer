@@ -41,7 +41,7 @@ public :
    void Init(TTree *tree);
    Bool_t   Notify(); //remove if possible
    void     Show(Long64_t entry = -1); //remove if possible
-
+   TTree* GetInputTree();
    void setBranchStatus(void);
 
 

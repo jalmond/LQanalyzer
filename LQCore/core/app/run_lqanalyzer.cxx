@@ -34,7 +34,7 @@ int main( int argc, char** argv ) {
   g_logger << VERBOSE << "Setting up job" << LQLogger::endmsg;
 
   LQController analysis; 
-  analysis.SetJobName("TESTJob");
+  analysis.SetJobName("Ztoll_ExampleCycle");
   analysis.AddLibraries("libSNUTree.so");
   analysis.AddLibraries("libcore.so");
   analysis.AddLibraries("libSelection.so");
@@ -52,10 +52,10 @@ int main( int argc, char** argv ) {
     g_logger << VERBOSE << "About to initialize" << LQLogger::endmsg;
     analysis.SetEffectiveLuminosity(1.);
     analysis.SetTargetLuminosity(1.);
-    analysis.SetLogLevel("DEBUG");
-    analysis.SetNEventsToProcess(20000);
+    analysis.SetLogLevel("INFO");
+    // analysis.SetNEventsToProcess(20000);
     analysis.SetName("TEST",1,"/var/tmp/jalmond/A_1122445/output/");
-
+    
     analysis.Initialize();
     analysis.ExecuteCycle();
 

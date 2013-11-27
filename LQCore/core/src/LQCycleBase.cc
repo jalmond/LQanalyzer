@@ -1,6 +1,5 @@
 #include "LQCycleBase.h"
 
-
 ClassImp( LQCycleBase );
 
 LQCycleBase::LQCycleBase(){

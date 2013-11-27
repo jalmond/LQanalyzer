@@ -4,6 +4,7 @@
 
 namespace LQAnalysis {
 
-  static const char* CycleConfigName      = "CycleConfig";
+  //  static const char* CycleConfigName      = "CycleConfig";
+  // Add any constants to be used by core code
 }
 #endif 

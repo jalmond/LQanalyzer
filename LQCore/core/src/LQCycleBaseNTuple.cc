@@ -5,15 +5,18 @@
 #include "TFile.h"
 #include <TSystem.h>
 
+/// STL includes
 #include <iostream>
+#include <iomanip>
 
 //local  includes
 #include "LQCycleBaseNTuple.h"
 
 ClassImp( LQCycleBaseNTuple);
 
-LQCycleBaseNTuple::LQCycleBaseNTuple(){
+LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), isData(false) , sample_entries(-999){
 
+ 
 }
 
 
@@ -23,7 +26,6 @@ LQCycleBaseNTuple::~LQCycleBaseNTuple(){
 
 void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString title){
   
-
   m_logger << INFO  << "Creating Output Trees" << LQLogger::endmsg;
 
   // Clear the vector of output trees:
@@ -55,12 +57,25 @@ void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TStri
   return;
 }
 
+void LQCycleBaseNTuple::SetDataType( bool type){
+  
+  isData = type;
+}
+
+void LQCycleBaseNTuple::SetNSampleEvents(double nev){
+  sample_entries = nev;
+}
+
 void LQCycleBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
   
-  m_logger << INFO << "Creating " << outfile << LQLogger::endmsg;  
-  m_outputFile = TFile::Open(outfile, "RECREATE");
-  std::getchar();
-  CreateOutputTrees(m_outputFile, treename , "");
+  if(!m_outputFile){
+    m_logger << INFO << "Creating " << outfile << LQLogger::endmsg;  
+    m_outputFile = TFile::Open(outfile, "RECREATE");
+  }else {
+    m_logger << WARNING << "Output file created already. Will not create again" << LQLogger::endmsg;
+  }
+  
+  if(!treename.Contains("NOTREE"))  CreateOutputTrees(m_outputFile, treename , "");
   
 }
 
@@ -71,29 +86,19 @@ void LQCycleBaseNTuple::FillOutTree(){
        tree != m_outputTrees.end(); ++tree ) {
     nbytes = ( *tree )->Fill();
     if( nbytes < 0 ) {
-      //REPORT_ERROR( "Write error occured in tree \""
-      //	    << ( *tree )->GetName() << "\"" );
+      REPORT_ERROR( "Write error occured in tree \""
+		    << ( *tree )->GetName() << "\"" );
     } else if( nbytes == 0 ) {
-      //m_logger << WARNING << "No data written to tree \""
-      //<< ( *tree )->GetName() << "\"" << SLogger::endmsg;
+      m_logger << WARNING << "No data written to tree \""
+	       << ( *tree )->GetName() << "\"" << LQLogger::endmsg;
     }
   }
   
 
 }
+void  LQCycleBaseNTuple::CloseFiles(){
 
-void LQCycleBaseNTuple::GetMemoryConsumption(){
-  // Print memory consumption after initialising the analysis:
-  ProcInfo_t procinfo;
-  gSystem->GetProcInfo( &procinfo );
-  //m_logger << DEBUG << "Memory consumption after initialisation:" << SLogger::endmsg;
-  //m_logger.setf( std::ios::fixed );
-  //m_logger << DEBUG << "  Resident mem.: " << std::setw( 7 ) << procinfo.fMemResident
-  //<< " kB; Virtual mem.: " << std::setw( 7 ) << procinfo.fMemVirtual
-  //<< " kB" << SLogger::endmsg;
-  
 }
-
 
 void LQCycleBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
 
@@ -131,6 +136,7 @@ TTree* LQCycleBaseNTuple::GetOutputTree( const char* treeName ) const{
       }
     }
   }
+  m_logger << WARNING << "Asked for output tree when none was initially created. " << LQLogger::endmsg;
   return 0;
 }
 

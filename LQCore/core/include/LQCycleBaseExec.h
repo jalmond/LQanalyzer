@@ -27,7 +27,7 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SNUTreeFiller{
   virtual void BeginCycle(TString filename)throw( LQError );
 
   /**
-   * Called before the first event. Gets the weight from the configured job
+   * Called before the  event. Gets the weight from the configured job
    **/
   virtual void BeginEvent(float weight)throw( LQError );
   
@@ -39,18 +39,18 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SNUTreeFiller{
    */
   virtual void ExecuteEvents() throw( LQError );
 
-  /**
-   * Called for each event. Initialised all SKTree objects
-   *
-   **/
-  virtual void SetUpEvent(Long64_t entry)throw( LQError );
-
   /**  
    *  Called at end of cycle
    *
    **/
   virtual void EndCycle()throw( LQError );
   virtual void EndEvent()throw( LQError );
+  
+  /**
+   *   Interates through the ntuple
+   *
+   **/
+  virtual void SetUpEvent(Long64_t jevent)throw( LQError );
 
   ClassDef(LQCycleBaseExec, 0 );
 };

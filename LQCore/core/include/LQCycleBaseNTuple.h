@@ -21,15 +21,22 @@ public:
   std::vector< TTree* > m_outputTrees;
   std::list< void* > m_outputVarPointers;  
   
- public:
+
   virtual void CreateOutputTrees(TFile* outputFile, TString name, TString title);
   virtual void FillOutTree();
-  virtual void GetMemoryConsumption();
   virtual void SaveOutputTrees( TDirectory* /*output*/ );
   virtual TTree* GetOutputTree( const char* treeName ) const;
-  virtual void MakeOutPutFile(TString path, TString name);
-
-
+  virtual void MakeOutPutFile(TString path, TString name= "NOTREE");
+  
+  void CloseFiles();
+  void SetDataType(bool type);
+  void SetNSampleEvents(double nev);
+  /// Bool to tell if sample is data or MC in analysis code
+  bool isData;
+  
+  // How many entries in the fullsample
+  double sample_entries;
+  
   /// Declare an output variable
   template< class T >
     TBranch* DeclareVariable( T& obj, const char* name,

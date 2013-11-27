@@ -1,14 +1,59 @@
+# Dear emacs, this is a -*- makefile -*-                                                                                                                                  
+# $Id: Makefile.common almond $
+########################################################################### 
 MAKEFLAGS = --no-print-directory -r -s -j4  
 
+#
+# Include the architecture definitions from the ROOT sources
+#
+#  Makefile.arch can be in two different locations depending on the system
+#  you're compiling on. The Fink installed version of ROOT has this file
+#  in a different location than the "normally installed" ROOT versions...
+#
+ARCH_LOC_1 := $(wildcard $(shell root-config --prefix)/test/Makefile.arch)
+ARCH_LOC_2 := $(wildcard $(shell root-config --prefix)/share/root/test/Makefile.arch)
+ARCH_LOC_3 := $(wildcard $(shell root-config --prefix)/share/doc/root/test/Makefile.arch)
+ARCH_LOC_4 := $(wildcard $(shell root-config --prefix)/etc/Makefile.arch)
+ARCH_LOC_5 := $(wildcard $(shell root-config --prefix)/etc/root/Makefile.arch)
+ARCH_LOC_5 := $(wildcard $(shell root-config --prefix)/etc/root/Makefile.arch)
+ARCH_LOC_6 := $(wildcard $(shell root-config --etcdir)/Makefile.arch)
+ifneq ($(strip $(ARCH_LOC_1)),)
+  $(info Using $(ARCH_LOC_1))
+  include $(ARCH_LOC_1)
+else
+  ifneq ($(strip $(ARCH_LOC_2)),)
+    $(info Using $(ARCH_LOC_2))
+    include $(ARCH_LOC_2)
+  else
+    ifneq ($(strip $(ARCH_LOC_3)),)
+      $(info Using $(ARCH_LOC_3))
+      include $(ARCH_LOC_3)
+    else
+                ifneq ($(strip $(ARCH_LOC_4)),)
+        $(info Using $(ARCH_LOC_4))
+        include $(ARCH_LOC_4)
+      else
+        ifneq ($(strip $(ARCH_LOC_5)),)
+          $(info Using $(ARCH_LOC_5))
+          include $(ARCH_LOC_5)
+        else
+         ifneq ($(strip $(ARCH_LOC_6)),)
+          $(info Using $(ARCH_LOC_6))
+          include $(ARCH_LOC_6)
+         else
+         $(error Could not find Makefile.arch!)
+        endif
+        endif
+        endif
+    endif
+  endif
+endif
 
-ARCH_LOC := $(wildcard $(shell root-config --prefix)/etc/Makefile.arch)
-$(info Using $(ARCH_LOC))
-include $(ARCH_LOC)
 
 # Some compilation options                                                                                                                                                     
 VPATH    += $(OBJDIR) $(SRCDIR)
-INCLUDES += -Iinclude/ -I./
-CXXFLAGS += -Wall -Wno-overloaded-virtual -Wno-unused
+INCLUDES += -Iinclude -I./ -I./
+CXXFLAGS += -Wall -Wextra -Wno-overloaded-virtual  # -Wparentheses-equality #-Wno-unused
 
 
 # Set the locations of some files                                                                                                                                               
@@ -33,7 +78,7 @@ OLIST = $(patsubst %.cc,%.o,$(notdir $(CPPLIST)))
 
 # Implicit rule to compile all sources                                                                                                                                          
 %.o : %.cc
-	@echo "Compiling $<"
+	@echo "Compiling $<" 
 	@mkdir -p $(OBJDIR) 
 	@$(CXX) $(CXXFLAGS)  -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
 
