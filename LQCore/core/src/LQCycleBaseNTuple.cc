@@ -1,9 +1,10 @@
 /// ROOT includes
 #include <TROOT.h>
-#include "TTree.h"
-#include "TDirectory.h"
-#include "TFile.h"
+#include <TTree.h>
+#include <TDirectory.h>
+#include <TFile.h>
 #include <TSystem.h>
+#include <TH1.h>
 
 /// STL includes
 #include <iostream>
@@ -14,7 +15,7 @@
 
 ClassImp( LQCycleBaseNTuple);
 
-LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), isData(false) , sample_entries(-999){
+LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) , sample_entries(-999), output_interval(10000), events_to_process(-1){
 
  
 }
@@ -57,9 +58,20 @@ void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TStri
   return;
 }
 
+
+void LQCycleBaseNTuple::SetOutPutStep(int step){
+
+  if(step != output_interval) m_logger << INFO << "Changing default value for output interval from every 10000 events to every " << step << " events" << LQLogger::endmsg;
+  output_interval = step;  
+}
+
+void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
+  events_to_process = nentries;
+}
+
 void LQCycleBaseNTuple::SetDataType( bool type){
   
-  isData = type;
+  k_isdata = type;
 }
 
 void LQCycleBaseNTuple::SetNSampleEvents(double nev){
@@ -93,19 +105,42 @@ void LQCycleBaseNTuple::FillOutTree(){
 	       << ( *tree )->GetName() << "\"" << LQLogger::endmsg;
     }
   }
-  
-
 }
+
+void LQCycleBaseNTuple::WriteCycleHists(TH1F* h_timing, TH1F* hmem1, TH1F* hmem2){
+
+  // Remember which directory we were in: 
+  TDirectory* savedir = gDirectory;
+
+  TDirectory* cycledir = m_outputFile->mkdir("CycleInfo");
+  m_outputFile->cd( cycledir->GetName());
+  h_timing->Write();
+  hmem1->Write();
+  hmem2->Write();
+
+  // Go back to the original directory:                                                                                                                              
+  gDirectory = savedir;
+  
+}
+
 void  LQCycleBaseNTuple::CloseFiles(){
 
+  m_logger << INFO << "Closing output file  " << m_outputFile->GetName() << LQLogger::endmsg;
+  m_outputFile->SaveSelf( kTRUE ); /// is this needed 
+  m_outputFile->Write();
+  m_outputFile->Close();
+  delete m_outputFile;
+  m_outputFile = 0;
+  
 }
 
 void LQCycleBaseNTuple::SaveOutputTrees( TDirectory* /*output*/ ) {
 
-  // Remember which directory we were in:                                                                  
+  // Remember which directory we were in:
   TDirectory* savedir = gDirectory;
 
-  // Save each regular output tree:                                                                        
+  // Save each regular output tree:
+
   for( std::vector< TTree* >::iterator tree = m_outputTrees.begin();
        tree != m_outputTrees.end(); ++tree ) {
     TDirectory* dir = ( *tree )->GetDirectory();

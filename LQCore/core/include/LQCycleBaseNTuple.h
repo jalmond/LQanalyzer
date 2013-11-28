@@ -11,6 +11,9 @@ class TBranch;
 #include "LQError.h"
 #include "LQCycleBaseBase.h"
 
+// forward declaration
+class TH1F;
+
 class LQCycleBaseNTuple :  public virtual LQCycleBaseBase{
 
 public:
@@ -31,12 +34,17 @@ public:
   void CloseFiles();
   void SetDataType(bool type);
   void SetNSampleEvents(double nev);
+  void SetOutPutStep(int step);
+  void SetNEventsToProcess(int nentries);
+  void WriteCycleHists(TH1F* htime, TH1F* mem1, TH1F* mem2);
+  
   /// Bool to tell if sample is data or MC in analysis code
-  bool isData;
+  bool k_isdata;
   
   // How many entries in the fullsample
   double sample_entries;
-  
+  int output_interval;
+  int events_to_process;
   /// Declare an output variable
   template< class T >
     TBranch* DeclareVariable( T& obj, const char* name,

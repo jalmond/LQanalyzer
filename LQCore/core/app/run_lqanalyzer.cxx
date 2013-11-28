@@ -44,6 +44,7 @@ int main( int argc, char** argv ) {
   g_logger << VERBOSE << "Added up libaries" << LQLogger::endmsg;
   
   analysis.SetInputList(TString(filename));
+  analysis.SetFullInputList(TString(filename));
   analysis.SetTreeName("rootTupleTree/tree");
   analysis.SetCycleName("Analyzer");
   g_logger << VERBOSE << "Setting up tree" << LQLogger::endmsg;
@@ -53,9 +54,11 @@ int main( int argc, char** argv ) {
     analysis.SetEffectiveLuminosity(1.);
     analysis.SetTargetLuminosity(1.);
     analysis.SetLogLevel("INFO");
-    // analysis.SetNEventsToProcess(20000);
+    analysis.SetNEventsToProcess(20000);
     analysis.SetName("TEST",1,"/var/tmp/jalmond/A_1122445/output/");
     
+
+    ///// Run cycle
     analysis.Initialize();
     analysis.ExecuteCycle();
 

@@ -22,6 +22,10 @@
 
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
+
+  // To have the correct name in the log:                                                                                                                            
+  SetLogName("AnalyzerCore");
+
   Message("In AnalyzerCore constructor", INFO);
   
   TDirectory* origDir = gDirectory;
@@ -46,7 +50,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 AnalyzerCore::~AnalyzerCore(){
   
   Message("In AnalyzerCore Destructor" , INFO);
-  delete FRHist;
+  if(FRHist) delete FRHist;
 
   for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
     delete it->second;
@@ -87,9 +91,15 @@ void AnalyzerCore::SetUpEvent(Long64_t entry) throw( LQError ) {
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
   if (!fChain) throw LQError( "Chain is not initialized",  LQError::SkipCycle );     
   int nbytes = fChain->GetEntry(entry,0);  //  ,0) sets lonly active branches 
-    
+  
+  if(k_isdata != isData) throw LQError( "!!! Event is confused. It does not know if it is data or MC", LQError::SkipCycle );
   if(nbytes==0)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );  
-  if (!(entry % 10000))  m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << "[" << sample_entries<<  "]"<< LQLogger::endmsg;
+  
+  if (!(entry % output_interval)) {
+    if(events_to_process != nentries) m_logger << INFO <<  "Processing entry " << entry <<  "/" << events_to_process << " : " <<  "[" << nentries << "/" << sample_entries<<  "]"<< LQLogger::endmsg;
+    else m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << "[" << sample_entries<<  "]"<< LQLogger::endmsg;
+
+  }
 }
 
   
@@ -129,16 +139,6 @@ TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
   return tempDir;
 
 }
-
-void AnalyzerCore::CloseFiles(){
-
-  m_outputFile->SaveSelf( kTRUE ); /// is this needed
-  m_outputFile->Write();
-  m_outputFile->Close();
-  delete m_outputFile;
-  m_outputFile = 0;
-}
-
 
 
 void AnalyzerCore::Message(TString message, LQMsgType type){
@@ -286,6 +286,7 @@ void AnalyzerCore::WriteHists(){
 
   /// Open Output rootfile
   m_outputFile->cd();
+
   for(map<TString, TH1*>::iterator mapit = maphist.begin(); mapit != maphist.end(); mapit++){
     mapit->second->Write();
   }

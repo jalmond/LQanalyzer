@@ -24,14 +24,15 @@ ClassImp (Analyzer);
  *
  */
 Analyzer::Analyzer() :  AnalyzerCore(), out_muons(0), out_electrons(0) {
-  
+
+
+  // To have the correct name in the log:                                                                                                                            
+  SetLogName("Analyzer");
+
   Message("In Analyzer constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
-
-  // To have the correct name in the log:
-  SetLogName("Analyzer");
 }
 
 
@@ -65,7 +66,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   //triggerslist.push_back("HLT_Mu17_TkMu8_v");
   //if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
-  if (MC_pu&&!isData)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
+  if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
   numberVertices = eventbase->GetBaseEvent().nVertices();
 
   if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
@@ -135,18 +136,16 @@ void Analyzer::EndCycle()throw( LQError ){
   //
   // This function opens output root file and saves output trees
   //
-  SaveOutputTrees(m_outputFile);
 
+  SaveOutputTrees(m_outputFile);
+  
   m_logger<< INFO << "Opening output root file " << m_outputFile->GetName() << LQLogger::endmsg;
   //
   // All histograms are output into m_outputFile
   //
   WriteHists();/// writes all outputs in maphist
   WriteCLHists(); /// writes all hists set with MakeCleverHistograms       
-  //
-  // m_outputFile is closed and saved
-  //
-  CloseFiles();
+
 }
 
 
@@ -160,7 +159,7 @@ void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
   ClearOutputVectors();
 
   string analysisdir = getenv("FILEDIR");  
-  if(!isData) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
 
   //
   // Open the out put file if any output Tree variables are  specified
@@ -184,7 +183,7 @@ void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
 Analyzer::~Analyzer() {
   
   Message("In Analyzer Destructor" , INFO);
-  if(!isData)delete reweightPU;
+  if(!k_isdata)delete reweightPU;
 
  }
 
@@ -225,7 +224,7 @@ void Analyzer::BeginEvent(float ev_weight )throw( LQError ){
   Message("In BeginEvent() " , DEBUG);
   ClearOutputVectors();
 
-  if(isData){
+  if(k_isdata){
     if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
     MCweight=1.;
     weight = 1.;

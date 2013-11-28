@@ -7,7 +7,7 @@
  #                                                                         #
  ###########################################################################
 
-all: snutree  AnalysisCore core plotting selection cycle 
+all: snutree core  AnalysisCore  plotting selection cycle 
 
 snutree::
 	(cd SNUTree; make)

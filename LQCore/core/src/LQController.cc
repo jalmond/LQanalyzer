@@ -27,12 +27,44 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.), file_version(0),  nevents_to_process(-1), m_isInitialized( kFALSE ), entrieslimit(-1), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0){
+LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.), file_version(0),  nevents_to_process(-1), m_isInitialized( kFALSE ), entrieslimit(-1), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000){
 
+  h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
+  h_timing_hist->GetYaxis()->SetTitle("Time (s)");
+  h_timing_hist->GetXaxis()->SetBinLabel(1,"Initialisation");
+  h_timing_hist->GetXaxis()->SetBinLabel(2,"BeginCycle");
+  h_timing_hist->GetXaxis()->SetBinLabel(3,"QuarterExecute");
+  h_timing_hist->GetXaxis()->SetBinLabel(4,"HalfExecute");
+  h_timing_hist->GetXaxis()->SetBinLabel(5,"ThreeQuarterExecute");
+  h_timing_hist->GetXaxis()->SetBinLabel(6,"FullExecute");
+  h_timing_hist->GetXaxis()->SetBinLabel(7,"EndCycle");
+  h_virtmemory_hist = new TH1F ("CycleVirtualMemoryUsage","Memory", 8,0.,8.);
+  h_virtmemory_hist->GetYaxis()->SetTitle("Usage (kB)");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(1, "LoadLibraries");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(2, "EndInitialization");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(3, "BeginCycle");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(4, "QuarterExecute");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(5, "HalfExecute");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(6, "ThreeQuarterExecute");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(7, "FullExecute");
+  h_virtmemory_hist->GetXaxis()->SetBinLabel(8, "EndCycle");
+  h_physicalmemory_hist = new TH1F ("CyclePhysicalMemoryUsage","Memory", 8,0.,8.);
+  h_physicalmemory_hist->GetYaxis()->SetTitle("Usage (kB)");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(1, "LoadLibraries");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(2, "EndInitialization");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(3, "BeginCycle");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(4, "QuarterExecute");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(5, "HalfExecute");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(6, "ThreeQuarterExecute");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(7, "FullExecute");
+  h_physicalmemory_hist->GetXaxis()->SetBinLabel(8, "EndCycle");
 }
 
 LQController::~LQController(){
-
+  
+  delete h_timing_hist;
+  delete h_virtmemory_hist;
+  delete h_physicalmemory_hist;
 }
 
 void LQController::AddLibraries(TString libname){
@@ -44,7 +76,9 @@ void LQController::RunEvent(Long64_t pick_event){
 }
   
 
-
+void LQController::SetOutPutStep(int step){
+  output_step = step;
+}
 
 void LQController::SetName(TString name, Int_t version, TString dir) {
 
@@ -75,33 +109,31 @@ void LQController::SetDataType(TString settype){
 
 std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
   
-  TH1I* EventCounter = new TH1I("EventCounter","Event Counter",2,-0.5,1.5);
-
   if(fullfilelist.Contains("NULL")){
     return std::make_pair(0.,0.);
   }
   std::ifstream fin(fullfilelist.Data());
   std::string word;
+  int ifile(0);
+
+  total_events_beforeskim = 0.;
+  total_events_afterskim = 0.;
 
   if(fin.is_open()){
     while(getline (fin,word)){
-      TFile * file = TFile::Open(word.c_str());
-      TH1I* EventCounter_tmp = dynamic_cast<TH1I*> ((file ->Get("LJFilter/EventCount/EventCount"))->Clone());
 
-      if(!EventCounter_tmp) throw LQError( "LJFilter/EventCount/EventCount NOT found!!!",   LQError::StopExecution );
-      
-      EventCounter->Add(EventCounter_tmp);
+      TFile * file = TFile::Open(word.c_str());
+      TH1I*  EventCounter = (TH1I*) (file ->Get("LJFilter/EventCount/EventCounter"));
+      if(!EventCounter) throw LQError( "LJFilter/EventCount/EventCount NOT found!!!",   LQError::StopExecution );
+
+      total_events_beforeskim += EventCounter->GetBinContent(1);
+      total_events_afterskim += EventCounter->GetBinContent(2);
       file->Close();
       delete file;
-      delete EventCounter_tmp;
+      ifile++;
     }
     fin.close();
   }
-  
-  total_events_beforeskim = EventCounter->GetBinContent(1);
-  total_events_afterskim = EventCounter->GetBinContent(2);
-  
-  delete EventCounter;
   
   return std::make_pair(total_events_beforeskim ,total_events_afterskim);
 }
@@ -163,7 +195,7 @@ void LQController::SetEffectiveLuminosity(float eff_lumi){
 
 void LQController::Initialize() throw( LQError ){
   
-  m_logger << INFO << "Initializing" << LQLogger::endmsg;
+  m_logger << DEBUG << "Initializing" << LQLogger::endmsg;
   
 
   // Just for kicks, lets measure the time it needs to initialise the                                                      
@@ -216,6 +248,8 @@ void LQController::Initialize() throw( LQError ){
       
       GetMemoryConsumption("Added library " + libraryName);
     }// lib loop
+    
+    FillMemoryHists("LoadLibraries");
   }
   catch( const LQError& error ) {
     //                                                                                                              
@@ -240,7 +274,7 @@ void LQController::Initialize() throw( LQError ){
   m_logger << INFO << "Time needed for initialisation: " << std::setw( 6 )
 	   << std::setprecision( 2 ) << timer.RealTime() << " s"
 	   << LQLogger::endmsg;
-  
+  h_timing_hist->Fill("Initialisation", timer.RealTime());
   // Print memory consumption after initialising the analysis:                                                             
   ProcInfo_t procinfo;
   gSystem->GetProcInfo( &procinfo );
@@ -250,6 +284,7 @@ void LQController::Initialize() throw( LQError ){
 	   << " kB; Virtual mem.: " << std::setw( 7 ) << procinfo.fMemVirtual
 	   << " kB" << LQLogger::endmsg;
   
+  FillMemoryHists("EndInitialization");
   // set object status to be ready                                                                                         
   m_isInitialized = kTRUE;
 }
@@ -262,14 +297,13 @@ void LQController::ExecuteCycle() throw( LQError ) {
   }
 
   GetMemoryConsumption("Start of ExecuteCycle");
-  m_logger << INFO << "Entering ExecuteCycles" << LQLogger::endmsg;
+  m_logger << DEBUG << "Entering ExecuteCycles" << LQLogger::endmsg;
 
   //                                                                                                                       
   // Measure the total time needed for this cycle:                                                                         
   //                                                                                                                       
   TStopwatch timer;
   timer.Start();
-
   //                                                                                                                       
   // Access the current cycle:                                                                                             
   //
@@ -293,10 +327,14 @@ void LQController::ExecuteCycle() throw( LQError ) {
     
     //                                                                                                                       
     // The begin cycle function has to be called here by hand:                                                               
-    //                                                                                                                       
+    // This creates anyoutput files/Trees/Branches for analysis                
+
+    /// Call BeginCycle by hand
+    cycle->BeginCycle(completename);
+    GetMemoryConsumption("Ran Begin Cycle");
+
 
     ///  Get Tree Name / input filename
-    
     TChain* chain = new TChain( treeName );
     if(filelist.Contains("NULL")){
       throw LQError( "Filelist is null!!!",
@@ -321,13 +359,16 @@ void LQController::ExecuteCycle() throw( LQError ) {
     //// Connect chain to Data class
     cycle->Init(chain);        
 
-    GetMemoryConsumption("Connected All Branches");
+    GetMemoryConsumption("Connected All Active Branches");
     
     /// We can now check 
     // a) is this Data?
     // b) how many events in sample
 
     /// tell base ntuple code if sample is data or MC 
+    /// This can be set in configuration
+    // if not set then we get the first entry of the input TTree and check ourselves
+    // if this is set incorrectly then the code will exit in Analysis code
     if(inputType!=NOTSET) {
       // This is if set by user:
       if(inputType == data) cycle->SetDataType(true);
@@ -335,7 +376,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
       throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
     }
     else{
-
       /// Get answer from input ntuple
       cycle->GetInputTree()->GetEntry(1,0);/// Get first entry in ntuple
       bool alt_isdata =  cycle->isData;
@@ -344,11 +384,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       cycle->SetDataType(alt_isdata);
       GetMemoryConsumption("Accessed branch to specify isData");
     }
-    /// Call BeginCycle by hand
-    cycle->BeginCycle(completename);
-    GetMemoryConsumption("Ran Begin Cycle");
-
-
+    
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
@@ -359,16 +395,16 @@ void LQController::ExecuteCycle() throw( LQError ) {
     
     if(sample_entries!=0){
       m_logger << INFO << "Input sample has: " << LQLogger::endmsg;    
-      m_logger <<INFO << "Before Skim:"  << sample_entries << " entries"  << LQLogger::endmsg;
-      m_logger <<INFO << "After Skim:"  << sample_entries_afterskim << " entries"  << LQLogger::endmsg;
+      m_logger <<INFO << "Before Skim:"  << int(sample_entries) << " entries"  << LQLogger::endmsg;
+      m_logger <<INFO << "After  Skim:"  << int(sample_entries_afterskim) << " entries"  << LQLogger::endmsg;
       cycle->SetNSampleEvents(sample_entries_afterskim);
-
+      
       if(n_total_event == -1.){
 	/// This is incase effective luminosity of mc is not set
 	n_total_event = sample_entries;
       }
       GetMemoryConsumption("Check Number of events in sample");    
-      std::getchar();
+
     }
     
     // calculate weight from input 
@@ -379,17 +415,33 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if(nevents_to_process > nentries || (nevents_to_process == -1) ) nevents_to_process = nentries;
     else if( nevents_to_process <=0) throw LQError( "nevents_to_process  is wrongly configured",LQError::SkipCycle);
     else {
-      ev_weight *= (nentries/nevents_to_process);
+      if(inputType == mc) ev_weight *= (nentries/nevents_to_process);
       if(inputType == mc) m_logger << INFO << "Weight is recalculated. Since user set a specific number of entries" << LQLogger::endmsg;
-      if(inputType == data) m_logger << WARNING << "Weight is recalculated. Since user set a specific number of entries" << LQLogger::endmsg;
+      if(inputType == data) m_logger << WARNING << "Weight is not recalculated. However user set a specific number of entries" << LQLogger::endmsg;
     }
+    cycle->SetNEventsToProcess(nevents_to_process);
+    cycle->SetOutPutStep(output_step);
     
+    //// Help user understand  event readout
+    if(nevents_to_process == nentries) m_logger << INFO <<  "Processing entry (#entry)/(#enties In Job) [(#Entries in Full Dataset)]"<< LQLogger::endmsg;
+    else  m_logger << INFO <<  "Processing entry (#entry)/(#enties to process) [(#Entries in input sample)(#Entries in Full Dataset)]"<< LQLogger::endmsg;
+
+    timer.Stop();
+    h_timing_hist->Fill("BeginCycle", timer.RealTime());
+    timer.Start();
+    FillMemoryHists("BeginCycle");
+
+    /// Get ints for 1/4 , 1/2 of the list to do timing checks
+    int entry_4 = int((nevents_to_process-n_ev_to_skip)/4.);
+    int entry_3_4 = 3*entry_4;
+    int entry_2 = int((nevents_to_process-n_ev_to_skip)/2.);
     if(list_to_run.size()!=0){
       for(unsigned int list_entry = 0; list_entry < list_to_run.size(); list_entry++){
 	cycle->SetUpEvent(list_entry);
 	cycle->BeginEvent(ev_weight);
 	cycle->ExecuteEvents();
 	cycle->EndEvent();
+	
       }/// list loop
     }/// check size of list loop
     else{
@@ -403,10 +455,40 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	cycle->ExecuteEvents();
 	// cleans up any pointers etc.
 	cycle->EndEvent();
+	if( jentry == entry_4) {
+	  timer.Stop();
+	  h_timing_hist->Fill("QuarterExecute", timer.RealTime());
+	  timer.Start();
+	  FillMemoryHists("QuarterExecute");
+	}
+	if( jentry == entry_2) {
+          timer.Stop();
+          h_timing_hist->Fill("HalfExecute", timer.RealTime());
+	  timer.Start();
+	  FillMemoryHists("HalfExecute");
+	}
+	if( jentry == entry_3_4) {
+          timer.Stop();
+          h_timing_hist->Fill("ThreeQuarterExecute", timer.RealTime());
+	  timer.Start();
+	  FillMemoryHists("ThreeQuarterExecute");
+        }
       }
     }
-
+    
+    timer.Stop();
+    h_timing_hist->Fill("FullExecute", timer.RealTime());
+    timer.Start();
+    FillMemoryHists("FullExecute");
     cycle->EndCycle();
+    timer.Stop();
+    h_timing_hist->Fill("EndCycle", timer.RealTime());
+    FillMemoryHists("EndCycle");
+
+    delete chain;
+    cycle->WriteCycleHists(h_timing_hist,h_virtmemory_hist,h_physicalmemory_hist);
+    cycle->CloseFiles();
+    
     GetMemoryConsumption("Finished Running Cycle");
   }
   catch( const LQError& error ) {
@@ -465,6 +547,12 @@ float LQController::CalculateWeight() throw(LQError) {
 }
 
 
+void LQController::FillMemoryHists(std::string binname){
+  h_virtmemory_hist->Fill(binname.c_str(), GetVirtualMemoryConsumption());
+  h_physicalmemory_hist->Fill(binname.c_str(), GetPhysicalMemoryConsumption());
+}
+
+
 void LQController::GetMemoryConsumption(TString label){
 
   ProcInfo_t procinfo;
@@ -476,3 +564,17 @@ void LQController::GetMemoryConsumption(TString label){
 	   << " kB" << LQLogger::endmsg;
 
 }
+double LQController::GetPhysicalMemoryConsumption(){
+  
+  ProcInfo_t procinfo;
+  gSystem->GetProcInfo( &procinfo );
+  return procinfo.fMemResident;
+}
+
+double LQController::GetVirtualMemoryConsumption(){
+
+  ProcInfo_t procinfo;
+  gSystem->GetProcInfo( &procinfo );
+  return procinfo.fMemVirtual;
+}
+

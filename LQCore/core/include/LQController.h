@@ -10,6 +10,9 @@
 #include "LQError.h"
 #include "SNUTreeFiller.h"
 
+//Forward declaration
+class TH1F;
+
 class LQController  {
 
  public:
@@ -21,10 +24,14 @@ class LQController  {
   enum dataType {NOTSET, data, mc};
 
   /// Initialise the analysis from the configuration file
-  virtual void Initialize() throw( LQError );  
-  virtual void ExecuteCycle()throw( LQError );
-  virtual void GetMemoryConsumption(TString label);
+  void Initialize() throw( LQError );  
+  void ExecuteCycle()throw( LQError );
 
+  /// Useful for checking performance
+  void GetMemoryConsumption(TString label);
+  double GetVirtualMemoryConsumption();
+  double GetPhysicalMemoryConsumption();
+  void FillMemoryHists(std::string binname);
 
   /// List of functions to configure job
   void SetTreeName(TString treename);
@@ -42,8 +49,11 @@ class LQController  {
   void SetTotalMCEvents(int total_mc_ev);
   void SetNEventsToProcess(int nevents);
   void SkipEvents(int ev_to_skip);
-  void RunEvent(Long64_t ev);
+  void SetOutPutStep( int step);
+  
+
   /// Other class functions
+  void RunEvent(Long64_t ev);
   std::pair< Double_t, Double_t> GetTotalEvents() throw(LQError);
   float CalculateWeight() throw (LQError);
   
@@ -75,5 +85,10 @@ class LQController  {
   std::vector<Long64_t> list_to_run;
   Double_t total_events_beforeskim;
   Double_t total_events_afterskim;
+  int output_step;
+  
+  TH1F* h_timing_hist;
+  TH1F* h_virtmemory_hist;
+  TH1F* h_physicalmemory_hist;
 };
 #endif
