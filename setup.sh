@@ -44,6 +44,7 @@ source ${LQANALYZER_BIN_PATH}/setup_rootfiles.sh
 ls $FILEDIR/*.root > /dev/null
 if [ $? -ne 0 ]
     then
+    mkdir ${LQANALYZER_DIR}/data/
     mkdir $FILEDIR
 
     $(setup_rootfile_manual $FILEDIR)
