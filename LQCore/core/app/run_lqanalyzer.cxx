@@ -20,6 +20,7 @@ void usage( char** argv );
 
 int main( int argc, char** argv ) {
   
+  LQLogWriter::Instance()->SetMinType(VERBOSE);
   std::string filename ="";
   if( (argc == 2 && std::string( argv[ 1 ] ) == "-h" ) ) {
     usage( argv );
@@ -33,6 +34,7 @@ int main( int argc, char** argv ) {
   
   g_logger << VERBOSE << "Setting up job" << LQLogger::endmsg;
 
+  std::getchar();
   LQController analysis; 
   analysis.SetJobName("Ztoll_ExampleCycle");
   analysis.AddLibraries("libSNUTree.so");
@@ -41,14 +43,15 @@ int main( int argc, char** argv ) {
   analysis.AddLibraries("libPlotting.so");
   analysis.AddLibraries("libHist.so");
   analysis.AddLibraries("libLQCycle.so");
+  std::getchar();
   g_logger << VERBOSE << "Added up libaries" << LQLogger::endmsg;
-  
+  std::getchar();
   analysis.SetInputList(TString(filename));
   analysis.SetFullInputList(TString(filename));
   analysis.SetTreeName("rootTupleTree/tree");
   analysis.SetCycleName("Analyzer");
   g_logger << VERBOSE << "Setting up tree" << LQLogger::endmsg;
-
+  std::getchar();
   try {
     g_logger << VERBOSE << "About to initialize" << LQLogger::endmsg;
     analysis.SetEffectiveLuminosity(1.);
@@ -59,7 +62,9 @@ int main( int argc, char** argv ) {
     
 
     ///// Run cycle
+    std::getchar();
     analysis.Initialize();
+    std::getchar();
     analysis.ExecuteCycle();
 
   }

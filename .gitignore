@@ -1,52 +1,19 @@
 # Ignore for commits
-bin/run_lqanalyzer
-test*
-*_Dict.*
-*/*_Dict.*
-*/*/*_Dict.*
-*/*/*/*_Dict.*
-*.out
-*/*.out
-*/*/*.out
-*/*/*/*.out
-*/*.pyc
-*/*/*.pyc
-*/*/*/*.pyc
-*.[oad]
-*/*.[oad]
-*/*/*.[oad]
-*/*/*/*.[oad]
-*.root
-*/*.root
-*/*/*.root
-*/*/*/*.root
-*~
-*/*~
-*/*/*~
-*/*/*~
-*/*.d
-*/*.so
-*/*/*.d
-*/*/*.so
-*/*/*/*.d
-*/*/*/*.so
-*/*/*/*/*.d
-*/*/*/*/*.so
+# ignore libraries
+*.so
+# ignore all object files
+*.o
+# ignore all dep files
+*.d
+# ignore all dict files
+*Dict.cxx
+*Dict.h
+# and of course have this .gitignore file included too 
 SNUTree/
-!*/output/
-*/*#*
-*/*/*#*
-*/*/*/*#*
-*.pdf
-*/*.pdf
-*/*/*.pdf
-run/log/*.log
-*.log
-*/*.log
-*/*/*.log
-#*
-*/#*
-*/*/#*
-*/*/*/#*
-*/*/*Dic*
-*/*/*/*Dic*
+bin/run_lqanalyzer
+*.pyc
+*.out
+#ignore root files and pdfs etc
+*pdf
+*.root
+*.jpg

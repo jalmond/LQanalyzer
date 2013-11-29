@@ -236,9 +236,11 @@ void LQController::Initialize() throw( LQError ){
       TString libraryName = *lit;
       REPORT_VERBOSE( "Trying to load library \"" << libraryName << "\"" );
       int ret = 0;
+      std::getchar();
       if( ( ret = gSystem->Load( libraryName.Data() ) ) >= 0 ) {
 	m_logger << INFO << "Library loaded: \"" << libraryName << "\""
 		 << LQLogger::endmsg;
+	std::getchar();
       } else {
 	LQError error( LQError::StopExecution );
 	error << "Library failed to load: \"" << libraryName
