@@ -26,10 +26,8 @@ export LQANALYZER_DIR=${PWD}
 export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
-export SNUTREE_INCLUDE_PATH=${LQANALYZER_DIR}/SNUTree/include/
+export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
-
-#
 export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 
@@ -45,6 +43,7 @@ ls $FILEDIR/*.root > /dev/null
 if [ $? -ne 0 ]
     then
     mkdir ${LQANALYZER_DIR}/data/
+    mkdir ${LQANALYZER_DIR}/output/
     mkdir $FILEDIR
 
     $(setup_rootfile_manual $FILEDIR)

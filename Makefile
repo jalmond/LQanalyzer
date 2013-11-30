@@ -7,15 +7,15 @@
  #                                                                         #
  ###########################################################################
 
-all: snutree core  AnalysisCore  plotting selection cycle 
+all: sktree core AnalysisCore plotting selection cycle 
 
-snutree::
-	(cd SNUTree; make)
+sktree::
+	(cd SKTree; make)
 
 core::
 	(cd LQCore/core; make)
 
-AnalysisCore:  
+AnalysisCore::
 	(cd LQCore/AnalysisCore; make)
 
 plotting::
@@ -28,15 +28,17 @@ cycle::
 	(cd LQCycle; make)
 
 clean::
-	(cd SNUTree; make clean)	
+	(cd SKTree; make clean)	
 	(cd LQCore/core; make clean)
+	(cd LQCore/AnalysisCore; make clean)
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
 	(cd LQCycle; make clean)
 
 distclean::
-	(cd SNUTree; make distclean)
+	(cd SKTree; make distclean)
 	(cd LQCore/core; make distclean)
+	(cd LQCore/AnalysisCore; make distclean)
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
 	(cd LQCycle; make distclean)

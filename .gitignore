@@ -1,0 +1,23 @@
+# Ignore for commits
+# ignore libraries
+*.so
+# ignore all object files
+*.[ao]
+# ignore all dep files
+*.d
+# ignore all dict files
+*Dict.cxx
+*Dict.h
+# ignore executables
+bin/run_lqanalyzer
+LQCore/SKTree/SK*
+# ignores for python 
+*.pyc
+# ignore any output form  nohup
+*.out
+#ignore root files and pdfs etc
+*.pdf
+*.root
+*.jpg
+# ignore emacs tmp files
+*~
