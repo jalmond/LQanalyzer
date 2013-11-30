@@ -25,7 +25,6 @@ elif [ $HOSTNAME ?? 'pb-d' ]; then
 fi    
 echo "Using root: " $root_setup
 
-
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 
@@ -43,7 +42,7 @@ export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
 ### Load useful functions
 echo "Running analysis from" $HOSTNAME " in directory " $ANALYSISDIR
-source ${LQANALYZER_BIN_PATH}/setup.sh 
+source ${LQANALYZER_BIN_PATH}/cleanup.sh 
 ### make directories that git does not allow to store
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
@@ -93,3 +92,7 @@ fi
 export PATH=${LQANALYZER_BIN_PATH}:${PATH}
 export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}
+
+
+#clean up all emacs tmp files
+clean_emacs

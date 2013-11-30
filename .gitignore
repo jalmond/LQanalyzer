@@ -11,6 +11,7 @@
 # ignore executables
 bin/run_lqanalyzer
 LQCore/SKTree/SK*
+LQLib/SKTree.rootmap
 # ignores for python 
 *.pyc
 # ignore any output form  nohup

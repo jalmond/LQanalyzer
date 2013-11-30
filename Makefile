@@ -10,7 +10,7 @@
 all: sktree core AnalysisCore plotting selection cycle 
 
 sktree::
-	(cd SKTree; make)
+	(cd LQCore/SKTree; make)
 
 core::
 	(cd LQCore/core; make)
@@ -28,7 +28,7 @@ cycle::
 	(cd LQCycle; make)
 
 clean::
-	(cd SKTree; make clean)	
+	(cd LQCore/SKTree; make clean)
 	(cd LQCore/core; make clean)
 	(cd LQCore/AnalysisCore; make clean)
 	(cd LQCore/Plotting; make clean)
@@ -36,9 +36,10 @@ clean::
 	(cd LQCycle; make clean)
 
 distclean::
-	(cd SKTree; make distclean)
+	(cd LQCore/SKTree; make distclean)
 	(cd LQCore/core; make distclean)
 	(cd LQCore/AnalysisCore; make distclean)
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
 	(cd LQCycle; make distclean)
+

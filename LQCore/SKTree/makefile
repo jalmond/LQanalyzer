@@ -9,7 +9,7 @@
  #                                                                         #
  ###########################################################################
 # Package information
-LIBRARY = SNUTree
+LIBRARY = SKTree
 OBJDIR  = obj
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src
@@ -17,23 +17,23 @@ INCDIR  = include
 
 
 # Override default target so we can install the rootmap file
-SNUTreedefault: default rootmap SNUTreeUnit
+SKTreedefault: default rootmap SKTreeUnit
 
 # Include the generic compilation rules
 include $(LQANALYZER_DIR)/Makefile.common
 
-SNUTreeUnit: SNUTreeUnit.o $(SHLIBFILE)
+SKTreeUnit: SKTreeUnit.o $(SHLIBFILE)
 	@echo "Linking " $@
-	@$(LD) $(LDFLAGS) -O2 $(OBJDIR)/SNUTreeUnit.o -L$(LQANALYZER_LIB_PATH) \
-                $(ROOTLIBS) -lSNUTree -o $@
+	@$(LD) $(LDFLAGS) -O2 $(OBJDIR)/SKTreeUnit.o -L$(LQANALYZER_LIB_PATH) \
+                $(ROOTLIBS) -lSKTree -o $@
 
-SNUTreeUnit.o: SNUTreeUnit.cxx include/KParticle.h
+SKTreeUnit.o: SKTreeUnit.cxx include/KParticle.h
 	@echo "Compiling $<"
 	@mkdir -p $(OBJDIR)
 	@$(CXX) $(CXXFLAGS) -O2 -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
 
 #install the rootmap file
-rootmap: $(LQANALYZER_DIR)/SNUTree/util/SNUTree.rootmap
+rootmap: $(LQANALYZER_DIR)/LQCore/SKTree/util/SKTree.rootmap
 	@echo "Installing rootmap " $<
 	(cp $< $(LQANALYZER_LIB_PATH)/.)
 
