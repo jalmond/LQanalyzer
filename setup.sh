@@ -19,8 +19,6 @@ fi
 
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
-    echo "Running on SNU machine"
-    echo $HOSTNAME
     export root_setup="/usr/local/bin/thisroot.sh"
 else
     export root_setup=$HOME"/root/root/bin/thisroot.sh"
