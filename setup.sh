@@ -17,6 +17,15 @@ if [ $LQANALYZER_DIR ]; then
     return 1
 fi
 
+## variables that are specific to your machine: Change if noy listed
+if [ $HOSTNAME="cms2.snu.ac.kr" ] || [ $HOSTNAME="cms1.snu.ac.kr" ]; then    
+    export root_setup="/usr/local/bin/thisroot.sh"
+elif [ $HOSTNAME ?? 'pb-d' ]; then  
+   export root_setup=$HOME"/root/root/bin/thisroot.sh"
+fi    
+echo "Using root: " $root_setup
+
+
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 
@@ -26,40 +35,25 @@ export LQANALYZER_DIR=${PWD}
 export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
-export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
-export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
 export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
-
+### set SKTree path
+export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
-dir=rootfiles/
-export FILEDIR=${LQANALYZER_DIR}/data/$dir
-
+export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
 ### Load useful functions
 echo "Running analysis from" $HOSTNAME " in directory " $ANALYSISDIR
-source ${LQANALYZER_BIN_PATH}/setup_rootfiles.sh 
-
-ls $FILEDIR/*.root > /dev/null
-if [ $? -ne 0 ]
-    then
-    mkdir ${LQANALYZER_DIR}/data/
-    mkdir ${LQANALYZER_DIR}/output/
-    mkdir $FILEDIR
-
-    $(setup_rootfile_manual $FILEDIR)
-    echo "Made directory "  $FILEDIR " and copied necessary rootfiles for running cms analysis"
-    echo ""
-fi
+source ${LQANALYZER_BIN_PATH}/setup.sh 
+### make directories that git does not allow to store
+python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
+export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
 
 
-if [ ! -d ${LQANALYZER_OUTPUT_PATH} ]; then
-    mkdir ${LQANALYZER_OUTPUT_PATH}
-    echo "First time running code: making output directory....."
-fi    
-
+# Setup root area and other paths
+ 
 if [[ `which root-config` == "" ]]; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
-
+    source root_setup
     if [[ `which root-config` == "" ]]; then
 	echo  "Error: ROOT environment cannot be configured!"
     else echo "Setup root enviroment " 
@@ -74,7 +68,6 @@ if [ -z ${ROOTSYS} ] ; then
       echo ""
       export ROOTSYS=/usr/local
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib/root:
-      source /usr/local/bin/thisroot.sh
       if [ -z ${ROOTSYS} ] ; then
 	  echo "Error: ROOT environment cannot be configured!"
       else echo "Setup root enviroment for user."
