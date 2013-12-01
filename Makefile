@@ -7,7 +7,7 @@
  #                                                                         #
  ###########################################################################
 
-all: sktree core AnalysisCore plotting selection cycle 
+all: sktree AnalysisCore core plotting selection cycle 
 
 sktree::
 	(cd LQCore/SKTree; make)
