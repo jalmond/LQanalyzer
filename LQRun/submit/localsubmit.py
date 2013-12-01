@@ -1,12 +1,3 @@
-####################################################################
-# Job settings for User
-####################################################################
-InputDir="/data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/"
-sample="periodAelectron"
-number_of_cores=1
-number_of_events_per_job=-1
-print "Splitting job into " + str(number_of_cores) + " subjobs"
-
 #################################################################### 
 ### configure run
 #################################################################### 
@@ -20,39 +11,60 @@ import os, getpass, sys
 from functions import *
 from optparse import OptionParser
 
-
-
 #Import parser to get options
 parser = OptionParser()
 parser.add_option("-p", "--period", dest="period", default="A",help="which data period")
 parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default="", help="Which data channel- ee,or mumu?")
+parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
+parser.add_option("-l", "--logstep", dest"logstep", default="10000", help="How many events betwene log messages")
+parser.add_option("-d", "--data_lumi", dest="data_lumi", default="", help="How much data are you weighting?")
+
+
 (options, args) = parser.parse_args()
 
 number_of_cores = int(options.jobs)
 sample = options.period
 stream = options.stream
+cycle = options.cycle
+logstep = options.logstep
 
-data="data"
+### THESE ARE OPTIONS THAT CAN BE INCLUDED
+number_of_events_per_job=-1
+skipev = -1
+datatype = ""
+totalev = -1
+xsec = -1.
+tar_lumi = -1.
+eff_lumi = -1.
+output_step=-1
+totalmc = -1.
+
+print "Splitting job into " + str(number_of_cores) + " subjobs"
+
 mc = len(sample)>1
 if mc:
-    data="mc"
+    dataType="mc"
+else:
+    dataType="data"
+    
+if sample == "AtoD":
+    dataType="data"
+    
 
 list = []
 import re
-
 if ("*" in sample) and mc:
     print "ADD code"
 else:
     list.append(sample)
+    period = sample
     
-
-#Find the DS name 
+#Find theq DS name 
 inDS = ""
 mcLumi = 1.0
 
 if not mc:
-    period = "period"+sample
     filename = 'txt/datasets.txt'
     for line in open(filename, 'r'):
         if not line.startswith("#"):
@@ -60,10 +72,17 @@ if not mc:
             if len(entries)==3:
                 if stream ==entries[0] and sample == entries[1]:
                     inDS = entries[2]
-                
+    sample = "period"+sample                
 else:
-    print "ADD code"
-    
+    filename = 'txt/datasets.txt'
+    for line in open(filename, 'r'):
+        if not line.startswith("#"):
+            entries = line.split()
+            if len(entries)==3:
+                if sample == entries[0]:
+                    eff_lumi = entries[1]
+                    inDS = entries[2]
+                    
 InputDir = inDS    
 print InputDir
 
@@ -146,7 +165,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile("ZTest", filelist, sample, count, outputdir, number_of_events_per_job)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(sample, filelist, fullfilelist, cycle, count, outputdir, number_of_events_per_job, output_step, skipev, datatype, channel, period, totalmc, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -168,7 +187,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile("ZTest", filelist, sample, count, outputdir, number_of_events_per_job))
+                configfile.write(makeConfigFile(sample, filelist, fullfilelist, cycle, count, outputdir, number_of_events_per_job, output_step, skipev, datatype , channel, period, totalmc, xsec, tar_lumi, eff_lumi))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
