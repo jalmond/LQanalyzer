@@ -184,10 +184,21 @@ Analyzer::~Analyzer() {
   
   Message("In Analyzer Destructor" , INFO);
   if(!k_isdata)delete reweightPU;
+  
+}
 
- }
 
 
+void Analyzer::BeginEvent( )throw( LQError ){
+
+  Message("In BeginEvent() " , DEBUG);
+  ClearOutputVectors();
+
+  return;
+}
+
+
+///############### THESE ARE FUNCTIONS SPECIFIC TO THIS CYCLE
 
 void Analyzer::MakeHistograms(){
   //// Additional plots to make
@@ -202,13 +213,6 @@ void Analyzer::MakeHistograms(){
 }
 
 
-void Analyzer::EndEvent()throw( LQError ){
-
-  FillOutTree();
-  //delete eventbase;
-
-}
-
 void Analyzer::ClearOutputVectors(){
   //
   // Reset all variables declared in Declare Variable
@@ -217,14 +221,5 @@ void Analyzer::ClearOutputVectors(){
   out_electrons.clear();
 }
 
-
-
-void Analyzer::BeginEvent( )throw( LQError ){
-  
-  Message("In BeginEvent() " , DEBUG);
-  ClearOutputVectors();
-
-  return;
-}
 
 

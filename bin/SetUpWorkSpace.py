@@ -5,8 +5,7 @@ from GetAnalysisRootFiles import *
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
 
 if not LQANALYZER_DIR == "None" :
-	datadir = LQANALYZER_DIR + "/data/"
-
+	datadir = LQANALYZER_DIR + "/data/"	
 	if not (os.path.exists(datadir)):
 		print "This is the first time running LQAnalyzer in this location"
 		print "Making data directory in $LQANALYZER_DIR"

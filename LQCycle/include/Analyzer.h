@@ -15,7 +15,6 @@ class Analyzer : public AnalyzerCore {
   virtual void BeginCycle(TString filename) throw( LQError );
   virtual void BeginEvent()throw( LQError );
   virtual void ExecuteEvents()throw( LQError );
-  virtual void EndEvent()throw( LQError );
   virtual void EndCycle()throw( LQError );
 
   void InitialiseAnalysis() throw( LQError );

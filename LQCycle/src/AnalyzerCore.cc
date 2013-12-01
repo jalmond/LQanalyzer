@@ -123,6 +123,12 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   
 }
 
+void AnalyzerCore::EndEvent()throw( LQError ){
+
+  FillOutTree();
+  delete eventbase;                                                                                                            
+
+}
   
 void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 

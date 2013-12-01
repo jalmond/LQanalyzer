@@ -24,7 +24,7 @@ class AnalyzerCore : public LQCycleBase {
 
   // SetUpEvent CORE function: accesses event in ntuple
   virtual void SetUpEvent(Long64_t entry, float ev_weight)throw( LQError );
-  
+  virtual void EndEvent()throw( LQError );
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
 
