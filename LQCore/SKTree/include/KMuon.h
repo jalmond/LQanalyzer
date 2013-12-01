@@ -21,6 +21,9 @@ namespace snu {
     virtual ~KMuon() ;
     
     KMuon& operator= (const KMuon& obj);
+
+    ///Return the type of this object, i.e. KMuon.h              
+    virtual std::string Type() const;
     
     void SetPtErr(double pterror);
     void SetEtaErr(double etaerror);

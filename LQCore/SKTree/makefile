@@ -27,7 +27,7 @@ SKTreeUnit: SKTreeUnit.o $(SHLIBFILE)
 	@$(LD) $(LDFLAGS) -O2 $(OBJDIR)/SKTreeUnit.o -L$(LQANALYZER_LIB_PATH) \
                 $(ROOTLIBS) -lSKTree -o $@
 
-SKTreeUnit.o: SKTreeUnit.cxx include/KParticle.h
+SKTreeUnit.o: SKTreeUnit.cc include/KParticle.h
 	@echo "Compiling $<"
 	@mkdir -p $(OBJDIR)
 	@$(CXX) $(CXXFLAGS) -O2 -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
