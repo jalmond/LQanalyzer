@@ -46,7 +46,7 @@ class CycleCreator:
 *  @author Put your name here
 * @version $Revision: 1 $
 */
-class %(class)-s : public AnalyzerCoree { 
+class %(class)-s : public AnalyzerCore { 
 
 
 
@@ -132,7 +132,9 @@ ClassImp( %(class)-s );
 : AnalyzerCore() {  
 
 // To have the correct name in the log:
-SetLogName(GetName() );
+SetLogName(\" %(class)-s \" );
+
+}
 
 %(class)-s::~%(class)-s() {
 }
@@ -209,13 +211,8 @@ void %(class)-s::EndEvent()throw( LQError ){
              
          # Write the source file:
          output = open( fileName, "w" )
-         if namespace == "":
-             output.write( self._source % { 'dir'   : dir,
-                                            'class' : cycleName } )
-         else:
-             output.write( self._sourceNs % { 'dir'   : dir,
-                                              'class' : cycleName,
-                                              'ns'    : namespace } )
+         output.write( self._source % { 'dir'   : dir,
+                                        'class' : cycleName } )
          return
       
     
