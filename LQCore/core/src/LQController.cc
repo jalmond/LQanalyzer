@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.), file_version(0),  nevents_to_process(-1), m_isInitialized( kFALSE ), entrieslimit(-1), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000){
+LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.), file_version(0),  nevents_to_process(-1), m_isInitialized( kFALSE ), entrieslimit(-1), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"){
 
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
   h_timing_hist->GetYaxis()->SetTitle("Time (s)");
@@ -136,6 +136,58 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
   }
   
   return std::make_pair(total_events_beforeskim ,total_events_afterskim);
+}
+
+
+void LQController::SetChannel(TString channel){
+
+  if     (channel == "muon")  channel = "Muon";
+  else     if     (channel == "Muon")  channel = "Muon";
+  else     if     (channel == "mumu")  channel = "Muon";
+  else     if     (channel == "MuMu")  channel = "Muon";
+  else if     (channel == "electron")  channel = "Electron";
+  else if     (channel == "Electron")  channel = "Electron";
+  else if     (channel == "EE")  channel = "Electron";
+  else if     (channel == "ee")  channel = "Electron";
+  
+}
+void LQController::SetDataPeriod(TString period){
+  
+  if( period == "A") k_period = "A";
+  else if( period == "B") k_period = "B";
+  else if( period == "C") k_period = "C";
+  else if( period == "D") k_period = "D";
+  else if( period == "AtoD") k_period = "AtoD";
+  else {
+    m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+    throw LQError( "Data Period not correctly set!!!",
+		   LQError::StopExecution );
+  }
+  
+  if(channel == "Muon") {
+    if( period == "A") effective_luminosity = 887.501;
+    if( period == "B") effective_luminosity = 4443.;
+    if( period == "C") effective_luminosity = 7114.;
+    if( period == "D") effective_luminosity = 7318.;
+    else effective_luminosity = (887.501 + 4443. + 7114. + 7318.);
+  }
+
+  else if(channel == "Electron"){
+    if( period == "A") effective_luminosity = 887.501;
+    if( period == "B") effective_luminosity = 4446.;
+    if( period == "C") effective_luminosity = 7152.;
+    if( period == "D") effective_luminosity = 7318.;
+    else effective_luminosity =(887.501 + 4446. + 7152. + 7318.);
+  }
+  else {
+    m_logger << WARNING  << "Channel is not set although you have set period. This will effect weights." << LQLogger::endmsg;
+ 
+    if( period == "A") effective_luminosity = 887.501;
+    if( period == "B") effective_luminosity = 4443.;
+    if( period == "C") effective_luminosity = 7114.;
+    if( period == "D") effective_luminosity = 7318.;
+    else effective_luminosity = (887.501 + 4443. + 7114. + 7318.);
+  }
 }
 
 void LQController::SetTotalMCEvents(int ev){
@@ -409,6 +461,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     }
     
+    if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
+    if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
+    
+
     // calculate weight from input 
     float ev_weight =  CalculateWeight();
     
@@ -419,7 +475,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else {
       if(inputType == mc) ev_weight *= (nentries/nevents_to_process);
       if(inputType == mc) m_logger << INFO << "Weight is recalculated. Since user set a specific number of entries" << LQLogger::endmsg;
-      if(inputType == data) m_logger << WARNING << "Weight is not recalculated. However user set a specific number of entries" << LQLogger::endmsg;
+      if(inputType == data) m_logger << WARNING << "Weight is not recalculated (as it is data). Even though user set a number of entries to run on." << LQLogger::endmsg;
     }
     cycle->SetNEventsToProcess(nevents_to_process);
     cycle->SetOutPutStep(output_step);

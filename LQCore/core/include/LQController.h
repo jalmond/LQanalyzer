@@ -50,6 +50,8 @@ class LQController  {
   void SetNEventsToProcess(int nevents);
   void SkipEvents(int ev_to_skip);
   void SetOutPutStep( int step);
+  void SetDataPeriod(TString period);
+  void SetChannel(TString channel);
   
 
   /// Other class functions
@@ -86,6 +88,8 @@ class LQController  {
   Double_t total_events_beforeskim;
   Double_t total_events_afterskim;
   int output_step;
+  TString channel;
+  TString k_period;
   
   TH1F* h_timing_hist;
   TH1F* h_virtmemory_hist;

@@ -20,7 +20,6 @@ void usage( char** argv );
 
 int main( int argc, char** argv ) {
   
-  LQLogWriter::Instance()->SetMinType(VERBOSE);
   std::string filename ="";
   if( (argc == 2 && std::string( argv[ 1 ] ) == "-h" ) ) {
     usage( argv );
@@ -37,7 +36,7 @@ int main( int argc, char** argv ) {
   std::getchar();
   LQController analysis; 
   analysis.SetJobName("Ztoll_ExampleCycle");
-  analysis.AddLibraries("libSNUTree.so");
+  analysis.AddLibraries("libSKTree.so");
   analysis.AddLibraries("libcore.so");
   analysis.AddLibraries("libSelection.so");
   analysis.AddLibraries("libPlotting.so");
