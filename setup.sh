@@ -1,4 +1,4 @@
-#! /bin/sh
+#/bin/sh
 # $Id: setup.sh 1
 ###################################################################################
 # @Project: LQAnalyzer/SKTree - ROOT-based analysis framework for Korea CMS group #
@@ -18,10 +18,10 @@ if [ $LQANALYZER_DIR ]; then
 fi
 
 ## variables that are specific to your machine: Change if noy listed
-if [ $HOSTNAME="cms2.snu.ac.kr" ] || [ $HOSTNAME="cms1.snu.ac.kr" ]; then    
+if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     export root_setup="/usr/local/bin/thisroot.sh"
-elif [ $HOSTNAME ?? 'pb-d' ]; then  
-   export root_setup=$HOME"/root/root/bin/thisroot.sh"
+else
+    export root_setup=$HOME"/root/root/bin/thisroot.sh"
 fi    
 echo "Using root: " $root_setup
 
@@ -35,6 +35,7 @@ export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/
+export LQANALYZER_RUN_PATH=${LQANALYZER_DIR}/LQRun/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
@@ -52,7 +53,7 @@ export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
  
 if [[ `which root-config` == "" ]]; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
-    source root_setup
+    source $root_setup
     if [[ `which root-config` == "" ]]; then
 	echo  "Error: ROOT environment cannot be configured!"
     else echo "Setup root enviroment " 
