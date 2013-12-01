@@ -1,4 +1,27 @@
+### DATA
 egamma A /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/
 egamma B /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
 egamma C /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
 egamma D /data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/
+
+muon A	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodA/
+muon B 	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodB/
+muon C 	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodC/
+muon D 	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodD/
+
+
+### MC
+# Sample	xsec(/pb)	localpath
+WZ		301122.644
+ZZ		555109.777
+WW		182363.161	
+W+W+		402840.451
+W-W-		1084518.452
+WW_dp		1418676.646
+ttW		845025.862
+ttZ		1205737.235
+WWW		2684057.442
+DY10-50		3424.007
+DY50+		8693.5
+QCD_mumu	2.17E-05
+ttbar		29588.256
