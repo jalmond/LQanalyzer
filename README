@@ -3,11 +3,25 @@
 //###########################
 
 Steps to run analysis:
-1) Download LQanalyzer and SKTree.
+1) Download LQanalyzer:
+git clone git@github.com:jalmond/LQanalyzer.git
+cd LQanalyzer/
 
-2) in LQanalyzer main directory do
+2) in LQanalyzer main directory type:
+source setup.sh
 
-$ source setup.sh
 
+### TEST CYCLE  ###
+
+To run the test cycle
+
+1) cd $LQANALYZER_RUN_PATH
+2) source submit.sh ( you can modify the number of cores in this or change the amount of data if you like)
+
+
+### Make cycle ###
+make_new_cycle <cyclename>
+
+this will create a skeleton cycle in $LQANALYZER_SRC_PATH called cyclename.cc. You can then modify this accordingly.
 
 
