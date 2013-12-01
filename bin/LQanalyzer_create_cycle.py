@@ -1,15 +1,20 @@
 #!/usr/bin/env python
-# $Id: LQanalyzer_create_cycle.py 120 2013-12-01 12:02:57Z jalmond $
+# $Id: sframe_create_cycle.py 120 2009-08-27 12:02:57Z krasznaa $
 #***************************************************************************
-#* @Project: LQanalyzer - ROOT-based analysis framework for CMS
-#* @Package: LQCore
-#* @author J. Almond  <jalmond@cern.ch> - SNU
+#* @Project: SFrame - ROOT-based analysis framework for ATLAS
+#* @Package: Core
+#*
+#* @author Stefan Ask       <Stefan.Ask@cern.ch>           - Manchester
+#* @author David Berge      <David.Berge@cern.ch>          - CERN
+#* @author Johannes Haller  <Johannes.Haller@cern.ch>      - Hamburg
+#* @author A. Krasznahorkay <Attila.Krasznahorkay@cern.ch> - CERN/Debrecen
+#*
 #***************************************************************************
 #
 # This script can be used to quickly create a new analysis cycle in
 # the user's package. If it's called in an arbitrary directory, then
 # all the created files are put in the current directory. However
-# when invoking it in an LQanalzer library directory (like LQanalzer/user)
+# when invoking it in an SFrame library directory (like SFrame/user)
 # it will put the files in the correct places and adds the entry
 # to the already existing LinkDef file.
 #
@@ -32,7 +37,7 @@ def main():
         os.path.basename( sys.argv[ 0 ] )
   print ">>"
   print ""
-  
+
   # Parse the command line parameters:
   parser = optparse.OptionParser( usage="%prog [options] <input files>" )
   parser.add_option( "-n", "--name", dest="name", action="store",
@@ -41,11 +46,12 @@ def main():
   parser.add_option( "-l", "--linkdef", dest="linkdef", action="store",
                      type="string", default="",
                      help="Name of the LinkDef.h file in the package" )
-  
+
   ( options, args ) = parser.parse_args()
-  
+
   # This is where the main function are:
   import CycleCreators
+
   # Execute the cycle creation:
   cc = CycleCreators.CycleCreator()
   cc.CreateCycle( options.name, options.linkdef )
