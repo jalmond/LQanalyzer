@@ -31,6 +31,11 @@ import optparse
 # from outside using the usual method. (Which I've seen in various
 # places...)
 def main():
+
+  if not str(os.getenv("PWD")) == str(os.getenv("LQANALYZER_CYCLE_PATH")):
+    print "Can only create cycle in LQCycle directory."
+    return 1
+  
   # Print some welcome message before doing anything else:
   print ">>"
   print ">> %s : Analysis cycle torso creator" % \

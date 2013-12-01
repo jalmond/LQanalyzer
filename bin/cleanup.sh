@@ -13,6 +13,7 @@ function clean_emacs(){
 
     cd $LQANALYZER_DIR
     find . -name \*~ -type f -delete
+    echo "Have Cleaned up all *~ files in:"
     cd -
 
 }

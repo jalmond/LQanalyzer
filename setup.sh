@@ -31,6 +31,7 @@ export LQANALYZER_DIR=${PWD}
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code
+export LQANALYZER_CYCLE_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
@@ -41,8 +42,11 @@ export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
+
+echo "Running analysis from" $HOSTNAME " in directory " $LQANALYZER_DIR
+
+
 ### Load useful functions
-echo "Running analysis from" $HOSTNAME " in directory " $ANALYSISDIR
 source ${LQANALYZER_BIN_PATH}/cleanup.sh 
 ### make directories that git does not allow to store
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
@@ -53,7 +57,6 @@ export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
  
 if [[ `which root-config` == "" ]]; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
-    source $root_setup
     if [[ `which root-config` == "" ]]; then
 	echo  "Error: ROOT environment cannot be configured!"
     else echo "Setup root enviroment " 
