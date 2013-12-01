@@ -29,7 +29,7 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SNUTreeFiller{
   /**
    * Called before the  event. Gets the weight from the configured job
    **/
-  virtual void BeginEvent(float weight)throw( LQError );
+  virtual void BeginEvent()throw( LQError );
   
   /// Function called for every event
   /**
@@ -50,7 +50,7 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SNUTreeFiller{
    *   Interates through the ntuple
    *
    **/
-  virtual void SetUpEvent(Long64_t jevent)throw( LQError );
+  virtual void SetUpEvent(Long64_t jevent, float ev_weight)throw( LQError );
 
   ClassDef(LQCycleBaseExec, 0 );
 };

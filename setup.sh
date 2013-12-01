@@ -1,5 +1,5 @@
-#/bin/sh
-# $Id: setup.sh 1
+#! /bin/sh
+# $Id: setup.sh 1 01/12/2013 jalmond $
 ###################################################################################
 # @Project: LQAnalyzer/SKTree - ROOT-based analysis framework for Korea CMS group #
 #                                                                                 #

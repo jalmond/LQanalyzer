@@ -7,10 +7,11 @@
  *
  ***************************************************************************/
 
-/// Local includes                                                                                                                                                
+/// Local includes 
 #include  "AnalyzerCore.h"
+#include "EventBase.h"
 
-//Plotting                                                                                                                                                        
+//Plotting                                                      
 #include "MuonPlots.h"
 #include "ElectronPlots.h"
 #include "JetPlots.h"
@@ -78,14 +79,14 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistSig.clear();
   
-  
+  delete eventbase; 
 }
 
 //###
 //###   IMPORTANT BASE FUNCTION: SETS UP EVENT FOR ALL CYCLES
 //###
 
-void AnalyzerCore::SetUpEvent(Long64_t entry) throw( LQError ) {
+void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
 
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
@@ -100,6 +101,26 @@ void AnalyzerCore::SetUpEvent(Long64_t entry) throw( LQError ) {
     else m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << "[" << sample_entries<<  "]"<< LQLogger::endmsg;
 
   }
+  
+  if(k_isdata){
+    if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
+    MCweight=1.;
+    weight = 1.;
+  }
+  else {
+    MCweight = 1.; //Get MC weight here FIX ME                                                              
+    weight= ev_weight; 
+  }
+  snu::KEvent eventinfo = GetEventInfo();
+  //
+    // creates object that stores all SKTree classes	
+  //                                                                                                        
+    LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
+    
+    //  eventbase is master class to use in analysis 
+    //
+    eventbase = new EventBase(lqevent);
+  
 }
 
   

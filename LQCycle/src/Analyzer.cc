@@ -205,7 +205,7 @@ void Analyzer::MakeHistograms(){
 void Analyzer::EndEvent()throw( LQError ){
 
   FillOutTree();
-  delete eventbase;
+  //delete eventbase;
 
 }
 
@@ -219,32 +219,11 @@ void Analyzer::ClearOutputVectors(){
 
 
 
-void Analyzer::BeginEvent(float ev_weight )throw( LQError ){
+void Analyzer::BeginEvent( )throw( LQError ){
   
   Message("In BeginEvent() " , DEBUG);
   ClearOutputVectors();
 
-  if(k_isdata){
-    if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
-    MCweight=1.;
-    weight = 1.;
-  }
-  else  {
-    MCweight = 1.; //Get MC weight here FIX ME
-    weight = ev_weight;
-  }
-
-  snu::KEvent eventinfo = GetEventInfo();
-  //                  
-  // creates object that stores all SKTree classes                                                                               
-  // 
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
-
-  
-  //  eventbase is master class to use in analysis 
-  //                                                                                                                                                                            
-  eventbase = new EventBase(lqevent);
-  
   return;
 }
 

@@ -10,6 +10,10 @@ cd LQanalyzer/
 2) in LQanalyzer main directory type:
 source setup.sh
 
+## NOTE
+ - If running on SNU machines this should work out of box. 
+ - If running on any other machine you need to setup root enviroment before hand/ and maybe add your root_setup script to the setup.sh file (you may also need to modify Makefile.common, if your Makefile.arch script is not found) 
+
 
 ### TEST CYCLE  ###
 

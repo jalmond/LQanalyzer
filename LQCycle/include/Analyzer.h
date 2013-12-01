@@ -13,7 +13,7 @@ class Analyzer : public AnalyzerCore {
 
   /// Functions from core
   virtual void BeginCycle(TString filename) throw( LQError );
-  virtual void BeginEvent(float w)throw( LQError );
+  virtual void BeginEvent()throw( LQError );
   virtual void ExecuteEvents()throw( LQError );
   virtual void EndEvent()throw( LQError );
   virtual void EndCycle()throw( LQError );

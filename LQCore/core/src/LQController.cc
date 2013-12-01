@@ -495,8 +495,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     int entry_2 = int((nevents_to_process-n_ev_to_skip)/2.);
     if(list_to_run.size()!=0){
       for(unsigned int list_entry = 0; list_entry < list_to_run.size(); list_entry++){
-	cycle->SetUpEvent(list_entry);
-	cycle->BeginEvent(ev_weight);
+	cycle->SetUpEvent(list_entry,ev_weight);
+	cycle->BeginEvent();
 	cycle->ExecuteEvents();
 	cycle->EndEvent();
 	
@@ -506,9 +506,9 @@ void LQController::ExecuteCycle() throw( LQError ) {
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
 	
 	/// This connects the correct entries for each active branch
-	cycle->SetUpEvent(jentry);
+	cycle->SetUpEvent(jentry, ev_weight);
 	/// 
-	cycle->BeginEvent(ev_weight);   
+	cycle->BeginEvent();   
 	/// executes analysis code
 	cycle->ExecuteEvents();
 	// cleans up any pointers etc.
