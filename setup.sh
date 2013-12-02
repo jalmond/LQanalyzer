@@ -61,6 +61,7 @@ export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
  
 if [[ `which root-config` == "" ]]; then
     echo "Warning: ROOT environment doesn't seem to be configured!"
+    source $root_setup
     if [[ `which root-config` == "" ]]; then
 	echo  "Error: ROOT environment cannot be configured!"
     else echo "Setup root enviroment " 
