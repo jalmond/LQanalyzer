@@ -4,17 +4,18 @@ source functions.sh
 ## CONFIGURE JOB ####
 ###########################################################
 
-## What cycle do you want to runHAT CYCLE 
+## What cycle do you want to run.  
 cycle="Analyzer"
 ## Which stream is being run egamma/muon
 stream="egamma"
-## How many events between log messages (default = 10000)
-#logstep=1000 
 ## How many cores should the job use
-njobs=50  
+njobs=1 
 ## How much data are you running/ for MC this helpw weight the events
 data_lumi="A"
 
+
+## How many events between log messages (default = 10000)     
+#logstep=1000 
 #### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt
 declare -a periods=( "A")
 
@@ -30,7 +31,6 @@ fi
 stream=$(makeParseVariable 's' ${stream})
 njobs=$(makeParseVariable 'j' ${njobs})
 cycle=$(makeParseVariable 'c' ${cycle})
-logstep=$(makeParseVariable 'l' ${logstep})
 data_lumi=$(makeParseVariable 'd' ${data_lumi})
 
 

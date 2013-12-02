@@ -13,32 +13,40 @@ from optparse import OptionParser
 
 #Import parser to get options
 parser = OptionParser()
-parser.add_option("-p", "--period", dest="period", default="A",help="which data period")
-parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
-parser.add_option("-j", "--jobs", dest="jobs", default="", help="Which data channel- ee,or mumu?")
+parser.add_option("-p", "--period", dest="period", default="A",help="which data period or mc sample")
+parser.add_option("-s", "--stream", dest="stream", default="mumu", help="Which data channel- ee,or mumu?")
+parser.add_option("-j", "--jobs", dest="jobs", default="TEST", help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
-parser.add_option("-l", "--logstep", dest"logstep", default="10000", help="How many events betwene log messages")
-parser.add_option("-d", "--data_lumi", dest="data_lumi", default="", help="How much data are you weighting?")
+parser.add_option("-t", "--tree", dest="tree", default="rootTupleTree/tree", help="What is input tree")
+parser.add_option("-o", "--logstep", dest="logstep", default=10000, help="How many events betwene log messages")
+parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you weighting?")
+parser.add_option("-l", "--log_level", dest="log_level", default="INFO", help="Set Log output level")
+parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
+parser.add_option("-k", "--skip", dest="skip", default=-1, help="Set number of events to skip")
+parser.add_option("-a", "--datatype", dest="datatype", default="data", help="Is data or mc?")
+parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
+parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
+parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="How many events in sample?")
+parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
 
 
 (options, args) = parser.parse_args()
-
 number_of_cores = int(options.jobs)
 sample = options.period
-stream = options.stream
+channel = options.stream
 cycle = options.cycle
 logstep = options.logstep
+loglevel = options.log_level
+### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
+tree = options.tree
+number_of_events_per_job= options.nevents
+skipev = options.skip
+datatype = options.datatype
+totalev = options.totalev
+xsec = options.xsec
+tar_lumi = options.targetlumi
+eff_lumi = options.efflumi
 
-### THESE ARE OPTIONS THAT CAN BE INCLUDED
-number_of_events_per_job=-1
-skipev = -1
-datatype = ""
-totalev = -1
-xsec = -1.
-tar_lumi = -1.
-eff_lumi = -1.
-output_step=-1
-totalmc = -1.
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
@@ -70,7 +78,7 @@ if not mc:
         if not line.startswith("#"):
             entries = line.split()
             if len(entries)==3:
-                if stream ==entries[0] and sample == entries[1]:
+                if channel ==entries[0] and sample == entries[1]:
                     inDS = entries[2]
     sample = "period"+sample                
 else:
@@ -150,14 +158,19 @@ for i in range(1,number_of_cores+1):
             if i==1:
                 print "making sub work directories " + printedworkdir
 
+
+
+
 ####################################################
 ## Creat separate input lists/macros for each subjob
 ####################################################
 fr = open('inputlist.txt', 'r')
 
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
+fullfilelist = output + sample +".txt"
+fullfile = open(fullfilelist, 'w')
 for line in fr:
-    
+    fullfile.write(line)
     # Deal with remaining files
     if nfiles < files_torun :
         if nfiles == 0 :        
@@ -165,7 +178,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(sample, filelist, fullfilelist, cycle, count, outputdir, number_of_events_per_job, output_step, skipev, datatype, channel, period, totalmc, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, period, totalev, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -187,7 +200,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(sample, filelist, fullfilelist, cycle, count, outputdir, number_of_events_per_job, output_step, skipev, datatype , channel, period, totalmc, xsec, tar_lumi, eff_lumi))
+                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, period, totalev, xsec, tar_lumi, eff_lumi))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -217,7 +230,7 @@ for line in fr:
         
     nfiles+=1        
 fr.close()
-
+fullfile.close()
 #################################################################### 
 ### Check Final input files have no duplicates
 #################################################################### 
@@ -262,7 +275,7 @@ for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
-    os.system(runcommand)   
+    #os.system(runcommand)   
     if i==1:
         print "Running " + script + " . Log file --->  " + log 
     elif i== number_of_cores:

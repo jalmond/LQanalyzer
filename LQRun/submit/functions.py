@@ -1,4 +1,4 @@
-def makeConfigFile(sample, input, fillinput, tree, cycle, ver, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi):
+def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi):
 
     config='{\n'
     config+='  //### Load Libraries\n'
@@ -11,8 +11,8 @@ def makeConfigFile(sample, input, fillinput, tree, cycle, ver, output, nevents, 
     config+='  gSystem->Load("libLQCycle.so");\n'
     config+='  gSystem->Load("libPyROOT.so");\n'
     config+='  \n'
-    config+='  TString filename = "' + input + '";"\n'
-    config+='  TString fullfilename = "' + fullinput + '";"\n'
+    config+='  TString filename = "' + input + '";\n'
+    config+='  TString fullfilename = "' + fullinput + '";\n'
     config+='  LQController analysis;\n'
     config+='  analysis.SetJobName("' + sample + "_" + cycle+'");\n'
     config+='  analysis.SetInputList(TString(filename));\n'
@@ -20,10 +20,11 @@ def makeConfigFile(sample, input, fillinput, tree, cycle, ver, output, nevents, 
     config+='  analysis.SetTreeName("'+ tree +'");\n'
     config+='  analysis.SetCycleName("' + cycle + '");\n'
     config+='  analysis.SetName("' + sample + ' ", '+ str(ver) +',"'+ output +'");\n'                        
-    config+='  analysis.SetLogLevel("'+ str(log) +'");\n'
+    config+='  analysis.SetLogLevel("'+ log +'");\n'
     
     
-    if not eff_lumi ==-1. :
+    if not eff_lumi == -1.:
+        print "WTF" + str(eff_lumi)
         config+='  analysis.SetEffectiveLuminosity(' + str(eff_lumi)+');\n'
     if not tar_lumi ==-1. :    
         config+='  analysis.SetTargetLuminosity('+ str(tar_lumi) +');\n'
@@ -32,13 +33,13 @@ def makeConfigFile(sample, input, fillinput, tree, cycle, ver, output, nevents, 
     if not skipev ==-1 :
         config+='  analysis.SkipEvents(' + str(skipev) + ');\n'
     if not outstep ==-1 :
-        config+='  analysis.SetOutPutStep(' + outstep + ');\n'
+        config+='  analysis.SetOutPutStep(' + str(outstep) + ');\n'
     if not period  =="":
-        config+='  analysis.SetDataPeriod(' + period + ');\n'
+        config+='  analysis.SetDataPeriod("' + period + '");\n'
     if not datatype =="":
         config+='  analysis.SetDataType( ' + datatype + ');\n'
     if not channel == "" :
-        config+='  analysis.SetChannel( ' + channel +');\n'
+        config+='  analysis.SetChannel( "' + channel +'");\n'
     if not totalmcevents == -1 :
         config+='  analysis.SetTotalMCEvents( ' + totalmcevents +');\n'
     if not xsec == -1.:
