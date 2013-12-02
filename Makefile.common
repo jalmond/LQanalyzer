@@ -52,7 +52,7 @@ endif
 
 # Some compilation options                                                                                                                                                     
 VPATH    += $(OBJDIR) $(SRCDIR)
-INCLUDES += -Iinclude -I./ -I./
+INCLUDES += -Iinclude -I./
 CXXFLAGS += -Wall -Wextra -Wno-overloaded-virtual  # -Wparentheses-equality #-Wno-unused
 
 
