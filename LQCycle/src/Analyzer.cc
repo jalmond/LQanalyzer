@@ -76,7 +76,6 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-
   std::vector<snu::KMuon> muonColl;
   eventbase->GetMuonSel()->SetPt(20); 
   eventbase->GetMuonSel()->SetEta(2.4);
@@ -104,7 +103,6 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
-
   if (muonColl.size() == 2) {      
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
@@ -172,8 +170,8 @@ void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(out_muons, "Signal_Muons");
 
   
   return;

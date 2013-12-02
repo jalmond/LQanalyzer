@@ -30,6 +30,7 @@ parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="Ho
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
 
 
+
 (options, args) = parser.parse_args()
 number_of_cores = int(options.jobs)
 sample = options.period
@@ -46,7 +47,7 @@ totalev = options.totalev
 xsec = options.xsec
 tar_lumi = options.targetlumi
 eff_lumi = options.efflumi
-
+data_lumi = options.data_lumi
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
@@ -66,7 +67,7 @@ if ("*" in sample) and mc:
     print "ADD code"
 else:
     list.append(sample)
-    period = sample
+
     
 #Find theq DS name 
 inDS = ""
@@ -178,7 +179,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, period, totalev, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -200,7 +201,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, period, totalev, xsec, tar_lumi, eff_lumi))
+                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -270,12 +271,17 @@ print "Total number of files processed = " + str(filesprocessed) + " check this 
 import thread,time
 start_time = time.time()
 
+wait_sub = 1
+if number_of_cores < 10:
+    wait_sub = 5
+    
 print "Running LQAnalyzer jobs for: " + getpass.getuser()
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
-    #os.system(runcommand)   
+    os.system(runcommand)
+    time.sleep(wait_sub)
     if i==1:
         print "Running " + script + " . Log file --->  " + log 
     elif i== number_of_cores:
@@ -294,8 +300,24 @@ print "Waiting for all jobs to finish before Merging"
 ncomplete_files=0
 JobSuccess=False
 CompletedJobs=[]
+doMerge=False
 print "Checking Job status:"
 while not JobSuccess:
+
+    os.system("ps ux &> log")
+    filename = 'log'
+    running = False
+    for line in open(filename, 'r'):
+        if  "root.exe" in line:
+            running = True
+    if not running:
+        check_outfile = outputdir + sample +  "_1.root"
+        if (os.path.exists(check_outfile)):
+            JobSuccess = True
+            doMerge=True
+
+    os.system("rm  log")
+            
     for i in range(1,number_of_cores+1):
         skipcheck=False
         for check in CompletedJobs:
@@ -316,9 +338,14 @@ while not JobSuccess:
         print str(ncomplete_files) + "/" + str(number_of_cores) + " completed. Wait " + str(timeWait) + " second..."
         
         time.sleep(timeWait)
+
+if doMerge:
+    os.system("hadd " + outputdir + cycle + "_" + sample + ".root "+ outputdir + "*.root")
          
-print "All sampless finished"        
-end_time = time.time()
-total_time=end_time- start_time
-print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
+    print "All sampless finished"
+    end_time = time.time()
+    total_time=end_time- start_time
+    print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
         
+else:
+    print "Jobs Failed"

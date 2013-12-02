@@ -37,9 +37,9 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output, neven
     if not period  =="":
         config+='  analysis.SetDataPeriod("' + period + '");\n'
     if not datatype =="":
-        config+='  analysis.SetDataType( ' + datatype + ');\n'
+        config+='  analysis.SetDataType("' + datatype + '");\n'
     if not channel == "" :
-        config+='  analysis.SetChannel( "' + channel +'");\n'
+        config+='  analysis.SetChannel("' + channel +'");\n'
     if not totalmcevents == -1 :
         config+='  analysis.SetTotalMCEvents( ' + totalmcevents +');\n'
     if not xsec == -1.:

@@ -26,7 +26,7 @@ int main( int argc, char** argv ) {
     return 1;
   }
   if( (argc == 1)){
-    filename = "//var/tmp/jalmond/A_1122445/Job_1/A_1.txt";
+    filename = "/var/tmp/jalmond/periodA_1221057/Job_19/periodA_19.txt";
   }
 
   gROOT->Reset();
@@ -52,8 +52,8 @@ int main( int argc, char** argv ) {
     analysis.SetEffectiveLuminosity(1.);
     analysis.SetTargetLuminosity(1.);
     analysis.SetLogLevel("INFO");
-    analysis.SetNEventsToProcess(20000);
-    analysis.SetName("TEST",1,"/var/tmp/jalmond/A_1122445/output/");
+    analysis.SetNEventsToProcess(200000);
+    analysis.SetName("TEST",1,"/var/tmp/");
     
 
     ///// Run cycle

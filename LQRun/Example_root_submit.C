@@ -1,13 +1,7 @@
 {
-  std::getchar();
-  string maindir = getenv("LQANALYZER_DIR");
-  string base_path = maindir + "/LQRun/base/";
-  string run_path = getenv("PWD");
-  //gSystem->ChangeDirectory(base_path.c_str());                               
-  //gROOT->ProcessLine(".L ChainMaker.C+g");                                   
-  //gSystem->ChangeDirectory(run_path.c_str());                                
-
-  std::getchar();
+  //### Run this eith root -l -q -b Example_root_submit.C
+  // make sure you have setup enviroment and compiled all codes
+  
   //### Load Libraries                                                         
   gSystem->Load("libSKTree.so");
   gSystem->Load("libcore.so");
@@ -18,9 +12,9 @@
   gSystem->Load("libLQCycle.so");
   gSystem->Load("libPyROOT.so");
 
-  TString filename = "/var/tmp/jalmond/A_1122445/Job_1/A_1.txt";
+  /// egamma data example list
+  TString filename = "/var/tmp/SKTree/Example/exampleSmall.txt";
 
-  std::getchar();
   LQController analysis;
   analysis.SetJobName("Ztoll_ExampleCycle");
   analysis.SetInputList(TString(filename));
@@ -30,8 +24,9 @@
   analysis.SetEffectiveLuminosity(1.);
   analysis.SetTargetLuminosity(1.);
   analysis.SetLogLevel("INFO");
-  analysis.SetNEventsToProcess(20000);
-  analysis.SetName("TEST",1,"/var/tmp/jalmond/A_1122445/output/");
+  analysis.SetDataType("data");
+  analysis.SetNEventsToProcess(400000);
+  analysis.SetName("TEST",1,"./");
 
   ///Other options : analysis.                                                 
   //RunEvent(i) --> only run this event: can do many times                     
@@ -47,9 +42,7 @@
   //SetEffectiveLuminosity                                                     
 
 
-  std::getchar();
   analysis.Initialize();
-  std::getchar();
   analysis.ExecuteCycle();
 
 

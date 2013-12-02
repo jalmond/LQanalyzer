@@ -9,7 +9,7 @@ cycle="Analyzer"
 ## Which stream is being run egamma/muon
 stream="egamma"
 ## How many cores should the job use
-njobs=1 
+njobs=20
 ## How much data are you running/ for MC this helpw weight the events
 data_lumi="A"
 
@@ -34,11 +34,12 @@ cycle=$(makeParseVariable 'c' ${cycle})
 data_lumi=$(makeParseVariable 'd' ${data_lumi})
 
 
+
 ################
 #submit
 for i in ${periods[@]}
   do
-  python ${LQANALYZER_DIR}/LQRun/submit/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi}
+  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi}
 done
 
 ################

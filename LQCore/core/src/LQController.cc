@@ -249,6 +249,7 @@ void LQController::Initialize() throw( LQError ){
   
   m_logger << DEBUG << "Initializing" << LQLogger::endmsg;
   
+  GetMemoryConsumption("Start of Initialize()");
 
   // Just for kicks, lets measure the time it needs to initialise the                                                      
   // analysis:    
@@ -288,11 +289,9 @@ void LQController::Initialize() throw( LQError ){
       TString libraryName = *lit;
       REPORT_VERBOSE( "Trying to load library \"" << libraryName << "\"" );
       int ret = 0;
-      std::getchar();
       if( ( ret = gSystem->Load( libraryName.Data() ) ) >= 0 ) {
 	m_logger << INFO << "Library loaded: \"" << libraryName << "\""
 		 << LQLogger::endmsg;
-	std::getchar();
       } else {
 	LQError error( LQError::StopExecution );
 	error << "Library failed to load: \"" << libraryName
@@ -344,7 +343,7 @@ void LQController::Initialize() throw( LQError ){
 }
 
 void LQController::ExecuteCycle() throw( LQError ) {
-  
+    
   if( ! m_isInitialized ) {
     throw LQError( "LQCycleController is not initialized",
     LQError::StopExecution );
@@ -426,8 +425,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if(inputType!=NOTSET) {
       // This is if set by user:
       if(inputType == data) cycle->SetDataType(true);
-      if(inputType == mc) cycle->SetDataType(false);
-      throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
+      else if(inputType == mc) cycle->SetDataType(false);
+      else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
     }
     else{
       /// Get answer from input ntuple
@@ -442,11 +441,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
-    
     std::pair<double, double> SampleEvents = GetTotalEvents();
     double sample_entries =  SampleEvents.first;
     double sample_entries_afterskim =  SampleEvents.second;    
-    
+
     if(sample_entries!=0){
       m_logger << INFO << "Input sample has: " << LQLogger::endmsg;    
       m_logger <<INFO << "Before Skim:"  << int(sample_entries) << " entries"  << LQLogger::endmsg;
@@ -456,10 +454,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
       if(n_total_event == -1.){
 	/// This is incase effective luminosity of mc is not set
 	n_total_event = sample_entries;
-      }
-      GetMemoryConsumption("Check Number of events in sample");    
-
+      }      
     }
+   
+    GetMemoryConsumption("Check Number of events in sample");    
     
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
@@ -504,7 +502,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
     }/// check size of list loop
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
-	
 	/// This connects the correct entries for each active branch
 	cycle->SetUpEvent(jentry, ev_weight);
 	/// 
@@ -513,6 +510,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	cycle->ExecuteEvents();
 	// cleans up any pointers etc.
 	cycle->EndEvent();
+	
 	if( jentry == entry_4) {
 	  timer.Stop();
 	  h_timing_hist->Fill("QuarterExecute", timer.RealTime());
@@ -530,7 +528,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
           h_timing_hist->Fill("ThreeQuarterExecute", timer.RealTime());
 	  timer.Start();
 	  FillMemoryHists("ThreeQuarterExecute");
-        }
+	  }
       }
     }
     

@@ -79,14 +79,14 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistSig.clear();
   
-  delete eventbase; 
-}
+  }
 
 //###
 //###   IMPORTANT BASE FUNCTION: SETS UP EVENT FOR ALL CYCLES
 //###
 
 void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
+
 
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
@@ -97,7 +97,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   if(nbytes==0)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );  
   
   if (!(entry % output_interval)) {
-    if(events_to_process != nentries) m_logger << INFO <<  "Processing entry " << entry <<  "/" << events_to_process << " : " <<  "[" << nentries << "/" << sample_entries<<  "]"<< LQLogger::endmsg;
+    if(sample_entries != nentries) m_logger << INFO <<  "Processing entry " << entry <<  "/" << events_to_process << " : " <<  "[" << nentries << "/" << sample_entries<<  "]"<< LQLogger::endmsg;
     else m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << "[" << sample_entries<<  "]"<< LQLogger::endmsg;
 
   }
@@ -111,9 +111,11 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     MCweight = 1.; //Get MC weight here FIX ME                                                              
     weight= ev_weight; 
   }
+
+
   snu::KEvent eventinfo = GetEventInfo();
   //
-    // creates object that stores all SKTree classes	
+  // creates object that stores all SKTree classes	
   //                                                                                                        
     LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
     
