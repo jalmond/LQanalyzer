@@ -18,7 +18,7 @@ parser.add_option("-s", "--stream", dest="stream", default="mumu", help="Which d
 parser.add_option("-j", "--jobs", dest="jobs", default="TEST", help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
 parser.add_option("-t", "--tree", dest="tree", default="rootTupleTree/tree", help="What is input tree")
-parser.add_option("-o", "--logstep", dest="logstep", default=10000, help="How many events betwene log messages")
+parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you weighting?")
 parser.add_option("-l", "--log_level", dest="log_level", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
@@ -81,7 +81,9 @@ if not mc:
             if len(entries)==3:
                 if channel ==entries[0] and sample == entries[1]:
                     inDS = entries[2]
-    sample = "period"+sample                
+    sample = "period"+sample
+    eff_lumi=1.
+    tar_lumi=1.
 else:
     filename = 'txt/datasets.txt'
     for line in open(filename, 'r'):
@@ -136,6 +138,7 @@ if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 output=workspace + sample + "_" + now() + "/"
 outputdir= output+ "output/"
+outputdir_tmp= output+ "output_tmp/"
 if not (os.path.exists(output)):
     os.system("mkdir " + output)
     print "Making tmp working directory to run Job  : " + output
@@ -147,7 +150,8 @@ if(os.path.exists(outputdir)):
        print "Emptying output directory as this should be empty for new job"
               
 if not (os.path.exists(outputdir)):
-        os.system("mkdir " + outputdir)
+    os.system("mkdir " + outputdir)
+    os.system("mkdir " + outputdir_tmp)
 
 
 printedworkdir =  output + "Job_[" + str(1) + "-" + str(number_of_cores) + "]/"
@@ -179,7 +183,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -201,7 +205,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi))
+                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -280,8 +284,8 @@ for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
+    #runcommand = "nohup root -l -q -b /home/jalmond/LQanalyzer/LQRun/Example_root_submit.C"  + "&>" + log + "&"
     os.system(runcommand)
-    time.sleep(wait_sub)
     if i==1:
         print "Running " + script + " . Log file --->  " + log 
     elif i== number_of_cores:
@@ -313,7 +317,7 @@ while not JobSuccess:
     if not running:
         check_outfile = outputdir + sample +  "_1.root"
         if (os.path.exists(check_outfile)):
-            JobSuccess = True
+            #JobSuccess = True
             doMerge=True
 
     os.system("rm  log")

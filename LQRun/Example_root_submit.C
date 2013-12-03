@@ -2,6 +2,15 @@
   //### Run this eith root -l -q -b Example_root_submit.C
   // make sure you have setup enviroment and compiled all codes
   
+  string maindir = getenv("LQANALYZER_DIR");
+  string base_path = maindir + "/LQRun/base/";
+  string run_path = getenv("PWD");
+  gSystem->ChangeDirectory(base_path.c_str());
+  gROOT->ProcessLine(".L ChainMaker.C+g");
+  gSystem->ChangeDirectory(run_path.c_str());
+  /// egamma data example list                                                                                                                               
+  TChain* chain = ChainMaker("/var/tmp/SKTree/Example/exampleSmall.txt");
+  
   //### Load Libraries                                                         
   gSystem->Load("libSKTree.so");
   gSystem->Load("libcore.so");
@@ -12,13 +21,10 @@
   gSystem->Load("libLQCycle.so");
   gSystem->Load("libPyROOT.so");
 
-  /// egamma data example list
-  TString filename = "/var/tmp/SKTree/Example/exampleSmall.txt";
-
+  
   LQController analysis;
   analysis.SetJobName("Ztoll_ExampleCycle");
-  analysis.SetInputList(TString(filename));
-  analysis.SetFullInputList(TString(filename));
+  analysis.SetInputList(TString("/var/tmp/SKTree/Example/exampleSmall.txt"));
   analysis.SetTreeName("rootTupleTree/tree");
   analysis.SetCycleName("Analyzer");
   analysis.SetEffectiveLuminosity(1.);
@@ -27,6 +33,7 @@
   analysis.SetDataType("data");
   analysis.SetNEventsToProcess(400000);
   analysis.SetName("TEST",1,"./");
+  analysis.SetInputChain(chain);
 
   ///Other options : analysis.                                                 
   //RunEvent(i) --> only run this event: can do many times                     

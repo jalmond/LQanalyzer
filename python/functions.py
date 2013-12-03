@@ -1,6 +1,17 @@
-def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi):
+def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi):
 
     config='{\n'
+
+    config+='    string maindir = getenv("LQANALYZER_DIR");\n'  
+    config+='    string base_path = maindir + "/LQRun/base/";\n'  
+    config+='    string run_path = getenv("PWD");\n'  
+    config+='    gSystem->ChangeDirectory(base_path.c_str());\n'  
+    config+='    gROOT->ProcessLine(".L ChainMaker.C+g");\n'  
+    config+='    gSystem->ChangeDirectory(run_path.c_str());\n'  
+    config+='    /// egamma data example list            \n'  
+    
+    config+='    TChain* chain = ChainMaker("/var/tmp/SKTree/Example/exampleSmall.txt");\n'
+    
     config+='  //### Load Libraries\n'
     config+='  gSystem->Load("libSKTree.so");\n'
     config+='  gSystem->Load("libHist.so");\n'
@@ -16,15 +27,14 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output, neven
     config+='  LQController analysis;\n'
     config+='  analysis.SetJobName("' + sample + "_" + cycle+'");\n'
     config+='  analysis.SetInputList(TString(filename));\n'
-    config+='  analysis.SetFullInputList(TString(fullfilename));\n'
+    config+='  analysis.SetFullInputList(TString(filename));\n'
     config+='  analysis.SetTreeName("'+ tree +'");\n'
     config+='  analysis.SetCycleName("' + cycle + '");\n'
-    config+='  analysis.SetName("' + sample + ' ", '+ str(ver) +',"'+ output +'");\n'                        
+    config+='  analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
     config+='  analysis.SetLogLevel("'+ log +'");\n'
     
-    
+    config+='  analysis.SetInputChain(chain);\n' 
     if not eff_lumi == -1.:
-        print "WTF" + str(eff_lumi)
         config+='  analysis.SetEffectiveLuminosity(' + str(eff_lumi)+');\n'
     if not tar_lumi ==-1. :    
         config+='  analysis.SetTargetLuminosity('+ str(tar_lumi) +');\n'
@@ -47,6 +57,8 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output, neven
         
     config+='  analysis.Initialize();\n'
     config+='  analysis.ExecuteCycle();\n'
+
+    config+='  gSystem->Exec("mv ' + output_tmp + sample + '_' + str(ver) + '.root ' + output + '");\n'
     config+='  \n}'
 
     return config

@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.), file_version(0),  nevents_to_process(-1), m_isInitialized( kFALSE ), entrieslimit(-1), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"){
+LQController::LQController(): chain(0), inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.), file_version(0),  nevents_to_process(-1), m_isInitialized( kFALSE ), entrieslimit(-1), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"){
 
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
   h_timing_hist->GetYaxis()->SetTitle("Time (s)");
@@ -95,6 +95,11 @@ void LQController::SkipEvents(int toskip){
   n_ev_to_skip = toskip;
 }
 
+
+void LQController::SetInputChain(TChain* ch){
+
+  chain = ch;
+}
 
 void LQController::SetDataType(TString settype){
   
@@ -388,7 +393,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
 
     ///  Get Tree Name / input filename
-    TChain* chain = new TChain( treeName );
+    /*TChain* chain = new TChain( treeName );
     if(filelist.Contains("NULL")){
       throw LQError( "Filelist is null!!!",
 		     LQError::StopExecution );
@@ -408,7 +413,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       fin.close();
     }
     GetMemoryConsumption("Created TChain");
-
+    */
     //// Connect chain to Data class
     cycle->Init(chain);        
 
@@ -441,6 +446,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
+    /*
     std::pair<double, double> SampleEvents = GetTotalEvents();
     double sample_entries =  SampleEvents.first;
     double sample_entries_afterskim =  SampleEvents.second;    
@@ -458,7 +464,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     }
    
     GetMemoryConsumption("Check Number of events in sample");    
-    
+    */
+
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     

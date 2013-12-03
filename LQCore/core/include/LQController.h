@@ -12,6 +12,7 @@
 
 //Forward declaration
 class TH1F;
+class TChain;
 
 class LQController  {
 
@@ -52,7 +53,7 @@ class LQController  {
   void SetOutPutStep( int step);
   void SetDataPeriod(TString period);
   void SetChannel(TString channel);
-  
+  void SetInputChain(TChain* ch);
 
   /// Other class functions
   void RunEvent(Long64_t ev);
@@ -60,6 +61,7 @@ class LQController  {
   float CalculateWeight() throw (LQError);
   
  private:
+  TTree*  chain;
   dataType inputType;
   TString outputLevelString;
   TString CycleName;
