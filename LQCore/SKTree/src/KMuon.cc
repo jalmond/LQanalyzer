@@ -8,8 +8,8 @@ ClassImp(KMuon)
  *Default constructor.
  */
 KMuon::KMuon() :
-  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_reliso(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999), i_muonVtx(-999)
-{
+  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_reliso(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999), i_muonVtx(-999), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
+ {
   //Reset();
 }
 
@@ -47,7 +47,15 @@ KMuon::KMuon(const KMuon& muon) :
   k_muon_layer_with_meas(muon.k_muon_layer_with_meas),
   k_muon_ispf(muon.k_muon_ispf),
   k_muon_isglobal(muon.k_muon_isglobal),
-  i_muonVtx(muon.i_muonVtx)
+  i_muonVtx(muon.i_muonVtx),
+  muon_ms_pt(muon.muon_ms_pt),
+  muon_ms_eta(muon.muon_ms_eta), 
+  muon_ms_phi(muon.muon_ms_phi), 
+  muon_ms_charge(muon.muon_ms_charge),
+  muon_id_pt(muon.muon_id_pt),
+  muon_id_eta(muon.muon_id_eta),
+  muon_id_phi(muon.muon_id_phi),
+  muon_id_charge(muon.muon_id_charge)
 {
 }
 
@@ -89,7 +97,16 @@ void KMuon::Reset()
   k_muongen_phi=0.;
   i_muonVtx = 0;
   k_vtxdistxy = 0.;
- 
+  /*
+    muon_ms_pt(muon.muon_ms_pt),
+  muon_ms_eta(muon.muon_ms_eta),
+  muon_ms_phi(muon.muon_ms_phi),
+  muon_ms_charge(muon.muon_ms_charge),
+  muon_id_pt(muon.muon_id_pt),
+  muon_id_eta(muon.muon_id_eta),
+  muon_id_phi(muon.muon_id_phi),
+  muon_id_charge(muon.muon_id_charge)
+  */
 }
 
 
@@ -129,12 +146,53 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muongen_phi=p.MuonMatchedGenParticlePhi();
 	i_muonVtx = p.MuonVertexIndex();       
 	k_vtxdistxy= p.VertexDistXY();
+	muon_ms_pt= p.MuonMSPt();
+	muon_ms_eta= p.MuonMSEta();
+	muon_ms_phi= p.MuonMSPhi();
+	muon_ms_charge= p.MuonMSCharge();
+	muon_id_pt= p.MuonIDPt();
+	muon_id_eta= p.MuonIDEta();
+	muon_id_phi= p.MuonIDPhi();
+	muon_id_charge= p.MuonIDCharge();
     }
     
     return *this;
 }
 
 //// SET CLASS VARIBALES
+
+
+void KMuon::SetMuonMSPt(float pt){
+  muon_ms_pt=pt;
+}
+
+void KMuon::SetMuonMSEta(float eta){
+  muon_ms_eta=eta;
+}
+
+void KMuon::SetMuonMSPhi(float phi){
+  muon_ms_phi=phi;
+}
+
+void KMuon::SetMuonMSCharge(int charge){
+  muon_ms_charge=charge;
+}
+
+void KMuon::SetMuonIDPt(float pt){
+  muon_id_pt=pt;
+}
+
+void KMuon::SetMuonIDEta(float eta){
+  muon_id_eta=eta;
+}
+
+void KMuon::SetMuonIDPhi(float phi){
+  muon_id_phi=phi;
+}
+
+void KMuon::SetMuonIDCharge(int charge){
+  muon_id_charge=charge;
+}
 
 
 std::string KMuon::Type() const

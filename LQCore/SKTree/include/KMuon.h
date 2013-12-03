@@ -56,7 +56,17 @@ namespace snu {
     void SetMuonVtxIndex(int ivertex);
     void SetVertexDistXY(double vdistxy);
 
-  
+    void SetMuonIDPt(float pt);
+    void SetMuonIDEta(float eta);
+    void SetMuonIDPhi(float phi);
+    void SetMuonIDCharge(int charge);
+    
+    void SetMuonMSPt(float pt);
+    void SetMuonMSEta(float eta);
+    void SetMuonMSPhi(float phi);
+    void SetMuonMSCharge(int charge);
+    
+
     inline Int_t IsPF() const {return k_muon_ispf;}
     inline Int_t IsGlobal() const {return k_muon_isglobal;}
     inline Int_t validHits() const {return k_muon_valid_hits;}
@@ -91,6 +101,16 @@ namespace snu {
     inline Double_t VertexDistXY() const {return k_vtxdistxy;}
     inline Int_t MuonVertexIndex() const {return i_muonVtx;}
 
+    inline Double_t MuonMSPt() const {return muon_ms_pt;}
+    inline Double_t MuonMSEta() const {return muon_ms_eta;}
+    inline Double_t MuonMSPhi() const {return muon_ms_phi;}
+    inline Double_t MuonMSCharge() const {return muon_ms_charge;}
+    
+    inline Double_t MuonIDPt() const {return muon_id_pt;}
+    inline Double_t MuonIDEta() const {return muon_id_eta;}
+    inline Double_t MuonIDPhi() const {return muon_id_phi;}
+    inline Double_t MuonIDCharge() const {return muon_id_charge;}
+
     inline Double_t IsoTerm() const {return (k_isor03ch + std::max(0.0, k_isor03n + k_isor03ph - k_MuonPFIsoR03PU));}
     
     
@@ -107,8 +127,10 @@ namespace snu {
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Int_t k_muon_ispf, k_muon_isglobal;
     Int_t i_muonVtx;
-
-    ClassDef(KMuon,1)
+    Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge;
+    Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
+    
+    ClassDef(KMuon,0)
   };   
 }//namespace snu
 

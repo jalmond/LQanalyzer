@@ -149,8 +149,27 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
   std::vector<KMuon> muons;
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
-    
-    muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
+
+    if( MuonGlobalEta){
+      muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
+      muon.SetCharge(MuonCharge->at(ilep));
+    }else{
+      muon.SetPtEtaPhiM(MuonGlobalPt->at(ilep), MuonGlobalEta->at(ilep),MuonGlobalPhi->at(ilep), 0.105658367);            
+      muon.SetCharge(MuonGlobalCharge->at(ilep));
+    }
+
+    if(MuonMuonSpecPt){
+      muon.SetMuonMSPt(MuonMuonSpecPt->at(ilep));
+      muon.SetMuonMSEta(MuonMuonSpecEta->at(ilep));
+      muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ilep));
+      muon.SetMuonMSCharge(MuonMuonSpecCharge->at(ilep));
+    }
+    if(MuonPt){
+      muon.SetMuonIDPt(MuonPt->at(ilep));
+      muon.SetMuonIDEta(MuonEta->at(ilep));
+      muon.SetMuonIDPhi(MuonPhi->at(ilep));
+      muon.SetMuonIDCharge(MuonTrackerCharge->at(ilep));  
+    }
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
     
@@ -164,7 +183,6 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetIsolationHcalVeto(MuonHcalVetoIso->at(ilep));
 
     //// what charge is this????
-    muon.SetCharge(MuonCharge->at(ilep));
 
     /// PU correction
     muon.SetPileUp_R03(MuonPFIsoR03PU->at(ilep));

@@ -19,7 +19,7 @@ outputdir=${LQANALYZER_DIR}/data/output/
 ## How many events between log messages (default = 10000)     
 #logstep=1000 
 #### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt
-declare -a periods=( "HNmumu100")
+declare -a periods=( "HNmumu100", "HNmumu200")
 
 ############################################################
 ################# Do not change anything after this line
@@ -41,7 +41,8 @@ outputdir=$(makeParseVariable 'O' ${outputdir})
 #submit
 for i in ${periods[@]}
   do
-  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir}
+  outlog="/var/tmp/jalmond/log_"${i}".txt"
+  nohup python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} &> $outlog&
 done
 
 ################
