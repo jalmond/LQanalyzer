@@ -99,7 +99,6 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetBSdz(0.10);
   eventbase->GetElectronSel()->Selection(out_electrons); 
   eventbase->GetElectronSel()->Selection(electronColl); 
-
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   

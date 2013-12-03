@@ -147,22 +147,35 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
 std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
   std::vector<KMuon> muons;
+  int iglobal=0;
+  int ims=0;
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
 
-    if( MuonGlobalEta){
+    if(!MuonGlobalEta){
       muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
       muon.SetCharge(MuonCharge->at(ilep));
     }else{
-      muon.SetPtEtaPhiM(MuonGlobalPt->at(ilep), MuonGlobalEta->at(ilep),MuonGlobalPhi->at(ilep), 0.105658367);            
-      muon.SetCharge(MuonGlobalCharge->at(ilep));
+      if(MuonIsGlobal->at(ilep)){
+	muon.SetPtEtaPhiM(MuonGlobalPt->at(iglobal), MuonGlobalEta->at(iglobal),MuonGlobalPhi->at(iglobal), 0.105658367);            
+	muon.SetCharge(MuonGlobalCharge->at(iglobal));
+	iglobal++;
+      }
     }
-
     if(MuonMuonSpecPt){
-      muon.SetMuonMSPt(MuonMuonSpecPt->at(ilep));
-      muon.SetMuonMSEta(MuonMuonSpecEta->at(ilep));
-      muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ilep));
-      muon.SetMuonMSCharge(MuonMuonSpecCharge->at(ilep));
+      if(MuonMuonSpecCharge->at(ilep) !=0.){
+	muon.SetMuonMSPt(MuonMuonSpecPt->at(ims));
+	muon.SetMuonMSEta(MuonMuonSpecEta->at(ims));
+	muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ims));
+	muon.SetMuonMSCharge(MuonMuonSpecCharge->at(ims));
+	ims++;
+      }
+      else{
+	muon.SetMuonMSPt(0.);
+	muon.SetMuonMSEta(0.);
+	muon.SetMuonMSPhi(0.);
+	muon.SetMuonMSCharge(0);
+      }
     }
     if(MuonPt){
       muon.SetMuonIDPt(MuonPt->at(ilep));
@@ -196,7 +209,6 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
     muon.SetVertexDistXY(MuonVtxDistXY->at(ilep));
 
-    
     if(VertexN != -999){
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));
       muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(VertexN),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(VertexN),2)));
@@ -212,7 +224,6 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     
     muon.SetD0( MuonTrkD0->at(ilep));
     muon.SetD0Error (MuonTrkD0Error->at(ilep));
-    
     //// chi2
     muon.SetGlobalchi2( MuonGlobalChi2->at(ilep));
         
@@ -224,6 +235,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
     /// truth info
     if(!isData){
+
       muon.SetMuonMatchedGenParticleEta(MuonMatchedGenParticleEta->at(ilep));
       muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
       muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
@@ -243,15 +255,15 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	      }
 	    }
 	  }
-	  else if ((fabs( GenParticleEta->at(g) - muon.Eta() ) < 0.2) && (fabs(GenParticlePhi->at(g) - muon.Phi() ) < 0.2)) {
-	    iMother = GenParticleMotherIndex->at(g);
-	    iDaughter = GenParticleNumDaught->at(g);      	  
-	    ipdgid =  GenParticlePdgId->at(g);
-	    truemu_index = g;
-	  } else nomatched_muon = true;
+	  else {
+	    iMother = -999;
+	    iDaughter = -999;
+	    ipdgid = -999;
+	    truemu_index = -999;
+	    nomatched_muon = true;
+	  }
 	}      
       }/// end gen loop    
-      
       
       int MotherPdgId(-999);
       if(!nomatched_muon){
@@ -287,7 +299,6 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetISPF(MuonIsPF->at(ilep));
     muon.SetIsGlobal(MuonIsGlobal->at(ilep));
     
-       
     /// Fill vector
     muons.push_back(muon);
   }

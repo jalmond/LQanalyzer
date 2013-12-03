@@ -117,11 +117,13 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   //
   // creates object that stores all SKTree classes	
   //                                                                                                        
-    LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
-    
-    //  eventbase is master class to use in analysis 
-    //
-    eventbase = new EventBase(lqevent);
+
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
+  
+  //  eventbase is master class to use in analysis 
+  //
+  
+  eventbase = new EventBase(lqevent);
   
 }
 

@@ -15,7 +15,8 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
   std::vector<KMuon> allmuons = k_lqevent.GetBaseMuons();
   
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
-  
+
+    if(muit->Pt() == 0.) continue;
     if (muit->Pt() > 0.01)      LeptonRelIso = muit->IsoTerm()/muit->Pt();
     else LeptonRelIso = 9999.;
     if (LeptonRelIso<0) LeptonRelIso=0.0001;    
@@ -36,7 +37,6 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
      muit->IsoEcalVeto() >= ECalDeposit_min) ) 
      ? DepositVeto=true : DepositVeto=false;
     
-
     bool pass_selection(true);
     if(apply_general && !individual) pass_selection = false;
     if(m_debug&&apply_general && !individual) cout << "Fails individual " << endl;
@@ -44,6 +44,7 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
     if(apply_ptcut && ! (muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max)) pass_selection = false;
     if(m_debug&&apply_ptcut && ! (muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max)) cout << "Fails pt cut " << endl;
     
+ 
     if(apply_etacut && !(fabs(muit->Eta()) < eta_cut)) pass_selection =false;
     if(m_debug&&apply_etacut && !(fabs(muit->Eta()) < eta_cut))  cout << "Fails eta cut " << endl;
 

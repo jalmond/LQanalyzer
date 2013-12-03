@@ -510,14 +510,17 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
 	/// This connects the correct entries for each active branch
+
 	cycle->SetUpEvent(jentry, ev_weight);
 	/// 
+
 	cycle->BeginEvent();   
 	/// executes analysis code
 	cycle->ExecuteEvents();
 	// cleans up any pointers etc.
+
 	cycle->EndEvent();
-	
+
 	if( jentry == entry_4) {
 	  timer.Stop();
 	  h_timing_hist->Fill("QuarterExecute", timer.RealTime());
