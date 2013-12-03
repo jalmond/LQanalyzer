@@ -244,7 +244,7 @@ fullfile.close()
 #################################################################### 
 ### Check Final input files have no duplicates
 #################################################################### 
-
+no_duplicate=False
 for check in range(1, number_of_cores+1):
     filelist = output+ "Job_" + str(check) + "/" + sample + "_%s" % (check) + ".txt"
     fcheck = open(filelist, 'r')
@@ -351,7 +351,8 @@ while not JobSuccess:
 if doMerge:
     os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
     os.system("rm -r" + output)
-    print "All sampless finished: OutFile:"  cycle + "_" + filechannel + sample + ".root -->" Finaloutputdir  
+    print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir  
+
     end_time = time.time()
     total_time=end_time- start_time
     print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"

@@ -24,8 +24,13 @@ To run the test cycle
 
 
 ### Make cycle ###
-make_new_cycle <cyclename>
+From $LQANALYZER_CYCLE_DIR you can use command:
+LQanalyzer_create_cycle.py <cyclename>
 
-this will create a skeleton cycle in $LQANALYZER_SRC_PATH called cyclename.cc. You can then modify this accordingly.
+this will create a skeleton cycle named cyclename:
+a) in $LQANALYZER_SRC_PATH it will create cyclename.cc. You can then modify this accordingly.
+b) in $LQANALYZER_INCLUDE_PATH it will create cyclename.h.
+c) it will add cyclename to LinkDef file.
+
 
 

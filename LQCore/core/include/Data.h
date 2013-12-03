@@ -732,13 +732,45 @@ public :
    std::vector<int>     *VertexNTracksW05;
    std::vector<std::vector<int> > *HLTFilterObjId;
 
+   /// New Variabels 2013/12/02
    std::vector<double>  *CaloJetEnergy;
    std::vector<double>  *CaloJetEta;
    std::vector<double>  *CaloJetPt;
    std::vector<double>  *CaloJetPhi;
    std::vector<int>     *CaloJetPassLooseID;
    std::vector<int>     *CaloJetPassTightID;
+   std::vector<double>  *MuonGlobalE;
+   std::vector<double>  *MuonGlobalEta;
+   std::vector<double>  *MuonGlobalPhi;
+   std::vector<double>  *MuonGlobalPt;
+   std::vector<double>  *MuonMuonSpecE;
+   std::vector<double>  *MuonMuonSpecEta;
+   std::vector<double>  *MuonMuonSpecPhi;
+   std::vector<double>  *MuonMuonSpecPt;
+   std::vector<double>  *PFJetScaledDownEnergy;
+   std::vector<double>  *PFJetScaledDownPt;
+   std::vector<double>  *PFJetScaledUpEnergy;
+   std::vector<double>  *PFJetScaledUpPt;
+   std::vector<double>  *PFJetSmearedDownEnergy;
+   std::vector<double>  *PFJetSmearedDownPt;
+   std::vector<double>  *PFJetSmearedUpEnergy;
+   std::vector<double>  *PFJetSmearedUpPt;
+   std::vector<double>  *PFMETType01XYCorElectronEnDown;
+   std::vector<double>  *PFMETType01XYCorElectronEnUp;
+   std::vector<double>  *PFMETType01XYCorJetEnDown;
+   std::vector<double>  *PFMETType01XYCorJetEnUp;
+   std::vector<double>  *PFMETType01XYCorJetResDown;
+   std::vector<double>  *PFMETType01XYCorJetResUp;
+   std::vector<double>  *PFMETType01XYCorMuonEnDown;
+   std::vector<double>  *PFMETType01XYCorMuonEnUp;
+   std::vector<double>  *PFMETType01XYCorUnclusteredDown;
+   std::vector<double>  *PFMETType01XYCorUnclusteredUp;
+   std::vector<int>     *MuonGlobalCharge;
+   std::vector<int>     *MuonMuonSpecCharge;
+   std::vector<int>     *MuonTrackerCharge;
 
+   
+   
    UInt_t          bunch;
    UInt_t          event;
    UInt_t          ls;
@@ -1413,15 +1445,48 @@ public :
    TBranch        *b_run;   //!
    TBranch        *b_ProcessID;   //!
 
+   /// NEW branched 2013/12/02
    TBranch        *b_CaloJetEnergy;   //!       
    TBranch        *b_CaloJetEta;   //!    
    TBranch        *b_CaloJetPt;   //! 
    TBranch        *b_CaloJetPhi;   //! 
    TBranch        *b_CaloJetPassLooseID;   //!                                                                   
    TBranch        *b_CaloJetPassTightID;   //!   
-
-
    
+   TBranch        *b_MuonGlobalE;   //!
+   TBranch        *b_MuonGlobalEta;   //!
+   TBranch        *b_MuonGlobalPhi;   //!
+   TBranch        *b_MuonGlobalPt;   //!
+   TBranch        *b_MuonMuonSpecE;   //!
+   TBranch        *b_MuonMuonSpecEta;   //!
+   TBranch        *b_MuonMuonSpecPhi;   //!
+   TBranch        *b_MuonMuonSpecPt;   //!
+   
+   TBranch        *b_PFJetScaledDownEnergy;   //!
+   TBranch        *b_PFJetScaledDownPt;   //!
+   TBranch        *b_PFJetScaledUpEnergy;   //!
+   TBranch        *b_PFJetScaledUpPt;   //!
+
+   TBranch        *b_PFJetSmearedDownEnergy;   //!
+   TBranch        *b_PFJetSmearedDownPt;   //!
+   TBranch        *b_PFJetSmearedUpEnergy;   //!
+   TBranch        *b_PFJetSmearedUpPt;   //!
+
+   TBranch        *b_PFMETType01XYCorElectronEnDown;   //!
+   TBranch        *b_PFMETType01XYCorElectronEnUp;   //!
+   TBranch        *b_PFMETType01XYCorJetEnDown;   //!
+   TBranch        *b_PFMETType01XYCorJetEnUp;   //!
+   TBranch        *b_PFMETType01XYCorJetResDown;   //!
+   TBranch        *b_PFMETType01XYCorJetResUp;   //!
+   TBranch        *b_PFMETType01XYCorMuonEnDown;   //!
+   TBranch        *b_PFMETType01XYCorMuonEnUp;   //!
+   TBranch        *b_PFMETType01XYCorUnclusteredDown;   //!
+   TBranch        *b_PFMETType01XYCorUnclusteredUp;   //!
+
+   TBranch        *b_MuonGlobalCharge;   //!
+   TBranch        *b_MuonMuonSpecCharge;   //!
+   TBranch        *b_MuonTrackerCharge;   //!
+
 };
 
 #endif

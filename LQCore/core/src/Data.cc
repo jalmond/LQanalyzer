@@ -144,12 +144,12 @@ void Data::Reset(){
   ElectronGsfScPixCharge = 0;
   ElectronHLTDoubleEleMatched = 0;
   ElectronHLTSingleEleMatched = 0;
-   ElectronHLTSingleEleWP80Matched = 0;
-   ElectronHasEcalDrivenSeed = 0;
-   ElectronHasMatchedConvPhot = 0;
-   ElectronHasTrackerDrivenSeed = 0;
-   ElectronIsEB = 0;
-   ElectronIsEE = 0;
+  ElectronHLTSingleEleWP80Matched = 0;
+  ElectronHasEcalDrivenSeed = 0;
+  ElectronHasMatchedConvPhot = 0;
+  ElectronHasTrackerDrivenSeed = 0;
+  ElectronIsEB = 0;
+  ElectronIsEE = 0;
    MuonHLTSingleIsoMuonMatched = 0;
    MuonHLTSingleMuonMatched = 0;
    PhotonHasMatchedConvPhot = 0;
@@ -739,6 +739,43 @@ void Data::Reset(){
    VertexNTracks = 0;
    VertexNTracksW05 = 0;
    HLTFilterObjId = 0;
+   
+   /// New variables 2013/12/02
+   CaloJetEnergy = 0;
+   CaloJetEta = 0;
+   CaloJetPhi = 0;
+   CaloJetPt = 0;
+   CaloJetPassLooseID = 0;
+   CaloJetPassTightID = 0;
+   MuonGlobalE = 0;
+   MuonGlobalEta = 0;
+   MuonGlobalPhi = 0;
+   MuonGlobalPt = 0;
+   MuonMuonSpecE = 0;
+   MuonMuonSpecEta = 0;
+   MuonMuonSpecPhi = 0;
+   MuonMuonSpecPt = 0;
+   PFJetScaledDownEnergy = 0;
+   PFJetScaledDownPt = 0;
+   PFJetScaledUpEnergy = 0;
+   PFJetScaledUpPt = 0;
+   PFJetSmearedDownEnergy = 0;
+   PFJetSmearedDownPt = 0;
+   PFJetSmearedUpEnergy = 0;
+   PFJetSmearedUpPt = 0;
+   PFMETType01XYCorElectronEnDown = 0;
+   PFMETType01XYCorElectronEnUp = 0;
+   PFMETType01XYCorJetEnDown = 0;
+   PFMETType01XYCorJetEnUp = 0;
+   PFMETType01XYCorJetResDown = 0;
+   PFMETType01XYCorJetResUp = 0;
+   PFMETType01XYCorMuonEnDown = 0;
+   PFMETType01XYCorMuonEnUp = 0;
+   PFMETType01XYCorUnclusteredDown = 0;
+   PFMETType01XYCorUnclusteredUp = 0;
+   MuonGlobalCharge = 0;
+   MuonMuonSpecCharge = 0;
+   MuonTrackerCharge = 0;
 
 }
 
@@ -896,6 +933,18 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonTrkPixelHits", MuonTrkPixelHits, b_MuonTrkPixelHits);
   ConnectVariable("MuonVtxIndex", MuonVtxIndex, b_MuonVtxIndex);
  
+ /// New variables 2013/12/02
+  ConnectVariable("MuonGlobalE", MuonGlobalE, b_MuonGlobalE);
+  ConnectVariable("MuonGlobalEta", MuonGlobalEta, b_MuonGlobalEta);
+  ConnectVariable("MuonGlobalPhi", MuonGlobalPhi, b_MuonGlobalPhi);
+  ConnectVariable("MuonGlobalPt", MuonGlobalPt, b_MuonGlobalPt);
+  ConnectVariable("MuonMuonSpecE", MuonMuonSpecE, b_MuonMuonSpecE);
+  ConnectVariable("MuonMuonSpecEta", MuonMuonSpecEta, b_MuonMuonSpecEta);
+  ConnectVariable("MuonMuonSpecPhi", MuonMuonSpecPhi, b_MuonMuonSpecPhi);
+  ConnectVariable("MuonMuonSpecPt", MuonMuonSpecPt, b_MuonMuonSpecPt);
+  ConnectVariable("MuonGlobalCharge",MuonGlobalCharge, b_MuonGlobalCharge);
+  ConnectVariable("MuonMuonSpecCharge",MuonMuonSpecCharge, b_MuonMuonSpecCharge);
+  ConnectVariable("MuonTrackerCharge", MuonTrackerCharge, b_MuonTrackerCharge);
 
   return;
 }
@@ -967,7 +1016,12 @@ void Data::ConnectElectrons(){
   ConnectVariable("ElectronPassIsoPAT", ElectronPassIsoPAT, b_ElectronPassIsoPAT);
   ConnectVariable("ElectronVtxIndex", ElectronVtxIndex, b_ElectronVtxIndex);
   
+  
+  /// NEW
+  /*
+    vector<double>  *ElectronR9;
 
+  */
   return;
 }
 
@@ -1019,7 +1073,17 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetPassLooseID", PFJetPassLooseID, b_PFJetPassLooseID);
   ConnectVariable("PFJetPassTightID", PFJetPassTightID, b_PFJetPassTightID);
   ConnectVariable("PFJetPhotonMultiplicity", PFJetPhotonMultiplicity, b_PFJetPhotonMultiplicity);
-
+  
+  // New Variables 2013/12/02
+  ConnectVariable("PFJetScaledDownEnergy",PFJetScaledDownEnergy,b_PFJetScaledDownEnergy);
+  ConnectVariable("PFJetScaledDownPt",PFJetScaledDownPt,b_PFJetScaledDownPt);
+  ConnectVariable("PFJetScaledUpEnergy",PFJetScaledUpEnergy,b_PFJetScaledUpEnergy);
+  ConnectVariable("PFJetScaledUpPt",PFJetScaledUpPt,b_PFJetScaledUpPt);
+  ConnectVariable("PFJetSmearedDownEnergy",PFJetSmearedDownEnergy,b_PFJetSmearedDownEnergy);
+  ConnectVariable("PFJetSmearedDownPt",PFJetSmearedDownPt,b_PFJetSmearedDownPt);
+  ConnectVariable("PFJetSmearedUpEnergy",PFJetSmearedUpEnergy,b_PFJetSmearedUpEnergy);
+  ConnectVariable("PFJetSmearedUpPt",PFJetSmearedUpPt,b_PFJetSmearedUpPt);
+  
 
   return;
 }
@@ -1032,7 +1096,31 @@ void Data::ConnectCaloJets(){
   ConnectVariable("CaloJetPt", CaloJetPt, b_CaloJetPt);
   ConnectVariable("CaloJetPassTightID", CaloJetPassTightID, b_CaloJetPassTightID);
   ConnectVariable("CaloJetPassLooseID", CaloJetPassLooseID, b_CaloJetPassLooseID);
-
+  /* 
+  <    vector<double>  *CaloJetEMF;
+  <    vector<double>  *CaloJetEnergy;
+  <    vector<double>  *CaloJetEnergyRaw;
+  <    vector<double>  *CaloJetEta;
+  <    vector<double>  *CaloJetHADF;
+  <    vector<double>  *CaloJetJECUnc;
+  <    vector<double>  *CaloJetJetBProbabilityBTag;
+  <    vector<double>  *CaloJetJetProbabilityBTag;
+  <    vector<double>  *CaloJetL1FastJetJEC;
+  <    vector<double>  *CaloJetL2L3ResJEC;
+  <    vector<double>  *CaloJetL2RelJEC;
+  <    vector<double>  *CaloJetL3AbsJEC;
+  <    vector<double>  *CaloJetPhi;
+  <    vector<double>  *CaloJetPt;
+  <    vector<double>  *CaloJetPtRaw;
+  <    vector<double>  *CaloJetSigmaEta;
+  <    vector<double>  *CaloJetSigmaPhi;
+  <    vector<double>  *CaloJetSimpleSecondaryVertexHighEffBTag;
+  <    vector<double>  *CaloJetSimpleSecondaryVertexHighPurBTag;
+  <    vector<double>  *CaloJetTrackCountingHighEffBTag;
+  <    vector<double>  *CaloJetTrackCountingHighPurBTag;
+  <    vector<double>  *CaloJetfHPD;
+  <    vector<double>  *CaloJetfRBX;
+  <    vector<double>  *CaloJetresEMF;*/
   return;
 }
 
@@ -1059,6 +1147,18 @@ void Data::ConnectMET(){
   ConnectVariable("PFMETType1Cor", PFMETType1Cor, b_PFMETType1Cor);
   ConnectVariable("PFSumETType1Cor", PFSumETType1Cor, b_PFSumETType1Cor);
 
+  /// New variables 2013/12/02
+  ConnectVariable("PFMETType01XYCorElectronEnDown",PFMETType01XYCorElectronEnDown,b_PFMETType01XYCorElectronEnDown);
+  ConnectVariable("PFMETType01XYCorElectronEnUp",PFMETType01XYCorElectronEnUp,b_PFMETType01XYCorElectronEnUp);
+  ConnectVariable("PFMETType01XYCorJetEnDown",PFMETType01XYCorJetEnDown,b_PFMETType01XYCorJetEnDown);
+  ConnectVariable("PFMETType01XYCorJetEnUp",PFMETType01XYCorJetEnUp,b_PFMETType01XYCorJetEnUp);
+  ConnectVariable("PFMETType01XYCorJetResDown",PFMETType01XYCorJetResDown,b_PFMETType01XYCorJetResDown);
+  ConnectVariable("PFMETType01XYCorJetResUp",PFMETType01XYCorJetResUp,b_PFMETType01XYCorJetResUp);
+  ConnectVariable("PFMETType01XYCorMuonEnDown",PFMETType01XYCorMuonEnDown,b_PFMETType01XYCorMuonEnDown);
+  ConnectVariable("PFMETType01XYCorMuonEnUp",PFMETType01XYCorMuonEnUp,b_PFMETType01XYCorMuonEnUp);
+  ConnectVariable("PFMETType01XYCorUnclusteredDown",PFMETType01XYCorUnclusteredDown,b_PFMETType01XYCorUnclusteredDown);
+  ConnectVariable("PFMETType01XYCorUnclusteredUp",PFMETType01XYCorUnclusteredUp,b_PFMETType01XYCorUnclusteredUp);
+  
 
   return;
 

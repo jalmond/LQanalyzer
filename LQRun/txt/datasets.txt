@@ -25,3 +25,6 @@ DY10-50		3424.007
 DY50+		8693.5
 QCD_mumu	2.17E-05
 ttbar		29588.256
+
+###HN signal
+HNmumu100	1.		/data1/SNUData/MC/HN/mumu/100
