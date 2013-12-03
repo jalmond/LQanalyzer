@@ -9,9 +9,10 @@ cycle="Analyzer"
 ## Which stream is being run egamma/muon
 stream="muon"
 ## How many cores should the job use
-njobs=1
+njobs=2
 ## How much data are you running/ for MC this helpw weight the events
 data_lumi="A"
+
 ### name output location : by default it is ${LQANALYZER_DIR}/data/output, but you can change it 
 outputdir=${LQANALYZER_DIR}/data/output/
 

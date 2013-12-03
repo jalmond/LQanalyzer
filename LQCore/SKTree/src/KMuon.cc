@@ -1,6 +1,4 @@
-//local includes
 #include "KMuon.h"
-#include "KTrack.h"
 
 using namespace snu;
 
@@ -10,10 +8,8 @@ ClassImp(KMuon)
  *Default constructor.
  */
 KMuon::KMuon() :
-  KTrack(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_reliso(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999), i_muonVtx(-999)
+  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_reliso(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999), i_muonVtx(-999)
 {
-  k_muonspecTrack = NULL;
-  k_indetTrack = NULL;
   //Reset();
 }
 
@@ -21,7 +17,7 @@ KMuon::KMuon() :
  * Copy constructor.
  */
 KMuon::KMuon(const KMuon& muon) :
-  KTrack(muon),
+  KParticle(muon),
   k_pterror(muon.k_pterror),
   k_etaerror(muon.k_etaerror),
   k_isor03ch(muon.k_isor03ch),
@@ -53,27 +49,17 @@ KMuon::KMuon(const KMuon& muon) :
   k_muon_isglobal(muon.k_muon_isglobal),
   i_muonVtx(muon.i_muonVtx)
 {
-  if (muon.MuonSpecTrack())k_muonspecTrack = new KTrack(*muon.MuonSpecTrack());
-
-  if (muon.InDetTrack()) k_indetTrack = new KTrack(*muon.InDetTrack());
-  
-  
 }
 
 
 KMuon::~KMuon()
 {
-  delete k_muonspecTrack;
-  delete k_indetTrack;
-
 }
 
 void KMuon::Reset()
 {
-  KParticle::Reset();
-  k_muonspecTrack=NULL;
-  k_indetTrack=NULL;
-  k_reliso=0;
+  KParticle::Reset(),
+  k_reliso=0,
   k_isor03ch=0.;
   k_isor03n=0.;
   k_isor03ph=0.;
@@ -110,13 +96,8 @@ void KMuon::Reset()
 
 KMuon& KMuon::operator= (const KMuon& p)
 {
-  if (this != &p) {
-    KTrack::operator=(p);
-    
-    if (p.MuonSpecTrack())
-        k_muonspecTrack = new KTrack(*p.MuonSpecTrack());
-    if (p.InDetTrack())
-        k_indetTrack = new KTrack(*p.InDetTrack());
+    if (this != &p) {
+        KParticle::operator=(p);
 	k_reliso = p.RelIso();
 	k_isor03ch = p.IsoR03ch();
 	k_muon_ispf = p.IsPF();
@@ -160,15 +141,6 @@ std::string KMuon::Type() const
 {
     return "KMuon";
 }
-
-void KMuon::Set_muonspecTrack(KTrack* value) {
-  k_muonspecTrack = value;
-}
-
-void KMuon::Set_indetTrack(KTrack* value) {
-  k_indetTrack = value;
-}
-
 
 void KMuon::SetVertexDistXY(double vdistxy) {
   k_vtxdistxy= vdistxy;

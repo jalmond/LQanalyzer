@@ -291,9 +291,11 @@ std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
     truthp.SetParticlePx(GenParticlePx->at(it));
     truthp.SetParticlePy(GenParticlePy->at(it));
     truthp.SetParticlePz(GenParticlePz->at(it));
-    truthp.SetParticleVx(GenParticleVX->at(it));
-    truthp.SetParticleVy(GenParticleVY->at(it));
-    truthp.SetParticleVz(GenParticleVZ->at(it));
+    if(GenParticleVX){
+      truthp.SetParticleVx(GenParticleVX->at(it));
+      truthp.SetParticleVy(GenParticleVY->at(it));
+      truthp.SetParticleVz(GenParticleVZ->at(it));
+    }
     truthp.SetParticlePdgId(GenParticlePdgId->at(it));
     truthp.SetParticleStatus(GenParticleStatus->at(it));
 

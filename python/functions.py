@@ -1,7 +1,6 @@
 def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi):
 
     config='{\n'
-
     config+='    string maindir = getenv("LQANALYZER_DIR");\n'  
     config+='    string base_path = maindir + "/LQRun/base/";\n'  
     config+='    string run_path = getenv("PWD");\n'  
@@ -10,7 +9,7 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     config+='    gSystem->ChangeDirectory(run_path.c_str());\n'  
     config+='    /// egamma data example list            \n'  
     
-    config+='    TChain* chain = ChainMaker(" ' + input + ' ")\n' 
+    config+='    TChain* chain = ChainMaker("' + input + '");\n' 
     
     config+='  //### Load Libraries\n'
     config+='  gSystem->Load("libSKTree.so");\n'

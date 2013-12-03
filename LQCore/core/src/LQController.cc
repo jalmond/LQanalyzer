@@ -447,10 +447,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
     /*
-    std::pair<double, double> SampleEvents = GetTotalEvents();
-    double sample_entries =  SampleEvents.first;
-    double sample_entries_afterskim =  SampleEvents.second;    
-
+      std::pair<double, double> SampleEvents = GetTotalEvents();
+      double sample_entries =  SampleEvents.first;
+      double sample_entries_afterskim =  SampleEvents.second;    
+    
     if(sample_entries!=0){
       m_logger << INFO << "Input sample has: " << LQLogger::endmsg;    
       m_logger <<INFO << "Before Skim:"  << int(sample_entries) << " entries"  << LQLogger::endmsg;

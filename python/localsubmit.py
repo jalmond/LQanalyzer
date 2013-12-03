@@ -2,7 +2,6 @@
 ### configure run
 #################################################################### 
 timeWait=60#
-
 ###################################################
 ### Make Input File
 ###################################################
@@ -53,15 +52,16 @@ Finaloutputdir = options.outputdir
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
+
 mc = len(sample)>1
 if mc:
-    dataType="mc"
+    datatype="mc"
 else:
-    dataType="data"
+    datatype="data"
     
 if sample == "AtoD":
-    dataType="data"
-    
+    datatype="data"
+
 
 list = []
 import re
@@ -343,6 +343,7 @@ while not JobSuccess:
     if ncomplete_files== number_of_cores :
         print "Job finished"
         JobSuccess=True
+        doMerge=True
     else:
         print str(ncomplete_files) + "/" + str(number_of_cores) + " completed. Wait " + str(timeWait) + " second..."
         
@@ -350,7 +351,7 @@ while not JobSuccess:
 
 if doMerge:
     os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
-    os.system("rm -r" + output)
+    os.system("rm -r " + output)
     print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir  
 
     end_time = time.time()
