@@ -12,7 +12,8 @@ stream="egamma"
 njobs=20
 ## How much data are you running/ for MC this helpw weight the events
 data_lumi="A"
-
+### name output location : by default it is ${LQANALYZER_DIR}/data/output, but you can change it 
+outputdir=${LQANALYZER_DIR}/data/output/
 
 ## How many events between log messages (default = 10000)     
 #logstep=1000 
@@ -32,14 +33,14 @@ stream=$(makeParseVariable 's' ${stream})
 njobs=$(makeParseVariable 'j' ${njobs})
 cycle=$(makeParseVariable 'c' ${cycle})
 data_lumi=$(makeParseVariable 'd' ${data_lumi})
-
+outputdir=$(makeParseVariable 'O' ${outputdir})
 
 
 ################
 #submit
 for i in ${periods[@]}
   do
-  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi}
+  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir}
 done
 
 ################

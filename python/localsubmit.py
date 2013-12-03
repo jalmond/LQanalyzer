@@ -28,6 +28,7 @@ parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many 
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
 parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="How many events in sample?")
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
+parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
 
 
 
@@ -48,6 +49,7 @@ xsec = options.xsec
 tar_lumi = options.targetlumi
 eff_lumi = options.efflumi
 data_lumi = options.data_lumi
+Finaloutputdir = options.outputdir
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
@@ -72,7 +74,7 @@ else:
 #Find theq DS name 
 inDS = ""
 mcLumi = 1.0
-
+filechannel=""
 if not mc:
     filename = 'txt/datasets.txt'
     for line in open(filename, 'r'):
@@ -84,6 +86,7 @@ if not mc:
     sample = "period"+sample
     eff_lumi=1.
     tar_lumi=1.
+    filechannel = channel+"_"
 else:
     filename = 'txt/datasets.txt'
     for line in open(filename, 'r'):
@@ -93,7 +96,9 @@ else:
                 if sample == entries[0]:
                     eff_lumi = entries[1]
                     inDS = entries[2]
-                    
+
+
+    
 InputDir = inDS    
 print InputDir
 
@@ -344,9 +349,9 @@ while not JobSuccess:
         time.sleep(timeWait)
 
 if doMerge:
-    os.system("hadd " + outputdir + cycle + "_" + sample + ".root "+ outputdir + "*.root")
-         
-    print "All sampless finished"
+    os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
+    os.system("rm -r" + output)
+    print "All sampless finished: OutFile:"  cycle + "_" + filechannel + sample + ".root -->" Finaloutputdir  
     end_time = time.time()
     total_time=end_time- start_time
     print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
