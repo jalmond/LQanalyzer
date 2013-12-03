@@ -76,13 +76,9 @@ class LQController  {
   float target_luminosity;
   float sample_crosssection;
   float effective_luminosity;
-
   double n_total_event;
-  Int_t file_version;
   int nevents_to_process;
-
   bool m_isInitialized;
-  int entrieslimit;
   int n_ev_to_skip;
   
   std::vector<TString> v_libnames;
