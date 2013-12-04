@@ -97,7 +97,6 @@ void LQController::SkipEvents(int toskip){
 
 
 void LQController::SetInputChain(TChain* ch){
-
   chain = ch;
 }
 
@@ -169,30 +168,12 @@ void LQController::SetDataPeriod(TString period){
 		   LQError::StopExecution );
   }
   
-  if(channel == "Muon") {
-    if( period == "A") effective_luminosity = 887.501;
-    if( period == "B") effective_luminosity = 4443.;
-    if( period == "C") effective_luminosity = 7114.;
-    if( period == "D") effective_luminosity = 7318.;
-    else effective_luminosity = (887.501 + 4443. + 7114. + 7318.);
-  }
-
-  else if(channel == "Electron"){
-    if( period == "A") effective_luminosity = 887.501;
-    if( period == "B") effective_luminosity = 4446.;
-    if( period == "C") effective_luminosity = 7152.;
-    if( period == "D") effective_luminosity = 7318.;
-    else effective_luminosity =(887.501 + 4446. + 7152. + 7318.);
-  }
-  else {
-    m_logger << WARNING  << "Channel is not set although you have set period. This will effect weights." << LQLogger::endmsg;
- 
-    if( period == "A") effective_luminosity = 887.501;
-    if( period == "B") effective_luminosity = 4443.;
-    if( period == "C") effective_luminosity = 7114.;
-    if( period == "D") effective_luminosity = 7318.;
-    else effective_luminosity = (887.501 + 4443. + 7114. + 7318.);
-  }
+  if( period == "A") effective_luminosity = 887.501;
+  if( period == "B") effective_luminosity = 4443.;
+  if( period == "C") effective_luminosity = 7114.;
+  if( period == "D") effective_luminosity = 7318.;
+  else effective_luminosity = (887.501 + 4443. + 7114. + 7318.);
+  
 }
 
 void LQController::SetTotalMCEvents(int ev){
@@ -379,7 +360,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     TString      cycleName = CycleName;
     m_logger << INFO << "Created cycle '" << cycleName << "'"
              << LQLogger::endmsg;
-        
+    
     GetMemoryConsumption("Initialised cycle class: " + cycleName );
     ///// This executes code:
     
@@ -391,29 +372,31 @@ void LQController::ExecuteCycle() throw( LQError ) {
     cycle->BeginCycle(completename);
     GetMemoryConsumption("Ran Begin Cycle");
 
-
-    ///  Get Tree Name / input filename
-    /*TChain* chain = new TChain( treeName );
-    if(filelist.Contains("NULL")){
-      throw LQError( "Filelist is null!!!",
-		     LQError::StopExecution );
-    }
-    std::ifstream fin(filelist.Data());
-    std::string word;
-    if(!chain) {
-      throw LQError( "Chain is null!!!",
-		     LQError::StopExecution );
-    }
-    
-    if(fin.is_open()){
-      while(getline (fin,word)){      
-	m_logger << "- " << word << LQLogger::endmsg;
-	chain->Add(word.c_str());
+    if(!chain){
+      if(filelist == "0") throw LQError( "No input filelist",
+					 LQError::StopExecution );
+      ///  Get Tree Name / input filename
+      TChain* chain = new TChain( treeName );
+      if(filelist.Contains("NULL")){
+	throw LQError( "Filelist is null!!!",
+		       LQError::StopExecution );
       }
-      fin.close();
+      std::ifstream fin(filelist.Data());
+      std::string word;
+      if(!chain) {
+	throw LQError( "Chain is null!!!",
+		       LQError::StopExecution );
+      }
+      
+      if(fin.is_open()){
+	while(getline (fin,word)){      
+	  m_logger << "- " << word << LQLogger::endmsg;
+	  chain->Add(word.c_str());
+	}
+	fin.close();
+      }
+      GetMemoryConsumption("Created TChain");
     }
-    GetMemoryConsumption("Created TChain");
-    */
     //// Connect chain to Data class
     cycle->Init(chain);        
 
@@ -446,26 +429,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
-    /*
-      std::pair<double, double> SampleEvents = GetTotalEvents();
-      double sample_entries =  SampleEvents.first;
-      double sample_entries_afterskim =  SampleEvents.second;    
-    
-    if(sample_entries!=0){
-      m_logger << INFO << "Input sample has: " << LQLogger::endmsg;    
-      m_logger <<INFO << "Before Skim:"  << int(sample_entries) << " entries"  << LQLogger::endmsg;
-      m_logger <<INFO << "After  Skim:"  << int(sample_entries_afterskim) << " entries"  << LQLogger::endmsg;
-      cycle->SetNSampleEvents(sample_entries_afterskim);
-      
-      if(n_total_event == -1.){
-	/// This is incase effective luminosity of mc is not set
-	n_total_event = sample_entries;
-      }      
-    }
-   
-    GetMemoryConsumption("Check Number of events in sample");    
-    */
-
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
@@ -486,8 +449,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     cycle->SetOutPutStep(output_step);
     
     //// Help user understand  event readout
-    if(nevents_to_process == nentries) m_logger << INFO <<  "Processing entry (#entry)/(#enties In Job) [(#Entries in Full Dataset)]"<< LQLogger::endmsg;
-    else  m_logger << INFO <<  "Processing entry (#entry)/(#enties to process) [(#Entries in input sample)(#Entries in Full Dataset)]"<< LQLogger::endmsg;
+    if(nevents_to_process == nentries) m_logger << INFO <<  "Processing entry (#entry)/(#enties In Job)"<< LQLogger::endmsg;
+    else  m_logger << INFO <<  "Processing entry (#entry)/(#enties to process) [(#Entries in input sample)]"<< LQLogger::endmsg;
 
     timer.Stop();
     h_timing_hist->Fill("BeginCycle", timer.RealTime());

@@ -97,8 +97,8 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   if(nbytes==0)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );  
   
   if (!(entry % output_interval)) {
-    if(sample_entries != nentries) m_logger << INFO <<  "Processing entry " << entry <<  "/" << events_to_process << " : " <<  "[" << nentries << "/" << sample_entries<<  "]"<< LQLogger::endmsg;
-    else m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << "[" << sample_entries<<  "]"<< LQLogger::endmsg;
+    if(sample_entries != nentries) m_logger << INFO <<  "Processing entry " << entry <<  "/" << events_to_process << " : " <<  "[" << nentries <<   "]"<< LQLogger::endmsg;
+    else m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << LQLogger::endmsg;
 
   }
   

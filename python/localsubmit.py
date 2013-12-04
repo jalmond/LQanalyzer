@@ -1,7 +1,7 @@
 #################################################################### 
 ### configure run
 #################################################################### 
-timeWait=60#
+timeWait=30#
 ###################################################
 ### Make Input File
 ###################################################
@@ -13,21 +13,22 @@ from optparse import OptionParser
 #Import parser to get options
 parser = OptionParser()
 parser.add_option("-p", "--period", dest="period", default="A",help="which data period or mc sample")
-parser.add_option("-s", "--stream", dest="stream", default="mumu", help="Which data channel- ee,or mumu?")
-parser.add_option("-j", "--jobs", dest="jobs", default="TEST", help="Name of Job")
+parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
+parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
 parser.add_option("-t", "--tree", dest="tree", default="rootTupleTree/tree", help="What is input tree")
 parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you weighting?")
-parser.add_option("-l", "--log_level", dest="log_level", default="INFO", help="Set Log output level")
+parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
 parser.add_option("-k", "--skip", dest="skip", default=-1, help="Set number of events to skip")
-parser.add_option("-a", "--datatype", dest="datatype", default="data", help="Is data or mc?")
+parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
 parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="How many events in sample?")
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
 parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
+parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 
 
 
@@ -36,23 +37,26 @@ number_of_cores = int(options.jobs)
 sample = options.period
 channel = options.stream
 cycle = options.cycle
-logstep = options.logstep
-loglevel = options.log_level
+logstep = int(options.logstep)
+loglevel = options.loglevel
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
-number_of_events_per_job= options.nevents
-skipev = options.skip
-datatype = options.datatype
-totalev = options.totalev
-xsec = options.xsec
-tar_lumi = options.targetlumi
-eff_lumi = options.efflumi
+number_of_events_per_job= int(options.nevents)
+skipev = int(options.skip)
+dataType = options.datatype
+totalev = int(options.totalev)
+xsec = float(options.xsec)
+tar_lumi = float(options.targetlumi)
+eff_lumi = float(options.efflumi)
 data_lumi = options.data_lumi
 Finaloutputdir = options.outputdir
+remove_workspace=options.remove
+print number_of_events_per_job
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
 
+datatype=""
 mc = len(sample)>1
 if mc:
     datatype="mc"
@@ -62,6 +66,11 @@ else:
 if sample == "AtoD":
     datatype="data"
 
+if datatype == "mc":
+    timeWait=10
+
+if not dataType =="":
+    datatype=dataType
 
 list = []
 import re
@@ -333,7 +342,6 @@ while not JobSuccess:
             if i== check: skipcheck=True
         while not skipcheck:
             skipcheck=True
-#            print "Checking " + str(i)
             check_outfile = outputdir + sample +  "_" +  str(i) + ".root"   
             if (os.path.exists(check_outfile)):
                 CompletedJobs.append(i)
@@ -348,10 +356,14 @@ while not JobSuccess:
         print str(ncomplete_files) + "/" + str(number_of_cores) + " completed. Wait " + str(timeWait) + " second..."
         
         time.sleep(timeWait)
+        timeWait+= 10
 
 if doMerge:
+    os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + sample + ".root ")
     os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
-    os.system("rm -r " + output)
+    
+    if remove_workspace == "True":
+        os.system("rm -r " + output)
     print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir  
 
     end_time = time.time()

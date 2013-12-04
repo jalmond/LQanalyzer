@@ -1,5 +1,21 @@
 #!/bin/sh
 
+stream=""
+cycle=""
+njobs=1
+data_lumi=""
+outputdir=${LQANALYZER_DIR}/data/output/
+loglevel="DEBUG"
+remove_workspace="True"
+logstep=-1
+skipevent=-1
+nevents=-1
+totalev=-1
+xsec=-1.
+targetlumi=-1.
+efflumi=-1.
+remove="True"
+
 function makeParseVariable() {
     if ! [ -z ${2} ] 
         then

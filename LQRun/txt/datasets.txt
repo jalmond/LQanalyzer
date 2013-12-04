@@ -27,4 +27,8 @@ QCD_mumu	2.17E-05
 ttbar		29588.256
 
 ###HN signal
+HNmumu50	1.		/data1/SNUData/MC/HN/mumu/50
+HNmumu70	1.		/data1/SNUData/MC/HN/mumu/70
+HNmumu90	1.		/data1/SNUData/MC/HN/mumu/90
 HNmumu100	1.		/data1/SNUData/MC/HN/mumu/100
+HNmumu200	1.		/data1/SNUData/MC/HN/mumu/200
