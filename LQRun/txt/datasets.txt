@@ -11,24 +11,38 @@ muon D 	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodD/
 
 
 ### MC
-# Sample	xsec(/pb)	localpath
-WZ		301122.644
-ZZ		555109.777
-WW		182363.161	
-W+W+		402840.451
-W-W-		1084518.452
-WW_dp		1418676.646
-ttW		845025.862
-ttZ		1205737.235
-WWW		2684057.442
-DY10-50		3424.007
-DY50+		8693.5
-QCD_mumu	2.17E-05
+# Sample	xinte.lumi(/pb)	localpath
+WZ		301122.644	/data1/SNUData/MC/Background/WZ/
+ZZ		555109.777	/data1/SNUData/MC/Background/ZZ/
+WW		182363.161	/data1/SNUData/MC/Background/WW/	
+W+W+		402840.451	/data1/SNUData/MC/Background/SSWpWp/
+W-W-		1084518.452	/data1/SNUData/MC/Background/SSWmWm/
+WW_dp		1418676.646	/data1/SNUData/MC/Background/
+ttW		845025.862	/data1/SNUData/MC/Background/TTW/
+ttZ		1205737.235	/data1/SNUData/MC/Background/TTZ/
+WWW		2684057.442	/data1/SNUData/MC/Background/WWW/
+DY10-50		3424.007	/data1/SNUData/MC/Background/DY10to50/
+DY50+		8693.5		/data1/SNUData/MC/Background/DY150plus/
+QCD_mumu	2.17E-05	
 ttbar		29588.256
 
 ###HN signal
-HNmumu50	1.		/data1/SNUData/MC/HN/mumu/50
-HNmumu70	1.		/data1/SNUData/MC/HN/mumu/70
-HNmumu90	1.		/data1/SNUData/MC/HN/mumu/90
-HNmumu100	1.		/data1/SNUData/MC/HN/mumu/100
-HNmumu200	1.		/data1/SNUData/MC/HN/mumu/200
+HNmumu50	46.68			/data1/SNUData/MC/HN/mumu/50/
+HNmumu70	235.87			/data1/SNUData/MC/HN/mumu/70/
+HNmumu90	7,037.03		/data1/SNUData/MC/HN/mumu/90/
+HNmumu100	14,036.72		/data1/SNUData/MC/HN/mumu/100/
+HNmumu125	46,242.46		/data1/SNUData/MC/HN/mumu/125/
+HNmumu150	108,826.73		/data1/SNUData/MC/HN/mumu/150/
+HNmumu175	214,442.23		/data1/SNUData/MC/HN/mumu/175/
+HNmumu200	380,833.40		/data1/SNUData/MC/HN/mumu/200/
+HNmumu225	627,546.73		/data1/SNUData/MC/HN/mumu/225/
+HNmumu250	979,699.29		/data1/SNUData/MC/HN/mumu/250/
+HNmumu275	1,476,651.80		/data1/SNUData/MC/HN/mumu/275/
+HNmumu300	2,153,700.35		/data1/SNUData/MC/HN/mumu/300/
+HNmumu325	3,063,798.49		/data1/SNUData/MC/HN/mumu/325/
+HNmumu350	4,271,251.60		/data1/SNUData/MC/HN/mumu/350/
+HNmumu375	5,826,499.35		/data1/SNUData/MC/HN/mumu/375/
+HNmumu400	7,879,056.73		/data1/SNUData/MC/HN/mumu/400/
+HNmumu500	23,208,151.52		/data1/SNUData/MC/HN/mumu/500/
+HNmumu600	58,506,729.08		/data1/SNUData/MC/HN/mumu/600/
+HNmumu700	130,502,192.52		/data1/SNUData/MC/HN/mumu/700/
