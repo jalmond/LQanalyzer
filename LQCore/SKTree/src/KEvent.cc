@@ -12,42 +12,47 @@ ClassImp(KEvent)
  *Default constructor.
  */
 KEvent::KEvent() :
-KParticle()
+  KParticle(),
+  k_EventNumber(0),
+  k_RunNumber(0),
+  k_nvertices(0),
+  k_ivertex(0),
+  k_MET(0.), 
+  k_vertexX(0.),
+  k_vertexY(0.),
+  k_vertexZ(0.), 
+  k_METphi(0.), 
+  k_jetrho(0.),
+  k_mcweight(0.),
+  k_isfakeV(false), 
+  k_isgoodevent(false),
+  k_isData(false), 
+  k_isprimaryvertex(false)
 {
-  k_isData=0;
-  k_EventNumber=0;
-  k_RunNumber=0;
-  k_MET=0.;
-  k_METphi=0.;
-  k_isprimaryvertex=0;
-  k_vertexX=0.;
-  k_vertexY=0.;
-  k_vertexZ=0.;
-  k_nvertices=0;
-  k_jetrho=0.;
-  k_isfakeV=false; 
-  k_isgoodevent = false;
+
 }
 
 /**
  * Copy constructor.
  */
 KEvent::KEvent(const KEvent& ev) :
-    KParticle(ev)
+  KParticle(ev),
+  k_EventNumber(ev.k_EventNumber),
+  k_RunNumber(ev.k_RunNumber),
+  k_nvertices(ev.k_nvertices),
+  k_ivertex(ev.k_ivertex),
+  k_MET(ev.k_MET),
+  k_vertexX(ev.k_vertexX),
+  k_vertexY(ev.k_vertexY),
+  k_vertexZ(ev.k_vertexZ),
+  k_METphi(ev.k_METphi),
+  k_jetrho(ev.k_jetrho),
+  k_mcweight(ev.k_mcweight),
+  k_isfakeV(ev.k_isfakeV),
+  k_isgoodevent(ev.k_isgoodevent),
+  k_isData(ev.k_isData),
+  k_isprimaryvertex(ev.k_isprimaryvertex)
 {
-  k_isData=ev.IsData();
-  k_EventNumber=ev.EventNumber();
-  k_RunNumber=ev.RunNumber();
-  k_MET= ev.MET();
-  k_METphi= ev.METphi();
-  k_isprimaryvertex=ev.IsPrimaryVertex();
-  k_vertexX=ev.VertexX();
-  k_vertexY=ev.VertexY();
-  k_vertexZ=ev.VertexZ();
-  k_nvertices= ev.nVertices();
-  k_isfakeV=ev.IsFakeVertex(); 
-  k_jetrho=ev.JetRho();
-  k_isgoodevent = ev.HasGoodPrimaryVertex();
 }
 
 
@@ -71,7 +76,7 @@ void KEvent::Reset()
   k_jetrho=0.;
   k_isfakeV=false; 
   k_isgoodevent = false;
-  
+  k_mcweight= 0.;
 }
 
 
@@ -93,13 +98,17 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_isfakeV=p.IsFakeVertex(); 
       k_jetrho=p.JetRho();
       k_isgoodevent = p.HasGoodPrimaryVertex();
+      k_mcweight = p.MCWeight();
     }
     
     return *this;
 }
 
-
 //// SET CLASS VARIBALES
+
+void KEvent::SetWeight(double mcweight){
+  k_mcweight = mcweight;
+}
 
 void KEvent::SetJetRho(double jetrho){
 

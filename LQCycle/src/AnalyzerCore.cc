@@ -100,6 +100,8 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << LQLogger::endmsg;
 
   }
+
+  snu::KEvent eventinfo = GetEventInfo();
   
   if(k_isdata){
     if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
@@ -107,12 +109,10 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     weight = 1.;
   }
   else {
-    MCweight = 1.; //Get MC weight here FIX ME                                                              
+    MCweight = eventinfo.MCWeight(); //Get MC weight here FIX ME                                                              
     weight= ev_weight; 
   }
-
-
-  snu::KEvent eventinfo = GetEventInfo();
+  
   //
   // creates object that stores all SKTree classes	
   //                                                                                                        

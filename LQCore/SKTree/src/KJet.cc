@@ -110,6 +110,11 @@ void KJet::SetPassLooseID(int looseID){
   k_passLooseID = looseID;
 }
 
+void KJet::SetPassTightID(int tightID){
+  
+  k_passTightID = tightID;
+}
+
 
 void KJet::SetPFJetTrackCountingHighPurBTag(double TCHPT){
 

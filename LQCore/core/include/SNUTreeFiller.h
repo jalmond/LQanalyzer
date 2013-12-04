@@ -27,6 +27,7 @@ class SNUTreeFiller : public Data, public AnalysisBase {
   std::vector<snu::KTau> GetAllTaus();
   std::vector<snu::KElectron> GetAllElectrons();
   std::vector<snu::KJet> GetAllJets();
+  std::vector<snu::KJet> GetAllCaloJets();
   snu::KEvent GetEventInfo();
   std::vector<snu::KTruth>  GetTruthParticles();
 

@@ -35,6 +35,7 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
   
   kevent.SetVertexIndex(VertexN); /// setting event vertex
   kevent.SetIsData(isData);
+  kevent.SetWeight(Weight);  
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
   kevent.SetIsPrimaryVertex(isPrimaryVertex);
@@ -143,6 +144,20 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
   return jets;
 }
 
+std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
+  
+  std::vector<KJet> jets;
+  for (UInt_t ijet=0; ijet< CaloJetEta->size(); ijet++) {
+    KJet jet;
+    jet.SetPtEtaPhiE(CaloJetPt->at(ijet), CaloJetEta->at(ijet), CaloJetPhi->at(ijet), CaloJetEnergy->at(ijet));
+    jet.SetPassLooseID(CaloJetPassLooseID->at(ijet));
+    jet.SetPassTightID(CaloJetPassTightID->at(ijet));    
+    
+    jets.push_back(jet);
+  }
+  std::sort( jets.begin(), jets.end(), isHigherPt );
+  return jets;
+}
 
 std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 

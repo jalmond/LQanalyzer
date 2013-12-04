@@ -23,6 +23,7 @@ namespace snu {
     KEvent& operator= (const KEvent& obj);
 
     void SetMET(double met);
+    void SetWeight(double weight);
     void SetMETphi(double metphi);
     void SetNVertices(int nvert);
     void SetVertexIndex(int ivertex);
@@ -43,6 +44,7 @@ namespace snu {
     inline Double_t MET() const {return k_MET;}
     inline Double_t METphi() const {return k_METphi;}
     inline Double_t JetRho() const {return k_jetrho;}
+    inline Double_t MCWeight() const{return k_mcweight;}
     inline Int_t nVertices()  const {return k_nvertices;}
     inline Int_t VertexIndex()  const {return k_ivertex;}
     inline Bool_t IsFakeVertex() const {return k_isfakeV;}
@@ -55,7 +57,7 @@ namespace snu {
     inline Int_t IsData() const {return k_isData;}
     inline Int_t EventNumber() const {return k_EventNumber;}
     inline Int_t RunNumber() const {return k_RunNumber;}
-    
+
     virtual void Reset();    
   protected:
     /// Reset function.                                                                  
@@ -63,9 +65,8 @@ namespace snu {
   private:
     /// decalre private functions
     
-    Int_t k_EventNumber, k_RunNumber;
-    Double_t k_MET, k_vertexX,k_vertexY,k_vertexZ, k_METphi, k_jetrho;
-    Int_t k_nvertices, k_ivertex;
+    Int_t k_EventNumber, k_RunNumber,k_nvertices, k_ivertex;
+    Double_t k_MET, k_vertexX,k_vertexY,k_vertexZ, k_METphi, k_jetrho, k_mcweight;
     Bool_t k_isfakeV, k_isgoodevent,k_isData, k_isprimaryvertex;
  
 

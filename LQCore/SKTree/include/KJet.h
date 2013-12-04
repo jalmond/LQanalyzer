@@ -24,6 +24,7 @@ namespace snu {
     KJet& operator= (const KJet& obj);
     
     void SetPassLooseID(int looseID);
+    void SetPassTightID(int tightID);
     void SetNeutralEmEF(double neutEmEF);
     void SetNeutralHEF(double neutHEF);
     void SetChargedEmEF(double chargeEmEF);
@@ -40,6 +41,7 @@ namespace snu {
 
     
     inline Int_t PassLooseID() const {return k_passLooseID;}
+    inline Int_t PassTightID() const {return k_passTightID;}
     inline Double_t NeutralEmEF() const {return k_neutralEmEF;}
     inline Double_t NeutralHEF() const {return k_neutralHEF;}
     inline Double_t ChargedEmEF() const {return k_chargeEmEF;}
@@ -61,12 +63,11 @@ namespace snu {
   private:
     
     Double_t k_neutralEmEF ,k_neutralHEF , k_chargeEmEF ,k_chargeHEF,k_closest3Dsep ,k_JetSecVertBtag, k_TCHPT, k_JetProbBtag, k_closestXYsep, k_closestZsep  ;
-    Int_t  k_passLooseID ,k_chargeMult,k_jetNconst;
+    Int_t  k_passLooseID ,k_passTightID ,k_chargeMult,k_jetNconst;
                         
       
-    
-
-    ClassDef(KJet,1)
+   
+    ClassDef(KJet,0)
   }; 
   
 
