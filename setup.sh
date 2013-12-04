@@ -43,7 +43,7 @@ export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
 
-echo "Running analysis from" $HOSTNAME " in directory " $LQANALYZER_DIR
+echo "Running analysis from" $HOSTNAME " in directory: " 
 
 if [ ! -d ${LQANALYZER_LIB_PATH} ]; then
     echo Directory ${LQANALYZER_LIB_PATH} does not exist ... creating it
