@@ -177,7 +177,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	muon.SetMuonMSCharge(0);
       }
     }
-    if(MuonPt){
+    if(MuonTrackerCharge){
       muon.SetMuonIDPt(MuonPt->at(ilep));
       muon.SetMuonIDEta(MuonEta->at(ilep));
       muon.SetMuonIDPhi(MuonPhi->at(ilep));

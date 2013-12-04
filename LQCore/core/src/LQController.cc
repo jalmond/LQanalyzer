@@ -28,7 +28,8 @@
 #include <TChain.h>
 
 LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"){
-
+  
+  chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
   h_timing_hist->GetYaxis()->SetTitle("Time (s)");
   h_timing_hist->GetXaxis()->SetBinLabel(1,"Initialisation");
@@ -373,10 +374,11 @@ void LQController::ExecuteCycle() throw( LQError ) {
     GetMemoryConsumption("Ran Begin Cycle");
 
     if(!chain){
+      m_logger << INFO << filelist << LQLogger::endmsg;
       if(filelist == "0") throw LQError( "No input filelist",
 					 LQError::StopExecution );
       ///  Get Tree Name / input filename
-      TChain* chain = new TChain( treeName );
+      chain = new TChain( treeName );
       if(filelist.Contains("NULL")){
 	throw LQError( "Filelist is null!!!",
 		       LQError::StopExecution );
@@ -390,7 +392,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       
       if(fin.is_open()){
 	while(getline (fin,word)){      
-	  m_logger << "- " << word << LQLogger::endmsg;
+	  m_logger <<  INFO << "- " << word << LQLogger::endmsg;
 	  chain->Add(word.c_str());
 	}
 	fin.close();
@@ -418,6 +420,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     }
     else{
       /// Get answer from input ntuple
+      m_logger <<  INFO << chain <<  LQLogger::endmsg;
       cycle->GetInputTree()->GetEntry(1,0);/// Get first entry in ntuple
       bool alt_isdata =  cycle->isData;
       if(alt_isdata) inputType = data;

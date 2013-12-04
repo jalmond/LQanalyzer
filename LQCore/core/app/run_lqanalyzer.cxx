@@ -26,9 +26,10 @@ int main( int argc, char** argv ) {
     return 1;
   }
   if( (argc == 1)){
-    filename = "/var/tmp/jalmond/periodA_1221057/Job_19/periodA_19.txt";
+    
   }
-
+  
+  filename = "/var/tmp/jalmond/TestHNMuMu100.txt";
   gROOT->Reset();
   
   g_logger << VERBOSE << "Setting up job" << LQLogger::endmsg;
@@ -37,13 +38,13 @@ int main( int argc, char** argv ) {
   analysis.SetJobName("Ztoll_ExampleCycle");
   analysis.AddLibraries("libSKTree.so");
   analysis.AddLibraries("libcore.so");
+  analysis.AddLibraries("libAnalysisCore.so");
   analysis.AddLibraries("libSelection.so");
   analysis.AddLibraries("libPlotting.so");
   analysis.AddLibraries("libHist.so");
   analysis.AddLibraries("libLQCycle.so");
   g_logger << VERBOSE << "Added up libaries" << LQLogger::endmsg;
   analysis.SetInputList(TString(filename));
-  analysis.SetFullInputList(TString(filename));
   analysis.SetTreeName("rootTupleTree/tree");
   analysis.SetCycleName("Analyzer");
   g_logger << VERBOSE << "Setting up tree" << LQLogger::endmsg;
@@ -52,8 +53,8 @@ int main( int argc, char** argv ) {
     analysis.SetEffectiveLuminosity(1.);
     analysis.SetTargetLuminosity(1.);
     analysis.SetLogLevel("INFO");
-    analysis.SetNEventsToProcess(200000);
-    analysis.SetName("TEST",1,"/var/tmp/");
+    //analysis.SetNEventsToProcess(200000);
+    analysis.SetName("TEST",1,"./");
     
 
     ///// Run cycle

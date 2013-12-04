@@ -61,7 +61,7 @@ class LQController  {
   float CalculateWeight() throw (LQError);
   
  private:
-  TTree*  chain;
+  TChain*  chain;
   dataType inputType;
   TString outputLevelString;
   TString CycleName;
