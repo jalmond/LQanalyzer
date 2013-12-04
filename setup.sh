@@ -31,7 +31,7 @@ export LQANALYZER_DIR=${PWD}
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code
-export LQANALYZER_CYCLE_PATH=${LQANALYZER_DIR}/LQCycle/src/
+export LQANALYZER_CYCLE_PATH=${LQANALYZER_DIR}/LQCycle/
 export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
