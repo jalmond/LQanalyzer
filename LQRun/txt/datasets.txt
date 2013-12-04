@@ -1,4 +1,6 @@
-### DATA
+### DATA# ############################################################
+# channel Period localpath
+############################################################
 egamma A /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/
 egamma B /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
 egamma C /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
@@ -10,8 +12,9 @@ muon C 	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodC/
 muon D 	 /data1/SNUData/Data/Electron/DoubleMuon/Nov13/periodD/
 
 
-### MC
-# Sample	xinte.lumi(/pb)	localpath
+### MC ############################################################
+# Sample	Inte.lumi(/pb)	localpath
+##################################################################
 WZ		301122.644	/data1/SNUData/MC/Background/WZ/
 ZZ		555109.777	/data1/SNUData/MC/Background/ZZ/
 WW		182363.161	/data1/SNUData/MC/Background/WW/	
@@ -23,8 +26,33 @@ ttZ		1205737.235	/data1/SNUData/MC/Background/TTZ/
 WWW		2684057.442	/data1/SNUData/MC/Background/WWW/
 DY10-50		3424.007	/data1/SNUData/MC/Background/DY10to50/
 DY50+		8693.5		/data1/SNUData/MC/Background/DY150plus/
-QCD_mumu	2.17E-05	
 ttbar		29588.256
+Wjets           1538.562  
+
+### QCD samples
+QCD_mu15
+QCD_mumu
+QCD_15-20_mu
+QCD_20-30_mu
+QCD_30_50_mu
+QCD_50-80_mu
+QCD_80-120_mu
+QCD_120-170_mu
+QCD_170-300_mu
+QCD_300-470_mu
+QCD_470-600_mu
+QCD_600-800_mu
+QCD_800-1000_mu
+QCD_1000_mu
+
+QCD_20-30_EM
+QCD_30-80_EM
+QCD_80-170_EM
+QCD_170-250_EM
+QCD_250-350_EM
+QCD_350_EM
+QCD_30-40_EM2
+QCD_40_EM2
 
 ###HN signal
 HNmumu50	46.68			/data1/SNUData/MC/HN/mumu/50/
@@ -46,3 +74,23 @@ HNmumu400	7,879,056.73		/data1/SNUData/MC/HN/mumu/400/
 HNmumu500	23,208,151.52		/data1/SNUData/MC/HN/mumu/500/
 HNmumu600	58,506,729.08		/data1/SNUData/MC/HN/mumu/600/
 HNmumu700	130,502,192.52		/data1/SNUData/MC/HN/mumu/700/
+
+HNee50        46.68                   /data1/SNUData/MC/HN/ee/50/
+HNee70        235.87                  /data1/SNUData/MC/HN/ee/70/
+HNee90        7,037.03                /data1/SNUData/MC/HN/ee/90/
+HNee100       14,036.72               /data1/SNUData/MC/HN/ee/100/
+HNee125       46,242.46               /data1/SNUData/MC/HN/ee/125/
+HNee150       108,833.261              /data1/SNUData/MC/HN/ee/150/
+HNee175       214,442.23              /data1/SNUData/MC/HN/ee/175/
+HNee200       380,833.40              /data1/SNUData/MC/HN/ee/200/
+HNee225       627,546.73              /data1/SNUData/MC/HN/ee/225/
+HNee250       979,699.29              /data1/SNUData/MC/HN/ee/250/
+HNee275       1,476,651.80            /data1/SNUData/MC/HN/ee/275/
+HNee300       2,153,700.35            /data1/SNUData/MC/HN/ee/300/
+HNee325       3,063,798.49            /data1/SNUData/MC/HN/ee/325/
+HNee350       4,271,251.60            /data1/SNUData/MC/HN/ee/350/
+HNee375       5,826,499.35            /data1/SNUData/MC/HN/ee/375/
+HNee400       7,879,056.73            /data1/SNUData/MC/HN/ee/400/
+HNee500       23,208,151.52           /data1/SNUData/MC/HN/ee/500/
+HNee600       58,506,729.08           /data1/SNUData/MC/HN/ee/600/
+HNee700       130,502,192.52          /data1/SNUData/MC/HN/ee/700/
