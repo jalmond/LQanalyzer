@@ -3,7 +3,7 @@
 GenSelection::GenSelection(){
 }
 
-GenSelection::GenSelection(LQEvent ev){
+GenSelection::GenSelection(LQEvent ev): BaseSelection(){
   k_lqevent = ev;  
 };
 
@@ -25,12 +25,15 @@ void GenSelection::Selection(std::vector<snu::KTruth>& truthColl) {
 
 
 GenSelection& GenSelection::operator= (const GenSelection& ms) {
-  if(this != &ms){    
+  if(this != &ms){ 
+    BaseSelection::operator = (ms);
     k_lqevent = ms.k_lqevent;  
   }
   return *this;
 };
 
-GenSelection::GenSelection(const GenSelection& ms){
+GenSelection::GenSelection(const GenSelection& ms):
+  BaseSelection(ms)
+{
   k_lqevent = ms.k_lqevent;  
 };

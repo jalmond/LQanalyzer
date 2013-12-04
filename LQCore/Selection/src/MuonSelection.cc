@@ -2,7 +2,9 @@
 
 using namespace snu;
 
-MuonSelection::MuonSelection(LQEvent ev) {
+MuonSelection::MuonSelection(LQEvent ev) :
+  BaseSelection()
+{
   k_lqevent = ev;  
 };
 
@@ -148,12 +150,15 @@ void MuonSelection::SetDeposits(Double_t ECalDeposit1 , Double_t HCalDeposit1, D
 
 MuonSelection& MuonSelection::operator= (const MuonSelection& ms) {
   if(this != &ms){    
+    BaseSelection::operator = (ms);
     k_lqevent = ms.k_lqevent;  
   }
   return *this;
 };
 
-MuonSelection::MuonSelection(const MuonSelection& ms){
+MuonSelection::MuonSelection(const MuonSelection& ms):
+  BaseSelection(ms)
+{
   k_lqevent = ms.k_lqevent;  
 };
 

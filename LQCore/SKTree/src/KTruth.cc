@@ -37,7 +37,7 @@ KTruth::KTruth(const KTruth& mc) :
     KParticle(mc)
 {
 
-  k_gen_index=mc.GetIndex();
+  k_gen_index=int(mc.GetIndex());
   k_gen_px=mc.GenPx(); 
   k_gen_py=mc.GenPy(); 
   k_gen_pz=mc.GenPz();
@@ -79,7 +79,7 @@ KTruth& KTruth::operator= (const KTruth& p)
 {
   if (this != &p) {
     KParticle::operator=(p);
-    k_gen_index=p.GetIndex();
+    k_gen_index=int(p.GetIndex());
     k_gen_px=p.GenPx(); 
     k_gen_py=p.GenPy(); 
     k_gen_pz=p.GenPz();
@@ -127,19 +127,19 @@ void KTruth::SetParticleVz(double Vz){
 }
 
 void KTruth::SetParticlePdgId(double pdgid){
-  k_gen_pdgid = pdgid;
+  k_gen_pdgid = int(pdgid);
 }
 
 void KTruth::SetParticleStatus(double status){
-  k_gen_status = status;
+  k_gen_status = int(status);
 }
 
 void KTruth::SetParticleIndexMother(double index_mum){
-  k_gen_indexmum = index_mum;
+  k_gen_indexmum = int(index_mum);
 }
 
 void KTruth::SetParticleIndexDaughter(double index_dau){
-  k_gen_indexdau = index_dau;
+  k_gen_indexdau = int(index_dau);
 }
 
 

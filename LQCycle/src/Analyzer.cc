@@ -79,11 +79,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muonColl;
   eventbase->GetMuonSel()->SetPt(20); 
   eventbase->GetMuonSel()->SetEta(2.4);
-  //eventbase->GetMuonSel().SetRelIso(1000.);
-  //eventbase->GetMuonSel().SetChiNdof(1000); 
-  //eventbase->GetMuonSel().SetBSdxy(0.01);
-  //eventbase->GetMuonSel().SetBSdz(0.10);
-  //eventbase->GetMuonSel().SetDeposits(40.0,60.00);    
+  eventbase->GetMuonSel()->SetRelIso(0.1);
   eventbase->GetMuonSel()->Selection(out_muons);
     
   std::vector<snu::KJet> jetColl;
@@ -169,8 +165,8 @@ void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  //DeclareVariable(out_muons, "Signal_Muons");
+  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  DeclareVariable(out_muons, "Signal_Muons");
 
   
   return;

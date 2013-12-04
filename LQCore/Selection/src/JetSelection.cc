@@ -2,7 +2,7 @@
 
 using namespace snu;
 
-JetSelection::JetSelection(LQEvent ev) {
+JetSelection::JetSelection(LQEvent ev) :BaseSelection() {
   k_lqevent = ev;
 }
 
@@ -64,12 +64,15 @@ void JetSelection::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vecto
 
 JetSelection& JetSelection::operator= (const JetSelection& ms) {
   if(this != &ms){    
+    BaseSelection::operator = (ms);
     k_lqevent = ms.k_lqevent;  
   }
   return *this;
 };
 
-JetSelection::JetSelection(const JetSelection& ms){
+JetSelection::JetSelection(const JetSelection& ms):
+  BaseSelection(ms)
+{
   k_lqevent = ms.k_lqevent;  
 };
 

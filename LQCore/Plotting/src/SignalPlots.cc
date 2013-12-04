@@ -44,7 +44,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   //// Jet mass variables
   dijetmass_tmp=dijetmass=9999.9;
-  UInt_t m,n;
+  UInt_t m(0),n(0);
 
   float min_mujet_Dr=10000.;  
   for(UInt_t i=0; i<muons.size(); i++){    for(UInt_t emme=0; emme<jets.size()-1; emme++){
@@ -114,7 +114,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, s
   
   //// Jet mass variables
   dijetmass_tmp=dijetmass=9999.9;
-  UInt_t m,n;
+  UInt_t m(0),n(0);
   float min_ejet_Dr=10000.;  
   for(UInt_t i=0; i<electrons.size(); i++){    for(UInt_t emme=0; emme<jets.size()-1; emme++){
       float dR =electrons[i].DeltaR(jets[emme]);
@@ -179,7 +179,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
    //// Jet mass variables
   dijetmass_tmp=dijetmass=9999.9;
-  UInt_t m,n;
+  UInt_t m(0),n(0);
 
   float min_mujet_Dr=10000.;  
   for(UInt_t i=0; i<muons.size(); i++){    for(UInt_t emme=0; emme<jets.size()-1; emme++){

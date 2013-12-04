@@ -2,7 +2,7 @@
 
 using namespace snu;
 
-ElectronSelection::ElectronSelection(LQEvent ev) {
+ElectronSelection::ElectronSelection(LQEvent ev) : BaseSelection() {
   k_lqevent = ev;
 };
 
@@ -77,12 +77,16 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl) {
 
 ElectronSelection& ElectronSelection::operator= (const ElectronSelection& ms) {
   if(this != &ms){    
+    BaseSelection::operator = (ms); 
     k_lqevent = ms.k_lqevent;  
   }
   return *this;
 };
 
-ElectronSelection::ElectronSelection(const ElectronSelection& ms){
-  k_lqevent = ms.k_lqevent;  
+ElectronSelection::ElectronSelection(const ElectronSelection& ms): 
+  BaseSelection(ms)
+{
+  k_lqevent = ms.k_lqevent;
+
 };
 
