@@ -17,14 +17,19 @@ SNUTreeFiller::~SNUTreeFiller() {};
 
 snu::KEvent SNUTreeFiller::GetEventInfo(){
   
+  m_logger << DEBUG << "Filling Event" << LQLogger::endmsg;
   snu::KEvent kevent;
+  VertexN = -999; 
+
   kevent.SetMET( PFMETType01XYCor->at(0));
   int nVertices = VertexNDF->size();
   kevent.SetNVertices(nVertices);
   goodVerticies = new Bool_t [nVertices];
-
+  /// delete
+  
   if ( !isGoodEvent(nVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) kevent.SetIsGoodEvent(false);
   else  kevent.SetIsGoodEvent(true);
+  
   
   for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
     if(goodVerticies[vv]) {
@@ -32,18 +37,22 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
       break;
     }
   }
-  
+
   kevent.SetVertexIndex(VertexN); /// setting event vertex
   kevent.SetIsData(isData);
-  kevent.SetWeight(Weight);  
+  if(!isData)kevent.SetWeight(Weight);  
+  else kevent.SetWeight(0.);  
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
   kevent.SetIsPrimaryVertex(isPrimaryVertex);
-  kevent.SetVertexX(VertexX->at(VertexN));
-  kevent.SetVertexY(VertexY->at(VertexN));
-  kevent.SetVertexZ(VertexZ->at(VertexN));  
-  kevent.SetVertexIsFake(VertexIsFake->at(VertexN));
 
+  if(VertexN != -999){
+    kevent.SetVertexX(VertexX->at(VertexN));
+    kevent.SetVertexY(VertexY->at(VertexN));
+    kevent.SetVertexZ(VertexZ->at(VertexN));  
+    kevent.SetVertexIsFake(VertexIsFake->at(VertexN));
+  }
+  else VertexN = -1;
   kevent.SetJetRho(rhoJets);
   
   
@@ -53,6 +62,7 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
 
 std::vector<KTau> SNUTreeFiller::GetAllTaus(){
   
+  m_logger << DEBUG << "Filling Tau" << LQLogger::endmsg;
   std::vector<KTau> taus;
   for(UInt_t itau = 0; itau < HPSTauPhi->size(); itau++){
 
@@ -69,6 +79,7 @@ std::vector<KTau> SNUTreeFiller::GetAllTaus(){
 
 std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
   
+  m_logger << DEBUG << "Filling Electron" << LQLogger::endmsg;
   std::vector<KElectron> electrons;
   for (UInt_t iel=0; iel< ElectronEta->size(); iel++) {
     KElectron el;
@@ -94,17 +105,23 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
     el.SetTrkVx(ElectronTrackVx->at(iel));
     el.SetTrkVy(ElectronTrackVy->at(iel));
     el.SetTrkVz(ElectronTrackVz->at(iel));
-    if(VertexN != -999){
+        
+    if(VertexN != -1){
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
 
     }
-    else{
+    else if (VertexN == -999.){
       snu::KEvent ev = SNUTreeFiller::GetEventInfo();
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(ev.VertexIndex()));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ev.VertexIndex()),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ev.VertexIndex()),2)));
     }
-  
+    else {
+      el.Setdz( -999.);
+      el.Setdxy( -999.);
+    }
+
+
     /// Need to add filling code
     electrons.push_back(el);
   }
@@ -117,6 +134,7 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
 
 std::vector<KJet> SNUTreeFiller::GetAllJets(){
 
+  m_logger << DEBUG << "Filling PFJets" << LQLogger::endmsg;
   std::vector<KJet> jets;
  
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
@@ -146,6 +164,7 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
 
 std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
   
+  m_logger << DEBUG << "Filling Cal Jets" << LQLogger::endmsg;
   std::vector<KJet> jets;
   for (UInt_t ijet=0; ijet< CaloJetEta->size(); ijet++) {
     KJet jet;
@@ -161,6 +180,7 @@ std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
 
 std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
+  m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
   std::vector<KMuon> muons;
   int iglobal=0;
   int ims=0;
@@ -200,7 +220,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     }
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
-    
+   
     muon.SetMuonVtxIndex(MuonVtxIndex->at(ilep));    
     
     /// Isolation
@@ -210,7 +230,6 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetIsolationEcalVeto(MuonEcalVetoIso->at(ilep));
     muon.SetIsolationHcalVeto(MuonHcalVetoIso->at(ilep));
 
-    //// what charge is this????
 
     /// PU correction
     muon.SetPileUp_R03(MuonPFIsoR03PU->at(ilep));
@@ -221,22 +240,24 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetTrackVx(MuonTrkVx->at(ilep));
     muon.SetTrackVy(MuonTrkVy->at(ilep));
     muon.SetTrackVz(MuonTrkVz->at(ilep));
-
     muon.SetVertexDistXY(MuonVtxDistXY->at(ilep));
 
-    if(VertexN != -999){
+    if(VertexN != -1){
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));
       muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(VertexN),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(VertexN),2)));
       muon.Setdxy_pat( MuonPrimaryVertexDXY->at(ilep));
       muon.Setdxyerr_pat( MuonPrimaryVertexDXYError->at(ilep));
     }
-    else{
-      cout << "WARNING creating vector of KMuon or KElectrons without setting up KEvent " << endl;
+    else if (VertexN == -999){
+      m_logger << WARNING << "WARNING creating vector of KMuon or KElectrons without setting up KEvent " << LQLogger::endmsg;
       snu::KEvent ev = SNUTreeFiller::GetEventInfo();
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(ev.VertexIndex()));
       muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(ev.VertexIndex()),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(ev.VertexIndex()),2)));      
     }
-    
+    else {
+      muon.Setdz(  -999.);
+      muon.Setdxy(  -999.);
+    }
     muon.SetD0( MuonTrkD0->at(ilep));
     muon.SetD0Error (MuonTrkD0Error->at(ilep));
     //// chi2
@@ -327,6 +348,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
 std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
 
+  m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;
   int itruth(0);
   for (UInt_t it=0; it< GenParticleEta->size(); it++, itruth++) {

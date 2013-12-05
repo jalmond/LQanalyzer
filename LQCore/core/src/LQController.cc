@@ -476,15 +476,16 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
 	/// This connects the correct entries for each active branch
-
+	m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	cycle->SetUpEvent(jentry, ev_weight);
 	/// 
-
+	m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
 	cycle->BeginEvent();   
 	/// executes analysis code
+	m_logger << DEBUG << "cycle->ExecuteEvent " << LQLogger::endmsg;
 	cycle->ExecuteEvents();
 	// cleans up any pointers etc.
-
+	m_logger << DEBUG << "cycle->ENDEvent " << LQLogger::endmsg;
 	cycle->EndEvent();
 
 	if( jentry == entry_4) {

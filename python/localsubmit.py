@@ -51,7 +51,6 @@ eff_lumi = float(options.efflumi)
 data_lumi = options.data_lumi
 Finaloutputdir = options.outputdir
 remove_workspace=options.remove
-print number_of_events_per_job
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
@@ -111,8 +110,10 @@ else:
 InputDir = inDS    
 print InputDir
 
+if not os.path.exists(sample):
+    os.system("mkdir " + sample)
     
-os.system("ls " + InputDir + "/*.root > inputlist.txt")
+os.system("ls " + InputDir + "/*.root > " + sample + "/inputlist.txt")
 isfile = os.path.isfile
 join = os.path.join
 
@@ -183,12 +184,15 @@ for i in range(1,number_of_cores+1):
 ####################################################
 ## Creat separate input lists/macros for each subjob
 ####################################################
-fr = open('inputlist.txt', 'r')
+fr = open(sample + '/inputlist.txt', 'r')
 
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
 fullfilelist = output + sample +".txt"
 fullfile = open(fullfilelist, 'w')
+test=0
 for line in fr:
+    test+=1
+
     fullfile.write(line)
     # Deal with remaining files
     if nfiles < files_torun :
@@ -234,8 +238,8 @@ for line in fr:
             fwrite.write(line)
             filesprocessed+=1
             nfiles_file+=1
-            
-        if nfiles == number_of_files :
+
+        if nfiles == number_of_files-1 :
             print "Completed " + str(nfiles) + "/" + str(number_of_files)        
             fwrite.close()
 
@@ -306,7 +310,7 @@ for i in range(1,number_of_cores+1):
         print "Running " + script + " . Log file --->  " + log
     elif i==2:
          print "......"
-os.system('rm inputlist.txt')
+#os.system('rm -r ' + sample)
 
 ###################################################
 ## wait and do merging
