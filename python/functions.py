@@ -7,10 +7,11 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     config+='    gSystem->ChangeDirectory(base_path.c_str());\n'  
     config+='    gROOT->ProcessLine(".L ChainMaker.C+g");\n'  
     config+='    gSystem->ChangeDirectory(run_path.c_str());\n'  
-    config+='    /// egamma data example list            \n'  
-    
-    config+='    TChain* chain = ChainMaker("' + input + '");\n' 
-    
+        
+
+    config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
+      
+    config+='    TChain* chain = ChainMaker("' + input + '");\n'     
     config+='   //### Load Libraries\n'
     config+='   gSystem->Load("libSKTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
@@ -25,8 +26,7 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     config+='   TString fullfilename = "' + fullinput + '";\n'
     config+='   LQController analysis;\n'
     config+='   analysis.SetJobName("' + sample + "_" + cycle+'");\n'
-    #config+='   analysis.SetInputList(TString(filename));\n'
-    #config+='  analysis.SetFullInputList(TString(filename));\n'
+    config+='   analysis.SetInputList(TString(filename));\n'
     config+='   analysis.SetTreeName("'+ tree +'");\n'
     config+='   analysis.SetCycleName("' + cycle + '");\n'
     config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
