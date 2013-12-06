@@ -34,7 +34,7 @@ def main():
 
   if not str(os.getenv("PWD")) == str(os.getenv("LQANALYZER_CYCLE_PATH")):
     print "Can only create cycle in LQCycle directory."
-    return 1
+    #return 1
   
   # Print some welcome message before doing anything else:
   print ">>"
