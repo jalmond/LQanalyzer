@@ -22,3 +22,5 @@ LQLib/SKTree.rootmap
 *.jpg
 # ignore emacs tmp files
 *~
+LQRun/HN*
+LQRun/per*
