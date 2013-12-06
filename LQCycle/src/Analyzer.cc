@@ -99,7 +99,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
-  m_logger << INFO << muonColl.size() << LQLogger::endmsg;
+
   if (muonColl.size() == 2) {      
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
