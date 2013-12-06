@@ -7,7 +7,7 @@
 
 // ROOT includes
 #include <TString.h>
-
+#include <string>
 
 SelectionFunctions::SelectionFunctions(){
 }
