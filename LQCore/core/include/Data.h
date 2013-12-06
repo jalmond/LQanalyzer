@@ -43,7 +43,7 @@ public :
    void     Show(Long64_t entry = -1); //remove if possible
    TTree* GetInputTree();
    void setBranchStatus(void);
-
+   void CheckCaching();
 
    /// Connect an input variable                                                
    template< typename T >

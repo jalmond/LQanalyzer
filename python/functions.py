@@ -1,17 +1,17 @@
 def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi):
 
     config='{\n'
-    config+='    string maindir = getenv("LQANALYZER_DIR");\n'  
-    config+='    string base_path = maindir + "/LQRun/base/";\n'  
-    config+='    string run_path = getenv("PWD");\n'  
-    config+='    gSystem->ChangeDirectory(base_path.c_str());\n'  
-    config+='    gROOT->ProcessLine(".L ChainMaker.C+g");\n'  
-    config+='    gSystem->ChangeDirectory(run_path.c_str());\n'  
+#    config+='    string maindir = getenv("LQANALYZER_DIR");\n'  
+ #   config+='    string base_path = maindir + "/LQRun/base/";\n'  
+ #   config+='    string run_path = getenv("PWD");\n'  
+ #   config+='    gSystem->ChangeDirectory(base_path.c_str());\n'  
+ #   config+='    gROOT->ProcessLine(".L ChainMaker.C+g");\n'  
+ #   config+='    gSystem->ChangeDirectory(run_path.c_str());\n'  
         
 
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
       
-    config+='    TChain* chain = ChainMaker("' + input + '");\n'     
+  #  config+='    TChain* chain = ChainMaker("' + input + '");\n'     
     config+='   //### Load Libraries\n'
     config+='   gSystem->Load("libSKTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
@@ -32,7 +32,7 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
     config+='   analysis.SetLogLevel("'+ log +'");\n'
     
-    config+='   analysis.SetInputChain(chain);\n' 
+    #config+='   analysis.SetInputChain(chain);\n' 
     if not eff_lumi == -1.:
         config+='   analysis.SetEffectiveLuminosity(' + str(eff_lumi)+');\n'
     if not tar_lumi ==-1.:    

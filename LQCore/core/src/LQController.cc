@@ -429,7 +429,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       GetMemoryConsumption("Accessed branch to specify isData");
     }
     
-    Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list
+    Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list    
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
@@ -476,6 +476,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
 	/// This connects the correct entries for each active branch
+
+	//	if( jentry%1000) cycle->CheckCaching();
 	m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	cycle->SetUpEvent(jentry, ev_weight);
 	/// 

@@ -23,6 +23,7 @@
 #include <TList.h>
 #include <TFriendElement.h>
 #include <TVirtualIndex.h>
+#include <TTreeCache.h>
 //#include <iostream>
 
 // STL include(s):                                                                                                      
@@ -43,11 +44,16 @@ TTree* Data::GetInputTree(){
   return fChain;
 }
 
+void Data::CheckCaching(){
+  m_logger << INFO << fChain->GetCurrentFile()->GetBytesRead() << " bytes with calls: " << fChain->GetCurrentFile()->GetReadCalls() << LQLogger::endmsg;
+
+}
+
 Int_t Data::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
-   return fChain->GetEntry(entry);
+   return fChain->GetEntry(entry,0);
 }
 
 Long64_t Data::LoadTree(Long64_t entry)
@@ -79,7 +85,7 @@ void Data::Init(TTree *tree)
   
   // Set branch addresses and branch pointers                                                                                                                                 
   if (!tree) return;
-
+  
   // do we need this at all now that we loop over the branches                                                                                                                
   // one-by-one?                                                                                                                                                              
 
@@ -108,17 +114,15 @@ void Data::Init(TTree *tree)
   fChain = tree;
   fCurrent = -1;
   fChain->SetMakeClass(1);
-
-  /// TESTS
-  //fChain->SetMaxVirtualSize(0);                                                                                                                                             
-  //Int_t cachesize=10000000;
-  //std::cout << "Cach size = " << fChain->GetCacheSize();
-  //std::getchar();
-  //fChain->SetCacheSize(cachesize);
   
+
+ /// TESTS
+  //fChain->SetMaxVirtualSize(100000000); 
+  Int_t cachesize=100000000;
+  fChain->SetCacheSize(cachesize);
   fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
   ConnectVariables(false); // -> false means not ALL branches are loaded
-  //fChain->StopCacheLearningPhase();
+  fChain->StopCacheLearningPhase();
   nentries = fChain->GetEntries();
   Notify();
 

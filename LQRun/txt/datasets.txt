@@ -25,7 +25,7 @@ ttW		845025.862	/data1/SNUData/MC/Background/TTW/
 ttZ		1205737.235	/data1/SNUData/MC/Background/TTZ/
 WWW		2684057.442	/data1/SNUData/MC/Background/WWW/
 DY10to50	3424.007	/data1/SNUData/MC/Background/DY10to50/
-DY50plus	8693.5		/data1/SNUData/MC/Background/DY150plus/
+DY50plus	8693.5		/data1/SNUData/MC/Background/DY50plus/
 ttbar		29588.256
 Wjets           1538.562  
 

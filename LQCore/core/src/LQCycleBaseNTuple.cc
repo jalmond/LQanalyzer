@@ -78,6 +78,7 @@ void LQCycleBaseNTuple::SetNSampleEvents(double nev){
   sample_entries = nev;
 }
 
+
 void LQCycleBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
   
   if(!m_outputFile){
