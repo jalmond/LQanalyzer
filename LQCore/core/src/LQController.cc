@@ -169,11 +169,11 @@ void LQController::SetDataPeriod(TString period){
 		   LQError::StopExecution );
   }
   
-  if( period == "A") effective_luminosity = 887.501;
-  if( period == "B") effective_luminosity = 4443.;
-  if( period == "C") effective_luminosity = 7114.;
-  if( period == "D") effective_luminosity = 7318.;
-  else effective_luminosity = (887.501 + 4443. + 7114. + 7318.);
+  if( period == "A") target_luminosity = 887.501;
+  if( period == "B") target_luminosity = 4443.;
+  if( period == "C") target_luminosity = 7114.;
+  if( period == "D") target_luminosity = 7318.;
+  else target_luminosity = (887.501 + 4443. + 7114. + 7318.);
   
 }
 

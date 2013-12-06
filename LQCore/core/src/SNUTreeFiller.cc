@@ -269,6 +269,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetValidStations( MuonStationMatches->at(ilep));
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
 
+    m_logger << DEBUG << "Muon Truth " << LQLogger::endmsg;
     /// truth info
     if(!isData){
 
@@ -276,10 +277,12 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
       muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
       muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
       
-      bool nomatched_muon(false);
+      bool matched_muon(false);
       int iMother(-999),iDaughter(-999), ipdgid(-999), truemu_index(-999);
       ///// ADD prompt definition for MC
       for(unsigned int g =0; g < GenParticleP->size(); g++){
+	m_logger << DEBUG <<  g << GenParticleStatus->size() << " " << GenParticlePdgId->size() << LQLogger::endmsg;
+	m_logger << DEBUG << GenParticleStatus->at(g) << " " << GenParticlePdgId->at(g) << LQLogger::endmsg;
 	if((GenParticleStatus->at(g) == 3) &&fabs(GenParticlePdgId->at(g))==13){
 	  if( muon.MuonMatchedGenParticleEta() != -999){
 	    if((fabs(muon.MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.2) && (fabs(muon.MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.2)) {
@@ -288,6 +291,8 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 		iDaughter = GenParticleNumDaught->at(g);
 		ipdgid =  GenParticlePdgId->at(g);
 		truemu_index = g;
+		matched_muon = true;
+
 	      }
 	    }
 	  }
@@ -296,16 +301,16 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	    iDaughter = -999;
 	    ipdgid = -999;
 	    truemu_index = -999;
-	    nomatched_muon = true;
 	  }
 	}      
       }/// end gen loop    
       
       int MotherPdgId(-999);
-      if(!nomatched_muon){
+      if(matched_muon){
 	MotherPdgId =  GenParticlePdgId->at(iMother);
       }
       
+      m_logger << DEBUG << "Muon Truth2 " << LQLogger::endmsg;
       if (isPrompt( MotherPdgId)){
 	if ( MuonCharge->at(ilep)*MotherPdgId  == -24 || MuonCharge->at(ilep)*MotherPdgId  == 15 )
 	  partType = KParticle::chargemisid;
