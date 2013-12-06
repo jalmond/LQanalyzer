@@ -31,9 +31,9 @@ loglevel="INFO"
 # skipevent
 # loglevel  /// VERBOSE/DEBUG/INFO/WARNING
 # nevents   /// set number of events to process
-#### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt
-declare -a periods=( "HNmumu100" "HNmumu200")
-#declare -a periods=( "HNmumu100")
+#### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt#
+#declare -a periods=( "HNmumu100" "HNmumu200")
+declare -a periods=( "HNmumu100")
 
 ############################################################
 ################# Do not change anything after this line

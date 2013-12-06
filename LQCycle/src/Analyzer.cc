@@ -81,6 +81,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetEta(2.4);
   eventbase->GetMuonSel()->SetRelIso(0.1);
   eventbase->GetMuonSel()->Selection(out_muons);
+  eventbase->GetMuonSel()->Selection(muonColl);
     
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetPt(20);
@@ -98,6 +99,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
+  m_logger << INFO << muonColl.size() << LQLogger::endmsg;
   if (muonColl.size() == 2) {      
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      

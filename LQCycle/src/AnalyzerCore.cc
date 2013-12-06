@@ -214,6 +214,7 @@ bool AnalyzerCore::PassBasicEventCuts(){
 
 void AnalyzerCore::FillHist(TString histname, float value, float w ){
 
+  m_logger << INFO << GetHist(histname) << LQLogger::endmsg;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  /// Plots Z peak                                   
   else m_logger << INFO << histname << " was NOT found" << LQLogger::endmsg;
   return;
