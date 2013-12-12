@@ -7,9 +7,15 @@
 #ifndef DATA_cc
 #define DATA_cc
 
+#include "KMuon.h"
+#include "KElectron.h"
+#include "KJet.h"
+#include "KEvent.h"
+#include "KTrigger.h"
 
 // Local include(s):
 #include "Data.h"
+#include "SPointer.h"
 
 // System include(s):  
 #include <string.h>
@@ -29,7 +35,8 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() 
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0)
+  
 {
 
 }
@@ -49,9 +56,33 @@ void Data::CheckCaching(){
 
 }
 
+
+void Data::GetEvent(Long64_t entry) throw( LQError )
+{
+  
+
+  m_logger << DEBUG <<  "Number of branches =  " << m_inputbranches.size() << LQLogger::endmsg;
+
+  if (!fChain)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );
+  m_logger << DEBUG <<  fChain << LQLogger::endmsg;
+  fChain->LoadTree( entry );
+
+  m_logger << DEBUG <<  fChain << LQLogger::endmsg;
+  // Load the current entry for all the regular input variables:                              
+  for( std::vector< TBranch* >::const_iterator it = m_inputbranches.begin();
+       it != m_inputbranches.end(); ++it ) {
+    m_logger << DEBUG <<  (*it) << LQLogger::endmsg;
+    int nbytes =  ( *it )->GetEntry( entry,0);
+    if(nbytes==0)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );
+  }
+  
+  return;
+  
+}
+
 Int_t Data::GetEntry(Long64_t entry)
 {
-// Read contents of entry.
+  // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry,0);
 }
@@ -83,6 +114,8 @@ void Data::Init(TTree *tree)
 
   Reset();
   
+  m_inputbranches.clear();
+  
   // Set branch addresses and branch pointers                                                                                                                                 
   if (!tree) return;
   
@@ -112,16 +145,17 @@ void Data::Init(TTree *tree)
   }
 
   fChain = tree;
+  m_logger << INFO << fChain->GetEntries() <<  " " << LQinput<< LQLogger::endmsg;
   fCurrent = -1;
-  fChain->SetMakeClass(1);
+  if(LQinput)fChain->SetMakeClass(1);
   
-
- /// TESTS
+  /// TESTS
   //fChain->SetMaxVirtualSize(100000000); 
   Int_t cachesize=100000000;
   fChain->SetCacheSize(cachesize);
   fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
   ConnectVariables(false); // -> false means not ALL branches are loaded
+  
   fChain->StopCacheLearningPhase();
   nentries = fChain->GetEntries();
   Notify();
@@ -143,6 +177,7 @@ void Data::Reset(){
   HLTInsideDatasetTriggerNames = 0;
   HLTOutsideDatasetTriggerNames = 0;
   HLTFilterName = 0;
+  passHcalLaserEventFilter=0;
   ElectronGsfCtfCharge = 0;
   ElectronGsfCtfScPixCharge = 0;
   ElectronGsfScPixCharge = 0;
@@ -783,22 +818,50 @@ void Data::Reset(){
 
 }
 
+void Data::SetLQNtupleInputType(bool lq){
+  LQinput= lq;
+}
+
+
+
 void Data::ConnectVariables(bool setall){
 
   /// set all controlls which cranches are set 
   //#####   EVENT branches
-  ConnectEvent();
-  ConnectMuons();
-  ConnectMET();
-  ConnectElectrons();
-  ConnectPFJets();
-  ConnectCaloJets();
-  //ConnectPhotons();
-  ConnectTaus();
-  ConnectTruth();
-  ConnectTrigger();
-  
-  if(setall) ConnectAllBranches();
+
+  if(!LQinput){
+    k_inputmuons=0;
+    k_inputelectrons=0;
+    k_inputjets=0;
+    k_inputevent=0;
+    k_inputtrigger=0;
+    b_inputmuons=0;
+    b_inputelectrons=0;
+    b_inputjets=0;
+    b_inputevent=0;
+    b_inputtrigger=0;
+    
+    ConnectVariable("KJets", k_inputjets,b_inputjets );
+    ConnectVariable("KEvent", k_inputevent, b_inputevent);
+    ConnectVariable("KMuons", k_inputmuons, b_inputmuons);
+    ConnectVariable("KElectrons", k_inputelectrons, b_inputelectrons);
+    ConnectVariable("KTrigger", k_inputtrigger, b_inputtrigger);
+
+  }  
+  else{
+    ConnectEvent();
+    ConnectMuons();
+    ConnectMET();
+    ConnectElectrons();
+    ConnectPFJets();
+    ConnectCaloJets();
+    //ConnectPhotons();
+    ConnectTaus();
+    ConnectTruth();
+    ConnectTrigger();
+    
+    if(setall) ConnectAllBranches();
+  }
   return;
 }
 void Data::ConnectEvent(){
@@ -829,18 +892,17 @@ void Data::ConnectEvent(){
   ConnectVariable("VertexZErr", VertexZErr, b_VertexZErr);
   ConnectVariable("PileUpInteractionsTrue", PileUpInteractionsTrue, b_PileUpInteractionsTrue);
 
-  return;
-}
+
+  return;}
 
 
 void Data::ConnectTrigger(){
   
   //#####   Trigger branches
-  ConnectVariable("HLTInsideDatasetTriggerNames", HLTInsideDatasetTriggerNames, b_HLTInsideDatasetTriggerNames);     
+  ConnectVariable("HLTInsideDatasetTriggerNames", HLTInsideDatasetTriggerNames, b_HLTInsideDatasetTriggerNames);
   ConnectVariable("HLTInsideDatasetTriggerDecisions", HLTInsideDatasetTriggerDecisions, b_HLTInsideDatasetTriggerDecisions);
   ConnectVariable("HLTInsideDatasetTriggerPrescales", HLTInsideDatasetTriggerPrescales, b_HLTInsideDatasetTriggerPrescales);
-  ConnectVariable("HLTOutsideDatasetTriggerPrescales", HLTOutsideDatasetTriggerPrescales, b_HLTOutsideDatasetTriggerPrescales);
-  
+  ConnectVariable("HLTOutsideDatasetTriggerPrescales", HLTOutsideDatasetTriggerPrescales, b_HLTOutsideDatasetTriggerPrescales);  
   return;
 }
 
@@ -853,10 +915,7 @@ void Data::ConnectTaus(){
   ConnectVariable("HPSTauEta", HPSTauEta, b_HPSTauEta);
   ConnectVariable("HPSTauCharge", HPSTauCharge, b_HPSTauCharge);
   ConnectVariable("HPSTauIsPFTau", HPSTauIsPFTau, b_HPSTauIsPFTau);
-
-
-  return;
-}
+  return;}
 
 void Data::ConnectMuons(){
   
@@ -936,8 +995,10 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonTrkHitsTrackerOnly", MuonTrkHitsTrackerOnly, b_MuonTrkHitsTrackerOnly);
   ConnectVariable("MuonTrkPixelHits", MuonTrkPixelHits, b_MuonTrkPixelHits);
   ConnectVariable("MuonVtxIndex", MuonVtxIndex, b_MuonVtxIndex);
- 
- /// New variables 2013/12/02
+
+
+
+  /// New variables 2013/12/02
   ConnectVariable("MuonGlobalE", MuonGlobalE, b_MuonGlobalE);
   ConnectVariable("MuonGlobalEta", MuonGlobalEta, b_MuonGlobalEta);
   ConnectVariable("MuonGlobalPhi", MuonGlobalPhi, b_MuonGlobalPhi);
@@ -950,8 +1011,8 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonMuonSpecCharge",MuonMuonSpecCharge, b_MuonMuonSpecCharge);
   ConnectVariable("MuonTrackerCharge", MuonTrackerCharge, b_MuonTrackerCharge);
 
-  return;
-}
+
+  return;}
 
 void Data::ConnectElectrons(){
 
@@ -1019,7 +1080,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("ElectronPassId", ElectronPassId, b_ElectronPassId);
   ConnectVariable("ElectronPassIsoPAT", ElectronPassIsoPAT, b_ElectronPassIsoPAT);
   ConnectVariable("ElectronVtxIndex", ElectronVtxIndex, b_ElectronVtxIndex);
-  
+
   
   /// NEW
   /*
@@ -1077,6 +1138,7 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetPassLooseID", PFJetPassLooseID, b_PFJetPassLooseID);
   ConnectVariable("PFJetPassTightID", PFJetPassTightID, b_PFJetPassTightID);
   ConnectVariable("PFJetPhotonMultiplicity", PFJetPhotonMultiplicity, b_PFJetPhotonMultiplicity);
+
   
   // New Variables 2013/12/02
   ConnectVariable("PFJetScaledDownEnergy",PFJetScaledDownEnergy,b_PFJetScaledDownEnergy);
@@ -1087,6 +1149,7 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetSmearedDownPt",PFJetSmearedDownPt,b_PFJetSmearedDownPt);
   ConnectVariable("PFJetSmearedUpEnergy",PFJetSmearedUpEnergy,b_PFJetSmearedUpEnergy);
   ConnectVariable("PFJetSmearedUpPt",PFJetSmearedUpPt,b_PFJetSmearedUpPt);
+
   
 
   return;
@@ -1151,6 +1214,7 @@ void Data::ConnectMET(){
   ConnectVariable("PFMETType1Cor", PFMETType1Cor, b_PFMETType1Cor);
   ConnectVariable("PFSumETType1Cor", PFSumETType1Cor, b_PFSumETType1Cor);
 
+
   /// New variables 2013/12/02
   ConnectVariable("PFMETType01XYCorElectronEnDown",PFMETType01XYCorElectronEnDown,b_PFMETType01XYCorElectronEnDown);
   ConnectVariable("PFMETType01XYCorElectronEnUp",PFMETType01XYCorElectronEnUp,b_PFMETType01XYCorElectronEnUp);
@@ -1162,10 +1226,8 @@ void Data::ConnectMET(){
   ConnectVariable("PFMETType01XYCorMuonEnUp",PFMETType01XYCorMuonEnUp,b_PFMETType01XYCorMuonEnUp);
   ConnectVariable("PFMETType01XYCorUnclusteredDown",PFMETType01XYCorUnclusteredDown,b_PFMETType01XYCorUnclusteredDown);
   ConnectVariable("PFMETType01XYCorUnclusteredUp",PFMETType01XYCorUnclusteredUp,b_PFMETType01XYCorUnclusteredUp);
-  
 
   return;
-
 }
 
 void Data::ConnectTruth(){
@@ -1185,7 +1247,6 @@ void Data::ConnectTruth(){
   ConnectVariable("GenParticleStatus", GenParticleStatus, b_GenParticleStatus);
   ConnectVariable("GenParticleTauDecayMode", GenParticleTauDecayMode, b_GenParticleTauDecayMode);
   
-  
   return;
 }
 
@@ -1195,424 +1256,420 @@ void Data::ConnectAllBranches(){
   ///#############################################################################                                                                                              
   //   These are variabels not currenly set: or read: BUT are in ntuples                                                                                                        
   //##############################################################################    
-  
+  /*
   /// Trigger
-  ConnectVariable("HLTKey", HLTKey, b_HLTKey);
-  ConnectVariable("HLTOutsideDatasetTriggerNames", HLTOutsideDatasetTriggerNames, b_HLTOutsideDatasetTriggerNames);
-  ConnectVariable("HLTFilterName", HLTFilterName, b_HLTFilterName);
+  ConnectVariable("HLTKey", HLTKey);
+  ConnectVariable("HLTOutsideDatasetTriggerNames", HLTOutsideDatasetTriggerNames);
+  ConnectVariable("HLTFilterName", HLTFilterName);
   
   /// Event
-  ConnectVariable("isBPTX0", isBPTX0, b_isBPTX0);  
-  ConnectVariable("isBSCBeamHalo", isBSCBeamHalo, b_isBSCBeamHalo);
-  ConnectVariable("isBSCMinBias", isBSCMinBias, b_isBSCMinBias);
-  ConnectVariable("isBeamScraping", isBeamScraping, b_isBeamScraping);
-  ConnectVariable("passBeamHaloFilterTight", passBeamHaloFilterTight, b_passBeamHaloFilterTight);
-  ConnectVariable("passCaloBoundaryDRFilter", passCaloBoundaryDRFilter, b_passCaloBoundaryDRFilter);
-  ConnectVariable("passEcalMaskedCellDRFilter", passEcalMaskedCellDRFilter, b_passEcalMaskedCellDRFilter);
-  ConnectVariable("passLogErrorTooManyClusters", passLogErrorTooManyClusters, b_passLogErrorTooManyClusters);
-  ConnectVariable("passManyStripClus53X", passManyStripClus53X, b_passManyStripClus53X);
-  ConnectVariable("passTooManyStripClus53X", passTooManyStripClus53X, b_passTooManyStripClus53X);
-  ConnectVariable("passTrackingFailureFilter", passTrackingFailureFilter, b_passTrackingFailureFilter);
-  ConnectVariable("hasVeryForwardPFMuon", hasVeryForwardPFMuon, b_hasVeryForwardPFMuon);
-  ConnectVariable("hasJetWithBadUnc", hasJetWithBadUnc, b_hasJetWithBadUnc);
+  ConnectVariable("isBPTX0", isBPTX0);
+  ConnectVariable("isBSCBeamHalo", isBSCBeamHalo);
+  ConnectVariable("isBSCMinBias", isBSCMinBias);
+  ConnectVariable("isBeamScraping", isBeamScraping);
+  ConnectVariable("passBeamHaloFilterTight", passBeamHaloFilterTight);
+  ConnectVariable("passCaloBoundaryDRFilter", passCaloBoundaryDRFilter);
+  ConnectVariable("passEcalMaskedCellDRFilter", passEcalMaskedCellDRFilter);
+  ConnectVariable("passLogErrorTooManyClusters", passLogErrorTooManyClusters);
+  ConnectVariable("passManyStripClus53X", passManyStripClus53X);
+  ConnectVariable("passTooManyStripClus53X", passTooManyStripClus53X);
+  ConnectVariable("passTrackingFailureFilter", passTrackingFailureFilter);
+  ConnectVariable("hasVeryForwardPFMuon", hasVeryForwardPFMuon);
+  ConnectVariable("hasJetWithBadUnc", hasJetWithBadUnc);
 
       
   /// Others
-  ConnectVariable("MuonHLTSingleIsoMuonMatched", MuonHLTSingleIsoMuonMatched, b_MuonHLTSingleIsoMuonMatched);
-  ConnectVariable("MuonHLTSingleMuonMatched", MuonHLTSingleMuonMatched, b_MuonHLTSingleMuonMatched);
-  ConnectVariable("PhotonHasMatchedConvPhot", PhotonHasMatchedConvPhot, b_PhotonHasMatchedConvPhot);
-  ConnectVariable("PhotonHasMatchedPromptEle", PhotonHasMatchedPromptEle, b_PhotonHasMatchedPromptEle);
-  ConnectVariable("PhotonHasPixelSeed", PhotonHasPixelSeed, b_PhotonHasPixelSeed);
-  ConnectVariable("PhotonIsEBEEGap", PhotonIsEBEEGap, b_PhotonIsEBEEGap);
-  ConnectVariable("PhotonIsEBGap", PhotonIsEBGap, b_PhotonIsEBGap);
-  ConnectVariable("PhotonIsEEGap", PhotonIsEEGap, b_PhotonIsEEGap);
-  ConnectVariable("HLTOutsideDatasetTriggerDecisions", HLTOutsideDatasetTriggerDecisions, b_HLTOutsideDatasetTriggerDecisions);     
-  ConnectVariable("rhoForHEEP", rhoForHEEP, b_rhoForHEEP);
-  ConnectVariable("rhoJetsCCPU", rhoJetsCCPU, b_rhoJetsCCPU);
-  ConnectVariable("rhoJetsCN", rhoJetsCN, b_rhoJetsCN);
-  ConnectVariable("rhoJetsCNT", rhoJetsCNT, b_rhoJetsCNT);
-  ConnectVariable("time", time, b_time);
-  ConnectVariable("PtHat", PtHat, b_PtHat);
+  ConnectVariable("MuonHLTSingleIsoMuonMatched", MuonHLTSingleIsoMuonMatched);
+  ConnectVariable("MuonHLTSingleMuonMatched", MuonHLTSingleMuonMatched);
+  ConnectVariable("PhotonHasMatchedConvPhot", PhotonHasMatchedConvPhot);
+  ConnectVariable("PhotonHasMatchedPromptEle", PhotonHasMatchedPromptEle);
+  ConnectVariable("PhotonHasPixelSeed", PhotonHasPixelSeed);
+  ConnectVariable("PhotonIsEBEEGap", PhotonIsEBEEGap);
+  ConnectVariable("PhotonIsEBGap", PhotonIsEBGap);
+  ConnectVariable("PhotonIsEEGap", PhotonIsEEGap);
+  ConnectVariable("HLTOutsideDatasetTriggerDecisions", HLTOutsideDatasetTriggerDecisions);
+  ConnectVariable("rhoForHEEP", rhoForHEEP);
+  ConnectVariable("rhoJetsCCPU", rhoJetsCCPU);
+  ConnectVariable("rhoJetsCN", rhoJetsCN);
+  ConnectVariable("rhoJetsCNT", rhoJetsCNT);
+  ConnectVariable("time", time);
+  ConnectVariable("PtHat", PtHat);
 
 
   /// Electron                                                                                                                                                                  
-  ConnectVariable("ElectronHLTDoubleEleMatched", ElectronHLTDoubleEleMatched, b_ElectronHLTDoubleEleMatched);
-  ConnectVariable("ElectronHLTSingleEleMatched", ElectronHLTSingleEleMatched, b_ElectronHLTSingleEleMatched);
-  ConnectVariable("ElectronHLTSingleEleWP80Matched", ElectronHLTSingleEleWP80Matched, b_ElectronHLTSingleEleWP80Matched);
-  ConnectVariable("ElectronFbrem", ElectronFbrem, b_ElectronFbrem);
-  ConnectVariable("ElectronHLTDoubleEleMatchEta", ElectronHLTDoubleEleMatchEta, b_ElectronHLTDoubleEleMatchEta);
-  ConnectVariable("ElectronHLTDoubleEleMatchPhi", ElectronHLTDoubleEleMatchPhi, b_ElectronHLTDoubleEleMatchPhi);
-  ConnectVariable("ElectronHLTDoubleEleMatchPt", ElectronHLTDoubleEleMatchPt, b_ElectronHLTDoubleEleMatchPt);
-  ConnectVariable("ElectronHLTSingleEleMatchEta", ElectronHLTSingleEleMatchEta, b_ElectronHLTSingleEleMatchEta);
-  ConnectVariable("ElectronHLTSingleEleMatchPhi", ElectronHLTSingleEleMatchPhi, b_ElectronHLTSingleEleMatchPhi);
-  ConnectVariable("ElectronHLTSingleEleMatchPt", ElectronHLTSingleEleMatchPt, b_ElectronHLTSingleEleMatchPt);
-  ConnectVariable("ElectronHLTSingleEleWP80MatchEta", ElectronHLTSingleEleWP80MatchEta, b_ElectronHLTSingleEleWP80MatchEta);
-  ConnectVariable("ElectronHLTSingleEleWP80MatchPhi", ElectronHLTSingleEleWP80MatchPhi, b_ElectronHLTSingleEleWP80MatchPhi);
-  ConnectVariable("ElectronHLTSingleEleWP80MatchPt", ElectronHLTSingleEleWP80MatchPt, b_ElectronHLTSingleEleWP80MatchPt);
-  ConnectVariable("ElectronHcalIsoD1DR03", ElectronHcalIsoD1DR03, b_ElectronHcalIsoD1DR03);
-  ConnectVariable("ElectronHcalIsoD2DR03", ElectronHcalIsoD2DR03, b_ElectronHcalIsoD2DR03);
-  ConnectVariable("ElectronHcalIsoDR03", ElectronHcalIsoDR03, b_ElectronHcalIsoDR03);
-  ConnectVariable("ElectronHcalIsoDR03FullCone", ElectronHcalIsoDR03FullCone, b_ElectronHcalIsoDR03FullCone);
-  ConnectVariable("ElectronHcalIsoPAT", ElectronHcalIsoPAT, b_ElectronHcalIsoPAT);
-  ConnectVariable("ElectronLeadVtxDistXY", ElectronLeadVtxDistXY, b_ElectronLeadVtxDistXY);
-  ConnectVariable("ElectronLeadVtxDistZ", ElectronLeadVtxDistZ, b_ElectronLeadVtxDistZ);
-  ConnectVariable("ElectronMatchedGenParticleEta", ElectronMatchedGenParticleEta, b_ElectronMatchedGenParticleEta);
-  ConnectVariable("ElectronMatchedGenParticlePhi", ElectronMatchedGenParticlePhi, b_ElectronMatchedGenParticlePhi);
-  ConnectVariable("ElectronMatchedGenParticlePt", ElectronMatchedGenParticlePt, b_ElectronMatchedGenParticlePt);
-  ConnectVariable("ElectronPtHeep", ElectronPtHeep, b_ElectronPtHeep);
-  ConnectVariable("ElectronRelIsoPAT", ElectronRelIsoPAT, b_ElectronRelIsoPAT);
-  ConnectVariable("ElectronTrkIsoDR03", ElectronTrkIsoDR03, b_ElectronTrkIsoDR03);
-  ConnectVariable("ElectronTrkIsoPAT", ElectronTrkIsoPAT, b_ElectronTrkIsoPAT);
+  ConnectVariable("ElectronHLTDoubleEleMatched", ElectronHLTDoubleEleMatched);
+  ConnectVariable("ElectronHLTSingleEleMatched", ElectronHLTSingleEleMatched);
+  ConnectVariable("ElectronHLTSingleEleWP80Matched", ElectronHLTSingleEleWP80Matched);
+  ConnectVariable("ElectronFbrem", ElectronFbrem);
+  ConnectVariable("ElectronHLTDoubleEleMatchEta", ElectronHLTDoubleEleMatchEta);
+  ConnectVariable("ElectronHLTDoubleEleMatchPhi", ElectronHLTDoubleEleMatchPhi);
+  ConnectVariable("ElectronHLTDoubleEleMatchPt", ElectronHLTDoubleEleMatchPt);
+  ConnectVariable("ElectronHLTSingleEleMatchEta", ElectronHLTSingleEleMatchEta);
+  ConnectVariable("ElectronHLTSingleEleMatchPhi", ElectronHLTSingleEleMatchPhi);
+  ConnectVariable("ElectronHLTSingleEleMatchPt", ElectronHLTSingleEleMatchPt);
+  ConnectVariable("ElectronHLTSingleEleWP80MatchEta", ElectronHLTSingleEleWP80MatchEta);
+  ConnectVariable("ElectronHLTSingleEleWP80MatchPhi", ElectronHLTSingleEleWP80MatchPhi);
+  ConnectVariable("ElectronHLTSingleEleWP80MatchPt", ElectronHLTSingleEleWP80MatchPt);
+  ConnectVariable("ElectronHcalIsoD1DR03", ElectronHcalIsoD1DR03);
+  ConnectVariable("ElectronHcalIsoD2DR03", ElectronHcalIsoD2DR03);
+  ConnectVariable("ElectronHcalIsoDR03", ElectronHcalIsoDR03);
+  ConnectVariable("ElectronHcalIsoDR03FullCone", ElectronHcalIsoDR03FullCone);
+  ConnectVariable("ElectronHcalIsoPAT", ElectronHcalIsoPAT);
+  ConnectVariable("ElectronLeadVtxDistXY", ElectronLeadVtxDistXY);
+  ConnectVariable("ElectronLeadVtxDistZ", ElectronLeadVtxDistZ);
+  ConnectVariable("ElectronMatchedGenParticleEta", ElectronMatchedGenParticleEta);
+  ConnectVariable("ElectronMatchedGenParticlePhi", ElectronMatchedGenParticlePhi);
+  ConnectVariable("ElectronMatchedGenParticlePt", ElectronMatchedGenParticlePt);
+  ConnectVariable("ElectronPtHeep", ElectronPtHeep);
+  ConnectVariable("ElectronRelIsoPAT", ElectronRelIsoPAT);
+  ConnectVariable("ElectronTrkIsoDR03", ElectronTrkIsoDR03);
+  ConnectVariable("ElectronTrkIsoPAT", ElectronTrkIsoPAT);
   
   // Truth
-  ConnectVariable("GenWElectronEnergy", GenWElectronEnergy, b_GenWElectronEnergy);
-  ConnectVariable("GenWElectronEta", GenWElectronEta, b_GenWElectronEta);
-  ConnectVariable("GenWElectronP", GenWElectronP, b_GenWElectronP);
-  ConnectVariable("GenWElectronPhi", GenWElectronPhi, b_GenWElectronPhi);
-  ConnectVariable("GenWElectronPt", GenWElectronPt, b_GenWElectronPt);
-  ConnectVariable("GenWElectronPx", GenWElectronPx, b_GenWElectronPx);
-  ConnectVariable("GenWElectronPy", GenWElectronPy, b_GenWElectronPy);
-  ConnectVariable("GenWElectronPz", GenWElectronPz, b_GenWElectronPz);
-  ConnectVariable("GenWElectronTauVisibleEta", GenWElectronTauVisibleEta, b_GenWElectronTauVisibleEta);
-  ConnectVariable("GenWElectronTauVisiblePhi", GenWElectronTauVisiblePhi, b_GenWElectronTauVisiblePhi);
-  ConnectVariable("GenWElectronTauVisiblePt", GenWElectronTauVisiblePt, b_GenWElectronTauVisiblePt);
-  ConnectVariable("GenWElectronVX", GenWElectronVX, b_GenWElectronVX);
-  ConnectVariable("GenWElectronVY", GenWElectronVY, b_GenWElectronVY);
-  ConnectVariable("GenWElectronVZ", GenWElectronVZ, b_GenWElectronVZ);
-  ConnectVariable("GenZElectronEnergy", GenZElectronEnergy, b_GenZElectronEnergy);
-  ConnectVariable("GenZElectronEta", GenZElectronEta, b_GenZElectronEta);
-  ConnectVariable("GenZElectronP", GenZElectronP, b_GenZElectronP);
-  ConnectVariable("GenZElectronPhi", GenZElectronPhi, b_GenZElectronPhi);
-  ConnectVariable("GenZElectronPt", GenZElectronPt, b_GenZElectronPt);
-  ConnectVariable("GenZElectronPx", GenZElectronPx, b_GenZElectronPx);
-  ConnectVariable("GenZElectronPy", GenZElectronPy, b_GenZElectronPy);
-  ConnectVariable("GenZElectronPz", GenZElectronPz, b_GenZElectronPz);
-  ConnectVariable("GenZElectronTauVisibleEta", GenZElectronTauVisibleEta, b_GenZElectronTauVisibleEta);
-  ConnectVariable("GenZElectronTauVisiblePhi", GenZElectronTauVisiblePhi, b_GenZElectronTauVisiblePhi);
-  ConnectVariable("GenZElectronTauVisiblePt", GenZElectronTauVisiblePt, b_GenZElectronTauVisiblePt);
-  ConnectVariable("GenZElectronVX", GenZElectronVX, b_GenZElectronVX);
-  ConnectVariable("GenZElectronVY", GenZElectronVY, b_GenZElectronVY);
-  ConnectVariable("GenZElectronVZ", GenZElectronVZ, b_GenZElectronVZ);
-  ConnectVariable("PDFCTEQWeights", PDFCTEQWeights, b_PDFCTEQWeights);
-  ConnectVariable("PDFMSTWWeights", PDFMSTWWeights, b_PDFMSTWWeights);
-  ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights, b_PDFNNPDFWeights);
-  ConnectVariable("GenJetEMF", GenJetEMF, b_GenJetEMF);
-  ConnectVariable("GenJetEnergy", GenJetEnergy, b_GenJetEnergy);
-  ConnectVariable("GenJetEta", GenJetEta, b_GenJetEta);
-  ConnectVariable("GenJetHADF", GenJetHADF, b_GenJetHADF);
-  ConnectVariable("GenJetP", GenJetP, b_GenJetP);
-  ConnectVariable("GenJetPhi", GenJetPhi, b_GenJetPhi);
-  ConnectVariable("GenJetPt", GenJetPt, b_GenJetPt);
-  ConnectVariable("GenMETCalo", GenMETCalo, b_GenMETCalo);
-  ConnectVariable("GenMETPhiCalo", GenMETPhiCalo, b_GenMETPhiCalo);
-  ConnectVariable("GenSumETCalo", GenSumETCalo, b_GenSumETCalo);
-  ConnectVariable("GenMETPhiTrue", GenMETPhiTrue, b_GenMETPhiTrue);
-  ConnectVariable("GenMETTrue", GenMETTrue, b_GenMETTrue);
-  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
-  ConnectVariable("GenWMuEnergy", GenWMuEnergy, b_GenWMuEnergy);
-  ConnectVariable("GenWMuEta", GenWMuEta, b_GenWMuEta);
-  ConnectVariable("GenWMuP", GenWMuP, b_GenWMuP);
-  ConnectVariable("GenWMuPhi", GenWMuPhi, b_GenWMuPhi);
-  ConnectVariable("GenWMuPt", GenWMuPt, b_GenWMuPt);
-  ConnectVariable("GenWMuPx", GenWMuPx, b_GenWMuPx);
-  ConnectVariable("GenWMuPy", GenWMuPy, b_GenWMuPy);
-  ConnectVariable("GenWMuPz", GenWMuPz, b_GenWMuPz);
-  ConnectVariable("GenWMuTauVisibleEta", GenWMuTauVisibleEta, b_GenWMuTauVisibleEta);
-  ConnectVariable("GenWMuTauVisiblePhi", GenWMuTauVisiblePhi, b_GenWMuTauVisiblePhi);
-  ConnectVariable("GenWMuTauVisiblePt", GenWMuTauVisiblePt, b_GenWMuTauVisiblePt);
-  ConnectVariable("GenWMuVX", GenWMuVX, b_GenWMuVX);
-  ConnectVariable("GenWMuVY", GenWMuVY, b_GenWMuVY);
-  ConnectVariable("GenWMuVZ", GenWMuVZ, b_GenWMuVZ);
-  ConnectVariable("GenZMuEnergy", GenZMuEnergy, b_GenZMuEnergy);
-  ConnectVariable("GenZMuEta", GenZMuEta, b_GenZMuEta);
-  ConnectVariable("GenZMuP", GenZMuP, b_GenZMuP);
-  ConnectVariable("GenZMuPhi", GenZMuPhi, b_GenZMuPhi);
-  ConnectVariable("GenZMuPt", GenZMuPt, b_GenZMuPt);
-  ConnectVariable("GenZMuPx", GenZMuPx, b_GenZMuPx);
-  ConnectVariable("GenZMuPy", GenZMuPy, b_GenZMuPy);
-  ConnectVariable("GenZMuPz", GenZMuPz, b_GenZMuPz);
-  ConnectVariable("GenZMuTauVisibleEta", GenZMuTauVisibleEta, b_GenZMuTauVisibleEta);
-  ConnectVariable("GenZMuTauVisiblePhi", GenZMuTauVisiblePhi, b_GenZMuTauVisiblePhi);
-  ConnectVariable("GenZMuTauVisiblePt", GenZMuTauVisiblePt, b_GenZMuTauVisiblePt);
-  ConnectVariable("GenZMuVX", GenZMuVX, b_GenZMuVX);
-  ConnectVariable("GenZMuVY", GenZMuVY, b_GenZMuVY);
-  ConnectVariable("GenZMuVZ", GenZMuVZ, b_GenZMuVZ);
-  ConnectVariable("GenParticleTauVisibleEta", GenParticleTauVisibleEta, b_GenParticleTauVisibleEta);
-  ConnectVariable("GenParticleTauVisiblePhi", GenParticleTauVisiblePhi, b_GenParticleTauVisiblePhi);
-  ConnectVariable("GenParticleTauVisiblePt", GenParticleTauVisiblePt, b_GenParticleTauVisiblePt);
-  ConnectVariable("GenParticleVX", GenParticleVX, b_GenParticleVX);
-  ConnectVariable("GenParticleVY", GenParticleVY, b_GenParticleVY);
-  ConnectVariable("GenParticleVZ", GenParticleVZ, b_GenParticleVZ);
-  ConnectVariable("GenWTauEnergy", GenWTauEnergy, b_GenWTauEnergy);
-  ConnectVariable("GenWTauEta", GenWTauEta, b_GenWTauEta);
-  ConnectVariable("GenWTauP", GenWTauP, b_GenWTauP);
-  ConnectVariable("GenWTauPhi", GenWTauPhi, b_GenWTauPhi);
-  ConnectVariable("GenWTauPt", GenWTauPt, b_GenWTauPt);
-  ConnectVariable("GenWTauPx", GenWTauPx, b_GenWTauPx);
-  ConnectVariable("GenWTauPy", GenWTauPy, b_GenWTauPy);
-  ConnectVariable("GenWTauPz", GenWTauPz, b_GenWTauPz);
-  ConnectVariable("GenWTauTauVisibleEta", GenWTauTauVisibleEta, b_GenWTauTauVisibleEta);
-  ConnectVariable("GenWTauTauVisiblePhi", GenWTauTauVisiblePhi, b_GenWTauTauVisiblePhi);
-  ConnectVariable("GenWTauTauVisiblePt", GenWTauTauVisiblePt, b_GenWTauTauVisiblePt);
-  ConnectVariable("GenWTauVX", GenWTauVX, b_GenWTauVX);
-  ConnectVariable("GenWTauVY", GenWTauVY, b_GenWTauVY);
-  ConnectVariable("GenWTauVZ", GenWTauVZ, b_GenWTauVZ);
-  ConnectVariable("GenZTauEnergy", GenZTauEnergy, b_GenZTauEnergy);
-  ConnectVariable("GenZTauEta", GenZTauEta, b_GenZTauEta);
-  ConnectVariable("GenZTauP", GenZTauP, b_GenZTauP);
-  ConnectVariable("GenZTauPhi", GenZTauPhi, b_GenZTauPhi);
-  ConnectVariable("GenZTauPt", GenZTauPt, b_GenZTauPt);
-  ConnectVariable("GenZTauPx", GenZTauPx, b_GenZTauPx);
-  ConnectVariable("GenZTauPy", GenZTauPy, b_GenZTauPy);
-  ConnectVariable("GenZTauPz", GenZTauPz, b_GenZTauPz);
-  ConnectVariable("GenZTauTauVisibleEta", GenZTauTauVisibleEta, b_GenZTauTauVisibleEta);
-  ConnectVariable("GenZTauTauVisiblePhi", GenZTauTauVisiblePhi, b_GenZTauTauVisiblePhi);
-  ConnectVariable("GenZTauTauVisiblePt", GenZTauTauVisiblePt, b_GenZTauTauVisiblePt);
-  ConnectVariable("GenZTauVX", GenZTauVX, b_GenZTauVX);
-  ConnectVariable("GenZTauVY", GenZTauVY, b_GenZTauVY);
-  ConnectVariable("GenZTauVZ", GenZTauVZ, b_GenZTauVZ);
+  ConnectVariable("GenWElectronEnergy", GenWElectronEnergy);
+  ConnectVariable("GenWElectronEta", GenWElectronEta);
+  ConnectVariable("GenWElectronP", GenWElectronP);
+  ConnectVariable("GenWElectronPhi", GenWElectronPhi);
+  ConnectVariable("GenWElectronPt", GenWElectronPt);
+  ConnectVariable("GenWElectronPx", GenWElectronPx);
+  ConnectVariable("GenWElectronPy", GenWElectronPy);
+  ConnectVariable("GenWElectronPz", GenWElectronPz);
+  ConnectVariable("GenWElectronTauVisibleEta", GenWElectronTauVisibleEta);
+  ConnectVariable("GenWElectronTauVisiblePhi", GenWElectronTauVisiblePhi);
+  ConnectVariable("GenWElectronTauVisiblePt", GenWElectronTauVisiblePt);
+  ConnectVariable("GenWElectronVX", GenWElectronVX);
+  ConnectVariable("GenWElectronVY", GenWElectronVY);
+  ConnectVariable("GenWElectronVZ", GenWElectronVZ);
+  ConnectVariable("GenZElectronEnergy", GenZElectronEnergy);
+  ConnectVariable("GenZElectronEta", GenZElectronEta);
+  ConnectVariable("GenZElectronP", GenZElectronP);
+  ConnectVariable("GenZElectronPhi", GenZElectronPhi);
+  ConnectVariable("GenZElectronPt", GenZElectronPt);
+  ConnectVariable("GenZElectronPx", GenZElectronPx);
+  ConnectVariable("GenZElectronPy", GenZElectronPy);
+  ConnectVariable("GenZElectronPz", GenZElectronPz);
+  ConnectVariable("GenZElectronTauVisibleEta", GenZElectronTauVisibleEta);
+  ConnectVariable("GenZElectronTauVisiblePhi", GenZElectronTauVisiblePhi);
+  ConnectVariable("GenZElectronTauVisiblePt", GenZElectronTauVisiblePt);
+  ConnectVariable("GenZElectronVX", GenZElectronVX);
+  ConnectVariable("GenZElectronVY", GenZElectronVY);
+  ConnectVariable("GenZElectronVZ", GenZElectronVZ);
+  ConnectVariable("PDFCTEQWeights", PDFCTEQWeights);
+  ConnectVariable("PDFMSTWWeights", PDFMSTWWeights);
+  ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights);
+  ConnectVariable("GenJetEMF", GenJetEMF);
+  ConnectVariable("GenJetEnergy", GenJetEnergy);
+  ConnectVariable("GenJetEta", GenJetEta);
+  ConnectVariable("GenJetHADF", GenJetHADF);
+  ConnectVariable("GenJetP", GenJetP);
+  ConnectVariable("GenJetPhi", GenJetPhi);
+  ConnectVariable("GenJetPt", GenJetPt);
+  ConnectVariable("GenMETCalo", GenMETCalo);
+  ConnectVariable("GenMETPhiCalo", GenMETPhiCalo);
+  ConnectVariable("GenSumETCalo", GenSumETCalo);
+  ConnectVariable("GenMETPhiTrue", GenMETPhiTrue);
+  ConnectVariable("GenMETTrue", GenMETTrue);
+  ConnectVariable("GenSumETTrue", GenSumETTrue);
+  ConnectVariable("GenWMuEnergy", GenWMuEnergy);
+  ConnectVariable("GenWMuEta", GenWMuEta);
+  ConnectVariable("GenWMuP", GenWMuP);
+  ConnectVariable("GenWMuPhi", GenWMuPhi);
+  ConnectVariable("GenWMuPt", GenWMuPt);
+  ConnectVariable("GenWMuPx", GenWMuPx);
+  ConnectVariable("GenWMuPy", GenWMuPy);
+  ConnectVariable("GenWMuPz", GenWMuPz);
+  ConnectVariable("GenWMuTauVisibleEta", GenWMuTauVisibleEta);
+  ConnectVariable("GenWMuTauVisiblePhi", GenWMuTauVisiblePhi);
+  ConnectVariable("GenWMuTauVisiblePt", GenWMuTauVisiblePt);
+  ConnectVariable("GenWMuVX", GenWMuVX);
+  ConnectVariable("GenWMuVY", GenWMuVY);
+  ConnectVariable("GenWMuVZ", GenWMuVZ);
+  ConnectVariable("GenZMuEnergy", GenZMuEnergy);
+  ConnectVariable("GenZMuEta", GenZMuEta);
+  ConnectVariable("GenZMuP", GenZMuP);
+  ConnectVariable("GenZMuPhi", GenZMuPhi);
+  ConnectVariable("GenZMuPt", GenZMuPt);
+  ConnectVariable("GenZMuPx", GenZMuPx);
+  ConnectVariable("GenZMuPy", GenZMuPy);
+  ConnectVariable("GenZMuPz", GenZMuPz);
+  ConnectVariable("GenZMuTauVisibleEta", GenZMuTauVisibleEta);
+  ConnectVariable("GenZMuTauVisiblePhi", GenZMuTauVisiblePhi);
+  ConnectVariable("GenZMuTauVisiblePt", GenZMuTauVisiblePt);
+  ConnectVariable("GenZMuVX", GenZMuVX);
+  ConnectVariable("GenZMuVY", GenZMuVY);
+  ConnectVariable("GenZMuVZ", GenZMuVZ);
+  ConnectVariable("GenParticleTauVisibleEta", GenParticleTauVisibleEta);
+  ConnectVariable("GenParticleTauVisiblePhi", GenParticleTauVisiblePhi);
+  ConnectVariable("GenParticleTauVisiblePt", GenParticleTauVisiblePt);
+  ConnectVariable("GenParticleVX", GenParticleVX);
+  ConnectVariable("GenParticleVY", GenParticleVY);
+  ConnectVariable("GenParticleVZ", GenParticleVZ);
+  ConnectVariable("GenWTauEnergy", GenWTauEnergy);
+  ConnectVariable("GenWTauEta", GenWTauEta);
+  ConnectVariable("GenWTauP", GenWTauP);
+  ConnectVariable("GenWTauPhi", GenWTauPhi);
+  ConnectVariable("GenWTauPt", GenWTauPt);
+  ConnectVariable("GenWTauPx", GenWTauPx);
+  ConnectVariable("GenWTauPy", GenWTauPy);
+  ConnectVariable("GenWTauPz", GenWTauPz);
+  ConnectVariable("GenWTauTauVisibleEta", GenWTauTauVisibleEta);
+  ConnectVariable("GenWTauTauVisiblePhi", GenWTauTauVisiblePhi);
+  ConnectVariable("GenWTauTauVisiblePt", GenWTauTauVisiblePt);
+  ConnectVariable("GenWTauVX", GenWTauVX);
+  ConnectVariable("GenWTauVY", GenWTauVY);
+  ConnectVariable("GenWTauVZ", GenWTauVZ);
+  ConnectVariable("GenZTauEnergy", GenZTauEnergy);
+  ConnectVariable("GenZTauEta", GenZTauEta);
+  ConnectVariable("GenZTauP", GenZTauP);
+  ConnectVariable("GenZTauPhi", GenZTauPhi);
+  ConnectVariable("GenZTauPt", GenZTauPt);
+  ConnectVariable("GenZTauPx", GenZTauPx);
+  ConnectVariable("GenZTauPy", GenZTauPy);
+  ConnectVariable("GenZTauPz", GenZTauPz);
+  ConnectVariable("GenZTauTauVisibleEta", GenZTauTauVisibleEta);
+  ConnectVariable("GenZTauTauVisiblePhi", GenZTauTauVisiblePhi);
+  ConnectVariable("GenZTauTauVisiblePt", GenZTauTauVisiblePt);
+  ConnectVariable("GenZTauVX", GenZTauVX);
+  ConnectVariable("GenZTauVY", GenZTauVY);
+  ConnectVariable("GenZTauVZ", GenZTauVZ);
   
   // Tau
-  ConnectVariable("HPSTauAgainstElectronDeadECALDiscr", HPSTauAgainstElectronDeadECALDiscr, b_HPSTauAgainstElectronDeadECALDiscr);
-  ConnectVariable("HPSTauAgainstElectronLooseDiscr", HPSTauAgainstElectronLooseDiscr, b_HPSTauAgainstElectronLooseDiscr);
-  ConnectVariable("HPSTauAgainstElectronLooseMVA2Discr", HPSTauAgainstElectronLooseMVA2Discr, b_HPSTauAgainstElectronLooseMVA2Discr);
-  ConnectVariable("HPSTauAgainstElectronLooseMVA3Discr", HPSTauAgainstElectronLooseMVA3Discr, b_HPSTauAgainstElectronLooseMVA3Discr);
-  ConnectVariable("HPSTauAgainstElectronMVA2categoryDiscr", HPSTauAgainstElectronMVA2categoryDiscr, b_HPSTauAgainstElectronMVA2categoryDiscr);
-  ConnectVariable("HPSTauAgainstElectronMVA2rawDiscr", HPSTauAgainstElectronMVA2rawDiscr, b_HPSTauAgainstElectronMVA2rawDiscr);
-  ConnectVariable("HPSTauAgainstElectronMVA3categoryDiscr", HPSTauAgainstElectronMVA3categoryDiscr, b_HPSTauAgainstElectronMVA3categoryDiscr);
-  ConnectVariable("HPSTauAgainstElectronMVA3rawDiscr", HPSTauAgainstElectronMVA3rawDiscr, b_HPSTauAgainstElectronMVA3rawDiscr);
-  ConnectVariable("HPSTauAgainstElectronMVADiscr", HPSTauAgainstElectronMVADiscr, b_HPSTauAgainstElectronMVADiscr);
-  ConnectVariable("HPSTauAgainstElectronMediumDiscr", HPSTauAgainstElectronMediumDiscr, b_HPSTauAgainstElectronMediumDiscr);
-  ConnectVariable("HPSTauAgainstElectronMediumMVA2Discr", HPSTauAgainstElectronMediumMVA2Discr, b_HPSTauAgainstElectronMediumMVA2Discr);
-  ConnectVariable("HPSTauAgainstElectronMediumMVA3Discr", HPSTauAgainstElectronMediumMVA3Discr, b_HPSTauAgainstElectronMediumMVA3Discr);
-  ConnectVariable("HPSTauAgainstElectronTightDiscr", HPSTauAgainstElectronTightDiscr, b_HPSTauAgainstElectronTightDiscr);
-  ConnectVariable("HPSTauAgainstElectronTightMVA2Discr", HPSTauAgainstElectronTightMVA2Discr, b_HPSTauAgainstElectronTightMVA2Discr);
-  ConnectVariable("HPSTauAgainstElectronTightMVA3Discr", HPSTauAgainstElectronTightMVA3Discr, b_HPSTauAgainstElectronTightMVA3Discr);
-  ConnectVariable("HPSTauAgainstElectronVLooseMVA2Discr", HPSTauAgainstElectronVLooseMVA2Discr, b_HPSTauAgainstElectronVLooseMVA2Discr);
-  ConnectVariable("HPSTauAgainstElectronVTightMVA3Discr", HPSTauAgainstElectronVTightMVA3Discr, b_HPSTauAgainstElectronVTightMVA3Discr);
-  ConnectVariable("HPSTauAgainstMuonLoose2Discr", HPSTauAgainstMuonLoose2Discr, b_HPSTauAgainstMuonLoose2Discr);
-  ConnectVariable("HPSTauAgainstMuonLooseDiscr", HPSTauAgainstMuonLooseDiscr, b_HPSTauAgainstMuonLooseDiscr);
-  ConnectVariable("HPSTauAgainstMuonMedium2Discr", HPSTauAgainstMuonMedium2Discr, b_HPSTauAgainstMuonMedium2Discr);
-  ConnectVariable("HPSTauAgainstMuonMediumDiscr", HPSTauAgainstMuonMediumDiscr, b_HPSTauAgainstMuonMediumDiscr);
-  ConnectVariable("HPSTauAgainstMuonTight2Discr", HPSTauAgainstMuonTight2Discr, b_HPSTauAgainstMuonTight2Discr);
-  ConnectVariable("HPSTauAgainstMuonTightDiscr", HPSTauAgainstMuonTightDiscr, b_HPSTauAgainstMuonTightDiscr);
-  ConnectVariable("HPSTauBremsRecoveryEOverPLead", HPSTauBremsRecoveryEOverPLead, b_HPSTauBremsRecoveryEOverPLead);
-  ConnectVariable("HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr, b_HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr);
-  ConnectVariable("HPSTauDecayModeFindingDiscr", HPSTauDecayModeFindingDiscr, b_HPSTauDecayModeFindingDiscr);
-  ConnectVariable("HPSTauEcalStripSumEOverPLead", HPSTauEcalStripSumEOverPLead, b_HPSTauEcalStripSumEOverPLead);
-  ConnectVariable("HPSTauEmFraction", HPSTauEmFraction, b_HPSTauEmFraction);
-  ConnectVariable("HPSTauEtaLeadCharged", HPSTauEtaLeadCharged, b_HPSTauEtaLeadCharged);
-  ConnectVariable("HPSTauEtaetaMoment", HPSTauEtaetaMoment, b_HPSTauEtaetaMoment);
-  ConnectVariable("HPSTauEtaphiMoment", HPSTauEtaphiMoment, b_HPSTauEtaphiMoment);
-  ConnectVariable("HPSTauHcal3x3OverPLead", HPSTauHcal3x3OverPLead, b_HPSTauHcal3x3OverPLead);
-  ConnectVariable("HPSTauHcalMaxOverPLead", HPSTauHcalMaxOverPLead, b_HPSTauHcalMaxOverPLead);
-  ConnectVariable("HPSTauHcalTotOverPLead", HPSTauHcalTotOverPLead, b_HPSTauHcalTotOverPLead);
-  ConnectVariable("HPSTauIsolationMVArawDiscr", HPSTauIsolationMVArawDiscr, b_HPSTauIsolationMVArawDiscr);
-  ConnectVariable("HPSTauIsolationPFChargedHadrCandsPtSum", HPSTauIsolationPFChargedHadrCandsPtSum, b_HPSTauIsolationPFChargedHadrCandsPtSum);
-  ConnectVariable("HPSTauIsolationPFGammaCandsEtSum", HPSTauIsolationPFGammaCandsEtSum, b_HPSTauIsolationPFGammaCandsEtSum);
-  ConnectVariable("HPSTauLeadPFChargedHadrCandsignedSipt", HPSTauLeadPFChargedHadrCandsignedSipt, b_HPSTauLeadPFChargedHadrCandsignedSipt);
-  ConnectVariable("HPSTauLeadVtxDistXY", HPSTauLeadVtxDistXY, b_HPSTauLeadVtxDistXY);
-  ConnectVariable("HPSTauLeadVtxDistZ", HPSTauLeadVtxDistZ, b_HPSTauLeadVtxDistZ);
-  ConnectVariable("HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr, b_HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr);
-  ConnectVariable("HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr", HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr, b_HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauLooseIsolationDeltaBetaCorrDiscr", HPSTauLooseIsolationDeltaBetaCorrDiscr, b_HPSTauLooseIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauLooseIsolationDiscr", HPSTauLooseIsolationDiscr, b_HPSTauLooseIsolationDiscr);
-  ConnectVariable("HPSTauLooseIsolationMVA2Discr", HPSTauLooseIsolationMVA2Discr, b_HPSTauLooseIsolationMVA2Discr);
-  ConnectVariable("HPSTauLooseIsolationMVADiscr", HPSTauLooseIsolationMVADiscr, b_HPSTauLooseIsolationMVADiscr);
-  ConnectVariable("HPSTauMatchedGenJetEta", HPSTauMatchedGenJetEta, b_HPSTauMatchedGenJetEta);
-  ConnectVariable("HPSTauMatchedGenJetPhi", HPSTauMatchedGenJetPhi, b_HPSTauMatchedGenJetPhi);
-  ConnectVariable("HPSTauMatchedGenJetPt", HPSTauMatchedGenJetPt, b_HPSTauMatchedGenJetPt);
-  ConnectVariable("HPSTauMatchedGenParticleEta", HPSTauMatchedGenParticleEta, b_HPSTauMatchedGenParticleEta);
-  ConnectVariable("HPSTauMatchedGenParticlePhi", HPSTauMatchedGenParticlePhi, b_HPSTauMatchedGenParticlePhi);
-  ConnectVariable("HPSTauMatchedGenParticlePt", HPSTauMatchedGenParticlePt, b_HPSTauMatchedGenParticlePt);
-  ConnectVariable("HPSTauMaximumHCALPFClusterEt", HPSTauMaximumHCALPFClusterEt, b_HPSTauMaximumHCALPFClusterEt);
-  ConnectVariable("HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr, b_HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr);
-  ConnectVariable("HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr", HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr, b_HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauMediumIsolationDeltaBetaCorrDiscr", HPSTauMediumIsolationDeltaBetaCorrDiscr, b_HPSTauMediumIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauMediumIsolationDiscr", HPSTauMediumIsolationDiscr, b_HPSTauMediumIsolationDiscr);
-  ConnectVariable("HPSTauMediumIsolationMVA2Discr", HPSTauMediumIsolationMVA2Discr, b_HPSTauMediumIsolationMVA2Discr);
-  ConnectVariable("HPSTauMediumIsolationMVADiscr", HPSTauMediumIsolationMVADiscr, b_HPSTauMediumIsolationMVADiscr);
-  ConnectVariable("HPSTauPhiLeadCharged", HPSTauPhiLeadCharged, b_HPSTauPhiLeadCharged);
-  ConnectVariable("HPSTauPhiphiMoment", HPSTauPhiphiMoment, b_HPSTauPhiphiMoment);
-  ConnectVariable("HPSTauPtLeadCharged", HPSTauPtLeadCharged, b_HPSTauPtLeadCharged);
-  ConnectVariable("HPSTauSignalPFChargedHadrCandsCount", HPSTauSignalPFChargedHadrCandsCount, b_HPSTauSignalPFChargedHadrCandsCount);
-  ConnectVariable("HPSTauSignalPFChargedHadrCandsEta", HPSTauSignalPFChargedHadrCandsEta, b_HPSTauSignalPFChargedHadrCandsEta);
-  ConnectVariable("HPSTauSignalPFChargedHadrCandsPhi", HPSTauSignalPFChargedHadrCandsPhi, b_HPSTauSignalPFChargedHadrCandsPhi);
-  ConnectVariable("HPSTauSignalPFChargedHadrCandsPt", HPSTauSignalPFChargedHadrCandsPt, b_HPSTauSignalPFChargedHadrCandsPt);
-  ConnectVariable("HPSTauSignalPFGammaCandsCount", HPSTauSignalPFGammaCandsCount, b_HPSTauSignalPFGammaCandsCount);
-  ConnectVariable("HPSTauSignalPFGammaCandsEta", HPSTauSignalPFGammaCandsEta, b_HPSTauSignalPFGammaCandsEta);
-  ConnectVariable("HPSTauSignalPFGammaCandsPhi", HPSTauSignalPFGammaCandsPhi, b_HPSTauSignalPFGammaCandsPhi);
-  ConnectVariable("HPSTauSignalPFGammaCandsPt", HPSTauSignalPFGammaCandsPt, b_HPSTauSignalPFGammaCandsPt);
-  ConnectVariable("HPSTauSignalPFNeutrHadrCandsCount", HPSTauSignalPFNeutrHadrCandsCount, b_HPSTauSignalPFNeutrHadrCandsCount);
-  ConnectVariable("HPSTauSignalPFNeutrHadrCandsEta", HPSTauSignalPFNeutrHadrCandsEta, b_HPSTauSignalPFNeutrHadrCandsEta);
-  ConnectVariable("HPSTauSignalPFNeutrHadrCandsPhi", HPSTauSignalPFNeutrHadrCandsPhi, b_HPSTauSignalPFNeutrHadrCandsPhi);
-  ConnectVariable("HPSTauSignalPFNeutrHadrCandsPt", HPSTauSignalPFNeutrHadrCandsPt, b_HPSTauSignalPFNeutrHadrCandsPt);
-  ConnectVariable("HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr, b_HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr);
-  ConnectVariable("HPSTauTightCombinedIsolationDeltaBetaCorrDiscr", HPSTauTightCombinedIsolationDeltaBetaCorrDiscr, b_HPSTauTightCombinedIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauTightIsolationDeltaBetaCorrDiscr", HPSTauTightIsolationDeltaBetaCorrDiscr, b_HPSTauTightIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauTightIsolationDiscr", HPSTauTightIsolationDiscr, b_HPSTauTightIsolationDiscr);
-  ConnectVariable("HPSTauTightIsolationMVA2Discr", HPSTauTightIsolationMVA2Discr, b_HPSTauTightIsolationMVA2Discr);
-  ConnectVariable("HPSTauTightIsolationMVADiscr", HPSTauTightIsolationMVADiscr, b_HPSTauTightIsolationMVADiscr);
-  ConnectVariable("HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr", HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr, b_HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauVLooseIsolationDeltaBetaCorrDiscr", HPSTauVLooseIsolationDeltaBetaCorrDiscr, b_HPSTauVLooseIsolationDeltaBetaCorrDiscr);
-  ConnectVariable("HPSTauVLooseIsolationDiscr", HPSTauVLooseIsolationDiscr, b_HPSTauVLooseIsolationDiscr);
-  ConnectVariable("HPSTauVtxDistXY", HPSTauVtxDistXY, b_HPSTauVtxDistXY);
-  ConnectVariable("HPSTauVtxDistZ", HPSTauVtxDistZ, b_HPSTauVtxDistZ);
+  ConnectVariable("HPSTauAgainstElectronDeadECALDiscr", HPSTauAgainstElectronDeadECALDiscr);
+  ConnectVariable("HPSTauAgainstElectronLooseDiscr", HPSTauAgainstElectronLooseDiscr);
+  ConnectVariable("HPSTauAgainstElectronLooseMVA2Discr", HPSTauAgainstElectronLooseMVA2Discr);
+  ConnectVariable("HPSTauAgainstElectronLooseMVA3Discr", HPSTauAgainstElectronLooseMVA3Discr);
+  ConnectVariable("HPSTauAgainstElectronMVA2categoryDiscr", HPSTauAgainstElectronMVA2categoryDiscr);
+  ConnectVariable("HPSTauAgainstElectronMVA2rawDiscr", HPSTauAgainstElectronMVA2rawDiscr);
+  ConnectVariable("HPSTauAgainstElectronMVA3categoryDiscr", HPSTauAgainstElectronMVA3categoryDiscr);
+  ConnectVariable("HPSTauAgainstElectronMVA3rawDiscr", HPSTauAgainstElectronMVA3rawDiscr);
+  ConnectVariable("HPSTauAgainstElectronMVADiscr", HPSTauAgainstElectronMVADiscr);
+  ConnectVariable("HPSTauAgainstElectronMediumDiscr", HPSTauAgainstElectronMediumDiscr);
+  ConnectVariable("HPSTauAgainstElectronMediumMVA2Discr", HPSTauAgainstElectronMediumMVA2Discr);
+  ConnectVariable("HPSTauAgainstElectronMediumMVA3Discr", HPSTauAgainstElectronMediumMVA3Discr);
+  ConnectVariable("HPSTauAgainstElectronTightDiscr", HPSTauAgainstElectronTightDiscr);
+  ConnectVariable("HPSTauAgainstElectronTightMVA2Discr", HPSTauAgainstElectronTightMVA2Discr);
+  ConnectVariable("HPSTauAgainstElectronTightMVA3Discr", HPSTauAgainstElectronTightMVA3Discr);
+  ConnectVariable("HPSTauAgainstElectronVLooseMVA2Discr", HPSTauAgainstElectronVLooseMVA2Discr);
+  ConnectVariable("HPSTauAgainstElectronVTightMVA3Discr", HPSTauAgainstElectronVTightMVA3Discr);
+  ConnectVariable("HPSTauAgainstMuonLoose2Discr", HPSTauAgainstMuonLoose2Discr);
+  ConnectVariable("HPSTauAgainstMuonLooseDiscr", HPSTauAgainstMuonLooseDiscr);
+  ConnectVariable("HPSTauAgainstMuonMedium2Discr", HPSTauAgainstMuonMedium2Discr);
+  ConnectVariable("HPSTauAgainstMuonMediumDiscr", HPSTauAgainstMuonMediumDiscr);
+  ConnectVariable("HPSTauAgainstMuonTight2Discr", HPSTauAgainstMuonTight2Discr);
+  ConnectVariable("HPSTauAgainstMuonTightDiscr", HPSTauAgainstMuonTightDiscr);
+  ConnectVariable("HPSTauBremsRecoveryEOverPLead", HPSTauBremsRecoveryEOverPLead);
+  ConnectVariable("HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr);
+  ConnectVariable("HPSTauDecayModeFindingDiscr", HPSTauDecayModeFindingDiscr);
+  ConnectVariable("HPSTauEcalStripSumEOverPLead", HPSTauEcalStripSumEOverPLead);
+  ConnectVariable("HPSTauEmFraction", HPSTauEmFraction);
+  ConnectVariable("HPSTauEtaLeadCharged", HPSTauEtaLeadCharged);
+  ConnectVariable("HPSTauEtaetaMoment", HPSTauEtaetaMoment);
+  ConnectVariable("HPSTauEtaphiMoment", HPSTauEtaphiMoment);
+  ConnectVariable("HPSTauHcal3x3OverPLead", HPSTauHcal3x3OverPLead);
+  ConnectVariable("HPSTauHcalMaxOverPLead", HPSTauHcalMaxOverPLead);
+  ConnectVariable("HPSTauHcalTotOverPLead", HPSTauHcalTotOverPLead);
+  ConnectVariable("HPSTauIsolationMVArawDiscr", HPSTauIsolationMVArawDiscr);
+  ConnectVariable("HPSTauIsolationPFChargedHadrCandsPtSum", HPSTauIsolationPFChargedHadrCandsPtSum);
+  ConnectVariable("HPSTauIsolationPFGammaCandsEtSum", HPSTauIsolationPFGammaCandsEtSum);
+  ConnectVariable("HPSTauLeadPFChargedHadrCandsignedSipt", HPSTauLeadPFChargedHadrCandsignedSipt);
+  ConnectVariable("HPSTauLeadVtxDistXY", HPSTauLeadVtxDistXY);
+  ConnectVariable("HPSTauLeadVtxDistZ", HPSTauLeadVtxDistZ);
+  ConnectVariable("HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr);
+  ConnectVariable("HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr", HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauLooseIsolationDeltaBetaCorrDiscr", HPSTauLooseIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauLooseIsolationDiscr", HPSTauLooseIsolationDiscr);
+  ConnectVariable("HPSTauLooseIsolationMVA2Discr", HPSTauLooseIsolationMVA2Discr);
+  ConnectVariable("HPSTauLooseIsolationMVADiscr", HPSTauLooseIsolationMVADiscr);
+  ConnectVariable("HPSTauMatchedGenJetEta", HPSTauMatchedGenJetEta);
+  ConnectVariable("HPSTauMatchedGenJetPhi", HPSTauMatchedGenJetPhi);
+  ConnectVariable("HPSTauMatchedGenJetPt", HPSTauMatchedGenJetPt);
+  ConnectVariable("HPSTauMatchedGenParticleEta", HPSTauMatchedGenParticleEta);
+  ConnectVariable("HPSTauMatchedGenParticlePhi", HPSTauMatchedGenParticlePhi);
+  ConnectVariable("HPSTauMatchedGenParticlePt", HPSTauMatchedGenParticlePt);
+  ConnectVariable("HPSTauMaximumHCALPFClusterEt", HPSTauMaximumHCALPFClusterEt);
+  ConnectVariable("HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr);
+  ConnectVariable("HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr", HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauMediumIsolationDeltaBetaCorrDiscr", HPSTauMediumIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauMediumIsolationDiscr", HPSTauMediumIsolationDiscr);
+  ConnectVariable("HPSTauMediumIsolationMVA2Discr", HPSTauMediumIsolationMVA2Discr);
+  ConnectVariable("HPSTauMediumIsolationMVADiscr", HPSTauMediumIsolationMVADiscr);
+  ConnectVariable("HPSTauPhiLeadCharged", HPSTauPhiLeadCharged);
+  ConnectVariable("HPSTauPhiphiMoment", HPSTauPhiphiMoment);  ConnectVariable("HPSTauPtLeadCharged", HPSTauPtLeadCharged);
+  ConnectVariable("HPSTauSignalPFChargedHadrCandsCount", HPSTauSignalPFChargedHadrCandsCount);
+  ConnectVariable("HPSTauSignalPFChargedHadrCandsEta", HPSTauSignalPFChargedHadrCandsEta);
+  ConnectVariable("HPSTauSignalPFChargedHadrCandsPhi", HPSTauSignalPFChargedHadrCandsPhi);
+  ConnectVariable("HPSTauSignalPFChargedHadrCandsPt", HPSTauSignalPFChargedHadrCandsPt);
+  ConnectVariable("HPSTauSignalPFGammaCandsCount", HPSTauSignalPFGammaCandsCount);
+  ConnectVariable("HPSTauSignalPFGammaCandsEta", HPSTauSignalPFGammaCandsEta);
+  ConnectVariable("HPSTauSignalPFGammaCandsPhi", HPSTauSignalPFGammaCandsPhi);
+  ConnectVariable("HPSTauSignalPFGammaCandsPt", HPSTauSignalPFGammaCandsPt);
+  ConnectVariable("HPSTauSignalPFNeutrHadrCandsCount", HPSTauSignalPFNeutrHadrCandsCount);
+  ConnectVariable("HPSTauSignalPFNeutrHadrCandsEta", HPSTauSignalPFNeutrHadrCandsEta);
+  ConnectVariable("HPSTauSignalPFNeutrHadrCandsPhi", HPSTauSignalPFNeutrHadrCandsPhi);
+  ConnectVariable("HPSTauSignalPFNeutrHadrCandsPt", HPSTauSignalPFNeutrHadrCandsPt);
+  ConnectVariable("HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr", HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr);
+  ConnectVariable("HPSTauTightCombinedIsolationDeltaBetaCorrDiscr", HPSTauTightCombinedIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauTightIsolationDeltaBetaCorrDiscr", HPSTauTightIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauTightIsolationDiscr", HPSTauTightIsolationDiscr);
+  ConnectVariable("HPSTauTightIsolationMVA2Discr", HPSTauTightIsolationMVA2Discr);
+  ConnectVariable("HPSTauTightIsolationMVADiscr", HPSTauTightIsolationMVADiscr);
+  ConnectVariable("HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr", HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauVLooseIsolationDeltaBetaCorrDiscr", HPSTauVLooseIsolationDeltaBetaCorrDiscr);
+  ConnectVariable("HPSTauVLooseIsolationDiscr", HPSTauVLooseIsolationDiscr);
+  ConnectVariable("HPSTauVtxDistXY", HPSTauVtxDistXY);
+  ConnectVariable("HPSTauVtxDistZ", HPSTauVtxDistZ);
   
   // Muon
-  ConnectVariable("MuonBackToBackCompatibility", MuonBackToBackCompatibility, b_MuonBackToBackCompatibility);
-  ConnectVariable("MuonBeamSpotDXY", MuonBeamSpotDXY, b_MuonBeamSpotDXY);
-  ConnectVariable("MuonBeamSpotDXYError", MuonBeamSpotDXYError, b_MuonBeamSpotDXYError);
-  ConnectVariable("MuonBestTrackVtxDistXY", MuonBestTrackVtxDistXY, b_MuonBestTrackVtxDistXY);
-  ConnectVariable("MuonBestTrackVtxDistZ", MuonBestTrackVtxDistZ, b_MuonBestTrackVtxDistZ);
-  ConnectVariable("MuonCocktailEta", MuonCocktailEta, b_MuonCocktailEta);
-  ConnectVariable("MuonCocktailEtaError", MuonCocktailEtaError, b_MuonCocktailEtaError);
-  ConnectVariable("MuonCocktailGlobalChi2", MuonCocktailGlobalChi2, b_MuonCocktailGlobalChi2);
-  ConnectVariable("MuonCocktailP", MuonCocktailP, b_MuonCocktailP);
-  ConnectVariable("MuonCocktailPhi", MuonCocktailPhi, b_MuonCocktailPhi);
-  ConnectVariable("MuonCocktailPhiError", MuonCocktailPhiError, b_MuonCocktailPhiError);
-  ConnectVariable("MuonCocktailPt", MuonCocktailPt, b_MuonCocktailPt);
-  ConnectVariable("MuonCocktailPtError", MuonCocktailPtError, b_MuonCocktailPtError);
-  ConnectVariable("MuonCocktailQOverPError", MuonCocktailQOverPError, b_MuonCocktailQOverPError);
-  ConnectVariable("MuonCocktailTrkD0", MuonCocktailTrkD0, b_MuonCocktailTrkD0);
-  ConnectVariable("MuonCocktailTrkD0Error", MuonCocktailTrkD0Error, b_MuonCocktailTrkD0Error);
-  ConnectVariable("MuonCocktailTrkDz", MuonCocktailTrkDz, b_MuonCocktailTrkDz);
-  ConnectVariable("MuonCocktailTrkDzError", MuonCocktailTrkDzError, b_MuonCocktailTrkDzError);
-  ConnectVariable("MuonCocktailTrkValidFractionOfHits", MuonCocktailTrkValidFractionOfHits, b_MuonCocktailTrkValidFractionOfHits);
-  ConnectVariable("MuonCosmicCompatibility", MuonCosmicCompatibility, b_MuonCosmicCompatibility);
+  ConnectVariable("MuonBackToBackCompatibility", MuonBackToBackCompatibility);
+  ConnectVariable("MuonBeamSpotDXY", MuonBeamSpotDXY);
+  ConnectVariable("MuonBeamSpotDXYError", MuonBeamSpotDXYError);
+  ConnectVariable("MuonBestTrackVtxDistXY", MuonBestTrackVtxDistXY);
+  ConnectVariable("MuonBestTrackVtxDistZ", MuonBestTrackVtxDistZ);
+  ConnectVariable("MuonCocktailEta", MuonCocktailEta);
+  ConnectVariable("MuonCocktailEtaError", MuonCocktailEtaError);
+  ConnectVariable("MuonCocktailGlobalChi2", MuonCocktailGlobalChi2);
+  ConnectVariable("MuonCocktailP", MuonCocktailP);
+  ConnectVariable("MuonCocktailPhi", MuonCocktailPhi);
+  ConnectVariable("MuonCocktailPhiError", MuonCocktailPhiError);
+  ConnectVariable("MuonCocktailPt", MuonCocktailPt);
+  ConnectVariable("MuonCocktailPtError", MuonCocktailPtError);
+  ConnectVariable("MuonCocktailQOverPError", MuonCocktailQOverPError);
+  ConnectVariable("MuonCocktailTrkD0", MuonCocktailTrkD0);
+  ConnectVariable("MuonCocktailTrkD0Error", MuonCocktailTrkD0Error);
+  ConnectVariable("MuonCocktailTrkDz", MuonCocktailTrkDz);
+  ConnectVariable("MuonCocktailTrkDzError", MuonCocktailTrkDzError);
+  ConnectVariable("MuonCocktailTrkValidFractionOfHits", MuonCocktailTrkValidFractionOfHits);
+  ConnectVariable("MuonCosmicCompatibility", MuonCosmicCompatibility);
   
   // PF
-  ConnectVariable("PFCandEnergyLeptLink", PFCandEnergyLeptLink, b_PFCandEnergyLeptLink);
-  ConnectVariable("PFCandEtaLeptLink", PFCandEtaLeptLink, b_PFCandEtaLeptLink);
-  ConnectVariable("PFCandPhiLeptLink", PFCandPhiLeptLink, b_PFCandPhiLeptLink);
-  ConnectVariable("PFCandPtLeptLink", PFCandPtLeptLink, b_PFCandPtLeptLink);
-  ConnectVariable("PFJetBestVertexTrackAssociationFactor", PFJetBestVertexTrackAssociationFactor, b_PFJetBestVertexTrackAssociationFactor);
-  ConnectVariable("PFJetBeta", PFJetBeta, b_PFJetBeta);
-  ConnectVariable("PFJetBetaClassic", PFJetBetaClassic, b_PFJetBetaClassic);
-  ConnectVariable("PFJetBetaStar", PFJetBetaStar, b_PFJetBetaStar);
-  ConnectVariable("PFJetBetaStarClassic", PFJetBetaStarClassic, b_PFJetBetaStarClassic);
-  ConnectVariable("PFJetCombinedInclusiveSecondaryVertexBTag", PFJetCombinedInclusiveSecondaryVertexBTag, b_PFJetCombinedInclusiveSecondaryVertexBTag);
-  ConnectVariable("PFJetCombinedMVABTag", PFJetCombinedMVABTag, b_PFJetCombinedMVABTag);
-  ConnectVariable("PFJetCombinedSecondaryVertexMVABTag", PFJetCombinedSecondaryVertexMVABTag, b_PFJetCombinedSecondaryVertexMVABTag);
-  ConnectVariable("PFJetL1FastJetJEC", PFJetL1FastJetJEC, b_PFJetL1FastJetJEC);
-  ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC, b_PFJetL2L3ResJEC);
-  ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC, b_PFJetL2RelJEC);
-  ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC, b_PFJetL3AbsJEC);
-  ConnectVariable("PFJetPtRaw", PFJetPtRaw, b_PFJetPtRaw);
-  ConnectVariable("PFJetSimpleSecondaryVertexHighEffBTag", PFJetSimpleSecondaryVertexHighEffBTag, b_PFJetSimpleSecondaryVertexHighEffBTag);
-  ConnectVariable("PFJetSimpleSecondaryVertexHighPurBTag", PFJetSimpleSecondaryVertexHighPurBTag, b_PFJetSimpleSecondaryVertexHighPurBTag);
-  ConnectVariable("PFJetSoftElectronByIP3dBTag", PFJetSoftElectronByIP3dBTag, b_PFJetSoftElectronByIP3dBTag);
-  ConnectVariable("PFJetSoftElectronByPtBTag", PFJetSoftElectronByPtBTag, b_PFJetSoftElectronByPtBTag);
-  ConnectVariable("PFJetTrackCountingHighEffBTag", PFJetTrackCountingHighEffBTag, b_PFJetTrackCountingHighEffBTag);
-  ConnectVariable("PFMET", PFMET, b_PFMET);
+  ConnectVariable("PFCandEnergyLeptLink", PFCandEnergyLeptLink);
+  ConnectVariable("PFCandEtaLeptLink", PFCandEtaLeptLink);
+  ConnectVariable("PFCandPhiLeptLink", PFCandPhiLeptLink);
+  ConnectVariable("PFCandPtLeptLink", PFCandPtLeptLink);
+  ConnectVariable("PFJetBestVertexTrackAssociationFactor", PFJetBestVertexTrackAssociationFactor);
+  ConnectVariable("PFJetBeta", PFJetBeta);
+  ConnectVariable("PFJetBetaClassic", PFJetBetaClassic);
+  ConnectVariable("PFJetBetaStar", PFJetBetaStar);
+  ConnectVariable("PFJetBetaStarClassic", PFJetBetaStarClassic);
+  ConnectVariable("PFJetCombinedInclusiveSecondaryVertexBTag", PFJetCombinedInclusiveSecondaryVertexBTag);
+  ConnectVariable("PFJetCombinedMVABTag", PFJetCombinedMVABTag);
+  ConnectVariable("PFJetCombinedSecondaryVertexMVABTag", PFJetCombinedSecondaryVertexMVABTag);
+  ConnectVariable("PFJetL1FastJetJEC", PFJetL1FastJetJEC);
+  ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC);
+  ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC);
+  ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC);
+  ConnectVariable("PFJetPtRaw", PFJetPtRaw);
+  ConnectVariable("PFJetSimpleSecondaryVertexHighEffBTag", PFJetSimpleSecondaryVertexHighEffBTag);
+  ConnectVariable("PFJetSimpleSecondaryVertexHighPurBTag", PFJetSimpleSecondaryVertexHighPurBTag);
+  ConnectVariable("PFJetSoftElectronByIP3dBTag", PFJetSoftElectronByIP3dBTag);
+  ConnectVariable("PFJetSoftElectronByPtBTag", PFJetSoftElectronByPtBTag);
+  ConnectVariable("PFJetTrackCountingHighEffBTag", PFJetTrackCountingHighEffBTag);
+  ConnectVariable("PFMET", PFMET);
 
   /// Photon
-  ConnectVariable("PhotonAlpha", PhotonAlpha, b_PhotonAlpha);
-  ConnectVariable("PhotonChi2ConvPhot", PhotonChi2ConvPhot, b_PhotonChi2ConvPhot);
-  ConnectVariable("PhotonDPhiTracksAtVtxConvPhot", PhotonDPhiTracksAtVtxConvPhot, b_PhotonDPhiTracksAtVtxConvPhot);
-  ConnectVariable("PhotonDistOfMinApproachConvPhot", PhotonDistOfMinApproachConvPhot, b_PhotonDistOfMinApproachConvPhot);
-  ConnectVariable("PhotonE2OverE9", PhotonE2OverE9, b_PhotonE2OverE9);
-  ConnectVariable("PhotonE3x3", PhotonE3x3, b_PhotonE3x3);
-  ConnectVariable("PhotonE4SwissCross", PhotonE4SwissCross, b_PhotonE4SwissCross);
-  ConnectVariable("PhotonE5x5", PhotonE5x5, b_PhotonE5x5);
-  ConnectVariable("PhotonEOverPConvPhot", PhotonEOverPConvPhot, b_PhotonEOverPConvPhot);
-  ConnectVariable("PhotonEcalIsoDR03", PhotonEcalIsoDR03, b_PhotonEcalIsoDR03);
-  ConnectVariable("PhotonEcalIsoDR04", PhotonEcalIsoDR04, b_PhotonEcalIsoDR04);
-  ConnectVariable("PhotonEnergy", PhotonEnergy, b_PhotonEnergy);
-  ConnectVariable("PhotonEta", PhotonEta, b_PhotonEta);
-  ConnectVariable("PhotonHcalIsoDR03", PhotonHcalIsoDR03, b_PhotonHcalIsoDR03);
-  ConnectVariable("PhotonHcalIsoDR03FullCone", PhotonHcalIsoDR03FullCone, b_PhotonHcalIsoDR03FullCone);
-  ConnectVariable("PhotonHcalIsoDR04", PhotonHcalIsoDR04, b_PhotonHcalIsoDR04);
-  ConnectVariable("PhotonHcalIsoDR04FullCone", PhotonHcalIsoDR04FullCone, b_PhotonHcalIsoDR04FullCone);
-  ConnectVariable("PhotonHoE", PhotonHoE, b_PhotonHoE);
-  ConnectVariable("PhotonNDofConvPhot", PhotonNDofConvPhot, b_PhotonNDofConvPhot);
-  ConnectVariable("PhotonPairCotThetaSeparationConvPhot", PhotonPairCotThetaSeparationConvPhot, b_PhotonPairCotThetaSeparationConvPhot);
-  ConnectVariable("PhotonPairInvariantMassConvPhot", PhotonPairInvariantMassConvPhot, b_PhotonPairInvariantMassConvPhot);
-  ConnectVariable("PhotonPairMomentumxConvPhot", PhotonPairMomentumxConvPhot, b_PhotonPairMomentumxConvPhot);
-  ConnectVariable("PhotonPairMomentumyConvPhot", PhotonPairMomentumyConvPhot, b_PhotonPairMomentumyConvPhot);
-  ConnectVariable("PhotonPairMomentumzConvPhot", PhotonPairMomentumzConvPhot, b_PhotonPairMomentumzConvPhot);
-  ConnectVariable("PhotonPhi", PhotonPhi, b_PhotonPhi);
-  ConnectVariable("PhotonPt", PhotonPt, b_PhotonPt);
-  ConnectVariable("PhotonSCenergy", PhotonSCenergy, b_PhotonSCenergy);
-  ConnectVariable("PhotonSCeta", PhotonSCeta, b_PhotonSCeta);
-  ConnectVariable("PhotonSCphi", PhotonSCphi, b_PhotonSCphi);
-  ConnectVariable("PhotonSCseedEnergy", PhotonSCseedEnergy, b_PhotonSCseedEnergy);
-  ConnectVariable("PhotonSEtaEta", PhotonSEtaEta, b_PhotonSEtaEta);
-  ConnectVariable("PhotonSEtaPhi", PhotonSEtaPhi, b_PhotonSEtaPhi);
-  ConnectVariable("PhotonSMajMaj", PhotonSMajMaj, b_PhotonSMajMaj);
-  ConnectVariable("PhotonSMinMin", PhotonSMinMin, b_PhotonSMinMin);
-  ConnectVariable("PhotonSPhiPhi", PhotonSPhiPhi, b_PhotonSPhiPhi);
-  ConnectVariable("PhotonSigmaIEtaIEta", PhotonSigmaIEtaIEta, b_PhotonSigmaIEtaIEta);
-  ConnectVariable("PhotonTimeSeed", PhotonTimeSeed, b_PhotonTimeSeed);
-  ConnectVariable("PhotonTrkIsoHollowDR03", PhotonTrkIsoHollowDR03, b_PhotonTrkIsoHollowDR03);
-  ConnectVariable("PhotonTrkIsoHollowDR04", PhotonTrkIsoHollowDR04, b_PhotonTrkIsoHollowDR04);
-  ConnectVariable("PhotonTrkIsoSolidDR03", PhotonTrkIsoSolidDR03, b_PhotonTrkIsoSolidDR03);
-  ConnectVariable("PhotonTrkIsoSolidDR04", PhotonTrkIsoSolidDR04, b_PhotonTrkIsoSolidDR04);
-  ConnectVariable("PhotonXVtxConvPhot", PhotonXVtxConvPhot, b_PhotonXVtxConvPhot);
-  ConnectVariable("PhotonYVtxConvPhot", PhotonYVtxConvPhot, b_PhotonYVtxConvPhot);
-  ConnectVariable("PhotonZVtxConvPhot", PhotonZVtxConvPhot, b_PhotonZVtxConvPhot);
-  ConnectVariable("TCMET", TCMET, b_TCMET);
-  ConnectVariable("TCMETPhi", TCMETPhi, b_TCMETPhi);
-  ConnectVariable("TCSumET", TCSumET, b_TCSumET);
+  ConnectVariable("PhotonAlpha", PhotonAlpha);
+  ConnectVariable("PhotonChi2ConvPhot", PhotonChi2ConvPhot);
+  ConnectVariable("PhotonDPhiTracksAtVtxConvPhot", PhotonDPhiTracksAtVtxConvPhot);
+  ConnectVariable("PhotonDistOfMinApproachConvPhot", PhotonDistOfMinApproachConvPhot);
+  ConnectVariable("PhotonE2OverE9", PhotonE2OverE9);
+  ConnectVariable("PhotonE3x3", PhotonE3x3);
+  ConnectVariable("PhotonE4SwissCross", PhotonE4SwissCross);
+  ConnectVariable("PhotonE5x5", PhotonE5x5);
+  ConnectVariable("PhotonEOverPConvPhot", PhotonEOverPConvPhot);
+  ConnectVariable("PhotonEcalIsoDR03", PhotonEcalIsoDR03);
+  ConnectVariable("PhotonEcalIsoDR04", PhotonEcalIsoDR04);
+  ConnectVariable("PhotonEnergy", PhotonEnergy);
+  ConnectVariable("PhotonEta", PhotonEta);
+  ConnectVariable("PhotonHcalIsoDR03", PhotonHcalIsoDR03);
+  ConnectVariable("PhotonHcalIsoDR03FullCone", PhotonHcalIsoDR03FullCone);
+  ConnectVariable("PhotonHcalIsoDR04", PhotonHcalIsoDR04);
+  ConnectVariable("PhotonHcalIsoDR04FullCone", PhotonHcalIsoDR04FullCone);
+  ConnectVariable("PhotonHoE", PhotonHoE);
+  ConnectVariable("PhotonNDofConvPhot", PhotonNDofConvPhot);
+  ConnectVariable("PhotonPairCotThetaSeparationConvPhot", PhotonPairCotThetaSeparationConvPhot);
+  ConnectVariable("PhotonPairInvariantMassConvPhot", PhotonPairInvariantMassConvPhot);
+  ConnectVariable("PhotonPairMomentumxConvPhot", PhotonPairMomentumxConvPhot);
+  ConnectVariable("PhotonPairMomentumyConvPhot", PhotonPairMomentumyConvPhot);
+  ConnectVariable("PhotonPairMomentumzConvPhot", PhotonPairMomentumzConvPhot);
+  ConnectVariable("PhotonPhi", PhotonPhi);
+  ConnectVariable("PhotonPt", PhotonPt);
+  ConnectVariable("PhotonSCenergy", PhotonSCenergy);
+  ConnectVariable("PhotonSCeta", PhotonSCeta);
+  ConnectVariable("PhotonSCphi", PhotonSCphi);
+  ConnectVariable("PhotonSCseedEnergy", PhotonSCseedEnergy);
+  ConnectVariable("PhotonSEtaEta", PhotonSEtaEta);
+  ConnectVariable("PhotonSEtaPhi", PhotonSEtaPhi);
+  ConnectVariable("PhotonSMajMaj", PhotonSMajMaj);
+  ConnectVariable("PhotonSMinMin", PhotonSMinMin);
+  ConnectVariable("PhotonSPhiPhi", PhotonSPhiPhi);
+  ConnectVariable("PhotonSigmaIEtaIEta", PhotonSigmaIEtaIEta);
+  ConnectVariable("PhotonTimeSeed", PhotonTimeSeed);
+  ConnectVariable("PhotonTrkIsoHollowDR03", PhotonTrkIsoHollowDR03);
+  ConnectVariable("PhotonTrkIsoHollowDR04", PhotonTrkIsoHollowDR04);
+  ConnectVariable("PhotonTrkIsoSolidDR03", PhotonTrkIsoSolidDR03);
+  ConnectVariable("PhotonTrkIsoSolidDR04", PhotonTrkIsoSolidDR04);
+  ConnectVariable("PhotonXVtxConvPhot", PhotonXVtxConvPhot);
+  ConnectVariable("PhotonYVtxConvPhot", PhotonYVtxConvPhot);
+  ConnectVariable("PhotonZVtxConvPhot", PhotonZVtxConvPhot);
+  ConnectVariable("TCMET", TCMET);  ConnectVariable("TCMETPhi", TCMETPhi);
+  ConnectVariable("TCSumET", TCSumET);
 
   // Trigger
-  ConnectVariable("HLTFilterObjEta", HLTFilterObjEta, b_HLTFilterObjEta);
-  ConnectVariable("HLTFilterObjPhi", HLTFilterObjPhi, b_HLTFilterObjPhi);
-  ConnectVariable("HLTFilterObjPt", HLTFilterObjPt, b_HLTFilterObjPt);
+  ConnectVariable("HLTFilterObjEta", HLTFilterObjEta);
+  ConnectVariable("HLTFilterObjPhi", HLTFilterObjPhi);
+  ConnectVariable("HLTFilterObjPt", HLTFilterObjPt);
   
   // Truth
   
-  ConnectVariable("GenWElectronMotherIndex", GenWElectronMotherIndex, b_GenWElectronMotherIndex);
-  ConnectVariable("GenWElectronNumDaught", GenWElectronNumDaught, b_GenWElectronNumDaught);
-  ConnectVariable("GenWElectronPdgId", GenWElectronPdgId, b_GenWElectronPdgId);
-  ConnectVariable("GenWElectronStatus", GenWElectronStatus, b_GenWElectronStatus);
-  ConnectVariable("GenWElectronTauDecayMode", GenWElectronTauDecayMode, b_GenWElectronTauDecayMode);
-  ConnectVariable("GenZElectronMotherIndex", GenZElectronMotherIndex, b_GenZElectronMotherIndex);
-  ConnectVariable("GenZElectronNumDaught", GenZElectronNumDaught, b_GenZElectronNumDaught);
-  ConnectVariable("GenZElectronPdgId", GenZElectronPdgId, b_GenZElectronPdgId);
-  ConnectVariable("GenZElectronStatus", GenZElectronStatus, b_GenZElectronStatus);
-  ConnectVariable("GenZElectronTauDecayMode", GenZElectronTauDecayMode, b_GenZElectronTauDecayMode);
-  ConnectVariable("PileUpInteractions", PileUpInteractions, b_PileUpInteractions);
-  ConnectVariable("PileUpOriginBX", PileUpOriginBX, b_PileUpOriginBX);
-  ConnectVariable("GenWMuMotherIndex", GenWMuMotherIndex, b_GenWMuMotherIndex);
-  ConnectVariable("GenWMuNumDaught", GenWMuNumDaught, b_GenWMuNumDaught);
-  ConnectVariable("GenWMuPdgId", GenWMuPdgId, b_GenWMuPdgId);
-  ConnectVariable("GenWMuStatus", GenWMuStatus, b_GenWMuStatus);
-  ConnectVariable("GenWMuTauDecayMode", GenWMuTauDecayMode, b_GenWMuTauDecayMode);
-  ConnectVariable("GenZMuMotherIndex", GenZMuMotherIndex, b_GenZMuMotherIndex);
-  ConnectVariable("GenZMuNumDaught", GenZMuNumDaught, b_GenZMuNumDaught);
-  ConnectVariable("GenZMuPdgId", GenZMuPdgId, b_GenZMuPdgId);
-  ConnectVariable("GenZMuStatus", GenZMuStatus, b_GenZMuStatus);
-  ConnectVariable("GenZMuTauDecayMode", GenZMuTauDecayMode, b_GenZMuTauDecayMode);
-  ConnectVariable("GenWTauMotherIndex", GenWTauMotherIndex, b_GenWTauMotherIndex);
-  ConnectVariable("GenWTauNumDaught", GenWTauNumDaught, b_GenWTauNumDaught);
-  ConnectVariable("GenWTauPdgId", GenWTauPdgId, b_GenWTauPdgId);
-  ConnectVariable("GenWTauStatus", GenWTauStatus, b_GenWTauStatus);
-  ConnectVariable("GenWTauTauDecayMode", GenWTauTauDecayMode, b_GenWTauTauDecayMode);
-  ConnectVariable("GenZTauMotherIndex", GenZTauMotherIndex, b_GenZTauMotherIndex);
-  ConnectVariable("GenZTauNumDaught", GenZTauNumDaught, b_GenZTauNumDaught);
-  ConnectVariable("GenZTauPdgId", GenZTauPdgId, b_GenZTauPdgId);
-  ConnectVariable("GenZTauStatus", GenZTauStatus, b_GenZTauStatus);
-  ConnectVariable("GenZTauTauDecayMode", GenZTauTauDecayMode, b_GenZTauTauDecayMode);
-  ConnectVariable("HPSTauDecayMode", HPSTauDecayMode, b_HPSTauDecayMode);
-  ConnectVariable("HPSTauIsCaloTau", HPSTauIsCaloTau, b_HPSTauIsCaloTau);
-  ConnectVariable("HPSTauVtxIndex", HPSTauVtxIndex, b_HPSTauVtxIndex);
-  ConnectVariable("MuonBestTrackVtxIndex", MuonBestTrackVtxIndex, b_MuonBestTrackVtxIndex);
-  ConnectVariable("MuonCocktailCharge", MuonCocktailCharge, b_MuonCocktailCharge);
-  ConnectVariable("MuonCocktailRefitID", MuonCocktailRefitID, b_MuonCocktailRefitID);
-  ConnectVariable("MuonCocktailTrkHits", MuonCocktailTrkHits, b_MuonCocktailTrkHits);
-  ConnectVariable("PhotonNTracksConvPhot", PhotonNTracksConvPhot, b_PhotonNTracksConvPhot);
+  ConnectVariable("GenWElectronMotherIndex", GenWElectronMotherIndex);
+  ConnectVariable("GenWElectronNumDaught", GenWElectronNumDaught);
+  ConnectVariable("GenWElectronPdgId", GenWElectronPdgId);
+  ConnectVariable("GenWElectronStatus", GenWElectronStatus);
+  ConnectVariable("GenWElectronTauDecayMode", GenWElectronTauDecayMode);
+  ConnectVariable("GenZElectronMotherIndex", GenZElectronMotherIndex);
+  ConnectVariable("GenZElectronNumDaught", GenZElectronNumDaught);  ConnectVariable("GenZElectronPdgId", GenZElectronPdgId);
+  ConnectVariable("GenZElectronStatus", GenZElectronStatus);
+  ConnectVariable("GenZElectronTauDecayMode", GenZElectronTauDecayMode);
+  ConnectVariable("PileUpInteractions", PileUpInteractions);
+  ConnectVariable("PileUpOriginBX", PileUpOriginBX);
+  ConnectVariable("GenWMuMotherIndex", GenWMuMotherIndex);
+  ConnectVariable("GenWMuNumDaught", GenWMuNumDaught);
+  ConnectVariable("GenWMuPdgId", GenWMuPdgId);
+  ConnectVariable("GenWMuStatus", GenWMuStatus);
+  ConnectVariable("GenWMuTauDecayMode", GenWMuTauDecayMode);
+  ConnectVariable("GenZMuMotherIndex", GenZMuMotherIndex);
+  ConnectVariable("GenZMuNumDaught", GenZMuNumDaught);
+  ConnectVariable("GenZMuPdgId", GenZMuPdgId);
+  ConnectVariable("GenZMuStatus", GenZMuStatus);
+  ConnectVariable("GenZMuTauDecayMode", GenZMuTauDecayMode);
+  ConnectVariable("GenWTauMotherIndex", GenWTauMotherIndex);
+  ConnectVariable("GenWTauNumDaught", GenWTauNumDaught);  ConnectVariable("GenWTauPdgId", GenWTauPdgId);
+  ConnectVariable("GenWTauStatus", GenWTauStatus);
+  ConnectVariable("GenWTauTauDecayMode", GenWTauTauDecayMode);
+  ConnectVariable("GenZTauMotherIndex", GenZTauMotherIndex);
+  ConnectVariable("GenZTauNumDaught", GenZTauNumDaught);
+  ConnectVariable("GenZTauPdgId", GenZTauPdgId);
+  ConnectVariable("GenZTauStatus", GenZTauStatus);
+  ConnectVariable("GenZTauTauDecayMode", GenZTauTauDecayMode);
+  ConnectVariable("HPSTauDecayMode", HPSTauDecayMode);
+  ConnectVariable("HPSTauIsCaloTau", HPSTauIsCaloTau);
+  ConnectVariable("HPSTauVtxIndex", HPSTauVtxIndex);
+  ConnectVariable("MuonBestTrackVtxIndex", MuonBestTrackVtxIndex);
+  ConnectVariable("MuonCocktailCharge", MuonCocktailCharge);
+  ConnectVariable("MuonCocktailRefitID", MuonCocktailRefitID);
+  ConnectVariable("MuonCocktailTrkHits", MuonCocktailTrkHits);
+  ConnectVariable("PhotonNTracksConvPhot", PhotonNTracksConvPhot);
 
   // Event
-  ConnectVariable("L1PhysBits", L1PhysBits, b_L1PhysBits);
-  ConnectVariable("L1TechBits", L1TechBits, b_L1TechBits);
-  ConnectVariable("VertexNTracksW05", VertexNTracksW05, b_VertexNTracksW05);
-  ConnectVariable("HLTFilterObjId", HLTFilterObjId, b_HLTFilterObjId);
-  ConnectVariable("bunch", bunch, b_bunch);
-  ConnectVariable("ls", ls, b_ls); 
-  ConnectVariable("orbit", orbit, b_orbit);                                                                                                    
-  ConnectVariable("ProcessID", ProcessID, b_ProcessID);     
-
+  ConnectVariable("L1PhysBits", L1PhysBits);
+  ConnectVariable("L1TechBits", L1TechBits);
+  ConnectVariable("VertexNTracksW05", VertexNTracksW05);
+  ConnectVariable("HLTFilterObjId", HLTFilterObjId);
+  ConnectVariable("bunch", bunch);
+  ConnectVariable("ls", ls);
+  ConnectVariable("orbit", orbit);
+  ConnectVariable("ProcessID", ProcessID);
+  */
 
   return;
 }
@@ -1621,35 +1678,52 @@ void Data::ConnectAllBranches(){
 
 template< typename T >
 bool Data::ConnectVariable( const char* branchName,
-                                        T*& variable , TBranch* br){
+			    T*& variable, TBranch* br){
 
   // Check if the branch actually exists:                                                                                                                                                                                                                                                             
   TBranch* branch_info;
   if( ! (branch_info = fChain->GetBranch( branchName ) ) ) {    
+    m_logger << INFO << "Branch NOT FOUND " << branchName << LQLogger::endmsg;
     return false;
   }
   
-  //variable = new T();
+  variable = new T();
+  
+  const char* type_name = typeid( *variable ).name();
   // The object pointers have to be initialised to zero before                                                                                                             
   // connecting them to the branches       
-  variable = 0;
-  fChain->SetBranchStatus(branchName,1);
-  fChain->SetBranchAddress(branchName, &variable, &br);
+  delete variable; 
+  if( strlen( type_name ) == 1 ) {
+
+    throw LQError( "ConnectVariable(...) specialised for object pointers calle\
+d "
+		  "with a simple variable.", LQError::SkipCycle );
+
+  } else {
+
+    variable = 0;
+    fChain->SetBranchStatus(TString(branchName) + "*",1);
+    fChain->SetBranchAddress(branchName, &variable, &br);
+    m_inputVarPointers.push_back( new SPointer< T >( variable ) );
+  }
   //br->SetAutoDelete(kTRUE);
   fChain->AddBranchToCache( branchName, kTRUE );
   
+
   return true;
 }
 
 template< typename T >
 bool Data::ConnectVariable(  const char* branchName,
-			     T& variable , TBranch* br){
+			     T& variable, TBranch* br){
   
+
   // Check if the branch actually exists:                                      
   TBranch* branch_info;
   if( ! (branch_info = fChain->GetBranch( branchName ) ) ) {    
     return false;
   }
+
 
   fChain->SetBranchStatus(branchName,1);
   fChain->SetBranchAddress(branchName, &variable, &br);

@@ -32,6 +32,7 @@
   analysis.SetDataType("data");
   analysis.SetNEventsToProcess(400000);
   analysis.SetName("TEST",1,"./");
+  analysis.SetLQInput(true);
   analysis.SetInputChain(chain);
 
   ///Other options : analysis.                                                 

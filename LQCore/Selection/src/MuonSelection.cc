@@ -14,7 +14,7 @@ MuonSelection::~MuonSelection() {};
 void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
   
   bool m_debug = false;
-  std::vector<KMuon> allmuons = k_lqevent.GetBaseMuons();
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
   
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
@@ -75,7 +75,7 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
 
 void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl) {
 
-  std::vector<KMuon> allmuons = k_lqevent.GetBaseMuons();  
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();  
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
     
     //// Make Loose selection
@@ -87,7 +87,7 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl) {
 
 void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl) {
   
-  std::vector<KMuon> allmuons = k_lqevent.GetBaseMuons();
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
 
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
     

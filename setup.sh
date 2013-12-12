@@ -55,7 +55,7 @@ source ${LQANALYZER_BIN_PATH}/cleanup.sh
 ### make directories that git does not allow to store
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
-
+export LQANALYZER_LOG_PATH=${LQANALYZER_DIR}/data/logfiles/
 
 # Setup root area and other paths
  

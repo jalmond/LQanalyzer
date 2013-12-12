@@ -54,7 +54,7 @@ class LQController  {
   void SetDataPeriod(TString period);
   void SetChannel(TString channel);
   void SetInputChain(TChain* ch);
-
+  void SetLQInput(bool lq);
   /// Other class functions
   void RunEvent(Long64_t ev);
   std::pair< Double_t, Double_t> GetTotalEvents() throw(LQError);
@@ -88,9 +88,11 @@ class LQController  {
   int output_step;
   TString channel;
   TString k_period;
+  bool kLQInput;
   
   TH1F* h_timing_hist;
   TH1F* h_virtmemory_hist;
   TH1F* h_physicalmemory_hist;
+
 };
 #endif

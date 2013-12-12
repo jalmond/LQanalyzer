@@ -91,10 +91,10 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
   if (!fChain) throw LQError( "Chain is not initialized",  LQError::SkipCycle );     
-  int nbytes = fChain->GetEntry(entry,0);  //  ,0) sets lonly active branches 
   
-  if(k_isdata != isData) throw LQError( "!!! Event is confused. It does not know if it is data or MC", LQError::SkipCycle );
-  if(nbytes==0)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );  
+  if(LQinput){
+    if(k_isdata != isData) throw LQError( "!!! Event is confused. It does not know if it is data or MC", LQError::SkipCycle );
+  }
   
   if (!(entry % output_interval)) {
     m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << LQLogger::endmsg;
@@ -117,7 +117,9 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   // creates object that stores all SKTree classes	
   //                                                                                                        
 
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), eventinfo);
+
+  snu::KTrigger triggerinfo = GetTriggerInfo();
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
@@ -128,23 +130,22 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
 void AnalyzerCore::EndEvent()throw( LQError ){
 
-  FillOutTree();
   delete eventbase;                                                                                                            
 
 }
   
 void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 
-  if(file) m_logger << "Analyzer: File " << file->GetName() << " was found." << LQLogger::endmsg;
-  else m_logger  << "Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << LQLogger::endmsg;
+  if(file) m_logger << INFO << "Analyzer: File " << file->GetName() << " was found." << LQLogger::endmsg;
+  else m_logger  << INFO <<"Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << LQLogger::endmsg;
 
-  if(!file)  throw LQError( "!!! File is not found", LQError::SkipCycle );
+  if(!file)  throw LQError( "!!! File is not found", LQError::SkipCycle);
   return;
 }
 
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler){
 
-  return TriggerSelector(list, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler);
+  return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
 
 }
 
@@ -204,10 +205,13 @@ bool AnalyzerCore::PassBasicEventCuts(){
 
   bool pass (true);
 
-  if (isTrackingFailure || passTrackingFailureFilter) pass = false;
-  if (!passBeamHaloFilterLoose) pass = false;
-  if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) pass = false;
-  if (!passHBHENoiseFilter) pass = false; // || passHcalLaserEventFilter) continue;                            
+  if (eventbase->GetEvent().IsTrackingFailure() || eventbase->GetEvent().PassTrackingFailureFilter()) pass = false;
+  if (!eventbase->GetEvent().PassBeamHaloFilterLoose()) pass = false;
+  if (eventbase->GetEvent().PassBadEESupercrystalFilter() || 
+      eventbase->GetEvent().PassEcalDeadCellBoundaryEnergyFilter() || 
+      eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter() || 
+      eventbase->GetEvent().PassEcalLaserCorrFilter()) pass = false;
+  if (!eventbase->GetEvent().PassHBHENoiseFilter()) pass = false; // || passHcalLaserEventFilter) continue;                            
   return pass;
 }
 

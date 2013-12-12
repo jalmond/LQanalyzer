@@ -66,7 +66,7 @@ KMuon::~KMuon()
 
 void KMuon::Reset()
 {
-  KParticle::Reset(),
+  KParticle::Reset();
   k_reliso=0,
   k_isor03ch=0.;
   k_isor03n=0.;

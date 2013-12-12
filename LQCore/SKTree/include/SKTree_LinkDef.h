@@ -28,4 +28,6 @@
 #pragma link C++ class std::vector<snu::KTruth>;
 #pragma link C++ class std::vector<snu::KTruth*>;
 
+#pragma link C++ class snu::KTrigger+;
+
 #endif

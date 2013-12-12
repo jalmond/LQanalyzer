@@ -141,6 +141,8 @@ SetLogName(\" %(class)-s \" );
 
 void %(class)-s::BeginCycle(TString output_file_name) throw( LQError ){
 Message(\"In begin Cycle[\" + output_file_name + \"]\" , INFO);
+
+
 }
 
 void %(class)-s::BeginEvent()throw( LQError ){
@@ -151,6 +153,8 @@ void %(class)-s::ExecuteEvents()throw( LQError ){
 }
 
 void %(class)-s::EndCycle()throw( LQError ){
+ WriteHists();/// writes all outputs in maphist
+ WriteCLHists(); /// writes all hists set with MakeCleverHistograms 
 
 }
 

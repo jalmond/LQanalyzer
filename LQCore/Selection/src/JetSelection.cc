@@ -14,7 +14,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
   
   //// This is a basic set of cuts on jets
  
-  std::vector<KJet> alljets = k_lqevent.GetBaseJets();
+  std::vector<KJet> alljets = k_lqevent.GetJets();
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 

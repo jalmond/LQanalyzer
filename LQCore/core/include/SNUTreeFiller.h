@@ -14,6 +14,7 @@
 #include "KEvent.h"
 #include "KTruth.h"
 #include "KTau.h"
+#include "KTrigger.h"
 #include "SelectionFunctions.h"
 #include "AnalysisBase.h"
 
@@ -29,6 +30,7 @@ class SNUTreeFiller : public Data, public AnalysisBase {
   std::vector<snu::KJet> GetAllJets();
   std::vector<snu::KJet> GetAllCaloJets();
   snu::KEvent GetEventInfo();
+  snu::KTrigger GetTriggerInfo();
   std::vector<snu::KTruth>  GetTruthParticles();
 
   snu::KParticle::PartType partType;

@@ -59,17 +59,17 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
 
 void Analyzer::ExecuteEvents()throw( LQError ){
   
-  if(!PassBasicEventCuts()) return;     /// Initial event cuts
+  // if(!PassBasicEventCuts()) return;     /// Initial event cuts
   
   /// Trigger List (specific to muons channel)
   std::vector<TString> triggerslist;
   //triggerslist.push_back("HLT_Mu17_TkMu8_v");
   //if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
-  if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
-  numberVertices = eventbase->GetBaseEvent().nVertices();
+  //if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
+  numberVertices = eventbase->GetEvent().nVertices();
 
-  if (!eventbase->GetBaseEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+  if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
  
  
   //////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
     if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
 
       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(elhist, "Zelectrons", electronColl, eventbase->GetBaseEvent().JetRho(), weight);
+      FillCLHist(elhist, "Zelectrons", electronColl, eventbase->GetEvent().JetRho(), weight);
     } 
   }
   
@@ -130,10 +130,7 @@ void Analyzer::EndCycle()throw( LQError ){
   Message("In EndCycle" , INFO);
   //
   // This function opens output root file and saves output trees
-  //
-
-  SaveOutputTrees(m_outputFile);
-  
+  //  
   m_logger<< INFO << "Opening output root file " << m_outputFile->GetName() << LQLogger::endmsg;
   //
   // All histograms are output into m_outputFile
@@ -156,12 +153,6 @@ void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
   string analysisdir = getenv("FILEDIR");  
   if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
 
-  //
-  // Open the out put file if any output Tree variables are  specified
-  //
-  MakeOutPutFile(output_file_name); 
-  /// can specify output tree by chaging line to  MakeOutPutFile(output_file_name, treename); This will change default name for DeclareVariable()
-  
   //
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function

@@ -22,7 +22,18 @@ LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_ou
 
 
 LQCycleBaseNTuple::~LQCycleBaseNTuple(){
+  DeleteInputVariables();
+}
 
+void LQCycleBaseNTuple::DeleteInputVariables() {
+
+  for( std::list< TObject* >::iterator it = m_inputVarPointers.begin();
+       it != m_inputVarPointers.end(); ++it ) {
+    delete ( *it );
+  }
+  m_inputVarPointers.clear();
+
+  return;
 }
 
 void LQCycleBaseNTuple::CreateOutputTrees(TFile* outputFile, TString name, TString title){
@@ -78,7 +89,10 @@ void LQCycleBaseNTuple::SetNSampleEvents(double nev){
   sample_entries = nev;
 }
 
-
+TFile* LQCycleBaseNTuple::GetOutputFile(){
+  return m_outputFile;
+}
+  
 void LQCycleBaseNTuple::MakeOutPutFile(TString outfile, TString treename){
   
   if(!m_outputFile){

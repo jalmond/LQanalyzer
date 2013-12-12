@@ -22,6 +22,16 @@
 class TTree;
 class TBranch;
 
+namespace snu{
+  class KMuon;
+  class KElectron;
+  class KEvent;
+  class KJet;
+  class KTrigger;
+}
+
+
+
 class Data : public LQCycleBaseNTuple {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
@@ -29,12 +39,12 @@ public :
 
 
    Long64_t GetNEntries();
-
    TTree          *output_tree;
 
    Data();
    ~Data();
 
+   void      GetEvent(Long64_t entry)throw( LQError );
    Int_t    GetEntry(Long64_t entry);
    Int_t    Cut(Long64_t entry);
    Long64_t LoadTree(Long64_t entry);
@@ -48,11 +58,11 @@ public :
    /// Connect an input variable                                                
    template< typename T >
      bool ConnectVariable(  const char* branchName,
-			    T& variable , TBranch* br);
+			    T& variable, TBranch* br);
    /// Specialisation for object pointers                                                                                                                                      
    template< typename T >
      bool ConnectVariable(const char* branchName,
-			  T*& variable , TBranch* br);   
+			  T*& variable, TBranch* br);   
 
    void Reset();
    void ConnectVariables(Bool_t setall);
@@ -68,7 +78,9 @@ public :
    void ConnectTrigger();
    void ConnectAllBranches();
    void ConnectMET();
-
+   void SetLQNtupleInputType(bool lq);
+     
+   bool LQinput;
    Long64_t nentries;
 
    // Declaration of leaf types
@@ -76,6 +88,14 @@ public :
    std::vector<std::string>  *HLTInsideDatasetTriggerNames;
    std::vector<std::string>  *HLTOutsideDatasetTriggerNames;
    std::vector<std::string>  *HLTFilterName;
+
+   /// If needed (using SKTree input)
+   std::vector<snu::KMuon>     *k_inputmuons;
+   std::vector<snu::KJet>     *k_inputjets;
+   snu::KEvent     *k_inputevent;
+   snu::KTrigger     *k_inputtrigger;
+   std::vector<snu::KElectron>     *k_inputelectrons;
+
    Bool_t          isData;
    Bool_t          isBPTX0;
    Bool_t          isBSCBeamHalo;
@@ -91,6 +111,7 @@ public :
    Bool_t          passEcalDeadCellBoundaryEnergyFilter;
    Bool_t          passEcalDeadCellTriggerPrimitiveFilter;
    Bool_t          passEcalLaserCorrFilter;
+   Bool_t          passHcalLaserEventFilter;
    Bool_t          passEcalMaskedCellDRFilter;
    Bool_t          passHBHENoiseFilter;
    Bool_t          passLogErrorTooManyClusters;
@@ -778,7 +799,14 @@ public :
    UInt_t          run;
    UInt_t          ProcessID;
 
+   std::vector<TBranch*> m_inputbranches;
    // List of branches
+
+   TBranch        *b_inputmuons;
+   TBranch        *b_inputtrigger;
+   TBranch        *b_inputjets;
+   TBranch        *b_inputevent;
+   TBranch        *b_inputelectrons;
    TBranch        *b_HLTKey;   //!
    TBranch        *b_HLTInsideDatasetTriggerNames;   //!
    TBranch        *b_HLTOutsideDatasetTriggerNames;   //!
@@ -798,6 +826,7 @@ public :
    TBranch        *b_passEcalDeadCellBoundaryEnergyFilter;   //!
    TBranch        *b_passEcalDeadCellTriggerPrimitiveFilter;   //!
    TBranch        *b_passEcalLaserCorrFilter;   //!
+   TBranch        *b_passHcalLaserEventFilter;  //!
    TBranch        *b_passEcalMaskedCellDRFilter;   //!
    TBranch        *b_passHBHENoiseFilter;   //!
    TBranch        *b_passLogErrorTooManyClusters;   //!
@@ -1486,7 +1515,6 @@ public :
    TBranch        *b_MuonGlobalCharge;   //!
    TBranch        *b_MuonMuonSpecCharge;   //!
    TBranch        *b_MuonTrackerCharge;   //!
-
 };
 
 #endif

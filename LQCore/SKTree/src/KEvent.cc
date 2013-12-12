@@ -27,7 +27,17 @@ KEvent::KEvent() :
   k_isfakeV(false), 
   k_isgoodevent(false),
   k_isData(false), 
-  k_isprimaryvertex(false)
+  k_isprimaryvertex(false),
+  k_isTrackingFailure(false),
+  k_passTrackingFailureFilter(false),
+  k_passBeamHaloFilterLoose(false),
+  k_passBadEESupercrystalFilter(false),
+  k_passEcalDeadCellBoundaryEnergyFilter(false),
+  k_passEcalDeadCellTriggerPrimitiveFilter(false),
+  k_passEcalLaserCorrFilter(false),
+  k_passHBHENoiseFilter(false),
+  k_passHcalLaserEventFilter(false),
+  k_PileUpInteractionsTrue(0.)
 {
 
 }
@@ -51,7 +61,17 @@ KEvent::KEvent(const KEvent& ev) :
   k_isfakeV(ev.k_isfakeV),
   k_isgoodevent(ev.k_isgoodevent),
   k_isData(ev.k_isData),
-  k_isprimaryvertex(ev.k_isprimaryvertex)
+  k_isprimaryvertex(ev.k_isprimaryvertex),
+  k_isTrackingFailure(ev.k_isTrackingFailure),
+  k_passTrackingFailureFilter(ev.k_passTrackingFailureFilter),
+  k_passBeamHaloFilterLoose(ev.k_passBeamHaloFilterLoose),
+  k_passBadEESupercrystalFilter(ev.k_passBadEESupercrystalFilter),
+  k_passEcalDeadCellBoundaryEnergyFilter(ev.k_passEcalDeadCellBoundaryEnergyFilter),
+  k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
+  k_passEcalLaserCorrFilter(ev.k_passEcalLaserCorrFilter),
+  k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
+  k_passHcalLaserEventFilter(ev.k_passHcalLaserEventFilter),
+  k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue)
 {
 }
 
@@ -99,12 +119,62 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_jetrho=p.JetRho();
       k_isgoodevent = p.HasGoodPrimaryVertex();
       k_mcweight = p.MCWeight();
+      k_isTrackingFailure = p.IsTrackingFailure();
+      k_passTrackingFailureFilter = p.PassTrackingFailureFilter();
+      k_passBeamHaloFilterLoose = p.PassBeamHaloFilterLoose();
+      k_passBadEESupercrystalFilter = p.PassBadEESupercrystalFilter();
+      k_passEcalDeadCellBoundaryEnergyFilter = p.PassEcalDeadCellBoundaryEnergyFilter();
+      k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
+      k_passEcalLaserCorrFilter = p.PassEcalLaserCorrFilter();
+      k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
+      k_passHcalLaserEventFilter = p.PassHcalLaserEventFilter();
+      k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
     }
     
     return *this;
 }
 
 //// SET CLASS VARIBALES
+void KEvent::SetIsTrackingFailure(bool fail){
+  k_isTrackingFailure = fail;
+}
+
+void KEvent::SetPassTrackingFailureFilter(bool pass){
+  k_passTrackingFailureFilter= pass;
+}
+
+void KEvent::SetPassBeamHaloFilterLoose(bool pass){
+  k_passBeamHaloFilterLoose = pass;
+}
+
+
+void KEvent::SetPassBadEESupercrystalFilter(bool pass){
+  k_passBadEESupercrystalFilter = pass;
+}
+
+void KEvent::SetPassEcalDeadCellBoundaryEnergyFilter(bool pass){
+  k_passEcalDeadCellBoundaryEnergyFilter = pass;
+}
+
+void KEvent::SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass){
+  k_passEcalDeadCellTriggerPrimitiveFilter = pass;
+}
+
+void KEvent::SetPassEcalLaserCorrFilter(bool pass){
+  k_passEcalLaserCorrFilter= pass;
+}
+
+void KEvent::SetPassHBHENoiseFilter(bool pass){
+  k_passHBHENoiseFilter= pass;
+}
+void KEvent::SetPassHcalLaserEventFilter(bool pass){
+
+  k_passHcalLaserEventFilter = pass;
+}
+
+void KEvent::SetPileUpInteractionsTrue(double npu){
+  k_PileUpInteractionsTrue = npu;
+}
 
 void KEvent::SetWeight(double mcweight){
   k_mcweight = mcweight;

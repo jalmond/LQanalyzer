@@ -29,6 +29,7 @@ parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="Ho
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
 parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
+parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 
 
 
@@ -51,6 +52,8 @@ eff_lumi = float(options.efflumi)
 data_lumi = options.data_lumi
 Finaloutputdir = options.outputdir
 remove_workspace=options.remove
+useskinput=options.skinput
+print "useskinput= " + useskinput
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
@@ -78,7 +81,11 @@ if ("*" in sample) and mc:
 else:
     list.append(sample)
 
-    
+if useskinput == "true":
+    channel="SK" + channel
+
+
+print "sample      = " + sample
 #Find theq DS name 
 inDS = ""
 mcLumi = 1.0
@@ -106,7 +113,7 @@ else:
                     inDS = entries[2]
 
 
-    
+print "inDS= " + inDS    
 InputDir = inDS    
 print InputDir
 
@@ -151,6 +158,7 @@ check_array = []
 workspace = "/var/tmp/"+ getpass.getuser() + "/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
+out_end=sample
 output=workspace + sample + "_" + now() + "/"
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"
@@ -201,7 +209,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -223,7 +231,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi))
+                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -323,6 +331,7 @@ ncomplete_files=0
 JobSuccess=False
 CompletedJobs=[]
 doMerge=False
+
 print "Checking Job status:"
 while not JobSuccess:
 
@@ -363,10 +372,19 @@ while not JobSuccess:
         timeWait+= 10
 
 if doMerge:
-    os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + sample + ".root ")
+    if os.path.exists(Finaloutputdir + cycle + "_" + filechannel + sample + ".root"):
+        os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + sample + ".root ")
     os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
+
     
     if remove_workspace == "True":
+        if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
+            os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
+
+        if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample):
+            os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample)
+                
+        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
         os.system("rm -r " + output)
     print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir  
 

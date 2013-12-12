@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"){
+LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
   
   chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
@@ -370,38 +370,68 @@ void LQController::ExecuteCycle() throw( LQError ) {
     // This creates anyoutput files/Trees/Branches for analysis                
 
     /// Call BeginCycle by hand
+    cycle->MakeOutPutFile(completename);
     cycle->BeginCycle(completename);
     GetMemoryConsumption("Ran Begin Cycle");
 
-    if(!chain){
-      m_logger << INFO << filelist << LQLogger::endmsg;
-      if(filelist == "0") throw LQError( "No input filelist",
-					 LQError::StopExecution );
-      ///  Get Tree Name / input filename
-      chain = new TChain( treeName );
+    if(!kLQInput){
+      /// Use SKTree input
+
+      chain = new TChain( "LQTree" );
       if(filelist.Contains("NULL")){
 	throw LQError( "Filelist is null!!!",
 		       LQError::StopExecution );
       }
       std::ifstream fin(filelist.Data());
       std::string word;
+      
       if(!chain) {
 	throw LQError( "Chain is null!!!",
 		       LQError::StopExecution );
       }
       
       if(fin.is_open()){
-	while(getline (fin,word)){      
+	while(getline (fin,word)){
 	  m_logger <<  INFO << "- " << word << LQLogger::endmsg;
 	  chain->Add(word.c_str());
 	}
 	fin.close();
+       
       }
-      GetMemoryConsumption("Created TChain");
+      cycle->SetLQNtupleInputType(false);
     }
-    //// Connect chain to Data class
-    cycle->Init(chain);        
+    else{
+      cycle->SetLQNtupleInputType(true);
+      if(!chain){
+	m_logger << INFO << filelist << LQLogger::endmsg;
+	if(filelist == "0") throw LQError( "No input filelist",
+					   LQError::StopExecution );
+	///  Get Tree Name / input filename
+	chain = new TChain( treeName );
+	if(filelist.Contains("NULL")){
+	  throw LQError( "Filelist is null!!!",
+			 LQError::StopExecution );
+	}
+	std::ifstream fin(filelist.Data());
+	std::string word;
+	if(!chain) {
+	  throw LQError( "Chain is null!!!",
+			 LQError::StopExecution );
+	}
+	
+	if(fin.is_open()){
+	  while(getline (fin,word)){      
+	    m_logger <<  INFO << "- " << word << LQLogger::endmsg;
+	    chain->Add(word.c_str());
+	  }
+	  fin.close();
+	}
+	GetMemoryConsumption("Created TChain");
+      }
+    }
 
+    //// Connect chain to Data class                                                                                                                                        
+    cycle->Init(chain);
     GetMemoryConsumption("Connected All Active Branches");
     
     /// We can now check 
@@ -460,36 +490,68 @@ void LQController::ExecuteCycle() throw( LQError ) {
     timer.Start();
     FillMemoryHists("BeginCycle");
 
+
+    int m_nSkippedEvents(0);
+    int m_nProcessedEvents(0);
+
     /// Get ints for 1/4 , 1/2 of the list to do timing checks
     int entry_4 = int((nevents_to_process-n_ev_to_skip)/4.);
     int entry_3_4 = 3*entry_4;
     int entry_2 = int((nevents_to_process-n_ev_to_skip)/2.);
     if(list_to_run.size()!=0){
       for(unsigned int list_entry = 0; list_entry < list_to_run.size(); list_entry++){
-	cycle->SetUpEvent(list_entry,ev_weight);
-	cycle->BeginEvent();
-	cycle->ExecuteEvents();
-	cycle->EndEvent();
-	
-      }/// list loop
+	Bool_t skipEvent = kFALSE;
+	try {
+	  cycle->GetEntry(list_entry);
+	  cycle->SetUpEvent(list_entry,ev_weight);
+	  cycle->BeginEvent();
+	  cycle->ExecuteEvents();
+	  cycle->EndEvent();
+	} catch( const LQError& error ) {
+	  if( error.request() <= LQError::SkipEvent ) {
+	    skipEvent = kTRUE;
+	  } else {
+	    throw;
+	  }
+	}
+	if( ! skipEvent ) cycle->FillOutTree();	
+      }// list loop
     }/// check size of list loop
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
 	/// This connects the correct entries for each active branch
-
+	
 	//	if( jentry%1000) cycle->CheckCaching();
 	m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
-	cycle->SetUpEvent(jentry, ev_weight);
-	/// 
-	m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
-	cycle->BeginEvent();   
-	/// executes analysis code
-	m_logger << DEBUG << "cycle->ExecuteEvent " << LQLogger::endmsg;
-	cycle->ExecuteEvents();
-	// cleans up any pointers etc.
-	m_logger << DEBUG << "cycle->ENDEvent " << LQLogger::endmsg;
-	cycle->EndEvent();
+	Bool_t skipEvent = kFALSE;
+        try {
+	  m_logger << DEBUG << "cycle->GetEvent " << LQLogger::endmsg;
+	  cycle->GetEntry(jentry);
+	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
+	  cycle->SetUpEvent(jentry, ev_weight);
+	  /// 
+	  m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
+	  cycle->BeginEvent();   
+	  /// executes analysis code
+	  m_logger << DEBUG << "cycle->ExecuteEvent " << LQLogger::endmsg;
+	  cycle->ExecuteEvents();
+	  // cleans up any pointers etc.
+	  cycle->EndEvent();
+	  m_logger << DEBUG << "cycle->ENDEvent " << LQLogger::endmsg;
+	}
+	catch( const LQError& error ) {
+          if( error.request() <= LQError::SkipEvent ) {
+            skipEvent = kTRUE;
+          } else {
+	    throw;
+	  }
+	}
 
+	if( ! skipEvent ) cycle->FillOutTree();
+	else ++m_nSkippedEvents;
+	
+	++m_nProcessedEvents;
+	
 	if( jentry == entry_4) {
 	  timer.Stop();
 	  h_timing_hist->Fill("QuarterExecute", timer.RealTime());
@@ -497,38 +559,44 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  FillMemoryHists("QuarterExecute");
 	}
 	if( jentry == entry_2) {
-          timer.Stop();
-          h_timing_hist->Fill("HalfExecute", timer.RealTime());
+	  timer.Stop();
+	  h_timing_hist->Fill("HalfExecute", timer.RealTime());
 	  timer.Start();
 	  FillMemoryHists("HalfExecute");
 	}
 	if( jentry == entry_3_4) {
-          timer.Stop();
-          h_timing_hist->Fill("ThreeQuarterExecute", timer.RealTime());
+	  timer.Stop();
+	  h_timing_hist->Fill("ThreeQuarterExecute", timer.RealTime());
 	  timer.Start();
 	  FillMemoryHists("ThreeQuarterExecute");
-	  }
+	}
       }
-    }
-    
+    }     
     timer.Stop();
     h_timing_hist->Fill("FullExecute", timer.RealTime());
     timer.Start();
     FillMemoryHists("FullExecute");
+
+    cycle->SaveOutputTrees(cycle->GetOutputFile());
     cycle->EndCycle();
     timer.Stop();
     h_timing_hist->Fill("EndCycle", timer.RealTime());
     FillMemoryHists("EndCycle");
-
+    
     delete chain;
     cycle->WriteCycleHists(h_timing_hist,h_virtmemory_hist,h_physicalmemory_hist);
     cycle->CloseFiles();
+
+    m_logger << INFO << "Number of event processed = " << m_nProcessedEvents << LQLogger::endmsg;
+    m_logger << INFO << "Number of event skipped = " << m_nSkippedEvents << LQLogger::endmsg;
+
     
     GetMemoryConsumption("Finished Running Cycle");
   }
+  
   catch( const LQError& error ) {
-    //                                                                                                                                                            
-    // This is where I catch "cycle level" problems:                                                                                                              
+    // 
+    // This is where I catch "cycle level" problems: 
     //                                                                                                                                                            
     if( error.request() <= LQError::SkipCycle ) {
       //If just this cycle has to be skipped:                                                                                                                    
@@ -543,6 +611,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
   }
 }
  
+
+void LQController::SetLQInput(bool lq){
+  kLQInput=lq;
+}
 
 
 float LQController::CalculateWeight() throw(LQError) {

@@ -8,20 +8,42 @@ using namespace snu;
 using namespace std;
 
 
-SNUTreeFiller::SNUTreeFiller() {
+SNUTreeFiller::SNUTreeFiller() :Data() {
   VertexN = -999; //// set event vertex to dummy number 
 };
 
 
 SNUTreeFiller::~SNUTreeFiller() {};
 
-snu::KEvent SNUTreeFiller::GetEventInfo(){
+snu::KTrigger SNUTreeFiller::GetTriggerInfo(){
+  snu::KTrigger ktrigger;
+  return ktrigger;
   
+  if(!LQinput){
+    ktrigger = *k_inputtrigger;
+    return ktrigger;
+  }
+  ktrigger.SetHLTInsideDatasetTriggerNames(*HLTInsideDatasetTriggerNames);
+  ktrigger.SetHLTInsideDatasetTriggerDecisions(*HLTInsideDatasetTriggerDecisions);
+  ktrigger.SetHLTInsideDatasetTriggerPrescales(*HLTInsideDatasetTriggerPrescales);
+  
+  return ktrigger;
+  
+}
+
+snu::KEvent SNUTreeFiller::GetEventInfo(){
+ 
   m_logger << DEBUG << "Filling Event" << LQLogger::endmsg;
   snu::KEvent kevent;
-  VertexN = -999; 
+  if(!LQinput){
+    kevent = *k_inputevent;
+    return kevent;
+  }
+ 
 
+  VertexN = -999; 
   kevent.SetMET( PFMETType01XYCor->at(0));
+  
   int nVertices = VertexNDF->size();
   kevent.SetNVertices(nVertices);
   goodVerticies = new Bool_t [nVertices];
@@ -38,6 +60,8 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
     }
   }
 
+
+  
   kevent.SetVertexIndex(VertexN); /// setting event vertex
   kevent.SetIsData(isData);
   if(!isData)kevent.SetWeight(Weight);  
@@ -55,6 +79,18 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
   else VertexN = -1;
   kevent.SetJetRho(rhoJets);
   
+  kevent.SetIsTrackingFailure(isTrackingFailure);
+  kevent.SetPassTrackingFailureFilter(passTrackingFailureFilter);
+  kevent.SetPassBeamHaloFilterLoose(passBeamHaloFilterLoose);
+  kevent.SetPassBadEESupercrystalFilter(passBadEESupercrystalFilter);
+  kevent.SetPassEcalDeadCellBoundaryEnergyFilter(passEcalDeadCellBoundaryEnergyFilter);
+  kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(passEcalDeadCellTriggerPrimitiveFilter);
+  kevent.SetPassEcalLaserCorrFilter(passEcalLaserCorrFilter);
+  kevent.SetPassHBHENoiseFilter(passHBHENoiseFilter);
+  kevent.SetPassHcalLaserEventFilter(passHcalLaserEventFilter);
+
+  if(!isData)kevent.SetPileUpInteractionsTrue(PileUpInteractionsTrue->at(0));
+  else kevent.SetPileUpInteractionsTrue(-999.);
   
   return kevent;
 }
@@ -62,8 +98,13 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
 
 std::vector<KTau> SNUTreeFiller::GetAllTaus(){
   
-  m_logger << DEBUG << "Filling Tau" << LQLogger::endmsg;
   std::vector<KTau> taus;
+  if(!LQinput){
+    
+    return taus;
+  }
+
+  m_logger << DEBUG << "Filling Tau" << LQLogger::endmsg;
   for(UInt_t itau = 0; itau < HPSTauPhi->size(); itau++){
 
     KTau tau;
@@ -78,9 +119,18 @@ std::vector<KTau> SNUTreeFiller::GetAllTaus(){
 }
 
 std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
+
+  std::vector<KElectron> electrons;
+  if(!LQinput){
+    for(std::vector<KElectron>::iterator kit  = k_inputelectrons->begin(); kit != k_inputelectrons->end(); kit++){
+      electrons.push_back(*kit);
+    }
+    return electrons;
+  }
+
   
   m_logger << DEBUG << "Filling Electron" << LQLogger::endmsg;
-  std::vector<KElectron> electrons;
+
   for (UInt_t iel=0; iel< ElectronEta->size(); iel++) {
     KElectron el;
     
@@ -134,8 +184,15 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
 
 std::vector<KJet> SNUTreeFiller::GetAllJets(){
 
-  m_logger << DEBUG << "Filling PFJets" << LQLogger::endmsg;
   std::vector<KJet> jets;
+  if(!LQinput){
+    for(std::vector<KJet>::iterator kit  = k_inputjets->begin(); kit != k_inputjets->end(); kit++){
+      jets.push_back(*kit);
+    }
+    return jets;
+  }
+
+  m_logger << DEBUG << "Filling PFJets" << LQLogger::endmsg;
  
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
     KJet jet;
@@ -163,9 +220,14 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
 }
 
 std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
-  
+
   m_logger << DEBUG << "Filling Cal Jets" << LQLogger::endmsg;
   std::vector<KJet> jets;
+
+  if(!LQinput){
+
+    return jets;
+  }
   for (UInt_t ijet=0; ijet< CaloJetEta->size(); ijet++) {
     KJet jet;
     jet.SetPtEtaPhiE(CaloJetPt->at(ijet), CaloJetEta->at(ijet), CaloJetPhi->at(ijet), CaloJetEnergy->at(ijet));
@@ -180,8 +242,15 @@ std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
 
 std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
+  std::vector<KMuon> muons ;
+  if(!LQinput){
+    for(std::vector<KMuon>::iterator kit  = k_inputmuons->begin(); kit != k_inputmuons->end(); kit++){
+      muons.push_back(*kit);
+    }  
+    return muons;
+  }
   m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
-  std::vector<KMuon> muons;
+
   int iglobal=0;
   int ims=0;
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
@@ -355,6 +424,11 @@ std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
 
   m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;
+  if(!LQinput){
+
+    return vtruth;
+  }
+
   int itruth(0);
   for (UInt_t it=0; it< GenParticleEta->size(); it++, itruth++) {
     snu::KTruth truthp;

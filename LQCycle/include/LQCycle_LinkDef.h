@@ -8,6 +8,7 @@
 
 #pragma link C++ class AnalyzerCore+;
 #pragma link C++ class Analyzer+;
+#pragma link C++ class SKTreeMaker+;
 
 
 #endif // __CINT__

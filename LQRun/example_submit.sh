@@ -13,9 +13,10 @@ source functions.sh
 cycle="Analyzer"
 ## Which stream is being run egamma/muon
 # This is for data (used to set input) / Not needed for MC
+skinput="true"
 stream="muon"
 ## How many cores should the job use
-njobs=5
+njobs=20
 ## How much data are you running/ for MC this sets target luminosity to weight the events
 ## can be A/B/C/D/AtoD
 data_lumi="AtoD"
@@ -34,8 +35,8 @@ loglevel="INFO"
 # loglevel  /// VERBOSE/DEBUG/INFO/WARNING
 # nevents   /// set number of events to process
 #### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt
-declare -a periods=( "A" "B" "C" "D" "DY10to50" "DY50plus")
-#declare -a periods=("DY10to50")
+#declare -a periods=( "A" "B" "C" "D" "DY10to50" "DY50plus")
+declare -a periods=("A" "B" "C" "D")
 
 
 ############################################################
@@ -62,6 +63,7 @@ xsec=$(makeParseVariable 'x' ${xsec})
 targetlumi=$(makeParseVariable 'T' ${targetlumi})
 efflumi=$(makeParseVariable 'E' ${efflumi})
 remove=$(makeParseVariable 'w' ${remove_workspace})
+skinput=$(makeParseVariable 'S' ${skinput})
 
 
 ################
@@ -69,7 +71,7 @@ remove=$(makeParseVariable 'w' ${remove_workspace})
 for i in ${periods[@]}
   do
   outlog="/var/tmp/"${USER}"/log_"${i}".txt"
-  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove}  &> $outlog
+  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput}
   echo "Submitted " ${i}   ": to view---> tail -f " $outlog
 
 done

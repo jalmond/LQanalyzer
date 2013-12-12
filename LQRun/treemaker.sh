@@ -10,13 +10,13 @@ source functions.sh
 ############################################################
 ## What cycle do you want to run.  
 ## 
-cycle="Analyzer"
+cycle="SKTreeMaker"
 ## Which stream is being run egamma/muon
 # This is for data (used to set input) / Not needed for MC
 #stream="muon"
 ## How many cores should the job use
 njobs=2
-skinput="true"
+skinput="false"
 ## How much data are you running/ for MC this sets target luminosity to weight the events
 ## can be A/B/C/D/AtoD
 data_lumi="A"
@@ -24,6 +24,7 @@ data_lumi="A"
 outputdir=${LQANALYZER_DIR}/data/output/
 ### OUTPUT LEVEL
 loglevel="INFO"
+remove_workspace="False"   
 
 ### FOR TESTING
 #remove_workspace="False"
@@ -61,8 +62,6 @@ targetlumi=$(makeParseVariable 'T' ${targetlumi})
 efflumi=$(makeParseVariable 'E' ${efflumi})
 remove=$(makeParseVariable 'w' ${remove_workspace})
 skinput=$(makeParseVariable 'S' ${skinput})
-
-echo  ${loglevel}
 
 
 ################

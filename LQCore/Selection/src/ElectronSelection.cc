@@ -11,8 +11,8 @@ ElectronSelection::~ElectronSelection() {};
 
 void ElectronSelection::Selection(std::vector<KElectron>& leptonColl) {
   
-  std::vector<KElectron> allelectrons = k_lqevent.GetBaseElectrons();
-  double rho = k_lqevent.GetBaseEvent().JetRho(); 
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho(); 
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     

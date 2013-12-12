@@ -11,7 +11,7 @@ GenSelection::~GenSelection() {};
 
 void GenSelection::Selection(std::vector<snu::KTruth>& truthColl) {
 
-  std::vector<snu::KTruth> truth_particles = k_lqevent.GetBaseTruth();  
+  std::vector<snu::KTruth> truth_particles = k_lqevent.GetTruth();  
   
   for (std::vector<snu::KTruth>::iterator trit = truth_particles.begin(); trit!=truth_particles.end(); trit++){
     

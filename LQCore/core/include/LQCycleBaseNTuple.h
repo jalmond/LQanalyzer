@@ -22,6 +22,7 @@ public:
 
   TFile*                m_outputFile;
   std::vector< TTree* > m_outputTrees;
+  std::list< TObject* >   m_inputVarPointers;
   std::list< void* > m_outputVarPointers;  
   
 
@@ -31,6 +32,9 @@ public:
   virtual TTree* GetOutputTree( const char* treeName ) const;
   virtual void MakeOutPutFile(TString path, TString name= "NOTREE");
   
+  
+  TFile* GetOutputFile();
+  void DeleteInputVariables();
   void CloseFiles();
   void SetDataType(bool type);
   void SetNSampleEvents(double nev);
