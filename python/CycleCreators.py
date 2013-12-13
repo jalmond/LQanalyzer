@@ -66,6 +66,10 @@ public:
     virtual void EndEvent()throw( LQError );
     /// Function called at the end of each cycle 
     virtual void EndCycle()throw( LQError );
+    virtual void ClearOutputVectors()throw( LQError );
+
+    void MakeHistograms();
+    
 private:
    //
    // Put all your private variables here
@@ -139,9 +143,7 @@ SetLogName(\" %(class)-s \" );
 %(class)-s::~%(class)-s() {
 }
 
-void %(class)-s::BeginCycle(TString output_file_name) throw( LQError ){
-Message(\"In begin Cycle[\" + output_file_name + \"]\" , INFO);
-
+void %(class)-s::BeginCycle) throw( LQError ){
 
 }
 
@@ -153,8 +155,6 @@ void %(class)-s::ExecuteEvents()throw( LQError ){
 }
 
 void %(class)-s::EndCycle()throw( LQError ){
- WriteHists();/// writes all outputs in maphist
- WriteCLHists(); /// writes all hists set with MakeCleverHistograms 
 
 }
 
@@ -162,6 +162,34 @@ void %(class)-s::EndCycle()throw( LQError ){
 void %(class)-s::EndEvent()throw( LQError ){
 
 }
+void %(class)-s::MakeHistograms(){
+//// Additional plots to make
+
+maphist.clear();
+AnalyzerCore::MakeHistograms();
+Message("Made histograms", INFO);
+/**
+*  Remove//Overide this AnalyzerCore::MakeHistograms() to make new hists for your analysis
+**/
+
+}
+
+void %(class)-s::ClearOutputVectors() throw(LQError) {
+
+// This function is called before every execute event (NO need to call this yourself.
+
+// Add any new output vector you create to this list.
+// if you do not the vector will keep keep getting larger when it is filled in ExecuteEvents an\
+d will use excessive amoun of memory
+//
+// Reset all variables declared in Declare Variable
+//
+//out_muons.clear();
+
+}
+
+
+
 
 """
     
