@@ -24,7 +24,7 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SNUTreeFiller{
    * algorithm based on properties 
    */
 
-  virtual void BeginCycle(TString filename)throw( LQError );
+  virtual void BeginCycle() throw( LQError );
 
   /**
    * Called before the  event. Gets the weight from the configured job
@@ -52,6 +52,19 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SNUTreeFiller{
    **/
   virtual void SetUpEvent(Long64_t jevent, float ev_weight)throw( LQError );
 
+  /**
+   *  call before each event. Specific function to clear output vectors
+   *
+   **/
+
+  virtual void ClearOutputVectors() throw( LQError );
+
+  /** 
+   *  call al end of cycle: Will write all histograms to output file
+   **/
+
+  virtual void WriteHistograms() throw( LQError );
+  
   ClassDef(LQCycleBaseExec, 0 );
 };
 

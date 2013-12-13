@@ -12,13 +12,13 @@ class Analyzer : public AnalyzerCore {
   ~Analyzer();
 
   /// Functions from core
-  virtual void BeginCycle(TString filename) throw( LQError );
+  virtual void BeginCycle() throw( LQError );
   virtual void BeginEvent()throw( LQError );
   virtual void ExecuteEvents()throw( LQError );
   virtual void EndCycle()throw( LQError );
-
+  virtual void ClearOutputVectors()throw( LQError );
+  
   void InitialiseAnalysis() throw( LQError );
-  void ClearOutputVectors();
   void MakeHistograms();
 
  private:

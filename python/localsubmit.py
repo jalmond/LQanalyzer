@@ -57,8 +57,37 @@ print "useskinput= " + useskinput
 
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
-
+sample = sample.replace(":", " ")
 datatype=""
+splitsample  = sample.split()
+if not len(splitsample)==1:
+    sample = splitsample[0]
+    for conf in range(1,len(splitsample)-1):
+        if "nevents" in splitsample[conf]:
+            conf+=1
+            number_of_events_per_job = splitsample[conf]
+        if "remove" in splitsample[conf]:    
+            conf+=1
+            remove_workspace  = splitsample[conf]
+        if "loglevel" in splitsample[conf]:
+            conf+=1
+            loglevel = splitsample[conf]
+        if "cycle"  in splitsample[conf]:
+            conf+=1
+            cycle = splitsample[conf]
+        if "njobs" in splitsample[conf]:
+            conf+=1
+            number_of_cores = splitsample[conf]
+        if "skipevent" in splitsample[conf]:
+            conf+=1
+            skipev = splitsample[conf]
+        if "skinput" in splitsample[conf]:
+            conf+=1
+            useskinput = splitsample[conf]
+
+##### FINISHED CONFIGURATION            
+singlejob = number_of_cores==1            
+             
 mc = len(sample)>1
 if mc:
     datatype="mc"
@@ -127,6 +156,10 @@ join = os.path.join
 ## Get numnber of files in Input directory
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 print str(number_of_files) + " files to process"
+
+### Correct user if ncores is > nfiles
+if number_of_cores > number_of_files:
+    number_of_cores = number_of_files
 
 #import numpy as np
 nfilesperjobs= 0
@@ -310,7 +343,9 @@ for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
-    #runcommand = "nohup root -l -q -b /home/jalmond/LQanalyzer/LQRun/Example_root_submit.C"  + "&>" + log + "&"
+    if singlejob:
+        runcommand = "nohup root -l -q -b " +  script + "&>" + log
+
     os.system(runcommand)
     if i==1:
         print "Running " + script + " . Log file --->  " + log 

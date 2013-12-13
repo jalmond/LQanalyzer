@@ -371,7 +371,9 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     /// Call BeginCycle by hand
     cycle->MakeOutPutFile(completename);
-    cycle->BeginCycle(completename);
+    cycle->BeginCycle();
+    cycle->ClearOutputVectors();
+
     GetMemoryConsumption("Ran Begin Cycle");
 
     if(!kLQInput){
@@ -504,6 +506,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	try {
 	  cycle->GetEntry(list_entry);
 	  cycle->SetUpEvent(list_entry,ev_weight);
+	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
@@ -531,6 +534,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  cycle->SetUpEvent(jentry, ev_weight);
 	  /// 
 	  m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
+	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();   
 	  /// executes analysis code
 	  m_logger << DEBUG << "cycle->ExecuteEvent " << LQLogger::endmsg;
@@ -542,6 +546,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	catch( const LQError& error ) {
           if( error.request() <= LQError::SkipEvent ) {
             skipEvent = kTRUE;
+	    cycle->EndEvent();
           } else {
 	    throw;
 	  }
@@ -579,6 +584,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     cycle->SaveOutputTrees(cycle->GetOutputFile());
     cycle->EndCycle();
+    cycle->WriteHistograms();/// writes all histograms declared in the cycle to the output file
+
     timer.Stop();
     h_timing_hist->Fill("EndCycle", timer.RealTime());
     FillMemoryHists("EndCycle");
@@ -589,7 +596,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     m_logger << INFO << "Number of event processed = " << m_nProcessedEvents << LQLogger::endmsg;
     m_logger << INFO << "Number of event skipped = " << m_nSkippedEvents << LQLogger::endmsg;
-
     
     GetMemoryConsumption("Finished Running Cycle");
   }
@@ -609,6 +615,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       throw;
     }
   }
+  
 }
  
 

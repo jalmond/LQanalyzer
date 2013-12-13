@@ -30,12 +30,10 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
-  return;
   if(!PassBasicEventCuts()) throw LQError( "Fails basic cuts",  LQError::SkipEvent );
   
-  /// Trigger List (specific to muons channel)
   std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Mu17_TkMu8_v");
+  triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
   if(!PassTrigger(triggerslist, prescale)) throw LQError( "Fails trigger",  LQError::SkipEvent );
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) throw LQError( "Has no PV",  LQError::SkipEvent );
  
@@ -57,8 +55,8 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetEta(2.5); 
   eventbase->GetElectronSel()->Selection(out_electrons); 
 
-  //out_event = eventbase->GetEvent();
-  //out_trigger = eventbase->GetTrigger();
+  out_event = eventbase->GetEvent();
+  out_trigger = eventbase->GetTrigger();
 
   return;
 }// End of execute event loop
@@ -71,13 +69,9 @@ void SKTreeMaker::EndCycle()throw( LQError ){
 }
 
 
-void SKTreeMaker::BeginCycle(TString output_file_name) throw( LQError ){
+void SKTreeMaker::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
-  //
-  // To clear output variables if running multiple cycles
-  //
-  ClearOutputVectors();
 
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
   DeclareVariable(out_electrons, "KElectrons", "LQTree");
@@ -102,13 +96,12 @@ SKTreeMaker::~SKTreeMaker() {
 void SKTreeMaker::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
-  ClearOutputVectors();
 
   return;
 }
 
 
-void SKTreeMaker::ClearOutputVectors(){
+void SKTreeMaker::ClearOutputVectors() throw (LQError){
   //
   // Reset all variables declared in Declare Variable
   //

@@ -65,6 +65,11 @@ bool SelectionFunctions::TriggerSelector(std::vector<TString> triggernames, std:
       }
     }
   }
+  if(triggernames.size()== 0){
+    for (UInt_t i=0; i<inputtriggers.size(); i++) {
+      if (triggerdecision[i]) return true;
+    }
+  }
   
   return false;
 }

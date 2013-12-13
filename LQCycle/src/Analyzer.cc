@@ -128,28 +128,14 @@ void Analyzer::ExecuteEvents()throw( LQError ){
 void Analyzer::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
-  //
-  // This function opens output root file and saves output trees
-  //  
-  m_logger<< INFO << "Opening output root file " << m_outputFile->GetName() << LQLogger::endmsg;
-  //
-  // All histograms are output into m_outputFile
-  //
-  WriteHists();/// writes all outputs in maphist
-  WriteCLHists(); /// writes all hists set with MakeCleverHistograms       
 
 }
 
 
-void Analyzer::BeginCycle(TString output_file_name) throw( LQError ){
+void Analyzer::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  //
-  // To clear output variables if running multiple cycles
-  //
-  ClearOutputVectors();
-
   string analysisdir = getenv("FILEDIR");  
   if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
 
@@ -178,7 +164,6 @@ Analyzer::~Analyzer() {
 void Analyzer::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
-  ClearOutputVectors();
 
   return;
 }
@@ -199,7 +184,12 @@ void Analyzer::MakeHistograms(){
 }
 
 
-void Analyzer::ClearOutputVectors(){
+void Analyzer::ClearOutputVectors() throw(LQError) {
+
+  // This function is called before every execute event (NO need to call this yourself.
+  
+  // Add any new output vector you create to this list. 
+  // if you do not the vector will keep keep getting larger when it is filled in ExecuteEvents and will use excessive amoun of memory
   //
   // Reset all variables declared in Declare Variable
   //

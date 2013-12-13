@@ -35,8 +35,11 @@ loglevel="INFO"
 # loglevel  /// VERBOSE/DEBUG/INFO/WARNING
 # nevents   /// set number of events to process
 #### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt
-#declare -a periods=( "A" "B" "C" "D" "DY10to50" "DY50plus")
-declare -a periods=("A" "B" "C" "D")
+
+declare -a input_samples=('A:nevents:10:remove:false:loglevel:DEBUG:cycle:Analyzer:njobs:10:skipevent:1000:skinput:true'
+                          'B'
+		          'C'
+		          'D')
 
 
 ############################################################
@@ -68,11 +71,11 @@ skinput=$(makeParseVariable 'S' ${skinput})
 
 ################
 #submit
-for i in ${periods[@]}
+for i in ${input_samples[@]}
   do
+  echo ${i}
   outlog="/var/tmp/"${USER}"/log_"${i}".txt"
   python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput}
-  echo "Submitted " ${i}   ": to view---> tail -f " $outlog
 
 done
 

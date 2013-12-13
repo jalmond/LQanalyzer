@@ -25,7 +25,8 @@
   LQController analysis;
   analysis.SetJobName("Ztoll_ExampleCycle");
   analysis.SetTreeName("rootTupleTree/tree");
-  analysis.SetCycleName("Analyzer");
+  analysis.SetCycleName("SKTreeMaker");
+  //analysis.SetCycleName("Analyzer");
   analysis.SetEffectiveLuminosity(1.);
   analysis.SetTargetLuminosity(1.);
   analysis.SetLogLevel("INFO");

@@ -30,7 +30,7 @@ class SNUTreeFiller : public Data, public AnalysisBase {
   std::vector<snu::KJet> GetAllJets();
   std::vector<snu::KJet> GetAllCaloJets();
   snu::KEvent GetEventInfo();
-  snu::KTrigger GetTriggerInfo();
+  snu::KTrigger GetTriggerInfo(std::vector<TString> triglist);
   std::vector<snu::KTruth>  GetTruthParticles();
 
   snu::KParticle::PartType partType;

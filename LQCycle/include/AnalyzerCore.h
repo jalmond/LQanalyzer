@@ -25,6 +25,10 @@ class AnalyzerCore : public LQCycleBase {
   // SetUpEvent CORE function: accesses event in ntuple
   virtual void SetUpEvent(Long64_t entry, float ev_weight)throw( LQError );
   virtual void EndEvent()throw( LQError );
+  virtual void WriteHistograms()throw( LQError );
+
+  
+
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
 
@@ -33,6 +37,12 @@ class AnalyzerCore : public LQCycleBase {
   // Useful message function 
   //
   void Message(TString message, LQMsgType type=INFO);
+
+
+  //
+  //  Specify which triggers will be avaiable in KTrigger
+  //
+  void AddTriggerToList(TString triggername);
   
   /// Pileup Reweighting class
   static const Bool_t MC_pu = true;
@@ -54,6 +64,8 @@ class AnalyzerCore : public LQCycleBase {
   // used to get trigger prescale
   Int_t prescale;
   
+  std::vector<TString> triggerlist;
+
   //// Making cleaver hist maps
   map<TString, SignalPlots*> mapCLhistSig;
   map<TString, ElectronPlots*> mapCLhistEl;

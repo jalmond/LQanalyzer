@@ -6,8 +6,7 @@ LQCycleBaseExec::LQCycleBaseExec() {
 
 }
 
-void LQCycleBaseExec::BeginCycle(TString filename)throw( LQError ){
-  m_logger << INFO << "Default BeginCycle function with " << filename << LQLogger::endmsg;
+void LQCycleBaseExec::BeginCycle()throw( LQError ){
 }
 
 void LQCycleBaseExec::BeginEvent()throw( LQError ){
@@ -32,5 +31,12 @@ void LQCycleBaseExec::EndCycle()throw( LQError ){
 }
 
 
+void LQCycleBaseExec::ClearOutputVectors() throw( LQError ){
+
+}
+
+void LQCycleBaseExec::WriteHistograms() throw( LQError ){
+
+}
 
 

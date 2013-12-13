@@ -15,17 +15,44 @@ SNUTreeFiller::SNUTreeFiller() :Data() {
 
 SNUTreeFiller::~SNUTreeFiller() {};
 
-snu::KTrigger SNUTreeFiller::GetTriggerInfo(){
+snu::KTrigger SNUTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
-  return ktrigger;
   
   if(!LQinput){
     ktrigger = *k_inputtrigger;
     return ktrigger;
   }
-  ktrigger.SetHLTInsideDatasetTriggerNames(*HLTInsideDatasetTriggerNames);
-  ktrigger.SetHLTInsideDatasetTriggerDecisions(*HLTInsideDatasetTriggerDecisions);
-  ktrigger.SetHLTInsideDatasetTriggerPrescales(*HLTInsideDatasetTriggerPrescales);
+
+  std::vector<std::string> vHLTInsideDatasetTriggerNames;
+  std::vector<bool> vHLTInsideDatasetTriggerDecisions;
+  std::vector<int> vHLTInsideDatasetTriggerPrescales;
+
+  for (std::vector<TString>::reverse_iterator it (trignames.end());
+       it != std::vector<TString>::reverse_iterator (trignames.begin());
+       ++it) {
+
+    bool trigger_exists(false);
+    for (UInt_t i=0; i< HLTInsideDatasetTriggerNames->size(); i++) {
+      TString tmpHLT = HLTInsideDatasetTriggerNames->at(i);
+      if ( tmpHLT.BeginsWith(*it)){
+	trigger_exists = true;
+	bool double_count_trig = false;
+	for(std::vector<std::string>::iterator vit = vHLTInsideDatasetTriggerNames.begin(); vit != vHLTInsideDatasetTriggerNames.end(); vit++){
+	  if(vit->compare(*it) == 0) double_count_trig = true;
+	}
+	if(!double_count_trig){
+	  vHLTInsideDatasetTriggerNames.push_back(HLTInsideDatasetTriggerNames->at(i));	
+	  vHLTInsideDatasetTriggerDecisions.push_back(HLTInsideDatasetTriggerDecisions->at(i));
+	  vHLTInsideDatasetTriggerPrescales.push_back(HLTInsideDatasetTriggerPrescales->at(i));
+	}// double count check
+      } // can use start of trig name to add many triggers
+    } // loop over input triggers
+    //if(!trigger_exists) m_logger << WARNING << "Trigger: " << *it << " does not exist" << LQLogger::endmsg;
+  }// loop of selected triggers  
+  
+  ktrigger.SetHLTInsideDatasetTriggerNames(vHLTInsideDatasetTriggerNames);
+  ktrigger.SetHLTInsideDatasetTriggerDecisions(vHLTInsideDatasetTriggerDecisions);
+  ktrigger.SetHLTInsideDatasetTriggerPrescales(vHLTInsideDatasetTriggerPrescales);
   
   return ktrigger;
   
@@ -353,15 +380,14 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	m_logger << DEBUG <<  g << GenParticleStatus->size() << " " << GenParticlePdgId->size() << LQLogger::endmsg;
 	m_logger << DEBUG << GenParticleStatus->at(g) << " " << GenParticlePdgId->at(g) << LQLogger::endmsg;
 	if((GenParticleStatus->at(g) == 3) &&fabs(GenParticlePdgId->at(g))==13){
-	  if( muon.MuonMatchedGenParticleEta() != -999){
-	    if((fabs(muon.MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.2) && (fabs(muon.MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.2)) {
+	  if( muon.MuonMatchedGenParticleEta() != -999){	   
+	    if((fabs(muon.MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.2) && (fabs(muon.MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.2)) {	      
 	      if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
 		iMother = GenParticleMotherIndex->at(g);
 		iDaughter = GenParticleNumDaught->at(g);
-		ipdgid =  GenParticlePdgId->at(g);
+		ipdgid =  GenParticlePdgId->at(g);	
 		truemu_index = g;
 		matched_muon = true;
-
 	      }
 	    }
 	  }
@@ -379,7 +405,6 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	MotherPdgId =  GenParticlePdgId->at(iMother);
       }
       
-      m_logger << DEBUG << "Muon Truth2 " << LQLogger::endmsg;
       if (isPrompt( MotherPdgId)){
 	if ( MuonCharge->at(ilep)*MotherPdgId  == -24 || MuonCharge->at(ilep)*MotherPdgId  == 15 )
 	  partType = KParticle::chargemisid;
@@ -396,7 +421,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
       }
       
       muon.SetType(partType);
-      muon.SetTruthParticleIndex(truemu_index);
+      muon.SetTruthParticleIndex(truemu_index);      
       muon.SetMotherIndex(iMother);
       muon.SetDaughterIndex(iDaughter);
     }
@@ -446,7 +471,18 @@ std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
 
     truthp.SetParticleIndexDaughter(GenParticleNumDaught->at(it));
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
-          
+    
+    float charge_truth = -999.;
+    if(GenParticlePdgId->at(it) == 1 || GenParticlePdgId->at(it) == 3 || GenParticlePdgId->at(it) == 5) charge_truth = -1./3.;
+    else if(GenParticlePdgId->at(it) == 2 || GenParticlePdgId->at(it) == 4 || GenParticlePdgId->at(it) == 6) charge_truth = 2./3.;
+    else if(GenParticlePdgId->at(it) == 11 || GenParticlePdgId->at(it) ==13 || GenParticlePdgId->at(it) ==15) charge_truth = -1.;
+    else if(GenParticlePdgId->at(it) == 12 || GenParticlePdgId->at(it) ==14 || GenParticlePdgId->at(it) ==16) charge_truth = 0.;
+    else if(GenParticlePdgId->at(it) == 22 || GenParticlePdgId->at(it) == 23) charge_truth = 0.;
+    else if(GenParticlePdgId->at(it) == 24) charge_truth =1.;
+    else charge_truth = -999.;
+    
+    if(GenParticlePdgId->at(it) < 0) charge_truth *=1.;
+
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }/// end of filling loop

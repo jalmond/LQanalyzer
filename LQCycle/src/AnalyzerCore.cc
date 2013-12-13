@@ -24,6 +24,23 @@
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
 
+  /// clear list of triggers stored in KTrigger
+  triggerlist.clear();
+  // If running on LQNtuples this is not important.
+  // If creating an SKTree ntuple this controls what triggers are accessible
+  AddTriggerToList("HLT_Mu17_TkMu8_v");
+  /*AddTriggerToList("HLT_Mu13_TkMu8_v");
+  AddTriggerToList("HLT_Mu5_v");
+  AddTriggerToList("HLT_Mu8_v");
+  AddTriggerToList("HLT_Mu12_v");
+  AddTriggerToList("HLT_Mu17_v");
+  AddTriggerToList("HLT_Mu24_v");
+  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+  AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
+  */
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 
@@ -46,6 +63,11 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   delete infile;
   origDir->cd();
   
+}
+
+void AnalyzerCore::AddTriggerToList(TString triggername){
+  
+  triggerlist.push_back(triggername);
 }
 
 AnalyzerCore::~AnalyzerCore(){
@@ -117,8 +139,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   // creates object that stores all SKTree classes	
   //                                                                                                        
 
-
-  snu::KTrigger triggerinfo = GetTriggerInfo();
+  snu::KTrigger triggerinfo = GetTriggerInfo(triggerlist);
   LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
@@ -280,7 +301,13 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
 }
 
 
+void AnalyzerCore::WriteHistograms() throw (LQError){
+  // This function is called after the cycle is ran. It wrues all histograms to the output file. This function is not used by user. But by the contrioller code.
+  WriteHists();
+  WriteCLHists();
+}
 
+  
 void AnalyzerCore::WriteCLHists(){
 
   for(map<TString, MuonPlots*>::iterator mupit = mapCLhistMu.begin(); mupit != mapCLhistMu.end(); mupit++){
