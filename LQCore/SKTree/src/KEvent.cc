@@ -12,7 +12,7 @@ ClassImp(KEvent)
  *Default constructor.
  */
 KEvent::KEvent() :
-  KParticle(),
+  TObject(),
   k_EventNumber(0),
   k_RunNumber(0),
   k_nvertices(0),
@@ -46,7 +46,7 @@ KEvent::KEvent() :
  * Copy constructor.
  */
 KEvent::KEvent(const KEvent& ev) :
-  KParticle(ev),
+  TObject(),
   k_EventNumber(ev.k_EventNumber),
   k_RunNumber(ev.k_RunNumber),
   k_nvertices(ev.k_nvertices),
@@ -82,7 +82,6 @@ KEvent::~KEvent()
 
 void KEvent::Reset()
 {
-  KParticle::Reset();
   k_isData=false;
   k_EventNumber= 0;
   k_RunNumber= 0;
@@ -104,7 +103,6 @@ void KEvent::Reset()
 KEvent& KEvent::operator= (const KEvent& p)
 {
     if (this != &p) {
-      KParticle::operator=(p);
       k_isData=p.IsData();
       k_EventNumber=p.EventNumber();
       k_RunNumber=p.RunNumber();

@@ -3,13 +3,11 @@
 
 #include <string>
 #include <vector>
-
-/// Local includes
-#include "KParticle.h"
+#include "TObject.h"
 
 namespace snu {
   
-  class KTrigger : public KParticle{
+  class KTrigger  : public TObject {
   public:
     
     KTrigger();
@@ -39,7 +37,7 @@ namespace snu {
     std::vector<bool> k_HLTInsideDatasetTriggerDecisions;
     std::vector<int> k_HLTInsideDatasetTriggerPrescales;
 
-    ClassDef(KTrigger,0)
+    ClassDef(KTrigger,1)
   }; 
   
 }//namespace snu

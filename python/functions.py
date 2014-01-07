@@ -1,4 +1,4 @@
-def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput):
+def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent):
 
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -16,7 +16,9 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     config+='   TString filename = "' + input + '";\n'
     config+='   TString fullfilename = "' + fullinput + '";\n'
     config+='   LQController analysis;\n'
-    if useSKinput == "true":        
+    if useSKinput == "True":        
+        config+='   analysis.SetLQInput(false);\n'
+    elif useSKinput == "true":
         config+='   analysis.SetLQInput(false);\n'
     else :
         config+='   analysis.SetLQInput(true);\n'
@@ -29,6 +31,8 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     
     if not eff_lumi == -1.:
         config+='   analysis.SetEffectiveLuminosity(' + str(eff_lumi)+');\n'
+    if not runevent ==-1:
+        config+='   analysis.RunEvent(' + str(runevent)+');\n'
     if not tar_lumi ==-1.:    
         config+='   analysis.SetTargetLuminosity('+ str(tar_lumi) +');\n'
     if not nevents ==-1:

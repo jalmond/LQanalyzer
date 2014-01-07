@@ -35,7 +35,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),  k_inputjets(0)
   
 {
 
@@ -145,15 +145,14 @@ void Data::Init(TTree *tree)
   }
 
   fChain = tree;
-  m_logger << INFO << fChain->GetEntries() <<  " " << LQinput<< LQLogger::endmsg;
+  m_logger << INFO << "Chain entries = " << fChain->GetEntries() <<  " UseLQ ntuples =  " << LQinput<< LQLogger::endmsg;
   fCurrent = -1;
   if(LQinput)fChain->SetMakeClass(1);
-  
   /// TESTS
   //fChain->SetMaxVirtualSize(100000000); 
   Int_t cachesize=100000000;
   fChain->SetCacheSize(cachesize);
-  fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
+  if(LQinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
   ConnectVariables(false); // -> false means not ALL branches are loaded
   
   fChain->StopCacheLearningPhase();
@@ -167,7 +166,14 @@ void Data::Init(TTree *tree)
 Long64_t  Data::GetNEntries(){
   return nentries;
 }
- 
+
+UInt_t Data::GetEventNumber(){
+  if(LQinput)  return event;
+  else return k_inputevent->EventNumber();
+  return k_inputevent->EventNumber();
+
+}
+
 void Data::Reset(){
 
   /// clear vectors
@@ -840,13 +846,13 @@ void Data::ConnectVariables(bool setall){
     b_inputjets=0;
     b_inputevent=0;
     b_inputtrigger=0;
-    
-    ConnectVariable("KJets", k_inputjets,b_inputjets );
+
     ConnectVariable("KEvent", k_inputevent, b_inputevent);
+    ConnectVariable("KJets", k_inputjets,b_inputjets );
     ConnectVariable("KMuons", k_inputmuons, b_inputmuons);
     ConnectVariable("KElectrons", k_inputelectrons, b_inputelectrons);
     ConnectVariable("KTrigger", k_inputtrigger, b_inputtrigger);
-
+    
   }  
   else{
     ConnectEvent();
@@ -867,6 +873,7 @@ void Data::ConnectVariables(bool setall){
 void Data::ConnectEvent(){
 
   ConnectVariable("isData", isData, b_isData);
+  
   ConnectVariable("run", run, b_run);
   ConnectVariable("VertexNTracks", VertexNTracks, b_VertexNTracks);
   ConnectVariable("event", event, b_event);
@@ -1701,9 +1708,12 @@ d "
 
   } else {
 
+    
     variable = 0;
-    fChain->SetBranchStatus(TString(branchName) + "*",1);
+    fChain->SetBranchStatus(TString(branchName)+ "*",1);
     fChain->SetBranchAddress(branchName, &variable, &br);
+    //if(TString(branchName).Contains("Event")) br->SetMakeClass(1);
+
     m_inputVarPointers.push_back( new SPointer< T >( variable ) );
   }
   //br->SetAutoDelete(kTRUE);

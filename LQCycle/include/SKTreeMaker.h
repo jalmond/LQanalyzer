@@ -2,6 +2,8 @@
 #define SKTreeMaker_h
 
 #include "AnalyzerCore.h"
+#include "KEvent.h"
+#include "KTrigger.h"
 
 
 class SKTreeMaker : public AnalyzerCore {

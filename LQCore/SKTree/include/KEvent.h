@@ -6,11 +6,11 @@
 
 #include <iosfwd>
 #include <string>
-#include "TLorentzVector.h"
+#include "TObject.h"
 
 namespace snu {
   
-  class KEvent : public KParticle {
+  class KEvent : public TObject{
   public:
     KEvent();
     
@@ -18,7 +18,7 @@ namespace snu {
     KEvent(const KEvent& el);
     
     ///Destructor    
-    virtual ~KEvent() ;
+    ~KEvent() ;
 
     KEvent& operator= (const KEvent& obj);
     
@@ -92,7 +92,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,1)
+    ClassDef(KEvent,2)
   }; 
   
 }//namespace snu

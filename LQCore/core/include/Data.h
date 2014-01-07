@@ -39,6 +39,7 @@ public :
 
 
    Long64_t GetNEntries();
+   UInt_t GetEventNumber();
    TTree          *output_tree;
 
    Data();

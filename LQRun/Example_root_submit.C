@@ -9,7 +9,7 @@
   gROOT->ProcessLine(".L ChainMaker.C+g");
   gSystem->ChangeDirectory(run_path.c_str());
   /// egamma data example list                                                                                                                               
-  TChain* chain = ChainMaker("/var/tmp/SKTree/Example/exampleSmall.txt");
+  TChain* chain = ChainMaker("/var/tmp/SKTree/Example/exampleSmall_mumu.txt");
   
   //### Load Libraries                                                         
   gSystem->Load("libSKTree.so");

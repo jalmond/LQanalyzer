@@ -15,12 +15,13 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
   
   bool m_debug = false;
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
-  
-  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
-
-    if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = muit->IsoTerm()/muit->Pt();
-    else LeptonRelIso = 9999.;
+  int ilep(0);
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++, ilep++)
+    { 
+      
+      if(muit->Pt() == 0.) continue;
+      if (muit->Pt() > 0.01)      LeptonRelIso = muit->IsoTerm()/muit->Pt();
+      else LeptonRelIso = 9999.;
     if (LeptonRelIso<0) LeptonRelIso=0.0001;    
     
     /// TIGHT MUON from muon POG
@@ -50,21 +51,18 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
     if(apply_etacut && !(fabs(muit->Eta()) < eta_cut)) pass_selection =false;
     if(m_debug&&apply_etacut && !(fabs(muit->Eta()) < eta_cut))  cout << "Fails eta cut " << endl;
 
+
     if(apply_deposit && !DepositVeto) pass_selection = false;
     if(m_debug&&apply_deposit && !DepositVeto) cout << "Fails DepositVeto " << endl;
-    
     if(apply_chi2cut && !(muit->GlobalChi2() <chiNdof_cut) && !( muit->GlobalChi2()  >=chiNdofMIN_cut)) pass_selection = false;
     if(m_debug&&apply_chi2cut && !(muit->GlobalChi2() <chiNdof_cut) && !( muit->GlobalChi2()  >=chiNdofMIN_cut)) cout << "Fails chi2 cut " << endl;
 
     if(apply_relisocut && !(LeptonRelIso < relIso_cut) &&! ( LeptonRelIso >= relIsoMIN_cut)) pass_selection = false;
     if(m_debug&&apply_relisocut && !(LeptonRelIso < relIso_cut) &&! ( LeptonRelIso >= relIsoMIN_cut)) cout << "Fails iso cut " << endl;
-    
     if(apply_dzcut && !(fabs(muit->dZ())<dz_cut)) pass_selection = false;
     if(m_debug&&apply_dzcut && !(fabs(muit->dZ())<dz_cut)) cout << "Fails  dz cut "<<  endl;
-
     if(apply_dxycut && !(fabs(muit->dXY())<dxy_cut)) pass_selection = false;
     if(m_debug&&apply_dxycut && !(fabs(muit->dXY())<dxy_cut)) cout << "Fails  dxy cut" <<  endl;
-
     if(pass_selection) leptonColl.push_back(*muit);    
 
   }/// muon loop end

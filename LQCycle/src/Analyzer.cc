@@ -39,8 +39,7 @@ Analyzer::Analyzer() :  AnalyzerCore(), out_muons(0), out_electrons(0) {
 void Analyzer::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
-  MakeHistograms();
-  
+  MakeHistograms();  
   //
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
@@ -59,30 +58,29 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
 
 void Analyzer::ExecuteEvents()throw( LQError ){
   
-  if(!PassBasicEventCuts()) return;     /// Initial event cuts
-  
+  if(!PassBasicEventCuts()) return;     /// Initial event cuts  
+
   /// Trigger List (specific to muons channel)
   std::vector<TString> triggerslist;
   triggerslist.push_back("HLT_Mu17_TkMu8_v");
-  if(!PassTrigger(triggerslist, prescale)) return;
+
+  //  if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
   if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
   numberVertices = eventbase->GetEvent().nVertices();
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
  
- 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
-  
+
   std::vector<snu::KMuon> muonColl;
   eventbase->GetMuonSel()->SetPt(20); 
   eventbase->GetMuonSel()->SetEta(2.4);
   eventbase->GetMuonSel()->SetRelIso(0.1);
-  eventbase->GetMuonSel()->Selection(out_muons);
   eventbase->GetMuonSel()->Selection(muonColl);
-    
+  
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
@@ -94,13 +92,13 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetRelIso(0.15); 
   eventbase->GetElectronSel()->SetBSdxy(0.02); 
   eventbase->GetElectronSel()->SetBSdz(0.10);
-  eventbase->GetElectronSel()->Selection(out_electrons); 
   eventbase->GetElectronSel()->Selection(electronColl); 
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
 
   if (muonColl.size() == 2) {      
+          
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak

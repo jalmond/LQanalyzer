@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController(): inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
+LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
   
   chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
@@ -72,10 +72,16 @@ void LQController::AddLibraries(TString libname){
   v_libnames.push_back(libname);
   
 }
-void LQController::RunEvent(Long64_t pick_event){
+void LQController::RunNtupleEvent(Long64_t pick_event){
   list_to_run.push_back(pick_event);
 }
-  
+
+void LQController::RunEvent(Long64_t ev){
+
+  if(ev==-1) return;
+  run_single_event=true;
+  single_ev=ev;
+}
 
 void LQController::SetOutPutStep(int step){
   output_step = step;
@@ -520,19 +526,33 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	if( ! skipEvent ) cycle->FillOutTree();	
       }// list loop
     }/// check size of list loop
+    else if(run_single_event){
+      for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {
+	cycle->GetEntry(jentry);	
+	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << LQLogger::endmsg;
+
+	if(cycle->GetEventNumber() == single_ev){
+	  cycle->SetUpEvent(jentry, ev_weight);
+	  cycle->ClearOutputVectors();
+	  cycle->BeginEvent();
+	  cycle->ExecuteEvents();
+	  cycle->EndEvent();
+	  break;
+	  }
+	else continue;
+      }
+    }
     else{
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {            
-	/// This connects the correct entries for each active branch
-	
-	//	if( jentry%1000) cycle->CheckCaching();
 	m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	Bool_t skipEvent = kFALSE;
         try {
 	  m_logger << DEBUG << "cycle->GetEvent " << LQLogger::endmsg;
+
 	  cycle->GetEntry(jentry);
+
 	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	  cycle->SetUpEvent(jentry, ev_weight);
-	  /// 
 	  m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();   

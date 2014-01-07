@@ -67,7 +67,7 @@ namespace snu {
                         
       
    
-    ClassDef(KJet,0)
+    ClassDef(KJet,1)
   }; 
   
 

@@ -29,7 +29,6 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   // If running on LQNtuples this is not important.
   // If creating an SKTree ntuple this controls what triggers are accessible
   AddTriggerToList("HLT_Mu17_TkMu8_v");
-  /*AddTriggerToList("HLT_Mu13_TkMu8_v");
   AddTriggerToList("HLT_Mu5_v");
   AddTriggerToList("HLT_Mu8_v");
   AddTriggerToList("HLT_Mu12_v");
@@ -40,7 +39,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
-  */
+  
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 

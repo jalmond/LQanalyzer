@@ -1,5 +1,5 @@
 #!/bin/sh
-
+declare -a input_samples=("")
 stream=""
 cycle=""
 njobs=1
@@ -15,6 +15,8 @@ xsec=-1.
 targetlumi=-1.
 efflumi=-1.
 remove="True"
+skinput="False"
+runevent=-1
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 

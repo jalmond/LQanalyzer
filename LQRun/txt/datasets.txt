@@ -1,10 +1,11 @@
-SKmuon A /var/tmp/jalmond/periodA_1291025/output/
-SKmuon B /var/tmp/jalmond/periodB_1291031/output/
-SKmuon C /var/tmp/jalmond/periodC_1291116/output/
-SKmuon D /var/tmp/jalmond/periodD_1291223/output/
+SKmuon A /data1/SKTrees/Data/DiMuon/PeriodA/
+SKmuon B /data1/SKTrees/Data/DiMuon/PeriodB/
+SKmuon C /data1/SKTrees/Data/DiMuon/PeriodC/
+SKmuon D /data1/SKTrees/Data/DiMuon/PeriodD/
+
 
 SKHNmumu100  14036.72  /data1/SKTrees/HN/100mm/SKTreeMaker_HNmumu100.root
-
+SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus/
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
@@ -13,7 +14,7 @@ egamma B /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
 egamma C /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
 egamma D /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/
 
-#muon A	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodA/
+muon A	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodA/
 muon B 	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodB/
 muon C 	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodC/
 muon D 	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodD/

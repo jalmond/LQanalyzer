@@ -19,7 +19,7 @@ snu::KTrigger SNUTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
   
   if(!LQinput){
-    ktrigger = *k_inputtrigger;
+    //ktrigger = *k_inputtrigger;
     return ktrigger;
   }
 
@@ -33,6 +33,7 @@ snu::KTrigger SNUTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
 
     bool trigger_exists(false);
     for (UInt_t i=0; i< HLTInsideDatasetTriggerNames->size(); i++) {
+      //m_logger << INFO << HLTInsideDatasetTriggerNames->at(i) <<  " " << i <<LQLogger::endmsg;
       TString tmpHLT = HLTInsideDatasetTriggerNames->at(i);
       if ( tmpHLT.BeginsWith(*it)){
 	trigger_exists = true;
@@ -213,6 +214,7 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
 
   std::vector<KJet> jets;
   if(!LQinput){
+
     for(std::vector<KJet>::iterator kit  = k_inputjets->begin(); kit != k_inputjets->end(); kit++){
       jets.push_back(*kit);
     }
@@ -280,9 +282,10 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
   int iglobal=0;
   int ims=0;
+
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
-
+    
     if(!MuonGlobalEta){
       muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
       muon.SetCharge(MuonCharge->at(ilep));
@@ -366,9 +369,9 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
 
     m_logger << DEBUG << "Muon Truth " << LQLogger::endmsg;
+
     /// truth info
     if(!isData){
-
       muon.SetMuonMatchedGenParticleEta(MuonMatchedGenParticleEta->at(ilep));
       muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
       muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
@@ -376,28 +379,54 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
       bool matched_muon(false);
       int iMother(-999),iDaughter(-999), ipdgid(-999), truemu_index(-999);
       ///// ADD prompt definition for MC
+      double truth_reco_dr(1000000.);
       for(unsigned int g =0; g < GenParticleP->size(); g++){
 	m_logger << DEBUG <<  g << GenParticleStatus->size() << " " << GenParticlePdgId->size() << LQLogger::endmsg;
 	m_logger << DEBUG << GenParticleStatus->at(g) << " " << GenParticlePdgId->at(g) << LQLogger::endmsg;
-	if((GenParticleStatus->at(g) == 3) &&fabs(GenParticlePdgId->at(g))==13){
-	  if( muon.MuonMatchedGenParticleEta() != -999){	   
-	    if((fabs(muon.MuonMatchedGenParticleEta() - GenParticleEta->at(g)) < 0.2) && (fabs(muon.MuonMatchedGenParticlePhi() -GenParticlePhi->at(g)) < 0.2)) {	      
-	      if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
+	
+	if( MuonMatchedGenParticleEta->at(ilep) != -999){	   
+	  if((fabs(MuonMatchedGenParticleEta->at(ilep) - GenParticleEta->at(g)) < 0.1) && (fabs(TVector2::Phi_mpi_pi(MuonMatchedGenParticlePhi->at(ilep) -GenParticlePhi->at(g))) < 0.1)) {    	
+	    if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){	      
+
+	      /// Calculate dR for truth stable muon and reco muon
+	      double dr = sqrt( pow(fabs(MuonMatchedGenParticleEta->at(ilep) - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonMatchedGenParticlePhi->at(ilep) -GenParticlePhi->at(g))),2.0));
+	      
+	      /// if this is the closest matching muon then assign it as matched truth
+	      if(dr < truth_reco_dr){
 		iMother = GenParticleMotherIndex->at(g);
 		iDaughter = GenParticleNumDaught->at(g);
 		ipdgid =  GenParticlePdgId->at(g);	
 		truemu_index = g;
 		matched_muon = true;
+		truth_reco_dr = dr;
 	      }
 	    }
 	  }
-	  else {
-	    iMother = -999;
-	    iDaughter = -999;
-	    ipdgid = -999;
-	    truemu_index = -999;
-	  }
-	}      
+	}
+	else if((fabs(MuonEta->at(ilep) - GenParticleEta->at(g)) < 0.1) && (fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenParticlePhi->at(g))) < 0.1)) {
+      
+	  /// This is the case when no truth particle is matched to the reco muon in the LeptoQuark Ntuple making. 
+	  // This happens when two reco muons are on top of each other (one MS muon and one CB muon). The MS muon is matched to the truth. Only one reco muon is matched and so the CB muon is not assigned a truth particle.
+	  if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
+	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenParticlePhi->at(g))),2.0));
+
+	    /// if this is the closest matching muon then assign it as matched truth                                                                                        
+	    if(dr < truth_reco_dr){
+	      iMother = GenParticleMotherIndex->at(g);
+	      iDaughter = GenParticleNumDaught->at(g);
+	      ipdgid =  GenParticlePdgId->at(g);
+	      truemu_index = g;
+	      matched_muon = true;
+	      truth_reco_dr = dr;
+	    }//closest truth match
+	  }/// stable muon
+	}// end of else if
+	else{
+	  iMother = -999;
+	  iDaughter = -999;
+	  ipdgid = -999;
+	  truemu_index = -999;
+	}		
       }/// end gen loop    
       
       int MotherPdgId(-999);
@@ -457,7 +486,7 @@ std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
   int itruth(0);
   for (UInt_t it=0; it< GenParticleEta->size(); it++, itruth++) {
     snu::KTruth truthp;
-    truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(0), GenParticleEnergy->at(it));
+    truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(it), GenParticleEnergy->at(it));
     truthp.SetParticlePx(GenParticlePx->at(it));
     truthp.SetParticlePy(GenParticlePy->at(it));
     truthp.SetParticlePz(GenParticlePz->at(it));

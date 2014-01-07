@@ -57,6 +57,7 @@ class LQController  {
   void SetLQInput(bool lq);
   /// Other class functions
   void RunEvent(Long64_t ev);
+  void RunNtupleEvent(Long64_t ev);
   std::pair< Double_t, Double_t> GetTotalEvents() throw(LQError);
   float CalculateWeight() throw (LQError);
   
@@ -83,6 +84,8 @@ class LQController  {
   
   std::vector<TString> v_libnames;
   std::vector<Long64_t> list_to_run;
+  Long64_t single_ev;
+  Bool_t run_single_event;
   Double_t total_events_beforeskim;
   Double_t total_events_afterskim;
   int output_step;

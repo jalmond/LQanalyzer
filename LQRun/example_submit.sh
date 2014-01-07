@@ -11,74 +11,19 @@ source functions.sh
 ## What cycle do you want to run.  
 ## 
 cycle="Analyzer"
-## Which stream is being run egamma/muon
-# This is for data (used to set input) / Not needed for MC
-skinput="true"
-stream="muon"
-## How many cores should the job use
-njobs=20
-## How much data are you running/ for MC this sets target luminosity to weight the events
-## can be A/B/C/D/AtoD
+skinput="True"
+njobs=1
 data_lumi="AtoD"
-### name output location : by default it is ${LQANALYZER_DIR}/data/output, but you can change it 
-outputdir=${LQANALYZER_DIR}/data/output/
-### OUTPUT LEVEL
 loglevel="INFO"
-#### 
+logstep=1000
+declare -a input_samples=('C')
+stream="muon"
 
+#declare -a input_samples=('DY50plus:runevent:57156031:remove:true') #'B' 'C' 'D')
+#declare -a input_samples=('DY50plus:remove:false') #'B' 'C' 'D')
 
-### FOR TESTING
-#remove_workspace="False"
-## How many events between log messages (default = 10000)     
-# logstep=1000 
-# skipevent
-# loglevel  /// VERBOSE/DEBUG/INFO/WARNING
-# nevents   /// set number of events to process
-#### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt
+### submit this configured job (uses bin/submit.sh)
+source submit.sh
 
-declare -a input_samples=('A:nevents:10:remove:false:loglevel:DEBUG:cycle:Analyzer:njobs:10:skipevent:1000:skinput:true'
-                          'B'
-		          'C'
-		          'D')
-
-
-############################################################
-################# Do not change anything after this line
-############################################################
-
-if [ -z ${LQANALYZER_DIR} ]
-    then 
-    setupLQANALYZER
-fi
-
-#### FULL LIST OF OPTIONS
-stream=$(makeParseVariable 's' ${stream})
-njobs=$(makeParseVariable 'j' ${njobs})
-cycle=$(makeParseVariable 'c' ${cycle})
-data_lumi=$(makeParseVariable 'd' ${data_lumi})
-outputdir=$(makeParseVariable 'O' ${outputdir})
-logstep=$(makeParseVariable 'o' ${logstep})
-skipevent=$(makeParseVariable 'k' ${skipevent})
-loglevel=$(makeParseVariable 'l' ${loglevel})
-nevents=$(makeParseVariable 'n' ${nevents})
-totalev=$(makeParseVariable 'e' ${totalev})
-xsec=$(makeParseVariable 'x' ${xsec})
-targetlumi=$(makeParseVariable 'T' ${targetlumi})
-efflumi=$(makeParseVariable 'E' ${efflumi})
-remove=$(makeParseVariable 'w' ${remove_workspace})
-skinput=$(makeParseVariable 'S' ${skinput})
-
-
-################
-#submit
-for i in ${input_samples[@]}
-  do
-  echo ${i}
-  outlog="/var/tmp/"${USER}"/log_"${i}".txt"
-  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput}
-
-done
-
-################
 echo ""
-echo "Done"
+echo "End of example_submit.sh script."

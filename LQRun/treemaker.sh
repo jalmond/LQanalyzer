@@ -1,6 +1,7 @@
 #!/bin/sh
+### sets all configurable variables to defaul values
 source functions.sh
-
+###
 ###########################################################
 ## CONFIGURE JOB ####
 ###########################################################
@@ -8,71 +9,15 @@ source functions.sh
 #  THIS SECTION IS FOR USER:
 #
 ############################################################
-## What cycle do you want to run.  
-## 
+
 cycle="SKTreeMaker"
-## Which stream is being run egamma/muon
-# This is for data (used to set input) / Not needed for MC
-#stream="muon"
-## How many cores should the job use
-njobs=2
-skinput="false"
-## How much data are you running/ for MC this sets target luminosity to weight the events
-## can be A/B/C/D/AtoD
-data_lumi="A"
-### name output location : by default it is ${LQANALYZER_DIR}/data/output, but you can change it 
-outputdir=${LQANALYZER_DIR}/data/output/
-### OUTPUT LEVEL
+stream="muon"
+njobs=30
+data_lumi="AtoD"
 loglevel="INFO"
-remove_workspace="False"   
-
-### FOR TESTING
-#remove_workspace="False"
-## How many events between log messages (default = 10000)     
-# logstep=1000 
-# skipevent
-# loglevel  /// VERBOSE/DEBUG/INFO/WARNING
-# nevents   /// set number of events to process
-#### WHAT SAMPLES TO RUN >> THIS SHOULD CORRESPOND TO FIRST COLUMN IN txt/datasets.txt#
-#declare -a periods=( "HNmumu100" "HNmumu200")
-declare -a periods=( "HNmumu100")
-
-############################################################
-################# Do not change anything after this line
-############################################################
-
-if [ -z ${LQANALYZER_DIR} ]
-    then 
-    setupLQANALYZER
-fi
-
-#### FULL LIST OF OPTIONS
-stream=$(makeParseVariable 's' ${stream})
-njobs=$(makeParseVariable 'j' ${njobs})
-cycle=$(makeParseVariable 'c' ${cycle})
-data_lumi=$(makeParseVariable 'd' ${data_lumi})
-outputdir=$(makeParseVariable 'O' ${outputdir})
-logstep=$(makeParseVariable 'o' ${logstep})
-skipevent=$(makeParseVariable 'k' ${skipevent})
-loglevel=$(makeParseVariable 'l' ${loglevel})
-nevents=$(makeParseVariable 'n' ${nevents})
-totalev=$(makeParseVariable 'e' ${totalev})
-xsec=$(makeParseVariable 'x' ${xsec})
-targetlumi=$(makeParseVariable 'T' ${targetlumi})
-efflumi=$(makeParseVariable 'E' ${efflumi})
-remove=$(makeParseVariable 'w' ${remove_workspace})
-skinput=$(makeParseVariable 'S' ${skinput})
+#declare -a periods=("A" "B" "C" "D" "DY10to50" "DY50plus")
+declare -a input_samples=("C" "D" "DY10to50" "DY50plus")  
 
 
-################
-#submit
-for i in ${periods[@]}
-  do
-  outlog="/var/tmp/"${USER}"/log_"${i}".txt"
-  #nohup python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} &> $outlog&
-  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput}
-done
-
-################
-echo ""
-echo "Done"
+### submit this configured job (uses bin/submit.sh)
+source submit.sh

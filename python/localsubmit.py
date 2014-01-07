@@ -1,7 +1,7 @@
 #################################################################### 
 ### configure run
 #################################################################### 
-timeWait=30#
+timeWait=10#
 ###################################################
 ### Make Input File
 ###################################################
@@ -30,6 +30,7 @@ parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many
 parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
+parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 
 
 
@@ -53,10 +54,18 @@ data_lumi = options.data_lumi
 Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
-print "useskinput= " + useskinput
+runevent= options.runevent
 
+print "Running : " + cycle
 print "Splitting job into " + str(number_of_cores) + " subjobs"
+if useskinput == "True": 
+    print "Using SKTrees as input."
+elif useskinput == "true":
+    print "Using SKTrees as input."
+else:
+    print "Using LQntuples as input"    
 
+########  Sample specific configuration #####
 sample = sample.replace(":", " ")
 datatype=""
 splitsample  = sample.split()
@@ -84,10 +93,14 @@ if not len(splitsample)==1:
         if "skinput" in splitsample[conf]:
             conf+=1
             useskinput = splitsample[conf]
-
+        if "runevent" in splitsample[conf]:
+            conf+=1
+            runevent = splitsample[conf]
+            
 ##### FINISHED CONFIGURATION            
 singlejob = number_of_cores==1            
-             
+
+#### determine if input is data/mc
 mc = len(sample)>1
 if mc:
     datatype="mc"
@@ -103,6 +116,8 @@ if datatype == "mc":
 if not dataType =="":
     datatype=dataType
 
+
+### Make a list of input samples: at the moment this is useless. Will add code to include * options in input
 list = []
 import re
 if ("*" in sample) and mc:
@@ -110,12 +125,23 @@ if ("*" in sample) and mc:
 else:
     list.append(sample)
 
+
+##### Specify if the job is running on SKTrees or LQNtuples
 if useskinput == "true":
-    channel="SK" + channel
+    if not mc:
+        channel="SK" + channel
+    else:
+        sample="SK" + sample
+        
+elif useskinput == "True":
+    if not mc:
+        channel="SK" + channel
+    else:
+        sample="SK" + sample
+        
+print "Input sample = " + sample
 
-
-print "sample      = " + sample
-#Find theq DS name 
+#Find the DS name (and lumi if MC)
 inDS = ""
 mcLumi = 1.0
 filechannel=""
@@ -142,9 +168,14 @@ else:
                     inDS = entries[2]
 
 
-print "inDS= " + inDS    
+print "input directory= " + inDS    
 InputDir = inDS    
-print InputDir
+
+############################################################
+############################################################
+###### RUN JOB
+############################################################
+############################################################
 
 if not os.path.exists(sample):
     os.system("mkdir " + sample)
@@ -155,7 +186,7 @@ join = os.path.join
 
 ## Get numnber of files in Input directory
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
-print str(number_of_files) + " files to process"
+print "Job has " + str(number_of_files) + " files to process:"
 
 ### Correct user if ncores is > nfiles
 if number_of_cores > number_of_files:
@@ -168,6 +199,10 @@ for i in range(1,number_of_files):
         nfilesperjobs+=1
     if number_of_cores == 1:
         nfilesperjobs = number_of_files
+
+if nfilesperjobs == 0:
+    nfilesperjobs=1
+    
 files_torun = (nfilesperjobs*number_of_cores)
 remainder = number_of_files - (nfilesperjobs*number_of_cores)
 
@@ -213,7 +248,7 @@ if not (os.path.exists(outputdir)):
 printedworkdir =  output + "Job_[" + str(1) + "-" + str(number_of_cores) + "]/"
 for i in range(1,number_of_cores+1):
     workdir =  output + "Job_" + str(i) + "/"
-
+    
     if not (os.path.exists(workdir)):
             os.system("mkdir " + workdir)
             if i==1:
@@ -233,16 +268,15 @@ fullfile = open(fullfilelist, 'w')
 test=0
 for line in fr:
     test+=1
-
     fullfile.write(line)
-    # Deal with remaining files
-    if nfiles < files_torun :
-        if nfiles == 0 :        
+
+    if nfiles < files_torun:
+        if nfiles == 0 :
             runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -264,7 +298,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput))
+                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -281,7 +315,6 @@ for line in fr:
             nfiles_file+=1
 
         if nfiles == number_of_files-1 :
-            print "Completed " + str(nfiles) + "/" + str(number_of_files)        
             fwrite.close()
 
     else:
@@ -291,7 +324,7 @@ for line in fr:
         fwrite.write(line)
         filesprocessed+=1
         fwrite.close()        
-        
+
     nfiles+=1        
 fr.close()
 fullfile.close()
@@ -337,51 +370,62 @@ start_time = time.time()
 wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
-    
+
 print "Running LQAnalyzer jobs for: " + getpass.getuser()
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
     if singlejob:
-        runcommand = "nohup root -l -q -b " +  script + "&>" + log
-
-    os.system(runcommand)
-    if i==1:
-        print "Running " + script + " . Log file --->  " + log 
-    elif i== number_of_cores:
-        print "Running " + script + " . Log file --->  " + log
-    elif i==2:
-         print "......"
-#os.system('rm -r ' + sample)
+        print "Running " + script 
+        runcommand = "root -l -q -b " +  script 
+        os.system(runcommand)
+    else:
+        if i==1:
+            print "Running " + script + " . Log file --->  " + log 
+        elif i== number_of_cores:
+            print "Running " + script + " . Log file --->  " + log
+        elif i==2:
+            print "......"
+        os.system(runcommand)   
+os.system('rm -r ' + sample)
 
 ###################################################
 ## wait and do merging
 ###################################################
 
-print "Waiting for all jobs to finish before Merging"
-
+print "Waiting for all jobs to finish before Merging."
 
 ncomplete_files=0
 JobSuccess=False
+JobOutput=True
 CompletedJobs=[]
 doMerge=False
 
 print "Checking Job status:"
+low_cpu=0
+ncycle=0
 while not JobSuccess:
 
     os.system("ps ux &> log")
     filename = 'log'
     running = False
+    
     for line in open(filename, 'r'):
-        if  "root.exe" in line:
-            running = True
+        if "root.exe" in line:
+            running = True            
+            splitline  = line.split()
+            if splitline[2] < 0.1:
+                low_cpu+=1
+    if low_cpu > 3:
+        running = False
+
     if not running:
         check_outfile = outputdir + sample +  "_1.root"
-        if (os.path.exists(check_outfile)):
-            #JobSuccess = True
-            doMerge=True
-
+        if not (os.path.exists(check_outfile)):
+            JobSuccess=True
+            JobOutput=False
+            
     os.system("rm  log")
             
     for i in range(1,number_of_cores+1):
@@ -398,34 +442,69 @@ while not JobSuccess:
         
     if ncomplete_files== number_of_cores :
         print "Job finished"
-        JobSuccess=True
         doMerge=True
+        if ncycle == 0:
+            print "Job ran in less than 10 seconds. Assumed bug:"
+            JobOutput=False
+        JobSuccess=True
+                                    
     else:
         print str(ncomplete_files) + "/" + str(number_of_cores) + " completed. Wait " + str(timeWait) + " second..."
         
         time.sleep(timeWait)
         timeWait+= 10
-
-if doMerge:
-    if os.path.exists(Finaloutputdir + cycle + "_" + filechannel + sample + ".root"):
-        os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + sample + ".root ")
-    os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
-
+        ncycle+=1
+        
+        
+if not JobOutput:
+    print "Job Failed...."
+    if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
+        os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
+    if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample):
+        os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample)
+        
+    if not number_of_cores == 1:
+        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
+    os.system("mv "+ output + "/Job_1/runJob_1.C .")
+    print "Check runJob_1.C or log files to debug"
+    #os.system("rm -r " + output)    
     
+    print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample
+    
+else:    
+
+    #do not merge the output when using tree maker code
+    if cycle == "SKTreeMaker":
+        doMerge=False
+
+    if doMerge:
+        if os.path.exists(Finaloutputdir + cycle + "_" + filechannel + sample + ".root"):
+            os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + sample + ".root ")
+        os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
+        print "Merged output :" + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "
+    else:
+        os.system("mv " + outputdir + "*.root " + Finaloutputdir )
+        print "Non merged output :" +Finaloutputdir
+
     if remove_workspace == "True":
         if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
             os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
-
+            
         if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample):
             os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample)
                 
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
         os.system("rm -r " + output)
-    print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir  
-
-    end_time = time.time()
-    total_time=end_time- start_time
-    print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
+        print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample    
+        if doMerge:
+            print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir
+        else:
+            print "All sampless finished: OutFiles "+ sample + "*.root -->" + Finaloutputdir
         
-else:
-    print "Jobs Failed"
+    else:
+        print "TMP directory " + output + "is not removed. "
+        
+        
+end_time = time.time()
+total_time=end_time- start_time
+print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
