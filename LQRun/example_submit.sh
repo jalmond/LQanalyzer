@@ -16,7 +16,7 @@ njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-declare -a input_samples=('C')
+declare -a input_samples=('DY50plus:nevents:100000')
 stream="muon"
 
 #declare -a input_samples=('DY50plus:runevent:57156031:remove:true') #'B' 'C' 'D')

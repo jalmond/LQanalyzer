@@ -1,11 +1,11 @@
 #################################################################### 
-### configure run
+### configure Job
 #################################################################### 
 timeWait=10#
+
 ###################################################
 ### Make Input File
 ###################################################
-
 import os, getpass, sys
 from functions import *
 from optparse import OptionParser
@@ -32,8 +32,9 @@ parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove th
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 
-
-
+###################################################
+#set the local variables using options
+###################################################
 (options, args) = parser.parse_args()
 number_of_cores = int(options.jobs)
 sample = options.period
@@ -56,6 +57,7 @@ remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
 
+
 print "Running : " + cycle
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 if useskinput == "True": 
@@ -65,7 +67,9 @@ elif useskinput == "true":
 else:
     print "Using LQntuples as input"    
 
-########  Sample specific configuration #####
+########  Sample specific configuration ###############
+## set the job conguration set for a specific sample###
+#######################################################
 sample = sample.replace(":", " ")
 datatype=""
 splitsample  = sample.split()
@@ -96,8 +100,10 @@ if not len(splitsample)==1:
         if "runevent" in splitsample[conf]:
             conf+=1
             runevent = splitsample[conf]
-            
-##### FINISHED CONFIGURATION            
+
+##################################################################################################################            
+##### FINISHED CONFIGURATION
+##################################################################################################################
 singlejob = number_of_cores==1            
 
 #### determine if input is data/mc
@@ -106,7 +112,6 @@ if mc:
     datatype="mc"
 else:
     datatype="data"
-    
 if sample == "AtoD":
     datatype="data"
 
@@ -116,23 +121,25 @@ if datatype == "mc":
 if not dataType =="":
     datatype=dataType
 
-
+##################################################################################################################
 ### Make a list of input samples: at the moment this is useless. Will add code to include * options in input
+##################################################################################################################
 list = []
 import re
 if ("*" in sample) and mc:
     print "ADD code"
 else:
     list.append(sample)
+#list has only size ==1 currently
 
-
+##################################################################################################################
 ##### Specify if the job is running on SKTrees or LQNtuples
+##################################################################################################################
 if useskinput == "true":
     if not mc:
         channel="SK" + channel
     else:
-        sample="SK" + sample
-        
+        sample="SK" + sample        
 elif useskinput == "True":
     if not mc:
         channel="SK" + channel
@@ -141,7 +148,9 @@ elif useskinput == "True":
         
 print "Input sample = " + sample
 
-#Find the DS name (and lumi if MC)
+##################################################################################################################
+#Find the DS name (and lumi if MC) from txt/datasets.txt
+##################################################################################################################
 inDS = ""
 mcLumi = 1.0
 filechannel=""
@@ -166,10 +175,11 @@ else:
                 if sample == entries[0]:
                     eff_lumi = entries[1]
                     inDS = entries[2]
-
-
-print "input directory= " + inDS    
+                    
 InputDir = inDS    
+##################################################################################################################
+print "input directory= " + inDS    ## now have defined what dur contains input files
+##################################################################################################################                    
 
 ############################################################
 ############################################################
@@ -177,28 +187,37 @@ InputDir = inDS
 ############################################################
 ############################################################
 
+############################################################
+### Make tmp directory for job
+############################################################
 if not os.path.exists(sample):
-    os.system("mkdir " + sample)
-    
+    os.system("mkdir " + sample)    
 os.system("ls " + InputDir + "/*.root > " + sample + "/inputlist.txt")
 isfile = os.path.isfile
 join = os.path.join
 
-## Get numnber of files in Input directory
+############################################################
+## Get number of files in Input directory
+############################################################
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 print "Job has " + str(number_of_files) + " files to process:"
 
+############################################################
 ### Correct user if ncores is > nfiles
+############################################################
 if number_of_cores > number_of_files:
     number_of_cores = number_of_files
 
-#import numpy as np
+############################################################
+### set number of files per job
+############################################################
 nfilesperjobs= 0
 for i in range(1,number_of_files):
     if not i%number_of_cores:
         nfilesperjobs+=1
-    if number_of_cores == 1:
-        nfilesperjobs = number_of_files
+
+if number_of_cores == 1:
+    nfilesperjobs = number_of_files
 
 if nfilesperjobs == 0:
     nfilesperjobs=1
@@ -206,7 +225,7 @@ if nfilesperjobs == 0:
 files_torun = (nfilesperjobs*number_of_cores)
 remainder = number_of_files - (nfilesperjobs*number_of_cores)
 
-print "Each job will process at most " + str(nfilesperjobs+1) + " files"
+print "Each job will process  " + str(nfilesperjobs) + "/" + str(nfilesperjobs+1) + " files"
 
 
 ###################################################
@@ -221,7 +240,7 @@ n_remainder_files=0
 check_array = []
 
 ###################################################
-# Setup work area
+# Setup work area on var tmp
 ###################################################
 workspace = "/var/tmp/"+ getpass.getuser() + "/"
 if not (os.path.exists(workspace)):
@@ -244,45 +263,44 @@ if not (os.path.exists(outputdir)):
     os.system("mkdir " + outputdir)
     os.system("mkdir " + outputdir_tmp)
 
-
+###################################################
+## Make subjob directories
+###################################################
 printedworkdir =  output + "Job_[" + str(1) + "-" + str(number_of_cores) + "]/"
 for i in range(1,number_of_cores+1):
-    workdir =  output + "Job_" + str(i) + "/"
-    
+    workdir =  output + "Job_" + str(i) + "/"    
     if not (os.path.exists(workdir)):
             os.system("mkdir " + workdir)
             if i==1:
                 print "making sub work directories " + printedworkdir
 
 
-
-
 ####################################################
 ## Creat separate input lists/macros for each subjob
 ####################################################
+
+### read inputlist.txt which contains all input files
 fr = open(sample + '/inputlist.txt', 'r')
 
+### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
-fullfilelist = output + sample +".txt"
-fullfile = open(fullfilelist, 'w')
-test=0
-for line in fr:
-    test+=1
-    fullfile.write(line)
 
+for line in fr:
     if nfiles < files_torun:
         if nfiles == 0 :
             runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, sample, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
             filesprocessed+=1
             nfiles_file+=1            
             nfiles+=1
+            if files_torun == 1:
+                fwrite.close()
             continue
 
         #End of file
@@ -298,7 +316,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,sample, filelist, fullfilelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
+                configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -320,14 +338,17 @@ for line in fr:
     else:
         n_remainder_files+=1
         filelist = output+ "Job_" + str(n_remainder_files) + "/" + sample + "_%s" % (n_remainder_files) + ".txt"
+        #runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
         fwrite = open(filelist, 'a')
         fwrite.write(line)
+        #configfile=open(runscript,'w')
+        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
+        #configfile.close()
         filesprocessed+=1
         fwrite.close()        
-
     nfiles+=1        
 fr.close()
-fullfile.close()
+
 #################################################################### 
 ### Check Final input files have no duplicates
 #################################################################### 
@@ -377,7 +398,7 @@ for i in range(1,number_of_cores+1):
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
     if singlejob:
-        print "Running " + script 
+        print "Running single job " + script 
         runcommand = "root -l -q -b " +  script 
         os.system(runcommand)
     else:
@@ -387,7 +408,8 @@ for i in range(1,number_of_cores+1):
             print "Running " + script + " . Log file --->  " + log
         elif i==2:
             print "......"
-        os.system(runcommand)   
+        os.system(runcommand)
+
 os.system('rm -r ' + sample)
 
 ###################################################
@@ -465,7 +487,7 @@ if not JobOutput:
         
     if not number_of_cores == 1:
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
-    os.system("mv "+ output + "/Job_1/runJob_1.C .")
+    #os.system("mv "+ output + "/Job_1/runJob_1.C .")
     print "Check runJob_1.C or log files to debug"
     #os.system("rm -r " + output)    
     

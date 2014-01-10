@@ -135,7 +135,6 @@ void Data::Init(TTree *tree)
     }
   }
 
-
   bool deleteIndex = true; // can be made configurable                                                                                                                        
   if( deleteIndex ) {
     if( tree->GetTreeIndex() ) {
@@ -148,13 +147,14 @@ void Data::Init(TTree *tree)
   m_logger << INFO << "Chain entries = " << fChain->GetEntries() <<  " UseLQ ntuples =  " << LQinput<< LQLogger::endmsg;
   fCurrent = -1;
   if(LQinput)fChain->SetMakeClass(1);
+
   /// TESTS
   //fChain->SetMaxVirtualSize(100000000); 
   Int_t cachesize=100000000;
   fChain->SetCacheSize(cachesize);
   if(LQinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
   ConnectVariables(false); // -> false means not ALL branches are loaded
-  
+  fChain->GetEntry(0,0);
   fChain->StopCacheLearningPhase();
   nentries = fChain->GetEntries();
   Notify();

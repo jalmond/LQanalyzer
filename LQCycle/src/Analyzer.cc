@@ -59,18 +59,16 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
 void Analyzer::ExecuteEvents()throw( LQError ){
   
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
-
   /// Trigger List (specific to muons channel)
   std::vector<TString> triggerslist;
   triggerslist.push_back("HLT_Mu17_TkMu8_v");
 
   //  if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
-  if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(int(PileUpInteractionsTrue->at(0)))* MCweight;
+  if (MC_pu&&!k_isdata)  weight = weight*eventbase->GetEvent().PileUpInteractionsTrue()* MCweight;
   numberVertices = eventbase->GetEvent().nVertices();
-
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
- 
+
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
@@ -96,6 +94,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
+  Message("TEST4", DEBUG);
 
   if (muonColl.size() == 2) {      
           

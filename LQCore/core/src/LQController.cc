@@ -550,9 +550,10 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  m_logger << DEBUG << "cycle->GetEvent " << LQLogger::endmsg;
 
 	  cycle->GetEntry(jentry);
-
+	  
 	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	  cycle->SetUpEvent(jentry, ev_weight);
+	  
 	  m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();   
@@ -561,7 +562,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  cycle->ExecuteEvents();
 	  // cleans up any pointers etc.
 	  cycle->EndEvent();
-	  m_logger << DEBUG << "cycle->ENDEvent " << LQLogger::endmsg;
+	  m_logger << DEBUG << "cycle->ENDEvent " << LQLogger::endmsg;	  
 	}
 	catch( const LQError& error ) {
           if( error.request() <= LQError::SkipEvent ) {

@@ -5,7 +5,7 @@ SKmuon D /data1/SKTrees/Data/DiMuon/PeriodD/
 
 
 SKHNmumu100  14036.72  /data1/SKTrees/HN/100mm/SKTreeMaker_HNmumu100.root
-SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus/
+SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus_test/
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################

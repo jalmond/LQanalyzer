@@ -1,4 +1,4 @@
-def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent):
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent):
 
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -14,7 +14,6 @@ def makeConfigFile(log,sample, input, fullinput, tree, cycle, ver, output_tmp, o
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'
     config+='   TString filename = "' + input + '";\n'
-    config+='   TString fullfilename = "' + fullinput + '";\n'
     config+='   LQController analysis;\n'
     if useSKinput == "True":        
         config+='   analysis.SetLQInput(false);\n'

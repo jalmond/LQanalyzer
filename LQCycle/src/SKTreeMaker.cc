@@ -34,7 +34,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
   std::vector<TString> triggerslist;
   triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
-  if(!PassTrigger(triggerslist, prescale)) throw LQError( "Fails trigger",  LQError::SkipEvent );
+  //if(!PassTrigger(triggerslist, prescale)) throw LQError( "Fails trigger",  LQError::SkipEvent );
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) throw LQError( "Has no PV",  LQError::SkipEvent );
  
  
