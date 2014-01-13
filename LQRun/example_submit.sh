@@ -1,3 +1,4 @@
+
 #!/bin/sh
 source functions.sh
 
@@ -11,12 +12,12 @@ source functions.sh
 ## What cycle do you want to run.  
 ## 
 cycle="Analyzer"
-skinput="True"
+skinput="False"
 njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-declare -a input_samples=('DY50plus:nevents:100000')
+declare -a input_samples=('A')
 stream="muon"
 
 #declare -a input_samples=('DY50plus:runevent:57156031:remove:true') #'B' 'C' 'D')

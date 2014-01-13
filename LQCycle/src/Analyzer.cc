@@ -49,9 +49,9 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
   
   //// Initialise Plotting class functions
   /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-  MakeCleverHistograms(muhist, "Zmuons");
-  MakeCleverHistograms(elhist, "Zelectrons");
-    
+  MakeCleverHistograms(sighist, "Zmuons");
+  MakeCleverHistograms(sighist, "Zelectrons");
+  
   return;
 }
 
@@ -101,7 +101,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(muhist, "Zmuons", muonColl, weight);
+      FillCLHist(sighist, "Zmuons", eventbase->GetEvent(), muonColl,jetColl, weight);
     } 
   }
   
@@ -113,7 +113,7 @@ void Analyzer::ExecuteEvents()throw( LQError ){
     if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
 
       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(elhist, "Zelectrons", electronColl, eventbase->GetEvent().JetRho(), weight);
+      FillCLHist(sighist, "Zelectrons", eventbase->GetEvent(), electronColl,jetColl, weight);
     } 
   }
   

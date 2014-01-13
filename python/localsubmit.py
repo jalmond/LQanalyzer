@@ -487,9 +487,9 @@ if not JobOutput:
         
     if not number_of_cores == 1:
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
-    #os.system("mv "+ output + "/Job_1/runJob_1.C .")
+        os.system("mv "+ output + "/Job_1/runJob_1.C .")
     print "Check runJob_1.C or log files to debug"
-    #os.system("rm -r " + output)    
+    os.system("rm -r " + output)    
     
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample
     
