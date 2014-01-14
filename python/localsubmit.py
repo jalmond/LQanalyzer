@@ -155,7 +155,7 @@ inDS = ""
 mcLumi = 1.0
 filechannel=""
 if not mc:
-    filename = 'txt/datasets.txt'
+    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + ".txt'
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()

@@ -1,5 +1,5 @@
-#!/bin/sh
-### sets all configurable variables to defaul values
+B#!/bin/sh
+#1;2c## sets all configurable variables to defaul values
 source functions.sh
 ###
 ###########################################################
