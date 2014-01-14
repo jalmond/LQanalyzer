@@ -7,7 +7,6 @@ SKmuon C /data1/SKTrees/Data/DiMuon/PeriodC/
 SKmuon D /data1/SKTrees/Data/DiMuon/PeriodD/
 
 ### MC #############
-SKHNmumu100  14036.72  /data1/SKTrees/HN/100mm/SKTreeMaker_HNmumu100.root
 SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus_test/
 
 ### LQNtuples ########################################################
@@ -20,10 +19,10 @@ egamma B /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
 egamma C /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
 egamma D /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/
 
-muon A	 /data/HN_data/test/
-muon B 	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodB/
-muon C 	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodC/
-muon D 	 /data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodD/
+muon A	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodA/
+muon B 	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodB/
+muon C 	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodC/
+muon D 	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodD/
 
 
 ### MC ############################################################
