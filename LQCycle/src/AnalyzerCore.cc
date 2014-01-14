@@ -38,8 +38,8 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");*/
-  
+  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
+  */
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 
@@ -116,6 +116,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   if(LQinput){
     if(k_isdata != isData) throw LQError( "!!! Event is confused. It does not know if it is data or MC", LQError::SkipCycle );
   }
+  else isData = k_isdata;
   
   if (!(entry % output_interval)) {
     m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << LQLogger::endmsg;

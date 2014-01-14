@@ -578,7 +578,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	
 	++m_nProcessedEvents;
 	
-	if( jentry == entry_4) {
+	/*if( jentry == entry_4) {
 	  timer.Stop();
 	  h_timing_hist->Fill("QuarterExecute", timer.RealTime());
 	  timer.Start();
@@ -595,19 +595,20 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  h_timing_hist->Fill("ThreeQuarterExecute", timer.RealTime());
 	  timer.Start();
 	  FillMemoryHists("ThreeQuarterExecute");
-	}
+	  }*/
       }
     }     
-    timer.Stop();
+    //    timer.Stop();
     h_timing_hist->Fill("FullExecute", timer.RealTime());
-    timer.Start();
+    //timer.Start();
+    m_logger << INFO << "Execute time = " << timer.RealTime() << " s" << LQLogger::endmsg;
     FillMemoryHists("FullExecute");
 
     cycle->SaveOutputTrees(cycle->GetOutputFile());
     cycle->EndCycle();
     cycle->WriteHistograms();/// writes all histograms declared in the cycle to the output file
 
-    timer.Stop();
+    //timer.Stop();
     h_timing_hist->Fill("EndCycle", timer.RealTime());
     FillMemoryHists("EndCycle");
     

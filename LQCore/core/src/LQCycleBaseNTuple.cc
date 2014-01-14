@@ -80,8 +80,7 @@ void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
   events_to_process = nentries;
 }
 
-void LQCycleBaseNTuple::SetDataType( bool type){
-  
+void LQCycleBaseNTuple::SetDataType( bool type){  
   k_isdata = type;
 }
 

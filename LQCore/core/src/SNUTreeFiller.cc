@@ -19,7 +19,7 @@ snu::KTrigger SNUTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
   
   if(!LQinput){
-    //ktrigger = *k_inputtrigger;
+    ktrigger = *k_inputtrigger;
     return ktrigger;
   }
 

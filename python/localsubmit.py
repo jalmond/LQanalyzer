@@ -467,7 +467,10 @@ while not JobSuccess:
         doMerge=True
         if ncycle == 0:
             print "Job ran in less than 10 seconds. Assumed bug:"
-            JobOutput=False
+            if number_of_cores == 1:
+                JobOutput=True
+            else:
+                JobOutput=False
         JobSuccess=True
                                     
     else:
