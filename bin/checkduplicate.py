@@ -13,10 +13,11 @@ os.system("ls " + str(dir) + "/*.root > check.txt")
 isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(dir) if isfile(join(dir, item)))
-#tocheck = "RootTupleMakerV2_output_DATA_"
+
 
 print "Checking for duplicated Job ID :" + tocheck + "[jobid]" + "_##.root"
 
+count = number_of_files
 dupl =0
 for i in range(1, count):
     fullname = tocheck + str(i) + "_"

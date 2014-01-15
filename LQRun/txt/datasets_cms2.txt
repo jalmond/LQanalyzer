@@ -14,15 +14,20 @@ SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus_test/
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
-egamma A /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/
-egamma B /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
-egamma C /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
-egamma D /data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/
+egamma	A	/data1/SNUData/Data/Electron/periodA/
+egamma 	B 	/data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
+egamma 	C 	/data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
+egamma 	D 	/data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/
 
-muon A	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodA/
-muon B 	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodB/
-muon C 	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodC/
-muon D 	 /data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodD/
+muon 	A	/data1/SNUData/Data/Muon/periodA/
+muon 	B 	/data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodB/
+muon 	C 	/data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodC/
+muon 	D 	/data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodD/
+
+emu 	A  	/data1/SNUData/Data/EMu/periodA/
+emu 	B  	/data1/SNUData/Data/EMu/periodB/
+emu 	C  	/data1/SNUData/Data/EMu/periodC/
+emu 	D  	/data1/SNUData/Data/EMu/periodD/
 
 
 ### MC ############################################################
@@ -33,77 +38,59 @@ ZZ		555109.777	/data1/SNUData/MC/Background/ZZ/
 WW		182363.161	/data1/SNUData/MC/Background/WW/	
 W+W+		402840.451	/data1/SNUData/MC/Background/SSWpWp/
 W-W-		1084518.452	/data1/SNUData/MC/Background/SSWmWm/
-WW_dp		1418676.646	/data1/SNUData/MC/Background/
+WW_dp		1418676.646	/data1/SNUData/MC/Background/WW_ds/
 ttW		845025.862	/data1/SNUData/MC/Background/TTW/
 ttZ		1205737.235	/data1/SNUData/MC/Background/TTZ/
 WWW		2684057.442	/data1/SNUData/MC/Background/WWW/
 DY10to50	3424.007	/data1/SNUData/MC/Background/DY10to50/
 DY50plus	8693.5		/data1/SNUData/MC/Background/DY50plus/
-ttbar		29588.256  /data1/SNUData/MC/Background/ttbar/
-Wjets           1538.562  /data2/SNUData/MC/Background/WJets/
+ttbar		29588.256 	/data1/SNUData/MC/Background/ttbar/
+Wjets           1538.562  	/data2/SNUData/MC/Background/WJets/
 
 ### QCD samples
-QCD_mu15
-QCD_mumu
-QCD_15-20_mu
-QCD_20-30_mu
-QCD_30_50_mu
-QCD_50-80_mu
-QCD_80-120_mu
-QCD_120-170_mu
-QCD_170-300_mu
-QCD_300-470_mu
-QCD_470-600_mu
-QCD_600-800_mu
-QCD_800-1000_mu
-QCD_1000_mu
+QCD_mu15	160.		/data1/SNUData/MC/Background/QCD_mu15/
+QCD_mumu  	54.2	 	/data1/SNUData/MC/Background/QCD_mumu/
 
-QCD_20-30_EM
-QCD_30-80_EM
-QCD_80-170_EM
-QCD_170-250_EM
-QCD_250-350_EM
-QCD_350_EM
-QCD_30-40_EM2
-QCD_40_EM2
+QCD_30-40_EM2 	497.0	 	/data1/SNUData/MC/Background/QCD_30to40EE/
+QCD_40_EM2    	86.0	 	/data1/SNUData/MC/Background/QCD_40EE/
 
 ###HN signal
-HNmumu50	46.68			/data1/SNUData/MC/HN/mumu/50/
-HNmumu70	235.87			/data1/SNUData/MC/HN/mumu/70/
+HNmumu50	46.68		/data1/SNUData/MC/HN/mumu/50/
+HNmumu70	235.87		/data1/SNUData/MC/HN/mumu/70/
 HNmumu90	7037.03		/data1/SNUData/MC/HN/mumu/90/
-HNmumu100	14036.72		/data1/SNUData/MC/HN/mumu/100/
-HNmumu125	46242.46		/data1/SNUData/MC/HN/mumu/125/
-HNmumu150	108826.73		/data1/SNUData/MC/HN/mumu/150/
-HNmumu175	214442.23		/data1/SNUData/MC/HN/mumu/175/
-HNmumu200	380833.40		/data1/SNUData/MC/HN/mumu/200/
-HNmumu225	627546.73		/data1/SNUData/MC/HN/mumu/225/
-HNmumu250	979699.29		/data1/SNUData/MC/HN/mumu/250/
-HNmumu275	1476651.80		/data1/SNUData/MC/HN/mumu/275/
-HNmumu300	2153700.35		/data1/SNUData/MC/HN/mumu/300/
-HNmumu325	3063798.49		/data1/SNUData/MC/HN/mumu/325/
-HNmumu350	4271251.60		/data1/SNUData/MC/HN/mumu/350/
-HNmumu375	5826499.35		/data1/SNUData/MC/HN/mumu/375/
-HNmumu400	7879056.73		/data1/SNUData/MC/HN/mumu/400/
-HNmumu500	23208151.52		/data1/SNUData/MC/HN/mumu/500/
-HNmumu600	58506729.08		/data1/SNUData/MC/HN/mumu/600/
-HNmumu700	130502192.52		/data1/SNUData/MC/HN/mumu/700/
+HNmumu100	14036.72	/data1/SNUData/MC/HN/mumu/100/
+HNmumu125	46242.46	/data1/SNUData/MC/HN/mumu/125/
+HNmumu150	108826.73	/data1/SNUData/MC/HN/mumu/150/
+HNmumu175	214442.23	/data1/SNUData/MC/HN/mumu/175/
+HNmumu200	380833.40	/data1/SNUData/MC/HN/mumu/200/
+HNmumu225	627546.73	/data1/SNUData/MC/HN/mumu/225/
+HNmumu250	979699.29	/data1/SNUData/MC/HN/mumu/250/
+HNmumu275	1476651.80	/data1/SNUData/MC/HN/mumu/275/
+HNmumu300	2153700.35	/data1/SNUData/MC/HN/mumu/300/
+HNmumu325	3063798.49	/data1/SNUData/MC/HN/mumu/325/
+HNmumu350	4271251.60	/data1/SNUData/MC/HN/mumu/350/
+HNmumu375	5826499.35	/data1/SNUData/MC/HN/mumu/375/
+HNmumu400	7879056.73	/data1/SNUData/MC/HN/mumu/400/
+HNmumu500	23208151.52	/data1/SNUData/MC/HN/mumu/500/
+HNmumu600	58506729.08	/data1/SNUData/MC/HN/mumu/600/
+HNmumu700	130502192.52	/data1/SNUData/MC/HN/mumu/700/
 
-HNee50        46.68                   /data1/SNUData/MC/HN/ee/50/
-HNee70        235.87                  /data1/SNUData/MC/HN/ee/70/
-HNee90        7037.03                /data1/SNUData/MC/HN/ee/90/
-HNee100       14036.72               /data1/SNUData/MC/HN/ee/100/
-HNee125       46242.46               /data1/SNUData/MC/HN/ee/125/
-HNee150       108833.261              /data1/SNUData/MC/HN/ee/150/
-HNee175       214442.23              /data1/SNUData/MC/HN/ee/175/
-HNee200       380833.40              /data1/SNUData/MC/HN/ee/200/
-HNee225       627546.73              /data1/SNUData/MC/HN/ee/225/
-HNee250       979699.29              /data1/SNUData/MC/HN/ee/250/
-HNee275       1476651.80            /data1/SNUData/MC/HN/ee/275/
-HNee300       2153700.35            /data1/SNUData/MC/HN/ee/300/
-HNee325       3063798.49            /data1/SNUData/MC/HN/ee/325/
-HNee350       4271251.60            /data1/SNUData/MC/HN/ee/350/
-HNee375       5826499.35            /data1/SNUData/MC/HN/ee/375/
-HNee400       7879056.73            /data1/SNUData/MC/HN/ee/400/
-HNee500       23208151.52           /data1/SNUData/MC/HN/ee/500/
-HNee600       58506729.08           /data1/SNUData/MC/HN/ee/600/
-HNee700       130502192.52          /data1/SNUData/MC/HN/ee/700/
+HNee50        	46.68           /data1/SNUData/MC/HN/ee/50/
+HNee70        	235.87          /data1/SNUData/MC/HN/ee/70/
+HNee90        	7037.03         /data1/SNUData/MC/HN/ee/90/
+HNee100       	14036.72        /data1/SNUData/MC/HN/ee/100/
+HNee125       	46242.46        /data1/SNUData/MC/HN/ee/125/
+HNee150       	108833.261      /data1/SNUData/MC/HN/ee/150/
+HNee175       	214442.23       /data1/SNUData/MC/HN/ee/175/
+HNee200       	380833.40       /data1/SNUData/MC/HN/ee/200/
+HNee225       	627546.73       /data1/SNUData/MC/HN/ee/225/
+HNee250       	979699.29       /data1/SNUData/MC/HN/ee/250/
+HNee275       	1476651.80      /data1/SNUData/MC/HN/ee/275/
+HNee300       	2153700.35      /data1/SNUData/MC/HN/ee/300/
+HNee325       	3063798.49      /data1/SNUData/MC/HN/ee/325/
+HNee350       	4271251.60      /data1/SNUData/MC/HN/ee/350/
+HNee375       	5826499.35      /data1/SNUData/MC/HN/ee/375/
+HNee400       	7879056.73      /data1/SNUData/MC/HN/ee/400/
+HNee500       	23208151.52     /data1/SNUData/MC/HN/ee/500/
+HNee600       	58506729.08     /data1/SNUData/MC/HN/ee/600/
+HNee700       	130502192.52    /data1/SNUData/MC/HN/ee/700/
