@@ -1,7 +1,7 @@
 ### SKTrees ##########
 ##################
 ### Data#############
-SKmuon A /data/HN_data/periodA/
+SKmuon A /data/SKTrees/periodA/
 SKmuon B 
 SKmuon C 
 SKmuon D 

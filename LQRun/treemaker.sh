@@ -1,5 +1,5 @@
-B#!/bin/sh
-#1;2c## sets all configurable variables to defaul values
+#!/bin/sh
+### sets all configurable variables to defaul values
 source functions.sh
 ###
 ###########################################################
@@ -12,9 +12,9 @@ source functions.sh
 
 cycle="SKTreeMaker"
 stream="muon"
-njobs=1
+njobs=30
 data_lumi="AtoD"
-loglevel="DEBUG"
+loglevel="INFO"
 #declare -a periods=("A" "B" "C" "D" "DY10to50" "DY50plus")
 #declare -a input_samples=("C" "D" "DY10to50" "DY50plus")  
 declare -a input_samples=("A")

@@ -101,6 +101,39 @@ if not len(splitsample)==1:
             conf+=1
             runevent = splitsample[conf]
 
+
+##################################################################################################################
+#### HARD CODE THE MAXIMUM number of subjobs
+##################################################################################################################
+os.system("top -n 1 -b | grep 'root.exe' &> log")
+filename = 'log'
+
+for line in open(filename, 'r'):
+    n_previous_jobs+=1
+
+if n_previous_jobs > 10:
+    number_of_cores = 1
+    print "Number of subjobs is reduced to 1, since there are over 10 subjobs running on this maching."
+
+    for line in open(filename, 'r'):
+        print line
+
+os.system("rm log")
+
+if useskinput == "True":
+    if number_of_cores > 30:
+        number_of_cores = 30
+        print "Number of sub jobs is set to high. Reset to default of 30."
+elif useskinput == "true":
+    if number_of_cores > 30:
+        number_of_cores= 30
+        print "Number of sub jobs is set to high. Reset to default of 30."
+else:
+    if number_of_cores > 5:
+        number_of_cores = 5
+        print "Number of sub jobs is set to high. Reset to default of 5."
+
+
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
 ##################################################################################################################
@@ -155,7 +188,7 @@ inDS = ""
 mcLumi = 1.0
 filechannel=""
 if not mc:
-    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + ".txt'
+    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + '.txt'
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()

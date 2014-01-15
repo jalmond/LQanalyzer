@@ -1,4 +1,4 @@
-1;2c#!/bin/sh
+#!/bin/sh
 source functions.sh
 
 ###########################################################
@@ -12,7 +12,7 @@ source functions.sh
 ## 
 cycle="Analyzer"
 skinput="True"
-njobs=1
+njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
