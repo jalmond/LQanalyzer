@@ -14,20 +14,20 @@ SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus_test/
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
-egamma	A	/data1/SNUData/Data/Electron/periodA/
+egamma	A	/data1/SNUData/Data/Electron/DoubleElectron/Nov13/periodA/
 egamma 	B 	/data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodB/
 egamma 	C 	/data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodC/
 egamma 	D 	/data2/SNUData/Data/Electron/DoubleElectron/Nov13/periodD/
 
-muon 	A	/data1/SNUData/Data/Muon/periodA/
+muon 	A	/data1/SNUData/Data/Muon/DoubleMuon/Nov13/periodA/
 muon 	B 	/data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodB/
 muon 	C 	/data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodC/
 muon 	D 	/data2/SNUData/Data/Muon/DoubleMuon/Nov13/periodD/
 
-emu 	A  	/data1/SNUData/Data/EMu/periodA/
-emu 	B  	/data1/SNUData/Data/EMu/periodB/
-emu 	C  	/data1/SNUData/Data/EMu/periodC/
-emu 	D  	/data1/SNUData/Data/EMu/periodD/
+emu 	A  	/data1/SNUData/Data/EMu/Nov13/periodA/
+emu 	B  	/data1/SNUData/Data/EMu/Nov13/periodB/
+emu 	C  	/data1/SNUData/Data/EMu/Nov13/periodC/
+emu 	D  	/data1/SNUData/Data/EMu/Nov13/periodD/
 
 
 ### MC ############################################################

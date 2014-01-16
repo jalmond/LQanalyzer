@@ -108,12 +108,13 @@ if not len(splitsample)==1:
 os.system("top -n 1 -b | grep 'root.exe' &> log")
 filename = 'log'
 
+n_previous_jobs=0
 for line in open(filename, 'r'):
     n_previous_jobs+=1
 
-if n_previous_jobs > 10:
+if n_previous_jobs > 40:
     number_of_cores = 1
-    print "Number of subjobs is reduced to 1, since there are over 10 subjobs running on this maching."
+    print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
 
     for line in open(filename, 'r'):
         print line
@@ -121,17 +122,22 @@ if n_previous_jobs > 10:
 os.system("rm log")
 
 if useskinput == "True":
+    if n_previous_jobs > 10:
+        number_of_cores = 40 - n_previous_jobs
     if number_of_cores > 30:
         number_of_cores = 30
         print "Number of sub jobs is set to high. Reset to default of 30."
 elif useskinput == "true":
+    if n_previous_jobs > 10:
+        number_of_cores = 40 - n_previous_jobs
     if number_of_cores > 30:
         number_of_cores= 30
         print "Number of sub jobs is set to high. Reset to default of 30."
 else:
     if number_of_cores > 5:
-        number_of_cores = 5
-        print "Number of sub jobs is set to high. Reset to default of 5."
+        if not cycle == "SKTreeMaker":
+            number_of_cores = 5
+            print "Number of sub jobs is set to high. Reset to default of 5."
 
 
 ##################################################################################################################            
@@ -200,7 +206,7 @@ if not mc:
     tar_lumi=1.
     filechannel = channel+"_"
 else:
-    filename = 'txt/datasets.txt'
+    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + '.txt'
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
@@ -524,7 +530,7 @@ if not JobOutput:
     if not number_of_cores == 1:
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
         os.system("mv "+ output + "/Job_1/runJob_1.C .")
-    print "Check runJob_1.C or log files to debug"
+    print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample   +"runJob_1.log file to debug"
     os.system("rm -r " + output)    
     
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample

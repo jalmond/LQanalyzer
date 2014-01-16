@@ -12,12 +12,12 @@ source functions.sh
 ## 
 cycle="Analyzer"
 skinput="True"
-njobs=30
+njobs=10
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=('HNmumu500')
-declare -a input_samples=('A')
+declare -a input_samples=('DY50plus')
 stream="muon"
 
 #declare -a input_samples=('DY50plus:runevent:57156031:remove:true') #'B' 'C' 'D')
