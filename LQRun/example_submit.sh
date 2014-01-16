@@ -16,7 +16,6 @@ njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-nevents=10000
 #declare -a input_samples=('HNmumu500')
 declare -a input_samples=('DY50plus')
 stream="muon"
