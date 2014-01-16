@@ -17,7 +17,7 @@ data_lumi="AtoD"
 loglevel="INFO"
 #declare -a periods=("A" "B" "C" "D" "DY10to50" "DY50plus")
 #declare -a input_samples=("C" "D" "DY10to50" "DY50plus")  
-declare -a input_samples=("B" "C" "D")
+declare -a input_samples=("DY10to50")
 
 
 ### submit this configured job (uses bin/submit.sh)

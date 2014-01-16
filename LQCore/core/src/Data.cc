@@ -1254,6 +1254,49 @@ void Data::ConnectTruth(){
   ConnectVariable("GenParticleStatus", GenParticleStatus, b_GenParticleStatus);
   ConnectVariable("GenParticleTauDecayMode", GenParticleTauDecayMode, b_GenParticleTauDecayMode);
   
+
+  ConnectVariable("GenZMuEnergy", GenZMuEnergy, b_GenZMuEnergy);
+  ConnectVariable("GenZMuEta", GenZMuEta, b_GenZMuEta);
+  ConnectVariable("GenZMuP", GenZMuP, b_GenZMuP);
+  ConnectVariable("GenZMuPhi", GenZMuPhi, b_GenZMuPhi);
+  ConnectVariable("GenZMuPt", GenZMuPt, b_GenZMuPt);
+  ConnectVariable("GenZMuPx", GenZMuPx, b_GenZMuPx);
+  ConnectVariable("GenZMuPy", GenZMuPy, b_GenZMuPy);
+  ConnectVariable("GenZMuPz", GenZMuPz, b_GenZMuPz);
+  ConnectVariable("GenZMuMotherIndex", GenZMuMotherIndex, b_GenZMuMotherIndex);                                                           
+  ConnectVariable("GenZMuNumDaught", GenZMuNumDaught, b_GenZMuNumDaught);                                                                           
+  ConnectVariable("GenZMuPdgId", GenZMuPdgId, b_GenZMuPdgId);                                                                                               
+  ConnectVariable("GenZMuStatus", GenZMuStatus, b_GenZMuStatus);                                                                                         
+  ConnectVariable("GenZMuTauDecayMode", GenZMuTauDecayMode, b_GenZMuTauDecayMode);
+
+  ConnectVariable("GenZTauMotherIndex", GenZTauMotherIndex, b_GenZTauMotherIndex); 
+  ConnectVariable("GenZTauNumDaught", GenZTauNumDaught, b_GenZTauNumDaught); 
+  ConnectVariable("GenZTauPdgId", GenZTauPdgId, b_GenZTauPdgId); 
+  ConnectVariable("GenZTauStatus", GenZTauStatus, b_GenZTauStatus);
+  ConnectVariable("GenZTauTauDecayMode", GenZTauTauDecayMode, b_GenZTauTauDecayMode);
+  ConnectVariable("GenZTauEnergy", GenZTauEnergy, b_GenZTauEnergy);
+  ConnectVariable("GenZTauEta", GenZTauEta, b_GenZTauEta);
+  ConnectVariable("GenZTauP", GenZTauP, b_GenZTauP);
+  ConnectVariable("GenZTauPhi", GenZTauPhi, b_GenZTauPhi);
+  ConnectVariable("GenZTauPt", GenZTauPt, b_GenZTauPt);
+  ConnectVariable("GenZTauPx", GenZTauPx, b_GenZTauPx);
+  ConnectVariable("GenZTauPy", GenZTauPy, b_GenZTauPy);
+  ConnectVariable("GenZTauPz", GenZTauPz, b_GenZTauPz);
+
+  ConnectVariable("GenZElectronMotherIndex", GenZElectronMotherIndex, b_GenZElectronMotherIndex);
+  ConnectVariable("GenZElectronNumDaught", GenZElectronNumDaught, b_GenZElectronNumDaught);
+  ConnectVariable("GenZElectronPdgId", GenZElectronPdgId, b_GenZElectronPdgId);
+  ConnectVariable("GenZElectronStatus", GenZElectronStatus, b_GenZElectronStatus);
+  ConnectVariable("GenZElectronTauDecayMode", GenZElectronTauDecayMode, b_GenZElectronTauDecayMode);
+  ConnectVariable("GenZElectronEnergy", GenZElectronEnergy, b_GenZElectronEnergy);
+  ConnectVariable("GenZElectronEta", GenZElectronEta, b_GenZElectronEta);
+  ConnectVariable("GenZElectronP", GenZElectronP, b_GenZElectronP);
+  ConnectVariable("GenZElectronPhi", GenZElectronPhi, b_GenZElectronPhi);
+  ConnectVariable("GenZElectronPt", GenZElectronPt, b_GenZElectronPt);
+  ConnectVariable("GenZElectronPx", GenZElectronPx, b_GenZElectronPx);
+  ConnectVariable("GenZElectronPy", GenZElectronPy, b_GenZElectronPy);
+  ConnectVariable("GenZElectronPz", GenZElectronPz, b_GenZElectronPz);
+
   return;
 }
 

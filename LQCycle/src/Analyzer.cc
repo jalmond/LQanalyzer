@@ -45,61 +45,63 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
 
-  Message("Making clever hists for Z ->ll test code", INFO);
-  
-  //// Initialise Plotting class functions
-  /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-  MakeCleverHistograms(sighist, "Zmuons");
-  MakeCleverHistograms(sighist, "Zelectrons");
-  MakeCleverHistograms(sighist, "Sigmuons");
-  MakeCleverHistograms(sighist, "Sigelectrons");
-  
-  return;
-}
+   Message("Making clever hists for Z ->ll test code", INFO);
+
+   //// Initialise Plotting class functions
+   /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
+   MakeCleverHistograms(sighist, "Zmuons");
+   MakeCleverHistograms(sighist, "Zelectrons");
+   MakeCleverHistograms(sighist, "Sigmuons");
+   MakeCleverHistograms(sighist, "Sigelectrons");
+
+   return;
+ }
 
 
-void Analyzer::ExecuteEvents()throw( LQError ){
-  
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
-  
-  if(!PassBasicEventCuts()) return;     /// Initial event cuts  
-  /// Trigger List (specific to muons channel)
-  std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Mu17_TkMu8_v");
-  m_logger << DEBUG << "Trigger = " << PassTrigger(triggerslist, prescale) << LQLogger::endmsg;
-  //  if(!PassTrigger(triggerslist, prescale)) return;
-  /// Correct MC for pileup
-  if (MC_pu&&!k_isdata)  weight = weight*eventbase->GetEvent().PileUpInteractionsTrue()* MCweight;
-  numberVertices = eventbase->GetEvent().nVertices();
-  if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+ void Analyzer::ExecuteEvents()throw( LQError ){
 
-  //////////////////////////////////////////////////////
-  //////////// Select objetcs
-  //////////////////////////////////////////////////////   
+   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-  std::vector<snu::KMuon> muonColl;
-  eventbase->GetMuonSel()->SetPt(20); 
-  eventbase->GetMuonSel()->SetEta(2.4);
-  eventbase->GetMuonSel()->SetRelIso(0.1);
-  eventbase->GetMuonSel()->Selection(muonColl);
+   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
+   /// Trigger List (specific to muons channel)
+   std::vector<TString> triggerslist;
+   triggerslist.push_back("HLT_Mu17_TkMu8_v");
+   m_logger << DEBUG << "Trigger = " << PassTrigger(triggerslist, prescale) << LQLogger::endmsg;
+   //  if(!PassTrigger(triggerslist, prescale)) return;
+   /// Correct MC for pileup
+   if (MC_pu&&!k_isdata)  weight = weight*eventbase->GetEvent().PileUpInteractionsTrue()* MCweight;
+   numberVertices = eventbase->GetEvent().nVertices();
+   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+
+   //////////////////////////////////////////////////////
+   //////////// Select objetcs
+   //////////////////////////////////////////////////////   
+
+   std::vector<snu::KMuon> muonColl;
+   eventbase->GetMuonSel()->SetPt(20); 
+   eventbase->GetMuonSel()->SetEta(2.4);
+   eventbase->GetMuonSel()->SetRelIso(0.1);
+   eventbase->GetMuonSel()->Selection(muonColl);
+
+   std::vector<snu::KJet> jetColl;
+   eventbase->GetJetSel()->SetPt(20);
+   eventbase->GetJetSel()->SetEta(2.5);
+   eventbase->GetJetSel()->Selection(jetColl);
+
+   std::vector<snu::KElectron> electronColl;
+   eventbase->GetElectronSel()->SetPt(20); 
+   eventbase->GetElectronSel()->SetEta(2.5); 
+   eventbase->GetElectronSel()->SetRelIso(0.15); 
+   eventbase->GetElectronSel()->SetBSdxy(0.02); 
+   eventbase->GetElectronSel()->SetBSdz(0.10);
+   eventbase->GetElectronSel()->Selection(electronColl); 
+   ///// SOME STANDARD PLOTS /////
+   ////  Z-> mumu            //////
+
+   if (muonColl.size() == 2) {             
   
-  std::vector<snu::KJet> jetColl;
-  eventbase->GetJetSel()->SetPt(20);
-  eventbase->GetJetSel()->SetEta(2.5);
-  eventbase->GetJetSel()->Selection(jetColl);
-  
-  std::vector<snu::KElectron> electronColl;
-  eventbase->GetElectronSel()->SetPt(20); 
-  eventbase->GetElectronSel()->SetEta(2.5); 
-  eventbase->GetElectronSel()->SetRelIso(0.15); 
-  eventbase->GetElectronSel()->SetBSdxy(0.02); 
-  eventbase->GetElectronSel()->SetBSdz(0.10);
-  eventbase->GetElectronSel()->Selection(electronColl); 
-  ///// SOME STANDARD PLOTS /////
-  ////  Z-> mumu            //////
-  
-  if (muonColl.size() == 2) {                
+    
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak

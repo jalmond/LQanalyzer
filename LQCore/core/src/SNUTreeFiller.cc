@@ -387,42 +387,14 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
       for(unsigned int g =0; g < GenParticleP->size(); g++){
 	m_logger << DEBUG <<  g << " " <<  GenParticleStatus->size() << " " << GenParticlePdgId->size() << LQLogger::endmsg;
 	m_logger << DEBUG << GenParticleStatus->at(g) << " " << GenParticlePdgId->at(g) << LQLogger::endmsg;
-
-	if( fabs(GenParticlePdgId->at(g))==13) m_logger << DEBUG << "Status = " << GenParticleStatus->at(g) << LQLogger::endmsg;
-	if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
-	  m_logger << DEBUG <<  "dR = " <<  fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenParticlePhi->at(g)))  << LQLogger::endmsg;
-	  m_logger << DEBUG <<  "Truth eta = " << GenParticleEta->at(g) << LQLogger::endmsg;
-	  m_logger << DEBUG <<  "Truth phi = " << GenParticlePhi->at(g) << LQLogger::endmsg;
-	}
-	if( MuonMatchedGenParticleEta->at(ilep) != -999){	   
-	  m_logger << DEBUG <<  "Matched"  << LQLogger::endmsg;
-	  if((fabs(MuonMatchedGenParticleEta->at(ilep) - GenParticleEta->at(g)) < 0.1) && (fabs(TVector2::Phi_mpi_pi(MuonMatchedGenParticlePhi->at(ilep) -GenParticlePhi->at(g))) < 0.1)) {    	
-
-	    if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){	      
-	      
-	      /// Calculate dR for truth stable muon and reco muon
-	      double dr = sqrt( pow(fabs(MuonMatchedGenParticleEta->at(ilep) - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonMatchedGenParticlePhi->at(ilep) -GenParticlePhi->at(g))),2.0));
-	      m_logger << DEBUG <<  "Matched dr=" << dr  << LQLogger::endmsg;
-	      /// if this is the closest matching muon then assign it as matched truth
-	      if(dr < truth_reco_dr){
-		iMother = GenParticleMotherIndex->at(g);
-		iDaughter = GenParticleNumDaught->at(g);
-		ipdgid =  GenParticlePdgId->at(g);	
-		truemu_index = g;
-		matched_muon = true;
-		truth_reco_dr = dr;
-	      }
-	    }
-	  }
-	}
-	else if((fabs(MuonEta->at(ilep) - GenParticleEta->at(g)) < 0.1) && (fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenParticlePhi->at(g))) < 0.1)) {
+	
+	if((fabs(MuonEta->at(ilep) - GenParticleEta->at(g)) < 0.1) && (fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenParticlePhi->at(g))) < 0.1)) {
 	  /// This is the case when no truth particle is matched to the reco muon in the LeptoQuark Ntuple making. 
 	  // This happens when two reco muons are on top of each other (one MS muon and one CB muon). The MS muon is matched to the truth. Only one reco muon is matched and so the CB muon is not assigned a truth particle.
-	  m_logger << DEBUG <<  "Non Matched : status = "  <<  GenParticleStatus->at(g) << " pdgid = " << GenParticlePdgId->at(g) << LQLogger::endmsg;
 	  if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
 	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenParticlePhi->at(g))),2.0));
 	    
-	    /// if this is the closest matching muon then assign it as matched truth                                                                                        
+	    /// if this is the closest matching muon then assign it as matched truth                                                                                      
 	    if(dr < truth_reco_dr){
 	      iMother = GenParticleMotherIndex->at(g);
 	      iDaughter = GenParticleNumDaught->at(g);
@@ -433,41 +405,49 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	    }//closest truth match
 	  }/// stable muon
 	}// end of else if
-	else{
-	  if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==13){
-	    m_logger << DEBUG <<  "Failed" << LQLogger::endmsg;
+	
+	int MotherPdgId(-999);
+	if(matched_muon){
+	  MotherPdgId =  GenParticlePdgId->at(iMother);
+	}
+	
+	if (isPrompt( MotherPdgId)){
+	  if ( MuonCharge->at(ilep)* GenParticlePdgId->at(ilep)   > 0)   partType = KParticle::chargemisid;
+	  else partType = KParticle::notfake;
+	}
+	else {
+	  if ( nthdigit( abs(MotherPdgId ),0 ) == 5 || nthdigit( abs(MotherPdgId ),1 ) == 5 || nthdigit( abs(MotherPdgId ),2 ) == 5) partType = KParticle::bjet;    
+	  else if ( nthdigit( abs(MotherPdgId ),0 ) == 4 || nthdigit( abs(MotherPdgId ),1 ) == 4 || nthdigit( abs(MotherPdgId ),2 ) == 4) partType = KParticle::cjet;
+	  else if
+	    (nthdigit( abs(MotherPdgId ),0 ) == 1 || nthdigit( abs(MotherPdgId ),1 ) == 1 || nthdigit( abs(MotherPdgId ),2 ) == 1
+	     || nthdigit( abs(MotherPdgId ),0 ) == 2 || nthdigit( abs(MotherPdgId ),1 ) == 2 || nthdigit( abs(MotherPdgId ),2 ) == 2
+	     || nthdigit( abs(MotherPdgId ),0 ) == 3 || nthdigit( abs(MotherPdgId ),1 ) == 3 || nthdigit( abs(MotherPdgId ),2 ) == 3 )	
+	    partType = KParticle::jet;
+	}
+	
+	muon.SetType(partType);
+	muon.SetTruthParticleIndex(truemu_index);      
+	muon.SetMotherIndex(iMother);
+	muon.SetDaughterIndex(iDaughter);
+      }
+      
+      truth_reco_dr=100000.;
+      matched_muon=false;
+      for(unsigned int g =0; g < GenZMuP->size(); g++){
+	if((fabs(GenZMuPdgId->at(g))==13)){ 
+	  double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenZMuPhi->at(g))),2.0) );	  
+	  if(dr < truth_reco_dr){
+	    ipdgid =  GenZMuPdgId->at(g);
+	    truemu_index = g;
+	    matched_muon = true;
+	    truth_reco_dr = dr;
 	  }
-	}		
-      }/// end gen loop    
-      
-      m_logger << DEBUG << "TEST " << GenParticlePdgId->size() << " " << iMother <<  LQLogger::endmsg;
+	}
+	muon.SetType(partType);
+        muon.SetTruthParticleIndex(truemu_index);
+      }
+    }	
 
-      int MotherPdgId(-999);
-      if(matched_muon){
-	MotherPdgId =  GenParticlePdgId->at(iMother);
-      }
-      
-      if (isPrompt( MotherPdgId)){
-	if ( MuonCharge->at(ilep)*MotherPdgId  == -24 || MuonCharge->at(ilep)*MotherPdgId  == 15 )
-	  partType = KParticle::chargemisid;
-	else partType = KParticle::notfake;
-      }
-      else {
-	if ( nthdigit( abs(MotherPdgId ),0 ) == 5 || nthdigit( abs(MotherPdgId ),1 ) == 5 || nthdigit( abs(MotherPdgId ),2 ) == 5) partType = KParticle::bjet;    
-	else if ( nthdigit( abs(MotherPdgId ),0 ) == 4 || nthdigit( abs(MotherPdgId ),1 ) == 4 || nthdigit( abs(MotherPdgId ),2 ) == 4) partType = KParticle::cjet;
-	else if
-	  (nthdigit( abs(MotherPdgId ),0 ) == 1 || nthdigit( abs(MotherPdgId ),1 ) == 1 || nthdigit( abs(MotherPdgId ),2 ) == 1
-	   || nthdigit( abs(MotherPdgId ),0 ) == 2 || nthdigit( abs(MotherPdgId ),1 ) == 2 || nthdigit( abs(MotherPdgId ),2 ) == 2
-	   || nthdigit( abs(MotherPdgId ),0 ) == 3 || nthdigit( abs(MotherPdgId ),1 ) == 3 || nthdigit( abs(MotherPdgId ),2 ) == 3 )	
-	  partType = KParticle::jet;
-      }
-      
-
-      muon.SetType(partType);
-      muon.SetTruthParticleIndex(truemu_index);      
-      muon.SetMotherIndex(iMother);
-      muon.SetDaughterIndex(iDaughter);
-    }
 
     double reliso = (MuonPFIsoR03ChargedHadron->at(ilep) + std::max(0.0, MuonPFIsoR03NeutralHadron->at(ilep) + MuonPFIsoR03Photon->at(ilep) - 0.5*MuonPFIsoR03PU->at(ilep)))/MuonPt->at(ilep);
     if(reliso < 0) reliso = 0.0001;
@@ -524,12 +504,111 @@ std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
     else if(GenParticlePdgId->at(it) == 24) charge_truth =1.;
     else charge_truth = -999.;
     
-    if(GenParticlePdgId->at(it) < 0) charge_truth *=1.;
+    if(GenParticlePdgId->at(it) < 0) charge_truth *=-1.;
 
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }/// end of filling loop
+
+  for (UInt_t it=0; it< GenZMuEta->size(); it++, itruth++) {
+    snu::KTruth truthp;
+    truthp.SetPtEtaPhiE(GenZMuPt->at(it), GenZMuEta->at(it), GenZMuPhi->at(it), GenZMuEnergy->at(it));
+    truthp.SetParticlePx(GenZMuPx->at(it));
+    truthp.SetParticlePy(GenZMuPy->at(it));
+    truthp.SetParticlePz(GenZMuPz->at(it));
+    if(GenZMuVX){
+      truthp.SetParticleVx(GenZMuVX->at(it));
+      truthp.SetParticleVy(GenZMuVY->at(it));
+      truthp.SetParticleVz(GenZMuVZ->at(it));
+    }
+    truthp.SetParticlePdgId(GenZMuPdgId->at(it));
+    truthp.SetParticleStatus(GenZMuStatus->at(it));
+
+    truthp.SetParticleIndexDaughter(GenZMuNumDaught->at(it));
+    truthp.SetParticleIndexMother(GenZMuMotherIndex->at(it));
+
+    float charge_truth = -999.;
+    if(GenZMuPdgId->at(it) == 1 || GenZMuPdgId->at(it) == 3 || GenZMuPdgId->at(it) == 5) charge_truth = -1./3.;
+    else if(GenZMuPdgId->at(it) == 2 || GenZMuPdgId->at(it) == 4 || GenZMuPdgId->at(it) == 6) charge_truth = 2./3.;
+    else if(GenZMuPdgId->at(it) == 11 || GenZMuPdgId->at(it) ==13 || GenZMuPdgId->at(it) ==15) charge_truth = -1.;
+    else if(GenZMuPdgId->at(it) == 12 || GenZMuPdgId->at(it) ==14 || GenZMuPdgId->at(it) ==16) charge_truth = 0.;
+    else if(GenZMuPdgId->at(it) == 22 || GenZMuPdgId->at(it) == 23) charge_truth = 0.;
+    else if(GenZMuPdgId->at(it) == 24) charge_truth =1.;
+    else charge_truth = -999.;
+
+    if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
+
+    truthp.SetIndex(itruth);
+    vtruth.push_back(truthp);    
+  }
   
+  for (UInt_t it=0; it< GenZTauEta->size(); it++, itruth++) {
+    snu::KTruth truthp;
+    truthp.SetPtEtaPhiE(GenZTauPt->at(it), GenZTauEta->at(it), GenZTauPhi->at(it), GenZTauEnergy->at(it));
+    truthp.SetParticlePx(GenZTauPx->at(it));
+    truthp.SetParticlePy(GenZTauPy->at(it));
+    truthp.SetParticlePz(GenZTauPz->at(it));
+    if(GenZTauVX){
+      truthp.SetParticleVx(GenZTauVX->at(it));
+      truthp.SetParticleVy(GenZTauVY->at(it));
+      truthp.SetParticleVz(GenZTauVZ->at(it));
+    }
+    truthp.SetParticlePdgId(GenZTauPdgId->at(it));
+    truthp.SetParticleStatus(GenZTauStatus->at(it));
+
+    truthp.SetParticleIndexDaughter(GenZTauNumDaught->at(it));
+    truthp.SetParticleIndexMother(GenZTauMotherIndex->at(it));
+
+    float charge_truth = -999.;
+    if(GenZTauPdgId->at(it) == 1 || GenZTauPdgId->at(it) == 3 || GenZTauPdgId->at(it) == 5) charge_truth = -1./3.;
+    else if(GenZTauPdgId->at(it) == 2 || GenZTauPdgId->at(it) == 4 || GenZTauPdgId->at(it) == 6) charge_truth = 2./3.;
+    else if(GenZTauPdgId->at(it) == 11 || GenZTauPdgId->at(it) ==13 || GenZTauPdgId->at(it) ==15) charge_truth = -1.;
+    else if(GenZTauPdgId->at(it) == 12 || GenZTauPdgId->at(it) ==14 || GenZTauPdgId->at(it) ==16) charge_truth = 0.;
+    else if(GenZTauPdgId->at(it) == 22 || GenZTauPdgId->at(it) == 23) charge_truth = 0.;
+    else if(GenZTauPdgId->at(it) == 24) charge_truth =1.;
+    else charge_truth = -999.;
+
+    if(GenZTauPdgId->at(it) < 0) charge_truth *=-1.;
+
+    truthp.SetIndex(itruth);
+    vtruth.push_back(truthp);
+  }
+
+
+  for (UInt_t it=0; it< GenZMuEta->size(); it++, itruth++) {
+    snu::KTruth truthp;
+    truthp.SetPtEtaPhiE(GenZMuPt->at(it), GenZMuEta->at(it), GenZMuPhi->at(it), GenZMuEnergy->at(it));
+    truthp.SetParticlePx(GenZMuPx->at(it));
+    truthp.SetParticlePy(GenZMuPy->at(it));
+    truthp.SetParticlePz(GenZMuPz->at(it));
+    if(GenZMuVX){
+      truthp.SetParticleVx(GenZMuVX->at(it));
+      truthp.SetParticleVy(GenZMuVY->at(it));
+      truthp.SetParticleVz(GenZMuVZ->at(it));
+    }
+    truthp.SetParticlePdgId(GenZMuPdgId->at(it));
+    truthp.SetParticleStatus(GenZMuStatus->at(it));
+
+    truthp.SetParticleIndexDaughter(GenZMuNumDaught->at(it));
+    truthp.SetParticleIndexMother(GenZMuMotherIndex->at(it));
+
+    float charge_truth = -999.;
+    if(GenZMuPdgId->at(it) == 1 || GenZMuPdgId->at(it) == 3 || GenZMuPdgId->at(it) == 5) charge_truth = -1./3.;
+    else if(GenZMuPdgId->at(it) == 2 || GenZMuPdgId->at(it) == 4 || GenZMuPdgId->at(it) == 6) charge_truth = 2./3.;
+    else if(GenZMuPdgId->at(it) == 11 || GenZMuPdgId->at(it) ==13 || GenZMuPdgId->at(it) ==15) charge_truth = -1.;
+    else if(GenZMuPdgId->at(it) == 12 || GenZMuPdgId->at(it) ==14 || GenZMuPdgId->at(it) ==16) charge_truth = 0.;
+    else if(GenZMuPdgId->at(it) == 22 || GenZMuPdgId->at(it) == 23) charge_truth = 0.;
+    else if(GenZMuPdgId->at(it) == 24) charge_truth =1.;
+    else charge_truth = -999.;
+
+    if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
+
+    truthp.SetIndex(itruth);
+    vtruth.push_back(truthp);
+  }
+
+
+
   return vtruth;
 }
 

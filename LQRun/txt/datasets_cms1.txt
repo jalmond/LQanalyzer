@@ -2,10 +2,13 @@
 ##################
 ### Data#############
 SKmuon A /data/SKTrees/DiMu/periodA/
-SKmuon B 
-SKmuon C 
-SKmuon D 
+SKmuon B /data/SKTrees/DiMu/periodB/
+SKmuon C /data/SKTrees/DiMu/periodC/
+SKmuon D /data/SKTrees/DiMu/periodD/
+
+
 ### MC #############
+SKDY10to50   3424.007  /data/SKTrees/MC/DY10to50/
 SKDY50plus   8693.5   /data/SKTrees/MC/DY50plus/
 
 ### LQNtuples ########################################################
@@ -18,7 +21,7 @@ egamma B
 egamma C 
 egamma D 
 
-muon A	 /data/HN_data/DiMu/periodAmuon/
+muon A	 /data/HN_data/DiMu/periodA/
 muon B 	 /home/jalmond/Muon/periodB/
 muon C 	 /home/jalmond/Muon/periodC/
 muon D 	 /home/jalmond/Muon/periodD/
