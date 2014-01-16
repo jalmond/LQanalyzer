@@ -1,4 +1,3 @@
-
 #!/bin/sh
 source functions.sh
 
@@ -12,11 +11,12 @@ source functions.sh
 ## What cycle do you want to run.  
 ## 
 cycle="Analyzer"
-skinput="False"
-njobs=1
+skinput="True"
+njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
+#declare -a input_samples=('HNmumu500')
 declare -a input_samples=('A')
 stream="muon"
 

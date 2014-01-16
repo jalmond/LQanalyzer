@@ -154,7 +154,7 @@ void Data::Init(TTree *tree)
   fChain->SetCacheSize(cachesize);
   if(LQinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
   ConnectVariables(false); // -> false means not ALL branches are loaded
-  fChain->GetEntry(0,0);
+  //fChain->GetEntry(0,0);
   fChain->StopCacheLearningPhase();
   nentries = fChain->GetEntries();
   Notify();

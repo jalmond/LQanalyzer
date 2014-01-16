@@ -51,6 +51,8 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
   /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
   MakeCleverHistograms(sighist, "Zmuons");
   MakeCleverHistograms(sighist, "Zelectrons");
+  MakeCleverHistograms(sighist, "Sigmuons");
+  MakeCleverHistograms(sighist, "Sigelectrons");
   
   return;
 }
@@ -58,11 +60,14 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
 
 void Analyzer::ExecuteEvents()throw( LQError ){
   
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+  
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   /// Trigger List (specific to muons channel)
   std::vector<TString> triggerslist;
   triggerslist.push_back("HLT_Mu17_TkMu8_v");
-
+  m_logger << DEBUG << "Trigger = " << PassTrigger(triggerslist, prescale) << LQLogger::endmsg;
   //  if(!PassTrigger(triggerslist, prescale)) return;
   /// Correct MC for pileup
   if (MC_pu&&!k_isdata)  weight = weight*eventbase->GetEvent().PileUpInteractionsTrue()* MCweight;
@@ -94,15 +99,15 @@ void Analyzer::ExecuteEvents()throw( LQError ){
   ///// SOME STANDARD PLOTS /////
   ////  Z-> mumu            //////
   
-  Message("TEST4", DEBUG);
-
-  if (muonColl.size() == 2) {      
-          
+  if (muonColl.size() == 2) {                
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(sighist, "Zmuons", eventbase->GetEvent(), muonColl,jetColl, weight);
+      FillCLHist(sighist, "Zmuons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
     } 
+    else{
+      FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
+    }
   }
   
 
@@ -113,8 +118,11 @@ void Analyzer::ExecuteEvents()throw( LQError ){
     if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
 
       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(sighist, "Zelectrons", eventbase->GetEvent(), electronColl,jetColl, weight);
+      FillCLHist(sighist, "Zelectrons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
     } 
+    else {
+      FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
+    }
   }
   
   return;

@@ -76,7 +76,7 @@ def makeTransferFile_snu(snumachine, sample, endpath):
 	os.system("ssh jalmond@" + snumachine + ".snu.ac.kr 'cd "+ endpath  +"; ls  ./' > files_at_snuend_v2.txt")
 
 	os.system("grep -Fxv -f  files_at_snuend_v2.txt fullsamplelist.txt")
-
+	
 
 
 
