@@ -84,7 +84,9 @@ Int_t Data::GetEntry(Long64_t entry)
 {
   // Read contents of entry.
    if (!fChain) return 0;
-   return fChain->GetEntry(entry,0);
+   m_logger << DEBUG << "Getting Entry " << entry << " in Data.cc " << fChain->GetEntry(entry,0)  << LQLogger::endmsg;
+   int nbytes = fChain->GetEntry(entry,0);
+   return nbytes;
 }
 
 Long64_t Data::LoadTree(Long64_t entry)
