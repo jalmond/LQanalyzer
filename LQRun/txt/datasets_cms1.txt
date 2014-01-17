@@ -6,20 +6,34 @@ SKmuon B /data/SKTrees/DiMu/periodB/
 SKmuon C /data/SKTrees/DiMu/periodC/
 SKmuon D /data/SKTrees/DiMu/periodD/
 
+SKegamma A /data/SKTrees/Data/DiEl/periodA/
+SKegamma B /data/SKTrees/Data/DiEl/periodB/
+SKegamma C /data/SKTrees/Data/DiEl/periodC/
+SKegamma D /data/SKTrees/Data/DiEl/periodD/
+
+SKemu A /data/SKTrees/Data/EMu/periodA/
+SKemu B /data/SKTrees/Data/EMu/periodB/
+SKemu C /data/SKTrees/Data/EMu/periodC/
+SKemu D /data/SKTrees/Data/EMu/periodD/
 
 ### MC #############
 SKDY10to50   3424.007  /data/SKTrees/MC/DY10to50/
 SKDY50plus   8693.5   /data/SKTrees/MC/DY50plus/
+SKttbar 	     29588.256	      /data/SKTrees/MC/ttbar/
+SKWW 	     182363.161       /data/SKTrees/MC/WW/
+SKWZ 	     301122.644		      /data/SKTrees/MC/WZ/
+SKZZ 	     555109.777		      /data/SKTrees/MC/ZZ/
+SKWjets 	     1538.562 		      /data/SKTrees/MC/Wjets/
 
 ### LQNtuples ########################################################
 ####
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
-egamma A  /data/HN_data/DiEl/periodA/
-egamma B 
-egamma C 
-egamma D 
+egamma A  /data/HN_data/Data/DiEl/periodA/
+egamma B  /home/jalmond/Electron/periodB/
+egamma C /home/jalmond/Electron/periodC/
+egamma D /home/jalmond/Electron/periodD/
 
 muon A	 /data/HN_data/DiMu/periodA/
 muon B 	 /home/jalmond/Muon/periodB/
@@ -32,6 +46,9 @@ muon D 	 /home/jalmond/Muon/periodD/
 DY10to50	3424.007	/data/HN_data/MC/DY10to50/
 DY50plus	8693.5		/data/HN_data/MC/DY50plus/
 ttbar		29588.256 	/data/HN_data/MC/ttbar/
+WZ              301122.644      /data/HN_data/MC/WZ/
+ZZ              555109.777      /data/HN_data/MC/ZZ/
+
 
 ###HN signal
 HNmumu50	46.68			/data/HN_data//MC/HN/mumu/50/

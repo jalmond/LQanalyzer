@@ -6,8 +6,15 @@ SKmuon B /data1/SKTrees/Data/DiMuon/PeriodB/
 SKmuon C /data1/SKTrees/Data/DiMuon/PeriodC/
 SKmuon D /data1/SKTrees/Data/DiMuon/PeriodD/
 
-### MC #############
-SKDY50plus   8693.5     /data1/SKTrees/MC/DY50plus_test/
+SKemu A /data2/SKTrees/Data/EMu/periodA/
+SKemu B /data2/SKTrees/Data/EMu/periodB/
+SKemu C /data2/SKTrees/Data/EMu/periodC/
+SKemu D /data2/SKTrees/Data/EMu/periodD/
+
+SKegamma A /data1/SKTrees/Data/DiEl/periodA/
+SKegamma B /data1/SKTrees/Data/DiEl/periodB/
+SKegamma C /data1/SKTrees/Data/DiEl/periodC/
+SKegamma D /data1/SKTrees/Data/DiEl/periodD/
 
 ### LQNtuples ########################################################
 ####
