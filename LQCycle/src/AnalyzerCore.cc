@@ -114,6 +114,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   if (!fChain) throw LQError( "Chain is not initialized",  LQError::SkipCycle );     
   
   if(LQinput){
+    m_logger << DEBUG << "k_isdata = " << k_isdata << " and isData = " << isData << LQLogger::endmsg;
     if(k_isdata != isData) throw LQError( "!!! Event is confused. It does not know if it is data or MC", LQError::SkipCycle );
   }
   else isData = k_isdata;

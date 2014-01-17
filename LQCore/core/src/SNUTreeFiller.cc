@@ -284,7 +284,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
-    
+    m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
     if(!MuonGlobalEta){
       muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
       muon.SetCharge(MuonCharge->at(ilep));
@@ -295,8 +295,11 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	iglobal++;
       }
     }
+
+    m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
     if(MuonMuonSpecPt){
-      if(MuonMuonSpecCharge->at(ilep) !=0.){
+
+      if(MuonMuonSpecCharge->at(ilep) !=-999. && MuonMuonSpecCharge->at(ilep) !=0){
 	muon.SetMuonMSPt(MuonMuonSpecPt->at(ims));
 	muon.SetMuonMSEta(MuonMuonSpecEta->at(ims));
 	muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ims));
@@ -310,6 +313,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	muon.SetMuonMSCharge(0);
       }
     }
+    m_logger << DEBUG << "Filling tracker ... " << LQLogger::endmsg;
     if(MuonTrackerCharge){
       muon.SetMuonIDPt(MuonPt->at(ilep));
       muon.SetMuonIDEta(MuonEta->at(ilep));
@@ -321,6 +325,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
    
     muon.SetMuonVtxIndex(MuonVtxIndex->at(ilep));    
     
+    m_logger << DEBUG << "Filling isolation ... " << LQLogger::endmsg;
     /// Isolation
     muon.SetISOR03ChargedHad(MuonPFIsoR03ChargedHadron->at(ilep));
     muon.SetISOR03NeutralHad(MuonPFIsoR03NeutralHadron->at(ilep));
@@ -340,6 +345,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     muon.SetTrackVz(MuonTrkVz->at(ilep));
     muon.SetVertexDistXY(MuonVtxDistXY->at(ilep));
 
+    m_logger << DEBUG << "Filling IP  ... " << LQLogger::endmsg;
     if(VertexN != -1){
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));
       muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(VertexN),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(VertexN),2)));
@@ -432,14 +438,12 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
       }
       
       truth_reco_dr=100000.;
-      matched_muon=false;
       for(unsigned int g =0; g < GenZMuP->size(); g++){
 	if((fabs(GenZMuPdgId->at(g))==13)){ 
 	  double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenZMuPhi->at(g))),2.0) );	  
 	  if(dr < truth_reco_dr){
 	    ipdgid =  GenZMuPdgId->at(g);
 	    truemu_index = g;
-	    matched_muon = true;
 	    truth_reco_dr = dr;
 	  }
 	}
@@ -452,11 +456,11 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     double reliso = (MuonPFIsoR03ChargedHadron->at(ilep) + std::max(0.0, MuonPFIsoR03NeutralHadron->at(ilep) + MuonPFIsoR03Photon->at(ilep) - 0.5*MuonPFIsoR03PU->at(ilep)))/MuonPt->at(ilep);
     if(reliso < 0) reliso = 0.0001;
     muon.SetRelIso(reliso);
-         
+    
     /// GENERAL
     muon.SetISPF(MuonIsPF->at(ilep));
     muon.SetIsGlobal(MuonIsGlobal->at(ilep));
-    
+    m_logger << DEBUG << "Add muon to vector " << LQLogger::endmsg;
     /// Fill vector
     muons.push_back(muon);
   }
