@@ -12,7 +12,7 @@ source functions.sh
 
 cycle="SKTreeMaker"
 stream="emu"
-njobs=1
+njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 #declare -a periods=("A" "B" "C" "D" "DY10to50" "DY50plus")
