@@ -121,25 +121,27 @@ if n_previous_jobs > 40:
 
 os.system("rm log")
 
-if useskinput == "True":
-    if n_previous_jobs > 10:
-        number_of_cores = 40 - n_previous_jobs
-    if number_of_cores > 30:
-        number_of_cores = 30
-        print "Number of sub jobs is set to high. Reset to default of 30."
-elif useskinput == "true":
-    if n_previous_jobs > 10:
-        number_of_cores = 40 - n_previous_jobs
-    if number_of_cores > 30:
-        number_of_cores= 30
-        print "Number of sub jobs is set to high. Reset to default of 30."
-else:
-    if number_of_cores > 5:
-        if not cycle == "SKTreeMaker":
-            number_of_cores = 5
-            print "Number of sub jobs is set to high. Reset to default of 5."
+if number_of_cores > 1:
+    if useskinput == "True":
+        if (40 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 40 - n_previous_jobs
+        if number_of_cores > 30:
+            number_of_cores = 30
+            print "Number of sub jobs is set to high. Reset to default of 30."
+    elif useskinput == "true":
+        if (40 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 40 - n_previous_jobs
+        if number_of_cores > 30:
+            number_of_cores= 30
+            print "Number of sub jobs is set to high. Reset to default of 30."
+    else:
+        if number_of_cores > 5:
+            if not cycle == "SKTreeMaker":
+                number_of_cores = 5
+                print "Number of sub jobs is set to high. Reset to default of 5."
 
-
+if number_of_cores < 0:
+    number_of_cores=1
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
 ##################################################################################################################

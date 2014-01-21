@@ -1,7 +1,6 @@
 //###########################
 //   Author John Almond
 //###########################
-
 Steps to run analysis:
 1) Download LQanalyzer:
 git clone git@github.com:jalmond/LQanalyzer.git
