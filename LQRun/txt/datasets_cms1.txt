@@ -1,10 +1,10 @@
 ### SKTrees ##########
 ##################
 ### Data#############
-SKmuon A /data/SKTrees/DiMu/periodA/
-SKmuon B /data/SKTrees/DiMu/periodB/
-SKmuon C /data/SKTrees/DiMu/periodC/
-SKmuon D /data/SKTrees/DiMu/periodD/
+SKmuon A /data/SKTrees/Data/DiMu/periodA/
+SKmuon B /data/SKTrees/Data/DiMu/periodB/
+SKmuon C /data/SKTrees/Data/DiMu/periodC/
+SKmuon D /data/SKTrees/Data/DiMu/periodD/
 
 SKegamma A /data/SKTrees/Data/DiEl/periodA/
 SKegamma B /data/SKTrees/Data/DiEl/periodB/
