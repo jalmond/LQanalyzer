@@ -1,2 +1,2 @@
 ######## MAC SPECIFIC LOCATIONS
-SKmuon A /data2/cms2_data1/SKTrees/Data/DiMuon/PeriodA/
+SKmuon A /Users/John/CMS1/LQanalyzer/data/input/data/SKmuonA
