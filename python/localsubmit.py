@@ -193,29 +193,27 @@ elif useskinput == "True":
 print "Input sample = " + sample
 
 
-###########################################################################    
-#### Check if sktrees are located on current machines                          
-###########################################################################    
+##############################################################################################
+#### Check if sktrees are located on current machines  (not used when running on cmsX at snu)                        
+#############################################################################################
 
 isfile = os.path.isfile
 join = os.path.join
 if platform.system() != "Linux":
-
     localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
     if not mc:        
         localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + channel  + sample
     else:
         localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/mc/"  + sample
+    
     if not os.path.exists(localDir):
         print "No files in current location: Will copy them over"
         CopySKTrees(channel,sample,mc,"True")
-    elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item\
-))) == 0:
+    elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item))) == 0:
         print "No files are located locally: Will copy from cms21 machine"
         CopySKTrees(channel,sample,mc,"True")
     else:
-        update = raw_input("Files already located on current machine. Do you w\
-ant these updating? Yes/No")
+        update = raw_input("Files already located on current machine. Do you want these updating? Yes/No")
         if update == "Yes":
             print "Updating local sktree"
             CopySKTrees(channel,sample,mc,"True")
