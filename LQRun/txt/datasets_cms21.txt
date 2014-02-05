@@ -1,0 +1,6 @@
+######## CMS21 LQNTUPLE/SKTREE PATHS ############
+
+SKmuon A /data2/cms2_data1/SKTrees/Data/DiMuon/PeriodA/
+SKmuon B /data2/cms2_data1/SKTrees/Data/DiMuon/PeriodB/
+SKmuon C /data2/cms2_data1/SKTrees/Data/DiMuon/PeriodC/
+SKmuon D /data2/cms2_data1/SKTrees/Data/DiMuon/PeriodD/

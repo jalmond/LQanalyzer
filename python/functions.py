@@ -44,7 +44,7 @@ def CopySKTrees(channel,sample,mc):
     print run
     os.system(run)
     
-    with open('txt/datasets_mac.txt', 'w') as file:
+    with open('txt/datasets_mac.txt', 'a') as file:
         if not mc:
             towrite = channel + " " + sample + " " + inputdir
         else:
