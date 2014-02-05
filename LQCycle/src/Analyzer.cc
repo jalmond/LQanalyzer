@@ -50,7 +50,11 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist, "Zmuons");
+   MakeCleverHistograms(sighist, "Zmuons_jlv");
+   MakeCleverHistograms(sighist, "Zmuons_jlv_60");
    MakeCleverHistograms(sighist, "Zelectrons");
+   MakeCleverHistograms(sighist, "Zelectrons_jlv");
+   MakeCleverHistograms(sighist, "Zelectrons_jlv_60");
    MakeCleverHistograms(sighist, "Sigmuons");
    MakeCleverHistograms(sighist, "Sigelectrons");
 
@@ -81,21 +85,31 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
    std::vector<snu::KMuon> muonColl;
    eventbase->GetMuonSel()->SetPt(20); 
    eventbase->GetMuonSel()->SetEta(2.4);
-   eventbase->GetMuonSel()->SetRelIso(0.1);
+   eventbase->GetMuonSel()->SetRelIso(0.12);
+   eventbase->GetMuonSel()->SetChiNdof(10); 
+   eventbase->GetMuonSel()->SetBSdxy(0.01);
+   eventbase->GetMuonSel()->SetBSdz(0.10);
+   eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
    eventbase->GetMuonSel()->Selection(muonColl);
 
-   std::vector<snu::KJet> jetColl;
-   eventbase->GetJetSel()->SetPt(20);
-   eventbase->GetJetSel()->SetEta(2.5);
-   eventbase->GetJetSel()->Selection(jetColl);
-
    std::vector<snu::KElectron> electronColl;
-   eventbase->GetElectronSel()->SetPt(20); 
-   eventbase->GetElectronSel()->SetEta(2.5); 
-   eventbase->GetElectronSel()->SetRelIso(0.15); 
-   eventbase->GetElectronSel()->SetBSdxy(0.02); 
+   eventbase->GetElectronSel()->SetPt(10);
+   eventbase->GetElectronSel()->SetEta(2.4);
+   eventbase->GetElectronSel()->SetRelIso(0.1);
+   eventbase->GetElectronSel()->SetBSdxy(0.02);
    eventbase->GetElectronSel()->SetBSdz(0.10);
-   eventbase->GetElectronSel()->Selection(electronColl); 
+   eventbase->GetElectronSel()->Selection(electronColl);
+
+   std::vector<snu::KJet> jetColl;
+   std::vector<snu::KJet> jetColl_lepveto;
+   std::vector<snu::KJet> jetColl_lepveto_60;
+   eventbase->GetJetSel()->SetPt(30.);
+   eventbase->GetJetSel()->SetEta(2.4);
+   eventbase->GetJetSel()->Selection(jetColl);
+   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonColl, electronColl);
+   eventbase->GetJetSel()->SetPt(60.);
+   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto_60, muonColl, electronColl);
+   
    ///// SOME STANDARD PLOTS /////
    ////  Z-> mumu            //////
 
@@ -104,6 +118,8 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
       FillCLHist(sighist, "Zmuons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
+      FillCLHist(sighist, "Zmuons_jlv", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto, weight);
+      FillCLHist(sighist, "Zmuons_jlv_60", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto_60, weight);
     } 
     else{
       FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
@@ -119,6 +135,8 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
 
       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
       FillCLHist(sighist, "Zelectrons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
+      FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto, weight);
+      FillCLHist(sighist, "Zelectrons_jlv_60", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto_60, weight);
     } 
     else {
       FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
