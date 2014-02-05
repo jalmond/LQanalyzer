@@ -1,5 +1,14 @@
-def CopySKTrees(channel,sample,mc):
+def CheckPathInFile(channel,sample,mc):
+    CopySKTrees(channel, sample, mc , "False")
+    
 
+    
+
+def CopySKTrees(channel,sample,mc,docopy):
+    
+    if not docopy == "False":
+        docopy = "True"
+    
     import os
     filename = 'txt/datasets_cms21.txt'
     tmpxsec=0
@@ -39,10 +48,11 @@ def CopySKTrees(channel,sample,mc):
         if not os.path.exists(sample_dir):
             os.system("mkdir " + sample_dir)     
 
-    user = raw_input("Please enter username of cms21 account")    
-    run = "scp " + str(user) + "@147.47.242.42:" + inputdir + "/*.root " + sample_dir
-    print run
-    os.system(run)
+    if docopy == "True":
+        user = raw_input("Please enter username of cms21 account")    
+        run = "scp " + str(user) + "@147.47.242.42:" + inputdir + "/*.root " + sample_dir
+        print run
+        os.system(run)
     
     with open('txt/datasets_mac.txt', 'a') as file:
         if not mc:
@@ -71,7 +81,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     if useSKinput == "True":        
         config+='   analysis.SetLQInput(false);\n'
     elif useSKinput == "true":
-        config+='   analysis.SetLQInput(false);\n'
+        config+='   analysis.SetLQInput(false);\n'    
     else :
         config+='   analysis.SetLQInput(true);\n'
     config+='   analysis.SetJobName("' + sample + "_" + cycle+'");\n'

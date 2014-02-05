@@ -192,13 +192,41 @@ elif useskinput == "True":
         
 print "Input sample = " + sample
 
+
+###########################################################################    
+#### Check if sktrees are located on current machines                          
+###########################################################################    
+
+isfile = os.path.isfile
+join = os.path.join
+if platform.system() != "Linux":
+    localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" + sample
+    if not os.path.exists(localDir):
+        print "No files in current location: Will copy them over"
+        CopySKTrees(channel,sample,mc)
+    elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item\
+))) == 0:
+        print "No files are located locally: Will copy from cms21 machine"
+        CopySKTrees(channel,sample,mc)
+    else:
+        update = raw_input("Files already located on current machine. Do you w\
+ant these updating? Yes/No")
+        if update == "Yes":
+            print "Updating local sktree"
+            CopySKTrees(channel,sample,mc)
+        elif update == "yes":
+            print "Updating local sktree"
+            CopySKTrees(channel,sample,mc)
+        else:
+            CheckPathInFile(channel,sample,mc)
+            
 ##################################################################################################################
 #Find the DS name (and lumi if MC) from txt/datasets.txt
 ##################################################################################################################
 inDS = ""
 mcLumi = 1.0
 filechannel=""
-psample=sample
+
 if platform.system() == "Linux":
     filename = 'txt/datasets_' + os.getenv("HOSTNAME") + '.txt'
 else:
@@ -223,28 +251,7 @@ else:
                     eff_lumi = entries[1]
                     inDS = entries[2]
 InputDir = inDS    
-###########################################################################
-#### Check if sktrees are located on current machines
-###########################################################################
 
-isfile = os.path.isfile
-join = os.path.join
-if platform.system() != "Linux":
-    localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" + sample 
-    if not os.path.exists(localDir):
-        print "No files in current location: Will copy them over"
-        CopySKTrees(channel,psample,mc)
-    elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item))) == 0:        
-        print "No files are located locally: Will copy from cms21 machine"
-        CopySKTrees(channel,psample,mc)
-    else:
-        update = raw_input("Files already located on current machine. Do you want these updating? Yes/No")
-        if update == "Yes":
-            print "Updating local sktree"
-            CopySKTrees(channel,psample,mc)
-        if update == "yes":
-            print "Updating local sktree"
-            CopySKTrees(channel,psample,mc)
 os.ass
 
 
