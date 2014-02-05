@@ -1,3 +1,84 @@
+def CheckPathInFile(channel,sample,mc):
+    CopySKTrees(channel, sample, mc , "False")
+    
+
+    
+
+def CopySKTrees(channel,sample,mc,docopy):
+    
+    if not docopy == "False":
+        docopy = "True"
+    
+    import os
+    filename = 'txt/datasets_cms21.txt'
+    tmpxsec=0
+    inputdir=""
+    if not mc:
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==3:
+                    if channel ==entries[0] and sample == entries[1]:
+                        inputdir = entries[2]
+                        print inputdir 
+    else:
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==3:
+                    tmpxsec=entries[1]
+                    if sample == entries[0]:
+                        inputdir = entries[2]
+
+    sample_dir = os.getenv("LQANALYZER_DIR")+ "/data/input/"
+    if not os.path.exists(sample_dir):                
+        os.system("mkdir " + sample_dir)
+    if not mc:
+        sample_dir+= "data/"
+        if not os.path.exists(sample_dir):
+            os.system("mkdir " + sample_dir)
+        sample_dir += channel+sample
+        if not os.path.exists(sample_dir):
+                os.system("mkdir " + sample_dir)
+    else: 
+        sample_dir += "mc/"    
+        if not os.path.exists(sample_dir):  
+            os.system("mkdir " + sample_dir)
+        sample_dir += sample
+        if not os.path.exists(sample_dir):
+            os.system("mkdir " + sample_dir)     
+
+    if docopy == "True":
+        user = raw_input("Please enter username of cms21 account")    
+        run = "scp " + str(user) + "@147.47.242.42:" + inputdir + "/*.root " + sample_dir
+        print run
+        os.system(run)
+    
+    infile=False
+    if not mc:    
+        for line in open('txt/datasets_mac.txt', 'r'):
+                if not line.startswith("#"):
+                    entries = line.split()
+                    if len(entries)==3:
+                        if sample == entries[1]:    
+                            if channel in entries[0]:
+                                infile=True
+    else:
+        for line in open('txt/datasets_mac.txt', 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==3:
+                    if sample == entries[0]:
+                       infile=True 
+
+    if not infile:                   
+        with open('txt/datasets_mac.txt', 'a') as file:
+            if not mc:
+                towrite = channel + " " + sample + " " + sample_dir
+            else:
+                towrite = sample + " " + tmpxsec + " " + sample_dir
+            file.write(towrite)
+
 def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent):
 
     config='{\n'
@@ -7,7 +88,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libSKTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
     config+='   gSystem->Load("libAnalysisCore.so");\n'
-    config+='   gSystem->Load("libcore.so");\n'
+    config+='   gSystem->Load("libNtuplecore.so");\n'
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
     config+='   gSystem->Load("libLQCycle.so");\n'
@@ -18,7 +99,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     if useSKinput == "True":        
         config+='   analysis.SetLQInput(false);\n'
     elif useSKinput == "true":
-        config+='   analysis.SetLQInput(false);\n'
+        config+='   analysis.SetLQInput(false);\n'    
     else :
         config+='   analysis.SetLQInput(true);\n'
     config+='   analysis.SetJobName("' + sample + "_" + cycle+'");\n'

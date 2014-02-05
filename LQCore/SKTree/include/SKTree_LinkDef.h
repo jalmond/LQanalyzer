@@ -4,6 +4,9 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ nestedclass;
+#pragma link C++ namespace snu;
+
 #pragma link C++ class snu::KParticle+;
 
 #pragma link C++ class snu::KMuon+;

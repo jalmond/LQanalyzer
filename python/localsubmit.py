@@ -105,21 +105,24 @@ if not len(splitsample)==1:
 ##################################################################################################################
 #### HARD CODE THE MAXIMUM number of subjobs
 ##################################################################################################################
-os.system("top -n 1 -b | grep 'root.exe' &> log")
-filename = 'log'
 
-n_previous_jobs=0
-for line in open(filename, 'r'):
-    n_previous_jobs+=1
+import platform
+if platform.system() == "Linux":
+    os.system("top -n 1 -b | grep 'root.exe' &> log")
+    filename = 'log'
 
-if n_previous_jobs > 40:
-    number_of_cores = 1
-    print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
-
+    n_previous_jobs=0
     for line in open(filename, 'r'):
-        print line
+        n_previous_jobs+=1
 
-os.system("rm log")
+    if n_previous_jobs > 40:
+        number_of_cores = 1
+        print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
+
+        for line in open(filename, 'r'):
+            print line
+
+    os.system("rm log")
 
 if number_of_cores > 1:
     if useskinput == "True":
@@ -189,14 +192,49 @@ elif useskinput == "True":
         
 print "Input sample = " + sample
 
+
+##############################################################################################
+#### Check if sktrees are located on current machines  (not used when running on cmsX at snu)                        
+#############################################################################################
+
+isfile = os.path.isfile
+join = os.path.join
+if platform.system() != "Linux":
+    localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
+    if not mc:        
+        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + channel  + sample
+    else:
+        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/mc/"  + sample
+    
+    if not os.path.exists(localDir):
+        print "No files in current location: Will copy them over"
+        CopySKTrees(channel,sample,mc,"True")
+    elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item))) == 0:
+        print "No files are located locally: Will copy from cms21 machine"
+        CopySKTrees(channel,sample,mc,"True")
+    else:
+        update = raw_input("Files already located on current machine. Do you want these updating? Yes/No")
+        if update == "Yes":
+            print "Updating local sktree"
+            CopySKTrees(channel,sample,mc,"True")
+        elif update == "yes":
+            print "Updating local sktree"
+            CopySKTrees(channel,sample,mc,"True")
+        else:
+            CheckPathInFile(channel,sample,mc)
+            
 ##################################################################################################################
 #Find the DS name (and lumi if MC) from txt/datasets.txt
 ##################################################################################################################
 inDS = ""
 mcLumi = 1.0
 filechannel=""
-if not mc:
+
+if platform.system() == "Linux":
     filename = 'txt/datasets_' + os.getenv("HOSTNAME") + '.txt'
+else:
+    filename = 'txt/datasets_mac.txt'
+if not mc:
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
@@ -208,7 +246,6 @@ if not mc:
     tar_lumi=1.
     filechannel = channel+"_"
 else:
-    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + '.txt'
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
@@ -216,8 +253,8 @@ else:
                 if sample == entries[0]:
                     eff_lumi = entries[1]
                     inDS = entries[2]
-                    
 InputDir = inDS    
+
 ##################################################################################################################
 print "input directory= " + inDS    ## now have defined what dur contains input files
 ##################################################################################################################                    
@@ -234,12 +271,12 @@ print "input directory= " + inDS    ## now have defined what dur contains input 
 if not os.path.exists(sample):
     os.system("mkdir " + sample)    
 os.system("ls " + InputDir + "/*.root > " + sample + "/inputlist.txt")
-isfile = os.path.isfile
-join = os.path.join
 
 ############################################################
 ## Get number of files in Input directory
 ############################################################
+isfile = os.path.isfile
+join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 print "Job has " + str(number_of_files) + " files to process:"
 

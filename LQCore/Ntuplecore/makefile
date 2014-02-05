@@ -9,7 +9,7 @@
 
 
 # Package information
-LIBRARY = core
+LIBRARY = Ntuplecore
 OBJDIR  = obj
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src
@@ -28,9 +28,9 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 
 
 $(LQANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)                                                                           
-	@echo "Linking " $@                                                                                                                     
-	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lcore -lSKTree -lHist -lAnalysisCore   \
-                $(ROOTLIBS) -lPyROOT  -o $@                                                                                                    
+	@echo "Linking " $(LD) $(LDFLAGS) $@                                                                                                                     
+	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lNtuplecore -lSKTree -lHist -lAnalysisCore   \
+		$(ROOTLIBS) -lPyROOT  -o $@ 
 
 run_lqanalyzer.o: app/run_lqanalyzer.cxx                                                                                                       
 	@echo "Compiling $<"                                                                                                                    

@@ -74,7 +74,7 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
    m_logger << DEBUG << "Trigger = " << PassTrigger(triggerslist, prescale) << LQLogger::endmsg;
    //  if(!PassTrigger(triggerslist, prescale)) return;
    /// Correct MC for pileup
-   if (MC_pu&&!k_isdata)  weight = weight*eventbase->GetEvent().PileUpInteractionsTrue()* MCweight;
+   if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
    numberVertices = eventbase->GetEvent().nVertices();
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
 
@@ -113,9 +113,7 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
    ///// SOME STANDARD PLOTS /////
    ////  Z-> mumu            //////
 
-   if (muonColl.size() == 2) {             
-  
-    
+   if (muonColl.size() == 2) {                   
     snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
     if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
