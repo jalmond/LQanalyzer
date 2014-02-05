@@ -125,7 +125,7 @@ void LQCycleBaseNTuple::WriteCycleHists(TH1F* h_timing, TH1F* hmem1, TH1F* hmem2
 
   // Remember which directory we were in: 
   TDirectory* savedir = gDirectory;
-
+  
   TDirectory* cycledir = m_outputFile->mkdir("CycleInfo");
   m_outputFile->cd( cycledir->GetName());
   h_timing->Write();
@@ -138,7 +138,7 @@ void LQCycleBaseNTuple::WriteCycleHists(TH1F* h_timing, TH1F* hmem1, TH1F* hmem2
 }
 
 void  LQCycleBaseNTuple::CloseFiles(){
-
+  
   m_logger << INFO << "Closing output file  " << m_outputFile->GetName() << LQLogger::endmsg;
   m_outputFile->SaveSelf( kTRUE ); /// is this needed 
   m_outputFile->Write();

@@ -25,6 +25,7 @@
 #include <TLeaf.h>
 #include <TString.h>
 
+#include <KElectron.h>
 
 
 template < class T >
@@ -87,9 +88,11 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
       std::ostringstream leaflist;
       leaflist << name << "/" << RootType( type_name );
       branch = output_tree->Branch( name, &obj, leaflist.str().c_str() );
+      m_logger << DEBUG << "Simple variable " << LQLogger::endmsg;
     }
     else {
       
+      m_logger << DEBUG << "Complex variable/object " << LQLogger::endmsg;
       //                                                                     
       // This is an object:                                                  
       //                                                                     
@@ -103,13 +106,22 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
 	error << "Couldn't demangle type name: " << type_name;
 	throw error;
       }
-      
+      if(real_type_name == NULL) {
+	LQError error( LQError::SkipInputData );
+	error << "Couldn't create branch with name: " << name;
+	throw error;
+      }
+      std::string sname(real_type_name);
+      size_t found = sname.find("::__1");
+      while(found != std::string::npos){
+	sname.erase(found,5);
+	found = sname.find("::__1");
+      }
       
       T* pointer = &obj;
       m_outputVarPointers.push_back( pointer );
-      branch = output_tree->Bronch( name, real_type_name, &m_outputVarPointers.back() );      
+      branch = output_tree->Bronch( name, sname.c_str(), &m_outputVarPointers.back() );      
       free( real_type_name );
-      m_logger << INFO << "Added " << name << " to output Tree" << LQLogger::endmsg;
     }
     
     if( ! branch ) {
@@ -118,17 +130,19 @@ TBranch* LQCycleBaseNTuple::DeclareVariable( T& obj, const char* name,
       throw error;
     }    
     REPORT_VERBOSE( "Successfully added branch" );
-    
   }
   else {
-
+    
     m_logger << WARNING << "A branch with the name \"" << name << "\" already\
  exists"
 	     << LQLogger::endmsg;
-    m_logger << WARNING << "New object not added to tree!" << LQLogger::endmsg\
+    m_logger << WARNING << "New object not added to tree!" << LQLogger::endmsg \
       ;
 
   }
+  
+  m_logger << DEBUG  << "Created output branch" << LQLogger::endmsg;
+
   return branch;
 }
 

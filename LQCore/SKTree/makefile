@@ -24,7 +24,7 @@ include $(LQANALYZER_DIR)/Makefile.common
 
 SKTreeUnit: SKTreeUnit.o $(SHLIBFILE)
 	@echo "Linking " $@
-	@$(LD) $(LDFLAGS) -O2 $(OBJDIR)/SKTreeUnit.o -L$(LQANALYZER_LIB_PATH) \
+	@$(LD) $(LDFLAGS)  -O2 $(OBJDIR)/SKTreeUnit.o -L$(LQANALYZER_LIB_PATH) \
                 $(ROOTLIBS) -lSKTree -o $@
 
 SKTreeUnit.o: SKTreeUnit.cc include/KParticle.h
