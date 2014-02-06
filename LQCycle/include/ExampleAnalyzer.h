@@ -1,15 +1,15 @@
-#ifndef Analyzer_h
-#define Analyzer_h
+#ifndef ExampleAnalyzer_h
+#define ExampleAnalyzer_h
 
 #include "AnalyzerCore.h"
 
 
-class Analyzer : public AnalyzerCore {
+class ExampleAnalyzer : public AnalyzerCore {
 
  public:
   //// constructors                                                                                                                                                             
-  Analyzer();
-  ~Analyzer();
+  ExampleAnalyzer();
+  ~ExampleAnalyzer();
 
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
@@ -46,6 +46,6 @@ class Analyzer : public AnalyzerCore {
   double trk_qflip, ms_qflip ;
   double qflip_1, qflip_2, qflip ; 
 
-  ClassDef ( Analyzer, 0);
+  ClassDef ( ExampleAnalyzer, 1);
 };
 #endif

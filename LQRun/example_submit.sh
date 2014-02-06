@@ -10,7 +10,7 @@ source functions.sh
 ############################################################
 ## What cycle do you want to run.  
 ## 
-cycle="Analyzer"
+cycle="ExampleAnalyzer"
 skinput="True"
 njobs=1
 data_lumi="AtoD"

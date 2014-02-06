@@ -7,7 +7,7 @@
 #pragma link C++ nestedclass;
 
 #pragma link C++ class AnalyzerCore+;
-#pragma link C++ class Analyzer+;
+#pragma link C++ class ExampleAnalyzer+;
 #pragma link C++ class SKTreeMaker+;
 
 

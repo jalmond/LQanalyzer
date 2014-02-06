@@ -1,6 +1,6 @@
-// $Id: Analyzer.cc 1 2013-11-26 10:23:10Z jalmond $
+// $Id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
+ * @Project: LQExampleAnalyzer Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
@@ -8,7 +8,7 @@
  ***************************************************************************/
 
 /// Local includes
-#include "Analyzer.h"
+#include "ExampleAnalyzer.h"
 
 //Core includes
 #include "Reweight.h"
@@ -16,27 +16,27 @@
 
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (Analyzer);
+ClassImp (ExampleAnalyzer);
 
 
 /**
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-Analyzer::Analyzer() :  AnalyzerCore(), out_muons(0), out_electrons(0) {
+ExampleAnalyzer::ExampleAnalyzer() :  AnalyzerCore(), out_muons(0), out_electrons(0) {
 
 
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("Analyzer");
+  SetLogName("ExampleAnalyzer");
 
-  Message("In Analyzer constructor", INFO);
+  Message("In ExampleAnalyzer constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
 }
 
 
-void Analyzer::InitialiseAnalysis() throw( LQError ) {
+void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
   MakeHistograms();  
@@ -62,7 +62,7 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
  }
 
 
- void Analyzer::ExecuteEvents()throw( LQError ){
+ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
 
    m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
    m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -148,14 +148,14 @@ void Analyzer::InitialiseAnalysis() throw( LQError ) {
   
 
 
-void Analyzer::EndCycle()throw( LQError ){
+void ExampleAnalyzer::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
 
 }
 
 
-void Analyzer::BeginCycle() throw( LQError ){
+void ExampleAnalyzer::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
@@ -175,16 +175,16 @@ void Analyzer::BeginCycle() throw( LQError ){
   
 }
 
-Analyzer::~Analyzer() {
+ExampleAnalyzer::~ExampleAnalyzer() {
   
-  Message("In Analyzer Destructor" , INFO);
+  Message("In ExampleAnalyzer Destructor" , INFO);
   if(!k_isdata)delete reweightPU;
   
 }
 
 
 
-void Analyzer::BeginEvent( )throw( LQError ){
+void ExampleAnalyzer::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -194,20 +194,20 @@ void Analyzer::BeginEvent( )throw( LQError ){
 
 ///############### THESE ARE FUNCTIONS SPECIFIC TO THIS CYCLE
 
-void Analyzer::MakeHistograms(){
+void ExampleAnalyzer::MakeHistograms(){
   //// Additional plots to make
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
   Message("Made histograms", INFO);
   /**
-   *  Remove//Overide this AnalyzerCore::MakeHistograms() to make new hists for your analysis
+   *  Remove//Overide this ExampleAnalyzerCore::MakeHistograms() to make new hists for your analysis
    **/
   
 }
 
 
-void Analyzer::ClearOutputVectors() throw(LQError) {
+void ExampleAnalyzer::ClearOutputVectors() throw(LQError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

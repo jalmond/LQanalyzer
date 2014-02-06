@@ -10,7 +10,7 @@ source functions.sh
 ############################################################
 ## What cycle do you want to run.  
 ## 
-cycle="Analyzer"
+cycle="ExampleAnalyzer"
 ## Which stream is being run egamma/muon
 # This is for data (used to set input) / Not needed for MC
 #stream="muon"

@@ -34,6 +34,6 @@ class SKTreeMaker : public AnalyzerCore {
   snu::KTrigger out_trigger;
 
 
-  ClassDef ( SKTreeMaker, 0);
+  ClassDef ( SKTreeMaker, 1);
 };
 #endif
