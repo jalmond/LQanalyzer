@@ -16,6 +16,7 @@ targetlumi=-1.
 efflumi=-1.
 remove="True"
 skinput="False"
+use5312ntuples="False"
 runevent=-1
 
 function makeParseVariable() {

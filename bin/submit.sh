@@ -1,5 +1,3 @@
-
-
 ############################################################                                                                                                                    
 ################# Do not change anything after this line                                                                                                                        
 ############################################################                                                                                                                    
@@ -26,10 +24,23 @@ efflumi=$(makeParseVariable 'E' ${efflumi})
 remove=$(makeParseVariable 'w' ${remove_workspace})
 skinput=$(makeParseVariable 'S' ${skinput})
 runevent=$(makeParseVariable 'R' ${runevent})
-################                                                                                                                                                                
-#submit                                                                                                                                                                         
-for i in ${input_samples[@]}
-  do
-  python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent}
-done
+use5312ntuples=$(makeParseVariable 'L' ${use5312ntuples})
+################                                                                                                                                                
+
+#submit     
+
+if [[ $1  == "" ]]; 
+then
+    for i in ${input_samples[@]}
+    do
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples}
+    done
+  
+elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
+    echo "Checking options"
+    python ${LQANALYZER_DIR}/python/localsubmit.py $1
+else 
+    echo "Command not recognised. You need:" 
+    echo "source example_script.sh (--help/--h) "
+fi
 

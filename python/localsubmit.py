@@ -16,9 +16,9 @@ parser.add_option("-p", "--period", dest="period", default="A",help="which data 
 parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
-parser.add_option("-t", "--tree", dest="tree", default="rootTupleTree/tree", help="What is input tree")
+parser.add_option("-t", "--tree", dest="tree", default="rootTupleTree/tree", help="What is input tree name?")
 parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
-parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you weighting?")
+parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
 parser.add_option("-k", "--skip", dest="skip", default=-1, help="Set number of events to skip")
@@ -31,6 +31,7 @@ parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_D
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
+parser.add_option("-L", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
 
 ###################################################
 #set the local variables using options
@@ -56,7 +57,7 @@ Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
-
+use5312ntuples = options.use5312ntuples
 
 print "Running : " + cycle
 print "Splitting job into " + str(number_of_cores) + " subjobs"
@@ -100,8 +101,23 @@ if not len(splitsample)==1:
         if "runevent" in splitsample[conf]:
             conf+=1
             runevent = splitsample[conf]
+        if "use5312ntuples" in splitsample[conf]:
+            conf+=1
+            use5312ntuples = splitsample[conf]
 
 
+####################
+####
+####################
+
+if not cycle == "SKTreeMaker":
+    if not useskinput == "True":
+        if not useskinput == "true":
+            update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
+            if not  update == "N":
+                useskinput="True"
+
+        
 ##################################################################################################################
 #### HARD CODE THE MAXIMUM number of subjobs
 ##################################################################################################################
@@ -231,7 +247,11 @@ mcLumi = 1.0
 filechannel=""
 
 if platform.system() == "Linux":
-    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + '.txt'
+    version="_5_3_12"
+    if not use5312ntuples == "True":
+        version = "_5_3_8"
+    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + version +  '.txt'
+    
 else:
     filename = 'txt/datasets_mac.txt'
 if not mc:
@@ -360,6 +380,20 @@ for i in range(1,number_of_cores+1):
 ### read inputlist.txt which contains all input files
 fr = open(sample + '/inputlist.txt', 'r')
 
+
+outsamplename = sample
+if not mc:
+    outsamplename = outsamplename +  "_" + channel
+    if use5312ntuples == "True":
+        outsamplename = outsamplename + "_5_3_12"
+    else:
+        outsamplename = outsamplename + "_5_3_8"
+else:
+    if use5312ntuples == "True":
+        outsamplename = outsamplename + "_5_3_12"
+    else:
+        outsamplename = outsamplename + "_5_3_8"
+        
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
 
@@ -370,7 +404,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, sample, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
             configfile.close()
             print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -394,7 +428,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -474,10 +508,10 @@ print "Running LQAnalyzer jobs for: " + getpass.getuser()
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
-    runcommand = "nohup root -l -q -b " +  script + "&>" + log + "&"
+    runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if singlejob:
         print "Running single job " + script 
-        runcommand = "root -l -q -b " +  script 
+        runcommand = "root.exe -l -q -b " +  script 
         os.system(runcommand)
     else:
         if i==1:
@@ -521,7 +555,7 @@ while not JobSuccess:
         running = False
 
     if not running:
-        check_outfile = outputdir + sample +  "_1.root"
+        check_outfile = outputdir + outsamplename +  "_1.root"
         if not (os.path.exists(check_outfile)):
             JobSuccess=True
             JobOutput=False
@@ -534,7 +568,7 @@ while not JobSuccess:
             if i== check: skipcheck=True
         while not skipcheck:
             skipcheck=True
-            check_outfile = outputdir + sample +  "_" +  str(i) + ".root"   
+            check_outfile = outputdir + outsamplename +  "_" +  str(i) + ".root"   
             if (os.path.exists(check_outfile)):
                 CompletedJobs.append(i)
                 ncomplete_files+=1
@@ -563,16 +597,16 @@ if not JobOutput:
     print "Job Failed...."
     if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
         os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
-    if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample):
-        os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample)
+    if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename):
+        os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
         
     if not number_of_cores == 1:
-        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
+        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("mv "+ output + "/Job_1/runJob_1.C .")
-    print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample   +"runJob_1.log file to debug"
+    print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
     os.system("rm -r " + output)    
     
-    print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample
+    print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
     
 else:    
 
@@ -581,10 +615,10 @@ else:
         doMerge=False
 
     if doMerge:
-        if os.path.exists(Finaloutputdir + cycle + "_" + filechannel + sample + ".root"):
-            os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + sample + ".root ")
-        os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "+ outputdir + "*.root")
-        print "Merged output :" + Finaloutputdir + cycle + "_" + filechannel + sample + ".root "
+        if os.path.exists(Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root"):
+            os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root ")
+        os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "+ outputdir + "*.root")
+        print "Merged output :" + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "
     else:
         os.system("mv " + outputdir + "*.root " + Finaloutputdir )
         print "Non merged output :" +Finaloutputdir
@@ -593,16 +627,16 @@ else:
         if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
             os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
             
-        if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample):
-            os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample)
+        if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename):
+            os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
                 
-        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + sample)
+        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
-        print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + sample    
+        print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename
         if doMerge:
-            print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + sample + ".root -->" + Finaloutputdir
+            print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
         else:
-            print "All sampless finished: OutFiles "+ sample + "*.root -->" + Finaloutputdir
+            print "All sampless finished: OutFiles "+ outsamplename + "*.root -->" + Finaloutputdir
         
     else:
         print "TMP directory " + output + "is not removed. "

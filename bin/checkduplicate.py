@@ -26,12 +26,12 @@ for i in range(1, count):
     for line in fr:
         if fullname in line:
             nrepeat+=1
-            #print "Job " +i  + ": --> " +  line
-            if nrepeat == 2:
-                print line         
-                nrepeat+=1
-                print "FOUND TWICE"
+            print "Job " + str(i)  + ": --> " +  line
+            if nrepeat != 1:
+                print "FOUND TWICE: removing " + line
+                os.system("rm " + line)
                 dupl+=1
+
 if dupl == 0:
     print "No duplicated jobs in directory"
 os.system("rm check.txt")

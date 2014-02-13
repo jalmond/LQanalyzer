@@ -16,7 +16,7 @@ stream="egamma"
 njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
-declare -a input_samples=("A")
+declare -a input_samples=("D" "DY10to50" "DY50plus")
 
 ### submit this configured job (uses bin/submit.sh)
 source submit.sh
