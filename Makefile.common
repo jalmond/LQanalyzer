@@ -63,9 +63,10 @@ DICTOBJ   = $(OBJDIR)/$(LIBRARY)_Dict.o
 DICTLDEF  = $(INCDIR)/$(LIBRARY)_LinkDef.h
 SKIPCPPLIST = $(DICTFILE)
 SKIPHLIST   = $(DICTHEAD) $(DICTLDEF)
-LIBFILE   = $(LQANALYZER_DIR)/LQLib/lib$(LIBRARY).a
-SHLIBFILE = $(LQANALYZER_DIR)/LQLib/lib$(LIBRARY).$(DllSuf)
+LIBFILE   = $(LQANALYZER_LIB_PATH)/lib$(LIBRARY).a
+SHLIBFILE = $(LQANALYZER_LIB_PATH)/lib$(LIBRARY).$(DllSuf)
 UNAME = $(shell uname)
+
 
 # Set up the default targets                                                                                                                                                    
 default: shlib 

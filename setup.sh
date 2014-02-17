@@ -35,7 +35,16 @@ export LQANALYZER_CYCLE_PATH=${LQANALYZER_DIR}/LQCycle/
 export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
-export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/
+
+if [[ "$HOSTNAME" == "cms1"  || "$HOSTNAME" == "cms5" || "$HOSTNAME" == "cms6" ]]
+then 
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib_slc6/
+else
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib_slc5/
+fi
+
+export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
+
 export LQANALYZER_RUN_PATH=${LQANALYZER_DIR}/LQRun/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
@@ -48,6 +57,10 @@ echo "Running analysis from" $HOSTNAME " in directory: "
 if [ ! -d ${LQANALYZER_LIB_PATH} ]; then
     echo Directory ${LQANALYZER_LIB_PATH} does not exist ... creating it
     mkdir ${LQANALYZER_LIB_PATH}
+    if [ -d ${LQANALYZER_OLDLIB_PATH} ]; then
+	echo Old lib dir ${LQANALYZER_OLDLIB_PATH} is redundant. Will remove this library
+	rm -r ${LQANALYZER_OLDLIB_PATH}
+    fi
 fi
 
 ### Load useful functions
