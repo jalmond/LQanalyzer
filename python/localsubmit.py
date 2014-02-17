@@ -1,4 +1,4 @@
-#################################################################### 
+################################################################### 
 ### configure Job
 #################################################################### 
 timeWait=10#
@@ -7,7 +7,8 @@ timeWait=10#
 ### Make Input File
 ###################################################
 import os, getpass, sys
-from functions import *
+from functions import makeConfigFile, now
+
 from optparse import OptionParser
 
 #Import parser to get options
@@ -216,6 +217,8 @@ print "Input sample = " + sample
 isfile = os.path.isfile
 join = os.path.join
 if platform.system() != "Linux":
+    from functions import CopySKTrees,CheckPathInFile
+    
     localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
     if not mc:        
         localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + channel  + sample
