@@ -1,10 +1,12 @@
 ### SKTrees ##########
 ##################
 ### Data#############
-SKmuon A    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodA/
+#SKmuon A    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodA/
 SKmuon B    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodB/ 
 SKmuon C    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodC/
 SKmuon D    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodD/
+
+SKmuon A  /home/jalmond/SKTrees/muonA_2trig/
 
 SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodA/
 SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodB/
