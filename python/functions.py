@@ -72,12 +72,15 @@ def CopySKTrees(channel,sample,mc,docopy):
                        infile=True 
 
     if not infile:                   
-        with open('txt/datasets_mac.txt', 'a') as file:
+        f = open('txt/datasets_mac.txt', 'a') 
+        try:
             if not mc:
                 towrite = channel + " " + sample + " " + sample_dir
             else:
                 towrite = sample + " " + tmpxsec + " " + sample_dir
-            file.write(towrite)
+            f.write(towrite)
+        finally:    
+            f.closed()  
 
 def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent):
 
