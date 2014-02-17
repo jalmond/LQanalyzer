@@ -250,7 +250,7 @@ if platform.system() == "Linux":
     version="_5_3_12"
     if not use5312ntuples == "True":
         version = "_5_3_8"
-    filename = 'txt/datasets_' + os.getenv("HOSTNAME") + version +  '.txt'
+    filename = 'txt/datasets_snu' + version +  '.txt'
     
 else:
     filename = 'txt/datasets_mac.txt'

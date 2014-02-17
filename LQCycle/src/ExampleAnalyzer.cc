@@ -49,10 +49,8 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
 
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-   MakeCleverHistograms(sighist, "Zmuons");
    MakeCleverHistograms(sighist, "Zmuons_jlv");
    MakeCleverHistograms(sighist, "Zmuons_jlv_60");
-   MakeCleverHistograms(sighist, "Zelectrons");
    MakeCleverHistograms(sighist, "Zelectrons_jlv");
    MakeCleverHistograms(sighist, "Zelectrons_jlv_60");
    MakeCleverHistograms(sighist, "Sigmuons");
@@ -72,75 +70,130 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    std::vector<TString> triggerslist;
    triggerslist.push_back("HLT_Mu17_TkMu8_v");
    m_logger << DEBUG << "Trigger = " << PassTrigger(triggerslist, prescale) << LQLogger::endmsg;
-   //  if(!PassTrigger(triggerslist, prescale)) return;
+   if(!PassTrigger(triggerslist, prescale)) return;
    /// Correct MC for pileup
-   if (MC_pu&&!k_isdata)  weight = weight*reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
-   numberVertices = eventbase->GetEvent().nVertices();
-   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+   
+   numberVertices = eventbase->GetEvent().nVertices();   
 
+   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+   
+   if (MC_pu&&!k_isdata) {
+     /// Here is an alternative method to Fill a histogram. 
+     /// The histogram with name "h_nvtx_norw"/"h_nvtx_rw" were not declared in the MakeHistogram code. 
+     /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx
+     
+     FillHist("h_nvtx_norw", numberVertices, weight, 0., 60.,60); 
+     weight = weight*reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+     FillHist("h_nvtx_rw",numberVertices,weight, 0., 60.,60 );      
+   }
+   
+   
    //////////////////////////////////////////////////////
    //////////// Select objetcs
    //////////////////////////////////////////////////////   
 
-   std::vector<snu::KMuon> muonColl;
-   eventbase->GetMuonSel()->SetPt(20); 
+
+   //// We will speicfy the following collection of objects
+   /// 1) Tight Muons
+   /// 2) Loose Muons
+   /// 3) LooseButNOTight Muons
+   /// 4) Loose Muons for veto
+   /// 5) TightElectrons
+   /// 6) Jets(with lepton veto)
+   
+   /// 1) Tight Muons       
+   std::vector<snu::KMuon> muonTightColl;
+   eventbase->GetMuonSel()->SetPt(20.); 
    eventbase->GetMuonSel()->SetEta(2.4);
-   eventbase->GetMuonSel()->SetRelIso(0.12);
-   eventbase->GetMuonSel()->SetChiNdof(10); 
-   eventbase->GetMuonSel()->SetBSdxy(0.01);
+   eventbase->GetMuonSel()->SetRelIso(0.1);
+   eventbase->GetMuonSel()->SetChiNdof(10.); 
+   eventbase->GetMuonSel()->SetBSdxy(0.005);
    eventbase->GetMuonSel()->SetBSdz(0.10);
    eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
-   eventbase->GetMuonSel()->Selection(muonColl);
-
-   std::vector<snu::KElectron> electronColl;
-   eventbase->GetElectronSel()->SetPt(10);
-   eventbase->GetElectronSel()->SetEta(2.4);
-   eventbase->GetElectronSel()->SetRelIso(0.1);
+   eventbase->GetMuonSel()->Selection(muonTightColl);
+   
+   /// 2) Loose Muons  
+   std::vector<snu::KMuon> muonLooseColl;
+   eventbase->GetMuonSel()->SetPt(20.);
+   eventbase->GetMuonSel()->SetEta(2.4);
+   eventbase->GetMuonSel()->SetRelIso(0.40);
+   eventbase->GetMuonSel()->SetChiNdof(50.);
+   eventbase->GetMuonSel()->SetBSdxy(0.20);
+   eventbase->GetMuonSel()->SetBSdz(0.10);
+   eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
+   eventbase->GetMuonSel()->Selection(muonLooseColl);
+   
+   
+   /// 3) LooseButNOTight Muons      
+   std::vector<snu::KMuon> muonLooseButNOTightColl;
+   eventbase->GetMuonSel()->SetPt(20.);
+   eventbase->GetMuonSel()->SetEta(2.4);
+   eventbase->GetMuonSel()->SetRelIso(0.1, 0.4);
+   eventbase->GetMuonSel()->SetChiNdof(10.,50.);
+   eventbase->GetMuonSel()->SetBSdxy(0.005,0.20);
+   eventbase->GetMuonSel()->SetBSdz(0.10);
+   eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
+   eventbase->GetMuonSel()->Selection(muonLooseButNOTightColl);
+   
+   /// 4) Loose Muons for veto
+   std::vector<snu::KMuon> muonVetoColl;
+   eventbase->GetMuonSel()->SetPt(10.);
+   eventbase->GetMuonSel()->SetEta(2.4);
+   eventbase->GetMuonSel()->SetRelIso(0.20);
+   eventbase->GetMuonSel()->SetChiNdof(500.);
+   eventbase->GetMuonSel()->SetBSdxy(2000.);
+   eventbase->GetMuonSel()->SetBSdz(100.00);
+   eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
+   eventbase->GetMuonSel()->Selection(muonVetoColl);
+   
+   /// 5) TightElectrons                                                                                                                                                     
+   std::vector<snu::KElectron> electronTightColl;
+   eventbase->GetElectronSel()->SetPt(20);
+   eventbase->GetElectronSel()->SetEta(2.5);
+   eventbase->GetElectronSel()->SetRelIso(0.15);
    eventbase->GetElectronSel()->SetBSdxy(0.02);
    eventbase->GetElectronSel()->SetBSdz(0.10);
-   eventbase->GetElectronSel()->Selection(electronColl);
+   eventbase->GetElectronSel()->Selection(electronTightColl);
 
-   std::vector<snu::KJet> jetColl;
+   /// 6) Jets(with lepton veto) 
    std::vector<snu::KJet> jetColl_lepveto;
+   /// 6) Jets(with lepton veto) with 60 GeV (default for analysis is 20 at the moment)
    std::vector<snu::KJet> jetColl_lepveto_60;
-   eventbase->GetJetSel()->SetPt(30.);
-   eventbase->GetJetSel()->SetEta(2.4);
-   eventbase->GetJetSel()->Selection(jetColl);
-   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonColl, electronColl);
+   eventbase->GetJetSel()->SetPt(20.);
+   eventbase->GetJetSel()->SetEta(2.5);
+   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
    eventbase->GetJetSel()->SetPt(60.);
-   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto_60, muonColl, electronColl);
+   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto_60, muonTightColl, electronTightColl);
    
    ///// SOME STANDARD PLOTS /////
    ////  Z-> mumu            //////
 
-   if (muonColl.size() == 2) {                   
-    snu::KParticle Z = muonColl.at(0) + muonColl.at(1);
-    if(muonColl.at(0).Charge() != muonColl.at(1).Charge()){      
-      FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(sighist, "Zmuons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
-      FillCLHist(sighist, "Zmuons_jlv", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto, weight);
-      FillCLHist(sighist, "Zmuons_jlv_60", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto_60, weight);
-    } 
-    else{
-      FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
+   if (muonTightColl.size() == 2) {                   
+     snu::KParticle Z = muonTightColl.at(0) + muonTightColl.at(1);
+     if(muonTightColl.at(0).Charge() != muonTightColl.at(1).Charge()){      
+       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
+       FillCLHist(sighist, "Zmuons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+       FillCLHist(sighist, "Zmuons_jlv_60", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto_60, weight);
+     } 
+     else{
+       FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
     }
   }
   
 
   ///// SOME STANDARD PLOTS /////
   ////  Z-> ee              //////
-  if (electronColl.size() == 2) {      
-    snu::KParticle Z = electronColl.at(0) + electronColl.at(1);
-    if(electronColl.at(0).Charge() != electronColl.at(1).Charge()){      
-
-      FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
-      FillCLHist(sighist, "Zelectrons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
-      FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto, weight);
-      FillCLHist(sighist, "Zelectrons_jlv_60", eventbase->GetEvent(), muonColl,electronColl,jetColl_lepveto_60, weight);
-    } 
-    else {
-      FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonColl,electronColl,jetColl, weight);
-    }
+   if (electronTightColl.size() == 2) {      
+     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
+     if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
+       
+       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
+       FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+       FillCLHist(sighist, "Zelectrons_jlv_60", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto_60, weight);
+     } 
+     else {
+       FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+     }
   }
   
   return;

@@ -82,10 +82,11 @@ class AnalyzerCore : public LQCycleBase {
   // Make Histograms and fill maphist
   //
   void MakeHistograms();
-  //
-  // Makes temporary dir
-  //
-  TDirectory* GetTemporaryDirectory(void) const;                                                                                                                                 
+  void MakeHistograms(TString hname, int nbins, float xmin, float xmax);
+    //
+    // Makes temporary dir
+    //
+    TDirectory* GetTemporaryDirectory(void) const;                                                                                                                                 
   //
   // Checks if a file exists
   //
@@ -96,6 +97,7 @@ class AnalyzerCore : public LQCycleBase {
 
   /// Fills hist in maphist
   void FillHist(TString histname, float value, float w );
+  void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0);
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);

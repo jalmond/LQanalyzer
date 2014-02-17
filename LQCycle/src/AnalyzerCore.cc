@@ -29,7 +29,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   // If running on LQNtuples this is not important.
   // If creating an SKTree ntuple this controls what triggers are accessible
   AddTriggerToList("HLT_Mu17_TkMu8_v");
-  /*AddTriggerToList("HLT_Mu5_v");
+  AddTriggerToList("HLT_Mu5_v");
   AddTriggerToList("HLT_Mu8_v");
   AddTriggerToList("HLT_Mu12_v");
   AddTriggerToList("HLT_Mu17_v");
@@ -39,7 +39,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
-  */
+
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 
@@ -223,6 +223,11 @@ void AnalyzerCore::MakeHistograms(){
   
 }
 
+void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax){
+
+  maphist[hname] =  new TH1F(hname.Data(),hname.Data(),nbins,xmin,xmax);
+}
+
 bool AnalyzerCore::PassBasicEventCuts(){
 
   bool pass (true);
@@ -238,10 +243,27 @@ bool AnalyzerCore::PassBasicEventCuts(){
 }
 
 
-void AnalyzerCore::FillHist(TString histname, float value, float w ){
+
+void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins){
+  
+  if(GetHist(histname)) GetHist(histname)->Fill(value, w);  
+  else{
+    if (nbins < 0) {
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      exit(0);
+    }
+    m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
+    MakeHistograms(histname, nbins, xmin, xmax);
+    if(GetHist(histname)) GetHist(histname)->Fill(value, w);
+  }
+  
+}
+void AnalyzerCore::FillHist(TString histname, float value, float w){
 
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  /// Plots Z peak                                   
-  else m_logger << INFO << histname << " was NOT found" << LQLogger::endmsg;
+  else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
+  
+  
   return;
 }
 

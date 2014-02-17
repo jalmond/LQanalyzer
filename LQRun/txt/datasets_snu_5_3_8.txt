@@ -12,13 +12,13 @@ SKegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodC/
 SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodD/
 
 ### MC #############
-SKDY10to50   3424.007   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY10to50/
-SKDY50plus   8693.5   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY50plus/
-SKttbar      29588.256	      
+SKDY10to50   3424.007      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY10to50/
+SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY50plus/
+SKttbar      29588.256	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/ttbar/   
 SKWW 	     182363.161       
 SKWZ 	     301122.644	
 SKZZ 	     555109.777	
-SKWjets 	     1538.562 
+SKWjets      1538.562	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/Wjets/
 
 ### LQNtuples ########################################################
 ####
@@ -40,9 +40,15 @@ muon D 	 /data1/DATA/LQNtuples_5_3_8/tag13_backup/DoubleMuD_22Jan/
 ##################################################################
 DY10to50	3424.007	/data1/DATA/LQNtuples_5_3_8/DY_10-50_jets/
 DY50plus	8693.5		/data1/DATA/LQNtuples_5_3_8/DY_50_jets/
-ttbar		29588.256 	
-WZ              301122.644      
-ZZ              555109.777      
+ttbar		29588.256 	/data1/DATA/LQNtuples_5_3_8/ttbar/
+WZ              301122.644      /data1/DATA/LQNtuples_5_3_8/WZ_inclusive/  
+ZZ              555109.777      /data1/DATA/LQNtuples_5_3_8/ZZ_inclusive/
+Wjets           1538.562        /data1/DATA/LQNtuples_5_3_8/W_jets/
+W-W-		1084518.452	/data1/DATA/LQNtuples_5_3_8/WmWm/
+W+W+		402840.451	/data1/DATA/LQNtuples_5_3_8/WpWp/
+Wgamma		10403.722	/data1/DATA/LQNtuples_5_3_8/Wgamma/
+
+
 
 ###HN signal
 HNmumu50	46.68			
