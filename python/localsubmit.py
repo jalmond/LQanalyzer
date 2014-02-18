@@ -1,7 +1,7 @@
 ################################################################### 
 ### configure Job
 #################################################################### 
-timeWait=10#
+timeWait=1#
 
 ###################################################
 ### Make Input File
@@ -33,6 +33,7 @@ parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove th
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 parser.add_option("-L", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
+parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 
 ###################################################
 #set the local variables using options
@@ -59,9 +60,13 @@ remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
 use5312ntuples = options.use5312ntuples
+DEBUG = options.debug
+
+if DEBUG:
+    print "In debug mode"
 
 print "Running : " + cycle
-print "Splitting job into " + str(number_of_cores) + " subjobs"
+
 if useskinput == "True": 
     print "Using SKTrees as input."
 elif useskinput == "true":
@@ -118,6 +123,13 @@ if not cycle == "SKTreeMaker":
             if not  update == "N":
                 useskinput="True"
 
+##########################################################
+### Make tmp directory for job
+############################################################
+
+local_sub_dir=sample + '_' + channel + '_' + now()
+if not os.path.exists(local_sub_dir):
+    os.system("mkdir " + local_sub_dir)
         
 ##################################################################################################################
 #### HARD CODE THE MAXIMUM number of subjobs
@@ -125,8 +137,8 @@ if not cycle == "SKTreeMaker":
 
 import platform
 if platform.system() == "Linux":
-    os.system("top -n 1 -b | grep 'root.exe' &> log")
-    filename = 'log'
+    os.system("top -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
+    filename = local_sub_dir +'/toplog'
 
     n_previous_jobs=0
     for line in open(filename, 'r'):
@@ -139,7 +151,7 @@ if platform.system() == "Linux":
         for line in open(filename, 'r'):
             print line
 
-    os.system("rm log")
+    os.system("rm " + filename)
 
 if number_of_cores > 1:
     if useskinput == "True":
@@ -278,7 +290,7 @@ else:
 InputDir = inDS    
 
 ##################################################################################################################
-print "input directory= " + inDS    ## now have defined what dur contains input files
+print "Input directory= " + inDS    ## now have defined what dur contains input files
 ##################################################################################################################                    
 
 ############################################################
@@ -287,12 +299,6 @@ print "input directory= " + inDS    ## now have defined what dur contains input 
 ############################################################
 ############################################################
 
-############################################################
-### Make tmp directory for job
-############################################################
-local_sub_dir=sample + '_' + channel + '_' + now()
-if not os.path.exists(local_sub_dir):
-    os.system("mkdir " + local_sub_dir)    
 os.system("ls " + InputDir + "/*.root > " + local_sub_dir + "/inputlist.txt")
 
 ############################################################
@@ -301,14 +307,16 @@ os.system("ls " + InputDir + "/*.root > " + local_sub_dir + "/inputlist.txt")
 isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
-print "Job has " + str(number_of_files) + " files to process:"
+
+if DEBUG:
+    print "Job has " + str(number_of_files) + " files to process:"
 
 ############################################################
 ### Correct user if ncores is > nfiles
 ############################################################
 if number_of_cores > number_of_files:
     number_of_cores = number_of_files
-
+print "Splitting job into " + str(number_of_cores) + " subjobs"
 ############################################################
 ### set number of files per job
 ############################################################
@@ -326,7 +334,8 @@ if nfilesperjobs == 0:
 files_torun = (nfilesperjobs*number_of_cores)
 remainder = number_of_files - (nfilesperjobs*number_of_cores)
 
-print "Each job will process  " + str(nfilesperjobs) + "/" + str(nfilesperjobs+1) + " files"
+if DEBUG:
+    print "Each job will process  " + str(nfilesperjobs) + "/" + str(nfilesperjobs+1) + " files"
 
 
 ###################################################
@@ -373,7 +382,8 @@ for i in range(1,number_of_cores+1):
     if not (os.path.exists(workdir)):
             os.system("mkdir " + workdir)
             if i==1:
-                print "making sub work directories " + printedworkdir
+                if DEBUG:
+                    print "making sub work directories " + printedworkdir
 
 
 ####################################################
@@ -408,7 +418,8 @@ for line in fr:
             configfile=open(runscript,'w')
             configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
             configfile.close()
-            print "Making file : " + printedrunscript
+            if DEBUG:
+                print "Making file : " + printedrunscript
             fwrite.write(line)
             filesprocessed+=1
             nfiles_file+=1            
@@ -439,7 +450,8 @@ for line in fr:
                 fwrite.write(line)
                 filesprocessed+=1
                 nfiles_file+=1
-                print "File " + filelist + " contains " + str(nfiles_file) + " files"            
+                if DEBUG:
+                    print "File " + filelist + " contains " + str(nfiles_file) + " files"            
                 
         else:
             fwrite.write(line)
@@ -481,20 +493,23 @@ for check in range(1, number_of_cores+1):
                 no_duplicate=False
                 sys.exit()
         check_array.append(list)
-    print  "File " + filelist + " contains " + str(nsamples) + " files"
+    if DEBUG:
+        print  "File " + filelist + " contains " + str(nsamples) + " files"
     fcheck.close()
-print "Total Number of input files = " + str(total_nsamples)     
+if DEBUG:
+    print "Total Number of input files = " + str(total_nsamples)     
 
 if no_duplicate:
-    print "Checking for duplicates: "
-    print "Checking for duplicates:...... "
-    print "Checking for duplicates: NONE found"
+    #print "Checking for duplicates: "
+    #print "Checking for duplicates:...... "
+    if DEBUG:
+        print "Checking for duplicates: NONE found"
 else:
-     print "Checking for duplicates: "
-     print "Checking for duplicates:...... "
+     #print "Checking for duplicates: "
+     #print "Checking for duplicates:...... "
      print "Checking for duplicates: Duplicate files found. Check script "
             
-print "Total number of files processed = " + str(filesprocessed) + " check this is correct"
+print "Total number of files processed = " + str(filesprocessed)
 
 ###################################################
 ### Run each .C file in background
@@ -506,7 +521,8 @@ wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
 
-print "Running LQAnalyzer jobs for: " + getpass.getuser()
+if DEBUG:
+    print "Running LQAnalyzer jobs for: " + getpass.getuser()
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
@@ -537,10 +553,14 @@ CompletedJobs=[]
 doMerge=False
 
 print "Checking Job status:"
+sys.stdout.write('\r'+ '0% of events processed...' )
+sys.stdout.flush()
 low_cpu=0
 ncycle=0
+file_iterator=0
+files_done= []
+clear_line='                                                                          '
 while not JobSuccess:
-
     os.system("ps ux &> " + local_sub_dir + "/log")
     filename = local_sub_dir +'/log'
     running = False
@@ -572,9 +592,13 @@ while not JobSuccess:
             if (os.path.exists(check_outfile)):
                 CompletedJobs.append(i)
                 ncomplete_files+=1
-                print "Job [" + str(i) + "] completed. Output ="  + check_outfile
-        
+                files_done.append("Job [" + str(i) + "] completed. Output ="  + check_outfile)
+            
     if ncomplete_files== number_of_cores :
+        sys.stdout.write('\r' + clear_line)
+        sys.stdout.flush()
+        sys.stdout.write('\r'+ '100% of events processed. \n' )
+        sys.stdout.flush()
         print "Job finished"
         doMerge=True
         if ncycle == 0:
@@ -586,13 +610,51 @@ while not JobSuccess:
         JobSuccess=True
                                     
     else:
-        print str(ncomplete_files) + "/" + str(number_of_cores) + " completed. Wait " + str(timeWait) + " second..."
-        
-        time.sleep(timeWait)
-        timeWait+= 10
+        nevents_total=0.
+        nevent_processed=0.
+        for i in range(1,number_of_cores+1):
+            check_outfile = output + "/Job" +  "_" +  str(i) + "/runJob_"+ str(i) +".log"
+            os.system('tail -100 ' + check_outfile + ' > ' + local_sub_dir + '/outlog.txt')
+            nevent_processed_i=0.
+            nevents_total_i=0.
+            for line in open(local_sub_dir + '/outlog.txt', 'r'):
+                if "Processing entry" in line:
+                    if "LQCycleController" not in line:
+                        entries = line.split()
+                        if len(entries)> 6:                        
+                            num = entries[7]
+                            s = num.replace("/", " ")
+                            event_split = s.split()
+                            nevent_processed_i = float(event_split[0])
+                            nevents_total_i= float(event_split[1])
+            nevent_processed+=nevent_processed_i                
+            nevents_total+=nevents_total_i
+
+        ## calculate time left to run jobs    
+        end_time = time.time()
+        remaining = (end_time - start_time)
+        if nevent_processed !=0:
+            remaining*= (1./nevent_processed)
+            remaining*= ( nevents_total  - nevent_processed)
+            b = str(round(float(100.*nevent_processed/nevents_total), 2)) + "% of events processed. Estimated cpu time remaining =  " + str(round(remaining,2)) + "[s]" 
+            sys.stdout.write('\r' + clear_line)
+            sys.stdout.flush()
+            sys.stdout.write('\r'+b)            
+            sys.stdout.flush()
+        else:
+            mess="Job Initialising 0% of events processed."
+            sys.stdout.write('\r' + clear_line)
+            sys.stdout.flush()
+            sys.stdout.write('\r'+mess)
+            sys.stdout.flush()
+            time.sleep(2.)
+        if ncomplete_files > file_iterator:
+            #print str(ncomplete_files) + "/" + str(number_of_cores) + " jobs completed.  " #Wait " + str(timeWait) + " second..."
+            #print ""
+            file_iterator=ncomplete_files
+        time.sleep(5.)
         ncycle+=1
-        
-        
+     
 if not JobOutput:
     print "Job Failed...."
     if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
@@ -610,8 +672,11 @@ if not JobOutput:
 
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
     
-else:    
+else:
 
+    for line in files_done:
+            print line
+            
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         doMerge=False

@@ -25,6 +25,7 @@ remove=$(makeParseVariable 'w' ${remove_workspace})
 skinput=$(makeParseVariable 'S' ${skinput})
 runevent=$(makeParseVariable 'R' ${runevent})
 use5312ntuples=$(makeParseVariable 'L' ${use5312ntuples})
+DEBUG=$(makeParseVariable 'D' ${DEBUG})
 ################                                                                                                                                                
 
 #submit     
@@ -33,7 +34,7 @@ if [[ $1  == "" ]];
 then
     for i in ${input_samples[@]}
     do
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples}
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${DEBUG}
     done
   
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
