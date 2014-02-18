@@ -7,7 +7,7 @@ timeWait=10#
 ### Make Input File
 ###################################################
 import os, getpass, sys
-from functions import makeConfigFile, now
+from functions import *
 
 from optparse import OptionParser
 
@@ -217,8 +217,7 @@ print "Input sample = " + sample
 isfile = os.path.isfile
 join = os.path.join
 if platform.system() != "Linux":
-    from functions import CopySKTrees,CheckPathInFile
-    
+
     localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
     if not mc:        
         localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + channel  + sample
@@ -525,8 +524,6 @@ for i in range(1,number_of_cores+1):
             print "......"
         os.system(runcommand)
 
-os.system('rm -r ' + sample)
-
 ###################################################
 ## wait and do merging
 ###################################################
@@ -544,8 +541,8 @@ low_cpu=0
 ncycle=0
 while not JobSuccess:
 
-    os.system("ps ux &> log")
-    filename = 'log'
+    os.system("ps ux &> " + local_sub_dir + "/log")
+    filename = local_sub_dir +'/log'
     running = False
     
     for line in open(filename, 'r'):
@@ -563,7 +560,7 @@ while not JobSuccess:
             JobSuccess=True
             JobOutput=False
             
-    os.system("rm  log")
+    os.system("rm  " + local_sub_dir + "/log")
             
     for i in range(1,number_of_cores+1):
         skipcheck=False
@@ -608,7 +605,9 @@ if not JobOutput:
         os.system("mv "+ output + "/Job_1/runJob_1.C .")
     print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
     os.system("rm -r " + output)    
+    os.system("rm -r " + local_sub_dir)    
     
+
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
     
 else:    
@@ -635,6 +634,7 @@ else:
                 
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
+        os.system("rm -r " + local_sub_dir)
         print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename
         if doMerge:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
@@ -643,7 +643,7 @@ else:
         
     else:
         print "TMP directory " + output + "is not removed. "
-        
+        os.system("rm -r " + local_sub_dir)
         
 end_time = time.time()
 total_time=end_time- start_time

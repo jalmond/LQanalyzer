@@ -5,14 +5,15 @@ Steps to run analysis:
 1) Download LQanalyzer:
 git clone git@github.com:jalmond/LQanalyzer.git
 cd LQanalyzer/
-git checkout -b LQanalyzer_Dec13 origin/LQanalyzer_Dec13
+git checkout -b LQanalyzer_Feb14 origin/LQanalyzer_Feb14
  
 2) in LQanalyzer main directory type:
 source setup.sh
 
 ## NOTE
- - If running on SNU machines this should work out of box. 
- - If running on any other machine you need to setup root enviroment before hand/ and maybe add your root_setup script to the setup.sh file (you may also need to modify Makefile.common, if your Makefile.arch script is not found) 
+ - If running on SNU machines/mac OS 10.9 this should work out of box. 
+
+The code now runs on all cms machines. Only one directory is needed. Three library directories are created, one for cms1 (slc6_cms1), one for cms2-4 (slc5) and one for cms5-6 (slc6)
 
 
 ### TEST CYCLE  ###
@@ -20,7 +21,7 @@ source setup.sh
 To run the test cycle
 
 1) cd $LQANALYZER_RUN_PATH
-2) source submit.sh ( you can modify the number of cores in this or change the amount of data if you like)
+2) source example_submit.sh ( you can modify the number of cores in this or change the amount of data if you like)
 
 
 ### Make cycle ###
