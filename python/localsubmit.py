@@ -291,9 +291,10 @@ print "input directory= " + inDS    ## now have defined what dur contains input 
 ############################################################
 ### Make tmp directory for job
 ############################################################
-if not os.path.exists(sample):
-    os.system("mkdir " + sample)    
-os.system("ls " + InputDir + "/*.root > " + sample + "/inputlist.txt")
+local_sub_dir=sample + '_' + channel + '_' + now()
+if not os.path.exists(local_sub_dir):
+    os.system("mkdir " + local_sub_dir)    
+os.system("ls " + InputDir + "/*.root > " + local_sub_dir + "/inputlist.txt")
 
 ############################################################
 ## Get number of files in Input directory
@@ -343,7 +344,7 @@ check_array = []
 ###################################################
 # Setup work area on var tmp
 ###################################################
-workspace = "/var/tmp/"+ getpass.getuser() + "/"
+workspace = "/home/"+ getpass.getuser() + "/LQ_SKTreeOutput/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample
@@ -381,8 +382,7 @@ for i in range(1,number_of_cores+1):
 ####################################################
 
 ### read inputlist.txt which contains all input files
-fr = open(sample + '/inputlist.txt', 'r')
-
+fr = open(local_sub_dir + '/inputlist.txt', 'r')
 
 outsamplename = sample
 if not mc:
