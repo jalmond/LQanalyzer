@@ -1,4 +1,7 @@
 # Ignore for commits
+LQLib/
+data/
+LQRun/runJob_1.C
 # ignore libraries
 *.so
 # ignore all object files
