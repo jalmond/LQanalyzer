@@ -1,6 +1,6 @@
 # Package information
 LIBRARY = AnalysisCore
-OBJDIR  = obj
+OBJDIR  = $(OBJ)
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src
 INCDIR  = include

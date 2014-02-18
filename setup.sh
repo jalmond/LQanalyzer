@@ -36,11 +36,17 @@ export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
-if [[ "$HOSTNAME" == "cms1"  || "$HOSTNAME" == "cms5" || "$HOSTNAME" == "cms6" ]]
+if [[ "$HOSTNAME" == "cms1" ]]
 then 
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib_slc6/
+    export OBJ=obj/slc6_cms1
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms1/
+elif [[ "$HOSTNAME" == "cms5" || "$HOSTNAME" == "cms6" ]]
+then
+    export OBJ=obj/slc6
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6/
 else
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib_slc5/
+    export OBJ=obj/slc5
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5/
 fi
 
 export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
@@ -54,12 +60,23 @@ export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
 
 echo "Running analysis from" $HOSTNAME " in directory: " 
 
+if [ ! -d ${LQANALYZER_OLDLIB_PATH} ]; then
+    echo Directory ${LQANALYZER_OLDLIB_PATH} does not exist ... creating it
+    mkdir ${LQANALYZER_OLDLIB_PATH}
+fi
+
 if [ ! -d ${LQANALYZER_LIB_PATH} ]; then
     echo Directory ${LQANALYZER_LIB_PATH} does not exist ... creating it
     mkdir ${LQANALYZER_LIB_PATH}
-    if [ -d ${LQANALYZER_OLDLIB_PATH} ]; then
-	echo Old lib dir ${LQANALYZER_OLDLIB_PATH} is redundant. Will remove this library
-	rm -r ${LQANALYZER_OLDLIB_PATH}
+    file="${LQANALYZER_OLDLIB_PATH}/libAnalysisCore.so"
+    if [ -f "$file" ]; then
+	echo Old lib dir ${LQANALYZER_OLDLIB_PATH} is redundant. Will remove these library
+	rm  ${LQANALYZER_OLDLIB_PATH}/*.so
+	rm  ${LQANALYZER_OLDLIB_PATH}/*map
+	rm  ${LQANALYZER_CORE_PATH}/*/obj/*.o
+	rm -r ${LQANALYZER_CORE_PATH}/*/obj/dep/
+	rm  ${LQANALYZER_CYCLE_PATH}/*/obj/*.o
+	rm -r ${LQANALYZER_CYCLE_PATH}/*/obj/dep/
     fi
 fi
 
@@ -82,17 +99,17 @@ if [[ `which root-config` == "" ]]; then
 fi
 
 if [ -z ${ROOTSYS} ] ; then
-      echo "Warning: ROOT environment doesn't seem to be configured!"
-      echo "Add these lines to your ~/.bashrc file to remove this warning in future."
-      echo ""
-      echo "source /usr/local/bin/thisroot.sh"
-      echo ""
-      export ROOTSYS=/usr/local
-      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib/root:
-      if [ -z ${ROOTSYS} ] ; then
-	  echo "Error: ROOT environment cannot be configured!"
-      else echo "Setup root enviroment for user."
-      fi
+    echo "Warning: ROOT environment doesn't seem to be configured!"
+    echo "Add these lines to your ~/.bashrc file to remove this warning in future."
+    echo ""
+    echo "source /usr/local/bin/thisroot.sh"
+    echo ""
+    export ROOTSYS=/usr/local
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ROOTSYS/lib/root:
+    if [ -z ${ROOTSYS} ] ; then
+	echo "Error: ROOT environment cannot be configured!"
+    else echo "Setup root enviroment for user."
+    fi
 fi
 
 if [[ `root-config --platform` == "macosx" ]]; then

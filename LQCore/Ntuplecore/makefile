@@ -10,7 +10,7 @@
 
 # Package information
 LIBRARY = Ntuplecore
-OBJDIR  = obj
+OBJDIR  = $(OBJ)
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src
 INCDIR  = include
