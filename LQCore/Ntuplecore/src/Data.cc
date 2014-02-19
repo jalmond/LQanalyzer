@@ -1103,34 +1103,29 @@ void Data::ConnectPFJets(){
 
   //#####   Jet branches
   ConnectVariable("rhoJets", rhoJets, b_rhoJets);
-  ConnectVariable("PFJetChargedEmEnergyFraction", PFJetChargedEmEnergyFraction, b_PFJetChargedEmEnergyFraction);
-  ConnectVariable("PFJetChargedHadronEnergyFraction", PFJetChargedHadronEnergyFraction, b_PFJetChargedHadronEnergyFraction);
-  ConnectVariable("PFJetChargedMuEnergyFraction", PFJetChargedMuEnergyFraction, b_PFJetChargedMuEnergyFraction);
-  ConnectVariable("PFJetClosestVertexWeighted3DSeparation", PFJetClosestVertexWeighted3DSeparation, b_PFJetClosestVertexWeighted3DSeparation);
-  ConnectVariable("PFJetClosestVertexWeightedXYSeparation", PFJetClosestVertexWeightedXYSeparation, b_PFJetClosestVertexWeightedXYSeparation);
-  ConnectVariable("PFJetClosestVertexWeightedZSeparation", PFJetClosestVertexWeightedZSeparation, b_PFJetClosestVertexWeightedZSeparation);
-  ConnectVariable("PFJetCombinedSecondaryVertexBTag", PFJetCombinedSecondaryVertexBTag, b_PFJetCombinedSecondaryVertexBTag);
-  ConnectVariable("PFJetElectronEnergyFraction", PFJetElectronEnergyFraction, b_PFJetElectronEnergyFraction);
+  /// TLV variables
   ConnectVariable("PFJetEnergy", PFJetEnergy, b_PFJetEnergy);
   ConnectVariable("PFJetEnergyRaw", PFJetEnergyRaw, b_PFJetEnergyRaw);
   ConnectVariable("PFJetEta", PFJetEta, b_PFJetEta);
+  ConnectVariable("PFJetPhi", PFJetPhi, b_PFJetPhi);
+  ConnectVariable("PFJetPt", PFJetPt, b_PFJetPt);
+  /// Jet Energy Fractions
+  ConnectVariable("PFJetChargedEmEnergyFraction", PFJetChargedEmEnergyFraction, b_PFJetChargedEmEnergyFraction);
+  ConnectVariable("PFJetChargedHadronEnergyFraction", PFJetChargedHadronEnergyFraction, b_PFJetChargedHadronEnergyFraction);
+  ConnectVariable("PFJetChargedMuEnergyFraction", PFJetChargedMuEnergyFraction, b_PFJetChargedMuEnergyFraction);
+  ConnectVariable("PFJetElectronEnergyFraction", PFJetElectronEnergyFraction, b_PFJetElectronEnergyFraction);
   ConnectVariable("PFJetHFEMEnergyFraction", PFJetHFEMEnergyFraction, b_PFJetHFEMEnergyFraction);
   ConnectVariable("PFJetHFHadronEnergyFraction", PFJetHFHadronEnergyFraction, b_PFJetHFHadronEnergyFraction);
-  ConnectVariable("PFJetJECUnc", PFJetJECUnc, b_PFJetJECUnc);
-  ConnectVariable("PFJetJetBProbabilityBTag", PFJetJetBProbabilityBTag, b_PFJetJetBProbabilityBTag);
-  ConnectVariable("PFJetJetProbabilityBTag", PFJetJetProbabilityBTag, b_PFJetJetProbabilityBTag);
   ConnectVariable("PFJetMuonEnergyFraction", PFJetMuonEnergyFraction, b_PFJetMuonEnergyFraction);
   ConnectVariable("PFJetNeutralEmEnergyFraction", PFJetNeutralEmEnergyFraction, b_PFJetNeutralEmEnergyFraction);
   ConnectVariable("PFJetNeutralHadronEnergyFraction", PFJetNeutralHadronEnergyFraction, b_PFJetNeutralHadronEnergyFraction);
-  ConnectVariable("PFJetPhi", PFJetPhi, b_PFJetPhi);
   ConnectVariable("PFJetPhotonEnergyFraction", PFJetPhotonEnergyFraction, b_PFJetPhotonEnergyFraction);
-  ConnectVariable("PFJetPt", PFJetPt, b_PFJetPt);
-  ConnectVariable("PFJetSoftMuonBTag", PFJetSoftMuonBTag, b_PFJetSoftMuonBTag);
-  ConnectVariable("PFJetSoftMuonByIP3dBTag", PFJetSoftMuonByIP3dBTag, b_PFJetSoftMuonByIP3dBTag);
-  ConnectVariable("PFJetSoftMuonByPtBTag", PFJetSoftMuonByPtBTag, b_PFJetSoftMuonByPtBTag);
-  ConnectVariable("PFJetTrackCountingHighPurBTag", PFJetTrackCountingHighPurBTag, b_PFJetTrackCountingHighPurBTag);
-  ConnectVariable("PFCandChargeLeptLink", PFCandChargeLeptLink, b_PFCandChargeLeptLink);
+  // Jet Track/Vertex Variables
+  ConnectVariable("PFJetClosestVertexWeighted3DSeparation", PFJetClosestVertexWeighted3DSeparation, b_PFJetClosestVertexWeighted3DSeparation);
+  ConnectVariable("PFJetClosestVertexWeightedXYSeparation", PFJetClosestVertexWeightedXYSeparation, b_PFJetClosestVertexWeightedXYSeparation);
+  ConnectVariable("PFJetClosestVertexWeightedZSeparation", PFJetClosestVertexWeightedZSeparation, b_PFJetClosestVertexWeightedZSeparation);
   ConnectVariable("PFJetBestVertexTrackAssociationIndex", PFJetBestVertexTrackAssociationIndex, b_PFJetBestVertexTrackAssociationIndex);
+  ConnectVariable("PFJetBestVertexTrackAssociationFactor", PFJetBestVertexTrackAssociationFactor, b_PFJetBestVertexTrackAssociationFactor);
   ConnectVariable("PFJetChargedHadronMultiplicity", PFJetChargedHadronMultiplicity, b_PFJetChargedHadronMultiplicity);
   ConnectVariable("PFJetChargedMultiplicity", PFJetChargedMultiplicity, b_PFJetChargedMultiplicity);
   ConnectVariable("PFJetClosestVertex3DIndex", PFJetClosestVertex3DIndex, b_PFJetClosestVertex3DIndex);
@@ -1143,13 +1138,34 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetNConstituents", PFJetNConstituents, b_PFJetNConstituents);
   ConnectVariable("PFJetNeutralHadronMultiplicity", PFJetNeutralHadronMultiplicity, b_PFJetNeutralHadronMultiplicity);
   ConnectVariable("PFJetNeutralMultiplicity", PFJetNeutralMultiplicity, b_PFJetNeutralMultiplicity);
+  ConnectVariable("PFJetPhotonMultiplicity", PFJetPhotonMultiplicity, b_PFJetPhotonMultiplicity);
+  
+  /// BTAG variables
+  ConnectVariable("PFJetCombinedSecondaryVertexBTag", PFJetCombinedSecondaryVertexBTag, b_PFJetCombinedSecondaryVertexBTag);
+  ConnectVariable("PFJetJetBProbabilityBTag", PFJetJetBProbabilityBTag, b_PFJetJetBProbabilityBTag);
+  ConnectVariable("PFJetJetProbabilityBTag", PFJetJetProbabilityBTag, b_PFJetJetProbabilityBTag);
+  ConnectVariable("PFJetSoftMuonBTag", PFJetSoftMuonBTag, b_PFJetSoftMuonBTag);
+  ConnectVariable("PFJetSoftMuonByIP3dBTag", PFJetSoftMuonByIP3dBTag, b_PFJetSoftMuonByIP3dBTag);
+  ConnectVariable("PFJetSoftMuonByPtBTag", PFJetSoftMuonByPtBTag, b_PFJetSoftMuonByPtBTag);
+  ConnectVariable("PFJetTrackCountingHighPurBTag", PFJetTrackCountingHighPurBTag, b_PFJetTrackCountingHighPurBTag);
+  //ConnectVariable("PFJetCombinedInclusiveSecondaryVertexBTag", PFJetCombinedInclusiveSecondaryVertexBTag);
+  //ConnectVariable("PFJetCombinedMVABTag", PFJetCombinedMVABTag);
+  //ConnectVariable("PFJetCombinedSecondaryVertexMVABTag", PFJetCombinedSecondaryVertexMVABTag);
+  //ConnectVariable("PFJetSimpleSecondaryVertexHighEffBTag", PFJetSimpleSecondaryVertexHighEffBTag);
+  //ConnectVariable("PFJetSimpleSecondaryVertexHighPurBTag", PFJetSimpleSecondaryVertexHighPurBTag);
+  //ConnectVariable("PFJetSoftElectronByIP3dBTag", PFJetSoftElectronByIP3dBTag);
+  //ConnectVariable("PFJetSoftElectronByPtBTag", PFJetSoftElectronByPtBTag);
+  //ConnectVariable("PFJetTrackCountingHighEffBTag", PFJetTrackCountingHighEffBTag);
+  /// OTHERS
+  ConnectVariable("PFCandChargeLeptLink", PFCandChargeLeptLink, b_PFCandChargeLeptLink);
   ConnectVariable("PFJetPartonFlavour", PFJetPartonFlavour, b_PFJetPartonFlavour);
   ConnectVariable("PFJetPassLooseID", PFJetPassLooseID, b_PFJetPassLooseID);
   ConnectVariable("PFJetPassTightID", PFJetPassTightID, b_PFJetPassTightID);
-  ConnectVariable("PFJetPhotonMultiplicity", PFJetPhotonMultiplicity, b_PFJetPhotonMultiplicity);
 
-  
-  // New Variables 2013/12/02
+
+ 
+  /// Uncertainties                                                                                                                                          // New Variables 2013/12/02 
+  ConnectVariable("PFJetJECUnc", PFJetJECUnc, b_PFJetJECUnc);
   ConnectVariable("PFJetScaledDownEnergy",PFJetScaledDownEnergy,b_PFJetScaledDownEnergy);
   ConnectVariable("PFJetScaledDownPt",PFJetScaledDownPt,b_PFJetScaledDownPt);
   ConnectVariable("PFJetScaledUpEnergy",PFJetScaledUpEnergy,b_PFJetScaledUpEnergy);
@@ -1158,9 +1174,28 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetSmearedDownPt",PFJetSmearedDownPt,b_PFJetSmearedDownPt);
   ConnectVariable("PFJetSmearedUpEnergy",PFJetSmearedUpEnergy,b_PFJetSmearedUpEnergy);
   ConnectVariable("PFJetSmearedUpPt",PFJetSmearedUpPt,b_PFJetSmearedUpPt);
-
+  ConnectVariable("PFJetL1FastJetJEC", PFJetL1FastJetJEC, b_PFJetL1FastJetJEC);
+  ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC, b_PFJetL2L3ResJEC);
+  ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC, b_PFJetL2RelJEC);
+  ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC, b_PFJetL3AbsJEC);
+  ConnectVariable("PFJetPtRaw", PFJetPtRaw, b_PFJetPtRaw);
+  ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC, b_PFJetL2L3ResJEC); 
+  ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC, b_PFJetL2RelJEC); 
+  ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC, b_PFJetL3AbsJEC); 
+  ConnectVariable("PFJetPtRaw", PFJetPtRaw, b_PFJetPtRaw);  
   
-
+  //ConnectVariable("PFJetBeta", PFJetBeta); 
+  //ConnectVariable("PFJetBetaClassic", PFJetBetaClassic);
+  //ConnectVariable("PFJetBetaStar", PFJetBetaStar);
+  //ConnectVariable("PFJetBetaStarClassic", PFJetBetaStarClassic);
+  ConnectVariable("PFJetCombinedInclusiveSecondaryVertexBTag", PFJetCombinedInclusiveSecondaryVertexBTag, b_PFJetCombinedInclusiveSecondaryVertexBTag);
+  ConnectVariable("PFJetCombinedMVABTag", PFJetCombinedMVABTag, b_PFJetCombinedMVABTag);
+  ConnectVariable("PFJetCombinedSecondaryVertexMVABTag", PFJetCombinedSecondaryVertexMVABTag, b_PFJetCombinedSecondaryVertexMVABTag);
+  ConnectVariable("PFJetSimpleSecondaryVertexHighEffBTag", PFJetSimpleSecondaryVertexHighEffBTag, b_PFJetSimpleSecondaryVertexHighEffBTag);
+  ConnectVariable("PFJetSimpleSecondaryVertexHighPurBTag", PFJetSimpleSecondaryVertexHighPurBTag, b_PFJetSimpleSecondaryVertexHighPurBTag);
+  ConnectVariable("PFJetSoftElectronByIP3dBTag", PFJetSoftElectronByIP3dBTag, b_PFJetSoftElectronByIP3dBTag);
+  ConnectVariable("PFJetSoftElectronByPtBTag", PFJetSoftElectronByPtBTag, b_PFJetSoftElectronByPtBTag);
+  ConnectVariable("PFJetTrackCountingHighEffBTag", PFJetTrackCountingHighEffBTag, b_PFJetTrackCountingHighEffBTag );  
   return;
 }
 
@@ -1572,6 +1607,10 @@ void Data::ConnectAllBranches(){
   ConnectVariable("HPSTauVtxDistZ", HPSTauVtxDistZ);
   
   // Muon
+  ConnectVariable("MuonBestTrackVtxIndex", MuonBestTrackVtxIndex);
+  ConnectVariable("MuonCocktailCharge", MuonCocktailCharge);
+  ConnectVariable("MuonCocktailRefitID", MuonCocktailRefitID);
+  ConnectVariable("MuonCocktailTrkHits", MuonCocktailTrkHits);  
   ConnectVariable("MuonBackToBackCompatibility", MuonBackToBackCompatibility);
   ConnectVariable("MuonBeamSpotDXY", MuonBeamSpotDXY);
   ConnectVariable("MuonBeamSpotDXYError", MuonBeamSpotDXYError);
@@ -1598,7 +1637,7 @@ void Data::ConnectAllBranches(){
   ConnectVariable("PFCandEtaLeptLink", PFCandEtaLeptLink);
   ConnectVariable("PFCandPhiLeptLink", PFCandPhiLeptLink);
   ConnectVariable("PFCandPtLeptLink", PFCandPtLeptLink);
-  ConnectVariable("PFJetBestVertexTrackAssociationFactor", PFJetBestVertexTrackAssociationFactor);
+
   ConnectVariable("PFJetBeta", PFJetBeta);
   ConnectVariable("PFJetBetaClassic", PFJetBetaClassic);
   ConnectVariable("PFJetBetaStar", PFJetBetaStar);
@@ -1606,17 +1645,12 @@ void Data::ConnectAllBranches(){
   ConnectVariable("PFJetCombinedInclusiveSecondaryVertexBTag", PFJetCombinedInclusiveSecondaryVertexBTag);
   ConnectVariable("PFJetCombinedMVABTag", PFJetCombinedMVABTag);
   ConnectVariable("PFJetCombinedSecondaryVertexMVABTag", PFJetCombinedSecondaryVertexMVABTag);
-  ConnectVariable("PFJetL1FastJetJEC", PFJetL1FastJetJEC);
-  ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC);
-  ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC);
-  ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC);
-  ConnectVariable("PFJetPtRaw", PFJetPtRaw);
   ConnectVariable("PFJetSimpleSecondaryVertexHighEffBTag", PFJetSimpleSecondaryVertexHighEffBTag);
   ConnectVariable("PFJetSimpleSecondaryVertexHighPurBTag", PFJetSimpleSecondaryVertexHighPurBTag);
   ConnectVariable("PFJetSoftElectronByIP3dBTag", PFJetSoftElectronByIP3dBTag);
   ConnectVariable("PFJetSoftElectronByPtBTag", PFJetSoftElectronByPtBTag);
   ConnectVariable("PFJetTrackCountingHighEffBTag", PFJetTrackCountingHighEffBTag);
-  ConnectVariable("PFMET", PFMET);
+
 
   /// Photon
   ConnectVariable("PhotonAlpha", PhotonAlpha);
@@ -1663,9 +1697,9 @@ void Data::ConnectAllBranches(){
   ConnectVariable("PhotonXVtxConvPhot", PhotonXVtxConvPhot);
   ConnectVariable("PhotonYVtxConvPhot", PhotonYVtxConvPhot);
   ConnectVariable("PhotonZVtxConvPhot", PhotonZVtxConvPhot);
-  ConnectVariable("TCMET", TCMET);  ConnectVariable("TCMETPhi", TCMETPhi);
-  ConnectVariable("TCSumET", TCSumET);
+  ConnectVariable("PhotonNTracksConvPhot", PhotonNTracksConvPhot);
 
+    
   // Trigger
   ConnectVariable("HLTFilterObjEta", HLTFilterObjEta);
   ConnectVariable("HLTFilterObjPhi", HLTFilterObjPhi);
@@ -1682,8 +1716,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenZElectronNumDaught", GenZElectronNumDaught);  ConnectVariable("GenZElectronPdgId", GenZElectronPdgId);
   ConnectVariable("GenZElectronStatus", GenZElectronStatus);
   ConnectVariable("GenZElectronTauDecayMode", GenZElectronTauDecayMode);
-  ConnectVariable("PileUpInteractions", PileUpInteractions);
-  ConnectVariable("PileUpOriginBX", PileUpOriginBX);
   ConnectVariable("GenWMuMotherIndex", GenWMuMotherIndex);
   ConnectVariable("GenWMuNumDaught", GenWMuNumDaught);
   ConnectVariable("GenWMuPdgId", GenWMuPdgId);
@@ -1706,13 +1738,15 @@ void Data::ConnectAllBranches(){
   ConnectVariable("HPSTauDecayMode", HPSTauDecayMode);
   ConnectVariable("HPSTauIsCaloTau", HPSTauIsCaloTau);
   ConnectVariable("HPSTauVtxIndex", HPSTauVtxIndex);
-  ConnectVariable("MuonBestTrackVtxIndex", MuonBestTrackVtxIndex);
-  ConnectVariable("MuonCocktailCharge", MuonCocktailCharge);
-  ConnectVariable("MuonCocktailRefitID", MuonCocktailRefitID);
-  ConnectVariable("MuonCocktailTrkHits", MuonCocktailTrkHits);
-  ConnectVariable("PhotonNTracksConvPhot", PhotonNTracksConvPhot);
 
+  
   // Event
+  ConnectVariable("PFMET", PFMET);
+  ConnectVariable("TCMET", TCMET);  
+  ConnectVariable("TCMETPhi", TCMETPhi); 
+  ConnectVariable("TCSumET", TCSumET); 
+  ConnectVariable("PileUpInteractions", PileUpInteractions);                                                                                               
+  ConnectVariable("PileUpOriginBX", PileUpOriginBX);     
   ConnectVariable("L1PhysBits", L1PhysBits);
   ConnectVariable("L1TechBits", L1TechBits);
   ConnectVariable("VertexNTracksW05", VertexNTracksW05);

@@ -14,20 +14,53 @@ ClassImp(KJet)
 KJet::KJet() :
 KParticle()
 {
-  k_passLooseID=0;
-  k_neutralEmEF=0;
-  k_neutralHEF=0;
-  k_chargeEmEF=0;
-  k_chargeHEF=0;
-  k_chargeMult=0;
-  k_jetNconst=0;
-  k_JetSecVertBtag=0;
-  k_TCHPT=0;
-  k_closest3Dsep=0;
-  k_closestXYsep=0;
-  k_closestZsep=0;
-  k_JetProbBtag =0;
-
+  k_jet_passLooseID=false;
+  k_jet_passTightID=false;
+  k_jet_chargeMult=0;
+  k_jet_neutralMult=0;
+  k_jet_chargeHadMult=0;
+  k_jet_neutralHadMult=0;
+  k_jet_muonMult=0;
+  k_jet_elMult=0;
+  k_jet_phMult=0;
+  k_jet_hfemMult=0;
+  k_jet_hfhadronMult=0;
+  k_jet_SecVertBtag=0.;
+  k_jet_TCHPT=0.;
+  k_jet_JetProbBtag=0.;
+  k_jet_neutralEmEF=0.;
+  k_jet_neutralHEF=0.;
+  k_jet_chargeEmEF=0.;
+  k_jet_chargeHEF=0.;
+  k_jet_hfemEF=0.;
+  k_jet_hfhadronEF=0.;
+  k_jet_chargedmuEF=0.;
+  k_jet_muonEF=0.;
+  k_jet_electronEF=0.;
+  k_jet_photonEF=0.;
+  k_jet_partonflavour=0.;
+  k_jet_Nconst=0;
+  k_jet_closest3Dsep=0.;
+  k_jet_closestXYsep=0.;
+  k_jet_closestZsep=0.;
+  k_jet_bestvertexTrackAssociatedIndex=0.;
+  k_jet_bestvertexTrackAssociatedFactor=0.;
+  k_jet_l1fastjet_jec=0.;
+  k_jet_l2l3res_jec=0.;
+  k_jet_l2rel_jec=0.;
+  k_jet_l3abs_jec=0.;
+  k_jet_error_jec=0.;
+  k_jet_scaled_down_energy=0.;
+  k_jet_scaled_up_energy=0.;
+  k_jet_scaled_down_pt=0.;
+  k_jet_scaled_up_pt=0.;
+  k_jet_smeared_down_energy=0.;
+  k_jet_smeared_up_energy=0.;
+  k_jet_smeared_down_pt=0.;
+  k_jet_smeared_up_pt=0.;
+  k_jet_energy_raw=0.;
+  k_jet_pt_raw=0.;
+  
 }
 
 /**
@@ -36,19 +69,54 @@ KParticle()
 KJet::KJet(const KJet& jet) :
     KParticle(jet)
 {
-  k_passLooseID = jet.PassLooseID();
-  k_neutralEmEF = jet.NeutralEmEF();
-  k_neutralHEF = jet.NeutralEmEF();
-  k_chargeEmEF  =jet.ChargedEmEF();
-  k_chargeHEF = jet.ChargedHEF();
-  k_chargeMult = jet.ChargedMultiplicity();
-  k_jetNconst = jet.Nconstituents();
-  k_JetSecVertBtag = jet.CombinedSecVertexBtag();
-  k_closest3Dsep = jet.JetRho();
-  k_TCHPT = jet.PFJetTrackCountingHighPurBTag();
-  k_closestZsep = jet.ClosestZsep();
-  k_closestXYsep= jet.ClosestXYsep();
-  k_JetProbBtag = jet.BtagProb();
+  k_jet_passLooseID= jet.PassLooseID();
+  k_jet_passTightID= jet.PassTightID();
+  k_jet_chargeMult=jet.ChargedMultiplicity();
+  k_jet_neutralMult=jet.NeutralMultiplicity();
+  k_jet_chargeHadMult=jet.ChargedHadronMultiplicity();
+  k_jet_neutralHadMult=jet.NeutralHadronMultiplicity();
+  k_jet_muonMult=jet.MuonMultiplicity();
+  k_jet_elMult=jet.ElectronMultiplicity();
+  k_jet_phMult=jet.PhotonMultiplicity();
+  k_jet_hfemMult=jet.HFEMMultiplicity();
+  k_jet_hfhadronMult=jet.HFHadronMultiplicity();
+  k_jet_SecVertBtag=jet.CombinedSecVertexBtag() ;
+  k_jet_TCHPT=jet.PFJetTrackCountingHighPurBTag();
+  k_jet_JetProbBtag=jet.BtagProb();
+  k_jet_neutralEmEF=jet.NeutralEMEnergyFraction();
+  k_jet_neutralHEF=jet.NeutralHadEnergyFraction();
+  k_jet_chargeEmEF=jet.ChargedEMEnergyFraction();
+  k_jet_chargeHEF=jet.ChargedHadEnergyFraction();
+  k_jet_hfemEF=jet.HFEMEnergyFraction();
+  k_jet_hfhadronEF=jet.HFHadEnergyFraction();
+  k_jet_chargedmuEF=jet.ChargedMuEnergyFraction();
+  k_jet_muonEF=jet.MuonEnergyFraction();
+  k_jet_electronEF=jet.ElectronEnergyFraction();
+  k_jet_photonEF=jet.PhotonEnergyFraction();
+  k_jet_partonflavour=jet.PartonFlavour();
+  k_jet_Nconst=jet.Nconstituents();
+  k_jet_closest3Dsep=jet.JetRho();
+  k_jet_closestXYsep=jet.ClosestXYsep();
+  k_jet_closestZsep=jet.ClosestZsep();
+  k_jet_bestvertexTrackAssociatedIndex=jet.BestVertexTrackAssociationIndex();
+  k_jet_bestvertexTrackAssociatedFactor=jet.BestVertexTrackAssociationFactor();
+  k_jet_l1fastjet_jec=jet.L1FastJetJEC();
+  k_jet_l2l3res_jec=jet.L2L3ResJEC();
+  k_jet_l2rel_jec=jet.L2RelJEC();
+  k_jet_l3abs_jec=jet.L3AbsJEC();
+  k_jet_error_jec=jet.JECUncertainty();
+  k_jet_scaled_down_energy=jet.ScaledDownEnergy();
+  k_jet_scaled_up_energy=jet.ScaledUpEnergy();
+  k_jet_scaled_down_pt=jet.ScaledDownPt();
+  k_jet_scaled_up_pt=jet.ScaledUpPt();
+  k_jet_smeared_down_energy=jet.SmearedDownEnergy();
+  k_jet_smeared_up_energy=jet.SmearedUpEnergy();
+  k_jet_smeared_down_pt=jet.SmearedDownPt();
+  k_jet_smeared_up_pt=jet.SmearedUpPt();
+  k_jet_energy_raw=jet.RawE();
+  k_jet_pt_raw = jet.RawPt();
+
+  
 }
 
 
@@ -59,19 +127,53 @@ KJet::~KJet()
 void KJet::Reset()
 {
     KParticle::Reset();
-    k_passLooseID = 0;
-    k_neutralEmEF = 0;
-    k_neutralHEF = 0;
-    k_chargeEmEF = 0;
-    k_chargeHEF = 0;
-    k_chargeMult = 0;
-    k_jetNconst = 0;
-    k_JetSecVertBtag = 0;
-    k_closest3Dsep = 0;
-    k_TCHPT=0;
-    k_closestZsep = 0;
-    k_closestXYsep= 0;
-    k_JetProbBtag = 0;
+    k_jet_passLooseID=false;
+    k_jet_passTightID=false;
+    k_jet_chargeMult=0;
+    k_jet_neutralMult=0;
+    k_jet_chargeHadMult=0;
+    k_jet_neutralHadMult=0;
+    k_jet_muonMult=0;
+    k_jet_elMult=0;
+    k_jet_phMult=0;
+    k_jet_hfemMult=0;
+    k_jet_hfhadronMult=0;
+    k_jet_SecVertBtag=0.;
+    k_jet_TCHPT=0.;
+    k_jet_JetProbBtag=0.;
+    k_jet_neutralEmEF=0.;
+    k_jet_neutralHEF=0.;
+    k_jet_chargeEmEF=0.;
+    k_jet_chargeHEF=0.;
+    k_jet_hfemEF=0.;
+    k_jet_hfhadronEF=0.;
+    k_jet_chargedmuEF=0.;
+    k_jet_muonEF=0.;
+    k_jet_electronEF=0.;
+    k_jet_photonEF=0.;
+    k_jet_partonflavour=0.;
+    k_jet_Nconst=0;
+    k_jet_closest3Dsep=0.;
+    k_jet_closestXYsep=0.;
+    k_jet_closestZsep=0.;
+    k_jet_bestvertexTrackAssociatedIndex=0.;
+    k_jet_bestvertexTrackAssociatedFactor=0.;
+    k_jet_l1fastjet_jec=0.;
+    k_jet_l2l3res_jec=0.;
+    k_jet_l2rel_jec=0.;
+    k_jet_l3abs_jec=0.;
+    k_jet_error_jec=0.;
+    k_jet_scaled_down_energy=0.;
+    k_jet_scaled_up_energy=0.;
+    k_jet_scaled_down_pt=0.;
+    k_jet_scaled_up_pt=0.;
+    k_jet_smeared_down_energy=0.;
+    k_jet_smeared_up_energy=0.;
+    k_jet_smeared_down_pt=0.;
+    k_jet_smeared_up_pt=0.;
+    k_jet_energy_raw=0.;
+    k_jet_pt_raw = 0.;
+
 
 }
 
@@ -85,87 +187,244 @@ void KJet::Reset()
 KJet& KJet::operator= (const KJet& p)
 {
     if (this != &p) {
-        KParticle::operator=(p);
-	k_passLooseID = p.PassLooseID();
-	k_TCHPT = p.PFJetTrackCountingHighPurBTag();
-	k_neutralEmEF = p.NeutralEmEF();
-	k_neutralHEF = p.NeutralEmEF();
-	k_chargeEmEF  =p.ChargedEmEF();
-	k_chargeHEF = p.ChargedHEF();
-	k_chargeMult = p.ChargedMultiplicity();
-	k_jetNconst = p.Nconstituents();
-	k_JetSecVertBtag = p.CombinedSecVertexBtag();
-	k_closest3Dsep = p.JetRho();
-	k_closestZsep = p.ClosestZsep();
-	k_closestXYsep= p.ClosestXYsep();
-	k_JetProbBtag = p.BtagProb();
+      KParticle::operator=(p);
+      k_jet_passLooseID= p.PassLooseID();
+      k_jet_passTightID= p.PassTightID();
+      k_jet_chargeMult=p.ChargedMultiplicity();
+      k_jet_neutralMult=p.NeutralMultiplicity();
+      k_jet_chargeHadMult=p.ChargedHadronMultiplicity();
+      k_jet_neutralHadMult=p.NeutralHadronMultiplicity();
+      k_jet_muonMult=p.MuonMultiplicity();
+      k_jet_elMult=p.ElectronMultiplicity();
+      k_jet_phMult=p.PhotonMultiplicity();
+      k_jet_hfemMult=p.HFEMMultiplicity();
+      k_jet_hfhadronMult=p.HFHadronMultiplicity();
+      k_jet_SecVertBtag=p.CombinedSecVertexBtag() ;
+      k_jet_TCHPT=p.PFJetTrackCountingHighPurBTag();
+      k_jet_JetProbBtag=p.BtagProb();
+      k_jet_neutralEmEF=p.NeutralEMEnergyFraction();
+      k_jet_neutralHEF=p.NeutralHadEnergyFraction();
+      k_jet_chargeEmEF=p.ChargedEMEnergyFraction();
+      k_jet_chargeHEF=p.ChargedHadEnergyFraction();
+      k_jet_hfemEF=p.HFEMEnergyFraction();
+      k_jet_hfhadronEF=p.HFHadEnergyFraction();
+      k_jet_chargedmuEF=p.ChargedMuEnergyFraction();
+      k_jet_muonEF=p.MuonEnergyFraction();
+      k_jet_electronEF=p.ElectronEnergyFraction();
+      k_jet_photonEF=p.PhotonEnergyFraction();
+      k_jet_partonflavour=p.PartonFlavour();
+      k_jet_Nconst=p.Nconstituents();
+      k_jet_closest3Dsep=p.JetRho();
+      k_jet_closestXYsep=p.ClosestXYsep();
+      k_jet_closestZsep=p.ClosestZsep();
+      k_jet_bestvertexTrackAssociatedIndex=p.BestVertexTrackAssociationIndex();
+      k_jet_bestvertexTrackAssociatedFactor=p.BestVertexTrackAssociationFactor();
+      k_jet_l1fastjet_jec=p.L1FastJetJEC();
+      k_jet_l2l3res_jec=p.L2L3ResJEC();
+      k_jet_l2rel_jec=p.L2RelJEC();
+      k_jet_l3abs_jec=p.L3AbsJEC();
+      k_jet_error_jec=p.JECUncertainty();
+      k_jet_scaled_down_energy=p.ScaledDownEnergy();
+      k_jet_scaled_up_energy=p.ScaledUpEnergy();
+      k_jet_scaled_down_pt=p.ScaledDownPt();
+      k_jet_scaled_up_pt=p.ScaledUpPt();
+      k_jet_smeared_down_energy=p.SmearedDownEnergy();
+      k_jet_smeared_up_energy=p.SmearedUpEnergy();
+      k_jet_smeared_down_pt=p.SmearedDownPt();
+      k_jet_smeared_up_pt=p.SmearedUpPt();
+      k_jet_energy_raw=p.RawE();
+      k_jet_pt_raw = p.RawPt();
+
     }
 
     return *this;
 }
 
 
-void KJet::SetPassLooseID(int looseID){
+//// POG ID CUTS
 
-  k_passLooseID = looseID;
+void KJet::SetJetPassLooseID(int looseID){
+
+  k_jet_passLooseID = looseID;
 }
 
-void KJet::SetPassTightID(int tightID){
+void KJet::SetJetPassTightID(int tightID){
   
-  k_passTightID = tightID;
+  k_jet_passTightID = tightID;
 }
 
 
-void KJet::SetPFJetTrackCountingHighPurBTag(double TCHPT){
 
-  k_TCHPT = TCHPT;
+//// Multiplicities                                                                                                                                                    
+void KJet::SetJetChargedMultiplicity(int chargeMult){
+  k_jet_chargeMult = chargeMult;
 }
 
-void KJet::SetPFJetJetProbabilityBTag(double JP){
-
-  k_JetProbBtag = JP;
+void KJet::SetJetNeutralMultiplicity(int neutralMult){
+  k_jet_neutralMult = neutralMult;
 }
 
-void KJet::SetPFJetClosestVertexWeightedXYSeparation(double cvxys){
-
-  k_closestXYsep = cvxys;
+void KJet::SetJetChargedHadronMultiplicity(int chargeHadMult){
+  k_jet_chargeHadMult = chargeHadMult;
 }
 
-void KJet::SetPFJetClosestVertexWeightedZSeparation(double cvzs){
+void KJet::SetJetNeutralHadronMultiplicity(int neutralHadMult){
+  k_jet_neutralHadMult = neutralHadMult;
+}
 
-  k_closestZsep = cvzs;
+void KJet::SetJetMuonMultiplicity(int jetmuonmult){
+  k_jet_muonMult = jetmuonmult;
+}
+
+void KJet::SetJetElectronMultiplicity(int jetelmult){
+  k_jet_elMult = jetelmult;
+}
+
+void KJet::SetJetPhotonMultiplicity(int jetphmult){
+  k_jet_phMult = jetphmult;
+}
+
+void KJet::SetJetHFEMMultiplicity(int jethfemmult){
+  k_jet_hfemMult = jethfemmult;
+}
+
+void KJet::SetJetHFHadronMultiplicity(int jethfhadmult){
+  k_jet_hfhadronMult = jethfhadmult;
 }
 
 
-void KJet::SetNeutralEmEF(double neutEmEF){
-  
-  k_neutralEmEF = neutEmEF;
+/// BTAG variables
+void KJet::SetJetTrackCountingHighPurBTag(double TCHPT){
+  k_jet_TCHPT = TCHPT;
 }
 
-void KJet::SetNeutralHEF(double neutHEF){
-  k_neutralHEF = neutHEF;
-}
-
-void KJet::SetChargedEmEF(double chargeEmEF){
-  k_chargeEmEF = chargeEmEF;
-}
-
-void KJet::SetChargedHEF(double chargeHEF){
-  k_chargeHEF = chargeHEF;
-}
-
-void KJet::SetChargedMult(int chargeMult){
-  k_chargeMult = chargeMult;
-}
-
-void KJet::SetJetNCon(int jetNconst){
-  k_jetNconst = jetNconst;
+void KJet::SetJetJetProbabilityBTag(double JP){
+  k_jet_JetProbBtag = JP;
 }
 
 void KJet::SetJetSecVertBtag(double svbt){
-  k_JetSecVertBtag = svbt;
+  k_jet_SecVertBtag = svbt;
 }
 
-void KJet::SetClosestVertW3DSep(double cv3ds){
-  k_closest3Dsep = cv3ds;
+///Tracking variables
+void KJet::SetJetClosestVertexWeightedXYSeparation(double cvxys){
+  k_jet_closestXYsep = cvxys;
+}
+
+void KJet::SetJetClosestVertexWeightedZSeparation(double cvzs){
+  k_jet_closestZsep = cvzs;
+}
+
+void KJet::SetJetNConstituents(int jetNconst){
+  k_jet_Nconst = jetNconst;
+}
+
+void KJet::SetJetClosestVertW3DSep(double cv3ds){
+  k_jet_closest3Dsep = cv3ds;
+}
+
+
+void KJet::SetJetBestVertexTrackAssociationIndex(double bvtai){
+  k_jet_bestvertexTrackAssociatedIndex=bvtai;
+}
+
+void KJet::SetJetBestVertexTrackAssociationFactor(double bvtaf){
+  k_jet_bestvertexTrackAssociatedFactor=bvtaf;
+}
+
+ 
+/// Jet energy fractions
+void KJet::SetJetNeutralEmEF(double neutEmEF){  
+  k_jet_neutralEmEF = neutEmEF;
+}
+
+void KJet::SetJetNeutralHEF(double neutHEF){
+  k_jet_neutralHEF = neutHEF;
+}
+
+void KJet::SetJetChargedEmEF(double chargeEmEF){
+  k_jet_chargeEmEF = chargeEmEF;
+}
+
+void KJet::SetJetChargedHEF(double chargeHEF){
+  k_jet_chargeHEF = chargeHEF;
+}
+
+void KJet::SetJetHFEMEnergyFraction(double hfemef){
+  k_jet_hfemEF = hfemef;
+}
+
+void KJet::SetJetHFHadronEnergyFraction(double hfhef){
+  k_jet_hfhadronEF = hfhef;
+}
+
+void KJet::SetJetChargedMuEnergyFraction(double cmuef){
+  k_jet_chargedmuEF = cmuef;
+}
+
+void KJet::SetJetMuonEnergyFraction(double muef){
+  k_jet_muonEF = muef;
+}
+
+void KJet::SetJetElectronEnergyFraction(double elef){
+  k_jet_electronEF= elef;
+}
+
+void KJet::SetJetPhotonEnergyFraction(double phef){
+  k_jet_photonEF= phef;
+}
+
+
+
+//flavour
+void KJet::SetJetPartonFlavour(int pf){
+  k_jet_partonflavour=pf;
+}
+
+//ERRORS
+void KJet::SetJetRawPt(double rawpt){
+  k_jet_pt_raw=rawpt;
+}
+
+void KJet::SetJetRawEnergy(double rawe){
+  k_jet_energy_raw=rawe;
+}
+void KJet::SetJetL1FastJetJEC(double L1FastJetJEC){
+  k_jet_l1fastjet_jec=L1FastJetJEC;
+}
+void KJet::SetJetL2L3ResJEC(double L2L3ResJEC){
+  k_jet_l2l3res_jec=L2L3ResJEC;
+}
+void KJet::SetJetL2RelJEC(double JetL2RelJEC){
+  k_jet_l2rel_jec=JetL2RelJEC;
+}
+void KJet::SetJetL3AbsJEC(double JetL3AbsJEC){
+  k_jet_l3abs_jec=JetL3AbsJEC;
+}
+void KJet::SetJetJECUnc(double jecunc){
+  k_jet_error_jec=jecunc;
+}
+void KJet::SetJetScaledDownEnergy(double jetscaleEdown){
+  k_jet_scaled_down_energy=jetscaleEdown;
+}
+void KJet::SetJetScaledUpEnergy(double jetscaleEup){
+  k_jet_scaled_up_energy=jetscaleEup;
+}
+void KJet::SetJetScaledDownPt(double jetscalePtdown){
+  k_jet_scaled_down_pt=jetscalePtdown;
+}
+void KJet::SetJetScaledUpPt(double jetscalePtup){
+  k_jet_scaled_up_pt=jetscalePtup;
+}
+void KJet::SetJetSmearedDownEnergy(double jetsmearEdown){
+  k_jet_smeared_down_energy=jetsmearEdown;
+}
+void KJet::SetJetSmearedUpEnergy(double jetsmearEup){
+  k_jet_smeared_up_energy=jetsmearEup;
+}
+void KJet::SetJetSmearedDownPt(double jetsmearPtdown){
+  k_jet_smeared_down_pt=jetsmearPtdown;
+}
+void KJet::SetJetSmearedUpPt(double jetsmearPtup){
+  k_jet_smeared_up_pt=jetsmearPtup;
 }

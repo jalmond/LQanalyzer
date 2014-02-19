@@ -226,20 +226,76 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
     KJet jet;
 
     jet.SetPtEtaPhiE(PFJetPt->at(ijet), PFJetEta->at(ijet), PFJetPhi->at(ijet), PFJetEnergy->at(ijet));
-    jet.SetPassLooseID(PFJetPassLooseID->at(ijet));    
-    jet.SetNeutralEmEF(PFJetNeutralEmEnergyFraction->at(ijet));
-    jet.SetNeutralHEF(PFJetNeutralHadronEnergyFraction->at(ijet));
-    jet.SetChargedEmEF(PFJetChargedEmEnergyFraction->at(ijet));
-    jet.SetChargedHEF(PFJetChargedHadronEnergyFraction->at(ijet));
-    jet.SetChargedMult(PFJetChargedMultiplicity->at(ijet));
-    jet.SetJetNCon(PFJetNConstituents->at(ijet));
+    jet.SetJetRawEnergy(PFJetEnergyRaw->at(ijet));
+    jet.SetJetRawPt(PFJetEnergyRaw->at(ijet));
+
+    // ID cuts
+    jet.SetJetPassLooseID(PFJetPassLooseID->at(ijet));    
+    jet.SetJetPassTightID(PFJetPassTightID->at(ijet));    
+
+    /// Jet energy fractions   
+    jet.SetJetNeutralEmEF(PFJetNeutralEmEnergyFraction->at(ijet));
+    jet.SetJetNeutralHEF(PFJetNeutralHadronEnergyFraction->at(ijet));
+    jet.SetJetChargedEmEF(PFJetChargedEmEnergyFraction->at(ijet));
+    jet.SetJetChargedHEF(PFJetChargedHadronEnergyFraction->at(ijet));
+    // NEW
+    jet.SetJetHFEMEnergyFraction(PFJetHFEMEnergyFraction->at(ijet));
+    jet.SetJetHFHadronEnergyFraction(PFJetHFHadronEnergyFraction->at(ijet));
+    jet.SetJetMuonEnergyFraction(PFJetMuonEnergyFraction->at(ijet));
+    jet.SetJetElectronEnergyFraction(PFJetElectronEnergyFraction->at(ijet));
+    jet.SetJetChargedMuEnergyFraction(PFJetChargedMuEnergyFraction->at(ijet));
+    jet.SetJetPhotonEnergyFraction(PFJetPhotonEnergyFraction->at(ijet));
+
+    /// BTAG variables
+    jet.SetJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));
     jet.SetJetSecVertBtag(PFJetCombinedSecondaryVertexBTag->at(ijet));
-    jet.SetClosestVertW3DSep(PFJetClosestVertexWeighted3DSeparation->at(ijet));
-    jet.SetPFJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));
-    jet.SetPFJetJetProbabilityBTag(PFJetJetProbabilityBTag->at(ijet));
-    jet.SetPFJetClosestVertexWeightedXYSeparation(PFJetClosestVertexWeightedXYSeparation->at(ijet));
-    jet.SetPFJetClosestVertexWeightedZSeparation(PFJetClosestVertexWeightedZSeparation->at(ijet));
-       
+    jet.SetJetJetProbabilityBTag(PFJetJetProbabilityBTag->at(ijet));
+    //jet.SetPFJetJetBProbabilityBTag(PFJetJetBProbabilityBTag->at(ijet)); >>> WHAT IS THIS?
+    //jet.SetPFJetSoftMuonBTag(PFJetSoftMuonBTag->at(ijet));
+    //jet.SetPFJetSoftMuonByIP3dBTag(PFJetSoftMuonByIP3dBTag->at(ijet));  
+    //jet.SetPFJetSoftMuonByPtBTag(PFJetSoftMuonByPtBTag->at(ijet));    
+    //jet.PFJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));  
+    
+    /// jet tracking/vertex variables
+    jet.SetJetClosestVertW3DSep(PFJetClosestVertexWeighted3DSeparation->at(ijet));
+    jet.SetJetClosestVertexWeightedXYSeparation(PFJetClosestVertexWeightedXYSeparation->at(ijet));
+    jet.SetJetClosestVertexWeightedZSeparation(PFJetClosestVertexWeightedZSeparation->at(ijet));
+    
+    /// Multiplicities
+    jet.SetJetChargedMultiplicity(PFJetChargedMultiplicity->at(ijet));
+    jet.SetJetNeutralMultiplicity(PFJetNeutralMultiplicity->at(ijet));
+    jet.SetJetChargedHadronMultiplicity(PFJetChargedHadronMultiplicity->at(ijet));
+    jet.SetJetElectronMultiplicity(PFJetElectronMultiplicity->at(ijet));
+    jet.SetJetHFEMMultiplicity(PFJetHFEMMultiplicity->at(ijet));
+    jet.SetJetHFHadronMultiplicity(PFJetHFHadronMultiplicity->at(ijet));
+    jet.SetJetMuonMultiplicity(PFJetMuonMultiplicity->at(ijet));
+    jet.SetJetNeutralHadronMultiplicity(PFJetNeutralHadronMultiplicity->at(ijet));
+    jet.SetJetPhotonMultiplicity(PFJetPhotonMultiplicity->at(ijet));
+    
+    /// Tracking
+    jet.SetJetNConstituents(PFJetNConstituents->at(ijet));
+    jet.SetJetBestVertexTrackAssociationIndex(PFJetBestVertexTrackAssociationIndex->at(ijet));
+    jet.SetJetBestVertexTrackAssociationFactor(PFJetBestVertexTrackAssociationFactor->at(ijet));
+    
+    // flavour
+    jet.SetJetPartonFlavour(PFJetPartonFlavour->at(ijet));
+    
+    /// JEC and uncertainties
+    jet.SetJetJECUnc(PFJetJECUnc->at(ijet));
+    jet.SetJetL1FastJetJEC(PFJetL1FastJetJEC->at(ijet));
+    jet.SetJetL2L3ResJEC(PFJetL2L3ResJEC->at(ijet));
+    jet.SetJetL2RelJEC(PFJetL2RelJEC->at(ijet));
+    jet.SetJetL3AbsJEC(PFJetL3AbsJEC->at(ijet));
+
+    jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
+    jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
+    jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
+    jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
+    jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
+    jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
+    jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
+    jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+
     jets.push_back(jet);
   }// end of jet 
   
@@ -259,8 +315,8 @@ std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
   for (UInt_t ijet=0; ijet< CaloJetEta->size(); ijet++) {
     KJet jet;
     jet.SetPtEtaPhiE(CaloJetPt->at(ijet), CaloJetEta->at(ijet), CaloJetPhi->at(ijet), CaloJetEnergy->at(ijet));
-    jet.SetPassLooseID(CaloJetPassLooseID->at(ijet));
-    jet.SetPassTightID(CaloJetPassTightID->at(ijet));    
+    jet.SetJetPassLooseID(CaloJetPassLooseID->at(ijet));
+    jet.SetJetPassTightID(CaloJetPassTightID->at(ijet));    
     
     jets.push_back(jet);
   }

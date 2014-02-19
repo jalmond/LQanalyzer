@@ -22,10 +22,10 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
     if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
 	 fabs(jit->Eta()) < eta_cut
 	 && jit->PassLooseID()
-	 && jit->NeutralHEF() < 0.99
-	 && jit->NeutralEmEF() < 0.99
+	 && jit->NeutralHadEnergyFraction() < 0.99
+	 && jit->NeutralEMEnergyFraction() < 0.99
 	 && jit->Nconstituents() > 1
-	 && ( fabs( jit->Eta() ) > 2.4 || ( jit->ChargedHEF() > 0. && jit->ChargedMultiplicity() > 0. && jit->ChargedEmEF() < 0.99 ) ) ) { 
+	 && ( fabs( jit->Eta() ) > 2.4 || ( jit->ChargedHadEnergyFraction() > 0. && jit->ChargedMultiplicity() > 0. && jit->ChargedEMEnergyFraction() < 0.99 ) ) ) { 
       
       jetColl.push_back(*jit);
     }
