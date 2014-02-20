@@ -157,7 +157,7 @@ namespace snu {
   private:
     
     /// ID 
-    Int_t  k_jet_passLooseID ,k_jet_passTightID ;
+    Bool_t  k_jet_passLooseID ,k_jet_passTightID;
     /// Multiplicities  
     Int_t  k_jet_chargeMult,k_jet_neutralMult,k_jet_chargeHadMult,k_jet_neutralHadMult,k_jet_muonMult,k_jet_elMult,k_jet_phMult,k_jet_hfemMult,k_jet_hfhadronMult;
     

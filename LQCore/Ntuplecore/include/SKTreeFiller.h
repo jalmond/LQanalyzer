@@ -1,10 +1,10 @@
-#ifndef SNUTreeFiller_h
-#define SNUTreeFiller_h
+#ifndef SKTreeFiller_h
+#define SKTreeFiller_h
 
 #include <set>
 #include "Data.h"
 
-// SNUTree
+// SKTree
 #include "KParticle.h"
 
 //class KMuon;
@@ -18,11 +18,11 @@
 #include "SelectionFunctions.h"
 #include "AnalysisBase.h"
 
-class SNUTreeFiller : public Data, public AnalysisBase {
+class SKTreeFiller : public Data, public AnalysisBase {
 
  public:
-  SNUTreeFiller();
-  ~SNUTreeFiller();
+  SKTreeFiller();
+  ~SKTreeFiller();
 
   std::vector<snu::KMuon> GetAllMuons();
   std::vector<snu::KTau> GetAllTaus();
@@ -32,7 +32,7 @@ class SNUTreeFiller : public Data, public AnalysisBase {
   snu::KEvent GetEventInfo();
   snu::KTrigger GetTriggerInfo(std::vector<TString> triglist);
   std::vector<snu::KTruth>  GetTruthParticles();
-
+  void ERRORMessage(TString comment);
   snu::KParticle::PartType partType;
   
   Int_t VertexN;

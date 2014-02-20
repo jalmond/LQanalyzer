@@ -43,9 +43,12 @@ namespace snu {
   void SetTrkVz(Double_t trkvz);
   void Setdxy(Double_t d_xy);
   void Setdz(Double_t d_z);
+  void SetElectronPassId(Int_t passid);
   
-  inline Int_t MissingHits() const {return k_missinghits;}
 
+  inline Int_t MissingHits() const {return k_missinghits;}
+  inline Int_t PassID() const {return k_passID;}
+    
   inline Bool_t isEB() const {return k_isEB;}
   inline Bool_t isEE() const {return k_isEE;}
   inline Bool_t TrackerDrivenSeed() const {return k_trackdrivenseed;}
@@ -78,12 +81,12 @@ namespace snu {
     /// decalre private functions
 
     Bool_t k_isEB,k_isEE,k_trackdrivenseed,k_chargeconstistency,k_ecaldrivenseed,k_hasmatchconvphot;
-    Int_t k_missinghits ;
+    Int_t k_missinghits,k_passID ;
     Double_t k_trkiso,k_ecaliso,k_hcaliso,k_delta_etatrkSC,k_delta_phitrkSC ;
     Double_t k_sigmaIEtaIEta,k_hoe,k_caloE,  k_cluster_over_p,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_dxy, k_dz;
 
-    ClassDef(KElectron,1)
+    ClassDef(KElectron,2)
   }; 
   
 }//namespace snu

@@ -10,7 +10,7 @@
 #pragma link C++ class LQCycleBaseNTuple+;
 #pragma link C++ class Data+;
 #pragma link C++ class LQEvent+;
-#pragma link C++ class SNUTreeFiller+;
+#pragma link C++ class SKTreeFiller+;
 #pragma link C++ class LQController+;
 #pragma link C++ class LQCycleBase+;
 #pragma link C++ class LQCycleBaseBase+;

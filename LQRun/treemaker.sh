@@ -13,7 +13,7 @@ source functions.sh
 cycle="SKTreeMaker"
 
 stream="egamma"
-njobs=30
+njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000

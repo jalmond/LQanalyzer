@@ -1,4 +1,4 @@
-#include "SNUTreeFiller.h"
+#include "SKTreeFiller.h"
 #include <stdio.h>  
 
 #include <stdlib.h>
@@ -8,14 +8,14 @@ using namespace snu;
 using namespace std;
 
 
-SNUTreeFiller::SNUTreeFiller() :Data() {
+SKTreeFiller::SKTreeFiller() :Data() {
   VertexN = -999; //// set event vertex to dummy number 
 };
 
 
-SNUTreeFiller::~SNUTreeFiller() {};
+SKTreeFiller::~SKTreeFiller() {};
 
-snu::KTrigger SNUTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
+snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
   
   if(!LQinput){
@@ -59,7 +59,7 @@ snu::KTrigger SNUTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   
 }
 
-snu::KEvent SNUTreeFiller::GetEventInfo(){
+snu::KEvent SKTreeFiller::GetEventInfo(){
  
   m_logger << DEBUG << "Filling Event" << LQLogger::endmsg;
   snu::KEvent kevent;
@@ -123,7 +123,7 @@ snu::KEvent SNUTreeFiller::GetEventInfo(){
 }
 
 
-std::vector<KTau> SNUTreeFiller::GetAllTaus(){
+std::vector<KTau> SKTreeFiller::GetAllTaus(){
   
   std::vector<KTau> taus;
   if(!LQinput){
@@ -145,7 +145,7 @@ std::vector<KTau> SNUTreeFiller::GetAllTaus(){
   return taus;
 }
 
-std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
+std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
   std::vector<KElectron> electrons;
   if(!LQinput){
@@ -163,6 +163,13 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
     
     el.SetisEB(ElectronIsEB->at(iel));
     el.SetisEE(ElectronIsEE->at(iel));
+
+    if(ElectronPassIsoPAT){
+      el.SetElectronPassId(ElectronPassIsoPAT->at(iel));
+    }
+    else{
+      el.SetElectronPassId(-999);
+    }
     el.SetTrackerDrivenSeed(ElectronHasTrackerDrivenSeed->at(iel));
     el.SetEcalDrivenSeed(ElectronHasEcalDrivenSeed->at(iel));
     el.SetPtEtaPhiE(ElectronPt->at(iel),ElectronEta->at(iel),ElectronPhi->at(iel),ElectronEnergy->at(iel));
@@ -189,7 +196,7 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
 
     }
     else if (VertexN == -999.){
-      snu::KEvent ev = SNUTreeFiller::GetEventInfo();
+      snu::KEvent ev = SKTreeFiller::GetEventInfo();
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(ev.VertexIndex()));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ev.VertexIndex()),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ev.VertexIndex()),2)));
     }
@@ -209,7 +216,13 @@ std::vector<KElectron> SNUTreeFiller::GetAllElectrons(){
   return electrons;
 }
 
-std::vector<KJet> SNUTreeFiller::GetAllJets(){
+
+void SKTreeFiller::ERRORMessage(TString comment){
+  
+  m_logger << ERROR << "SKTreeFiller had a probleming filling " << comment << ". This variable is not present in the current LQntuples." << LQLogger::endmsg;   
+}
+
+std::vector<KJet> SKTreeFiller::GetAllJets(){
 
   std::vector<KJet> jets;
   if(!LQinput){
@@ -224,78 +237,104 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
  
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
     KJet jet;
-
-    jet.SetPtEtaPhiE(PFJetPt->at(ijet), PFJetEta->at(ijet), PFJetPhi->at(ijet), PFJetEnergy->at(ijet));
-    jet.SetJetRawEnergy(PFJetEnergyRaw->at(ijet));
-    jet.SetJetRawPt(PFJetEnergyRaw->at(ijet));
+    
+    if(!(PFJetPt && PFJetEta && PFJetPhi && PFJetEnergy )) ERRORMessage("PFJetPtEtaPhi");
+    else jet.SetPtEtaPhiE(PFJetPt->at(ijet), PFJetEta->at(ijet), PFJetPhi->at(ijet), PFJetEnergy->at(ijet));
+    if(!PFJetEnergyRaw)ERRORMessage("PFJetEnergyRaw");
+    else jet.SetJetRawEnergy(PFJetEnergyRaw->at(ijet));
+    if(!PFJetEnergyRaw)ERRORMessage("PFJetEnergyRaw");
+    else jet.SetJetRawPt(PFJetEnergyRaw->at(ijet));
 
     // ID cuts
-    jet.SetJetPassLooseID(PFJetPassLooseID->at(ijet));    
-    jet.SetJetPassTightID(PFJetPassTightID->at(ijet));    
-
+    if(!(PFJetPassLooseID && PFJetPassTightID)) ERRORMessage("JetID");
+    else{
+      jet.SetJetPassLooseID(PFJetPassLooseID->at(ijet));    
+      jet.SetJetPassTightID(PFJetPassTightID->at(ijet));    
+    }
+        
     /// Jet energy fractions   
-    jet.SetJetNeutralEmEF(PFJetNeutralEmEnergyFraction->at(ijet));
-    jet.SetJetNeutralHEF(PFJetNeutralHadronEnergyFraction->at(ijet));
-    jet.SetJetChargedEmEF(PFJetChargedEmEnergyFraction->at(ijet));
-    jet.SetJetChargedHEF(PFJetChargedHadronEnergyFraction->at(ijet));
-    // NEW
-    jet.SetJetHFEMEnergyFraction(PFJetHFEMEnergyFraction->at(ijet));
-    jet.SetJetHFHadronEnergyFraction(PFJetHFHadronEnergyFraction->at(ijet));
-    jet.SetJetMuonEnergyFraction(PFJetMuonEnergyFraction->at(ijet));
-    jet.SetJetElectronEnergyFraction(PFJetElectronEnergyFraction->at(ijet));
-    jet.SetJetChargedMuEnergyFraction(PFJetChargedMuEnergyFraction->at(ijet));
-    jet.SetJetPhotonEnergyFraction(PFJetPhotonEnergyFraction->at(ijet));
-
+    if(!(PFJetNeutralEmEnergyFraction&&PFJetNeutralHadronEnergyFraction&&PFJetChargedEmEnergyFraction&&PFJetChargedHadronEnergyFraction&&PFJetHFEMEnergyFraction&&PFJetMuonEnergyFraction&&PFJetElectronEnergyFraction&&PFJetChargedMuEnergyFraction&&PFJetPhotonEnergyFraction)) ERRORMessage("JetEnergyFraction");
+    else{
+      jet.SetJetNeutralEmEF(PFJetNeutralEmEnergyFraction->at(ijet));
+      jet.SetJetNeutralHEF(PFJetNeutralHadronEnergyFraction->at(ijet));
+      jet.SetJetChargedEmEF(PFJetChargedEmEnergyFraction->at(ijet));
+      jet.SetJetChargedHEF(PFJetChargedHadronEnergyFraction->at(ijet));
+      // NEW
+      jet.SetJetHFEMEnergyFraction(PFJetHFEMEnergyFraction->at(ijet));
+      jet.SetJetHFHadronEnergyFraction(PFJetHFHadronEnergyFraction->at(ijet));
+      jet.SetJetMuonEnergyFraction(PFJetMuonEnergyFraction->at(ijet));
+      jet.SetJetElectronEnergyFraction(PFJetElectronEnergyFraction->at(ijet));
+      jet.SetJetChargedMuEnergyFraction(PFJetChargedMuEnergyFraction->at(ijet));
+      jet.SetJetPhotonEnergyFraction(PFJetPhotonEnergyFraction->at(ijet));
+    }
     /// BTAG variables
-    jet.SetJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));
-    jet.SetJetSecVertBtag(PFJetCombinedSecondaryVertexBTag->at(ijet));
-    jet.SetJetJetProbabilityBTag(PFJetJetProbabilityBTag->at(ijet));
-    //jet.SetPFJetJetBProbabilityBTag(PFJetJetBProbabilityBTag->at(ijet)); >>> WHAT IS THIS?
-    //jet.SetPFJetSoftMuonBTag(PFJetSoftMuonBTag->at(ijet));
-    //jet.SetPFJetSoftMuonByIP3dBTag(PFJetSoftMuonByIP3dBTag->at(ijet));  
-    //jet.SetPFJetSoftMuonByPtBTag(PFJetSoftMuonByPtBTag->at(ijet));    
-    //jet.PFJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));  
-    
-    /// jet tracking/vertex variables
-    jet.SetJetClosestVertW3DSep(PFJetClosestVertexWeighted3DSeparation->at(ijet));
-    jet.SetJetClosestVertexWeightedXYSeparation(PFJetClosestVertexWeightedXYSeparation->at(ijet));
-    jet.SetJetClosestVertexWeightedZSeparation(PFJetClosestVertexWeightedZSeparation->at(ijet));
-    
+    if(!(PFJetTrackCountingHighPurBTag&&PFJetCombinedSecondaryVertexBTag&&PFJetJetProbabilityBTag&&PFJetClosestVertexWeighted3DSeparation&&PFJetClosestVertexWeightedXYSeparation&&PFJetClosestVertexWeightedZSeparation))ERRORMessage("JetBtag");
+    else{
+      jet.SetJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));
+      jet.SetJetSecVertBtag(PFJetCombinedSecondaryVertexBTag->at(ijet));
+      jet.SetJetJetProbabilityBTag(PFJetJetProbabilityBTag->at(ijet));
+      //jet.SetPFJetJetBProbabilityBTag(PFJetJetBProbabilityBTag->at(ijet)); >>> WHAT IS THIS?
+      //jet.SetPFJetSoftMuonBTag(PFJetSoftMuonBTag->at(ijet));
+      //jet.SetPFJetSoftMuonByIP3dBTag(PFJetSoftMuonByIP3dBTag->at(ijet));  
+      //jet.SetPFJetSoftMuonByPtBTag(PFJetSoftMuonByPtBTag->at(ijet));    
+      //jet.PFJetTrackCountingHighPurBTag(PFJetTrackCountingHighPurBTag->at(ijet));  
+      
+      /// jet tracking/vertex variables
+      jet.SetJetClosestVertW3DSep(PFJetClosestVertexWeighted3DSeparation->at(ijet));
+      jet.SetJetClosestVertexWeightedXYSeparation(PFJetClosestVertexWeightedXYSeparation->at(ijet));
+      jet.SetJetClosestVertexWeightedZSeparation(PFJetClosestVertexWeightedZSeparation->at(ijet));
+    }
     /// Multiplicities
-    jet.SetJetChargedMultiplicity(PFJetChargedMultiplicity->at(ijet));
-    jet.SetJetNeutralMultiplicity(PFJetNeutralMultiplicity->at(ijet));
-    jet.SetJetChargedHadronMultiplicity(PFJetChargedHadronMultiplicity->at(ijet));
-    jet.SetJetElectronMultiplicity(PFJetElectronMultiplicity->at(ijet));
-    jet.SetJetHFEMMultiplicity(PFJetHFEMMultiplicity->at(ijet));
-    jet.SetJetHFHadronMultiplicity(PFJetHFHadronMultiplicity->at(ijet));
-    jet.SetJetMuonMultiplicity(PFJetMuonMultiplicity->at(ijet));
-    jet.SetJetNeutralHadronMultiplicity(PFJetNeutralHadronMultiplicity->at(ijet));
-    jet.SetJetPhotonMultiplicity(PFJetPhotonMultiplicity->at(ijet));
-    
+    if(!(PFJetChargedMultiplicity&&PFJetNeutralMultiplicity&&PFJetChargedHadronMultiplicity&&PFJetElectronMultiplicity&&PFJetHFEMMultiplicity&&PFJetHFHadronMultiplicity&&PFJetMuonMultiplicity&&PFJetNeutralHadronMultiplicity&&PFJetPhotonMultiplicity))ERRORMessage("JetMultiplicity");
+    else{
+      jet.SetJetChargedMultiplicity(PFJetChargedMultiplicity->at(ijet));
+      jet.SetJetNeutralMultiplicity(PFJetNeutralMultiplicity->at(ijet));
+      jet.SetJetChargedHadronMultiplicity(PFJetChargedHadronMultiplicity->at(ijet));
+      jet.SetJetElectronMultiplicity(PFJetElectronMultiplicity->at(ijet));
+      jet.SetJetHFEMMultiplicity(PFJetHFEMMultiplicity->at(ijet));
+      jet.SetJetHFHadronMultiplicity(PFJetHFHadronMultiplicity->at(ijet));
+      jet.SetJetMuonMultiplicity(PFJetMuonMultiplicity->at(ijet));
+      jet.SetJetNeutralHadronMultiplicity(PFJetNeutralHadronMultiplicity->at(ijet));
+      jet.SetJetPhotonMultiplicity(PFJetPhotonMultiplicity->at(ijet));
+    }
     /// Tracking
-    jet.SetJetNConstituents(PFJetNConstituents->at(ijet));
-    jet.SetJetBestVertexTrackAssociationIndex(PFJetBestVertexTrackAssociationIndex->at(ijet));
-    jet.SetJetBestVertexTrackAssociationFactor(PFJetBestVertexTrackAssociationFactor->at(ijet));
+    if(!(PFJetNConstituents&&PFJetBestVertexTrackAssociationIndex&&PFJetBestVertexTrackAssociationFactor))ERRORMessage("JetTrack");
+    else{
+      jet.SetJetNConstituents(PFJetNConstituents->at(ijet));
+      jet.SetJetBestVertexTrackAssociationIndex(PFJetBestVertexTrackAssociationIndex->at(ijet));
+      jet.SetJetBestVertexTrackAssociationFactor(PFJetBestVertexTrackAssociationFactor->at(ijet));
+    }
     
     // flavour
     jet.SetJetPartonFlavour(PFJetPartonFlavour->at(ijet));
-    
+
     /// JEC and uncertainties
     jet.SetJetJECUnc(PFJetJECUnc->at(ijet));
     jet.SetJetL1FastJetJEC(PFJetL1FastJetJEC->at(ijet));
     jet.SetJetL2L3ResJEC(PFJetL2L3ResJEC->at(ijet));
     jet.SetJetL2RelJEC(PFJetL2RelJEC->at(ijet));
     jet.SetJetL3AbsJEC(PFJetL3AbsJEC->at(ijet));
-
-    jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
-    jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
-    jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
-    jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
-    jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
-    jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
-    jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
-    jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
-
+    
+    if(PFJetScaledDownEnergy&&PFJetScaledUpEnergy&&PFJetScaledDownPt&&PFJetScaledUpPt&&PFJetSmearedDownEnergy&&PFJetSmearedUpEnergy&&PFJetSmearedDownPt&&PFJetSmearedUpPt){
+      jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
+      jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
+      jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
+      jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
+      jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
+      jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
+      jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
+      jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+    }
+    else{
+      jet.SetJetScaledDownEnergy(-999.);
+      jet.SetJetScaledUpEnergy(-999.);
+      jet.SetJetScaledDownPt(-999.);
+      jet.SetJetScaledUpPt(-999.);
+      jet.SetJetSmearedDownEnergy(-999.);
+      jet.SetJetSmearedUpEnergy(-999.);
+      jet.SetJetSmearedDownPt(-999.);
+      jet.SetJetSmearedUpPt(-999.);
+    }
     jets.push_back(jet);
   }// end of jet 
   
@@ -303,7 +342,7 @@ std::vector<KJet> SNUTreeFiller::GetAllJets(){
   return jets;
 }
 
-std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
+std::vector<KJet> SKTreeFiller::GetAllCaloJets(){
 
   m_logger << DEBUG << "Filling Cal Jets" << LQLogger::endmsg;
   std::vector<KJet> jets;
@@ -324,7 +363,7 @@ std::vector<KJet> SNUTreeFiller::GetAllCaloJets(){
   return jets;
 }
 
-std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
+std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
   std::vector<KMuon> muons ;
   if(!LQinput){
@@ -363,10 +402,10 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 	ims++;
       }
       else{
-	muon.SetMuonMSPt(0.);
-	muon.SetMuonMSEta(0.);
-	muon.SetMuonMSPhi(0.);
-	muon.SetMuonMSCharge(0);
+	muon.SetMuonMSPt(-999.);
+	muon.SetMuonMSEta(-999.);
+	muon.SetMuonMSPhi(-999.);
+	muon.SetMuonMSCharge(-999);
       }
     }
     m_logger << DEBUG << "Filling tracker ... " << LQLogger::endmsg;
@@ -410,7 +449,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
     }
     else if (VertexN == -999){
       m_logger << WARNING << "WARNING creating vector of KMuon or KElectrons without setting up KEvent " << LQLogger::endmsg;
-      snu::KEvent ev = SNUTreeFiller::GetEventInfo();
+      snu::KEvent ev = SKTreeFiller::GetEventInfo();
       muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(ev.VertexIndex()));
       muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(ev.VertexIndex()),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(ev.VertexIndex()),2)));      
     }
@@ -528,7 +567,7 @@ std::vector<KMuon> SNUTreeFiller::GetAllMuons(){
 
 
 
-std::vector<snu::KTruth>   SNUTreeFiller::GetTruthParticles(){
+std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
   m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;

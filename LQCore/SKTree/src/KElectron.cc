@@ -35,7 +35,7 @@ KParticle()
   k_trkvz=0.;
   k_dxy=0;
   k_dz=0;
-  
+  k_passID=0;
 }
 
 /**
@@ -65,6 +65,7 @@ KElectron::KElectron(const KElectron& el) :
   k_trkvz=el.TrkVz();
   k_dxy=el.dxy();
   k_dz=el.dz();
+  k_passID=el.PassID();
 }
 
 
@@ -96,6 +97,7 @@ void KElectron::Reset()
   k_trkvz=0.;
   k_dxy=0;
   k_dz=0;
+  k_passID=0;
 }
 
 
@@ -125,6 +127,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_trkvz=p.TrkVz();
     k_dxy= p.dxy();
     k_dz=p.dz();
+    k_passID=p.PassID();
   }
     
     return *this;
@@ -139,7 +142,10 @@ void KElectron::Setdxy(double d_xy){
   k_dxy = d_xy;
 }
 
-
+void KElectron::SetElectronPassId(Int_t passid){
+  k_passID = passid;
+}
+  
 
 void KElectron::SetisEB(Bool_t iseb){
   k_isEB = iseb;
