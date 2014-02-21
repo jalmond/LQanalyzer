@@ -178,7 +178,7 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
      else{
        FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
     }
-  }
+   }
   
 
   ///// SOME STANDARD PLOTS /////

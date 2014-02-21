@@ -1,12 +1,6 @@
 ### SKTrees ##########
 ##################
 ### Data#############
-#SKmuon A    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodA/
-SKmuon B    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodB/ 
-SKmuon C    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodC/
-SKmuon D    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodD/
-
-SKmuon A  /home/jalmond/SKTrees/muonA_2trig/
 
 SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodA/
 SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodB/
@@ -17,10 +11,13 @@ SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodD/
 SKDY10to50   3424.007      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY10to50/
 SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY50plus/
 SKttbar      29588.256	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/ttbar/   
-SKWW 	     182363.161       
-SKWZ 	     301122.644	
-SKZZ 	     555109.777	
+SKWW 	     182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WW/      
+SKWZ 	     301122.644	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WZ/
+SKZZ 	     555109.777	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/ZZ/
 SKWjets      1538.562	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/Wjets/
+SKW-W-	     1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WmWm/ 
+SKW+W+	     402840.451	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WpWp/
+SKWgamma     10403.722	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/Wgamma/
 
 ### LQNtuples ########################################################
 ####
@@ -32,11 +29,6 @@ egamma B   /data1/DATA/LQNtuples_5_3_8/DoubleElectronB_22Jan/
 egamma C   /data1/DATA/LQNtuples_5_3_8/DoubleElectronC_22Jan/
 egamma D   /data1/DATA/LQNtuples_5_3_8/DoubleElectronD_22Jan/
 
-muon A	 /data1/DATA/LQNtuples_5_3_8/tag13_backup/DoubleMuA_22Jan/
-muon B 	 /data1/DATA/LQNtuples_5_3_8/tag13_backup/DoubleMuB_22Jan/
-muon C 	 /data1/DATA/LQNtuples_5_3_8/tag13_backup/DoubleMuC_22Jan/
-muon D 	 /data1/DATA/LQNtuples_5_3_8/tag13_backup/DoubleMuD_22Jan/
-
 ### MC ############################################################
 # Sample	Inte.lumi(/pb)	localpath
 ##################################################################
@@ -45,6 +37,7 @@ DY50plus	8693.5		/data1/DATA/LQNtuples_5_3_8/DY_50_jets/
 ttbar		29588.256 	/data1/DATA/LQNtuples_5_3_8/ttbar/
 WZ              301122.644      /data1/DATA/LQNtuples_5_3_8/WZ_inclusive/  
 ZZ              555109.777      /data1/DATA/LQNtuples_5_3_8/ZZ_inclusive/
+WW		182363.161	/data1/DATA/LQNtuples_5_3_8/WW_inclusive/
 Wjets           1538.562        /data1/DATA/LQNtuples_5_3_8/W_jets/
 W-W-		1084518.452	/data1/DATA/LQNtuples_5_3_8/WmWm/
 W+W+		402840.451	/data1/DATA/LQNtuples_5_3_8/WpWp/

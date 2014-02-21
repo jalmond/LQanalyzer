@@ -18,6 +18,8 @@ remove="True"
 skinput="False"
 use5312ntuples="False"
 runevent=-1
+DEBUG="False"
+
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 
