@@ -1,5 +1,5 @@
 # Package information
-LIBRARY = LQCycle
+LIBRARY = LQAnalysis
 OBJDIR  = $(OBJ)
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src

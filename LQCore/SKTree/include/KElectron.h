@@ -21,9 +21,21 @@ namespace snu {
     virtual ~KElectron() ;
 
     KElectron& operator= (const KElectron& obj);
+    
+    
+    //// Setting class variables
 
-  void SetisEB(Bool_t isEB);
-  void SetisEE(Bool_t isEE);
+    // set kinematic variables
+    void SetSCEta(Double_t sceta);
+    void SetSCPhi(Double_t scphi);        
+    void SetisEB(Bool_t isEB);
+    void SetisEE(Bool_t isEE);
+    void SetisRawEnergy(Double_t rawE);
+    
+    //##### NOTE charge/pt/eta/phi use tlv class
+    
+    ////
+
   void SetTrackerDrivenSeed(Bool_t trackdrivenseed);
   void SetEcalDrivenSeed(Bool_t ecaldrivenseed);
   void SetTrkIso(Double_t trkiso);

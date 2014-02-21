@@ -50,9 +50,7 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist, "Zmuons_jlv");
-   MakeCleverHistograms(sighist, "Zmuons_jlv_60");
    MakeCleverHistograms(sighist, "Zelectrons_jlv");
-   MakeCleverHistograms(sighist, "Zelectrons_jlv_60");
    MakeCleverHistograms(sighist, "Sigmuons");
    MakeCleverHistograms(sighist, "Sigelectrons");
 
@@ -157,13 +155,9 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
 
    /// 6) Jets(with lepton veto) 
    std::vector<snu::KJet> jetColl_lepveto;
-   /// 6) Jets(with lepton veto) with 60 GeV (default for analysis is 20 at the moment)
-   std::vector<snu::KJet> jetColl_lepveto_60;
    eventbase->GetJetSel()->SetPt(20.);
    eventbase->GetJetSel()->SetEta(2.5);
    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
-   eventbase->GetJetSel()->SetPt(60.);
-   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto_60, muonTightColl, electronTightColl);
    
    ///// SOME STANDARD PLOTS /////
    ////  Z-> mumu            //////
@@ -171,9 +165,8 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    if (muonTightColl.size() == 2) {                   
      snu::KParticle Z = muonTightColl.at(0) + muonTightColl.at(1);
      if(muonTightColl.at(0).Charge() != muonTightColl.at(1).Charge()){      
-       FillHist("zpeak_mumu", Z.M(), weight);	 /// Plots Z peak
+       FillHist("zpeak_mumu", Z.M(), weight, 0., 200.,400);
        FillCLHist(sighist, "Zmuons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-       FillCLHist(sighist, "Zmuons_jlv_60", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto_60, weight);
      } 
      else{
        FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
@@ -186,10 +179,8 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    if (electronTightColl.size() == 2) {      
      snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
      if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
-       
-       FillHist("zpeak_ee", Z.M(), weight);	 /// Plots Z peak
+       FillHist("zpeak_ee", Z.M(), weight, 0., 200.,400);      
        FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-       FillCLHist(sighist, "Zelectrons_jlv_60", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto_60, weight);
      } 
      else {
        FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);

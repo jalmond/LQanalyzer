@@ -7,7 +7,7 @@
  #                                                                         #
  ###########################################################################
 
-all: sktree AnalysisCore Ntuplecore plotting selection cycle 
+all: sktree AnalysisCore Ntuplecore plotting selection analysis 
 
 sktree::
 	(cd LQCore/SKTree; make)
@@ -24,8 +24,8 @@ plotting::
 selection::
 	(cd LQCore/Selection; make)
 
-cycle::
-	(cd LQCycle; make)
+analysis::
+	(cd LQAnalysis; make)
 
 
 clean::
@@ -34,7 +34,7 @@ clean::
 	(cd LQCore/AnalysisCore; make clean)
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
-	(cd LQCycle; make clean)
+	(cd LQAnalysis; make clean)
 
 distclean::
 	(cd LQCore/SKTree; make distclean)
@@ -42,5 +42,5 @@ distclean::
 	(cd LQCore/AnalysisCore; make distclean)
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
-	(cd LQCycle; make distclean)
+	(cd LQAnalysis; make distclean)
 

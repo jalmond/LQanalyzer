@@ -12,11 +12,11 @@ source functions.sh
 ## 
 cycle="ExampleAnalyzer"
 skinput="True"
-njobs=1
+njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-declare -a input_samples=('A')
+declare -a input_samples=('DY10to50' 'DY50plus')  
 stream="muon"
 
 
