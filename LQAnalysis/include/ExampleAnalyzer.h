@@ -20,7 +20,7 @@ class ExampleAnalyzer : public AnalyzerCore {
   
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
-
+  void FillCutFlow(TString cut, float w);
  private:
   
   //

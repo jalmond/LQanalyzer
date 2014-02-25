@@ -26,11 +26,11 @@ namespace snu {
     //// Setting class variables
 
     // set kinematic variables
-    void SetSCEta(Double_t sceta);
-    void SetSCPhi(Double_t scphi);        
+    //void SetSCEta(Double_t sceta);
+    //void SetSCPhi(Double_t scphi);        
     void SetisEB(Bool_t isEB);
     void SetisEE(Bool_t isEE);
-    void SetisRawEnergy(Double_t rawE);
+    //void SetisRawEnergy(Double_t rawE);
     
     //##### NOTE charge/pt/eta/phi use tlv class
     

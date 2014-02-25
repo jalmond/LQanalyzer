@@ -94,7 +94,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libNtuplecore.so");\n'
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
-    config+='   gSystem->Load("libLQCycle.so");\n'
+    config+='   gSystem->Load("libLQAnalysis.so");\n'
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'
     config+='   TString filename = "' + input + '";\n'

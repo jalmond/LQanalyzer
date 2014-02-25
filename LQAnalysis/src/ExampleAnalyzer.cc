@@ -62,29 +62,39 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
 
    m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
    m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
-
+   
+   FillCutFlow("NoCut", weight);
    if(!PassBasicEventCuts()) return;     /// Initial event cuts  
+   
+   FillCutFlow("EventCut", weight);
+      
    /// Trigger List (specific to muons channel)
    std::vector<TString> triggerslist;
-   triggerslist.push_back("HLT_Mu17_TkMu8_v");
-   m_logger << DEBUG << "Trigger = " << PassTrigger(triggerslist, prescale) << LQLogger::endmsg;
+   //triggerslist.push_back("HLT_Mu17_TkMu8_v");
+   triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
+   
    if(!PassTrigger(triggerslist, prescale)) return;
+
+   FillCutFlow("TriggerCut", weight);
    /// Correct MC for pileup
+   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
    
    numberVertices = eventbase->GetEvent().nVertices();   
 
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
+
+   FillCutFlow("VertexCut", weight);
+
+   FillHist("h_nvtx_norw_ee", numberVertices, weight, 0., 60.,60); 
    
    if (MC_pu&&!k_isdata) {
      /// Here is an alternative method to Fill a histogram. 
      /// The histogram with name "h_nvtx_norw"/"h_nvtx_rw" were not declared in the MakeHistogram code. 
-     /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx
-     
-     FillHist("h_nvtx_norw", numberVertices, weight, 0., 60.,60); 
+     /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx          
      weight = weight*reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
-     FillHist("h_nvtx_rw",numberVertices,weight, 0., 60.,60 );      
    }
-   
+
+   FillHist("h_nvtx_rw_ee",numberVertices,weight, 0., 60.,60 );
    
    //////////////////////////////////////////////////////
    //////////// Select objetcs
@@ -146,7 +156,7 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    
    /// 5) TightElectrons                                                                                                                                                     
    std::vector<snu::KElectron> electronTightColl;
-   eventbase->GetElectronSel()->SetPt(20);
+   eventbase->GetElectronSel()->SetPt(25);
    eventbase->GetElectronSel()->SetEta(2.5);
    eventbase->GetElectronSel()->SetRelIso(0.15);
    eventbase->GetElectronSel()->SetBSdxy(0.02);
@@ -179,6 +189,8 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    if (electronTightColl.size() == 2) {      
      snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
      if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
+       FillHist("h_nvtx_rw_tight_ee",numberVertices,weight, 0., 60.,60 );
+       FillCutFlow("DiEl_tight",weight);
        FillHist("zpeak_ee", Z.M(), weight, 0., 200.,400);      
        FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
      } 
@@ -226,6 +238,26 @@ ExampleAnalyzer::~ExampleAnalyzer() {
   
 }
 
+
+void ExampleAnalyzer::FillCutFlow(TString cut, float weight){
+
+  
+  if(GetHist("cutflow")) {
+    GetHist("cutflow")->Fill(cut,weight);
+   
+  }
+  else{
+    AnalyzerCore::MakeHistograms("cutflow", 5,0.,5.);
+
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"EventCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"TriggerCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"VertexCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"DiEl_tight");
+   
+    
+  }
+}
 
 
 void ExampleAnalyzer::BeginEvent( )throw( LQError ){

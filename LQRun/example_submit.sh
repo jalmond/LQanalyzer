@@ -16,8 +16,8 @@ njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-declare -a input_samples=('DY10to50' 'DY50plus')  
-stream="muon"
+declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
+stream="egamma"
 
 
 #declare -a input_samples=('DY50plus:runevent:57156031:remove:true') #'B' 'C' 'D')

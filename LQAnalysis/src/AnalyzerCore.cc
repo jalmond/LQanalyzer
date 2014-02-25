@@ -23,7 +23,7 @@
 
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
-
+  TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
   // If running on LQNtuples this is not important.
@@ -243,12 +243,14 @@ bool AnalyzerCore::PassBasicEventCuts(){
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins){
   
+  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  
   else{
     if (nbins < 0) {
       m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
       exit(0);
     }
+    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
     m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
     MakeHistograms(histname, nbins, xmin, xmax);
     if(GetHist(histname)) GetHist(histname)->Fill(value, w);
