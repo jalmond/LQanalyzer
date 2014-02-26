@@ -70,7 +70,7 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
       
    /// Trigger List (specific to muons channel)
    std::vector<TString> triggerslist;
-   //triggerslist.push_back("HLT_Mu17_TkMu8_v");
+   triggerslist.push_back("HLT_Mu17_TkMu8_v");
    triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
    
    if(!PassTrigger(triggerslist, prescale)) return;
