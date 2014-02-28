@@ -41,7 +41,10 @@ elif [[ $1  == "--help"  || $1  == "--h" ]]; then
     echo "Checking options"
     python ${LQANALYZER_DIR}/python/localsubmit.py $1
 else 
-    echo "Command not recognised. You need:" 
-    echo "source example_script.sh (--help/--h) "
+    for i in ${input_samples[@]}
+    do
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${DEBUG}
+    done
+
 fi
 

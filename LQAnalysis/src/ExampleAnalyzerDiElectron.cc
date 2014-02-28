@@ -23,7 +23,7 @@ ClassImp (ExampleAnalyzerDiElectron);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-ExampleAnalyzerDiElectron::ExampleAnalyzerDiElectron() :  AnalyzerCore(), out_muons(0), out_electrons(0) {
+ExampleAnalyzerDiElectron::ExampleAnalyzerDiElectron() :  AnalyzerCore(),  out_electrons(0) {
 
 
   // To have the correct name in the log:                                                                                                                            
@@ -49,11 +49,9 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
 
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-   MakeCleverHistograms(sighist, "Zmuons_jlv");
-   MakeCleverHistograms(sighist, "Zelectrons_jlv");
-   MakeCleverHistograms(sighist, "Sigmuons");
-   MakeCleverHistograms(sighist, "Sigelectrons");
-
+   MakeCleverHistograms(sighist, "DiElectron");
+   MakeCleverHistograms(sighist, "DiElectronLooseVeto");
+   
    return;
 }
 
@@ -115,32 +113,17 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-  
-  /// 1) Loose Muons for veto
-  /// 2) TightElectrons
-  /// 3) Tight Muons (for jet veto)
+  /// We want to select events with 2 medium electrons (we will also remove events with a looser third muon to show how it is done)
+  /// We will use 4 different object collections
+  /// 1) Tight Electrons
+  /// 2) Loose Electrons for veto (can veto events with a third loose el)
+  /// 3) Tight Muons (for PFjet veto)
   /// 4) Jets(with lepton veto)
   
-  /// 1) Loose Muons for veto
-  std::vector<snu::KMuon> muonVetoColl;
-  /// Lower pt cut to 10
-  eventbase->GetMuonSel()->SetPt(10.);
-  eventbase->GetMuonSel()->SetEta(2.4);
-  // Use LOOSE definition from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Loose_Muon
-  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_LOOSE);
-  // Use loose isolation https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation_AN1
-  // Note we use PF based isolation
-  //(∑ET(chHad from PV)+∑ET(neutHad)+∑ET(photons))/pT
-  // Default is 0.12 for Tight and 0.2 for loose.. However this is with 0.4 cone. We use 0.3 cone
-  eventbase->GetMuonSel()->SetRelIso(0.20);
-  /// These following cuts are essentially large to be extremely loose
-  eventbase->GetMuonSel()->SetChiNdof(500.);
-  eventbase->GetMuonSel()->SetBSdxy(2000.);
-  eventbase->GetMuonSel()->SetBSdz(100.00);
-  eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
-  eventbase->GetMuonSel()->Selection(muonVetoColl);
-  
-  /// 2) TightElectrons                                                                                                                                                     
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  /// 1) TightElectrons                                                                                                                                                     
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
   std::vector<snu::KElectron> electronTightColl;
   
   //// CHOICE OF ELECTRON ID /////////////////////
@@ -185,7 +168,26 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Use the selection function to fill our empty vector with the cuts specified above
   eventbase->GetElectronSel()->Selection(electronTightColl);
   
+  
+  
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  /// 2) Loose Electrons
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  std::vector<snu::KElectron> electronVetoColl;
+  /// Use VETO definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
+  // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter
+  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_VETO);
+  /// Lower pt for veto
+  eventbase->GetElectronSel()->SetPt(10.);
+  eventbase->GetElectronSel()->SetEta(2.5);
+  eventbase->GetElectronSel()->SetRelIso(0.15);
+  eventbase->GetElectronSel()->Selection(electronVetoColl);
+  
+  ///////////////////////////////////////////////////////////////////////////////////////////
   /// 3) Tight Muons
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
   std::vector<snu::KMuon> muonTightColl;
   eventbase->GetMuonSel()->SetPt(20.);
   /// ID are explained in https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
@@ -209,8 +211,10 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
   eventbase->GetMuonSel()->Selection(muonTightColl);
   
-  
+  ///////////////////////////////////////////////////////////////////////////////////////////
   /// 4) Jets(with lepton veto) 
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
   std::vector<snu::KJet> jetColl_lepveto;
   /// We use PFJets : AKT jets with dR=0.5
   /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
@@ -245,11 +249,13 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       FillHist("h_nvtx_rw_tight_ee",numberVertices,weight, 0., 60.,60 );
       FillCutFlow("DiEl_tight",weight);
       FillHist("zpeak_ee", Z.M(), weight, 0., 200.,400);      
-      FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-    } 
-    else {
-      FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-    }
+      FillCLHist(sighist, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+
+      if(electronVetoColl.size()==2){
+	FillCLHist(sighist, "DiElectron_LooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+      }
+    }// OS 
+    
   }
   
   return;
