@@ -173,7 +173,7 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    eventbase->GetJetSel()->SetPt(20.);
    eventbase->GetJetSel()->SetEta(2.5);
    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
-   
+
    ///// SOME STANDARD PLOTS /////
    ////  Z-> mumu            //////
 

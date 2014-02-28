@@ -38,7 +38,7 @@ class SKTreeFiller : public Data, public AnalysisBase {
   Int_t VertexN;
   Bool_t *goodVerticies;
   
-  static bool isHigherPt(snu::KParticle p1, snu::KParticle p2){ return (p1 < p2);}
+  static bool isHigherPt(snu::KParticle p1, snu::KParticle p2){ return (p1 > p2);}
 
 };
 

@@ -31,6 +31,7 @@ KEvent::KEvent() :
   k_isTrackingFailure(false),
   k_passTrackingFailureFilter(false),
   k_passBeamHaloFilterLoose(false),
+  k_passBeamHaloFilterTight(false),
   k_passBadEESupercrystalFilter(false),
   k_passEcalDeadCellBoundaryEnergyFilter(false),
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
@@ -65,6 +66,7 @@ KEvent::KEvent(const KEvent& ev) :
   k_isTrackingFailure(ev.k_isTrackingFailure),
   k_passTrackingFailureFilter(ev.k_passTrackingFailureFilter),
   k_passBeamHaloFilterLoose(ev.k_passBeamHaloFilterLoose),
+  k_passBeamHaloFilterTight(ev.k_passBeamHaloFilterTight),
   k_passBadEESupercrystalFilter(ev.k_passBadEESupercrystalFilter),
   k_passEcalDeadCellBoundaryEnergyFilter(ev.k_passEcalDeadCellBoundaryEnergyFilter),
   k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
@@ -120,6 +122,7 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_isTrackingFailure = p.IsTrackingFailure();
       k_passTrackingFailureFilter = p.PassTrackingFailureFilter();
       k_passBeamHaloFilterLoose = p.PassBeamHaloFilterLoose();
+      k_passBeamHaloFilterTight = p.PassBeamHaloFilterTight();
       k_passBadEESupercrystalFilter = p.PassBadEESupercrystalFilter();
       k_passEcalDeadCellBoundaryEnergyFilter = p.PassEcalDeadCellBoundaryEnergyFilter();
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
@@ -145,6 +148,9 @@ void KEvent::SetPassBeamHaloFilterLoose(bool pass){
   k_passBeamHaloFilterLoose = pass;
 }
 
+void KEvent::SetPassBeamHaloFilterTight(bool pass){
+  k_passBeamHaloFilterTight = pass;
+}
 
 void KEvent::SetPassBadEESupercrystalFilter(bool pass){
   k_passBadEESupercrystalFilter = pass;

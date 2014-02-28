@@ -110,6 +110,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetIsTrackingFailure(isTrackingFailure);
   kevent.SetPassTrackingFailureFilter(passTrackingFailureFilter);
   kevent.SetPassBeamHaloFilterLoose(passBeamHaloFilterLoose);
+  if(passBeamHaloFilterTight)kevent.SetPassBeamHaloFilterTight(passBeamHaloFilterTight);
   kevent.SetPassBadEESupercrystalFilter(passBadEESupercrystalFilter);
   kevent.SetPassEcalDeadCellBoundaryEnergyFilter(passEcalDeadCellBoundaryEnergyFilter);
   kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(passEcalDeadCellTriggerPrimitiveFilter);
@@ -340,6 +341,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     electrons.push_back(el);
   }
   
+  
   std::sort( electrons.begin(), electrons.end(), isHigherPt );
 
 
@@ -468,7 +470,10 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jets.push_back(jet);
   }// end of jet 
   
+  
   std::sort( jets.begin(), jets.end(), isHigherPt );
+  
+  
   return jets;
 }
 

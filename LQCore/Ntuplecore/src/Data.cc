@@ -882,6 +882,7 @@ void Data::ConnectEvent(){
   ConnectVariable("Weight", Weight, b_Weight);
   ConnectVariable("isPhysDeclared", isPhysDeclared, b_isPhysDeclared);
   ConnectVariable("isPrimaryVertex", isPrimaryVertex, b_isPrimaryVertex);
+
   ConnectVariable("isTrackingFailure", isTrackingFailure, b_isTrackingFailure);
   ConnectVariable("passHBHENoiseFilter", passHBHENoiseFilter, b_passHBHENoiseFilter);
   ConnectVariable("passBadEESupercrystalFilter", passBadEESupercrystalFilter, b_passBadEESupercrystalFilter);
@@ -889,6 +890,9 @@ void Data::ConnectEvent(){
   ConnectVariable("passEcalDeadCellBoundaryEnergyFilter", passEcalDeadCellBoundaryEnergyFilter, b_passEcalDeadCellBoundaryEnergyFilter);
   ConnectVariable("passEcalDeadCellTriggerPrimitiveFilter", passEcalDeadCellTriggerPrimitiveFilter, b_passEcalDeadCellTriggerPrimitiveFilter);
   ConnectVariable("passEcalLaserCorrFilter", passEcalLaserCorrFilter, b_passEcalLaserCorrFilter);
+  ConnectVariable("passTrackingFailureFilter", passTrackingFailureFilter, b_passTrackingFailureFilter);
+  ConnectVariable("passBeamHaloFilterTight", passBeamHaloFilterTight, b_passBeamHaloFilterTight);
+  
   ConnectVariable("VertexIsFake", VertexIsFake, b_VertexIsFake);
   ConnectVariable("VertexChi2", VertexChi2, b_VertexChi2);
   ConnectVariable("VertexNDF", VertexNDF, b_VertexNDF);
@@ -1362,13 +1366,12 @@ void Data::ConnectAllBranches(){
   ConnectVariable("isBSCBeamHalo", isBSCBeamHalo);
   ConnectVariable("isBSCMinBias", isBSCMinBias);
   ConnectVariable("isBeamScraping", isBeamScraping);
-  ConnectVariable("passBeamHaloFilterTight", passBeamHaloFilterTight);
+  
   ConnectVariable("passCaloBoundaryDRFilter", passCaloBoundaryDRFilter);
   ConnectVariable("passEcalMaskedCellDRFilter", passEcalMaskedCellDRFilter);
   ConnectVariable("passLogErrorTooManyClusters", passLogErrorTooManyClusters);
   ConnectVariable("passManyStripClus53X", passManyStripClus53X);
   ConnectVariable("passTooManyStripClus53X", passTooManyStripClus53X);
-  ConnectVariable("passTrackingFailureFilter", passTrackingFailureFilter);
   ConnectVariable("hasVeryForwardPFMuon", hasVeryForwardPFMuon);
   ConnectVariable("hasJetWithBadUnc", hasJetWithBadUnc);
 

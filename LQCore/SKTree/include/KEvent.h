@@ -41,6 +41,7 @@ namespace snu {
     void SetIsTrackingFailure(bool fail);
     void SetPassTrackingFailureFilter(bool pass) ;
     void SetPassBeamHaloFilterLoose(bool pass);
+    void SetPassBeamHaloFilterTight(bool pass);
     void SetPassBadEESupercrystalFilter(bool pass);
     void SetPassEcalDeadCellBoundaryEnergyFilter(bool pass);
     void SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass);
@@ -69,6 +70,7 @@ namespace snu {
     inline Bool_t IsTrackingFailure() const {return k_isTrackingFailure ;}
     inline Bool_t   PassTrackingFailureFilter() const {return  k_passTrackingFailureFilter ;}
     inline Bool_t   PassBeamHaloFilterLoose() const {return   k_passBeamHaloFilterLoose;}
+    inline Bool_t   PassBeamHaloFilterTight() const {return   k_passBeamHaloFilterTight;}
     inline Bool_t   PassBadEESupercrystalFilter() const {return  k_passBadEESupercrystalFilter ;}
     inline Bool_t   PassEcalDeadCellBoundaryEnergyFilter() const {return  k_passEcalDeadCellBoundaryEnergyFilter ;}
     inline Bool_t   PassEcalDeadCellTriggerPrimitiveFilter() const {return   k_passEcalDeadCellTriggerPrimitiveFilter;}
@@ -88,11 +90,11 @@ namespace snu {
     Int_t k_EventNumber, k_RunNumber,k_nvertices, k_ivertex;
     Double_t k_MET, k_vertexX,k_vertexY,k_vertexZ, k_METphi, k_jetrho, k_mcweight;
     Bool_t k_isfakeV, k_isgoodevent,k_isData, k_isprimaryvertex;
-    Bool_t k_isTrackingFailure, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
+    Bool_t k_isTrackingFailure, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,2)
+    ClassDef(KEvent,3)
   }; 
   
 }//namespace snu

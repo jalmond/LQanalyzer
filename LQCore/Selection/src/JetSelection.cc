@@ -35,10 +35,18 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
-    if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
-	 fabs(jit->Eta()) < eta_cut
-	 && jit->PassLooseID()
-	 && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
+    if(apply_ID) {
+      if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
+	   fabs(jit->Eta()) < eta_cut
+	   && jit->PassLooseID()
+	   && PassUserID(k_id, *jit))  jetColl.push_back(*jit);
+    }
+    else{
+      if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
+	   fabs(jit->Eta()) < eta_cut
+	   && jit->PassLooseID()
+	   && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
+    }
   }
 }
 

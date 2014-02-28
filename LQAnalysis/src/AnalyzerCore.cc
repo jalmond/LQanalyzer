@@ -316,16 +316,31 @@ void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xm
 }
 
 bool AnalyzerCore::PassBasicEventCuts(){
-
+  
   bool pass (true);
-
-  if (eventbase->GetEvent().IsTrackingFailure() || eventbase->GetEvent().PassTrackingFailureFilter()) pass = false;
-  if (!eventbase->GetEvent().PassBeamHaloFilterLoose()) pass = false;
-  if (eventbase->GetEvent().PassBadEESupercrystalFilter() || 
-      eventbase->GetEvent().PassEcalDeadCellBoundaryEnergyFilter() || 
-      eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter() || 
-      eventbase->GetEvent().PassEcalLaserCorrFilter()) pass = false;
-  if (!eventbase->GetEvent().PassHBHENoiseFilter()) pass = false; // || passHcalLaserEventFilter) continue;                            
+  
+  ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
+  /// The recommendations of the MET group regarding noise cleaning are summarized in the talk https://indico.cern.ch/getFile.py/access?subContId=1&contribId=4&resId=0&materialId=slides&confId=172431
+  
+  //CSC tight beam halo filter
+  if (!eventbase->GetEvent().PassBeamHaloFilterTight()) pass = false;
+  //if (!eventbase->GetEvent().PassBeamHaloFilterLoose()) pass = false;
+  //HBHE noise filter with isolated noise rejection
+  if (!eventbase->GetEvent().PassHBHENoiseFilter()) pass = false; 
+  //HCAL laser filter (post-ICHEP: updated to reduce over-tagging rate in channels with low Bias Voltage)
+  
+  //ECAL dead cell trigger primitive (TP) filter
+  if(eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) pass = false;
+  if(  eventbase->GetEvent().PassEcalDeadCellBoundaryEnergyFilter()) pass = false;
+  //Tracking failure filter
+  if (eventbase->GetEvent().IsTrackingFailure()) pass = false;
+  //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
+  if (eventbase->GetEvent().PassBadEESupercrystalFilter()) pass = false;
+  //ECAL Laser correction filter (only mandatory for 53X rereco of 2012A+B, i.e., Jul13 rereco; An optional filter for 2012C prompt reco Mandatory for Jan2013 ReReco)
+  if(eventbase->GetEvent().PassEcalLaserCorrFilter()) pass = false;
+  //Tracking POG filters (new. Only work on AOD >=53X)
+  if(eventbase->GetEvent().PassTrackingFailureFilter())pass = false;
+  
   return pass;
 }
 
