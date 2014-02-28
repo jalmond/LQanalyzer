@@ -21,7 +21,7 @@ ClassImp (SKTreeMaker);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), out_jets(0){
+SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), out_jets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMaker");
@@ -30,34 +30,52 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
+  FillCutFlow("NoCut", 1);
+
   if(!PassBasicEventCuts()) throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  FillCutFlow("EventCut", 1);
   
   std::vector<TString> triggerslist;
   triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
-  //if(!PassTrigger(triggerslist, prescale)) throw LQError( "Fails trigger",  LQError::SkipEvent );
+
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) throw LQError( "Has no PV",  LQError::SkipEvent );
- 
+  FillCutFlow("VertexCut", 1);
+
  
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
+  std::vector<snu::KMuon> skim_muons;
   eventbase->GetMuonSel()->SetPt(15); 
-  eventbase->GetMuonSel()->SetEta(2.4);
-  eventbase->GetMuonSel()->Selection(out_muons);
-    
+  eventbase->GetMuonSel()->SetEta(5.);
+  eventbase->GetMuonSel()->BasicSelection(out_muons); /// Muons For SKTree
+  /// Selection for event skim
+  eventbase->GetMuonSel()->SetPt(15);
+  eventbase->GetMuonSel()->SetEta(2.5);
+  eventbase->GetMuonSel()->SkimSelection(skim_muons);
+  
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
-  eventbase->GetJetSel()->Selection(out_jets);
+  eventbase->GetJetSel()->BasicSelection(out_jets);
   
-  std::vector<snu::KElectron> electronColl;
+
+  std::vector<snu::KElectron> skim_electrons;
   eventbase->GetElectronSel()->SetPt(15); 
-  eventbase->GetElectronSel()->SetEta(2.5); 
-  eventbase->GetElectronSel()->Selection(out_electrons); 
-
-  out_event = eventbase->GetEvent();
+  eventbase->GetElectronSel()->SetEta(5.); 
+  eventbase->GetElectronSel()->BasicSelection(out_electrons); 
+  eventbase->GetElectronSel()->SetPt(15);
+  eventbase->GetElectronSel()->SetEta(2.5);
+  eventbase->GetElectronSel()->SkimSelection(skim_electrons);
+  
+  int nlep = skim_electrons.size() + skim_muons.size();
+  if(nlep < 2) throw LQError( "Not DiLepton Event",  LQError::SkipEvent );
+  FillCutFlow("DiLep", 1);
+  
+  out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
-
+  out_truth   = eventbase->GetTruth();
+  
   return;
 }// End of execute event loop
   
@@ -79,8 +97,8 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   DeclareVariable(out_jets, "KJets");
   DeclareVariable(out_trigger, "KTrigger");
   DeclareVariable(out_event, "KEvent");
+  DeclareVariable(out_truth, "KTruth");
 
-  
   return;
   
 }
@@ -89,6 +107,24 @@ SKTreeMaker::~SKTreeMaker() {
   
   Message("In Analyzer Destructor" , INFO);
   
+}
+
+
+void SKTreeMaker::FillCutFlow(TString cut, float weight){
+
+
+  if(GetHist("cutflow")) {
+    GetHist("cutflow")->Fill(cut,weight);
+
+  }
+  else{
+    AnalyzerCore::MakeHistograms("cutflow", 4,0.,4.);
+
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"VertexCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"DiLep");
+  }
 }
 
 
@@ -108,6 +144,7 @@ void SKTreeMaker::ClearOutputVectors() throw (LQError){
   out_muons.clear();
   out_electrons.clear();
   out_jets.clear();
+  out_truth.clear();
 
 }
 

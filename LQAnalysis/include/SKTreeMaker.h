@@ -20,7 +20,7 @@ class SKTreeMaker : public AnalyzerCore {
   virtual void EndCycle()throw( LQError );
   virtual void ClearOutputVectors()throw( LQError );
 
-
+  void FillCutFlow(TString cut, float weight);
  private:
   
   //
@@ -30,10 +30,15 @@ class SKTreeMaker : public AnalyzerCore {
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
   std::vector<snu::KJet> out_jets;
+  std::vector<snu::KTruth> out_truth;
   snu::KEvent out_event;
   snu::KTrigger out_trigger;
 
+  int pass_eventcut;
+  int nevents;
+  int pass_vertexcut;
 
-  ClassDef ( SKTreeMaker, 1);
+
+  ClassDef ( SKTreeMaker, 2);
 };
 #endif

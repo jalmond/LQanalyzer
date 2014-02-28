@@ -27,7 +27,6 @@ namespace snu {
     
     void SetPtErr(double pterror);
     void SetEtaErr(double etaerror);
-    void SetRelIso(double reliso);
     void SetISOR03ChargedHad(double isor03ch );
     void SetISOR03NeutralHad(double isor03n );
     void SetISOR03Photon(double isor03ph );
@@ -50,6 +49,7 @@ namespace snu {
     void SetLayersWithMeasurement(int layer_with_meas);
     void SetISPF(int ispf);
     void SetIsGlobal(int isglobal);
+    void SetIsTracker(int istracker);
     void SetMuonMatchedGenParticlePt(double muonmatch_genpt);
     void SetMuonMatchedGenParticlePhi(double muonmatch_genphi);
     void SetMuonMatchedGenParticleEta(double muonmatch_geneta);
@@ -69,6 +69,7 @@ namespace snu {
 
     inline Int_t IsPF() const {return k_muon_ispf;}
     inline Int_t IsGlobal() const {return k_muon_isglobal;}
+    inline Int_t IsTracker() const {return k_muon_istracker;}
     inline Int_t validHits() const {return k_muon_valid_hits;}
     inline Int_t validPixHits() const {return k_muon_valid_pixhits;}
     inline Int_t validStations() const {return k_muon_valid_stations;}
@@ -79,15 +80,15 @@ namespace snu {
     inline Double_t MuonMatchedGenParticleEta() const {return k_muongen_eta;}
     inline Double_t MuonMatchedGenParticlePhi() const {return k_muongen_phi;}
       
-    inline Double_t RelIso() const {return k_reliso;}
     inline Double_t PtError() const {return k_pterror;}
     inline Double_t EtaError() const {return k_etaerror;}
-    inline Double_t IsoR03ch() const {return k_isor03ch;} /// charged hadron
-    inline Double_t IsoR03nh() const {return k_isor03n;} /// neutral hadron
-    inline Double_t IsoR03ph() const {return k_isor03ph;} /// photon
+
+    inline Double_t SumIsoCHDR03() const {return k_isor03ch;} /// charged hadron
+    inline Double_t SumIsoNHDR03() const {return k_isor03n;} /// neutral hadron
+    inline Double_t SumIsoPHDR03() const {return k_isor03ph;} /// photon
     inline Double_t IsoEcalVeto() const {return k_isoEcalveto;}
     inline Double_t IsoHcalVeto() const {return k_isoHcalveto;}
-    inline Double_t PFPUIsoR03() const {return k_MuonPFIsoR03PU;}
+    inline Double_t SumPUIsoR03() const {return k_MuonPFIsoR03PU;}
     inline Double_t muonVtx() const {return k_muonVtx;}
     inline Double_t muonVty() const {return k_muonVty;}
     inline Double_t muonVtz() const {return k_muonVtz;}
@@ -125,12 +126,12 @@ namespace snu {
     Double_t k_isoEcalveto , k_isoHcalveto , k_MuonPFIsoR03PU, k_muonVtx, k_muonVty, k_muonVtz,k_muongen_pt,k_muongen_eta,k_muongen_phi;
     Double_t k_dz, k_dxy , k_d0, k_d0err, k_globmuon_chi2,  k_dxy_pat,  k_dxyerr_pat,k_vtxdistxy,k_reliso;
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
-    Int_t k_muon_ispf, k_muon_isglobal;
+    Int_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
     Int_t i_muonVtx;
     Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,1)
+    ClassDef(KMuon,2)
   };   
 }//namespace snu
 

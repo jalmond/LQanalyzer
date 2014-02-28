@@ -31,16 +31,16 @@ void ElectronPlots::Fill(Double_t weight, std::vector<snu::KElectron> el, double
   for(std::vector<snu::KElectron>::iterator elit = el.begin(); elit!=el.end(); elit++,iel++){
 
     Int_t ifid = (fabs(elit->Eta()) < 1.479) ? 0 : 1;
-    Double_t ElTkIso   = elit->TrkIso() - AreaTrackerEle[ifid] * rho;
-    Double_t ElEcalIso = elit->ECalIso() - AreaEcalEle[ifid]  * rho;
-    Double_t ElHcalIso = elit->HCalIso() - AreaHcalEle[ifid] * rho;
+    Double_t ElTkIso   = elit->TrkIsoDR03() - AreaTrackerEle[ifid] * rho;
+    Double_t ElEcalIso = elit->ECalIsoDR03() - AreaEcalEle[ifid]  * rho;
+    Double_t ElHcalIso = elit->HCalIsoDR03() - AreaHcalEle[ifid] * rho;
 
     Fill("h_charge", elit->Charge(), weight);
-    Fill("h_HCalIso",elit->HCalIso() , weight);
-    Fill("h_ECalIso",elit->ECalIso() , weight);
-    Fill("h_TrkIso",elit->TrkIso() , weight);
+    Fill("h_HCalIso",elit->HCalIsoDR03() , weight);
+    Fill("h_ECalIso",elit->ECalIsoDR03() , weight);
+    Fill("h_TrkIso",elit->TrkIsoDR03() , weight);
     if (elit->Pt()>0.01) {
-      Fill("h_Detector_RelIso", (elit->HCalIso()+elit->ECalIso()+elit->TrkIso()) / max(elit->Pt(),20.0) , weight);
+      Fill("h_Detector_RelIso", (elit->HCalIsoDR03()+elit->ECalIsoDR03()+elit->TrkIsoDR03()) / max(elit->Pt(),20.0) , weight);
       Fill("h_Detector_RelIsorho", (ElTkIso+ElEcalIso+ElHcalIso) / elit->Pt() , weight);
     }
     else {

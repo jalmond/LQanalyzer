@@ -22,69 +22,178 @@ namespace snu {
 
     KElectron& operator= (const KElectron& obj);
     
-    
+   
     //// Setting class variables
 
     // set kinematic variables
-    //void SetSCEta(Double_t sceta);
-    //void SetSCPhi(Double_t scphi);        
+    void SetSCEta(Double_t sceta);
+    void SetSCPhi(Double_t scphi);        
     void SetisEB(Bool_t isEB);
     void SetisEE(Bool_t isEE);
-    //void SetisRawEnergy(Double_t rawE);
+    void SetRawEnergy(Double_t rawE);
     
     //##### NOTE charge/pt/eta/phi use tlv class
     
-    ////
+    //// set EGamma bits
+    void SetPassEGammaIDEoP(bool eop);
+    void SetPassEGammaIDLoose(bool loose);
+    void SetPassEGammaIDMedium(bool med);
+    void SetPassEGammaIDTight(bool tight);
+    void SetPassEGammaIDTrigTight(bool trigtight);
+    void SetPassEGammaIDTrigWP70(bool trigwp70);
+    void SetPassEGammaIDVeto(bool veto);
+     
+    /// set ID variables
+    void SetElectronPassId(Int_t passid);
+    void SetTrackerDrivenSeed(Bool_t trackdrivenseed);
+    void SetEcalDrivenSeed(Bool_t ecaldrivenseed);
+    void SetDeltaEtaTrkSC(Double_t delta_etatrkSC);
+    void SetDeltaPhiTrkSC(Double_t delta_phitrkSC);
+    void SetSigmaIEtaIEta(Double_t sigmaIEtaIEta);
+    void SetHoE(Double_t hoe);
+    void SetcaloEnergy(Double_t caloE);
+    void SetESuperClusterOverP(Double_t E_cluster_over_p);
 
-  void SetTrackerDrivenSeed(Bool_t trackdrivenseed);
-  void SetEcalDrivenSeed(Bool_t ecaldrivenseed);
-  void SetTrkIso(Double_t trkiso);
-  void SetECalIso(Double_t ecaliso);  
-  void SetHCalIso(Double_t hcaliso);
-  void SetChargeConsistency(Bool_t chargeconsistency);
-  void SetMissingHits(Int_t missinghits); 
-  void SetHasMatchedConvPhot(Bool_t hasmatchConvPhot);
-  void SetDeltaEtaTrkSC(Double_t delta_etatrkSC); 
-  void SetDeltaPhiTrkSC(Double_t delta_phitrkSC);
-  void SetSigmaIEtaIEta(Double_t sigmaIEtaIEta);
-  void SetHoE(Double_t hoe);
-  void SetcaloEnergy(Double_t caloE);
-  void SetSuperClusterOverP(Double_t cluster_over_p);
-  void SetTrkVx(Double_t trkvx);
-  void SetTrkVy(Double_t trkvy);
-  void SetTrkVz(Double_t trkvz);
-  void Setdxy(Double_t d_xy);
-  void Setdz(Double_t d_z);
-  void SetElectronPassId(Int_t passid);
-  
 
-  inline Int_t MissingHits() const {return k_missinghits;}
-  inline Int_t PassID() const {return k_passID;}
+    //// set   vertex variables
+    void SetVtxIndex (Int_t vtx_index);
+    void SetVtxDistXY(Double_t vtx_dist_xy);
+    void SetVtxDistZ(Double_t vtx_dist_z);
+    void Setdxy(Double_t d_xy);
+    void Setdz(Double_t d_z);
+    void SetPrimaryVertexDXY(Double_t pv_dist_xy);
+    void SetPrimaryVertexDXYError(Double_t pv_dist_xy_error);
     
-  inline Bool_t isEB() const {return k_isEB;}
-  inline Bool_t isEE() const {return k_isEE;}
-  inline Bool_t TrackerDrivenSeed() const {return k_trackdrivenseed;}
-  inline Bool_t EcalDrivenSeed() const {return k_ecaldrivenseed;}
-  inline Bool_t ChargeConsistency() const {return k_chargeconstistency;}
-  inline Bool_t HasMatchedConvPhot() const {return k_hasmatchconvphot;}
+    
+    /// set ISO variables
+    void SetTrkIsoDR03(Double_t trkiso);
+    void SetECalIsoDR03(Double_t ecaliso);  
+    void SetHCalIsoDR03(Double_t hcaliso);
+    void SetPFChargedHadronIso03(Double_t pf_ch_03);
+    void SetPFPhotonIso03(Double_t pf_ph_03);
+    void SetPFNeutralHadronIso03(Double_t pf_ne_03);
+    void SetPFChargedHadronIso04(Double_t pf_ch_03);
+    void SetPFPhotonIso04(Double_t pf_ph_03);
+    void SetPFNeutralHadronIso04(Double_t pf_ne_03);
+    
+    
+    // set charge variables
+    
+    void SetGsfCtfScPixCharge(bool gsfctfscpix_ch);
+    void SetGsfScPixCharge(bool gsfscpix_ch);
+    void SetGsfCtfCharge(bool gsfctf_ch);
+    
+    
+    /// set conversion variables
+    void SetMissingHits(Int_t missinghits); 
+    void SetMissingLostHits(Int_t missinglosthits); 
+    void SetHasMatchedConvPhot(Bool_t hasmatchConvPhot);
+    void SetConvFitProb(double conv_fit_prob);
+    void SetNBrems(double nbrems);
+    void SetFBrem(double fbrem);
+    
+    /// set GEN  macthing
+    void SetElectronMatchedGenPt(Double_t pt);
+    void SetElectronMatchedGenEta(Double_t eta);
+    void SetElectronMatchedGenPhi(Double_t phi);
 
-  inline Double_t  TrkIso() const {return   k_trkiso;}
-  inline Double_t  ECalIso() const {return  k_ecaliso;}
-  inline Double_t  HCalIso() const {return  k_hcaliso;}
-  inline Double_t  DeltaEtaTrkSC() const {return  k_delta_etatrkSC;}
-  inline Double_t  DeltaPhiTrkSC() const {return  k_delta_phitrkSC;}
-  inline Double_t  SigmaIEtaIEta() const {return  k_sigmaIEtaIEta;}
-  inline Double_t  HoE() const {return  k_hoe;}
-  inline Double_t  caloEnergy() const {return  k_caloE;}
-  inline Double_t  SuperClusterOverP() const {return  k_cluster_over_p;}
-  inline Double_t  TrkVx() const {return  k_trkvx;}
-  inline Double_t  TrkVy() const {return  k_trkvy;}
-  inline Double_t  TrkVz() const {return  k_trkvz;}
-  inline Double_t  dxy() const {return  k_dxy;}
-  inline Double_t  dz() const {return  k_dz;}
+    /// set Track variables
+    void SetTrackPt(Double_t pt);
+    void SetTrackValidFractionOfHits(Double_t valid_frac_hits);
+    void SetTrkVx(Double_t trkvx);
+    void SetTrkVy(Double_t trkvy);
+    void SetTrkVz(Double_t trkvz);
 
-  
-  
+    
+    ///// Functions to call class variables
+    
+    inline Bool_t  IsEBFiducial() {return bool (fabs(SCEta()) < 1.442);}
+    inline Bool_t  IsEEFiducial() {return bool (fabs(SCEta()) > 1.560 && fabs(SCEta()) < 2.50);}
+      
+    /// // Kinematic variables
+    inline Double_t  SCEta() const {return k_sceta;}
+    inline Double_t  SCPhi() const {return k_scphi;}
+    inline Double_t  RawEnergy() const {return k_rawenergy;}
+    inline Bool_t isEB() const {return k_isEB;}
+    inline Bool_t isEE() const {return k_isEE;}
+    
+    // Vertex variables
+    inline Double_t PrimaryVertexDXY() const {return k_pv_dist_xy;}
+    inline Double_t PrimaryVertexDXYError() const {return k_pv_dist_xy_error;}
+    inline Int_t VertexIndex() const {return k_vertex_index;}
+
+    /// Track variables
+    inline Double_t TrackPt() const {return k_track_pt;}
+    inline Double_t TrackValidHitFraction() const {return k_track_hitfrac;}
+
+
+    // EGamma bits
+    inline Bool_t PassEGammaIDEoP () const {return k_pass_egammaID_eop;}
+    inline Bool_t PassEGammaIDLoose ()  const {return k_pass_egammaID_loose;}
+    inline Bool_t PassEGammaIDMedium ()  const {return k_pass_egammaID_medium;}
+    inline Bool_t PassEGammaIDTight ()  const {return k_pass_egammaID_tight;}
+    inline Bool_t PassEGammaIDTrigTight ()  const {return k_pass_egammaID_trigtight;}
+    inline Bool_t PassEGammaIDTrigWP70 ()  const {return k_pass_egammaID_trigwp70;}
+    inline Bool_t PassEGammaIDVeto ()  const {return k_pass_egammaID_veto;}
+    
+    // ID variables
+
+    inline Int_t     PassID() const {return k_passID;}
+    inline Bool_t    TrackerDrivenSeed() const {return k_trackdrivenseed;}
+    inline Bool_t    EcalDrivenSeed() const {return k_ecaldrivenseed;}
+    inline Double_t  DeltaEta() const {return  k_delta_etatrkSC;}
+    inline Double_t  DeltaPhi() const {return  k_delta_phitrkSC;}
+    inline Double_t  SigmaIEtaIEta() const {return  k_sigmaIEtaIEta;}
+    inline Double_t  HoE() const {return  k_hoe;}
+    inline Double_t  CaloEnergy() const {return  k_caloE;}
+    inline Double_t  ESuperClusterOverP() const {return  k_E_cluster_over_p;}
+    
+    
+    /// method 1
+    inline Double_t  TrkVx() const {return  k_trkvx;}
+    inline Double_t  TrkVy() const {return  k_trkvy;}
+    inline Double_t  TrkVz() const {return  k_trkvz;}
+    /// method 2
+    inline Double_t VtxDistXY() const {return k_vtx_xy;}
+    inline Double_t VtxDistZ() const {return k_vtx_z;}
+    
+
+    // charge variables
+    inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
+    inline Bool_t GsffScPixChargeConsistency()  const {return k_gsf_scpix_charge;}
+    inline Bool_t GsfCtfChargeConsistency()  const {return k_gsf_ct_charge;}
+    
+    // Conversion variables
+    inline Int_t MissingHits() const {return k_missinghits;}
+    inline Int_t MissingLostHits() const {return k_missing_lost_hits;}
+    inline Double_t ConvFitProb () const {return k_convFitProb;}
+    inline Bool_t HasMatchedConvPhot() const {return k_hasmatchconvphot;}
+    inline Double_t NBrems() const {return k_nbrems;}
+    inline Double_t FBrem() const {return k_fbrem;}
+    
+    
+    // Isolation Variables
+    inline Double_t  TrkIsoDR03() const {return   k_trkiso_03;}
+    inline Double_t  ECalIsoDR03() const {return  k_ecaliso_03;}
+    inline Double_t  HCalIsoDR03() const {return  k_hcaliso_03;}
+
+    inline Double_t PFChargedHadronIso03() const {return k_pf_chargedhad_iso03;}
+    inline Double_t PFPhotonIso03() const {return k_pf_photon_iso03;}
+    inline Double_t PFNeutralHadronIso03() const {return k_pf_neutral_iso03;}
+    inline Double_t PFChargedHadronIso04() const {return k_pf_chargedhad_iso04;}
+    inline Double_t PFPhotonIso04() const {return k_pf_photon_iso04;}
+    inline Double_t PFNeutralHadronIso04() const {return k_pf_neutral_iso04;}
+
+    
+    /// GEN matching
+    inline Double_t MatchedGenParticlePt() const {return k_matched_gen_pt;}
+    inline Double_t MatchedGenParticleEta() const {return k_matched_gen_eta;}
+    inline Double_t MatchedGenParticlePhi() const {return k_matched_gen_phi;}
+    
+    /// VtxDist with vertex chosen to be primary   
+    inline Double_t  dxy() const {return  k_dxy;}
+    inline Double_t  dz() const {return  k_dz;}
+
   protected:
     /// Reset function.                                                                  
     virtual void Reset();    
@@ -92,13 +201,25 @@ namespace snu {
   private:
     /// decalre private functions
 
-    Bool_t k_isEB,k_isEE,k_trackdrivenseed,k_chargeconstistency,k_ecaldrivenseed,k_hasmatchconvphot;
-    Int_t k_missinghits,k_passID ;
-    Double_t k_trkiso,k_ecaliso,k_hcaliso,k_delta_etatrkSC,k_delta_phitrkSC ;
-    Double_t k_sigmaIEtaIEta,k_hoe,k_caloE,  k_cluster_over_p,k_trkvx,  k_trkvy,  k_trkvz;
-    Double_t k_dxy, k_dz;
+    Bool_t k_isEB,k_isEE,k_trackdrivenseed,k_ecaldrivenseed,k_hasmatchconvphot;
+    Int_t k_missinghits,k_passID , k_missing_lost_hits;
+    Double_t k_trkiso_03,k_ecaliso_03,k_hcaliso_03,k_delta_etatrkSC,k_delta_phitrkSC ;
+    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04;
+    Double_t k_sigmaIEtaIEta,k_hoe,k_caloE,  k_E_cluster_over_p,k_trkvx,  k_trkvy,  k_trkvz;
+    Double_t k_matched_gen_pt, k_matched_gen_eta, k_matched_gen_phi;
 
-    ClassDef(KElectron,2)
+    Double_t k_dxy, k_dz;
+    Double_t k_sceta,k_scphi, k_rawenergy;
+    Bool_t k_pass_egammaID_eop, k_pass_egammaID_loose, k_pass_egammaID_medium, k_pass_egammaID_tight, k_pass_egammaID_trigtight, k_pass_egammaID_trigwp70, k_pass_egammaID_veto;
+    Double_t k_vtx_xy, k_vtx_z;
+    Bool_t k_gsf_ctscpix_charge, k_gsf_scpix_charge, k_gsf_ct_charge;
+    Double_t k_convFitProb, k_nbrems, k_fbrem;
+    
+    Double_t k_pv_dist_xy, k_pv_dist_xy_error, k_track_pt, k_track_hitfrac;
+    Int_t k_vertex_index;
+    
+
+    ClassDef(KElectron,3)
   }; 
   
 }//namespace snu

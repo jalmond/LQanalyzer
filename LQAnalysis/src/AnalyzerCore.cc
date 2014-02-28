@@ -38,7 +38,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
+  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
@@ -62,6 +62,96 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   delete infile;
   origDir->cd();
   
+}
+
+double AnalyzerCore::ElectronScaleFactor( double eta, double pt){
+  
+  ///https://twiki.cern.ch/twiki/bin/view/Main/EGammaScaleFactors2012
+  /// medium working point
+  double sf = 0.;
+  if(fabs(eta) < 0.8 ) {
+    if( pt < 15.) sf = 0.865;
+    else if( pt < 20.) sf = 0.958;
+    else if( pt < 30.) sf = 0.988;
+    else if( pt < 40.) sf = 1.002;
+    else if( pt < 50.) sf = 1.005;
+    else sf = 1.005;
+  }
+  else  if(fabs(eta) <  1.442){
+
+    if( pt < 15.) sf = 0.967;
+    else if( pt < 20.) sf = 0.971;
+    else if( pt < 30.) sf = 0.965;
+    else if( pt < 40.) sf = 0.985;
+    else if( pt < 50.) sf = 0.989;
+    else sf = 0.989;
+  }
+  else  if(fabs(eta) <1.556){
+    if( pt < 15.) sf = 1.064;
+    else if( pt < 20.) sf = 0.902;
+    else if( pt < 30.) sf = 0.990;
+    else if( pt < 40.) sf = 0.966;
+    else if( pt < 50.) sf = 0.971;
+    else sf = 0.980;
+  }
+  else if(fabs(eta) <2.0){
+
+    if( pt < 15.) sf = 0.939;
+    else if( pt < 20.) sf = 0.897;
+    else if( pt < 30.) sf = 0.953;
+    else if( pt < 40.) sf = 0.980;
+    else if( pt < 50.) sf = 0.999;
+    else sf = 1.004;
+  }
+  else{
+    if( pt < 15.) sf = 1.050;
+    else if( pt < 20.) sf = 0.941;
+    else if( pt < 30.) sf = 1.017;
+    else if( pt < 40.) sf = 1.019;
+    else if( pt < 50.) sf = 1.019;
+    else sf = 1.023;
+    
+  }
+  return sf;
+  /// From higgs note Z->llll
+  /// reconstruction scale factors
+  if(fabs(eta) < 0.8 ) {
+    if( pt < 15.) sf *= 0.967;
+    else if( pt < 20.) sf *= 0.997;
+    else if( pt < 30.) sf *= 0.982;
+    else if( pt < 40.) sf *= 0.988;
+    else sf *= 0.990;
+  }
+  else if (fabs(eta) < 1.4442 ) {
+    if( pt < 15.) sf *= 0.967;
+    else if( pt < 20.) sf *= 0.997;
+    else if( pt < 30.) sf *= 0.993;
+    else if( pt < 40.) sf *= 0.993;
+    else sf *= 0.992;
+  }
+  else if (fabs(eta) < 1.566 ) {
+    if( pt < 15.) sf *= 1.126;
+    else if( pt < 20.) sf *= 0.955;
+    else if( pt < 30.) sf *= 1.015;
+    else if( pt < 40.) sf *= 0.985;
+    else sf *= 0.985;
+  }
+  else if (fabs(eta) < 2. ) {
+    if( pt < 15.) sf *= 1.097;
+    else if( pt < 20.) sf *= 1.012;
+    else if( pt < 30.) sf *= 0.988;
+    else if( pt < 40.) sf *= 0.992;
+    else sf *= 0.991;
+  }
+  else{
+    if( pt < 15.) sf *= 1.097;
+    else if( pt < 20.) sf *= 1.012;
+    else if( pt < 30.) sf *= 1.002;
+    else if( pt < 40.) sf *= 1.004;
+    else sf *= 1.004;
+  }
+
+    
 }
 
 void AnalyzerCore::AddTriggerToList(TString triggername){

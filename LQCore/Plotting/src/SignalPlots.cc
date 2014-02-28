@@ -86,12 +86,16 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_lljjmass", (muons[0]+muons[1]+jets[m]+jets[n]).M(),weight);
       Fill("h_WandNmass", (muons[0]+muons[1]+jets[m]+jets[n]).M() , (muons[1]+jets[m]+jets[n]).M(),weight);      
     }
+    
+    float mu1_reliso = (muons[0].SumIsoCHDR03() + std::max(0.0, muons[0].SumIsoNHDR03() + muons[0].SumIsoPHDR03() - 0.5* muons[0].SumPUIsoR03()))/muons[0].Pt() ;
+    float mu2_reliso = (muons[1].SumIsoCHDR03() + std::max(0.0, muons[1].SumIsoNHDR03() + muons[1].SumIsoPHDR03() - 0.5* muons[1].SumPUIsoR03()))/muons[1].Pt() ;
+    
     Fill("h_muonseta",muons[0].Eta(),weight);
     Fill("h_muonseta",muons[1].Eta(),weight);
     Fill("h_secondMuonPt", muons[1].Pt(),weight);
     Fill("h_leadingMuonPt", muons[0].Pt(),weight);
-    Fill("h_leadingMuonIso", muons[0].RelIso(),weight);
-    Fill("h_secondMuonIso", muons[1].RelIso(),weight);
+    Fill("h_leadingMuonIso", mu1_reliso,weight);
+    Fill("h_secondMuonIso", mu2_reliso,weight);
     Fill("h_paircharge",muons[0].Charge(),weight);
   }
 
@@ -108,6 +112,17 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_electronseta",electrons[1].Eta(),weight);
     Fill("h_secondElectronPt", electrons[1].Pt(),weight);
     Fill("h_leadingElectronPt", electrons[0].Pt(),weight);     
+
+
+    float EA1=GetElectronISOEA(electrons[0].SCEta());
+    float EA2=GetElectronISOEA(electrons[1].SCEta());
+
+    float rho = ev.JetRho();
+    float el1_reliso =  electrons[0].PFChargedHadronIso03() + max( electrons[0].PFNeutralHadronIso03() + electrons[0].PFPhotonIso03() - rho * EA1, 0.);
+    float el2_reliso =  electrons[1].PFChargedHadronIso03() + max( electrons[1].PFNeutralHadronIso03() + electrons[1].PFPhotonIso03() - rho * EA2, 0.);
+
+    Fill("h_leadingElectronIso", el1_reliso,weight);
+    Fill("h_secondElectronIso", el2_reliso,weight);
   }
   
   
@@ -178,7 +193,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, s
 	    n = enne;
 	  }
 	}
-
+    
       //// Fillplots
       Fill("h_MET",ev.MET(), weight);
       
@@ -195,8 +210,15 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, s
       Fill("h_secondElectronPt", electrons[j].Pt(),weight);
       Fill("h_leadingJetPt", jets[m].Pt(),weight);
       Fill("h_secondJetPt", jets[n].Pt(),weight);
-      //Fill("h_leadingElectronIso", electrons[i].RelIso(),weight);
-      //Fill("h_secondElectronIso", electrons[j].RelIso(),weight);
+      
+      float EA1=GetElectronISOEA(electrons[i].SCEta());
+      float EA2=GetElectronISOEA(electrons[j].SCEta());
+      float rho = ev.JetRho();
+      float el1_reliso =  electrons[i].PFChargedHadronIso03() + max( electrons[i].PFNeutralHadronIso03() + electrons[i].PFPhotonIso03() - rho * EA1, 0.);
+      float el2_reliso =  electrons[j].PFChargedHadronIso03() + max( electrons[j].PFNeutralHadronIso03() + electrons[j].PFPhotonIso03() - rho * EA2, 0.);
+ 
+      Fill("h_leadingElectronIso", el1_reliso,weight);
+      Fill("h_secondElectronIso", el2_reliso,weight);
       Fill("h_paircharge",electrons[i].Charge(),weight);
       Fill("h_electronseta",electrons[i].Eta(),weight);
       Fill("h_electronseta",electrons[j].Eta(),weight);
@@ -216,8 +238,20 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, s
   return;
 }
   
+float SignalPlots::GetElectronISOEA(float eta){
 
-
+  Float_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+  int ifid=0;
+  if (fabs(eta) < 1.0) ifid = 0;
+  else if (fabs(eta) < 1.479) ifid = 1;
+  else if (fabs(eta) < 2.0) ifid = 2;
+  else if (fabs(eta) < 2.2) ifid = 3;
+  else if (fabs(eta) < 2.3) ifid = 4;
+  else if (fabs(eta) < 2.4) ifid = 5;
+  else ifid = 6;
+  
+  return PHONH_03[ifid];
+}
 void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight){
   
    //// Jet mass variables
@@ -261,8 +295,12 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_secondMuonPt", muons[j].Pt(),weight);
       Fill("h_leadingJetPt", jets[m].Pt(),weight);
       Fill("h_secondJetPt", jets[n].Pt(),weight);
-      Fill("h_leadingMuonIso", muons[i].RelIso(),weight);
-      Fill("h_secondMuonIso", muons[j].RelIso(),weight);
+
+      
+      float mu1_reliso = (muons[i].SumIsoCHDR03() + std::max(0.0, muons[i].SumIsoNHDR03() + muons[i].SumIsoPHDR03() - 0.5* muons[i].SumPUIsoR03()))/muons[0].Pt();
+      float mu2_reliso = (muons[j].SumIsoCHDR03() + std::max(0.0, muons[j].SumIsoNHDR03() + muons[j].SumIsoPHDR03() - 0.5* muons[j].SumPUIsoR03()))/muons[1].Pt();
+      Fill("h_leadingMuonIso",mu1_reliso ,weight);
+      Fill("h_secondMuonIso",mu2_reliso ,weight);
       Fill("h_paircharge",muons[i].Charge(),weight);
       Fill("h_muonseta",muons[i].Eta(),weight);
       Fill("h_muonseta",muons[j].Eta(),weight);

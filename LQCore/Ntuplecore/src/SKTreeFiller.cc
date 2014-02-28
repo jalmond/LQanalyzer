@@ -36,6 +36,7 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
 
       TString tmpHLT = HLTInsideDatasetTriggerNames->at(i);
       if ( tmpHLT.BeginsWith(*it)){
+
 	trigger_exists = true;
 	bool double_count_trig = false;
 	for(std::vector<std::string>::iterator vit = vHLTInsideDatasetTriggerNames.begin(); vit != vHLTInsideDatasetTriggerNames.end(); vit++){
@@ -161,35 +162,49 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
   for (UInt_t iel=0; iel< ElectronEta->size(); iel++) {
     KElectron el;
     
+    /// Kinematic Variables
+    el.SetPtEtaPhiE(ElectronPt->at(iel),ElectronEta->at(iel),ElectronPhi->at(iel),ElectronEnergy->at(iel));
     el.SetisEB(ElectronIsEB->at(iel));
     el.SetisEE(ElectronIsEE->at(iel));
-
-    if(ElectronPassIsoPAT){
-      el.SetElectronPassId(ElectronPassIsoPAT->at(iel));
-    }
-    else{
-      el.SetElectronPassId(-999);
-    }
+    el.SetSCEta(ElectronEta->at(iel));
+    el.SetSCPhi(ElectronPhi->at(iel));
+    el.SetRawEnergy(ElectronSCRawEnergy->at(iel));
+    
+    m_logger << DEBUG << "Filling Electron ID Bit "<< LQLogger::endmsg;
+    //// set EGamma bits
+    el.SetPassEGammaIDEoP(ElectronPassEGammaIDEoP->at(iel));
+    el.SetPassEGammaIDLoose(ElectronPassEGammaIDLoose->at(iel));
+    el.SetPassEGammaIDMedium(ElectronPassEGammaIDMedium->at(iel));
+    el.SetPassEGammaIDTight(ElectronPassEGammaIDTight->at(iel));
+    el.SetPassEGammaIDTrigTight(ElectronPassEGammaIDTrigTight->at(iel));
+    el.SetPassEGammaIDTrigWP70(ElectronPassEGammaIDTrigWP70->at(iel));
+    el.SetPassEGammaIDVeto(ElectronPassEGammaIDVeto->at(iel));
+    
+    m_logger << DEBUG << "Filling Electron ID variablest "<< LQLogger::endmsg;
+    /// set ID variables
+    el.SetElectronPassId(ElectronPassId->at(iel));
+    
     el.SetTrackerDrivenSeed(ElectronHasTrackerDrivenSeed->at(iel));
     el.SetEcalDrivenSeed(ElectronHasEcalDrivenSeed->at(iel));
-    el.SetPtEtaPhiE(ElectronPt->at(iel),ElectronEta->at(iel),ElectronPhi->at(iel),ElectronEnergy->at(iel));
-    el.SetTrkIso(ElectronPFPhotonIso03->at(iel));
-    el.SetECalIso(ElectronPFNeutralHadronIso03->at(iel));
-    el.SetHCalIso(ElectronPFChargedHadronIso03->at(iel));
-    el.SetCharge(ElectronCharge->at(iel));
-    el.SetChargeConsistency(ElectronGsfCtfScPixCharge->at(iel));
-    el.SetMissingHits(ElectronMissingHitsEG->at(iel));
-    el.SetHasMatchedConvPhot(ElectronHasMatchedConvPhot->at(iel));
     el.SetDeltaEtaTrkSC(ElectronDeltaEtaTrkSC->at(iel));
     el.SetDeltaPhiTrkSC(ElectronDeltaPhiTrkSC->at(iel));
     el.SetSigmaIEtaIEta(ElectronSigmaIEtaIEta->at(iel));
     el.SetHoE(ElectronHoE->at(iel));
     el.SetcaloEnergy(ElectronCaloEnergy->at(iel));
-    el.SetSuperClusterOverP(ElectronESuperClusterOverP->at(iel));
-    el.SetTrkVx(ElectronTrackVx->at(iel));
-    el.SetTrkVy(ElectronTrackVy->at(iel));
-    el.SetTrkVz(ElectronTrackVz->at(iel));
-        
+    el.SetESuperClusterOverP(ElectronESuperClusterOverP->at(iel));
+
+    m_logger << DEBUG << "Filling Electron vertex info "<< LQLogger::endmsg;
+    //// distance of closest vertex to lepton
+    el.SetVtxDistXY(ElectronVtxDistXY->at(iel));
+    el.SetVtxDistZ(ElectronVtxDistZ->at(iel));
+    
+    el.SetVtxIndex(ElectronVtxIndex->at(iel));
+    el.SetPrimaryVertexDXY(ElectronPrimaryVertexDXY->at(iel));
+    el.SetPrimaryVertexDXYError(ElectronPrimaryVertexDXYError->at(iel));
+    el.SetTrackPt(ElectronTrackPt->at(iel));
+    el.SetTrackValidFractionOfHits(ElectronTrackValidFractionOfHits->at(iel));
+
+    /// distance between lepton and PRIMARY analysis vertex
     if(VertexN != -1){
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
@@ -205,7 +220,122 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.Setdxy( -999.);
     }
 
+    m_logger << DEBUG << "Filling isolation variables " << LQLogger::endmsg;
+    /// Set Isolation variables
+    m_logger << DEBUG << ElectronTrkIsoDR03 << " " << ElectronEcalIsoDR03 << " " << ElectronHcalIsoDR03 << LQLogger::endmsg;
+    m_logger << DEBUG << ElectronTrkIsoDR03->size() << " " << ElectronEcalIsoDR03->size() << " " << ElectronHcalIsoDR03->size()<< LQLogger::endmsg;
+    el.SetTrkIsoDR03(ElectronTrkIsoDR03->at(iel));
+    el.SetECalIsoDR03(ElectronEcalIsoDR03->at(iel));
+    el.SetHCalIsoDR03(ElectronHcalIsoDR03->at(iel));
+    
+    m_logger << DEBUG << "Filling PF03 isolation variables " << LQLogger::endmsg;
+    
+    el.SetPFChargedHadronIso03(ElectronPFChargedHadronIso03->at(iel));
+    el.SetPFPhotonIso03(ElectronPFPhotonIso03->at(iel));
+    el.SetPFNeutralHadronIso03(ElectronPFNeutralHadronIso03->at(iel));
 
+    m_logger << DEBUG << "Filling PF04 isolation variables " << LQLogger::endmsg;
+    el.SetPFChargedHadronIso04(ElectronPFChargedHadronIso04->at(iel));
+    el.SetPFPhotonIso04(ElectronPFPhotonIso04->at(iel));
+    el.SetPFNeutralHadronIso04(ElectronPFNeutralHadronIso04->at(iel));
+    
+    m_logger << DEBUG << "Filling electron charge variables " << LQLogger::endmsg;
+
+    /// set Charge variables
+    el.SetCharge(ElectronCharge->at(iel));
+    el.SetGsfCtfScPixCharge(ElectronGsfCtfScPixCharge->at(iel));
+    el.SetGsfScPixCharge(ElectronGsfScPixCharge->at(iel));
+    el.SetGsfCtfCharge(ElectronGsfCtfCharge->at(iel));
+    
+    m_logger << DEBUG << "Filling electron conversion variables " << LQLogger::endmsg;
+
+    /// set conversion variables
+    el.SetMissingHits(ElectronMissingHitsEG->at(iel));
+    el.SetMissingLostHits(ElectronMissingHits->at(iel));
+    el.SetHasMatchedConvPhot(ElectronHasMatchedConvPhot->at(iel));
+    el.SetConvFitProb(ElectronConvFitProb->at(iel));
+    el.SetNBrems(ElectronNumberOfBrems->at(iel));
+    el.SetFBrem(ElectronFbrem->at(iel));
+    
+    m_logger << DEBUG << "Filling El Truth variables " << LQLogger::endmsg;
+    
+    /*
+    /// truth info
+    if(!isData){
+      el.SetElectronMatchedGenPt(ElectronMatchedGenParticlePt->at(iel));
+      el.SetElectronMatchedGenEta(ElectronMatchedGenParticleEta->at(iel));
+      el.SetElectronMatchedGenPhi(ElectronMatchedGenParticlePhi->at(iel));
+      
+      bool matched_electron(false);
+      int iMother(-999),nDaughter(-999), ipdgid(-999), trueel_index(-999);
+      ///// ADD prompt definition for MC
+      double truth_reco_dr(1000000.);
+      
+      m_logger << DEBUG <<  "Electron Eta  = " << ElectronEta->at(iel) << LQLogger::endmsg;
+      m_logger << DEBUG <<  "Electron Phi  = " << ElectronPhi->at(iel) << LQLogger::endmsg;
+      m_logger << DEBUG <<  "Electron Pt  = " << ElectronPt->at(iel) << LQLogger::endmsg;
+      
+      for(unsigned int g =0; g < GenParticleP->size(); g++){
+	
+        if((fabs(ElectronEta->at(iel) - GenParticleEta->at(g)) < 0.1) && (fabs(TVector2::Phi_mpi_pi(ElectronPhi->at(iel) -GenParticlePhi->at(g))) < 0.1)) {
+          
+	  /// This is the case when no truth particle is matched to the reco muon in the LeptoQuark Ntuple making. This happens when two reco muons are on top of each other (one MS muon and one CB muon). The MS muon is matched to the truth. Only one reco muon is matched and so the CB muon is not assigned a truth particle.
+	  if( (GenParticleStatus->at(g) == 3) && fabs(GenParticlePdgId->at(g))==11){
+	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( ElectronPhi->at(iel) -GenParticlePhi->at(g))),2.0));
+	    
+	    /// if this is the closest matchi
+	    
+	    if(dr < truth_reco_dr){
+              iMother = GenParticleMotherIndex->at(g);
+              nDaughter = GenParticleNumDaught->at(g);
+              ipdgid =  GenParticlePdgId->at(g);
+              trueel_index = g;
+              matched_electron = true;
+              truth_reco_dr = dr;
+            }//closest truth match
+          }/// stable electron
+	  
+	  int MotherPdgId(-999);
+	  if(matched_electron){
+	    MotherPdgId =  GenParticlePdgId->at(iMother);
+	  }
+	  
+	  if (isPrompt( MotherPdgId)){
+	    if ( ElectronCharge->at(iel)* GenParticlePdgId->at(g)   > 0)   partType = KParticle::chargemisid;
+	    else partType = KParticle::notfake;
+	  }
+	  
+	  else {
+	    if ( nthdigit( abs(MotherPdgId ),0 ) == 5 || nthdigit( abs(MotherPdgId ),1 ) == 5 || nthdigit( abs(MotherPdgId     ),2 ) == 5) partType = KParticle::bjet;
+	    else if ( nthdigit( abs(MotherPdgId ),0 ) == 4 || nthdigit( abs(MotherPdgId ),1 ) == 4 || nthdigit( abs(MotherPdgId ),2 ) == 4) partType = KParticle::cjet;
+	    else if
+	      (nthdigit( abs(MotherPdgId ),0 ) == 1 || nthdigit( abs(MotherPdgId ),1 ) == 1 || nthdigit( abs(MotherPdgId ), 2 ) == 1  || nthdigit( abs(MotherPdgId ),0 ) == 2 || nthdigit( abs(MotherPdgId ),1 ) == 2 || nthdigit( abs(MotherPdgId),2 ) == 2   || nthdigit( abs(MotherPdgId ),0 ) == 3 || nthdigit( abs(MotherPdgId ),1 ) == 3 || nthdigit( abs(MotherPdgId),2 ) == 3 )
+	      
+	      partType = KParticle::jet;
+	  }
+	  
+	  el.SetType(partType);
+	  el.SetTruthParticleIndex(trueel_index);
+	  el.SetMotherIndex(iMother);
+	}
+	
+	truth_reco_dr=100000.;
+	for(unsigned int g =0; g < GenZMuP->size(); g++){
+	  if((fabs(GenZElectronPdgId->at(g))==13)){
+	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenZElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenZElectronPhi->at(g))),2.0) );
+	    if(dr < truth_reco_dr){
+	      ipdgid =  GenZElectronPdgId->at(g);
+	      trueel_index = g;
+	      truth_reco_dr = dr;
+	    }
+	  }
+	  el.SetType(partType);
+	  el.SetTruthParticleIndex(trueel_index);
+	}
+      }
+    }
+    */
+    
     /// Need to add filling code
     electrons.push_back(el);
   }
@@ -418,7 +548,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetPtErr(MuonPtError->at(ilep));
     muon.SetEtaErr(MuonEtaError->at(ilep));
    
-    muon.SetMuonVtxIndex(MuonVtxIndex->at(ilep));    
+    muon.SetMuonVtxIndex(MuonBestTrackVtxIndex->at(ilep));    
     
     m_logger << DEBUG << "Filling isolation ... " << LQLogger::endmsg;
     /// Isolation
@@ -441,22 +571,11 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetVertexDistXY(MuonVtxDistXY->at(ilep));
 
     m_logger << DEBUG << "Filling IP  ... " << LQLogger::endmsg;
-    if(VertexN != -1){
-      muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(VertexN));
-      muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(VertexN),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(VertexN),2)));
-      muon.Setdxy_pat( MuonPrimaryVertexDXY->at(ilep));
-      muon.Setdxyerr_pat( MuonPrimaryVertexDXYError->at(ilep));
-    }
-    else if (VertexN == -999){
-      m_logger << WARNING << "WARNING creating vector of KMuon or KElectrons without setting up KEvent " << LQLogger::endmsg;
-      snu::KEvent ev = SKTreeFiller::GetEventInfo();
-      muon.Setdz( MuonTrkVz->at(ilep) - VertexZ->at(ev.VertexIndex()));
-      muon.Setdxy( sqrt(pow(MuonTrkVx->at(ilep)-VertexX->at(ev.VertexIndex()),2)+pow(MuonTrkVy->at(ilep)-VertexY->at(ev.VertexIndex()),2)));      
-    }
-    else {
-      muon.Setdz(  -999.);
-      muon.Setdxy(  -999.);
-    }
+
+    muon.Setdz(MuonBestTrackVtxDistZ->at(ilep)); 
+    muon.Setdxy(MuonBestTrackVtxDistXY->at(ilep));
+    muon.Setdxy_pat(MuonPrimaryVertexDXY->at(ilep));
+    muon.Setdxyerr_pat(MuonPrimaryVertexDXYError->at(ilep));
     muon.SetD0( MuonTrkD0->at(ilep));
     muon.SetD0Error (MuonTrkD0Error->at(ilep));
     //// chi2
@@ -477,7 +596,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
       
       bool matched_muon(false);
-      int iMother(-999),iDaughter(-999), ipdgid(-999), truemu_index(-999);
+      int iMother(-999),nDaughter(-999), ipdgid(-999), truemu_index(-999);
       ///// ADD prompt definition for MC
       double truth_reco_dr(1000000.);
       
@@ -498,7 +617,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	    /// if this is the closest matching muon then assign it as matched truth                                                                                      
 	    if(dr < truth_reco_dr){
 	      iMother = GenParticleMotherIndex->at(g);
-	      iDaughter = GenParticleNumDaught->at(g);
+	      nDaughter = GenParticleNumDaught->at(g);
 	      ipdgid =  GenParticlePdgId->at(g);
 	      truemu_index = g;
 	      matched_muon = true;
@@ -513,7 +632,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	}
 	
 	if (isPrompt( MotherPdgId)){
-	  if ( MuonCharge->at(ilep)* GenParticlePdgId->at(ilep)   > 0)   partType = KParticle::chargemisid;
+	  if ( MuonCharge->at(ilep)* GenParticlePdgId->at(g)   > 0)   partType = KParticle::chargemisid;
 	  else partType = KParticle::notfake;
 	}
 	else {
@@ -529,7 +648,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	muon.SetType(partType);
 	muon.SetTruthParticleIndex(truemu_index);      
 	muon.SetMotherIndex(iMother);
-	muon.SetDaughterIndex(iDaughter);
+	muon.SetNDaughter(nDaughter);
       }
       
       truth_reco_dr=100000.;
@@ -545,16 +664,15 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	muon.SetType(partType);
         muon.SetTruthParticleIndex(truemu_index);
       }
-    }	
-
-
-    double reliso = (MuonPFIsoR03ChargedHadron->at(ilep) + std::max(0.0, MuonPFIsoR03NeutralHadron->at(ilep) + MuonPFIsoR03Photon->at(ilep) - 0.5*MuonPFIsoR03PU->at(ilep)))/MuonPt->at(ilep);
-    if(reliso < 0) reliso = 0.0001;
-    muon.SetRelIso(reliso);
+    }
+    
+      
+    
     
     /// GENERAL
     muon.SetISPF(MuonIsPF->at(ilep));
     muon.SetIsGlobal(MuonIsGlobal->at(ilep));
+    muon.SetIsTracker(MuonIsTracker->at(ilep));
     m_logger << DEBUG << "Add muon to vector " << LQLogger::endmsg;
     /// Fill vector
     muons.push_back(muon);
@@ -576,8 +694,19 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     return vtruth;
   }
 
+
   int itruth(0);
   for (UInt_t it=0; it< GenParticleEta->size(); it++, itruth++) {
+
+    if(GenParticlePdgId->at(it) == 2212) {
+      itruth = itruth -1;
+      continue;
+    }
+    if(GenParticleStatus->at(it) < 3) {
+      itruth = itruth -1;
+      continue;
+    }
+
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(it), GenParticleEnergy->at(it));
     truthp.SetParticlePx(GenParticlePx->at(it));
@@ -591,7 +720,8 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticlePdgId(GenParticlePdgId->at(it));
     truthp.SetParticleStatus(GenParticleStatus->at(it));
 
-    truthp.SetParticleIndexDaughter(GenParticleNumDaught->at(it));
+
+    truthp.SetParticleNDaughter(GenParticleNumDaught->at(it));
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
     
     float charge_truth = -999.;
@@ -610,8 +740,16 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
   }/// end of filling loop
 
   for (UInt_t it=0; it< GenZMuEta->size(); it++, itruth++) {
+    
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenZMuPt->at(it), GenZMuEta->at(it), GenZMuPhi->at(it), GenZMuEnergy->at(it));
+    bool duplicate = false;
+    for(int itr = 0; itr < vtruth.size() ; itr++){
+      if( (GenZMuPdgId->at(it) == vtruth.at(itr).PdgId()) && (truthp.DeltaR(vtruth.at(itr)) < 0.1)) duplicate = true;
+    }
+
+    if (duplicate) continue;
+
     truthp.SetParticlePx(GenZMuPx->at(it));
     truthp.SetParticlePy(GenZMuPy->at(it));
     truthp.SetParticlePz(GenZMuPz->at(it));
@@ -623,7 +761,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticlePdgId(GenZMuPdgId->at(it));
     truthp.SetParticleStatus(GenZMuStatus->at(it));
 
-    truthp.SetParticleIndexDaughter(GenZMuNumDaught->at(it));
+    truthp.SetParticleNDaughter(GenZMuNumDaught->at(it));
     truthp.SetParticleIndexMother(GenZMuMotherIndex->at(it));
 
     float charge_truth = -999.;
@@ -644,6 +782,14 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
   for (UInt_t it=0; it< GenZTauEta->size(); it++, itruth++) {
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenZTauPt->at(it), GenZTauEta->at(it), GenZTauPhi->at(it), GenZTauEnergy->at(it));
+    
+    bool duplicate = false;
+    for(int itr = 0; itr < vtruth.size() ; itr++){
+      if( (GenZTauPdgId->at(it) == vtruth.at(itr).PdgId()) && (truthp.DeltaR(vtruth.at(itr)) < 0.1)) duplicate = true;
+    }
+
+    if (duplicate) continue;
+    
     truthp.SetParticlePx(GenZTauPx->at(it));
     truthp.SetParticlePy(GenZTauPy->at(it));
     truthp.SetParticlePz(GenZTauPz->at(it));
@@ -655,7 +801,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticlePdgId(GenZTauPdgId->at(it));
     truthp.SetParticleStatus(GenZTauStatus->at(it));
 
-    truthp.SetParticleIndexDaughter(GenZTauNumDaught->at(it));
+    truthp.SetParticleNDaughter(GenZTauNumDaught->at(it));
     truthp.SetParticleIndexMother(GenZTauMotherIndex->at(it));
 
     float charge_truth = -999.;
@@ -674,34 +820,42 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
   }
 
 
-  for (UInt_t it=0; it< GenZMuEta->size(); it++, itruth++) {
+  for (UInt_t it=0; it< GenZElectronEta->size(); it++, itruth++) {
     snu::KTruth truthp;
-    truthp.SetPtEtaPhiE(GenZMuPt->at(it), GenZMuEta->at(it), GenZMuPhi->at(it), GenZMuEnergy->at(it));
-    truthp.SetParticlePx(GenZMuPx->at(it));
-    truthp.SetParticlePy(GenZMuPy->at(it));
-    truthp.SetParticlePz(GenZMuPz->at(it));
-    if(GenZMuVX){
-      truthp.SetParticleVx(GenZMuVX->at(it));
-      truthp.SetParticleVy(GenZMuVY->at(it));
-      truthp.SetParticleVz(GenZMuVZ->at(it));
-    }
-    truthp.SetParticlePdgId(GenZMuPdgId->at(it));
-    truthp.SetParticleStatus(GenZMuStatus->at(it));
+    truthp.SetPtEtaPhiE(GenZElectronPt->at(it), GenZElectronEta->at(it), GenZElectronPhi->at(it), GenZElectronEnergy->at(it));
 
-    truthp.SetParticleIndexDaughter(GenZMuNumDaught->at(it));
-    truthp.SetParticleIndexMother(GenZMuMotherIndex->at(it));
+    bool duplicate = false;
+    for(int itr = 0; itr < vtruth.size() ; itr++){
+      if( (GenZElectronPdgId->at(it) == vtruth.at(itr).PdgId()) && (truthp.DeltaR(vtruth.at(itr)) < 0.1)) duplicate = true;
+    }
+
+    if (duplicate) continue;
+
+    truthp.SetParticlePx(GenZElectronPx->at(it));
+    truthp.SetParticlePy(GenZElectronPy->at(it));
+    truthp.SetParticlePz(GenZElectronPz->at(it));
+    if(GenZElectronVX){
+      truthp.SetParticleVx(GenZElectronVX->at(it));
+      truthp.SetParticleVy(GenZElectronVY->at(it));
+      truthp.SetParticleVz(GenZElectronVZ->at(it));
+    }
+    truthp.SetParticlePdgId(GenZElectronPdgId->at(it));
+    truthp.SetParticleStatus(GenZElectronStatus->at(it));
+
+    truthp.SetParticleNDaughter(GenZElectronNumDaught->at(it));
+    truthp.SetParticleIndexMother(GenZElectronMotherIndex->at(it));
 
     float charge_truth = -999.;
-    if(GenZMuPdgId->at(it) == 1 || GenZMuPdgId->at(it) == 3 || GenZMuPdgId->at(it) == 5) charge_truth = -1./3.;
-    else if(GenZMuPdgId->at(it) == 2 || GenZMuPdgId->at(it) == 4 || GenZMuPdgId->at(it) == 6) charge_truth = 2./3.;
-    else if(GenZMuPdgId->at(it) == 11 || GenZMuPdgId->at(it) ==13 || GenZMuPdgId->at(it) ==15) charge_truth = -1.;
-    else if(GenZMuPdgId->at(it) == 12 || GenZMuPdgId->at(it) ==14 || GenZMuPdgId->at(it) ==16) charge_truth = 0.;
-    else if(GenZMuPdgId->at(it) == 22 || GenZMuPdgId->at(it) == 23) charge_truth = 0.;
-    else if(GenZMuPdgId->at(it) == 24) charge_truth =1.;
+    if(GenZElectronPdgId->at(it) == 1 || GenZElectronPdgId->at(it) == 3 || GenZElectronPdgId->at(it) == 5) charge_truth = -1./3.;
+    else if(GenZElectronPdgId->at(it) == 2 || GenZElectronPdgId->at(it) == 4 || GenZElectronPdgId->at(it) == 6) charge_truth = 2./3.;
+    else if(GenZElectronPdgId->at(it) == 11 || GenZElectronPdgId->at(it) ==13 || GenZElectronPdgId->at(it) ==15) charge_truth = -1.;
+    else if(GenZElectronPdgId->at(it) == 12 || GenZElectronPdgId->at(it) ==14 || GenZElectronPdgId->at(it) ==16) charge_truth = 0.;
+    else if(GenZElectronPdgId->at(it) == 22 || GenZElectronPdgId->at(it) == 23) charge_truth = 0.;
+    else if(GenZElectronPdgId->at(it) == 24) charge_truth =1.;
     else charge_truth = -999.;
 
-    if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
-
+    if(GenZElectronPdgId->at(it) < 0) charge_truth *=-1.;
+    
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }

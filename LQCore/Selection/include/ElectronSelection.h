@@ -6,24 +6,27 @@
 #include "BaseSelection.h" 
 
 class ElectronSelection : public BaseSelection {
-  
-  Bool_t ElectronID;
-  Double_t PHONH[7];
 
  public:
+  
+  Bool_t ElectronID;
+
+
   ElectronSelection(LQEvent ev);
   ~ElectronSelection();
 
   ElectronSelection& operator= (const ElectronSelection& obj);
   ElectronSelection(const ElectronSelection& bs);
   
-  void Selection(std::vector<snu::KElectron>& leptonColl);
-
-  
-  //  const Double_t ElectronSel::AreaTrackerEle[2] = {0., 0.};         //   barrel/endcap
-  //const Double_t ElectronSel::AreaEcalEle[2]    = {0.101, 0.046};   //   barrel/endcap
-  //const Double_t ElectronSel::AreaHcalEle[2]    = {0.021 , 0.040};  //   barrel/endcap
-  //const Double_t ElectronSel::PHONH[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
-
+  void Selection(std::vector<snu::KElectron>& leptonColl,  bool recalculate_id= false);
+  void BasicSelection(std::vector<snu::KElectron>& leptonColl);
+  void SkimSelection(std::vector<snu::KElectron>& leptonColl);
+ 
+  bool PassUserID(ID id,snu::KElectron el, bool recalculate_id, double rho);
+  bool PassUserID_EGamma2012 ( ID id, snu::KElectron el , double rho) ;
+  bool PassUserID_ECALFiducial (snu::KElectron el);
+  bool PassUserID_MVA (snu::KElectron el, bool trig);
+    
+    
 };
 #endif

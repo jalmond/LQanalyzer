@@ -1,6 +1,7 @@
 ### SKTrees ##########
 ##################
 ### Data#############
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodA/
 
 SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodA/
 SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodB/
@@ -24,6 +25,9 @@ SKWgamma     10403.722	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/Wgamma/
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
+
+muon A    /data1/DATA/LQNtuples_5_3_8/DoubleMuA_22Jan/
+
 egamma A   /data1/DATA/LQNtuples_5_3_8/DoubleElectronA_22Jan/
 egamma B   /data1/DATA/LQNtuples_5_3_8/DoubleElectronB_22Jan/
 egamma C   /data1/DATA/LQNtuples_5_3_8/DoubleElectronC_22Jan/

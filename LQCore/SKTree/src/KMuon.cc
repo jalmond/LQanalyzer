@@ -8,7 +8,7 @@ ClassImp(KMuon)
  *Default constructor.
  */
 KMuon::KMuon() :
-  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_reliso(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999), i_muonVtx(-999), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
+  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999), i_muonVtx(-999), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
  {
   //Reset();
 }
@@ -40,13 +40,13 @@ KMuon::KMuon(const KMuon& muon) :
   k_dxy_pat(muon.k_dxy_pat),
   k_dxyerr_pat(muon.k_dxyerr_pat),
   k_vtxdistxy(muon.k_vtxdistxy),
-  k_reliso(muon.k_reliso),
   k_muon_valid_hits(muon.k_muon_valid_hits),
   k_muon_valid_pixhits(muon.k_muon_valid_pixhits),
   k_muon_valid_stations(muon.k_muon_valid_stations),
   k_muon_layer_with_meas(muon.k_muon_layer_with_meas),
   k_muon_ispf(muon.k_muon_ispf),
   k_muon_isglobal(muon.k_muon_isglobal),
+  k_muon_istracker(muon.k_muon_istracker),
   i_muonVtx(muon.i_muonVtx),
   muon_ms_pt(muon.muon_ms_pt),
   muon_ms_eta(muon.muon_ms_eta), 
@@ -67,12 +67,12 @@ KMuon::~KMuon()
 void KMuon::Reset()
 {
   KParticle::Reset();
-  k_reliso=0,
   k_isor03ch=0.;
   k_isor03n=0.;
   k_isor03ph=0.;
   k_muon_ispf=0;
   k_muon_isglobal=0;
+  k_muon_istracker=0;
   k_globmuon_chi2=0;
   k_pterror=0;
   k_etaerror=0;
@@ -115,18 +115,17 @@ KMuon& KMuon::operator= (const KMuon& p)
 {
     if (this != &p) {
         KParticle::operator=(p);
-	k_reliso = p.RelIso();
-	k_isor03ch = p.IsoR03ch();
+	k_isor03ch = p.SumIsoCHDR03();
 	k_muon_ispf = p.IsPF();
 	k_muon_isglobal = p.IsGlobal();
-	k_isor03n=p.IsoR03nh();
-	k_isor03ph=p.IsoR03ph();
-	k_muon_ispf=p.IsPF();
+	k_muon_istracker = p.IsTracker();
+	k_isor03n=p.SumIsoNHDR03();
+	k_isor03ph=p.SumIsoPHDR03();
 	k_pterror=p.PtError();
 	k_etaerror=p.EtaError();
 	k_isoEcalveto=p.IsoEcalVeto(); 
 	k_isoHcalveto=p.IsoHcalVeto(); 
-	k_MuonPFIsoR03PU=p.PFPUIsoR03();
+	k_MuonPFIsoR03PU=p.SumPUIsoR03();
 	k_muonVtx=p.muonVtx();
 	k_muonVty=p.muonVty();
 	k_muonVtz=p.muonVtz();
@@ -204,10 +203,6 @@ void KMuon::SetVertexDistXY(double vdistxy) {
   k_vtxdistxy= vdistxy;
 }
 
-void KMuon::SetRelIso(double reliso){
-  k_reliso = reliso;
-  
-}
 
 void KMuon::SetMuonVtxIndex(int ivertex){
   i_muonVtx = ivertex;
@@ -331,6 +326,12 @@ void KMuon::SetIsGlobal(int isglobal){
 
   k_muon_isglobal =isglobal;
 }
+
+void KMuon::SetIsTracker(int istracker){
+
+  k_muon_istracker =istracker;
+}
+
 
 void KMuon::SetMuonMatchedGenParticlePt(double genpt){
   k_muongen_pt = genpt;

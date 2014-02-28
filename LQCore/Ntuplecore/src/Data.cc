@@ -973,6 +973,8 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonTimeCompatibility", MuonTimeCompatibility, b_MuonTimeCompatibility);
   ConnectVariable("MuonTrackChi2", MuonTrackChi2, b_MuonTrackChi2);
   ConnectVariable("MuonTrackerIsoSumPT", MuonTrackerIsoSumPT, b_MuonTrackerIsoSumPT);
+  ConnectVariable("MuonBestTrackVtxDistXY", MuonBestTrackVtxDistXY,b_MuonBestTrackVtxDistXY);
+  ConnectVariable("MuonBestTrackVtxDistZ", MuonBestTrackVtxDistZ, b_MuonBestTrackVtxDistZ);
   ConnectVariable("MuonTrkD0", MuonTrkD0, b_MuonTrkD0);
   ConnectVariable("MuonTrkD0Error", MuonTrkD0Error, b_MuonTrkD0Error);
   ConnectVariable("MuonTrkDz", MuonTrkDz, b_MuonTrkDz);
@@ -1004,7 +1006,7 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonTrkHitsTrackerOnly", MuonTrkHitsTrackerOnly, b_MuonTrkHitsTrackerOnly);
   ConnectVariable("MuonTrkPixelHits", MuonTrkPixelHits, b_MuonTrkPixelHits);
   ConnectVariable("MuonVtxIndex", MuonVtxIndex, b_MuonVtxIndex);
-
+  ConnectVariable("MuonBestTrackVtxIndex", MuonBestTrackVtxIndex, b_MuonBestTrackVtxIndex) ;
 
 
   /// New variables 2013/12/02
@@ -1087,9 +1089,15 @@ void Data::ConnectElectrons(){
   ConnectVariable("ElectronPassEGammaIDTrigWP70", ElectronPassEGammaIDTrigWP70, b_ElectronPassEGammaIDTrigWP70);
   ConnectVariable("ElectronPassEGammaIDVeto", ElectronPassEGammaIDVeto, b_ElectronPassEGammaIDVeto);
   ConnectVariable("ElectronPassId", ElectronPassId, b_ElectronPassId);
-  ConnectVariable("ElectronPassIsoPAT", ElectronPassIsoPAT, b_ElectronPassIsoPAT);
   ConnectVariable("ElectronVtxIndex", ElectronVtxIndex, b_ElectronVtxIndex);
-
+  ConnectVariable("ElectronTrkIsoDR03", ElectronTrkIsoDR03, b_ElectronTrkIsoDR03);
+  ConnectVariable("ElectronFbrem", ElectronFbrem, b_ElectronFbrem);
+  ConnectVariable("ElectronHcalIsoDR03", ElectronHcalIsoDR03, b_ElectronHcalIsoDR03);
+  ConnectVariable("ElectronLeadVtxDistXY", ElectronLeadVtxDistXY, b_ElectronLeadVtxDistXY);
+  ConnectVariable("ElectronLeadVtxDistZ", ElectronLeadVtxDistZ, b_ElectronLeadVtxDistZ);
+  ConnectVariable("ElectronMatchedGenParticleEta", ElectronMatchedGenParticleEta, b_ElectronMatchedGenParticleEta);
+  ConnectVariable("ElectronMatchedGenParticlePhi", ElectronMatchedGenParticlePhi, b_ElectronMatchedGenParticlePhi);
+  ConnectVariable("ElectronMatchedGenParticlePt", ElectronMatchedGenParticlePt, b_ElectronMatchedGenParticlePt);
   
   /// NEW
   /*
@@ -1387,7 +1395,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("ElectronHLTDoubleEleMatched", ElectronHLTDoubleEleMatched);
   ConnectVariable("ElectronHLTSingleEleMatched", ElectronHLTSingleEleMatched);
   ConnectVariable("ElectronHLTSingleEleWP80Matched", ElectronHLTSingleEleWP80Matched);
-  ConnectVariable("ElectronFbrem", ElectronFbrem);
   ConnectVariable("ElectronHLTDoubleEleMatchEta", ElectronHLTDoubleEleMatchEta);
   ConnectVariable("ElectronHLTDoubleEleMatchPhi", ElectronHLTDoubleEleMatchPhi);
   ConnectVariable("ElectronHLTDoubleEleMatchPt", ElectronHLTDoubleEleMatchPt);
@@ -1399,17 +1406,10 @@ void Data::ConnectAllBranches(){
   ConnectVariable("ElectronHLTSingleEleWP80MatchPt", ElectronHLTSingleEleWP80MatchPt);
   ConnectVariable("ElectronHcalIsoD1DR03", ElectronHcalIsoD1DR03);
   ConnectVariable("ElectronHcalIsoD2DR03", ElectronHcalIsoD2DR03);
-  ConnectVariable("ElectronHcalIsoDR03", ElectronHcalIsoDR03);
   ConnectVariable("ElectronHcalIsoDR03FullCone", ElectronHcalIsoDR03FullCone);
   ConnectVariable("ElectronHcalIsoPAT", ElectronHcalIsoPAT);
-  ConnectVariable("ElectronLeadVtxDistXY", ElectronLeadVtxDistXY);
-  ConnectVariable("ElectronLeadVtxDistZ", ElectronLeadVtxDistZ);
-  ConnectVariable("ElectronMatchedGenParticleEta", ElectronMatchedGenParticleEta);
-  ConnectVariable("ElectronMatchedGenParticlePhi", ElectronMatchedGenParticlePhi);
-  ConnectVariable("ElectronMatchedGenParticlePt", ElectronMatchedGenParticlePt);
   ConnectVariable("ElectronPtHeep", ElectronPtHeep);
   ConnectVariable("ElectronRelIsoPAT", ElectronRelIsoPAT);
-  ConnectVariable("ElectronTrkIsoDR03", ElectronTrkIsoDR03);
   ConnectVariable("ElectronTrkIsoPAT", ElectronTrkIsoPAT);
   
   // Truth
@@ -1607,7 +1607,7 @@ void Data::ConnectAllBranches(){
   ConnectVariable("HPSTauVtxDistZ", HPSTauVtxDistZ);
   
   // Muon
-  ConnectVariable("MuonBestTrackVtxIndex", MuonBestTrackVtxIndex);
+
   ConnectVariable("MuonCocktailCharge", MuonCocktailCharge);
   ConnectVariable("MuonCocktailRefitID", MuonCocktailRefitID);
   ConnectVariable("MuonCocktailTrkHits", MuonCocktailTrkHits);  

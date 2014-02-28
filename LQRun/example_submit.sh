@@ -13,12 +13,13 @@ source functions.sh
 cycle="ExampleAnalyzer"
 skinput="True"
 njobs=30
-data_lumi="AtoD"
+data_lumi="A"
 loglevel="INFO"
 logstep=1000
-declare -a input_samples=("A" "B" "C" "D" )
+declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
+declare -a input_samples=("A" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
 stream="muon"
-use5312ntuples="True"
+#use5312ntuples="True"
 
 #declare -a input_samples=('DY50plus:runevent:57156031:remove:true') #'B' 'C' 'D')
 #declare -a input_samples=('DY50plus:remove:false') #'B' 'C' 'D')

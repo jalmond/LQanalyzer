@@ -24,6 +24,14 @@ class JetSelection : public BaseSelection {
 
  
   void Selection (std::vector<snu::KJet>& jetColl);
+  void BasicSelection (std::vector<snu::KJet>& jetColl);
+  
+  bool PassUserID (ID id, snu::KJet jet);
+  bool PassUserID_PFJetLoose( snu::KJet jet);
+  bool PassUserID_PFJetMedium( snu::KJet jet);
+  bool PassUserID_PFJetTight( snu::KJet jet);
+
+  //// To be used in analysis
   void JetSelectionLeptonVeto(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
    
 };

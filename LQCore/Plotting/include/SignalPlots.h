@@ -42,6 +42,7 @@ class SignalPlots : public StdPlots{
   SignalPlots(const SignalPlots& sp);  ///Copy constructor
   /// assigment operator
   SignalPlots& operator=(const SignalPlots& obj);
+  float GetElectronISOEA(float eta);
 
   /// fill functions
   void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight);

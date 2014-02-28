@@ -53,7 +53,7 @@ namespace snu {
     int MotherIndex() const;
     
     // index of daughter particle
-    int DaughterIndex() const;
+    int NDaughter() const;
   
   
     ///Set the class members of the particle.
@@ -62,7 +62,7 @@ namespace snu {
     void SetType(PartType partType);
     void SetTruthParticleIndex(int truemu_index);
     void SetMotherIndex(int iMother);
-    void SetDaughterIndex(int iDaughter);
+    void SetNDaughter(int iDaughter);
   
   
     ///So we know what type of particle this is at run time.

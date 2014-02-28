@@ -26,7 +26,7 @@ KParticle()
   k_gen_pdgid=0; 
   k_gen_status=0;
   k_gen_indexmum=0;
-  k_gen_indexdau=0;
+  k_gen_ndau=0;
 
 }
 
@@ -47,7 +47,7 @@ KTruth::KTruth(const KTruth& mc) :
   k_gen_pdgid=mc.PdgId(); 
   k_gen_status=mc.GenStatus();
   k_gen_indexmum=mc.IndexMother();
-  k_gen_indexdau=mc.IndexDaughter();
+  k_gen_ndau=mc.NDaughter();
   
 }
 
@@ -69,7 +69,7 @@ void KTruth::Reset()
   k_gen_pdgid=0;
   k_gen_status=0;
   k_gen_indexmum=0;
-  k_gen_indexdau=0;
+  k_gen_ndau=0;
   
 }
 
@@ -89,7 +89,7 @@ KTruth& KTruth::operator= (const KTruth& p)
     k_gen_pdgid=p.PdgId(); 
     k_gen_status=p.GenStatus();
     k_gen_indexmum=p.IndexMother();
-    k_gen_indexdau=p.IndexDaughter();
+    k_gen_ndau=p.NDaughter();
   }
   
   return *this;
@@ -138,8 +138,8 @@ void KTruth::SetParticleIndexMother(double index_mum){
   k_gen_indexmum = int(index_mum);
 }
 
-void KTruth::SetParticleIndexDaughter(double index_dau){
-  k_gen_indexdau = int(index_dau);
+void KTruth::SetParticleNDaughter(double n_dau){
+  k_gen_ndau = int(n_dau);
 }
 
 

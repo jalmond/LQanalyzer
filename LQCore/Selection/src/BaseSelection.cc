@@ -17,6 +17,7 @@ BaseSelection::BaseSelection() {
   chiNdofMIN_cut = 0.;
   dxy_cut = 100000.;
   dxyMIN_cut = -1000000.;
+  k_id = EGAMMA_MEDIUM;
   
   apply_ptcut=false;
   apply_etacut=false;
@@ -28,6 +29,10 @@ BaseSelection::BaseSelection() {
   apply_dzcut=false;
   apply_general=false;
   apply_deposit=false;
+  
+  apply_ID= false;
+  apply_convcut= false;
+  apply_chargeconst = false;
 
 }
 
@@ -49,7 +54,7 @@ BaseSelection& BaseSelection::operator= (const BaseSelection& bs)
     chiNdofMIN_cut = bs.chiNdofMIN_cut;
     dxy_cut = bs.dxy_cut; 
     dxyMIN_cut = bs.dxyMIN_cut;
-    
+    k_id = bs.k_id;
     apply_ptcut= bs.apply_ptcut;
     apply_etacut= bs.apply_etacut;
     apply_jptcut= bs.apply_jptcut;
@@ -60,6 +65,10 @@ BaseSelection& BaseSelection::operator= (const BaseSelection& bs)
     apply_dzcut= bs.apply_dzcut;
     apply_general= bs.apply_general;
     apply_deposit= bs.apply_deposit;
+    apply_ID= bs.apply_ID;
+    apply_convcut= bs.apply_convcut;
+    apply_chargeconst = bs.apply_chargeconst;
+  
   }
   return *this;
 }
@@ -81,7 +90,7 @@ BaseSelection::BaseSelection(const BaseSelection& bs) {
   chiNdofMIN_cut = bs.chiNdofMIN_cut;
   dxy_cut = bs.dxy_cut; 
   dxyMIN_cut = bs.dxyMIN_cut;
-  
+  k_id = bs.k_id;
   apply_ptcut= bs.apply_ptcut;
   apply_etacut= bs.apply_etacut;
   apply_jptcut= bs.apply_jptcut;
@@ -92,6 +101,10 @@ BaseSelection::BaseSelection(const BaseSelection& bs) {
   apply_dzcut= bs.apply_dzcut;
   apply_general= bs.apply_general;
   apply_deposit= bs.apply_deposit;
+  apply_ID= bs.apply_ID;
+  apply_convcut= bs.apply_convcut;
+  apply_chargeconst = bs.apply_chargeconst;
+  
 
 }
 
@@ -115,7 +128,7 @@ void BaseSelection::reset(){
   chiNdofMIN_cut = 0.;
   dxy_cut = 100000.;
   dxyMIN_cut = -1000000.;
-  
+  k_id = EGAMMA_MEDIUM;
   apply_ptcut=false;
   apply_etacut=false;
   apply_jptcut=false;
@@ -124,6 +137,10 @@ void BaseSelection::reset(){
   apply_chi2cut=false;
   apply_dxycut=false;
   apply_dzcut=false;
+  apply_ID= false;
+  apply_convcut= false;
+  apply_chargeconst = false;
+
 }
 
 void BaseSelection::SetPt(Double_t minPt) {
@@ -139,6 +156,19 @@ void BaseSelection::SetPt(Double_t minPt, Double_t maxPt) {
   maxPt ? pt_cut_max=maxPt : pt_cut_max=10000.0;
 }
 
+void BaseSelection::SetID(ID id){
+  apply_ID = true;
+  k_id = id;
+}
+
+
+void BaseSelection::SetCheckCharge(bool check){
+  apply_chargeconst = check;
+}
+
+void BaseSelection::SetApplyConvVeto(bool apply){
+  apply_convcut=apply;
+}
 
 void BaseSelection::SetJetPt(Double_t minPt) {
   apply_jptcut=true;

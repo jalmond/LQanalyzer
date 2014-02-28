@@ -21,6 +21,27 @@ using namespace std;
 class BaseSelection {
 
  public:
+
+
+  enum ID {
+    EGAMMA_VETO              = 0,
+    EGAMMA_LOOSE             = 1,
+    EGAMMA_MEDIUM            = 2,
+    EGAMMA_TIGHT             = 3,
+    EGAMMA_TRIGTIGHT         = 4,
+    EGAMMA_TRIGWP70          = 5,
+    EGAMMA_EOP               = 6,
+    MVATrig                  = 7,
+    MVANonTrig               = 8,
+    ECAL_FIDUCIAL            = 9,
+    MUON_LOOSE               = 10,
+    MUON_TIGHT               = 11,
+    PFJET_LOOSE              = 12,
+    PFJET_MEDIUM             = 13,
+    PFJET_TIGHT              = 14
+    
+  };
+
   Int_t ifid;
   
   //// Selection cuts
@@ -52,6 +73,9 @@ class BaseSelection {
 
   /// bools to tell selector to apply cuts
   Bool_t  apply_ptcut,apply_etacut, apply_jptcut,apply_jetacut, apply_relisocut, apply_chi2cut, apply_dxycut, apply_dzcut, apply_general, apply_deposit;
+  Bool_t apply_ID, apply_convcut, apply_chargeconst;
+  
+  ID k_id;
   
   /// SetCut functions
   void reset();
@@ -68,6 +92,9 @@ class BaseSelection {
   void SetBSdxy(Double_t dxy);
   void SetBSdxy(Double_t dxyMIN, Double_t dxy);
   void SetBSdz(Double_t dz);
+  void SetID(ID  id);
+  void SetCheckCharge(bool check);
+  void SetApplyConvVeto(bool applu);
 };
 
 #endif

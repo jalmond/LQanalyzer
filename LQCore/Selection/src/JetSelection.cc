@@ -11,6 +11,22 @@ JetSelection::~JetSelection() {}
 
 //// This code is used to make selection cuts to vectors of KJets
 
+
+void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
+  
+  //// This is a basic set of cuts on jets
+
+  std::vector<KJet> alljets = k_lqevent.GetJets();
+
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+    
+    if ( jit->PassLooseID() && PassUserID(PFJET_LOOSE, *jit) &&    (jit->Pt() >= pt_cut_min) &&  (fabs(jit->Eta()) < eta_cut))  jetColl.push_back(*jit);
+    
+  }
+}
+
+  
+
 void JetSelection::Selection(std::vector<KJet>& jetColl) {
   
   //// This is a basic set of cuts on jets
@@ -22,15 +38,10 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
     if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
 	 fabs(jit->Eta()) < eta_cut
 	 && jit->PassLooseID()
-	 && jit->NeutralHadEnergyFraction() < 0.99
-	 && jit->NeutralEMEnergyFraction() < 0.99
-	 && jit->Nconstituents() > 1
-	 && ( fabs( jit->Eta() ) > 2.4 || ( jit->ChargedHadEnergyFraction() > 0. && jit->ChargedMultiplicity() > 0. && jit->ChargedEMEnergyFraction() < 0.99 ) ) ) { 
-      
-      jetColl.push_back(*jit);
-    }
+	 && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
   }
 }
+
 
 
 void JetSelection::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
@@ -62,6 +73,97 @@ void JetSelection::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vecto
   } /// End of Jet loop
   
 }
+
+
+bool JetSelection::PassUserID (ID id, snu::KJet jet){ 
+  if      ( id == PFJET_LOOSE  ) return PassUserID_PFJetLoose  (jet);
+  else if ( id == PFJET_MEDIUM ) return PassUserID_PFJetMedium (jet);
+  else if ( id == PFJET_TIGHT  ) return PassUserID_PFJetTight  (jet);
+  else return false;
+}
+
+bool JetSelection::PassUserID_PFJetLoose ( snu::KJet jet){
+  
+  bool pass_chargedHadFraction_central  = true;
+  bool pass_chargedEMFraction_central   = true;
+  bool pass_chargedMultiplicity_central = true;
+  bool pass_neutralhadFraction          = bool ( jet.NeutralHadEnergyFraction () < 0.99 );
+  bool pass_neutralEMFraction           = bool ( jet.NeutralEMEnergyFraction     () < 0.99 );
+  bool pass_nConstituents               = bool ( jet.Nconstituents               () > 1    );
+
+
+  if ( fabs ( jet.Eta() ) < 2.4 ) {
+    pass_chargedHadFraction_central = bool ( jet.ChargedHadEnergyFraction() > 0.0  );
+    pass_chargedMultiplicity_central= bool ( jet.ChargedMultiplicity        () > 0    );
+    pass_chargedEMFraction_central  = bool ( jet.ChargedEMEnergyFraction    () < 0.99 );
+  }
+  
+  bool decision = ( pass_chargedHadFraction_central  && 
+		        pass_chargedEMFraction_central   && 
+		        pass_chargedMultiplicity_central && 
+		        pass_neutralhadFraction          && 
+		        pass_neutralEMFraction           && 
+		    pass_nConstituents                );
+  
+  return decision;
+  
+}
+
+
+
+bool JetSelection::PassUserID_PFJetMedium( snu::KJet jet ){
+  
+  bool pass_chargedHadFraction_central  = true;
+  bool pass_chargedEMFraction_central   = true;
+  bool pass_chargedMultiplicity_central = true;
+  bool pass_neutralhadFraction          = bool ( jet.NeutralHadEnergyFraction () < 0.95 );
+  bool pass_neutralEMFraction           = bool ( jet.NeutralEMEnergyFraction     () < 0.95 );
+  bool pass_nConstituents               = bool ( jet.Nconstituents               () > 1    );
+  
+  if ( fabs ( jet.Eta() ) < 2.4 ) {
+    pass_chargedHadFraction_central = bool ( jet.ChargedHadEnergyFraction() > 0.0  );
+    pass_chargedMultiplicity_central= bool ( jet.ChargedMultiplicity        () > 0    );
+    pass_chargedEMFraction_central  = bool ( jet.ChargedEMEnergyFraction    () < 0.99 );
+  }
+  
+  bool decision = ( pass_chargedHadFraction_central  && 
+		        pass_chargedEMFraction_central   && 
+		        pass_chargedMultiplicity_central && 
+		        pass_neutralhadFraction          && 
+		        pass_neutralEMFraction           && 
+		    pass_nConstituents                );
+
+  return decision;
+
+}
+
+bool JetSelection::PassUserID_PFJetTight ( snu::KJet jet ){
+  
+  bool pass_chargedHadFraction_central  = true;
+  bool pass_chargedEMFraction_central   = true;
+  bool pass_chargedMultiplicity_central = true;
+  bool pass_neutralhadFraction          = bool ( jet.NeutralHadEnergyFraction () < 0.90 );
+  bool pass_neutralEMFraction           = bool ( jet.NeutralEMEnergyFraction     () < 0.90 );
+  bool pass_nConstituents               = bool ( jet.Nconstituents               () > 1    );
+  
+  if ( fabs ( jet.Eta() ) < 2.4 ) {
+    pass_chargedHadFraction_central = bool ( jet.ChargedHadEnergyFraction() > 0.0  );
+    pass_chargedMultiplicity_central= bool ( jet.ChargedMultiplicity        () > 0    );
+    pass_chargedEMFraction_central  = bool ( jet.ChargedEMEnergyFraction    () < 0.99 );
+  }
+  
+  bool decision = ( pass_chargedHadFraction_central  && 
+		        pass_chargedEMFraction_central   && 
+		        pass_chargedMultiplicity_central && 
+		        pass_neutralhadFraction          && 
+		        pass_neutralEMFraction           && 
+		    pass_nConstituents                );
+
+  return decision;
+
+}
+
+
 
 
 JetSelection& JetSelection::operator= (const JetSelection& ms) {

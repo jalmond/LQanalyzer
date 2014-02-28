@@ -36,7 +36,7 @@ KParticle::KParticle(const KParticle& p) :
     partType_(p.GetType()),
     k_index(p.ParticleIndex()),
     k_mindex(p.MotherIndex()),
-    k_dindex(p.DaughterIndex()),
+    k_dindex(p.NDaughter()),
     m_charge(p.Charge())
  {
  }
@@ -95,7 +95,7 @@ int KParticle::MotherIndex() const {
   return k_mindex;
 }
 
-int KParticle::DaughterIndex() const {
+int KParticle::NDaughter() const {
   return k_dindex;
 }
 
@@ -153,7 +153,7 @@ KParticle& KParticle::operator=(const KParticle& p)
 	partType_= p.GetType();
 	k_index= p.ParticleIndex();
 	k_mindex= p.MotherIndex();
-	k_dindex =p.DaughterIndex();
+	k_dindex =p.NDaughter();
     }
 
     return *this;
@@ -224,6 +224,6 @@ void KParticle::SetMotherIndex(int index){
   k_mindex = index;
 }
 
-void KParticle::SetDaughterIndex(int index){
+void KParticle::SetNDaughter(int index){
   k_dindex = index;
 }

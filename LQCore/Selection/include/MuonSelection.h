@@ -17,11 +17,16 @@ class MuonSelection : public BaseSelection {
   
   MuonSelection& operator= (const MuonSelection& obj);
   MuonSelection(const MuonSelection& bs);
-
+  
+  bool PassID(ID id, snu::KMuon mu);
   
   //// General Selection
   void Selection(std::vector<snu::KMuon>& leptonColl);
 
+  /// selection for treemaker
+  void BasicSelection(std::vector<snu::KMuon>& leptonColl);
+
+  void SkimSelection( std::vector<snu::KMuon>& leptonColl); 
   //// HN analysis selection
   void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
   void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl) ;

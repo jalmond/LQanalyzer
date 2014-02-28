@@ -27,11 +27,11 @@ class AnalyzerCore : public LQCycleBase {
   virtual void EndEvent()throw( LQError );
   virtual void WriteHistograms()throw( LQError );
 
-  
+  double ElectronScaleFactor( double eta, double pt);
 
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
-
+  
   
   //
   // Useful message function 

@@ -13,7 +13,7 @@
 //Core includes
 #include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
-
+#include "BaseSelection.h"
 
 //// Needed to allow inheritance for use in LQCore/core classes
 ClassImp (ExampleAnalyzer);
@@ -70,9 +70,9 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
       
    /// Trigger List (specific to muons channel)
    std::vector<TString> triggerslist;
+   //triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
    triggerslist.push_back("HLT_Mu17_TkMu8_v");
-   triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
-   
+
    if(!PassTrigger(triggerslist, prescale)) return;
 
    FillCutFlow("TriggerCut", weight);
@@ -112,6 +112,7 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    /// 1) Tight Muons       
    std::vector<snu::KMuon> muonTightColl;
    eventbase->GetMuonSel()->SetPt(20.); 
+   eventbase->GetElectronSel()->SetID(BaseSelection::MUON_TIGHT);
    eventbase->GetMuonSel()->SetEta(2.4);
    eventbase->GetMuonSel()->SetRelIso(0.1);
    eventbase->GetMuonSel()->SetChiNdof(10.); 
@@ -156,13 +157,17 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    
    /// 5) TightElectrons                                                                                                                                                     
    std::vector<snu::KElectron> electronTightColl;
+   eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
    eventbase->GetElectronSel()->SetPt(25);
    eventbase->GetElectronSel()->SetEta(2.5);
    eventbase->GetElectronSel()->SetRelIso(0.15);
    eventbase->GetElectronSel()->SetBSdxy(0.02);
    eventbase->GetElectronSel()->SetBSdz(0.10);
+   eventbase->GetElectronSel()->SetCheckCharge(true);
+   eventbase->GetElectronSel()->SetApplyConvVeto(true);
    eventbase->GetElectronSel()->Selection(electronTightColl);
 
+  
    /// 6) Jets(with lepton veto) 
    std::vector<snu::KJet> jetColl_lepveto;
    eventbase->GetJetSel()->SetPt(20.);
@@ -182,11 +187,20 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
        FillCLHist(sighist, "Sigmuons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
     }
    }
-  
+   
+   
+   
+
 
   ///// SOME STANDARD PLOTS /////
   ////  Z-> ee              //////
    if (electronTightColl.size() == 2) {      
+     
+     if(!isData){
+       weight *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt());
+       weight *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt());
+     }
+       
      snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
      if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
        FillHist("h_nvtx_rw_tight_ee",numberVertices,weight, 0., 60.,60 );
@@ -250,10 +264,10 @@ void ExampleAnalyzer::FillCutFlow(TString cut, float weight){
     AnalyzerCore::MakeHistograms("cutflow", 5,0.,5.);
 
     GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"EventCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"TriggerCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"DiEl_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"DiEl_tight");
    
     
   }
