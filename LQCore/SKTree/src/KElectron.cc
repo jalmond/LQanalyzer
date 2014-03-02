@@ -40,6 +40,8 @@ KParticle()
   k_trkvz=0.;
   k_vtx_xy=0.;
   k_vtx_z=0.;
+  k_lvtx_xy=0.;
+  k_lvtx_z=0.;
   k_dxy=0;
   k_dz=0;
   k_gsf_ctscpix_charge=false;
@@ -103,6 +105,8 @@ KElectron::KElectron(const KElectron& el) :
   k_trkvz= el.TrkVz();
   k_vtx_xy= el.VtxDistXY();
   k_vtx_z= el.VtxDistZ();
+  k_lvtx_xy= el.LeadVtxDistXY();
+  k_lvtx_z= el.LeadVtxDistZ();
   k_dxy= el.dxy();
   k_dz= el.dz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
@@ -169,6 +173,8 @@ void KElectron::Reset()
   k_trkvz=0.;
   k_vtx_xy=0.;
   k_vtx_z=0.;
+  k_lvtx_xy=0.;
+  k_lvtx_z=0.;
   k_dxy=0;
   k_dz=0;
   k_gsf_ctscpix_charge=false;
@@ -232,6 +238,8 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_trkvz= p.TrkVz();
     k_vtx_xy= p.VtxDistXY();
     k_vtx_z= p.VtxDistZ();
+    k_lvtx_xy= p.LeadVtxDistXY();
+    k_lvtx_z= p.LeadVtxDistZ();
     k_dxy= p.dxy();
     k_dz= p.dz();
     k_gsf_ctscpix_charge= p.GsfCtfScPixChargeConsistency();
@@ -372,6 +380,14 @@ void KElectron::SetVtxDistXY(Double_t vtx_dist_xy){
 void KElectron::SetVtxDistZ(Double_t vtx_dist_z){
   k_vtx_z = vtx_dist_z;
 }
+
+void KElectron::SetLeadVtxDistXY(Double_t lvtx_dist_xy){
+  k_lvtx_xy= lvtx_dist_xy;
+}
+void KElectron::SetLeadVtxDistZ(Double_t lvtx_dist_z){
+  k_lvtx_z = lvtx_dist_z;
+}
+
 
 void KElectron::SetTrkIsoDR03(Double_t trkiso){  
   k_trkiso_03  = trkiso;

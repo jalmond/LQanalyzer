@@ -198,6 +198,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     //// distance of closest vertex to lepton
     el.SetVtxDistXY(ElectronVtxDistXY->at(iel));
     el.SetVtxDistZ(ElectronVtxDistZ->at(iel));
+    el.SetLeadVtxDistXY(ElectronLeadVtxDistXY->at(iel));
+    el.SetLeadVtxDistZ(ElectronLeadVtxDistZ->at(iel));
     
     el.SetVtxIndex(ElectronVtxIndex->at(iel));
     el.SetPrimaryVertexDXY(ElectronPrimaryVertexDXY->at(iel));
@@ -254,6 +256,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetMissingHits(ElectronMissingHitsEG->at(iel));
     el.SetMissingLostHits(ElectronMissingHits->at(iel));
     el.SetHasMatchedConvPhot(ElectronHasMatchedConvPhot->at(iel));
+
     el.SetConvFitProb(ElectronConvFitProb->at(iel));
     el.SetNBrems(ElectronNumberOfBrems->at(iel));
     el.SetFBrem(ElectronFbrem->at(iel));

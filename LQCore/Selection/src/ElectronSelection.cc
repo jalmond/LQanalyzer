@@ -20,6 +20,7 @@ void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl) {
     
     if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
     if ( el->CaloEnergy()==0 ) continue;
+    
     if ( !PassUserID(EGAMMA_MEDIUM, *el, false, rho) ) continue;
     
     
@@ -137,24 +138,23 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, bool recal
 
 bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool recalculate, double jetrho){
 
-  if(recalculate){
-    if ( id == EGAMMA_TIGHT   ) return PassUserID_EGamma2012     ( EGAMMA_TIGHT, el, jetrho);
-    else if ( id == EGAMMA_MEDIUM  ) return PassUserID_EGamma2012     (EGAMMA_MEDIUM,el, jetrho);
-    else if ( id == EGAMMA_LOOSE   ) return PassUserID_EGamma2012     (EGAMMA_LOOSE,el, jetrho);
-    else if ( id == EGAMMA_VETO    ) return PassUserID_EGamma2012     (EGAMMA_VETO,el, jetrho);
-    else if ( id == EGAMMA_TRIGTIGHT ) return PassUserID_EGamma2012     (EGAMMA_TRIGTIGHT,el, jetrho);
-    else if ( id == EGAMMA_TRIGWP70 ) return PassUserID_EGamma2012     (EGAMMA_TRIGWP70,el, jetrho);
-    else if ( id == EGAMMA_EOP      ) return PassUserID_EGamma2012     (EGAMMA_EOP,el, jetrho);
-    else if ( id == MVATrig            ) return PassUserID_MVA     (el, true);
-    else if ( id == MVANonTrig            ) return PassUserID_MVA     (el, false);
-    else if ( id == ECAL_FIDUCIAL  ) return PassUserID_ECALFiducial     (el);
-    else return false;
-  }
-  else{
-    if ( id == EGAMMA_TIGHT   )  return el.PassEGammaIDTight();
-    else if ( id == EGAMMA_MEDIUM  ) return el.PassEGammaIDMedium();
-    else if ( id == EGAMMA_LOOSE   ) return el.PassEGammaIDLoose();
-    else if ( id == EGAMMA_VETO    ) return el.PassEGammaIDVeto();
+  
+  if ( id == EGAMMA_TIGHT   ) return PassUserID_EGamma2012     ( EGAMMA_TIGHT, el, jetrho);
+  else if ( id == EGAMMA_MEDIUM  ) return PassUserID_EGamma2012     (EGAMMA_MEDIUM,el, jetrho);
+  else if ( id == EGAMMA_LOOSE   ) return PassUserID_EGamma2012     (EGAMMA_LOOSE,el, jetrho);
+  else if ( id == EGAMMA_VETO    ) return PassUserID_EGamma2012     (EGAMMA_VETO,el, jetrho);
+  else if ( id == EGAMMA_TRIGTIGHT ) return PassUserID_EGamma2012     (EGAMMA_TRIGTIGHT,el, jetrho);
+  else if ( id == EGAMMA_TRIGWP70 ) return PassUserID_EGamma2012     (EGAMMA_TRIGWP70,el, jetrho);
+  else if ( id == EGAMMA_EOP      ) return PassUserID_EGamma2012     (EGAMMA_EOP,el, jetrho);
+  else if ( id == MVATrig            ) return PassUserID_MVA     (el, true);
+  else if ( id == MVANonTrig            ) return PassUserID_MVA     (el, false);
+  else if ( id == ECAL_FIDUCIAL  ) return PassUserID_ECALFiducial     (el);
+  else return false;
+  
+  /*if ( id == EGAMMA_TIGHT   )  return (el.PassEGammaIDTight() == 1023);
+    else if ( id == EGAMMA_MEDIUM  ) return (el.PassEGammaIDMedium() == 1023);
+    else if ( id == EGAMMA_LOOSE   ) return (el.PassEGammaIDLoose()== 1023);
+    else if ( id == EGAMMA_VETO    ) return (el.PassEGammaIDVeto()== 1023);
     else if ( id == EGAMMA_TRIGTIGHT ) return el.PassEGammaIDTrigTight();
     else if ( id == EGAMMA_TRIGWP70 ) return el.PassEGammaIDTrigWP70();
     else if ( id == EGAMMA_EOP      ) return el.PassEGammaIDEoP(); 
@@ -162,8 +162,7 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool recalculate, d
     else if ( id == MVANonTrig            )  return PassUserID_MVA     (el, false);
     else return false;
     
-    
-  }
+  */
   
   
 }
@@ -178,7 +177,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   //----------------------------------------------------------------------
   // Barrel electron cut values
   //----------------------------------------------------------------------
-
+  
   double l_b_dEtaIn  [4] = { 0.007 , 0.007, 0.004, 0.004 };
   double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.06 , 0.03 };
   double l_b_sieie   [4] = { 0.01  , 0.01 , 0.01 , 0.01 };
@@ -242,7 +241,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   for (int i = 0; i < 7; ++i ){ 
     double bin_minimum = effective_area_eta_minimums[i];
     double bin_maximum = effective_area_eta_maximums[i];
-    if ( fabs(el.Eta()) >= bin_minimum && fabs(el.Eta()) < bin_maximum ) {
+    if ( fabs(el.SCEta()) >= bin_minimum && fabs(el.SCEta()) < bin_maximum ) {
       effective_area_03 = effective_areas_03 [i];
       effective_area_04 = effective_areas_04 [i];
     }
@@ -250,6 +249,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   
   double egamma_pfiso_03 = el.PFChargedHadronIso03() + std::max ( el.PFPhotonIso03() + el.PFNeutralHadronIso03() - ( jetrho * effective_area_03 ), 0.0 );
   double egamma_pfiso_04 = el.PFChargedHadronIso04() + std::max ( el.PFPhotonIso04() + el.PFNeutralHadronIso04() - ( jetrho * effective_area_04 ), 0.0 );
+  
 
   egamma_pfiso_03 /= el.Pt();
   egamma_pfiso_04 /= el.Pt();
@@ -264,8 +264,8 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
     pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_b_dPhiIn  [ id ] ) ;
     pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_b_sieie   [ id ] ) ;
     pass_hoe           = bool ( el.HoE            ()  <= l_b_hoe     [ id ] ) ;
-    pass_vtxDistXY     = bool ( fabs(el.VtxDistXY())  <= l_b_d0      [ id ] ) ;
-    pass_vtxDistZ      = bool ( fabs(el.VtxDistZ ())  <= l_b_dZ      [ id ] ) ;
+    pass_vtxDistXY     = bool ( fabs(el.LeadVtxDistXY())  <= l_b_d0      [ id ] ) ;
+    pass_vtxDistZ      = bool ( fabs(el.LeadVtxDistZ ())  <= l_b_dZ      [ id ] ) ;
     pass_ep            = bool ( egamma_ep          <= l_b_ep      [ id ] ) ;
     pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_b_pfRelIso[ id ] ) ;
     pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_b_vtxProb [ id ] ) ;
@@ -283,8 +283,8 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
     pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_e_dPhiIn  [ id ] ) ;
     pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_e_sieie   [ id ] ) ;
     pass_hoe           = bool ( el.HoE          ()    <= l_e_hoe     [ id ] ) ;
-    pass_vtxDistXY     = bool ( fabs(el.VtxDistXY())  <= l_e_d0      [ id ] ) ;
-    pass_vtxDistZ      = bool ( fabs(el.VtxDistZ ())  <= l_e_dZ      [ id ] ) ;
+    pass_vtxDistXY     = bool ( fabs(el.LeadVtxDistXY())  <= l_e_d0      [ id ] ) ;
+    pass_vtxDistZ      = bool ( fabs(el.LeadVtxDistZ ())  <= l_e_dZ      [ id ] ) ;
     pass_ep            = bool ( egamma_ep          <= l_e_ep      [ id ] ) ;
     pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_e_pfRelIso[ id ] ) ;
     pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_e_vtxProb [ id ] ) ;
@@ -302,6 +302,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
 		         pass_pfIsolation   && 
 		         pass_convFitProb   && 
 		      pass_missingHits   ) ;
+  
   
   return decision;
   

@@ -59,6 +59,8 @@ namespace snu {
     void SetVtxIndex (Int_t vtx_index);
     void SetVtxDistXY(Double_t vtx_dist_xy);
     void SetVtxDistZ(Double_t vtx_dist_z);
+    void SetLeadVtxDistXY(Double_t vtx_dist_xy);
+    void SetLeadVtxDistZ(Double_t vtx_dist_z);
     void Setdxy(Double_t d_xy);
     void Setdz(Double_t d_z);
     void SetPrimaryVertexDXY(Double_t pv_dist_xy);
@@ -156,7 +158,9 @@ namespace snu {
     /// method 2
     inline Double_t VtxDistXY() const {return k_vtx_xy;}
     inline Double_t VtxDistZ() const {return k_vtx_z;}
-    
+    ///
+    inline Double_t LeadVtxDistXY() const {return k_lvtx_xy;}
+    inline Double_t LeadVtxDistZ() const {return k_lvtx_z;}
 
     // charge variables
     inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
@@ -211,7 +215,7 @@ namespace snu {
     Double_t k_dxy, k_dz;
     Double_t k_sceta,k_scphi, k_rawenergy;
     Bool_t k_pass_egammaID_eop, k_pass_egammaID_loose, k_pass_egammaID_medium, k_pass_egammaID_tight, k_pass_egammaID_trigtight, k_pass_egammaID_trigwp70, k_pass_egammaID_veto;
-    Double_t k_vtx_xy, k_vtx_z;
+    Double_t k_vtx_xy, k_vtx_z, k_lvtx_xy, k_lvtx_z;
     Bool_t k_gsf_ctscpix_charge, k_gsf_scpix_charge, k_gsf_ct_charge;
     Double_t k_convFitProb, k_nbrems, k_fbrem;
     
@@ -219,7 +223,7 @@ namespace snu {
     Int_t k_vertex_index;
     
 
-    ClassDef(KElectron,3)
+    ClassDef(KElectron,4)
   }; 
   
 }//namespace snu

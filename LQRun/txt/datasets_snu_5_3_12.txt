@@ -1,29 +1,33 @@
 ### SKTrees ##########
 ##################
 ### Data#############
-SKmuon A /data/cms1/cms1_data1/SKTrees/Data/DiMu/periodA/
-SKmuon B /data/cms1/cms1_data1/SKTrees/Data/DiMu/periodB/
-SKmuon C /data/cms1/cms1_data1/SKTrees/Data/DiMu/periodC/
-SKmuon D /data/cms1/cms1_data1/SKTrees/Data/DiMu/periodD/
 
-SKegamma A /data/cms1/cms1_data1/SKTrees/Data/DiEl/periodA/
-SKegamma B /data/cms1/cms1_data1/SKTrees/Data/DiEl/periodB/
-SKegamma C /data/cms1/cms1_data1/SKTrees/Data/DiEl/periodC/
-SKegamma D /data/cms1/cms1_data1/SKTrees/Data/DiEl/periodD/
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiMuon/periodA/
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiMuon/periodB/
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiMuon/periodC/
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiMuon/periodD/
+
+SKegamma A /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiElectron/periodA/
+SKegamma B /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiElectron/periodB/
+SKegamma C /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiElectron/periodC/
+SKegamma D /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/Data/DiElectron/periodD/
+
+### MC #############
+SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/DY10to50/
+SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/DY50plus/
+SKttbar      29588.256     /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/ttbar/
+SKWW         182363.161    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/WW/
+SKWZ         301122.644    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/WZ/
+SKZZ         555109.777    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/ZZ/
+SKWjets      1538.562       /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/MC/Wjets/
+
 
 SKemu A /data/cms1/cms1_data1/SKTrees/Data/EMu/periodA/
 SKemu B /data/cms1/cms1_data1/SKTrees/Data/EMu/periodB/
 SKemu C /data/cms1/cms1_data1/SKTrees/Data/EMu/periodC/
 SKemu D /data/cms1/cms1_data1/SKTrees/Data/EMu/periodD/
 
-### MC #############
-SKDY10to50   3424.007  /data/cms1/cms1_data1/SKTrees/MC//DY10to50/
-SKDY50plus   8693.5   /data/cms1/cms1_data1/SKTrees/MC//DY50plus/
-SKttbar	     29588.256	      /data/cms1/cms1_data1/SKTrees/MC//ttbar/
-SKWW 	     182363.161       /data/cms1/cms1_data1/SKTrees/MC//WW/
-SKWZ 	     301122.644		      /data/cms1/cms1_data1/SKTrees/MC//WZ/
-SKZZ 	     555109.777		      /data/cms1/cms1_data1/SKTrees/MC//ZZ/
-SKWjets      1538.562 		      /data/cms1/cms1_data1/SKTrees/MC//Wjets/
+
 
 ### LQNtuples ########################################################
 ####

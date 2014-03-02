@@ -47,7 +47,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////   
   
   std::vector<snu::KMuon> skim_muons;
-  eventbase->GetMuonSel()->SetPt(15); 
+  eventbase->GetMuonSel()->SetPt(10); 
   eventbase->GetMuonSel()->SetEta(5.);
   eventbase->GetMuonSel()->BasicSelection(out_muons); /// Muons For SKTree
   /// Selection for event skim
@@ -61,7 +61,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
 
   std::vector<snu::KElectron> skim_electrons;
-  eventbase->GetElectronSel()->SetPt(15); 
+  eventbase->GetElectronSel()->SetPt(10); 
   eventbase->GetElectronSel()->SetEta(5.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
   eventbase->GetElectronSel()->SetPt(15);
