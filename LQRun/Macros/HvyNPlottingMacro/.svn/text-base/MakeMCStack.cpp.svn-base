@@ -1,0 +1,69 @@
+#include "MakeMCStack.hpp"
+#include "HistUtils.hpp"
+
+#include "TH2.h"
+#include <iostream>
+#include "TMath.h"
+//#include <sstream>
+
+using namespace std;
+
+
+THStack* MakeMCStack(vector<pair<pair<TH1*,int>, TString> > mchists) {
+  
+
+  /// Want to make a stack of all background hists
+  //THStack* stack; 
+  THStack* stack = new THStack();
+  cout << "Filling stack " << endl;
+  
+  /// loop over mchists
+  // mc hists is a vector of all background hist
+  
+  for(vector<pair<pair<TH1*,int>, TString> >::iterator it = mchists.begin(); it!= mchists.end(); it++){
+
+    /// it = pair < pair < TH1 (of bkg), int (colour of hist > , TString (for name)
+    TH1* h = it->first.first;
+    
+    cout << h->Integral() << endl;
+    
+    stack->Add(h);    
+    cout << "Adding hist" << endl;
+  }
+
+
+  return stack;
+
+}//MakeMCStack
+
+
+
+
+TH1* MakeMCSum(vector<pair<pair<TH1*,int>, TString> > mchists, vector<THStack*>& vstack) {
+  
+  THStack* thestack =MakeMCStack(mchists);
+  vstack.push_back(thestack);
+
+  TH1* hsum=0;
+
+  TList* list = thestack->GetHists();
+  TIter it(list, true);
+  TObject* obj=0;
+  while( (obj = it.Next()) ) {
+    TH1* h = dynamic_cast<TH1*>(obj);
+    cout << "Int = " << h->Integral() << endl;;
+    if(!hsum) hsum = (TH1*)h->Clone( (string(h->GetName()) + "_sum").c_str() );
+    else {
+      hsum->Add(h, 1.0);
+    }
+  }//hist loop
+
+  return hsum;
+
+}//MakeMCSum
+
+
+
+
+
+

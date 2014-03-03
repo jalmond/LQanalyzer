@@ -1,0 +1,43 @@
+#ifndef NORMALIZESEMIISO_H__
+#define NORMALIZESEMIISO_H__
+
+#include "TFile.h"
+
+#include <string>
+#include <utility>
+#include <vector>
+
+class TCanvas;
+class TH1;
+
+class NormalizeSemiIso {
+
+
+public:
+
+  NormalizeSemiIso();
+
+  void calcSimpleFact();
+
+  void setMCFiles(std::vector<std::pair<TFile*, int> >& mcfiles);
+
+  void setDataFile(TFile* file);
+
+  void calcSimpleFact(std::string hname);
+
+  TCanvas* CompDataMC_SimpleNorm(std::string hname, const int rebin=1);
+
+private:
+
+  std::vector<std::pair<TFile*, int> > m_mcfiles;
+
+  TFile* m_fdata;
+		      
+  double m_simpleFact;
+
+  TH1* getDataHist(std::string hname, int rebin=1);
+  TH1* getNonIsoDataHist(std::string hname, int rebin=1);
+
+};
+
+#endif//NORMALIZESEMIISO_H__

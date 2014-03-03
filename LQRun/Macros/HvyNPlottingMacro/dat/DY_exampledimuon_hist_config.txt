@@ -1,0 +1,13 @@
+DiMuon/h_MET 1 0 200.
+DiMuon/h_Njets 1 0 10
+DiMuon/h_bTag 1 0 1
+DiMuon/h_mumumass 1 40 150
+DiMuon/h_muonseta 1 -4 4
+DiMuon/h_leadingMuonPt 1 0 100.
+DiMuon/h_secondMuonPt 1 0 100.
+END
+h_nvtx_norw 1 0 30
+h_nvtx_rw 1 0 30
+h_nvtx_rw_tight 1 0 30
+zpeak 2 75. 105.
+END
