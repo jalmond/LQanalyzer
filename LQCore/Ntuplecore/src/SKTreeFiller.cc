@@ -69,9 +69,40 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     return kevent;
   }
  
-  VertexN = -999; 
-  kevent.SetMET( PFMETType01XYCor->at(0));
+  VertexN = -999;
+  
+  
+  /// MET variables
+  // PF met
+  kevent.SetPFMET( PFMETType01XYCor->at(0));
+  kevent.SetPFMETphi( PFMETPhiType01XYCor->at(0));
+  kevent.SetPFSumET( PFSumETType01XYCor->at(0));
+  
+  if(PFMETType01XYCorElectronEnDown){
+    kevent.SetPFMETElectronEnDown(PFMETType01XYCorElectronEnDown->at(0));
+    kevent.SetPFMETElectronEnUp(PFMETType01XYCorElectronEnUp->at(0));
+    kevent.SetPFMETJetEnDown(PFMETType01XYCorJetEnDown->at(0));
+    kevent.SetPFMETJetEnUp(PFMETType01XYCorJetEnUp->at(0));
+    kevent.SetPFMETJetResDown( PFMETType01XYCorJetResDown->at(0));
+    kevent.SetPFMETJetResUp( PFMETType01XYCorJetResUp->at(0));
+    kevent.SetPFMETMuonEnDown(PFMETType01XYCorMuonEnDown->at(0));
+    kevent.SetPFMETMuonEnUp(PFMETType01XYCorMuonEnUp->at(0));
+    kevent.SetPFMETUnclusteredDown(PFMETType01XYCorUnclusteredDown->at(0));
+    kevent.SetPFMETUnclusteredUp(PFMETType01XYCorUnclusteredUp->at(0));
+  }
+  
+  // TC met
+  kevent.SetTCMET( TCMET->at(0));
+  kevent.SetTCMETphi( TCMETPhi->at(0));
+  kevent.SetTCSumET( TCSumET->at(0));
 
+  kevent.SetCaloMET( CaloMETType1Cor->at(0));  
+  kevent.SetCaloMETphi( CaloMETPhiType1Cor->at(0));
+  kevent.SetCaloSumET(CaloSumETType1Cor->at(0));
+  
+  
+
+  //// Filling vertex variables
   int nVertices = VertexNDF->size();
   kevent.SetNVertices(nVertices);
   goodVerticies = new Bool_t [nVertices];
@@ -88,25 +119,31 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     }
   }
 
-
-  
-  kevent.SetVertexIndex(VertexN); /// setting event vertex
-  kevent.SetIsData(isData);
-  if(!isData)kevent.SetWeight(Weight);  
-  else kevent.SetWeight(0.);  
-  kevent.SetRunNumber(run);
-  kevent.SetEventNumber(event);
   kevent.SetIsPrimaryVertex(isPrimaryVertex);
-
+  
+  kevent.SetVertexIndex(VertexN); /// setting event vertex (chooses vertex that passes selection of a good vertex with sum pt of all tracks is greatest
+  
   if(VertexN != -999){
+    /// This is the X/Y/Z coordinate of the Primary vertex
     kevent.SetVertexX(VertexX->at(VertexN));
     kevent.SetVertexY(VertexY->at(VertexN));
     kevent.SetVertexZ(VertexZ->at(VertexN));  
     kevent.SetVertexIsFake(VertexIsFake->at(VertexN));
   }
   else VertexN = -1;
+
+
+  /// Filling JetRho for PFisolation pile up corrections
   kevent.SetJetRho(rhoJets);
+
+  /// Filling event variables
+  kevent.SetIsData(isData);
+  if(!isData)kevent.SetWeight(Weight);
+  else kevent.SetWeight(0.);
+  kevent.SetRunNumber(run);
+  kevent.SetEventNumber(event);
   
+  /// MET filter cuts/checks
   kevent.SetIsTrackingFailure(isTrackingFailure);
   kevent.SetPassTrackingFailureFilter(passTrackingFailureFilter);
   kevent.SetPassBeamHaloFilterLoose(passBeamHaloFilterLoose);
@@ -118,6 +155,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPassHBHENoiseFilter(passHBHENoiseFilter);
   kevent.SetPassHcalLaserEventFilter(passHcalLaserEventFilter);
 
+  /// 
   if(!isData)kevent.SetPileUpInteractionsTrue(PileUpInteractionsTrue->at(0));
   else kevent.SetPileUpInteractionsTrue(-999.);
   
@@ -752,7 +790,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenZMuPt->at(it), GenZMuEta->at(it), GenZMuPhi->at(it), GenZMuEnergy->at(it));
     bool duplicate = false;
-    for(int itr = 0; itr < vtruth.size() ; itr++){
+    for(unsigned int itr = 0; itr < vtruth.size() ; itr++){
       if( (GenZMuPdgId->at(it) == vtruth.at(itr).PdgId()) && (truthp.DeltaR(vtruth.at(itr)) < 0.1)) duplicate = true;
     }
 
@@ -792,7 +830,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetPtEtaPhiE(GenZTauPt->at(it), GenZTauEta->at(it), GenZTauPhi->at(it), GenZTauEnergy->at(it));
     
     bool duplicate = false;
-    for(int itr = 0; itr < vtruth.size() ; itr++){
+    for(unsigned int itr = 0; itr < vtruth.size() ; itr++){
       if( (GenZTauPdgId->at(it) == vtruth.at(itr).PdgId()) && (truthp.DeltaR(vtruth.at(itr)) < 0.1)) duplicate = true;
     }
 
@@ -833,7 +871,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetPtEtaPhiE(GenZElectronPt->at(it), GenZElectronEta->at(it), GenZElectronPhi->at(it), GenZElectronEnergy->at(it));
 
     bool duplicate = false;
-    for(int itr = 0; itr < vtruth.size() ; itr++){
+    for(unsigned int itr = 0; itr < vtruth.size() ; itr++){
       if( (GenZElectronPdgId->at(it) == vtruth.at(itr).PdgId()) && (truthp.DeltaR(vtruth.at(itr)) < 0.1)) duplicate = true;
     }
 

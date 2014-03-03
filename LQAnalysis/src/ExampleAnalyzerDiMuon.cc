@@ -70,7 +70,7 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
    /// These are applied in AnalyzerCore::PassBasicEventCuts
    if(!PassBasicEventCuts()) return;     /// Initial event cuts  
    FillCutFlow("EventCut", weight);
-      
+
    
    /// Trigger List (specific to muons channel)
    std::vector<TString> triggerslist;
@@ -250,31 +250,7 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
      } /// OS muons
    }//// 2Muon (Tight) Loop
    
-   
-   
-
-
-  ///// SOME STANDARD PLOTS /////
-  ////  Z-> ee              //////
-   if (electronTightColl.size() == 2) {      
      
-     if(!isData){
-       weight *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt());
-       weight *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt());
-     }
-       
-     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
-     if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
-       FillHist("h_nvtx_rw_tight_ee",numberVertices,weight, 0., 60.,60 );
-       FillCutFlow("DiEl_tight",weight);
-       FillHist("zpeak_ee", Z.M(), weight, 0., 200.,400);      
-       FillCLHist(sighist, "Zelectrons_jlv", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-     } 
-     else {
-       FillCLHist(sighist, "Sigelectrons", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-     }
-  }
-  
   return;
 }// End of execute event loop
   
@@ -329,7 +305,7 @@ void ExampleAnalyzerDiMuon::FillCutFlow(TString cut, float weight){
     GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
     GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
     GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"DiEl_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"DiMu_tight");
    
     
   }

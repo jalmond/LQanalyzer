@@ -252,7 +252,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       FillCLHist(sighist, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
 
       if(electronVetoColl.size()==2){
-	FillCLHist(sighist, "DiElectron_LooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+	FillCLHist(sighist, "DiElectronLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
       }
     }// OS 
     

@@ -32,8 +32,10 @@ parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_D
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-L", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
+parser.add_option("-N", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
+parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
+
 
 ###################################################
 #set the local variables using options
@@ -60,7 +62,29 @@ remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
 use5312ntuples = options.use5312ntuples
+tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
+
+list_of_extra_lib=[]
+libname=''
+for lib in tmplist_of_extra_lib:
+    if '"' in libname:
+        libname=""
+    if ',' in libname:
+        libname=""
+        
+    libname+=lib
+    if ".so" in libname:
+        list_of_extra_lib.append(libname)
+        libname=""
+    
+if libname:
+    if len(list_of_extra_lib) ==0:
+        print "Name of library has to contain .so."
+   
+for lib in list_of_extra_lib:
+    print "Adding " + lib + " to list of Libraies to Load"
+
 
 if DEBUG == "True":
     print "In debug mode"
@@ -268,6 +292,7 @@ if platform.system() == "Linux":
     
 else:
     filename = 'txt/datasets_mac.txt'
+
 if not mc:
     for line in open(filename, 'r'):
         if not line.startswith("#"):
@@ -416,7 +441,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib)) #job, input, sample, ver, output
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -441,7 +466,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -468,7 +493,7 @@ for line in fr:
         fwrite = open(filelist, 'a')
         fwrite.write(line)
         #configfile=open(runscript,'w')
-        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent))
+        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib))
         #configfile.close()
         filesprocessed+=1
         fwrite.close()        
@@ -699,7 +724,10 @@ else:
         os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "+ outputdir + "*.root")
         print "Merged output :" + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "
     else:
-        os.system("mv " + outputdir + "*.root " + Finaloutputdir )
+        if number_of_cores == 1:
+            os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root ") 
+        else:
+            os.system("mv " + outputdir + "*.root " + Finaloutputdir )
         if DEBUG == "True":
             print "Non merged output :" +Finaloutputdir
 
@@ -718,8 +746,11 @@ else:
         if doMerge:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
         else:
-            print "All sampless finished: OutFiles "+ outsamplename + "*.root -->" + Finaloutputdir
-        
+            if number_of_cores == 1:
+                print "All sampless finished: OutFiles "+ outsamplename + "_1.root -->" + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "
+            else:
+                print "All sampless finished: OutFiles "+ outsamplename + "*.root -->" + Finaloutputdir
+            
     else:
         print "TMP directory " + output + "is not removed. "
         os.system("rm -r " + local_sub_dir)

@@ -175,11 +175,13 @@ void LQController::SetDataPeriod(TString period){
 		   LQError::StopExecution );
   }
   
+  
   if( period == "A") target_luminosity = 887.501;
-  if( period == "B") target_luminosity = 4443.;
-  if( period == "C") target_luminosity = 7114.;
-  if( period == "D") target_luminosity = 7318.;
+  else if( period == "B") target_luminosity = 4443.;
+  else if( period == "C") target_luminosity = 7114.;
+  else if( period == "D") target_luminosity = 7318.;
   else target_luminosity = (887.501 + 4443. + 7114. + 7318.);
+
   
 }
 
@@ -658,7 +660,10 @@ float LQController::CalculateWeight() throw(LQError) {
   //
   // Calculate weight for MC
   //
+  
+  m_logger <<  INFO << "Target lumi = " << target_luminosity << " " << effective_luminosity << LQLogger::endmsg;
   if(target_luminosity != 1. || effective_luminosity != 1.){
+    m_logger <<  INFO << "Target lumi = " << target_luminosity <<LQLogger::endmsg;
     if(target_luminosity == 1. ) m_logger << WARNING << "Target_luminosity is set to 1. while effective_luminosity is not. Is this correct?" <<LQLogger::endmsg;
     if(effective_luminosity == 1. ) m_logger << WARNING <<"Effective_luminosity is set to 1. while target_luminosity is not. Is this correct?" <<LQLogger::endmsg;    
     return (target_luminosity/effective_luminosity);

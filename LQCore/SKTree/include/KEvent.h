@@ -22,9 +22,33 @@ namespace snu {
 
     KEvent& operator= (const KEvent& obj);
     
-    void SetMET(double met);
-    void SetWeight(double weight);
-    void SetMETphi(double metphi);
+    /// MET variabkes
+    void SetPFMET(double met); ///defailt MET for analysis
+    void SetPFMETphi(double metphi);
+    void SetPFSumET(double sumet);
+    
+    void SetTCMET(double met); 
+    void SetTCMETphi(double metphi);
+    void SetTCSumET(double sumet);
+    
+    void SetCaloMET(double met);
+    void SetCaloMETphi(double metphi);
+    void SetCaloSumET(double sumet);
+    
+    /// systematics PF
+    void SetPFMETElectronEnDown (double met_elen_down);
+    void SetPFMETElectronEnUp (double met_elen_up);
+    void SetPFMETJetEnDown (double met_jetem_down);
+    void SetPFMETJetEnUp (double met_jetem_up);
+    void SetPFMETJetResDown (double  met_jetres_down);
+    void SetPFMETJetResUp (double  met_jetres_up);
+    void SetPFMETMuonEnDown (double met_muonen_down);    
+    void SetPFMETMuonEnUp (double met_muonen_up);    
+    void SetPFMETUnclusteredDown  (double met_unclust_down);
+    void SetPFMETUnclusteredUp  (double met_unclust_up);
+    
+    
+    /// Vertex
     void SetNVertices(int nvert);
     void SetVertexIndex(int ivertex);
     void SetVertexIsFake(bool isfakeV);
@@ -32,12 +56,19 @@ namespace snu {
     void SetVertexX(double vX);
     void SetVertexY(double vY);
     void SetVertexZ(double vZ);    
-    void SetJetRho(double jetrho);    
     void SetIsPrimaryVertex(bool isprimary);
+
+    /// Event
+    void SetWeight(double weight);
     
     void SetEventNumber(int ev);
     void SetRunNumber(int rn);
     void SetIsData(bool isdata);
+    
+    // Jet rhos
+    void SetJetRho(double jetrho);    
+    
+    /// MET filters
     void SetIsTrackingFailure(bool fail);
     void SetPassTrackingFailureFilter(bool pass) ;
     void SetPassBeamHaloFilterLoose(bool pass);
@@ -48,25 +79,58 @@ namespace snu {
     void SetPassEcalLaserCorrFilter(bool pass);
     void SetPassHBHENoiseFilter(bool pass);
     void SetPassHcalLaserEventFilter(bool pass);
+
+    /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
 				   
     
-    inline Double_t MET() const {return k_MET;}
-    inline Double_t METphi() const {return k_METphi;}
+    //// Functions to call in analysis code/selection code
+    
+    /// MET variables
+    inline Double_t PFMET() const {return k_PF_MET;}
+    inline Double_t PFMETphi() const {return k_PF_METphi;}
+    inline Double_t PFSumET() const {return k_PF_SumET;}
+    
+    inline Double_t TCMET() const {return k_tc_MET;}
+    inline Double_t TCMETphi() const {return k_tc_METphi;}
+    inline Double_t TCSumET() const {return k_tc_SumET;}
+
+    inline Double_t CaloMET() const {return k_calo_MET;}
+    inline Double_t CaloMETphi() const {return k_calo_METphi;}
+    inline Double_t CaloSumET() const {return k_calo_SumET;}
+    
+    inline Double_t PFMET_El_EnUp() const {return k_PF_MET_el_enup;}
+    inline Double_t PFMET_El_EnDown() const {return k_PF_MET_el_endown;}
+    inline Double_t PFMET_Jet_EnUp() const {return k_PF_MET_jet_enup;}
+    inline Double_t PFMET_Jet_EnDown() const {return k_PF_MET_jet_endown;}
+    inline Double_t PFMET_Jet_ResUp() const {return k_PF_MET_jet_resup;}
+    inline Double_t PFMET_Jet_ResDown() const {return k_PF_MET_jet_resdown;}
+    inline Double_t PFMET_Muon_EnUp() const {return k_PF_MET_muon_enup;}
+    inline Double_t PFMET_Muon_EnDown() const {return k_PF_MET_muon_endown;}
+    inline Double_t PFMET_Unclust_Up() const {return k_PF_MET_unclust_up;}
+    inline Double_t PFMET_Unclust_Down() const {return k_PF_MET_unclust_down;}
+    
+    
+    /// Jet rho
     inline Double_t JetRho() const {return k_jetrho;}
+
+    /// Event specific
     inline Double_t MCWeight() const{return k_mcweight;}
+    inline Int_t IsData() const {return k_isData;}
+    inline Int_t EventNumber() const {return k_EventNumber;}
+    inline Int_t RunNumber() const {return k_RunNumber;}
+    
+    // Vertex
     inline Int_t nVertices()  const {return k_nvertices;}
     inline Int_t VertexIndex()  const {return k_ivertex;}
     inline Bool_t IsFakeVertex() const {return k_isfakeV;}
     inline Bool_t HasGoodPrimaryVertex() const {return k_isgoodevent;}
-    
     inline Bool_t IsPrimaryVertex() const {return k_isprimaryvertex;}
     inline Double_t VertexX() const {return k_vertexX;}
     inline Double_t VertexY() const {return k_vertexY;}
     inline Double_t VertexZ() const {return k_vertexZ;}
-    inline Int_t IsData() const {return k_isData;}
-    inline Int_t EventNumber() const {return k_EventNumber;}
-    inline Int_t RunNumber() const {return k_RunNumber;}
+
+    /// MET filters
     inline Bool_t IsTrackingFailure() const {return k_isTrackingFailure ;}
     inline Bool_t   PassTrackingFailureFilter() const {return  k_passTrackingFailureFilter ;}
     inline Bool_t   PassBeamHaloFilterLoose() const {return   k_passBeamHaloFilterLoose;}
@@ -77,9 +141,11 @@ namespace snu {
     inline Bool_t   PassEcalLaserCorrFilter() const {return    k_passEcalLaserCorrFilter;}
     inline Bool_t   PassHBHENoiseFilter() const {return  k_passHBHENoiseFilter ;}
     inline Bool_t   PassHcalLaserEventFilter() const {return  k_passHcalLaserEventFilter ;}
-    inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
 
-				   
+    //Pileup reweighting
+    inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
+    
+    
     virtual void Reset();    
   protected:
     /// Reset function.                                                                  
@@ -87,14 +153,21 @@ namespace snu {
   private:
     /// decalre private functions
     
-    Int_t k_EventNumber, k_RunNumber,k_nvertices, k_ivertex;
-    Double_t k_MET, k_vertexX,k_vertexY,k_vertexZ, k_METphi, k_jetrho, k_mcweight;
-    Bool_t k_isfakeV, k_isgoodevent,k_isData, k_isprimaryvertex;
+    Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex;
+    Double_t k_vertexX,k_vertexY,k_vertexZ,  k_jetrho, k_mcweight;
+    
+    Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
+    Double_t k_tc_MET, k_tc_METphi, k_tc_SumET;
+    Double_t k_calo_MET, k_calo_METphi, k_calo_SumET;
+    Double_t k_PF_MET_el_enup,k_PF_MET_el_endown, k_PF_MET_jet_enup,k_PF_MET_jet_endown, k_PF_MET_jet_resup,k_PF_MET_jet_resdown, k_PF_MET_muon_enup,k_PF_MET_muon_endown, k_PF_MET_unclust_up,k_PF_MET_unclust_down;
+
+    Bool_t k_isfakeV;
+    Bool_t k_isgoodevent,k_isData, k_isprimaryvertex;
     Bool_t k_isTrackingFailure, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,3)
+    ClassDef(KEvent,4)
   }; 
   
 }//namespace snu

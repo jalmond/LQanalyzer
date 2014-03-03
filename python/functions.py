@@ -82,7 +82,7 @@ def CopySKTrees(channel,sample,mc,docopy):
         finally:    
             f.closed()  
 
-def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent):
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries):
 
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -94,6 +94,9 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libNtuplecore.so");\n'
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
+    for lib in libraries:
+        config+='   gSystem->Load("' + lib + ' + .so");\n'
+        
     config+='   gSystem->Load("libLQAnalysis.so");\n'
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'

@@ -9,6 +9,14 @@
 class StdPlots {
 
  public:
+
+  enum Channel{ 
+    ALL        =0,
+    ee         =1,
+    mumu       =2,
+    emu        =3
+  };
+  
   TH1F *h_particles, *h_pt, *h_eta, *h_phi;
   const Double_t Mass_W;
     

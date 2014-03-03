@@ -30,7 +30,7 @@ class SignalPlots : public StdPlots{
   SignalPlots();
   
   // Main constructor
-  SignalPlots(TString name);
+  SignalPlots(TString name, Channel ch= ALL);
   
   // Destructor
   ~SignalPlots();
