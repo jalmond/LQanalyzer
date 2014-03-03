@@ -167,7 +167,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,4)
+    ClassDef(KEvent,5)
   }; 
   
 }//namespace snu

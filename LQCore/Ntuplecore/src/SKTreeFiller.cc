@@ -91,15 +91,18 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETUnclusteredUp(PFMETType01XYCorUnclusteredUp->at(0));
   }
   
-  // TC met
-  kevent.SetTCMET( TCMET->at(0));
-  kevent.SetTCMETphi( TCMETPhi->at(0));
-  kevent.SetTCSumET( TCSumET->at(0));
 
-  kevent.SetCaloMET( CaloMETType1Cor->at(0));  
-  kevent.SetCaloMETphi( CaloMETPhiType1Cor->at(0));
-  kevent.SetCaloSumET(CaloSumETType1Cor->at(0));
-  
+  // TC met
+  if(TCMET){
+    kevent.SetTCMET( TCMET->at(0));
+    kevent.SetTCMETphi( TCMETPhi->at(0));
+    kevent.SetTCSumET( TCSumET->at(0));
+  }
+  if(CaloMETType1Cor){
+    kevent.SetCaloMET( CaloMETType1Cor->at(0));  
+    kevent.SetCaloMETphi( CaloMETPhiType1Cor->at(0));
+    kevent.SetCaloSumET(CaloSumETType1Cor->at(0));
+  }
   
 
   //// Filling vertex variables
@@ -119,8 +122,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     }
   }
 
-  kevent.SetIsPrimaryVertex(isPrimaryVertex);
-  
+  kevent.SetIsPrimaryVertex(isPrimaryVertex);  
   kevent.SetVertexIndex(VertexN); /// setting event vertex (chooses vertex that passes selection of a good vertex with sum pt of all tracks is greatest
   
   if(VertexN != -999){

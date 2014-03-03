@@ -719,13 +719,16 @@ else:
         doMerge=False
 
     if doMerge:
-        if os.path.exists(Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root"):
-            os.system("rm  "  +  Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root ")
-        os.system("hadd " + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "+ outputdir + "*.root")
-        print "Merged output :" + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "
+        outfile = cycle + "_" + filechannel + outsamplename + ".root"
+        if not mc:
+            outfile = cycle + "_" + outsamplename + ".root"
+        if os.path.exists(Finaloutputdir + outfile):
+            os.system("rm  "  +  Finaloutputdir +  + outfile)
+        os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
+        print "Merged output :" + Finaloutputdir + outfile
     else:
         if number_of_cores == 1:
-            os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root ") 
+            os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
         else:
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
         if DEBUG == "True":
@@ -747,7 +750,7 @@ else:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
         else:
             if number_of_cores == 1:
-                print "All sampless finished: OutFiles "+ outsamplename + "_1.root -->" + Finaloutputdir + cycle + "_" + filechannel + outsamplename + ".root "
+                print "All sampless finished: OutFiles "+ outsamplename + "_1.root -->" + Finaloutputdir + outfile
             else:
                 print "All sampless finished: OutFiles "+ outsamplename + "*.root -->" + Finaloutputdir
             
