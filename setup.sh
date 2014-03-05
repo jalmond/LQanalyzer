@@ -31,9 +31,9 @@ export LQANALYZER_DIR=${PWD}
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code
-export LQANALYZER_CYCLE_PATH=${LQANALYZER_DIR}/LQCycle/
-export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQCycle/src/
-export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQCycle/include/
+export LQANALYZER_ANALYSIS_PATH=${LQANALYZER_DIR}/LQAnalysis/
+export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQAnalysis/src/
+export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
 if [[ "$HOSTNAME" == "cms1" ]]
@@ -75,8 +75,8 @@ if [ ! -d ${LQANALYZER_LIB_PATH} ]; then
 	rm  ${LQANALYZER_OLDLIB_PATH}/*map
 	rm  ${LQANALYZER_CORE_PATH}/*/obj/*.o
 	rm -r ${LQANALYZER_CORE_PATH}/*/obj/dep/
-	rm  ${LQANALYZER_CYCLE_PATH}/*/obj/*.o
-	rm -r ${LQANALYZER_CYCLE_PATH}/*/obj/dep/
+	rm  ${LQANALYZER_ANALYSIS_PATH}/*/obj/*.o
+	rm -r ${LQANALYZER_ANALYSIS_PATH}/*/obj/dep/
     fi
 fi
 
