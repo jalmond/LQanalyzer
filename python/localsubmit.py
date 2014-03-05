@@ -727,6 +727,8 @@ else:
         os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
         print "Merged output :" + Finaloutputdir + outfile
     else:
+        if not mc:
+            outfile = cycle + "_" + outsamplename + ".root"
         if number_of_cores == 1:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
         else:
