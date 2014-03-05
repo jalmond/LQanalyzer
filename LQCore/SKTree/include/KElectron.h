@@ -93,6 +93,8 @@ namespace snu {
     void SetConvFitProb(double conv_fit_prob);
     void SetNBrems(double nbrems);
     void SetFBrem(double fbrem);
+    void SetElDist(double fbrem);
+    void SetCotTheta(double fbrem);
     
     /// set GEN  macthing
     void SetElectronMatchedGenPt(Double_t pt);
@@ -174,6 +176,8 @@ namespace snu {
     inline Bool_t HasMatchedConvPhot() const {return k_hasmatchconvphot;}
     inline Double_t NBrems() const {return k_nbrems;}
     inline Double_t FBrem() const {return k_fbrem;}
+    inline Double_t Dist() const {return k_eldist;}
+    inline Double_t CotTheta() const {return k_cottheta;}
     
     
     // Isolation Variables
@@ -221,9 +225,9 @@ namespace snu {
     
     Double_t k_pv_dist_xy, k_pv_dist_xy_error, k_track_pt, k_track_hitfrac;
     Int_t k_vertex_index;
-    
+    Double_t k_eldist, k_cottheta;
 
-    ClassDef(KElectron,4)
+    ClassDef(KElectron,5)
   }; 
   
 }//namespace snu

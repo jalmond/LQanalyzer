@@ -300,6 +300,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetConvFitProb(ElectronConvFitProb->at(iel));
     el.SetNBrems(ElectronNumberOfBrems->at(iel));
     el.SetFBrem(ElectronFbrem->at(iel));
+    if(ElectronDCotTheta){
+      el.SetCotTheta(ElectronDCotTheta->at(iel));
+      el.SetElDist(ElectronDist->at(iel));
+    }
     
     m_logger << DEBUG << "Filling El Truth variables " << LQLogger::endmsg;
     

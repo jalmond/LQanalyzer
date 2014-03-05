@@ -21,8 +21,6 @@ void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl) {
     if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
     if ( el->CaloEnergy()==0 ) continue;
     
-    if ( !PassUserID(EGAMMA_MEDIUM, *el, false, rho) ) continue;
-    
     
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max){
       leptonColl.push_back(*el);
@@ -40,7 +38,6 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl) {
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
     if ( el->CaloEnergy()==0 ) continue;
-    if ( !PassUserID(EGAMMA_MEDIUM, *el, false, rho) ) continue;
     
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max){
       leptonColl.push_back(*el);

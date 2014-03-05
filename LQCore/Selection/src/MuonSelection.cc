@@ -49,10 +49,7 @@ void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl) {
       if( muit->Pt() < pt_cut_min ) pass_selection = false;
       if( fabs(muit->Eta()) > eta_cut) pass_selection =false;
       
-      if(!PassID(MUON_TIGHT, *muit)) pass_selection =false;
-      
-      //if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-      //if (LeptonRelIso > 0.2)     pass_selection =false;
+      if(!PassID(MUON_LOOSE, *muit)) pass_selection =false;
       if (pass_selection) leptonColl.push_back(*muit);  
     }
   

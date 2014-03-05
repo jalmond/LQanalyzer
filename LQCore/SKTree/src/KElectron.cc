@@ -53,6 +53,8 @@ KParticle()
   k_convFitProb=0.;
   k_nbrems=0.;
   k_fbrem=0.;
+  k_cottheta=0.;
+  k_eldist=0.;
   k_trkiso_03=0.;
   k_ecaliso_03=0.;
   k_hcaliso_03=0.;
@@ -118,6 +120,8 @@ KElectron::KElectron(const KElectron& el) :
   k_convFitProb= el.ConvFitProb();
   k_nbrems= el.NBrems();
   k_fbrem= el.FBrem();
+  k_cottheta=el.CotTheta();
+  k_eldist=el.Dist();
   k_trkiso_03= el.TrkIsoDR03();
   k_ecaliso_03= el.ECalIsoDR03();
   k_hcaliso_03= el.HCalIsoDR03();
@@ -186,6 +190,8 @@ void KElectron::Reset()
   k_convFitProb=0.;
   k_nbrems=0.;
   k_fbrem=0.;
+  k_cottheta=0.;
+  k_eldist=0.;
   k_trkiso_03=0.;
   k_ecaliso_03=0.;
   k_hcaliso_03=0.;
@@ -251,6 +257,8 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_convFitProb= p.ConvFitProb();
     k_nbrems= p.NBrems();
     k_fbrem= p.FBrem();
+    k_cottheta=p.CotTheta();
+    k_eldist=p.Dist();
     k_trkiso_03= p.TrkIsoDR03();
     k_ecaliso_03= p.ECalIsoDR03();
     k_hcaliso_03= p.HCalIsoDR03();
@@ -452,6 +460,14 @@ void KElectron::SetNBrems(double nbrems){
 }
 void KElectron::SetFBrem(double fbrem){
   k_fbrem = fbrem;
+}
+
+void KElectron::SetCotTheta(double theta){
+  k_cottheta=theta;
+}
+void KElectron::SetElDist(double dist){
+
+  k_eldist=dist;
 }
 
 void KElectron::SetHasMatchedConvPhot(Bool_t hasmatchConvPhot){  
