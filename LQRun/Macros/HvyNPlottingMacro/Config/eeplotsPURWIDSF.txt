@@ -1,0 +1,25 @@
+# Specify_location_of_data/mc
+mcpath	        /home/jalmond/LQanalyzer/data/output/Electron/
+datapath	/home/jalmond/LQanalyzer/data/output/Electron/ExampleAnalyzerDiElectron_data_SKegamma_5_3_8.root
+datadrivenpath	/home/jalmond/LQanalyzer/data/output/Electron/
+# Specify_the_list_of_hists_to_plot
+plottingpath	dat/DY_exampledielectron_hist_config.txt
+cutpath		dat/DY_exampledielectron_purwidcuts.txt
+# file_prefix
+prefix		ExampleAnalyzerDiElectron_SK
+postfix		_5_3_8.root	
+# NAME_THE_OUTPUT_DIR
+outputdir  ExampleAnalyzer_DiElectronPURWID
+histdir    LQMarch14
+# CONFIGURE_HISTOGRAMS
+showdata   true
+usenp      false
+ylog	   true
+# List_the_samples_to_be_included
+samples	   WW   
+samples	   WZ   
+samples	   ZZ   
+samples	   DY   
+samples	   Top	
+samples	   Wjet 
+END

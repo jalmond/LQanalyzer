@@ -1,0 +1,25 @@
+# Specify_location_of_data/mc
+mcpath	        /home/jalmond/LQanalyzer/data/output/Muon/
+datapath	/home/jalmond/LQanalyzer/data/output/Muon/ExampleAnalyzerDiMuon_periodA_SKmuon_5_3_8.root
+datadrivenpath	/home/jalmond/LQanalyzer/data/output/Muon/
+# Specify_the_list_of_hists_to_plot
+plottingpath	dat/DY_exampledimuon_hist_config.txt
+cutpath		dat/DY_exampledimuon_purwcuts.txt
+# file_prefix
+prefix		ExampleAnalyzerDiMuon_SK
+postfix		_5_3_8.root	
+# NAME_THE_OUTPUT_DIR
+outputdir  ExampleAnalyzer_DiMuonPURW
+histdir    LQMarch14
+# CONFIGURE_HISTOGRAMS
+showdata   true
+usenp      false
+ylog	   true
+# List_the_samples_to_be_included
+samples	   WW   
+samples	   WZ   
+samples	   ZZ   
+samples	   DY   
+samples	   Top	
+samples	   Wjet 
+END
