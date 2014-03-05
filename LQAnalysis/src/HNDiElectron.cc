@@ -66,13 +66,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
-  FillCutFlow("NoCut", weight);
+  //FillCutFlow("NoCut", weight);
   
   ///// Apply some general cuts on event to clean MET
   /// Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
   /// These are applied in AnalyzerCore::PassBasicEventCuts
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
-  FillCutFlow("EventCut", weight);
+  //FillCutFlow("EventCut", weight);
   
   /// Trigger List 
   std::vector<TString> triggerslist;
@@ -83,7 +83,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
   
-  FillCutFlow("TriggerCut", weight);
+  //FillCutFlow("TriggerCut", weight);
   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
   
   
@@ -97,7 +97,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
   
-  FillCutFlow("VertexCut", weight);
+  //FillCutFlow("VertexCut", weight);
   
   /// Use the number of vertices in the event to check effect of pileup reweighting
   numberVertices = eventbase->GetEvent().nVertices();   
@@ -122,8 +122,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
   eventbase->GetElectronSel()->SetPt(20);
   eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->SetCheckCharge(true);
-  eventbase->GetElectronSel()->SetApplyConvVeto(true);
   eventbase->GetElectronSel()->Selection(electronTightColl);
   
   
@@ -135,9 +133,43 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
   eventbase->GetElectronSel()->SetPt(20);
   eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->SetCheckCharge(true);
-  eventbase->GetElectronSel()->SetApplyConvVeto(true);
   eventbase->GetElectronSel()->Selection(electronMediumColl);
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  /// 1) EGAMMA_TRIGTIGHT
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  std::vector<snu::KElectron> electronTrigTightColl;
+  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TRIGTIGHT);
+  eventbase->GetElectronSel()->SetPt(20);
+  eventbase->GetElectronSel()->SetEta(2.5);
+  eventbase->GetElectronSel()->Selection(electronTrigTightColl);
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  /// 1) EGAMMA_TRIGWP70
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  std::vector<snu::KElectron> electronTrigWP70Coll;
+  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TRIGWP70);
+  eventbase->GetElectronSel()->SetPt(20);
+  eventbase->GetElectronSel()->SetEta(2.5);
+  eventbase->GetElectronSel()->Selection(electronTrigWP70Coll);
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  /// 1) EGAMMA_TRIGWP70
+  ///////////////////////////////////////////////////////////////////////////////////////////
+
+  std::vector<snu::KElectron> electronEOPColl;
+  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_EOP);
+  eventbase->GetElectronSel()->SetPt(20);
+  eventbase->GetElectronSel()->SetEta(2.5);
+  eventbase->GetElectronSel()->Selection(electronEOPColl);
+
+
+
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   /// 2) Loose Electrons
@@ -153,6 +185,20 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetRelIso(0.15);
   eventbase->GetElectronSel()->Selection(electronVetoColl);
   
+  std::vector<snu::KMuon> muonVetoColl;
+  /// Lower pt cut to 10
+  eventbase->GetMuonSel()->SetPt(10.);
+  eventbase->GetMuonSel()->SetEta(2.4);
+  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_LOOSE);
+  eventbase->GetMuonSel()->SetRelIso(0.20);
+ eventbase->GetMuonSel()->SetChiNdof(500.);
+ eventbase->GetMuonSel()->SetBSdxy(2000.);
+ eventbase->GetMuonSel()->SetBSdz(100.00);
+ eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
+ eventbase->GetMuonSel()->Selection(muonVetoColl);
+
+ 
+
   std::vector<snu::KMuon> muonTightColl;
   eventbase->GetMuonSel()->SetPt(20.);
   eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
@@ -164,31 +210,107 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->Selection(muonTightColl);
   
   std::vector<snu::KJet> jetColl_lepveto;
+  std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-  eventbase->GetJetSel()->SetPt(20.);
+  eventbase->GetJetSel()->SetPt(30.);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
+
   
+  /// count number of loose leptons
   
+  int nloose_lep = muonVetoColl.size() + electronVetoColl.size();
   
   if (electronTightColl.size() == 2) {      
-    
+
     if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge()){      
       
       FillCutFlow("SSDiEl_tight",weight);
       FillCLHist(sighist, "SSDiElectronTight", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+      
+      if(jetColl_lepveto.size() > 1){
+	FillCutFlow("SSDiEl_dijet_tight",weight);
+	
+	if(nloose_lep == 2){
+	  FillCutFlow("SSDiEl_dijet_lv_tight",weight);
+	  
+	  bool pass_same_vertex= (electronTightColl.at(0).VertexIndex() == electronTightColl.at(1).VertexIndex());
+	  bool fail_conv = true;
+	  bool fail_d0=false;
+	  bool ecalseeded= true;
+	  bool pass_charge_cons=true;
+	  
+	  for(int i= 0; i < electronTightColl.size(); i++){
+	    if(electronTightColl.at(i).MissingHits() == 0) fail_conv = false;
+	    if(electronTightColl.at(i).HasMatchedConvPhot()) fail_conv = false; 
+	    if((electronTightColl.at(i).LeadVtxDistXY()/ electronTightColl.at(i).PrimaryVertexDXYError()) > 4.) fail_d0=true;
+	    if(!electronTightColl.at(i).EcalDrivenSeed()) ecalseeded = false;
+	    if(!electronTightColl.at(i).GsfCtfScPixChargeConsistency()) pass_charge_cons=false;
+	  }
+	  
+	  if(pass_same_vertex) {
+	    FillCutFlow("SSDiEl_dijet_lv_sv_tight",weight);
+	    if(!fail_conv) {
+	      FillCutFlow("SSDiEl_dijet_lv_sv_noconv_tight",weight);
+	      if(fail_d0){
+		FillCutFlow("SSDiEl_dijet_lv_sv_noconv_sd0_tight",weight);
+		if(ecalseeded){
+		  FillCutFlow("SSDiEl_dijet_lv_sv_noconv_sd0_ecalseed_tight",weight);
+		  if(pass_charge_cons) FillCutFlow("SSDiEl_dijet_lv_sv_noconv_sd0_es_sc_tight",weight);
+		}
+	      }
+	    }
+	  }
+	}
+      }
     }// SS 
   }
-  
+
+    
+
+    /// Check all other el WPs
   if (electronMediumColl.size() == 2) {
-    
     if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()){
-      
-      FillCutFlow("SSDiEl_medium",weight);
-	FillCLHist(sighist, "SSDiElectronMedium", eventbase->GetEvent(), muonTightColl,electronMediumColl,jetColl_lepveto, weight);
-    }// SS
-    
+      FillCLHist(sighist, "SSDiElectronMedium", eventbase->GetEvent(), muonTightColl,electronMediumColl,jetColl_lepveto, weight);    
+      if(jetColl_lepveto.size() > 1){
+	if(nloose_lep == 2){
+	  FillCutFlow("SSDiEl_medium",weight);
+        }
+      } 
+    }
   }
+  
+  if (electronTrigTightColl.size() == 2) {
+    if(electronTrigTightColl.at(0).Charge() == electronTrigTightColl.at(1).Charge()){
+      if(jetColl_lepveto.size() > 1){
+	if(nloose_lep == 2){
+          FillCutFlow("SSDiEl_trigtight",weight);
+        }
+      }
+    }
+  }
+  if (electronTrigWP70Coll.size() == 2) {
+    if(electronTrigWP70Coll.at(0).Charge() == electronTrigWP70Coll.at(1).Charge()){
+      if(jetColl_lepveto.size() > 1){
+        if(nloose_lep == 2){
+          FillCutFlow("SSDiEl_trigwp70",weight);
+	}
+      }
+    }
+  }
+
+  if (electronEOPColl.size() == 2) {
+    if(electronEOPColl.at(0).Charge() == electronEOPColl.at(1).Charge()){
+      if(jetColl_lepveto.size() > 1){
+        if(nloose_lep == 2){
+          FillCutFlow("SSDiEl_eop",weight);
+	}
+      }
+    }
+  }
+
+
+  
   
   return;
 }// End of execute event loop
@@ -238,15 +360,22 @@ void HNDiElectron::FillCutFlow(TString cut, float weight){
    
   }
   else{
-    AnalyzerCore::MakeHistograms("cutflow",6,0.,6.);
+    AnalyzerCore::MakeHistograms("cutflow",12,0.,12.);
 
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"DiEl_medium");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"DiEl_tight");
-   
+
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"SSDiEl_medium");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"SSDiEl_trigtight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"SSDiEl_trigwp70");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"SSDiEl_eop");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"SSDiEl_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"SSDiEl_dijet_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(7,"SSDiEl_dijet_lv_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(8,"SSDiEl_dijet_lv_sv_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(9,"SSDiEl_dijet_lv_sv_noconv_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(10,"SSDiEl_dijet_lv_sv_noconv_sd0_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(11,"SSDiEl_dijet_lv_sv_noconv_sd0_ecalseed_tight");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(12,"SSDiEl_dijet_lv_sv_noconv_sd0_es_sc_tight");
+
     
   }
 }

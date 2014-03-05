@@ -53,6 +53,10 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
     map_sig["h_secondElectronIso"] =  new TH1F("h_secondElectronIso_" + name,"secondary electron relIso",40,0,0.4);
     map_sig["h_ElectronD0"] = new TH1F("h_ElectronD0_" + name," leading electron D0", 400, -0.5 , 0.5);
     map_sig["h_ElectronD0Sig"] = new TH1F("h_ElectronD0Sig_" + name," leading electron SigD0", 100, -10. , 10.);
+    map_sig["h_ElectronD0Sig2"] = new TH1F("h_ElectronD0Sig2_" + name," leading electron SigD0", 100, -10. , 10.);
+    map_sig["h_ElectronD0Sig2_2"] = new TH1F("h_ElectronD0Sig2_" + name," leading electron SigD0_2", 100, -30. , 30.);
+    map_sig["h_ElectronD0Sig3"] = new TH1F("h_ElectronD0Sig3_" + name," leading electron SigD0", 100, -10. , 10.);
+    
     
   }
   
@@ -221,8 +225,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_MuonDz", muons[0].dZ(),weight);
     Fill("h_MuonDz", muons[1].dZ(),weight);
     
-    Fill("h_MuonD0Sig", (muons[0].dXYPat()/ pow(muons[0].D0Err(),2.)),weight);
-    Fill("h_MuonD0Sig", (muons[1].dXYPat()/ pow(muons[1].D0Err(),2.)),weight);
+    Fill("h_MuonD0Sig", (muons[0].dXYPat()/ muons[0].D0Err()),weight);
+    Fill("h_MuonD0Sig", (muons[1].dXYPat()/ muons[1].D0Err()),weight);
     
     Fill("h_muons_eta",muons[0].Eta(),weight);
     Fill("h_muons_eta",muons[1].Eta(),weight);
@@ -258,10 +262,17 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_ElectronD0", electrons[0].PrimaryVertexDXY(),weight);
     Fill("h_ElectronD0", electrons[1].PrimaryVertexDXY(),weight);
 
-    Fill("h_ElectronD0Sig", (electrons[0].PrimaryVertexDXY()/ pow(electrons[0].PrimaryVertexDXYError(),2.)),weight);
-    Fill("h_ElectronD0Sig", (electrons[1].PrimaryVertexDXY()/ pow(electrons[1].PrimaryVertexDXYError(),2.)),weight);
+    Fill("h_ElectronD0Sig", (electrons[0].PrimaryVertexDXY()/ electrons[0].PrimaryVertexDXYError()),weight);
+    Fill("h_ElectronD0Sig", (electrons[1].PrimaryVertexDXY()/ electrons[1].PrimaryVertexDXYError()),weight);
 
+    Fill("h_ElectronD0Sig2", (electrons[0].LeadVtxDistXY()/ electrons[0].PrimaryVertexDXYError()),weight);
+    Fill("h_ElectronD0Sig2", (electrons[1].LeadVtxDistXY()/ electrons[1].PrimaryVertexDXYError()),weight);
+
+    Fill("h_ElectronD0Sig2_2", (electrons[0].LeadVtxDistXY()/ pow(electrons[0].PrimaryVertexDXYError(), 2.)),weight);
+    Fill("h_ElectronD0Sig2_2", (electrons[1].LeadVtxDistXY()/ pow(electrons[1].PrimaryVertexDXYError(),2.)),weight);
     
+    Fill("h_ElectronD0Sig3", (electrons[0].dxy()/ electrons[0].PrimaryVertexDXYError()),weight);
+    Fill("h_ElectronD0Sig3", (electrons[1].dxy()/ electrons[1].PrimaryVertexDXYError()),weight);
     
     Fill("h_secondElectronPt", electrons[1].Pt(),weight);
     Fill("h_leadingElectronPt", electrons[0].Pt(),weight);     
@@ -274,8 +285,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float el1_reliso =  electrons[0].PFChargedHadronIso03() + max( electrons[0].PFNeutralHadronIso03() + electrons[0].PFPhotonIso03() - rho * EA1, 0.);
     float el2_reliso =  electrons[1].PFChargedHadronIso03() + max( electrons[1].PFNeutralHadronIso03() + electrons[1].PFPhotonIso03() - rho * EA2, 0.);
 
-    Fill("h_leadingElectronIso", el1_reliso,weight);
-    Fill("h_secondElectronIso", el2_reliso,weight);
+    Fill("h_leadingElectronIso", el1_reliso/electrons[0].Pt() ,weight);
+    Fill("h_secondElectronIso", el2_reliso/electrons[1].Pt(),weight);
   }
   
   

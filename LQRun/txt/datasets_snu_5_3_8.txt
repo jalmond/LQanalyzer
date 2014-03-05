@@ -8,6 +8,9 @@ SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/perio
 SKegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodC/
 SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodD/
 
+### E == A+B+C+D 
+SKegamma E /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodAtoD/
+
 ### MC #############
 SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY10to50/
 SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY50plus/
