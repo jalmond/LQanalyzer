@@ -7,12 +7,12 @@ using namespace std;
 
 SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   
-  map_sig["h_jjmass"] =         new TH1F("h_dijetsmass_"    + name,"Invariant mass of the two leading jets",250,0,500);
+  map_sig["h_jjmass"] =         new TH1F("h_dijetsmass_"    + name,"Invariant mass of the two leading jets",250,0.,500.);
   if(channel == ee ){
-    map_sig["h_eemass"] =         new TH1F("h_eemass_"        + name,"Invariant mass of the two leading electrons",250,0,500);
-    map_sig["h_e1jjmass"] =       new TH1F("h_e1jjmass_"      + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
-    map_sig["h_e2jjmass"] =       new TH1F("h_e2jjmass_"      + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
-    map_sig["h_eejjmass"] =       new TH1F("h_eejjmass_"      + name,"Invariant mass of the four particles",200,0,2000);
+    map_sig["h_eemass"] =         new TH1F("h_eemass_"        + name,"Invariant mass of the two leading electrons",250,0.,500.);
+    map_sig["h_e1jjmass"] =       new TH1F("h_e1jjmass_"      + name,"Invariant mass of the two leading jets and leading muon",100,0.,1000.);
+    map_sig["h_e2jjmass"] =       new TH1F("h_e2jjmass_"      + name,"Invariant mass of the two leading jets and second muon",100,0.,1000.);
+    map_sig["h_eejjmass"] =       new TH1F("h_eejjmass_"      + name,"Invariant mass of the four particles",200,0.,2000.);
   }
   if(channel == mumu){
     map_sig["h_mumumass"] =         new TH1F("h_mumumass_"        + name,"Invariant mass of the two leading muons",250,0,500);
@@ -44,6 +44,8 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
     map_sig["h_leadingMuonIso"] = new TH1F("h_leadingMuonIso_"+ name,"leading muon relIso",40,0,0.4);
     map_sig["h_secondMuonIso"] =  new TH1F("h_secondMuonIso_" + name,"secondary muon relIso",40,0,0.4);
     map_sig["h_MuonD0"] = new TH1F("h_MuonD0_" + name," muon D0", 400, -0.5 , 0.5);
+    map_sig["h_MuonDxy"] = new TH1F("h_MuonDxy_" + name," muon D0", 400, -0.5 , 0.5);
+    map_sig["h_MuonDz"] = new TH1F("h_MuonDz_" + name," muon D0", 400, -0.5 , 0.5);
     map_sig["h_MuonD0Sig"] = new TH1F("h_MuonD0Sig_" + name," muon SigD0", 100, -10. , 10.);
     map_sig["h_leadingElectronPt"] =  new TH1F("h_leadingElectronPt_" + name,"leading electron pt",60,0,300);
     map_sig["h_secondElectronPt"] =   new TH1F("h_secondElectronPt_"  + name,"secondary electron pt",60,0,300);
@@ -57,8 +59,11 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig2["h_WandNmass"] =      new TH2F("h_WandNmass_"     + name,"Invariant mass of the W and the N",200,0,2000,200,0,2000);
   map_sig3["h_3Dparm"] =         new TH3F("h_3Dpar_"         + name,"m(lljj) and muon p_{T}_{1} and muon p_{T}_{2}",200,0,2000,60,0,300,60,0,300);
   
-  map_sig["h_MuonJetdR"] =  new TH1F("h_MuonJetdR_" + name,"leading muon pt",500,0,5);
-  map_sig["h_ElectronJetdR"] =  new TH1F("h_ElectronJetdR_" + name,"leading muon pt",500,0,5);
+  map_sig["h_MuonJetdR"] =  new TH1F("h_MuonJetdR_" + name,"muon jet dR",500,0,5);
+  map_sig["h_ElectronJetdR"] =  new TH1F("h_ElectronJetdR_" + name,"electron jet dR",500,0,5);
+  map_sig["h_leadMuondR"] =  new TH1F("h_leadMuondR_" + name,"leading muon dR",500,0,5);
+  map_sig["h_leadElectrondR"] =  new TH1F("h_leadElectrondR_" + name,"leading electron dR",500,0,5);
+  map_sig["h_leadJetdR"] =  new TH1F("h_leadJetdR_" + name,"leading jet dR",500,0,5);
   
   if(channel == mumu ){
     map_sig["h_leadingMuonPt"] =  new TH1F("h_leadingMuonPt_" + name,"leading muon pt",60,0,300);
@@ -92,7 +97,7 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   
   
   map_sig["h_MET"] =            new TH1F("h_MET_"           + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_MET_phi"] =        new TH1F("h_MET_phi_"           + name,"Missing Et",100,-3.5,3.5);
+  map_sig["h_MET_phi"] =        new TH1F("h_MET_phi_"           + name,"Missing Et",140,-3.5,3.5);
   map_sig["h_SumET"] =          new TH1F("h_SumET_"           + name,"Sum Et",100,0.0,500.0);
   map_sig["h_nVertices"] =      new TH1F("h_nVertices_"           + name,"number of even vertices",60,0.0,60.0);
   
@@ -104,14 +109,14 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig["h_electrons_sceta"] =       new TH1F("h_electrons_sceta_"      + name,"#eta distribution of the two electrons",50,-3,3);
   
   map_sig["h_muons_phi"] =       new TH1F("h_muons_phi_"      + name,"#phi distribution of the two muons",50,-3,3);
-  map_sig["h_electrons_phi"] =       new TH1F("h_electrons_phi_"      + name,"#phi distribution of the two electrons",50,-3,3);
+  map_sig["h_electrons_phi"] =       new TH1F("h_electrons_phi_"      + name,"#phi distribution of the two electrons",140,-3.5,3.5);
   map_sig["h_electrons_scphi"] =       new TH1F("h_electrons_scphi_"      + name,"#phi distribution of the two electrons",50,-3,3);
-
   
-  map_sig["h_jets_eta"] =        new TH1F("h_jet_seta_"       + name,"#eta distribution of the two jets",50,-3,3);
-  map_sig["h_jets_phi"] =        new TH1F("h_jet_sphi_"       + name,"#phi distribution of the two jets",50,-3,3);
+  map_sig["h_jets_eta"] =        new TH1F("h_jets_eta_"       + name,"#eta distribution of the two jets",120,-3,3);
+  map_sig["h_jets_phi"] =        new TH1F("h_jets_phi_"       + name,"#phi distribution of the two jets",140,-3.5,3.5);
   map_sig["h_bTag"] =           new TH1F("h_bTag_"          + name,"bTag discrimant",100,-1,3);
   map_sig["h_Njets"] =          new TH1F("h_Njets_"         + name,"number of jets",10,0,10);
+  map_sig["h_Nbjets"] =         new TH1F("h_Nbjets_"        + name,"number of b jets",5,0,5);
 }
 
 
@@ -122,10 +127,11 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   //// Jet mass variables
   dijetmass_tmp=dijetmass=9999.9;
   UInt_t m(0),n(0);
-  
+ 
 
   float min_mujet_Dr=10000.;  
   for(UInt_t i=0; i<muons.size(); i++){  
+    
     for(UInt_t emme=0; emme<jets.size(); emme++){
       float dR =muons[i].DeltaR(jets[emme]);
       if(dR< min_mujet_Dr) min_mujet_Dr=dR;
@@ -139,11 +145,47 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       if(dR< min_ejet_Dr) min_ejet_Dr=dR;
     }
   }
+  
 
-  Fill("h_MuonJetdR",min_mujet_Dr,weight);
-  Fill("h_ElectronJetdR",min_ejet_Dr,weight);
+  float min_ee_Dr=10000.;
+  for(UInt_t i=0; i<electrons.size(); i++){
+    for(UInt_t j=0; j<electrons.size(); j++){
+      if(i==j) continue;
+      float dR =electrons[i].DeltaR(electrons[j]);
+      if(dR < min_ee_Dr) min_ee_Dr = dR;
+    }
+  }
 
+  float min_mm_Dr=10000.;
+  for(UInt_t i=0; i<muons.size(); i++){
+    for(UInt_t j=0; j<muons.size(); j++){
+      if(i==j) continue;
+      float dR =muons[i].DeltaR(muons[j]);
+      if(dR < min_mm_Dr) min_mm_Dr = dR;
+    }
+  }
+  
+  float min_jj_Dr=10000.;
+  for(UInt_t i=0; i<jets.size(); i++){
+    for(UInt_t j=0; j<jets.size(); j++){
+      if(i==j) continue;
+      float dR =jets[i].DeltaR(jets[j]);
+      if(dR < min_jj_Dr) min_jj_Dr = dR;
+    }
+  }
+  
+  if(jets.size()!=0){
+    Fill("h_MuonJetdR",min_mujet_Dr,weight);
+    Fill("h_ElectronJetdR",min_ejet_Dr,weight);
+    Fill("h_leadElectrondR",min_ee_Dr,weight);
+    Fill("h_leadMuondR",min_mm_Dr,weight);
+    if(jets.size() > 1)Fill("h_leadJetdR",min_jj_Dr,weight);
+  }
+  
+  int nbjet=0;
+  /// use CSVM https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP
   for(UInt_t emme=0; emme<jets.size(); emme++){
+    
     for(UInt_t enne=1; enne<jets.size(); enne++) {
       if(emme == enne) continue;
       dijetmass_tmp = (jets[emme]+jets[enne]).M();
@@ -155,6 +197,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     }
   }
 
+
+  
 
   if(muons.size()==2){     
     Fill("h_mumumass", (muons[0]+muons[1]).M(),weight);
@@ -168,16 +212,22 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float mu1_reliso = (muons[0].SumIsoCHDR03() + std::max(0.0, muons[0].SumIsoNHDR03() + muons[0].SumIsoPHDR03() - 0.5* muons[0].SumPUIsoR03()))/muons[0].Pt() ;
     float mu2_reliso = (muons[1].SumIsoCHDR03() + std::max(0.0, muons[1].SumIsoNHDR03() + muons[1].SumIsoPHDR03() - 0.5* muons[1].SumPUIsoR03()))/muons[1].Pt() ;
     
-    Fill("h_MuonD0", muons[0].D0(),weight);
-    Fill("h_MuonD0", muons[1].D0(),weight);
+    Fill("h_MuonD0", muons[0].dXYPat(),weight);
+    Fill("h_MuonD0", muons[1].dXYPat(),weight);
     
-    Fill("h_MuonD0Sig", (muons[0].D0()/ pow(muons[0].D0Err(),2.)),weight);
-    Fill("h_MuonD0Sig", (muons[1].D0()/ pow(muons[1].D0Err(),2.)),weight);
+    Fill("h_MuonDxy", muons[0].dXY(),weight);
+    Fill("h_MuonDxy", muons[1].dXY(),weight);
+    
+    Fill("h_MuonDz", muons[0].dZ(),weight);
+    Fill("h_MuonDz", muons[1].dZ(),weight);
+    
+    Fill("h_MuonD0Sig", (muons[0].dXYPat()/ pow(muons[0].D0Err(),2.)),weight);
+    Fill("h_MuonD0Sig", (muons[1].dXYPat()/ pow(muons[1].D0Err(),2.)),weight);
     
     Fill("h_muons_eta",muons[0].Eta(),weight);
     Fill("h_muons_eta",muons[1].Eta(),weight);
-    Fill("h_muons_eta",muons[0].Phi(),weight);
-    Fill("h_muons_eta",muons[1].Phi(),weight);
+    Fill("h_muons_phi",muons[0].Phi(),weight);
+    Fill("h_muons_phi",muons[1].Phi(),weight);
 
     Fill("h_secondMuonPt", muons[1].Pt(),weight);
     Fill("h_leadingMuonPt", muons[0].Pt(),weight);
@@ -283,7 +333,10 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_jets_eta",jets[j].Eta(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].BtagProb(),weight);
+    if(jets.at(j).BtagProb() > 0.679) nbjet++; 
   }
+  
+  Fill("h_Nbjets",nbjet, weight);
   Fill("h_Njets",jets.size(), weight);
   
   return;

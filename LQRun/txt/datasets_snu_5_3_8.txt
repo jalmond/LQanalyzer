@@ -1,24 +1,24 @@
 ### SKTrees ##########
 ##################
 ### Data#############
-SKmuon A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiMuon/periodA/
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiMuon/periodA/
 
-SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodA/
-SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodB/
-SKegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodC/
-SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/Data/DiElectron/periodD/
+SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodA/
+SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodB/
+SKegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodC/
+SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodD/
 
 ### MC #############
-SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY10to50/
-SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/DY50plus/
-SKttbar      29588.256	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/ttbar/   
-SKWW 	     182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WW/      
-SKWZ 	     301122.644	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WZ/
-SKZZ 	     555109.777	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/ZZ/
-SKWjets      1538.562	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/Wjets/
-SKW-W-	     1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WmWm/ 
-SKW+W+	     402840.451	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/WpWp/
-SKWgamma     10403.722	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/MC/Wgamma/
+SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY10to50/
+SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY50plus/
+SKttbar      29588.256	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/ttbar/   
+SKWW 	     182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WW/      
+SKWZ 	     301122.644	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WZ/
+SKZZ 	     555109.777	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/ZZ/
+SKWjets      1538.562	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/Wjets/
+SKW-W-	     1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WmWm/ 
+SKW+W+	     402840.451	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WpWp/
+SKWgamma     10403.722	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/Wgamma/
 
 ### LQNtuples ########################################################
 ####

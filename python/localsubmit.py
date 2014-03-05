@@ -718,12 +718,12 @@ else:
     if cycle == "SKTreeMaker":
         doMerge=False
 
+    outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:
-        outfile = cycle + "_" + filechannel + outsamplename + ".root"
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
         if os.path.exists(Finaloutputdir + outfile):
-            os.system("rm  "  +  Finaloutputdir +  + outfile)
+            os.system("rm  "  +  Finaloutputdir   + outfile)
         os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
         print "Merged output :" + Finaloutputdir + outfile
     else:

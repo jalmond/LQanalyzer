@@ -32,7 +32,7 @@ using namespace std;
 int MakePlots(std::string hist);
 void MakeCutFlow(std::string hist);
 int MakeCutFlow_Plots(string configfile);
-void PrintCanvas(TCanvas* c1, std::string folder, std::string title);
+void PrintCanvas(TCanvas* c1, std::string folder, std::string plotdesciption,  std::string title);
 bool repeat(string hname);
 TLegend* MakeLegend(map<TString, TH1*> legmap,TH1* h_legdata, bool rundata, bool log);
 TH1* MakeDataHist(string name, double xmin, double xmax, TH1* h_up,bool ylog , int rebin);
@@ -156,6 +156,8 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
+  system("scp -r /home/jalmond/WebPlots/ jalmond@lxplus5.cern.ch:~/www/SNU/");
+
   return 0;
 }
 
@@ -236,8 +238,8 @@ void setTDRStyle() {
 
   // Margins:
   tdrStyle->SetPadTopMargin(0.05);
-  tdrStyle->SetPadBottomMargin(0.13);
-  tdrStyle->SetPadLeftMargin(0.16);
+  tdrStyle->SetPadBottomMargin(0.12);
+  tdrStyle->SetPadLeftMargin(0.12);
   tdrStyle->SetPadRightMargin(0.02);
   
   // For the Global title:
@@ -263,7 +265,7 @@ void setTDRStyle() {
   // tdrStyle->SetTitleXSize(Float_t size = 0.02); // Another way to set the size?
   // tdrStyle->SetTitleYSize(Float_t size = 0.02);
   tdrStyle->SetTitleXOffset(0.9);
-  tdrStyle->SetTitleYOffset(1.25);
+  tdrStyle->SetTitleYOffset(1.75);
   // tdrStyle->SetTitleOffset(1.1, "Y"); // Another way to set the Offset
 
   // For the axis labels:
@@ -385,8 +387,9 @@ int MakePlots(string hist) {
   }
   
   histpage << "<table border = 1><tr>"
-	   << "<th> <a name=\"Cut : Plot\">Cut : Plot</a> </th>"
-	   << "<th> Plots </th>"
+	   << "<th> <a name=\"PlotName (variable_Cut)\"> PlotName (variable_Cut) </a> </th>"
+	   << "<th> Data/MC Plot </th>"
+	   << "<th> Data/MC LogPlots </th>"
 	   << "</tr>" << endl;
   
   while(!histo_name_file.eof()) {
@@ -403,7 +406,7 @@ int MakePlots(string hist) {
     if(h_name.find("#")!=string::npos) continue;
     
     for(unsigned int ncut=0; ncut<allcuts.size();  ncut++){
-      string name = h_name+allcuts.at(ncut);
+      string name = allcuts.at(ncut) + "/" + h_name+ "_" + allcuts.at(ncut);
        
 	cout << "\n------------------------------------------------------- \n" << endl;
 	cout << "Making histogram " << name << endl;
@@ -427,7 +430,7 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (0.), ymax( 1000000.);
+	float ymin (1.), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
@@ -443,7 +446,10 @@ int MakePlots(string hist) {
 	
 	TCanvas* c = CompDataMC(hdata, vstack,hup,hdown, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 	cout << " Made canvas" << endl;
-	PrintCanvas(c, histdir, c->GetName());
+
+	string canvasname = c->GetName();
+	canvasname.erase(0,4);
+	PrintCanvas(c, histdir, canvasname, c->GetName());
     }
   }            
   page.close();
@@ -666,13 +672,9 @@ bool repeat (string hname){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void PrintCanvas(TCanvas* c1, string folder, string title){
+void PrintCanvas(TCanvas* c1, string folder, string plot_description, string title){
 
   std::string tpdf = "/home/jalmond/WebPlots/"+ path +  "/histograms/"+folder+"/"+title;
-  string plot_description;
-
-  plot_description = title;
-  
   
   if(plot_description.empty())plot_description=title;
   histpage << "<tr><td>"<< plot_description <<"</td>"<<endl;
@@ -680,6 +682,11 @@ void PrintCanvas(TCanvas* c1, string folder, string title){
   histpage << "<a href=\"" << title.c_str() << ".png\">";
   histpage << "<img src=\"" << title.c_str() << ".png\" width=\"100%\"/>";
   histpage << "</td>" << endl;
+  histpage <<"<td>"<<endl;
+  histpage << "<a href=\"" << title.c_str() << "_log.png\">";
+  histpage << "<img src=\"" << title.c_str() << "_log.png\" width=\"100%\"/>";
+  histpage << "</td>" << endl;
+
   
   return;
   
@@ -689,17 +696,17 @@ void PrintCanvas(TCanvas* c1, string folder, string title){
 
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
-  double x1 = 0.75;
-  double y1 = 0.6;
-  double x2 = 0.9;
-  double y2 = 0.85;
+  double x1 = 0.8;
+  double y1 = 0.8;
+  double x2 = 1.;
+  double y2 = 1.;
 
   if(logy){
     
-    x1 = 0.75;
-    y1 = 0.7;
-    x2 = 0.92;
-    y2 = 0.9;
+    x1 = 0.8;
+    y1 = 0.8;
+    x2 = 0.99;
+    y2 = 0.95;
 
   }
 
@@ -713,7 +720,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   TLegend* legendH = new TLegend(x1,y1,x2,y2);
   legendH->SetFillColor(10);
   legendH->SetBorderSize(0);
-  legendH->SetTextSize(0.035);
+  legendH->SetTextSize(0.02);
   
   
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pl");
@@ -737,8 +744,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (0.), ymax( 1000000.);
-  if(ylog) ymin= 1.;
+  float ymin (1.), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
   /// Set Ranges / overflows
@@ -1030,56 +1036,81 @@ void SetTitles(TH1* hist, string name){
 
   if(HistInGev(name)) ytitle = "Entries / " +str_width.str() + " GeV";
   
-  if(name.find("MET")!=string::npos)xtitle="E^{miss}_{T} [GeV]"; 
+  if(name.find("h_MET")!=string::npos)xtitle="E^{miss}_{T} [GeV]"; 
+  if(name.find("h_MET_phi")!=string::npos)xtitle="#phi_{E^{miss}_{T}} "; 
 
-  if(name.find("mu_eta")!=string::npos)xtitle="Muon #eta";
-  if(name.find("mu_pt")!=string::npos)xtitle="Muon p_{T} [GeV]";
-  if(name.find("mu1_pt")!=string::npos)xtitle="Lead p_{T} [GeV]";
-  if(name.find("mu2_pt")!=string::npos)xtitle="Second p_{T} [GeV]";
-  if(name.find("mu3_pt")!=string::npos)xtitle="Third p_{T} [GeV]";
+  if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
+  if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
+  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} [GeV]";
+  if(name.find("MuonD0")!=string::npos)xtitle="d0";
+  if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
+  if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
+  if(name.find("secondMuonPt")!=string::npos)xtitle="Second p_{T} [GeV]";
+  if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} [GeV]";
 
-
-  if(name.find("el_eta")!=string::npos)xtitle="Electron #eta";
+  if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
+  if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
   if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} [GeV]";
-  if(name.find("el1_pt")!=string::npos)xtitle="Lead p_{T} [GeV]";
-  if(name.find("el2_pt")!=string::npos)xtitle="Second p_{T} [GeV]";
-  if(name.find("el3_pt")!=string::npos)xtitle="Third p_{T} [GeV]";
+  if(name.find("leadElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
+  if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} [GeV]";
+  if(name.find("thirdELectronPt")!=string::npos)xtitle="Third p_{T} [GeV]";
   
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
-  if(name.find("leaddimuma")!=string::npos)xtitle="m(#mu#mu) [GeV]";
-  if(name.find("leaddielma")!=string::npos)xtitle="m(ee) [GeV]";
-  if(name.find("leademuma")!=string::npos)xtitle="m(e#mu) [GeV]";
+  if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) [GeV]";
+  if(name.find("eemass")!=string::npos)xtitle="m(ee) [GeV]";
+  if(name.find("emumass")!=string::npos)xtitle="m(e#mu) [GeV]";
   
-  if(name.find("jet_eta")!=string::npos)xtitle="jet #eta";
-  if(name.find("1jet_eta")!=string::npos)xtitle="Leading jet #eta";
-  if(name.find("2jet_eta")!=string::npos)xtitle="2^{nd} Leading jet #eta";
-  if(name.find("njet")!=string::npos)xtitle="Number of jets";
-  if(name.find("nbjet")!=string::npos)xtitle="Number of bjets";
-
-  if(name.find("muall")!=string::npos)xtitle="m(#mu#mu#mu(#mu)) [GeV]";
+  if(name.find("jets_eta")!=string::npos)xtitle="jet #eta";
+  if(name.find("jets_phi")!=string::npos)xtitle="jet #phi";
+  if(name.find("Njets")!=string::npos)xtitle="Number of jets";
+  if(name.find("Nbjet")!=string::npos)xtitle="Number of bjets";
+  if(name.find("bTag")!=string::npos)xtitle="CSV";
 
   if(name.find("el1jet_mindr")!=string::npos)xtitle="min#Delta R(e_{1}j)";
   if(name.find("el2jet_mindr")!=string::npos)xtitle="min#Delta R(e_{2}j)";
 
-  if(name.find("mu1jet_mindr")!=string::npos)xtitle="min#Delta R(#mu_{1}j)";
-  if(name.find("mu2jet_mindr")!=string::npos)xtitle="min#Delta R(#mu_{2}j)";
-  if(name.find("mujj_massle")!=string::npos)xtitle="m(#mu_{1}jj) [GeV]";
-  if(name.find("mujj_masstr")!=string::npos)xtitle="m(#mu_{2}jj) [GeV]";
-  if(name.find("mumujj_mass")!=string::npos)xtitle="m(#mu#mujj) [GeV]";
+  if(name.find("leadMuonJetdR")!=string::npos)xtitle="min#Delta R(#mu j)";
+  if(name.find("leadJetdR")!=string::npos)xtitle="min#Delta R(jj)";
+  if(name.find("mu1jjmass")!=string::npos)xtitle="m(#mu_{1}jj) [GeV]";
+  if(name.find("mu2jjmass")!=string::npos)xtitle="m(#mu_{2}jj) [GeV]";
+  if(name.find("mumujjmass")!=string::npos)xtitle="m(#mu#mujj) [GeV]";
 
-  if(name.find("ejj_massle")!=string::npos)xtitle="m(e_{1}jj) [GeV]";
-  if(name.find("ejj_masstr")!=string::npos)xtitle="m(e_{2}jj) [GeV]";
-  if(name.find("eejj_mass")!=string::npos)xtitle="m(eejj) [GeV]";
+  if(name.find("leadElectronJetdR")!=string::npos)xtitle="min#Delta R(e_j)";
+  if(name.find("e1jjmass")!=string::npos)xtitle="m(e_{1}jj) [GeV]";
+  if(name.find("e2jjmass")!=string::npos)xtitle="m(e_{2}jj) [GeV]";
+  if(name.find("eejjmass")!=string::npos)xtitle="m(eejj) [GeV]";
+
+  if(name.find("leadingMuonIso")!=string::npos)xtitle="PF Iso #mu_{1} [GeV]";
+  if(name.find("secondMuonIso")!=string::npos)xtitle="PF Iso #mu_{2} [GeV]";
+
+  if(name.find("leadingElectronIso")!=string::npos)xtitle="PF Iso e_{1} [GeV]";
+  if(name.find("secondELectronIso")!=string::npos)xtitle="PF Iso e_{2} [GeV]";
+
+  if(name.find("MuonD0_")!=string::npos)xtitle="d0";
+  if(name.find("MuonD0Sig")!=string::npos)xtitle="d0sig";
+  
+  if(name.find("D0_")!=string::npos)xtitle="d0";
+  if(name.find("D0Sig")!=string::npos)xtitle="d0sig";
+
+  if(name.find("nVertice")!=string::npos)xtitle="Number of vertices";
+
+  if(name.find("MuonJetdR")!=string::npos)xtitle="mindR(#mu,jet)";
+  if(name.find("ElectronJetdR")!=string::npos)xtitle="mindR(e,jet)";
+  if(name.find("LeadJetdR")!=string::npos)xtitle="mindR(jet,jet)";
+  if(name.find("LeadMuondR")!=string::npos)xtitle="mindR(#mu,#mu)";
+  if(name.find("LeadElectrondR")!=string::npos)xtitle="mindR(e,e)";
+  
 
   if(name.find("muon_deta_")!=string::npos)xtitle="#Delta #eta (#mu,#mu)";
   if(name.find("el_deta_")!=string::npos)xtitle="#Delta #eta (e,e)";
   if(name.find("leaddimudeltaR_")!=string::npos)xtitle="#Delta R (#mu,#mu)";
   if(name.find("leaddieldeltaR_")!=string::npos)xtitle="#Delta R (e,e)";
 
-  if(name.find("leaddijetma")!=string::npos)xtitle="m(j_{1}j_{2}) [GeV]";
+  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) [GeV]";
   if(name.find("leaddijetdr")!=string::npos)xtitle="#Delta R(j_{1}j_{2})";
-  if(name.find("jet_pt")!=string::npos)xtitle="jet p_{T} [GeV]";
+  if(name.find("leadingJetPt")!=string::npos)xtitle="jet1 p_{T} [GeV]";
+  if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} [GeV]";
 
 
 
@@ -1105,7 +1136,6 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
   float yscale= 1.4;
   if(!showdata) yscale = 1.2;
-  if(ylog) yscale = 100000.;
   
   cout << name << endl;
   if(name.find("eta")!=string::npos) yscale*=1.5;
@@ -1390,7 +1420,8 @@ void SetUpMasterConfig(string name){
     
     if(tmp=="END") break;
     if(tmp.find("#")!=string::npos) continue;
-
+    
+    cerr << "tmp = " << tmp << std::endl; 
     if(tmp=="mcpath") mcloc = tmppath;
     if(tmp=="datapath") dataloc = tmppath;
     if(tmp=="datadrivenpath") datadrivenloc = tmppath;
@@ -1420,6 +1451,7 @@ void SetUpMasterConfig(string name){
     }
     
     if(tmp=="samples"){
+      cerr << "samples = " << tmppath << endl;
       listofsamples.push_back(tmppath);
     }
     
@@ -1518,22 +1550,26 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   
   std::cout << "start " << std::endl;
   
+  TH1* hdata_clone_for_log = (TH1*)hdata->Clone( "log");
 
   string cname;
   if(hdata) cname= string("c_") + hdata->GetName();
   else cname = string("c_") + ((TNamed*)mcstack.at(0)->GetHists()->First())->GetName();
-
+  
+  string label_plot_type = "";
   //Create Canvases
-  TCanvas* canvas = new TCanvas((cname+"significance").c_str(), (cname+"significance").c_str(), 800, 600);
+  TCanvas* canvas = new TCanvas((cname+ label_plot_type).c_str(), (cname+label_plot_type).c_str(), 800, 600);
+  TCanvas* canvas_log = new TCanvas((cname+ label_plot_type+"log").c_str(), (cname+label_plot_type+"log").c_str(), 800, 600);
 
   
   std::string title=canvas->GetName();
   std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".png";
+  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.png";
   
   ///####################   Standard plot
-  if(logy)canvas->SetLogy();
+  canvas_log->SetLogy();
   canvas->cd();
-
+  
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   TH1* h_nominal = MakeSumHist2(mcstack.at(0));
@@ -1541,7 +1577,6 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   MakeLabel(0.2,0.8);
 
   TH1* errorband = MakeErrorBand(h_nominal,hup, hdown) ;
-
   SetNomBinError(h_nominal, hup, hdown);
 
   if(usedata){
@@ -1636,7 +1671,103 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   
   canvas->Print(tpdf.c_str(), ".png");
 
+  //// %%%%%%%%%% PRINT ON LOG
+  canvas_log->cd();
 
+  
+  //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
+  MakeLabel(0.2,0.8);
+  
+  
+  if(usedata){
+    hdata_clone_for_log->GetYaxis()->SetRangeUser(ymin, ymax*100.);
+    hdata_clone_for_log->Draw("p");
+    mcstack.at(0)->Draw("HIST same");
+    hdata_clone_for_log->Draw("p same");
+    hdata_clone_for_log->Draw("axis same");
+    errorband->Draw("E2same");
+  }
+  else{
+    errorband->GetXaxis()->SetRangeUser(xmin,xmax);
+    errorband->GetYaxis()->SetRangeUser(ymin,ymax*100.);
+    errorband->Draw("E2");
+    mcstack.at(0)->Draw("same HIST");
+    errorband->Draw("E2same");
+  }
+  legend->Draw("same");
+  
+  if(usedata){
+    //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
+    /// Make significance hist
+    
+    TH1* h_significance=(TH1F*)hdata_clone_for_log->Clone();
+    TH1* h_divup=(TH1F*)hup->Clone();
+    TH1* h_divdown=(TH1F*)hdown->Clone();
+
+    TH1* errorbandratio = (TH1*)h_nominal->Clone("AAA");
+
+    hdata_clone_for_log->GetXaxis()->SetLabelSize(0.); ///
+    hdata_clone_for_log->GetXaxis()->SetTitle("");
+
+    h_divup->Divide(h_nominal);
+    h_divdown->Divide(h_nominal);
+
+    for(int i=1; i < errorbandratio->GetNbinsX()+1; i++){
+
+      float bc = ((h_divup->GetBinContent(i)+h_divdown->GetBinContent(i))/2.);
+      float bd = ((h_divup->GetBinContent(i)-h_divdown->GetBinContent(i))/2.);
+
+      errorbandratio->SetBinContent(i,bc);
+      errorbandratio->SetBinError(i,bd);
+    }
+    errorbandratio->SetFillStyle(3354);
+    errorbandratio->SetFillColor(kBlue-8);
+    errorbandratio->SetMarkerStyle(0);
+
+    for(int i=1; i < h_significance->GetNbinsX()+1; i++){
+      float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
+      float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
+
+      float sig = 0.;
+      if(denom!=0.) sig = num / denom;
+
+      /// For  now plot data/mc ...
+      if(h_nominal->GetBinContent(i)!=0. ) sig =   h_significance->GetBinContent(i)/ h_nominal->GetBinContent(i);
+      h_significance->SetBinContent(i,sig);
+    }
+
+
+    // How large fraction that will be taken up by the data/MC ratio part
+    double FIGURE2_RATIO = 0.35;
+    double SUBFIGURE_MARGIN = 0.15;
+    canvas_log->SetBottomMargin(FIGURE2_RATIO);
+    TPad *p = new TPad( "p_test", "", 0, 0, 1, 1.0 - SUBFIGURE_MARGIN, 0, 0, 0);  // create new pad, fullsize to have equal font-sizes in both plots
+    p->SetTopMargin(1-FIGURE2_RATIO);   // top-boundary (should be 1 - thePad->GetBottomMargin() )
+    p->SetFillStyle(0);     // needs to be transparent
+    p->Draw();
+    p->cd();
+
+    //h_significance->SetFillColor(kGray+1);
+    //h_significance->SetLineColor(kGray+1);
+
+    h_significance->GetYaxis()->SetNdivisions(10204);
+    //h_significance->GetYaxis()->SetTitle("Significance");
+    h_significance->GetYaxis()->SetTitle("Data/MC");
+    //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
+    h_significance->GetYaxis()->SetRangeUser(0., 2.);
+    h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
+    h_significance->Draw("hist");
+    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
+
+    line->SetLineStyle(2);
+    line->SetLineWidth(2);
+    line->Draw();
+    h_significance->Draw("HISTsame");
+  }
+  
+  canvas_log->Print(tlogpdf.c_str(), ".png");
+  
+  
   return canvas;
 
 

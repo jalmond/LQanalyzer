@@ -50,6 +50,9 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist, "DiElectron");
+   MakeCleverHistograms(sighist, "DiElectronWPURW");
+   MakeCleverHistograms(sighist, "DiElectronWPURWID");
+
    MakeCleverHistograms(sighist, "DiElectronLooseVeto");
    
    return;
@@ -103,8 +106,10 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("h_nvtx_norw_ee", numberVertices, weight, 0., 60.,60); 
   
   /// Correct MC for pileup   
+  
+  float pileup_reweight (1.);
   if (MC_pu&&!k_isdata) {
-    weight = weight*reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+    pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
   }
   
   FillHist("h_nvtx_rw_ee",numberVertices,weight, 0., 60.,60 );
@@ -239,20 +244,30 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   if (electronTightColl.size() == 2) {      
     
     /// For MC reweight event to correct for ID efficiency in MC/DATA
+    float id_scalefactor(1.);
     if(!isData){
-      weight *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt());
-      weight *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt());
+      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt());
+      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt());
     }
     
+    // reconstruct dilepton system
     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
+    
     if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
-      FillHist("h_nvtx_rw_tight_ee",numberVertices,weight, 0., 60.,60 );
+      
       FillCutFlow("DiEl_tight",weight);
-      FillHist("zpeak_ee", Z.M(), weight, 0., 200.,400);      
+      
+      /// Fill Standard set of cuts for all objects with NO corrections
       FillCLHist(sighist, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
 
+      /// Fill Standardset of cuts forall objects with pileup reweighting applied
+      FillCLHist(sighist, "DiElectronWPURW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight));
+      
+      /// Fill Standardset of cuts forall objects with pileup reweighting applied
+      FillCLHist(sighist, "DiElectronWPURWID", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
+      
       if(electronVetoColl.size()==2){
-	FillCLHist(sighist, "DiElectronLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+	FillCLHist(sighist, "DiElectronLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
       }
     }// OS 
     

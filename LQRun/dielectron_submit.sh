@@ -12,7 +12,7 @@ source functions.sh
 ## 
 cycle="ExampleAnalyzerDiElectron"
 skinput="True"
-njobs=1
+njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000

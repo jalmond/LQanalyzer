@@ -25,7 +25,7 @@ ClassImp (ExampleAnalyzerDiMuon);
  */
 ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
 
-
+  
   // To have the correct name in the log:                                                                                                                            
   SetLogName("ExampleAnalyzerDiMuon");
 
@@ -50,6 +50,7 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist, "DiMuon");
+   MakeCleverHistograms(sighist, "DiMuonWPURW");
    MakeCleverHistograms(sighist, "DiMuonLooseVeto");
 
    return;
@@ -97,16 +98,14 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
    
    /// Use the number of vertices in the event to check effect of pileup reweighting
    numberVertices = eventbase->GetEvent().nVertices();   
-   FillHist("h_nvtx_norw_mumu", numberVertices, weight, 0., 60.,60); 
    
+   float pileup_reweight=(1.0);
    if (MC_pu&&!k_isdata) {
      /// Here is an alternative method to Fill a histogram. 
      /// The histogram with name "h_nvtx_norw"/"h_nvtx_rw" were not declared in the MakeHistogram code. 
      /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx          
-     weight = weight*reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+     pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
    }
-   
-   FillHist("h_nvtx_rw_mumu",numberVertices,weight, 0., 60.,60 );
    
    //////////////////////////////////////////////////////
    //////////// Select objetcs
@@ -241,11 +240,18 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
    if (muonTightColl.size() == 2) {                   
      snu::KParticle Z = muonTightColl.at(0) + muonTightColl.at(1);
      if(muonTightColl.at(0).Charge() != muonTightColl.at(1).Charge()){      
+       
+       /// Method of plotting single histogram
        FillHist("zpeak_mumu", Z.M(), weight, 0., 200.,400);
+
+       /// Standard set of histograms for muons/jets/electrons.. with no corrections
        FillCLHist(sighist, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+
+       /// Standard set of histograms with pileup reweighting applied
+       FillCLHist(sighist, "DiMuonWPURW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight*pileup_reweight);
        
        if(muonVetoColl.size() ==2){
-	 FillCLHist(sighist, "DiMuonLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+	 FillCLHist(sighist, "DiMuonLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight*pileup_reweight);
        }       
      } /// OS muons
    }//// 2Muon (Tight) Loop
