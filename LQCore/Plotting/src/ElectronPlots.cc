@@ -5,24 +5,30 @@ using namespace std;
 
 ElectronPlots::ElectronPlots(TString name) : StdPlots(name) {
   
-  map_el["h_charge"]             = new TH1F("h_"+name+"_charge","Charge of "+name,5,-2,3);
-  map_el["h_dxy"]                = new TH1F("h_"+name+"_dxy",name+" transverse IP",100,0.0,0.5);
-  map_el["h_dz"]                 = new TH1F("h_"+name+"_dz",name+" longitudinal IP",100,0.0,1.0);
-  map_el["h_valid_hit_frac"]     = new TH1F("h_"+name+"_valid_hit_frac",name+" TrackValidHitFraction",100,0.0,1.0);
-  map_el["h_trackdriven_seed"]   = new TH1F("h_"+name+"_trackdriven_seed",name+" TrackerDrivenSeed",2,0.0,2.0);
-  map_el["h_elecal_seed"]        = new TH1F("h_"+name+"_elecal_seed",name+" EcalDrivenSeed",2,0.0,2.0);
-  map_el["h_deltaeta"]        = new TH1F("h_"+name+"_deltaeta",name+" ", 100 ,-0.02 ,0.02 );
-  map_el["h_deltaphi"]        = new TH1F("h_"+name+"_deltaphi",name+" ", 100 , -1. , 1. );
-  map_el["h_sigmaIetaIeta"]        = new TH1F("h_"+name+"_sigmaIetaIeta",name+" ",50 ,0. , 0.05 );
-  map_el["h_hoe"]        = new TH1F("h_"+name+"_hoe",name+" ", 100 ,0. , 0.5);
-  map_el["h_caloenergy"]        = new TH1F("h_"+name+"_caloenergy",name+" ", 100 , 0. ,200. );
-  map_el["h_escoverp"]        = new TH1F("h_"+name+"_ecoverp",name+" ", 50 , -0.25 , 0.25);
-  map_el["h_gsf_ct_pix_charecons"]        = new TH1F("h_"+name+"_chargeconst",name+" ",2 ,0. , 2.);
-  map_el["h_missinghits"]        = new TH1F("h_"+name+"_missinghits",name+" ", 5 , 0. ,5. );
-  map_el["h_convfitprob"]        = new TH1F("h_"+name+"_convfitprob",name+" ",20. , 0. ,1. );
-  map_el["h_matched_convphot"]        = new TH1F("h_"+name+"_matchedcon_phot",name+" ",2 ,0. ,2. );
-  map_el["h_nbrem"]        = new TH1F("h_"+name+"_nbrem",name+" ", 10,0. ,10. );
-  map_el["h_fbrem"]        = new TH1F("h_"+name+"_fbrem",name+" ", 10,0. ,10. );
+  map_el["h_charge"]             = new TH1F("h_charge","Charge of "+name,5,-2,3);
+  map_el["h_dxy"]                = new TH1F("h_dxy",name+" transverse IP",100,0.0,0.5);
+  map_el["h_dz"]                 = new TH1F("h_dz",name+" longitudinal IP",100,0.0,1.0);
+  map_el["h_valid_hit_frac"]     = new TH1F("h_valid_hit_frac",name+" TrackValidHitFraction",100,0.0,1.0);
+  map_el["h_trackdriven_seed"]   = new TH1F("h_trackdriven_seed",name+" TrackerDrivenSeed",2,0.0,2.0);
+  map_el["h_elecal_seed"]        = new TH1F("h_elecal_seed",name+" EcalDrivenSeed",2,0.0,2.0);
+  map_el["h_deltaeta"]        = new TH1F("h_deltaeta",name+" ", 100 ,-0.02 ,0.02 );
+  map_el["h_deltaphi"]        = new TH1F("h_deltaphi",name+" ", 100 , -1. , 1. );
+  map_el["h_sigmaIetaIeta"]        = new TH1F("h_sigmaIetaIeta",name+" ",50 ,0. , 0.05 );
+  map_el["h_hoe"]        = new TH1F("h_hoe",name+" ", 100 ,0. , 0.5);
+  map_el["h_caloenergy"]        = new TH1F("h_caloenergy",name+" ", 100 , 0. ,200. );
+  map_el["h_escoverp"]        = new TH1F("h_ecoverp",name+" ", 50 , -0.25 , 0.25);
+  map_el["h_gsf_ct_pix_charecons"]        = new TH1F("h_chargeconst",name+" ",2 ,0. , 2.);
+  map_el["h_missinghits"]        = new TH1F("h_missinghits",name+" ", 5 , 0. ,5. );
+  map_el["h_convfitprob"]        = new TH1F("h_convfitprob",name+" ",20 , 0. ,1. );
+  map_el["h_matched_convphot"]        = new TH1F("h_matchedcon_phot",name+" ",2 ,0. ,2. );
+  map_el["h_nbrem"]        = new TH1F("h_nbrem",name+" ", 10,0. ,10. );
+  map_el["h_fbrem"]        = new TH1F("h_fbrem",name+" ", 10,0. ,10. );
+  map_el["h_cottheta"]        = new TH1F("h_cottheta",name+" ", 50,-4. ,4. );
+  map_el["h_eldist"]        = new TH1F("h_eldist",name+" ", 100,0. ,1. );
+
+  map_el["h_trkiso"]        = new TH1F("h_trkiso",name+" ", 100,0. ,20. );
+  map_el["h_ecaliso"]       = new TH1F("h_ecaliso",name+" ", 100,0. ,20. );
+  map_el["h_hcaliso"]       = new TH1F("h_hcaliso",name+" ", 100,0. ,20. );
 
   
 }
@@ -42,6 +48,9 @@ void ElectronPlots::Fill(Double_t weight, std::vector<snu::KElectron> el, double
     Fill("h_dz",elit->dz(), weight);
     Fill("h_fbrem", elit->FBrem(), weight);
     Fill("h_nbrem", elit->NBrems(), weight);
+    Fill("h_nbrem", elit->NBrems(), weight);
+    Fill("h_cottheta", elit->CotTheta(), weight);
+    Fill("h_eldist", elit->Dist(), weight);
     Fill("h_valid_hit_frac", elit->TrackValidHitFraction(), weight);
     Fill("h_trackdriven_seed", elit->TrackerDrivenSeed(), weight);
     Fill("h_elecal_seed", elit->EcalDrivenSeed(), weight);
@@ -61,6 +70,9 @@ void ElectronPlots::Fill(Double_t weight, std::vector<snu::KElectron> el, double
     Fill("h_convfitprob", elit->ConvFitProb(), weight);
     Fill("h_matched_convphot", elit->HasMatchedConvPhot(), weight);
     
+    Fill("h_trkiso", elit->TrkIsoDR03(), weight);
+    Fill("h_ecaliso", elit->ECalIsoDR03(), weight);
+    Fill("h_hcaliso", elit->HCalIsoDR03(), weight);
     
   } // end of electron loop
   
