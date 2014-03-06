@@ -38,7 +38,9 @@ class BaseSelection {
     MUON_TIGHT               = 11,
     PFJET_LOOSE              = 12,
     PFJET_MEDIUM             = 13,
-    PFJET_TIGHT              = 14
+    PFJET_TIGHT              = 14,
+
+    EGAMMA_FAKELOOSE         = 15
     
   };
 

@@ -44,9 +44,14 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
-
-   Message("Making clever hists for Z ->ll test code", INFO);
-
+  
+  MakeCleverHistograms(sighist, "DiLooseEl");
+  MakeCleverHistograms(sighist, "ZDiLooseEl");
+  MakeCleverHistograms(sighist, "DiTightEl");
+  MakeCleverHistograms(sighist, "SingleLooseEl");
+  MakeCleverHistograms(sighist, "SingleTightEl");
+  MakeCleverHistograms(sighist, "LooseEl");
+  MakeCleverHistograms(sighist, "TightEl");
      
    return;
 }
@@ -67,7 +72,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   triggerslist.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   triggerslist.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
 
-  if(!PassTrigger(triggerslist, prescale)) return;
+  std::vector<TString> triggerslist_diel;
+  triggerslist_diel.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  
   
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
 
@@ -80,56 +87,18 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
-  
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 1) Loose Electrons
-  ///////////////////////////////////////////////////////////////////////////////////////////
 
   std::vector<snu::KElectron> electronLooseColl;
+  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_FAKELOOSE);
+  eventbase->GetElectronSel()->SetPt(20);
+  eventbase->GetElectronSel()->SetEta(2.4);
+  eventbase->GetElectronSel()->Selection(electronLooseColl);
+  
+  std::vector<snu::KElectron> electronTightColl;
+  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
   eventbase->GetElectronSel()->SetPt(20);
   eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->SetRelIso(0.4);
-  eventbase->GetElectronSel()->SetBSdxy(0.2);
-  eventbase->GetElectronSel()->SetBSdz(0.1);
   eventbase->GetElectronSel()->Selection(electronTightColl);
-  
-  
-  std::vector<snu::KElectron> electronEOPColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_EOP);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronEOPColl);
-
-
-
-  
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 2) Loose Electrons
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
-  std::vector<snu::KElectron> electronVetoColl;
-  /// Use VETO definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
-  // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_VETO);
-  /// Lower pt for veto
-  eventbase->GetElectronSel()->SetPt(10.);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->SetRelIso(0.15);
-  eventbase->GetElectronSel()->Selection(electronVetoColl);
-  
-  std::vector<snu::KMuon> muonVetoColl;
-  /// Lower pt cut to 10
-  eventbase->GetMuonSel()->SetPt(10.);
-  eventbase->GetMuonSel()->SetEta(2.4);
-  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_LOOSE);
-  eventbase->GetMuonSel()->SetRelIso(0.20);
- eventbase->GetMuonSel()->SetChiNdof(500.);
- eventbase->GetMuonSel()->SetBSdxy(2000.);
- eventbase->GetMuonSel()->SetBSdz(100.00);
- eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
- eventbase->GetMuonSel()->Selection(muonVetoColl);
-
- 
 
   std::vector<snu::KMuon> muonTightColl;
   eventbase->GetMuonSel()->SetPt(20.);
@@ -140,6 +109,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetRelIso(0.1);
   eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
   eventbase->GetMuonSel()->Selection(muonTightColl);
+
   
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
@@ -149,126 +119,93 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
   
-  int nbjet=0;
-  for(int ij=0; ij <jetColl_lepveto.size(); ij++){
-    if(jetColl_lepveto.at(ij).BtagProb() > 0.679) nbjet++;
-    for (int iel=0; iel < electronTightColl.size(); iel++){
-      float dR = electronTightColl[iel].DeltaR(jetColl_lepveto[ij]);
-      if(dR< 0.4){
-	m_logger << INFO << " close jet to electron has pT diff = " << 100.*(electronTightColl[iel].Pt() - jetColl_lepveto[ij].Pt()) / electronTightColl[iel].Pt() << LQLogger::endmsg;
-	m_logger << INFO << (electronTightColl.at(iel).PrimaryVertexDXY()/ electronTightColl.at(iel).PrimaryVertexDXYError())<< LQLogger::endmsg;
+
+  if(muonTightColl.size() > 0) return;
+  /// Get p rate
+  
+  if(PassTrigger(triggerslist_diel, prescale)){
+    if(electronLooseColl.size() == 2){
+      FillCLHist(sighist, "DiLooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight);
+      snu::KParticle Z = electronLooseColl.at(0) + electronLooseColl.at(1);
+      
+      if(Z.M() > 81. && Z.M() < 101.){
+	FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight);
+
+	if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())  ){
+	  
+	  FillHist("h_promptrate_denom_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
+	  FillHist("h_promptrate_denom_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
+	  
+	  
+	  if(IsTight(electronLooseColl.at(1), eventbase->GetEvent().JetRho()) ){
+	    FillHist("h_promptrate_num_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
+	    FillHist("h_promptrate_num_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
+	  }
+	}
+	
+	if(IsTight(electronLooseColl.at(1), eventbase->GetEvent().JetRho())){
+	  
+          FillHist("h_promptrate_denom_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
+          FillHist("h_promptrate_denom_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	  
+          if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())){
+            FillHist("h_promptrate_num_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
+            FillHist("h_promptrate_num_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+          }
+	}      	
       }
-    }    
+    }
+    if(electronTightColl.size() == 2.)FillCLHist(sighist, "DiTightEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   }
-  /// count number of loose leptons
-  int nloose_lep = muonVetoColl.size() + electronVetoColl.size();
+  
+  if(!PassTrigger(triggerslist, prescale)) return;
+  /// Z and W veto
+  Double_t temp_MT=0;
+  Double_t MT=0;
+
+  if (electronLooseColl.size() == 1)FillCLHist(sighist, "SingleLooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight); 
+  if (electronLooseColl.size() == 1 && electronTightColl.size() == 1)FillCLHist(sighist, "SingleTightEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight); 
+  
+  
+  for(unsigned int w = 0; w < electronLooseColl.size();  w++){
+    
+    temp_MT = sqrt(2.* electronLooseColl.at(w).Et()*eventbase->GetEvent().PFMET() * (1 - cos( electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi())) );
+    if ( temp_MT > MT) 
+      MT = temp_MT;
+  }
+  
+  
+  if(! (eventbase->GetEvent().PFMET()  < 20. && MT < 20.)) return;
+  
+  bool useevent= false;
+  /// Fake Rates
+
+  if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto.size() >= 1){
+    
+    for (int ielT=0; ielT < electronTightColl.size(); ielT++){
+      for( int ij=0; ij < jetColl_lepveto.size(); ij++){
+	
+        float dr = electronTightColl.at(ielT).DeltaR(jetColl_lepveto.at(ij));
+        if(dr > 1.) useevent = true;
+      }
+    }
+  }
+  
+  if(!useevent) return;
 
   
-  if (electronTightColl.size() == 2) {      
-
-    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge()){      
-      
-      FillCutFlow("SS_t",weight);
-      FillCLHist(sighist, "SSDiElectronTight", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-      
-      if(nloose_lep == 2){
-	FillCutFlow("SS_lvt_t",weight);
-      
-	if(jetColl_lepveto.size() > 1){
-	  FillCutFlow("SS_dijet_t",weight);
-	  FillCLHist(sighist, "SSDiElectronTight_DiJet", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-
-	  bool pass_same_vertex= (electronTightColl.at(0).VertexIndex() == electronTightColl.at(1).VertexIndex());
-	  bool fail_conv = true;
-	  bool fail_d0=false;
-	  bool ecalseeded= true;
-	  bool pass_charge_cons=true;
-	  
-	  for(int i= 0; i < electronTightColl.size(); i++){
-	    if(electronTightColl.at(i).MissingHits() == 0) fail_conv = false;
-	    if(electronTightColl.at(i).HasMatchedConvPhot()) fail_conv = false; 
-	    if((electronTightColl.at(i).PrimaryVertexDXY()/ electronTightColl.at(i).PrimaryVertexDXYError()) > 4.) {
-	      fail_d0=true;
-	    }
-	    
-	    if(!electronTightColl.at(i).EcalDrivenSeed()) ecalseeded = false;
-	    if(!electronTightColl.at(i).GsfCtfScPixChargeConsistency()) pass_charge_cons=false;
-	  }
-	  
-	  if(nbjet==0){
-	    FillCutFlow("SS_0bj_t",weight);
-	    if(pass_same_vertex) {
-	      FillCutFlow("SS_sv_t",weight);
-	      if(!fail_conv) {
-		FillCutFlow("SS_noconv_t",weight);
-		if(!fail_d0){
-		  FillCutFlow("SS_d0_t",weight);
-		  if(pass_charge_cons) FillCutFlow("SS_sc_t",weight);
-		}
-	      }
-	    }
-	  }
-	}
-      }
-    }// SS 
-  }
-
+  if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto.size() >= 1){
     
-
-    /// Check all other el WPs
-  if (electronMediumColl.size() == 2) {
-    if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()){
-      FillCLHist(sighist, "SSDiElectronMedium", eventbase->GetEvent(), muonTightColl,electronMediumColl,jetColl_lepveto, weight);    
-      FillCLHist(elhist, "SSDiElectronMedium_Electrons", electronMediumColl, eventbase->GetEvent().JetRho(),weight);
-      if(jetColl_lepveto.size() > 1){
-	if(nloose_lep == 2){
-	  FillCutFlow("SSDiEl_medium",weight);
-        }
-      } 
-    }
+    FillHist("TightEl_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50); 
+    FillHist("TightEl_pt", electronTightColl.at(0).Pt(), weight, 0.,200.,50); 
+    FillCLHist(sighist, "TightEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   }
 
-  if (electronMVAColl.size() == 2) {
-    if(electronMVAColl.at(0).Charge() == electronMVAColl.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-	if(nloose_lep == 2){
-	  FillCutFlow("SSDiEl_mva",weight);
-	}
-      }
-    }
+  if (electronLooseColl.size() == 1 &&jetColl_lepveto.size() >= 1){
+    FillHist("LooseEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+    FillHist("LooseEl_pt", electronLooseColl.at(0).Pt(), weight, 0.,200.,50);
+    FillCLHist(sighist, "LooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight);
   }
-
-      
-
-  if (electronTrigTightColl.size() == 2) {
-    if(electronTrigTightColl.at(0).Charge() == electronTrigTightColl.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-	if(nloose_lep == 2){
-          FillCutFlow("SSDiEl_trigtight",weight);
-        }
-      }
-    }
-  }
-  if (electronTrigWP70Coll.size() == 2) {
-    if(electronTrigWP70Coll.at(0).Charge() == electronTrigWP70Coll.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-        if(nloose_lep == 2){
-          FillCutFlow("SSDiEl_trigwp70",weight);
-	}
-      }
-    }
-  }
-
-  if (electronEOPColl.size() == 2) {
-    if(electronEOPColl.at(0).Charge() == electronEOPColl.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-        if(nloose_lep == 2){
-          FillCutFlow("SSDiEl_eop",weight);
-	}
-      }
-    }
-  }
-
 
   
   
@@ -282,6 +219,129 @@ void FakeRateCalculator_El::EndCycle()throw( LQError ){
   Message("In EndCycle" , INFO);
 
 }
+
+bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
+  //----------------------------------------------------------------------
+  // Barrel electron cut values
+  //----------------------------------------------------------------------
+
+  double l_b_dEtaIn  = 0.004;
+  double l_b_dPhiIn  = 0.03;
+  double l_b_sieie   = 0.01;
+  double l_b_hoe     = 0.12;
+  double l_b_d0      = 0.1;
+  double l_b_dZ      = 0.1;
+  double l_b_ep      = 0.05;
+  double l_b_pfRelIso =0.1;
+  double l_b_vtxProb = 1e-6;
+  int    l_b_missHits = 0;
+  //----------------------------------------------------------------------
+  // Endcap electron cut values
+  //----------------------------------------------------------------------
+
+  double l_e_dEtaIn  = 0.005;
+  double l_e_dPhiIn  = 0.02;
+  double l_e_sieie   = 0.03;
+  double l_e_hoe     = 0.10;
+  double l_e_d0      = 0.02;
+  double l_e_dZ      = 0.1;
+  double l_e_ep      = 0.05;
+  double l_e_vtxProb = 1e-6;
+  int    l_e_missHits = 0;
+  double l_e_pfRelIso = 0.1;
+  //----------------------------------------------------------------------
+  // Bools that depend on barrel vs. endcap
+  //----------------------------------------------------------------------
+
+  bool   pass_deltaEta      = false;
+  bool   pass_deltaPhi      = false;
+  bool   pass_sigmaIEtaIEta = false;
+  bool   pass_hoe           = false;
+  bool   pass_vtxDistXY     = false;
+  bool   pass_vtxDistZ      = false;
+  bool   pass_ep            = false;
+  bool   pass_convFitProb   = false;
+  bool   pass_missingHits   = false;
+  bool   pass_pfIsolation   = false;
+
+
+
+  //----------------------------------------------------------------------
+  // Define EGamma ep parameter
+  //----------------------------------------------------------------------
+
+  double egamma_e  = el.CaloEnergy();
+  double egamma_p  = el.CaloEnergy() / el.ESuperClusterOverP();
+  double egamma_ep = fabs ( ( 1.0 / egamma_e ) - ( 1.0 / egamma_p ) );
+
+  //----------------------------------------------------------------------
+  // Define PF Isolation
+  //----------------------------------------------------------------------
+
+  double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
+  double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
+  double effective_areas_03             [7] = { 0.100, 0.120, 0.085, 0.110, 0.120, 0.120, 0.130 };
+  double effective_area_03  = 0.0;
+
+
+  for (int i = 0; i < 7; ++i ){
+    double bin_minimum = effective_area_eta_minimums[i];
+    double bin_maximum = effective_area_eta_maximums[i];
+    if ( fabs(el.SCEta()) >= bin_minimum && fabs(el.SCEta()) < bin_maximum ) {
+      effective_area_03 = effective_areas_03 [i];
+    }
+  }
+
+  double egamma_pfiso_03 = el.PFChargedHadronIso03() + std::max ( el.PFPhotonIso03() + el.PFNeutralHadronIso03() - ( jetrho * effective_area_03 ), 0.0 );
+
+
+  egamma_pfiso_03 /= el.Pt();
+
+  //----------------------------------------------------------------------
+  // Barrel electron test
+  //----------------------------------------------------------------------
+
+  if ( fabs(el.SCEta()) < 1.479 ){
+
+    pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_b_dEtaIn);
+    pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_b_dPhiIn );
+    pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_b_sieie   );
+    pass_hoe           = bool ( el.HoE            ()  <= l_b_hoe     );
+    pass_vtxDistXY     = bool ( fabs(el.LeadVtxDistXY())  <= l_b_d0   );
+    pass_vtxDistZ      = bool ( fabs(el.LeadVtxDistZ ())  <= l_b_dZ  );
+    pass_ep            = bool ( egamma_ep          <= l_b_ep   );
+    pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_b_vtxProb);
+    pass_missingHits   = bool ( el.MissingHits()    <= l_b_missHits);
+    pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_b_pfRelIso);
+  }
+
+  else if ( fabs(el.SCEta()) > 1.479 && fabs(el.SCEta()) < 2.5 ){
+    pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_e_dEtaIn);
+    pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_e_dPhiIn );
+    pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_e_sieie   );
+    pass_hoe           = bool ( el.HoE            ()  <= l_e_hoe     );
+    pass_vtxDistXY     = bool ( fabs(el.LeadVtxDistXY())  <= l_e_d0   );
+    pass_vtxDistZ      = bool ( fabs(el.LeadVtxDistZ ())  <= l_e_dZ  );
+    pass_ep            = bool ( egamma_ep          <= l_e_ep   );
+    pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_e_vtxProb);
+    pass_missingHits   = bool ( el.MissingHits()    <= l_e_missHits);
+    pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_e_pfRelIso);
+
+  }  bool decision = (
+                      pass_deltaEta      &&
+		      pass_deltaPhi      &&
+		      pass_sigmaIEtaIEta &&
+		      pass_hoe           &&
+		      pass_vtxDistXY     &&
+		      pass_vtxDistZ      &&
+                       pass_ep            &&
+		      pass_pfIsolation   &&
+		      pass_convFitProb   &&
+		      pass_missingHits   ) ;
+  
+  return decision;
+}
+
 
 
 void FakeRateCalculator_El::BeginCycle() throw( LQError ){

@@ -26,7 +26,8 @@ class ElectronSelection : public BaseSelection {
   bool PassUserID_EGamma2012 ( ID id, snu::KElectron el , double rho) ;
   bool PassUserID_ECALFiducial (snu::KElectron el);
   bool PassUserID_MVA (snu::KElectron el, bool trig);
-    
+  bool PassUserID_FakeLoose2012 (snu::KElectron el, double jetrho );
+
     
 };
 #endif

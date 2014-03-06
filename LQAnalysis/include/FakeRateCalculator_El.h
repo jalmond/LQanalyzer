@@ -21,6 +21,7 @@ class FakeRateCalculator_El : public AnalyzerCore {
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillCutFlow(TString cut, float w);
+  bool IsTight(snu::KElectron el, double jetrho );
  private:
   
   //

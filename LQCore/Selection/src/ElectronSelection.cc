@@ -146,6 +146,7 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool recalculate, d
   else if ( id == MVATrig            ) return PassUserID_MVA     (el, true);
   else if ( id == MVANonTrig            ) return PassUserID_MVA     (el, false);
   else if ( id == ECAL_FIDUCIAL  ) return PassUserID_ECALFiducial     (el);
+  else if ( id == EGAMMA_FAKELOOSE ) return PassUserID_FakeLoose2012( el, jetrho);
   else return false;
   
   /*if ( id == EGAMMA_TIGHT   )  return (el.PassEGammaIDTight() == 1023);
@@ -167,6 +168,131 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool recalculate, d
 bool ElectronSelection::PassUserID_ECALFiducial (snu::KElectron el){
   if ( el.IsEBFiducial() || el.IsEEFiducial() ) return true;
   else return false;
+}
+
+bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetrho ){
+
+  //----------------------------------------------------------------------
+  // Barrel electron cut values
+  //----------------------------------------------------------------------
+
+  double l_b_dEtaIn  = 0.007;
+  double l_b_dPhiIn  = 0.15;
+  double l_b_sieie   = 0.01;
+  double l_b_hoe     = 0.12;
+  double l_b_d0      = 1.0; 
+  double l_b_dZ      = 0.2; 
+  double l_b_ep      = 0.05;
+  double l_b_vtxProb = 1e-6;
+  int    l_b_missHits = 1;
+  double l_b_pfRelIso = 0.4;
+  //----------------------------------------------------------------------
+  // Endcap electron cut values
+  //----------------------------------------------------------------------
+
+  double l_e_dEtaIn  = 0.009; 
+  double l_e_dPhiIn  = 0.10;
+  double l_e_sieie   = 0.03;
+  double l_e_hoe     = 0.10;
+  double l_e_d0      = 1.;
+  double l_e_dZ      = 0.2;
+  double l_e_ep      = 0.05;
+  double l_e_vtxProb = 1e-6;
+  int    l_e_missHits = 1;
+  double l_e_pfRelIso = 0.4;
+  //----------------------------------------------------------------------
+  // Bools that depend on barrel vs. endcap
+  //----------------------------------------------------------------------
+
+  bool   pass_deltaEta      = false;
+  bool   pass_deltaPhi      = false;
+  bool   pass_sigmaIEtaIEta = false;
+  bool   pass_hoe           = false;
+  bool   pass_vtxDistXY     = false;
+  bool   pass_vtxDistZ      = false;
+  bool   pass_ep            = false;
+  bool   pass_convFitProb   = false;
+  bool   pass_missingHits   = false;
+  bool   pass_pfIsolation   = false;
+  
+  //----------------------------------------------------------------------
+  // Define EGamma ep parameter
+  //----------------------------------------------------------------------
+
+  double egamma_e  = el.CaloEnergy();
+  double egamma_p  = el.CaloEnergy() / el.ESuperClusterOverP();
+  double egamma_ep = fabs ( ( 1.0 / egamma_e ) - ( 1.0 / egamma_p ) );
+
+  //----------------------------------------------------------------------
+  // Define PF Isolation
+  //----------------------------------------------------------------------
+
+  double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
+  double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
+  double effective_areas_03             [7] = { 0.100, 0.120, 0.085, 0.110, 0.120, 0.120, 0.130 };
+  double effective_area_03  = 0.0;
+
+  for (int i = 0; i < 7; ++i ){
+    double bin_minimum = effective_area_eta_minimums[i];
+    double bin_maximum = effective_area_eta_maximums[i];
+    if ( fabs(el.SCEta()) >= bin_minimum && fabs(el.SCEta()) < bin_maximum ) {
+      effective_area_03 = effective_areas_03 [i];
+    }
+  }
+
+  double egamma_pfiso_03 = el.PFChargedHadronIso03() + std::max ( el.PFPhotonIso03() + el.PFNeutralHadronIso03() - ( jetrho * effective_area_03 ), 0.0 );
+
+
+  egamma_pfiso_03 /= el.Pt();
+
+  //----------------------------------------------------------------------
+  // Barrel electron test
+  //----------------------------------------------------------------------
+
+  if ( fabs(el.SCEta()) < 1.479 ){
+    
+    pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_b_dEtaIn);
+    pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_b_dPhiIn );
+    pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_b_sieie   );
+    pass_hoe           = bool ( el.HoE            ()  <= l_b_hoe     );
+    pass_vtxDistXY     = bool ( fabs(el.LeadVtxDistXY())  <= l_b_d0   );
+    pass_vtxDistZ      = bool ( fabs(el.LeadVtxDistZ ())  <= l_b_dZ  );
+    pass_ep            = bool ( egamma_ep          <= l_b_ep   );
+    pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_b_vtxProb);
+    pass_missingHits   = bool ( el.MissingHits()    <= l_b_missHits);
+    pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_b_pfRelIso);
+  }
+  
+  
+  //----------------------------------------------------------------------
+  // Endcap electron test
+  //----------------------------------------------------------------------
+  
+  else if ( fabs(el.SCEta()) > 1.479 && fabs(el.SCEta()) < 2.5 ){
+    pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_e_dEtaIn);
+    pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_e_dPhiIn );
+    pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_e_sieie   ); 
+    pass_hoe           = bool ( el.HoE            ()  <= l_e_hoe     ); 
+    pass_vtxDistXY     = bool ( fabs(el.LeadVtxDistXY())  <= l_e_d0   );
+    pass_vtxDistZ      = bool ( fabs(el.LeadVtxDistZ ())  <= l_e_dZ  ); 
+    pass_ep            = bool ( egamma_ep          <= l_e_ep   );
+    pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_e_vtxProb);
+    pass_missingHits   = bool ( el.MissingHits()    <= l_e_missHits);
+    pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_e_pfRelIso);
+  } 
+  bool decision = (
+		   pass_deltaEta      &&
+		   pass_deltaPhi      &&
+		   pass_sigmaIEtaIEta &&
+		   pass_hoe           &&
+		   pass_vtxDistXY     &&
+		   pass_vtxDistZ      &&
+		   pass_ep            &&
+		   pass_pfIsolation   &&
+		   pass_convFitProb   &&
+		   pass_missingHits   ) ;
+  
+  return decision;
 }
 
 bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double jetrho ){

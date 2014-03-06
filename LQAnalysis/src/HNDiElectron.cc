@@ -54,6 +54,8 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist, "SSDiElectronTight_DiJet");
    MakeCleverHistograms(sighist, "SSDiElectronTightNLV");
    MakeCleverHistograms(elhist,  "SSDiElectronMedium_Electrons");
+   MakeCleverHistograms(sighist,  "TriEl");
+   MakeCleverHistograms(sighist,  "ZZ");
 
 
    
@@ -244,6 +246,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   }
   /// count number of loose leptons
   int nloose_lep = muonVetoColl.size() + electronVetoColl.size();
+
+  if(electronTightColl.size() ==  3)FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  if(electronTightColl.size() ==  4)FillCLHist(sighist, "ZZ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+
 
   
   if (electronTightColl.size() == 2) {      
