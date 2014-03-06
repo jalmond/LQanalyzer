@@ -100,6 +100,8 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig["h_secondJetPt"] =    new TH1F("h_secondJetPt_"   + name,"secondary jet pt",60,0,300);
   
   
+  map_sig["h_MTmuon"] =            new TH1F("h_MTmuon_"           + name,"Mt",100,0.0,500.0);
+  map_sig["h_MTelectron"] =            new TH1F("h_MTelectron_"           + name,"Mt",100,0.0,500.0);
   map_sig["h_MET"] =            new TH1F("h_MET_"           + name,"Missing Et",100,0.0,500.0);
   map_sig["h_MET_phi"] =        new TH1F("h_MET_phi_"           + name,"Missing Et",140,-3.5,3.5);
   map_sig["h_SumET"] =          new TH1F("h_SumET_"           + name,"Sum Et",100,0.0,500.0);
@@ -280,20 +282,20 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   
   if(muons.size()==1 && electrons.size()==1){
-    Fill("h_eemumass", (electrons[0]+muons[0]).M(),weight);
+    Fill("h_emumass", (electrons[0]+muons[0]).M(),weight);
     Fill("h_paircharge",muons[0].Charge(),weight);
-    if(jets.size()>1)Fill("h_lljjmass", (muons[0]+electrons[0]+jets[m]+jets[n]).M(),weight);
+    if(jets.size()>1)Fill("h_emujjmass", (muons[0]+electrons[0]+jets[m]+jets[n]).M(),weight);
 
     if(jets.size()>1){
       if(muons[0].Pt() > electrons[0].Pt()){
 	Fill("h_emujjmass", (electrons[0] + muons[0]+jets[m]+jets[n]).M(),weight);
-	Fill("h_mujjmass", (muons[0]+jets[m]+jets[n]).M(),weight);
-	Fill("h_ejjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
+	Fill("h_mu1jjmass", (muons[0]+jets[m]+jets[n]).M(),weight);
+	Fill("h_e1jjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
 	Fill("h_WandNmass", (muons[0]+electrons[0]+jets[m]+jets[n]).M() , (electrons[0]+jets[m]+jets[n]).M(),weight);      
       } 
       else{
-	Fill("h_ejjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
-	Fill("h_mujjmass", (muons[0]+jets[m]+jets[n]).M(),weight);
+	Fill("h_e1jjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
+	Fill("h_mu1jjmass", (muons[0]+jets[m]+jets[n]).M(),weight);
 	Fill("h_emujjmass", (electrons[0] + muons[0]+jets[m]+jets[n]).M(),weight);
 	Fill("h_WandNmass", (muons[0]+electrons[0]+jets[m]+jets[n]).M() , (muons[0]+jets[m]+jets[n]).M(),weight);      
       }
@@ -301,6 +303,16 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
   
   //// Fillplots
+
+  for(int i=0 ; i < electrons.size(); i++){
+    float MT = sqrt(2.* electrons.at(i).Et()*ev.PFMET() * (1 - cos( electrons.at(i).Phi()- ev.PFMETphi())) );
+    Fill("h_MTelectron",MT, weight);
+  }
+  for(int i=0 ; i < muons.size(); i++){
+    float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos( muons.at(i).Phi()- ev.PFMETphi())) );
+    Fill("h_MTmuon",MT, weight);
+  }
+
   Fill("h_MET",ev.PFMET(), weight);
   Fill("h_MET_phi",ev.PFMETphi(), weight);
   Fill("h_SumET",ev.PFSumET(), weight);
