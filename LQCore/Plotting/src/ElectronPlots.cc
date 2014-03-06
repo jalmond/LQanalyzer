@@ -5,30 +5,30 @@ using namespace std;
 
 ElectronPlots::ElectronPlots(TString name) : StdPlots(name) {
   
-  map_el["h_charge"]             = new TH1F("h_charge","Charge of "+name,5,-2,3);
-  map_el["h_dxy"]                = new TH1F("h_dxy",name+" transverse IP",100,0.0,0.5);
-  map_el["h_dz"]                 = new TH1F("h_dz",name+" longitudinal IP",100,0.0,1.0);
-  map_el["h_valid_hit_frac"]     = new TH1F("h_valid_hit_frac",name+" TrackValidHitFraction",100,0.0,1.0);
-  map_el["h_trackdriven_seed"]   = new TH1F("h_trackdriven_seed",name+" TrackerDrivenSeed",2,0.0,2.0);
-  map_el["h_elecal_seed"]        = new TH1F("h_elecal_seed",name+" EcalDrivenSeed",2,0.0,2.0);
-  map_el["h_deltaeta"]        = new TH1F("h_deltaeta",name+" ", 100 ,-0.02 ,0.02 );
-  map_el["h_deltaphi"]        = new TH1F("h_deltaphi",name+" ", 100 , -1. , 1. );
-  map_el["h_sigmaIetaIeta"]        = new TH1F("h_sigmaIetaIeta",name+" ",50 ,0. , 0.05 );
-  map_el["h_hoe"]        = new TH1F("h_hoe",name+" ", 100 ,0. , 0.5);
-  map_el["h_caloenergy"]        = new TH1F("h_caloenergy",name+" ", 100 , 0. ,200. );
-  map_el["h_escoverp"]        = new TH1F("h_ecoverp",name+" ", 50 , -0.25 , 0.25);
-  map_el["h_gsf_ct_pix_charecons"]        = new TH1F("h_chargeconst",name+" ",2 ,0. , 2.);
-  map_el["h_missinghits"]        = new TH1F("h_missinghits",name+" ", 5 , 0. ,5. );
-  map_el["h_convfitprob"]        = new TH1F("h_convfitprob",name+" ",20 , 0. ,1. );
-  map_el["h_matched_convphot"]        = new TH1F("h_matchedcon_phot",name+" ",2 ,0. ,2. );
-  map_el["h_nbrem"]        = new TH1F("h_nbrem",name+" ", 10,0. ,10. );
-  map_el["h_fbrem"]        = new TH1F("h_fbrem",name+" ", 10,0. ,10. );
-  map_el["h_cottheta"]        = new TH1F("h_cottheta",name+" ", 50,-4. ,4. );
-  map_el["h_eldist"]        = new TH1F("h_eldist",name+" ", 100,0. ,1. );
+  map_el["h_charge"]             = new TH1F("h_charge_"+ name ,"Charge of "+name,5,-2,3);
+  map_el["h_dxy"]                = new TH1F("h_dxy_"+ name,name+" transverse IP",100,0.0,0.5);
+  map_el["h_dz"]                 = new TH1F("h_dz_"+ name,name+" longitudinal IP",100,0.0,1.0);
+  map_el["h_valid_hit_frac"]     = new TH1F("h_valid_hit_frac_"+ name,name+" TrackValidHitFraction",100,0.0,1.0);
+  map_el["h_trackdriven_seed"]   = new TH1F("h_trackdriven_seed_"+ name,name+" TrackerDrivenSeed",2,0.0,2.0);
+  map_el["h_elecal_seed"]        = new TH1F("h_elecal_seed_"+ name,name+" EcalDrivenSeed",2,0.0,2.0);
+  map_el["h_deltaeta"]        = new TH1F("h_deltaeta_"+ name,name+" ", 100 ,-0.02 ,0.02 );
+  map_el["h_deltaphi"]        = new TH1F("h_deltaphi_"+ name,name+" ", 100 , -1. , 1. );
+  map_el["h_sigmaIetaIeta"]        = new TH1F("h_sigmaIetaIeta_"+ name,name+" ",50 ,0. , 0.05 );
+  map_el["h_hoe"]        = new TH1F("h_hoe_"+ name,name+" ", 100 ,0. , 0.5);
+  map_el["h_caloenergy"]        = new TH1F("h_caloenergy_"+ name,name+" ", 100 , 0. ,200. );
+  map_el["h_escoverp"]        = new TH1F("h_ecoverp_"+ name,name+" ", 50 , -0.25 , 0.25);
+  map_el["h_gsf_ct_pix_charecons"]        = new TH1F("h_chargeconst_"+ name,name+" ",2 ,0. , 2.);
+  map_el["h_missinghits"]        = new TH1F("h_missinghits_"+ name,name+" ", 5 , 0. ,5. );
+  map_el["h_convfitprob"]        = new TH1F("h_convfitprob_"+ name,name+" ",20 , 0. ,1. );
+  map_el["h_matched_convphot"]        = new TH1F("h_matchedcon_phot_"+ name,name+" ",2 ,0. ,2. );
+  map_el["h_nbrem"]        = new TH1F("h_nbrem_"+ name,name+" ", 10,0. ,10. );
+  map_el["h_fbrem"]        = new TH1F("h_fbrem_"+ name,name+" ", 10,0. ,10. );
+  map_el["h_cottheta"]        = new TH1F("h_cottheta_"+ name,name+" ", 50,-4. ,4. );
+  map_el["h_eldist"]        = new TH1F("h_eldist_"+ name,name+" ", 100,0. ,1. );
 
-  map_el["h_trkiso"]        = new TH1F("h_trkiso",name+" ", 100,0. ,20. );
-  map_el["h_ecaliso"]       = new TH1F("h_ecaliso",name+" ", 100,0. ,20. );
-  map_el["h_hcaliso"]       = new TH1F("h_hcaliso",name+" ", 100,0. ,20. );
+  map_el["h_trkiso"]        = new TH1F("h_trkiso_"+ name,name+" ", 100,0. ,20. );
+  map_el["h_ecaliso"]       = new TH1F("h_ecaliso_"+ name,name+" ", 100,0. ,20. );
+  map_el["h_hcaliso"]       = new TH1F("h_hcaliso_"+ name,name+" ", 100,0. ,20. );
 
   
 }
