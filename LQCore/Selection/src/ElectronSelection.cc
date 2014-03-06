@@ -317,10 +317,9 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
     if (el.SigmaIEtaIEta() > cut_sigmaIEtaIEta[idx])     return false;
     if (el.HoE          () > cut_hoe[idx])                         return false;
 
-    //// Needed these adding to sktree ele.dr03TkSumPt(); / ele.dr03EcalRecHitSumEt(); / ele.dr03HcalTowerSumEt()
-    //if (trackIso / pt > cut_trackIso[idx])          return false;
-    //if (ecalIso / pt > cut_ecalIso[idx])            return false;
-    //if (hcalIso / pt > cut_hcalIso[idx])            return false;
+    if ( (el.TrkIsoDR03() /el.Pt() ) > cut_trackIso[idx])          return false;
+    if ( (el.ECalIsoDR03() /el.Pt()) > cut_ecalIso[idx])            return false;
+    if ( (el.HCalIsoDR03() /el.Pt()) > cut_hcalIso[idx])            return false;
   }
   
   if ( id == EGAMMA_TRIGWP70){
@@ -336,9 +335,10 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
     if (el.SigmaIEtaIEta() > cut_sigmaIEtaIEta[idx])     return false;
     if (el.HoE          () > cut_hoe[idx])                         return false;
     
-    // if (trackIso / pt > cut_trackIso[idx])          return false;
-    //if (ecalIso / pt > cut_ecalIso[idx])            return false;
-    //if (hcalIso / pt > cut_hcalIso[idx])            return false;
+    if ( (el.TrkIsoDR03() /el.Pt() ) > cut_trackIso[idx])          return false;
+    if ( (el.ECalIsoDR03() /el.Pt()) > cut_ecalIso[idx])            return false;
+    if ( (el.HCalIsoDR03() /el.Pt()) > cut_hcalIso[idx])            return false;
+
   }
   
   if( id == EGAMMA_EOP){
