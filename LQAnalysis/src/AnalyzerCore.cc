@@ -438,6 +438,7 @@ void AnalyzerCore::WriteHistograms() throw (LQError){
 void AnalyzerCore::WriteCLHists(){
 
   for(map<TString, MuonPlots*>::iterator mupit = mapCLhistMu.begin(); mupit != mapCLhistMu.end(); mupit++){
+
     Dir = m_outputFile->mkdir(mupit->first);
     m_outputFile->cd( Dir->GetName() );
     mupit->second->Write();
@@ -446,6 +447,7 @@ void AnalyzerCore::WriteCLHists(){
 
   for(map<TString, ElectronPlots*>::iterator elpit = mapCLhistEl.begin(); elpit != mapCLhistEl.end(); elpit++)\
     {
+
       Dir = m_outputFile->mkdir(elpit->first);
       m_outputFile->cd( Dir->GetName() );
       elpit->second->Write();
@@ -454,13 +456,14 @@ void AnalyzerCore::WriteCLHists(){
 
   for(map<TString, JetPlots*>::iterator jetpit = mapCLhistJet.begin(); jetpit != mapCLhistJet.end(); jetpit++)\
     {
+      
       Dir = m_outputFile->mkdir(jetpit->first);
       m_outputFile->cd( Dir->GetName() );
       jetpit->second->Write();
       m_outputFile->cd();
     }
-  for(map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.begin(); sigpit != mapCLhistSig.end(); sigpit\
-	++){
+  for(map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.begin(); sigpit != mapCLhistSig.end(); sigpit++){
+    
     Dir = m_outputFile->mkdir(sigpit->first);
     m_outputFile->cd( Dir->GetName() );
     sigpit->second->Write();

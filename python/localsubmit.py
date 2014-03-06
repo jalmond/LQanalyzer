@@ -209,6 +209,7 @@ if mc:
     datatype="mc"
 else:
     datatype="data"
+
 if sample == "AtoD":
     datatype="data"
 
