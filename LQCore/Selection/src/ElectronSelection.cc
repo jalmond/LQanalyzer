@@ -254,9 +254,10 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   //----------------------------------------------------------------------
   // Barrel electron test
   //----------------------------------------------------------------------
-
+  
+  int idx = 0;
   if ( fabs(el.SCEta()) < 1.479 ){
-
+    idx=0;
     pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_b_dEtaIn  [ id ] ) ;
     pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_b_dPhiIn  [ id ] ) ;
     pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_b_sieie   [ id ] ) ;
@@ -275,7 +276,8 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   //----------------------------------------------------------------------
 
   else if ( fabs(el.SCEta()) > 1.479 && fabs(el.SCEta()) < 2.5 ){ 
-
+    
+    idx=1;
     pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_e_dEtaIn  [ id ] ) ;
     pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_e_dPhiIn  [ id ] ) ;
     pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_e_sieie   [ id ] ) ;
@@ -300,6 +302,52 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
 		         pass_convFitProb   && 
 		      pass_missingHits   ) ;
   
+
+  
+  if( id == EGAMMA_TRIGTIGHT ){
+    float cut_dEtaIn[2]         = {0.007, 0.009};
+    float cut_dPhiIn[2]         = {0.15, 0.10};
+    float cut_sigmaIEtaIEta[2]  = {0.01, 0.03};
+    float cut_hoe[2]            = {0.12, 0.10};
+    float cut_trackIso[2]       = {0.20, 0.20};
+    float cut_ecalIso[2]        = {0.20, 0.20};
+    float cut_hcalIso[2]        = {0.20, 0.20};
+    if (fabs(el.DeltaEta()) > cut_dEtaIn[idx])             return false;
+    if (fabs(el.DeltaPhi())> cut_dPhiIn[idx])             return false;
+    if (el.SigmaIEtaIEta() > cut_sigmaIEtaIEta[idx])     return false;
+    if (el.HoE          () > cut_hoe[idx])                         return false;
+
+    //// Needed these adding to sktree ele.dr03TkSumPt(); / ele.dr03EcalRecHitSumEt(); / ele.dr03HcalTowerSumEt()
+    //if (trackIso / pt > cut_trackIso[idx])          return false;
+    //if (ecalIso / pt > cut_ecalIso[idx])            return false;
+    //if (hcalIso / pt > cut_hcalIso[idx])            return false;
+  }
+  
+  if ( id == EGAMMA_TRIGWP70){
+    float cut_dEtaIn[2]         = {0.004, 0.005};
+    float cut_dPhiIn[2]         = {0.03, 0.02};
+    float cut_sigmaIEtaIEta[2]  = {0.01, 0.03};
+    float cut_hoe[2]            = {0.025, 0.025};
+    float cut_trackIso[2]       = {0.10, 0.10};
+    float cut_ecalIso[2]        = {0.10, 0.05};
+    float cut_hcalIso[2]        = {0.05, 0.05};
+    if (fabs(el.DeltaEta()) > cut_dEtaIn[idx])             return false;
+    if (fabs(el.DeltaPhi())> cut_dPhiIn[idx])             return false;
+    if (el.SigmaIEtaIEta() > cut_sigmaIEtaIEta[idx])     return false;
+    if (el.HoE          () > cut_hoe[idx])                         return false;
+    
+    // if (trackIso / pt > cut_trackIso[idx])          return false;
+    //if (ecalIso / pt > cut_ecalIso[idx])            return false;
+    //if (hcalIso / pt > cut_hcalIso[idx])            return false;
+  }
+  
+  if( id == EGAMMA_EOP){
+    if (el.FBrem() > 0.15)                           return true;
+    else if (fabs(el.SCEta()) < 1.0 && el.ESuperClusterOverP() > 0.95)   return true;
+    return false;
+  }
+  
+
   
   return decision;
   
