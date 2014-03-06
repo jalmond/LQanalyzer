@@ -743,6 +743,10 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
   std::vector<snu::KTruth> vtruth;
   if(!LQinput){
 
+    for(std::vector<KTruth>::iterator kit  = k_inputtruth->begin(); kit != k_inputtruth->end(); kit++){
+      vtruth.push_back(*kit);
+    }
+
     return vtruth;
   }
 

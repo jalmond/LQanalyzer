@@ -12,6 +12,7 @@
 #include "KJet.h"
 #include "KEvent.h"
 #include "KTrigger.h"
+#include "KTruth.h"
 
 // Local include(s):
 #include "Data.h"
@@ -843,17 +844,20 @@ void Data::ConnectVariables(bool setall){
     k_inputjets=0;
     k_inputevent=0;
     k_inputtrigger=0;
+    k_inputtruth=0;
     b_inputmuons=0;
     b_inputelectrons=0;
     b_inputjets=0;
     b_inputevent=0;
     b_inputtrigger=0;
+    b_inputtruth=0;
 
     ConnectVariable("KEvent", k_inputevent, b_inputevent);
     ConnectVariable("KJets", k_inputjets,b_inputjets );
     ConnectVariable("KMuons", k_inputmuons, b_inputmuons);
     ConnectVariable("KElectrons", k_inputelectrons, b_inputelectrons);
     ConnectVariable("KTrigger", k_inputtrigger, b_inputtrigger);
+    ConnectVariable("KTruth" , k_inputtruth, b_inputtruth);
     
   }  
   else{
