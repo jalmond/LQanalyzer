@@ -149,7 +149,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	  if(IsTight(electronLooseColl.at(1), eventbase->GetEvent().JetRho()) ){
 	    FillHist("h_promptrate_num_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
 	    FillHist("h_promptrate_num_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
-	    FillHist("h_promptrate_denom_num", jetColl_lepveto.size(), weight, 0., 5.,5);
+	    FillHist("h_promptrate_num_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
 	    if(electronLooseColl.at(1).IsEBFiducial()){
 	      FillHist("h_promptrate_num_barrel_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
 	    }
@@ -164,7 +164,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	  
           FillHist("h_promptrate_denom_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
           FillHist("h_promptrate_denom_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-	  FillHist("h_promptrate_denom_num", jetColl_lepveto.size(), weight, 0., 5.,5);
+	  FillHist("h_promptrate_denom_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
 	  if(electronLooseColl.at(0).IsEBFiducial()){
             FillHist("h_promptrate_denom_barrel_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
           }
@@ -176,7 +176,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
           if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())){
             FillHist("h_promptrate_num_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
             FillHist("h_promptrate_num_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-	    FillHist("h_promptrate_num_num", jetColl_lepveto.size(), weight, 0., 5.,5);
+	    FillHist("h_promptrate_num_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
 	    if(electronLooseColl.at(0).IsEBFiducial()){
 	      FillHist("h_promptrate_num_barrel_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
 	    }
