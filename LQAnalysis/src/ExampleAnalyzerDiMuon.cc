@@ -57,10 +57,10 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
  }
 
 
- void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
+void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
-   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
    /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
    /// The string cut must match a bin label in FillCutFlow function
@@ -128,7 +128,7 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
    
    /// Standard cut of 2.4 which is the Muon Spectrometer coverage
    eventbase->GetMuonSel()->SetEta(2.4);
-
+   
    /// χ2/ndof of the global-muon track fit. To suppress hadronic punch-through and muons from decays in flight.
    /// TIGHT ID includes χ2/ndof < 10
    // To tighten or add use SetChiNdof(X);
