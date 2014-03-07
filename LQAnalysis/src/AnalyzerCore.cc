@@ -356,7 +356,6 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
     MakeHistograms(histname, nbins, xmin, xmax);
     if(GetHist(histname)) GetHist(histname)->Fill(value, w);
   }

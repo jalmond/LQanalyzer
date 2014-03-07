@@ -106,9 +106,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   /// Use the number of vertices in the event to check effect of pileup reweighting
   numberVertices = eventbase->GetEvent().nVertices();   
-  /// Fill a hist with nVertices with no reweighting
-  FillHist("h_nvtx_norw_ee", numberVertices, weight, 0., 60.,60); 
-  
+
   /// Correct MC for pileup   
   
   if (MC_pu&&!k_isdata) {
@@ -236,18 +234,25 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   int nbjet=0;
   for(int ij=0; ij <jetColl_lepveto.size(); ij++){
     if(jetColl_lepveto.at(ij).BtagProb() > 0.679) nbjet++;
+  }
+  for(int ij=0; ij <jetColl.size(); ij++){
     for (int iel=0; iel < electronTightColl.size(); iel++){
-      float dR = electronTightColl[iel].DeltaR(jetColl_lepveto[ij]);
+      float dR = electronTightColl[iel].DeltaR(jetColl[ij]);
       if(dR< 0.4){
-	m_logger << INFO << " close jet to electron has pT diff = " << 100.*(electronTightColl[iel].Pt() - jetColl_lepveto[ij].Pt()) / electronTightColl[iel].Pt() << LQLogger::endmsg;
-	m_logger << INFO << (electronTightColl.at(iel).PrimaryVertexDXY()/ electronTightColl.at(iel).PrimaryVertexDXYError())<< LQLogger::endmsg;
+	//m_logger << INFO << " close jet to electron has pT diff = " << 100.*(electronTightColl[iel].Pt() - jetColl[ij].Pt()) / electronTightColl[iel].Pt() << LQLogger::endmsg;
+	///m_logger << INFO << (electronTightColl.at(iel).PrimaryVertexDXY()/ electronTightColl.at(iel).PrimaryVertexDXYError())<< LQLogger::endmsg;
       }
     }    
   }
   /// count number of loose leptons
   int nloose_lep = muonVetoColl.size() + electronVetoColl.size();
 
-  if(electronTightColl.size() ==  3)FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  
+  if(electronTightColl.size() ==  3) {
+       m_logger << INFO << "Number of jets in tri electron event = " << jetColl_lepveto.size() << LQLogger::endmsg;
+     
+       FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+     }
   if(electronTightColl.size() ==  4)FillCLHist(sighist, "ZZ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
 
 

@@ -11,6 +11,11 @@ SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/perio
 ### E == A+B+C+D 
 SKegamma E /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodAtoD/
 
+SKsingleegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodA/
+SKsingleegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodB/
+SKsingleegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodC/
+SKsingleegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodD/
+
 ### MC #############
 SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY10to50/
 SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY50plus/
@@ -22,6 +27,17 @@ SKWjets      1538.562	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/Wje
 SKW-W-	     1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WmWm/ 
 SKW+W+	     402840.451	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WpWp/
 SKWgamma     10403.722	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/Wgamma/
+
+SKseDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/DY10to50/
+SKseDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/DY50plus/
+SKsettbar      29588.256     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/ttbar/
+SKseWW         182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WW/
+SKseWZ         301122.644    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WZ/
+SKseZZ         555109.777    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/ZZ/
+SKseWjets      1538.562       /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/Wjets/
+SKseW-W-       1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WmWm/
+SKseW+W+       402840.451     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WpWp/
+SKseWgamma     10403.722      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/Wgamma/
 
 ### LQNtuples ########################################################
 ####

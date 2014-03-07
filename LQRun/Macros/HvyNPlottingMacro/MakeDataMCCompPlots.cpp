@@ -891,7 +891,9 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
       tempDir->cd();
       TH1* h_loop = dynamic_cast<TH1*> ((file_loop->Get(name.c_str()))->Clone(clonename.c_str()));	    	    	    
       CheckHist(h_loop);
+      cout << h_tmp << " " << h_loop   << endl;
       h_tmp->Add(h_loop);	  	    	    
+      
       
       if(debug)cout <<  it->second <<  "  contribution " <<i+1 <<"/" << it->first.first.size()  << " is from ExampleAnalyzer_SK" << it->first.first.at(i).first << ".NTUP_SMWZ.Reco.root : Integral = " <<h_loop->Integral() << " sum integral = " << h_tmp->Integral()    << endl;
       file_loop->Close();

@@ -17,10 +17,10 @@ data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-#declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-declare -a input_samples=("E")
+declare -a input_samples=("A" "B" "C" "D" "seDY10to50" "seDY50plus" "settbar" "seWjets" "seWZ" "seZZ" "seWW" "seW-W-" "seW+W+" "seWgamma")
 
-stream="egamma"
+
+stream="singleegamma"
 outputdir="/home/jalmond/LQanalyzer/data/output/ElectronFakes/"
 
 

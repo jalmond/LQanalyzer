@@ -47,8 +47,10 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
     map_sig["h_MuonDxy"] = new TH1F("h_MuonDxy_" + name," muon D0", 400, -0.5 , 0.5);
     map_sig["h_MuonDz"] = new TH1F("h_MuonDz_" + name," muon D0", 400, -0.5 , 0.5);
     map_sig["h_MuonD0Sig"] = new TH1F("h_MuonD0Sig_" + name," muon SigD0", 100, -10. , 10.);
+    map_sig["h_ElectronPt"] =  new TH1F("h_ElectronPt_" + name,"leading electron pt",60,0,300);
     map_sig["h_leadingElectronPt"] =  new TH1F("h_leadingElectronPt_" + name,"leading electron pt",60,0,300);
     map_sig["h_secondElectronPt"] =   new TH1F("h_secondElectronPt_"  + name,"secondary electron pt",60,0,300);
+    map_sig["h_ElectronIso"] = new TH1F("h_ElectronIso_"+ name,"leading electron relIso",40,0,0.4);
     map_sig["h_leadingElectronIso"] = new TH1F("h_leadingElectronIso_"+ name,"leading electron relIso",40,0,0.4);
     map_sig["h_secondElectronIso"] =  new TH1F("h_secondElectronIso_" + name,"secondary electron relIso",40,0,0.4);
     map_sig["h_ElectronD0"] = new TH1F("h_ElectronD0_" + name," leading electron D0", 400, -0.5 , 0.5);
@@ -269,9 +271,11 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float rho = ev.JetRho();
     float el_reliso =  elit->PFChargedHadronIso03() + max( elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() - rho * EA, 0.);
     
+    Fill("h_ElectronPt", elit->Pt(),weight);
+    Fill("h_ElectronIso", el_reliso/elit->Pt(),weight);
     if(iel==1){
-      Fill("h_secondElectronPt", electrons[1].Pt(),weight);
-      Fill("h_secondElectronIso", el_reliso/electrons[1].Pt(),weight);
+      Fill("h_secondElectronPt", elit->Pt(),weight);
+      Fill("h_secondElectronIso", el_reliso/elit->Pt(),weight);
     }
     if(iel==0){
       Fill("h_leadingElectronPt", elit->Pt(),weight);
@@ -333,6 +337,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
   
   Fill("h_Nbjets",nbjet, weight);
+  if(electrons.size() ==3)std::cout << "jet size = " << jets.size() << std::endl;
   Fill("h_Njets",jets.size(), weight);
   
   return;
