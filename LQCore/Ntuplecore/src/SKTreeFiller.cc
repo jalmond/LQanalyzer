@@ -790,7 +790,8 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     else charge_truth = -999.;
     
     if(GenParticlePdgId->at(it) < 0) charge_truth *=-1.;
-
+    
+    truthp.SetCharge(charge_truth);
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }/// end of filling loop
@@ -831,6 +832,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
 
+    truthp.SetCharge(charge_truth);
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);    
   }
@@ -871,6 +873,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     if(GenZTauPdgId->at(it) < 0) charge_truth *=-1.;
 
+    truthp.SetCharge(charge_truth);
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }
@@ -912,6 +915,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     if(GenZElectronPdgId->at(it) < 0) charge_truth *=-1.;
     
+    truthp.SetCharge(charge_truth);
     truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }
