@@ -17,13 +17,10 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
   //// This is a basic set of cuts on jets
 
   std::vector<KJet> alljets = k_lqevent.GetJets();
-  
+
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
-    if((fabs(jit->Eta()) < eta_cut)){
-      if(jit->PassLooseID() != PassUserID(PFJET_LOOSE, *jit)) std::cout << "Jet ID not the same" << std::endl;
-    }
-    if ( jit->PassLooseID() && PassUserID(PFJET_LOOSE, *jit) &&    (jit->Pt() >= pt_cut_min) &&  (fabs(jit->Eta()) < eta_cut))  jetColl.push_back(*jit);
+    if ( PassUserID(PFJET_LOOSE, *jit) &&    (jit->Pt() >= pt_cut_min) &&  (fabs(jit->Eta()) < eta_cut))  jetColl.push_back(*jit);
         
   }
 }
@@ -41,13 +38,11 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
     if(apply_ID) {
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
 	   fabs(jit->Eta()) < eta_cut
-	   && jit->PassLooseID()
 	   && PassUserID(k_id, *jit))  jetColl.push_back(*jit);
     }
     else{
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
 	   fabs(jit->Eta()) < eta_cut
-	   && jit->PassLooseID()
 	   && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
     }
   }
@@ -116,24 +111,6 @@ bool JetSelection::PassUserID_PFJetLoose ( snu::KJet jet){
 		        pass_neutralEMFraction           && 
 		    pass_nConstituents                );
   
-  if(decision != jet.PassLooseID()){
-    std::cout << decision << " " << jet.PassLooseID() << " " << jet.Eta() << " " << jet.ChargedHadEnergyFraction() <<  std::endl;
-    std::cout << "pass_chargedHadFraction_central = " << pass_chargedHadFraction_central << " " << jet.ChargedEMEnergyFraction    () << std::endl;
-    std::cout << "pass_chargedEMFraction_central = " << pass_chargedEMFraction_central << " " <<  jet.ChargedMultiplicity() <<std::endl;
-    std::cout << "pass_chargedMultiplicity_central   = " << pass_chargedMultiplicity_central  << std::endl;
-    std::cout << "pass_neutralhadFraction   = " << pass_neutralhadFraction  <<  " " <<  jet.NeutralHadEnergyFraction() << std::endl;
-    std::cout << "pass_neutralEMFraction   = " << pass_neutralEMFraction   << " " <<  jet.NeutralEMEnergyFraction() << std::endl;
-    std::cout << "pass_nConstituents   = " <<  pass_nConstituents << " " << jet.Nconstituents()   <<std::endl;
-  }
-
-
-
-
-
-
-
-
-    
   return decision;
   
 }

@@ -28,7 +28,7 @@ class AnalyzerCore : public LQCycleBase {
   virtual void WriteHistograms()throw( LQError );
 
   double ElectronScaleFactor( double eta, double pt);
-
+  float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
   

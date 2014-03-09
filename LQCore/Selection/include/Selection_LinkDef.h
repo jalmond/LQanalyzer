@@ -12,6 +12,7 @@
 #pragma link C++ class EventSelection+; 
 #pragma link C++ class GenSelection+;  
 #pragma link C++ class JetSelection+;  
+#pragma link C++ class GenJetSelection+;  
 #pragma link C++ class MuonSelection+;  
 #pragma link C++ class TauSelection+;
 

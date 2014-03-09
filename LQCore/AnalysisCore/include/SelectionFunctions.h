@@ -21,7 +21,11 @@ class SelectionFunctions {
  
   
   bool TriggerSelector (std::vector<TString> triggernames, std::vector<std::string> inputtriggers, std::vector<bool> triggerdecision, std::vector<int> HLTPrescales, int &prescaler);
-};
 
+  
+  double EnergyResScaleFactor (float eta); 
+  double EnergyResScaleError  (float eta);
+  
+};
 #endif
 

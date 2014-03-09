@@ -14,7 +14,7 @@ SKWW         182363.161    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/W
 SKWZ         301122.644    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/WZ/
 SKZZ         555109.777    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/ZZ/
 SKWjets      1538.562       /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/Wjets/
-
+SKHNmumu100  14036.72    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/HNmumu100/
 
 ### LQNtuples ########################################################
 ####
@@ -46,7 +46,7 @@ WW		182363.161    	/data2/cms2_data1/SNUData/MC/Background/WW/
 HNmumu50	46.68			
 HNmumu70	235.87			
 HNmumu90	7037.03			
-HNmumu100	14036.72		
+HNmumu100	14036.72		/data2/cms2_data1/SNUData/MC/HN/mumu/100/
 HNmumu125	46242.46		
 HNmumu150	108826.73		
 HNmumu175	214442.23		

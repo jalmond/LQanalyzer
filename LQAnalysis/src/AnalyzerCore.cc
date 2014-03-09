@@ -231,13 +231,49 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   //                                                                                                        
 
   snu::KTrigger triggerinfo = GetTriggerInfo(triggerlist);
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(),GetAllJets(), GetTruthParticles(), triggerinfo,eventinfo);
+
+  std::vector<snu::KJet> skjets= GetAllJets();
+  std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
+  if(!k_isdata){
+    for(unsigned int ijet = 0; ijet < skjets.size(); ijet++){
+      float new_pt = JetResCorr(skjets[ijet], skgenjets);
+      skjets[ijet].SetPtEtaPhiE(new_pt, skjets[ijet].Eta(), skjets[ijet].Phi(), skjets[ijet].E());
+    }
+  }
+  
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(), skjets, skgenjets,GetTruthParticles(), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
   
   eventbase = new EventBase(lqevent);
   
+}
+
+float  AnalyzerCore::JetResCorr(snu::KJet jet, std::vector<KGenJet> genjets){
+  
+  float genpt= -999.;
+  for(std::vector<KGenJet>::iterator it = genjets.begin(); it != genjets.end(); it++){
+    m_logger << "Jet , genjet dR = " << it->DeltaR(jet) << LQLogger::endmsg;
+    if(it->DeltaR(jet) < 0.3){
+      genpt = it->Pt();
+    }
+  }
+  
+  double fabs_eta = fabs ( jet.Eta() );
+  float c(0.);
+  if      ( fabs_eta > 0.0 && fabs_eta <= 0.5 ) c= 1.052;
+  else if ( fabs_eta > 0.5 && fabs_eta <= 1.1 ) c= 1.057;
+  else if ( fabs_eta > 1.1 && fabs_eta <= 1.7 ) c= 1.096;
+  else if ( fabs_eta > 1.7 && fabs_eta <= 2.3 ) c= 1.134;
+  else                                          c= 1.288;
+  
+  float newpt = std::max(0., genpt + c*(jet.Pt() - genpt));
+  m_logger << "Old jet pt = " << jet.Pt() << " new jet pt = " << newpt << LQLogger::endmsg;
+  
+  if(genpt < 0.) newpt = jet.Pt();
+  
+  return newpt;
 }
 
 void AnalyzerCore::EndEvent()throw( LQError ){

@@ -151,7 +151,11 @@ if not cycle == "SKTreeMaker":
 ### Make tmp directory for job
 ############################################################
 
-local_sub_dir=sample + '_' + channel + '_' + now()
+if not os.path.exists("job_output"):
+    os.system("mkdir job_output/")
+
+local_sub_dir= "job_output/" + sample + '_' + channel + '_' + now()
+    
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
         

@@ -1,4 +1,5 @@
 # Ignore for commits
+LQRun/job_output/
 LQLib/
 data/
 LQRun/runJob_1.C

@@ -56,7 +56,7 @@ Wgamma		10403.722	/data1/DATA/LQNtuples_5_3_8/Wgamma/
 HNmumu50	46.68			
 HNmumu70	235.87			
 HNmumu90	7037.03			
-HNmumu100	14036.72		
+HNmumu100	14036.72 		
 HNmumu125	46242.46		
 HNmumu150	108826.73		
 HNmumu175	214442.23		
@@ -76,7 +76,7 @@ HNmumu700	130502192.52
 HNee50        46.68                   
 HNee70        235.87                 
 HNee90        7037.03                
-HNee100       14036.72               
+HNee100       14036.72   /home/jalmond/GridScripts/manager/HN/            
 HNee125       46242.46              
 HNee150       108833.261            
 HNee175       214442.23             

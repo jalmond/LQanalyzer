@@ -21,7 +21,7 @@ ClassImp (SKTreeMaker);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), out_jets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), out_jets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMaker");
@@ -58,6 +58,8 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
+
+  eventbase->GetGenJetSel()->BasicSelection(out_genjets);
   
 
   std::vector<snu::KElectron> skim_electrons;
@@ -69,7 +71,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
   int nlep = skim_electrons.size() + skim_muons.size();
-  if(nlep < 2) throw LQError( "Not DiLepton Event",  LQError::SkipEvent );
+  if(nlep < 1) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   FillCutFlow("DiLep", 1);
   
   out_event   = eventbase->GetEvent();
@@ -95,6 +97,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   DeclareVariable(out_electrons, "KElectrons", "LQTree");
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
+  DeclareVariable(out_genjets, "KGenJets");
   DeclareVariable(out_trigger, "KTrigger");
   DeclareVariable(out_event, "KEvent");
   DeclareVariable(out_truth, "KTruth");
@@ -144,6 +147,7 @@ void SKTreeMaker::ClearOutputVectors() throw (LQError){
   out_muons.clear();
   out_electrons.clear();
   out_jets.clear();
+  out_genjets.clear();
   out_truth.clear();
 
 }
