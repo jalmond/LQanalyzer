@@ -1,43 +1,25 @@
 ### SKTrees ##########
 ##################
-### Data#############
-SKmuon A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiMuon/periodA/
 
-SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodA/
-SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodB/
-SKegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodC/
-SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodD/
+### SINGLE LEPTON SKIM
+SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleMuon/periodA/
 
-### E == A+B+C+D 
-SKegamma E /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/DiElectron/periodAtoD/
+SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleElectron/periodA/
+SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleElectron/periodB/
+SKegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleElectron/periodC/
+SKegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleElectron/periodD/
 
-SKsingleegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodA/
-SKsingleegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodB/
-SKsingleegamma C /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodC/
-SKsingleegamma D /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/Data/SingleElectron/periodD/
-
-### MC #############
-SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY10to50/
-SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/DY50plus/
-SKttbar      29588.256	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/ttbar/   
-SKWW 	     182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WW/      
-SKWZ 	     301122.644	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WZ/
-SKZZ 	     555109.777	   /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/ZZ/
-SKWjets      1538.562	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/Wjets/
-SKW-W-	     1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WmWm/ 
-SKW+W+	     402840.451	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/WpWp/
-SKWgamma     10403.722	    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC/Wgamma/
-
-SKseDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/DY10to50/
-SKseDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/DY50plus/
-SKsettbar      29588.256     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/ttbar/
-SKseWW         182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WW/
-SKseWZ         301122.644    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WZ/
-SKseZZ         555109.777    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/ZZ/
-SKseWjets      1538.562       /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/Wjets/
-SKseW-W-       1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WmWm/
-SKseW+W+       402840.451     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WpWp/
-SKseWgamma     10403.722      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/Wgamma/
+### SINGLE LEPTON SKIM
+SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/DY10to50/
+SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/DY50plus/
+SKttbar      29588.256     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/ttbar/
+SKWW         182363.161    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/WW/
+SKWZ         301122.644    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/WZ/
+SKZZ         555109.777    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/ZZ/
+SKWjets      1538.562       /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/Wjets/
+SKW-W-       1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/WmWm/
+SKW+W+       402840.451     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/WpWp/
+SKWgamma     10403.722      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/Wgamma/
 
 SKHNee100   1.     /var/tmp/jalmond/HNsktree_test/
 
