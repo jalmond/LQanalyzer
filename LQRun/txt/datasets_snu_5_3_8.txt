@@ -39,6 +39,8 @@ SKseW-W-       1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MC
 SKseW+W+       402840.451     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/WpWp/
 SKseWgamma     10403.722      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14/MCSingleLepSkim/Wgamma/
 
+SKHNee100   1.     /var/tmp/jalmond/HNsktree_test/
+
 ### LQNtuples ########################################################
 ####
 ### DATA# ############################################################

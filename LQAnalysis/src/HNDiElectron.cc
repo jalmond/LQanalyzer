@@ -54,6 +54,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist, "SSDiElectronTight_DiJet");
    MakeCleverHistograms(sighist, "SSDiElectronTightNLV");
    MakeCleverHistograms(elhist,  "SSDiElectronMedium_Electrons");
+   MakeCleverHistograms(sighist,  "NoCut");
    MakeCleverHistograms(sighist,  "TriEl");
    MakeCleverHistograms(sighist,  "ZZ");
 
@@ -84,7 +85,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// This is the analysis electron trigger 
   /// No Scale Factors are yet applied to correct MC
   triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  if(!PassTrigger(triggerslist, prescale)) return;
+  //if(!PassTrigger(triggerslist, prescale)) return;
   
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
   
@@ -223,6 +224,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
   eventbase->GetMuonSel()->Selection(muonTightColl);
   
+
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
@@ -230,6 +232,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
+
+
+  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   
   int nbjet=0;
   for(int ij=0; ij <jetColl_lepveto.size(); ij++){
