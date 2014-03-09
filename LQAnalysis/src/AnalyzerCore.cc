@@ -234,10 +234,13 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
   std::vector<snu::KJet> skjets= GetAllJets();
   std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
+  
   if(!k_isdata){
-    for(unsigned int ijet = 0; ijet < skjets.size(); ijet++){
-      float new_pt = JetResCorr(skjets[ijet], skgenjets);
-      skjets[ijet].SetPtEtaPhiE(new_pt, skjets[ijet].Eta(), skjets[ijet].Phi(), skjets[ijet].E());
+    if(skgenjets.size() != 0){
+      for(unsigned int ijet = 0; ijet < skjets.size(); ijet++){
+	float new_pt = JetResCorr(skjets[ijet], skgenjets);
+	skjets[ijet].SetPtEtaPhiE(new_pt, skjets[ijet].Eta(), skjets[ijet].Phi(), skjets[ijet].E());
+      }
     }
   }
   
@@ -254,7 +257,6 @@ float  AnalyzerCore::JetResCorr(snu::KJet jet, std::vector<KGenJet> genjets){
   
   float genpt= -999.;
   for(std::vector<KGenJet>::iterator it = genjets.begin(); it != genjets.end(); it++){
-    m_logger << "Jet , genjet dR = " << it->DeltaR(jet) << LQLogger::endmsg;
     if(it->DeltaR(jet) < 0.3){
       genpt = it->Pt();
     }
@@ -269,8 +271,6 @@ float  AnalyzerCore::JetResCorr(snu::KJet jet, std::vector<KGenJet> genjets){
   else                                          c= 1.288;
   
   float newpt = std::max(0., genpt + c*(jet.Pt() - genpt));
-  m_logger << "Old jet pt = " << jet.Pt() << " new jet pt = " << newpt << LQLogger::endmsg;
-  
   if(genpt < 0.) newpt = jet.Pt();
   
   return newpt;

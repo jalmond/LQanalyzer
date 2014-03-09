@@ -405,25 +405,25 @@ void SKTreeFiller::ERRORMessage(TString comment){
 
 std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 
+
   std::vector<KGenJet> genjets;
   if(!LQinput){
-
-    for(std::vector<KGenJet>::iterator kit  = k_inputgenjets->begin(); kit != k_inputgenjets->end(); kit++){
-      genjets.push_back(*kit);
+    if(k_inputgenjets){
+      for(std::vector<KGenJet>::iterator kit  = k_inputgenjets->begin(); kit != k_inputgenjets->end(); kit++){
+	genjets.push_back(*kit);
+      }
     }
     return genjets;
   }
 
   for (UInt_t ijet=0; ijet< GenJetEnergy->size(); ijet++) {
     KGenJet jet;
-    
     jet.SetPtEtaPhiE(GenJetPt->at(ijet), GenJetEta->at(ijet), GenJetPhi->at(ijet), GenJetEnergy->at(ijet));
     jet.SetGenJetP(GenJetP->at(ijet));
     jet.SetGenJetEMF(GenJetEMF->at(ijet));
     jet.SetGenJetHADF(GenJetHADF->at(ijet));
     genjets.push_back(jet);
   }
-  
   return genjets;
 }
 
