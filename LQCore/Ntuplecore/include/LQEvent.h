@@ -16,6 +16,7 @@ using namespace std;
 #include "KMuon.h"
 #include "KElectron.h"
 #include "KJet.h"
+#include "KGenJet.h"
 #include "KTau.h"
 #include "KTruth.h"
 #include "KTrigger.h"
@@ -24,7 +25,7 @@ using namespace std;
 class LQEvent {
 
  public:
-  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KTau> taus, std::vector<snu::KJet> jets, std::vector<snu::KTruth> truth, snu::KTrigger tr,  snu::KEvent ev);
+  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KTau> taus, std::vector<snu::KJet> jets, std::vector<snu::KGenJet> genjets,std::vector<snu::KTruth> truth, snu::KTrigger tr,  snu::KEvent ev);
 
   ///Copy constructor
   LQEvent(const LQEvent& evb);
@@ -39,6 +40,7 @@ class LQEvent {
   inline std::vector<snu::KTau> GetTaus() const {return k_taus;}
   inline std::vector<snu::KTruth> GetTruth() const {return k_truth;}
   inline std::vector<snu::KJet> GetJets() const {return k_jets;}
+  inline std::vector<snu::KGenJet> GetGenJets() const {return k_genjets;}
   inline snu::KEvent GetEvent() const {return k_event;}
   inline snu::KTrigger GetTrigger() const {return k_trigger;}
   
@@ -50,6 +52,7 @@ class LQEvent {
   std::vector<snu::KTau> k_taus;
   std::vector<snu::KTruth> k_truth;
   std::vector<snu::KJet> k_jets;
+  std::vector<snu::KGenJet> k_genjets;
   snu::KTrigger k_trigger;
   snu::KEvent k_event;
 

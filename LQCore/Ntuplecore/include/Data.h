@@ -27,6 +27,7 @@ namespace snu{
   class KElectron;
   class KEvent;
   class KJet;
+  class KGenJet;
   class KTrigger;
   class KTruth;
 }
@@ -94,6 +95,7 @@ public :
    /// If needed (using SKTree input)
    std::vector<snu::KMuon>     *k_inputmuons;
    std::vector<snu::KJet>     *k_inputjets;
+   std::vector<snu::KGenJet>     *k_inputgenjets;
    snu::KEvent     *k_inputevent;
    snu::KTrigger     *k_inputtrigger;
    std::vector<snu::KTruth>     *k_inputtruth;
@@ -809,6 +811,7 @@ public :
    TBranch        *b_inputtrigger;
    TBranch        *b_inputtruth;
    TBranch        *b_inputjets;
+   TBranch        *b_inputgenjets;
    TBranch        *b_inputevent;
    TBranch        *b_inputelectrons;
    TBranch        *b_HLTKey;   //!

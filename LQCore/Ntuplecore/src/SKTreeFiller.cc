@@ -401,6 +401,33 @@ void SKTreeFiller::ERRORMessage(TString comment){
   m_logger << ERROR << "SKTreeFiller had a probleming filling " << comment << ". This variable is not present in the current LQntuples." << LQLogger::endmsg;   
 }
 
+
+
+std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
+
+  std::vector<KGenJet> genjets;
+  if(!LQinput){
+
+    for(std::vector<KGenJet>::iterator kit  = k_inputgenjets->begin(); kit != k_inputgenjets->end(); kit++){
+      genjets.push_back(*kit);
+    }
+    return genjets;
+  }
+
+  for (UInt_t ijet=0; ijet< GenJetEnergy->size(); ijet++) {
+    KGenJet jet;
+    
+    jet.SetPtEtaPhiE(GenJetPt->at(ijet), GenJetEta->at(ijet), GenJetPhi->at(ijet), GenJetEnergy->at(ijet));
+    jet.SetGenJetP(GenJetP->at(ijet));
+    jet.SetGenJetEMF(GenJetEMF->at(ijet));
+    jet.SetGenJetHADF(GenJetHADF->at(ijet));
+    genjets.push_back(jet);
+  }
+  
+  return genjets;
+}
+
+
 std::vector<KJet> SKTreeFiller::GetAllJets(){
 
   std::vector<KJet> jets;
@@ -416,7 +443,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
  
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
     KJet jet;
-    
+    m_logger << DEBUG << "PFJeta = " << PFJetEta->at(ijet) << LQLogger::endmsg;
     if(!(PFJetPt && PFJetEta && PFJetPhi && PFJetEnergy )) ERRORMessage("PFJetPtEtaPhi");
     else jet.SetPtEtaPhiE(PFJetPt->at(ijet), PFJetEta->at(ijet), PFJetPhi->at(ijet), PFJetEnergy->at(ijet));
     if(!PFJetEnergyRaw)ERRORMessage("PFJetEnergyRaw");
@@ -520,7 +547,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   
   std::sort( jets.begin(), jets.end(), isHigherPt );
   
-  
+  m_logger << DEBUG << "PFJet size = " << jets.size() << LQLogger::endmsg;
   return jets;
 }
 

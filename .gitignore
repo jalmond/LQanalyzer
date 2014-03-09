@@ -1,4 +1,5 @@
 # Ignore for commits
+LQRun/job_output/
 LQLib/
 data/
 LQRun/runJob_1.C
@@ -25,7 +26,4 @@ LQLib/SKTree.rootmap
 *.jpg
 # ignore emacs tmp files
 *~
-LQRun/HN*
-LQRun/per*
-LQRun/DY*
 LQRun/Macros/HvyNPlottingMacro/MakeDataMCCompPlots

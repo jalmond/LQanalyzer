@@ -10,6 +10,7 @@
 #include "KMuon.h"
 #include "KElectron.h"
 #include "KJet.h"
+#include "KGenJet.h"
 #include "KEvent.h"
 #include "KTrigger.h"
 #include "KTruth.h"
@@ -36,7 +37,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),  k_inputjets(0)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),  k_inputjets(0), k_inputgenjets(0)
   
 {
 
@@ -842,18 +843,21 @@ void Data::ConnectVariables(bool setall){
     k_inputmuons=0;
     k_inputelectrons=0;
     k_inputjets=0;
+    k_inputgenjets=0;
     k_inputevent=0;
     k_inputtrigger=0;
     k_inputtruth=0;
     b_inputmuons=0;
     b_inputelectrons=0;
     b_inputjets=0;
+    b_inputgenjets=0;
     b_inputevent=0;
     b_inputtrigger=0;
     b_inputtruth=0;
 
     ConnectVariable("KEvent", k_inputevent, b_inputevent);
     ConnectVariable("KJets", k_inputjets,b_inputjets );
+    ConnectVariable("KGenJets", k_inputgenjets,b_inputgenjets );
     ConnectVariable("KMuons", k_inputmuons, b_inputmuons);
     ConnectVariable("KElectrons", k_inputelectrons, b_inputelectrons);
     ConnectVariable("KTrigger", k_inputtrigger, b_inputtrigger);
@@ -1349,6 +1353,14 @@ void Data::ConnectTruth(){
   ConnectVariable("GenZElectronPx", GenZElectronPx, b_GenZElectronPx);
   ConnectVariable("GenZElectronPy", GenZElectronPy, b_GenZElectronPy);
   ConnectVariable("GenZElectronPz", GenZElectronPz, b_GenZElectronPz);
+  
+  ConnectVariable("GenJetEMF", GenJetEMF, b_GenJetEMF);
+  ConnectVariable("GenJetEnergy", GenJetEnergy, b_GenJetEnergy);
+  ConnectVariable("GenJetEta", GenJetEta, b_GenJetEta);
+  ConnectVariable("GenJetHADF", GenJetHADF, b_GenJetHADF);
+  ConnectVariable("GenJetP", GenJetP, b_GenJetP);
+  ConnectVariable("GenJetPhi", GenJetPhi, b_GenJetPhi);
+  ConnectVariable("GenJetPt", GenJetPt, b_GenJetPt);
 
   return;
 }
@@ -1451,13 +1463,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("PDFCTEQWeights", PDFCTEQWeights);
   ConnectVariable("PDFMSTWWeights", PDFMSTWWeights);
   ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights);
-  ConnectVariable("GenJetEMF", GenJetEMF);
-  ConnectVariable("GenJetEnergy", GenJetEnergy);
-  ConnectVariable("GenJetEta", GenJetEta);
-  ConnectVariable("GenJetHADF", GenJetHADF);
-  ConnectVariable("GenJetP", GenJetP);
-  ConnectVariable("GenJetPhi", GenJetPhi);
-  ConnectVariable("GenJetPt", GenJetPt);
   ConnectVariable("GenMETCalo", GenMETCalo);
   ConnectVariable("GenMETPhiCalo", GenMETPhiCalo);
   ConnectVariable("GenSumETCalo", GenSumETCalo);
