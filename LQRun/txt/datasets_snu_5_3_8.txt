@@ -2,7 +2,7 @@
 ##################
 
 ### SINGLE LEPTON SKIM
-SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleMuon/periodA/
+SKmuon A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleMuon/periodA/
 
 SKegamma A /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleElectron/periodA/
 SKegamma B /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/Data/SingleElectron/periodB/
