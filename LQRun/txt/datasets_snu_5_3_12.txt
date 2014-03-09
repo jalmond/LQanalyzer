@@ -2,19 +2,10 @@
 ##################
 ### Data#############
 
-SKmuon A /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/Data/DiMuon/periodA/
-
 
 
 ### MC #############
-SKDY10to50   2901.7      /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/DY10to50/
-SKDY50plus   8693.5        /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/DY50plus/
-SKttbar      29588.256     /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/ttbar/
-SKWW         182363.161    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/WW/
-SKWZ         301122.644    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/WZ/
-SKZZ         555109.777    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/ZZ/
-SKWjets      1538.562       /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/Wjets/
-SKHNmumu100  14036.72    /data1/LocalNtuples/CMSSW_5_3_12/SKTrees/March14/MC/HNmumu100/
+
 
 ### LQNtuples ########################################################
 ####
