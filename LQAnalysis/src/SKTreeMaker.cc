@@ -13,6 +13,10 @@
 //Core includes
 #include "EventBase.h"                                                                                                                           
 
+/// Include class to correct muon pt
+#include "MuScleFitCorrector.h"
+
+
 //// Needed to allow inheritance for use in LQCore/core classes
 ClassImp (SKTreeMaker);
 
@@ -25,6 +29,9 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMaker");
+
+
+
 
 }
 
@@ -54,7 +61,20 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(15);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons);
-  
+  /*
+  if(out_muons.size()>0){
+    //MuScleFitCorrector muoncorrector =  MuScleFitCorrector(muscale_fitParametersFile);    
+    for(int imuon=0; imuon < out_muons.size(); imuon++){
+      if(out_muons.at(imuon).Charge() < 0) muoncorrector.applyPtCorrection(out_muons.at(imuon), -1    );
+      else muoncorrector.applyPtCorrection(out_muons.at(imuon), 1    );
+      
+      if(!k_isdata){
+	if(out_muons.at(imuon).Charge() < 0) muoncorrector.applyPtSmearing(out_muons.at(imuon), -1 ,false);
+	else muoncorrector.applyPtSmearing(out_muons.at(imuon), 1 ,false);
+      }
+    }
+  }
+  */
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
@@ -102,6 +122,8 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   DeclareVariable(out_event, "KEvent");
   DeclareVariable(out_truth, "KTruth");
 
+  m_logger<< INFO << "Muon Smearing applied using " << muscale_fitParametersFile << " file" << " " << muoncorrector<< LQLogger::endmsg;
+
   return;
   
 }
@@ -109,7 +131,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
 SKTreeMaker::~SKTreeMaker() {
   
   Message("In Analyzer Destructor" , INFO);
-  
+
 }
 
 

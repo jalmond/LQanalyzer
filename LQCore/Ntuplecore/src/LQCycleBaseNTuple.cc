@@ -80,6 +80,12 @@ void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
   events_to_process = nentries;
 }
 
+
+void LQCycleBaseNTuple::SetMuSCLFile( TString muonfitParametersFile ){
+  m_logger << INFO << "Setting muscale_fitParametersFile = " << muonfitParametersFile << LQLogger::endmsg;
+  muscale_fitParametersFile = muonfitParametersFile;
+}
+
 void LQCycleBaseNTuple::SetDataType( bool type){  
   k_isdata = type;
 }

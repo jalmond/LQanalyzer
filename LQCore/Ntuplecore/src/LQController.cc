@@ -344,6 +344,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     LQError::StopExecution );
   }
 
+  TString muonfitParametersFile = "";
   GetMemoryConsumption("Start of ExecuteCycle");
   m_logger << DEBUG << "Entering ExecuteCycles" << LQLogger::endmsg;
 
@@ -376,6 +377,16 @@ void LQController::ExecuteCycle() throw( LQError ) {
     //                                                                                                                       
     // The begin cycle function has to be called here by hand:                                                               
     // This creates anyoutput files/Trees/Branches for analysis                
+
+
+    string ms_dir = getenv("LQANALYZER_CORE_PATH") + string("/MuScleFitCorrector/");
+    muonfitParametersFile += TString(ms_dir);
+    if(inputType != data) muonfitParametersFile += "MuScleFit_2012_MC_53X_smearReReco.txt";
+    else{
+      if(completename.Contains("periodD")) muonfitParametersFile += "MuScleFit_2012D_DATA_ReReco_53X.txt";
+      else muonfitParametersFile += "MuScleFit_2012ABC_DATA_ReReco_53X.txt";
+    }
+    cycle->SetMuSCLFile( muonfitParametersFile );
 
     /// Call BeginCycle by hand
     cycle->MakeOutPutFile(completename);
@@ -499,8 +510,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     h_timing_hist->Fill("BeginCycle", timer.RealTime());
     timer.Start();
     FillMemoryHists("BeginCycle");
-
-
+    
+   
     int m_nSkippedEvents(0);
     int m_nProcessedEvents(0);
 

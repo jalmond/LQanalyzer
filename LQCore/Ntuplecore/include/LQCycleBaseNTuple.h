@@ -32,7 +32,7 @@ public:
   virtual TTree* GetOutputTree( const char* treeName ) const;
   virtual void MakeOutPutFile(TString path, TString name= "NOTREE");
   
-  
+  void SetMuSCLFile( TString muonfitParametersFile );
   TFile* GetOutputFile();
   void DeleteInputVariables();
   void CloseFiles();
@@ -44,6 +44,7 @@ public:
   
   /// Bool to tell if sample is data or MC in analysis code
   bool k_isdata;
+  TString muscale_fitParametersFile;
   
   // How many entries in the fullsample
   double sample_entries;
