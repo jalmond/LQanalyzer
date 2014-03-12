@@ -233,12 +233,25 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
 
-
+  
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   
   int nbjet=0;
   for(int ij=0; ij <jetColl_lepveto.size(); ij++){
     if(jetColl_lepveto.at(ij).BtagProb() > 0.679) nbjet++;
+  }
+  
+  if(nbjet == 2){
+    if(eventbase->GetEvent().PFMET() > 30.){
+      if(muonTightColl.size() ==2){
+	if(muonTightColl.at(0).Charge() != muonTightColl.at(1).Charge()){
+	  FillHist("OSTopCR", jetColl_lepveto.size(),weight, 0.,10.,10);
+	}
+	else{
+	  FillHist("SSTopCR", jetColl_lepveto.size(),weight, 0.,10.,10);
+	}
+      }
+    }
   }
   for(int ij=0; ij <jetColl.size(); ij++){
     for (int iel=0; iel < electronTightColl.size(); iel++){
