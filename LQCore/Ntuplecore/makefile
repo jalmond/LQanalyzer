@@ -24,7 +24,6 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/SKTree/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCycle/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/MuScleFitCorrector/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 
 
