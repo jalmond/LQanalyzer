@@ -11,8 +11,11 @@ class TBranch;
 #include "LQError.h"
 #include "LQCycleBaseBase.h"
 
+
+
 // forward declaration
 class TH1F;
+
 
 class LQCycleBaseNTuple :  public virtual LQCycleBaseBase{
 
@@ -31,7 +34,7 @@ public:
   virtual void SaveOutputTrees( TDirectory* /*output*/ );
   virtual TTree* GetOutputTree( const char* treeName ) const;
   virtual void MakeOutPutFile(TString path, TString name= "NOTREE");
-  
+
   
   TFile* GetOutputFile();
   void DeleteInputVariables();
@@ -44,6 +47,7 @@ public:
   
   /// Bool to tell if sample is data or MC in analysis code
   bool k_isdata;
+  TString muscale_fitParametersFile;
   
   // How many entries in the fullsample
   double sample_entries;
@@ -53,10 +57,11 @@ public:
   template< class T >
     TBranch* DeclareVariable( T& obj, const char* name,
 			       const char* treeName = 0 ) throw( LQError );
+
  private:
   static const char* RootType( const char* typeid_type ) ;
 
-  ClassDef( LQCycleBaseNTuple, 0 );
+  ClassDef( LQCycleBaseNTuple, 1 );
   
 };
 

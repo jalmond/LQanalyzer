@@ -18,8 +18,9 @@ loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
 #declare -a input_samples=("A" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-declare -a input_samples=("A" "ttbar")
+declare -a input_samples=("W+W+")
 #use5312ntuples="True"
+remove="False"
 
 
 stream="muon"

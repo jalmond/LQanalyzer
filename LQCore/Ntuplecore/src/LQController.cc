@@ -344,6 +344,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     LQError::StopExecution );
   }
 
+  TString muonfitParametersFile = "";
   GetMemoryConsumption("Start of ExecuteCycle");
   m_logger << DEBUG << "Entering ExecuteCycles" << LQLogger::endmsg;
 
@@ -376,6 +377,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     //                                                                                                                       
     // The begin cycle function has to be called here by hand:                                                               
     // This creates anyoutput files/Trees/Branches for analysis                
+
 
     /// Call BeginCycle by hand
     cycle->MakeOutPutFile(completename);
@@ -499,8 +501,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     h_timing_hist->Fill("BeginCycle", timer.RealTime());
     timer.Start();
     FillMemoryHists("BeginCycle");
-
-
+    
+   
     int m_nSkippedEvents(0);
     int m_nProcessedEvents(0);
 

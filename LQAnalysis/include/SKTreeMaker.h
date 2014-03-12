@@ -39,7 +39,6 @@ class SKTreeMaker : public AnalyzerCore {
   int nevents;
   int pass_vertexcut;
 
-
   ClassDef ( SKTreeMaker, 2);
 };
 #endif

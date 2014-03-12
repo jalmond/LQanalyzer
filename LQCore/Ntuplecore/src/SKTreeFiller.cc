@@ -9,6 +9,8 @@ using namespace std;
 
 
 SKTreeFiller::SKTreeFiller() :Data() {
+  
+  TString fitParametersFile = "";
   VertexN = -999; //// set event vertex to dummy number 
 };
 
@@ -589,6 +591,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
     m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
+    
     if(!MuonGlobalEta){
       muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
       muon.SetCharge(MuonCharge->at(ilep));
@@ -599,7 +602,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	iglobal++;
       }
     }
-
+    
+    
+    
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
     if(MuonMuonSpecPt){
 
@@ -778,19 +783,9 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
   }
 
 
-  int itruth(0);
-  for (UInt_t it=0; it< GenParticleEta->size(); it++, itruth++) {
-
-    if(GenParticlePdgId->at(it) == 2212) {
-      itruth = itruth -1;
-      continue;
-    }
-    if(GenParticleStatus->at(it) < 3) {
-      itruth = itruth -1;
-      continue;
-    }
-
-    snu::KTruth truthp;
+  for (UInt_t it=0; it< GenParticleEta->size(); it++ ) {
+    
+    KTruth truthp;
     truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(it), GenParticleEnergy->at(it));
     truthp.SetParticlePx(GenParticlePx->at(it));
     truthp.SetParticlePy(GenParticlePy->at(it));
@@ -802,9 +797,9 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     }
     truthp.SetParticlePdgId(GenParticlePdgId->at(it));
     truthp.SetParticleStatus(GenParticleStatus->at(it));
-
-
+   
     truthp.SetParticleNDaughter(GenParticleNumDaught->at(it));
+    m_logger << INFO << "Setting mother index = " << GenParticleMotherIndex->at(it) << LQLogger::endmsg;
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
     
     float charge_truth = -999.;
@@ -819,11 +814,10 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     if(GenParticlePdgId->at(it) < 0) charge_truth *=-1.;
     
     truthp.SetCharge(charge_truth);
-    truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }/// end of filling loop
 
-  for (UInt_t it=0; it< GenZMuEta->size(); it++, itruth++) {
+  for (UInt_t it=0; it< GenZMuEta->size(); it++) {
     
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenZMuPt->at(it), GenZMuEta->at(it), GenZMuPhi->at(it), GenZMuEnergy->at(it));
@@ -860,11 +854,10 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
 
     truthp.SetCharge(charge_truth);
-    truthp.SetIndex(itruth);
     vtruth.push_back(truthp);    
   }
   
-  for (UInt_t it=0; it< GenZTauEta->size(); it++, itruth++) {
+  for (UInt_t it=0; it< GenZTauEta->size(); it++) {
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenZTauPt->at(it), GenZTauEta->at(it), GenZTauPhi->at(it), GenZTauEnergy->at(it));
     
@@ -901,12 +894,11 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     if(GenZTauPdgId->at(it) < 0) charge_truth *=-1.;
 
     truthp.SetCharge(charge_truth);
-    truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }
 
 
-  for (UInt_t it=0; it< GenZElectronEta->size(); it++, itruth++) {
+  for (UInt_t it=0; it< GenZElectronEta->size(); it++) {
     snu::KTruth truthp;
     truthp.SetPtEtaPhiE(GenZElectronPt->at(it), GenZElectronEta->at(it), GenZElectronPhi->at(it), GenZElectronEnergy->at(it));
 
@@ -943,7 +935,6 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     if(GenZElectronPdgId->at(it) < 0) charge_truth *=-1.;
     
     truthp.SetCharge(charge_truth);
-    truthp.SetIndex(itruth);
     vtruth.push_back(truthp);
   }
 
