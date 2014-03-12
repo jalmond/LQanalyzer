@@ -234,6 +234,16 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
 
+
+  std::vector<snu::KJet> calojets =GetAllCaloJets();
+
+  m_logger << INFO << "Number of calo jets = " << calojets.size() << LQLogger::endmsg;
+  
+  for(int i = 0; i < calojets.size(); i++){
+    for(int j = 0; j < muonTightColl.size(); j++){
+      m_logger<< "dR (e ,jet) = " << calojets.at(i).DeltaR(muonTightColl.at(j)) << LQLogger::endmsg;
+    }
+  }
   
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   

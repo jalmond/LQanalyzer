@@ -555,7 +555,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
 
 std::vector<KJet> SKTreeFiller::GetAllCaloJets(){
 
-  m_logger << DEBUG << "Filling Cal Jets" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling Calo Jets" << LQLogger::endmsg;
   std::vector<KJet> jets;
 
   if(!LQinput){
