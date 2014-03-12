@@ -99,8 +99,6 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         
     config+='   gSystem->Load("libLQAnalysis.so");\n'
     config+='   gSystem->Load("libPyROOT.so");\n'
-    if cycle == "SKTreeMaker":
-        config+='   gSystem->Load("/home/jalmond/LQanalyzer_master/LQCore/MuScleFitCorrector/MuScleFitCorrector_h.so");'
     config+='   \n'
     config+='   TString filename = "' + input + '";\n'
     config+='   LQController analysis;\n'
