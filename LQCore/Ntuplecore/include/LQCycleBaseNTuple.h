@@ -11,8 +11,11 @@ class TBranch;
 #include "LQError.h"
 #include "LQCycleBaseBase.h"
 
+
+
 // forward declaration
 class TH1F;
+
 
 class LQCycleBaseNTuple :  public virtual LQCycleBaseBase{
 
@@ -31,8 +34,8 @@ public:
   virtual void SaveOutputTrees( TDirectory* /*output*/ );
   virtual TTree* GetOutputTree( const char* treeName ) const;
   virtual void MakeOutPutFile(TString path, TString name= "NOTREE");
+
   
-  void SetMuSCLFile( TString muonfitParametersFile );
   TFile* GetOutputFile();
   void DeleteInputVariables();
   void CloseFiles();
@@ -54,10 +57,11 @@ public:
   template< class T >
     TBranch* DeclareVariable( T& obj, const char* name,
 			       const char* treeName = 0 ) throw( LQError );
+
  private:
   static const char* RootType( const char* typeid_type ) ;
 
-  ClassDef( LQCycleBaseNTuple, 0 );
+  ClassDef( LQCycleBaseNTuple, 1 );
   
 };
 

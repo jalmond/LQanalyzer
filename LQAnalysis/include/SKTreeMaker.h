@@ -6,8 +6,6 @@
 #include "KTrigger.h"
 
 
-class MuScleFitCorrector;
-
 class SKTreeMaker : public AnalyzerCore {
 
  public:
@@ -41,7 +39,6 @@ class SKTreeMaker : public AnalyzerCore {
   int nevents;
   int pass_vertexcut;
 
-  MuScleFitCorrector* muoncorrector;
   ClassDef ( SKTreeMaker, 2);
 };
 #endif

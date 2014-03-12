@@ -13,9 +13,6 @@
 //Core includes
 #include "EventBase.h"                                                                                                                           
 
-/// Include class to correct muon pt
-#include "MuScleFitCorrector.h"
-
 
 //// Needed to allow inheritance for use in LQCore/core classes
 ClassImp (SKTreeMaker);
@@ -53,28 +50,18 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
+
   std::vector<snu::KMuon> skim_muons;
   eventbase->GetMuonSel()->SetPt(10); 
-  eventbase->GetMuonSel()->SetEta(5.);
+  eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->BasicSelection(out_muons); /// Muons For SKTree
+
   /// Selection for event skim
   eventbase->GetMuonSel()->SetPt(15);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons);
-  /*
-  if(out_muons.size()>0){
-    //MuScleFitCorrector muoncorrector =  MuScleFitCorrector(muscale_fitParametersFile);    
-    for(int imuon=0; imuon < out_muons.size(); imuon++){
-      if(out_muons.at(imuon).Charge() < 0) muoncorrector.applyPtCorrection(out_muons.at(imuon), -1    );
-      else muoncorrector.applyPtCorrection(out_muons.at(imuon), 1    );
-      
-      if(!k_isdata){
-	if(out_muons.at(imuon).Charge() < 0) muoncorrector.applyPtSmearing(out_muons.at(imuon), -1 ,false);
-	else muoncorrector.applyPtSmearing(out_muons.at(imuon), 1 ,false);
-      }
-    }
-  }
-  */
+
+  
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
@@ -91,9 +78,20 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
   int nlep = skim_electrons.size() + skim_muons.size();
-  if(nlep < 1) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  FillCutFlow("DiLep", 1);
+  bool pass20gevlep = false;
+  if(skim_electrons.size() > 0){
+    if(skim_electrons.at(0).Pt()> 20 ) pass20gevlep = true;
+  }
+  if(skim_muons.size() > 0){
+    if(skim_muons.at(0).Pt()> 20 ) pass20gevlep = true;
+  }
   
+  /// select events with either 1 lepton with pt > 20  gev or 2 leptons with pt > 15
+  if(! ((nlep > 1) || ( nlep ==1 && pass20gevlep))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+    
+
+  FillCutFlow("DiLep", 1);
+
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
   out_truth   = eventbase->GetTruth();
@@ -121,8 +119,6 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   DeclareVariable(out_trigger, "KTrigger");
   DeclareVariable(out_event, "KEvent");
   DeclareVariable(out_truth, "KTruth");
-
-  m_logger<< INFO << "Muon Smearing applied using " << muscale_fitParametersFile << " file" << " " << muoncorrector<< LQLogger::endmsg;
 
   return;
   

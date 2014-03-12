@@ -21,7 +21,7 @@ namespace snu {
     virtual ~KTruth() ;
   
     KTruth& operator= (const KTruth& obj);
-
+    
     
     void SetIndex(int index);
     void SetParticlePx(double px);
@@ -58,7 +58,7 @@ namespace snu {
     Double_t k_gen_px, k_gen_py, k_gen_pz, k_gen_vx, k_gen_vy,k_gen_vz;
     Int_t k_gen_pdgid, k_gen_status, k_gen_indexmum, k_gen_ndau, k_gen_index;
 
-    ClassDef(KTruth,1)
+    ClassDef(KTruth,2)
   }; 
   
 }//namespace snu

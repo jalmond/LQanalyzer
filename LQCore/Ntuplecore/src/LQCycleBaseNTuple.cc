@@ -13,9 +13,11 @@
 //local  includes
 #include "LQCycleBaseNTuple.h"
 
+
 ClassImp( LQCycleBaseNTuple);
 
 LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) , sample_entries(-999), output_interval(10000), events_to_process(-1){
+
 
  
 }
@@ -24,6 +26,8 @@ LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_ou
 LQCycleBaseNTuple::~LQCycleBaseNTuple(){
   DeleteInputVariables();
 }
+
+
 
 void LQCycleBaseNTuple::DeleteInputVariables() {
 
@@ -80,11 +84,6 @@ void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
   events_to_process = nentries;
 }
 
-
-void LQCycleBaseNTuple::SetMuSCLFile( TString muonfitParametersFile ){
-  m_logger << INFO << "Setting muscale_fitParametersFile = " << muonfitParametersFile << LQLogger::endmsg;
-  muscale_fitParametersFile = muonfitParametersFile;
-}
 
 void LQCycleBaseNTuple::SetDataType( bool type){  
   k_isdata = type;
