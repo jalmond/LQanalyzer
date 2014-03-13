@@ -21,6 +21,7 @@ SKW-W-       1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MC
 SKW+W+       402840.451     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/WpWp/
 SKWgamma     10403.722      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/Wgamma/
 
+SKHNee100   11. /var/tmp/jalmond/HNtest/
 
 ### LQNtuples ########################################################
 ####

@@ -234,17 +234,57 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
 
-
-  std::vector<snu::KJet> calojets =GetAllCaloJets();
-
-  m_logger << INFO << "Number of calo jets = " << calojets.size() << LQLogger::endmsg;
   
-  for(int i = 0; i < calojets.size(); i++){
-    for(int j = 0; j < muonTightColl.size(); j++){
-      m_logger<< "dR (e ,jet) = " << calojets.at(i).DeltaR(muonTightColl.at(j)) << LQLogger::endmsg;
+  if(electronMediumColl.size() ==2){
+    if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()) {
+
+      for(int it = 0; it < eventbase->GetTruth().size() ; it++){
+	
+	if(eventbase->GetTruth().at(it).GenStatus() == 3 && eventbase->GetTruth().at(it).PdgId() == -11 && eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId() == -24 || 23) ;
+	
+      }
+ 
+      bool closejet = false;
+      for(int j = 0; j < electronMediumColl.size(); j++){
+	bool prompt_e=false;
+	for(int it = 0; it < eventbase->GetTruth().size() ; it++){
+
+	  if(eventbase->GetTruth().at(it).GenStatus() == 3 && fabs(eventbase->GetTruth().at(it).PdgId()) == 11){
+	    if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()) == 24 || fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()) ==  23) {
+	      if(electronMediumColl.at(j).DeltaR(eventbase->GetTruth().at(it)) < 0.3) {
+		prompt_e=true; 
+	      }
+	    }
+	  }
+	}
+	if(prompt_e){
+	  for(int i = 0; i < jetColl.size(); i++){
+	    
+	    if( jetColl.at(i).DeltaR(electronMediumColl.at(j)) < 0.4) {
+	      
+	      m_logger << INFO << "Electron vertex index = " << electronMediumColl.at(j).VertexIndex()  << LQLogger::endmsg;
+	      FillHist("prompt_e_closejet_multiplicity",jetColl.at(i).ChargedMultiplicity(), weight, 0.,30.,30);
+	      FillHist("prompt_e_closejet_chem_enfrac", jetColl.at(i).ChargedEMEnergyFraction(), weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_chhad_enfrac", jetColl.at(i).ChargedHadEnergyFraction() , weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_elfrac", jetColl.at(i).ElectronEnergyFraction() , weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_nem_frac", jetColl.at(i).NeutralEMEnergyFraction(), weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_chem_frac", jetColl.at(i).NeutralHadEnergyFraction(), weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_phot_frac", jetColl.at(i).PhotonEnergyFraction()  , weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_muon_frac", jetColl.at(i).MuonEnergyFraction() , weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_vert_index", jetColl.at(i).BestVertexTrackAssociationIndex() -  electronMediumColl.VertexIndex(), weight, -10., 10., 20);
+	      FillHist("prompt_e_closejet_vert_frac", jetColl.at(i).BestVertexTrackAssociationFactor(), 0., 1., 100.);
+	      
+	      if((jetColl.at(i).Pt() * (1.- jetColl.at(i).ElectronEnergyFraction())) > 20.) closejet = true;
+	    }
+	  }
+	
+	  FillHist("SSMediumElclosejet",0, weight, 0.,2.,2);
+	  if(!closejet)FillHist("SSMediumElclosejet",1, weight, 0.,2.,2);
+	}
+      }
     }
   }
-  
+    
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   
   int nbjet=0;

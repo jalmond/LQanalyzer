@@ -799,7 +799,6 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleStatus(GenParticleStatus->at(it));
    
     truthp.SetParticleNDaughter(GenParticleNumDaught->at(it));
-    m_logger << INFO << "Setting mother index = " << GenParticleMotherIndex->at(it) << LQLogger::endmsg;
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
     
     float charge_truth = -999.;
