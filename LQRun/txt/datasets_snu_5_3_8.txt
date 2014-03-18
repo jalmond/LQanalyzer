@@ -21,6 +21,7 @@ SKW-W-       1084518.452    /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MC
 SKW+W+       402840.451     /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/WpWp/
 SKWgamma     10403.722      /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/Wgamma/
 
+SKHNee100   14036.72  /data1/LocalNtuples/CMSSW_5_3_8/SKTrees/March14v2/MCSingleLepSkim/HNee100/
 
 ### LQNtuples ########################################################
 ####
@@ -75,7 +76,7 @@ HNmumu700	130502192.52
 HNee50        46.68                   
 HNee70        235.87                 
 HNee90        7037.03                
-HNee100       14036.72   /home/jalmond/GridScripts/manager/HN/            
+HNee100       14036.72   /data1/DATA/LQNtuples_5_3_8/Majorana_ee_100/
 HNee125       46242.46              
 HNee150       108833.261            
 HNee175       214442.23             

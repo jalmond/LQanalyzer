@@ -26,8 +26,8 @@ void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl) {
       /// ONLY CUT ON PT/ETA/LOOSE ID
       if( muit->Pt() < pt_cut_min ) pass_selection = false;
       if( fabs(muit->Eta()) > eta_cut) pass_selection =false;
-      
-      
+ 
+     
       if(! (PassID(MUON_LOOSE, *muit))) pass_selection =false;
       
 
@@ -44,6 +44,8 @@ void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl) {
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++, ilep++)
     {
       
+      if(muit->Pt() == 0.) continue;
+
       bool pass_selection = true;
       
       /// ONLY CUT ON PT/ETA/LOOSE ID
