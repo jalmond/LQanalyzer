@@ -110,7 +110,8 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig["h_nVertices"] =      new TH1F("h_nVertices_"           + name,"number of even vertices",60,0.0,60.0);
   
 
-  map_sig["h_paircharge"] =     new TH1F("h_paircharge_"    + name,"Charge of the muon pair",5,-2,3);
+  map_sig["h_muoncharge"] =     new TH1F("h_muoncharge_"    + name,"Charge of the muon pair",5,-2,3);
+  map_sig["h_electroncharge"] =     new TH1F("h_electroncharge_"    + name,"Charge of the muon pair",5,-2,3);
 
   map_sig["h_muons_eta"] =       new TH1F("h_muons_eta_"      + name,"#eta distribution of the two muons",50,-3,3);
   map_sig["h_electrons_eta"] =       new TH1F("h_electrons_eta_"      + name,"#eta distribution of the two electrons",50,-3,3);
@@ -238,14 +239,14 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_leadingMuonIso", mureliso,weight);
     }
 
-    if(fabs(muit->Charge()) !=  1.) std::cout << "Muon charge = " << muit->Charge() << std::endl;
-    Fill("h_paircharge",muit->Charge(),weight);
+    Fill("h_muoncharge",muit->Charge(),weight);
   }
   
     
   if(electrons.size()==2){
     Fill("h_eemass", (electrons[0]+electrons[1]).M(),weight);
-    Fill("h_paircharge",electrons[0].Charge(),weight);
+    if(fabs(electrons[0].Charge()) !=  1.) std::cout << "Electron charge = " << electrons[0].Charge() << std::endl;
+    Fill("h_electroncharge",electrons[0].Charge(),weight);
     if(jets.size()>1){
       Fill("h_e1jjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
       Fill("h_e2jjmass", (electrons[1]+jets[m]+jets[n]).M(),weight);
@@ -287,7 +288,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   if(muons.size()==1 && electrons.size()==1){
     Fill("h_emumass", (electrons[0]+muons[0]).M(),weight);
-    Fill("h_paircharge",muons[0].Charge(),weight);
+    Fill("h_muoncharge",muons[0].Charge(),weight);
+    Fill("h_electroncharge",electrons[0].Charge(),weight);
     if(jets.size()>1)Fill("h_emujjmass", (muons[0]+electrons[0]+jets[m]+jets[n]).M(),weight);
 
     if(jets.size()>1){
@@ -395,7 +397,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, s
  
       Fill("h_leadingElectronIso", el1_reliso,weight);
       Fill("h_secondElectronIso", el2_reliso,weight);
-      Fill("h_paircharge",electrons[i].Charge(),weight);
+      Fill("h_electroncharge",electrons[i].Charge(),weight);
       Fill("h_electronseta",electrons[i].Eta(),weight);
       Fill("h_electronseta",electrons[j].Eta(),weight);
       Fill("h_jetseta",jets[m].Eta(),weight);
@@ -477,7 +479,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       float mu2_reliso = (muons[j].SumIsoCHDR03() + std::max(0.0, muons[j].SumIsoNHDR03() + muons[j].SumIsoPHDR03() - 0.5* muons[j].SumPUIsoR03()))/muons[1].Pt();
       Fill("h_leadingMuonIso",mu1_reliso ,weight);
       Fill("h_secondMuonIso",mu2_reliso ,weight);
-      Fill("h_paircharge",muons[i].Charge(),weight);
+      Fill("h_muoncharge",muons[i].Charge(),weight);
       Fill("h_muonseta",muons[i].Eta(),weight);
       Fill("h_muonseta",muons[j].Eta(),weight);
       Fill("h_jetseta",jets[m].Eta(),weight);

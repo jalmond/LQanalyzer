@@ -12,13 +12,14 @@ source functions.sh
 ## 
 cycle="ExampleAnalyzerDiMuon"
 skinput="True"
-njobs=30
+njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("A" "B" "C" "D"  "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW")
-declare -a input_samples=("Wjets")
+declare -a input_samples=("WZ")
 stream="muon"
+
 use5314ntuples="True"
 outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"
 #LibList=("libMinuit.so") ### NO SPACES

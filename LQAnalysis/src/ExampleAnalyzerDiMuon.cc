@@ -231,13 +231,10 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
    /// Cuts applied to 1) isolation 2) EM fraction 3) HPD noise rejection
    eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-
    // 20 GeV is very loose. Needed to keep soft signal muons form heavy neutrinos
    eventbase->GetJetSel()->SetPt(20.);
-
    // As with electrons the eta cut is chosed to coincide with teh tracker acceptance
    eventbase->GetJetSel()->SetEta(2.5);
-
    /// To select jets use JetSelectionLeptonVeto function
    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
 

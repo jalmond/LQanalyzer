@@ -89,8 +89,8 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl) {
       // Also stores dB() on pat::Muon  as dxy_pat
       // Also stores D0 
 
-      if(apply_dzcut && !(muit->dZ()<  dz_cut )) pass_selection = false;
-      if(apply_dxycut && !(muit->dXY()< dxy_cut )) pass_selection = false;
+      if(apply_dzcut && !(fabs(muit->dZ())<  dz_cut )) pass_selection = false;
+      if(apply_dxycut && !(fabs(muit->dXY())< dxy_cut )) pass_selection = false;
 
       if(apply_ID && !PassID(MUON_TIGHT, *muit)) pass_selection =false;
       
@@ -137,8 +137,8 @@ void MuonSelection::HNVetoMuonSelection(std::vector<KMuon>& leptonColl) {
     if(!(fabs(muit->Eta()) < 2.4)) pass_selection =false;
     if(!( LeptonRelIso < 0.2)) pass_selection = false;
     if(!(muit->GlobalChi2() < 500.)) pass_selection = false;
-    if(!(muit->dZ()< 100.  )) pass_selection = false;
-    if(!(muit->dXY()< 20.0 )) pass_selection = false;
+    if(!(fabs(muit->dZ())< 100.  )) pass_selection = false;
+    if(!(fabs(muit->dXY())< 20.0 )) pass_selection = false;
     if(!PassID(MUON_LOOSE, *muit)) pass_selection =false;
 
     /// ENERGY DEPOSIT
@@ -213,8 +213,8 @@ void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl) {
     if(!( muit->Pt() > 20. )) pass_selection = false;
     if(!(fabs(muit->Eta()) < 2.4)) pass_selection =false;
     if(!( LeptonRelIso < 0.2)) pass_selection = false;
-    if(!(muit->dZ()< 0.10  )) pass_selection = false;
-    if(!(muit->dXY()< 0.005 )) pass_selection = false;
+    if(!(fabs(muit->dZ())< 0.10  )) pass_selection = false;
+    if(!(fabs(muit->dXY())< 0.005 )) pass_selection = false;
     
     /// TIGHT MUON from muon POG
     if(!PassID(MUON_TIGHT, *muit)) pass_selection =false;

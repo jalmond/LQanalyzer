@@ -642,9 +642,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   }
   m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
 
-  int iglobal=0;
   int ims=0;
-
   for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
     KMuon muon;
     m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
@@ -654,12 +652,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetCharge(MuonCharge->at(ilep));
     }else{
       if(MuonIsGlobal->at(ilep)){
-	muon.SetPtEtaPhiM(MuonGlobalPt->at(iglobal), MuonGlobalEta->at(iglobal),MuonGlobalPhi->at(iglobal), 0.105658367);            
-	muon.SetCharge(MuonGlobalCharge->at(iglobal));
-	iglobal++;
+	muon.SetPtEtaPhiM(MuonGlobalPt->at(ilep), MuonGlobalEta->at(ilep),MuonGlobalPhi->at(ilep), 0.105658367);            
+	muon.SetCharge(MuonGlobalCharge->at(ilep));
       }
-
-    
     }
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
