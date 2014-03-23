@@ -42,9 +42,16 @@ namespace snu {
     void SetPassEGammaIDTrigTight(bool trigtight);
     void SetPassEGammaIDTrigWP70(bool trigwp70);
     void SetPassEGammaIDVeto(bool veto);
+
+    /// Trigger matching
+    void SetHLTDoubleElMatched(bool match);
+    void SetHLTSingleElMatched(bool match);
+    void SetHLTSingleElWP80Matched(bool match);
      
     /// set ID variables
     void SetElectronPassId(Int_t passid);
+    void SetElectronMVA(Double_t mva);
+    void SetElectronTrigMVA(Double_t trig_mva);
     void SetTrackerDrivenSeed(Bool_t trackdrivenseed);
     void SetEcalDrivenSeed(Bool_t ecaldrivenseed);
     void SetDeltaEtaTrkSC(Double_t delta_etatrkSC);
@@ -53,8 +60,8 @@ namespace snu {
     void SetHoE(Double_t hoe);
     void SetcaloEnergy(Double_t caloE);
     void SetESuperClusterOverP(Double_t E_cluster_over_p);
-
-
+    
+    
     //// set   vertex variables
     void SetVtxIndex (Int_t vtx_index);
     void SetVtxDistXY(Double_t vtx_dist_xy);
@@ -71,6 +78,11 @@ namespace snu {
     void SetTrkIsoDR03(Double_t trkiso);
     void SetECalIsoDR03(Double_t ecaliso);  
     void SetHCalIsoDR03(Double_t hcaliso);
+    
+    void SetTrkIsoDR04(Double_t trkiso);
+    void SetECalIsoDR04(Double_t ecaliso);
+    void SetHCalIsoDR04(Double_t hcaliso);
+    
     void SetPFChargedHadronIso03(Double_t pf_ch_03);
     void SetPFPhotonIso03(Double_t pf_ph_03);
     void SetPFNeutralHadronIso03(Double_t pf_ne_03);
@@ -121,6 +133,12 @@ namespace snu {
     inline Bool_t isEB() const {return k_isEB;}
     inline Bool_t isEE() const {return k_isEE;}
     
+
+    /// Trigger matching
+    inline Bool_t MatchedDiElectronTrigger() const {return k_diel_trig_match;}
+    inline Bool_t MatchedSingleElectronTrigger() const {return k_el_trig_match;}
+    inline Bool_t MatchedSingleElectronWP80Trigger() const {return k_elwp80_trig_match;}
+
     // Vertex variables
     inline Double_t PrimaryVertexDXY() const {return k_pv_dist_xy;}
     inline Double_t PrimaryVertexDXYError() const {return k_pv_dist_xy_error;}
@@ -143,6 +161,8 @@ namespace snu {
     // ID variables
 
     inline Int_t     PassID() const {return k_passID;}
+    inline Double_t  MVA() const{return k_mva;}
+    inline Double_t  TrigMVA() const{return k_trigmva;}
     inline Bool_t    TrackerDrivenSeed() const {return k_trackdrivenseed;}
     inline Bool_t    EcalDrivenSeed() const {return k_ecaldrivenseed;}
     inline Double_t  DeltaEta() const {return  k_delta_etatrkSC;}
@@ -185,6 +205,10 @@ namespace snu {
     inline Double_t  ECalIsoDR03() const {return  k_ecaliso_03;}
     inline Double_t  HCalIsoDR03() const {return  k_hcaliso_03;}
 
+    inline Double_t  TrkIsoDR04() const {return   k_trkiso_04;}
+    inline Double_t  ECalIsoDR04() const {return  k_ecaliso_04;}
+    inline Double_t  HCalIsoDR04() const {return  k_hcaliso_04;}
+
     inline Double_t PFChargedHadronIso03() const {return k_pf_chargedhad_iso03;}
     inline Double_t PFPhotonIso03() const {return k_pf_photon_iso03;}
     inline Double_t PFNeutralHadronIso03() const {return k_pf_neutral_iso03;}
@@ -211,11 +235,13 @@ namespace snu {
 
     Bool_t k_isEB,k_isEE,k_trackdrivenseed,k_ecaldrivenseed,k_hasmatchconvphot;
     Int_t k_missinghits,k_passID , k_missing_lost_hits;
-    Double_t k_trkiso_03,k_ecaliso_03,k_hcaliso_03,k_delta_etatrkSC,k_delta_phitrkSC ;
+    Double_t k_trkiso_03,k_ecaliso_03,k_hcaliso_03,k_trkiso_04,k_ecaliso_04,k_hcaliso_04, k_delta_etatrkSC,k_delta_phitrkSC ;
     Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04;
     Double_t k_sigmaIEtaIEta,k_hoe,k_caloE,  k_E_cluster_over_p,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_matched_gen_pt, k_matched_gen_eta, k_matched_gen_phi;
 
+    Bool_t k_diel_trig_match, k_el_trig_match , k_elwp80_trig_match;
+    Double_t k_mva, k_trigmva;
     Double_t k_dxy, k_dz;
     Double_t k_sceta,k_scphi, k_rawenergy;
     Bool_t k_pass_egammaID_eop, k_pass_egammaID_loose, k_pass_egammaID_medium, k_pass_egammaID_tight, k_pass_egammaID_trigtight, k_pass_egammaID_trigwp70, k_pass_egammaID_veto;
@@ -227,7 +253,7 @@ namespace snu {
     Int_t k_vertex_index;
     Double_t k_eldist, k_cottheta;
 
-    ClassDef(KElectron,5)
+    ClassDef(KElectron,7)
   }; 
   
 }//namespace snu

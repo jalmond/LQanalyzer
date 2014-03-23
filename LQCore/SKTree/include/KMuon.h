@@ -55,7 +55,12 @@ namespace snu {
     void SetMuonMatchedGenParticleEta(double muonmatch_geneta);
     void SetMuonVtxIndex(int ivertex);
     void SetVertexDistXY(double vdistxy);
-
+    
+    void SetHLTDoubleMuMatched(bool match);
+    void SetHLTSingleMuMatched(bool match);
+    void SetHLTSingleMuIsoMatched(bool match);
+    
+    
     void SetMuonIDPt(float pt);
     void SetMuonIDEta(float eta);
     void SetMuonIDPhi(float phi);
@@ -102,6 +107,12 @@ namespace snu {
     inline Double_t VertexDistXY() const {return k_vtxdistxy;}
     inline Int_t MuonVertexIndex() const {return i_muonVtx;}
 
+    /// Trigger Matching
+    inline Bool_t   MatchedDiMuonTrigger()  const {return k_dimuon_trig_match;}
+    inline Bool_t   MatchedSingleMuonTrigger()  const {return k_muon_trig_match;}
+    inline Bool_t   MatchedSingleIsoMuonTrigger()  const {return k_isomuon_trig_match;}
+      
+      
     inline Double_t MuonMSPt() const {return muon_ms_pt;}
     inline Double_t MuonMSEta() const {return muon_ms_eta;}
     inline Double_t MuonMSPhi() const {return muon_ms_phi;}
@@ -128,10 +139,12 @@ namespace snu {
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Int_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
     Int_t i_muonVtx;
+
+    Bool_t k_dimuon_trig_match,k_muon_trig_match,k_isomuon_trig_match;
     Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,2)
+    ClassDef(KMuon,3)
   };   
 }//namespace snu
 

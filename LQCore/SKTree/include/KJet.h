@@ -26,7 +26,15 @@ namespace snu {
     /// ID cut on jet
     void SetJetPassLooseID(int looseID);
     void SetJetPassTightID(int tightID);
-
+    
+    /// Pileup
+    void SetJetPileupIDLooseWP(bool pass);
+    void SetJetPileupIDMediumWP(bool pass);
+    void SetJetPileupIDTightWP(bool pass);
+    void SetJetPileupIDFlag(int idflag);
+    void SetJetPileupIDMVA(double mva);
+    
+    
     //Multiplicities
     void SetJetChargedMultiplicity(int chargeMult);    
     void SetJetNeutralMultiplicity(int neutralMult);
@@ -90,6 +98,16 @@ namespace snu {
     inline Int_t PassLooseID() const {return k_jet_passLooseID;}
     inline Int_t PassTightID() const {return k_jet_passTightID;}
 
+    // Pileup flags
+    inline Bool_t PileupJetIDLoose() const {return k_jet_passpileup_loose;}
+    inline Bool_t PileupJetIDMedium() const {return k_jet_passpileup_medium;}
+    inline Bool_t PileupJetIDTight() const {return k_jet_passpileup_tight;}
+
+    inline Int_t PileupJetIDFlag() const {return k_jet_pileup_flag;}
+    inline Double_t PileupJetIDMVA() const {return k_jet_pileup_mva;}
+    
+   
+    
     /// Multiplicities 
     inline Int_t ChargedMultiplicity() const {return k_jet_chargeMult;}
     inline Int_t NeutralMultiplicity() const {return k_jet_neutralMult;}
@@ -178,9 +196,11 @@ namespace snu {
     // Errors
     Double_t k_jet_l1fastjet_jec,k_jet_l2l3res_jec,k_jet_l2rel_jec,k_jet_l3abs_jec,k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_scaled_down_pt,k_jet_scaled_up_pt,k_jet_smeared_down_energy,k_jet_smeared_up_energy,k_jet_smeared_down_pt,k_jet_smeared_up_pt;
     
-      
+    Bool_t k_jet_passpileup_loose, k_jet_passpileup_medium ,k_jet_passpileup_tight;
+    Int_t k_jet_pileup_flag;
+    Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,2)
+    ClassDef(KJet,3)
   }; 
   
 

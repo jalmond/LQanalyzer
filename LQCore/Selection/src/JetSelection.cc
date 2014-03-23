@@ -48,6 +48,9 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
 	   && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
     }
   }
+  BaseSelection::reset();
+  return;
+  
 }
 
 

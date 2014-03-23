@@ -33,6 +33,7 @@ parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove th
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 parser.add_option("-N", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
+parser.add_option("-M", "--use5314ntuples", dest="use5314ntuples", default=True, help="use5314ntuples? add use5314ntuples='True' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 
@@ -62,6 +63,7 @@ remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
 use5312ntuples = options.use5312ntuples
+use5314ntuples = options.use5314ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 
@@ -134,7 +136,9 @@ if not len(splitsample)==1:
         if "use5312ntuples" in splitsample[conf]:
             conf+=1
             use5312ntuples = splitsample[conf]
-
+        if "use5314ntuples" in splitsample[conf]:
+            conf+=1
+            use5314ntuples = splitsample[conf]
 
 ####################
 ####
@@ -293,6 +297,8 @@ if platform.system() == "Linux":
     version="_5_3_12"
     if not use5312ntuples == "True":
         version = "_5_3_8"
+    if use5314ntuples == "True":
+         version = "_5_3_14"
     filename = 'txt/datasets_snu' + version +  '.txt'
     
 else:
@@ -426,12 +432,16 @@ fr = open(local_sub_dir + '/inputlist.txt', 'r')
 outsamplename = sample
 if not mc:
     outsamplename = outsamplename +  "_" + channel
-    if use5312ntuples == "True":
+    if use5314ntuples == "True":
+        outsamplename = outsamplename + "_5_3_14"
+    elif use5312ntuples == "True":
         outsamplename = outsamplename + "_5_3_12"
     else:
         outsamplename = outsamplename + "_5_3_8"
 else:
-    if use5312ntuples == "True":
+    if use5314ntuples == "True":
+        outsamplename = outsamplename + "_5_3_14"
+    elif use5312ntuples == "True":
         outsamplename = outsamplename + "_5_3_12"
     else:
         outsamplename = outsamplename + "_5_3_8"

@@ -137,8 +137,19 @@ public :
    std::vector<bool>    *ElectronHasTrackerDrivenSeed;
    std::vector<bool>    *ElectronIsEB;
    std::vector<bool>    *ElectronIsEE;
+
+   std::vector<bool>    *PFJetPileupjetIDpassLooseWP;
+   std::vector<bool>    *PFJetPileupjetIDpassMediumWP;
+   std::vector<bool>    *PFJetPileupjetIDpassTightWP;
+   std::vector<int>     *PFJetJetPileupIdflag;
+   std::vector<double>  *PFJetJetPileupMVA;
+   
+   std::vector<double>  *ElectronmvatrigV0;
+   std::vector<double>  *ElectronmvaNontrigV0;
+
    std::vector<bool>    *MuonHLTSingleIsoMuonMatched;
    std::vector<bool>    *MuonHLTSingleMuonMatched;
+   std::vector<bool>    *MuonHLTDoubleMuonMatched;
    std::vector<bool>    *PhotonHasMatchedConvPhot;
    std::vector<bool>    *PhotonHasMatchedPromptEle;
    std::vector<bool>    *PhotonHasPixelSeed;
@@ -854,8 +865,16 @@ public :
    TBranch        *b_ElectronHasTrackerDrivenSeed;   //!
    TBranch        *b_ElectronIsEB;   //!
    TBranch        *b_ElectronIsEE;   //!
+   TBranch        *b_ElectronmvatrigV0;   //!
+   TBranch        *b_ElectronmvaNontrigV0;   //!
+   TBranch        *b_PFJetPileupjetIDpassLooseWP; //!
+   TBranch        *b_PFJetPileupjetIDpassMediumWP; //!
+   TBranch        *b_PFJetPileupjetIDpassTightWP; //!
+   TBranch        *b_PFJetJetPileupIdflag; //!
+   TBranch        *b_PFJetJetPileupMVA; //!
    TBranch        *b_MuonHLTSingleIsoMuonMatched;   //!
    TBranch        *b_MuonHLTSingleMuonMatched;   //!
+   TBranch        *b_MuonHLTDoubleMuonMatched;   //!
    TBranch        *b_PhotonHasMatchedConvPhot;   //!
    TBranch        *b_PhotonHasMatchedPromptEle;   //!
    TBranch        *b_PhotonHasPixelSeed;   //!

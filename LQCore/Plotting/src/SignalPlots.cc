@@ -308,11 +308,11 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   //// Fillplots
 
-  for(int i=0 ; i < electrons.size(); i++){
+  for(unsigned int i=0 ; i < electrons.size(); i++){
     float MT = sqrt(2.* electrons.at(i).Et()*ev.PFMET() * (1 - cos( electrons.at(i).Phi()- ev.PFMETphi())) );
     Fill("h_MTelectron",MT, weight);
   }
-  for(int i=0 ; i < muons.size(); i++){
+  for(unsigned int i=0 ; i < muons.size(); i++){
     float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos( muons.at(i).Phi()- ev.PFMETphi())) );
     Fill("h_MTmuon",MT, weight);
   }

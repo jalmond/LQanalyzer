@@ -16,6 +16,11 @@ KParticle()
 {
   k_jet_passLooseID=false;
   k_jet_passTightID=false;
+  k_jet_passpileup_loose=false;
+  k_jet_passpileup_medium=false;
+  k_jet_passpileup_tight=false;
+  k_jet_pileup_flag=0;
+  k_jet_pileup_mva=0.;
   k_jet_chargeMult=0;
   k_jet_neutralMult=0;
   k_jet_chargeHadMult=0;
@@ -71,6 +76,11 @@ KJet::KJet(const KJet& jet) :
 {
   k_jet_passLooseID= jet.PassLooseID();
   k_jet_passTightID= jet.PassTightID();
+  k_jet_passpileup_loose= jet.PileupJetIDLoose();
+  k_jet_passpileup_medium= jet.PileupJetIDMedium();
+  k_jet_passpileup_tight=jet.PileupJetIDTight();
+  k_jet_pileup_flag=jet.PileupJetIDFlag();
+  k_jet_pileup_mva= jet.PileupJetIDMVA();
   k_jet_chargeMult=jet.ChargedMultiplicity();
   k_jet_neutralMult=jet.NeutralMultiplicity();
   k_jet_chargeHadMult=jet.ChargedHadronMultiplicity();
@@ -129,6 +139,11 @@ void KJet::Reset()
     KParticle::Reset();
     k_jet_passLooseID=false;
     k_jet_passTightID=false;
+    k_jet_passpileup_loose=false;
+    k_jet_passpileup_medium=false;
+    k_jet_passpileup_tight=false;
+    k_jet_pileup_flag=0;
+    k_jet_pileup_mva=0.;
     k_jet_chargeMult=0;
     k_jet_neutralMult=0;
     k_jet_chargeHadMult=0;
@@ -190,6 +205,11 @@ KJet& KJet::operator= (const KJet& p)
       KParticle::operator=(p);
       k_jet_passLooseID= p.PassLooseID();
       k_jet_passTightID= p.PassTightID();
+      k_jet_passpileup_loose= false;
+      k_jet_passpileup_medium= false;
+      k_jet_passpileup_tight= false;
+      k_jet_pileup_flag=0;
+      k_jet_pileup_mva= 0.;
       k_jet_chargeMult=p.ChargedMultiplicity();
       k_jet_neutralMult=p.NeutralMultiplicity();
       k_jet_chargeHadMult=p.ChargedHadronMultiplicity();
@@ -251,6 +271,26 @@ void KJet::SetJetPassLooseID(int looseID){
 void KJet::SetJetPassTightID(int tightID){
   
   k_jet_passTightID = tightID;
+}
+
+void KJet::SetJetPileupIDLooseWP(bool pass){
+  k_jet_passpileup_loose=pass;
+}
+
+void KJet::SetJetPileupIDMediumWP(bool pass){
+  k_jet_passpileup_medium = pass;
+}
+
+void KJet::SetJetPileupIDTightWP(bool pass){
+  k_jet_passpileup_tight=pass;
+}
+
+void KJet::SetJetPileupIDFlag(int flag){
+  k_jet_pileup_flag=flag;
+}
+
+void KJet::SetJetPileupIDMVA(double mva){
+  k_jet_pileup_mva=mva;
 }
 
 

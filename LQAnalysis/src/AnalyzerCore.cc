@@ -34,12 +34,15 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Mu12_v");
   AddTriggerToList("HLT_Mu17_v");
   AddTriggerToList("HLT_Mu24_v");
+  AddTriggerToList("HLT_Mu40_eta2p1_v");
+  AddTriggerToList("HLT_IsoMu24_eta2p1_v");
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-
+  AddTriggerToList("HLT_Ele27_WP80_v");
+  
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 
@@ -67,50 +70,104 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 double AnalyzerCore::ElectronScaleFactor( double eta, double pt){
   
   ///https://twiki.cern.ch/twiki/bin/view/Main/EGammaScaleFactors2012
-  /// medium working point
   double sf = 0.;
-  if(fabs(eta) < 0.8 ) {
-    if( pt < 15.) sf = 0.865;
-    else if( pt < 20.) sf = 0.958;
-    else if( pt < 30.) sf = 0.988;
-    else if( pt < 40.) sf = 1.002;
-    else if( pt < 50.) sf = 1.005;
-    else sf = 1.005;
+  
+  /// tight working point
+  bool medium_electron=false;
+  bool tight_electron=true;
+  
+  if(tight_electron){
+    if(fabs(eta) < 0.8 ) {
+      if( pt < 15.) sf = 0.827;
+      else if( pt < 20.) sf = 0.924;
+      else if( pt < 30.) sf = 0.960;
+      else if( pt < 40.) sf = 0.978;
+      else if( pt < 50.) sf = 0.981;
+      else sf = 0.982;
+    }
+    else  if(fabs(eta) <  1.442){
+      
+      if( pt < 15.) sf = 0.948;
+      else if( pt < 20.) sf = 0.932;
+      else if( pt < 30.) sf = 0.936;
+      else if( pt < 40.) sf = 0.958;
+      else if( pt < 50.) sf = 0.969;
+      else sf = 0.969;
+    }
+    else  if(fabs(eta) <1.556){
+      if( pt < 15.) sf = 1.073;
+      else if( pt < 20.) sf = 0.808;
+      else if( pt < 30.) sf = 0.933;
+      else if( pt < 40.) sf = 0.907;
+      else if( pt < 50.) sf = 0.904;
+      else sf = 0.926;
+    }
+    else if(fabs(eta) <2.0){
+      
+      if( pt < 15.) sf = 0.854;
+      else if( pt < 20.) sf = 0.853;
+      else if( pt < 30.) sf = 0.879;
+      else if( pt < 40.) sf = 0.909;
+      else if( pt < 50.) sf = 0.942;
+      else sf = 0.957;
+    }
+    else{
+      if( pt < 15.) sf = 1.007;
+      else if( pt < 20.) sf = 0.903;
+      else if( pt < 30.) sf = 0.974;
+      else if( pt < 40.) sf = 0.987;
+      else if( pt < 50.) sf = 0.991;
+      else sf = 0.999;
+    }
+    return sf;
   }
-  else  if(fabs(eta) <  1.442){
+  if(medium_electron){
+    /// medium working point
+    if(fabs(eta) < 0.8 ) {
+      if( pt < 15.) sf = 0.865;
+      else if( pt < 20.) sf = 0.958;
+      else if( pt < 30.) sf = 0.988;
+      else if( pt < 40.) sf = 1.002;
+      else if( pt < 50.) sf = 1.005;
+      else sf = 1.005;
+    }
+    else  if(fabs(eta) <  1.442){
+      
+      if( pt < 15.) sf = 0.967;
+      else if( pt < 20.) sf = 0.971;
+      else if( pt < 30.) sf = 0.965;
+      else if( pt < 40.) sf = 0.985;
+      else if( pt < 50.) sf = 0.989;
+      else sf = 0.989;
+    }
+    else  if(fabs(eta) <1.556){
+      if( pt < 15.) sf = 1.064;
+      else if( pt < 20.) sf = 0.902;
+      else if( pt < 30.) sf = 0.990;
+      else if( pt < 40.) sf = 0.966;
+      else if( pt < 50.) sf = 0.971;
+      else sf = 0.980;
+    }
+    else if(fabs(eta) <2.0){
+      
+      if( pt < 15.) sf = 0.939;
+      else if( pt < 20.) sf = 0.897;
+      else if( pt < 30.) sf = 0.953;
+      else if( pt < 40.) sf = 0.980;
+      else if( pt < 50.) sf = 0.999;
+      else sf = 1.004;
+    }
+    else{
+      if( pt < 15.) sf = 1.050;
+      else if( pt < 20.) sf = 0.941;
+      else if( pt < 30.) sf = 1.017;
+      else if( pt < 40.) sf = 1.019;
+      else if( pt < 50.) sf = 1.019;
+      else sf = 1.023;
+      
+    }
+    return sf;
 
-    if( pt < 15.) sf = 0.967;
-    else if( pt < 20.) sf = 0.971;
-    else if( pt < 30.) sf = 0.965;
-    else if( pt < 40.) sf = 0.985;
-    else if( pt < 50.) sf = 0.989;
-    else sf = 0.989;
-  }
-  else  if(fabs(eta) <1.556){
-    if( pt < 15.) sf = 1.064;
-    else if( pt < 20.) sf = 0.902;
-    else if( pt < 30.) sf = 0.990;
-    else if( pt < 40.) sf = 0.966;
-    else if( pt < 50.) sf = 0.971;
-    else sf = 0.980;
-  }
-  else if(fabs(eta) <2.0){
-
-    if( pt < 15.) sf = 0.939;
-    else if( pt < 20.) sf = 0.897;
-    else if( pt < 30.) sf = 0.953;
-    else if( pt < 40.) sf = 0.980;
-    else if( pt < 50.) sf = 0.999;
-    else sf = 1.004;
-  }
-  else{
-    if( pt < 15.) sf = 1.050;
-    else if( pt < 20.) sf = 0.941;
-    else if( pt < 30.) sf = 1.017;
-    else if( pt < 40.) sf = 1.019;
-    else if( pt < 50.) sf = 1.019;
-    else sf = 1.023;
-    
   }
   return sf;
   /// From higgs note Z->llll
@@ -241,15 +298,6 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
   std::vector<snu::KJet> skjets= GetAllJets();
   std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
-  
-  if(!k_isdata){
-    if(skgenjets.size() != 0){
-      for(unsigned int ijet = 0; ijet < skjets.size(); ijet++){
-	float new_pt = JetResCorr(skjets[ijet], skgenjets);
-	skjets[ijet].SetPtEtaPhiE(new_pt, skjets[ijet].Eta(), skjets[ijet].Phi(), skjets[ijet].E());
-      }
-    }
-  }
   
   LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllTaus(), skjets, skgenjets,GetTruthParticles(), triggerinfo,eventinfo);
   

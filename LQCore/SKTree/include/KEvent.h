@@ -47,6 +47,20 @@ namespace snu {
     void SetPFMETUnclusteredDown  (double met_unclust_down);
     void SetPFMETUnclusteredUp  (double met_unclust_up);
     
+    /// GENMET
+    void SetGenMETTrue( double genmettrue);
+    void SetGenMETPhiTrue( double genmetphitrue);
+    void SetGenSumEtTrue( double gensumettrue);
+    void SetGenMETCalo( double genmetcalo);
+    void SetGenMETPhiCalo( double genmetphicalo);
+    void SetGenSumEtCalo( double gensumetcalo);
+
+    
+    /// PDF
+    void SetPDFCTEQWeight( double pdf);
+    void SetPDFMSTWWeight( double pdf);
+    void SetPDFNNPDFWeight( double pdf);
+    
     
     /// Vertex
     void SetNVertices(int nvert);
@@ -110,6 +124,11 @@ namespace snu {
     inline Double_t PFMET_Unclust_Up() const {return k_PF_MET_unclust_up;}
     inline Double_t PFMET_Unclust_Down() const {return k_PF_MET_unclust_down;}
     
+    /// PDF 
+    inline Double_t PDFCTEQWeight() const {return k_pdf_cteq;}
+    inline Double_t PDFMSTWWeight() const {return k_pdf_mstw;}
+    inline Double_t PDFNNPDFWeight() const {return k_pdf_nnpdf;}
+    
     
     /// Jet rho
     inline Double_t JetRho() const {return k_jetrho;}
@@ -130,8 +149,15 @@ namespace snu {
     inline Double_t VertexY() const {return k_vertexY;}
     inline Double_t VertexZ() const {return k_vertexZ;}
 
+    inline Double_t GenMETTrue() const {return k_genmettrue;}
+    inline Double_t GenMETPhiTrue() const {return k_genmetphitrue;}
+    inline Double_t GenSumEtTrue() const {return k_gensumettrue;}
+    inline Double_t GenMETCalo() const {return k_genmetcalo;}
+    inline Double_t GenMETPhiCalo() const {return k_genmetphicalo;}
+    inline Double_t GenSumEtCalo() const {return k_gensumetcalo;}
+    
     /// MET filters
-    inline Bool_t IsTrackingFailure() const {return k_isTrackingFailure ;}
+    inline Bool_t   IsTrackingFailure() const {return k_isTrackingFailure ;}
     inline Bool_t   PassTrackingFailureFilter() const {return  k_passTrackingFailureFilter ;}
     inline Bool_t   PassBeamHaloFilterLoose() const {return   k_passBeamHaloFilterLoose;}
     inline Bool_t   PassBeamHaloFilterTight() const {return   k_passBeamHaloFilterTight;}
@@ -155,7 +181,8 @@ namespace snu {
     
     Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex;
     Double_t k_vertexX,k_vertexY,k_vertexZ,  k_jetrho, k_mcweight;
-    
+    Double_t k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
+    Double_t k_genmettrue, k_genmetphitrue,k_gensumettrue, k_genmetcalo, k_genmetphicalo,k_gensumetcalo;
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
     Double_t k_tc_MET, k_tc_METphi, k_tc_SumET;
     Double_t k_calo_MET, k_calo_METphi, k_calo_SumET;
@@ -167,7 +194,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,5)
+    ClassDef(KEvent,6)
   }; 
   
 }//namespace snu

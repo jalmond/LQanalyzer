@@ -1,0 +1,127 @@
+### SKTrees ##########
+##################
+### Data#############
+
+SKmuon A /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodA/
+SKmuon B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodB/
+SKmuon C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
+SKmuon D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
+
+
+### MC #############
+
+SKDY10to50        2901.7          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/DY10to50/
+SKDY50plus        8693.5          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/DY50plus/
+SKttbar           29588.256       /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/ttbar/
+SKWZ              301122.644      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WZ/
+SKZZ              555109.777      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/ZZ/
+SKWW              182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WW/
+SKWjets           1538.562        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/Wjets/
+SKSSWmWm          1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WmWm/
+SKSSWpWp          402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WpWp/
+SKWgamma          10403.722       /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/Wgamma/
+SKWW_dp           1418676.646     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WW_ds/
+SKttW             845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/TTW/
+SKttZ             1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/TTZ/
+SKWWW             2684057.442     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WWW/
+
+SKQCD_mumu        54.2            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_mumu/
+SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_30to40EE/
+SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_40EE/
+
+
+SKHNee100       14036.72  /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v2/MC/HNee100
+
+### LQNtuples ########################################################
+####
+### DATA# ############################################################
+# channel Period localpath
+############################################################
+egamma A    /data1/DATA/LQNtuples_5_3_14/Data/DiElA/
+egamma B    /data1/DATA/LQNtuples_5_3_14/Data/DiElB/
+egamma C    /data1/DATA/LQNtuples_5_3_14/Data/DiElC/
+egamma D    /data1/DATA/LQNtuples_5_3_14/Data/DiElD/
+
+muon A	 /data1/DATA/LQNtuples_5_3_14/Data/DiMuA/
+muon B 	 /data1/DATA/LQNtuples_5_3_14/Data/DiMuB/	
+muon C 	 /data1/DATA/LQNtuples_5_3_14/Data/DiMuC/	
+muon D 	 /data1/DATA/LQNtuples_5_3_14/Data/DiMuD/	
+
+emu A  /data1/DATA/LQNtuples_5_3_14/Data/MuEGA/
+emu B /data1/DATA/LQNtuples_5_3_14/Data/MuEGB/
+emu C  /data1/DATA/LQNtuples_5_3_14/Data/MuEGC/
+emu D  /data1/DATA/LQNtuples_5_3_14/Data/MuEGD/
+
+singlemuon A /data1/DATA/LQNtuples_5_3_14/Data/MuA/
+singlemuon B /data1/DATA/LQNtuples_5_3_14/Data/MuB/
+singlemuon C /data1/DATA/LQNtuples_5_3_14/Data/MuC/
+singlemuon D /data1/DATA/LQNtuples_5_3_14/Data/MuD/
+
+singleelectron A  /data1/DATA/LQNtuples_5_3_14/Data/ElA/
+singleelectron B  /data1/DATA/LQNtuples_5_3_14/Data/ElB/
+singleelectron C  /data1/DATA/LQNtuples_5_3_14/Data/ElC/
+singleelectron D  /data1/DATA/LQNtuples_5_3_14/Data/ElD/
+
+
+### MC ############################################################
+# Sample	Inte.lumi(/pb)	localpath
+##################################################################
+DY10to50	2901.7          /data1/DATA/LQNtuples_5_3_14/MC/DY10to50/
+DY50plus	8693.5		/data1/DATA/LQNtuples_5_3_14/MC/DY50plus/  
+ttbar		29588.256 	/data1/DATA/LQNtuples_5_3_14/MC/ttbar/
+WZ              301122.644      /data1/DATA/LQNtuples_5_3_14/MC/WZ/
+ZZ              555109.777      /data1/DATA/LQNtuples_5_3_14/MC/ZZ/
+WW		182363.161    	/data1/DATA/LQNtuples_5_3_14/MC/WW/
+Wjets           1538.562        /data1/DATA/LQNtuples_5_3_14/MC/WJets/
+SSWmWm		1084518.452	/data1/DATA/LQNtuples_5_3_14/MC/WmWm/
+SSWpWp		402840.451	/data1/DATA/LQNtuples_5_3_14/MC/WpWp/
+Wgamma		10403.722	/data1/DATA/LQNtuples_5_3_14/MC/Wgamma/
+WW_dp		1418676.646	/data1/DATA/LQNtuples_5_3_14/MC/WW_ds/
+ttW		845025.862	/data1/DATA/LQNtuples_5_3_14/MC/TTW/
+ttZ		1205737.235	/data1/DATA/LQNtuples_5_3_14/MC/TTZ/
+WWW		2684057.442	/data1/DATA/LQNtuples_5_3_14/MC/WWW/
+
+QCD_mumu	54.2		/data1/DATA/LQNtuples_5_3_14/MC/QCD_mumu/
+QCD_30-40_EM2	497.0		/data1/DATA/LQNtuples_5_3_14/MC/QCD_30to40EE/
+QCD_40_EM2	86.0		/data1/DATA/LQNtuples_5_3_14/MC/QCD_40EE/
+
+###HN signal
+HNmumu50	46.68      /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu50/			
+HNmumu70	235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu17/			 
+HNmumu90	7037.03   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu90/
+HNmumu100	14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu100/
+HNmumu125	46242.46   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu125/
+HNmumu150	108826.73  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu150/
+HNmumu175	214442.23  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu175/
+HNmumu200	380833.40   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu200/
+HNmumu225	627546.73   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu225/
+HNmumu250	979699.29    /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu250/
+HNmumu275	1476651.80  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu275/
+HNmumu300	2153700.35  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu300/
+HNmumu325	3063798.49  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu325/
+HNmumu350	4271251.60  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu350/
+HNmumu375	5826499.35  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu375/
+HNmumu400	7879056.73  /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu400/
+HNmumu500	23208151.52 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu500/
+HNmumu600	58506729.08 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu600/
+HNmumu700	130502192.52 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu700/
+
+HNee50        46.68      /data1/DATA/LQNtuples_5_3_14/MC/HNEE50/
+HNee70        235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNEE17/
+HNee90        7037.03   /data1/DATA/LQNtuples_5_3_14/MC/HNEE90/
+HNee100       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100/
+HNee125       46242.46   /data1/DATA/LQNtuples_5_3_14/MC/HNEE125/
+HNee150       108826.73  /data1/DATA/LQNtuples_5_3_14/MC/HNEE150/
+HNee175       214442.23  /data1/DATA/LQNtuples_5_3_14/MC/HNEE175/
+HNee200       380833.40   /data1/DATA/LQNtuples_5_3_14/MC/HNEE200/
+HNee225       627546.73   /data1/DATA/LQNtuples_5_3_14/MC/HNEE225/
+HNee250       979699.29    /data1/DATA/LQNtuples_5_3_14/MC/HNEE250/
+HNee275       1476651.80  /data1/DATA/LQNtuples_5_3_14/MC/HNEE275/
+HNee300       2153700.35  /data1/DATA/LQNtuples_5_3_14/MC/HNEE300/
+HNee325       3063798.49  /data1/DATA/LQNtuples_5_3_14/MC/HNEE325/
+HNee350       4271251.60  /data1/DATA/LQNtuples_5_3_14/MC/HNEE350/
+HNee375       5826499.35  /data1/DATA/LQNtuples_5_3_14/MC/HNEE375/
+HNee400       7879056.73  /data1/DATA/LQNtuples_5_3_14/MC/HNEE400/
+HNee500       23208151.52 /data1/DATA/LQNtuples_5_3_14/MC/HNEE500/
+HNee600       58506729.08 /data1/DATA/LQNtuples_5_3_14/MC/HNEE600/
+HNee700       130502192.52 /data1/DATA/LQNtuples_5_3_14/MC/HNEE700/

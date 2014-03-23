@@ -507,9 +507,9 @@ void LQController::ExecuteCycle() throw( LQError ) {
     int m_nProcessedEvents(0);
 
     /// Get ints for 1/4 , 1/2 of the list to do timing checks
-    int entry_4 = int((nevents_to_process-n_ev_to_skip)/4.);
-    int entry_3_4 = 3*entry_4;
-    int entry_2 = int((nevents_to_process-n_ev_to_skip)/2.);
+    //int entry_4 = int((nevents_to_process-n_ev_to_skip)/4.);
+    //int entry_3_4 = 3*entry_4;
+    //    int entry_2 = int((nevents_to_process-n_ev_to_skip)/2.);
     if(list_to_run.size()!=0){
       for(unsigned int list_entry = 0; list_entry < list_to_run.size(); list_entry++){
 	Bool_t skipEvent = kFALSE;

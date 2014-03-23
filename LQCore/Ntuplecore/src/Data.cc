@@ -186,7 +186,6 @@ void Data::Reset(){
   HLTKey = 0;
   HLTInsideDatasetTriggerNames = 0;
   HLTOutsideDatasetTriggerNames = 0;
-  HLTFilterName = 0;
   passHcalLaserEventFilter=0;
   ElectronGsfCtfCharge = 0;
   ElectronGsfCtfScPixCharge = 0;
@@ -199,8 +198,9 @@ void Data::Reset(){
   ElectronHasTrackerDrivenSeed = 0;
   ElectronIsEB = 0;
   ElectronIsEE = 0;
-   MuonHLTSingleIsoMuonMatched = 0;
-   MuonHLTSingleMuonMatched = 0;
+  MuonHLTSingleIsoMuonMatched = 0;
+  MuonHLTSingleMuonMatched = 0;
+  MuonHLTDoubleMuonMatched = 0;
    PhotonHasMatchedConvPhot = 0;
    PhotonHasMatchedPromptEle = 0;
    PhotonHasPixelSeed = 0;
@@ -788,6 +788,7 @@ void Data::Reset(){
    VertexNTracks = 0;
    VertexNTracksW05 = 0;
    HLTFilterObjId = 0;
+
    
    /// New variables 2013/12/02
    CaloJetEnergy = 0;
@@ -912,7 +913,10 @@ void Data::ConnectEvent(){
   ConnectVariable("VertexZ", VertexZ, b_VertexZ);
   ConnectVariable("VertexZErr", VertexZErr, b_VertexZErr);
   ConnectVariable("PileUpInteractionsTrue", PileUpInteractionsTrue, b_PileUpInteractionsTrue);
-
+  
+  ConnectVariable("PDFCTEQWeights", PDFCTEQWeights, b_PDFCTEQWeights);
+  ConnectVariable("PDFMSTWWeights", PDFMSTWWeights, b_PDFMSTWWeights);
+  ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights, b_PDFNNPDFWeights);
 
   return;}
 
@@ -924,6 +928,14 @@ void Data::ConnectTrigger(){
   ConnectVariable("HLTInsideDatasetTriggerDecisions", HLTInsideDatasetTriggerDecisions, b_HLTInsideDatasetTriggerDecisions);
   ConnectVariable("HLTInsideDatasetTriggerPrescales", HLTInsideDatasetTriggerPrescales, b_HLTInsideDatasetTriggerPrescales);
   ConnectVariable("HLTOutsideDatasetTriggerPrescales", HLTOutsideDatasetTriggerPrescales, b_HLTOutsideDatasetTriggerPrescales);  
+  
+  ConnectVariable("MuonHLTSingleIsoMuonMatched", MuonHLTSingleIsoMuonMatched, b_MuonHLTSingleIsoMuonMatched) ;
+  ConnectVariable("MuonHLTSingleMuonMatched", MuonHLTSingleMuonMatched, b_MuonHLTSingleMuonMatched);
+  ConnectVariable("MuonHLTDoubleMuonMatched", MuonHLTDoubleMuonMatched, b_MuonHLTDoubleMuonMatched);
+  ConnectVariable("ElectronHLTDoubleEleMatched", ElectronHLTDoubleEleMatched, b_ElectronHLTDoubleEleMatched);
+  ConnectVariable("ElectronHLTSingleEleMatched", ElectronHLTSingleEleMatched, b_ElectronHLTSingleEleMatched);
+  ConnectVariable("ElectronHLTSingleEleWP80Matched", ElectronHLTSingleEleWP80Matched, b_ElectronHLTSingleEleWP80Matched);
+
   return;
 }
 
@@ -947,12 +959,6 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonEta", MuonEta, b_MuonEta);
   ConnectVariable("MuonEtaError", MuonEtaError, b_MuonEtaError);
   ConnectVariable("MuonGlobalChi2", MuonGlobalChi2, b_MuonGlobalChi2);
-  ConnectVariable("MuonHLTSingleIsoMuonMatchEta", MuonHLTSingleIsoMuonMatchEta, b_MuonHLTSingleIsoMuonMatchEta);
-  ConnectVariable("MuonHLTSingleIsoMuonMatchPhi", MuonHLTSingleIsoMuonMatchPhi, b_MuonHLTSingleIsoMuonMatchPhi);
-  ConnectVariable("MuonHLTSingleIsoMuonMatchPt", MuonHLTSingleIsoMuonMatchPt, b_MuonHLTSingleIsoMuonMatchPt);
-  ConnectVariable("MuonHLTSingleMuonMatchEta", MuonHLTSingleMuonMatchEta, b_MuonHLTSingleMuonMatchEta);
-  ConnectVariable("MuonHLTSingleMuonMatchPhi", MuonHLTSingleMuonMatchPhi, b_MuonHLTSingleMuonMatchPhi);
-  ConnectVariable("MuonHLTSingleMuonMatchPt", MuonHLTSingleMuonMatchPt, b_MuonHLTSingleMuonMatchPt);
   ConnectVariable("MuonHOIso", MuonHOIso, b_MuonHOIso);
   ConnectVariable("MuonHcalIso", MuonHcalIso, b_MuonHcalIso);
   ConnectVariable("MuonHcalVetoIso", MuonHcalVetoIso, b_MuonHcalVetoIso);
@@ -1046,6 +1052,9 @@ void Data::ConnectElectrons(){
   ConnectVariable("ElectronHasEcalDrivenSeed", ElectronHasEcalDrivenSeed, b_ElectronHasEcalDrivenSeed);
   ConnectVariable("ElectronHasMatchedConvPhot", ElectronHasMatchedConvPhot, b_ElectronHasMatchedConvPhot);
   ConnectVariable("ElectronHasTrackerDrivenSeed", ElectronHasTrackerDrivenSeed, b_ElectronHasTrackerDrivenSeed);
+
+  ConnectVariable("ElectronmvatrigV0", ElectronmvatrigV0, b_ElectronmvatrigV0); 
+  ConnectVariable("ElectronmvaNontrigV0", ElectronmvaNontrigV0, b_ElectronmvaNontrigV0); 
   ConnectVariable("ElectronIsEB", ElectronIsEB, b_ElectronIsEB);
   ConnectVariable("ElectronIsEE", ElectronIsEE, b_ElectronIsEE);
   ConnectVariable("ElectronBeamSpotDXY", ElectronBeamSpotDXY, b_ElectronBeamSpotDXY);
@@ -1110,6 +1119,8 @@ void Data::ConnectElectrons(){
   ConnectVariable("ElectronMatchedGenParticleEta", ElectronMatchedGenParticleEta, b_ElectronMatchedGenParticleEta);
   ConnectVariable("ElectronMatchedGenParticlePhi", ElectronMatchedGenParticlePhi, b_ElectronMatchedGenParticlePhi);
   ConnectVariable("ElectronMatchedGenParticlePt", ElectronMatchedGenParticlePt, b_ElectronMatchedGenParticlePt);
+  ConnectVariable("ElectronHcalIsoPAT", ElectronHcalIsoPAT, b_ElectronHcalIsoPAT);
+  ConnectVariable("ElectronTrkIsoPAT", ElectronTrkIsoPAT, b_ElectronTrkIsoPAT);
   
   /// NEW
   /*
@@ -1129,6 +1140,13 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetEta", PFJetEta, b_PFJetEta);
   ConnectVariable("PFJetPhi", PFJetPhi, b_PFJetPhi);
   ConnectVariable("PFJetPt", PFJetPt, b_PFJetPt);
+  ///Pileup
+  ConnectVariable("PFJetPileupjetIDpassLooseWP", PFJetPileupjetIDpassLooseWP, b_PFJetPileupjetIDpassLooseWP);
+  ConnectVariable("PFJetPileupjetIDpassMediumWP", PFJetPileupjetIDpassMediumWP, b_PFJetPileupjetIDpassMediumWP);
+  ConnectVariable("PFJetPileupjetIDpassTightWP", PFJetPileupjetIDpassTightWP, b_PFJetPileupjetIDpassTightWP);
+  ConnectVariable("PFJetJetPileupIdflag", PFJetJetPileupIdflag, b_PFJetJetPileupIdflag);
+  ConnectVariable("PFJetJetPileupMVA", PFJetJetPileupMVA, b_PFJetJetPileupMVA);
+  
   /// Jet Energy Fractions
   ConnectVariable("PFJetChargedEmEnergyFraction", PFJetChargedEmEnergyFraction, b_PFJetChargedEmEnergyFraction);
   ConnectVariable("PFJetChargedHadronEnergyFraction", PFJetChargedHadronEnergyFraction, b_PFJetChargedHadronEnergyFraction);
@@ -1362,6 +1380,13 @@ void Data::ConnectTruth(){
   ConnectVariable("GenJetPhi", GenJetPhi, b_GenJetPhi);
   ConnectVariable("GenJetPt", GenJetPt, b_GenJetPt);
 
+
+  ConnectVariable("GenMETCalo", GenMETCalo, b_GenMETCalo);
+  ConnectVariable("GenMETPhiCalo", GenMETPhiCalo, b_GenMETPhiCalo);
+  ConnectVariable("GenSumETCalo", GenSumETCalo, b_GenSumETCalo);
+  ConnectVariable("GenMETPhiTrue", GenMETPhiTrue, b_GenMETPhiTrue);
+  ConnectVariable("GenMETTrue", GenMETTrue, b_GenMETTrue);
+  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
   return;
 }
 
@@ -1376,7 +1401,14 @@ void Data::ConnectAllBranches(){
   ConnectVariable("HLTKey", HLTKey);
   ConnectVariable("HLTOutsideDatasetTriggerNames", HLTOutsideDatasetTriggerNames);
   ConnectVariable("HLTFilterName", HLTFilterName);
-  
+
+  ConnectVariable("MuonHLTSingleIsoMuonMatchEta", MuonHLTSingleIsoMuonMatchEta, b_MuonHLTSingleIsoMuonMatchEta);
+  ConnectVariable("MuonHLTSingleIsoMuonMatchPhi", MuonHLTSingleIsoMuonMatchPhi, b_MuonHLTSingleIsoMuonMatchPhi);
+  ConnectVariable("MuonHLTSingleIsoMuonMatchPt", MuonHLTSingleIsoMuonMatchPt, b_MuonHLTSingleIsoMuonMatchPt);
+  ConnectVariable("MuonHLTSingleMuonMatchEta", MuonHLTSingleMuonMatchEta, b_MuonHLTSingleMuonMatchEta);
+  ConnectVariable("MuonHLTSingleMuonMatchPhi", MuonHLTSingleMuonMatchPhi, b_MuonHLTSingleMuonMatchPhi);
+  ConnectVariable("MuonHLTSingleMuonMatchPt", MuonHLTSingleMuonMatchPt, b_MuonHLTSingleMuonMatchPt);
+
   /// Event
   ConnectVariable("isBPTX0", isBPTX0);
   ConnectVariable("isBSCBeamHalo", isBSCBeamHalo);
@@ -1393,8 +1425,6 @@ void Data::ConnectAllBranches(){
 
       
   /// Others
-  ConnectVariable("MuonHLTSingleIsoMuonMatched", MuonHLTSingleIsoMuonMatched);
-  ConnectVariable("MuonHLTSingleMuonMatched", MuonHLTSingleMuonMatched);
   ConnectVariable("PhotonHasMatchedConvPhot", PhotonHasMatchedConvPhot);
   ConnectVariable("PhotonHasMatchedPromptEle", PhotonHasMatchedPromptEle);
   ConnectVariable("PhotonHasPixelSeed", PhotonHasPixelSeed);
@@ -1411,9 +1441,6 @@ void Data::ConnectAllBranches(){
 
 
   /// Electron                                                                                                                                                                  
-  ConnectVariable("ElectronHLTDoubleEleMatched", ElectronHLTDoubleEleMatched);
-  ConnectVariable("ElectronHLTSingleEleMatched", ElectronHLTSingleEleMatched);
-  ConnectVariable("ElectronHLTSingleEleWP80Matched", ElectronHLTSingleEleWP80Matched);
   ConnectVariable("ElectronHLTDoubleEleMatchEta", ElectronHLTDoubleEleMatchEta);
   ConnectVariable("ElectronHLTDoubleEleMatchPhi", ElectronHLTDoubleEleMatchPhi);
   ConnectVariable("ElectronHLTDoubleEleMatchPt", ElectronHLTDoubleEleMatchPt);
@@ -1426,10 +1453,8 @@ void Data::ConnectAllBranches(){
   ConnectVariable("ElectronHcalIsoD1DR03", ElectronHcalIsoD1DR03);
   ConnectVariable("ElectronHcalIsoD2DR03", ElectronHcalIsoD2DR03);
   ConnectVariable("ElectronHcalIsoDR03FullCone", ElectronHcalIsoDR03FullCone);
-  ConnectVariable("ElectronHcalIsoPAT", ElectronHcalIsoPAT);
   ConnectVariable("ElectronPtHeep", ElectronPtHeep);
   ConnectVariable("ElectronRelIsoPAT", ElectronRelIsoPAT);
-  ConnectVariable("ElectronTrkIsoPAT", ElectronTrkIsoPAT);
   
   // Truth
   ConnectVariable("GenWElectronEnergy", GenWElectronEnergy);
@@ -1460,15 +1485,8 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenZElectronVX", GenZElectronVX);
   ConnectVariable("GenZElectronVY", GenZElectronVY);
   ConnectVariable("GenZElectronVZ", GenZElectronVZ);
-  ConnectVariable("PDFCTEQWeights", PDFCTEQWeights);
-  ConnectVariable("PDFMSTWWeights", PDFMSTWWeights);
-  ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights);
-  ConnectVariable("GenMETCalo", GenMETCalo);
-  ConnectVariable("GenMETPhiCalo", GenMETPhiCalo);
-  ConnectVariable("GenSumETCalo", GenSumETCalo);
-  ConnectVariable("GenMETPhiTrue", GenMETPhiTrue);
-  ConnectVariable("GenMETTrue", GenMETTrue);
-  ConnectVariable("GenSumETTrue", GenSumETTrue);
+
+
   ConnectVariable("GenWMuEnergy", GenWMuEnergy);
   ConnectVariable("GenWMuEta", GenWMuEta);
   ConnectVariable("GenWMuP", GenWMuP);
@@ -1710,12 +1728,13 @@ void Data::ConnectAllBranches(){
   ConnectVariable("PhotonYVtxConvPhot", PhotonYVtxConvPhot);
   ConnectVariable("PhotonZVtxConvPhot", PhotonZVtxConvPhot);
   ConnectVariable("PhotonNTracksConvPhot", PhotonNTracksConvPhot);
-
-    
+  
+  
   // Trigger
   ConnectVariable("HLTFilterObjEta", HLTFilterObjEta);
   ConnectVariable("HLTFilterObjPhi", HLTFilterObjPhi);
   ConnectVariable("HLTFilterObjPt", HLTFilterObjPt);
+    
   
   // Truth
   
