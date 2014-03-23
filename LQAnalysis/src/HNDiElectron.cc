@@ -247,39 +247,126 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       bool closejet = false;
       for(int j = 0; j < electronMediumColl.size(); j++){
 	bool prompt_e=false;
+	
+	m_logger << INFO << "\n-------------------------------------\n " << LQLogger::endmsg;
+	m_logger << INFO << "Electron id = " << j << "  pt = " << electronMediumColl.at(j).Pt() << " eta = " << electronMediumColl.at(j).Eta() << " phi = " << electronMediumColl.at(j).Phi() << " energy = " << electronMediumColl.at(j).E() << LQLogger::endmsg;
+	
 	for(int it = 0; it < eventbase->GetTruth().size() ; it++){
 
 	  if(eventbase->GetTruth().at(it).GenStatus() == 3 && fabs(eventbase->GetTruth().at(it).PdgId()) == 11){
-	    if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()) == 24 || fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()) ==  23) {
-	      if(electronMediumColl.at(j).DeltaR(eventbase->GetTruth().at(it)) < 0.3) {
-		prompt_e=true; 
+    
+	    if(eventbase->GetTruth().at(it).PdgId() * electronMediumColl.at(j).Charge() < 0){
+	      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()) == 24 || fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()) ==  23) {
+		m_logger << "Truth el pt = " << eventbase->GetTruth().at(it).Pt() << " eta = " << eventbase->GetTruth().at(it).Eta() << " phi = " << eventbase->GetTruth().at(it).Phi() << LQLogger::endmsg;
+		if(electronMediumColl.at(j).DeltaR(eventbase->GetTruth().at(it)) < 0.3) {
+		  prompt_e=true; 
+		}
 	      }
 	    }
 	  }
 	}
+	
+	for(int it = 0; it < jetColl.size(); it++){
+	  m_logger<< INFO << "Jet id = " << it+1 << " pt = " <<  jetColl.at(it).Pt() << " eta= " << jetColl.at(it).Eta() << " phi = " << jetColl.at(it).Phi() << LQLogger::endmsg;
+	}
+	for(int it = 0; it < eventbase->GetGenJets().size(); it++){
+	  if(eventbase->GetGenJets().at(it).DeltaR(electronMediumColl.at(j)) < 0.4) {
+	    m_logger<< INFO << "Matched Gen jet id = " << it+1 << " pt = " <<  eventbase->GetGenJets().at(it).Pt() << " eta= " << eventbase->GetGenJets().at(it).Eta() << " phi = " << eventbase->GetGenJets().at(it).Phi() << LQLogger::endmsg;   
+	  }
+	}
+
+	if(prompt_e)m_logger<< INFO << "Electron is prompt" << LQLogger::endmsg;
+	else  m_logger<< INFO << "Electron is NOT prompt" << LQLogger::endmsg;
+	
+	
 	if(prompt_e){
 	  for(int i = 0; i < jetColl.size(); i++){
 	    
 	    if( jetColl.at(i).DeltaR(electronMediumColl.at(j)) < 0.4) {
 	      
 	      m_logger << INFO << "Electron vertex index = " << electronMediumColl.at(j).VertexIndex()  << LQLogger::endmsg;
+	      FillHist("prompt_e_closejet_dr", jetColl.at(i).DeltaR(electronMediumColl.at(j)), weight, 0.,0.2,1000);
+
 	      FillHist("prompt_e_closejet_multiplicity",jetColl.at(i).ChargedMultiplicity(), weight, 0.,30.,30);
 	      FillHist("prompt_e_closejet_chem_enfrac", jetColl.at(i).ChargedEMEnergyFraction(), weight, 0., 1., 100.);
 	      FillHist("prompt_e_closejet_chhad_enfrac", jetColl.at(i).ChargedHadEnergyFraction() , weight, 0., 1., 100.);
 	      FillHist("prompt_e_closejet_elfrac", jetColl.at(i).ElectronEnergyFraction() , weight, 0., 1., 100.);
 	      FillHist("prompt_e_closejet_nem_frac", jetColl.at(i).NeutralEMEnergyFraction(), weight, 0., 1., 100.);
-	      FillHist("prompt_e_closejet_chem_frac", jetColl.at(i).NeutralHadEnergyFraction(), weight, 0., 1., 100.);
+	      FillHist("prompt_e_closejet_nhad_frac", jetColl.at(i).NeutralHadEnergyFraction(), weight, 0., 1., 100.);
 	      FillHist("prompt_e_closejet_phot_frac", jetColl.at(i).PhotonEnergyFraction()  , weight, 0., 1., 100.);
 	      FillHist("prompt_e_closejet_muon_frac", jetColl.at(i).MuonEnergyFraction() , weight, 0., 1., 100.);
-	      FillHist("prompt_e_closejet_vert_index", jetColl.at(i).BestVertexTrackAssociationIndex() -  electronMediumColl.VertexIndex(), weight, -10., 10., 20);
+	      FillHist("prompt_e_closejet_vert_index", jetColl.at(i).BestVertexTrackAssociationIndex() -  electronMediumColl.at(j).VertexIndex(), weight, -10., 10., 20);
 	      FillHist("prompt_e_closejet_vert_frac", jetColl.at(i).BestVertexTrackAssociationFactor(), 0., 1., 100.);
 	      
+	      
+	      FillHist("prompt_e_closejet_had_frac_elfrac" , jetColl.at(i).ChargedHadEnergyFraction() + jetColl.at(i).NeutralHadEnergyFraction(), jetColl.at(i).ElectronEnergyFraction() , weight, 0., 1., 100, 0., 1., 100);
+	      FillHist("prompt_e_closejet_hadphoton_frac_elfrac" , jetColl.at(i).ChargedHadEnergyFraction() + jetColl.at(i).NeutralHadEnergyFraction() + jetColl.at(i).PhotonEnergyFraction(), jetColl.at(i).ElectronEnergyFraction() , weight , 0., 1., 100, 0., 1., 100);
+	      
+
+	      float theta = 2.*atan( (exp(-1.*jetColl.at(i).Eta())));
+	      float sintheta = sin(theta);
+	      float Et = jetColl.at(i).E() * sintheta;
+
+	      m_logger << INFO << "prompt Jet energy = " << jetColl.at(i).E() << LQLogger::endmsg;
+	      m_logger << INFO << "prompt Jet Et = " <<  Et<< LQLogger::endmsg;
+	      m_logger << INFO << "prompt Jet Et (1-el frac) =  " << (Et * (1. - jetColl.at(i).ElectronEnergyFraction())) << LQLogger::endmsg;
+	      m_logger << INFO << "prompt Jet Et (1-el- ph frac) =  " << (Et * (1. - jetColl.at(i).ElectronEnergyFraction()- jetColl.at(i).PhotonEnergyFraction())) << LQLogger::endmsg;
+	      
+	      FillHist("prompt_e_closejet_pt_corrEt", jetColl.at(i).Pt(), (Et * (1. - jetColl.at(i).ElectronEnergyFraction())) , weight, 0., 200., 200., 0., 100., 100.);
+
+      
+	      FillHist("prompt_e_closejet_Ecorr", (Et * (1. - jetColl.at(i).ElectronEnergyFraction()))  , weight, 0., 100., 50.);
+	      FillHist("prompt_e_closejet_Ecorr2", (Et * (1. - (jetColl.at(i).ElectronEnergyFraction() + jetColl.at(i).PhotonEnergyFraction()))  )  , weight, 0., 100., 50.);
+	      
+	      
 	      if((jetColl.at(i).Pt() * (1.- jetColl.at(i).ElectronEnergyFraction())) > 20.) closejet = true;
+
+	      
 	    }
 	  }
 	
 	  FillHist("SSMediumElclosejet",0, weight, 0.,2.,2);
 	  if(!closejet)FillHist("SSMediumElclosejet",1, weight, 0.,2.,2);
+	}
+	else{
+	  for(int i = 0; i < jetColl.size(); i++){
+
+            if( jetColl.at(i).DeltaR(electronMediumColl.at(j)) < 0.4) {
+	      
+	      FillHist("nonprompt_e_closejet_dr", jetColl.at(i).DeltaR(electronMediumColl.at(j)), weight, 0.,0.2,1000);
+              m_logger << INFO << "Electron vertex index = " << electronMediumColl.at(j).VertexIndex()  << LQLogger::endmsg;
+              FillHist("nonprompt_e_closejet_multiplicity",jetColl.at(i).ChargedMultiplicity(), weight, 0.,30.,30);
+              FillHist("nonprompt_e_closejet_chem_enfrac", jetColl.at(i).ChargedEMEnergyFraction(), weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_chhad_enfrac", jetColl.at(i).ChargedHadEnergyFraction() , weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_elfrac", jetColl.at(i).ElectronEnergyFraction() , weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_nem_frac", jetColl.at(i).NeutralEMEnergyFraction(), weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_nhad_frac", jetColl.at(i).NeutralHadEnergyFraction(), weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_phot_frac", jetColl.at(i).PhotonEnergyFraction()  , weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_muon_frac", jetColl.at(i).MuonEnergyFraction() , weight, 0., 1., 100.);
+              FillHist("nonprompt_e_closejet_vert_index", jetColl.at(i).BestVertexTrackAssociationIndex() -  electronMediumColl.at(j).VertexIndex(), weight, -10., 10., 20);
+              FillHist("nonprompt_e_closejet_vert_frac", jetColl.at(i).BestVertexTrackAssociationFactor(), 0., 1., 100.);
+
+
+	      
+	      FillHist("nonprompt_e_closejet_had_frac_elfrac" , jetColl.at(i).ChargedHadEnergyFraction() + jetColl.at(i).NeutralHadEnergyFraction(), jetColl.at(i).ElectronEnergyFraction() ,weight, 0., 1., 100, 0., 1., 100);
+              FillHist("nonprompt_e_closejet_hadphoton_frac_elfrac" , jetColl.at(i).ChargedHadEnergyFraction() + jetColl.at(i).NeutralHadEnergyFraction() + jetColl.at(i).PhotonEnergyFraction(), jetColl.at(i).ElectronEnergyFraction() ,weight, 0., 1., 100, 0., 1., 100);
+	      
+	      
+
+	      float theta = 2.*atan( (exp(-1.*jetColl.at(i).Eta())));
+	      float sintheta = sin(theta);
+	      float Et = jetColl.at(i).E() * sintheta;
+	      
+	      m_logger << INFO << "non prompt Jet Et = " << Et << LQLogger::endmsg;
+              m_logger << INFO << "non prompt Jet Et (1-elfrac) =  " << (Et * (1. - jetColl.at(i).ElectronEnergyFraction())) << LQLogger::endmsg;
+	      m_logger << INFO << "non prompt Jet Et (1-elfrac - phfrac) =  " << (Et * (1. - jetColl.at(i).ElectronEnergyFraction() - jetColl.at(i).PhotonEnergyFraction() )) << LQLogger::endmsg;
+	      
+	      FillHist("nonprompt_e_closejet_Ecorr", (Et * (1. - jetColl.at(i).ElectronEnergyFraction()))  , weight, 0., 100., 50.);
+              FillHist("nonprompt_e_closejet_Ecorr2", (Et * (1. - (jetColl.at(i).ElectronEnergyFraction() + jetColl.at(i).PhotonEnergyFraction()))  )  , weight, 0., 100., 50.);
+
+	      FillHist("nonprompt_e_closejet_pt_corrEt", jetColl.at(i).Pt(), (Et * (1. - jetColl.at(i).ElectronEnergyFraction())) , weight, 0., 200., 200., 0., 100., 100.);
+            }
+          }
 	}
       }
     }

@@ -856,7 +856,7 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     CheckSamples( it->first.first.size() );
 
     TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(0).first + filepostfix).Data());
-
+    
    
     gROOT->cd();
     TDirectory* tempDir = 0;
@@ -878,8 +878,9 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
 
     CheckHist(h_tmp);
 
-    if(debug)cout <<  it->second <<  "  contribution " << 1 << "/" << it->first.first.size()  << " is from " << filepostfix + it->first.first.at(0).first + filepostfix <<" : Integral = " <<h_tmp->Integral() << " " << fileloc << endl;
+    if(debug)cout <<  it->second <<  "  contribution " << 1 << "/" << it->first.first.size()  << " is from " << fileprefix + it->first.first.at(0).first + filepostfix <<" : Integral = " <<h_tmp->Integral() << " " << fileloc << endl;
     
+
     
     for(unsigned int i=1; i < it->first.first.size(); i++){	    
       clonename+="A";

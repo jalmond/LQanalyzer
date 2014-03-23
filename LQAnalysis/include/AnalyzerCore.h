@@ -56,6 +56,7 @@ class AnalyzerCore : public LQCycleBase {
 
   TDirectory *Dir;
   map<TString, TH1*> maphist;
+  map<TString, TH2*> maphist2D;
   TH2F* FRHist;
   
   /// Event weights
@@ -83,6 +84,7 @@ class AnalyzerCore : public LQCycleBase {
   //
   void MakeHistograms();
   void MakeHistograms(TString hname, int nbins, float xmin, float xmax);
+  void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax);
     //
     // Makes temporary dir
     //
@@ -94,10 +96,12 @@ class AnalyzerCore : public LQCycleBase {
   
   //// Plotting 
   TH1* GetHist(TString hname);
+  TH2* GetHist2D(TString hname);
 
   /// Fills hist in maphist
   void FillHist(TString histname, float value, float w );
   void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0);
+  void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy);
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);

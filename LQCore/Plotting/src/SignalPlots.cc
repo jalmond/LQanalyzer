@@ -238,7 +238,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_leadingMuonIso", mureliso,weight);
     }
 
-
+    if(fabs(muit->Charge()) !=  1.) std::cout << "Muon charge = " << muit->Charge() << std::endl;
     Fill("h_paircharge",muit->Charge(),weight);
   }
   

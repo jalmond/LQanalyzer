@@ -169,6 +169,13 @@ AnalyzerCore::~AnalyzerCore(){
   }
   maphist.clear();
 
+  for(map<TString, TH2*>::iterator it = maphist2D.begin(); it!= maphist2D.end(); it++){
+    delete it->second;
+  }
+  maphist2D.clear();
+
+
+
   for(map<TString, MuonPlots*>::iterator it = mapCLhistMu.begin(); it != mapCLhistMu.end(); it++){
     delete it->second;
   }
@@ -342,6 +349,7 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
 void AnalyzerCore::MakeHistograms(){
   //// Additional plots to make                                                                                
   maphist.clear();
+  maphist2D.clear();
 
     
 }
@@ -349,6 +357,11 @@ void AnalyzerCore::MakeHistograms(){
 void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax){
 
   maphist[hname] =  new TH1F(hname.Data(),hname.Data(),nbins,xmin,xmax);
+}
+
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax) {
+
+  maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
 }
 
 bool AnalyzerCore::PassBasicEventCuts(){
@@ -397,6 +410,24 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, 
   }
   
 }
+
+void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy){
+
+  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
+  else{
+    if (nbinsx < 0) {
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      exit(0);
+    }
+    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax );
+    if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
+  }
+
+}
+
+
 void AnalyzerCore::FillHist(TString histname, float value, float w){
 
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  /// Plots Z peak                                   
@@ -516,6 +547,12 @@ void AnalyzerCore::WriteHists(){
   for(map<TString, TH1*>::iterator mapit = maphist.begin(); mapit != maphist.end(); mapit++){
     mapit->second->Write();
   }
+
+  for(map<TString, TH2*>::iterator mapit = maphist2D.begin(); mapit != maphist2D.end(); mapit++){
+    mapit->second->Write();
+  }
+
+
   return;
 }
 
@@ -524,6 +561,18 @@ TH1* AnalyzerCore::GetHist(TString hname){
   TH1* h = NULL;
   std::map<TString, TH1*>::iterator mapit = maphist.find(hname);
   if(mapit != maphist.end()) return mapit->second;
+  else m_logger << INFO  << hname << " was not found in map" << LQLogger::endmsg;
+
+  return h;
+}
+
+
+
+TH2* AnalyzerCore::GetHist2D(TString hname){
+
+  TH2* h = NULL;
+  std::map<TString, TH2*>::iterator mapit = maphist2D.find(hname);
+  if(mapit != maphist2D.end()) return mapit->second;
   else m_logger << INFO  << hname << " was not found in map" << LQLogger::endmsg;
 
   return h;
