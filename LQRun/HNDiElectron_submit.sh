@@ -11,20 +11,20 @@ source functions.sh
 ## What cycle do you want to run.  
 ## 
 cycle="HNDiElectron"
-skinput="True"
+#skinput="True"
 njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
 #declare -a input_samples=("A" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-declare -a input_samples=("HNee100")
-#use5314ntuples="True"
+declare -a input_samples=("DY50plus")
+use5314ntuples="True"
 remove="False"
 
 
 stream="muon"
-outputdir="/home/jalmond/LQanalyzer/data/output/SSElectron/"
+outputdir=$LQANALYZER_OUTPUT_PATH +"/SSElectron/"
 
 
 

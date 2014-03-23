@@ -13,8 +13,6 @@ void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl) {
   
   /// For filling SKTrees
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
-  double rho = k_lqevent.GetEvent().JetRho();
-  
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
@@ -33,7 +31,6 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl) {
 
   
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
-  double rho = k_lqevent.GetEvent().JetRho();
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
@@ -46,12 +43,116 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl) {
  
 }
 
-void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, bool recalculate_id) {
+void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonColl) {
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho();
+
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+
+    //// DEFAULT cuts
+    //// Require it is not in crack
+    if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
+    if ( el->CaloEnergy()==0 ) continue;
+
+    bool pass_selection = true;
+    ElectronID = PassUserID(EGAMMA_VETO, *el, rho);
+    ///List of cuts
+    if(!ElectronID) pass_selection = false;
+    if(!(fabs(el->Eta()) < 2.5)) pass_selection = false;
+    if(!(el->Pt() < 10.))pass_selection = false;
+
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+
+  return;
+}
+
+void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonColl) {
+  
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho();
+
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+
+    //// DEFAULT cuts
+    //// Require it is not in crack
+    if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
+    if ( el->CaloEnergy()==0 ) continue;
+
+    bool pass_selection = true;
+    ElectronID = PassUserID(EGAMMA_FAKELOOSE, *el, rho);
+    
+    ///List of cuts
+    if(!ElectronID) pass_selection = false;
+    
+    if(!(fabs(el->Eta()) < 2.5)) pass_selection = false;
+    if(!(el->Pt() < 20.))pass_selection = false;
+
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+
+  return;
+}
+
+
+void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonColl) {
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho();
+
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+    
+    //// DEFAULT cuts
+    //// Require it is not in crack
+    if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
+    if ( el->CaloEnergy()==0 ) continue;
+
+    bool pass_selection = true;
+    ElectronID = PassUserID(EGAMMA_TIGHT, *el,rho);
+    Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+    if (fabs(el->SCEta()) < 1.0) ifid = 0;
+    else if (fabs(el->SCEta()) < 1.479) ifid = 1;
+    else if (fabs(el->SCEta()) < 2.0) ifid = 2;
+    else if (fabs(el->SCEta()) < 2.2) ifid = 3;
+    else if (fabs(el->SCEta()) < 2.3) ifid = 4;
+    else if (fabs(el->SCEta()) < 2.4) ifid = 5;
+    else ifid = 6;
+
+    float LeptonRelIsoDR03(0.);
+    float ElectronIsoDR03 =  el->PFChargedHadronIso03() + max( el->PFNeutralHadronIso03() + el->PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
+    if(el->Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  el->Pt();
+    else LeptonRelIsoDR03 = -999.;
+    
+    ///List of cuts
+    if(!ElectronID) pass_selection = false;
+    if((el->HasMatchedConvPhot() ||  (el->MissingHits() != 0)) ) pass_selection = false;
+    if(!(LeptonRelIsoDR03 <  0.1))  pass_selection = false;
+    if(el->GsfCtfScPixChargeConsistency())  pass_selection = false;
+    if(!(fabs(el->Eta()) < 2.5)) pass_selection = false;
+    if(!(el->Pt() < 20.))        pass_selection = false;
+    if(!(el->dz()<  0.10 ))      pass_selection = false;
+    if(!(el->dz()< 0.02 ))       pass_selection = false;
+    
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+  
+  return;
+}
+
+
+void ElectronSelection::Selection(std::vector<KElectron>& leptonColl) {
   
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho(); 
   
-
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
     //// DEFAULT cuts
@@ -64,7 +165,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, bool recal
     ////  ID cut : need to optimise cuts
     /// Default is medium
     if(apply_ID){
-      ElectronID = PassUserID(k_id, *el, true, rho);
+      ElectronID = PassUserID(k_id, *el, rho);
       if(!ElectronID) pass_selection = false;
     }
     /// extra cut to reduce conversions
@@ -112,6 +213,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, bool recal
     if(apply_etacut && !(fabs(el->Eta()) < eta_cut)) {
       pass_selection = false;
     }
+
     if(apply_ptcut && ! (el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max)) {
       pass_selection = false; 
     }
@@ -129,11 +231,13 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, bool recal
     
   }// end of el loop
   
+  BaseSelection::reset();
+  
   return;
 }
 
 
-bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool recalculate, double jetrho){
+bool ElectronSelection::PassUserID(ID id, snu::KElectron el, double jetrho){
 
   
   if ( id == EGAMMA_TIGHT   ) return PassUserID_EGamma2012     ( EGAMMA_TIGHT, el, jetrho);

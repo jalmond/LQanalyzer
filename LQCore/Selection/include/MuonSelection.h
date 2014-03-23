@@ -30,6 +30,7 @@ class MuonSelection : public BaseSelection {
   //// HN analysis selection
   void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
   void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
+  void HNVetoMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
 
   //// General 
   void SetDeposits(Double_t ECalDeposit, Double_t HCalDeposit);

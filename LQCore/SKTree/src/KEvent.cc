@@ -20,15 +20,26 @@ KEvent::KEvent() :
   k_vertexX(0.),
   k_vertexY(0.),
   k_vertexZ(0.), 
+  k_jetrho(0.),
+  k_mcweight(0.),
+  k_pdf_cteq(0.),
+  k_pdf_mstw(0.),
+  k_pdf_nnpdf(0.),
+  k_genmettrue(0.),
+  k_genmetphitrue(0.),
+  k_gensumettrue(0.),
+  k_genmetcalo(0.),
+  k_genmetphicalo(0.),
+  k_gensumetcalo(0.),
   k_PF_MET(0.), 
-  k_PF_SumET(0.), 
   k_PF_METphi(0.),
+  k_PF_SumET(0.), 
   k_tc_MET(0.),
-  k_tc_SumET(0.),
   k_tc_METphi(0.),
+  k_tc_SumET(0.),
   k_calo_MET(0.),
-  k_calo_SumET(0.),
   k_calo_METphi(0.),
+  k_calo_SumET(0.),
   k_PF_MET_el_enup(0.),
   k_PF_MET_el_endown(0.),
   k_PF_MET_jet_enup(0.),
@@ -39,8 +50,6 @@ KEvent::KEvent() :
   k_PF_MET_muon_endown(0.),
   k_PF_MET_unclust_up(0.),
   k_PF_MET_unclust_down(0.),
-  k_jetrho(0.),
-  k_mcweight(0.),
   k_isfakeV(false), 
   k_isgoodevent(false),
   k_isData(false), 
@@ -72,15 +81,24 @@ KEvent::KEvent(const KEvent& ev) :
   k_vertexX(ev.k_vertexX),
   k_vertexY(ev.k_vertexY),
   k_vertexZ(ev.k_vertexZ),
+  k_pdf_cteq(ev.k_pdf_cteq),
+  k_pdf_mstw(ev.k_pdf_mstw),
+  k_pdf_nnpdf(ev.k_pdf_nnpdf),
+  k_genmettrue(ev.k_genmettrue),
+  k_genmetphitrue(ev.k_genmetphitrue),
+  k_gensumettrue(ev.k_gensumettrue),
+  k_genmetcalo(ev.k_genmetcalo),
+  k_genmetphicalo(ev.k_genmetphicalo),
+  k_gensumetcalo(ev.k_gensumetcalo),
   k_PF_MET(ev.k_PF_MET),
-  k_PF_SumET(ev.k_PF_SumET),
   k_PF_METphi(ev.k_PF_METphi),
+  k_PF_SumET(ev.k_PF_SumET),
   k_tc_MET(ev.k_tc_MET),
-  k_tc_SumET(ev.k_tc_SumET),
   k_tc_METphi(ev.k_tc_METphi),
+  k_tc_SumET(ev.k_tc_SumET),
   k_calo_MET(ev.k_calo_MET),
-  k_calo_SumET(ev.k_calo_SumET),
   k_calo_METphi(ev.k_calo_METphi),
+  k_calo_SumET(ev.k_calo_SumET),
   k_PF_MET_el_enup(ev.k_PF_MET_el_enup),
   k_PF_MET_el_endown(ev.k_PF_MET_el_endown),
   k_PF_MET_jet_enup(ev.k_PF_MET_jet_enup),
@@ -129,6 +147,15 @@ void KEvent::Reset()
   k_PF_MET= 0.;
   k_PF_SumET= 0.;
   k_PF_METphi= 0.;
+  k_pdf_cteq =0.;
+  k_pdf_mstw = 0.;
+  k_pdf_nnpdf = 0.;
+  k_genmettrue = 0.;
+  k_genmetphitrue= 0.;
+  k_gensumettrue= 0.;
+  k_genmetcalo= 0.;
+  k_genmetphicalo= 0.;
+  k_gensumetcalo= 0.;
   k_tc_MET= 0.;
   k_tc_SumET= 0.;
   k_tc_METphi= 0.;
@@ -178,7 +205,17 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_PF_MET= p.PFMET();
       k_PF_METphi= p.PFMETphi();
       k_PF_SumET = p.PFSumET();
-      
+      k_pdf_cteq = p.PDFCTEQWeight();
+      k_pdf_mstw = p.PDFMSTWWeight();
+      k_pdf_nnpdf = p.PDFNNPDFWeight();
+
+      k_genmettrue = p.GenMETTrue();
+      k_genmetphitrue=  p.GenMETPhiTrue();
+      k_gensumettrue=  p.GenSumEtTrue();
+      k_genmetcalo=  p.GenMETCalo();
+      k_genmetphicalo=  p.GenMETPhiCalo();
+      k_gensumetcalo=  p.GenSumEtCalo();
+     
       k_tc_MET = p.TCMET();
       k_tc_SumET = p.TCSumET();
       k_tc_METphi = p.TCMETphi();
@@ -281,8 +318,41 @@ void KEvent::SetIsPrimaryVertex(bool ispv){
   k_isprimaryvertex = ispv;
 }
 
+///
 
+void KEvent::SetGenMETTrue(double genmettrue){
+  k_genmettrue = genmettrue;
+}
+void KEvent::SetGenMETPhiTrue(double genmetphitrue){
+  k_genmetphitrue = genmetphitrue;
+}
+void KEvent::SetGenSumEtTrue(double gensumettrue){
+  k_gensumettrue = gensumettrue;
+}
 
+void KEvent::SetGenMETCalo(double genmetcalo){
+  k_genmetcalo = genmetcalo;
+}
+void KEvent::SetGenMETPhiCalo(double genmetphicalo){
+  k_genmetphicalo = genmetphicalo;
+}
+void KEvent::SetGenSumEtCalo(double gensumetcalo){
+  k_gensumetcalo = gensumetcalo;
+}
+
+///PDF weights
+
+void KEvent::SetPDFCTEQWeight(double pdfw){
+  k_pdf_cteq = pdfw;
+}
+
+void KEvent::SetPDFMSTWWeight(double pdfw){
+  k_pdf_mstw= pdfw;
+}
+
+void KEvent::SetPDFNNPDFWeight(double pdfw){
+  k_pdf_nnpdf =pdfw;
+}
 /// Filling Event variables
 
 void KEvent::SetEventNumber(int ev){

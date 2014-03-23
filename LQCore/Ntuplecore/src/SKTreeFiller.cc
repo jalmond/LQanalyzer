@@ -80,6 +80,17 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPFMETphi( PFMETPhiType01XYCor->at(0));
   kevent.SetPFSumET( PFSumETType01XYCor->at(0));
   
+  if(!isData){
+    if(GenMETCalo){
+      kevent.SetGenMETCalo(GenMETCalo->at(0));
+      kevent.SetGenMETPhiCalo(GenMETPhiCalo->at(0));
+      kevent.SetGenSumEtCalo(GenSumETCalo->at(0));
+      kevent.SetGenMETTrue(GenMETTrue->at(0));
+      kevent.SetGenMETPhiTrue(GenMETPhiTrue->at(0));
+      kevent.SetGenSumEtTrue(GenSumETTrue->at(0));
+      
+    }
+  }
   if(PFMETType01XYCorElectronEnDown){
     kevent.SetPFMETElectronEnDown(PFMETType01XYCorElectronEnDown->at(0));
     kevent.SetPFMETElectronEnUp(PFMETType01XYCorElectronEnUp->at(0));
@@ -105,7 +116,15 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetCaloMETphi( CaloMETPhiType1Cor->at(0));
     kevent.SetCaloSumET(CaloSumETType1Cor->at(0));
   }
-  
+
+  if(!isData){
+    if(PDFCTEQWeights){
+      /// This will have to take in a vector for any systematic studies
+      kevent.SetPDFCTEQWeight(PDFCTEQWeights->at(0));
+      kevent.SetPDFMSTWWeight(PDFMSTWWeights->at(0));
+      kevent.SetPDFNNPDFWeight(PDFNNPDFWeights->at(0));
+    }
+  }
 
   //// Filling vertex variables
   int nVertices = VertexNDF->size();
@@ -223,6 +242,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassEGammaIDTrigWP70(ElectronPassEGammaIDTrigWP70->at(iel));
     el.SetPassEGammaIDVeto(ElectronPassEGammaIDVeto->at(iel));
     
+    if(ElectronmvatrigV0){
+      el.SetElectronTrigMVA(ElectronmvatrigV0->at(iel));
+      el.SetElectronMVA(ElectronmvaNontrigV0->at(iel));
+    }
+    
+
     m_logger << DEBUG << "Filling Electron ID variablest "<< LQLogger::endmsg;
     /// set ID variables
     el.SetElectronPassId(ElectronPassId->at(iel));
@@ -269,10 +294,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     /// Set Isolation variables
     m_logger << DEBUG << ElectronTrkIsoDR03 << " " << ElectronEcalIsoDR03 << " " << ElectronHcalIsoDR03 << LQLogger::endmsg;
     m_logger << DEBUG << ElectronTrkIsoDR03->size() << " " << ElectronEcalIsoDR03->size() << " " << ElectronHcalIsoDR03->size()<< LQLogger::endmsg;
+
     el.SetTrkIsoDR03(ElectronTrkIsoDR03->at(iel));
     el.SetECalIsoDR03(ElectronEcalIsoDR03->at(iel));
     el.SetHCalIsoDR03(ElectronHcalIsoDR03->at(iel));
-    
+    if(ElectronTrkIsoPAT){
+      el.SetTrkIsoDR04(ElectronTrkIsoPAT->at(iel));
+      el.SetECalIsoDR04(ElectronEcalIsoPAT->at(iel));
+      el.SetHCalIsoDR04(ElectronHcalIsoPAT->at(iel));
+    }
     m_logger << DEBUG << "Filling PF03 isolation variables " << LQLogger::endmsg;
     
     el.SetPFChargedHadronIso03(ElectronPFChargedHadronIso03->at(iel));
@@ -307,6 +337,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetElDist(ElectronDist->at(iel));
     }
     
+    
+    m_logger << DEBUG << "Filling trigmatch variable" << LQLogger::endmsg;
+    m_logger << DEBUG <<  ElectronHLTDoubleEleMatched << " " << ElectronHLTSingleEleMatched << " " << ElectronHLTSingleEleWP80Matched << LQLogger::endmsg;
+
+    el.SetHLTDoubleElMatched(ElectronHLTDoubleEleMatched->at(iel));
+    el.SetHLTSingleElMatched(ElectronHLTSingleEleMatched->at(iel));
+    el.SetHLTSingleElWP80Matched(ElectronHLTSingleEleWP80Matched->at(iel));
+
     m_logger << DEBUG << "Filling El Truth variables " << LQLogger::endmsg;
     
     /*
@@ -453,13 +491,24 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     if(!PFJetEnergyRaw)ERRORMessage("PFJetEnergyRaw");
     else jet.SetJetRawPt(PFJetEnergyRaw->at(ijet));
 
+    m_logger << DEBUG << "Filling JetID " << LQLogger::endmsg; 
     // ID cuts
     if(!(PFJetPassLooseID && PFJetPassTightID)) ERRORMessage("JetID");
     else{
       jet.SetJetPassLooseID(PFJetPassLooseID->at(ijet));    
       jet.SetJetPassTightID(PFJetPassTightID->at(ijet));    
     }
+
+    m_logger << DEBUG << "Filling JetID WP " << LQLogger::endmsg; 
+    if(PFJetPileupjetIDpassLooseWP){
+      jet.SetJetPileupIDLooseWP(PFJetPileupjetIDpassLooseWP->at(ijet));
+      jet.SetJetPileupIDMediumWP(PFJetPileupjetIDpassMediumWP->at(ijet));
+      jet.SetJetPileupIDTightWP(PFJetPileupjetIDpassTightWP->at(ijet));
+      jet.SetJetPileupIDFlag(PFJetJetPileupIdflag->at(ijet));
+      jet.SetJetPileupIDMVA(PFJetJetPileupMVA->at(ijet));
+    }
         
+    m_logger << DEBUG << "Filling Jet Energy Fraction " << LQLogger::endmsg; 
     /// Jet energy fractions   
     if(!(PFJetNeutralEmEnergyFraction&&PFJetNeutralHadronEnergyFraction&&PFJetChargedEmEnergyFraction&&PFJetChargedHadronEnergyFraction&&PFJetHFEMEnergyFraction&&PFJetMuonEnergyFraction&&PFJetElectronEnergyFraction&&PFJetChargedMuEnergyFraction&&PFJetPhotonEnergyFraction)) ERRORMessage("JetEnergyFraction");
     else{
@@ -475,6 +524,8 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
       jet.SetJetChargedMuEnergyFraction(PFJetChargedMuEnergyFraction->at(ijet));
       jet.SetJetPhotonEnergyFraction(PFJetPhotonEnergyFraction->at(ijet));
     }
+
+    m_logger << DEBUG << "Filling Jet btag info " << LQLogger::endmsg; 
     /// BTAG variables
     if(!(PFJetTrackCountingHighPurBTag&&PFJetCombinedSecondaryVertexBTag&&PFJetJetProbabilityBTag&&PFJetClosestVertexWeighted3DSeparation&&PFJetClosestVertexWeightedXYSeparation&&PFJetClosestVertexWeightedZSeparation))ERRORMessage("JetBtag");
     else{
@@ -492,6 +543,8 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
       jet.SetJetClosestVertexWeightedXYSeparation(PFJetClosestVertexWeightedXYSeparation->at(ijet));
       jet.SetJetClosestVertexWeightedZSeparation(PFJetClosestVertexWeightedZSeparation->at(ijet));
     }
+
+    m_logger << DEBUG << "Filling Jet multiplicities " << LQLogger::endmsg; 
     /// Multiplicities
     if(!(PFJetChargedMultiplicity&&PFJetNeutralMultiplicity&&PFJetChargedHadronMultiplicity&&PFJetElectronMultiplicity&&PFJetHFEMMultiplicity&&PFJetHFHadronMultiplicity&&PFJetMuonMultiplicity&&PFJetNeutralHadronMultiplicity&&PFJetPhotonMultiplicity))ERRORMessage("JetMultiplicity");
     else{
@@ -505,6 +558,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
       jet.SetJetNeutralHadronMultiplicity(PFJetNeutralHadronMultiplicity->at(ijet));
       jet.SetJetPhotonMultiplicity(PFJetPhotonMultiplicity->at(ijet));
     }
+    m_logger << DEBUG << "Filling Jet track info " << LQLogger::endmsg; 
     /// Tracking
     if(!(PFJetNConstituents&&PFJetBestVertexTrackAssociationIndex&&PFJetBestVertexTrackAssociationFactor))ERRORMessage("JetTrack");
     else{
@@ -515,6 +569,8 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     
     // flavour
     jet.SetJetPartonFlavour(PFJetPartonFlavour->at(ijet));
+
+    m_logger << DEBUG << "Fill SKTree jetuncertainty" << LQLogger::endmsg;
 
     /// JEC and uncertainties
     jet.SetJetJECUnc(PFJetJECUnc->at(ijet));
@@ -543,6 +599,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
       jet.SetJetSmearedDownPt(-999.);
       jet.SetJetSmearedUpPt(-999.);
     }
+    m_logger << DEBUG << "Fill PFJet vector for SKJet" << LQLogger::endmsg;
     jets.push_back(jet);
   }// end of jet 
   
@@ -601,10 +658,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	muon.SetCharge(MuonGlobalCharge->at(iglobal));
 	iglobal++;
       }
+
+    
     }
-    
-    
-    
+     
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
     if(MuonMuonSpecPt){
 
@@ -670,6 +727,11 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetPixelValidHits(  MuonTrkPixelHits->at(ilep));
     muon.SetValidStations( MuonStationMatches->at(ilep));
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
+
+    /// TrigMatching
+    if(MuonHLTDoubleMuonMatched)muon.SetHLTDoubleMuMatched(MuonHLTDoubleMuonMatched->at(ilep));
+    if(MuonHLTSingleMuonMatched)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched->at(ilep));
+    if(MuonHLTSingleIsoMuonMatched)muon.SetHLTSingleMuIsoMatched(MuonHLTSingleIsoMuonMatched->at(ilep));
 
     m_logger << DEBUG << "Muon Truth " << LQLogger::endmsg;
 
@@ -765,12 +827,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   std::sort( muons.begin(), muons.end(), isHigherPt );
   m_logger << DEBUG << "End of Muon Filling" << LQLogger::endmsg;
   return muons;
-}
+  }
 
-
+  
 
 std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
-
+  
   m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;
   if(!LQinput){
@@ -812,7 +874,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     
     if(GenParticlePdgId->at(it) < 0) charge_truth *=-1.;
     
-    truthp.SetCharge(charge_truth);
+    truthp.SetCharge(int(charge_truth));
     vtruth.push_back(truthp);
   }/// end of filling loop
 
@@ -852,7 +914,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
 
-    truthp.SetCharge(charge_truth);
+    truthp.SetCharge(int(charge_truth));
     vtruth.push_back(truthp);    
   }
   
@@ -892,7 +954,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     if(GenZTauPdgId->at(it) < 0) charge_truth *=-1.;
 
-    truthp.SetCharge(charge_truth);
+    truthp.SetCharge(int(charge_truth));
     vtruth.push_back(truthp);
   }
 
@@ -933,7 +995,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     if(GenZElectronPdgId->at(it) < 0) charge_truth *=-1.;
     
-    truthp.SetCharge(charge_truth);
+    truthp.SetCharge(int(charge_truth));
     vtruth.push_back(truthp);
   }
 

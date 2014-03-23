@@ -69,7 +69,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
-  
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   //FillCutFlow("NoCut", weight);
@@ -92,8 +91,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //FillCutFlow("TriggerCut", weight);
   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
   
-  
-  
+    
   /// Check the event has a "Good" Primary vertex
   /// Good is taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/TrackingPFGJob:
   /// defined as : !isFake && ndof > 4 && |z| <= 24 cm && position.Rho <= 2cm (rho = radius of vertex)
@@ -125,7 +123,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronTightColl;
   eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
-  eventbase->GetElectronSel()->SetPt(20);
+  eventbase->GetElectronSel()->SetPt(30);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->Selection(electronTightColl);
   
@@ -136,8 +134,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronMediumColl;
   eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
+  //  eventbase->GetElectronSel()->SetPt(20);
+  eventbase->GetElectronSel()->SetEta(4.5);
   eventbase->GetElectronSel()->Selection(electronMediumColl);
 
 
@@ -357,7 +355,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       }
     }
   }
-
+  
   if (electronEOPColl.size() == 2) {
     if(electronEOPColl.at(0).Charge() == electronEOPColl.at(1).Charge()){
       if(jetColl_lepveto.size() > 1){
@@ -367,15 +365,15 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       }
     }
   }
-
+  
 
   
   
   return;
 }// End of execute event loop
 
-
-
+  
+  
 void HNDiElectron::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
@@ -388,6 +386,7 @@ void HNDiElectron::BeginCycle() throw( LQError ){
   Message("In begin Cycle", INFO);
   
   string analysisdir = getenv("FILEDIR");  
+
   if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
 
   //
@@ -397,7 +396,8 @@ void HNDiElectron::BeginCycle() throw( LQError ){
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
   DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
   DeclareVariable(out_muons, "Signal_Muons");
-
+  
+  
   
   return;
   

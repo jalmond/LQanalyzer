@@ -134,16 +134,16 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   //// CHOICE OF ELECTRON ID /////////////////////
   /// Use MEDIUM definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
   // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter  
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
+  //eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
   
   /// Select pt of electrons
-  eventbase->GetElectronSel()->SetPt(20);
+  //eventbase->GetElectronSel()->SetPt(20);
   
   // Use 2.5 eta cut. This is due to the acceptance of the tracker
   // Barrel |eta| <= 1.479
   // Endcap 1.479 < |eta| < 2.5
   // We actually cut on 1.4442<abeta<1.566 . This is due to gap region between barrel and endcap of the ECal
-  eventbase->GetElectronSel()->SetEta(2.5);
+  //eventbase->GetElectronSel()->SetEta(2.5);
   
   /// A relative iso cut of 0.15 is already implemented in the EGAMMA_MEDIUM cut. 
   /// Uses PF isolation. Corrected for Pile Up https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaEARhoCorrection
@@ -161,17 +161,19 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   // We can check the charge of the Super Cluster / Tracker / combined electron
   // SetCheckCharge(true) requires that all 3 are the same
-  eventbase->GetElectronSel()->SetCheckCharge(true);
+  //eventbase->GetElectronSel()->SetCheckCharge(true);
   
   // Some cuts are applied in the ID MEDIUM/TIGHT to reduce conversion electrons
   // These cuts are on the vertex fit probabilty/missing hits in the tracker 
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Conversion_Rejection
   // We can also cut on the presence of any matched conversion https://twiki.cern.ch/twiki/bin/viewauth/CMS/ConversionTools
   // To apply the passconversionveto use SetApplyConvVeto(true)
-  eventbase->GetElectronSel()->SetApplyConvVeto(true);
+  //eventbase->GetElectronSel()->SetApplyConvVeto(true);
   
   /// Use the selection function to fill our empty vector with the cuts specified above
-  eventbase->GetElectronSel()->Selection(electronTightColl);
+
+  ///New function that applies all tight selection
+  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
   
   
   
@@ -182,23 +184,25 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronVetoColl;
   /// Use VETO definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
   // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_VETO);
+  //eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_VETO);
   /// Lower pt for veto
-  eventbase->GetElectronSel()->SetPt(10.);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->SetRelIso(0.15);
-  eventbase->GetElectronSel()->Selection(electronVetoColl);
+  //eventbase->GetElectronSel()->SetPt(10.);
+  //eventbase->GetElectronSel()->SetEta(2.5);
+  //eventbase->GetElectronSel()->SetRelIso(0.15);
+
+  /// new function that applies all vero selection  
+  eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   /// 3) Tight Muons
   ///////////////////////////////////////////////////////////////////////////////////////////
 
   std::vector<snu::KMuon> muonTightColl;
-  eventbase->GetMuonSel()->SetPt(20.);
+  //eventbase->GetMuonSel()->SetPt(20.);
   /// ID are explained in https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
-  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
+  //eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
   
-  eventbase->GetMuonSel()->SetEta(2.4);
+  //eventbase->GetMuonSel()->SetEta(2.4);
   
   /// χ2/ndof of the global-muon track fit. To suppress hadronic punch-through and muons from decays in flight. 
   /// TIGHT ID includes χ2/ndof < 10 
@@ -207,14 +211,16 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   /// TIGHT ID includes dxy < 2 mm  amd dz < 5 mm
   /// FOr our analysis we tighten to 50 micrometers and 1 mm respectively
-  eventbase->GetMuonSel()->SetBSdxy(0.005);
-  eventbase->GetMuonSel()->SetBSdz(0.10);
+  //eventbase->GetMuonSel()->SetBSdxy(0.005);
+  //eventbase->GetMuonSel()->SetBSdz(0.10);
   
   /// Use PF isolation DR=0.3
   /// (∑ET(chHad from PV)+∑ET(neutHad)+∑ET(photons))/pT < 0.1
-  eventbase->GetMuonSel()->SetRelIso(0.1);
-  eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
-  eventbase->GetMuonSel()->Selection(muonTightColl);
+  //eventbase->GetMuonSel()->SetRelIso(0.1);
+  //eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
+  
+  // New function that applies all tight muon selection
+  eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   /// 4) Jets(with lepton veto) 

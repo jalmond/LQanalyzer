@@ -12,12 +12,12 @@ source functions.sh
 ## 
 cycle="ExampleAnalyzerDiMuon"
 skinput="True"
-njobs=1
-data_lumi="A"
+njobs=30
+data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-#declare -a input_samples=("A" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW")
-declare -a input_samples=("A")
+#declare -a input_samples=("A" "B" "C" "D"  "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW")
+declare -a input_samples=("Wjets")
 stream="muon"
 use5314ntuples="True"
 outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"

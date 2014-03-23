@@ -27,6 +27,8 @@ KParticle()
   k_pass_egammaID_trigwp70= false;
   k_pass_egammaID_veto= false;
   k_passID=0;
+  k_mva=0.;
+  k_trigmva=0.;
   k_trackdrivenseed = false;
   k_ecaldrivenseed= false;
   k_delta_etatrkSC=0.;
@@ -58,6 +60,9 @@ KParticle()
   k_trkiso_03=0.;
   k_ecaliso_03=0.;
   k_hcaliso_03=0.;
+  k_trkiso_04=0.;
+  k_ecaliso_04=0.;
+  k_hcaliso_04=0.;
   k_pf_chargedhad_iso03=0.;
   k_pf_photon_iso03=0.;
   k_pf_neutral_iso03=0.;
@@ -67,6 +72,9 @@ KParticle()
   k_matched_gen_pt=0.;
   k_matched_gen_eta=0.;
   k_matched_gen_phi=0.;
+  k_diel_trig_match= false;
+  k_el_trig_match= false;
+  k_elwp80_trig_match= false;
   k_track_pt = 0.;
   k_track_hitfrac=0.;
   k_pv_dist_xy=0.;
@@ -94,6 +102,8 @@ KElectron::KElectron(const KElectron& el) :
   k_pass_egammaID_trigwp70= el.PassEGammaIDTrigWP70(); 
   k_pass_egammaID_veto= el.PassEGammaIDVeto(); 
   k_passID= el.PassID();
+  k_mva=el.MVA();
+  k_trigmva=el.TrigMVA();
   k_trackdrivenseed = el.TrackerDrivenSeed(); 
   k_ecaldrivenseed= el.EcalDrivenSeed(); 
   k_delta_etatrkSC= el.DeltaEta();
@@ -125,6 +135,9 @@ KElectron::KElectron(const KElectron& el) :
   k_trkiso_03= el.TrkIsoDR03();
   k_ecaliso_03= el.ECalIsoDR03();
   k_hcaliso_03= el.HCalIsoDR03();
+  k_trkiso_04= el.TrkIsoDR04();
+  k_ecaliso_04= el.ECalIsoDR04();
+  k_hcaliso_04= el.HCalIsoDR04();
   k_pf_chargedhad_iso03= el.PFChargedHadronIso03();
   k_pf_photon_iso03 = el.PFPhotonIso03();
   k_pf_neutral_iso03= el.PFNeutralHadronIso03();
@@ -134,6 +147,9 @@ KElectron::KElectron(const KElectron& el) :
   k_matched_gen_pt= el.MatchedGenParticlePt();
   k_matched_gen_eta= el.MatchedGenParticleEta();
   k_matched_gen_phi= el.MatchedGenParticlePhi();
+  k_diel_trig_match= el.MatchedDiElectronTrigger();
+  k_el_trig_match= el.MatchedSingleElectronTrigger();
+  k_elwp80_trig_match= el.MatchedSingleElectronWP80Trigger();
   k_track_pt = el.TrackPt();
   k_track_hitfrac=el.TrackValidHitFraction();
   k_pv_dist_xy=el.PrimaryVertexDXY();
@@ -164,6 +180,8 @@ void KElectron::Reset()
   k_pass_egammaID_trigwp70= false;
   k_pass_egammaID_veto= false;
   k_passID=0;
+  k_mva=0.;
+  k_trigmva=0.;
   k_trackdrivenseed = false;
   k_ecaldrivenseed= false;
   k_delta_etatrkSC=0.;
@@ -195,6 +213,9 @@ void KElectron::Reset()
   k_trkiso_03=0.;
   k_ecaliso_03=0.;
   k_hcaliso_03=0.;
+  k_trkiso_04=0.;
+  k_ecaliso_04=0.;
+  k_hcaliso_04=0.;
   k_pf_chargedhad_iso03=0.;
   k_pf_photon_iso03=0.;
   k_pf_neutral_iso03=0.;
@@ -204,6 +225,9 @@ void KElectron::Reset()
   k_matched_gen_pt=0.;
   k_matched_gen_eta=0.;
   k_matched_gen_phi=0.;
+  k_diel_trig_match= 0.;
+  k_el_trig_match= 0.;
+  k_elwp80_trig_match= 0.;
   k_track_pt = 0.;
   k_track_hitfrac=0.;
   k_pv_dist_xy=0.;
@@ -231,6 +255,8 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_pass_egammaID_trigwp70= p.PassEGammaIDTrigWP70();
     k_pass_egammaID_veto= p.PassEGammaIDVeto();
     k_passID= p.PassID();
+    k_mva=p.MVA();
+    k_trigmva=p.TrigMVA();
     k_trackdrivenseed = p.TrackerDrivenSeed();
     k_ecaldrivenseed= p.EcalDrivenSeed();
     k_delta_etatrkSC= p.DeltaEta();
@@ -262,6 +288,9 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_trkiso_03= p.TrkIsoDR03();
     k_ecaliso_03= p.ECalIsoDR03();
     k_hcaliso_03= p.HCalIsoDR03();
+    k_trkiso_04= p.TrkIsoDR04();
+    k_ecaliso_04= p.ECalIsoDR04();
+    k_hcaliso_04= p.HCalIsoDR04();
     k_pf_chargedhad_iso03= p.PFChargedHadronIso03();
     k_pf_photon_iso03 = p.PFPhotonIso03();
     k_pf_neutral_iso03= p.PFNeutralHadronIso03();
@@ -271,6 +300,9 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_matched_gen_pt= p.MatchedGenParticlePt();
     k_matched_gen_eta= p.MatchedGenParticleEta();
     k_matched_gen_phi= p.MatchedGenParticlePhi();
+    k_diel_trig_match= p.MatchedDiElectronTrigger();
+    k_el_trig_match= p.MatchedSingleElectronTrigger();
+    k_elwp80_trig_match= p.MatchedSingleElectronWP80Trigger();
     k_track_pt = p.TrackPt();
     k_track_hitfrac=p.TrackValidHitFraction();
     k_pv_dist_xy=p.PrimaryVertexDXY();
@@ -364,7 +396,14 @@ void KElectron::Setdxy(double d_xy){
 void KElectron::SetElectronPassId(Int_t passid){
   k_passID = passid;
 }
-  
+void KElectron::SetElectronMVA(Double_t mva){
+  k_mva=mva;
+}
+
+void KElectron::SetElectronTrigMVA(Double_t trigmva){
+  k_trigmva=trigmva;
+}
+
 void KElectron::SetisEB(Bool_t iseb){
   k_isEB = iseb;
 }
@@ -406,6 +445,18 @@ void KElectron::SetECalIsoDR03(Double_t ecaliso){
 void KElectron::SetHCalIsoDR03(Double_t hcaliso){  
   k_hcaliso_03 = hcaliso;
 }
+
+
+void KElectron::SetTrkIsoDR04(Double_t trkiso){
+  k_trkiso_04  = trkiso;
+}
+void KElectron::SetECalIsoDR04(Double_t ecaliso){
+  k_ecaliso_04 = ecaliso;
+}
+void KElectron::SetHCalIsoDR04(Double_t hcaliso){
+  k_hcaliso_04 = hcaliso;
+}
+
 
 
 void KElectron::SetPFChargedHadronIso03(Double_t pf_ch_03){
@@ -513,5 +564,17 @@ void KElectron::SetElectronMatchedGenEta(Double_t eta){
 }
 void KElectron::SetElectronMatchedGenPhi(Double_t phi){
   k_matched_gen_phi = phi;
+}
+
+void KElectron::SetHLTDoubleElMatched(bool match){
+  k_diel_trig_match= match;
+}
+
+void KElectron::SetHLTSingleElMatched(bool match){
+  k_el_trig_match= match;
+}
+
+void KElectron::SetHLTSingleElWP80Matched(bool match){
+  k_elwp80_trig_match= match;
 }
 

@@ -190,7 +190,7 @@ TTree* LQCycleBaseNTuple::GetOutputTree( const char* treeName ) const{
       }
     }
   }
-  m_logger << WARNING << "Asked for output tree when none was initially created. " << LQLogger::endmsg;
+  m_logger << INFO << "Asked for output tree when none was initially created. " << LQLogger::endmsg;
   return 0;
 }
 
