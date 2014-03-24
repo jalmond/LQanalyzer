@@ -7,11 +7,10 @@ SKmuon B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuo
 SKmuon C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
 SKmuon D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
 
-SKmuon A /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodA/
-SKmuon B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodB/
-SKmuon C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
-SKmuon D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
-
+SKegamma A /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodA/
+SKegamma B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodB/
+SKegamma C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodC/
+SKegamma D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodD/
 ### MC #############
 
 SKDY10to50        2901.7          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/DY10to50/

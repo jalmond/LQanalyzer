@@ -29,7 +29,7 @@ for i in range(1, count):
             print "Job " + str(i)  + ": --> " +  line
             if nrepeat != 1:
                 print "FOUND TWICE: removing " + line
-                os.system("rm " + line)
+                os.system("rm -f " + line)
                 dupl+=1
 
 if dupl == 0:
