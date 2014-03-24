@@ -174,8 +174,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   ///New function that applies all tight selection
   eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
-  
-  
+  m_logger << DEBUG << "Number of electrons  = " << electronTightColl.size() << LQLogger::endmsg; 
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   /// 2) Loose Electrons
@@ -192,6 +191,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   /// new function that applies all vero selection  
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
+  m_logger << DEBUG << "Number of veto electrons  = " << electronVetoColl.size() << LQLogger::endmsg;
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   /// 3) Tight Muons
@@ -221,11 +221,12 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   // New function that applies all tight muon selection
   eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
-  
+  m_logger << DEBUG << "Number of muons  = " << muonTightColl.size() << LQLogger::endmsg;
+
   ///////////////////////////////////////////////////////////////////////////////////////////
   /// 4) Jets(with lepton veto) 
   ///////////////////////////////////////////////////////////////////////////////////////////
-
+  
   std::vector<snu::KJet> jetColl_lepveto;
   /// We use PFJets : AKT jets with dR=0.5
   /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
@@ -240,11 +241,19 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   /// To select jets use predefined function in JetSel
   eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonTightColl, electronTightColl);
+  m_logger << DEBUG<< "Number of jets  = " << jetColl_lepveto.size() << LQLogger::endmsg;
+
   
-  
-  
-  
-  
+  if(electronTightColl.size()==2){
+    //m_logger << INFO  << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+    //m_logger << INFO << "Electron1 pt/eta  = " << electronTightColl[0].Pt() <<  " / " << electronTightColl[0].Eta() << LQLogger::endmsg;
+    //m_logger << INFO << "Electron2 pt/eta  = " << electronTightColl[1].Pt() <<  " / " << electronTightColl[1].Eta() << LQLogger::endmsg;
+    
+    //if(jetColl_lepveto.size()>=1) m_logger << INFO << "Jet 1 pt/eta  = " <<jetColl_lepveto[0].Pt() <<  " / " <<jetColl_lepveto[0].Eta() << LQLogger::endmsg;
+    //if(jetColl_lepveto.size()>1) m_logger << INFO << "Jet 2 pt/eta  = " <<jetColl_lepveto[1].Pt() <<  " / " <<jetColl_lepveto[1].Eta() << LQLogger::endmsg;
+  }
+
+
   ///// SOME STANDARD PLOTS /////
   ////  Z-> ee              //////
   if (electronTightColl.size() == 2) {      
@@ -259,7 +268,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     // reconstruct dilepton system
     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
     
-    if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
+    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge()){      
       
       FillCutFlow("DiEl_tight",weight);
       

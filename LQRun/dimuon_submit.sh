@@ -12,12 +12,13 @@ source functions.sh
 ## 
 cycle="ExampleAnalyzerDiMuon"
 skinput="True"
-njobs=30
+njobs=1
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("A" "B" "C" "D"  "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW")
-declare -a input_samples=("WW" "WWv2")
+declare -a input_samples=("HNee100" "HNee100v2")
+nevents=100
 stream="muon"
 
 use5314ntuples="True"

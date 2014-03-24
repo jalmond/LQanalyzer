@@ -153,18 +153,42 @@ void MuonSelection::HNVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_d
     if (LeptonRelIso<0) LeptonRelIso=0.0001;
 
     //// VETO MUON SELECTION
-    if(!( muit->Pt() > 10. )) pass_selection = false;
-    if(!(fabs(muit->Eta()) < 2.4)) pass_selection =false;
-    if(!( LeptonRelIso < 0.2)) pass_selection = false;
-    if(!(muit->GlobalChi2() < 500.)) pass_selection = false;
-    if(!(fabs(muit->dZ())< 100.  )) pass_selection = false;
-    if(!(fabs(muit->dXY())< 20.0 )) pass_selection = false;
-    if(!PassID(MUON_LOOSE, *muit,m_debug)) pass_selection =false;
+    if(( muit->Pt() < 10. )) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail Pt cut" << endl;
+    }
+    if(!(fabs(muit->Eta()) < 2.4)) {
+      pass_selection =false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail Eta cut" << endl;
+    }
+    if(!( LeptonRelIso < 0.2)){
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail Isolation cut" << endl;
+    }
+    if(!(muit->GlobalChi2() < 500.)) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail chi2 cut" << endl;
+    }
+    if(!(fabs(muit->dZ())< 100.  )) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail dz cut" << endl;
+    }
+    if(!(fabs(muit->dXY())< 20.0 )) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail dxy cut" << endl;
+    }
+    if(!PassID(MUON_LOOSE, *muit,m_debug)) {
+      pass_selection =false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail loose cut" << endl;
+    }
 
     /// ENERGY DEPOSIT
     (muit->IsoHcalVeto() < 600.0 &&
      muit->IsoEcalVeto() < 400.0 ) ? DepositVeto=true : DepositVeto=false;
-    if(!DepositVeto) pass_selection = false;
+    if(!DepositVeto) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail deposit cut" << endl;
+    }
 
 
     //// Make Loose selection
@@ -187,7 +211,10 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m
     if (LeptonRelIso<0) LeptonRelIso=0.0001;
     
     //// Muon Loose selection
-    if(!( muit->Pt() > 20. )) pass_selection = false;
+    if(( muit->Pt() < 20. )) {
+      pass_selection = false;
+      if(m_debug) cout << "HNLooseMuonSelection Fail chi2 cut" << endl;
+    }
     if(!(fabs(muit->Eta()) < 2.4)) pass_selection =false;
     if(!PassID(MUON_LOOSE, *muit, m_debug)) pass_selection =false;
     if(!( LeptonRelIso < 0.4)) pass_selection = false;
@@ -230,7 +257,7 @@ void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_
     if (LeptonRelIso<0) LeptonRelIso=0.0001;    
 
     /// TIGHT MUON SELECTION
-    if(!( muit->Pt() > 20. )) {
+    if(( muit->Pt() < 20. )) {
       pass_selection = false;
       if(m_debug) cout << "Muon fails Tight pt cut " << endl;
     }
@@ -298,35 +325,35 @@ bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
     }
     if(!(mu.IsGlobal()==1      )) {
       passID = false;
-      cout << "PassID: Fail isGlobal" << endl;
+      if(m_debug)cout << "PassID: Fail isGlobal" << endl;
     }
     if( mu.validHits() == 0     ) {
       passID = false;
-      cout << "PassID: Fail validHit" << endl;
+      if(m_debug)cout << "PassID: Fail validHit" << endl;
     }
     if( mu.validPixHits() == 0) {
       passID = false;
-      cout << "PassID: Fail validPixelHit" << endl;
+      if(m_debug)cout << "PassID: Fail validPixelHit" << endl;
     }
     if( mu.validStations() <= 1 ) {
       passID = false;
-      cout << "PassID: Fail validStations" << endl;
+      if(m_debug)cout << "PassID: Fail validStations" << endl;
     }
     if( mu.ActiveLayer() <= 5   ) {
       passID = false;
-      cout << "PassID: Fail ActiveLayer " << endl;
+      if(m_debug)cout << "PassID: Fail ActiveLayer " << endl;
     }
     if( fabs(mu.dXY())    >= 0.2) {
       passID = false;
-      cout << "PassID: Fail dXY" << endl;
+      if(m_debug)cout << "PassID: Fail dXY" << endl;
     }
     if( fabs(mu.dZ())    >= 0.5) {
       passID = false;
-      cout << "PassID: Fail dZ" << endl;
+      if(m_debug)cout << "PassID: Fail dZ" << endl;
     }
     if( mu.GlobalChi2() >=  10.){
       passID = false;
-      cout << "PassID: Fail  Chi2" << endl;
+      if(m_debug) cout << "PassID: Fail  Chi2" << endl;
     }
   }
   

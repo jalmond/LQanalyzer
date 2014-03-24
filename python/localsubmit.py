@@ -33,7 +33,7 @@ parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove th
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 parser.add_option("-N", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
-parser.add_option("-M", "--use5314ntuples", dest="use5314ntuples", default=True, help="use5314ntuples? add use5314ntuples='True' to run on these samples")
+parser.add_option("-M", "--use538ntuples", dest="use538ntuples", default=True, help="use538ntuples? add use5384ntuples='True' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 
@@ -63,7 +63,7 @@ remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
 use5312ntuples = options.use5312ntuples
-use5314ntuples = options.use5314ntuples
+use538ntuples = options.use538ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 
@@ -136,9 +136,9 @@ if not len(splitsample)==1:
         if "use5312ntuples" in splitsample[conf]:
             conf+=1
             use5312ntuples = splitsample[conf]
-        if "use5314ntuples" in splitsample[conf]:
+        if "use538ntuples" in splitsample[conf]:
             conf+=1
-            use5314ntuples = splitsample[conf]
+            use584ntuples = splitsample[conf]
 
 ####################
 ####
@@ -294,11 +294,15 @@ mcLumi = 1.0
 filechannel=""
 
 if platform.system() == "Linux":
-    version="_5_3_12"
-    if not use5312ntuples == "True":
+    version="_5_3_14"
+    if  use5312ntuples == "True":
+        version = "_5_3_12"
+        print "Using Version 5312 ntuples"
+    elif  use538ntuples == "True":
         version = "_5_3_8"
-    if use5314ntuples == "True":
-         version = "_5_3_14"
+        print "Using Version 538 ntuples"
+    else:
+        print "Using Version 5314 ntuples"
     filename = 'txt/datasets_snu' + version +  '.txt'
     
 else:
@@ -432,19 +436,19 @@ fr = open(local_sub_dir + '/inputlist.txt', 'r')
 outsamplename = sample
 if not mc:
     outsamplename = outsamplename +  "_" + channel
-    if use5314ntuples == "True":
-        outsamplename = outsamplename + "_5_3_14"
+    if use538ntuples == "True":
+        outsamplename = outsamplename + "_5_3_8"
     elif use5312ntuples == "True":
         outsamplename = outsamplename + "_5_3_12"
     else:
-        outsamplename = outsamplename + "_5_3_8"
+        outsamplename = outsamplename + "_5_3_14"
 else:
-    if use5314ntuples == "True":
-        outsamplename = outsamplename + "_5_3_14"
+    if use538ntuples == "True":
+        outsamplename = outsamplename + "_5_3_8"
     elif use5312ntuples == "True":
         outsamplename = outsamplename + "_5_3_12"
     else:
-        outsamplename = outsamplename + "_5_3_8"
+        outsamplename = outsamplename + "_5_3_14"
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
@@ -523,16 +527,16 @@ for check in range(1, number_of_cores+1):
     filelist = output+ "Job_" + str(check) + "/" + sample + "_%s" % (check) + ".txt"
     fcheck = open(filelist, 'r')
     nsamples=0
-    for line in fcheck:
+    for cline in fcheck:
         nsamples+=1
         total_nsamples+=1
         no_duplicate= True
         for s in check_array:
-            if s == line :
+            if s == cline :
                 print "DUPLICATE file : " + s
                 no_duplicate=False
                 sys.exit()
-        check_array.append(list)
+        check_array.append(cline)
     if DEBUG == "True":
         print  "File " + filelist + " contains " + str(nsamples) + " files"
     fcheck.close()

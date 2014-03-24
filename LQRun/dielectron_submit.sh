@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/sh
 source functions.sh 
 
 ###########################################################
@@ -16,9 +16,9 @@ njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-#declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-declare -a input_samples=("HNee100")
-use5314ntuples="True"
+#nevents=100
+declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
+#declare -a input_samples=( "HNee100" "HNee100BF")
 stream="egamma"
 outputdir="/home/jalmond/LQanalyzer/data/output/Electron/"
 

@@ -7,6 +7,10 @@ SKmuon B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuo
 SKmuon C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
 SKmuon D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
 
+SKmuon A /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodA/
+SKmuon B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodB/
+SKmuon C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
+SKmuon D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
 
 ### MC #############
 
@@ -26,12 +30,15 @@ SKttW             845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees
 SKttZ             1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/TTZ/
 SKWWW             2684057.442     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WWW/
 
+
+SKHNee100       14036.72          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/HNee100/
+SKHNee100BF       14036.72        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/HNee100BF/
+
+
 SKQCD_mumu        54.2            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_mumu/
 SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_30to40EE/
 SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_40EE/
 
-
-SKHNee100       14036.72  /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v2/MC/HNee100
 
 ### LQNtuples ########################################################
 ####
@@ -112,6 +119,7 @@ HNee50        46.68      /data1/DATA/LQNtuples_5_3_14/MC/HNEE50/
 HNee70        235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNEE17/
 HNee90        7037.03   /data1/DATA/LQNtuples_5_3_14/MC/HNEE90/
 HNee100       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100/
+HNee100v2       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100V2/
 HNee125       46242.46   /data1/DATA/LQNtuples_5_3_14/MC/HNEE125/
 HNee150       108826.73  /data1/DATA/LQNtuples_5_3_14/MC/HNEE150/
 HNee175       214442.23  /data1/DATA/LQNtuples_5_3_14/MC/HNEE175/
