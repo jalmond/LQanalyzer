@@ -34,15 +34,36 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
+  vector<int> eventlist;
+  eventlist.push_back(438758857);
+  eventlist.push_back(1555347710);
+  eventlist.push_back(247323968);
+  eventlist.push_back(274081498);
+  eventlist.push_back(645134403);
+  eventlist.push_back(242623596);
+  
+  bool checkevent=false;
+  for(unsigned int iev = 0; iev < eventlist.size(); iev++){
+    if((eventbase->GetEvent().EventNumber() == eventlist.at(iev))) checkevent=true;
+  }
+  if(!checkevent) throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  
   FillCutFlow("NoCut", 1);
 
-  if(!PassBasicEventCuts()) throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  if(!PassBasicEventCuts()){
+    m_logger <<  INFO << "Fail MET filter cuts" << LQLogger::endmsg;
+    throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  }  
   FillCutFlow("EventCut", 1);
   
   std::vector<TString> triggerslist;
   triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
 
-  if (!eventbase->GetEvent().HasGoodPrimaryVertex()) throw LQError( "Has no PV",  LQError::SkipEvent );
+  if (!eventbase->GetEvent().HasGoodPrimaryVertex()){
+    m_logger <<  INFO << "Event FAILS HasGoodPrimaryVertex " << LQLogger::endmsg;
+    throw LQError( "Has no PV",  LQError::SkipEvent );
+  }
   FillCutFlow("VertexCut", 1);
 
  
@@ -50,26 +71,32 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-  
+  m_logger << INFO << "Selecting objects" << LQLogger::endmsg;
+  //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
+  /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
   eventbase->GetMuonSel()->SetPt(10); 
   eventbase->GetMuonSel()->SetEta(2.5);
-  eventbase->GetMuonSel()->BasicSelection(out_muons); /// Muons For SKTree
+  eventbase->GetMuonSel()->BasicSelection(out_muons, true); /// Muons For SKTree
 
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim
+  /// Apart from eta/pt muons are required to have a global OR tracker track && be PF
   eventbase->GetMuonSel()->SetPt(15);
   eventbase->GetMuonSel()->SetEta(2.5);
-  eventbase->GetMuonSel()->SkimSelection(skim_muons);
+  eventbase->GetMuonSel()->SkimSelection(skim_muons, true);
 
+  //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
+  //###### GenJet Selection ##########
   if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
   
+  //###### Electron Selection ########
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
   eventbase->GetElectronSel()->SetPt(10); 

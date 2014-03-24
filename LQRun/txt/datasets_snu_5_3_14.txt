@@ -20,6 +20,7 @@ SKttbar           29588.256       /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees
 SKWZ              301122.644      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WZ/
 SKZZ              555109.777      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/ZZ/
 SKWW              182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WW/
+SKWWv2              182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WWv2/
 SKWjets           1538.562        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/Wjets/
 SKSSWmWm          1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WmWm/
 SKSSWpWp          402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WpWp/
@@ -76,6 +77,7 @@ ttbar		29588.256 	/data1/DATA/LQNtuples_5_3_14/MC/ttbar/
 WZ              301122.644      /data1/DATA/LQNtuples_5_3_14/MC/WZ/
 ZZ              555109.777      /data1/DATA/LQNtuples_5_3_14/MC/ZZ/
 WW		182363.161    	/data1/DATA/LQNtuples_5_3_14/MC/WW/
+WWv2		182363.161    	/data1/DATA/LQNtuples_5_3_14/MC/WWV2/
 Wjets           1538.562        /data1/DATA/LQNtuples_5_3_14/MC/WJets/
 SSWmWm		1084518.452	/data1/DATA/LQNtuples_5_3_14/MC/WmWm/
 SSWpWp		402840.451	/data1/DATA/LQNtuples_5_3_14/MC/WpWp/

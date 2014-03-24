@@ -120,9 +120,9 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   /// We want to select events with 2 medium electrons (we will also remove events with a looser third muon to show how it is done)
   /// We will use 4 different object collections
-  /// 1) Tight Electrons
-  /// 2) Loose Electrons for veto (can veto events with a third loose el)
-  /// 3) Tight Muons (for PFjet veto)
+  /// 1) Tight Electrons  ||  eventbase->GetElectronSel()->HNTightElectronSelection
+  /// 2) Loose Electrons for veto (can veto events with a third loose el)    || eventbase->GetElectronSel()->HNVetoElectronSelection
+  /// 3) Tight Muons (for PFjet veto)  || eventbase->GetMuonSel()->HNTightMuonSelection
   /// 4) Jets(with lepton veto)
   
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +134,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   //// CHOICE OF ELECTRON ID /////////////////////
   /// Use MEDIUM definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
   // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter  
-  //eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
+  //eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
   
   /// Select pt of electrons
   //eventbase->GetElectronSel()->SetPt(20);
@@ -230,16 +230,16 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// We use PFJets : AKT jets with dR=0.5
   /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
   /// Cuts applied to 1) isolation 2) EM fraction 3) HPD noise rejection
-  eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
+  //eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   
   // 20 GeV is very loose. Needed to keep soft signal muons form heavy neutrinos
-  eventbase->GetJetSel()->SetPt(20.);
+  //eventbase->GetJetSel()->SetPt(20.);
   
   // As with electrons the eta cut is chosed to coincide with teh tracker acceptance
-  eventbase->GetJetSel()->SetEta(2.5);
+  //eventbase->GetJetSel()->SetEta(2.5);
   
-  /// To select jets use JetSelectionLeptonVeto function
-  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
+  /// To select jets use predefined function in JetSel
+  eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonTightColl, electronTightColl);
   
   
   

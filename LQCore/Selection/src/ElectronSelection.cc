@@ -251,8 +251,10 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, double jetrho){
   else if ( id == MVANonTrig            ) return PassUserID_MVA     (el, false);
   else if ( id == ECAL_FIDUCIAL  ) return PassUserID_ECALFiducial     (el);
   else if ( id == EGAMMA_FAKELOOSE ) return PassUserID_FakeLoose2012( el, jetrho);
-  else return false;
-  
+  else {
+    cout << "Invalid ID set for electron selection" << endl;
+    return false;
+  }
   /*if ( id == EGAMMA_TIGHT   )  return (el.PassEGammaIDTight() == 1023);
     else if ( id == EGAMMA_MEDIUM  ) return (el.PassEGammaIDMedium() == 1023);
     else if ( id == EGAMMA_LOOSE   ) return (el.PassEGammaIDLoose()== 1023);

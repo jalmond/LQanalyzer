@@ -33,7 +33,8 @@ class JetSelection : public BaseSelection {
 
   //// To be used in analysis
   void JetSelectionLeptonVeto(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
-   
+  void JetHNSelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl); 
+
 };
 
 #endif
