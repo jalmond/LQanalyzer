@@ -66,6 +66,55 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
+  vector<int> eventlist;
+  eventlist.push_back(438758857);
+  eventlist.push_back(1555347710);
+  eventlist.push_back(247323968);
+  eventlist.push_back(274081498);
+  eventlist.push_back(645134403);
+  eventlist.push_back(242623596);
+  eventlist.push_back(55949857);
+  eventlist.push_back(476719880);
+  eventlist.push_back(286152885);
+  eventlist.push_back(102193331);
+  eventlist.push_back(437147073);
+eventlist.push_back(18161318);
+eventlist.push_back(997862896);
+eventlist.push_back(142611597);
+eventlist.push_back(201170251);
+eventlist.push_back(63567468);
+eventlist.push_back(418693851);
+eventlist.push_back(1164006004);
+eventlist.push_back(292969178);
+eventlist.push_back(948592428);
+eventlist.push_back(125030447);
+eventlist.push_back(199854192);
+eventlist.push_back(344264228);
+eventlist.push_back(165379256);
+eventlist.push_back(165932004);
+eventlist.push_back(322830357);
+eventlist.push_back(41574847);
+eventlist.push_back(212711707);
+eventlist.push_back(463361233);
+eventlist.push_back(396039526);
+eventlist.push_back(74829066);
+eventlist.push_back(278020508);
+eventlist.push_back(381728771);
+eventlist.push_back(71377287);
+eventlist.push_back(545322973);
+eventlist.push_back(211161415);
+eventlist.push_back(75979972);
+ eventlist.push_back(132797613);
+ eventlist.push_back(261164910);
+  
+
+  bool checkevent=false;
+  for(unsigned int iev = 0; iev < eventlist.size(); iev++){
+    if((eventbase->GetEvent().EventNumber() == eventlist.at(iev))) checkevent=true;
+  }
+  if(!checkevent) throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
@@ -200,30 +249,18 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->Selection(electronVetoColl);
   
   std::vector<snu::KMuon> muonVetoColl;
-  /// Lower pt cut to 10
-  eventbase->GetMuonSel()->SetPt(10.);
-  eventbase->GetMuonSel()->SetEta(2.4);
-  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_LOOSE);
-  eventbase->GetMuonSel()->SetRelIso(0.20);
- eventbase->GetMuonSel()->SetChiNdof(500.);
- eventbase->GetMuonSel()->SetBSdxy(2000.);
- eventbase->GetMuonSel()->SetBSdz(100.00);
- eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
- eventbase->GetMuonSel()->Selection(muonVetoColl);
+  eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
 
  
 
   std::vector<snu::KMuon> muonTightColl;
-  eventbase->GetMuonSel()->SetPt(20.);
-  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
-  eventbase->GetMuonSel()->SetBSdxy(0.005);
-  eventbase->GetMuonSel()->SetBSdz(0.10);
-  eventbase->GetMuonSel()->SetEta(2.4);
-  eventbase->GetMuonSel()->SetRelIso(0.1);
-  eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
-  eventbase->GetMuonSel()->Selection(muonTightColl);
+  eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl,true);
   
-
+  m_logger << INFO << "Number of muons = " << muonTightColl.size() << LQLogger::endmsg;
+  if(muonTightColl.size() == 2){
+    m_logger << INFO << "Muon1 id charge = " << muonTightColl.at(0).MuonIDCharge() << " muon 2 id charge = " << muonTightColl.at(1).MuonIDCharge() << LQLogger::endmsg;
+  }
+  
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);

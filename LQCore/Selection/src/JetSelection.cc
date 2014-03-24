@@ -54,6 +54,36 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
 }
 
 
+void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
+  
+  std::vector<KJet> pre_jetColl; 
+  std::vector<KJet> alljets = k_lqevent.GetJets();
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+
+    if ( jit->Pt() >= 20. && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))  pre_jetColl.push_back(*jit);
+    
+  }
+  
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
+    jetIsOK = true;
+    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4) {
+        jetIsOK = false;
+        ilep = muonColl.size();
+      }
+    }/// End of muon loop
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4 ) {
+        jetIsOK = false;
+        ilep = electronColl.size();
+      }
+    }/// End of electron loop
+
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
+  }/// End of Jet loop
+  
+}
 
 void JetSelection::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
   

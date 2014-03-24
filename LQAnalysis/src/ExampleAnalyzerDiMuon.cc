@@ -113,9 +113,9 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
 
    //// We will speicfy the following collection of objects
-   /// 1) Tight Muons
-   /// 2) Loose Muons for veto
-   /// 3) TightElectrons (for jet veto)
+   /// 1) Tight Muons                       || eventbase->GetMuonSel()->HNTightMuonSelection
+   /// 2) Loose Muons for veto              || eventbase->GetMuonSel()->HNVetoMuonSelection
+   /// 3) TightElectrons (for jet veto)     || eventbase->GetElectronSel()->HNTightElectronSelection
    /// 4) Jets(with lepton veto)
    
    ///////////////////////////////////////////////////////////////////////////////////////////
@@ -230,13 +230,13 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// We use PFJets : AKT jets with dR=0.5
    /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
    /// Cuts applied to 1) isolation 2) EM fraction 3) HPD noise rejection
-   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
+   //eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
    // 20 GeV is very loose. Needed to keep soft signal muons form heavy neutrinos
-   eventbase->GetJetSel()->SetPt(20.);
+   //eventbase->GetJetSel()->SetPt(20.);
    // As with electrons the eta cut is chosed to coincide with teh tracker acceptance
-   eventbase->GetJetSel()->SetEta(2.5);
-   /// To select jets use JetSelectionLeptonVeto function
-   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
+   //eventbase->GetJetSel()->SetEta(2.5);
+   /// To select jets use predefined function
+   eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonTightColl, electronTightColl);
 
    ///// SOME STANDARD PLOTS /////
    ////  Z-> mumu            //////

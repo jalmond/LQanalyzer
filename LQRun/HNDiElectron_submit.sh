@@ -12,15 +12,15 @@ source functions.sh
 ## 
 cycle="HNDiElectron"
 skinput="True"
-njobs=30
+njobs=1
 data_lumi="A"
 
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
 #declare -a input_samples=("A" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-
-stream="egamma"
+declare -a input_samples=("A")
+stream="muon"
 outputdir="/home/jalmond/LQanalyzer/data/output/SSElectron/"
 use5314ntuples="True"
 remove="False"
