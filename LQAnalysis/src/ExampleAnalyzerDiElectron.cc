@@ -268,7 +268,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     // reconstruct dilepton system
     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
     
-    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge()){      
+    if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
       
       FillCutFlow("DiEl_tight",weight);
       
