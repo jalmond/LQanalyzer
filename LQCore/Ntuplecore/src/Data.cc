@@ -1309,6 +1309,7 @@ void Data::ConnectMET(){
   ConnectVariable("PFMETType01XYCorUnclusteredDown",PFMETType01XYCorUnclusteredDown,b_PFMETType01XYCorUnclusteredDown);
   ConnectVariable("PFMETType01XYCorUnclusteredUp",PFMETType01XYCorUnclusteredUp,b_PFMETType01XYCorUnclusteredUp);
 
+  ConnectVariable("PFMET", PFMET, b_PFMET);
   return;
 }
 
@@ -1772,7 +1773,7 @@ void Data::ConnectAllBranches(){
 
   
   // Event
-  ConnectVariable("PFMET", PFMET);
+ 
   ConnectVariable("TCMET", TCMET);  
   ConnectVariable("TCMETPhi", TCMETPhi); 
   ConnectVariable("TCSumET", TCSumET); 
