@@ -42,7 +42,8 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Ele27_WP80_v");
-  
+  AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 

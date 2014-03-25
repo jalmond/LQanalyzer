@@ -24,6 +24,9 @@ namespace snu {
     
     /// MET variabkes
     void SetPFMET(double met); ///defailt MET for analysis
+    void SetPFMETRaw(double met); ///defailt MET for analysis
+    void SetPFMETType1(double met); ///defailt MET for analysis
+    void SetPFMETType01(double met); ///defailt MET for analysis
     void SetPFMETphi(double metphi);
     void SetPFSumET(double sumet);
     
@@ -102,6 +105,10 @@ namespace snu {
     
     /// MET variables
     inline Double_t PFMET() const {return k_PF_MET;}
+    inline Double_t PFMETRaw() const {return k_PF_METraw;}
+    inline Double_t PFMETType1() const {return k_PF_METtype1;}
+    inline Double_t PFMETType01() const {return k_PF_METtype01;}
+
     inline Double_t PFMETphi() const {return k_PF_METphi;}
     inline Double_t PFSumET() const {return k_PF_SumET;}
     
@@ -184,6 +191,7 @@ namespace snu {
     Double_t k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
     Double_t k_genmettrue, k_genmetphitrue,k_gensumettrue, k_genmetcalo, k_genmetphicalo,k_gensumetcalo;
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
+    Double_t k_PF_METraw, k_PF_METtype1, k_PF_METtype01;
     Double_t k_tc_MET, k_tc_METphi, k_tc_SumET;
     Double_t k_calo_MET, k_calo_METphi, k_calo_SumET;
     Double_t k_PF_MET_el_enup,k_PF_MET_el_endown, k_PF_MET_jet_enup,k_PF_MET_jet_endown, k_PF_MET_jet_resup,k_PF_MET_jet_resdown, k_PF_MET_muon_enup,k_PF_MET_muon_endown, k_PF_MET_unclust_up,k_PF_MET_unclust_down;
@@ -194,7 +202,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,6)
+    ClassDef(KEvent,7)
   }; 
   
 }//namespace snu

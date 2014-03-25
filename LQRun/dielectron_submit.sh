@@ -19,8 +19,8 @@ logstep=1000
 
 
 #nevents=100
-#declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "QCD_30-40_EM2" "QCD_40_EM2")
-declare -a input_samples=("QCD_30-40_EM2" "QCD_40_EM2")
+declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "QCD_30-40_EM2" "QCD_40_EM2")
+
 
 stream="egamma"
 outputdir="/home/jalmond/LQanalyzer/data/output/Electron/"
