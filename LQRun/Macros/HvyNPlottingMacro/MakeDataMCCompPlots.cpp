@@ -790,7 +790,13 @@ vector<pair<TString,float> >  InitSample (TString sample){
   if(sample.Contains("wz")){    
     list.push_back(make_pair("WZ",0.09));
   }
-  
+
+  if(sample.Contains("QCD"))
+  {
+  list.push_back(make_pair("QCD_30-40_EM2",0.1));
+  list.push_back(make_pair("QCD_40_EM2",0.1));
+  }
+
   if(sample.Contains("zz")){
     list.push_back(make_pair("ZZ",0.09));
   }
@@ -1506,6 +1512,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > ssww = InitSample("ssww");
   vector<pair<TString,float> > z = InitSample("DY");
   vector<pair<TString,float> > w = InitSample("wjet");
+  vector<pair<TString,float> > QCD = InitSample("QCD");
   
   /// NP is datadriven
   vector<pair<TString,float> > np;
@@ -1518,6 +1525,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
     if(listofsamples.at(i) =="Top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
     if(listofsamples.at(i) =="Wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
+    if(listofsamples.at(i) =="QCD")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="NonPrompt")samples.push_back(make_pair(make_pair(np,fcol),"NonPrompt"));   
   }
 

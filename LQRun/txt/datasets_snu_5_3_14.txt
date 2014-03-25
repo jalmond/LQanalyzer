@@ -35,8 +35,8 @@ SKHNee100BF       14036.72        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees
 
 
 SKQCD_mumu        54.2            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_mumu/
-SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_30to40EE/
-SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_40EE/
+SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCDEE30to40/
+SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCDEE40/
 
 
 ### LQNtuples ########################################################
