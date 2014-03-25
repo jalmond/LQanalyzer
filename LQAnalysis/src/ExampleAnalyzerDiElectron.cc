@@ -108,7 +108,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Correct MC for pileup   
   
   float pileup_reweight (1.);
-  if (MC_pu&&!k_isdata) {
+  if (!k_isdata) {
     pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
   }
   
@@ -244,18 +244,11 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG<< "Number of jets  = " << jetColl_lepveto.size() << LQLogger::endmsg;
 
   
-  if(electronTightColl.size()==2){
-    //m_logger << INFO  << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-    //m_logger << INFO << "Electron1 pt/eta  = " << electronTightColl[0].Pt() <<  " / " << electronTightColl[0].Eta() << LQLogger::endmsg;
-    //m_logger << INFO << "Electron2 pt/eta  = " << electronTightColl[1].Pt() <<  " / " << electronTightColl[1].Eta() << LQLogger::endmsg;
-    
-    //if(jetColl_lepveto.size()>=1) m_logger << INFO << "Jet 1 pt/eta  = " <<jetColl_lepveto[0].Pt() <<  " / " <<jetColl_lepveto[0].Eta() << LQLogger::endmsg;
-    //if(jetColl_lepveto.size()>1) m_logger << INFO << "Jet 2 pt/eta  = " <<jetColl_lepveto[1].Pt() <<  " / " <<jetColl_lepveto[1].Eta() << LQLogger::endmsg;
-  }
+
    int nbjet=0;
-  for(int i=0; i <jetColl_lepveto.size() ; i++){
+   for(int i=0; i <jetColl_lepveto.size() ; i++){
     if(jetColl_lepveto.at(i).BtagProb() > 0.679) nbjet++;
-  }
+   }
 
   ///// SOME STANDARD PLOTS /////
   ////  Z-> ee              //////
@@ -272,25 +265,27 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
     
     if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()){      
-      if( fabs(Z.M() - 90.) > 20. && nbjet > 1)
-{      
-
-
-      FillCutFlow("DiEl_tight",weight);
-
-      /// Fill Standard set of cuts for all objects with NO corrections
+      
       FillCLHist(sighist, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-      
-      /// Fill Standardset of cuts forall objects with pileup reweighting applied
-      FillCLHist(sighist, "DiElectronWPURW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight));
-      
-      /// Fill Standardset of cuts forall objects with pileup reweighting applied
-      FillCLHist(sighist, "DiElectronWPURWID", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
-      
-      if(electronVetoColl.size()==2){
-	FillCLHist(sighist, "DiElectronLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
-      }
- }
+     
+      if( (fabs(Z.M() - 90.) > 20.) && nbjet >0)
+	{      
+	  
+	  FillCutFlow("DiEl_tight",weight);
+	  
+	  /// Fill Standard set of cuts for all objects with NO corrections
+	  
+	  if(nbjet > 1){
+	    /// Fill Standardset of cuts forall objects with pileup reweighting applied
+	    FillCLHist(sighist, "DiElectronWPURW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight));
+	  }
+	  /// Fill Standardset of cuts forall objects with pileup reweighting applied
+	  FillCLHist(sighist, "DiElectronWPURWID", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
+	  
+	  if(electronVetoColl.size()==2){
+	    FillCLHist(sighist, "DiElectronLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
+	  }
+	}
     }// OS 
     
   }

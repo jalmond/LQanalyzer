@@ -100,7 +100,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    numberVertices = eventbase->GetEvent().nVertices();   
    
    float pileup_reweight=(1.0);
-   if (MC_pu&&!k_isdata) {
+   if (!k_isdata) {
      /// Here is an alternative method to Fill a histogram. 
      /// The histogram with name "h_nvtx_norw"/"h_nvtx_rw" were not declared in the MakeHistogram code. 
      /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx          
