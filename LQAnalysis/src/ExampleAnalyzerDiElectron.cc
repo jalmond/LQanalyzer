@@ -108,7 +108,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Correct MC for pileup   
   
   float pileup_reweight (1.);
-  if (MC_pu&&!k_isdata) {
+  if (!k_isdata) {
     pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
   }
   

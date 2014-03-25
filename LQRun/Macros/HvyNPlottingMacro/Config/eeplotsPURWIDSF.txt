@@ -9,7 +9,7 @@ cutpath		dat/DY_exampledielectron_purwidcuts.txt
 prefix		ExampleAnalyzerDiElectron_SK
 postfix		_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  ExampleAnalyzer_DiElectronPURWID_Mar14
+outputdir  ExampleAnalyzer_DiElectronPURWID_Mar14top
 histdir    LQMarch14
 # CONFIGURE_HISTOGRAMS
 showdata   true
