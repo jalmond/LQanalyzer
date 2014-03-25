@@ -527,16 +527,16 @@ for check in range(1, number_of_cores+1):
     filelist = output+ "Job_" + str(check) + "/" + sample + "_%s" % (check) + ".txt"
     fcheck = open(filelist, 'r')
     nsamples=0
-    for cline in fcheck:
+    for line in fcheck:
         nsamples+=1
         total_nsamples+=1
         no_duplicate= True
         for s in check_array:
-            if s == cline :
+            if s == line :
                 print "DUPLICATE file : " + s
                 no_duplicate=False
                 sys.exit()
-        check_array.append(cline)
+        check_array.append(line)
     if DEBUG == "True":
         print  "File " + filelist + " contains " + str(nsamples) + " files"
     fcheck.close()
