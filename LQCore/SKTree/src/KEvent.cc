@@ -34,6 +34,9 @@ KEvent::KEvent() :
   k_PF_MET(0.), 
   k_PF_METphi(0.),
   k_PF_SumET(0.), 
+  k_PF_METraw(0.),
+  k_PF_METtype1(0.),
+  k_PF_METtype01(0.),
   k_tc_MET(0.),
   k_tc_METphi(0.),
   k_tc_SumET(0.),
@@ -93,6 +96,9 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_MET(ev.k_PF_MET),
   k_PF_METphi(ev.k_PF_METphi),
   k_PF_SumET(ev.k_PF_SumET),
+  k_PF_METraw(ev.k_PF_METraw),
+  k_PF_METtype1(ev.k_PF_METtype1),
+  k_PF_METtype01(ev.k_PF_METtype01),
   k_tc_MET(ev.k_tc_MET),
   k_tc_METphi(ev.k_tc_METphi),
   k_tc_SumET(ev.k_tc_SumET),
@@ -147,6 +153,9 @@ void KEvent::Reset()
   k_PF_MET= 0.;
   k_PF_SumET= 0.;
   k_PF_METphi= 0.;
+  k_PF_METraw= 0.;
+  k_PF_METtype1= 0.;
+  k_PF_METtype01= 0.;
   k_pdf_cteq =0.;
   k_pdf_mstw = 0.;
   k_pdf_nnpdf = 0.;
@@ -205,6 +214,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_PF_MET= p.PFMET();
       k_PF_METphi= p.PFMETphi();
       k_PF_SumET = p.PFSumET();
+      k_PF_MET = p.PFMETRaw();
+      k_PF_METtype1 = p.PFMETType1();
+      k_PF_METtype01 = p.PFMETType01();
       k_pdf_cteq = p.PDFCTEQWeight();
       k_pdf_mstw = p.PDFMSTWWeight();
       k_pdf_nnpdf = p.PDFNNPDFWeight();
@@ -380,6 +392,20 @@ void KEvent::SetPFMETphi(double metphi){
 
 void KEvent::SetPFSumET(double sumet){
   k_PF_SumET =sumet;
+}
+
+
+void KEvent::SetPFMETRaw(double met){
+  k_PF_METraw = met;
+}
+
+void KEvent::SetPFMETType1(double met){
+  k_PF_METtype1 = met;
+}
+
+
+void KEvent::SetPFMETType01(double met){
+  k_PF_METtype01 = met;
 }
 
 void KEvent::SetCaloMET(double met){

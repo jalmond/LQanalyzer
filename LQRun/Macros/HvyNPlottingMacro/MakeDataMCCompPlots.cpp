@@ -1668,7 +1668,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     //h_significance->GetYaxis()->SetTitle("Significance");
     h_significance->GetYaxis()->SetTitle("Data/MC");
     //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
-    h_significance->GetYaxis()->SetRangeUser(0., 2.);
+    h_significance->GetYaxis()->SetRangeUser(0.8, 1.2);
     h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
     h_significance->Draw("hist");
     TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
