@@ -115,7 +115,8 @@ string cutloc ="";
 
 string histdir="";
 
-
+string output_index_path="";
+string output_path = "";
 
 
 
@@ -156,8 +157,9 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system("scp -r /home/jalmond/WebPlots/ jalmond@lxplus5.cern.ch:~/www/SNU/");
+  system(("scp -r " + output_path + " jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/").c_str());
 
+  cout << "Open plots in " << output_index_path << endl; 
   return 0;
 }
 
@@ -322,6 +324,8 @@ int MakeCutFlow_Plots(string configfile){
   
   std::string pname = "/home/jalmond/WebPlots/"+ path + "/indexCMS.html";
   std::string phistname = "/home/jalmond/WebPlots/"+ path + "/histograms/" + histdir  + "/indexCMS.html";
+  output_path = "/home/jalmond/WebPlots/"+ path ;
+  output_index_path = string("https://jalmond.web.cern.ch/jalmond/SNU/WebPlots/")+ path + "/histograms/" + histdir  + "/indexCMS.html";
   system(("mkdir /home/jalmond/WebPlots/" + path).c_str());
   system(("mkdir /home/jalmond/WebPlots/" + path+ "/histograms/").c_str());
   system(("mkdir /home/jalmond/WebPlots/" + path+"/histograms/" + histdir + "/").c_str());

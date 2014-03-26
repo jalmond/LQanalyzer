@@ -103,8 +103,13 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   
   
   map_sig["h_MTmuon"] =            new TH1F("h_MTmuon_"           + name,"Mt",100,0.0,500.0);
-  map_sig["h_MTelectron"] =            new TH1F("h_MTelectron_"           + name,"Mt",100,0.0,500.0);
-  map_sig["h_MET"] =            new TH1F("h_MET_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_MTelectron"] =        new TH1F("h_MTelectron_"           + name,"Mt",100,0.0,500.0);
+  map_sig["h_MET"] =               new TH1F("h_MET_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_caloMET"] =           new TH1F("h_caloMET_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_tcMET"] =            new TH1F("h_tcMET_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_METraw"] =            new TH1F("h_METraw_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_METtype1"] =            new TH1F("h_METtype1_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_METtype01"] =            new TH1F("h_METtype01_"           + name,"Missing Et",100,0.0,500.0);
   map_sig["h_MET_phi"] =        new TH1F("h_MET_phi_"           + name,"Missing Et",140,-3.5,3.5);
   map_sig["h_SumET"] =          new TH1F("h_SumET_"           + name,"Sum Et",100,0.0,500.0);
   map_sig["h_nVertices"] =      new TH1F("h_nVertices_"           + name,"number of even vertices",60,0.0,60.0);
@@ -320,6 +325,11 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
 
   Fill("h_MET",ev.PFMET(), weight);
+  Fill("h_METraw",ev.PFMETRaw(), weight);
+  Fill("h_METtype1",ev.PFMETType1(), weight);
+  Fill("h_METtype01",ev.PFMETType01(), weight);
+  Fill("h_caloMET",ev.CaloMET(), weight);
+  Fill("h_tcMET",ev.TCMET(), weight);
   Fill("h_MET_phi",ev.PFMETphi(), weight);
   Fill("h_SumET",ev.PFSumET(), weight);
   Fill("h_nVertices", ev.nVertices(), weight);

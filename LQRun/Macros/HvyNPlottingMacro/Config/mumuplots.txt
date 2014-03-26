@@ -1,13 +1,13 @@
 # Specify_location_of_data/mc
 mcpath	        /home/jalmond/LQanalyzer/data/output/Muon/
-datapath	/home/jalmond/LQanalyzer/data/output/Muon/ExampleAnalyzerDiMuon_periodA_SKmuon_5_3_8.root
+datapath	/home/jalmond/LQanalyzer/data/output/Muon/ExampleAnalyzerDiMuon_periodA_SKmuon_5_3_14.root
 datadrivenpath	/home/jalmond/LQanalyzer/data/output/Muon/
 # Specify_the_list_of_hists_to_plot
-plottingpath	dat/DY_exampledimuon_hist_config.txt
-cutpath		dat/DY_exampledimuon_cuts.txt
+plottingpath	dat/exampledimuon_hist_config.txt
+cutpath		dat/exampledimuon_cuts.txt
 # file_prefix
 prefix		ExampleAnalyzerDiMuon_SK
-postfix		_5_3_8.root	
+postfix		_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
 outputdir  ExampleAnalyzer_DiMuon
 histdir    LQMarch14
