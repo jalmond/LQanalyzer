@@ -66,115 +66,39 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
-  vector<int> eventlist;
-  eventlist.push_back(438758857);
-  eventlist.push_back(1555347710);
-  eventlist.push_back(247323968);
-  eventlist.push_back(274081498);
-  eventlist.push_back(645134403);
-  eventlist.push_back(242623596);
-  eventlist.push_back(55949857);
-  eventlist.push_back(476719880);
-  eventlist.push_back(286152885);
-  eventlist.push_back(102193331);
-  eventlist.push_back(437147073);
-eventlist.push_back(18161318);
-eventlist.push_back(997862896);
-eventlist.push_back(142611597);
-eventlist.push_back(201170251);
-eventlist.push_back(63567468);
-eventlist.push_back(418693851);
-eventlist.push_back(1164006004);
-eventlist.push_back(292969178);
-eventlist.push_back(948592428);
-eventlist.push_back(125030447);
-eventlist.push_back(199854192);
-eventlist.push_back(344264228);
-eventlist.push_back(165379256);
-eventlist.push_back(165932004);
-eventlist.push_back(322830357);
-eventlist.push_back(41574847);
-eventlist.push_back(212711707);
-eventlist.push_back(463361233);
-eventlist.push_back(396039526);
-eventlist.push_back(74829066);
-eventlist.push_back(278020508);
-eventlist.push_back(381728771);
-eventlist.push_back(71377287);
-eventlist.push_back(545322973);
-eventlist.push_back(211161415);
-eventlist.push_back(75979972);
- eventlist.push_back(132797613);
- eventlist.push_back(261164910);
-  
-
-  bool checkevent=false;
-  for(unsigned int iev = 0; iev < eventlist.size(); iev++){
-    if((eventbase->GetEvent().EventNumber() == eventlist.at(iev))) checkevent=true;
-  }
-  if(!checkevent) throw LQError( "Fails basic cuts",  LQError::SkipEvent );
-  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
-  /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
-  /// The string cut must match a bin label in FillCutFlow function
-  //FillCutFlow("NoCut", weight);
+  FillCutFlow("NoCut", weight);
   
-  ///// Apply some general cuts on event to clean MET
-  /// Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
-  /// These are applied in AnalyzerCore::PassBasicEventCuts
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
-  //FillCutFlow("EventCut", weight);
+  FillCutFlow("EventCut", weight);
   
   /// Trigger List 
-  std::vector<TString> triggerslist;
-  /// This is the analysis electron trigger 
-  /// No Scale Factors are yet applied to correct MC
+  std::vector<TString> triggerslist;  
   triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  //if(!PassTrigger(triggerslist, prescale)) return;
+  if(!PassTrigger(triggerslist, prescale)) return;
   
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
   
-  //FillCutFlow("TriggerCut", weight);
+  FillCutFlow("TriggerCut", weight);
   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
   
     
-  /// Check the event has a "Good" Primary vertex
-  /// Good is taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/TrackingPFGJob:
-  /// defined as : !isFake && ndof > 4 && |z| <= 24 cm && position.Rho <= 2cm (rho = radius of vertex)
-  /// Cut is coded in SKTreeFiller and stored in KEvent class as HasGoodPrimaryVertex()
-  /// More info on primary vertex can be found https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideOfflinePrimaryVertexProduction (LQNtuples use offlinePrimaryVertices)
-  // isFake is true if the vertex is based on the beam spot (as no reconstructed vertex is found
-  
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
-  
-  //FillCutFlow("VertexCut", weight);
-  
-  /// Use the number of vertices in the event to check effect of pileup reweighting
-  numberVertices = eventbase->GetEvent().nVertices();   
+  FillCutFlow("VertexCut", weight);
 
   /// Correct MC for pileup   
-  
   if (MC_pu&&!k_isdata) {
     weight  = weight* reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
-
 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 1) TightElectrons                                                                                                                                                     
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
   std::vector<snu::KElectron> electronTightColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
-  eventbase->GetElectronSel()->SetPt(30);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronTightColl);
+  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
   
   
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -239,27 +163,14 @@ eventlist.push_back(75979972);
   ///////////////////////////////////////////////////////////////////////////////////////////
 
   std::vector<snu::KElectron> electronVetoColl;
-  /// Use VETO definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
-  // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_VETO);
-  /// Lower pt for veto
-  eventbase->GetElectronSel()->SetPt(10.);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->SetRelIso(0.15);
-  eventbase->GetElectronSel()->Selection(electronVetoColl);
+  eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
   
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
 
- 
-
   std::vector<snu::KMuon> muonTightColl;
   eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl,true);
   
-  m_logger << INFO << "Number of muons = " << muonTightColl.size() << LQLogger::endmsg;
-  if(muonTightColl.size() == 2){
-    m_logger << INFO << "Muon1 id charge = " << muonTightColl.at(0).MuonIDCharge() << " muon 2 id charge = " << muonTightColl.at(1).MuonIDCharge() << LQLogger::endmsg;
-  }
   
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
@@ -270,6 +181,8 @@ eventlist.push_back(75979972);
   eventbase->GetJetSel()->Selection(jetColl);
 
   
+  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+
   if(electronMediumColl.size() ==2){
     if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()) {
 
@@ -407,7 +320,7 @@ eventlist.push_back(75979972);
     }
   }
     
-  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jetColl_lepveto.size(); ij++){

@@ -303,10 +303,10 @@ if platform.system() == "Linux":
         print "Using Version 538 ntuples"
     else:
         print "Using Version 5314 ntuples"
-    filename = 'txt/datasets_snu' + version +  '.txt'
+    filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
     
 else:
-    filename = 'txt/datasets_mac.txt'
+    filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
 if not mc:
     for line in open(filename, 'r'):

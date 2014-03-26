@@ -49,7 +49,7 @@ void SetTitles(TH1* hist, string name);
 bool HistInGev(string name);
 void fixOverlay();
 void setTDRStyle();
-TCanvas* DrawMC(TH1* hsig, TLegend* legend, const string hname, const int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel);
+TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TLegend* legend, const string hname, const int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel);
 TH1* MakeSumHist2(THStack* thestack);
 TH1* MakeErrorBand(TH1* hnom, TH1* hup, TH1* hdown);
 void SetNomBinError(TH1* hnom, TH1* hup, TH1* hdown);
@@ -127,7 +127,21 @@ string output_path = "";
 
 int main(int argc, char *argv[]) {
   
+  /////////////////////////////////////////////////////
+  //
+  //  3 stages to setup : 
+  //  1: McatNloWZ specifies with WZ MC we plot
+  //  2: reg: specifies which fake region is plotted
+  //  3: BM specifies if we plot 1.2 or 4.7 fb-1
+  //
+  //////////////////////////////////////////////////////
+  
   TH1::SetDefaultSumw2(true);
+  
+  if(argc == 1) {
+    cout << "No config file set" << endl;
+    return 0;  
+  }
   
   /// Set Plotting style
   setTDRStyle();
@@ -135,11 +149,13 @@ int main(int argc, char *argv[]) {
   
   //read in config
   
-  string configfile = "";
-  
-  SetUpMasterConfig(configfile);
-  
-  int a =MakeCutFlow_Plots(configfile);
+  for (int i = 1; i < argc; ++i) {
+    string configfile = argv[i];   
+    
+    SetUpMasterConfig(configfile);
+    
+    int a =MakeCutFlow_Plots(configfile);
+  }
   
   system(("scp -r " + output_path + " jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/").c_str());
 
@@ -327,6 +343,7 @@ int MakeCutFlow_Plots(string configfile){
 
 
   int M=MakePlots(histdir);  
+  //MakeCutFlow(histdir);
 
   return M;
 
@@ -334,7 +351,7 @@ int MakeCutFlow_Plots(string configfile){
 
 
 
-int MakePlots(string hist, string h_name) {
+int MakePlots(string hist) {
 
   
   cout << "\n ---------------------------------------- " << endl;
@@ -380,30 +397,63 @@ int MakePlots(string hist, string h_name) {
 	   << "</tr>" << endl;
   
   while(!histo_name_file.eof()) {
-    string mass;
-    
-    histo_name_file >> mass;
+    string h_name;
+    int rebin;
+    double xmin,xmax;
+    histo_name_file >> h_name;
     if(repeat(h_name))continue;
     if(h_name=="END") break;
+    histo_name_file >> rebin;
+    histo_name_file >> xmin;
+    histo_name_file >> xmax;
     
     if(h_name.find("#")!=string::npos) continue;
     
     for(unsigned int ncut=0; ncut<allcuts.size();  ncut++){
       string name = allcuts.at(ncut) + "/" + h_name+ "_" + allcuts.at(ncut);
        
-      cout << "\n------------------------------------------------------- \n" << endl;
-      cout << "Making histogram " << name << endl;
-      
-      TFile* sig =  TFile::Open((sigloc).c_str());
-      TH1* hsig = dynamic_cast<TH1*> ((file_data->Get(name.c_str()))->Clone());
-     
-      
-      TCanvas* c = DrawMC(hsig, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
-      cout << " Made canvas" << endl;
-      
-      string canvasname = c->GetName();
-      canvasname.erase(0,4);
-      PrintCanvas(c, histdir, canvasname, c->GetName());
+	cout << "\n------------------------------------------------------- \n" << endl;
+	cout << "Making histogram " << name << endl;
+	
+	
+	/// Make nominal histogram stack
+	map<TString, TH1*> legmap;
+	
+	cout << "Making Nominal histogram " << endl;
+	THStack* mstack=  MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin );
+	
+	//// mhist sets error config
+	map<TString,TH1*> mhist;
+	mhist["Nominal"] = MakeSumHist(mstack);
+	
+	TH1* hup = MakeStackUp(mhist, name+"UP");
+	TH1* hdown = MakeStackDown(mhist, name+"DOWN");
+		
+	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
+	
+	/// Make data histogram
+	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
+	CheckHist(hdata);	
+	float ymin (1.), ymax( 1000000.);
+	ymax = GetMaximum(hdata, hup, ylog, name);
+  
+	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
+	
+	/// Make legend
+	TLegend* legend = MakeLegend(legmap, hdata, showdata, ylog);       		
+	
+        vector<THStack*> vstack;		
+	vstack.push_back(mstack);   	
+	
+
+	cout << " Making canvas" << endl;
+	
+	TCanvas* c = CompDataMC(hdata, vstack,hup,hdown, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	cout << " Made canvas" << endl;
+
+	string canvasname = c->GetName();
+	canvasname.erase(0,4);
+	PrintCanvas(c, histdir, canvasname, c->GetName());
     }
   }            
   page.close();
@@ -1511,9 +1561,15 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
 
 
-TCanvas* DrawMC(TH1* hsig , TH1* hup, TH1* hdown,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
-  string cnamestring("c_") + hsig->GetName();
+  std::cout << "start " << std::endl;
+  
+  TH1* hdata_clone_for_log = (TH1*)hdata->Clone( "log");
+
+  string cname;
+  if(hdata) cname= string("c_") + hdata->GetName();
+  else cname = string("c_") + ((TNamed*)mcstack.at(0)->GetHists()->First())->GetName();
   
   string label_plot_type = "";
   //Create Canvases
@@ -1531,25 +1587,205 @@ TCanvas* DrawMC(TH1* hsig , TH1* hup, TH1* hdown,TLegend* legend, const string h
   
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
-  TH1* h_nominal = hsig 
+  TH1* h_nominal = MakeSumHist2(mcstack.at(0));
 
   MakeLabel(0.2,0.8);
-  hsig->SetFillColor(kBlue-2);
-  hsig->SetFillStyle(1000);
-  hsig->Draw("HIST");
+
+  TH1* errorband = MakeErrorBand(h_nominal,hup, hdown) ;
+  SetNomBinError(h_nominal, hup, hdown);
+
+  if(usedata){
+    hdata->Draw("p");
+    mcstack.at(0)->Draw("HIST same");
+    hdata->Draw("p same");
+    hdata->Draw("axis same");
+    errorband->Draw("E2same");
+  }
+  else{
+    errorband->GetXaxis()->SetRangeUser(xmin,xmax);
+    errorband->GetYaxis()->SetRangeUser(ymin,ymax);
+    errorband->Draw("E2");
+    mcstack.at(0)->Draw("same HIST");
+    errorband->Draw("E2same");
+
+    
+  }
   legend->Draw("same");
+
+  if(usedata){
+    //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
+
+    /// Make significance hist
+
+    TH1* h_significance=(TH1F*)hdata->Clone();
+    TH1* h_divup=(TH1F*)hup->Clone();
+    TH1* h_divdown=(TH1F*)hdown->Clone();
+
+    TH1* errorbandratio = (TH1*)h_nominal->Clone("AA");
+
+    hdata->GetXaxis()->SetLabelSize(0.); ///
+    hdata->GetXaxis()->SetTitle("");
+
+    h_divup->Divide(h_nominal);
+    h_divdown->Divide(h_nominal);
+
+    for(int i=1; i < errorbandratio->GetNbinsX()+1; i++){
+
+      float bc = ((h_divup->GetBinContent(i)+h_divdown->GetBinContent(i))/2.);
+      float bd = ((h_divup->GetBinContent(i)-h_divdown->GetBinContent(i))/2.);
+
+      errorbandratio->SetBinContent(i,bc);
+      errorbandratio->SetBinError(i,bd);
+    }
+
+    errorbandratio->SetFillStyle(3354);
+    errorbandratio->SetFillColor(kBlue-8);
+    errorbandratio->SetMarkerStyle(0);
+
+    for(int i=1; i < h_significance->GetNbinsX()+1; i++){
+      float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
+      float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
+
+      float sig = 0.;
+      if(denom!=0.) sig = num / denom;
+
+      /// For  now plot data/mc ...
+      if(h_nominal->GetBinContent(i)!=0. ) sig =   h_significance->GetBinContent(i)/ h_nominal->GetBinContent(i);
+      h_significance->SetBinContent(i,sig);
+    }
+
+
+    // How large fraction that will be taken up by the data/MC ratio part
+    double FIGURE2_RATIO = 0.35;
+    double SUBFIGURE_MARGIN = 0.15;
+    canvas->SetBottomMargin(FIGURE2_RATIO);
+    TPad *p = new TPad( "p_test", "", 0, 0, 1, 1.0 - SUBFIGURE_MARGIN, 0, 0, 0);  // create new pad, fullsize to have equal font-sizes in both plots
+    p->SetTopMargin(1-FIGURE2_RATIO);   // top-boundary (should be 1 - thePad->GetBottomMargin() )
+    p->SetFillStyle(0);     // needs to be transparent
+    p->Draw();
+    p->cd();
+    
+    //h_significance->SetFillColor(kGray+1);
+    //h_significance->SetLineColor(kGray+1);
+
+    h_significance->GetYaxis()->SetNdivisions(10204);
+    //h_significance->GetYaxis()->SetTitle("Significance");
+    h_significance->GetYaxis()->SetTitle("Data/MC");
+    //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
+    h_significance->GetYaxis()->SetRangeUser(0.8, 1.2);
+    h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
+    h_significance->Draw("hist");
+    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
+    
+    line->SetLineStyle(2);
+    line->SetLineWidth(2);
+    line->Draw();
+    h_significance->Draw("HISTsame");
+    
+  }
   
   canvas->Print(tpdf.c_str(), ".png");
 
   //// %%%%%%%%%% PRINT ON LOG
   canvas_log->cd();
+
   
-  hsig->Draw("HIST");
+  //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
+  MakeLabel(0.2,0.8);
+  
+  
+  if(usedata){
+    hdata_clone_for_log->GetYaxis()->SetRangeUser(ymin, ymax*100.);
+    hdata_clone_for_log->Draw("p");
+    mcstack.at(0)->Draw("HIST same");
+    hdata_clone_for_log->Draw("p same");
+    hdata_clone_for_log->Draw("axis same");
+    errorband->Draw("E2same");
+  }
+  else{
+    errorband->GetXaxis()->SetRangeUser(xmin,xmax);
+    errorband->GetYaxis()->SetRangeUser(ymin,ymax*100.);
+    errorband->Draw("E2");
+    mcstack.at(0)->Draw("same HIST");
+    errorband->Draw("E2same");
+  }
   legend->Draw("same");
+  
+  if(usedata){
+    //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
+    /// Make significance hist
     
+    TH1* h_significance=(TH1F*)hdata_clone_for_log->Clone();
+    TH1* h_divup=(TH1F*)hup->Clone();
+    TH1* h_divdown=(TH1F*)hdown->Clone();
+
+    TH1* errorbandratio = (TH1*)h_nominal->Clone("AAA");
+
+    hdata_clone_for_log->GetXaxis()->SetLabelSize(0.); ///
+    hdata_clone_for_log->GetXaxis()->SetTitle("");
+
+    h_divup->Divide(h_nominal);
+    h_divdown->Divide(h_nominal);
+
+    for(int i=1; i < errorbandratio->GetNbinsX()+1; i++){
+
+      float bc = ((h_divup->GetBinContent(i)+h_divdown->GetBinContent(i))/2.);
+      float bd = ((h_divup->GetBinContent(i)-h_divdown->GetBinContent(i))/2.);
+
+      errorbandratio->SetBinContent(i,bc);
+      errorbandratio->SetBinError(i,bd);
+    }
+    errorbandratio->SetFillStyle(3354);
+    errorbandratio->SetFillColor(kBlue-8);
+    errorbandratio->SetMarkerStyle(0);
+
+    for(int i=1; i < h_significance->GetNbinsX()+1; i++){
+      float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
+      float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
+
+      float sig = 0.;
+      if(denom!=0.) sig = num / denom;
+
+      /// For  now plot data/mc ...
+      if(h_nominal->GetBinContent(i)!=0. ) sig =   h_significance->GetBinContent(i)/ h_nominal->GetBinContent(i);
+      h_significance->SetBinContent(i,sig);
+    }
+
+
+    // How large fraction that will be taken up by the data/MC ratio part
+    double FIGURE2_RATIO = 0.35;
+    double SUBFIGURE_MARGIN = 0.15;
+    canvas_log->SetBottomMargin(FIGURE2_RATIO);
+    TPad *p = new TPad( "p_test", "", 0, 0, 1, 1.0 - SUBFIGURE_MARGIN, 0, 0, 0);  // create new pad, fullsize to have equal font-sizes in both plots
+    p->SetTopMargin(1-FIGURE2_RATIO);   // top-boundary (should be 1 - thePad->GetBottomMargin() )
+    p->SetFillStyle(0);     // needs to be transparent
+    p->Draw();
+    p->cd();
+
+    //h_significance->SetFillColor(kGray+1);
+    //h_significance->SetLineColor(kGray+1);
+
+    h_significance->GetYaxis()->SetNdivisions(10204);
+    //h_significance->GetYaxis()->SetTitle("Significance");
+    h_significance->GetYaxis()->SetTitle("Data/MC");
+    //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
+    h_significance->GetYaxis()->SetRangeUser(0., 2.);
+    h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
+    h_significance->Draw("hist");
+    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
+
+    line->SetLineStyle(2);
+    line->SetLineWidth(2);
+    line->Draw();
+    h_significance->Draw("HISTsame");
+  }
+  
   canvas_log->Print(tlogpdf.c_str(), ".png");
-   
+  
+  
   return canvas;
+
+
 
 }
 
