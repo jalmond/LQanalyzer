@@ -119,7 +119,6 @@ HNee70        235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNEE17/
 HNee90        7037.03   /data1/DATA/LQNtuples_5_3_14/MC/HNEE90/
 HNee100       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100/
 HNee100v2       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100V2/
-HNee100v3       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100V3/
 HNee125       46242.46   /data1/DATA/LQNtuples_5_3_14/MC/HNEE125/
 HNee150       108826.73  /data1/DATA/LQNtuples_5_3_14/MC/HNEE150/
 HNee175       214442.23  /data1/DATA/LQNtuples_5_3_14/MC/HNEE175/

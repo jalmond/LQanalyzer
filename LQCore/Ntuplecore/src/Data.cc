@@ -1284,6 +1284,9 @@ void Data::ConnectMET(){
   ConnectVariable("CaloMETUncorrType1Cor", CaloMETUncorrType1Cor, b_CaloMETUncorrType1Cor);
   ConnectVariable("CaloSumETType1Cor", CaloSumETType1Cor, b_CaloSumETType1Cor);
   ConnectVariable("CaloSumETUncorrType1Cor", CaloSumETUncorrType1Cor, b_CaloSumETUncorrType1Cor);
+  ConnectVariable("TCMET", TCMET, b_TCMET);
+  ConnectVariable("TCMETPhi", TCMETPhi, b_TCMETPhi);
+  ConnectVariable("TCSumET", TCSumET, b_TCSumET);
   ConnectVariable("PFMETPhi", PFMETPhi, b_PFMETPhi);
   ConnectVariable("PFSumET", PFSumET, b_PFSumET);
   ConnectVariable("PFMETPhiType01Cor", PFMETPhiType01Cor, b_PFMETPhiType01Cor);
