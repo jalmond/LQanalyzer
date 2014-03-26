@@ -81,6 +81,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPFMETType1( PFMETType1Cor->at(0));
   kevent.SetPFMETType01( PFMETType01Cor->at(0));
   kevent.SetPFMETphi( PFMETPhiType01XYCor->at(0));
+  kevent.SetPFMETRawphi( PFMETPhi->at(0));
+  kevent.SetPFMETType1phi( PFMETPhiType1Cor->at(0));
+  kevent.SetPFMETType01phi( PFMETPhiType01Cor->at(0));
+  
   kevent.SetPFSumET( PFSumETType01XYCor->at(0));
   
   if(!isData){
