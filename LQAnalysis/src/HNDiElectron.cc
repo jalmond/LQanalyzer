@@ -25,7 +25,6 @@ ClassImp (HNDiElectron);
  */
 HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
 
-
   // To have the correct name in the log:                                                                                                                            
   SetLogName("HNDiElectron");
 
