@@ -27,6 +27,7 @@ runevent=$(makeParseVariable 'R' ${runevent})
 use5312ntuples=$(makeParseVariable 'N' ${use5312ntuples})
 use538ntuples=$(makeParseVariable 'M' ${use538ntuples})
 LibList=$(makeParseVariable 'L' ${LibList})
+useskim=$(makeParseVariable 'm' ${useskim})
 
 DEBUG=$(makeParseVariable 'D' ${DEBUG})
 ################                                                                                                                                                
@@ -37,7 +38,7 @@ if [[ $1  == "" ]];
 then
     for i in ${input_samples[@]}
     do
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use538ntuples} ${LibList} ${DEBUG}
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use538ntuples} ${LibList} ${DEBUG} ${useskim}
     done
   
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
@@ -46,7 +47,7 @@ elif [[ $1  == "--help"  || $1  == "--h" ]]; then
 else 
     for i in ${input_samples[@]}
     do
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use5314ntuples}  ${LibList} ${DEBUG}
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use5314ntuples}  ${LibList} ${DEBUG} ${useskim}
     done
 
 fi

@@ -20,7 +20,7 @@ use5312ntuples="False"
 use538ntuples="False"
 runevent=-1
 DEBUG="False"
-
+useskim="Lepton"
 
 
 function makeParseVariable() {

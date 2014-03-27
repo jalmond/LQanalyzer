@@ -49,11 +49,9 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-   MakeCleverHistograms(sighist, "SSDiElectronMedium");
-   MakeCleverHistograms(sighist, "SSDiElectronTight");
-   MakeCleverHistograms(sighist, "SSDiElectronTight_DiJet");
-   MakeCleverHistograms(sighist, "SSDiElectronTightNLV");
-   MakeCleverHistograms(elhist,  "SSDiElectronMedium_Electrons");
+   MakeCleverHistograms(sighist,  "SSDiElectronTight");
+   MakeCleverHistograms(sighist,  "SSDiElectronTight_DiJet");
+   
    MakeCleverHistograms(sighist,  "NoCut");
    MakeCleverHistograms(sighist,  "TriEl");
    MakeCleverHistograms(sighist,  "ZZ");
@@ -77,7 +75,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// Trigger List 
   std::vector<TString> triggerslist;  
   triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  if(!PassTrigger(triggerslist, prescale)) return;
+  //if(!PassTrigger(triggerslist, prescale)) return;
   
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
   
@@ -97,92 +95,43 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
+  /// ELECTRONS
   std::vector<snu::KElectron> electronTightColl;
   eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
+ 
   
-  
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 1) MediumElectrons
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
-  std::vector<snu::KElectron> electronMediumColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
-  //  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(4.5);
-  eventbase->GetElectronSel()->Selection(electronMediumColl);
-
-
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 1) EGAMMA_TRIGTIGHT
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
-  std::vector<snu::KElectron> electronTrigTightColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TRIGTIGHT);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronTrigTightColl);
-
-
-  ///////////////////////////////////////////////////////////////////////////////////////////                                                                                       
-  /// 1) MVA
-  ///////////////////////////////////////////////////////////////////////////////////////////                                                                                       
-
-  std::vector<snu::KElectron> electronMVAColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::MVATrig);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronMVAColl);
-
-
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 1) EGAMMA_TRIGWP70
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
-  std::vector<snu::KElectron> electronTrigWP70Coll;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TRIGWP70);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronTrigWP70Coll);
-
-
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 1) EGAMMA_TRIGWP70
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
-  std::vector<snu::KElectron> electronEOPColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_EOP);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronEOPColl);
-
-
-
-  
-  ///////////////////////////////////////////////////////////////////////////////////////////
-  /// 2) Loose Electrons
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
   std::vector<snu::KElectron> electronVetoColl;
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
-  
+
+
+  std::vector<snu::KElectron> electronNoCutColl;
+  eventbase->GetElectronSel()->Selection(electronNoCutColl);
+
+  /// MUONS
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
 
   std::vector<snu::KMuon> muonTightColl;
-  eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl,true);
+  eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl,false);
   
+  std::vector<snu::KMuon> muonNoCutColl;
+  eventbase->GetMuonSel()->Selection(muonNoCutColl);
   
+  /// JETS
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-  eventbase->GetJetSel()->SetPt(30.);
+  eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
 
   
-  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl_lepveto, weight);
 
+
+  
+  /*
   if(electronMediumColl.size() ==2){
     if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()) {
 
@@ -319,7 +268,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       }
     }
   }
-    
+  */  
   
   
   int nbjet=0;
@@ -411,7 +360,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   }
 
     
-
+  /*
     /// Check all other el WPs
   if (electronMediumColl.size() == 2) {
     if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()){
@@ -466,7 +415,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
   
-
+  */
   
   
   return;

@@ -1,16 +1,71 @@
 ### SKTrees ##########
 ##################
-### Data#############
 
-SKmuon A /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodA/
-SKmuon B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodB/
-SKmuon C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
-SKmuon D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
+##### NO CUTS/SKIMS
 
-SKegamma A /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodA/
-SKegamma B /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodB/
-SKegamma C /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodC/
-SKegamma D /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodD/
+###HN signal
+#######################################################################################################################################
+# sample	      Effective lumi	Path ##########################################################################################
+#######################################################################################################################################
+SKHNmumu50_nocut        46.68	        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu50/
+SKHNmumu70_nocut        235.87		/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu70/
+SKHNmumu90_nocut        7037.03		/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu90/
+SKHNmumu100_nocut       14036.72	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu100/
+SKHNmumu125_nocut       46242.46	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu125/
+SKHNmumu150_nocut       108826.73	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu150/
+SKHNmumu175_nocut       214442.23	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu175/
+SKHNmumu200_nocut       380833.40	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu200/
+SKHNmumu225_nocut       627546.73	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu225/
+SKHNmumu250_nocut       979699.29	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu250/
+SKHNmumu275_nocut       1476651.80	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu275
+SKHNmumu300_nocut       2153700.35	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu300/
+SKHNmumu325_nocut       3063798.49	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu325/
+SKHNmumu350_nocut       4271251.60	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu350/
+SKHNmumu375_nocut       5826499.35	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu375
+SKHNmumu400_nocut       7879056.73	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu400/
+SKHNmumu500_nocut       23208151.52	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu500/
+SKHNmumu600_nocut       58506729.08	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu600/
+SKHNmumu700_nocut       130502192.52	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNmumu700/
+
+SKHNee50_nocut		46.68		/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee50/
+SKHNee70_nocut		235.87		/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee70/
+SKHNee90_nocut		7037.03		/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee90/
+SKHNee100_nocut		14036.72	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee100/
+SKHNee125_nocut		46242.46	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee125/
+SKHNee150_nocut		108826.73	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee150/
+SKHNee175_nocut		214442.23	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee175/
+SKHNee200_nocut		380833.40	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee200/
+SKHNee225_nocut		627546.73	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee225/
+SKHNee250_nocut		979699.29	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee250/
+SKHNee275_nocut		1476651.80	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee275/
+SKHNee300_nocut		2153700.35	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee300/
+SKHNee325_nocut		3063798.49	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee325/
+SKHNee350_nocut		4271251.60	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee350/
+SKHNee375_nocut		5826499.35	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee375/
+SKHNee400_nocut		7879056.73	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee400/
+SKHNee500_nocut		23208151.52	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee500/
+SKHNee600_nocut		58506729.08	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee600/
+SKHNee700_nocut		130502192.52	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MCNoCuts/HNee700/
+
+### DY 
+
+
+##### LEPTON SKIMS
+##### 1 LEPTON > 15 GeV
+##### 2 LEPTON > 10 GeV
+#######################################################################################################################################
+# channel    period	Path ##########################################################################################
+#######################################################################################################################################
+
+SKmuon		 A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodA/
+SKmuon		 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodB/
+SKmuon		 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodC/
+SKmuon		 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleMuon/periodD/
+
+SKegamma	 A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodA/
+SKegamma	 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodB/
+SKegamma	 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodC/
+SKegamma	 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/Data/DoubleElectron/periodD/
 ### MC #############
 
 SKDY10to50        2901.7          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/DY10to50/
@@ -19,7 +74,7 @@ SKttbar           29588.256       /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees
 SKWZ              301122.644      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WZ/
 SKZZ              555109.777      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/ZZ/
 SKWW              182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WW/
-SKWWv2              182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WWv2/
+SKWWv2            182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WWv2/
 SKWjets           1538.562        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/Wjets/
 SKSSWmWm          1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WmWm/
 SKSSWpWp          402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WpWp/
@@ -28,12 +83,6 @@ SKWW_dp           1418676.646     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees
 SKttW             845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/TTW/
 SKttZ             1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/TTZ/
 SKWWW             2684057.442     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/WWW/
-
-
-SKHNee100       14036.72          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/HNee100/
-SKHNee100BF       14036.72        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/HNee100BF/
-
-
 SKQCD_mumu        54.2            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCD_mumu/
 SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCDEE30to40/
 SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/MC/QCDEE40/
@@ -95,7 +144,7 @@ QCD_40_EM2	86.0		/data1/DATA/LQNtuples_5_3_14/MC/QCD_40EE/
 
 ###HN signal
 HNmumu50	46.68      /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu50/			
-HNmumu70	235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu17/			 
+HNmumu70	235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu70/			 
 HNmumu90	7037.03   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu90/
 HNmumu100	14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu100/
 HNmumu125	46242.46   /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu125/
@@ -115,7 +164,7 @@ HNmumu600	58506729.08 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu600/
 HNmumu700	130502192.52 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu700/
 
 HNee50        46.68      /data1/DATA/LQNtuples_5_3_14/MC/HNEE50/
-HNee70        235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNEE17/
+HNee70        235.87    /data1/DATA/LQNtuples_5_3_14/MC/HNEE70/
 HNee90        7037.03   /data1/DATA/LQNtuples_5_3_14/MC/HNEE90/
 HNee100       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100/
 HNee100v2       14036.72   /data1/DATA/LQNtuples_5_3_14/MC/HNEE100V2/

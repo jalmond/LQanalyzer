@@ -111,6 +111,10 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig["h_METtype1"] =            new TH1F("h_METtype1_"           + name,"Missing Et",100,0.0,500.0);
   map_sig["h_METtype01"] =            new TH1F("h_METtype01_"           + name,"Missing Et",100,0.0,500.0);
   map_sig["h_MET_phi"] =        new TH1F("h_MET_phi_"           + name,"Missing Et",140,-3.5,3.5);
+  map_sig["h_caloMET_phi"] =        new TH1F("h_caloMET_phi_"           + name,"Missing Et",140,-3.5,3.5);
+  map_sig["h_METraw_phi"] =        new TH1F("h_METraw_phi_"           + name,"Missing Et",140,-3.5,3.5);
+  map_sig["h_METtype1_phi"] =        new TH1F("h_METtype1_phi_"           + name,"Missing Et",140,-3.5,3.5);
+  map_sig["h_METtype01_phi"] =        new TH1F("h_METtype01_phi_"           + name,"Missing Et",140,-3.5,3.5);
   map_sig["h_SumET"] =          new TH1F("h_SumET_"           + name,"Sum Et",100,0.0,500.0);
   map_sig["h_nVertices"] =      new TH1F("h_nVertices_"           + name,"number of even vertices",60,0.0,60.0);
   
@@ -331,6 +335,10 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   Fill("h_caloMET",ev.CaloMET(), weight);
   Fill("h_tcMET",ev.TCMET(), weight);
   Fill("h_MET_phi",ev.PFMETphi(), weight);
+  Fill("h_caloMET_phi",ev.CaloMETphi(), weight);
+  Fill("h_METraw_phi",ev.PFMETRawphi(), weight);
+  Fill("h_METtype1_phi",ev.PFMETType1phi(), weight);
+  Fill("h_METtype01_phi",ev.PFMETType01phi(), weight);
   Fill("h_SumET",ev.PFSumET(), weight);
   Fill("h_nVertices", ev.nVertices(), weight);
   
@@ -349,7 +357,6 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
   
   Fill("h_Nbjets",nbjet, weight);
-  if(electrons.size() ==3)std::cout << "jet size = " << jets.size() << std::endl;
   Fill("h_Njets",jets.size(), weight);
   
   return;

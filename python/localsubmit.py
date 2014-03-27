@@ -36,6 +36,7 @@ parser.add_option("-N", "--use5312ntuples", dest="use5312ntuples", default=True,
 parser.add_option("-M", "--use538ntuples", dest="use538ntuples", default=True, help="use538ntuples? add use5384ntuples='True' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
+parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 
 
 ###################################################
@@ -66,6 +67,7 @@ use5312ntuples = options.use5312ntuples
 use538ntuples = options.use538ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
+useskim = options.useskim
 
 list_of_extra_lib=[]
 libname=''
@@ -139,17 +141,19 @@ if not len(splitsample)==1:
         if "use538ntuples" in splitsample[conf]:
             conf+=1
             use584ntuples = splitsample[conf]
+            
 
 ####################
 ####
 ####################
 
 if not cycle == "SKTreeMaker":
-    if not useskinput == "True":
-        if not useskinput == "true":
-            update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
-            if not  update == "N":
-                useskinput="True"
+    if not cycle == "SKTreeMakerNoCut":
+        if not useskinput == "True":
+            if not useskinput == "true":
+                update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
+                if not  update == "N":
+                    useskinput="True"
 
 ##########################################################
 ### Make tmp directory for job
@@ -201,8 +205,9 @@ if number_of_cores > 1:
     else:
         if number_of_cores > 5:
             if not cycle == "SKTreeMaker":
-                number_of_cores = 5
-                print "Number of sub jobs is set to high. Reset to default of 5."
+                if not cycle == "SKTreeMakerNoCut":
+                    number_of_cores = 5
+                    print "Number of sub jobs is set to high. Reset to default of 5."
 
 if number_of_cores < 0:
     number_of_cores=1
@@ -243,14 +248,31 @@ else:
 ##################################################################################################################
 if useskinput == "true":
     if not mc:
-        channel="SK" + channel
+        if useskim == "Lepton":
+            channel="SK" + channel
+        else:
+            if useskim == "NoCut":
+                channel="SK" + channel + "_nocut"
     else:
-        sample="SK" + sample        
+        if useskim == "Lepton":
+            sample="SK" + sample
+        else:
+            if useskim == "NoCut":
+                sample="SK" + sample + "_nocut"
 elif useskinput == "True":
+
     if not mc:
-        channel="SK" + channel
+        if useskim == "Lepton":
+            channel="SK" + channel
+        else:
+            if useskim == "NoCut":
+                channel="SK" + channel + "_nocut"
     else:
-        sample="SK" + sample
+        if useskim == "Lepton":
+            sample="SK" + sample
+        else:
+            if useskim == "NoCut":
+                sample="SK" + sample + "_nocut"
         
 print "Input sample = " + sample
 
@@ -736,7 +758,9 @@ else:
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         doMerge=False
-
+    if cycle == "SKTreeMakerNoCut":
+        doMerge=False
+                
     outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:
         if not mc:

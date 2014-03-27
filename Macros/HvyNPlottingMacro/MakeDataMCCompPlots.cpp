@@ -29,9 +29,8 @@
 using namespace std;
 
 /// LIST OF FUNCIONS FOR PLOTTER CODE
-int MakePlots(std::string hist);
-void MakeCutFlow(std::string hist);
-int MakeCutFlow_Plots(string configfile);
+int MakePlots(std::string hist, std::string histname);
+
 void PrintCanvas(TCanvas* c1, std::string folder, std::string plotdesciption,  std::string title);
 bool repeat(string hname);
 TLegend* MakeLegend(map<TString, TH1*> legmap,TH1* h_legdata, bool rundata, bool log);
@@ -139,7 +138,7 @@ int main(int argc, char *argv[]) {
   
   SetUpMasterConfig(configfile);
   
-  int a =MakeCutFlow_Plots(configfile);
+  int a =MakeCutFlow_Plots(configfile , "h_met");
   
   system(("scp -r " + output_path + " jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/").c_str());
 
@@ -304,7 +303,7 @@ void fixOverlay() {
 }
 
 
-int MakeCutFlow_Plots(string configfile){
+int MakeCutFlow_Plots(string configfile, string histname){
   
   std::string pname = "/home/jalmond/WebPlots/"+ path + "/indexCMS.html";
   std::string phistname = "/home/jalmond/WebPlots/"+ path + "/histograms/" + histdir  + "/indexCMS.html";
@@ -325,8 +324,8 @@ int MakeCutFlow_Plots(string configfile){
   
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
 
-
-  int M=MakePlots(histdir);  
+  
+  int M=MakePlots(histdir, histname);  
 
   return M;
 
@@ -340,18 +339,15 @@ int MakePlots(string hist, string h_name) {
   cout << "\n ---------------------------------------- " << endl;
   cout << "MakeDataMCCompPlots::MakePlots(string hist) " << endl;
 
-  ////////////////////// ////////////////
-  ////  MAIN PART OF CODE for user/
-  ///////////////////////////////////////
   //// What samples to use in histogram
   vector<pair<pair<vector<pair<TString,float> >, int >, TString > > samples;  
   vector<string> cut_label;
   //// Sets flags for using CF/NP/logY axis/plot data/ and which mc samples to use
   
   SetUpConfig( samples, cut_label);  
-
+  
   cuts.clear();
-
+  
   // ----------Get list of cuts to plot  ----------------------
   ifstream cut_name_file(cutfile.c_str());
   if(!cut_name_file) {
@@ -366,7 +362,7 @@ int MakePlots(string hist, string h_name) {
     cout << "Added " << cutname << endl;
   }
   
-
+  
   ifstream histo_name_file(histfile.c_str());
   if(!histo_name_file) {
     cerr << "Did not find " << histfile << ", exiting ..." << endl;
@@ -379,14 +375,11 @@ int MakePlots(string hist, string h_name) {
 	   << "<th> Data/MC LogPlots </th>"
 	   << "</tr>" << endl;
   
-  while(!histo_name_file.eof()) {
-    string mass;
-    
-    histo_name_file >> mass;
-    if(repeat(h_name))continue;
-    if(h_name=="END") break;
-    
-    if(h_name.find("#")!=string::npos) continue;
+  vector<TString> masspoints;
+  masspoints.push_back("50");
+  masspoints.push_back("100");
+
+  for(int i =0; i < masspoints.size(); i++){
     
     for(unsigned int ncut=0; ncut<allcuts.size();  ncut++){
       string name = allcuts.at(ncut) + "/" + h_name+ "_" + allcuts.at(ncut);
@@ -394,6 +387,8 @@ int MakePlots(string hist, string h_name) {
       cout << "\n------------------------------------------------------- \n" << endl;
       cout << "Making histogram " << name << endl;
       
+      TString sigloc = "/home/jalmond/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masspoints.at(i) + "_nocut_5_3_14.root"
+
       TFile* sig =  TFile::Open((sigloc).c_str());
       TH1* hsig = dynamic_cast<TH1*> ((file_data->Get(name.c_str()))->Clone());
      
@@ -405,214 +400,12 @@ int MakePlots(string hist, string h_name) {
       canvasname.erase(0,4);
       PrintCanvas(c, histdir, canvasname, c->GetName());
     }
-  }            
+  }           
   page.close();
   
   return 0;
 }
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-///%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-///   CODE FOR CUTFLOW
-///%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void MakeCutFlow(string type){
-  
-  return ;
-  vector<string> cut_label;  
-  vector<pair<pair<vector<pair<TString,float> >, int >, TString > > cfsamples;  
-  SetUpConfig( cfsamples, cut_label);
-
-  cuts.clear();    
-  // ----------Get list of cuts to plot  ----------------------
-  ifstream cut_name_file(cutfile.c_str());
-  while(!cut_name_file.eof()) {
-    string cutname;
-    cut_name_file >> cutname;
-    if(cutname=="END") break;
-    cuts.push_back((hist + cutname).c_str());    
-    cout << "Making cutflow for MuonPlots/mu1_eta"<< cutname << endl;
-  }
-
- 
-  vector<float> totalnumbers;
-  vector<float> totalnumbersup;
-  vector<float> totalnumbersdown;  
-  
-  int i_cut(0);
-  for(vector<string>::iterator it = cuts.begin(); it!=cuts.end(); it++, i_cut++){
-    
-    vector<pair<vector<pair<TString,float> >, TString> > samples;   
-    for(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >::iterator it2 = cfsamples.begin(); it2!=cfsamples.end(); it2++){
-      samples.push_back(make_pair(it2->first.first,it2->second));      
-    }
-    
-      
-    /// Vectors for cutflow	table
-    map<TString,float> samples_numbers;
-    map<TString,float> samples_numbers_staterr;
-    map<TString,float> samples_numbers_up;
-    map<TString,float> samples_numbers_down;
-    
-    /// Vector for systematic table
-    map<TString,float> syst_stat;
-    map<TString,float> syst_JESup;
-    map<TString,float> syst_JESdown;
-    map<TString,float> syst_MUONISOup;
-    map<TString,float> syst_MUONISOdown;
-    map<TString,float> syst_MUONRECOup;
-    map<TString,float> syst_MUONRECOdown;
-    map<TString,float> syst_MUONSCALEup;
-    map<TString,float> syst_MUONSCALEdown;
-    map<TString,float> syst_ELECTRONISOup;
-    map<TString,float> syst_ELECTRONISOdown;
-    map<TString,float> syst_ELECTRONIDup;
-    map<TString,float> syst_ELECTRONIDdown;
-    map<TString,float> syst_ELECTRONRECOup;
-    map<TString,float> syst_ELECTRONRECOdown;
-    map<TString,float> syst_ELECTRONSCALEup;
-    map<TString,float> syst_ELECTRONSCALEdown;
-    map<TString,float> syst_ELECTRONSMEARup;
-    map<TString,float> syst_ELECTRONSMEARdown;
-    map<TString,float> syst_CFup;
-    map<TString,float> syst_CFdown;
-    map<TString,float> syst_JVFup;
-    map<TString,float> syst_JVFdown;
-    map<TString,float> syst_JER;
-    map<TString,float> syst_norm;
-    map<TString,float> syst_total;
-
-    
-    float totalbkg(0.),totalbkgdown(0.), totalbkgup(0.); 
-    for(vector<pair<vector<pair<TString,float> >, TString> >::iterator it2 = samples.begin() ; it2!= samples.end(); it2++){
-      TString cutname = *it;
-      totalbkg+= Calculate(*it,"Normal",*it2);
-      totalbkgup+= Calculate(*it,"Up",*it2);
-      totalbkgdown+= Calculate(*it,"Down",*it2);
-      
-      samples_numbers[it2->second] = Calculate(cutname,"Normal",*it2);
-      samples_numbers_up[it2->second] = Calculate(cutname,"Down",*it2);
-      samples_numbers_down[it2->second] = Calculate(cutname,"Up",*it2);
-      samples_numbers_staterr[it2->second] = Calculate(cutname,"StatErr",*it2);
-    }	
-    
-    
-    float totaldata(0.);
-    if(showdata) totaldata = GetIntegral(*it,"data","data");
-    float errdata(0.);
-    if(showdata) errdata= GetError(*it,"data","data");
-    
-    
-    float totalerr_up(0.),totalerr_down(0.),totalerrup(0.),totalerrdown(0.),total_staterr(0.);
-    for(map<TString,float>::iterator mapit = samples_numbers.begin(); mapit!= samples_numbers.end(); mapit++){
-      
-      map<TString,float>::iterator mapit_up;
-      mapit_up = samples_numbers_up.find(mapit->first);
-      map<TString,float>::iterator mapit_down;
-      mapit_down = samples_numbers_down.find(mapit->first);
-      map<TString,float>::iterator mapit_stat;
-      mapit_stat = samples_numbers_staterr.find(mapit->first);
-      totalerr_up += ( mapit_up->second*mapit_up->second+ mapit_stat->second*mapit_stat->second); 
-      totalerr_down += (mapit_down->second*mapit_down->second + mapit_stat->second*mapit_stat->second); 
-      totalerrup += (mapit_up->second*mapit_up->second); 
-      totalerrdown += (mapit_down->second*mapit_down->second); 
-      total_staterr += mapit_stat->second*mapit_stat->second;
-      cout << mapit->first << " background = " << mapit->second << " +- " << mapit_stat->second << " + " << mapit_up->second << " - " << mapit_down->second <<  endl;      
-   
-      
-    }
-  
-    
-    totalerr_up = sqrt(totalerr_up);
-    totalerr_down = sqrt(totalerr_down);
-    total_staterr = sqrt(total_staterr);
-    totalerrup = sqrt(totalerrup);
-    totalerrdown = sqrt(totalerrdown);
-    
-    cout << "Total Bkg   = " << totalbkg << "+- " << total_staterr << " + " << totalerrup << " - " << totalerrdown << endl;
-    if(showdata)cout << "Total Data  = " << totaldata << endl;
-    cout << "-------------" << endl;
-    if(totaldata > totalbkg)cout <<"Significance = " << (totaldata - totalbkg) / (sqrt( (errdata*errdata) + (totalerr_up*totalerr_up))) << endl;
-    else cout <<"Significance = " << (totaldata - totalbkg) / (sqrt( (errdata*errdata) + (totalerr_down*totalerr_down))) << endl;
-    float significance = (totaldata - totalbkg) / (sqrt( (errdata*errdata) + (totalerr_up*totalerr_up))) ;
-    
-    if(significance < 0.) significance = (totaldata - totalbkg) / (sqrt( (errdata*errdata) + (totalerr_down*totalerr_down))) ;
-    
-    ofstream ofile;
-    
-    cout << cut_label.size() << endl;
-    string latex =  "Tables/" + cut_label.at(i_cut) + "Table.txt";
-    
-    ofile.open(latex.c_str());
-    ofile.setf(ios::fixed,ios::floatfield); 
-    
-    ofile.precision(1);
-    ofile << "\\begin{table}[h]" << endl;
-    ofile << "\\begin{center}" << endl;
-    ofile << "\\begin{tabular}{lr@{\\hspace{0.5mm}}c@{\\hspace{0.5mm}}c@{\\hspace{0.5mm}}l}" << endl;
-    ofile << "\\hline" << endl;
-    ofile << "\\hline" << endl;   
-    //ofile << "Source & \\multicolumn{4}{c}{$\\mu\\mu\\mu$} \\"<<"\\" << endl;
-    ofile << "Source & \\multicolumn{4}{c}{" << columnname << "} \\"<<"\\" << endl;
-    ofile << "\\hline" << endl;   
-	 
-    
-    for(map<TString,float>::iterator mapit = samples_numbers.begin(); mapit!= samples_numbers.end(); mapit++){
-      
-      map<TString,float>::iterator mapit_up;
-      mapit_up = samples_numbers_up.find(mapit->first);
-      map<TString,float>::iterator mapit_down;
-      mapit_down = samples_numbers_down.find(mapit->first);
-      map<TString,float>::iterator mapit_stat;
-      mapit_stat = samples_numbers_staterr.find(mapit->first);
-      
-      if(mapit->second!=0.0){
-	ofile << mapit->first + "&" <<  mapit->second << "& $\\pm$& "  << mapit_stat->second <<  "&$^{+" <<  mapit_up->second << "}_{-" <<  mapit_down->second  << "}$" ; 
-	ofile  <<  "\\"  << "\\" << endl;	   
-      }
-    }
-    ofile << "\\hline" << endl;
-    ofile << "Total&" << totalbkg << "& $\\pm$&"  << total_staterr << "&$^{+" << totalerrup  << "}_{-" << totalerrdown << "}$" ; 
-    ofile  <<  "\\"  << "\\" << endl;
-    ofile << "\\hline" << endl;
-    
-    ofile << "Data&  \\multicolumn{4}{c}{$" << totaldata << "$}\\" << "\\" <<endl;
-    ofile << "\\hline" << endl;
-    if(significance < 0) ofile << "Signficance&  \\multicolumn{4}{c}{$" << significance << "\\sigma$}\\" << "\\" <<endl;
-    if(significance > 0) ofile << "Signficance&  \\multicolumn{4}{c}{$+" << significance << "\\sigma$}\\" << "\\" <<endl;
-    ofile << "\\hline" << endl;   
-    ofile << "\\hline" << endl;   
-    ofile << "\\end{tabular}" << endl;
-    ofile << "\\caption{" << caption << "}" << endl;
-    ofile << "\\end{center}" << endl;
-    ofile << "\\end{table}" << endl;    
-  }
-  
-  
-  string latex_command = "latex Tables/" + cut_label.at(0) +".tex";
-  string dvi_command = "dvipdf " + cut_label.at(0) +".dvi";
-  string mv_command = "mv " + cut_label.at(0) +".pdf /home/jalmond/WebPlots/" + path +"/histograms/"+ histdir ;
-  
-  system((latex_command.c_str()));
-  system((dvi_command.c_str()));
-  system((mv_command.c_str()));
-  system(("rm *aux"));
-  system(("rm *log"));
-  system(("rm *dvi"));
-  
-  string cftitle = cut_label.at(0);
-  
-  histpage << "<tr><td>"<< "cutflow " + cut_label.at(0)  <<"</td>"<<endl;
-  histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << cut_label.at(0)  << ".pdf\">";
-  histpage << "<img src=\"" << cut_label.at(0)  << ".pdf\" width=\"100%\"/>";
-  histpage << "</td>" << endl;
-
-  
-  return;
-   }
 
 bool repeat (string hname){
   map<string,int>::iterator mit = norepeatplot.find(hname);
