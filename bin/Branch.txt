@@ -1,1 +1,2 @@
-LQanalyzer_Mar14v2/tag1.4
+LQanalyzer_Mar14v2
+tag1.4

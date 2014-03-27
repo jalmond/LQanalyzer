@@ -58,7 +58,7 @@ export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
 
-echo "Running analysis from" $HOSTNAME " in directory: " 
+
 
 if [ ! -d ${LQANALYZER_OLDLIB_PATH} ]; then
     echo Directory ${LQANALYZER_OLDLIB_PATH} does not exist ... creating it
@@ -132,6 +132,9 @@ export PATH=${LQANALYZER_BIN_PATH}:${PATH}
 export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}
 
+python bin/local_check.py
+
+echo "Running analysis from" $HOSTNAME " in directory: " 
 
 #clean up all emacs tmp files
 clean_emacs
