@@ -311,6 +311,9 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
 float  AnalyzerCore::JetResCorr(snu::KJet jet, std::vector<KGenJet> genjets){
   
+  /// This function is not needed when smeaing is already applied to LQNtuples in production stage
+  return 1.;
+  
   float genpt= -999.;
   for(std::vector<KGenJet>::iterator it = genjets.begin(); it != genjets.end(); it++){
     if(it->DeltaR(jet) < 0.3){

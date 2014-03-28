@@ -52,6 +52,7 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist, "DiElectron");
    MakeCleverHistograms(sighist, "DiElectronWPURW");
    MakeCleverHistograms(sighist, "DiElectronWPURWID");
+   MakeCleverHistograms(sighist, "DiElectronWPURWID_METGT45");
 
    MakeCleverHistograms(sighist, "DiElectron1bjet");
    MakeCleverHistograms(sighist, "DiElectron2bjet");
@@ -277,7 +278,9 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
       /// Fill Standardset of cuts forall objects with pileup reweighting applied
       FillCLHist(sighist, "DiElectronWPURWID", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
-
+      
+      if(eventbase->GetEvent().PFMET() > 45.) FillCLHist(sighist, "DiElectronWPURWID_METGT45", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
+      
       /// Select Top lise events
       if( (fabs(Z.M() - 90.) > 20.) && nbjet >0)
 	{   	

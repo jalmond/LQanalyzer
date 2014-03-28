@@ -2,7 +2,7 @@
 LQRun/*/job_output/
 LQLib/
 data/
-LQRun/runJob_1.C
+LQRun/*/runJob_1.C
 # ignore libraries
 *.so
 # ignore all object files

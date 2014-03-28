@@ -69,6 +69,9 @@ tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
 
+original_channel = channel
+
+
 list_of_extra_lib=[]
 libname=''
 for lib in tmplist_of_extra_lib:
@@ -149,11 +152,12 @@ if not len(splitsample)==1:
 
 if not cycle == "SKTreeMaker":
     if not cycle == "SKTreeMakerNoCut":
-        if not useskinput == "True":
-            if not useskinput == "true":
-                update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
-                if not  update == "N":
-                    useskinput="True"
+        if not cycle == "SKTreeMakerDiLep":
+            if not useskinput == "True":
+                if not useskinput == "true":
+                    update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
+                    if not  update == "N":
+                        useskinput="True"
 
 ##########################################################
 ### Make tmp directory for job
@@ -206,8 +210,9 @@ if number_of_cores > 1:
         if number_of_cores > 5:
             if not cycle == "SKTreeMaker":
                 if not cycle == "SKTreeMakerNoCut":
-                    number_of_cores = 5
-                    print "Number of sub jobs is set to high. Reset to default of 5."
+                    if not cycle == "SKTreeMakerDiLep":
+                        number_of_cores = 5
+                        print "Number of sub jobs is set to high. Reset to default of 5."
 
 if number_of_cores < 0:
     number_of_cores=1
@@ -246,6 +251,7 @@ else:
 ##################################################################################################################
 ##### Specify if the job is running on SKTrees or LQNtuples
 ##################################################################################################################
+original_sample = sample
 if useskinput == "true":
     if not mc:
         if useskim == "Lepton":
@@ -253,12 +259,19 @@ if useskinput == "true":
         else:
             if useskim == "NoCut":
                 channel="SK" + channel + "_nocut"
+            else:
+                if useskim == "DiLep":
+                    channel="SK" + channel + "_dilep"
+
     else:
         if useskim == "Lepton":
             sample="SK" + sample
         else:
             if useskim == "NoCut":
                 sample="SK" + sample + "_nocut"
+            else:
+                if useskim == "DiLep":
+                    sample="SK" + sample + "_dilep"
 elif useskinput == "True":
 
     if not mc:
@@ -267,15 +280,22 @@ elif useskinput == "True":
         else:
             if useskim == "NoCut":
                 channel="SK" + channel + "_nocut"
+            else:
+                if useskim == "DiLep":
+                    channel="SK" + channel + "_dilep"
     else:
         if useskim == "Lepton":
             sample="SK" + sample
         else:
             if useskim == "NoCut":
                 sample="SK" + sample + "_nocut"
-        
+            else:
+                if useskim == "DiLep":
+                    sample="SK" + sample + "_dilep"
+                
 print "Input sample = " + sample
-
+if not mc:
+    print "Input channel = " + channel
 
 ##############################################################################################
 #### Check if sktrees are located on current machines  (not used when running on cmsX at snu)                        
@@ -754,12 +774,121 @@ else:
     for line in files_done:
         if DEBUG == "True":
             print line
-            
+
+
+    SKTreeOutput = "/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/"        
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
+        if not os.path.exists(SKTreeOutput):
+            os.system("mkdir + " SKTreeOutput)
+            
         doMerge=False
+        if not mc:
+            if useskim == "Lepton":
+                Finaloutputdir = SKTreeOutput + "Data/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            elif useskim == "DiLep":
+                Finaloutputdir = SKTreeOutput + "DataDiLep/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="egamma":
+                Finaloutputdir += "DoubleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="muon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="emu":
+                Finaloutputdir += "ElectronMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir + " Finaloutputdir)
+        else:
+            if useskim == "Lepton":
+                Finaloutputdir = SKTreeOutput + "MC/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            elif useskim == "DiLep":
+                Finaloutputdir = SKTreeOutput + "DataDiLep/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="egamma":
+                Finaloutputdir += "DoubleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="muon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="emu":
+                Finaloutputdir += "ElectronMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir + " Finaloutputdir)
+                
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
+        if not os.path.exists(SKTreeOutput):
+            os.system("mkdir + " SKTreeOutput)
+    if cycle == "SKTreeMakerDiLep":
+        doMerge=False
+        if not os.path.exists(SKTreeOutput):
+            os.system("mkdir + " SKTreeOutput)
+        if not mc:
+            if useskim == "Lepton":
+                Finaloutputdir = SKTreeOutput + "Data/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            elif useskim == "DiLep":
+                Finaloutputdir = SKTreeOutput + "DataDiLep/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="egamma":
+                Finaloutputdir += "DoubleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="muon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="emu":
+                Finaloutputdir += "ElectronMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir + " Finaloutputdir)
+        else:
+            if useskim == "Lepton":
+                Finaloutputdir = SKTreeOutput + "MC/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            elif useskim == "DiLep":
+                Finaloutputdir = SKTreeOutput + "DataDiLep/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="egamma":
+                Finaloutputdir += "DoubleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="muon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            if original_channel =="emu":
+                Finaloutputdir += "ElectronMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir + " Finaloutputdir)
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir + " Finaloutputdir)
+        ////
                 
     outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:

@@ -7,5 +7,6 @@ wcol 432
 tcol	 596
 wwcol    840
 vvvcol   820
+wgammacol 820
 END 
 #Sherpa Alpgen Herwig

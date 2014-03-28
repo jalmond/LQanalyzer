@@ -121,10 +121,6 @@ string output_path = "";
 
 
 
-//##################################################################
-//###### MAIN CALL
-//##################################################################
-
 int main(int argc, char *argv[]) {
   
   /////////////////////////////////////////////////////
@@ -799,6 +795,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   {
   list.push_back(make_pair("QCD_30-40_EM2",0.1));
   list.push_back(make_pair("QCD_40_EM2",0.1));
+  list.push_back(make_pair("Wgamma",0.1));
   }
 
   if(sample.Contains("zz")){
@@ -1049,9 +1046,12 @@ void SetTitles(TH1* hist, string name){
 
   if(HistInGev(name)) ytitle = "Entries / " +str_width.str() + " GeV";
   
-  if(name.find("h_MET")!=string::npos)xtitle="E^{miss}_{T} [GeV]"; 
-  if(name.find("h_MET_phi")!=string::npos)xtitle="#phi_{E^{miss}_{T}} "; 
-
+  if(name.find("h_MET")!=string::npos){
+    xtitle="E^{miss}_{T} [GeV]"; 
+    if(name.find("phi")!=string::npos){
+      xtitle="#phi_{E^{miss}_{T}} "; 
+    }
+  }
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
   if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} [GeV]";
@@ -1672,7 +1672,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     //h_significance->GetYaxis()->SetTitle("Significance");
     h_significance->GetYaxis()->SetTitle("Data/MC");
     //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
-    h_significance->GetYaxis()->SetRangeUser(0.8, 1.2);
+    h_significance->GetYaxis()->SetRangeUser(0.0, 2.0);
     h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
     h_significance->Draw("hist");
     TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);

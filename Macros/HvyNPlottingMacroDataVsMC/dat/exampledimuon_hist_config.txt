@@ -15,8 +15,8 @@ h_MuonDz        2 -0.2 0.2
 h_MuonJetdR	 5 0. 5.
 h_leadMuondR	 5 0. 5.
 h_leadJetdR	 1 0. 5.
-h_Njets 1 0 10
-h_Nbjets 1 0 5
+h_Njets 1 0 5
+h_Nbjets 1 0 4
 h_bTag 1 0 1
 h_leadingJetPt	 1 0. 200.
 h_secondJetPt	 1 0. 100.
