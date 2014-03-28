@@ -776,119 +776,110 @@ else:
             print line
 
 
-    SKTreeOutput = "/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/March14v3/"        
+    SKTreeOutput = "/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/"        
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):
-            os.system("mkdir + " SKTreeOutput)
-            
+            os.system("mkdir  " + SKTreeOutput)
         doMerge=False
         if not mc:
-            if useskim == "Lepton":
-                Finaloutputdir = SKTreeOutput + "Data/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            elif useskim == "DiLep":
-                Finaloutputdir = SKTreeOutput + "DataDiLep/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+            Finaloutputdir = SKTreeOutput + "Data/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+                
             if original_channel =="egamma":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+                    os.system("mkdir " + Finaloutputdir)
             if original_channel =="muon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+                    os.system("mkdir " + Finaloutputdir)
             if original_channel =="emu":
                 Finaloutputdir += "ElectronMuon/"
                 if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="singlemuon":
+                Finaloutputdir += "SingleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="singleelectron":
+                Finaloutputdir += "SingleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
-                os.system("mkdir + " Finaloutputdir)
+                os.system("mkdir " + Finaloutputdir)
         else:
-            if useskim == "Lepton":
-                Finaloutputdir = SKTreeOutput + "MC/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            elif useskim == "DiLep":
-                Finaloutputdir = SKTreeOutput + "DataDiLep/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            if original_channel =="egamma":
-                Finaloutputdir += "DoubleElectron/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            if original_channel =="muon":
-                Finaloutputdir += "DoubleMuon/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            if original_channel =="emu":
-                Finaloutputdir += "ElectronMuon/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            Finaloutputdir += "period" + original_sample + "/"
+            Finaloutputdir = SKTreeOutput + "MC/"
             if not os.path.exists(Finaloutputdir):
-                os.system("mkdir + " Finaloutputdir)
+                os.system("mkdir " + Finaloutputdir)
+                                                                                            
+            Finaloutputdir +=  original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
                 
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
-            os.system("mkdir + " SKTreeOutput)
+            os.system("mkdir " + SKTreeOutput)
+        if not mc:
+            Finaloutputdir = SKTreeOutput + "DataNoCut/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            if original_channel =="egamma":
+                Finaloutputdir += "DoubleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="muon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="emu":
+                Finaloutputdir += "ElectronMuon/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+        else:
+            Finaloutputdir = SKTreeOutput + "MCNoCut/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir += original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
-            os.system("mkdir + " SKTreeOutput)
+            os.system("mkdir " + SKTreeOutput)
         if not mc:
-            if useskim == "Lepton":
-                Finaloutputdir = SKTreeOutput + "Data/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            elif useskim == "DiLep":
-                Finaloutputdir = SKTreeOutput + "DataDiLep/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+            Finaloutputdir = SKTreeOutput + "DataDiLep/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
             if original_channel =="egamma":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+                    os.system("mkdir " + Finaloutputdir)
             if original_channel =="muon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+                    os.system("mkdir " + Finaloutputdir)
             if original_channel =="emu":
                 Finaloutputdir += "ElectronMuon/"
                 if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
+                    os.system("mkdir " + Finaloutputdir)
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
-                os.system("mkdir + " Finaloutputdir)
+                os.system("mkdir " + Finaloutputdir)
         else:
-            if useskim == "Lepton":
-                Finaloutputdir = SKTreeOutput + "MC/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            elif useskim == "DiLep":
-                Finaloutputdir = SKTreeOutput + "DataDiLep/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            if original_channel =="egamma":
-                Finaloutputdir += "DoubleElectron/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            if original_channel =="muon":
-                Finaloutputdir += "DoubleMuon/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            if original_channel =="emu":
-                Finaloutputdir += "ElectronMuon/"
-                if not os.path.exists(Finaloutputdir):
-                    os.system("mkdir + " Finaloutputdir)
-            Finaloutputdir += "period" + original_sample + "/"
+            Finaloutputdir = SKTreeOutput + "MCDiLep/"
             if not os.path.exists(Finaloutputdir):
-                os.system("mkdir + " Finaloutputdir)
-        ////
+                os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir +=  original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+                
                 
     outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:

@@ -12,12 +12,21 @@ source functions.sh
 
 cycle="SKTreeMaker"
 
-stream="egamma"
+#### JOB CONFIGURATION
 njobs=30
 data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
-declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" )
+
+#declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" )
+#declare input_samples=("WZ")
+
+stream="egamma"
+declare -a input_samples=("A")
 
 ### submit this configured job (uses bin/submit.sh)
+source submit.sh
+
+declare -a input_samples=("A")
+stream="muon"
 source submit.sh
