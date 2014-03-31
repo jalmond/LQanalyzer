@@ -10,7 +10,7 @@ then
     cycle="ExampleAnalyzerElectronMuon"
     skinput="True"
     useskim="DiLep"
-    outputdir="/home/jalmond/LQanalyzer/data/output/ElectronMuon/"
+    outputdir=$LQANALYZER_DIR"/data/output/ElectronMuon/"
     #### JOB CONFIGURATION
     njobs=30
     data_lumi="AtoD"
@@ -18,6 +18,7 @@ then
     logstep=1000
     
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" )
+    
     source submit.sh $1
 fi
     
@@ -30,7 +31,7 @@ then
     skinput="True"
     stream="emu"
     useskim="DiLep"
-    outputdir="/home/jalmond/LQanalyzer/data/output/ElectronMuon/"
+    outputdir=$LQANALYZER_DIR"/data/output/ElectronMuon/"
     #### JOB CONFIGURATION
     njobs=30
     data_lumi="AtoD"

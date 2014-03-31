@@ -10,7 +10,7 @@ then
     cycle="ExampleAnalyzerDiMuon"
     skinput="True"
     useskim="DiLep"
-    outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"
+    outputdir=$LQANALYZER_DIR"/data/output/Muon/"
     #### JOB CONFIGURATION
     njobs=30
     data_lumi="AtoD"
@@ -30,7 +30,7 @@ then
     skinput="True"
     stream="muon"
     useskim="DiLep"
-    outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"
+    outputdir=$LQANALYZER_DIR"/data/output/Muon/"
     #### JOB CONFIGURATION
     njobs=30
     data_lumi="AtoD"

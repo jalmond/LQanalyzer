@@ -10,7 +10,7 @@ then
     cycle="ExampleAnalyzerDiElectron"
     skinput="True"
     useskim="DiLep"
-    outputdir="/home/jalmond/LQanalyzer/data/output/Electron/"
+    outputdir=$LQANALYZER_DIR"/LQanalyzer/data/output/Electron/"
     #### JOB CONFIGURATION
     njobs=30
     data_lumi="AtoD"
@@ -18,6 +18,7 @@ then
     logstep=1000
     
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma")
+    
     source submit.sh $1
 fi
     
@@ -31,7 +32,7 @@ then
     skinput="True"
     stream="egamma"
     useskim="DiLep"
-    outputdir="/home/jalmond/LQanalyzer/data/output/Electron/"
+    outputdir=$LQANALYZER_DIR"/data/output/Electron/"
     #### JOB CONFIGURATION
     njobs=30
     data_lumi="AtoD"
