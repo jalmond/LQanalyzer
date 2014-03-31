@@ -1,30 +1,49 @@
 #!/bin/sh
-source functions.sh 
 
-###########################################################
-## CONFIGURE JOB ####
-###########################################################
-#
-#  THIS SECTION IS FOR USER:
-#
-############################################################
-## What cycle do you want to run.  
-## 
-cycle="ExampleAnalyzerDiMuon"
-skinput="True"
-stream="muon"
-##### CONFIGURE JOB
-njobs=30
-data_lumi="AtoD"
-loglevel="INFO"
-logstep=1000
-outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"
+###### SET WHAT JOBS TO RUN
+runMC=true
+runDoubleMuon=true
 
-#### SET SAMPLES
-declare -a input_samples=("A" "B" "C" "D"  "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW")
+if [[ $runMC  == "true" ]]; 
+then
+    source functions.sh
+    cycle="ExampleAnalyzerDiMuon"
+    skinput="True"
+    useskim="DiLep"
+    outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"
+    #### JOB CONFIGURATION
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+    logstep=1000
+    
+    declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "QCD_mumu")
+    source submit.sh $1
+fi
+    
 
-### submit this configured job (uses bin/submit.sh)
-source submit.sh $1
+################ DOUBLEMUON DATA
+if [[ $runDoubleMuon  == "true" ]];
+then
+    source functions.sh
+    cycle="ExampleAnalyzerDiMuon"
+    skinput="True"
+    stream="muon"
+    useskim="DiLep"
+    outputdir="/home/jalmond/LQanalyzer/data/output/Muon/"
+    #### JOB CONFIGURATION
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+    logstep=1000
+
+    declare -a input_samples=("A" "B" "C" "D")
+    source submit.sh $1
+fi     
+
+
+
+
 
 echo ""
 echo "End of example_submit.sh script."
