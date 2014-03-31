@@ -731,7 +731,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
 
     /// TrigMatching
-    if(MuonHLTDoubleMuonMatched)muon.SetHLTDoubleMuMatched(MuonHLTDoubleMuonMatched->at(ilep));
+    if(MuonHLTDoubleMuonMatched){
+      //muon.SetHLTDoubleMuMatched(MuonHLTDoubleMuonMatched->at(ilep));
+      
+    }
     if(MuonHLTSingleMuonMatched)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched->at(ilep));
     if(MuonHLTSingleIsoMuonMatched)muon.SetHLTSingleMuIsoMatched(MuonHLTSingleIsoMuonMatched->at(ilep));
 

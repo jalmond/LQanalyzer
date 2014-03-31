@@ -144,7 +144,7 @@ namespace snu {
     Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,3)
+    ClassDef(KMuon,4)
   };   
 }//namespace snu
 

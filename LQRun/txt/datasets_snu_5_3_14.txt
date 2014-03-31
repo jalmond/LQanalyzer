@@ -67,20 +67,20 @@ SKegamma	 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/DoubleEl
 SKegamma	 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/DoubleElectron/periodC/
 SKegamma	 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/DoubleElectron/periodD/
 
-SKemu		 A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/
-SKemu		 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/
-SKemu		 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/
-SKemu		 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/
+SKemu		 A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/periodA/
+SKemu		 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/periodB/
+SKemu		 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/periodC/
+SKemu		 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/ElectronMuon/periodD/
 
-SKsinglemuon	 A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/
-SKsinglemuon	 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/
-SKsinglemuon	 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/
-SKsinglemuon	 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/
+SKsinglemuon	 A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/periodA/
+SKsinglemuon	 B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/periodB/
+SKsinglemuon	 C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/periodC/
+SKsinglemuon	 D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleMuon/periodD/
 
-SKsingleelectron A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/
-SKsingleelectron B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/
-SKsingleelectron C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/
-SKsingleelectron D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/
+SKsingleelectron A	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/periodA/
+SKsingleelectron B	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/periodB/
+SKsingleelectron C	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/periodC/
+SKsingleelectron D	/data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/Data/SingleElectron/periodD/
 ### MC #############
 SKDY10to50        2901.7          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/DY10to50/
 SKDY50plus        8693.5          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/DY50plus/
@@ -90,16 +90,16 @@ SKZZ              555109.777      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees
 SKWW              182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WW/
 SKWWv2            182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WWv2/
 SKWjets           1538.562        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/Wjets/
-SKSSWmWm          1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WmWm/
-SKSSWpWp          402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WpWp/
+SKSSWmWm          1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/SSWmWm/
+SKSSWpWp          402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/SSWpWp/
 SKWgamma          10403.722       /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/Wgamma/
-SKWW_dp           1418676.646     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WW_ds/
-SKttW             845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/TTW/
-SKttZ             1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/TTZ/
+SKWW_dp           1418676.646     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WW_dp/
+SKttW             845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/ttW/
+SKttZ             1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/ttZ/
 SKWWW             2684057.442     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/WWW/
 SKQCD_mumu        54.2            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/QCD_mumu/
-SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/QCDEE30to40/
-SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/QCDEE40/
+SKQCD_30-40_EM2   497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/QCD_30-40_EM2/ 
+SKQCD_40_EM2      86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/QCD_40_EM2/
 SKstbar_sch       1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/stbar_sch/
 SKstbar_tch       1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/stbar_tch/
 SKstbar_tW        1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MC/stbar_tW/
@@ -154,16 +154,16 @@ SKWZ_dilep               301122.644      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/
 SKZZ_dilep               555109.777      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/ZZ/
 SKWW_dilep               182363.161      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/WW/
 SKWjets_dilep            1538.562        /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/Wjets/
-SKSSWmWm_dilep           1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/WmWm/
-SKSSWpWp_dilep           402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/WpWp/
+SKSSWmWm_dilep           1084518.452     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/SSWmWm/
+SKSSWpWp_dilep           402840.451      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/SSWpWp/
 SKWgamma_dilep           10403.722       /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/Wgamma/
 SKWW_dp_dilep            1418676.646     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/WW_ds/
-SKttW_dilep              845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/TTW/
-SKttZ_dilep              1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/TTZ/
+SKttW_dilep              845025.862      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/ttW/
+SKttZ_dilep              1205737.235     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/ttZ/
 SKWWW_dilep              2684057.442     /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/WWW/
 SKQCD_mumu_dilep         54.2            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/QCD_mumu/
-SKQCD_30-40_EM2_dilep    497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/QCDEE30to40/
-SKQCD_40_EM2_dilep       86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/QCDEE40/
+SKQCD_30-40_EM2_dilep    497.0           /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/QCD_30-40_EM2/
+SKQCD_40_EM2_dilep       86.0            /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/QCD_40_EM2/
 SKstbar_sch_dilep        1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/stbar_sch/
 SKstbar_tch_dilep        1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/stbar_tch/
 SKstbar_tW_dilep         1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/stbar_tW/
@@ -187,10 +187,10 @@ SKZ4Jets_dilep           1.              /data1/LocalNtuples/Tag18_CMSSW_5_3_14/
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
-egamma A    /data1/DATA/LQNtuples_5_3_14/Data/DiElA/
-egamma B    /data1/DATA/LQNtuples_5_3_14/Data/DiElB/
-egamma C    /data1/DATA/LQNtuples_5_3_14/Data/DiElC/
-egamma D    /data1/DATA/LQNtuples_5_3_14/Data/DiElD/
+egamma A    /data1/DATA/LQNtuples_5_3_14_patch1/Data/DiElA/
+egamma B    /data1/DATA/LQNtuples_5_3_14_patch1/Data/DiElB/
+egamma C    /data1/DATA/LQNtuples_5_3_14_patch1/Data/DiElC/
+egamma D    /data1/DATA/LQNtuples_5_3_14_patch1/Data/DiElD/
 
 muon A	 /data1/DATA/LQNtuples_5_3_14/Data/DiMuA/
 muon B 	 /data1/DATA/LQNtuples_5_3_14/Data/DiMuB/	
@@ -216,15 +216,15 @@ singleelectron D  /data1/DATA/LQNtuples_5_3_14/Data/ElD/
 ### MC ############################################################
 # Sample	Inte.lumi(/pb)	localpath
 ##################################################################
-DY10to50	2901.7          /data1/DATA/LQNtuples_5_3_14/MC/DY10to50/
-DY50plus	8693.5		/data1/DATA/LQNtuples_5_3_14/MC/DY50plus/  
+DY10to50	2901.7          /data1/DATA/LQNtuples_5_3_14_patch1/MC/DY10to50/
+DY50plus	8693.5		/data1/DATA/LQNtuples_5_3_14_patch1/MC/DY50plus/  
 WZ              301122.644      /data1/DATA/LQNtuples_5_3_14/MC/WZ/
 ZZ              555109.777      /data1/DATA/LQNtuples_5_3_14/MC/ZZ/
 WW		182363.161    	/data1/DATA/LQNtuples_5_3_14/MC/WW/
 WWv2		182363.161    	/data1/DATA/LQNtuples_5_3_14/MC/WWV2/
 Wjets           1538.562        /data1/DATA/LQNtuples_5_3_14/MC/WJets/
-SSWmWm		1084518.452	/data1/DATA/LQNtuples_5_3_14/MC/WmWm/
-SSWpWp		402840.451	/data1/DATA/LQNtuples_5_3_14/MC/WpWp/
+SSWmWm		1084518.452	/data1/DATA/LQNtuples_5_3_14/MC/SSWmWm/
+SSWpWp		402840.451	/data1/DATA/LQNtuples_5_3_14/MC/SSWpWp/
 Wgamma		10403.722	/data1/DATA/LQNtuples_5_3_14/MC/Wgamma/
 WW_dp		1418676.646	/data1/DATA/LQNtuples_5_3_14/MC/WW_ds/
 ttW		845025.862	/data1/DATA/LQNtuples_5_3_14/MC/TTW/
@@ -244,7 +244,7 @@ st_tW		1.		/data1/DATA/LQNtuples_5_3_14/MC/st_tW/
 topDIL		1.		/data1/DATA/LQNtuples_5_3_14/MC/topDIL/
 topHAD		1.		/data1/DATA/LQNtuples_5_3_14/MC/topHAD/
 topLJ		1.		/data1/DATA/LQNtuples_5_3_14/MC/topLJ/
-ttbar           29588.256       /data1/DATA/LQNtuples_5_3_14/MC/ttbar/
+ttbar           29588.256       /data1/DATA/LQNtuples_5_3_14_patch1/MC/ttbar/
 		
 W1Jets		1.		/data1/DATA/LQNtuples_5_3_14/MC/W1Jets/
 W2Jets		1.		/data1/DATA/LQNtuples_5_3_14/MC/W2Jets/			

@@ -880,7 +880,8 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 
-                
+    if not os.path.exists(Finaloutputdir):
+        os.system("mkdir " + Finaloutputdir)
     outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:
         if not mc:
