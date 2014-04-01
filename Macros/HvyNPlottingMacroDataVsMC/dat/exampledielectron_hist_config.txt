@@ -24,14 +24,11 @@ h_caloMET 1 0. 200.
 h_tcMET 1 0. 200.
 h_METraw 1 0. 200.
 h_METtype1 1 0. 200.
-h_METtype1_fly 1 0. 200.
 h_METtype01 1 0. 200.
-h_METtype01xy_fg 1 0. 200.
 h_MET 1 0. 200.
 h_METraw_phi 5 -3.2 3.2
 h_METtype1_phi 5 -3.2 3.2
 h_METtype01_phi 5 -3.2 3.2
-h_METtype01xy_fg_phi 5 -3.2 3.2
 h_MET_phi 5 -3.2 3.2
 h_caloMET_phi 5 -3.2 3.2
 h_nVertices 1 0. 30.

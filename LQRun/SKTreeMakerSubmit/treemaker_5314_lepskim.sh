@@ -8,6 +8,7 @@ runDoubleElectron=false
 runElectronMuon=true
 runSingleMuon=false
 runSingleElectron=true
+runSignal=true
 
 if [[ $1  == "ALL" ]]; 
 then
@@ -38,6 +39,23 @@ then
     runSingleMuon=true
     runSingleElectron=true
 fi    
+
+
+if [[ $runSignal  == "true" ]];
+then
+    source functions.sh
+    cycle="SKTreeMaker"
+    #### JOB CONFIGURATION
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+    logstep=1000
+
+    declare -a input_samples=("HNmumu50")
+
+    source submit.sh
+fi
+
 
 if [[ $runMC  == "true" ]]; 
 then
