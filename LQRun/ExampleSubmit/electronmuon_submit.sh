@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ###### SET WHAT JOBS TO RUN
-runMC=false
+runMC=true
 runElectronMuon=true
 
 if [[ $runMC  == "true" ]]; 
@@ -33,13 +33,12 @@ then
     useskim="DiLep"
     outputdir=$LQANALYZER_DIR"/data/output/ElectronMuon/"
     #### JOB CONFIGURATION
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
 
-    declare -a input_samples=("A")
-# "B" "C" "D")
+    declare -a input_samples=("A" "B" "C" "D")
     source submit.sh $1
 fi     
 
