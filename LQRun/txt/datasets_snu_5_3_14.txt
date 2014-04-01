@@ -131,20 +131,20 @@ SKegamma_dilep         B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/Apr
 SKegamma_dilep         C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/DoubleElectron/periodC/
 SKegamma_dilep         D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/DoubleElectron/periodD/
 
-SKemu_dilep            A      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/
-SKemu_dilep            B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/
-SKemu_dilep            C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/
-SKemu_dilep            D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/
+SKemu_dilep            A      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/periodA/
+SKemu_dilep            B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/periodB/
+SKemu_dilep            C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/periodC/
+SKemu_dilep            D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/ElectronMuon/periodD/
 
-SKsinglemuon_dilep     A      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/
-SKsinglemuon_dilep     B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/
-SKsinglemuon_dilep     C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/
-SKsinglemuon_dilep     D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/
+SKsinglemuon_dilep     A      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/periodA/
+SKsinglemuon_dilep     B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/periodB/
+SKsinglemuon_dilep     C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/periodC/
+SKsinglemuon_dilep     D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleMuon/periodD/
 
-SKsingleelectron_dilep A      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/
-SKsingleelectron_dilep B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/
-SKsingleelectron_dilep C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/
-SKsingleelectron_dilep D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/
+SKsingleelectron_dilep A      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/periodA/
+SKsingleelectron_dilep B      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/periodB/
+SKsingleelectron_dilep C      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/periodC/
+SKsingleelectron_dilep D      /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/DataDiLep/SingleElectron/periodD/
 
 ### MC
 SKDY10to50_dilep         2901.7          /data1/LocalNtuples/Tag18_CMSSW_5_3_14/SKTrees/April14/MCDiLep/DY10to50/

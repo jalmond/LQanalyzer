@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ###### SET WHAT JOBS TO RUN
-runMC=true
+runMC=false
 runElectronMuon=true
 
 if [[ $runMC  == "true" ]]; 
