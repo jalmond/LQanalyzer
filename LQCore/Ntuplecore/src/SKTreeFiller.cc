@@ -349,8 +349,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     m_logger << DEBUG <<  ElectronHLTDoubleEleMatched << " " << ElectronHLTSingleEleMatched << " " << ElectronHLTSingleEleWP80Matched << LQLogger::endmsg;
 
     el.SetHLTDoubleElMatched(ElectronHLTDoubleEleMatched->at(iel));
-    el.SetHLTSingleElMatched(ElectronHLTSingleEleMatched->at(iel));
+    if(ElectronHLTSingleEleMatched17)el.SetHLTSingleElMatched17(ElectronHLTSingleEleMatched17->at(iel));
+    if(ElectronHLTSingleEleMatched8)el.SetHLTSingleElMatched8(ElectronHLTSingleEleMatched8->at(iel));
+    if(ElectronHLTSingleEleMatched)el.SetHLTSingleElMatched8(ElectronHLTSingleEleMatched->at(iel));
     el.SetHLTSingleElWP80Matched(ElectronHLTSingleEleWP80Matched->at(iel));
+
+
+    if(ElectronHLTEMuMatched8)el.SetHLTEMuMatched8(ElectronHLTEMuMatched8->at(iel));
+    if(ElectronHLTEMuMatched17)el.SetHLTEMuMatched17(ElectronHLTEMuMatched17->at(iel));
 
     m_logger << DEBUG << "Filling El Truth variables " << LQLogger::endmsg;
     
@@ -585,7 +591,12 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jet.SetJetL2L3ResJEC(PFJetL2L3ResJEC->at(ijet));
     jet.SetJetL2RelJEC(PFJetL2RelJEC->at(ijet));
     jet.SetJetL3AbsJEC(PFJetL3AbsJEC->at(ijet));
-    
+    if(PFJetL5BottomJEC){
+      jet.SetJetL5BottomJEC(PFJetL5BottomJEC->at(ijet));
+      jet.SetJetL5CharmJEC(PFJetL5CharmJEC->at(ijet));
+      jet.SetJetL5UDSJEC(PFJetL5UDSJEC->at(ijet));
+      jet.SetJetL5GluonJEC(PFJetL5GluonJEC->at(ijet));
+    }
     if(PFJetScaledDownEnergy&&PFJetScaledUpEnergy&&PFJetScaledDownPt&&PFJetScaledUpPt&&PFJetSmearedDownEnergy&&PFJetSmearedUpEnergy&&PFJetSmearedDownPt&&PFJetSmearedUpPt){
       jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
       jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
@@ -732,10 +743,20 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     /// TrigMatching
     if(MuonHLTDoubleMuonMatched){
-      //muon.SetHLTDoubleMuMatched(MuonHLTDoubleMuonMatched->at(ilep));
+      muon.SetHLTDoubleMuMatched(MuonHLTDoubleMuonMatched->at(ilep));
       
     }
     if(MuonHLTSingleMuonMatched)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched->at(ilep));
+    if(MuonHLTSingleMuonMatched5)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched5->at(ilep));
+    if(MuonHLTSingleMuonMatched8)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched8->at(ilep));
+    if(MuonHLTSingleMuonMatched12)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched12->at(ilep));
+    if(MuonHLTSingleMuonMatched17)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched17->at(ilep));
+    if(MuonHLTSingleMuonMatched24)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched24->at(ilep));
+
+    if(MuonHLTEMuMatched8)muon.SetHLTEMuMatched8(MuonHLTEMuMatched8->at(ilep));
+    if(MuonHLTEMuMatched17)muon.SetHLTEMuMatched17(MuonHLTEMuMatched17->at(ilep));
+    
+    
     if(MuonHLTSingleIsoMuonMatched)muon.SetHLTSingleMuIsoMatched(MuonHLTSingleIsoMuonMatched->at(ilep));
 
     m_logger << DEBUG << "Muon Truth " << LQLogger::endmsg;
@@ -753,9 +774,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       
       m_logger << DEBUG <<  "Muon Eta  = " << MuonEta->at(ilep) << LQLogger::endmsg;
       m_logger << DEBUG <<  "Muon Phi  = " << MuonPhi->at(ilep) << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Muon Pt  = " << MuonPt->at(ilep) << LQLogger::endmsg;
+      m_logger << DEBUG <<  "Muon Pt  = " <<  MuonPt->at(ilep) << LQLogger::endmsg;
       
-      for(unsigned int g =0; g < GenParticleP->size(); g++){
+      int itruth_index = 0;
+      for(unsigned int g =0; g < GenParticleP->size(); g++, itruth_index++){
 	m_logger << DEBUG <<  g << " " <<  GenParticleStatus->size() << " " << GenParticlePdgId->size() << LQLogger::endmsg;
 	m_logger << DEBUG << GenParticleStatus->at(g) << " " << GenParticlePdgId->at(g) << LQLogger::endmsg;
 	
@@ -803,12 +825,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }
       
       truth_reco_dr=100000.;
-      for(unsigned int g =0; g < GenZMuP->size(); g++){
+      for(unsigned int g =0; g < GenZMuP->size(); g++, , itruth_index++){
 	if((fabs(GenZMuPdgId->at(g))==13)){ 
 	  double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenZMuPhi->at(g))),2.0) );	  
 	  if(dr < truth_reco_dr){
 	    ipdgid =  GenZMuPdgId->at(g);
-	    truemu_index = g;
+	    truemu_index = itruth_index;
 	    truth_reco_dr = dr;
 	  }
 	}
@@ -869,12 +891,12 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
     
     float charge_truth = -999.;
-    if(GenParticlePdgId->at(it) == 1 || GenParticlePdgId->at(it) == 3 || GenParticlePdgId->at(it) == 5) charge_truth = -1./3.;
-    else if(GenParticlePdgId->at(it) == 2 || GenParticlePdgId->at(it) == 4 || GenParticlePdgId->at(it) == 6) charge_truth = 2./3.;
-    else if(GenParticlePdgId->at(it) == 11 || GenParticlePdgId->at(it) ==13 || GenParticlePdgId->at(it) ==15) charge_truth = -1.;
-    else if(GenParticlePdgId->at(it) == 12 || GenParticlePdgId->at(it) ==14 || GenParticlePdgId->at(it) ==16) charge_truth = 0.;
-    else if(GenParticlePdgId->at(it) == 22 || GenParticlePdgId->at(it) == 23) charge_truth = 0.;
-    else if(GenParticlePdgId->at(it) == 24) charge_truth =1.;
+    if(fabs(GenParticlePdgId->at(it) )== 1 || fabs(GenParticlePdgId->at(it) )== 3 || fabs(GenParticlePdgId->at(it) )== 5) charge_truth = -1./3.;
+    else if(fabs(GenParticlePdgId->at(it) )== 2 || fabs(GenParticlePdgId->at(it) )== 4 || fabs(GenParticlePdgId->at(it) )== 6) charge_truth = 2./3.;
+    else if(fabs(GenParticlePdgId->at(it) )== 11 || fabs(GenParticlePdgId->at(it) )==13 || fabs(GenParticlePdgId->at(it) )==15) charge_truth = -1.;
+    else if(fabs(GenParticlePdgId->at(it) )== 12 || fabs(GenParticlePdgId->at(it) )==14 || fabs(GenParticlePdgId->at(it) )==16) charge_truth = 0.;
+    else if(fabs(GenParticlePdgId->at(it) )== 22 || fabs(GenParticlePdgId->at(it) )== 23) charge_truth = 0.;
+    else if(fabs(GenParticlePdgId->at(it) )== 24) charge_truth =1.;
     else charge_truth = -999.;
     
     if(GenParticlePdgId->at(it) < 0) charge_truth *=-1.;
@@ -909,12 +931,12 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleIndexMother(GenZMuMotherIndex->at(it));
 
     float charge_truth = -999.;
-    if(GenZMuPdgId->at(it) == 1 || GenZMuPdgId->at(it) == 3 || GenZMuPdgId->at(it) == 5) charge_truth = -1./3.;
-    else if(GenZMuPdgId->at(it) == 2 || GenZMuPdgId->at(it) == 4 || GenZMuPdgId->at(it) == 6) charge_truth = 2./3.;
-    else if(GenZMuPdgId->at(it) == 11 || GenZMuPdgId->at(it) ==13 || GenZMuPdgId->at(it) ==15) charge_truth = -1.;
-    else if(GenZMuPdgId->at(it) == 12 || GenZMuPdgId->at(it) ==14 || GenZMuPdgId->at(it) ==16) charge_truth = 0.;
-    else if(GenZMuPdgId->at(it) == 22 || GenZMuPdgId->at(it) == 23) charge_truth = 0.;
-    else if(GenZMuPdgId->at(it) == 24) charge_truth =1.;
+    if(fabs(GenZMuPdgId->at(it)) == 1 || fabs(GenZMuPdgId->at(it)) == 3 || fabs(GenZMuPdgId->at(it)) == 5) charge_truth = -1./3.;
+    else if(fabs(GenZMuPdgId->at(it)) == 2 || fabs(GenZMuPdgId->at(it)) == 4 || fabs(GenZMuPdgId->at(it)) == 6) charge_truth = 2./3.;
+    else if(fabs(GenZMuPdgId->at(it)) == 11 || fabs(GenZMuPdgId->at(it)) ==13 || fabs(GenZMuPdgId->at(it)) ==15) charge_truth = -1.;
+    else if(fabs(GenZMuPdgId->at(it)) == 12 || fabs(GenZMuPdgId->at(it)) ==14 || fabs(GenZMuPdgId->at(it)) ==16) charge_truth = 0.;
+    else if(fabs(GenZMuPdgId->at(it)) == 22 || fabs(GenZMuPdgId->at(it)) == 23) charge_truth = 0.;
+    else if(fabs(GenZMuPdgId->at(it)) == 24) charge_truth =1.;
     else charge_truth = -999.;
 
     if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
@@ -949,12 +971,12 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleIndexMother(GenZTauMotherIndex->at(it));
 
     float charge_truth = -999.;
-    if(GenZTauPdgId->at(it) == 1 || GenZTauPdgId->at(it) == 3 || GenZTauPdgId->at(it) == 5) charge_truth = -1./3.;
-    else if(GenZTauPdgId->at(it) == 2 || GenZTauPdgId->at(it) == 4 || GenZTauPdgId->at(it) == 6) charge_truth = 2./3.;
-    else if(GenZTauPdgId->at(it) == 11 || GenZTauPdgId->at(it) ==13 || GenZTauPdgId->at(it) ==15) charge_truth = -1.;
-    else if(GenZTauPdgId->at(it) == 12 || GenZTauPdgId->at(it) ==14 || GenZTauPdgId->at(it) ==16) charge_truth = 0.;
-    else if(GenZTauPdgId->at(it) == 22 || GenZTauPdgId->at(it) == 23) charge_truth = 0.;
-    else if(GenZTauPdgId->at(it) == 24) charge_truth =1.;
+    if(fabs(GenZTauPdgId->at(it)) == 1 || fabs(GenZTauPdgId->at(it)) == 3 || fabs(GenZTauPdgId->at(it)) == 5) charge_truth = -1./3.;
+    else if(fabs(GenZTauPdgId->at(it)) == 2 || fabs(GenZTauPdgId->at(it)) == 4 || fabs(GenZTauPdgId->at(it)) == 6) charge_truth = 2./3.;
+    else if(fabs(GenZTauPdgId->at(it)) == 11 || fabs(GenZTauPdgId->at(it)) ==13 || fabs(GenZTauPdgId->at(it)) ==15) charge_truth = -1.;
+    else if(fabs(GenZTauPdgId->at(it)) == 12 || fabs(GenZTauPdgId->at(it)) ==14 || fabs(GenZTauPdgId->at(it)) ==16) charge_truth = 0.;
+    else if(fabs(GenZTauPdgId->at(it)) == 22 || fabs(GenZTauPdgId->at(it)) == 23) charge_truth = 0.;
+    else if(fabs(GenZTauPdgId->at(it)) == 24) charge_truth =1.;
     else charge_truth = -999.;
 
     if(GenZTauPdgId->at(it) < 0) charge_truth *=-1.;
@@ -990,14 +1012,14 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleIndexMother(GenZElectronMotherIndex->at(it));
 
     float charge_truth = -999.;
-    if(GenZElectronPdgId->at(it) == 1 || GenZElectronPdgId->at(it) == 3 || GenZElectronPdgId->at(it) == 5) charge_truth = -1./3.;
-    else if(GenZElectronPdgId->at(it) == 2 || GenZElectronPdgId->at(it) == 4 || GenZElectronPdgId->at(it) == 6) charge_truth = 2./3.;
-    else if(GenZElectronPdgId->at(it) == 11 || GenZElectronPdgId->at(it) ==13 || GenZElectronPdgId->at(it) ==15) charge_truth = -1.;
-    else if(GenZElectronPdgId->at(it) == 12 || GenZElectronPdgId->at(it) ==14 || GenZElectronPdgId->at(it) ==16) charge_truth = 0.;
-    else if(GenZElectronPdgId->at(it) == 22 || GenZElectronPdgId->at(it) == 23) charge_truth = 0.;
-    else if(GenZElectronPdgId->at(it) == 24) charge_truth =1.;
+    if(fabs(GenZElectronPdgId->at(it)) == 1 || fabs(GenZElectronPdgId->at(it)) == 3 || fabs(GenZElectronPdgId->at(it)) == 5) charge_truth = -1./3.;
+    else if(fabs(GenZElectronPdgId->at(it)) == 2 || fabs(GenZElectronPdgId->at(it)) == 4 || fabs(GenZElectronPdgId->at(it)) == 6) charge_truth = 2./3.;
+    else if(fabs(GenZElectronPdgId->at(it)) == 11 || fabs(GenZElectronPdgId->at(it)) ==13 || fabs(GenZElectronPdgId->at(it)) ==15) charge_truth = -1.;
+    else if(fabs(GenZElectronPdgId->at(it)) == 12 || fabs(GenZElectronPdgId->at(it)) ==14 || fabs(GenZElectronPdgId->at(it)) ==16) charge_truth = 0.;
+    else if(fabs(GenZElectronPdgId->at(it)) == 22 || fabs(GenZElectronPdgId->at(it)) == 23) charge_truth = 0.;
+    else if(fabs(GenZElectronPdgId->at(it)) == 24) charge_truth =1.;
     else charge_truth = -999.;
-
+    
     if(GenZElectronPdgId->at(it) < 0) charge_truth *=-1.;
     
     truthp.SetCharge(int(charge_truth));

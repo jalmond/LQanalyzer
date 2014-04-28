@@ -58,6 +58,13 @@ namespace snu {
     
     void SetHLTDoubleMuMatched(bool match);
     void SetHLTSingleMuMatched(bool match);
+    void SetHLTSingleMuMatched5(bool match);
+    void SetHLTSingleMuMatched8(bool match);
+    void SetHLTSingleMuMatched12(bool match);
+    void SetHLTSingleMuMatched17(bool match);
+    void SetHLTSingleMuMatched24(bool match);
+    void SetHLTEMuMatched8(bool match);
+    void SetHLTEMuMatched17(bool match);
     void SetHLTSingleMuIsoMatched(bool match);
     
     
@@ -110,6 +117,13 @@ namespace snu {
     /// Trigger Matching
     inline Bool_t   MatchedDiMuonTrigger()  const {return k_dimuon_trig_match;}
     inline Bool_t   MatchedSingleMuonTrigger()  const {return k_muon_trig_match;}
+    inline Bool_t   MatchedSingleMuonTrigger5()  const {return k_muon_trig_match5;}
+    inline Bool_t   MatchedSingleMuonTrigger8()  const {return k_muon_trig_match8;}
+    inline Bool_t   MatchedSingleMuonTrigger12()  const {return k_muon_trig_match12;}
+    inline Bool_t   MatchedSingleMuonTrigger17()  const {return k_muon_trig_match17;}
+    inline Bool_t   MatchedSingleMuonTrigger24()  const {return k_muon_trig_match24;}
+    inline Bool_t   MatchedElMuonTrigger8()  const {return k_emu_trig_match8;}
+    inline Bool_t   MatchedElMuonTrigger17()  const {return k_emu_trig_match17;}
     inline Bool_t   MatchedSingleIsoMuonTrigger()  const {return k_isomuon_trig_match;}
       
       
@@ -140,11 +154,11 @@ namespace snu {
     Int_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
     Int_t i_muonVtx;
 
-    Bool_t k_dimuon_trig_match,k_muon_trig_match,k_isomuon_trig_match;
+    Bool_t k_dimuon_trig_match,k_muon_trig_match,k_isomuon_trig_match, k_muon_trig_match5,k_muon_trig_match8,k_muon_trig_match12,k_muon_trig_match17,k_muon_trig_match24,k_emu_trig_match8, k_emu_trig_match17;
     Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,4)
+    ClassDef(KMuon,5)
   };   
 }//namespace snu
 

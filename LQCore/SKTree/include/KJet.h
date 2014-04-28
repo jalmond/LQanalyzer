@@ -83,6 +83,10 @@ namespace snu {
     void SetJetL2L3ResJEC(double L2L3ResJEC);
     void SetJetL2RelJEC(double JetL2RelJEC);
     void SetJetL3AbsJEC(double JetL3AbsJEC);
+    void SetJetL5BottomJEC(double JetL5BottomJEC);
+    void SetJetL5CharmJEC(double JetL5CharmJEC);
+    void SetJetL5UDSJEC(double JetL5UDSJEC);
+    void SetJetL5GluonJEC(double JetL5GluonJEC);
     void SetJetJECUnc(double jecunc);
     void SetJetScaledDownEnergy(double jetscaleEdown);
     void SetJetScaledUpEnergy(double jetscaleEup);
@@ -153,6 +157,10 @@ namespace snu {
     inline Double_t L2L3ResJEC() const {return k_jet_l2l3res_jec;}
     inline Double_t L2RelJEC() const {return k_jet_l2rel_jec;}
     inline Double_t L3AbsJEC() const {return k_jet_l3abs_jec;}
+    inline Double_t L5BottomJEC() const {return k_jet_l5bottom_jec;}
+    inline Double_t L5CharmJEC() const {return k_jet_l5charm_jec;}
+    inline Double_t L5UDSJEC() const {return k_jet_l5uds_jec;}
+    inline Double_t L5GluonJEC() const {return k_jet_l5gluon_jec;}
     inline Double_t JECUncertainty() const {return k_jet_error_jec;}
 
     inline Double_t ScaledDownEnergy() const {return k_jet_scaled_down_energy;}
@@ -194,13 +202,13 @@ namespace snu {
     Double_t k_jet_closest3Dsep,k_jet_closestXYsep,k_jet_closestZsep,k_jet_bestvertexTrackAssociatedIndex,k_jet_bestvertexTrackAssociatedFactor;
     
     // Errors
-    Double_t k_jet_l1fastjet_jec,k_jet_l2l3res_jec,k_jet_l2rel_jec,k_jet_l3abs_jec,k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_scaled_down_pt,k_jet_scaled_up_pt,k_jet_smeared_down_energy,k_jet_smeared_up_energy,k_jet_smeared_down_pt,k_jet_smeared_up_pt;
+    Double_t k_jet_l1fastjet_jec,k_jet_l2l3res_jec,k_jet_l2rel_jec,k_jet_l3abs_jec, k_jet_l5bottom_jec, k_jet_l5charm_jec,k_jet_l5uds_jec,k_jet_l5gluon_jec, k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_scaled_down_pt,k_jet_scaled_up_pt,k_jet_smeared_down_energy,k_jet_smeared_up_energy,k_jet_smeared_down_pt,k_jet_smeared_up_pt;
     
     Bool_t k_jet_passpileup_loose, k_jet_passpileup_medium ,k_jet_passpileup_tight;
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,3)
+    ClassDef(KJet,4)
   }; 
   
 

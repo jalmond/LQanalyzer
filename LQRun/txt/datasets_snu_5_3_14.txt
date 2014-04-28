@@ -260,7 +260,7 @@ Z4Jets		1.		/data1/DATA/LQNtuples_5_3_14/MC/Z4Jets/
 HNmumu50	46.68		 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu50/			
 HNmumu70	235.87		 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu70/			 
 HNmumu90	7037.03		 /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu90/
-HNmumu100	14036.72         /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu100/
+HNmumu100	14036.72         /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-100_TuneZ2star_8TeV-alpgen/
 HNmumu125	46242.46         /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu125/
 HNmumu150	108826.73        /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu150/
 HNmumu175	214442.23        /data1/DATA/LQNtuples_5_3_14/MC/HNMuMu175/

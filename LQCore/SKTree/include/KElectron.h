@@ -45,7 +45,10 @@ namespace snu {
 
     /// Trigger matching
     void SetHLTDoubleElMatched(bool match);
-    void SetHLTSingleElMatched(bool match);
+    void SetHLTSingleElMatched8(bool match);
+    void SetHLTSingleElMatched17(bool match);
+    void SetHLTEMuMatched8(bool match);
+    void SetHLTEMuMatched17(bool match);
     void SetHLTSingleElWP80Matched(bool match);
      
     /// set ID variables
@@ -136,7 +139,10 @@ namespace snu {
 
     /// Trigger matching
     inline Bool_t MatchedDiElectronTrigger() const {return k_diel_trig_match;}
-    inline Bool_t MatchedSingleElectronTrigger() const {return k_el_trig_match;}
+    inline Bool_t MatchedSingleElectronTrigger8() const {return k_el_trig_match8;}
+    inline Bool_t MatchedSingleElectronTrigger17() const {return k_el_trig_match17;}
+    inline Bool_t MatchedElectronMuonTrigger8() const {return k_emu_trig_match8;}
+    inline Bool_t MatchedElectronMuonTrigger17() const {return k_emu_trig_match17;}
     inline Bool_t MatchedSingleElectronWP80Trigger() const {return k_elwp80_trig_match;}
 
     // Vertex variables
@@ -240,7 +246,7 @@ namespace snu {
     Double_t k_sigmaIEtaIEta,k_hoe,k_caloE,  k_E_cluster_over_p,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_matched_gen_pt, k_matched_gen_eta, k_matched_gen_phi;
 
-    Bool_t k_diel_trig_match, k_el_trig_match , k_elwp80_trig_match;
+    Bool_t k_diel_trig_match,k_el_trig_match8, k_el_trig_match17 , k_elwp80_trig_match, k_emu_trig_match8,k_emu_trig_match17;
     Double_t k_mva, k_trigmva;
     Double_t k_dxy, k_dz;
     Double_t k_sceta,k_scphi, k_rawenergy;
@@ -253,7 +259,7 @@ namespace snu {
     Int_t k_vertex_index;
     Double_t k_eldist, k_cottheta;
 
-    ClassDef(KElectron,7)
+    ClassDef(KElectron,8)
   }; 
   
 }//namespace snu
