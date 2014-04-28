@@ -825,7 +825,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }
       
       truth_reco_dr=100000.;
-      for(unsigned int g =0; g < GenZMuP->size(); g++, , itruth_index++){
+      for(unsigned int g =0; g < GenZMuP->size(); g++, itruth_index++){
 	if((fabs(GenZMuPdgId->at(g))==13)){ 
 	  double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi->at(ilep) -GenZMuPhi->at(g))),2.0) );	  
 	  if(dr < truth_reco_dr){
