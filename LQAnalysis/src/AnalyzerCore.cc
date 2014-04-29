@@ -1,4 +1,4 @@
-// $Id: AnalyzerCore.cc 1 2013-11-26 10:23:10Z jalmond $
+/ $Id: AnalyzerCore.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
@@ -44,6 +44,14 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   AddTriggerToList("HLT_Ele27_WP80_v");
   AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
+  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_v");
+  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_30_20_v");
+  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet45_35_25_v");
+  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v");
+  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v");
+  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
+  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 

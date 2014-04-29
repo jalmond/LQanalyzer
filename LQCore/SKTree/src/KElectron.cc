@@ -73,8 +73,11 @@ KParticle()
   k_matched_gen_eta=0.;
   k_matched_gen_phi=0.;
   k_diel_trig_match= false;
-  k_el_trig_match= false;
+  k_el_trig_match8= false;
+  k_el_trig_match17= false;
   k_elwp80_trig_match= false;
+  k_emu_trig_match8= false;
+  k_emu_trig_match17= false;
   k_track_pt = 0.;
   k_track_hitfrac=0.;
   k_pv_dist_xy=0.;
@@ -148,8 +151,11 @@ KElectron::KElectron(const KElectron& el) :
   k_matched_gen_eta= el.MatchedGenParticleEta();
   k_matched_gen_phi= el.MatchedGenParticlePhi();
   k_diel_trig_match= el.MatchedDiElectronTrigger();
-  k_el_trig_match= el.MatchedSingleElectronTrigger();
+  k_el_trig_match8= el.MatchedSingleElectronTrigger8();
+  k_el_trig_match17= el.MatchedSingleElectronTrigger17();
   k_elwp80_trig_match= el.MatchedSingleElectronWP80Trigger();
+  k_emu_trig_match8= el.MatchedElectronMuonTrigger8();
+  k_emu_trig_match17= el.MatchedElectronMuonTrigger17();
   k_track_pt = el.TrackPt();
   k_track_hitfrac=el.TrackValidHitFraction();
   k_pv_dist_xy=el.PrimaryVertexDXY();
@@ -226,8 +232,11 @@ void KElectron::Reset()
   k_matched_gen_eta=0.;
   k_matched_gen_phi=0.;
   k_diel_trig_match= 0.;
-  k_el_trig_match= 0.;
+  k_el_trig_match8= 0.;
+  k_el_trig_match17= 0.;
   k_elwp80_trig_match= 0.;
+  k_emu_trig_match8= 0.;
+  k_emu_trig_match17= 0.;
   k_track_pt = 0.;
   k_track_hitfrac=0.;
   k_pv_dist_xy=0.;
@@ -301,14 +310,16 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_matched_gen_eta= p.MatchedGenParticleEta();
     k_matched_gen_phi= p.MatchedGenParticlePhi();
     k_diel_trig_match= p.MatchedDiElectronTrigger();
-    k_el_trig_match= p.MatchedSingleElectronTrigger();
+    k_el_trig_match8= p.MatchedSingleElectronTrigger8();
+    k_el_trig_match17= p.MatchedSingleElectronTrigger17();
     k_elwp80_trig_match= p.MatchedSingleElectronWP80Trigger();
+    k_emu_trig_match8= p.MatchedElectronMuonTrigger8();
+    k_emu_trig_match17= p.MatchedElectronMuonTrigger17();
     k_track_pt = p.TrackPt();
     k_track_hitfrac=p.TrackValidHitFraction();
     k_pv_dist_xy=p.PrimaryVertexDXY();
     k_pv_dist_xy_error=p.PrimaryVertexDXYError();
     k_vertex_index=p.VertexIndex();
-    
   }
   
     return *this;
@@ -570,11 +581,23 @@ void KElectron::SetHLTDoubleElMatched(bool match){
   k_diel_trig_match= match;
 }
 
-void KElectron::SetHLTSingleElMatched(bool match){
-  k_el_trig_match= match;
+void KElectron::SetHLTSingleElMatched8(bool match){
+  k_el_trig_match8= match;
 }
+
+void KElectron::SetHLTSingleElMatched17(bool match){
+  k_el_trig_match17= match;
+}
+
 
 void KElectron::SetHLTSingleElWP80Matched(bool match){
   k_elwp80_trig_match= match;
 }
 
+void KElectron::SetHLTEMuMatched8(bool match){
+  k_emu_trig_match8= match;
+}
+
+void KElectron::SetHLTEMuMatched17(bool match){
+  k_emu_trig_match17= match;
+}

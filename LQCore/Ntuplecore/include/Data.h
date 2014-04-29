@@ -131,7 +131,11 @@ public :
    std::vector<bool>    *ElectronGsfScPixCharge;
    std::vector<bool>    *ElectronHLTDoubleEleMatched;
    std::vector<bool>    *ElectronHLTSingleEleMatched;
+   std::vector<bool>    *ElectronHLTSingleEleMatched17;
+   std::vector<bool>    *ElectronHLTSingleEleMatched8;
    std::vector<bool>    *ElectronHLTSingleEleWP80Matched;
+   std::vector<bool>    *ElectronHLTEMuMatched8;
+   std::vector<bool>    *ElectronHLTEMuMatched17;
    std::vector<bool>    *ElectronHasEcalDrivenSeed;
    std::vector<bool>    *ElectronHasMatchedConvPhot;
    std::vector<bool>    *ElectronHasTrackerDrivenSeed;
@@ -149,6 +153,14 @@ public :
 
    std::vector<bool>    *MuonHLTSingleIsoMuonMatched;
    std::vector<bool>    *MuonHLTSingleMuonMatched;
+   std::vector<bool>    *MuonHLTSingleMuonMatched5;
+   std::vector<bool>    *MuonHLTSingleMuonMatched8;
+   std::vector<bool>    *MuonHLTSingleMuonMatched12;
+   std::vector<bool>    *MuonHLTSingleMuonMatched17;
+   std::vector<bool>    *MuonHLTSingleMuonMatched24;
+   std::vector<bool>    *MuonHLTEMuMatched8;
+   std::vector<bool>    *MuonHLTEMuMatched17;
+
    std::vector<bool>    *MuonHLTDoubleMuonMatched;
    std::vector<bool>    *PhotonHasMatchedConvPhot;
    std::vector<bool>    *PhotonHasMatchedPromptEle;
@@ -559,6 +571,10 @@ public :
    std::vector<double>  *PFJetL2L3ResJEC;
    std::vector<double>  *PFJetL2RelJEC;
    std::vector<double>  *PFJetL3AbsJEC;
+   std::vector<double>  *PFJetL5BottomJEC;
+   std::vector<double>  *PFJetL5CharmJEC;
+   std::vector<double>  *PFJetL5UDSJEC;
+   std::vector<double>  *PFJetL5GluonJEC;
    std::vector<double>  *PFJetMuonEnergyFraction;
    std::vector<double>  *PFJetNeutralEmEnergyFraction;
    std::vector<double>  *PFJetNeutralHadronEnergyFraction;
@@ -859,7 +875,11 @@ public :
    TBranch        *b_ElectronGsfScPixCharge;   //!
    TBranch        *b_ElectronHLTDoubleEleMatched;   //!
    TBranch        *b_ElectronHLTSingleEleMatched;   //!
+   TBranch        *b_ElectronHLTSingleEleMatched8;   //!
+   TBranch        *b_ElectronHLTSingleEleMatched17;   //!
    TBranch        *b_ElectronHLTSingleEleWP80Matched;   //!
+   TBranch        *b_ElectronHLTEMuMatched8;   //!
+   TBranch        *b_ElectronHLTEMuMatched17;   //!
    TBranch        *b_ElectronHasEcalDrivenSeed;   //!
    TBranch        *b_ElectronHasMatchedConvPhot;   //!
    TBranch        *b_ElectronHasTrackerDrivenSeed;   //!
@@ -874,7 +894,14 @@ public :
    TBranch        *b_PFJetJetPileupMVA; //!
    TBranch        *b_MuonHLTSingleIsoMuonMatched;   //!
    TBranch        *b_MuonHLTSingleMuonMatched;   //!
+   TBranch        *b_MuonHLTSingleMuonMatched5;   //!
+   TBranch        *b_MuonHLTSingleMuonMatched8;   //!
+   TBranch        *b_MuonHLTSingleMuonMatched12;   //!
+   TBranch        *b_MuonHLTSingleMuonMatched17;   //!
+   TBranch        *b_MuonHLTSingleMuonMatched24;   //!
    TBranch        *b_MuonHLTDoubleMuonMatched;   //!
+   TBranch        *b_MuonHLTEMuMatched8;   //!
+   TBranch        *b_MuonHLTEMuMatched17;   //!
    TBranch        *b_PhotonHasMatchedConvPhot;   //!
    TBranch        *b_PhotonHasMatchedPromptEle;   //!
    TBranch        *b_PhotonHasPixelSeed;   //!
@@ -1284,6 +1311,10 @@ public :
    TBranch        *b_PFJetL2L3ResJEC;   //!
    TBranch        *b_PFJetL2RelJEC;   //!
    TBranch        *b_PFJetL3AbsJEC;   //!
+   TBranch        *b_PFJetL5BottomJEC;   //!
+   TBranch        *b_PFJetL5CharmJEC;   //!
+   TBranch        *b_PFJetL5UDSJEC;   //!
+   TBranch        *b_PFJetL5GluonJEC;   //!
    TBranch        *b_PFJetMuonEnergyFraction;   //!
    TBranch        *b_PFJetNeutralEmEnergyFraction;   //!
    TBranch        *b_PFJetNeutralHadronEnergyFraction;   //!

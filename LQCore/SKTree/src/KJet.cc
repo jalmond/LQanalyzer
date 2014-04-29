@@ -54,6 +54,10 @@ KParticle()
   k_jet_l2l3res_jec=0.;
   k_jet_l2rel_jec=0.;
   k_jet_l3abs_jec=0.;
+  k_jet_l5bottom_jec=0.;
+  k_jet_l5charm_jec=0.;
+  k_jet_l5uds_jec=0.;
+  k_jet_l5gluon_jec=0.;
   k_jet_error_jec=0.;
   k_jet_scaled_down_energy=0.;
   k_jet_scaled_up_energy=0.;
@@ -114,6 +118,10 @@ KJet::KJet(const KJet& jet) :
   k_jet_l2l3res_jec=jet.L2L3ResJEC();
   k_jet_l2rel_jec=jet.L2RelJEC();
   k_jet_l3abs_jec=jet.L3AbsJEC();
+  k_jet_l5bottom_jec=jet.L5BottomJEC();
+  k_jet_l5charm_jec=jet.L5CharmJEC();
+  k_jet_l5uds_jec=jet.L5UDSJEC();
+  k_jet_l5gluon_jec=jet.L5GluonJEC();
   k_jet_error_jec=jet.JECUncertainty();
   k_jet_scaled_down_energy=jet.ScaledDownEnergy();
   k_jet_scaled_up_energy=jet.ScaledUpEnergy();
@@ -177,6 +185,10 @@ void KJet::Reset()
     k_jet_l2l3res_jec=0.;
     k_jet_l2rel_jec=0.;
     k_jet_l3abs_jec=0.;
+    k_jet_l5bottom_jec=0.;
+    k_jet_l5charm_jec=0.;
+    k_jet_l5uds_jec=0.;
+    k_jet_l5gluon_jec=0.;
     k_jet_error_jec=0.;
     k_jet_scaled_down_energy=0.;
     k_jet_scaled_up_energy=0.;
@@ -243,6 +255,10 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_l2l3res_jec=p.L2L3ResJEC();
       k_jet_l2rel_jec=p.L2RelJEC();
       k_jet_l3abs_jec=p.L3AbsJEC();
+      k_jet_l5bottom_jec=p.L5BottomJEC();
+      k_jet_l5charm_jec=p.L5CharmJEC();
+      k_jet_l5uds_jec=p.L5UDSJEC();
+      k_jet_l5gluon_jec=p.L5GluonJEC();
       k_jet_error_jec=p.JECUncertainty();
       k_jet_scaled_down_energy=p.ScaledDownEnergy();
       k_jet_scaled_up_energy=p.ScaledUpEnergy();
@@ -441,6 +457,24 @@ void KJet::SetJetL2RelJEC(double JetL2RelJEC){
 void KJet::SetJetL3AbsJEC(double JetL3AbsJEC){
   k_jet_l3abs_jec=JetL3AbsJEC;
 }
+
+void KJet::SetJetL5BottomJEC(double JetL5BottomJEC){
+  k_jet_l5bottom_jec=JetL5BottomJEC;
+}
+
+void KJet::SetJetL5CharmJEC(double JetL5CharmJEC){
+  k_jet_l5charm_jec=JetL5CharmJEC;
+}
+
+void KJet::SetJetL5UDSJEC(double JetL5UDSJEC){
+  k_jet_l5uds_jec=JetL5UDSJEC;
+}
+
+void KJet::SetJetL5GluonJEC(double JetL5GluonJEC){
+  k_jet_l5gluon_jec=JetL5GluonJEC;
+}
+
+
 void KJet::SetJetJECUnc(double jecunc){
   k_jet_error_jec=jecunc;
 }

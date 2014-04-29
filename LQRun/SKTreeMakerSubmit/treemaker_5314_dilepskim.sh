@@ -3,12 +3,12 @@
 
 ###### SET WHAT JOBS TO RUN
 
-runMC=true
-runDoubleMuon=false
+runMC=false
+runDoubleMuon=true
 runDoubleElectron=false
-runElectronMuon=true
+runElectronMuon=false
 runSingleMuon=false
-runSingleElectron=true
+runSingleElectron=false
 
 if [[ $1  == "ALL" ]];
 then
@@ -55,7 +55,8 @@ then
     logstep=1000
 
     #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "topDIL" "topHAD" "topLJ" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets")
-    declare -a input_samples=("SSWmWm" "SSWpWp")
+    declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ")
+
     source submit.sh
 fi
 

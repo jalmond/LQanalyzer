@@ -192,7 +192,11 @@ void Data::Reset(){
   ElectronGsfScPixCharge = 0;
   ElectronHLTDoubleEleMatched = 0;
   ElectronHLTSingleEleMatched = 0;
+  ElectronHLTSingleEleMatched8 = 0;
+  ElectronHLTSingleEleMatched17 = 0;
   ElectronHLTSingleEleWP80Matched = 0;
+  ElectronHLTEMuMatched8 = 0;
+  ElectronHLTEMuMatched17 = 0;
   ElectronHasEcalDrivenSeed = 0;
   ElectronHasMatchedConvPhot = 0;
   ElectronHasTrackerDrivenSeed = 0;
@@ -200,7 +204,14 @@ void Data::Reset(){
   ElectronIsEE = 0;
   MuonHLTSingleIsoMuonMatched = 0;
   MuonHLTSingleMuonMatched = 0;
+  MuonHLTSingleMuonMatched5 = 0;
+  MuonHLTSingleMuonMatched8 = 0;
+  MuonHLTSingleMuonMatched12 = 0;
+  MuonHLTSingleMuonMatched17= 0;
+  MuonHLTSingleMuonMatched24 = 0;
   MuonHLTDoubleMuonMatched = 0;
+  MuonHLTEMuMatched8 = 0;
+  MuonHLTEMuMatched17 = 0;
    PhotonHasMatchedConvPhot = 0;
    PhotonHasMatchedPromptEle = 0;
    PhotonHasPixelSeed = 0;
@@ -598,6 +609,10 @@ void Data::Reset(){
    PFJetL2L3ResJEC = 0;
    PFJetL2RelJEC = 0;
    PFJetL3AbsJEC = 0;
+   PFJetL5BottomJEC = 0;
+   PFJetL5CharmJEC = 0;
+   PFJetL5UDSJEC = 0;
+   PFJetL5GluonJEC = 0;
    PFJetMuonEnergyFraction = 0;
    PFJetNeutralEmEnergyFraction = 0;
    PFJetNeutralHadronEnergyFraction = 0;
@@ -931,10 +946,21 @@ void Data::ConnectTrigger(){
   
   ConnectVariable("MuonHLTSingleIsoMuonMatched", MuonHLTSingleIsoMuonMatched, b_MuonHLTSingleIsoMuonMatched) ;
   ConnectVariable("MuonHLTSingleMuonMatched", MuonHLTSingleMuonMatched, b_MuonHLTSingleMuonMatched);
+  ConnectVariable("MuonHLTSingleMuonMatched5", MuonHLTSingleMuonMatched5, b_MuonHLTSingleMuonMatched5);
+  ConnectVariable("MuonHLTSingleMuonMatched8", MuonHLTSingleMuonMatched8, b_MuonHLTSingleMuonMatched8);
+  ConnectVariable("MuonHLTSingleMuonMatched12", MuonHLTSingleMuonMatched12, b_MuonHLTSingleMuonMatched12);
+  ConnectVariable("MuonHLTSingleMuonMatched17", MuonHLTSingleMuonMatched17, b_MuonHLTSingleMuonMatched17);
+  ConnectVariable("MuonHLTSingleMuonMatched24", MuonHLTSingleMuonMatched24, b_MuonHLTSingleMuonMatched24);
   ConnectVariable("MuonHLTDoubleMuonMatched", MuonHLTDoubleMuonMatched, b_MuonHLTDoubleMuonMatched);
+  ConnectVariable("MuonHLTEMuMatched8", MuonHLTEMuMatched8,   b_MuonHLTEMuMatched8);
+  ConnectVariable("MuonHLTEMuMatched17", MuonHLTEMuMatched17, b_MuonHLTEMuMatched17);
   ConnectVariable("ElectronHLTDoubleEleMatched", ElectronHLTDoubleEleMatched, b_ElectronHLTDoubleEleMatched);
   ConnectVariable("ElectronHLTSingleEleMatched", ElectronHLTSingleEleMatched, b_ElectronHLTSingleEleMatched);
+  ConnectVariable("ElectronHLTSingleEleMatched8", ElectronHLTSingleEleMatched8, b_ElectronHLTSingleEleMatched8);
+  ConnectVariable("ElectronHLTSingleEleMatched17", ElectronHLTSingleEleMatched17, b_ElectronHLTSingleEleMatched17);
   ConnectVariable("ElectronHLTSingleEleWP80Matched", ElectronHLTSingleEleWP80Matched, b_ElectronHLTSingleEleWP80Matched);
+  ConnectVariable("ElectronHLTEMuMatched8",  ElectronHLTEMuMatched8,   b_ElectronHLTEMuMatched8);
+  ConnectVariable("ElectronHLTEMuMatched17", ElectronHLTEMuMatched17,  b_ElectronHLTEMuMatched17);
 
   return;
 }
@@ -1216,11 +1242,11 @@ void Data::ConnectPFJets(){
   ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC, b_PFJetL2L3ResJEC);
   ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC, b_PFJetL2RelJEC);
   ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC, b_PFJetL3AbsJEC);
+  ConnectVariable("PFJetL5BottomJEC", PFJetL5BottomJEC, b_PFJetL5BottomJEC);
+  ConnectVariable("PFJetL5CharmJEC", PFJetL5CharmJEC, b_PFJetL5CharmJEC);
+  ConnectVariable("PFJetL5UDSJEC", PFJetL5UDSJEC, b_PFJetL5UDSJEC);
+  ConnectVariable("PFJetL5GluonJEC", PFJetL5GluonJEC, b_PFJetL5GluonJEC);
   ConnectVariable("PFJetPtRaw", PFJetPtRaw, b_PFJetPtRaw);
-  ConnectVariable("PFJetL2L3ResJEC", PFJetL2L3ResJEC, b_PFJetL2L3ResJEC); 
-  ConnectVariable("PFJetL2RelJEC", PFJetL2RelJEC, b_PFJetL2RelJEC); 
-  ConnectVariable("PFJetL3AbsJEC", PFJetL3AbsJEC, b_PFJetL3AbsJEC); 
-  ConnectVariable("PFJetPtRaw", PFJetPtRaw, b_PFJetPtRaw);  
   
   //ConnectVariable("PFJetBeta", PFJetBeta); 
   //ConnectVariable("PFJetBetaClassic", PFJetBetaClassic);

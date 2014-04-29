@@ -133,7 +133,7 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
     }
     
     // reconstruct dilepton system
-    snu::KParticle Z = electronTightColl.at(0) + muonTightColl.at(1);
+    snu::KParticle Z = electronTightColl.at(0) + muonTightColl.at(0);
     
     if(electronTightColl.at(0).Charge() != muonTightColl.at(0).Charge()){      
       
