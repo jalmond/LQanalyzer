@@ -74,6 +74,7 @@ namespace snu {
     void SetMuonIDCharge(int charge);
     
     void SetMuonMSPt(float pt);
+    void SetMuonMSE(float e);
     void SetMuonMSEta(float eta);
     void SetMuonMSPhi(float phi);
     void SetMuonMSCharge(int charge);
@@ -129,6 +130,7 @@ namespace snu {
       
     inline Double_t MuonMSPt() const {return muon_ms_pt;}
     inline Double_t MuonMSEta() const {return muon_ms_eta;}
+    inline Double_t MuonMSE() const {return muon_ms_e;}
     inline Double_t MuonMSPhi() const {return muon_ms_phi;}
     inline Double_t MuonMSCharge() const {return muon_ms_charge;}
     
@@ -155,10 +157,10 @@ namespace snu {
     Int_t i_muonVtx;
 
     Bool_t k_dimuon_trig_match,k_muon_trig_match,k_isomuon_trig_match, k_muon_trig_match5,k_muon_trig_match8,k_muon_trig_match12,k_muon_trig_match17,k_muon_trig_match24,k_emu_trig_match8, k_emu_trig_match17;
-    Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge;
+    Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge,  muon_ms_e;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,5)
+    ClassDef(KMuon,6)
   };   
 }//namespace snu
 

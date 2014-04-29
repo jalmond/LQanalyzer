@@ -680,6 +680,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
       if(MuonMuonSpecCharge->at(ilep) !=-999. && MuonMuonSpecCharge->at(ilep) !=0){
 	muon.SetMuonMSPt(MuonMuonSpecPt->at(ims));
+	muon.SetMuonMSE(MuonMuonSpecE->at(ims));
 	muon.SetMuonMSEta(MuonMuonSpecEta->at(ims));
 	muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ims));
 	muon.SetMuonMSCharge(MuonMuonSpecCharge->at(ims));
@@ -687,6 +688,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }
       else{
 	muon.SetMuonMSPt(-999.);
+	muon.SetMuonMSE(-999.);
 	muon.SetMuonMSEta(-999.);
 	muon.SetMuonMSPhi(-999.);
 	muon.SetMuonMSCharge(-999);
