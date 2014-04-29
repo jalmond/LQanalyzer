@@ -391,10 +391,10 @@ topHAD		460656.55	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_HadronicMGDecays_
 topLJ		93722.93	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
 ttbar           29588.256       /data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
 		
-W1Jets		3781.307	/data1/DATA/LQNtuples_5_3_14_snu27/MC/
-W2Jets		18803.881	/data1/DATA/LQNtuples_5_3_14_snu27/MC/
-W3Jets		29514.73	/data1/DATA/LQNtuples_5_3_14_snu27/MC/
-W4Jets		62889.11	/data1/DATA/LQNtuples_5_3_14_snu27/MC/
+W1Jets		3781.307	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W2Jets		18803.881	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W3Jets		29514.73	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W4Jets		62889.11	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/
 		
 Z1Jets		43081.069	/data1/DATA/LQNtuples_5_3_14_snu27/MC/DY1JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
 Z2Jets		12949.444	/data1/DATA/LQNtuples_5_3_14_snu27/MC/DY2JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
