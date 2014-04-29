@@ -1,13 +1,13 @@
 # Specify_location_of_data/mc
 mcpath	        /home/jalmond/LQanalyzer/data/output/SSElectron/
-datapath	/home/jalmond/LQanalyzer/data/output/SSElectron/HNDiElectron_periodE_SKegamma_5_3_8.root
-datadrivenpath	/home/jalmond/LQanalyzer/data/output/SElectron/
+datapath	/home/jalmond/LQanalyzer/data/output/SSElectron/HNDiElectron_data_dilep_5_3_14.root
+datadrivenpath	/home/jalmond/LQanalyzer/data/output/SSElectron/
 # Specify_the_list_of_hists_to_plot
-plottingpath	dat/DY_hnhist_config.txt
-cutpath		dat/DY_hn_cuts.txt
+plottingpath	dat/hnhist_config.txt
+cutpath		dat/hn_cuts.txt
 # file_prefix
 prefix		HNDiElectron_SK
-postfix		_5_3_8.root	
+postfix		_dilep_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
 outputdir  HNDiElectron
 histdir    LQMarch14
@@ -21,5 +21,5 @@ samples	   WZ
 samples	   ZZ   
 samples	   DY   
 samples	   Top	
-samples	   Wjet 
+#samples	   Wjet 
 END

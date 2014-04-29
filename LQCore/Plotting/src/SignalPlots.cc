@@ -8,6 +8,7 @@ using namespace std;
 SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   
   map_sig["h_jjmass"] =         new TH1F("h_dijetsmass_"    + name,"Invariant mass of the two leading jets",250,0.,500.);
+  map_sig["h_leadjetmass"] =         new TH1F("h_leadjetsmass_"    + name,"Invariant mass of the two leading jets",250,0.,500.);
   if(channel == ee ){
     map_sig["h_eemass"] =         new TH1F("h_eemass_"        + name,"Invariant mass of the two leading electrons",250,0.,500.);
     map_sig["h_e1jjmass"] =       new TH1F("h_e1jjmass_"      + name,"Invariant mass of the two leading jets and leading muon",100,0.,1000.);
@@ -132,6 +133,7 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   
   map_sig["h_jets_eta"] =        new TH1F("h_jets_eta_"       + name,"#eta distribution of the two jets",120,-3,3);
   map_sig["h_jets_phi"] =        new TH1F("h_jets_phi_"       + name,"#phi distribution of the two jets",140,-3.5,3.5);
+  map_sig["h_PileupJetIDMVA"] =        new TH1F("h_pileupJetIDMVA_"   + name, "" ,100., -1.,1.);
   map_sig["h_bTag"] =           new TH1F("h_bTag_"          + name,"bTag discrimant",100,-1,3);
   map_sig["h_Njets"] =          new TH1F("h_Njets_"         + name,"number of jets",10,0,10);
   map_sig["h_Nbjets"] =         new TH1F("h_Nbjets_"        + name,"number of b jets",5,0,5);
@@ -202,11 +204,13 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   int nbjet=0;
   /// use CSVM https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagPerformanceOP
+  float leadjetmass=0.;
   for(UInt_t emme=0; emme<jets.size(); emme++){
     
     for(UInt_t enne=1; enne<jets.size(); enne++) {
       if(emme == enne) continue;
       dijetmass_tmp = (jets[emme]+jets[enne]).M();
+      if(emme==0 && enne == 1) leadjetmass = dijetmass_tmp;
       if ( fabs(dijetmass_tmp-Mass_W) < fabs(dijetmass-Mass_W) ) {
 	dijetmass = dijetmass_tmp;
 	m = emme;
@@ -214,8 +218,9 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       }
     }
   }
-
-
+  
+  if(leadjetmass != 0.)Fill("h_leadjetmass", leadjetmass,weight);
+  
   
 
   if(muons.size()==2){     
@@ -226,7 +231,9 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_mumujjmass", (muons[0]+muons[1]+jets[m]+jets[n]).M(),weight);
       Fill("h_WandNmass", (muons[0]+muons[1]+jets[m]+jets[n]).M() , (muons[1]+jets[m]+jets[n]).M(),weight);      
     }
+    Fill("h_3Dparm", (muons[0]+muons[1]+jets[m]+jets[n]).M(), muons[0].Pt(), muons[1].Pt(), weight); 
   }
+  
   int imu(0);
   for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++, imu++){
     
@@ -261,6 +268,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_e2jjmass", (electrons[1]+jets[m]+jets[n]).M(),weight);
       Fill("h_eejjmass", (electrons[0] + electrons[1]+jets[m]+jets[n]).M(),weight);
       Fill("h_WandNmass", (electrons[0]+electrons[1]+jets[m]+jets[n]).M() , (electrons[1]+jets[m]+jets[n]).M(),weight);      
+      Fill("h_3Dparm", (electrons[0]+electrons[1]+jets[m]+jets[n]).M(), electrons[0].Pt(), electrons[1].Pt(), weight); 
     }
   }
   int iel(0);
@@ -351,6 +359,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     if(j==0)Fill("h_leadingJetPt", jets[0].Pt(),weight);
     if(j==1)Fill("h_secondJetPt", jets[1].Pt(),weight);
     Fill("h_jets_eta",jets[j].Eta(),weight);
+    Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].BtagProb(),weight);
     if(jets.at(j).BtagProb() > 0.679) nbjet++; 
@@ -364,71 +373,6 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
 
 void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight) {
-  
-  //// Jet mass variables
-  dijetmass_tmp=dijetmass=9999.9;
-  UInt_t m(0),n(0);
-  float min_ejet_Dr=10000.;  
-  for(UInt_t i=0; i<electrons.size(); i++){    for(UInt_t emme=0; emme<jets.size()-1; emme++){
-      float dR =electrons[i].DeltaR(jets[emme]);
-      if(dR< min_ejet_Dr) min_ejet_Dr=dR;
-    }
-  }
-  
-  Fill("h_ElectronJetdR",min_ejet_Dr,weight);
-  
-  for(UInt_t i=0; i<electrons.size()-1; i++)
-    for(UInt_t j=1; j<electrons.size(); j++) {
-      for(UInt_t emme=0; emme<jets.size()-1; emme++)
-	for(UInt_t enne=1; enne<jets.size(); enne++) {
-	  dijetmass_tmp = (jets[emme]+jets[enne]).M();
-	  if ( fabs(dijetmass_tmp-Mass_W) < fabs(dijetmass-Mass_W) ) {
-	    dijetmass = dijetmass_tmp;
-	    m = emme;
-	    n = enne;
-	  }
-	}
-    
-      //// Fillplots
-      Fill("h_MET",ev.PFMET(), weight);
-      
-      //// Mass plots
-      Fill("h_jjmass", (jets[m]+jets[n]).M(),weight);
-      Fill("h_llmass", (electrons[i]+electrons[j]).M(),weight);
-      Fill("h_l1jjmass", (electrons[i]+jets[m]+jets[n]).M(),weight);
-      Fill("h_l2jjmass", (electrons[j]+jets[m]+jets[n]).M(),weight);
-      Fill("h_lljjmass", (electrons[i]+electrons[j]+jets[m]+jets[n]).M(),weight);
-      Fill("h_WandNmass", (electrons[i]+electrons[j]+jets[m]+jets[n]).M() , (electrons[j]+jets[m]+jets[n]).M(),weight);
-
-      Fill("h_3Dparm", (electrons[i]+electrons[j]+jets[m]+jets[n]).M(), electrons[i].Pt(), electrons[j].Pt(), weight); 
-      Fill("h_leadingElectronPt", electrons[i].Pt(),weight);
-      Fill("h_secondElectronPt", electrons[j].Pt(),weight);
-      Fill("h_leadingJetPt", jets[m].Pt(),weight);
-      Fill("h_secondJetPt", jets[n].Pt(),weight);
-      
-      float EA1=GetElectronISOEA(electrons[i].SCEta());
-      float EA2=GetElectronISOEA(electrons[j].SCEta());
-      float rho = ev.JetRho();
-      float el1_reliso =  electrons[i].PFChargedHadronIso03() + max( electrons[i].PFNeutralHadronIso03() + electrons[i].PFPhotonIso03() - rho * EA1, 0.);
-      float el2_reliso =  electrons[j].PFChargedHadronIso03() + max( electrons[j].PFNeutralHadronIso03() + electrons[j].PFPhotonIso03() - rho * EA2, 0.);
- 
-      Fill("h_leadingElectronIso", el1_reliso,weight);
-      Fill("h_secondElectronIso", el2_reliso,weight);
-      Fill("h_electroncharge",electrons[i].Charge(),weight);
-      Fill("h_electronseta",electrons[i].Eta(),weight);
-      Fill("h_electronseta",electrons[j].Eta(),weight);
-      Fill("h_jetseta",jets[m].Eta(),weight);
-      Fill("h_jetseta",jets[n].Eta(),weight);
-      Fill("h_bTag",jets[m].BtagProb(),weight);
-      Fill("h_bTag",jets[n].BtagProb(),weight);
-      Fill("h_cosTheta1",cos(electrons[i].Theta()),weight);
-      Fill("h_cosTheta2",cos(electrons[j].Theta()),weight);
-      Fill("h_Njets",jets.size(), weight);
-      
-      //nogoodW:
-      ;
-    }
-  
   
   return;
 }
@@ -449,75 +393,21 @@ float SignalPlots::GetElectronISOEA(float eta){
 }
 void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight){
   
-   //// Jet mass variables
-  dijetmass_tmp=dijetmass=9999.9;
-  UInt_t m(0),n(0);
-
-  float min_mujet_Dr=10000.;  
-  for(UInt_t i=0; i<muons.size(); i++){    for(UInt_t emme=0; emme<jets.size()-1; emme++){
-      float dR =muons[i].DeltaR(jets[emme]);
-      if(dR< min_mujet_Dr) min_mujet_Dr=dR;
-    }
-  }
-
-  Fill("h_MuonJetdR",min_mujet_Dr,weight);
-  
-  for(UInt_t i=0; i<muons.size()-1; i++)
-    for(UInt_t j=1; j<muons.size(); j++) {
-      for(UInt_t emme=0; emme<jets.size()-1; emme++)
-	for(UInt_t enne=1; enne<jets.size(); enne++) {
-	  dijetmass_tmp = (jets[emme]+jets[enne]).M();
-	  if ( fabs(dijetmass_tmp-Mass_W) < fabs(dijetmass-Mass_W) ) {
-	    dijetmass = dijetmass_tmp;
-	    m = emme;
-	    n = enne;
-	  }
-	}
-
-      //// Fillplots
-      Fill("h_MET",ev.PFMET(), weight);
-      
-      //// Mass plots
-      Fill("h_jjmass", (jets[m]+jets[n]).M(),weight);
-      Fill("h_llmass", (muons[i]+muons[j]).M(),weight);
-      Fill("h_l1jjmass", (muons[i]+jets[m]+jets[n]).M(),weight);
-      Fill("h_l2jjmass", (muons[j]+jets[m]+jets[n]).M(),weight);
-      Fill("h_lljjmass", (muons[i]+muons[j]+jets[m]+jets[n]).M(),weight);
-      Fill("h_WandNmass", (muons[i]+muons[j]+jets[m]+jets[n]).M() , (muons[j]+jets[m]+jets[n]).M(),weight);
-
-      Fill("h_3Dparm", (muons[i]+muons[j]+jets[m]+jets[n]).M(), muons[i].Pt(), muons[j].Pt(), weight); 
-      Fill("h_leadingMuonPt", muons[i].Pt(),weight);
-      Fill("h_secondMuonPt", muons[j].Pt(),weight);
-      Fill("h_leadingJetPt", jets[m].Pt(),weight);
-      Fill("h_secondJetPt", jets[n].Pt(),weight);
-
-      
-      float mu1_reliso = (muons[i].SumIsoCHDR03() + std::max(0.0, muons[i].SumIsoNHDR03() + muons[i].SumIsoPHDR03() - 0.5* muons[i].SumPUIsoR03()))/muons[0].Pt();
-      float mu2_reliso = (muons[j].SumIsoCHDR03() + std::max(0.0, muons[j].SumIsoNHDR03() + muons[j].SumIsoPHDR03() - 0.5* muons[j].SumPUIsoR03()))/muons[1].Pt();
-      Fill("h_leadingMuonIso",mu1_reliso ,weight);
-      Fill("h_secondMuonIso",mu2_reliso ,weight);
-      Fill("h_muoncharge",muons[i].Charge(),weight);
-      Fill("h_muonseta",muons[i].Eta(),weight);
-      Fill("h_muonseta",muons[j].Eta(),weight);
-      Fill("h_jetseta",jets[m].Eta(),weight);
-      Fill("h_jetseta",jets[n].Eta(),weight);
-      Fill("h_bTag",jets[m].BtagProb(),weight);
-      Fill("h_bTag",jets[n].BtagProb(),weight);
-      Fill("h_cosTheta1",cos(muons[i].Theta()),weight);
-      Fill("h_cosTheta2",cos(muons[j].Theta()),weight);
-      Fill("h_Njets",jets.size(), weight);
-          
-      //nogoodW:
-      ;
-    }
-
-  
   return;
 }
 
 void SignalPlots::Write() {
  
   for(map<TString, TH1*>::iterator it = map_sig.begin(); it != map_sig.end(); it++){
+    it->second->Write();
+  }
+
+  for(map<TString, TH2*>::iterator it = map_sig2.begin(); it != map_sig2.end(); it++){
+    it->second->Write();
+  }
+
+
+  for(map<TString, TH3*>::iterator it = map_sig3.begin(); it != map_sig3.end(); it++){
     it->second->Write();
   }
 
@@ -537,6 +427,17 @@ SignalPlots::SignalPlots(const SignalPlots& sp): StdPlots(sp)
     std::map<TString, TH1*>::iterator mit2 = sp.GetMap().find(mit->first);
     mit->second = mit2->second;
   }
+
+  for(std::map<TString, TH2*>::iterator mit = map_sig2.begin(); mit != map_sig2.end() ; mit++){
+    std::map<TString, TH2*>::iterator mit2 = sp.GetMap2().find(mit->first);
+    mit->second = mit2->second;
+  }
+
+  for(std::map<TString, TH3*>::iterator mit = map_sig3.begin(); mit != map_sig3.end() ; mit++){
+    std::map<TString, TH3*>::iterator mit2 = sp.GetMap3().find(mit->first);
+    mit->second = mit2->second;
+  }
+  
 }
 
 
@@ -548,6 +449,16 @@ SignalPlots& SignalPlots::operator= (const SignalPlots& sp)
       std::map<TString, TH1*>::iterator mit2 = sp.GetMap().find(mit->first);
       mit->second = mit2->second;
     }
+    
+    for(std::map<TString, TH2*>::iterator mit = map_sig2.begin(); mit != map_sig2.end() ; mit++){
+      std::map<TString, TH2*>::iterator mit2 = sp.GetMap2().find(mit->first);
+      mit->second = mit2->second;
+    }
+
+    for(std::map<TString, TH3*>::iterator mit = map_sig3.begin(); mit != map_sig3.end() ; mit++){
+      std::map<TString, TH3*>::iterator mit2 = sp.GetMap3().find(mit->first);
+      mit->second = mit2->second;
+    }
   }
   return *this;
 }
@@ -557,6 +468,14 @@ SignalPlots::~SignalPlots() {
      delete mit->second ;
   }
 
+   for(std::map<TString, TH2*>::iterator mit = map_sig2.begin(); mit != map_sig2.end() ; mit++){
+     delete mit->second ;
+   }
+
+   for(std::map<TString, TH3*>::iterator mit = map_sig3.begin(); mit != map_sig3.end() ; mit++){
+     delete mit->second ;
+   }
+   
 }
 
 void SignalPlots::Fill(TString name, double value, double w){

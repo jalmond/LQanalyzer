@@ -37,6 +37,8 @@ class SignalPlots : public StdPlots{
 
   /// Get Map
   inline std::map<TString, TH1*> GetMap() const{return map_sig;}
+  inline std::map<TString, TH2*> GetMap2() const{return map_sig2;}
+  inline std::map<TString, TH3*> GetMap3() const{return map_sig3;}
 
   /// copy constructor
   SignalPlots(const SignalPlots& sp);  ///Copy constructor

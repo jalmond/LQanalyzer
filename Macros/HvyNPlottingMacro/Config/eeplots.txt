@@ -1,7 +1,7 @@
 # Specify_location_of_data/mc
-mcpath	        /home/jalmond/LQanalyzer/data/output/Electron/
-datapath	/home/jalmond/LQanalyzer/data/output/Electron/ExampleAnalyzerDiElectron_data_5_3_14.root
-datadrivenpath	/home/jalmond/LQanalyzer/data/output/Electron/
+mcpath	        /home/jalmond/LQanalyzer/data/output/SSElectron/
+datapath	/home/jalmond/LQanalyzer/data/output/SSElectron/ExampleAnalyzerDiElectron_data_5_3_14.root
+datadrivenpath	/home/jalmond/LQanalyzer/data/output/SSElectron/
 # Specify_the_list_of_hists_to_plot
 plottingpath	dat/exampledielectron_hist_config.txt
 cutpath		dat/exampledielectron_cuts.txt

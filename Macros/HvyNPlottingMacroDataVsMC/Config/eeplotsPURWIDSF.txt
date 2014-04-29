@@ -16,11 +16,11 @@ showdata   true
 usenp      false
 ylog	   true
 # List_the_samples_to_be_included
-#samples	   WW   
-#samples	   WZ   
-#samples	   ZZ   
+samples	   WW   
+samples	   WZ   
+samples	   ZZ   
 samples	   DY   
 samples	   Top	
-#samples	   Wjet 
+samples	   Wjet 
 #samples    QCD
 END

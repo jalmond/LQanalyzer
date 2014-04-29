@@ -53,7 +53,7 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   MakeCleverHistograms(sighist, "LooseEl");
   MakeCleverHistograms(sighist, "TightEl");
      
-   return;
+  return;
 }
 
 
@@ -91,7 +91,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronLooseColl;
   eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_FAKELOOSE);
   eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.4);
+  eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->Selection(electronLooseColl);
   
   std::vector<snu::KElectron> electronTightColl;

@@ -246,9 +246,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonTightColl, electronTightColl);
   m_logger << DEBUG<< "Number of jets  = " << jetColl_lepveto.size() << LQLogger::endmsg;
 
-  
-
-   int nbjet=0;
+  int nbjet=0;
    for(int i=0; i <jetColl_lepveto.size() ; i++){
     if(jetColl_lepveto.at(i).BtagProb() > 0.679) nbjet++;
    }
@@ -307,6 +305,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 void ExampleAnalyzerDiElectron::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
+  m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
 
 }
 
