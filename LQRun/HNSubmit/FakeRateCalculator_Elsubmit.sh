@@ -17,7 +17,7 @@ data_lumi="AtoD"
 loglevel="INFO"
 logstep=1000
 #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "W-W-" "W+W+" "Wgamma")
-declare -a input_samples=("A")
+declare -a input_samples=("DY50plus")
 # "B" "C" "D" "seDY10to50" "seDY50plus" "settbar" "seWjets" "seWZ" "seZZ" "seWW" "seW-W-" "seW+W+" "seWgamma")
 
 

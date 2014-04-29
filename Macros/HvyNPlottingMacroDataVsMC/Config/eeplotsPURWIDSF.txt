@@ -1,7 +1,7 @@
 # Specify_location_of_data/mc
-mcpath	        /home/jalmond/LQanalyzer/data/output/Electron/
-datapath	/home/jalmond/LQanalyzer/data/output/Electron/ExampleAnalyzerDiElectron_data_dilep_5_3_14.root
-datadrivenpath	/home/jalmond/LQanalyzer/data/output/Electron/
+mcpath	        /home/jalmond/Analysis/LQanalyzer/data/output/Electron/
+datapath	/home/jalmond/Analysis/LQanalyzer/data/output/Electron/ExampleAnalyzerDiElectron_data_dilep_5_3_14.root
+datadrivenpath	/home/jalmond/Analysis/LQanalyzer/data/output/Electron/
 # Specify_the_list_of_hists_to_plot
 plottingpath	dat/exampledielectron_hist_config.txt
 cutpath		dat/exampledielectron_purwidcuts.txt
@@ -9,7 +9,7 @@ cutpath		dat/exampledielectron_purwidcuts.txt
 prefix		ExampleAnalyzerDiElectron_SK
 postfix		_dilep_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  ExampleAnalyzer_DiElectronPURWID_Mar14_patch1
+outputdir  ExampleAnalyzer_DiElectronPURWID_May14
 histdir    LQMarch14
 # CONFIGURE_HISTOGRAMS
 showdata   true
@@ -21,6 +21,6 @@ samples	   WZ
 samples	   ZZ   
 samples	   DY   
 samples	   Top	
-samples	   Wjet 
+#samples	   Wjet 
 #samples    QCD
 END
