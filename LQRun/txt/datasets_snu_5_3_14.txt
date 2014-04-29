@@ -47,6 +47,16 @@ SKHNee500_nocut		23208151.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May1
 SKHNee600_nocut		58506729.08	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNee600/
 SKHNee700_nocut		130502192.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNee700/
 
+SKHNemu50_nocut         46.68           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu50/
+SKHNemu100_nocut        14036.72        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu100/
+SKHNemu125_nocut        46242.46        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu125/
+SKHNemu200_nocut        380833.40       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu200/
+SKHNemu250_nocut        979699.29       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu250/
+SKHNemu275_nocut        1476651.80	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu275/
+SKHNemu325_nocut        3063798.49	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu325/
+SKHNemu400_nocut        7879056.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu400/
+SKHNemu500_nocut        23208151.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCNoCuts/HNemu500/
+
 #######################################################################################################################################
 #######################################################################################################################################
 ##### LEPTON SKIMS
@@ -392,9 +402,14 @@ Z2Jets		1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/
 Z3Jets		1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/
 Z4Jets		1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/ 
 
-###HN signal
+##########################################
+### HN signal ###
+##########################################
+HNmumu40	1.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-40_TuneZ2star_8TeV-alpgen/
 HNmumu50	46.68		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-50_TuneZ2star_8TeV-alpgen/
+HNmumu60	1.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-60_TuneZ2star_8TeV-alpgen/
 HNmumu70	235.87		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-70_TuneZ2star_8TeV-alpgen/
+HNmumu80	1.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-80_TuneZ2star_8TeV-alpgen/
 HNmumu90	7037.03		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-90_TuneZ2star_8TeV-alpgen/
 HNmumu100	14036.72         /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen/
 HNmumu125	46242.46         /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-125_TuneZ2star_8TeV-alpgen/
@@ -413,8 +428,11 @@ HNmumu500	23208151.52      /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrin
 HNmumu600	58506729.08      /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-600_TuneZ2star_8TeV-alpgen/
 HNmumu700	130502192.5      /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuMu_M-700_TuneZ2star_8TeV-alpgen/
 
+HNee40        1.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-40_TuneZ2star_8TeV-alpgen/
 HNee50        46.68		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-50_TuneZ2star_8TeV-alpgen/
+HNee60        1.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-60_TuneZ2star_8TeV-alpgen/
 HNee70        235.87		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-70_TuneZ2star_8TeV-alpgen/
+HNee80        1.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-80_TuneZ2star_8TeV-alpgen/
 HNee90        7037.03		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-90_TuneZ2star_8TeV-alpgen/
 HNee100       14036.72		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-100_TuneZ2star_8TeV-alpgen/
 HNee125       46242.46		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-125_TuneZ2star_8TeV-alpgen/
@@ -432,3 +450,13 @@ HNee400       7879056.73	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrino
 HNee500       23208151.52	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-500_TuneZ2star_8TeV-alpgen/
 HNee600       58506729.08	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-600_TuneZ2star_8TeV-alpgen/
 HNee700       130502192.52	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEE_M-700_TuneZ2star_8TeV-alpgen/
+
+HNemu50	      46.68		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-50_TuneZ2star_8TeV-alpgen/
+HNemu100      14036.72		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-100_TuneZ2star_8TeV-alpgen/
+HNemu125      46242.46		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-125_TuneZ2star_8TeV-alpgen/
+HNemu200      380833.40		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-200_TuneZ2star_8TeV-alpgen/
+HNemu250      979699.29		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-250_TuneZ2star_8TeV-alpgen/
+HNemu275      1476651.80	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-275_TuneZ2star_8TeV-alpgen/
+HNemu325      3063798.49	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-325_TuneZ2star_8TeV-alpgen/ 
+HNemu400      7879056.73	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-400_TuneZ2star_8TeV-alpgen/ 
+HNemu500      23208151.52	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToEMu_M-500_TuneZ2star_8TeV-alpgen/
