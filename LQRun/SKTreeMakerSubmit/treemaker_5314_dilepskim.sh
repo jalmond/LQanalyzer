@@ -3,8 +3,8 @@
 
 ###### SET WHAT JOBS TO RUN
 
-runMC=false
-runDoubleMuon=true
+runMC=true
+runDoubleMuon=false
 runDoubleElectron=false
 runElectronMuon=false
 runSingleMuon=false
@@ -55,8 +55,8 @@ then
     logstep=1000
 
     #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "topDIL" "topHAD" "topLJ" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets")
-    declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ")
-
+    
+    declare -a input_samples=("Wbb" "Zbb" "DYee" "DYmm" "DYtt" "HtoZZ" "Wgamma" "Zgamma" "WgammaE" "WWmg" "WZtollqq" "WZtoqqln" "WZtollln" "ZZtollnn" "ZZtollqq" "ZZtollll" "ZZZZtoeemm" "ZZtoeett" "ZZtommtt" "ZZtommmm" "ZZtoeeee" "ZZtotttt" "Wjets" )
     source submit.sh
 fi
 
