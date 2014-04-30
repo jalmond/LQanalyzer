@@ -253,7 +253,7 @@ void KMuon::SetMuonMSCharge(int charge){
   muon_ms_charge=charge;
 }
 
-void KMuon::SetMuonMSE(int e){
+void KMuon::SetMuonMSE(float e){
   muon_ms_e=e;
 }
 

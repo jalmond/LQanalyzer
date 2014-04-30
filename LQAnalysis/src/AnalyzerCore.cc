@@ -1,4 +1,4 @@
-/ $Id: AnalyzerCore.cc 1 2013-11-26 10:23:10Z jalmond $
+// $Id: AnalyzerCore.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
