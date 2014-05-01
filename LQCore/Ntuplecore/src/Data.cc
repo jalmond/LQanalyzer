@@ -899,7 +899,7 @@ void Data::ConnectVariables(bool setall){
 void Data::ConnectEvent(){
 
   ConnectVariable("isData", isData, b_isData);
-  ConnectVariable("ProcessID", ProcessID);
+  ConnectVariable("ProcessID", ProcessID, b_ProcessID);
   ConnectVariable("run", run, b_run);
   ConnectVariable("VertexNTracks", VertexNTracks, b_VertexNTracks);
   ConnectVariable("event", event, b_event);
