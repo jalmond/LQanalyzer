@@ -143,7 +143,7 @@ void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonC
     if ( el->CaloEnergy()==0 ) continue;
     
     bool pass_selection = true;
-    ElectronID = PassUserID(EGAMMA_TIGHT, *el,rho);
+    ElectronID = PassUserID(EGAMMA_MEDIUM, *el,rho);
     Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
     if (fabs(el->SCEta()) < 1.0) ifid = 0;
     else if (fabs(el->SCEta()) < 1.479) ifid = 1;
@@ -167,13 +167,13 @@ void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonC
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
     }
-    if(!(LeptonRelIsoDR03 <  0.1)){
+    if(!(LeptonRelIsoDR03 <  0.09)){
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut" <<endl;
     }
     if(!el->GsfCtfScPixChargeConsistency())  {
       pass_selection = false;
-      if(m_debug)  cout << "HNTightElectronSelection:Fail Charge Cons. Cut" <<endl;
+      if(m_debug) cout << "HNTightElectronSelection:Fail Charge Cons. Cut" <<endl;
     }
     if(!(fabs(el->Eta()) < 2.5)){
       pass_selection = false;

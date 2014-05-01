@@ -50,6 +50,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist,  "SSDiElectronTight");
    MakeCleverHistograms(sighist,  "SSDiElectronTight_DiJet");
+   MakeCleverHistograms(sighist,  "SSSR0");
    
    MakeCleverHistograms(sighist,  "NoCut");
    MakeCleverHistograms(sighist,  "TriEl");
@@ -118,8 +119,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-  eventbase->GetJetSel()->SetPt(20.);
-  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->SetPt(40.);
+  eventbase->GetJetSel()->SetEta(2.4);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
 
@@ -307,6 +308,15 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 
   
+  bool no_emuoverlap = true;
+
+  for(int i=0; i < electronTightColl.size() ; i++){
+    for(int j=0; j < muonTightColl.size() ; j++){
+      float dR =  electronTightColl[i].DeltaR(muonTightColl[j]);
+      if(dR < 0.1) no_emuoverlap= false;
+    }
+  }
+  
   if (electronTightColl.size() == 2) {      
 
     if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge()){      
@@ -314,13 +324,22 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       FillCutFlow("SS_t",weight);
       FillCLHist(sighist, "SSDiElectronTight", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
       
-      if(nloose_lep == 2){
+      if(nloose_lep == 2 && no_emuoverlap){
 	FillCutFlow("SS_lvt_t",weight);
       
 	if(jetColl_lepveto.size() > 1){
 	  FillCutFlow("SS_dijet_t",weight);
 	  FillCLHist(sighist, "SSDiElectronTight_DiJet", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-
+	  
+	  
+	  if(SumPt(jetColl_lepveto)  > 80.){
+	    if(! ( SumPt(jetColl_lepveto) < 500. && eventbase->GetEvent().PFMET() < 30.)){
+	      FillCLHist(sighist, "SSSR0", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+	    }
+	  }
+	  
+	    
+	  
 	  bool pass_same_vertex= (electronTightColl.at(0).VertexIndex() == electronTightColl.at(1).VertexIndex());
 	  bool fail_conv = true;
 	  bool fail_d0=false;

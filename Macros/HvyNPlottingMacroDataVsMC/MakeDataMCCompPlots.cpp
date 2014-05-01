@@ -696,11 +696,11 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
 
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
-  double x1 = 0.8;
-  double y1 = 0.8;
-  double x2 = 1.;
-  double y2 = 1.;
-
+  double x1 = 0.65;
+  double y1 = 0.65;
+  double x2 = 0.9;
+  double y2 = 0.9;
+  /*
   if(logy){
     
     x1 = 0.8;
@@ -716,7 +716,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
     y1= 0.6;
     y2= 0.9;
   }
-
+  */
   TLegend* legendH = new TLegend(x1,y1,x2,y2);
   legendH->SetFillColor(10);
   legendH->SetBorderSize(0);
@@ -777,9 +777,10 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
   
-  if(sample.Contains("DY")){
+  if(sample.Contains("dy")){
     list.push_back(make_pair("DY10to50",0.2));    
     list.push_back(make_pair("DY50plus",0.2));    
+    list.push_back(make_pair("Zbb",0.2));    
   }
   
   ///// Top samples //////////////////    
@@ -788,37 +789,44 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   //////// Diboson ////////
   if(sample.Contains("wz")){    
-    list.push_back(make_pair("WZ",0.09));
+    list.push_back(make_pair("WZtollln",0.09));
+    list.push_back(make_pair("WZtollqq",0.09));
+    list.push_back(make_pair("WZtoqqln",0.09));
   }
 
-  if(sample.Contains("QCD"))
+  if(sample.Contains("qcd"))
   {
-  list.push_back(make_pair("QCD_30-40_EM2",0.1));
-  list.push_back(make_pair("QCD_40_EM2",0.1));
-  list.push_back(make_pair("Wgamma",0.1));
+    //list.push_back(make_pair("QCD_30-40_EM2",0.1));
+    //list.push_back(make_pair("QCD_40_EM2",0.1));
+    
   }
-
+  
   if(sample.Contains("zz")){
-    list.push_back(make_pair("ZZ",0.09));
+    list.push_back(make_pair("ZZtollll",0.09));
+    list.push_back(make_pair("ZZtollnn",0.09));
+    list.push_back(make_pair("ZZtollqq",0.09));
   }
   
   if(sample.Contains("ww")){      
     list.push_back(make_pair("WW",0.09));
+    list.push_back(make_pair("WWW",0.09));
   }
   
   if(sample.Contains("wjet")){
     list.push_back(make_pair("Wjets",0.09));
+    list.push_back(make_pair("Wbb",0.09));
+    list.push_back(make_pair("Wgamma",0.1));
   }
   
   
-  
-
   //////// SS WW /////////  
-  if(sample.Contains("ssww")){         
-    list.push_back(make_pair("W-W-",0.22));              
-    list.push_back(make_pair("W+W+",0.22));              
+  if(sample.Contains("ss")){         
+    list.push_back(make_pair("SSWmWm",0.22));              
+    list.push_back(make_pair("SSWpWp",0.22));              
+    list.push_back(make_pair("ttZ",0.22));
+    list.push_back(make_pair("ttW",0.22));
+    list.push_back(make_pair("HtoZZ",0.22));
   }
-
 
   if(list.size()==0) cout << "Error in making lists" << endl;
   
@@ -1481,7 +1489,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     
   cout << " /// MakeDataMCComplots::SetUpConfig " << endl;
   /// colours of histograms
-  int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0);
+  int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0),  ttvcol(0), higgscol(0);
   
   // Get list of cuts to plot  
   ifstream colour_name_file("Config/colour.txt");
@@ -1504,6 +1512,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(histname=="sscol") sscol =col;
     if(histname=="wwcol") wwcol =col;
     if(histname=="wcol") wcol =col;
+    if(histname=="higgscol") higgscol =col;
+    if(histname=="ttvcol") ttvcol =col;
     cout << "Set sample " << histname << " with colour " << col  << endl;
   }
   
@@ -1513,23 +1523,24 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > wz = InitSample("wz");
   vector<pair<TString,float> > zz = InitSample("zz");
   vector<pair<TString,float> > ww = InitSample("ww");
-  vector<pair<TString,float> > ssww = InitSample("ssww");
-  vector<pair<TString,float> > z = InitSample("DY");
+  vector<pair<TString,float> > ss = InitSample("ss");
+  vector<pair<TString,float> > z = InitSample("dy");
   vector<pair<TString,float> > w = InitSample("wjet");
-  vector<pair<TString,float> > QCD = InitSample("QCD");
+  vector<pair<TString,float> > QCD = InitSample("qcd");
   
   /// NP is datadriven
   vector<pair<TString,float> > np;
   np.push_back(make_pair("datadriven",0.));
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-    if(listofsamples.at(i) =="WW")samples.push_back(make_pair(make_pair(ww,wwcol),"WW")); 
-    if(listofsamples.at(i) =="ZZ")samples.push_back(make_pair(make_pair(zz,zzcol),"ZZ"));
-    if(listofsamples.at(i) =="WZ")samples.push_back(make_pair(make_pair(wz,wzcol),"WZ"));
-    if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
-    if(listofsamples.at(i) =="Top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
-    if(listofsamples.at(i) =="Wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
-    if(listofsamples.at(i) =="QCD")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
+    if(listofsamples.at(i) =="ww")samples.push_back(make_pair(make_pair(ww,wwcol),"WW")); 
+    if(listofsamples.at(i) =="zz")samples.push_back(make_pair(make_pair(zz,zzcol),"ZZ"));
+    if(listofsamples.at(i) =="wz")samples.push_back(make_pair(make_pair(wz,wzcol),"WZ"));
+    if(listofsamples.at(i) =="ss")samples.push_back(make_pair(make_pair(ss,sscol),"SS"));
+    if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
+    if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
+    if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
+    if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="NonPrompt")samples.push_back(make_pair(make_pair(np,fcol),"NonPrompt"));   
   }
 

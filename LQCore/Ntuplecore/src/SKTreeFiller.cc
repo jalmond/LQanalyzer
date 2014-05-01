@@ -677,10 +677,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
     if(MuonMuonSpecPt){
-
+      
       if(MuonMuonSpecCharge->at(ilep) !=-999. && MuonMuonSpecCharge->at(ilep) !=0){
 	muon.SetMuonMSPt(MuonMuonSpecPt->at(ims));
-	muon.SetMuonMSE(MuonMuonSpecE->at(ims));
 	muon.SetMuonMSEta(MuonMuonSpecEta->at(ims));
 	muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ims));
 	muon.SetMuonMSCharge(MuonMuonSpecCharge->at(ims));

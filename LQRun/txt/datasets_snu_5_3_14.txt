@@ -299,10 +299,10 @@ muon B 	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodB/
 muon C 	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodC/
 muon D 	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodD/
 
-emu A       /data1/DATA/LQNtuples_5_3_14_snu27/Data/ElectronMuon/periodA/
-emu B       /data1/DATA/LQNtuples_5_3_14_snu27/Data/ElectronMuon/periodB/
-emu C       /data1/DATA/LQNtuples_5_3_14_snu27/Data/ElectronMuon/periodC/
-emu D       /data1/DATA/LQNtuples_5_3_14_snu27/Data/ElectronMuon/periodD/
+emu A       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodA/
+emu B       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodB/
+emu C       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodC/
+emu D       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodD/
 
 singlemuon A    /data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleMuon/periodA/ 
 singlemuon B    /data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleMuon/periodB/ 

@@ -29,6 +29,8 @@ class AnalyzerCore : public LQCycleBase {
 
   double ElectronScaleFactor( double eta, double pt);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
+  float SumPt( std::vector<snu::KJet> particles);
+
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
   

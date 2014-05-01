@@ -317,6 +317,17 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   
 }
 
+float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
+
+  float sumpt=0.;
+  
+  for(std::vector<snu::KJet>::iterator it = particles.begin(); it != particles.end(); it++){
+    sumpt += it->Pt();
+  }
+  return sumpt;
+}
+  
+
 float  AnalyzerCore::JetResCorr(snu::KJet jet, std::vector<KGenJet> genjets){
   
   /// This function is not needed when smeaing is already applied to LQNtuples in production stage

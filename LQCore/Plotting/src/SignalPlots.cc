@@ -101,6 +101,7 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   
   map_sig["h_leadingJetPt"] =   new TH1F("h_leadingJetPt_"  + name,"leading jet pt",60,0,300);
   map_sig["h_secondJetPt"] =    new TH1F("h_secondJetPt_"   + name,"secondary jet pt",60,0,300);
+  map_sig["h_HT"] =    new TH1F("h_HT_"   + name,"sum jet pt",100,0,1000);
   
   
   map_sig["h_MTmuon"] =            new TH1F("h_MTmuon_"           + name,"Mt",100,0.0,500.0);
@@ -356,6 +357,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
   
   for(UInt_t j=0; j < jets.size(); j++){ 
+    Fill("h_HT", jets[j].Pt(),weight);
     if(j==0)Fill("h_leadingJetPt", jets[0].Pt(),weight);
     if(j==1)Fill("h_secondJetPt", jets[1].Pt(),weight);
     Fill("h_jets_eta",jets[j].Eta(),weight);
