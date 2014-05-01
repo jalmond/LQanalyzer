@@ -353,18 +353,18 @@ Zgamma		49684.472	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZGToLLG_8TeV-madgraph/
 WgammaE		53576.196	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/WGstarToLNu2E_TuneZ2star_8TeV-madgraph-tauola/
 
 ### MADGRAPGH DIBOSON
-WWmg		332629.0	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WWJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
-WZtollqq	1457837.72	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
-WZtoqqln	1836275.25	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZJetsTo2QLNu_8TeV-madgraph/
-WZtollln	1910000.0	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZJetsTo3LNu_TuneZ2_8TeV-madgraph-tauola/
-ZZtollnn	2617628.83	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
-ZZtollqq	790824.82	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
-ZZtollll	27163220.34	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/
+WW_mg		332629.0	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WWJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
+WZtollqq_mg	1457837.72	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
+WZtoqqln_mg	1836275.25	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZJetsTo2QLNu_8TeV-madgraph/
+WZtollln_mg	1910000.0	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZJetsTo3LNu_TuneZ2_8TeV-madgraph-tauola/
+ZZtollnn_mg	2617628.83	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
+ZZtollqq_mg	790824.82	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
+ZZtollll_mg	27163220.34	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/
 
 ###PYTHIA DIBOSON
-WZ              301122.644       /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZ_TuneZ2star_8TeV_pythia6_tauola/
-ZZ              555109.777       /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZ_TuneZ2star_8TeV_pythia6_tauola/
-WW              182363.161       /data1/DATA/LQNtuples_5_3_14_snu27/MC/WW_TuneZ2star_8TeV_pythia6_tauola/
+WZ_py           301122.644       /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZ_TuneZ2star_8TeV_pythia6_tauola/
+ZZ_py           555109.777       /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZ_TuneZ2star_8TeV_pythia6_tauola/
+WW_py           182363.161       /data1/DATA/LQNtuples_5_3_14_snu27/MC/WW_TuneZ2star_8TeV_pythia6_tauola/
 
 ### POWHEG
 ZZtoeemm	8474476.51	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo2e2mu_8TeV-powheg-pythia6/	

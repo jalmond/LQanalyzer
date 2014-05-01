@@ -110,7 +110,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETUnclusteredDown(PFMETType01XYCorUnclusteredDown->at(0));
     kevent.SetPFMETUnclusteredUp(PFMETType01XYCorUnclusteredUp->at(0));
   }
-  
+  kevent.SetProcessID(ProcessID);
 
   // TC met
   if(TCMET){

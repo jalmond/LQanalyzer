@@ -899,7 +899,7 @@ void Data::ConnectVariables(bool setall){
 void Data::ConnectEvent(){
 
   ConnectVariable("isData", isData, b_isData);
-  
+  ConnectVariable("ProcessID", ProcessID);
   ConnectVariable("run", run, b_run);
   ConnectVariable("VertexNTracks", VertexNTracks, b_VertexNTracks);
   ConnectVariable("event", event, b_event);
@@ -1815,7 +1815,7 @@ void Data::ConnectAllBranches(){
   ConnectVariable("bunch", bunch);
   ConnectVariable("ls", ls);
   ConnectVariable("orbit", orbit);
-  ConnectVariable("ProcessID", ProcessID);
+
   */
 
   return;

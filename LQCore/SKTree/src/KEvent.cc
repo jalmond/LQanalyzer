@@ -17,6 +17,7 @@ KEvent::KEvent() :
   k_RunNumber(0),
   k_nvertices(0),
   k_ivertex(0),
+  k_process_id(0),
   k_vertexX(0.),
   k_vertexY(0.),
   k_vertexZ(0.), 
@@ -84,6 +85,7 @@ KEvent::KEvent(const KEvent& ev) :
   k_RunNumber(ev.k_RunNumber),
   k_nvertices(ev.k_nvertices),
   k_ivertex(ev.k_ivertex),
+  k_process_id(ev.k_process_id),
   k_vertexX(ev.k_vertexX),
   k_vertexY(ev.k_vertexY),
   k_vertexZ(ev.k_vertexZ),
@@ -153,6 +155,7 @@ void KEvent::Reset()
   k_RunNumber= 0;
   k_nvertices= 0;
   k_ivertex= 0;
+  k_process_id= 0;
   k_vertexX= 0.;
   k_vertexY= 0.;
   k_vertexZ= 0.;
@@ -499,6 +502,11 @@ void KEvent::SetNVertices(int nvert){
 void KEvent::SetVertexIndex(int ivertex){
   k_ivertex = ivertex;
 }
+
+void KEvent::SetProcessID(int processid){
+  k_process_id = id;
+}
+
 
 void KEvent::SetVertexIsFake(bool isfakeV){
   k_isfakeV = isfakeV;
