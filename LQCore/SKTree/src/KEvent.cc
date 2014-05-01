@@ -503,7 +503,7 @@ void KEvent::SetVertexIndex(int ivertex){
   k_ivertex = ivertex;
 }
 
-void KEvent::SetProcessID(int processid){
+void KEvent::SetProcessID(int id){
   k_process_id = id;
 }
 
