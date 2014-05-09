@@ -50,9 +50,13 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   MakeCleverHistograms(sighist, "DiTightEl");
   MakeCleverHistograms(sighist, "SingleLooseEl");
   MakeCleverHistograms(sighist, "SingleTightEl");
-  MakeCleverHistograms(sighist, "LooseEl");
-  MakeCleverHistograms(sighist, "TightEl");
-     
+  MakeCleverHistograms(sighist, "LooseEl20");
+  MakeCleverHistograms(sighist, "TightEl20");
+  MakeCleverHistograms(sighist, "LooseEl40");
+  MakeCleverHistograms(sighist, "TightEl40");
+  MakeCleverHistograms(sighist, "LooseEl60");
+  MakeCleverHistograms(sighist, "TightEl60");
+
   return;
 }
 
@@ -66,11 +70,12 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   
   /// Single Trigger List 
-  std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-  triggerslist.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  triggerslist.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+  std::vector<TString> triggerslist17;
+  triggerslist17.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  triggerslist17.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+  std::vector<TString> triggerslist8;
+  triggerslist8.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  triggerslist8.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
 
   std::vector<TString> triggerslist_diel;
   triggerslist_diel.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
@@ -89,55 +94,54 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////   
 
   std::vector<snu::KElectron> electronLooseColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_FAKELOOSE);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronLooseColl);
+  eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl);
   
   std::vector<snu::KElectron> electronTightColl;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
-  eventbase->GetElectronSel()->SetPt(20);
-  eventbase->GetElectronSel()->SetEta(2.5);
-  eventbase->GetElectronSel()->Selection(electronTightColl);
+  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
+
+  std::vector<snu::KMuon> muonLooseColl;
+  eventbase->GetMuonSel()->HNVetoMuonSelection(muonLooseColl);
 
   std::vector<snu::KMuon> muonTightColl;
-  eventbase->GetMuonSel()->SetPt(20.);
-  eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
-  eventbase->GetMuonSel()->SetBSdxy(0.005);
-  eventbase->GetMuonSel()->SetBSdz(0.10);
-  eventbase->GetMuonSel()->SetEta(2.4);
-  eventbase->GetMuonSel()->SetRelIso(0.1);
-  eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
-  eventbase->GetMuonSel()->Selection(muonTightColl);
+  eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
 
-  
-  std::vector<snu::KJet> jetColl_lepveto;
-  std::vector<snu::KJet> jetColl;
+  std::vector<snu::KElectron> electronVetoColl;
+  eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
+
+
+  std::vector<snu::KJet> jetColl_lepveto20;
+  std::vector<snu::KJet> jetColl_lepveto40;
+  std::vector<snu::KJet> jetColl_lepveto60;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-  eventbase->GetJetSel()->SetPt(30.);
   eventbase->GetJetSel()->SetEta(2.5);
-  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
-  eventbase->GetJetSel()->Selection(jetColl);
+  eventbase->GetJetSel()->SetPt(20.);
+  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto20, muonTightColl, electronTightColl);
+  eventbase->GetJetSel()->SetPt(40.);
+  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto40, muonTightColl, electronTightColl);
+  eventbase->GetJetSel()->SetPt(60.);
+  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto60, muonTightColl, electronTightColl);
+    
   
+  //// SELECT EVENTS WITH NO MUONS
+  if(muonLooseColl.size() > 0) return;
 
-  if(muonTightColl.size() > 0) return;
+  
   /// Get p rate
   
   if(PassTrigger(triggerslist_diel, prescale)){
     if(electronLooseColl.size() == 2){
-      FillCLHist(sighist, "DiLooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight);
+      FillCLHist(sighist, "DiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
       snu::KParticle Z = electronLooseColl.at(0) + electronLooseColl.at(1);
       
-      if(Z.M() > 81. && Z.M() < 101.){
-	FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight);
-	
+      if(Z.M() > 86. && Z.M() < 96.){
+	FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
 	
 	//// Electron 1 IS TAG
 	if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())  ){
 	  
 	  FillHist("h_promptrate_denom_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
 	  FillHist("h_promptrate_denom_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
-	  FillHist("h_promptrate_denom_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
+	  FillHist("h_promptrate_denom_njets", jetColl_lepveto20.size(), weight, 0., 5.,5);
 	  if(electronLooseColl.at(1).IsEBFiducial()){
 	    FillHist("h_promptrate_denom_barrel_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
 	  }
@@ -149,7 +153,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	  if(IsTight(electronLooseColl.at(1), eventbase->GetEvent().JetRho()) ){
 	    FillHist("h_promptrate_num_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
 	    FillHist("h_promptrate_num_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
-	    FillHist("h_promptrate_num_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
+	    FillHist("h_promptrate_num_njets", jetColl_lepveto20.size(), weight, 0., 5.,5);
 	    if(electronLooseColl.at(1).IsEBFiducial()){
 	      FillHist("h_promptrate_num_barrel_pt", electronLooseColl.at(1).Pt(), weight, 0., 200.,40);
 	    }
@@ -164,7 +168,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	  
           FillHist("h_promptrate_denom_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
           FillHist("h_promptrate_denom_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-	  FillHist("h_promptrate_denom_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
+	  FillHist("h_promptrate_denom_njets", jetColl_lepveto20.size(), weight, 0., 5.,5);
 	  if(electronLooseColl.at(0).IsEBFiducial()){
             FillHist("h_promptrate_denom_barrel_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
           }
@@ -176,7 +180,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
           if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())){
             FillHist("h_promptrate_num_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
             FillHist("h_promptrate_num_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-	    FillHist("h_promptrate_num_njets", jetColl_lepveto.size(), weight, 0., 5.,5);
+	    FillHist("h_promptrate_num_njets", jetColl_lepveto20.size(), weight, 0., 5.,5);
 	    if(electronLooseColl.at(0).IsEBFiducial()){
 	      FillHist("h_promptrate_num_barrel_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
 	    }
@@ -188,61 +192,193 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	}      	
       }
     }
-    if(electronTightColl.size() == 2.)FillCLHist(sighist, "DiTightEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+    if(electronTightColl.size() == 2.)FillCLHist(sighist, "DiTightEl", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
   }
   
-  if(!PassTrigger(triggerslist, prescale)) return;
-  /// Z and W veto
-  Double_t temp_MT=0;
-  Double_t MT=0;
+  
+  if(electronLooseColl.size() != 1) return;
+  
+  
+  /// REMOVE Z like events
+  if(electronVetoColl.size() == 2) {
+    if(electronVetoColl.at(0).Charge() != electronVetoColl.at(1).Charge()){
+      snu::KParticle Z = electronVetoColl.at(0) + electronVetoColl.at(1);
+      if(Z.M() > 76. && Z.M() < 106.) return;
+    }
+  }
+  
+  
+  if(!(PassTrigger(triggerslist8, prescale)  ||  PassTrigger(triggerslist17, prescale))) return;
+  
+  float prescale_trigger8  = (3.55+ 4.86) / 19789 ;
+  float prescale_trigger17 = (16.95 + 24.18) / 19789 ;
+  
+  if(electronLooseColl.at(0).Pt() < 20.){
+    if(!(PassTrigger(triggerslist8, prescale))) return;
+  }
+  else {
+    if(!(PassTrigger(triggerslist17, prescale))) return;
+  }
+  
+  if(!k_isdata && PassTrigger(triggerslist8, prescale)) {
+    if(electronLooseColl.at(0).Pt() < 20.){
+      weight *= prescale_trigger8;
+    }
+  }
+  if(!k_isdata && PassTrigger(triggerslist17, prescale)){
+    if(electronLooseColl.at(0).Pt() >= 20.){
+      weight *= prescale_trigger17;
+    }
+  }
 
-  if (electronLooseColl.size() == 1)FillCLHist(sighist, "SingleLooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight); 
-  if (electronLooseColl.size() == 1 && electronTightColl.size() == 1)FillCLHist(sighist, "SingleTightEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight); 
+  /// Z and W veto
+  Double_t MT=0;
+  Double_t METdphi=0;
   
   
+  if (electronLooseColl.size() == 1 && jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "SingleLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight); 
+  if (electronLooseColl.size() == 1  && jetColl_lepveto20.size() >= 1 && electronTightColl.size() == 1)FillCLHist(sighist, "SingleTightEl", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight); 
+  
+  
+  /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT ELECTRONS
+  if(!k_isdata) {
+    /// ONLY INCLUDE ELECTRONS FROM W/Z
+    if(electronLooseColl.at(0).GetType() != 1) return;
+  }
+
+
   for(unsigned int w = 0; w < electronLooseColl.size();  w++){
-    
-    temp_MT = sqrt(2.* electronLooseColl.at(w).Et()*eventbase->GetEvent().PFMET() * (1 - cos( electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi())) );
-    if ( temp_MT > MT) 
-      MT = temp_MT;
+    MT = sqrt(2.* electronLooseColl.at(w).Et()*eventbase->GetEvent().PFMET() * (1 - cos( electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi())) );
+    METdphi = TVector2::Phi_mpi_pi(electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi());
   }
   
   
-  if(! (eventbase->GetEvent().PFMET()  < 20. && MT < 20.)) return;
+  if(! (eventbase->GetEvent().PFMET() < 20)) return;
+  if(!(MT < 25.)) return;
+ 
+  if(fabs(METdphi) > 0.5) return;
   
-  bool useevent= false;
+  bool useevent20= false;
+  bool useevent40= false;
+  bool useevent60= false;
   /// Fake Rates
 
-  if (electronLooseColl.size() == 1  && jetColl_lepveto.size() >= 1){
-    
+  if (electronLooseColl.size() == 1  && jetColl_lepveto20.size() >= 1){
     for (int ielT=0; ielT < electronLooseColl.size(); ielT++){
-      for( int ij=0; ij < jetColl_lepveto.size(); ij++){
+      for( int ij=0; ij < jetColl_lepveto20.size(); ij++){
 	
-        float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto.at(ij));
-        if(dr > 1.) useevent = true;
+        float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto20.at(ij));
+	if( (jetColl_lepveto20.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto20.at(ij).ChargedEMEnergyFraction()) > 0.8) return;
+	if( (jetColl_lepveto20.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
+        if(dr > 1.) useevent20 = true;
+      }
+    }
+  }
+
+  if (electronLooseColl.size() == 1  && jetColl_lepveto40.size() >= 1){
+    for (int ielT=0; ielT < electronLooseColl.size(); ielT++){
+      for( int ij=0; ij < jetColl_lepveto40.size(); ij++){
+
+        float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto40.at(ij));
+        if( (jetColl_lepveto40.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto40.at(ij).ChargedEMEnergyFraction()) > 0.8) return;
+        if( (jetColl_lepveto40.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
+        if(dr > 1.) useevent40 = true;
+      }
+    }
+  }
+
+
+
+  if (electronLooseColl.size() == 1  && jetColl_lepveto60.size() >= 1){
+    for (int ielT=0; ielT < electronLooseColl.size(); ielT++){
+      for( int ij=0; ij < jetColl_lepveto60.size(); ij++){
+
+        float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto60.at(ij));
+        if( (jetColl_lepveto60.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto60.at(ij).ChargedEMEnergyFraction()) > 0.8) return;
+        if( (jetColl_lepveto60.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
+        if(dr > 1.) useevent60 = true;
       }
     }
   }
   
-  if(!useevent) return;
-
+  Float_t ptbins[7] = { 15.,20.,25.,30.,35., 40.,60.};
   
-  if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto.size() >= 1){
+  
+  if(useevent20){
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto20.size() >= 1){
+      FillHist("TightEl20_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50); 
+      FillHist("TightEl20_pt", electronTightColl.at(0).Pt(), weight, ptbins, 6);     
+      FillHist("TightEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
+      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl20_pt_eta1", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl20_pt_eta2", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl20_pt_eta3", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl20_pt_eta4", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+	 
+      FillCLHist(sighist, "TightEl20", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+    }
     
-    FillHist("TightEl_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50); 
-    FillHist("TightEl_pt", electronTightColl.at(0).Pt(), weight, 0.,200.,50);     
-    FillHist("TightEl_njets", jetColl_lepveto.size(), weight, 0.,5.,5); 
-    
-    FillCLHist(sighist, "TightEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+    if (electronLooseColl.size() == 1 &&jetColl_lepveto20.size() >= 1){
+      FillHist("LooseEl20_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+      FillHist("LooseEl20_pt", electronLooseColl.at(0).Pt(), weight,  ptbins, 6);
+      FillHist("LooseEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
+      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl20_pt_eta1", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl20_pt_eta2", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl20_pt_eta3", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl20_pt_eta4", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+
+      FillCLHist(sighist, "LooseEl20", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+    }
+  }    
+
+  if(useevent40){
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto40.size() >= 1){
+      FillHist("TightEl40_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50);
+      FillHist("TightEl40_pt", electronTightColl.at(0).Pt(), weight,  ptbins, 6);
+      FillHist("TightEl40_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
+      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl40_pt_eta1", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl40_pt_eta2", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl40_pt_eta3", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl40_pt_eta4", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      FillCLHist(sighist, "TightEl40", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
+    }
+
+    if (electronLooseColl.size() == 1 &&jetColl_lepveto40.size() >= 1){
+      FillHist("LooseEl40_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+      FillHist("LooseEl40_pt", electronLooseColl.at(0).Pt(), weight,  ptbins, 6);
+      FillHist("LooseEl40_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
+      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl40_pt_eta1", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl40_pt_eta2", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl40_pt_eta3", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl40_pt_eta4", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+
+      FillCLHist(sighist, "LooseEl40", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
+    }
   }
 
-  if (electronLooseColl.size() == 1 &&jetColl_lepveto.size() >= 1){
-    FillHist("LooseEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-    FillHist("LooseEl_pt", electronLooseColl.at(0).Pt(), weight, 0.,200.,50);
-    FillHist("LooseEl_njets", jetColl_lepveto.size(), weight, 0.,5.,5); 
-    FillCLHist(sighist, "LooseEl", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, weight);
-  }
+  if(useevent60){
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto60.size() >= 1){
+      FillHist("TightEl60_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50);
+      FillHist("TightEl60_pt", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      FillHist("TightEl60_njets", jetColl_lepveto60.size(), weight, 0.,5.,5);
+      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl60_pt_eta1", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl60_pt_eta2", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl60_pt_eta3", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl60_pt_eta4", electronTightColl.at(0).Pt(), weight, ptbins, 6);
 
+      FillCLHist(sighist, "TightEl60", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto60, weight);
+    }
+
+    if (electronLooseColl.size() == 1 &&jetColl_lepveto60.size() >= 1){
+      FillHist("LooseEl60_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+      FillHist("LooseEl60_pt", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      FillHist("LooseEl60_njets", jetColl_lepveto60.size(), weight, 0.,5.,5);
+      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl60_pt_eta1", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl60_pt_eta2", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl60_pt_eta3", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl60_pt_eta4", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      FillCLHist(sighist, "LooseEl60", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto60, weight);
+    }
+  }
   
   
   return;
@@ -420,18 +556,6 @@ void FakeRateCalculator_El::FillCutFlow(TString cut, float weight){
 
 
     GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"SSDiEl_medium");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"SSDiEl_trigtight");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"SSDiEl_trigwp70");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"SSDiEl_eop");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"SS_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"SS_lv_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(7,"SS_dijet_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(8,"SS_0bj_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(9,"SS_sv_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(10,"SS_noconv_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(11,"SS_d0_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(12,"SS_sc_t");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(13,"SSDiEl_mva");
     
   }
 }

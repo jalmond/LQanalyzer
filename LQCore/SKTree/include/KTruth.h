@@ -34,7 +34,7 @@ namespace snu {
     void SetParticleStatus(double status);
     void SetParticleIndexMother(double index_mum);
     void SetParticleNDaughter(double index_dau);
-
+    void SetTauDecayMode(int taudm);
     
     inline Double_t GetIndex() const {return k_gen_index;}
     inline Double_t GenPx() const {return k_gen_px;}
@@ -47,6 +47,7 @@ namespace snu {
     inline Int_t GenStatus() const {return k_gen_status;}
     inline Int_t IndexMother() const {return k_gen_indexmum;}
     inline Int_t NDaughter() const {return k_gen_ndau;}
+    inline Int_t TauDecayMode() const {return k_gen_tdm;}
     
   protected:
     /// Reset function.                                                                  
@@ -56,9 +57,9 @@ namespace snu {
     /// decalre private functions
     
     Double_t k_gen_px, k_gen_py, k_gen_pz, k_gen_vx, k_gen_vy,k_gen_vz;
-    Int_t k_gen_pdgid, k_gen_status, k_gen_indexmum, k_gen_ndau, k_gen_index;
+    Int_t k_gen_pdgid, k_gen_status, k_gen_indexmum, k_gen_ndau, k_gen_index, k_gen_tdm;
 
-    ClassDef(KTruth,2)
+    ClassDef(KTruth,3)
   }; 
   
 }//namespace snu

@@ -92,16 +92,16 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
   int nlep = skim_electrons.size() + skim_muons.size();
-  bool pass20gevlep = false;
+  bool pass15gevlep = false;
   if(skim_electrons.size() > 0){
-    if(skim_electrons.at(0).Pt()> 20 ) pass20gevlep = true;
+    if(skim_electrons.at(0).Pt()> 15 ) pass15gevlep = true;
   }
   if(skim_muons.size() > 0){
-    if(skim_muons.at(0).Pt()> 20 ) pass20gevlep = true;
+    if(skim_muons.at(0).Pt()> 15 ) pass15gevlep = true;
   }
   
-  /// select events with either 1 lepton with pt > 20  gev or 2 leptons with pt > 15
-  if(! ((nlep > 1) || ( nlep ==1 && pass20gevlep))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
+  if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
     
 
   FillCutFlow("DiLep", 1);

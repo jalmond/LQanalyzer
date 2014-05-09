@@ -56,6 +56,9 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist,  "TriEl");
    MakeCleverHistograms(sighist,  "ZZ");
 
+   MakeCleverHistograms(sighist,  "SSeeJJ");
+   MakeCleverHistograms(sighist,  "SSeeJJnoph");
+   MakeCleverHistograms(sighist,  "SSeeJJnoph_noZ");
 
    
    return;
@@ -63,6 +66,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
+  
   
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -90,6 +94,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   if (MC_pu&&!k_isdata) {
     weight  = weight* reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
+  m_logger << DEBUG << "reweighted pileup "<< LQLogger::endmsg;
+  
 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
@@ -104,7 +110,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronNoCutColl;
   eventbase->GetElectronSel()->Selection(electronNoCutColl);
-
+  
   /// MUONS
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
@@ -119,15 +125,222 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-  eventbase->GetJetSel()->SetPt(40.);
+  eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->SetEta(2.4);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
   eventbase->GetJetSel()->Selection(jetColl);
 
-  
+  m_logger << DEBUG << "filled vectors "<< LQLogger::endmsg;
+
+  return;
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl_lepveto, weight);
+  
+  //if(electronTightColl.size() != 2 ) return;
+  //if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()) return;
+  //if(jetColl.size() < 2) return;
+  
+  m_logger << DEBUG << "Filled SSeeJJ "<< LQLogger::endmsg;
+  
+  FillCLHist(sighist, "SSeeJJ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  
+  m_logger << INFO << "SSeeJJ event "<< LQLogger::endmsg;
+
+  for(int ip=0; ip < PhotonEta->size() ; ip++){
+    if(PhotonHasMatchedPromptEle->at(ip) ) {
+      m_logger << INFO << "Failed PhotonHasMatchedPromptEle" << LQLogger::endmsg;
+      continue;
+    }
+    if(PhotonHoE->at(ip) > 0.05) {
+      m_logger << INFO << "Failed PhotonHoE " << LQLogger::endmsg;
+      continue;
+    }
+    if(PhotonHasPixelSeed->at(ip)) {
+      m_logger << INFO << "Failed PhotonHasPixelSeed"<< LQLogger::endmsg;
+      continue;
+    }
+    if(PhotonSCeta->at(ip) < 1.479) {
+      if(PhotonSigmaIEtaIEta->at(ip) > 0.011) {
+	m_logger << INFO << "Failed PhotonSigmaIEtaIEta"<< LQLogger::endmsg;
+	continue;
+      }
+      if(PhotonTrkIsoHollowDR04->at(ip) > (2. + 0.001*PhotonPt->at(ip) + 0.0167 *rhoJets)) {
+	m_logger << INFO << "Failed  PhotonTrkIsoHollowDR04" << LQLogger::endmsg;
+	continue;
+      }
+      if(PhotonEcalIsoDR04->at(ip) > (4.2 + 0.006*PhotonPt->at(ip) + 0.183*rhoJets)) {
+	m_logger << INFO << "Failed  PhotonEcalIsoDR04" << LQLogger::endmsg;
+	continue;
+      }
+      if(PhotonHcalIsoDR04->at(ip) > (2.2 + 0.0025*PhotonPt->at(ip) +0.062*rhoJets)){
+	m_logger << INFO << "Failed  PhotonHcalIsoDR04" << LQLogger::endmsg;
+	continue;
+      }
+    }
+    else{
+      if(PhotonSigmaIEtaIEta->at(ip) > 0.03) {
+	m_logger << INFO << "Failed PhotonSigmaIEtaIEta"<< LQLogger::endmsg;
+	continue;
+      }
+      if(PhotonTrkIsoHollowDR03->at(ip) > (2. + 0.001*PhotonPt->at(ip) + 0.032 *rhoJets)) {
+	m_logger << INFO << "Failed  PhotonTrkIsoHollowDR04" << LQLogger::endmsg;
+	continue;
+      }
+      if(PhotonEcalIsoDR04->at(ip) > (4.2 + 0.006*PhotonPt->at(ip) + 0.090*rhoJets)){
+	m_logger << INFO << "Failed  PhotonEcalIsoDR04" << LQLogger::endmsg;
+	continue;
+      }
+      if(PhotonHcalIsoDR04->at(ip) > (2.2 + 0.0025*PhotonPt->at(ip) +0.18*rhoJets)){
+	m_logger << INFO << "Failed  PhotonHcalIsoDR04" << LQLogger::endmsg;
+	continue;
+     }
+    }
+    m_logger << INFO << "Event has Tight photon" << LQLogger::endmsg;
+    return;
+  }
+  
+  m_logger << DEBUG << "Filled SSeeJJnoph "<< LQLogger::endmsg;
+  FillCLHist(sighist, "SSeeJJnoph", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  m_logger << DEBUG << "Making Z" << LQLogger::endmsg;
+  snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
+  if(fabs( Z.M() - 90.)  < 10.){
+    m_logger << INFO << "Event has mass close to Z" << LQLogger::endmsg;
+    return;
+  }
+  FillCLHist(sighist, "SSeeJJnoph_noZ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  
+  
+  bool prompt_prompt = false;
+  bool prompt_nonprompt = false;
+  bool nonprompt_nonprompt = false;
+  bool prompt_chargeflip = false;
+
+  m_logger << INFO << "Number of electrons == " << electronTightColl.size() << LQLogger::endmsg;
+  
+  for(int iel = 0; iel < electronTightColl.size(); iel++){
+    m_logger << INFO << "El number:  " <<  iel+1  << LQLogger::endmsg;
+    
+    if(electronTightColl[iel].Charge() == -1){
+      
+      if(electronTightColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El- pt/eta/phi = " << electronTightColl[iel].Pt() << " / " << electronTightColl[iel].Eta() << " / " << electronTightColl[iel].Phi() << LQLogger::endmsg;
+      else m_logger << INFO << "El- pt/eta/phi = " << electronTightColl[iel].MatchedGenParticlePt() << " / " << electronTightColl[iel].MatchedGenParticleEta() << " / " <<electronTightColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
+    }
+    else {
+      if(electronTightColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El+ pt/eta/phi = " << electronTightColl[iel].Pt() << " / " << electronTightColl[iel].Eta() << " / " << electronTightColl[iel].Phi() << LQLogger::endmsg;
+      else m_logger << INFO << "El+ pt/eta/phi = " << electronTightColl[iel].MatchedGenParticlePt() << " / " << electronTightColl[iel].MatchedGenParticleEta() << " / " <<electronTightColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
+      
+    }
+    
+    for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
+      if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
+      if( electronTightColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
+        if(eventbase->GetTruth().at(it).IndexMother()!= 1)  m_logger << INFO << "Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / "<< eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()   << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId() << LQLogger::endmsg;
+      }
+    }
+    
+    bool prompt = true;
+    bool charge_flip = false;
+    bool match_found=false;
+    for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
+      if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
+      
+      if( electronTightColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
+	m_logger << INFO << "Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / " << eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()    << LQLogger::endmsg;
+	
+	match_found=true;
+	
+	if(eventbase->GetTruth().at(it).GenStatus() == 1){
+	  if(fabs(eventbase->GetTruth().at(it).PdgId()) == 11){
+	    for(unsigned int it2 = 0; it2 < eventbase->GetTruth().size() ; it2++){
+	      if(eventbase->GetTruth().at(it2).PdgId() == 2212) continue;
+	      if(eventbase->GetTruth().at(it2).GenStatus() == 3){
+		if(eventbase->GetTruth().at(it).DeltaR(eventbase->GetTruth().at(it2)) < 0.1) {
+		  m_logger << "PDGID of particle close to status 1 electron = " << eventbase->GetTruth().at(it2).PdgId() << LQLogger::endmsg;
+		  m_logger << "Mother of  particle close to status 1 electron = " << eventbase->GetTruth().at(eventbase->GetTruth().at(it2).IndexMother()).PdgId() << LQLogger::endmsg;
+		  if(fabs(eventbase->GetTruth().at(it2).PdgId()) == 15){
+		    m_logger << INFO << "Electron  from Tau decay" << LQLogger::endmsg;
+		    
+		    if(eventbase->GetTruth().at(it2).PdgId() * electronTightColl[iel].Charge() > 0.){
+		      charge_flip= true;
+		      prompt=true;
+		      m_logger << INFO << "ELECTRON FROM CHARGELFIP" <<  LQLogger::endmsg;
+		      break;
+		      
+		    }		  
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+	else if(eventbase->GetTruth().at(it).GenStatus() == 3){
+	  
+	  if(fabs(eventbase->GetTruth().at(it).PdgId()) == 11 && isPrompt(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()))) prompt = true;
+	  else prompt = false;
+	  
+	  if(electronTightColl[iel].Charge() * eventbase->GetTruth().at(it).PdgId() > 0.)  charge_flip= true;
+	}
+      }
+      
+    } 
+    if(!match_found)  {
+      m_logger << INFO << "NOOOOO MATCHED  TRUTH PARTICLE FOUND" << LQLogger::endmsg;
+      for(unsigned int jit = 0; jit < eventbase->GetGenJets().size(); jit++){
+	m_logger<< INFO << "Matched Gen jet id = " << jit+1 << " pt = " <<  eventbase->GetGenJets().at(jit).Pt() << " eta= " << eventbase->GetGenJets().at(jit).Eta() << " phi = " << eventbase->GetGenJets().at(jit).Phi() << LQLogger::endmsg;
+      }
+      
+      for(int ip=0; ip < PhotonEta->size() ; ip++){
+	if(!PhotonHasMatchedPromptEle)m_logger<< INFO << "Photon pt/eta/phi = " << PhotonPt->at(ip) << " / " <<  PhotonEta->at(ip) << " / " << PhotonPhi->at(ip) << LQLogger::endmsg;
+      }
+    }
 
 
+    if(iel==0){
+      if(!prompt) {
+	prompt_nonprompt = true;
+	nonprompt_nonprompt = true;
+	prompt_prompt = false;
+      }
+      else{
+	if(charge_flip)  prompt_chargeflip = true;
+	prompt_prompt = true;
+	prompt_nonprompt = false;
+	nonprompt_nonprompt = false;
+      }
+    }
+    if(iel==1){
+      if(!prompt) {
+	if(nonprompt_nonprompt)nonprompt_nonprompt = true;
+	else nonprompt_nonprompt = false;
+	if(prompt_nonprompt) prompt_nonprompt = false;
+	else prompt_nonprompt = true;
+	prompt_prompt =false;
+      }
+      else {
+	if(charge_flip)  prompt_chargeflip = true;
+	nonprompt_nonprompt = false;
+	if(prompt_prompt) prompt_prompt = true;
+	else prompt_prompt =false;
+	if(prompt_nonprompt) prompt_nonprompt = true;
+	else  prompt_nonprompt = false;
+      }
+    }
+  }
+  
+  if(prompt_chargeflip)  m_logger << INFO << "EVENT HAS CHARGEFLIP   "<<  LQLogger::endmsg;
+  else   if (prompt_prompt) {
+    m_logger << INFO << "EVENT IS PROMPT-PROMPT "<<  LQLogger::endmsg;
+    cout << "WTF" << endl;
+    for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
+      if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
+      m_logger << INFO << "PP:Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / " << eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()    << LQLogger::endmsg;
+      if( eventbase->GetTruth().at(it).IndexMother() != -1)m_logger << INFO <<   eventbase->GetTruth().at( eventbase->GetTruth().at(it).IndexMother()).PdgId()    << LQLogger::endmsg;
+    }
+    
+  }
+  else if (prompt_nonprompt) m_logger << INFO << "EVENT IS PROMPT-NONPROMPT "<<  LQLogger::endmsg;
+  else if (nonprompt_nonprompt) m_logger << INFO << "EVENT IS NONPROMPT-NONPROMPT "<<  LQLogger::endmsg;
+  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  
   
   /*
   if(electronMediumColl.size() ==2){

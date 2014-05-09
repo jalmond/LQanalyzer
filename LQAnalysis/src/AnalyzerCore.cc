@@ -328,6 +328,19 @@ float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
 }
   
 
+
+bool AnalyzerCore::isPrompt(long pdgid) {
+  
+  pdgid = abs(pdgid);
+  if (pdgid == 24) return true; // Z
+  else if (pdgid == 23) return true; // W
+  else if (pdgid == 15) return true; // taus
+  else if (pdgid == 90) return true; // N
+  else if (pdgid == 13) return true;
+  else return false;
+}
+
+
 float  AnalyzerCore::JetResCorr(snu::KJet jet, std::vector<KGenJet> genjets){
   
   /// This function is not needed when smeaing is already applied to LQNtuples in production stage
@@ -425,6 +438,10 @@ void AnalyzerCore::MakeHistograms(){
     
 }
 
+void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xbins[]){
+  maphist[hname] =  new TH1F(hname.Data(),hname.Data(),nbins,xbins);
+}
+
 void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax){
 
   maphist[hname] =  new TH1F(hname.Data(),hname.Data(),nbins,xmin,xmax);
@@ -488,6 +505,22 @@ bool AnalyzerCore::PassBasicEventCuts(){
 }
 
 
+
+void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins){
+  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  if(GetHist(histname)) GetHist(histname)->Fill(value, w);
+  
+  else{
+    if (nbins < 0) {
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      exit(0);
+    }
+    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    MakeHistograms(histname, nbins, xbins);
+    if(GetHist(histname)) GetHist(histname)->Fill(value, w);
+  }
+
+}
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins){
   

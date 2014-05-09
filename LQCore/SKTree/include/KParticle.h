@@ -54,6 +54,8 @@ namespace snu {
     
     // index of daughter particle
     int NDaughter() const;
+    
+    int MotherPdgId() const;
   
   
     ///Set the class members of the particle.
@@ -62,6 +64,7 @@ namespace snu {
     void SetType(PartType partType);
     void SetTruthParticleIndex(int truemu_index);
     void SetMotherIndex(int iMother);
+    void SetMotherPdgId(int MotherPDGID);
     void SetNDaughter(int iDaughter);
   
   
@@ -92,12 +95,12 @@ namespace snu {
     
     PartType partType_;
     LooseTight looseTight_;    
-    Int_t k_index, k_mindex, k_dindex;
+    Int_t k_index, k_mindex, k_dindex, k_mother_pdgid;
     ///Private member variable to hold the charge.
     Int_t m_charge;
   
     
-  ClassDef(KParticle,1);
+  ClassDef(KParticle,2);
   }; // class KParticle
   
 } // namespace snu

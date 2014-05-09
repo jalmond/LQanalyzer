@@ -887,7 +887,7 @@ void Data::ConnectVariables(bool setall){
     ConnectElectrons();
     ConnectPFJets();
     ConnectCaloJets();
-    //ConnectPhotons();
+    ConnectPhotons();
     ConnectTaus();
     ConnectTruth();
     ConnectTrigger();
@@ -1156,6 +1156,24 @@ void Data::ConnectElectrons(){
   return;
 }
 
+void Data::ConnectPhotons(){
+
+  ConnectVariable("PhotonEta", PhotonEta, b_PhotonEta);
+  ConnectVariable("PhotonPhi" ,PhotonPhi, b_PhotonPhi);
+  ConnectVariable("PhotonPt" ,PhotonPt, b_PhotonPt);
+  ConnectVariable("PhotonHasMatchedConvPhot", PhotonHasMatchedConvPhot, b_PhotonHasMatchedConvPhot);
+  ConnectVariable("PhotonHasMatchedPromptEle", PhotonHasMatchedPromptEle, b_PhotonHasMatchedPromptEle);
+  ConnectVariable("PhotonHoE", PhotonHoE, b_PhotonHoE);
+  ConnectVariable("PhotonSigmaIEtaIEta", PhotonSigmaIEtaIEta, b_PhotonSigmaIEtaIEta);
+  ConnectVariable("PhotonHasPixelSeed", PhotonHasPixelSeed, b_PhotonHasPixelSeed);
+  ConnectVariable("PhotonSCeta", PhotonSCeta, b_PhotonSCeta);
+  ConnectVariable("PhotonTrkIsoHollowDR04", PhotonTrkIsoHollowDR04, b_PhotonTrkIsoHollowDR04);
+  ConnectVariable("PhotonPt", PhotonPt, b_PhotonPt);
+  ConnectVariable("PhotonEcalIsoDR04", PhotonEcalIsoDR04, b_PhotonEcalIsoDR04);
+  ConnectVariable("PhotonHcalIsoDR04", PhotonHcalIsoDR04, b_PhotonHcalIsoDR04);
+
+}
+
 void Data::ConnectPFJets(){
 
   //#####   Jet branches
@@ -1402,6 +1420,51 @@ void Data::ConnectTruth(){
   ConnectVariable("GenZElectronPy", GenZElectronPy, b_GenZElectronPy);
   ConnectVariable("GenZElectronPz", GenZElectronPz, b_GenZElectronPz);
   
+
+  ConnectVariable("GenWMuEnergy", GenWMuEnergy, b_GenWMuEnergy);
+  ConnectVariable("GenWMuEta", GenWMuEta, b_GenWMuEta);
+  ConnectVariable("GenWMuP", GenWMuP, b_GenWMuP);
+  ConnectVariable("GenWMuPhi", GenWMuPhi, b_GenWMuPhi);
+  ConnectVariable("GenWMuPt", GenWMuPt, b_GenWMuPt);
+  ConnectVariable("GenWMuPx", GenWMuPx, b_GenWMuPx);
+  ConnectVariable("GenWMuPy", GenWMuPy, b_GenWMuPy);
+  ConnectVariable("GenWMuPz", GenWMuPz, b_GenWMuPz);
+  ConnectVariable("GenWMuMotherIndex", GenWMuMotherIndex, b_GenWMuMotherIndex);
+  ConnectVariable("GenWMuNumDaught", GenWMuNumDaught, b_GenWMuNumDaught);
+  ConnectVariable("GenWMuPdgId", GenWMuPdgId, b_GenWMuPdgId);
+  ConnectVariable("GenWMuStatus", GenWMuStatus, b_GenWMuStatus);
+  ConnectVariable("GenWMuTauDecayMode", GenWMuTauDecayMode, b_GenWMuTauDecayMode);
+
+  ConnectVariable("GenWTauMotherIndex", GenWTauMotherIndex, b_GenWTauMotherIndex);
+  ConnectVariable("GenWTauNumDaught", GenWTauNumDaught, b_GenWTauNumDaught);
+  ConnectVariable("GenWTauPdgId", GenWTauPdgId, b_GenWTauPdgId);
+  ConnectVariable("GenWTauStatus", GenWTauStatus, b_GenWTauStatus);
+  ConnectVariable("GenWTauTauDecayMode", GenWTauTauDecayMode, b_GenWTauTauDecayMode);
+  ConnectVariable("GenWTauEnergy", GenWTauEnergy, b_GenWTauEnergy);
+  ConnectVariable("GenWTauEta", GenWTauEta, b_GenWTauEta);
+  ConnectVariable("GenWTauP", GenWTauP, b_GenWTauP);
+  ConnectVariable("GenWTauPhi", GenWTauPhi, b_GenWTauPhi);
+  ConnectVariable("GenWTauPt", GenWTauPt, b_GenWTauPt);
+  ConnectVariable("GenWTauPx", GenWTauPx, b_GenWTauPx);
+  ConnectVariable("GenWTauPy", GenWTauPy, b_GenWTauPy);
+  ConnectVariable("GenWTauPz", GenWTauPz, b_GenWTauPz);
+
+  ConnectVariable("GenWElectronMotherIndex", GenWElectronMotherIndex, b_GenWElectronMotherIndex);
+  ConnectVariable("GenWElectronNumDaught", GenWElectronNumDaught, b_GenWElectronNumDaught);
+  ConnectVariable("GenWElectronPdgId", GenWElectronPdgId, b_GenWElectronPdgId);
+  ConnectVariable("GenWElectronStatus", GenWElectronStatus, b_GenWElectronStatus);
+  ConnectVariable("GenWElectronTauDecayMode", GenWElectronTauDecayMode, b_GenWElectronTauDecayMode);
+  ConnectVariable("GenWElectronEnergy", GenWElectronEnergy, b_GenWElectronEnergy);
+  ConnectVariable("GenWElectronEta", GenWElectronEta, b_GenWElectronEta);
+  ConnectVariable("GenWElectronP", GenWElectronP, b_GenWElectronP);
+  ConnectVariable("GenWElectronPhi", GenWElectronPhi, b_GenWElectronPhi);
+  ConnectVariable("GenWElectronPt", GenWElectronPt, b_GenWElectronPt);
+  ConnectVariable("GenWElectronPx", GenWElectronPx, b_GenWElectronPx);
+  ConnectVariable("GenWElectronPy", GenWElectronPy, b_GenWElectronPy);
+  ConnectVariable("GenWElectronPz", GenWElectronPz, b_GenWElectronPz);
+
+
+
   ConnectVariable("GenJetEMF", GenJetEMF, b_GenJetEMF);
   ConnectVariable("GenJetEnergy", GenJetEnergy, b_GenJetEnergy);
   ConnectVariable("GenJetEta", GenJetEta, b_GenJetEta);
@@ -1457,7 +1520,6 @@ void Data::ConnectAllBranches(){
   /// Others
   ConnectVariable("PhotonHasMatchedConvPhot", PhotonHasMatchedConvPhot);
   ConnectVariable("PhotonHasMatchedPromptEle", PhotonHasMatchedPromptEle);
-  ConnectVariable("PhotonHasPixelSeed", PhotonHasPixelSeed);
   ConnectVariable("PhotonIsEBEEGap", PhotonIsEBEEGap);
   ConnectVariable("PhotonIsEBGap", PhotonIsEBGap);
   ConnectVariable("PhotonIsEEGap", PhotonIsEEGap);
@@ -1501,14 +1563,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenWElectronVX", GenWElectronVX);
   ConnectVariable("GenWElectronVY", GenWElectronVY);
   ConnectVariable("GenWElectronVZ", GenWElectronVZ);
-  ConnectVariable("GenZElectronEnergy", GenZElectronEnergy);
-  ConnectVariable("GenZElectronEta", GenZElectronEta);
-  ConnectVariable("GenZElectronP", GenZElectronP);
-  ConnectVariable("GenZElectronPhi", GenZElectronPhi);
-  ConnectVariable("GenZElectronPt", GenZElectronPt);
-  ConnectVariable("GenZElectronPx", GenZElectronPx);
-  ConnectVariable("GenZElectronPy", GenZElectronPy);
-  ConnectVariable("GenZElectronPz", GenZElectronPz);
   ConnectVariable("GenZElectronTauVisibleEta", GenZElectronTauVisibleEta);
   ConnectVariable("GenZElectronTauVisiblePhi", GenZElectronTauVisiblePhi);
   ConnectVariable("GenZElectronTauVisiblePt", GenZElectronTauVisiblePt);
@@ -1740,7 +1794,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("PhotonPhi", PhotonPhi);
   ConnectVariable("PhotonPt", PhotonPt);
   ConnectVariable("PhotonSCenergy", PhotonSCenergy);
-  ConnectVariable("PhotonSCeta", PhotonSCeta);
   ConnectVariable("PhotonSCphi", PhotonSCphi);
   ConnectVariable("PhotonSCseedEnergy", PhotonSCseedEnergy);
   ConnectVariable("PhotonSEtaEta", PhotonSEtaEta);
