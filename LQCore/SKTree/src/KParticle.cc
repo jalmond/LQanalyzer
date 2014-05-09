@@ -21,6 +21,7 @@ KParticle::KParticle() :
     partType_( NOPARTICLE),
     k_index(0),
     k_mindex(0),
+    k_mother_pdgid(0),
     k_dindex(0),
     m_charge(0)
 {  
@@ -36,6 +37,7 @@ KParticle::KParticle(const KParticle& p) :
     partType_(p.GetType()),
     k_index(p.ParticleIndex()),
     k_mindex(p.MotherIndex()),
+    k_mother_pdgid(p.MotherPdgId()),
     k_dindex(p.NDaughter()),
     m_charge(p.Charge())
  {
@@ -47,6 +49,7 @@ KParticle::KParticle(const TLorentzVector& p) :
     k_index(0),
     k_mindex(0),
     k_dindex(0),
+    k_mother_pdgid(0),
     m_charge(0)
 {
 }
@@ -57,6 +60,7 @@ KParticle::KParticle(Double_t px, Double_t py, Double_t pz, Double_t e) :
     k_index(0),
     k_mindex(0),
     k_dindex(0),
+    k_mother_pdgid(0),
     m_charge(0)
 {
 }
@@ -95,6 +99,10 @@ int KParticle::MotherIndex() const {
   return k_mindex;
 }
 
+int KParticle::MotherPdgId() const {
+  return k_mother_pdgid;
+}
+
 int KParticle::NDaughter() const {
   return k_dindex;
 }
@@ -108,6 +116,7 @@ void KParticle::Reset()
     k_index=0;
     k_mindex=0;
     k_dindex=0;
+    k_mother_pdgid=0;
 }
 
 void KParticle::SetCharge(Int_t c)
@@ -153,6 +162,7 @@ KParticle& KParticle::operator=(const KParticle& p)
 	partType_= p.GetType();
 	k_index= p.ParticleIndex();
 	k_mindex= p.MotherIndex();
+	k_mother_pdgid= p.MotherPdgId();
 	k_dindex =p.NDaughter();
     }
 
@@ -223,6 +233,11 @@ void KParticle::SetTruthParticleIndex(int index){
 void KParticle::SetMotherIndex(int index){
   k_mindex = index;
 }
+
+void KParticle::SetMotherPdgId(int mp){
+  k_mother_pdgid = mp;
+}
+
 
 void KParticle::SetNDaughter(int index){
   k_dindex = index;

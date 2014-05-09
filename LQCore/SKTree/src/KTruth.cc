@@ -27,7 +27,7 @@ KParticle()
   k_gen_status=0;
   k_gen_indexmum=0;
   k_gen_ndau=0;
-
+  k_gen_tdm=0;
 }
 
 /**
@@ -48,7 +48,7 @@ KTruth::KTruth(const KTruth& mc) :
   k_gen_status=mc.GenStatus();
   k_gen_indexmum=mc.IndexMother();
   k_gen_ndau=mc.NDaughter();
-  
+  k_gen_tdm=mc.TauDecayMode();
 }
 
 
@@ -70,6 +70,7 @@ void KTruth::Reset()
   k_gen_status=0;
   k_gen_indexmum=0;
   k_gen_ndau=0;
+  k_gen_tdm=0;
   
 }
 
@@ -90,6 +91,7 @@ KTruth& KTruth::operator= (const KTruth& p)
     k_gen_status=p.GenStatus();
     k_gen_indexmum=p.IndexMother();
     k_gen_ndau=p.NDaughter();
+    k_gen_tdm = p.TauDecayMode();
   }
   
   return *this;
@@ -102,6 +104,9 @@ void KTruth::SetIndex(int index){
   k_gen_index = index;
 }
 
+void KTruth::SetTauDecayMode(int mode){
+  k_gen_tdm = mode;
+}
 
 void KTruth::SetParticlePx(double px){
   k_gen_px = px;

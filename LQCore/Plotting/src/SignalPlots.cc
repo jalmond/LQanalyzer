@@ -222,9 +222,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   if(leadjetmass != 0.)Fill("h_leadjetmass", leadjetmass,weight);
   
-  
-
-  if(muons.size()==2){     
+  if(muons.size()>=2){     
     Fill("h_mumumass", (muons[0]+muons[1]).M(),weight);
     if(jets.size()>1){
       Fill("h_mu1jjmass", (muons[0]+jets[m]+jets[n]).M(),weight);
@@ -260,7 +258,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
   
     
-  if(electrons.size()==2){
+  if(electrons.size()>=2){
     Fill("h_eemass", (electrons[0]+electrons[1]).M(),weight);
     if(fabs(electrons[0].Charge()) !=  1.) std::cout << "Electron charge = " << electrons[0].Charge() << std::endl;
     Fill("h_electroncharge",electrons[0].Charge(),weight);

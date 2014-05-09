@@ -30,6 +30,8 @@ class AnalyzerCore : public LQCycleBase {
   double ElectronScaleFactor( double eta, double pt);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
+  bool isPrompt(long pdgid);
+
 
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
@@ -86,6 +88,7 @@ class AnalyzerCore : public LQCycleBase {
   //
   void MakeHistograms();
   void MakeHistograms(TString hname, int nbins, float xmin, float xmax);
+  void MakeHistograms(TString hname, int nbins, float xbins[]);
   void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax);
     //
     // Makes temporary dir
@@ -103,6 +106,7 @@ class AnalyzerCore : public LQCycleBase {
   /// Fills hist in maphist
   void FillHist(TString histname, float value, float w );
   void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0);
+  void FillHist(TString histname, float value, float w , float xmin[], int nbins=0);
   void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy);
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);

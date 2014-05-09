@@ -44,6 +44,10 @@ elif [[ "$HOSTNAME" == "cms5" || "$HOSTNAME" == "cms6" ]]
 then
     export OBJ=obj/slc6
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6/
+elif [[ "$HOSTNAME" == "cms3" ]]
+then
+    export OBJ=obj/slc5_cms3
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms3/
 else
     export OBJ=obj/slc5
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5/

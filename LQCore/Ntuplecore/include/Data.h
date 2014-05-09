@@ -75,7 +75,7 @@ public :
    void ConnectElectrons();
    void ConnectPFJets();
    void ConnectCaloJets();
-   //ConnectPhotons();                                                                                                                                                           
+   void ConnectPhotons();                                                                                                                                                           
    void ConnectTaus();
    void ConnectTruth();
    void ConnectTrigger();

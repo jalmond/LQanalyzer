@@ -18,6 +18,8 @@ int AnalysisBase::nthdigit(int x, int n) {
   return ((x / powersof10[n]) % 10);
 }
 
+
+
 bool AnalysisBase::isPrompt(long pdgid) {
   pdgid = abs(pdgid);
   if (pdgid >= 1000001 && pdgid <= 1000006) return true; // SUSY squarks
