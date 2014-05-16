@@ -1,0 +1,22 @@
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lr@{\hspace{0.5mm}}c@{\hspace{0.5mm}}c@{\hspace{0.5mm}}l}
+\hline
+\hline
+Source & \multicolumn{4}{c}{} \\
+\hline
+DY&1689.0& $\pm$& 2.5&$^{+291.1}_{-291.1}$\\
+Top&79.2& $\pm$& 0.3&$^{+5.7}_{-5.7}$\\
+Wjet&1690.1& $\pm$& 5.5&$^{+252.5}_{-252.5}$\\
+\hline
+Total&3458.3& $\pm$&6.1&$^{+385.4}_{-385.4}$\\
+\hline
+Data&  \multicolumn{4}{c}{$12853.0$}\\
+\hline
+Signficance&  \multicolumn{4}{c}{$+23.4\sigma$}\\
+\hline
+\hline
+\end{tabular}
+\caption{Number of events containing one prompt loose electron in 19 fb$^{-1}$ of CMS data at 8~TeV}
+\end{center}
+\end{table}

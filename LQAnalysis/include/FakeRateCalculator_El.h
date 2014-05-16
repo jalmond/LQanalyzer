@@ -31,22 +31,10 @@ class FakeRateCalculator_El : public AnalyzerCore {
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
 
-  double pf_trk_qflip ; 
-  double pf_ms_qflip ; 
-  double pf_qflip ; 
-  int cnt_trk_qflip ; 
-  int cnt_ms_qflip ; 
-
-  double tag_q1, tag_q2 ; 
-  int cnt_tag, cnt_qflip ; 
-
-  int tot_evt ; 
-  int tot_mumu_evt ; 
-  int tot_gold_evt ;
-
-  double trk_qflip, ms_qflip ;
-  double qflip_1, qflip_2, qflip ; 
-
+  int n_17_pass;
+  int n_17_17_jet_pass;
+  int n_17_jet_pass;
+  
   ClassDef ( FakeRateCalculator_El, 1);
 };
 #endif

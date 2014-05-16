@@ -1,0 +1,13 @@
+h_electrons_eta 2 -3. 3.
+END
+h_MET 5 0. 300.
+h_MTelectron 1 0. 100. 
+h_leadingElectronPt 1 10 100.
+h_ElectronAwayJetdR 1 0. 5.
+h_ElectronJetdR 1 0. 5.
+h_Njets 1 0. 5.
+h_dphi_METelectron 1 0. 5.
+h_el_jet_emfrac 1 0. 1.
+h_jet_el_ptratio 1 0. 2.
+END
+
