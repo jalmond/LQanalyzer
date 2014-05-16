@@ -171,7 +171,7 @@ SKstbar_sch       79530.6821     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/
 SKstbar_tch       63031.661      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/stbar_tch/
 SKstbar_tW        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/stbar_tW/
 SKst_sch          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/st_tch/
-SKst_tch          1770.851       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/st_tch/
+SKst_tch          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/st_tch/
 SKst_tW           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/st_tW/
 SKtopDIL          461277.43      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/topDIL/
 SKtopHAD          460656.55      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MC/topHAD/
@@ -304,7 +304,7 @@ SKstbar_sch_dilep       79530.6821     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SK
 SKstbar_tch_dilep       63031.661      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/stbar_tch/
 SKstbar_tW_dilep        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/stbar_tW/
 SKst_sch_dilep          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/st_tch/
-SKst_tch_dilep          1770.851       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/st_tch/
+SKst_tch_dilep          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/st_tch/
 SKst_tW_dilep           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/st_tW/
 SKtopDIL_dilep          461277.43      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/topDIL/
 SKtopHAD_dilep          460656.55      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/May14/MCDiLep/topHAD/
@@ -494,12 +494,13 @@ QCD_250_350_BCtoE 19623.52       /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD_Pt_25
 QCD_350_EM        382497.9062    /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/
 QCD_350_BCtoE     81446.75       /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/
 
+
 ### TOP
-stbar_sch	79530.6821	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
-stbar_tch	63031.661	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
-stbar_tW	44455.856	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
-st_sch		68591.293	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_s-channel_TuneZ2star_8TeV-powheg-tauola/
-st_tch		1770.851	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_sch	79530.67	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_tch	63031.66	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_tW	44455.85	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
+st_sch		68591.28	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_s-channel_TuneZ2star_8TeV-powheg-tauola/
+st_tch		66635.23	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola/
 st_tW		44834.054	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
 topDIL		461277.43	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_FullLeptMGDecays_8TeV-madgraph-tauola/
 topHAD		460656.55	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_HadronicMGDecays_8TeV-madgraph/

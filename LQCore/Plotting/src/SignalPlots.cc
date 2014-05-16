@@ -67,7 +67,8 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig3["h_3Dparm"] =         new TH3F("h_3Dpar_"         + name,"m(lljj) and muon p_{T}_{1} and muon p_{T}_{2}",200,0,2000,60,0,300,60,0,300);
   
   map_sig["h_MuonJetdR"] =  new TH1F("h_MuonJetdR_" + name,"muon jet dR",500,0,5);
-  map_sig["h_ElectronJetdR"] =  new TH1F("h_ElectronJetdR_" + name,"electron jet dR",500,0,5);
+  map_sig["h_ElectronJetdR"] =  new TH1F("h_ElectronJetdR_" + name,"electron jet dR",100,0,5);
+  map_sig["h_ElectronAwayJetdR"] =  new TH1F("h_ElectronAwayJetdR_" + name, "away jet dr", 100,0,5);
   map_sig["h_leadMuondR"] =  new TH1F("h_leadMuondR_" + name,"leading muon dR",500,0,5);
   map_sig["h_leadElectrondR"] =  new TH1F("h_leadElectrondR_" + name,"leading electron dR",500,0,5);
   map_sig["h_leadJetdR"] =  new TH1F("h_leadJetdR_" + name,"leading jet dR",500,0,5);
@@ -102,10 +103,15 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
   map_sig["h_leadingJetPt"] =   new TH1F("h_leadingJetPt_"  + name,"leading jet pt",60,0,300);
   map_sig["h_secondJetPt"] =    new TH1F("h_secondJetPt_"   + name,"secondary jet pt",60,0,300);
   map_sig["h_HT"] =    new TH1F("h_HT_"   + name,"sum jet pt",100,0,1000);
-  
-  
+  map_sig["h_jets_pt"] =    new TH1F("h_jets_pt_"   + name,"jet pt",60,0,300);
+  map_sig["h_el_jet_emfrac"] =    new TH1F("h_el_jet_emfrac_"+ name, "jet_el_emfrac", 20, 0., 1.);
+  map_sig["h_jet_el_ptratio"] =    new TH1F("h_jet_el_ptratio_" + name, "jet_el_ptratio", 20, 0., 5.);
+
   map_sig["h_MTmuon"] =            new TH1F("h_MTmuon_"           + name,"Mt",100,0.0,500.0);
   map_sig["h_MTelectron"] =        new TH1F("h_MTelectron_"           + name,"Mt",100,0.0,500.0);
+  map_sig["h_dphi_METelectron"]=        new TH1F("h_dphi_METelectron_" + name , "METlepdphi", 50, -5., 5.);
+  map_sig["h_dphi_METmuon"]=        new TH1F("h_dphi_METmuon_" + name , "METlepdphi", 50, -5., 5.);
+  
   map_sig["h_MET"] =               new TH1F("h_MET_"           + name,"Missing Et",100,0.0,500.0);
   map_sig["h_caloMET"] =           new TH1F("h_caloMET_"           + name,"Missing Et",100,0.0,500.0);
   map_sig["h_tcMET"] =            new TH1F("h_tcMET_"           + name,"Missing Et",100,0.0,500.0);
@@ -142,7 +148,7 @@ SignalPlots::SignalPlots(TString name, Channel channel): StdPlots(name){
 
 
 void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight) {
-
+  
   //// Fills all hists (e/mu/jets/MET)
   
   //// Jet mass variables
@@ -160,9 +166,21 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
 
   float min_ejet_Dr=10000.;  
+  float min_eleadawayjet_Dr= -10000.;
+  bool leadjet_away=true;
   for(UInt_t i=0; i<electrons.size(); i++){ 
     for(UInt_t emme=0; emme<jets.size(); emme++){
       float dR =electrons[i].DeltaR(jets[emme]);
+      if(dR > 0.5) {
+	if(dR > min_eleadawayjet_Dr) min_eleadawayjet_Dr=  dR;
+      }
+      if(dR > 1.) {
+	if(leadjet_away){
+	  Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
+	  Fill("h_jet_el_ptratio", electrons.at(i).Pt()/ jets[emme].Pt(), weight);
+	}
+	leadjet_away=false;
+      }
       if(dR< min_ejet_Dr) min_ejet_Dr=dR;
     }
   }
@@ -198,6 +216,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(jets.size()!=0){
     Fill("h_MuonJetdR",min_mujet_Dr,weight);
     Fill("h_ElectronJetdR",min_ejet_Dr,weight);
+    Fill("h_ElectronAwayJetdR",min_eleadawayjet_Dr,weight);
     Fill("h_leadElectrondR",min_ee_Dr,weight);
     Fill("h_leadMuondR",min_mm_Dr,weight);
     if(jets.size() > 1)Fill("h_leadJetdR",min_jj_Dr,weight);
@@ -327,12 +346,16 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   //// Fillplots
 
   for(unsigned int i=0 ; i < electrons.size(); i++){
-    float MT = sqrt(2.* electrons.at(i).Et()*ev.PFMET() * (1 - cos( electrons.at(i).Phi()- ev.PFMETphi())) );
+    float dphi = TVector2::Phi_mpi_pi(electrons.at(i).Phi()- ev.PFMETphi());
+    float MT = sqrt(2.* electrons.at(i).Et()*ev.PFMET() * (1 - cos( dphi)));
     Fill("h_MTelectron",MT, weight);
+    Fill("h_dphi_METelectron",dphi, weight);
   }
   for(unsigned int i=0 ; i < muons.size(); i++){
-    float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos( muons.at(i).Phi()- ev.PFMETphi())) );
+    float dphi = TVector2::Phi_mpi_pi(muons.at(i).Phi()- ev.PFMETphi());
+    float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos(  dphi)));
     Fill("h_MTmuon",MT, weight);
+    Fill("h_dphi_METmuon",dphi, weight);
   }
 
   Fill("h_MET",ev.PFMET(), weight);
@@ -353,11 +376,12 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(jets.size()>1){
     Fill("h_jjmass", (jets[m]+jets[n]).M(),weight); 
   }
-  
+  float ht=0.;
   for(UInt_t j=0; j < jets.size(); j++){ 
-    Fill("h_HT", jets[j].Pt(),weight);
+    ht+= jets[j].Pt();
     if(j==0)Fill("h_leadingJetPt", jets[0].Pt(),weight);
     if(j==1)Fill("h_secondJetPt", jets[1].Pt(),weight);
+    Fill("h_jets_pt", jets[j].Pt(),weight);
     Fill("h_jets_eta",jets[j].Eta(),weight);
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
@@ -365,6 +389,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     if(jets.at(j).BtagProb() > 0.679) nbjet++; 
   }
   
+  Fill("h_HT", ht,weight);
   Fill("h_Nbjets",nbjet, weight);
   Fill("h_Njets",jets.size(), weight);
   

@@ -17,7 +17,7 @@ void GetEffectiveLuminosity() {
 
   map<TString, double> dirmap;
   // dir name  = xsec
-  dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
+  /*dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
   dirmap["DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball"] = 3503.71 ;
   dirmap["DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
   dirmap["DYToMuMu_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
@@ -159,7 +159,16 @@ void GetEffectiveLuminosity() {
   dirmap["ZZ_TuneZ2star_8TeV_pythia6_tauola"] =  17.654;
   dirmap["ZZZNoGstarJets_8TeV-madgraph"] =  0.00459;
   dirmap["WWGJets_8TeV-madgraph"] =  0.528;
-  
+  dirmap["QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6"] =  23.924;
+  dirmap["QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6"] =  (810 * 0.11);
+  */
+  dirmap["Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola"] = 1.76;
+  dirmap["Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola"] = 30.7;
+  dirmap["Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola"]  = 11.1;
+  dirmap["T_s-channel_TuneZ2star_8TeV-powheg-tauola"]   = 3.79;
+  dirmap["T_t-channel_TuneZ2star_8TeV-powheg-tauola"] = 56.4;
+  dirmap["T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola"] =11.1;
+
   for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
     
     

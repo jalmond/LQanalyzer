@@ -50,12 +50,38 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   MakeCleverHistograms(sighist, "DiTightEl");
   MakeCleverHistograms(sighist, "SingleLooseEl");
   MakeCleverHistograms(sighist, "SingleTightEl");
+  
+  MakeCleverHistograms(sighist, "SingleLooseElJet");
+  MakeCleverHistograms(sighist, "SingleTightElJet");
+  MakeCleverHistograms(sighist, "SingleLowPtLooseElJet");
+  MakeCleverHistograms(sighist, "SingleLowPtTightElJet");
+  MakeCleverHistograms(sighist, "SingleLooseEl_prompt");
+  MakeCleverHistograms(sighist, "SingleTightEl_prompt");
+  MakeCleverHistograms(sighist, "SingleLooseElJet_prompt");
+  MakeCleverHistograms(sighist, "SingleTightElJet_prompt");
+  MakeCleverHistograms(sighist, "SingleLooseEl_tm");
+  MakeCleverHistograms(sighist, "SingleTightEl_tm");
+  MakeCleverHistograms(sighist, "SingleLooseElJet_tm");
+  MakeCleverHistograms(sighist, "SingleTightElJet_tm");
+  MakeCleverHistograms(sighist, "SingleLowPtLooseElJet_tm");
+  MakeCleverHistograms(sighist, "SingleLowPtTightElJet_tm");
+  MakeCleverHistograms(sighist, "SingleLooseElJet_metmt_vloose");
+  MakeCleverHistograms(sighist, "SingleTightElJet_metmt_vloose");
+  MakeCleverHistograms(sighist, "SingleLooseElJet_metmt_loose");
+  MakeCleverHistograms(sighist, "SingleTightElJet_metmt_loose");
+  MakeCleverHistograms(sighist, "SingleLooseElJet_metmt_medium");
+  MakeCleverHistograms(sighist, "SingleTightElJet_metmt_medium");
+  MakeCleverHistograms(sighist, "SingleLooseElJet_metmt_tight");
+  MakeCleverHistograms(sighist, "SingleTightElJet_metmt_tight");
   MakeCleverHistograms(sighist, "LooseEl20");
   MakeCleverHistograms(sighist, "TightEl20");
   MakeCleverHistograms(sighist, "LooseEl40");
+  MakeCleverHistograms(sighist, "LooseEl40_notm");
   MakeCleverHistograms(sighist, "TightEl40");
+  MakeCleverHistograms(sighist, "TightEl40_notm");
   MakeCleverHistograms(sighist, "LooseEl60");
   MakeCleverHistograms(sighist, "TightEl60");
+  MakeCleverHistograms(sighist, "Inclusive");
 
   return;
 }
@@ -63,20 +89,14 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 
 void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
+
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
-    
+  
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   
-  /// Single Trigger List 
-  std::vector<TString> triggerslist17;
-  triggerslist17.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  triggerslist17.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-  std::vector<TString> triggerslist8;
-  triggerslist8.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  triggerslist8.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-
+ 
   std::vector<TString> triggerslist_diel;
   triggerslist_diel.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   
@@ -95,6 +115,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronLooseColl;
   eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl);
+  
+  if(electronLooseColl.size() ==0) return;
   
   std::vector<snu::KElectron> electronTightColl;
   eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
@@ -121,12 +143,77 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetPt(60.);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto60, muonTightColl, electronTightColl);
     
+  /// Single Trigger List
+  std::vector<TString> triggerslist17;
+  triggerslist17.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+
+  std::vector<TString> triggerslist17jet;
+  triggerslist17jet.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
   
-  //// SELECT EVENTS WITH NO MUONS
-  if(muonLooseColl.size() > 0) return;
+  /// Calcalate prescale weights
+  float prescale_trigger17 = (16.95) / 19789 ;
+  float prescale_trigger17jet = (24.18) / 19789 ;
 
   
-  /// Get p rate
+  if(PassTrigger(triggerslist17jet, prescale))FillCLHist(sighist, "Inclusive", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight*prescale_trigger17jet);
+  
+  return;
+
+  
+  
+  if(electronLooseColl.size()==1){
+    if(electronLooseColl.at(0).Pt() < 20.){
+      std::vector<TString> triggerslist8jet;
+      triggerslist8jet.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+      bool pass_el8jettrig= false;
+      if(PassTrigger(triggerslist8jet, prescale))pass_el8jettrig= true;
+      float prescale_trigger8jet = (4.85) / 19789 ;
+      if(k_isdata) prescale_trigger8jet=1.;
+      if(pass_el8jettrig){
+	if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLowPtLooseElJet", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight*prescale_trigger8jet);
+	if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleLowPtTightElJet", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight*prescale_trigger8jet);
+      }
+      
+      /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT ELECTRONS
+      if(!k_isdata) {
+	/// ONLY INCLUDE ELECTRONS FROM W/Z
+	if(electronLooseColl.at(0).GetType() >1 ) prescale_trigger8jet=0.;
+      }
+      
+      if(pass_el8jettrig){
+	if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLowPtLooseElJet_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight*prescale_trigger8jet);
+	if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleLowPtTightElJet_tm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight*prescale_trigger8jet);
+      }
+    }
+  }
+  
+  if(electronLooseColl.size()==1&& electronLooseColl.at(0).Pt() < 20.) return;
+  
+  float weight_nojet = weight;
+  float weight_jet = weight;
+  
+  if(!k_isdata && PassTrigger(triggerslist17, prescale)){
+    if(electronLooseColl.at(0).Pt() >= 20.){
+      weight_nojet *= prescale_trigger17;
+    }
+  }
+
+  if(!k_isdata && (PassTrigger(triggerslist17jet, prescale) )){
+    if(electronLooseColl.at(0).Pt() >= 20.){
+      weight_jet *= prescale_trigger17jet;
+    }
+  }
+
+  bool pass_el17trig= false;
+  bool pass_el17jettrig= false;
+  if(PassTrigger(triggerslist17, prescale)) FillCutFlow("Trigger_Ele17", weight_nojet);
+  if(PassTrigger(triggerslist17jet, prescale)) FillCutFlow("Trigger_Ele17Jet", weight_jet);
+  
+  if(PassTrigger(triggerslist17, prescale))pass_el17trig= true;
+  if(PassTrigger(triggerslist17jet, prescale))pass_el17jettrig= true;
+  
+
+  m_logger << DEBUG << "Running real efficiency code" << LQLogger::endmsg;
   
   if(PassTrigger(triggerslist_diel, prescale)){
     if(electronLooseColl.size() == 2){
@@ -195,9 +282,26 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     if(electronTightColl.size() == 2.)FillCLHist(sighist, "DiTightEl", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
   }
   
-  
   if(electronLooseColl.size() != 1) return;
+
+  m_logger << DEBUG << "Running fake efficiency code" << LQLogger::endmsg;
+  if(pass_el17trig) FillCutFlow("Ele17_single_el", weight_nojet);
+  if(pass_el17jettrig) FillCutFlow("Ele17Jet_single_el", weight_jet);
   
+  if(jetColl_lepveto20.size() == 0) return;
+
+  if(pass_el17trig) FillCutFlow("Ele17_gt1jet", weight_nojet);
+  if(pass_el17jettrig) FillCutFlow("Ele17Jet_gt1jet", weight_jet);
+  
+  //// SELECT EVENTS WITH NO MUONS
+  if(muonLooseColl.size() > 0) return;
+
+  if(pass_el17trig) FillCutFlow("Ele17_muonveto", weight_nojet);
+  if(pass_el17jettrig) FillCutFlow("Ele17Jet_muonveto", weight_jet);
+
+  
+  if(PassTrigger(triggerslist17jet, prescale)) n_17_jet_pass++;
+  if(PassTrigger(triggerslist17, prescale)) n_17_pass++;
   
   /// REMOVE Z like events
   if(electronVetoColl.size() == 2) {
@@ -207,57 +311,110 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
   }
   
-  
-  if(!(PassTrigger(triggerslist8, prescale)  ||  PassTrigger(triggerslist17, prescale))) return;
-  
-  float prescale_trigger8  = (3.55+ 4.86) / 19789 ;
-  float prescale_trigger17 = (16.95 + 24.18) / 19789 ;
-  
-  if(electronLooseColl.at(0).Pt() < 20.){
-    if(!(PassTrigger(triggerslist8, prescale))) return;
-  }
-  else {
-    if(!(PassTrigger(triggerslist17, prescale))) return;
-  }
-  
-  if(!k_isdata && PassTrigger(triggerslist8, prescale)) {
-    if(electronLooseColl.at(0).Pt() < 20.){
-      weight *= prescale_trigger8;
-    }
-  }
-  if(!k_isdata && PassTrigger(triggerslist17, prescale)){
-    if(electronLooseColl.at(0).Pt() >= 20.){
-      weight *= prescale_trigger17;
-    }
-  }
+  if(pass_el17trig) FillCutFlow("Ele17_Zveto", weight_nojet);
+  if(pass_el17jettrig) FillCutFlow("Ele17Jet_Zveto", weight_jet);
 
+  
   /// Z and W veto
   Double_t MT=0;
   Double_t METdphi=0;
   
+  m_logger << DEBUG << "Filling single lepton + 1 jet plots " << LQLogger::endmsg;
   
-  if (electronLooseColl.size() == 1 && jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "SingleLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight); 
-  if (electronLooseColl.size() == 1  && jetColl_lepveto20.size() >= 1 && electronTightColl.size() == 1)FillCLHist(sighist, "SingleTightEl", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight); 
-  
-  
+  if(pass_el17trig){
+    if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_nojet);
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightEl", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_nojet);
+  }
+
+  if(pass_el17jettrig){
+    if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+  }
+    
+  for(unsigned int w = 0; w < electronLooseColl.size();  w++){
+    METdphi = TVector2::Phi_mpi_pi(electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi());
+    MT = sqrt(2.* electronLooseColl.at(w).Et()*eventbase->GetEvent().PFMET() * (1 - cos( METdphi)));
+  }
+
+  bool truth_match=true;
+ 
   /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT ELECTRONS
   if(!k_isdata) {
     /// ONLY INCLUDE ELECTRONS FROM W/Z
-    if(electronLooseColl.at(0).GetType() != 1) return;
-  }
+    if(electronLooseColl.at(0).GetType() > 1)  truth_match=false;
 
-
-  for(unsigned int w = 0; w < electronLooseColl.size();  w++){
-    MT = sqrt(2.* electronLooseColl.at(w).Et()*eventbase->GetEvent().PFMET() * (1 - cos( electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi())) );
-    METdphi = TVector2::Phi_mpi_pi(electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi());
   }
   
+  if(pass_el17trig&&truth_match){
+    if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseEl_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_nojet);
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightEl_tm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_nojet);
+  }
   
-  if(! (eventbase->GetEvent().PFMET() < 20)) return;
-  if(!(MT < 25.)) return;
- 
-  if(fabs(METdphi) > 0.5) return;
+  if(pass_el17jettrig&&truth_match){
+    if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_tm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+  }
   
+  
+  m_logger << DEBUG << "making cuts to remove prompt leptons" << LQLogger::endmsg;
+
+  m_logger << DEBUG << "Selecting region to calculate MC SFs " << LQLogger::endmsg;
+  
+  if(eventbase->GetEvent().PFMET() > 30 && (60. < MT)  &&(MT < 100.) &&truth_match){
+    if(pass_el17trig){
+      if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightEl_prompt", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_nojet);
+    }
+    
+    if(pass_el17jettrig){
+      if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+    }
+  }
+  
+  if(eventbase->GetEvent().PFMET() > 50 && (60. < MT)  &&(MT < 100.)&& truth_match){
+    if(pass_el17trig){
+      if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseEl_prompt", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_nojet);
+    }
+    if(pass_el17jettrig){
+      if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+    }
+  }
+
+  
+  if( (eventbase->GetEvent().PFMET() < 20) && (MT < 20.) &&truth_match){
+    if(pass_el17jettrig){
+      if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_tight", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+      if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_tight", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+    }
+  }
+  
+  if( (eventbase->GetEvent().PFMET() < 25) && (MT < 25.) &&truth_match ){
+    if(pass_el17jettrig){
+      if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_medium", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+      if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_medium", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+    }
+  }
+  
+  if( (eventbase->GetEvent().PFMET() < 30) && MT < 30. &&truth_match){
+    if(pass_el17jettrig){
+      if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_loose", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+      if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_loose", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+    }
+  }
+  
+  if( (eventbase->GetEvent().PFMET() < 40) && MT < 40. &&truth_match){
+    if(pass_el17jettrig){
+      if (electronLooseColl.size() == 1&& jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_vloose", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight_jet);
+      if (electronLooseColl.size() == 1 && electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_vloose", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight_jet);
+    }
+  }
+  
+  
+  if( !( (eventbase->GetEvent().PFMET() < 30) && (MT < 30.)) ) return;
+  if(!pass_el17jettrig) return;
+  weight =weight_jet;
+  
+  m_logger << DEBUG << "Making plots for fake rates with different jet cuts" << LQLogger::endmsg;
+
   bool useevent20= false;
   bool useevent40= false;
   bool useevent60= false;
@@ -268,7 +425,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       for( int ij=0; ij < jetColl_lepveto20.size(); ij++){
 	
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto20.at(ij));
-	if( (jetColl_lepveto20.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto20.at(ij).ChargedEMEnergyFraction()) > 0.8) return;
+	if( (jetColl_lepveto20.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto20.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
 	if( (jetColl_lepveto20.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
         if(dr > 1.) useevent20 = true;
       }
@@ -280,7 +437,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       for( int ij=0; ij < jetColl_lepveto40.size(); ij++){
 
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto40.at(ij));
-        if( (jetColl_lepveto40.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto40.at(ij).ChargedEMEnergyFraction()) > 0.8) return;
+        if( (jetColl_lepveto40.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto40.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
         if( (jetColl_lepveto40.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
         if(dr > 1.) useevent40 = true;
       }
@@ -294,88 +451,97 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       for( int ij=0; ij < jetColl_lepveto60.size(); ij++){
 
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto60.at(ij));
-        if( (jetColl_lepveto60.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto60.at(ij).ChargedEMEnergyFraction()) > 0.8) return;
+        if( (jetColl_lepveto60.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto60.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
         if( (jetColl_lepveto60.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
         if(dr > 1.) useevent60 = true;
       }
     }
   }
   
-  Float_t ptbins[7] = { 15.,20.,25.,30.,35., 40.,60.};
+  Float_t ptbins[8] = { 15.,20.,25.,30.,35.,40.,60.,100.};
+  
+  float el_pt = electronLooseColl.at(0).Pt();
+  if(electronLooseColl.at(0).Pt() > 60.) el_pt = 59.;
   
   
-  if(useevent20){
+  if(useevent20&&truth_match){
     if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto20.size() >= 1){
       FillHist("TightEl20_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50); 
-      FillHist("TightEl20_pt", electronTightColl.at(0).Pt(), weight, ptbins, 6);     
+      FillHist("TightEl20_pt",el_pt, weight, ptbins, 7);     
       FillHist("TightEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl20_pt_eta1", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl20_pt_eta2", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl20_pt_eta3", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl20_pt_eta4", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl20_pt_eta1",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl20_pt_eta2",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl20_pt_eta3",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl20_pt_eta4",el_pt, weight, ptbins, 7);
 	 
       FillCLHist(sighist, "TightEl20", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
     }
     
     if (electronLooseColl.size() == 1 &&jetColl_lepveto20.size() >= 1){
       FillHist("LooseEl20_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("LooseEl20_pt", electronLooseColl.at(0).Pt(), weight,  ptbins, 6);
+      FillHist("LooseEl20_pt", el_pt, weight,  ptbins, 7);
       FillHist("LooseEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl20_pt_eta1", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl20_pt_eta2", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl20_pt_eta3", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl20_pt_eta4", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl20_pt_eta1", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl20_pt_eta2", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl20_pt_eta3", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl20_pt_eta4", el_pt, weight, ptbins, 7);
 
       FillCLHist(sighist, "LooseEl20", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
     }
   }    
 
   if(useevent40){
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "TightEl40_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
+    if (electronLooseColl.size() == 1 &&jetColl_lepveto40.size() >= 1) FillCLHist(sighist, "LooseEl40_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
+    
+  }
+
+  if(useevent40&&truth_match){
     if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto40.size() >= 1){
       FillHist("TightEl40_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("TightEl40_pt", electronTightColl.at(0).Pt(), weight,  ptbins, 6);
+      FillHist("TightEl40_pt",el_pt, weight,  ptbins, 7);
       FillHist("TightEl40_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl40_pt_eta1", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl40_pt_eta2", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl40_pt_eta3", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl40_pt_eta4", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl40_pt_eta1",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl40_pt_eta2",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl40_pt_eta3",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl40_pt_eta4",el_pt, weight, ptbins, 7);
       FillCLHist(sighist, "TightEl40", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
     }
 
     if (electronLooseColl.size() == 1 &&jetColl_lepveto40.size() >= 1){
       FillHist("LooseEl40_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("LooseEl40_pt", electronLooseColl.at(0).Pt(), weight,  ptbins, 6);
+      FillHist("LooseEl40_pt", el_pt, weight,  ptbins, 7);
       FillHist("LooseEl40_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl40_pt_eta1", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl40_pt_eta2", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl40_pt_eta3", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl40_pt_eta4", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl40_pt_eta1", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl40_pt_eta2", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl40_pt_eta3", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl40_pt_eta4", el_pt, weight, ptbins, 7);
 
       FillCLHist(sighist, "LooseEl40", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
     }
   }
 
-  if(useevent60){
+  if(useevent60&&truth_match){
     if (electronLooseColl.size() == 1 && electronTightColl.size() == 1 && jetColl_lepveto60.size() >= 1){
       FillHist("TightEl60_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("TightEl60_pt", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      FillHist("TightEl60_pt",el_pt, weight, ptbins, 7);
       FillHist("TightEl60_njets", jetColl_lepveto60.size(), weight, 0.,5.,5);
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl60_pt_eta1", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl60_pt_eta2", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl60_pt_eta3", electronTightColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl60_pt_eta4", electronTightColl.at(0).Pt(), weight, ptbins, 6);
+      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl60_pt_eta1",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl60_pt_eta2",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl60_pt_eta3",el_pt, weight, ptbins, 7);
+      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl60_pt_eta4",el_pt, weight, ptbins, 7);
 
       FillCLHist(sighist, "TightEl60", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto60, weight);
     }
 
     if (electronLooseColl.size() == 1 &&jetColl_lepveto60.size() >= 1){
       FillHist("LooseEl60_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("LooseEl60_pt", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      FillHist("LooseEl60_pt", el_pt, weight, ptbins, 7);
       FillHist("LooseEl60_njets", jetColl_lepveto60.size(), weight, 0.,5.,5);
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl60_pt_eta1", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl60_pt_eta2", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl60_pt_eta3", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl60_pt_eta4", electronLooseColl.at(0).Pt(), weight, ptbins, 6);
+      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl60_pt_eta1", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl60_pt_eta2", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl60_pt_eta3", el_pt, weight, ptbins, 7);
+      else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl60_pt_eta4", el_pt, weight, ptbins, 7);
       FillCLHist(sighist, "LooseEl60", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto60, weight);
     }
   }
@@ -389,6 +555,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 void FakeRateCalculator_El::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
+  m_logger<< INFO << "Number of events that pass 17 GeV trigger = " << n_17_pass  << LQLogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 17 GeV + jet trigger = " << n_17_jet_pass  << LQLogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 17 GeV || jet trigger = " << n_17_17_jet_pass  << LQLogger::endmsg;
 
 }
 
@@ -531,6 +700,10 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
   DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
   DeclareVariable(out_muons, "Signal_Muons");
 
+  n_17_jet_pass=0;
+  n_17_17_jet_pass=0;
+  n_17_pass=0;
+
   
   return;
   
@@ -552,11 +725,18 @@ void FakeRateCalculator_El::FillCutFlow(TString cut, float weight){
    
   }
   else{
-    AnalyzerCore::MakeHistograms("cutflow",13,0.,13.);
+    AnalyzerCore::MakeHistograms("cutflow",10,0.,10.);
 
-
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"SSDiEl_medium");
-    
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"Trigger_Ele17");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"Trigger_Ele17Jet");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"Ele17_single_el");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"Ele17Jet_single_el");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"Ele17_gt1jet");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"Ele17Jet_gt1jet");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(7,"Ele17_muonveto");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(8,"Ele17Jet_muonveto");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(9,"Ele17_Zveto");	
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(10,"Ele17Jet_Zveto");
   }
 }
 

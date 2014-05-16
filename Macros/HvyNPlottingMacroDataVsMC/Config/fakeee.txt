@@ -1,0 +1,26 @@
+# Specify_location_of_data/mc
+mcpath	        /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/
+datapath	/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/FakeRateCalculator_El_data_5_3_14.root	
+datadrivenpath	/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/
+# Specify_the_list_of_hists_to_plot
+plottingpath	dat/fakeelectron_hist_config.txt
+cutpath		dat/fakeelectron_cuts.txt
+# file_prefix
+prefix		FakeRateCalculator_El_SK
+postfix		_5_3_14.root	
+# NAME_THE_OUTPUT_DIR
+outputdir  FakeRateCalculator_May14_16
+histdir    LQMay14
+# CONFIGURE_HISTOGRAMS
+showdata   true
+usenp      false
+ylog	   true
+# List_the_samples_to_be_included
+samples	   ww   
+samples	   wz   
+samples	   zz   
+samples	   dyplusbb   
+samples	   top	
+samples	   qcd 
+samples	   wjetplusbb
+END

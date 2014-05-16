@@ -190,7 +190,7 @@ void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonC
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
     }
-    if(!(el->Pt() > 10.))        {
+    if(!(el->Pt() > 15.))        {
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
     }

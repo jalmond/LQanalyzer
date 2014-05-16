@@ -1,124 +1,5 @@
-// STD includes
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <utility>
-#include <stdio.h>
-#include <stdlib.h>
-#include <cmath>
-#include <map>
-#include <sstream>
-
-/// Local includes
-#include "HistUtils.hpp"
-
-///ROOT includes
-#include "TH1.h"
-#include "TDirectory.h"
-#include "TFile.h"
-#include "TCanvas.h"
-#include "TSystem.h"
-#include "THStack.h"
-#include "TLegend.h"
-#include "TLine.h"
-#include "TROOT.h"
-#include <TStyle.h>
-#include "TLatex.h"
-
-
-using namespace std;
-
-/// LIST OF FUNCIONS FOR PLOTTER CODE
-int MakePlots(std::string hist);
-void MakeCutFlow(std::string hist);
-int MakeCutFlow_Plots(string configfile);
-void PrintCanvas(TCanvas* c1, std::string folder, std::string plotdesciption,  std::string title);
-bool repeat(string hname);
-TLegend* MakeLegend(map<TString, TH1*> legmap,TH1* h_legdata, bool rundata, bool log);
-TH1* MakeDataHist(string name, double xmin, double xmax, TH1* h_up,bool ylog , int rebin);
-void CheckHist(TH1* h);
-void CheckSamples(int nsamples);
-vector<pair<TString,float> >  InitSample (TString sample);
-THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString > > sample, TString type, string name, float xmin, float xmax,map<TString, TH1*>& legmap, int rebin);
-void SetErrors(TH1* hist, float normerr);
-TH1* MakeStackUp(map<TString, TH1*> map_of_stacks, TString clonename);
-TH1* MakeStackDown(map<TString, TH1*> map_of_stacks, TString clonename);
-TH1* MakeSumHist(THStack* thestack);
-float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name);
-void SetTitles(TH1* hist, string name);
-bool HistInGev(string name);
-void fixOverlay();
-void setTDRStyle();
-TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TLegend* legend, const string hname, const int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel);
-TH1* MakeSumHist2(THStack* thestack);
-TH1* MakeErrorBand(TH1* hnom, TH1* hup, TH1* hdown);
-void SetNomBinError(TH1* hnom, TH1* hup, TH1* hdown);
-void MakeLabel( float rhcol_x, float rhcol_y);
-std::map<std::string,std::string> _htmls;
-
-float GetSyst(TString cut, TString syst, pair<vector<pair<TString,float> >,TString > samples );
-float GetSystPercent(TString cut, TString syst, pair<vector<pair<TString,float> >,TString > samples );
-void setZ(bool useAlpgen);
-float Calculate(TString cut, TString variance,  pair<vector<pair<TString,float> >, TString >  samples);
-void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples , vector<string>& cut_label);
-void  SetUpMasterConfig(std::string filename);
-
-
-////// For cutflow
-float Error(TH1* h);
-float GetTotal(TString cut, vector<pair<TString,float> > sample);
-float GetStatError(TString cut, vector<pair<TString,float> > sample);
-float GetStatError2(TString cut, vector<pair<TString,float> > sample);
-float GetIntegral(TString cut, TString isample, TString type);
-float GetNormErr(TString cut,  vector<pair<TString,float> > samples);
-float GetNormErr2(TString cut,  vector<pair<TString,float> > samples);
-float GetErr(TString cut,  vector<pair<TString,float> > samples, TString err_type,TString var);
-float GetErr2(TString cut,  vector<pair<TString,float> > samples, TString err_type,TString var);
-float GetError(TString cut, TString isample, TString type);
-
-
-//// GLOBAL VARIABLES
-int isig=0;
-map<string,int> norepeatplot;
-TString columnname="";
-TString caption="";
-  
-std::string hist;
-bool showdata=true;
-std::string cutfile;
-std::string histfile;
-bool ylog;
-bool usenp(false);
-
-TString channel;
-
-std::string path;
-std::string message;
-std::string fileprefix="";
-std::string filepostfix = "";
-
-std::ofstream page;
-std::ofstream histpage;
-
-vector<string> cuts; 
-vector<string> allcuts; 
-vector<string> listofsamples; 
-
-//// Standard bkg folders 
-string  mcloc="";
-/// Data folder
-string dataloc = "";
-/// data driven
-string datadrivenloc= "";
-string plotloc ="";
-string cutloc ="";
-
-string histdir="";
-
-string output_index_path="";
-string output_path = "";
-
-
+//// Code makes directory of histograms and cutflow. 
+#include "MakeDataMCCompPlots.h"
 
 
 int main(int argc, char *argv[]) {
@@ -147,9 +28,7 @@ int main(int argc, char *argv[]) {
   
   for (int i = 1; i < argc; ++i) {
     string configfile = argv[i];   
-    
     SetUpMasterConfig(configfile);
-    
     int a =MakeCutFlow_Plots(configfile);
   }
   
@@ -158,163 +37,6 @@ int main(int argc, char *argv[]) {
   cout << "Open plots in " << output_index_path << endl; 
   return 0;
 }
-
-
-void setTDRStyle() {
-  TStyle *tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
-  
-  // For the canvas:
-  tdrStyle->SetCanvasBorderMode(0);
-  tdrStyle->SetCanvasColor(kWhite);
-  tdrStyle->SetCanvasDefH(600); //Height of canvas
-  tdrStyle->SetCanvasDefW(600); //Width of canvas
-  tdrStyle->SetCanvasDefX(0);   //POsition on screen
-  tdrStyle->SetCanvasDefY(0);
-  
-  // For the Pad:
-  tdrStyle->SetPadBorderMode(0);
-  // tdrStyle->SetPadBorderSize(Width_t size = 1);
-  tdrStyle->SetPadColor(kWhite);
-  tdrStyle->SetPadGridX(false);
-  tdrStyle->SetPadGridY(false);
-  tdrStyle->SetGridColor(0);
-  tdrStyle->SetGridStyle(3);
-  tdrStyle->SetGridWidth(1);
-
-  // For the frame:
-  tdrStyle->SetFrameBorderMode(0);
-  tdrStyle->SetFrameBorderSize(1);
-  tdrStyle->SetFrameFillColor(0);
-  tdrStyle->SetFrameFillStyle(0);
-  tdrStyle->SetFrameLineColor(1);
-  tdrStyle->SetFrameLineStyle(1);
-  tdrStyle->SetFrameLineWidth(1);
-
-  // For the histo:
-  // tdrStyle->SetHistFillColor(1);
-  // tdrStyle->SetHistFillStyle(0);
-  tdrStyle->SetHistLineColor(1);
-  tdrStyle->SetHistLineStyle(0);
-  tdrStyle->SetHistLineWidth(1);
-  // tdrStyle->SetLegoInnerR(Float_t rad = 0.5);
-  // tdrStyle->SetNumberContours(Int_t number = 20);
-  
-  tdrStyle->SetEndErrorSize(2);
-  //  tdrStyle->SetErrorMarker(20);
-  //  tdrStyle->SetErrorX(0.);
-  
-  tdrStyle->SetMarkerStyle(20);
-  
-  //For the fit/function:
-  tdrStyle->SetOptFit(1);
-  tdrStyle->SetFitFormat("5.4g");
-  tdrStyle->SetFuncColor(2);
-  tdrStyle->SetFuncStyle(1);
-  tdrStyle->SetFuncWidth(1);
-
-  //For the date:
-  tdrStyle->SetOptDate(0);
-  // tdrStyle->SetDateX(Float_t x = 0.01);
-
-  
-  // tdrStyle->SetDateY(Float_t y = 0.01);
-  
-  // For the statistics box:
-  tdrStyle->SetOptFile(0);
-  tdrStyle->SetOptStat(0); // To display the mean and RMS:   SetOptStat("mr");
-  tdrStyle->SetStatColor(kWhite);
-  tdrStyle->SetStatFont(42);
-  tdrStyle->SetStatFontSize(0.025);
-  tdrStyle->SetStatTextColor(1);
-  tdrStyle->SetStatFormat("6.4g");
-  tdrStyle->SetStatBorderSize(1);
-  tdrStyle->SetStatH(0.1);
-  tdrStyle->SetStatW(0.15);
-  // tdrStyle->SetStatStyle(Style_t style = 1001);
-  // tdrStyle->SetStatX(Float_t x = 0);
-  // tdrStyle->SetStatY(Float_t y = 0);
-
-  // Margins:
-  tdrStyle->SetPadTopMargin(0.05);
-  tdrStyle->SetPadBottomMargin(0.12);
-  tdrStyle->SetPadLeftMargin(0.12);
-  tdrStyle->SetPadRightMargin(0.02);
-  
-  // For the Global title:
-
-  tdrStyle->SetOptTitle(0);
-  tdrStyle->SetTitleFont(42);
-  tdrStyle->SetTitleColor(1);
-  tdrStyle->SetTitleTextColor(1);
-  tdrStyle->SetTitleFillColor(10);
-  tdrStyle->SetTitleFontSize(0.05);
-  // tdrStyle->SetTitleH(0); // Set the height of the title box
-  // tdrStyle->SetTitleW(0); // Set the width of the title box
-  // tdrStyle->SetTitleX(0); // Set the position of the title box
-  // tdrStyle->SetTitleY(0.985); // Set the position of the title box
-  // tdrStyle->SetTitleStyle(Style_t style = 1001);
-  // tdrStyle->SetTitleBorderSize(2);
-
-  // For the axis titles:
-
-  tdrStyle->SetTitleColor(1, "XYZ");
-  tdrStyle->SetTitleFont(42, "XYZ");
-  tdrStyle->SetTitleSize(0.06, "XYZ");
-  // tdrStyle->SetTitleXSize(Float_t size = 0.02); // Another way to set the size?
-  // tdrStyle->SetTitleYSize(Float_t size = 0.02);
-  tdrStyle->SetTitleXOffset(0.9);
-  tdrStyle->SetTitleYOffset(1.75);
-  // tdrStyle->SetTitleOffset(1.1, "Y"); // Another way to set the Offset
-
-  // For the axis labels:
-
-  tdrStyle->SetLabelColor(1, "XYZ");
-  tdrStyle->SetLabelFont(42, "XYZ");
-  tdrStyle->SetLabelOffset(0.007, "XYZ");
-  tdrStyle->SetLabelSize(0.05, "XYZ");
-
-  // For the axis:
-
-  tdrStyle->SetAxisColor(1, "XYZ");
-  tdrStyle->SetStripDecimals(kTRUE);
-  tdrStyle->SetTickLength(0.03, "XYZ");
-  tdrStyle->SetNdivisions(510, "XYZ");
-  tdrStyle->SetPadTickX(1);  // To get tick marks on the opposite side of the frame
-  tdrStyle->SetPadTickY(1);
-  
-  // Change for log plots:
-  tdrStyle->SetOptLogx(0);
-  tdrStyle->SetOptLogy(0);
-  tdrStyle->SetOptLogz(0);
-
-  // Postscript options:
-  tdrStyle->SetPaperSize(20.,20.);
-
-
-  // tdrStyle->SetLineScalePS(Float_t scale = 3);
-  // tdrStyle->SetLineStyleString(Int_t i, const char* text);
-  // tdrStyle->SetHeaderPS(const char* header);
-  // tdrStyle->SetTitlePS(const char* pstitle);
-
-  // tdrStyle->SetBarOffset(Float_t baroff = 0.5);
-  // tdrStyle->SetBarWidth(Float_t barwidth = 0.5);
-  // tdrStyle->SetPaintTextFormat(const char* format = "g");
-  // tdrStyle->SetPalette(Int_t ncolors = 0, Int_t* colors = 0);
-  // tdrStyle->SetTimeOffset(Double_t toffset);
-  // tdrStyle->SetHistMinimumZero(kTRUE);
-
-  tdrStyle->cd();
-
-}
-
-
-
-// fixOverlay: Redraws the axis
-
-void fixOverlay() {
-  gPad->RedrawAxis();
-}
-
 
 int MakeCutFlow_Plots(string configfile){
   
@@ -334,17 +56,14 @@ int MakeCutFlow_Plots(string configfile){
   page << "<body>" << endl;
   page << "<h1> HvyN Analysis Plots </h1>" << endl;
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
-  
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
 
-
+  MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
-  //MakeCutFlow(histdir);
 
-  return M;
+  return 1;
 
 }
-
 
 
 int MakePlots(string hist) {
@@ -352,7 +71,7 @@ int MakePlots(string hist) {
   
   cout << "\n ---------------------------------------- " << endl;
   cout << "MakeDataMCCompPlots::MakePlots(string hist) " << endl;
-
+  
   ////////////////////// ////////////////
   ////  MAIN PART OF CODE for user/
   ///////////////////////////////////////
@@ -362,7 +81,6 @@ int MakePlots(string hist) {
   //// Sets flags for using CF/NP/logY axis/plot data/ and which mc samples to use
   
   SetUpConfig( samples, cut_label);  
-
   cuts.clear();
 
   // ----------Get list of cuts to plot  ----------------------
@@ -424,7 +142,7 @@ int MakePlots(string hist) {
 	
 	TH1* hup = MakeStackUp(mhist, name+"UP");
 	TH1* hdown = MakeStackDown(mhist, name+"DOWN");
-		
+	
 	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
 	
 	/// Make data histogram
@@ -434,7 +152,8 @@ int MakePlots(string hist) {
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
-	
+	//scale =  MakeSumHist(mstack)->Integral() /  hdata->Integral();
+	scale = 1.;
 	/// Make legend
 	TLegend* legend = MakeLegend(legmap, hdata, showdata, ylog);       		
 	
@@ -465,8 +184,8 @@ int MakePlots(string hist) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void MakeCutFlow(string type){
+
   
-  return ;
   vector<string> cut_label;  
   vector<pair<pair<vector<pair<TString,float> >, int >, TString > > cfsamples;  
   SetUpConfig( cfsamples, cut_label);
@@ -478,8 +197,9 @@ void MakeCutFlow(string type){
     string cutname;
     cut_name_file >> cutname;
     if(cutname=="END") break;
-    cuts.push_back((hist + cutname).c_str());    
-    cout << "Making cutflow for MuonPlots/mu1_eta"<< cutname << endl;
+    cut_label.push_back(cutname);
+    cuts.push_back((cutname+ hist +"_" + cutname).c_str());    
+    cout << "Making cutflow for SingleLooseEl/h_leadingElectronPt"<< cutname << endl;
   }
 
  
@@ -504,29 +224,6 @@ void MakeCutFlow(string type){
     
     /// Vector for systematic table
     map<TString,float> syst_stat;
-    map<TString,float> syst_JESup;
-    map<TString,float> syst_JESdown;
-    map<TString,float> syst_MUONISOup;
-    map<TString,float> syst_MUONISOdown;
-    map<TString,float> syst_MUONRECOup;
-    map<TString,float> syst_MUONRECOdown;
-    map<TString,float> syst_MUONSCALEup;
-    map<TString,float> syst_MUONSCALEdown;
-    map<TString,float> syst_ELECTRONISOup;
-    map<TString,float> syst_ELECTRONISOdown;
-    map<TString,float> syst_ELECTRONIDup;
-    map<TString,float> syst_ELECTRONIDdown;
-    map<TString,float> syst_ELECTRONRECOup;
-    map<TString,float> syst_ELECTRONRECOdown;
-    map<TString,float> syst_ELECTRONSCALEup;
-    map<TString,float> syst_ELECTRONSCALEdown;
-    map<TString,float> syst_ELECTRONSMEARup;
-    map<TString,float> syst_ELECTRONSMEARdown;
-    map<TString,float> syst_CFup;
-    map<TString,float> syst_CFdown;
-    map<TString,float> syst_JVFup;
-    map<TString,float> syst_JVFdown;
-    map<TString,float> syst_JER;
     map<TString,float> syst_norm;
     map<TString,float> syst_total;
 
@@ -586,9 +283,21 @@ void MakeCutFlow(string type){
     
     if(significance < 0.) significance = (totaldata - totalbkg) / (sqrt( (errdata*errdata) + (totalerr_down*totalerr_down))) ;
     
-    ofstream ofile;
+
+    //// Make TEX file
+    ofstream ofile_tex;
+    string latex_file =  "Tables/" + cut_label.at(i_cut) + ".tex";
+    ofile_tex.open(latex_file.c_str());
+    ofile_tex.setf(ios::fixed,ios::floatfield);
+    ofile_tex << "\\documentclass[10pt]{article}" << endl;
+    ofile_tex << "\\usepackage{epsfig,subfigure,setspace,xtab,xcolor,array,colortbl}" << endl;
+
+    ofile_tex << "\\begin{document}" << endl;
+    ofile_tex << "\\input{Tables/" + cut_label.at(i_cut)  + "Table.txt}" << endl;
+    ofile_tex << "\\end{document}" << endl;
     
-    cout << cut_label.size() << endl;
+    /// Make text file
+    ofstream ofile;
     string latex =  "Tables/" + cut_label.at(i_cut) + "Table.txt";
     
     ofile.open(latex.c_str());
@@ -634,31 +343,30 @@ void MakeCutFlow(string type){
     ofile << "\\caption{" << caption << "}" << endl;
     ofile << "\\end{center}" << endl;
     ofile << "\\end{table}" << endl;    
+     
+  
+    string latex_command = "latex Tables/" + cut_label.at(i_cut) +".tex";
+    string dvi_command = "dvipdf " + cut_label.at(i_cut) +".dvi";
+    string mv_command = "mv " + cut_label.at(i_cut) +".pdf /home/jalmond/WebPlots/" + path +"/histograms/"+ histdir ;
+    
+    system((latex_command.c_str()));
+    system((dvi_command.c_str()));
+    system((mv_command.c_str()));
+    system(("rm *aux"));
+    system(("rm *log"));
+    system(("rm *dvi"));
+    
+    string cftitle = cut_label.at(i_cut);
+    
+    histpage << "<tr><td>"<< "cutflow " + cut_label.at(i_cut)  <<"</td>"<<endl;
+    histpage <<"<td>"<<endl;
+    histpage << "<a href=\"" << cut_label.at(i_cut)  << ".pdf\">";
+    histpage << "Cutflow: " + cut_label.at(i_cut)  + ".pdf</p>";
+    histpage << "</td>" << endl;
   }
-  
-  
-  string latex_command = "latex Tables/" + cut_label.at(0) +".tex";
-  string dvi_command = "dvipdf " + cut_label.at(0) +".dvi";
-  string mv_command = "mv " + cut_label.at(0) +".pdf /home/jalmond/WebPlots/" + path +"/histograms/"+ histdir ;
-  
-  system((latex_command.c_str()));
-  system((dvi_command.c_str()));
-  system((mv_command.c_str()));
-  system(("rm *aux"));
-  system(("rm *log"));
-  system(("rm *dvi"));
-  
-  string cftitle = cut_label.at(0);
-  
-  histpage << "<tr><td>"<< "cutflow " + cut_label.at(0)  <<"</td>"<<endl;
-  histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << cut_label.at(0)  << ".pdf\">";
-  histpage << "<img src=\"" << cut_label.at(0)  << ".pdf\" width=\"100%\"/>";
-  histpage << "</td>" << endl;
 
-  
   return;
-   }
+}
 
 bool repeat (string hname){
   map<string,int>::iterator mit = norepeatplot.find(hname);
@@ -696,27 +404,30 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
 
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
-  double x1 = 0.65;
-  double y1 = 0.65;
-  double x2 = 0.9;
+  double x1 = 0.6;
+  double y1 = 0.6;
+  double x2 = 0.6;
   double y2 = 0.9;
-  /*
-  if(logy){
-    
-    x1 = 0.8;
-    y1 = 0.8;
-    x2 = 0.99;
-    y2 = 0.95;
 
+  
+  int nbinsX=hlegdata->GetNbinsX();
+  
+  /// 
+  if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
+    x1 = 0.6;
+    y1 = 0.6;
+    x2 = 0.9;
+    y2 = 0.9;
   }
-
-  if(!showdata){
-    x1= 0.6;
-    x2= 0.85;
-    y1= 0.6;
-    y2= 0.9;
+  else{
+    if((hlegdata->GetBinContent(nbinsX*0.3) / hlegdata->GetMaximum()) < 0.5){
+      x1 = 0.2;
+      y1 = 0.6;
+      x2 = 0.5;
+      y2 = 0.9;
+    }
   }
-  */
+  
   TLegend* legendH = new TLegend(x1,y1,x2,y2);
   legendH->SetFillColor(10);
   legendH->SetBorderSize(0);
@@ -777,45 +488,90 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
   
-  if(sample.Contains("dy")){
+  if(sample.Contains("dy_")){
     list.push_back(make_pair("DY10to50",0.2));    
     list.push_back(make_pair("DY50plus",0.2));    
-    list.push_back(make_pair("Zbb",0.2));    
   }
   
+  if(sample.Contains("dyplusbb")){
+    list.push_back(make_pair("DY10to50",0.2));
+    list.push_back(make_pair("DY50plus",0.2));
+    list.push_back(make_pair("Zbb",0.2));
+  }
+    
   ///// Top samples //////////////////    
   if(sample.Contains("top")){
-    list.push_back(make_pair("ttbar",0.08));
+    list.push_back(make_pair("ttbar",0.1));
+    list.push_back(make_pair("stbar_sch",0.1));
+    list.push_back(make_pair("stbar_tch",0.1));
+    list.push_back(make_pair("stbar_tW",0.1));
+    list.push_back(make_pair("st_sch",0.1));
+    list.push_back(make_pair("st_tch",0.1));
+    list.push_back(make_pair("st_tW",0.1));
   }
-  //////// Diboson ////////
-  if(sample.Contains("wz")){    
-    list.push_back(make_pair("WZtollln",0.09));
-    list.push_back(make_pair("WZtollqq",0.09));
-    list.push_back(make_pair("WZtoqqln",0.09));
+  
+  if(sample.Contains("ttbar")){
+    list.push_back(make_pair("ttbar",0.1));
   }
-
+  
   if(sample.Contains("qcd"))
-  {
-    //list.push_back(make_pair("QCD_30-40_EM2",0.1));
-    //list.push_back(make_pair("QCD_40_EM2",0.1));
-    
+    {
+      list.push_back(make_pair("QCD",0.50));
+    }
+  
+  
+  //////// Diboson ////////
+  if(sample.Contains("wz_py")){    
+    list.push_back(make_pair("WZ_py",0.15));
   }
   
-  if(sample.Contains("zz")){
-    list.push_back(make_pair("ZZtollll",0.09));
-    list.push_back(make_pair("ZZtollnn",0.09));
-    list.push_back(make_pair("ZZtollqq",0.09));
+  if(sample.Contains("zz_py")){
+    list.push_back(make_pair("ZZ_py",0.15));
   }
   
-  if(sample.Contains("ww")){      
-    list.push_back(make_pair("WW",0.09));
-    list.push_back(make_pair("WWW",0.09));
+  if(sample.Contains("ww_py")){      
+    list.push_back(make_pair("WW_py",0.15));
   }
   
-  if(sample.Contains("wjet")){
-    list.push_back(make_pair("Wjets",0.09));
-    list.push_back(make_pair("Wbb",0.09));
-    list.push_back(make_pair("Wgamma",0.1));
+  if(sample.Contains("vv_py")){
+    list.push_back(make_pair("WZ_py",0.15));
+    list.push_back(make_pair("ZZ_py",0.15));
+    list.push_back(make_pair("WW_py",0.15));
+  }
+  
+  if(sample.Contains("wz_mg")){
+    list.push_back(make_pair("WZtollqq_mg",0.15));
+    list.push_back(make_pair("WZtoqqln_mg",0.15));
+    list.push_back(make_pair("WZtollln_mg",0.15));
+  }
+  
+  if(sample.Contains("zz_mg")){
+    list.push_back(make_pair("ZZtollnn_mg",0.15));
+    list.push_back(make_pair("ZZtollqq_mg",0.15));
+    list.push_back(make_pair("ZZtollll_mg",0.15));
+  }
+  
+  if(sample.Contains("ww_mg")){
+    list.push_back(make_pair("WW_mg",0.15));
+  }
+  
+  
+  if(sample.Contains("zz_pow")){
+    list.push_back(make_pair("Ztoeemm",0.15));
+    list.push_back(make_pair("Ztoeett",0.15));
+    list.push_back(make_pair("Ztommtt",0.15));
+    list.push_back(make_pair("Ztoeeee",0.15));
+    list.push_back(make_pair("Ztommmm",0.15));
+    list.push_back(make_pair("Ztotttt",0.15));
+  }
+  
+  //// Wjets
+  if(sample.Contains("wjet_")){
+    list.push_back(make_pair("Wjets",0.15));
+  }
+  if(sample.Contains("wjetplusbb")){
+    list.push_back(make_pair("Wjets",0.15));
+    list.push_back(make_pair("Wbb",0.15));
   }
   
   
@@ -826,6 +582,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("ttZ",0.22));
     list.push_back(make_pair("ttW",0.22));
     list.push_back(make_pair("HtoZZ",0.22));
+  }
+  
+  if(sample.Contains("Other")){
   }
 
   if(list.size()==0) cout << "Error in making lists" << endl;
@@ -856,9 +615,8 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
  
   TDirectory* origDir = gDirectory;
 
-  cout << "File prefix = " << fileprefix << " postfix= "  << filepostfix << endl;
-
   float sum_integral=0.;
+
   for(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >::iterator it = sample.begin() ; it!= sample.end(); it++){
 	
     if(type.Contains("Nominal")) fileloc = mcloc;
@@ -871,8 +629,8 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     CheckSamples( it->first.first.size() );
 
     TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(0).first + filepostfix).Data());
+    if(!file) cout << "Could not open " << fileloc+ fileprefix + it->first.first.at(0).first + filepostfix << endl;
     
-   
     gROOT->cd();
     TDirectory* tempDir = 0;
     int counter = 0;
@@ -890,12 +648,12 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     tempDir->cd();
 
     TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
-
+    if(!h_tmp) cout << "Could not open hist " << clonename << endl;
+    
     CheckHist(h_tmp);
 
     if(debug)cout <<  it->second <<  "  contribution " << 1 << "/" << it->first.first.size()  << " is from " << fileprefix + it->first.first.at(0).first + filepostfix <<" : Integral = " <<h_tmp->Integral() << " " << fileloc << endl;
     
-
     
     for(unsigned int i=1; i < it->first.first.size(); i++){	    
       clonename+="A";
@@ -934,7 +692,6 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     h_tmp->Rebin(rebin);
     SetErrors(h_tmp, it->first.first.at(0).second);
            
-    
     stack->Add(h_tmp);
     sum_integral+=h_tmp->Integral();
     
@@ -963,14 +720,14 @@ TH1* MakeStackUp(map<TString, TH1*> map_of_stacks, TString clonename){
     float nom_content = h_up->GetBinContent(binx);
     float nom_error = h_up->GetBinError(binx);
     
-    float errup2 =  nom_error*nom_error ;
+    /// Now use 5%+ norm + stat error
+    float errup2 =  nom_error*nom_error + 0.05*0.05*nom_content*nom_content;
     
     /// add rest of systs
 
-    float new_bin = nom_content * 1.075; //sqrt(errup2);
-        
+    float new_bin = nom_content + sqrt(errup2);
     h_up->SetBinContent(binx,new_bin);
-    
+   
   }
   
   return  h_up;
@@ -993,11 +750,12 @@ TH1* MakeStackDown(map<TString, TH1*> map_of_stacks, TString clonename){
     //// nom_error = stat err + normalisation error, set previously on nom hist
     float errdown2 =  nom_error*nom_error;
     
-    float new_bin = nom_content  * (1./1.075) ;//- sqrt(errdown2);
+    /// Now use 5%+ norm + stat error
+    float errup2 =  nom_error*nom_error + 0.05*0.05*nom_content*nom_content;
     
-        
+    float new_bin = nom_content  - sqrt(errdown2);
     h_down->SetBinContent(binx,new_bin);
-    
+   
   }
   
   return  h_down;
@@ -1060,6 +818,14 @@ void SetTitles(TH1* hist, string name){
       xtitle="#phi_{E^{miss}_{T}} "; 
     }
   }
+  if(name.find("h_MT")!=string::npos) xtitle="M_{T} [GeV]";
+  if(name.find("h_dphi_METe")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{el})";
+  if(name.find("h_dphi_METm")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{mu})";
+
+  if(name.find("h_jet_emfra")!=string::npos) xtitle="Jet EMFrac";
+  if(name.find("jet_el_ptratio")!=string::npos) xtitle="El p_{T}/ Jet p_{T}";
+
+    
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
   if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} [GeV]";
@@ -1072,7 +838,7 @@ void SetTitles(TH1* hist, string name){
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
   if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} [GeV]";
-  if(name.find("leadElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
+  if(name.find("leadingElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
   if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} [GeV]";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third p_{T} [GeV]";
   
@@ -1195,7 +961,7 @@ float GetStatError2(TString cut, vector<pair<TString,float> > samples){
 
 float GetStatError(TString cut, vector<pair<TString,float> > samples){  
 
-  TString path  = "/home/jalmond/LQanalyzer/data/output/Electron/";
+  TString path  = mcloc;
   
   TFile* f0 =  TFile::Open((path+ fileprefix + samples.at(0).first +  filepostfix).Data());  
   TH1* h_tmp = dynamic_cast<TH1*> ((f0->Get(cut.Data()))->Clone());
@@ -1224,10 +990,11 @@ float GetStatError(TString cut, vector<pair<TString,float> > samples){
 
 
 float GetIntegral(TString cut, TString isample, TString type){
-
-  TFile* f =  TFile::Open(( mcloc  + fileprefix + isample + filepostfix).Data());  
   
-  
+  TString filepath = mcloc  + fileprefix + isample + filepostfix;
+  if(type.Contains("data")) filepath=dataloc;
+  TFile* f =  TFile::Open(( filepath.Data()));
+    
   if(!((f->Get(cut.Data())))){
     cout << "Histogram " << cut << " in "  << mcloc+  fileprefix + isample + filepostfix << " not found" << endl;
     exit(0);
@@ -1243,21 +1010,6 @@ float GetIntegral(TString cut, TString isample, TString type){
   
   float integral = h->Integral();
  
-  
-  if(!h) {
-    f->Close();
-    cout << "Systematic file does not exist. Setting this error to zero" << endl;
-    type = "MC";
-    path  = "/home/jalmond/LQanalyzer/data/output" + type + "/";
-
-    TFile* f_tmp =  TFile::Open((mcloc+ fileprefix + isample +  filepostfix).Data());
-    TH1* h_tmp = dynamic_cast<TH1*> ((f_tmp->Get(cut.Data())->Clone()));
-    integral = h_tmp->Integral();
-    f_tmp->Close();
-    return integral;
-  }
-  
-
   f->Close();
 
   return integral;
@@ -1266,9 +1018,10 @@ float GetIntegral(TString cut, TString isample, TString type){
 
 float GetError(TString cut, TString isample, TString type){
   
-  TString path  = mcloc + type + "/";
-    
-  TFile* f =  TFile::Open((path+ fileprefix + isample + filepostfix).Data());
+  TString filepath = mcloc  + fileprefix + isample + filepostfix;
+  if(type.Contains("data")) filepath=dataloc;
+  TFile* f =  TFile::Open(( filepath.Data()));
+  
   TH1* h = dynamic_cast<TH1*> ((f->Get(cut.Data())->Clone()));
   cout << h << endl;
   
@@ -1379,28 +1132,11 @@ float Calculate(TString cut, TString variance, pair<vector<pair<TString,float> >
   if(samples.second.Contains("NonPrompt")){
     if(variance.Contains("Normal"))  return GetTotal(cut,samples.first) ;  
     if(variance.Contains("StatErr")) return GetStatError(cut,samples.first) ;  
-    //if(variance.Contains("Up")) return sqrt(GetErr2(cut,samples.first,"MMFDown",variance)+GetErr2(cut,samples.first,"MMFUp",variance)+GetErr2(cut,samples.first,"MMRUp",variance)+GetErr2(cut,samples.first,"MMRDown",variance));
-    //if(variance.Contains("Down")) return sqrt(GetErr2(cut,samples.first,"MMFDown",variance)+GetErr2(cut,samples.first,"MMFUp",variance)+GetErr2(cut,samples.first,"MMRUp",variance)+GetErr2(cut,samples.first,"MMRDown",variance) );     
-
   }
   
   
   if(variance.Contains("Up") || variance.Contains("UP")||variance.Contains("Down") || variance.Contains("DOWN")  ){
-    bool debug =false; 
-    if(debug){
-      cout << "Variance = " << variance << endl;
-      cout << "Normalisation =" <<  GetNormErr(cut,samples.first) << endl;
-      cout << "JESUp = " <<  GetErr(cut,samples.first,"JESup",variance) << endl;
-      cout << "JESDown = " <<  GetErr(cut,samples.first,"JESdown",variance) << endl;
-      cout << "MUONISOUp = " <<  GetErr(cut,samples.first,"MUONISOup",variance) << endl;
-      cout << "MUONISODown = " <<  GetErr(cut,samples.first,"MUONISOdown",variance) << endl;
-      cout << "JVFup = " <<  GetErr(cut,samples.first,"JVFup",variance) << endl;
-      cout << "JVFdown = " <<  GetErr(cut,samples.first,"JVFdown",variance) << endl;
-      cout << "JER = " <<  GetErr(cut,samples.first,"JER",variance) << endl;
-      cout << "CFup = " <<  GetErr(cut,samples.first,"CFup",variance) << endl;
-      cout << "CFdown = " <<  GetErr(cut,samples.first,"CFdown",variance) << endl;
-    }
-
+    
     return fabs(sqrt( (GetNormErr2(cut,samples.first))));
     
   }
@@ -1442,21 +1178,15 @@ void SetUpMasterConfig(string name){
     if(tmp=="END") break;
     if(tmp.find("#")!=string::npos) continue;
     
-    cerr << "tmp = " << tmp << std::endl; 
     if(tmp=="mcpath") mcloc = tmppath;
     if(tmp=="datapath") dataloc = tmppath;
     if(tmp=="datadrivenpath") datadrivenloc = tmppath;
-    
     if(tmp=="prefix") fileprefix = tmppath;
     if(tmp=="postfix") filepostfix = tmppath;
-    
     if(tmp=="plottingpath") plotloc = tmppath;
     if(tmp=="cutpath")  cutloc = tmppath;
-    if(tmp=="cutpath")  cerr << "tmppath = " << tmppath << std::endl;
-
     if(tmp=="outputdir")    path = tmppath;
 
-    
     if(tmp=="showdata")    {
       if (tmppath == "true") showdata=true;
       else showdata=false;
@@ -1472,7 +1202,6 @@ void SetUpMasterConfig(string name){
     }
     
     if(tmp=="samples"){
-      cerr << "samples = " << tmppath << endl;
       listofsamples.push_back(tmppath);
     }
     
@@ -1480,9 +1209,7 @@ void SetUpMasterConfig(string name){
     
     cutfile = cutloc;
     histfile =  plotloc;
-
   }
-
 }
 
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<string>& cut_label){
@@ -1514,67 +1241,65 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(histname=="wcol") wcol =col;
     if(histname=="higgscol") higgscol =col;
     if(histname=="ttvcol") ttvcol =col;
-    cout << "Set sample " << histname << " with colour " << col  << endl;
   }
   
   /// Setup list of samples: grouped into different processes 
-  //// MC (truth only)
   vector<pair<TString,float> > top = InitSample("top");
-  vector<pair<TString,float> > wz = InitSample("wz");
-  vector<pair<TString,float> > zz = InitSample("zz");
-  vector<pair<TString,float> > ww = InitSample("ww");
-  vector<pair<TString,float> > ss = InitSample("ss");
-  vector<pair<TString,float> > z = InitSample("dy");
-  vector<pair<TString,float> > w = InitSample("wjet");
-  vector<pair<TString,float> > QCD = InitSample("qcd");
+  vector<pair<TString,float> > ttbar = InitSample("ttbar");
   
+  vector<pair<TString,float> > wz_py = InitSample("wz_py");
+  vector<pair<TString,float> > zz_py = InitSample("zz_py");
+  vector<pair<TString,float> > ww_py = InitSample("ww_py");
+  vector<pair<TString,float> > wz_mg = InitSample("wz_mg");
+  vector<pair<TString,float> > zz_mg = InitSample("zz_mg");
+  vector<pair<TString,float> > zz_pow = InitSample("zz_pow");
+  // Zjet
+  vector<pair<TString,float> > z = InitSample("dy_");
+  // Zjet + Zbb
+  vector<pair<TString,float> > zplusbb = InitSample("dyplusbb");
+  /// Wjet
+  vector<pair<TString,float> > w = InitSample("wjet_");
+  /// Wjet + Wbb
+  vector<pair<TString,float> > wplusbb = InitSample("wjetplusbb");
+  /// QCD samples
+  vector<pair<TString,float> > QCD = InitSample("qcd");
+  /// ALL same sign processes
+  vector<pair<TString,float> > ss = InitSample("ss");
+
   /// NP is datadriven
   vector<pair<TString,float> > np;
   np.push_back(make_pair("datadriven",0.));
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-    if(listofsamples.at(i) =="ww")samples.push_back(make_pair(make_pair(ww,wwcol),"WW")); 
-    if(listofsamples.at(i) =="zz")samples.push_back(make_pair(make_pair(zz,zzcol),"ZZ"));
-    if(listofsamples.at(i) =="wz")samples.push_back(make_pair(make_pair(wz,wzcol),"WZ"));
+    if(listofsamples.at(i) =="ww_py")samples.push_back(make_pair(make_pair(ww_py,wwcol),"WW")); 
+    if(listofsamples.at(i) =="zz_py")samples.push_back(make_pair(make_pair(zz_py,zzcol),"ZZ"));
+    if(listofsamples.at(i) =="wz_py")samples.push_back(make_pair(make_pair(wz_py,wzcol),"WZ"));
+    if(listofsamples.at(i) =="zz_mg")samples.push_back(make_pair(make_pair(zz_mg,zzcol),"ZZ"));
+    if(listofsamples.at(i) =="wz_mg")samples.push_back(make_pair(make_pair(wz_mg,wzcol),"WZ"));
+    if(listofsamples.at(i) =="zz_pow")samples.push_back(make_pair(make_pair(zz_pow,zzcol),"ZZ"));
+
     if(listofsamples.at(i) =="ss")samples.push_back(make_pair(make_pair(ss,sscol),"SS"));
     if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
+    if(listofsamples.at(i) =="dyplusbb")samples.push_back(make_pair(make_pair(zplusbb,zcol),"DY"));
     if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
+    if(listofsamples.at(i) =="ttbar")samples.push_back(make_pair(make_pair(ttbar,tcol),"ttbar"));
     if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
+    if(listofsamples.at(i) =="wjetplusbb")samples.push_back(make_pair(make_pair(wplusbb,wcol),"Wjet"));
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="NonPrompt")samples.push_back(make_pair(make_pair(np,fcol),"NonPrompt"));   
   }
 
   ///// Fix cut flow code
-  caption="";
-  cut_label.push_back("DY");
-  hist = "/mu1_eta";
+  caption="Number of events containing one prompt loose electron in 19 fb$^{-1}$ of CMS data at 8~TeV";
+  hist = "/h_leadingElectronPt";
   columnname="";
-
-  
-  cout << "Configured as :: " << endl;
-  cout << "- channel = " << channel  << endl;
-  cout << "- usenp = " << usenp << endl;
-  cout << "- showdata = " << showdata << endl;
-  cout << "- Y axis set log = " << ylog << endl;
-  cout << "- cutfile = " << cutfile << endl;
-  cout << "- histogram name = " << hist << endl;
-  cout << "- Samples include: " << endl;
-
-  for( vector<pair<pair<vector<pair<TString,float> >, int >, TString > >::iterator it = samples.begin(); it!=samples.end();++it){
-    cout << it->second << endl;
-  }
-  
 
   return;
 
 }
 
 
-
-
 TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
-  
-  std::cout << "start " << std::endl;
   
   TH1* hdata_clone_for_log = (TH1*)hdata->Clone( "log");
 
@@ -1605,8 +1330,10 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   TH1* errorband = MakeErrorBand(h_nominal,hup, hdown) ;
   SetNomBinError(h_nominal, hup, hdown);
 
+  cout << "Scaling data by " << scale << endl;
   if(usedata){
     hdata->Draw("p");
+    hdata->GetYaxis()->SetTitleOffset(1.5);
     mcstack.at(0)->Draw("HIST same");
     hdata->Draw("p same");
     hdata->Draw("axis same");
@@ -1623,7 +1350,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   }
   legend->Draw("same");
 
-  if(usedata){
+  /*if(usedata){
     //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
 
     /// Make significance hist
@@ -1656,12 +1383,8 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     for(int i=1; i < h_significance->GetNbinsX()+1; i++){
       float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
       float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
-
       float sig = 0.;
       if(denom!=0.) sig = num / denom;
-
-      /// For  now plot data/mc ...
-      if(h_nominal->GetBinContent(i)!=0. ) sig =   h_significance->GetBinContent(i)/ h_nominal->GetBinContent(i);
       h_significance->SetBinContent(i,sig);
     }
 
@@ -1676,14 +1399,12 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     p->Draw();
     p->cd();
     
-    //h_significance->SetFillColor(kGray+1);
-    //h_significance->SetLineColor(kGray+1);
+    h_significance->SetFillColor(kGray+1);
+    h_significance->SetLineColor(kGray+1);
 
     h_significance->GetYaxis()->SetNdivisions(10204);
-    //h_significance->GetYaxis()->SetTitle("Significance");
-    h_significance->GetYaxis()->SetTitle("Data/MC");
-    //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
-    h_significance->GetYaxis()->SetRangeUser(0.0, 2.0);
+    h_significance->GetYaxis()->SetTitle("Significance");
+    h_significance->GetYaxis()->SetRangeUser(-4., 4.);
     h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
     h_significance->Draw("hist");
     TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
@@ -1694,7 +1415,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     h_significance->Draw("HISTsame");
     
   }
-  
+  */
   canvas->Print(tpdf.c_str(), ".png");
 
   //// %%%%%%%%%% PRINT ON LOG
@@ -1753,12 +1474,8 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     for(int i=1; i < h_significance->GetNbinsX()+1; i++){
       float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
       float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
-
       float sig = 0.;
       if(denom!=0.) sig = num / denom;
-
-      /// For  now plot data/mc ...
-      if(h_nominal->GetBinContent(i)!=0. ) sig =   h_significance->GetBinContent(i)/ h_nominal->GetBinContent(i);
       h_significance->SetBinContent(i,sig);
     }
 
@@ -1773,14 +1490,12 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     p->Draw();
     p->cd();
 
-    //h_significance->SetFillColor(kGray+1);
-    //h_significance->SetLineColor(kGray+1);
+    h_significance->SetFillColor(kGray+1);
+    h_significance->SetLineColor(kGray+1);
 
     h_significance->GetYaxis()->SetNdivisions(10204);
-    //h_significance->GetYaxis()->SetTitle("Significance");
-    h_significance->GetYaxis()->SetTitle("Data/MC");
-    //h_significance->GetYaxis()->SetRangeUser(-4., 4.);
-    h_significance->GetYaxis()->SetRangeUser(0., 2.);
+    h_significance->GetYaxis()->SetTitle("Significance");
+    h_significance->GetYaxis()->SetRangeUser(-4., 4.);
     h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
     h_significance->Draw("hist");
     TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
