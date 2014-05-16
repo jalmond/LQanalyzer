@@ -559,6 +559,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	}
       }
       
+      if(partType == KParticle::NOPARTICLE) cout << "Type = NOPARTICLE" << endl;
       el.SetType(partType);
       el.SetTruthParticleIndex(trueel_index);
       el.SetMotherIndex(iMother);

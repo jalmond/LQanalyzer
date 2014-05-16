@@ -100,7 +100,7 @@ namespace snu {
     Int_t m_charge;
   
     
-  ClassDef(KParticle,2);
+  ClassDef(KParticle,3);
   }; // class KParticle
   
 } // namespace snu
