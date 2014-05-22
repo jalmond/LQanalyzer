@@ -210,6 +210,204 @@ void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonC
 }
 
 
+
+void ElectronSelection::TopVetoElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho();
+
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+
+    //// DEFAULT cuts
+    //// Require it is not in crack
+
+    if ( el->CaloEnergy()==0 ) continue;
+
+    bool pass_selection = true;
+    ElectronID = PassUserID(EGAMMA_VETO, *el, rho);
+
+    ///List of cuts
+    if(!ElectronID){
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoElectronSelection::Fail ID Cut" <<endl;
+    }
+    if(!(fabs(el->Eta()) < 2.5)) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoElectronSelection::Fail Eta Cut" <<endl;
+    }
+    if(!(el->Pt() > 20.)){
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoElectronSelection::Fail Pt Cut" <<endl;
+    }
+
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+
+  return;
+
+}
+
+void ElectronSelection::TopLooseElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
+
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho();
+
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+
+    //// DEFAULT cuts
+    //// Require it is not in crack
+    if ( el->CaloEnergy()==0 ) continue;
+
+    bool pass_selection = true;
+    //ElectronID = PassUserID(EGAMMA_LOOSE, *el, rho);
+
+    ///List of cuts
+    //if(!ElectronID) {
+    //pass_selection = false;
+    //if(m_debug)  cout << "HNLooseElectronSelection:Fail ID Cut" <<endl;
+    //}
+
+    if(!(fabs(el->Eta()) < 2.5)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNLooseElectronSelection:Fail Eta Cut" <<endl;
+    }
+    if((el->Pt() <= 20.)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNLooseElectronSelection:Fail Pt Cut" <<endl;
+    }
+
+    Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+    if (fabs(el->SCEta()) < 1.0) ifid = 0;
+    else if (fabs(el->SCEta()) < 1.479) ifid = 1;
+    else if (fabs(el->SCEta()) < 2.0) ifid = 2;
+    else if (fabs(el->SCEta()) < 2.2) ifid = 3;
+    else if (fabs(el->SCEta()) < 2.3) ifid = 4;
+    else if (fabs(el->SCEta()) < 2.4) ifid = 5;
+    else ifid = 6;
+
+
+    float LeptonRelIsoDR03(0.);
+    float ElectronIsoDR03 =  el->PFChargedHadronIso03() + max( el->PFNeutralHadronIso03() + el->PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
+    if(el->Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  el->Pt();
+    else LeptonRelIsoDR03 = -999.;
+
+
+    if(!(LeptonRelIsoDR03 <  0.15)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut" <<endl;
+    }
+
+    if((el->HasMatchedConvPhot() ||  (el->MissingHits() != 0)) ) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNLooseElectronSelection:Fail Conv Cut" <<endl;
+    }
+
+    if(!(el->dxy()< 0.04 )) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
+    }
+
+    if(!(el->TrigMVA()< 0.5)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail MVA Cut" <<endl;
+    }
+
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+
+  return;
+}
+
+
+void ElectronSelection::TopTightElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  double rho = k_lqevent.GetEvent().JetRho();
+
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+
+    //// DEFAULT cuts
+    //// Require it is not in crack
+
+    // exclude EB-EE transition region
+    if ( fabs(el->Eta())>1.4442 && fabs(el->Eta())<1.566 ) continue;
+
+    if ( el->CaloEnergy()==0 ) continue;
+
+
+    bool pass_selection = true;
+    //ElectronID = PassUserID(EGAMMA_TIGHT, *el,rho);
+
+    if(!(el->Pt() > 30.)) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
+    }
+
+    if(!(fabs(el->Eta()) < 2.5)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
+    }
+
+    Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+    if (fabs(el->SCEta()) < 1.0) ifid = 0;
+    else if (fabs(el->SCEta()) < 1.479) ifid = 1;
+    else if (fabs(el->SCEta()) < 2.0) ifid = 2;
+    else if (fabs(el->SCEta()) < 2.2) ifid = 3;
+    else if (fabs(el->SCEta()) < 2.3) ifid = 4;
+    else if (fabs(el->SCEta()) < 2.4) ifid = 5;
+    else ifid = 6;
+
+
+    float LeptonRelIsoDR03(0.);
+    float ElectronIsoDR03 =  el->PFChargedHadronIso03() + max( el->PFNeutralHadronIso03() + el->PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
+    if(el->Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  el->Pt();
+
+    ///List of cuts
+    //              if(!ElectronID) {
+    //      pass_selection = false;
+    //      if(m_debug)  cout << "HNTightElectronSelection:Fail ID Cut" <<endl;
+    //}
+
+    if((el->HasMatchedConvPhot() ||  (el->MissingHits() != 0)) ) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
+    }
+    if(!(LeptonRelIsoDR03 <  0.1)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut" <<endl;
+    }
+    if(!(el->TrigMVA()< 0.9)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail MVA Cut" <<endl;
+    }
+    
+    if(!(el->dxy()< 0.02 )) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
+    }
+    
+    if(!(el->dz()<  0.10 )) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
+    }
+
+
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+
+  return;
+}
+
+
+
+
 void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_debug) {
   
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();

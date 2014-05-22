@@ -26,7 +26,13 @@ class ElectronSelection : public BaseSelection {
   void HNTightElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void HNLooseElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void HNVetoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
-  
+
+  //// Top analysis selection
+  void TopTightElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+  void TopLooseElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+  void TopVetoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+
+
 
   //// IDS
   bool PassUserID(ID id,snu::KElectron el,  double rho, bool m_debug= false);

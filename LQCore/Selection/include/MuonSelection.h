@@ -27,11 +27,19 @@ class MuonSelection : public BaseSelection {
   void BasicSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
 
   void SkimSelection( std::vector<snu::KMuon>& leptonColl, bool m_debug = false); 
+
   //// HN analysis selection
   void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void HNVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
 
+  //// Top analysis selection
+  void TopTightMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+  void TopLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+  void TopVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+
+
+  
   //// General 
   void SetDeposits(Double_t ECalDeposit, Double_t HCalDeposit);
   void SetDeposits(Double_t ECalDeposit1 , Double_t HCalDeposit1, Double_t ECalDeposit2 , Double_t HCalDeposit2);

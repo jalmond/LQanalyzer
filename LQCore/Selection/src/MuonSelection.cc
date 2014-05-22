@@ -297,6 +297,121 @@ void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_
   return;
 }
 
+
+////////// PREDEFINED MUON SELECTIONS FOR TOP ANALYSIS
+
+
+void MuonSelection::TopVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_debug) {
+  
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
+
+    bool pass_selection(true);
+    if(muit->Pt() == 0.) continue;
+    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
+    else LeptonRelIso = 9999.;
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+
+    //// VETO MUON SELECTION
+    if(( muit->Pt() < 10. )) {
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail Pt cut" << endl;
+    }
+    if(!(fabs(muit->Eta()) < 2.5)) {
+      pass_selection =false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail Eta cut" << endl;
+    }
+    if(!( LeptonRelIso < 0.2)){
+      pass_selection = false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail Isolation cut" << endl;
+    }
+
+    if(!PassID(MUON_LOOSE, *muit,m_debug)) {
+      pass_selection =false;
+      if(m_debug) cout << "HNVetoMuonSelection Fail loose cut" << endl;
+    }
+
+    //// Make Loose selection
+    if(pass_selection)leptonColl.push_back(*muit);
+  }
+  return;
+}
+
+// Intended use for di-lepton channel
+void MuonSelection::TopLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m_debug) {
+
+  //### THIS SELECTION IS USED FOR MUON FAKES STUDIES
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
+
+    bool pass_selection(true);
+
+    if(muit->Pt() == 0.) continue;
+    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
+    else LeptonRelIso = 9999.;
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+
+    //// Muon Loose selection
+    if(( muit->Pt() < 20. )) {
+      pass_selection = false;
+      if(m_debug) cout << "HNLooseMuonSelection Fail chi2 cut" << endl;
+    }
+    if(!(fabs(muit->Eta()) < 2.4)) pass_selection =false;
+    if(!PassID(MUON_LOOSE, *muit, m_debug)) pass_selection =false;
+    if(!( LeptonRelIso < 0.2)) pass_selection = false;
+
+
+    //// Make Loose selection
+    if(pass_selection)leptonColl.push_back(*muit);
+  }
+  return;
+}
+
+void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_debug) {
+
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
+
+    bool pass_selection(true);
+
+    if(muit->Pt() == 0.) continue;
+
+    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
+    else LeptonRelIso = 9999.;
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+
+    /// TIGHT MUON SELECTION
+    if(( muit->Pt() < 20. )) {
+      pass_selection = false;
+      if(m_debug) cout << "Muon fails Tight pt cut " << endl;
+    }
+    if(!(fabs(muit->Eta()) < 2.4)) {
+      pass_selection =false;
+      if(m_debug) cout << "Muon fails Tight eta cut " <<endl;
+    }
+    if(!( LeptonRelIso < 0.1)) {
+      pass_selection = false;
+      if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;
+    }
+    if(!(fabs(muit->dZ())< 0.10  )) {
+      pass_selection = false;
+      if(m_debug) cout << "Muon fails Tight dZ cut " <<endl;
+    }
+    if(!(fabs(muit->dXY())< 0.005 )){
+      pass_selection = false;
+      if(m_debug) cout << "Muon fails Tight dXY " <<endl;
+    }
+
+    /// TIGHT MUON from muon POG
+    if(!PassID(MUON_TIGHT, *muit, m_debug)) pass_selection =false;
+
+    if(pass_selection)  leptonColl.push_back(*muit);
+  }
+
+  return;
+}
+
 bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
   
   
