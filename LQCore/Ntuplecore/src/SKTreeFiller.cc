@@ -862,13 +862,17 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetISOR03ChargedHad(MuonPFIsoR03ChargedHadron->at(ilep));
     muon.SetISOR03NeutralHad(MuonPFIsoR03NeutralHadron->at(ilep));
     muon.SetISOR03Photon(MuonPFIsoR03Photon->at(ilep));       
+    muon.SetISOR04ChargedHad(MuonPFIsoR04ChargedHadron->at(ilep));
+    muon.SetISOR04NeutralHad(MuonPFIsoR04NeutralHadron->at(ilep));
+    muon.SetISOR04Photon(MuonPFIsoR04Photon->at(ilep)); 
     muon.SetIsolationEcalVeto(MuonEcalVetoIso->at(ilep));
     muon.SetIsolationHcalVeto(MuonHcalVetoIso->at(ilep));
 
 
     /// PU correction
     muon.SetPileUp_R03(MuonPFIsoR03PU->at(ilep));
-
+    muon.SetPileUp_R04(MuonPFIsoR04PU->at(ilep));
+    
     ////////// TRACK
     /// Imapct parameter 
     
