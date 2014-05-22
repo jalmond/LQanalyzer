@@ -40,6 +40,9 @@ public:
   void DeleteInputVariables();
   void CloseFiles();
   void SetDataType(bool type);
+  void SetNPStatus( bool type);
+  void SetCFStatus( bool type);
+
   void SetNSampleEvents(double nev);
   void SetOutPutStep(int step);
   void SetNEventsToProcess(int nentries);
@@ -47,6 +50,8 @@ public:
   
   /// Bool to tell if sample is data or MC in analysis code
   bool k_isdata;
+  bool k_running_nonprompt;
+  bool k_running_chargeflip;
   TString muscale_fitParametersFile;
   
   // How many entries in the fullsample

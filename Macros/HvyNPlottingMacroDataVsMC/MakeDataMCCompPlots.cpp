@@ -584,7 +584,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("HtoZZ",0.22));
   }
   
-  if(sample.Contains("Other")){
+  if(sample.Contains("nonprompt")){
+    list.push_back(make_pair("nonprompt",0.5));
   }
 
   if(list.size()==0) cout << "Error in making lists" << endl;
@@ -622,7 +623,7 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     if(type.Contains("Nominal")) fileloc = mcloc;
         
     if(!type.Contains("Nominal")) {
-      if(it->first.first.at(0).first.Contains("datadriven"))fileloc=mcloc;
+      if(it->first.first.at(0).first.Contains("nonprompt"))fileloc=mcloc;
     }    
     
     
@@ -1180,7 +1181,7 @@ void SetUpMasterConfig(string name){
     
     if(tmp=="mcpath") mcloc = tmppath;
     if(tmp=="datapath") dataloc = tmppath;
-    if(tmp=="datadrivenpath") datadrivenloc = tmppath;
+    if(tmp=="nonpromptpath") nonpromptloc = tmppath;
     if(tmp=="prefix") fileprefix = tmppath;
     if(tmp=="postfix") filepostfix = tmppath;
     if(tmp=="plottingpath") plotloc = tmppath;
@@ -1266,9 +1267,9 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   /// ALL same sign processes
   vector<pair<TString,float> > ss = InitSample("ss");
 
-  /// NP is datadriven
+  /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("datadriven",0.));
+  np.push_back(make_pair("nonprompt",0.5));
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
     if(listofsamples.at(i) =="ww_py")samples.push_back(make_pair(make_pair(ww_py,wwcol),"WW")); 
@@ -1286,7 +1287,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
     if(listofsamples.at(i) =="wjetplusbb")samples.push_back(make_pair(make_pair(wplusbb,wcol),"Wjet"));
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
-    if(listofsamples.at(i) =="NonPrompt")samples.push_back(make_pair(make_pair(np,fcol),"NonPrompt"));   
+    if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"nonprompt"));   
   }
 
   ///// Fix cut flow code

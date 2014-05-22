@@ -29,22 +29,10 @@ class HNDiElectron : public AnalyzerCore {
   /// Vectors for output objetcs
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
-
-  double pf_trk_qflip ; 
-  double pf_ms_qflip ; 
-  double pf_qflip ; 
-  int cnt_trk_qflip ; 
-  int cnt_ms_qflip ; 
-
-  double tag_q1, tag_q2 ; 
-  int cnt_tag, cnt_qflip ; 
-
-  int tot_evt ; 
-  int tot_mumu_evt ; 
-  int tot_gold_evt ;
-
-  double trk_qflip, ms_qflip ;
-  double qflip_1, qflip_2, qflip ; 
+  float m_os_Z_nw;
+  float m_ss_Z_nw;
+  float m_os_Z;
+  float m_ss_Z;
 
   ClassDef ( HNDiElectron, 1);
 };

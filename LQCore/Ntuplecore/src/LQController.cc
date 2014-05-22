@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),  m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
+LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
   
   chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
@@ -88,9 +88,10 @@ void LQController::SetOutPutStep(int step){
 }
 
 void LQController::SetName(TString name, Int_t version, TString dir) {
-
+  
   string out_dir = getenv("LQANALYZER_OUTPUT_PATH");
   if(!dir.Contains("NULL")) out_dir = dir;
+  
   completename = TString(out_dir) + name + "_";
   completename += version;
   completename += ".root";
@@ -107,6 +108,7 @@ void LQController::SetInputChain(TChain* ch){
   chain = ch;
 }
 
+
 void LQController::SetDataType(TString settype){
   
   if     ( settype == "Data" )    inputType = data;
@@ -117,6 +119,22 @@ void LQController::SetDataType(TString settype){
   else                            inputType = NOTSET;
   
 }
+
+void LQController::RunNonPrompt(TString np){
+
+  if(np.Contains("True")) runnp = true;
+  else runnp = false;
+  m_logger << INFO << "Running Non-Prompt background estimate" << LQLogger::endmsg; 
+}
+
+
+void LQController::RunChargeFlip(TString cf){
+
+  if(cf.Contains("True")) runcf = true;
+  else runcf = false;
+  m_logger << INFO << "Running ChargeFlip background estimate" << LQLogger::endmsg;
+}
+
 
 std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
   
@@ -470,6 +488,9 @@ void LQController::ExecuteCycle() throw( LQError ) {
       cycle->SetDataType(alt_isdata);
       GetMemoryConsumption("Accessed branch to specify isData");
     }
+
+    cycle->SetNPStatus(runnp);
+    cycle->SetCFStatus(runcf);
     
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list    
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;

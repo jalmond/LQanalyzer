@@ -1,6 +1,6 @@
 # Specify_location_of_data/mc
 mcpath	        /home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/
-datapath	/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_data_dilep_5_3_14.root
+datapath	/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_data_5_3_14.root
 datadrivenpath	/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/
 # Specify_the_list_of_hists_to_plot
 plottingpath	dat/hnhist_config.txt
@@ -16,10 +16,10 @@ showdata   true
 usenp      false
 ylog	   true
 # List_the_samples_to_be_included
-samples	   wz   
-samples	   zz   
-samples	   ss   
+samples	   wz_mg   
+samples	   zz_mg   
+samples	   ss_mg   
 samples	   dy   
-samples	   top	
-samples	   wjet 
+samples	   ttbar	
+samples	   nonprompt	
 END

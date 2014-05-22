@@ -11,6 +11,8 @@ class SignalPlots;
 class EventBase;
 
 #include "LQCycleBase.h"
+#include "WRHNCommonLeptonFakes/WRHNCommonLeptonFakes/WRHNCommonLeptonFakes.h"
+
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -31,8 +33,17 @@ class AnalyzerCore : public LQCycleBase {
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
+  bool IsTight(snu::KElectron electron, double rho);
+  bool IsTight(snu::KMuon muon);
+  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons);
+  int NBJet(std::vector<snu::KJet> jets);
+  bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
+  bool SameCharge(std::vector<snu::KElectron> electrons);
+  float CFRate(snu::KElectron el);
 
 
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho);
+  vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
   
@@ -62,6 +73,8 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   TH2F* FRHist;
+  WRHNCommonLeptonFakes* m_fakeobj;
+
   
   /// Event weights
   Double_t MCweight, weight;

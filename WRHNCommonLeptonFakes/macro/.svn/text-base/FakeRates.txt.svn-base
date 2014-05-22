@@ -1,0 +1,148 @@
+--------------------------------------------------------------
+Efficiency:: parameter _eta
+Efficiency:: nbins=50
+--------------------------------------------------------------
+Efficiency:: parameter _met
+Efficiency:: nbins=50
+--------------------------------------------------------------
+Efficiency:: parameter _njet
+Efficiency:: nbins=10
+--------------------------------------------------------------
+Efficiency:: parameter _pt
+Efficiency:: nbins=13
+--------------------------------------------------------------
+Efficiency:: parameter _ptnjets
+Efficiency:: nbins=13
+--------------------------------------------------------------
+Efficiency:: parameter _ptnjetseta1
+Efficiency:: nbins=13
+--------------------------------------------------------------
+Efficiency:: parameter _ptnjetseta2
+Efficiency:: nbins=13
+--------------------------------------------------------------
+Efficiency:: parameter _ptnjetseta3
+Efficiency:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter met
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter njets
+Fake:: nbins=5
+--------------------------------------------------------------
+Fake:: parameter pt_barrel
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter pt_endcap
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter pt_periodBtoI
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter pt_periodJtoM
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter ptbarrel_heavyflavour
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter ptbarrel_lightflavour
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter ptendcap_heavyflavour
+Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter ptendcap_lightflavour
+Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter BptHT_pt
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ECptHT_pt
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_barrel
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_barrel_heavyflavour
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_barrel_lightflavour
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_endcap
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_endcap_heavyflavour
+2D Fake:: nbins=13
+h_d0sig2regionclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_endcap_lightflavour
+2D Fake:: nbins=13
+--------------------------------------------------------------
+Fake:: parameter met
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter njets
+Fake:: nbins=5
+--------------------------------------------------------------
+Fake:: parameter pt_barrel
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter pt_endcap
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter pt_periodBtoI
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter pt_periodJtoM
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter ptbarrel_heavyflavour
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter ptbarrel_lightflavour
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter ptendcap_heavyflavour
+Fake:: nbins=10
+--------------------------------------------------------------
+Fake:: parameter ptendcap_lightflavour
+Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter BptHT_pt
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ECptHT_pt
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_barrel
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_barrel_heavyflavour
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_barrel_lightflavour
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_endcap
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_endcap_heavyflavour
+2D Fake:: nbins=10
+h_d0sig2regionnoclose
+--------------------------------------------------------------
+2D Fake:: parameter ptnjets_endcap_lightflavour
+2D Fake:: nbins=10

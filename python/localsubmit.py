@@ -37,6 +37,8 @@ parser.add_option("-M", "--use538ntuples", dest="use538ntuples", default=True, h
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
+parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
+parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 
 
 ###################################################
@@ -49,6 +51,8 @@ channel = options.stream
 cycle = options.cycle
 logstep = int(options.logstep)
 loglevel = options.loglevel
+runnp = options.runnp
+runcf = options.runcf
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
 number_of_events_per_job= int(options.nevents)
@@ -144,8 +148,8 @@ if not len(splitsample)==1:
         if "use538ntuples" in splitsample[conf]:
             conf+=1
             use584ntuples = splitsample[conf]
-            
 
+            
 ####################
 ####
 ####################
@@ -476,6 +480,12 @@ for i in range(1,number_of_cores+1):
 fr = open(local_sub_dir + '/inputlist.txt', 'r')
 
 outsamplename = sample
+if runnp == "True":
+    outsamplename = "nonprompt_" + outsamplename
+    print "sample --> " + outsamplename
+if runcf == "True":
+    outsamplename = "chargeflip_" + outsamplename
+    print "sample --> " + outsamplename
 if not mc:
     outsamplename = outsamplename +  "_" + channel
     if use538ntuples == "True":
@@ -502,7 +512,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -527,7 +537,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -554,7 +564,7 @@ for line in fr:
         fwrite = open(filelist, 'a')
         fwrite.write(line)
         #configfile=open(runscript,'w')
-        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib))
+        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
         #configfile.close()
         filesprocessed+=1
         fwrite.close()        
@@ -763,8 +773,8 @@ if not JobOutput:
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("mv "+ output + "/Job_1/runJob_1.C .")
     print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
-    os.system("rm -r " + output)    
-    os.system("rm -r " + local_sub_dir)    
+    #os.system("rm -r " + output)    
+    #os.system("rm -r " + local_sub_dir)    
     
 
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename

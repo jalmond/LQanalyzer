@@ -14,4 +14,4 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Ntuplecore/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
-INCLUDES += -I$(LQANALYZER_DIR)/LQCore/MuScleFitCorrector/
+INCLUDES += -I$(LQANALYZER_DIR)

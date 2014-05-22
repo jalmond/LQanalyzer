@@ -48,19 +48,10 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-   MakeCleverHistograms(sighist,  "SSDiElectronTight");
-   MakeCleverHistograms(sighist,  "SSDiElectronTight_DiJet");
-   MakeCleverHistograms(sighist,  "SSSR0");
-   
-   MakeCleverHistograms(sighist,  "NoCut");
-   MakeCleverHistograms(sighist,  "TriEl");
-   MakeCleverHistograms(sighist,  "ZZ");
-
-   MakeCleverHistograms(sighist,  "SSeeJJ");
-   MakeCleverHistograms(sighist,  "SSeeJJnoph");
-   MakeCleverHistograms(sighist,  "SSeeJJnoph_noZ");
-
-   
+   m_os_Z_nw = 0;
+   m_os_Z = 0;
+   m_ss_Z_nw = 0;
+   m_ss_Z = 0;
    return;
 }
 
@@ -95,16 +86,29 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     weight  = weight* reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
   m_logger << DEBUG << "reweighted pileup "<< LQLogger::endmsg;
-  
 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
   /// ELECTRONS
-  std::vector<snu::KElectron> electronTightColl;
-  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
- 
+  std::vector<snu::KElectron> _electronAnalysisColl;
+  
+  if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronAnalysisColl);
+  else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl);
+
+
+  for(int i =0; i < _electronAnalysisColl.size(); i++){
+    // is the mother a tau
+    int mother_pdgid=_electronAnalysisColl.at(i).MotherPdgId();
+    if(fabs(mother_pdgid) == 15){
+      FillHist("TauEl_d0",_electronAnalysisColl.at(i).PrimaryVertexDXY()  , weight, -3.,3.,600);
+    }
+  }
+  
+  /// Get Prompt electrons/CF
+  std::vector<snu::KElectron> electronAnalysisColl =GetTruePrompt(_electronAnalysisColl);
+
   std::vector<snu::KElectron> electronVetoColl;
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
 
@@ -127,25 +131,82 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->SetEta(2.4);
-  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
+  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonVetoColl, electronVetoColl);
   eventbase->GetJetSel()->Selection(jetColl);
+  
+  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl, weight);
+  
+  if(electronAnalysisColl.size() != 2 ) return;
+  
+  
+  if(k_running_nonprompt){
+    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, eventbase->GetEvent().JetRho());
+    weight*= ee_weight;
+  }
+  
+  if(electronAnalysisColl.at(0).Pt() < 20.) return;
+  if(electronAnalysisColl.at(1).Pt() < 20.) return;
+  
+  
+  //if(k_running_chargeflip) {
+  
+  if(Zcandidate(electronAnalysisColl, 15., false))  {
+    if(electronAnalysisColl.at(0).Charge() != electronAnalysisColl.at(1).Charge()) {
+      float cf1=  CFRate(electronAnalysisColl.at(0));
+      float cf2=  CFRate(electronAnalysisColl.at(1));
+      
+      
+      weight *= ((cf1/(1.-cf1)) + (cf2/(1.-cf2)));
+      
+      m_os_Z += weight;
+      m_os_Z_nw +=1;
+      
+      FillHist("Z_os_mc_1pt",electronAnalysisColl.at(0).Pt()  , weight, 0.,200.,20);
+      FillHist("Z_os_mc_1eta",electronAnalysisColl.at(0).Eta()  , weight, -2.5,2.5,10);
+      FillHist("Z_os_mc_2pt",electronAnalysisColl.at(1).Pt()  , weight, 0.,200.,20);
+      FillHist("Z_os_mc_2eta",electronAnalysisColl.at(1).Eta()  , weight, -2.5,2.5,10);
+      
+    }
+    
+    else{
+      m_ss_Z += weight;
+      m_ss_Z_nw += 1.;
+      FillHist("Z_ss_mc_1pt",electronAnalysisColl.at(0).Pt()  , weight, 0.,200.,20);
+      FillHist("Z_ss_mc_2pt",electronAnalysisColl.at(1).Pt()  , weight, 0.,200.,20);
 
-  m_logger << DEBUG << "filled vectors "<< LQLogger::endmsg;
+      FillHist("Z_ss_mc_1eta",electronAnalysisColl.at(0).Eta()  , weight, -2.5,2.5,10);
+      FillHist("Z_ss_mc_2eta",electronAnalysisColl.at(1).Eta()  , weight, -2.5,2.5,10);
+    }
+  }
 
   return;
-  FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl_lepveto, weight);
   
-  //if(electronTightColl.size() != 2 ) return;
-  //if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge()) return;
-  //if(jetColl.size() < 2) return;
+
   
-  m_logger << DEBUG << "Filled SSeeJJ "<< LQLogger::endmsg;
+
+  FillCLHist(sighist, "SSee", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
-  FillCLHist(sighist, "SSeeJJ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
   
+
+  FillHist("SSee_nloose_el",electronVetoColl.size()  , weight, 0.,5.,5);
+  FillHist("SSee_nloose_mu",muonVetoColl.size()  , weight, 0.,5.,5);
+  
+  if(jetColl_lepveto.size() == 0)  FillCLHist(sighist, "SSee_0Jet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(jetColl_lepveto.size() == 1)  FillCLHist(sighist, "SSee_1Jet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+
+  
+  if(NBJet(jetColl_lepveto) != 0)  FillCLHist(sighist, "SSee_njet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  
+  if(!Zcandidate(electronAnalysisColl, 15., false)) FillCLHist(sighist, "SSee_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  else FillCLHist(sighist, "SSee_Z", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+
+
+
+  
+  return;
   m_logger << INFO << "SSeeJJ event "<< LQLogger::endmsg;
 
-  for(int ip=0; ip < PhotonEta->size() ; ip++){
+  for(unsigned int ip=0; ip < PhotonEta->size() ; ip++){
     if(PhotonHasMatchedPromptEle->at(ip) ) {
       m_logger << INFO << "Failed PhotonHasMatchedPromptEle" << LQLogger::endmsg;
       continue;
@@ -199,14 +260,14 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   }
   
   m_logger << DEBUG << "Filled SSeeJJnoph "<< LQLogger::endmsg;
-  FillCLHist(sighist, "SSeeJJnoph", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  FillCLHist(sighist, "SSeeJJnoph", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   m_logger << DEBUG << "Making Z" << LQLogger::endmsg;
-  snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
+  snu::KParticle Z = electronAnalysisColl.at(0) + electronAnalysisColl.at(1);
   if(fabs( Z.M() - 90.)  < 10.){
     m_logger << INFO << "Event has mass close to Z" << LQLogger::endmsg;
     return;
   }
-  FillCLHist(sighist, "SSeeJJnoph_noZ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  FillCLHist(sighist, "SSeeJJnoph_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
   
   bool prompt_prompt = false;
@@ -214,25 +275,25 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   bool nonprompt_nonprompt = false;
   bool prompt_chargeflip = false;
 
-  m_logger << INFO << "Number of electrons == " << electronTightColl.size() << LQLogger::endmsg;
+  m_logger << INFO << "Number of electrons == " << electronAnalysisColl.size() << LQLogger::endmsg;
   
-  for(int iel = 0; iel < electronTightColl.size(); iel++){
+  for(unsigned int iel = 0; iel < electronAnalysisColl.size(); iel++){
     m_logger << INFO << "El number:  " <<  iel+1  << LQLogger::endmsg;
     
-    if(electronTightColl[iel].Charge() == -1){
+    if(electronAnalysisColl[iel].Charge() == -1){
       
-      if(electronTightColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El- pt/eta/phi = " << electronTightColl[iel].Pt() << " / " << electronTightColl[iel].Eta() << " / " << electronTightColl[iel].Phi() << LQLogger::endmsg;
-      else m_logger << INFO << "El- pt/eta/phi = " << electronTightColl[iel].MatchedGenParticlePt() << " / " << electronTightColl[iel].MatchedGenParticleEta() << " / " <<electronTightColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
+      if(electronAnalysisColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El- pt/eta/phi = " << electronAnalysisColl[iel].Pt() << " / " << electronAnalysisColl[iel].Eta() << " / " << electronAnalysisColl[iel].Phi() << LQLogger::endmsg;
+      else m_logger << INFO << "El- pt/eta/phi = " << electronAnalysisColl[iel].MatchedGenParticlePt() << " / " << electronAnalysisColl[iel].MatchedGenParticleEta() << " / " <<electronAnalysisColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
     }
     else {
-      if(electronTightColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El+ pt/eta/phi = " << electronTightColl[iel].Pt() << " / " << electronTightColl[iel].Eta() << " / " << electronTightColl[iel].Phi() << LQLogger::endmsg;
-      else m_logger << INFO << "El+ pt/eta/phi = " << electronTightColl[iel].MatchedGenParticlePt() << " / " << electronTightColl[iel].MatchedGenParticleEta() << " / " <<electronTightColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
+      if(electronAnalysisColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El+ pt/eta/phi = " << electronAnalysisColl[iel].Pt() << " / " << electronAnalysisColl[iel].Eta() << " / " << electronAnalysisColl[iel].Phi() << LQLogger::endmsg;
+      else m_logger << INFO << "El+ pt/eta/phi = " << electronAnalysisColl[iel].MatchedGenParticlePt() << " / " << electronAnalysisColl[iel].MatchedGenParticleEta() << " / " <<electronAnalysisColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
       
     }
     
     for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
       if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
-      if( electronTightColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
+      if( electronAnalysisColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
         if(eventbase->GetTruth().at(it).IndexMother()!= 1)  m_logger << INFO << "Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / "<< eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()   << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId() << LQLogger::endmsg;
       }
     }
@@ -243,7 +304,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
       if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
       
-      if( electronTightColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
+      if( electronAnalysisColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
 	m_logger << INFO << "Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / " << eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()    << LQLogger::endmsg;
 	
 	match_found=true;
@@ -259,7 +320,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 		  if(fabs(eventbase->GetTruth().at(it2).PdgId()) == 15){
 		    m_logger << INFO << "Electron  from Tau decay" << LQLogger::endmsg;
 		    
-		    if(eventbase->GetTruth().at(it2).PdgId() * electronTightColl[iel].Charge() > 0.){
+		    if(eventbase->GetTruth().at(it2).PdgId() * electronAnalysisColl[iel].Charge() > 0.){
 		      charge_flip= true;
 		      prompt=true;
 		      m_logger << INFO << "ELECTRON FROM CHARGELFIP" <<  LQLogger::endmsg;
@@ -277,7 +338,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	  if(fabs(eventbase->GetTruth().at(it).PdgId()) == 11 && isPrompt(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()))) prompt = true;
 	  else prompt = false;
 	  
-	  if(electronTightColl[iel].Charge() * eventbase->GetTruth().at(it).PdgId() > 0.)  charge_flip= true;
+	  if(electronAnalysisColl[iel].Charge() * eventbase->GetTruth().at(it).PdgId() > 0.)  charge_flip= true;
 	}
       }
       
@@ -288,7 +349,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	m_logger<< INFO << "Matched Gen jet id = " << jit+1 << " pt = " <<  eventbase->GetGenJets().at(jit).Pt() << " eta= " << eventbase->GetGenJets().at(jit).Eta() << " phi = " << eventbase->GetGenJets().at(jit).Phi() << LQLogger::endmsg;
       }
       
-      for(int ip=0; ip < PhotonEta->size() ; ip++){
+      for(unsigned int ip=0; ip < PhotonEta->size() ; ip++){
 	if(!PhotonHasMatchedPromptEle)m_logger<< INFO << "Photon pt/eta/phi = " << PhotonPt->at(ip) << " / " <<  PhotonEta->at(ip) << " / " << PhotonPhi->at(ip) << LQLogger::endmsg;
       }
     }
@@ -500,11 +561,11 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
   for(unsigned int ij=0; ij <jetColl.size(); ij++){
-    for (unsigned int iel=0; iel < electronTightColl.size(); iel++){
-      float dR = electronTightColl[iel].DeltaR(jetColl[ij]);
+    for (unsigned int iel=0; iel < electronAnalysisColl.size(); iel++){
+      float dR = electronAnalysisColl[iel].DeltaR(jetColl[ij]);
       if(dR< 0.4){
-	//m_logger << INFO << " close jet to electron has pT diff = " << 100.*(electronTightColl[iel].Pt() - jetColl[ij].Pt()) / electronTightColl[iel].Pt() << LQLogger::endmsg;
-	///m_logger << INFO << (electronTightColl.at(iel).PrimaryVertexDXY()/ electronTightColl.at(iel).PrimaryVertexDXYError())<< LQLogger::endmsg;
+	//m_logger << INFO << " close jet to electron has pT diff = " << 100.*(electronAnalysisColl[iel].Pt() - jetColl[ij].Pt()) / electronAnalysisColl[iel].Pt() << LQLogger::endmsg;
+	///m_logger << INFO << (electronAnalysisColl.at(iel).PrimaryVertexDXY()/ electronAnalysisColl.at(iel).PrimaryVertexDXYError())<< LQLogger::endmsg;
       }
     }    
   }
@@ -512,62 +573,62 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   int nloose_lep = muonVetoColl.size() + electronVetoColl.size();
 
   
-  if(electronTightColl.size() ==  3) {
+  if(electronAnalysisColl.size() ==  3) {
        m_logger << INFO << "Number of jets in tri electron event = " << jetColl_lepveto.size() << LQLogger::endmsg;
      
-       FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+       FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
      }
-  if(electronTightColl.size() ==  4)FillCLHist(sighist, "ZZ", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+  if(electronAnalysisColl.size() ==  4)FillCLHist(sighist, "ZZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
 
 
   
   bool no_emuoverlap = true;
 
-  for(int i=0; i < electronTightColl.size() ; i++){
+  for(int i=0; i < electronAnalysisColl.size() ; i++){
     for(int j=0; j < muonTightColl.size() ; j++){
-      float dR =  electronTightColl[i].DeltaR(muonTightColl[j]);
+      float dR =  electronAnalysisColl[i].DeltaR(muonTightColl[j]);
       if(dR < 0.1) no_emuoverlap= false;
     }
   }
   
-  if (electronTightColl.size() == 2) {      
+  if (electronAnalysisColl.size() == 2) {      
 
-    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge()){      
+    if(electronAnalysisColl.at(0).Charge() == electronAnalysisColl.at(1).Charge()){      
       
       FillCutFlow("SS_t",weight);
-      FillCLHist(sighist, "SSDiElectronTight", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+      FillCLHist(sighist, "SSDiElectronTight", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
       
       if(nloose_lep == 2 && no_emuoverlap){
 	FillCutFlow("SS_lvt_t",weight);
       
 	if(jetColl_lepveto.size() > 1){
 	  FillCutFlow("SS_dijet_t",weight);
-	  FillCLHist(sighist, "SSDiElectronTight_DiJet", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+	  FillCLHist(sighist, "SSDiElectronTight_DiJet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
 	  
 	  
 	  if(SumPt(jetColl_lepveto)  > 80.){
 	    if(! ( SumPt(jetColl_lepveto) < 500. && eventbase->GetEvent().PFMET() < 30.)){
-	      FillCLHist(sighist, "SSSR0", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
+	      FillCLHist(sighist, "SSSR0", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
 	    }
 	  }
 	  
 	    
 	  
-	  bool pass_same_vertex= (electronTightColl.at(0).VertexIndex() == electronTightColl.at(1).VertexIndex());
+	  bool pass_same_vertex= (electronAnalysisColl.at(0).VertexIndex() == electronAnalysisColl.at(1).VertexIndex());
 	  bool fail_conv = true;
 	  bool fail_d0=false;
 	  bool ecalseeded= true;
 	  bool pass_charge_cons=true;
 	  
-	  for(unsigned int i= 0; i < electronTightColl.size(); i++){
-	    if(electronTightColl.at(i).MissingHits() == 0) fail_conv = false;
-	    if(electronTightColl.at(i).HasMatchedConvPhot()) fail_conv = false; 
-	    if((electronTightColl.at(i).PrimaryVertexDXY()/ electronTightColl.at(i).PrimaryVertexDXYError()) > 4.) {
+	  for(unsigned int i= 0; i < electronAnalysisColl.size(); i++){
+	    if(electronAnalysisColl.at(i).MissingHits() == 0) fail_conv = false;
+	    if(electronAnalysisColl.at(i).HasMatchedConvPhot()) fail_conv = false; 
+	    if((electronAnalysisColl.at(i).PrimaryVertexDXY()/ electronAnalysisColl.at(i).PrimaryVertexDXYError()) > 4.) {
 	      fail_d0=true;
 	    }
 	    
-	    if(!electronTightColl.at(i).EcalDrivenSeed()) ecalseeded = false;
-	    if(!electronTightColl.at(i).GsfCtfScPixChargeConsistency()) pass_charge_cons=false;
+	    if(!electronAnalysisColl.at(i).EcalDrivenSeed()) ecalseeded = false;
+	    if(!electronAnalysisColl.at(i).GsfCtfScPixChargeConsistency()) pass_charge_cons=false;
 	  }
 	  
 	  if(nbjet==0){
@@ -655,7 +716,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 void HNDiElectron::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
-
+  m_logger << INFO << "Number of os mc events = " << m_os_Z_nw  << LQLogger::endmsg; 
+  m_logger << INFO << "Number of os mc events (weighted) = " << m_os_Z  << LQLogger::endmsg; 
+  m_logger << INFO << "Number of ss mc events = " << m_ss_Z_nw  << LQLogger::endmsg; 
+  m_logger << INFO << "Number of ss mc events (weighted)= " << m_ss_Z  << LQLogger::endmsg; 
 }
 
 

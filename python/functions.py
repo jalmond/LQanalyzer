@@ -82,7 +82,7 @@ def CopySKTrees(channel,sample,mc,docopy):
         finally:    
             f.closed()  
 
-def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries):
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf):
 
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -94,6 +94,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libNtuplecore.so");\n'
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
+    config+='   gSystem->Load("libWRHNCommonLeptonFakes.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("' + lib + ' + .so");\n'
         
@@ -112,7 +113,6 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   analysis.SetInputList(TString(filename));\n'
     config+='   analysis.SetTreeName("'+ tree +'");\n'
     config+='   analysis.SetCycleName("' + cycle + '");\n'
-    config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
     config+='   analysis.SetLogLevel("'+ log +'");\n'
     
     if not eff_lumi == -1.:
@@ -135,7 +135,9 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         config+='   analysis.SetTotalMCEvents(' + str(totalmcevents) +');\n'
     if not xsec == -1.:
         config+='   analysis.SetMCCrossSection(' + str(xsec) +');\n'
-        
+    config+='   analysis.RunNonPrompt("' +runnp+'");\n'
+    config+='   analysis.RunChargeFlip("' +runcf+'");\n'
+    config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
     config+='   analysis.Initialize();\n'
     config+='   analysis.ExecuteCycle();\n'
 

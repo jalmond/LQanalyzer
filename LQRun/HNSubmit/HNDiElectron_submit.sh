@@ -1,40 +1,227 @@
 #!/bin/sh
-source functions.sh 
 
-###########################################################
-## CONFIGURE JOB ####
-###########################################################
-#
-#  THIS SECTION IS FOR USER:
-#
-############################################################
-## What cycle do you want to run.  
-## 
-cycle="HNDiElectron"
-#skinput="True"
-#useskim="DiLep"
+rundata=true
+runmc=true
+runfakes=true
+runflips=true
 
-njobs=1
-data_lumi="AtoD"
+if [[ $1  == "NP" ]];
+    then
+    runfakes=true
+    rundata=false
+    runmc=false
+    runflips=false
+fi
 
-loglevel="INFO"
-logstep=1000
+if [[ $1  == "CF" ]];
+    then
+    runfakes=false
+    rundata=false
+    runmc=false
+    runflips=true
+fi
+
+if [[ $1  == "DATA" ]];
+    then
+    runfakes=false
+    rundata=true
+    runmc=false
+    runflips=false
+fi
+
+if [[ $1  == "MC" ]];
+    then
+    runfakes=false
+    rundata=false
+    runmc=true
+    runflips=false
+fi
 
 
-#declare -a input_samples=("HNmumu50" "HNmumu70" "HNmumu90" "HNmumu100" "HNmumu125" "HNmumu150" "HNmumu175" "HNmumu200" "HNmumu225" "HNmumu250" "HNmumu275" "HNmumu300" "HNmumu325" "HNmumu350" "HNmumu375" "HNmumu400" "HNmumu500" "HNmumu600" "HNmumu700"  "HNee50" "HNee70" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300"  "HNee325" "HNee350" "HNee375" "HNee400" "HNee500" "HNee600" "HNee700" )
+if [[ $1  == "testMC" ]];
+    then
+    
+    rundata=false
+    runmc=false
+    runfakes=false
+    runflips=false
+    source functions.sh
+    
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+    loglevel="INFO"
 
-#declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "WZtollqq" "WZtoqqln" "WZtollln" "ZZtollnn" "ZZtollqq" "ZZtollll" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "ZZtoeett" "ZZtommtt" "ZZtommmm" "ZZtoeeee" "ZZtotttt" "Zbb" "Zgamma" "ZZtoeemm" "Wbb" "WWW")
+    njobs=30
+    data_lumi="AtoD"
+   
+    declare -a input_samples=("DY50plus")
 
-#declare -a input_samples=("A" "B" )
-declare -a input_samples=("Wjets")
+    stream="egamma"
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+    
+    
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+fi
 
-stream="egamma"
-outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+
+if [[ $1  == "testData" ]];
+then
+    source functions.sh
+    
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+    njobs=1
+    data_lumi="AtoD"
+    
+    nevents=100000
+    loglevel="INFO"
+    declare -a input_samples=("A")
+    
+    stream="egamma"
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+    
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+    
+fi
+
+if [[ $1  == "testNP" ]];
+then
+    source functions.sh
+
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+
+    njobs=1
+    data_lumi="AtoD"
+
+    nevents=100000
+    loglevel="INFO"
+    runnp="True"
+    declare -a input_samples=("A")
+
+    stream="egamma"
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+
+fi
+
+if [[ $runmc  == "true" ]];
+then
+
+    source functions.sh
+    
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+    
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+
+    loglevel="INFO"
+    logstep=1000
+    
+    declare -a input_samples=("DY10to50" "DY50plus" "ttbar")
+# "Wjets" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "Zgamma")
+    
+    
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+fi
+
+
+if [[ $rundata  == "true" ]];
+then
+
+    source functions.sh
+
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+
+    loglevel="INFO"
+    logstep=1000
+
+    declare -a input_samples=( "A" "B" "C" "D")
+    stream="egamma"
+    
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+fi
+
+
+if [[ $runfakes  == "true" ]];
+    then
+    source functions.sh
+    
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+    loglevel="INFO"
+
+    njobs=30
+    data_lumi="AtoD"
+    
+    loglevel="INFO"
+    logstep=1000
+    
+    runnp="True"
+    declare -a input_samples=("A" "B" "C" "D") 
+
+
+    stream="egamma"
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+
+
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+fi
+
+if [[ $runflips  == "true" ]];
+    then
+    source functions.sh
+
+    cycle="HNDiElectron"
+    skinput="True"
+    useskim="DiLep"
+    loglevel="INFO"
+
+    njobs=30
+    data_lumi="AtoD"
+
+    loglevel="INFO"
+    logstep=1000
+
+    runcf="True"
+    #declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar")
+    declare -a input_samples=("DY10to50" "DY50plus" "ttbar")
+
+
+    stream="egamma"
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+
+
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+fi
 
 
 
-### submit this configured job (uses bin/submit.sh)
-source submit.sh $1
+
+
 
 echo ""
 echo "End of example_submit.sh script."

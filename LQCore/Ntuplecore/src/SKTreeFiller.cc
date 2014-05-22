@@ -132,7 +132,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetPDFNNPDFWeight(PDFNNPDFWeights->at(0));
     }
   }
-
+  
   //// Filling vertex variables
   int nVertices = VertexNDF->size();
   kevent.SetNVertices(nVertices);
@@ -391,11 +391,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       m_logger << DEBUG <<  "Electron Pt  = " <<  match_pt << LQLogger::endmsg;
 
       
-      if(match_pt < 15.) continue;
+      if(match_pt < 10.) continue;
       int MotherPdgId(-999);
       int eltruth_index=0;
-      float truth_Dr=1000.;
+      float truth_Dr=0.5;
       
+      bool close_to_photon=false;
       //// Loop over main truth collection to search for matced truth particle
       for(unsigned int g =0; g < GenParticleP->size(); g++, eltruth_index++){
 	/// If already matched no need to continue
@@ -427,12 +428,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    if(fabs(GenParticlePdgId->at(g)) == 11){
 	      if(dr < truth_Dr){
 		truth_Dr = dr;
+		bool close_to_tau=false;
 		/// IF NO STATUS 3 
 		for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
 		  if(GenParticlePdgId->at(g2) == 2212) continue;
 		  if(GenParticleStatus->at(g2) == 3){
 		    if( sqrt( pow(fabs( GenParticleEta->at(g)  - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)  -GenParticlePhi->at(g2))),2.0)) < 0.1){
 		      if(fabs(GenParticlePdgId->at(g2)) == 15){
+			close_to_tau=true;
 			iMother = g2;
 			nDaughter = GenParticleNumDaught->at(g);
 			ipdgid =  GenParticlePdgId->at(g);
@@ -442,15 +445,22 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		    }
 		  }
 		}
+		if(!close_to_tau) {
+		  iMother = GenParticleMotherIndex->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g)));
+		  nDaughter = GenParticleNumDaught->at(g);
+		  ipdgid =  GenParticlePdgId->at(g);
+		  trueel_index = g;
+		  MotherPdgId = GenParticlePdgId->at(iMother);
+		}
 	      }
 	    }
 	    if(fabs(GenParticlePdgId->at(g)) == 22){
-	      
+	      close_to_photon=true;
 	    }
 	  }
 	}
       }
-
+      
       if(ipdgid != -999) matched_electron=true;
       
       for(unsigned int g =0; g < GenZMuPdgId->size(); g++, eltruth_index++){
@@ -478,6 +488,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
             trueel_index = eltruth_index;
             truth_reco_dr = dr;
             MotherPdgId= 23;
+	    for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+	      if(fabs(GenParticlePdgId->at(g2) == 15)) {
+		MotherPdgId= GenParticlePdgId->at(g2);
+		iMother = g2;
+	      }	   
+	    }
           }
         }
       }
@@ -520,7 +536,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    m_logger << DEBUG << "Truth Matched to electron[GenWTau]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWTauPt->at(g) << "/" << GenWTauEta->at(g) << "/" << GenWTauPhi->at(g) <<  "/" << GenWTauPhi->at(g) << "/" <<  GenWTauStatus->at(g) << "/" << GenWTauPdgId->at(g) << "/" << GenWTauMotherIndex->at(g) << LQLogger::endmsg;            
 	    ipdgid =  GenWTauPdgId->at(g);
             trueel_index = eltruth_index;
-            MotherPdgId= 24;    
+	    for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+              if(fabs(GenParticlePdgId->at(g2) == 15)) {
+                MotherPdgId= GenParticlePdgId->at(g2);
+		iMother = g2;
+              }
+	    }   
           }
         }
       }
@@ -558,6 +579,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  partType = KParticle::unknown;
 	}
       }
+      
+      if(trueel_index == GetTruthParticles().size()) cout << "Event number =" <<  event  << ", el index = " << trueel_index << " while truth size == " << GetTruthParticles().size()<< endl;
       
       el.SetType(partType);
       el.SetTruthParticleIndex(trueel_index);
@@ -966,6 +989,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
           if(GenParticleStatus->at(g) == 1){
 	    if(fabs(GenParticlePdgId->at(g)) == 11){
+	      bool match_to_tau=false;
               double dr = sqrt( pow(fabs( match_eta - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g))),2.0));
               if(dr < truthDr){
 		truthDr = dr;
@@ -975,7 +999,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
                   if(GenParticleStatus->at(g2) == 3){
                     if( sqrt( pow(fabs( GenParticleEta->at(g)  - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)  -GenParticlePhi->at(g2))),2.0)) < 0.1){
                       if(fabs(GenParticlePdgId->at(g2)) == 15){
-
+			match_to_tau=true;
 			iMother = g2;
                         nDaughter = GenParticleNumDaught->at(g);
                         ipdgid =  GenParticlePdgId->at(g);
@@ -984,6 +1008,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
                       }//closest truth match
                     }
                   }
+		}
+		if(!match_to_tau){
+		  iMother = GenParticleMotherIndex->at(g);
+		  nDaughter = GenParticleNumDaught->at(g);
+		  ipdgid =  GenParticlePdgId->at(g);
+		  truemu_index = g;
+		  MotherPdgId = GenParticlePdgId->at(iMother);
 		}
               }
             }
@@ -1018,7 +1049,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             ipdgid =  GenZTauPdgId->at(g);
             truemu_index = mutruth_index;
             truth_reco_dr = dr;
-            MotherPdgId= 23;
+	    for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+              if(fabs(GenParticlePdgId->at(g2) == 15)) {
+		MotherPdgId= GenParticlePdgId->at(g2);
+                iMother = g2;
+              }
+            }
           }
         }
       }
@@ -1060,7 +1096,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             m_logger << DEBUG << "Truth Matched to electron[GenWTau]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWTauPt->at(g) << "/" << GenWTauEta->at(g) << "/" << GenWTauPhi->at(g) <<  "/" << GenWTauPhi->at(g) << "/" <<  GenWTauStatus->at(g) << "/" << GenWTauPdgId->at(g) << "/" << GenWTauMotherIndex->at(g) << LQLogger::endmsg;
             ipdgid =  GenWTauPdgId->at(g);
             truemu_index = mutruth_index;
-            MotherPdgId= 24;
+	    for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+              if(fabs(GenParticlePdgId->at(g2) == 15)) {
+		MotherPdgId= GenParticlePdgId->at(g2);
+                iMother = g2;
+              }
+            }
 	  }
         }
       }
@@ -1211,7 +1252,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     else charge_truth = -999.;
 
     if(GenZMuPdgId->at(it) < 0) charge_truth *=-1.;
-
+    
     truthp.SetCharge(int(charge_truth));
     vtruth.push_back(truthp);    
   }

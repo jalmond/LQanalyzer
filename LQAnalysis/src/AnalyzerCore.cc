@@ -74,6 +74,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   delete infile;
   origDir->cd();
   
+  string lqdir = getenv("LQANALYZER_DIR");
+  
+  m_fakeobj = new WRHNCommonLeptonFakes(lqdir+"/WRHNCommonLeptonFakes/share/");
 }
 
 double AnalyzerCore::ElectronScaleFactor( double eta, double pt){
@@ -330,13 +333,12 @@ float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
 
 
 bool AnalyzerCore::isPrompt(long pdgid) {
-  
+  /// mother pdgid
   pdgid = abs(pdgid);
   if (pdgid == 24) return true; // Z
   else if (pdgid == 23) return true; // W
   else if (pdgid == 15) return true; // taus
   else if (pdgid == 90) return true; // N
-  else if (pdgid == 13) return true;
   else return false;
 }
 
@@ -417,7 +419,7 @@ void AnalyzerCore::Message(TString message, LQMsgType type){
 
 
 void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
-
+  
   //// ELECTRON PLOTs                                                                                          
   if(type==elhist) mapCLhistEl[clhistname] = new ElectronPlots(clhistname);
   //// MUON PLOTs                                                                                              
@@ -425,8 +427,8 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
   /// JET PLOTs                                                                                                
   if(type==jethist) mapCLhistJet[clhistname] = new JetPlots(clhistname);
   /// Signal plots                                                                                             
-  if(type==sighist) mapCLhistSig[clhistname] = new SignalPlots(clhistname);
-
+  if(type==sighist)  mapCLhistSig[clhistname] = new SignalPlots(clhistname);
+      
   return;
 }
 
@@ -576,8 +578,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KMuon> mu
 }
 
 
-void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons, double rho, double w)\
-{
+void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons, double rho, double w){
 
   if(type==elhist){
     map<TString, ElectronPlots*>::iterator elpit = mapCLhistEl.find(hist);
@@ -604,7 +605,11 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   if(type==sighist){
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w);
-    else m_logger << INFO  << hist << " not found in mapCLhistSig" <<LQLogger::endmsg;
+    else {
+      mapCLhistSig[hist] = new SignalPlots(hist);
+      sigpit = mapCLhistSig.find(hist);
+      sigpit->second->Fill(ev, muons, electrons, jets,w);
+    }
   }
   else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
 }
@@ -615,7 +620,11 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   if(type==sighist){
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w);
-    else m_logger << INFO  << hist << " not found in mapCLhistSig" <<LQLogger::endmsg;
+    else {
+      mapCLhistSig[hist] = new SignalPlots(hist);
+      sigpit = mapCLhistSig.find(hist);
+      sigpit->second->Fill(ev, electrons, jets, w);
+    }
   }
   else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
 }
@@ -704,5 +713,140 @@ TH2* AnalyzerCore::GetHist2D(TString hname){
 
   return h;
 }
+
+
+bool AnalyzerCore::Zcandidate(std::vector<snu::KElectron> electrons, float interval, bool require_os){
+  
+  if(electrons.size()!=2) return false;
+  if(require_os&&SameCharge(electrons)) return false;
+  
+  KParticle Z = electrons.at(0) + electrons.at(1);
+  if(fabs(Z.M() - 90.) <  interval) return true;
+  else return false;
+  
+}
+  
+bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons){
+  
+  if(electrons.size()!=2) return false;
+  if(electrons.at(0).Charge() == electrons.at(1).Charge()) return true;
+  return false;
+}
+
+int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
+  
+  int nbjet=0;
+  for(unsigned int ij=0; ij <jets.size(); ij++){
+    if(jets.at(ij).BtagProb() > 0.679) nbjet++;
+  }
+  return nbjet;
+}
+
+
+float AnalyzerCore::CFRate(snu::KElectron el){
+
+  if(fabs(el.Eta()) < 1.){
+    if(el.Pt() < 30.) return 0.00001511625;
+    else if(el.Pt() < 40.) return 0.0000358564;
+    else if(el.Pt() < 50.) return 0.00003;
+    else if(el.Pt() < 60.) return 0.00003;
+    else if(el.Pt() < 80.) return 0.000058;
+    else return 0.00006;
+  }
+  else if(fabs(el.Eta() ) < 1.6){
+    if(el.Pt() < 30.) return 0.000158954;
+    else if(el.Pt() < 40.) return 0.0001273112;
+    else if(el.Pt() < 50.) return 0.00000982577;
+    else if(el.Pt() < 60.) return 0.000165563;
+    else if(el.Pt() < 80.) return 0.000382288;
+    else return 0.000587109;
+  }
+
+  else if(fabs(el.Eta() ) < 2.5){
+    if(el.Pt() < 30.) return 0.00017;
+    else if(el.Pt() < 40.) return 0.00026163;
+    else if(el.Pt() < 50.) return 0.000311835;
+    else if(el.Pt() < 60.) return 0.000509239;
+    else if(el.Pt() < 80.) return 0.000907024;
+    else return 0.00154662;
+  }
+  return 1.;
+  
+}
+
+bool AnalyzerCore::IsTight(snu::KMuon muon){
+  /// ADD TIGHT MUON REQUIREMENT
+  
+  return true;
+}
+
+bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
+  bool istight= true;
+  
+  Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+  int ifid = 0;
+  if (fabs(electron.SCEta()) < 1.0) ifid = 0;
+  else if (fabs(electron.SCEta()) < 1.479) ifid = 1;
+  else if (fabs(electron.SCEta()) < 2.0) ifid = 2;
+  else if (fabs(electron.SCEta()) < 2.2) ifid = 3;
+  else if (fabs(electron.SCEta()) < 2.3) ifid = 4;
+  else if (fabs(electron.SCEta()) < 2.4) ifid = 5;
+  else ifid = 6;
+
+  float LeptonRelIsoDR03(0.);
+  float ElectronIsoDR03 =  electron.PFChargedHadronIso03() + max( electron.PFNeutralHadronIso03() + electron.PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
+  if(electron.Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electron.Pt();
+  else LeptonRelIsoDR03 = -999.;
+
+  
+  /// assuming electron is loose
+  if(LeptonRelIsoDR03 >  0.09) istight=false;
+  if(fabs(electron.dxy()) > 0.01) istight=false;
+  
+  return istight;
+  
+}
+
+vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons){
+  
+  vector<snu::KElectron> prompt_electrons;
+  for(unsigned int i = 0; i < electrons.size(); i++){
+    if(!k_isdata){
+      if(!(electrons.at(i).GetType() == 3 || electrons.at(i).GetType() == 4 || electrons.at(i).GetType() == 5)) prompt_electrons.push_back(electrons.at(i));
+    }
+    else prompt_electrons.push_back(electrons.at(i));
+  }
+  return prompt_electrons;
+}
+
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho){
+  
+  float ee_weight = 0.;
+  if(k_electrons.size()==2){
+    
+    bool is_el1_tight    = IsTight(k_electrons.at(0), rho);
+    bool is_el2_tight    = IsTight(k_electrons.at(1), rho);
+    
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight);
+    
+  }
+  
+  return ee_weight;
+}
+
+vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KElectron> el){
+
+  vector<TLorentzVector> tl_el;
+  for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
+    TLorentzVector tmp_em;
+    tmp_em.SetPtEtaPhiM((*itel).Pt(),(*itel).Eta(),(*itel).Phi(),(*itel).M());
+    tl_el.push_back(tmp_em);
+  }
+  return tl_el;
+}
+
+
 
 

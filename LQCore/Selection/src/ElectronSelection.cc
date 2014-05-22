@@ -73,7 +73,7 @@ void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonCo
       pass_selection = false;
       if(m_debug) cout << "HNVetoElectronSelection::Fail ID Cut" <<endl;
     }
-    if(!(fabs(el->Eta()) < 2.5)) {
+    if(!(fabs(el->Eta()) < 2.4)) {
       pass_selection = false;
       if(m_debug) cout << "HNVetoElectronSelection::Fail Eta Cut" <<endl;
     }
@@ -125,7 +125,7 @@ void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonC
     if((el->HasMatchedConvPhot() ||  (el->MissingHits() != 0)) ) {
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Conv Cut" <<endl;
-    }
+      }
     
     if(!el->GsfCtfScPixChargeConsistency()) {
       pass_selection = false;
@@ -194,14 +194,10 @@ void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonC
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
     }
-    if(!(el->dz()<  0.10 ))      {
+    
+    if(!(fabs(el->dxy())< 0.01 ))    {
       pass_selection = false;
-      if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
-    }
-
-    if(!(el->dxy()< 0.01 ))    {
-      pass_selection = false;
-      if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail dxy Cut" <<endl;
     }
     
     if(pass_selection){
@@ -258,15 +254,13 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     else if (fabs(el->SCEta()) < 2.3) ifid = 4;
     else if (fabs(el->SCEta()) < 2.4) ifid = 5;
     else ifid = 6;
-    float LeptonRelIsoDR03(0.), LeptonRelIsoDR04(0.);
+    float LeptonRelIsoDR03(0.);
     float ElectronIsoDR03 =  el->PFChargedHadronIso03() + max( el->PFNeutralHadronIso03() + el->PFPhotonIso03() - rho * PHONH_03[ifid], 0.);
     if(el->Pt() > 0.){
-      LeptonRelIsoDR03 = ElectronIsoDR03/  el->Pt();
       LeptonRelIsoDR03 = ElectronIsoDR03/  el->Pt();
     }else
       {
 	LeptonRelIsoDR03 = -999.;
-	LeptonRelIsoDR04 = -999.;
       }
 
     if(apply_relisocut && !(LeptonRelIsoDR03 < relIso_cut && LeptonRelIsoDR03 >= relIsoMIN_cut)){
@@ -290,11 +284,11 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
       if(m_debug)cout << "Selection: Fail Pt Cut" << endl;
     }
     /// impact parameter cuts
-    if(apply_dzcut && !(el->dz()<  dz_cut )) {
+    if(apply_dzcut && !(fabs(el->dz())<  dz_cut )) {
       pass_selection = false;
       if(m_debug)cout << "Selection: Fail dZ Cut" << endl;
     }
-    if(apply_dxycut && !(el->dz()< dxy_cut )) {
+    if(apply_dxycut && !( fabs(el->dxy())< dxy_cut )) {
       pass_selection = false;
       if(m_debug)cout << "Selection: Fail dxy Cut" << endl;
     }
@@ -329,19 +323,6 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, double jetrho, bool
     cout << "Invalid ID set for electron selection" << endl;
     return false;
   }
-  /*if ( id == EGAMMA_TIGHT   )  return (el.PassEGammaIDTight() == 1023);
-    else if ( id == EGAMMA_MEDIUM  ) return (el.PassEGammaIDMedium() == 1023);
-    else if ( id == EGAMMA_LOOSE   ) return (el.PassEGammaIDLoose()== 1023);
-    else if ( id == EGAMMA_VETO    ) return (el.PassEGammaIDVeto()== 1023);
-    else if ( id == EGAMMA_TRIGTIGHT ) return el.PassEGammaIDTrigTight();
-    else if ( id == EGAMMA_TRIGWP70 ) return el.PassEGammaIDTrigWP70();
-    else if ( id == EGAMMA_EOP      ) return el.PassEGammaIDEoP(); 
-    else if ( id == MVATrig            )  return PassUserID_MVA     (el, true);
-    else if ( id == MVANonTrig            )  return PassUserID_MVA     (el, false);
-    else return false;
-    
-  */
-  
   
 }
 
@@ -360,11 +341,11 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
   double l_b_dPhiIn  = 0.03;
   double l_b_sieie   = 0.01;
   double l_b_hoe     = 0.12;
-  double l_b_d0      = 100.; 
-  double l_b_dZ      = 0.1; 
   double l_b_ep      = 0.05;
   double l_b_vtxProb = 1e-6;
   int    l_b_missHits = 0;
+  double l_b_d0      = 100.; 
+  double l_b_dZ      = 0.1; 
   double l_b_pfRelIso = 0.6;
   //----------------------------------------------------------------------
   // Endcap electron cut values
@@ -374,7 +355,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
   double l_e_dPhiIn  = 0.02;
   double l_e_sieie   = 0.03;
   double l_e_hoe     = 0.10;
-  double l_e_d0      = 100.;
+  double l_e_d0      = 100.0;
   double l_e_dZ      = 0.1;
   double l_e_ep      = 0.05;
   double l_e_vtxProb = 1e-6;
@@ -471,6 +452,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
 		   pass_pfIsolation   &&
 		   pass_convFitProb   &&
 		   pass_missingHits   ) ;
+		   
   
   if(m_debug){
     if(!pass_deltaEta) cout << "Fake ID Fail deltaEta" << endl;
@@ -479,10 +461,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
     if(!pass_hoe) cout << "Fake ID Fail hoe" << endl;
     if(!pass_vtxDistXY) cout << "Fake ID Fail dxy" << endl;
     if(!pass_vtxDistZ) cout << "Fake ID Fail dz" << endl;
-    if(!pass_ep) cout << "Fake ID Fail ep" << endl;
-    if(!pass_convFitProb) cout << "Fake ID Fail convFitProb" << endl;
     if(!pass_pfIsolation) cout << "Fake ID Fail isolation" << endl;
-    if(!pass_missingHits) cout << "Fake ID Fail missinghit" << endl;
   }
   
   return decision;

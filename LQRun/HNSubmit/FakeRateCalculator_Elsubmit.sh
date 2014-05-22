@@ -9,7 +9,7 @@ then
     cycle="FakeRateCalculator_El"
     skinput="True"
     
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
@@ -17,7 +17,8 @@ then
     #skipevent=8099
     #nevents=10000
     #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "WW_py" "WZ_py" "ZZ_py" "QCD_350_EM" "QCD_350_BCtoE" "Wbb" "stbar_sch" "stbar_tch" "stbar_tW"  "st_sch" "st_tch" "st_tW"  "Zbb" )
-    declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE")
+    #declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_350_EM" "QCD_350_BCtoE")
+    declare -a input_samples=("QCD_20_30_EM")
     source submit.sh
 fi
 

@@ -96,7 +96,7 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
   
   float pileup_reweight (1.);
   if (MC_pu&&!k_isdata) {
-    pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
   
     

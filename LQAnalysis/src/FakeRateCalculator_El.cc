@@ -81,7 +81,6 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   MakeCleverHistograms(sighist, "TightEl40_notm");
   MakeCleverHistograms(sighist, "LooseEl60");
   MakeCleverHistograms(sighist, "TightEl60");
-  MakeCleverHistograms(sighist, "Inclusive");
 
   return;
 }
@@ -106,7 +105,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   numberVertices = eventbase->GetEvent().nVertices();   
   
   if (MC_pu&&!k_isdata) {
-    weight  = weight* reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+    weight  = weight* reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
   
   //////////////////////////////////////////////////////
@@ -155,7 +154,24 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   float prescale_trigger17jet = (24.18) / 19789 ;
 
   
-  if(PassTrigger(triggerslist17jet, prescale))FillCLHist(sighist, "Inclusive", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight*prescale_trigger17jet);
+  if(!k_isdata){
+    Float_t ptbins[8] = { 15.,20.,25.,30.,35.,40.,60.,100.};
+    float el_pt = electronLooseColl.at(0).Pt();
+    if(electronLooseColl.at(0).GetType() >1 ) {
+      if (electronLooseColl.size() == 1 &&jetColl_lepveto40.size() >= 1){
+	FillHist("MCLooseEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 7);
+	FillHist("MCLooseEl_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
+	
+	if(electronTightColl.size() == 1){
+	  FillHist("MCTightEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	  FillHist("MCTightEl_pt", el_pt, weight, ptbins, 7);
+	  FillHist("MCTightEl_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
+	}
+      }
+    }
+  }
+  
   
   return;
 
@@ -218,10 +234,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(PassTrigger(triggerslist_diel, prescale)){
     if(electronLooseColl.size() == 2){
       FillCLHist(sighist, "DiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
-      snu::KParticle Z = electronLooseColl.at(0) + electronLooseColl.at(1);
-      
-      if(Z.M() > 86. && Z.M() < 96.){
-	FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+      if(Zcandidate(electronLooseColl, 5.)){
+	   FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
 	
 	//// Electron 1 IS TAG
 	if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())  ){
@@ -421,8 +435,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   /// Fake Rates
 
   if (electronLooseColl.size() == 1  && jetColl_lepveto20.size() >= 1){
-    for (int ielT=0; ielT < electronLooseColl.size(); ielT++){
-      for( int ij=0; ij < jetColl_lepveto20.size(); ij++){
+    for (unsigned int ielT=0; ielT < electronLooseColl.size(); ielT++){
+      for(unsigned int ij=0; ij < jetColl_lepveto20.size(); ij++){
 	
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto20.at(ij));
 	if( (jetColl_lepveto20.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto20.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
@@ -433,8 +447,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
 
   if (electronLooseColl.size() == 1  && jetColl_lepveto40.size() >= 1){
-    for (int ielT=0; ielT < electronLooseColl.size(); ielT++){
-      for( int ij=0; ij < jetColl_lepveto40.size(); ij++){
+    for (unsigned int ielT=0; ielT < electronLooseColl.size(); ielT++){
+      for(unsigned int ij=0; ij < jetColl_lepveto40.size(); ij++){
 
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto40.at(ij));
         if( (jetColl_lepveto40.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto40.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
@@ -447,8 +461,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
 
   if (electronLooseColl.size() == 1  && jetColl_lepveto60.size() >= 1){
-    for (int ielT=0; ielT < electronLooseColl.size(); ielT++){
-      for( int ij=0; ij < jetColl_lepveto60.size(); ij++){
+    for (unsigned int ielT=0; ielT < electronLooseColl.size(); ielT++){
+      for(unsigned int ij=0; ij < jetColl_lepveto60.size(); ij++){
 
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto60.at(ij));
         if( (jetColl_lepveto60.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto60.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
@@ -562,10 +576,11 @@ void FakeRateCalculator_El::EndCycle()throw( LQError ){
 }
 
 bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
+  
   //----------------------------------------------------------------------
   // Barrel electron cut values
   //----------------------------------------------------------------------
-
+  
   double l_b_dEtaIn  = 0.004;
   double l_b_dPhiIn  = 0.03;
   double l_b_sieie   = 0.01;
@@ -579,7 +594,7 @@ bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
   //----------------------------------------------------------------------
   // Endcap electron cut values
   //----------------------------------------------------------------------
-
+  
   double l_e_dEtaIn  = 0.005;
   double l_e_dPhiIn  = 0.02;
   double l_e_sieie   = 0.03;
@@ -604,17 +619,14 @@ bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
   bool   pass_convFitProb   = false;
   bool   pass_missingHits   = false;
   bool   pass_pfIsolation   = false;
-
-
-
+  
   //----------------------------------------------------------------------
   // Define EGamma ep parameter
   //----------------------------------------------------------------------
-
   double egamma_e  = el.CaloEnergy();
   double egamma_p  = el.CaloEnergy() / el.ESuperClusterOverP();
   double egamma_ep = fabs ( ( 1.0 / egamma_e ) - ( 1.0 / egamma_p ) );
-
+  
   //----------------------------------------------------------------------
   // Define PF Isolation
   //----------------------------------------------------------------------
@@ -634,16 +646,14 @@ bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
   }
 
   double egamma_pfiso_03 = el.PFChargedHadronIso03() + std::max ( el.PFPhotonIso03() + el.PFNeutralHadronIso03() - ( jetrho * effective_area_03 ), 0.0 );
-
-
   egamma_pfiso_03 /= el.Pt();
-
+  
+  
   //----------------------------------------------------------------------
   // Barrel electron test
   //----------------------------------------------------------------------
-
+  
   if ( fabs(el.SCEta()) < 1.479 ){
-
     pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_b_dEtaIn);
     pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_b_dPhiIn );
     pass_sigmaIEtaIEta = bool ( el.SigmaIEtaIEta()    <= l_b_sieie   );
@@ -655,7 +665,6 @@ bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
     pass_missingHits   = bool ( el.MissingHits()    <= l_b_missHits);
     pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_b_pfRelIso);
   }
-
   else if ( fabs(el.SCEta()) > 1.479 && fabs(el.SCEta()) < 2.5 ){
     pass_deltaEta      = bool ( fabs(el.DeltaEta())   <= l_e_dEtaIn);
     pass_deltaPhi      = bool ( fabs(el.DeltaPhi())   <= l_e_dPhiIn );
@@ -667,18 +676,19 @@ bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho ){
     pass_convFitProb   = bool ( el.ConvFitProb  ()    <= l_e_vtxProb);
     pass_missingHits   = bool ( el.MissingHits()    <= l_e_missHits);
     pass_pfIsolation   = bool ( egamma_pfiso_03    <= l_e_pfRelIso);
-
-  }  bool decision = (
-                      pass_deltaEta      &&
-		      pass_deltaPhi      &&
-		      pass_sigmaIEtaIEta &&
-		      pass_hoe           &&
-		      pass_vtxDistXY     &&
-		      pass_vtxDistZ      &&
-                       pass_ep            &&
-		      pass_pfIsolation   &&
-		      pass_convFitProb   &&
-		      pass_missingHits   ) ;
+  } 
+  
+  bool decision = (
+		   pass_deltaEta      &&
+		   pass_deltaPhi      &&
+		   pass_sigmaIEtaIEta &&
+		   pass_hoe           &&
+		   pass_vtxDistXY     &&
+		   pass_vtxDistZ      &&
+		   pass_ep            &&
+		   pass_pfIsolation   &&
+		   pass_convFitProb   &&
+		   pass_missingHits   ) ;
   
   return decision;
 }

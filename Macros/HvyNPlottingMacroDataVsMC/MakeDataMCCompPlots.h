@@ -116,7 +116,7 @@ string  mcloc="";
 /// Data folder
 string dataloc = "";
 /// data driven
-string datadrivenloc= "";
+string nonpromptloc= "";
 string plotloc ="";
 string cutloc ="";
 string histdir="";

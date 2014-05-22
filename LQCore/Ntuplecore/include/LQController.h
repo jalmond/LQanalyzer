@@ -58,6 +58,9 @@ class LQController  {
   /// Other class functions
   void RunEvent(Long64_t ev);
   void RunNtupleEvent(Long64_t ev);
+  void RunNonPrompt(TString np);
+  void RunChargeFlip(TString cf);
+
   std::pair< Double_t, Double_t> GetTotalEvents() throw(LQError);
   float CalculateWeight() throw (LQError);
   
@@ -71,7 +74,8 @@ class LQController  {
   TString filelist;
   TString fullfilelist;
   TString completename;
-
+  bool runnp;
+  bool runcf;
   mutable LQLogger m_logger;
   
   float target_luminosity;
