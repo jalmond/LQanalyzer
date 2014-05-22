@@ -580,8 +580,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	}
       }
       
-      if(trueel_index == GetTruthParticles().size()) cout << "Event number =" <<  event  << ", el index = " << trueel_index << " while truth size == " << GetTruthParticles().size()<< endl;
-      
+      if(partType == KParticle::NOPARTICLE) cout << "Type = NOPARTICLE" << endl;
       el.SetType(partType);
       el.SetTruthParticleIndex(trueel_index);
       el.SetMotherIndex(iMother);
