@@ -20,6 +20,15 @@ then
     runSingleElectron=true
 fi
 
+if [[ $1  == "HN" ]];
+then
+    runMC=true
+    runDoubleMuon=true
+    runDoubleElectron=true
+    runElectronMuon=true
+fi
+
+
 if [[ $1  == "MC" ]];
 then
     runMC=true
@@ -67,8 +76,7 @@ then
     loglevel="INFO"
     logstep=1000
 
-    #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ_py" "ZZ_py" "WW_py" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "topDIL" "topHAD" "topLJ" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "Wbb" "Zbb" "DYee" "DYmm" "DYtt" "ggHtoZZ"  "Zgamma" "WgammaE" "WW_mg" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "ZZtoeemm" "ZZtoeett" "ZZtommtt" "ZZtommmm" "ZZtoeeee" "ZZtotttt" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "HtoTauTau" "HtoWW" "WgammaMu" "WgammaTau" "WWW" "WWG" "HtoZZ" "HtoWW" "HtoTauTau")
-    declare -a input_samples=("Wjets")
+    declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ_py" "ZZ_py" "WW_py" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "topDIL" "topHAD" "topLJ" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "Wbb" "Zbb" "DYee" "DYmm" "DYtt" "ggHtoZZ"  "Zgamma" "WgammaE" "WW_mg" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "ZZtoeemm" "ZZtoeett" "ZZtommtt" "ZZtommmm" "ZZtoeeee" "ZZtotttt" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "HtoTauTau" "HtoWW" "WgammaMu" "WgammaTau" "WWW" "WWG" "HtoZZ" "HtoWW" "HtoTauTau" "QCD_350_EM" "QCD_350_BCtoE")
     
     source submit.sh
 fi    
