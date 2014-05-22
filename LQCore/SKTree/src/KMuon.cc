@@ -8,7 +8,7 @@ ClassImp(KMuon)
  *Default constructor.
  */
 KMuon::KMuon() :
-  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999), i_muonVtx(-999), k_dimuon_trig_match(-999.), k_muon_trig_match(-999.),k_muon_trig_match5(-999.),k_muon_trig_match8(-999.),k_muon_trig_match12(-999.),k_muon_trig_match17(-999.),k_muon_trig_match24(-999.),k_isomuon_trig_match(-999.),k_emu_trig_match8(-999.),k_emu_trig_match17(-999.), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0), muon_ms_e(0.),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
+KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isor04ch(0.),k_isor04n(0.),k_isor04ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_MuonPFIsoR04PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999), i_muonVtx(-999), k_dimuon_trig_match(-999.), k_muon_trig_match(-999.),k_muon_trig_match5(-999.),k_muon_trig_match8(-999.),k_muon_trig_match12(-999.),k_muon_trig_match17(-999.),k_muon_trig_match24(-999.),k_isomuon_trig_match(-999.),k_emu_trig_match8(-999.),k_emu_trig_match17(-999.), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0), muon_ms_e(0.),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
  {
   //Reset();
 }
@@ -23,9 +23,13 @@ KMuon::KMuon(const KMuon& muon) :
   k_isor03ch(muon.k_isor03ch),
   k_isor03n(muon.k_isor03n),
   k_isor03ph(muon.k_isor03ph),
+  k_isor04ch(muon.k_isor04ch),
+  k_isor04n(muon.k_isor04n),
+  k_isor04ph(muon.k_isor04ph),
   k_isoEcalveto(muon.k_isoEcalveto), 
   k_isoHcalveto(muon.k_isoHcalveto), 
   k_MuonPFIsoR03PU(muon.k_MuonPFIsoR03PU),
+  k_MuonPFIsoR04PU(muon.k_MuonPFIsoR04PU),
   k_muonVtx(muon.k_muonVtx), 
   k_muonVty(muon.k_muonVty), 
   k_muonVtz(muon.k_muonVtz), 
@@ -81,6 +85,9 @@ void KMuon::Reset()
   k_isor03ch=0.;
   k_isor03n=0.;
   k_isor03ph=0.;
+  k_isor04ch=0.;
+  k_isor04n=0.;
+  k_isor04ph=0.;
   k_muon_ispf=0;
   k_muon_isglobal=0;
   k_muon_istracker=0;
@@ -90,6 +97,7 @@ void KMuon::Reset()
   k_isoEcalveto=0.; 
   k_isoHcalveto=0.; 
   k_MuonPFIsoR03PU=0.;
+  k_MuonPFIsoR04PU=0.;
   k_muonVtx=0.;
   k_muonVty=0.;
   k_muonVtz=0.;
@@ -137,16 +145,20 @@ KMuon& KMuon::operator= (const KMuon& p)
     if (this != &p) {
         KParticle::operator=(p);
 	k_isor03ch = p.SumIsoCHDR03();
+	k_isor04ch = p.SumIsoCHDR04();
 	k_muon_ispf = p.IsPF();
 	k_muon_isglobal = p.IsGlobal();
 	k_muon_istracker = p.IsTracker();
 	k_isor03n=p.SumIsoNHDR03();
 	k_isor03ph=p.SumIsoPHDR03();
+	k_isor04n=p.SumIsoNHDR04();
+	k_isor04ph=p.SumIsoPHDR04();
 	k_pterror=p.PtError();
 	k_etaerror=p.EtaError();
 	k_isoEcalveto=p.IsoEcalVeto(); 
 	k_isoHcalveto=p.IsoHcalVeto(); 
 	k_MuonPFIsoR03PU=p.SumPUIsoR03();
+	k_MuonPFIsoR04PU=p.SumPUIsoR04();
 	k_muonVtx=p.muonVtx();
 	k_muonVty=p.muonVty();
 	k_muonVtz=p.muonVtz();
@@ -308,6 +320,19 @@ void KMuon::SetISOR03Photon(double isor03ph ){
   k_isor03ph = isor03ph;
 }
 
+
+void KMuon::SetISOR04ChargedHad(double isor04ch ){
+  k_isor04ch = isor04ch;
+}
+
+void KMuon::SetISOR04NeutralHad(double isor04n ){
+  k_isor04n = isor04n;
+}
+
+void KMuon::SetISOR04Photon(double isor04ph ){
+  k_isor04ph = isor04ph;
+}
+
 void KMuon::SetIsolationEcalVeto(double isoEcalveto ){
   k_isoEcalveto = isoEcalveto;
 }
@@ -320,6 +345,11 @@ void KMuon::SetIsolationHcalVeto(double isoHcalveto ){
 void KMuon::SetPileUp_R03(double pileupr03){
   
   k_MuonPFIsoR03PU = pileupr03;
+}
+
+void KMuon::SetPileUp_R04(double pileupr04){
+  
+  k_MuonPFIsoR04PU = pileupr04;
 }
 
 void KMuon::SetTrackVx(double vtx){
