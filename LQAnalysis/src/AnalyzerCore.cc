@@ -76,7 +76,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   
   string lqdir = getenv("LQANALYZER_DIR");
   
-  m_fakeobj = new WRHNCommonLeptonFakes(lqdir+"/WRHNCommonLeptonFakes/share/");
+  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
 }
 
 double AnalyzerCore::ElectronScaleFactor( double eta, double pt){
@@ -398,7 +398,7 @@ TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
   while (not tempDir) {
     // First, let's find a directory name that doesn't exist yet:                                              
     std::stringstream dirname;
-    dirname << "WRHNCommonLeptonFakes_%i" << counter;
+    dirname << "HNCommonLeptonFakes_%i" << counter;
     if (gROOT->GetDirectory((dirname.str()).c_str())) {
       ++counter;
       continue;

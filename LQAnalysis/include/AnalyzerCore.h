@@ -11,7 +11,7 @@ class SignalPlots;
 class EventBase;
 
 #include "LQCycleBase.h"
-#include "WRHNCommonLeptonFakes/WRHNCommonLeptonFakes/WRHNCommonLeptonFakes.h"
+#include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 
 
 class AnalyzerCore : public LQCycleBase {
@@ -73,7 +73,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   TH2F* FRHist;
-  WRHNCommonLeptonFakes* m_fakeobj;
+  HNCommonLeptonFakes* m_fakeobj;
 
   
   /// Event weights
