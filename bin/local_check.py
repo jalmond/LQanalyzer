@@ -25,3 +25,9 @@ if os.path.exists("LQRun/runJob_1.C"):
 if os.path.exists("LQCycle/"):
     print "Cleaning up directory that failed to be removed by git merge"
     os.system("rm -r LQCycle/")
+
+fakelib = os.getenv("LQANALYZER_LIB_PATH") + "libWRHNCommonLeptonFakes.so"
+
+if not os.path.exists(fakelib):
+    os.system("source bin/make_fake_lib.sh")
+

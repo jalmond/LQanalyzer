@@ -773,8 +773,8 @@ if not JobOutput:
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("mv "+ output + "/Job_1/runJob_1.C .")
     print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
-    #os.system("rm -r " + output)    
-    #os.system("rm -r " + local_sub_dir)    
+    os.system("rm -r " + output)    
+    os.system("rm -r " + local_sub_dir)    
     
 
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
