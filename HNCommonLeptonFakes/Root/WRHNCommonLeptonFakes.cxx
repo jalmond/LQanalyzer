@@ -15,13 +15,13 @@
 #include "TEfficiency.h"
 
 /// local includes
-#include "WRHNCommonLeptonFakes/WRHNCommonLeptonFakes.h"
+#include "HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 
 using namespace std;
 
 
 
-TDirectory* WRHNCommonLeptonFakes::getTemporaryDirectory(void) const
+TDirectory* HNCommonLeptonFakes::getTemporaryDirectory(void) const
 {
   //                                                                                                                                                                                
   // Create a unique directory in memory to hold the histograms:                                                                                                                      //                                                                                                                                                                                 
@@ -31,7 +31,7 @@ TDirectory* WRHNCommonLeptonFakes::getTemporaryDirectory(void) const
   while (not tempDir) {
     // First, let's find a directory name that doesn't exist yet:
     std::stringstream dirname;
-    dirname << "WRHNCommonLeptonFakes_%i" << counter;
+    dirname << "HNCommonLeptonFakes_%i" << counter;
     if (gROOT->GetDirectory((dirname.str()).c_str())) {
       ++counter;
       continue;
@@ -45,12 +45,12 @@ TDirectory* WRHNCommonLeptonFakes::getTemporaryDirectory(void) const
 }
 
 
-void WRHNCommonLeptonFakes::InitialiseFake(){
+void HNCommonLeptonFakes::InitialiseFake(){
   
   bool failedinitialisation=false;
 
-  cout << "WRHNCommonLeptonFakes : Initializing" << endl;
-  cout << "Accessing Fake Ntuple at " << path_to_root_files+"FakeRateDiLeptonWRHN.root" << endl;
+  cout << "HNCommonLeptonFakes : Initializing" << endl;
+  cout << "Accessing Fake Ntuple at " << path_to_root_files+"FakeRateDiLeptonHN.root" << endl;
 
   // Remember which TDirectory the system is in at the beginning of the method:                                                                                                      
   TDirectory* origDir = gDirectory;
@@ -69,7 +69,7 @@ void WRHNCommonLeptonFakes::InitialiseFake(){
 
 
 /// Constructor
-WRHNCommonLeptonFakes::WRHNCommonLeptonFakes(std::string path,bool usegev){
+HNCommonLeptonFakes::HNCommonLeptonFakes(std::string path,bool usegev){
 
   path_to_root_files = path;
   useGeV = usegev;
@@ -80,27 +80,27 @@ WRHNCommonLeptonFakes::WRHNCommonLeptonFakes(std::string path,bool usegev){
 
 
 /// Destructor
-WRHNCommonLeptonFakes::~WRHNCommonLeptonFakes() {
+HNCommonLeptonFakes::~HNCommonLeptonFakes() {
   closefile();   
   CutHists.clear();
 }
 
 
 
-void WRHNCommonLeptonFakes::ApplyFakeSystematic(int type){
+void HNCommonLeptonFakes::ApplyFakeSystematic(int type){
  
-  //  if(type==0)cout << "WRHNCommonLeptonFakes : Running in default mode f [no systematic applied] " << endl;
-  //  if(type==1)cout << "WRHNCommonLeptonFakes : Applying systematic f + sigma" << endl;
-  //  if(type==-1)cout << "WRHNCommonLeptonFakes : Applying systematic f - sigma" << endl;
+  //  if(type==0)cout << "HNCommonLeptonFakes : Running in default mode f [no systematic applied] " << endl;
+  //  if(type==1)cout << "HNCommonLeptonFakes : Applying systematic f + sigma" << endl;
+  //  if(type==-1)cout << "HNCommonLeptonFakes : Applying systematic f - sigma" << endl;
   
   fsys=type;
 }
 
-void WRHNCommonLeptonFakes::ApplyRealSystematic(int type ){
+void HNCommonLeptonFakes::ApplyRealSystematic(int type ){
   
-  //if(type==0)cout << "WRHNCommonLeptonFakes : Running in default mode r [no systematic applied] " << endl;
-  //if(type==1)cout << "WRHNCommonLeptonFakes : Applying systematic r + sigma " << endl;
-  //if(type==-1)cout << "WRHNCommonLeptonFakes : Applying systematic r - sigma " << endl;
+  //if(type==0)cout << "HNCommonLeptonFakes : Running in default mode r [no systematic applied] " << endl;
+  //if(type==1)cout << "HNCommonLeptonFakes : Applying systematic r + sigma " << endl;
+  //if(type==-1)cout << "HNCommonLeptonFakes : Applying systematic r - sigma " << endl;
   
   rsys=type;
 }
@@ -108,7 +108,7 @@ void WRHNCommonLeptonFakes::ApplyRealSystematic(int type ){
 
 
 
-float  WRHNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight){
+float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight){
   
   useGeV=true;
 
@@ -128,7 +128,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVe
   float _el2_eta=electrons.at(1).Eta();
 
   if(m_debug){
-    cout << "WRHNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
     cout << "el1 pT = " << _el1_pt << endl;
     cout << "el2 pT = " << _el2_pt << endl;
   }
@@ -177,7 +177,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVe
   
   if(fabs(ev_weight) > 2.|| ev_weight == 0.&& r1!=1.){
     cout << "\n ---------------------------------  "<< endl;
-    cout << "WRHNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
     cout << "weight = " << ev_weight << endl;
     cout << "r1 = " << r1 << endl;
     cout << "r2 = " << r2 << endl;
@@ -197,7 +197,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVe
 
 }
 
-float  WRHNCommonLeptonFakes::get_dilepton_emu_eventweight(std::vector<TLorentzVector> muons,  std::vector<TLorentzVector> electrons, std::vector<TLorentzVector> jets,float met, bool ismutight, bool iseltight, bool is_muonHF,bool is_elconv, bool _el_primarytriggerpass, bool _el_secondarytriggerpass,bool _mu_primarytriggerpass,bool _mu_secondarytriggerpass, bool inGeV, bool use_kirill){
+float  HNCommonLeptonFakes::get_dilepton_emu_eventweight(std::vector<TLorentzVector> muons,  std::vector<TLorentzVector> electrons, std::vector<TLorentzVector> jets,float met, bool ismutight, bool iseltight, bool is_muonHF,bool is_elconv, bool _el_primarytriggerpass, bool _el_secondarytriggerpass,bool _mu_primarytriggerpass,bool _mu_secondarytriggerpass, bool inGeV, bool use_kirill){
 
   useGeV=inGeV;
  
@@ -327,7 +327,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_emu_eventweight(std::vector<TLorentzV
   
   if(fabs(CalculateDiLepMMWeight(r1,fr1,r2,fr2, ismutight, iseltight)) > 2. || CalculateDiLepMMWeight(r1,fr1,r2,fr2, ismutight, iseltight) == 0. && r1!=1.){    
     cout << "\n ---------------------------------  "<< endl;
-    cout << "WRHNCommonLeptonFakes::Event Summary (emu) " << endl;
+    cout << "HNCommonLeptonFakes::Event Summary (emu) " << endl;
     cout << "weight = " <<CalculateDiLepMMWeight(r1,fr1,r2,fr2, ismutight, iseltight)    << endl;
     cout << "r1 = " << r1 << endl;
     cout << "r2 = " << r2 << endl;
@@ -360,7 +360,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_emu_eventweight(std::vector<TLorentzV
 }
 
 
-float  WRHNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzVector> muons, std::vector<TLorentzVector> jets,bool ismu1tight, bool ismu2tight,bool isHF1, bool isHF2,bool inGeV, bool oldrates){
+float  HNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzVector> muons, std::vector<TLorentzVector> jets,bool ismu1tight, bool ismu2tight,bool isHF1, bool isHF2,bool inGeV, bool oldrates){
   
   useGeV=inGeV;
   if(muons.size()!=2) {
@@ -409,7 +409,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzV
 
   if(fabs(ev_weight) > 2.|| ev_weight == 0.){
     cout << "\n ---------------------------------  "<< endl;
-    cout << "WRHNCommonLeptonFakes::Event Summary (mm) " << endl;
+    cout << "HNCommonLeptonFakes::Event Summary (mm) " << endl;
     cout << "weight = " << ev_weight << endl;
     cout << "r1 = " << r1 << endl;
     cout << "r2 = " << r2 << endl;
@@ -433,7 +433,7 @@ float  WRHNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzV
 }
 
 
-float WRHNCommonLeptonFakes::getEfficiency_electron_emu_lou(int sys, float muon_pt, float el_pt, float el_eta, bool muon_triggerpass, bool primarytrigger_el, bool secondarytrigger_el){
+float HNCommonLeptonFakes::getEfficiency_electron_emu_lou(int sys, float muon_pt, float el_pt, float el_eta, bool muon_triggerpass, bool primarytrigger_el, bool secondarytrigger_el){
   
   
   float eff_real(-100000000000.);  
@@ -512,7 +512,7 @@ float WRHNCommonLeptonFakes::getEfficiency_electron_emu_lou(int sys, float muon_
 
 
 
-pair<float,float> WRHNCommonLeptonFakes::getEfficiency_electron_ee_lou(int sys, float lep1_pt, float lep2_pt, float lep1_eta, float lep2_eta, bool primarytrigger_lep1,  bool secondarytrigger_lep1, bool primarytrigger_lep2, bool secondarytrigger_lep2){
+pair<float,float> HNCommonLeptonFakes::getEfficiency_electron_ee_lou(int sys, float lep1_pt, float lep2_pt, float lep1_eta, float lep2_eta, bool primarytrigger_lep1,  bool secondarytrigger_lep1, bool primarytrigger_lep2, bool secondarytrigger_lep2){
   
   float eff_real1(-100000000000.);
   float eff_real2(-100000000000.);
@@ -520,7 +520,7 @@ pair<float,float> WRHNCommonLeptonFakes::getEfficiency_electron_ee_lou(int sys, 
   map<TString,TH2*>::const_iterator mapit;  
   map<TString,TH1*>::const_iterator mapit1D;  
   
-  if(lep1_pt < lep2_pt) cout << "Check leading / sub-leading inputs for electrons in WRHNCommonLeptonFakes package" << endl;
+  if(lep1_pt < lep2_pt) cout << "Check leading / sub-leading inputs for electrons in HNCommonLeptonFakes package" << endl;
   
   TString file_name = "nom_";
   if(sys ==1) file_name = "realup_";
@@ -674,7 +674,7 @@ pair<float,float> WRHNCommonLeptonFakes::getEfficiency_electron_ee_lou(int sys, 
 }
 
 
-float WRHNCommonLeptonFakes::getEfficiency_electron_kirill(int sys, float pt, float eta, int njet, bool passtrigger){
+float HNCommonLeptonFakes::getEfficiency_electron_kirill(int sys, float pt, float eta, int njet, bool passtrigger){
 
   map<TString,TH2*>::const_iterator mapit;  
     
@@ -710,7 +710,7 @@ float WRHNCommonLeptonFakes::getEfficiency_electron_kirill(int sys, float pt, fl
 }
 
 
-float WRHNCommonLeptonFakes::getFakeRate_electrons_emu_lou(int sys, float muon_pt, float el_pt, float el_eta, bool muon_passtrigger, bool primarytrigger_el,  bool secondarytrigger_el, bool el_conv){
+float HNCommonLeptonFakes::getFakeRate_electrons_emu_lou(int sys, float muon_pt, float el_pt, float el_eta, bool muon_passtrigger, bool primarytrigger_el,  bool secondarytrigger_el, bool el_conv){
 
  float eff_fake(-100000000000.);
   
@@ -791,7 +791,7 @@ float WRHNCommonLeptonFakes::getFakeRate_electrons_emu_lou(int sys, float muon_p
 }
 
 
-pair<float,float> WRHNCommonLeptonFakes::getFakeRate_electrons_ee_lou(int sys, float lep1_pt, float lep2_pt, float lep1_eta, float lep2_eta, bool primarytrigger_lep1,  bool secondarytrigger_lep1, bool primarytrigger_lep2, bool secondarytrigger_lep2, bool el1_conv, bool el2_conv){
+pair<float,float> HNCommonLeptonFakes::getFakeRate_electrons_ee_lou(int sys, float lep1_pt, float lep2_pt, float lep1_eta, float lep2_eta, bool primarytrigger_lep1,  bool secondarytrigger_lep1, bool primarytrigger_lep2, bool secondarytrigger_lep2, bool el1_conv, bool el2_conv){
   
   float eff_fake1(-100000000000.);
   float eff_fake2(-100000000000.);
@@ -799,7 +799,7 @@ pair<float,float> WRHNCommonLeptonFakes::getFakeRate_electrons_ee_lou(int sys, f
   map<TString,TH2*>::const_iterator mapit;  
   map<TString,TH1*>::const_iterator mapit1D;  
   
-  if(lep1_pt < lep2_pt) cout << "Check leading / sub-leading inputs for electrons in WRHNCommonLeptonFakes package" << endl;
+  if(lep1_pt < lep2_pt) cout << "Check leading / sub-leading inputs for electrons in HNCommonLeptonFakes package" << endl;
   
   TString file_name = "nom_";
   if(sys ==1) file_name = "fakeup_";
@@ -948,7 +948,7 @@ pair<float,float> WRHNCommonLeptonFakes::getFakeRate_electrons_ee_lou(int sys, f
 
 }
 
-float WRHNCommonLeptonFakes::getFakeRate_electrons_kirill(int sys, float pt, float eta, int njet, bool triggerpass, bool el_conv){
+float HNCommonLeptonFakes::getFakeRate_electrons_kirill(int sys, float pt, float eta, int njet, bool triggerpass, bool el_conv){
 
 
   map<TString,TH1*>::const_iterator mapit;  
@@ -983,7 +983,7 @@ float WRHNCommonLeptonFakes::getFakeRate_electrons_kirill(int sys, float pt, flo
   
 }
 
-float WRHNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta, int njets, TString region){
+float HNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta, int njets, TString region){
   
   map<TString,TH2*>::const_iterator mapit;  
   
@@ -1014,7 +1014,7 @@ float WRHNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta, in
 
 
 
-float WRHNCommonLeptonFakes::getFakeRate_muons(int sys, bool isHF,float pt, int njets, float eta, bool nearjet, TString region, bool usefit){
+float HNCommonLeptonFakes::getFakeRate_muons(int sys, bool isHF,float pt, int njets, float eta, bool nearjet, TString region, bool usefit){
   
   map<TString,TH1*>::const_iterator mapit1D;  
   
@@ -1093,7 +1093,7 @@ float WRHNCommonLeptonFakes::getFakeRate_muons(int sys, bool isHF,float pt, int 
 }
 
 
-float WRHNCommonLeptonFakes::getFakeRate_muonsold(int sys, bool isHF,float pt, int njets,float eta, bool nearjet, TString region){
+float HNCommonLeptonFakes::getFakeRate_muonsold(int sys, bool isHF,float pt, int njets,float eta, bool nearjet, TString region){
   
   map<TString,TH2*>::const_iterator mapit;  
   map<TString,TH1*>::const_iterator mapit1D;  
@@ -1170,7 +1170,7 @@ float WRHNCommonLeptonFakes::getFakeRate_muonsold(int sys, bool isHF,float pt, i
 
 
 
-float WRHNCommonLeptonFakes::getHSTEfficiency_sm(int sys, float pt, int njets, TString cut){
+float HNCommonLeptonFakes::getHSTEfficiency_sm(int sys, float pt, int njets, TString cut){
   
   if(sys==1)  cut+="_ErrUp";
   if(sys==-1) cut+="_ErrDn";
@@ -1207,7 +1207,7 @@ float WRHNCommonLeptonFakes::getHSTEfficiency_sm(int sys, float pt, int njets, T
   return eff_real;
 }
 
-float WRHNCommonLeptonFakes::getHSTEfficiency(int isys, float pt, float eta, int njets, TString region){
+float HNCommonLeptonFakes::getHSTEfficiency(int isys, float pt, float eta, int njets, TString region){
 
   map<TString,TH2*>::const_iterator mapit;  
  
@@ -1240,7 +1240,7 @@ float WRHNCommonLeptonFakes::getHSTEfficiency(int isys, float pt, float eta, int
 
 
 ///////////  EMU function
-float WRHNCommonLeptonFakes::getHSTFakeRate_sm(int sys, float pt, bool close_to_jet, TString cut){
+float HNCommonLeptonFakes::getHSTFakeRate_sm(int sys, float pt, bool close_to_jet, TString cut){
 
   map<TString,TH1*>::const_iterator mapit;  
   if(!close_to_jet){
@@ -1267,7 +1267,7 @@ float WRHNCommonLeptonFakes::getHSTFakeRate_sm(int sys, float pt, bool close_to_
 
 
 ///////////  MUMU function
-float WRHNCommonLeptonFakes::getHSTFakeRate(int isys, bool isHF,float pt,float eta, int njets, bool nearjet, TString region){
+float HNCommonLeptonFakes::getHSTFakeRate(int isys, bool isHF,float pt,float eta, int njets, bool nearjet, TString region){
   
   map<TString,TH1*>::const_iterator mapit1D;   
   
@@ -1317,7 +1317,7 @@ float WRHNCommonLeptonFakes::getHSTFakeRate(int isys, bool isHF,float pt,float e
 
 
 
-float WRHNCommonLeptonFakes::HSTWeightF(int sys, TLorentzVector muon, std::vector<TLorentzVector> jets, bool isHF, TString region){
+float HNCommonLeptonFakes::HSTWeightF(int sys, TLorentzVector muon, std::vector<TLorentzVector> jets, bool isHF, TString region){
   
   float _mu1_pt=muon.Pt();
   float _mu1_eta=muon.Eta();
@@ -1335,16 +1335,16 @@ float WRHNCommonLeptonFakes::HSTWeightF(int sys, TLorentzVector muon, std::vecto
 }
 
 
-float WRHNCommonLeptonFakes::HSTWeight_sm(int sys, float pt,bool isclose_tojet, TString cut){
+float HNCommonLeptonFakes::HSTWeight_sm(int sys, float pt,bool isclose_tojet, TString cut){
   return getHSTFakeRate_sm(sys, pt, isclose_tojet,cut);
 }
 
 
-float WRHNCommonLeptonFakes::HSTWeight_Rsm(int sys, float pt_gev, int njets, TString cut){
+float HNCommonLeptonFakes::HSTWeight_Rsm(int sys, float pt_gev, int njets, TString cut){
   return getHSTEfficiency_sm(sys,pt_gev, njets, cut);
 }
 
-float WRHNCommonLeptonFakes::HSTWeightR(int sys, TLorentzVector muons, std::vector<TLorentzVector> jets, TString region){
+float HNCommonLeptonFakes::HSTWeightR(int sys, TLorentzVector muons, std::vector<TLorentzVector> jets, TString region){
 
   float _mu1_pt=muons.Pt();
   float _mu1_eta=muons.Eta();
@@ -1359,7 +1359,7 @@ float WRHNCommonLeptonFakes::HSTWeightR(int sys, TLorentzVector muons, std::vect
 
 
 
-void WRHNCommonLeptonFakes::NoHist(TString hist, TString function){
+void HNCommonLeptonFakes::NoHist(TString hist, TString function){
   
   cout << function << ": No Histogram found for string " << hist << endl;
 
@@ -1387,23 +1387,23 @@ void WRHNCommonLeptonFakes::NoHist(TString hist, TString function){
   exit(1);
 }
 
-void WRHNCommonLeptonFakes::NullTotals(){
+void HNCommonLeptonFakes::NullTotals(){
   fsys=0;
   rsys=0;
   
 }
 
 
-void WRHNCommonLeptonFakes::CheckFile(TFile* file){
+void HNCommonLeptonFakes::CheckFile(TFile* file){
 
-  if(file) cout << "WRHNCommonLeptonFakes: File " << file->GetName() << " was found." << endl;
-  else cout << "WRHNCommonLeptonFakes  " << file->GetName()  << "  : ERROR Rootfile failed to open." << endl;
+  if(file) cout << "HNCommonLeptonFakes: File " << file->GetName() << " was found." << endl;
+  else cout << "HNCommonLeptonFakes  " << file->GetName()  << "  : ERROR Rootfile failed to open." << endl;
   
   if(!file) exit(0);
   return;
 }
 
-float WRHNCommonLeptonFakes::GetFitfakeRate(float pt, TString histname){
+float HNCommonLeptonFakes::GetFitfakeRate(float pt, TString histname){
 
 
   float f(0.), p0(0.), p1(0.), p0err(0.), p1err(0.);
@@ -1516,7 +1516,7 @@ float WRHNCommonLeptonFakes::GetFitfakeRate(float pt, TString histname){
 }
 
 
-float WRHNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight){
+float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight){
  
   
   // Function calculates event weight given r/f of two muons in the event
@@ -1555,7 +1555,7 @@ float WRHNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r
 }
 
 
-double WRHNCommonLeptonFakes::lepton_weight(bool loose, double r, double f) {
+double HNCommonLeptonFakes::lepton_weight(bool loose, double r, double f) {
   // Function to get event weight for a single muon event
   double nl=loose ? 1 :0;
   double nt=!loose ? 1 :0;
@@ -1566,6 +1566,6 @@ double WRHNCommonLeptonFakes::lepton_weight(bool loose, double r, double f) {
   return nf+nr;
 }
 
-void WRHNCommonLeptonFakes::APPLY_scalefactor(bool applysf) {
+void HNCommonLeptonFakes::APPLY_scalefactor(bool applysf) {
   apply_scalefactor = applysf;
 }

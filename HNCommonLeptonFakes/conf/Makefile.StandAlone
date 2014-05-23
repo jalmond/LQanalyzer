@@ -42,25 +42,25 @@ endif
 # -------------------------------------------------------------
 # General flags
 # -------------------------------------------------------------
-PACKAGE    = WRHNCommonLeptonFakes
+PACKAGE    = HNCommonLeptonFakes
 OUTPUTDIR  = ../Root
 
 MFLAGS     = -MM -Wall -W -Woverloaded-virtual
-INCLUDES   += -I${ROOTSYS}/include -I.. -I../Root -I../WRHNCommonLeptonFakes -I../../egammaAnalysisUtils
+INCLUDES   += -I${ROOTSYS}/include -I.. -I../Root -I../HNCommonLeptonFakes 
 
 # Need these to avoid loading dependent libraries when ROOT starts
 LINKLIBS = -L${ROOTSYS}/lib
 
 CCLIST     = $(wildcard ../Root/*.cxx)
 
-HLIST      = $(wildcard ../WRHNCommonLeptonFakes/*.h)
+HLIST      = $(wildcard ../HNCommonLeptonFakes/*.h)
 OLIST      = $(patsubst %.cxx,%.o,$(CCLIST))
 DLIST      = $(patsubst %.h,%.d,$(HLIST))
 
 # -------------------------------------------------------------
 # Libraries
 # -------------------------------------------------------------
-SHLIBFILE  = $(OUTPUTDIR)/libWRHNCommonLeptonFakes.so
+SHLIBFILE  = $(OUTPUTDIR)/libHNCommonLeptonFakes.so
 
 ifeq ($(PLATFORM),macosx)
 EXTRALDFLAGS = -install_name @rpath/$(SHLIBFILE)
@@ -96,10 +96,10 @@ $(SHLIBFILE): $(OLIST)
 	@mkdir -p ../StandAlone
 	@rm -f $(SHLIBFILE)
 	@$(LD) $(CXXFLAGS) $(SOFLAGS) $(LINKLIBS) $(EXTRALDFLAGS) $(OLIST) -o $(SHLIBFILE) 
-	@rm -f $(OUTPUTDIR)/WRHNCommonLeptonFakesLib.so
-	@rm -f ../StandAlone/libWRHNCommonLeptonFakes.so
-	@ln -s $(SHLIBFILE) $(OUTPUTDIR)/WRHNCommonLeptonFakesLib.so 
-	@ln -s $(SHLIBFILE) ../StandAlone/libWRHNCommonLeptonFakes.so
+	@rm -f $(OUTPUTDIR)/HNCommonLeptonFakesLib.so
+	@rm -f ../StandAlone/libHNCommonLeptonFakes.so
+	@ln -s $(SHLIBFILE) $(OUTPUTDIR)/HNCommonLeptonFakesLib.so 
+	@ln -s $(SHLIBFILE) ../StandAlone/libHNCommonLeptonFakes.so
 
 -include $(DLIST)
 
@@ -107,8 +107,8 @@ shlib: $(SHLIBFILE)
 
 clean:
 	@rm -f ../*/*.o ../*/*.d
-	@rm -f ../Root/WRHNCommonLeptonFakesDict.h
-	@rm -f ../Root/WRHNCommonLeptonFakesDict.cxx
+	@rm -f ../Root/HNCommonLeptonFakesDict.h
+	@rm -f ../Root/HNCommonLeptonFakesDict.cxx
 	@rm -f $(SHLIBFILE)
-	@rm -f $(OUTPUTDIR)/WRHNCommonLeptonFakesLib.so
-	@rm -f ../StandAlone/libWRHNCommonLeptonFakes.so
+	@rm -f $(OUTPUTDIR)/HNCommonLeptonFakesLib.so
+	@rm -f ../StandAlone/libHNCommonLeptonFakes.so

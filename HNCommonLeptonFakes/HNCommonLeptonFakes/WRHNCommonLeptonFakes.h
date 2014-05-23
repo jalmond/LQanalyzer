@@ -1,5 +1,5 @@
-#ifndef WRHNCommonLeptonFakes_H
-#define WRHNCommonLeptonFakes_H
+#ifndef HNCommonLeptonFakes_H
+#define HNCommonLeptonFakes_H
 
 // STL include(s):                                                                                                                                                                   
 #include <vector>
@@ -18,14 +18,14 @@
 #include "TFile.h"
 #include "TLorentzVector.h"
 
-class WRHNCommonLeptonFakes {
+class HNCommonLeptonFakes {
 
  public:
   /// Destructor
-  ~WRHNCommonLeptonFakes();
+  ~HNCommonLeptonFakes();
 
   /// constructor
-  WRHNCommonLeptonFakes(std::string path = "../share/", bool usegev=false);
+  HNCommonLeptonFakes(std::string path = "../share/", bool usegev=false);
 
 //Declaration of the function
 
