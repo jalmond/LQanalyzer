@@ -94,7 +94,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libNtuplecore.so");\n'
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
-    config+='   gSystem->Load("libWRHNCommonLeptonFakes.so");\n'
+    config+='   gSystem->Load("libHNCommonLeptonFakes.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("' + lib + ' + .so");\n'
         

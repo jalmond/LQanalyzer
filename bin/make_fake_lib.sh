@@ -1,6 +1,6 @@
-cd WRHNCommonLeptonFakes/conf/
+cd HNCommonLeptonFakes/conf/
 make -f Makefile.StandAlone
 cd -
 cd $LQANALYZER_LIB_PATH
-ln -s $LQANALYZER_DIR/WRHNCommonLeptonFakes/Root/libWRHNCommonLeptonFakes.so .  
+ln -s $LQANALYZER_DIR/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .  
 cd $LQANALYZER_DIR
