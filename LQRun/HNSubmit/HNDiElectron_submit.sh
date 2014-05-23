@@ -55,7 +55,7 @@ if [[ $1  == "testMC" ]];
     njobs=30
     data_lumi="AtoD"
    
-    declare -a input_samples=("DY50plus")
+    declare -a input_samples=("DY10to50")
 
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
