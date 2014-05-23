@@ -173,9 +173,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
   
   
-  return;
-
-  
   
   if(electronLooseColl.size()==1){
     if(electronLooseColl.at(0).Pt() < 20.){
@@ -302,13 +299,12 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(pass_el17trig) FillCutFlow("Ele17_single_el", weight_nojet);
   if(pass_el17jettrig) FillCutFlow("Ele17Jet_single_el", weight_jet);
   
-  if(jetColl_lepveto20.size() == 0) return;
+  if(jetColl_lepveto60.size() == 0) return;
 
   if(pass_el17trig) FillCutFlow("Ele17_gt1jet", weight_nojet);
   if(pass_el17jettrig) FillCutFlow("Ele17Jet_gt1jet", weight_jet);
   
-  //// SELECT EVENTS WITH NO MUONS
-  if(muonLooseColl.size() > 0) return;
+  //  if(muonLooseColl.size() > 0) return;
 
   if(pass_el17trig) FillCutFlow("Ele17_muonveto", weight_nojet);
   if(pass_el17jettrig) FillCutFlow("Ele17Jet_muonveto", weight_jet);
@@ -423,7 +419,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
   
   
-  if( !( (eventbase->GetEvent().PFMET() < 30) && (MT < 30.)) ) return;
+  if( !( (eventbase->GetEvent().PFMET() < 20) && (MT < 20.)) ) return;
   if(!pass_el17jettrig) return;
   weight =weight_jet;
   
@@ -441,7 +437,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto20.at(ij));
 	if( (jetColl_lepveto20.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto20.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
 	if( (jetColl_lepveto20.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
-        if(dr > 1.) useevent20 = true;
+        if(dr > 2.) useevent20 = true;
       }
     }
   }
@@ -453,7 +449,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto40.at(ij));
         if( (jetColl_lepveto40.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto40.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
         if( (jetColl_lepveto40.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
-        if(dr > 1.) useevent40 = true;
+        if(dr > 2.) useevent40 = true;
       }
     }
   }
@@ -467,7 +463,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
         float dr = electronLooseColl.at(ielT).DeltaR(jetColl_lepveto60.at(ij));
         if( (jetColl_lepveto60.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto60.at(ij).ChargedEMEnergyFraction()) > 0.65) return;
         if( (jetColl_lepveto60.at(ij).Pt() / electronLooseColl.at(ielT).Pt()) < 1.) continue;
-        if(dr > 1.) useevent60 = true;
+        if(dr > 2.) useevent60 = true;
       }
     }
   }
@@ -475,7 +471,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   Float_t ptbins[8] = { 15.,20.,25.,30.,35.,40.,60.,100.};
   
   float el_pt = electronLooseColl.at(0).Pt();
-  if(electronLooseColl.at(0).Pt() > 60.) el_pt = 59.;
+  if(electronLooseColl.at(0).Pt() > 100.) el_pt = 99.;
   
   
   if(useevent20&&truth_match){

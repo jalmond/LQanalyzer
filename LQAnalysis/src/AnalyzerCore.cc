@@ -28,30 +28,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   triggerlist.clear();
   // If running on LQNtuples this is not important.
   // If creating an SKTree ntuple this controls what triggers are accessible
-  AddTriggerToList("HLT_Mu17_TkMu8_v");
-  AddTriggerToList("HLT_Mu5_v");
-  AddTriggerToList("HLT_Mu8_v");
-  AddTriggerToList("HLT_Mu12_v");
-  AddTriggerToList("HLT_Mu17_v");
-  AddTriggerToList("HLT_Mu24_v");
-  AddTriggerToList("HLT_Mu40_eta2p1_v");
-  AddTriggerToList("HLT_IsoMu24_eta2p1_v");
-  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-  AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-  AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  AddTriggerToList("HLT_Ele27_WP80_v");
-  AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
-  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_v");
-  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_30_20_v");
-  AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet45_35_25_v");
-  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v");
-  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v");
-  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
-  AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
+  
   // To have the correct name in the log:                                                                                                                            
   SetLogName("AnalyzerCore");
 
@@ -273,8 +250,7 @@ AnalyzerCore::~AnalyzerCore(){
 //###
 
 void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
-
-
+  
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
   if (!fChain) throw LQError( "Chain is not initialized",  LQError::SkipCycle );     

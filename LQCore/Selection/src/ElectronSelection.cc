@@ -865,7 +865,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
 
 bool ElectronSelection::PassUserID_MVA (snu::KElectron el, bool triggermva){
   
-  int id = el.PassID();
+  int id =0 ; //el.PassID();
   
   int cut (0);
   if(triggermva) cut = 32;

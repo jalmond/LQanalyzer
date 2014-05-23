@@ -168,16 +168,13 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
 }
 
 
-void LQController::SetChannel(TString channel){
-
-  if     (channel == "muon")  channel = "Muon";
-  else     if     (channel == "Muon")  channel = "Muon";
-  else     if     (channel == "mumu")  channel = "Muon";
-  else     if     (channel == "MuMu")  channel = "Muon";
-  else if     (channel == "electron")  channel = "Electron";
-  else if     (channel == "Electron")  channel = "Electron";
-  else if     (channel == "EE")  channel = "Electron";
-  else if     (channel == "ee")  channel = "Electron";
+void LQController::SetChannel(TString ch){
+  
+  if     (ch == "muon")  channel = "Muon";
+  else if     (ch == "egamma")  channel = "Electron";
+  else if     (ch == "emu")  channel = "EMu";
+  else if     (ch == "singlemuon")      channel = "singleMuon";
+  else if     (ch == "singleelectron")  channel = "singleElectron";
   
 }
 void LQController::SetDataPeriod(TString period){
@@ -240,6 +237,8 @@ void LQController::SetCycleName(TString cyclename){
 void LQController::SetLogLevel(TString  level){
   outputLevelString = level;
 }
+
+
 
 void LQController::SetNEventsToProcess(int nevents){
 
@@ -399,6 +398,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     /// Call BeginCycle by hand
     cycle->MakeOutPutFile(completename);
+    cycle->SetDataChannel(channel);
     cycle->BeginCycle();
     cycle->ClearOutputVectors();
 

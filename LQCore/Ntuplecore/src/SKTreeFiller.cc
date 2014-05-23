@@ -84,7 +84,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPFMETRawphi( PFMETPhi->at(0));
   kevent.SetPFMETType1phi( PFMETPhiType1Cor->at(0));
   kevent.SetPFMETType01phi( PFMETPhiType01Cor->at(0));
-  
+ 
   kevent.SetPFSumET( PFSumETType01XYCor->at(0));
   
   if(!isData){
@@ -112,17 +112,6 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   }
   kevent.SetProcessID(ProcessID);
 
-  // TC met
-  if(TCMET){
-    kevent.SetTCMET( TCMET->at(0));
-    kevent.SetTCMETphi( TCMETPhi->at(0));
-    kevent.SetTCSumET( TCSumET->at(0));
-  }
-  if(CaloMETType1Cor){
-    kevent.SetCaloMET( CaloMETType1Cor->at(0));  
-    kevent.SetCaloMETphi( CaloMETPhiType1Cor->at(0));
-    kevent.SetCaloSumET(CaloSumETType1Cor->at(0));
-  }
 
   if(!isData){
     if(PDFCTEQWeights){
@@ -141,7 +130,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   
   if ( !isGoodEvent(nVertices, *VertexIsFake, *VertexNDF, *VertexX, *VertexY, *VertexZ, goodVerticies) ) kevent.SetIsGoodEvent(false);
   else  kevent.SetIsGoodEvent(true);
-  
+
   
   for(UInt_t vv=0; vv<VertexNDF->size(); vv++) {
     if(goodVerticies[vv]) {
@@ -149,8 +138,8 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       break;
     }
   }
-
-  kevent.SetIsPrimaryVertex(isPrimaryVertex);  
+  
+  
   kevent.SetVertexIndex(VertexN); /// setting event vertex (chooses vertex that passes selection of a good vertex with sum pt of all tracks is greatest
   
   if(VertexN != -999){
@@ -240,14 +229,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetRawEnergy(ElectronSCRawEnergy->at(iel));
     
     m_logger << DEBUG << "Filling Electron ID Bit "<< LQLogger::endmsg;
-    //// set EGamma bits
-    el.SetPassEGammaIDEoP(ElectronPassEGammaIDEoP->at(iel));
-    el.SetPassEGammaIDLoose(ElectronPassEGammaIDLoose->at(iel));
-    el.SetPassEGammaIDMedium(ElectronPassEGammaIDMedium->at(iel));
-    el.SetPassEGammaIDTight(ElectronPassEGammaIDTight->at(iel));
-    el.SetPassEGammaIDTrigTight(ElectronPassEGammaIDTrigTight->at(iel));
-    el.SetPassEGammaIDTrigWP70(ElectronPassEGammaIDTrigWP70->at(iel));
-    el.SetPassEGammaIDVeto(ElectronPassEGammaIDVeto->at(iel));
     
     if(ElectronmvatrigV0){
       el.SetElectronTrigMVA(ElectronmvatrigV0->at(iel));
@@ -257,7 +238,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     m_logger << DEBUG << "Filling Electron ID variablest "<< LQLogger::endmsg;
     /// set ID variables
-    el.SetElectronPassId(ElectronPassId->at(iel));
     
     el.SetTrackerDrivenSeed(ElectronHasTrackerDrivenSeed->at(iel));
     el.SetEcalDrivenSeed(ElectronHasEcalDrivenSeed->at(iel));

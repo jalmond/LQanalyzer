@@ -114,6 +114,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   analysis.SetTreeName("'+ tree +'");\n'
     config+='   analysis.SetCycleName("' + cycle + '");\n'
     config+='   analysis.SetLogLevel("'+ log +'");\n'
+    config+='   analysis.SetChannel("'+ channel +'");\n'
     
     if not eff_lumi == -1.:
         config+='   analysis.SetEffectiveLuminosity(' + str(eff_lumi)+');\n'
