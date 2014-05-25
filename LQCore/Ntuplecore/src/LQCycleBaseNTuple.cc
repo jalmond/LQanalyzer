@@ -97,6 +97,9 @@ void LQCycleBaseNTuple::SetCFStatus( bool type){
   k_running_chargeflip = type;
 }
 
+void LQCycleBaseNTuple::SetDataChannel( TString channel){
+  k_channel= channel;
+}
 
 
 void LQCycleBaseNTuple::SetNSampleEvents(double nev){

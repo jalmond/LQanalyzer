@@ -19,14 +19,6 @@ KParticle()
   k_sceta=0;
   k_scphi=0;
   k_rawenergy=0;
-  k_pass_egammaID_eop= false;
-  k_pass_egammaID_loose = false;
-  k_pass_egammaID_medium= false;
-  k_pass_egammaID_tight= false;
-  k_pass_egammaID_trigtight= false;
-  k_pass_egammaID_trigwp70= false;
-  k_pass_egammaID_veto= false;
-  k_passID=0;
   k_mva=0.;
   k_trigmva=0.;
   k_trackdrivenseed = false;
@@ -97,14 +89,6 @@ KElectron::KElectron(const KElectron& el) :
   k_sceta= el.SCEta();
   k_scphi= el.SCPhi();
   k_rawenergy= el.RawEnergy();
-  k_pass_egammaID_eop= el.PassEGammaIDEoP();
-  k_pass_egammaID_loose= el.PassEGammaIDLoose();
-  k_pass_egammaID_medium= el.PassEGammaIDMedium();
-  k_pass_egammaID_tight= el.PassEGammaIDTight();
-  k_pass_egammaID_trigtight= el.PassEGammaIDTrigTight(); 
-  k_pass_egammaID_trigwp70= el.PassEGammaIDTrigWP70(); 
-  k_pass_egammaID_veto= el.PassEGammaIDVeto(); 
-  k_passID= el.PassID();
   k_mva=el.MVA();
   k_trigmva=el.TrigMVA();
   k_trackdrivenseed = el.TrackerDrivenSeed(); 
@@ -178,14 +162,6 @@ void KElectron::Reset()
   k_sceta=0;
   k_scphi=0;
   k_rawenergy=0;
-  k_pass_egammaID_eop= false;
-  k_pass_egammaID_loose = false;
-  k_pass_egammaID_medium= false;
-  k_pass_egammaID_tight= false;
-  k_pass_egammaID_trigtight= false;
-  k_pass_egammaID_trigwp70= false;
-  k_pass_egammaID_veto= false;
-  k_passID=0;
   k_mva=0.;
   k_trigmva=0.;
   k_trackdrivenseed = false;
@@ -256,14 +232,6 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_sceta= p.SCEta();
     k_scphi= p.SCPhi();
     k_rawenergy= p.RawEnergy();
-    k_pass_egammaID_eop= p.PassEGammaIDEoP();
-    k_pass_egammaID_loose= p.PassEGammaIDLoose();
-    k_pass_egammaID_medium= p.PassEGammaIDMedium();
-    k_pass_egammaID_tight= p.PassEGammaIDTight();
-    k_pass_egammaID_trigtight= p.PassEGammaIDTrigTight();
-    k_pass_egammaID_trigwp70= p.PassEGammaIDTrigWP70();
-    k_pass_egammaID_veto= p.PassEGammaIDVeto();
-    k_passID= p.PassID();
     k_mva=p.MVA();
     k_trigmva=p.TrigMVA();
     k_trackdrivenseed = p.TrackerDrivenSeed();
@@ -342,34 +310,6 @@ void KElectron::SetRawEnergy(Double_t rawE){
 }
 
 
-// EGamma bits
-void KElectron::SetPassEGammaIDEoP(bool eop){
-  k_pass_egammaID_eop = eop;
-}
-
-void KElectron::SetPassEGammaIDLoose(bool loose){
-  k_pass_egammaID_loose= loose;
-}
-
-void KElectron::SetPassEGammaIDMedium(bool med){
-  k_pass_egammaID_medium = med;
-}
-
-void KElectron::SetPassEGammaIDTight(bool tight){
-  k_pass_egammaID_tight= tight;
-}
-
-void KElectron::SetPassEGammaIDTrigTight(bool trigtight){
-  k_pass_egammaID_trigtight = trigtight;
-}
-
-void KElectron::SetPassEGammaIDTrigWP70(bool trigwp70){
-  k_pass_egammaID_trigwp70 = trigwp70;
-}
-
-void KElectron::SetPassEGammaIDVeto(bool veto){
-  k_pass_egammaID_veto = veto;
-}
 
 
 void KElectron::SetPrimaryVertexDXY(Double_t pv_dist_xy){
@@ -404,9 +344,6 @@ void KElectron::Setdxy(double d_xy){
   k_dxy = d_xy;
 }
 
-void KElectron::SetElectronPassId(Int_t passid){
-  k_passID = passid;
-}
 void KElectron::SetElectronMVA(Double_t mva){
   k_mva=mva;
 }

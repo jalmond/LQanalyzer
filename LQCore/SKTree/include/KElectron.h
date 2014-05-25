@@ -34,15 +34,6 @@ namespace snu {
     
     //##### NOTE charge/pt/eta/phi use tlv class
     
-    //// set EGamma bits
-    void SetPassEGammaIDEoP(bool eop);
-    void SetPassEGammaIDLoose(bool loose);
-    void SetPassEGammaIDMedium(bool med);
-    void SetPassEGammaIDTight(bool tight);
-    void SetPassEGammaIDTrigTight(bool trigtight);
-    void SetPassEGammaIDTrigWP70(bool trigwp70);
-    void SetPassEGammaIDVeto(bool veto);
-
     /// Trigger matching
     void SetHLTDoubleElMatched(bool match);
     void SetHLTSingleElMatched8(bool match);
@@ -52,7 +43,6 @@ namespace snu {
     void SetHLTSingleElWP80Matched(bool match);
      
     /// set ID variables
-    void SetElectronPassId(Int_t passid);
     void SetElectronMVA(Double_t mva);
     void SetElectronTrigMVA(Double_t trig_mva);
     void SetTrackerDrivenSeed(Bool_t trackdrivenseed);
@@ -154,19 +144,9 @@ namespace snu {
     inline Double_t TrackPt() const {return k_track_pt;}
     inline Double_t TrackValidHitFraction() const {return k_track_hitfrac;}
 
-
-    // EGamma bits
-    inline Bool_t PassEGammaIDEoP () const {return k_pass_egammaID_eop;}
-    inline Bool_t PassEGammaIDLoose ()  const {return k_pass_egammaID_loose;}
-    inline Bool_t PassEGammaIDMedium ()  const {return k_pass_egammaID_medium;}
-    inline Bool_t PassEGammaIDTight ()  const {return k_pass_egammaID_tight;}
-    inline Bool_t PassEGammaIDTrigTight ()  const {return k_pass_egammaID_trigtight;}
-    inline Bool_t PassEGammaIDTrigWP70 ()  const {return k_pass_egammaID_trigwp70;}
-    inline Bool_t PassEGammaIDVeto ()  const {return k_pass_egammaID_veto;}
     
     // ID variables
 
-    inline Int_t     PassID() const {return k_passID;}
     inline Double_t  MVA() const{return k_mva;}
     inline Double_t  TrigMVA() const{return k_trigmva;}
     inline Bool_t    TrackerDrivenSeed() const {return k_trackdrivenseed;}
@@ -240,7 +220,7 @@ namespace snu {
     /// decalre private functions
 
     Bool_t k_isEB,k_isEE,k_trackdrivenseed,k_ecaldrivenseed,k_hasmatchconvphot;
-    Int_t k_missinghits,k_passID , k_missing_lost_hits;
+    Int_t k_missinghits, k_missing_lost_hits;
     Double_t k_trkiso_03,k_ecaliso_03,k_hcaliso_03,k_trkiso_04,k_ecaliso_04,k_hcaliso_04, k_delta_etatrkSC,k_delta_phitrkSC ;
     Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04;
     Double_t k_sigmaIEtaIEta,k_hoe,k_caloE,  k_E_cluster_over_p,k_trkvx,  k_trkvy,  k_trkvz;
@@ -250,7 +230,7 @@ namespace snu {
     Double_t k_mva, k_trigmva;
     Double_t k_dxy, k_dz;
     Double_t k_sceta,k_scphi, k_rawenergy;
-    Bool_t k_pass_egammaID_eop, k_pass_egammaID_loose, k_pass_egammaID_medium, k_pass_egammaID_tight, k_pass_egammaID_trigtight, k_pass_egammaID_trigwp70, k_pass_egammaID_veto;
+    
     Double_t k_vtx_xy, k_vtx_z, k_lvtx_xy, k_lvtx_z;
     Bool_t k_gsf_ctscpix_charge, k_gsf_scpix_charge, k_gsf_ct_charge;
     Double_t k_convFitProb, k_nbrems, k_fbrem;
@@ -259,7 +239,7 @@ namespace snu {
     Int_t k_vertex_index;
     Double_t k_eldist, k_cottheta;
 
-    ClassDef(KElectron,8)
+    ClassDef(KElectron,9)
   }; 
   
 }//namespace snu

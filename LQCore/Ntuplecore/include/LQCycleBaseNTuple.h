@@ -42,6 +42,7 @@ public:
   void SetDataType(bool type);
   void SetNPStatus( bool type);
   void SetCFStatus( bool type);
+  void SetDataChannel(TString channel);
 
   void SetNSampleEvents(double nev);
   void SetOutPutStep(int step);
@@ -52,7 +53,8 @@ public:
   bool k_isdata;
   bool k_running_nonprompt;
   bool k_running_chargeflip;
-  TString muscale_fitParametersFile;
+  TString k_channel;
+TString muscale_fitParametersFile;
   
   // How many entries in the fullsample
   double sample_entries;

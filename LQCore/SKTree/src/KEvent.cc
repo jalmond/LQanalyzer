@@ -41,12 +41,6 @@ KEvent::KEvent() :
   k_PF_METtype1phi(0.),
   k_PF_METtype01(0.),
   k_PF_METtype01phi(0.),
-  k_tc_MET(0.),
-  k_tc_METphi(0.),
-  k_tc_SumET(0.),
-  k_calo_MET(0.),
-  k_calo_METphi(0.),
-  k_calo_SumET(0.),
   k_PF_MET_el_enup(0.),
   k_PF_MET_el_endown(0.),
   k_PF_MET_jet_enup(0.),
@@ -60,7 +54,6 @@ KEvent::KEvent() :
   k_isfakeV(false), 
   k_isgoodevent(false),
   k_isData(false), 
-  k_isprimaryvertex(false),
   k_isTrackingFailure(false),
   k_passTrackingFailureFilter(false),
   k_passBeamHaloFilterLoose(false),
@@ -107,12 +100,6 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_METtype1phi(ev.k_PF_METtype1phi),
   k_PF_METtype01(ev.k_PF_METtype01),
   k_PF_METtype01phi(ev.k_PF_METtype01phi),
-  k_tc_MET(ev.k_tc_MET),
-  k_tc_METphi(ev.k_tc_METphi),
-  k_tc_SumET(ev.k_tc_SumET),
-  k_calo_MET(ev.k_calo_MET),
-  k_calo_METphi(ev.k_calo_METphi),
-  k_calo_SumET(ev.k_calo_SumET),
   k_PF_MET_el_enup(ev.k_PF_MET_el_enup),
   k_PF_MET_el_endown(ev.k_PF_MET_el_endown),
   k_PF_MET_jet_enup(ev.k_PF_MET_jet_enup),
@@ -126,9 +113,8 @@ KEvent::KEvent(const KEvent& ev) :
   k_jetrho(ev.k_jetrho),
   k_mcweight(ev.k_mcweight),
   k_isfakeV(ev.k_isfakeV),
-  k_isgoodevent(ev.k_isgoodevent),
   k_isData(ev.k_isData),
-  k_isprimaryvertex(ev.k_isprimaryvertex),
+  k_isgoodevent(ev.k_isgoodevent),
   k_isTrackingFailure(ev.k_isTrackingFailure),
   k_passTrackingFailureFilter(ev.k_passTrackingFailureFilter),
   k_passBeamHaloFilterLoose(ev.k_passBeamHaloFilterLoose),
@@ -177,12 +163,6 @@ void KEvent::Reset()
   k_genmetcalo= 0.;
   k_genmetphicalo= 0.;
   k_gensumetcalo= 0.;
-  k_tc_MET= 0.;
-  k_tc_SumET= 0.;
-  k_tc_METphi= 0.;
-  k_calo_MET= 0.;
-  k_calo_SumET= 0.;
-  k_calo_METphi= 0.;
   k_PF_MET_el_enup= 0.;
   k_PF_MET_el_endown= 0.;
   k_PF_MET_jet_enup= 0.;
@@ -196,9 +176,8 @@ void KEvent::Reset()
   k_jetrho= 0.;
   k_mcweight= 0.;
   k_isfakeV= false;
-  k_isgoodevent= false;
   k_isData= false;
-  k_isprimaryvertex= false;
+  k_isgoodevent = false;
   k_isTrackingFailure= false;
   k_passTrackingFailureFilter= false;
   k_passBeamHaloFilterLoose= false;
@@ -222,7 +201,6 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_isData=p.IsData();
       k_EventNumber=p.EventNumber();
       k_RunNumber=p.RunNumber();
-      k_isprimaryvertex=p.IsPrimaryVertex();
       k_PF_MET= p.PFMET();
       k_PF_METphi= p.PFMETphi();
       k_PF_SumET = p.PFSumET();
@@ -243,13 +221,6 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_genmetphicalo=  p.GenMETPhiCalo();
       k_gensumetcalo=  p.GenSumEtCalo();
      
-      k_tc_MET = p.TCMET();
-      k_tc_SumET = p.TCSumET();
-      k_tc_METphi = p.TCMETphi();
-
-      k_calo_MET= p.CaloMET();
-      k_calo_SumET = p.CaloSumET();
-      k_calo_METphi = p.CaloMETphi();
 
       k_PF_MET_el_enup = p.PFMET_El_EnUp();
       k_PF_MET_el_endown  = p.PFMET_El_EnDown();
@@ -268,7 +239,7 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_nvertices= p.nVertices();
       k_isfakeV=p.IsFakeVertex(); 
       k_jetrho=p.JetRho();
-      k_isgoodevent = p.HasGoodPrimaryVertex();
+      k_isgoodevent= p.HasGoodPrimaryVertex();
       k_mcweight = p.MCWeight();
       k_isTrackingFailure = p.IsTrackingFailure();
       k_passTrackingFailureFilter = p.PassTrackingFailureFilter();
@@ -340,10 +311,7 @@ void KEvent::SetJetRho(double jetrho){
   k_jetrho = jetrho;
 }
 
-void KEvent::SetIsPrimaryVertex(bool ispv){
 
-  k_isprimaryvertex = ispv;
-}
 
 ///
 
@@ -435,30 +403,6 @@ void KEvent::SetPFMETType01phi(double phi){
 }
 
 
-void KEvent::SetCaloMET(double met){
-  k_calo_MET = met;
-}
-
-void KEvent::SetCaloMETphi(double metphi){
-  k_calo_METphi = metphi;
-}
-
-void KEvent::SetCaloSumET(double sumet){
-  k_calo_SumET =sumet;
-}
-
-
-void KEvent::SetTCMET(double met){
-  k_tc_MET = met;
-}
-
-void KEvent::SetTCMETphi(double metphi){
-  k_tc_METphi = metphi;
-}
-
-void KEvent::SetTCSumET(double sumet){
-  k_tc_SumET =sumet;
-}
 
 void KEvent::SetPFMETElectronEnDown (double met_elen_down){
   k_PF_MET_el_endown = met_elen_down;
@@ -516,7 +460,6 @@ void KEvent::SetIsGoodEvent(bool isgood){
   k_isgoodevent = isgood;
 }
 
-  
 void KEvent::SetVertexX(double vX){
   k_vertexX = vX;
 }

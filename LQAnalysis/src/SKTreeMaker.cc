@@ -134,8 +134,73 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   DeclareVariable(out_event, "KEvent");
   DeclareVariable(out_truth, "KTruth");
 
-  return;
+  //// Set triggers available in sktree
+  triggerlist.clear();
+  if(k_isdata){
+    if(k_channel.Contains("singleMuon")){
+      AddTriggerToList("HLT_Mu5_v");
+      AddTriggerToList("HLT_Mu8_v");
+      AddTriggerToList("HLT_Mu12_v");
+      AddTriggerToList("HLT_Mu17_v");
+      AddTriggerToList("HLT_Mu24_v");
+      AddTriggerToList("HLT_Mu24_v");
+      AddTriggerToList("HLT_Mu40_eta2p1_v");
+      AddTriggerToList("HLT_IsoMu24_eta2p1_v");
+    }
+    else if(k_channel.Contains("Muon")){
+      AddTriggerToList("HLT_Mu40_eta2p1_v");
+      AddTriggerToList("HLT_IsoMu24_eta2p1_v");
+      AddTriggerToList("HLT_Mu17_TkMu8_v");
+      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v");
+      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v");
+      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
+      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
+    }
+    if(k_channel.Contains("Electron")){
+      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+      AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+      AddTriggerToList("HLT_Ele27_WP80_v");
+      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
+      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_v");
+      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_30_20_v");
+      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet45_35_25_v");
+    }
+    
+    if(k_channel.Contains("EMu")){
+      AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+      AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    }
+  }
+  else {
+    AddTriggerToList("HLT_Mu5_v");
+    AddTriggerToList("HLT_Mu8_v");
+    AddTriggerToList("HLT_Mu12_v");
+    AddTriggerToList("HLT_Mu17_v");
+    AddTriggerToList("HLT_Mu24_v");
+    AddTriggerToList("HLT_Mu24_v");
+    AddTriggerToList("HLT_Mu40_eta2p1_v");
+    AddTriggerToList("HLT_IsoMu24_eta2p1_v");
+    AddTriggerToList("HLT_Mu40_eta2p1_v");
+    AddTriggerToList("HLT_IsoMu24_eta2p1_v");
+    AddTriggerToList("HLT_Mu17_TkMu8_v");
+    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v");
+    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v");
+    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
+    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
+    AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+    AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+    AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    AddTriggerToList("HLT_Ele27_WP80_v");
+    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
+    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_v");
+    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_30_20_v");
+    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet45_35_25_v");
+    AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  }
   
+  return;
 }
 
 SKTreeMaker::~SKTreeMaker() {

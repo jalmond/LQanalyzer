@@ -33,14 +33,6 @@ namespace snu {
     void SetPFMETType01phi(double phi); 
     void SetPFSumET(double sumet);
     
-    void SetTCMET(double met); 
-    void SetTCMETphi(double metphi);
-    void SetTCSumET(double sumet);
-    
-    void SetCaloMET(double met);
-    void SetCaloMETphi(double metphi);
-    void SetCaloSumET(double sumet);
-    
     /// systematics PF
     void SetPFMETElectronEnDown (double met_elen_down);
     void SetPFMETElectronEnUp (double met_elen_up);
@@ -78,7 +70,6 @@ namespace snu {
     void SetVertexX(double vX);
     void SetVertexY(double vY);
     void SetVertexZ(double vZ);    
-    void SetIsPrimaryVertex(bool isprimary);
 
     /// Event
     void SetWeight(double weight);
@@ -121,13 +112,6 @@ namespace snu {
 
     inline Double_t PFSumET() const {return k_PF_SumET;}
     
-    inline Double_t TCMET() const {return k_tc_MET;}
-    inline Double_t TCMETphi() const {return k_tc_METphi;}
-    inline Double_t TCSumET() const {return k_tc_SumET;}
-
-    inline Double_t CaloMET() const {return k_calo_MET;}
-    inline Double_t CaloMETphi() const {return k_calo_METphi;}
-    inline Double_t CaloSumET() const {return k_calo_SumET;}
     
     inline Double_t PFMET_El_EnUp() const {return k_PF_MET_el_enup;}
     inline Double_t PFMET_El_EnDown() const {return k_PF_MET_el_endown;}
@@ -162,7 +146,6 @@ namespace snu {
     inline Int_t VertexIndex()  const {return k_ivertex;}
     inline Bool_t IsFakeVertex() const {return k_isfakeV;}
     inline Bool_t HasGoodPrimaryVertex() const {return k_isgoodevent;}
-    inline Bool_t IsPrimaryVertex() const {return k_isprimaryvertex;}
     inline Double_t VertexX() const {return k_vertexX;}
     inline Double_t VertexY() const {return k_vertexY;}
     inline Double_t VertexZ() const {return k_vertexZ;}
@@ -204,17 +187,15 @@ namespace snu {
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
     Double_t k_PF_METraw, k_PF_METtype1, k_PF_METtype01;
     Double_t k_PF_METrawphi, k_PF_METtype1phi, k_PF_METtype01phi;
-    Double_t k_tc_MET, k_tc_METphi, k_tc_SumET;
-    Double_t k_calo_MET, k_calo_METphi, k_calo_SumET;
     Double_t k_PF_MET_el_enup,k_PF_MET_el_endown, k_PF_MET_jet_enup,k_PF_MET_jet_endown, k_PF_MET_jet_resup,k_PF_MET_jet_resdown, k_PF_MET_muon_enup,k_PF_MET_muon_endown, k_PF_MET_unclust_up,k_PF_MET_unclust_down;
     
     Bool_t k_isfakeV;
-    Bool_t k_isgoodevent,k_isData, k_isprimaryvertex;
+    Bool_t k_isData, k_isgoodevent;
     Bool_t k_isTrackingFailure, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,9)
+    ClassDef(KEvent,10)
   }; 
   
 }//namespace snu
