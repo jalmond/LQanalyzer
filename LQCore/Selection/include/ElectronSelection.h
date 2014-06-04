@@ -24,6 +24,7 @@ class ElectronSelection : public BaseSelection {
   
   //// HN analysis selection
   void HNTightElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+  bool HNIsTight(snu::KElectron el, double rho, bool m_debug);   
   void HNLooseElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void HNVetoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
 
@@ -38,7 +39,6 @@ class ElectronSelection : public BaseSelection {
   bool PassUserID(ID id,snu::KElectron el,  double rho, bool m_debug= false);
   bool PassUserID_EGamma2012 ( ID id, snu::KElectron el , double rho, bool m_debug= false);
   bool PassUserID_ECALFiducial (snu::KElectron el);
-  bool PassUserID_MVA (snu::KElectron el, bool trig);
   bool PassUserID_FakeLoose2012 (snu::KElectron el, double jetrho , bool m_debug=false);
 
     
