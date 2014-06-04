@@ -73,7 +73,7 @@ void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonCo
       pass_selection = false;
       if(m_debug) cout << "HNVetoElectronSelection::Fail ID Cut" <<endl;
     }
-    if(!(fabs(el->Eta()) < 2.4)) {
+    if(!(fabs(el->Eta()) < 2.5)) {
       pass_selection = false;
       if(m_debug) cout << "HNVetoElectronSelection::Fail Eta Cut" <<endl;
     }
