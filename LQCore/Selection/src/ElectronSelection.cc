@@ -151,6 +151,7 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
   bool pass_selection = true;
   
   ElectronID = PassUserID(EGAMMA_TIGHT, el,rho);
+
   Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
   if (fabs(el.SCEta()) < 1.0) ifid = 0;
   else if (fabs(el.SCEta()) < 1.479) ifid = 1;
@@ -438,6 +439,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 	if(m_debug)cout << "Selection: Fail ID Cut" << endl;
       }
     }
+
     /// extra cut to reduce conversions
     /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
     if(apply_convcut && (el->HasMatchedConvPhot() ||  (el->MissingHits() != 0)) ) {
@@ -684,7 +686,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double l_b_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
   double l_b_dZ      [4] = { 0.2   , 0.2  , 0.1  ,  0.1 };
   double l_b_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
-  double l_b_pfRelIso[4] = { 0.15  , 0.15 , 0.15 , 0.10 };
+  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 0.15 , 0.10 }; 
   double l_b_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
   int    l_b_missHits[4] = { 999   , 1    , 1    , 0 }; 
 

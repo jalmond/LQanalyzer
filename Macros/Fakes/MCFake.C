@@ -22,31 +22,36 @@ void MCFake(TString path) {
   setTDRStyle();
   gStyle->SetPalette(1);
 
-  TFile * fmc = new TFile(path + "FakeRateCalculator_El_SKQCD_5_3_14.root");
+  TFile * fmc = new TFile(path );
   
   
-
   if(!fmc){
     cout << "No MC file" << endl;
     return;
   }
   
-  TCanvas* c1 = new TCanvas(("Plot"), "Plot", 800, 600);
+  vector<TString> list_of_names;
+  list_of_names.push_back("pt");
+  list_of_names.push_back("eta");
+  list_of_names.push_back("njets");
   
-  TH1F* h_mc_loose= (TH1F*)fmc->Get(("MCLooseEl_pt"));
-  TH1F* h_mc_tight= (TH1F*)fmc->Get(("MCTightEl_pt"));
+  for(unsigned int i = 1; i < list_of_names.size(); i++){
+    
+    TCanvas* c1 = new TCanvas((("Plot")+list_of_names.at(i)).Data(), "Plot", 800, 600);
   
-  h_mc_tight->SetMarkerStyle(20);
-  
-  h_mc_tight->SetLineColor(kRed);
-  h_mc_tight->SetLineWidth(2.);
-  
- 
-  h_mc_tight->Divide(h_mc_loose);
-  h_mc_tight->Draw("hist");
-  
-  c1->SaveAs(("/home/jalmond/WebPlots/Fakes/MCFake_pt.pdf"));
-  
+    TH1F* h_mc_loose= (TH1F*)fmc->Get((("MCLooseEl_"+list_of_names.at(i)).Data()));
+    TH1F* h_mc_tight= (TH1F*)fmc->Get((("MCTightEl_"+list_of_names.at(i)).Data()));
+    
+    h_mc_tight->SetMarkerStyle(20);
+    
+    h_mc_tight->SetLineColor(kRed);
+    h_mc_tight->SetLineWidth(2.);
+    
+    h_mc_tight->Divide(h_mc_loose);
+    h_mc_tight->Draw("hist");
+    
+    c1->SaveAs(("/home/jalmond/WebPlots/Fakes/MCFake_" + list_of_names.at(i) + ".pdf").Data());
+  }
 
 }
 

@@ -5,17 +5,16 @@
 \hline
 Source & \multicolumn{4}{c}{} \\
 \hline
-DY&980.9& $\pm$& 51.5&$^{+193.0}_{-193.0}$\\
-WZ&239.0& $\pm$& 1.7&$^{+35.6}_{-35.6}$\\
-ZZ&36.5& $\pm$& 0.3&$^{+5.2}_{-5.2}$\\
-nonprompt&1595.3& $\pm$& 19.9&$^{+0.0}_{-0.0}$\\
-ttbar&20.3& $\pm$& 3.9&$^{+2.0}_{-2.0}$\\
+WZ&237.7& $\pm$& 1.7&$^{+35.5}_{-35.5}$\\
+ZZ&35.8& $\pm$& 0.3&$^{+5.2}_{-5.2}$\\
+chargeflip&936.0& $\pm$& 1.1&$^{+468.0}_{-468.0}$\\
+nonprompt&1633.5& $\pm$& 20.1&$^{+816.8}_{-816.8}$\\
 \hline
-Total&2872.0& $\pm$&55.3&$^{+196.4}_{-196.4}$\\
+Total&2843.0& $\pm$&20.2&$^{+942.0}_{-942.0}$\\
 \hline
-Data&  \multicolumn{4}{c}{$2536.0$}\\
+Data&  \multicolumn{4}{c}{$2444.0$}\\
 \hline
-Signficance&  \multicolumn{4}{c}{$-1.6\sigma$}\\
+Signficance&  \multicolumn{4}{c}{$-0.4\sigma$}\\
 \hline
 \hline
 \end{tabular}

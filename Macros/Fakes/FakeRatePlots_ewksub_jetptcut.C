@@ -12,9 +12,18 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 
+/// Style
+#include "Macro.h"
+
 
 void FakeRatePlots_ewksub(TString path) {
+  
+  /// Set Plotting style
+  setTDRStyle();
+  gStyle->SetPalette(1);
 
+
+  
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_5_3_14.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
   if(!fdata)cout << "No Data" << endl;
@@ -22,10 +31,10 @@ void FakeRatePlots_ewksub(TString path) {
   gStyle->SetPaintTextFormat("4.2f");
   
   vector<TString> plotname;
-  plotname.push_back("_pt_eta1");
-  plotname.push_back("_pt_eta2");
-  plotname.push_back("_pt_eta3");
-  plotname.push_back("_pt_eta4");
+  plotname.push_back("_pt");
+  //plotname.push_back("_pt_eta2");
+  //plotname.push_back("_pt_eta3");
+  //plotname.push_back("_pt_eta4");
  
   
   int ihist(0);
@@ -78,23 +87,37 @@ void FakeRatePlots_ewksub(TString path) {
       h_pt_num->GetYaxis()->SetRangeUser(0.,1.);
       
       histmap[*it2] = h_pt_num;
+
+      cout << "Hist : " << *it2 << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_num->GetNbinsX()+1; ibin++){
+	cout << h_pt_num->GetBinContent(ibin) << " +/- "  << h_pt_num->GetBinError(ibin) << endl; 
+      }
+      
     }
     
       
+    
     histmap.find("20")->second->Draw("p");
     histmap.find("40")->second->Draw("psame");
     histmap.find("60")->second->Draw("psame");
-      
+    
+    histmap.find("40")->second->SetMarkerStyle(22);
+    histmap.find("60")->second->SetMarkerStyle(21);
+  
     TLegend* legend= new TLegend(0.2,0.5,0.4,0.7);
     legend->SetFillColor(10);
     legend->SetBorderSize(0);
     legend->SetTextSize(0.04);
     
-    legend->AddEntry(histmap.find("20")->second, "away jet pt>" +histmap.find("20")->first, "lp");
-    legend->AddEntry(histmap.find("40")->second, "away jet pt>" +histmap.find("40")->first, "lp");
-    legend->AddEntry(histmap.find("60")->second, "away jet pt>" +histmap.find("60")->first, "lp");
+    legend->AddEntry(histmap.find("20")->second, "away jet pt>" +histmap.find("20")->first, "p");
+    legend->AddEntry(histmap.find("40")->second, "away jet pt>" +histmap.find("40")->first, "p");
+    legend->AddEntry(histmap.find("60")->second, "away jet pt>" +histmap.find("60")->first, "p");
     legend->Draw("same");
-     
+
+
+
+    
+    
     c1->SaveAs(("/home/jalmond/WebPlots/Fakes/FakeRateEWKSub_jetcuts_" +  *it + ".pdf"));
   }
   

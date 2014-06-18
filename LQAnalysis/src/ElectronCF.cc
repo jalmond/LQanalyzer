@@ -79,15 +79,35 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   
   std::vector<snu::KMuon> muonTightColl;
   eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
-
+  
   std::vector<snu::KJet> jetColl_lepveto;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonTightColl, electronTightColl);
+  
+  
+  bool el1_barr = (fabs(electronTightColl.at(0).Eta()) < 1.47);
+  bool el2_barr = (fabs(electronTightColl.at(1).Eta()) < 1.47);
 
+  if(el1_barr&&el2_barr) {
+    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge())   FillHist("BarrBarr_ss", 1, weight, 0, 1., 1);
+    else FillHist("BarrBarr_os", 1, weight, 0, 1., 1);
+  }
+
+  if( (el1_barr&&!el2_barr) || (!el1_barr&&el2_barr)) {
+    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge())   FillHist("BarrEnd_ss", 1, weight, 0, 1., 1);
+    else FillHist("BarrEnd_os", 1, weight, 0, 1., 1);
+  }
+  if(el1_barr&&!el2_barr) {
+    if(electronTightColl.at(0).Charge() == electronTightColl.at(1).Charge())   FillHist("EndEnd_ss", 1, weight, 0, 1., 1);
+    else FillHist("EndEnd_os", 1, weight, 0, 1., 1);
+  }
+
+  
   Float_t ptbins[7] = { 20.,30.,40.,50.,60.,80.,200.};
-
+ 
+  
   for(int iel = 0 ; iel < electronTightColl.size(); iel++){
     FillHist("CFDenominatort", 1  , weight, 0.,1.,1);
     FillHist("CFDenominator_pt", electronTightColl.at(iel).Pt()  , weight, 0.,500.,100);

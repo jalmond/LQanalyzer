@@ -37,9 +37,11 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_leadingElectronEta"]  =     new TH1F("h_leadingElectronEta_"+ name,"leading electron eta",60,-3.,3.);
   map_sig["h_secondElectronEta"]   =     new TH1F("h_secondElectronEta_" + name,"second electron eta",60,-3.,3.);
   map_sig["h_ElectronIso"]         =     new TH1F("h_ElectronIso_"       + name,"leading electron relIso",50,0,10.);
-  map_sig["h_ElectronRelIso"]      =     new TH1F("h_RelElectronIso_"    + name,"leading electron relIso",40,0,0.4);
-  map_sig["h_leadingElectronIso"]  =     new TH1F("h_leadingElectronIso_"+ name,"leading electron relIso",40,0,0.4);
-  map_sig["h_secondElectronIso"]   =     new TH1F("h_secondElectronIso_" + name,"secondary electron relIso",40,0,0.4);
+  map_sig["h_ElectronRelIso"]      =     new TH1F("h_RelElectronIso_"    + name,"leading electron relIso",70,0,0.7);
+  map_sig["h_leadingElectronIso"]  =     new TH1F("h_leadingElectronIso_"+ name,"leading electron relIso",70,0,0.7);
+  map_sig["h_secondElectronIso"]   =     new TH1F("h_secondElectronIso_" + name,"secondary electron relIso",70,0,0.7);
+  map_sig["h_leadingElectronNonPFIso"]  =     new TH1F("h_leadingElectronNonPFIso_"+ name,"leading electron relIso",70,0,0.7);
+  map_sig["h_secondElectronNonPFIso"]   =     new TH1F("h_secondElectronNonPFIso_" + name,"secondary electron relIso",70,0,0.7);
   map_sig["h_ElectronD0"]          =     new TH1F("h_ElectronD0_"        + name," leading electron D0", 400, -0.5 , 0.5);
   map_sig["h_ElectronD0Sig"]       =     new TH1F("h_ElectronD0Sig_"     + name," leading electron SigD0", 100, -10. , 10.);
   map_sig["h_ElectronD0Sig2"]      =     new TH1F("h_ElectronD0Sig2_"    + name," leading electron SigD0", 100, -10. , 10.);
@@ -67,6 +69,7 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_HT"]                  =     new TH1F("h_HT_"                + name,"sum jet pt",50,0,1000);
   map_sig["h_jets_pt"]             =     new TH1F("h_jets_pt_"           + name,"jet pt",60,0,300);
   map_sig["h_el_jet_emfrac"]       =     new TH1F("h_el_jet_emfrac_"     + name, "jet_el_emfrac", 20, 0., 1.);
+  map_sig["h_el_awayjet_emfrac"]       =     new TH1F("h_el_awayjet_emfrac_"     + name, "jet_el_emfrac", 20, 0., 1.);
   map_sig["h_jet_el_ptratio"]      =     new TH1F("h_jet_el_ptratio_"    + name, "jet_el_ptratio", 20, 0., 5.);
 
   /// dPhi/MT
@@ -143,12 +146,13 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       }
       if(dR > 1.) {
 	if(leadjet_away){
-	  Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
+	  Fill("h_el_awayjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
 	  Fill("h_jet_el_ptratio", electrons.at(i).Pt()/ jets[emme].Pt(), weight);
 	}
 	leadjet_away=false;
+	if(dR< min_ejet_Dr) min_ejet_Dr=dR;
       }
-      if(dR< min_ejet_Dr) min_ejet_Dr=dR;
+      if(emme == 0)   Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
     }
   }
   
@@ -297,18 +301,24 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float rho = ev.JetRho();
     float el_iso =  elit->PFChargedHadronIso03() + max( elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() - rho * EA, 0.);
     
- 
+    float trkiso = elit->TrkIsoDR03();
+    float ecaliso = elit->ECalIsoDR03();
+    float hcaliso = elit->HCalIsoDR03();
+    float iso = trkiso + hcaliso + ecaliso;
+    
     Fill("h_ElectronPt", elit->Pt(),weight);
     Fill("h_ElectronIso", el_iso,weight);
     Fill("h_ElectronRelIso", el_iso/elit->Pt(),weight);
     if(iel==1){
       Fill("h_secondElectronPt", elit->Pt(),weight);
       Fill("h_secondElectronIso", el_iso/elit->Pt(),weight);
+      Fill("h_secondElectronNonPFIso", iso/elit->Pt(),weight);
     }
     if(iel==0){
       Fill("h_leadingElectronEta",elit->Eta(),weight);
       Fill("h_leadingElectronPt", elit->Pt(),weight);
       Fill("h_leadingElectronIso", el_iso/elit->Pt() ,weight);
+      Fill("h_leadingElectronNonPFIso", iso/elit->Pt(),weight);
     }
     sum_charge += elit->Charge();
   }

@@ -14,7 +14,7 @@ then
     logstep=1000
     
     
-    declare -a input_samples=("DY10to50" "DY50plus" "ttbar")
+    declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar")
         
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/CFElectron/"

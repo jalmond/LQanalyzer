@@ -27,3 +27,5 @@ LQLib/SKTree.rootmap
 # ignore emacs tmp files
 *~
 Macros/HvyNPlottingMacro/MakeDataMCCompPlots
+*.tex
+*.txt

@@ -21,6 +21,10 @@ class HNDiElectron : public AnalyzerCore {
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillCutFlow(TString cut, float w);
+  void FillIsoCutFlow(TString cut, float w);
+  void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  TString name);
+  void CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name);
+    
  private:
   
   //

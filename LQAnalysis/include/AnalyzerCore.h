@@ -42,7 +42,7 @@ class AnalyzerCore : public LQCycleBase {
   float CFRate(snu::KElectron el);
 
 
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho);
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};

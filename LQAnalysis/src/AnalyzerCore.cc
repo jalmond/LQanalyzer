@@ -673,7 +673,7 @@ TH1* AnalyzerCore::GetHist(TString hname){
   TH1* h = NULL;
   std::map<TString, TH1*>::iterator mapit = maphist.find(hname);
   if(mapit != maphist.end()) return mapit->second;
-  else m_logger << INFO  << hname << " was not found in map" << LQLogger::endmsg;
+  else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
 
   return h;
 }
@@ -685,7 +685,7 @@ TH2* AnalyzerCore::GetHist2D(TString hname){
   TH2* h = NULL;
   std::map<TString, TH2*>::iterator mapit = maphist2D.find(hname);
   if(mapit != maphist2D.end()) return mapit->second;
-  else m_logger << INFO  << hname << " was not found in map" << LQLogger::endmsg;
+  else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
 
   return h;
 }
@@ -795,7 +795,7 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
   return prompt_electrons;
 }
 
-float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho){
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho){
   
   float ee_weight = 0.;
   if(k_electrons.size()==2){
@@ -805,7 +805,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight);
     
   }
   

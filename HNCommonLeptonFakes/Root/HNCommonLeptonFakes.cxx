@@ -108,7 +108,7 @@ void HNCommonLeptonFakes::ApplyRealSystematic(int type ){
 
 
 
-float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight){
+float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight){
   
   useGeV=true;
 
@@ -155,17 +155,25 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
   else if(_el2_pt< 50.) r2 = 0.94;
   else  r2 = 0.99;
   
-  if(_el1_pt< 15.) fr1=0.25;
-  else if(_el1_pt< 20) fr1=0.175;
-  else if(_el1_pt< 25.) fr1=0.16;
-  else if(_el1_pt< 35.) fr1=0.15;
-  else  fr1=0.12;
+  if(_el1_pt< 20.) fr1=0.180564;
+  else if(_el1_pt< 25) fr1=0.161576;
+  else if(_el1_pt< 30.) fr1=0.141819;
+  else if(_el1_pt< 35.) fr1=0.14412;
+  else if(_el1_pt< 40.) fr1=0.143885;
+  else if(_el1_pt< 60.) fr1=0.153494;
+  else  fr1=0.125989;
   
-  if(_el2_pt< 15.) fr2=0.25;
-  else if(_el2_pt< 20) fr2=0.175;
-  else if(_el2_pt< 25.) fr2=0.16;
-  else if(_el2_pt< 35.) fr2=0.15;
-  else  fr2=0.12;
+  if(_el2_pt< 20.) fr2=0.180564;
+  else if(_el2_pt< 25) fr2=0.161576;
+  else if(_el2_pt< 30.) fr2=0.141819;
+  else if(_el2_pt< 35.) fr2=0.14412;
+  else if(_el2_pt< 40.) fr2=0.143885;
+  else if(_el2_pt< 60.) fr2=0.153494;
+  else  fr2=0.125989;
+
+  if(njets==0) fr1 = fr1*1.45;
+  if(njets==0) fr2 = fr2*1.45;
+
   
   // Calculate event weight
   float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
