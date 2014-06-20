@@ -426,7 +426,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		  }
 		}
 		if(!close_to_tau) {
-		  iMother = GenParticleMotherIndex->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g)));
+		  if(GenParticleStatus->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g))) == 3) iMother = GenParticleMotherIndex->at(GenParticleMotherIndex->at(g));
+		  else iMother = GenParticleMotherIndex->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g)));
+
 		  nDaughter = GenParticleNumDaught->at(g);
 		  ipdgid =  GenParticlePdgId->at(g);
 		  trueel_index = g;
