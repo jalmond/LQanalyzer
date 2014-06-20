@@ -973,7 +973,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
           }
 
           if(GenParticleStatus->at(g) == 1){
-	    if(fabs(GenParticlePdgId->at(g)) == 11){
+	    if(fabs(GenParticlePdgId->at(g)) == 13){
 	      bool match_to_tau=false;
               double dr = sqrt( pow(fabs( match_eta - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g))),2.0));
               if(dr < truthDr){
@@ -995,7 +995,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
                   }
 		}
 		if(!match_to_tau){
-		  iMother = GenParticleMotherIndex->at(g);
+		  if(GenParticleStatus->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g))) == 3) iMother =   GenParticleMotherIndex->at(GenParticleMotherIndex->at(g));
+                  else iMother = GenParticleMotherIndex->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g)));
+		  
+
 		  nDaughter = GenParticleNumDaught->at(g);
 		  ipdgid =  GenParticlePdgId->at(g);
 		  truemu_index = g;
