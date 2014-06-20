@@ -1,15 +1,15 @@
-#ifndef HNDiElectron_h
-#define HNDiElectron_h
+#ifndef HNElectronOptimisation_h
+#define HNElectronOptimisation_h
 
 #include "AnalyzerCore.h"
 
 
-class HNDiElectron : public AnalyzerCore {
+class HNElectronOptimisation : public AnalyzerCore {
 
  public:
   //// constructors                                                                                                                                                             
-  HNDiElectron();
-  ~HNDiElectron();
+  HNElectronOptimisation();
+  ~HNElectronOptimisation();
 
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
@@ -21,7 +21,6 @@ class HNDiElectron : public AnalyzerCore {
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillCutFlow(TString cut, float w);
-  void FillEventCutFlow(TString cut, float w);
   void FillIsoCutFlow(TString cut, float w);
   void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  TString name);
   
@@ -43,6 +42,6 @@ class HNDiElectron : public AnalyzerCore {
   float m_os_Z;
   float m_ss_Z;
 
-  ClassDef ( HNDiElectron, 1);
+  ClassDef ( HNElectronOptimisation, 1);
 };
 #endif

@@ -477,7 +477,7 @@ ZZtotttt	10719880.38	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo4tau_8TeV-powheg-
 
 ### QCD
 QCD_mumu	54.2		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD2MuMu_2MupPtEtaFilterFilter_8TeV-pythia6/ 
-QCD_30-40_EM2	497.0		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD_Pt-30to40_doubleEMEnriched_TuneZ2star_8TeV-pythia/
+QCD_30-40_EM2	497.0		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD_Pt-30to40_doubleEMEnriched_TuneZ2star_8TeV-pythia6/
 QCD_40_EM2	86.0		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/QCD_Pt-40_doubleEMEnriched_TuneZ2star_8TeV-pythia6/
 
 ### QCD SINGLE LEP

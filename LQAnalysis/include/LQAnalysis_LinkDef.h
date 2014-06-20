@@ -17,5 +17,6 @@
 #pragma link C++ class SKTreeMakerDiLep+;
 #pragma link C++ class SKTreeMakerNoCut+;
 #pragma link C++ class ElectronCF+;
+#pragma link C++ class HNElectronOptimisation+;
 
 #endif // __CINT__
