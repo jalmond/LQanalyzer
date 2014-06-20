@@ -52,8 +52,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   origDir->cd();
   
   string lqdir = getenv("LQANALYZER_DIR");
-  
+
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
+  rmcor = new rochcor2012();
+
 }
 
 double AnalyzerCore::ElectronScaleFactor( double eta, double pt){
@@ -795,6 +797,20 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
   return prompt_electrons;
 }
 
+
+
+void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
+  
+  vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
+  int imu(0);
+  for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
+    float qter =1.; /// uncertainty
+    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
+    else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), 0, qter);
+    it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
+  }
+}
+
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho){
   
   float ee_weight = 0.;
@@ -822,6 +838,30 @@ vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KElectron> el){
   }
   return tl_el;
 }
+
+vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KMuon> mu){
+  
+  vector<TLorentzVector> tl_mu;
+  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
+    TLorentzVector tmp_mu;
+    tmp_mu.SetPtEtaPhiM((*itmu).Pt(),(*itmu).Eta(),(*itmu).Phi(),(*itmu).M());
+    tl_mu.push_back(tmp_mu);
+  }
+  return tl_mu;
+}
+
+
+vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KJet> j){
+
+  vector<TLorentzVector> tl_jet;
+  for(vector<KJet>::iterator itj=j.begin(); itj!=j.end(); ++itj) {
+    TLorentzVector tmp_j;
+    tmp_j.SetPtEtaPhiM((*itj).Pt(),(*itj).Eta(),(*itj).Phi(),(*itj).M());
+    tl_jet.push_back(tmp_j);
+  }
+  return tl_jet;
+}
+
 
 
 

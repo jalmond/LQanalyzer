@@ -124,7 +124,7 @@ void LQController::RunNonPrompt(TString np){
 
   if(np.Contains("True")) runnp = true;
   else runnp = false;
-  m_logger << INFO << "Running Non-Prompt background estimate" << LQLogger::endmsg; 
+  if(np.Contains("True"))m_logger << INFO << "Running Non-Prompt background estimate" << LQLogger::endmsg; 
 }
 
 
@@ -132,7 +132,7 @@ void LQController::RunChargeFlip(TString cf){
 
   if(cf.Contains("True")) runcf = true;
   else runcf = false;
-  m_logger << INFO << "Running ChargeFlip background estimate" << LQLogger::endmsg;
+  if(cf.Contains("True"))m_logger << INFO << "Running ChargeFlip background estimate" << LQLogger::endmsg;
 }
 
 

@@ -147,6 +147,15 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// New function applies all tight selection
    eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
    
+   
+   //for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end(); it++){
+   //cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
+   //}
+   CorrectMuonMomentum(muonTightColl);
+
+   //for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end();it++){
+   //cout << "Tight corrrected muon pt = "<< it->Pt() << " " << it->Eta() << " " << it->Phi() << endl;
+   //}
 
    ///////////////////////////////////////////////////////////////////////////////////////////
    /// 2) Loose Muons for veto

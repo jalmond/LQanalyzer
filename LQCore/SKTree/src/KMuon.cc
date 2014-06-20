@@ -8,7 +8,7 @@ ClassImp(KMuon)
  *Default constructor.
  */
 KMuon::KMuon() :
-KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isor04ch(0.),k_isor04n(0.),k_isor04ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_MuonPFIsoR04PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999), i_muonVtx(-999), k_dimuon_trig_match(-999.), k_muon_trig_match(-999.),k_muon_trig_match5(-999.),k_muon_trig_match8(-999.),k_muon_trig_match12(-999.),k_muon_trig_match17(-999.),k_muon_trig_match24(-999.),k_isomuon_trig_match(-999.),k_emu_trig_match8(-999.),k_emu_trig_match17(-999.), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0), muon_ms_e(0.),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
+  KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isor04ch(0.),k_isor04n(0.),k_isor04ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_MuonPFIsoR04PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999),muon_ck_pt(0.), muon_ck_eta(0.), muon_ck_phi(0.), muon_ck_chi2(0.), muon_ck_trkd0(0.),muon_ck_trkdz(0.), muon_ck_charge(0.), i_muonVtx(-999), k_dimuon_trig_match(-999.), k_muon_trig_match(-999.),k_muon_trig_match5(-999.),k_muon_trig_match8(-999.),k_muon_trig_match12(-999.),k_muon_trig_match17(-999.),k_muon_trig_match24(-999.),k_isomuon_trig_match(-999.),k_emu_trig_match8(-999.),k_emu_trig_match17(-999.), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0), muon_ms_e(0.),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0)
  {
   //Reset();
 }
@@ -51,6 +51,13 @@ KMuon::KMuon(const KMuon& muon) :
   k_muon_ispf(muon.k_muon_ispf),
   k_muon_isglobal(muon.k_muon_isglobal),
   k_muon_istracker(muon.k_muon_istracker),
+  muon_ck_pt(muon.muon_ck_pt),
+  muon_ck_eta(muon.muon_ck_eta), 
+  muon_ck_phi(muon.muon_ck_phi), 
+  muon_ck_chi2(muon.muon_ck_chi2),
+  muon_ck_trkd0(muon.muon_ck_trkd0),
+  muon_ck_trkdz(muon.muon_ck_trkdz),
+  muon_ck_charge(muon.muon_ck_charge),
   i_muonVtx(muon.i_muonVtx),
   k_dimuon_trig_match(muon.k_dimuon_trig_match),
   k_muon_trig_match(muon.k_muon_trig_match),
@@ -91,6 +98,13 @@ void KMuon::Reset()
   k_muon_ispf=0;
   k_muon_isglobal=0;
   k_muon_istracker=0;
+  muon_ck_pt=0.;
+  muon_ck_eta=0.;
+  muon_ck_phi=0.;
+  muon_ck_chi2=0.;
+  muon_ck_trkd0=0.;
+  muon_ck_trkdz=0.;
+  muon_ck_charge=0.;
   k_globmuon_chi2=0;
   k_pterror=0;
   k_etaerror=0;
@@ -149,6 +163,13 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muon_ispf = p.IsPF();
 	k_muon_isglobal = p.IsGlobal();
 	k_muon_istracker = p.IsTracker();
+	muon_ck_pt = p.MuonCocktailPt();
+	muon_ck_eta=p.MuonCocktailEta();
+	muon_ck_phi=p.MuonCocktailPhi();
+	muon_ck_chi2=p.MuonCocktailGlobalChi2(); 
+	muon_ck_trkd0=p.MuonCocktailTrkD0();
+	muon_ck_trkdz=p.MuonCocktailTrkDz();
+	muon_ck_charge=p.MuonCocktailCharge();
 	k_isor03n=p.SumIsoNHDR03();
 	k_isor03ph=p.SumIsoPHDR03();
 	k_isor04n=p.SumIsoNHDR04();
@@ -440,6 +461,29 @@ void KMuon::SetIsGlobal(int isglobal){
 void KMuon::SetIsTracker(int istracker){
 
   k_muon_istracker =istracker;
+}
+
+void KMuon::SetMuonCocktailPt(double pt){
+  muon_ck_pt=pt;
+}
+
+void KMuon::SetMuonCocktailEta(double eta){
+  muon_ck_eta= eta;
+}
+void KMuon::SetMuonCocktailPhi(double phi){
+  muon_ck_phi=phi;
+}
+void KMuon::SetMuonCocktailCharge(double charge){
+  muon_ck_charge=charge;
+}
+void KMuon::SetMuonCocktailTrkD0(double d0){
+  muon_ck_trkd0 = d0;
+}
+void KMuon::SetMuonCocktailTrkDz(double dz){
+  muon_ck_trkdz=dz;
+}
+void KMuon::SetMuonCocktailGlobalChi2(double chi2){
+  muon_ck_chi2= chi2;
 }
 
 

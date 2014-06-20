@@ -897,7 +897,16 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     
     if(MuonHLTSingleIsoMuonMatched)muon.SetHLTSingleMuIsoMatched(MuonHLTSingleIsoMuonMatched->at(ilep));
+    
+    muon.SetMuonCocktailPt(MuonCocktailPt->at(ilep));
+    muon.SetMuonCocktailEta(MuonCocktailEta->at(ilep));
+    muon.SetMuonCocktailPhi(MuonCocktailPhi->at(ilep));
+    muon.SetMuonCocktailGlobalChi2(MuonCocktailGlobalChi2->at(ilep));
+    muon.SetMuonCocktailTrkD0(MuonCocktailTrkD0->at(ilep));
+    muon.SetMuonCocktailTrkDz(MuonCocktailTrkDz->at(ilep));
+    muon.SetMuonCocktailCharge(MuonCocktailCharge->at(ilep));
 
+        
     m_logger << DEBUG << "Muon Truth " << LQLogger::endmsg;
 
     /// truth info

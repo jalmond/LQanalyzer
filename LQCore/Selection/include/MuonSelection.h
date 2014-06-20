@@ -29,6 +29,8 @@ class MuonSelection : public BaseSelection {
   void SkimSelection( std::vector<snu::KMuon>& leptonColl, bool m_debug = false); 
 
   //// HN analysis selection
+  bool HNIsTight(snu::KMuon muon,  bool m_debug = false);
+  void HNTightHighPtMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
   void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void HNVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);

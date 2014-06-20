@@ -12,7 +12,7 @@ class EventBase;
 
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-
+#include "rochcor2012/rochcor2012/rochcor2012jan22.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -40,10 +40,12 @@ class AnalyzerCore : public LQCycleBase {
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KElectron> electrons);
   float CFRate(snu::KElectron el);
-
-
+  void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
+  
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
+  vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
+  vector<TLorentzVector> MakeTLorentz( vector<snu::KJet> jet);
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist};
   
@@ -74,7 +76,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH2*> maphist2D;
   TH2F* FRHist;
   HNCommonLeptonFakes* m_fakeobj;
-
+  rochcor2012 *rmcor;
   
   /// Event weights
   Double_t MCweight, weight;

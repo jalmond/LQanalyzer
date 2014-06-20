@@ -1067,6 +1067,16 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonTrackerCharge", MuonTrackerCharge, b_MuonTrackerCharge);
 
 
+  ConnectVariable("MuonCocktailCharge", MuonCocktailCharge, b_MuonCocktailCharge);
+  ConnectVariable("MuonCocktailPt", MuonCocktailPt, b_MuonCocktailPt);
+  ConnectVariable("MuonCocktailEta", MuonCocktailEta, b_MuonCocktailEta);
+  ConnectVariable("MuonCocktailPhi", MuonCocktailPhi, b_MuonCocktailPhi);
+  ConnectVariable("MuonCocktailTrkD0", MuonCocktailTrkD0, b_MuonCocktailTrkD0);
+  ConnectVariable("MuonCocktailTrkDz", MuonCocktailTrkDz, b_MuonCocktailTrkDz);
+  ConnectVariable("MuonCocktailGlobalChi2", MuonCocktailGlobalChi2, b_MuonCocktailGlobalChi2);
+
+  
+
   return;}
 
 void Data::ConnectElectrons(){
@@ -1722,7 +1732,7 @@ void Data::ConnectAllBranches(){
   
   // Muon
 
-  ConnectVariable("MuonCocktailCharge", MuonCocktailCharge);
+  
   ConnectVariable("MuonCocktailRefitID", MuonCocktailRefitID);
   ConnectVariable("MuonCocktailTrkHits", MuonCocktailTrkHits);  
   ConnectVariable("MuonBackToBackCompatibility", MuonBackToBackCompatibility);
@@ -1730,19 +1740,14 @@ void Data::ConnectAllBranches(){
   ConnectVariable("MuonBeamSpotDXYError", MuonBeamSpotDXYError);
   ConnectVariable("MuonBestTrackVtxDistXY", MuonBestTrackVtxDistXY);
   ConnectVariable("MuonBestTrackVtxDistZ", MuonBestTrackVtxDistZ);
-  ConnectVariable("MuonCocktailEta", MuonCocktailEta);
   ConnectVariable("MuonCocktailEtaError", MuonCocktailEtaError);
   ConnectVariable("MuonCocktailGlobalChi2", MuonCocktailGlobalChi2);
   ConnectVariable("MuonCocktailP", MuonCocktailP);
-  ConnectVariable("MuonCocktailPhi", MuonCocktailPhi);
   ConnectVariable("MuonCocktailPhiError", MuonCocktailPhiError);
-  ConnectVariable("MuonCocktailPt", MuonCocktailPt);
   ConnectVariable("MuonCocktailPtError", MuonCocktailPtError);
   ConnectVariable("MuonCocktailQOverPError", MuonCocktailQOverPError);
-  ConnectVariable("MuonCocktailTrkD0", MuonCocktailTrkD0);
   ConnectVariable("MuonCocktailTrkD0Error", MuonCocktailTrkD0Error);
-  ConnectVariable("MuonCocktailTrkDz", MuonCocktailTrkDz);
-  ConnectVariable("MuonCocktailTrkDzError", MuonCocktailTrkDzError);
+    ConnectVariable("MuonCocktailTrkDzError", MuonCocktailTrkDzError);
   ConnectVariable("MuonCocktailTrkValidFractionOfHits", MuonCocktailTrkValidFractionOfHits);
   ConnectVariable("MuonCosmicCompatibility", MuonCosmicCompatibility);
   

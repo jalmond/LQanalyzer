@@ -113,6 +113,12 @@ if [[ $1  == "testNP" ]];
 then
     source functions.sh
 
+    rundata=false
+    runmc=false
+    runsig=false
+    runfakes=false
+    runflips=false
+    
     cycle="HNDiElectron"
     skinput="True"
     useskim="DiLep"
@@ -120,7 +126,7 @@ then
     njobs=1
     data_lumi="AtoD"
 
-    nevents=100000
+    nevents=10000
     loglevel="INFO"
     runnp="True"
     declare -a input_samples=("A")

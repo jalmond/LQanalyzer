@@ -83,6 +83,14 @@ namespace snu {
     void SetMuonMSPhi(float phi);
     void SetMuonMSCharge(int charge);
     
+    void SetMuonCocktailPt(double pt);
+    void SetMuonCocktailEta(double eta);
+    void SetMuonCocktailPhi(double phi);
+    void SetMuonCocktailGlobalChi2(double chi2);
+    void SetMuonCocktailTrkD0(double d0);
+    void SetMuonCocktailTrkDz(double dz);
+    void SetMuonCocktailCharge(double charge);
+    
 
     inline Int_t IsPF() const {return k_muon_ispf;}
     inline Int_t IsGlobal() const {return k_muon_isglobal;}
@@ -147,6 +155,14 @@ namespace snu {
     inline Double_t MuonIDPhi() const {return muon_id_phi;}
     inline Double_t MuonIDCharge() const {return muon_id_charge;}
 
+    inline Double_t MuonCocktailPt() const {return muon_ck_pt;}
+    inline Double_t MuonCocktailEta() const {return muon_ck_eta;}
+    inline Double_t MuonCocktailPhi() const {return muon_ck_phi;}
+    inline Double_t MuonCocktailGlobalChi2() const {return muon_ck_chi2;}
+    inline Double_t MuonCocktailTrkD0() const {return muon_ck_trkd0;}
+    inline Double_t MuonCocktailTrkDz() const {return muon_ck_trkdz;}
+    inline Double_t MuonCocktailCharge() const {return muon_ck_charge;}
+    
     inline Double_t IsoTerm() const {return (k_isor03ch + std::max(0.0, k_isor03n + k_isor03ph - k_MuonPFIsoR03PU));}
     
     
@@ -163,12 +179,13 @@ namespace snu {
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Int_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
     Int_t i_muonVtx;
+    Double_t muon_ck_pt, muon_ck_eta, muon_ck_phi, muon_ck_chi2, muon_ck_trkd0, muon_ck_trkdz, muon_ck_charge;
 
     Bool_t k_dimuon_trig_match,k_muon_trig_match,k_isomuon_trig_match, k_muon_trig_match5,k_muon_trig_match8,k_muon_trig_match12,k_muon_trig_match17,k_muon_trig_match24,k_emu_trig_match8, k_emu_trig_match17;
     Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge,  muon_ms_e;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,7)
+    ClassDef(KMuon,8)
   };   
 }//namespace snu
 

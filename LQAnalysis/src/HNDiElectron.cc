@@ -32,6 +32,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
+
 }
 
 
@@ -110,7 +111,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   std::vector<snu::KMuon> muonNoCutColl;
   eventbase->GetMuonSel()->Selection(muonNoCutColl);
+
   
+
   /// JETS
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl_reallepveto;  /// -> does not veto jets IF the electron Fraction is < 20%

@@ -242,56 +242,81 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m
 }
 
 
+
+
+bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
+  
+  bool pass_selection(true);
+  
+  if(muon.Pt() == 0.) return false;
+
+  if (muon.Pt() > 0.01)      LeptonRelIso = (muon.SumIsoCHDR03() + std::max(0.0, muon.SumIsoNHDR03() + muon.SumIsoPHDR03() - 0.5* muon.SumPUIsoR03()))/muon.Pt() ;
+  else LeptonRelIso = 9999.;
+  if (LeptonRelIso<0) LeptonRelIso=0.0001;
+  
+  
+  /// TIGHT MUON SELECTION
+  if(( muon.Pt() < 15. )) {
+    pass_selection = false;
+    if(m_debug) cout << "Muon fails Tight pt cut " << endl;
+  }
+  if(!(fabs(muon.Eta()) < 2.4)) {
+    pass_selection =false;
+    if(m_debug) cout << "Muon fails Tight eta cut " <<endl;
+  }
+  if(!( LeptonRelIso < 0.1)) {
+    pass_selection = false;
+    if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;
+  }
+  if(!(fabs(muon.dZ())< 0.10  )) {
+    pass_selection = false;
+    if(m_debug) cout << "Muon fails Tight dZ cut " <<endl;
+  }
+  if(!(fabs(muon.dXY())< 0.005 )){
+    pass_selection = false;
+    if(m_debug) cout << "Muon fails Tight dXY " <<endl;
+  }
+  
+
+  /// TIGHT MUON from muon POG
+  if(!PassID(MUON_TIGHT, muon, m_debug)) pass_selection =false;
+
+  /// ENERGY DEPOSIT
+  /// ENERGY DEPOSIT
+  (muon.IsoHcalVeto() < 6.0 &&
+   muon.IsoEcalVeto() < 4.0 ) ? DepositVeto=true : DepositVeto=false;
+  if(!DepositVeto){
+    pass_selection = false;
+    if(m_debug) cout << "Muon fails Tight deposit cut" <<endl;
+  }
+  
+  return pass_selection;
+}
+
+void MuonSelection::HNTightHighPtMuonSelection(std::vector<snu::KMuon>& leptonColl) {
+
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
+    if(muit->Pt() > 200.){
+      muit->SetPtEtaPhiM(muit->MuonCocktailPt(), muit->MuonCocktailEta(), muit->MuonCocktailPhi(), muit->M());
+      muit->SetCharge(muit->MuonCocktailCharge());
+      muit->Setdxy(muit->MuonCocktailTrkD0());
+      muit->SetD0(muit->MuonCocktailTrkD0());
+      muit->Setdz(muit->MuonCocktailTrkDz());
+      muit->SetGlobalchi2(muit->MuonCocktailGlobalChi2());
+    }
+    if(HNIsTight(*muit, false)) leptonColl.push_back(*muit);
+  }
+  return;
+}
+
 void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_debug) {
   
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
 
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
-    bool pass_selection(true);
-
-    if(muit->Pt() == 0.) continue;
-    
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;    
-
-    /// TIGHT MUON SELECTION
-    if(( muit->Pt() < 15. )) {
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight pt cut " << endl;
-    }
-    if(!(fabs(muit->Eta()) < 2.4)) {
-      pass_selection =false;
-      if(m_debug) cout << "Muon fails Tight eta cut " <<endl;
-    }
-    if(!( LeptonRelIso < 0.1)) {
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;
-    }
-    if(!(fabs(muit->dZ())< 0.10  )) {
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight dZ cut " <<endl;
-    } 
-    if(!(fabs(muit->dXY())< 0.005 )){
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight dXY " <<endl;
-    }
-    
-    /// TIGHT MUON from muon POG
-    if(!PassID(MUON_TIGHT, *muit, m_debug)) pass_selection =false;
-
-    /// ENERGY DEPOSIT
-    /// ENERGY DEPOSIT
-    (muit->IsoHcalVeto() < 6.0 &&
-     muit->IsoEcalVeto() < 4.0 ) ? DepositVeto=true : DepositVeto=false;
-    if(!DepositVeto){
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight deposit cut" <<endl;
-    }
-    
-
-    if(pass_selection)  leptonColl.push_back(*muit);    
+    if(HNIsTight(*muit, m_debug)) leptonColl.push_back(*muit);    
   }
   
   return;
