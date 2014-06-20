@@ -112,7 +112,6 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    //////////////////////////////////////////////////////   
 
 
-   //// We will speicfy the following collection of objects
    /// 1) Tight Muons                       || eventbase->GetMuonSel()->HNTightMuonSelection
    /// 2) Loose Muons for veto              || eventbase->GetMuonSel()->HNVetoMuonSelection
    /// 3) TightElectrons (for jet veto)     || eventbase->GetElectronSel()->HNTightElectronSelection
@@ -126,6 +125,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// ID are explained in https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
    // eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
    
+   
    /// Standard cut of 2.4 which is the Muon Spectrometer coverage
    //eventbase->GetMuonSel()->SetEta(2.4);
    
@@ -138,7 +138,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// FOr our analysis we tighten to 50 micrometers and 1 mm respectively
    //eventbase->GetMuonSel()->SetBSdxy(0.005);
    //eventbase->GetMuonSel()->SetBSdz(0.10);
-
+   
    /// Use PF isolation DR=0.3
    /// (∑ET(chHad from PV)+∑ET(neutHad)+∑ET(photons))/pT < 0.1
    //eventbase->GetMuonSel()->SetRelIso(0.1);
@@ -148,15 +148,25 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
    
    
-   //for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end(); it++){
-   //cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
-   //}
+   for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end(); it++){
+     //cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
+   }
+  
    CorrectMuonMomentum(muonTightColl);
+   
+   
+   for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end();it++){
+     //cout << "Tight corrrected muon pt = "<< it->Pt() << " " << it->Eta() << " " << it->Phi() << endl;
+   }
+   
 
-   //for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end();it++){
-   //cout << "Tight corrrected muon pt = "<< it->Pt() << " " << it->Eta() << " " << it->Phi() << endl;
-   //}
-
+   std::vector<snu::KMuon> muonLooseColl;
+   eventbase->GetMuonSel()->HNLooseMuonSelection(muonLooseColl);
+   if(muonLooseColl.size()==2){
+    float mmweight = Get_DataDrivenWeight_MM(muonLooseColl);
+   }
+   
+   
    ///////////////////////////////////////////////////////////////////////////////////////////
    /// 2) Loose Muons for veto
    ///////////////////////////////////////////////////////////////////////////////////////////
@@ -339,7 +349,6 @@ void ExampleAnalyzerDiMuon::BeginEvent( )throw( LQError ){
 }
 
 
-///############### THESE ARE FUNCTIONS SPECIFIC TO THIS CYCLE
 
 void ExampleAnalyzerDiMuon::MakeHistograms(){
   //// Additional plots to make

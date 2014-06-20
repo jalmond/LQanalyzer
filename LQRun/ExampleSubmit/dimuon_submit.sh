@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ###### SET WHAT JOBS TO RUN
-runMC=true
-runDoubleMuon=false
+runMC=false
+runDoubleMuon=true
 
 if [[ $runMC  == "true" ]]; 
 then
@@ -33,12 +33,12 @@ then
     useskim="DiLep"
     outputdir=$LQANALYZER_DIR"/data/output/Muon/"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-
-    declare -a input_samples=("A" "B" "C" "D")
+    nevents=100000
+    declare -a input_samples=("A")
     source submit.sh $1
 fi     
 

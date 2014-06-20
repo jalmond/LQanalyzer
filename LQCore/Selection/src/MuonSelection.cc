@@ -173,7 +173,7 @@ void MuonSelection::HNVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_d
       pass_selection = false;
       if(m_debug) cout << "HNVetoMuonSelection Fail dz cut" << endl;
     }
-    if(!(fabs(muit->dXY())< 20.0 )) {
+    if(!(fabs(muit->dXY())< 10.0 )) {
       pass_selection = false;
       if(m_debug) cout << "HNVetoMuonSelection Fail dxy cut" << endl;
     }
@@ -242,8 +242,6 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m
 }
 
 
-
-
 bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   
   bool pass_selection(true);
@@ -264,7 +262,7 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
     pass_selection =false;
     if(m_debug) cout << "Muon fails Tight eta cut " <<endl;
   }
-  if(!( LeptonRelIso < 0.1)) {
+  if(!( LeptonRelIso < 0.05)) {
     pass_selection = false;
     if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;
   }

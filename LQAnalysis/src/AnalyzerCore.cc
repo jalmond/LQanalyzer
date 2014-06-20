@@ -754,7 +754,16 @@ float AnalyzerCore::CFRate(snu::KElectron el){
 
 bool AnalyzerCore::IsTight(snu::KMuon muon){
   /// ADD TIGHT MUON REQUIREMENT
+  float reliso=0.;
+  if (muon.Pt() > 0.01)  reliso = (muon.SumIsoCHDR03() + std::max(0.0, muon.SumIsoNHDR03() + muon.SumIsoPHDR03() - 0.5* muon.SumPUIsoR03()))/muon.Pt() ;
+  else reliso = 9999.;
+  if (reliso<0) reliso=0.0001;
   
+
+  if(( reliso >= 0.05)) return false;
+  if(( muon.GlobalChi2() >= 10.)) return false;
+ 
+  if(fabs(muon.dXY()) >= 0.005) return false; 
   return true;
 }
 
@@ -809,6 +818,23 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), 0, qter);
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
   }
+}
+
+
+float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
+
+  float mm_weight = 0.;
+  if(k_muons.size()==2){
+    
+    bool is_mu1_tight    = IsTight(k_muons.at(0));
+    bool is_mu2_tight    = IsTight(k_muons.at(1));
+
+    vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+
+    mm_weight =m_fakeobj->get_dilepton_mm_eventweight(muons,  is_mu1_tight,is_mu2_tight);
+  }
+
+  return mm_weight;
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho){

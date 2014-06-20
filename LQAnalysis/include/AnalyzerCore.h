@@ -43,6 +43,9 @@ class AnalyzerCore : public LQCycleBase {
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
+  float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
+
+  
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KJet> jet);

@@ -40,7 +40,7 @@ KMuon::KMuon(const KMuon& muon) :
   k_dxy(muon.k_dxy),
   k_d0(muon.k_d0),
   k_d0err(muon.k_d0err),
-  k_globmuon_chi2(muon.k_muon_ispf),
+  k_globmuon_chi2(muon.k_globmuon_chi2),
   k_dxy_pat(muon.k_dxy_pat),
   k_dxyerr_pat(muon.k_dxyerr_pat),
   k_vtxdistxy(muon.k_vtxdistxy),

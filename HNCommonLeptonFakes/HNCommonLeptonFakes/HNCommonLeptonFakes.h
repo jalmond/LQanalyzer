@@ -39,46 +39,22 @@ class HNCommonLeptonFakes {
 
 
 
-  float get_dilepton_mm_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> jets, bool isT1, bool isT2 ,bool isHF1, bool isHF2, bool useGeV, bool oldrates);
+  float get_dilepton_mm_eventweight(std::vector<TLorentzVector> muons, bool isT1, bool isT2);
 
-  float get_dilepton_emu_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron, std::vector<TLorentzVector> jets,float met, bool isT1, bool isT2 ,bool isHF2, bool iselconv, bool _el1_primarytriggerpass, bool _el1_secondarytriggerpass,bool _mu1_primarytriggerpass,bool _mu1_secondaytriggerpass,bool useGeV, bool usekirill);
+  //float get_dilepton_emu_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron, std::vector<TLorentzVector> jets,float met, bool isT1, bool isT2 ,bool isHF2, bool iselconv, bool _el1_primarytriggerpass, bool _el1_secondarytriggerpass,bool _mu1_primarytriggerpass,bool _mu1_secondaytriggerpass,bool useGeV, bool usekirill);
 
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight);
   
 
-  float getFakeRate_muons(int sys, bool isHF,float pt, int njets, float eta, bool overlap, TString region, bool usefit = false);
-  float getFakeRate_muonsold(int sys, bool isHF,float pt, int njets, float eta, bool overlap, TString region);
-  float getFakeRate_electrons_kirill(int sys,float pt, float eta, int njet, bool triggerpass, bool isconversion);
-  float getFakeRate_electrons_emu_lou(int sys, float muon_pt, float el_pt, float el_eta, bool muon_trigpass, bool primarytrigger_el,  bool secondarytrigger_el ,bool el_conv);
+  float getFakeRate_muon(int sys, float pt,  float eta);
+  float getEfficiency_muon(int sys,float pt, float eta);
 
-  std::pair<float,float> getFakeRate_electrons_ee_lou(int sys, float lep1_pt, float lep2_pt, float lep1_eta, float lep2_eta, bool primarytrigger_lep1,  bool primarytrigger_lep2, bool secondarytrigger_lep1, bool secondarytrigger_lep2, bool el1_conv, bool el2_conv);
-
-
-  float getEfficiency_muon(int sys,float pt, float eta, int njets, TString region);
-  float getEfficiency_electron_kirill(int sys, float pt,float eta, int njet, bool triggerpass);
-  float getEfficiency_electron_emu_lou(int sys, float muon_pt, float el_pt, float el_eta, bool muon_trigmatch, bool primarytrigger_el, bool secondarytrigger_el);
-  
-  std::pair<float,float> getEfficiency_electron_ee_lou(int sys, float lep1_pt, float lep2_pt, float lep1_eta, float lep2_eta, bool primarytrigger_lep1,  bool primarytrigger_lep2, bool secondarytrigger_lep1, bool secondarytrigger_lep2);
-
+  float getFakeRate_electron(int sys, float pt,  float eta);
+  float getEfficiency_electron(int sys,float pt, float eta);
  
 
   void APPLY_scalefactor(bool applysf) ;
-  float GetFitfakeRate(float pt, TString histname);
-  float getHSTEfficiency(int sys, float pt, float eta, int njets, TString region);
-  //  float getHSTFakeRate(int sys, bool isHF,float pt,float eta, int njets, bool nearjet, TString region);
-  float getHSTFakeRate(int isys, bool isHF,float pt,float eta, int njets, bool nearjet, TString region);
 
-  float getHSTFakeRate_sm(int sys, float pt, bool isclose, TString cut);
-  float HSTWeight_sm(int sys, float pt, bool close_to_jet,TString cut);
-  
-  float HSTWeight(int sys, TLorentzVector muons, std::vector<TLorentzVector> jets, bool isHF, TString region);
-
-  float HSTWeightF(int sys, TLorentzVector muons, std::vector<TLorentzVector> jets, bool isHF, TString region);
-
-  float HSTWeightR(int sys, TLorentzVector muons, std::vector<TLorentzVector> jets, TString region);
-
-  float HSTWeight_Rsm(int sys, float pt, int njets, TString cut);
-  float getHSTEfficiency_sm(int sys, float pt, int njets, TString cut);
 
   /// Function to calculate the event weight from the muon efficiencies
   float CalculateDiLepMMWeight(float r1, float f1, float r2, float f2, bool t1, bool t2 );
