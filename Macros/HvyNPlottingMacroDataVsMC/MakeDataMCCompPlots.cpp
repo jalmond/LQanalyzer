@@ -1221,7 +1221,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     
   cout << " /// MakeDataMCComplots::SetUpConfig " << endl;
   /// colours of histograms
-  int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0),  ttvcol(0), higgscol(0);
+  int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0),  ttvcol(0), higgscol(0), vvvcol(0), vvcol(0);
   
   // Get list of cuts to plot  
   ifstream colour_name_file("Config/colour.txt");
@@ -1246,6 +1246,9 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(histname=="wcol") wcol =col;
     if(histname=="higgscol") higgscol =col;
     if(histname=="ttvcol") ttvcol =col;
+    if(histname=="vvvcol") vvvcol =col;
+    if(histname=="vvcol") vvcol =col;
+    
   }
   
   /// Setup list of samples: grouped into different processes 
@@ -1271,6 +1274,10 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   /// ALL same sign processes
   vector<pair<TString,float> > ss = InitSample("ss");
 
+  vector<pair<TString,float> > vvv = InitSample("vvv");
+  vector<pair<TString,float> > vvv = InitSample("vv");
+  
+
   /// NP is nonprompt
   vector<pair<TString,float> > np;
   np.push_back(make_pair("nonprompt",0.5));
@@ -1293,6 +1300,14 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="ttbar")samples.push_back(make_pair(make_pair(ttbar,tcol),"ttbar"));
     if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
     if(listofsamples.at(i) =="wjetplusbb")samples.push_back(make_pair(make_pair(wplusbb,wcol),"Wjet"));
+
+    if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
+    if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
+    if(listofsamples.at(i) =="vvv")samples.push_back(make_pair(make_pair(vvv,vvvcol),"VVV"));
+    if(listofsamples.at(i) =="vv")samples.push_back(make_pair(make_pair(vv,vvcol),"VV"));
+    
+
+    if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"Fake Background"));
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"nonprompt"));   
     if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"chargeflip"));   
