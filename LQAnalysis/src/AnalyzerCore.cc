@@ -41,14 +41,12 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   //// FakeRate Input file           
   //////////////////////////////////////////////////////////////////////                                                                                                   
   string analysisdir = getenv("FILEDIR");
-
-  // Create a unique directory in memory to hold the histograms:                                                                                                           
-  TFile *infile = TFile::Open((analysisdir+ "Total_FRcorr60_51_bis.root").c_str());
-  CheckFile(infile);
   
-  FRHist = dynamic_cast<TH2F*> (( infile->Get("h_FOrate3"))->Clone());
-  infile->Close();
-  delete infile;
+  TFile *infile_sf = TFile::Open((analysisdir+ "HMN_FinalSFNoJets.root").c_str());
+  MuonSF =  dynamic_cast<TH1F*> (( infile_sf->Get("etavspt"))->Clone());
+  
+  infile_sf->Close();
+  delete infile_sf;
   origDir->cd();
   
   string lqdir = getenv("LQANALYZER_DIR");
@@ -56,6 +54,18 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   rmcor = new rochcor2012();
 
+}
+
+double AnalyzerCore::MuonScaleFactor(double eta, double pt){
+  
+  double sf = 0.;
+  if(fabs(eta) > 2.4) return 1.;
+  if(pt < 15.) return 1.;
+  int bin = MuonSF->FindBin(pt,fabs(eta));
+  
+  sf = MuonSF->GetBinContent(bin);
+  return sf;
+  
 }
 
 double AnalyzerCore::ElectronScaleFactor( double eta, double pt){
@@ -820,6 +830,24 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   }
 }
 
+
+float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho){
+
+  float em_weight = 0.;
+  if(k_muons.size()==1 && k_electrons.size()==1){
+
+    bool is_mu1_tight    = IsTight(k_muons.at(0));
+    bool is_el1_tight    = IsTight(k_electrons.at(0), rho);
+
+    vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+
+
+    em_weight =m_fakeobj->get_dilepton_em_eventweight(muons,electrons, njets,  is_mu1_tight,is_el1_tight);
+  }
+
+  return em_weight;
+}
 
 float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
 

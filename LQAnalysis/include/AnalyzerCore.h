@@ -30,6 +30,7 @@ class AnalyzerCore : public LQCycleBase {
   virtual void WriteHistograms()throw( LQError );
 
   double ElectronScaleFactor( double eta, double pt);
+  double MuonScaleFactor(double eta, double pt);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
@@ -44,7 +45,8 @@ class AnalyzerCore : public LQCycleBase {
   
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
-
+  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho);
+    
   
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
@@ -78,6 +80,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   TH2F* FRHist;
+  TH1F* MuonSF;
   HNCommonLeptonFakes* m_fakeobj;
   rochcor2012 *rmcor;
   

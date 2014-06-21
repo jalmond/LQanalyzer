@@ -159,6 +159,54 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 }
 
 
+float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, int njets, bool ismu1tight, bool isel1tight){
+
+  if(muons.size()!=1) {
+    return (0.);
+  }
+  if(electrons.size()!=1) {
+    return (0.);
+  }
+
+  float _el1_pt=electrons.at(0).Pt();
+  float _mu1_pt=muons.at(0).Pt();
+
+
+  float _el1_eta=electrons.at(0).Eta();
+  float _mu1_eta=muons.at(0).Eta();
+
+  if(m_debug){
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "el1 pT = " << _el1_pt << endl;
+    cout << "mu1 pT = " << _mu1_pt << endl;
+  }
+
+  if(_el1_pt > 100.) _el1_pt = 99.;
+  if(_mu1_pt > 60.) _mu1_pt = 59.;
+
+
+  float fr1(0.),fr2(0.),r1(0.),r2(0.);
+
+  r1 = getEfficiency_muon(0,_mu1_pt, _mu1_eta);
+  r2 = getEfficiency_electron(0,_el1_pt, _el1_eta);
+
+  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
+  fr2= getFakeRate_electron(0,_el1_pt, _el1_eta);
+
+  if(njets==0) fr2 = fr2*1.45;
+
+  // Calculate event weight
+  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
+
+  if(ev_weight!=ev_weight){
+    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
+  }
+
+
+  return ev_weight;
+
+}
+
 float  HNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzVector> muons,bool ismu1tight, bool ismu2tight){
   
   if(muons.size()!=2) {
