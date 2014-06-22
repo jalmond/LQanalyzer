@@ -516,6 +516,8 @@ void Data::Reset(){
    MuonCocktailTrkDzError = 0;
    MuonCocktailTrkValidFractionOfHits = 0;
    MuonCosmicCompatibility = 0;
+   MuonCocktailTrkVtxDXY=0;
+   MuonCocktailTrkVtxDZ=0;
    MuonEcalIso = 0;
    MuonEcalVetoIso = 0;
    MuonEnergy = 0;
@@ -1075,7 +1077,8 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonCocktailTrkDz", MuonCocktailTrkDz, b_MuonCocktailTrkDz);
   ConnectVariable("MuonCocktailGlobalChi2", MuonCocktailGlobalChi2, b_MuonCocktailGlobalChi2);
 
-  
+  ConnectVariable("MuonCocktailTrkVtxDXY", MuonCocktailTrkVtxDXY, b_MuonCocktailTrkVtxDXY);
+  ConnectVariable("MuonCocktailTrkVtxDZ", MuonCocktailTrkVtxDZ, b_MuonCocktailTrkVtxDZ);
 
   return;}
 
@@ -1738,8 +1741,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("MuonBackToBackCompatibility", MuonBackToBackCompatibility);
   ConnectVariable("MuonBeamSpotDXY", MuonBeamSpotDXY);
   ConnectVariable("MuonBeamSpotDXYError", MuonBeamSpotDXYError);
-  ConnectVariable("MuonBestTrackVtxDistXY", MuonBestTrackVtxDistXY);
-  ConnectVariable("MuonBestTrackVtxDistZ", MuonBestTrackVtxDistZ);
   ConnectVariable("MuonCocktailEtaError", MuonCocktailEtaError);
   ConnectVariable("MuonCocktailGlobalChi2", MuonCocktailGlobalChi2);
   ConnectVariable("MuonCocktailP", MuonCocktailP);
@@ -1747,7 +1748,7 @@ void Data::ConnectAllBranches(){
   ConnectVariable("MuonCocktailPtError", MuonCocktailPtError);
   ConnectVariable("MuonCocktailQOverPError", MuonCocktailQOverPError);
   ConnectVariable("MuonCocktailTrkD0Error", MuonCocktailTrkD0Error);
-    ConnectVariable("MuonCocktailTrkDzError", MuonCocktailTrkDzError);
+  ConnectVariable("MuonCocktailTrkDzError", MuonCocktailTrkDzError);
   ConnectVariable("MuonCocktailTrkValidFractionOfHits", MuonCocktailTrkValidFractionOfHits);
   ConnectVariable("MuonCosmicCompatibility", MuonCosmicCompatibility);
   

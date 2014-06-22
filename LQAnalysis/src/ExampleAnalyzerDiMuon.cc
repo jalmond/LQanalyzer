@@ -147,23 +147,28 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// New function applies all tight selection
    eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
    
+   std::vector<snu::KMuon> muonHighPtColl;
+   eventbase->GetMuonSel()->HNTightHighPtMuonSelection(muonHighPtColl);
    
    for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end(); it++){
-     //cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
+//   cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
    }
   
    CorrectMuonMomentum(muonTightColl);
+   CorrectMuonMomentum(muonHighPtColl);
    
    
-   for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end();it++){
-     //cout << "Tight corrrected muon pt = "<< it->Pt() << " " << it->Eta() << " " << it->Phi() << endl;
+   int imu=0;
+   for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end();it++, imu++){
+//     cout << "Tight corrrected muon pt = "<< it->Pt() << " " << it->Eta() << " " << it->Phi() << endl;
    }
    
 
    std::vector<snu::KMuon> muonLooseColl;
    eventbase->GetMuonSel()->HNLooseMuonSelection(muonLooseColl);
    if(muonLooseColl.size()==2){
-    float mmweight = Get_DataDrivenWeight_MM(muonLooseColl);
+     float mmweight = Get_DataDrivenWeight_MM(muonLooseColl);
+     cout << "Weight of mm event = " << mmweight << endl;
    }
    
    

@@ -475,6 +475,8 @@ public :
    std::vector<double>  *MuonCocktailTrkD0Error;
    std::vector<double>  *MuonCocktailTrkDz;
    std::vector<double>  *MuonCocktailTrkDzError;
+   std::vector<double>  *MuonCocktailTrkVtxDXY;
+   std::vector<double>  *MuonCocktailTrkVtxDZ;
    std::vector<double>  *MuonCocktailTrkValidFractionOfHits;
    std::vector<double>  *MuonCosmicCompatibility;
    std::vector<double>  *MuonEcalIso;
@@ -1214,6 +1216,8 @@ public :
    TBranch        *b_MuonCocktailTrkD0;   //!
    TBranch        *b_MuonCocktailTrkD0Error;   //!
    TBranch        *b_MuonCocktailTrkDz;   //!
+   TBranch        *b_MuonCocktailTrkVtxDXY;   //!
+   TBranch        *b_MuonCocktailTrkVtxDZ;   //!
    TBranch        *b_MuonCocktailTrkDzError;   //!
    TBranch        *b_MuonCocktailTrkValidFractionOfHits;   //!
    TBranch        *b_MuonCosmicCompatibility;   //!

@@ -1,7 +1,7 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-runSignal=true
+runSignal=false
 runMC=true
 
 if [[ $runSignal  == "true" ]];
@@ -19,17 +19,18 @@ then
     source submit.sh
 fi
 
+
 if [[ $runMC  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMakerNoCut"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("DY10to50" "DY50plus")
+    declare -a input_samples=("A")
 
     stream="muon"
     source submit.sh

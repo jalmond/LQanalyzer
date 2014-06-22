@@ -268,7 +268,7 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   }
   if(!(fabs(muon.dZ())< 0.10  )) {
     pass_selection = false;
-    if(m_debug) cout << "Muon fails Tight dZ cut " <<endl;
+    if(m_debug) cout << "Muon fails Tight dZ cut (" << fabs(muon.dZ()) << ")" <<endl;
   }
   if(!(fabs(muon.dXY())< 0.005 )){
     pass_selection = false;
@@ -299,11 +299,11 @@ void MuonSelection::HNTightHighPtMuonSelection(std::vector<snu::KMuon>& leptonCo
       muit->SetPtEtaPhiM(muit->MuonCocktailPt(), muit->MuonCocktailEta(), muit->MuonCocktailPhi(), muit->M());
       muit->SetCharge(muit->MuonCocktailCharge());
       muit->Setdxy(muit->MuonCocktailTrkD0());
-      muit->SetD0(muit->MuonCocktailTrkD0());
       muit->Setdz(muit->MuonCocktailTrkDz());
       muit->SetGlobalchi2(muit->MuonCocktailGlobalChi2());
+      if(HNIsTight(*muit, false)) leptonColl.push_back(*muit);
     }
-    if(HNIsTight(*muit, false)) leptonColl.push_back(*muit);
+    else if(HNIsTight(*muit, false)) leptonColl.push_back(*muit);
   }
   return;
 }
