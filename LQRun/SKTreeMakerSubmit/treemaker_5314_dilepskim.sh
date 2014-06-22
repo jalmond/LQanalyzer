@@ -36,8 +36,8 @@ then
     runDoubleMuon=true
     runDoubleElectron=true
     runElectronMuon=true
-    runSingleMuon=true
-    runSingleElectron=true
+    runSingleMuon=false
+    runSingleElectron=false
 fi
 
 if [[ $runMC  == "true" ]];
