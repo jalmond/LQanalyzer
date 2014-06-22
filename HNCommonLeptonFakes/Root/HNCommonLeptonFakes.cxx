@@ -196,7 +196,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   if(njets==0) fr2 = fr2*1.45;
 
   // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
+  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, ismu1tight);
 
   if(ev_weight!=ev_weight){
     cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;

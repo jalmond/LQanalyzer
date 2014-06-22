@@ -23,7 +23,6 @@ if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; the
 else
     export root_setup=$HOME"/root/root/bin/thisroot.sh"
 fi    
-echo "Using root: " $root_setup
 
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
