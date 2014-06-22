@@ -1,7 +1,7 @@
 def GetFiles(dir):
 
     import os
-    files = ["MyDataPileupHistogram.root", "Total_FRcorr60_51_bis.root"]
+    files = ["MyDataPileupHistogram.root", "Total_FRcorr60_51_bis.root", "HMN_FinalSFNoJets.root"]
 
     for file in files:
         if not os.path.exists(dir + file):

@@ -41,7 +41,7 @@ class HNCommonLeptonFakes {
 
   float get_dilepton_mm_eventweight(std::vector<TLorentzVector> muons, bool isT1, bool isT2);
 
-  //float get_dilepton_emu_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron, std::vector<TLorentzVector> jets,float met, bool isT1, bool isT2 ,bool isHF2, bool iselconv, bool _el1_primarytriggerpass, bool _el1_secondarytriggerpass,bool _mu1_primarytriggerpass,bool _mu1_secondaytriggerpass,bool useGeV, bool usekirill);
+  float get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron,int njets, bool ismu1tight, bool isel1tight);
 
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight);
   

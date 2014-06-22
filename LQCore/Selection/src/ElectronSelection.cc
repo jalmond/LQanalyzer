@@ -116,7 +116,7 @@ void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonC
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Eta Cut" <<endl;
     }
-    if((el->Pt() < 10.)){
+    if((el->Pt() < 15.)){
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Pt Cut" <<endl;
     }
