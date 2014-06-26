@@ -97,7 +97,6 @@ double AnalyzerCore::MuonScaleFactor(double eta, double pt){
   int bin = MuonSF->FindBin(fabs(eta),pt);
   
   sf = MuonSF->GetBinContent(bin);
-  cout << sf << endl;
   return sf;
   
 }
