@@ -934,7 +934,8 @@ void Data::ConnectEvent(){
   ConnectVariable("PDFCTEQWeights", PDFCTEQWeights, b_PDFCTEQWeights);
   ConnectVariable("PDFMSTWWeights", PDFMSTWWeights, b_PDFMSTWWeights);
   ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights, b_PDFNNPDFWeights);
-
+  ConnectVariable("ls", ls, b_ls);
+  
   return;}
 
 

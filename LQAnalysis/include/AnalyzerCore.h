@@ -29,6 +29,9 @@ class AnalyzerCore : public LQCycleBase {
   virtual void EndEvent()throw( LQError );
   virtual void WriteHistograms()throw( LQError );
 
+
+  TDirectory*   getTemporaryDirectory(void) const;
+
   double ElectronScaleFactor( double eta, double pt);
   double MuonScaleFactor(double eta, double pt);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
@@ -80,7 +83,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   TH2F* FRHist;
-  TH1F* MuonSF;
+  TH2F* MuonSF;
   HNCommonLeptonFakes* m_fakeobj;
   rochcor2012 *rmcor;
   

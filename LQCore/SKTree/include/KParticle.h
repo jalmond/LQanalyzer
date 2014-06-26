@@ -19,7 +19,7 @@ namespace snu {
   class KParticle : public TLorentzVector {
   public:
     
-    enum PartType{NOPARTICLE, notfake, unknown, jet, cjet, bjet, chargemisid};
+    enum PartType{notfake, jet, cjet, bjet, chargemisid, chargemisid_photonconv, photonfake, nonfake_photonconv,  NOPARTICLE, unknown};
     enum LooseTight{Loose, Tight, Other};
     
     
@@ -100,7 +100,7 @@ namespace snu {
     Int_t m_charge;
   
     
-  ClassDef(KParticle,3);
+  ClassDef(KParticle,5);
   }; // class KParticle
   
 } // namespace snu

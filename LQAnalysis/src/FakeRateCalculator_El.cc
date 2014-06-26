@@ -1,7 +1,7 @@
 // $id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQFakeRateCalculator_El Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+OB * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -55,10 +55,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
-  
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
-  
- 
+   
   std::vector<TString> triggerslist_diel;
   triggerslist_diel.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
   
@@ -80,6 +78,14 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   if(electronLooseColl.size() ==0) return;
   
+  if(!isData){
+    for(std::vector<snu::KElectron>::iterator it = electronLooseColl.begin(); it != electronLooseColl.end(); it++){
+      weight *=  ElectronScaleFactor(it->Eta(), it->Pt());
+    }
+  }
+  
+  /// Event contains at least one loose electron
+
   std::vector<snu::KElectron> electronTightColl;
   eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
 
@@ -96,9 +102,11 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl_lepveto20;
   std::vector<snu::KJet> jetColl_lepveto40;
   std::vector<snu::KJet> jetColl_lepveto60;
+  std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->SetPt(20.);
+  eventbase->GetJetSel()->Selection(jetColl);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto20, muonTightColl, electronLooseColl);
   eventbase->GetJetSel()->SetPt(40.);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto40, muonTightColl, electronLooseColl);
@@ -127,11 +135,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   m_logger << DEBUG << "Running real efficiency code" << LQLogger::endmsg;
   
+
+  /// This code calculates the real efficiency
   if(PassTrigger(triggerslist_diel, prescale)){
     if(electronLooseColl.size() == 2){
       FillCLHist(sighist, "DiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
       if(Zcandidate(electronLooseColl, 5.)){
-	   FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+	FillCLHist(sighist, "ZDiLooseEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
 	
 	//// Electron 1 IS TAG
 	if(IsTight(electronLooseColl.at(0), eventbase->GetEvent().JetRho())  ){
@@ -184,7 +194,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	    else if(electronLooseColl.at(0).IsEEFiducial()){
 	      FillHist("h_promptrate_num_endcap_pt", electronLooseColl.at(0).Pt(), weight, 0., 200.,40);
 	    }
-
           }
 	}      	
       }
@@ -363,7 +372,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
   
   Float_t ptbins[9] = { 10.,15.,20.,25.,30.,35.,40.,60.,100.};
-  Float_t etabins[5] = { 0., 1., 1.479, 2., 2.5};
+  Float_t etabins[5] = { 0., 0.8, 1.479, 2., 2.5};
   Float_t htbins[5] = { 0., 30., 50., 100., 200.};
   
   float el_pt = electronLooseColl.at(0).Pt();
@@ -377,9 +386,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillHist("TightEl20_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);     
       FillHist("TightEl20_ht", SumPt(jetColl_lepveto20), weight, htbins, 4);
       FillHist("TightEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
-      FillHist("TightEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
       
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl20_pt_eta1",el_pt, weight, ptbins, 8);
+      if(fabs( electronTightColl.at(0).Eta() < 0.8)) FillHist("TightEl20_pt_eta1",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl20_pt_eta2",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl20_pt_eta3",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl20_pt_eta4",el_pt, weight, ptbins, 8);
@@ -393,9 +401,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillHist("LooseEl20_njets", jetColl_lepveto20.size(), weight, 0.,5.,5); 
       FillHist("LooseEl20_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);     
       FillHist("LooseEl20_ht", SumPt(jetColl_lepveto20), weight, htbins, 4); 
-      FillHist("LooseEl20_ht", SumPt(jetColl_lepveto20), weight, htbins, 4); 
-      
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl20_pt_eta1", el_pt, weight, ptbins, 8);
+      FillHist("LooseEl20_njets", jetColl_lepveto20.size(), weight,  0.,5.,5);
+
+
+      if(fabs( electronLooseColl.at(0).Eta() < 0.8)) FillHist("LooseEl20_pt_eta1", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl20_pt_eta2", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl20_pt_eta3", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl20_pt_eta4", el_pt, weight, ptbins, 8);
@@ -403,7 +412,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillCLHist(sighist, "LooseEl20", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
     }
   }    
-
+  
   if(useevent40){
     if ( electronTightColl.size() == 1 && jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "TightEl40_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
     if (jetColl_lepveto40.size() >= 1) FillCLHist(sighist, "LooseEl40_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
@@ -417,54 +426,112 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillHist("TightEl40_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
       FillHist("TightEl40_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);     
       FillHist("TightEl40_ht", SumPt(jetColl_lepveto40), weight, htbins, 4);
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl40_pt_eta1",el_pt, weight, ptbins, 8);
+      if(fabs( electronTightColl.at(0).Eta() < 0.8)) FillHist("TightEl40_pt_eta1",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl40_pt_eta2",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl40_pt_eta3",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl40_pt_eta4",el_pt, weight, ptbins, 8);
       FillCLHist(sighist, "TightEl40", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
+      
+      
+      bool awaybjet=false;
+      bool closebjet=false;
+      bool closenoejet=false;
+      bool closephjet=false;
+      /// plot FR if away jet is btagged
+      for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
+	for(unsigned int iel=0 ; iel < electronTightColl.size() ; iel++){
+	  
+	  float dphi =TVector2::Phi_mpi_pi(electronTightColl.at(iel).Phi()- jetColl.at(ijet).Phi());
+	  
+	  if( dphi > 2.5){
+	    if(jetColl.at(ijet).BtagProb() > 0.679) awaybjet=true;
+	  }
+	  if( dphi < 0.4){
+            if(jetColl.at(ijet).BtagProb() > 0.679) closebjet=true;
+          }
+	  
+	  if( electronTightColl[iel].DeltaR(jetColl.at(ijet)) < 0.4){
+	    if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
+	    if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
+	  }
+	}
+      }
+      if(awaybjet)FillHist("TightEl40_awaybjet_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);
+      if(closebjet)FillHist("TightEl40_closebjet_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);
+      if(closenoejet) FillHist("TightEl40_closejet_noe_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);
+      if(closephjet) FillHist("TightEl40_closejet_ph_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);
     }
-
+    
     if (jetColl_lepveto40.size() >= 1){
       FillHist("LooseEl40_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
       FillHist("LooseEl40_pt", el_pt, weight,  ptbins, 8);
       FillHist("LooseEl40_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
       FillHist("LooseEl40_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);     
       FillHist("LooseEl40_ht", SumPt(jetColl_lepveto40), weight, htbins, 4);
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl40_pt_eta1", el_pt, weight, ptbins, 8);
+      if(fabs( electronLooseColl.at(0).Eta() < 0.8)) FillHist("LooseEl40_pt_eta1", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl40_pt_eta2", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl40_pt_eta3", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl40_pt_eta4", el_pt, weight, ptbins, 8);
-
+      
       FillCLHist(sighist, "LooseEl40", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
+      
+      
+      bool awaybjet=false;
+      bool closebjet=false;
+      bool closenoejet=false;
+      bool closephjet=false;
+      /// plot FR if away jet is btagged
+      for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
+        for(unsigned int iel=0 ; iel < electronLooseColl.size() ; iel++){
+	  
+          float dphi =TVector2::Phi_mpi_pi(electronLooseColl.at(iel).Phi()- jetColl.at(ijet).Phi());
+	  if( dphi > 2.5){
+            if(jetColl.at(ijet).BtagProb() > 0.679) awaybjet=true;
+          }
+          if( dphi < 0.4){
+            if(jetColl.at(ijet).BtagProb() > 0.679) closebjet=true;
+          }
+	  
+          if( electronLooseColl[iel].DeltaR(jetColl.at(ijet)) < 0.4){
+            if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
+            if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
+          }
+	}
+      }
+      if(awaybjet)FillHist("LooseEl40_awaybjet_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
+      if(closebjet)FillHist("LooseEl40_closebjet_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
+      if(closenoejet) FillHist("LooseEl40_closejet_noe_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
+      if(closephjet) FillHist("LooseEl40_closejet_ph_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
+      
     }
   }
-  
-  if(useevent40&&truth_match){
-    if( electronTightColl.size() == 1 && jetColl_lepveto40.size() >= 1){
-      FillHist("TightEl40_dr1_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("TightEl40_dr1_pt",el_pt, weight,  ptbins, 8);
-      FillHist("TightEl40_dr1_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
-      FillHist("TightEl40_dr1_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);
-      FillHist("TightEl40_dr1_ht", SumPt(jetColl_lepveto40), weight, htbins, 4);
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl40_dr1_pt_eta1",el_pt, weight, ptbins, 8);
-      else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl40_dr1_pt_eta2",el_pt, weight, ptbins, 8);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl40_dr1_pt_eta3",el_pt, weight, ptbins, 8);
-      else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl40_dr1_pt_eta4",el_pt, weight, ptbins, 8);
-    }
 
-    if (jetColl_lepveto40.size() >= 1){
-      FillHist("LooseEl40_dr1_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("LooseEl40_dr1_pt", el_pt, weight,  ptbins, 8);
-      FillHist("LooseEl40_dr1_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
-      FillHist("LooseEl40_dr1_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
-      FillHist("LooseEl40_dr1_ht", SumPt(jetColl_lepveto40), weight, htbins, 4);
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl40_dr1_pt_eta1", el_pt, weight, ptbins, 8);
-      else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl40_dr1_pt_eta2", el_pt, weight, ptbins, 8);
-      else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl40_dr1_pt_eta3", el_pt, weight, ptbins, 8);
+    if(useevent40&&truth_match){
+      if( electronTightColl.size() == 1 && jetColl_lepveto40.size() >= 1){
+	FillHist("TightEl40_dr1_eta", electronTightColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	FillHist("TightEl40_dr1_pt",el_pt, weight,  ptbins, 8);
+	FillHist("TightEl40_dr1_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
+	FillHist("TightEl40_dr1_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);
+	FillHist("TightEl40_dr1_ht", SumPt(jetColl_lepveto40), weight, htbins, 4);
+	if(fabs( electronTightColl.at(0).Eta() < 0.8)) FillHist("TightEl40_dr1_pt_eta1",el_pt, weight, ptbins, 8);
+	else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl40_dr1_pt_eta2",el_pt, weight, ptbins, 8);
+	else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl40_dr1_pt_eta3",el_pt, weight, ptbins, 8);
+	else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl40_dr1_pt_eta4",el_pt, weight, ptbins, 8);
+      }
+
+      if (jetColl_lepveto40.size() >= 1){
+	FillHist("LooseEl40_dr1_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	FillHist("LooseEl40_dr1_pt", el_pt, weight,  ptbins, 8);
+	FillHist("LooseEl40_dr1_njets", jetColl_lepveto40.size(), weight, 0.,5.,5);
+	FillHist("LooseEl40_dr1_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
+	FillHist("LooseEl40_dr1_ht", SumPt(jetColl_lepveto40), weight, htbins, 4);
+	if(fabs( electronLooseColl.at(0).Eta() < 0.8)) FillHist("LooseEl40_dr1_pt_eta1", el_pt, weight, ptbins, 8);
+	else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl40_dr1_pt_eta2", el_pt, weight, ptbins, 8);
+	else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl40_dr1_pt_eta3", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl40_dr1_pt_eta4", el_pt, weight, ptbins, 8);
-
+	
+      }
     }
-  }
 
 
 
@@ -476,7 +543,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillHist("TightEl60_eta_binned",fabs(electronTightColl.at(0).Eta()), weight, etabins, 4);     
       FillHist("TightEl60_ht", SumPt(jetColl_lepveto60), weight, htbins, 4);
       
-      if(fabs( electronTightColl.at(0).Eta() < 1.)) FillHist("TightEl60_pt_eta1",el_pt, weight, ptbins, 8);
+      if(fabs( electronTightColl.at(0).Eta() < 0.8)) FillHist("TightEl60_pt_eta1",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 1.479))FillHist("TightEl60_pt_eta2",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 2.)) FillHist("TightEl60_pt_eta3",el_pt, weight, ptbins, 8);
       else if(fabs( electronTightColl.at(0).Eta() < 2.5))FillHist("TightEl60_pt_eta4",el_pt, weight, ptbins, 8);
@@ -490,7 +557,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillHist("LooseEl60_njets", jetColl_lepveto60.size(), weight, 0.,5.,5);
       FillHist("LooseEl60_eta_binned",fabs(electronLooseColl.at(0).Eta()), weight, etabins, 4);
       FillHist("LooseEl60_ht", SumPt(jetColl_lepveto60), weight, htbins, 4);
-      if(fabs( electronLooseColl.at(0).Eta() < 1.)) FillHist("LooseEl60_pt_eta1", el_pt, weight, ptbins, 8);
+      if(fabs( electronLooseColl.at(0).Eta() < 0.8)) FillHist("LooseEl60_pt_eta1", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 1.479))FillHist("LooseEl60_pt_eta2", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.)) FillHist("LooseEl60_pt_eta3", el_pt, weight, ptbins, 8);
       else if(fabs( electronLooseColl.at(0).Eta() < 2.5))FillHist("LooseEl60_pt_eta4", el_pt, weight, ptbins, 8);

@@ -16,7 +16,10 @@
 
 void setTDRStyle();
 
-void FakeRatePlots_ewksub(TString path) {
+void FakeRatePlots_ewksub(){
+  
+  TString path= "/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/";
+
 
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_5_3_14.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
@@ -36,6 +39,10 @@ void FakeRatePlots_ewksub(TString path) {
   plotname.push_back("_ht");
   plotname.push_back("_eta_binned");
   plotname.push_back("_njets");
+  plotname.push_back("awaybjet_eta_binned");
+  plotname.push_back("closebjet_eta_binned");
+  plotname.push_back("closejet_noe_eta_binned");
+  plotname.push_back("closejet_ph_eta_binned");
   
   
   int ihist(0);

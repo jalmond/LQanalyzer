@@ -18,6 +18,7 @@ KEvent::KEvent() :
   k_nvertices(0),
   k_ivertex(0),
   k_process_id(0),
+  k_lumisec(0),
   k_vertexX(0.),
   k_vertexY(0.),
   k_vertexZ(0.), 
@@ -79,6 +80,7 @@ KEvent::KEvent(const KEvent& ev) :
   k_nvertices(ev.k_nvertices),
   k_ivertex(ev.k_ivertex),
   k_process_id(ev.k_process_id),
+  k_lumisec(ev.k_lumisec),
   k_vertexX(ev.k_vertexX),
   k_vertexY(ev.k_vertexY),
   k_vertexZ(ev.k_vertexZ),
@@ -142,6 +144,7 @@ void KEvent::Reset()
   k_nvertices= 0;
   k_ivertex= 0;
   k_process_id= 0;
+  k_lumisec=0;
   k_vertexX= 0.;
   k_vertexY= 0.;
   k_vertexZ= 0.;
@@ -201,6 +204,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_isData=p.IsData();
       k_EventNumber=p.EventNumber();
       k_RunNumber=p.RunNumber();
+
+      k_process_id= p.ProcessID();
+      k_lumisec= p.LumiSection();
       k_PF_MET= p.PFMET();
       k_PF_METphi= p.PFMETphi();
       k_PF_SumET = p.PFSumET();
@@ -449,6 +455,10 @@ void KEvent::SetVertexIndex(int ivertex){
 
 void KEvent::SetProcessID(int id){
   k_process_id = id;
+}
+
+void KEvent::SetLumiSection(int ls){
+  k_lumisec = ls;
 }
 
 

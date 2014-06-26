@@ -215,6 +215,7 @@ then
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
+    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_data_5_3_14.root HNDiElectron_period*
 fi
 
 
@@ -243,6 +244,7 @@ if [[ $runfakes  == "true" ]];
 
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
+    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_SKnonprompt_dilep_5_3_14.root HNDiElectron_nonprompt_periodA*
 fi
 
 if [[ $runflips  == "true" ]];
@@ -271,6 +273,7 @@ if [[ $runflips  == "true" ]];
 
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
+    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_SKchargeflip_dilep_5_3_14.root HNDiElectron_chargeflip_SK*
 fi
 
 

@@ -20,7 +20,7 @@ class ElectronCF : public AnalyzerCore {
   
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
-  void FillCutFlow(TString cut, float w);
+  void FillCutFlow(int cut, float w, TString tag);
 
  private:
   
@@ -31,7 +31,8 @@ class ElectronCF : public AnalyzerCore {
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
 
-  
+  float Z_el_denom;
+  float Z_el_num;
   ClassDef ( ElectronCF, 1);
 };
 #endif

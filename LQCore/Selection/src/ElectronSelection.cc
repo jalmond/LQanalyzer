@@ -684,30 +684,30 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   //----------------------------------------------------------------------
   
   double l_b_dEtaIn  [4] = { 0.007 , 0.007, 0.004, 0.004 };
-  double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.06 , 0.03 };
+  double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.03 , 0.03 };
   double l_b_sieie   [4] = { 0.01  , 0.01 , 0.01 , 0.01 };
   double l_b_hoe     [4] = { 0.15  , 0.12 , 0.12 , 0.12 };
-  double l_b_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
+  double l_b_d0      [4] = { 0.04  , 0.02 , 0.6 , 0.6 };
   double l_b_dZ      [4] = { 0.2   , 0.2  , 0.1  ,  0.1 };
   double l_b_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
-  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 0.15 , 0.10 }; 
-  double l_b_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
-  int    l_b_missHits[4] = { 999   , 1    , 1    , 0 }; 
+  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 0.6 , 0.6 }; 
+  double l_b_vtxProb [4] = { 999.  , 1e-6 , 999. , 1e-6 };
+  int    l_b_missHits[4] = { 999   , 1    , 999    , 0 }; 
 
   //----------------------------------------------------------------------
   // Endcap electron cut values
   //----------------------------------------------------------------------
   
-  double l_e_dEtaIn  [4] = { 0.01  , 0.009, 0.007, 0.005 };
-  double l_e_dPhiIn  [4] = { 0.7   , 0.10 , 0.03 , 0.02 };
+  double l_e_dEtaIn  [4] = { 0.01  , 0.009, 0.005, 0.005 };
+  double l_e_dPhiIn  [4] = { 0.7   , 0.10 , 0.02 , 0.02 };
   double l_e_sieie   [4] = { 0.03  , 0.03 , 0.03 , 0.03 };
   double l_e_hoe     [4] = { 999.  , 0.10 , 0.10 , 0.10 };
-  double l_e_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
+  double l_e_d0      [4] = { 0.04  , 0.02 , 0.6 , 0.6 };
   double l_e_dZ      [4] = { 0.2   , 0.2  , 0.1  , 0.1 };
   double l_e_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
-  double l_e_pfRelIso[4] = { 0.15  , 0.15 , 0.15 , 0.10 };
-  double l_e_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
-  int    l_e_missHits[4] = { 999   , 1    , 1    , 0 };
+  double l_e_pfRelIso[4] = { 0.15  , 0.15 , 0.6 , 0.60 };
+  double l_e_vtxProb [4] = { 999.  , 1e-6 , 999 , 1e-6 };
+  int    l_e_missHits[4] = { 999   , 1    , 999    , 0 };
   
   //----------------------------------------------------------------------
   // Bools that depend on barrel vs. endcap

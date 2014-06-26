@@ -41,10 +41,12 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   //// FakeRate Input file           
   //////////////////////////////////////////////////////////////////////                                                                                                   
   string analysisdir = getenv("FILEDIR");
-  
+
   TFile *infile_sf = TFile::Open((analysisdir+ "HMN_FinalSFNoJets.root").c_str());
-  MuonSF =  dynamic_cast<TH1F*> (( infile_sf->Get("etavspt"))->Clone());
-  
+  TDirectory* tempDir = getTemporaryDirectory();
+  tempDir->cd();
+ 
+  MuonSF =  dynamic_cast<TH2F*> (( infile_sf->Get("etavspt"))->Clone());
   infile_sf->Close();
   delete infile_sf;
   origDir->cd();
@@ -55,6 +57,37 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   rmcor = new rochcor2012();
 
 }
+
+
+TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
+{
+  //									\
+  									\
+  // Create a unique directory in memory to hold the histograms:	\
+  									\
+  //									\
+  									\
+  
+  gROOT->cd();
+  TDirectory* tempDir = 0;
+  int counter = 0;
+  while (not tempDir) {
+    // First, let's find a directory name that doesn't exist yet:               
+    std::stringstream dirname;
+    dirname << "AnalyzerCore_%i" << counter;
+    if (gROOT->GetDirectory((dirname.str()).c_str())) {
+      ++counter;
+      continue;
+    }
+    // Let's try to make this directory:                                        
+    tempDir = gROOT->mkdir((dirname.str()).c_str());
+
+  }
+
+  return tempDir;
+}
+
+
 
 double AnalyzerCore::MuonScaleFactor(double eta, double pt){
   
@@ -809,7 +842,7 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
   vector<snu::KElectron> prompt_electrons;
   for(unsigned int i = 0; i < electrons.size(); i++){
     if(!k_isdata){
-      if(!(electrons.at(i).GetType() == 3 || electrons.at(i).GetType() == 4 || electrons.at(i).GetType() == 5)) prompt_electrons.push_back(electrons.at(i));
+      if(!(electrons.at(i).GetType() == 1 || electrons.at(i).GetType() == 2 || electrons.at(i).GetType() == 3 || electrons.at(i).GetType() ==6)) prompt_electrons.push_back(electrons.at(i));
     }
     else prompt_electrons.push_back(electrons.at(i));
   }

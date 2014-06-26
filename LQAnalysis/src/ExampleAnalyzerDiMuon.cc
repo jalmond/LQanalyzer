@@ -151,7 +151,10 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    eventbase->GetMuonSel()->HNTightHighPtMuonSelection(muonHighPtColl);
    
    for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end(); it++){
-//   cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
+cout << "Weight = " << weight << endl;
+     weight *= MuonScaleFactor(it->Eta(), it->Pt());
+cout << "Weight = " << weight << endl;
+    cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
    }
   
    CorrectMuonMomentum(muonTightColl);

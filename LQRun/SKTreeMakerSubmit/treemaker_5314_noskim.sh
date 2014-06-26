@@ -30,7 +30,7 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("A")
+    declare -a input_samples=("DY50plus")
 
     stream="muon"
     source submit.sh

@@ -61,7 +61,7 @@ namespace snu {
     
     /// Process ID
     void SetProcessID(int id);
-    
+    void SetLumiSection(int ls);
     /// Vertex
     void SetNVertices(int nvert);
     void SetVertexIndex(int ivertex);
@@ -132,6 +132,7 @@ namespace snu {
     
     /// ProcessID
     inline Int_t ProcessID()  const {return k_process_id;}
+    inline Int_t LumiSection()  const {return k_lumisec;}
     /// Jet rho
     inline Double_t JetRho() const {return k_jetrho;}
 
@@ -180,7 +181,7 @@ namespace snu {
   private:
     /// decalre private functions
     
-    Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex, k_process_id;
+    Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex, k_process_id, k_lumisec;
     Double_t k_vertexX,k_vertexY,k_vertexZ,  k_jetrho, k_mcweight;
     Double_t k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
     Double_t k_genmettrue, k_genmetphitrue,k_gensumettrue, k_genmetcalo, k_genmetphicalo,k_gensumetcalo;
@@ -195,7 +196,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,10)
+    ClassDef(KEvent,12)
   }; 
   
 }//namespace snu

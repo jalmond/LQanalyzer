@@ -57,6 +57,8 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////   
   
 
+  if(eventbase->GetEvent().EventNumber() == 28681993) cout << "JOHN : " << eventbase->GetEvent().LumiSection() << endl;
+
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;

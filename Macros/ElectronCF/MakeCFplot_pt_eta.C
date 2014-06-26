@@ -29,12 +29,8 @@ void MakeCFPlot_pt_eta(TString path) {
     return;
   }
   vector<TString> hists;
-  hists.push_back("pt_eta1");
-  hists.push_back("pt_eta2");
-  hists.push_back("pt_eta3");
-  hists.push_back("pt_eta4");
-  hists.push_back("pt_eta5");
-  hists.push_back("pt_eta6");
+  hists.push_back("Zpeak_pt_eta1");
+  hists.push_back("Zpeak_pt_eta2");
   
   for(vector<TString>::iterator it = hists.begin(); it!= hists.end(); it++){
     TCanvas* c1 = new TCanvas(("Plot" +*it).Data(), "Plot", 800, 600);
