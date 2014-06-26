@@ -94,9 +94,10 @@ double AnalyzerCore::MuonScaleFactor(double eta, double pt){
   double sf = 0.;
   if(fabs(eta) > 2.4) return 1.;
   if(pt < 15.) return 1.;
-  int bin = MuonSF->FindBin(pt,fabs(eta));
+  int bin = MuonSF->FindBin(fabs(eta),pt);
   
   sf = MuonSF->GetBinContent(bin);
+  cout << sf << endl;
   return sf;
   
 }
