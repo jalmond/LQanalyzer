@@ -766,30 +766,19 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
 
 float AnalyzerCore::CFRate(snu::KElectron el){
 
-  if(fabs(el.Eta()) < 1.){
-    if(el.Pt() < 30.) return 0.00001511625;
-    else if(el.Pt() < 40.) return 0.0000358564;
-    else if(el.Pt() < 50.) return 0.00003;
-    else if(el.Pt() < 60.) return 0.00003;
-    else if(el.Pt() < 80.) return 0.000058;
-    else return 0.00006;
+  if(fabs(el.Eta()) < 1.5){
+    if(el.Pt() < 20.) return 0.0000125873;
+    else if(el.Pt() < 40.) return 0.0000526579;
+    else if(el.Pt() < 60.) return 0.0000413122;
+    else if(el.Pt() < 80.) return 0.000125591;
+    else return 0.000373733;
   }
-  else if(fabs(el.Eta() ) < 1.6){
-    if(el.Pt() < 30.) return 0.000158954;
-    else if(el.Pt() < 40.) return 0.0001273112;
-    else if(el.Pt() < 50.) return 0.00000982577;
-    else if(el.Pt() < 60.) return 0.000165563;
-    else if(el.Pt() < 80.) return 0.000382288;
-    else return 0.000587109;
-  }
-
-  else if(fabs(el.Eta() ) < 2.5){
-    if(el.Pt() < 30.) return 0.00017;
-    else if(el.Pt() < 40.) return 0.00026163;
-    else if(el.Pt() < 50.) return 0.000311835;
-    else if(el.Pt() < 60.) return 0.000509239;
-    else if(el.Pt() < 80.) return 0.000907024;
-    else return 0.00154662;
+  else {
+    if(el.Pt() < 20.) return      0.00011713;
+    else if(el.Pt() < 40.) return 0.00021563;
+    else if(el.Pt() < 60.) return 0.000348532;
+    else if(el.Pt() < 80.) return 0.000826625;
+    else return 0.00166157;
   }
   return 1.;
   

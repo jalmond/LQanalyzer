@@ -182,7 +182,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       float cf1=  CFRate(electronAnalysisColl.at(0));
       float cf2=  CFRate(electronAnalysisColl.at(1));
 
-      weight *=  0.5* ((cf1/(1.-cf1)) + (cf2/(1.-cf2)));
+      weight *=  ((cf1/(1.-cf1)) + (cf2/(1.-cf2)));
     }
     else return;
   }

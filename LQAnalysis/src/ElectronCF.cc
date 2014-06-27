@@ -320,8 +320,25 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   }
 
   
+
+  if(SameCharge(electronTightColl)){
+    snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
+    
+    FillHist("SS_Z", Z.M(), weight, 0, 150., 15);
+    
+  }
+  if (electronTightColl.size()==2){
+    if(electronTightColl.at(0).Charge() != electronTightColl.at(1).Charge() ){
+      snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
+      float cfweight = weight*( (CFRate(electronTightColl.at(0)) /(1-CFRate(electronTightColl.at(0)))) + (CFRate(electronTightColl.at(1)) / (1-CFRate(electronTightColl.at(1)))));
+      FillHist("OS_Z", Z.M(), cfweight, 0, 150., 15);
+      
+    }
+  }
+  
+  
   Float_t ptbins[6] = { 15.,20.,40.,60.,80.,200.};
- 
+  
   
   for(int iel = 0 ; iel < electronTightColl.size(); iel++){
     FillHist("CFDenominator", 1  , weight, 0.,1.,1);
