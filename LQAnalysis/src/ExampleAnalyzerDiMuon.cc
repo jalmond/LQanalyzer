@@ -47,12 +47,6 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
 
    Message("Making clever hists for Z ->ll test code", INFO);
 
-   //// Initialise Plotting class functions
-   /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-   MakeCleverHistograms(sighist, "DiMuon");
-   MakeCleverHistograms(sighist, "DiMuonWPURW");
-   MakeCleverHistograms(sighist, "DiMuonLooseVeto");
-
    return;
  }
 
@@ -124,8 +118,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    //eventbase->GetMuonSel()->SetPt(20.);
    /// ID are explained in https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
    // eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
-   
-   
+      
    /// Standard cut of 2.4 which is the Muon Spectrometer coverage
    //eventbase->GetMuonSel()->SetEta(2.4);
    
@@ -156,24 +149,17 @@ cout << "Weight = " << weight << endl;
 cout << "Weight = " << weight << endl;
     cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
    }
-  
+   
+   /// Correct the muon momentum with rochester corrections
    CorrectMuonMomentum(muonTightColl);
    CorrectMuonMomentum(muonHighPtColl);
    
-   
-   int imu=0;
-   for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end();it++, imu++){
-//     cout << "Tight corrrected muon pt = "<< it->Pt() << " " << it->Eta() << " " << it->Phi() << endl;
-   }
-   
-
+   /// Example of how to get fake weight for dimuon channel
    std::vector<snu::KMuon> muonLooseColl;
    eventbase->GetMuonSel()->HNLooseMuonSelection(muonLooseColl);
    if(muonLooseColl.size()==2){
      float mmweight = Get_DataDrivenWeight_MM(muonLooseColl);
-     cout << "Weight of mm event = " << mmweight << endl;
    }
-   
    
    ///////////////////////////////////////////////////////////////////////////////////////////
    /// 2) Loose Muons for veto
