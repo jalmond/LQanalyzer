@@ -464,7 +464,20 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      }
 	      if(!close_to_tau) {
 		
-		/// Theis is a match for status 1 electron and reco electron
+		/// Check there is no "CLOSER" status 1 electron 
+		for(unsigned int g2 =g+1; g2 < GenParticleP->size(); g2++){
+		  if(GenParticleStatus->at(g2) == 1){
+		    if(fabs(GenParticlePdgId->at(g2)) == 11){
+		      double dr_el2 = sqrt( pow(fabs( match_eta - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g2))),2.0));
+		      
+		      if(dr_el2 < dr) {
+			g = g2;
+			break;
+		      }
+		    }
+		  }
+		}
+		/// This is a match for status 1 electron and reco electron
 		int mu_index = GenParticleMotherIndex->at(g);
 		bool matched_el=false;
 		while(!matched_el){
@@ -768,7 +781,9 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
 
     m_logger << DEBUG << "Filling JetID WP " << LQLogger::endmsg; 
+
     if(PFJetPileupjetIDpassLooseWP){
+      cout << PFJetPileupjetIDpassLooseWP->at(ijet) << endl;
       jet.SetJetPileupIDLooseWP(PFJetPileupjetIDpassLooseWP->at(ijet));
       jet.SetJetPileupIDMediumWP(PFJetPileupjetIDpassMediumWP->at(ijet));
       jet.SetJetPileupIDTightWP(PFJetPileupjetIDpassTightWP->at(ijet));

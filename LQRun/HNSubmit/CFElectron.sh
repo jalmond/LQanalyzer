@@ -7,8 +7,8 @@ then
     source functions.sh
     cycle="ElectronCF"
     skinput="True"
-    useskim="DiLep"
-    njobs=30
+    #useskim="DiLep"
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000

@@ -60,8 +60,7 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
   std::vector<KJet> alljets = k_lqevent.GetJets();
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-
-    if ( jit->Pt() >= 20. && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))  pre_jetColl.push_back(*jit);
+    if ( (jit->Pt() >= 20.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit) && jit->PileupJetIDLoose())  pre_jetColl.push_back(*jit);
     
   }
   

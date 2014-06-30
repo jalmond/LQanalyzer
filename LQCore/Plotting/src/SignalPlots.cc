@@ -88,9 +88,10 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_METraw_phi"]          =     new TH1F("h_METraw_phi_"        + name,"Missing Et",140,-3.5,3.5);
   map_sig["h_METtype1_phi"]        =     new TH1F("h_METtype1_phi_"      + name,"Missing Et",140,-3.5,3.5);
   map_sig["h_METtype01_phi"]       =     new TH1F("h_METtype01_phi_"     + name,"Missing Et",140,-3.5,3.5);
-  map_sig["h_SumET"]               =     new TH1F("h_SumET_"             + name,"Sum Et",100,0.0,500.0);
+  map_sig["h_SumET"]               =     new TH1F("h_SumET_"             + name,"Sum Et",100,0.0,2000.0);
   map_sig["h_nVertices"]           =     new TH1F("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
-  
+  map_sig["h_samevertex"]          =     new TH1F("h_samevertex_"        + name,"same vertex", 2,0., 2.0); 
+  map_sig["h_el_evvertexmatch"]    =     new TH1F("h_el_evvertexmatch_"  + name, "el vertex " , 2,0., 2.0);
   /// Charge plot
   map_sig["h_sumcharge"]           =     new TH1F("h_sumcharge_"         + name,"Charge of the lepton pair",6,-3,3);
   
@@ -150,8 +151,9 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 	  Fill("h_jet_el_ptratio", electrons.at(i).Pt()/ jets[emme].Pt(), weight);
 	}
 	leadjet_away=false;
-	if(dR< min_ejet_Dr) min_ejet_Dr=dR;
-      }
+      }	
+      
+      if(dR< min_ejet_Dr) min_ejet_Dr=dR;
       if(emme == 0)   Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
     }
   }
@@ -279,7 +281,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     }
   }
   
-  if(electrons.size()==1){
+  if(electrons.size()>=1){
     if(jets.size()>1){
       Fill("h_e1jjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
     }
@@ -287,7 +289,21 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
   if(debug)cout<< "Plotting [4] " << endl;
   int iel(0);
+  
+  int samevertex=-999;
+  int vid=0;
+  int ev_elvertex=-999;
   for(std::vector<snu::KElectron>::iterator elit = electrons.begin(); elit != electrons.end(); elit++, iel++){
+    if(iel == 0 ) vid= elit->VertexIndex() ;
+    else{
+      if(elit->VertexIndex() != vid) samevertex = 0;
+      else {
+	samevertex = 1;
+	if(ev.VertexIndex() == elit->VertexIndex()) ev_elvertex = 1;
+	else ev_elvertex = 0;
+      }
+    }
+    
     Fill("h_electrons_phi",elit->Phi(),weight);
     Fill("h_electrons_scphi",elit->SCPhi(),weight);
     Fill("h_electrons_eta",elit->Eta(),weight);
@@ -370,6 +386,11 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   Fill("h_METtype01_phi",ev.PFMETType01phi(), weight);
   Fill("h_SumET",ev.PFSumET(), weight);
   Fill("h_nVertices", ev.nVertices(), weight);
+  
+  Fill("h_samevertex", samevertex, weight);
+  Fill("h_el_evvertexmatch" , ev_elvertex, weight);
+
+
   
   //// Mass plots
   if(jets.size()>1){

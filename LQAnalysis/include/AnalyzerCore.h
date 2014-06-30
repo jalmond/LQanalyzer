@@ -39,7 +39,7 @@ class AnalyzerCore : public LQCycleBase {
   bool isPrompt(long pdgid);
   bool IsTight(snu::KElectron electron, double rho);
   bool IsTight(snu::KMuon muon);
-  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons);
+  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip=false);
   int NBJet(std::vector<snu::KJet> jets);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KElectron> electrons);

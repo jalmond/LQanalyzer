@@ -70,118 +70,32 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
-
+  
   std::vector<snu::KElectron> _electronTightColl;
   eventbase->GetElectronSel()->HNTightElectronSelection(_electronTightColl);
-
-  /*  
-  //// NO CHARGE CONS
-  std::vector<snu::KElectron> _electronTightColl_nochargeconsistency;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
-  eventbase->GetElectronSel()->SetPt(15);
-  eventbase->GetElectronSel()->SetBSdxy(0.01);
-  eventbase->GetElectronSel()->SetBSdz(0.10);
-  eventbase->GetElectronSel()->SetRelIso(0.09);
-  eventbase->GetElectronSel()->SetCheckCharge(false);
-  eventbase->GetElectronSel()->SetApplyConvVeto(true);
-  eventbase->GetElectronSel()->Selection(_electronTightColl_nochargeconsistency);
-  //// NO CONV VETO
-  std::vector<snu::KElectron> _electronTightColl_noconvveto;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
-  eventbase->GetElectronSel()->SetPt(15);
-  eventbase->GetElectronSel()->SetBSdxy(0.01);
-  eventbase->GetElectronSel()->SetBSdz(0.10);
-  eventbase->GetElectronSel()->SetRelIso(0.09);
-  eventbase->GetElectronSel()->SetCheckCharge(true);
-  eventbase->GetElectronSel()->SetApplyConvVeto(false);
-  eventbase->GetElectronSel()->Selection(_electronTightColl_noconvveto);
   
-  //// LOOSEN d0
-  std::vector<snu::KElectron> _electronTightColl_loosed0;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
-  eventbase->GetElectronSel()->SetPt(15);
-  eventbase->GetElectronSel()->SetRelIso(0.09);
-  eventbase->GetElectronSel()->SetCheckCharge(true);
-  eventbase->GetElectronSel()->SetApplyConvVeto(true);
-  eventbase->GetElectronSel()->Selection(_electronTightColl_loosed0);
+  std::vector<snu::KMuon> muonVetoColl;
+  eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
 
-  //// LOOSEN ISO
-  std::vector<snu::KElectron> _electronTightColl_looseiso;
-  eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_TIGHT);
-  eventbase->GetElectronSel()->SetPt(15);
-  eventbase->GetElectronSel()->SetBSdxy(0.01);
-  eventbase->GetElectronSel()->SetBSdz(0.10);
-  eventbase->GetElectronSel()->SetCheckCharge(true);
-  eventbase->GetElectronSel()->SetApplyConvVeto(true);
-  eventbase->GetElectronSel()->Selection(_electronTightColl_looseiso);
+  std::vector<snu::KElectron> electronVetoColl;
+  eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
 
-  if(SameCharge(_electronTightColl_nochargeconsistency)){
-    FillCutFlow(_electronTightColl_nochargeconsistency.at(0).GetType(),1, "NoCC");
-    FillCutFlow(_electronTightColl_nochargeconsistency.at(1).GetType(),1,"NoCC");
-  }
-  if(SameCharge(_electronTightColl_noconvveto)){
-    FillCutFlow(_electronTightColl_noconvveto.at(0).GetType(),1, "NoCV");
-    FillCutFlow(_electronTightColl_noconvveto.at(1).GetType(),1,"NoCV");
-  }
-  if(SameCharge(_electronTightColl_loosed0)){
-    FillCutFlow(_electronTightColl_loosed0.at(0).GetType(),1, "LooseD0");
-    FillCutFlow(_electronTightColl_loosed0.at(1).GetType(),1,"LooseD0");
-  }
-  if(SameCharge(_electronTightColl_looseiso)){
-    FillCutFlow(_electronTightColl_looseiso.at(0).GetType(),1, "LooseIso");
-    FillCutFlow(_electronTightColl_looseiso.at(1).GetType(),1,"LooseIso");
-  }
-
-  if(SameCharge(_electronTightColl)){
-    cout << "SS DY event" << endl;
-    
-    FillCutFlow(_electronTightColl.at(0).GetType(),1, "Tight");
-    FillCutFlow(_electronTightColl.at(1).GetType(),1, "Tight");
-    if((_electronTightColl.at(0).GetType() != 0 && _electronTightColl.at(1).GetType() != 0) || (_electronTightColl.at(0).GetType() >6  || _electronTightColl.at(1).GetType() >6 )){
-      cout << "Electron 1 type = " << _electronTightColl.at(0).GetType() << endl;
-      cout << "Electron 2 type = " << _electronTightColl.at(1).GetType() << endl;
-      std::vector<snu::KTruth> truthColl;
-      eventbase->GetTruthSel()->Selection(truthColl);
-
-      float eta1 =  _electronTightColl.at(0).Eta();
-      float phi1 =  _electronTightColl.at(0).Phi();
-      float eta2 =  _electronTightColl.at(1).Eta();
-      float phi2 =  _electronTightColl.at(1).Phi();
-      
-      cout << "[Reco] Electron1 pt/eta/phi/charge = " << _electronTightColl.at(0).Pt() << " " << _electronTightColl.at(0).Eta() << " " << _electronTightColl.at(0).Phi() << " " <<_electronTightColl.at(0).Charge() << endl;
-      cout << "[Reco] Electron2 pt/eta/phi/charge = " << _electronTightColl.at(1).Pt() << " " << _electronTightColl.at(1).Eta() << " " << _electronTightColl.at(1).Phi() << " " << _electronTightColl.at(1).Charge() << endl;
-      for(int i=0; i < eventbase->GetElectrons().size();i++){
-	cout << "[nocut] Electron pt/eta/phi/charge = " << eventbase->GetElectrons().at(i).Pt() << " " <<  eventbase->GetElectrons().at(i).Eta() << " " << eventbase->GetElectrons().at(i).Phi() << " " << eventbase->GetElectrons().at(i).Charge() << endl;
-      }
-      
-      
-      cout << "\n --------" << endl;
-      for(unsigned int g =0; g < truthColl.size(); g++){
-	if(truthColl.at(g).PdgId() != 2212){
-	  double dr1 = sqrt( pow(fabs( eta1 - truthColl.at(g).Eta()),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( phi1 -truthColl.at(g).Phi())),2.0));
-	  double dr2 = sqrt( pow(fabs( eta2 - truthColl.at(g).Eta()),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( phi2 -truthColl.at(g).Phi())),2.0));
-	  if(dr1 < 0.4){
-	    m_logger << INFO << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID/NDaughters/TauDecay = " << truthColl.at(g).Pt() << "/" << truthColl.at(g).Eta() << "/" << truthColl.at(g).Phi() << "/" <<  truthColl.at(g).GenStatus() << "/" << truthColl.at(g).PdgId() << "/" << truthColl.at(truthColl.at(g).IndexMother()).PdgId() << "/" <<  truthColl.at(g).NDaughter() << "/" << truthColl.at(g).TauDecayMode() << " Matched to el1" <<  LQLogger::endmsg;
-	  }
-	  else    if(dr2 < 0.4){
-	    m_logger << INFO << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID/NDaughters/TauDecay = " << truthColl.at(g).Pt() << "/" << truthColl.at(g).Eta() << "/" << truthColl.at(g).Phi() << "/" <<  truthColl.at(g).GenStatus() << "/" << truthColl.at(g).PdgId() << "/" << truthColl.at(truthColl.at(g).IndexMother()).PdgId() << "/" <<  truthColl.at(g).NDaughter() << "/" << truthColl.at(g).TauDecayMode() << " Matched to el2" <<  LQLogger::endmsg;
-	  }
-	  else {
-	    m_logger << INFO << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID/NDaughters/TauDecay = " << truthColl.at(g).Pt() << "/" << truthColl.at(g).Eta() << "/" << truthColl.at(g).Phi() << "/" <<  truthColl.at(g).GenStatus() << "/" << truthColl.at(g).PdgId() << "/" << truthColl.at(truthColl.at(g).IndexMother()).PdgId() << "/" <<  truthColl.at(g).NDaughter() << "/" << truthColl.at(g).TauDecayMode()  <<  LQLogger::endmsg;
-	  }
-	}
-      }
-    }
-    
-  }
+  if(electronVetoColl.size() !=2) return;
+  if(muonVetoColl.size() != 0) return;
   
-  return;
 
-  
-  if(SameCharge(_electronTightColl)){
+ if(SameCharge(_electronTightColl)){
+    int e1_type = _electronTightColl.at(0).GetType();
+    int e2_type = _electronTightColl.at(1).GetType();
+    if(!( e1_type == 1 || e1_type == 2 || e1_type == 3 || e1_type == 6 )
+       && !( e2_type == 1 || e2_type == 2 || e2_type == 3 || e2_type == 6 ) )  FillHist("ss", 1, 1, 0, 1., 1);
+  }
+
+ 
+ if(_electronTightColl.size() ==2){
     
-    std::vector<snu::KTruth> truthColl;
-    eventbase->GetTruthSel()->Selection(truthColl);
+   std::vector<snu::KTruth> truthColl;
+   eventbase->GetTruthSel()->Selection(truthColl);
     
     float eta1 =  _electronTightColl.at(0).Eta();
     float phi1 =  _electronTightColl.at(0).Phi();
@@ -213,7 +127,8 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
     }
   }
   
-  return;
+
+  /*
   if(SameCharge(_electronTightColl)){
     cout << "SS DY event" << endl;
     cout << "Electron 1 type = " << _electronTightColl.at(0).GetType() << endl;
@@ -282,14 +197,21 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
       Z_el_denom +=2;
       if(_electronTightColl.at(0).GetType() == 6) {
 	Z_el_num +=1;
-      cout << "TYPE 6 " << endl;
-    }
-    if(_electronTightColl.at(1).GetType() == 6) Z_el_num +=1;
-  }
+	cout << "TYPE 6 " << endl;
+	}
+	if(_electronTightColl.at(1).GetType() == 6) Z_el_num +=1;
+	}
   
   */
   
   std::vector<snu::KElectron> electronTightColl =  GetTruePrompt(_electronTightColl);
+
+  
+  if(SameCharge(electronTightColl)){
+    FillHist("ss2", 1, 1., 0, 1., 1);
+  }
+
+
   if(electronTightColl.size()!=2) return;
   
   std::vector<snu::KMuon> muonTightColl;
@@ -320,7 +242,6 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   }
 
   
-
   if(SameCharge(electronTightColl)){
     snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);
     
@@ -338,9 +259,11 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   
   
   Float_t ptbins[6] = { 15.,20.,40.,60.,80.,200.};
-  
-  
+
+  int cf_event=0;
   for(int iel = 0 ; iel < electronTightColl.size(); iel++){
+    //if(electronTightColl.at(iel).Pt() < 20.) return;
+    
     FillHist("CFDenominator", 1  , weight, 0.,1.,1);
     FillHist("CFDenominator_pt", electronTightColl.at(iel).Pt()  , weight, 0.,500.,100);
     FillHist("CFDenominator_eta", electronTightColl.at(iel).Eta()  , weight, -3.,3.,60);
@@ -358,6 +281,10 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
     
     
     if(electronTightColl.at(iel).GetType() == 4 || electronTightColl.at(iel).GetType() == 5) {
+      cf_event++;
+      if(cf_event > 1) cout << "2 CF in 1 event " << eventbase->GetEvent().EventNumber()<< endl;
+      if(!SameCharge(electronTightColl)) cout << "Opposite sign event has chargeflip ? "<< eventbase->GetEvent().EventNumber()<< endl;
+  
       FillHist("CFNumerator", 1  , weight, 0.,1.,1);
       FillHist("CFNumerator_pt", electronTightColl.at(iel).Pt()  , weight, 0.,500.,100);
       FillHist("CFNumerator_eta", electronTightColl.at(iel).Eta()  , weight, -3.,3.,60);

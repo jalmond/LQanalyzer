@@ -1,8 +1,8 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-runSignal=false
-runMC=true
+runSignal=true
+runMC=false
 
 if [[ $runSignal  == "true" ]];
 then
@@ -29,7 +29,7 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-    
+    nevents=10000
     declare -a input_samples=("DY50plus")
 
     stream="muon"

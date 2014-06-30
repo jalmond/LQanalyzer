@@ -359,7 +359,7 @@ int MakePlots(string hist, string h_name, float xmin,float  xmax, int rebin) {
   
   vector<string> vchannel;
   vchannel.push_back("ee");
-  vchannel.push_back("mumu");
+  //vchannel.push_back("mumu");
   
   for(vector<string>::iterator it=vchannel.begin(); it!= vchannel.end(); it++){
     
@@ -376,9 +376,6 @@ int MakePlots(string hist, string h_name, float xmin,float  xmax, int rebin) {
     masspoints.push_back("250");
     masspoints.push_back("275");
     masspoints.push_back("300");
-    masspoints.push_back("325");
-    masspoints.push_back("350");
-    masspoints.push_back("375");
     masspoints.push_back("400");
     masspoints.push_back("500");
     masspoints.push_back("600");
@@ -393,7 +390,7 @@ int MakePlots(string hist, string h_name, float xmin,float  xmax, int rebin) {
 	cout << "\n------------------------------------------------------- \n" << endl;
 	cout << "Making histogram " << name <<  " " << " mass = " << masspoints.at(i) << "channel = " << *it<<endl;
 	
-	TString sigloc = "/home/jalmond/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHN" + (*it) + masspoints.at(i) + "_nocut_5_3_14.root";
+	TString sigloc = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHN" + (*it) + masspoints.at(i) + "_nocut_5_3_14.root";
       
 	TFile* sig =  TFile::Open((sigloc).Data());
 	cout << "WandNmass" << endl;

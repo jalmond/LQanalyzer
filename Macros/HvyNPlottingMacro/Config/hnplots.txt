@@ -1,7 +1,7 @@
 # Specify_location_of_data/mc
-mcpath	        /home/jalmond/LQanalyzer/data/output/SSElectron/
-datapath	/home/jalmond/LQanalyzer/data/output/SSElectron/HNDiElectron_periodE_SKegamma_5_3_8.root
-datadrivenpath	/home/jalmond/LQanalyzer/data/output/SElectron/
+mcpath	        /home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/
+datapath	/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_data_5_3_14.root
+datadrivenpath	/home/jalmond/Analysis/LQanalyzer/data/output/SElectron/
 # Specify_the_list_of_hists_to_plot
 plottingpath	dat/hnhist_config.txt
 cutpath		dat/hn_cuts.txt
@@ -9,7 +9,7 @@ cutpath		dat/hn_cuts.txt
 prefix		HNDiElectron_SK
 postfix		_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  HNDiElectron
+outputdir  HNSignal2
 histdir    LQMarch14
 # CONFIGURE_HISTOGRAMS
 showdata   true

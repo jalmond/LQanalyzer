@@ -91,7 +91,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl);
 
   /// Get Prompt electrons/CF
-  std::vector<snu::KElectron> electronAnalysisColl =GetTruePrompt(_electronAnalysisColl);
+  std::vector<snu::KElectron> electronAnalysisColl =GetTruePrompt(_electronAnalysisColl, false); // removes CF and fake in mc
   
   std::vector<snu::KElectron> electronVetoColl;
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
@@ -116,19 +116,19 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   /// JETS
   std::vector<snu::KJet> jetColl_lepveto;
-  std::vector<snu::KJet> jetColl_reallepveto;  /// -> does not veto jets IF the electron Fraction is < 20%
+  std::vector<snu::KJet> jetColl_lepveto_mva;
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetPt(20.);
-  eventbase->GetJetSel()->SetEta(2.4);
+  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, muonNoCutColl, electronNoCutColl);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonVetoColl, electronLooseColl);
-  eventbase->GetJetSel()->JetSelectionRealLeptonVeto(jetColl_reallepveto, muonVetoColl, electronLooseColl);
-  eventbase->GetJetSel()->Selection(jetColl);
- 
+  eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto_mva, muonVetoColl, electronLooseColl);
   
   /// makes full set of plots for el/mu/jets/met with no cuts applied on objects 
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl, weight);
   
+  cout << jetColl_lepveto_mva.size() << " " <<  jetColl_lepveto.size() << endl;
   
   /// Apply electron SFs for tight id
   if(!isData){
@@ -140,7 +140,20 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //// WZ/ZZ CR
   if(_electronAnalysisColl.size() ==  3 && (muonVetoColl.size()== 0)) {
     
-    m_logger << INFO << "Number of jets in tri electron event = " << jetColl_lepveto.size() << LQLogger::endmsg;
+    m_logger << DEBUG << "Number of jets in tri electron event = " << jetColl_lepveto.size() << LQLogger::endmsg;
+    
+    float charge1 = _electronAnalysisColl.at(0).Charge();
+    float charge2 = _electronAnalysisColl.at(1).Charge();
+    float charge3 = _electronAnalysisColl.at(2).Charge();
+    
+    snu::KParticle osee;
+    if(charge1 != charge2) osee= _electronAnalysisColl.at(0) + _electronAnalysisColl.at(1);
+    if(charge1 != charge3) osee= _electronAnalysisColl.at(0) + _electronAnalysisColl.at(2);
+    if(charge2 != charge3) osee= _electronAnalysisColl.at(1) + _electronAnalysisColl.at(2);
+    
+    if(eventbase->GetEvent().PFMET() > 30){
+      if(fabs(osee.M() - 90.) < 10) FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,_electronAnalysisColl,jetColl_lepveto, weight);
+    }
 
     FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,_electronAnalysisColl,jetColl_lepveto, weight);
   }
@@ -187,10 +200,11 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     else return;
   }
   else {
-    if(electronAnalysisColl.at(0).Charge() != electronAnalysisColl.at(1).Charge()) FillCLHist(sighist, "OSee", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+    if ((electronVetoColl.size() + muonVetoColl.size()) == 2){
+      if(electronAnalysisColl.at(0).Charge() != electronAnalysisColl.at(1).Charge()) FillCLHist(sighist, "OSee", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+    }
     if(electronAnalysisColl.at(0).Charge() != electronAnalysisColl.at(1).Charge()) return;
   }
-  
   
   FillEventCutFlow("SSDiEl",weight);
   
@@ -207,14 +221,14 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   FillCLHist(sighist, "SSee", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
-  
-  
   if(!Zcandidate(electronAnalysisColl, 20., false)) FillCLHist(sighist, "SSee_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   else FillCLHist(sighist, "SSee_Z", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
   if(jetColl_lepveto.size() != 0){
     if(!Zcandidate(electronAnalysisColl, 20., false)) FillCLHist(sighist, "SSee_gt0jet_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   }
+
+  if(jetColl_lepveto.size() == 1) FillCLHist(sighist, "SSee_1jet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
   if(jetColl_lepveto.size() < 2) return;
   FillCLHist(sighist, "SSee_DiJet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
@@ -223,7 +237,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   if(MidMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto) )FillCLHist(sighist, "MediumMassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   if(HighMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto) )FillCLHist(sighist, "HighMassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
-  
+  cout << "jetColl_lepveto_mva.size() = " << jetColl_lepveto_mva.size() << endl;
+  if(LowMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva) )FillCLHist(sighist, "LowMassRegion_mvajet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+
   if(jetColl_lepveto.size() ==1) FillCLHist(sighist, "1JetCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   if(jetColl_lepveto.size() >= 1 && (nbjet!=0)) FillCLHist(sighist, "BJetCR",eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   if(jetColl_lepveto.size() >= 1 && (eventbase->GetEvent().PFMET() > 50.)) FillCLHist(sighist, "HighMETCR",eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
@@ -282,16 +298,46 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   if(jets.size() < 2) return false;
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
   if(ee.M()  < 10.) return false;
-
-  snu::KParticle eejj = electrons.at(0) + electrons.at(1)+ jets.at(0) + jets.at(1) ; 
-  if(eejj.M()  > 200.) return false;
-    
-  snu::KParticle jj = jets.at(0) + jets.at(1) ;
-  if(jj.M() > 120.) return false;
-  
   if(ee.M() > 80.) return false;
-  if(eventbase->GetEvent().PFMET() > 35.) return false;
-
+  
+  
+  snu::KParticle eej1 = electrons.at(0)+ jets.at(0) + jets.at(1) ; 
+  if(eej1.M() > 160.) return false;
+  if(eej1.M() < 40.) return false;;
+  
+  snu::KParticle eej2 = electrons.at(1)+ jets.at(0) + jets.at(1) ; 
+  if(eej2.M() > 120.) return false;;
+  if(eej2.M() < 50.) return false;;
+  
+  snu::KParticle eejj = electrons.at(0) + electrons.at(1)+ jets.at(0) + jets.at(1) ; 
+  if(eejj.M()  > 180.) return false;
+  if(eejj.M()  < 50.) return false;
+  
+  
+  snu::KParticle jj = jets.at(0) + jets.at(1) ;
+  if(jj.M() > 100.) return false;
+  if(jj.M() < 40.) return false;
+  
+  
+  if(eventbase->GetEvent().PFSumET() < 200.) return false;;
+  if(eventbase->GetEvent().PFSumET() > 1500.) return false;;
+  
+  if(electrons.at(0).DeltaR(electrons.at(1)) < 0.6) return false;
+  if(electrons.at(0).DeltaR(electrons.at(1)) > 3.5) return false;
+  
+  if(jets.at(0).DeltaR(jets.at(1)) > 3.5) return false;
+  
+  if(eventbase->GetEvent().PFMET() > 30.) return false;
+  
+  float dphi1 = TVector2::Phi_mpi_pi(electrons.at(0).Phi()- eventbase->GetEvent().PFMETphi());
+  float MT1 = sqrt(2.* electrons.at(0).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi1)));
+  
+  float dphi2 = TVector2::Phi_mpi_pi(electrons.at(1).Phi()- eventbase->GetEvent().PFMETphi());
+  float MT2 = sqrt(2.* electrons.at(1).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi2)));
+  if(MT1 > 50.) return false;
+  if(MT2 > 50.) return false;
+  
+  
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     if(jets.at(ij).BtagProb() > 0.679) nbjet++;
@@ -303,21 +349,41 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
 }
 
 bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets){
+  
   if(electrons.size() != 2 ) return false;
   if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
   if(!SameCharge(electrons)) return false;
   if(jets.size() < 2) return false;
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
-  if(ee.M()  < 10.) return false;
+  if(ee.M()  < 15.) return false;
+  if(fabs(ee.M()-90.)  < 10.) return false;
 
-  snu::KParticle eejj = electrons.at(0) + electrons.at(1)+ jets.at(0) + jets.at(1) ;
-  if(eejj.M()  > 200.) return false;
+  if(eventbase->GetEvent().PFSumET() < 300.) return false;;
+  if(eventbase->GetEvent().PFSumET() > 2000.) return false;;
 
+
+  snu::KParticle e2jj = electrons.at(1) + electrons.at(1)+ jets.at(0) + jets.at(1) ;
+  if(e2jj.M() > 250.) return false;;
+  
+  
   snu::KParticle jj = jets.at(0) + jets.at(1) ;
-  if(jj.M() > 120.) return false;
+  if(jj.M() > 110.) return false;
+  if(jj.M() < 50.) return false;
 
-  if(ee.M() > 80.) return false;
+  if(electrons.at(0).DeltaR(electrons.at(1)) < 0.6) return false;
+  if(electrons.at(0).DeltaR(electrons.at(1)) > 3.5) return false;
+
+  if(jets.at(0).DeltaR(jets.at(1)) > 3.) return false;
+
+  float dphi1 = TVector2::Phi_mpi_pi(electrons.at(0).Phi()- eventbase->GetEvent().PFMETphi());
+  float MT1 = sqrt(2.* electrons.at(0).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi1)));
+
+  float dphi2 = TVector2::Phi_mpi_pi(electrons.at(1).Phi()- eventbase->GetEvent().PFMETphi());
+  float MT2 = sqrt(2.* electrons.at(1).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi2)));
+  if(MT1 > 100.) return false;
+  if(MT2 > 100.) return false;
+
   if(eventbase->GetEvent().PFMET() > 35.) return false;
 
   int nbjet=0;
@@ -332,22 +398,25 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
 
 bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets){
   if(electrons.size() != 2 ) return false;
-  if(electrons.at(0).Pt() < 20.) return false;
+  if(electrons.at(0).Pt() < 50.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
   if(!SameCharge(electrons)) return false;
   if(jets.size() < 2) return false;
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
-  if(ee.M()  < 10.) return false;
+  if(ee.M()  < 40.) return false;
+  if(fabs(ee.M()-90.)  < 10.) return false;
 
-  snu::KParticle eejj = electrons.at(0) + electrons.at(1)+ jets.at(0) + jets.at(1) ;
-  if(eejj.M()  > 200.) return false;
+  if(eventbase->GetEvent().PFSumET() < 400.) return false;;
 
+  
   snu::KParticle jj = jets.at(0) + jets.at(1) ;
-  if(jj.M() > 120.) return false;
+  if(jj.M() > 110.) return false;
+  if(jj.M() < 50.) return false;
 
-  if(ee.M() > 80.) return false;
-  if(eventbase->GetEvent().PFMET() > 35.) return false;
+  if(eventbase->GetEvent().PFMET() > 40.) return false;
+  if(jets.at(0).DeltaR(jets.at(1)) > 2.5) return false;
 
+  
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     if(jets.at(ij).BtagProb() > 0.679) nbjet++;

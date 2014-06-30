@@ -765,23 +765,34 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
 
 
 float AnalyzerCore::CFRate(snu::KElectron el){
-
-  if(fabs(el.Eta()) < 1.5){
-    if(el.Pt() < 20.) return 0.0000125873;
-    else if(el.Pt() < 40.) return 0.0000526579;
-    else if(el.Pt() < 60.) return 0.0000413122;
-    else if(el.Pt() < 80.) return 0.000125591;
-    else return 0.000373733;
-  }
-  else {
-    if(el.Pt() < 20.) return      0.00011713;
-    else if(el.Pt() < 40.) return 0.00021563;
-    else if(el.Pt() < 60.) return 0.000348532;
-    else if(el.Pt() < 80.) return 0.000826625;
-    else return 0.00166157;
-  }
-  return 1.;
   
+  Double_t frac = 0. ;
+  float eta = el.Eta();
+  float pt = el.Pt();
+  Double_t p0 = 0. ;
+  Double_t p1 = 0. ;
+
+  if( fabs(el.Eta()) <= 1.4442 ) {
+    frac = 4.78e-05 ;
+    
+    if( (1./pt) <= 0.02 ) {
+      p1 = -0.e-04 ;
+      p0 = 6.45e-05 ;
+      frac = max(p0 + p1*(1./pt), frac);
+    }
+    
+  } else {  // fabs(eta) > 1.4
+    
+    frac = 2.48e-04 ;
+    
+    if( (1./pt) <= 0.02 ){
+      p0 = 2.46e-03 ;
+      p1 = -1.16e-01 ;
+      frac = max(p0 + p1*(1./pt), frac);
+    }
+  }
+  
+  return float(frac) ;
 }
 
 bool AnalyzerCore::IsTight(snu::KMuon muon){
@@ -826,15 +837,21 @@ bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
   
 }
 
-vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons){
+vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons, bool keep_chargeflip){
   
   vector<snu::KElectron> prompt_electrons;
   for(unsigned int i = 0; i < electrons.size(); i++){
     if(!k_isdata){
-      if(!(electrons.at(i).GetType() == 1 || electrons.at(i).GetType() == 2 || electrons.at(i).GetType() == 3 || electrons.at(i).GetType() ==6)) prompt_electrons.push_back(electrons.at(i));
-    }
+      if(keep_chargeflip){
+	if(!(electrons.at(i).GetType() == 1 || electrons.at(i).GetType() == 2 || electrons.at(i).GetType() == 3 || electrons.at(i).GetType() ==6 ||  electrons.at(i).GetType()== 8 ||  electrons.at(i).GetType() == 9)) prompt_electrons.push_back(electrons.at(i));
+      }
+      else{
+	if(!(electrons.at(i).GetType() == 1 || electrons.at(i).GetType() == 2 || electrons.at(i).GetType() == 3 || electrons.at(i).GetType() == 4 || electrons.at(i).GetType() == 5 || electrons.at(i).GetType() ==6 ||  electrons.at(i).GetType()== 8 ||  electrons.at(i).GetType() == 9)) prompt_electrons.push_back(electrons.at(i));
+      }
+    }// Data
     else prompt_electrons.push_back(electrons.at(i));
-  }
+  }/// loop
+  
   return prompt_electrons;
 }
 
