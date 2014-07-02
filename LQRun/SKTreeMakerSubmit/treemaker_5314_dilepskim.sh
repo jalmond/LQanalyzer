@@ -5,8 +5,8 @@
 
 runMC=false
 runDoubleMuon=false
-runDoubleElectron=false
-runElectronMuon=false
+runDoubleElectron=falsee
+runElectronMuon=true
 runSingleMuon=false
 runSingleElectron=false
 

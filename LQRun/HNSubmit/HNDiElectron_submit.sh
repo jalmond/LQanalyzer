@@ -64,16 +64,16 @@ if [[ $1  == "testMC" ]];
     
     cycle="HNDiElectron"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
     loglevel="INFO"
 
     njobs=1
     data_lumi="AtoD"
     nevents=100000
-    declare -a input_samples=("DY10to50")
+    declare -a input_samples=("DY50plus")
 
     stream="egamma"
-    outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
+    outputdir="./"
     
     
     ### submit this configured job (uses bin/submit.sh)
@@ -149,15 +149,15 @@ then
     skinput="True"
     useskim="NoCut"
 
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000
 
-    #declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
-    declare -a input_samples=("HNee40")
+    declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
+    #declare -a input_samples=("HNee40")
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)
@@ -184,7 +184,9 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus") 
+    declare -a input_samples=("DY50plus")
+
+    #declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus") 
     #declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE")
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
@@ -244,7 +246,7 @@ if [[ $runfakes  == "true" ]];
 
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_SKnonprompt_dilep_5_3_14.root HNDiElectron_nonprompt_periodA*
+    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_SKnonprompt_dilep_5_3_14.root HNDiElectron_nonprompt_period*
 fi
 
 if [[ $runflips  == "true" ]];

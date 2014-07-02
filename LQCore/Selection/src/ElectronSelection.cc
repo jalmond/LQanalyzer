@@ -95,8 +95,9 @@ void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonC
   
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho();
-
-  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+  int iel(0);
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++, iel++){
+    if(m_debug)  cout << "Electron (HNLooseElectronSelection) # " << iel << endl;
 
     //// DEFAULT cuts
     //// Require it is not in crack
@@ -104,7 +105,7 @@ void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonC
     if ( el->CaloEnergy()==0 ) continue;
 
     bool pass_selection = true;
-    ElectronID = PassUserID(EGAMMA_FAKELOOSE, *el, rho);
+    ElectronID = PassUserID(EGAMMA_FAKELOOSE, *el, rho, m_debug);
     
     ///List of cuts
     if(!ElectronID) {
@@ -147,10 +148,10 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
   //// Require it is not in crack
   if ( fabs(el.Eta())>1.4442 && fabs(el.Eta())<1.566 ) return false;
   if ( el.CaloEnergy()==0 )  return false;
-
+  
   bool pass_selection = true;
   
-  ElectronID = PassUserID(EGAMMA_TIGHT, el,rho);
+  ElectronID = PassUserID(EGAMMA_TIGHT, el,rho, m_debug);
 
   Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
   if (fabs(el.SCEta()) < 1.0) ifid = 0;
@@ -177,7 +178,7 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
   }
   if(!(LeptonRelIsoDR03 <  0.09)){
     pass_selection = false;
-    if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut" <<endl;
+    if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut: " << LeptonRelIsoDR03 <<endl;
   }
   if(!el.GsfCtfScPixChargeConsistency()) {
     pass_selection = false;
@@ -195,7 +196,7 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
 
   if(!(fabs(el.dxy())< 0.01 )) {
     pass_selection = false;
-    if(m_debug)  cout << "HNTightElectronSelection:Fail dxy Cut" <<endl;
+    if(m_debug)  cout << "HNTightElectronSelection:Fail dxy Cut: " << el.dxy() <<endl;
   }
 
   return pass_selection;
@@ -209,9 +210,9 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
 void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho();
-  
-  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
-  
+  int iel(0);
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++, iel++){
+    if(m_debug)  cout << "Electron (HNTightElectronSelection) # " << iel << endl;
     if(HNIsTight(*el,rho, m_debug)){
       leptonColl.push_back(*el);
     }
@@ -599,7 +600,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
 
   double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
   double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
-  double effective_areas_03             [7] = { 0.100, 0.120, 0.085, 0.110, 0.120, 0.120, 0.130 };
+  double effective_areas_03             [7] = { 0.130, 0.140, 0.07, 0.09, 0.110, 0.110, 0.140 };
   double effective_area_03  = 0.0;
 
   for (int i = 0; i < 7; ++i ){
@@ -611,7 +612,6 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
   }
 
   double egamma_pfiso_03 = el.PFChargedHadronIso03() + std::max ( el.PFPhotonIso03() + el.PFNeutralHadronIso03() - ( jetrho * effective_area_03 ), 0.0 );
-
 
   egamma_pfiso_03 /= el.Pt();
 
@@ -684,30 +684,30 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   //----------------------------------------------------------------------
   
   double l_b_dEtaIn  [4] = { 0.007 , 0.007, 0.004, 0.004 };
-  double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.03 , 0.03 };
+  double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.06 , 0.03 };
   double l_b_sieie   [4] = { 0.01  , 0.01 , 0.01 , 0.01 };
   double l_b_hoe     [4] = { 0.15  , 0.12 , 0.12 , 0.12 };
-  double l_b_d0      [4] = { 0.04  , 0.02 , 0.6 , 0.6 };
+  double l_b_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
   double l_b_dZ      [4] = { 0.2   , 0.2  , 0.1  ,  0.1 };
   double l_b_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
-  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 0.6 , 0.6 }; 
-  double l_b_vtxProb [4] = { 999.  , 1e-6 , 999. , 1e-6 };
-  int    l_b_missHits[4] = { 999   , 1    , 999    , 0 }; 
+  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 0.15 , 0.1 }; 
+  double l_b_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
+  int    l_b_missHits[4] = { 999   , 1    , 1    , 0 }; 
 
   //----------------------------------------------------------------------
   // Endcap electron cut values
   //----------------------------------------------------------------------
   
-  double l_e_dEtaIn  [4] = { 0.01  , 0.009, 0.005, 0.005 };
-  double l_e_dPhiIn  [4] = { 0.7   , 0.10 , 0.02 , 0.02 };
+  double l_e_dEtaIn  [4] = { 0.01  , 0.009, 0.007, 0.005 };
+  double l_e_dPhiIn  [4] = { 0.7   , 0.10 , 0.03 , 0.02 };
   double l_e_sieie   [4] = { 0.03  , 0.03 , 0.03 , 0.03 };
   double l_e_hoe     [4] = { 999.  , 0.10 , 0.10 , 0.10 };
-  double l_e_d0      [4] = { 0.04  , 0.02 , 0.6 , 0.6 };
+  double l_e_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
   double l_e_dZ      [4] = { 0.2   , 0.2  , 0.1  , 0.1 };
-  double l_e_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
-  double l_e_pfRelIso[4] = { 0.15  , 0.15 , 0.6 , 0.60 };
-  double l_e_vtxProb [4] = { 999.  , 1e-6 , 999 , 1e-6 };
-  int    l_e_missHits[4] = { 999   , 1    , 999    , 0 };
+  double l_e_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05};
+  double l_e_pfRelIso[4] = { 0.15  , 0.10 , 0.1 , 0.07  };
+  double l_e_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
+  int    l_e_missHits[4] = { 999   , 1    , 1    , 0 };
   
   //----------------------------------------------------------------------
   // Bools that depend on barrel vs. endcap
@@ -738,8 +738,8 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
 
   double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
   double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
-  double effective_areas_04             [7] = { 0.190, 0.250, 0.120, 0.210, 0.270, 0.440, 0.520 };
-  double effective_areas_03             [7] = { 0.100, 0.120, 0.085, 0.110, 0.120, 0.120, 0.130 };
+  double effective_areas_04             [7] = { 0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261 };
+  double effective_areas_03             [7] = { 0.130, 0.140, 0.07, 0.09, 0.110, 0.110, 0.140 };
   double effective_area_03  = 0.0;
   double effective_area_04  = 0.0;
   
@@ -755,7 +755,6 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double egamma_pfiso_03 = el.PFChargedHadronIso03() + std::max ( el.PFPhotonIso03() + el.PFNeutralHadronIso03() - ( jetrho * effective_area_03 ), 0.0 );
   double egamma_pfiso_04 = el.PFChargedHadronIso04() + std::max ( el.PFPhotonIso04() + el.PFNeutralHadronIso04() - ( jetrho * effective_area_04 ), 0.0 );
   
-
   egamma_pfiso_03 /= el.Pt();
   egamma_pfiso_04 /= el.Pt();
   
@@ -798,17 +797,19 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
     pass_missingHits   = bool ( el.MissingHits()    <= l_e_missHits[ id ] ) ;
   }
 
+
+
   bool decision = ( 
-		      pass_deltaEta      && 
-		         pass_deltaPhi      && 
-		         pass_sigmaIEtaIEta && 
-		         pass_hoe           && 
-		         pass_vtxDistXY     && 
-		         pass_vtxDistZ      && 
-		         pass_ep            && 
-		         pass_pfIsolation   && 
-		         pass_convFitProb   && 
-		      pass_missingHits   ) ;
+		   pass_deltaEta      && 
+		   pass_deltaPhi      && 
+		   pass_sigmaIEtaIEta && 
+		   pass_hoe           && 
+		   pass_vtxDistXY     && 
+		   pass_vtxDistZ      && 
+		   pass_ep            && 
+		   pass_pfIsolation   && 
+		   pass_convFitProb   && 
+		   pass_missingHits   ) ;
   
 
   
@@ -861,11 +862,11 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
     if(!pass_deltaPhi) cout << "ID " << id <<" Fail deltaPhi" << endl;
     if(!pass_sigmaIEtaIEta) cout << "ID " << id <<" Fail sigmaIEtaIEta" << endl;
     if(!pass_hoe) cout << "ID " << id <<" Fail hoe" << endl;
-    if(!pass_vtxDistXY) cout << "ID " << id <<" Fail dxy" << endl;
+    if(!pass_vtxDistXY) cout << "ID " << id <<" Fail dxy: " << el.LeadVtxDistXY() << endl;
     if(!pass_vtxDistZ) cout << "ID " << id <<" Fail dz" << endl;
     if(!pass_ep) cout << "ID " << id <<" Fail ep" << endl;
     if(!pass_convFitProb) cout << "ID " << id <<" Fail convFitProb" << endl;
-    if(!pass_pfIsolation) cout << "ID " << id <<" Fail isolation" << endl;
+    if(!pass_pfIsolation) cout << "ID " << id <<" Fail isolation : " << egamma_pfiso_03 << endl;
     if(!pass_missingHits) cout << "ID " << id <<" Fail missinghit" << endl;
   }
 

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
 /// Local includes 
-#include  "AnalyzerCore.h"
+#include "AnalyzerCore.h"
 #include "EventBase.h"
 
 //Plotting                                                      
@@ -772,7 +772,12 @@ float AnalyzerCore::CFRate(snu::KElectron el){
   Double_t p0 = 0. ;
   Double_t p1 = 0. ;
 
+  Double_t scale_factor_EE = 1. ;
+  Double_t scale_factor_BB = 1. ;
+
+
   if( fabs(el.Eta()) <= 1.4442 ) {
+    scale_factor_BB = sqrt(0.792) ;
     frac = 4.78e-05 ;
     
     if( (1./pt) <= 0.02 ) {
@@ -780,16 +785,19 @@ float AnalyzerCore::CFRate(snu::KElectron el){
       p0 = 6.45e-05 ;
       frac = max(p0 + p1*(1./pt), frac);
     }
+    frac *= scale_factor_BB ;
     
   } else {  // fabs(eta) > 1.4
     
     frac = 2.48e-04 ;
-    
+    scale_factor_EE = sqrt(1.81);
+
     if( (1./pt) <= 0.02 ){
       p0 = 2.46e-03 ;
       p1 = -1.16e-01 ;
       frac = max(p0 + p1*(1./pt), frac);
     }
+    frac *= scale_factor_EE ;
   }
   
   return float(frac) ;
@@ -832,6 +840,7 @@ bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
   /// assuming electron is loose
   if(LeptonRelIsoDR03 >  0.09) istight=false;
   if(fabs(electron.dxy()) > 0.01) istight=false;
+  
   
   return istight;
   

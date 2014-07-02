@@ -55,12 +55,15 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig3["h_3Dparm"]             =     new TH3F("h_3Dpar_"             + name,"m(lljj) and muon p_{T}_{1} and muon p_{T}_{2}",100,0,2000,30,0,300,30,0,300);
   
   /// Muon/Jet/Electron dR
+  map_sig["h_njets_inrapgap"]           =     new TH1F("h_njets_inrapgap_" + name,"# jets in Y gap", 6, 0 , 6);
   map_sig["h_MuonJetdR"]           =     new TH1F("h_MuonJetdR_"         + name,"muon jet dR",50,0,5);
   map_sig["h_ElectronJetdR"]       =     new TH1F("h_ElectronJetdR_"     + name,"electron jet dR",50,0,5);
   map_sig["h_ElectronAwayJetdR"]   =     new TH1F("h_ElectronAwayJetdR_" + name, "away jet dr", 50,0,5);
   map_sig["h_leadMuondR"]          =     new TH1F("h_leadMuondR_"        + name,"leading muon dR",50,0,5);
   map_sig["h_leadElectrondR"]      =     new TH1F("h_leadElectrondR_"    + name,"leading electron dR",50,0,5);
+  map_sig["h_leadElectrondPhi"]    =     new TH1F("h_leadElectrondPhi_"  + name,"leading electron dPhi",50,-5,5);
   map_sig["h_leadJetdR"]           =     new TH1F("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
+  map_sig["h_leadJetdPhi"]           =     new TH1F("h_leadJetdPhi_"         + name,"leading jet dPhi",50,-5,5);
   map_sig["h_ElectronMuondR"]      =     new TH1F("h_ElectronMuonR_"     + name,"leading jet dR",50,0,5);
   
   //// Jet Plots
@@ -170,11 +173,14 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(debug)cout<< "Plotting [1d] " << endl;
     
   float min_ee_Dr=10000.;
+  float min_ee_DPhi=10000.;
   for(UInt_t i=0; i<electrons.size(); i++){
     for(UInt_t j=0; j<electrons.size(); j++){
       if(i==j) continue;
+      float dPhi = TVector2::Phi_mpi_pi(electrons[i].Phi() - electrons[j].Phi() );
       float dR =electrons[i].DeltaR(electrons[j]);
       if(dR < min_ee_Dr) min_ee_Dr = dR;
+      if(dPhi < min_ee_DPhi) min_ee_DPhi = dPhi;
     }
   }
 
@@ -188,15 +194,43 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   }
   
   float min_jj_Dr=10000.;
+  float min_jj_DPhi=10000.;
   for(UInt_t i=0; i<jets.size(); i++){
     for(UInt_t j=0; j<jets.size(); j++){
       if(i==j) continue;
       float dR =jets[i].DeltaR(jets[j]);
+      float dPhi = TVector2::Phi_mpi_pi(jets[i].Phi() - jets[j].Phi());
       if(dR < min_jj_Dr) min_jj_Dr = dR;
+      if(dR < min_jj_DPhi) min_jj_DPhi = dPhi;
     }
   }
   
+  if(jets.size() > 2) {
+    float Jet1Rap = jets.at(0).Rapidity();
+    float Jet2Rap = jets.at(1).Rapidity();
+    float ymax(0.);
+    float ymin(0.);
+    if(Jet1Rap > Jet2Rap ){
+      ymax = Jet1Rap;
+      ymin= Jet2Rap;
+    }
+    else{
+      ymax = Jet1Rap;
+      ymin= Jet2Rap;
+    }
+    int jet_in_gap(0);
+    for(unsigned int ij = 2; ij < jets.size() ; ij++){
+      if( (jets.at(ij).Rapidity() <  ymax) && (jets.at(ij).Rapidity()>  ymin)  ){
+	jet_in_gap++;
+      }
+    }
+    Fill("h_njets_inrapgap",jet_in_gap, weight);
+    
+    
+  }
+  
   if(electrons.size()!=0)Fill("h_leadElectrondR",min_ee_Dr,weight);
+  if(electrons.size()!=0)Fill("h_leadElectrondPhi",min_ee_DPhi,weight);
   if(electrons.size()!=0 && muons.size()!=0)Fill("h_ElectronMuondR",min_emuon_Dr,weight);
   if(muons.size()!=0) Fill("h_leadMuondR",min_mm_Dr,weight);
 
@@ -208,6 +242,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_ElectronAwayJetdR",min_eleadawayjet_Dr,weight);
     }
     if(jets.size() > 1)Fill("h_leadJetdR",min_jj_Dr,weight);
+    if(jets.size() > 1)Fill("h_leadJetdPhi",min_jj_DPhi,weight);
   }
 
   if(debug)cout<< "Plotting [2] " << endl;  

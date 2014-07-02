@@ -22,6 +22,7 @@ BaseSelection::BaseSelection() {
   apply_ptcut=false;
   apply_etacut=false;
   apply_jptcut=false;
+  applypileuptool= false;
   apply_jetacut=false;
   apply_relisocut=false;
   apply_chi2cut=false;
@@ -55,6 +56,7 @@ BaseSelection& BaseSelection::operator= (const BaseSelection& bs)
     dxy_cut = bs.dxy_cut; 
     dxyMIN_cut = bs.dxyMIN_cut;
     k_id = bs.k_id;
+    applypileuptool=bs.applypileuptool;
     apply_ptcut= bs.apply_ptcut;
     apply_etacut= bs.apply_etacut;
     apply_jptcut= bs.apply_jptcut;
@@ -91,6 +93,7 @@ BaseSelection::BaseSelection(const BaseSelection& bs) {
   dxy_cut = bs.dxy_cut; 
   dxyMIN_cut = bs.dxyMIN_cut;
   k_id = bs.k_id;
+  applypileuptool=bs.applypileuptool;
   apply_ptcut= bs.apply_ptcut;
   apply_etacut= bs.apply_etacut;
   apply_jptcut= bs.apply_jptcut;
@@ -129,6 +132,7 @@ void BaseSelection::reset(){
   dxy_cut = 100000.;
   dxyMIN_cut = -1000000.;
   k_id = EGAMMA_MEDIUM;
+  applypileuptool=false;
   apply_ptcut=false;
   apply_etacut=false;
   apply_jptcut=false;
@@ -164,6 +168,9 @@ void BaseSelection::SetID(ID id){
 
 void BaseSelection::SetCheckCharge(bool check){
   apply_chargeconst = check;
+}
+void BaseSelection::SetUseJetPileUp(bool use){
+  applypileuptool=use;
 }
 
 void BaseSelection::SetApplyConvVeto(bool apply){

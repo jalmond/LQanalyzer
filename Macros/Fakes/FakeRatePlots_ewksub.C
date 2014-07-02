@@ -39,19 +39,19 @@ void FakeRatePlots_ewksub(){
   plotname.push_back("_ht");
   plotname.push_back("_eta_binned");
   plotname.push_back("_njets");
-  plotname.push_back("awaybjet_eta_binned");
-  plotname.push_back("closebjet_eta_binned");
-  plotname.push_back("closejet_noe_eta_binned");
-  plotname.push_back("closejet_ph_eta_binned");
+  plotname.push_back("_awaybjet_eta_binned");
+  plotname.push_back("_closebjet_eta_binned");
+  plotname.push_back("_closejet_noe_eta_binned");
+  plotname.push_back("_closejet_ph_eta_binned");
   
   
   int ihist(0);
   for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     
     vector<TString> hist_ptcut;
-    //hist_ptcut.push_back("20");
+    hist_ptcut.push_back("20");
     hist_ptcut.push_back("40");
-    //hist_ptcut.push_back("60");
+    hist_ptcut.push_back("60");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
       int rebin=1;

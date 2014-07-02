@@ -37,15 +37,18 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
+    bool pileupjet=false;
+    if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());
+    
     if(apply_ID) {
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
 	   fabs(jit->Eta()) < eta_cut
-	   && PassUserID(k_id, *jit))  jetColl.push_back(*jit);
+	   && PassUserID(k_id, *jit) && !pileupjet)  jetColl.push_back(*jit);
     }
     else{
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
 	   fabs(jit->Eta()) < eta_cut
-	   && PassUserID(PFJET_LOOSE, *jit))  jetColl.push_back(*jit);
+	   && PassUserID(PFJET_LOOSE, *jit)&& !pileupjet)  jetColl.push_back(*jit);
     }
   }
   BaseSelection::reset();

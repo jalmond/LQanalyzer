@@ -2,10 +2,10 @@
 ### sets all configurable variables to defaul values
 
 ###### SET WHAT JOBS TO RUN
-runMC=true
+runMC=false
 runDoubleMuon=false
-runDoubleElectron=true
-runElectronMuon=false
+runDoubleElectron=false
+runElectronMuon=true
 runSingleMuon=false
 runSingleElectron=false
 runSignal=false

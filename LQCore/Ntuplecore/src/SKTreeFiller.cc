@@ -783,7 +783,6 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     m_logger << DEBUG << "Filling JetID WP " << LQLogger::endmsg; 
 
     if(PFJetPileupjetIDpassLooseWP){
-      cout << PFJetPileupjetIDpassLooseWP->at(ijet) << endl;
       jet.SetJetPileupIDLooseWP(PFJetPileupjetIDpassLooseWP->at(ijet));
       jet.SetJetPileupIDMediumWP(PFJetPileupjetIDpassMediumWP->at(ijet));
       jet.SetJetPileupIDTightWP(PFJetPileupjetIDpassTightWP->at(ijet));
