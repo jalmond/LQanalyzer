@@ -63,13 +63,14 @@ if [[ $1  == "testMC" ]];
     source functions.sh
     
     cycle="HNDiElectron"
-    #skinput="True"
-    #useskim="DiLep"
+    skinput="True"
+    useskim="DiLep"
     loglevel="INFO"
 
     njobs=1
     data_lumi="AtoD"
     nevents=100000000
+    
     declare -a input_samples=("DY50plus")
 
     stream="egamma"
