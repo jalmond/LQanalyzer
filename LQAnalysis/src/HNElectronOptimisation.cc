@@ -98,7 +98,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl);
 
 
-  for(int i =0; i < _electronAnalysisColl.size(); i++){
+  for(unsigned int i =0; i < _electronAnalysisColl.size(); i++){
     // is the mother a tau
     int mother_pdgid=_electronAnalysisColl.at(i).MotherPdgId();
     if(fabs(mother_pdgid) == 15){
@@ -121,9 +121,11 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronVetoColl;
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
   
-  std::vector<snu::KElectron> electronLooseColl;
-  eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl);
+  std::vector<snu::KElectron> _electronLooseColl;
+  eventbase->GetElectronSel()->HNLooseElectronSelection(_electronLooseColl);
   
+  std::vector<snu::KElectron> electronLooseColl = GetTruePrompt(_electronLooseColl, true);
+
   std::vector<snu::KElectron> electronNoCutColl;
   eventbase->GetElectronSel()->Selection(electronNoCutColl);
   
@@ -136,16 +138,484 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronTight_reliso;
   std::vector<snu::KElectron> electronTight_chargeconst;
 
+
+  // For d0/iso opt
+  std::vector<snu::KElectron> electronLooseColl_nodxy;
+  std::vector<snu::KElectron> electronLooseColl_dxy_05;
+  std::vector<snu::KElectron> electronLooseColl_dxy_10;
+  std::vector<snu::KElectron> electronLooseColl_dxy_15;
+  std::vector<snu::KElectron> electronLooseColl_dxy_20;
+  std::vector<snu::KElectron> electronLooseColl_dxy_25;
+  std::vector<snu::KElectron> electronLooseColl_dxy_30;
+  
+
+  std::vector<snu::KElectron> electronLooseColl_iseref;
+  std::vector<snu::KElectron> electronLooseColl_dr03_150;
+  std::vector<snu::KElectron> electronLooseColl_dr03_125;
+  std::vector<snu::KElectron> electronLooseColl_dr03_100;
+  std::vector<snu::KElectron> electronLooseColl_dr03_090;
+  std::vector<snu::KElectron> electronLooseColl_dr03_080;
+  std::vector<snu::KElectron> electronLooseColl_dr03_070;
+  std::vector<snu::KElectron> electronLooseColl_dr03_060;
+  std::vector<snu::KElectron> electronLooseColl_dr03_050;
+
+  std::vector<snu::KElectron> electronLooseColl_dr04_150;
+  std::vector<snu::KElectron> electronLooseColl_dr04_125;
+  std::vector<snu::KElectron> electronLooseColl_dr04_100;
+  std::vector<snu::KElectron> electronLooseColl_dr04_090;
+  std::vector<snu::KElectron> electronLooseColl_dr04_080;
+  std::vector<snu::KElectron> electronLooseColl_dr04_070;
+  std::vector<snu::KElectron> electronLooseColl_dr04_060;
+  std::vector<snu::KElectron> electronLooseColl_dr04_050;
+
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b150_e050;
+  
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b125_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b100_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b090_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b080_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b070_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e125;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e100;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e090;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e080;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e070;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e060;
+  std::vector<snu::KElectron>  electronLooseColl_dr03_b050_e050;
+  
+  /// add trkiso
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b150_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b125_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b100_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b090_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b080_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b070_e050;
+
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e125;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e100;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e090;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e080;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e070;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e060;
+  std::vector<snu::KElectron>  electronLooseColl_NPFisodr03_b050_e050;
+
+
+  for(unsigned int iel = 0; iel < electronLooseColl.size(); iel++){
+    Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+    Double_t PHONH_04[7]          = {0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
+    int ifid = 0;
+    if (fabs(electronLooseColl.at(iel).SCEta()) < 1.0) ifid = 0;
+    else if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479) ifid = 1;
+    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.0) ifid = 2;
+    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.2) ifid = 3;
+    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.3) ifid = 4;
+    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.4) ifid = 5;
+    else ifid = 6;
+
+    float LeptonRelIsoDR03(0.);
+    float LeptonRelIsoDR04(0.);
+    float trkiso = electronLooseColl.at(iel).TrkIsoDR03();
+    float ecaliso = electronLooseColl.at(iel).ECalIsoDR03();
+    float hcaliso = electronLooseColl.at(iel).HCalIsoDR03();
+    float NPFiso = (trkiso + hcaliso + ecaliso)/electronLooseColl.at(iel).Pt();
+
+    float ElectronIsoDR03 =  electronLooseColl.at(iel).PFChargedHadronIso03() + max( electronLooseColl.at(iel).PFNeutralHadronIso03() + electronLooseColl.at(iel).PFPhotonIso03() - eventbase->GetEvent().JetRho() * PHONH_03[ifid],  0.);
+
+    float ElectronIsoDR04 =  electronLooseColl.at(iel).PFChargedHadronIso04() + max( electronLooseColl.at(iel).PFNeutralHadronIso04() + electronLooseColl.at(iel).PFPhotonIso04() - eventbase->GetEvent().JetRho() * PHONH_04[ifid],  0.);
+    if(electronLooseColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronLooseColl.at(iel).Pt();
+    if(electronLooseColl.at(iel).Pt() > 0.)  LeptonRelIsoDR04 = ElectronIsoDR04/  electronLooseColl.at(iel).Pt();
+
+    
+    if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479 ){
+      if(LeptonRelIsoDR03 < 0.1){
+	electronLooseColl_nodxy.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.005) electronLooseColl_dxy_05.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.010) electronLooseColl_dxy_10.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.015) electronLooseColl_dxy_15.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.020) electronLooseColl_dxy_20.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.025) electronLooseColl_dxy_25.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.030) electronLooseColl_dxy_30.push_back(electronLooseColl.at(iel));
+      }
+    }
+    else{
+      if(LeptonRelIsoDR03 < 0.07){
+	electronLooseColl_nodxy.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.005) electronLooseColl_dxy_05.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.010) electronLooseColl_dxy_10.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.015) electronLooseColl_dxy_15.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.020) electronLooseColl_dxy_20.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.025) electronLooseColl_dxy_25.push_back(electronLooseColl.at(iel));
+	if(fabs(electronLooseColl.at(iel).dxy()) < 0.030) electronLooseColl_dxy_30.push_back(electronLooseColl.at(iel));
+      }
+    }
+    
+    if(fabs(electronLooseColl.at(iel).dxy()) < 0.010){
+      electronLooseColl_iseref.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.15)  electronLooseColl_dr03_150.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.125) electronLooseColl_dr03_125.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.1)   electronLooseColl_dr03_100.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.09)  electronLooseColl_dr03_090.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.08)  electronLooseColl_dr03_080.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.07)  electronLooseColl_dr03_070.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.06)  electronLooseColl_dr03_060.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR03 < 0.05)  electronLooseColl_dr03_050.push_back(electronLooseColl.at(iel));
+      
+      if(LeptonRelIsoDR04 < 0.15)  electronLooseColl_dr04_150.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.125) electronLooseColl_dr04_125.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.1)   electronLooseColl_dr04_100.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.09)  electronLooseColl_dr04_090.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.08)  electronLooseColl_dr04_080.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.07)  electronLooseColl_dr04_070.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.06)  electronLooseColl_dr04_060.push_back(electronLooseColl.at(iel));
+      if(LeptonRelIsoDR04 < 0.05)  electronLooseColl_dr04_050.push_back(electronLooseColl.at(iel));
+      
+      if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479 ){
+	if(LeptonRelIsoDR03 < 0.15) {
+	  electronLooseColl_dr03_b150_e125.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b150_e100.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b150_e090.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b150_e080.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b150_e070.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b150_e060.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b150_e050.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.125) {
+          electronLooseColl_dr03_b125_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e050.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.1) {
+          electronLooseColl_dr03_b100_e125.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e050.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.09) {
+          electronLooseColl_dr03_b090_e125.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e050.push_back(electronLooseColl.at(iel));
+        }
+	if(LeptonRelIsoDR03 < 0.08) {
+          electronLooseColl_dr03_b080_e125.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e050.push_back(electronLooseColl.at(iel));
+        }
+	
+	if(LeptonRelIsoDR03 < 0.07) {
+	  electronLooseColl_dr03_b070_e125.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e050.push_back(electronLooseColl.at(iel));
+        }
+	if(LeptonRelIsoDR03 < 0.05) {
+	  electronLooseColl_dr03_b050_e125.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e060.push_back(electronLooseColl.at(iel));
+	}
+      }
+      else{
+	if(LeptonRelIsoDR03 < 0.125) {
+	  electronLooseColl_dr03_b150_e125.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b100_e125.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b090_e125.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b080_e125.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b070_e125.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b050_e125.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.100) {
+	  electronLooseColl_dr03_b150_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e100.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e100.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.090) {
+	  electronLooseColl_dr03_b150_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e090.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e090.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.080) {
+	  electronLooseColl_dr03_b150_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b125_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e080.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e080.push_back(electronLooseColl.at(iel));
+	}
+	if(LeptonRelIsoDR03 < 0.070) {
+	  electronLooseColl_dr03_b150_e070.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b125_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e070.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e070.push_back(electronLooseColl.at(iel));
+        }
+
+	if(LeptonRelIsoDR03 < 0.060) {
+	  electronLooseColl_dr03_b150_e060.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b125_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e060.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b050_e060.push_back(electronLooseColl.at(iel));
+        }
+
+	if(LeptonRelIsoDR03 < 0.050) {
+	  electronLooseColl_dr03_b150_e050.push_back(electronLooseColl.at(iel));
+	  electronLooseColl_dr03_b125_e050.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b100_e050.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b090_e050.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b080_e050.push_back(electronLooseColl.at(iel));
+          electronLooseColl_dr03_b070_e050.push_back(electronLooseColl.at(iel));
+        }
+      }
+      
+      if(NPFiso < 0.25){
+	if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479 ){
+	  if(LeptonRelIsoDR03 < 0.15) {
+	    electronLooseColl_NPFisodr03_b150_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b150_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b150_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b150_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b150_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b150_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b150_e050.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.125) {
+	    electronLooseColl_NPFisodr03_b125_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e050.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.1) {
+	    electronLooseColl_NPFisodr03_b100_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e050.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.09) {
+	    electronLooseColl_NPFisodr03_b090_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e050.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.08) {
+	    electronLooseColl_NPFisodr03_b080_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e050.push_back(electronLooseColl.at(iel));
+	  }
+
+	  if(LeptonRelIsoDR03 < 0.07) {
+	    electronLooseColl_NPFisodr03_b070_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e050.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.05) {
+	    electronLooseColl_NPFisodr03_b050_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e060.push_back(electronLooseColl.at(iel));
+	  }
+	}
+	else{
+	  if(LeptonRelIsoDR03 < 0.125) {
+	    electronLooseColl_NPFisodr03_b150_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e125.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e125.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.100) {
+	    electronLooseColl_NPFisodr03_b150_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e100.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e100.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.090) {
+	    electronLooseColl_NPFisodr03_b150_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e090.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e090.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.080) {
+	    electronLooseColl_NPFisodr03_b150_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e080.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e080.push_back(electronLooseColl.at(iel));
+	  }
+	  if(LeptonRelIsoDR03 < 0.070) {
+	    electronLooseColl_NPFisodr03_b150_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e070.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e070.push_back(electronLooseColl.at(iel));
+	  }
+
+	  if(LeptonRelIsoDR03 < 0.060) {
+	    electronLooseColl_NPFisodr03_b150_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e060.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b050_e060.push_back(electronLooseColl.at(iel));
+	  }
+
+	  if(LeptonRelIsoDR03 < 0.050) {
+	    electronLooseColl_NPFisodr03_b150_e050.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b125_e050.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b100_e050.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b090_e050.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b080_e050.push_back(electronLooseColl.at(iel));
+	    electronLooseColl_NPFisodr03_b070_e050.push_back(electronLooseColl.at(iel));
+	  }
+	}
+      }
+    }
+  }
+
+	
+
   for(unsigned int iel = 0; iel < electronNoCutColl.size(); iel++){
     
-    if(electronNoCutColl[iel].Pt() < 20.) continue;
+    if(iel ==0){
+      if(electronNoCutColl[iel].Pt() < 20.) continue;
+    }
+    else{
+      if(electronNoCutColl[iel].Pt() < 15.) continue;
+    }
     if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
     
     electronPtEtaCutColl.push_back(electronNoCutColl[iel]);
     
     double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
     double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
-    double effective_areas_03             [7] = { 0.100, 0.120, 0.085, 0.110, 0.120, 0.120, 0.130 };
+    double effective_areas_03             [7] = { 0.130, 0.140, 0.07, 0.09, 0.110, 0.110, 0.140 };
     double effective_area_03  = 0.0;
     
     for (int i = 0; i < 7; ++i ){
@@ -168,14 +638,14 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       if(fabs(electronNoCutColl.at(iel).DeltaEta())   <= 0.004) {
 	if(fabs(electronNoCutColl.at(iel).DeltaPhi())   <= 0.06){
 	  if(electronNoCutColl.at(iel).SigmaIEtaIEta()    <= 0.01){
-	    if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ()) < 0.02){
+	    if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ()) < 0.1){
 	      if(electronNoCutColl.at(iel).HoE            ()  <= 0.12){
 		if( egamma_ep          <= 0.05){
 		  if(electronNoCutColl.at(iel).ConvFitProb  ()    <=  1e-6){
 		    if(electronNoCutColl.at(iel).MissingHits()    <=  1){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
-			if(fabs(electronNoCutColl.at(iel).LeadVtxDistXY())  <= 0.02){
-			  if(egamma_pfiso_03    <=  0.15){
+			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
+			  if(egamma_pfiso_03    <=  0.1){
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
 			      electronMedium_chargeconst.push_back(electronNoCutColl.at(iel));
 			    }
@@ -195,14 +665,14 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       if(fabs(electronNoCutColl.at(iel).DeltaEta())   <= 0.007){
 	if(fabs(electronNoCutColl.at(iel).DeltaPhi())   <= 0.03) {
 	  if(electronNoCutColl.at(iel).SigmaIEtaIEta()    <= 0.03){
-            if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ())< 0.02){
+            if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ())< 0.1){
 	      if(electronNoCutColl.at(iel).HoE            ()  <= 0.10){
 		if( egamma_ep          <=0.05){
 		  if(electronNoCutColl.at(iel).ConvFitProb  ()    <=  1e-6){
 		    if(electronNoCutColl.at(iel).MissingHits()    <=  1){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
-			if(fabs(electronNoCutColl.at(iel).LeadVtxDistXY())  <= 0.02){
-			  if(egamma_pfiso_03    <=  0.15){
+			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
+			  if(egamma_pfiso_03    <=  0.07){
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
                               electronMedium_chargeconst.push_back(electronNoCutColl.at(iel));
                             }
@@ -224,7 +694,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       if(fabs(electronNoCutColl.at(iel).DeltaEta())   <= 0.004) {
         if(fabs(electronNoCutColl.at(iel).DeltaPhi())   <= 0.03){
           if(electronNoCutColl.at(iel).SigmaIEtaIEta()    <= 0.01){
-            if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ())< 0.02){
+            if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ())< 0.1){
 	      if(electronNoCutColl.at(iel).HoE            ()  <= 0.12){
 		if( egamma_ep          <= 0.05){
 		  electronTight.push_back(electronNoCutColl.at(iel));
@@ -233,7 +703,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
 			electronTight_convveto.push_back(electronNoCutColl.at(iel));
 			
-			if(fabs(electronNoCutColl.at(iel).LeadVtxDistXY())  <= 0.02){
+			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.1){
 			  electronTight_d0veto.push_back(electronNoCutColl.at(iel));
 			  if(egamma_pfiso_03    <=  0.1){
 			    electronTight_reliso.push_back(electronNoCutColl.at(iel));
@@ -256,7 +726,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       if(fabs(electronNoCutColl.at(iel).DeltaEta())   <= 0.005){
         if(fabs(electronNoCutColl.at(iel).DeltaPhi())   <= 0.02) {
           if(electronNoCutColl.at(iel).SigmaIEtaIEta()    <= 0.03){
-            if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ())< 0.02){
+            if(fabs(electronNoCutColl.at(iel).LeadVtxDistZ ())< 0.1){
 	      if(electronNoCutColl.at(iel).HoE            ()  <= 0.10){
 		if( egamma_ep          <=0.05){
 		  electronTight.push_back(electronNoCutColl.at(iel));
@@ -264,9 +734,9 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 		    if(electronNoCutColl[iel].MissingHits()    <=  0){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
 			electronTight_convveto.push_back(electronNoCutColl.at(iel));
-			if(fabs(electronNoCutColl.at(iel).LeadVtxDistXY())  <= 0.02){
+			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
 			  electronTight_d0veto.push_back(electronNoCutColl.at(iel));
-			  if(egamma_pfiso_03    <=  0.1){
+			  if(egamma_pfiso_03    <=  0.07){
 			    electronTight_reliso.push_back(electronNoCutColl.at(iel));
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
                               electronTight_chargeconst.push_back(electronNoCutColl.at(iel));
@@ -284,7 +754,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       }
     }
   }
- 
+  
   /// MUONS
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
@@ -301,15 +771,16 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetPt(20.);
-  eventbase->GetJetSel()->SetEta(2.4);
-  eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonVetoColl, electronLooseColl);
-  eventbase->GetJetSel()->JetSelectionRealLeptonVeto(jetColl_reallepveto, muonVetoColl, electronLooseColl);
+  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonVetoColl, electronLooseColl);
   eventbase->GetJetSel()->Selection(jetColl);
  
   
   /// makes full set of plots for el/mu/jets/met with no cuts applied on objects 
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl, weight);
   
+  
+
   //// Check efficiency of Selecting two same sign electrons (efficiency of medium/tight and breakdown of tight cuts) 
   if(SameCharge(electronNoCutColl))   FillCutFlow("SS_NoCut",weight);
   if(SameCharge(electronPtEtaCutColl)) FillCutFlow("SS_PtEta",weight);
@@ -346,173 +817,398 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   
   /// So far events pass event cuts and  trigger
   
-   
-   
-  CheckSignalRegion(electronAnalysisColl, jetColl_lepveto,"Signal_anal", weight) ;
-  CheckSignalRegion(electronTight_chargeconst, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight) ;
-  CheckSignalRegion(electronMedium_chargeconst, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight) ;
-  if(!jetclosetoel)CheckSignalRegion(electronTight_chargeconst, jetColl_lepveto,"Signal_drcut1", weight) ;
-
+  if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;
   
-  bool analjetclosetoel= false;
-  for(unsigned int ijet =0; ijet < jetColl_reallepveto.size(); ijet++){
-    for(unsigned int iel=0; iel <  electronAnalysisColl.size(); iel++){
-      if(jetColl_reallepveto.at(ijet).DeltaR(electronAnalysisColl.at(iel)) < 0.4) {
-        analjetclosetoel=true;
-      }
-    }
+  if(!k_running_nonprompt){
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDREF",0.  , weight, 0.,1.,1);
+    if(CheckSignalRegion(electronMedium_chargeconst, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight, 0.,2.,2);
+    if(CheckSignalRegion(electronTight_chargeconst, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight, 0.,2.,2);
   }
+  else{
+    float ee_weight_medium = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.07, true, false, false, "medium");
+    float ee_weight_tight = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.07, true, false, true, "tight");
 
-
-  if(!analjetclosetoel)CheckSignalRegion(electronAnalysisColl, jetColl_lepveto,"Signal_anal_dr1", weight) ;
-  std::vector<snu::KElectron> el_d0_03_iso3_60;
-  std::vector<snu::KElectron> el_d0_03_iso3_50;
-  std::vector<snu::KElectron> el_d0_03_iso3_40;
-  std::vector<snu::KElectron> el_d0_03_iso3_30;
-  std::vector<snu::KElectron> el_d0_03_iso3_20;
-  std::vector<snu::KElectron> el_d0_03_iso3_10;
-  std::vector<snu::KElectron> el_d0_03_iso3_09;
-  std::vector<snu::KElectron> el_d0_03_iso3_075;
-
-  std::vector<snu::KElectron> el_d0_02_iso3_60;
-  std::vector<snu::KElectron> el_d0_02_iso3_50;
-  std::vector<snu::KElectron> el_d0_02_iso3_40;
-  std::vector<snu::KElectron> el_d0_02_iso3_30;
-  std::vector<snu::KElectron> el_d0_02_iso3_20;
-  std::vector<snu::KElectron> el_d0_02_iso3_10;
-  std::vector<snu::KElectron> el_d0_02_iso3_09;
-  std::vector<snu::KElectron> el_d0_02_iso3_075;
-
-  std::vector<snu::KElectron> el_d0_01_iso3_60;
-  std::vector<snu::KElectron> el_d0_01_iso3_50;
-  std::vector<snu::KElectron> el_d0_01_iso3_40;
-  std::vector<snu::KElectron> el_d0_01_iso3_30;
-  std::vector<snu::KElectron> el_d0_01_iso3_20;
-  std::vector<snu::KElectron> el_d0_01_iso3_10;
-  std::vector<snu::KElectron> el_d0_01_iso3_09;
-  std::vector<snu::KElectron> el_d0_01_iso3_075;
-  
-  std::vector<snu::KElectron> el_d0_005_iso3_60;
-  std::vector<snu::KElectron> el_d0_005_iso3_50;
-  std::vector<snu::KElectron> el_d0_005_iso3_40;
-  std::vector<snu::KElectron> el_d0_005_iso3_30;
-  std::vector<snu::KElectron> el_d0_005_iso3_20;
-  std::vector<snu::KElectron> el_d0_005_iso3_10;
-  std::vector<snu::KElectron> el_d0_005_iso3_075;
-  std::vector<snu::KElectron> el_d0_005_iso3_09;
-
-
-  
-  
-  /// LOOK AT ISO/D0 cut to use
-  for(int iel=0; iel < electronTight_convveto.size(); iel++){
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight*ee_weight_medium, 0.,2.,2);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight*ee_weight_tight, 0.,2.,2);
     
-
-    cout << "TEST" << endl;
-    double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
-    double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
-    double effective_areas_03             [7] = { 0.100, 0.120, 0.085, 0.110, 0.120, 0.120, 0.130 };
-    double effective_area_03  = 0.0;
-    
-    for (int i = 0; i < 7; ++i ){
-      double bin_minimum = effective_area_eta_minimums[i];
-      double bin_maximum = effective_area_eta_maximums[i];
-      if ( fabs(electronTight_convveto[iel].SCEta()) >= bin_minimum && fabs(electronTight_convveto[iel].SCEta()) < bin_maximum ) {
-        effective_area_03 = effective_areas_03 [i];
-      }
-    }
-
-    double egamma_pfiso_03 = electronTight_convveto[iel].PFChargedHadronIso03() + std::max ( electronTight_convveto[iel].PFPhotonIso03() + electronTight_convveto[iel].PFNeutralHadronIso03() - ( eventbase->GetEvent().JetRho() * effective_area_03 ), 0.0 );
-    egamma_pfiso_03 /= electronTight_convveto[iel].Pt();
-    
-    
-    if(fabs(electronTight_convveto.at(iel).LeadVtxDistXY()) < 0.03 ){
-      cout << "TEST2" << endl;
-      if(egamma_pfiso_03 < 0.6 )el_d0_03_iso3_60.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.5 )el_d0_03_iso3_50.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.4 )el_d0_03_iso3_40.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.3 )el_d0_03_iso3_30.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.2 )el_d0_03_iso3_20.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.1 )el_d0_03_iso3_10.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.09 )el_d0_03_iso3_09.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.075 )el_d0_03_iso3_075.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.05 )el_d0_03_iso3_50.push_back(electronTight_convveto[iel]);
-    }
-    if(fabs(electronTight_convveto.at(iel).LeadVtxDistXY()) < 0.02 ){
-      if(egamma_pfiso_03 < 0.6 )el_d0_02_iso3_60.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.5 )el_d0_02_iso3_50.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.4 )el_d0_02_iso3_40.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.3 )el_d0_02_iso3_30.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.2 )el_d0_02_iso3_20.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.1 )el_d0_02_iso3_10.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.09 )el_d0_02_iso3_09.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.075 )el_d0_02_iso3_075.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.05 )el_d0_02_iso3_50.push_back(electronTight_convveto[iel]);
-    }
-    
-    if(fabs(electronTight_convveto.at(iel).LeadVtxDistXY()) < 0.01 ){
-      if(egamma_pfiso_03 < 0.6 )el_d0_01_iso3_60.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.5 )el_d0_01_iso3_50.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.4 )el_d0_01_iso3_40.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.3 )el_d0_01_iso3_30.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.2 )el_d0_01_iso3_20.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.1 )el_d0_01_iso3_10.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.09 )el_d0_01_iso3_09.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.075 )el_d0_01_iso3_075.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.05 )el_d0_01_iso3_50.push_back(electronTight_convveto[iel]);
-    }
-    if(fabs(electronTight_convveto.at(iel).LeadVtxDistXY()) < 0.005 ){
-      if(egamma_pfiso_03 < 0.6 )el_d0_005_iso3_60.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.5 )el_d0_005_iso3_50.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.4 )el_d0_005_iso3_40.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.3 )el_d0_005_iso3_30.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.2 )el_d0_005_iso3_20.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.1 )el_d0_005_iso3_10.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.09 )el_d0_005_iso3_09.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.075 )el_d0_005_iso3_075.push_back(electronTight_convveto[iel]);
-      if(egamma_pfiso_03 < 0.05 )el_d0_005_iso3_50.push_back(electronTight_convveto[iel]);
-    }
   }
   
+  if(!k_running_nonprompt){
+    if(CheckSignalRegion(electronLooseColl_iseref,jetColl_lepveto,"", weight))   FillHist("ISOREF", 0., weight, 0.,1.,1);
+    if(CheckSignalRegion(electronLooseColl_dr03_150,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      0.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_125,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      1.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_100,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      2.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_090,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      3.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_080,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      4.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_070,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      5.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_060,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      6.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr03_050,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      7.  , weight, 0.,16.,16);
+    
+    if(CheckSignalRegion(electronLooseColl_dr04_150,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      8.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_125,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      9.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_100,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      10.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_090,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      11.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_080,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      12.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_070,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      13.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_060,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      14.  , weight, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl_dr04_050,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      15.  , weight, 0.,16.,16);
+  }
+  else{
+    float ee_weight_dr03_150 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.15, true, false, true, "iso_b150_e150");
+    float ee_weight_dr03_125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.125, true, false, true, "iso_b125_e125");
+    float ee_weight_dr03_100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, true, false, true, "iso_b100_e100");
+    float ee_weight_dr03_090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.09, true, false, true, "iso_b090_e090");
+    float ee_weight_dr03_080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.08, true, false, true, "iso_b080_e080");
+    float ee_weight_dr03_070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.07, true, false, true, "iso_b070_e070");
+    float ee_weight_dr03_060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.06, 0.06, true, false, true, "iso_b060_e060");
+    float ee_weight_dr03_050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.05, true, false, true, "iso_b050_e050");
+    
+    float ee_weight_dr04_150 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.15, false, true, true, "iso_b150_e150");
+    float ee_weight_dr04_125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.125, false, true, true, "iso_b125_e125");
+    float ee_weight_dr04_100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, false, true, true, "iso_b100_e100");
+    float ee_weight_dr04_090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.09, false, true, true, "iso_b090_e090");
+    float ee_weight_dr04_080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.08, false, true, true, "iso_b080_e080");
+    float ee_weight_dr04_070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.07, false, true, true, "iso_b070_e070");
+    float ee_weight_dr04_060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.06, 0.06, false, true, true, "iso_b060_e060");
+    float ee_weight_dr04_050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.05, false, true, true, "iso_b050_e050");
+    
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      0.  , weight*ee_weight_dr03_150, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      1.  , weight*ee_weight_dr03_125, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      2.  , weight*ee_weight_dr03_100, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      3.  , weight*ee_weight_dr03_090, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      4.  , weight*ee_weight_dr03_080, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      5.  , weight*ee_weight_dr03_070, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      6.  , weight*ee_weight_dr03_060, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      7.  , weight*ee_weight_dr03_050, 0.,16.,16);
 
-  CheckSignalRegion(el_d0_005_iso3_60, jetColl_lepveto,"iso_d0_005_iso3_60", weight);
-  CheckSignalRegion(el_d0_005_iso3_50, jetColl_lepveto,"iso_d0_005_iso3_50", weight);
-  CheckSignalRegion(el_d0_005_iso3_40, jetColl_lepveto,"iso_d0_005_iso3_40", weight);
-  CheckSignalRegion(el_d0_005_iso3_30, jetColl_lepveto,"iso_d0_005_iso3_30", weight);
-  CheckSignalRegion(el_d0_005_iso3_20, jetColl_lepveto,"iso_d0_005_iso3_20", weight);
-  CheckSignalRegion(el_d0_005_iso3_10, jetColl_lepveto,"iso_d0_005_iso3_10", weight);
-  CheckSignalRegion(el_d0_005_iso3_09, jetColl_lepveto,"iso_d0_005_iso3_09", weight);
-  CheckSignalRegion(el_d0_005_iso3_075, jetColl_lepveto,"iso_d0_005_iso3_075", weight);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      8.  , weight*ee_weight_dr04_150, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      9.  , weight*ee_weight_dr04_125, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      10.  , weight*ee_weight_dr04_100, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      11.  , weight*ee_weight_dr04_090, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      12.  , weight*ee_weight_dr04_080, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      13.  , weight*ee_weight_dr04_070, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      14.  , weight*ee_weight_dr04_060, 0.,16.,16);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      15.  , weight*ee_weight_dr04_050, 0.,16.,16);
 
-  CheckSignalRegion(el_d0_01_iso3_60, jetColl_lepveto,"iso_d0_01_iso3_60", weight);
-  CheckSignalRegion(el_d0_01_iso3_50, jetColl_lepveto,"iso_d0_01_iso3_50", weight);
-  CheckSignalRegion(el_d0_01_iso3_40, jetColl_lepveto,"iso_d0_01_iso3_40", weight);
-  CheckSignalRegion(el_d0_01_iso3_30, jetColl_lepveto,"iso_d0_01_iso3_30", weight);
-  CheckSignalRegion(el_d0_01_iso3_20, jetColl_lepveto,"iso_d0_01_iso3_20", weight);
-  CheckSignalRegion(el_d0_01_iso3_10, jetColl_lepveto,"iso_d0_01_iso3_10", weight);
-  CheckSignalRegion(el_d0_01_iso3_09, jetColl_lepveto,"iso_d0_01_iso3_09", weight);
-  CheckSignalRegion(el_d0_01_iso3_075, jetColl_lepveto,"iso_d0_01_iso3_075", weight);
+  }
 
-  CheckSignalRegion(el_d0_02_iso3_60, jetColl_lepveto,"iso_d0_02_iso3_60", weight);
-  CheckSignalRegion(el_d0_02_iso3_50, jetColl_lepveto,"iso_d0_02_iso3_50", weight);
-  CheckSignalRegion(el_d0_02_iso3_40, jetColl_lepveto,"iso_d0_02_iso3_40", weight);
-  CheckSignalRegion(el_d0_02_iso3_30, jetColl_lepveto,"iso_d0_02_iso3_30", weight);
-  CheckSignalRegion(el_d0_02_iso3_20, jetColl_lepveto,"iso_d0_02_iso3_20", weight);
-  CheckSignalRegion(el_d0_02_iso3_10, jetColl_lepveto,"iso_d0_02_iso3_10", weight);
-  CheckSignalRegion(el_d0_02_iso3_09, jetColl_lepveto,"iso_d0_02_iso3_09", weight);
-  CheckSignalRegion(el_d0_02_iso3_075, jetColl_lepveto,"iso_d0_02_iso3_075", weight);
+  if(k_running_nonprompt){
+    float ee_weight_dr03_b150_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.125, true, false, true, "iso_b150_e125");
+    float ee_weight_dr03_b150_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.100, true, false, true, "iso_b150_e100");
+    float ee_weight_dr03_b150_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.090, true, false, true, "iso_b150_e090");
+    float ee_weight_dr03_b150_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.080, true, false, true, "iso_b150_e080");
+    float ee_weight_dr03_b150_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.070, true, false, true, "iso_b150_e070");
+    float ee_weight_dr03_b150_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.060, true, false, true, "iso_b150_e060");
+    float ee_weight_dr03_b150_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.050, true, false, true, "iso_b150_e050");
+    float ee_weight_dr03_b125_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.100, true, false, true, "iso_b125_e100");
+    float ee_weight_dr03_b125_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.090, true, false, true, "iso_b125_e090");
+    float ee_weight_dr03_b125_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.080, true, false, true, "iso_b125_e080");
+    float ee_weight_dr03_b125_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.070, true, false, true, "iso_b125_e070");
+    float ee_weight_dr03_b125_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.060, true, false, true, "iso_b125_e060");
+    float ee_weight_dr03_b125_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.050, true, false, true, "iso_b125_e050");
+    float ee_weight_dr03_b100_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.125, true, false, true, "iso_b100_e125");
+    float ee_weight_dr03_b100_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.090, true, false, true, "iso_b100_e090");
+    float ee_weight_dr03_b100_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.080, true, false, true, "iso_b100_e080");
+    float ee_weight_dr03_b100_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.070, true, false, true, "iso_b100_e070");
+    float ee_weight_dr03_b100_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.060, true, false, true, "iso_b100_e060");
+    float ee_weight_dr03_b100_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.050, true, false, true, "iso_b100_e050");
+    float ee_weight_dr03_b090_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.125, true, false, true, "iso_b090_e125");
+    float ee_weight_dr03_b090_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.100, true, false, true, "iso_b090_e100");
+    float ee_weight_dr03_b090_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.080, true, false, true, "iso_b090_e080");
+    float ee_weight_dr03_b090_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.070, true, false, true, "iso_b090_e070");
+    float ee_weight_dr03_b090_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.060, true, false, true, "iso_b090_e060");
+    float ee_weight_dr03_b090_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.050, true, false, true, "iso_b090_e050");
+    float ee_weight_dr03_b080_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.125, true, false, true, "iso_b080_e125");
+    float ee_weight_dr03_b080_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.100, true, false, true, "iso_b080_e100");
+    float ee_weight_dr03_b080_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.090, true, false, true, "iso_b080_e090");
+    float ee_weight_dr03_b080_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.070, true, false, true, "iso_b080_e070");
+    float ee_weight_dr03_b080_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.060, true, false, true, "iso_b080_e060");
+    float ee_weight_dr03_b080_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.050, true, false, true, "iso_b080_e050");
+    float ee_weight_dr03_b070_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.125, true, false, true, "iso_b070_e125");
+    float ee_weight_dr03_b070_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.100, true, false, true, "iso_b070_e100");
+    float ee_weight_dr03_b070_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.090, true, false, true, "iso_b070_e090");
+    float ee_weight_dr03_b070_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.080, true, false, true, "iso_b070_e080");
+    float ee_weight_dr03_b070_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.060, true, false, true, "iso_b070_e060");
+    float ee_weight_dr03_b070_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.050, true, false, true, "iso_b070_e050");
+    float ee_weight_dr03_b050_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.125, true, false, true, "iso_b050_e125");
+    float ee_weight_dr03_b050_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.100, true, false, true, "iso_b050_e100");
+    float ee_weight_dr03_b050_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.090, true, false, true, "iso_b050_e090");
+    float ee_weight_dr03_b050_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.080, true, false, true, "iso_b050_e080");
+    float ee_weight_dr03_b050_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.070, true, false, true, "iso_b050_e070");
+    float ee_weight_dr03_b050_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.060, true, false, true, "iso_b050_e050");
+
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,0., weight*ee_weight_dr03_b150_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,1., weight*ee_weight_dr03_b150_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,2., weight*ee_weight_dr03_b150_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,3., weight*ee_weight_dr03_b150_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,4., weight*ee_weight_dr03_b150_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,5., weight*ee_weight_dr03_b150_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,6., weight*ee_weight_dr03_b150_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,7., weight*ee_weight_dr03_b125_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,8., weight*ee_weight_dr03_b125_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,9., weight*ee_weight_dr03_b125_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,10, weight*ee_weight_dr03_b125_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,11., weight*ee_weight_dr03_b125_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,12., weight*ee_weight_dr03_b125_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,13., weight*ee_weight_dr03_b100_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,14., weight*ee_weight_dr03_b100_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,15., weight*ee_weight_dr03_b100_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,16., weight*ee_weight_dr03_b100_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,17., weight*ee_weight_dr03_b100_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,18., weight*ee_weight_dr03_b100_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,19., weight*ee_weight_dr03_b090_e125, 0.,49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,20., weight*ee_weight_dr03_b090_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,21., weight*ee_weight_dr03_b090_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,22., weight*ee_weight_dr03_b090_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,23., weight*ee_weight_dr03_b090_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,24., weight*ee_weight_dr03_b090_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,25., weight*ee_weight_dr03_b080_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,26., weight*ee_weight_dr03_b080_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,27., weight*ee_weight_dr03_b080_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,28., weight*ee_weight_dr03_b080_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,29., weight*ee_weight_dr03_b080_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,30., weight*ee_weight_dr03_b080_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,31., weight*ee_weight_dr03_b070_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,32., weight*ee_weight_dr03_b070_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,33., weight*ee_weight_dr03_b070_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,34., weight*ee_weight_dr03_b070_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,35., weight*ee_weight_dr03_b070_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,36., weight*ee_weight_dr03_b070_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,37., weight*ee_weight_dr03_b050_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,38., weight*ee_weight_dr03_b050_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,39., weight*ee_weight_dr03_b050_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,40., weight*ee_weight_dr03_b050_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,41., weight*ee_weight_dr03_b050_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,42., weight*ee_weight_dr03_b050_e060, 0., 49.,49);
+  }
+  else{
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,0., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,1., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,2., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,3., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,4., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,5., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b150_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,6., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b125_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,7., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b125_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,8., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b125_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,9., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b125_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,10, weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b125_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,11., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b125_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,12., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b100_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,13., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b100_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,14., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b100_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,15., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b100_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,16., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b100_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,17., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b100_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,18., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b090_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,19., weight, 0.,49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b090_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,20., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b090_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,21., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b090_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,22., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b090_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,23., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b090_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,24., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b080_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,25., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b080_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,26., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b080_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,27., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b080_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,28., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b080_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,29., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b080_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,30., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b070_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,31., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b070_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,32., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b070_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,33., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b070_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,34., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b070_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,35., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b070_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,36., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b050_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,37., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b050_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,38., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b050_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,39., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b050_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,40., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b050_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,41., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_dr03_b050_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,42., weight, 0., 49.,49);
+  }
+
+  /// + NPiso
+  if(!k_running_nonprompt){
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,0., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,1., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,2., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,3., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,4., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,5., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b150_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,6., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b125_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,7., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b125_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,8., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b125_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,9., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b125_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,10., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b125_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,11., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b125_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,12., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b100_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,13., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b100_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,14., weight, 0.,49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b100_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,15., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b100_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,16., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b100_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,17., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b100_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,18., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b090_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,19., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b090_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,20., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b090_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,21., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b090_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,22., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b090_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,23., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b090_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,24., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b080_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,25., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b080_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,26., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b080_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,27., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b080_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,28., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b080_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,29., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b080_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,30., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b070_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,31., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b070_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,32., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b070_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,33., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b070_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,34., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b070_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,35., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b070_e050 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,36., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b050_e125 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,37., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b050_e100 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,38., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b050_e090 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,39., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b050_e080 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,40., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b050_e070 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,41., weight, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl_NPFisodr03_b050_e060 ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,42., weight, 0., 49.,49);
+
+  }
+  else{
+
+    float ee_weight_dr03_b150_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.125, true, true, true, "NPFiso_b150_e125");
+    float ee_weight_dr03_b150_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.100, true, true, true, "NPFiso_b150_e100");
+    float ee_weight_dr03_b150_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.090, true, true, true, "NPFiso_b150_e090");
+    float ee_weight_dr03_b150_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.080, true, true, true, "NPFiso_b150_e080");
+    float ee_weight_dr03_b150_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.070, true, true, true, "NPFiso_b150_e070");
+    float ee_weight_dr03_b150_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.060, true, true, true, "NPFiso_b150_e060");
+    float ee_weight_dr03_b150_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.050, true, true, true, "NPFiso_b150_e050");
+
+    float ee_weight_dr03_b125_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.100, true, true, true, "NPFiso_b125_e100");
+    float ee_weight_dr03_b125_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.090, true, true, true, "NPFiso_b125_e090");
+    float ee_weight_dr03_b125_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.080, true, true, true, "NPFiso_b125_e080");
+    float ee_weight_dr03_b125_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.070, true, true, true, "NPFiso_b125_e070");
+    float ee_weight_dr03_b125_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.060, true, true, true, "NPFiso_b125_e060");
+    float ee_weight_dr03_b125_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.050, true, true, true, "NPFiso_b125_e050");
+
+    float ee_weight_dr03_b100_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.125, true, true, true, "NPFiso_b100_e125");
+    float ee_weight_dr03_b100_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.090, true, true, true, "NPFiso_b100_e090");
+    float ee_weight_dr03_b100_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.080, true, true, true, "NPFiso_b100_e080");
+    float ee_weight_dr03_b100_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.070, true, true, true, "NPFiso_b100_e070");
+    float ee_weight_dr03_b100_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.060, true, true, true, "NPFiso_b100_e060");
+    float ee_weight_dr03_b100_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.050, true, true, true, "NPFiso_b100_e050");
+
+    float ee_weight_dr03_b090_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.125, true, true, true, "NPFiso_b090_e125");
+    float ee_weight_dr03_b090_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.100, true, true, true, "NPFiso_b090_e100");
+    float ee_weight_dr03_b090_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.080, true, true, true, "NPFiso_b090_e080");
+    float ee_weight_dr03_b090_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.070, true, true, true, "NPFiso_b090_e070");
+    float ee_weight_dr03_b090_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.060, true, true, true, "NPFiso_b090_e060");
+    float ee_weight_dr03_b090_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.050, true, true, true, "NPFiso_b090_e050");
+    
+    float ee_weight_dr03_b080_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.125, true, true, true, "NPFiso_b080_e125");
+    float ee_weight_dr03_b080_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.100, true, true, true, "NPFiso_b080_e100");
+    float ee_weight_dr03_b080_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.090, true, true, true, "NPFiso_b080_e090");
+    float ee_weight_dr03_b080_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.070, true, true, true, "NPFiso_b080_e070");
+    float ee_weight_dr03_b080_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.060, true, true, true, "NPFiso_b080_e060");
+    float ee_weight_dr03_b080_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.050, true, true, true, "NPFiso_b080_e050");
+
+    float ee_weight_dr03_b070_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.125, true, true, true, "NPFiso_b070_e125");
+    float ee_weight_dr03_b070_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.100, true, true, true, "NPFiso_b070_e100");
+    float ee_weight_dr03_b070_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.090, true, true, true, "NPFiso_b070_e090");
+    float ee_weight_dr03_b070_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.080, true, true, true, "NPFiso_b070_e080");
+    float ee_weight_dr03_b070_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.060, true, true, true, "NPFiso_b070_e060");
+    float ee_weight_dr03_b070_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.050, true, true, true, "NPFiso_b070_e050");
+
+    float ee_weight_dr03_b050_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.125, true, true, true, "NPFiso_b050_e125");
+    float ee_weight_dr03_b050_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.100, true, true, true, "NPFiso_b050_e100");
+    float ee_weight_dr03_b050_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.090, true, true, true, "NPFiso_b050_e090");
+    float ee_weight_dr03_b050_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.080, true, true, true, "NPFiso_b050_e080");
+    float ee_weight_dr03_b050_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.070, true, true, true, "NPFiso_b050_e070");
+    float ee_weight_dr03_b050_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.060, true, true, true, "NPFiso_b050_e060");
+
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,0., weight*ee_weight_dr03_b150_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,1., weight*ee_weight_dr03_b150_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,2., weight*ee_weight_dr03_b150_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,3., weight*ee_weight_dr03_b150_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,4., weight*ee_weight_dr03_b150_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,5., weight*ee_weight_dr03_b150_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,6., weight*ee_weight_dr03_b150_e050, 0., 49.,49);
+
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,7., weight*ee_weight_dr03_b125_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,8., weight*ee_weight_dr03_b125_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,9., weight*ee_weight_dr03_b125_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,11., weight*ee_weight_dr03_b125_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,10., weight*ee_weight_dr03_b125_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,12., weight*ee_weight_dr03_b125_e050, 0., 49.,49);
+    
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,13., weight*ee_weight_dr03_b100_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,14., weight*ee_weight_dr03_b100_e090, 0.,49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,15., weight*ee_weight_dr03_b100_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,16., weight*ee_weight_dr03_b100_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,17., weight*ee_weight_dr03_b100_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,18., weight*ee_weight_dr03_b100_e050, 0., 49.,49);
+
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,19., weight*ee_weight_dr03_b090_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,20., weight*ee_weight_dr03_b090_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,21., weight*ee_weight_dr03_b090_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,22., weight*ee_weight_dr03_b090_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,23., weight*ee_weight_dr03_b090_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,24., weight*ee_weight_dr03_b090_e050, 0., 49.,49);
+
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,25., weight*ee_weight_dr03_b080_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,26., weight*ee_weight_dr03_b080_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,27., weight*ee_weight_dr03_b080_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,28., weight*ee_weight_dr03_b080_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,29., weight*ee_weight_dr03_b080_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,30., weight*ee_weight_dr03_b080_e050, 0., 49.,49);
+
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,31., weight*ee_weight_dr03_b070_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,32., weight*ee_weight_dr03_b070_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,33., weight*ee_weight_dr03_b070_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,34., weight*ee_weight_dr03_b070_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,35., weight*ee_weight_dr03_b070_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,36., weight*ee_weight_dr03_b070_e050, 0., 49.,49);
+
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,37., weight*ee_weight_dr03_b050_e125, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,38., weight*ee_weight_dr03_b050_e100, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,39., weight*ee_weight_dr03_b050_e090, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,40., weight*ee_weight_dr03_b050_e080, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,41., weight*ee_weight_dr03_b050_e070, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,42., weight*ee_weight_dr03_b050_e060, 0., 49.,49);
+
+    
+  }
+    
+
+  if(CheckSignalRegion(electronLooseColl_nodxy, jetColl_lepveto,"pogiso_d0_nocut", weight))FillHist("d0cutflow",0.  , weight, 0.,7.,7);
+  if(!k_running_nonprompt){
+    if(CheckSignalRegion(electronLooseColl_dxy_05, jetColl_lepveto,"pogiso_d0_05", weight))FillHist("d0cutflow",1.  , weight, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl_dxy_10, jetColl_lepveto,"pogiso_d0_10", weight))FillHist("d0cutflow",2.  , weight, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl_dxy_15, jetColl_lepveto,"pogiso_d0_15", weight))FillHist("d0cutflow",3.  , weight, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl_dxy_20, jetColl_lepveto,"pogiso_d0_20", weight))FillHist("d0cutflow",4.  , weight, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl_dxy_25, jetColl_lepveto,"pogiso_d0_25", weight))FillHist("d0cutflow",5.  , weight, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl_dxy_30, jetColl_lepveto,"pogiso_d0_30", weight))FillHist("d0cutflow",6.  , weight, 0.,7.,7);
+  }
+  else{
+    
+    float ee_weight_05 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.005, 0.1, 0.07, true, false, true, "dxy05");
+    float ee_weight_10 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.010, 0.1, 0.07, true, false, true, "dxy10");
+    float ee_weight_15 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.015, 0.1, 0.07, true, false, true,  "dxy15");
+    float ee_weight_20 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.020, 0.1, 0.07, true, false, true, "dxy20");
+    float ee_weight_25 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.025, 0.1, 0.07, true, false, true, "dxy25");
+    float ee_weight_30 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.030, 0.1, 0.07, true, false, true, "dxy30");
+
+       
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_05", weight*ee_weight_05))FillHist("d0cutflow",1.  , weight*ee_weight_05, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_10", weight*ee_weight_10))FillHist("d0cutflow",2.  , weight*ee_weight_10, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_15", weight*ee_weight_15))FillHist("d0cutflow",3.  , weight*ee_weight_15, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_20", weight*ee_weight_20))FillHist("d0cutflow",4.  , weight*ee_weight_20, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_25", weight*ee_weight_25))FillHist("d0cutflow",5.  , weight*ee_weight_25, 0.,7.,7);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_30", weight*ee_weight_30))FillHist("d0cutflow",6.  , weight*ee_weight_30, 0.,7.,7);
+    
+  }
   
-  CheckSignalRegion(el_d0_03_iso3_60, jetColl_lepveto,"iso_d0_03_iso3_60", weight);
-  CheckSignalRegion(el_d0_03_iso3_50, jetColl_lepveto,"iso_d0_03_iso3_50", weight);
-  CheckSignalRegion(el_d0_03_iso3_40, jetColl_lepveto,"iso_d0_03_iso3_40", weight);
-  CheckSignalRegion(el_d0_03_iso3_30, jetColl_lepveto,"iso_d0_03_iso3_30", weight);
-  CheckSignalRegion(el_d0_03_iso3_20, jetColl_lepveto,"iso_d0_03_iso3_20", weight);
-  CheckSignalRegion(el_d0_03_iso3_10, jetColl_lepveto,"iso_d0_03_iso3_10", weight);
-  CheckSignalRegion(el_d0_03_iso3_09, jetColl_lepveto,"iso_d0_03_iso3_09", weight);
-  CheckSignalRegion(el_d0_03_iso3_075, jetColl_lepveto,"iso_d0_03_iso3_075", weight);
-  
-  
-  /// Now check signal regions
+/// Now check signal regions
   
   if(electronAnalysisColl.size() != 2 ) return;
   
@@ -588,51 +1284,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   }
   
   
-  FillCLHist(sighist, "SSee", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  
-  FillHist("SSee_nloose_el",electronVetoColl.size()  , weight, 0.,5.,5);
-  FillHist("SSee_nloose_mu",muonVetoColl.size()  , weight, 0.,5.,5);
-  
-  if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;
-  
-  FillCLHist(sighist, "SSee_trilepveto", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  
-  snu::KParticle ee = electronAnalysisColl.at(0) + electronAnalysisColl.at(1);
-  if(ee.M()  < 15.) return;
-  FillCLHist(sighist, "SSee_eegt15", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  
-  for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
-    for(unsigned int iel=0 ; iel < electronLooseColl.size() ; iel++){
-      if( electronLooseColl[iel].DeltaR(jetColl.at(ijet)) < 0.4){
-	if(jetColl.at(ijet).BtagProb() > 0.679) cout << "Jet close to electron is btagged" <<  endl;
-      }
-    }
-  }
-  
-  
-  if(!Zcandidate(electronAnalysisColl, 20., false)) FillCLHist(sighist, "SSee_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  else FillCLHist(sighist, "SSee_Z", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  
-  if(jetColl_lepveto.size() != 0){
-    if(!Zcandidate(electronAnalysisColl, 20., false)) FillCLHist(sighist, "SSee_gt0jet_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  }
-
-  if(jetColl_lepveto.size() < 2) return;
-  FillCLHist(sighist, "SSee_DiJet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
- 
-
-  snu::KParticle Z = electronAnalysisColl.at(0) + electronAnalysisColl.at(1);
-  if(fabs( Z.M() - 90.)  < 10.){
-    m_logger << INFO << "Event has mass close to Z" << LQLogger::endmsg;
-    return;
-  }
-  FillCLHist(sighist, "SSeeJJ_noZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  
-  if(eventbase->GetEvent().PFMET() > 50.) return;
-
-  ///  FillCutFlow("SS_MET",weight);
-  
-
+  return;
   for(unsigned int ijet=0; ijet < jetColl_lepveto.size(); ijet++){
     
     FillHist("jet_NeutralEMEnergyFraction",jetColl_lepveto.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
@@ -650,337 +1302,34 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 
   
   return;
-  bool prompt_prompt = false;
-  bool prompt_nonprompt = false;
-  bool nonprompt_nonprompt = false;
-  bool prompt_chargeflip = false;
-
-  m_logger << INFO << "Number of electrons == " << electronAnalysisColl.size() << LQLogger::endmsg;
-  
-  for(unsigned int iel = 0; iel < electronAnalysisColl.size(); iel++){
-    m_logger << INFO << "El number:  " <<  iel+1  << LQLogger::endmsg;
-    
-    if(electronAnalysisColl[iel].Charge() == -1){
-      
-      if(electronAnalysisColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El- pt/eta/phi = " << electronAnalysisColl[iel].Pt() << " / " << electronAnalysisColl[iel].Eta() << " / " << electronAnalysisColl[iel].Phi() << LQLogger::endmsg;
-      else m_logger << INFO << "El- pt/eta/phi = " << electronAnalysisColl[iel].MatchedGenParticlePt() << " / " << electronAnalysisColl[iel].MatchedGenParticleEta() << " / " <<electronAnalysisColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
-    }
-    else {
-      if(electronAnalysisColl[iel].MatchedGenParticlePt() == -999)  m_logger << INFO << "El+ pt/eta/phi = " << electronAnalysisColl[iel].Pt() << " / " << electronAnalysisColl[iel].Eta() << " / " << electronAnalysisColl[iel].Phi() << LQLogger::endmsg;
-      else m_logger << INFO << "El+ pt/eta/phi = " << electronAnalysisColl[iel].MatchedGenParticlePt() << " / " << electronAnalysisColl[iel].MatchedGenParticleEta() << " / " <<electronAnalysisColl[iel].MatchedGenParticlePhi() << LQLogger::endmsg;
-      
-    }
-    
-    for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
-      if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
-      if( electronAnalysisColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
-        if(eventbase->GetTruth().at(it).IndexMother()!= 1)  m_logger << INFO << "Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / "<< eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()   << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId() << LQLogger::endmsg;
-      }
-    }
-    
-    bool prompt = true;
-    bool charge_flip = false;
-    bool match_found=false;
-    for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
-      if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
-      
-      if( electronAnalysisColl[iel].DeltaR(eventbase->GetTruth().at(it)) < 0.2){
-	m_logger << INFO << "Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / " << eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()    << LQLogger::endmsg;
-	
-	match_found=true;
-	
-	if(eventbase->GetTruth().at(it).GenStatus() == 1){
-	  if(fabs(eventbase->GetTruth().at(it).PdgId()) == 11){
-	    for(unsigned int it2 = 0; it2 < eventbase->GetTruth().size() ; it2++){
-	      if(eventbase->GetTruth().at(it2).PdgId() == 2212) continue;
-	      if(eventbase->GetTruth().at(it2).GenStatus() == 3){
-		if(eventbase->GetTruth().at(it).DeltaR(eventbase->GetTruth().at(it2)) < 0.1) {
-		  m_logger << "PDGID of particle close to status 1 electron = " << eventbase->GetTruth().at(it2).PdgId() << LQLogger::endmsg;
-		  m_logger << "Mother of  particle close to status 1 electron = " << eventbase->GetTruth().at(eventbase->GetTruth().at(it2).IndexMother()).PdgId() << LQLogger::endmsg;
-		  if(fabs(eventbase->GetTruth().at(it2).PdgId()) == 15){
-		    m_logger << INFO << "Electron  from Tau decay" << LQLogger::endmsg;
-		    
-		    if(eventbase->GetTruth().at(it2).PdgId() * electronAnalysisColl[iel].Charge() > 0.){
-		      charge_flip= true;
-		      prompt=true;
-		      m_logger << INFO << "ELECTRON FROM CHARGELFIP" <<  LQLogger::endmsg;
-		      break;
-		      
-		    }		  
-		  }
-		}
-	      }
-	    }
-	  }
-	}
-	else if(eventbase->GetTruth().at(it).GenStatus() == 3){
-	  
-	  if(fabs(eventbase->GetTruth().at(it).PdgId()) == 11 && isPrompt(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(it).IndexMother()).PdgId()))) prompt = true;
-	  else prompt = false;
-	  
-	  if(electronAnalysisColl[iel].Charge() * eventbase->GetTruth().at(it).PdgId() > 0.)  charge_flip= true;
-	}
-      }
-      
-    } 
-    if(!match_found)  {
-      m_logger << INFO << "NOOOOO MATCHED  TRUTH PARTICLE FOUND" << LQLogger::endmsg;
-      for(unsigned int jit = 0; jit < eventbase->GetGenJets().size(); jit++){
-	m_logger<< INFO << "Matched Gen jet id = " << jit+1 << " pt = " <<  eventbase->GetGenJets().at(jit).Pt() << " eta= " << eventbase->GetGenJets().at(jit).Eta() << " phi = " << eventbase->GetGenJets().at(jit).Phi() << LQLogger::endmsg;
-      }
-      
-      for(unsigned int ip=0; ip < PhotonEta->size() ; ip++){
-	if(!PhotonHasMatchedPromptEle)m_logger<< INFO << "Photon pt/eta/phi = " << PhotonPt->at(ip) << " / " <<  PhotonEta->at(ip) << " / " << PhotonPhi->at(ip) << LQLogger::endmsg;
-      }
-    }
-
-
-    if(iel==0){
-      if(!prompt) {
-	prompt_nonprompt = true;
-	nonprompt_nonprompt = true;
-	prompt_prompt = false;
-      }
-      else{
-	if(charge_flip)  prompt_chargeflip = true;
-	prompt_prompt = true;
-	prompt_nonprompt = false;
-	nonprompt_nonprompt = false;
-      }
-    }
-    if(iel==1){
-      if(!prompt) {
-	if(nonprompt_nonprompt)nonprompt_nonprompt = true;
-	else nonprompt_nonprompt = false;
-	if(prompt_nonprompt) prompt_nonprompt = false;
-	else prompt_nonprompt = true;
-	prompt_prompt =false;
-      }
-      else {
-	if(charge_flip)  prompt_chargeflip = true;
-	nonprompt_nonprompt = false;
-	if(prompt_prompt) prompt_prompt = true;
-	else prompt_prompt =false;
-	if(prompt_nonprompt) prompt_nonprompt = true;
-	else  prompt_nonprompt = false;
-      }
-    }
-  }
-  
-  if(prompt_chargeflip)  m_logger << INFO << "EVENT HAS CHARGEFLIP   "<<  LQLogger::endmsg;
-  else   if (prompt_prompt) {
-    m_logger << INFO << "EVENT IS PROMPT-PROMPT "<<  LQLogger::endmsg;
-    cout << "WTF" << endl;
-    for(unsigned int it = 0; it < eventbase->GetTruth().size() ; it++){
-      if(eventbase->GetTruth().at(it).PdgId() == 2212) continue;
-      m_logger << INFO << "PP:Truth " << it << " Matched to reco:   pt/eta/phi/ pdgid/status = " << eventbase->GetTruth().at(it).Pt() << " / " << eventbase->GetTruth().at(it).Eta() << " / " <<eventbase->GetTruth().at(it).Phi() <<  " / " <<   eventbase->GetTruth().at(it).PdgId()    << " / " << eventbase->GetTruth().at(it).GenStatus()    << LQLogger::endmsg;
-      if( eventbase->GetTruth().at(it).IndexMother() != -1)m_logger << INFO <<   eventbase->GetTruth().at( eventbase->GetTruth().at(it).IndexMother()).PdgId()    << LQLogger::endmsg;
-    }
-    
-  }
-  else if (prompt_nonprompt) m_logger << INFO << "EVENT IS PROMPT-NONPROMPT "<<  LQLogger::endmsg;
-  else if (nonprompt_nonprompt) m_logger << INFO << "EVENT IS NONPROMPT-NONPROMPT "<<  LQLogger::endmsg;
-  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   
   
-  
-  int nbjet=0;
-  for(unsigned int ij=0; ij <jetColl_lepveto.size(); ij++){
-    if(jetColl_lepveto.at(ij).BtagProb() > 0.679) nbjet++;
-  }
-  
-  if(nbjet == 2){
-    if(eventbase->GetEvent().PFMET() > 30.){
-      if(muonTightColl.size() ==2){
-	if(muonTightColl.at(0).Charge() != muonTightColl.at(1).Charge()){
-	  FillHist("OSTopCR", jetColl_lepveto.size(),weight, 0.,10.,10);
-	}
-	else{
-	  FillHist("SSTopCR", jetColl_lepveto.size(),weight, 0.,10.,10);
-	}
-      }
-    }
-  }
-  for(unsigned int ij=0; ij <jetColl.size(); ij++){
-    for (unsigned int iel=0; iel < electronAnalysisColl.size(); iel++){
-      float dR = electronAnalysisColl[iel].DeltaR(jetColl[ij]);
-      if(dR< 0.4){
-	//m_logger << INFO << " close jet to electron has pT diff = " << 100.*(electronAnalysisColl[iel].Pt() - jetColl[ij].Pt()) / electronAnalysisColl[iel].Pt() << LQLogger::endmsg;
-	///m_logger << INFO << (electronAnalysisColl.at(iel).PrimaryVertexDXY()/ electronAnalysisColl.at(iel).PrimaryVertexDXYError())<< LQLogger::endmsg;
-      }
-    }    
-  }
-  /// count number of loose leptons
-  int nloose_lep = muonVetoColl.size() + electronVetoColl.size();
-
-  
-  if(electronAnalysisColl.size() ==  3) {
-       m_logger << INFO << "Number of jets in tri electron event = " << jetColl_lepveto.size() << LQLogger::endmsg;
-     
-       FillCLHist(sighist, "TriEl", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-     }
-  if(electronAnalysisColl.size() ==  4)FillCLHist(sighist, "ZZ", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-
-
-  
-  bool no_emuoverlap = true;
-
-  for(int i=0; i < electronAnalysisColl.size() ; i++){
-    for(int j=0; j < muonTightColl.size() ; j++){
-      float dR =  electronAnalysisColl[i].DeltaR(muonTightColl[j]);
-      if(dR < 0.1) no_emuoverlap= false;
-    }
-  }
-  
-  if (electronAnalysisColl.size() == 2) {      
-
-    if(electronAnalysisColl.at(0).Charge() == electronAnalysisColl.at(1).Charge()){      
-      
-      FillCutFlow("SS_t",weight);
-      FillCLHist(sighist, "SSDiElectronTight", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-      
-      if(nloose_lep == 2 && no_emuoverlap){
-	FillCutFlow("SS_lvt_t",weight);
-      
-	if(jetColl_lepveto.size() > 1){
-	  FillCutFlow("SS_dijet_t",weight);
-	  FillCLHist(sighist, "SSDiElectronTight_DiJet", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-	  
-	  
-	  if(SumPt(jetColl_lepveto)  > 80.){
-	    if(! ( SumPt(jetColl_lepveto) < 500. && eventbase->GetEvent().PFMET() < 30.)){
-	      FillCLHist(sighist, "SSSR0", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-	    }
-	  }
-	  
-	    
-	  
-	  bool pass_same_vertex= (electronAnalysisColl.at(0).VertexIndex() == electronAnalysisColl.at(1).VertexIndex());
-	  bool fail_conv = true;
-	  bool fail_d0=false;
-	  bool ecalseeded= true;
-	  bool pass_charge_cons=true;
-	  
-	  for(unsigned int i= 0; i < electronAnalysisColl.size(); i++){
-	    if(electronAnalysisColl.at(i).MissingHits() == 0) fail_conv = false;
-	    if(electronAnalysisColl.at(i).HasMatchedConvPhot()) fail_conv = false; 
-	    if((electronAnalysisColl.at(i).PrimaryVertexDXY()/ electronAnalysisColl.at(i).PrimaryVertexDXYError()) > 4.) {
-	      fail_d0=true;
-	    }
-	    
-	    if(!electronAnalysisColl.at(i).EcalDrivenSeed()) ecalseeded = false;
-	    if(!electronAnalysisColl.at(i).GsfCtfScPixChargeConsistency()) pass_charge_cons=false;
-	  }
-	  
-	  if(nbjet==0){
-	    FillCutFlow("SS_0bj_t",weight);
-	    if(pass_same_vertex) {
-	      FillCutFlow("SS_sv_t",weight);
-	      if(!fail_conv) {
-		FillCutFlow("SS_noconv_t",weight);
-		if(!fail_d0){
-		  FillCutFlow("SS_d0_t",weight);
-		  if(pass_charge_cons) FillCutFlow("SS_sc_t",weight);
-		}
-	      }
-	    }
-	  }
-	}
-      }
-    }// SS 
-  }
-
-    
-  /*
-    /// Check all other el WPs
-  if (electronMediumColl.size() == 2) {
-    if(electronMediumColl.at(0).Charge() == electronMediumColl.at(1).Charge()){
-      FillCLHist(sighist, "SSDiElectronMedium", eventbase->GetEvent(), muonTightColl,electronMediumColl,jetColl_lepveto, weight);    
-      FillCLHist(elhist, "SSDiElectronMedium_Electrons", electronMediumColl, eventbase->GetEvent().JetRho(),weight);
-      if(jetColl_lepveto.size() > 1){
-	if(nloose_lep == 2){
-	  FillCutFlow("SSDiEl_medium",weight);
-        }
-      } 
-    }
-  }
-
-  if (electronMVAColl.size() == 2) {
-    if(electronMVAColl.at(0).Charge() == electronMVAColl.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-	if(nloose_lep == 2){
-	  FillCutFlow("SSDiEl_mva",weight);
-	}
-      }
-    }
-  }
-
-      
-
-  if (electronTrigTightColl.size() == 2) {
-    if(electronTrigTightColl.at(0).Charge() == electronTrigTightColl.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-	if(nloose_lep == 2){
-          FillCutFlow("SSDiEl_trigtight",weight);
-        }
-      }
-    }
-  }
-  if (electronTrigWP70Coll.size() == 2) {
-    if(electronTrigWP70Coll.at(0).Charge() == electronTrigWP70Coll.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-        if(nloose_lep == 2){
-          FillCutFlow("SSDiEl_trigwp70",weight);
-	}
-      }
-    }
-  }
-  
-  if (electronEOPColl.size() == 2) {
-    if(electronEOPColl.at(0).Charge() == electronEOPColl.at(1).Charge()){
-      if(jetColl_lepveto.size() > 1){
-        if(nloose_lep == 2){
-          FillCutFlow("SSDiEl_eop",weight);
-	}
-      }
-    }
-  }
-  
-  */
-  
-  
-  return;
 }// End of execute event loop
 
-void HNElectronOptimisation::CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
-  if(electrons.size() != 2 ) return ;
-  if(electrons.at(0).Pt() < 20.) return ;
-  if(electrons.at(1).Pt() < 15.) return ;
-  if(!SameCharge(electrons)) return ;
-  if(jets.size() < 2) return ;
+bool HNElectronOptimisation::CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
+  if(electrons.size() != 2 ) return false ;
+  if(electrons.at(0).Pt() < 20.) return false;
+  if(electrons.at(1).Pt() < 15.) return false;
+  if(!SameCharge(electrons)) return false;
+  if(jets.size() < 2) return false;
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
-  if(ee.M()  < 10.) return ;
-
-  snu::KParticle eejj = electrons.at(0) + electrons.at(1)+ jets.at(0) + jets.at(1) ;
-  if(eejj.M()  > 200.) return ;
+  if(ee.M()  < 10.) return false;
 
   snu::KParticle jj = jets.at(0) + jets.at(1) ;
-  if(jj.M() > 120.) return ;
+  if(jj.M() > 120.) return false;
 
-  if(ee.M() > 80.) return ;
-  if(eventbase->GetEvent().PFMET() > 35.) return ;
+  if((ee.M() > 80.) && (ee.M() < 100.) ) return false;
+  if(eventbase->GetEvent().PFMET() > 50.) return false;
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     if(jets.at(ij).BtagProb() > 0.679) nbjet++;
   }
-  if(nbjet > 0) return;
-
-  if(name.Contains("iso_d0")) FillIsoCutFlow(name.Data(),w);
-  else FillCutFlow(name.Data(),w);
+  if(nbjet > 0) return false;
+  
+  return true;
 
 }
-
 
 
 bool HNElectronOptimisation::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets){
@@ -1181,53 +1530,25 @@ void HNElectronOptimisation::FillCutFlow(TString cut, float weight){
 }
      
      
-void HNElectronOptimisation::FillIsoCutFlow(TString cut, float weight){
+void HNElectronOptimisation::FillIsoCutFlow(TString cut, float w){
        
   
   if(GetHist("isocutflow")) {
-    GetHist("isocutflow")->Fill(cut,weight);
+    if(cut.Contains("nocut")) GetHist("isocutflow")->Fill(0.,w);
+       //GetHist("isocutflow")->Fill(cut,double(w));
     
   }
   else{
-    AnalyzerCore::MakeHistograms("isocutflow",36,0.,36.);
+    AnalyzerCore::MakeHistograms("isocutflow",7,0.,7.);
     
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(1,"iso_d0_03_iso3_60");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(2,"iso_d0_03_iso3_50");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(3,"iso_d0_03_iso3_40");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(4,"iso_d0_03_iso3_30");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(5,"iso_d0_03_iso3_20");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(6,"iso_d0_03_iso3_10");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(7,"iso_d0_03_iso3_09");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(8,"iso_d0_03_iso3_075");
-    
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(10,"iso_d0_02_iso3_60");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(11,"iso_d0_02_iso3_50");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(12,"iso_d0_02_iso3_40");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(13,"iso_d0_02_iso3_30");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(14,"iso_d0_02_iso3_20");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(15,"iso_d0_02_iso3_10");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(16,"iso_d0_02_iso3_09");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(17,"iso_d0_02_iso3_075");
-
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(19,"iso_d0_01_iso3_60");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(20,"iso_d0_01_iso3_50");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(21,"iso_d0_01_iso3_40");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(22,"iso_d0_01_iso3_30");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(23,"iso_d0_01_iso3_20");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(24,"iso_d0_01_iso3_10");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(25,"iso_d0_01_iso3_09");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(26,"iso_d0_01_iso3_075");
-
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(28,"iso_d0_005_iso3_60");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(29,"iso_d0_005_iso3_50");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(30,"iso_d0_005_iso3_40");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(31,"iso_d0_005_iso3_30");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(32,"iso_d0_005_iso3_20");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(33,"iso_d0_005_iso3_10");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(34,"iso_d0_005_iso3_09");
-    GetHist("isocutflow")->GetXaxis()->SetBinLabel(35,"iso_d0_005_iso3_075");
-
-    
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(1,"pogiso_d0_nocut");
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(2,"pogiso_d0_05");
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(3,"pogiso_d0_10");
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(4,"pogiso_d0_15");
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(5,"pogiso_d0_20");
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(6,"pogiso_d0_25");
+    GetHist("isocutflow")->GetXaxis()->SetBinLabel(7,"pogiso_d0_30");
+   
     
   }
 }

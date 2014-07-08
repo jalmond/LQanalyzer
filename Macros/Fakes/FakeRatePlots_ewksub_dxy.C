@@ -30,141 +30,90 @@ void FakeRatePlots_ewksub(){
   gStyle->SetPalette(1);
     
   vector<TString> plotname;
-  /*plotname.push_back("_pt_eta1");
-  plotname.push_back("_pt_eta2");
-  plotname.push_back("_pt_eta3");
-  plotname.push_back("_pt_eta4");*/
-  plotname.push_back("_nvertices");
-  /*plotname.push_back("_eta");
-  plotname.push_back("_ht");
-  plotname.push_back("_eta_binned");
-  plotname.push_back("_njets");
-  plotname.push_back("_awaybjet_eta_binned");
-  plotname.push_back("_closebjet_eta_binned");
-  plotname.push_back("_closejet_noe_eta_binned");
-  plotname.push_back("_closejet_ph_eta_binned");
-  */
+  plotname.push_back("_pt");
+  
   
   int ihist(0);
   for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     
     vector<TString> hist_ptcut;
-    //hist_ptcut.push_back("20");
     hist_ptcut.push_back("40");
-    //hist_ptcut.push_back("60");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
       int rebin=1;
       
-      
-      TH1F* h_pt_num= (TH1F*)fdata->Get(("TightEl"+ *it2+ *it ).Data());
+      TH1F* h_pt_dxy_05_num= (TH1F*)fdata->Get(("Tight_dxy05_El"+ *it2+ *it ).Data());
+      TH1F* h_pt_dxy_10_num= (TH1F*)fdata->Get(("Tight_dxy10_El"+ *it2+ *it ).Data());
+      TH1F* h_pt_dxy_15_num= (TH1F*)fdata->Get(("Tight_dxy15_El"+ *it2+ *it ).Data());
+      TH1F* h_pt_dxy_20_num= (TH1F*)fdata->Get(("Tight_dxy20_El"+ *it2+ *it ).Data());
+      TH1F* h_pt_dxy_25_num= (TH1F*)fdata->Get(("Tight_dxy25_El"+ *it2+ *it ).Data());
+      TH1F* h_pt_dxy_30_num= (TH1F*)fdata->Get(("Tight_dxy30_El"+ *it2+ *it ).Data());
+
       TH1F* h_pt_denom= (TH1F*)fdata->Get(("LooseEl"+ *it2+*it).Data());
       
-      TH1F* h_mcpt_num= (TH1F*)fmc->Get(("TightEl"+*it2+ *it ).Data());
+      TH1F* h_mcpt_dxy_05_num= (TH1F*)fmc->Get(("Tight_dxy05_El"+ *it2+ *it ).Data());
+      TH1F* h_mcpt_dxy_10_num= (TH1F*)fmc->Get(("Tight_dxy10_El"+ *it2+ *it ).Data());
+      TH1F* h_mcpt_dxy_15_num= (TH1F*)fmc->Get(("Tight_dxy15_El"+ *it2+ *it ).Data());
+      TH1F* h_mcpt_dxy_20_num= (TH1F*)fmc->Get(("Tight_dxy20_El"+ *it2+ *it ).Data());
+      TH1F* h_mcpt_dxy_25_num= (TH1F*)fmc->Get(("Tight_dxy25_El"+ *it2+ *it ).Data());
+      TH1F* h_mcpt_dxy_30_num= (TH1F*)fmc->Get(("Tight_dxy30_El"+ *it2+ *it ).Data());
       TH1F* h_mcpt_denom= (TH1F*)fmc->Get(("LooseEl"+*it2 +*it).Data());
 
       if(it->Contains("eta")){
 	if(!it->Contains("pt") && !it->Contains("binned"))rebin=2;
       }
+      
+      cout << h_mcpt_dxy_05_num << " " << h_mcpt_denom << " " << h_pt_denom << " " << h_pt_dxy_25_num << endl;
+      
+      h_pt_dxy_05_num->Add(h_mcpt_dxy_05_num,-1);
+      h_pt_dxy_10_num->Add(h_mcpt_dxy_10_num,-1);
+      h_pt_dxy_15_num->Add(h_mcpt_dxy_15_num,-1);
+      h_pt_dxy_20_num->Add(h_mcpt_dxy_20_num,-1);
+      h_pt_dxy_25_num->Add(h_mcpt_dxy_25_num,-1);
+      h_pt_dxy_30_num->Add(h_mcpt_dxy_30_num,-1);
+      
+      h_pt_denom->Add(h_mcpt_denom, -1.);
+      
+      h_pt_dxy_05_num->Divide(h_pt_denom);
+      h_pt_dxy_10_num->Divide(h_pt_denom);
+      h_pt_dxy_15_num->Divide(h_pt_denom);
+      h_pt_dxy_20_num->Divide(h_pt_denom);
+      h_pt_dxy_25_num->Divide(h_pt_denom);
+      h_pt_dxy_30_num->Divide(h_pt_denom);
+      
 
-      h_pt_num->Rebin(rebin);
-      h_pt_denom->Rebin(rebin);
-      h_mcpt_num->Rebin(rebin);
-      h_mcpt_denom->Rebin(rebin);
-      
-      TH1F* h_pt_num_clone = (TH1F*)h_pt_num->Clone("");
-      h_pt_num_clone->Add(h_mcpt_num,-1);
-
-      TH1F* h_pt_num_up_clone = (TH1F*)h_pt_num->Clone("up");
-      TH1F* h_pt_num_down_clone = (TH1F*)h_pt_num->Clone("down");
-      h_pt_num_up_clone->Add(h_mcpt_num,-1.15);
-      h_pt_num_down_clone->Add(h_mcpt_num,-0.85);
-
-      TH1F* h_pt_denom_clone = (TH1F*)h_pt_denom->Clone("");
-      TH1F* h_errorhist = (TH1F*)h_pt_denom->Clone("error");
-      h_pt_denom_clone->Add(h_mcpt_denom,-1);
-      
-      
-      TH1F* h_pt_denom_up_clone = (TH1F*)h_pt_denom->Clone("up");
-      TH1F* h_pt_denom_down_clone = (TH1F*)h_pt_denom->Clone("down");
-      
-      h_pt_denom_up_clone->Add(h_mcpt_denom,-1.15);
-      h_pt_denom_down_clone->Add(h_mcpt_denom,-0.85);
-
-      cout << "Number of events in numerator (data) = " << h_pt_num->Integral() << endl;
-      cout << "Number of events in denominator (data) = " << h_pt_denom->Integral() << endl;
-      
-      cout << "Number of events in numerator (mc) = " << h_mcpt_num->Integral() << endl;
-      cout << "Number of events in denominator (mc) = " << h_mcpt_denom->Integral() << endl;
-      
-      cout << "Number of events in numerator (data-mc) = " << h_pt_num_clone->Integral() << endl;
-      cout << "Number of events in denominator (data-mc) = " << h_pt_denom_clone->Integral() << endl;
-      
-      h_pt_num->Divide(h_pt_denom);
-      h_pt_num_clone->Divide(h_pt_denom_clone);
-
-      h_pt_num_up_clone->Divide(h_pt_denom_up_clone);
-      h_pt_num_down_clone->Divide(h_pt_denom_down_clone);
-      
-      h_pt_num->SetMarkerStyle(20);
-      h_pt_num->SetMarkerColor(kRed);
-      h_pt_num->SetLineColor(kRed);
-      
-      h_pt_num_clone->SetMarkerStyle(20);
-      h_pt_num_clone->SetMarkerColor(kBlue);
-      h_pt_num_clone->SetLineColor(kBlue);
-      
-      
-      
-      for(unsigned int ibin = 1; ibin < h_pt_num_clone->GetNbinsX()+1; ibin++){
-	float binerror = h_pt_num_clone->GetBinError(ibin);
-	
-	float error_up = h_pt_num_clone->GetBinContent(ibin)  -  h_pt_num_down_clone->GetBinContent(ibin) ;
-	error_up = sqrt( error_up*error_up + binerror*binerror);
-	
-	float error_down = h_pt_num_clone->GetBinContent(ibin)  -  h_pt_num_up_clone->GetBinContent(ibin) ;
-        error_down = sqrt( error_down*error_down + binerror*binerror);
-	cout << h_pt_num_clone->GetBinContent(ibin)  << " " << error_up << " " << error_down << endl;
-	h_errorhist->SetBinContent(ibin,  (h_pt_num_clone->GetBinContent(ibin)  + error_up - error_down));
-	h_errorhist->SetBinError( ibin, (error_down + error_up) / 2.);
+      cout << "\n -----------:  h_pt_dxy_05_num" << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_dxy_05_num->GetNbinsX()+1; ibin++){
+	cout << h_pt_dxy_05_num->GetBinContent(ibin) << " " <<  h_pt_dxy_05_num->GetBinError(ibin) << endl;
       }
       
-      cout << "\n -----------" << endl;
-      for(unsigned int ibin = 1; ibin <h_errorhist->GetNbinsX()+1; ibin++){
-	cout << h_errorhist->GetBinContent(ibin) << " " <<  h_errorhist->GetBinError(ibin) << endl;
+      cout << "\n -----------:  h_pt_dxy_10_num" << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_dxy_10_num->GetNbinsX()+1; ibin++){
+        cout << h_pt_dxy_10_num->GetBinContent(ibin) << " " <<  h_pt_dxy_10_num->GetBinError(ibin) << endl;
       }
 
-      TCanvas* c1 = new TCanvas((("Plot")+*it2+*it).Data(), "Plot", 800, 600);
-      
-      if(it->Contains("pt")) h_pt_num->GetXaxis()->SetTitle("El p_{T} [GeV]");
-      else if(it->Contains("njet")) h_pt_num->GetXaxis()->SetTitle("# jets");
-      else if(it->Contains("ht")) h_pt_num->GetXaxis()->SetTitle("#Sigma jet p_{T} [GeV]");
-      else  h_pt_num->GetXaxis()->SetTitle("El #eta");
-      h_pt_num->GetYaxis()->SetTitle("#epsilon_{T/L}");
-      
-      h_pt_num->GetYaxis()->SetRangeUser(0.,1.);
-      
-      h_pt_num->Draw("p");
+      cout << "\n -----------:  h_pt_dxy_15_num" << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_dxy_15_num->GetNbinsX()+1; ibin++){
+        cout << h_pt_dxy_15_num->GetBinContent(ibin) << " " <<  h_pt_dxy_15_num->GetBinError(ibin) << endl;
+      }
 
-      h_pt_num_clone->Draw("psame");
-      h_errorhist->SetFillStyle(3354);
-      h_errorhist->SetFillColor(kBlue-8);
-      h_errorhist->SetMarkerSize(0);
-      h_errorhist->SetMarkerStyle(0);
-      h_errorhist->SetLineColor(kWhite);
-      h_errorhist->Draw("E2same");
-      
-      TLegend* legend= new TLegend(0.2,0.5,0.4,0.7);
-      legend->SetFillColor(10);
-      legend->SetBorderSize(0);
-      legend->SetTextSize(0.04);
-      
-      legend->AddEntry(h_pt_num, "uncorrected", "lp");
-      legend->AddEntry(h_pt_num_clone, "ewk corrected", "lp");
-      
-      legend->Draw("same");
+      cout << "\n -----------:  h_pt_dxy_20_num" << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_dxy_20_num->GetNbinsX()+1; ibin++){
+        cout << h_pt_dxy_20_num->GetBinContent(ibin) << " " <<  h_pt_dxy_20_num->GetBinError(ibin) << endl;
+      }
 
-      c1->SaveAs(("/home/jalmond/WebPlots/Fakes/FakeRateEWKSub" +  *it + ".pdf"));
+      cout << "\n -----------:  h_pt_dxy_25_num" << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_dxy_25_num->GetNbinsX()+1; ibin++){
+        cout << h_pt_dxy_25_num->GetBinContent(ibin) << " " <<  h_pt_dxy_25_num->GetBinError(ibin) << endl;
+      }
+
+      cout << "\n -----------:  h_pt_dxy_30_num" << endl;
+      for(unsigned int ibin = 1; ibin < h_pt_dxy_30_num->GetNbinsX()+1; ibin++){
+        cout << h_pt_dxy_30_num->GetBinContent(ibin) << " " <<  h_pt_dxy_30_num->GetBinError(ibin) << endl;
+      }
+
+      
+      
     }
   }
 }

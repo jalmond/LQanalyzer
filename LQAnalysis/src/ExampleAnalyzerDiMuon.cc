@@ -98,7 +98,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
      /// Here is an alternative method to Fill a histogram. 
      /// The histogram with name "h_nvtx_norw"/"h_nvtx_rw" were not declared in the MakeHistogram code. 
      /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx          
-     pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+     pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
    }
    
    //////////////////////////////////////////////////////
@@ -157,9 +157,6 @@ cout << "Weight = " << weight << endl;
    /// Example of how to get fake weight for dimuon channel
    std::vector<snu::KMuon> muonLooseColl;
    eventbase->GetMuonSel()->HNLooseMuonSelection(muonLooseColl);
-   if(muonLooseColl.size()==2){
-     float mmweight = Get_DataDrivenWeight_MM(muonLooseColl);
-   }
    
    ///////////////////////////////////////////////////////////////////////////////////////////
    /// 2) Loose Muons for veto

@@ -61,12 +61,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
 TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 {
-  //									\
-  									\
-  // Create a unique directory in memory to hold the histograms:	\
-  									\
-  //									\
-  									\
+
   
   gROOT->cd();
   TDirectory* tempDir = 0;
@@ -475,6 +470,11 @@ void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float
   maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
 }
 
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[]) {
+
+  maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
+}
+
 bool AnalyzerCore::PassBasicEventCuts(){
   
   bool pass (true);
@@ -576,6 +576,23 @@ void AnalyzerCore::FillHist(TString histname, float value1, float value2, float 
   }
 
 }
+
+void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins){
+  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex,valuey, w);
+
+  else{
+    if (nxbins < 0) {
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      exit(0);
+    }
+    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins );
+    if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex, valuey, w);
+  }
+
+}
+
 
 
 void AnalyzerCore::FillHist(TString histname, float value, float w){
@@ -767,7 +784,6 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
 float AnalyzerCore::CFRate(snu::KElectron el){
   
   Double_t frac = 0. ;
-  float eta = el.Eta();
   float pt = el.Pt();
   Double_t p0 = 0. ;
   Double_t p1 = 0. ;
@@ -777,7 +793,7 @@ float AnalyzerCore::CFRate(snu::KElectron el){
 
 
   if( fabs(el.Eta()) <= 1.4442 ) {
-    scale_factor_BB = sqrt(0.792) ;
+    scale_factor_BB = 0.792;
     frac = 4.78e-05 ;
     
     if( (1./pt) <= 0.02 ) {
@@ -790,7 +806,7 @@ float AnalyzerCore::CFRate(snu::KElectron el){
   } else {  // fabs(eta) > 1.4
     
     frac = 2.48e-04 ;
-    scale_factor_EE = sqrt(1.81);
+    scale_factor_EE = 1.81;
 
     if( (1./pt) <= 0.02 ){
       p0 = 2.46e-03 ;
@@ -818,8 +834,19 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
   return true;
 }
 
+
+bool AnalyzerCore::IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight){
+  
+  return eventbase->GetElectronSel()->HNIsTight(el, jetrho, dxy, biso, eiso, usedr3, usetrkiso, usetight, false);
+
+}
+  
+
 bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
-  bool istight= true;
+
+  return eventbase->GetElectronSel()->HNIsTight(electron, rho, false);
+  
+  /*bool istight= true;
   
   Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
   int ifid = 0;
@@ -838,12 +865,19 @@ bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
 
   
   /// assuming electron is loose
-  if(LeptonRelIsoDR03 >  0.09) istight=false;
+  
+  if (fabs(electron.SCEta()) < 1.479 ){
+    if(LeptonRelIsoDR03 >  0.09) istight=false;
+  }
+  else {
+    if(LeptonRelIsoDR03 >  0.07) istight=false;
+  }
+  
   if(fabs(electron.dxy()) > 0.01) istight=false;
   
   
   return istight;
-  
+  */
 }
 
 vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons, bool keep_chargeflip){
@@ -911,6 +945,22 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
   }
 
   return mm_weight;
+}
+
+
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut){
+  
+  float ee_weight = 0.;
+  if(k_electrons.size()==2){
+    
+    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight , cut);
+    
+  }
+  return ee_weight;
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho){

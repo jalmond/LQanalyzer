@@ -59,7 +59,7 @@ namespace snu {
     Double_t k_gen_px, k_gen_py, k_gen_pz, k_gen_vx, k_gen_vy,k_gen_vz;
     Int_t k_gen_pdgid, k_gen_status, k_gen_indexmum, k_gen_ndau, k_gen_index, k_gen_tdm;
 
-    ClassDef(KTruth,3)
+    ClassDef(KTruth,4)
   }; 
   
 }//namespace snu

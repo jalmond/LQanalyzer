@@ -51,6 +51,10 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_electrons_phi"]       =     new TH1F("h_electrons_phi_"     + name,"#phi distribution of the two electrons",140,-3.5,3.5);
   map_sig["h_electrons_scphi"]     =     new TH1F("h_electrons_scphi_"   + name,"#phi distribution of the two electrons",50,-3,3);
 
+  map_sig["h_electron_hoe_barrel"] =     new TH1F("h_electron_hoe_barrel_" +name,"Hoe barrel",  50, 0., 0.5);
+  map_sig["h_electron_hoe_endcap"] =     new TH1F("h_electron_hoe_endcap_" +name,"Hoe endcap",  50, 0., 0.5);
+ 
+  
   map_sig2["h_WandNmass"]          =     new TH2F("h_WandNmass_"         + name,"Invariant mass of the W and the N",100,0,2000,100,0,2000);
   map_sig3["h_3Dparm"]             =     new TH3F("h_3Dpar_"             + name,"m(lljj) and muon p_{T}_{1} and muon p_{T}_{2}",100,0,2000,30,0,300,30,0,300);
   
@@ -175,6 +179,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   float min_ee_Dr=10000.;
   float min_ee_DPhi=10000.;
   for(UInt_t i=0; i<electrons.size(); i++){
+    if(fabs(electrons.at(i).Eta()) < 1.447)Fill("h_electron_hoe_barrel", electrons.at(i).HoE(),weight);
+    else Fill("h_electron_hoe_endcap", electrons.at(i).HoE(),weight);
     for(UInt_t j=0; j<electrons.size(); j++){
       if(i==j) continue;
       float dPhi = TVector2::Phi_mpi_pi(electrons[i].Phi() - electrons[j].Phi() );
@@ -356,7 +362,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float ecaliso = elit->ECalIsoDR03();
     float hcaliso = elit->HCalIsoDR03();
     float iso = trkiso + hcaliso + ecaliso;
-    
+   
     Fill("h_ElectronPt", elit->Pt(),weight);
     Fill("h_ElectronIso", el_iso,weight);
     Fill("h_ElectronRelIso", el_iso/elit->Pt(),weight);

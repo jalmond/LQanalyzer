@@ -112,7 +112,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   float pileup_reweight (1.);
   if (!k_isdata) {
-    pileup_reweight = reweightPU->GetWeight(eventbase->GetEvent().PileUpInteractionsTrue())* MCweight;
+    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
   
   FillHist("h_nvtx_rw_ee",numberVertices,weight, 0., 60.,60 );
@@ -247,7 +247,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG<< "Number of jets  = " << jetColl_lepveto.size() << LQLogger::endmsg;
 
   int nbjet=0;
-   for(int i=0; i <jetColl_lepveto.size() ; i++){
+   for(unsigned int i=0; i <jetColl_lepveto.size() ; i++){
     if(jetColl_lepveto.at(i).BtagProb() > 0.679) nbjet++;
    }
 

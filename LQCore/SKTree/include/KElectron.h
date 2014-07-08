@@ -239,7 +239,7 @@ namespace snu {
     Int_t k_vertex_index;
     Double_t k_eldist, k_cottheta;
 
-    ClassDef(KElectron,9)
+    ClassDef(KElectron,10)
   }; 
   
 }//namespace snu

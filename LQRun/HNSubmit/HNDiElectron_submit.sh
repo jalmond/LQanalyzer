@@ -63,13 +63,13 @@ if [[ $1  == "testMC" ]];
     source functions.sh
     
     cycle="HNDiElectron"
-    skinput="True"
-    useskim="DiLep"
+    #skinput="True"
+    #useskim="DiLep"
     loglevel="INFO"
 
     njobs=1
     data_lumi="AtoD"
-    nevents=100000
+    nevents=100000000
     declare -a input_samples=("DY50plus")
 
     stream="egamma"
@@ -156,8 +156,8 @@ then
     loglevel="INFO"
     logstep=1000
 
-    declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
-    #declare -a input_samples=("HNee40")
+    #declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
+    declare -a input_samples=("HNee100")
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)

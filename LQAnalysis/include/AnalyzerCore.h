@@ -37,6 +37,7 @@ class AnalyzerCore : public LQCycleBase {
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
+  bool IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
   bool IsTight(snu::KElectron electron, double rho);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip=false);
@@ -47,6 +48,7 @@ class AnalyzerCore : public LQCycleBase {
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho);
     
@@ -113,6 +115,7 @@ class AnalyzerCore : public LQCycleBase {
   void MakeHistograms();
   void MakeHistograms(TString hname, int nbins, float xmin, float xmax);
   void MakeHistograms(TString hname, int nbins, float xbins[]);
+  void MakeHistograms2D(TString hname, int nbinsx, float xbins[], int nbinsy, float ybins[]);
   void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax);
     //
     // Makes temporary dir
@@ -131,6 +134,7 @@ class AnalyzerCore : public LQCycleBase {
   void FillHist(TString histname, float value, float w );
   void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0);
   void FillHist(TString histname, float value, float w , float xmin[], int nbins=0);
+  void FillHist(TString histname, float value1, float value2, float w , float x[], int nbinsx, float y[], int nbinsy);
   void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy);
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);

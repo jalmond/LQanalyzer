@@ -24,35 +24,53 @@ void FakeRatePlots_ewksub(TString path) {
   gStyle->SetPalette(1);
     
   vector<TString> plotname;
-  plotname.push_back("barrel_pt");
-  plotname.push_back("endcap_pt");
-  plotname.push_back("eta");
+  plotname.push_back("nvertices");
+  //plotname.push_back("endcap_pt");
+  //plotname.push_back("eta");
   
   
   int ihist(0);
   for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     int rebin=1;
+                                     
+    TH1F* h_num= (TH1F*)fdata->Get(("h_promptrate_iso_B100_E100_dr03_num_"+ *it ).Data());
+    TH1F* h_denom= (TH1F*)fdata->Get(("h_promptrate_iso_B100_E100_dr03_denom_"+*it).Data());
     
-    TH1F* h_num= (TH1F*)fdata->Get(("h_promptrate_num_"+ *it ).Data());
-    TH1F* h_denom= (TH1F*)fdata->Get(("h_promptrate_denom_"+*it).Data());
+    TH1F* h_num2= (TH1F*)fdata->Get(("h_promptrate_iso_B100_E100_dr04_num_"+ *it ).Data());
+    TH1F* h_denom2= (TH1F*)fdata->Get(("h_promptrate_iso_B100_E100_dr04_denom_"+*it).Data());
+   
+    h_num->Divide(h_num,h_denom,1.,1.,"cl=0.683 b(1,1) mode");
+    h_num2->Divide(h_num2,h_denom2,1.,1.,"cl=0.683 b(1,1) mode");
     
-    h_num->Rebin(rebin);
-    h_denom->Rebin(rebin);
-      
-    h_num->Divide(h_denom);
     h_num->SetMarkerStyle(20);
     h_num->SetMarkerColor(kRed);
     h_num->SetLineColor(kRed);
+    
+    h_num2->SetMarkerStyle(20);
+    h_num2->SetMarkerColor(kBlue);
+    h_num2->SetLineColor(kBlue);
+
       
     TCanvas* c1 = new TCanvas((("Plot")+*it).Data(), "Plot", 800, 600);
       
     if(it->Contains("pt")) h_num->GetXaxis()->SetTitle("El p_{T} [GeV]");
-    else  h_num->GetXaxis()->SetTitle("El #eta");
+    else  h_num->GetXaxis()->SetTitle("# vertices");
     h_num->GetYaxis()->SetTitle("Prompt #epsilon_{T/L} ");
     
-    h_num->GetYaxis()->SetRangeUser(0.,1.);
+    h_num->GetYaxis()->SetRangeUser(0.6,1.);
+    h_num->GetXaxis()->SetRangeUser(2,30.);
     h_num->Draw("p");
-    c1->SaveAs(("/home/jalmond/WebPlots/Fakes/RealRff_" +  *it + ".pdf"));
+    h_num2->Draw("psame");
+
+    TLegend* legend= new TLegend(0.2,0.2,0.4,0.4);
+    legend->SetFillColor(10);
+    legend->SetBorderSize(0);
+    legend->SetTextSize(0.04);
+    legend->AddEntry(h_num, "dR 0.3 reliso < 0.1", "p");
+    legend->AddEntry(h_num2, "dR 0.4 reliso < 0.1", "p");
+
+    legend->Draw("same");
+    c1->SaveAs(("/home/jalmond/WebPlots/Fakes/RealRff_" +  *it + "_dr3_dr4.pdf"));
   }
 }
 

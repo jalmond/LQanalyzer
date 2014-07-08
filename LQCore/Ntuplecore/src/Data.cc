@@ -1385,6 +1385,9 @@ void Data::ConnectTruth(){
   ConnectVariable("GenParticlePx", GenParticlePx, b_GenParticlePx);
   ConnectVariable("GenParticlePy", GenParticlePy, b_GenParticlePy);
   ConnectVariable("GenParticlePz", GenParticlePz, b_GenParticlePz);
+  ConnectVariable("GenParticleVX", GenParticleVX, b_GenParticleVX);
+  ConnectVariable("GenParticleVY", GenParticleVY, b_GenParticleVX);
+  ConnectVariable("GenParticleVZ", GenParticleVZ, b_GenParticleVZ);
   ConnectVariable("GenParticleMotherIndex", GenParticleMotherIndex, b_GenParticleMotherIndex);
   ConnectVariable("GenParticleNumDaught", GenParticleNumDaught, b_GenParticleNumDaught);
   ConnectVariable("GenParticlePdgId", GenParticlePdgId, b_GenParticlePdgId);
@@ -1400,6 +1403,9 @@ void Data::ConnectTruth(){
   ConnectVariable("GenZMuPx", GenZMuPx, b_GenZMuPx);
   ConnectVariable("GenZMuPy", GenZMuPy, b_GenZMuPy);
   ConnectVariable("GenZMuPz", GenZMuPz, b_GenZMuPz);
+  ConnectVariable("GenZMuVX", GenZMuVX, b_GenZMuVX);
+  ConnectVariable("GenZMuVY", GenZMuVY, b_GenZMuVY);
+  ConnectVariable("GenZMuVZ", GenZMuVZ, b_GenZMuVZ);
   ConnectVariable("GenZMuMotherIndex", GenZMuMotherIndex, b_GenZMuMotherIndex);                                                           
   ConnectVariable("GenZMuNumDaught", GenZMuNumDaught, b_GenZMuNumDaught);                                                                           
   ConnectVariable("GenZMuPdgId", GenZMuPdgId, b_GenZMuPdgId);                                                                                               
@@ -1419,6 +1425,9 @@ void Data::ConnectTruth(){
   ConnectVariable("GenZTauPx", GenZTauPx, b_GenZTauPx);
   ConnectVariable("GenZTauPy", GenZTauPy, b_GenZTauPy);
   ConnectVariable("GenZTauPz", GenZTauPz, b_GenZTauPz);
+  ConnectVariable("GenZTauVX", GenZTauVX, b_GenZTauVX);
+  ConnectVariable("GenZTauVY", GenZTauVY, b_GenZTauVY);
+  ConnectVariable("GenZTauVZ", GenZTauVZ, b_GenZTauVZ);
 
   ConnectVariable("GenZElectronMotherIndex", GenZElectronMotherIndex, b_GenZElectronMotherIndex);
   ConnectVariable("GenZElectronNumDaught", GenZElectronNumDaught, b_GenZElectronNumDaught);
@@ -1433,7 +1442,10 @@ void Data::ConnectTruth(){
   ConnectVariable("GenZElectronPx", GenZElectronPx, b_GenZElectronPx);
   ConnectVariable("GenZElectronPy", GenZElectronPy, b_GenZElectronPy);
   ConnectVariable("GenZElectronPz", GenZElectronPz, b_GenZElectronPz);
-  
+  ConnectVariable("GenZElectronVX", GenZElectronVX, b_GenZElectronVX);
+  ConnectVariable("GenZElectronVY", GenZElectronVY, b_GenZElectronVY);
+  ConnectVariable("GenZElectronVZ", GenZElectronVZ, b_GenZElectronVZ);
+
 
   ConnectVariable("GenWMuEnergy", GenWMuEnergy, b_GenWMuEnergy);
   ConnectVariable("GenWMuEta", GenWMuEta, b_GenWMuEta);
@@ -1443,6 +1455,9 @@ void Data::ConnectTruth(){
   ConnectVariable("GenWMuPx", GenWMuPx, b_GenWMuPx);
   ConnectVariable("GenWMuPy", GenWMuPy, b_GenWMuPy);
   ConnectVariable("GenWMuPz", GenWMuPz, b_GenWMuPz);
+  ConnectVariable("GenWMuVX", GenWMuVX, b_GenWMuVX);
+  ConnectVariable("GenWMuVY", GenWMuVY, b_GenWMuVY);
+  ConnectVariable("GenWMuVZ", GenWMuVZ, b_GenWMuVZ);
   ConnectVariable("GenWMuMotherIndex", GenWMuMotherIndex, b_GenWMuMotherIndex);
   ConnectVariable("GenWMuNumDaught", GenWMuNumDaught, b_GenWMuNumDaught);
   ConnectVariable("GenWMuPdgId", GenWMuPdgId, b_GenWMuPdgId);
@@ -1462,6 +1477,10 @@ void Data::ConnectTruth(){
   ConnectVariable("GenWTauPx", GenWTauPx, b_GenWTauPx);
   ConnectVariable("GenWTauPy", GenWTauPy, b_GenWTauPy);
   ConnectVariable("GenWTauPz", GenWTauPz, b_GenWTauPz);
+  ConnectVariable("GenWTauVX", GenWTauVX, b_GenWTauVX);
+  ConnectVariable("GenWTauVY", GenWTauVY, b_GenWTauVY);
+  ConnectVariable("GenWTauVZ", GenWTauVZ, b_GenWTauVZ);
+
 
   ConnectVariable("GenWElectronMotherIndex", GenWElectronMotherIndex, b_GenWElectronMotherIndex);
   ConnectVariable("GenWElectronNumDaught", GenWElectronNumDaught, b_GenWElectronNumDaught);
@@ -1476,6 +1495,9 @@ void Data::ConnectTruth(){
   ConnectVariable("GenWElectronPx", GenWElectronPx, b_GenWElectronPx);
   ConnectVariable("GenWElectronPy", GenWElectronPy, b_GenWElectronPy);
   ConnectVariable("GenWElectronPz", GenWElectronPz, b_GenWElectronPz);
+  ConnectVariable("GenWElectronVX", GenWElectronVX, b_GenWElectronVX);
+  ConnectVariable("GenWElectronVY", GenWElectronVY, b_GenWElectronVY);
+  ConnectVariable("GenWElectronVZ", GenWElectronVZ, b_GenWElectronVZ);
 
 
 
@@ -1574,15 +1596,9 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenWElectronTauVisibleEta", GenWElectronTauVisibleEta);
   ConnectVariable("GenWElectronTauVisiblePhi", GenWElectronTauVisiblePhi);
   ConnectVariable("GenWElectronTauVisiblePt", GenWElectronTauVisiblePt);
-  ConnectVariable("GenWElectronVX", GenWElectronVX);
-  ConnectVariable("GenWElectronVY", GenWElectronVY);
-  ConnectVariable("GenWElectronVZ", GenWElectronVZ);
   ConnectVariable("GenZElectronTauVisibleEta", GenZElectronTauVisibleEta);
   ConnectVariable("GenZElectronTauVisiblePhi", GenZElectronTauVisiblePhi);
   ConnectVariable("GenZElectronTauVisiblePt", GenZElectronTauVisiblePt);
-  ConnectVariable("GenZElectronVX", GenZElectronVX);
-  ConnectVariable("GenZElectronVY", GenZElectronVY);
-  ConnectVariable("GenZElectronVZ", GenZElectronVZ);
 
 
   ConnectVariable("GenWMuEnergy", GenWMuEnergy);
@@ -1596,9 +1612,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenWMuTauVisibleEta", GenWMuTauVisibleEta);
   ConnectVariable("GenWMuTauVisiblePhi", GenWMuTauVisiblePhi);
   ConnectVariable("GenWMuTauVisiblePt", GenWMuTauVisiblePt);
-  ConnectVariable("GenWMuVX", GenWMuVX);
-  ConnectVariable("GenWMuVY", GenWMuVY);
-  ConnectVariable("GenWMuVZ", GenWMuVZ);
   ConnectVariable("GenZMuEnergy", GenZMuEnergy);
   ConnectVariable("GenZMuEta", GenZMuEta);
   ConnectVariable("GenZMuP", GenZMuP);
@@ -1610,15 +1623,9 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenZMuTauVisibleEta", GenZMuTauVisibleEta);
   ConnectVariable("GenZMuTauVisiblePhi", GenZMuTauVisiblePhi);
   ConnectVariable("GenZMuTauVisiblePt", GenZMuTauVisiblePt);
-  ConnectVariable("GenZMuVX", GenZMuVX);
-  ConnectVariable("GenZMuVY", GenZMuVY);
-  ConnectVariable("GenZMuVZ", GenZMuVZ);
   ConnectVariable("GenParticleTauVisibleEta", GenParticleTauVisibleEta);
   ConnectVariable("GenParticleTauVisiblePhi", GenParticleTauVisiblePhi);
   ConnectVariable("GenParticleTauVisiblePt", GenParticleTauVisiblePt);
-  ConnectVariable("GenParticleVX", GenParticleVX);
-  ConnectVariable("GenParticleVY", GenParticleVY);
-  ConnectVariable("GenParticleVZ", GenParticleVZ);
   ConnectVariable("GenWTauEnergy", GenWTauEnergy);
   ConnectVariable("GenWTauEta", GenWTauEta);
   ConnectVariable("GenWTauP", GenWTauP);
@@ -1630,9 +1637,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenWTauTauVisibleEta", GenWTauTauVisibleEta);
   ConnectVariable("GenWTauTauVisiblePhi", GenWTauTauVisiblePhi);
   ConnectVariable("GenWTauTauVisiblePt", GenWTauTauVisiblePt);
-  ConnectVariable("GenWTauVX", GenWTauVX);
-  ConnectVariable("GenWTauVY", GenWTauVY);
-  ConnectVariable("GenWTauVZ", GenWTauVZ);
   ConnectVariable("GenZTauEnergy", GenZTauEnergy);
   ConnectVariable("GenZTauEta", GenZTauEta);
   ConnectVariable("GenZTauP", GenZTauP);
@@ -1644,9 +1648,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("GenZTauTauVisibleEta", GenZTauTauVisibleEta);
   ConnectVariable("GenZTauTauVisiblePhi", GenZTauTauVisiblePhi);
   ConnectVariable("GenZTauTauVisiblePt", GenZTauTauVisiblePt);
-  ConnectVariable("GenZTauVX", GenZTauVX);
-  ConnectVariable("GenZTauVY", GenZTauVY);
-  ConnectVariable("GenZTauVZ", GenZTauVZ);
   
   // Tau
   ConnectVariable("HPSTauAgainstElectronDeadECALDiscr", HPSTauAgainstElectronDeadECALDiscr);

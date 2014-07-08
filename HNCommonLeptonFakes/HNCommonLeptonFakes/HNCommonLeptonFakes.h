@@ -13,7 +13,7 @@
 #include <map>
 #include "TString.h"
 #include "TH1.h"
-#include "TH2.h"
+#include "TH2F.h"
 #include "TEfficiency.h"
 #include "TFile.h"
 #include "TLorentzVector.h"
@@ -44,6 +44,7 @@ class HNCommonLeptonFakes {
   float get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron,int njets, bool ismu1tight, bool isel1tight);
 
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight);
+  float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut);
   
 
   float getFakeRate_muon(int sys, float pt,  float eta);
@@ -51,6 +52,9 @@ class HNCommonLeptonFakes {
 
   float getFakeRate_electron(int sys, float pt,  float eta);
   float getEfficiency_electron(int sys,float pt, float eta);
+
+  float getFakeRate_electron(int sys, float pt,  float eta, TString cut);
+  float getEfficiency_electron(int sys,float pt, float eta, TString cut);
  
 
   void APPLY_scalefactor(bool applysf) ;
@@ -73,10 +77,10 @@ class HNCommonLeptonFakes {
 
   /// Maps for storing histograms in the rootfile
   std::map<TString,TH1*> _EfficiencyMap;
-  std::map<TString,TH2*> _2DEfficiencyMap;
+  std::map<TString,TH2F*> _2DEfficiencyMap;
   std::map<TString,TEfficiency*> _TEEfficiencyMap;
   std::map<TString,TH1*> _EfficiencyMapHST;
-  std::map<TString,TH2*> _2DEfficiencyMapHST;
+  std::map<TString,TH2F*> _2DEfficiencyMapHST;
 
 
   /// Function to fill maps , null variable and set up conditions for running algorithm
@@ -115,7 +119,7 @@ class HNCommonLeptonFakes {
   
   /// class string for fake CR used as the central value
   TString defCR;
-  
+
   /// bool to set output messsage level
   bool m_debug;
 

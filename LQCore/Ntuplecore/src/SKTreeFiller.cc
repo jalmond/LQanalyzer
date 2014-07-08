@@ -261,7 +261,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPrimaryVertexDXYError(ElectronPrimaryVertexDXYError->at(iel));
     el.SetTrackPt(ElectronTrackPt->at(iel));
     el.SetTrackValidFractionOfHits(ElectronTrackValidFractionOfHits->at(iel));
-
+    el.SetTrkVx(ElectronTrackVx->at(iel));
+    el.SetTrkVy(ElectronTrackVy->at(iel));
+    el.SetTrkVz(ElectronTrackVz->at(iel));
     /// distance between lepton and PRIMARY analysis vertex
     if(VertexN != -1){
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
@@ -372,7 +374,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     }
     if(!check_event) return electrons;
     
-    cout << "EN = " << event << endl;
     */
     
     /// truth info

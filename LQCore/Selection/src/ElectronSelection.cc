@@ -92,6 +92,10 @@ void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonCo
 }
 
 void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
+  return HNLooseElectronSelection( true, leptonColl, m_debug);
+}
+
+void ElectronSelection::HNLooseElectronSelection( bool usetight, std::vector<KElectron>& leptonColl, bool m_debug) {
   
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho();
@@ -105,7 +109,7 @@ void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonC
     if ( el->CaloEnergy()==0 ) continue;
 
     bool pass_selection = true;
-    ElectronID = PassUserID(EGAMMA_FAKELOOSE, *el, rho, m_debug);
+    ElectronID = PassUserID(EGAMMA_FAKELOOSE, usetight, *el, rho, m_debug);
     
     ///List of cuts
     if(!ElectronID) {
@@ -143,7 +147,12 @@ void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonC
 }
 
 
-bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
+bool ElectronSelection::HNIsTight(KElectron el, double rho,  bool m_debug=false){
+  return HNIsTight(el, rho, 0.01, 0.1,0.07, true, false, true,  m_debug);
+}
+  
+bool ElectronSelection::HNIsTight(KElectron el, double rho, double dxycut, double barrel_isocut, double endcap_isocut, bool usedr3, bool usetrkiso, bool usetight,  bool m_debug){
+  
   //// DEFAULT cuts
   //// Require it is not in crack
   if ( fabs(el.Eta())>1.4442 && fabs(el.Eta())<1.566 ) return false;
@@ -151,9 +160,11 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
   
   bool pass_selection = true;
   
-  ElectronID = PassUserID(EGAMMA_TIGHT, el,rho, m_debug);
-
+  if(usetight)ElectronID = PassUserID(EGAMMA_TIGHT, el,rho, m_debug);
+  else ElectronID = PassUserID(EGAMMA_MEDIUM, el,rho, m_debug);
+  
   Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+  Double_t PHONH_04[7]          = {0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
   if (fabs(el.SCEta()) < 1.0) ifid = 0;
   else if (fabs(el.SCEta()) < 1.479) ifid = 1;
   else if (fabs(el.SCEta()) < 2.0) ifid = 2;
@@ -163,10 +174,24 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
   else ifid = 6;
 
   float LeptonRelIsoDR03(0.);
+  float LeptonRelIsoDR04(0.);
   float ElectronIsoDR03 =  el.PFChargedHadronIso03() + max( el.PFNeutralHadronIso03() + el.PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
+  float ElectronIsoDR04 =  el.PFChargedHadronIso04() + max( el.PFNeutralHadronIso04() + el.PFPhotonIso04() - rho * PHONH_04[ifid],  0.);
+  
   if(el.Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  el.Pt();
   else LeptonRelIsoDR03 = -999.;
-
+  if(el.Pt() > 0.)  LeptonRelIsoDR04 = ElectronIsoDR04/  el.Pt();
+  else LeptonRelIsoDR04 = -999.;
+  
+  float trkiso =el.TrkIsoDR03();
+  float ecaliso =el.ECalIsoDR03();
+  float hcaliso =el.HCalIsoDR03();
+  float NPFiso = (trkiso + hcaliso + ecaliso)/el.Pt();
+  
+  double isocut(-9999.);
+  if(fabs(el.Eta()) < 1.479) isocut = barrel_isocut;
+  else isocut = endcap_isocut;
+  
   ///List of cuts
   if(!ElectronID) {
     pass_selection = false;
@@ -176,9 +201,23 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
   }
-  if(!(LeptonRelIsoDR03 <  0.09)){
-    pass_selection = false;
-    if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut: " << LeptonRelIsoDR03 <<endl;
+  if(usedr3){
+    if(!(LeptonRelIsoDR03 <  isocut)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut: " << LeptonRelIsoDR03 <<endl;
+    }
+  }
+  else{
+    if(!(LeptonRelIsoDR04 <  isocut)){
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut: " << LeptonRelIsoDR03 <<endl;
+    }
+  }
+  if(usetrkiso){
+    if(! (NPFiso < 0.25)) {
+      pass_selection = false;
+      if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut: " <<  NPFiso << endl;
+    }
   }
   if(!el.GsfCtfScPixChargeConsistency()) {
     pass_selection = false;
@@ -194,7 +233,7 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
     if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
   }
 
-  if(!(fabs(el.dxy())< 0.01 )) {
+  if(!(fabs(el.dxy())< dxycut )) {
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail dxy Cut: " << el.dxy() <<endl;
   }
@@ -205,15 +244,13 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, bool m_debug){
 
 
 
-
-
 void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho();
   int iel(0);
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++, iel++){
     if(m_debug)  cout << "Electron (HNTightElectronSelection) # " << iel << endl;
-    if(HNIsTight(*el,rho, m_debug)){
+    if(HNIsTight(*el,rho,  m_debug)){
       leptonColl.push_back(*el);
     }
 
@@ -518,6 +555,11 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
 
 bool ElectronSelection::PassUserID(ID id, snu::KElectron el, double jetrho, bool m_debug){
+  return PassUserID(id, true, el, jetrho, m_debug);
+}
+  
+
+bool ElectronSelection::PassUserID(ID id,bool usetight, snu::KElectron el, double jetrho, bool m_debug){
 
   
   if ( id == EGAMMA_TIGHT   ) return PassUserID_EGamma2012     ( EGAMMA_TIGHT, el, jetrho,m_debug);
@@ -528,7 +570,7 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, double jetrho, bool
   else if ( id == EGAMMA_TRIGWP70 ) return PassUserID_EGamma2012     (EGAMMA_TRIGWP70,el, jetrho,m_debug);
   else if ( id == EGAMMA_EOP      ) return PassUserID_EGamma2012     (EGAMMA_EOP,el, jetrho,m_debug);
   else if ( id == ECAL_FIDUCIAL  ) return PassUserID_ECALFiducial     (el);
-  else if ( id == EGAMMA_FAKELOOSE ) return PassUserID_FakeLoose2012( el, jetrho,m_debug);
+  else if ( id == EGAMMA_FAKELOOSE ) return PassUserID_FakeLoose2012( el, usetight, jetrho,m_debug);
   else {
     cout << "Invalid ID set for electron selection" << endl;
     return false;
@@ -541,7 +583,7 @@ bool ElectronSelection::PassUserID_ECALFiducial (snu::KElectron el){
   else return false;
 }
 
-bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetrho , bool m_debug){
+bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, bool usetight,  double jetrho , bool m_debug){
 
   //----------------------------------------------------------------------
   // Barrel electron cut values
@@ -571,6 +613,40 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, double jetr
   double l_e_vtxProb = 1e-6;
   int    l_e_missHits = 0;
   double l_e_pfRelIso = 0.6;
+
+
+  if(!usetight){
+    //----------------------------------------------------------------------
+    // Barrel electron cut values
+    //----------------------------------------------------------------------
+    
+    l_b_dEtaIn  = 0.004;
+    l_b_dPhiIn  = 0.06;
+    l_b_sieie   = 0.01;
+    l_b_hoe     = 0.12;
+    l_b_ep      = 0.05;
+    l_b_vtxProb = 1e-6;
+    l_b_missHits = 1;
+    l_b_d0      = 100.;
+    l_b_dZ      = 0.1;
+    l_b_pfRelIso = 0.6;
+    //----------------------------------------------------------------------
+    // Endcap electron cut values
+    //----------------------------------------------------------------------
+
+    l_e_dEtaIn  = 0.007;
+    l_e_dPhiIn  = 0.03;
+    l_e_sieie   = 0.03;
+    l_e_hoe     = 0.10;
+    l_e_d0      = 100.0;
+    l_e_dZ      = 0.1;
+    l_e_ep      = 0.05;
+    l_e_vtxProb = 1e-6;
+    l_e_missHits = 1;
+    l_e_pfRelIso = 0.6;
+  }
+
+  
   //----------------------------------------------------------------------
   // Bools that depend on barrel vs. endcap
   //----------------------------------------------------------------------
@@ -687,10 +763,10 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.06 , 0.03 };
   double l_b_sieie   [4] = { 0.01  , 0.01 , 0.01 , 0.01 };
   double l_b_hoe     [4] = { 0.15  , 0.12 , 0.12 , 0.12 };
-  double l_b_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
+  double l_b_d0      [4] = { 0.04  , 0.02 , 1000. , 1000. };
   double l_b_dZ      [4] = { 0.2   , 0.2  , 0.1  ,  0.1 };
   double l_b_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
-  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 0.15 , 0.1 }; 
+  double l_b_pfRelIso[4] = { 0.6  , 0.15 , 1000. , 1000. }; 
   double l_b_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
   int    l_b_missHits[4] = { 999   , 1    , 1    , 0 }; 
 
@@ -702,10 +778,10 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double l_e_dPhiIn  [4] = { 0.7   , 0.10 , 0.03 , 0.02 };
   double l_e_sieie   [4] = { 0.03  , 0.03 , 0.03 , 0.03 };
   double l_e_hoe     [4] = { 999.  , 0.10 , 0.10 , 0.10 };
-  double l_e_d0      [4] = { 0.04  , 0.02 , 0.02 , 0.02 };
+  double l_e_d0      [4] = { 0.04  , 0.02 , 1000. , 1000. };
   double l_e_dZ      [4] = { 0.2   , 0.2  , 0.1  , 0.1 };
   double l_e_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05};
-  double l_e_pfRelIso[4] = { 0.15  , 0.10 , 0.1 , 0.07  };
+  double l_e_pfRelIso[4] = { 0.15  , 0.10 , 1000. , 1000.  };
   double l_e_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
   int    l_e_missHits[4] = { 999   , 1    , 1    , 0 };
   
