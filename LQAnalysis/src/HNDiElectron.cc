@@ -283,9 +283,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	eventbase->GetTruthSel()->Selection(truthColl);
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
 	
-	cout << "\n ----------" << endl;
-	cout << el_truth.GenVx() << " " << electronLooseColl.at(0).TrkVx() << endl;
-	cout << el_truth.GenVy() << " " << electronLooseColl.at(0).TrkVy() << endl;
+
 	float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
 	float truth_pt = el_truth.Pt();
 	FillHist("nonZchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
@@ -314,9 +312,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	eventbase->GetTruthSel()->Selection(truthColl);
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
 	
-	cout << "\n ----------" << endl;
-	cout << el_truth.GenVx() << " " << electronLooseColl.at(1).TrkVx() << endl;
-	cout << el_truth.GenVy() << " " << electronLooseColl.at(1).TrkVy() << endl;
 	float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
 	float truth_pt = el_truth.Pt();
 	FillHist("nonZchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
