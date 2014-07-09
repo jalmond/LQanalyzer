@@ -245,8 +245,6 @@ void MakeFRRootFile(){
   fakes.push_back("Tight_iso_dr3_b050_e070_pt_eta");
   fakes.push_back("Tight_iso_dr3_b050_e060_pt_eta");
 
-
-  fakes.push_back("Tight_medium_pt_eta");
   fakes.push_back("Tight_tight_pt_eta");
 
   fakes.push_back("Tight_iso_NPFisodr3_b150_e125_pt_eta");
@@ -294,36 +292,50 @@ void MakeFRRootFile(){
   fakes.push_back("Tight_iso_NPFisodr3_b050_e060_pt_eta");
 
   
-  
+  vector<TString> fakes2;
+  fakes2.push_back("Tight_medium_pt_eta");
   for(vector<TString>::iterator it2 = fakes.begin(); it2!=fakes.end(); ++it2){
-
     cout << *it2 << endl;
     if(!CheckFile(fdata))return;
     if(!CheckFile(fmc))return;
 
     TString denom ="LooseOpt_pt_eta";
-    
     TH2F* h_pt_num= (TH2F*)fdata->Get(it2->Data());
     TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
     CheckHist(h_pt_denom);
     CheckHist(h_pt_num);
-    
     TH2F* h_mcpt_num= (TH2F*)fmc->Get(it2->Data());
     TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
     CheckHist(h_mcpt_denom);
     CheckHist(h_mcpt_num);
-
-
     TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
     TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
-
     eff_rate->Add(h_mcpt_num,-1.);
     hratedenom->Add(h_mcpt_denom, -1.);
-
     eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    
     eff_rate->Write();
+  }
 
+  for(vector<TString>::iterator it2 = fakes2.begin(); it2!=fakes2.end(); ++it2){
+    cout << *it2 << endl;
+    if(!CheckFile(fdata))return;
+    if(!CheckFile(fmc))return;
+
+    TString denom ="LooseOpt_medium_pt_eta";
+    TH2F* h_pt_num= (TH2F*)fdata->Get(it2->Data());
+    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
+    CheckHist(h_pt_denom);
+    CheckHist(h_pt_num);
+    TH2F* h_mcpt_num= (TH2F*)fmc->Get(it2->Data());
+    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
+    CheckHist(h_mcpt_denom);
+    CheckHist(h_mcpt_num);
+    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
+    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
+    eff_rate->Add(h_mcpt_num,-1.);
+    hratedenom->Add(h_mcpt_denom, -1.);
+    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
+    eff_rate->Write();
   }
 
 

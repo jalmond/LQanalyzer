@@ -124,6 +124,10 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> _electronLooseColl;
   eventbase->GetElectronSel()->HNLooseElectronSelection(_electronLooseColl);
   
+  std::vector<snu::KElectron> _electronLooseColl_medium;
+  eventbase->GetElectronSel()->HNLooseElectronSelection(false,_electronLooseColl_medium);
+  std::vector<snu::KElectron> electronLooseColl_medium= GetTruePrompt(_electronLooseColl_medium, true);
+
   std::vector<snu::KElectron> electronLooseColl = GetTruePrompt(_electronLooseColl, true);
 
   std::vector<snu::KElectron> electronNoCutColl;
@@ -320,7 +324,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       }
     }
     else{
-      if(LeptonRelIsoDR03 < 0.07){
+      if(LeptonRelIsoDR03 < 0.1){
 	electronLooseColl_nodxy.push_back(electronLooseColl.at(iel));
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.005) electronLooseColl_dxy_05.push_back(electronLooseColl.at(iel));
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.010) electronLooseColl_dxy_10.push_back(electronLooseColl.at(iel));
@@ -672,7 +676,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 		    if(electronNoCutColl.at(iel).MissingHits()    <=  1){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
 			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
-			  if(egamma_pfiso_03    <=  0.07){
+			  if(egamma_pfiso_03    <=  0.1){
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
                               electronMedium_chargeconst.push_back(electronNoCutColl.at(iel));
                             }
@@ -736,7 +740,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 			electronTight_convveto.push_back(electronNoCutColl.at(iel));
 			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
 			  electronTight_d0veto.push_back(electronNoCutColl.at(iel));
-			  if(egamma_pfiso_03    <=  0.07){
+			  if(egamma_pfiso_03    <=  0.1){
 			    electronTight_reliso.push_back(electronNoCutColl.at(iel));
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
                               electronTight_chargeconst.push_back(electronNoCutColl.at(iel));
@@ -825,12 +829,17 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
     if(CheckSignalRegion(electronTight_chargeconst, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight, 0.,2.,2);
   }
   else{
-    float ee_weight_medium = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.07, true, false, false, "medium");
-    float ee_weight_tight = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.07, true, false, true, "tight");
-
-    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight*ee_weight_medium, 0.,2.,2);
+    float ee_weight_medium = Get_DataDrivenWeight_EE(electronLooseColl_medium, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, false, "medium");
+    float ee_weight_tight = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, true, false, true, "tight");
+    
+    if(CheckSignalRegion(electronLooseColl_medium, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight*ee_weight_medium, 0.,2.,2);
     if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight*ee_weight_tight, 0.,2.,2);
     
+    if(CheckSignalRegion(electronLooseColl_medium, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow_samefakerate",0.  , weight*ee_weight_tight, 0.,2.,2);
+    if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow_samefakerate",1.  , weight*ee_weight_tight, 0.,2.,2);
+
+
+
   }
   
   if(!k_running_nonprompt){
@@ -1191,12 +1200,12 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   }
   else{
     
-    float ee_weight_05 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.005, 0.1, 0.07, true, false, true, "dxy05");
-    float ee_weight_10 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.010, 0.1, 0.07, true, false, true, "dxy10");
-    float ee_weight_15 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.015, 0.1, 0.07, true, false, true,  "dxy15");
-    float ee_weight_20 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.020, 0.1, 0.07, true, false, true, "dxy20");
-    float ee_weight_25 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.025, 0.1, 0.07, true, false, true, "dxy25");
-    float ee_weight_30 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.030, 0.1, 0.07, true, false, true, "dxy30");
+    float ee_weight_05 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.005, 0.1, 0.1, true, false, true, "dxy05");
+    float ee_weight_10 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.010, 0.1, 0.1, true, false, true, "dxy10");
+    float ee_weight_15 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.015, 0.1, 0.1, true, false, true,  "dxy15");
+    float ee_weight_20 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.020, 0.1, 0.1, true, false, true, "dxy20");
+    float ee_weight_25 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.025, 0.1, 0.1, true, false, true, "dxy25");
+    float ee_weight_30 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.030, 0.1, 0.1, true, false, true, "dxy30");
 
        
     if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_05", weight*ee_weight_05))FillHist("d0cutflow",1.  , weight*ee_weight_05, 0.,7.,7);

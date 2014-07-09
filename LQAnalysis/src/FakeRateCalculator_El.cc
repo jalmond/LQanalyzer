@@ -77,7 +77,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl);
 
   std::vector<snu::KElectron> electronLooseColl_medium;
-  eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl_medium, false); /// Sets medium WP cuts 
+  eventbase->GetElectronSel()->HNLooseElectronSelection(false,electronLooseColl_medium); /// Sets medium WP cuts 
   
   if(!isData){
     for(std::vector<snu::KElectron>::iterator it = electronLooseColl.begin(); it != electronLooseColl.end(); it++){
@@ -216,7 +216,11 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron>  electronTightColl_NPFisodr03_b050_e070;
   std::vector<snu::KElectron>  electronTightColl_NPFisodr03_b050_e060;
 
+  std::vector<snu::KElectron>  electronLooseColl_dxy01;
+
   for(unsigned int iel = 0; iel < electronLooseColl.size(); iel++){
+
+    if(fabs(electronLooseColl.at(iel).dxy()) < 0.010 )   electronLooseColl_dxy01.push_back(electronLooseColl.at(iel));
     Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
     Double_t PHONH_04[7]          = {0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
 
@@ -254,7 +258,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       }
     }
     else{
-      if(LeptonRelIsoDR03 < 0.07){
+      if(LeptonRelIsoDR03 < 0.10){
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.005 )  electronTightColl_dxy05.push_back(electronLooseColl.at(iel));
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.010 )  electronTightColl_dxy10.push_back(electronLooseColl.at(iel));
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.015 )  electronTightColl_dxy15.push_back(electronLooseColl.at(iel));
@@ -598,7 +602,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 		    if(electronNoCutColl.at(iel).MissingHits()    <=  1){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
 			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
-			  if(egamma_pfiso_03    <=  0.07){
+			  if(egamma_pfiso_03    <=  0.1){
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
 			      electronTightColl_medium.push_back(electronNoCutColl.at(iel));
 			    }
@@ -616,7 +620,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
     
     /// TIGHT
-    
     if ( fabs(electronNoCutColl.at(iel).SCEta()) < 1.479 ){
       if(fabs(electronNoCutColl.at(iel).DeltaEta())   <= 0.004) {
 	if(fabs(electronNoCutColl.at(iel).DeltaPhi())   <= 0.03){
@@ -627,7 +630,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 		  if(electronNoCutColl[iel].ConvFitProb  ()    <=  1e-6){
 		    if(electronNoCutColl[iel].MissingHits()    <=  0){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
-			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.1){
+			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
 			  if(egamma_pfiso_03    <=  0.1){
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
 			      electronTightColl_tight.push_back(electronNoCutColl.at(iel));
@@ -655,7 +658,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 		    if(electronNoCutColl[iel].MissingHits()    <=  0){
 		      if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
 			if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
-			  if(egamma_pfiso_03    <=  0.07){
+			  if(egamma_pfiso_03    <=  0.1){
 			    if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
 			      electronTightColl_tight.push_back(electronNoCutColl.at(iel));
 			    }
@@ -731,20 +734,22 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   /// This code calculates the real efficiency
   if(PassTrigger(triggerslist_diel, prescale)){
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "", 0.01, 0.1,  0.07, true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 2.5, "TightWindow", 0.01, 0.1, 0.07 , true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 10., "LooseWindow",0.01, 0.1 , 0.07, true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "", 0.01, 0.1,  0.1, true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 2.5, "TightWindow", 0.01, 0.1, 0.1 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 10., "LooseWindow",0.01, 0.1 , 0.1, true,false,true);
 
+    GetRealEfficiency(electronLooseColl_dxy01, jetColl_lepveto20, muonLooseColl, weight, 10., "Loosedxy01",0.01, 0.1 , 0.1, true,false,true);
+    
     /// Optimising
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "Tight", 0.02, 0.1, 0.07 , true,false,true);    
-    GetRealEfficiency(electronLooseColl_medium, jetColl_lepveto20, muonLooseColl, weight, 5., "Medium", 0.02, 0.1, 0.07 , true,false,false);    
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "Tight", 0.01, 0.1, 0.1 , true,false,true);    
+    GetRealEfficiency(electronLooseColl_medium, jetColl_lepveto20, muonLooseColl, weight, 5., "Medium", 0.01, 0.1, 0.1 , true,false,false);    
 
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy05", 0.005, 0.1, 0.07 , true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy10", 0.01, 0.1, 0.07 , true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy15", 0.015, 0.1, 0.07 , true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy20", 0.02, 0.1, 0.07 , true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy25", 0.025, 0.1, 0.07 , true,false,true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy30", 0.030, 0.1, 0.07 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy05", 0.005, 0.1, 0.1 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy10", 0.01, 0.1, 0.1 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy15", 0.015, 0.1, 0.1 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy20", 0.02, 0.1, 0.1 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy25", 0.025, 0.1, 0.1 , true,false,true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "dxy30", 0.030, 0.1, 0.1 , true,false,true);
   
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight,5., "iso_B150_E150_dr03", 0.01, 0.15,0.15,true,false,true);
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight,5., "iso_B125_E125_dr03", 0.01, 0.125,0.125,true,false,true);
@@ -869,7 +874,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
  }
   
-
   FillCLHist(sighist, "SingleEl_nocut", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
   
   std::vector<TString> triggerslist17jet;
@@ -961,6 +965,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	}
 	else truth_match_medium = true;
       }
+      else truth_match_medium=true;
+
       if(( (eventbase->GetEvent().PFMET() < 20) && (MT_med < 25.)) ) {
 	
 	bool useevent40_medium = false;
@@ -1041,6 +1047,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
     else truth_match = true;
   }
+  else truth_match=true;
   
   if(truth_match){
     if (jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
@@ -1060,30 +1067,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     if (jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
   }
   
-  
-  if( (eventbase->GetEvent().PFMET() < 20) && (MT < 20.) &&truth_match){
-    if (jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_tight", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
-    if (electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_tight", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
-  }
-  
-  
-  if( (eventbase->GetEvent().PFMET() < 25) && (MT < 25.) &&truth_match ){
-    if (jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_medium", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
-    if (electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_medium", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
-  }
-  
-  
-  if( (eventbase->GetEvent().PFMET() < 30) && MT < 30. &&truth_match){
-    if (jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_loose", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
-    if (electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_loose", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
-    
-  }
-  
-  if( (eventbase->GetEvent().PFMET() < 40) && MT < 40. &&truth_match){
-    if (jetColl_lepveto40.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_metmt_vloose", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto40, weight);
-    if (electronTightColl.size() == 1&& jetColl_lepveto40.size() >= 1)FillCLHist(sighist, "SingleTightElJet_metmt_vloose", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto40, weight);
-  }
-  
+
   
   if( !( (eventbase->GetEvent().PFMET() < 20) && (MT < 25.)) ) return;
   
@@ -1157,6 +1141,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(useevent40&&truth_match){
     if(jetColl_lepveto40.size() >= 1){
       if( electronLooseColl.size()==1 )   FillHist("LooseOpt_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
+      if( electronLooseColl_dxy01.size()==1 )   FillHist("Loosedxy01_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
       if( electronTightColl_dxy05.size()==1 )   FillHist("Tight_dxy05_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
       if( electronTightColl_dxy10.size()==1 )   FillHist("Tight_dxy10_El40_pt_eta",el_pt, el_eta,  weight,  ptbins, 8, ebetabins, 2);
       if( electronTightColl_dxy15.size()==1 )   FillHist("Tight_dxy15_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
@@ -1295,8 +1280,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(useevent40&&truth_match)   GetFakeRates(electronLooseColl, electronTightColl, jetColl_lepveto40,  jetColl, "40");
   if(useevent60&&truth_match)   GetFakeRates(electronLooseColl, electronTightColl, jetColl_lepveto60,  jetColl, "60");
 
-  
-  
+   
   return;
 }// End of execute event loop
 

@@ -781,6 +781,18 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
 }
 
 
+double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
+  
+  if(mu.size()< 2) return 0.;
+  snu::KParticle Z = mu.at(0) + mu.at(1);
+  
+  double factor (1.);
+  if(Z.M() > 90.){
+    factor = 8.47072e-01 + 1.44553e-03*Z.M();
+  }
+  return w*factor;
+}
+
 float AnalyzerCore::CFRate(snu::KElectron el){
   
   Double_t frac = 0. ;
@@ -870,7 +882,7 @@ bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
     if(LeptonRelIsoDR03 >  0.09) istight=false;
   }
   else {
-    if(LeptonRelIsoDR03 >  0.07) istight=false;
+    if(LeptonRelIsoDR03 >  0.09) istight=false;
   }
   
   if(fabs(electron.dxy()) > 0.01) istight=false;

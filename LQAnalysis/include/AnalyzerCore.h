@@ -51,7 +51,9 @@ class AnalyzerCore : public LQCycleBase {
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho);
-    
+  
+  double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
+
   
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);

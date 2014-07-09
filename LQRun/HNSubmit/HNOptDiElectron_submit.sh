@@ -107,7 +107,7 @@ then
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
     source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/  HNElectronOptimisation_mc_dilep_5_3_14.root HNElectronOptimisation_SK*
-
+    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/HNElectronOptimisation_mc_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
 fi
 
 if [[ $runcf  == "true" ]];
@@ -134,7 +134,7 @@ then
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
     source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/CF/  HNElectronOptimisation_cf_dilep_5_3_14.root HNElectronOptimisation_SK*
-
+    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/CF/HNElectronOptimisation_cf_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
     
 fi
 
@@ -159,10 +159,10 @@ if [[ $rundata  == "true" ]];
     declare -a input_samples=( "A" "B" "C" "D")
     stream="egamma"
     
-    outputdir=$LQANALYZER_DIR"/data/output/Electronopt/"
+    outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNElectronOptimisation_data_5_3_14.root HNElectronOptimisation_period*
+    source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/  HNElectronOptimisation_data_5_3_14.root HNElectronOptimisation_period*
 fi
 
 
@@ -192,6 +192,7 @@ if [[ $runfakes  == "true" ]];
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
     source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/NP/  HNElectronOptimisation_SKnonprompt_dilep_5_3_14.root HNElectronOptimisation_nonprompt_period*
+    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/NP/HNElectronOptimisation_SKnonprompt_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
 fi
 
 

@@ -193,9 +193,16 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       FillCLHist(sighist, "Zcandidate_check_os", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, 1.);
     }
     else{
+      
+      /// SS Z window (loose electrons)
+      
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("ElectronVertexID" , (electronLooseColl.at(0).VertexIndex() - eventbase->GetEvent().VertexIndex()), weight, -5., 5., 10);
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("ElectronVertexID" , (electronLooseColl.at(1).VertexIndex() - eventbase->GetEvent().VertexIndex()), weight, -5., 5., 10);
+      
       if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_d0", fabs(electronLooseColl.at(0).dxy()), weight, 0.,0.5,200);
       if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_d0", fabs(electronLooseColl.at(1).dxy()), weight, 0.,0.5,200);
       
+
       if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5){
 	//// Chargeflip electron
 	
@@ -275,7 +282,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   }
   else{
     /// not in Z peak
+    
     if(SameCharge(electronLooseColl)){
+      
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("nonZchargeflip_d0", fabs(electronLooseColl.at(0).dxy()), weight, 0.,0.5,200);
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("nonZchargeflip_d0", fabs(electronLooseColl.at(1).dxy()), weight, 0.,0.5,200);
+
+
       if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5){
 	//// Chargeflip electron
 	

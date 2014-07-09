@@ -57,7 +57,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////   
   
 
-  if(eventbase->GetEvent().EventNumber() == 28681993) cout << "JOHN : " << eventbase->GetEvent().LumiSection() << endl;
+  //if(eventbase->GetEvent().EventNumber() == 28681993) cout << "JOHN : " << eventbase->GetEvent().LumiSection() << endl;
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
@@ -89,14 +89,14 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetPt(10); 
   eventbase->GetElectronSel()->SetEta(5.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
-  eventbase->GetElectronSel()->SetPt(15);
+  eventbase->GetElectronSel()->SetPt(10);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
   int nlep = skim_electrons.size() + skim_muons.size();
   bool pass15gevlep = false;
   if(skim_electrons.size() > 0){
-    if(skim_electrons.at(0).Pt()> 15 ) pass15gevlep = true;
+    if(skim_electrons.at(0).Pt()> 10 ) pass15gevlep = true;
   }
   if(skim_muons.size() > 0){
     if(skim_muons.at(0).Pt()> 15 ) pass15gevlep = true;
