@@ -1072,7 +1072,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   bool useevent20= false;
   bool useevent40= false;
   bool useevent60= false;
-  useevent40_loosedxy01 = false;
+  bool useevent40_loosedxy01 = false;
   /// Fake Rates
   
   if ( jetColl_lepveto20.size() >= 1){
