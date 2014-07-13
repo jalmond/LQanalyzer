@@ -1072,6 +1072,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   bool useevent20= false;
   bool useevent40= false;
   bool useevent60= false;
+  useevent40_loosedxy01 = false;
   /// Fake Rates
   
   if ( jetColl_lepveto20.size() >= 1){
@@ -1097,7 +1098,17 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       }
     }
   }
-  
+
+  if (jetColl_lepveto40.size() >= 1){
+    for (unsigned int ielT=0; ielT < electronLooseColl_withipcut.size(); ielT++){
+      for(unsigned int ij=0; ij < jetColl_lepveto40.size(); ij++){
+        float dphi =TVector2::Phi_mpi_pi(electronLooseColl_withipcut.at(ielT).Phi()- jetColl_lepveto40.at(ij).Phi());
+        if( (jetColl_lepveto40.at(ij).NeutralEMEnergyFraction() +jetColl_lepveto40.at(ij).ChargedEMEnergyFraction()) > 0.65)  continue;
+        if(dphi > 2.5) useevent40_loosedxy01 = true;
+      }
+    }
+  }
+
   
   
   if (jetColl_lepveto60.size() >= 1){
@@ -1132,13 +1143,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
   
   
-  if(useevent40&&truth_match){
+  if(useevent40_loosedxy01&&truth_match){
     if(jetColl_lepveto40.size() >= 1){
       if( electronLooseColl_withipcut.size()==1 )   FillHist("Loosedxy01_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
     }
   }
-
-
+  
+  
   if(useevent40&&truth_match){
     if(jetColl_lepveto40.size() >= 1){
       if( electronLooseColl.size()==1 )   FillHist("LooseOpt_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
