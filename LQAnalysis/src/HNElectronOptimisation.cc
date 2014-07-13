@@ -130,6 +130,12 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronLooseColl = GetTruePrompt(_electronLooseColl, true);
 
+
+  std::vector<snu::KElectron>  electronLooseColl1;
+  std::vector<snu::KElectron>  electronLooseColl2;
+  std::vector<snu::KElectron>  electronLooseColl3;
+  std::vector<snu::KElectron>  electronLooseColl4;
+  
   std::vector<snu::KElectron> electronNoCutColl;
   eventbase->GetElectronSel()->Selection(electronNoCutColl);
   
@@ -287,6 +293,10 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 
 
   for(unsigned int iel = 0; iel < electronLooseColl.size(); iel++){
+    if(fabs(electronLooseColl.at(iel).dxy()) < 0.01 ) electronLooseColl1.push_back(electronLooseColl.at(iel));
+    if(fabs(electronLooseColl.at(iel).dxy()) < 0.02 ) electronLooseColl2.push_back(electronLooseColl.at(iel));
+
+    
     Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
     Double_t PHONH_04[7]          = {0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
     int ifid = 0;
@@ -311,8 +321,13 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
     if(electronLooseColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronLooseColl.at(iel).Pt();
     if(electronLooseColl.at(iel).Pt() > 0.)  LeptonRelIsoDR04 = ElectronIsoDR04/  electronLooseColl.at(iel).Pt();
 
-    
     if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479 ){
+
+      if(LeptonRelIsoDR03 < 0.09){
+        electronLooseColl3.push_back(electronLooseColl.at(iel));
+        if(fabs(electronLooseColl.at(iel).dxy()) < 0.02 )         electronLooseColl4.push_back(electronLooseColl.at(iel));
+      }
+      
       if(LeptonRelIsoDR03 < 0.1){
 	electronLooseColl_nodxy.push_back(electronLooseColl.at(iel));
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.005) electronLooseColl_dxy_05.push_back(electronLooseColl.at(iel));
@@ -324,6 +339,11 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
       }
     }
     else{
+      
+      if(LeptonRelIsoDR03 < 0.07){
+        if(fabs(electronLooseColl.at(iel).dxy()) < 0.02 )         electronLooseColl4.push_back(electronLooseColl.at(iel));
+        electronLooseColl3.push_back(electronLooseColl.at(iel));
+      }
       if(LeptonRelIsoDR03 < 0.1){
 	electronLooseColl_nodxy.push_back(electronLooseColl.at(iel));
 	if(fabs(electronLooseColl.at(iel).dxy()) < 0.005) electronLooseColl_dxy_05.push_back(electronLooseColl.at(iel));
@@ -823,6 +843,573 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;
   
+  
+  if(!SameCharge(electronAnalysisColl))FillHist("SScandidate_check", 0.,1., 0.,2.,2);
+  if(!SameCharge(electronLooseColl4)) FillHist("SScandidate_check", 1.,1, 0.,2.,2);
+
+  if(Zcandidate(electronAnalysisColl, 10., false)) {
+    if(!SameCharge(electronAnalysisColl))FillHist("Zcandidate_check", 0.,1., 0.,10.,10);
+    else FillHist("Zcandidate_check", 1.,1., 0.,10.,10);
+  }
+  if(Zcandidate(electronLooseColl, 10., false)) {
+    if(!SameCharge(electronLooseColl)){
+
+      FillHist("Zcandidate_check", 2.,1., 0.,10.,10);
+      FillCLHist(sighist, "Zcandidate_check_os", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, 1.);
+    }
+    else{
+
+      if( (fabs(electronLooseColl.at(1).dxy()) < 0.01) && (fabs(electronLooseColl.at(0).dxy()) < 0.01)) {
+	if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5){
+	  // el 1 is cf
+	  if(fabs(electronLooseColl.at(0).dxy()) > fabs(electronLooseColl.at(1).dxy()) ) FillHist("CF_largestd0", 1 , weight, 0.,2.,2);
+	  else FillHist("CF_largestd0", 0 , weight, 0,2.,2);
+	}
+	if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5){
+	  // el 2 is cf
+	  if(fabs(electronLooseColl.at(1).dxy()) > fabs(electronLooseColl.at(0).dxy()) ) FillHist("CF_largestd0", 1 , weight, 0,2.,2);
+	  else FillHist("CF_largestd0", 0 , weight, 0.,2.,2);	  
+	}
+      }
+	
+
+      /// SS Z window (loose electrons)
+      
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("ElectronVertexID" , (electronLooseColl.at(0).VertexIndex() - eventbase->GetEvent().VertexIndex()), weight, -5., 5., 10);
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("ElectronVertexID" , (electronLooseColl.at(1).VertexIndex() - eventbase->GetEvent().VertexIndex()), weight, -5., 5., 10);
+
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_d0", fabs(electronLooseColl.at(0).dxy()), weight, 0.,0.5,200);
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_d0", fabs(electronLooseColl.at(1).dxy()), weight, 0.,0.5,200);
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_dZ", fabs(electronLooseColl.at(0).LeadVtxDistZ ()), weight, 0.,1.,200 );
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_dZ", fabs(electronLooseColl.at(1).LeadVtxDistZ ()), weight, 0.,1.,200);
+      
+      //electron 0
+      if (fabs(electronLooseColl.at(0).SCEta()) < 1.479 ){
+	if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_barrel_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+	else  FillHist("Znonchargeflip_barrel_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+
+      }
+      else{
+	if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_endcap_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+	else FillHist("Znonchargeflip_endcap_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+      }
+      if(fabs(electronLooseColl.at(0).dxy()) < 0.01){
+	if (fabs(electronLooseColl.at(0).SCEta()) < 1.479 ){
+	  if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_barrel_dxy01_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+	  else  FillHist("Znonchargeflip_barrel_dxy01_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+	  
+	}
+	else{
+	  if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("Zchargeflip_endcap_dxy01_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+	  else FillHist("Znonchargeflip_endcap_dxy01_iso", electronLooseColl.at(0).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(0).Pt()),weight, 0., 1., 100);
+	}
+
+      }
+      
+      
+      // electron 1
+      if (fabs(electronLooseColl.at(1).SCEta()) < 1.479 ){
+	if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_barrel_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+	else FillHist("Znonchargeflip_barrel_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+      }
+      else{
+	if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_endcap_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+	else FillHist("Znonchargeflip_endcap_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+      }
+      if(fabs(electronLooseColl.at(1).dxy()) < 0.01){
+	if (fabs(electronLooseColl.at(1).SCEta()) < 1.479 ){
+	  if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_barrel_dxy01_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+	  else FillHist("Znonchargeflip_barrel_dxy01_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+	}
+	else{
+	  if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("Zchargeflip_endcap_dxy01_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+	  else FillHist("Znonchargeflip_endcap_dxy01_iso", electronLooseColl.at(1).RelIso03(eventbase->GetEvent().JetRho(), electronLooseColl.at(1).Pt()),weight, 0., 1., 100);
+	}
+
+      }
+      
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5){
+        //// Chargeflip electron
+	
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
+
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_dz = el_truth.GenVz() -  eventbase->GetEvent().VertexZ();
+        float truth_pt = el_truth.Pt();
+	float truth_pz = el_truth.Pz();
+        float truth_p = sqrt( truth_pz*truth_pz + truth_pt*truth_pt);
+	float reco_p = sqrt( electronLooseColl.at(0).Pt()*electronLooseColl.at(0).Pt() + electronLooseColl.at(0).Pz()*electronLooseColl.at(0).Pz());
+	
+	float truth_eta = el_truth.Eta();
+	float reco_eta = electronLooseColl.at(0).Eta();
+	float reco_sceta = electronLooseColl.at(0).SCEta();
+	float truth_phi = el_truth.Phi();
+	float reco_phi = electronLooseColl.at(0).Phi();
+	float reco_scphi = electronLooseColl.at(0).SCPhi();
+
+	float truth_e = el_truth.E();
+	float reco_e = electronLooseColl.at(0).E();
+	float reco_caloe = electronLooseColl.at(0).CaloEnergy();
+	float reco_rawe = electronLooseColl.at(0).RawEnergy();
+	float reco_scpt = electronLooseColl.at(0).SCPt();
+
+	FillHist("Zchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+	FillHist("Zchargeflip_truthdZ", fabs(truth_dz) , weight, 0.,1.,200);
+        FillHist("Zchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(0).dxy())) , weight, 0.,1.,200);
+        FillHist("Zchargeflip_truthdZ_minus_reco", fabs(truth_dz - fabs(electronLooseColl.at(0).LeadVtxDistZ())) , weight, 0.,1.,200);
+        FillHist("Zchargeflip_truthpt_minus_reco", truth_pt - fabs(electronLooseColl.at(0).Pt()) , weight, -20.,20.,200);
+	FillHist("Zchargeflip_truthscpt_minus_reco", truth_pt - fabs(electronLooseColl.at(0).SCPt()) , weight, -20.,20.,200);
+	FillHist("Zchargeflip_truthpz_minus_reco", truth_pz - fabs(electronLooseColl.at(0).Pz()) , weight, -20.,20.,200);
+	FillHist("Zchargeflip_rel_truthpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(0).Pt()))/truth_pt  , weight, -1.,1.,200);
+	FillHist("Zchargeflip_rel_truthscpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(0).SCPt()))/truth_pt  , weight, -1.,1.,200);
+	FillHist("Zchargeflip_rel_truthpz_minus_reco", (truth_pz - fabs(electronLooseColl.at(0).Pz()))/truth_pz , weight, -1.,1.,200);
+	FillHist("Zchargeflip_rel_truthp_minus_reco", (truth_p - reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Zchargeflip_trutheta_minus_reco", (truth_eta - reco_eta) , weight, -.5,.5,500);
+	FillHist("Zchargeflip_truthsceta_minus_reco", (truth_eta - reco_sceta) , weight, -.5,.5,500);
+	FillHist("Zchargeflip_truthphi_minus_reco", (truth_phi - reco_phi) , weight, -.5,.5,500);
+        FillHist("Zchargeflip_truthscphi_minus_reco", (truth_phi - reco_scphi) , weight, -.5,.5,500);
+
+	FillHist("Zchargeflip_deltaeta_sctrk", electronLooseColl.at(0).DeltaEta() , weight, -0.008,.008,500);
+	FillHist("Zchargeflip_deltaphi_sctrk", electronLooseColl.at(0).DeltaPhi() , weight, -0.05,.05,500);
+	
+	FillHist("Zchargeflip_rel_truthenergy_minus_reco", (truth_e - reco_e)/truth_e , weight, -1.,1.,100);
+	FillHist("Zchargeflip_rel_truthcaloenergy_minus_reco", (truth_e - reco_caloe)/truth_e , weight, -1.,1.,100);
+	FillHist("Zchargeflip_rel_truthrawenergy_minus_reco", (truth_e - reco_rawe)/truth_e , weight, -1.,1.,100);
+	FillHist("Zchargeflip_losthit", electronLooseColl.at(0).MissingLostHits() , weight, -1.,1.,100);
+	FillHist("Zchargeflip_nbrem",  electronLooseColl.at(0).NBrems(), weight, 0., 5., 5);
+	FillHist("Zchargeflip_fbrem",  electronLooseColl.at(0).FBrem(), weight, -1., 2., 100);
+	FillHist("Zchargeflip_dist",  electronLooseColl.at(0).Dist(), weight, -5., 5., 100);
+	FillHist("Zchargeflip_cottheta",  electronLooseColl.at(0).CotTheta(), weight, -1., 1., 100);
+	
+	
+	FillHist("Zchargeflip_cut1", 0, 1, 0.,7.,7);
+	FillHist("Zchargeflip_cut2", 0, 1, 0.,7.,7);
+	FillHist("Zchargeflip_cut3", 0, 1, 0.,7.,7);
+	if(electronLooseColl.at(0).Dist() > -0.1 && (fabs(electronLooseColl.at(0).CotTheta()) < 0.05)){
+	  if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.3))  FillHist("Zchargeflip_cut1", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.4))  FillHist("Zchargeflip_cut1", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.5))  FillHist("Zchargeflip_cut1", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.6))  FillHist("Zchargeflip_cut1", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.7))  FillHist("Zchargeflip_cut1", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.8))  FillHist("Zchargeflip_cut1", 6, 1, 0.,7.,7);
+
+	  if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.3))  FillHist("Zchargeflip_cut2", 1, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.4))  FillHist("Zchargeflip_cut2", 2, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.5))  FillHist("Zchargeflip_cut2", 3, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.6))  FillHist("Zchargeflip_cut2", 4, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.7))  FillHist("Zchargeflip_cut2", 5, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.8))  FillHist("Zchargeflip_cut2", 6, 1, 0.,7.,7);
+
+	  if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.3))  FillHist("Zchargeflip_cut3", 1, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.4))  FillHist("Zchargeflip_cut3", 2, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.5))  FillHist("Zchargeflip_cut3", 3, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.6))  FillHist("Zchargeflip_cut3", 4, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.7))  FillHist("Zchargeflip_cut3", 5, 1, 0.,7.,7);
+	  if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.8))  FillHist("Zchargeflip_cut3", 6, 1, 0.,7.,7);
+	     
+	}
+      }
+      else{
+
+        /// Non flip electron
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
+	float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+        float truth_dz = el_truth.GenVz() -  eventbase->GetEvent().VertexZ();
+        float truth_pz = el_truth.Pz();
+	float truth_p = sqrt( truth_pz*truth_pz+ truth_pt*truth_pt);
+	float reco_p = sqrt( electronLooseColl.at(0).Pt()*electronLooseColl.at(0).Pt() + electronLooseColl.at(0).Pz()*electronLooseColl.at(0).Pz());
+	float truth_eta = el_truth.Eta();
+        float reco_eta = electronLooseColl.at(0).Eta();
+        float reco_sceta = electronLooseColl.at(0).SCEta();
+        float truth_phi = el_truth.Phi();
+        float reco_phi = electronLooseColl.at(0).Phi();
+        float reco_scphi = electronLooseColl.at(0).SCPhi();
+
+        float truth_e = el_truth.E();
+        float reco_e = electronLooseColl.at(0).E();
+        float reco_caloe = electronLooseColl.at(0).CaloEnergy();
+	float reco_rawe = electronLooseColl.at(0).RawEnergy();
+        float reco_scpt = electronLooseColl.at(0).SCPt();
+
+	FillHist("Znonchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+        FillHist("Znonchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(0).dxy())) , weight, 0.,1.,200);
+	FillHist("Znonchargeflip_truthdZ", fabs(truth_dz) , weight, 0.,1.,200);
+        FillHist("Znonchargeflip_truthdZ_minus_reco", fabs(truth_dz - fabs(electronLooseColl.at(0).LeadVtxDistZ ())) , weight, 0.,1.,200);
+        FillHist("Znonchargeflip_truthpt_minus_reco", truth_pt - fabs(electronLooseColl.at(0).Pt()) , weight, -20.,20.,200);
+	FillHist("Znonchargeflip_truthscpt_minus_reco", truth_pt - fabs(electronLooseColl.at(0).SCPt()) , weight, -20.,20.,200);
+	FillHist("Znonchargeflip_truthpz_minus_reco", truth_pz - fabs(electronLooseColl.at(0).Pz()) , weight, -20.,20.,200);
+	FillHist("Znonchargeflip_rel_truthpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(0).Pt()))/truth_pt  , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthscpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(0).SCPt()))/truth_pt  , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthpz_minus_reco", (truth_pz - fabs(electronLooseColl.at(0).Pz()))/truth_pz , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthp_minus_reco", (truth_p - reco_p)/truth_p , weight, -1.,1.,200);
+
+	FillHist("Znonchargeflip_rel_truthp_minus_reco_099", (truth_p - 0.99*reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthp_minus_reco_098", (truth_p - 0.98*reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthp_minus_reco_097", (truth_p - 0.97*reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthp_minus_reco_096", (truth_p - 0.96*reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthp_minus_reco_095", (truth_p - 0.95*reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_trutheta_minus_reco", (truth_eta - reco_eta) , weight, -.5,.5,500);
+        FillHist("Znonchargeflip_truthsceta_minus_reco", (truth_eta - reco_sceta) , weight, -.5,.5,500);
+        FillHist("Znonchargeflip_truthphi_minus_reco", (truth_phi - reco_phi) , weight, -.5,.5,500);
+        FillHist("Znonchargeflip_truthscphi_minus_reco", (truth_phi - reco_scphi) , weight, -.5,.5,500);
+
+        FillHist("Znonchargeflip_deltaeta_sctrk", electronLooseColl.at(0).DeltaEta() , weight, -0.008,.008,500);
+        FillHist("Znonchargeflip_deltaphi_sctrk", electronLooseColl.at(0).DeltaPhi() , weight, -0.05,.05,500);
+
+        FillHist("Znonchargeflip_rel_truthenergy_minus_reco", (truth_e - reco_e)/truth_e , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_rel_truthcaloenergy_minus_reco", (truth_e - reco_caloe)/truth_e , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_rel_truthrawenergy_minus_reco", (truth_e - reco_rawe)/truth_e , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_losthit", electronLooseColl.at(0).MissingLostHits() , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_nbrem",  electronLooseColl.at(0).NBrems(), weight, 0., 5., 5);
+        FillHist("Znonchargeflip_fbrem",  electronLooseColl.at(0).FBrem(), weight, -1., 2., 100);
+        FillHist("Znonchargeflip_dist",  electronLooseColl.at(0).Dist(), weight, -5., 5., 100);
+        FillHist("Znonchargeflip_cottheta",  electronLooseColl.at(0).CotTheta(), weight, -1., 1., 100);
+
+	FillHist("Znonchargeflip_cut1", 0, 1, 0.,7.,7);
+	FillHist("Znonchargeflip_cut2", 0, 1, 0.,7.,7);
+	FillHist("Znonchargeflip_cut3", 0, 1, 0.,7.,7);
+        if(electronLooseColl.at(0).Dist() > -0.1 && (fabs(electronLooseColl.at(0).CotTheta()) < 0.05)){
+	  if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.3))  FillHist("Znonchargeflip_cut1", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.4))  FillHist("Znonchargeflip_cut1", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.5))  FillHist("Znonchargeflip_cut1", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.6))  FillHist("Znonchargeflip_cut1", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.7))  FillHist("Znonchargeflip_cut1", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 0 ) && ( electronLooseColl.at(0).FBrem() > 0.8))  FillHist("Znonchargeflip_cut1", 6, 1, 0.,7.,7);
+
+          if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.3))  FillHist("Znonchargeflip_cut2", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.4))  FillHist("Znonchargeflip_cut2", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.5))  FillHist("Znonchargeflip_cut2", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.6))  FillHist("Znonchargeflip_cut2", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.7))  FillHist("Znonchargeflip_cut2", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 1 ) && ( electronLooseColl.at(0).FBrem() > 0.8))  FillHist("Znonchargeflip_cut2", 6, 1, 0.,7.,7);
+
+          if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.3))  FillHist("Znonchargeflip_cut3", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.4))  FillHist("Znonchargeflip_cut3", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.5))  FillHist("Znonchargeflip_cut3", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.6))  FillHist("Znonchargeflip_cut3", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.7))  FillHist("Znonchargeflip_cut3", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(0).NBrems() > 2 ) && ( electronLooseColl.at(0).FBrem() > 0.8))  FillHist("Znonchargeflip_cut3", 6, 1, 0.,7.,7);
+        }
+
+      }
+
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5){
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
+
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+	float truth_dz = el_truth.GenVz() -  eventbase->GetEvent().VertexZ();
+        float truth_pz = el_truth.Pz();
+	float truth_p = sqrt( truth_pz*truth_pz+ truth_pt*truth_pt);
+        float reco_p = sqrt( electronLooseColl.at(1).Pt()*electronLooseColl.at(1).Pt() + electronLooseColl.at(1).Pz()*electronLooseColl.at(1).Pz());
+	float truth_eta = el_truth.Eta();
+        float reco_eta = electronLooseColl.at(1).Eta();
+        float reco_sceta = electronLooseColl.at(1).SCEta();
+        float truth_phi = el_truth.Phi();
+        float reco_phi = electronLooseColl.at(1).Phi();
+        float reco_scphi = electronLooseColl.at(1).SCPhi();
+
+        float truth_e = el_truth.E();
+        float reco_e = electronLooseColl.at(1).E();
+        float reco_caloe = electronLooseColl.at(1).CaloEnergy();
+	float reco_rawe = electronLooseColl.at(1).RawEnergy();
+        float reco_scpt = electronLooseColl.at(1).SCPt();
+
+	
+	FillHist("Zchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+        FillHist("Zchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(1).dxy())) , weight, 0.,1.,200);
+	FillHist("Zchargeflip_truthdZ", fabs(truth_dz) , weight, 0.,1.,200);
+        FillHist("Zchargeflip_truthdZ_minus_reco", fabs(truth_dz - fabs(electronLooseColl.at(1).LeadVtxDistZ ())) , weight, 0.,1.,200);
+        FillHist("Zchargeflip_truthpt_minus_reco", truth_pt - fabs(electronLooseColl.at(1).Pt()) , weight, -20.,20.,200);
+	FillHist("Zchargeflip_truthscpt_minus_reco", truth_pt - fabs(electronLooseColl.at(1).SCPt()) , weight, -20.,20.,200);
+	FillHist("Zchargeflip_truthpz_minus_reco", truth_pz - fabs(electronLooseColl.at(1).Pz()) , weight, -20.,20.,200);
+	FillHist("Zchargeflip_rel_truthpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(1).Pt()))/truth_pt  , weight, -1.,1.,200);
+	FillHist("Zchargeflip_rel_truthscpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(1).SCPt()))/truth_pt  , weight, -1.,1.,200);
+        FillHist("Zchargeflip_rel_truthpz_minus_reco", (truth_pz - fabs(electronLooseColl.at(1).Pz()))/truth_pz , weight, -1.,1.,200);
+        FillHist("Zchargeflip_rel_truthp_minus_reco", (truth_p - reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Zchargeflip_trutheta_minus_reco", (truth_eta - reco_eta) , weight, -.5,.5,500);
+        FillHist("Zchargeflip_truthsceta_minus_reco", (truth_eta - reco_sceta) , weight, -.5,.5,500);
+        FillHist("Zchargeflip_truthphi_minus_reco", (truth_phi - reco_phi) , weight, -.5,.5,500);
+        FillHist("Zchargeflip_truthscphi_minus_reco", (truth_phi - reco_scphi) , weight, -.5,.5,500);
+
+        FillHist("Zchargeflip_deltaeta_sctrk", electronLooseColl.at(1).DeltaEta() , weight, -0.008,.008,500);
+        FillHist("Zchargeflip_deltaphi_sctrk", electronLooseColl.at(1).DeltaPhi() , weight, -0.05,.05,500);
+
+        FillHist("Zchargeflip_rel_truthenergy_minus_reco", (truth_e - reco_e)/truth_e , weight, -1.,1.,100);
+        FillHist("Zchargeflip_rel_truthcaloenergy_minus_reco", (truth_e - reco_caloe)/truth_e , weight, -1.,1.,100);
+        FillHist("Zchargeflip_rel_truthrawenergy_minus_reco", (truth_e - reco_rawe)/truth_e , weight, -1.,1.,100);
+        FillHist("Zchargeflip_losthit", electronLooseColl.at(1).MissingLostHits() , weight, -1.,1.,100);
+        FillHist("Zchargeflip_nbrem",  electronLooseColl.at(1).NBrems(), weight, 0., 5., 5);
+        FillHist("Zchargeflip_fbrem",  electronLooseColl.at(1).FBrem(), weight, -1., 2., 100);
+        FillHist("Zchargeflip_dist",  electronLooseColl.at(1).Dist(), weight, -5., 5., 100);
+        FillHist("Zchargeflip_cottheta",  electronLooseColl.at(1).CotTheta(), weight, -1., 1., 100);
+	
+	FillHist("Zchargeflip_cut1", 0, 1, 0.,7.,7);
+	FillHist("Zchargeflip_cut2", 0, 1, 0.,7.,7);
+	FillHist("Zchargeflip_cut3", 0, 1, 0.,7.,7);
+
+        if(electronLooseColl.at(1).Dist() > -0.1 && (fabs(electronLooseColl.at(1).CotTheta()) < 0.05)){
+	  if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.3))  FillHist("Zchargeflip_cut1", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.4))  FillHist("Zchargeflip_cut1", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.5))  FillHist("Zchargeflip_cut1", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.6))  FillHist("Zchargeflip_cut1", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.7))  FillHist("Zchargeflip_cut1", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.8))  FillHist("Zchargeflip_cut1", 6, 1, 0.,7.,7);
+
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.3))  FillHist("Zchargeflip_cut2", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.4))  FillHist("Zchargeflip_cut2", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.5))  FillHist("Zchargeflip_cut2", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.6))  FillHist("Zchargeflip_cut2", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.7))  FillHist("Zchargeflip_cut2", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.8))  FillHist("Zchargeflip_cut2", 6, 1, 0.,7.,7);
+
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.3))  FillHist("Zchargeflip_cut3", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.4))  FillHist("Zchargeflip_cut3", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.5))  FillHist("Zchargeflip_cut3", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.6))  FillHist("Zchargeflip_cut3", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.7))  FillHist("Zchargeflip_cut3", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.8))  FillHist("Zchargeflip_cut3", 6, 1, 0.,7.,7);
+        }
+
+      }
+      else{
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
+
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+	float truth_dz = el_truth.GenVz() -  eventbase->GetEvent().VertexZ();
+        float truth_pz = el_truth.Pz();
+	float truth_p = sqrt( truth_pz*truth_pz+ truth_pt*truth_pt);
+        float reco_p = sqrt( electronLooseColl.at(1).Pt()*electronLooseColl.at(1).Pt() + electronLooseColl.at(1).Pz()*electronLooseColl.at(1).Pz());
+	float truth_eta = el_truth.Eta();
+        float reco_eta = electronLooseColl.at(1).Eta();
+        float reco_sceta = electronLooseColl.at(1).SCEta();
+        float truth_phi = el_truth.Phi();
+        float reco_phi = electronLooseColl.at(1).Phi();
+        float reco_scphi = electronLooseColl.at(1).SCPhi();
+
+        float truth_e = el_truth.E();
+        float reco_e = electronLooseColl.at(1).E();
+        float reco_caloe = electronLooseColl.at(1).CaloEnergy();
+	float reco_rawe = electronLooseColl.at(1).RawEnergy();
+        float reco_scpt = electronLooseColl.at(1).SCPt();
+
+        FillHist("Znonchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+        FillHist("Znonchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(1).dxy())) , weight, 0.,1.,200);
+	FillHist("Znonchargeflip_truthdZ", fabs(truth_dz) , weight, 0.,1.,200);
+	FillHist("Znonchargeflip_truthdZ_minus_reco", fabs(truth_dz - fabs(electronLooseColl.at(1).LeadVtxDistZ ())) , weight, 0.,1.,200);
+        FillHist("Znonchargeflip_truthpt_minus_reco", truth_pt - fabs(electronLooseColl.at(1).Pt()) , weight, -20.,20.,200);
+        FillHist("Znonchargeflip_truthscpt_minus_reco", truth_pt - fabs(electronLooseColl.at(1).SCPt()) , weight, -20.,20.,200);
+        FillHist("Znonchargeflip_truthpz_minus_reco", truth_pz - fabs(electronLooseColl.at(1).Pz()) , weight, -20.,20.,200);
+	FillHist("Znonchargeflip_rel_truthpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(1).Pt()))/truth_pt  , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthscpt_minus_reco", (truth_pt - fabs(electronLooseColl.at(1).SCPt()))/truth_pt  , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthpz_minus_reco", (truth_pz - fabs(electronLooseColl.at(1).Pz()))/truth_pz , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthp_minus_reco", (truth_p - reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_rel_truthp_minus_reco_099", (truth_p - 0.99*reco_p)/truth_p , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthp_minus_reco_098", (truth_p - 0.98*reco_p)/truth_p , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthp_minus_reco_097", (truth_p - 0.97*reco_p)/truth_p , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthp_minus_reco_096", (truth_p - 0.96*reco_p)/truth_p , weight, -1.,1.,200);
+        FillHist("Znonchargeflip_rel_truthp_minus_reco_095", (truth_p - 0.95*reco_p)/truth_p , weight, -1.,1.,200);
+	FillHist("Znonchargeflip_trutheta_minus_reco", (truth_eta - reco_eta) , weight, -.5,.5,500);
+        FillHist("Znonchargeflip_truthsceta_minus_reco", (truth_eta - reco_sceta) , weight, -.5,.5,500);
+        FillHist("Znonchargeflip_truthphi_minus_reco", (truth_phi - reco_phi) , weight, -.5,.5,500);
+        FillHist("Znonchargeflip_truthscphi_minus_reco", (truth_phi - reco_scphi) , weight, -.5,.5,500);
+
+        FillHist("Znonchargeflip_deltaeta_sctrk", electronLooseColl.at(1).DeltaEta() , weight, -0.008,.008,500);
+        FillHist("Znonchargeflip_deltaphi_sctrk", electronLooseColl.at(1).DeltaPhi() , weight, -0.05,.05,500);
+
+        FillHist("Znonchargeflip_rel_truthenergy_minus_reco", (truth_e - reco_e)/truth_e , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_rel_truthcaloenergy_minus_reco", (truth_e - reco_caloe)/truth_e , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_rel_truthrawenergy_minus_reco", (truth_e - reco_rawe)/truth_e , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_losthit", electronLooseColl.at(1).MissingLostHits() , weight, -1.,1.,100);
+        FillHist("Znonchargeflip_nbrem",  electronLooseColl.at(1).NBrems(), weight, 0., 5., 5);
+        FillHist("Znonchargeflip_fbrem",  electronLooseColl.at(1).FBrem(), weight, -1., 2., 100);
+        FillHist("Znonchargeflip_dist",  electronLooseColl.at(1).Dist(), weight, -5., 5., 100);
+        FillHist("Znonchargeflip_cottheta",  electronLooseColl.at(1).CotTheta(), weight, -1., 1., 100);
+	
+	FillHist("Znonchargeflip_cut1", 0, 1, 0.,7.,7);
+        FillHist("Znonchargeflip_cut2", 0, 1, 0.,7.,7);
+        FillHist("Znonchargeflip_cut3", 0, 1, 0.,7.,7);
+        if(electronLooseColl.at(1).Dist() > -0.1 && (fabs(electronLooseColl.at(1).CotTheta()) < 0.05)){
+	  if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.3))  FillHist("Znonchargeflip_cut1", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.4))  FillHist("Znonchargeflip_cut1", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.5))  FillHist("Znonchargeflip_cut1", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.6))  FillHist("Znonchargeflip_cut1", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.7))  FillHist("Znonchargeflip_cut1", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 0 ) && ( electronLooseColl.at(1).FBrem() > 0.8))  FillHist("Znonchargeflip_cut1", 6, 1, 0.,7.,7);
+
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.3))  FillHist("Znonchargeflip_cut2", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.4))  FillHist("Znonchargeflip_cut2", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.5))  FillHist("Znonchargeflip_cut2", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.6))  FillHist("Znonchargeflip_cut2", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.7))  FillHist("Znonchargeflip_cut2", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 1 ) && ( electronLooseColl.at(1).FBrem() > 0.8))  FillHist("Znonchargeflip_cut2", 6, 1, 0.,7.,7);
+
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.3))  FillHist("Znonchargeflip_cut3", 1, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.4))  FillHist("Znonchargeflip_cut3", 2, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.5))  FillHist("Znonchargeflip_cut3", 3, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.6))  FillHist("Znonchargeflip_cut3", 4, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.7))  FillHist("Znonchargeflip_cut3", 5, 1, 0.,7.,7);
+          if((electronLooseColl.at(1).NBrems() > 2 ) && ( electronLooseColl.at(1).FBrem() > 0.8))  FillHist("Znonchargeflip_cut3", 6, 1, 0.,7.,7);
+        }
+
+      }
+
+      FillHist("Zcandidate_check", 3.,1., 0.,10.,10);
+      FillCLHist(sighist, "Zcandidate_check_ss", eventbase->GetEvent(), muonTightColl,electronLooseColl,jetColl_lepveto, 1.);
+    }
+  }
+  else{
+    /// not in Z peak
+
+    if(SameCharge(electronLooseColl)){
+      
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5) FillHist("nonZchargeflip_d0", fabs(electronLooseColl.at(0).dxy()), weight, 0.,0.5,200);
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("nonZchargeflip_d0", fabs(electronLooseColl.at(1).dxy()), weight, 0.,0.5,200);
+
+
+      if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5){
+        //// Chargeflip electron
+
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
+
+
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+        FillHist("nonZchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+        FillHist("nonZchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(0).dxy())) , weight, 0.,1.,200);
+        FillHist("nonZchargeflip_truthpt_minus_reco", fabs(truth_pt - fabs(electronLooseColl.at(0).Pt())) , weight, 0.,20.,200);
+
+      }
+      else{
+        /// Non flip electron
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
+
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+        FillHist("nonZnonchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+        FillHist("nonZnonchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(0).dxy())) , weight, 0.,1.,200);
+        FillHist("nonZnonchargeflip_truthpt_minus_reco", fabs(truth_pt - fabs(electronLooseColl.at(0).Pt())) , weight, 0.,20.,200);
+      }
+
+      if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5){
+        //// Chargeflip electron
+
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+        FillHist("nonZchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+        FillHist("nonZchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(1).dxy())) , weight, 0.,1.,200);
+        FillHist("nonZchargeflip_truthpt_minus_reco", fabs(truth_pt - fabs(electronLooseColl.at(1).Pt())) , weight, 0.,20.,200);
+
+      }
+      else{
+
+        /// Non flip electron
+	std::vector<snu::KTruth> truthColl;
+        eventbase->GetTruthSel()->Selection(truthColl);
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
+
+        float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
+        float truth_pt = el_truth.Pt();
+        FillHist("nonZnonchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
+	FillHist("nonZnonchargeflip_truthd0_minus_reco", fabs(truth_dxy - fabs(electronLooseColl.at(1).dxy())) , weight, 0.,1.,200);
+	FillHist("nonZnonchargeflip_truthpt_minus_reco", fabs(truth_pt - fabs(electronLooseColl.at(1).Pt())) , weight, 0.,20.,200);
+      }
+    }
+  }
+
+  if(Zcandidate(electronLooseColl2, 10., false)) {
+    if(!SameCharge(electronLooseColl2))FillHist("Zcandidate_check", 4.,1., 0.,10.,10);
+    else  FillHist("Zcandidate_check", 5.,1., 0.,10.,10);
+  }
+
+  if(Zcandidate(electronLooseColl3, 10., false)) {
+    if(!SameCharge(electronLooseColl3))FillHist("Zcandidate_check", 6.,1., 0.,10.,10);
+    else  FillHist("Zcandidate_check", 7.,1., 0.,10.,10);
+  }
+
+  if(Zcandidate(electronLooseColl4, 10., false)) {
+    if(!SameCharge(electronLooseColl4))FillHist("Zcandidate_check", 8.,1., 0.,10.,10);
+    else  FillHist("Zcandidate_check", 9.,1., 0.,10.,10);
+  }
+
+
+	
+
+  if(SameCharge(electronLooseColl_iseref)){
+    double npweight = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,0 , false);
+    FillCLHist(sighist, "SSee_np_loosedxy01", eventbase->GetEvent(), muonTightColl,electronLooseColl_iseref, jetColl_lepveto, npweight);
+    
+    if(jetColl_lepveto.size() >1){
+      
+      double npweight_df = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,2 , false);
+      double npweight_sf = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,1 , false);
+      
+      
+      double npweight_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 0, true);
+      double npweight_df_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 2, true);
+      double npweight_sf_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 1, true);
+      
+      snu::KParticle SSee = electronLooseColl_iseref.at(0) + electronLooseColl_iseref.at(1);
+      FillHist("SIGREGION_loosedxy01_NP", SSee.M() , npweight, 0.,200.,50);
+      FillHist("SIGREGION_loosedxy01_NP_r1", SSee.M() , npweight_r1, 0.,200.,50);
+      
+      FillHist("SIGREGION_loosedxy01_NP_singlefake", SSee.M() , npweight_sf, 0.,200.,50);
+      FillHist("SIGREGION_loosedxy01_NP_singlefake_r1", SSee.M() , npweight_sf_r1, 0.,200.,50);
+
+      FillHist("SIGREGION_loosedxy01_NP_doublefake", SSee.M() , npweight_df, 0.,200.,50);
+      FillHist("SIGREGION_loosedxy01_NP_doublefake_r1", SSee.M() , npweight_df_r1, 0.,200.,50);
+      
+      
+    }
+  }
+  if(SameCharge(electronLooseColl)){
+    
+    double npweight = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",0, false);
+    FillCLHist(sighist, "SSee_np", eventbase->GetEvent(), muonTightColl,electronLooseColl, jetColl_lepveto, npweight);
+
+    if(jetColl_lepveto.size() >1){
+      
+    
+      double npweight_df = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",2,false);
+      double npweight_sf = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",1,false);
+      
+      double npweight_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 0, true);
+      
+      double npweight_df_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 2, true);
+      double npweight_sf_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 1, true);
+ 
+      
+      snu::KParticle SSee = electronLooseColl.at(0) + electronLooseColl.at(1);
+      FillHist("SIGREGION_NP", SSee.M() , npweight, 0.,200.,50);
+      FillHist("SIGREGION_NP_r1", SSee.M() , npweight_r1, 0.,200.,50);
+
+      FillHist("SIGREGION_NP_singlefake", SSee.M() , npweight_sf, 0.,200.,50);
+      FillHist("SIGREGION_NP_singlefake_r1", SSee.M() , npweight_sf_r1, 0.,200.,50);
+
+      FillHist("SIGREGION_NP_doublefake", SSee.M() , npweight_df, 0.,200.,50);
+      FillHist("SIGREGION_NP_doublefake_r1", SSee.M() , npweight_df_r1, 0.,200.,50);
+      
+      
+    }
+  }
+
   if(!k_running_nonprompt){
     if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDREF",0.  , weight, 0.,1.,1);
     if(CheckSignalRegion(electronMedium_chargeconst, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight, 0.,2.,2);

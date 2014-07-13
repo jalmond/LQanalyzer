@@ -56,12 +56,14 @@ void HNCommonLeptonFakes::InitialiseFake(){
   
   /// List files with fake rates
 
-  TFile* file_Muon_Opt  = TFile::Open(("/home/jalmond/Analysis/LQanalyzer/HNCommonLeptonFakes/share/FakeRateOpt.root"));
-  //CheckFile(file_Muon_opt);
+  string lqdir = getenv("LQANALYZER_DIR");
+  TFile* file_Muon_Opt  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateOpt.root").c_str());
+  CheckFile(file_Muon_Opt);
   
     
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
+
 
   
   _2DEfficiencyMap["real_eff_tight"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Tight"))->Clone());
@@ -74,7 +76,19 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["real_eff_dxy20"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_dxy20"))->Clone());
   _2DEfficiencyMap["real_eff_dxy25"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_dxy25"))->Clone());
   _2DEfficiencyMap["real_eff_dxy30"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_dxy30"))->Clone());
-  
+
+  _2DEfficiencyMap["real_eff_Loosedxy01_iso_b100_e100"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_100_100"))->Clone());
+  _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e090"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009"))->Clone());
+  _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e080"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_008"))->Clone());
+  _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e070"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_007"))->Clone());
+  _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e060"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_006"))->Clone());
+  _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e050"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_005"))->Clone());
+
+  _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e008"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_008_np"))->Clone());
+  _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e007"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_007_np"))->Clone());
+  _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e006"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_006_np"))->Clone());
+  _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e005"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_005_np"))->Clone());
+
   _2DEfficiencyMap["real_eff_iso_b050_e060"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_iso_B050_E060_dr03"))->Clone());
   _2DEfficiencyMap["real_eff_iso_b050_e070"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_iso_B050_E070_dr03"))->Clone());
   _2DEfficiencyMap["real_eff_iso_b050_e080"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_iso_B050_E080_dr03"))->Clone());
@@ -193,6 +207,17 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_medium"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_medium_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_tight"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_tight_pt_eta"))->Clone());
 
+  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b100_e100"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b100_e100_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e090"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e090_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e080"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e080_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e070"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e070_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e060"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e060_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e050"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e050_pt_eta"))->Clone());
+
+  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e080"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e080_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e070"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e070_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e060"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e060_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e050"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e050_pt_eta"))->Clone());
 
   _2DEfficiencyMap["fake_eff_iso_b050_e060"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_iso_dr3_b050_e060_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_iso_b050_e070"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_iso_dr3_b050_e070_pt_eta"))->Clone());
@@ -308,7 +333,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
  
   
-
+  cout << "HNCommonLeptonFakes : Initializing" << endl;
   for(map<TString, TH2F*>::iterator mit = _2DEfficiencyMap.begin(); mit != _2DEfficiencyMap.end(); mit++){
     if(!mit->second){
       cout << "Failed " << mit->first << endl;
@@ -401,16 +426,13 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
   if(_el1_pt > 100.) _el1_pt = 99.;
   if(_el2_pt > 100.) _el2_pt = 99.;
 
-
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
   
   r1 = getEfficiency_electron(0,_el1_pt, _el1_eta, cut);
   r2 = getEfficiency_electron(0,_el2_pt, _el2_eta,cut);
-
   fr1= getFakeRate_electron(0,_el1_pt, _el1_eta,cut);
   fr2= getFakeRate_electron(0,_el2_pt, _el2_eta,cut);
 
-  
   // Calculate event weight
   float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
 
@@ -424,6 +446,60 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 
   return ev_weight;
 }
+
+float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut, int eventtype, bool user1){
+
+  if(electrons.size()!=2) {
+    cout << "DiLepton event weight requires 2 muons." << endl;
+    return (0.);
+  }
+
+  float _el1_pt=electrons.at(0).Pt();
+  float _el2_pt=electrons.at(1).Pt();
+
+  //// vectors need to be ordered in pT
+  if(_el1_pt < _el2_pt) return -100000000000.;
+
+
+  float _el1_eta=fabs(electrons.at(0).Eta());
+  float _el2_eta=fabs(electrons.at(1).Eta());
+
+  if(m_debug){
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "el1 pT = " << _el1_pt << endl;
+    cout << "el2 pT = " << _el2_pt << endl;
+  }
+
+  if(_el1_pt > 100.) _el1_pt = 99.;
+  if(_el2_pt > 100.) _el2_pt = 99.;
+
+  float fr1(0.),fr2(0.),r1(0.),r2(0.);
+
+  if(!user1){
+    r1 = getEfficiency_electron(0,_el1_pt, _el1_eta, cut);
+    r2 = getEfficiency_electron(0,_el2_pt, _el2_eta,cut);
+  }
+  else{
+    r1=1.;
+    r2=1.;
+  }
+  fr1= getFakeRate_electron(0,_el1_pt, _el1_eta,cut);
+  fr2= getFakeRate_electron(0,_el2_pt, _el2_eta,cut);
+
+  // Calculate event weight
+  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight, eventtype);
+
+  if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
+  if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
+
+  if(ev_weight!=ev_weight){
+    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
+  }
+
+
+  return ev_weight;
+}
+
 
 float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight){
   
@@ -475,6 +551,8 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
   return ev_weight;
 
 }
+
+
 
 
 float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, int njets, bool ismu1tight, bool isel1tight){
@@ -826,6 +904,69 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
 
   return w_mm;   
 }
+
+
+float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
+
+
+  // Function calculates event weight given r/f of two muons in the event
+  double alpha = 1./((r1- fr1)*(r2- fr2));
+
+  // Initialise weight
+  float w_mm=-999.;
+
+  // Terms for RF and FR events from MM
+  double termTT_sf = alpha*(r1*fr2*(fr1-1.)*(1.-r2) + (fr1*r2*(r1-1.)*(1.-fr2)));
+  double termTL_sf = alpha*(r1*fr2*((1-fr1)*r2) + (fr1*r2*(1.-r1)*fr2));
+  double termLT_sf = alpha*(r1*fr2*(fr1*(1.-r2))+ (fr1*r2*(1.-fr2)*r1));
+  double termLL_sf = -2.*alpha*(r1*fr2*(fr1*r2));
+
+  
+  // Term for FF events
+  double termTT_df = alpha*fr1*fr2*((1.-r1)*(1.-r2));
+  double termTL_df = alpha*fr1*fr2*r2*(r1-1.);
+  double termLT_df = alpha*fr1*fr2*r1*(r2-1.);
+  double termLL_df = alpha*r1*r2*(fr1*fr2);
+
+  double termTT(0.);
+  double termTL(0.);
+  double termLT(0.);
+  double termLL(0.);
+  
+  if(eventtype==0) {
+    termTT = termTT_sf+ termTT_df;
+    termTL = termTL_sf + termTL_df;
+    termLT = termLT_sf + termLT_df;
+    termLL = termLL_sf + termLL_df;    
+  }
+  else   if(eventtype==1) {
+    termTT = termTT_sf;
+    termTL = termTL_sf;
+    termLT = termLT_sf;
+    termLL = termLL_sf;
+  }
+  else if(eventtype==2) {
+    termTT = termTT_df;
+    termTL = termTL_df;
+    termLT = termLT_df;
+    termLL = termLL_df;
+  }
+
+  // decide which type of event we have so to return correct weight
+  bool isLL = (!mu1Tight&&!mu2Tight);
+  bool isLT = (!mu1Tight&&mu2Tight);
+  bool isTL = (mu1Tight && !mu2Tight);
+  bool isTT = (mu1Tight && mu2Tight);
+
+  if(isLL)w_mm = termLL;
+  if(isTL)w_mm = termTL;
+  if(isLT)w_mm = termLT;
+  if(isTT)w_mm=  termTT;
+
+
+  return w_mm;
+}
+
 
 
 double HNCommonLeptonFakes::lepton_weight(bool loose, double r, double f) {

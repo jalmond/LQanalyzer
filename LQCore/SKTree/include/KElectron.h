@@ -22,11 +22,14 @@ namespace snu {
 
     KElectron& operator= (const KElectron& obj);
     
-   
+    
+    float RelIso04(float rho, float pt);
+    float RelIso03(float rho, float pt);
     //// Setting class variables
 
     // set kinematic variables
     void SetSCEta(Double_t sceta);
+    void SetSCPt(Double_t scpt);
     void SetSCPhi(Double_t scphi);        
     void SetisEB(Bool_t isEB);
     void SetisEE(Bool_t isEE);
@@ -121,6 +124,7 @@ namespace snu {
       
     /// // Kinematic variables
     inline Double_t  SCEta() const {return k_sceta;}
+    inline Double_t  SCPt() const {return k_scpt;}
     inline Double_t  SCPhi() const {return k_scphi;}
     inline Double_t  RawEnergy() const {return k_rawenergy;}
     inline Bool_t isEB() const {return k_isEB;}
@@ -229,7 +233,7 @@ namespace snu {
     Bool_t k_diel_trig_match,k_el_trig_match8, k_el_trig_match17 , k_elwp80_trig_match, k_emu_trig_match8,k_emu_trig_match17;
     Double_t k_mva, k_trigmva;
     Double_t k_dxy, k_dz;
-    Double_t k_sceta,k_scphi, k_rawenergy;
+    Double_t k_sceta, k_scpt,k_scphi, k_rawenergy;
     
     Double_t k_vtx_xy, k_vtx_z, k_lvtx_xy, k_lvtx_z;
     Bool_t k_gsf_ctscpix_charge, k_gsf_scpix_charge, k_gsf_ct_charge;
@@ -239,7 +243,7 @@ namespace snu {
     Int_t k_vertex_index;
     Double_t k_eldist, k_cottheta;
 
-    ClassDef(KElectron,10)
+    ClassDef(KElectron,12);
   }; 
   
 }//namespace snu

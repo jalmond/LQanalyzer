@@ -45,6 +45,7 @@ class HNCommonLeptonFakes {
 
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight);
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut);
+  float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut, int eventtype, bool user1);
   
 
   float getFakeRate_muon(int sys, float pt,  float eta);
@@ -62,6 +63,7 @@ class HNCommonLeptonFakes {
 
   /// Function to calculate the event weight from the muon efficiencies
   float CalculateDiLepMMWeight(float r1, float f1, float r2, float f2, bool t1, bool t2 );
+  float CalculateDiLepMMWeight(float r1, float f1, float r2, float f2, bool t1, bool t2 , int eventtype);
   
   //Incase we want single muon event weight
   double lepton_weight(bool loose, double r, double f);

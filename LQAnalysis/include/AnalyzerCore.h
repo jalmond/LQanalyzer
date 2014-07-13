@@ -46,9 +46,12 @@ class AnalyzerCore : public LQCycleBase {
   bool SameCharge(std::vector<snu::KElectron> electrons);
   float CFRate(snu::KElectron el);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
-  
+  void ShiftElectronEnergy(std::vector<snu::KElectron> el);
+  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets ,int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut);
+
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut);
+  float Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool  usetight,TString cut, int eventtype, bool setr1);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho);
   

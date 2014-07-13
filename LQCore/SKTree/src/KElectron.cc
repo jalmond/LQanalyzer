@@ -18,6 +18,7 @@ KParticle()
   k_isEE = false; 
   k_sceta=0;
   k_scphi=0;
+  k_scpt=0;
   k_rawenergy=0;
   k_mva=0.;
   k_trigmva=0.;
@@ -87,6 +88,7 @@ KElectron::KElectron(const KElectron& el) :
   k_isEB = el.isEB();
   k_isEE = el.isEE();
   k_sceta= el.SCEta();
+  k_scpt= el.SCPt();
   k_scphi= el.SCPhi();
   k_rawenergy= el.RawEnergy();
   k_mva=el.MVA();
@@ -160,6 +162,7 @@ void KElectron::Reset()
   k_isEB =false;
   k_isEE = false;
   k_sceta=0;
+  k_scpt=0;
   k_scphi=0;
   k_rawenergy=0;
   k_mva=0.;
@@ -230,6 +233,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_isEB = p.isEB();
     k_isEE = p.isEE();
     k_sceta= p.SCEta();
+    k_scpt= p.SCPt();
     k_scphi= p.SCPhi();
     k_rawenergy= p.RawEnergy();
     k_mva=p.MVA();
@@ -301,6 +305,10 @@ void KElectron::SetSCEta(Double_t sceta){
   k_sceta = sceta;
 }
 
+void KElectron::SetSCPt(Double_t scpt){
+  k_scpt = scpt;
+}
+
 void KElectron::SetSCPhi(Double_t scphi){
   k_scphi = scphi;
 }
@@ -337,7 +345,7 @@ void  KElectron::SetTrackValidFractionOfHits(Double_t valid_frac_hits){
 // ID variables
 
 void KElectron::Setdz(double d_z){ 
-  k_dxy = d_z;
+  k_dz = d_z;
 }
 
 void KElectron::Setdxy(double d_xy){ 
@@ -537,4 +545,43 @@ void KElectron::SetHLTEMuMatched8(bool match){
 
 void KElectron::SetHLTEMuMatched17(bool match){
   k_emu_trig_match17= match;
+}
+
+
+float KElectron::RelIso03( float rho, float elpt){
+  double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
+  double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
+  double effective_areas_03             [7] = { 0.130, 0.140, 0.07, 0.09, 0.110, 0.110, 0.140 };
+  double effective_area_03  = 0.0;
+  
+  for (int i = 0; i < 7; ++i ){
+    double bin_minimum = effective_area_eta_minimums[i];
+    double bin_maximum = effective_area_eta_maximums[i];
+    if ( fabs(k_sceta) >= bin_minimum && fabs(k_sceta) < bin_maximum ) {
+      effective_area_03 = effective_areas_03 [i];
+    }
+  }
+  double egamma_pfiso_03 = k_pf_chargedhad_iso03  + std::max ( k_pf_photon_iso03 + k_pf_neutral_iso03 - ( rho * effective_area_03 ), 0.0 );
+  egamma_pfiso_03 = egamma_pfiso_03/   elpt;
+  return egamma_pfiso_03;
+}
+
+
+float KElectron::RelIso04( float rho, float elpt){
+  double effective_area_eta_minimums    [7] = { 0.000, 1.000, 1.479, 2.000, 2.200, 2.300, 2.400 };
+  double effective_area_eta_maximums    [7] = { 1.000, 1.479, 2.000, 2.200, 2.300, 2.400, 999.0 };
+
+  double effective_areas_04             [7] = {0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
+  double effective_area_04  = 0.0;
+
+  for (int i = 0; i < 7; ++i ){
+    double bin_minimum = effective_area_eta_minimums[i];
+    double bin_maximum = effective_area_eta_maximums[i];
+    if ( fabs(k_sceta) >= bin_minimum && fabs(k_sceta) < bin_maximum ) {
+      effective_area_04 = effective_areas_04 [i];
+    }
+  }
+  double egamma_pfiso_04 = k_pf_chargedhad_iso04  + std::max ( k_pf_photon_iso04 + k_pf_neutral_iso04 - ( rho * effective_area_04 ), 0.0 );
+  egamma_pfiso_04 = egamma_pfiso_04/   elpt;
+  return egamma_pfiso_04;
 }

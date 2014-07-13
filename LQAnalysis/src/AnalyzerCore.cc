@@ -347,6 +347,21 @@ float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
 }
   
 
+void AnalyzerCore::ShiftElectronEnergy(std::vector<snu::KElectron> electrons){
+  
+  if(electrons.size()!=2) return;
+  if(electrons.at(0).Charge() == electrons.at(1).Charge()) return;
+  
+
+  /// shift scale of electron with largest IP
+  float scale =0.95;
+  cout << "Eta = " <<  electrons.at(0).Eta() << " phi = " << electrons.at(0).Phi() << endl;
+  electrons.at(0).SetPtEtaPhiM(electrons.at(0).Pt()*scale, electrons.at(0).Eta(), electrons.at(0).Phi(), 0.511e-3);
+  cout << "rescaled Eta = " <<  electrons.at(0).Eta() << " phi = " << electrons.at(0).Phi() << endl;
+  electrons.at(1).SetPtEtaPhiM(electrons.at(1).Pt()*scale, electrons.at(1).Eta(), electrons.at(1).Phi(), 0.511e-3);
+
+  
+}
 
 bool AnalyzerCore::isPrompt(long pdgid) {
   /// mother pdgid
@@ -788,7 +803,7 @@ double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
   
   double factor (1.);
   if(Z.M() > 90.){
-    factor = 8.47072e-01 + 1.44553e-03*Z.M();
+    factor = 8.37401e-01 + 1.61277e-03*Z.M();
   }
   return w*factor;
 }
@@ -805,25 +820,28 @@ float AnalyzerCore::CFRate(snu::KElectron el){
 
 
   if( fabs(el.Eta()) <= 1.4442 ) {
-    scale_factor_BB = 0.792;
-    frac = 4.78e-05 ;
+    scale_factor_BB = 1.32;
+    //--region:  1/pt > 0.02
+    p0 = 8.16e-05 ; p1 = -1.82e-03 ;
+    frac = p0 + p1*(1./pt) ;
     
     if( (1./pt) <= 0.02 ) {
-      p1 = -0.e-04 ;
-      p0 = 6.45e-05 ;
+      p0 = 3.37e-04 ;  p1 = -1.55e-02 ;
       frac = max(p0 + p1*(1./pt), frac);
     }
     frac *= scale_factor_BB ;
     
   } else {  // fabs(eta) > 1.4
     
-    frac = 2.48e-04 ;
-    scale_factor_EE = 1.81;
+    
+    scale_factor_EE = 1.32 ; //
+    //--region:  1/pt > 0.02
+    p0 = 5.41e-04 ; p1 = -1.10e-02 ;
+    frac = p0 + p1*(1./pt) ;
 
     if( (1./pt) <= 0.02 ){
-      p0 = 2.46e-03 ;
-      p1 = -1.16e-01 ;
-      frac = max(p0 + p1*(1./pt), frac);
+      p0 = 2.95e-03 ;  p1 = -1.32e-01 ;
+      frac = max(p0 + p1*(1./pt), frac) ;
     }
     frac *= scale_factor_EE ;
   }
@@ -974,6 +992,46 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
   }
   return ee_weight;
 }
+
+float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets, int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut){
+  
+  if(k_electrons.size()==1){
+    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    float r = m_fakeobj->getEfficiency_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
+    float f = m_fakeobj->getFakeRate_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
+    
+    if(nbjets==0){
+      if( k_electrons.at(0).Pt() < 20.) f*= 1.4;
+      else  if(k_electrons.at(0).Pt() < 30.) f*= 1.3;
+      else  if(k_electrons.at(0).Pt() < 40.) f*= 1.1;
+      
+      if(SumPt(jets) < 40.) f*=1.1;
+      else if (SumPt(jets) < 200.) f = f/1.1;
+    }
+    
+    
+    float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
+    return w;
+  }
+  return 0.;
+}
+    
+float AnalyzerCore::Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, int eventtype, bool setr1){
+
+  float ee_weight = 0.;
+  if(k_electrons.size()==2){
+
+    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight , cut, eventtype, setr1);
+
+  }
+  return ee_weight;
+}
+
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho){
   

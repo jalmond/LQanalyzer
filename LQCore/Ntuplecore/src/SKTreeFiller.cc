@@ -225,8 +225,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPtEtaPhiE(ElectronPt->at(iel),ElectronEta->at(iel),ElectronPhi->at(iel),ElectronEnergy->at(iel));
     el.SetisEB(ElectronIsEB->at(iel));
     el.SetisEE(ElectronIsEE->at(iel));
-    el.SetSCEta(ElectronEta->at(iel));
-    el.SetSCPhi(ElectronPhi->at(iel));
+
+    el.SetSCEta(ElectronSCEta->at(iel));
+    el.SetSCPhi(ElectronSCPhi->at(iel));
+    el.SetSCPt(ElectronSCPt->at(iel));
     el.SetRawEnergy(ElectronSCRawEnergy->at(iel));
     
     m_logger << DEBUG << "Filling Electron ID Bit "<< LQLogger::endmsg;
@@ -710,7 +712,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
   
   std::sort( electrons.begin(), electrons.end(), isHigherPt );
 
-
+    
   return electrons;
 }
 

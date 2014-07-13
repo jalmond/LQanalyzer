@@ -92,10 +92,21 @@ void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonCo
 }
 
 void ElectronSelection::HNLooseElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
-  return HNLooseElectronSelection( true, leptonColl, m_debug);
+  return HNLooseElectronSelection( true, false, leptonColl, m_debug);
 }
 
-void ElectronSelection::HNLooseElectronSelection( bool usetight, std::vector<KElectron>& leptonColl, bool m_debug) {
+void ElectronSelection::HNLooseElectronSelectionWithIPCut(std::vector<KElectron>& leptonColl, bool m_debug) {
+  return HNLooseElectronSelection( true, true, leptonColl, m_debug);
+}
+
+
+void ElectronSelection::HNLooseElectronSelection( bool usetight,  std::vector<KElectron>& leptonColl, bool m_debug) {
+  /// no dxycut is made
+  return HNLooseElectronSelection( usetight, false, leptonColl, m_debug);
+}
+
+
+void ElectronSelection::HNLooseElectronSelection( bool usetight, bool apply_ipcut, std::vector<KElectron>& leptonColl, bool m_debug) {
   
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho();
@@ -121,7 +132,7 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, std::vector<KEl
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Eta Cut" <<endl;
     }
-    if((el->Pt() < 15.)){
+    if((el->Pt() < 10.)){
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Pt Cut" <<endl;
     }
@@ -136,6 +147,12 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, std::vector<KEl
       pass_selection = false;
       if(m_debug) cout << "HNLooseElectronSelection:Fail Charge Cons. Cut" <<endl;
     }
+    if(apply_ipcut){
+      if(!(fabs(el->dxy())< 0.01 )) {
+	pass_selection = false;
+	if(m_debug)  cout << "HNLooseElectronSelection:Fail dxy Cut: " << el->dxy() <<endl;
+      }
+    }
 
     if(pass_selection){
       leptonColl.push_back(*el);
@@ -148,7 +165,7 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, std::vector<KEl
 
 
 bool ElectronSelection::HNIsTight(KElectron el, double rho,  bool m_debug=false){
-  return HNIsTight(el, rho, 0.01, 0.1,0.1, true, false, true,  m_debug);
+  return HNIsTight(el, rho, 0.01, 0.09,0.09, true, false, true,  m_debug);
 }
   
 bool ElectronSelection::HNIsTight(KElectron el, double rho, double dxycut, double barrel_isocut, double endcap_isocut, bool usedr3, bool usetrkiso, bool usetight,  bool m_debug){
@@ -228,7 +245,7 @@ bool ElectronSelection::HNIsTight(KElectron el, double rho, double dxycut, doubl
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
   }
-  if(!(el.Pt() > 15.)) {
+  if(!(el.Pt() > 10.)) {
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
   }

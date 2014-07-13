@@ -79,6 +79,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronLooseColl_medium;
   eventbase->GetElectronSel()->HNLooseElectronSelection(false,electronLooseColl_medium); /// Sets medium WP cuts 
   
+  std::vector<snu::KElectron> electronLooseColl_withipcut;
+  eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(electronLooseColl_withipcut);
+
   if(!isData){
     for(std::vector<snu::KElectron>::iterator it = electronLooseColl.begin(); it != electronLooseColl.end(); it++){
       weight *=  ElectronScaleFactor(it->Eta(), it->Pt());
@@ -216,36 +219,16 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron>  electronTightColl_NPFisodr03_b050_e070;
   std::vector<snu::KElectron>  electronTightColl_NPFisodr03_b050_e060;
 
-  std::vector<snu::KElectron>  electronLooseColl_dxy01;
-
   for(unsigned int iel = 0; iel < electronLooseColl.size(); iel++){
+    
+    float LeptonRelIsoDR03 = electronLooseColl.at(iel).RelIso03(eventbase->GetEvent().JetRho() , electronLooseColl.at(iel).Pt());
+    float LeptonRelIsoDR04 = electronLooseColl.at(iel).RelIso04(eventbase->GetEvent().JetRho() , electronLooseColl.at(iel).Pt());
 
-    if(fabs(electronLooseColl.at(iel).dxy()) < 0.010 )   electronLooseColl_dxy01.push_back(electronLooseColl.at(iel));
-    Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
-    Double_t PHONH_04[7]          = {0.208, 0.209, 0.115, 0.143, 0.183, 0.194, 0.261};
-
-    int ifid = 0;
-    if (fabs(electronLooseColl.at(iel).SCEta()) < 1.0) ifid = 0;
-    else if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479) ifid = 1;
-    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.0) ifid = 2;
-    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.2) ifid = 3;
-    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.3) ifid = 4;
-    else if (fabs(electronLooseColl.at(iel).SCEta()) < 2.4) ifid = 5;
-    else ifid = 6;
-
-    float LeptonRelIsoDR03(0.);
-    float LeptonRelIsoDR04(0.);
     float trkiso = electronLooseColl.at(iel).TrkIsoDR03();
     float ecaliso = electronLooseColl.at(iel).ECalIsoDR03();
     float hcaliso = electronLooseColl.at(iel).HCalIsoDR03();
-    float NPFiso = (trkiso + hcaliso + ecaliso)/electronLooseColl.at(iel).Pt();
 
-    float ElectronIsoDR03 =  electronLooseColl.at(iel).PFChargedHadronIso03() + max( electronLooseColl.at(iel).PFNeutralHadronIso03() + electronLooseColl.at(iel).PFPhotonIso03() - eventbase->GetEvent().JetRho() * PHONH_03[ifid],  0.);
-    float ElectronIsoDR04 =  electronLooseColl.at(iel).PFChargedHadronIso04() + max( electronLooseColl.at(iel).PFNeutralHadronIso04() + electronLooseColl.at(iel).PFPhotonIso04() - eventbase->GetEvent().JetRho() * PHONH_04[ifid],  0.);
-    
-    if(electronLooseColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronLooseColl.at(iel).Pt();
-    if(electronLooseColl.at(iel).Pt() > 0.)  LeptonRelIsoDR04 = ElectronIsoDR04/  electronLooseColl.at(iel).Pt();
-    
+    float NPFiso = (trkiso + hcaliso + ecaliso)/electronLooseColl.at(iel).Pt();
     
     if (fabs(electronLooseColl.at(iel).SCEta()) < 1.479 ){
       if(LeptonRelIsoDR03 < 0.10){
@@ -534,7 +517,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     } /// dxy < 0.01
   }
   
-  
+  /// Fill Medium/Tight ID vectors
   std::vector<snu::KElectron> electronNoCutColl;
   eventbase->GetElectronSel()->Selection(electronNoCutColl);
   
@@ -738,7 +721,19 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 2.5, "TightWindow", 0.01, 0.1, 0.1 , true,false,true);
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 10., "LooseWindow",0.01, 0.1 , 0.1, true,false,true);
 
-    GetRealEfficiency(electronLooseColl_dxy01, jetColl_lepveto20, muonLooseColl, weight, 10., "Loosedxy01",0.01, 0.1 , 0.1, true,false,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_100_100",0.01, 0.1 , 0.1, true,false,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_009",0.01, 0.09 , 0.09, true,false,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_008",0.01, 0.09 , 0.08, true,false,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_007",0.01, 0.09 , 0.07, true,false,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_006",0.01, 0.09 , 0.06, true,false,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_005",0.01, 0.09 , 0.05, true,false,true);
+
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_009_np",0.01, 0.09 , 0.09, true,true,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_008_np",0.01, 0.09 , 0.08, true,true,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_007_np",0.01, 0.09 , 0.07, true,true,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_006_np",0.01, 0.09 , 0.06, true,true,true);
+    GetRealEfficiency(electronLooseColl_withipcut, jetColl_lepveto20, muonLooseColl, weight, 5., "Loosedxy01_009_005_np",0.01, 0.09 , 0.05, true,true,true);
+    
     
     /// Optimising
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, muonLooseColl, weight, 5., "Tight", 0.01, 0.1, 0.1 , true,false,true);    
@@ -1136,12 +1131,18 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     
   }
   
+  
+  if(useevent40&&truth_match){
+    if(jetColl_lepveto40.size() >= 1){
+      if( electronLooseColl_withipcut.size()==1 )   FillHist("Loosedxy01_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
+    }
+  }
 
 
   if(useevent40&&truth_match){
     if(jetColl_lepveto40.size() >= 1){
       if( electronLooseColl.size()==1 )   FillHist("LooseOpt_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if( electronLooseColl_dxy01.size()==1 )   FillHist("Loosedxy01_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
+
       if( electronTightColl_dxy05.size()==1 )   FillHist("Tight_dxy05_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
       if( electronTightColl_dxy10.size()==1 )   FillHist("Tight_dxy10_El40_pt_eta",el_pt, el_eta,  weight,  ptbins, 8, ebetabins, 2);
       if( electronTightColl_dxy15.size()==1 )   FillHist("Tight_dxy15_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);

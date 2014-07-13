@@ -9,7 +9,7 @@ cutpath		dat/hn_cuts.txt
 prefix		HNDiElectron_SK
 postfix		_dilep_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  HNDiElectron_datadriven
+outputdir  HNDiElectron_datadriven_july_iso01
 histdir    LQMarch14
 # CONFIGURE_HISTOGRAMS
 showdata   true
@@ -19,6 +19,7 @@ ylog	   true
 samples	   wz_mg   
 samples	   zz_mg   
 samples	   ss_mg   
+samples	   ttv
 samples	   chargeflip
 samples	   nonprompt	
 END

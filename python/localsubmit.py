@@ -919,8 +919,8 @@ else:
         
         if not number_of_cores == 1:    
             os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
-        os.system("rm -r " + output)
-        os.system("rm -r " + local_sub_dir)
+#        os.system("rm -r " + output)
+ #       os.system("rm -r " + local_sub_dir)
         print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename
         if doMerge:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir

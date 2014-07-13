@@ -11,6 +11,7 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_jjmass"]              =     new TH1F("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",100,0.,500.);
   map_sig["h_leadjetmass"]         =     new TH1F("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",100,0.,500.);
   map_sig["h_eemass"]              =     new TH1F("h_eemass_"            + name,"Invariant mass of the two leading electrons",200,0,1000);
+  map_sig["h_oseemass"]              =     new TH1F("h_oseemass_"            + name,"Invariant mass of the two leading os electrons",100,0,500);
   map_sig["h_e1jjmass"]            =     new TH1F("h_e1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
   map_sig["h_e2jjmass"]            =     new TH1F("h_e2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
   map_sig["h_eejjmass"]            =     new TH1F("h_eejjmass_"          + name,"Invariant mass of the four particles",200,0,2000);
@@ -42,6 +43,7 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_secondElectronIso"]   =     new TH1F("h_secondElectronIso_" + name,"secondary electron relIso",70,0,0.7);
   map_sig["h_leadingElectronNonPFIso"]  =     new TH1F("h_leadingElectronNonPFIso_"+ name,"leading electron relIso",70,0,0.7);
   map_sig["h_secondElectronNonPFIso"]   =     new TH1F("h_secondElectronNonPFIso_" + name,"secondary electron relIso",70,0,0.7);
+  map_sig["h_ElectronDZ"]          =     new TH1F("h_ElectronDZ_"        + name," leading electron DZ", 400, -0.5 , 0.5);
   map_sig["h_ElectronD0"]          =     new TH1F("h_ElectronD0_"        + name," leading electron D0", 400, -0.5 , 0.5);
   map_sig["h_ElectronD0Sig"]       =     new TH1F("h_ElectronD0Sig_"     + name," leading electron SigD0", 100, -10. , 10.);
   map_sig["h_ElectronD0Sig2"]      =     new TH1F("h_ElectronD0Sig2_"    + name," leading electron SigD0", 100, -10. , 10.);
@@ -320,6 +322,13 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_WandNmass", (electrons[0]+electrons[1]+jets[m]+jets[n]).M() , (electrons[1]+jets[m]+jets[n]).M(),weight);      
       Fill("h_3Dparm", (electrons[0]+electrons[1]+jets[m]+jets[n]).M(), electrons[0].Pt(), electrons[1].Pt(), weight); 
     }
+
+    /// Triel plots
+    if(electrons.size()>2){
+      if(electrons[0].Charge() != electrons[1].Charge())   Fill("h_oseemass", (electrons[0]+electrons[1]).M(),weight);
+      if(electrons[0].Charge() != electrons[2].Charge())   Fill("h_oseemass", (electrons[0]+electrons[2]).M(),weight);
+      if(electrons[1].Charge() != electrons[2].Charge())   Fill("h_oseemass", (electrons[1]+electrons[2]).M(),weight);
+    }
   }
   
   if(electrons.size()>=1){
@@ -349,11 +358,13 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_electrons_scphi",elit->SCPhi(),weight);
     Fill("h_electrons_eta",elit->Eta(),weight);
     Fill("h_electrons_sceta",elit->SCEta(),weight);
-    Fill("h_ElectronD0", elit->PrimaryVertexDXY(),weight);
+    Fill("h_ElectronD0", elit->dxy(),weight);
+    Fill("h_ElectronDZ", elit->dz(),weight);
     Fill("h_ElectronD0Sig", (elit->PrimaryVertexDXY()/ elit->PrimaryVertexDXYError()),weight);
     Fill("h_ElectronD0Sig2", (elit->LeadVtxDistXY()/ elit->PrimaryVertexDXYError()),weight);
     Fill("h_ElectronD0Sig3", (elit->dxy()/ elit->PrimaryVertexDXYError()),weight);
-
+    
+    
     float EA=GetElectronISOEA(elit->SCEta());
     float rho = ev.JetRho();
     float el_iso =  elit->PFChargedHadronIso03() + max( elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() - rho * EA, 0.);

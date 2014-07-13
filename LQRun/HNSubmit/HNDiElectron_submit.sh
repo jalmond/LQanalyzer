@@ -175,8 +175,7 @@ then
     
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
-    
+    #useskim="DiLep"
     
     njobs=30
     data_lumi="AtoD"
@@ -185,9 +184,7 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("DY50plus")
-
-    #declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus") 
+    declare -a input_samples=("Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "WZ_py" "ZZ_py" "WW_py" )
     #declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE")
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
@@ -203,7 +200,7 @@ then
 
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
+    #useskim="DiLep"
 
     njobs=30
     data_lumi="AtoD"
@@ -228,7 +225,7 @@ if [[ $runfakes  == "true" ]];
     
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
+    #useskim="DiLep"
     loglevel="INFO"
 
     njobs=30
@@ -239,8 +236,7 @@ if [[ $runfakes  == "true" ]];
     
     runnp="True"
     declare -a input_samples=("A" "B" "C" "D") 
-
-
+    
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
 
@@ -266,8 +262,8 @@ if [[ $runflips  == "true" ]];
     logstep=1000
 
     runcf="True"
-    #declare -a input_samples=("A" "B" "C" "D" "DY10to50" "DY50plus" "ttbar")
-    declare -a input_samples=("DY10to50" "DY50plus" "ttbar")
+    declare -a input_samples=("A" "B" "C" "D" )
+    #declare -a input_samples=("DY10to50" "DY50plus" "ttbar")
     
     
     stream="egamma"
@@ -276,7 +272,7 @@ if [[ $runflips  == "true" ]];
     
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_SKchargeflip_dilep_5_3_14.root HNDiElectron_chargeflip_SK*
+    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_SKchargeflip_dilep_5_3_14.root HNDiElectron_chargeflip_*
 fi
 
 

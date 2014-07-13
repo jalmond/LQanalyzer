@@ -37,7 +37,19 @@ void MakeFRRootFile(){
 
   hist_ptcut.push_back("Tight");
   hist_ptcut.push_back("Medium");
-
+  hist_ptcut.push_back("Loosedxy01_100_100");
+  hist_ptcut.push_back("Loosedxy01_009_009");
+  hist_ptcut.push_back("Loosedxy01_009_008");
+  hist_ptcut.push_back("Loosedxy01_009_007");
+  hist_ptcut.push_back("Loosedxy01_009_006");
+  hist_ptcut.push_back("Loosedxy01_009_005");
+  
+  hist_ptcut.push_back("Loosedxy01_009_009_np");
+  hist_ptcut.push_back("Loosedxy01_009_008_np");
+  hist_ptcut.push_back("Loosedxy01_009_007_np");
+  hist_ptcut.push_back("Loosedxy01_009_006_np");
+  hist_ptcut.push_back("Loosedxy01_009_005_np");
+  
   hist_ptcut.push_back("dxy05");
   hist_ptcut.push_back("dxy10");
   hist_ptcut.push_back("dxy15");
@@ -316,6 +328,7 @@ void MakeFRRootFile(){
     eff_rate->Write();
   }
 
+
   for(vector<TString>::iterator it2 = fakes2.begin(); it2!=fakes2.end(); ++it2){
     cout << *it2 << endl;
     if(!CheckFile(fdata))return;
@@ -337,8 +350,42 @@ void MakeFRRootFile(){
     eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
     eff_rate->Write();
   }
+  vector<TString> fakes3;
+  fakes3.push_back("Tight_iso_dr3_b100_e100_pt_eta");
+  fakes3.push_back("Tight_iso_dr3_b090_e090_pt_eta");
+  fakes3.push_back("Tight_iso_dr3_b090_e080_pt_eta");
+  fakes3.push_back("Tight_iso_dr3_b090_e070_pt_eta");
+  fakes3.push_back("Tight_iso_dr3_b090_e060_pt_eta");
+  fakes3.push_back("Tight_iso_dr3_b090_e050_pt_eta");
+  fakes3.push_back("Tight_iso_NPFisodr3_b090_e080_pt_eta");
+  fakes3.push_back("Tight_iso_NPFisodr3_b090_e070_pt_eta");
+  fakes3.push_back("Tight_iso_NPFisodr3_b090_e060_pt_eta");
+  fakes3.push_back("Tight_iso_NPFisodr3_b090_e050_pt_eta");
+  
 
+  for(vector<TString>::iterator it2 = fakes3.begin(); it2!=fakes3.end(); ++it2){
+    cout << *it2 << endl;
+    if(!CheckFile(fdata))return;
+    if(!CheckFile(fmc))return;
 
+    TString denom ="Loosedxy01_pt_eta";
+    TH2F* h_pt_num= (TH2F*)fdata->Get(it2->Data());
+    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
+    CheckHist(h_pt_denom);
+    CheckHist(h_pt_num);
+    TH2F* h_mcpt_num= (TH2F*)fmc->Get(it2->Data());
+    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
+    CheckHist(h_mcpt_denom);
+    CheckHist(h_mcpt_num);
+    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_Loosedxy01_" + *it2).Data()); 
+    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
+    eff_rate->Add(h_mcpt_num,-1.);
+    hratedenom->Add(h_mcpt_denom, -1.);
+    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
+    eff_rate->Write();
+  }
+
+  
 }
 
   

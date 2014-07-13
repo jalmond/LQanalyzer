@@ -199,7 +199,7 @@ void MakeCutFlow(string type){
     if(cutname=="END") break;
     cut_label.push_back(cutname);
     cuts.push_back((cutname+ hist +"_" + cutname).c_str());    
-    cout << "Making cutflow for SingleLooseEl/h_leadingElectronPt"<< cutname << endl;
+    cout << "Making cutflow for " << hist << " " << cutname << endl;
   }
 
  
@@ -262,7 +262,9 @@ void MakeCutFlow(string type){
       totalerrup += (mapit_up->second*mapit_up->second); 
       totalerrdown += (mapit_down->second*mapit_down->second); 
       total_staterr += mapit_stat->second*mapit_stat->second;
-      cout << mapit->first << " background = " << mapit->second << " +- " << mapit_stat->second << " + " << mapit_up->second << " - " << mapit_down->second <<  endl;      
+      TString sample = mapit->first;
+      if(sample.Contains("t#bar{t}+V")) sample = "t$\bar{t}$+V";
+      cout << sample << " background = " << mapit->second<< " +- " << mapit_stat->second << " + " << mapit_up->second << " - " << mapit_down->second <<  endl;      
    
       
     }
@@ -323,8 +325,10 @@ void MakeCutFlow(string type){
       map<TString,float>::iterator mapit_stat;
       mapit_stat = samples_numbers_staterr.find(mapit->first);
       
+      TString sample = mapit->first;
+      if(sample.Contains("t#bar{t}+V")) sample = "t$\\bar{t}$+V";
       if(mapit->second!=0.0){
-	ofile << mapit->first + "&" <<  mapit->second << "& $\\pm$& "  << mapit_stat->second <<  "&$^{+" <<  mapit_up->second << "}_{-" <<  mapit_down->second  << "}$" ; 
+	ofile << sample + "&" <<  mapit->second << "& $\\pm$& "  << mapit_stat->second <<  "&$^{+" <<  mapit_up->second << "}_{-" <<  mapit_down->second  << "}$" ; 
 	ofile  <<  "\\"  << "\\" << endl;	   
       }
     }
@@ -479,7 +483,6 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
 void CheckHist(TH1* h){
   if(!h) {
     cout << "Not able to find data histogram" << endl;
-    exit(1);
   }
 }
 
@@ -518,6 +521,11 @@ vector<pair<TString,float> >  InitSample (TString sample){
     {
       list.push_back(make_pair("QCD",0.50));
     }
+
+  if(sample.Contains("ttv")){
+    list.push_back(make_pair("ttW",0.3));
+    list.push_back(make_pair("ttZ",0.3));
+  }
   
   
   //////// Diboson ////////
@@ -540,14 +548,14 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   
   if(sample.Contains("wz_mg")){
-    list.push_back(make_pair("WZtollqq_mg",0.15));
-    list.push_back(make_pair("WZtoqqln_mg",0.15));
+    //list.push_back(make_pair("WZtollqq_mg",0.15));
+    //list.push_back(make_pair("WZtoqqln_mg",0.15));
     list.push_back(make_pair("WZtollln_mg",0.15));
   }
   
   if(sample.Contains("zz_mg")){
-    list.push_back(make_pair("ZZtollnn_mg",0.15));
-    list.push_back(make_pair("ZZtollqq_mg",0.15));
+    //list.push_back(make_pair("ZZtollnn_mg",0.15));
+    //list.push_back(make_pair("ZZtollqq_mg",0.15));
     list.push_back(make_pair("ZZtollll_mg",0.15));
   }
   
@@ -576,12 +584,10 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   
   //////// SS WW /////////  
-  if(sample.Contains("ss")){         
+  if(sample.Contains("ss_mg")){         
     list.push_back(make_pair("SSWmWm",0.22));              
     list.push_back(make_pair("SSWpWp",0.22));              
-    list.push_back(make_pair("ttZ",0.22));
-    list.push_back(make_pair("ttW",0.22));
-    list.push_back(make_pair("HtoZZ",0.22));
+    //list.push_back(make_pair("HtoZZ",0.22));
   }
   
   if(sample.Contains("nonprompt")){
@@ -633,8 +639,10 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     
     CheckSamples( it->first.first.size() );
 
-    TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(0).first + filepostfix).Data());
-    if(!file) cout << "Could not open " << fileloc+ fileprefix + it->first.first.at(0).first + filepostfix << endl;
+
+    int isample=0;
+    TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix).Data());
+    if(!file) cout << "Could not open " << fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix << endl;
     
     gROOT->cd();
     TDirectory* tempDir = 0;
@@ -653,14 +661,21 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     tempDir->cd();
 
     TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
-    if(!h_tmp) cout << "Could not open hist " << clonename << endl;
+
+    while(!h_tmp) {
+      isample++;
+      gROOT->cd();
+      file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix).Data());
+      tempDir->cd();
+      h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
+    }
     
     CheckHist(h_tmp);
 
-    if(debug)cout <<  it->second <<  "  contribution " << 1 << "/" << it->first.first.size()  << " is from " << fileprefix + it->first.first.at(0).first + filepostfix <<" : Integral = " <<h_tmp->Integral() << " " << fileloc << endl;
+    if(debug)cout <<  it->second <<  "  contribution " << 1 << "/" << it->first.first.size()  << " is from " << fileprefix + it->first.first.at(isample).first + filepostfix <<" : Integral = " <<h_tmp->Integral() << " " << fileloc << endl;
     
     
-    for(unsigned int i=1; i < it->first.first.size(); i++){	    
+    for(unsigned int i=isample+1; i < it->first.first.size(); i++){	    
       clonename+="A";
              
       origDir->cd();
@@ -669,11 +684,11 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
 
       tempDir->cd();
       TH1* h_loop = dynamic_cast<TH1*> ((file_loop->Get(name.c_str()))->Clone(clonename.c_str()));	    	    	    
+      if(!h_loop) continue;
       CheckHist(h_loop);
       cout << h_tmp << " " << h_loop   << endl;
       h_tmp->Add(h_loop);	  	    	    
-      
-      
+            
       if(debug)cout <<  it->second <<  "  contribution " <<i+1 <<"/" << it->first.first.size()  << " is from ExampleAnalyzer_SK" << it->first.first.at(i).first << ".NTUP_SMWZ.Reco.root : Integral = " <<h_loop->Integral() << " sum integral = " << h_tmp->Integral()    << endl;
       file_loop->Close();
     }	  	  
@@ -689,7 +704,6 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
       stack->SetName( (string("s_") + name).c_str() );
       stack->SetTitle( (string("s_") + name).c_str() );
       SetTitles(h_tmp, name);
-
   
     }//stack empt   
     
@@ -968,14 +982,24 @@ float GetStatError(TString cut, vector<pair<TString,float> > samples){
 
   TString path  = mcloc;
   
-  TFile* f0 =  TFile::Open((path+ fileprefix + samples.at(0).first +  filepostfix).Data());  
-  TH1* h_tmp = dynamic_cast<TH1*> ((f0->Get(cut.Data()))->Clone());
-  float stat_error(-99999.);
+  int isample=0;
+  TFile* f0 =  TFile::Open((path+ fileprefix + samples.at(isample).first +  filepostfix).Data());  
 
-  for(unsigned int i=1; i < samples.size(); i++){
+  TH1* h_tmp=NULL;
+  if((f0->Get(cut.Data()))){
+    h_tmp = dynamic_cast<TH1*> ((f0->Get(cut.Data()))->Clone());
+  }
+    float stat_error(-99999.);
+
+  while(!h_tmp){
+    isample++;
+    f0 =  TFile::Open((path+ fileprefix + samples.at(isample).first +  filepostfix).Data());
+    if((f0->Get(cut.Data()))) h_tmp = dynamic_cast<TH1*> ((f0->Get(cut.Data()))->Clone());
+  }
     
-    
+  for(unsigned int i=isample+1; i < samples.size(); i++){
     TFile* f =  TFile::Open((path+ fileprefix + samples.at(i).first +  filepostfix).Data());
+    if(!f->Get(cut.Data())) continue;
     TH1* h = dynamic_cast<TH1*> ((f->Get(cut.Data()))->Clone());
     h_tmp->Add(h);
     f->Close();
@@ -1002,17 +1026,17 @@ float GetIntegral(TString cut, TString isample, TString type){
     
   if(!((f->Get(cut.Data())))){
     cout << "Histogram " << cut << " in "  << mcloc+  fileprefix + isample + filepostfix << " not found" << endl;
-    exit(0);
+    return 0.;
   }
+  
 
   TH1* h = dynamic_cast<TH1*> ((f->Get(cut.Data())->Clone()));
   
   
   if(!h) {
     cout << "Histogram " << cut << " in "  <<  (mcloc + fileprefix + isample + filepostfix) << " not found" << endl;
-    exit(1);
+    return 0.;
   }
-  
   float integral = h->Integral();
  
   f->Close();
@@ -1032,9 +1056,10 @@ float GetError(TString cut, TString isample, TString type){
   
   if(!h) {
     cout << "Histogram " << cut << " in "  << (path+ fileprefix + isample + filepostfix) << " not found" << endl;
-    exit(1);
+    return 0.;
   }
   
+      
   float err = Error(h);
   
   f->Close();
@@ -1272,11 +1297,12 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   /// QCD samples
   vector<pair<TString,float> > QCD = InitSample("qcd");
   /// ALL same sign processes
-  vector<pair<TString,float> > ss = InitSample("ss");
+  vector<pair<TString,float> > ss_mg = InitSample("ss_mg");
 
   vector<pair<TString,float> > vvv = InitSample("vvv");
-  vector<pair<TString,float> > vvv = InitSample("vv");
-  
+  vector<pair<TString,float> > vv = InitSample("vv");
+  vector<pair<TString,float> > ttv   = InitSample("ttv");
+
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
@@ -1293,7 +1319,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="wz_mg")samples.push_back(make_pair(make_pair(wz_mg,wzcol),"WZ"));
     if(listofsamples.at(i) =="zz_pow")samples.push_back(make_pair(make_pair(zz_pow,zzcol),"ZZ"));
 
-    if(listofsamples.at(i) =="ss")samples.push_back(make_pair(make_pair(ss,sscol),"SS"));
+    if(listofsamples.at(i) =="ss_mg")samples.push_back(make_pair(make_pair(ss_mg,sscol),"SS"));
     if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
     if(listofsamples.at(i) =="dyplusbb")samples.push_back(make_pair(make_pair(zplusbb,zcol),"DY"));
     if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
