@@ -91,23 +91,23 @@ then
     
     cycle="HNElectronOptimisation"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
     
     
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000
     
-    #declare -a input_samples=( "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ")
-    declare -a input_samples=( "DY50plus")
+    declare -a input_samples=( "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ")
+    #declare -a input_samples=( "DY50plus")
     outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    #source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/  HNElectronOptimisation_mc_dilep_5_3_14.root HNElectronOptimisation_SK*
-    #mv ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/HNElectronOptimisation_mc_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
+    source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/  HNElectronOptimisation_mc_dilep_5_3_14.root HNElectronOptimisation_SK*
+    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/HNElectronOptimisation_mc_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
 fi
 
 if [[ $runcf  == "true" ]];
@@ -118,18 +118,17 @@ then
 
     cycle="HNElectronOptimisation"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
 
 
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000
 
-    declare -a input_samples=( "DY10to50")
-    #"DY50plus" "ttbar")
+    declare -a input_samples=( "DY10to50" "DY50plus" "ttbar")
 
     outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/CF/"
     ### submit this configured job (uses bin/submit.sh)
@@ -148,7 +147,7 @@ if [[ $rundata  == "true" ]];
 
     cycle="HNElectronOptimisation"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
 
     njobs=30
     data_lumi="AtoD"
@@ -173,18 +172,17 @@ if [[ $runfakes  == "true" ]];
     
     cycle="HNElectronOptimisation"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
     loglevel="INFO"
 
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     
     loglevel="INFO"
     logstep=1000
     
     runnp="True"
-    declare -a input_samples=("A")
-# "B" "C" "D") 
+    declare -a input_samples=("A" "B" "C" "D") 
     
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/NP/"
