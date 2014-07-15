@@ -87,7 +87,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetPt(10); 
   eventbase->GetElectronSel()->SetEta(5.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
-  eventbase->GetElectronSel()->SetPt(15);
+  eventbase->GetElectronSel()->SetPt(10);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
@@ -96,6 +96,9 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   /// select events  with 2 leptons with pt > 15
   if(! ((nlep > 1) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   
+  if(skim_electrons.size() > 0) {
+    if(skim_electrons.at(0).Pt() < 15.)  throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  } 
 
   FillCutFlow("DiLep", 1);
 

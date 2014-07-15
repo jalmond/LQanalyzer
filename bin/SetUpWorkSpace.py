@@ -21,6 +21,7 @@ if not LQANALYZER_DIR == "None" :
 		os.system("mkdir " + outfiledir)
 		print "Making data/output directory in $LQANALYZER_DIR"
 
+		
 	GetFiles(rootfiledir)
 	
 else:

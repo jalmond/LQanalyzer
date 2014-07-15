@@ -40,17 +40,18 @@ class AnalyzerCore : public LQCycleBase {
   bool IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
   bool IsTight(snu::KElectron electron, double rho);
   bool IsTight(snu::KMuon muon);
-  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip=false);
+  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   int NBJet(std::vector<snu::KJet> jets);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KElectron> electrons);
   float CFRate(snu::KElectron el);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
-  void ShiftElectronEnergy(std::vector<snu::KElectron> el);
+  std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
   float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets ,int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut);
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut ,int nbjet, float ht);
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut );
   float Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool  usetight,TString cut, int eventtype, bool setr1);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho);

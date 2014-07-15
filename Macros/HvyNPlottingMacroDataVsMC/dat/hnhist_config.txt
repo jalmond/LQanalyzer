@@ -1,12 +1,14 @@
+h_eemass 1 0. 200.
+h_leadingElectronPt 1 10. 100.
+h_secondElectronPt 1 10. 70.
+h_Njets 1 0 6
+END
 h_leadJetdR  4 0. 5.
 h_leadElectrondR 5 0. 5.
-h_eemass 1 0. 200.
 h_Njets 1 0 6
 h_Nbjets 1 0 5
 h_MET 4 0. 400.
 h_electrons_eta 2 -4. 4.
-h_leadingElectronPt 2 10. 100.
-h_secondElectronPt 2 10. 70.
 h_HT 2 0. 1000.
 h_bTag 1 -1. 1.
 h_leadingJetPt 5 0. 200.

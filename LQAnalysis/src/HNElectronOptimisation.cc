@@ -116,7 +116,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   
   
   /// Get Prompt electrons/CF
-  std::vector<snu::KElectron> electronAnalysisColl =GetTruePrompt(_electronAnalysisColl);
+  std::vector<snu::KElectron> electronAnalysisColl =GetTruePrompt(_electronAnalysisColl, false,false);
   
   std::vector<snu::KElectron> electronVetoColl;
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
@@ -126,9 +126,9 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   
   std::vector<snu::KElectron> _electronLooseColl_medium;
   eventbase->GetElectronSel()->HNLooseElectronSelection(false,_electronLooseColl_medium);
-  std::vector<snu::KElectron> electronLooseColl_medium= GetTruePrompt(_electronLooseColl_medium, true);
+  std::vector<snu::KElectron> electronLooseColl_medium= GetTruePrompt(_electronLooseColl_medium, true,false);
 
-  std::vector<snu::KElectron> electronLooseColl = GetTruePrompt(_electronLooseColl, true);
+  std::vector<snu::KElectron> electronLooseColl = GetTruePrompt(_electronLooseColl, true,false);
 
 
   std::vector<snu::KElectron>  electronLooseColl1;
@@ -1913,9 +1913,13 @@ bool HNElectronOptimisation::CheckSignalRegion(  std::vector<snu::KElectron> ele
 
   snu::KParticle jj = jets.at(0) + jets.at(1) ;
   if(jj.M() > 120.) return false;
+  if(jj.M() < 40.) return false;
+
+  if(electrons.at(0).DeltaR(electrons.at(1)) > 3.5) return false;
+  if(eventbase->GetEvent().PFSumET() < 200.) return false;;
 
   if((ee.M() > 80.) && (ee.M() < 100.) ) return false;
-  if(eventbase->GetEvent().PFMET() > 50.) return false;
+  if(eventbase->GetEvent().PFMET() > 35.) return false;
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){

@@ -53,6 +53,11 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_electrons_phi"]       =     new TH1F("h_electrons_phi_"     + name,"#phi distribution of the two electrons",140,-3.5,3.5);
   map_sig["h_electrons_scphi"]     =     new TH1F("h_electrons_scphi_"   + name,"#phi distribution of the two electrons",50,-3,3);
 
+  map_sig["h_Electron_fbrem"]      =     new TH1F("h_Electron_fbrem_"    + name, "",100, -1., 2.);
+  map_sig["h_Electron_nbrem"]      =     new TH1F("h_Electron_nbrem_"    + name, "", 5,0., 5.);
+  map_sig["h_Electron_dist"]       =     new TH1F("h_Electron_dist_"    + name, "",100, -5., 5.);
+  map_sig["h_Electron_cottheta"]   =     new TH1F("h_Electron_cottheta_" + name,"",100,-1., 1.);
+ 
   map_sig["h_electron_hoe_barrel"] =     new TH1F("h_electron_hoe_barrel_" +name,"Hoe barrel",  50, 0., 0.5);
   map_sig["h_electron_hoe_endcap"] =     new TH1F("h_electron_hoe_endcap_" +name,"Hoe endcap",  50, 0., 0.5);
  
@@ -374,6 +379,13 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float hcaliso = elit->HCalIsoDR03();
     float iso = trkiso + hcaliso + ecaliso;
    
+    Fill("h_Electron_fbrem", elit->FBrem(),weight);
+    Fill("h_Electron_nbrem", elit->NBrems() ,weight);
+    Fill("h_Electron_dist", elit->Dist() ,weight);
+    Fill("h_Electron_cottheta", elit->CotTheta() ,weight);
+    
+    
+
     Fill("h_ElectronPt", elit->Pt(),weight);
     Fill("h_ElectronIso", el_iso,weight);
     Fill("h_ElectronRelIso", el_iso/elit->Pt(),weight);
@@ -381,6 +393,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       Fill("h_secondElectronPt", elit->Pt(),weight);
       Fill("h_secondElectronIso", el_iso/elit->Pt(),weight);
       Fill("h_secondElectronNonPFIso", iso/elit->Pt(),weight);
+      Fill("h_secondElectronEta",elit->Eta(),weight);
     }
     if(iel==0){
       Fill("h_leadingElectronEta",elit->Eta(),weight);

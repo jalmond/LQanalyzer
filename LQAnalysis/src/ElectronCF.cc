@@ -204,7 +204,7 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   
   */
   
-  std::vector<snu::KElectron> electronTightColl =  GetTruePrompt(_electronTightColl);
+ std::vector<snu::KElectron> electronTightColl =  GetTruePrompt(_electronTightColl, true, false);
 
   
   if(SameCharge(electronTightColl)){
