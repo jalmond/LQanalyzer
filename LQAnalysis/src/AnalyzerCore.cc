@@ -787,7 +787,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).BtagProb() > 0.679) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   return nbjet;
 }

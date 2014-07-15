@@ -162,7 +162,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   // TOP Control region os/SS
   int nbjet=0;
   for(unsigned int ij=0; ij <jetColl_lepveto_mva.size(); ij++){
-    if(jetColl_lepveto_mva.at(ij).BtagProb() > 0.679) nbjet++;
+    if(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
 
   // Remove overlapping particles only need electron overlap in ee channel
@@ -333,6 +333,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   /// Remove events with 3 veto leptons
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;  
+  
+  if(muonTightColl.size() != 0) {
+    cout << "Number of muons (tight = " << muonTightColl.size() << endl;
+    cout << "Number of muons veto = " << muonVetoColl.size() << endl;
+    cout << "Number of el veto = " << electronVetoColl.size() << endl;
+    cout << "Number of el tight = " << electronAnalysisColl.size() << endl;
+  }
   FillEventCutFlow("SS_lepveto",weight);
   
   FillCLHist(sighist, "SSloose", eventbase->GetEvent(), muonTightColl, electronAnalysisColl,jetColl_lepveto_mva, weight);
@@ -446,7 +453,7 @@ void HNDiElectron::CheckSignalRegion(  std::vector<snu::KElectron> electrons, st
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).BtagProb() > 0.679) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return;
 
@@ -506,7 +513,7 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).BtagProb() > 0.679) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return false;
 
@@ -556,7 +563,7 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).BtagProb() > 0.679) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return false;
 
@@ -589,7 +596,7 @@ bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> elect
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).BtagProb() > 0.679) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return false;
 

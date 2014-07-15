@@ -229,7 +229,7 @@ if [[ $runfakes  == "true" ]];
     useskim="DiLep"
     loglevel="INFO"
 
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     
     loglevel="INFO"
