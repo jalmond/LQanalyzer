@@ -42,9 +42,9 @@ fi
 if [[ $1  == "DATA" ]];
 then
     runMC=false
-    runDoubleMuon=true
+    runDoubleMuon=false
     runDoubleElectron=true
-    runElectronMuon=true
+    runElectronMuon=false
     runSingleMuon=false
     runSingleElectron=false
 fi    
@@ -75,11 +75,12 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-
-    declare -a input_samples=("DY50plus")
-    # "DY10to50" "ttbar" "WZ_py" "ZZ_py" "WW_py" "Wjets" "QCD_mumu" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW"  "Wbb" "Zbb" "DYee" "DYmm" "DYtt" "ggHtoZZ"  "Zgamma" "WgammaE" "WW_mg" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "ZZtoeemm" "ZZtoeett" "ZZtommtt" "ZZtommmm" "ZZtoeeee" "ZZtotttt" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "HtoTauTau" "HtoWW" "WgammaMu" "WgammaTau" "WWW" "WWG" "HtoZZ" "HtoWW" "HtoTauTau" "QCD_350_EM" "QCD_350_BCtoE")
     
-   
+    #declare -a input_samples=("DY10to50" "ttbar" "Wjets")
+    #declare -a input_samples=("WZ_py" "ZZ_py" "WW_py" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW"  "Wbb" "Zbb" "DYee" "DYmm" "DYtt" "ggHtoZZ"  "Zgamma" "WgammaE" "WW_mg" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "ZZtoeemm" "ZZtoeett" "ZZtommtt" "ZZtommmm" "ZZtoeeee" "ZZtotttt" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" 
+    #declare -a input_samples=("QCD_250_350_EM" "QCD_250_350_BCtoE" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "HtoTauTau" "HtoWW" "WgammaMu" "WgammaTau" "WWW" "WWG" "HtoZZ" "HtoWW" "HtoTauTau" "QCD_350_EM" "QCD_350_BCtoE" "WW_dp")
+    declare -a input_samples=("WW_dp")
+    
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA
@@ -94,7 +95,8 @@ then
     logstep=1000
     
     stream="egamma"
-    declare -a input_samples=("A" "B" "C" "D")
+    declare -a input_samples=("B" "C" "D")
+   
     source submit.sh
 fi    
 

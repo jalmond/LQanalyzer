@@ -424,9 +424,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  
 	  if(dr < 0.4){
 	    
-	    m_logger << DEBUG << "Truth Matched to electron[GenParticle]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenParticlePt->at(g) << "/" << GenParticleEta->at(g) << "/" << GenParticlePhi->at(g) << "/" <<  GenParticleStatus->at(g) << "/" << GenParticlePdgId->at(g) << "/" << GenParticleMotherIndex->at(g) << LQLogger::endmsg; 
-	    if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g)) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(g)) << LQLogger::endmsg;
-	    if(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g)) != -1)  m_logger << DEBUG << "Mother/Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g))) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g))) << LQLogger::endmsg;
+	    //m_logger << DEBUG << "Truth Matched to electron[GenParticle]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenParticlePt->at(g) << "/" << GenParticleEta->at(g) << "/" << GenParticlePhi->at(g) << "/" <<  GenParticleStatus->at(g) << "/" << GenParticlePdgId->at(g) << "/" << GenParticleMotherIndex->at(g) << LQLogger::endmsg; 
+	    //if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g)) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(g)) << LQLogger::endmsg;
+	    //if(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g)) != -1)  m_logger << DEBUG << "Mother/Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g))) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(GenParticleMotherIndex->at(g))) << LQLogger::endmsg;
 	    
 	    
 	    /// First check status 3 particles (this is just a check and if status 1 particle is matched it will overright it)
