@@ -864,7 +864,7 @@ else:
         if not os.path.exists(SKTreeOutput):
             os.system("mkdir " + SKTreeOutput)
         if not mc:
-            Finaloutputdir = SKTreeOutput + "DataDiLep/"
+            Finaloutputdir = SKTreeOutput + "DataDiLep1510/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
             if original_channel =="egamma":
@@ -883,7 +883,7 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
         else:
-            Finaloutputdir = SKTreeOutput + "MCDiLep/"
+            Finaloutputdir = SKTreeOutput + "MCDiLep1510/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
             Finaloutputdir +=  original_sample + "/"
