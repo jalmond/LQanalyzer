@@ -519,7 +519,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   if(sample.Contains("qcd"))
     {
-      list.push_back(make_pair("QCD",0.50));
+      list.push_back(make_pair("QCDEl",0.50));
     }
 
   if(sample.Contains("ttv")){
@@ -546,16 +546,27 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("ZZ_py",0.15));
     list.push_back(make_pair("WW_py",0.15));
   }
-  
+  if(sample.Contains("vv_mg")){
+    list.push_back(make_pair("WZtollqq_mg",0.15));
+    list.push_back(make_pair("WZtoqqln_mg",0.15));
+    list.push_back(make_pair("WZtollln_mg",0.15));
+    list.push_back(make_pair("ZZtollnn_mg",0.15));
+    list.push_back(make_pair("ZZtollqq_mg",0.15));
+    list.push_back(make_pair("ZZtollll_mg",0.15));
+    list.push_back(make_pair("WW_mg",0.15));
+    list.push_back(make_pair("WgammaE",0.22));
+    list.push_back(make_pair("WgammaTau",0.22));
+  }
+
   if(sample.Contains("wz_mg")){
-    //list.push_back(make_pair("WZtollqq_mg",0.15));
-    //list.push_back(make_pair("WZtoqqln_mg",0.15));
+    list.push_back(make_pair("WZtollqq_mg",0.15));
+    list.push_back(make_pair("WZtoqqln_mg",0.15));
     list.push_back(make_pair("WZtollln_mg",0.15));
   }
   
   if(sample.Contains("zz_mg")){
-    //list.push_back(make_pair("ZZtollnn_mg",0.15));
-    //list.push_back(make_pair("ZZtollqq_mg",0.15));
+    list.push_back(make_pair("ZZtollnn_mg",0.15));
+    list.push_back(make_pair("ZZtollqq_mg",0.15));
     list.push_back(make_pair("ZZtollll_mg",0.15));
   }
   
@@ -587,9 +598,27 @@ vector<pair<TString,float> >  InitSample (TString sample){
   if(sample.Contains("ss_mg")){         
     list.push_back(make_pair("SSWmWm",0.22));              
     list.push_back(make_pair("SSWpWp",0.22));              
-    //list.push_back(make_pair("HtoZZ",0.22));
+    list.push_back(make_pair("WW_dp",0.22));              
   }
-  
+  if(sample.Contains("higgs")){
+    //list.push_back(make_pair("HtoZZ",0.22));
+    list.push_back(make_pair("HtoTauTau",0.22));
+    list.push_back(make_pair("HtoWW",0.22));
+    list.push_back(make_pair("ggHtoZZ",0.22));
+  }
+  if(sample.Contains("vvv")){
+    list.push_back(make_pair("WWW",0.22));
+    list.push_back(make_pair("TTWW",0.22));
+    list.push_back(make_pair("TTG",0.22));
+    list.push_back(make_pair("ZZZ",0.22));
+    list.push_back(make_pair("WWZ",0.22));
+    list.push_back(make_pair("WWG",0.22));
+  }
+  if(sample.Contains("vgamma")){
+    list.push_back(make_pair("Wgamma",0.22));
+    list.push_back(make_pair("Zgamma",0.22));
+    
+  }
   if(sample.Contains("nonprompt")){
     list.push_back(make_pair("nonprompt",0.5));
   }
@@ -1246,7 +1275,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     
   cout << " /// MakeDataMCComplots::SetUpConfig " << endl;
   /// colours of histograms
-  int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0),  ttvcol(0), higgscol(0), vvvcol(0), vvcol(0);
+  int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0),  ttvcol(0), higgscol(0), vvvcol(0), vvcol(0), vgammacol(0);
   
   // Get list of cuts to plot  
   ifstream colour_name_file("Config/colour.txt");
@@ -1273,6 +1302,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(histname=="ttvcol") ttvcol =col;
     if(histname=="vvvcol") vvvcol =col;
     if(histname=="vvcol") vvcol =col;
+    if(histname=="vgammacol") vgammacol =col;
     
   }
   
@@ -1286,6 +1316,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > wz_mg = InitSample("wz_mg");
   vector<pair<TString,float> > zz_mg = InitSample("zz_mg");
   vector<pair<TString,float> > zz_pow = InitSample("zz_pow");
+  vector<pair<TString,float> > vv_mg = InitSample("vv_mg");
+  
   // Zjet
   vector<pair<TString,float> > z = InitSample("dy_");
   // Zjet + Zbb
@@ -1302,6 +1334,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > vvv = InitSample("vvv");
   vector<pair<TString,float> > vv = InitSample("vv");
   vector<pair<TString,float> > ttv   = InitSample("ttv");
+  vector<pair<TString,float> > higgs   = InitSample("higgs");
+  vector<pair<TString,float> > vgamma   = InitSample("vgamma");
 
 
   /// NP is nonprompt
@@ -1318,6 +1352,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="zz_mg")samples.push_back(make_pair(make_pair(zz_mg,zzcol),"ZZ"));
     if(listofsamples.at(i) =="wz_mg")samples.push_back(make_pair(make_pair(wz_mg,wzcol),"WZ"));
     if(listofsamples.at(i) =="zz_pow")samples.push_back(make_pair(make_pair(zz_pow,zzcol),"ZZ"));
+    if(listofsamples.at(i) =="vv_mg")samples.push_back(make_pair(make_pair(vv_mg,vvcol),"VV"));
 
     if(listofsamples.at(i) =="ss_mg")samples.push_back(make_pair(make_pair(ss_mg,sscol),"SS"));
     if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
@@ -1327,13 +1362,11 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
     if(listofsamples.at(i) =="wjetplusbb")samples.push_back(make_pair(make_pair(wplusbb,wcol),"Wjet"));
 
-    if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
     if(listofsamples.at(i) =="vvv")samples.push_back(make_pair(make_pair(vvv,vvvcol),"VVV"));
-    if(listofsamples.at(i) =="vv")samples.push_back(make_pair(make_pair(vv,vvcol),"VV"));
+    if(listofsamples.at(i) =="vgamma")samples.push_back(make_pair(make_pair(vgamma,vgammacol),"Vgamma"));
+    if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs"));
     
-
-    if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"Fake Background"));
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"nonprompt"));   
     if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"chargeflip"));   

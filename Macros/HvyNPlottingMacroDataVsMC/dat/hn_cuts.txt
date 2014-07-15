@@ -1,10 +1,8 @@
-SingleEl_CR
-SingleEl_bjetCR
+LowMassRegion_mvajet
 END
-TriElCR
-TriEl
-TriEl_jetmva
-ZZ
+MediumMassRegion
+END
+LowMassRegion_mvajet
 END
 SSee
 SSee_noZ
@@ -13,11 +11,5 @@ SSee_1jet_noZ
 SSee_1jet_Z
 SSee_0jet_noZ
 SSee_0jet_Z
-SSee_gt0jet_noZ
 SSee_DiJet
 END
-TriEl
-ZZ
-END
-#SSDiElectronTight
-#SSSR0

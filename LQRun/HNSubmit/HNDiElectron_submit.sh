@@ -157,7 +157,7 @@ then
     loglevel="INFO"
     logstep=1000
 
-    #declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
+    #declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 "HNee500" "HNee600" "HNee700")
     declare -a input_samples=("HNee100")
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
@@ -175,17 +175,18 @@ then
     
     cycle="HNDiElectron"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
     
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "WZ_py" "ZZ_py" "WW_py" )
-    #declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE")
+    declare -a input_samples=("HtoWW")
+    #declare -a input_samples=("ggHtoZZ" "HtoTauTau" "HtoWW")
+    #declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "Zbb" "WW_mg" "ggHtoZZ" "HtoTauTau" "HtoWW" "WgammaE" "WgammaTau" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WZ_py" "ZZ_py" "WW_py" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_30-40_EM2" "QCD_40_EM2")
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)
@@ -200,7 +201,7 @@ then
 
     cycle="HNDiElectron"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
 
     njobs=30
     data_lumi="AtoD"
@@ -225,7 +226,7 @@ if [[ $runfakes  == "true" ]];
     
     cycle="HNDiElectron"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
     loglevel="INFO"
 
     njobs=30
