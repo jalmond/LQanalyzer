@@ -120,7 +120,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl, false);
   
   /// Get Prompt electrons/CF 
-  std::vector<snu::KElectron> electronAnalysisColl_temp =  GetTruePrompt(_electronAnalysisColl, false, false); // removes CF and fake in mc
+  std::vector<snu::KElectron> electronAnalysisColl_temp =  GetTruePrompt(_electronAnalysisColl, false, true); // removes CF and fake in mc
   std::vector<snu::KElectron> electronAnalysisColl =ShiftElectronEnergy(electronAnalysisColl_temp, k_running_chargeflip);
   
   
@@ -130,12 +130,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   std::vector<snu::KElectron> _electronLooseColl;
   eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(_electronLooseColl, false);
-    /// Loose electron sample (tight  - iso + looseiso) this removes fake el from jet/photon
-  std::vector<snu::KElectron>  electronLooseColl = GetTruePrompt(_electronLooseColl, false, false);
+  /// Loose electron sample (tight  - iso + looseiso) this removes fake el from jet/photon
+  std::vector<snu::KElectron>  electronLooseColl = GetTruePrompt(_electronLooseColl, false, true);
+  
   
   std::vector<snu::KElectron>  electronNoCutColl;
   eventbase->GetElectronSel()->Selection(electronNoCutColl);
- 
+  
   /// MUONS
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
@@ -145,6 +146,32 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->Selection(muonNoCutColl);
 
   
+  if(SameCharge(electronNoCutColl)){
+
+    if(!(electronNoCutColl.at(0).GetType()== 0 || electronNoCutColl.at(0).GetType()== 7 )) {
+      if(electronNoCutColl.at(0).GetType()==6){
+        FillHist("Wgamma_el_iso",electronNoCutColl.at(0).RelIso03(eventbase->GetEvent().JetRho() ,electronNoCutColl.at(0).Pt()), weight  , 0., 0.6, 60);
+        FillHist("Wgamma_el_dxy",fabs(electronNoCutColl.at(0).dxy()) , weight  ,0., 0.1, 100);
+      }
+    }
+    else {
+      FillHist("W_el_iso",electronNoCutColl.at(0).RelIso03(eventbase->GetEvent().JetRho() ,electronNoCutColl.at(0).Pt())  ,weight  , 0., 0.6, 60);
+      FillHist("W_el_dxy",fabs(electronNoCutColl.at(0).dxy())  ,weight  ,0., 0.1, 100);
+    }
+
+    if(!(electronNoCutColl.at(1).GetType()== 0 || electronNoCutColl.at(1).GetType()==7 )) {
+      if(electronNoCutColl.at(1).GetType()==6){
+        FillHist("Wgamma_el_iso",electronNoCutColl.at(1).RelIso03(eventbase->GetEvent().JetRho() ,electronNoCutColl.at(1).Pt())  , weight  ,0., 0.6, 60);
+        FillHist("Wgamma_el_dxy",fabs(electronNoCutColl.at(1).dxy()) , weight  ,0., 0.1, 100);
+      }
+    }
+    else{
+      FillHist("W_el_iso",electronNoCutColl.at(1).RelIso03(eventbase->GetEvent().JetRho() ,electronNoCutColl.at(1).Pt())  , weight  ,0., 0.6, 60);
+      FillHist("W_el_dxy",fabs(electronNoCutColl.at(1).dxy()) , weight  ,0., 0.1, 100);
+    }
+  }
+
+
 
   /// JETS
   std::vector<snu::KJet> jetColl_lepveto;
@@ -324,6 +351,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     if(electronAnalysisColl.at(0).Charge() != electronAnalysisColl.at(1).Charge()) return;
   }
   
+
+
+  
   ///// NOW OS event is weighted for CF sample
 
   FillEventCutFlow("SSDiEl",weight);
@@ -333,6 +363,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   /// Remove events with 3 veto leptons
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;  
+  if(muonVetoColl.size() !=0) return;
   
   if(muonTightColl.size() != 0) {
     cout << "Number of muons (tight = " << muonTightColl.size() << endl;
