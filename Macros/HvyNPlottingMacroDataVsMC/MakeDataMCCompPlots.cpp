@@ -1,6 +1,8 @@
 //// Code makes directory of histograms and cutflow. 
 #include "MakeDataMCCompPlots.h"
-
+#include "Math/QuantFuncMathCore.h"
+#include "TMath.h"
+#include "TGraphAsymmErrors.h"
 
 int main(int argc, char *argv[]) {
   
@@ -1415,12 +1417,42 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
 
   cout << "Scaling data by " << scale << endl;
   if(usedata){
-    hdata->Draw("p");
+    hdata->Draw("9pX0");
     hdata->GetYaxis()->SetTitleOffset(1.5);
-    mcstack.at(0)->Draw("HIST same");
-    hdata->Draw("p same");
+    mcstack.at(0)->Draw("HIST9same");
+    hdata->Draw("9samepX0");
     hdata->Draw("axis same");
-    errorband->Draw("E2same");
+    //errorband->Draw("9E2same");
+
+    /// Draw data again
+    const double alpha = 1 - 0.6827;
+    TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata);
+    for (int i = 0; i < g->GetN(); ++i) {
+      int N = g->GetY()[i];
+      double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
+      double U =  (N==0) ?  ( ROOT::Math::gamma_quantile_c(alpha,N+1,1) ) :
+	( ROOT::Math::gamma_quantile_c(alpha/2,N+1,1) );
+      if ( N!=0 ) {
+	g->SetPointEYlow(i, N-L );
+	g->SetPointEXlow(i, 0);
+	g->SetPointEYhigh(i, U-N );
+	g->SetPointEXhigh(i, 0);
+      }
+      else {
+	g->SetPointEYlow(i, 0.);
+	g->SetPointEXlow(i, 0);
+	g->SetPointEYhigh(i, 0.);
+	g->SetPointEXhigh(i, 0);
+      }
+    }
+    g->SetLineWidth(2.0);
+    g->SetMarkerSize(0.);
+    g->Draw( ("9samep") );
+
+    hdata->SetMarkerStyle(20);
+    hdata->SetMarkerSize(1.2);
+    hdata->SetLineWidth(2.0);
+    hdata->Draw( ("9samepX0") );
   }
   else{
     errorband->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -1506,8 +1538,6 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
 
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
-  MakeLabel(0.2,0.8);
-  
   
   if(usedata){
     hdata_clone_for_log->GetYaxis()->SetRangeUser(ymin, ymax*100.);

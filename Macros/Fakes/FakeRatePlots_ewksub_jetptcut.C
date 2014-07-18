@@ -46,7 +46,7 @@ void FakeRatePlots_ewksub(TString path) {
     vector<TString> hist_ptcut;
     hist_ptcut.push_back("20");
     hist_ptcut.push_back("40");
-    hist_ptcut.push_back("60");
+    //hist_ptcut.push_back("60");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
       int rebin=1;

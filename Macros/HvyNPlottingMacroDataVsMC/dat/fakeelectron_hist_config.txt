@@ -1,3 +1,5 @@
+h_leadingJetPt 1 10 100.
+END
 h_electrons_eta 2 -3. 3.
 END
 h_MET 5 0. 300.

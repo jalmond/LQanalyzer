@@ -65,6 +65,14 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
 
   
+
+  _2DEfficiencyMap["real_eff_noclose_40"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009"))->Clone("a"));
+  _2DEfficiencyMap["real_eff_close_40"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009"))->Clone("b"));
+  _2DEfficiencyMap["real_eff_noclose_20"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009"))->Clone("aa"));
+  _2DEfficiencyMap["real_eff_noclose_bjet_20"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009"))->Clone("aaa"));
+  _2DEfficiencyMap["real_eff_close_20"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009"))->Clone("bb"));
+    
+
   _2DEfficiencyMap["real_eff_tight"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Tight"))->Clone());
   _2DEfficiencyMap["real_eff_medium"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Medium"))->Clone());
   
@@ -83,6 +91,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e060"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_006"))->Clone());
   _2DEfficiencyMap["real_eff_Loosedxy01_iso_b090_e050"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_005"))->Clone());
 
+  _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e009"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_009_np"))->Clone());
   _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e008"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_008_np"))->Clone());
   _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e007"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_007_np"))->Clone());
   _2DEfficiencyMap["real_eff_NPiso_Loosedxy01_iso_b009_e006"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_Loosedxy01_009_006_np"))->Clone());
@@ -195,7 +204,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["real_eff_NPFiso_b150_e090"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_NPFiso_B150_E090_dr03"))->Clone());
   _2DEfficiencyMap["real_eff_NPFiso_b150_e100"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_NPFiso_B150_E100_dr03"))->Clone());
   _2DEfficiencyMap["real_eff_NPFiso_b150_e125"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("RealEff_NPFiso_B150_E125_dr03"))->Clone());
-
+  
   _2DEfficiencyMap["fake_eff_dxy05"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_dxy05_El40_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_dxy10"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_dxy10_El40_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_dxy15"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_dxy15_El40_pt_eta"))->Clone());
@@ -327,6 +336,14 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_NPFiso_b150_e100"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e100_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_NPFiso_b150_e125"] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e125_pt_eta"))->Clone());
 
+  _2DEfficiencyMap["fake_eff_close_40" ] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate__close_40_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_noclose_40" ] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate__noclose_40_pt_eta"))->Clone());
+
+  
+  _2DEfficiencyMap["fake_eff_close_20" ] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate__close_20_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_noclose_20" ] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate__noclose_20_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_noclose_bjet_20" ] = dynamic_cast<TH2F*>((file_Muon_Opt->Get("FakeRate__noclose_bjet_20_pt_eta"))->Clone());
+
 
 
 
@@ -435,11 +452,11 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
   //r1=1.;
   //r2=1.;
   
-  if(nbjet==0){
+  /*if(nbjet==0){
     if( _el1_pt < 20.) fr1*= 1.4;
     else  if(_el1_pt < 30.) fr1*= 1.3;
     else  if(_el1_pt < 40.) fr1*= 1.1;
-
+    
 
     if(ht < 40.) fr1*=1.1;
     else if (ht < 200.) fr1 = fr1/1.1;
@@ -466,7 +483,7 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 
     if(ht < 30.) fr2*=1.1;
   }
-  
+  */
 
   /*if(njets==0){
     if(_el1_pt < 30. && _el1_pt < 20.) fr1*= 1.3;

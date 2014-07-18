@@ -75,6 +75,7 @@ then
 
     declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
     
+    declare -a input_samples=("HNee300")
     
     outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/"
     ### submit this configured job (uses bin/submit.sh)

@@ -66,7 +66,7 @@ then
     skinput="True"
     useskim="NoCut"
 
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
@@ -74,7 +74,7 @@ then
     logstep=1000
 
     #declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400 ""HNee500" "HNee600" "HNee700")
-    declare -a input_samples=("HNee300")
+    declare -a input_samples=("HNee100")
     
     outputdir=$LQANALYZER_DIR"/data/output/ChargeFlip/"
     ### submit this configured job (uses bin/submit.sh)
@@ -89,7 +89,7 @@ then
 
     source functions.sh
     
-    cycle="HNElectronOptimisation"
+    cycle="HNChargeFlipStudies"
     skinput="True"
     useskim="DiLep"
     
@@ -101,13 +101,12 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=( "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ")
-    #declare -a input_samples=( "DY50plus")
-    outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/MC/"
+    #declare -a input_samples=( "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ")
+    declare -a input_samples=( "DY50plus")
+    outputdir=$LQANALYZER_DIR"/data/output/ChargeFlip/"
+
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/  HNElectronOptimisation_mc_dilep_5_3_14.root HNElectronOptimisation_SK*
-    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/MC/HNElectronOptimisation_mc_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
 fi
 
 if [[ $runcf  == "true" ]];
@@ -116,7 +115,7 @@ then
 
     source functions.sh
 
-    cycle="HNElectronOptimisation"
+    cycle="HNChargeFlipStudies"
     skinput="True"
     useskim="DiLep"
 
@@ -130,11 +129,9 @@ then
 
     declare -a input_samples=( "DY10to50" "DY50plus" "ttbar")
 
-    outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/CF/"
+    outputdir=$LQANALYZER_DIR"/data/output/ChargeFlip/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/CF/  HNElectronOptimisation_cf_dilep_5_3_14.root HNElectronOptimisation_SK*
-    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/CF/HNElectronOptimisation_cf_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
     
 fi
 
@@ -145,7 +142,7 @@ if [[ $rundata  == "true" ]];
     
     source functions.sh
 
-    cycle="HNElectronOptimisation"
+    cycle="HNChargeFlipStudies"
     skinput="True"
     useskim="DiLep"
 
@@ -157,12 +154,13 @@ if [[ $rundata  == "true" ]];
     logstep=1000
 
     declare -a input_samples=( "A" "B" "C" "D")
+
     stream="egamma"
     
-    outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/"
+    outputdir=$LQANALYZER_DIR"/data/output/ChargeFlip/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/  HNElectronOptimisation_data_5_3_14.root HNElectronOptimisation_period*
+
 fi
 
 
@@ -170,7 +168,7 @@ if [[ $runfakes  == "true" ]];
     then
     source functions.sh
     
-    cycle="HNElectronOptimisation"
+    cycle="HNChargeFlipStudies"
     skinput="True"
     useskim="DiLep"
     loglevel="INFO"
@@ -185,13 +183,12 @@ if [[ $runfakes  == "true" ]];
     declare -a input_samples=("A" "B" "C" "D") 
     
     stream="egamma"
-    outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/NP/"
+    outputdir=$LQANALYZER_DIR"/data/output/ChargeFlip/"
 
 
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/ElectronOpt/NP/  HNElectronOptimisation_SKnonprompt_dilep_5_3_14.root HNElectronOptimisation_nonprompt_period*
-    mv ${LQANALYZER_DIR}/data/output/ElectronOpt/NP/HNElectronOptimisation_SKnonprompt_dilep_5_3_14.root ${LQANALYZER_DIR}/data/output/ElectronOpt/
+
 fi
 
 

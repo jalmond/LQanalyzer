@@ -16,7 +16,7 @@
 void setTDRStyle();
 
 
-void MCFake(TString path) {
+void MCFake(TString path, TString tag) {
 
   /// Set Plotting style
   setTDRStyle();
@@ -32,10 +32,12 @@ void MCFake(TString path) {
   
   vector<TString> list_of_names;
   list_of_names.push_back("pt");
-  list_of_names.push_back("eta");
-  list_of_names.push_back("njets");
+  //list_of_names.push_back("eta");
+  //list_of_names.push_back("njets");
+  //list_of_names.push_back("ht");
+  //list_of_names.push_back("nbjet");
   
-  for(unsigned int i = 1; i < list_of_names.size(); i++){
+  for(unsigned int i = 0; i < list_of_names.size(); i++){
     
     TCanvas* c1 = new TCanvas((("Plot")+list_of_names.at(i)).Data(), "Plot", 800, 600);
   
@@ -50,7 +52,7 @@ void MCFake(TString path) {
     h_mc_tight->Divide(h_mc_loose);
     h_mc_tight->Draw("hist");
     
-    c1->SaveAs(("/home/jalmond/WebPlots/Fakes/MCFake_" + list_of_names.at(i) + ".pdf").Data());
+    c1->SaveAs(("/home/jalmond/WebPlots/Fakes/MCFake_" + tag  + list_of_names.at(i) + ".pdf").Data());
   }
 
 }

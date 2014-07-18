@@ -38,6 +38,7 @@ then
     outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/MC/"
 
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets")
+
     source submit.sh
     source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/MC/  FakeRateCalculator_El_mc_5_3_14.root  FakeRateCalculator_El_SK*
     mv /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/MC/FakeRateCalculator_El_mc_5_3_14.root /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/

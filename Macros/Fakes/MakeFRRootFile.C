@@ -385,6 +385,40 @@ void MakeFRRootFile(){
     eff_rate->Write();
   }
 
+
+  /// 
+  std::vector<TString> fakes40;
+  fakes40.push_back("_noclose_20_pt_eta");
+  fakes40.push_back("_close_20_pt_eta");
+  fakes40.push_back("_noclose_bjet_20_pt_eta");
+  fakes40.push_back("_noclose_40_pt_eta");
+  fakes40.push_back("_close_40_pt_eta");
+
+  for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
+    cout << *it2 << endl;
+    if(!CheckFile(fdata))return;
+    if(!CheckFile(fmc))return;
+
+    TString denom ="LooseEl" + *it2;
+    TString num ="TightEl" + *it2;
+    TH2F* h_pt_num= (TH2F*)fdata->Get(num.Data());
+    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
+    CheckHist(h_pt_denom);
+    CheckHist(h_pt_num);
+    TH2F* h_mcpt_num= (TH2F*)fmc->Get(num.Data());
+    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
+    CheckHist(h_mcpt_denom);
+    CheckHist(h_mcpt_num);
+
+    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
+    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
+    eff_rate->Add(h_mcpt_num,-1.);
+    hratedenom->Add(h_mcpt_denom, -1.);
+    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
+    eff_rate->Write();
+  }
+
+
   
 }
 

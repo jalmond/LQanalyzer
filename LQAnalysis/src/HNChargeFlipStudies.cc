@@ -96,24 +96,24 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
   
   if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronAnalysisColl);
   else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl);
-
-
-  for(unsigned int i =0; i < _electronAnalysisColl.size(); i++){
-    // is the mother a tau
-    int mother_pdgid=_electronAnalysisColl.at(i).MotherPdgId();
-    if(fabs(mother_pdgid) == 15){
-      FillHist("TauEl_d0",_electronAnalysisColl.at(i).PrimaryVertexDXY()  , weight, -3.,3.,600);
+  
+  
+  if(!k_isdata){
+    for(unsigned int i =0; i < _electronAnalysisColl.size(); i++){
+      // is the mother a tau
+      int mother_pdgid=_electronAnalysisColl.at(i).MotherPdgId();
+      if(fabs(mother_pdgid) == 15){
+	FillHist("TauEl_d0",_electronAnalysisColl.at(i).PrimaryVertexDXY()  , weight, -3.,3.,600);
+      }
+    }
+    
+    if(_electronAnalysisColl.size() >= 1){
+      FillHist("MC_type",_electronAnalysisColl.at(0).GetType()  , weight, 0.,10.,10);
+      if(_electronAnalysisColl.size() >= 2){
+	FillHist("MC_type",_electronAnalysisColl.at(1).GetType()  , weight, 0.,10.,10);
+      }
     }
   }
-  
-  
-  if(_electronAnalysisColl.size() >= 1){
-    FillHist("MC_type",_electronAnalysisColl.at(0).GetType()  , weight, 0.,10.,10);
-    if(_electronAnalysisColl.size() >= 2){
-      FillHist("MC_type",_electronAnalysisColl.at(1).GetType()  , weight, 0.,10.,10);
-    }
-  }
-  
   
   /// Get Prompt electrons/CF
   std::vector<snu::KElectron> electronAnalysisColl =GetTruePrompt(_electronAnalysisColl, true,false);
@@ -847,9 +847,31 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
   if(!SameCharge(electronLooseColl4)) FillHist("SScandidate_check", 1.,1, 0.,2.,2);
   
   if(Zcandidate(electronAnalysisColl, 10., false)) {
+    
     if(!SameCharge(electronAnalysisColl))FillHist("Zcandidate_check", 0.,1., 0.,10.,10);
-    else FillHist("Zcandidate_check", 1.,1., 0.,10.,10);
+    else {
+      FillHist("Zcandidate_check", 1.,1., 0.,10.,10);
+      snu::KParticle SSee = electronAnalysisColl.at(0) +electronAnalysisColl.at(1);
+      if(jetColl_lepveto.size() > 1){
+	FillHist("Z_ssee_mass", SSee.M() , weight, 0.,200.,50);
+	if(fabs(electronAnalysisColl.at(0).DeltaEta()) <  0.004){
+	  if(fabs(electronAnalysisColl.at(1).DeltaEta()) < 0.004){
+	    if(fabs(electronAnalysisColl.at(0).DeltaPhi()) < 0.02){
+	      if(fabs(electronAnalysisColl.at(1).DeltaPhi()) < 0.02){
+		FillHist("Z_ssee_mass_dphieta", SSee.M() , weight, 0.,200.,50);
+		if(!( (electronAnalysisColl.at(0).FBrem() >  0.7) && (electronAnalysisColl.at(0).NBrems() > 1) && (electronAnalysisColl.at(0).Dist() > -0.1 ) && (fabs(electronAnalysisColl.at(0).CotTheta()) < 0.05))){
+		  if(!( (electronAnalysisColl.at(1).FBrem() >  0.7) && (electronAnalysisColl.at(1).NBrems() > 1) && (electronAnalysisColl.at(1).Dist() > -0.1 ) && (fabs(electronAnalysisColl.at(1).CotTheta()) < 0.05))){
+		    FillHist("Z_ssee_mass_dphieta_tight", SSee.M() , weight, 0.,200.,50);
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+      }
+    }
   }
+  if(k_isdata) return;
   if(Zcandidate(electronLooseColl, 10., false)) {
     if(!SameCharge(electronLooseColl)){
 
@@ -931,9 +953,8 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
 	
 	std::vector<snu::KTruth> truthColl;
         eventbase->GetTruthSel()->Selection(truthColl);
-	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
-	cout << electronLooseColl.at(0).ParticleIndex() << endl;
 	if(electronLooseColl.at(0).ParticleIndex() > truthColl.size()) return;
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
 
         float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
         float truth_dz = el_truth.GenVz() -  eventbase->GetEvent().VertexZ();
@@ -1015,8 +1036,9 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
         /// Non flip electron
 	std::vector<snu::KTruth> truthColl;
         eventbase->GetTruthSel()->Selection(truthColl);
-	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
 	if(electronLooseColl.at(0).ParticleIndex() > truthColl.size()) return;
+	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
+
 	float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
         float truth_pt = el_truth.Pt();
         float truth_dz = el_truth.GenVz() -  eventbase->GetEvent().VertexZ();
@@ -1100,8 +1122,6 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
       if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5){
 	std::vector<snu::KTruth> truthColl;
         eventbase->GetTruthSel()->Selection(truthColl);
-	cout << electronLooseColl.at(1).ParticleIndex() << endl;
-	
 	if(electronLooseColl.at(1).ParticleIndex() > truthColl.size()) return;
 
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
@@ -1278,14 +1298,10 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
       if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5) FillHist("nonZchargeflip_d0", fabs(electronLooseColl.at(1).dxy()), weight, 0.,0.5,200);
       
 	  
-      cout << "Test " << endl;
       if(electronLooseColl.at(0).GetType() ==4 || electronLooseColl.at(0).GetType() ==5){
-	cout << "Test 1" << endl;	
-
         //// Chargeflip electron
 	std::vector<snu::KTruth> truthColl;
         eventbase->GetTruthSel()->Selection(truthColl);
-	cout << "Test " <<  truthColl.size() << " " << electronLooseColl.at(0).ParticleIndex() << endl;
 	if(electronLooseColl.at(0).ParticleIndex() > truthColl.size()) return;
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
 
@@ -1299,16 +1315,11 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
       }
       else{
 	
-	cout << "Test 2" << endl;
         /// Non flip electron
 	std::vector<snu::KTruth> truthColl;
 	eventbase->GetTruthSel()->Selection(truthColl);
-	cout << "Test " <<  truthColl.size() << " " << electronLooseColl.at(0).ParticleIndex() << endl;
 	if(electronLooseColl.at(0).ParticleIndex() > truthColl.size()) return;
-	cout << eventbase->GetEvent().EventNumber() << endl;
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(0).ParticleIndex());
-	cout << el_truth << endl;
-	cout << el_truth.GenVx() << endl;
         float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
         float truth_pt = el_truth.Pt();
         FillHist("nonZnonchargeflip_truthd0", truth_dxy , weight, 0.,0.5,200);
@@ -1316,12 +1327,10 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
         FillHist("nonZnonchargeflip_truthpt_minus_reco", fabs(truth_pt - fabs(electronLooseColl.at(0).Pt())) , weight, 0.,20.,200);
       }
 
-      cout << "Test 3" << endl;
       if(electronLooseColl.at(1).GetType() ==4 || electronLooseColl.at(1).GetType() ==5){
         //// Chargeflip electron
 	std::vector<snu::KTruth> truthColl;
         eventbase->GetTruthSel()->Selection(truthColl);
-	cout << "Test 4" <<  truthColl.size() << " " << electronLooseColl.at(1).ParticleIndex() << endl;
 	if(electronLooseColl.at(1).ParticleIndex() > truthColl.size()) return;
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());
         float truth_dxy = sqrt(pow(el_truth.GenVx() -  eventbase->GetEvent().VertexX(),2) + pow(el_truth.GenVy() -  eventbase->GetEvent().VertexY(),2));
@@ -1332,12 +1341,9 @@ void HNChargeFlipStudies::ExecuteEvents()throw( LQError ){
 
       }
       else{
-	cout << "Test 5" << endl;
-
         /// Non flip electron
 	std::vector<snu::KTruth> truthColl;
         eventbase->GetTruthSel()->Selection(truthColl);
-	cout << "Test 4" <<  truthColl.size() << " " << electronLooseColl.at(1).ParticleIndex() << endl;
 
 	if(electronLooseColl.at(1).ParticleIndex() > truthColl.size()) return;
 	snu::KTruth el_truth = truthColl.at(electronLooseColl.at(1).ParticleIndex());

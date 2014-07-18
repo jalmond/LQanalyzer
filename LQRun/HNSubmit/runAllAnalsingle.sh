@@ -1,0 +1,3 @@
+source HNDiElectron_submit_singlelep.sh MC
+source HNDiElectron_submit_singlelep.sh DATA
+source HNDiElectron_submit_singlelep.sh NP

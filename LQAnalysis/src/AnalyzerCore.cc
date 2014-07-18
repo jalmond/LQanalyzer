@@ -914,9 +914,9 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
     toremove.push_back(1);
     toremove.push_back(2);
     toremove.push_back(3);
-    toremove.push_back(6);
   }
   if(!keep_chargeflip){
+    toremove.push_back(6);
     toremove.push_back(4);
     toremove.push_back(5);
   }
@@ -1028,7 +1028,10 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
     float r = m_fakeobj->getEfficiency_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
     float f = m_fakeobj->getFakeRate_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
     
-    if(nbjets==0){
+
+    //if(SumPt(jets) < 30.) f*= 1.1;
+    //if(SumPt(jets) > 40.) f/= 1.1;
+    /*if(nbjets==0){
       if( k_electrons.at(0).Pt() < 20.) f*= 1.4;
       else  if(k_electrons.at(0).Pt() < 30.) f*= 1.3;
       else  if(k_electrons.at(0).Pt() < 40.) f*= 1.1;
@@ -1042,7 +1045,7 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
 
       if(SumPt(jets) < 30.) f*=1.1;
     }
-    
+    */
     
     float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
     return w;

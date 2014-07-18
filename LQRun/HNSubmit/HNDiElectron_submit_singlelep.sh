@@ -61,7 +61,7 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "Zbb" "WW_mg" "ggHtoZZ" "HtoTauTau" "HtoWW" "WgammaE" "WgammaTau" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WZ_py" "ZZ_py" "WW_py" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_30-40_EM2" "QCD_40_EM2")
+    declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "Zbb" "WW_mg" "WgammaE" "WgammaTau" "Wbb")
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronSingleEl/"
     ### submit this configured job (uses bin/submit.sh)

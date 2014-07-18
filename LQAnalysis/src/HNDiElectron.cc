@@ -59,7 +59,13 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"HighMETCR");
   MakeCleverHistograms(sighist,"SingleEl_CR");
   MakeCleverHistograms(sighist,"SingleEl_bjetCR");
-  
+  MakeCleverHistograms(sighist,"SingleElTight_CR");
+  MakeCleverHistograms(sighist,"SingleElTight_bjetCR");
+  MakeCleverHistograms(sighist,"SingleElLoose_CR");
+  MakeCleverHistograms(sighist,"SingleElLoose_bjetCR");
+  MakeCleverHistograms(sighist,"SingleEl_InclusiveCR");
+  MakeCleverHistograms(sighist,"SingleEl_promptCR");
+  MakeCleverHistograms(sighist,"SingleEl_promptbjetCR");
 }
 
 
@@ -120,7 +126,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl, false);
   
   /// Get Prompt electrons/CF 
-  std::vector<snu::KElectron> electronAnalysisColl_temp =  GetTruePrompt(_electronAnalysisColl, false, true); // removes CF and fake in mc
+  std::vector<snu::KElectron> electronAnalysisColl_temp =  GetTruePrompt(_electronAnalysisColl, true, false); // removes CF and fake in mc
   std::vector<snu::KElectron> electronAnalysisColl =ShiftElectronEnergy(electronAnalysisColl_temp, k_running_chargeflip);
   
   
@@ -131,7 +137,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> _electronLooseColl;
   eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(_electronLooseColl, false);
   /// Loose electron sample (tight  - iso + looseiso) this removes fake el from jet/photon
-  std::vector<snu::KElectron>  electronLooseColl = GetTruePrompt(_electronLooseColl, false, true);
+  std::vector<snu::KElectron>  electronLooseColl = GetTruePrompt(_electronLooseColl, true, false);
   
   
   std::vector<snu::KElectron>  electronNoCutColl;
@@ -180,6 +186,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->Selection(jetColl);
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, muonNoCutColl, electronNoCutColl);
   // jetColl_lepveto have no pileup mva applied
   eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl_lepveto, muonVetoColl, electronLooseColl);
@@ -286,7 +293,39 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       
 
       if(k_running_nonprompt){
-	float ee_weight =  Get_DataDrivenWeight_E(electronAnalysisColl, jetColl_lepveto_mva, jetColl_lepveto_mva.size(),nbjet, eventbase->GetEvent().JetRho(),  0.01,0.09,0.09,true,false,true,"Loosedxy01_iso_b090_e090");
+	
+	bool closebjet=false;
+	bool closenoejet=false;
+	bool closephjet=false;
+	for(unsigned int ijet =0 ; ijet <jetColl.size() ; ijet++){
+	  for(unsigned int iel=0 ; iel < electronAnalysisColl.size() ; iel++){
+
+	    float dphi =fabs(TVector2::Phi_mpi_pi(electronAnalysisColl.at(iel).Phi()- jetColl.at(ijet).Phi()));
+	    if( dphi < 0.4){
+	      if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
+	    }
+	    if( electronAnalysisColl[iel].DeltaR(jetColl.at(ijet)) < 0.4){
+	      if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
+	      if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
+	    }
+	  }
+	}
+	
+	TString cut="";
+	//if(!(closebjet || closenoejet || closephjet))cut = "noclose_40";
+	//else cut = "close_40";
+	if(!(closebjet || closenoejet || closephjet)){
+	  if(nbjet ==0)cut = "noclose_20";
+	  else cut ="noclose_bjet_20";
+	  if(nbjet ==0) FillHist("numberclose_singleel",0 ,weight, 0.,3,.3);
+	  else FillHist("numberclose_singleel",1 ,weight, 0.,3.,3);
+	}
+        else{
+	  cut = "close_20";
+	  FillHist("numberclose_singleel",2 ,weight, 0.,3.,3);
+	}
+
+	float ee_weight =  Get_DataDrivenWeight_E(electronAnalysisColl, jetColl_lepveto_mva, jetColl_lepveto_mva.size(),nbjet, eventbase->GetEvent().JetRho(),  0.01,0.09,0.09,true,false,true,cut);
 	weight=ee_weight;
       }
 
@@ -294,6 +333,24 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	if(jetColl_lepveto_mva.size() > 0){
 	  FillCLHist(sighist, "SingleEl_CR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger*weight);
 	  if(nbjet > 0)  FillCLHist(sighist, "SingleEl_bjetCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger*weight);
+	  if(IsTight(electronAnalysisColl.at(0),  eventbase->GetEvent().JetRho())) {
+	    FillCLHist(sighist, "SingleElTight_CR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger);
+	    if(nbjet > 0)  FillCLHist(sighist, "SingleElTight_bjetCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger);
+	  }
+	  else{
+	    FillCLHist(sighist, "SingleElLoose_CR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger);
+            if(nbjet > 0)  FillCLHist(sighist, "SingleElLoose_bjetCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger);
+	  }
+	}/// NON INCLUSIVE JET
+	FillCLHist(sighist, "SingleEl_InclusiveCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger*weight);
+      }/// LOW MET SCR
+
+      if(eventbase->GetEvent().PFMET() > 30.){
+	float dphiel = TVector2::Phi_mpi_pi(electronAnalysisColl.at(0).Phi()- eventbase->GetEvent().PFMETphi());
+	float MTel = sqrt(2.* electronAnalysisColl.at(0).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphiel)));
+	if((MTel < 100.) && (MTel  > 60.)){
+	  FillCLHist(sighist, "SingleEl_promptCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger*weight);
+	  if(nbjet > 0)  FillCLHist(sighist, "SingleEl_promptbjetCR", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, prescale_trigger*weight);
 	}
       }
     }

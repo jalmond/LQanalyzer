@@ -615,7 +615,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, bool usetig
   int    l_b_missHits = 0;
   double l_b_d0      = 100.; 
   double l_b_dZ      = 0.1; 
-  double l_b_pfRelIso = 0.6;
+  double l_b_pfRelIso = 0.8;
   //----------------------------------------------------------------------
   // Endcap electron cut values
   //----------------------------------------------------------------------
@@ -629,7 +629,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, bool usetig
   double l_e_ep      = 0.05;
   double l_e_vtxProb = 1e-6;
   int    l_e_missHits = 0;
-  double l_e_pfRelIso = 0.6;
+  double l_e_pfRelIso = 0.8;
 
 
   if(!usetight){
@@ -646,7 +646,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, bool usetig
     l_b_missHits = 1;
     l_b_d0      = 100.;
     l_b_dZ      = 0.1;
-    l_b_pfRelIso = 0.6;
+    l_b_pfRelIso = 0.8;
     //----------------------------------------------------------------------
     // Endcap electron cut values
     //----------------------------------------------------------------------
@@ -660,7 +660,7 @@ bool ElectronSelection::PassUserID_FakeLoose2012 (snu::KElectron el, bool usetig
     l_e_ep      = 0.05;
     l_e_vtxProb = 1e-6;
     l_e_missHits = 1;
-    l_e_pfRelIso = 0.6;
+    l_e_pfRelIso = 0.8;
   }
 
   
