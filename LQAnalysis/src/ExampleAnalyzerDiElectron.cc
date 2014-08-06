@@ -176,7 +176,14 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Use the selection function to fill our empty vector with the cuts specified above
 
   ///New function that applies all tight selection
-  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
+
+  std::vector<snu::KJet> jetColl;
+  eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
+  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->SetPt(20.);
+  eventbase->GetJetSel()->Selection(jetColl);
+  
+  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl, jetColl);
   m_logger << DEBUG << "Number of electrons  = " << electronTightColl.size() << LQLogger::endmsg; 
   
   ///////////////////////////////////////////////////////////////////////////////////////////

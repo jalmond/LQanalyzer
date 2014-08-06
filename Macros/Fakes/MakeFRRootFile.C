@@ -27,7 +27,7 @@ void MakeFRRootFile(){
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_5_3_14.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
   if(!fdata)cout << "No Data" << endl;
-
+  
   /// Set Plotting style
   setTDRStyle();
   gStyle->SetPalette(1);
@@ -35,147 +35,28 @@ void MakeFRRootFile(){
   
   vector<TString> hist_ptcut;
 
-  hist_ptcut.push_back("Tight");
-  hist_ptcut.push_back("Medium");
-  hist_ptcut.push_back("Loosedxy01_100_100");
   hist_ptcut.push_back("Loosedxy01_009_009");
-  hist_ptcut.push_back("Loosedxy01_009_008");
-  hist_ptcut.push_back("Loosedxy01_009_007");
-  hist_ptcut.push_back("Loosedxy01_009_006");
-  hist_ptcut.push_back("Loosedxy01_009_005");
   
-  hist_ptcut.push_back("Loosedxy01_009_009_np");
-  hist_ptcut.push_back("Loosedxy01_009_008_np");
-  hist_ptcut.push_back("Loosedxy01_009_007_np");
-  hist_ptcut.push_back("Loosedxy01_009_006_np");
-  hist_ptcut.push_back("Loosedxy01_009_005_np");
-  
-  hist_ptcut.push_back("dxy05");
-  hist_ptcut.push_back("dxy10");
-  hist_ptcut.push_back("dxy15");
-  hist_ptcut.push_back("dxy20");
-  hist_ptcut.push_back("dxy25");
-  hist_ptcut.push_back("dxy30");
-
-  hist_ptcut.push_back("iso_B050_E060_dr03");
-  hist_ptcut.push_back("iso_B050_E070_dr03");
-  hist_ptcut.push_back("iso_B050_E080_dr03");
-  hist_ptcut.push_back("iso_B050_E090_dr03");
-  hist_ptcut.push_back("iso_B050_E100_dr03");
-  hist_ptcut.push_back("iso_B050_E125_dr03");
-  hist_ptcut.push_back("iso_B070_E050_dr03");
-  hist_ptcut.push_back("iso_B070_E060_dr03");
-  hist_ptcut.push_back("iso_B070_E080_dr03");
-  hist_ptcut.push_back("iso_B070_E090_dr03");
-  hist_ptcut.push_back("iso_B070_E100_dr03");
-  hist_ptcut.push_back("iso_B070_E125_dr03");
-  hist_ptcut.push_back("iso_B080_E050_dr03");
-  hist_ptcut.push_back("iso_B080_E060_dr03");
-  hist_ptcut.push_back("iso_B080_E070_dr03");
-  hist_ptcut.push_back("iso_B080_E090_dr03");
-  hist_ptcut.push_back("iso_B080_E100_dr03");
-  hist_ptcut.push_back("iso_B080_E125_dr03");
-  hist_ptcut.push_back("iso_B090_E050_dr03");
-  hist_ptcut.push_back("iso_B090_E060_dr03");
-  hist_ptcut.push_back("iso_B090_E070_dr03");
-  hist_ptcut.push_back("iso_B090_E080_dr03");
-  hist_ptcut.push_back("iso_B090_E100_dr03");
-  hist_ptcut.push_back("iso_B090_E125_dr03");
-  hist_ptcut.push_back("iso_B100_E050_dr03");
-  hist_ptcut.push_back("iso_B100_E060_dr03");
-  hist_ptcut.push_back("iso_B100_E070_dr03");
-  hist_ptcut.push_back("iso_B100_E080_dr03");
-  hist_ptcut.push_back("iso_B100_E090_dr03");
-  hist_ptcut.push_back("iso_B100_E125_dr03");
-  hist_ptcut.push_back("iso_B125_E050_dr03");
-  hist_ptcut.push_back("iso_B125_E060_dr03");
-  hist_ptcut.push_back("iso_B125_E070_dr03");
-  hist_ptcut.push_back("iso_B125_E080_dr03");
-  hist_ptcut.push_back("iso_B125_E090_dr03");
-  hist_ptcut.push_back("iso_B125_E100_dr03");
-  hist_ptcut.push_back("iso_B150_E050_dr03");
-  hist_ptcut.push_back("iso_B150_E060_dr03");
-  hist_ptcut.push_back("iso_B150_E070_dr03");
-  hist_ptcut.push_back("iso_B150_E080_dr03");
-  hist_ptcut.push_back("iso_B150_E090_dr03");
-  hist_ptcut.push_back("iso_B150_E100_dr03");
-  hist_ptcut.push_back("iso_B150_E125_dr03");
-    hist_ptcut.push_back("iso_B050_E050_dr04");
-  hist_ptcut.push_back("iso_B060_E060_dr04");
-  hist_ptcut.push_back("iso_B070_E070_dr04");
-  hist_ptcut.push_back("iso_B080_E080_dr04");
-  hist_ptcut.push_back("iso_B090_E090_dr04");
-  hist_ptcut.push_back("iso_B100_E100_dr04");
-  hist_ptcut.push_back("iso_B125_E125_dr04");
-  hist_ptcut.push_back("iso_B150_E150_dr04");
-  hist_ptcut.push_back("iso_B050_E050_dr03");
-  hist_ptcut.push_back("iso_B060_E060_dr03");
-  hist_ptcut.push_back("iso_B070_E070_dr03");
-  hist_ptcut.push_back("iso_B080_E080_dr03");
-  hist_ptcut.push_back("iso_B090_E090_dr03");
-  hist_ptcut.push_back("iso_B100_E100_dr03");
-  hist_ptcut.push_back("iso_B125_E125_dr03");
-  hist_ptcut.push_back("iso_B150_E150_dr03");
-
-
-  hist_ptcut.push_back("NPFiso_B050_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B050_E070_dr03");
-  hist_ptcut.push_back("NPFiso_B050_E080_dr03");
-  hist_ptcut.push_back("NPFiso_B050_E090_dr03");
-  hist_ptcut.push_back("NPFiso_B050_E100_dr03");
-  hist_ptcut.push_back("NPFiso_B050_E125_dr03");
-  hist_ptcut.push_back("NPFiso_B070_E050_dr03");
-  hist_ptcut.push_back("NPFiso_B070_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B070_E080_dr03");
-  hist_ptcut.push_back("NPFiso_B070_E090_dr03");
-  hist_ptcut.push_back("NPFiso_B070_E100_dr03");
-  hist_ptcut.push_back("NPFiso_B070_E125_dr03");
-  hist_ptcut.push_back("NPFiso_B080_E050_dr03");
-  hist_ptcut.push_back("NPFiso_B080_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B080_E070_dr03");
-  hist_ptcut.push_back("NPFiso_B080_E090_dr03");
-  hist_ptcut.push_back("NPFiso_B080_E100_dr03");
-  hist_ptcut.push_back("NPFiso_B080_E125_dr03");
-  hist_ptcut.push_back("NPFiso_B090_E050_dr03");
-  hist_ptcut.push_back("NPFiso_B090_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B090_E070_dr03");
-  hist_ptcut.push_back("NPFiso_B090_E080_dr03");
-  hist_ptcut.push_back("NPFiso_B090_E100_dr03");
-  hist_ptcut.push_back("NPFiso_B090_E125_dr03");
-  hist_ptcut.push_back("NPFiso_B100_E050_dr03");
-  hist_ptcut.push_back("NPFiso_B100_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B100_E070_dr03");
-  hist_ptcut.push_back("NPFiso_B100_E080_dr03");
-  hist_ptcut.push_back("NPFiso_B100_E090_dr03");
-  hist_ptcut.push_back("NPFiso_B100_E125_dr03");
-  hist_ptcut.push_back("NPFiso_B125_E050_dr03");
-  hist_ptcut.push_back("NPFiso_B125_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B125_E070_dr03");
-  hist_ptcut.push_back("NPFiso_B125_E080_dr03");
-  hist_ptcut.push_back("NPFiso_B125_E090_dr03");
-  hist_ptcut.push_back("NPFiso_B125_E100_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E050_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E060_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E070_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E080_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E090_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E100_dr03");
-  hist_ptcut.push_back("NPFiso_B150_E125_dr03");
-  
-  TString outfile = "FakeRateOpt.root";
+  vector<TString>  jettag;
+  jettag.push_back("");
+  jettag.push_back("_0jet");
+  jettag.push_back("_1jet");
+  jettag.push_back("_2jet");
+  TString outfile = "FakeRate2807.root";
   TFile* fout = new TFile(outfile.Data(),"RECREATE");
   fout->cd();
   for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
+    for(vector<TString>::iterator iti = jettag.begin(); iti!=jettag.end(); ++iti){
       int rebin=1;
       cout << *it2 << endl;
       if(!CheckFile(fdata))return;      
-      TH2F* h_pt_num= (TH2F*)fdata->Get(("h_promptrate_"+ *it2+ "_num_pt_eta").Data());
-      TH2F* h_pt_denom= (TH2F*)fdata->Get(("h_promptrate_"+ *it2+"_denom_pt_eta").Data());
+      TH2F* h_pt_num= (TH2F*)fdata->Get(("h_promptrate_"+ *it2+ "_num_pt_eta" + *iti).Data());
+      TH2F* h_pt_denom= (TH2F*)fdata->Get(("h_promptrate_"+ *it2+"_denom_pt_eta" + *iti).Data());
       CheckHist(h_pt_denom);
       CheckHist(h_pt_num);
 
       
-      TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("RealEff_" + *it2 ).Data());
+      TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("RealEff_" + *it2 + *iti ).Data());
       TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
       
       
@@ -184,215 +65,38 @@ void MakeFRRootFile(){
 
       eff_rate->Write();
 
+    }
   }
-	
   
-  vector<TString> fakes;
-  fakes.push_back("Tight_dxy05_El40_pt_eta");
-  fakes.push_back("Tight_dxy10_El40_pt_eta");
-  fakes.push_back("Tight_dxy15_El40_pt_eta");
-  fakes.push_back("Tight_dxy20_El40_pt_eta");
-  fakes.push_back("Tight_dxy25_El40_pt_eta");
-  fakes.push_back("Tight_dxy30_El40_pt_eta");
-  
-  fakes.push_back("Tight_iso_dr3_b150_e150_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b060_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e050_pt_eta");
-
-  fakes.push_back("Tight_iso_dr4_b150_e150_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b125_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b100_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b090_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b080_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b070_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b060_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr4_b050_e050_pt_eta");
-
-  fakes.push_back("Tight_iso_dr3_b150_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b150_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b150_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b150_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b150_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b150_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b150_e050_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b125_e050_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b100_e050_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b090_e050_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b080_e050_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e060_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b070_e050_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e125_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e100_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e090_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e080_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e070_pt_eta");
-  fakes.push_back("Tight_iso_dr3_b050_e060_pt_eta");
-
-  fakes.push_back("Tight_tight_pt_eta");
-
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e125_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e100_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e090_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e080_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e070_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e060_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b150_e050_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b125_e100_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b125_e090_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b125_e080_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b125_e070_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b125_e060_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b125_e050_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b100_e125_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b100_e090_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b100_e080_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b100_e070_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b100_e060_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b100_e050_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b090_e125_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b090_e100_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b090_e080_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b090_e070_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b090_e060_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b090_e050_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b080_e125_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b080_e100_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b080_e090_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b080_e070_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b080_e060_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b080_e050_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b070_e125_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b070_e100_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b070_e090_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b070_e080_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b070_e060_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b070_e050_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b050_e125_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b050_e100_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b050_e090_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b050_e080_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b050_e070_pt_eta");
-  fakes.push_back("Tight_iso_NPFisodr3_b050_e060_pt_eta");
-
-  
-  vector<TString> fakes2;
-  fakes2.push_back("Tight_medium_pt_eta");
-  for(vector<TString>::iterator it2 = fakes.begin(); it2!=fakes.end(); ++it2){
-    cout << *it2 << endl;
-    if(!CheckFile(fdata))return;
-    if(!CheckFile(fmc))return;
-
-    TString denom ="LooseOpt_pt_eta";
-    TH2F* h_pt_num= (TH2F*)fdata->Get(it2->Data());
-    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
-    CheckHist(h_pt_denom);
-    CheckHist(h_pt_num);
-    TH2F* h_mcpt_num= (TH2F*)fmc->Get(it2->Data());
-    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
-    CheckHist(h_mcpt_denom);
-    CheckHist(h_mcpt_num);
-    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
-    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
-    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    eff_rate->Write();
-  }
-
-
-  for(vector<TString>::iterator it2 = fakes2.begin(); it2!=fakes2.end(); ++it2){
-    cout << *it2 << endl;
-    if(!CheckFile(fdata))return;
-    if(!CheckFile(fmc))return;
-
-    TString denom ="LooseOpt_medium_pt_eta";
-    TH2F* h_pt_num= (TH2F*)fdata->Get(it2->Data());
-    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
-    CheckHist(h_pt_denom);
-    CheckHist(h_pt_num);
-    TH2F* h_mcpt_num= (TH2F*)fmc->Get(it2->Data());
-    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
-    CheckHist(h_mcpt_denom);
-    CheckHist(h_mcpt_num);
-    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
-    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
-    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    eff_rate->Write();
-  }
-  vector<TString> fakes3;
-  fakes3.push_back("Tight_iso_dr3_b100_e100_pt_eta");
-  fakes3.push_back("Tight_iso_dr3_b090_e090_pt_eta");
-  fakes3.push_back("Tight_iso_dr3_b090_e080_pt_eta");
-  fakes3.push_back("Tight_iso_dr3_b090_e070_pt_eta");
-  fakes3.push_back("Tight_iso_dr3_b090_e060_pt_eta");
-  fakes3.push_back("Tight_iso_dr3_b090_e050_pt_eta");
-  fakes3.push_back("Tight_iso_NPFisodr3_b090_e080_pt_eta");
-  fakes3.push_back("Tight_iso_NPFisodr3_b090_e070_pt_eta");
-  fakes3.push_back("Tight_iso_NPFisodr3_b090_e060_pt_eta");
-  fakes3.push_back("Tight_iso_NPFisodr3_b090_e050_pt_eta");
-  
-
-  for(vector<TString>::iterator it2 = fakes3.begin(); it2!=fakes3.end(); ++it2){
-    cout << *it2 << endl;
-    if(!CheckFile(fdata))return;
-    if(!CheckFile(fmc))return;
-
-    TString denom ="Loosedxy01_pt_eta";
-    TH2F* h_pt_num= (TH2F*)fdata->Get(it2->Data());
-    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
-    CheckHist(h_pt_denom);
-    CheckHist(h_pt_num);
-    TH2F* h_mcpt_num= (TH2F*)fmc->Get(it2->Data());
-    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
-    CheckHist(h_mcpt_denom);
-    CheckHist(h_mcpt_num);
-    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_Loosedxy01_" + *it2).Data()); 
-    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
-    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    eff_rate->Write();
-  }
-
 
   /// 
   std::vector<TString> fakes40;
-  fakes40.push_back("_noclose_20_pt_eta");
-  fakes40.push_back("_close_20_pt_eta");
-  fakes40.push_back("_noclose_bjet_20_pt_eta");
-  fakes40.push_back("_noclose_40_pt_eta");
-  fakes40.push_back("_close_40_pt_eta");
+  fakes40.push_back("20_pt_eta");
+  fakes40.push_back("20_1jet_pt_eta");
+  fakes40.push_back("20_2jet_pt_eta");
+  fakes40.push_back("20_3jet_pt_eta");
+  fakes40.push_back("40_1jet_pt_eta");
+  fakes40.push_back("40_2jet_pt_eta");
+  fakes40.push_back("40_3jet_pt_eta");
+  fakes40.push_back("20_pt_eta");
+  fakes40.push_back("20_pt_ht");
+  fakes40.push_back("20_ptbarrel_ht");
+  fakes40.push_back("20_ptendcap_ht");
+  fakes40.push_back("40_pt_eta");
+  fakes40.push_back("40_pt_ht");
+  fakes40.push_back("40_ptbarrel_ht");
+  fakes40.push_back("40_ptendcap_ht");
+  fakes40.push_back("30_pt_eta");
+  fakes40.push_back("30_1jet_pt_eta");
+  fakes40.push_back("30_2jet_pt_eta");
+  fakes40.push_back("30_3jet_pt_eta");
+  fakes40.push_back("20_pt_ht2");
+  fakes40.push_back("30_pt_ht2");
+  fakes40.push_back("40_pt_ht2");
+  fakes40.push_back("20_0905_pt_eta");
+  fakes40.push_back("30_0905_pt_eta");
+  fakes40.push_back("40_0905_pt_eta");
+
 
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     cout << *it2 << endl;

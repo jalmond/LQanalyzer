@@ -862,49 +862,16 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
 }
 
 
-bool AnalyzerCore::IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight){
+bool AnalyzerCore::IsTight(snu::KElectron el, std::vector<snu::KJet> jets, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight){
   
-  return eventbase->GetElectronSel()->HNIsTight(el, jetrho, dxy, biso, eiso, usedr3, usetrkiso, usetight, false);
+  return eventbase->GetElectronSel()->HNIsTight(el,jets, jetrho, dxy, biso, eiso, usedr3, usetrkiso, usetight, false);
 
 }
   
 
-bool AnalyzerCore::IsTight(snu::KElectron electron, double rho){
+bool AnalyzerCore::IsTight(snu::KElectron electron, std::vector<snu::KJet> jets,double rho){
 
-  return eventbase->GetElectronSel()->HNIsTight(electron, rho, false);
-  
-  /*bool istight= true;
-  
-  Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
-  int ifid = 0;
-  if (fabs(electron.SCEta()) < 1.0) ifid = 0;
-  else if (fabs(electron.SCEta()) < 1.479) ifid = 1;
-  else if (fabs(electron.SCEta()) < 2.0) ifid = 2;
-  else if (fabs(electron.SCEta()) < 2.2) ifid = 3;
-  else if (fabs(electron.SCEta()) < 2.3) ifid = 4;
-  else if (fabs(electron.SCEta()) < 2.4) ifid = 5;
-  else ifid = 6;
-
-  float LeptonRelIsoDR03(0.);
-  float ElectronIsoDR03 =  electron.PFChargedHadronIso03() + max( electron.PFNeutralHadronIso03() + electron.PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
-  if(electron.Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electron.Pt();
-  else LeptonRelIsoDR03 = -999.;
-
-  
-  /// assuming electron is loose
-  
-  if (fabs(electron.SCEta()) < 1.479 ){
-    if(LeptonRelIsoDR03 >  0.09) istight=false;
-  }
-  else {
-    if(LeptonRelIsoDR03 >  0.09) istight=false;
-  }
-  
-  if(fabs(electron.dxy()) > 0.01) istight=false;
-  
-  
-  return istight;
-  */
+  return eventbase->GetElectronSel()->HNIsTight(electron, jets, rho, false);
 }
 
 vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons, bool keep_chargeflip, bool keepfake){
@@ -954,13 +921,13 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
 }
 
 
-float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho){
+float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets, int njets, double rho){
 
   float em_weight = 0.;
   if(k_muons.size()==1 && k_electrons.size()==1){
 
     bool is_mu1_tight    = IsTight(k_muons.at(0));
-    bool is_el1_tight    = IsTight(k_electrons.at(0), rho);
+    bool is_el1_tight    = IsTight(k_electrons.at(0),alljets,rho);
 
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
@@ -988,13 +955,13 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
   return mm_weight;
 }
 
-float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut){
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut){
   
   float ee_weight = 0.;
   if(k_electrons.size()==2){
     
-    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
-    bool is_el2_tight    = IsTight(k_electrons.at(1), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el1_tight    = IsTight(k_electrons.at(0),alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1), alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight , cut);
@@ -1005,47 +972,64 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
 
 
 
-float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut, int nbjet, float ht){
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut, int nbjet, float ht, bool user, bool useht, bool usenjet){
   
   float ee_weight = 0.;
   if(k_electrons.size()==2){
     
-    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
-    bool is_el2_tight    = IsTight(k_electrons.at(1), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el1_tight    = IsTight(k_electrons.at(0),alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1), alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight , cut, nbjet, ht);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight , cut, nbjet, ht, user, useht, usenjet);
     
   }
   return ee_weight;
 }
 
-float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets, int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut){
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut, int nbjet, float ht, bool closejet1, bool closejet2 ){
+
+  float ee_weight = 0.;
+  if(k_electrons.size()==2){
+
+    bool is_el1_tight    = IsTight(k_electrons.at(0), alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1), alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, njets, is_el1_tight,is_el2_tight , cut, nbjet, ht, closejet1, closejet2);
+
+  }
+  return ee_weight;
+}
+
+
+float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets,std::vector<snu::KJet> alljets, int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, bool applypucorr){
   
   if(k_electrons.size()==1){
-    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el1_tight    = IsTight(k_electrons.at(0), alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    float r = m_fakeobj->getEfficiency_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
-    float f = m_fakeobj->getFakeRate_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
     
+    TString rcut = cut;
+    if(njets == 0) rcut += "_0jet";
+    if(njets == 1) rcut += "_1jet";
+    if(njets > 1) rcut += "_2jet";
 
-    //if(SumPt(jets) < 30.) f*= 1.1;
-    //if(SumPt(jets) > 40.) f/= 1.1;
-    /*if(nbjets==0){
-      if( k_electrons.at(0).Pt() < 20.) f*= 1.4;
-      else  if(k_electrons.at(0).Pt() < 30.) f*= 1.3;
-      else  if(k_electrons.at(0).Pt() < 40.) f*= 1.1;
-      
-      if(SumPt(jets) < 40.) f*=1.1;
-      else if (SumPt(jets) < 200.) f = f/1.1;
-    }
-    else{
-      if( k_electrons.at(0).Pt() < 20.) f*= 1.2;
-      else if( k_electrons.at(0).Pt() < 25.) f*= 1.1;
+    float r = m_fakeobj->getEfficiency_electron(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), rcut);
 
-      if(SumPt(jets) < 30.) f*=1.1;
+    if(nbjets!=0){
+      if(jets.size()==1) cut += "_1jet";
+      if(jets.size()==2) cut += "_2jet";
+      if(jets.size()>2) cut += "_3jet";
     }
-    */
+    float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
+    
+    float ht = SumPt(jets);
+    if(ht < 30 ) {
+      if(k_electrons.at(0).Pt() < 30.) f*= 1.35;
+    }
+    if(fabs(k_electrons.at(0).Eta()) > 1.5){
+      if(k_electrons.at(0).Pt() > 15. && k_electrons.at(0).Pt() < 20.)  f= 0.175;
+    }
     
     float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
     return w;
@@ -1053,13 +1037,13 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
   return 0.;
 }
     
-float AnalyzerCore::Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, int eventtype, bool setr1){
+float AnalyzerCore::Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, int eventtype, bool setr1){
 
   float ee_weight = 0.;
   if(k_electrons.size()==2){
 
-    bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
-    bool is_el2_tight    = IsTight(k_electrons.at(1), rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el1_tight    = IsTight(k_electrons.at(0),alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1),alljets, rho, dxy, biso, eiso, usedr3, usetrkiso, usetight);
 
     
 
@@ -1071,13 +1055,13 @@ float AnalyzerCore::Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electron
 }
 
 
-float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho){
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets, int njets, double rho){
   
   float ee_weight = 0.;
   if(k_electrons.size()==2){
     
-    bool is_el1_tight    = IsTight(k_electrons.at(0), rho);
-    bool is_el2_tight    = IsTight(k_electrons.at(1), rho);
+    bool is_el1_tight    = IsTight(k_electrons.at(0),alljets, rho);
+    bool is_el2_tight    = IsTight(k_electrons.at(1),alljets, rho);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     

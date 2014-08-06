@@ -105,10 +105,10 @@ int main(int argc, char *argv[]) {
   SetUpMasterConfig(configfile);
   
 
-  std::string masterpname = "/home/jalmond/WebPlots/HNSignal/indexCMS.html";
+  std::string masterpname = "/home/jalmond/WebPlots/HNSignal07/indexCMS.html";
 
-  system(("mkdir /home/jalmond/WebPlots/HNSignal/" ));
-  system(("mkdir /home/jalmond/WebPlots/HNSignal/histograms/"));
+  system(("mkdir /home/jalmond/WebPlots/HNSignal07/" ));
+  system(("mkdir /home/jalmond/WebPlots/HNSignal07/histograms/"));
 
   masterpage.open(masterpname.c_str());
   
@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
   }
 
   masterpage.close();
-  system(("scp -r /home/jalmond/WebPlots/HNSignal/ jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/"));
+  system(("scp -r /home/jalmond/WebPlots/HNSignal07/ jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/"));
   cout << "Open plots in " << output_index_path << endl; 
   return 0;
 }
@@ -301,10 +301,10 @@ void fixOverlay() {
 
 int MakeCutFlow_Plots(string configfile, string histname, float xmin,float  xmax, int rebin){
   
-  std::string phistname = "/home/jalmond/WebPlots/HNSignal/histograms/" + histname  + "/indexCMS.html";
-  output_path = "/home/jalmond/WebPlots/HNSignal/" ;
-  output_index_path = string("https://jalmond.web.cern.ch/jalmond/SNU/WebPlots/")+ "/HNSignal/indexCMS.html";
-  system(("mkdir /home/jalmond/WebPlots/HNSignal/histograms/" + histname + "/").c_str());
+  std::string phistname = "/home/jalmond/WebPlots/HNSignal07/histograms/" + histname  + "/indexCMS.html";
+  output_path = "/home/jalmond/WebPlots/HNSignal07/" ;
+  output_index_path = string("https://jalmond.web.cern.ch/jalmond/SNU/WebPlots/")+ "/HNSignal07/indexCMS.html";
+  system(("mkdir /home/jalmond/WebPlots/HNSignal07/histograms/" + histname + "/").c_str());
   cout << "HIST page is set to " << phistname.c_str() << endl;
 
   histpage.open(phistname.c_str());
@@ -364,11 +364,13 @@ int MakePlots(string hist, string h_name, float xmin,float  xmax, int rebin) {
   for(vector<string>::iterator it=vchannel.begin(); it!= vchannel.end(); it++){
     
     vector<TString> masspoints;
+    masspoints.push_back("40");
     masspoints.push_back("50");
+    masspoints.push_back("60");
     masspoints.push_back("70");
+    masspoints.push_back("80");
     masspoints.push_back("90");
     masspoints.push_back("100");
-    masspoints.push_back("125");
     masspoints.push_back("150");
     masspoints.push_back("175");
     masspoints.push_back("200");
@@ -475,7 +477,7 @@ bool repeat (string hname){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PrintCanvas(TCanvas* c1, string folder, string plot_description, string title, TString mass, TString channel, string hname){
 
-  std::string tpdf = "/home/jalmond/WebPlots/HNSignal/histograms/" + hname + "/"+ title;
+  std::string tpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/" + hname + "/"+ title;
   
   cout << "title = " << title << endl;
   if(plot_description.empty())plot_description=title;
@@ -688,8 +690,8 @@ TCanvas* DrawMC(TH1* hsig ,  const string hname, const  int rebin, double xmin, 
 
   
   std::string title=canvas->GetName();
-  std::string tpdf = "/home/jalmond/WebPlots/HNSignal/histograms/"+ dirname+"/"+title+".png";
-  std::string tlogpdf = "/home/jalmond/WebPlots/HNSignal/histograms/"+dirname+"/" + title+"_log.png";
+  std::string tpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/"+ dirname+"/"+title+".png";
+  std::string tlogpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/"+dirname+"/" + title+"_log.png";
   
   canvas_log->SetLogy();
   canvas->cd();
@@ -737,8 +739,8 @@ TCanvas* DrawMC(TH2* hsig ,  const string hname, const  int rebin, double xmin, 
 
 
   std::string title=canvas->GetName();
-  std::string tpdf = "/home/jalmond/WebPlots/HNSignal/histograms/"+ dirname+"/"+title+".png";
-  std::string tlogpdf = "/home/jalmond/WebPlots/HNSignal/histograms/"+dirname+"/" + title+"_log.png";
+  std::string tpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/"+ dirname+"/"+title+".png";
+  std::string tlogpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/"+dirname+"/" + title+"_log.png";
 
   canvas_log->SetLogy();
   canvas->cd();
@@ -784,8 +786,8 @@ TCanvas* DrawMC(TH3* hsig ,  const string hname, const  int rebin, double xmin, 
 
 
   std::string title=canvas->GetName();
-  std::string tpdf = "/home/jalmond/WebPlots/HNSignal/histograms/"+ dirname+"/"+title+".png";
-  std::string tlogpdf = "/home/jalmond/WebPlots/HNSignal/histograms/"+dirname+"/" + title+"_log.png";
+  std::string tpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/"+ dirname+"/"+title+".png";
+  std::string tlogpdf = "/home/jalmond/WebPlots/HNSignal07/histograms/"+dirname+"/" + title+"_log.png";
 
   canvas_log->SetLogy();
   canvas->cd();

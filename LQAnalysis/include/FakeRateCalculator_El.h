@@ -21,13 +21,13 @@ class FakeRateCalculator_El : public AnalyzerCore {
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillCutFlow(TString cut, float w);
-  bool IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
-  void GetRealEfficiency(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KMuon> muons, double w, float interval,TString tag, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
+  bool IsTight(snu::KElectron el, std::vector<snu::KJet> jets, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
+  void GetRealEfficiency(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, std::vector<snu::KMuon> muons, double w, float interval,TString tag, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
 
   void GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets,  std::vector<snu::KJet>  alljets, TString tag);
-
+  void GetHSTRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets,  std::vector<snu::KJet>  alljets, TString tag);
  private:
-
+  
   
   //
   // The output variables 

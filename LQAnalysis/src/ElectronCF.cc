@@ -70,9 +70,14 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
+  std::vector<snu::KJet> jetColl;
+  eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
+  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->SetPt(20.);
+  eventbase->GetJetSel()->Selection(jetColl);
   
   std::vector<snu::KElectron> _electronTightColl;
-  eventbase->GetElectronSel()->HNTightElectronSelection(_electronTightColl);
+  eventbase->GetElectronSel()->HNTightElectronSelection(_electronTightColl, jetColl);
   
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
