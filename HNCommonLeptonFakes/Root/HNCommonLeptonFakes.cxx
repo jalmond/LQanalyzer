@@ -60,14 +60,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
   CheckFile(file_fake_Opt);
   TFile* file_fake  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate2807.root").c_str());
   CheckFile(file_fake);
-
+  TFile* file_mc  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMC.root").c_str());
+  CheckFile(file_mc);
     
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
 
-
-  
-  
   _2DEfficiencyMap["real_eff_20"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("A"));
   _2DEfficiencyMap["real_eff_20_0jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009_0jet"))->Clone("AB"));
   _2DEfficiencyMap["real_eff_20_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009_1jet"))->Clone("AC"));
@@ -81,11 +79,23 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["real_eff_30_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAC"));
   _2DEfficiencyMap["real_eff_30_2jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAD"));
   
+  
+  _2DEfficiencyMap["real_eff_20_0905_0jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAB"));
+  _2DEfficiencyMap["real_eff_20_0905_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAC"));
+  _2DEfficiencyMap["real_eff_20_0905_2jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAD"));
+  
+  _2DEfficiencyMap["real_eff_30_0905_0jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAAB"));
+  _2DEfficiencyMap["real_eff_30_0905_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAAC"));
+  _2DEfficiencyMap["real_eff_30_0905_2jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAAD"));
 
-  _2DEfficiencyMap["real_eff_30_0905_0jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAB"));
-  _2DEfficiencyMap["real_eff_30_0905_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAC"));
-  _2DEfficiencyMap["real_eff_30_0905_2jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAD"));
+  _2DEfficiencyMap["real_eff_40_0905_0jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAAB"));
+  _2DEfficiencyMap["real_eff_40_0905_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAAC"));
+  _2DEfficiencyMap["real_eff_40_0905_2jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAAD"));
 
+  _2DEfficiencyMap["real_eff_mc_30_0jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAB"));
+  _2DEfficiencyMap["real_eff_mc_30_1jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAC"));
+  _2DEfficiencyMap["real_eff_mc_30_2jet"] = dynamic_cast<TH2F*>((file_fake->Get("RealEff_Loosedxy01_009_009"))->Clone("AAAD"));
+    
 
   /*
   _2DEfficiencyMap["real_eff_tight"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("RealEff_Tight"))->Clone());
@@ -363,7 +373,8 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_noclose_ht2_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht2_20_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_noclose_ht3_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht3_20_pt_eta"))->Clone());
   */
-  _2DEfficiencyMap["fake_eff_ht_20" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_pt_ht"))->Clone());
+
+    _2DEfficiencyMap["fake_eff_ht_20" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_pt_ht"))->Clone());
   _2DEfficiencyMap["fake_eff_20" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_20_1jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_1jet_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_20_2jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_2jet_pt_eta"))->Clone());
@@ -376,17 +387,31 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_40_2jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_2jet_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_40_3jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_3jet_pt_eta"))->Clone());
 
+  _2DEfficiencyMap["fake_eff_60" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_60_pt_eta"))->Clone());
+
+
   _2DEfficiencyMap["fake_eff_30" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_30_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_30_1jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_30_1jet_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_30_2jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_30_2jet_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_30_3jet" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_30_3jet_pt_eta"))->Clone());
   
+  _2DEfficiencyMap["fake_eff_0bjet_20" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_0bjet_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_bjet_20" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_bjet_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_0bjet_40" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_0bjet_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_bjet_40" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_bjet_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_0bjet_60" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_60_0bjet_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_bjet_60" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_60_bjet_pt_eta"))->Clone());
+
+  
+
   _2DEfficiencyMap["fake_eff_20_0905" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_0905_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_30_0905" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_30_0905_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_40_0905" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_0905_pt_eta"))->Clone());
-  
 
-  
+  _2DEfficiencyMap["fake_eff_mc_20"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_20_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_mc_30"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_30_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_mc_40"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_40_pt_eta"))->Clone());
+
   cout << "HNCommonLeptonFakes : Initializing" << endl;
   for(map<TString, TH2F*>::iterator mit = _2DEfficiencyMap.begin(); mit != _2DEfficiencyMap.end(); mit++){
     if(!mit->second){
@@ -409,6 +434,11 @@ void HNCommonLeptonFakes::InitialiseFake(){
   
   file_fake->Close();
   delete file_fake;
+  
+  file_mc->Close();
+  delete file_mc;
+
+
   // Now we can close the file:   
   origDir->cd();
   
@@ -545,12 +575,12 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
   if(njets == 1) rcut += "_1jet";
   if(njets > 1) rcut += "_2jet";
 
-  r1 = getEfficiency_electron(0,_el1_pt,  _el1_eta , rcut);
-  r2 = getEfficiency_electron(0,_el2_pt,  _el2_eta , rcut);
-  if(!user){
-    r1=1.;
-    r2=1.;
-  }
+  //r1 = getEfficiency_electron(0,_el1_pt,  _el1_eta , rcut);
+  //r2 = getEfficiency_electron(0,_el2_pt,  _el2_eta , rcut);
+  //if(!user){
+  r1=1.;
+  r2=1.;
+  //}
 
   TString fcut = cut;
   if(njets == 1) fcut += "_1jet";
@@ -567,6 +597,10 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,fcut);
     }
     else{
+      if(user){
+	if(nbjet==0) cut = "0bjet_" + cut ;
+	else cut = "bjet_" + cut ;
+      }
       fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
       fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
       
@@ -689,14 +723,14 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
     cout << "DiLepton event weight requires 2 muons." << endl;
     return (0.);
   }
-
+  
   float _el1_pt=electrons.at(0).Pt();
   float _el2_pt=electrons.at(1).Pt();
 
   //// vectors need to be ordered in pT
   if(_el1_pt < _el2_pt) return -100000000000.;
 
-
+  
   float _el1_eta=fabs(electrons.at(0).Eta());
   float _el2_eta=fabs(electrons.at(1).Eta());
 
@@ -711,8 +745,14 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
 
-  r1 = getEfficiency_electron(0,_el1_pt, _el1_eta, cut);
-  r2 = getEfficiency_electron(0,_el2_pt, _el2_eta,cut);
+  TString rcut = cut;
+  if(njets == 0) rcut += "_0jet";
+  if(njets == 1) rcut += "_1jet";
+  if(njets > 1) rcut += "_2jet";
+  //r1 = getEfficiency_electron(0,_el1_pt,  _el1_eta , rcut);
+  //  r2 = getEfficiency_electron(0,_el2_pt,  _el2_eta , rcut);
+  r1=1.;
+  r2=1.;
   fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
   fr2= getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
 

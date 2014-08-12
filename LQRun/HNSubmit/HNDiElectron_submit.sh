@@ -150,7 +150,7 @@ then
     skinput="True"
     useskim="NoCut"
 
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
@@ -158,7 +158,7 @@ then
     logstep=1000
 
     declare -a input_samples=("HNee40" "HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400" "HNee500" "HNee600" "HNee700")
-    declare -a input_samples=("HNee40")
+  
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
@@ -184,6 +184,9 @@ then
     logstep=1000
     declare -a input_samples=("Wjets" "ttbar" "HtoZZ" "DY10to50" "DY50plus"  "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py"  "ggHtoZZ" "HtoTauTau" "HtoWW" )
         
+    #declare -a input_samples=("Wjets" "ttbar" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE")
+    
+    #runnp="True"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
@@ -234,7 +237,6 @@ if [[ $runfakes  == "true" ]];
     
     runnp="True"
     declare -a input_samples=("A" "B" "C" "D") 
-    
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
 

@@ -1,5 +1,5 @@
-source HNDiElectron_submit.sh MC
-source HNDiElectron_submit.sh DATA
-source HNDiElectron_submit.sh CF
-source HNDiElectron_submit.sh NP
-source HNDiElectron_submit.sh SIG
+source HNOpt.sh MC
+source HNOpt.sh DATA
+source HNOpt.sh NP
+//source HNOpt.sh CF
+source HNOpt.sh SIG

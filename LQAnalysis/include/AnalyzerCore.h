@@ -33,7 +33,7 @@ class AnalyzerCore : public LQCycleBase {
   TDirectory*   getTemporaryDirectory(void) const;
 
   double ElectronScaleFactor( double eta, double pt);
-  double MuonScaleFactor(double eta, double pt);
+  double MuonScaleFactor(double eta, double pt, int sys=0);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);

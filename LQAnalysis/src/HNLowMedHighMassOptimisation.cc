@@ -203,20 +203,36 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
   
   FillEventCutFlow("SS_lepveto",1.);
   
+  float isoweight=weight;
   if(k_running_nonprompt){
     
     float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.09,true,false,true,"30",nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
     
     weight*= ee_weight;
+    
+    float ee_weight_0905 = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.09,true,false,true,"30_0905",  nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
+    isoweight*= ee_weight_0905;
   }
   
+  bool tight_endcapiso=true;
+  if(fabs(electronAnalysisColl.at(0).Eta() > 1.5)){
+    if(electronAnalysisColl.at(0).RelIso03(eventbase->GetEvent().JetRho() ,electronAnalysisColl.at(0).Pt()) > 0.05)tight_endcapiso= false;
+  }
+  if(fabs(electronAnalysisColl.at(1).Eta() > 1.5)){
+    if(electronAnalysisColl.at(1).RelIso03(eventbase->GetEvent().JetRho() ,electronAnalysisColl.at(1).Pt()) > 0.05)tight_endcapiso= false;
+  } 
+
   if(jetColl_lepveto_mva.size() < 2) return;
   
+
   bool do_optimisation=true;
   if(do_optimisation){
+    std::vector<float> isocut;
+    isocut.push_back(0.);
+    isocut.push_back(1.);
     std::vector<float> ptmin;
+    ptmin.push_back(10.);
     ptmin.push_back(15.);
-    ptmin.push_back(20.);
     std::vector<float> ptmax;
     ptmax.push_back(20.);
     ptmax.push_back(25.);
@@ -226,14 +242,15 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     eemax.push_back(60.);
     eemax.push_back(80.);
     eemax.push_back(100);
-    eemax.push_back(1000);
+    eemax.push_back(150);
+    eemax.push_back(1000.);
     std::vector<float> jjmin;
-    jjmin.push_back(20.);
+    jjmin.push_back(0.);
     jjmin.push_back(40.);
     std::vector<float> jjmax;
+    //jjmax.push_back(100.);
     jjmax.push_back(120.);
-    jjmax.push_back(140.);
-    jjmax.push_back(150.);
+    //jjmax.push_back(150.);
     std::vector<float> eejjmin;
     eejjmin.push_back(80.);
     eejjmin.push_back(90.);
@@ -244,6 +261,7 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     eejjmax.push_back(200.);
     eejjmax.push_back(220.);
     eejjmax.push_back(260.);
+    eejjmax.push_back(300.);
     std::vector<float> e1jjmin;
     e1jjmin.push_back(0.);
     std::vector<float> e1jjmax;
@@ -251,11 +269,11 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     std::vector<float> e2jjmin;
     e2jjmin.push_back(0.);
     std::vector<float>e2jjmax;
-    e2jjmax.push_back(125.);
-    e2jjmax.push_back(150.);
-    e2jjmax.push_back(175.);
-    e2jjmax.push_back(200.);
-    e2jjmax.push_back(1000.);
+    //e2jjmax.push_back(125.);
+    //e2jjmax.push_back(150.);
+    //e2jjmax.push_back(175.);
+    //e2jjmax.push_back(200.);
+    e2jjmax.push_back(10000.);
     std::vector<float> metmax;
     metmax.push_back(30.);
     metmax.push_back(35.);
@@ -264,49 +282,108 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     mtmax.push_back(50.);
     mtmax.push_back(60.);
     mtmax.push_back(70.);
-    mtmax.push_back(1000.);
+    mtmax.push_back(10000.);
     std::vector<float> stmin;
     stmin.push_back(0.);
-    stmin.push_back(100.);
-    stmin.push_back(150.);
     std::vector<float> stmax;
-    stmax.push_back(100.);
     stmax.push_back(150.);
     stmax.push_back(200.);
+    stmax.push_back(300.);
+    stmax.push_back(10000.);
     std::vector<bool> removeZ;
     removeZ.push_back(true);
     removeZ.push_back(false);
     std::vector<bool> removedRej;
-    removedRej.push_back(true);
+    //removedRej.push_back(true);
     removedRej.push_back(false);
     
-    FillHist("LowMassOptimise", 560000 , weight, 0.,560000.,560000);
-    FillHist("LowMassOptimise_sig", 560000 , 1., 0.,560000.,560000);
+    float ilmbin=0.;
+    /*for(unsigned int iiso = 0; iiso<  isocut.size() ; iiso++){
+      for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
+	for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
+	  for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
+	    for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
+	      for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
+		for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
+		  for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
+		    for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
+		      for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
+			for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
+			  for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
+			    for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
+			      for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
+				for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
+				  for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
+				    for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
+				      for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
+					for(unsigned int iej =0; iej< removedRej.size(); iej++){
+					  ilmbin+=1.;
+					  cout << "ilmbin = " << ilmbin << endl;
+					}
+				      }
+				    }
+				  }
+				}
+			      }
+			    }
+			  }
+			}
+		      }
+		    }
+		  }
+		}
+	      }
+	    }
+	  }
+	}
+      }
+    }
+    */
+    ilmbin = 160000 ;
+
+    FillHist("LowMassOptimise", ilmbin , weight, 0.,ilmbin,int(ilmbin));
+    FillHist("LowMassOptimise_sig", ilmbin , 1., 0.,ilmbin,int(ilmbin));
     
     int icut=0;
-    for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
-      for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
-	for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
-	  for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
-	    for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
-	      for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
-		for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
-		  for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
-		    for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
-		      for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
-			for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
-			  for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
-			    for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
-			      for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
-				for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
-				  for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
-				    for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
-				      for(unsigned int iej =0; iej< removedRej.size(); iej++){
-					if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip, ptmin.at(ipt), ptmax.at(ipt2), eemin.at(iee),  eemax.at(iee2), jjmin.at(ijj), jjmax.at(ijj2), eejjmin.at(ieejj), eejjmax.at(ieejj2), e1jjmin.at(ie1jj), e1jjmax.at(ie1jj2), e2jjmin.at(ie2jj), e2jjmax.at(ie2jj2), metmax.at(imet),  mtmax.at(imt), stmin.at(istmin), stmax.at(istmax), removeZ.at(iZ), removedRej.at(iej))){
-					  FillHist("LowMassOptimise", icut , weight, 0.,560000.,560000); 
-					  FillHist("LowMassOptimise_sig", icut , 1., 0.,560000.,560000); 
+    for(unsigned int iiso = 0; iiso<  isocut.size() ; iiso++){
+      for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
+	for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
+	  for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
+	    for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
+	      for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
+		for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
+		  for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
+		    for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
+		      for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
+			for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
+			  for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
+			    for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
+			      for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
+				for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
+				  for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
+				    for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
+				      for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
+					for(unsigned int iej =0; iej< removedRej.size(); iej++){
+					  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip, ptmin.at(ipt), ptmax.at(ipt2), eemin.at(iee),  eemax.at(iee2), jjmin.at(ijj), jjmax.at(ijj2), eejjmin.at(ieejj), eejjmax.at(ieejj2), e1jjmin.at(ie1jj), e1jjmax.at(ie1jj2), e2jjmin.at(ie2jj), e2jjmax.at(ie2jj2), metmax.at(imet),  mtmax.at(imt), stmin.at(istmin), stmax.at(istmax), removeZ.at(iZ), removedRej.at(iej))){
+					    if(iiso==0){
+					      FillHist("LowMassOptimise", icut , weight, 0.,ilmbin,int(ilmbin)); 
+					      FillHist("LowMassOptimise_sig", icut , 1., 0.,ilmbin,int(ilmbin)); 
+					    }
+					    else{
+					      if(!k_running_nonprompt){
+						if(tight_endcapiso){
+						  FillHist("LowMassOptimise", icut , weight, 0.,ilmbin,int(ilmbin));
+						  FillHist("LowMassOptimise_sig", icut , 1., 0.,ilmbin,int(ilmbin));
+						}
+					      }
+					      else{
+						FillHist("LowMassOptimise", icut , isoweight, 0.,ilmbin,int(ilmbin));
+						FillHist("LowMassOptimise_sig", icut , 1., 0.,ilmbin,int(ilmbin));
+					      }
+					    }
+					  }
+					  icut++;
 					}
-					icut++;
 				      }
 				    }
 				  }
@@ -328,9 +405,14 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     
   }// do optimisation
   
+
   bool do_optimisation2=true;
   if(do_optimisation2){
+    std::vector<float> isocut;
+    isocut.push_back(0.);
+    isocut.push_back(1.);
     std::vector<float> ptmin;
+    ptmin.push_back(10.);
     ptmin.push_back(15.);
     ptmin.push_back(20.);
     ptmin.push_back(25.);
@@ -340,12 +422,17 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     ptmax.push_back(20.);
     ptmax.push_back(25.);
     ptmax.push_back(30.);
+    ptmax.push_back(35.);
     ptmax.push_back(40.);
     ptmax.push_back(50.);
+    ptmax.push_back(70.);
     std::vector<float> eemin;
     eemin.push_back(15.);
     std::vector<float> eemax;
-    eemax.push_back(1000);
+    //eemax.push_back(200);
+    //eemax.push_back(250);
+    //eemax.push_back(300);
+    eemax.push_back(10000);
     std::vector<float> jjmin;
     jjmin.push_back(40.);
     jjmin.push_back(50.);
@@ -358,26 +445,35 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     eejjmin.push_back(150.);
     eejjmin.push_back(175.);
     eejjmin.push_back(200.);
+    eejjmin.push_back(250.);
     std::vector<float> eejjmax;
     eejjmax.push_back(300.);
+    eejjmax.push_back(400.);
     eejjmax.push_back(500.);
-    eejjmax.push_back(1000.);
+    eejjmax.push_back(600.);
+    eejjmax.push_back(10000.);
     std::vector<float> e1jjmin;
     e1jjmin.push_back(0.);
     std::vector<float> e1jjmax;
-    e1jjmax.push_back(1000.);
+    //e1jjmax.push_back(300.);
+    //e1jjmax.push_back(400.);
+    //e1jjmax.push_back(500.);
+    e1jjmax.push_back(10000.);
     std::vector<float> e2jjmin;
-    e2jjmin.push_back(40.);
+    e2jjmin.push_back(0.);
     std::vector<float> e2jjmax;
-    e2jjmax.push_back(1000.);
+    //e2jjmax.push_back(200.);
+    //e2jjmax.push_back(250.);
+    //e2jjmax.push_back(300.);
+    e2jjmax.push_back(10000.);
     std::vector<float> metmax;
     metmax.push_back(30.);
     metmax.push_back(35.);
     metmax.push_back(40.);
     std::vector<float> mtmax;
-    mtmax.push_back(1000.);
+    mtmax.push_back(10000.);
     std::vector<float> stmin;
-    stmin.push_back(100.);
+    stmin.push_back(80.);
     stmin.push_back(150.);
     stmin.push_back(200.);
     std::vector<float> stmax;
@@ -385,40 +481,102 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     stmax.push_back(300.);
     stmax.push_back(400.);
     stmax.push_back(500.);
-    stmax.push_back(1000.);
+    stmax.push_back(600.);
+    stmax.push_back(10000.);
     std::vector<bool> removeZ;
     removeZ.push_back(true);
     removeZ.push_back(false);
     std::vector<bool> removedRej;
-    removedRej.push_back(true);
+    //removedRej.push_back(true);
     removedRej.push_back(false);
+    
     int icut=0;
-    FillHist("MidMassOptimise", 280000. , weight, 0.,280000.,280000);
-    FillHist("MidMassOptimise_sig",280000. , 1., 0.,280000.,280000);
-    for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
-      for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
-        for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
-          for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
-            for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
-              for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
-                for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
-                  for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
-                    for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
-                      for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
-                        for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
-                          for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
-                            for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
-                              for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
-				for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
-                                  for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
-                                    for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
-                                      for(unsigned int iej =0; iej< removedRej.size(); iej++){
-
-					if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip, ptmin.at(ipt), ptmax.at(ipt2), eemin.at(iee),  eemax.at(iee2), jjmin.at(ijj), jjmax.at(ijj2), eejjmin.at(ieejj), eejjmax.at(ieejj2), e1jjmin.at(ie1jj), e1jjmax.at(ie1jj2), e2jjmin.at(ie2jj), e2jjmax.at(ie2jj2), metmax.at(imet),  mtmax.at(imt), stmin.at(istmin),  stmax.at(istmax), removeZ.at(iZ), removedRej.at(iej))){
-					  FillHist("MidMassOptimise", icut , weight, 0.,280000.,280000);
-					  FillHist("MidMassOptimise_sig", icut , 1., 0.,280000.,280000);
+    float immbin=0.;
+    /*  for(unsigned int iiso = 0; iiso<  isocut.size() ; iiso++){
+      for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
+	for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
+	  for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
+	    for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
+	      for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
+		for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
+		  for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
+		    for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
+		      for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
+			for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
+			  for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
+			    for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
+			      for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
+				for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
+				  for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
+				    for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
+				      for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
+					for(unsigned int iej =0; iej< removedRej.size(); iej++){
+					  immbin+=1.;
 					}
-					icut++;
+				      }
+				    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    */
+    immbin = 1100000;
+    
+    FillHist("MidMassOptimise", immbin , weight, 0.,immbin,int(immbin));
+    FillHist("MidMassOptimise_sig",immbin , 1., 0.,immbin,int(immbin));
+
+    for(unsigned int iiso = 0; iiso<  isocut.size() ; iiso++){
+      for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
+	for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
+	  for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
+	    for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
+	      for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
+		for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
+		  for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
+		    for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
+		      for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
+			for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
+			  for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
+			    for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
+			      for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
+				for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
+				  for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
+				    for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
+				      for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
+					for(unsigned int iej =0; iej< removedRej.size(); iej++){
+					  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip, ptmin.at(ipt), ptmax.at(ipt2), eemin.at(iee),  eemax.at(iee2), jjmin.at(ijj), jjmax.at(ijj2), eejjmin.at(ieejj), eejjmax.at(ieejj2), e1jjmin.at(ie1jj), e1jjmax.at(ie1jj2), e2jjmin.at(ie2jj), e2jjmax.at(ie2jj2), metmax.at(imet),  mtmax.at(imt), stmin.at(istmin),  stmax.at(istmax), removeZ.at(iZ), removedRej.at(iej))){
+					    if(iiso==0){
+					      FillHist("MidMassOptimise", icut , weight, 0.,immbin,int(immbin));
+					      FillHist("MidMassOptimise_sig", icut , 1., 0.,immbin,int(immbin));
+					    }
+					    else{
+					      if(!k_running_nonprompt){
+						if(tight_endcapiso){
+						  FillHist("MidMassOptimise", icut , weight, 0.,immbin,int(immbin));
+						  FillHist("MidMassOptimise_sig", icut , 1., 0.,immbin,int(immbin));
+						}
+					      }
+					      else{
+						FillHist("MidMassOptimise", icut , isoweight, 0.,immbin,int(immbin));
+						FillHist("MidMassOptimise_sig", icut , 1., 0.,immbin,int(immbin));
+					      }
+					    }
+					    
+					  }
+					  icut++;
+					}
 				      }
 				    }
 				  }
@@ -437,11 +595,15 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
         }
       }
     }
-
+    
   }// do optimisation
 
   bool do_optimisation3=true;
   if(do_optimisation3){
+
+    std::vector<float> isocut;
+    isocut.push_back(0.);
+    isocut.push_back(1.);
     std::vector<float> ptmin;
     ptmin.push_back(25.);
     ptmin.push_back(30.);
@@ -459,7 +621,7 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     std::vector<float> eemin;
     eemin.push_back(15.);
     std::vector<float> eemax;
-    eemax.push_back(1000);
+    eemax.push_back(10000);
     std::vector<float> jjmin;
     jjmin.push_back(50.);
     jjmin.push_back(60.);
@@ -467,71 +629,134 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
     jjmax.push_back(110.);
     jjmax.push_back(120.);
     std::vector<float> eejjmin;
+    eejjmin.push_back(180.);
     eejjmin.push_back(200.);
     eejjmin.push_back(225.);
     eejjmin.push_back(250.);
     eejjmin.push_back(275.);
     eejjmin.push_back(300.);
     std::vector<float> eejjmax;
-    eejjmax.push_back(1000.);
+    eejjmax.push_back(10000.);
     std::vector<float> e1jjmin;
     e1jjmin.push_back(0.);
     std::vector<float> e1jjmax;
-    e1jjmax.push_back(1000.);
+    e1jjmax.push_back(10000.);
     std::vector<float> e2jjmin;
-    e2jjmin.push_back(40.);
+    e2jjmin.push_back(0.);
     std::vector<float> e2jjmax;
-    e2jjmax.push_back(1000.);
+    //e2jjmax.push_back(600.);
+    //e2jjmax.push_back(1000.);
+    e2jjmax.push_back(10000.);
     std::vector<float> metmax;
-    metmax.push_back(30.);
     metmax.push_back(35.);
     metmax.push_back(40.);
+    metmax.push_back(50.);
     std::vector<float> mtmax;
-    mtmax.push_back(1000.);
+    mtmax.push_back(10000.);
     std::vector<float> stmin;
-    stmin.push_back(100.);
+    stmin.push_back(0.);
     stmin.push_back(150.);
     stmin.push_back(200.);
     std::vector<float> stmax;
-    stmax.push_back(200.);
-    stmax.push_back(300.);
-    stmax.push_back(400.);
+    stmax.push_back(500.);
+    stmax.push_back(750.);
     stmax.push_back(1000.);
+    stmax.push_back(10000.);
     std::vector<bool> removeZ;
     removeZ.push_back(true);
     removeZ.push_back(false);
     std::vector<bool> removedRej;
-    removedRej.push_back(true);
+    //removedRej.push_back(true);
     removedRej.push_back(false);
 
-    FillHist("HighMassOptimise", 102000 , weight, 0.,102000.,102000);
-    FillHist("HighMassOptimise_sig", 102000 , 1., 0.,102000.,102000);
     
-    int icut=0;
-    for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
-      for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
-        for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
-          for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
-            for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
-              for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
-                for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
-                  for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
-                    for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
-                      for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
-                        for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
-                          for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
-                            for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
-                              for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
-				for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
-                                  for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
-                                    for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
-                                      for(unsigned int iej =0; iej< removedRej.size(); iej++){
-					
-					if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip, ptmin.at(ipt), ptmax.at(ipt2), eemin.at(iee),  eemax.at(iee2), jjmin.at(ijj), jjmax.at(ijj2), eejjmin.at(ieejj), eejjmax.at(ieejj2), e1jjmin.at(ie1jj), e1jjmax.at(ie1jj2), e2jjmin.at(ie2jj), e2jjmax.at(ie2jj2), metmax.at(imet),  mtmax.at(imt),  stmin.at(istmin),  stmax.at(istmax), removeZ.at(iZ), removedRej.at(iej))){
-					  FillHist("HighMassOptimise", icut , weight, 0.,102000.,102000);
-					  FillHist("HighMassOptimise_sig", icut , 1., 0.,102000.,102000);
+    float ihmbin=0.;
+    /*for(unsigned int iiso = 0; iiso<  isocut.size() ; iiso++){
+      for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
+	for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
+	  for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
+	    for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
+	      for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
+		for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
+		  for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
+		    for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
+		      for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
+			for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
+			  for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
+			    for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
+			      for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
+				for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
+				  for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
+				    for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
+				      for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
+					for(unsigned int iej =0; iej< removedRej.size(); iej++){
+					  ihmbin+=1.;
 					}
-					icut++;
+				      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      }*/
+
+    //  ihmbin += 1000;
+    ihmbin= 1050000;
+    FillHist("HighMassOptimise", ihmbin , weight, 0.,ihmbin,int(ihmbin));
+    FillHist("HighMassOptimise_sig", ihmbin , 1., 0.,ihmbin,int(ihmbin));
+
+    int icut=0;
+    for(unsigned int iiso = 0; iiso<  isocut.size() ; iiso++){
+      for(unsigned int ipt = 0; ipt <  ptmin.size() ; ipt++){
+	for(unsigned int ipt2 = 0; ipt2 <  ptmax.size() ; ipt2++){
+	  for(unsigned int iee = 0; iee <  eemin.size() ; iee++){
+	    for(unsigned int iee2 = 0; iee2 <  eemax.size() ; iee2++){
+	      for(unsigned int ijj = 0; ijj <  jjmin.size() ; ijj++){
+		for(unsigned int ijj2 = 0; ijj2 <  jjmax.size() ; ijj2++){
+		  for(unsigned int ieejj = 0; ieejj <  eejjmin.size() ; ieejj++){
+		    for(unsigned int ieejj2 = 0; ieejj2 <  eejjmax.size() ; ieejj2++){
+		      for(unsigned int ie1jj = 0; ie1jj <  e1jjmin.size() ; ie1jj++){
+			for(unsigned int ie1jj2 = 0; ie1jj2 <  e1jjmax.size() ; ie1jj2++){
+			  for(unsigned int ie2jj = 0; ie2jj <  e2jjmin.size() ; ie2jj++){
+			    for(unsigned int ie2jj2 = 0; ie2jj2 <  e2jjmax.size() ; ie2jj2++){
+			      for(unsigned int imet = 0; imet <  metmax.size() ; imet++){
+				for(unsigned int imt = 0; imt <  mtmax.size() ; imt++){
+				  for(unsigned int istmin = 0; istmin <  stmin.size() ; istmin++){
+				    for(unsigned int istmax = 0; istmax <  stmax.size() ; istmax++){
+				      for(unsigned int iZ =0; iZ< removeZ.size(); iZ++){
+					for(unsigned int iej =0; iej< removedRej.size(); iej++){
+					  
+					  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip, ptmin.at(ipt), ptmax.at(ipt2), eemin.at(iee),  eemax.at(iee2), jjmin.at(ijj), jjmax.at(ijj2), eejjmin.at(ieejj), eejjmax.at(ieejj2), e1jjmin.at(ie1jj), e1jjmax.at(ie1jj2), e2jjmin.at(ie2jj), e2jjmax.at(ie2jj2), metmax.at(imet),  mtmax.at(imt),  stmin.at(istmin),  stmax.at(istmax), removeZ.at(iZ), removedRej.at(iej))){
+					    if(iiso==0){
+                                              FillHist("HighMassOptimise", icut , weight, 0.,ihmbin,int(ihmbin));
+                                              FillHist("HighMassOptimise_sig", icut , 1., 0.,ihmbin,int(ihmbin));
+                                            }
+                                            else{
+                                              if(!k_running_nonprompt){
+                                                if(tight_endcapiso){
+                                                  FillHist("HighMassOptimise", icut , weight, 0.,ihmbin,int(ihmbin));
+                                                  FillHist("HighMassOptimise_sig", icut , 1., 0.,ihmbin,int(ihmbin));
+                                                }
+                                              }
+                                              else{
+                                                FillHist("HighMassOptimise", icut , isoweight, 0.,ihmbin,int(ihmbin));
+                                                FillHist("HighMassOptimise_sig", icut , 1., 0.,ihmbin,int(ihmbin));
+                                              }
+                                            }
+					  }
+					  icut++;
+					}
 				      }
 				    }
 				  }
@@ -550,7 +775,7 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
         }
       }
     }
-
+  
   }// do optimisation
 
 

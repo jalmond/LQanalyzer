@@ -79,6 +79,7 @@ void MakeFRRootFile(){
   fakes40.push_back("40_2jet_pt_eta");
   fakes40.push_back("40_3jet_pt_eta");
   fakes40.push_back("20_pt_eta");
+  fakes40.push_back("60_pt_eta");
   fakes40.push_back("20_pt_ht");
   fakes40.push_back("20_ptbarrel_ht");
   fakes40.push_back("20_ptendcap_ht");
@@ -97,6 +98,23 @@ void MakeFRRootFile(){
   fakes40.push_back("30_0905_pt_eta");
   fakes40.push_back("40_0905_pt_eta");
 
+  fakes40.push_back("20_0bjet_pt_eta");
+  fakes40.push_back("20_bjet_pt_eta");
+  fakes40.push_back("30_0bjet_pt_eta");
+  fakes40.push_back("30_bjet_pt_eta");
+  fakes40.push_back("40_0bjet_pt_eta");
+  fakes40.push_back("40_bjet_pt_eta");
+  fakes40.push_back("60_0bjet_pt_eta");
+  fakes40.push_back("60_bjet_pt_eta");
+
+  fakes40.push_back("20_awaybjet_pt_eta");
+  fakes40.push_back("20_noawaybjet_pt_eta");
+  fakes40.push_back("30_awaybjet_pt_eta");
+  fakes40.push_back("30_noawaybjet_pt_eta");
+  fakes40.push_back("40_awaybjet_pt_eta");
+  fakes40.push_back("40_noawaybjet_pt_eta");
+  fakes40.push_back("60_awaybjet_pt_eta");
+  fakes40.push_back("60_noawaybjet_pt_eta");
 
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     cout << *it2 << endl;

@@ -526,12 +526,58 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(!k_isdata&&electronLooseColl.size() >0){
     Float_t ptbins[9] = { 10.,15.,20.,25.,30.,35.,40.,60.,100.};
     Float_t htbins[6] = { 0., 30., 50., 100., 200., 400.};
-
+    Float_t etabins[5] = { 0., 0.8, 1.479, 2., 2.5};
+    
     int nbjetmc(0);
     for(unsigned int ij =0 ; ij < jetColl_lepveto20.size() ; ij++){
       if(jetColl_lepveto20.at(ij).CombinedSecVertexBtag() > 0.679) nbjetmc++;
     }
     
+    if(electronLooseColl.size()==1){
+      if(eventbase->GetEvent().PFMET() < 30.){
+	if(electronLooseColl.at(0).GetType() == 1 || electronLooseColl.at(0).GetType() == 2 || electronLooseColl.at(0).GetType() == 3 || electronLooseColl.at(0).GetType() == 4 || electronLooseColl.at(0).GetType() == 5 || electronLooseColl.at(0).GetType() == 6 ){
+	  
+	  bool use20=false;
+	  for(unsigned int ijet = 0; ijet < jetColl_lepveto20.size(); ijet++){
+	    float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl_lepveto20.at(ijet).Phi()));
+	    if(dphi > 2.5) use20=true;
+	  }
+	  bool use30=false;
+          for(unsigned int ijet = 0; ijet < jetColl_lepveto20.size(); ijet++){
+            if(jetColl_lepveto20.at(ijet).Pt() < 30.) continue;
+            float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl_lepveto20.at(ijet).Phi()));
+            if(dphi > 2.5) use30=true;
+          }
+
+	  bool use40=false;
+          for(unsigned int ijet = 0; ijet < jetColl_lepveto20.size(); ijet++){
+            if(jetColl_lepveto20.at(ijet).Pt() < 40.) continue;
+            float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl_lepveto20.at(ijet).Phi()));
+            if(dphi > 2.5) use40=true;
+          }
+	  
+	  if(use20){
+	    FillHist("MCLooseEl_20_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+	    if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+	      FillHist("MCTightEl_20_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+	    }
+	  }
+	  if(use30){
+            FillHist("MCLooseEl_30_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+              FillHist("MCTightEl_30_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+            }
+          }
+	  if(use40){
+            FillHist("MCLooseEl_40_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+              FillHist("MCTightEl_40_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+            }
+          }
+	}
+      }
+    }
+	  
     float el_pt = electronLooseColl.at(0).Pt();
     if(electronLooseColl.at(0).GetType() == 1 || electronLooseColl.at(0).GetType() == 2 || electronLooseColl.at(0).GetType() == 3 ){
       
@@ -610,13 +656,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       }
       else FillHist("MCLooseEl_closejet",   1, weight, 0.,2., 2);
       
-      
 
       FillHist("MCLooseEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
       FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 8);
       FillHist("MCLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
       FillHist("MCLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
       FillHist("MCLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
+      
       if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
 	FillHist("MCTightEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
 	FillHist("MCTightEl_pt", el_pt, weight, ptbins, 8);
@@ -644,6 +690,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	}
       }
     }
+    
+    
     if(electronLooseColl.size() >1){
 
       if(electronLooseColl.at(1).GetType() == 0 || electronLooseColl.at(1).GetType() == 7){
@@ -743,8 +791,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	  FillHist("MCLooseEl_noclosejet_nbjet", nbjetmc, weight, 0.,4.,4);
 	}
 	else FillHist("MCLooseEl_closejet",   1, weight, 0.,2., 2);
+	
 
-		
 	FillHist("MCLooseEl_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
 	FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 8);
 	FillHist("MCLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
@@ -1381,6 +1429,9 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     
     FillHist(("TightEl" + tag + "_pt_ht").Data(), el_pt, SumPt(jets), weight, ptbins_ht, 8 , htbins_pt, 8);
     FillHist(("TightEl" + tag + "_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+    if(nbjet==0)    FillHist(("TightEl" + tag + "_0bjet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+    else FillHist(("TightEl" + tag + "_bjet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+
     if(jets.size() == 1)     FillHist(("TightEl" + tag + "_1jet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
     if(jets.size() == 2)     FillHist(("TightEl" + tag + "_2jet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
     if(jets.size() > 2)     FillHist(("TightEl" + tag + "_3jet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
@@ -1436,20 +1487,26 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     //FillCLHist(sighist, ("TightEl" + tag + "").Data(), eventbase->GetEvent(), muons,tight_el,jets, weight);
 
     bool awayjet=false;
+    bool awaybjet = false;
     float ptawayjet(0.);
     /// plot FR if away jet is btagged
     for(unsigned int ijet =0 ; ijet < alljets.size() ; ijet++){
       for(unsigned int iel=0 ; iel < tight_el.size() ; iel++){
-
+	
 	float dphi =fabs(TVector2::Phi_mpi_pi(tight_el.at(iel).Phi()- alljets.at(ijet).Phi()));
 
 	if( dphi > 2.5){
 	  if(!awayjet) ptawayjet=alljets.at(ijet).Pt();
 	  awayjet=true;
+	  if(alljets.at(ijet).CombinedSecVertexBtag() > 0.679) awaybjet= true;
 	}
       }
     }
     
+    if(awaybjet)    FillHist(("TightEl" + tag + "_awaybjet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+    else FillHist(("TightEl" + tag + "_noawaybjet_pt_eta").Data(), el_pt, fabs(tight_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+
+
     if(awayjet) FillHist(("TightEl" + tag + "_ptawayjet").Data(),ptawayjet, weight,  ptbins, 8);
     if(SumPt(jets) < 30.)  FillHist(("TightEl" + tag + "_ptawayjet_ht1").Data(),ptawayjet, weight,  ptbins, 8);
     else if(SumPt(jets) < 40.)   FillHist(("TightEl" + tag + "_ptawayjet_ht2").Data(),ptawayjet, weight,  ptbins, 8);
@@ -1481,6 +1538,8 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     
     FillHist(("LooseEl" + tag + "_pt_ht").Data(), el_pt, SumPt(jets), weight, ptbins_ht, 8 , htbins_pt, 8);
     FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()), weight, ptbins, 8 , etabins, 4);
+    if(nbjet==0)    FillHist(("LooseEl" + tag + "_0bjet_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+    else FillHist(("LooseEl" + tag + "_bjet_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
     
     if(jets.size() == 1)     FillHist(("LooseEl" + tag + "_1jet_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
     if(jets.size() == 2)     FillHist(("LooseEl" + tag + "_2jet_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
@@ -1536,7 +1595,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     
     bool awayjet=false;
     float ptawayjet(0.);
-
+    bool awaybjet=false;
     /// plot FR if away jet is btagged
     for(unsigned int ijet =0 ; ijet < alljets.size() ; ijet++){
       for(unsigned int iel=0 ; iel < loose_el.size() ; iel++){
@@ -1545,10 +1604,15 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
 	if( dphi > 2.5){
 	  if(!awayjet) ptawayjet=alljets.at(ijet).Pt();
 	  awayjet=true;
+          if(alljets.at(ijet).CombinedSecVertexBtag() > 0.679) awaybjet= true;
+
 	}
       }
     }
     if(awayjet) FillHist(("LooseEl" + tag + "_ptawayjet").Data(),ptawayjet, weight,  ptbins, 8);
+
+    if(awaybjet)    FillHist(("LooseEl" + tag + "_awaybjet_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
+    else FillHist(("LooseEl" + tag + "_noawaybjet_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  weight, ptbins, 8 , etabins, 4);
 
     if(SumPt(jets) < 30.)  FillHist(("LooseEl" + tag + "_ptawayjet_ht1").Data(),ptawayjet, weight,  ptbins, 8);
     else if(SumPt(jets) < 40.)   FillHist(("LooseEl" + tag + "_ptawayjet_ht2").Data(),ptawayjet, weight,  ptbins, 8);

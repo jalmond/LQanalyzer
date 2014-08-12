@@ -28,10 +28,10 @@ analysis::
 	(cd LQAnalysis; make)
 
 fakes::
-	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; ln -s ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
 rocher::	
-	(cd rochcor2012/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ; rm librochcor2012.so ;ln -s ${LQANALYZER_DIR}/rochcor2012/Root/librochcor2012.so   .; cd ${LQANALYZER_DIR})
+	(cd rochcor2012/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ; rm librochcor2012.so ; cp ${LQANALYZER_DIR}/rochcor2012/Root/librochcor2012.so   .; cd ${LQANALYZER_DIR})
 
 
 clean::

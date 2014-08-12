@@ -97,7 +97,7 @@ then
     declare -a input_samples=("Wjets" "ttbar" "HtoZZ" "DY10to50" "DY50plus"  "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py"  "ggHtoZZ" "HtoTauTau" "HtoWW" )
         
 
-    outputdir=$LQANALYZER_DIR"/data/output/ElectonOpt/MC/"
+    outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
 fi
@@ -146,7 +146,7 @@ if [[ $runfakes  == "true" ]];
     
     runnp="True"
     declare -a input_samples=("A" "B" "C" "D") 
-    
+ 
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/ElectronOpt/"
 
@@ -172,7 +172,7 @@ if [[ $runflips  == "true" ]];
     logstep=1000
 
     runcf="True"
-    declare -a input_samples=("A" "B" "C" "D" )
+    declare -a input_samples=( "D" )
         
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"

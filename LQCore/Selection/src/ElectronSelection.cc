@@ -159,7 +159,7 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, bool apply_ipcu
       bool keep_el=true;
       for(unsigned int ij=0; ij < jets.size(); ij++){
         if(el->DeltaR(jets.at(ij)) < 0.4){
-          if(jets.at(ij).CombinedSecVertexBtag() > 0.679) keep_el=false;
+          if(jets.at(ij).CombinedSecVertexBtag() > 0.898) keep_el=false;
 	}
       }
       if(keep_el)leptonColl.push_back(*el);
@@ -173,7 +173,7 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, bool apply_ipcu
 
 bool ElectronSelection::HNIsTight(KElectron el, std::vector<KJet> jets,  double rho,  bool m_debug=false){
   
-  return HNIsTight(el, jets, rho, 0.01, 0.09,0.09, true, false, true,  m_debug);
+  return HNIsTight(el, jets, rho, 0.01, 0.09,0.05, true, false, true,  m_debug);
 }
   
 bool ElectronSelection::HNIsTight(KElectron el, std::vector<snu::KJet> jets,  double rho, double dxycut, double barrel_isocut, double endcap_isocut, bool usedr3, bool usetrkiso, bool usetight,  bool m_debug){
@@ -220,9 +220,11 @@ bool ElectronSelection::HNIsTight(KElectron el, std::vector<snu::KJet> jets,  do
   double isocut(-9999.);
   if(fabs(el.Eta()) < 1.479) isocut = barrel_isocut;
   else isocut = endcap_isocut;
-
-  if(el.Pt() < 20.) isocut = 0.07;
   
+  if(fabs(el.Eta() ) < 1.5){
+    if(el.Pt() < 20.) isocut = 0.07;
+  }
+
   ///List of cuts
   if(!ElectronID) {
     pass_selection = false;
@@ -271,9 +273,9 @@ bool ElectronSelection::HNIsTight(KElectron el, std::vector<snu::KJet> jets,  do
   for(unsigned int ij=0; ij < jets.size(); ij++){
     if(el.DeltaR(jets.at(ij)) < 0.4){
       if(jets.at(ij).CombinedSecVertexBtag() > 0.679) keep_el=false;
-      if(jets.at(ij).ChargedEMEnergyFraction() < 0.2) keep_el=false;
-      if(jets.at(ij).NeutralEMEnergyFraction() > 0.25) keep_el=false;
-      if(jets.at(ij).ChargedHadEnergyFraction() > 0.5) keep_el=false;
+      if(jets.at(ij).ChargedEMEnergyFraction() < 0.1) keep_el=false;
+      if(jets.at(ij).NeutralEMEnergyFraction() > 0.4) keep_el=false;
+      if(jets.at(ij).ChargedHadEnergyFraction() > 0.6) keep_el=false;
     }
   }
 

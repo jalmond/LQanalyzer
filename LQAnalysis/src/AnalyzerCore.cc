@@ -84,7 +84,7 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 
 
 
-double AnalyzerCore::MuonScaleFactor(double eta, double pt){
+double AnalyzerCore::MuonScaleFactor(double eta, double pt, int sys){
   
   double sf = 0.;
   if(fabs(eta) > 2.4) return 1.;
@@ -92,6 +92,10 @@ double AnalyzerCore::MuonScaleFactor(double eta, double pt){
   int bin = MuonSF->FindBin(fabs(eta),pt);
   
   sf = MuonSF->GetBinContent(bin);
+
+  if(sys==1) sf*= sqrt(1.02); 
+  if(sys==-1) sf/= sqrt(1.02); 
+  
   return sf;
   
 }
