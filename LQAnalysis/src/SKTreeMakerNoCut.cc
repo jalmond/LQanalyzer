@@ -101,7 +101,6 @@ void SKTreeMakerNoCut::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   cout << "MC CHANNEL = " << k_channel << endl;
-
   
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
   DeclareVariable(out_electrons, "KElectrons", "LQTree");
@@ -137,6 +136,8 @@ void SKTreeMakerNoCut::BeginCycle() throw( LQError ){
     if(k_channel.Contains("Electron")){
       AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
       AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+      AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
       AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
       AddTriggerToList("HLT_Ele27_WP80_v");
       AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
@@ -168,6 +169,8 @@ void SKTreeMakerNoCut::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
     AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
     AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+    AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
     AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
     AddTriggerToList("HLT_Ele27_WP80_v");
     AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
