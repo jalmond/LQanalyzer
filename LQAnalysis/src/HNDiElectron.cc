@@ -138,6 +138,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
+  FillEventCutFlow("NoCut_w",weight);
   FillEventCutFlow("NoCut",1.);
 
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
@@ -1068,40 +1069,75 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   FillCLHist(sighist, "SSee_DiJet_20_nor", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, ee_weight_20_nor);
   FillCLHist(sighist, "SSee_DiJet_40_nor", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, ee_weight_40_nor);
+  ///                                                                                           pt2, pt1  ,eemin, max, jjmin,max, eehhmin,max, STmin,max, j1  
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20., 15., 20., 60., 40.,120. , 80., 200. , 30., 80., 260., 20., 60., 190.)) 
+    FillCLHist(sighist, "40MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15,   10., 60., 20.,120. , 80., 200. , 30., 80., 260., 20., 40., 170.)) 
+    FillCLHist(sighist, "50MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15,   10., 55., 20.,120. , 80., 200. , 30., 80., 260., 20.,40., 160.))  
+    FillCLHist(sighist, "60MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15,   10., 80., 20.,100. , 90., 200. , 25., 80., 260., 20., 60., 160.)) 
+    FillCLHist(sighist, "70MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15,   10., 10000., 20.,120. , 100., 200. , 30., 80., 260., 20., 60., 120.))  
+    FillCLHist(sighist, "80MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+
+  /// MID MASS
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15, 15., 10000., 50.,110. , 100., 400. , 35., 100., 10000., 25.,60.,140.))  FillCLHist(sighist, "90MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15, 15., 10000., 50.,110. , 100., 500. , 35., 100., 10000., 25., 60., 130.))  FillCLHist(sighist, "100MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 25, 20, 15., 10000., 50.,110. , 125., 10000. , 35., 120., 10000., 25., 90., 17.))  FillCLHist(sighist, "125MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 35, 25, 15., 10000., 50.,110. , 150., 10000. , 35., 160., 10000., 25.,110.,180.))  FillCLHist(sighist, "150MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 45, 30, 15., 10000., 50.,110. , 170., 10000. , 35., 160., 10000., 25., 130., 210.))  FillCLHist(sighist, "175MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 55, 30, 15., 10000., 50.,110. , 230., 10000. , 35., 180., 10000., 25., 130., 210.))  FillCLHist(sighist, "200MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+
+  /// HIGH MASS
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 65, 35, 20., 10000., 50.,110. , 250., 10000. , 35., 240., 10000., 35., 0., 1000.))  FillCLHist(sighist, "225MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 55, 35, 20., 10000., 50.,110. , 235., 10000. , 35., 180., 10000.,30., 0., 1000.))  FillCLHist(sighist, "250MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 80, 45, 20., 10000., 50.,110. , 250., 10000. , 35., 220., 10000.,30., 0., 1000.))  FillCLHist(sighist, "275MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 90, 45, 20., 10000., 50.,110. , 290., 10000. , 35., 220., 10000.,30., 0., 1000.)) FillCLHist(sighist, "300MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 300., 10000. , 35., 280., 10000.,30., 0., 1000.)) FillCLHist(sighist, "325MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 350., 10000. , 35., 280., 10000.,30., 0., 1000.)) FillCLHist(sighist, "350MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 350., 10000. , 35., 320., 10000.,45., 0., 1000.)) FillCLHist(sighist, "375MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 300., 10000. , 35., 350., 10000.,30., 0., 1000.)) FillCLHist(sighist, "400MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 300., 10000. , 35., 400., 10000.,30., 0., 1000.)) FillCLHist(sighist, "500MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 300., 10000. , 35., 400., 10000.,30., 0., 1000.)) FillCLHist(sighist, "600MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 20., 10000., 50.,110. , 300., 10000. , 35., 400., 10000.,30., 0., 1000.)) FillCLHist(sighist, "700MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
   
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20., 10., 20., 60., 40.,120. , 0., 250. , 30., 0., 200.))  FillCLHist(sighist, "40MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 10, 10., 60., 20.,120. , 0., 250. , 30., 0., 240.))  FillCLHist(sighist, "50MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 10, 10., 55., 0.,120. , 0., 210. , 30., 0., 200.))  FillCLHist(sighist, "60MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 10, 10., 165., 0.,120. , 90., 280. , 30., 0., 300.))  FillCLHist(sighist, "70MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 10, 10., 10000., 0.,120. , 90., 300. , 30., 0., 340.))  FillCLHist(sighist, "80MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15, 15., 10000., 40.,110. , 100., 400. , 35., 100., 10000.))  FillCLHist(sighist, "90MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15, 20., 160., 40.,110. , 100., 500. , 35., 100., 10000.))  FillCLHist(sighist, "100MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 20, 15, 15., 10000., 40.,110. , 125., 10000. , 35., 120., 10000.))  FillCLHist(sighist, "125assRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 35, 25, 15., 10000., 40.,110. , 150., 10000. , 35., 140., 10000.))  FillCLHist(sighist, "150MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 45, 30, 15., 10000., 40.,110. , 170., 10000. , 35., 160., 10000.))  FillCLHist(sighist, "175MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 45, 30, 15., 10000., 40.,110. , 200., 10000. , 35., 180., 10000.))  FillCLHist(sighist, "200MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 55, 35, 15., 10000., 40.,110. , 220., 10000. , 35., 180., 10000.))  FillCLHist(sighist, "225assRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 55, 35, 15., 10000., 40.,110. , 240., 10000. , 35., 180., 10000.))  FillCLHist(sighist, "250MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-
-  
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 80, 45, 15., 10000., 50.,110. , 250., 10000. , 35., 220., 10000.))  FillCLHist(sighist, "275MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 90, 45, 15., 10000., 50.,110. , 290., 10000. , 40., 220., 10000.))  FillCLHist(sighist, "300MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 300., 10000. , 40., 280., 10000.))  FillCLHist(sighist, "325MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 350., 10000. , 40., 280., 10000.))  FillCLHist(sighist, "350MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 350., 10000. , 40., 300., 10000.))  FillCLHist(sighist, "375MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 300., 10000. , 40., 350., 10000.))  FillCLHist(sighist, "400MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 300., 10000. , 40., 400., 10000.))  FillCLHist(sighist, "500MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 300., 10000. , 40., 400., 10000.))  FillCLHist(sighist, "600MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip , 100, 45, 15., 10000., 50.,110. , 300., 10000. , 40., 400., 10000.))  FillCLHist(sighist, "700MassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
-  
   
 
-
+  
   //// Low Mass Signal region
   if(LowMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto, k_running_chargeflip) ) {
     FillCLHist(sighist, "LowMassRegion", eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto, weight);
+    
+    if(IsTight(electronAnalysisColl.at(0), jetColl, eventbase->GetEvent().JetRho()) &&  IsTight(electronAnalysisColl.at(1), jetColl, eventbase->GetEvent().JetRho())){
+      FillHist("LowMass_TT", electronAnalysisColl.at(0).Pt() , 1.,  0. , 100., 20);
+      FillHist("LowMass_TT_w",electronAnalysisColl.at(0).Pt() , weight,  0. , 100., 20);
+      FillHist("LowMass_TT", electronAnalysisColl.at(1).Pt() , 1.,  0. , 100., 20);
+      FillHist("LowMass_TT_w",electronAnalysisColl.at(1).Pt() , weight,  0. , 100., 20);
+      
+    }
+    if(IsTight(electronAnalysisColl.at(0), jetColl,  eventbase->GetEvent().JetRho()) &&  !IsTight(electronAnalysisColl.at(1), jetColl ,eventbase->GetEvent().JetRho())){
+      FillHist("LowMass_TL", electronAnalysisColl.at(0).Pt() ,1.,  0. , 100., 20);
+      FillHist("LowMass_TL_w", electronAnalysisColl.at(0).Pt() , weight,  0. , 100., 20);
+      FillHist("LowMass_TL", electronAnalysisColl.at(1).Pt() ,1.,  0. , 100., 20);
+      FillHist("LowMass_TL_w", electronAnalysisColl.at(1).Pt() , weight,  0. , 100., 20);
+
+    }
+    if(!IsTight(electronAnalysisColl.at(0),jetColl,  eventbase->GetEvent().JetRho()) &&  IsTight(electronAnalysisColl.at(1),  jetColl, eventbase->GetEvent().JetRho())){
+      FillHist("LowMass_LT", electronAnalysisColl.at(0).Pt() ,1.,  0. , 100., 20);
+      FillHist("LowMass_LT_w", electronAnalysisColl.at(0).Pt() , weight,  0. , 100., 20);
+      FillHist("LowMass_LT", electronAnalysisColl.at(1).Pt() ,1.,  0. , 100., 20);
+      FillHist("LowMass_LT_w", electronAnalysisColl.at(1).Pt() , weight,  0. , 100., 20);
+    }
+    if(!IsTight(electronAnalysisColl.at(0), jetColl,  eventbase->GetEvent().JetRho()) &&  !IsTight(electronAnalysisColl.at(1), jetColl,  eventbase->GetEvent().JetRho())){
+      FillHist("LowMass_LL",   electronAnalysisColl.at(0).Pt() ,1.,  0. , 100., 20);
+      FillHist("LowMass_LL_w",electronAnalysisColl.at(0).Pt() , weight,  0. , 100., 20);
+      FillHist("LowMass_LL",   electronAnalysisColl.at(1).Pt() ,1.,  0. , 100., 20);
+      FillHist("LowMass_LL_w",electronAnalysisColl.at(1).Pt() , weight,  0. , 100., 20);
+    }
+
+
     bool hasendcap_highiso=false;
     if(fabs(electronAnalysisColl.at(0).Eta() > 1.5)) {
       if(electronAnalysisColl.at(0).RelIso03(eventbase->GetEvent().JetRho() ,electronAnalysisColl.at(0).Pt())> 0.05)  hasendcap_highiso=true;
@@ -1201,7 +1237,7 @@ void HNDiElectron::CheckSignalRegion(  std::vector<snu::KElectron> electrons, st
 }
 
 
-bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip , float pt1, float pt2, float eemin, float eemax, float jjmin, float jjmax, float eejjmin, float eejjmax, float metmax, float stmin, float stmax){
+bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip , float pt1, float pt2, float eemin, float eemax, float jjmin, float jjmax, float eejjmin, float eejjmax, float metmax, float stmin, float stmax, float jetpt1, float e2jjmin, float e2jjmax){
   
   if(electrons.size() != 2 ) return false;
   if(electrons.at(0).Pt() < pt1) return false;
@@ -1216,6 +1252,7 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
   if(mass > eemax) return false;
   if(fabs(mass-90.) < 10.) return false;
 
+  if(jets.at(0).Pt() < jetpt1) return false;
   
   float wmassjj= 100000.;
   int indexj1=0;
@@ -1268,8 +1305,8 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
   //if(e1jj.M() < e1jjmin) return false;
 
   snu::KParticle e2jj = electrons.at(1)+ jets.at(indexj1) + jets.at(indexj2) ;
-  //if(e2jj.M() > e2jjmax) return false;;
-  //if(e2jj.M() < e2jjmin) return false;;
+  if(e2jj.M() > e2jjmax) return false;;
+  if(e2jj.M() < e2jjmin) return false;;
   
   //if(eventbase->GetEvent().PFSumET() < 200.) return false;;
   //if(eventbase->GetEvent().PFSumET() > 1500.) return false;;
@@ -1290,7 +1327,7 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     float emfrac = jets.at(ij).NeutralEMEnergyFraction() +jets.at(ij).ChargedEMEnergyFraction();
-    if(emfrac > 0.7) return false;
+    //if(emfrac > 0.7) return false;
     if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
   }
 
@@ -1329,29 +1366,20 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   if(jj.M() > 120.) return false;
 
   snu::KParticle eejj = electrons.at(0) + electrons.at(1)+ jets.at(indexj1) + jets.at(indexj2) ;
-  if(eejj.M() > 250.)return false;
-
-
-  float dphi1 = TVector2::Phi_mpi_pi(electrons.at(0).Phi()- eventbase->GetEvent().PFMETphi());
-  float MT1 = sqrt(2.* electrons.at(0).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi1)));
-
-  float dphi2 = TVector2::Phi_mpi_pi(electrons.at(1).Phi()- eventbase->GetEvent().PFMETphi());
-  float MT2 = sqrt(2.* electrons.at(1).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi2)));
-  if(MT1 > 70.) return false;
-  if(MT2 > 70.) return false;
+  if(eejj.M() > 200.)return false;
 
   if(eventbase->GetEvent().PFMET() > 30.) return false;
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     float emfrac = jets.at(ij).NeutralEMEnergyFraction() +jets.at(ij).ChargedEMEnergyFraction();
-    if(emfrac > 0.65) return false;
+    //if(emfrac > 0.65) return false;
     if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
   }
   if(nbjet > 0) return false;
 
-  if(electrons.at(0).NBrems() > 3) return false;
-  if(electrons.at(1).NBrems() > 3) return false;
+  //  if(electrons.at(0).NBrems() > 3) return false;
+  //  if(electrons.at(1).NBrems() > 3) return false;
 
   
 
@@ -1372,6 +1400,7 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   if(ee.M()  < 10.) return false;
   if(fabs(ee.M()-90.)  < 10.) return false;
 
+  if(jets.at(0).Pt() < 25.) return false;
 
   float wmassjj= 100000.;
   int indexj1=0;
@@ -1388,7 +1417,7 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   }
   snu::KParticle jj = jets.at(indexj1) + jets.at(indexj2);
   if(jj.M() > 110.) return false;
-  if(jj.M() > 50.) return false;
+  if(jj.M() < 50.) return false;
 
 
   if(eventbase->GetEvent().PFMET() > 35.) return false;
@@ -1396,13 +1425,13 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     float emfrac = jets.at(ij).NeutralEMEnergyFraction() +jets.at(ij).ChargedEMEnergyFraction();
-    if(emfrac > 0.7) return false;
+    //if(emfrac > 0.7) return false;
     if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
   }
   if(nbjet > 0) return false;
 
-  if(electrons.at(0).NBrems() > 3) return false;
-  if(electrons.at(1).NBrems() > 3) return false;
+  //if(electrons.at(0).NBrems() > 3) return false;
+  //if(electrons.at(1).NBrems() > 3) return false;
 
 
   return true;
@@ -1411,7 +1440,7 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
 
 bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
   if(electrons.size() != 2 ) return false;
-  if(electrons.at(0).Pt() < 50.) return false;
+  if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
   if(!runchargeflip){
     if(!SameCharge(electrons)) return false;
@@ -1420,8 +1449,6 @@ bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> elect
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
   if(ee.M()  < 40.) return false;
   if(fabs(ee.M()-90.)  < 10.) return false;
-
-  if(eventbase->GetEvent().PFSumET() < 400.) return false;;
 
   float wmassjj= 100000.;
   int indexj1=0;
@@ -1441,8 +1468,8 @@ bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> elect
   if(jj.M() < 50.) return false;
 
   if(eventbase->GetEvent().PFMET() > 40.) return false;
-  if(jets.at(0).DeltaR(jets.at(1)) > 2.5) return false;
-
+  //if(jets.at(0).DeltaR(jets.at(1)) > 2.5) return false;
+  if(jets.at(0).Pt() < 30.) return false;
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
@@ -1547,18 +1574,19 @@ void HNDiElectron::FillEventCutFlow(TString cut, float weight){
 
   }
   else{
-    AnalyzerCore::MakeHistograms("eventcutflow",10,0.,10.);
+    AnalyzerCore::MakeHistograms("eventcutflow",11,0.,11.);
 
     GetHist("eventcutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(5,"DiEl");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(6,"eedR");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(7,"SSDiEl");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(8,"SS_lepveto");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(9,"SS_samevertex");
-    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(10,"Preselection");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(2,"NoCut_w");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(3,"EventCut");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(4,"TriggerCut");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(5,"VertexCut");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(6,"DiEl");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(7,"eedR");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(8,"SSDiEl");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(9,"SS_lepveto");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(10,"SS_samevertex");
+    GetHist("eventcutflow")->GetXaxis()->SetBinLabel(11,"Preselection");
   }
   
 }
