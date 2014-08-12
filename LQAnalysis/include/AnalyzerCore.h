@@ -48,12 +48,13 @@ class AnalyzerCore : public LQCycleBase {
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
   float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets ,std::vector<snu::KJet> alljets , int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, bool applypucorr);
-
+  
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets,  double rho);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut ,int nbjet, float ht, bool user, bool useht, bool usenjet);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets , int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut ,int nbjet, float ht, bool close1, bool close2);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut );
-  float Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets , int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool  usetight,TString cut, int eventtype, bool setr1);
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets, double rho, double dxy, double biso, double eciso, TString cut);
+  
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets, int njets, double rho,bool usedr3, bool usetrkiso, bool usetight,  double dxy, double biso, double eiso, TString cut);
+
+  float Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, int eventtype, bool setr1);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets, double rho);
   

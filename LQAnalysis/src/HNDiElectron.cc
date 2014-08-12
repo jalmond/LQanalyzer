@@ -937,13 +937,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
     
     
-    ee_weight_20_nor *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.05,true,false,true,"20",nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
+    ee_weight_20_nor *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01, 0.09, 0.05, "20");
     
-    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.05,true,false,true,"40",nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
+    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.05, "40");
 
-    ee_weight_40_nor *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.05,true,false,true,"60",nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
+    ee_weight_40_nor *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.05, "60");
 
-    ee_weight_30_0905_nor *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.05,true,false,true,"30_0905",nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
+    ee_weight_30_0905_nor *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01, 0.09, 0.05,"30_0905");
     
     weight*= ee_weight;
     

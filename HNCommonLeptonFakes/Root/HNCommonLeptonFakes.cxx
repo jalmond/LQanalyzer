@@ -486,7 +486,7 @@ void HNCommonLeptonFakes::ApplyRealSystematic(int type ){
 
 
 
-float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut, int nbjet, float ht, bool closejet1, bool closejet2){
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut){
 
   if(electrons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
@@ -514,194 +514,28 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
   
-  TString cut1, cut2;
-  cut1 = "Loosedxy01_iso_b090_e090" ;
-  cut2 = "Loosedxy01_iso_b090_e090" ;
-
-  
-  //r1 = getEfficiency_electron(0,_el1_pt, _el1_eta, cut1);
-  //r2 = getEfficiency_electron(0,_el2_pt, _el2_eta,cut2);
-  fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut1);
-  fr2= getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut2);
-  
   r1=1.;
   r2=1.;
-
-  
-  // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
-
-  if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
-  if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
-
-  if(ev_weight!=ev_weight){
-    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
-  }
-
-
-  return ev_weight;
-}
-
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut, int nbjet, float ht, bool user, bool useht, bool usenjet ){
-
-  if(electrons.size()!=2) {
-    cout << "DiLepton event weight requires 2 muons." << endl;
-    return (0.);
-  }
-
-  float _el1_pt=electrons.at(0).Pt();
-  float _el2_pt=electrons.at(1).Pt();
-
-  //// vectors need to be ordered in pT
-  if(_el1_pt < _el2_pt) return -100000000000.;
-
-
-  float _el1_eta=fabs(electrons.at(0).Eta());
-  float _el2_eta=fabs(electrons.at(1).Eta());
-
-  if(m_debug){
-    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
-    cout << "el1 pT = " << _el1_pt << endl;
-    cout << "el2 pT = " << _el2_pt << endl;
-  }
-
-  if(_el1_pt > 100.) _el1_pt = 99.;
-  if(_el2_pt > 100.) _el2_pt = 99.;
-
-  float fr1(0.),fr2(0.),r1(0.),r2(0.);
-  
-  TString rcut = cut;
-  if(njets == 0) rcut += "_0jet";
-  if(njets == 1) rcut += "_1jet";
-  if(njets > 1) rcut += "_2jet";
-
-  //r1 = getEfficiency_electron(0,_el1_pt,  _el1_eta , rcut);
-  //r2 = getEfficiency_electron(0,_el2_pt,  _el2_eta , rcut);
-  //if(!user){
-  r1=1.;
-  r2=1.;
-  //}
 
   TString fcut = cut;
   if(njets == 1) fcut += "_1jet";
   if(njets == 2) fcut += "_2jet";
   if(njets > 2) fcut += "_3jet";
-  if(useht){
-    if(ht < 20.) ht=21.;
-    fr1=  getFakeRate_electron(0,_el1_pt, ht,cut);
-    fr2=  getFakeRate_electron(0,_el2_pt, ht,cut);
-  }
-  else{
-    if(usenjet){
-      fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,fcut);
-      fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,fcut);
-    }
-    else{
-      if(user){
-	if(nbjet==0) cut = "0bjet_" + cut ;
-	else cut = "bjet_" + cut ;
-      }
-      fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
-      fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
-      
-      if(cut.Contains("20")){
 
-	if(_el1_eta > 1.5){
-	  if(_el1_pt > 15. && _el1_pt < 20.)  fr1= 0.175;
-	}
-	if(_el2_eta > 1.5){
-	  if(_el2_pt > 15. && _el2_pt < 20.)  fr2= 0.175;
-	} 
-	
-	//if(nbjet > 0){
-	//fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,fcut);
-	// fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,fcut);
-	//}
-      }
-    }
-  }
-
+  fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
+  fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
   
-  /*
-  if(_el1_eta < 1.5){
-    if(ht < 20 ) {
-      if(_el1_pt < 15.) fr1*= 1.5;
-      if(_el1_pt > 15. && _el1_pt < 25.) fr1*= 1.3;
+  if(cut.Contains("20")){
+    
+    if(_el1_eta > 1.5){
+      if(_el1_pt > 15. && _el1_pt < 20.)  fr1= 0.175;
     }
-    else if( ht < 30.) {
-      if(_el1_pt > 10. && _el1_pt < 20.) fr1*= 1.5;
-    }
-    else if(ht < 60){
-      if(_el1_pt > 15. && _el1_pt < 20.)  fr1*= 1.3;
-    }
-    else if(ht < 80) {
-      if(_el1_pt < 15) fr1*= 1.5;
-    }
-    else{
-      if(_el1_pt < 15) fr1/= 1.2;
-      if(_el1_pt > 20. && _el1_pt < 35.) fr1*= 1.5;
-    }
+    if(_el2_eta > 1.5){
+      if(_el2_pt > 15. && _el2_pt < 20.)  fr2= 0.175;
+    } 
+    
   }
-  else{
-    if(ht < 20 ) {
-      if( _el1_pt < 30.) fr1*= 1.5;
-    }
-    else if( ht < 30.) {
-      if(_el1_pt > 15. && _el1_pt < 20.)  fr1*= 1.5;
-    }
-    else if(ht < 60){
-      if(_el1_pt > 10. && _el1_pt < 20.)  fr1*= 1.5;
-    }
-    else if(ht < 80) {
-      if(_el1_pt < 30) fr1*= 1.5;
-      if(el1_pt > 15. && _el1_pt < 30) fr1*= 1.3;
-    }
-    else{
-      if(_el1_pt > 15. && _el1_pt < 20.)  fr1*= 1.5;
-    }
-  }
-  
 
-
-  if(_el2_eta < 1.5){
-    if(ht < 20 ) {
-      if(_el2_pt < 15.) fr2*= 1.5;
-      if(_el2_pt > 15. && _el2_pt < 25.) fr2*= 1.3;
-    }
-    else if( ht < 30.) {
-      if(_el2_pt > 10. && _el2_pt < 20.) fr2*= 1.5;
-    }
-    else if(ht < 60){
-      if(_el2_pt > 15. && _el2_pt < 20.)  fr2*= 1.3;
-    }
-    else if(ht < 80) {
-      if(_el2_pt < 15) fr2*= 1.5;
-    }
-    else{
-      if(_el2_pt < 15) fr2/= 1.2;
-      if(_el2_pt > 20. && _el2_pt < 35.) fr2*= 1.5;
-    }
-  }
-  else{
-    if(ht < 20 ) {
-      if( _el2_pt < 30.) fr2*= 1.5;
-    }
-    else if( ht < 30.) {
-      if(_el2_pt > 15. && _el2_pt < 20.)  fr2*= 1.5;
-    }
-    else if(ht < 60){
-      if(_el2_pt > 10. && _el2_pt < 20.)  fr2*= 1.5;
-    }
-    else if(ht < 80) {
-      if(_el2_pt < 30) fr2*= 1.5;
-      if(el2_pt > 15. && _el2_pt < 30) fr2*= 1.3;
-    }
-    else{
-      if(_el2_pt > 15. && _el2_pt < 20.)  fr2*= 1.5;
-    }
-  }
-  */
-  
 
   // Calculate event weight
   float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
@@ -716,60 +550,6 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
   return ev_weight;
 }
-
-float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut){
-
-  if(electrons.size()!=2) {
-    cout << "DiLepton event weight requires 2 muons." << endl;
-    return (0.);
-  }
-  
-  float _el1_pt=electrons.at(0).Pt();
-  float _el2_pt=electrons.at(1).Pt();
-
-  //// vectors need to be ordered in pT
-  if(_el1_pt < _el2_pt) return -100000000000.;
-
-  
-  float _el1_eta=fabs(electrons.at(0).Eta());
-  float _el2_eta=fabs(electrons.at(1).Eta());
-
-  if(m_debug){
-    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
-    cout << "el1 pT = " << _el1_pt << endl;
-    cout << "el2 pT = " << _el2_pt << endl;
-  }
-
-  if(_el1_pt > 100.) _el1_pt = 99.;
-  if(_el2_pt > 100.) _el2_pt = 99.;
-
-  float fr1(0.),fr2(0.),r1(0.),r2(0.);
-
-  TString rcut = cut;
-  if(njets == 0) rcut += "_0jet";
-  if(njets == 1) rcut += "_1jet";
-  if(njets > 1) rcut += "_2jet";
-  //r1 = getEfficiency_electron(0,_el1_pt,  _el1_eta , rcut);
-  //  r2 = getEfficiency_electron(0,_el2_pt,  _el2_eta , rcut);
-  r1=1.;
-  r2=1.;
-  fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
-  fr2= getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
-
-  // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
-
-  if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
-  if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
-
-  if(ev_weight!=ev_weight){
-    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
-  }
-
-
-  return ev_weight;
-}
-
 
 
 float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight, TString cut, int eventtype, bool user1){
@@ -824,59 +604,6 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 
   return ev_weight;
 }
-
-
-float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, int njets, bool isel1tight, bool isel2tight){
-  
-  if(electrons.size()!=2) {
-    cout << "DiLepton event weight requires 2 muons." << endl;
-    return (0.);
-  }
-  
-  float _el1_pt=electrons.at(0).Pt();
-  float _el2_pt=electrons.at(1).Pt();
-  
-  //// vectors need to be ordered in pT
-  if(_el1_pt < _el2_pt) return -100000000000.;
-
- 
-  float _el1_eta=electrons.at(0).Eta();
-  float _el2_eta=electrons.at(1).Eta();
-
-  if(m_debug){
-    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
-    cout << "el1 pT = " << _el1_pt << endl;
-    cout << "el2 pT = " << _el2_pt << endl;
-  }
-  
-  if(_el1_pt > 100.) _el1_pt = 99.;
-  if(_el2_pt > 100.) _el2_pt = 99.;
-
-
-  float fr1(0.),fr2(0.),r1(0.),r2(0.);  
-
-  r1 = getEfficiency_electron(0,_el1_pt, _el1_eta);
-  r2 = getEfficiency_electron(0,_el2_pt, _el2_eta);
-  
-  fr1= getFakeRate_electron(0,_el1_pt, _el1_eta); 
-  fr2= getFakeRate_electron(0,_el2_pt, _el2_eta); 
-  
-  if(njets==0) fr1 = fr1*1.45;
-  if(njets==0) fr2 = fr2*1.45;
-
-  
-  // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight);
-
-  if(ev_weight!=ev_weight){
-    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
-  }
-
-
-  return ev_weight;
-
-}
-
 
 
 

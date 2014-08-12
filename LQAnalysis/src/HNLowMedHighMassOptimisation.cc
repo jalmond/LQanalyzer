@@ -206,11 +206,10 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
   float isoweight=weight;
   if(k_running_nonprompt){
     
-    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.09,true,false,true,"30",nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
-    
+    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho());
     weight*= ee_weight;
     
-    float ee_weight_0905 = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho(), 0.01,0.09,0.09,true,false,true,"30_0905",  nbjet, SumPt(jetColl_lepveto_mva), false, false, false);
+    float ee_weight_0905 = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho());
     isoweight*= ee_weight_0905;
   }
   
