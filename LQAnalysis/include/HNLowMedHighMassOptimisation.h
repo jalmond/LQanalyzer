@@ -1,15 +1,15 @@
-#ifndef HNDiElectron_h
-#define HNDiElectron_h
+#ifndef HNLowMedHighMassOptimisation_h
+#define HNLowMedHighMassOptimisation_h
 
 #include "AnalyzerCore.h"
 
 
-class HNDiElectron : public AnalyzerCore {
+class HNLowMedHighMassOptimisation : public AnalyzerCore {
 
  public:
   //// constructors                                                                                                                                                             
-  HNDiElectron();
-  ~HNDiElectron();
+  HNLowMedHighMassOptimisation();
+  ~HNLowMedHighMassOptimisation();
 
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
@@ -27,7 +27,7 @@ class HNDiElectron : public AnalyzerCore {
   
   void CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
   bool LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
-  bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip , float pt2, float pt1, float eemin, float eemax, float jjmin, float jjmax, float eejjmin, float eejjmax, float metmax,  float stmin, float stmax);
+  bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip , float pt2, float pt1, float eemin, float eemax, float jjmin, float jjmax, float eejjmin, float eejjmax, float e1jjmin, float e1jjmax, float e2jjmin, float e2jjmax, float metmax, float mtmax, float stmin, float stmax, bool removeZ, bool removeej);
   bool MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   
@@ -44,6 +44,6 @@ class HNDiElectron : public AnalyzerCore {
   float m_os_Z;
   float m_ss_Z;
 
-  ClassDef ( HNDiElectron, 1);
+  ClassDef ( HNLowMedHighMassOptimisation, 1);
 };
 #endif

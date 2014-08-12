@@ -150,7 +150,7 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (1.), ymax( 1000000.);
+	float ymin (0.), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
@@ -461,7 +461,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (1.), ymax( 1000000.);
+  float ymin (0.), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
   /// Set Ranges / overflows
@@ -469,6 +469,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   cout << "Ymax = " << ymax << endl;
   hdata->GetXaxis()->SetRangeUser(xmin,xmax);
+  
   hdata->GetYaxis()->SetRangeUser(ymin, ymax);
 
   hdata->SetMarkerStyle(20);
@@ -521,7 +522,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   if(sample.Contains("qcd"))
     {
-      list.push_back(make_pair("QCDEl",0.50));
+      list.push_back(make_pair("QCDEl",0.30));
     }
 
   if(sample.Contains("ttv")){
@@ -533,6 +534,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   //////// Diboson ////////
   if(sample.Contains("wz_py")){    
     list.push_back(make_pair("WZ_py",0.15));
+    //list.push_back(make_pair("WgammaE",0.22));
+    //list.push_back(make_pair("WgammaTau",0.22));
+
   }
   
   if(sample.Contains("zz_py")){
@@ -547,6 +551,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_py",0.15));
     list.push_back(make_pair("ZZ_py",0.15));
     list.push_back(make_pair("WW_py",0.15));
+    ////list.push_back(make_pair("WgammaE",0.22));
+    //list.push_back(make_pair("WgammaTau",0.22));
   }
   if(sample.Contains("vv_mg")){
     list.push_back(make_pair("WZtollqq_mg",0.15));
@@ -556,14 +562,17 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("ZZtollqq_mg",0.15));
     list.push_back(make_pair("ZZtollll_mg",0.15));
     list.push_back(make_pair("WW_mg",0.15));
-    list.push_back(make_pair("WgammaE",0.22));
-    list.push_back(make_pair("WgammaTau",0.22));
+    //list.push_back(make_pair("WgammaE",0.22));
+    //list.push_back(make_pair("WgammaTau",0.22));
   }
 
   if(sample.Contains("wz_mg")){
     list.push_back(make_pair("WZtollqq_mg",0.15));
     list.push_back(make_pair("WZtoqqln_mg",0.15));
     list.push_back(make_pair("WZtollln_mg",0.15));
+    //list.push_back(make_pair("WgammaE",0.22));
+    //list.push_back(make_pair("WgammaTau",0.22));
+
   }
   
   if(sample.Contains("zz_mg")){
@@ -622,11 +631,11 @@ vector<pair<TString,float> >  InitSample (TString sample){
     
   }
   if(sample.Contains("nonprompt")){
-    list.push_back(make_pair("nonprompt",0.5));
+    list.push_back(make_pair("nonprompt",0.3));
   }
 
   if(sample.Contains("chargeflip")){
-    list.push_back(make_pair("chargeflip",0.5));
+    list.push_back(make_pair("chargeflip",0.2));
   }
 
   if(list.size()==0) cout << "Error in making lists" << endl;
@@ -971,8 +980,8 @@ bool HistInGev(string name){
 
 float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
-  float yscale= 1.4;
-  if(!showdata) yscale = 1.2;
+  float yscale= 1.5;
+  if(!showdata) yscale = 1.4;
   
   cout << name << endl;
   if(name.find("eta")!=string::npos) yscale*=1.5;
@@ -1319,6 +1328,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > zz_mg = InitSample("zz_mg");
   vector<pair<TString,float> > zz_pow = InitSample("zz_pow");
   vector<pair<TString,float> > vv_mg = InitSample("vv_mg");
+  vector<pair<TString,float> > vv_py = InitSample("vv_py");
   
   // Zjet
   vector<pair<TString,float> > z = InitSample("dy_");
@@ -1342,10 +1352,10 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("nonprompt",0.5));
+  np.push_back(make_pair("nonprompt",0.3));
   
   vector<pair<TString,float> > cf;
-  cf.push_back(make_pair("chargeflip",0.5));
+  cf.push_back(make_pair("chargeflip",0.2));
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
     if(listofsamples.at(i) =="ww_py")samples.push_back(make_pair(make_pair(ww_py,wwcol),"WW")); 
@@ -1354,6 +1364,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="zz_mg")samples.push_back(make_pair(make_pair(zz_mg,zzcol),"ZZ"));
     if(listofsamples.at(i) =="wz_mg")samples.push_back(make_pair(make_pair(wz_mg,wzcol),"WZ"));
     if(listofsamples.at(i) =="zz_pow")samples.push_back(make_pair(make_pair(zz_pow,zzcol),"ZZ"));
+    if(listofsamples.at(i) =="vv_py")samples.push_back(make_pair(make_pair(vv_py,vvcol),"VV"));
     if(listofsamples.at(i) =="vv_mg")samples.push_back(make_pair(make_pair(vv_mg,vvcol),"VV"));
 
     if(listofsamples.at(i) =="ss_mg")samples.push_back(make_pair(make_pair(ss_mg,sscol),"SS"));
@@ -1409,7 +1420,6 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   TH1* h_nominal = MakeSumHist2(mcstack.at(0));
-
   MakeLabel(0.2,0.8);
 
   TH1* errorband = MakeErrorBand(h_nominal,hup, hdown) ;
@@ -1422,7 +1432,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     mcstack.at(0)->Draw("HIST9same");
     hdata->Draw("9samepX0");
     hdata->Draw("axis same");
-    //errorband->Draw("9E2same");
+    errorband->Draw("E2same");
 
     /// Draw data again
     const double alpha = 1 - 0.6827;
@@ -1540,7 +1550,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
   if(usedata){
-    hdata_clone_for_log->GetYaxis()->SetRangeUser(ymin, ymax*100.);
+    hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax*100.);
     hdata_clone_for_log->Draw("p");
     mcstack.at(0)->Draw("HIST same");
     hdata_clone_for_log->Draw("p same");

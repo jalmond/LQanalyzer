@@ -53,7 +53,6 @@ then
     
     cycle="HNDiElectron"
     skinput="True"
-    
     njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
@@ -61,7 +60,7 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "Zbb" "WW_mg" "WgammaE" "WgammaTau" "Wbb")
+    declare -a input_samples=("WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "Wjets" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wgamma" "HtoZZ" "Zgamma" "DY10to50" "DY50plus" "Zbb" "WW_mg" "WgammaE" "WgammaTau" "Wbb" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py"  "ggHtoZZ" "HtoTauTau" "HtoWW" "WgammaE" "WgammaTau" )
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronSingleEl/"
     ### submit this configured job (uses bin/submit.sh)
@@ -109,8 +108,9 @@ if [[ $runfakes  == "true" ]];
     logstep=1000
     
     runnp="True"
-    declare -a input_samples=("A" "B" "C" "D") 
-    
+
+    declare -a input_samples=("A" "B" "C" "D")
+
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronSingleEl/"
 

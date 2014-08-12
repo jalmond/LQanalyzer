@@ -32,7 +32,7 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   for (std::vector<TString>::reverse_iterator it (trignames.end());
        it != std::vector<TString>::reverse_iterator (trignames.begin());
        ++it) {
-
+    
     bool trigger_exists(false);
     for (UInt_t i=0; i< HLTInsideDatasetTriggerNames->size(); i++) {
 

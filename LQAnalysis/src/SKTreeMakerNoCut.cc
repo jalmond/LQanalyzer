@@ -36,19 +36,12 @@ void SKTreeMakerNoCut::ExecuteEvents()throw( LQError ){
   
   FillCutFlow("NoCut", 1);
 
-  if(!PassBasicEventCuts()){
-    m_logger << DEBUG << "Fail MET filter cuts" << LQLogger::endmsg;
-    throw LQError( "Fails basic cuts",  LQError::SkipEvent );
-  }  
   FillCutFlow("EventCut", 1);
   
   std::vector<TString> triggerslist;
   triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
 
-  if (!eventbase->GetEvent().HasGoodPrimaryVertex()){
-    m_logger <<  DEBUG << "Event FAILS HasGoodPrimaryVertex " << LQLogger::endmsg;
-    throw LQError( "Has no PV",  LQError::SkipEvent );
-  }
+
   FillCutFlow("VertexCut", 1);
 
  

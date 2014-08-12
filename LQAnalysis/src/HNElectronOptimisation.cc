@@ -90,11 +90,17 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
+
+  std::vector<snu::KJet> jetColl;
+  eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
+  eventbase->GetJetSel()->SetPt(20.);
+  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->Selection(jetColl);
   
   /// ELECTRONS
   std::vector<snu::KElectron> _electronAnalysisColl;
   
-  if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronAnalysisColl);
+  if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronAnalysisColl, jetColl);
   else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl);
 
 
@@ -122,10 +128,10 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
   
   std::vector<snu::KElectron> _electronLooseColl;
-  eventbase->GetElectronSel()->HNLooseElectronSelection(_electronLooseColl);
+  eventbase->GetElectronSel()->HNLooseElectronSelection(_electronLooseColl, jetColl);
   
   std::vector<snu::KElectron> _electronLooseColl_medium;
-  eventbase->GetElectronSel()->HNLooseElectronSelection(false,_electronLooseColl_medium);
+  eventbase->GetElectronSel()->HNLooseElectronSelection(false,_electronLooseColl_medium, jetColl);
   std::vector<snu::KElectron> electronLooseColl_medium= GetTruePrompt(_electronLooseColl_medium, true,false);
 
   std::vector<snu::KElectron> electronLooseColl = GetTruePrompt(_electronLooseColl, true,false);
@@ -792,12 +798,10 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   /// JETS
   std::vector<snu::KJet> jetColl_lepveto;
   std::vector<snu::KJet> jetColl_reallepveto;  /// -> does not veto jets IF the electron Fraction is < 20%
-  std::vector<snu::KJet> jetColl;
   eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
   eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->SetEta(2.5);
   eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonVetoColl, electronLooseColl);
-  eventbase->GetJetSel()->Selection(jetColl);
  
   /// makes full set of plots for el/mu/jets/met with no cuts applied on objects 
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonNoCutColl,electronNoCutColl,jetColl, weight);
@@ -847,18 +851,18 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 
   
   if(SameCharge(electronLooseColl_iseref)){
-    double npweight = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,0 , false);
+    double npweight = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref,jetColl, jetColl_lepveto.size(),eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,0 , false);
     FillCLHist(sighist, "SSee_np_loosedxy01", eventbase->GetEvent(), muonTightColl,electronLooseColl_iseref, jetColl_lepveto, npweight);
     
     if(jetColl_lepveto.size() >1){
       
-      double npweight_df = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,2 , false);
-      double npweight_sf = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,1 , false);
+      double npweight_df = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,2 , false);
+      double npweight_sf = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100" ,1 , false);
       
       
-      double npweight_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 0, true);
-      double npweight_df_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 2, true);
-      double npweight_sf_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 1, true);
+      double npweight_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 0, true);
+      double npweight_df_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 2, true);
+      double npweight_sf_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl_iseref,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "Loosedxy01_iso_b100_e100", 1, true);
       
       snu::KParticle SSee = electronLooseColl_iseref.at(0) + electronLooseColl_iseref.at(1);
       FillHist("SIGREGION_loosedxy01_NP", SSee.M() , npweight, 0.,200.,50);
@@ -875,19 +879,19 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   }
   if(SameCharge(electronLooseColl)){
     
-    double npweight = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",0, false);
+    double npweight = Get_DataDrivenWeight_r1_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",0, false);
     FillCLHist(sighist, "SSee_np", eventbase->GetEvent(), muonTightColl,electronLooseColl, jetColl_lepveto, npweight);
 
     if(jetColl_lepveto.size() >1){
       
     
-      double npweight_df = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",2,false);
-      double npweight_sf = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",1,false);
+      double npweight_df = Get_DataDrivenWeight_r1_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",2,false);
+      double npweight_sf = Get_DataDrivenWeight_r1_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100",1,false);
       
-      double npweight_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 0, true);
+      double npweight_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 0, true);
       
-      double npweight_df_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 2, true);
-      double npweight_sf_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 1, true);
+      double npweight_df_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 2, true);
+      double npweight_sf_r1 = Get_DataDrivenWeight_r1_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, true, "iso_b100_e100", 1, true);
  
       
       snu::KParticle SSee = electronLooseColl.at(0) + electronLooseColl.at(1);
@@ -910,8 +914,8 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
     if(CheckSignalRegion(electronTight_chargeconst, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight, 0.,2.,2);
   }
   else{
-    float ee_weight_medium = Get_DataDrivenWeight_EE(electronLooseColl_medium, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, false, "medium");
-    float ee_weight_tight = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, true, false, true, "tight");
+    float ee_weight_medium = Get_DataDrivenWeight_EE(electronLooseColl_medium,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.01, 0.1, 0.1, true, false, false, "medium");
+    float ee_weight_tight = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, true, false, true, "tight");
     
     if(CheckSignalRegion(electronLooseColl_medium, jetColl_lepveto,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight*ee_weight_medium, 0.,2.,2);
     if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight*ee_weight_tight, 0.,2.,2);
@@ -942,23 +946,23 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
     if(CheckSignalRegion(electronLooseColl_dr04_050,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      15.  , weight, 0.,16.,16);
   }
   else{
-    float ee_weight_dr03_150 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.15, true, false, true, "iso_b150_e150");
-    float ee_weight_dr03_125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.125, true, false, true, "iso_b125_e125");
-    float ee_weight_dr03_100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, true, false, true, "iso_b100_e100");
-    float ee_weight_dr03_090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.09, true, false, true, "iso_b090_e090");
-    float ee_weight_dr03_080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.08, true, false, true, "iso_b080_e080");
-    float ee_weight_dr03_070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.07, true, false, true, "iso_b070_e070");
-    float ee_weight_dr03_060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.06, 0.06, true, false, true, "iso_b060_e060");
-    float ee_weight_dr03_050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.05, true, false, true, "iso_b050_e050");
+    float ee_weight_dr03_150 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.15, true, false, true, "iso_b150_e150");
+    float ee_weight_dr03_125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.125, true, false, true, "iso_b125_e125");
+    float ee_weight_dr03_100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, true, false, true, "iso_b100_e100");
+    float ee_weight_dr03_090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.09, true, false, true, "iso_b090_e090");
+    float ee_weight_dr03_080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.08, true, false, true, "iso_b080_e080");
+    float ee_weight_dr03_070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.07, true, false, true, "iso_b070_e070");
+    float ee_weight_dr03_060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.06, 0.06, true, false, true, "iso_b060_e060");
+    float ee_weight_dr03_050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.05, true, false, true, "iso_b050_e050");
     
-    float ee_weight_dr04_150 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.15, false, true, true, "iso_b150_e150");
-    float ee_weight_dr04_125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.125, false, true, true, "iso_b125_e125");
-    float ee_weight_dr04_100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, false, true, true, "iso_b100_e100");
-    float ee_weight_dr04_090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.09, false, true, true, "iso_b090_e090");
-    float ee_weight_dr04_080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.08, false, true, true, "iso_b080_e080");
-    float ee_weight_dr04_070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.07, false, true, true, "iso_b070_e070");
-    float ee_weight_dr04_060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.06, 0.06, false, true, true, "iso_b060_e060");
-    float ee_weight_dr04_050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.05, false, true, true, "iso_b050_e050");
+    float ee_weight_dr04_150 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.15, false, true, true, "iso_b150_e150");
+    float ee_weight_dr04_125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.125, false, true, true, "iso_b125_e125");
+    float ee_weight_dr04_100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.1, false, true, true, "iso_b100_e100");
+    float ee_weight_dr04_090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.09, false, true, true, "iso_b090_e090");
+    float ee_weight_dr04_080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.08, false, true, true, "iso_b080_e080");
+    float ee_weight_dr04_070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.07, false, true, true, "iso_b070_e070");
+    float ee_weight_dr04_060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.06, 0.06, false, true, true, "iso_b060_e060");
+    float ee_weight_dr04_050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.05, false, true, true, "iso_b050_e050");
     
     if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      0.  , weight*ee_weight_dr03_150, 0.,16.,16);
     if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISOcutflow",      1.  , weight*ee_weight_dr03_125, 0.,16.,16);
@@ -981,49 +985,49 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   }
 
   if(k_running_nonprompt){
-    float ee_weight_dr03_b150_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.125, true, false, true, "iso_b150_e125");
-    float ee_weight_dr03_b150_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.100, true, false, true, "iso_b150_e100");
-    float ee_weight_dr03_b150_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.090, true, false, true, "iso_b150_e090");
-    float ee_weight_dr03_b150_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.080, true, false, true, "iso_b150_e080");
-    float ee_weight_dr03_b150_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.070, true, false, true, "iso_b150_e070");
-    float ee_weight_dr03_b150_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.060, true, false, true, "iso_b150_e060");
-    float ee_weight_dr03_b150_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.050, true, false, true, "iso_b150_e050");
-    float ee_weight_dr03_b125_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.100, true, false, true, "iso_b125_e100");
-    float ee_weight_dr03_b125_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.090, true, false, true, "iso_b125_e090");
-    float ee_weight_dr03_b125_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.080, true, false, true, "iso_b125_e080");
-    float ee_weight_dr03_b125_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.070, true, false, true, "iso_b125_e070");
-    float ee_weight_dr03_b125_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.060, true, false, true, "iso_b125_e060");
-    float ee_weight_dr03_b125_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.050, true, false, true, "iso_b125_e050");
-    float ee_weight_dr03_b100_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.125, true, false, true, "iso_b100_e125");
-    float ee_weight_dr03_b100_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.090, true, false, true, "iso_b100_e090");
-    float ee_weight_dr03_b100_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.080, true, false, true, "iso_b100_e080");
-    float ee_weight_dr03_b100_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.070, true, false, true, "iso_b100_e070");
-    float ee_weight_dr03_b100_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.060, true, false, true, "iso_b100_e060");
-    float ee_weight_dr03_b100_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.050, true, false, true, "iso_b100_e050");
-    float ee_weight_dr03_b090_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.125, true, false, true, "iso_b090_e125");
-    float ee_weight_dr03_b090_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.100, true, false, true, "iso_b090_e100");
-    float ee_weight_dr03_b090_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.080, true, false, true, "iso_b090_e080");
-    float ee_weight_dr03_b090_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.070, true, false, true, "iso_b090_e070");
-    float ee_weight_dr03_b090_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.060, true, false, true, "iso_b090_e060");
-    float ee_weight_dr03_b090_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.050, true, false, true, "iso_b090_e050");
-    float ee_weight_dr03_b080_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.125, true, false, true, "iso_b080_e125");
-    float ee_weight_dr03_b080_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.100, true, false, true, "iso_b080_e100");
-    float ee_weight_dr03_b080_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.090, true, false, true, "iso_b080_e090");
-    float ee_weight_dr03_b080_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.070, true, false, true, "iso_b080_e070");
-    float ee_weight_dr03_b080_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.060, true, false, true, "iso_b080_e060");
-    float ee_weight_dr03_b080_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.050, true, false, true, "iso_b080_e050");
-    float ee_weight_dr03_b070_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.125, true, false, true, "iso_b070_e125");
-    float ee_weight_dr03_b070_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.100, true, false, true, "iso_b070_e100");
-    float ee_weight_dr03_b070_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.090, true, false, true, "iso_b070_e090");
-    float ee_weight_dr03_b070_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.080, true, false, true, "iso_b070_e080");
-    float ee_weight_dr03_b070_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.060, true, false, true, "iso_b070_e060");
-    float ee_weight_dr03_b070_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.050, true, false, true, "iso_b070_e050");
-    float ee_weight_dr03_b050_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.125, true, false, true, "iso_b050_e125");
-    float ee_weight_dr03_b050_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.100, true, false, true, "iso_b050_e100");
-    float ee_weight_dr03_b050_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.090, true, false, true, "iso_b050_e090");
-    float ee_weight_dr03_b050_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.080, true, false, true, "iso_b050_e080");
-    float ee_weight_dr03_b050_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.070, true, false, true, "iso_b050_e070");
-    float ee_weight_dr03_b050_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.060, true, false, true, "iso_b050_e050");
+    float ee_weight_dr03_b150_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.125, true, false, true, "iso_b150_e125");
+    float ee_weight_dr03_b150_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.100, true, false, true, "iso_b150_e100");
+    float ee_weight_dr03_b150_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.090, true, false, true, "iso_b150_e090");
+    float ee_weight_dr03_b150_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.080, true, false, true, "iso_b150_e080");
+    float ee_weight_dr03_b150_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.070, true, false, true, "iso_b150_e070");
+    float ee_weight_dr03_b150_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.060, true, false, true, "iso_b150_e060");
+    float ee_weight_dr03_b150_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.050, true, false, true, "iso_b150_e050");
+    float ee_weight_dr03_b125_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.100, true, false, true, "iso_b125_e100");
+    float ee_weight_dr03_b125_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.090, true, false, true, "iso_b125_e090");
+    float ee_weight_dr03_b125_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.080, true, false, true, "iso_b125_e080");
+    float ee_weight_dr03_b125_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.070, true, false, true, "iso_b125_e070");
+    float ee_weight_dr03_b125_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.060, true, false, true, "iso_b125_e060");
+    float ee_weight_dr03_b125_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.050, true, false, true, "iso_b125_e050");
+    float ee_weight_dr03_b100_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.125, true, false, true, "iso_b100_e125");
+    float ee_weight_dr03_b100_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.090, true, false, true, "iso_b100_e090");
+    float ee_weight_dr03_b100_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.080, true, false, true, "iso_b100_e080");
+    float ee_weight_dr03_b100_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.070, true, false, true, "iso_b100_e070");
+    float ee_weight_dr03_b100_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.060, true, false, true, "iso_b100_e060");
+    float ee_weight_dr03_b100_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.050, true, false, true, "iso_b100_e050");
+    float ee_weight_dr03_b090_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.125, true, false, true, "iso_b090_e125");
+    float ee_weight_dr03_b090_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.100, true, false, true, "iso_b090_e100");
+    float ee_weight_dr03_b090_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.080, true, false, true, "iso_b090_e080");
+    float ee_weight_dr03_b090_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.070, true, false, true, "iso_b090_e070");
+    float ee_weight_dr03_b090_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.060, true, false, true, "iso_b090_e060");
+    float ee_weight_dr03_b090_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.050, true, false, true, "iso_b090_e050");
+    float ee_weight_dr03_b080_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.125, true, false, true, "iso_b080_e125");
+    float ee_weight_dr03_b080_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.100, true, false, true, "iso_b080_e100");
+    float ee_weight_dr03_b080_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.090, true, false, true, "iso_b080_e090");
+    float ee_weight_dr03_b080_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.070, true, false, true, "iso_b080_e070");
+    float ee_weight_dr03_b080_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.060, true, false, true, "iso_b080_e060");
+    float ee_weight_dr03_b080_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.050, true, false, true, "iso_b080_e050");
+    float ee_weight_dr03_b070_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.125, true, false, true, "iso_b070_e125");
+    float ee_weight_dr03_b070_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.100, true, false, true, "iso_b070_e100");
+    float ee_weight_dr03_b070_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.090, true, false, true, "iso_b070_e090");
+    float ee_weight_dr03_b070_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.080, true, false, true, "iso_b070_e080");
+    float ee_weight_dr03_b070_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.060, true, false, true, "iso_b070_e060");
+    float ee_weight_dr03_b070_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.050, true, false, true, "iso_b070_e050");
+    float ee_weight_dr03_b050_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.125, true, false, true, "iso_b050_e125");
+    float ee_weight_dr03_b050_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.100, true, false, true, "iso_b050_e100");
+    float ee_weight_dr03_b050_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.090, true, false, true, "iso_b050_e090");
+    float ee_weight_dr03_b050_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.080, true, false, true, "iso_b050_e080");
+    float ee_weight_dr03_b050_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.070, true, false, true, "iso_b050_e070");
+    float ee_weight_dr03_b050_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.060, true, false, true, "iso_b050_e050");
 
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,0., weight*ee_weight_dr03_b150_e125, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,1., weight*ee_weight_dr03_b150_e100, 0., 49.,49);
@@ -1048,8 +1052,8 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,20., weight*ee_weight_dr03_b090_e100, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,21., weight*ee_weight_dr03_b090_e080, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,22., weight*ee_weight_dr03_b090_e070, 0., 49.,49);
-    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,23., weight*ee_weight_dr03_b090_e060, 0., 49.,49);
-    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,24., weight*ee_weight_dr03_b090_e050, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))  FillHist("ISO_EEEB_cutflow" ,23., weight*ee_weight_dr03_b090_e060, 0., 49.,49);
+    if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))  FillHist("ISO_EEEB_cutflow" ,24., weight*ee_weight_dr03_b090_e050, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,25., weight*ee_weight_dr03_b080_e125, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,26., weight*ee_weight_dr03_b080_e100, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_EEEB_cutflow" ,27., weight*ee_weight_dr03_b080_e090, 0., 49.,49);
@@ -1164,55 +1168,55 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   }
   else{
 
-    float ee_weight_dr03_b150_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.125, true, true, true, "NPFiso_b150_e125");
-    float ee_weight_dr03_b150_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.100, true, true, true, "NPFiso_b150_e100");
-    float ee_weight_dr03_b150_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.090, true, true, true, "NPFiso_b150_e090");
-    float ee_weight_dr03_b150_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.080, true, true, true, "NPFiso_b150_e080");
-    float ee_weight_dr03_b150_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.070, true, true, true, "NPFiso_b150_e070");
-    float ee_weight_dr03_b150_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.060, true, true, true, "NPFiso_b150_e060");
-    float ee_weight_dr03_b150_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.050, true, true, true, "NPFiso_b150_e050");
+    float ee_weight_dr03_b150_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.125, true, true, true, "NPFiso_b150_e125");
+    float ee_weight_dr03_b150_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.100, true, true, true, "NPFiso_b150_e100");
+    float ee_weight_dr03_b150_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.090, true, true, true, "NPFiso_b150_e090");
+    float ee_weight_dr03_b150_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.080, true, true, true, "NPFiso_b150_e080");
+    float ee_weight_dr03_b150_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.070, true, true, true, "NPFiso_b150_e070");
+    float ee_weight_dr03_b150_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.060, true, true, true, "NPFiso_b150_e060");
+    float ee_weight_dr03_b150_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.15, 0.050, true, true, true, "NPFiso_b150_e050");
 
-    float ee_weight_dr03_b125_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.100, true, true, true, "NPFiso_b125_e100");
-    float ee_weight_dr03_b125_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.090, true, true, true, "NPFiso_b125_e090");
-    float ee_weight_dr03_b125_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.080, true, true, true, "NPFiso_b125_e080");
-    float ee_weight_dr03_b125_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.070, true, true, true, "NPFiso_b125_e070");
-    float ee_weight_dr03_b125_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.060, true, true, true, "NPFiso_b125_e060");
-    float ee_weight_dr03_b125_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.050, true, true, true, "NPFiso_b125_e050");
+    float ee_weight_dr03_b125_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.100, true, true, true, "NPFiso_b125_e100");
+    float ee_weight_dr03_b125_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.090, true, true, true, "NPFiso_b125_e090");
+    float ee_weight_dr03_b125_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.080, true, true, true, "NPFiso_b125_e080");
+    float ee_weight_dr03_b125_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.070, true, true, true, "NPFiso_b125_e070");
+    float ee_weight_dr03_b125_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.060, true, true, true, "NPFiso_b125_e060");
+    float ee_weight_dr03_b125_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.125, 0.050, true, true, true, "NPFiso_b125_e050");
 
-    float ee_weight_dr03_b100_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.125, true, true, true, "NPFiso_b100_e125");
-    float ee_weight_dr03_b100_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.090, true, true, true, "NPFiso_b100_e090");
-    float ee_weight_dr03_b100_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.080, true, true, true, "NPFiso_b100_e080");
-    float ee_weight_dr03_b100_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.070, true, true, true, "NPFiso_b100_e070");
-    float ee_weight_dr03_b100_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.060, true, true, true, "NPFiso_b100_e060");
-    float ee_weight_dr03_b100_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.050, true, true, true, "NPFiso_b100_e050");
+    float ee_weight_dr03_b100_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.125, true, true, true, "NPFiso_b100_e125");
+    float ee_weight_dr03_b100_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.090, true, true, true, "NPFiso_b100_e090");
+    float ee_weight_dr03_b100_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.080, true, true, true, "NPFiso_b100_e080");
+    float ee_weight_dr03_b100_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.070, true, true, true, "NPFiso_b100_e070");
+    float ee_weight_dr03_b100_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.060, true, true, true, "NPFiso_b100_e060");
+    float ee_weight_dr03_b100_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.1, 0.050, true, true, true, "NPFiso_b100_e050");
 
-    float ee_weight_dr03_b090_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.125, true, true, true, "NPFiso_b090_e125");
-    float ee_weight_dr03_b090_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.100, true, true, true, "NPFiso_b090_e100");
-    float ee_weight_dr03_b090_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.080, true, true, true, "NPFiso_b090_e080");
-    float ee_weight_dr03_b090_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.070, true, true, true, "NPFiso_b090_e070");
-    float ee_weight_dr03_b090_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.060, true, true, true, "NPFiso_b090_e060");
-    float ee_weight_dr03_b090_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.050, true, true, true, "NPFiso_b090_e050");
+    float ee_weight_dr03_b090_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.125, true, true, true, "NPFiso_b090_e125");
+    float ee_weight_dr03_b090_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.100, true, true, true, "NPFiso_b090_e100");
+    float ee_weight_dr03_b090_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.080, true, true, true, "NPFiso_b090_e080");
+    float ee_weight_dr03_b090_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.070, true, true, true, "NPFiso_b090_e070");
+    float ee_weight_dr03_b090_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.060, true, true, true, "NPFiso_b090_e060");
+    float ee_weight_dr03_b090_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.09, 0.050, true, true, true, "NPFiso_b090_e050");
     
-    float ee_weight_dr03_b080_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.125, true, true, true, "NPFiso_b080_e125");
-    float ee_weight_dr03_b080_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.100, true, true, true, "NPFiso_b080_e100");
-    float ee_weight_dr03_b080_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.090, true, true, true, "NPFiso_b080_e090");
-    float ee_weight_dr03_b080_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.070, true, true, true, "NPFiso_b080_e070");
-    float ee_weight_dr03_b080_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.060, true, true, true, "NPFiso_b080_e060");
-    float ee_weight_dr03_b080_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.050, true, true, true, "NPFiso_b080_e050");
+    float ee_weight_dr03_b080_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.125, true, true, true, "NPFiso_b080_e125");
+    float ee_weight_dr03_b080_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.100, true, true, true, "NPFiso_b080_e100");
+    float ee_weight_dr03_b080_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.090, true, true, true, "NPFiso_b080_e090");
+    float ee_weight_dr03_b080_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.070, true, true, true, "NPFiso_b080_e070");
+    float ee_weight_dr03_b080_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.060, true, true, true, "NPFiso_b080_e060");
+    float ee_weight_dr03_b080_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.08, 0.050, true, true, true, "NPFiso_b080_e050");
 
-    float ee_weight_dr03_b070_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.125, true, true, true, "NPFiso_b070_e125");
-    float ee_weight_dr03_b070_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.100, true, true, true, "NPFiso_b070_e100");
-    float ee_weight_dr03_b070_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.090, true, true, true, "NPFiso_b070_e090");
-    float ee_weight_dr03_b070_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.080, true, true, true, "NPFiso_b070_e080");
-    float ee_weight_dr03_b070_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.060, true, true, true, "NPFiso_b070_e060");
-    float ee_weight_dr03_b070_e050 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.050, true, true, true, "NPFiso_b070_e050");
+    float ee_weight_dr03_b070_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.125, true, true, true, "NPFiso_b070_e125");
+    float ee_weight_dr03_b070_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.100, true, true, true, "NPFiso_b070_e100");
+    float ee_weight_dr03_b070_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.090, true, true, true, "NPFiso_b070_e090");
+    float ee_weight_dr03_b070_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.080, true, true, true, "NPFiso_b070_e080");
+    float ee_weight_dr03_b070_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.060, true, true, true, "NPFiso_b070_e060");
+    float ee_weight_dr03_b070_e050 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.07, 0.050, true, true, true, "NPFiso_b070_e050");
 
-    float ee_weight_dr03_b050_e125 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.125, true, true, true, "NPFiso_b050_e125");
-    float ee_weight_dr03_b050_e100 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.100, true, true, true, "NPFiso_b050_e100");
-    float ee_weight_dr03_b050_e090 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.090, true, true, true, "NPFiso_b050_e090");
-    float ee_weight_dr03_b050_e080 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.080, true, true, true, "NPFiso_b050_e080");
-    float ee_weight_dr03_b050_e070 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.070, true, true, true, "NPFiso_b050_e070");
-    float ee_weight_dr03_b050_e060 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.060, true, true, true, "NPFiso_b050_e060");
+    float ee_weight_dr03_b050_e125 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.125, true, true, true, "NPFiso_b050_e125");
+    float ee_weight_dr03_b050_e100 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.100, true, true, true, "NPFiso_b050_e100");
+    float ee_weight_dr03_b050_e090 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.090, true, true, true, "NPFiso_b050_e090");
+    float ee_weight_dr03_b050_e080 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.080, true, true, true, "NPFiso_b050_e080");
+    float ee_weight_dr03_b050_e070 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.070, true, true, true, "NPFiso_b050_e070");
+    float ee_weight_dr03_b050_e060 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.01, 0.05, 0.060, true, true, true, "NPFiso_b050_e060");
 
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,0., weight*ee_weight_dr03_b150_e125, 0., 49.,49);
     if(CheckSignalRegion(electronLooseColl ,jetColl_lepveto,"", weight))   FillHist("ISO_NPFISO_EEEB_cutflow" ,1., weight*ee_weight_dr03_b150_e100, 0., 49.,49);
@@ -1279,12 +1283,12 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   }
   else{
     
-    float ee_weight_05 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.005, 0.1, 0.1, true, false, true, "dxy05");
-    float ee_weight_10 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.010, 0.1, 0.1, true, false, true, "dxy10");
-    float ee_weight_15 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(), 0.015, 0.1, 0.1, true, false, true,  "dxy15");
-    float ee_weight_20 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.020, 0.1, 0.1, true, false, true, "dxy20");
-    float ee_weight_25 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.025, 0.1, 0.1, true, false, true, "dxy25");
-    float ee_weight_30 = Get_DataDrivenWeight_EE(electronLooseColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho(),  0.030, 0.1, 0.1, true, false, true, "dxy30");
+    float ee_weight_05 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.005, 0.1, 0.1, true, false, true, "dxy05");
+    float ee_weight_10 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.010, 0.1, 0.1, true, false, true, "dxy10");
+    float ee_weight_15 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(), 0.015, 0.1, 0.1, true, false, true,  "dxy15");
+    float ee_weight_20 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.020, 0.1, 0.1, true, false, true, "dxy20");
+    float ee_weight_25 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.025, 0.1, 0.1, true, false, true, "dxy25");
+    float ee_weight_30 = Get_DataDrivenWeight_EE(electronLooseColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho(),  0.030, 0.1, 0.1, true, false, true, "dxy30");
 
        
     if(CheckSignalRegion(electronLooseColl, jetColl_lepveto,"pogiso_d0_05", weight*ee_weight_05))FillHist("d0cutflow",1.  , weight*ee_weight_05, 0.,7.,7);
@@ -1315,7 +1319,7 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
   
   /// before third lepton veto no fake estimate can be done.
   if(k_running_nonprompt){
-    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto.size(), eventbase->GetEvent().JetRho());
+    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl,jetColl, jetColl_lepveto.size(),  eventbase->GetEvent().JetRho());
     weight*= ee_weight;
   }
   

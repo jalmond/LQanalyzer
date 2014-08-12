@@ -159,6 +159,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
       AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
     }
+    cout << "k_channel = " << k_channel << endl;
     if(k_channel.Contains("Electron")){
       AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
       AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");

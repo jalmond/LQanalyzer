@@ -18,6 +18,6 @@
 #pragma link C++ class SKTreeMakerNoCut+;
 #pragma link C++ class ElectronCF+;
 #pragma link C++ class HNElectronOptimisation+;
-#pragma link C++ class HNChargeFlipStudies+;
+#pragma link C++ class HNLowMedHighMassOptimisation+;
 
 #endif // __CINT__

@@ -33,12 +33,12 @@ class AnalyzerCore : public LQCycleBase {
   TDirectory*   getTemporaryDirectory(void) const;
 
   double ElectronScaleFactor( double eta, double pt);
-  double MuonScaleFactor(double eta, double pt);
+  double MuonScaleFactor(double eta, double pt, int sys=0);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
-  bool IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
-  bool IsTight(snu::KElectron electron, double rho);
+  bool IsTight(snu::KElectron el, std::vector<snu::KJet> jets, double jetrho , double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight);
+  bool IsTight(snu::KElectron electron, std::vector<snu::KJet> jets, double rho);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   int NBJet(std::vector<snu::KJet> jets);
@@ -47,14 +47,16 @@ class AnalyzerCore : public LQCycleBase {
   float CFRate(snu::KElectron el);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
-  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets ,int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut);
+  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, vector<snu::KJet> jets ,std::vector<snu::KJet> alljets , int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, bool applypucorr);
+  
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets,  double rho);
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets, double rho, double dxy, double biso, double eciso, TString cut);
+  
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets, int njets, double rho,bool usedr3, bool usetrkiso, bool usetight,  double dxy, double biso, double eiso, TString cut);
 
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets,  double rho);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut ,int nbjet, float ht);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool usetight,TString cut );
-  float Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool  usetight,TString cut, int eventtype, bool setr1);
+  float Get_DataDrivenWeight_r1_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, bool usedr3, bool usetrkiso, bool    usetight,TString cut, int eventtype, bool setr1);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
-  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, int njets, double rho);
+  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, std::vector<snu::KJet> alljets ,int njets, double rho);
   
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 

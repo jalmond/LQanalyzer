@@ -9,19 +9,18 @@ cutpath		dat/hn_cuts.txt
 prefix		HNDiElectron_SK
 postfix		_dilep_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  HNDiElectron_datadriven_july_14
+outputdir  HNDiElectron_datadriven_july_14_preselection_20_newfake_cr
 histdir    LQMarch14
 # CONFIGURE_HISTOGRAMS
 showdata   true
 usenp      false
 ylog	   true
 # List_the_samples_to_be_included
-samples	   vv_mg   
+samples	   vv_py
 samples	   ttv
-samples	   higgs
 samples	   vvv
+samples	   higgs
 samples	   ss_mg
-samples	   vgamma
 samples	   chargeflip
 samples	   nonprompt	
 END

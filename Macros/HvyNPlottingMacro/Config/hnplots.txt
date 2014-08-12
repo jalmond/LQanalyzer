@@ -9,7 +9,7 @@ cutpath		dat/hn_cuts.txt
 prefix		HNDiElectron_SK
 postfix		_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  HNSignal2
+outputdir  HNSignal07dijet
 histdir    LQMarch14
 # CONFIGURE_HISTOGRAMS
 showdata   true

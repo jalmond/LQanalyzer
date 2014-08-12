@@ -30,26 +30,24 @@ void FakeRatePlots_ewksub(){
   gStyle->SetPalette(1);
     
   vector<TString> plotname;
-  //plotname.push_back("_eta_binned");
-  //plotname.push_back("_njets");
-  //plotname.push_back("_awaybjet_eta_binned");
-  //plotname.push_back("_closebjet_eta_binned");
-  //plotname.push_back("_closejet_noe_eta_binned");
-  //plotname.push_back("_closejet_ph_eta_binned");
-  //plotname.push_back("_nbjet");
-  plotname.push_back("_pt");
+  plotname.push_back("_nbjet");
+  /*plotname.push_back("_njets");
+  plotname.push_back("_ptawayjet");
+  plotname.push_back("_ht");
+  plotname.push_back("_ht_noawayjet");
+  plotname.push_back("_ht_dijet");
+  plotname.push_back("_ptbarrel");
+  plotname.push_back("_ptendcap");
+  plotname.push_back("_nvertices");*/
 
   int ihist(0);
   for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     
     vector<TString> hist_ptcut;
     hist_ptcut.push_back("20");
-    //hist_ptcut.push_back("40");
-    //hist_ptcut.push_back("60");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
-      int rebin=1;
-      
+      int rebin=10;
       
       TH1F* h_pt_num= (TH1F*)fdata->Get(("TightEl"+ *it2+ *it ).Data());
       TH1F* h_pt_denom= (TH1F*)fdata->Get(("LooseEl"+ *it2+*it).Data());

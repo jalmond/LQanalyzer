@@ -15,11 +15,8 @@
 #include "TString.h"
 
 void setTDRStyle();
-bool CheckFile(TFile* f);
-bool CheckHist(TH2* h);
 
-
-void MakeFRRootFile(){
+void FakeRatePlots_ewksub(){
   
   TString path= "/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/";
 
@@ -27,144 +24,150 @@ void MakeFRRootFile(){
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_5_3_14.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
   if(!fdata)cout << "No Data" << endl;
-  
+
+  TH1::SetDefaultSumw2(true);
   /// Set Plotting style
   setTDRStyle();
   gStyle->SetPalette(1);
     
-  
-  vector<TString> hist_ptcut;
-
-  hist_ptcut.push_back("Loosedxy01_009_009");
-  
-  vector<TString>  jettag;
-  jettag.push_back("");
-  jettag.push_back("_0jet");
-  jettag.push_back("_1jet");
-  jettag.push_back("_2jet");
-  TString outfile = "FakeRate2807.root";
-  TFile* fout = new TFile(outfile.Data(),"RECREATE");
-  fout->cd();
-  for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
-    for(vector<TString>::iterator iti = jettag.begin(); iti!=jettag.end(); ++iti){
-      int rebin=1;
-      cout << *it2 << endl;
-      if(!CheckFile(fdata))return;      
-      TH2F* h_pt_num= (TH2F*)fdata->Get(("h_promptrate_"+ *it2+ "_num_pt_eta" + *iti).Data());
-      TH2F* h_pt_denom= (TH2F*)fdata->Get(("h_promptrate_"+ *it2+"_denom_pt_eta" + *iti).Data());
-      CheckHist(h_pt_denom);
-      CheckHist(h_pt_num);
-
-      
-      TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("RealEff_" + *it2 + *iti ).Data());
-      TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
-      
-      
-      eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-      
-
-      eff_rate->Write();
-
-    }
-  }
-  
-
-  /// 
-  std::vector<TString> fakes40;
-  fakes40.push_back("20_pt_eta");
-  fakes40.push_back("20_1jet_pt_eta");
-  fakes40.push_back("20_2jet_pt_eta");
-  fakes40.push_back("20_3jet_pt_eta");
-  fakes40.push_back("40_1jet_pt_eta");
-  fakes40.push_back("40_2jet_pt_eta");
-  fakes40.push_back("40_3jet_pt_eta");
-  fakes40.push_back("20_pt_eta");
-  fakes40.push_back("60_pt_eta");
-  fakes40.push_back("20_pt_ht");
-  fakes40.push_back("20_ptbarrel_ht");
-  fakes40.push_back("20_ptendcap_ht");
-  fakes40.push_back("40_pt_eta");
-  fakes40.push_back("40_pt_ht");
-  fakes40.push_back("40_ptbarrel_ht");
-  fakes40.push_back("40_ptendcap_ht");
-  fakes40.push_back("30_pt_eta");
-  fakes40.push_back("30_1jet_pt_eta");
-  fakes40.push_back("30_2jet_pt_eta");
-  fakes40.push_back("30_3jet_pt_eta");
-  fakes40.push_back("20_pt_ht2");
-  fakes40.push_back("30_pt_ht2");
-  fakes40.push_back("40_pt_ht2");
-  fakes40.push_back("20_0905_pt_eta");
-  fakes40.push_back("30_0905_pt_eta");
-  fakes40.push_back("40_0905_pt_eta");
-
-  fakes40.push_back("20_0bjet_pt_eta");
-  fakes40.push_back("20_bjet_pt_eta");
-  fakes40.push_back("30_0bjet_pt_eta");
-  fakes40.push_back("30_bjet_pt_eta");
-  fakes40.push_back("40_0bjet_pt_eta");
-  fakes40.push_back("40_bjet_pt_eta");
-  fakes40.push_back("60_0bjet_pt_eta");
-  fakes40.push_back("60_bjet_pt_eta");
-
-  fakes40.push_back("20_awaybjet_pt_eta");
-  fakes40.push_back("20_noawaybjet_pt_eta");
-  fakes40.push_back("30_awaybjet_pt_eta");
-  fakes40.push_back("30_noawaybjet_pt_eta");
-  fakes40.push_back("40_awaybjet_pt_eta");
-  fakes40.push_back("40_noawaybjet_pt_eta");
-  fakes40.push_back("60_awaybjet_pt_eta");
-  fakes40.push_back("60_noawaybjet_pt_eta");
-
-  for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    cout << *it2 << endl;
-    if(!CheckFile(fdata))return;
-    if(!CheckFile(fmc))return;
-
-    TString denom ="LooseEl" + *it2;
-    TString num ="TightEl" + *it2;
-    TH2F* h_pt_num= (TH2F*)fdata->Get(num.Data());
-    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
-    CheckHist(h_pt_denom);
-    CheckHist(h_pt_num);
-    TH2F* h_mcpt_num= (TH2F*)fmc->Get(num.Data());
-    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
-    CheckHist(h_mcpt_denom);
-    CheckHist(h_mcpt_num);
-
-    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
-    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
-    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    eff_rate->Write();
-  }
+  vector<TString> plotname;
+  //plotname.push_back("_eta");
+  //plotname.push_back("_njets");
+  //plotname.push_back("_pt");
+  //plotname.push_back("_ptbarrel");
+  //plotname.push_back("_ptendcap");
+  //plotname.push_back("_ht");
+  plotname.push_back("_eta_be");
+  //plotname.push_back("_pt");
+  //plotname.push_back("_nvertices");
+  //plotname.push_back("_nbjet");
 
 
-  
-}
 
-  
-bool CheckFile(TFile* f ){
-    bool file_exist = true;
-    if(!f){
-      cout << "File " << f->GetName() << " does not exist. Exiting " << endl;
-      file_exist = false;
-    }
+
+  int ihist(0);
+  for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     
-    return file_exist;
-}
+    vector<TString> hist_ptcut;
+    hist_ptcut.push_back("_noclose_20");
+    //hist_ptcut.push_back("_noclose_bjet_20");
+    //hist_ptcut.push_back("_close_20");
+    
+    for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
+      int rebin=1;
+      
+      
+      TH1F* h_pt_num= (TH1F*)fdata->Get(("TightEl"+ *it2+ *it ).Data());
+      TH1F* h_pt_denom= (TH1F*)fdata->Get(("LooseEl"+ *it2+*it).Data());
+      
+      TH1F* h_mcpt_num= (TH1F*)fmc->Get(("TightEl"+*it2+ *it ).Data());
+      TH1F* h_mcpt_denom= (TH1F*)fmc->Get(("LooseEl"+*it2 +*it).Data());
 
-bool CheckHist(TH2* h ){
-  bool hist_exist = true;
-  if(!h){
-    cout << "No histogram with name " << h->GetName() << endl;
-    hist_exist= false;
+      if(it->Contains("eta")){
+	if(!it->Contains("pt") && !it->Contains("binned"))rebin=1;
+      }
+
+      h_pt_num->Rebin(rebin);
+      h_pt_denom->Rebin(rebin);
+      h_mcpt_num->Rebin(rebin);
+      h_mcpt_denom->Rebin(rebin);
+      
+      TH1F* h_pt_num_clone = (TH1F*)h_pt_num->Clone("");
+      h_pt_num_clone->Add(h_mcpt_num,-1);
+
+      TH1F* h_pt_num_up_clone = (TH1F*)h_pt_num->Clone("up");
+      TH1F* h_pt_num_down_clone = (TH1F*)h_pt_num->Clone("down");
+      h_pt_num_up_clone->Add(h_mcpt_num,-1.15);
+      h_pt_num_down_clone->Add(h_mcpt_num,-0.85);
+
+      TH1F* h_pt_denom_clone = (TH1F*)h_pt_denom->Clone("");
+      TH1F* h_errorhist = (TH1F*)h_pt_denom->Clone("error");
+      h_pt_denom_clone->Add(h_mcpt_denom,-1);
+      
+      
+      TH1F* h_pt_denom_up_clone = (TH1F*)h_pt_denom->Clone("up");
+      TH1F* h_pt_denom_down_clone = (TH1F*)h_pt_denom->Clone("down");
+      
+      h_pt_denom_up_clone->Add(h_mcpt_denom,-1.15);
+      h_pt_denom_down_clone->Add(h_mcpt_denom,-0.85);
+
+      cout << "Number of events in numerator (data) = " << h_pt_num->Integral() << endl;
+      cout << "Number of events in denominator (data) = " << h_pt_denom->Integral() << endl;
+      
+      cout << "Number of events in numerator (mc) = " << h_mcpt_num->Integral() << endl;
+      cout << "Number of events in denominator (mc) = " << h_mcpt_denom->Integral() << endl;
+      
+      cout << "Number of events in numerator (data-mc) = " << h_pt_num_clone->Integral() << endl;
+      cout << "Number of events in denominator (data-mc) = " << h_pt_denom_clone->Integral() << endl;
+      
+      h_pt_num->Divide(h_pt_denom);
+      h_pt_num_clone->Divide(h_pt_denom_clone);
+
+      h_pt_num_up_clone->Divide(h_pt_denom_up_clone);
+      h_pt_num_down_clone->Divide(h_pt_denom_down_clone);
+      
+      h_pt_num->SetMarkerStyle(20);
+      h_pt_num->SetMarkerColor(kRed);
+      h_pt_num->SetLineColor(kRed);
+      
+      h_pt_num_clone->SetMarkerStyle(20);
+      h_pt_num_clone->SetMarkerColor(kBlue);
+      h_pt_num_clone->SetLineColor(kBlue);
+      
+      
+      
+      for(unsigned int ibin = 1; ibin < h_pt_num_clone->GetNbinsX()+1; ibin++){
+	float binerror = h_pt_num_clone->GetBinError(ibin);
+	
+	float error_up = h_pt_num_clone->GetBinContent(ibin)  -  h_pt_num_down_clone->GetBinContent(ibin) ;
+	error_up = sqrt( error_up*error_up + binerror*binerror);
+	
+	float error_down = h_pt_num_clone->GetBinContent(ibin)  -  h_pt_num_up_clone->GetBinContent(ibin) ;
+        error_down = sqrt( error_down*error_down + binerror*binerror);
+	cout << h_pt_num_clone->GetBinContent(ibin)  << " " << error_up << " " << error_down << endl;
+	h_errorhist->SetBinContent(ibin,  (h_pt_num_clone->GetBinContent(ibin)  + error_up - error_down));
+	h_errorhist->SetBinError( ibin, (error_down + error_up) / 2.);
+      }
+      
+      cout << "\n -----------" << endl;
+      for(unsigned int ibin = 1; ibin <h_errorhist->GetNbinsX()+1; ibin++){
+	cout << h_errorhist->GetBinContent(ibin) << " " <<  h_errorhist->GetBinError(ibin) << endl;
+      }
+
+      TCanvas* c1 = new TCanvas((("Plot")+*it2+*it).Data(), "Plot", 800, 600);
+      
+      if(it->Contains("pt")) h_pt_num->GetXaxis()->SetTitle("El p_{T} [GeV]");
+      else if(it->Contains("njet")) h_pt_num->GetXaxis()->SetTitle("# jets");
+      else if(it->Contains("ht")) h_pt_num->GetXaxis()->SetTitle("#Sigma jet p_{T} [GeV]");
+      else  h_pt_num->GetXaxis()->SetTitle("El #eta");
+      h_pt_num->GetYaxis()->SetTitle("#epsilon_{T/L}");
+      
+      h_pt_num->GetYaxis()->SetRangeUser(0.,1.);
+      
+      h_pt_num->Draw("p");
+
+      h_pt_num_clone->Draw("psame");
+      h_errorhist->SetFillStyle(3354);
+      h_errorhist->SetFillColor(kBlue-8);
+      h_errorhist->SetMarkerSize(0);
+      h_errorhist->SetMarkerStyle(0);
+      h_errorhist->SetLineColor(kWhite);
+      h_errorhist->Draw("E2same");
+      
+      TLegend* legend= new TLegend(0.2,0.5,0.4,0.7);
+      legend->SetFillColor(10);
+      legend->SetBorderSize(0);
+      legend->SetTextSize(0.04);
+      
+      legend->AddEntry(h_pt_num, "uncorrected", "lp");
+      legend->AddEntry(h_pt_num_clone, "ewk corrected", "lp");
+      
+      legend->Draw("same");
+
+      c1->SaveAs(("/home/jalmond/WebPlots/Fakes/FakeRateEWKSub" +  *it + "_" + *it2  + ".pdf"));
+    }
   }
-  return hist_exist;
 }
-
-
 
 
 
