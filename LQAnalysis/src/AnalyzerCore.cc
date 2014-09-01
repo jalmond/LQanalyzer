@@ -417,7 +417,7 @@ void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 }
 
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler){
-
+  
   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
 
 }
@@ -657,6 +657,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
   if(type==sighist){
+    if(!hist.Contains("200MassRegion")) return;
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w);
     else {
@@ -821,13 +822,13 @@ float AnalyzerCore::CFRate(snu::KElectron el){
 
 
   if( fabs(el.Eta()) <= 1.4442 ) {
-    scale_factor_BB = 1.32;
+    scale_factor_BB = 1.29;
     //--region:  1/pt > 0.02
-    p0 = 8.16e-05 ; p1 = -1.82e-03 ;
+    p0 = 8.01e-05 ; p1 = -1.80e-03 ;
     frac = p0 + p1*(1./pt) ;
     
     if( (1./pt) <= 0.02 ) {
-      p0 = 3.37e-04 ;  p1 = -1.55e-02 ;
+      p0 = 3.13e-04 ;  p1 = -1.43e-02 ;
       frac = max(p0 + p1*(1./pt), frac);
     }
     frac *= scale_factor_BB ;
@@ -835,13 +836,13 @@ float AnalyzerCore::CFRate(snu::KElectron el){
   } else {  // fabs(eta) > 1.4
     
     
-    scale_factor_EE = 1.32 ; //
+    scale_factor_EE = 1.40 ; //
     //--region:  1/pt > 0.02
-    p0 = 5.41e-04 ; p1 = -1.10e-02 ;
+    p0 = 4.91e-04 ; p1 = -0.952e-02 ;
     frac = p0 + p1*(1./pt) ;
 
     if( (1./pt) <= 0.02 ){
-      p0 = 2.95e-03 ;  p1 = -1.32e-01 ;
+      p0 = 2.70e-03 ;  p1 = -1.21e-01 ;
       frac = max(p0 + p1*(1./pt), frac) ;
     }
     frac *= scale_factor_EE ;
@@ -967,7 +968,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,s
   return Get_DataDrivenWeight_EE(k_electrons, alljets, njets, rho, 0.01, 0.09, 0.05, "40"); /// dxy cut ,  biso, eciso, awayjet pt
 }
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets, int njets, double rho,bool usedr3, bool usetrkiso, bool usetight,  double dxy, double biso, double eiso, TString cut){
-  return Get_DataDrivenWeight_EE(k_electrons, alljets, njets, rho, 0.01, 0.09, 0.05, "40");
+  return Get_DataDrivenWeight_EE(k_electrons, alljets, njets, rho, 0.01, 0.09, 0.05, cut);
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons,std::vector<snu::KJet> alljets, int njets, double rho, double dxy, double biso, double eiso, TString cut){

@@ -9,5 +9,7 @@ h_Njets 1 0. 5.
 h_dphi_METelectron 1 0. 5.
 h_el_jet_emfrac 1 0. 1.
 h_jet_el_ptratio 1 0. 2.
+h_eemass 2 0. 200
+h_Nelectrons 1 0. 4.	 
 END
 

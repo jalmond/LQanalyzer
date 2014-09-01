@@ -4,12 +4,12 @@ zcol	391
 wzcol	416
 sscol	800
 wcol    432
-tcol	596
+tcol	840
 wwcol   840
 vvvcol  820
-vgammacol 810
+vgammacol 820
 vvcol 416
 higgscol 840
-ttvcol  840
+ttvcol  596
 END 
 #Sherpa Alpgen Herwig

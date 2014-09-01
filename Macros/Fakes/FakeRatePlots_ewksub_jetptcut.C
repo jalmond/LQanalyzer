@@ -31,7 +31,9 @@ void FakeRatePlots_ewksub(TString path) {
   gStyle->SetPaintTextFormat("4.2f");
   
   vector<TString> plotname;
-  plotname.push_back("_pt");
+  plotname.push_back("_ptbarrel");
+  plotname.push_back("_ptendcap");
+  //plotname.push_back("_eta");
   //plotname.push_back("_pt_eta2");
   //plotname.push_back("_pt_eta3");
   //plotname.push_back("_pt_eta4");
@@ -46,7 +48,7 @@ void FakeRatePlots_ewksub(TString path) {
     vector<TString> hist_ptcut;
     hist_ptcut.push_back("20");
     hist_ptcut.push_back("40");
-    //hist_ptcut.push_back("60");
+    hist_ptcut.push_back("60");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
       int rebin=1;
@@ -70,21 +72,27 @@ void FakeRatePlots_ewksub(TString path) {
       if(it2->Contains("20")){
 	h_pt_num->SetMarkerColor(kRed);
 	h_pt_num->SetLineColor(kRed);
+	h_pt_num->SetLineStyle(20);
       }
       if(it2->Contains("40")){
         h_pt_num->SetMarkerColor(kBlue);
         h_pt_num->SetLineColor(kBlue);
+	h_pt_num->SetLineStyle(21);
+
       }
       if(it2->Contains("60")){
         h_pt_num->SetMarkerColor(kCyan);
         h_pt_num->SetLineColor(kCyan);
+	h_pt_num->SetLineStyle(22);
+
       }
       h_pt_num->SetLineWidth(0.3);
      
       h_pt_num->GetXaxis()->SetTitle("El p_{T} [GeV]");
       h_pt_num->GetYaxis()->SetTitle("#epsilon_{T/L}");
       
-      h_pt_num->GetYaxis()->SetRangeUser(0.,1.);
+      h_pt_num->GetYaxis()->SetRangeUser(0.,.5);
+      h_pt_num->GetXaxis()->SetRangeUser(15,59.);
       
       histmap[*it2] = h_pt_num;
 
@@ -104,14 +112,14 @@ void FakeRatePlots_ewksub(TString path) {
     histmap.find("40")->second->SetMarkerStyle(22);
     histmap.find("60")->second->SetMarkerStyle(21);
   
-    TLegend* legend= new TLegend(0.2,0.5,0.4,0.7);
+    TLegend* legend= new TLegend(0.2,0.7,0.4,0.9);
     legend->SetFillColor(10);
     legend->SetBorderSize(0);
     legend->SetTextSize(0.04);
     
-    legend->AddEntry(histmap.find("20")->second, "away jet pt>" +histmap.find("20")->first, "p");
-    legend->AddEntry(histmap.find("40")->second, "away jet pt>" +histmap.find("40")->first, "p");
-    legend->AddEntry(histmap.find("60")->second, "away jet pt>" +histmap.find("60")->first, "p");
+    legend->AddEntry(histmap.find("20")->second, "away jet pt >" +histmap.find("20")->first+ " GeV", "p");
+    legend->AddEntry(histmap.find("40")->second, "away jet pt >" +histmap.find("40")->first+ " GeV", "p");
+    legend->AddEntry(histmap.find("60")->second, "away jet pt >" +histmap.find("60")->first+ " GeV", "p");
     legend->Draw("same");
 
 

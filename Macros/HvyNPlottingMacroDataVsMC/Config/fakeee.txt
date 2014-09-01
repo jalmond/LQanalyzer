@@ -9,7 +9,7 @@ cutpath		dat/fakeelectron_cuts.txt
 prefix		FakeRateCalculator_El_SK
 postfix		_5_3_14.root	
 # NAME_THE_OUTPUT_DIR
-outputdir  FakeRateCalculator_July14_19
+outputdir  FakeRateCalculator_Aug14_3
 histdir    LQMay14
 # CONFIGURE_HISTOGRAMS
 showdata   true
@@ -19,11 +19,11 @@ ylog	   true
 #samples	   ww   
 #samples	   wz   
 #samples	   zz   
-#samples	   dyplusbb   
+samples	   dy
+samples	   vgamma
 #samples	   top	
-#samples		   qcd 
 #samples	   wjetplusbb
 samples		   	   wjet
-samples			   DY
 samples			   ttbar
+#samples		   qcd 
 END

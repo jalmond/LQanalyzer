@@ -105,6 +105,7 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_ST"]                  =     new TH1F("h_ST_"                + name,"sum event pt",50,0,1000);
   map_sig["h_jets_pt"]             =     new TH1F("h_jets_pt_"           + name,"jet pt",60,0,300);
   map_sig["h_el_jet_emfrac"]       =     new TH1F("h_el_jet_emfrac_"     + name, "jet_el_emfrac", 20, 0., 1.);
+  map_sig["h_el_jet_dphi"]       =     new TH1F("h_el_jet_dphi_"        + name, "el_jet_emfrac" , 50, 0., 5.);
   map_sig["h_el_leadjet_emfrac"]       =     new TH1F("h_el_leadjet_emfrac_"     + name, "jet_el_emfrac", 20, 0., 1.);
   map_sig["h_el_awayjet_emfrac"]       =     new TH1F("h_el_awayjet_emfrac_"     + name, "jet_el_emfrac", 20, 0., 1.);
   map_sig["h_el_awayjet_pt"]       =     new TH1F("h_el_awayjet_pt_"  + name, "h_el_awayjet_pt", 50, 20., 270.);
@@ -169,6 +170,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       if(dR > 0.5) {
 	if(dR > min_eleadawayjet_Dr) min_eleadawayjet_Dr=  dR;
       }
+      Fill("h_el_jet_dphi", dphi, weight);
+
       if(fabs(dphi) > 2.5) {
 	if(leadjet_away){
 	  Fill("h_el_awayjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
@@ -182,7 +185,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       if(emme == 0)   Fill("h_el_leadjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
       Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight);
       
-      if(jets[emme].CombinedSecVertexBtag() > 0.679)  Fill("h_dr_el_bjet", dR, weight);
+      if(jets[emme].CombinedSecVertexBtag() > 0.898)  Fill("h_dr_el_bjet", dR, weight);
     }
   }
   
@@ -475,15 +478,14 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].CombinedSecVertexBtag(),weight);
-    if(jets.at(j).CombinedSecVertexBtag() > 0.679) nbjet++; 
+    if(jets.at(j).CombinedSecVertexBtag() > 0.898) nbjet++; 
   }
   
   float st = ht + ev.PFMET();
   for(unsigned int i=0 ; i < electrons.size(); i++){
     st+= electrons.at(i).Pt();
   }
-
-
+  
   Fill("h_HT", ht,weight);
   Fill("h_ST", st,weight);
   Fill("h_Nbjets",nbjet, weight);

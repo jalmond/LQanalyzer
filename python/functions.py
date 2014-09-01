@@ -95,7 +95,8 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
     config+='   gSystem->Load("libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("librochcor2012.so");\n' 
+    config+='   gSystem->Load("librochcor2012.so");\n'
+    config+='   gSystem->Load("BTagSFUtil_C.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("' + lib + ' + .so");\n'
         

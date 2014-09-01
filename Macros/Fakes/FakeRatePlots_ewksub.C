@@ -30,24 +30,26 @@ void FakeRatePlots_ewksub(){
   gStyle->SetPalette(1);
     
   vector<TString> plotname;
-  plotname.push_back("_nbjet");
-  /*plotname.push_back("_njets");
-  plotname.push_back("_ptawayjet");
-  plotname.push_back("_ht");
-  plotname.push_back("_ht_noawayjet");
-  plotname.push_back("_ht_dijet");
+  //plotname.push_back("_nbjet");
+  //plotname.push_back("_njets");
+  //plotname.push_back("_ptawayjet");
+  //plotname.push_back("_ht");
+  //plotname.push_back("_ht_noawayjet");
+  //plotname.push_back("_ht_dijet");
+  
+  //  plotname.push_back("_eta");
   plotname.push_back("_ptbarrel");
-  plotname.push_back("_ptendcap");
-  plotname.push_back("_nvertices");*/
+  //plotname.push_back("_ptendcap");
+  //plotname.push_back("_nvertices");
 
   int ihist(0);
   for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     
     vector<TString> hist_ptcut;
-    hist_ptcut.push_back("20");
+    hist_ptcut.push_back("40");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
-      int rebin=10;
+      int rebin=1;
       
       TH1F* h_pt_num= (TH1F*)fdata->Get(("TightEl"+ *it2+ *it ).Data());
       TH1F* h_pt_denom= (TH1F*)fdata->Get(("LooseEl"+ *it2+*it).Data());
@@ -102,7 +104,7 @@ void FakeRatePlots_ewksub(){
       h_pt_num->SetMarkerColor(kRed);
       h_pt_num->SetLineColor(kRed);
       
-      h_pt_num_clone->SetMarkerStyle(20);
+      h_pt_num_clone->SetMarkerStyle(21);
       h_pt_num_clone->SetMarkerColor(kBlue);
       h_pt_num_clone->SetLineColor(kBlue);
       
@@ -117,6 +119,7 @@ void FakeRatePlots_ewksub(){
 	float error_down = h_pt_num_clone->GetBinContent(ibin)  -  h_pt_num_up_clone->GetBinContent(ibin) ;
         error_down = sqrt( error_down*error_down + binerror*binerror);
 	cout << h_pt_num_clone->GetBinContent(ibin)  << " " << error_up << " " << error_down << endl;
+	
 	h_errorhist->SetBinContent(ibin,  (h_pt_num_clone->GetBinContent(ibin)  + error_up - error_down));
 	h_errorhist->SetBinError( ibin, (error_down + error_up) / 2.);
       }
@@ -134,7 +137,8 @@ void FakeRatePlots_ewksub(){
       else  h_pt_num->GetXaxis()->SetTitle("El #eta");
       h_pt_num->GetYaxis()->SetTitle("#epsilon_{T/L}");
       
-      h_pt_num->GetYaxis()->SetRangeUser(0.,1.);
+      h_pt_num->GetYaxis()->SetRangeUser(0.,0.5);
+      h_pt_num->GetXaxis()->SetRangeUser(15.,59.);
       
       h_pt_num->Draw("p");
 

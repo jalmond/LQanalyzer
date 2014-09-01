@@ -32,10 +32,10 @@ void MCFake(TString path, TString tag) {
   
   vector<TString> list_of_names;
   list_of_names.push_back("pt");
-  //list_of_names.push_back("eta");
-  //list_of_names.push_back("njets");
-  //list_of_names.push_back("ht");
-  //list_of_names.push_back("nbjet");
+  list_of_names.push_back("eta");
+  list_of_names.push_back("njets");
+  list_of_names.push_back("ht");
+  list_of_names.push_back("nbjet");
   
   for(unsigned int i = 0; i < list_of_names.size(); i++){
     

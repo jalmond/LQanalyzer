@@ -85,8 +85,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronLooseColl_noipcut;
   eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl_noipcut,jetColl);
 
-
-
   std::vector<snu::KElectron> electronLooseColl_medium;
   eventbase->GetElectronSel()->HNLooseElectronSelection(false,electronLooseColl_medium,jetColl); /// Sets medium WP cuts 
   
@@ -505,7 +503,26 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   /// Event contains at least one loose electron
   std::vector<snu::KElectron> electronTightColl;
   eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl,jetColl);
-  
+  if(!isData){
+    if(electronTightColl.size() > 0){
+      if(electronTightColl.at(0).Pt() < 15.) weight/= 0.496799;
+      else if(electronTightColl.at(0).Pt() < 20.) weight/= 1.13124;
+      else if(electronTightColl.at(0).Pt() < 25.) weight/= 1.0217;
+      else if(electronTightColl.at(0).Pt() < 30.) weight/=  1.06533;
+      else if(electronTightColl.at(0).Pt() < 35.) weight/=  1.05734;
+      else if(electronTightColl.at(0).Pt() < 40.) weight/= 1.34635;
+      else if(electronTightColl.at(0).Pt() < 45.) weight/=  1.26799;
+      else if(electronTightColl.at(0).Pt() < 50.) weight/=  1.15155;
+      else if(electronTightColl.at(0).Pt() < 55.) weight/=  1.23619;
+      else if(electronTightColl.at(0).Pt() < 60.) weight/= 1.00562;
+      else if(electronTightColl.at(0).Pt() < 65.) weight/= 0.927055;
+      else if(electronTightColl.at(0).Pt() < 70.) weight/= 1.05704;
+      else if(electronTightColl.at(0).Pt() < 75.) weight/= 1.07512;
+      else if(electronTightColl.at(0).Pt() < 80.) weight/=  0.915664;
+      else if(electronTightColl.at(0).Pt() < 85.) weight/=  1.46619;
+      else if(electronTightColl.at(0).Pt() < 90.) weight/=  0.910909;
+    }
+  }
   std::vector<snu::KMuon> muonLooseColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonLooseColl);
 
@@ -555,124 +572,142 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
             float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl_lepveto20.at(ijet).Phi()));
             if(dphi > 2.5) use40=true;
           }
+	  bool use60=false;
+          for(unsigned int ijet = 0; ijet < jetColl_lepveto20.size(); ijet++){
+            if(jetColl_lepveto20.at(ijet).Pt() < 60.) continue;
+            float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl_lepveto20.at(ijet).Phi()));
+            if(dphi > 2.5) use60=true;
+          }
 	  
 	  if(use20){
 	    FillHist("MCLooseEl_20_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
-	    if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+	    if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
 	      FillHist("MCTightEl_20_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
 	    }
 	  }
 	  if(use30){
             FillHist("MCLooseEl_30_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
-            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
               FillHist("MCTightEl_30_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
             }
           }
 	  if(use40){
             FillHist("MCLooseEl_40_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
-            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
               FillHist("MCTightEl_40_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
             }
           }
+	  if(use60){
+            FillHist("MCLooseEl_60_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+            if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
+              FillHist("MCTightEl_60_pt_eta", electronLooseColl.at(0).Pt(), fabs(electronLooseColl.at(0).Eta()), weight,  ptbins, 8, etabins, 4);
+            }
+          }
+	  
 	}
       }
     }
 	  
     float el_pt = electronLooseColl.at(0).Pt();
     if(electronLooseColl.at(0).GetType() == 1 || electronLooseColl.at(0).GetType() == 2 || electronLooseColl.at(0).GetType() == 3 ){
-      
-      bool awayjet=false;
-      bool closebjet=false;
-      bool closejet=false;
-      bool closenoejet=false;
-      bool closephjet=false;
-      float ptclosejet(0.);
-      float ptawayjet(0.);
-      /// plot FR if away jet is btagged
-      for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
-	
-	float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl.at(ijet).Phi()));
-	
-	if( dphi > 2.5){
-	  if(!awayjet) ptawayjet=jetColl.at(ijet).Pt();
-	  awayjet=true;
-	}
-	if( dphi < 0.4){
-	  if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
-	}
-	
-	if( electronLooseColl.at(0).DeltaR(jetColl.at(ijet)) < 0.4){
-	  closejet=true;
-	  ptclosejet=jetColl.at(ijet).Pt();
-	  if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
-	  if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
-	  FillHist(("closejet_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
-	  FillHist(("closejet_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
-	  FillHist(("closejet_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
-	  FillHist(("closejet_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
-	  FillHist(("closejet_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
-	  FillHist(("closejet_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
-	  FillHist(("closejet_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200, 20);
-	  FillHist(("closejet_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0.,200,  20);
-	  FillHist(("closejet_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200,  20);
-	  FillHist("closejet_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(0).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50); 
-	  if(jetColl.at(ijet).CombinedSecVertexBtag() < 0.679) {
+
+      if(jetColl_lepveto20.size() > 0){
+	if(electronLooseColl.at(0).Pt() > 15.){
+	  bool awayjet=false;
+	  bool closebjet=false;
+	  bool closejet=false;
+	  bool closenoejet=false;
+	  bool closephjet=false;
+	  float ptclosejet(0.);
+	  float ptawayjet(0.);
+	  /// plot FR if away jet is btagged
+	  for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
 	    
-	    FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
-	    FillHist(("closejet_notb_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_notb_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_notb_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
-	    FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200, 20);
-	    FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0.,200,  20);
-	    FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200,  20);
-	    FillHist("closejet_notb_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(0).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
-    
+	    float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(0).Phi()- jetColl.at(ijet).Phi()));
+	    
+	    if( dphi > 2.5){
+	      if(!awayjet) ptawayjet=jetColl.at(ijet).Pt();
+	      awayjet=true;
+	    }
+	    if( dphi < 0.4){
+	      if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
+	    }
+	    
+	    if( electronLooseColl.at(0).DeltaR(jetColl.at(ijet)) < 0.4){
+	      closejet=true;
+	      ptclosejet=jetColl.at(ijet).Pt();
+	      if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
+	      if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
+	      FillHist(("closejet_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
+	      FillHist(("closejet_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
+	      FillHist(("closejet_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
+	      FillHist(("closejet_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
+	      FillHist(("closejet_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
+	      FillHist(("closejet_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
+	      FillHist(("closejet_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200, 20);
+	      FillHist(("closejet_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0.,200,  20);
+	      FillHist(("closejet_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200,  20);
+	      FillHist("closejet_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(0).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50); 
+	      if(jetColl.at(ijet).CombinedSecVertexBtag() < 0.679) {
+		
+		FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
+		FillHist(("closejet_notb_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_notb_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_notb_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
+		FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200, 20);
+		FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0.,200,  20);
+		FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200,  20);
+		FillHist("closejet_notb_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(0).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
+		
+	      }
+	      else{
+		FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
+		FillHist(("closejet_b_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_b_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_b_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
+		FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200, 20);
+		FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0.,200,  20);
+		FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200,  20);
+		FillHist("closejet_b_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(0).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
+		
+	      }
+	    }
 	  }
-	  else{
-	    FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
-            FillHist(("closejet_b_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
-            FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
-            FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
-            FillHist(("closejet_b_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
-            FillHist(("closejet_b_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
-            FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200, 20);
-            FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0.,200,  20);
-            FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(0).Pt(),  weight, 0.,1.,20, 0., 200,  20);
-            FillHist("closejet_b_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(0).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
-
+	  FillHist("MCLooseEl_closebjet",   closebjet, weight, 0.,2., 2);
+	  FillHist("MCLooseEl_closenoejet", closenoejet, weight, 0.,2., 2);
+	  FillHist("MCLooseEl_closephjet",   closephjet, weight, 0.,2., 2);
+	  FillHist("MCLooseEl_awayjet_pt", ptawayjet, weight, 0., 100., 20);
+	  
+	  if(!(closebjet || closenoejet || closenoejet ))   {
+	    FillHist("MCLooseEl_closejet",   0, weight, 0.,2., 2);
+	    FillHist("MCLooseEl_noclosejet_nbjet", nbjetmc, weight, 0.,4.,4);
+	  }
+	  else FillHist("MCLooseEl_closejet",   1, weight, 0.,2., 2);
+	  
+	  
+	  FillHist("MCLooseEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	  FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 8);
+	  FillHist("MCLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
+	  FillHist("MCLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
+	  FillHist("MCLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
+	  
+	  if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
+	    FillHist("MCTightEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
+	    FillHist("MCTightEl_pt", el_pt, weight, ptbins, 8);
+	    FillHist("MCTightEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
+	    FillHist("MCTightEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
+	    FillHist("MCTightEl_nbjet", nbjetmc, weight, 0.,4.,4);
 	  }
 	}
-      }
-      FillHist("MCLooseEl_closebjet",   closebjet, weight, 0.,2., 2);
-      FillHist("MCLooseEl_closenoejet", closenoejet, weight, 0.,2., 2);
-      FillHist("MCLooseEl_closephjet",   closephjet, weight, 0.,2., 2);
-      FillHist("MCLooseEl_awayjet_pt", ptawayjet, weight, 0., 100., 20);
-      
-      if(!(closebjet || closenoejet || closenoejet ))   {
-	FillHist("MCLooseEl_closejet",   0, weight, 0.,2., 2);
-	FillHist("MCLooseEl_noclosejet_nbjet", nbjetmc, weight, 0.,4.,4);
-      }
-      else FillHist("MCLooseEl_closejet",   1, weight, 0.,2., 2);
-      
-
-      FillHist("MCLooseEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-      FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 8);
-      FillHist("MCLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
-      FillHist("MCLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
-      FillHist("MCLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
-      
-      if(IsTight(electronLooseColl.at(0), jetColl,eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
-	FillHist("MCTightEl_eta", electronLooseColl.at(0).Eta(), weight, -2.5, 2.5,50);
-	FillHist("MCTightEl_pt", el_pt, weight, ptbins, 8);
-	FillHist("MCTightEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
-	FillHist("MCTightEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
-	FillHist("MCTightEl_nbjet", nbjetmc, weight, 0.,4.,4);
       }
     }
+    
     if(electronLooseColl.at(0).GetType() == 0 || electronLooseColl.at(0).GetType() == 7){
-
+      
       /// plot FR if away jet is btagged
       for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
 	
@@ -691,16 +726,16 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       }
     }
     
-    
+      
     if(electronLooseColl.size() >1){
-
+      
       if(electronLooseColl.at(1).GetType() == 0 || electronLooseColl.at(1).GetType() == 7){
-
+	
 	/// plot FR if away jet is btagged
 	for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
-
+	  
 	  if( electronLooseColl.at(1).DeltaR(jetColl.at(ijet)) < 0.4){
-
+	    
 	    FillHist(("closejet_nonfakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
 	    FillHist(("closejet_nonfakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
 	    FillHist(("closejet_nonfakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
@@ -717,108 +752,111 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       
       if(electronLooseColl.at(1).GetType() == 1 || electronLooseColl.at(1).GetType() == 2 || electronLooseColl.at(1).GetType() == 3 ){
 	
-	bool awayjet=false;
-	bool closebjet=false;
-	bool closejet=false;
-	bool closenoejet=false;
-	bool closephjet=false;
-	float ptclosejet(0.);
-	float ptawayjet(0.);
-	/// plot FR if away jet is btagged
-	for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
-
-	  float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(1).Phi()- jetColl.at(ijet).Phi()));
-
-	  if( dphi > 2.5){
-	    if(!awayjet) ptawayjet=jetColl.at(ijet).Pt();
-	    awayjet=true;
-	  }
-	  if( dphi < 0.4){
-	    if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
-	  }
-
-	  if( electronLooseColl.at(1).DeltaR(jetColl.at(ijet)) < 0.4){
-	    closejet=true;
-	    ptclosejet=jetColl.at(ijet).Pt();
-	    if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
-	    if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
-	    FillHist(("closejet_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
-	    FillHist(("closejet_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
-	    FillHist(("closejet_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
-	    FillHist(("closejet_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200, 20);
-	    FillHist(("closejet_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0.,200,  20);
-	    FillHist(("closejet_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200,  20);
-	    FillHist("closejet_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(1).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
-
-	    if(jetColl.at(ijet).CombinedSecVertexBtag() < 0.679) {
-
-	      FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
-	      FillHist(("closejet_notb_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_notb_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_notb_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
-	      FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200, 20);
-	      FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0.,200,  20);
-	      FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200,  20);
-	      FillHist("closejet_notb_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(1).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
-
+	if(jetColl_lepveto20.size() > 0){
+	  if(electronLooseColl.at(1).Pt() > 15.){
+	    bool awayjet=false;
+	    bool closebjet=false;
+	    bool closejet=false;
+	    bool closenoejet=false;
+	    bool closephjet=false;
+	    float ptclosejet(0.);
+	    float ptawayjet(0.);
+	    /// plot FR if away jet is btagged
+	    for(unsigned int ijet =0 ; ijet < jetColl.size() ; ijet++){
+	      
+	      float dphi =fabs(TVector2::Phi_mpi_pi(electronLooseColl.at(1).Phi()- jetColl.at(ijet).Phi()));
+	      
+	      if( dphi > 2.5){
+		if(!awayjet) ptawayjet=jetColl.at(ijet).Pt();
+		awayjet=true;
+	      }
+	      if( dphi < 0.4){
+		if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
+	      }
+	      
+	      if( electronLooseColl.at(1).DeltaR(jetColl.at(ijet)) < 0.4){
+		closejet=true;
+		ptclosejet=jetColl.at(ijet).Pt();
+		if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
+		if(jetColl.at(ijet).ChargedEMEnergyFraction() < 0.2) closenoejet=true ;
+		FillHist(("closejet_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
+		FillHist(("closejet_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
+		FillHist(("closejet_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
+		FillHist(("closejet_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200, 20);
+		FillHist(("closejet_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0.,200,  20);
+		FillHist(("closejet_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200,  20);
+		FillHist("closejet_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(1).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
+		
+		if(jetColl.at(ijet).CombinedSecVertexBtag() < 0.679) {
+		  
+		  FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
+		  FillHist(("closejet_notb_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_notb_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_notb_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
+		  FillHist(("closejet_notb_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200, 20);
+		  FillHist(("closejet_notb_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0.,200,  20);
+		  FillHist(("closejet_notb_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200,  20);
+		  FillHist("closejet_notb_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(1).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
+		  
+		}
+		else{
+		  FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
+		  FillHist(("closejet_b_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_b_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
+		  FillHist(("closejet_b_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
+		  FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200, 20);
+		  FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0.,200,  20);
+		  FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200,  20);
+		  FillHist("closejet_b_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(1).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
+		}
+	      }
 	    }
-	    else{
-	      FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction"),jetColl.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);
-	      FillHist(("closejet_b_fakemcel_NeutralHadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction"),jetColl.at(ijet).ChargedEMEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction"),jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_b_fakemcel_ElectronEnergyFraction"),jetColl.at(ijet).ElectronEnergyFraction() , weight, 0.,1.,20);
-	      FillHist(("closejet_b_fakemcel_HadEnergyFraction"),jetColl.at(ijet).NeutralHadEnergyFraction()+ jetColl.at(ijet).ChargedHadEnergyFraction() , weight, 0., 1.,200);
-	      FillHist(("closejet_b_fakemcel_ChargedEMEnergyFraction_elpt"),jetColl.at(ijet).ChargedEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200, 20);
-	      FillHist(("closejet_b_fakemcel_ChargedHadEnergyFraction_elpt"),jetColl.at(ijet).ChargedHadEnergyFraction()  ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0.,200,  20);
-	      FillHist(("closejet_b_fakemcel_NeutralEMEnergyFraction_elpt"),jetColl.at(ijet).NeutralEMEnergyFraction() ,electronLooseColl.at(1).Pt(),  weight, 0.,1.,20, 0., 200,  20);
-	      FillHist("closejet_b_ptdiff_el", (jetColl.at(ijet).Pt() -  electronLooseColl.at(1).Pt()) / jetColl.at(ijet).Pt() , weight, -1., 1., 50);
+	    FillHist("MCLooseEl_closebjet",   closebjet, weight, 0.,2., 2);
+	    FillHist("MCLooseEl_closenoejet", closenoejet, weight, 0.,2., 2);
+	    FillHist("MCLooseEl_closephjet",   closephjet, weight, 0.,2., 2);
+	    FillHist("MCLooseEl_awayjet_pt", ptawayjet, weight, 0., 100., 20);
+	    
+	    if(!(closebjet || closenoejet || closenoejet )) {
+	      FillHist("MCLooseEl_closejet",   0, weight, 0.,2., 2);
+	      FillHist("MCLooseEl_noclosejet_nbjet", nbjetmc, weight, 0.,4.,4);
+	    }
+	    else FillHist("MCLooseEl_closejet",   1, weight, 0.,2., 2);
+	    
+	    
+	    FillHist("MCLooseEl_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
+	    FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 8);
+	    FillHist("MCLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
+	    FillHist("MCLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
+	    FillHist("MCLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
+	    if(IsTight(electronLooseColl.at(1),jetColl, eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
+	      FillHist("MCTightEl_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
+	      FillHist("MCTightEl_pt", el_pt, weight, ptbins, 8);
+	      FillHist("MCTightEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
+	      FillHist("MCTightEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
+	      FillHist("MCTightEl_nbjet", nbjetmc, weight, 0.,4.,4);
 	    }
 	  }
-	}
-	FillHist("MCLooseEl_closebjet",   closebjet, weight, 0.,2., 2);
-	FillHist("MCLooseEl_closenoejet", closenoejet, weight, 0.,2., 2);
-	FillHist("MCLooseEl_closephjet",   closephjet, weight, 0.,2., 2);
-	FillHist("MCLooseEl_awayjet_pt", ptawayjet, weight, 0., 100., 20);
-
-	if(!(closebjet || closenoejet || closenoejet )) {
-	  FillHist("MCLooseEl_closejet",   0, weight, 0.,2., 2);
-	  FillHist("MCLooseEl_noclosejet_nbjet", nbjetmc, weight, 0.,4.,4);
-	}
-	else FillHist("MCLooseEl_closejet",   1, weight, 0.,2., 2);
-	
-
-	FillHist("MCLooseEl_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
-	FillHist("MCLooseEl_pt",el_pt , weight, ptbins, 8);
-	FillHist("MCLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
-	FillHist("MCLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
-	FillHist("MCLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
-	if(IsTight(electronLooseColl.at(1),jetColl, eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
-	  FillHist("MCTightEl_eta", electronLooseColl.at(1).Eta(), weight, -2.5, 2.5,50);
-	  FillHist("MCTightEl_pt", el_pt, weight, ptbins, 8);
-	  FillHist("MCTightEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
-	  FillHist("MCTightEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
-	  FillHist("MCTightEl_nbjet", nbjetmc, weight, 0.,4.,4);
 	}
       }
     }
   }
   
-
   if(!k_isdata&&electronLooseColl_noipcut.size() >0){
     Float_t ptbins[9] = { 10.,15.,20.,25.,30.,35.,40.,60.,100.};
     Float_t htbins[6] = { 0., 30., 50., 100., 200., 400.};
-
+    
     int nbjetmc(0);
     for(unsigned int ij =0 ; ij < jetColl_lepveto20.size() ; ij++){
       if(jetColl_lepveto20.at(ij).CombinedSecVertexBtag() > 0.679) nbjetmc++;
     }
-
+    
     float el_pt = electronLooseColl_noipcut.at(0).Pt();
     if(electronLooseColl_noipcut.at(0).GetType() == 1 || electronLooseColl_noipcut.at(0).GetType() == 2 || electronLooseColl_noipcut.at(0).GetType() == 3 ){
       FillHist("MCNoIPCUTLooseEl_eta", electronLooseColl_noipcut.at(0).Eta(), weight, -2.5, 2.5,50);
@@ -826,7 +864,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       FillHist("MCNoIPCUTLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
       FillHist("MCNoIPCUTLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
       FillHist("MCNoIPCUTLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
-      if(IsTight(electronLooseColl_noipcut.at(0), jetColl, eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+      if(IsTight(electronLooseColl_noipcut.at(0), jetColl, eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
         FillHist("MCNoIPCUTTightEl_eta", electronLooseColl_noipcut.at(0).Eta(), weight, -2.5, 2.5,50);
         FillHist("MCNoIPCUTTightEl_pt", el_pt, weight, ptbins, 8);
         FillHist("MCNoIPCUTTightEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
@@ -842,7 +880,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
         FillHist("MCNoIPCUTLooseEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
         FillHist("MCNoIPCUTLooseEl_ht", SumPt(jetColl_lepveto20), weight, htbins, 5);
         FillHist("MCNoIPCUTLooseEl_nbjet", nbjetmc, weight, 0.,4.,4);
-        if(IsTight(electronLooseColl_noipcut.at(1),jetColl, eventbase->GetEvent().JetRho(), 0.01,0.09, 0.09,true, false, true)){
+        if(IsTight(electronLooseColl_noipcut.at(1),jetColl, eventbase->GetEvent().JetRho(), 0.01,0.09, 0.05,true, false, true)){
           FillHist("MCNoIPCUTTightEl_eta", electronLooseColl_noipcut.at(1).Eta(), weight, -2.5, 2.5,50);
           FillHist("MCNoIPCUTTightEl_pt", el_pt, weight, ptbins, 8);
           FillHist("MCNoIPCUTTightEl_njets", jetColl_lepveto20.size(), weight, 0.,5.,5);
@@ -858,9 +896,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   /// This code calculates the real efficiency
   if(PassTrigger(triggerslist_diel, prescale)){
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 5., "", 0.01, 0.09,  0.09,true,false, true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 2.5, "TightWindow", 0.01, 0.09, 0.09 ,true,false, true);
-    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 10., "LooseWindow",0.01, 0.09 , 0.09,true,false, true);
+        GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 5., "", 0.01, 0.09,  0.05,true,false, true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 2.5, "TightWindow", 0.01, 0.09, 0.05 ,true,false, true);
+    GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 10., "LooseWindow",0.01, 0.09 , 0.05,true,false, true);
 
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 5., "Loosedxy01_100_100",0.01, 0.1 , 0.1,true,false, true);
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight, 5., "Loosedxy01_009_009",0.01, 0.09 , 0.09,true,false, true);
@@ -955,10 +993,20 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight,5., "iso_B050_E080_dr03", 0.01, 0.05,0.08,true,false,true);
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight,5., "iso_B050_E070_dr03", 0.01, 0.05,0.07,true,false,true);
     GetRealEfficiency(electronLooseColl, jetColl_lepveto20, jetColl, muonLooseColl, weight,5., "iso_B050_E060_dr03", 0.01, 0.05,0.06,true,false,true);
-
+    if(electronLooseColl.size() ==2){
+      if(jetColl_lepveto20.size() > 0){
+	if(jetColl_lepveto20.at(0).Pt() > 30.){
+	  FillCLHist(sighist, "DoubleEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+	}
+      }
+    }
     
   }
   
+
+
+  if(muonLooseColl.size() > 0) return;
+
   FillCLHist(sighist, "SingleEl_nocut", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
   
   std::vector<TString> triggerslist17jet;
@@ -1093,6 +1141,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   weight = weight * prescale_trigger;
   /// prescale_trigger = 1 for data, 0 if failed trigger
   
+  if(electronLooseColl.size() ==0) return;
   
   if(!pass_eljettrig) return;
   
@@ -1117,9 +1166,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   Double_t MT=0;
   Double_t METdphi=0;
   m_logger << DEBUG << "Filling single lepton + 1 jet plots " << LQLogger::endmsg;
-  if (jetColl_lepveto20.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
-  if (electronTightColl.size() == 1&& jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "SingleTightElJet", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
   
+  if (jetColl_lepveto20.size() >= 1 ) {
+    if(jetColl_lepveto20.at(0).Pt() > 30.){
+      FillCLHist(sighist, "SingleLooseElJet", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+      if (electronTightColl.size() == 1&& jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "SingleTightElJet", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+    }
+  }
   
   for(unsigned int w = 0; w < electronLooseColl.size();  w++){
     METdphi = TVector2::Phi_mpi_pi(electronLooseColl.at(w).Phi()- eventbase->GetEvent().PFMETphi());
@@ -1139,27 +1192,43 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   else truth_match=true;
   
   if(truth_match){
-    if (jetColl_lepveto20.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
-    if (electronTightColl.size() == 1&& jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "SingleTightElJet_tm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+    if (jetColl_lepveto20.size() >= 1 ){
+      if(jetColl_lepveto20.at(0).Pt() > 30.) {
+	FillCLHist(sighist, "SingleLooseElJet_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+      }
+    }
+    
+    if (electronTightColl.size() == 1&& jetColl_lepveto20.size() >= 1){
+      if(jetColl_lepveto20.at(0).Pt() > 30.) {
+	FillCLHist(sighist, "SingleTightElJet_tm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+      }
+    }
   }
-  
   
   m_logger << DEBUG << "making cuts to remove prompt leptons" << LQLogger::endmsg;
   m_logger << DEBUG << "Selecting region to calculate MC SFs " << LQLogger::endmsg;
   
-  if(eventbase->GetEvent().PFMET() > 30 && (60. < MT)  &&(MT < 100.) &&truth_match){
+  if(eventbase->GetEvent().PFMET() > 40 && (60. < MT)  &&(MT < 100.) &&truth_match){
     
-    if(electronTightColl.size() == 1&& jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "SingleTightElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+    if(electronTightColl.size() == 1&& jetColl_lepveto20.size() >= 1){
+      if(jetColl_lepveto20.at(0).Pt() > 30.) {
+	FillCLHist(sighist, "SingleTightElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+      }
+      if(jetColl_lepveto20.at(0).Pt() > 40.) {
+	FillCLHist(sighist, "SingleTightElJet40_prompt", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+      }
+    }
+    if(jetColl_lepveto20.size() >= 1){
+      if(jetColl_lepveto20.at(0).Pt() > 30.) {
+        FillCLHist(sighist, "SingleLooseElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+      }
+      if(jetColl_lepveto20.at(0).Pt() > 40.) {
+        FillCLHist(sighist, "SingleLooseElJet40_prompt", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
+      }
+    }
   }
-  
-  if(eventbase->GetEvent().PFMET() > 50 && (60. < MT)  &&(MT < 100.)&& truth_match){
-    if (jetColl_lepveto20.size() >= 1 )FillCLHist(sighist, "SingleLooseElJet_prompt", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
-  }
-  
-
   
   if( !( (eventbase->GetEvent().PFMET() < 20) && (MT < 25.)) ) return;
-  
   
   m_logger << DEBUG << "Making plots for fake rates with different jet cuts" << LQLogger::endmsg;
   
@@ -1244,107 +1313,19 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
  
   
-  if(useevent40){
-    if ( electronTightColl.size() == 1 && jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "TightEl40_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
-    if (jetColl_lepveto20.size() >= 1) FillCLHist(sighist, "LooseEl40_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+  if(useevent30){
+    if ( electronTightColl.size() == 1 && jetColl_lepveto20.size() >= 1)FillCLHist(sighist, "TightEl30_notm", eventbase->GetEvent(), muonLooseColl,electronTightColl,jetColl_lepveto20, weight);
+    if (jetColl_lepveto20.size() >= 1) FillCLHist(sighist, "LooseEl30_notm", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_lepveto20, weight);
     
   }
-  
-  
+    
   if(useevent40_loosedxy01&&truth_match){
     if(jetColl_lepveto20.size() >= 1){
       if( electronLooseColl.size()==1 )   FillHist("Loosedxy01_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
     }
   }
   
-  
-  if(useevent40&&truth_match){
-    if(jetColl_lepveto20.size() >= 1){
-      if( electronLooseColl.size()==1 )   FillHist("LooseOpt_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      if( electronTightColl_dxy05.size()==1 )   FillHist("Tight_dxy05_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if( electronTightColl_dxy10.size()==1 )   FillHist("Tight_dxy10_El40_pt_eta",el_pt, el_eta,  weight,  ptbins, 8, ebetabins, 2);
-      if( electronTightColl_dxy15.size()==1 )   FillHist("Tight_dxy15_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if( electronTightColl_dxy20.size()==1 )   FillHist("Tight_dxy20_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if( electronTightColl_dxy25.size()==1 )   FillHist("Tight_dxy25_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if( electronTightColl_dxy30.size()==1 )   FillHist("Tight_dxy30_El40_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if( electronTightColl_tight.size()==1 )   FillHist("Tight_tight_pt_eta",el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
     
-      if(electronTightColl_dr03_150.size()==1 )  FillHist("Tight_iso_dr3_b150_e150_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_125.size()==1 )  FillHist("Tight_iso_dr3_b125_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_100.size()==1 )  FillHist("Tight_iso_dr3_b100_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_090.size()==1 )  FillHist("Tight_iso_dr3_b090_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_080.size()==1 )  FillHist("Tight_iso_dr3_b080_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_070.size()==1 )  FillHist("Tight_iso_dr3_b070_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_060.size()==1 )  FillHist("Tight_iso_dr3_b060_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_050.size()==1 )  FillHist("Tight_iso_dr3_b050_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);      
-
-      if(electronTightColl_dr04_150.size()==1 )  FillHist("Tight_iso_dr4_b150_e150_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_125.size()==1 )  FillHist("Tight_iso_dr4_b125_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_100.size()==1 )  FillHist("Tight_iso_dr4_b100_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_090.size()==1 )  FillHist("Tight_iso_dr4_b090_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_080.size()==1 )  FillHist("Tight_iso_dr4_b080_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_070.size()==1 )  FillHist("Tight_iso_dr4_b070_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_060.size()==1 )  FillHist("Tight_iso_dr4_b060_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr04_050.size()==1 )  FillHist("Tight_iso_dr4_b050_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      /// Get asymmetric fake rates for E/B
-      if(electronTightColl_dr03_b150_e125.size()==1 ) FillHist("Tight_iso_dr3_b150_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b150_e100.size()==1 ) FillHist("Tight_iso_dr3_b150_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b150_e090.size()==1 ) FillHist("Tight_iso_dr3_b150_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b150_e080.size()==1 ) FillHist("Tight_iso_dr3_b150_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b150_e070.size()==1 ) FillHist("Tight_iso_dr3_b150_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b150_e060.size()==1 ) FillHist("Tight_iso_dr3_b150_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b150_e050.size()==1 ) FillHist("Tight_iso_dr3_b150_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      
-      if(electronTightColl_dr03_b125_e100.size()==1 ) FillHist("Tight_iso_dr3_b125_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b125_e090.size()==1 ) FillHist("Tight_iso_dr3_b125_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b125_e080.size()==1 ) FillHist("Tight_iso_dr3_b125_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b125_e070.size()==1 ) FillHist("Tight_iso_dr3_b125_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b125_e060.size()==1 ) FillHist("Tight_iso_dr3_b125_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b125_e050.size()==1 ) FillHist("Tight_iso_dr3_b125_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      if(electronTightColl_dr03_b100_e125.size()==1 ) FillHist("Tight_iso_dr3_b100_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b100_e090.size()==1 ) FillHist("Tight_iso_dr3_b100_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b100_e080.size()==1 ) FillHist("Tight_iso_dr3_b100_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b100_e070.size()==1 ) FillHist("Tight_iso_dr3_b100_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b100_e060.size()==1 ) FillHist("Tight_iso_dr3_b100_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b100_e050.size()==1 ) FillHist("Tight_iso_dr3_b100_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      if(electronTightColl_dr03_b090_e100.size()==1 ) FillHist("Tight_iso_dr3_b090_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b090_e125.size()==1 ) FillHist("Tight_iso_dr3_b090_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b090_e080.size()==1 ) FillHist("Tight_iso_dr3_b090_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b090_e070.size()==1 ) FillHist("Tight_iso_dr3_b090_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b090_e060.size()==1 ) FillHist("Tight_iso_dr3_b090_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b090_e050.size()==1 ) FillHist("Tight_iso_dr3_b090_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      if(electronTightColl_dr03_b080_e100.size()==1 ) FillHist("Tight_iso_dr3_b080_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b080_e090.size()==1 ) FillHist("Tight_iso_dr3_b080_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b080_e125.size()==1 ) FillHist("Tight_iso_dr3_b080_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b080_e070.size()==1 ) FillHist("Tight_iso_dr3_b080_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b080_e060.size()==1 ) FillHist("Tight_iso_dr3_b080_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b080_e050.size()==1 ) FillHist("Tight_iso_dr3_b080_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      if(electronTightColl_dr03_b070_e100.size()==1 ) FillHist("Tight_iso_dr3_b070_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b070_e090.size()==1 ) FillHist("Tight_iso_dr3_b070_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b070_e080.size()==1 ) FillHist("Tight_iso_dr3_b070_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b070_e125.size()==1 ) FillHist("Tight_iso_dr3_b070_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b070_e060.size()==1 ) FillHist("Tight_iso_dr3_b070_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b070_e050.size()==1 ) FillHist("Tight_iso_dr3_b070_e050_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-      if(electronTightColl_dr03_b050_e100.size()==1 ) FillHist("Tight_iso_dr3_b050_e100_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b050_e090.size()==1 ) FillHist("Tight_iso_dr3_b050_e090_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b050_e080.size()==1 ) FillHist("Tight_iso_dr3_b050_e080_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b050_e070.size()==1 ) FillHist("Tight_iso_dr3_b050_e070_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b050_e060.size()==1 ) FillHist("Tight_iso_dr3_b050_e060_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-      if(electronTightColl_dr03_b050_e125.size()==1 ) FillHist("Tight_iso_dr3_b050_e125_pt_eta", el_pt, el_eta, weight,  ptbins, 8, ebetabins, 2);
-
-
-    
-    }
-  }
-  
   /// Gets Fake rates for events with away jet > 20/40/60 GeV 
 
   if(truth_match)   GetFakeRates(electronLooseColl, electronTightColl, jetColl_lepveto20,  jetColl, "NoJetReq");

@@ -63,6 +63,9 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TFile* file_mc  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMC.root").c_str());
   CheckFile(file_mc);
     
+  TFile* file_muon = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_130.root").c_str());
+  CheckFile(file_muon);
+
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
 
@@ -403,7 +406,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_bjet_60" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_60_bjet_pt_eta"))->Clone());
 
   
-
   _2DEfficiencyMap["fake_eff_20_0905" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_20_0905_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_30_0905" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_30_0905_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_40_0905" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_0905_pt_eta"))->Clone());
@@ -411,6 +413,11 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_mc_20"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_20_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_mc_30"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_30_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_mc_40"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_40_pt_eta"))->Clone());
+  _2DEfficiencyMap["fake_eff_mc_60"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_60_pt_eta"))->Clone());
+
+  _2DEfficiencyMap["fake_eff_muon"] = dynamic_cast<TH2F*>((file_muon->Get("h_FOrate3"))->Clone());
+  
+  
 
   cout << "HNCommonLeptonFakes : Initializing" << endl;
   for(map<TString, TH2F*>::iterator mit = _2DEfficiencyMap.begin(); mit != _2DEfficiencyMap.end(); mit++){
@@ -521,10 +528,14 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
   if(njets == 1) fcut += "_1jet";
   if(njets == 2) fcut += "_2jet";
   if(njets > 2) fcut += "_3jet";
-
+  
+  cout << cut <<  " " << _el1_eta << " f = " << getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut) << endl; 
+  
   fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
   fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
   
+  
+
   if(cut.Contains("20")){
     
     if(_el1_eta > 1.5){
@@ -635,13 +646,12 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
 
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
 
-  r1 = getEfficiency_muon(0,_mu1_pt, _mu1_eta);
-  r2 = getEfficiency_electron(0,_el1_pt, _el1_eta);
+  r1 = 1.;
+  r2 = 1.;
 
   fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
   fr2= getFakeRate_electron(0,_el1_pt, _el1_eta);
 
-  if(njets==0) fr2 = fr2*1.45;
 
   // Calculate event weight
   float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, ismu1tight);

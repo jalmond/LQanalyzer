@@ -2,6 +2,7 @@
 #define HNDiElectron_h
 
 #include "AnalyzerCore.h"
+#include "BTagSFUtil.h"
 
 
 class HNDiElectron : public AnalyzerCore {
@@ -27,7 +28,7 @@ class HNDiElectron : public AnalyzerCore {
   
   void CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
   bool LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
-  bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip , float pt2, float pt1, float eemin, float eemax, float jjmin, float jjmax, float eejjmin, float eejjmax, float metmax,  float stmin, float stmax);
+  bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, float evmet, bool runchargeflip , std::vector<float> cuts);
   bool MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   
@@ -43,6 +44,12 @@ class HNDiElectron : public AnalyzerCore {
   float m_ss_Z_nw;
   float m_os_Z;
   float m_ss_Z;
+
+  float k_met, k_eemass, k_eejjmass, k_e1jjmass, k_e2jjmass,  k_st, k_ht;
+  int k_njet, k_nbjet_l, k_nbjet_m, k_nbjet_t;
+  float k_weight, k_el1pt, k_el2pt, k_j1pt, k_jjmass;
+
+  BTagSFUtil *fBTagSF;
 
   ClassDef ( HNDiElectron, 1);
 };

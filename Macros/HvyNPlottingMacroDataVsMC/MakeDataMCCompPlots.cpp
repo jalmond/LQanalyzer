@@ -507,7 +507,6 @@ vector<pair<TString,float> >  InitSample (TString sample){
     
   ///// Top samples //////////////////    
   if(sample.Contains("top")){
-    list.push_back(make_pair("ttbar",0.1));
     list.push_back(make_pair("stbar_sch",0.1));
     list.push_back(make_pair("stbar_tch",0.1));
     list.push_back(make_pair("stbar_tW",0.1));
@@ -553,6 +552,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WW_py",0.15));
     ////list.push_back(make_pair("WgammaE",0.22));
     //list.push_back(make_pair("WgammaTau",0.22));
+    list.push_back(make_pair("SSWmWm",0.22));
+    list.push_back(make_pair("SSWpWp",0.22));
+    list.push_back(make_pair("WW_dp",0.22));
   }
   if(sample.Contains("vv_mg")){
     list.push_back(make_pair("WZtollqq_mg",0.15));
@@ -626,9 +628,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WWG",0.22));
   }
   if(sample.Contains("vgamma")){
-    list.push_back(make_pair("Wgamma",0.22));
-    list.push_back(make_pair("Zgamma",0.22));
-    
+    list.push_back(make_pair("Wgamma",0.22));    
   }
   if(sample.Contains("nonprompt")){
     list.push_back(make_pair("nonprompt",0.3));
@@ -1550,7 +1550,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
   if(usedata){
-    hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax*100.);
+    hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax*10000.);
     hdata_clone_for_log->Draw("p");
     mcstack.at(0)->Draw("HIST same");
     hdata_clone_for_log->Draw("p same");

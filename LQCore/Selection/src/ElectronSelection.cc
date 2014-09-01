@@ -279,7 +279,7 @@ bool ElectronSelection::HNIsTight(KElectron el, std::vector<snu::KJet> jets,  do
     }
   }
 
-  if(!keep_el) pass_selection = false;
+  //if(!keep_el) pass_selection = false;
 
   return pass_selection;
   
