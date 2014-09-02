@@ -27,10 +27,12 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 
+sepdir = os.getenv("LQANALYZER_LIB_PATH")+ "/Sep/"
 junedir = os.getenv("LQANALYZER_LIB_PATH")+ "/June/"
-if not os.path.exists(junedir):
-    os.system("mkdir " + junedir)
-    print "using June branch for first time: All codes are being recompiled"
+if not os.path.exists(sepdir):
+    os.system("mkdir " + sepdir)
+    os.system("rm " + junedir)
+    print "using September branch for first time: All codes are being recompiled"
     os.system("source bin/make_clean_newbranch.sh")
     
 
@@ -38,6 +40,10 @@ fakelib = os.getenv("LQANALYZER_LIB_PATH") + "libHNCommonLeptonFakes.so"
 
 if not os.path.exists(fakelib):
     os.system("source bin/make_fake_lib.sh")
+
+btaglib = os.getenv("LQANALYZER_LIB_PATH") + "BTagSFUtil_C.so"
+if not os.path.exists(btaglib):
+        os.system("source bin/make_btag_lib.sh")
 
 rocherlib = os.getenv("LQANALYZER_LIB_PATH") + "librochcor2012.so"
 
