@@ -883,7 +883,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 	    float dphi =fabs(TVector2::Phi_mpi_pi(electronAnalysisColl.at(iel).Phi()- jetColl.at(ijet).Phi()));
 	    if( dphi < 0.4){
-	      if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.898) closebjet=true;
+	      if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
 	    }
 	    if( electronAnalysisColl[iel].DeltaR(jetColl.at(ijet)) < 0.4){
 	      if(jetColl.at(ijet).NeutralEMEnergyFraction() > 0.2) closephjet=true ;
@@ -1077,7 +1077,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 		  awayjet=true;
 		}
 		if( electronAnalysisColl.at(ilooseel).DeltaR(jetColl.at(ijet)) < 0.4){
-		  if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.898) closebjet=true;
+		  if(jetColl.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
 		}
 	      }//jetcoll
 	      if(closebjet)  FillHist(("closebjet_looseobject"), 1 ,  weight, 0.,2.,2);
@@ -1458,7 +1458,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   masscuts275.push_back(50.);  masscuts275.push_back(110.);
   masscuts275.push_back(320.); masscuts275.push_back(10000.);
   masscuts275.push_back(35.);
-  masscuts275.push_back(320.);  masscuts275.push_back(10000.);
   masscuts275.push_back(40.);
   masscuts275.push_back(0.);  masscuts275.push_back(10000.);
 
@@ -1549,9 +1548,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   for( std::map<TString, std::vector<float> >::iterator mapit = sysymap.begin(); mapit != sysymap.end(); mapit++){
     
-    FillHist((mapit->first + "MassRegion_nentries").Data(), 0, weight , 0., 2.,2);
     /// Low Mass                       pt2, pt1  ,eemin, max, jjmin,max, eejjmin,max, STmin,max, j1  , e2jjmin, ej22max, njet
     if(OptMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva,event_met, k_running_chargeflip , mapit->second)){
+
       FillCLHist(sighist, (mapit->first +"MassRegion").Data(), eventbase->GetEvent(), muonTightColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
       FillHist((mapit->first + "MassRegion_syst").Data(), 0, weight , 0., 15.,15);
       FillHist((mapit->first + "MassRegion_nentries").Data(), 0, weight , 0., 2.,2);
@@ -1706,7 +1705,7 @@ void HNDiElectron::CheckSignalRegion(  std::vector<snu::KElectron> electrons, st
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return;
 
@@ -1772,9 +1771,7 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    float emfrac = jets.at(ij).NeutralEMEnergyFraction() +jets.at(ij).ChargedEMEnergyFraction();
-    //if(emfrac > 0.7) return false;
-    if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
 
   if(nbjet > 0) return false;
@@ -1830,7 +1827,7 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   for(unsigned int ij=0; ij <jets.size(); ij++){
     float emfrac = jets.at(ij).NeutralEMEnergyFraction() +jets.at(ij).ChargedEMEnergyFraction();
     //if(emfrac > 0.65) return false;
-    if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return false;
 
@@ -1882,7 +1879,7 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   for(unsigned int ij=0; ij <jets.size(); ij++){
     float emfrac = jets.at(ij).NeutralEMEnergyFraction() +jets.at(ij).ChargedEMEnergyFraction();
     //if(emfrac > 0.7) return false;
-    if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return false;
 
@@ -1929,7 +1926,7 @@ bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> elect
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).CombinedSecVertexBtag() > 0.898) nbjet++;
+    if(jets.at(ij).CombinedSecVertexBtag() > 0.679) nbjet++;
   }
   if(nbjet > 0) return false;
 
@@ -1948,7 +1945,7 @@ void HNDiElectron::CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons
 	  for(unsigned int iel=0; iel < electrons.size(); iel++){
 	    if( electrons[iel].DeltaR(jets.at(ijet)) < 0.4){
 	      FillHist(("closejet" + name + "_ptdiff").Data(), (jets.at(ijet).Pt() - electrons.at(iel).Pt()) /  jets.at(ijet).Pt(), weight, -1. , 1., 50);
-	      if(jets.at(ijet).CombinedSecVertexBtag() > 0.898) FillHist(("closejet" + name + "_bjet").Data(), 1, weight, 0., 2., 2);
+	      if(jets.at(ijet).CombinedSecVertexBtag() > 0.679) FillHist(("closejet" + name + "_bjet").Data(), 1, weight, 0., 2., 2);
 	      else FillHist(("closejet" + name + "_bjet").Data(), 0, weight, 0., 2., 2);
 	      /// Jet usually vetoe
 	      FillHist(("closejet" + name + "_NeutralEMEnergyFraction").Data(),jets.at(ijet).NeutralEMEnergyFraction()  , weight, 0.,1.,20);

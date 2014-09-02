@@ -1,15 +1,14 @@
 h_eemass 2 0. 500.
-h_eejjmass   2 0. 1000.
+h_eejjmass   5 0. 1000.
 h_leadingElectronPt 2 20. 200.
 h_secondElectronPt 1 15. 100.
+h_e1jjmass   5 0. 500.
+h_e2jjmass   5 0. 500.
 h_bTag 1 -1. 1.
-
 END
 h_ElectronPt_barrel 1 10. 100.
 h_ElectronPt_endcap 1 10. 100.
 h_eemass 1 0. 200.
-h_e1jjmass   1 0. 500.
-h_e2jjmass   1 0. 500.
 h_dijetsmass  1 0. 300.
 h_eejjmass   1 0. 1000.
 h_secondElectronPt 1 10. 100.

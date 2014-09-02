@@ -657,7 +657,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
   if(type==sighist){
-    if(!hist.Contains("200MassRegion")) return;
+
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w);
     else {
