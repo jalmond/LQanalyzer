@@ -258,13 +258,14 @@ then
     loglevel="INFO"
     logstep=1000
 
-    declare -a input_samples=( "A" "B" "C" "D")
-    stream="egamma"
+    declare -a input_samples=( "A")
+# "B" "C" "D")
+    stream="emu"
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_data_5_3_14.root HNDiElectron_period*
+ #   source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/  HNDiElectron_data_5_3_14.root HNDiElectron_period*
 fi
 
 
