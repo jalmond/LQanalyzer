@@ -90,8 +90,8 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
   /// ELECTRONS
   std::vector<snu::KElectron> _electronAnalysisColl;
   
-  if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(_electronAnalysisColl, jetColl);
-  else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl, jetColl, false);
+  if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(_electronAnalysisColl);
+  else eventbase->GetElectronSel()->HNTightElectronSelection(_electronAnalysisColl, false);
   
   /// Get Prompt electrons/CF 
   /// As of July 20:New cuts on tight electrons:
@@ -107,7 +107,7 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->HNVetoElectronSelection(electronVetoColl);
   
   std::vector<snu::KElectron> _electronLooseColl;
-  eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(_electronLooseColl, jetColl, false);
+  eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(_electronLooseColl, false);
   /// Loose electron sample (tight  - iso + looseiso) this removes fake el from jet/photon
   std::vector<snu::KElectron>  electronLooseColl = GetTruePrompt(_electronLooseColl, false, false);
   
@@ -206,10 +206,10 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
   float isoweight=weight;
   if(k_running_nonprompt){
     
-    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho());
+    float ee_weight = Get_DataDrivenWeight_EE(electronAnalysisColl, eventbase->GetEvent().JetRho());
     weight*= ee_weight;
     
-    float ee_weight_0905 = Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl,jetColl_lepveto_mva.size(), eventbase->GetEvent().JetRho());
+    float ee_weight_0905 = Get_DataDrivenWeight_EE(electronAnalysisColl,  eventbase->GetEvent().JetRho());
     isoweight*= ee_weight_0905;
   }
   

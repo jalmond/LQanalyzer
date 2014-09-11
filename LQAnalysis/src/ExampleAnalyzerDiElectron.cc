@@ -183,7 +183,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetPt(20.);
   eventbase->GetJetSel()->Selection(jetColl);
   
-  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl, jetColl);
+  eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
   m_logger << DEBUG << "Number of electrons  = " << electronTightColl.size() << LQLogger::endmsg; 
   
   ///////////////////////////////////////////////////////////////////////////////////////////

@@ -77,7 +77,7 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->Selection(jetColl);
   
   std::vector<snu::KElectron> _electronTightColl;
-  eventbase->GetElectronSel()->HNTightElectronSelection(_electronTightColl, jetColl);
+  eventbase->GetElectronSel()->HNTightElectronSelection(_electronTightColl);
   
   std::vector<snu::KMuon> muonVetoColl;
   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
@@ -109,7 +109,7 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
     
     cout << "[Reco] Electron1 pt/eta/phi/charge = " << _electronTightColl.at(0).Pt() << " " << _electronTightColl.at(0).Eta() << " " << _electronTightColl.at(0).Phi() << " " << _electronTightColl.at(0).Charge() << endl;
     cout << "[Reco] Electron2 pt/eta/phi/charge = " << _electronTightColl.at(1).Pt() << " " << _electronTightColl.at(1).Eta() << " " << _electronTightColl.at(1).Phi() << " " << _electronTightColl.at(1).Charge() << endl;
-    for(int i=0; i < eventbase->GetElectrons().size();i++){
+    for(unsigned int i=0; i < eventbase->GetElectrons().size();i++){
       cout << "[nocut] Electron pt/eta/phi/charge = " << eventbase->GetElectrons().at(i).Pt() << " " <<  eventbase->GetElectrons().at(i).Eta() << " " << eventbase->GetElectrons().at(i).Phi() << " " << eventbase->GetElectrons().at(i).Charge() << endl;
     }
     
@@ -266,7 +266,7 @@ void ElectronCF::ExecuteEvents()throw( LQError ){
   Float_t ptbins[6] = { 15.,20.,40.,60.,80.,200.};
 
   int cf_event=0;
-  for(int iel = 0 ; iel < electronTightColl.size(); iel++){
+  for( unsigned int iel = 0 ; iel < electronTightColl.size(); iel++){
     //if(electronTightColl.at(iel).Pt() < 20.) return;
     
     FillHist("CFDenominator", 1  , weight, 0.,1.,1);

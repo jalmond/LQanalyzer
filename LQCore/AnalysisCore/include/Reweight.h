@@ -16,14 +16,19 @@ class Reweight {
   ~Reweight();
   
   double GetWeight(int nvtx);
+  double GetWeight(int nvtx, int sys);
   TDirectory* getTemporaryDirectory(void) const;
 
  private:
 
   TFile* fileData_;
+  TFile* fileDataUP_;
+  TFile* fileDataDOWN_;
 
   TH1D* h_MCmod_;
   TH1D* h_Data_;
+  TH1D* h_Data_up_;
+  TH1D* h_Data_down_;
 
 };
 
