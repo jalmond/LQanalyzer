@@ -33,6 +33,8 @@
 #include "TROOT.h"
 #include <TStyle.h>
 #include "TLatex.h"
+#include "TBox.h"
+#include "TASImage.h"
 
 using namespace std;
 
@@ -122,6 +124,11 @@ string cutloc ="";
 string histdir="";
 string output_index_path="";
 string output_path = "";
+
+
+//                                                                                                                                                                                 
+// Global variables                                                                                                                                                                
+//                                                                                                                                                                                 
 
 
 void setTDRStyle() {

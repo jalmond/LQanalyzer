@@ -175,7 +175,7 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, bool apply_ipcu
 
 bool ElectronSelection::HNIsTight(KElectron el,  double rho,  bool m_debug=false){
   
-  return HNIsTight(el,  rho, 0.01, 0.09,0.05, true, true, true,  m_debug);
+  return HNIsTight(el,  rho, 0.01, 0.09,0.05, true, false, true,  m_debug);
 }
   
 bool ElectronSelection::HNIsTight(KElectron el,  double rho, double dxycut, double barrel_isocut, double endcap_isocut, bool usedr3, bool usetrkiso, bool usetight,  bool m_debug){

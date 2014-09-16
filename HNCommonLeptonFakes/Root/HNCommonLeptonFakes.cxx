@@ -239,6 +239,9 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_090_050"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b090_e050"))->Clone());
 
   
+  _2DEfficiencyMap["fake_eff_medium"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_medium"))->Clone());
+  _2DEfficiencyMap["fake_eff_tight"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_tight"))->Clone());
+
 
   cout << "HNCommonLeptonFakes : Initializing" << endl;
   for(map<TString, TH2F*>::iterator mit = _2DEfficiencyMap.begin(); mit != _2DEfficiencyMap.end(); mit++){

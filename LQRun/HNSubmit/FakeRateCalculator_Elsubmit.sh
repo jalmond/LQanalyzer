@@ -58,8 +58,8 @@ then
     outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD/"
 
      declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_350_EM" "QCD_350_BCtoE" )
-
-    source submit.sh
+      declare -a input_samples=("QCD_350_EM" "QCD_350_BCtoE" )
+     source submit.sh
     source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD/ FakeRateCalculator_El_SKQCD_5_3_14.root FakeRateCalculator_El_SKQCD*
     mv /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD/FakeRateCalculator_El_SKQCD_5_3_14.root /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/
 fi

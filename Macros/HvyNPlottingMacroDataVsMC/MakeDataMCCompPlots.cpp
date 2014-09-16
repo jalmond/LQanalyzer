@@ -3,6 +3,8 @@
 #include "Math/QuantFuncMathCore.h"
 #include "TMath.h"
 #include "TGraphAsymmErrors.h"
+#include "CMS_lumi.h"
+
 
 int main(int argc, char *argv[]) {
   
@@ -158,10 +160,8 @@ int MakePlots(string hist) {
 	scale = 1.;
 	/// Make legend
 	TLegend* legend = MakeLegend(legmap, hdata, showdata, ylog);       		
-	
         vector<THStack*> vstack;		
 	vstack.push_back(mstack);   	
-	
 
 	cout << " Making canvas" << endl;
 	
@@ -170,6 +170,8 @@ int MakePlots(string hist) {
 
 	string canvasname = c->GetName();
 	canvasname.erase(0,4);
+
+	
 	PrintCanvas(c, histdir, canvasname, c->GetName());
     }
   }            
@@ -435,9 +437,11 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   }
   
   TLegend* legendH = new TLegend(x1,y1,x2,y2);
-  legendH->SetFillColor(10);
-  legendH->SetBorderSize(0);
-  legendH->SetTextSize(0.02);
+  legendH->SetFillColor(kWhite);
+  legendH->SetTextFont(42);
+  
+  //legendH->SetBorderSize(0);
+  //  legendH->SetTextSize(0.02);
   
   
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pl");
@@ -445,6 +449,8 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     legendH->AddEntry(it->second,it->first.Data(),"f");    
   }
+  legendH->SetFillColor(kWhite);
+  legendH->SetTextFont(42);
 
   return legendH;
   
@@ -1405,8 +1411,12 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   
   string label_plot_type = "";
   //Create Canvases
-  TCanvas* canvas = new TCanvas((cname+ label_plot_type).c_str(), (cname+label_plot_type).c_str(), 800, 600);
-  TCanvas* canvas_log = new TCanvas((cname+ label_plot_type+"log").c_str(), (cname+label_plot_type+"log").c_str(), 800, 600);
+
+  unsigned int outputWidth = 1600;
+  unsigned int outputHeight = 1200;
+
+  TCanvas* canvas = new TCanvas((cname+ label_plot_type).c_str(), (cname+label_plot_type).c_str(), outputWidth,outputHeight);
+  TCanvas* canvas_log = new TCanvas((cname+ label_plot_type+"log").c_str(), (cname+label_plot_type+"log").c_str(), outputWidth,outputHeight);
 
   
   std::string title=canvas->GetName();
@@ -1414,18 +1424,15 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.png";
   
   ///####################   Standard plot
-  canvas_log->SetLogy();
+  //canvas_log->SetLogy();
   canvas->cd();
-  
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   TH1* h_nominal = MakeSumHist2(mcstack.at(0));
-  MakeLabel(0.2,0.8);
 
   TH1* errorband = MakeErrorBand(h_nominal,hup, hdown) ;
   SetNomBinError(h_nominal, hup, hdown);
 
-  cout << "Scaling data by " << scale << endl;
   if(usedata){
     hdata->Draw("9pX0");
     hdata->GetYaxis()->SetTitleOffset(1.5);
@@ -1465,106 +1472,66 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     hdata->Draw( ("9samepX0") );
   }
   else{
-    errorband->GetXaxis()->SetRangeUser(xmin,xmax);
-    errorband->GetYaxis()->SetRangeUser(ymin,ymax);
-    errorband->Draw("E2");
-    mcstack.at(0)->Draw("same HIST");
-    errorband->Draw("E2same");
-
-    
   }
-  legend->Draw("same");
-
-  /*if(usedata){
-    //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
-
-    /// Make significance hist
-
-    TH1* h_significance=(TH1F*)hdata->Clone();
-    TH1* h_divup=(TH1F*)hup->Clone();
-    TH1* h_divdown=(TH1F*)hdown->Clone();
-
-    TH1* errorbandratio = (TH1*)h_nominal->Clone("AA");
-
-    hdata->GetXaxis()->SetLabelSize(0.); ///
-    hdata->GetXaxis()->SetTitle("");
-
-    h_divup->Divide(h_nominal);
-    h_divdown->Divide(h_nominal);
-
-    for(int i=1; i < errorbandratio->GetNbinsX()+1; i++){
-
-      float bc = ((h_divup->GetBinContent(i)+h_divdown->GetBinContent(i))/2.);
-      float bd = ((h_divup->GetBinContent(i)-h_divdown->GetBinContent(i))/2.);
-
-      errorbandratio->SetBinContent(i,bc);
-      errorbandratio->SetBinError(i,bd);
-    }
-
-    errorbandratio->SetFillStyle(3354);
-    errorbandratio->SetFillColor(kBlue-8);
-    errorbandratio->SetMarkerStyle(0);
-
-    for(int i=1; i < h_significance->GetNbinsX()+1; i++){
-      float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
-      float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
-      float sig = 0.;
-      if(denom!=0.) sig = num / denom;
-      h_significance->SetBinContent(i,sig);
-    }
-
-
-    // How large fraction that will be taken up by the data/MC ratio part
-    double FIGURE2_RATIO = 0.35;
-    double SUBFIGURE_MARGIN = 0.15;
-    canvas->SetBottomMargin(FIGURE2_RATIO);
-    TPad *p = new TPad( "p_test", "", 0, 0, 1, 1.0 - SUBFIGURE_MARGIN, 0, 0, 0);  // create new pad, fullsize to have equal font-sizes in both plots
-    p->SetTopMargin(1-FIGURE2_RATIO);   // top-boundary (should be 1 - thePad->GetBottomMargin() )
-    p->SetFillStyle(0);     // needs to be transparent
-    p->Draw();
-    p->cd();
-    
-    h_significance->SetFillColor(kGray+1);
-    h_significance->SetLineColor(kGray+1);
-
-    h_significance->GetYaxis()->SetNdivisions(10204);
-    h_significance->GetYaxis()->SetTitle("Significance");
-    h_significance->GetYaxis()->SetRangeUser(-4., 4.);
-    h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
-    h_significance->Draw("hist");
-    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
-    
-    line->SetLineStyle(2);
-    line->SetLineWidth(2);
-    line->Draw();
-    h_significance->Draw("HISTsame");
-    
-  }
-  */
+  legend->Draw();
+  
+  CMS_lumi( canvas, 2, 11 );
+  canvas->Update();
+  canvas->RedrawAxis();
   canvas->Print(tpdf.c_str(), ".png");
 
   //// %%%%%%%%%% PRINT ON LOG
   canvas_log->cd();
 
-  
+  TPad*    upperPad = new TPad("upperPad", "upperPad", .010, .210, .990, .990);
+  TPad*    lowerPad = new TPad("lowerPad", "lowerPad", .010, .010, .990, .200);
+  upperPad->Draw();
+  lowerPad->Draw();
+
+  canvas_log->Draw();
+  gPad->SetLogz(1);
+
+  upperPad->cd();
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
   if(usedata){
     hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax*10000.);
-    hdata_clone_for_log->Draw("p");
-    mcstack.at(0)->Draw("HIST same");
-    hdata_clone_for_log->Draw("p same");
-    hdata_clone_for_log->Draw("axis same");
+    hdata_clone_for_log->Draw("9pX0");
+
+    hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
+    mcstack.at(0)->Draw("9HIST same");
+    hdata_clone_for_log->Draw("9p same");
+    hdata_clone_for_log->Draw("9axis same");
     errorband->Draw("E2same");
+
+    const double alpha = 1 - 0.6827;
+    TGraphAsymmErrors * g = new TGraphAsymmErrors(h_th1f[ifile][iplot]);
+    for (int i = 0; i < g->GetN(); ++i) {
+      int N = g->GetY()[i];
+      double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
+      double U =  (N==0) ?  ( ROOT::Math::gamma_quantile_c(alpha,N+1,1) ) :
+	( ROOT::Math::gamma_quantile_c(alpha/2,N+1,1) );
+      if ( N!=0 ) {
+	g->SetPointEYlow(i, N-L );
+	g->SetPointEXlow(i, 0);
+	g->SetPointEYhigh(i, U-N );
+	g->SetPointEXhigh(i, 0);
+      }
+      else {
+	g->SetPointEYlow(i, 0.);
+	g->SetPointEXlow(i, 0);
+	g->SetPointEYhigh(i, 0.);
+	g->SetPointEXhigh(i, 0);
+      }
+    }
+    g->SetLineWidth(2.0);
+    g->SetMarkerSize(0.);
+    g->Draw( ("p9same").Data() );
+
   }
   else{
-    errorband->GetXaxis()->SetRangeUser(xmin,xmax);
-    errorband->GetYaxis()->SetRangeUser(ymin,ymax*100.);
-    errorband->Draw("E2");
-    mcstack.at(0)->Draw("same HIST");
-    errorband->Draw("E2same");
   }
-  legend->Draw("same");
+  legend->Draw();
   
   if(usedata){
     //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
@@ -1621,20 +1588,21 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     h_significance->GetYaxis()->SetRangeUser(-4., 4.);
     h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
     h_significance->Draw("hist");
-    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),1.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),1.0);
+    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),0.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),0.0);
 
     line->SetLineStyle(2);
     line->SetLineWidth(2);
     line->Draw();
     h_significance->Draw("HISTsame");
   }
-  
+
+  CMS_lumi( canvas_log, 2, 11 );
+  canvas_log->Update();
+  canvas_log->RedrawAxis();
   canvas_log->Print(tlogpdf.c_str(), ".png");
-  
+ 
   
   return canvas;
-
-
 
 }
 
@@ -1716,5 +1684,165 @@ void MakeLabel(float rhcol_x, float rhcol_y){
 
   return;
 }
+
+
+
+void
+CMS_lumi( TPad* pad, int iPeriod, int iPosX )
+{
+  bool outOfFrame    = false;
+  if( iPosX/10==0 )
+    {
+      outOfFrame = true;
+    }
+  int alignY_=3;
+  int alignX_=2;
+  if( iPosX/10==0 ) alignX_=1;
+  if( iPosX==0    ) alignY_=1;
+  if( iPosX/10==1 ) alignX_=1;
+  if( iPosX/10==2 ) alignX_=2;
+  if( iPosX/10==3 ) alignX_=3;
+  int align_ = 10*alignX_ + alignY_;
+
+  float H = pad->GetWh();
+  float W = pad->GetWw();
+  float l = pad->GetLeftMargin();
+  float t = pad->GetTopMargin();
+  float r = pad->GetRightMargin();
+  float b = pad->GetBottomMargin();
+  float e = 0.025;
+
+  pad->cd();
+
+  TString lumiText;
+  if( iPeriod==1 )
+    {
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+    }
+  else if ( iPeriod==2 )
+    {
+      lumiText += lumi_8TeV;
+      lumiText += " (8 TeV)";
+    }
+  else if( iPeriod==3 )
+    {
+      lumiText = lumi_8TeV;
+      lumiText += " (8 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+    }
+  else if ( iPeriod==4 )
+    {
+      lumiText += lumi_13TeV;
+      lumiText += " (13 TeV)";
+    }
+  else if ( iPeriod==7 )
+    {
+      if( outOfFrame ) lumiText += "#scale[0.85]{";
+      lumiText += lumi_13TeV;
+      lumiText += " (13 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_8TeV;
+      lumiText += " (8 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+      if( outOfFrame) lumiText += "}";
+    }
+  else if ( iPeriod==12 )
+    {
+      lumiText += "8 TeV";
+    }
+
+  cout << lumiText << endl;
+
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);
+
+  float extraTextSize = extraOverCmsTextSize*cmsTextSize;
+
+  latex.SetTextFont(42);
+  latex.SetTextAlign(31);
+  latex.SetTextSize(lumiTextSize*t);
+  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
+  if( outOfFrame )
+    {
+      latex.SetTextFont(cmsTextFont);
+      latex.SetTextAlign(11);
+      latex.SetTextSize(cmsTextSize*t);
+      latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+    }
+
+  pad->cd();
+
+  float posX_;
+  if( iPosX%10<=1 )
+    {
+      posX_ =   l + relPosX*(1-l-r);
+    }
+  else if( iPosX%10==2 )
+    {
+      posX_ =  l + 0.5*(1-l-r);
+    }
+  else if( iPosX%10==3 )
+    {
+      posX_ =  1-r - relPosX*(1-l-r);
+    }
+  float posY_ = 1-t - relPosY*(1-t-b);
+  if( !outOfFrame )
+    {
+      if( drawLogo )
+        {
+          posX_ =   l + 0.045*(1-l-r)*W/H;
+          posY_ = 1-t - 0.045*(1-t-b);
+          float xl_0 = posX_;
+          float yl_0 = posY_ - 0.15;
+          float xl_1 = posX_ + 0.15*H/W;
+          float yl_1 = posY_;
+          TASImage* CMS_logo = new TASImage("CMS-BW-label.png");
+          TPad* pad_logo = new TPad("logo","logo", xl_0, yl_0, xl_1, yl_1 );
+          pad_logo->Draw();
+          pad_logo->cd();
+          CMS_logo->Draw("X");
+          pad_logo->Modified();
+          pad->cd();
+        }
+      else
+        {
+          latex.SetTextFont(cmsTextFont);
+          latex.SetTextSize(cmsTextSize*t);
+          latex.SetTextAlign(align_);
+          latex.DrawLatex(posX_, posY_, cmsText);
+          if( writeExtraText )
+            {
+              latex.SetTextFont(extraTextFont);
+              latex.SetTextAlign(align_);
+              latex.SetTextSize(extraTextSize*t);
+              latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText);
+            }
+        }
+    }
+  else if( writeExtraText )
+    {
+      if( iPosX==0)
+        {
+          posX_ =   l +  relPosX*(1-l-r);
+          posY_ =   1-t+lumiTextOffset*t;
+        }
+      latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(posX_, posY_, extraText);
+    }
+  return;
+}
+
+
+
 
 

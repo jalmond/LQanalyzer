@@ -46,7 +46,7 @@ endif
 
 # compilation options
 VPATH    += $(OBJDIR)
-INCLUDES += -I./ 
+INCLUDES += -I./ -I$(MACRO_DIR)
 CXXFLAGS += -Wall -Wno-overloaded-virtual -Wno-unused
 SRCSUF = cpp
 ROOTLIBS = `root-config --libs`
@@ -93,7 +93,7 @@ endif
 # Rule to make the executable
 MakeDataMCCompPlots: $(SHLIBFILE) MakeDataMCCompPlots.cpp
 	@echo "Make executable: $@"
-	@$(CXX) $(CXXFLAGS)  -o $@  $(SHLIBFILE) MakeDataMCCompPlots.cpp $(ROOTLIBS) $(INCLUDES)
+	@$(CXX) $(CXXFLAGS) -lASImage  -o $@  $(SHLIBFILE) MakeDataMCCompPlots.cpp $(ROOTLIBS) $(INCLUDES)
 
 
 clean:

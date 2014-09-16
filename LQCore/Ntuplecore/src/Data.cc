@@ -965,6 +965,14 @@ void Data::ConnectTrigger(){
   ConnectVariable("ElectronHLTEMuMatched8",  ElectronHLTEMuMatched8,   b_ElectronHLTEMuMatched8);
   ConnectVariable("ElectronHLTEMuMatched17", ElectronHLTEMuMatched17,  b_ElectronHLTEMuMatched17);
 
+  // Trigger
+  /*ConnectVariable("HLTFilterObjEta", HLTFilterObjEta, b_HLTFilterObjEta);
+  ConnectVariable("HLTFilterObjPhi", HLTFilterObjPhi, b_HLTFilterObjPhi);
+  ConnectVariable("HLTFilterObjPt", HLTFilterObjPt, b_HLTFilterObjPt);
+  ConnectVariable("HLTFilterName", HLTFilterName, b_HLTFilterName);
+  ConnectVariable("HLTFilterObjId", HLTFilterObjId, b_HLTFilterObjId);*/
+
+  
   return;
 }
 

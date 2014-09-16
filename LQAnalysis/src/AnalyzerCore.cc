@@ -1017,8 +1017,8 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
   float ee_weight = 0.;
   if(k_electrons.size()==2){
     
-    bool is_el1_tight    = IsTight(k_electrons.at(0),  rho, dxy, biso, eiso, true, true, true);
-    bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, true, true, true);
+    bool is_el1_tight    = IsTight(k_electrons.at(0),  rho, dxy, biso, eiso, true, false, true);
+    bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, true, false, true);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut);
