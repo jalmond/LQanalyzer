@@ -17,7 +17,7 @@
 void setTDRStyle();
 
 
-void Opt_idcut(){
+void Opt_id_select(){
  
   
   setTDRStyle();

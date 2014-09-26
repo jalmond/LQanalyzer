@@ -25,16 +25,33 @@ Reweight::Reweight(TString filename){
   fileData_ = TFile::Open( filename, "READ");
   if (!fileData_) cout << "\n\nAt least one of the Nvtx reweighting files could not be opened!\n\n";
 
+  string analysisdir = getenv("FILEDIR");
+
+  TString filenamedown = analysisdir + "MyDataPileupHistogram_65930.root";
+  TString filenameup = analysisdir + "MyDataPileupHistogram_72870.root";
+  fileDataUP_ = TFile::Open(filenameup , "READ");
+  if (!fileData_) cout << "\n\nAt least one of the Nvtx reweighting files could not be opened!\n\n";
+  fileDataDOWN_ = TFile::Open( filenamedown, "READ");
+  if (!fileData_) cout << "\n\nAt least one of the Nvtx reweighting files could not be opened!\n\n";
+
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
   
   h_Data_ = 0;
   h_Data_ = dynamic_cast<TH1D*>((fileData_->Get("pileup"))->Clone());;  
+  h_Data_up_ = dynamic_cast<TH1D*>((fileDataUP_->Get("pileup"))->Clone());;  
+  h_Data_down_ = dynamic_cast<TH1D*>((fileDataDOWN_->Get("pileup"))->Clone());;  
+  
+  
   h_MCmod_ = dynamic_cast<TH1D*>((h_Data_->Clone("h_MCmod_")));
   
   // Now we can close the file:
   fileData_->Close();
   delete fileData_;
+  fileDataUP_->Close();
+  delete fileDataUP_;
+  fileDataDOWN_->Close();
+  delete fileDataDOWN_;
   // Return to the directory we were in before the function call: 
   origDir->cd();
   
@@ -116,8 +133,16 @@ Reweight::Reweight(TString filename){
 Reweight::~Reweight(){
 }
 
-double Reweight::GetWeight(int nvtx){
+double Reweight::GetWeight(int nvtx, int sys){
+  if(sys==1) return h_Data_up_->GetBinContent( nvtx + 1 );
+  else if(sys==-1) return h_Data_down_->GetBinContent( nvtx + 1 );
+  
   return h_Data_->GetBinContent( nvtx + 1 );
+  
+}
+
+double Reweight::GetWeight(int nvtx){
+  return GetWeight(nvtx,0);
 }
 
 
