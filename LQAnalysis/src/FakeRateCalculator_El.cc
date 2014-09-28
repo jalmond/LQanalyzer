@@ -51,15 +51,10 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 
 void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
-
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
-  
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
    
   std::vector<TString> triggerslist_diel;
   triggerslist_diel.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  
   
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
 
@@ -75,12 +70,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
 
   /// With IP cut and Tight
-  std::vector<snu::KElectron> electronLooseColl;
-  eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(electronLooseColl); 
-  //eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl);
-  
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(true, true, "loose");
+
   /// No IP  and Tight
-  std::vector<snu::KElectron> electronLooseColl_tight_noipcut;
+  std::vector<snu::KElectron> electronLooseColl_tight_noipcut = GetElectrons(true, true, "loose_relaxipcut");
   eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl_tight_noipcut);
   
   // No IP and Medium

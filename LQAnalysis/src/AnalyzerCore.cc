@@ -190,6 +190,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     }
   }
 
+  else if(label.Contains("loose_relaxipcut"))    eventbase->GetElectronSel()->HNLooseElectronSelection(electronColl);
   else if(label.Contains("loose"))    eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(electronColl);
   else if(label.Contains("veto"))     eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);
   

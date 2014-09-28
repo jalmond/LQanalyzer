@@ -13,6 +13,7 @@
 #pragma link C++ class ExampleAnalyzerElectronMuon+;
 #pragma link C++ class HNDiElectron+;
 #pragma link C++ class FakeRateCalculator_El+;
+#pragma link C++ class FakeRateCalculator_El_region2+;
 #pragma link C++ class SKTreeMaker+;
 #pragma link C++ class SKTreeMakerDiLep+;
 #pragma link C++ class SKTreeMakerNoCut+;
