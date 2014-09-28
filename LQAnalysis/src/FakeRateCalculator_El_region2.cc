@@ -1,6 +1,6 @@
 // $id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQFakeRateCalculator_El Frame - ROOT-based analysis framework for Korea SNU
+ * @Project: LQFakeRateCalculator_El_region2 Frame - ROOT-based analysis framework for Korea SNU
 OB * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
@@ -8,7 +8,7 @@ OB * @Package: LQCycles
  ***************************************************************************/
 
 /// Local includes
-#include "FakeRateCalculator_El.h"
+#include "FakeRateCalculator_El_region2.h"
 
 //Core includes
 #include "Reweight.h"
@@ -16,27 +16,27 @@ OB * @Package: LQCycles
 #include "BaseSelection.h"
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (FakeRateCalculator_El);
+ClassImp (FakeRateCalculator_El_region2);
 
 
 /**
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-FakeRateCalculator_El::FakeRateCalculator_El() :  AnalyzerCore(),  out_electrons(0) {
+FakeRateCalculator_El_region2::FakeRateCalculator_El_region2() :  AnalyzerCore(),  out_electrons(0) {
 
 
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("FakeRateCalculator_El");
+  SetLogName("FakeRateCalculator_El_region2");
 
-  Message("In FakeRateCalculator_El constructor", INFO);
+  Message("In FakeRateCalculator_El_region2 constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
 }
 
 
-void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
+void FakeRateCalculator_El_region2::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
   MakeHistograms();  
@@ -49,12 +49,17 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
+void FakeRateCalculator_El_region2::ExecuteEvents()throw( LQError ){
+  
+
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
    
   std::vector<TString> triggerslist_diel;
   triggerslist_diel.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+  
   
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
 
@@ -70,11 +75,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
 
   /// With IP cut and Tight
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons(true, true, "loose");
-
+  std::vector<snu::KElectron> electronLooseColl;
+  eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(electronLooseColl); 
+  //eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl);
+  
   /// No IP  and Tight
-  std::vector<snu::KElectron> electronLooseColl_tight_noipcut = GetElectrons(true, true, "loose_relaxipcut");
-
+  std::vector<snu::KElectron> electronLooseColl_tight_noipcut;
+  eventbase->GetElectronSel()->HNLooseElectronSelection(electronLooseColl_tight_noipcut);
   
   // No IP and Medium
   std::vector<snu::KElectron> electronLooseColl_medium_noipcut;
@@ -467,6 +474,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	}
       }
     }
+    
   }
       
   /// Event contains at least one loose electron
@@ -1564,7 +1572,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 }// End of execute event loop
 
 
-void FakeRateCalculator_El::GetHSTRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets, TString tag){
+void FakeRateCalculator_El_region2::GetHSTRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets, TString tag){
 
   Float_t htbins[14] = { 20.,22.5, 25.,27.5, 30.,35.,40.,45.,50.,60.,80.,100.,200., 1000.};
 
@@ -1597,7 +1605,7 @@ void FakeRateCalculator_El::GetHSTRates(std::vector<snu::KElectron> loose_el, st
 }
 
 
-void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets,  TString tag, float w){
+void FakeRateCalculator_El_region2::GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets,  TString tag, float w){
 
   Float_t ptbins_ht[9] = { 10.,15.,20.,22.5,25.,27.5,35.,40., 60};
   Float_t ptbins[9] = { 10.,15.,20.,25.,30.,35.,40.,60.,100.};
@@ -1773,7 +1781,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
 
 
 
-void FakeRateCalculator_El::GetRealEfficiency(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, std::vector<snu::KMuon> muons, double w, float interval,TString tag, double dxycut,  double  barreliso, double endcapiso, bool usetight){
+void FakeRateCalculator_El_region2::GetRealEfficiency(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, std::vector<snu::KMuon> muons, double w, float interval,TString tag, double dxycut,  double  barreliso, double endcapiso, bool usetight){
   
   Float_t ptbins[18] = {10.,12.5,15.,17.5, 20.,25.,30.,35.,40.,45.,50.,60., 70., 80., 100., 125., 150., 200.};
   Float_t etabins[5] = { 0., 0.8, 1.479, 2., 2.5};
@@ -1894,7 +1902,7 @@ void FakeRateCalculator_El::GetRealEfficiency(std::vector<snu::KElectron> electr
 
 
 
-void FakeRateCalculator_El::EndCycle()throw( LQError ){
+void FakeRateCalculator_El_region2::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
   m_logger<< INFO << "Number of events that pass 17 GeV trigger = " << n_17_pass  << LQLogger::endmsg;
@@ -1903,7 +1911,7 @@ void FakeRateCalculator_El::EndCycle()throw( LQError ){
 
 }
 
-bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso,bool usetight){
+bool FakeRateCalculator_El_region2::IsTight(snu::KElectron el, double jetrho , double dxy, double biso, double eiso,bool usetight){
   
   return eventbase->GetElectronSel()->HNIsTight(el, jetrho, dxy, biso, eiso,  usetight, false);
 
@@ -1911,7 +1919,7 @@ bool FakeRateCalculator_El::IsTight(snu::KElectron el, double jetrho , double dx
 
 
 
-void FakeRateCalculator_El::BeginCycle() throw( LQError ){
+void FakeRateCalculator_El_region2::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
@@ -1935,15 +1943,15 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
   
 }
 
-FakeRateCalculator_El::~FakeRateCalculator_El() {
+FakeRateCalculator_El_region2::~FakeRateCalculator_El_region2() {
   
-  Message("In FakeRateCalculator_El Destructor" , INFO);
+  Message("In FakeRateCalculator_El_region2 Destructor" , INFO);
   if(!k_isdata)delete reweightPU;
   
 }
 
 
-void FakeRateCalculator_El::FillCutFlow(TString cut, float weight){
+void FakeRateCalculator_El_region2::FillCutFlow(TString cut, float weight){
 
   
   if(GetHist("cutflow")) {
@@ -1967,7 +1975,7 @@ void FakeRateCalculator_El::FillCutFlow(TString cut, float weight){
 }
 
 
-void FakeRateCalculator_El::BeginEvent( )throw( LQError ){
+void FakeRateCalculator_El_region2::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -1977,20 +1985,20 @@ void FakeRateCalculator_El::BeginEvent( )throw( LQError ){
 
 ///############### THESE ARE FUNCTIONS SPECIFIC TO THIS CYCLE
 
-void FakeRateCalculator_El::MakeHistograms(){
+void FakeRateCalculator_El_region2::MakeHistograms(){
   //// Additional plots to make
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
   Message("Made histograms", INFO);
   /**
-   *  Remove//Overide this FakeRateCalculator_ElCore::MakeHistograms() to make new hists for your analysis
+   *  Remove//Overide this FakeRateCalculator_El_region2Core::MakeHistograms() to make new hists for your analysis
    **/
   
 }
 
 
-void FakeRateCalculator_El::ClearOutputVectors() throw(LQError) {
+void FakeRateCalculator_El_region2::ClearOutputVectors() throw(LQError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   
