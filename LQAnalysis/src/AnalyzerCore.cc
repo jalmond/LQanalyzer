@@ -152,7 +152,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
   float dxy= 0.01; float biso= 0.09;    float eiso= 0.05;  bool usetight_id= true;
 
-  if(label.Contains("Analysis_loosereg2")){
+  if(label.Contains("HNTight_loosereg2")){
     applyidsf= true;
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
@@ -162,7 +162,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
   
-  else if(label.Contains("Analysis_loosereg1")){
+  else if(label.Contains("HNTight")){
     applyidsf= true;
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
@@ -171,7 +171,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
-
+   
   else if(label.Contains("iso")){
     std::vector<snu::KElectron> electronLooseColl = GetElectrons(keepcf, keepfake, "loose");
     if(label.Contains("iso_b10_e10")){biso = 0.1;    eiso = 0.1;     dxy= 0.01;    usetight_id = true;}
@@ -293,8 +293,8 @@ void AnalyzerCore::RunMCCLosureTest( std::vector<snu::KJet> jets, float w){
     if(k_running_nonprompt){
       
       TString looseregion = "loosereg1";
-      std::vector<snu::KElectron> electronAnalysisColl_mcclosure =  GetElectrons(false, true, "Analysis_" + looseregion); // removes CF and fake in mc
-      std::vector<snu::KElectron> electronAnalysisColl_loosereg2_mcclosure =  GetElectrons(false, true, "Analysis_loosereg2"); // removes CF and fake in mc
+      std::vector<snu::KElectron> electronAnalysisColl_mcclosure =  GetElectrons(false, true, "HNTight"); // removes CF and fake in mc
+      std::vector<snu::KElectron> electronAnalysisColl_loosereg2_mcclosure =  GetElectrons(false, true, "HNTight_loosereg2"); // removes CF and fake in mc
 
       if(SameCharge(electronAnalysisColl_loosereg2_mcclosure)){
 	FakeBkgBreakDown(electronAnalysisColl_loosereg2_mcclosure, "mcclosure,loosereg2",1.);

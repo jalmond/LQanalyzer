@@ -217,8 +217,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   double weight_reg2= weight;
 
   //// Get the collection of electrons
-  std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(false, false, "Analysis_loosereg1" , weight);
-  std::vector<snu::KElectron> electronAnalysisColl_withfakes         = GetElectrons(false, true, "Analysis_loosereg1" , weight);
+  std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(false, false, "HNTight" , weight);
+  std::vector<snu::KElectron> electronAnalysisColl_withfakes         = GetElectrons(false, true, "HNTight" , weight);
   
   vector<snu::KTruth> truth =  eventbase->GetTruth();
 
@@ -251,8 +251,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   //Analysis_loosereg1 means relaxed iso in loose
   //Analysis_loosereg2 means relaxed iso and relaxed d0 cut in loose
-  std::vector<snu::KElectron> electronAnalysisColl_loosereg1              = GetElectrons(false, false, "Analysis_loosereg1", weight_reg1);
-  std::vector<snu::KElectron> electronAnalysisColl_loosereg2              = GetElectrons(false, false, "Analysis_loosereg2", weight_reg2);
+  std::vector<snu::KElectron> electronAnalysisColl_loosereg1              = GetElectrons(false, false, "HNTight", weight_reg1);
+  std::vector<snu::KElectron> electronAnalysisColl_loosereg2              = GetElectrons(false, false, "HNTight_loosereg2", weight_reg2);
   
   
   
@@ -323,9 +323,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(nbjet == 0 ){
     if(PassTrigger(triggerslist, prescale))
-      MakeTriLeptonPlots(GetElectrons(true,true, "Analysis_loosereg1"), muonVetoColl, jetColl_lepveto_mva, "_mva",  weight);
+      MakeTriLeptonPlots(GetElectrons(true,true, "HNTight"), muonVetoColl, jetColl_lepveto_mva, "_mva",  weight);
     if(PassTrigger(triggerslist, prescale))
-      MakeTriLeptonPlots(GetElectrons(true,true, "Analysis_loosereg1"), muonVetoColl, jetColl_lepveto, "_nomva" , weight);
+      MakeTriLeptonPlots(GetElectrons(true,true, "HNTight"), muonVetoColl, jetColl_lepveto, "_nomva" , weight);
   }
 
   /// for systematics
