@@ -62,8 +62,8 @@ export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
-#export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
-export FILEDIR="/data1/LQAnalyzer_rootfiles_for_analysis/Sep14/"
+export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
+
 
 
 
