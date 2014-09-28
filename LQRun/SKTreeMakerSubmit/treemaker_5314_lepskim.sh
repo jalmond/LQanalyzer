@@ -71,7 +71,7 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
@@ -81,6 +81,7 @@ then
     declare -a input_samples=("WgammaTau" "WWW" "WWG" "HtoZZ" "HtoWW" "HtoTauTau" "QCD_350_EM" "QCD_350_BCtoE" "WW_dp" "Wgamma" "SSWmWm" "SSWpWp" "ttW" "ttZ" "Zgamma" "WgammaE" "WW_mg" "WZtollqq_mg"  "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg")
     
     declare -a input_samples=("DY50plus")
+
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA

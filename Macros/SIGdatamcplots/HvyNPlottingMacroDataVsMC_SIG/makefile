@@ -61,7 +61,7 @@ SHLIBFILE = ./lib$(LIBRARY).$(DllSuf)
 %.o : %.$(SRCSUF)
 	@echo "Compiling $<"
 	@mkdir -p $(OBJDIR)
-	@$(CXX) $(CXXFLAGS) -O2 -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
+	@$(CXX) $(CXXFLAGS)  -O2 -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
 
 
 ##############################
@@ -93,7 +93,7 @@ endif
 # Rule to make the executable
 MakeDataMCCompPlots: $(SHLIBFILE) MakeDataMCCompPlots.cpp
 	@echo "Make executable: $@"
-	@$(CXX) $(CXXFLAGS)  -o $@  $(SHLIBFILE) MakeDataMCCompPlots.cpp $(ROOTLIBS) $(INCLUDES)
+	@$(CXX) $(CXXFLAGS) -lASImage  -o $@  $(SHLIBFILE) MakeDataMCCompPlots.cpp $(ROOTLIBS) $(INCLUDES)
 
 
 clean:

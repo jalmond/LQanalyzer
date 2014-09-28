@@ -124,10 +124,18 @@ Reweight::Reweight(TString filename){
   
   double int_MC_ = h_MCmod_->Integral();
   double int_Data_ = h_Data_->Integral();
+  double int_Dataup_ = h_Data_up_->Integral();
+  double int_Datadown_ = h_Data_down_->Integral();
   
   h_Data_->Divide(h_MCmod_);
   h_Data_->Scale(int_MC_ / int_Data_);
   
+  h_Data_up_->Divide(h_MCmod_);
+  h_Data_up_->Scale(int_MC_ / int_Dataup_);
+  
+  h_Data_down_->Divide(h_MCmod_);
+  h_Data_down_->Scale(int_MC_ / int_Datadown_);
+
 }
 
 Reweight::~Reweight(){

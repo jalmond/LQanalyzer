@@ -240,7 +240,7 @@ SKQCD_250_350_EM    62200.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTree
 SKQCD_250_350_BCtoE 19600.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_250_350_BCtoE/
 SKQCD_350_EM        382497.9062	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_350_EM/
 SKQCD_350_BCtoE     81446.75	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_350_BCtoE/
-
+SKQCD		    1.		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD/
 ########################################################################
 ########################################################################
 ### DILEPTON SKIM
@@ -371,6 +371,7 @@ SKQCD_250_350_EM_dilep    62166.73      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 SKQCD_250_350_BCtoE_dilep 19623.52      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_250_350_BCtoE/
 SKQCD_350_EM_dilep        382497.9062   /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_350_EM/ 
 SKQCD_350_BCtoE_dilep     81446.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_350_BCtoE/
+SKQCD_dilep    1.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD/
 
 ######################################################################
 ### LQNtuples ########################################################
