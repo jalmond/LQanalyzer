@@ -113,6 +113,7 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
 
   /// dPhi/MT
   map_sig["h_MTelectron"]          =     new TH1F("h_MTelectron_"        + name,"Mt",100,0.0,500.0);
+  map_sig["h_MTmuon"]          =     new TH1F("h_MTmuon_"        + name,"Mt",100,0.0,500.0);
   map_sig["h_dphi_METelectron"]    =     new TH1F("h_dphi_METelectron_"  + name , "METlepdphi", 50, -5., 5.);
   
   
@@ -446,6 +447,15 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_dphi_METelectron",dphi, weight);
   }
 
+  //// Fillplots
+  for(unsigned int i=0 ; i < muons.size(); i++){
+    float dphi = fabs(TVector2::Phi_mpi_pi(muons.at(i).Phi()- ev.PFMETphi()));
+    float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos( dphi)));
+    Fill("h_MTmuon",MT, weight);
+  }
+
+
+
   if(debug)cout<< "Plotting [5] " << endl;
 
   Fill("h_MET",ev.PFMET(), weight);
@@ -478,7 +488,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].CombinedSecVertexBtag(),weight);
-    if(jets.at(j).CombinedSecVertexBtag() > 0.898) nbjet++; 
+    if(jets.at(j).CombinedSecVertexBtag() > 0.679) nbjet++; 
   }
   
   float st = ht + ev.PFMET();

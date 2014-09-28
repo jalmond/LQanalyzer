@@ -33,9 +33,8 @@ class HNDiElectron : public AnalyzerCore {
   bool MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
 
-  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);  
+  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates=false);  
   float IsDiLep(std::vector<snu::KElectron> electrons);
-  void FakeBkgBreakDown(std::vector<snu::KElectron> electrons, TString cut, float w);
 
  private:
   

@@ -5,5 +5,6 @@ vgammacol 820
 vvcol 416
 ttvcol  800
 higgscol 432 
+tcol   800
 END 
 #Sherpa Alpgen Herwig

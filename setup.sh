@@ -27,6 +27,9 @@ fi
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 
+
+export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/Sep14/"
+
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code
@@ -59,7 +62,8 @@ export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
-export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
+#export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
+export FILEDIR="/data1/LQAnalyzer_rootfiles_for_analysis/Sep14/"
 
 
 

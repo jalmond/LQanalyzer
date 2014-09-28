@@ -19,12 +19,12 @@ bool CheckFile(TFile* f);
 bool CheckHist(TH2* h);
 
 
-void MakeMCFakeRootFile(){
+void MakeMCFakeRootFile(TString file){
   
   TString path= "/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/";
 
 
-  TFile * fQCD = new TFile(path + "FakeRateCalculator_El_SKQCD_5_3_14.root");
+  TFile * fQCD = new TFile(file);
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
   if(!fQCD)cout << "No Data" << endl;
   
@@ -35,10 +35,36 @@ void MakeMCFakeRootFile(){
   
   vector<TString> hist;
   
-  hist.push_back("20");
-  hist.push_back("30");
-  hist.push_back("40");
-  hist.push_back("60");
+  hist.push_back("20_pt_eta");
+  hist.push_back("30_pt_eta");
+  hist.push_back("40_pt_eta");
+  hist.push_back("60_pt_eta");
+  hist.push_back("80_pt_eta");
+
+  hist.push_back("20_pt_eta_ht1");
+  hist.push_back("20_pt_eta_ht2");
+  hist.push_back("20_pt_eta_ht3");
+  hist.push_back("20_pt_eta_ht4");
+  hist.push_back("40_pt_eta_ht1");
+  hist.push_back("40_pt_eta_ht2");
+  hist.push_back("40_pt_eta_ht3");
+  hist.push_back("40_pt_eta_ht4");
+  hist.push_back("60_pt_eta_ht1");
+  hist.push_back("60_pt_eta_ht2");
+  hist.push_back("60_pt_eta_ht3");
+  hist.push_back("60_pt_eta_ht4");
+
+
+  hist.push_back("awaybjet_20_pt_eta");
+  hist.push_back("closebjet_20_pt_eta");
+  hist.push_back("awaybjet_30_pt_eta");
+  hist.push_back("closebjet_30_pt_eta");
+  hist.push_back("awaybjet_40_pt_eta");
+  hist.push_back("closebjet_40_pt_eta");
+  hist.push_back("awaybjet_60_pt_eta");
+  hist.push_back("closebjet_60_pt_eta");
+  hist.push_back("awaybjet_80_pt_eta");
+  hist.push_back("closebjet_80_pt_eta");
   
   TString outfile = "FakeRateMC.root";
   TFile* fout = new TFile(outfile.Data(),"RECREATE");
@@ -49,27 +75,29 @@ void MakeMCFakeRootFile(){
     cout << *it2 << endl;
     if(!CheckFile(fQCD))return;      
 
-    TH2F* h_pt_num= (TH2F*)fQCD->Get(("MCTightEl_"+ *it2+ "_pt_eta").Data());
-    TH2F* h_pt_denom= (TH2F*)fQCD->Get(("MCLooseEl_"+ *it2+"_pt_eta").Data());
+    TH2F* h_pt_num= (TH2F*)fQCD->Get(("MCTightEl_"+ *it2 ).Data());
+    TH2F* h_pt_denom= (TH2F*)fQCD->Get(("MCLooseEl_"+ *it2).Data());
     CheckHist(h_pt_denom);
     CheckHist(h_pt_num);
     
-    TH2F* h_QCDpt_num= (TH2F*)fQCD->Get(("MCTightEl_"+ *it2+ "_pt_eta").Data());
-    TH2F* h_QCDpt_denom= (TH2F*)fQCD->Get(("MCLooseEl_"+ *it2+"_pt_eta").Data());
+    TH2F* h_QCDpt_num= (TH2F*)fQCD->Get(("MCTightEl_"+ *it2).Data());
+    TH2F* h_QCDpt_denom= (TH2F*)fQCD->Get(("MCLooseEl_"+ *it2).Data());
     
     //h_pt_num->Add(h_QCDpt_num);
     //h_pt_denom->Add(h_QCDpt_denom);
     
     
-    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("MCEl_"+ *it2+ "_pt_eta").Data());
-    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 +"_denom").Data());
+    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("MCEl_"+ *it2 ).Data());
+    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((*it2 ).Data());
     
     eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-      
 
     eff_rate->Write();
     
   }
+
+
+
 }
 
 

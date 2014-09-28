@@ -27,12 +27,19 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 
+octdir = os.getenv("LQANALYZER_LIB_PATH")+ "/Oct/"
 sepdir = os.getenv("LQANALYZER_LIB_PATH")+ "/Sep/"
 junedir = os.getenv("LQANALYZER_LIB_PATH")+ "/June/"
-if not os.path.exists(sepdir):
-    os.system("mkdir " + sepdir)
+localfiledir = os.getenv("LQANALYZER_FILE_DIR")
+snufiledir = os.getenv("FILEDIR")
+if not os.path.exists(octdir):
+    os.system("mkdir " + octdir)
+    os.system("rm " + sepdir)
     os.system("rm " + junedir)
-    print "using September branch for first time: All codes are being recompiled"
+    print "Copying all latest rootfiles for use in analysis"
+    os.system("cp " + snufiledir +"* " + localfiledir)
+      
+    print "using October branch for first time: All codes are being recompiled"
     os.system("source bin/make_clean_newbranch.sh")
     
 

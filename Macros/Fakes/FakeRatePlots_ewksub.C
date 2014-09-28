@@ -30,7 +30,7 @@ void FakeRatePlots_ewksub(){
   gStyle->SetPalette(1);
     
   vector<TString> plotname;
-  //plotname.push_back("_nbjet");
+  plotname.push_back("_nbjet");
   //plotname.push_back("_njets");
   //plotname.push_back("_ptawayjet");
   //plotname.push_back("_ht");
@@ -46,7 +46,9 @@ void FakeRatePlots_ewksub(){
   for(vector<TString>::iterator it = plotname.begin(); it!=plotname.end(); ++it,ihist++){
     
     vector<TString> hist_ptcut;
+    hist_ptcut.push_back("60");
     hist_ptcut.push_back("40");
+    hist_ptcut.push_back("30");
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
       int rebin=1;

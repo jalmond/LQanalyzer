@@ -61,7 +61,7 @@ int MakeCutFlow_Plots(string configfile){
   page << "<h1> HvyN Analysis Plots </h1>" << endl;
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
-
+  
   MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
 
@@ -152,7 +152,7 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (0.), ymax( 1000000.);
+	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
@@ -467,7 +467,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (0.), ymax( 1000000.);
+  float ymin (0.1), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
   /// Set Ranges / overflows
@@ -1424,7 +1424,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.png";
   
   ///####################   Standard plot
-  //canvas_log->SetLogy();
+  canvas->SetLogy();
   canvas->cd();
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
@@ -1464,11 +1464,11 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    g->Draw( ("9samep") );
-
+    g->Draw( "9samepX0" );
+    
     hdata->SetMarkerStyle(20);
-    hdata->SetMarkerSize(1.2);
-    hdata->SetLineWidth(2.0);
+    hdata->SetMarkerSize(2.3);
+    hdata->SetLineWidth(2.);
     hdata->Draw( ("9samepX0") );
   }
   else{
@@ -1482,30 +1482,22 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
 
   //// %%%%%%%%%% PRINT ON LOG
   canvas_log->cd();
-
-  TPad*    upperPad = new TPad("upperPad", "upperPad", .010, .210, .990, .990);
-  TPad*    lowerPad = new TPad("lowerPad", "lowerPad", .010, .010, .990, .200);
-  upperPad->Draw();
-  lowerPad->Draw();
-
-  canvas_log->Draw();
+  
   gPad->SetLogz(1);
-
-  upperPad->cd();
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
   if(usedata){
     hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax*10000.);
     hdata_clone_for_log->Draw("9pX0");
-
+    
     hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
     mcstack.at(0)->Draw("9HIST same");
     hdata_clone_for_log->Draw("9p same");
     hdata_clone_for_log->Draw("9axis same");
     errorband->Draw("E2same");
-
+    
     const double alpha = 1 - 0.6827;
-    TGraphAsymmErrors * g = new TGraphAsymmErrors(h_th1f[ifile][iplot]);
+    TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata);
     for (int i = 0; i < g->GetN(); ++i) {
       int N = g->GetY()[i];
       double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
@@ -1526,41 +1518,36 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    g->Draw( ("p9same").Data() );
-
-  }
-  else{
-  }
-  legend->Draw();
-  
-  if(usedata){
-    //// %%%%%%%%%% BOTTOM (SIGNIFICANCE) HALF OF PLOT %%%%%%%%%%%%%%%%%%
+    g->Draw( "p9same");
+    
+    legend->Draw();
+    
     /// Make significance hist
     
     TH1* h_significance=(TH1F*)hdata_clone_for_log->Clone();
     TH1* h_divup=(TH1F*)hup->Clone();
     TH1* h_divdown=(TH1F*)hdown->Clone();
-
+    
     TH1* errorbandratio = (TH1*)h_nominal->Clone("AAA");
-
+    
     hdata_clone_for_log->GetXaxis()->SetLabelSize(0.); ///
     hdata_clone_for_log->GetXaxis()->SetTitle("");
-
+    
     h_divup->Divide(h_nominal);
     h_divdown->Divide(h_nominal);
-
+    
     for(int i=1; i < errorbandratio->GetNbinsX()+1; i++){
-
+      
       float bc = ((h_divup->GetBinContent(i)+h_divdown->GetBinContent(i))/2.);
       float bd = ((h_divup->GetBinContent(i)-h_divdown->GetBinContent(i))/2.);
-
+      
       errorbandratio->SetBinContent(i,bc);
       errorbandratio->SetBinError(i,bd);
     }
     errorbandratio->SetFillStyle(3354);
     errorbandratio->SetFillColor(kBlue-8);
     errorbandratio->SetMarkerStyle(0);
-
+    
     for(int i=1; i < h_significance->GetNbinsX()+1; i++){
       float num = h_significance->GetBinContent(i) - h_nominal->GetBinContent(i);
       float denom = sqrt( (h_significance->GetBinError(i)*h_significance->GetBinError(i) + h_nominal->GetBinError(i)*h_nominal->GetBinError(i)));
@@ -1589,18 +1576,19 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
     h_significance->Draw("hist");
     TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),0.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),0.0);
-
+    
     line->SetLineStyle(2);
     line->SetLineWidth(2);
     line->Draw();
     h_significance->Draw("HISTsame");
+
   }
 
   CMS_lumi( canvas_log, 2, 11 );
   canvas_log->Update();
   canvas_log->RedrawAxis();
   canvas_log->Print(tlogpdf.c_str(), ".png");
- 
+  gPad->RedrawAxis();
   
   return canvas;
 
