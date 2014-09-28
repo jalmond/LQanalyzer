@@ -34,9 +34,10 @@ localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
 if not os.path.exists(octdir):
     os.system("mkdir " + octdir)
-    os.system("rm " + sepdir)
-    os.system("rm " + junedir)
+    os.system("rm -r " + sepdir)
+    os.system("rm -r " + junedir)
     print "Copying all latest rootfiles for use in analysis"
+    os.system("rm " + snufiledir +"* ")   
     os.system("cp " + snufiledir +"* " + localfiledir)
       
     print "using October branch for first time: All codes are being recompiled"
