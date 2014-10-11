@@ -342,6 +342,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     float EA=GetElectronISOEA(elit->SCEta());
     float rho = ev.JetRho();
     float el_iso =  elit->PFChargedHadronIso03() + max( elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() - rho * EA, 0.);
+    float el_iso_noncorr =  elit->PFChargedHadronIso03() +  elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() ;
     
     float trkiso = elit->TrkIsoDR03();
     float ecaliso = elit->ECalIsoDR03();
@@ -384,6 +385,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     
     
     Fill("h_ElectronIso", el_iso,weight);
+    Fill("h_ElectronRelIso", el_iso/elit->Pt(),weight);
+    Fill("h_ElectronRelIso_nocorr", el_iso_noncorr/elit->Pt(),weight);
     if(iel==1){
       Fill("h_secondElectronPt", elit->Pt(),weight);
       Fill("h_secondTrkElectronIso", trkiso/elit->Pt(),weight);

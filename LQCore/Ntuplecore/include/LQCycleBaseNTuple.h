@@ -42,6 +42,7 @@ public:
   void SetDataType(bool type);
   void SetNPStatus( bool type);
   void SetCFStatus( bool type);
+  void SetSampleName( TString sample);
   void SetDataChannel(TString channel);
 
   void SetNSampleEvents(double nev);
@@ -53,6 +54,7 @@ public:
   bool k_isdata;
   bool k_running_nonprompt;
   bool k_running_chargeflip;
+  TString k_sample_name;
   TString k_channel;
 TString muscale_fitParametersFile;
   
