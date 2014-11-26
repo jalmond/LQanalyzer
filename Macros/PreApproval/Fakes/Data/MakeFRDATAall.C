@@ -15,12 +15,24 @@ void MakeFRDATAall(){
   
   vector<TString> list_of_names;
   list_of_names.push_back("_pt");
+  list_of_names.push_back("_ht_morebins");
   list_of_names.push_back("_eta");
+  list_of_names.push_back("_njets");
+  list_of_names.push_back("_nbjet");
+  list_of_names.push_back("_nvertices");
+  list_of_names.push_back("_pt_barrel");
+  list_of_names.push_back("_pt_endcap");
   
 
   vector<TString> xaxis_label;
   xaxis_label.push_back("P_{T} GeV");
+  xaxis_label.push_back("H_{T} GeV");
   xaxis_label.push_back("#eta");
+  xaxis_label.push_back("N_{jet}");
+  xaxis_label.push_back("N_{bjet}");
+  xaxis_label.push_back("N_{vertices}");
+  xaxis_label.push_back("Barrel P_{T} GeV}");
+  xaxis_label.push_back("Endcap P_{T} GeV}");
   
 
   
@@ -97,9 +109,12 @@ void MakeFRDATAall(){
     heff->GetXaxis()->SetTitle(xaxis_label.at(i));
     
     heff->GetYaxis()->SetRangeUser(0., 0.5);
-    heff->GetXaxis()->SetRangeUser(15., 59.);
+
     if(list_of_names.at(i).Contains("eta")){
       heff->GetXaxis()->SetRangeUser(-3., 3.);
+    }
+    if(list_of_names.at(i).Contains("_ht")){
+      heff->GetXaxis()->SetRangeUser(0., 1000.);
     }
 
     heff->Draw("p");

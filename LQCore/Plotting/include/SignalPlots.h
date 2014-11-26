@@ -47,14 +47,15 @@ class SignalPlots : public StdPlots{
   float GetElectronISOEA(float eta);
 
   /// fill functions
-  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight);
-  void Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
+  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KJet>& jets, Double_t weight, Double_t w_err);
+  void Fill(snu::KEvent ev, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight, Double_t w_err);
+  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight, Double_t w_err);
   void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
 
 
-  void Fill(TString name, double value, double weight);
-  void Fill(TString name, double value, double value2, double weight);
-  void Fill(TString name, double value, double value2, double value3, double weight);
+  void Fill(TString name, double value, double weight, Double_t err);
+  void Fill(TString name, double value, double value2, double weight, Double_t err);
+  void Fill(TString name, double value, double value2, double value3, double weight, Double_t err);
 
   /// function to write out hists
   void Write();

@@ -29,7 +29,7 @@ void MakeMCClosurePlot(){
   mcclosure_hist->GetXaxis()->SetBinLabel(9,"PtvsEta_HT");
   
 
-  TString path_qcd2= "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/MC/HNDiElectron_nonprompt_SKQCDdiem_dilep_5_3_14.root";
+  TString path_qcd2= "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/NP/HNDiElectron_nonprompt_SKQCDdiem_dilep_5_3_14.root";
   TFile * fqcd2 = new TFile(path_qcd2);
   TH1F* h_qcd2_doubletosingle= (TH1F*)fqcd2->Get("MCclosure/HNTight_loosereg2MCSSclosure_mcclosure_Doubletosingle");
   

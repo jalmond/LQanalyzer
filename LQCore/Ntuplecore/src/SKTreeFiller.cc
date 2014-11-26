@@ -1355,11 +1355,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleStatus(GenParticleStatus->at(it));
    
     truthp.SetParticleNDaughter(GenParticleNumDaught->at(it));
-    if(fabs(GenParticlePdgId->at(it)) == 11 ){
-      if(GenParticleStatus->at(it) == 1){
-	cout << "GenParticleMotherIndex->at(it) = " << GenParticleMotherIndex->at(it) << endl;
-      }
-    }
+
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
     truthp.SetTauDecayMode(GenParticleTauDecayMode->at(it));
     

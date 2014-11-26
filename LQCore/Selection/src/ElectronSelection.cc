@@ -871,7 +871,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double l_b_dPhiIn  [4] = { 0.8   , 0.15 , 0.06 , 0.03 };
   double l_b_sieie   [4] = { 0.01  , 0.01 , 0.01 , 0.01 };
   double l_b_hoe     [4] = { 0.15  , 0.12 , 0.12 , 0.12 };
-  double l_b_d0      [4] = { 0.04  , 0.02 , d0cut , d0cut };
+  double l_b_d0      [4] = { 10000.  , 0.02 , d0cut , d0cut };
   double l_b_dZ      [4] = { 0.2   , 0.2  , 0.1  ,  0.1 };
   double l_b_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05 };
   double l_b_pfRelIso[4] = { 0.6  , 0.15 ,  isolation_medium_b, isolation_tight_b  }; 
@@ -886,7 +886,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double l_e_dPhiIn  [4] = { 0.7   , 0.10 , 0.03 , 0.02 };
   double l_e_sieie   [4] = { 0.03  , 0.03 , 0.03 , 0.03 };
   double l_e_hoe     [4] = { 999.  , 0.10 , 0.1 , 0.10 };
-  double l_e_d0      [4] = { 0.04  , 0.02 , d0cut , d0cut };
+  double l_e_d0      [4] = { 10000.  , 0.02 , d0cut , d0cut };
   double l_e_dZ      [4] = { 0.2   , 0.2  , 0.1  , 0.1 };
   double l_e_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05};
   double l_e_pfRelIso[4] = { 0.15  , 0.10 , isolation_medium_e , isolation_tight_e };

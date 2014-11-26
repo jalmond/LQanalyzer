@@ -30,7 +30,7 @@ void MakePlotFakeDistMC(){
   list_of_names.push_back("Njets");
   list_of_names.push_back("Nbjets");
   list_of_names.push_back("leadElectrondPhi");
-
+  list_of_names.push_back("ElectronRelIso");
 
 
   vector<TString> xaxis_label;
@@ -40,8 +40,10 @@ void MakePlotFakeDistMC(){
   xaxis_label.push_back("N(jets)");
   xaxis_label.push_back("N(bjets)");
   xaxis_label.push_back("#Delta#phi (ee)");
+  xaxis_label.push_back("Iso_{PF} / p_{T}")
 
   vector<TString> yaxis_label;
+  yaxis_label.push_back("Entries");
   yaxis_label.push_back("Entries");
   yaxis_label.push_back("Entries");
   yaxis_label.push_back("Entries");

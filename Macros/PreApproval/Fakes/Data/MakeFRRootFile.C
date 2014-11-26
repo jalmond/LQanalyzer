@@ -38,7 +38,8 @@ void MakeFRRootFile(){
   /// 
   std::vector<TString> type;
   type.push_back("HNTight_");
-  
+  type.push_back("HNTight_relaxedip_");
+    
 
   std::vector<TString> fakes40;
   fakes40.push_back("20_pt_eta");
@@ -58,7 +59,14 @@ void MakeFRRootFile(){
   fakes40.push_back("30_0bjet_pt_eta");
   fakes40.push_back("60_0bjet_pt_eta");
   fakes40.push_back("40_0bjet_pt_eta");
-  
+  fakes40.push_back("20_pt_eta_ht1");
+  fakes40.push_back("20_pt_eta_ht3");
+  fakes40.push_back("30_pt_eta_ht1");
+  fakes40.push_back("30_pt_eta_ht3");
+  fakes40.push_back("40_pt_eta_ht1");
+  fakes40.push_back("40_pt_eta_ht3");
+  fakes40.push_back("60_pt_eta_ht1");
+  fakes40.push_back("60_pt_eta_ht3");
 
   for(vector<TString>::iterator it = type.begin(); it!=type.end(); ++it){
     for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
@@ -215,11 +223,10 @@ void MakeFRRootFile(){
   }
   
   
-  bool extra=false;
+  bool extra=true;
   if(extra){
   
     std::vector<TString> type2;
-    type2.push_back("HNTight_relaxedip");
     type2.push_back("HNTight_iso05");
     type2.push_back("HNTight_iso07");
     type2.push_back("susy_pog");

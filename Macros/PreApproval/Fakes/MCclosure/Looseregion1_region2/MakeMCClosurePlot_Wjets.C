@@ -13,12 +13,12 @@ void MakeMCClosurePlot_Wjets(){
   TH1::SetDefaultSumw2(true);
   setTDRStyle();
 
-  TString path_wjet = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/MC/HNDiElectron_nonprompt_SKWjets_dilep_5_3_14.root";
+  TString path_wjet = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/NP/HNDiElectron_nonprompt_SKWjets_dilep_5_3_14.root";
   TFile * fwjet = new TFile(path_wjet);
 
   TH1F* mcclosure_hist = new TH1F("mcclosure","mcclosure", 10,0.,10.);
   mcclosure_hist->GetYaxis()->SetTitle("Event");
-  mcclosure_hist->GetYaxis()->SetRangeUser(0., 100.);
+  mcclosure_hist->GetYaxis()->SetRangeUser(0., 50.);
   mcclosure_hist->GetXaxis()->SetTitle("");
   mcclosure_hist->GetXaxis()->SetBinLabel(1,"PtvsEta");
   mcclosure_hist->GetXaxis()->SetBinLabel(2,"HtvsEta");
@@ -155,11 +155,13 @@ void MakeMCClosurePlot_Wjets(){
 
   TString label = "#bf{W+jet MC}";
   TString label2 = "#bf{2 Electrons + 2 Jets}"; 
+  TString label3 = "#bf{MET < 30 GeV}"; 
   float l = c1->GetLeftMargin()+0.05;
   latex.DrawLatex(l, 0.75 ,label);
   latex.DrawLatex(l, 0.7 ,label2);
+  latex.DrawLatex(l, 0.65 ,label3);
 
-  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/WjetMCclosure_region2.pdf"));
+  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/WjetMCclosure_looseregion1_region2.pdf"));
   
 
   

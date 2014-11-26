@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus.cern.ch:~/www/SNU/WebPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl; 
   return 0;
@@ -154,7 +154,7 @@ int MakePlots(string hist) {
 	ymax = GetMaximum(hdata, hup, ylog, name);
 	
 	
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee50_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_basic_SKHNee50_nocut_5_3_14.root"));
 	TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
 	hsig_40->Rebin(rebin);
 	FixOverUnderFlows(hsig_40, xmax);
@@ -169,7 +169,7 @@ int MakePlots(string hist) {
 	hsig_40->SetLineColor(kRed);
 	hsig_40->SetLineWidth(2.);
 	
-	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee50_nocut_5_3_14.root"));
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_basic_SKHNee50_nocut_5_3_14.root"));
         TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
 	hsig_80->Rebin(rebin);
 	FixOverUnderFlows(hsig_80, xmax);
@@ -178,7 +178,7 @@ int MakePlots(string hist) {
 	hsig_80->SetLineColor(kBlue);
 	hsig_80->SetLineWidth(2.);
 
-	TFile* file_sig200 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee60_nocut_5_3_14.root"));
+	TFile* file_sig200 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_basic_SKHNee60_nocut_5_3_14.root"));
         TH1* hsig_200 = dynamic_cast<TH1*> ((file_sig200->Get(name.c_str()))->Clone());
         hsig_200->Rebin(rebin);
         FixOverUnderFlows(hsig_200, xmax);
@@ -647,10 +647,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WW_dp",0.22));              
   }
   if(sample.Contains("higgs")){
-    //list.push_back(make_pair("HtoZZ",0.22));
-    list.push_back(make_pair("HtoTauTau",0.22));
     list.push_back(make_pair("HtoWW",0.22));
-    list.push_back(make_pair("ggHtoZZ",0.22));
   }
   if(sample.Contains("vvv")){
     list.push_back(make_pair("WWW",0.22));
@@ -1464,11 +1461,12 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, TH1* hsig_200, vecto
   if(usedata){
     
     //hdata->Draw("9pX0");
-    //hdata->GetYaxis()->SetTitleOffset(1.5);
+    /hdata->GetYaxis()->SetTitleOffset(1.5);
 
     hsig_40->GetYaxis()->SetRangeUser(0., 5.);
-    hsig_40->Draw("hist9");
-      
+    hsig_40->Draw("hist9same");
+    hdata->Draw("9pX0same");
+    
     mcstack.at(0)->Draw("HIST9same");
     //hdata->Draw("9samepX0");
     //hdata->Draw("axis same");

@@ -2,7 +2,6 @@
 #define HNDiElectron_h
 
 #include "AnalyzerCore.h"
-#include "BTagSFUtil.h"
 
 
 class HNDiElectron : public AnalyzerCore {
@@ -52,9 +51,9 @@ class HNDiElectron : public AnalyzerCore {
 
   float k_met, k_eemass, k_eejjmass, k_e1jjmass, k_e2jjmass,  k_st, k_ht;
   int k_njet, k_nbjet_l, k_nbjet_m, k_nbjet_t;
+  float  k_el1eta, k_el2eta;
   float k_weight, k_el1pt, k_el2pt, k_j1pt, k_jjmass;
-
-  BTagSFUtil *fBTagSF;
+  bool k_cl1bjet, k_cl2bjet,k_cll1bjet, k_cll2bjet; 
 
   ClassDef ( HNDiElectron, 1);
 };

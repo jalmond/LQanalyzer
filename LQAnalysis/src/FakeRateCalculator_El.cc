@@ -288,7 +288,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     
     if(mapit->first.Contains("medium_pog"))MakeFakeRatePlots(mapit->first, mapit->second, electronLooseColl_medium,  jetColl_lepveto20, jetColl,prescale_trigger_medium, weight);
     else if(mapit->first.Contains("susy_pog"))MakeFakeRatePlots(mapit->first, mapit->second, electronLooseColl_susy,jetColl_lepveto20, jetColl, prescale_trigger_susy, weight);
-    else       MakeFakeRatePlots(mapit->first, mapit->second, electronLooseColl_tight, jetColl_lepveto20, jetColl, prescale_trigger, weight);
+    else  {
+      MakeFakeRatePlots(mapit->first, mapit->second, electronLooseColl_tight, jetColl_lepveto20, jetColl, prescale_trigger, weight);
+      MakeFakeRatePlots(mapit->first + "_relaxedip", mapit->second, electronLooseColl_tight_relaxed_ipcut, jetColl_lepveto20, jetColl, prescale_trigger, weight);
+    }
 
   }
 
@@ -425,11 +428,12 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
   bool closebjet = false;
   float awayjetpt = 0.;
   for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
-    if(loose_el.at(0).DeltaR(alljets.at(ij)) < 0.4) {
+    if(loose_el.at(0).DeltaR(alljets.at(ij)) < 0.5) {
       if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) closebjet = true;
-      float dphi =fabs(TVector2::Phi_mpi_pi(loose_el.at(0).Phi()- alljets.at(ij).Phi()));
-      if(dphi > 2.5) awayjetpt = alljets.at(ij).Pt();
-    }
+    }     
+    float dphi =fabs(TVector2::Phi_mpi_pi(loose_el.at(0).Phi()- alljets.at(ij).Phi()));
+    if(dphi > 2.5) awayjetpt = alljets.at(ij).Pt();
+    
   }
   
   if( tight_el.size() == 1 && jets.size() >= 1){
@@ -444,6 +448,9 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     FillHist(("TightEl" + tag + "_njets").Data(), jets.size(), w, 0.,5.,5);
     FillHist(("TightEl" + tag + "_eta_binned").Data(),fabs(tight_el.at(0).Eta()), w, etabins, 2);
     FillHist(("TightEl" + tag + "_ht").Data(), SumPt(jets) - awayjetpt, w, htbins, 5);
+    if(fabs(tight_el.at(0).Eta()) < 1.5) FillHist(("TightEl" + tag + "_barrel_ht").Data(), SumPt(jets) - awayjetpt, w, htbins, 5);
+    else FillHist(("TightEl" + tag + "_endcap_ht").Data(), SumPt(jets) - awayjetpt, w, htbins, 5);
+    FillHist(("TightEl" + tag + "_ht_morebins").Data(), SumPt(jets) - awayjetpt, w, 0., 1000., 50);
     FillHist(("TightEl" + tag + "_nvertices").Data(), eventbase->GetEvent().nVertices(), w, 0., 30., 30);
     FillHist(("TightEl" + tag + "_nbjet").Data(), nbjet, w, 0., 4.,4); 
     
@@ -533,6 +540,12 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     FillHist(("LooseEl" + tag + "_njets").Data(), jets.size(), w, 0.,5.,5);
     FillHist(("LooseEl" + tag + "_eta_binned").Data(),fabs(loose_el.at(0).Eta()), w, etabins, 2);
     FillHist(("LooseEl" + tag + "_ht").Data(), SumPt(jets)-awayjetpt, w, htbins, 5);
+    FillHist(("LooseEl" + tag + "_ht_morebins").Data(), SumPt(jets) - awayjetpt, w, 0., 1000., 50);
+
+    if(fabs(loose_el.at(0).Eta()) < 1.5) FillHist(("LooseEl" + tag + "_barrel_ht").Data(), SumPt(jets) - awayjetpt, w, htbins, 5);
+    else FillHist(("LooseEl" + tag + "_endcap_ht").Data(), SumPt(jets) - awayjetpt, w, htbins, 5);
+
+
     FillHist(("LooseEl" + tag + "_nvertices").Data(), eventbase->GetEvent().nVertices(), w, 0., 30., 30);
     FillHist(("LooseEl" + tag + "_nbjet").Data(), nbjet, w, 0., 4.,4);
     
@@ -540,6 +553,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     FillHist(("LooseEl" + tag + "_ht_eta").Data(), SumPt(jets) - awayjetpt,fabs(loose_el.at(0).Eta()), w, htbins, 5 , etabins, 2);
     FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  w, ptbins, 7 , etabins2, 4);
 
+    if( ( SumPt(jets)-awayjetpt ) < 0. ) cout << "ht is = " << ( SumPt(jets)-awayjetpt ) << endl;
 
     if(nbjet > 0){
       FillHist(("LooseEl" + tag + "_bjet_eta").Data(), loose_el.at(0).Eta(), w, -2.5, 2.5,50);
@@ -738,7 +752,7 @@ void FakeRateCalculator_El::MakeFakeRatePlots(TString label, std::vector<snu::KE
   if(electrons.size() == 0 ) return;
   if(prescale_w==0.) return;
   
-  bool useevent20 = UseEvent(electrons ,jets, 20., prescale_w, w); 
+  bool useevent20 = UseEvent(electrons , jets, 20., prescale_w, w); 
   bool useevent30 = UseEvent(electrons , jets, 30., prescale_w, w); 
   bool useevent40 = UseEvent(electrons , jets, 40., prescale_w, w); 
   bool useevent60 = UseEvent(electrons , jets, 60., prescale_w, w); 
@@ -825,7 +839,7 @@ void FakeRateCalculator_El::MakePlotsMCAwaJetPt(TString label,float awayjetptcut
       if(alljets.at(ijet).Pt() > awayjetptcut)  useevent=true;
       ptawayjet = alljets.at(ijet).Pt();
     }
-    if(electrons.at(0).DeltaR(alljets.at(ijet)) < 0.4){
+    if(electrons.at(0).DeltaR(alljets.at(ijet)) < 0.5){
       if(alljets.at(ijet).CombinedSecVertexBtag() > 0.679)  closebjet = true;
     }
   }
@@ -979,7 +993,7 @@ void FakeRateCalculator_El::MakeMCPlots(TString label, snu::KElectron electron, 
 	    if(!awayjet) ptawayjet=alljets.at(ijet).Pt();
 	    if(alljets.at(ijet).Pt() > 40.) awayjet=true;
 	  }
-	  if( electron.DeltaR(alljets.at(ijet)) < 0.4){
+	  if( electron.DeltaR(alljets.at(ijet)) < 0.5){
 	    if(alljets.at(ijet).CombinedSecVertexBtag() > 0.679) closebjet=true;
 	  }
 	}

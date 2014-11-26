@@ -29,7 +29,7 @@ void MakeMCClosurePlot_region1(){
   mcclosure_hist->GetXaxis()->SetBinLabel(9,"PtvsEta_HT");
   
 
-  TString path_qcd2= "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/MC/HNDiElectron_nonprompt_SKQCDdiem_dilep_5_3_14.root";
+  TString path_qcd2= "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/NP/HNDiElectron_nonprompt_SKQCDdiem_dilep_5_3_14.root";
   TFile * fqcd2 = new TFile(path_qcd2);
   TH1F* h_qcd2_doubletosingle= (TH1F*)fqcd2->Get("MCclosure/HNTightregion1MCSSclosure_mcclosure_Doubletosingle");
   
@@ -149,7 +149,7 @@ void MakeMCClosurePlot_region1(){
   latex.DrawLatex(l, 0.75 ,label);
   latex.DrawLatex(l, 0.7 ,label2);
 
-  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/DoubleToSingle_region1.pdf"));
+  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/DoubleToSingle_looseregion1_region1.pdf"));
   
 
   

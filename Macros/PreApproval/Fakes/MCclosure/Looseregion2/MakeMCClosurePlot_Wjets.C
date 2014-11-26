@@ -13,7 +13,7 @@ void MakeMCClosurePlot_Wjets(){
   TH1::SetDefaultSumw2(true);
   setTDRStyle();
 
-  TString path_wjet = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/MC/HNDiElectron_nonprompt_SKWjets_dilep_5_3_14.root";
+  TString path_wjet = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/NP/HNDiElectron_nonprompt_SKWjets_dilep_5_3_14.root";
   TFile * fwjet = new TFile(path_wjet);
 
   TH1F* mcclosure_hist = new TH1F("mcclosure","mcclosure", 10,0.,10.);
@@ -40,7 +40,7 @@ void MakeMCClosurePlot_Wjets(){
 
 
   vector<TString> collection;
-  collection.push_back("MCclosure/HNTightMCSSclosure");
+  collection.push_back("MCclosure/HNTight_loosereg2MCSSclosure");
 
   for(unsigned int k = 0 ; k < 1 ; k ++){
     
@@ -159,7 +159,7 @@ void MakeMCClosurePlot_Wjets(){
   latex.DrawLatex(l, 0.75 ,label);
   latex.DrawLatex(l, 0.7 ,label2);
 
-  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/WjetMCclosure.pdf"));
+  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/WjetMCclosure_looseregion2.pdf"));
   
 
   

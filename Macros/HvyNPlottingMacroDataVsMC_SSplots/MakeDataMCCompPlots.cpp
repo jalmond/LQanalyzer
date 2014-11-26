@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus.cern.ch:~/www/SNU/WebPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl; 
   return 0;
@@ -558,25 +558,24 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WW_py",0.15));
   }
   
+
   if(sample.Contains("vv_py")){
-    list.push_back(make_pair("WZ_py",0.15));
-    list.push_back(make_pair("ZZ_py",0.15));
-    list.push_back(make_pair("WW_py",0.15));
-    ////list.push_back(make_pair("WgammaE",0.22));
-    //list.push_back(make_pair("WgammaTau",0.22));
+    list.push_back(make_pair("WZ_py",0.20));
+    list.push_back(make_pair("ZZ_py",0.20));
+    list.push_back(make_pair("WW_py",0.20));
+    //list.push_back(make_pair("Wgamma",0.22));
     list.push_back(make_pair("SSWmWm",0.22));
     list.push_back(make_pair("SSWpWp",0.22));
     list.push_back(make_pair("WW_dp",0.22));
   }
   if(sample.Contains("vv_mg")){
-    list.push_back(make_pair("WZtollqq_mg",0.15));
-    list.push_back(make_pair("WZtoqqln_mg",0.15));
-    list.push_back(make_pair("WZtollln_mg",0.15));
-    list.push_back(make_pair("ZZtollnn_mg",0.15));
-    list.push_back(make_pair("ZZtollqq_mg",0.15));
-    list.push_back(make_pair("ZZtollll_mg",0.15));
-    list.push_back(make_pair("WW_mg",0.15));
-    //list.push_back(make_pair("WgammaE",0.22));
+    list.push_back(make_pair("WZtollqq_mg",0.25));
+    list.push_back(make_pair("WZtollln_mg",0.25));
+    list.push_back(make_pair("ZZtollll_mg",0.25));
+    list.push_back(make_pair("WgammaE",0.22));
+    list.push_back(make_pair("SSWmWm",0.22));
+    list.push_back(make_pair("SSWpWp",0.22));
+    list.push_back(make_pair("WW_dp",0.22));
     //list.push_back(make_pair("WgammaTau",0.22));
   }
 
@@ -627,9 +626,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   if(sample.Contains("higgs")){
     //list.push_back(make_pair("HtoZZ",0.22));
-    list.push_back(make_pair("HtoTauTau",0.22));
+    //list.push_back(make_pair("HtoTauTau",0.22));
     list.push_back(make_pair("HtoWW",0.22));
-    list.push_back(make_pair("ggHtoZZ",0.22));
+    //list.push_back(make_pair("ggHtoZZ",0.22));
   }
   if(sample.Contains("vvv")){
     list.push_back(make_pair("WWW",0.22));

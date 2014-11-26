@@ -174,6 +174,7 @@ void MakeFRMCall(){
       h_qcd_tight->GetXaxis()->SetTitle(xaxis_label.at(i));
       
       h_qcd_tight->GetYaxis()->SetRangeUser(0., .5);
+      h_qcd_tight->GetXaxis()->SetRangeUser(40., 300.);
       if(xaxis_label.at(i).Contains("Has")){
 	h_qcd_tight->GetXaxis()->SetBinLabel(1,"!bjet: #DeltaR< 0.4");
 	h_qcd_tight->GetXaxis()->SetBinLabel(2,"bjet:  #DeltaR< 0.4");

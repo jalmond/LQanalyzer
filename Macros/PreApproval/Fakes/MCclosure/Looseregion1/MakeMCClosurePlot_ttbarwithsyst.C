@@ -13,7 +13,7 @@ void MakeMCClosurePlot_ttbarwithsyst(){
   TH1::SetDefaultSumw2(true);
   setTDRStyle();
 
-  TString path_ttbar = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/MC/HNDiElectron_nonprompt_SKttbar_dilep_5_3_14.root";
+  TString path_ttbar = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/NP/HNDiElectron_nonprompt_SKttbar_dilep_5_3_14.root";
 
   TFile * fttbar = new TFile(path_ttbar);
 
@@ -160,7 +160,7 @@ void MakeMCClosurePlot_ttbarwithsyst(){
   latex.DrawLatex(l, 0.75 ,label);
   latex.DrawLatex(l, 0.7 ,label2);
 
-  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/TTbarMCclosure_with40percsyst.pdf"));
+  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/MCclosure/TTbarMCclosure_with40percsyst_looseregion1.pdf"));
   
 
   

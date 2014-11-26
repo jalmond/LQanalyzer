@@ -26,26 +26,26 @@ void GetSigEfficiency(TString path){
   
   TFile * file = new TFile(path);
   
-  TH1F* h_ref= (TH1F*)file->Get(("electronRef"));
-  TH1F* h_pteta =(TH1F*)file->Get(("electronPtEtaCutColl"));
-  TH1F* h_tight =(TH1F*)file->Get(("electron_NoIsoCutColl"));
-  TH1F* h_iso =(TH1F*)file->Get(("electron_IsoCutColl"));
-  TH1F* h_npfiso =(TH1F*)file->Get(("electron_NPFIsoCutColl"));
-  TH1F* h_analysis =(TH1F*)file->Get(("electron_analysisCutColll"));
-  TH1F* h_analysisnpf =(TH1F*)file->Get(("electron_analysisNPFCutColll"));
+  TH1F* h_ref= (TH1F*)file->Get(("Efficiency/eff_electronRef"));
+  TH1F* h_pteta =(TH1F*)file->Get(("Efficiency/eff_electronPtEtaCutColl"));
+  TH1F* h_tight =(TH1F*)file->Get(("Efficiency/eff_electron_NoIsoCutColl"));
+  TH1F* h_iso =(TH1F*)file->Get(("Efficiency/eff_electron_IsoCutColl"));
+  TH1F* h_npfiso =(TH1F*)file->Get(("Efficiency/eff_electron_NPFIsoCutColl"));
+  TH1F* h_analysis =(TH1F*)file->Get(("Efficiency/eff_electron_analysisCutColll"));
+  TH1F* h_analysisnpf =(TH1F*)file->Get(("Efficiency/eff_electron_analysisNPFCutColll"));
   
-  TH1F* h_DeltaEta =(TH1F*)file->Get(("electron_DeltaEta"));
-  TH1F* h_DeltaPhi =(TH1F*)file->Get(("electron_DeltaPhi"));
-  TH1F* h_SigmaIEta =(TH1F*)file->Get(("electron_SigmaIEta"));
-  TH1F* h_DZ =(TH1F*)file->Get(("electron_DZ"));
-  TH1F* h_HoverE =(TH1F*)file->Get(("electron_HoverE"));
-  TH1F* h_convfit =(TH1F*)file->Get(("electron_convfit"));
-  TH1F* h_ep =(TH1F*)file->Get(("electron_ep"));
-  TH1F* h_missinghit =(TH1F*)file->Get(("electron_missinghit"));
-  TH1F* h_convphoton =(TH1F*)file->Get(("electron_convphoton"));
-  TH1F* h_DXY =(TH1F*)file->Get(("electron_DXY"));
-  TH1F* h_chargeconst =(TH1F*)file->Get(("electron_chargeconst"));
-  TH1F* h_refd0 = (TH1F*)file->Get(("electronTight_tightref"));
+  TH1F* h_DeltaEta =(TH1F*)file->Get(("Efficiency/eff_electron_DeltaEta"));
+  TH1F* h_DeltaPhi =(TH1F*)file->Get(("Efficiency/eff_electron_DeltaPhi"));
+  TH1F* h_SigmaIEta =(TH1F*)file->Get(("Efficiency/eff_electron_SigmaIEta"));
+  TH1F* h_DZ =(TH1F*)file->Get(("Efficiency/eff_electron_DZ"));
+  TH1F* h_HoverE =(TH1F*)file->Get(("Efficiency/eff_electron_HoverE"));
+  TH1F* h_convfit =(TH1F*)file->Get(("Efficiency/eff_electron_convfit"));
+  TH1F* h_ep =(TH1F*)file->Get(("Efficiency/eff_electron_ep"));
+  TH1F* h_missinghit =(TH1F*)file->Get(("Efficiency/eff_electron_missinghit"));
+  TH1F* h_convphoton =(TH1F*)file->Get(("Efficiency/eff_electron_convphoton"));
+  TH1F* h_DXY =(TH1F*)file->Get(("Efficiency/eff_electron_DXY"));
+  TH1F* h_chargeconst =(TH1F*)file->Get(("Efficiency/eff_electron_chargeconst"));
+  TH1F* h_refd0 = (TH1F*)file->Get(("Efficiency/eff_electronTight_tightref"));
   
   TH1F* h_jetsel =(TH1F*)file->Get(("JetSelection"));
   TH1F* h_presel =(TH1F*)file->Get(("PreSelection"));

@@ -358,8 +358,8 @@ void HNCommonLeptonFakes::InitialiseFake(){
   cut.push_back("pt_eta_nocb");
   cut.push_back("pt_eta_ht1_nocb");
   cut.push_back("pt_eta_ht3_nocb");
-  //cut.push_back("pt_eta_ht1");
-  //cut.push_back("pt_eta_ht3");
+  cut.push_back("pt_eta_ht1");
+  cut.push_back("pt_eta_ht3");
   cut.push_back("bjet_pt_eta_ht1_nocb");
   cut.push_back("bjet_pt_eta_ht3_nocb");
   cut.push_back("0bjet_pt_eta_ht1_nocb");
@@ -370,23 +370,34 @@ void HNCommonLeptonFakes::InitialiseFake(){
   for(unsigned int fi = 0; fi < region.size() ; fi++){
     for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
       for(unsigned int fk = 0; fk < cut.size() ; fk++){
-	if( region.at(fi).Contains("2"))
-	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_HNTight_relaxedip" + datajetcut.at(fj) + "_" + cut.at(fk))));
-	else
-	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_HNTight_" + datajetcut.at(fj) + "_" + cut.at(fk))));
+	if( region.at(fi).Contains("2")){
+	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_HNTight_relaxedip_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	}
+	else{
+	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_HNTight_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	  
+	}
       }
     }
   }
-
+  
   std::vector <TString> cut2;
   cut2.push_back("40_pt_eta");
-
+  
   
 
   std::vector <TString> region2;
+  region2.push_back("susy_pog");
+  region2.push_back("medium_pog");
+  region2.push_back("tight_pog");
+  region2.push_back("HNTight_iso05");
+  region2.push_back("HNTight_iso07");
+  region2.push_back("electronTightColl_dr03_b10_e10");
+  region2.push_back("electronTightColl_dr03_b09_e09");
+  region2.push_back("electronTightColl_dr03_b09_e05");
   for(unsigned int fi = 0; fi < region2.size() ; fi++){
     for(unsigned int fk = 0; fk < cut2.size() ; fk++){
-      
+      _2DEfficiencyMap["fake_eff_" + region2.at(fi) + "_" + cut2.at(fk)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_" + region2.at(fi) + "_" + cut2.at(fk)))->Clone());
     }
   }
 
@@ -478,12 +489,14 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
     
 
 float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, float ht,  bool isel1tight, bool isel2tight, TString cut, int eventtype){
-
+  
   if(electrons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
     return (0.);
   }
 
+  if(ht < 40.) ht = 40.;
+  if(ht > 300.) ht = 250.;
   float _el1_pt=electrons.at(0).Pt();
   float _el2_pt=electrons.at(1).Pt();
 
@@ -656,6 +669,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       if(fcut.Contains("30")) JetPt = "30";
       if(fcut.Contains("40")) JetPt = "40";
       if(fcut.Contains("60")) JetPt = "60";
+      
 
       _el1_pt = ht;
       _el2_pt = ht;
@@ -675,7 +689,14 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
       TString bjet = "bjet";
       if(fcut.Contains("0bjet")) bjet = "0bjet";
+      else{
+	if(_el1_eta > 1.5 && _el1_pt < 20.) _el1_pt = 21.; 
+	if(_el1_eta > 1.5 && _el1_pt > 60.) _el1_pt = 51.;
+	if(_el2_eta > 1.5 && _el2_pt < 20.) _el2_pt = 21.;
+	if(_el2_eta > 1.5 && _el2_pt > 60.) _el2_pt = 51.;
 
+      }
+      
       
       cut1  = bjet+ "_pt_eta_"+ JetPt+ "_" +reg;
       cut2  = bjet+ "_pt_eta_"+ JetPt+ "_" +reg;
@@ -732,6 +753,12 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
       TString bjet = "bjet";
       if(fcut.Contains("0bjet")) bjet = "0bjet";
+      else{
+	if(_el1_eta > 1.5 && _el1_pt < 20.) _el1_pt = 21.;
+        if(_el1_eta > 1.5 && _el1_pt > 60.) _el1_pt = 51.;
+        if(_el2_eta > 1.5 && _el2_pt < 20.) _el2_pt = 21.;
+        if(_el2_eta > 1.5 && _el2_pt > 60.) _el2_pt = 51.;
+      }
       
       TString JetPt = "";
       if(fcut.Contains("20")) JetPt = "20";
@@ -747,7 +774,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       if(fcut.Contains("cl2")) {
         cut2  = "pt_eta_cb_"+ JetPt+ "_" +reg;
       }
-      else cut2  = bjet + "_ht_eta_nocb_"+ JetPt+ "_" +reg;
+      else cut2  = bjet + "_pt_eta_nocb_"+ JetPt+ "_" +reg;
     }
     
     else     if(fcut.Contains("method7")){
@@ -756,13 +783,16 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       else reg = "looseregion2";
 
       TString htbin = "ht1";
-      if( ht > 100) htbin = "ht3";
+      if( ht > 150) htbin = "ht3";
       
       TString JetPt = "";
       if(fcut.Contains("20")) JetPt = "20";
       if(fcut.Contains("30")) JetPt = "30";
       if(fcut.Contains("40")) JetPt = "40";
       if(fcut.Contains("60")) JetPt = "60";
+
+      if(_el1_pt > 45. && _el1_pt > 60 && ht > 100.) _el1_pt = 44.;
+      if(_el2_pt > 45. && _el2_pt > 60 && ht > 100.) _el2_pt = 44.;
       if(fcut.Contains("cl1")) {
         cut1  = "pt_eta_cb_"+ JetPt+ "_" +reg;
       }
@@ -780,7 +810,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       else reg = "looseregion2";
 
       TString htbin = "ht1";
-      if( ht > 100) htbin = "ht3";
+      if( ht > 150) htbin = "ht3";
 
       TString bjet = "bjet";
       if(fcut.Contains("0bjet")) bjet = "0bjet";
@@ -807,7 +837,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       else reg = "looseregion2";
 
       TString htbin = "ht1";
-      if( ht > 100) htbin = "ht3";
+      if( ht > 150) htbin = "ht3";
 
       TString JetPt = "";
       if(fcut.Contains("20")) JetPt = "20";
@@ -815,15 +845,16 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       if(fcut.Contains("40")) JetPt = "40";
       if(fcut.Contains("60")) JetPt = "60";
       
-      cut1  = "pt_eta_" + htbin + JetPt+ "_" +reg;
-      cut2  = "pt_eta_" + htbin + JetPt+ "_" +reg;
+      cut1  = "pt_eta_" + htbin + "_" +JetPt+ "_" +reg;
+      cut2  = "pt_eta_" + htbin + "_"+ JetPt+ "_" +reg;
     }
   }
-  
-    
   fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut1);
   fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut2);
   
+  float fr1_err=  getFakeRate_electronEta(1,_el1_pt, _el1_eta,cut1);
+  float fr2_err=  getFakeRate_electronEta(1,_el2_pt, _el2_eta,cut2);
+
   //if(!isel1tight) cout << "fr1 = " << fr1 << " " << cut1<< " " << _el1_pt << " " << _el1_eta << endl;
   //if(!isel2tight) cout << "fr2 = " << fr2 << " " <<  cut2 << " " << _el2_pt << " " << _el2_eta << endl;
   
@@ -839,10 +870,10 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
 
   // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight, eventtype);
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, isel2tight, eventtype);
 
-  if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
-  if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
+  //if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
+  //if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
 
   if(ev_weight!=ev_weight){
     cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
@@ -892,8 +923,11 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
   fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
   fr2= getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
 
+  float fr1_err=  getFakeRate_electronEta(1,_el1_pt, _el1_eta,cut);
+  float fr2_err=  getFakeRate_electronEta(1,_el2_pt, _el2_eta,cut);
+
   // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight, eventtype);
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, isel2tight, eventtype);
 
   if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
   if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
@@ -943,8 +977,10 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   fr2= getFakeRate_electron(0,_el1_pt, _el1_eta);
 
 
+  float fr1_err = 0.;
+  float fr2_err = 0.;
   // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, ismu1tight);
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, ismu1tight);
 
   if(ev_weight!=ev_weight){
     cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
@@ -1081,10 +1117,11 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
   hist += cut;
   
   mapit = _2DEfficiencyMap.find(hist.Data());
-  
   if(mapit!=_2DEfficiencyMap.end()){
+
     int binx =  mapit->second->FindBin(pt,eta);
     eff_fake =  mapit->second->GetBinContent(binx);
+    if(sys != 0) return mapit->second->GetBinError(binx); 
   }
   else NoHist((hist.Data()));
   
@@ -1287,11 +1324,11 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
 }
 
 
-float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
+float HNCommonLeptonFakes::CalculateDiLepMMWeight(float fr1_err, float fr1, float fr2_err, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
 
 
   // Function calculates event weight given r/f of two muons in the event
-  double alpha = 1./((r1- fr1)*(r2- fr2));
+  double alpha = 1./((1.- fr1)*(1.- fr2));
   
   // Initialise weight
   float w_mm=-999.;
@@ -1303,13 +1340,13 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
   double termLT = alpha*(fr1*(1.-fr2));
   double termLL = -2.*alpha*(fr2*(fr1));
 
-
-  // Term for FF events
-  termTT += 0.;
-  termTL += 0.;
-  termLT += 0.;
-  termLL += alpha*(fr1*fr2);
-
+  if(eventtype == 0 || eventtype == 2){
+    // Term for FF events
+    termTT += 0.;
+    termTL += 0.;
+    termLT += 0.;
+    termLL += alpha*(fr1*fr2);
+  }
 
   // decide which type of event we have so to return correct weight
   bool isLL = (!mu1Tight&&!mu2Tight);
@@ -1317,8 +1354,22 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
   bool isTL = (mu1Tight && !mu2Tight);
   bool isTT = (mu1Tight && mu2Tight);
 
-
-
+  
+  if(eventtype == 3) {
+    // error onfake
+    float error = 0.;
+    if(isLL) {
+      error = sqrt( pow(fr1_err*fr2*(1-fr2),2) + pow(fr2_err*fr1*(1-fr1),2) ) / pow((1-fr1)*(1-fr2),2);
+    }
+    if(isLT){
+      error= fr1_err/pow(fr1-1,2);
+    }
+    if(isTL){
+      error= fr2_err/pow(fr2-1,2);
+    }
+    return error;
+  }
+    
   if(isLL)w_mm = termLL;
   if(isTL)w_mm = termTL;
   if(isLT)w_mm = termLT;

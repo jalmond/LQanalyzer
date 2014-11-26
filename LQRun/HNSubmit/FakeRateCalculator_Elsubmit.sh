@@ -104,7 +104,7 @@ then
     outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/Data/"
     
     declare -a input_samples=("A" "B" "C" "D")
-   
+
     source submit.sh $1
 
     source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/Data/ FakeRateCalculator_El_data_5_3_14.root FakeRateCalculator_El_period*  

@@ -13,7 +13,6 @@ void MakeMCClosurePlot(){
   TH1::SetDefaultSumw2(true);
   setTDRStyle();
 
-
   TH1F* mcclosure_hist = new TH1F("mcclosure","mcclosure", 10,0.,10.);
   mcclosure_hist->GetYaxis()->SetTitle("Event");
   mcclosure_hist->GetYaxis()->SetRangeUser(0., 15.);

@@ -1,3 +1,4 @@
+
 //$Id: AnalyzerCore.cc 1 2013-11-26 10:23:10 jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
@@ -70,29 +71,30 @@ void AnalyzerCore::FakeBkgBreakDown(std::vector<snu::KElectron> electrons, TStri
 
   if(electrons.size() != 2) return;
   if(IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  IsTight(electrons.at(1),  eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_TT").Data(), electrons.at(0).Pt() , 1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_TT_w").Data(),electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TT").Data(),  GetEEMass(electrons), 1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TT_w").Data(),GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TT").Data(), electrons.at(1).Pt() , 1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TT_w").Data(),electrons.at(1).Pt() , w,  0. , 100., 20);
   }
   if(IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  !IsTight(electrons.at(1),eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_TL").Data(), electrons.at(0).Pt() ,1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_TL_w").Data(), electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TL").Data(), GetEEMass(electrons) ,1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TL_w").Data(), GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TL").Data(), electrons.at(1).Pt() ,1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TL_w").Data(), electrons.at(1).Pt() , w,  0. , 100., 20);
   }
   if(!IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  IsTight(electrons.at(1),   eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_LT").Data(), electrons.at(0).Pt() ,1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_LT_w").Data(), electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LT").Data(), GetEEMass(electrons) ,1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LT_w").Data(), GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LT").Data(), electrons.at(1).Pt() ,1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LT_w").Data(), electrons.at(1).Pt() , w,  0. , 100., 20);
   }
   if(!IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  !IsTight(electrons.at(1),  eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_LL").Data(),   electrons.at(0).Pt() ,1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_LL_w").Data(),electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LL").Data(),   GetEEMass(electrons) ,1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LL_w").Data() ,GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LL").Data(),   electrons.at(1).Pt() ,1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LL_w").Data(),electrons.at(1).Pt() , w,  0. , 100., 20);
   }
+ 
 
 }
 
@@ -110,10 +112,10 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
     eventbase->GetJetSel()->SetEta(2.5);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "loose"));
+    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
   }
   else if(label.Contains("ApplyPileUpID")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "loose"));
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "veto"));
     
   }
   
@@ -403,13 +405,29 @@ void AnalyzerCore::MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std
   
 }
 
+
+bool AnalyzerCore::HasCloseLBJet(snu::KElectron el){
+
+  std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
+
+  bool cl = false;
+  for(unsigned int ij =0; ij < alljets.size(); ij++){
+    if(el.DeltaR(alljets.at(ij)) < 0.5){
+      if(alljets.at(ij).CombinedSecVertexBtag() > 0.244) cl = true;
+    }
+  }
+
+  return cl;
+
+}
+
 bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
 
   std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
   
   bool cl = false;
   for(unsigned int ij =0; ij < alljets.size(); ij++){
-    if(el.DeltaR(alljets.at(ij)) < 0.4){
+    if(el.DeltaR(alljets.at(ij)) < 0.5){
       if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) cl = true;
     }
   }
@@ -444,10 +462,10 @@ void AnalyzerCore::RunMCCLosureTest(TString label, std::vector<snu::KJet> jets, 
 
 	    std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
             for(unsigned int ij =0; ij < alljets.size(); ij++){
-              if(electronAnalysisColl_mcclosure.at(0).DeltaR(alljets.at(ij)) < 0.4){
+              if(electronAnalysisColl_mcclosure.at(0).DeltaR(alljets.at(ij)) < 0.5){
                 if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) closejet_el1 = true;
               }
-              if(electronAnalysisColl_mcclosure.at(1).DeltaR(alljets.at(ij)) < 0.4){
+              if(electronAnalysisColl_mcclosure.at(1).DeltaR(alljets.at(ij)) < 0.5){
                 if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) closejet_el2 = true;
               }
             }
@@ -1923,11 +1941,27 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   if(type==sighist){
 
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
-    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
     else {
       mapCLhistSig[hist] = new SignalPlots(hist);
       sigpit = mapCLhistSig.find(hist);
-      sigpit->second->Fill(ev, muons, electrons, jets,w);
+      sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
+    }
+  }
+  else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
+}
+
+
+void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, Double_t weight_err){
+
+  if(type==sighist){
+
+    map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w, weight_err);
+    else {
+      mapCLhistSig[hist] = new SignalPlots(hist);
+      sigpit = mapCLhistSig.find(hist);
+      sigpit->second->Fill(ev, muons, electrons, jets,w, weight_err);
     }
   }
   else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
@@ -1938,11 +1972,11 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
 
   if(type==sighist){
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
-    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w, 0.);
     else {
       mapCLhistSig[hist] = new SignalPlots(hist);
       sigpit = mapCLhistSig.find(hist);
-      sigpit->second->Fill(ev, electrons, jets, w);
+      sigpit->second->Fill(ev, electrons, jets, w, 0.);
     }
   }
   else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
