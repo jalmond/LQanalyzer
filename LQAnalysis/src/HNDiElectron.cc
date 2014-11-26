@@ -290,12 +290,11 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// before third lepton veto no fake estimate can be done.
   if(k_running_nonprompt){
     
-    weight      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method4_pt_eta_40_" + reg,0); 
-    weight_err      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method4_pt_eta_40_" + reg,3); 
-
+    weight      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method1_pt_eta_40_" + reg,0); 
+    weight_err      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method1_pt_eta_40_" + reg,3); 
     
-    weight_sf   *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true,0.01, 0.09, 0.05,  "method4_pt_eta_40_" + reg, 1);
-    weight_df   *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true,0.01, 0.09, 0.05,  "method4_pt_eta_40_" + reg, 2);
+    weight_sf   *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true,0.01, 0.09, 0.05,  "method1_pt_eta_40_" + reg, 1);
+    weight_df   *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true,0.01, 0.09, 0.05,  "method1_pt_eta_40_" + reg, 2);
     ee_weight_up      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method1_pt_eta_60_" + reg,0); 
     ee_weight_down      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method1_pt_eta_20_" + reg,0); 
 
@@ -495,7 +494,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	if(ee.M() < 40. && eejjtmp.M() > 350) 
 	  FillCLHist(sighist, "SSee_gt1jet_lowZhighW", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
 	
-	cout << "ee.M() = " << ee.M() << " weight= " << weight << endl;
+
 	if(ee.M() < 35. && ee.M() > 25.&&jetColl_lepveto_mva.size() == 2){
 	  FillCLHist(sighist, "SSee_gt1jet_lowZ", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight, weight_err);
 	  if(eventbase->GetEvent().PFMET() > 20. && eventbase->GetEvent().PFMET() < 30.)         FillCLHist(sighist, "SSee_gt1jet_lowZ_met", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight, weight_err);
@@ -943,12 +942,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// Map for masspoint and list of cuts (fully optimised)
   std::map< TString,  std::pair< std::vector<snu::KElectron> , float> > leptonmap;
   leptonmap[""]  = make_pair(electronAnalysisColl, weight);
-
+  
   
   std::map<TString, std::vector<float> > sysymap;
   sysymap["40"] =  masscuts40;  sysymap["50"] =  masscuts50;
   sysymap["60"] =  masscuts60;  sysymap["70"] =  masscuts70;
   sysymap["80"] =  masscuts80;  sysymap["90"] =  masscuts90;
+  sysymap["80m"] =  masscuts80m;  sysymap["90l"] =  masscuts90l;
   sysymap["100"] =  masscuts100; sysymap["125"] =  masscuts125;
   sysymap["150"] =  masscuts150; sysymap["175"] =  masscuts175;
   sysymap["200"] =  masscuts200;  sysymap["225"] =  masscuts225;
@@ -985,14 +985,12 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 		if(!lepmapit->first.Contains("tight"))
 		  if(!lepmapit->first.Contains("susy")){
 		    FillCLHist(sighist, (mapit->first + lepmapit->first+"MassRegion").Data(), eventbase->GetEvent(), muonVetoColl,lepmapit->second.first,jetColl_lepveto_mva, lepmapit->second.second);
-		    cout << "lepmapit->first = " << lepmapit->first << endl;
-		    cout << " mapit->first = " << mapit->first << endl;
-		    cout << " mapit2->first : " << mapit2->first << endl;
-		    cout << " mapit2->second : " << mapit2->second << endl;
-		    
+		  		    
 	            CheckJetsCloseToLeptons(electronAnalysisColl, jetColl, label);
 		  }
 	  }
+
+	  
 	  FillHist(label.Data(), 0, 1. , 0., 16.,16);
 	  FillHist(label.Data(), 1, lepmapit->second.second , 0., 16.,16);
 	  
@@ -1297,10 +1295,9 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
     return true;
   }
   
-  cout << "additional_option = " << additional_option << endl;
+
   if(electrons.size() != 2 ) return false;
-  cout << "Pt 1 = " << cuts.at(0) << endl;
-  cout << "Pt 2 = " << cuts.at(1) << endl;
+
 
   if(electrons.at(0).Pt() < cuts.at(0)) return false;
   if(electrons.at(1).Pt() < cuts.at(1)) return false;

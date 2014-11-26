@@ -224,7 +224,13 @@ bool ElectronSelection::HNIsTight(KElectron el,  double rho, double dxycut, doub
     }
   }
   
-  
+  // remove el if ec and pt < 20
+  if(fabs(el.SCEta() )> 1.479){
+    if(el.Pt() < 20.) {
+      return false;
+    }
+  }
+
   ///List of cuts
   if(!ElectronID) {
     pass_selection = false;

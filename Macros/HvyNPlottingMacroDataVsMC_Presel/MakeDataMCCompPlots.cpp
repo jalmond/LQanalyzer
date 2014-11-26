@@ -626,9 +626,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   if(sample.Contains("higgs")){
     //list.push_back(make_pair("HtoZZ",0.22));
-    //list.push_back(make_pair("HtoTauTau",0.22));
+    list.push_back(make_pair("HtoTauTau",0.22));
     list.push_back(make_pair("HtoWW",0.3));
-    //list.push_back(make_pair("ggHtoZZ",0.22));
+    list.push_back(make_pair("ggHtoZZ",0.22));
   }
   if(sample.Contains("vvv")){
     list.push_back(make_pair("WWW",0.4));

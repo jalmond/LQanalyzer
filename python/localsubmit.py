@@ -440,9 +440,8 @@ check_array = []
 ###################################################
 
 tmpwork = "/data1/"+ getpass.getuser()
-
 if not (os.path.exists(tmpwork)):
-    os.system("mkdir " tmpork)
+    os.system("mkdir " + tmpwork)
     
 workspace = "/data1/"+ getpass.getuser() + "/LQ_SKTreeOutput/"
 if not (os.path.exists(workspace)):

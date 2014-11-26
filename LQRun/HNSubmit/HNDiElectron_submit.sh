@@ -193,7 +193,9 @@ then
 
     loglevel="INFO"
     logstep=1000
-    declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "ttbar" "DY10to50" "DY50plus" "WZtollqq_mg" "WZtollln_mg" "WZtoqqln_mg" "ZZtollqq_mg" "ZZtollll_mg" "WW_py" "WW_mg")
+    declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "ttbar" "DY10to50" "DY50plus" "WZtollqq_mg" "WZtollln_mg" "WZtoqqln_mg" "ZZtollqq_mg" "ZZtollll_mg" "WW_py" "WW_mg" "HtoTauTau")
+    declare -a input_samples=("ggHtoZZ")
+
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
