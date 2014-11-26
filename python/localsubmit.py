@@ -438,7 +438,13 @@ check_array = []
 ###################################################
 # Setup work area on var tmp
 ###################################################
-workspace = "/home/"+ getpass.getuser() + "/LQ_SKTreeOutput/"
+
+tmpwork = "/data1/"+ getpass.getuser()
+
+if not (os.path.exists(tmpwork)):
+    os.system("mkdir " tmpork)
+    
+workspace = "/data1/"+ getpass.getuser() + "/LQ_SKTreeOutput/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample

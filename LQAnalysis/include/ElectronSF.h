@@ -1,16 +1,15 @@
-#ifndef HNDiElectron_h
-#define HNDiElectron_h
+#ifndef ElectronSF_h
+#define ElectronSF_h
 
 #include "AnalyzerCore.h"
-#include "BTagSFUtil.h"
 
 
-class HNDiElectron : public AnalyzerCore {
+class ElectronSF : public AnalyzerCore {
 
  public:
   //// constructors                                                                                                                                                             
-  HNDiElectron();
-  ~HNDiElectron();
+  ElectronSF();
+  ~ElectronSF();
 
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
@@ -33,6 +32,11 @@ class HNDiElectron : public AnalyzerCore {
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
 
+  void FillDenominator(snu::KElectron el, float mass, float w);
+  void FillNumerator(snu::KElectron el, float mass,  float w);
+  void FillPass(snu::KElectron el, float mass,  float w);
+  void FillFail(snu::KElectron el, float mass,  float w);
+
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates=false);  
   float IsDiLep(std::vector<snu::KElectron> electrons);
@@ -50,14 +54,10 @@ class HNDiElectron : public AnalyzerCore {
   float m_os_Z;
   float m_ss_Z;
 
-  BTagSFUtil *fBTagSF;
-
   float k_met, k_eemass, k_eejjmass, k_e1jjmass, k_e2jjmass,  k_st, k_ht;
   int k_njet, k_nbjet_l, k_nbjet_m, k_nbjet_t;
-  float  k_el1eta, k_el2eta;
   float k_weight, k_el1pt, k_el2pt, k_j1pt, k_jjmass;
-  bool k_cl1bjet, k_cl2bjet,k_cll1bjet, k_cll2bjet; 
 
-  ClassDef ( HNDiElectron, 1);
+  ClassDef ( ElectronSF, 1);
 };
 #endif
