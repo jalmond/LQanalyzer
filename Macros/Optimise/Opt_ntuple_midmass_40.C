@@ -12,16 +12,16 @@ void Opt_ntuple_midmass_40(){
   gStyle->SetOptStat(1111);
 
   TChain * f_chain = new TChain("MyTree");
-  f_chain->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKnonprompt_dilep_5_3_14.root");
+  f_chain->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKnonprompt_dilep_5_3_14.root");
   f_chain->LoadTree(0) ;
   
   TChain * f_chainmc = new TChain("MyTree");
-  f_chainmc->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_mc_5_3_14.root");
+  f_chainmc->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_mc_5_3_14.root");
   f_chainmc->LoadTree(0) ;
 
   TChain * f_chainsig = new TChain("MyTree");
-  f_chainsig->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKHNee40_nocut_5_3_14.root");
-  TFile * file = new TFile("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKHNee40_nocut_5_3_14.root");
+  f_chainsig->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKHNee40_nocut_5_3_14.root");
+  TFile * file = new TFile("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKHNee40_nocut_5_3_14.root");
   cout << file << endl;
   float  k_met=0., k_eemass=0., k_eejjmass=0., k_e1jjmass=0., k_e2jjmass=0.,  k_st=0., k_ht;
   float k_weight=0.;
@@ -112,6 +112,8 @@ void Opt_ntuple_midmass_40(){
   float sum_sigevent =0.;
   for(Int_t i = 0; i < f_chainsig->GetEntries(); i++){
     f_chainsig->GetEntry(i) ;
+    if(k_eemass > 80. && k_eemass < 100) continue;
+    if(k_jjmass > 120.) continue;
 
     if( (i % 100000) == 0) cout << "Sig: N processing = " << i << endl;
     sum_sigevent+=k_weight;
@@ -155,10 +157,10 @@ void Opt_ntuple_midmass_40(){
   for(unsigned int imet=0; imet < METcut.size(); imet++){
     float met_cut = METcut.at(imet);
     cout << "MET : "<< met_cut << endl;
-    for(int imeejjmin= 8; imeejjmin < 9. ; imeejjmin++){
-      float meejjmin_cut = float(imeejjmin) * 10.;
-      for(int imeejjmax= 0; imeejjmax <5. ; imeejjmax++){
-	float meejjmax_cut = 140.+ float(imeejjmax)*5.;
+    for(int imeejjmin= 0; imeejjmin < 1. ; imeejjmin++){
+      float meejjmin_cut = 80 .+ float(imeejjmin) * 10.;
+      for(int imeejjmax= 0; imeejjmax < 1. ; imeejjmax++){
+	float meejjmax_cut = 200.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	for(int ipt1= 0; ipt1 <1. ; ipt1++){
 	  float pt1_cut =  20. + float(ipt1)*5.;
@@ -168,7 +170,7 @@ void Opt_ntuple_midmass_40(){
 	    if(pt2_cut > pt1_cut) continue;
 	    cout << "pt1_cut = " << pt1_cut << " pt2_cut = " << pt2_cut << endl;
 	    
-	    for(int ipt3= 0; ipt3 < 4. ; ipt3++){
+	    for(int ipt3= 0; ipt3 < 1. ; ipt3++){
 	      float pt3_cut = 15. + float(ipt3)*5.;
 
 	    for(int ieemin =0 ; ieemin < 1 ; ieemin++){
@@ -183,30 +185,30 @@ void Opt_ntuple_midmass_40(){
                   for(int ie1jjmax =0 ; ie1jjmax < 1 ; ie1jjmax++){
                     float e1jjmax_cut =  10000. + float(ie1jjmax)* 20.;
 		    
-		    for(int ie2jjmin =0 ; ie2jjmin < 10 ; ie2jjmin++){
+		    for(int ie2jjmin =0 ; ie2jjmin < 1 ; ie2jjmin++){
 
-		      float e2jjmin_cut = 40. + float(ie2jjmin)* 5.;
+		      float e2jjmin_cut = 0. + float(ie2jjmin)* 5.;
 		      
-		      for(int ie2jjmax =0 ; ie2jjmax < 5 ; ie2jjmax++){
-			float e2jjmax_cut =  115. + float(ie2jjmax)* 5.;
+		      for(int ie2jjmax =0 ; ie2jjmax < 1 ; ie2jjmax++){
+			float e2jjmax_cut =  10000. + float(ie2jjmax)* 5.;
 			if(ie2jjmax == 10) e2jjmax_cut = 10000.;
 			
 			cout << e2jjmin_cut << " < e2jjmin_cut < " << e2jjmax_cut  << endl;
 			for(int ihtmin =0 ; ihtmin < 1 ; ihtmin++){
 			  float htmin_cut = 0. + float(ihtmin)*5.;
 			  for(int ihtmax =16 ; ihtmax < 17 ; ihtmax++){
-			    float htmax_cut =10000. + float(ihtmax)*25.;
+			    float htmax_cut =100000. + float(ihtmax)*25.;
 			    for(int istmin =0; istmin < 1 ; istmin++){
 			      float stmin_cut = float(istmin)*10.;  
 			      for(int istmax =0 ; istmax < 1 ; istmax++){
-				float stmax_cut =1000. + float(istmax) *10.;
+				float stmax_cut =100000. + float(istmax) *10.;
 				
 				for(int ijpt =0 ; ijpt <1 ; ijpt++){
 				  float jetpt_cut = 20. + float(ijpt)*5.;
 				  
 				  for(int injet = 10 ; injet< 11 ; injet ++){
 				    
-				    for(int iclj = 0 ; iclj< 2 ; iclj ++){
+				    for(int iclj = 0 ; iclj< 1 ; iclj ++){
 				     
 
 				      cout << "Check closebjet = " << iclj << endl; 

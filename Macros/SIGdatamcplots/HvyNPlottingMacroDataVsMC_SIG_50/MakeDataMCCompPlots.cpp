@@ -154,7 +154,7 @@ int MakePlots(string hist) {
 	ymax = GetMaximum(hdata, hup, ylog, name);
 	
 	
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_basic_SKHNee50_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee50_nocut_5_3_14.root"));
 	TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
 	hsig_40->Rebin(rebin);
 	FixOverUnderFlows(hsig_40, xmax);
@@ -169,7 +169,7 @@ int MakePlots(string hist) {
 	hsig_40->SetLineColor(kRed);
 	hsig_40->SetLineWidth(2.);
 	
-	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_basic_SKHNee50_nocut_5_3_14.root"));
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee50_nocut_5_3_14.root"));
         TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
 	hsig_80->Rebin(rebin);
 	FixOverUnderFlows(hsig_80, xmax);
@@ -178,7 +178,7 @@ int MakePlots(string hist) {
 	hsig_80->SetLineColor(kBlue);
 	hsig_80->SetLineWidth(2.);
 
-	TFile* file_sig200 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_basic_SKHNee60_nocut_5_3_14.root"));
+	TFile* file_sig200 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee60_nocut_5_3_14.root"));
         TH1* hsig_200 = dynamic_cast<TH1*> ((file_sig200->Get(name.c_str()))->Clone());
         hsig_200->Rebin(rebin);
         FixOverUnderFlows(hsig_200, xmax);
@@ -1461,7 +1461,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, TH1* hsig_200, vecto
   if(usedata){
     
     //hdata->Draw("9pX0");
-    /hdata->GetYaxis()->SetTitleOffset(1.5);
+    ///hdata->GetYaxis()->SetTitleOffset(1.5);
 
     hsig_40->GetYaxis()->SetRangeUser(0., 5.);
     hsig_40->Draw("hist9same");

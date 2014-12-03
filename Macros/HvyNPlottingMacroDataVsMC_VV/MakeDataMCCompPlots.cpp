@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus0099.cern.ch:~/www/SNU/WebPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus.cern.ch:~/www/SNU/WebPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl; 
   return 0;
@@ -249,10 +249,7 @@ void MakeCutFlow(string type){
       samples_numbers_up[it2->second] = Calculate(cutname,"Down",*it2);
       samples_numbers_down[it2->second] = Calculate(cutname,"Up",*it2);
       samples_numbers_staterr[it2->second] = Calculate(cutname,"StatErr",*it2);
-
-
- 
-  }	
+    }	
     
     
     float totaldata(0.);
@@ -510,14 +507,14 @@ vector<pair<TString,float> >  InitSample (TString sample){
   vector<pair<TString,float> > list;  
   
   if(sample.Contains("dy_")){
-    list.push_back(make_pair("DY10to50",0.25));    
-    list.push_back(make_pair("DY50plus",0.25));    
+    list.push_back(make_pair("DY10to50",0.2));    
+    list.push_back(make_pair("DY50plus",0.2));    
   }
   
   if(sample.Contains("dyplusbb")){
-    list.push_back(make_pair("DY10to50",0.25));
-    list.push_back(make_pair("DY50plus",0.25));
-    list.push_back(make_pair("Zbb",0.25));
+    list.push_back(make_pair("DY10to50",0.2));
+    list.push_back(make_pair("DY50plus",0.2));
+    list.push_back(make_pair("Zbb",0.2));
   }
     
   ///// Top samples //////////////////    
@@ -531,7 +528,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   
   if(sample.Contains("ttbar")){
-
+    list.push_back(make_pair("ttbar",0.25));
   }
   
   if(sample.Contains("qcd"))
@@ -540,45 +537,45 @@ vector<pair<TString,float> >  InitSample (TString sample){
     }
 
   if(sample.Contains("ttv")){
-    list.push_back(make_pair("ttW",0.5));
-    list.push_back(make_pair("ttZ",0.5));
-    list.push_back(make_pair("ttbar",0.3));
+    list.push_back(make_pair("ttW",0.4));
+    list.push_back(make_pair("ttZ",0.4));
   }
   
   
   //////// Diboson ////////
   if(sample.Contains("wz_py")){    
-    list.push_back(make_pair("WZ_py",0.25));
+    list.push_back(make_pair("WZ_py",0.15));
     //list.push_back(make_pair("WgammaE",0.22));
     //list.push_back(make_pair("WgammaTau",0.22));
 
   }
   
   if(sample.Contains("zz_py")){
-    list.push_back(make_pair("ZZ_py",0.25));
+    list.push_back(make_pair("ZZ_py",0.15));
   }
   
   if(sample.Contains("ww_py")){      
-    list.push_back(make_pair("WW_py",0.25));
+    list.push_back(make_pair("WW_py",0.15));
   }
   
+
   if(sample.Contains("vv_py")){
-    list.push_back(make_pair("WZ_py",0.3));
-    list.push_back(make_pair("ZZ_py",0.3));
-    list.push_back(make_pair("WW_py",0.3));
+    list.push_back(make_pair("WZ_py",0.25));
+    list.push_back(make_pair("ZZ_py",0.25));
+    list.push_back(make_pair("WW_py",0.25));
+    //list.push_back(make_pair("Wgamma",0.22));
     list.push_back(make_pair("SSWmWm",0.4));
     list.push_back(make_pair("SSWpWp",0.4));
-    list.push_back(make_pair("WW_dp",0.4));
+    list.push_back(make_pair("WW_dp",0.5));
   }
   if(sample.Contains("vv_mg")){
     list.push_back(make_pair("WZtollqq_mg",0.25));
-    list.push_back(make_pair("WZtoqqln_mg",0.25));
     list.push_back(make_pair("WZtollln_mg",0.25));
-    //list.push_back(make_pair("ZZtollnn_mg",0.25));
-    list.push_back(make_pair("ZZtollqq_mg",0.25));
     list.push_back(make_pair("ZZtollll_mg",0.25));
-    list.push_back(make_pair("WW_mg",0.15));
     //list.push_back(make_pair("WgammaE",0.22));
+    list.push_back(make_pair("SSWmWm",0.22));
+    list.push_back(make_pair("SSWpWp",0.22));
+    list.push_back(make_pair("WW_dp",0.22));
     //list.push_back(make_pair("WgammaTau",0.22));
   }
 
@@ -629,15 +626,17 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   if(sample.Contains("higgs")){
     //list.push_back(make_pair("HtoZZ",0.22));
-    //list.push_back(make_pair("HtoTauTau",0.22));
-    list.push_back(make_pair("HtoWW",0.25));
-    //list.push_back(make_pair("ggHtoZZ",0.22));
+    list.push_back(make_pair("HtoTauTau",0.22));
+    list.push_back(make_pair("HtoWW",0.3));
+    list.push_back(make_pair("ggHtoZZ",0.22));
   }
   if(sample.Contains("vvv")){
-    list.push_back(make_pair("WWW",0.5));
-    list.push_back(make_pair("TTWW",0.5));
-    list.push_back(make_pair("ZZZ",0.5));
-    list.push_back(make_pair("WWZ",0.5));
+    list.push_back(make_pair("WWW",0.4));
+    list.push_back(make_pair("TTWW",0.4));
+    list.push_back(make_pair("TTG",0.4));
+    list.push_back(make_pair("ZZZ",0.4));
+    list.push_back(make_pair("WWZ",0.4));
+    list.push_back(make_pair("WWG",0.4));
   }
   if(sample.Contains("vgamma")){
     list.push_back(make_pair("Wgamma",0.22));    
@@ -793,7 +792,8 @@ TH1* MakeStackUp(map<TString, TH1*> map_of_stacks, TString clonename){
     
     /// Now use 5%+ norm + stat error
     float errup2 =  nom_error*nom_error + 0.05*0.05*nom_content*nom_content;
-    
+    if(clonename.Contains("stat")) errup2 =  nom_error*nom_error;
+
     /// add rest of systs
 
     float new_bin = nom_content + sqrt(errup2);
@@ -857,9 +857,8 @@ TH1* MakeSumHist(THStack* thestack){
 void SetErrors(TH1* hist, float normerr, bool includestaterr ){
 
   for(int binx =1; binx < hist->GetNbinsX()+1; binx++){
-    cout << "hist->GetBinError(binx) = " << hist->GetBinError(binx) << endl;
     float newbinerr = hist->GetBinError(binx)*hist->GetBinError(binx) + hist->GetBinContent(binx)*hist->GetBinContent(binx)*normerr*normerr;
-    if(!includestaterr)  newbinerr =hist->GetBinContent(binx)*hist->GetBinContent(binx)*normerr*normerr;
+    if(!includestaterr)  newbinerr =hist->GetBinError(binx)*hist->GetBinError(binx) ;
     hist->SetBinError(binx, sqrt(newbinerr));
   }
   
@@ -910,6 +909,7 @@ void SetTitles(TH1* hist, string name){
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
   if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} [GeV]";
+  if(name.find("ElectronPt")!=string::npos)xtitle="Electron p_{T} [GeV]";
   if(name.find("leadingElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
   if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} [GeV]";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third p_{T} [GeV]";
@@ -1238,8 +1238,7 @@ float Calculate(TString cut, TString variance, pair<vector<pair<TString,float> >
 float Error(TH1* h){
   double err ;
   double integral = h->IntegralAndError(0,h->GetNbinsX(),err,"");
-
-  cout << "Error = " << err << endl;
+  
   return err;
 }
 
@@ -1400,8 +1399,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   }
 
   ///// Fix cut flow code
-  caption="Number of events containing one prompt loose electron in 19 fb$^{-1}$ of CMS data at 8~TeV";
-  hist = "/h_leadingElectronPt";
+  caption="Number of events containing two prompt electrons and two jets, with Z peak removed, in 19 fb$^{-1}$ of CMS data at 8~TeV";
+  hist = "/h_Nelectrons";
   columnname="";
 
   return;
@@ -1447,8 +1446,8 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
     hdata->Draw("9pX0");
     hdata->GetYaxis()->SetTitleOffset(1.5);
     mcstack.at(0)->Draw("HIST9same");
-    hdata->Draw("9samep");
-    hdata->Draw("9axis same");
+    hdata->Draw("9samepX0");
+    hdata->Draw("axis same");
     errorband->Draw("E2same");
 
     /// Draw data again
@@ -1474,12 +1473,12 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    g->Draw( "9samep" );
+    g->Draw( "9samepX0" );
     
     hdata->SetMarkerStyle(20);
     hdata->SetMarkerSize(2.3);
     hdata->SetLineWidth(2.);
-    hdata->Draw( ("9samep") );
+    hdata->Draw( ("9samepX0") );
   }
   else{
   }
@@ -1623,10 +1622,8 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
       
       for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
 	if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
-	  
 	  hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
 	  hdev->SetBinError(i, sqrt(hdev->GetBinContent(i)) / h_nominal->GetBinContent(i));
-	  //hdev->SetBinError(i, hdev->GetBinError(i) / h_nominal->GetBinContent(i));
 	}
 	else {
 	  hdev->SetBinContent(i, -99);

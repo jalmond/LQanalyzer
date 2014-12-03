@@ -45,7 +45,7 @@ void GetSigEfficiency(TString path){
   TH1F* h_convphoton =(TH1F*)file->Get(("Efficiency/eff_electron_convphoton"));
   TH1F* h_DXY =(TH1F*)file->Get(("Efficiency/eff_electron_DXY"));
   TH1F* h_chargeconst =(TH1F*)file->Get(("Efficiency/eff_electron_chargeconst"));
-  TH1F* h_refd0 = (TH1F*)file->Get(("Efficiency/eff_electronTight_tightref"));
+  TH1F* h_refd0 = (TH1F*)file->Get(("tight/eff_electronTight_tightref"));
   
   TH1F* h_jetsel =(TH1F*)file->Get(("JetSelection"));
   TH1F* h_presel =(TH1F*)file->Get(("PreSelection"));

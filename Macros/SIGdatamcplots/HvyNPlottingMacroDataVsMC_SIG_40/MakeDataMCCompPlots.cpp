@@ -147,14 +147,15 @@ int MakePlots(string hist) {
 	
 	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
 	
+
 	/// Make data histogram
-	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
+	TH1* hdata = MakeDataHist("SSee_DiJet/h_electrons_eta_SSee_DiJet", xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
 	float ymin (0.), ymax( 20.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
 	
 	
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee40_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
 	TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
 	hsig_40->Rebin(rebin);
 	FixOverUnderFlows(hsig_40, xmax);
@@ -222,7 +223,7 @@ int MakePlots(string hist) {
 
 void MakeCutFlow(string type){
 
-  
+  return;
   vector<string> cut_label;  
   vector<pair<pair<vector<pair<TString,float> >, int >, TString > > cfsamples;  
   SetUpConfig( cfsamples, cut_label);
@@ -587,6 +588,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_py",0.15));
     list.push_back(make_pair("ZZ_py",0.15));
     list.push_back(make_pair("WW_py",0.15));
+    list.push_back(make_pair("SSWmWm",0.22));
+    list.push_back(make_pair("SSWpWp",0.22));
     ////list.push_back(make_pair("WgammaE",0.22));
     //list.push_back(make_pair("WgammaTau",0.22));
   }
@@ -1469,7 +1472,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, TH1* hsig_200, vecto
     
     hsig_40->GetYaxis()->SetRangeUser(0., 20.);
     hsig_40->Draw("hist9");
-    hdata->Draw("9pX0same");
+    //hdata->Draw("9pX0same");
     mcstack.at(0)->Draw("HIST9same");
     //hdata->Draw("9samepX0");
     //hdata->Draw("axis same");
@@ -1506,7 +1509,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, TH1* hsig_200, vecto
     hdata->Draw( ("9samepX0") );
     */
     hsig_40->Draw("hist9same");
-    hdata->Draw("9pX0same");
+    //hdata->Draw("9pX0same");
     //hsig_80->Draw("hist9same");
     //hsig_200->Draw("hist9same");
   }
@@ -1520,7 +1523,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, TH1* hsig_200, vecto
     
   }
 
-  legend->AddEntry(hsig_40, "m_{N} = 40 GeV","l"); 
+  legend->AddEntry(hsig_40, "m_{N} = 100 GeV","l"); 
   legend->Draw("same");
 
   /*if(usedata){

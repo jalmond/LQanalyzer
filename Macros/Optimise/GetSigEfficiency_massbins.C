@@ -29,7 +29,7 @@ void GetSigEfficiency(TString path, TString tag){
   TH1* hnsig =   (TH1F*)file->Get(("eventcutflow"));
   float nsig = float(hnsig->GetBinContent(2)); 
   
-  TString hist = tag + "MassRegion/h_MET_" + tag + "MassRegion";
+  TString hist = tag + "MassRegion/h_Nelectrons_" + tag + "MassRegion";
   TH1* h =  (TH1*)file->Get(hist.Data());
   cout << h << endl;
   cout << h->Integral() << endl;

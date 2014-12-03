@@ -858,7 +858,14 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
   //if(!isel1tight) cout << "fr1 = " << fr1 << " " << cut1<< " " << _el1_pt << " " << _el1_eta << endl;
   //if(!isel2tight) cout << "fr2 = " << fr2 << " " <<  cut2 << " " << _el2_pt << " " << _el2_eta << endl;
   
-  
+  /*
+  if(!fcut.Contains("0bjet" )) {
+    if(fcut.Contains("bjet" )){
+      if(fabs(_el1_eta) > 1.5) fr1 = 0.04;
+      if(fabs(_el2_eta) > 1.5) fr2 = 0.04;
+    }
+  }
+  */
   if(fr1 == 0.)  fr1 = 0.05;
   if(fr2 == 0.)  fr2 = 0.05;
   
@@ -1346,6 +1353,14 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float fr1_err, float fr1, floa
     termTL += 0.;
     termLT += 0.;
     termLL += alpha*(fr1*fr2);
+  }
+
+  if(eventtype == 2){
+    // Term for FF events
+    termTT = 0.;
+    termTL = 0.;
+    termLT = 0.;
+    termLL = alpha*(fr1*fr2);
   }
 
   // decide which type of event we have so to return correct weight

@@ -975,7 +975,6 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
 	if(ee.M() < 40. && eejjtmp.M() > 350) 
 	  FillCLHist(sighist, "SSee_gt1jet_lowZhighW", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
 	
-	cout << "ee.M() = " << ee.M() << " weight= " << weight << endl;
 	if(ee.M() < 35. && ee.M() > 25.&&jetColl_lepveto_mva.size() == 2){
 	  FillCLHist(sighist, "SSee_gt1jet_lowZ", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight, weight_err);
 	  if(eventbase->GetEvent().PFMET() > 20. && eventbase->GetEvent().PFMET() < 30.)         FillCLHist(sighist, "SSee_gt1jet_lowZ_met", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight, weight_err);
@@ -1212,7 +1211,7 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
       k_el2pt= electronAnalysisColl.at(1).Pt();
       k_el1eta= electronAnalysisColl.at(0).Eta();
       k_el2eta= electronAnalysisColl.at(1).Eta();
-
+      
       k_cl1bjet = HasCloseBJet( electronAnalysisColl.at(0)) ;
       k_cl2bjet = HasCloseBJet( electronAnalysisColl.at(1)) ;
 
@@ -1663,10 +1662,6 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
 		if(!lepmapit->first.Contains("tight"))
 		  if(!lepmapit->first.Contains("susy")){
 		    FillCLHist(sighist, (mapit->first + lepmapit->first+"MassRegion").Data(), eventbase->GetEvent(), muonVetoColl,lepmapit->second.first,jetColl_lepveto_mva, lepmapit->second.second);
-		    cout << "lepmapit->first = " << lepmapit->first << endl;
-		    cout << " mapit->first = " << mapit->first << endl;
-		    cout << " mapit2->first : " << mapit2->first << endl;
-		    cout << " mapit2->second : " << mapit2->second << endl;
 		    
 	            CheckJetsCloseToLeptons(electronAnalysisColl, jetColl, label);
 		  }
@@ -2050,7 +2045,7 @@ float HNDiElectron_basic::IsDiLep(std::vector<snu::KElectron> electrons){
 
   if(electrons.size() == 2 ){
     if(electrons.at(0).Pt() > 20.){
-      if(electrons.at(1).Pt() > 15.){
+      if(electrons.at(1).Pt() > 10.){
 	return 1.;
       }
     }
@@ -2154,10 +2149,7 @@ bool HNDiElectron_basic::OptMassCheckSignalRegion(std::vector<snu::KElectron> el
     return true;
   }
   
-  cout << "additional_option = " << additional_option << endl;
   if(electrons.size() != 2 ) return false;
-  cout << "Pt 1 = " << cuts.at(0) << endl;
-  cout << "Pt 2 = " << cuts.at(1) << endl;
 
   if(electrons.at(0).Pt() < cuts.at(0)) return false;
   if(electrons.at(1).Pt() < cuts.at(1)) return false;

@@ -974,7 +974,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
     else{
       if(electronNoCutColl[iel].Pt() < 15.) continue;
     }
-    if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+    if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
 
     electronPtEtaCutColl.push_back(electronNoCutColl[iel]);
   }
@@ -1064,7 +1064,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
     else{
       if(electronNoCutColl[iel].Pt() < 15.) continue;
     }
-    if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+    if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
     
 
     if ( fabs(electronNoCutColl.at(iel).SCEta()) < 1.479 ){
@@ -1141,8 +1141,8 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
                             if(ecaliso > 0.25) passNPFiso = false;
                             if(hcaliso > 0.2)  passNPFiso = false;
 
-                            float isocut= 0.09;
-                            if(fabs(electronNoCutColl.at(iel).Eta() > 1.5) )isocut = 0.05;
+                            float isocut= 0.1;
+                            if(fabs(electronNoCutColl.at(iel).Eta() < 1.5) )isocut = 0.1;
                             else   if(electronNoCutColl.at(iel).Pt()< 20.) isocut=0.07;
                             if(LeptonRelIsoDR03 < isocut){
                               electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
@@ -1167,7 +1167,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
       else{
         if(electronNoCutColl[iel].Pt() < 15.) continue;
       }
-      if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+      if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
 
       if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
         electronTight_tightref.push_back(electronNoCutColl.at(iel));
@@ -1244,8 +1244,8 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
                             if(hcaliso > 0.2)  passNPFiso = false;
 
                             float isocut= 0.09;
-                            if(fabs(electronNoCutColl.at(iel).Eta() > 1.5) )isocut = 0.05;
-			    else   if(electronNoCutColl.at(iel).Pt()< 20.) isocut=0.07;
+                            if(fabs(electronNoCutColl.at(iel).Eta() > 1.5))isocut = 0.05;
+
                             if(LeptonRelIsoDR03 < isocut){
                               electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
                               if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
@@ -1292,7 +1292,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
     if(hcaliso > 0.2)  passNPFiso = false;
     float isocut= 0.09;
     if(fabs(electronNoCutColl.at(iel).Eta() > 1.5) )isocut = 0.05;
-    else  if(electronNoCutColl.at(iel).Pt()< 20.) isocut=0.07;
+
     if(LeptonRelIsoDR03 < isocut){
       electron_IsoCutColl.push_back(electronNoCutColl.at(iel));
       if(passNPFiso)       electron_NPFIsoCutColl.push_back(electronNoCutColl.at(iel));
@@ -2267,7 +2267,7 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
   if (reliso<0) reliso=0.0001;
   
 
-  if(( reliso >= 0.05)) return false;
+  if(( reliso >= 0.09)) return false;
   if(( muon.GlobalChi2() >= 10.)) return false;
  
   if(fabs(muon.dXY()) >= 0.005) return false; 

@@ -32,6 +32,9 @@ class HNDiElectron : public AnalyzerCore {
   bool MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
+  
+  void DoAnaysis(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KMuon> muon, bool run_cf, bool run_np, int nbjet, float w,  TString label);
+
 
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates=false);  

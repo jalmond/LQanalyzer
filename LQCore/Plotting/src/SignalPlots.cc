@@ -619,14 +619,8 @@ SignalPlots::~SignalPlots() {
 
 void SignalPlots::Fill(TString name, double value, double w, Double_t w_err){
   std::map<TString, TH1*>::iterator it = map_sig.find(name);
-  if(it!= map_sig.end()) {
-    int bin = it->second->FindBin(value);
-    float binerr = it->second->GetBinError(bin);
-    
-    it->second->Fill(value, w);
-    //binerr = sqrt(binerr*binerr + w_err*w_err);
-    //it->second->SetBinError(bin,binerr);
-  }
+  if(it!= map_sig.end())   it->second->Fill(value, w);
+
   else cout << name << " not found in map_sig" << endl;
   return;
 }

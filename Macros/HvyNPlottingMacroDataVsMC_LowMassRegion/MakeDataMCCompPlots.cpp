@@ -626,9 +626,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   if(sample.Contains("higgs")){
     //list.push_back(make_pair("HtoZZ",0.22));
-    //list.push_back(make_pair("HtoTauTau",0.22));
+    list.push_back(make_pair("HtoTauTau",0.22));
     list.push_back(make_pair("HtoWW",0.3));
-    //list.push_back(make_pair("ggHtoZZ",0.22));
+    list.push_back(make_pair("ggHtoZZ",0.22));
   }
   if(sample.Contains("vvv")){
     list.push_back(make_pair("WWW",0.4));
@@ -792,7 +792,8 @@ TH1* MakeStackUp(map<TString, TH1*> map_of_stacks, TString clonename){
     
     /// Now use 5%+ norm + stat error
     float errup2 =  nom_error*nom_error + 0.05*0.05*nom_content*nom_content;
-    
+    if(clonename.Contains("stat")) errup2 =  nom_error*nom_error;
+
     /// add rest of systs
 
     float new_bin = nom_content + sqrt(errup2);
@@ -857,7 +858,7 @@ void SetErrors(TH1* hist, float normerr, bool includestaterr ){
 
   for(int binx =1; binx < hist->GetNbinsX()+1; binx++){
     float newbinerr = hist->GetBinError(binx)*hist->GetBinError(binx) + hist->GetBinContent(binx)*hist->GetBinContent(binx)*normerr*normerr;
-    if(!includestaterr)  newbinerr =hist->GetBinContent(binx)*hist->GetBinContent(binx)*normerr*normerr;
+    if(!includestaterr)  newbinerr =hist->GetBinError(binx)*hist->GetBinError(binx) ;
     hist->SetBinError(binx, sqrt(newbinerr));
   }
   
@@ -1397,7 +1398,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   }
 
   ///// Fix cut flow code
-  caption="Number of events containing one prompt loose electron in 19 fb$^{-1}$ of CMS data at 8~TeV";
+  caption="Number of events containing two prompt electrons and two jets, with Z peak removed, in 19 fb$^{-1}$ of CMS data at 8~TeV";
   hist = "/h_Nelectrons";
   columnname="";
 

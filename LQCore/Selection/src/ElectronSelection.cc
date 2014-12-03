@@ -136,11 +136,11 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, bool apply_ipcu
       if(m_debug)  cout << "HNLooseElectronSelection:Fail ID Cut" <<endl; 
     }
     
-    if(!(fabs(el->SCEta()) < 2.4)){
+    if(!(fabs(el->SCEta()) < 2.5)){
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Eta Cut" <<endl;
     }
-    if((el->Pt() < 15.)){
+    if((el->Pt() < 10.)){
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Pt Cut" <<endl;
     }
@@ -224,12 +224,6 @@ bool ElectronSelection::HNIsTight(KElectron el,  double rho, double dxycut, doub
     }
   }
   
-  // remove el if ec and pt < 20
-  if(fabs(el.SCEta() )> 1.479){
-    if(el.Pt() < 20.) {
-      return false;
-    }
-  }
 
   ///List of cuts
   if(!ElectronID) {
@@ -259,11 +253,11 @@ bool ElectronSelection::HNIsTight(KElectron el,  double rho, double dxycut, doub
     if(m_debug) cout << "HNTightElectronSelection:Fail Charge Cons. Cut" <<endl;
   }
   
-  if(!(fabs(el.SCEta()) < 2.4)){
+  if(!(fabs(el.SCEta()) < 2.5)){
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
   }
-  if(!(el.Pt() > 15.)) {
+  if(!(el.Pt() > 10.)) {
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
   }

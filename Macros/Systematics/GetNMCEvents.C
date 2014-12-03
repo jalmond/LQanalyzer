@@ -70,7 +70,7 @@ void GetNMCEvents(){
 
     float staterr = sqrt( hnmc->GetBinError(1)*hnmc->GetBinError(1) +  hnnp->GetBinError(1)*hnnp->GetBinError(1) + hncf->GetBinError(1)*hncf->GetBinError(1));
 
-   TString sigpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
+    TString sigpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
     TFile * file_sig = new TFile(sigpath);
     TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_nentries").Data());
     

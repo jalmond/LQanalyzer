@@ -13,11 +13,11 @@
   gStyle->SetOptStat(1111);
 
   TChain * f_chain = new TChain("MyTree");
-  f_chain->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKnonprompt_dilep_5_3_14.root");
+  f_chain->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKnonprompt_dilep_5_3_14.root");
   f_chain->LoadTree(0) ;
   
   TChain * f_chainmc = new TChain("MyTree");
-  f_chainmc->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_mc_5_3_14.root");
+  f_chainmc->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_mc_5_3_14.root");
   f_chainmc->LoadTree(0) ;
   
 
@@ -28,8 +28,8 @@
   
   for(int im = 0 ; im < imasses ; im++){
     TChain * f_chainsig = new TChain("MyTree");
-    f_chainsig->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKHNee" + masses[im] + "_nocut_5_3_14.root");
-    TFile * file = new TFile("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKHNee" + masses[im] + "_nocut_5_3_14.root");
+    f_chainsig->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKHNee" + masses[im] + "_nocut_5_3_14.root");
+    TFile * file = new TFile("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKHNee" + masses[im] + "_nocut_5_3_14.root");
     cout << file << endl;
     float  k_met=0., k_eemass=0., k_eejjmass=0., k_e1jjmass=0., k_e2jjmass=0.,  k_st=0., k_ht;
     float k_weight=0.;
