@@ -241,6 +241,18 @@ void HNDiElectron_basic::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
   
+
+  vector<snu::KTruth> itruth =  eventbase->GetTruth();
+  
+  cout << "\n---------" << endl; 
+  for(unsigned int itr =0 ; itr < itruth.size(); itr++){
+    if(itruth.at(itr).IndexMother()  >= 0 ) cout << "pdgid = " << itruth.at(itr).PdgId() << " : status = " << itruth.at(itr).GenStatus() << " eta = " << itruth.at(itr).Eta() << " phi  = " << itruth.at(itr).Phi() << " : pdgid of mother = "  << itruth.at(itruth.at(itr).IndexMother()).PdgId() << " status of parent = " << itruth.at(itruth.at(itr).IndexMother()).GenStatus() << endl;
+    else cout << "pdgid = " << itruth.at(itr).PdgId() <<  " : status = " << itruth.at(itr).GenStatus() << " eta = " << itruth.at(itr).Eta() << " phi  = " << endl;
+  }
+  cout << "\n---------" << endl; 
+  return;
+
+
   k_met=0., k_eemass=0., k_eejjmass=0., k_e1jjmass=0., k_e2jjmass=0.,  k_st=0., k_njet=0, k_ht=0.;
   k_weight=0.;
   k_el1pt=0., k_el2pt=0., k_j1pt=0., k_jjmass=0.;
@@ -533,8 +545,6 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "Checking ID eff. "<< LQLogger::endmsg;
   
   //// CHECK EFFICIENCY OF CUTS
-  GetIDEfficiency(electronNoCutColl, jetColl_lepveto_mva);
-
   if(nbjet == 0 ){
     if(PassTrigger(triggerslist, prescale))
       MakeTriLeptonPlots(GetElectrons(true,true, "HNTight"), muonVetoColl, jetColl_lepveto_mva, "_mva",  weight);

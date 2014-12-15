@@ -22,8 +22,7 @@ bool CheckHist(TH2* h);
 void MakeFRRootFile(){
   
   TString path= "/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/";
-
-
+  
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_5_3_14.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
   if(!fdata)cout << "No Data" << endl;
@@ -47,14 +46,18 @@ void MakeFRRootFile(){
   //fakes40.push_back("40_0bjet_pt_eta");
   //fakes40.push_back("30_0bjet_pt_eta");
 
+  std::vector<TString> fakes;
+  fakes.push_back("HNTight_");
+  fakes.push_back("HNTight_relaxedip_");
 
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    cout << *it2 << endl;
+    for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
+      cout << *it2 << endl;
     if(!CheckFile(fdata))return;
     if(!CheckFile(fmc))return;
 
-    TString denom ="LooseEl" + *it2;
-    TString num ="TightEl" + *it2;
+    TString denom ="LooseEl" + *it + *it2;
+    TString num ="TightEl" + *it + *it2;
     TH2F* h_pt_num= (TH2F*)fdata->Get(num.Data());
     TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
 
@@ -72,9 +75,9 @@ void MakeFRRootFile(){
     //hratedenom->Add(h_mcpt_denom, -1.);
     eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
     eff_rate->Write();
+    }
   }
-
-
+  return;
   std::vector<TString> fakesopt;
   fakesopt.push_back("100_detiso");
   fakesopt.push_back("090_detiso");

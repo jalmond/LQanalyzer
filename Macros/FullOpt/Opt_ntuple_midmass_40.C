@@ -33,67 +33,36 @@ void Opt_ntuple_midmass_40(){
   f_chain->SetBranchAddress("met", &k_met);
   f_chain->SetBranchAddress("ee_mass", &k_eemass);
   f_chain->SetBranchAddress("eejj_mass", &k_eejjmass);
-  f_chain->SetBranchAddress("e1jj_mass", &k_e1jjmass);
   f_chain->SetBranchAddress("e2jj_mass", &k_e2jjmass);
   f_chain->SetBranchAddress("jj_mass", &k_jjmass);
-  f_chain->SetBranchAddress("st", &k_st);
-  f_chain->SetBranchAddress("ht", &k_ht);
   f_chain->SetBranchAddress("njet", &k_njet);
   f_chain->SetBranchAddress("nbjet_m", &k_nbjet_m);
-  f_chain->SetBranchAddress("el1_eta", &k_el1eta);
-  f_chain->SetBranchAddress("el2_eta", &k_el2eta);
   f_chain->SetBranchAddress("el1_pt", &k_el1pt);
   f_chain->SetBranchAddress("el2_pt", &k_el2pt);
   f_chain->SetBranchAddress("jet1_pt", &k_j1pt);
   f_chain->SetBranchAddress("weight", &k_weight);
-  f_chain->SetBranchAddress("el1_clbjet", &k_cl1bjet);
-  f_chain->SetBranchAddress("el2_clbjet", &k_cl2bjet);
-  f_chain->SetBranchAddress("el1_cllbjet", &k_cll1bjet);
-  f_chain->SetBranchAddress("el2_cllbjet", &k_cll2bjet);
-
-  
+    
 
   f_chainmc->SetBranchAddress("met", &k_met);
   f_chainmc->SetBranchAddress("ee_mass", &k_eemass);
   f_chainmc->SetBranchAddress("eejj_mass", &k_eejjmass);
-  f_chainmc->SetBranchAddress("e1jj_mass", &k_e1jjmass);
   f_chainmc->SetBranchAddress("e2jj_mass", &k_e2jjmass);
   f_chainmc->SetBranchAddress("jj_mass", &k_jjmass);
-  f_chainmc->SetBranchAddress("st", &k_st);
-  f_chainmc->SetBranchAddress("ht", &k_ht);
-  f_chainmc->SetBranchAddress("njet", &k_njet);
   f_chainmc->SetBranchAddress("el1_pt", &k_el1pt);
   f_chainmc->SetBranchAddress("el2_pt", &k_el2pt);
-  f_chainmc->SetBranchAddress("el1_eta", &k_el1eta);
-  f_chainmc->SetBranchAddress("el2_eta", &k_el2eta);
   f_chainmc->SetBranchAddress("jet1_pt", &k_j1pt);
   f_chainmc->SetBranchAddress("weight", &k_weight);
-  f_chainmc->SetBranchAddress("el1_clbjet", &k_cl1bjet);
-  f_chainmc->SetBranchAddress("el2_clbjet", &k_cl2bjet);
-  f_chainmc->SetBranchAddress("el1_cllbjet", &k_cll1bjet);
-  f_chainmc->SetBranchAddress("el2_cllbjet", &k_cll2bjet);
 
 
   f_chainsig->SetBranchAddress("met", &k_met);
   f_chainsig->SetBranchAddress("ee_mass", &k_eemass);
   f_chainsig->SetBranchAddress("eejj_mass", &k_eejjmass);
-  f_chainsig->SetBranchAddress("e1jj_mass", &k_e1jjmass);
   f_chainsig->SetBranchAddress("e2jj_mass", &k_e2jjmass);
   f_chainsig->SetBranchAddress("jj_mass", &k_jjmass);
-  f_chainsig->SetBranchAddress("st", &k_st);
-  f_chainsig->SetBranchAddress("ht", &k_ht);
-  f_chainsig->SetBranchAddress("njet", &k_njet);
   f_chainsig->SetBranchAddress("el1_pt", &k_el1pt);
   f_chainsig->SetBranchAddress("el2_pt", &k_el2pt);
-  f_chainsig->SetBranchAddress("el1_eta", &k_el1eta);
-  f_chainsig->SetBranchAddress("el2_eta", &k_el2eta);
   f_chainsig->SetBranchAddress("jet1_pt", &k_j1pt);
   f_chainsig->SetBranchAddress("weight", &k_weight);
-  f_chainsig->SetBranchAddress("el1_clbjet", &k_cl1bjet);
-  f_chainsig->SetBranchAddress("el2_clbjet", &k_cl2bjet);
-  f_chainsig->SetBranchAddress("el1_cllbjet", &k_cll1bjet);
-  f_chainsig->SetBranchAddress("el2_cllbjet", &k_cll2bjet);
-
 
 
   float sum_event =0.;
@@ -127,15 +96,12 @@ void Opt_ntuple_midmass_40(){
   std::vector<float> METcut;
   //  METcut.push_back(100000.);
   METcut.push_back(30.);
-  METcut.push_back(35.);
-  METcut.push_back(40.);
   
   int imet_opt=0;
   float imeejjmin_opt=0.;
   float imeejjmax_opt=0.;
   float ipt1_opt=0.;
   float ipt2_opt=0.;
-  float ipt3_opt=0.;
 
   float sig_eff_opt=0.;
   float sig_eff_opt_presel=0.;
@@ -145,16 +111,9 @@ void Opt_ntuple_midmass_40(){
   float ieemax_opt=0.;
   float ie2jjmin_opt=0.;
   float ie2jjmax_opt=0.;
-  float ie1jjmin_opt=0.;
-  float ie1jjmax_opt=0.;
-  float istmin_opt=0.;
-  float istmax_opt=0.;
-  float ihtmin_opt=0.;
-  float ihtmax_opt=0.;
+
   float ijetpt_opt=0.;
   int injet_opt=0.;
-  bool clbjet_opt=false;
-
 
   TH1* hnsig =   (TH1F*)file->Get(("eventcutflow"));
 
@@ -164,10 +123,10 @@ void Opt_ntuple_midmass_40(){
   for(unsigned int imet=0; imet < METcut.size(); imet++){
     float met_cut = METcut.at(imet);
     cout << "MET : "<< met_cut << endl;
-    for(int imeejjmin= 0; imeejjmin < 5. ; imeejjmin++){
+    for(int imeejjmin= 0; imeejjmin < 1. ; imeejjmin++){
       float meejjmin_cut = 80. + float(imeejjmin) * 5.;
       for(int imeejjmax= 0; imeejjmax <1. ; imeejjmax++){
-	float meejjmax_cut = 200.+ float(imeejjmax)*5.;
+	float meejjmax_cut = 1000.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	for(int ipt1= 0; ipt1 <1. ; ipt1++){
 	  float pt1_cut =  20. + float(ipt1)*5.;

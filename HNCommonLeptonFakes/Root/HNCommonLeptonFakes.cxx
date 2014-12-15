@@ -70,6 +70,9 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TFile* file_fake_data  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_dataoct.root").c_str());
   CheckFile(file_fake_data);
 
+  TFile* file_fake_dec  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_datanov.root").c_str());
+  CheckFile(file_fake_dec);
+
   TFile* file_fake_med  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMedium.root").c_str());
   CheckFile(file_fake_med);
 
@@ -349,6 +352,8 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   std::vector <TString> cut;
   cut.push_back("pt_eta");
+  cut.push_back("pt_eta_cb");
+  cut.push_back("pt_eta_nocb");
   cut.push_back("ht_eta");
   cut.push_back("bjet_pt_eta");
   cut.push_back("0bjet_pt_eta");
@@ -371,10 +376,10 @@ void HNCommonLeptonFakes::InitialiseFake(){
     for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
       for(unsigned int fk = 0; fk < cut.size() ; fk++){
 	if( region.at(fi).Contains("2")){
-	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_HNTight_relaxedip_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_dec->Get("FakeRate_HNTight_relaxedip_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
 	}
 	else{
-	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_HNTight_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_dec->Get("FakeRate_HNTight_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
 	  
 	}
       }
@@ -385,7 +390,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
   cut2.push_back("40_pt_eta");
   
   
-
   std::vector <TString> region2;
   region2.push_back("susy_pog");
   region2.push_back("medium_pog");
@@ -424,6 +428,9 @@ void HNCommonLeptonFakes::InitialiseFake(){
   
   file_fake_data->Close();
   delete file_fake_data;
+
+  file_fake_dec->Close();
+  delete file_fake_dec;
 
   file_fake_dxy->Close();
   delete file_fake_dxy;
@@ -503,7 +510,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
   //// vectors need to be ordered in pT
   if(_el1_pt < _el2_pt) return -100000000000.;
 
-
+  
   float _el1_eta=fabs(electrons.at(0).Eta());
   float _el2_eta=fabs(electrons.at(1).Eta());
 
@@ -962,8 +969,8 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   float _mu1_pt=muons.at(0).Pt();
 
 
-  float _el1_eta=electrons.at(0).Eta();
-  float _mu1_eta=muons.at(0).Eta();
+  float _el1_eta=fabs(electrons.at(0).Eta());
+  float _mu1_eta=fabs(muons.at(0).Eta());
 
   if(m_debug){
     cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
@@ -980,8 +987,9 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   r1 = 1.;
   r2 = 1.;
 
+
   fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
-  fr2= getFakeRate_electron(0,_el1_pt, _el1_eta);
+  fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
 
 
   float fr1_err = 0.;

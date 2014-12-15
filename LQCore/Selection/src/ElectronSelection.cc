@@ -140,7 +140,7 @@ void ElectronSelection::HNLooseElectronSelection( bool usetight, bool apply_ipcu
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Eta Cut" <<endl;
     }
-    if((el->Pt() < 10.)){
+    if((el->Pt() < 15.)){
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Pt Cut" <<endl;
     }
@@ -257,7 +257,7 @@ bool ElectronSelection::HNIsTight(KElectron el,  double rho, double dxycut, doub
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
   }
-  if(!(el.Pt() > 10.)) {
+  if(!(el.Pt() > 15.)) {
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
   }

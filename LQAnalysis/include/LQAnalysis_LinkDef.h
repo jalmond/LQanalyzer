@@ -23,5 +23,6 @@
 #pragma link C++ class HNLowMedHighMassOptimisation+;
 #pragma link C++ class HN_FakeStudies+;
 #pragma link C++ class ElectronSF+;
+#pragma link C++ class HNEMu+;
 
 #endif // __CINT__

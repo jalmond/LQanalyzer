@@ -102,6 +102,10 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_leadJetdPhi"]           =     new TH1F("h_leadJetdPhi_"         + name,"leading jet dPhi",50,-5,5);
   map_sig["h_ElectronMuondR"]      =     new TH1F("h_ElectronMuonR_"     + name,"leading jet dR",50,0,5);
   map_sig["h_dr_el_bjet"]      =     new TH1F("h_dr_el_bjet_"  + name, "", 50,0,5);
+
+  map_sig["h_MuonPt"]          =     new TH1F("h_MuonPt_"        + name,"leading muon pt",60,0,300);
+  map_sig["h_MuonEta"]          =     new TH1F("h_MuonEta_"        + name,"leading muon eta",50,-2.5,2.5);
+  
   //// Jet Plots
   map_sig["h_leadingJetPt"]        =     new TH1F("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
   map_sig["h_secondJetPt"]         =     new TH1F("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
@@ -297,6 +301,14 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(leadjetmass != 0.)Fill("h_leadjetmass", leadjetmass,weight, weight_err);
   
   if(debug)cout<< "Plotting [3] " << endl;  
+
+  if(electrons.size() == 1 && muons.size() == 1){
+    Fill("h_eemumass", ((electrons[0]+ muons[0]).M()), weight, weight_err);
+    Fill("h_eejjmumass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    Fill("h_MuonPt", muons[0].Pt(), weight, weight_err);
+    Fill("h_MuonEta", muons[0].Eta(), weight,weight_err);
+    
+  }
 
   int sum_charge(0);
   

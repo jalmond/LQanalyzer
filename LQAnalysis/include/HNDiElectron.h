@@ -22,7 +22,7 @@ class HNDiElectron : public AnalyzerCore {
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillCutFlow(TString cut, float w);
-  void FillEventCutFlow(TString cut, float w);
+  void FillEventCutFlow(TString cut, TString label, float w);
   void FillIsoCutFlow(TString cut, float w);
   void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  TString name);
   
@@ -33,7 +33,7 @@ class HNDiElectron : public AnalyzerCore {
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
   
-  void DoAnaysis(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KMuon> muon, bool run_cf, bool run_np, int nbjet, float w,  TString label);
+  void DoAnalysis(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KMuon> muon, std::vector<snu::KElectron> electronveto, bool run_cf, bool run_np, int nbjet, float w,  TString label, float pileupup, float pileupdown, TString reg);
 
 
 

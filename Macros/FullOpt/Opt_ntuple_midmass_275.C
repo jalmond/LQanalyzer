@@ -184,7 +184,7 @@ void Opt_ntuple_midmass_300(){
 			      for(int istmax =45 ; istmax < 46 ; istmax++){
 				float stmax_cut = 10000. + float(istmax) *10.;
 				
-				for(int ijpt =4 ; ijpt <5 ; ijpt++){
+				for(int ijpt = ; ijpt <1 ; ijpt++){
 				  float jetpt_cut = 20. + float(ijpt)*5.;
 				  
 				  for(int injet = 14 ; injet< 15 ; injet ++){

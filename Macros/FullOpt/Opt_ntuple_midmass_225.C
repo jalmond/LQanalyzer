@@ -209,7 +209,7 @@ void Opt_ntuple_midmass_225(){
 				float stmax_cut =1000. + float(istmax) *10.;
 				
 				for(int ijpt =0 ; ijpt <1 ; ijpt++){
-				  float jetpt_cut = 40. + float(ijpt)*5.;
+				  float jetpt_cut = 20. + float(ijpt)*5.;
 				  
 				  for(int injet = 10 ; injet< 11 ; injet ++){
 				    for(int iclj = 0 ; iclj< 1 ; iclj ++){

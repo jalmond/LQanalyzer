@@ -43,7 +43,10 @@ class AnalyzerCore : public LQCycleBase {
   void RunMCCLosureTest(TString label,  std::vector<snu::KJet> jets, TString cut,  float w);
   void MakeMCCloseplots(TString ajpt, TString label,  TString method, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool closejet, float w1 );
 
-  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets);
+
+  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
+
+  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets, TString label, float w);
   void PlotFakeLeptons( std::vector<snu::KJet> jets, float w);
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   float GetEEMass(std::vector<snu::KElectron> electrons);
@@ -58,6 +61,7 @@ class AnalyzerCore : public LQCycleBase {
   bool IsTight(snu::KElectron electron,  double rho);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
+  std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
   int NBJet(std::vector<snu::KJet> jets);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KElectron> electrons);
