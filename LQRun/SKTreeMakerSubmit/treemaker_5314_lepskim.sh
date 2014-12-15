@@ -71,7 +71,7 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
@@ -80,7 +80,7 @@ then
     #declare -a input_samples=("stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW"  "Wbb" "Zbb" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "WZ_py" "ZZ_py" "WW_py")
     declare -a input_samples=("WgammaTau" "WWW" "WWG" "HtoZZ" "HtoWW" "HtoTauTau" "QCD_350_EM" "QCD_350_BCtoE" "WW_dp" "Wgamma" "SSWmWm" "SSWpWp" "ttW" "ttZ" "Zgamma" "WgammaE" "WW_mg" "WZtollqq_mg"  "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg")
     
-    declare -a input_samples=("DY50plus")
+    declare -a input_samples=("topLJ" "topHAD")
 
     source submit.sh
 fi    
@@ -96,8 +96,8 @@ then
     logstep=1000
     
     stream="egamma"
-    declare -a input_samples=("B" "C" "D")
-     declare -a input_samples=("A")
+    declare -a input_samples=("A" "B" "C" "D")
+
     source submit.sh
 fi    
 

@@ -496,7 +496,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muonTightColl = GetMuons("tight");
 
   std::vector<snu::KElectron> electronVetoColl = GetElectrons(false, false, "veto");
-
+  
   std::vector<snu::KJet> jetColl_lepveto20 = GetJets("ApplyPileUpID");
   std::vector<snu::KJet> jetColl           = GetJets("NoLeptonVeto");
 

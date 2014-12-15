@@ -77,8 +77,7 @@ then
     logstep=1000
     
     stream="egamma"
-    declare -a input_samples=("A")
-    #"B" "C" "D")
+    declare -a input_samples=("A" "B" "C" "D")
     source submit.sh
 fi
 
