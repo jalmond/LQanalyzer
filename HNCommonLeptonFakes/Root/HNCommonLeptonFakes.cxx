@@ -60,13 +60,18 @@ void HNCommonLeptonFakes::InitialiseFake(){
   CheckFile(file_fake_Opt);
   TFile* file_fake  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate2807.root").c_str());
   CheckFile(file_fake);
-  TFile* file_mc_loosereg2  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMC_loosereg2.root").c_str());
-  CheckFile(file_mc_loosereg2);
-  TFile* file_mc_loosereg1  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMC_loosereg1.root").c_str());
-  CheckFile(file_mc_loosereg1);
 
+  TFile* file_mc  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_0110.root").c_str());
+  CheckFile(file_mc);
+  
   TFile* file_fake_Opt2  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate0309.root").c_str());
   CheckFile(file_fake_Opt2);
+
+  TFile* file_fake_data  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_dataoct.root").c_str());
+  CheckFile(file_fake_data);
+
+  TFile* file_fake_dec  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_datanov.root").c_str());
+  CheckFile(file_fake_dec);
 
   TFile* file_fake_med  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMedium.root").c_str());
   CheckFile(file_fake_med);
@@ -225,7 +230,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_noclose_ht1_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht1_20_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_noclose_ht2_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht2_20_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_noclose_ht3_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht3_20_pt_eta"))->Clone());
-  */
+  
 
   _2DEfficiencyMap["fake_eff_20" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_20_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_40" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_40_pt_eta"))->Clone());
@@ -243,50 +248,86 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_40_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_40_0bjet_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_60_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_60_0bjet_pt_eta"))->Clone());
   _2DEfficiencyMap["fake_eff_30_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_30_0bjet_pt_eta"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_mc_20_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_30_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_30_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_60_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_80_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_80_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40b_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_40_pt_eta_bjet"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60b_loosereg2"] = dynamic_cast<TH2F*>((file_mc_loosereg2->Get("MCEl_60_pt_eta_bjet"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_mc_20_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_30_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_30_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_60_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_80_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_80_pt_eta"))->Clone());
+  */
+  cout << "Pt/eta depenance " << endl;
+  /// pt vs eta 
   
-  _2DEfficiencyMap["fake_eff_mc_20_awaybjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_awaybjet_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_30_awaybjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_awaybjet_30_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_awaybjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_awaybjet_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_awaybjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_awaybjet_60_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_80_awaybjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_awaybjet_80_pt_eta"))->Clone());
+  std::vector<TString> jetcut;
+  jetcut.push_back("20");
+  jetcut.push_back("30");
+  jetcut.push_back("40");
+  jetcut.push_back("60");
+  for(unsigned int ij = 0 ; ij < jetcut.size() ; ij++){
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_pt_eta"))->Clone());
+    /// add bjet dep
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_pt_eta_nocb"))->Clone());
 
-  _2DEfficiencyMap["fake_eff_mc_20_closebjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_closebjet_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_30_closebjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_closebjet_30_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_closebjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_closebjet_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_closebjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_closebjet_60_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_80_closebjet_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_closebjet_80_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_pt_eta"))->Clone());
 
+    
+    cout << "Ht depenance and Pt " << endl;
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht1_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht2_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht3_pt_eta_nocb"))->Clone());
+    
+    cout << "Ht depenance and Pt: bjet " << endl;
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht1_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_ht1_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht2_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_ht2_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht3_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_ht3_pt_eta_nocb"))->Clone());
+    
+    cout << "Ht depenance and Pt: bjet " << endl;
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht1_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_ht1_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht2_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_ht2_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht3_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_ht3_pt_eta_nocb"))->Clone());
+    cout << "Ht depenance and Pt " << endl;
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht1_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht2_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht3_pt_eta_nocb"))->Clone());
 
-  _2DEfficiencyMap["fake_eff_mc_20_ht1_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_20_pt_eta_ht1"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_20_ht2_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_20_pt_eta_ht2"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_20_ht3_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_20_pt_eta_ht3"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_20_ht4_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_20_pt_eta_ht4"))->Clone());
+    cout << "Ht depenance and Pt: bjet " << endl;
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht1_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_ht1_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht2_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_ht2_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht3_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_ht3_pt_eta_nocb"))->Clone());
+
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht1_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_ht1_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht2_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_ht2_pt_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht3_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_ht3_pt_eta_nocb"))->Clone());
+
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht1_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht2_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht3_pt_eta"))->Clone());
+
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht1_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht2_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht3_pt_eta"))->Clone());
+    
+    
+    cout << "Ht depenance: close bjet " << endl;
+    
+    /// ht dependance
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_ht_eta_cb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_ht_eta_nocb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_ht_eta_cb"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_ht_eta_nocb"))->Clone());
+
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_ht_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_ht_eta"))->Clone());
+    cout << "Pt depenance: close bjet " << endl;
+    // pt dependance
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_pt_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_closebjet_"+ jetcut.at(ij)+"_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_pt_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_noclosebjet_"+ jetcut.at(ij)+"_pt_eta"))->Clone());
+
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_pt_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_closebjet_relaxed_ipcut"+ jetcut.at(ij)+"_pt_eta"))->Clone());
+    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_pt_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_noclosebjet_relaxed_ipcut"+ jetcut.at(ij)+"_pt_eta"))->Clone());
+  }  
   
-  _2DEfficiencyMap["fake_eff_mc_40_ht1_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_40_pt_eta_ht1"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_ht2_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_40_pt_eta_ht2"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_ht3_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_40_pt_eta_ht3"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_40_ht4_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_40_pt_eta_ht4"))->Clone());
-  
-  _2DEfficiencyMap["fake_eff_mc_60_ht1_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_60_pt_eta_ht1"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_ht2_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_60_pt_eta_ht2"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_ht3_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_60_pt_eta_ht3"))->Clone());
-  _2DEfficiencyMap["fake_eff_mc_60_ht4_loosereg1"] = dynamic_cast<TH2F*>((file_mc_loosereg1->Get("MCEl_60_pt_eta_ht4"))->Clone());
-
-
   _2DEfficiencyMap["fake_eff_muon"] = dynamic_cast<TH2F*>((file_muon->Get("h_FOrate3"))->Clone());
  
   _2DEfficiencyMap["fake_eff_100_100_detiso"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_100_detiso"))->Clone());
@@ -295,10 +336,74 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_eff_100_100"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b100_e100"))->Clone());
   _2DEfficiencyMap["fake_eff_090_090"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b090_e090"))->Clone());
   _2DEfficiencyMap["fake_eff_090_050"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b090_e050"))->Clone());
-
   
   _2DEfficiencyMap["fake_eff_medium"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_medium"))->Clone());
   _2DEfficiencyMap["fake_eff_tight"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_tight"))->Clone());
+
+  std::vector <TString> datajetcut;
+  datajetcut.push_back("20");
+  datajetcut.push_back("30");
+  datajetcut.push_back("40");
+  datajetcut.push_back("60");
+
+  std::vector <TString> region;
+  region.push_back("looseregion1");
+  region.push_back("looseregion2");
+
+  std::vector <TString> cut;
+  cut.push_back("pt_eta");
+  cut.push_back("pt_eta_cb");
+  cut.push_back("pt_eta_nocb");
+  cut.push_back("ht_eta");
+  cut.push_back("bjet_pt_eta");
+  cut.push_back("0bjet_pt_eta");
+  cut.push_back("ht_eta_cb");
+  cut.push_back("pt_eta_cb");
+  cut.push_back("ht_eta_nocb");
+  cut.push_back("pt_eta_nocb");
+  cut.push_back("pt_eta_ht1_nocb");
+  cut.push_back("pt_eta_ht3_nocb");
+  cut.push_back("pt_eta_ht1");
+  cut.push_back("pt_eta_ht3");
+  cut.push_back("bjet_pt_eta_ht1_nocb");
+  cut.push_back("bjet_pt_eta_ht3_nocb");
+  cut.push_back("0bjet_pt_eta_ht1_nocb");
+  cut.push_back("0bjet_pt_eta_ht3_nocb");
+  cut.push_back("bjet_pt_eta_nocb");
+  cut.push_back("0bjet_pt_eta_nocb");
+  
+  for(unsigned int fi = 0; fi < region.size() ; fi++){
+    for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
+      for(unsigned int fk = 0; fk < cut.size() ; fk++){
+	if( region.at(fi).Contains("2")){
+	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_dec->Get("FakeRate_HNTight_relaxedip_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	}
+	else{
+	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_dec->Get("FakeRate_HNTight_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	  
+	}
+      }
+    }
+  }
+  
+  std::vector <TString> cut2;
+  cut2.push_back("40_pt_eta");
+  
+  
+  std::vector <TString> region2;
+  region2.push_back("susy_pog");
+  region2.push_back("medium_pog");
+  region2.push_back("tight_pog");
+  region2.push_back("HNTight_iso05");
+  region2.push_back("HNTight_iso07");
+  region2.push_back("electronTightColl_dr03_b10_e10");
+  region2.push_back("electronTightColl_dr03_b09_e09");
+  region2.push_back("electronTightColl_dr03_b09_e05");
+  for(unsigned int fi = 0; fi < region2.size() ; fi++){
+    for(unsigned int fk = 0; fk < cut2.size() ; fk++){
+      _2DEfficiencyMap["fake_eff_" + region2.at(fi) + "_" + cut2.at(fk)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_" + region2.at(fi) + "_" + cut2.at(fk)))->Clone());
+    }
+  }
 
 
   cout << "HNCommonLeptonFakes : Initializing" << endl;
@@ -321,16 +426,19 @@ void HNCommonLeptonFakes::InitialiseFake(){
   file_fake_Opt->Close();
   delete file_fake_Opt;
   
+  file_fake_data->Close();
+  delete file_fake_data;
+
+  file_fake_dec->Close();
+  delete file_fake_dec;
+
   file_fake_dxy->Close();
   delete file_fake_dxy;
   file_fake->Close();
   delete file_fake;
   
-  file_mc_loosereg2->Close();
-  delete file_mc_loosereg2;
-  
-  file_mc_loosereg1->Close();
-  delete file_mc_loosereg1;
+  file_mc->Close();
+  delete file_mc;
 
   file_fake_med->Close();
   delete file_fake_med;
@@ -383,19 +491,26 @@ void HNCommonLeptonFakes::ApplyRealSystematic(int type ){
 
 
 float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons,  bool isel1tight, bool isel2tight, TString cut, int eventtype){
+  return get_dilepton_ee_eventweight( electrons, 0., isel1tight, isel2tight, cut, eventtype);
+}
+    
 
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, float ht,  bool isel1tight, bool isel2tight, TString cut, int eventtype){
+  
   if(electrons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
     return (0.);
   }
 
+  if(ht < 40.) ht = 40.;
+  if(ht > 300.) ht = 250.;
   float _el1_pt=electrons.at(0).Pt();
   float _el2_pt=electrons.at(1).Pt();
 
   //// vectors need to be ordered in pT
   if(_el1_pt < _el2_pt) return -100000000000.;
 
-
+  
   float _el1_eta=fabs(electrons.at(0).Eta());
   float _el2_eta=fabs(electrons.at(1).Eta());
 
@@ -405,66 +520,374 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
     cout << "el2 pT = " << _el2_pt << endl;
   }
 
-  if(_el1_pt > 100.) _el1_pt = 99.;
-  if(_el2_pt > 100.) _el2_pt = 99.;
-
+  if(cut.Contains("mc")){
+    if(_el1_pt > 60.) _el1_pt = 59.;
+    if(_el2_pt > 60.) _el2_pt = 59.;
+  }
+  else{
+    if(_el1_pt > 100.) _el1_pt = 99.;
+    if(_el2_pt > 100.) _el2_pt = 99.;
+  }
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
   
   r1=1.;
   r2=1.;
+  
 
   TString fcut = cut;
   TString cut1 = fcut;
   TString cut2 = fcut;
-  
-  if(true){
-    if(fcut.Contains("mc_20_") && fcut.Contains("ht1")) fcut = "mc_20_ht1_loosereg1";
-    if(fcut.Contains("mc_20_") && fcut.Contains("ht2")) fcut = "mc_20_ht2_loosereg1";
-    if(fcut.Contains("mc_20_") && fcut.Contains("ht3")) fcut = "mc_20_ht3_loosereg1";
-    if(fcut.Contains("mc_20_") && fcut.Contains("ht4")) fcut = "mc_20_ht4_loosereg1";
-    if(fcut.Contains("mc_40_") && fcut.Contains("ht1")) fcut = "mc_40_ht1_loosereg1";
-    if(fcut.Contains("mc_40_") && fcut.Contains("ht2")) fcut = "mc_40_ht2_loosereg1";
-    if(fcut.Contains("mc_40_") && fcut.Contains("ht3")) fcut = "mc_40_ht3_loosereg1";
-    if(fcut.Contains("mc_40_") && fcut.Contains("ht4")) fcut = "mc_40_ht4_loosereg1";
-    if(fcut.Contains("mc_60_") && fcut.Contains("ht1")) fcut = "mc_60_ht1_loosereg1";
-    if(fcut.Contains("mc_60_") && fcut.Contains("ht2")) fcut = "mc_60_ht2_loosereg1";
-    if(fcut.Contains("mc_60_") && fcut.Contains("ht3")) fcut = "mc_60_ht3_loosereg1";
-    if(fcut.Contains("mc_60_") && fcut.Contains("ht4")) fcut = "mc_60_ht4_loosereg1";
-
-    cut1 = fcut;
-    cut2 = fcut;
-
-    if(cut.Contains("cl1_") && cut.Contains("mc_20_")) cut1 = "mc_20_closebjet_loosereg1";
-    if(cut.Contains("cl1_") && cut.Contains("mc_30_")) cut1 = "mc_30_closebjet_loosereg1";
-    if(cut.Contains("cl1_") && cut.Contains("mc_40_")) cut1 = "mc_40_closebjet_loosereg1";
-    if(cut.Contains("cl1_") && cut.Contains("mc_60_")) cut1 = "mc_60_closebjet_loosereg1";
-    if(cut.Contains("cl1_") && cut.Contains("mc_80_")) cut1 = "mc_80_closebjet_loosereg1";
-    if(cut.Contains("aw1_") && cut.Contains("mc_20_")) cut1 = "mc_20_awaybjet_loosereg1";
-    if(cut.Contains("aw1_") && cut.Contains("mc_30_")) cut1 = "mc_30_awaybjet_loosereg1";
-    if(cut.Contains("aw1_") && cut.Contains("mc_40_")) cut1 = "mc_40_awaybjet_loosereg1";
-    if(cut.Contains("aw1_") && cut.Contains("mc_60_")) cut1 = "mc_60_awaybjet_loosereg1";
-    if(cut.Contains("aw1_") && cut.Contains("mc_80_")) cut1 = "mc_80_awaybjet_loosereg1";
+  if(cut.Contains("mc")){
+    if(fcut.Contains("mc") && fcut.Contains("_ht_") ){
+      _el1_pt = ht;
+      _el2_pt = ht;
+    }
     
-    if(cut.Contains("cl2_") && cut.Contains("mc_20_")) cut2 = "mc_20_closebjet_loosereg1";
-    if(cut.Contains("cl2_") && cut.Contains("mc_30_")) cut2 = "mc_30_closebjet_loosereg1";
-    if(cut.Contains("cl2_") && cut.Contains("mc_40_")) cut2 = "mc_40_closebjet_loosereg1";
-    if(cut.Contains("cl2_") && cut.Contains("mc_60_")) cut2 = "mc_60_closebjet_loosereg1";
-    if(cut.Contains("cl2_") && cut.Contains("mc_80_")) cut2 = "mc_80_closebjet_loosereg1";
-    if(cut.Contains("aw2_") && cut.Contains("mc_20_")) cut2 = "mc_20_awaybjet_loosereg1";
-    if(cut.Contains("aw2_") && cut.Contains("mc_30_")) cut2 = "mc_30_awaybjet_loosereg1";
-    if(cut.Contains("aw2_") && cut.Contains("mc_40_")) cut2 = "mc_40_awaybjet_loosereg1";
-    if(cut.Contains("aw2_") && cut.Contains("mc_60_")) cut2 = "mc_60_awaybjet_loosereg1";
-    if(cut.Contains("aw2_") && cut.Contains("mc_80_")) cut2 = "mc_80_awaybjet_loosereg1";
+    if(fcut.Contains("mc") && fcut.Contains("HT") ){
+      TString jetcut="";
+      if (fcut.Contains("20")) jetcut = "20";
+      if (fcut.Contains("30")) jetcut = "30";
+      if (fcut.Contains("40")) jetcut = "40";
+      if (fcut.Contains("60")) jetcut = "60";
+      _el1_pt = ht;
+      _el2_pt = ht;
+      TString region="";
+      if (fcut.Contains("loosereg1")) region = "loosereg1";
+      else region = "loosereg2";
+      
+      if(cut1.Contains("cl1")) cut1 = "mc_" + jetcut +"_cb_" + region;
+      else cut1 = "mc_" + jetcut+  "_nocb_" + region;
+      if(cut2.Contains("cl2")) cut2 = "mc_" + jetcut +"_cb_" + region;
+      else cut2 = "mc_" + jetcut+  "_nocb_" + region;
+    }
+    if(fcut.Contains("mc") && fcut.Contains("PT") ){
+      TString jetcut="";
+      if (fcut.Contains("20")) jetcut = "20";
+      if (fcut.Contains("30")) jetcut = "30";
+      if (fcut.Contains("40")) jetcut = "40";
+      if (fcut.Contains("60")) jetcut = "60";
+      TString region="";
+      if (fcut.Contains("loosereg1")) region = "loosereg1";
+      else region = "loosereg2";
+      
+      if(cut1.Contains("cl1")){
+	cut1 = "mc_" + jetcut +"_cb_" + region;
+	_el1_pt = ht;
+      }
+      else cut1 = "mc_" + jetcut+  "_nocb_pt_" + region;
+      if(cut2.Contains("cl2")) {
+	cut2 = "mc_" + jetcut +"_cb_" + region;
+	_el2_pt = ht;
+      }
+      else cut2 = "mc_" + jetcut+  "_nocb_pt_" + region;
+    }
+    
+    if(fcut.Contains("mc") && fcut.Contains("BT") ){
+      TString jetcut="";
+      if (fcut.Contains("20")) jetcut = "20";
+      if (fcut.Contains("30")) jetcut = "30";
+      if (fcut.Contains("40")) jetcut = "40";
+      if (fcut.Contains("60")) jetcut = "60";
+      TString region="";
+      if (fcut.Contains("loosereg1")) region = "loosereg1";
+      else region = "loosereg2";
+      
+      if(cut1.Contains("cl1")){
+	cut1 = "mc_" + jetcut +"_cb_" + region;
+	_el1_pt = ht;
+      }
+      else {
+	if(cut1.Contains("nob")) cut1 = "mc_" + jetcut+  "nob_nocb_" + region;
+	else cut1 = "mc_" + jetcut+  "b_nocb_" + region;
+      }
+      if(cut2.Contains("cl2")) {
+	cut2 = "mc_" + jetcut +"_cb_" + region;
+	_el2_pt = ht;
+      }
+      else{
+	if(cut2.Contains("nob")) cut2 = "mc_" + jetcut+  "nob_nocb_" + region;
+	else cut2 = "mc_" + jetcut+  "b_nocb_" + region;
+      }  
+    }
+    
+    
+    if(fcut.Contains("mc") && fcut.Contains("ST") ){
+      TString jetcut="";
+      if (fcut.Contains("20")) jetcut = "20";
+      if (fcut.Contains("30")) jetcut = "30";
+      if (fcut.Contains("40")) jetcut = "40";
+      if (fcut.Contains("60")) jetcut = "60";
+      TString region="";
+      if (fcut.Contains("loosereg1")) region = "loosereg1";
+      else region = "loosereg2";
+      
+      if(cut1.Contains("cl1")) {
+	cut1 = "mc_" + jetcut +"_cb_" + region;
+	_el1_pt = ht;
+      }
+      else {
+	
+	TString bjet = "";
+	if(cut1.Contains("0bjet" )) bjet = "_0bjet"; 
+	else if(cut1.Contains("bjet" )) bjet = "_bjet"; 
+	if(ht < 100.) cut1 = "mc_" + jetcut+ bjet + "_ht1_nocb_" + region;
+	else  cut1 = "mc_" + jetcut+  bjet + "_ht3_nocb_" + region;
+	
+      }
+      if(cut2.Contains("cl2")){
+	cut2 = "mc_" + jetcut +"_cb_" + region;
+	_el2_pt = ht;
+      }
+      else {
+	TString bjet = "";
+	if(cut2.Contains("0bjet" )) bjet = "_0bjet";
+	else if(cut2.Contains("bjet" )) bjet = "_bjet";
+	if(ht < 100.) cut2 = "mc_" + jetcut+ bjet + "_ht1_nocb_" + region;
+	else  cut2 = "mc_" + jetcut+  bjet + "_ht3_nocb_" + region;
+	
+      }
+    }
   }
+  
+  else{
+    /// DATA FAKE RATES
 
+    if(fcut.Contains("method1")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+      
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+
+      cut1  = "pt_eta_" + JetPt + "_" + reg;
+      cut2  = "pt_eta_" + JetPt + "_" + reg;
+    }
+    else     if(fcut.Contains("method2")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+      
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+      
+
+      _el1_pt = ht;
+      _el2_pt = ht;
+      cut1  = "ht_eta_"+ JetPt+ "_" +reg;
+      cut2  = "ht_eta_"+ JetPt+ "_" +reg;
+    }
+    else     if(fcut.Contains("method3")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+
+      TString bjet = "bjet";
+      if(fcut.Contains("0bjet")) bjet = "0bjet";
+      else{
+	if(_el1_eta > 1.5 && _el1_pt < 20.) _el1_pt = 21.; 
+	if(_el1_eta > 1.5 && _el1_pt > 60.) _el1_pt = 51.;
+	if(_el2_eta > 1.5 && _el2_pt < 20.) _el2_pt = 21.;
+	if(_el2_eta > 1.5 && _el2_pt > 60.) _el2_pt = 51.;
+
+      }
+      
+      
+      cut1  = bjet+ "_pt_eta_"+ JetPt+ "_" +reg;
+      cut2  = bjet+ "_pt_eta_"+ JetPt+ "_" +reg;
+    }
+    
+    else     if(fcut.Contains("method4")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+
+      if(fcut.Contains("cl1")) {
+	cut1  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut1  = "pt_eta_nocb_"+ JetPt+ "_" +reg;
+      
+      if(fcut.Contains("cl2")) {
+	cut2  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut2  = "pt_eta_nocb_"+ JetPt+ "_" +reg;
+    }
+    else     if(fcut.Contains("method5")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+      _el1_pt = ht;
+      _el2_pt = ht;
+
+      if(fcut.Contains("cl1")) {
+	cut1  = "ht_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut1  = "ht_eta_nocb_"+ JetPt+ "_" +reg;
+      
+      if(fcut.Contains("cl2")) {
+        cut2  = "ht_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut2  = "ht_eta_nocb_"+ JetPt+ "_" +reg;
+    }
+    else     if(fcut.Contains("method6")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString bjet = "bjet";
+      if(fcut.Contains("0bjet")) bjet = "0bjet";
+      else{
+	if(_el1_eta > 1.5 && _el1_pt < 20.) _el1_pt = 21.;
+        if(_el1_eta > 1.5 && _el1_pt > 60.) _el1_pt = 51.;
+        if(_el2_eta > 1.5 && _el2_pt < 20.) _el2_pt = 21.;
+        if(_el2_eta > 1.5 && _el2_pt > 60.) _el2_pt = 51.;
+      }
+      
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+      if(fcut.Contains("cl1")) {
+        cut1  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else {
+	cut1  = bjet+ "_pt_eta_nocb_"+ JetPt+ "_" +reg;
+      }
+      if(fcut.Contains("cl2")) {
+        cut2  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut2  = bjet + "_pt_eta_nocb_"+ JetPt+ "_" +reg;
+    }
+    
+    else     if(fcut.Contains("method7")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString htbin = "ht1";
+      if( ht > 150) htbin = "ht3";
+      
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+
+      if(_el1_pt > 45. && _el1_pt > 60 && ht > 100.) _el1_pt = 44.;
+      if(_el2_pt > 45. && _el2_pt > 60 && ht > 100.) _el2_pt = 44.;
+      if(fcut.Contains("cl1")) {
+        cut1  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else {
+        cut1  = "pt_eta_" + htbin + "_nocb_"+ JetPt+ "_" +reg;
+      }
+      if(fcut.Contains("cl2")) {
+        cut2  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut2  =  "pt_eta_" + htbin + "_nocb_"+ JetPt+ "_" +reg;
+    }
+    else     if(fcut.Contains("method8")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString htbin = "ht1";
+      if( ht > 150) htbin = "ht3";
+
+      TString bjet = "bjet";
+      if(fcut.Contains("0bjet")) bjet = "0bjet";
+
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+      if(fcut.Contains("cl1")) {
+        cut1  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else {
+        cut1  = bjet + "_pt_eta_" + htbin + "_nocb_"+ JetPt+ "_" +reg;
+      }
+      if(fcut.Contains("cl2")) {
+        cut2  = "pt_eta_cb_"+ JetPt+ "_" +reg;
+      }
+      else cut2  = bjet + "_pt_eta_" + htbin + "_nocb_"+ JetPt+ "_" +reg;
+    }
+    else     if(fcut.Contains("method9")){
+      TString reg = "";
+      if(fcut.Contains("looseregion1")) reg = "looseregion1";
+      else reg = "looseregion2";
+
+      TString htbin = "ht1";
+      if( ht > 150) htbin = "ht3";
+
+      TString JetPt = "";
+      if(fcut.Contains("20")) JetPt = "20";
+      if(fcut.Contains("30")) JetPt = "30";
+      if(fcut.Contains("40")) JetPt = "40";
+      if(fcut.Contains("60")) JetPt = "60";
+      
+      cut1  = "pt_eta_" + htbin + "_" +JetPt+ "_" +reg;
+      cut2  = "pt_eta_" + htbin + "_"+ JetPt+ "_" +reg;
+    }
+  }
   fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut1);
   fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut2);
   
-  // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight, eventtype);
+  float fr1_err=  getFakeRate_electronEta(1,_el1_pt, _el1_eta,cut1);
+  float fr2_err=  getFakeRate_electronEta(1,_el2_pt, _el2_eta,cut2);
 
-  if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
-  if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
+  //if(!isel1tight) cout << "fr1 = " << fr1 << " " << cut1<< " " << _el1_pt << " " << _el1_eta << endl;
+  //if(!isel2tight) cout << "fr2 = " << fr2 << " " <<  cut2 << " " << _el2_pt << " " << _el2_eta << endl;
+  
+  /*
+  if(!fcut.Contains("0bjet" )) {
+    if(fcut.Contains("bjet" )){
+      if(fabs(_el1_eta) > 1.5) fr1 = 0.04;
+      if(fabs(_el2_eta) > 1.5) fr2 = 0.04;
+    }
+  }
+  */
+  if(fr1 == 0.)  fr1 = 0.05;
+  if(fr2 == 0.)  fr2 = 0.05;
+  
+  if(_el1_pt < 20.){
+    if(fabs(_el1_eta) > 1.5){
+      if(cut1.Contains("fake_eff_mc_60_bjet_ht3_loosereg1")) cout << "mod: fake_eff_mc_60_bjet_ht3_loosereg1 : fr = " << fr1 << endl;
+    }
+  }
+
+
+  // Calculate event weight
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, isel2tight, eventtype);
+
+  //if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
+  //if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
 
   if(ev_weight!=ev_weight){
     cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
@@ -472,9 +895,9 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
   
   return ev_weight;
-}
+  }
 
-
+  
 float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut, int eventtype, bool user1){
 
   if(electrons.size()!=2) {
@@ -514,8 +937,11 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
   fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
   fr2= getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);
 
+  float fr1_err=  getFakeRate_electronEta(1,_el1_pt, _el1_eta,cut);
+  float fr2_err=  getFakeRate_electronEta(1,_el2_pt, _el2_eta,cut);
+
   // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, isel2tight, eventtype);
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, isel2tight, eventtype);
 
   if(fr1 <=0.) cout << cut << "  eta = " << _el1_eta << " pt = " << _el1_pt << endl;
   if(fr2 <=0.) cout << cut << "  eta = " << _el2_eta << " pt = " << _el2_pt << endl;
@@ -543,8 +969,8 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   float _mu1_pt=muons.at(0).Pt();
 
 
-  float _el1_eta=electrons.at(0).Eta();
-  float _mu1_eta=muons.at(0).Eta();
+  float _el1_eta=fabs(electrons.at(0).Eta());
+  float _mu1_eta=fabs(muons.at(0).Eta());
 
   if(m_debug){
     cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
@@ -561,12 +987,15 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   r1 = 1.;
   r2 = 1.;
 
+
   fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
-  fr2= getFakeRate_electron(0,_el1_pt, _el1_eta);
+  fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
 
 
+  float fr1_err = 0.;
+  float fr2_err = 0.;
   // Calculate event weight
-  float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isel1tight, ismu1tight);
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, ismu1tight);
 
   if(ev_weight!=ev_weight){
     cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
@@ -695,29 +1124,23 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
   float eff_fake(0.);
 
   if(fabs(eta) > 2.5) return -999999.;
-  if(pt < 10) return -999999.;
+  if(pt < 15) return -999999.;
 
   map<TString,TH2F*>::const_iterator mapit;
 
   TString hist = "fake_eff_";
   hist += cut;
+  
+  mapit = _2DEfficiencyMap.find(hist.Data());
+  if(mapit!=_2DEfficiencyMap.end()){
 
-  if(hist.Contains("mc")){
-    if(pt > 50) pt = 45.;
+    int binx =  mapit->second->FindBin(pt,eta);
+    eff_fake =  mapit->second->GetBinContent(binx);
+    if(sys != 0) return mapit->second->GetBinError(binx); 
   }
-
-  if(hist.Contains("_bjet")) eff_fake=0.15;
-  else{
-    mapit = _2DEfficiencyMap.find(hist.Data());
-    
-    if(mapit!=_2DEfficiencyMap.end()){
-      int binx =  mapit->second->FindBin(pt,eta);
-      eff_fake =  mapit->second->GetBinContent(binx);
-    }
-    else NoHist((hist.Data()));
-    
-    if(eff_fake <0.) eff_fake=0.1;
-  }
+  else NoHist((hist.Data()));
+  
+  
   return eff_fake;
 }
 
@@ -880,23 +1303,23 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
  
   
   // Function calculates event weight given r/f of two muons in the event
-  double alpha = 1./((r1- fr1)*(r2- fr2));
+  double alpha = 1./((1.- fr1)*(1.- fr2));
 
   // Initialise weight
   float w_mm=-999.;
     
   // Terms for RF and FR events from MM
-  double termTT = alpha*(r1*fr2*(fr1-1.)*(1.-r2) + (fr1*r2*(r1-1.)*(1.-fr2)));
-  double termTL = alpha*(r1*fr2*((1-fr1)*r2) + (fr1*r2*(1.-r1)*fr2));
-  double termLT = alpha*(r1*fr2*(fr1*(1.-r2))+ (fr1*r2*(1.-fr2)*r1));
-  double termLL = -2.*alpha*(r1*fr2*(fr1*r2));
+  double termTT = 0.;
+  double termTL = alpha*(fr2*(1.-fr1));
+  double termLT = alpha*(fr1*(1.-fr2));
+  double termLL = -2.*alpha*(fr2*(fr1));
   
   
   // Term for FF events
-  termTT += alpha*fr1*fr2*((1.-r1)*(1.-r2));
-  termTL += alpha*fr1*fr2*r2*(r1-1.);
-  termLT += alpha*fr1*fr2*r1*(r2-1.);
-  termLL += alpha*r1*r2*(fr1*fr2);
+  termTT += 0.;
+  termTL += 0.;
+  termLT += 0.;
+  termLL += alpha*(fr1*fr2);
 
   
   // decide which type of event we have so to return correct weight
@@ -911,54 +1334,41 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
   if(isTT)w_mm=  termTT;  
 
 
+
   return w_mm;   
 }
 
 
-float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
+float HNCommonLeptonFakes::CalculateDiLepMMWeight(float fr1_err, float fr1, float fr2_err, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
 
 
   // Function calculates event weight given r/f of two muons in the event
-  double alpha = 1./((r1- fr1)*(r2- fr2));
-
+  double alpha = 1./((1.- fr1)*(1.- fr2));
+  
   // Initialise weight
   float w_mm=-999.;
 
+
   // Terms for RF and FR events from MM
-  double termTT_sf = alpha*(r1*fr2*(fr1-1.)*(1.-r2) + (fr1*r2*(r1-1.)*(1.-fr2)));
-  double termTL_sf = alpha*(r1*fr2*((1-fr1)*r2) + (fr1*r2*(1.-r1)*fr2));
-  double termLT_sf = alpha*(r1*fr2*(fr1*(1.-r2))+ (fr1*r2*(1.-fr2)*r1));
-  double termLL_sf = -2.*alpha*(r1*fr2*(fr1*r2));
+  double termTT = 0.;
+  double termTL = alpha*(fr2*(1.-fr1));
+  double termLT = alpha*(fr1*(1.-fr2));
+  double termLL = -2.*alpha*(fr2*(fr1));
 
-  
-  // Term for FF events
-  double termTT_df = alpha*fr1*fr2*((1.-r1)*(1.-r2));
-  double termTL_df = alpha*fr1*fr2*r2*(r1-1.);
-  double termLT_df = alpha*fr1*fr2*r1*(r2-1.);
-  double termLL_df = alpha*r1*r2*(fr1*fr2);
+  if(eventtype == 0 || eventtype == 2){
+    // Term for FF events
+    termTT += 0.;
+    termTL += 0.;
+    termLT += 0.;
+    termLL += alpha*(fr1*fr2);
+  }
 
-  double termTT(0.);
-  double termTL(0.);
-  double termLT(0.);
-  double termLL(0.);
-  
-  if(eventtype==0) {
-    termTT = termTT_sf+ termTT_df;
-    termTL = termTL_sf + termTL_df;
-    termLT = termLT_sf + termLT_df;
-    termLL = termLL_sf + termLL_df;    
-  }
-  else   if(eventtype==1) {
-    termTT = termTT_sf;
-    termTL = termTL_sf;
-    termLT = termLT_sf;
-    termLL = termLL_sf;
-  }
-  else if(eventtype==2) {
-    termTT = termTT_df;
-    termTL = termTL_df;
-    termLT = termLT_df;
-    termLL = termLL_df;
+  if(eventtype == 2){
+    // Term for FF events
+    termTT = 0.;
+    termTL = 0.;
+    termLT = 0.;
+    termLL = alpha*(fr1*fr2);
   }
 
   // decide which type of event we have so to return correct weight
@@ -967,6 +1377,22 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
   bool isTL = (mu1Tight && !mu2Tight);
   bool isTT = (mu1Tight && mu2Tight);
 
+  
+  if(eventtype == 3) {
+    // error onfake
+    float error = 0.;
+    if(isLL) {
+      error = sqrt( pow(fr1_err*fr2*(1-fr2),2) + pow(fr2_err*fr1*(1-fr1),2) ) / pow((1-fr1)*(1-fr2),2);
+    }
+    if(isLT){
+      error= fr1_err/pow(fr1-1,2);
+    }
+    if(isTL){
+      error= fr2_err/pow(fr2-1,2);
+    }
+    return error;
+  }
+    
   if(isLL)w_mm = termLL;
   if(isTL)w_mm = termTL;
   if(isLT)w_mm = termLT;

@@ -12,6 +12,7 @@
 #pragma link C++ class ExampleAnalyzerDiElectron+;
 #pragma link C++ class ExampleAnalyzerElectronMuon+;
 #pragma link C++ class HNDiElectron+;
+#pragma link C++ class HNDiElectron_basic+;
 #pragma link C++ class FakeRateCalculator_El+;
 #pragma link C++ class FakeRateCalculator_El_region2+;
 #pragma link C++ class SKTreeMaker+;
@@ -21,5 +22,7 @@
 #pragma link C++ class HNElectronOptimisation+;
 #pragma link C++ class HNLowMedHighMassOptimisation+;
 #pragma link C++ class HN_FakeStudies+;
+#pragma link C++ class ElectronSF+;
+#pragma link C++ class HNEMu+;
 
 #endif // __CINT__

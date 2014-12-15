@@ -1,0 +1,356 @@
+#include "Macro.h"
+#include "CMS_lumi.h"
+#include "TGraphAsymmErrors.h"
+
+
+TH1F* makeHist(TString m, TString hist, int col, int style);
+TH1F* makeRefHist(TString m);
+TH1F* makehist(TString hist);
+void MakeCutEffHist(TCanvas* c, TString hist, TH1F* thist, TH1F* thist_presel);
+
+
+void MakeNsignalEffLowMass(){
+  
+  setTDRStyle();
+  gStyle->SetPalette(1);
+
+  TH1F* tight_anala = makehist("PreSelection");
+  TH1F* tight_analb = makehist("PreSelection_noZ");
+  TH1F* tight_analc = makehist("PreSelection_pt15");
+  TH1F* tight_anal1 = makehist("PreSelection_trig");
+  TH1F* tight_anal2 = makehist("PreSelection_met");
+  TH1F* tight_anal3 = makehist("PreSelection_bjet");
+  TH1F* tight_anal4 = makehist("PreSelection_jj");
+  TH1F* tight_anal5 = makehist("PreSelection_veto");
+  TH1F* tight_anal6 = makehist("PreSelection_ee");
+  TH1F* tight_anal7 = makehist("PreSelection_lowmass");
+
+
+
+  TLegend* legendH = new TLegend(0.6, 0.7, 0.9, 0.9);
+  legendH->SetFillColor(kWhite);
+  legendH->SetTextSize(0.03);
+
+  
+  tight_anala->GetXaxis()->SetTitle("m_{N} GeV");
+  tight_anala->GetYaxis()->SetTitle("ID efficiency");
+  
+  tight_anala->SetMarkerColor(kBlue);
+  tight_anala->SetMarkerStyle(20.);
+  tight_analb->SetMarkerColor(kBlue);
+  tight_analb->SetMarkerStyle(21.);
+  tight_analc->SetMarkerColor(kBlue);
+  tight_analc->SetMarkerStyle(22.);
+
+
+
+  tight_anal1->SetMarkerColor(kRed);
+  tight_anal1->SetMarkerStyle(20.);
+  tight_anal2->SetMarkerColor(kRed);
+  tight_anal2->SetMarkerStyle(21.);
+  tight_anal3->SetMarkerColor(kRed);
+  tight_anal3->SetMarkerStyle(22.);
+  tight_anal4->SetMarkerColor(kRed);
+  tight_anal4->SetMarkerStyle(23.);
+  tight_anal5->SetMarkerColor(kRed);
+  tight_anal5->SetMarkerStyle(24.);
+  tight_anal6->SetMarkerColor(kRed);
+  tight_anal6->SetMarkerStyle(25.);
+  tight_anal7->SetMarkerColor(kRed);
+  tight_anal7->SetMarkerStyle(26.);
+
+  legendH->AddEntry(tight_anala, "Presel (20_10)", "p");
+  legendH->AddEntry(tight_analb, "Z veto", "p");
+  legendH->AddEntry(tight_analc, "Presel (20_15)", "p");
+  legendH->AddEntry(tight_anal1, "Trigger + ID", "p");
+  legendH->AddEntry(tight_anal2, "MET", "p");
+  legendH->AddEntry(tight_anal3, "bjet veto", "p");
+  legendH->AddEntry(tight_anal4, "m(jj) cut", "p");
+  legendH->AddEntry(tight_anal5, "3lep veto", "p");
+  legendH->AddEntry(tight_anal6, "ee cut", "p");
+  legendH->AddEntry(tight_anal7, "m(eejj) cut", "p");
+
+  tight_anala->Draw("p");
+  tight_analb->Draw("psame");
+  tight_analc->Draw("psame");
+  tight_anal1->Draw("psame");
+  tight_anal2->Draw("psame");
+  tight_anal3->Draw("psame");
+  tight_anal4->Draw("psame");
+  tight_anal5->Draw("psame");
+  tight_anal6->Draw("psame");
+
+  legendH->Draw();
+
+  TGraphAsymmErrors * g = new TGraphAsymmErrors(heff);
+  g->SetLineWidth(2.0);
+  g->SetMarkerSize(2.);
+  //  g->Draw( "9pXsame" );
+  
+  
+  CMS_lumi( c1, 2, 11 );
+  c1->Update();
+  c1->RedrawAxis();
+  
+  
+  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/SignalPlots/SignalEff_presel_med_lowmass.pdf" ));
+
+
+  MakeCutEffHist(c1,"Zveto", tight_analb, tight_anala);
+  MakeCutEffHist(c1,"2015", tight_analc, tight_analb);
+  MakeCutEffHist(c1,"trig", tight_anal1, tight_analc);
+  MakeCutEffHist(c1,"met", tight_anal2, tight_anal1);
+  MakeCutEffHist(c1,"bjetveto", tight_anal3, tight_anal2);
+  MakeCutEffHist(c1,"jj", tight_anal4, tight_anal3);
+  MakeCutEffHist(c1,"3lep", tight_anal5, tight_anal4);
+  MakeCutEffHist(c1,"eecut", tight_anal6, tight_anal5);
+  MakeCutEffHist(c1,"meejj", tight_anal7, tight_anal6);
+
+  
+  
+}
+
+void MakeCutEffHist(TCanvas* c, TString hist, TH1F* thist, TH1F* thist_presel){
+
+  TH1F* h_zveto_eff = (TH1F*)thist->Clone(hist);
+  h_zveto_eff->Divide(thist_presel);
+  h_zveto_eff->GetYaxis()->SetTitle("Cut efficiency");
+  h_zveto_eff->Draw("p");
+  
+  c->SaveAs(("/home/jalmond/WebPlots/PreApproval/SignalPlots/SignalEff_" + hist + ".pdf" ));
+  
+
+}
+
+
+TH1F* makehist(TString hist){
+  TH1F* hn_40 = makeHist("40",hist, 414,0);
+  TH1F* hn_50 = makeHist("50",hist,402,0);
+  TH1F* hn_60 = makeHist("60",hist,616,0);
+  TH1F* hn_70 = makeHist("70",hist,432,0);
+  TH1F* hn_80 = makeHist("80",hist,600,0);
+  TH1F* hn_90 = makeHist("90",hist,600,0);
+  /*TH1F* hn_100 = makeHist("100",hist,600,0);
+  TH1F* hn_200 = makeHist("200",hist,600,0);
+  TH1F* hn_300 = makeHist("300",hist,600,0);
+  TH1F* hn_500 = makeHist("500",hist,600,0);*/
+
+  TH1F* href_40 = makeRefHist("40");
+  TH1F* href_50 = makeRefHist("50");
+  TH1F* href_60 = makeRefHist("60");
+  TH1F* href_70 = makeRefHist("70");
+  TH1F* href_80 = makeRefHist("80");
+    TH1F* href_90 = makeRefHist("90");
+    /*TH1F* href_100 = makeRefHist("100");
+  TH1F* href_200 = makeRefHist("200");
+  TH1F* href_300 = makeRefHist("300");
+  TH1F* href_500 = makeRefHist("500");*/
+
+  TH1F* heff = new TH1F("heff","heff", 10, 0., 10.);
+  heff->SetBinContent(1, (hn_40->GetBinContent(2)/href_40->GetBinContent(2)));
+  heff->SetBinContent(2, (hn_50->GetBinContent(2)/href_50->GetBinContent(2)));
+  heff->SetBinContent(3, (hn_60->GetBinContent(2)/href_60->GetBinContent(2)));
+  heff->SetBinContent(4, (hn_70->GetBinContent(2)/href_70->GetBinContent(2)));
+  heff->SetBinContent(5, (hn_80->GetBinContent(2)/href_80->GetBinContent(2)));
+  heff->SetBinContent(6, (hn_90->GetBinContent(2)/href_90->GetBinContent(2)));
+  /*heff->SetBinContent(7, (hn_100->GetBinContent(2)/href_100->GetBinContent(2)));
+  heff->SetBinContent(8, (hn_200->GetBinContent(2)/href_200->GetBinContent(2)));
+  heff->SetBinContent(9, (hn_300->GetBinContent(2)/href_300->GetBinContent(2)));
+  heff->SetBinContent(10, (hn_500->GetBinContent(2)/href_500->GetBinContent(2)));*/
+
+  heff->GetXaxis()->SetBinLabel(1,"40");
+  heff->GetXaxis()->SetBinLabel(2,"50");
+  heff->GetXaxis()->SetBinLabel(3,"60");
+  heff->GetXaxis()->SetBinLabel(4,"70");
+  heff->GetXaxis()->SetBinLabel(5,"80");
+  heff->GetXaxis()->SetBinLabel(6,"90");
+  /*heff->GetXaxis()->SetBinLabel(7,"100");
+  heff->GetXaxis()->SetBinLabel(8,"200");
+  heff->GetXaxis()->SetBinLabel(9,"300");*/
+
+  
+  return heff;
+}
+
+
+TH1F* makeHist(TString m, TString hist,  int col, int style){
+  TString  path = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + m + "_nocut_5_3_14.root";
+
+  cout << hist << endl;
+  TFile* file = new TFile(path);
+  TH1F* h = (TH1F*)file->Get(hist);
+
+  cout << h << endl;
+  return h;
+}
+
+
+TH1F* makeRefHist(TString m){
+  TString  path = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + m + "_nocut_5_3_14.root";
+  
+  TFile* file = new TFile(path);
+  TH1F* h = (TH1F*)file->Get("Efficiency/eff_electronRef");
+  return h;
+}
+
+
+
+CMS_lumi( TPad* pad, int iPeriod, int iPosX )
+{
+  bool outOfFrame    = false;
+  if( iPosX/10==0 )
+    {
+      outOfFrame = true;
+    }
+  int alignY_=3;
+  int alignX_=2;
+  if( iPosX/10==0 ) alignX_=1;
+  if( iPosX==0    ) alignY_=1;
+  if( iPosX/10==1 ) alignX_=1;
+  if( iPosX/10==2 ) alignX_=2;
+  if( iPosX/10==3 ) alignX_=3;
+  int align_ = 10*alignX_ + alignY_;
+
+  float H = pad->GetWh();
+  float W = pad->GetWw();
+  float l = pad->GetLeftMargin();
+  float t = pad->GetTopMargin();
+  float r = pad->GetRightMargin();
+  float b = pad->GetBottomMargin();
+  float e = 0.025;
+
+  pad->cd();
+
+  TString lumiText;
+  if( iPeriod==1 )
+    {
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+    }
+  else if ( iPeriod==2 )
+    {
+      lumiText += " (8 TeV)";
+    }
+  else if( iPeriod==3 )
+    {
+      lumiText = lumi_8TeV;
+      lumiText += " (8 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+    }
+  else if ( iPeriod==4 )
+    {
+      lumiText += lumi_13TeV;
+      lumiText += " (13 TeV)";
+    }
+  else if ( iPeriod==7 )
+    {
+      if( outOfFrame ) lumiText += "#scale[0.85]{";
+      lumiText += lumi_13TeV;
+      lumiText += " (13 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_8TeV;
+      lumiText += " (8 TeV)";
+      lumiText += " + ";
+      lumiText += lumi_7TeV;
+      lumiText += " (7 TeV)";
+      if( outOfFrame) lumiText += "}";
+    }
+  else if ( iPeriod==12 )
+    {
+      lumiText += "8 TeV";
+    }
+
+  cout << lumiText << endl;
+
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);
+
+  float extraTextSize = extraOverCmsTextSize*cmsTextSize;
+
+  latex.SetTextFont(42);
+  latex.SetTextAlign(31);
+  latex.SetTextSize(lumiTextSize*t);
+  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
+  if( outOfFrame )
+    {
+      latex.SetTextFont(cmsTextFont);
+      latex.SetTextAlign(11);
+      latex.SetTextSize(cmsTextSize*t);
+      latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+    }
+
+  pad->cd();
+
+  float posX_;
+  if( iPosX%10<=1 )
+    {
+      posX_ =   l + relPosX*(1-l-r);
+    }
+  else if( iPosX%10==2 )
+    {
+      posX_ =  l + 0.5*(1-l-r);
+    }
+  else if( iPosX%10==3 )
+    {
+      posX_ =  1-r - relPosX*(1-l-r);
+    }
+  float posY_ = 1-t - relPosY*(1-t-b);
+  if( !outOfFrame )
+    {
+      if( drawLogo )
+        {
+          posX_ =   l + 0.045*(1-l-r)*W/H;
+          posY_ = 1-t - 0.045*(1-t-b);
+          float xl_0 = posX_;
+          float yl_0 = posY_ - 0.15;
+          float xl_1 = posX_ + 0.15*H/W;
+          float yl_1 = posY_;
+          TASImage* CMS_logo = new TASImage("CMS-BW-label.png");
+          TPad* pad_logo = new TPad("logo","logo", xl_0, yl_0, xl_1, yl_1 );
+          pad_logo->Draw();
+          pad_logo->cd();
+          CMS_logo->Draw("X");
+          pad_logo->Modified();
+          pad->cd();
+        }
+      else
+        {
+          latex.SetTextFont(cmsTextFont);
+          latex.SetTextSize(cmsTextSize*t);
+          latex.SetTextAlign(align_);
+          latex.DrawLatex(posX_, posY_, cmsText);
+          if( writeExtraText )
+            {
+              latex.SetTextFont(extraTextFont);
+              latex.SetTextAlign(align_);
+              latex.SetTextSize(extraTextSize*t);
+              latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText);
+            }
+        }
+    }
+  else if( writeExtraText )
+    {
+      if( iPosX==0)
+        {
+          posX_ =   l +  relPosX*(1-l-r);
+          posY_ =   1-t+lumiTextOffset*t;
+        }
+      latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(posX_, posY_, extraText);
+    }
+  return;
+}
+
+
+
+
+
+
+

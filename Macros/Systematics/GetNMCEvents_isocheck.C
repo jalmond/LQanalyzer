@@ -57,12 +57,14 @@ void GetNMCEvents_isocheck(){
   
   std::map<TString, int> mapcut;
   std::map<TString, int>::iterator mit; 
-  mapcut["b09_e05_w_detiso"] = 1;
-  mapcut["b10_e10"] = 2;
-  mapcut["b09_e09"] = 3;
-  mapcut["b09_e05"] = 4;
-  mapcut["b10_e10_w_detiso"] = 5;
-  mapcut["b09_e09_w_detiso"] = 6;
+  //mapcut["b09_e05_w_detiso"] = 1;
+  //mapcut["b10_e10"] = 2;
+  //mapcut["b09_e09"] = 3;
+  //mapcut["b09_e05"] = 4;
+  //mapcut["b10_e10_w_detiso"] = 5;
+  //mapcut["b09_e09_w_detiso"] = 6;
+
+  mapcut["_default"] = 1;
   
   for(mit = mapcut.begin(); mit!= mapcut.end() ; mit++){
 
@@ -86,37 +88,37 @@ void GetNMCEvents_isocheck(){
     Double_t mass[]     = {40 , 50, 60, 70, 80   , 90    , 100   , 125   , 150   , 175    , 200  , 225  , 250   , 275,  300    , 325   , 350   ,  375  , 400     , 500 };
     Double_t k_factor=1.;
     Double_t xsec_alp[] = {1516, 1071.1, 607.7, 211.96, 19.07, 7.1047, 3.5618, 1.0767, 0.4594, 0.23266, 0.13127, 0.079661,  0.050928, 0.033857, 0.023214,0.016317,  0.011705,0.0085448, 0.006332, 0.002154};
+    Double_t efferr_alp[20];
     
     for(unsigned int i=0; i < masses.size(); i++){
       h_xsec->SetBinContent(i+1,xsec_alp[i]);
       h_obs->SetBinContent(i+1,result[i]);
       h_mass->SetBinContent(i+1,mass[i]);
       
-      TString tag = masses.at(i);
+      TString tag = "limithist/" +masses.at(i) + mit->first;
       cout << tag << endl;
-      TH1* hnmc =   (TH1F*)file->Get((tag + "_wIsocut_limitcheck").Data());
+      TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_limithist").Data());
       cout << hnmc << endl;
-      TH1* hnnp =   (TH1F*)filefake->Get((tag + "_wIsocut_limitcheck").Data());
+      TH1* hnnp =   (TH1F*)filefake->Get((tag + "MassRegion_limithist").Data());
       cout << hnnp << endl;
-      TH1* hncf =   (TH1F*)filecf->Get((tag + "_wIsocut_limitcheck").Data());
+      TH1* hncf =   (TH1F*)filecf->Get((tag + "MassRegion_limithist").Data());
       cout << hncf << endl;
       
-      float staterr = sqrt( hnmc->GetBinError(mit->second)*hnmc->GetBinError(mit->second) +  hnnp->GetBinError(mit->second)*hnnp->GetBinError(mit->second) + hncf->GetBinError(mit->second)*hncf->GetBinError(mit->second));
+      float staterr = sqrt( hnmc->GetBinError(2)*hnmc->GetBinError(2) +  hnnp->GetBinError(2)*hnnp->GetBinError(2) + hncf->GetBinError(2)*hncf->GetBinError(2));
       
       TString sigpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
       TFile * file_sig = new TFile(sigpath);
-      TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "_wIsocut_limitcheck").Data());
-      TH1F* h_ref= (TH1F*)file_sig->Get(("electronRef"));
+      TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_limithist").Data());
+      TH1F* h_ref= (TH1F*)file_sig->Get(("Efficiency/eff_electronRef"));
       
-      float sig_nom = hn_sig_mc->GetBinContent(mit->second);
+      float sig_nom = hn_sig_mc->GetBinContent(2);
+    
+     
+      float mc_nom = hnmc->GetBinContent(2);
+      float mc_nom_no_weight = hnmc->GetBinContent(1);
       
-      TH1* hnmc_now  = (TH1F*)file->Get((tag + "_Isocut_limitcheck").Data());
-      
-      float mc_nom = hnmc->GetBinContent(mit->second);
-      float mc_nom_no_weight = hnmc_now->GetBinContent(mit->second);
-      
-      float np_nom = hnnp->GetBinContent(mit->second);
-      float cf_nom = hncf->GetBinContent(mit->second);
+      float np_nom = hnnp->GetBinContent(2);
+      float cf_nom = hncf->GetBinContent(2);
             
       float total_bkg = mc_nom + np_nom + cf_nom;
       
@@ -138,40 +140,54 @@ void GetNMCEvents_isocheck(){
       h_nfake->SetBinContent(i+1,np_nom);
       h_staterr->SetBinContent(i+1,staterr);
       
-      float bkgerr = sqrt( pow(staterr,2) + pow(.30*np_nom,2) + pow(.19* (mc_nom),2)  +  pow(.20*(cf_nom),2) );
+      float nperrup  = fabs(hnnp->GetBinContent(2) - hnnp->GetBinContent(13) )/hnnp->GetBinContent(2);  
+      float nperrdown = fabs(hnnp->GetBinContent(2) - hnnp->GetBinContent(14) )/hnnp->GetBinContent(2);
+      
+      float nperr = nperrup;
+      if(nperrup < nperrdown) nperr= nperrdown;
+      cout << "NP err = " << nperr << endl;
+      nperr = 0.4;
+      
+      float bkgerr = sqrt( pow(staterr,2) + pow(nperr*np_nom,2) + pow(.19* (mc_nom),2)  +  pow(.20*(cf_nom),2) );
       cout << pow(staterr,2) << endl;
-      cout <<  pow(.30*np_nom,2) << endl;
+      cout <<  pow(nperr*np_nom,2) << endl;
       cout <<  pow(.19* (mc_nom),2) << endl;
       cout << pow(.20*(cf_nom),2) << endl;
       h_bkgerr->SetBinContent(i+1,bkgerr);
       
       cout << "Bkgerr = " << bkgerr << endl;
+
+      float err_sig_up = sqrt( pow((hn_sig_mc->GetBinContent(3) - sig_nom),2) 
+			       + pow((hn_sig_mc->GetBinContent(5) - sig_nom),2) 
+			       + pow((hn_sig_mc->GetBinContent(7) - sig_nom),2) 
+		     + pow((hn_sig_mc->GetBinContent(8) - sig_nom),2) 
+			       + pow((hn_sig_mc->GetBinContent(9) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(10) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(11) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(12) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(15) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(16) - sig_nom),2));
+      float err_sig_down = sqrt( pow((hn_sig_mc->GetBinContent(4) - sig_nom),2)
+                               + pow((hn_sig_mc->GetBinContent(6) - sig_nom),2)
+                               + pow((hn_sig_mc->GetBinContent(7) - sig_nom),2)
+                               + pow((hn_sig_mc->GetBinContent(8) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(9) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(10) - sig_nom),2)
+			       + pow((hn_sig_mc->GetBinContent(11) - sig_nom),2)
+                               + pow((hn_sig_mc->GetBinContent(12) - sig_nom),2)
+                               + pow((hn_sig_mc->GetBinContent(15) - sig_nom),2)
+                               + pow((hn_sig_mc->GetBinContent(16) - sig_nom),2));
+      
+      float err_sig = err_sig_up; 
+      if(err_sig_up < err_sig_down) err_sig = err_sig_down;
+      
+      cout << "sig err = " << err_sig << endl;
+      err_sig = err_sig/ sig_nom;
+      efferr_alp[i]  = eff_alp[i]   *sqrt(1./hn_sig_mc->GetBinContent(1)  + 2*pow(.02,2) + pow(err_sig,2) );//40
+      cout << "sig err = " << err_sig << endl;
+      cout << "sig err = " << eff_alp[i]   *sqrt(1./hn_sig_mc->GetBinContent(1)  + 2*pow(.02,2) + pow(err_sig,2) ) << endl;
     }
-    
-    Double_t efferr_alp[20];
-    
-    efferr_alp[0]  = eff_alp[0]   *sqrt(1./194. + 2*pow(.02,2) + pow(0.149053,2) );//40
-    efferr_alp[1]  = eff_alp[1]   *sqrt(1./133.  + 2*pow(.02,2) + pow(0.145389,2) );//50
-    efferr_alp[2]  = eff_alp[2]   *sqrt(1./219. + 2*pow(.02,2) + pow(0.217225,2) );//60
-    
-    efferr_alp[3]  = eff_alp[3]   *sqrt(1./47. + 2*pow(.02,2) + pow(0.149812,2) );//70
-    efferr_alp[4]  = eff_alp[4]   *sqrt(1./392. + 2*pow(.02,2) + pow(0.14975,2) );//80                                                                                               
-    efferr_alp[5]  = eff_alp[5]   *sqrt(1./244. + 2*pow(.02,2) + pow(0.134903,2) );//90                                                                                              
-    efferr_alp[6]  = eff_alp[6]   *sqrt(1./983. + 2*pow(.02,2) + pow(0.132761,2) );//100                                                                                             
-    efferr_alp[7]  = eff_alp[7]   *sqrt(1./2898. + 2*pow(.02,2) + pow(0.133017,2) );//125                                                                                            
-    efferr_alp[8]  = eff_alp[8]   *sqrt(1./3869. + 2*pow(.02,2) + pow(0.130787,2) );//150                                                                                            
-    efferr_alp[9]  = eff_alp[9]   *sqrt(1./4828. + 2*pow(.02,2) + pow(0.129689,2) );//175                                                                                            
-    efferr_alp[10]  = eff_alp[10] *sqrt(1./6334. + 2*pow(.02,2) + pow(0.131009,2) );//200                                                                                            
-    efferr_alp[11]  = eff_alp[11] *sqrt(1./5932. + 2*pow(.02,2) + pow(0.132519,2) );//225                                                                                            
-    efferr_alp[12]  = eff_alp[12] *sqrt(1./6842. + 2*pow(.02,2) + pow(0.130412,2) );//250                                                                                            
-    efferr_alp[13]  = eff_alp[13] *sqrt(1./7633. + 2*pow(.02,2) + pow(0.130082,2) );//275                                                                                            
-    efferr_alp[14]  = eff_alp[14] *sqrt(1./7239. + 2*pow(.02,2) + pow(0.130438,2) );//300                                                                                            
-    efferr_alp[15]  = eff_alp[15] *sqrt(1./8148. + 2*pow(.02,2) + pow(0.131317,2) );//325                                                                                            
-    efferr_alp[16]  = eff_alp[16] *sqrt(1./8596. + 2*pow(.02,2) + pow(0.131965,2) );//350                                                                                            
-    efferr_alp[17]  = eff_alp[17] *sqrt(1./9207. + 2*pow(.02,2) + pow(0.131034,2) );//375                                                                                            
-    efferr_alp[18]  = eff_alp[18] *sqrt(1./8971. + 2*pow(.02,2) + pow(0.131662,2) );//400                                                                                            
-    efferr_alp[19]  = eff_alp[19] *sqrt(1./8651. + 2*pow(.02,2) + pow(0.133802,2) );//500   
-    
+
     for(unsigned int i=0; i < masses.size(); i++){
       h_sigefferr->SetBinContent(i+1,efferr_alp[i]);
     }

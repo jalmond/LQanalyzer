@@ -491,6 +491,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     cycle->SetNPStatus(runnp);
     cycle->SetCFStatus(runcf);
+    cycle->SetSampleName(jobName);
     
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list    
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;

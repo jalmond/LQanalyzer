@@ -1,4 +1,5 @@
-// $Id: AnalyzerCore.cc 1 2013-11-26 10:23:10Z jalmond $
+
+//$Id: AnalyzerCore.cc 1 2013-11-26 10:23:10 jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
@@ -70,29 +71,30 @@ void AnalyzerCore::FakeBkgBreakDown(std::vector<snu::KElectron> electrons, TStri
 
   if(electrons.size() != 2) return;
   if(IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  IsTight(electrons.at(1),  eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_TT").Data(), electrons.at(0).Pt() , 1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_TT_w").Data(),electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TT").Data(),  GetEEMass(electrons), 1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TT_w").Data(),GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TT").Data(), electrons.at(1).Pt() , 1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TT_w").Data(),electrons.at(1).Pt() , w,  0. , 100., 20);
   }
   if(IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  !IsTight(electrons.at(1),eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_TL").Data(), electrons.at(0).Pt() ,1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_TL_w").Data(), electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TL").Data(), GetEEMass(electrons) ,1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_TL_w").Data(), GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TL").Data(), electrons.at(1).Pt() ,1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_TL_w").Data(), electrons.at(1).Pt() , w,  0. , 100., 20);
   }
   if(!IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  IsTight(electrons.at(1),   eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_LT").Data(), electrons.at(0).Pt() ,1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_LT_w").Data(), electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LT").Data(), GetEEMass(electrons) ,1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LT_w").Data(), GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LT").Data(), electrons.at(1).Pt() ,1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LT_w").Data(), electrons.at(1).Pt() , w,  0. , 100., 20);
   }
   if(!IsTight(electrons.at(0),  eventbase->GetEvent().JetRho()) &&  !IsTight(electrons.at(1),  eventbase->GetEvent().JetRho())){
-    //FillHist(("FakeBkg/" + cut  + "_LL").Data(),   electrons.at(0).Pt() ,1.,  0. , 100., 20);
-    //FillHist(("FakeBkg/" + cut  + "_LL_w").Data(),electrons.at(0).Pt() , w,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LL").Data(),   GetEEMass(electrons) ,1.,  0. , 100., 20);
+    FillHist(("FakeBkg/" + cut  + "_mass_LL_w").Data() ,GetEEMass(electrons) , w,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LL").Data(),   electrons.at(1).Pt() ,1.,  0. , 100., 20);
     FillHist(("FakeBkg/" + cut  + "_LL_w").Data(),electrons.at(1).Pt() , w,  0. , 100., 20);
   }
+ 
 
 }
 
@@ -110,10 +112,10 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
     eventbase->GetJetSel()->SetEta(2.5);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "loose"));
+    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
   }
   else if(label.Contains("ApplyPileUpID")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "loose"));
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "veto"));
     
   }
   
@@ -125,6 +127,13 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
 std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
 
   std::vector<snu::KMuon> muonColl;
+
+  if(k_running_nonprompt) {
+    eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
+
+    return  GetTruePrompt(muonColl,  false);
+  }
+
   if(label.Contains("veto")){
     eventbase->GetMuonSel()->HNVetoMuonSelection(muonColl);
   }
@@ -135,7 +144,8 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
     eventbase->GetMuonSel()->Selection(muonColl);
   }
   
-  return muonColl;
+
+  return  GetTruePrompt(muonColl,  false);
   
 }
 
@@ -152,17 +162,19 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
   float dxy= 0.01; float biso= 0.09;    float eiso= 0.05;  bool usetight_id= true;
 
+  int icoll(0);
   if(label.Contains("HNTight_loosereg2")){
+    icoll++;
     applyidsf= true;
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
     if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronColl);
     else eventbase->GetElectronSel()->HNTightElectronSelection(_electronColl, false);
-    
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
-  
+
   else if(label.Contains("HNTight")){
+    icoll++;
     applyidsf= true;
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
@@ -172,33 +184,30 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
    
-  else if(label.Contains("iso")){
-    std::vector<snu::KElectron> electronLooseColl = GetElectrons(keepcf, keepfake, "loose");
-    if(label.Contains("iso_b10_e10")){biso = 0.1;    eiso = 0.1;     dxy= 0.01;    usetight_id = true;}
-    else if(label.Contains("iso_b09_e09_medium")){biso = 0.09;   eiso = 0.09;    dxy= 0.01;  usetight_id = false;}
-    else if(label.Contains("iso_b09_e09")){biso = 0.09;   eiso = 0.09;    dxy= 0.01;  usetight_id = true;}
-    else if(label.Contains("iso_b09_e05")){biso = 0.09;   eiso = 0.05;    dxy= 0.01;  usetight_id = true;}
-    applyidsf= true;
-    
+ 
+  /// Four loose samples 
+  else if(label.Contains("loose_relaxipcut"))   {     icoll++; eventbase->GetElectronSel()->HNLooseElectronSelection(electronColl);}
+  else if(label.Contains("loose_mediumID"))      {
+    icoll++;
+    std::vector<snu::KElectron> electronLooseColl;    
+    eventbase->GetElectronSel()->HNLooseElectronSelection(false,false, 0.6, electronLooseColl);
     for(unsigned int ilooseel=0; ilooseel< electronLooseColl.size(); ilooseel++){
-      if(!k_running_nonprompt){
-	if(eventbase->GetElectronSel()->HNIsTight(electronLooseColl.at(ilooseel), eventbase->GetEvent().JetRho(), dxy, biso, eiso, usetight_id)) electronColl.push_back(electronLooseColl.at(ilooseel));
-      }
-      else{
-	electronColl.push_back(electronLooseColl.at(ilooseel));
-      }
+      if(fabs(electronLooseColl.at(ilooseel).dxy()) < 0.02) electronColl.push_back(electronLooseColl.at(ilooseel));
     }
   }
+  else if(label.Contains("loose_susy")) {    icoll++;eventbase->GetElectronSel()->HNLooseElectronSelection(false, true, 0.6, electronColl);}
+  else if(label.Contains("loose")){    icoll++; eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(electronColl);}
 
-  else if(label.Contains("loose_relaxipcut"))    eventbase->GetElectronSel()->HNLooseElectronSelection(electronColl);
-  else if(label.Contains("loose"))    eventbase->GetElectronSel()->HNLooseElectronSelectionWithIPCut(electronColl);
-  else if(label.Contains("veto"))     eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);
+  // Veto cut
+  else if(label.Contains("veto")){    icoll++; eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);}
   
+  /// Standard pog ids or susy analysis id
   else if(label.Contains("id")){
+    icoll++;
     applyidsf= true;
     if(label.Contains("medium")){biso = 0.10;   eiso = 0.10;    dxy= 0.02;      usetight_id = false;}
-    if(label.Contains("tight")) {biso = 0.10;   eiso = 0.10;    dxy= 0.02;     usetight_id = true;}
-    if(label.Contains("susy")) {biso = 0.09;    eiso = 0.09;    dxy= 0.01;     usetight_id = false;}
+    if(label.Contains("tight")) {biso = 0.10;   eiso = 0.10;    dxy= 0.02;      usetight_id = true;}
+    if(label.Contains("susy")) {biso = 0.09;    eiso = 0.09;    dxy= 0.01;      usetight_id = false;}
     
     std::vector<snu::KElectron> electronLooseColl;    
     eventbase->GetElectronSel()->HNLooseElectronSelection(usetight_id, false, 0.6,electronLooseColl);
@@ -212,21 +221,139 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     }
   }
   
+
   else if(label.Contains("NoCutPtEta")){ 
+    icoll++;
     eventbase->GetElectronSel()->SetPt(20.);
     eventbase->GetElectronSel()->SetEta(2.5);
     eventbase->GetElectronSel()->Selection(electronColl);
   }
-  else if(label.Contains("NoCut")){ eventbase->GetElectronSel()->Selection(electronColl);}
+  else if(label.Contains("NoCut")){     icoll++;eventbase->GetElectronSel()->Selection(electronColl);}
   
-  if(!isData){
-    if(applyidsf){
-      for(std::vector<snu::KElectron>::iterator it = electronColl.begin(); it != electronColl.end(); it++){
-	w*=  ElectronScaleFactor(it->Eta(), it->Pt(), usetight_id);
+  else if(label.Contains("dxy")){
+    icoll++;
+    if(label.Contains("tight")) usetight_id = true;
+    else usetight_id = false;
+    TString looselabel = "loose_relaxipcut";
+    if(!usetight_id) looselabel = "loose_medium_relaxipcut";
+    std::vector<snu::KElectron> electronLooseColl = GetElectrons(keepcf, keepfake, looselabel);
+    
+    if(label.Contains("05"))  {biso = 0.1;   eiso = 0.1;    dxy= 0.005; }
+    if(label.Contains("10"))  {biso = 0.1;   eiso = 0.1;    dxy= 0.010; }
+    if(label.Contains("15"))  {biso = 0.1;   eiso = 0.1;    dxy= 0.015; }
+    if(label.Contains("20"))  {biso = 0.1;   eiso = 0.1;    dxy= 0.020; }
+    if(label.Contains("25"))  {biso = 0.1;   eiso = 0.1;    dxy= 0.025; }
+    if(label.Contains("30"))  {biso = 0.1;   eiso = 0.1;    dxy= 0.030; }
+    
+    for(unsigned int ilooseel=0; ilooseel< electronLooseColl.size(); ilooseel++){
+      if(!k_running_nonprompt){
+	if(eventbase->GetElectronSel()->HNIsTight(electronLooseColl.at(ilooseel), eventbase->GetEvent().JetRho(), dxy, biso, eiso, usetight_id)) electronColl.push_back(electronLooseColl.at(ilooseel));
+      }
+      else{
+	electronColl.push_back(electronLooseColl.at(ilooseel));
       }
     }
   }
 
+  else if(label.Contains("iso")){
+    icoll++;
+    if(label.Contains("tight")) usetight_id = true;
+    else usetight_id = false;
+    TString looselabel = "loose";
+    if(!usetight_id) looselabel = "loose_medium";
+    std::vector<snu::KElectron> electronLooseColl = GetElectrons(keepcf, keepfake, looselabel);
+    
+    dxy=0.01;
+    if(label.Contains("iso_b150_e150")){biso = 0.150;  eiso = 0.150;      }
+    if(label.Contains("iso_b150_e125")){biso = 0.150;  eiso = 0.125;      }
+    if(label.Contains("iso_b150_e10")){biso = 0.15;    eiso = 0.10;      }    
+    if(label.Contains("iso_b150_e09")){biso = 0.15;    eiso = 0.09;      }
+    if(label.Contains("iso_b150_e08")){biso = 0.15;    eiso = 0.08;      }
+    if(label.Contains("iso_b150_e07")){biso = 0.15;    eiso = 0.07;      }
+    if(label.Contains("iso_b150_e06")){biso = 0.15;    eiso = 0.06;      }
+    if(label.Contains("iso_b150_e05")){biso = 0.15;    eiso = 0.05;      }
+    
+    if(label.Contains("iso_b125_e125")){biso = 0.125;     eiso = 0.125;      }
+    if(label.Contains("iso_b125_e10")) {biso = 0.125;     eiso = 0.10;      }
+    if(label.Contains("iso_b125_e09")) {biso = 0.125;     eiso = 0.09;      }
+    if(label.Contains("iso_b125_e08")) {biso = 0.125;     eiso = 0.08;      }
+    if(label.Contains("iso_b125_e07")) {biso = 0.125;     eiso = 0.07;      }
+    if(label.Contains("iso_b125_e06")) {biso = 0.125;     eiso = 0.06;      }
+    if(label.Contains("iso_b125_e05")) {biso = 0.125;     eiso = 0.05;      }
+    
+    if(label.Contains("iso_b10_e125")){biso = 0.1;     eiso = 0.125;      }
+    if(label.Contains("iso_b10_e10")) {biso = 0.1;     eiso = 0.10;      }
+    if(label.Contains("iso_b10_e09")) {biso = 0.1;     eiso = 0.09;      }
+    if(label.Contains("iso_b10_e08")) {biso = 0.1;     eiso = 0.08;      }
+    if(label.Contains("iso_b10_e07")) {biso = 0.1;     eiso = 0.07;      }
+    if(label.Contains("iso_b10_e06")) {biso = 0.1;     eiso = 0.06;      }
+    if(label.Contains("iso_b10_e05")) {biso = 0.1;     eiso = 0.05;      }
+
+    if(label.Contains("iso_b09_e125")){biso = 0.09;     eiso = 0.125;      }
+    if(label.Contains("iso_b09_e10")) {biso = 0.09;     eiso = 0.10;      }
+    if(label.Contains("iso_b09_e09")) {biso = 0.09;     eiso = 0.09;      }
+    if(label.Contains("iso_b09_e08")) {biso = 0.09;     eiso = 0.08;      }
+    if(label.Contains("iso_b09_e07")) {biso = 0.09;     eiso = 0.07;      }
+    if(label.Contains("iso_b09_e06")) {biso = 0.09;     eiso = 0.06;      }
+    if(label.Contains("iso_b09_e05")) {biso = 0.09;     eiso = 0.05;      }
+    
+    if(label.Contains("iso_b08_e125")){biso = 0.08;     eiso = 0.125;      }
+    if(label.Contains("iso_b08_e10")) {biso = 0.08;     eiso = 0.10;      }
+    if(label.Contains("iso_b08_e09")) {biso = 0.08;     eiso = 0.09;      }
+    if(label.Contains("iso_b08_e08")) {biso = 0.08;     eiso = 0.08;      }
+    if(label.Contains("iso_b08_e07")) {biso = 0.08;     eiso = 0.07;      }
+    if(label.Contains("iso_b08_e06")) {biso = 0.08;     eiso = 0.06;      }
+    if(label.Contains("iso_b08_e05")) {biso = 0.08;     eiso = 0.05;      }
+    
+    if(label.Contains("iso_b07_e125")){biso = 0.07;     eiso = 0.125;     }
+    if(label.Contains("iso_b07_e10")) {biso = 0.07;     eiso = 0.10;      }
+    if(label.Contains("iso_b07_e09")) {biso = 0.07;     eiso = 0.09;      }
+    if(label.Contains("iso_b07_e08")) {biso = 0.07;     eiso = 0.08;      }
+    if(label.Contains("iso_b07_e07")) {biso = 0.07;     eiso = 0.07;      }
+    if(label.Contains("iso_b07_e06")) {biso = 0.07;     eiso = 0.06;      }
+    if(label.Contains("iso_b07_e05")) {biso = 0.07;     eiso = 0.05;      }
+    
+    if(label.Contains("iso_b06_e125")){biso = 0.06;     eiso = 0.125;      }
+    if(label.Contains("iso_b06_e10")) {biso = 0.06;     eiso = 0.10;      }
+    if(label.Contains("iso_b06_e09")) {biso = 0.06;     eiso = 0.09;      }
+    if(label.Contains("iso_b06_e08")) {biso = 0.06;     eiso = 0.08;      }
+    if(label.Contains("iso_b06_e07")) {biso = 0.06;     eiso = 0.07;      }
+    if(label.Contains("iso_b06_e06")) {biso = 0.06;     eiso = 0.06;      }
+    if(label.Contains("iso_b06_e05")) {biso = 0.06;     eiso = 0.05;      }
+
+    if(label.Contains("iso_b05_e125")){biso = 0.05;     eiso = 0.125;      }
+    if(label.Contains("iso_b05_e10")) {biso = 0.05;     eiso = 0.10;      }
+    if(label.Contains("iso_b05_e09")) {biso = 0.05;     eiso = 0.09;      }
+    if(label.Contains("iso_b05_e08")) {biso = 0.05;     eiso = 0.08;      }
+    if(label.Contains("iso_b05_e07")) {biso = 0.05;     eiso = 0.07;      }
+    if(label.Contains("iso_b05_e06")) {biso = 0.05;     eiso = 0.06;      }
+    if(label.Contains("iso_b05_e05")) {biso = 0.05;     eiso = 0.05;      }
+    
+    
+    applyidsf= true;
+    
+    for(unsigned int ilooseel=0; ilooseel< electronLooseColl.size(); ilooseel++){
+      if(!k_running_nonprompt){
+	if(eventbase->GetElectronSel()->HNIsTight(electronLooseColl.at(ilooseel), eventbase->GetEvent().JetRho(), dxy, biso, eiso, usetight_id)) electronColl.push_back(electronLooseColl.at(ilooseel));
+      }
+      else{
+	electronColl.push_back(electronLooseColl.at(ilooseel));
+      }
+    }
+  }
+
+
+
+  /*if(!isData){
+    if(applyidsf){
+      for(std::vector<snu::KElectron>::iterator it = electronColl.begin(); it != electronColl.end(); it++){
+	w*= ElectronScaleFactor(it->Eta(), it->Pt(), usetight_id);
+      }
+    }
+    }*/
+  
+  
+  if(icoll != 1) {cout << "Error in GetElectrons " << endl; exit(0);}
   return  GetTruePrompt(electronColl, keepcf, keepfake); 
   
 }
@@ -287,292 +414,344 @@ void AnalyzerCore::MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std
 }
 
 
-void AnalyzerCore::RunMCCLosureTest( std::vector<snu::KJet> jets, float w){
+bool AnalyzerCore::HasCloseLBJet(snu::KElectron el){
+
+  std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
+
+  bool cl = false;
+  for(unsigned int ij =0; ij < alljets.size(); ij++){
+    if(el.DeltaR(alljets.at(ij)) < 0.5){
+      if(alljets.at(ij).CombinedSecVertexBtag() > 0.244) cl = true;
+    }
+  }
+
+  return cl;
+
+}
+
+bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
+
+  std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
+  
+  bool cl = false;
+  for(unsigned int ij =0; ij < alljets.size(); ij++){
+    if(el.DeltaR(alljets.at(ij)) < 0.5){
+      if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) cl = true;
+    }
+  }
+
+  return cl;
+
+}
+
+void AnalyzerCore::RunMCCLosureTest(TString label, std::vector<snu::KJet> jets, TString cut, float w){
   
   if(jets.size() <  2 ) return;
   if(!isData){
     if(k_running_nonprompt){
       
-      TString looseregion = "loosereg1";
-      std::vector<snu::KElectron> electronAnalysisColl_mcclosure =  GetElectrons(false, true, "HNTight"); // removes CF and fake in mc
-      std::vector<snu::KElectron> electronAnalysisColl_loosereg2_mcclosure =  GetElectrons(false, true, "HNTight_loosereg2"); // removes CF and fake in mc
-
-      if(SameCharge(electronAnalysisColl_loosereg2_mcclosure)){
-	FakeBkgBreakDown(electronAnalysisColl_loosereg2_mcclosure, "mcclosure,loosereg2",1.);
-	//float fake_weight40 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_loosereg2_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_loosereg2", 0);
-	float fake_weight40 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_loosereg2_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_loosereg2", 0);
-	float fake_weight60 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_loosereg2_mcclosure,  eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_loosereg2", 0);
-	
-	if(IsTight(electronAnalysisColl_loosereg2_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_loosereg2_mcclosure.at(1),   eventbase->GetEvent().JetRho())  ){
-	  FillHist(("MCSSclosure_loosereg2_fake_pt_measured"), electronAnalysisColl_loosereg2_mcclosure.at(1).Pt() ,w, 0. , 200., 10);
-	  
-	}
-	FillHist(("MCSSclosure_loosereg2_fake_pt_predicted40"),  electronAnalysisColl_loosereg2_mcclosure.at(1).Pt(), fake_weight40, 0. , 200., 10);
-	FillHist(("MCSSclosure_loosereg2_fake_pt_predicted60"),  electronAnalysisColl_loosereg2_mcclosure.at(1).Pt(), fake_weight60, 0. , 200., 10);
-	
-	if(IsTight(electronAnalysisColl_loosereg2_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && !IsTight(electronAnalysisColl_loosereg2_mcclosure.at(1),   eventbase->GetEvent().JetRho())   ){
-	  FillHist(("mcclosure_Doubletosingle_loosereg2"), 1., w, 0. , 2., 2);
-	}
-	if(!IsTight(electronAnalysisColl_loosereg2_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_loosereg2_mcclosure.at(1),   eventbase->GetEvent().JetRho())	){
-	  FillHist(("mcclosure_Doubletosingle_loosereg2"), 1., w, 0. , 2., 2);
-	}
-	if(!IsTight(electronAnalysisColl_loosereg2_mcclosure.at(0),   eventbase->GetEvent().JetRho()) &&!IsTight(electronAnalysisColl_loosereg2_mcclosure.at(1),   eventbase->GetEvent().JetRho())   ){
-	  //if(true){
-	  float f1 = m_fakeobj->getFakeRate_electronEta(0, electronAnalysisColl_loosereg2_mcclosure.at(0).Pt(), fabs(electronAnalysisColl_loosereg2_mcclosure.at(0).Eta()), "mc_40_loosereg2");
-	  float f2 = m_fakeobj->getFakeRate_electronEta(0, electronAnalysisColl_loosereg2_mcclosure.at(1).Pt(), fabs(electronAnalysisColl_loosereg2_mcclosure.at(1).Eta()), "mc_40_loosereg2");
-	  float sd = f1/(1.-f1) + f2/(1.-f2);
-	  
-	  FillHist(("mcclosure_single_loosereg2"), 1., sd*w, 0. , 2., 2);
-	}
-      }
+      TString looseregion = label;
+      if(label.Contains("loosereg2")) label = "HNTight_loosereg2";
+      else label = "HNTight";
+      
+      std::vector<snu::KElectron> electronAnalysisColl_mcclosure =  GetElectrons(false, true, label); // removes CF and fake in mc
+      
+      label+= cut;
       if(electronAnalysisColl_mcclosure.size() == 2){
 	float mcclosure_weight = w;
-	if(SameCharge(electronAnalysisColl_mcclosure)){
+
+	
+	if(k_sample_name.Contains("QCD") || k_sample_name.Contains("W")||  (k_sample_name.Contains("tt") && SameCharge(electronAnalysisColl_mcclosure))){
 	  //  if(true){
-	  if(electronAnalysisColl_mcclosure.at(1).Pt() > 15. && jets.size() > 0){
-	    
-	    /// weights using pt eta binning only
-	    float fake_weight20 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+looseregion, 0);
-	    float fake_weight30 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_30_"+looseregion, 0);
-	    float fake_weight40 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+looseregion, 0);
-	    float fake_weight60 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+looseregion, 0);
-	    float fake_weight80 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_80_"+looseregion, 0);
-	    
+	  if(electronAnalysisColl_mcclosure.at(1).Pt() > 15.){
 	    
 	    bool closejet_el1=false;
-	    bool closejet_el2=false;
-	    bool awayjet_el1=false;
-	    bool awayjet_el2=false;
+            bool closejet_el2=false;
 
 	    std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
-	    for(int ij =0; ij < alljets.size(); ij++){
-	      if(electronAnalysisColl_mcclosure.at(0).DeltaR(alljets.at(ij)) < 0.4){
-		if(alljets.at(ij).CombinedSecVertexBtag() > 0.244) closejet_el1 = true;
-	      }
-	      if(electronAnalysisColl_mcclosure.at(1).DeltaR(alljets.at(ij)) < 0.4){
-		if(alljets.at(ij).CombinedSecVertexBtag() > 0.244) closejet_el2 = true;
+            for(unsigned int ij =0; ij < alljets.size(); ij++){
+              if(electronAnalysisColl_mcclosure.at(0).DeltaR(alljets.at(ij)) < 0.5){
+                if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) closejet_el1 = true;
               }
-	      float dphi_el1 =fabs(TVector2::Phi_mpi_pi(electronAnalysisColl_mcclosure.at(0).Phi() - alljets.at(ij).Phi()));
-	      float dphi_el2 =fabs(TVector2::Phi_mpi_pi(electronAnalysisColl_mcclosure.at(1).Phi() - alljets.at(ij).Phi()));
-	      if(dphi_el1 > 2.5){
-		if(alljets.at(ij).CombinedSecVertexBtag() > 0.244) awayjet_el1 = true;
+              if(electronAnalysisColl_mcclosure.at(1).DeltaR(alljets.at(ij)) < 0.5){
+                if(alljets.at(ij).CombinedSecVertexBtag() > 0.679) closejet_el2 = true;
               }
-	      if(dphi_el2 > 2.5){
-		if(alljets.at(ij).CombinedSecVertexBtag() > 0.244) awayjet_el2 = true;
-              }
+            }
+	    
+
+	    //// 1: pt eta binning
+
+	    /// weights using pt eta binning only
+	    float fake_weight20 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,   eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+looseregion, 0);
+	    float fake_weight40 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+looseregion, 0);
+	    float fake_weight60 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,  eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+looseregion, 0);
+	    float fake_weight30 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,  eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_"+looseregion, 0);
+	    
+	    
+	    //// 2: pt eta binning + bjet/no bjet
+
+	    TString frbjet="b";
+	    if(NBJet(jets) ==0) frbjet="nob";
+	    float fake_weight20b = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20" + frbjet + "_"+looseregion, 0);
+            float fake_weight40b = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40" + frbjet + "_"+looseregion, 0);
+            float fake_weight60b = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,jets,   eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60" + frbjet + "_"+looseregion, 0);
+            float fake_weight30b = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,jets,   eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30" + frbjet + "_"+looseregion, 0);
+	    
+	    
+	    /// 3: ht eta binning
+
+	    float fake_weight20h = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  jets ,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_ht_"+looseregion, 0);
+            float fake_weight40h = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_ht_"+looseregion, 0);
+            float fake_weight60h = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_ht_"+looseregion, 0);
+            float fake_weight30h = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_ht_"+looseregion, 0);
+
+	    /// 4 :  pt eta binning + bjet : flavour dep
+
+	    TString btlabel= "BT"+looseregion;
+            if(closejet_el1 && closejet_el2) btlabel += "cl1_cl2";
+            if(!closejet_el1 && closejet_el2) btlabel += "cl2";
+            if(closejet_el1 && !closejet_el2) btlabel += "cl1";
+            btlabel += frbjet;
+
+            float fake_weight20bt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20" + btlabel + "_"+looseregion, 0);
+            float fake_weight40bt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets, eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40" + btlabel + "_"+looseregion, 0 );
+            float fake_weight60bt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets, eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60" + btlabel + "_"+looseregion, 0);
+            float fake_weight30bt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets, eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30" + btlabel + "_"+looseregion, 0);
+
+
+	    /// 5 : ht vs eta : flavour dep
+	    
+	    TString htlabel= "HT"+looseregion;
+	    if(closejet_el1 && closejet_el2) htlabel += "cl1_cl2";
+	    if(!closejet_el1 && closejet_el2) htlabel += "cl2";
+	    if(closejet_el1 && !closejet_el2) htlabel += "cl1";
+	    
+	    if(IsTight(electronAnalysisColl_mcclosure.at(0), eventbase->GetEvent().JetRho()) && !IsTight(electronAnalysisColl_mcclosure.at(1), eventbase->GetEvent().JetRho())) {
+	      if(closejet_el2)FillHist(label + "mcclosure_TL_cb", 1, 1., 0.,2.,2);
+	      else FillHist(label + "mcclosure_TL_cb", 0, 1., 0.,2.,2);
+
+	      FillHist(label + "mcclosure_TL_faketype", electronAnalysisColl_mcclosure.at(1).GetType(), 1., 0.,8.,8);
 	    }
+	    if(!IsTight(electronAnalysisColl_mcclosure.at(0), eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_mcclosure.at(1), eventbase->GetEvent().JetRho())) {
+              if(closejet_el1)FillHist(label + "mcclosure_TL_cb", 1, 1., 0.,2.,2);
+              else FillHist(label + "mcclosure_TL_cb", 0, 1., 0.,2.,2);
+	      FillHist(label + "mcclosure_TL_faketype", electronAnalysisColl_mcclosure.at(0).GetType(), 1., 0.,8.,8);
+            }
+	    
+	    
+	    float fake_weight20ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+htlabel, 0);
+            float fake_weight40ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+ htlabel, 0);
+            float fake_weight60ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+ htlabel, 0);
+            float fake_weight30ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_"+ htlabel, 0);
+
+
+
+	    // 6: pt vs eta : flavour dep
+	    TString ptlabel= "PT"+looseregion;
+            if(closejet_el1 && closejet_el2) ptlabel += "cl1_cl2";
+            if(!closejet_el1 && closejet_el2) ptlabel += "cl2";
+            if(closejet_el1 && !closejet_el2) ptlabel += "cl1";
+
+            float fake_weight20pt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets ,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+ptlabel, 0);
+            float fake_weight40pt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+ ptlabel, 0);
+            float fake_weight60pt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+ ptlabel, 0);
+            float fake_weight30pt = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_"+ ptlabel, 0);
+
+
+	    // 7: pt vs eta vs ht vs nbjet : flavour dep 
+	    TString stlabel= "ST"+looseregion;
+            if(closejet_el1 && closejet_el2) stlabel += "cl1_cl2";
+            if(!closejet_el1 && closejet_el2) stlabel += "cl2";
+            if(closejet_el1 && !closejet_el2) stlabel += "cl1";
+	    stlabel+=frbjet;
 	    
 
-
-	    //// weights for eta/pt but for 4 different ht bins
-            TString htlabel = "";
-
-            if(SumPt(jets) < 100.)        htlabel = "_ht1_loosereg1";
-            else if(SumPt(jets) < 150.)   htlabel = "_ht2_loosereg1";
-            else if(SumPt(jets) < 200.)   htlabel = "_ht3_loosereg1";
-            else if(SumPt(jets) < 10000.) htlabel = "_ht4_loosereg1";
-
-
-	    TString label = "";
-            if(closejet_el1) label+= "cl1_";
-            else if(closejet_el2) label+= "cl2_";
-            else if(awayjet_el1)  label+= "aw1_";
-            else if(awayjet_el2)  label+= "aw2_";
-	    
-	    label += htlabel;
-	    // wights using pt eta. But having separate maps for el with closeby bjet
-	    float fake_weight20_awaybjet = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05,  "mc_20_"+label, 0);
-            float fake_weight30_awaybjet = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_20_"+label, 0);
-            float fake_weight40_awaybjet = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+label, 0);
-            float fake_weight60_awaybjet = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true,0.01,0.09, 0.05,"mc_60_"+label, 0);
-            float fake_weight80_awaybjet = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(), true,0.01,0.09, 0.05,"mc_60_"+label, 0);
-
-	    //// weights for eta/pt but for 4 different ht bins
+	    float fake_weight20st = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+stlabel, 0);
+            float fake_weight40st = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+ stlabel, 0);
+            float fake_weight60st = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+ stlabel, 0);
+            float fake_weight30st = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_"+ stlabel, 0);
 
 	    
-            float fake_weight20_ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(),true,0.01,0.09, 0.05,"mc_20"+htlabel, 0);
-            float fake_weight40_ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(),true,0.01,0.09, 0.05,"mc_40"+htlabel, 0);
-            float fake_weight60_ht = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(),true,0.01,0.09, 0.05,"mc_60"+htlabel, 0);
+	    // 8:  pt vs eta vs ht : flavour dep
+	    TString st2label= "ST"+looseregion;
+            if(closejet_el1 && closejet_el2) st2label += "cl1_cl2";
+            if(!closejet_el1 && closejet_el2) st2label += "cl2";
+            if(closejet_el1 && !closejet_el2) st2label += "cl1";
+	    
+            if(SumPt(jets) < 100.) st2label +=  "ht1";
+            else st2label +=  "ht3";
 
+            float fake_weight20st2 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets ,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+st2label, 0);
+            float fake_weight40st2 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+ st2label, 0);
+            float fake_weight60st2 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+ st2label, 0);
+            float fake_weight30st2 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_"+ st2label, 0);
 	    
-	    cout << "fake_weight40_ht = " << fake_weight40_ht  << "  : normal weight = " << fake_weight40 << endl;
-	    
+	    // 9:  pt vs eta vs ht 
+            TString st3label= "";
+            if(SumPt(jets) < 100.) st3label +=  "ht1_";
+            else st3label +=  "ht3_";
+	    st3label += looseregion;
+
+            float fake_weight20st3 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets ,  eventbase->GetEvent().JetRho(), true, 0.01,0.09  ,0.05,  "mc_20_"+st3label, 0);
+            float fake_weight40st3 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true, 0.01,0.09,0.05, "mc_40_"+ st3label, 0);
+            float fake_weight60st3 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_60_"+ st3label, 0);
+            float fake_weight30st3 = w* Get_DataDrivenWeight_EE(electronAnalysisColl_mcclosure, jets , eventbase->GetEvent().JetRho(), true,0.01,0.09,0.05,"mc_30_"+ st3label, 0);
+
 	    bool el1_fake=false;
 	    bool el2_fake=false;
 	    if(electronAnalysisColl_mcclosure.at(0).GetType() == 1 || electronAnalysisColl_mcclosure.at(0).GetType() == 2 || electronAnalysisColl_mcclosure.at(0).GetType() == 3 || electronAnalysisColl_mcclosure.at(0).GetType() == 6 || electronAnalysisColl_mcclosure.at(0).GetType() ==8 ){
-	     
-	      if(IsTight(electronAnalysisColl_mcclosure.at(0), eventbase->GetEvent().JetRho())) FillHist("mcclosure_el1_fake_checktight", 1, 1., 0.,2.,2);
-              else FillHist("mcclosure_el1_fake_checktight", 0, 1.,0.,2.,2);
+	      
+	      if(IsTight(electronAnalysisColl_mcclosure.at(0), eventbase->GetEvent().JetRho())) FillHist(label + "mcclosure_el1_fake_checktight", 1, 1., 0.,2.,2);
+              else FillHist(label + "mcclosure_el1_fake_checktight", 0, 1.,0.,2.,2);
 	      
 	      el1_fake= true;
 	      if(closejet_el1)
-		FillHist("mcclosure_cbj_el1", 1 , 1.,  0. , 2, 2);
+		FillHist(label + "mcclosure_cbj_el", 1 , 1.,  0. , 2, 2);
 	      else
-		FillHist("mcclosure_cbj_el1", 0 , 1.,  0. , 2, 2);
-	      if(awayjet_el1)
-                FillHist("mcclosure_abj_el1", 1 , 1.,  0. , 2, 2);
-	      else
-		FillHist("mcclosure_abj_el1", 0 , 1.,  0. , 2, 2);
-
+		FillHist(label + "mcclosure_cbj_el", 0 , 1.,  0. , 2, 2);
 	    }	    
 	    if(electronAnalysisColl_mcclosure.at(1).GetType() == 1 || electronAnalysisColl_mcclosure.at(1).GetType() == 2 || electronAnalysisColl_mcclosure.at(1).GetType() == 3 || electronAnalysisColl_mcclosure.at(1).GetType() == 6 || electronAnalysisColl_mcclosure.at(0).GetType() ==8){
 	      el2_fake= true;
-	      if(IsTight(electronAnalysisColl_mcclosure.at(1), eventbase->GetEvent().JetRho())) FillHist("mcclosure_el2_fake_checktight", 1, 1.,0.,2.,2);
-              else FillHist("mcclosure_el2_fake_checktight", 0, 1.,0.,2.,2);
-
+	      if(IsTight(electronAnalysisColl_mcclosure.at(1), eventbase->GetEvent().JetRho())) FillHist(label + "mcclosure_el2_fake_checktight", 1, 1.,0.,2.,2);
+              else FillHist(label + "mcclosure_el2_fake_checktight", 0, 1.,0.,2.,2);
+	      
 	      if(closejet_el2)
-		FillHist("mcclosure_cbj_el2", 1 , 1.,  0. , 2, 2);
+		FillHist(label + "mcclosure_cbj_el", 1 , 1.,  0. , 2, 2);
 	      else
-		FillHist("mcclosure_cbj_el2", 0 , 1.,  0. , 2, 2);
-	      if(awayjet_el2)
-		FillHist("mcclosure_abj_el2", 1 , 1.,  0. , 2, 2);
-	      else
-		FillHist("mcclosure_abj_el2", 0 , 1.,  0. , 2, 2);
+		FillHist(label + "mcclosure_cbj_el", 0 , 1.,  0. , 2, 2);
 	    }
 	    
-	    if(el1_fake &&el2_fake)                 FillHist("mcclosure_fakeevent_type", 0 , 1.,  0. , 4, 4);
-	    if(!el1_fake &&el2_fake)                FillHist("mcclosure_fakeevent_type", 1 , 1.,  0. , 4, 4);
-	    if(el1_fake &&!el2_fake)                FillHist("mcclosure_fakeevent_type", 2 , 1.,  0. , 4, 4);
-	    if(!el1_fake &&!el2_fake)                FillHist("mcclosure_fakeevent_type", 3 , 1.,  0. ,4, 4);
 
-	    if(!el1_fake &&!el2_fake)   FillHist("mcclosure_realevent_type", electronAnalysisColl_mcclosure.at(0).GetType() , 1., 0., 8., 8);	    
-	    if(!el1_fake &&!el2_fake)   FillHist("mcclosure_realevent_type", electronAnalysisColl_mcclosure.at(1).GetType() , 1., 0., 8., 8);	    
+	    if(el1_fake )   FillHist(label + "mcclosure_realevent_type", electronAnalysisColl_mcclosure.at(0).GetType() , 1., 0., 8., 8);	    
+	    if(el2_fake)   FillHist(label + "mcclosure_realevent_type", electronAnalysisColl_mcclosure.at(1).GetType() , 1., 0., 8., 8);	    
 	    
+	    
+	    if(el1_fake &&el2_fake)   FillHist(label + "mcclosure_trueevent_type", 0., 1., 0., 3., 3);
+	    if(!el1_fake &&el2_fake)   FillHist(label + "mcclosure_trueevent_type", 1., 1., 0., 3., 3);
+	    if(el1_fake &&!el2_fake)   FillHist(label + "mcclosure_trueevent_type", 1., 1., 0., 3., 3);
+	    if(!el1_fake &&!el2_fake)   FillHist(label + "mcclosure_trueevent_type", 2., 1., 0., 3., 3);
+	    
+	    
+
 	    FakeBkgBreakDown(electronAnalysisColl_mcclosure, "mcclosure",fake_weight60); 
 	    
 	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_mcclosure.at(1),   eventbase->GetEvent().JetRho()) ){
 	      
-	      FillHist(("MCSSclosure_fake_pt_measured"), electronAnalysisColl_mcclosure.at(1).Pt(), mcclosure_weight, 0. , 200., 10);
-	      FillHist(("MCSSclosure_fake_njet_measured"), jets.size(), mcclosure_weight, 0. , 10., 10);
-	      FillHist(("MCSSclosure_fake_nbjet_measured"), NBJet(jets), mcclosure_weight, 0. , 4., 4);
-	      FillHist(("MCSSclosure_fake_ht_measured"), SumPt(jets), mcclosure_weight, 0. , 400., 40);
-	      FillHist(("MCSSclosure_fake_eta_measured"), electronAnalysisColl_mcclosure.at(1).Eta(), mcclosure_weight, -2.5 , 2.5, 50);
-	      FillHist(("MCSSclosure_fake_eta_measured"), electronAnalysisColl_mcclosure.at(0).Eta(), mcclosure_weight, -2.5 , 2.5, 50);
-	      
-	      
-	      if(el1_fake &&el2_fake)                 FillHist("mcclosure_tt_fakeevent_type", 0 , 1.,  0. , 3, 3);
-	      if(!el1_fake &&el2_fake)                FillHist("mcclosure_tt_fakeevent_type", 1 , 1.,  0. , 3, 3);
-	      if(el1_fake &&!el2_fake)                FillHist("mcclosure_tt_fakeevent_type", 2 , 1.,  0. , 3, 3);
-	      if(!el1_fake &&!el2_fake)                FillHist("mcclosure_tt_fakeevent_type", 3 , 1.,  0. , 4, 4);
+	      FillHist(label + "mcclosure_event_breakdown_tt", 0., 1., 0., 1., 1);
+	      FillHist((label + "MCSSclosure_fake_pt_measured"), electronAnalysisColl_mcclosure.at(1).Pt(), mcclosure_weight, 0. , 400., 20);
+	      FillHist((label + "MCSSclosure_fake_njet_measured"), jets.size(), mcclosure_weight, 0. , 10., 10);
+	      FillHist((label + "MCSSclosure_fake_measured"), 0., mcclosure_weight, 0. , 1., 1);
+	      FillHist((label + "MCSSclosure_fake_nbjet_measured"), NBJet(jets), mcclosure_weight, 0. , 4., 4);
+	      FillHist((label + "MCSSclosure_fake_ht_measured"), SumPt(jets), mcclosure_weight, 0. , 1000., 40);
+	      FillHist((label + "MCSSclosure_fake_eta_measured"), electronAnalysisColl_mcclosure.at(1).Eta(), mcclosure_weight, -2.5 , 2.5, 4);
+	      FillHist((label + "MCSSclosure_fake_eta_measured"), electronAnalysisColl_mcclosure.at(0).Eta(), mcclosure_weight, -2.5 , 2.5, 4);
+
+	      if(closejet_el1 || closejet_el2){
+		FillHist((label + "MCSSclosure_fakecb_njet_measured"), jets.size(), mcclosure_weight, 0. , 10., 10);
+		FillHist((label + "MCSSclosure_fakecb_ht_measured"), SumPt(jets), mcclosure_weight, 0. , 1000., 40);
+		FillHist((label + "MCSSclosure_fakecb_measured"), 0., mcclosure_weight, 0. , 1., 1);
+	      }
+	      else{
+                FillHist((label + "MCSSclosure_fakenocb_njet_measured"), jets.size(), mcclosure_weight, 0. , 10., 10);
+                FillHist((label + "MCSSclosure_fakenocb_ht_measured"), SumPt(jets), mcclosure_weight, 0. , 1000., 40);
+		FillHist((label + "MCSSclosure_fakenocb_nbjet_measured"), NBJet(jets), mcclosure_weight, 0. , 4., 4);
+		FillHist((label + "MCSSclosure_fakenocb_pt_measured"),  electronAnalysisColl_mcclosure.at(1).Pt(), mcclosure_weight, 0. , 400., 20);
+		FillHist((label + "MCSSclosure_fakenocb_measured"), 0., mcclosure_weight, 0. , 1., 1);
+	      }
 	      
 	    }
 	    
 	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && !IsTight(electronAnalysisColl_mcclosure.at(1),   eventbase->GetEvent().JetRho()) ){
-              FillHist(("mcclosure_Doubletosingle"), 1., mcclosure_weight, 0. , 2., 2);
-	      
-	      if(el1_fake &&el2_fake)                 FillHist("mcclosure_tl_fakeevent_type", 0 , 1.,  0. , 3, 3);
-	      if(!el1_fake &&el2_fake)                FillHist("mcclosure_tl_fakeevent_type", 1 , 1.,  0. , 3, 3);
-	      if(el1_fake &&!el2_fake)                FillHist("mcclosure_tl_fakeevent_type", 2 , 1.,  0. , 3, 3);
-
+              FillHist((label + "MCSSclosure_mcclosure_Doubletosingle"), 0., mcclosure_weight, 0. , 1., 1);
+	      FillHist(label + "mcclosure_event_breakdown_tl", 0., 1., 0., 1., 1);
 	    }
 	    if(!IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_mcclosure.at(1),   eventbase->GetEvent().JetRho()) ){
-              FillHist(("mcclosure_Doubletosingle"), 1., mcclosure_weight, 0. , 2., 2);
-	      if(el1_fake &&el2_fake)                 FillHist("mcclosure_tl_fakeevent_type", 0 , 1.,  0. , 3, 3);
-              if(!el1_fake &&el2_fake)                FillHist("mcclosure_tl_fakeevent_type", 1 , 1.,  0. , 3, 3);
-              if(el1_fake &&!el2_fake)                FillHist("mcclosure_tl_fakeevent_type", 2 , 1.,  0. , 3, 3);
-
+              FillHist((label + "MCSSclosure_mcclosure_Doubletosingle"), 0., mcclosure_weight, 0. , 1., 1);
+	      FillHist(label + "mcclosure_event_breakdown_tl", 0., 1., 0., 1., 1);
             }
 	    if(!IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) &&!IsTight(electronAnalysisColl_mcclosure.at(1),   eventbase->GetEvent().JetRho()) ){
 	      //if(true){
-	      float f1 = m_fakeobj->getFakeRate_electronEta(0, electronAnalysisColl_mcclosure.at(0).Pt(), fabs(electronAnalysisColl_mcclosure.at(0).Eta()), "mc_20_loosereg1");
-	      float f2 = m_fakeobj->getFakeRate_electronEta(1, electronAnalysisColl_mcclosure.at(1).Pt(), fabs(electronAnalysisColl_mcclosure.at(1).Eta()), "mc_20_loosereg1");
-	      float sd = f1/(1.-f1) + f2/(1.-f2);
 	      
-	      FillHist(("mcclosure_single"), 1., sd*mcclosure_weight, 0. , 2., 2);
+	      vector<TString> jetcut;
+	      jetcut.push_back("20");
+	      jetcut.push_back("30");
+	      jetcut.push_back("40");
+	      jetcut.push_back("60");
+	      for(unsigned int ij=0; ij < jetcut.size() ; ij ++){
+		float sd =    GetFakeRateByParam("pteta", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2);      // pt vs eta
+		float sd_b =  GetFakeRateByParam("bjet_pt_eta", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2);      // pt vs eta
+		float sd_h =  GetFakeRateByParam("ht_eta", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2);      // pt vs eta
+		float sd_ht = GetFakeRateByParam("HT", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2); // ht vs eta (cb or nocb)
+		float sd_pt = GetFakeRateByParam("PT", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2); // ht vs eta (cb or nocb)
+		float sd_bt = GetFakeRateByParam("BT", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2);  // pt vs eta (0/non0 bjet) (cb or nocb)
+		float sd_st = GetFakeRateByParam("ST1", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2); ; // pt vs eta vs ht ((0/non0 bjet) (cb or nocb)
+		float sd_st2 = GetFakeRateByParam("ST2", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2);  // pt vs eta vs ht (cb or nocb)
+		float sd_st3 = GetFakeRateByParam("ST3", jetcut.at(ij), looseregion, electronAnalysisColl_mcclosure, jets,closejet_el1,closejet_el2);  // pt vs eta vs ht
+		
+		FillHist((label + "MCSSclosure_mcclosure" + jetcut.at(ij) + "_single"), 0., sd*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_b_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_b*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_h_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_h*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_ht_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_ht*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_pt_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_pt*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_bt_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_bt*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_st_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_st*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_st2_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_st2*mcclosure_weight, 0. , 1., 1);
+		FillHist((label + "MCSSclosure_st3_mcclosure" + jetcut.at(ij) + "_single"), 0., sd_st3*mcclosure_weight, 0. , 1., 1);
+	      }
 	      
-	      if(el1_fake &&el2_fake)                 FillHist("mcclosure_ll_fakeevent_type", 0 , 1.,  0. , 3, 3);
-              if(!el1_fake &&el2_fake)                FillHist("mcclosure_ll_fakeevent_type", 1 , 1.,  0. , 3, 3);
-              if(el1_fake &&!el2_fake)                FillHist("mcclosure_ll_fakeevent_type", 2 , 1.,  0. , 3, 3);
+	      FillHist(label + "mcclosure_event_breakdown_ll", 0., 1., 0., 1., 1);
+
+	      if(el1_fake &&el2_fake)                 FillHist(label + "MCSSclosure_mcclosure_ll_fakeevent_type", 0 , 1.,  0. , 3, 3);
+              if(!el1_fake &&el2_fake)                FillHist(label + "MCSSclosure_mcclosure_ll_fakeevent_type", 1 , 1.,  0. , 3, 3);
+              if(el1_fake &&!el2_fake)                FillHist(label + "MCSSclosure_mcclosure_ll_fakeevent_type", 2 , 1.,  0. , 3, 3);
 
 	    }
+	    /// prediction plots
+	    MakeMCCloseplots("20", label,  "pteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20);
+	    MakeMCCloseplots("40", label,  "pteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40);
+	    MakeMCCloseplots("60", label,  "pteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60);
+	    MakeMCCloseplots("30", label,  "pteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30);
+
+	    MakeMCCloseplots("20",  label, "pteta_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20b);
+            MakeMCCloseplots("40",  label, "pteta_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40b);
+            MakeMCCloseplots("60",  label, "pteta_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60b);
+            MakeMCCloseplots("30",  label, "pteta_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30b);
 	    
-	    FillHist(("MCSSclosure_fake_pt_predicted20"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight20, 0. , 200., 20);
-	    FillHist(("MCSSclosure_fake_pt_predicted30"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight30, 0. , 200., 20);
-	    FillHist(("MCSSclosure_fake_pt_predicted40"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight40, 0. , 200., 20);
-	    FillHist(("MCSSclosure_fake_pt_predicted60"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight60, 0. , 200., 20);
-	    FillHist(("MCSSclosure_fake_pt_predicted80"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight80, 0. , 200., 20);
+	    MakeMCCloseplots("20",  label, "pteta_h", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20h);
+            MakeMCCloseplots("40",  label, "pteta_h", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40h);
+            MakeMCCloseplots("60",  label, "pteta_h", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60h);
+            MakeMCCloseplots("30",  label, "pteta_h", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30h);
 
-	    FillHist(("MCSSclosure_fake_eta_predicted20"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight20, -2.5 , 2.5, 50);
-	    FillHist(("MCSSclosure_fake_eta_predicted20"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight20, -2.5 , 2.5, 50);
-	    FillHist(("MCSSclosure_fake_eta_predicted40"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight40, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_predicted40"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight40, -2.5 , 2.5, 50);
-	    FillHist(("MCSSclosure_fake_eta_predicted60"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight60, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_predicted60"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight60, -2.5 , 2.5, 50);
-
+	    MakeMCCloseplots("20",  label, "hteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20ht);
+	    MakeMCCloseplots("40",  label, "hteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40ht);
+	    MakeMCCloseplots("60",  label, "hteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60ht);
+	    MakeMCCloseplots("30",  label, "hteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30ht);
 	    
-	    /// ht prediction
-	    FillHist(("MCSSclosure_fake_pt_ht_predicted20"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight20_ht, 0. , 200., 20);
-	    FillHist(("MCSSclosure_fake_pt_ht_predicted40"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight40_ht, 0. , 200., 20);
-	    FillHist(("MCSSclosure_fake_pt_ht_predicted60"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight60_ht, 0. , 200., 20);
+            MakeMCCloseplots("20",  label, "bteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20bt);
+            MakeMCCloseplots("40",  label, "bteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40bt);
+            MakeMCCloseplots("60",  label, "bteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60bt);
+            MakeMCCloseplots("30",  label, "bteta", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30bt);
 
-	    FillHist(("MCSSclosure_fake_ht_ht_predicted20"), SumPt(jets), fake_weight20_ht, 0. , 400., 40);
-	    FillHist(("MCSSclosure_fake_ht_ht_predicted40"), SumPt(jets), fake_weight40_ht, 0. , 400., 40);
-	    FillHist(("MCSSclosure_fake_ht_ht_predicted60"), SumPt(jets), fake_weight60_ht, 0. , 400., 40);
+	    MakeMCCloseplots("20",  label, "pteta_ht_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20st);
+            MakeMCCloseplots("40",  label, "pteta_ht_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40st);
+            MakeMCCloseplots("60",  label, "pteta_ht_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60st);
+            MakeMCCloseplots("30",  label, "pteta_ht_b", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30st);
+
+	    MakeMCCloseplots("20",  label, "pteta_ht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20st2);
+            MakeMCCloseplots("40",  label, "pteta_ht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40st2);
+            MakeMCCloseplots("60",  label, "pteta_ht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60st2);
+            MakeMCCloseplots("30",  label, "pteta_ht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30st2);
 	    
-	    FillHist(("MCSSclosure_fake_eta_ht_predicted20"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight20_ht, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_ht_predicted20"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight20_ht, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_ht_predicted40"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight40_ht, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_ht_predicted40"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight40_ht, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_ht_predicted60"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight60_ht, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_ht_predicted60"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight60_ht, -2.5 , 2.5, 50);
+	    MakeMCCloseplots("20",  label, "pteta_pht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20st3);
+            MakeMCCloseplots("40",  label, "pteta_pht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40st3);
+            MakeMCCloseplots("60",  label, "pteta_pht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60st3);
+            MakeMCCloseplots("30",  label, "pteta_pht", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30st3);
 
-
-
-	    FillHist(("MCSSclosure_fake_njet_ht_predicted20"), jets.size(), fake_weight20_ht, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_njet_ht_predicted40"), jets.size(), fake_weight40_ht, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_njet_ht_predicted60"), jets.size(), fake_weight60_ht, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_nbjet_ht_predicted20"),  NBJet(jets),fake_weight20_ht, 0. , 4., 4);
-	    FillHist(("MCSSclosure_fake_nbjet_ht_predicted40"),  NBJet(jets),fake_weight40_ht,  0. , 4., 4);
-	    FillHist(("MCSSclosure_fake_nbjet_ht_predicted60"),  NBJet(jets),fake_weight60_ht, 0. , 4., 4);
-
-	    /// close bjet prediction
-	    FillHist(("MCSSclosure_fake_njet_awayjet_predicted20"), jets.size(), fake_weight20_awaybjet, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_njet_awayjet_predicted30"), jets.size(), fake_weight30_awaybjet, 0. , 10., 10);
-            FillHist(("MCSSclosure_fake_njet_awayjet_predicted40"), jets.size(), fake_weight40_awaybjet, 0. , 10., 10);
-            FillHist(("MCSSclosure_fake_njet_awayjet_predicted60"), jets.size() , fake_weight60_awaybjet, 0. ,10., 10);
-            FillHist(("MCSSclosure_fake_njet_awayjet_predicted80"), jets.size() , fake_weight80_awaybjet, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_nbjet_awayjet_predicted20"),  NBJet(jets), fake_weight20_awaybjet, 0. , 4., 4);
-            FillHist(("MCSSclosure_fake_nbjet_awayjet_predicted40"),  NBJet(jets), fake_weight40_awaybjet, 0. , 4., 4);
-            FillHist(("MCSSclosure_fake_nbjet_awayjet_predicted60"),  NBJet(jets), fake_weight60_awaybjet, 0. , 4., 4);
-            FillHist(("MCSSclosure_fake_nbjet_awayjet_predicted80"),  NBJet(jets), fake_weight80_awaybjet, 0. , 4., 4);
-
-	    FillHist(("MCSSclosure_fake_ht_awayjet_predicted20"), SumPt(jets), fake_weight20_awaybjet, 0. , 400., 40);
-	    FillHist(("MCSSclosure_fake_ht_awayjet_predicted40"), SumPt(jets), fake_weight40_awaybjet, 0. , 400., 40);
-	    FillHist(("MCSSclosure_fake_ht_awayjet_predicted60"), SumPt(jets), fake_weight60_awaybjet, 0. , 400., 40);
-	    FillHist(("MCSSclosure_fake_ht_awayjet_predicted80"), SumPt(jets), fake_weight80_awaybjet, 0. , 400., 40);
-
-	    FillHist(("MCSSclosure_fake_eta_awayjet_predicted20"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight20_awaybjet, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_awayjet_predicted20"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight20_awaybjet, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_awayjet_predicted40"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight40_awaybjet, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_awayjet_predicted40"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight40_awaybjet, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_awayjet_predicted60"),  electronAnalysisColl_mcclosure.at(0).Eta(), fake_weight60_awaybjet, -2.5 , 2.5, 50);
-            FillHist(("MCSSclosure_fake_eta_awayjet_predicted60"),  electronAnalysisColl_mcclosure.at(1).Eta(), fake_weight60_awaybjet, -2.5 , 2.5, 50);
-
-
-
-
-	    
-	    
-	    FillHist(("MCSSclosure_fake_pt_predicted_now"),  electronAnalysisColl_mcclosure.at(1).Pt(), w, 0. , 100., 10);
-	    if(NBJet(jets) > 0) {
-	      FillHist(("MCSSclosure_fake_pt_bjet_predicted20"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight20, 0. , 100., 10);
-	      FillHist(("MCSSclosure_fake_pt_bjet_predicted40"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight40, 0. , 100., 10);
-	      FillHist(("MCSSclosure_fake_pt_bjet_predicted60"),  electronAnalysisColl_mcclosure.at(1).Pt(), fake_weight60, 0. , 100., 10);
-	    }
-	    FillHist(("MCSSclosure_fake_njet_predicted20"), jets.size(), fake_weight20, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_njet_predicted40"), jets.size(), fake_weight40, 0. , 10., 10);
-	    FillHist(("MCSSclosure_fake_njet_predicted60"), jets.size() , fake_weight60, 0. , 10., 10); 
-	    FillHist(("MCSSclosure_fake_njet_predicted80"), jets.size() , fake_weight80, 0. , 10., 10); 
-	    FillHist(("MCSSclosure_fake_nbjet_predicted20"),  NBJet(jets), fake_weight20, 0. , 4., 4);
-	    FillHist(("MCSSclosure_fake_nbjet_predicted40"),  NBJet(jets), fake_weight40, 0. , 4., 4);
-	    FillHist(("MCSSclosure_fake_nbjet_predicted60"),  NBJet(jets), fake_weight60, 0. , 4., 4);
-	    FillHist(("MCSSclosure_fake_nbjet_predicted80"),  NBJet(jets), fake_weight80, 0. , 4., 4);
-	    FillHist(("MCSSclosure_fake_ht_predicted20"), SumPt(jets), fake_weight20, 0. , 400., 40);
-            FillHist(("MCSSclosure_fake_ht_predicted40"), SumPt(jets), fake_weight40, 0. , 400., 40);
-            FillHist(("MCSSclosure_fake_ht_predicted60"), SumPt(jets), fake_weight60, 0. , 400., 40);
-            FillHist(("MCSSclosure_fake_ht_predicted80"), SumPt(jets), fake_weight80, 0. , 400., 40);
-
-
+	    MakeMCCloseplots("20",  label, "pteta_cb", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight20pt);
+            MakeMCCloseplots("40",  label, "pteta_cb", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight40pt);
+            MakeMCCloseplots("60",  label, "pteta_cb", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight60pt);
+            MakeMCCloseplots("30",  label, "pteta_cb", electronAnalysisColl_mcclosure , jets, (closejet_el1 || closejet_el2) , fake_weight30pt);
+	    	    
 	  }
         }
       }
@@ -582,6 +761,171 @@ void AnalyzerCore::RunMCCLosureTest( std::vector<snu::KJet> jets, float w){
   return;
 }
   
+
+double AnalyzerCore::GetFakeRateByParam(TString param, TString jetcut, TString looseregion, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  bool cl1, bool cl2){
+
+  if(param.Contains("pteta")){
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), "mc_" + jetcut +"_"+ looseregion);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), "mc_" + jetcut +"_"+ looseregion);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+  }
+
+  if(param.Contains("ht_eta")){
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(0).Eta()), "mc_" + jetcut +"_ht_"+ looseregion);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(1).Eta()), "mc_" + jetcut +"_ht_"+ looseregion);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+    
+  }
+  
+  if(param.Contains("PT")){
+    TString el_1_pt = "";
+    TString el_2_pt = "";
+    if(cl1) el_1_pt = "mc_"+ jetcut + "_cb_" + looseregion;
+    else el_1_pt = "mc_"+jetcut+"_nocb_pt_" + looseregion;
+    if(cl2) el_2_pt = "mc_"+ jetcut + "_cb_" + looseregion;
+    else el_2_pt = "mc_"+ jetcut +"_nocb_pt_" + looseregion;
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), el_1_pt);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), el_2_pt);
+    if(cl1) f1 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(0).Eta()), el_1_pt);
+    if(cl2) f2 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(1).Eta()), el_2_pt);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+
+  }
+  if(param.Contains("BT")){
+
+    TString frbjet="b";
+    if(NBJet(jets) ==0) frbjet="nob";
+
+    TString el_1_bt = "";
+    TString el_2_bt = "";
+    if(cl1) el_1_bt = "mc_"+ jetcut + "_cb_" + looseregion;
+    else    el_1_bt = "mc_" + jetcut  + frbjet + "_nocb_" + looseregion;
+    if(cl2) el_2_bt = "mc_"+ jetcut + "_cb_" + looseregion;
+    else el_2_bt =  "mc_" + jetcut + frbjet + "_nocb_" + looseregion;
+
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), el_1_bt);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), el_2_bt);
+    if(cl1) f1 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(0).Eta()), el_1_bt);
+    if(cl2) f2 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(1).Eta()), el_2_bt);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+    
+  }
+  if(param.Contains("ST1")){
+    TString el_1_st = "";
+    TString el_2_st = "";
+    if(cl1) el_1_st = "mc_"+jetcut+"_cb_" + looseregion;
+    else {
+      if( NBJet(jets) == 0 ) {
+	if(SumPt(jets) < 100.)  el_1_st = "mc_"+jetcut+"_0bjet_ht1_nocb_" + looseregion;
+	else el_1_st = "mc_"+jetcut+"_0bjet_ht3_nocb_" + looseregion;
+      }
+      else{
+	if(SumPt(jets) < 100.)  el_1_st = "mc_"+jetcut+"_bjet_ht1_nocb_" + looseregion;
+	else el_1_st = "mc_"+jetcut+"_bjet_ht3_nocb_" + looseregion;
+
+      }
+    }
+    if(cl2) el_2_st = "mc_"+jetcut+"_cb_" + looseregion;
+    else {
+      if( NBJet(jets) == 0 ){
+	if(SumPt(jets) < 100.)   el_2_st = "mc_"+jetcut+"_0bjet_ht1_nocb_" + looseregion;
+	else  el_2_st = "mc_"+jetcut+"_0bjet_ht3_nocb_" + looseregion;
+      }
+      else{
+	if(SumPt(jets) < 100.)   el_2_st = "mc_"+jetcut+"_bjet_ht1_nocb_" + looseregion;
+	else  el_2_st = "mc_"+jetcut+"_bjet_ht3_nocb_" + looseregion;
+      }
+    }
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), el_1_st);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), el_2_st);
+    if(cl1) f1 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(0).Eta()), el_1_st);
+    if(cl2) f2 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(1).Eta()), el_2_st);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+    
+  }
+
+  if(param.Contains("ST3")){
+
+    TString st3label= "";
+    if(SumPt(jets) < 100.) st3label +=  "ht1_";
+    else st3label +=  "ht3_";
+    st3label += looseregion;
+    
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), "mc_" + jetcut +"_" +  st3label );
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), "mc_" + jetcut +"_" +  st3label );
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+
+  }
+  if(param.Contains("ST2")){
+    
+    TString el_1_st2 = "";
+    TString el_2_st2 = "";
+    if(cl1) el_1_st2 = "mc_"+jetcut+"_cb_" + looseregion;
+    else {
+      if(SumPt(jets) < 100.)  el_1_st2 = "mc_"+jetcut+"_ht1_nocb_" + looseregion;
+      else el_1_st2 = "mc_"+jetcut+"_ht3_nocb_" + looseregion;
+    }
+    if(cl2) el_2_st2 = "mc_"+jetcut+"_cb_" + looseregion;
+    else {
+      if(SumPt(jets) < 100.)   el_2_st2 = "mc_"+jetcut+"_ht1_nocb_" + looseregion;
+      else  el_2_st2 = "mc_"+jetcut+"_ht3_nocb_" + looseregion;
+    }
+
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), el_1_st2);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), el_2_st2);
+    if(cl1) f1 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(0).Eta()), el_1_st2);
+    if(cl2) f2 = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(1).Eta()), el_2_st2);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+    
+  }
+  if(param.Contains("bjet_pt_eta")){
+
+    TString frbjet="b";
+    if(NBJet(jets) ==0) frbjet="nob";
+    float f1 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(0).Pt(), fabs(electrons.at(0).Eta()), "mc_" + jetcut +"" + frbjet + "_"+looseregion);
+    float f2 = m_fakeobj->getFakeRate_electronEta(0, electrons.at(1).Pt(), fabs(electrons.at(1).Eta()), "mc_" + jetcut +"" + frbjet + "_"+looseregion);
+    return ( (f1 / (1.-f1))  + (f2 / (1.-f2)));
+  }
+
+  if(param.Contains("HT")){
+    TString el_1_ht = "";
+    TString el_2_ht = "";
+    if(cl1) el_1_ht = "mc_"+ jetcut + "_cb_" + looseregion;
+    else el_1_ht = "mc_"+ jetcut +"_nocb_" + looseregion;
+    if(cl2) el_2_ht = "mc_"+ jetcut +"_cb_" + looseregion;
+    else el_2_ht = "mc_"+ jetcut +"_nocb_" + looseregion;
+    
+    float f1_ht = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(0).Eta()), el_1_ht);
+    float f2_ht = m_fakeobj->getFakeRate_electronEta(0, SumPt(jets), fabs(electrons.at(1).Eta()), el_2_ht);
+    return ( (f1_ht / (1.-f1_ht))  + (f2_ht / (1.-f2_ht)));
+  }
+  return -9999999.;
+}
+
+void AnalyzerCore::MakeMCCloseplots(TString ajpt, TString label,  TString method, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool closebjet, float w1 ){
+  
+  FillHist((label + "MCSSclosure_fake_pt_predicted"+ajpt+method),  electrons.at(1).Pt(), w1, 0. , 400., 20);
+  FillHist((label + "MCSSclosure_fake_eta_predicted"+ ajpt+method),  electrons.at(0).Eta(), w1, -2.5 , 2.5, 4);
+  FillHist((label + "MCSSclosure_fake_eta_predicted"+ ajpt+method),  electrons.at(1).Eta(), w1, -2.5 , 2.5, 4);
+  FillHist((label + "MCSSclosure_fake_nbjet_predicted"+ajpt+method),  NBJet(jets), w1, 0. , 4., 4);
+  FillHist((label + "MCSSclosure_fake_ht_predicted"+ajpt+method), SumPt(jets), w1, 0. , 1000., 40);
+  FillHist((label + "MCSSclosure_fake_njet_predicted"+ ajpt+method), jets.size(), w1, 0. , 10., 10);
+  FillHist((label + "MCSSclosure_fake_predicted"+ ajpt+method), 0., w1, 0. , 1., 1);
+
+  if(closebjet){
+    FillHist((label + "MCSSclosure_fakecb_njet_predicted"+ ajpt+method), jets.size(), w1, 0. , 10., 10);
+    FillHist((label + "MCSSclosure_fakecb_predicted"+ ajpt+method), 0., w1, 0. , 1., 1);
+  }
+  else{
+    FillHist((label + "MCSSclosure_fakenocb_njet_predicted"+ajpt+method), jets.size(), w1, 0. , 10., 10);
+    FillHist((label + "MCSSclosure_fakenocb_ht_predicted"+ajpt+method), SumPt(jets), w1, 0. , 1000., 40);
+    FillHist((label + "MCSSclosure_fakenocb_nbjet_predicted"+ajpt+method),  NBJet(jets), w1, 0. , 4., 4);
+    FillHist((label + "MCSSclosure_fakenocb_pt_predicted"+ajpt+method),  electrons.at(1).Pt(), w1, 0. , 400., 20);
+    FillHist((label + "MCSSclosure_fakenocb_predicted"+ ajpt+method), 0., w1, 0. , 1., 1);
+  }
+  
+ 
+}
   
 void AnalyzerCore::PlotFakeLeptons( std::vector<snu::KJet> jets, float w){
 
@@ -626,26 +970,55 @@ void AnalyzerCore::PlotFakeLeptons( std::vector<snu::KJet> jets, float w){
 }
 
 
-void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets){
+void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets, TString label, float w){
 
   //// CHECK EFFICIENCY OF CUTS
-  std::vector<snu::KElectron>  electronPtEtaCutColl;
+  std::vector<snu::KElectron>  electronEta24CutColl;
+  std::vector<snu::KElectron>  electronEta25CutColl;
 
   for(unsigned int iel = 0; iel < electronNoCutColl.size(); iel++){
     if(iel ==0){
       if(electronNoCutColl[iel].Pt() < 20.) continue;
     }
     else{
-      if(electronNoCutColl[iel].Pt() < 15.) continue;
+      if(electronNoCutColl[iel].Pt() < 10.) continue;
     }
-    if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+    if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
+   
+    electronEta25CutColl.push_back(electronNoCutColl[iel]);
 
-    electronPtEtaCutColl.push_back(electronNoCutColl[iel]);
+    if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+    electronEta24CutColl.push_back(electronNoCutColl[iel]);
+
   }
 
+  std::vector<snu::KElectron>  electronPt10CutColl;
+  std::vector<snu::KElectron>  electronPt15CutColl;
+
+  for(unsigned int iel = 0; iel < electronNoCutColl.size(); iel++){
+    if(iel ==0){
+      if(electronNoCutColl[iel].Pt() < 20.) continue;
+    }
+    else{
+      if(electronNoCutColl[iel].Pt() < 10.) continue;
+    }
+    if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
+
+    electronPt10CutColl.push_back(electronNoCutColl[iel]);
+
+    if(iel ==0){
+      if(electronNoCutColl[iel].Pt() < 20.) continue;
+    }
+    else{
+      if(electronNoCutColl[iel].Pt() < 15.) continue;
+    }
+    
+    electronPt15CutColl.push_back(electronNoCutColl[iel]);
+
+  }
 
   
-  /// Tight ID eff
+   /// Tight ID eff
   std::vector<snu::KElectron>  electronTight_NoIsoCutColl;
   for(unsigned int iel = 0; iel < electronNoCutColl.size(); iel++){
     double egamma_e  = electronNoCutColl.at(iel).CaloEnergy();
@@ -728,7 +1101,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
     else{
       if(electronNoCutColl[iel].Pt() < 15.) continue;
     }
-    if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+    if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
     
 
     if ( fabs(electronNoCutColl.at(iel).SCEta()) < 1.479 ){
@@ -806,8 +1179,8 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
                             if(hcaliso > 0.2)  passNPFiso = false;
 
                             float isocut= 0.09;
-                            if(fabs(electronNoCutColl.at(iel).Eta() > 1.5) )isocut = 0.05;
-                            else   if(electronNoCutColl.at(iel).Pt()< 20.) isocut=0.07;
+                            if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5)isocut = 0.05;
+
                             if(LeptonRelIsoDR03 < isocut){
                               electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
                               if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
@@ -831,7 +1204,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
       else{
         if(electronNoCutColl[iel].Pt() < 15.) continue;
       }
-      if(fabs(electronNoCutColl[iel].Eta()) > 2.4) continue;
+      if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
 
       if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
         electronTight_tightref.push_back(electronNoCutColl.at(iel));
@@ -908,10 +1281,10 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
                             if(hcaliso > 0.2)  passNPFiso = false;
 
                             float isocut= 0.09;
-                            if(fabs(electronNoCutColl.at(iel).Eta() > 1.5) )isocut = 0.05;
-			    else   if(electronNoCutColl.at(iel).Pt()< 20.) isocut=0.07;
-                            if(LeptonRelIsoDR03 < isocut){
-                              electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
+                            if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5)isocut = 0.05;
+			  
+			    if(LeptonRelIsoDR03 < isocut){
+			    electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
                               if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
                             }
                           }
@@ -955,8 +1328,8 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
     if(ecaliso > 0.25) passNPFiso = false;
     if(hcaliso > 0.2)  passNPFiso = false;
     float isocut= 0.09;
-    if(fabs(electronNoCutColl.at(iel).Eta() > 1.5) )isocut = 0.05;
-    else  if(electronNoCutColl.at(iel).Pt()< 20.) isocut=0.07;
+    if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5 )isocut = 0.05;
+
     if(LeptonRelIsoDR03 < isocut){
       electron_IsoCutColl.push_back(electronNoCutColl.at(iel));
       if(passNPFiso)       electron_NPFIsoCutColl.push_back(electronNoCutColl.at(iel));
@@ -964,35 +1337,314 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
     }
   }
 
-  FillHist("electronRef", 1.,weight, 0.,2.,2);
-  if(SameCharge(electronPtEtaCutColl))   FillHist("electronPtEtaCutColl", 1.,weight, 0.,2.,2);
-  if(SameCharge(electronTight_NoIsoCutColl))   FillHist("electron_NoIsoCutColl", 1.,weight, 0.,2.,2);
-  if(SameCharge(electron_IsoCutColl))   FillHist("electron_IsoCutColl", 1.,weight, 0.,2.,2);
-  if(SameCharge(electron_NPFIsoCutColl))   FillHist("electron_NPFIsoCutColl", 1.,weight, 0.,2.,2);
-  if(SameCharge(electron_analysisCutColl))   FillHist("electron_analysisCutColll", 1.,weight, 0.,2.,2);
-  if(SameCharge(electron_analysisNPFCutColl))   FillHist("electron_analysisNPFCutColll", 1.,weight, 0.,2.,2);
-  if(jets.size()  > 1) FillHist("JetSelection", 1.,weight, 0.,2.,2);
-  if(SameCharge(electron_analysisCutColl) && jets.size()  > 1)  FillHist("PreSelection", 1.,weight, 0.,2.,2);
-  if(SameCharge(electron_analysisNPFCutColl) && jets.size()  > 1)  FillHist("PreSelectionNPF", 1.,weight, 0.,2.,2);
+  FillHist(label + "eff_electronRef", 1.,w, 0.,2.,2);
+  if(SameCharge(electronPt10CutColl))   FillHist(label + "eff_electronPt10CutColl", 1.,w, 0.,2.,2);
+  if(SameCharge(electronPt15CutColl))   FillHist(label + "eff_electronPt15CutColl", 1.,w, 0.,2.,2);
+  if(SameCharge(electronEta24CutColl))   FillHist(label + "eff_electronEta24CutColl", 1.,w, 0.,2.,2);
+  if(SameCharge(electronEta25CutColl))   FillHist(label + "eff_electronEta25CutColl", 1.,w, 0.,2.,2);
 
+  if(SameCharge(electronTight_NoIsoCutColl))   FillHist(label + "eff_electron_NoIsoCutColl", 1.,w, 0.,2.,2);
+  if(SameCharge(electron_IsoCutColl))   FillHist(label + "eff_electron_IsoCutColl", 1.,w, 0.,2.,2);
+  if(SameCharge(electron_NPFIsoCutColl))   FillHist(label + "eff_electron_NPFIsoCutColl", 1.,w, 0.,2.,2);
+  if(SameCharge(electron_analysisCutColl))   FillHist(label + "eff_electron_analysisCutColll", 1.,w, 0.,2.,2);
+  if(SameCharge(electron_analysisNPFCutColl))   FillHist(label + "eff_electron_analysisNPFCutColll", 1.,w, 0.,2.,2);
+  if(jets.size()  > 1) FillHist(label + "_JetSelection", 1.,w, 0.,2.,2);
+  if(jets.size()  > 1 && NBJet(jets) == 0 ) FillHist(label + "_JetSelection_noB", 1.,w, 0.,2.,2);
+
+  std::vector<TString> triggerslist;
+  triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+
+
+  if(PassTrigger(triggerslist, prescale) &&  jets.size()  > 1) {
+    
+    float wmassjj=0.;
+    int indexj1=0;
+    int indexj2=0;
+    for(unsigned int ij=0; ij < jets.size()-1; ij++){
+      for(unsigned int ij2=ij+1; ij2 < jets.size(); ij2++){
+	snu::KParticle jjtmp = jets.at(ij) + jets.at(ij2) ;
+	if(fabs(jjtmp.M() - 80.4) < wmassjj) {
+	  wmassjj = fabs(jjtmp.M() - 80.4);
+	  indexj1=ij;
+	  indexj2=ij2;
+	}
+      }
+    }
+
+    
+    int nlep = GetElectrons(false, false, "veto").size() + GetMuons(label + "_veto").size();
+
+    snu::KParticle jj = jets.at(indexj1) + jets.at(indexj2);
+    
+    if((GetElectrons(false, false,"HNTight_loosereg2").size() == 2) && jets.size()  > 1) {
+
+      float wa = w;
+      wa*= WeightCFEvent(GetElectrons(false,false,"HNTight_loosereg2"), k_running_chargeflip, false);
+      if(k_running_nonprompt) wa*=Get_DataDrivenWeight_EE(GetElectrons(false,false,"HNTight_loosereg2"),  jets,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method1_pt_eta_40_looseregion2", 0);
+
+      snu::KParticle Z = GetElectrons(false, false,"HNTight_loosereg2").at(0) + GetElectrons(false, false,"HNTight_loosereg2").at(1);
+      FillHist(label + "PreSelection", 1.,wa, 0.,2.,2);
+
+      if(!Zcandidate(GetElectrons(false, false,"HNTight_loosereg2"), 10., false)) {
+	FillHist(label + "PreSelection_noZ", 1.,wa, 0.,2.,2); 
+	if(nlep == 2 && Z.M() > 10.){
+	  FillHist(label + "PreSelection_veto", 1.,wa, 0.,2.,2);
+	  if(GetElectrons(false, false,"HNTight_loosereg2").at(1).Pt() > 15.)  {
+	    FillHist(label + "PreSelection_pt15", 1.,wa, 0.,2.,2); 
+	    if(eventbase->GetEvent().PFMET() < 30){
+	      FillHist(label + "PreSelection_met", 1.,wa, 0.,2.,2);
+	      if(NBJet(jets) == 0 ){
+		FillHist(label + "PreSelection_bjet", 1.,wa, 0.,2.,2);
+		if(jj.M() < 120.){
+		  FillHist(label + "PreSelection_jj", 1.,wa, 0.,2.,2);
+		  
+		  
+		  snu::KParticle eejj = GetElectrons(false, false,"HNTight_loosereg2").at(0) + GetElectrons(false, false,"HNTight_loosereg2").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  snu::KParticle e2jj = GetElectrons(false, false,"HNTight_loosereg2").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200.  ) FillHist(label + "PreSelection_lowmass", 1.,wa, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200. && Z.M() < 60 ) FillHist(label + "PreSelection_lowmass2", 1.,wa, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 155. && Z.M() < 60 ) FillHist(label + "PreSelection_lowmass3", 1.,wa, 0.,2.,2);
+		}
+	      }
+	    }
+	    
+	    if(eventbase->GetEvent().PFMET() < 35){
+              FillHist(label + "PreSelection_high_met", 1.,wa, 0.,2.,2);
+              if(NBJet(jets) == 0 ){
+                FillHist(label + "PreSelection_high_bjet", 1.,wa, 0.,2.,2);
+                if(jj.M() < 110.&& jj.M() > 50.){
+                  FillHist(label + "PreSelection_high_jj", 1.,wa, 0.,2.,2);
+
+		  
+		  snu::KParticle eejj = GetElectrons(false, false,"HNTight_loosereg2").at(0) + GetElectrons(false, false,"HNTight_loosereg2").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  snu::KParticle e2jj = GetElectrons(false, false,"HNTight_loosereg2").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  float pt1 = GetElectrons(false, false,"HNTight_loosereg2").at(0).Pt();
+		  float pt2 = GetElectrons(false, false,"HNTight_loosereg2").at(1).Pt();
+
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 100 ) FillHist(label + "PreSelection_highmass", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 110 ) FillHist(label + "PreSelection_highmass2", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 120 ) FillHist(label + "PreSelection_highmass3", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 140 && pt1 > 25 && pt2 > 20) FillHist(label + "PreSelection_highmass4", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 160 && pt1 > 35 && pt2 > 25) FillHist(label + "PreSelection_highmass5", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 200 && pt1 > 45 && pt2 > 30) FillHist(label + "PreSelection_highmass6", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 220 && pt1 > 50 && pt2 > 35) FillHist(label + "PreSelection_highmass7", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 270 && pt1 > 70 && pt2 > 45) FillHist(label + "PreSelection_highmass8", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 290 && pt1 > 100 && pt2 > 45) FillHist(label + "PreSelection_highmass9", 1.,wa, 0.,2.,2);
+
+		  
+		  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 80  && e2jj.M() > 70. && e2jj.M() < 120. ) FillHist(label + "PreSelection_highmass10", 1.,wa, 0.,2.,2); // 80
+		  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 110  && e2jj.M() > 80. && e2jj.M() < 120. ) FillHist(label + "PreSelection_highmass11", 1.,wa, 0.,2.,2); // 90-100
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 140 && pt1 > 25 && pt2 > 25  && e2jj.M() > 90. && e2jj.M() < 145.) FillHist(label + "PreSelection_highmass12", 1.,wa, 0.,2.,2); // 125
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 160 && pt1 > 35 && pt2 > 25 && e2jj.M() > 120. && e2jj.M() < 180.) FillHist(label + "PreSelection_highmass13", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 240 && pt1 > 45 && pt2 > 30  && e2jj.M() > 140. && e2jj.M() < 200.) FillHist(label + "PreSelection_highmass14", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 280 && pt1 > 65 && pt2 > 40  && e2jj.M() > 160. && e2jj.M() < 250.) FillHist(label + "PreSelection_highmass15", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 290 && pt1 > 70 && pt2 > 45 && e2jj.M() > 160. && e2jj.M() < 260.) FillHist(label + "PreSelection_highmass16", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 300 && pt1 > 70 && pt2 > 45 ) FillHist(label + "PreSelection_highmass17", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 320 && pt1 > 70 && pt2 > 45 ) FillHist(label + "PreSelection_highmass18", 1.,wa, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 350 && pt1 > 120 && pt2 > 25 ) FillHist(label + "PreSelection_highmass19", 1.,wa, 0.,2.,2);
+		  
+                }
+              }
+            }
+	    
+	  }
+        }
+      }
+    }
+    
+    
+    if((GetElectrons(false,false,"id_medium").size() == 2) && jets.size()  > 1) {
+      
+      snu::KParticle Z = GetElectrons(false,false,"id_medium").at(0) + GetElectrons(false,false,"id_medium").at(1);
+
+
+      float wm = w;
+      wm*= WeightCFEvent(GetElectrons(false,false,"id_medium"), k_running_chargeflip, false);
+      if(k_running_nonprompt)wm  *= Get_DataDrivenWeight_EE(GetElectrons(false,false,"id_medium"),  jets,  eventbase->GetEvent().JetRho(),  false, 0.02, 0.1, 0.1, "medium_pog_40_pt_eta", 0);
+      FillHist(label + "PreSelection_medium", 1.,wm, 0.,2.,2);
+
+      if(!Zcandidate(GetElectrons(false,false,"id_medium"), 10., false)) {
+	FillHist(label + "PreSelection_medium_noZ", 1.,wm, 0.,2.,2);
+	if(nlep == 2 && Z.M() > 10.) {
+	  FillHist(label + "PreSelection_medium_veto", 1.,wm, 0.,2.,2);
+	  if(GetElectrons(false,false,"id_medium").at(1).Pt() > 15.)  {
+	    FillHist(label + "PreSelection_medium_pt15", 1.,wm, 0.,2.,2);
+	    if(eventbase->GetEvent().PFMET() < 30){
+	      FillHist(label + "PreSelection_medium_met", 1.,wm, 0.,2.,2);
+	      if(NBJet(jets) == 0 ){
+		FillHist(label + "PreSelection_medium_bjet", 1.,wm, 0.,2.,2);
+		if(jj.M() < 120.){
+		  FillHist(label + "PreSelection_medium_jj", 1.,wm, 0.,2.,2);
+		  
+		  snu::KParticle eejj = GetElectrons(false,false,"id_medium").at(0) + GetElectrons(false,false,"id_medium").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  snu::KParticle e2jj = GetElectrons(false,false,"id_medium").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200.  ) FillHist(label + "PreSelection_medium_lowmass", 1.,wm, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200. && Z.M() < 60 ) FillHist(label + "PreSelection_medium_lowmass2", 1.,wm, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 155. && Z.M() < 60 ) FillHist(label + "PreSelection_medium_lowmass3", 1.,wm, 0.,2.,2);
+		}
+	      }
+	    }
+
+	  }
+	}
+      }
+    }
+    
+    if((GetElectrons(false,false,"id_tight").size()==2) && jets.size()  > 1)  {
+
+      snu::KParticle Z = GetElectrons(false,false,"id_tight").at(0) + GetElectrons(false,false,"id_tight").at(1);
+      float wt = w;
+      wt*= WeightCFEvent(GetElectrons(false,false,"id_tight"), k_running_chargeflip, false);
+
+      if(k_running_nonprompt)wt *= Get_DataDrivenWeight_EE(GetElectrons(false,false,"id_tight"),  jets,  eventbase->GetEvent().JetRho(),  true, 0.02, 0.1, 0.1, "tight_pog_40_pt_eta", 0);
+
+      FillHist(label + "PreSelection_tight", 1.,wt, 0.,2.,2);
+      if(!Zcandidate(GetElectrons(false,false,"id_tight"), 10., false)) {
+	FillHist(label + "PreSelection_tight_noZ", 1.,wt, 0.,2.,2);
+	if(nlep == 2 && Z.M() > 10.) {
+          FillHist(label + "PreSelection_tight_veto", 1.,wt, 0.,2.,2);
+	  
+	  if(GetElectrons(false,false,"id_tight").at(1).Pt() > 15.)     {
+	    FillHist(label + "PreSelection_tight_pt15", 1.,wt, 0.,2.,2);
+	    
+	    if(eventbase->GetEvent().PFMET() < 30){
+	      FillHist(label + "PreSelection_tight_met", 1.,wt, 0.,2.,2);
+	      if(NBJet(jets) == 0 ){
+		FillHist(label + "PreSelection_tight_bjet", 1.,wt, 0.,2.,2);
+		if(jj.M() < 120.){
+		  FillHist(label + "PreSelection_tight_jj", 1.,wt, 0.,2.,2);
+		  
+		  snu::KParticle eejj = GetElectrons(false,false,"id_tight").at(0) + GetElectrons(false,false,"id_tight").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  snu::KParticle e2jj = GetElectrons(false,false,"id_tight").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200.  ) FillHist(label + "PreSelection_tight_lowmass", 1.,wt, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200. && Z.M() < 60 ) FillHist(label + "PreSelection_tight_lowmass2", 1.,wt, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 155. && Z.M() < 60 ) FillHist(label + "PreSelection_tight_lowmass3", 1.,wt, 0.,2.,2);
+		}
+	      }
+            }
+	    if(eventbase->GetEvent().PFMET() < 35){
+              FillHist(label + "PreSelection_tight_high_met", 1.,wt, 0.,2.,2);
+              if(NBJet(jets) == 0 ){
+                FillHist(label + "PreSelection_tight_high_bjet", 1.,wt, 0.,2.,2);
+                if(jj.M() < 110.&& jj.M() > 50.){
+                  FillHist(label + "PreSelection_tight_high_jj", 1.,wt, 0.,2.,2);
+
+
+		  snu::KParticle eejj = GetElectrons(false, false,"id_tight").at(0) + GetElectrons(false, false,"id_tight").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  snu::KParticle e2jj = GetElectrons(false, false,"id_tight").at(1) + jets.at(indexj1) + jets.at(indexj2);
+                  float pt1 = GetElectrons(false, false,"id_tight").at(0).Pt();
+                  float pt2 = GetElectrons(false, false,"id_tight").at(1).Pt();
+
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 100 ) FillHist(label + "PreSelection_tight_highmass", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 110 ) FillHist(label + "PreSelection_tight_highmass2", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 120 ) FillHist(label + "PreSelection_tight_highmass3", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 140 && pt1 > 25 && pt2 > 20) FillHist(label + "PreSelection_tight_highmass4", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 160 && pt1 > 35 && pt2 > 25) FillHist(label + "PreSelection_tight_highmass5", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 200 && pt1 > 45 && pt2 > 30) FillHist(label + "PreSelection_tight_highmass6", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 220 && pt1 > 50 && pt2 > 35) FillHist(label + "PreSelection_tight_highmass7", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 270 && pt1 > 70 && pt2 > 45) FillHist(label + "PreSelection_tight_highmass8", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 290 && pt1 > 100 && pt2 > 45) FillHist(label + "PreSelection_tight_highmass9", 1.,wt, 0.,2.,2);
+
+
+
+
+
+		  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 80  && e2jj.M() > 70. && e2jj.M() < 120. ) FillHist(label + "PreSelection_tight_highmass10", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 110  && e2jj.M() > 80. && e2jj.M() < 120. ) FillHist(label + "PreSelection_tight_highmass11", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 140 && pt1 > 25 && pt2 > 25  && e2jj.M() > 90. && e2jj.M() < 145.) FillHist(label + "PreSelection_tight_highmass12", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 160 && pt1 > 35 && pt2 > 25 && e2jj.M() > 120. && e2jj.M() < 180.) FillHist(label + "PreSelection_tight_highmass13", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 240 && pt1 > 45 && pt2 > 30  && e2jj.M() > 140. && e2jj.M() < 200.) FillHist(label + "PreSelection_tight_highmass14", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 280 && pt1 > 65 && pt2 > 40  && e2jj.M() > 160. && e2jj.M() < 250.) FillHist(label + "PreSelection_tight_highmass15", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 290 && pt1 > 70 && pt2 > 45 && e2jj.M() > 160. && e2jj.M() < 260.) FillHist(label + "PreSelection_tight_highmass16", 1.,wt, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 300 && pt1 > 70 && pt2 > 45 ) FillHist(label + "PreSelection_tight_highmass17", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 320 && pt1 > 70 && pt2 > 45 ) FillHist(label + "PreSelection_tight_highmass18", 1.,wt, 0.,2.,2);
+                  if(nlep == 2 && Z.M() > 15.&& eejj.M() > 350 && pt1 > 120 && pt2 > 25 ) FillHist(label + "PreSelection_tight_highmass19", 1.,wt, 0.,2.,2);
+                }
+              }
+            }
+	  }
+        }
+      }
+    }
+
+    if((GetElectrons(false,false,"tight_iso_b10_e10").size()==2)&& jets.size()  > 1)  {
+      snu::KParticle Z = GetElectrons(false,false,"tight_iso_b10_e10").at(0) + GetElectrons(false,false,"tight_iso_b10_e10").at(1);
+
+      float wt = w;
+      wt*= WeightCFEvent(GetElectrons(false,false,"tight_iso_b10_e10"), k_running_chargeflip, false);
+      if(k_running_nonprompt)wt *= Get_DataDrivenWeight_EE(GetElectrons(false,false,"tight_iso_b10_e10"),  jets,  eventbase->GetEvent().JetRho(), false, 0.01, 0.1, 0.1, "electronTightColl_dr03_b10_e10_40_pt_eta", 0);
+      FillHist(label + "PreSelection_iso_10_10", 1.,wt, 0.,2.,2);
+      if(!Zcandidate(GetElectrons(false,false,"tight_iso_b10_e10"), 10., false)){
+	FillHist(label + "PreSelection_iso_10_10_noZ", 1.,wt, 0.,2.,2);
+	if(nlep == 2 && Z.M() > 10.){
+	  FillHist(label + "PreSelection_iso_b10_e10_veto", 1.,wt, 0.,2.,2);
+	  
+	  if(GetElectrons(false,false,"tight_iso_b10_e10").at(1).Pt() > 15.)     {
+	    FillHist(label + "PreSelection_iso_10_10_pt15", 1.,wt, 0.,2.,2);
+	    
+	    if(eventbase->GetEvent().PFMET() < 30){
+	      FillHist(label + "PreSelection_iso_b10_e10_met", 1.,wt, 0.,2.,2);
+	      if(NBJet(jets) == 0 ){
+		FillHist(label + "PreSelection_iso_b10_e10_bjet", 1.,wt, 0.,2.,2);
+		if(jj.M() < 120.){
+		  FillHist(label + "PreSelection_iso_b10_e10_jj", 1.,wt, 0.,2.,2);
+		  
+		  snu::KParticle eejj = GetElectrons(false,false,"tight_iso_b10_e10").at(0) + GetElectrons(false,false,"tight_iso_b10_e10").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  snu::KParticle e2jj = GetElectrons(false,false,"tight_iso_b10_e10").at(1) + jets.at(indexj1) + jets.at(indexj2);
+		  
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200.  ) FillHist(label + "PreSelection_iso_b10_e10_lowmass", 1.,wt, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 200. && Z.M() < 60 ) FillHist(label + "PreSelection_iso_b10_e10_lowmass2", 1.,wt, 0.,2.,2);
+		  if(nlep == 2 && Z.M() > 10.&& eejj.M() > 80&&eejj.M() < 155. && Z.M() < 60 ) FillHist(label + "PreSelection_iso_b10_e10_lowmass3", 1.,wt, 0.,2.,2);
+		}
+	      }
+	    }
+          }
+        }
+      }
+    }
+    
+    
+    
+  }
+    
   if(SameCharge(electronTight_tightref)){
-    FillHist("electronTight_tightref", 1., weight, 0.,2.,2);
-    if(SameCharge(electronTight_DeltaEta))   FillHist("electron_DeltaEta", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_DeltaPhi))   FillHist("electron_DeltaPhi", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_SigmaIEta))   FillHist("electron_SigmaIEta", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_DZ))   FillHist("electron_DZ", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_HoverE))   FillHist("electron_HoverE", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_convfit))   FillHist("electron_convfit", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_ep))   FillHist("electron_ep", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_missinghit))   FillHist("electron_missinghit", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_convphoton))   FillHist("electron_convphoton", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_DXY))   FillHist("electron_DXY", 1.,weight, 0.,2.,2);
-    if(SameCharge(electronTight_chargeconst))   FillHist("electron_chargeconst", 1.,weight, 0.,2.,2);
+    FillHist(label + "eff_electronTight_tightref", 1., w, 0.,2.,2);
+    if(SameCharge(electronTight_DeltaEta))   FillHist(label + "eff_electron_DeltaEta", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_DeltaPhi))   FillHist(label + "eff_electron_DeltaPhi", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_SigmaIEta))   FillHist(label + "eff_electron_SigmaIEta", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_DZ))   FillHist(label + "eff_electron_DZ", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_HoverE))   FillHist(label + "eff_electron_HoverE", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_convfit))   FillHist(label + "eff_electron_convfit", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_ep))   FillHist(label + "eff_electron_ep", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_missinghit))   FillHist(label + "eff_electron_missinghit", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_convphoton))   FillHist(label + "eff_electron_convphoton", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_DXY))   FillHist(label + "eff_electron_DXY", 1.,w, 0.,2.,2);
+    if(SameCharge(electronTight_chargeconst))   FillHist(label + "eff_electron_chargeconst", 1.,w, 0.,2.,2);
   }
 
+}
+float AnalyzerCore::WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates){
 
+  if(electrons.size()!=2) return 0.;
+  if(runchargeflip) {
+    if(electrons.at(0).Charge() != electrons.at(1).Charge()) {
+      float cf1=  CFRate(electrons.at(0), useoldrates);
+      float cf2=  CFRate(electrons.at(1),useoldrates);
+      return ((cf1/(1.-cf1)) + (cf2/(1.-cf2)));
+    }// OS requirement
+    else return 0.;
+  }// cf requirement
+  else {
+    if(electrons.at(0).Charge() != electrons.at(1).Charge()) return 0.;
+  }
+
+  return 1.;
 
 }
+
 
 
 TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
@@ -1057,46 +1709,46 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
   
   if(tight_electron){
     if(fabs(eta) < 0.8 ) {
-      if( pt < 15.) sf = 0.827;
-      else if( pt < 20.) sf = 0.924;
-      else if( pt < 30.) sf = 0.960;
-      else if( pt < 40.) sf = 0.978;
-      else if( pt < 50.) sf = 0.981;
-      else sf = 0.982;
+      if( pt < 15.) sf = 0.949;
+      else if( pt < 20.) sf = 0.949;
+      else if( pt < 30.) sf = 0.957;
+      else if( pt < 40.) sf = 0.966;
+      else if( pt < 50.) sf = 0.973;
+      else sf = 0.985;
     }
     else  if(fabs(eta) <  1.442){
       
-      if( pt < 15.) sf = 0.948;
-      else if( pt < 20.) sf = 0.932;
-      else if( pt < 30.) sf = 0.936;
-      else if( pt < 40.) sf = 0.958;
-      else if( pt < 50.) sf = 0.969;
-      else sf = 0.969;
+      if( pt < 15.) sf = 0.96;
+      else if( pt < 20.) sf = 0.96;
+      else if( pt < 30.) sf = 0.935;
+      else if( pt < 40.) sf = 0.938;
+      else if( pt < 50.) sf = 0.949;
+      else sf = 0.946;
     }
     else  if(fabs(eta) <1.556){
-      if( pt < 15.) sf = 1.073;
-      else if( pt < 20.) sf = 0.808;
-      else if( pt < 30.) sf = 0.933;
-      else if( pt < 40.) sf = 0.907;
-      else if( pt < 50.) sf = 0.904;
-      else sf = 0.926;
+      if( pt < 15.) sf = 0.831;
+      else if( pt < 20.) sf = 0.831;
+      else if( pt < 30.) sf = 0.876;
+      else if( pt < 40.) sf = 0.847;
+      else if( pt < 50.) sf = 0.901;
+      else sf = 0.916;
     }
     else if(fabs(eta) <2.0){
       
-      if( pt < 15.) sf = 0.854;
-      else if( pt < 20.) sf = 0.853;
-      else if( pt < 30.) sf = 0.879;
-      else if( pt < 40.) sf = 0.909;
-      else if( pt < 50.) sf = 0.942;
-      else sf = 0.957;
+      if( pt < 15.) sf = 0.831;
+      else if( pt < 20.) sf = 0.831;
+      else if( pt < 30.) sf = 0.876;
+      else if( pt < 40.) sf = 0.847;
+      else if( pt < 50.) sf = 0.901;
+      else sf = 0.916;
     }
     else{
-      if( pt < 15.) sf = 1.007;
-      else if( pt < 20.) sf = 0.903;
-      else if( pt < 30.) sf = 0.974;
-      else if( pt < 40.) sf = 0.987;
-      else if( pt < 50.) sf = 0.991;
-      else sf = 0.999;
+      if( pt < 15.) sf = 0.86;
+      else if( pt < 20.) sf = 0.86;
+      else if( pt < 30.) sf = 0.885;
+      else if( pt < 40.) sf = 0.913;
+      else if( pt < 50.) sf = 0.937;
+      else sf = 0.946;
     }
     return sf;
   }
@@ -1605,6 +2257,22 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   if(type==sighist){
 
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
+    else {
+      mapCLhistSig[hist] = new SignalPlots(hist);
+      sigpit = mapCLhistSig.find(hist);
+      sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
+    }
+  }
+  else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
+}
+
+
+void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, Double_t weight_err){
+
+  if(type==sighist){
+
+    map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w);
     else {
       mapCLhistSig[hist] = new SignalPlots(hist);
@@ -1620,11 +2288,11 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
 
   if(type==sighist){
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
-    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w, 0.);
     else {
       mapCLhistSig[hist] = new SignalPlots(hist);
       sigpit = mapCLhistSig.find(hist);
-      sigpit->second->Fill(ev, electrons, jets, w);
+      sigpit->second->Fill(ev, electrons, jets, w, 0.);
     }
   }
   else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
@@ -1682,7 +2350,9 @@ void AnalyzerCore::WriteHists(){
   m_outputFile->cd();
 
   for(map<TString, TH1*>::iterator mapit = maphist.begin(); mapit != maphist.end(); mapit++){
-
+    
+    
+    
     if(mapit->first.Contains("closejet")){
       if(!m_outputFile->GetDirectory( "closejet" )){
 	Dir = m_outputFile->mkdir("closejet");
@@ -1701,6 +2371,25 @@ void AnalyzerCore::WriteHists(){
       mapit->second->Write();
       m_outputFile->cd();
     }
+    else if (mapit->first.Contains("MCSSclo")){
+      if(!m_outputFile->GetDirectory("MCclosure")){
+	Dir = m_outputFile->mkdir("MCclosure");
+        m_outputFile->cd(Dir->GetName() );
+      }
+      else m_outputFile->cd("MCclosure");
+      mapit->second->Write();
+      m_outputFile->cd();
+    }
+    else if (mapit->first.Contains("mcclosure")){
+      if(!m_outputFile->GetDirectory("MCclosure")){
+        Dir = m_outputFile->mkdir("MCclosure");
+        m_outputFile->cd(Dir->GetName() );
+      }
+      else m_outputFile->cd("MCclosure");
+      mapit->second->Write();
+      m_outputFile->cd();
+    }
+
     else if (mapit->first.Contains("FakeBkg")){
       if(!m_outputFile->GetDirectory("FakeBkg")){
 	Dir = m_outputFile->mkdir("FakeBkg");
@@ -1738,7 +2427,42 @@ void AnalyzerCore::WriteHists(){
       m_outputFile->cd();
     }
     
-    else     mapit->second->Write();
+    else if (mapit->first.Contains("limithist")){
+      
+      if(!m_outputFile->GetDirectory("limithist")){
+        Dir = m_outputFile->mkdir("limithist");
+        m_outputFile->cd(Dir->GetName() );
+      }
+      else m_outputFile->cd("limithist");
+      mapit->second->Write();
+      m_outputFile->cd();
+
+    }
+    
+    else if (mapit->first.Contains("eventcutflow")){
+      if(!m_outputFile->GetDirectory("CutFlow")){
+        Dir = m_outputFile->mkdir("CutFlow");
+        m_outputFile->cd(Dir->GetName() );
+      }
+      else m_outputFile->cd("CutFlow");
+      mapit->second->Write();
+      m_outputFile->cd();
+    }
+    else if (mapit->first.Contains("eff_electron")){
+      if(!m_outputFile->GetDirectory("Efficiency")){
+        Dir = m_outputFile->mkdir("Efficiency");
+        m_outputFile->cd(Dir->GetName() );
+      }
+      else m_outputFile->cd("Efficiency");
+      mapit->second->Write();
+      m_outputFile->cd();
+
+    }
+    
+    
+    else {
+      mapit->second->Write();
+    }
   }
 
   for(map<TString, TH2*>::iterator mapit = maphist2D.begin(); mapit != maphist2D.end(); mapit++){
@@ -1876,7 +2600,7 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
   if (reliso<0) reliso=0.0001;
   
 
-  if(( reliso >= 0.05)) return false;
+  if(( reliso >= 0.09)) return false;
   if(( muon.GlobalChi2() >= 10.)) return false;
  
   if(fabs(muon.dXY()) >= 0.005) return false; 
@@ -1927,6 +2651,31 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
   
   return prompt_electrons;
 }
+
+vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool keepfake){
+
+  vector<int> toremove;
+  if(!keepfake){
+    toremove.push_back(1);
+    toremove.push_back(2);
+    toremove.push_back(3);
+  }
+
+  vector<snu::KMuon> prompt_muons;
+  for(unsigned int i = 0; i < muons.size(); i++){
+    if(!k_isdata){
+      bool remove_el=false;
+      for(unsigned int j=0; j < toremove.size(); j++){
+        if(muons.at(i).GetType() == toremove.at(j)) remove_el=true;
+      }
+      if(!remove_el) prompt_muons.push_back(muons.at(i));
+    }// Data
+    else prompt_muons.push_back(muons.at(i));
+  }/// loop
+
+  return prompt_muons;
+}
+
 
 
 
@@ -1989,6 +2738,21 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons ,  double rho, bool usetight,  double dxy, double biso, double eiso,TString cut){
   return Get_DataDrivenWeight_EE(k_electrons, rho, usetight, dxy, biso, eiso, cut, 0);
+}
+
+
+float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons , std::vector<snu::KJet> jets,  double rho,  bool usetight,  double dxy, double biso, double eiso, TString cut, int type){
+  float ee_weight = 0.;
+  if(k_electrons.size()==2){
+
+    bool is_el1_tight    = IsTight(k_electrons.at(0),  rho, dxy, biso, eiso, usetight);
+    bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, usetight);
+    
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, SumPt(jets), is_el1_tight,is_el2_tight, cut, type);
+
+  }
+  return ee_weight;
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons ,  double rho,  bool usetight,  double dxy, double biso, double eiso, TString cut, int type){
