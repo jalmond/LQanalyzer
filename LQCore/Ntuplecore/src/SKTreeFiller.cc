@@ -267,13 +267,18 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetTrkVy(ElectronTrackVy->at(iel));
     el.SetTrkVz(ElectronTrackVz->at(iel));
     /// distance between lepton and PRIMARY analysis vertex
+    cout << "\n------" << endl;
     if(VertexN != -1){
+      //cout << "Setting dz for electron, using method 1 : vertexN = " <<  VertexN << endl;
+      //cout << "ElectronTrackVz =  " << ElectronTrackVz->at(iel)<< " : VertexZ = " << VertexZ->at(VertexN) << endl;
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
 
     }
     else if (VertexN == -999.){
+
       snu::KEvent ev = SKTreeFiller::GetEventInfo();
+      cout << "ElectronTrackVz =  " << ElectronTrackVz->at(iel) << " : VertexZ = " << VertexZ->at(ev.VertexIndex()) << " : VertexN = " << ev.VertexIndex() << endl;
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(ev.VertexIndex()));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ev.VertexIndex()),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ev.VertexIndex()),2)));
     }

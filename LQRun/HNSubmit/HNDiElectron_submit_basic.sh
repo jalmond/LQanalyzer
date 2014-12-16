@@ -243,7 +243,7 @@ then
     skinput="True"
     useskim="DiLep"
 
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
 
@@ -251,7 +251,7 @@ then
     logstep=1000
 
     declare -a input_samples=( "A" "B" "C" "D")
-
+     declare -a input_samples=( "A" )
     stream="egamma"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron_ntup/"
