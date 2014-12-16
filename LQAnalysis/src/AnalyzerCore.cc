@@ -2702,11 +2702,10 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
 
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-
-
-    em_weight =m_fakeobj->get_dilepton_em_eventweight(muons,electrons, is_mu1_tight,is_el1_tight);
+    
+    em_weight =m_fakeobj->get_dilepton_em_eventweight(muons,electrons, is_mu1_tight,is_el1_tight, NBJet( GetJets("ApplyPileUpID")));
   }
-
+  
   return em_weight;
 }
 

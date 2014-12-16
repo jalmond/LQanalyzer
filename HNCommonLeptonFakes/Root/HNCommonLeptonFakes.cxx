@@ -956,7 +956,7 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 
 
 
-float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight){
+float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet){
 
   if(muons.size()!=1) {
     return (0.);
@@ -990,8 +990,23 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
 
   fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
   fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
-
-
+  
+  if(nbjet ==0) {
+    if(_el1_pt < 20.){
+      if(fabs(_el1_eta) < 1.5){
+	fr2*= 1.5;
+      }
+    }
+    if(_el1_pt > 100.) fr2 *= 2.5;
+  }
+  else{
+    if(fabs(_el1_eta) > 1.5){
+      if(_el1_pt < 50.){
+	fr2 = fr2/ 3.;
+      }
+    }
+  }
+  
   float fr1_err = 0.;
   float fr2_err = 0.;
   // Calculate event weight
