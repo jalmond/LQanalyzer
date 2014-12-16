@@ -33,6 +33,10 @@ HNEMu::HNEMu() :  AnalyzerCore(),  out_electrons(0) {
   InitialiseAnalysis();
   
   
+  MakeCleverHistograms(sighist,"SS_1Jet");
+  MakeCleverHistograms(sighist,"SS_0bjet");
+  MakeCleverHistograms(sighist,"SS_bjet");
+  MakeCleverHistograms(sighist,"SS_DiJet");
   MakeCleverHistograms(sighist,"SSemu_1Jet");
   MakeCleverHistograms(sighist,"SSemu_DiJet");
   MakeCleverHistograms(sighist,"SSmue_1Jet");
@@ -96,17 +100,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
     pileup_up_sys_factor = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 1) / reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0);
     pileup_down_sys_factor = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), -1) / reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0);
   }
-  
-  cout << "\n ----------------- " << endl;
-  std::vector<snu::KElectron> nocuts_electron                   = GetElectrons(false,  false, "NoCut");
-  for(unsigned int i = 0 ; i < nocuts_electron.size() ; i++){
-    cout << "dz = " << nocuts_electron.at(i).dz() << endl;
-    cout << "dz = " << nocuts_electron.at(i).LeadVtxDistZ() << endl;
-    cout << "dxy = " << nocuts_electron.at(i).dxy() << endl;
     
-  }
-
-  
   TString fake_loose_region = "looseregion2";
   TString fake_loose_label = "HNTight_loosereg2";
 
@@ -114,8 +108,6 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(false,  false, fake_loose_label , weight);
   std::vector<snu::KMuon> muons = GetMuons("tight");
   
-  
-
   if(!isData){
     for(std::vector<snu::KElectron>::iterator it = electronAnalysisColl.begin(); it != electronAnalysisColl.end(); it++){
       weight *= ElectronScaleFactor(it->Eta(), it->Pt(), true);
@@ -172,6 +164,20 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) throw LQError( "Fails basic cuts",  LQError::SkipEvent );  
 
   
+  if(electronAnalysisColl.at(0).Pt() > 20. || muons.at(0).Pt() > 20){
+    if(jetColl_lepveto_mva.size() == 1)
+      FillCLHist(sighist, "SS_1Jet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
+    if(jetColl_lepveto_mva.size() > 1){
+      FillCLHist(sighist, "SS_DiJet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
+      if(nbjet==0){
+	FillCLHist(sighist, "SS_0bjet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
+      }
+      else{
+	FillCLHist(sighist, "SS_bjet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
+      }
+    }
+  }
+
   if(electronAnalysisColl.at(0).Pt() > 20. && muons.at(0).Pt() > 15){
     if(jetColl_lepveto_mva.size() == 1)  
       FillCLHist(sighist, "SSemu_1Jet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);

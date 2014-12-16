@@ -124,9 +124,9 @@ then
 
     cycle="HNEMu"
     skinput="True"
-#    useskim="DiLep"
+    useskim="DiLep"
 
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
@@ -134,7 +134,7 @@ then
     logstep=1000
 
     declare -a input_samples=( "A" "B" "C" "D")
-    declare -a input_samples=( "A")
+
 
     stream="emu"
 
