@@ -131,7 +131,7 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
   if(k_running_nonprompt) {
     eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
 
-    return  GetTruePrompt(muonColl,  false);
+    return  muonColl;
   }
 
   if(label.Contains("veto")){
