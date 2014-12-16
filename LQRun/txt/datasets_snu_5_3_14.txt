@@ -256,10 +256,10 @@ SKegamma_dilep         B    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June1
 SKegamma_dilep         C    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/DoubleElectron/periodC/
 SKegamma_dilep         D    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/DoubleElectron/periodD/
 
-SKemu_dilep            A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/ElectronMuon/periodA/
-SKemu_dilep            B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/ElectronMuon/periodB/
-SKemu_dilep            C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/ElectronMuon/periodC/
-SKemu_dilep            D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/ElectronMuon/periodD/
+SKemu_dilep            A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/ElectronMuon/periodA/
+SKemu_dilep            B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodB/
+SKemu_dilep            C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodC/
+SKemu_dilep            D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodD/
 
 SKsinglemuon_dilep     A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleMuon/periodA/
 SKsinglemuon_dilep     B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleMuon/periodB/
