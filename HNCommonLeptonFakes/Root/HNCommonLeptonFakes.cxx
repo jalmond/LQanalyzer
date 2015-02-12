@@ -490,12 +490,12 @@ void HNCommonLeptonFakes::ApplyRealSystematic(int type ){
 
 
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons,  bool isel1tight, bool isel2tight, TString cut, int eventtype){
-  return get_dilepton_ee_eventweight( electrons, 0., isel1tight, isel2tight, cut, eventtype);
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons,  bool isel1tight, bool isel2tight, TString cut, int eventtype, int nbjet){
+  return get_dilepton_ee_eventweight( electrons, 0., isel1tight, isel2tight, cut, eventtype, nbjet);
 }
     
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, float ht,  bool isel1tight, bool isel2tight, TString cut, int eventtype){
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, float ht,  bool isel1tight, bool isel2tight, TString cut, int eventtype. int nbjet){
   
   if(electrons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
@@ -865,14 +865,6 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
   //if(!isel1tight) cout << "fr1 = " << fr1 << " " << cut1<< " " << _el1_pt << " " << _el1_eta << endl;
   //if(!isel2tight) cout << "fr2 = " << fr2 << " " <<  cut2 << " " << _el2_pt << " " << _el2_eta << endl;
   
-  /*
-  if(!fcut.Contains("0bjet" )) {
-    if(fcut.Contains("bjet" )){
-      if(fabs(_el1_eta) > 1.5) fr1 = 0.04;
-      if(fabs(_el2_eta) > 1.5) fr2 = 0.04;
-    }
-  }
-  */
   if(fr1 == 0.)  fr1 = 0.05;
   if(fr2 == 0.)  fr2 = 0.05;
   
@@ -978,33 +970,36 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
     cout << "mu1 pT = " << _mu1_pt << endl;
   }
 
-  if(_el1_pt > 100.) _el1_pt = 99.;
+  if(_el1_pt > 60.) _el1_pt = 59.;
   if(_mu1_pt > 60.) _mu1_pt = 59.;
-
 
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
 
   r1 = 1.;
   r2 = 1.;
-
+  
+  if(nbjet ==0) {
+    
+    if( _el1_eta < 1.5) {
+      if(_el1_pt > 45.) _el1_pt = 64.;
+    }
+  }
+  
 
   fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
   fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
   
+  
+  
+  if(nbjet != 0) {
+    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
+    
+  }
+  
   if(nbjet ==0) {
-    if(_el1_pt < 20.){
-      if(fabs(_el1_eta) < 1.5){
-	fr2*= 1.5;
-      }
-    }
     if(_el1_pt > 100.) fr2 *= 2.5;
   }
   else{
-    if(fabs(_el1_eta) > 1.5){
-      if(_el1_pt < 50.){
-	fr2 = fr2/ 3.;
-      }
-    }
   }
   
   float fr1_err = 0.;

@@ -65,12 +65,29 @@ void GetSigEfficiency(){
     TH1F* h_presel_dijet =(TH1F*)file->Get(("PreSelection"));
     TH1F* h_presel_noZ =(TH1F*)file->Get(("PreSelection_noZ"));
     
+    double tight_err ;
+    h_tight->IntegralAndError(0, h_tight->GetNbinsX()+1, tight_err, ""); 
+    double eta25_err ;
+    h_eta25->IntegralAndError(0, h_eta25->GetNbinsX()+1, eta25_err, "");
+    double iso_err ;
+    h_iso->IntegralAndError(0, h_iso->GetNbinsX()+1, iso_err, "");
+    double el_err ;
+    h_analysis->IntegralAndError(0, h_analysis->GetNbinsX()+1, el_err, "");
+    
+    double jet_err ;
+    h_jetsel->IntegralAndError(0, h_jetsel->GetNbinsX()+1, jet_err, "");
+
+    double presel_err;
+    h_presel->IntegralAndError(0, h_presel->GetNbinsX()+1, presel_err, "");
+
+
     cout << "\n ------- "  << endl;
+    cout << "Mass = " << masses.at(i) << endl;
     cout << "Pt 15 cut efficiency [%] = " <<100* h_pt15->Integral() / h_ref->Integral()<< endl;;
     
-    cout << "Eta 25 cut efficiency [%] = " <<100* h_eta25->Integral() / h_ref->Integral()<< endl;;
+    cout << "Eta 25 cut efficiency [%] = " <<100* h_eta25->Integral() / h_ref->Integral()<< " \pm " << 100.* eta25_err/ h_ref->Integral() << endl;;
     
-    cout << "ID cut efficiency [%] = " << 100* h_tight->Integral() / h_ref->Integral()<< endl;;
+    cout << "ID cut efficiency [%] = " << 100* h_tight->Integral() / h_ref->Integral()<< " \pm " << 100.* tight_err / h_ref->Integral()<<  endl;;
     cout << "DeltaEta cut efficiency [%] = " << 100* h_DeltaEta->Integral() / h_refd0->Integral()<< endl;;
     cout << "DeltaPhi cut efficiency [%] = " << 100* h_DeltaPhi->Integral() / h_refd0->Integral()<< endl;;
     cout << "SigmaIEta cut efficiency [%] = " << 100* h_SigmaIEta->Integral() / h_refd0->Integral()<< endl;;
@@ -85,14 +102,14 @@ void GetSigEfficiency(){
     cout << "\n ------------ " << endl;
     
     
-    cout << "Isolation cut efficiency [%] = " << 100* h_iso->Integral() / h_ref->Integral()<< endl;;
-    cout << "Electron efficiency [%] = " << 100* h_analysis->Integral() / h_ref->Integral()<< endl;;
+    cout << "Isolation cut efficiency [%] = " << 100* h_iso->Integral() / h_ref->Integral()<< " \pm " <<   100.*iso_err/ h_ref->Integral() << endl;;
+    cout << "Electron efficiency [%] = " << 100* h_analysis->Integral() / h_ref->Integral()<<  " \pm " <<  100.*el_err/ h_ref->Integral() << endl;;
     
     cout << "\n ------------ " << endl;
-    cout << "Jet Selection  efficiency [%] " << 100* h_jetsel->Integral() / h_ref->Integral()<< endl;;
+    cout << "Jet Selection  efficiency [%] " << 100* h_jetsel->Integral() / h_ref->Integral() << " \pm " << 100.* jet_err / h_ref->Integral()   << endl;;
     cout << "\n ------------ " <<endl;
     
-    cout << "Total efficiency (SSee + 2 jets) " << 100* h_presel->Integral() / h_ref->Integral()<< endl;;
+    cout << "Total efficiency (SSee + 2 jets) " << 100* h_presel->Integral() / h_ref->Integral() << " \pm   " <<  100* presel_err /  h_ref->Integral() << endl;;
     cout << "\n ------- "  << endl;
     
 

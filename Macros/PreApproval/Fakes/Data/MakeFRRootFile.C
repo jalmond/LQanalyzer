@@ -31,7 +31,7 @@ void MakeFRRootFile(){
   setTDRStyle();
   gStyle->SetPalette(1);
     
-  TString outfile = "FakeRate0110.root";
+  TString outfile = "FakeRate2015.root";
   TFile* fout = new TFile(outfile.Data(),"RECREATE");
   fout->cd();
 

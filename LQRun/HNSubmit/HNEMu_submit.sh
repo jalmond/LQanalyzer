@@ -103,9 +103,9 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
 
-    loglevel="INFO"
+    loglevel="DEBUG"
     logstep=1000
-    declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "topDIL" "DY10to50" "DY50plus"  "WW_py" "WW_mg" "HtoTauTau" "ggHtoZZ")
+    declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "topDIL" "DY10to50" "DY50plus"  "WW_py" "WW_mg" "HtoTauTau" "ggHtoZZ" "ttbar" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW")
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/MC/"
     ### submit this configured job (uses bin/submit.sh)

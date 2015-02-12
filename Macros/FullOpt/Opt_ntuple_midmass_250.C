@@ -164,14 +164,14 @@ void Opt_ntuple_midmass_250(){
     float met_cut = METcut.at(imet);
     cout << "MET : "<< met_cut << endl;
 
-    for(int imeejjmin= 0; imeejjmin <4 ; imeejjmin++){
-      float meejjmin_cut = 270. + float(imeejjmin) * 10.;
+    for(int imeejjmin= 0; imeejjmin <1 ; imeejjmin++){
+      float meejjmin_cut = 300. + float(imeejjmin) * 10.;
       
       for(int imeejjmax= 0; imeejjmax <1. ; imeejjmax++){
 	float meejjmax_cut = 10000.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	
-	for(int ipt1= 0; ipt1 <1. ; ipt1++){
+	for(int ipt1= 0; ipt1 <20. ; ipt1++){
 	  float pt1_cut =  70. + float(ipt1)*5.;
 	  
 	  for(int ipt2= 0; ipt2 < 1. ; ipt2++){
@@ -199,8 +199,8 @@ void Opt_ntuple_midmass_250(){
 		    for(int ie1jjmax =0 ; ie1jjmax < 1 ; ie1jjmax++){
 		      float e1jjmax_cut =  1000000. + float(ie1jjmax)* 20.;
 		      
-		      for(int ie2jjmin =0; ie2jjmin < 1 ; ie2jjmin++){
-			float e2jjmin_cut = 0. + float(ie2jjmin)* 10.;
+		      for(int ie2jjmin =0; ie2jjmin < 10 ; ie2jjmin++){
+			float e2jjmin_cut = 160. + float(ie2jjmin)* 5.;
 			
 			for(int ie2jjmax =10; ie2jjmax < 11 ; ie2jjmax++){
 			  float e2jjmax_cut =  260. + float(ie2jjmax)* 10.;
@@ -216,7 +216,7 @@ void Opt_ntuple_midmass_250(){
 				  float stmax_cut =1000. + float(istmax) *10.;
 				  
 				  for(int ijpt =0 ; ijpt <1 ; ijpt++){
-				    float jetpt_cut = 20. + float(ijpt)*5.;
+				    float jetpt_cut = 40. + float(ijpt)*5.;
 				    
 				    for(int injet = 10 ; injet< 11 ; injet ++){
 				      for(int iclj = 0 ; iclj< 1 ; iclj ++){
@@ -353,7 +353,8 @@ void Opt_ntuple_midmass_250(){
 				      float punzi = sig_eff / denom;
 				      
 				      cout << cut_sum_sig / sum_sigevent << endl;
-				      //if( (cut_sum_sig / sum_sigevent) < 0.3) continue;
+				      cout << "total_bkg = " << total_bkg << endl;
+				      if( total_bkg > 4.) continue;
 				      
 				      if( (punzi) > opt_cut_sb){
 					opt_cut_sb = punzi;

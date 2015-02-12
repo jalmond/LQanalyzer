@@ -265,8 +265,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     /// For MC reweight event to correct for ID efficiency in MC/DATA
     float id_scalefactor(1.);
     if(!isData){
-      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt());
-      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt());
+      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt(), true);
+      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt(), true);
     }
     
     // reconstruct dilepton system

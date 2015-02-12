@@ -171,7 +171,7 @@ void Opt_ntuple_midmass_200(){
 	float meejjmax_cut = 10000.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	
-	for(int ipt1= 0; ipt1 <4. ; ipt1++){
+	for(int ipt1= 0; ipt1 <15. ; ipt1++){
 	  float pt1_cut =  50. + float(ipt1)*5.;
 	  
 	  for(int ipt2= 0; ipt2 < 1. ; ipt2++){

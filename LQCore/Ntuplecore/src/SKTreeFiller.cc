@@ -267,13 +267,24 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetTrkVy(ElectronTrackVy->at(iel));
     el.SetTrkVz(ElectronTrackVz->at(iel));
     /// distance between lepton and PRIMARY analysis vertex
-    cout << "\n------" << endl;
+    
+    //cout << "\n ----- " << endl;
+    //cout << "Lead vertex dxy = " << ElectronLeadVtxDistXY->at(iel) << endl;
+    //cout << "Primary vertex dxy = " << ElectronPrimaryVertexDXY->at(iel) << endl;
+    //cout << "Closest vertex dxy = " << ElectronVtxDistXY->at(iel) << endl;
+  
     if(VertexN != -1){
       //cout << "Setting dz for electron, using method 1 : vertexN = " <<  VertexN << endl;
       //cout << "ElectronTrackVz =  " << ElectronTrackVz->at(iel)<< " : VertexZ = " << VertexZ->at(VertexN) << endl;
       el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
       el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
-
+      if(VertexN != 0){
+	//cout << "Setting dxy of electron " << ElectronTrackVx->at(iel) <<  " " << VertexX->at(VertexN) << " " << ElectronTrackVy->at(iel)<< " " << VertexY->at(VertexN) << endl;
+	//cout << "vertex = " << VertexN << endl;
+      }
+      //cout << "electron vertex = " << ElectronVtxIndex->at(iel) << " event vertex = " << VertexN << endl; 
+      //cout << "event dxy = " << sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)) << endl; 
+      //cout << "event dxy (el vertex) = " << sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ElectronVtxIndex->at(iel)),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ElectronVtxIndex->at(iel)),2)) << endl; 
     }
     else if (VertexN == -999.){
 
@@ -349,40 +360,22 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     m_logger << DEBUG << "Filling El Truth variables " << LQLogger::endmsg;
     
     /*vector<int> numbers;
-    numbers.push_back(70440364);
-    numbers.push_back(68186176);
-    numbers.push_back(70406412);
-    numbers.push_back(30677797);
-    numbers.push_back(69320310);
-    numbers.push_back(33485443);
-    numbers.push_back(6472209);
-    numbers.push_back(68877563);
-    numbers.push_back(19899089);
-    numbers.push_back(37603793);
-    numbers.push_back(68186176);
-    numbers.push_back(37177952);
-    numbers.push_back(70525146);
-    numbers.push_back(60652151);
-    numbers.push_back(24630948);
-    numbers.push_back(19185804);
-    numbers.push_back(24445440);
-    numbers.push_back(22196210);
-    numbers.push_back(6362568);
-    numbers.push_back(18488458);
-    numbers.push_back(764033);
-    numbers.push_back(52697503);
-    numbers.push_back(1781115);
+      
+    numbers.push_back(99462);
+    numbers.push_back(99616);
+    numbers.push_back(99616);
+    
 
     bool check_event=false;
-
+    
     for(int i=0; i<numbers.size(); i++){
-
+      
       if(numbers.at(i) == event) check_event=true;
     }
     if(!check_event) return electrons;
     
+    cout << "Event = " << event << endl;
     */
-    
     /// truth info
     if(!isData){
       el.SetElectronMatchedGenPt(ElectronMatchedGenParticlePt->at(iel));
@@ -423,7 +416,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	for(unsigned int g =0; g < GenParticleP->size(); g++, eltruth_index++){
 	  /// If already matched no need to continue
 	  if(matched_electron) continue;
-	  
+	  float status_3_dr= 10000.;
 	  // Check the truth particle is close in Eta-phi space
 	  double dr = sqrt( pow(fabs( match_eta - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g))),2.0));
 	  
@@ -434,13 +427,30 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    /// First check status 3 particles (this is just a check and if status 1 particle is matched it will overright it)
 	    if(GenParticleStatus->at(g) == 3 ){
 	      /// MATCH STABLE STATUS 3 EL to RECO EL
-	      iMother = GenParticleMotherIndex->at(g);
-	      nDaughter = GenParticleNumDaught->at(g);
-	      ipdgid =  GenParticlePdgId->at(g);
-	      trueel_index = g;
-	      MotherPdgId = GenParticlePdgId->at(iMother);
+              if(dr < status_3_dr){
+		status_3_dr = dr;
+		if(fabs(GenParticlePdgId->at(g)) != 11 ){
+		  if(fabs(GenParticlePdgId->at(g)) != 23){
+		    if(fabs(GenParticlePdgId->at(g)) != 24){
+		      iMother = g;
+		      nDaughter = 1;
+		      ipdgid =  11;
+		      trueel_index = g;
+		      MotherPdgId = GenParticlePdgId->at(iMother);
+		    }
+		  }
+		}
+		else{
+		  iMother = GenParticleMotherIndex->at(g);
+                  nDaughter = GenParticleNumDaught->at(g);
+                  ipdgid =  GenParticlePdgId->at(g);
+                  trueel_index = g;
+                  MotherPdgId = GenParticlePdgId->at(iMother);
+		  
+		}
+	      }
 	    }// stable electron
-	    
+	      
 	    /// Now check if status 1 electron is matched  
 	    if(GenParticleStatus->at(g) == 1){
 	      if(fabs(GenParticlePdgId->at(g)) == 11){
@@ -672,11 +682,21 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  }
 	}
 	
+	
 	if (isPrompt( MotherPdgId)){
 	  //cout << "Is prompt (MotherPdgId = "  << MotherPdgId << ") "<< endl;
 	  //if ( ElectronCharge->at(iel)* ipdgid  > 0) cout << "Is chargeflip" << endl; 
+	  
 	  if ( ElectronCharge->at(iel)* ipdgid  > 0)   partType = KParticle::chargemisid;
 	  else partType = KParticle::notfake;
+
+	  if(fabs(MotherPdgId) ==15){
+            partType = KParticle::fromtau;
+          }
+	  if(fabs(MotherPdgId) ==13){
+            partType = KParticle::misidmuon;
+          }
+
 	}
 	else {
 	  //cout << "Not prompt (MotherPdgId = "  << MotherPdgId << ") "<< endl;
@@ -702,6 +722,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	
 	if(partType == KParticle::NOPARTICLE) cout << "Type = NOPARTICLE" << endl;
 	if(iMother == 0 ) cout << "Mother has index == 0 " << endl;
+
+	//cout << "partType = " << partType << endl;
 	el.SetType(partType);
 	el.SetTruthParticleIndex(trueel_index);
 	el.SetMotherIndex(iMother);

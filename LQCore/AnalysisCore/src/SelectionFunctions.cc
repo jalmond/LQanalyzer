@@ -9,6 +9,11 @@
 #include <TString.h>
 #include <string>
 
+#include <iostream>
+
+using namespace std;
+
+
 SelectionFunctions::SelectionFunctions(){
 }
 
@@ -28,7 +33,6 @@ bool SelectionFunctions::isGoodEvent(Int_t nVertex, std::vector<Bool_t> Vertex_F
     for (Int_t i=0; i<nVertex; i++) {
       if ( Vertex_Ndof[i]>4 && fabs(Vertex_Z[i])<=24 && sqrt(pow(Vertex_X[i],2)+pow(Vertex_Y[i],2))<=2 && !Vertex_Fake[i] ) {
         goodVerticies[i] = true;
-
 	return true;
       }
       else {

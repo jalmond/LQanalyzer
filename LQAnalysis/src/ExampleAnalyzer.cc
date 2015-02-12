@@ -197,8 +197,8 @@ void ExampleAnalyzer::InitialiseAnalysis() throw( LQError ) {
    if (electronTightColl.size() == 2) {      
      
      if(!isData){
-       weight *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt());
-       weight *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt());
+       weight *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt(), true);
+       weight *=  ElectronScaleFactor(electronTightColl.at(1).Eta(), electronTightColl.at(1).Pt(), true);
      }
        
      snu::KParticle Z = electronTightColl.at(0) + electronTightColl.at(1);

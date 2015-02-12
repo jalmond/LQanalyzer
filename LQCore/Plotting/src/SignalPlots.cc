@@ -46,7 +46,10 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_secondElectronIso_endcap"]   =     new TH1F("h_secondElectronIso_endcap_" + name,"secondary electron relIso",70,0,0.7);
 
   map_sig["h_ElectronDZ"]          =     new TH1F("h_ElectronDZ_"        + name," leading electron DZ", 400, -0.5 , 0.5);
-  map_sig["h_ElectronD0"]          =     new TH1F("h_ElectronD0_"        + name," leading electron D0", 400, -0.5 , 0.5);
+  map_sig["h_ElectronD0"]          =     new TH1F("h_ElectronD0_"        + name," leading electron D0", 1000, -0.25 , 0.25);
+  map_sig["h_ElectronDXY"]          =     new TH1F("h_ElectronDXY_"        + name," leading electron DXY", 1000, -0.25 , 0.25);
+  map_sig["h_ElectronVDXY"]          =     new TH1F("h_ElectronVDXY_"        + name," leading electron DXY", 1000, -0.25 , 0.25);
+  map_sig["h_ElectronLVDXY"]          =     new TH1F("h_ElectronLVDXY_"        + name," leading electron DXY", 1000, -0.25 , 0.25);
   map_sig["h_ElectronD0Sig"]       =     new TH1F("h_ElectronD0Sig_"     + name," leading electron SigD0", 100, -10. , 10.);
   map_sig["h_electrons_eta"]       =     new TH1F("h_electrons_eta_"     + name,"#eta distribution of the two electrons",60,-3,3);
   map_sig["h_electrons_sceta"]     =     new TH1F("h_electrons_sceta_"   + name,"#eta distribution of the two electrons",60,-3,3);
@@ -303,8 +306,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(debug)cout<< "Plotting [3] " << endl;  
 
   if(electrons.size() == 1 && muons.size() == 1){
-    Fill("h_eemumass", ((electrons[0]+ muons[0]).M()), weight, weight_err);
-    Fill("h_eejjmumass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    Fill("h_emumass", ((electrons[0]+ muons[0]).M()), weight, weight_err);
+    Fill("h_emujjmass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
     Fill("h_MuonPt", muons[0].Pt(), weight, weight_err);
     Fill("h_MuonEta", muons[0].Eta(), weight,weight_err);
     
@@ -358,6 +361,9 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_electrons_eta",elit->Eta(),weight, weight_err);
     Fill("h_electrons_sceta",elit->SCEta(),weight, weight_err);
     Fill("h_ElectronD0", elit->dxy(),weight, weight_err);
+    Fill("h_ElectronDXY", elit->PrimaryVertexDXY(),weight, weight_err);
+    Fill("h_ElectronVDXY", elit->VtxDistXY(),weight, weight_err);
+    Fill("h_ElectronLVDXY", elit->LeadVtxDistXY(),weight, weight_err);
     Fill("h_ElectronDZ", elit->dz(),weight, weight_err);
     Fill("h_ElectronD0Sig", (elit->PrimaryVertexDXY()/ elit->PrimaryVertexDXYError()),weight, weight_err);
     

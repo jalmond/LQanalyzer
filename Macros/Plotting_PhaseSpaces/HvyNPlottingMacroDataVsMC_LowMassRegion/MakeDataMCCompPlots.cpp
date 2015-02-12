@@ -160,6 +160,28 @@ int MakePlots(string hist) {
 	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee40_nocut_5_3_14.root"));
+        TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
+        hsig_40->Rebin(rebin);
+        hsig_40->Scale(0.0002);
+        FixOverUnderFlows(hsig_40, xmax);
+        //SetTitles(hsig_40, name);
+        ymax = GetMaximum(hsig_40, hsig_40, ylog, name);
+        float int_bkg = hup->Integral()/2.;
+
+        hsig_40->SetLineColor(kRed);
+        hsig_40->SetLineWidth(2.);
+	hsig_40->GetXaxis()->SetRangeUser(xmin,xmax);
+	hsig_40->GetYaxis()->SetRangeUser(ymin,ymax);
+
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee60_nocut_5_3_14.root"));
+        TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
+        hsig_80->Rebin(rebin);
+        FixOverUnderFlows(hsig_80, xmax);
+        hsig_80->Scale(0.0005);
+        hsig_80->SetLineColor(kBlue);
+        hsig_80->SetLineWidth(2.);
+
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
 	//scale =  MakeSumHist(mstack)->Integral() /  hdata->Integral();
 	scale = 1.;
@@ -171,7 +193,7 @@ int MakePlots(string hist) {
 
 	cout << " Making canvas" << endl;
 	
-	TCanvas* c = CompDataMC(hdata, vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	TCanvas* c = CompDataMC(hdata,hsig_40,hsig_80, vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 	cout << " Made canvas" << endl;
 
 	string canvasname = c->GetName();
@@ -450,7 +472,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   //  legendH->SetTextSize(0.02);
   
   
-  if(rundata) 	legendH->AddEntry(hlegdata,"Data","pl");
+  if(rundata) 	legendH->AddEntry(hlegdata,"Data","plE");
   
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     legendH->AddEntry(it->second,it->first.Data(),"f");    
@@ -476,9 +498,11 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   float ymin (0.1), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
+  cout << "Fixing Overflow in data" << endl;
   /// Set Ranges / overflows
+  cout << "xmax = " << xmax << endl;
   FixOverUnderFlows(hdata, xmax);  
-  
+    
   cout << "Ymax = " << ymax << endl;
   hdata->GetXaxis()->SetRangeUser(xmin,xmax);
   
@@ -560,8 +584,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
 
   if(sample.Contains("vv_py")){
-    list.push_back(make_pair("WZ_py",0.25));
-    list.push_back(make_pair("ZZ_py",0.25));
+    list.push_back(make_pair("WZ_py",0.20));
+    list.push_back(make_pair("ZZ_py",0.20));
     list.push_back(make_pair("WW_py",0.25));
     //list.push_back(make_pair("Wgamma",0.22));
     list.push_back(make_pair("SSWmWm",0.4));
@@ -642,7 +666,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("Wgamma",0.22));    
   }
   if(sample.Contains("nonprompt")){
-    list.push_back(make_pair("nonprompt",0.3));
+    list.push_back(make_pair("nonprompt",0.4));
   }
 
   if(sample.Contains("chargeflip")){
@@ -757,9 +781,22 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
   
     }//stack empt   
     
-
+    cout << "\n ------- " << endl;
+    
+    cout << "\n ------- " << endl;
     h_tmp->Rebin(rebin);
+    
+    for(unsigned int ib = 1; ib< h_tmp->GetNbinsX()+1; ib++){
+      cout << "No errorset bin " << ib << " =  " << h_tmp->GetBinContent(ib) << " +- " << h_tmp->GetBinError(ib) << endl;
+    }
+
+    
     SetErrors(h_tmp, it->first.first.at(0).second, include_syst_err );
+    cout << "\n ------- " << endl;
+
+    for(unsigned int ib = 1; ib< h_tmp->GetNbinsX()+1; ib++){
+      cout << "Errorset bin " << ib << " =  " << h_tmp->GetBinContent(ib) <<" +- " << h_tmp->GetBinError(ib) << endl;
+    }
 
 
     stack->Add(h_tmp);
@@ -855,10 +892,12 @@ TH1* MakeSumHist(THStack* thestack){
 
 
 void SetErrors(TH1* hist, float normerr, bool includestaterr ){
-
+  cout << "normerror = " << normerr << endl;
   for(int binx =1; binx < hist->GetNbinsX()+1; binx++){
     float newbinerr = hist->GetBinError(binx)*hist->GetBinError(binx) + hist->GetBinContent(binx)*hist->GetBinContent(binx)*normerr*normerr;
     if(!includestaterr)  newbinerr =hist->GetBinError(binx)*hist->GetBinError(binx) ;
+    cout << "setting error of bin = " << sqrt(newbinerr) << endl; 
+  
     hist->SetBinError(binx, sqrt(newbinerr));
   }
   
@@ -982,8 +1021,10 @@ void SetTitles(TH1* hist, string name){
 bool HistInGev(string name){
   
   bool ingev=false;
+  if(name.find("ElectronPt")!=string::npos)ingev=true;
   if(name.find("_pt_")!=string::npos)ingev=true;
   if(name.find("mass_")!=string::npos)ingev=true;
+  if(name.find("MET")!=string::npos)ingev=true;
   
   return ingev;
 
@@ -992,7 +1033,7 @@ bool HistInGev(string name){
 
 float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
-  float yscale= 1.5;
+  float yscale= 3;
   if(!showdata) yscale = 1.4;
   
   cout << name << endl;
@@ -1000,6 +1041,8 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(name.find("MET")!=string::npos) yscale*=1.;
   if(name.find("charge")!=string::npos) yscale*=2.5;
   if(name.find("deltaR")!=string::npos) yscale*=2.;
+  if(name.find("bTag")!=string::npos) yscale*=2.5;
+  if(name.find("eejj")!=string::npos) yscale*=2.;
   
   float max_data = h_data->GetMaximum()*yscale;
   float max_bkg = h_up->GetMaximum()*yscale;
@@ -1364,7 +1407,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("nonprompt",0.3));
+  np.push_back(make_pair("nonprompt",0.4));
   
   vector<pair<TString,float> > cf;
   cf.push_back(make_pair("chargeflip",0.2));
@@ -1407,7 +1450,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 }
 
 
-TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
   TH1* hdata_clone_for_log = (TH1*)hdata->Clone( "log");
   
@@ -1442,11 +1485,14 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   SetNomBinError(h_nominal, hup, hdown);
 
   if(usedata){
-    hdata->Draw("9pX0");
-    hdata->GetYaxis()->SetTitleOffset(1.5);
+    //hdata->Draw("pE");
+    //hdata->GetYaxis()->SetTitleOffset(1.5);
+    //hsig_40->GetXaxis()->SetLabelSize(0.);
+    hsig_40->Draw("hist9");
+    
     mcstack.at(0)->Draw("HIST9same");
-    hdata->Draw("9samepX0");
-    hdata->Draw("axis same");
+    //hdata->Draw("samepE");
+    //hdata->Draw("axis same");
     errorband->Draw("E2same");
 
     /// Draw data again
@@ -1472,15 +1518,22 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    g->Draw( "9samepX0" );
-    
+    //g->Draw("samepE" );
+
     hdata->SetMarkerStyle(20);
     hdata->SetMarkerSize(2.3);
     hdata->SetLineWidth(2.);
-    hdata->Draw( ("9samepX0") );
+    //    hdata->Draw( ("samepE") );
+    hsig_40->Draw("hist9same");
+    hsig_80->Draw("hist9same");
+    
   }
   else{
   }
+
+  legend->AddEntry(hsig_40, "m_{N} = 40 GeV, |V_{eN}|^{2} = 5E-4 ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 80 GeV, |V_{eN}|^{2} = 2E-4","l");
+
   legend->Draw();
   
   CMS_lumi( canvas, 2, 11 );
@@ -1494,25 +1547,36 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   gPad->SetLogz(1);
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
+  vector<float> err_up_tmp;
+  vector<float> err_down_tmp;
+
   if(usedata){
     //hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax);
-    hdata_clone_for_log->Draw("9pX0");
+    //hdata_clone_for_log->Draw("pE");
+    hsig_40->GetXaxis()->SetLabelSize(0.);
+    hsig_40->Draw("hist9");
     
-    hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
+    //hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
     mcstack.at(0)->Draw("9HIST same");
-    hdata_clone_for_log->Draw("9p same");
-    hdata_clone_for_log->Draw("9axis same");
+    //hdata_clone_for_log->Draw("PE same");
+    //hdata_clone_for_log->Draw("axis same");
     errorband->Draw("E2same");
     
     const double alpha = 1 - 0.6827;
-    TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata);
+    TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata_clone_for_log);
     for (int i = 0; i < g->GetN(); ++i) {
       int N = g->GetY()[i];
+      cout << " N = " << N << endl;
       double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
       double U =  (N==0) ?  ( ROOT::Math::gamma_quantile_c(alpha,N+1,1) ) :
 	( ROOT::Math::gamma_quantile_c(alpha/2,N+1,1) );
       if ( N!=0 ) {
+	cout<< "N-L =  " << N- L << endl;
+	cout<< "U-N =  " << U-N << endl;
 	g->SetPointEYlow(i, N-L );
+	err_down_tmp.push_back(N-L);
+	err_up_tmp.push_back(U-N);
+
 	g->SetPointEXlow(i, 0);
 	g->SetPointEYhigh(i, U-N );
 	g->SetPointEXhigh(i, 0);
@@ -1522,11 +1586,16 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
 	g->SetPointEXlow(i, 0);
 	g->SetPointEYhigh(i, 0.);
 	g->SetPointEXhigh(i, 0);
+	err_down_tmp.push_back(0);
+	err_up_tmp.push_back(0);
       }
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    g->Draw( "p9same");
+    //g->Draw( "pE same");
+    hsig_40->Draw("hist9same");
+    hsig_80->Draw("hist9same");
+
     
     legend->Draw();
     
@@ -1621,8 +1690,9 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
       
       for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
 	if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
-	  hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
-	  hdev->SetBinError(i, sqrt(hdev->GetBinContent(i)) / h_nominal->GetBinContent(i));
+	  //hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	  hdev->SetBinContent(i, h_nominal->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	  hdev->SetBinError(i, 0.01);
 	}
 	else {
 	  hdev->SetBinContent(i, -99);
@@ -1630,11 +1700,39 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
 	}
       }
       
+      /// set errors for datamc plot
+      const double alpha = 1 - 0.6827;
+      TGraphAsymmErrors * gratio = new TGraphAsymmErrors(hdev);
+      cout << "\n --- " << endl;
+      for (int i = 0; i < gratio->GetN(); ++i) {
+	
+	cout << "g->GetY()[i] = " << gratio->GetY()[i] << endl;
+	
+	if(err_down_tmp.at(i)  !=0.) {
+	  cout << "- " << err_down_tmp.at(i) / h_nominal->GetBinContent(i+1)   << " + " << err_up_tmp.at(i) /h_nominal->GetBinContent(i+1) << endl;
+	  gratio->SetPointEYlow(i, err_down_tmp.at(i) / h_nominal->GetBinContent(i+1) );
+	  gratio->SetPointEXlow(i, 0);
+	  gratio->SetPointEYhigh(i, err_up_tmp.at(i) /h_nominal->GetBinContent(i+1));
+	  gratio->SetPointEXhigh(i, 0);
+	}
+	else{
+	  gratio->SetPointEYlow(i, 0);
+          gratio->SetPointEXlow(i, 0);
+          gratio->SetPointEYhigh(i, 0);
+          gratio->SetPointEXhigh(i, 0);
+
+	}
+      }
+      
+
+      //////////// Plot all
+      
+
       hdev->GetYaxis()->SetTitle( "#frac{Data}{MC}" );
       hdev->GetYaxis()->SetRangeUser(0.,+2.);
       hdev->GetYaxis()->SetNdivisions(9);
       hdev->SetMarkerStyle(20);
-      hdev->SetMarkerSize(2);
+      //hdev->SetMarkerSize(2.3);
       hdev_err_stat->SetMarkerSize(0.);
       hdev_err->SetMarkerSize(0.);
       hdev->SetLineColor(kBlack);
@@ -1643,10 +1741,14 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
       hdev_err->SetFillStyle(3444);
       hdev_err_stat->SetFillColor(kOrange-9);
       hdev_err_stat->SetLineColor(kOrange-9);
-      hdev->Draw("p9");
+      hdev->Draw("pE0");
+      
       hdev_err_stat->Draw("sameE4");
       hdev_err->Draw("sameE4");
-      hdev->Draw("samep9");
+      gratio->SetLineWidth(2.0);
+      gratio->SetMarkerSize(0.);
+      gratio->Draw("same pE" );
+      hdev->Draw("same pE");
       
       
       
@@ -1708,8 +1810,9 @@ void SetNomBinError(TH1* hnom, TH1* hup, TH1* hdown){
 TH1* MakeErrorBand(TH1* hnom, TH1* hup, TH1* hdown){
 
   TH1* errorband = (TH1*)hnom->Clone("aa");
-
+  cout << "\n ----- " << endl;
   for(int i=1; i < errorband->GetNbinsX()+1; i++){
+    cout << "Errorband : bin " << i  << " content = " << errorband->GetBinContent(i) << " up = " << 100*( (hup->GetBinContent(i) - errorband->GetBinContent(i))/ errorband->GetBinContent(i)) << " down = " << 100*( (-hdown->GetBinContent(i) + errorband->GetBinContent(i))/ errorband->GetBinContent(i)) << endl; 
 
     float bin_content = (hup->GetBinContent(i)+ hdown->GetBinContent(i))/2.;
     float bin_error = (hup->GetBinContent(i)- hdown->GetBinContent(i))/2.;

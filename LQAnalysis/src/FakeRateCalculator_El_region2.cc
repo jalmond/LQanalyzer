@@ -93,7 +93,7 @@ void FakeRateCalculator_El_region2::ExecuteEvents()throw( LQError ){
 
   if(!isData){
     for(std::vector<snu::KElectron>::iterator it = electronLooseColl.begin(); it != electronLooseColl.end(); it++){
-      weight *=  ElectronScaleFactor(it->Eta(), it->Pt());
+      weight *=  ElectronScaleFactor(it->Eta(), it->Pt(), true);
     }
   }
   

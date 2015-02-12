@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus5.cern.ch:~/www/SNU/WebPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus.cern.ch:~/www/SNU/WebPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl; 
   return 0;
@@ -138,13 +138,18 @@ int MakePlots(string hist) {
 	map<TString, TH1*> legmap;
 	
 	cout << "Making Nominal histogram " << endl;
-	THStack* mstack=  MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin );
+	THStack* mstack=  MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , true);
+	THStack* mstack_nostat= MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , false);
 	
 	//// mhist sets error config
 	map<TString,TH1*> mhist;
 	mhist["Nominal"] = MakeSumHist(mstack);
 	
+	map<TString,TH1*> mhist_nostat;
+	mhist_nostat["Nominal"] = MakeSumHist(mstack_nostat);
+
 	TH1* hup = MakeStackUp(mhist, name+"UP");
+	TH1* hup_nostat = MakeStackUp(mhist_nostat, name+"UPnostat");
 	TH1* hdown = MakeStackDown(mhist, name+"DOWN");
 	
 	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
@@ -152,7 +157,7 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (0.1), ymax( 1000000.);
+	float ymin (0.1), ymax( 1000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
@@ -162,10 +167,11 @@ int MakePlots(string hist) {
 	TLegend* legend = MakeLegend(legmap, hdata, showdata, ylog);       		
         vector<THStack*> vstack;		
 	vstack.push_back(mstack);   	
+	vstack.push_back(mstack_nostat);   	
 
 	cout << " Making canvas" << endl;
 	
-	TCanvas* c = CompDataMC(hdata, vstack,hup,hdown, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	TCanvas* c = CompDataMC(hdata, vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 	cout << " Made canvas" << endl;
 
 	string canvasname = c->GetName();
@@ -395,12 +401,12 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
   if(plot_description.empty())plot_description=title;
   histpage << "<tr><td>"<< plot_description <<"</td>"<<endl;
   histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << title.c_str() << ".png\">";
-  histpage << "<img src=\"" << title.c_str() << ".png\" width=\"100%\"/>";
+  histpage << "<a href=\"" << title.c_str() << ".pdf\">";
+  histpage << "<img src=\"" << title.c_str() << ".pdf\" width=\"100%\"/>";
   histpage << "</td>" << endl;
   histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << title.c_str() << "_log.png\">";
-  histpage << "<img src=\"" << title.c_str() << "_log.png\" width=\"100%\"/>";
+  histpage << "<a href=\"" << title.c_str() << "_log.pdf\">";
+  histpage << "<img src=\"" << title.c_str() << "_log.pdf\" width=\"100%\"/>";
   histpage << "</td>" << endl;
 
   
@@ -423,7 +429,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
     x1 = 0.6;
-    y1 = 0.6;
+    y1 = 0.7;
     x2 = 0.9;
     y2 = 0.9;
   }
@@ -467,12 +473,14 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (0.1), ymax( 1000000.);
+  float ymin (10.), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
+  cout << "Fixing Overflow in data" << endl;
   /// Set Ranges / overflows
+  cout << "xmax = " << xmax << endl;
   FixOverUnderFlows(hdata, xmax);  
-  
+    
   cout << "Ymax = " << ymax << endl;
   hdata->GetXaxis()->SetRangeUser(xmin,xmax);
   
@@ -500,34 +508,40 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
   
-  if(sample.Contains("dy_")){
+  if(sample.Contains("dy1_")){
     list.push_back(make_pair("DY10to50",0.2));    
+  }
+  if(sample.Contains("dy2_")){
     list.push_back(make_pair("DY50plus",0.2));    
   }
-  
-  if(sample.Contains("dyplusbb")){
+  if(sample.Contains("dyplus")){
     list.push_back(make_pair("DY10to50",0.2));
     list.push_back(make_pair("DY50plus",0.2));
-    list.push_back(make_pair("Zbb",0.2));
   }
     
   ///// Top samples //////////////////    
   if(sample.Contains("top")){
-    list.push_back(make_pair("stbar_sch",0.1));
-    list.push_back(make_pair("stbar_tch",0.1));
-    list.push_back(make_pair("stbar_tW",0.1));
-    list.push_back(make_pair("st_sch",0.1));
-    list.push_back(make_pair("st_tch",0.1));
-    list.push_back(make_pair("st_tW",0.1));
+    list.push_back(make_pair("stbar_sch",0.2));
+    list.push_back(make_pair("stbar_tch",0.2));
+    list.push_back(make_pair("stbar_tW",0.2));
+    list.push_back(make_pair("st_sch",0.2));
+    list.push_back(make_pair("st_tch",0.2));
+    list.push_back(make_pair("st_tW",0.2));
   }
   
   if(sample.Contains("ttbar")){
-    list.push_back(make_pair("ttbar",0.1));
+    list.push_back(make_pair("ttbar",0.25));
+    /*list.push_back(make_pair("stbar_sch",0.2));
+    list.push_back(make_pair("stbar_tch",0.2));
+    list.push_back(make_pair("stbar_tW",0.2));
+    list.push_back(make_pair("st_sch",0.2));
+    list.push_back(make_pair("st_tch",0.2));
+    list.push_back(make_pair("st_tW",0.2));*/
   }
   
   if(sample.Contains("qcd"))
     {
-      list.push_back(make_pair("QCDEl",0.30));
+      list.push_back(make_pair("QCDEl",1.0));
     }
 
   if(sample.Contains("ttv")){
@@ -552,25 +566,24 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WW_py",0.15));
   }
   
+
   if(sample.Contains("vv_py")){
-    list.push_back(make_pair("WZ_py",0.15));
-    list.push_back(make_pair("ZZ_py",0.15));
-    list.push_back(make_pair("WW_py",0.15));
-    ////list.push_back(make_pair("WgammaE",0.22));
-    //list.push_back(make_pair("WgammaTau",0.22));
+    list.push_back(make_pair("WZ_py",0.25));
+    list.push_back(make_pair("ZZ_py",0.25));
+    list.push_back(make_pair("WW_py",0.25));
+    //list.push_back(make_pair("Wgamma",0.22));
+    list.push_back(make_pair("SSWmWm",0.4));
+    list.push_back(make_pair("SSWpWp",0.4));
+    list.push_back(make_pair("WW_dp",0.5));
+  }
+  if(sample.Contains("vv_mg")){
+    list.push_back(make_pair("WZtollqq_mg",0.25));
+    list.push_back(make_pair("WZtollln_mg",0.25));
+    list.push_back(make_pair("ZZtollll_mg",0.25));
+    //list.push_back(make_pair("WgammaE",0.22));
     list.push_back(make_pair("SSWmWm",0.22));
     list.push_back(make_pair("SSWpWp",0.22));
     list.push_back(make_pair("WW_dp",0.22));
-  }
-  if(sample.Contains("vv_mg")){
-    list.push_back(make_pair("WZtollqq_mg",0.15));
-    list.push_back(make_pair("WZtoqqln_mg",0.15));
-    list.push_back(make_pair("WZtollln_mg",0.15));
-    list.push_back(make_pair("ZZtollnn_mg",0.15));
-    list.push_back(make_pair("ZZtollqq_mg",0.15));
-    list.push_back(make_pair("ZZtollll_mg",0.15));
-    list.push_back(make_pair("WW_mg",0.15));
-    //list.push_back(make_pair("WgammaE",0.22));
     //list.push_back(make_pair("WgammaTau",0.22));
   }
 
@@ -615,29 +628,29 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   //////// SS WW /////////  
   if(sample.Contains("ss_mg")){         
-    list.push_back(make_pair("SSWmWm",0.22));              
-    list.push_back(make_pair("SSWpWp",0.22));              
-    list.push_back(make_pair("WW_dp",0.22));              
+    list.push_back(make_pair("SSWmWm",0.4));              
+    list.push_back(make_pair("SSWpWp",0.4));              
+    list.push_back(make_pair("WW_dp",0.4));              
   }
   if(sample.Contains("higgs")){
     //list.push_back(make_pair("HtoZZ",0.22));
     list.push_back(make_pair("HtoTauTau",0.22));
-    list.push_back(make_pair("HtoWW",0.22));
+    list.push_back(make_pair("HtoWW",0.3));
     list.push_back(make_pair("ggHtoZZ",0.22));
   }
   if(sample.Contains("vvv")){
-    list.push_back(make_pair("WWW",0.22));
-    list.push_back(make_pair("TTWW",0.22));
-    list.push_back(make_pair("TTG",0.22));
-    list.push_back(make_pair("ZZZ",0.22));
-    list.push_back(make_pair("WWZ",0.22));
-    list.push_back(make_pair("WWG",0.22));
+    list.push_back(make_pair("WWW",0.4));
+    list.push_back(make_pair("TTWW",0.4));
+    list.push_back(make_pair("TTG",0.4));
+    list.push_back(make_pair("ZZZ",0.4));
+    list.push_back(make_pair("WWZ",0.4));
+    list.push_back(make_pair("WWG",0.4));
   }
   if(sample.Contains("vgamma")){
     list.push_back(make_pair("Wgamma",0.22));    
   }
   if(sample.Contains("nonprompt")){
-    list.push_back(make_pair("nonprompt",0.3));
+    list.push_back(make_pair("nonprompt",0.4));
   }
 
   if(sample.Contains("chargeflip")){
@@ -660,10 +673,13 @@ void CheckSamples(int nsamples){
 
 
 
-THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString > > sample, TString type, string name, float xmin, float xmax,map<TString, TH1*>& legmap , int rebin){
+THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString > > sample, TString type, string name, float xmin, float xmax,map<TString, TH1*>& legmap , int rebin, bool include_syst_err){
   
+
   string clonename = name;	
-  THStack* stack = new THStack();
+  if(include_syst_err) clonename += "_andsysyerr";
+  
+  THStack* stack = new THStack(clonename.c_str(), clonename.c_str());
   
   bool debug(false);
   if(type.Contains("Nominal")) debug=true;
@@ -675,16 +691,13 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
   float sum_integral=0.;
 
   for(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >::iterator it = sample.begin() ; it!= sample.end(); it++){
-	
     if(type.Contains("Nominal")) fileloc = mcloc;
         
     if(!type.Contains("Nominal")) {
       if(it->first.first.at(0).first.Contains("nonprompt"))fileloc=mcloc;
     }    
     
-    
     CheckSamples( it->first.first.size() );
-
 
     int isample=0;
     TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix).Data());
@@ -703,7 +716,6 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
       tempDir = gROOT->mkdir((dirname.str()).c_str());      
     }
             
-
     tempDir->cd();
 
     TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
@@ -753,10 +765,24 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
   
     }//stack empt   
     
-
+    cout << "\n ------- " << endl;
+    
+    cout << "\n ------- " << endl;
     h_tmp->Rebin(rebin);
-    SetErrors(h_tmp, it->first.first.at(0).second);
-           
+    
+    for(unsigned int ib = 1; ib< h_tmp->GetNbinsX()+1; ib++){
+      cout << "No errorset bin " << ib << " =  " << h_tmp->GetBinContent(ib) << " +- " << h_tmp->GetBinError(ib) << endl;
+    }
+
+    
+    SetErrors(h_tmp, it->first.first.at(0).second, include_syst_err );
+    cout << "\n ------- " << endl;
+
+    for(unsigned int ib = 1; ib< h_tmp->GetNbinsX()+1; ib++){
+      cout << "Errorset bin " << ib << " =  " << h_tmp->GetBinContent(ib) <<" +- " << h_tmp->GetBinError(ib) << endl;
+    }
+
+
     stack->Add(h_tmp);
     sum_integral+=h_tmp->Integral();
     
@@ -787,7 +813,8 @@ TH1* MakeStackUp(map<TString, TH1*> map_of_stacks, TString clonename){
     
     /// Now use 5%+ norm + stat error
     float errup2 =  nom_error*nom_error + 0.05*0.05*nom_content*nom_content;
-    
+    if(clonename.Contains("stat")) errup2 =  nom_error*nom_error;
+
     /// add rest of systs
 
     float new_bin = nom_content + sqrt(errup2);
@@ -848,11 +875,13 @@ TH1* MakeSumHist(THStack* thestack){
 }
 
 
-void SetErrors(TH1* hist, float normerr){
-
-  
+void SetErrors(TH1* hist, float normerr, bool includestaterr ){
+  cout << "normerror = " << normerr << endl;
   for(int binx =1; binx < hist->GetNbinsX()+1; binx++){
     float newbinerr = hist->GetBinError(binx)*hist->GetBinError(binx) + hist->GetBinContent(binx)*hist->GetBinContent(binx)*normerr*normerr;
+    if(!includestaterr)  newbinerr =hist->GetBinError(binx)*hist->GetBinError(binx) ;
+    cout << "setting error of bin = " << sqrt(newbinerr) << endl; 
+  
     hist->SetBinError(binx, sqrt(newbinerr));
   }
   
@@ -978,6 +1007,8 @@ bool HistInGev(string name){
   bool ingev=false;
   if(name.find("_pt_")!=string::npos)ingev=true;
   if(name.find("mass_")!=string::npos)ingev=true;
+  if(name.find("met_")!=string::npos)ingev=true;
+  if(name.find("MT")!=string::npos)ingev=true;
   
   return ingev;
 
@@ -989,6 +1020,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   float yscale= 1.5;
   if(!showdata) yscale = 1.4;
   
+
   cout << name << endl;
   if(name.find("eta")!=string::npos) yscale*=1.5;
   if(name.find("MET")!=string::npos) yscale*=1.;
@@ -996,7 +1028,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(name.find("deltaR")!=string::npos) yscale*=2.;
   
   float max_data = h_data->GetMaximum()*yscale;
-  float max_bkg = h_up->GetMaximum()*yscale;
+  float max_bkg =  h_up->GetMaximum()*yscale;
 
   
   if(max_data > max_bkg) return max_data;
@@ -1337,9 +1369,10 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > vv_py = InitSample("vv_py");
   
   // Zjet
-  vector<pair<TString,float> > z = InitSample("dy_");
+  vector<pair<TString,float> > z1 = InitSample("dy1_");
+  vector<pair<TString,float> > z2 = InitSample("dy2_");
   // Zjet + Zbb
-  vector<pair<TString,float> > zplusbb = InitSample("dyplusbb");
+  vector<pair<TString,float> > zplusbb = InitSample("dy");
   /// Wjet
   vector<pair<TString,float> > w = InitSample("wjet_");
   /// Wjet + Wbb
@@ -1358,7 +1391,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("nonprompt",0.3));
+  np.push_back(make_pair("nonprompt",0.4));
   
   vector<pair<TString,float> > cf;
   cf.push_back(make_pair("chargeflip",0.2));
@@ -1374,11 +1407,12 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="vv_mg")samples.push_back(make_pair(make_pair(vv_mg,vvcol),"VV"));
 
     if(listofsamples.at(i) =="ss_mg")samples.push_back(make_pair(make_pair(ss_mg,sscol),"SS"));
-    if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
+    if(listofsamples.at(i) =="dy1")samples.push_back(make_pair(make_pair(z1,zcol),"DY 10 < m(ll) < 50"));
+    if(listofsamples.at(i) =="dy2")samples.push_back(make_pair(make_pair(z2,vvcol),"DY 50 < m(ll) "));
     if(listofsamples.at(i) =="dyplusbb")samples.push_back(make_pair(make_pair(zplusbb,zcol),"DY"));
     if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
     if(listofsamples.at(i) =="ttbar")samples.push_back(make_pair(make_pair(ttbar,tcol),"ttbar"));
-    if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
+    if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,vvvcol),"Wjet"));
     if(listofsamples.at(i) =="wjetplusbb")samples.push_back(make_pair(make_pair(wplusbb,wcol),"Wjet"));
 
     if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
@@ -1392,8 +1426,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   }
 
   ///// Fix cut flow code
-  caption="Number of events containing one prompt loose electron in 19 fb$^{-1}$ of CMS data at 8~TeV";
-  hist = "/h_leadingElectronPt";
+  caption="Number of events containing two prompt electrons and two jets, with Z peak removed, in 19 fb$^{-1}$ of CMS data at 8~TeV";
+  hist = "/h_Nelectrons";
   columnname="";
 
   return;
@@ -1401,10 +1435,12 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 }
 
 
-TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
   TH1* hdata_clone_for_log = (TH1*)hdata->Clone( "log");
-
+  
+  cout << "hup total = " << hup->Integral() << " hup_nostat total = " << hup_nostat->Integral() << endl; 
+  
   string cname;
   if(hdata) cname= string("c_") + hdata->GetName();
   else cname = string("c_") + ((TNamed*)mcstack.at(0)->GetHists()->First())->GetName();
@@ -1420,11 +1456,14 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
 
   
   std::string title=canvas->GetName();
-  std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".png";
-  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.png";
+  std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".pdf";
+  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.pdf";
   
   ///####################   Standard plot
+  if(TString(hname).Contains("eemass"))canvas->SetLogy();
+  if(TString(hname).Contains("eemass"))canvas_log->SetLogy();
   canvas->SetLogy();
+  canvas_log->SetLogy();
   canvas->cd();
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
@@ -1434,12 +1473,13 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   SetNomBinError(h_nominal, hup, hdown);
 
   if(usedata){
+    hdata->GetYaxis()->SetRangeUser(1., ymax);
     hdata->Draw("9pX0");
     hdata->GetYaxis()->SetTitleOffset(1.5);
     mcstack.at(0)->Draw("HIST9same");
     hdata->Draw("9samepX0");
     hdata->Draw("axis same");
-    errorband->Draw("E2same");
+    //errorband->Draw("E2same");
 
     /// Draw data again
     const double alpha = 1 - 0.6827;
@@ -1478,7 +1518,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   CMS_lumi( canvas, 2, 11 );
   canvas->Update();
   canvas->RedrawAxis();
-  canvas->Print(tpdf.c_str(), ".png");
+  canvas->Print(tpdf.c_str(), ".pdf");
 
   //// %%%%%%%%%% PRINT ON LOG
   canvas_log->cd();
@@ -1486,25 +1526,34 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
   gPad->SetLogz(1);
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
+  vector<float> err_up_tmp;
+  vector<float> err_down_tmp;
+
   if(usedata){
-    hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax*10000.);
+    //hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax);
     hdata_clone_for_log->Draw("9pX0");
     
     hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
     mcstack.at(0)->Draw("9HIST same");
     hdata_clone_for_log->Draw("9p same");
     hdata_clone_for_log->Draw("9axis same");
-    errorband->Draw("E2same");
+    //errorband->Draw("E2same");
     
     const double alpha = 1 - 0.6827;
-    TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata);
+    TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata_clone_for_log);
     for (int i = 0; i < g->GetN(); ++i) {
       int N = g->GetY()[i];
+      cout << " N = " << N << endl;
       double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
       double U =  (N==0) ?  ( ROOT::Math::gamma_quantile_c(alpha,N+1,1) ) :
 	( ROOT::Math::gamma_quantile_c(alpha/2,N+1,1) );
       if ( N!=0 ) {
+	cout<< "N-L =  " << N- L << endl;
+	cout<< "U-N =  " << U-N << endl;
 	g->SetPointEYlow(i, N-L );
+	err_down_tmp.push_back(N-L);
+	err_up_tmp.push_back(U-N);
+
 	g->SetPointEXlow(i, 0);
 	g->SetPointEYhigh(i, U-N );
 	g->SetPointEXhigh(i, 0);
@@ -1514,6 +1563,8 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
 	g->SetPointEXlow(i, 0);
 	g->SetPointEYhigh(i, 0.);
 	g->SetPointEXhigh(i, 0);
+	err_down_tmp.push_back(0);
+	err_up_tmp.push_back(0);
       }
     }
     g->SetLineWidth(2.0);
@@ -1524,9 +1575,14 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     
     /// Make significance hist
     
-    TH1* h_significance=(TH1F*)hdata_clone_for_log->Clone();
-    TH1* h_divup=(TH1F*)hup->Clone();
-    TH1* h_divdown=(TH1F*)hdown->Clone();
+    
+    TH1* h_significance=(TH1F*)hdata_clone_for_log->Clone("sig");
+    TH1* h_divup=(TH1F*)hup->Clone("divup");
+    TH1* h_divdown=(TH1F*)hdown->Clone("divdown");
+
+    TH1F* hdev = (TH1F*)hdata_clone_for_log->Clone("hdev");
+    TH1F* hdev_err = (TH1F*)hdata_clone_for_log->Clone("hdev_err");
+    TH1F* hdev_err_stat = (TH1F*)hdata_clone_for_log->Clone("hdev_err_stat");
     
     TH1* errorbandratio = (TH1*)h_nominal->Clone("AAA");
     
@@ -1566,28 +1622,120 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TL
     p->SetFillStyle(0);     // needs to be transparent
     p->Draw();
     p->cd();
-
-    h_significance->SetFillColor(kGray+1);
-    h_significance->SetLineColor(kGray+1);
-
-    h_significance->GetYaxis()->SetNdivisions(10204);
-    h_significance->GetYaxis()->SetTitle("Significance");
-    h_significance->GetYaxis()->SetRangeUser(-4., 4.);
-    h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
-    h_significance->Draw("hist");
-    TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),0.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),0.0);
     
-    line->SetLineStyle(2);
-    line->SetLineWidth(2);
-    line->Draw();
-    h_significance->Draw("HISTsame");
+    if(!true){
+      h_significance->SetFillColor(kGray+1);
+      h_significance->SetLineColor(kGray+1);
+      
+      h_significance->GetYaxis()->SetNdivisions(10204);
+      h_significance->GetYaxis()->SetTitle("Significance");
+      h_significance->GetYaxis()->SetRangeUser(-4., 4.);
+      h_significance->GetXaxis()->SetRangeUser(xmin, xmax);
+      h_significance->Draw("hist");
+      TLine *line = new TLine(h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetFirst()),0.0,h_significance->GetBinLowEdge(h_significance->GetXaxis()->GetLast()+1),0.0);
+      
+      line->SetLineStyle(2);
+      line->SetLineWidth(2);
+      line->Draw();
+      h_significance->Draw("HISTsame");
+    }
+    else{
+      Double_t *staterror;
+      
+      for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+	hdev_err->SetBinContent(i, 1.0);
+	if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
+	  hdev_err->SetBinError(i, (hup_nostat->GetBinContent(i)- h_nominal->GetBinContent(i))/h_nominal->GetBinContent(i) );
+	}
+	else{
+	  hdev_err->SetBinError(i, 0.0);
+	}
+      }
+      for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+	hdev_err_stat->SetBinContent(i, 1.0);
+        if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
+          hdev_err_stat->SetBinError(i, (hup->GetBinContent(i)-h_nominal->GetBinContent(i))/h_nominal->GetBinContent(i) );
+        }
+        else{
+          hdev_err_stat->SetBinError(i, 0.0);
+	}
+      } 
+
+      
+      for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+	if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
+	  hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	  hdev->SetBinError(i, 0.);
+	}
+	else {
+	  hdev->SetBinContent(i, -99);
+	  hdev->SetBinError(i, 0.);
+	}
+      }
+      
+      /// set errors for datamc plot
+      const double alpha = 1 - 0.6827;
+      TGraphAsymmErrors * gratio = new TGraphAsymmErrors(hdev);
+      cout << "\n --- " << endl;
+      for (int i = 0; i < gratio->GetN(); ++i) {
+	
+	cout << "g->GetY()[i] = " << gratio->GetY()[i] << endl;
+	
+	if(err_down_tmp.at(i)  !=0.) {
+	  cout << "- " << err_down_tmp.at(i) / h_nominal->GetBinContent(i+1)   << " + " << err_up_tmp.at(i) /h_nominal->GetBinContent(i+1) << endl;
+	  gratio->SetPointEYlow(i, err_down_tmp.at(i) / h_nominal->GetBinContent(i+1) );
+	  gratio->SetPointEXlow(i, 0);
+	  gratio->SetPointEYhigh(i, err_up_tmp.at(i) /h_nominal->GetBinContent(i+1));
+	  gratio->SetPointEXhigh(i, 0);
+	}
+	else{
+	  gratio->SetPointEYlow(i, 0);
+          gratio->SetPointEXlow(i, 0);
+          gratio->SetPointEYhigh(i, 0);
+          gratio->SetPointEXhigh(i, 0);
+
+	}
+      }
+      
+
+      //////////// Plot all
+      
+
+      hdev->GetYaxis()->SetTitle( "#frac{Data}{MC}" );
+      hdev->GetYaxis()->SetRangeUser(0.,+3.);
+      hdev->GetYaxis()->SetNdivisions(9);
+      hdev->SetMarkerStyle(20);
+      //hdev->SetMarkerSize(2.3);
+      hdev_err_stat->SetMarkerSize(0.);
+      hdev_err->SetMarkerSize(0.);
+      hdev->SetLineColor(kBlack);
+      hdev_err->SetFillColor(kRed);
+      hdev_err->SetLineColor(kRed);
+      hdev_err->SetFillStyle(3444);
+      hdev_err_stat->SetFillColor(kOrange-9);
+      hdev_err_stat->SetLineColor(kOrange-9);
+      hdev->Draw("p9x0");
+      hdev_err_stat->Draw("sameE4");
+      hdev_err->Draw("sameE4");
+      gratio->SetLineWidth(2.0);
+      gratio->SetMarkerSize(0.);
+      gratio->Draw( "9samep" );
+      hdev->Draw("p9samex0");
+      
+      
+      TLine *devz = new TLine(hdev->GetBinLowEdge(hdev->GetXaxis()->GetFirst()),1.0,hdev->GetBinLowEdge(hdev->GetXaxis()->GetLast()+1),1.0  );
+      devz->SetLineWidth(1);
+      devz->SetLineStyle(1);
+      devz->Draw("SAME");
+      
+    }
 
   }
 
   CMS_lumi( canvas_log, 2, 11 );
   canvas_log->Update();
   canvas_log->RedrawAxis();
-  canvas_log->Print(tlogpdf.c_str(), ".png");
+  canvas_log->Print(tlogpdf.c_str(), ".pdf");
   gPad->RedrawAxis();
   
   return canvas;
@@ -1633,8 +1781,9 @@ void SetNomBinError(TH1* hnom, TH1* hup, TH1* hdown){
 TH1* MakeErrorBand(TH1* hnom, TH1* hup, TH1* hdown){
 
   TH1* errorband = (TH1*)hnom->Clone("aa");
-
+  cout << "\n ----- " << endl;
   for(int i=1; i < errorband->GetNbinsX()+1; i++){
+    cout << "Errorband : bin " << i  << " content = " << errorband->GetBinContent(i) << " up = " << 100*( (hup->GetBinContent(i) - errorband->GetBinContent(i))/ errorband->GetBinContent(i)) << " down = " << 100*( (-hdown->GetBinContent(i) + errorband->GetBinContent(i))/ errorband->GetBinContent(i)) << endl; 
 
     float bin_content = (hup->GetBinContent(i)+ hdown->GetBinContent(i))/2.;
     float bin_error = (hup->GetBinContent(i)- hdown->GetBinContent(i))/2.;
@@ -1643,7 +1792,7 @@ TH1* MakeErrorBand(TH1* hnom, TH1* hup, TH1* hdown){
     errorband->SetBinError(i,bin_error);
   }
 
-  errorband->SetFillStyle(3354);
+  errorband->SetFillStyle(3444);
   errorband->SetFillColor(kBlue-8);
   errorband->SetMarkerSize(0);
   errorband->SetMarkerStyle(0);

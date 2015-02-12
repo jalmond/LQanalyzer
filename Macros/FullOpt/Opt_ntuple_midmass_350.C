@@ -199,8 +199,8 @@ void Opt_ntuple_midmass_350(){
 		    for(int ie1jjmax =0 ; ie1jjmax < 1 ; ie1jjmax++){
 		      float e1jjmax_cut =  1000000. + float(ie1jjmax)* 20.;
 		      
-		      for(int ie2jjmin =0; ie2jjmin < 1 ; ie2jjmin++){
-			float e2jjmin_cut = 0. + float(ie2jjmin)* 10.;
+		      for(int ie2jjmin =0; ie2jjmin < 10 ; ie2jjmin++){
+			float e2jjmin_cut = 180. + float(ie2jjmin)* 10.;
 			
 			for(int ie2jjmax =10; ie2jjmax < 11 ; ie2jjmax++){
 			  float e2jjmax_cut =  300. + float(ie2jjmax)* 20.;
@@ -216,7 +216,7 @@ void Opt_ntuple_midmass_350(){
 				  float stmax_cut =1000. + float(istmax) *10.;
 				  
 				  for(int ijpt =0 ; ijpt <1 ; ijpt++){
-				    float jetpt_cut = 20. + float(ijpt)*5.;
+				    float jetpt_cut = 40. + float(ijpt)*5.;
 				    
 				    for(int injet = 10 ; injet< 11 ; injet ++){
 				      for(int iclj = 0 ; iclj< 1 ; iclj ++){

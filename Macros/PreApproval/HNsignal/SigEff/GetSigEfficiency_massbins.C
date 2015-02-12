@@ -25,16 +25,19 @@ void GetSigEfficiency(TString path, TString tag){
   //gStyle->SetPalette(1);
   
   TFile * file = new TFile(path);
-  
-  TH1* hnsig =   (TH1F*)file->Get(("eventcutflow"));
-  float nsig = float(hnsig->GetBinContent(2)); 
+  cout << file << endl;
+  TH1* hnsig =   (TH1F*)file->Get(("Efficiency/eff_electronRef"));
+
+  float nsig = float(hnsig->Integral());
   
   TString hist = tag + "MassRegion/h_Nelectrons_" + tag + "MassRegion";
   TH1* h =  (TH1*)file->Get(hist.Data());
   cout << h << endl;
   cout << h->Integral() << endl;
   cout << nsig << endl;
-  cout << "Total efficiency  " << tag << " = " << 100* (h->Integral() / nsig) << endl;
+  double err;
+  h->IntegralAndError(0, h->GetNbinsX()+1, err, "");
+  cout << "Total efficiency  " << tag << " = " << 100* (h->Integral() / nsig) <<  " +- " << err * 100. / nsig << endl;
 }
 
 

@@ -160,7 +160,7 @@ void HNLowMedHighMassOptimisation::ExecuteEvents()throw( LQError ){
   /// Apply electron SFs for tight id
   if(!isData){
     for(std::vector<snu::KElectron>::iterator it = electronAnalysisColl.begin(); it != electronAnalysisColl.end(); it++){
-      weight *=  ElectronScaleFactor(it->Eta(), it->Pt());
+      weight *=  ElectronScaleFactor(it->Eta(), it->Pt(), true);
     }
   }
   m_logger << DEBUG << "Analysis part: "<< LQLogger::endmsg;

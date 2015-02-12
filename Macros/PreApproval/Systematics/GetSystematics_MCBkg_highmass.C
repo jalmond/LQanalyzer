@@ -16,34 +16,107 @@
 //#include "Macro.h"
 void setTDRStyle();
 
+float integrate_mc(TString sample);
+float syst(TString sample, TString path,int sys1, int sys2);
+
+float GetSyst(TString path, int sys1, int sys2);
 
 
-void GetSystematics_jets(TString path, TString tag){
+void GetSystematics_MCBkg_highmass(){
   
   
   setTDRStyle();
   //gStyle->SetPalette(1);
+    
+  float syst_jes = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 3,4);
+  float syst_jer = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 5,6);
+  float syst_met = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 7,8);
+  float syst_btag1 = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 9,10);
+  float syst_btag2 = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 11,12);
+  float syst_btag = sqrt(syst_btag1*syst_btag1 + syst_btag2*syst_btag2);
+  float syst_id = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 17,18);
+  float syst_pileup = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 15,16);
+
+  cout << "Low Mass JES = " << syst_jes << endl;
+  cout << "Low Mass JER = " << syst_jer << endl;
+  cout << "Low Mass MET = " << syst_met << endl;
+  cout << "Low Mass btag = " << syst_btag << endl;
+  cout << "Low Mass ID= " << syst_id << endl;
+  cout << "Low Mass pileup = " << syst_pileup << endl;
+  cout << "Low MAss total = " << sqrt (syst_jes*syst_jes + syst_jer*syst_jer + syst_met*syst_met + syst_btag*syst_btag + syst_id*syst_id + syst_pileup*syst_pileup + 6*6 + 15.*15. + 2.6*2.6) << endl;;
   
+
+}
+
+
+float GetSyst(TString path, int sys1, int sys2){
+
+  float nwz = integrate_mc("WZ_py");
+  float nzz = integrate_mc("ZZ_py");
+  float nwwm = integrate_mc("SSWmWm");
+  float nwwp = integrate_mc("SSWpWp");
+  float nttz = integrate_mc("ttZ");
+  float nttw = integrate_mc("ttW");
+
+  float tot = nwz + nzz + nwwp + nwwm + nttw + nttz;
+  
+  float wz_percent = nwz / tot;
+  float zz_percent = nzz / tot;
+  float ssm_percent = nwwm / tot;
+  float ssp_percent = nwwp / tot;
+  float ttz_percent = nttz / tot;
+  float ttw_percent = nttw / tot;
+  cout << "% = " << wz_percent << " " << zz_percent << " " << ssm_percent << " "  << ssp_percent << " " << ttz_percent << " " << ttw_percent << " " << endl;
+  cout <<  syst("WZ_py",path, sys1, sys2) << endl;
+
+
+  float wz_syst = wz_percent* syst("WZ_py",path, sys1, sys2); 
+  float zz_syst = zz_percent* syst("ZZ_py",path, sys1, sys2); 
+  float ssm_syst = ssm_percent* syst("SSWmWm",path, sys1, sys2); 
+  float ssp_syst = ssp_percent* syst("SSWpWp",path, sys1, sys2); 
+  float ttz_syst = ttz_percent* syst("ttZ",path, sys1, sys2); 
+  float ttw_syst = ttw_percent* syst("ttW",path, sys1, sys2); 
+  
+  cout << wz_syst << " " << zz_syst << " " << ssm_syst << " " << ssp_syst << " " << ttw_syst << " " << ttz_syst << endl;
+
+  return  wz_syst + zz_syst + ssp_syst + ssm_syst + ttz_syst+ ttw_syst;
+  
+  
+}
+
+float syst(TString sample, TString path,int isys1, int isys2){
+
+  TString spath = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SK" + sample  +"_dilep_5_3_14.root";
+
+  TFile * file = new TFile(spath);
+
+  TH1* hnsig = (TH1F*)file->Get(path);
+
+  if(!hnsig) return 0.;
+  float nom = hnsig->GetBinContent(2);
+  float sys1 = hnsig->GetBinContent(isys1);
+  float sys2 = hnsig->GetBinContent(isys2);
+  
+  cout << sys1 << " " << sys2   <<  " nom = " << nom << endl;
+  sys1 = ((sys1 - nom) / nom) * 100.;
+  sys2 = ((sys2 - nom) / nom) * 100.;
+  float sys_final = fabs(sys1);
+  if(fabs(sys2) > sys_final) sys_final = fabs(sys2);  
+
+  return sys_final;
+  
+}
+
+float integrate_mc(TString sample){
+
+  TString path = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SK" + sample  +"_dilep_5_3_14.root";
   TFile * file = new TFile(path);
-  
-  
 
-  TH1* hnsig =   (TH1F*)file->Get((tag + "MassRegion_syst").Data());
-  
-  float nom = hnsig->GetBinContent(1);
-  float jesup = hnsig->GetBinContent(2);
-  float jesdown = hnsig->GetBinContent(3);
-  float jresup = hnsig->GetBinContent(4);
-  float jresdown = hnsig->GetBinContent(5);
-  float unclustup = hnsig->GetBinContent(6);
-  float unclustdown = hnsig->GetBinContent(7);
+  TH1* h = (TH1*)(TH1F*)file->Get(("LowMassRegion/h_Nelectrons_LowMassRegion"));
 
-  cout <<"Efficiecny of JET Energy shifted up  = " <<  ((nom - jesup)/nom)*100. << endl;
-  cout <<"Efficiecny of JET Energy shifted down  = " <<  ((nom-jesdown)/nom)*100. << endl;
-  cout <<"Efficiecny of JET resolution shifted up  = " << ((nom-jresup)/nom)*100. << endl;
-  cout <<"Efficiecny of JET resolution shifted down  = " << ((nom-jresdown)/nom)*100. << endl;
-  cout <<"Efficiecny of MET unclustered shifted up  = " << ((nom-unclustup)/nom)*100. << endl;
-  cout <<"Efficiecny of MET unclustered shifted down  = " << ((nom-unclustdown)/nom)*100. << endl;
+  float n = h->Integral();
+
+  return n;
 
 }
 
