@@ -92,7 +92,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"SSee_gt1jet_3jet_highmet");
   MakeCleverHistograms(sighist,"SSee_gt1jet_4jet_highmet");
   MakeCleverHistograms(sighist,"SSee_gt1jet_5jet_highmet");
-
+  
 
 
   MakeCleverHistograms(sighist,"TriElCR_dijet_highmet_osZW_mva");
@@ -152,30 +152,30 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"HighMassRegion_m4_40");
 
  
-  MakeCleverHistograms(sighist,"40_lmMassRegion");
-  MakeCleverHistograms(sighist,"50_lmMassRegion");
-  MakeCleverHistograms(sighist,"60_lmMassRegion");
-  MakeCleverHistograms(sighist,"70_lmMassRegion");
-  MakeCleverHistograms(sighist,"80_lmMassRegion");
-  MakeCleverHistograms(sighist,"90_lmMassRegion");
-  MakeCleverHistograms(sighist,"80_hmMassRegion");
-  MakeCleverHistograms(sighist,"90_hmMassRegion");
-  MakeCleverHistograms(sighist,"100_hmMassRegion");
-  MakeCleverHistograms(sighist,"125_hmMassRegion");
-  MakeCleverHistograms(sighist,"150_hmMassRegion");
-  MakeCleverHistograms(sighist,"175_hmMassRegion");
-  MakeCleverHistograms(sighist,"200_hmMassRegion");
-  MakeCleverHistograms(sighist,"225_hmMassRegion");
-  MakeCleverHistograms(sighist,"250_hmMassRegion");
-  MakeCleverHistograms(sighist,"275_hmMassRegion");
-  MakeCleverHistograms(sighist,"300_hmMassRegion");
-  MakeCleverHistograms(sighist,"325_hmMassRegion");
-  MakeCleverHistograms(sighist,"350_hmMassRegion");
-  MakeCleverHistograms(sighist,"375_hmMassRegion");
-  MakeCleverHistograms(sighist,"400_hmMassRegion");
-  MakeCleverHistograms(sighist,"500_hmMassRegion");
-  MakeCleverHistograms(sighist,"600_hmMassRegion");
-  MakeCleverHistograms(sighist,"700_hmMassRegion");
+  MakeCleverHistograms(sighist,"40MassRegion");
+  MakeCleverHistograms(sighist,"50MassRegion");
+  MakeCleverHistograms(sighist,"60MassRegion");
+  MakeCleverHistograms(sighist,"70MassRegion");
+  MakeCleverHistograms(sighist,"80MassRegion");
+  MakeCleverHistograms(sighist,"90MassRegion");
+  MakeCleverHistograms(sighist,"80MassRegion");
+  MakeCleverHistograms(sighist,"90MassRegion");
+  MakeCleverHistograms(sighist,"100MassRegion");
+  MakeCleverHistograms(sighist,"125MassRegion");
+  MakeCleverHistograms(sighist,"150MassRegion");
+  MakeCleverHistograms(sighist,"175MassRegion");
+  MakeCleverHistograms(sighist,"200MassRegion");
+  MakeCleverHistograms(sighist,"225MassRegion");
+  MakeCleverHistograms(sighist,"250MassRegion");
+  MakeCleverHistograms(sighist,"275MassRegion");
+  MakeCleverHistograms(sighist,"300MassRegion");
+  MakeCleverHistograms(sighist,"325MassRegion");
+  MakeCleverHistograms(sighist,"350MassRegion");
+  MakeCleverHistograms(sighist,"375MassRegion");
+  MakeCleverHistograms(sighist,"400MassRegion");
+  MakeCleverHistograms(sighist,"500MassRegion");
+  MakeCleverHistograms(sighist,"600MassRegion");
+  MakeCleverHistograms(sighist,"700MassRegion");
 
 
 
@@ -320,7 +320,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   vector<snu::KTruth> truth =  eventbase->GetTruth();
   
   std::vector<snu::KElectron> electronVetoColl       = GetElectrons(false, false, "veto"); 
-  std::vector<snu::KElectron> electronLooseColl      = GetElectrons(false, false, "loose"); 
+  std::vector<snu::KElectron> electronLooseColl      = GetElectrons(false, true, "loose"); 
   std::vector<snu::KElectron> electronNoCutColl      = GetElectrons(true, true, "NoCut");
   std::vector<snu::KElectron> electronPtEtaNoCutColl = GetElectrons(true, true, "NoCutPtEta");
   
@@ -333,7 +333,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   double weight_susyid= weight;
   double weight_medium= weight;
   double weight_tight= weight;
-
+  
   std::vector<snu::KElectron> electronAnalysisColl_medium= GetElectrons(false, false, "id_medium", weight_medium);
   std::vector<snu::KElectron> electronAnalysisColl_tight=  GetElectrons(false, false, "id_tight", weight_tight);
   std::vector<snu::KElectron> electronAnalysisColl_iso_b10_e10 = GetElectrons(false, false, "iso_b10_e10", weight_iso_b10_e10);
@@ -353,20 +353,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonVetoColl, electronNoCutColl,jetColl_lepveto_mva, weight);
 
-  /*if(electronNoCutColl.size() == 2){
-    cout << "\n ---------- " << endl;
-    cout << "Event vertex = " << eventbase->GetEvent().VertexIndex() << endl;
-    cout << "electronNoCutColl el 1 : vertex = " << electronNoCutColl.at(0).VertexIndex() << " electronNoCutColl el 2 : vertex = " << electronNoCutColl.at(1).VertexIndex() << endl;
-    cout << "electronNoCutColl el 1 : dxy = " << electronNoCutColl.at(0).dxy() << " electronNoCutColl el 2 : dxy = " << electronNoCutColl.at(1).dxy() << endl;
-    cout << "electronNoCutColl el 1 : Primary vertex = " << electronNoCutColl.at(0).PrimaryVertexDXY() << " electronNoCutColl el 2 : dxy = " << electronNoCutColl.at(1).PrimaryVertexDXY() << endl;
-    cout << "electronNoCutColl el 1 : track vx = " << electronNoCutColl.at(0).TrkVx() << "  vetex X = " << eventbase->GetEvent().VertexX() << endl;
-    cout << "electronNoCutColl el 1 : track vy = " << electronNoCutColl.at(0).TrkVy() << "  vetex Y = " << eventbase->GetEvent().VertexY() << endl;
-    cout << "electronNoCutColl el 2 : track vx = " << electronNoCutColl.at(1).TrkVx() << "  vetex X = " << eventbase->GetEvent().VertexX() << endl;
-    cout << "electronNoCutColl el 2 : track vy = " << electronNoCutColl.at(1).TrkVy() << "  vetex Y = " << eventbase->GetEvent().VertexY() << endl;
-
-
-    }*/
-  
+  RunMCCLosureTest("loosereg2", jetColl_lepveto_mva,"",weight);
 
   ///// count number of bjets in the event (using cvs medium WP)
   int nbjet_l=0;
@@ -463,28 +450,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	    weight *= 1.5;
 	  }
 	}
-	if(electronAnalysisColl.at(1).Pt()  > 100.) {
-	  weight *= 2.5;
-	  ee_weight_up *= 2.5;
-	  ee_weight_down*= 2.5;
-	  ee_weight_method_pteta_40*= 2.5;
-	}
-      }
-      else{
-	if(fabs(electronAnalysisColl.at(1).Eta()) > 1.5){
-	  if(electronAnalysisColl.at(1).Pt() < 50.){
-	    weight = 0.05;
-	    ee_weight_up = 0.02;
-	    ee_weight_down = 0.1;
-	  }
-	}
-	if(fabs(electronAnalysisColl.at(0).Eta()) > 1.5){
-	  if(electronAnalysisColl.at(0).Pt() < 50.){
-	    weight = 0.05;
-	    ee_weight_up = 0.02;
-            ee_weight_down = 0.1;
-	  }
-	} 
       }
     }
       
@@ -512,14 +477,15 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     ee_weight_method_ptetacb_60  *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(), true, 0.01, 0.09, 0.05, "method4_pt_eta_60_" + cl1 + cl2 + reg, 0);
     
   }
-  
+
   
   if(SameCharge(electronLooseColl)){
+    cout << "SS" << endl;
     if(IsDiLep(electronLooseColl)){
-      if(jetColl_lepveto_mva.size() > 1){
-	if(!Zcandidate(electronLooseColl, 10., false)){
-	  FillHist("Loose_Presel", 1.,weight, 0.,2.,2);
-	}
+      cout << "DiLep " << endl; 
+    if(jetColl_lepveto_mva.size() > 1){
+	cout << "Loose_Presel" << endl;
+	FillHist("Loose_Presel", 1.,weight, 0.,2.,2);
       }
     }
   }
@@ -528,7 +494,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// in IsDiLep: weight is set to 0 if event does not contain 2 elecrons 20/15 gev cuts
   bool dilep_event = false;
   if(IsDiLep(electronAnalysisColl) != 0.) dilep_event = true; 
-
+  
   snu::KParticle ee;
   if(electronAnalysisColl.size() == 2) ee= electronAnalysisColl.at(0) + electronAnalysisColl.at(1);
   
@@ -840,7 +806,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   masscuts40.push_back(20.);  masscuts40.push_back(15.);   /// pt1 / pt2
   masscuts40.push_back(10.);  masscuts40.push_back(60.);   /// m(ee)
   masscuts40.push_back(0.);   masscuts40.push_back(120.);  /// m(jj)
-  masscuts40.push_back(60.);  masscuts40.push_back(160.);  /// m(eejj)
+  masscuts40.push_back(80.);  masscuts40.push_back(160.);  /// m(eejj)
   masscuts40.push_back(30.);                               /// MET
   masscuts40.push_back(20.);                               /// jet 1 pt
   masscuts40.push_back(0.);  masscuts40.push_back(120.);  /// m(e2jj)
@@ -849,7 +815,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   masscuts50.push_back(20.);  masscuts50.push_back(15.);
   masscuts50.push_back(10.);  masscuts50.push_back(60.);
   masscuts50.push_back(0.);   masscuts50.push_back(120.);
-  masscuts50.push_back(60.);  masscuts50.push_back(160.);
+  masscuts50.push_back(80.);  masscuts50.push_back(160.);
   masscuts50.push_back(30.);
   masscuts50.push_back(20.);
   masscuts50.push_back(0.);  masscuts50.push_back(120.);
@@ -858,29 +824,29 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   masscuts60.push_back(20.);  masscuts60.push_back(15.);
   masscuts60.push_back(10.);  masscuts60.push_back(60.);
   masscuts60.push_back(0.);   masscuts60.push_back(120.);
-  masscuts60.push_back(60.);  masscuts60.push_back(160.);
+  masscuts60.push_back(80.);  masscuts60.push_back(160.);
   masscuts60.push_back(30.);
   masscuts60.push_back(20.);
   masscuts60.push_back(0.);  masscuts60.push_back(120.);
 
   std::vector<float> masscuts70;
   masscuts70.push_back(20.);  masscuts70.push_back(15.);
-  masscuts70.push_back(10.);  masscuts70.push_back(60.);
+  masscuts70.push_back(10.);  masscuts70.push_back(110.);
   masscuts70.push_back(0.);   masscuts70.push_back(120.);
-  masscuts70.push_back(60.);  masscuts70.push_back(160.);
+  masscuts70.push_back(80.);  masscuts70.push_back(195.);
   masscuts70.push_back(30.);
   masscuts70.push_back(20.);
-  masscuts70.push_back(0.);  masscuts70.push_back(120.);
+  masscuts70.push_back(0.);  masscuts70.push_back(125.);
 
 
   std::vector<float> masscuts80;
   masscuts80.push_back(20.);  masscuts80.push_back(15.);
-  masscuts80.push_back(10.);  masscuts80.push_back(60.);
+  masscuts80.push_back(10.);  masscuts80.push_back(100000.);
   masscuts80.push_back(0.);   masscuts80.push_back(120.);
-  masscuts80.push_back(60.);  masscuts80.push_back(160.);
+  masscuts80.push_back(80.);  masscuts80.push_back(200.);
   masscuts80.push_back(30.);
   masscuts80.push_back(20.);
-  masscuts80.push_back(0.);  masscuts80.push_back(120.);
+  masscuts80.push_back(0.);  masscuts80.push_back(125.);
 
 
   std::vector<float> masscuts90l;
@@ -1230,33 +1196,33 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   
   std::map<TString, std::vector<float> > sysymap;
-  sysymap["40_lm"] =  masscuts40;  sysymap["50_lm"] =  masscuts50;
-  sysymap["60_lm"] =  masscuts60;  sysymap["70_lm"] =  masscuts70;
-  sysymap["80_lm"] =  masscuts80;  sysymap["90_hm"] =  masscuts90;
-  sysymap["80_hm"] =  masscuts80m;  sysymap["90_lm"] =  masscuts90l;
-  sysymap["100_hm"] =  masscuts100; sysymap["125_hm"] =  masscuts125;
-  sysymap["150_hm"] =  masscuts150; sysymap["175_hm"] =  masscuts175;
-  sysymap["200_hm"] =  masscuts200;  sysymap["225_hm"] =  masscuts225;
-  sysymap["250_hm"] =  masscuts250;  sysymap["275_hm"] =  masscuts275;
-  sysymap["300_hm"] =  masscuts300;  sysymap["325_hm"] =  masscuts325;
-  sysymap["350_hm"] =  masscuts350;  sysymap["375_hm"] =  masscuts375;
-  sysymap["400_hm"] =  masscuts400;  sysymap["500_hm"] =  masscuts500;
-  sysymap["600_hm"] =  masscuts700;  sysymap["700_hm"] =  masscuts700;
+  sysymap["40"] =  masscuts40;  sysymap["50"] =  masscuts50;
+  sysymap["60"] =  masscuts60;  sysymap["70"] =  masscuts70;
+  sysymap["80"] =  masscuts80;  sysymap["90"] =  masscuts90;
+  sysymap["80m"] =  masscuts80m;  sysymap["90l"] =  masscuts90l;
+  sysymap["100"] =  masscuts100; sysymap["125"] =  masscuts125;
+  sysymap["150"] =  masscuts150; sysymap["175"] =  masscuts175;
+  sysymap["200"] =  masscuts200;  sysymap["225"] =  masscuts225;
+  sysymap["250"] =  masscuts250;  sysymap["275"] =  masscuts275;
+  sysymap["300"] =  masscuts300;  sysymap["325"] =  masscuts325;
+  sysymap["350"] =  masscuts350;  sysymap["375"] =  masscuts375;
+  sysymap["400"] =  masscuts400;  sysymap["500"] =  masscuts500;
+  sysymap["600"] =  masscuts700;  sysymap["700"] =  masscuts700;
 
-  sysymap["40_lm_fg"] =  masscuts40_fg;  sysymap["50_lm_fg"] =  masscuts50_fg;
-  sysymap["60_lm_fg"] =  masscuts60_fg;  sysymap["70_lm_fg"] =  masscuts70_fg;
-  sysymap["80_lm_fg"] =  masscuts80_fg;
-  sysymap["90_hm_fg"] =  masscuts90_fg;
-  sysymap["100_hm_fg"] =  masscuts100_fg;
-  sysymap["125_hm_fg"] =  masscuts125_fg;
-  sysymap["150_hm_fg"] =  masscuts150_fg;
-  sysymap["175_hm_fg"] =  masscuts175_fg;
-  sysymap["200_hm_fg"] =  masscuts200_fg;
-  sysymap["350_hm_fg"] =  masscuts250_fg;
-  sysymap["300_hm_fg"] =  masscuts300_fg;
-  sysymap["350_hm_fg"] =  masscuts350_fg;
-  sysymap["400_hm_fg"] =  masscuts400_fg;
-  sysymap["500_hm_fg"] =  masscuts500_fg;
+  sysymap["40_fg"] =  masscuts40_fg;  sysymap["50_fg"] =  masscuts50_fg;
+  sysymap["60_fg"] =  masscuts60_fg;  sysymap["70_fg"] =  masscuts70_fg;
+  sysymap["80_fg"] =  masscuts80_fg;
+  sysymap["90_fg"] =  masscuts90_fg;
+  sysymap["100_fg"] =  masscuts100_fg;
+  sysymap["125_fg"] =  masscuts125_fg;
+  sysymap["150_fg"] =  masscuts150_fg;
+  sysymap["175_fg"] =  masscuts175_fg;
+  sysymap["200_fg"] =  masscuts200_fg;
+  sysymap["350_fg"] =  masscuts250_fg;
+  sysymap["300_fg"] =  masscuts300_fg;
+  sysymap["350_fg"] =  masscuts350_fg;
+  sysymap["400_fg"] =  masscuts400_fg;
+  sysymap["500_fg"] =  masscuts500_fg;
 
   // Add addition criteris .. i.e, remove me2jj cut 
   std::map<TString, TString > sysymap2;
@@ -1277,10 +1243,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	TString label = lepmapit->first + mapit->first+ mapit2->first + "MassRegion_limithist";	
 	TString jetlabel = "";
 	if(mapit->first.Contains("fg") && (mapit2->second != "default")) continue;
-	if(mapit->first.Contains("_lm")) jetlabel = "low_massjj";
-	if(mapit->first.Contains("_lm") && (mapit2->second == "midmass")) continue; 
-	if(mapit->first.Contains("_lm") && (mapit2->second == "highmass")) continue; 
-	if(mapit->first.Contains("_hm") && (mapit2->second == "lowmass")) continue; 
+
 	
 	/// ANALYSIS FINAL SELECTION HISTS
 	/// Low Mass                       pt2, pt1  ,eemin, max, jjmin,max, eejjmin,max, STmin,max, j1  , e2jjmin, ej22max, njet
@@ -1925,22 +1888,22 @@ void HNDiElectron::DoAnalysis(std::vector<snu::KElectron> electrons, std::vector
 
 
   std::map<TString, std::vector<float> > sysymap;
-  sysymap["40_lm"] =  masscuts40;  sysymap["50_lm"] =  masscuts50;
-  sysymap["60_lm"] =  masscuts60;  sysymap["70_lm"] =  masscuts70;
-  sysymap["80_lm"] =  masscuts80;  sysymap["90_hm"] =  masscuts90;
-  sysymap["80_hm"] =  masscuts80m;  sysymap["90_lm"] =  masscuts90l;
-  sysymap["100_hm"] =  masscuts100; sysymap["125_hm"] =  masscuts125;
-  sysymap["150_hm"] =  masscuts150; sysymap["175_hm"] =  masscuts175;
-  sysymap["200_hm"] =  masscuts200;  sysymap["225_hm"] =  masscuts225;
-  sysymap["250_hm"] =  masscuts250;  sysymap["275_hm"] =  masscuts275;
-  sysymap["300_hm"] =  masscuts300;  sysymap["325_hm"] =  masscuts325;
-  sysymap["350_hm"] =  masscuts350;  sysymap["375_hm"] =  masscuts375;
-  sysymap["400_hm"] =  masscuts400;  sysymap["500_hm"] =  masscuts500;
-  sysymap["600_hm"] =  masscuts700;  sysymap["700_hm"] =  masscuts700;
+  sysymap["40"] =  masscuts40;  sysymap["50"] =  masscuts50;
+  sysymap["60"] =  masscuts60;  sysymap["70"] =  masscuts70;
+  sysymap["80"] =  masscuts80;  sysymap["90"] =  masscuts90;
+  sysymap["80m"] =  masscuts80m;  sysymap["90l"] =  masscuts90l;
+  sysymap["100"] =  masscuts100; sysymap["125"] =  masscuts125;
+  sysymap["150"] =  masscuts150; sysymap["175"] =  masscuts175;
+  sysymap["200"] =  masscuts200;  sysymap["225"] =  masscuts225;
+  sysymap["250"] =  masscuts250;  sysymap["275"] =  masscuts275;
+  sysymap["300"] =  masscuts300;  sysymap["325"] =  masscuts325;
+  sysymap["350"] =  masscuts350;  sysymap["375"] =  masscuts375;
+  sysymap["400"] =  masscuts400;  sysymap["500"] =  masscuts500;
+  sysymap["600"] =  masscuts700;  sysymap["700"] =  masscuts700;
 
-  sysymap["40_lm_fg"] =  masscuts40_fg;  sysymap["50_lm_fg"] =  masscuts50_fg;
-  sysymap["60_lm_fg"] =  masscuts60_fg;  sysymap["70_lm_fg"] =  masscuts70_fg;
-  sysymap["80_lm_fg"] =  masscuts80_fg;  sysymap["90_hm_fg"] =  masscuts90_fg;
+  sysymap["40_fg"] =  masscuts40_fg;  sysymap["50_fg"] =  masscuts50_fg;
+  sysymap["60_fg"] =  masscuts60_fg;  sysymap["70_fg"] =  masscuts70_fg;
+  sysymap["80_fg"] =  masscuts80_fg;  sysymap["90_fg"] =  masscuts90_fg;
 
 
   // Add addition criteris .. i.e, remove me2jj cut
@@ -1967,10 +1930,6 @@ void HNDiElectron::DoAnalysis(std::vector<snu::KElectron> electrons, std::vector
         if(lepmapit->first.Contains("susy") && (mapit2->second != "default")) continue;
 
 	TString jetlabel = "";
-        if(mapit->first.Contains("_lm")) jetlabel = "low_massjj";
-	if(mapit->first.Contains("_lm") && (mapit2->second == "midmass")) continue;
-	if(mapit->first.Contains("_lm") && (mapit2->second == "highmass")) continue;
-	if(mapit->first.Contains("_hm") && (mapit2->second == "lowmass")) continue;
 
         if(mapit->first.Contains("fg") && (mapit2->second != "default")) continue;
 	
@@ -2149,8 +2108,6 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
   bool cut_on_pt=true;
   if(additional_option.Contains("pt10")) cut_on_pt= false;
 
-  bool using_lowmass_jj=false;
-  if(additional_option.Contains("low_massjj"))using_lowmass_jj = true;
 
 
 
@@ -2185,7 +2142,6 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
     for(unsigned int ij=0; ij < jets.size()-1; ij++){
       for(unsigned int ij2=ij+1; ij2 < jets.size(); ij2++){
 	snu::KParticle jjtmp = jets.at(ij) + jets.at(ij2) ;
-	if(using_lowmass_jj) jjtmp = jets.at(ij) + jets.at(ij2) + electrons.at(0) +electrons.at(1);
 	if(fabs(jjtmp.M() - 80.4) < wmassjj) {
 	  wmassjj = fabs(jjtmp.M() - 80.4);
 	  indexj1=ij;
@@ -2239,7 +2195,6 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
   for(unsigned int ij=0; ij < jets.size()-1; ij++){
     for(unsigned int ij2=ij+1; ij2 < jets.size(); ij2++){
       snu::KParticle jjtmp = jets.at(ij) + jets.at(ij2) ;
-      if(using_lowmass_jj) jjtmp = jets.at(ij) + jets.at(ij2) + electrons.at(0) +electrons.at(1);
       if(fabs(jjtmp.M() - 80.4) < wmassjj) {
         wmassjj = fabs(jjtmp.M() - 80.4);
         indexj1=ij;
@@ -2302,7 +2257,7 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   int indexj2=0;
   for(unsigned int ij=0; ij < jets.size()-1; ij++){
     for(unsigned int ij2=ij+1; ij2 < jets.size(); ij2++){
-      snu::KParticle jjtmp = jets.at(ij) + jets.at(ij2) +electrons.at(0) + electrons.at(1);
+      snu::KParticle jjtmp = jets.at(ij) + jets.at(ij2);
       if(fabs(jjtmp.M() - 80.4) < wmassjj) {
         wmassjj = fabs(jjtmp.M() - 80.4);
         indexj1=ij;

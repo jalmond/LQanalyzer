@@ -564,11 +564,10 @@ vector<pair<TString,float> >  InitSample (TString sample){
   if(sample.Contains("vv_py")){
     list.push_back(make_pair("WZ_py",0.20));
     list.push_back(make_pair("ZZ_py",0.20));
-    list.push_back(make_pair("WW_py",0.25));
-    //list.push_back(make_pair("Wgamma",0.22));
-    list.push_back(make_pair("SSWmWm",0.4));
-    list.push_back(make_pair("SSWpWp",0.4));
-    list.push_back(make_pair("WW_dp",0.5));
+    list.push_back(make_pair("WW_py",0.20));
+    list.push_back(make_pair("SSWmWm",0.20));
+    list.push_back(make_pair("SSWpWp",0.2));
+    list.push_back(make_pair("WW_dp",0.2));
   }
   if(sample.Contains("vv_mg")){
     list.push_back(make_pair("WZtollqq_mg",0.25));

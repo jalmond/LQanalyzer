@@ -9,7 +9,7 @@ void Make2Dplot(){
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_5_3_14.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_5_3_14.root");
   if(!fdata)cout << "No Data" << endl;
-
+  TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
   /// Set Plotting style
   setTDRStyle();
   gStyle->SetPalette(1);
@@ -33,21 +33,60 @@ void Make2Dplot(){
       TH2F* h_mcpt_num= (TH2F*)fmc->Get(num.Data());
       TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
 
+      for(unsigned int j = 1; j < h_pt_num->GetNbinsY()+1; j++){
+	float newcontent = h_pt_num->GetBinContent(7, j) + h_pt_num->GetBinContent(8, j) ;
+	float newerror =   h_pt_num->GetBinError(7, j)*h_pt_num->GetBinError(7, j) + h_pt_num->GetBinError(8, j)*h_pt_num->GetBinError(8, j) ;
+	h_pt_num->SetBinError(7, j, sqrt(newerror));
+	h_pt_num->SetBinContent(7, j, newcontent);
+      }
+      for(unsigned int j = 1; j < h_pt_denom->GetNbinsY()+1; j++){
+        float newcontent = h_pt_denom->GetBinContent(7, j) + h_pt_denom->GetBinContent(8, j) ;
+        float newerror =   h_pt_denom->GetBinError(7, j)*h_pt_denom->GetBinError(7, j) + h_pt_denom->GetBinError(8, j)*h_pt_denom->GetBinError(8, j) ;
+	h_pt_denom->SetBinError(7, j, sqrt(newerror));
+	h_pt_denom->SetBinContent(7, j, newcontent);
+      } 
+
+
+
+      for(unsigned int j = 1; j < h_mcpt_num->GetNbinsY()+1; j++){
+        float newcontent = h_mcpt_num->GetBinContent(7, j) + h_mcpt_num->GetBinContent(8, j) ;
+        float newerror =   h_mcpt_num->GetBinError(7, j)*h_mcpt_num->GetBinError(7, j) + h_mcpt_num->GetBinError(8, j)*h_mcpt_num->GetBinError(8, j) ;
+	h_mcpt_num->SetBinError(7, j, sqrt(newerror));
+	h_mcpt_num->SetBinContent(7, j, newcontent);
+      } 
+
+
+      for(unsigned int j = 1; j < h_mcpt_denom->GetNbinsY()+1; j++){
+        float newcontent = h_mcpt_denom->GetBinContent(7, j) + h_mcpt_denom->GetBinContent(8, j) ;
+        float newerror =   h_mcpt_denom->GetBinError(7, j)*h_mcpt_denom->GetBinError(7, j) + h_mcpt_denom->GetBinError(8, j)*h_mcpt_denom->GetBinError(8, j) ;
+	h_mcpt_denom->SetBinError(7, j, sqrt(newerror));
+	h_mcpt_denom->SetBinContent(7, j, newcontent);
+      } 
+
+
+
       TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + *it2).Data());
       cout << h_pt_denom << " " << h_mcpt_num  <<endl;
       TString tmp = (*it2 +"_denom");
       TH2F* hratedenom = (TH2F*)h_pt_denom->Clone(tmp.Data());
-      eff_rate->Add(h_mcpt_num,-1.);
-      hratedenom->Add(h_mcpt_denom, -1.);
+      //eff_rate->Add(h_mcpt_num,-1.);
+      //hratedenom->Add(h_mcpt_denom, -1.);
       eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
       
       eff_rate->GetYaxis()->SetTitle("#eta" );
       eff_rate->GetXaxis()->SetTitle("p_{T} (GeV)");
-      eff_rate->GetXaxis()->SetRangeUser(15.,99.);
+      eff_rate->GetXaxis()->SetRangeUser(15.,59.);
       
-      eff_rate->Draw("colztext");
+      for(unsigned int i = 1; i < eff_rate->GetNbinsX()+1; i++){
+	for(unsigned int j = 1; j < eff_rate->GetNbinsY()+1; j++){
+	  cout <<"Bin " << i << ":"<< j << " has content= " <<eff_rate->GetBinContent(i,j) << endl;
+	} 
+      }
+      
+	
+      eff_rate->Draw("colztextE");
       c1->Update();
-
+      
       c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/Fakes/FakeRatePtEta.pdf"));
     }
     
@@ -55,7 +94,7 @@ void Make2Dplot(){
 }
 
 
-CMS_lumi( TPad* pad, int iPeriod, int iPosX )
+void CMS_lumi( TPad* pad, int iPeriod, int iPosX )
 {
   bool outOfFrame    = false;
   if( iPosX/10==0 )
@@ -212,3 +251,5 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
 
 
 
+
+//  LocalWords:  newcontent

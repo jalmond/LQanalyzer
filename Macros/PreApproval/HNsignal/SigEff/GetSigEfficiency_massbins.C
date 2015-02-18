@@ -26,9 +26,9 @@ void GetSigEfficiency(TString path, TString tag){
   
   TFile * file = new TFile(path);
   cout << file << endl;
-  TH1* hnsig =   (TH1F*)file->Get(("Efficiency/eff_electronRef"));
+  //  TH1* hnsig =   (TH1F*)file->Get(("NoCut_sigeff"));
 
-  float nsig = float(hnsig->Integral());
+  // float nsig = float(hnsig->Integral());
   
   TString hist = tag + "MassRegion/h_Nelectrons_" + tag + "MassRegion";
   TH1* h =  (TH1*)file->Get(hist.Data());
@@ -38,6 +38,7 @@ void GetSigEfficiency(TString path, TString tag){
   double err;
   h->IntegralAndError(0, h->GetNbinsX()+1, err, "");
   cout << "Total efficiency  " << tag << " = " << 100* (h->Integral() / nsig) <<  " +- " << err * 100. / nsig << endl;
+  
 }
 
 

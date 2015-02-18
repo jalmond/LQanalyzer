@@ -12,16 +12,16 @@ void Opt_ntuple_midmass_60(){
   gStyle->SetOptStat(1111);
 
   TChain * f_chain = new TChain("MyTree");
-  f_chain->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKnonprompt_dilep_5_3_14.root");
+  f_chain->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKnonprompt_dilep_5_3_14.root");
   f_chain->LoadTree(0) ;
   
   TChain * f_chainmc = new TChain("MyTree");
-  f_chainmc->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_mc_5_3_14.root");
+  f_chainmc->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_mc_5_3_14.root");
   f_chainmc->LoadTree(0) ;
 
   TChain * f_chainsig = new TChain("MyTree");
-  f_chainsig->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKHNee60_nocut_5_3_14.root");
-  TFile * file = new TFile("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_SKHNee60_nocut_5_3_14.root");
+  f_chainsig->Add("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKHNee60_nocut_5_3_14.root");
+  TFile * file = new TFile("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron_ntup/HNDiElectron_basic_SKHNee60_nocut_5_3_14.root");
   cout << file << endl;
   float  k_met=0., k_eemass=0., k_eejjmass=0., k_e1jjmass=0., k_e2jjmass=0.,  k_st=0., k_ht;
   float k_weight=0.;
@@ -163,7 +163,7 @@ void Opt_ntuple_midmass_60(){
     cout << "MET : "<< met_cut << endl;
     for(int imeejjmin= 0; imeejjmin < 1. ; imeejjmin++){
       float meejjmin_cut = 80. + float(imeejjmin) * 10.;
-      for(int imeejjmax= 0; imeejjmax <10. ; imeejjmax++){
+      for(int imeejjmax= 0; imeejjmax <11. ; imeejjmax++){
 	float meejjmax_cut = 150.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	for(int ipt1= 0; ipt1 <1. ; ipt1++){
@@ -179,7 +179,7 @@ void Opt_ntuple_midmass_60(){
 	    
 	      cout << "pt3_cut  =  " << pt3_cut << endl;
 	      for(int ieemin =0 ; ieemin < 1; ieemin++){
-		float eemin_cut =  15. + float(ieemin)* 5.;
+		float eemin_cut =  10. + float(ieemin)* 5.;
 		if(ieemin == 7) eemin_cut = 100.;
 		
 		for(int ieemax =0 ; ieemax <1 ; ieemax++){
@@ -188,16 +188,16 @@ void Opt_ntuple_midmass_60(){
 		  cout << eemin_cut << " <  ee < " <<   eemax_cut << endl;
 		  
 		  for(int ie1jjmin =0 ; ie1jjmin < 1 ; ie1jjmin++){
-                  float e1jjmin_cut = 60. + float(ie1jjmin)* 10.;
+                  float e1jjmin_cut = 0. + float(ie1jjmin)* 10.;
 
                   for(int ie1jjmax =0 ; ie1jjmax < 1 ; ie1jjmax++){
-                    float e1jjmax_cut =  130. + float(ie1jjmax)* 5.;
+                    float e1jjmax_cut =  10000. + float(ie1jjmax)* 5.;
 
 		    for(int ie2jjmin =0 ; ie2jjmin < 1 ; ie2jjmin++){
 		      float e2jjmin_cut = 0. + float(ie2jjmin)* 5.;
 		      
-		      for(int ie2jjmax =0 ; ie2jjmax < 1 ; ie2jjmax++){
-			float e2jjmax_cut =  130. + float(ie2jjmax)* 5.;
+		      for(int ie2jjmax =0 ; ie2jjmax < 11 ; ie2jjmax++){
+			float e2jjmax_cut =  120. + float(ie2jjmax)* 5.;
 			if(ie2jjmax == 10) e2jjmax_cut = 10000.;
 			
 			for(int ihtmin =0 ; ihtmin < 1 ; ihtmin++){

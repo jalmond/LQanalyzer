@@ -183,6 +183,8 @@ void LQController::SetDataPeriod(TString period){
   else if( period == "B") k_period = "B";
   else if( period == "C") k_period = "C";
   else if( period == "D") k_period = "D";
+  else if( period == "AtoB") k_period = "AtoB";
+  else if( period == "AtoC") k_period = "AtoC";
   else if( period == "AtoD") k_period = "AtoD";
   else {
     m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
@@ -195,6 +197,8 @@ void LQController::SetDataPeriod(TString period){
   else if( period == "B") target_luminosity = 4443.;
   else if( period == "C") target_luminosity = 7114.;
   else if( period == "D") target_luminosity = 7318.;
+  else if( period == "AtoB") target_luminosity = (887.501 + 4443.);
+  else if( period == "AtoC") target_luminosity = (887.501 + 4443. + 7114.);
   else target_luminosity = (887.501 + 4443. + 7114. + 7318.);
 
   

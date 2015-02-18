@@ -406,7 +406,7 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> test_elcoll                   = GetElectrons(false, false, "HNTight_loosereg2");
   TString fake_loose_region = "";
   TString fake_loose_label = "";
-  if(Zcandidate(test_elcoll, 20., false)) {
+  if(Zcandidate(test_elcoll, 25., false)) {
     fake_loose_region = "looseregion1";
     fake_loose_label = "HNTight";
   }
@@ -416,7 +416,7 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
   }
 
   //// Get the collection of electrons
-  std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(true,  false, fake_loose_label , weight);
+  std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(false,  false, fake_loose_label , weight);
   std::vector<snu::KElectron> electronAnalysisColl_withfakes         = GetElectrons(false, true, fake_loose_label);
   
   vector<snu::KTruth> truth =  eventbase->GetTruth();
@@ -599,7 +599,7 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
   /// before third lepton veto no fake estimate can be done.
   if(k_running_nonprompt){
     
-    weight      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method4_pt_eta_40_" + reg,0); 
+    weight      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method1_pt_eta_40_" + reg,0); 
     weight_err      *= Get_DataDrivenWeight_EE(electronAnalysisColl, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method4_pt_eta_40_" + reg,3); 
 
     weight_reg1      *= Get_DataDrivenWeight_EE(electronAnalysisColl_loosereg1, jetColl_lepveto_mva,  eventbase->GetEvent().JetRho(),  true, 0.01, 0.09, 0.05, "method4_pt_eta_40_HNTight",0); 
@@ -709,7 +709,12 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
 
 
   // Require now dilepton trigger passed
-  if(!PassTrigger(triggerslist, prescale))  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  if(isData){
+    if(!PassTrigger(triggerslist, prescale))  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  }
+  else{
+    weight *= TriggerScaleFactor( electronAnalysisColl);
+  }
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
  
   if(!isData)weight*= TriggerScaleFactor( electronAnalysisColl);

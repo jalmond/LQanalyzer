@@ -16,10 +16,13 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_oseemass"]            =     new TH1F("h_oseemass_"            + name,"Invariant mass of the two leading os electrons",100,0,500);
   map_sig["h_e1jjmass"]            =     new TH1F("h_e1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
   map_sig["h_e2jjmass"]            =     new TH1F("h_e2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
+  map_sig["h_l1jjmass"]            =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
+  map_sig["h_l2jjmass"]            =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
   map_sig["h_eejjmass"]            =     new TH1F("h_eejjmass_"          + name,"Invariant mass of the four particles",200,0,2000);
   map_sig["h_eejmass"]            =     new TH1F("h_eejmass_"          + name,"Invariant mass of the four particles",200,0,2000);
   map_sig["h_emumass"]             =     new TH1F("h_emumass_"           + name,"Invariant mass of the two leading leptons",200,0,1000);
   map_sig["h_emujjmass"]           =     new TH1F("h_emujjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_mujjmass"]           =     new TH1F("h_mujjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
   
   /// Electron plots  
   map_sig["h_ElectronPt"]          =     new TH1F("h_ElectronPt_"        + name,"leading electron pt",60,0,300);
@@ -308,9 +311,18 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(electrons.size() == 1 && muons.size() == 1){
     Fill("h_emumass", ((electrons[0]+ muons[0]).M()), weight, weight_err);
     Fill("h_emujjmass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    Fill("h_mujjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
     Fill("h_MuonPt", muons[0].Pt(), weight, weight_err);
     Fill("h_MuonEta", muons[0].Eta(), weight,weight_err);
-    
+
+    if(electrons.at(0).Pt() > muons.at(0).Pt()) {
+      Fill("h_l1jjmass", ((electrons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+      Fill("h_l2jjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    }
+    else{
+      Fill("h_l2jjmass", ((electrons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+      Fill("h_l1jjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    }
   }
 
   int sum_charge(0);

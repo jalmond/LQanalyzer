@@ -124,7 +124,7 @@ void Opt_ntuple_midmass_40(){
     float met_cut = METcut.at(imet);
     cout << "MET : "<< met_cut << endl;
     for(int imeejjmin= 0; imeejjmin < 1. ; imeejjmin++){
-      float meejjmin_cut = 60. + float(imeejjmin) * 5.;
+      float meejjmin_cut = 80. + float(imeejjmin) * 5.;
       for(int imeejjmax= 0; imeejjmax <1. ; imeejjmax++){
 	float meejjmax_cut = 160.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
@@ -145,8 +145,8 @@ void Opt_ntuple_midmass_40(){
 		if(ieemin == 7) eemin_cut = 100.;
 		
 		for(int ieemax =0 ; ieemax <1 ; ieemax++){
-		  float eemax_cut =  60. + float(ieemax) * 10. ;
-		  if(ieemax == 3) eemax_cut = 100000.;
+		  float eemax_cut =  60. + float(ieemax) * 5. ;
+		  if(ieemax == 10) eemax_cut = 100000.;
 		  cout << eemin_cut << " <  ee < " <<   eemax_cut << endl;
 		  
 		  for(int ie1jjmin =0 ; ie1jjmin < 1 ; ie1jjmin++){
@@ -158,7 +158,7 @@ void Opt_ntuple_midmass_40(){
 		    for(int ie2jjmin =0 ; ie2jjmin < 1 ; ie2jjmin++){
 		      float e2jjmin_cut = 0. + float(ie2jjmin)* 10.;
 		      
-		      for(int ie2jjmax =0 ; ie2jjmax < 1 ; ie2jjmax++){
+		      for(int ie2jjmax =1 ; ie2jjmax < 11 ; ie2jjmax++){
 			float e2jjmax_cut =  120. + float(ie2jjmax)* 5.;
 			if(ie2jjmax == 10) e2jjmax_cut = 10000.;
 			

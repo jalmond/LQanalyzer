@@ -13,7 +13,7 @@
 #include "THStack.h"
 #include "TLegend.h"
 
-#include "CMS_lumi.h"
+
 
 void setTDRStyle();
 
@@ -21,6 +21,7 @@ void setTDRStyle();
 void setTDRStyle() {
   TStyle *tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
 
+  tdrStyle->SetPaintTextFormat("4.4f");
   // For the canvas:
   tdrStyle->SetCanvasBorderMode(0);
   tdrStyle->SetCanvasColor(kWhite);

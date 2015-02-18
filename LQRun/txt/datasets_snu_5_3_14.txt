@@ -207,7 +207,7 @@ SKHtoWW           769720.          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTree
 
 ### OTHER ###
 SKZgamma          49684.472       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Zgamma/
-SKWgammaE         53576.196       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaE/
+SKWgammaE         156730.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaE/
 SKWgamma          10403.722       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Wgamma/
 SKWgammaMu        156730.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaMu/
 SKWgammaTau       148800.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaTau/
@@ -339,7 +339,7 @@ SKHtoWW_dilep           769720.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 
 ### OTHER ######
 SKZgamma_dilep          49684.472       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Zgamma/
-SKWgammaE_dilep         53576.196       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WgammaE/
+SKWgammaE_dilep         156730.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WgammaE/
 SKSSWmWm_dilep          1084518.452     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/SSWmWm/
 SKSSWpWp_dilep          402840.451      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/SSWpWp/
 SKWgamma_dilep          10403.722       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Wgamma/

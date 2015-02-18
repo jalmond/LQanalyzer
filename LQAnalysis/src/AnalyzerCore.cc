@@ -108,6 +108,14 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
     eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->Selection(jetColl);
   }
+  else  if(label.Contains("loosest")){
+    eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
+    eventbase->GetJetSel()->SetPt(10.);
+    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
+  }
+  
+  
   else  if(label.Contains("ApplyLeptonVeto")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
@@ -637,7 +645,6 @@ void AnalyzerCore::RunMCCLosureTest(TString label, std::vector<snu::KJet> jets, 
 	    if(!el1_fake &&!el2_fake)   FillHist(label + "mcclosure_trueevent_type", 2., 1., 0., 3., 3);
 	    
 	    
-
 	    FakeBkgBreakDown(electronAnalysisColl_mcclosure, "mcclosure",fake_weight60); 
 	    
 	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_mcclosure.at(1),   eventbase->GetEvent().JetRho()) ){
@@ -2863,7 +2870,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons ,
     bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, usetight);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, SumPt(jets), is_el1_tight,is_el2_tight, cut, type);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, SumPt(jets), is_el1_tight,is_el2_tight, cut, type, NBJet( GetJets("ApplyPileUpID")));
 
   }
   return ee_weight;
@@ -2878,7 +2885,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons ,
     bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, usetight);
 
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type, NBJet( GetJets("ApplyPileUpID")));
         
   }
   return ee_weight;
@@ -2898,7 +2905,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
     bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, true);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type, NBJet( GetJets("ApplyPileUpID")));
     
   }
   return ee_weight;

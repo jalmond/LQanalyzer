@@ -495,7 +495,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 }
     
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, float ht,  bool isel1tight, bool isel2tight, TString cut, int eventtype. int nbjet){
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, float ht,  bool isel1tight, bool isel2tight, TString cut, int eventtype, int nbjet){
   
   if(electrons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
@@ -520,13 +520,15 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
     cout << "el2 pT = " << _el2_pt << endl;
   }
 
+  bool highpt = false; 
   if(cut.Contains("mc")){
     if(_el1_pt > 60.) _el1_pt = 59.;
     if(_el2_pt > 60.) _el2_pt = 59.;
   }
   else{
-    if(_el1_pt > 100.) _el1_pt = 99.;
-    if(_el2_pt > 100.) _el2_pt = 99.;
+    if(_el2_pt > 100.) highpt = true;
+    if(_el1_pt > 60.) _el1_pt = 59.;
+    if(_el2_pt > 60.) _el2_pt = 59.;
   }
   float fr1(0.),fr2(0.),r1(0.),r2(0.);
   
@@ -856,6 +858,16 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       cut2  = "pt_eta_" + htbin + "_"+ JetPt+ "_" +reg;
     }
   }
+
+
+  if(fcut.Contains("method1")){
+    if(nbjet ==0) {
+      if( _el1_eta < 1.5) {
+	if(_el1_pt > 45.) _el1_pt = 64.;
+      }
+    }
+  }
+  
   fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut1);
   fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut2);
   
@@ -864,6 +876,22 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
   //if(!isel1tight) cout << "fr1 = " << fr1 << " " << cut1<< " " << _el1_pt << " " << _el1_eta << endl;
   //if(!isel2tight) cout << "fr2 = " << fr2 << " " <<  cut2 << " " << _el2_pt << " " << _el2_eta << endl;
+
+  if(nbjet ==0) {
+    if(highpt){
+      fr1 *= 2.5;
+      fr2 *= 2.5;
+    }
+  }
+  else{
+  }
+  
+  //if(nbjet != 0) {
+  // fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
+  //  fr2= getFakeRate_electronEta(0,_el2_pt, _el2_eta,"bjet_pt_eta_40_looseregion2");
+
+  //}
+
   
   if(fr1 == 0.)  fr1 = 0.05;
   if(fr2 == 0.)  fr2 = 0.05;
@@ -873,7 +901,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       if(cut1.Contains("fake_eff_mc_60_bjet_ht3_loosereg1")) cout << "mod: fake_eff_mc_60_bjet_ht3_loosereg1 : fr = " << fr1 << endl;
     }
   }
-
+  
 
   // Calculate event weight
   float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, isel2tight, eventtype);
@@ -992,7 +1020,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   
   
   if(nbjet != 0) {
-    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
+    //fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
     
   }
   

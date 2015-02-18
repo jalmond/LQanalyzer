@@ -35,47 +35,47 @@ void GetNMCEvents_isochec_dec(){
   TFile * filecf = new TFile(cfpath);
   cout << file << " " << filefake << " " << filecf << endl;
   vector<TString> masses;
-  masses.push_back("40");
-  masses.push_back("50");
-  masses.push_back("60");
+  masses.push_back("40_lm");
+  masses.push_back("50_lm");
+  masses.push_back("60_lm");
   //masses.push_back("70");
-  masses.push_back("80");
-  masses.push_back("90");
-  masses.push_back("100");
-  masses.push_back("125");
-  masses.push_back("150");
-  masses.push_back("175");
-  masses.push_back("200");
+  masses.push_back("80_lm");
+  masses.push_back("90_hm");
+  masses.push_back("100_hm");
+  masses.push_back("125_hm");
+  masses.push_back("150_hm");
+  masses.push_back("175_hm");
+  masses.push_back("200_hm");
   //masses.push_back("225");
-  masses.push_back("250");
+  masses.push_back("250_hm");
   //  masses.push_back("275");
-  masses.push_back("300");
+  masses.push_back("300_hm");
   //masses.push_back("325");
-  masses.push_back("350");
+  masses.push_back("350_hm");
   //masses.push_back("375");
-  masses.push_back("400");
-  masses.push_back("500");
+  masses.push_back("400_hm");
+  masses.push_back("500_hm");
   
   vector<TString> type;
   type.push_back("");
   //type.push_back("_fg");
   
-    std::map<TString, int> mapcut;
-    std::map<TString, int>::iterator mit; 
+  std::map<TString, int> mapcut;
+  //std::map<TString, int>::iterator mit; 
     
   mapcut["_default"] = 1;
   /*mapcut["_lowmass"] = 2;
-  mapcut["_noMe2jj"] = 3;
-  mapcut["_noeeupper"] = 4;
-  mapcut["_noeejjupper"] = 5;
-  mapcut["_nopt10"] = 6;
+    mapcut["_noMe2jj"] = 3;
+    mapcut["_noeeupper"] = 4;
+    mapcut["_noeejjupper"] = 5;
+    mapcut["_nopt10"] = 6;
   */
   
-  for(mit = mapcut.begin(); mit!= mapcut.end() ; mit++){
+  for(  std::map<TString, int>::iterator mit = mapcut.begin(); mit!= mapcut.end() ; mit++){
     for(unsigned int j=0; j < type.size(); j++){
-    
+      
       //if(type.at(j).Contains("fg") && !mit->first.Contains("default")) continue;
-      TString outfile = "Limit_file_isocheck_" + mit->first + type.at(j) + ".root";
+      TString outfile = "Limit_file_isocheck_default"  + type.at(j) + ".root";
       TFile* fout = new TFile(outfile.Data(),"RECREATE");
       fout->cd();
       
@@ -103,7 +103,7 @@ void GetNMCEvents_isochec_dec(){
 	h_obs->SetBinContent(i+1,result[i]);
 	h_mass->SetBinContent(i+1,mass[i]);
 	
-	TString tag = "limithist/" +masses.at(i)+ type.at(j)+  mit->first;
+	TString tag = "limithist/" +masses.at(i)+ type.at(j)+  "_default";
 	cout << tag << endl;
 	TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_limithist").Data());
 	cout << hnmc << endl;

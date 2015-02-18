@@ -547,8 +547,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
   //////// Diboson ////////
   if(sample.Contains("wz_py")){    
     list.push_back(make_pair("WZ_py",0.15));
-    //list.push_back(make_pair("WgammaE",0.22));
-    //list.push_back(make_pair("WgammaTau",0.22));
+    list.push_back(make_pair("WgammaE",0.22));
+    list.push_back(make_pair("WgammaTau",0.22));
 
   }
   
@@ -562,12 +562,14 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
 
   if(sample.Contains("vv_py")){
-    list.push_back(make_pair("WZ_py",0.20));
-    list.push_back(make_pair("ZZ_py",0.20));
-    list.push_back(make_pair("WW_py",0.25));
-    //list.push_back(make_pair("Wgamma",0.22));
-    list.push_back(make_pair("SSWmWm",0.4));
-    list.push_back(make_pair("SSWpWp",0.4));
+    list.push_back(make_pair("WZ_py",0.12));
+    list.push_back(make_pair("ZZ_py",0.10));
+    list.push_back(make_pair("WW_py",0.10));
+    list.push_back(make_pair("Wgamma",0.22));
+    list.push_back(make_pair("WgammaE",0.25));
+    list.push_back(make_pair("Zgamma",0.25));
+    list.push_back(make_pair("SSWmWm",0.25));
+    list.push_back(make_pair("SSWpWp",0.25));
     list.push_back(make_pair("WW_dp",0.5));
   }
   if(sample.Contains("vv_mg")){
@@ -925,6 +927,7 @@ void SetTitles(TH1* hist, string name){
 
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
+  if(name.find("ElectronPt")!=string::npos)xtitle="Electron p_{T} [GeV]";
   if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} [GeV]";
   if(name.find("leadingElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
   if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} [GeV]";
