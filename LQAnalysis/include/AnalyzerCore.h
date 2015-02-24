@@ -1,7 +1,9 @@
 #ifndef AnalyzerCore_H
 #define AnalyzerCore_H
 
-//forward declarations                                                                                                                                            
+//forward declarations
+
+                                                                   
 class Reweight;
 class EventBase;
 class MuonPlots;
@@ -13,6 +15,7 @@ class EventBase;
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 #include "rochcor2012/rochcor2012/rochcor2012jan22.h"
+#include "BTagSFUtil.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -84,6 +87,23 @@ class AnalyzerCore : public LQCycleBase {
   
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
+
+  
+  double TopElTriggerEff(float pt, float eta);
+  double TopElTriggerScaleFactor(float pt, float eta, int syst);
+  
+  double TopElIDIsoEff(float pt, float eta);
+  double TopElIDIsoScaleFactor(float pt, float eta, int syst);
+  
+  double TopMuIDEff(float eta, int syst);
+  double TopMuIsoEff(float eta, int syst);
+  double TopMuTriggerEff(float eta, int syst);
+
+  double TopMuIDSF( float eta, int syst);
+  double TopMuIsoSF( float eta, int syst);
+  double TopMuTriggerSF( float eta, int syst);
+  
+
   
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
@@ -106,6 +126,7 @@ class AnalyzerCore : public LQCycleBase {
   /// Pileup Reweighting class
   static const Bool_t MC_pu = true;
   Reweight *reweightPU;
+  BTagSFUtil *fBTagSF;
 
   //// Event base pointer. Used to get all objects for analysis
   EventBase* eventbase;

@@ -47,6 +47,7 @@ class BTagSFUtil{
 
   float GetJetSF(int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
+  void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], bool isTag[], int syst, float &wbtag, float &wbtagErr);
 
  private:
 
