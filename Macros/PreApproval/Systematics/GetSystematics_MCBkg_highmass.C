@@ -28,22 +28,59 @@ void GetSystematics_MCBkg_highmass(){
   setTDRStyle();
   //gStyle->SetPalette(1);
     
-  float syst_jes = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 3,4);
-  float syst_jer = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 5,6);
-  float syst_met = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 7,8);
-  float syst_btag1 = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 9,10);
-  float syst_btag2 = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 11,12);
+  float syst_jes = GetSyst("limithist/200_midmassMassRegion_limithist", 3,4);
+  float syst_jer = GetSyst("limithist/200_midmassMassRegion_limithist", 5,6);
+  float syst_met = GetSyst("limithist/200_midmassMassRegion_limithist", 7,8);
+  float syst_btag1 = GetSyst("limithist/200_midmassMassRegion_limithist", 9,10);
+  float syst_btag2 = GetSyst("limithist/200_midmassMassRegion_limithist", 11,12);
   float syst_btag = sqrt(syst_btag1*syst_btag1 + syst_btag2*syst_btag2);
-  float syst_id = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 17,18);
-  float syst_pileup = GetSyst("limithist/100_hm_midmassMassRegion_limithist", 15,16);
+  float syst_id = GetSyst("limithist/200_midmassMassRegion_limithist", 17,18);
+  float syst_pileup = GetSyst("limithist/200_midmassMassRegion_limithist", 15,16);
 
-  cout << "Low Mass JES = " << syst_jes << endl;
-  cout << "Low Mass JER = " << syst_jer << endl;
-  cout << "Low Mass MET = " << syst_met << endl;
-  cout << "Low Mass btag = " << syst_btag << endl;
-  cout << "Low Mass ID= " << syst_id << endl;
-  cout << "Low Mass pileup = " << syst_pileup << endl;
-  cout << "Low MAss total = " << sqrt (syst_jes*syst_jes + syst_jer*syst_jer + syst_met*syst_met + syst_btag*syst_btag + syst_id*syst_id + syst_pileup*syst_pileup + 6*6 + 15.*15. + 2.6*2.6) << endl;;
+  float xsecerr = 0.;
+  if(true){
+    float nwz = integrate_mc("WZ_py");
+    float nzz = integrate_mc("ZZ_py");
+    float nwwm = integrate_mc("SSWmWm");
+    float nwwp = integrate_mc("SSWpWp");
+    float nttz = integrate_mc("ttZ");
+    float nttw = integrate_mc("ttW");
+    float nhiggsZZ = integrate_mc("ggHtoZZ");
+    float nhiggsWW = integrate_mc("HtoWW");
+
+
+    float tot = nwz + nzz + nwwp + nwwm + nttw + nttz+ nhiggsZZ + nhiggsWW;
+
+    float wz_percent = nwz / tot;
+    float zz_percent = nzz / tot;
+    float ssm_percent = nwwm / tot;
+    float ssp_percent = nwwp / tot;
+    float ttz_percent = nttz / tot;
+    float ttw_percent = nttw / tot;
+    float higgsZZ_percent = nhiggsZZ / tot;
+    float higgsWW_percent = nhiggsWW / tot;
+
+    float wz_err_perc = wz_percent * 12.;
+    float zz_err_perc = zz_percent * 9.;
+    float sswp_err_perc = ssm_percent * 22.;
+    float sswm_err_perc = ssp_percent * 22.;
+    float ttz_err_perc = ttz_percent * 25.;
+    float ttw_err_perc = ttw_percent * 25.;
+    float higgsZZ_err_perc = higgsZZ_percent * 25.;
+    float higgsWW_err_perc = higgsWW_percent * 25.;
+    xsecerr = wz_err_perc +zz_err_perc + sswp_err_perc + sswm_err_perc + ttz_err_perc + ttw_err_perc + higgsWW_err_perc + higgsZZ_err_perc;
+
+  }
+
+
+  cout << "high Mass JES = " << syst_jes << endl;
+  cout << "high Mass JER = " << syst_jer << endl;
+  cout << "high Mass MET = " << syst_met << endl;
+  cout << "high Mass btag = " << syst_btag << endl;
+  cout << "high Mass ID= " << syst_id << endl;
+  cout << "high Mass pileup = " << syst_pileup << endl;
+  cout << "high Mass xsec = " << xsecerr << endl;
+  cout << "high MAss total = " << sqrt (syst_jes*syst_jes + syst_jer*syst_jer + syst_met*syst_met + syst_btag*syst_btag + syst_id*syst_id + syst_pileup*syst_pileup + 6*6 + xsecerr*xsecerr + 2.6*2.6) << endl;;
   
 
 }
@@ -57,8 +94,10 @@ float GetSyst(TString path, int sys1, int sys2){
   float nwwp = integrate_mc("SSWpWp");
   float nttz = integrate_mc("ttZ");
   float nttw = integrate_mc("ttW");
+  float nhiggsZZ= integrate_mc("ggHtoZZ");
+  float nhiggsWW = integrate_mc("HtoWW");
 
-  float tot = nwz + nzz + nwwp + nwwm + nttw + nttz;
+  float tot = nwz + nzz + nwwp + nwwm + nttw + nttz+ nhiggsZZ + nhiggsWW;
   
   float wz_percent = nwz / tot;
   float zz_percent = nzz / tot;
@@ -66,6 +105,9 @@ float GetSyst(TString path, int sys1, int sys2){
   float ssp_percent = nwwp / tot;
   float ttz_percent = nttz / tot;
   float ttw_percent = nttw / tot;
+  float higgsZZ_percent = nhiggsZZ / tot;
+  float higgsWW_percent = nhiggsWW / tot;
+
   cout << "% = " << wz_percent << " " << zz_percent << " " << ssm_percent << " "  << ssp_percent << " " << ttz_percent << " " << ttw_percent << " " << endl;
   cout <<  syst("WZ_py",path, sys1, sys2) << endl;
 
@@ -76,10 +118,12 @@ float GetSyst(TString path, int sys1, int sys2){
   float ssp_syst = ssp_percent* syst("SSWpWp",path, sys1, sys2); 
   float ttz_syst = ttz_percent* syst("ttZ",path, sys1, sys2); 
   float ttw_syst = ttw_percent* syst("ttW",path, sys1, sys2); 
+  float higgsZZ_syst = higgsZZ_percent* syst("ggHtoZZ",path, sys1, sys2); 
+  float higgsWW_syst = higgsWW_percent* syst("HtoWW",path, sys1, sys2); 
   
   cout << wz_syst << " " << zz_syst << " " << ssm_syst << " " << ssp_syst << " " << ttw_syst << " " << ttz_syst << endl;
 
-  return  wz_syst + zz_syst + ssp_syst + ssm_syst + ttz_syst+ ttw_syst;
+  return  wz_syst + zz_syst + ssp_syst + ssm_syst + ttz_syst+ ttw_syst + higgsZZ_syst + higgsWW_syst;
   
   
 }
@@ -112,7 +156,7 @@ float integrate_mc(TString sample){
   TString path = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SK" + sample  +"_dilep_5_3_14.root";
   TFile * file = new TFile(path);
 
-  TH1* h = (TH1*)(TH1F*)file->Get(("LowMassRegion/h_Nelectrons_LowMassRegion"));
+  TH1* h = (TH1*)(TH1F*)file->Get(("MediumMassRegion/h_Nelectrons_MediumMassRegion"));
 
   float n = h->Integral();
 

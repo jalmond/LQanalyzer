@@ -1,0 +1,27 @@
+# Specify_location_of_data/mc
+mcpath	        /home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/
+datapath	/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_data_5_3_14.root
+datadrivenpath	/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/
+# Specify_the_list_of_hists_to_plot
+plottingpath	dat/hnhist_config.txt
+cutpath		dat/hn_cuts.txt
+xs# file_prefix
+prefix		HNDiElectron_SK
+postfix		_dilep_5_3_14.root	
+# NAME_THE_OUTPUT_DIR
+outputdir  HNDiElectron_ANnote_2014_jan
+histdir    LQMarch14
+# CONFIGURE_HISTOGRAMS
+showdata   true
+usenp      false
+ylog	   true
+# List_the_samples_to_be_included
+samples	   vv_py
+samples	   ttv
+samples	   vvv
+samples	   higgs
+samples	   chargeflip
+##samples   ttbar
+samples	   nonprompt	
+#samples    dy
+END

@@ -24,9 +24,9 @@ KEvent::KEvent() :
   k_vertexZ(0.), 
   k_jetrho(0.),
   k_mcweight(0.),
-  k_pdf_cteq(0.),
-  k_pdf_mstw(0.),
-  k_pdf_nnpdf(0.),
+  k_pdf_cteq(),
+  k_pdf_mstw(),
+  k_pdf_nnpdf(),
   k_genmettrue(0.),
   k_genmetphitrue(0.),
   k_gensumettrue(0.),
@@ -157,9 +157,9 @@ void KEvent::Reset()
   k_PF_METrawphi= 0.;
   k_PF_METtype1phi= 0.;
   k_PF_METtype01phi= 0.;
-  k_pdf_cteq =0.;
-  k_pdf_mstw = 0.;
-  k_pdf_nnpdf = 0.;
+  k_pdf_cteq.clear();
+  k_pdf_mstw.clear(); 
+  k_pdf_nnpdf.clear();
   k_genmettrue = 0.;
   k_genmetphitrue= 0.;
   k_gensumettrue= 0.;
@@ -343,15 +343,15 @@ void KEvent::SetGenSumEtCalo(double gensumetcalo){
 
 ///PDF weights
 
-void KEvent::SetPDFCTEQWeight(double pdfw){
+void KEvent::SetPDFCTEQWeight(vector<double> pdfw){
   k_pdf_cteq = pdfw;
 }
 
-void KEvent::SetPDFMSTWWeight(double pdfw){
+void KEvent::SetPDFMSTWWeight(vector<double> pdfw){
   k_pdf_mstw= pdfw;
 }
 
-void KEvent::SetPDFNNPDFWeight(double pdfw){
+void KEvent::SetPDFNNPDFWeight(vector<double> pdfw){
   k_pdf_nnpdf =pdfw;
 }
 /// Filling Event variables

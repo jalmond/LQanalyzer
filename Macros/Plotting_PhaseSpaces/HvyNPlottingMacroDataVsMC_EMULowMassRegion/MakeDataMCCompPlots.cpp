@@ -160,10 +160,10 @@ int MakePlots(string hist) {
 	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu125_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu40_nocut_5_3_14.root"));
         TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
         hsig_40->Rebin(rebin);
-        hsig_40->Scale(0.03);
+        hsig_40->Scale(24./hsig_40->Integral());
         FixOverUnderFlows(hsig_40, xmax);
         //SetTitles(hsig_40, name);
         ymax = GetMaximum(hsig_40, hsig_40, ylog, name);
@@ -174,11 +174,11 @@ int MakePlots(string hist) {
 	hsig_40->GetXaxis()->SetRangeUser(xmin,xmax);
 	hsig_40->GetYaxis()->SetRangeUser(ymin,ymax);
 
-	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu150_nocut_5_3_14.root"));
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu60_nocut_5_3_14.root"));
         TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
         hsig_80->Rebin(rebin);
         FixOverUnderFlows(hsig_80, xmax);
-        hsig_80->Scale(0.04);
+        hsig_80->Scale(24./hsig_80->Integral());
         hsig_80->SetLineColor(kBlue);
         hsig_80->SetLineWidth(2.);
 
@@ -1514,8 +1514,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   else{
   }
 
-  legend->AddEntry(hsig_40, "m_{N} = 60 GeV, |V_{eN}|^{2} = 5E-4 ","l");
-  legend->AddEntry(hsig_80, "m_{N} = 80 GeV, |V_{eN}|^{2} = 2E-4","l");
+  legend->AddEntry(hsig_40, "m_{N} = 40 GeV, |V_{eN}|^{2} = 5E-4 ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 60 GeV, |V_{eN}|^{2} = 2E-4","l");
 
   legend->Draw();
   

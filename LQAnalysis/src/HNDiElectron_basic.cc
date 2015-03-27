@@ -483,9 +483,7 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
 
   m_logger << DEBUG << "Filled Jets "<< LQLogger::endmsg;
 
-
-
-
+  
   if(k_running_nonprompt){
     /// MC CLOSURE
     RunMCCLosureTest("loosereg1", jetColl_lepveto_mva,"", weight);

@@ -160,28 +160,27 @@ int MakePlots(string hist) {
 	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
-	TFile* file_sig100 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
-        TH1* hsig_100 = dynamic_cast<TH1*> ((file_sig100->Get(name.c_str()))->Clone());
-        hsig_100->Rebin(rebin);
-        hsig_100->Scale(0.005);
-        FixOverUnderFlows(hsig_100, xmax);
-        SetTitles(hsig_100, name);
-	hsig_100->GetXaxis()->SetTitle("");
-        ymax = GetMaximum(hsig_100, hsig_100, ylog, name);
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
+        TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
+        hsig_40->Rebin(rebin);
+        hsig_40->Scale(0.005);
+        FixOverUnderFlows(hsig_40, xmax);
+        //SetTitles(hsig_40, name);
+        ymax = GetMaximum(hsig_40, hsig_40, ylog, name);
         float int_bkg = hup->Integral()/2.;
 
-        hsig_100->SetLineColor(kRed);
-        hsig_100->SetLineWidth(2.);
-	hsig_100->GetXaxis()->SetRangeUser(xmin,xmax);
-	hsig_100->GetYaxis()->SetRangeUser(ymin,ymax);
+        hsig_40->SetLineColor(kRed);
+        hsig_40->SetLineWidth(2.);
+	hsig_40->GetXaxis()->SetRangeUser(xmin,xmax);
+	hsig_40->GetYaxis()->SetRangeUser(ymin,ymax);
 
-	TFile* file_sig300 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee300_nocut_5_3_14.root"));
-        TH1* hsig_300 = dynamic_cast<TH1*> ((file_sig300->Get(name.c_str()))->Clone());
-        hsig_300->Rebin(rebin);
-        FixOverUnderFlows(hsig_300, xmax);
-        hsig_300->Scale(0.25);
-        hsig_300->SetLineColor(kBlue);
-        hsig_300->SetLineWidth(2.);
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee300_nocut_5_3_14.root"));
+        TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
+        hsig_80->Rebin(rebin);
+        FixOverUnderFlows(hsig_80, xmax);
+        hsig_80->Scale(0.25);
+        hsig_80->SetLineColor(kBlue);
+        hsig_80->SetLineWidth(2.);
 
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
 	//scale =  MakeSumHist(mstack)->Integral() /  hdata->Integral();
@@ -192,7 +191,9 @@ int MakePlots(string hist) {
 	vstack.push_back(mstack);   	
 	vstack.push_back(mstack_nostat);   	
 
-	TCanvas* c = CompDataMC(hdata,hsig_100,hsig_300, vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	cout << " Making canvas" << endl;
+	
+	TCanvas* c = CompDataMC(hdata,hsig_40,hsig_80, vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 	cout << " Made canvas" << endl;
 
 	string canvasname = c->GetName();
@@ -450,14 +451,14 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
     x1 = 0.6;
-    y1 = 0.6;
+    y1 = 0.5;
     x2 = 0.9;
     y2 = 0.9;
   }
   else{
     if((hlegdata->GetBinContent(nbinsX*0.3) / hlegdata->GetMaximum()) < 0.5){
       x1 = 0.2;
-      y1 = 0.6;
+      y1 = 0.5;
       x2 = 0.5;
       y2 = 0.9;
     }
@@ -467,13 +468,23 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetFillColor(kWhite);
   legendH->SetTextFont(42);
   
-  //legendH->SetBorderSize(0);
+  legendH->SetBorderSize(0);
   //  legendH->SetTextSize(0.02);
   
   
-  if(rundata) 	legendH->AddEntry(hlegdata,"Data","plE");
+  if(rundata) 	legendH->AddEntry(hlegdata,"Data","pE");
   
-  for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
+  //  for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
+  
+  vector<TString> legorder;
+  legorder.push_back("Fake Electron Background");
+  legorder.push_back("Charge Flip Background");
+  legorder.push_back("VV");
+  legorder.push_back("VVV");
+  legorder.push_back("t#bar{t}+V");
+  legorder.push_back("Higgs");
+  for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
+    map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
     legendH->AddEntry(it->second,it->first.Data(),"f");    
   }
   legendH->SetFillColor(kWhite);
@@ -586,6 +597,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_py",0.20));
     list.push_back(make_pair("ZZ_py",0.20));
     list.push_back(make_pair("WW_py",0.25));
+    //list.push_back(make_pair("Wgamma",0.22));
     list.push_back(make_pair("SSWmWm",0.4));
     list.push_back(make_pair("SSWpWp",0.4));
     list.push_back(make_pair("WW_dp",0.5));
@@ -921,12 +933,12 @@ void SetTitles(TH1* hist, string name){
   if(HistInGev(name)) ytitle = "Entries / " +str_width.str() + " GeV";
   
   if(name.find("h_MET")!=string::npos){
-    xtitle="E^{miss}_{T} [GeV]"; 
+    xtitle="E^{miss}_{T} (GeV)"; 
     if(name.find("phi")!=string::npos){
       xtitle="#phi_{E^{miss}_{T}} "; 
     }
   }
-  if(name.find("h_MT")!=string::npos) xtitle="M_{T} [GeV]";
+  if(name.find("h_MT")!=string::npos) xtitle="M_{T} (GeV)";
   if(name.find("h_dphi_METe")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{el})";
   if(name.find("h_dphi_METm")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{mu})";
 
@@ -936,25 +948,27 @@ void SetTitles(TH1* hist, string name){
     
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
-  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} [GeV]";
+  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV)";
   if(name.find("MuonD0")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
-  if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
-  if(name.find("secondMuonPt")!=string::npos)xtitle="Second p_{T} [GeV]";
-  if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} [GeV]";
-
+  if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
+  if(name.find("secondMuonPt")!=string::npos)xtitle="Second p_{T} (GeV)";
+  if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} (GeV)";
+  
+  if(name.find("jets_pt")!=string::npos)xtitle="Jet p_{T} (GeV)";
+  
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
-  if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} [GeV]";
-  if(name.find("leadingElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
-  if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} [GeV]";
-  if(name.find("thirdELectronPt")!=string::npos)xtitle="Third p_{T} [GeV]";
+  if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} (GeV)";
+  if(name.find("leadingElectronPt")!=string::npos)xtitle="Leading electron p_{T} (GeV)";
+  if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV)";
+  if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
-  if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) [GeV]";
-  if(name.find("eemass")!=string::npos)xtitle="m(ee) [GeV]";
-  if(name.find("emumass")!=string::npos)xtitle="m(e#mu) [GeV]";
+  if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) (GeV)";
+  if(name.find("eemass")!=string::npos)xtitle="e^{#pm}e^{#pm} invariant mass (GeV)";
+  if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#mp} invariant mass (GeV)";
   
   if(name.find("jets_eta")!=string::npos)xtitle="jet #eta";
   if(name.find("jets_phi")!=string::npos)xtitle="jet #phi";
@@ -967,20 +981,20 @@ void SetTitles(TH1* hist, string name){
 
   if(name.find("leadMuonJetdR")!=string::npos)xtitle="min#Delta R(#mu j)";
   if(name.find("leadJetdR")!=string::npos)xtitle="min#Delta R(jj)";
-  if(name.find("mu1jjmass")!=string::npos)xtitle="m(#mu_{1}jj) [GeV]";
-  if(name.find("mu2jjmass")!=string::npos)xtitle="m(#mu_{2}jj) [GeV]";
-  if(name.find("mumujjmass")!=string::npos)xtitle="m(#mu#mujj) [GeV]";
+  if(name.find("mu1jjmass")!=string::npos)xtitle="m(#mu_{1}jj) (GeV)";
+  if(name.find("mu2jjmass")!=string::npos)xtitle="m(#mu_{2}jj) (GeV)";
+  if(name.find("mumujjmass")!=string::npos)xtitle="m(#mu#mujj) (GeV)";
 
   if(name.find("leadElectronJetdR")!=string::npos)xtitle="min#Delta R(e_j)";
-  if(name.find("e1jjmass")!=string::npos)xtitle="m(e_{1}jj) [GeV]";
-  if(name.find("e2jjmass")!=string::npos)xtitle="m(e_{2}jj) [GeV]";
-  if(name.find("eejjmass")!=string::npos)xtitle="m(eejj) [GeV]";
+  if(name.find("e1jjmass")!=string::npos)xtitle="e_{1}jj invariant mass (GeV)";
+  if(name.find("e2jjmass")!=string::npos)xtitle="e_{2}jj invariant mass (GeV)";
+  if(name.find("eejjmass")!=string::npos)xtitle="e^{#pm}e^{#pm}jj (GeV)";
 
-  if(name.find("leadingMuonIso")!=string::npos)xtitle="PF Iso #mu_{1} [GeV]";
-  if(name.find("secondMuonIso")!=string::npos)xtitle="PF Iso #mu_{2} [GeV]";
+  if(name.find("leadingMuonIso")!=string::npos)xtitle="PF Iso #mu_{1} (GeV)";
+  if(name.find("secondMuonIso")!=string::npos)xtitle="PF Iso #mu_{2} (GeV)";
 
-  if(name.find("leadingElectronIso")!=string::npos)xtitle="PF Iso e_{1} [GeV]";
-  if(name.find("secondELectronIso")!=string::npos)xtitle="PF Iso e_{2} [GeV]";
+  if(name.find("leadingElectronIso")!=string::npos)xtitle="PF Iso e_{1} (GeV)";
+  if(name.find("secondELectronIso")!=string::npos)xtitle="PF Iso e_{2} (GeV)";
 
   if(name.find("MuonD0_")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0sig";
@@ -1002,10 +1016,10 @@ void SetTitles(TH1* hist, string name){
   if(name.find("leaddimudeltaR_")!=string::npos)xtitle="#Delta R (#mu,#mu)";
   if(name.find("leaddieldeltaR_")!=string::npos)xtitle="#Delta R (e,e)";
 
-  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) [GeV]";
+  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) (GeV)";
   if(name.find("leaddijetdr")!=string::npos)xtitle="#Delta R(j_{1}j_{2})";
-  if(name.find("leadingJetPt")!=string::npos)xtitle="jet1 p_{T} [GeV]";
-  if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} [GeV]";
+  if(name.find("leadingJetPt")!=string::npos)xtitle="jet1 p_{T} (GeV)";
+  if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} (GeV)";
 
 
 
@@ -1021,6 +1035,7 @@ bool HistInGev(string name){
   bool ingev=false;
   if(name.find("ElectronPt")!=string::npos)ingev=true;
   if(name.find("_pt_")!=string::npos)ingev=true;
+  if(name.find("pt")!=string::npos)ingev=true;
   if(name.find("mass_")!=string::npos)ingev=true;
   if(name.find("MET")!=string::npos)ingev=true;
   
@@ -1031,18 +1046,22 @@ bool HistInGev(string name){
 
 float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
-  float yscale= 10;
-  if(!showdata) yscale = 1.4;
+  float yscale= 1;
+  if(!showdata) yscale = 1.;
   
   cout << name << endl;
-  if(name.find("eta")!=string::npos) yscale*=1.5;
-  if(name.find("MET")!=string::npos) yscale*=1.;
-  if(name.find("charge")!=string::npos) yscale*=2.5;
-  if(name.find("deltaR")!=string::npos) yscale*=2.;
-  if(name.find("bTag")!=string::npos) yscale*=2.5;
-  if(name.find("eejj")!=string::npos) yscale*=1.;
-  if(name.find("e1jj")!=string::npos) yscale*=1.;
-  if(name.find("e2jj")!=string::npos) yscale*=1.;
+  if(name.find("eemass")!=string::npos) yscale*=1.3;
+  if(name.find("eta")!=string::npos) yscale*=2.;
+  if(name.find("MET")!=string::npos) yscale*=1.2;
+  if(name.find("e1jj")!=string::npos) yscale*=1.2;
+  if(name.find("e2jj")!=string::npos) yscale*=1.2;
+  if(name.find("charge")!=string::npos) yscale*=1.5;
+  if(name.find("deltaR")!=string::npos) yscale*=1.5;
+  if(name.find("bTag")!=string::npos) yscale*=1.7;
+  if(name.find("eejj")!=string::npos) yscale*=1.2;
+  if(name.find("dijetmass")!=string::npos) yscale*=1.5;
+  if(name.find("leadingElectronPt")!=string::npos) yscale*=1.3;
+  if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
   
   float max_data = h_data->GetMaximum()*yscale;
   float max_bkg = h_up->GetMaximum()*yscale;
@@ -1436,8 +1455,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs"));
     
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
-    if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"nonprompt"));   
-    if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"chargeflip"));   
+    if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"Fake Electron Background"));   
+    if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"Charge Flip Background"));   
   }
 
   ///// Fix cut flow code
@@ -1450,12 +1469,15 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 }
 
 
-TCanvas* CompDataMC(TH1* hdata, TH1* hsig_100, TH1* hsig_300, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+  
   
   TH1* hdata_clone_for_log = (TH1*)hdata->Clone( "log");
   
   cout << "hup total = " << hup->Integral() << " hup_nostat total = " << hup_nostat->Integral() << endl; 
   
+  ymax = GetMaximum(hdata, hup, ylog, hname);
+
   string cname;
   if(hdata) cname= string("c_") + hdata->GetName();
   else cname = string("c_") + ((TNamed*)mcstack.at(0)->GetHists()->First())->GetName();
@@ -1485,15 +1507,17 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_100, TH1* hsig_300, vector<THStack*> m
   SetNomBinError(h_nominal, hup, hdown);
 
   if(usedata){
-    //hdata->Draw("pE");
-    //hdata->GetYaxis()->SetTitleOffset(1.5);
-    //hsig_40->GetXaxis()->SetLabelSize(0.);
-    hsig_100->Draw("hist9");
+    
+    hdata->SetLineColor(kBlack);
+    hdata->Draw("p9hist");
+    hdata->GetYaxis()->SetTitleOffset(1.5);
+    hsig_40->GetXaxis()->SetLabelSize(0.);
+    hsig_40->Draw("hist9same");
     
     mcstack.at(0)->Draw("HIST9same");
-    //hdata->Draw("samepE");
-    //hdata->Draw("axis same");
-    errorband->Draw("E2same");
+    hdata->Draw("same p9 hist");
+    hdata->Draw("axis same");
+    //errorband->Draw("E2same");
 
     /// Draw data again
     const double alpha = 1 - 0.6827;
@@ -1511,28 +1535,28 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_100, TH1* hsig_300, vector<THStack*> m
       }
       else {
 	g->SetPointEYlow(i, 0.);
-	g->SetPointEXlow(i, 0);
-	g->SetPointEYhigh(i, 0.);
-	g->SetPointEXhigh(i, 0);
+	g->SetPointEXlow(i, 0.);
+	g->SetPointEYhigh(i, 1.8);
+	g->SetPointEXhigh(i, 0.);
       }
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    //g->Draw("samepE" );
+    g->Draw("9samep" );
 
     hdata->SetMarkerStyle(20);
     hdata->SetMarkerSize(2.3);
     hdata->SetLineWidth(2.);
-    //    hdata->Draw( ("samepE") );
-    hsig_100->Draw("hist9same");
-    hsig_300->Draw("hist9same");
+    hdata->Draw( ("samephist"));
+    hsig_40->Draw("hist9same");
+    hsig_80->Draw("hist9same");
     
   }
   else{
   }
 
-  legend->AddEntry(hsig_100, "m_{N} = 100 GeV, |V_{eN}|^{2} = 0.005 ","l");
-  legend->AddEntry(hsig_300, "m_{N} = 300 GeV, |V_{eN}|^{2} = 0.25","l");
+  legend->AddEntry(hsig_40, "m_{N} = 100 GeV, |V_{eN}|^{2} = 0.005 ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 300 GeV, |V_{eN}|^{2} = 0.25","l");
 
   legend->Draw();
   
@@ -1551,16 +1575,16 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_100, TH1* hsig_300, vector<THStack*> m
   vector<float> err_down_tmp;
 
   if(usedata){
-    //hdata_clone_for_log->GetYaxis()->SetRangeUser(1., ymax);
-    //hdata_clone_for_log->Draw("pE");
-    hsig_100->GetXaxis()->SetLabelSize(0.);
-    hsig_100->Draw("hist9");
+    hdata_clone_for_log->GetYaxis()->SetRangeUser(0.01, ymax);
+    hdata_clone_for_log->Draw("pE");
+    hsig_40->GetXaxis()->SetLabelSize(0.);
+    hsig_40->Draw("hist9same");
     
-    //hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
+    hdata_clone_for_log->GetYaxis()->SetTitleOffset(1.6);
     mcstack.at(0)->Draw("9HIST same");
-    //hdata_clone_for_log->Draw("PE same");
-    //hdata_clone_for_log->Draw("axis same");
-    errorband->Draw("E2same");
+    hdata_clone_for_log->Draw("PE same");
+    hdata_clone_for_log->Draw("axis same");
+    //errorband->Draw("E2same");
     
     const double alpha = 1 - 0.6827;
     TGraphAsymmErrors * g = new TGraphAsymmErrors(hdata_clone_for_log);
@@ -1592,9 +1616,9 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_100, TH1* hsig_300, vector<THStack*> m
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    //g->Draw( "pE same");
-    hsig_100->Draw("hist9same");
-    hsig_300->Draw("hist9same");
+    g->Draw( "pE same");
+    hsig_40->Draw("hist9same");
+    hsig_80->Draw("hist9same");
 
     
     legend->Draw();
@@ -1690,8 +1714,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_100, TH1* hsig_300, vector<THStack*> m
       
       for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
 	if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
-	  //hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
-	  hdev->SetBinContent(i, h_nominal->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	  hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	  //hdev->SetBinContent(i, h_nominal->GetBinContent(i)/ h_nominal->GetBinContent(i));
 	  hdev->SetBinError(i, 0.01);
 	}
 	else {

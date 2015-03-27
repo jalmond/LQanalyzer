@@ -45,6 +45,7 @@ void GetEffectiveLuminosity() {
   dirmap["MajoranaNeutrinoToEE_M-70_TuneZ2star_8TeV-alpgen"] =  211.96;
   dirmap["MajoranaNeutrinoToEE_M-80_TuneZ2star_8TeV-alpgen"] =  19.07;
   dirmap["MajoranaNeutrinoToEE_M-90_TuneZ2star_8TeV-alpgen"] =  7.1047;
+  */
   dirmap["MajoranaNeutrinoToEMu_M-40_TuneZ2star_8TeV-alpgen"] =  1516;
   dirmap["MajoranaNeutrinoToEMu_M-60_TuneZ2star_8TeV-alpgen"] =  607.7;
   dirmap["MajoranaNeutrinoToEMu_M-70_TuneZ2star_8TeV-alpgen"] =  211.96;
@@ -65,6 +66,7 @@ void GetEffectiveLuminosity() {
   dirmap["MajoranaNeutrinoToEMu_M-400_TuneZ2star_8TeV-alpgen"] =  0.0063324;
   dirmap["MajoranaNeutrinoToEMu_M-500_TuneZ2star_8TeV-alpgen"] =  0.0021542;
   dirmap["MajoranaNeutrinoToEMu_M-50_TuneZ2star_8TeV-alpgen"] =  1071.1;
+  dirmap["MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen"] =  1516.;
   dirmap["MajoranaNeutrinoToMuE_M-60_TuneZ2star_8TeV-alpgen"] =  607.7;
   dirmap["MajoranaNeutrinoToMuE_M-70_TuneZ2star_8TeV-alpgen"] =  211.96;
   dirmap["MajoranaNeutrinoToMuE_M-80_TuneZ2star_8TeV-alpgen"] =  19.07;
@@ -84,7 +86,7 @@ void GetEffectiveLuminosity() {
   dirmap["MajoranaNeutrinoToMuE_M-400_TuneZ2star_8TeV-alpgen"] =  0.0063324;
   dirmap["MajoranaNeutrinoToMuE_M-500_TuneZ2star_8TeV-alpgen"] =  0.0021542;
   dirmap["MajoranaNeutrinoToMuE_M-50_TuneZ2star_8TeV-alpgen"] =  1071.1;
-  dirmap["MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen"] =  3.5618;
+  /*  dirmap["MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen"] =  3.5618;
   dirmap["MajoranaNeutrinoToMuMu_M-125_TuneZ2star_8TeV-alpgen"] =  1.0767;
   dirmap["MajoranaNeutrinoToMuMu_M-150_TuneZ2star_8TeV-alpgen"] =  0.4594;
   dirmap["MajoranaNeutrinoToMuMu_M-175_TuneZ2star_8TeV-alpgen"] =  0.23266;
@@ -161,13 +163,16 @@ void GetEffectiveLuminosity() {
   dirmap["WWGJets_8TeV-madgraph"] =  0.528;
   dirmap["QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6"] =  23.924;
   dirmap["QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6"] =  (810 * 0.11);
-  */
+  
   dirmap["Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola"] = 1.76;
   dirmap["Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola"] = 30.7;
   dirmap["Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola"]  = 11.1;
   dirmap["T_s-channel_TuneZ2star_8TeV-powheg-tauola"]   = 3.79;
   dirmap["T_t-channel_TuneZ2star_8TeV-powheg-tauola"] = 56.4;
   dirmap["T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola"] =11.1;
+  */
+
+  dirmap["MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen"] =  1516.;
 
   for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
     

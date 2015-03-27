@@ -116,9 +116,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   if(!isData){
     if(PDFCTEQWeights){
       /// This will have to take in a vector for any systematic studies
-      kevent.SetPDFCTEQWeight(PDFCTEQWeights->at(0));
-      kevent.SetPDFMSTWWeight(PDFMSTWWeights->at(0));
-      kevent.SetPDFNNPDFWeight(PDFNNPDFWeights->at(0));
+      kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
+      kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
+      kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
     }
   }
   

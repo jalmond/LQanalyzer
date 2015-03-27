@@ -1479,7 +1479,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
     mcstack.at(0)->Draw("HIST9same");
     hdata->Draw("9samepX0");
     hdata->Draw("axis same");
-    //errorband->Draw("E2same");
+    errorband->Draw("E2same");
 
     /// Draw data again
     const double alpha = 1 - 0.6827;

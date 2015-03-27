@@ -446,7 +446,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetFillColor(kWhite);
   legendH->SetTextFont(42);
   
-  //legendH->SetBorderSize(0);
+  legendH->SetBorderSize(0);
   //  legendH->SetTextSize(0.02);
   
   
@@ -903,12 +903,12 @@ void SetTitles(TH1* hist, string name){
   if(HistInGev(name)) ytitle = "Entries / " +str_width.str() + " GeV";
   
   if(name.find("h_MET")!=string::npos){
-    xtitle="E^{miss}_{T} [GeV]"; 
+    xtitle="E^{miss}_{T} (GeV)"; 
     if(name.find("phi")!=string::npos){
       xtitle="#phi_{E^{miss}_{T}} "; 
     }
   }
-  if(name.find("h_MT")!=string::npos) xtitle="M_{T} [GeV]";
+  if(name.find("h_MT")!=string::npos) xtitle="M_{T} (GeV)";
   if(name.find("h_dphi_METe")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{el})";
   if(name.find("h_dphi_METm")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{mu})";
 
@@ -918,26 +918,26 @@ void SetTitles(TH1* hist, string name){
     
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
-  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} [GeV]";
+  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV)";
   if(name.find("MuonD0")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
-  if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
-  if(name.find("secondMuonPt")!=string::npos)xtitle="Second p_{T} [GeV]";
-  if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} [GeV]";
+  if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
+  if(name.find("secondMuonPt")!=string::npos)xtitle="Second p_{T} (GeV)";
+  if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} (GeV)";
 
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
-  if(name.find("ElectronPt")!=string::npos)xtitle="Electron p_{T} [GeV]";
-  if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} [GeV]";
-  if(name.find("leadingElectronPt")!=string::npos)xtitle="Lead p_{T} [GeV]";
-  if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} [GeV]";
-  if(name.find("thirdELectronPt")!=string::npos)xtitle="Third p_{T} [GeV]";
+  if(name.find("ElectronPt")!=string::npos)xtitle="Electron p_{T} (GeV)";
+  if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} (GeV)";
+  if(name.find("leadingElectronPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
+  if(name.find("secondElectronPt")!=string::npos)xtitle="Second p_{T} (GeV)";
+  if(name.find("thirdELectronPt")!=string::npos)xtitle="Third p_{T} (GeV)";
   
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
-  if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) [GeV]";
-  if(name.find("eemass")!=string::npos)xtitle="m(ee) [GeV]";
-  if(name.find("emumass")!=string::npos)xtitle="m(e#mu) [GeV]";
+  if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) (GeV)";
+  if(name.find("eemass")!=string::npos)xtitle="m(ee) (GeV)";
+  if(name.find("emumass")!=string::npos)xtitle="m(e#mu) (GeV)";
   
   if(name.find("jets_eta")!=string::npos)xtitle="jet #eta";
   if(name.find("jets_phi")!=string::npos)xtitle="jet #phi";
@@ -950,20 +950,20 @@ void SetTitles(TH1* hist, string name){
 
   if(name.find("leadMuonJetdR")!=string::npos)xtitle="min#Delta R(#mu j)";
   if(name.find("leadJetdR")!=string::npos)xtitle="min#Delta R(jj)";
-  if(name.find("mu1jjmass")!=string::npos)xtitle="m(#mu_{1}jj) [GeV]";
-  if(name.find("mu2jjmass")!=string::npos)xtitle="m(#mu_{2}jj) [GeV]";
-  if(name.find("mumujjmass")!=string::npos)xtitle="m(#mu#mujj) [GeV]";
+  if(name.find("mu1jjmass")!=string::npos)xtitle="m(#mu_{1}jj) (GeV)";
+  if(name.find("mu2jjmass")!=string::npos)xtitle="m(#mu_{2}jj) (GeV)";
+  if(name.find("mumujjmass")!=string::npos)xtitle="m(#mu#mujj) (GeV)";
 
   if(name.find("leadElectronJetdR")!=string::npos)xtitle="min#Delta R(e_j)";
-  if(name.find("e1jjmass")!=string::npos)xtitle="m(e_{1}jj) [GeV]";
-  if(name.find("e2jjmass")!=string::npos)xtitle="m(e_{2}jj) [GeV]";
-  if(name.find("eejjmass")!=string::npos)xtitle="m(eejj) [GeV]";
+  if(name.find("e1jjmass")!=string::npos)xtitle="m(e_{1}jj) (GeV)";
+  if(name.find("e2jjmass")!=string::npos)xtitle="m(e_{2}jj) (GeV)";
+  if(name.find("eejjmass")!=string::npos)xtitle="m(eejj) (GeV)";
 
-  if(name.find("leadingMuonIso")!=string::npos)xtitle="PF Iso #mu_{1} [GeV]";
-  if(name.find("secondMuonIso")!=string::npos)xtitle="PF Iso #mu_{2} [GeV]";
+  if(name.find("leadingMuonIso")!=string::npos)xtitle="PF Iso #mu_{1} (GeV)";
+  if(name.find("secondMuonIso")!=string::npos)xtitle="PF Iso #mu_{2} (GeV)";
 
-  if(name.find("leadingElectronIso")!=string::npos)xtitle="PF Iso e_{1} [GeV]";
-  if(name.find("secondELectronIso")!=string::npos)xtitle="PF Iso e_{2} [GeV]";
+  if(name.find("leadingElectronIso")!=string::npos)xtitle="PF Iso e_{1} (GeV)";
+  if(name.find("secondELectronIso")!=string::npos)xtitle="PF Iso e_{2} (GeV)";
 
   if(name.find("MuonD0_")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0sig";
@@ -985,10 +985,10 @@ void SetTitles(TH1* hist, string name){
   if(name.find("leaddimudeltaR_")!=string::npos)xtitle="#Delta R (#mu,#mu)";
   if(name.find("leaddieldeltaR_")!=string::npos)xtitle="#Delta R (e,e)";
 
-  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) [GeV]";
+  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) (GeV)";
   if(name.find("leaddijetdr")!=string::npos)xtitle="#Delta R(j_{1}j_{2})";
-  if(name.find("leadingJetPt")!=string::npos)xtitle="jet1 p_{T} [GeV]";
-  if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} [GeV]";
+  if(name.find("leadingJetPt")!=string::npos)xtitle="jet1 p_{T} (GeV)";
+  if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} (GeV)";
 
 
 
@@ -1465,12 +1465,12 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   SetNomBinError(h_nominal, hup, hdown);
 
   if(usedata){
-    hdata->Draw("pE");
+    hdata->Draw("phist");
     hdata->GetYaxis()->SetTitleOffset(1.5);
     mcstack.at(0)->Draw("HIST9same");
-    hdata->Draw("samepE");
+    hdata->Draw("samephist");
     hdata->Draw("axis same");
-    errorband->Draw("E2same");
+    //errorband->Draw("E2same");
 
     /// Draw data again
     const double alpha = 1 - 0.6827;
@@ -1489,18 +1489,18 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
       else {
 	g->SetPointEYlow(i, 0.);
 	g->SetPointEXlow(i, 0);
-	g->SetPointEYhigh(i, 0.);
+	g->SetPointEYhigh(i, 1.8);
 	g->SetPointEXhigh(i, 0);
       }
     }
     g->SetLineWidth(2.0);
     g->SetMarkerSize(0.);
-    g->Draw("samepE" );
+    g->Draw("p0" );
     
     hdata->SetMarkerStyle(20);
     hdata->SetMarkerSize(2.3);
     hdata->SetLineWidth(2.);
-    hdata->Draw( ("samepE") );
+    hdata->Draw( ("same hist p") );
   }
   else{
   }

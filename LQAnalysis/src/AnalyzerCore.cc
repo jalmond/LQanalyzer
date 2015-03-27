@@ -1712,8 +1712,8 @@ double AnalyzerCore::MuonScaleFactor(double eta, double pt, int sys){
   
   sf = MuonSF->GetBinContent(bin);
 
-  if(sys==1) sf*= sqrt(1.02); 
-  if(sys==-1) sf/= sqrt(1.02); 
+  if(sys==1) sf*= 1.02; 
+  if(sys==-1) sf/= 1.02; 
   
   return sf;
   
@@ -2814,7 +2814,7 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
 }
 
 
-float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho){
+float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho, int syst){
 
   float em_weight = 0.;
   if(k_muons.size()==1 && k_electrons.size()==1){
@@ -2825,7 +2825,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     
-    em_weight =m_fakeobj->get_dilepton_em_eventweight(muons,electrons, is_mu1_tight,is_el1_tight, NBJet( GetJets("ApplyPileUpID")));
+    em_weight =m_fakeobj->get_dilepton_em_eventweight(muons,electrons, is_mu1_tight,is_el1_tight, NBJet( GetJets("ApplyPileUpID")), syst);
   }
   
   return em_weight;

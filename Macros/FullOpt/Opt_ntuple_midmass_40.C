@@ -159,7 +159,7 @@ void Opt_ntuple_midmass_40(){
 		      float e2jjmin_cut = 0. + float(ie2jjmin)* 10.;
 		      
 		      for(int ie2jjmax =1 ; ie2jjmax < 11 ; ie2jjmax++){
-			float e2jjmax_cut =  120. + float(ie2jjmax)* 5.;
+			float e2jjmax_cut =  110. + float(ie2jjmax)* 5.;
 			if(ie2jjmax == 10) e2jjmax_cut = 10000.;
 			
 			for(int ihtmin =0 ; ihtmin < 1 ; ihtmin++){

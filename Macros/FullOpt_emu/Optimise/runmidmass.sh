@@ -1,0 +1,11 @@
+root -l -q -b Opt_ntuple_midmass_90.C &> log902.txt&
+root -l -q -b Opt_ntuple_midmass_100.C &> log1002.txt&
+root -l -q -b Opt_ntuple_midmass_125.C &> log1252.txt&
+root -l -q -b Opt_ntuple_midmass_150.C &> log1502.txt&
+root -l -q -b Opt_ntuple_midmass_175.C &> log1752.txt&
+root -l -q -b Opt_ntuple_midmass_200.C &> log2002.txt&
+root -l -q -b Opt_ntuple_midmass_225.C &> log2252.txt&
+root -l -q -b Opt_ntuple_midmass_250.C &> log2502.txt&
+root -l -q -b Opt_ntuple_midmass_275.C &> log2752.txt&
+root -l -q -b Opt_ntuple_midmass_300.C &> log3002.txt&
+root -l -q -b Opt_ntuple_midmass_325.C &> log3252.txt&

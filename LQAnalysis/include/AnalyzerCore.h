@@ -82,7 +82,7 @@ class AnalyzerCore : public LQCycleBase {
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, TString cut, int type);
 
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
-  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons , double rho);
+  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons , double rho, int sys =0);
   
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 

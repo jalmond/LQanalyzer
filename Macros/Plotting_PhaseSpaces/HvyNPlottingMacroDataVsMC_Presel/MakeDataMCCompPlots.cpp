@@ -565,6 +565,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_py",0.20));
     list.push_back(make_pair("ZZ_py",0.20));
     list.push_back(make_pair("WW_py",0.20));
+    list.push_back(make_pair("Wgamma",0.20));
     list.push_back(make_pair("SSWmWm",0.20));
     list.push_back(make_pair("SSWpWp",0.2));
     list.push_back(make_pair("WW_dp",0.2));

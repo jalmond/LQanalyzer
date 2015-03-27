@@ -182,9 +182,9 @@ void Opt_ntuple_midmass_60(){
 		float eemin_cut =  10. + float(ieemin)* 5.;
 		if(ieemin == 7) eemin_cut = 100.;
 		
-		for(int ieemax =0 ; ieemax <1 ; ieemax++){
+		for(int ieemax =0 ; ieemax <11 ; ieemax++){
 		  float eemax_cut =  60. + float(ieemax) * 10. ;
-		  if(ieemax == 3) eemax_cut = 100000.;
+		  if(ieemax == 10) eemax_cut = 100000.;
 		  cout << eemin_cut << " <  ee < " <<   eemax_cut << endl;
 		  
 		  for(int ie1jjmin =0 ; ie1jjmin < 1 ; ie1jjmin++){

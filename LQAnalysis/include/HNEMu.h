@@ -43,11 +43,13 @@ class HNEMu : public AnalyzerCore {
   float m_ss_Z;
 
 
-  float k_met, k_eemass, k_eejjmass, k_e1jjmass, k_e2jjmass,  k_st, k_ht;
+  float k_met, k_emumass, k_emujjmass, k_l1jjmass, k_l2jjmass,  k_st, k_ht;
+  float k_emujjmass_lowmass, k_l1jjmass_lowmass, k_l2jjmass_lowmass;
+
   int k_njet, k_nbjet_l, k_nbjet_m, k_nbjet_t;
-  float  k_el1eta, k_el2eta;
-  float k_weight, k_el1pt, k_el2pt, k_j1pt, k_jjmass;
-  bool k_cl1bjet, k_cl2bjet,k_cll1bjet, k_cll2bjet; 
+  float  k_l1eta, k_l2eta,k_jjmass_lowmass;
+  float k_weight, k_l1pt, k_l2pt, k_j1pt, k_jjmass;
+
 
   ClassDef ( HNEMu, 1);
 };

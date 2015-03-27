@@ -6,6 +6,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 #include "TObject.h"
 
 namespace snu {
@@ -55,9 +56,9 @@ namespace snu {
 
     
     /// PDF
-    void SetPDFCTEQWeight( double pdf);
-    void SetPDFMSTWWeight( double pdf);
-    void SetPDFNNPDFWeight( double pdf);
+    void SetPDFCTEQWeight( std::vector<double> pdf);
+    void SetPDFMSTWWeight( std::vector<double> pdf);
+    void SetPDFNNPDFWeight( std::vector<double> pdf);
     
     /// Process ID
     void SetProcessID(int id);
@@ -125,9 +126,9 @@ namespace snu {
     inline Double_t PFMET_Unclust_Down() const {return k_PF_MET_unclust_down;}
     
     /// PDF 
-    inline Double_t PDFCTEQWeight() const {return k_pdf_cteq;}
-    inline Double_t PDFMSTWWeight() const {return k_pdf_mstw;}
-    inline Double_t PDFNNPDFWeight() const {return k_pdf_nnpdf;}
+    inline std::vector<Double_t> PDFCTEQWeight() const {return k_pdf_cteq;}
+    inline std::vector<Double_t> PDFMSTWWeight() const {return k_pdf_mstw;}
+    inline std::vector<Double_t> PDFNNPDFWeight() const {return k_pdf_nnpdf;}
     
     
     /// ProcessID
@@ -183,7 +184,7 @@ namespace snu {
     
     Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex, k_process_id, k_lumisec;
     Double_t k_vertexX,k_vertexY,k_vertexZ,  k_jetrho, k_mcweight;
-    Double_t k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
+    std::vector<Double_t> k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
     Double_t k_genmettrue, k_genmetphitrue,k_gensumettrue, k_genmetcalo, k_genmetphicalo,k_gensumetcalo;
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
     Double_t k_PF_METraw, k_PF_METtype1, k_PF_METtype01;
@@ -196,7 +197,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,12)
+    ClassDef(KEvent,13)
   }; 
   
 }//namespace snu

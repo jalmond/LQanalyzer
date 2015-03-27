@@ -163,7 +163,7 @@ void Opt_ntuple_midmass_70(){
     cout << "MET : "<< met_cut << endl;
     for(int imeejjmin= 0; imeejjmin < 1. ; imeejjmin++){
       float meejjmin_cut = 80. + float(imeejjmin) * 10.;
-      for(int imeejjmax= 0; imeejjmax <11. ; imeejjmax++){
+      for(int imeejjmax= 0; imeejjmax <10. ; imeejjmax++){
 	float meejjmax_cut = 150.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	for(int ipt1= 0; ipt1 <1. ; ipt1++){
@@ -196,7 +196,7 @@ void Opt_ntuple_midmass_70(){
 		    for(int ie2jjmin =0 ; ie2jjmin < 1 ; ie2jjmin++){
 		      float e2jjmin_cut = 0. + float(ie2jjmin)* 10.;
 		      
-		      for(int ie2jjmax =0 ; ie2jjmax < 11 ; ie2jjmax++){
+		      for(int ie2jjmax =0 ; ie2jjmax < 1 ; ie2jjmax++){
 			float e2jjmax_cut =  120. + float(ie2jjmax)* 5.;
 			if(ie2jjmax == 10) e2jjmax_cut = 10000.;
 			
@@ -344,7 +344,6 @@ void Opt_ntuple_midmass_70(){
 				      
 
 				      cout << cut_sum_sig / sum_sigevent << endl;
-				      if( (cut_sum_sig / sum_sigevent) < 0.3) continue;
 
 				      
 				      if( (punzi) > opt_cut_sb){

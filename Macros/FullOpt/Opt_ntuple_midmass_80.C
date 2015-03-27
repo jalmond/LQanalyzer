@@ -163,7 +163,7 @@ s
     cout << "MET : "<< met_cut << endl;
     for(int imeejjmin= 0; imeejjmin < 1. ; imeejjmin++){
       float meejjmin_cut = 80. + float(imeejjmin) * 10.;
-      for(int imeejjmax= 0; imeejjmax <11. ; imeejjmax++){
+      for(int imeejjmax= 0; imeejjmax <9. ; imeejjmax++){
 	float meejjmax_cut = 160.+ float(imeejjmax)*5.;
 	cout << meejjmin_cut <<   "  < M(eejj) < "<< meejjmax_cut << endl;
 	for(int ipt1= 0; ipt1 <1. ; ipt1++){
@@ -344,8 +344,6 @@ s
 				      
 
 				      cout << cut_sum_sig / sum_sigevent << endl;
-				      if( (cut_sum_sig / sum_sigevent) < 0.3) continue;
-
 				      
 				      if( (punzi) > opt_cut_sb){
 					opt_cut_sb = punzi;
