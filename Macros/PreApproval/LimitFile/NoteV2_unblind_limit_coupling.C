@@ -20,7 +20,7 @@ void setTDRStyle();
 
 
 
-void NoteV2_unblind_limit(){
+void NoteV2_unblind_limit_coupling(){
   
   
   setTDRStyle();
@@ -100,7 +100,7 @@ void NoteV2_unblind_limit(){
       Double_t efferr_alp[20];
       
       
-      for(unsigned int i=0; i < 5; i++){
+      for(unsigned int i=0; i < 16; i++){
         cout << "Mass = " << mass[i] << endl;
 
 	h_xsec->SetBinContent(i+1,xsec_alp[i]);
@@ -162,7 +162,7 @@ void NoteV2_unblind_limit(){
 	float nperr = nperrup;
 	if(nperrup < nperrdown) nperr= nperrdown;
 	cout << "NP err = " << nperr << endl;
-	nperr = 0.35;
+	nperr = 0.3;
 
 	float bkgerr = sqrt( pow(nperr*np_nom,2) + pow(bkg_err[i]* (mc_nom),2)  +  pow(.19*(cf_nom),2) );
 	cout << pow(staterr,2) << endl;

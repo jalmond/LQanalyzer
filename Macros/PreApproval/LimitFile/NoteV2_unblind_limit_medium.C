@@ -20,7 +20,7 @@ void setTDRStyle();
 
 
 
-void NoteV2_unblind_limit(){
+void NoteV2_unblind_limit_medium(){
   
   
   setTDRStyle();
@@ -107,7 +107,7 @@ void NoteV2_unblind_limit(){
 	h_obs->SetBinContent(i+1,result[i]);
 	h_mass->SetBinContent(i+1,mass[i]);
 	
-	TString tag = "limithist/" +masses.at(i)+ type.at(j)+  "_default";
+	TString tag = "medium/medium_" +masses.at(i)+ type.at(j)+  "_default";
 	cout << tag << endl;
 	TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_limithist").Data());
 	cout << hnmc << endl;

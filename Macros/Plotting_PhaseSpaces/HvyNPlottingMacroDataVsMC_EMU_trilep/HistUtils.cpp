@@ -44,17 +44,19 @@ void FixOverFlows(TH1* hist, float max_x) {
   }
 
   for(int i = (nbins+1); i > (bin_max_x); i--){
-
+    std::cout << "Setting bin " << hist->GetBinLowEdge(i) << std::endl;
     const double of = hist->GetBinContent(i);
     const double of_err = hist->GetBinError(i);
     const double last = hist->GetBinContent(i-1);
     const double last_err = hist->GetBinError(i-1);
+    std::cout << "New bin " << std::endl; 
+    std::cout << i << " " << last <<  " " << of << std::endl;
 
     const double err = TMath::Sqrt(of_err*of_err + last_err*last_err);
 
     hist->SetBinContent(i,0.0);
     hist->SetBinContent(i-1, last + of);
-
+    std::cout << i-1 << " " << last <<  " " << of << std::endl;
     hist->SetBinError(i,0.0);
     hist->SetBinError(i-1,err);
   }

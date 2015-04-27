@@ -441,7 +441,7 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
   double x1 = 0.6;
-  double y1 = 0.6;
+  double y1 = 0.5;
   double x2 = 0.6;
   double y2 = 0.9;
 
@@ -935,7 +935,7 @@ void SetTitles(TH1* hist, string name){
     
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
-  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV/c)";
+  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV)";
   if(name.find("MuonD0")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
   if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
@@ -943,28 +943,29 @@ void SetTitles(TH1* hist, string name){
   if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} (GeV)";
   
   if(name.find("jets_pt")!=string::npos)xtitle="Jet p_{T} (GeV)";
-
-  if(name.find("leadingLeptonPt")!=string::npos)xtitle="Leading lepton p_{T} (GeV/c)";
-  if(name.find("secondLeptonPt")!=string::npos)xtitle="Trailing lepton p_{T} (GeV/c)";
   
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
   if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} (GeV)";
   if(name.find("leadingElectronPt")!=string::npos)xtitle="Leading electron p_{T} (GeV/c)";
+  if(name.find("leadingLeptonPt")!=string::npos)xtitle="Leading lepton p_{T} (GeV/c)";
+  if(name.find("secondLeptonPt")!=string::npos)xtitle="Second lepton p_{T} (GeV/c)";
   if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="emujj invariant mass [GeV/c^{2}]";
-  if(name.find("emujj_lowmass")!=string::npos)xtitle="emujj invariant mass [GeV/c^{2}]";
-  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass [GeV/c^{2}]";
-  if(name.find("l2jj")!=string::npos)xtitle="l_{2}jj invariant mass [GeV/c^{2}]";
-  if(name.find("l1jj")!=string::npos)xtitle="l_{1}jj invariant mass [GeV/c^{2}]";
+  if(name.find("emujjmass")!=string::npos)xtitle="e#mujj invariant mass (GeV/c^{2})";
+  if(name.find("emujj_lowmass")!=string::npos)xtitle="e#mujj invariant mass (GeV/c^{2})";
+  if(name.find("emumass")!=string::npos)xtitle="e#mu invariant mass (GeV/c^{2})";
+  if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+  if(name.find("l2jj_lowmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+  if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
+  if(name.find("l1jj_lowmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
 
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
   if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) (GeV)";
   if(name.find("eemass")!=string::npos)xtitle="e^{#pm}e^{#pm} invariant mass (GeV)";
-  if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#mp} invariant mass (GeV)";
+  //if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#mp} invariant mass (GeV)";
   
   if(name.find("jets_eta")!=string::npos)xtitle="jet #eta";
   if(name.find("jets_phi")!=string::npos)xtitle="jet #phi";
@@ -1042,7 +1043,7 @@ bool HistInGev(string name){
 
 float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
-  float yscale= 1;
+  float yscale= 1.4;
   if(!showdata) yscale = 1.;
   
   if(name.find("eemass")!=string::npos) yscale*=1.3;
@@ -1502,7 +1503,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   label.SetTextFont(42);
   label.SetNDC();
   label.SetTextColor(1);
-  label.DrawLatex(0.6 ,0.4,"Low Mass Region");
+  label.DrawLatex(0.6 ,0.4,"Low Mass CR");
   
 
   //return canvas;  
@@ -1556,12 +1557,12 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hdata->Draw( ("same9p9hist"));
   
   cout << hsig_40 << " " << hsig_80 << endl;
-  hsig_40->Draw("hist9same");
-  hsig_80->Draw("hist9same");
+  //hsig_40->Draw("hist9same");
+  //hsig_80->Draw("hist9same");
   
   //return canvas;  
-  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}||V_{#mu N}| = 2E-4 ","l");
-  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}||V_{#mu N}| = 4E-3","l");
+  //legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}||V_{#mu N}| = 2E-4 ","l");
+  //legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}||V_{#mu N}| = 4E-3","l");
 
   legend->Draw();
   //return canvas;  
@@ -1592,9 +1593,9 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
 
 
   g->Draw(" p0" );
-
-  hsig_40->Draw("hist9same");
-  hsig_80->Draw("hist9same");
+  
+  //hsig_40->Draw("hist9same");
+  //hsig_80->Draw("hist9same");
   
   legend->Draw();
   
