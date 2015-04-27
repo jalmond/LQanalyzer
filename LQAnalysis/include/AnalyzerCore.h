@@ -37,11 +37,15 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label, double& w);
   void MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w) ;
+  void MakeEMUTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w); 
+
   double GetFakeRateByParam(TString param, TString jetcut, TString looseregion, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  bool cl1, bool cl2);
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);
   void RunMCCLosureTest(TString label,  std::vector<snu::KJet> jets, TString cut,  float w);
   void MakeMCCloseplots(TString ajpt, TString label,  TString method, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool closejet, float w1 );
+
+  void RunMCCLosureTestEMU(TString label, std::vector<snu::KJet> jets, TString cut, float w);
 
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
@@ -83,7 +87,8 @@ class AnalyzerCore : public LQCycleBase {
 
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons , double rho, int sys =0);
-  
+  float Get_DataDrivenWeightMC_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho, TString tag);
+
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   

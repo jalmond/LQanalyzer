@@ -233,10 +233,12 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
   Double_t weight_err = 1.;
-  
+   
 
   //// CHECK EFFICIENCY OF CUTS
-  if(!isData)GetIDEfficiency(GetElectrons(true, true, "NoCut"), GetJets("ApplyPileUpID"), "", weight);
+  //if(!isData ||k_running_nonprompt )GetIDEfficiency(GetElectrons(true, true, "NoCut"), GetJets("ApplyPileUpID"), "", weight);
+  
+  //GetIDEfficiency(GetElectrons(true, true, "NoCut"), GetJets("ApplyPileUpID"), "", weight);
   
   if(true){
     float w_for_sigeff = weight;
@@ -319,7 +321,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //// Get the collection of electrons
   std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(false,  false, fake_loose_label , weight);
   std::vector<snu::KElectron> electronAnalysisColl_withfakes         = GetElectrons(false, true, fake_loose_label);
-  
+
 
   float id_sf_up_sys_factor = 1.;
   float id_sf_down_sys_factor = 1.;
@@ -339,7 +341,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronNoCutColl      = GetElectrons(true, true, "NoCut");
   std::vector<snu::KElectron> electronPtEtaNoCutColl = GetElectrons(true, true, "NoCutPtEta");
   
-
 
 
   double weight_iso_b10_e10= weight;
@@ -396,15 +397,15 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   FillEventCutFlow("TriggerCut", "", weight);
  
   //DoAnalysis(electronAnalysisColl          ,   jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight, "Analysis", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
-  DoAnalysis(electronAnalysisColl_medium,      jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_medium, "medium", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
-  DoAnalysis(electronAnalysisColl_tight ,      jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_tight,"tight", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
-  DoAnalysis(electronAnalysisColl_iso_b10_e10, jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_iso_b10_e10,"iso_b10_e10", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
-  DoAnalysis(electronAnalysisColl_iso_b09_e09, jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_iso_b09_e09,"iso_b09_e09", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
-  DoAnalysis(electronAnalysisColl_iso_b09_e05, jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_iso_b09_e05, "iso_b09_e05", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
+  //DoAnalysis(electronAnalysisColl_medium,      jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_medium, "medium", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
+  //DoAnalysis(electronAnalysisColl_tight ,      jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_tight,"tight", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
+  //DoAnalysis(electronAnalysisColl_iso_b10_e10, jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_iso_b10_e10,"iso_b10_e10", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
+  //DoAnalysis(electronAnalysisColl_iso_b09_e09, jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_iso_b09_e09,"iso_b09_e09", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
+  //DoAnalysis(electronAnalysisColl_iso_b09_e05, jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_iso_b09_e05, "iso_b09_e05", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
   //DoAnalysis(electronAnalysisColl_susyid,      jetColl_lepveto_mva,muonVetoColl,electronVetoColl,k_running_chargeflip , k_running_nonprompt, nbjet,  weight_susyid, "susy", pileup_up_sys_factor, pileup_down_sys_factor, fake_loose_region);
  
  
- /// Plot leptons not matched to W/Z
+  /// Plot leptons not matched to W/Z
   //PlotFakeLeptons(jetColl_lepveto_mva,weight);
   
   m_logger << DEBUG << "Made some Fake Plots "<< LQLogger::endmsg;
@@ -1460,7 +1461,6 @@ void HNDiElectron::DoAnalysis(std::vector<snu::KElectron> electrons, std::vector
   
   float w_i = w;
   
-
   w_i*= IsDiLep(electrons);
   if(w_i == 0.) return;
 

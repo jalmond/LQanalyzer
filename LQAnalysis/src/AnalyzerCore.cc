@@ -1,4 +1,3 @@
-
 //$Id: AnalyzerCore.cc 1 2013-11-26 10:23:10 jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
@@ -136,16 +135,25 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
 
   std::vector<snu::KMuon> muonColl;
 
+  if(label.Contains("veto")){
+    eventbase->GetMuonSel()->HNVetoMuonSelection(muonColl);
+    return  GetTruePrompt(muonColl, true);
+  }
+  
   if(k_running_nonprompt) {
-    eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
+    if(label.Contains("tight_03")){
+      eventbase->GetMuonSel()->HNLooseMuonSelection03(muonColl); 
+    }
+    else  if(label.Contains("tight_05")){
+      eventbase->GetMuonSel()->HNLooseMuonSelection05(muonColl);
+    }
+    else 
+      eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
 
     return  muonColl;
   }
 
-  if(label.Contains("veto")){
-    eventbase->GetMuonSel()->HNVetoMuonSelection(muonColl);
-  }
-  else if(label.Contains("tight")){
+  if(label.Contains("tight")){
     eventbase->GetMuonSel()->HNTightMuonSelection(muonColl);
   }
   else if(label.Contains("NoCut")){
@@ -366,6 +374,47 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   
 }
 
+
+void AnalyzerCore::MakeEMUTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w) {
+
+  if(electrons.size() ==  2 && (muons.size()== 1)) {
+    if(electrons.at(0).Charge() != electrons.at(1).Charge()){
+      snu::KParticle osee = electrons.at(0) + electrons.at(1);
+      if(fabs(osee.M() - 90.) < 10.) {
+
+	if(jets.size() > 1){
+
+	  if(eventbase->GetEvent().PFMET() > 30){
+
+	    FillCLHist(sighist, "TriLepEECR" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
+	    FillCLHist(sighist, "TriLepCR" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
+	  }
+	}
+      }
+    }
+    
+  }
+  
+  if(electrons.size() ==  1 && (muons.size()== 2)) {
+
+    if(muons.at(0).Charge() != muons.at(1).Charge()){
+      snu::KParticle osee = muons.at(0) + muons.at(1);
+      if(fabs(osee.M() - 90.) < 10.) {
+
+        if(jets.size() > 1){
+          if(eventbase->GetEvent().PFMET() > 30){
+            FillCLHist(sighist, "TriLepMMCR" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
+            FillCLHist(sighist, "TriLepCR" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
+          }
+        }
+      }
+    }
+
+  }
+
+}
+
+
 void AnalyzerCore::MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w) {
 
   if(electrons.size() ==  3 && (muons.size()== 0)) {
@@ -455,6 +504,91 @@ bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
 
   return cl;
 
+}
+
+void AnalyzerCore::RunMCCLosureTestEMU(TString label, std::vector<snu::KJet> jets, TString cut, float w){
+  
+  w=1;
+
+  if(jets.size() <  2 ) return;
+  if(!isData){
+    if(k_running_nonprompt){
+      TString looseregion = label;
+      label = "HNTight_loosereg2";
+      
+
+
+      std::vector<snu::KElectron> electronAnalysisColl_mcclosure =  GetElectrons(false, true, label); 
+      std::vector<snu::KMuon> MuonAnalysisColl_mcclosure =  GetMuons("loose");
+
+      if(MuonAnalysisColl_mcclosure.size() == 1){
+	if(MuonAnalysisColl_mcclosure.at(0).GetType() == 1 || MuonAnalysisColl_mcclosure.at(0).GetType() ==  2 ||MuonAnalysisColl_mcclosure.at(0).GetType() ==  3) {
+	  FillHist(("MCEMUSSclosure_muon_fake"), 0., w, 0. , 2., 2);
+	  if( IsTight(MuonAnalysisColl_mcclosure.at(0)))FillHist(("MCEMUSSclosure_muon_fake"), 1., w, 0. , 2., 2);
+	}
+	else {
+	  FillHist(("MCEMUSSclosure_muon_nonfake"), 0., w, 0. , 2., 2);
+          if( IsTight(MuonAnalysisColl_mcclosure.at(0)))FillHist(("MCEMUSSclosure_muon_nonfake"), 1., w, 0. , 2., 2);
+	}
+      }
+      if(electronAnalysisColl_mcclosure.size() == 1){
+	if(electronAnalysisColl_mcclosure.at(0).GetType() == 1 || electronAnalysisColl_mcclosure.at(0).GetType() ==  2 ||electronAnalysisColl_mcclosure.at(0).GetType() ==  3) {
+          FillHist(("MCEMUSSclosure_electron_fake"), 0., w, 0. , 2., 2);
+          if( IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()))FillHist(("MCEMUSSclosure_electron_fake"), 1., w, 0. , 2., 2);
+        }
+	else {
+          FillHist(("MCEMUSSclosure_electron_nonfake"), 0., w, 0. , 2., 2);
+          if( IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()))FillHist(("MCEMUSSclosure_electron_nonfake"), 1., w, 0. , 2., 2);
+        }
+      }
+
+      if(electronAnalysisColl_mcclosure.size() == 1 && MuonAnalysisColl_mcclosure.size() == 1){
+	
+        //if((MuonAnalysisColl_mcclosure.at(0).GetType() == 1 || MuonAnalysisColl_mcclosure.at(0).GetType() ==  2 ||MuonAnalysisColl_mcclosure.at(0).GetType() ==  3)) return;
+	   
+        float mcclosure_weight = w;
+	//if(electronAnalysisColl_mcclosure.at(0).Charge() == MuonAnalysisColl_mcclosure.at(0).Charge()){
+	if(k_sample_name.Contains("W")||  (k_sample_name.Contains("tt") && (electronAnalysisColl_mcclosure.at(0).Charge() == MuonAnalysisColl_mcclosure.at(0).Charge()))){
+          //  if(true){
+          if(electronAnalysisColl_mcclosure.at(0).Pt() > 20. && MuonAnalysisColl_mcclosure.at(0).Pt() > 20.){
+	    
+
+	    /// weights using pt eta binning onlyGet_DataDrivenWeight
+	    float fake_weight20 = w* Get_DataDrivenWeightMC_EM(MuonAnalysisColl_mcclosure,electronAnalysisColl_mcclosure,   eventbase->GetEvent().JetRho(),"20");
+	    float fake_weight40 = w* Get_DataDrivenWeightMC_EM(MuonAnalysisColl_mcclosure,electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(),"40");
+	    float fake_weight60 = w* Get_DataDrivenWeightMC_EM(MuonAnalysisColl_mcclosure,electronAnalysisColl_mcclosure,  eventbase->GetEvent().JetRho(),"60");
+
+	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(MuonAnalysisColl_mcclosure.at(0))){
+	      
+              FillHist((label + "MCEMUSSclosure_fake_measured"), 0., mcclosure_weight, 0. , 1., 1);
+	      
+
+	      if(eventbase->GetEvent().PFMET() < 30 &&   (NBJet(jets) ==0))               FillHist((label + "MCEMUSSclosure_top_fake_measured"), 0., mcclosure_weight, 0. , 1., 1);
+		 
+	    }
+
+	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(MuonAnalysisColl_mcclosure.at(0)))               FillHist("MCEMUSSclosure_fake_elt_mut", 0,1, 0. , 1, 1.);
+	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && !IsTight(MuonAnalysisColl_mcclosure.at(0)))               FillHist("MCEMUSSclosure_fake_elt_mul", 0,1, 0. , 1, 1.);
+	    if(!IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(MuonAnalysisColl_mcclosure.at(0)))               FillHist("MCEMUSSclosure_fake_ell_mut", 0,1, 0. , 1, 1.);
+	    if(!IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && !IsTight(MuonAnalysisColl_mcclosure.at(0)))               FillHist("MCEMUSSclosure_fake_ell_mul", 0,1, 0. , 1, 1.);
+
+
+
+	    FillHist((label + "MCEMUSSclosure_fake_predicted_20"), 0., fake_weight20, 0. , 1., 1);
+	    FillHist((label + "MCEMUSSclosure_fake_predicted_40"), 0., fake_weight40, 0. , 1., 1);
+	    FillHist((label + "MCEMUSSclosure_fake_predicted_60"), 0., fake_weight60, 0. , 1., 1);
+	    
+	    if(eventbase->GetEvent().PFMET() < 30 &&  (NBJet(jets) ==0)) {
+	      FillHist((label + "MCEMUSSclosure_top_fake_predicted_20"), 0., fake_weight20, 0. , 1., 1);
+	      FillHist((label + "MCEMUSSclosure_top_fake_predicted_40"), 0., fake_weight40, 0. , 1., 1);
+	      FillHist((label + "MCEMUSSclosure_top_fake_predicted_60"), 0., fake_weight60, 0. , 1., 1);
+	    }
+
+	  }
+	}
+      }
+    }
+  }
 }
 
 void AnalyzerCore::RunMCCLosureTest(TString label, std::vector<snu::KJet> jets, TString cut, float w){
@@ -2663,26 +2797,35 @@ float AnalyzerCore::CFRate(snu::KElectron el, bool use_oldrates){
   Double_t scale_factor_EE = 1. ;
   Double_t scale_factor_BB = 1. ;
 
+  float eta = el.Eta();
+  
+  //--root fitting
+  if( fabs(eta) <= 0.9 ) { // inner BB region
 
-  if( fabs(el.Eta()) <= 1.4442 ) {
-    scale_factor_BB = 1.29;
-    if(use_oldrates)  scale_factor_BB = 1.32;
+    scale_factor_BB = 1.22 ; // BB
 
-    //--region:  1/pt > 0.02
-    p0 = 8.01e-05 ; p1 = -1.80e-03 ;
-    if(use_oldrates){
-      p0 = 8.16e-05 ; p1 = -1.82e-03 ;
-    }
-    frac = p0 + p1*(1./pt);
-    
-    if( (1./pt) <= 0.02 ) {
-      p0 = 3.13e-04 ;  p1 = -1.43e-02 ;
-      if(use_oldrates){
-	p0 = 3.37e-04 ;  p1 = -1.55e-02 ;
-      }
+    p0 = 3.31e-05 ; p1 = -6.5e-04 ; // root fit
+    // p0 = 2.8e-05 ; p1 = 0. ;// UK eye fit
+
+    frac = p0 + p1*(1./pt) ;
+    if( 1./pt < 0.017 ){
+      p0 = 1.92e-04 ; p1 = -0.011 ;
       frac = max(p0 + p1*(1./pt), frac);
     }
-    frac *= scale_factor_BB ;
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+
+  }else if( fabs(eta) > 0.9 && fabs(eta) <= 1.4442 ){ // outer BB region
+    scale_factor_BB = 1.22 ; // BB
+    p0 = 2.21e-04 ; p1 = -5.1e-03 ; // root fit
+    //    p0 = 1.2e-04 ; p1 = 0. ; // UK eye fit
+    frac = p0 + p1*(1./pt) ;
+    if( 1./pt < 0.02 ){
+      p0 = 6.35e-04 ; p1 = -0.027 ;
+      frac = max(p0 + p1*(1./pt), frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
     
   } else {  // fabs(eta) > 1.4
     
@@ -2716,8 +2859,8 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
   else reliso = 9999.;
   if (reliso<0) reliso=0.0001;
   
-
-  if(( reliso >= 0.09)) return false;
+  
+  if(( reliso >= 0.05)) return false;
   if(( muon.GlobalChi2() >= 10.)) return false;
  
   if(fabs(muon.dXY()) >= 0.005) return false; 
@@ -2813,6 +2956,26 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   }
 }
 
+ float AnalyzerCore::Get_DataDrivenWeightMC_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho, TString tag){
+
+   float em_weight = 0.;
+   if(k_muons.size()==1 && k_electrons.size()==1){
+
+     bool is_mu1_tight    = IsTight(k_muons.at(0));
+     bool is_el1_tight    = IsTight(k_electrons.at(0),rho);
+
+
+     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+
+     em_weight =m_fakeobj->get_dilepton_em_mceventweight(muons,electrons, is_mu1_tight,is_el1_tight, NBJet( GetJets("ApplyPileUpID")), tag);
+     
+     
+   }
+   return em_weight;
+
+ }
+
 
 float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho, int syst){
 
@@ -2822,10 +2985,14 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
     bool is_mu1_tight    = IsTight(k_muons.at(0));
     bool is_el1_tight    = IsTight(k_electrons.at(0),rho);
 
+    
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     
     em_weight =m_fakeobj->get_dilepton_em_eventweight(muons,electrons, is_mu1_tight,is_el1_tight, NBJet( GetJets("ApplyPileUpID")), syst);
+    
+    if(muons.at(0).Pt() < 20.) em_weight*= 1.4;
+
   }
   
   return em_weight;

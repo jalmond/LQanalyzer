@@ -60,7 +60,7 @@ void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonCo
   double rho = k_lqevent.GetEvent().JetRho();
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
-
+    
     //// DEFAULT cuts
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
@@ -889,7 +889,7 @@ bool ElectronSelection::PassUserID_EGamma2012 ( ID id, snu::KElectron el, double
   double l_e_d0      [4] = { 10000.  , 0.02 , d0cut , d0cut };
   double l_e_dZ      [4] = { 0.2   , 0.2  , 0.1  , 0.1 };
   double l_e_ep      [4] = { 999.  , 0.05 , 0.05 , 0.05};
-  double l_e_pfRelIso[4] = { 0.15  , 0.10 , isolation_medium_e , isolation_tight_e };
+  double l_e_pfRelIso[4] = { 0.6  , 0.10 , isolation_medium_e , isolation_tight_e };
   double l_e_vtxProb [4] = { 999.  , 1e-6 , 1e-6 , 1e-6 };
   int    l_e_missHits[4] = { 999   , 1    , 1    , 0 };
   

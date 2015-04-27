@@ -67,21 +67,30 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
     
   }
   
+
+  //cout << "Number of loose jets = " << pre_jetColl.size() << endl;
+  //cout << "Number of electrons = " << electronColl.size() << endl;
+  //cout << "Number of muons = " << muonColl.size() << endl;
+  
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
     jetIsOK = true;
     for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
       if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4) {
         jetIsOK = false;
-        ilep = muonColl.size();
+	//cout << "Muon eta/phi = " << muonColl[ilep].Eta() << " " << muonColl[ilep].Phi() << endl;
+	//cout << "Jet eta/phi = " <<  pre_jetColl[ijet].Eta() << " " <<  pre_jetColl[ijet].Phi() << endl;
+	ilep = muonColl.size();
       }
     }/// End of muon loop
     for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
       if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4 ) {
         jetIsOK = false;
+	//cout <<"electron eta/phi =" << electronColl[ilep].Eta() << " " << electronColl[ilep].Phi() << endl;
+	//cout <<"Jet eta/phi = " <<  pre_jetColl[ijet].Eta() <<" " <<pre_jetColl[ijet].Phi() << endl;
         ilep = electronColl.size();
       }
     }/// End of electron loop
-
+    
     if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
   }/// End of Jet loop
   

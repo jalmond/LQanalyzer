@@ -74,7 +74,7 @@ then
     skinput="True"
     useskim="NoCut"
 
-    njobs=30
+    njobs=2
     data_lumi="AtoD"
     loglevel="INFO"
 
@@ -88,6 +88,31 @@ then
 fi
 
 
+
+
+if [[ $runmc_cl  == "true" ]];
+
+then
+
+    source functions.sh
+
+    cycle="HNEMu"
+    skinput="True"
+    useskim="DiLep"
+    
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+
+    loglevel="INFO"
+    logstep=1000
+
+    declare -a input_samples=("Wjets" "ttbar")
+    runnp="True"
+    outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/MCcl/"
+    ### submit this configured job (uses bin/submit.sh)
+    source submit.sh $1
+fi
 
 if [[ $runmc  == "true" ]];
 
@@ -103,10 +128,9 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
 
-    loglevel="DEBUG"
     logstep=1000
-    declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "HtoTauTau" "ggHtoZZ" )
-
+    declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "HtoTauTau" "ggHtoZZ" "DY10to50" "DY50plus")
+     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
@@ -157,12 +181,12 @@ if [[ $runfakes  == "true" ]];
 
     njobs=30
     data_lumi="AtoD"
-    
+
     loglevel="INFO"
     logstep=1000
     
     runnp="True"
-    declare -a input_samples=("A" "B" "C" "D") 
+    declare -a input_samples=("A" "B" "C" "D")
 
     stream="emu"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/"

@@ -680,7 +680,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
 
   if(sample.Contains("chargeflip")){
-    list.push_back(make_pair("chargeflip",0.2));
+    list.push_back(make_pair("chargeflip",0.12));
   }
 
   if(list.size()==0) cout << "Error in making lists" << endl;
@@ -1429,7 +1429,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   np.push_back(make_pair("nonprompt",0.4));
   
   vector<pair<TString,float> > cf;
-  cf.push_back(make_pair("chargeflip",0.2));
+  cf.push_back(make_pair("chargeflip",0.12));
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
     if(listofsamples.at(i) =="ww_py")samples.push_back(make_pair(make_pair(ww_py,wwcol),"WW")); 

@@ -131,7 +131,7 @@ void Opt_ntuple_midmass_90(){
   int iemujj_max_k = 1;
   int iemu_min_k = 1;
   int iemu_max_k = 1;
-  int i_pt1_k = 8;
+  int i_pt1_k = 1;
   int i_pt2_k =1;
   int i_ljj_min_k = 1;
   int i_ljj_max_k = 1;
@@ -150,7 +150,7 @@ void Opt_ntuple_midmass_90(){
 	for(int ipt1= 0; ipt1 < i_pt1_k ; ipt1++){
 	  float pt1_cut =  20. + float(ipt1)*5.;
 	  for(int ipt2= 0; ipt2 < i_pt2_k ; ipt2++){
-	    float pt2_cut =  20. + float(ipt2)*5.;
+	    float pt2_cut =  15. + float(ipt2)*5.;
 	    if(pt2_cut > pt1_cut) continue;
 	    
 	    for(int iemumin =0 ; iemumin < iemu_min_k; iemumin++){

@@ -131,8 +131,8 @@ void Opt_ntuple_midmass_100(){
   int iemujj_max_k = 1;
   int iemu_min_k = 1;
   int iemu_max_k = 1;
-  int i_pt1_k = 8;
-  int i_pt2_k =8;
+  int i_pt1_k = 6;
+  int i_pt2_k =3;
   int i_ljj_min_k = 1;
   int i_ljj_max_k = 1;
   int i_jet_k = 1;
@@ -248,8 +248,10 @@ void Opt_ntuple_midmass_100(){
 			  float bkgtmp = total_bkg + (0.28* np_sum)* (0.4* np_sum);
 			  float denom = 1. + sqrt(bkgtmp);
 			  float punzi = sig_eff / denom;
+
 			  cout << "punzi = " << punzi << " " << sig_eff << " " << denom << endl;
-			  
+			  cout << "total_bkg = " << total_bkg << " bkgtmp = " << bkgtmp << " denom = " <<  denom << endl;
+			  cout << "np_sum = " << np_sum << endl; 
 			  cout << "NSIG after cuts = " << cut_sum_sig_now  << " weighted = " << cut_sum_sig << endl;
 			  cout << "SIG EF NOW =  " << sig_eff_now << " weighted = " << sig_eff << endl;
 			  

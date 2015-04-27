@@ -157,7 +157,7 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (0.1), ymax( 1000000.);
+	float ymin (0.001), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
 	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
@@ -505,7 +505,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (0.1), ymax( 1000000.);
+  float ymin (0.001), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
   cout << "Fixing Overflow in data" << endl;
@@ -597,7 +597,8 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_py",0.20));
     list.push_back(make_pair("ZZ_py",0.20));
     list.push_back(make_pair("WW_py",0.25));
-    //list.push_back(make_pair("Wgamma",0.22));
+    list.push_back(make_pair("Wgamma",0.22));
+    //list.push_back(make_pair("WgammaE",0.22));
     list.push_back(make_pair("SSWmWm",0.4));
     list.push_back(make_pair("SSWpWp",0.4));
     list.push_back(make_pair("WW_dp",0.5));

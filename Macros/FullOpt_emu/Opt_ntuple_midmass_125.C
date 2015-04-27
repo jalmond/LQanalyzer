@@ -132,7 +132,7 @@ void Opt_ntuple_midmass_125(){
   int iemu_min_k = 1;
   int iemu_max_k = 1;
   int i_pt1_k = 1;
-  int i_pt2_k =1;
+  int i_pt2_k =2;
   int i_ljj_min_k = 1;
   int i_ljj_max_k = 1;
   int i_jet_k = 1;
@@ -148,13 +148,13 @@ void Opt_ntuple_midmass_125(){
 	float memujjmax_cut = 100000.+ float(imemujjmax)*5.;
 
 	for(int ipt1= 0; ipt1 < i_pt1_k ; ipt1++){
-	  float pt1_cut =  30. + float(ipt1)*5.;
+	  float pt1_cut =  40. + float(ipt1)*5.;
 	  for(int ipt2= 0; ipt2 < i_pt2_k ; ipt2++){
-	    float pt2_cut =  20. + float(ipt2)*5.;
+	    float pt2_cut =  25. + float(ipt2)*5.;
 	    if(pt2_cut > pt1_cut) continue;
 	    
 	    for(int iemumin =0 ; iemumin < iemu_min_k; iemumin++){
-		float emumin_cut =  45. + float(iemumin)* 10.;
+		float emumin_cut =  15. + float(iemumin)* 10.;
 		if(iemumin == 7) emumin_cut = 100.;
 		
 		for(int iemumax =0 ; iemumax <iemu_max_k ; iemumax++){
@@ -163,11 +163,11 @@ void Opt_ntuple_midmass_125(){
 		  cout << emumin_cut << " <  emu < " <<   emumax_cut << endl;
 	  
 		  for(int il2jjmin =0 ; il2jjmin < i_ljj_min_k ; il2jjmin++){
-		    float l2jjmin_cut = 100. + float(il2jjmin)* 10.;
+		    float l2jjmin_cut = 0. + float(il2jjmin)* 10.;
 		      
 		      for(int il2jjmax =0 ; il2jjmax < i_ljj_max_k ; il2jjmax++){
 			float l2jjmax_cut =  150. + float(il2jjmax)* 10.;
-			if(il2jjmax == 1) l2jjmax_cut = 10000.;
+			if(il2jjmax == 0) l2jjmax_cut = 10000.;
 				
 			for(int ijpt =0 ; ijpt <i_jet_k ; ijpt++){
 			  nit++; 

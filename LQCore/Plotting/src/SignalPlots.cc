@@ -34,10 +34,12 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_leadingElectronPt"]   =     new TH1F("h_leadingElectronPt_" + name,"leading electron pt",100,0,500);
   map_sig["h_secondElectronPt"]    =     new TH1F("h_secondElectronPt_"  + name,"secondary electron pt",60,0,300);
 
+  map_sig["h_LeptonEta"]  =     new TH1F("h_LeptonEta_"+ name,"leading electron eta",60,-3.,3.);
   map_sig["h_leadingElectronEta"]  =     new TH1F("h_leadingElectronEta_"+ name,"leading electron eta",60,-3.,3.);
   map_sig["h_secondElectronEta"]   =     new TH1F("h_secondElectronEta_" + name,"second electron eta",60,-3.,3.);
 
   
+  map_sig["h_LeptonPt"]   =     new TH1F("h_LeptonPt_" + name,"lepton pt",100,0,500);
   map_sig["h_leadingLeptonPt"]   =     new TH1F("h_leadingLeptonPt_" + name,"leading electron pt",100,0,500);
   map_sig["h_secondLeptonPt"]    =     new TH1F("h_secondLeptonPt_"  + name,"secondary electron pt",60,0,300);
   
@@ -394,6 +396,17 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     }
   }
 
+
+  for(unsigned int iel = 0 ; iel < electrons.size(); iel++){
+    Fill("h_LeptonEta",electrons.at(iel).Eta(),weight, weight_err);
+    Fill("h_LeptonPt", electrons.at(iel).Pt(),weight, weight_err);
+  }
+  for(unsigned int imu = 0 ; imu < muons.size(); imu++){
+    Fill("h_LeptonEta",muons.at(imu).Eta(),weight, weight_err);
+    Fill("h_LeptonPt", muons.at(imu).Pt(),weight, weight_err);
+  }
+
+
   if(debug)cout<< "Plotting [4] " << endl;
   int iel(0);
   
@@ -517,6 +530,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       }
     }
 
+    
     if(jets.size()==0){
       Fill("h_ElectronEta_0jets",elit->Eta(),weight, weight_err);
       Fill("h_ElectronPt_0jets", elit->Pt(),weight, weight_err);

@@ -33,6 +33,8 @@ class MuonSelection : public BaseSelection {
   void HNTightHighPtMuonSelection(std::vector<snu::KMuon>& leptonColl) ;
   void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+  void HNLooseMuonSelection03(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+  void HNLooseMuonSelection05(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void HNVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
 
   //// Top analysis selection
