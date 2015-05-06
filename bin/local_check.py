@@ -27,14 +27,18 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 
+april15dir = os.getenv("LQANALYZER_LIB_PATH")+ "/April15/"
 decdir = os.getenv("LQANALYZER_LIB_PATH")+ "/Dec/"
 octdir = os.getenv("LQANALYZER_LIB_PATH")+ "/Oct/"
 sepdir = os.getenv("LQANALYZER_LIB_PATH")+ "/Sep/"
 junedir = os.getenv("LQANALYZER_LIB_PATH")+ "/June/"
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
-if not os.path.exists(decdir):
-    os.system("mkdir " + decdir)
+
+if not os.path.exists(april15dir):
+    os.system("mkdir " + april15dir)
+    if os.path.exists(decdir):
+             os.system("rm -r " + decdir)
     if os.path.exists(octdir):
         os.system("rm -r " + octdir)
     if os.path.exists(sepdir):
@@ -44,7 +48,7 @@ if not os.path.exists(decdir):
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "* " + snufiledir )
       
-    print "using October branch for first time: All codes are being recompiled"
+    print "using branch for first time: All codes are being recompiled"
     os.system("source bin/make_clean_newbranch.sh")
     
 

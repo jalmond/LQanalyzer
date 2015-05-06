@@ -952,15 +952,16 @@ void SetTitles(TH1* hist, string name){
   if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="emujj invariant mass [GeV/c^{2}]";
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass [GeV/c^{2}]";
   if(name.find("emumass")!=string::npos)xtitle="emu invariant mass [GeV/c^{2}]";
+  if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass [GeV/c^{2}]";
   if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass [GeV/c^{2}]";
 
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
   if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) (GeV)";
   if(name.find("eemass")!=string::npos)xtitle="e^{#pm}e^{#pm} invariant mass (GeV)";
-  if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#mp} invariant mass (GeV)";
+  if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#pm} invariant mass (GeV)";
   
   if(name.find("jets_eta")!=string::npos)xtitle="jet #eta";
   if(name.find("jets_phi")!=string::npos)xtitle="jet #phi";

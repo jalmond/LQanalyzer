@@ -954,8 +954,8 @@ void SetTitles(TH1* hist, string name){
   if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="emujj invariant mass [GeV/c^{2}]";
-  if(name.find("emujj_lowmass")!=string::npos)xtitle="emujj invariant mass [GeV/c^{2}]";
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass [GeV/c^{2}]";
+  if(name.find("emujj_lowmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass [GeV/c^{2}]";
   if(name.find("emumass")!=string::npos)xtitle="emu invariant mass [GeV/c^{2}]";
   if(name.find("l2jj")!=string::npos)xtitle="l_{2}jj invariant mass [GeV/c^{2}]";
   if(name.find("l1jj")!=string::npos)xtitle="l_{1}jj invariant mass [GeV/c^{2}]";

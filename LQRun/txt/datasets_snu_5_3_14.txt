@@ -507,7 +507,7 @@ topDIL		461277.43	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_FullLeptMGDecays_
 topHAD		460656.55	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_HadronicMGDecays_8TeV-madgraph/
 topLJ		93722.93	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
 ttbar           29588.256       /data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
-		
+ttbar_new	1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
 ### EXTRA STAT
 W1Jets		3781.307	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
 W2Jets		18803.881	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/
