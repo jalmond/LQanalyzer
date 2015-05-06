@@ -294,7 +294,6 @@ void Opt_ntuple_midmass_100(){
   //Opt cut
   cout << "Opt punzi = " << opt_cut_sb << endl;
   cout << "Opt cut : MET <  " << METcut.at(imet_opt) << endl;
-  cout << "Opt cut : njet <  " << injet_opt<< endl;
   cout << "Opt cut : " << imeejjmin_opt << " < M(eejj) <  " << imeejjmax_opt << endl;
   cout << "Opt cut : " << ie2jjmin_opt << " < M(e2jj) <  " << ie2jjmax_opt << endl;
   cout << "Opt cut : " << ieemin_opt << " < M(ee) < " << ieemax_opt<< endl;
