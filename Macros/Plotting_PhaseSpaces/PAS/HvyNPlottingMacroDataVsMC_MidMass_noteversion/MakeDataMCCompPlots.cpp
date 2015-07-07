@@ -163,7 +163,7 @@ int MakePlots(string hist) {
 	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
         TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
         hsig_40->Rebin(rebin);
-        hsig_40->Scale(0.05);
+        hsig_40->Scale(0.015);
         FixOverUnderFlows(hsig_40, xmax);
         //SetTitles(hsig_40, name);
         ymax = GetMaximum(hsig_40, hsig_40, ylog, name);
@@ -469,7 +469,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetTextFont(42);
   
   legendH->SetBorderSize(0);
-  //  legendH->SetTextSize(0.02);
+  legendH->SetTextSize(0.03);
   
   
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pE");
@@ -482,7 +482,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legorder.push_back("VV");
   legorder.push_back("VVV");
   legorder.push_back("t#bar{t}+V");
-  legorder.push_back("Higgs boson");
+  legorder.push_back("Higgs Boson");
   for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
     map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
     legendH->AddEntry(it->second,it->first.Data(),"f");    
@@ -1451,7 +1451,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
     if(listofsamples.at(i) =="vvv")samples.push_back(make_pair(make_pair(vvv,vvvcol),"VVV"));
     if(listofsamples.at(i) =="vgamma")samples.push_back(make_pair(make_pair(vgamma,vgammacol),"Vgamma"));
-    if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs boson"));
+    if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs Boson"));
     
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"Misid. Electron Background"));   
@@ -1513,7 +1513,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   label.SetTextFont(42);
   label.SetNDC();
   label.SetTextColor(1);
-  label.DrawLatex(0.6 ,0.4,"High Mass Region");
+  label.DrawLatex(0.6 ,0.34,"High Mass Region");
+  label.DrawLatex(0.6 ,0.4,"e^{#pm}e^{#pm} Channel"); 
 
 
 
@@ -1570,7 +1571,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hsig_80->Draw("hist9same");
   
 
-  legend->AddEntry(hsig_40, "m_{N} = 100 GeV, |V_{eN}|^{2} = 0.05 ","l");
+  legend->AddEntry(hsig_40, "m_{N} = 100 GeV, |V_{eN}|^{2} = 0.015 ","l");
   legend->AddEntry(hsig_80, "m_{N} = 300 GeV, |V_{eN}|^{2} = 0.5","l");
 
   legend->Draw();

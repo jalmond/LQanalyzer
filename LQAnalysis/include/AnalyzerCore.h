@@ -51,6 +51,8 @@ class AnalyzerCore : public LQCycleBase {
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
 
   void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets, TString label, float w);
+  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KMuon> muons,  std::vector<snu::KJet> jets, float w);
+    
   void PlotFakeLeptons( std::vector<snu::KJet> jets, float w);
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   double TriggerScaleFactor( vector<snu::KMuon> mu);;

@@ -157,13 +157,13 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (0.001), ymax( 1000000.);
+	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu100_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu40_nocut_5_3_14.root"));
         TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
         hsig_40->Rebin(rebin);
-        hsig_40->Scale(0.015);
+        hsig_40->Scale(0.0004);
         FixOverUnderFlows(hsig_40, xmax);
         //SetTitles(hsig_40, name);
         ymax = GetMaximum(hsig_40, hsig_40, ylog, name);
@@ -174,11 +174,11 @@ int MakePlots(string hist) {
 	hsig_40->GetXaxis()->SetRangeUser(xmin,xmax);
 	hsig_40->GetYaxis()->SetRangeUser(ymin,ymax);
 
-	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu300_nocut_5_3_14.root"));
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu80_nocut_5_3_14.root"));
         TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
         hsig_80->Rebin(rebin);
         FixOverUnderFlows(hsig_80, xmax);
-        hsig_80->Scale(0.5);
+        hsig_80->Scale(0.004);
         hsig_80->SetLineColor(kBlue);
         hsig_80->SetLineWidth(2.);
 
@@ -450,9 +450,9 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
-    x1 = 0.6;
+    x1 = 0.5;
     y1 = 0.5;
-    x2 = 0.9;
+    x2 = 0.8;
     y2 = 0.9;
   }
   else{
@@ -469,7 +469,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetTextFont(42);
   
   legendH->SetBorderSize(0);
-  //  legendH->SetTextSize(0.02);
+  legendH->SetTextSize(0.03);
   
 
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pE");
@@ -479,10 +479,13 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   vector<TString> legorder;
   legorder.push_back("Misid. Lepton Background");
   legorder.push_back("Mismeas. Charge Background");
+  //legorder.push_back("WZ");
+  //legorder.push_back("ZZ");
+  //legorder.push_back("SS");
   legorder.push_back("VV");
   legorder.push_back("VVV");
   legorder.push_back("t#bar{t}+V");
-  legorder.push_back("Higgs boson");
+  legorder.push_back("Higgs Boson");
   for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
     map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
     cout << it->second << " " << it->first.Data() << endl;
@@ -506,7 +509,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (0.001), ymax( 1000000.);
+  float ymin (0.1), ymax( 1000000.);
   ymax = GetMaximum(hdata, hup, ylog, name);
   
 
@@ -592,6 +595,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   if(sample.Contains("ww_py")){      
     list.push_back(make_pair("WW_py",0.15));
   }
+  
   
 
   if(sample.Contains("vv_py")){
@@ -932,18 +936,24 @@ void SetTitles(TH1* hist, string name){
   if(name.find("h_jet_emfra")!=string::npos) xtitle="Jet EMFrac";
   if(name.find("jet_el_ptratio")!=string::npos) xtitle="El p_{T}/ Jet p_{T}";
 
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
+  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV/c^{2})";
+  if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
+  if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
     
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
-  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV)";
+  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV/c)";
   if(name.find("MuonD0")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
-  if(name.find("leadingLeptonPt")!=string::npos)xtitle="Lead lepton p_{T} (GeV)";
   if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
   if(name.find("secondMuonPt")!=string::npos)xtitle="Second p_{T} (GeV)";
   if(name.find("thirdMuonPt")!=string::npos)xtitle="Third p_{T} (GeV)";
   
   if(name.find("jets_pt")!=string::npos)xtitle="Jet p_{T} (GeV)";
+
+  if(name.find("leadingLeptonPt")!=string::npos)xtitle="Leading lepton p_{T} (GeV/c)";
+  if(name.find("secondLeptonPt")!=string::npos)xtitle="Trailing lepton p_{T} (GeV/c)";
   
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
@@ -952,16 +962,17 @@ void SetTitles(TH1* hist, string name){
   if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass [GeV/c^{2}]";
-  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass [GeV/c^{2}]";
-  if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass [GeV/c^{2}]";
-  if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass [GeV/c^{2}]";
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
+  if(name.find("emujj_lowmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
+  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV/c^{2})";
+  if(name.find("l2jj")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+  if(name.find("l1jj")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2}])";
 
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
   if(name.find("mumumass")!=string::npos)xtitle="m(#mu#mu) (GeV)";
   if(name.find("eemass")!=string::npos)xtitle="e^{#pm}e^{#pm} invariant mass (GeV)";
-  if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#pm} invariant mass (GeV)";
+  if(name.find("emumass")!=string::npos)xtitle="e^{#pm}mu^{#mp} invariant mass (GeV)";
   
   if(name.find("jets_eta")!=string::npos)xtitle="jet #eta";
   if(name.find("jets_phi")!=string::npos)xtitle="jet #phi";
@@ -1039,8 +1050,8 @@ bool HistInGev(string name){
 
 float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
-  float yscale= 2;
-  if(!showdata) yscale = 2.;
+  float yscale= 1;
+  if(!showdata) yscale = 1.;
   
   if(name.find("eemass")!=string::npos) yscale*=1.3;
   if(name.find("eta")!=string::npos) yscale*=2.5;
@@ -1425,6 +1436,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
     if(listofsamples.at(i) =="vv_py")samples.push_back(make_pair(make_pair(vv_py,vvcol),"VV"));
+    if(listofsamples.at(i) =="wz_py")samples.push_back(make_pair(make_pair(wz_py,wzcol),"WZ"));
+    if(listofsamples.at(i) =="zz_py")samples.push_back(make_pair(make_pair(zz_py,zzcol),"ZZ"));
     if(listofsamples.at(i) =="vv_mg")samples.push_back(make_pair(make_pair(vv_mg,vvcol),"VV"));
 
     if(listofsamples.at(i) =="ss_mg")samples.push_back(make_pair(make_pair(ss_mg,sscol),"SS"));
@@ -1437,7 +1450,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
     if(listofsamples.at(i) =="vvv")samples.push_back(make_pair(make_pair(vvv,vvvcol),"VVV"));
     if(listofsamples.at(i) =="vgamma")samples.push_back(make_pair(make_pair(vgamma,vgammacol),"Vgamma"));
-    if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs boson"));
+    if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs Boson"));
     
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
     if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"Misid. Lepton Background"));   
@@ -1473,7 +1486,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   TCanvas* canvas = new TCanvas((cname+ label_plot_type).c_str(), (cname+label_plot_type).c_str(), outputWidth,outputHeight);
   TCanvas* canvas_log = new TCanvas((cname+ label_plot_type+"log").c_str(), (cname+label_plot_type+"log").c_str(), outputWidth,outputHeight);
   
-
+  float ymax_err = 1.8;
+  if(TString(hname).Contains("emujj")) ymax_err = 0.;
   
   std::string title=canvas->GetName();
   std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".png";
@@ -1499,7 +1513,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   label.SetTextFont(42);
   label.SetNDC();
   label.SetTextColor(1);
-  label.DrawLatex(0.6 ,0.4,"High Mass Region");
+  label.DrawLatex(0.6 ,0.34,"Low Mass Region");
+  label.DrawLatex(0.6 ,0.4,"e^{#pm} #mu^{#pm} Channel");
   
 
   //return canvas;  
@@ -1536,6 +1551,11 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
 	g->SetPointEXhigh(i, 0.);
 	err_down_tmp.push_back(0.);
         err_up_tmp.push_back(1.8);
+
+	if(ymax_err == 0){
+          if(hdata->GetBinLowEdge(i) >= 190.)g->SetPointEYhigh(i, 0.);
+	  if(hdata->GetBinLowEdge(i) >=190.)err_up_tmp.push_back(0.);
+	}
       }
   }
   
@@ -1557,8 +1577,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hsig_80->Draw("hist9same");
   
   //return canvas;  
-  legend->AddEntry(hsig_40, "m_{N} = 100 GeV/c^{2}, |V_{eN}||V_{#mu N}| = 15E-3 ","l");
-  legend->AddEntry(hsig_80, "m_{N} = 300 GeV/c^{2}, |V_{eN}||V_{#mu N}| = 5E-1","l");
+  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}*V_{#mu N}| = 4E-4 ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}*V_{#mu N}| = 4E-3","l");
 
   legend->Draw();
   //return canvas;  

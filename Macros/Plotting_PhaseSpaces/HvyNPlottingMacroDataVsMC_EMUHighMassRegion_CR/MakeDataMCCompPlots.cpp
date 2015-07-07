@@ -450,9 +450,9 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
-    x1 = 0.6;
+    x1 = 0.5;
     y1 = 0.5;
-    x2 = 0.9;
+    x2 = 0.8;
     y2 = 0.9;
   }
   else{
@@ -469,7 +469,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetTextFont(42);
   
   legendH->SetBorderSize(0);
-  //  legendH->SetTextSize(0.02);
+  legendH->SetTextSize(0.03);
   
 
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pE");

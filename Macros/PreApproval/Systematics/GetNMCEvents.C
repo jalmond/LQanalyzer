@@ -33,7 +33,7 @@ void GetNMCEvents(){
   TFile * filecf = new TFile(cfpath);
   cout << file << " " << filefake << " " << filecf << endl;
   vector<TString> masses;
-  masses.push_back("40");
+  /*masses.push_back("40");
   masses.push_back("50");
   masses.push_back("60");
   masses.push_back("70");
@@ -51,47 +51,47 @@ void GetNMCEvents(){
   masses.push_back("325");
   masses.push_back("350");
   masses.push_back("375");
-  masses.push_back("400");
+  masses.push_back("400");*/
   masses.push_back("500");
-  masses.push_back("600");
-  masses.push_back("700");
+  //masses.push_back("600");
+  //masses.push_back("700");
 
   
   for(unsigned int i=0; i < masses.size(); i++){
     
     TString tag = masses.at(i);
     cout << tag << endl;
-    TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_nentries").Data());
+    TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_limithist").Data());
     cout << hnmc << endl;
-    TH1* hnnp =   (TH1F*)filefake->Get((tag + "MassRegion_syst").Data());
+    TH1* hnnp =   (TH1F*)filefake->Get((tag + "MassRegion_limithist").Data());
     cout << hnnp << endl;
-    TH1* hncf =   (TH1F*)filecf->Get((tag + "MassRegion_syst").Data());
+    TH1* hncf =   (TH1F*)filecf->Get((tag + "MassRegion_limithist").Data());
     cout << hncf << endl;
 
-    float staterr = sqrt( hnmc->GetBinError(1)*hnmc->GetBinError(1) +  hnnp->GetBinError(1)*hnnp->GetBinError(1) + hncf->GetBinError(1)*hncf->GetBinError(1));
+    float staterr = sqrt( hnmc->GetBinError(2)*hnmc->GetBinError(2) +  hnnp->GetBinError(2)*hnnp->GetBinError(2) + hncf->GetBinError(2)*hncf->GetBinError(2));
 
     TString sigpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
     TFile * file_sig = new TFile(sigpath);
-    TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_nentries").Data());
+    TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_limithist").Data());
+   
     
+    float sig_nom = hn_sig_mc->GetBinContent(2);
     
-    float sig_nom = hn_sig_mc->GetBinContent(1);
+    TH1* hn_sig_syst  = (TH1F*)file_sig->Get((tag + "MassRegion_limithist").Data());
     
-    TH1* hn_sig_syst  = (TH1F*)file_sig->Get((tag + "MassRegion_syst").Data());
+    float diff_jet_Eup = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(3))/hn_sig_syst->GetBinContent(2);;
+    float diff_jet_Edown = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(4))/hn_sig_syst->GetBinContent(2);
     
-    float diff_jet_Eup = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(2))/hn_sig_syst->GetBinContent(1);;
-    float diff_jet_Edown = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(3))/hn_sig_syst->GetBinContent(1);
+    float diff_jet_Rup = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(5))/hn_sig_syst->GetBinContent(2);
+    float diff_jet_Rdown = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(6))/hn_sig_syst->GetBinContent(2);
     
-    float diff_jet_Rup = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(4))/hn_sig_syst->GetBinContent(1);
-    float diff_jet_Rdown = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(5))/hn_sig_syst->GetBinContent(1);
-    
-    float diff_met_clup = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(6))/hn_sig_syst->GetBinContent(1);
-    float diff_met_cldown = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(7))/hn_sig_syst->GetBinContent(1);
+    float diff_met_clup = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(7))/hn_sig_syst->GetBinContent(2);
+    float diff_met_cldown = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(8))/hn_sig_syst->GetBinContent(2);
 
-    float diff_btag_1 = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(8))/hn_sig_syst->GetBinContent(1);
-    float diff_btag_2 = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(9))/hn_sig_syst->GetBinContent(1);
-    float diff_btag_3 = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(10))/hn_sig_syst->GetBinContent(1);
-    float diff_btag_4 = fabs(hn_sig_syst->GetBinContent(1)- hn_sig_syst->GetBinContent(11))/hn_sig_syst->GetBinContent(1);
+    float diff_btag_1 = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(9))/hn_sig_syst->GetBinContent(1);
+    float diff_btag_2 = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(10))/hn_sig_syst->GetBinContent(1);
+    float diff_btag_3 = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(11))/hn_sig_syst->GetBinContent(2);
+    float diff_btag_4 = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(12))/hn_sig_syst->GetBinContent(2);
     
     float jetE = diff_jet_Eup;
     if(diff_jet_Eup < diff_jet_Edown) jetE= diff_jet_Edown;
@@ -106,15 +106,25 @@ void GetNMCEvents(){
     cout << "Met error = " << metE << endl;
     float btag = sqrt(diff_btag_1*diff_btag_1 + diff_btag_2*diff_btag_2 + diff_btag_3*diff_btag_3 + diff_btag_4 *diff_btag_4);
     
+
+    float diff_pileup_up = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(15))/hn_sig_syst->GetBinContent(2);
+    float diff_pileup_down = fabs(hn_sig_syst->GetBinContent(2)- hn_sig_syst->GetBinContent(16))/hn_sig_syst->GetBinContent(2);
+
+    float pileup_err = diff_pileup_up;
+    if(diff_pileup_up < diff_pileup_down) pileup_err = diff_pileup_down; 
+    cout << "pileup error = " << pileup_err << endl;
+   
+
+
     cout << "Btag error = " << btag << endl;
     float err = sqrt(0.1*0.1 + 0.035*0.035  + jetE*jetE + jetR*jetR + metE*metE + btag*btag + 0.07*0.07);
     
     
-    float mc_nom = hnmc->GetBinContent(1);
-    float mc_nom_no_weight = hnmc->GetBinContent(2);
+    float mc_nom = hnmc->GetBinContent(2);
+    float mc_nom_no_weight = hnmc->GetBinContent(1);
     
-    float np_nom = hnnp->GetBinContent(1);
-    float cf_nom = hncf->GetBinContent(1);
+    float np_nom = hnnp->GetBinContent(2);
+    float cf_nom = hncf->GetBinContent(2);
 
     
     

@@ -441,9 +441,9 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
   double x1 = 0.6;
-  double y1 = 0.6;
+  double y1 = 0.5;
   double x2 = 0.6;
-  double y2 = 0.9;
+  double y2 = 0.8;
 
   
   int nbinsX=hlegdata->GetNbinsX();
@@ -451,16 +451,16 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
     x1 = 0.6;
-    y1 = 0.6;
+    y1 = 0.5;
     x2 = 0.9;
-    y2 = 0.9;
+    y2 = 0.8;
   }
   else{
     if((hlegdata->GetBinContent(nbinsX*0.3) / hlegdata->GetMaximum()) < 0.5){
       x1 = 0.2;
-      y1 = 0.6;
+      y1 = 0.5;
       x2 = 0.5;
-      y2 = 0.9;
+      y2 = 0.8;
     }
   }
   
@@ -469,7 +469,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetTextFont(42);
   
   legendH->SetBorderSize(0);
-  //  legendH->SetTextSize(0.02);
+  legendH->SetTextSize(0.03);
   
 
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pE");
@@ -953,7 +953,7 @@ void SetTitles(TH1* hist, string name){
   if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="e#mujj invariant mass (GeV/c^{2})";
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}j invariant mass (GeV/c^{2})";
   if(name.find("emujj_lowmass")!=string::npos)xtitle="e#mujj invariant mass (GeV/c^{2})";
   if(name.find("emumass")!=string::npos)xtitle="e#mu invariant mass (GeV/c^{2})";
   if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
@@ -1013,7 +1013,7 @@ void SetTitles(TH1* hist, string name){
   if(name.find("leaddimudeltaR_")!=string::npos)xtitle="#Delta R (#mu,#mu)";
   if(name.find("leaddieldeltaR_")!=string::npos)xtitle="#Delta R (e,e)";
 
-  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) (GeV)";
+  if(name.find("dijetsmass")!=string::npos)xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
   if(name.find("leaddijetdr")!=string::npos)xtitle="#Delta R(j_{1}j_{2})";
   if(name.find("leadingJetPt")!=string::npos)xtitle="jet1 p_{T} (GeV)";
   if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} (GeV)";

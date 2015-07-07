@@ -101,7 +101,6 @@ void NoteV2_unblind_limit_emuv2(){
     float mc = total_bkg - fake[i] - cf[i];
     
     float mcerr = sqrt(0.15*0.15 +  pow(bkg_err[i],2));
-    //    float bkgerr = sqrt( pow(0.34*fake[i],2) + pow(bkg_err[i]* (mc),2)  +  pow(.15*(cf[i]),2) );
     float bkgerr = sqrt( pow(0.34*fake[i],2) + pow(mcerr* (mc),2)  +  pow(.15*(cf[i]),2) );
     h_bkgerr->SetBinContent(i+1,bkgerr);
     

@@ -179,7 +179,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   FillEventCutFlow("NoCut","", 1.);
   FillEventCutFlow("NoCut_w","", weight);
   
-
+  GetIDEfficiency(GetElectrons(true, true, "NoCut"), GetMuons("NoCut"),GetJets("ApplyPileUpID"),  weight);
 
 
   if(!PassBasicEventCuts())  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
@@ -270,7 +270,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   float weight_down= weight;
   TString reg = fake_loose_region;
   /// before third lepton veto no fake estimate can be done.
-  if(k_running_nonprompt){
+  if(k_running_nonprompt&&isData){
     
     weight      *= Get_DataDrivenWeight_EM(muons, electronAnalysisColl,   eventbase->GetEvent().JetRho());
     weight_up      *= Get_DataDrivenWeight_EM(muons, electronAnalysisColl,   eventbase->GetEvent().JetRho(),1);
@@ -422,6 +422,14 @@ void HNEMu::ExecuteEvents()throw( LQError ){
       }
     }
     if(jetColl_lepveto_mva.size() > 1){
+
+      if(IsTight(muons.at(0)) && IsTight(electronAnalysisColl.at(0), eventbase->GetEvent().JetRho())) 
+	FillHist("TT_presel",1,weight, 0., 2., 2.);
+      else if(!IsTight(muons.at(0)) && !IsTight(electronAnalysisColl.at(0), eventbase->GetEvent().JetRho()))
+	FillHist("LL_presel",1,weight,0., 2.,2.);
+      else FillHist("TL_presel",1,weight,0., 2.,2.);
+
+
       FillCLHist(sighist, "SS_DiJet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
       FillCLHist(sighist, "SS_DiJet_iso1", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight_iso1);
       FillCLHist(sighist, "SS_DiJet_iso2", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight_iso2);
@@ -561,7 +569,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
 		}
 	      }
 	      
-	      if(emu.M() > 50.){
+	      if(emu.M() > 45.){
 		if(eventbase->GetEvent().PFMET() < 35. && nbjet ==0){
 		    FillCLHist(sighist, "SS_highmass", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 
@@ -613,13 +621,13 @@ void HNEMu::ExecuteEvents()throw( LQError ){
 		  if(l2jjm < 330. &&emujj.M() > 260. && ((electronAnalysisColl.at(0).Pt()> 80. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 80))&& jetColl_lepveto_mva.at(0).Pt() > 35.)
 		    FillCLHist(sighist, "SS_highmass_250", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 
-		  if(l2jjm < 390. &&emujj.M() > 310. && ((electronAnalysisColl.at(0).Pt()> 110. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 110))&&  jetColl_lepveto_mva.at(0).Pt() > 35.)
+		  if(l2jjm < 490. &&emujj.M() > 310. && ((electronAnalysisColl.at(0).Pt()> 110. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 110))&&  jetColl_lepveto_mva.at(0).Pt() > 35.)
 		     FillCLHist(sighist, "SS_highmass_300", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
-		  if(l2jjm < 490. &&emujj.M() > 370. && ((electronAnalysisColl.at(0).Pt()> 115. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 115))&&   jetColl_lepveto_mva.at(0).Pt() > 35.)
+		  if(l2jjm < 590. &&emujj.M() > 370. && ((electronAnalysisColl.at(0).Pt()> 115. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 115))&&   jetColl_lepveto_mva.at(0).Pt() > 35.)
                     FillCLHist(sighist, "SS_highmass_350", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
-		  if(l2jjm < 600. &&emujj.M() > 380. && ((electronAnalysisColl.at(0).Pt()> 120. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 120))&&  jetColl_lepveto_mva.at(0).Pt() > 35.)
+		  if(l2jjm < 800. &&emujj.M() > 380. && ((electronAnalysisColl.at(0).Pt()> 120. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 120))&&  jetColl_lepveto_mva.at(0).Pt() > 35.)
 		    FillCLHist(sighist, "SS_highmass_400", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
-		  if(l2jjm < 600. &&emujj.M() > 380. && ((electronAnalysisColl.at(0).Pt()> 120. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 120))&&   jetColl_lepveto_mva.at(0).Pt() >35.)
+		  if(l2jjm < 1000. &&emujj.M() > 380. && ((electronAnalysisColl.at(0).Pt()> 120. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 120))&&   jetColl_lepveto_mva.at(0).Pt() >35.)
 		    FillCLHist(sighist, "SS_highmass_500", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 		}
 		
