@@ -165,3 +165,271 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
 
 }
 
+
+void BTagSFUtil::GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], bool isTag[], int syst, float &wbtag, float &wbtagErr ){
+	// 
+	// Get Event-by-Event btag weight
+	//
+	
+	float mcTag = 1.;
+	float mcNoTag = 1.;
+	float dataTag = 1.;
+	float dataNoTag = 1.;
+	float errTag = 0.;
+	float errNoTag = 0.;
+
+	float err1 = 0; 
+	float err2 = 0; 
+	float err3 = 0; 
+	float err4 = 0; 
+
+	//	std::cout << " == BTag Weight Called == " << endl;
+	
+	for(int nj=0; nj<NJets ;nj++){ //Here we loop over all selected jets ( for our case, pt>30, PF loose ID, etc ) 
+
+		int partonFlavor = abs(JetFlav[nj]);
+		float eta = fabs(JetEta[nj]);
+		float x = JetPt[nj];
+		if( partonFlavor==0 ) continue; //for jets with flavor 0, we ignore. 
+
+		float eff = JetTagEfficiency(partonFlavor, x, eta);
+		bool istag = isTag[nj];
+
+		float SF = 0.;
+		float SFerr = 0.;
+
+		if(x<20) x=20; 
+		if(x>800) x=800;
+		
+
+		if(partonFlavor==5 || partonFlavor == 4){ //for b or c. flavJet[indj] refers to the MC-true flavor of the jet
+
+			int JetPtBin = -1;
+			for (int ptbtagbin = 0; ptbtagbin<nBTagPtBins; ptbtagbin++) 
+				if (x>=BTagPtBinEdge[ptbtagbin]) JetPtBin++;
+			
+			SFerr = SFb_error[JetPtBin];
+			SF  = (0.938887+(0.00017124*x))+(-2.76366e-07*(x*x)) + syst*SFerr;
+			
+			if(partonFlavor == 4 ) SFerr *= 2; 
+		}
+		else{
+			
+			float max;
+			float min;
+			if(eta<=0.8){
+				SF = ((1.07541+(0.00231827*x))+(-4.74249e-06*(x*x)))+(2.70862e-09*(x*(x*x)));
+				max = ((1.18638+(0.00314148*x))+(-6.68993e-06*(x*x)))+(3.89288e-09*(x*(x*x)));
+				min = ((0.964527+(0.00149055*x))+(-2.78338e-06*(x*x)))+(1.51771e-09*(x*(x*x)));
+			}
+			else if(eta<=1.6){
+				SF = ((1.05613+(0.00114031*x))+(-2.56066e-06*(x*x)))+(1.67792e-09*(x*(x*x)));
+				max = ((1.16624+(0.00151884*x))+(-3.59041e-06*(x*x)))+(2.38681e-09*(x*(x*x)));
+				min = ((0.946051+(0.000759584*x))+(-1.52491e-06*(x*x)))+(9.65822e-10*(x*(x*x)));
+			}  else if(eta>1.6 && eta<=2.4){
+				SF = ((1.05625+(0.000487231*x))+(-2.22792e-06*(x*x)))+(1.70262e-09*(x*(x*x)));
+				max = ((1.15575+(0.000693344*x))+(-3.02661e-06*(x*x)))+(2.39752e-09*(x*(x*x)));
+				min = ((0.956736+(0.000280197*x))+(-1.42739e-06*(x*x)))+(1.0085e-09*(x*(x*x)));
+			}
+
+			SFerr = fabs(max-SF)>fabs(min-SF)? fabs(max-SF):fabs(min-SF);
+			SF += syst*SFerr;
+		}
+		    		
+		if(istag){
+			mcTag *= eff; 
+			dataTag *= eff*SF; 
+
+			if(partonFlavor==5 || partonFlavor ==4)  err1 += SFerr/SF; ///correlated for b/c
+			else err3 += SFerr/SF; //correlated for light
+      
+		}else{
+			mcNoTag *= (1- eff); 
+			dataNoTag *= (1- eff*SF); 
+      
+			if(partonFlavor==5 || partonFlavor ==4 ) err2 += (-eff*SFerr)/(1-eff*SF); /// /correlated for b/c
+			else err4 +=  (-eff*SFerr)/(1-eff*SF);  ////correlated for light
+      
+		}
+
+		//		std::cout << " For Jet " << nj << ", flav = " <<  partonFlavor << " eff = " << eff << ", istag " << istag << std::endl;
+		
+    
+	}
+
+
+  
+	wbtag = (dataNoTag * dataTag ) / ( mcNoTag * mcTag ); 
+	wbtagErr = sqrt( pow(err1+err2,2) + pow( err3 + err4,2)) * wbtag;  ///un-correlated for b/c and light
+
+	//	std::cout << " Event Weights =  " << wbtag << " +- " << wbtagErr << std::endl;
+
+	return;
+
+}
+
+
+
+void BTagSFUtil::GetMisTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], int syst, float &wbtag, float &wbtagErr, int NBjets){
+	// 
+	// Get mistag btag weight
+	// One event can contribute to multiple b-tagging category
+  //
+	
+	float dataTag = 1.;
+	float dataNoTag = 1.;
+	float errTag = 0.;
+	float errNoTag = 0.;
+
+	float err3 = 0; 
+	float err4 = 0; 
+
+	//	std::cout << " == MisTag Weight Called == " << endl;
+
+	float SF_Array[NJets];
+	float SFerr_Array[NJets];
+	float eff_Array[NJets];
+	
+	for(int nj=0; nj<NJets ;nj++){ //Here we loop over all selected jets ( for our case, pt>30, PF loose ID, etc ) 
+
+
+		int partonFlavor = abs(JetFlav[nj]);
+		float eta = fabs(JetEta[nj]);
+		float x = JetPt[nj];
+		if( partonFlavor==0 || partonFlavor==4 || partonFlavor == 5) continue; //for jets with flavor 0, and heavy flavor jets we ignore.
+
+		
+		float eff = JetTagEfficiency(partonFlavor, x, eta);
+
+		float SF = 0.;
+		float SFerr = 0.;
+
+		if(x<20) x=20; 
+		if(x>800) x=800;
+		
+		float max;
+		float min;
+
+		if(eta<=0.8){
+			SF = ((1.07541+(0.00231827*x))+(-4.74249e-06*(x*x)))+(2.70862e-09*(x*(x*x)));
+			max = ((1.18638+(0.00314148*x))+(-6.68993e-06*(x*x)))+(3.89288e-09*(x*(x*x)));
+			min = ((0.964527+(0.00149055*x))+(-2.78338e-06*(x*x)))+(1.51771e-09*(x*(x*x)));
+		}
+		else if(eta<=1.6){
+			SF = ((1.05613+(0.00114031*x))+(-2.56066e-06*(x*x)))+(1.67792e-09*(x*(x*x)));
+			max = ((1.16624+(0.00151884*x))+(-3.59041e-06*(x*x)))+(2.38681e-09*(x*(x*x)));
+			min = ((0.946051+(0.000759584*x))+(-1.52491e-06*(x*x)))+(9.65822e-10*(x*(x*x)));
+		}
+		else if(eta>1.6 && eta<=2.4){
+			SF = ((1.05625+(0.000487231*x))+(-2.22792e-06*(x*x)))+(1.70262e-09*(x*(x*x)));
+			max = ((1.15575+(0.000693344*x))+(-3.02661e-06*(x*x)))+(2.39752e-09*(x*(x*x)));
+			min = ((0.956736+(0.000280197*x))+(-1.42739e-06*(x*x)))+(1.0085e-09*(x*(x*x)));
+		}
+		
+		SFerr = fabs(max-SF)>fabs(min-SF)? fabs(max-SF):fabs(min-SF);
+		SF += syst*SFerr;
+
+		SF_Array[nj] = SF;
+		SFerr_Array[nj] = SFerr;
+		eff_Array[nj] = eff;
+	
+	}
+
+	wbtag = 0;
+	wbtagErr =0;
+	
+	if (NBjets == 0){ // all jets not tagged
+		for (int i=0; i<NJets; i++){
+			dataNoTag *= (1-eff_Array[i]*SF_Array[i]); // count the tagging probability in data
+			err4 += (-eff_Array[i]*SFerr_Array[i])/(1-eff_Array[i]*SF_Array[i]);
+		}
+
+		wbtag = dataNoTag;
+		wbtagErr = fabs(err4*wbtag);
+
+	}
+
+	else if (NBjets == 1){ // 1 jets tagged only
+		float prob[NJets];
+		float proberr[NJets];
+		for (int i=0; i<NJets; i++){
+			prob[i] = 1.0;
+			proberr[i] = 0.;
+		}
+		
+		for (int i=0; i<NJets; i++){
+			for (int k=0; k<NJets; k++){
+				if (i==k){
+					prob[i] *= eff_Array[k]*SF_Array[k];
+					proberr[i] += SFerr_Array[k]/SF_Array[k];
+				}
+				else{
+					prob[i] *= (1-eff_Array[k]*SF_Array[k]);
+					proberr[i] += (-eff_Array[k]*SFerr_Array[k])/(1-eff_Array[k]*SF_Array[k]);
+				}
+			}
+		}
+
+		float wbtagErr2 = 0;
+		for (int i=0; i<NJets; i++){
+			wbtag += prob[i];
+			wbtagErr2 += proberr[i]*proberr[i]*prob[i]*prob[i];			
+		}
+		wbtagErr = sqrt(wb tagErr2);
+	}
+	else if (NBjets == 2){ // 2 jets tagged only
+		float prob[NJets-1][NJets-1];
+		float proberr[NJets-1][NJets-1] ;
+
+		for (int i=0; i<NJets-1; i++){
+			for (int j=0; j<NJets-1; j++){
+				prob[i][j] = 1.0;
+				proberr[i][j] = 0.;
+			}
+		}
+			
+		for (int i=0; i<NJets-1; i++){
+			for (int j=i+1; j<NJets; j++){
+
+				dataTag *= eff_Array[i]*SF_Array[i];
+				err3 += SFerr_Array[i]/SF_Array[i];
+
+				dataTag *= eff_Array[j]*SF_Array[j];
+				err3 += SFerr_Array[j]/SF_Array[j];
+
+				for (int k=0; k<NJets; k++){
+					if (k==i || k==j) continue;
+					dataNoTag *= (1-eff_Array[k]*SF_Array[k]);
+					err4 += (-eff_Array[k]*SFerr_Array[k])/(1-eff_Array[k]*SF_Array[k]);
+				}
+
+				prob[i][j-1] = dataTag*dataNoTag;
+				proberr[i][j-1] = pow(err3+err4,2)*pow(prob[i][j-1],2) ;
+			}
+		}		
+
+		float wbtagErr2 = 0;
+		for (int i=0; i<NJets-1; i++){
+			for (int j=i+1; j<NJets; j++){
+				wbtag += prob[i][j-1];
+				wbtagErr2 += proberr[i][j-1];
+			}
+		}
+		wbtagErr = sqrt(wbtagErr2);
+
+	}
+	else if (NBjets == 4 && NJets == 4){
+		for (int i=0; i<NJets; i++){
+			dataTag *= eff_Array[i]*SF_Array[i];
+			err3 += SFerr_Array[i]/SF_Array[i];
+		}
+		wbtag = dataTag;
+		wbtagErr = fabs(err3*wbtag);
+	}
+	
+	//	std::cout << " Event Weights =  " << wbtag << " +- " << wbtagErr << std::endl;
+
+	return;
+
+}
+

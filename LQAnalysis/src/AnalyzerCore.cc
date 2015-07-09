@@ -108,14 +108,6 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
     eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->Selection(jetColl);
   }
-  else  if(label.Contains("loosest")){
-    eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-    eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(2.5);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
-  }
-  
-  
   else  if(label.Contains("ApplyLeptonVeto")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
@@ -399,14 +391,9 @@ void AnalyzerCore::MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std
     }
 
     if(osmassdiff <10.){
-      if(jets.size() > 1){
-	if(eventbase->GetEvent().PFMET() > 30){
-	  if( (fabs(electrons.at(0).Eta() ) < 2.4) &&  (fabs(electrons.at(1).Eta() ) < 2.4) && (fabs(electrons.at(2).Eta() ) < 2.4)){
-	    FillCLHist(sighist, "TriElCR_jet_osZW" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
-	  }
-	}
-      }	
-
+      if(jets.size() > 0){
+	FillCLHist(sighist, "TriElCR_jet_osZW" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
+      }
     }
 
     FillCLHist(sighist, "TriElCR" + jetid, eventbase->GetEvent(), muons,electrons,jets, w);
@@ -645,6 +632,7 @@ void AnalyzerCore::RunMCCLosureTest(TString label, std::vector<snu::KJet> jets, 
 	    if(!el1_fake &&!el2_fake)   FillHist(label + "mcclosure_trueevent_type", 2., 1., 0., 3., 3);
 	    
 	    
+
 	    FakeBkgBreakDown(electronAnalysisColl_mcclosure, "mcclosure",fake_weight60); 
 	    
 	    if(IsTight(electronAnalysisColl_mcclosure.at(0),   eventbase->GetEvent().JetRho()) && IsTight(electronAnalysisColl_mcclosure.at(1),   eventbase->GetEvent().JetRho()) ){
@@ -993,7 +981,7 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
       if(electronNoCutColl[iel].Pt() < 20.) continue;
     }
     else{
-      if(electronNoCutColl[iel].Pt() < 15.) continue;
+      if(electronNoCutColl[iel].Pt() < 10.) continue;
     }
     if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
    
@@ -1103,8 +1091,6 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
   std::vector<snu::KElectron>   electronTight_DXY;
   std::vector<snu::KElectron>   electronTight_chargeconst;
   std::vector<snu::KElectron>   electronTight_tightref;
-
-  std::vector<snu::KElectron>   electron_analysis_primarydxyCutColl;;
   for(unsigned int iel = 0; iel < electronNoCutColl.size(); iel++){
     double egamma_e  = electronNoCutColl.at(iel).CaloEnergy();
     double egamma_p  = electronNoCutColl.at(iel).CaloEnergy() / electronNoCutColl.at(iel).ESuperClusterOverP();
@@ -1116,7 +1102,6 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
       if(electronNoCutColl[iel].Pt() < 15.) continue;
     }
     if(fabs(electronNoCutColl[iel].Eta()) > 2.5) continue;
-    
     
 
     if ( fabs(electronNoCutColl.at(iel).SCEta()) < 1.479 ){
@@ -1167,45 +1152,42 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
                   if(electronNoCutColl[iel].ConvFitProb  ()    <=  1e-6){
                     if(electronNoCutColl[iel].MissingHits()    <=  0){
                       if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
-			if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
-			  
-			  Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
-			  int ifid=0;
-			  if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.0) ifid = 0;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.479) ifid = 1;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.0) ifid = 2;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.2) ifid = 3;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.3) ifid = 4;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.4) ifid = 5;
-			  else ifid = 6;
-			  
-			  float LeptonRelIsoDR03(0.);
-			  float ElectronIsoDR03 =  electronNoCutColl.at(iel).PFChargedHadronIso03() + max( electronNoCutColl.at(iel).PFNeutralHadronIso03() + electronNoCutColl.at(iel).PFPhotonIso03() - eventbase->GetEvent().JetRho() * PHONH_03[ifid],  0.);
-			  
-			  if(electronNoCutColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronNoCutColl.at(iel).Pt();
-			  else LeptonRelIsoDR03 = -999.;
-			  float trkiso =electronNoCutColl.at(iel).TrkIsoDR03()/electronNoCutColl.at(iel).Pt();
-			  float ecaliso =electronNoCutColl.at(iel).ECalIsoDR03()/electronNoCutColl.at(iel).Pt();
-			  float hcaliso =electronNoCutColl.at(iel).HCalIsoDR03()/electronNoCutColl.at(iel).Pt();
-			  bool passNPFiso = true;
-			  if(trkiso > 0.1) passNPFiso = false;
-			  if(ecaliso > 0.25) passNPFiso = false;
-			  if(hcaliso > 0.2)  passNPFiso = false;
-			  
-			  float isocut= 0.09;
-			  if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5)isocut = 0.05;
-			  
-			  if(LeptonRelIsoDR03 < isocut){
-			    if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
-			      electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
-			      if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
-			    }
-			    if(fabs(electronNoCutColl.at(iel).LeadVtxDistXY ())  <= 0.01){
-			      electron_analysis_primarydxyCutColl.push_back(electronNoCutColl.at(iel));
-			    }
-			  }
-			}
-		      }
+                        if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
+                          if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
+
+                            Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+                            int ifid=0;
+                            if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.0) ifid = 0;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.479) ifid = 1;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.0) ifid = 2;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.2) ifid = 3;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.3) ifid = 4;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.4) ifid = 5;
+                            else ifid = 6;
+
+                            float LeptonRelIsoDR03(0.);
+                            float ElectronIsoDR03 =  electronNoCutColl.at(iel).PFChargedHadronIso03() + max( electronNoCutColl.at(iel).PFNeutralHadronIso03() + electronNoCutColl.at(iel).PFPhotonIso03() - eventbase->GetEvent().JetRho() * PHONH_03[ifid],  0.);
+
+                            if(electronNoCutColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronNoCutColl.at(iel).Pt();
+                            else LeptonRelIsoDR03 = -999.;
+                            float trkiso =electronNoCutColl.at(iel).TrkIsoDR03()/electronNoCutColl.at(iel).Pt();
+                            float ecaliso =electronNoCutColl.at(iel).ECalIsoDR03()/electronNoCutColl.at(iel).Pt();
+                            float hcaliso =electronNoCutColl.at(iel).HCalIsoDR03()/electronNoCutColl.at(iel).Pt();
+                            bool passNPFiso = true;
+                            if(trkiso > 0.1) passNPFiso = false;
+                            if(ecaliso > 0.25) passNPFiso = false;
+                            if(hcaliso > 0.2)  passNPFiso = false;
+
+                            float isocut= 0.09;
+                            if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5)isocut = 0.05;
+
+                            if(LeptonRelIsoDR03 < isocut){
+                              electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
+                              if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -1271,43 +1253,40 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
                   if(electronNoCutColl[iel].ConvFitProb  ()    <=  1e-6){
                     if(electronNoCutColl[iel].MissingHits()    <=  0){
                       if(!electronNoCutColl.at(iel).HasMatchedConvPhot()){
-			if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
+                        if(fabs(electronNoCutColl.at(iel).dxy())  <= 0.01){
+                          if(electronNoCutColl.at(iel).GsfCtfScPixChargeConsistency()){
+
+                            Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
+                            int ifid=0;
+                            if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.0) ifid = 0;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.479) ifid = 1;
+			    else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.0) ifid = 2;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.2) ifid = 3;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.3) ifid = 4;
+                            else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.4) ifid = 5;
+                            else ifid = 6;
+
+                            float LeptonRelIsoDR03(0.);
+                            float ElectronIsoDR03 =  electronNoCutColl.at(iel).PFChargedHadronIso03() + max( electronNoCutColl.at(iel).PFNeutralHadronIso03() + electronNoCutColl.at(iel).PFPhotonIso03() - eventbase->GetEvent().JetRho() * PHONH_03[ifid],  0.);
+
+                            if(electronNoCutColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronNoCutColl.at(iel).Pt();
+                            else LeptonRelIsoDR03 = -999.;
+
+                            float trkiso =electronNoCutColl.at(iel).TrkIsoDR03()/electronNoCutColl.at(iel).Pt();
+                            float ecaliso =electronNoCutColl.at(iel).ECalIsoDR03()/electronNoCutColl.at(iel).Pt();
+                            float hcaliso =electronNoCutColl.at(iel).HCalIsoDR03()/electronNoCutColl.at(iel).Pt();
+                            bool passNPFiso = true;
+                            if(trkiso > 0.1) passNPFiso = false;
+                            if(ecaliso > 0.25) passNPFiso = false;
+                            if(hcaliso > 0.2)  passNPFiso = false;
+
+                            float isocut= 0.09;
+                            if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5)isocut = 0.05;
 			  
-			  Double_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
-			  int ifid=0;
-			  if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.0) ifid = 0;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 1.479) ifid = 1;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.0) ifid = 2;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.2) ifid = 3;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.3) ifid = 4;
-			  else if (fabs(electronNoCutColl.at(iel).SCEta()) < 2.4) ifid = 5;
-			  else ifid = 6;
-			  
-			  float LeptonRelIsoDR03(0.);
-			  float ElectronIsoDR03 =  electronNoCutColl.at(iel).PFChargedHadronIso03() + max( electronNoCutColl.at(iel).PFNeutralHadronIso03() + electronNoCutColl.at(iel).PFPhotonIso03() - eventbase->GetEvent().JetRho() * PHONH_03[ifid],  0.);
-			  
-			  if(electronNoCutColl.at(iel).Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  electronNoCutColl.at(iel).Pt();
-			  else LeptonRelIsoDR03 = -999.;
-			  
-			  float trkiso =electronNoCutColl.at(iel).TrkIsoDR03()/electronNoCutColl.at(iel).Pt();
-			  float ecaliso =electronNoCutColl.at(iel).ECalIsoDR03()/electronNoCutColl.at(iel).Pt();
-			  float hcaliso =electronNoCutColl.at(iel).HCalIsoDR03()/electronNoCutColl.at(iel).Pt();
-			  bool passNPFiso = true;
-			  if(trkiso > 0.1) passNPFiso = false;
-			  if(ecaliso > 0.25) passNPFiso = false;
-			  if(hcaliso > 0.2)  passNPFiso = false;
-			  
-			  float isocut= 0.09;
-			  if(fabs(electronNoCutColl.at(iel).Eta()) > 1.5)isocut = 0.05;
-			  
-			  if(LeptonRelIsoDR03 < isocut){
-			    if(fabs(electronNoCutColl.at(iel).dxy ())  <= 0.01){
-			      electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
-			      if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
+			    if(LeptonRelIsoDR03 < isocut){
+			    electron_analysisCutColl.push_back(electronNoCutColl.at(iel));
+                              if(passNPFiso)       electron_analysisNPFCutColl.push_back(electronNoCutColl.at(iel));
                             }
-			    if(fabs(electronNoCutColl.at(iel).LeadVtxDistXY ())  <= 0.01){
-			      electron_analysis_primarydxyCutColl.push_back(electronNoCutColl.at(iel));
-			    }
                           }
                         }
                       }
@@ -1359,15 +1338,6 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
   }
 
   FillHist(label + "eff_electronRef", 1.,w, 0.,2.,2);
-  if(SameCharge(electron_analysisCutColl)) {
-    FillHist(label + "eff_electron_vertexcheck", 1.,w, 0.,4.,4);
-    if(electronNoCutColl.at(0).VertexIndex() == electronNoCutColl.at(1).VertexIndex())  {
-      FillHist(label + "eff_electron_vertexcheck", 2.,w, 0.,4.,4);
-      if(electronNoCutColl.at(0).VertexIndex() == eventbase->GetEvent().VertexIndex()){
-	FillHist(label + "eff_electron_vertexcheck", 3.,w, 0.,4.,4);
-      }
-    }
-  }
   if(SameCharge(electronPt10CutColl))   FillHist(label + "eff_electronPt10CutColl", 1.,w, 0.,2.,2);
   if(SameCharge(electronPt15CutColl))   FillHist(label + "eff_electronPt15CutColl", 1.,w, 0.,2.,2);
   if(SameCharge(electronEta24CutColl))   FillHist(label + "eff_electronEta24CutColl", 1.,w, 0.,2.,2);
@@ -1377,7 +1347,6 @@ void AnalyzerCore::GetIDEfficiency( std::vector<snu::KElectron> electronNoCutCol
   if(SameCharge(electron_IsoCutColl))   FillHist(label + "eff_electron_IsoCutColl", 1.,w, 0.,2.,2);
   if(SameCharge(electron_NPFIsoCutColl))   FillHist(label + "eff_electron_NPFIsoCutColl", 1.,w, 0.,2.,2);
   if(SameCharge(electron_analysisCutColl))   FillHist(label + "eff_electron_analysisCutColll", 1.,w, 0.,2.,2);
-  if(SameCharge(electron_analysis_primarydxyCutColl))   FillHist(label + "eff_electron_primarydxyanalysisCutColll", 1.,w, 0.,2.,2);
   if(SameCharge(electron_analysisNPFCutColl))   FillHist(label + "eff_electron_analysisNPFCutColll", 1.,w, 0.,2.,2);
   if(jets.size()  > 1) FillHist(label + "_JetSelection", 1.,w, 0.,2.,2);
   if(jets.size()  > 1 && NBJet(jets) == 0 ) FillHist(label + "_JetSelection_noB", 1.,w, 0.,2.,2);
@@ -1728,22 +1697,7 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el){
   
 }
 
-double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu){
-  if(isData) return 1.;
-  if(mu.size() != 2) return 1.;
-  float eta = fabs(mu.at(1).Eta());
-  if( eta < 1.) return 0.9;
-  else return 0.81;
-
-}
-double AnalyzerCore::TriggerScaleFactorEMu( ){
-  // numbers from AN2012_330_v11 
-  return 0.93;
-}
-
-
-
-double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_electron , int sys){
+double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_electron){
   
   ///https://twiki.cern.ch/twiki/bin/view/Main/EGammaScaleFactors2012
   double sf = 0.;
@@ -1755,96 +1709,47 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
   
   if(tight_electron){
     if(fabs(eta) < 0.8 ) {
-      if( pt < 15.) sf = 0.969;
-      else if( pt < 20.) sf = 0.969;
-      else if( pt < 30.) sf = 0.958;
+      if( pt < 15.) sf = 0.949;
+      else if( pt < 20.) sf = 0.949;
+      else if( pt < 30.) sf = 0.957;
       else if( pt < 40.) sf = 0.966;
       else if( pt < 50.) sf = 0.973;
-      else sf = 0.967;
+      else sf = 0.985;
     }
     else  if(fabs(eta) <  1.442){
       
-      if( pt < 15.) sf = 0.957;
-      else if( pt < 20.) sf = 0.957;
-      else if( pt < 30.) sf = 0.908;
-      else if( pt < 40.) sf = 0.920;
+      if( pt < 15.) sf = 0.96;
+      else if( pt < 20.) sf = 0.96;
+      else if( pt < 30.) sf = 0.935;
+      else if( pt < 40.) sf = 0.938;
       else if( pt < 50.) sf = 0.949;
-      else sf = 0.948;
+      else sf = 0.946;
     }
     else  if(fabs(eta) <1.556){
-      if( pt < 15.) sf = 0.875;
-      else if( pt < 20.) sf = 0.875;
-      else if( pt < 30.) sf = 0.884;
+      if( pt < 15.) sf = 0.831;
+      else if( pt < 20.) sf = 0.831;
+      else if( pt < 30.) sf = 0.876;
       else if( pt < 40.) sf = 0.847;
-      else if( pt < 50.) sf = 0.898;
-      else sf = 0.910;
+      else if( pt < 50.) sf = 0.901;
+      else sf = 0.916;
     }
     else if(fabs(eta) <2.0){
       
-      if( pt < 15.) sf = 0.875;
-      else if( pt < 20.) sf = 0.875;
-      else if( pt < 30.) sf = 0.884;
+      if( pt < 15.) sf = 0.831;
+      else if( pt < 20.) sf = 0.831;
+      else if( pt < 30.) sf = 0.876;
       else if( pt < 40.) sf = 0.847;
-      else if( pt < 50.) sf = 0.898;
-      else sf = 0.91;
+      else if( pt < 50.) sf = 0.901;
+      else sf = 0.916;
     }
     else{
-      if( pt < 15.) sf = 0.8;
-      else if( pt < 20.) sf = 0.8;
-      else if( pt < 30.) sf = 0.872;
-      else if( pt < 40.) sf = 0.895;
-      else if( pt < 50.) sf = 0.936;
-      else sf = 0.94;
+      if( pt < 15.) sf = 0.86;
+      else if( pt < 20.) sf = 0.86;
+      else if( pt < 30.) sf = 0.885;
+      else if( pt < 40.) sf = 0.913;
+      else if( pt < 50.) sf = 0.937;
+      else sf = 0.946;
     }
-    float syst_err = 1.;
-    
-    if(sys == 0) return sf;
-    
-    if(fabs(eta) < 0.8 ) {
-      if( pt < 15.) syst_err = 0.11;
-      else if( pt < 20.) syst_err = 0.069;
-      else if( pt < 30.) syst_err = 0.014;
-      else if( pt < 40.) syst_err = 0.0028;
-      else if( pt < 50.) syst_err = 0.0014;
-      else syst_err = 0.0041;
-    }
-    else  if(fabs(eta) <  1.442){
-      if( pt < 15.) syst_err = 0.11;
-      else if( pt < 20.) syst_err = 0.069;
-      else if( pt < 30.) syst_err = 0.014;
-      else if( pt < 40.) syst_err = 0.0028;
-      else if( pt < 50.) syst_err = 0.0014;
-      else syst_err = 0.0041;
-    }
-    else  if(fabs(eta) <1.556){
-      if( pt < 15.) syst_err = 0.11;
-      else if( pt < 20.) syst_err = 0.083;
-      else if( pt < 30.) syst_err = 0.057;
-      else if( pt < 40.) syst_err = 0.024;
-      else if( pt < 50.) syst_err = 0.0028;
-      else syst_err = 0.0043;
-    }
-    else if(fabs(eta) <2.0){
-
-      if( pt < 15.) syst_err = 0.12;
-      else if( pt < 20.) syst_err = 0.04;
-      else if( pt < 30.) syst_err = 0.022;
-      else if( pt < 40.) syst_err = 0.0029;
-      else if( pt < 50.) syst_err = 0.003;
-      else syst_err = 0.0053;
-    }
-    else{
-      if( pt < 15.) syst_err = 0.12;
-      else if( pt < 20.) syst_err = 0.04;
-      else if( pt < 30.) syst_err = 0.022;
-      else if( pt < 40.) syst_err = 0.0059;
-      else if( pt < 50.) syst_err = 0.003;
-      else syst_err = 0.053;
-    }
-        
-    if(sys == 1)  sf = sf *(1. +  syst_err);
-    if(sys == -1) sf = sf *(1. -  syst_err);
-    
     return sf;
   }
   if(medium_electron){
@@ -1937,6 +1842,417 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
     
 }
 
+
+double AnalyzerCore::TopElTriggerScaleFactor(float pt, float eta, int syst = 0){
+
+	if(isData) return 1.;
+	
+	if (pt<30) return 1.;
+	
+	double SF = 1.;
+	
+	if(pt<40.){
+		if (eta<0.8) SF = 0.987;
+		else if (eta<1.478) SF = 0.964;
+		else if (eta<2.5) SF = 1.004;
+
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.987+0.012;
+			else if (eta<1.478) SF = 0.964+0.002;
+			else if (eta<2.5) SF = 1.004+0.006; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.987-0.017;
+			else if (eta<1.478) SF = 0.964-0.001;
+			else if (eta<2.5) SF = 1.004-0.006; 
+			
+		}
+	}
+	else if (pt<50){
+		
+		if (eta<0.8) SF = 0.997;
+		else if (eta<1.478) SF = 0.98;
+		else if (eta<2.5) SF = 1.033;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.997+0.001;
+			else if (eta<1.478) SF = 0.98+0.001;
+			else if (eta<2.5) SF = 1.033+0.007; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.997-0.001;
+			else if (eta<1.478) SF = 0.98-0.001;
+			else if (eta<2.5) SF = 1.033-0.007; 
+			
+		}
+	}
+	else if (pt<200){
+		
+		if (eta<0.8) SF = 0.998;
+		else if (eta<1.478) SF = 0.988;
+		else if (eta<2.5) SF = 0.976;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.998+0.002;
+			else if (eta<1.478) SF = 0.988+0.002;
+			else if (eta<2.5) SF = 0.976+0.015; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.998-0.002;
+			else if (eta<1.478) SF = 0.988-0.002;
+			else if (eta<2.5) SF = 0.976-0.012; 
+			
+		}
+	}
+	
+	
+	return SF;
+	
+}
+
+
+double AnalyzerCore::TopElTriggerEff(float pt, float eta){
+
+	// ID && Iso Efficiency
+	//	if(!isData) return 1.;
+	
+	double Eff = 1.;
+	if (pt<30.) return 1.;
+	
+	if(pt<40.){
+		if (eta<0.8) Eff = Eff = 1/0.865;
+		else if (eta<1.478) Eff = 1/0.876;
+		else if (eta<2.5) Eff = 1/0.69;
+	}
+	else if (pt<50){
+		
+  	  if (eta<0.8) Eff = 1/0.895;
+	  else if (eta<1.478) Eff = 1/0.91;
+	  else if (eta<2.5) Eff = 1/0.738;
+
+	}
+	else if (pt<200){
+
+  	  if (eta<0.8) Eff = 1/0.91;
+	  else if (eta<1.478) Eff = 1/0.93;
+	  else if (eta<2.5) Eff = 1/0.753;
+	}
+
+  return Eff;
+  
+}
+
+
+
+double AnalyzerCore::TopElIDIsoScaleFactor(float pt, float eta, int syst = 0){
+	//https://twiki.cern.ch/twili/bin/viewauth/CMS/KoPFAElectronTagAndProbe
+	
+	if(isData) return 1.;
+
+	double SF = 1.;
+	if (pt<30.) return 1.;
+	
+	if( pt<40.){
+		if (eta<0.8) SF = 0.939;
+		else if (eta<1.478) SF = 0.920;
+		else if (eta<2.5) SF = 0.907;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF += 0.003;
+			else if (eta<1.478) SF += 0.002;
+			else if (eta<2.5) SF += 0.005; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.003;
+			else if (eta<1.478) SF -= 0.;
+			else if (eta<2.5) SF -= 0.005; 			
+		}
+	}
+	else if (pt<50){
+		
+		if (eta<0.8) SF = 0.950;
+		else if (eta<1.478) SF = 0.949;
+		else if (eta<2.5) SF = 0.937;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF +=0.001;
+			else if (eta<1.478) SF += 0.002;
+			else if (eta<2.6) SF += 0.008; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.001;
+			else if (eta<1.478) SF -= 0.002;
+			else if (eta<2.6) SF -= 0.008; 
+			
+		}
+	}
+	else if (pt<200){
+		
+		if (eta<0.8) SF = 0.957;
+		else if (eta<1.478) SF = 0.959;
+		else if (eta<2.5) SF = 0.954;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF += 0.001;
+			else if (eta<1.478) SF += 0.003;
+			else if (eta<2.6) SF += 0.011; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.001;
+			else if (eta<1.478) SF -= 0.003;
+			else if (eta<2.6) SF -= 0.01; 
+			
+		}
+	}
+
+	return SF;
+  
+}
+
+
+double AnalyzerCore::TopElIDIsoEff(float pt, float eta){
+
+	// ID && Iso Efficiency
+	//	if(!isData) return 1.;
+
+	
+	double Eff = 1.;
+	
+	if( pt > 30. && pt<40.){
+		if (eta<0.8) Eff = Eff = 1/0.834;
+		else if (eta<1.478) Eff = 1/0.796;
+		else if (eta<2.5) Eff = 1/0.739;
+	}
+	else if (pt<50){
+		
+  	  if (eta<0.8) Eff = 1/0.885;
+	  else if (eta<1.478) Eff = 1/0.878;
+	  else if (eta<2.5) Eff = 1/0.814;
+
+	}
+	else if (pt<200){
+
+  	  if (eta<0.8) Eff = 1/0.908;
+	  else if (eta<1.478) Eff = 1/0.906;
+	  else if (eta<2.5) Eff = 1/0.873;
+	}
+
+  return Eff;
+  
+}
+
+
+double AnalyzerCore::TopMuIDEff(float eta, int syst=0){
+
+	//	if(!isData) return 1.;
+   
+	double Eff = 1.;
+	
+	
+	if (eta<0.9){
+		Eff = 0.9582;
+		if (syst>0) Eff+=0.0001;
+		if (syst<0) Eff-=0.0001;
+	}
+	else if (eta<1.2){
+		Eff = 0.9612;
+		if (syst>0) Eff+=0.0002;
+		if (syst<0) Eff-=0.0002;
+	}
+	else if (eta<2.1){
+		Eff = 0.9535;
+		if (syst>0) Eff += 0.0002;
+		if (syst<0) Eff -= 0.0002;		
+	}
+	else if (eta<2.4){
+		Eff = 0.9495;
+		if (syst>0) Eff += 0.0004;
+		if (syst<0) Eff -=0.0004;
+	}
+
+	return Eff;
+}
+
+
+double AnalyzerCore::TopMuIDSF( float eta, int syst=0){
+
+	if(isData) return 1.;
+	//	if(mu.size() != 1) return 1.;
+   
+	double SF = 1.;
+	
+	//	if ( mu.at(0).Pt() < 20) return 1.;
+	
+	//	float eta = fabs(mu.at(0).Eta());
+	
+	if (eta<0.9){
+		SF = 0.9930;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		SF = 0.9942;
+		if (syst>0) SF+=0.0003;
+		if (syst<0) SF-=0.0003;
+	}
+	else if (eta<2.1){
+		SF = 0.9968;
+		if (syst>0) SF += 0.0002;
+		if (syst<0) SF -= 0.0002;		
+	}
+	else if (eta<2.4){
+		SF = 0.9963;
+		if (syst>0) SF += 0.0006;
+		if (syst<0) SF -=0.0006;
+	}
+
+	return SF;
+}
+
+
+double AnalyzerCore::TopMuIsoEff(float eta, int syst = 0){
+
+	//if(!isData) return 1.;
+	double Eff = 1.;
+	
+	
+	if (eta<0.9){
+		Eff = 0.9289;
+		if (syst>0) Eff+=0.0001;
+		if (syst<0) Eff-=0.0001;
+	}
+	else if (eta<1.2){
+		Eff = 0.9444;
+		if (syst>0) Eff+=0.0002;
+		if (syst<0) Eff-=0.0002;
+	}
+	else if (eta<2.1){
+		Eff = 0.9534;
+		if (syst>0) Eff += 0.0001;
+		if (syst<0) Eff -= 0.0001;		
+	}
+	else if (eta<2.4){
+		Eff = 0.9342;
+		if (syst>0) Eff += 0.0003;
+		if (syst<0) Eff -=0.0003;
+	}
+
+	return Eff;
+}
+
+double AnalyzerCore::TopMuIsoSF( float eta, int syst = 0){
+
+	if(isData) return 1.;
+	//	if(mu.size() != 1) return 1.;
+   
+	double SF = 1.;
+	
+	//if ( mu.at(0).Pt() < 20) return 1.;
+	
+	//	float eta = fabs(mu.at(0).Eta());
+	
+	if (eta<0.9){
+		SF = 0.9959;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		SF = 1.0005;
+		if (syst>0) SF+=0.0004;
+		if (syst<0) SF-=0.0004;
+	}
+	else if (eta<2.1){
+		SF = 1.0027;
+		if (syst>0) SF += 0.0002;
+		if (syst<0) SF -= 0.0002;		
+	}
+	else if (eta<2.4){
+		SF = 1.0633;
+		if (syst>0) SF += 0.0007;
+		if (syst<0) SF -=0.0007;
+	}
+
+	return SF;
+}
+
+
+double AnalyzerCore::TopMuTriggerSF( float eta, int syst = 0){
+
+	if(isData) return 1.;
+	//  if(mu.size() != 1) return 1.;
+	
+	//  float eta = fabs(mu.at(0).Eta());
+	
+	double SF = 1.;
+	
+	if (eta<0.9){
+		SF = 0.9837;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		
+		SF = 0.9656;
+		if (syst>0) SF +=0.0007;
+		if (syst<0) SF -=0.0007;
+	}
+	else if (eta<2.1){
+		
+		SF = 0.9962;
+		if (syst>0) SF += 0.0005;
+		if (syst<0) SF -= 0.0005;
+	}
+	
+	return SF;
+	
+}
+
+double AnalyzerCore::TopMuTriggerEff(float eta, int syst = 0){
+	//  if(isData) return 1.;
+  
+  double Eff = 1.;
+
+  if (eta<0.9){
+	  Eff = 0.9377;
+	  if (syst>0) Eff+=0.0001;
+	  if (syst<0) Eff-=0.0001;
+  }
+  else if (eta<1.2){
+	  Eff = 0.8397;
+	  if (syst>0) Eff +=0.0003;
+	  if (syst<0) Eff -=0.0003;
+  }
+  else if (eta<2.1){
+	  Eff = 0.8179;
+	  if (syst>0) Eff += 0.0002;
+	  if (syst<0) Eff -= 0.0002;
+  }
+
+  return Eff;
+  
+}
+
+
+
+
 void AnalyzerCore::AddTriggerToList(TString triggername){
   
   triggerlist.push_back(triggername);
@@ -1957,7 +2273,15 @@ AnalyzerCore::~AnalyzerCore(){
   }
   maphist2D.clear();
 
+	for(map<TString, TNtuple*>::iterator it = mapntp.begin(); it!= mapntp.end(); it++){
+		delete it->second;
+	}
+	mapntp.clear();
 
+	for(map<TString, TProfile*>::iterator it = mapprof.begin(); it!= mapprof.end(); it++){
+		delete it->second;
+	}
+	mapprof.clear();
 
   for(map<TString, MuonPlots*>::iterator it = mapCLhistMu.begin(); it != mapCLhistMu.end(); it++){
     delete it->second;
@@ -2179,6 +2503,18 @@ void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float
   maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
 }
 
+
+void AnalyzerCore::MakeNtp(TString hname, TString myvar){
+
+	mapntp[hname] =  new TNtuple(hname.Data(),hname.Data(),myvar.Data());
+}
+
+
+void AnalyzerCore::MakeProfile(TString hname, int nbins, float xmin, float xmax, float ymin, float ymax){
+
+	mapprof[hname] =  new TProfile(hname.Data(),hname.Data(),nbins,xmin,xmax,ymin,ymax);
+}
+
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[]) {
 
   maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
@@ -2313,6 +2649,25 @@ void AnalyzerCore::FillHist(TString histname, float value, float w){
   return;
 }
 
+
+
+void AnalyzerCore::FillNtp(TString hname, Float_t myinput[]){
+
+	if (GetNtp(hname)) GetNtp(hname)->Fill(myinput);
+	else m_logger << INFO << hname << " was NOT found. Check you ntp. " << LQLogger::endmsg;
+
+	return;
+}
+
+
+void AnalyzerCore::FillProfile(TString histname, float xvalue, float yvalue, float w){
+	
+	if(GetProfile(histname)) GetProfile(histname)->Fill(xvalue, yvalue, w);  /// Plots Z peak                                   
+	else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
+	
+	return;
+}
+
 void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons, double w){
 
   if(type==muhist){
@@ -2398,6 +2753,8 @@ void AnalyzerCore::WriteHistograms() throw (LQError){
   // This function is called after the cycle is ran. It wrues all histograms to the output file. This function is not used by user. But by the contrioller code.
   WriteHists();
   WriteCLHists();
+  WriteNtp();
+  WriteProfile();
 }
 
   
@@ -2457,17 +2814,15 @@ void AnalyzerCore::WriteHists(){
       mapit->second->Write();
       m_outputFile->cd();
     }
-
     else if (mapit->first.Contains("awayjet")){
       if(!m_outputFile->GetDirectory("awayjet")){
-        Dir = m_outputFile->mkdir("awayjet");
-        m_outputFile->cd(Dir->GetName() );
+	Dir = m_outputFile->mkdir("awayjet");
+	m_outputFile->cd(Dir->GetName() );
       }
       else m_outputFile->cd("awayjet");
       mapit->second->Write();
       m_outputFile->cd();
     }
-
     else if (mapit->first.Contains("MCSSclo")){
       if(!m_outputFile->GetDirectory("MCclosure")){
 	Dir = m_outputFile->mkdir("MCclosure");
@@ -2553,29 +2908,9 @@ void AnalyzerCore::WriteHists(){
       else m_outputFile->cd("Efficiency");
       mapit->second->Write();
       m_outputFile->cd();
+
     }
     
-    else if (mapit->first.Contains("sigeff")){
-      if(!m_outputFile->GetDirectory("Efficiency")){
-        Dir = m_outputFile->mkdir("Efficiency");
-        m_outputFile->cd(Dir->GetName() );
-      }
-      else m_outputFile->cd("Efficiency");
-      mapit->second->Write();
-      m_outputFile->cd();
-    }
-    else if (mapit->first.Contains("Selection")){
-      if(!m_outputFile->GetDirectory("Efficiency")){
-        Dir = m_outputFile->mkdir("Efficiency");
-        m_outputFile->cd(Dir->GetName() );
-      }
-      else m_outputFile->cd("Efficiency");
-      mapit->second->Write();
-      m_outputFile->cd();
-    }
-
-
-
     
     else {
       mapit->second->Write();
@@ -2589,6 +2924,34 @@ void AnalyzerCore::WriteHists(){
 
   return;
 }
+
+
+void AnalyzerCore::WriteProfile(){
+
+  /// Open Output rootfile
+  m_outputFile->cd();
+
+  for(map<TString, TProfile*>::iterator mapit = mapprof.begin(); mapit != mapprof.end(); mapit++){
+    mapit->second->Write();
+  }
+  
+  return;
+}
+
+void AnalyzerCore::WriteNtp(){
+
+  /// Open Output rootfile
+  m_outputFile->cd();
+
+  for(map<TString, TNtuple*>::iterator mapit = mapntp.begin(); mapit != mapntp.end(); mapit++){
+	  mapit->second->Write();
+  }
+
+  return;
+}
+
+
+
 
 TH1* AnalyzerCore::GetHist(TString hname){
 
@@ -2610,6 +2973,28 @@ TH2* AnalyzerCore::GetHist2D(TString hname){
   else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
 
   return h;
+}
+
+
+TProfile* AnalyzerCore::GetProfile(TString hname){
+
+  TProfile* h = NULL;
+  std::map<TString, TProfile*>::iterator mapit = mapprof.find(hname);
+  if(mapit != mapprof.end()) return mapit->second;
+  else m_logger << INFO  << hname << " was not found in map" << LQLogger::endmsg;
+
+  return h;
+}
+
+
+TNtuple* AnalyzerCore::GetNtp(TString hname){
+
+	TNtuple* n = NULL;
+	std::map<TString, TNtuple*>::iterator mapit = mapntp.find(hname);
+	if (mapit != mapntp.end()) return mapit->second;
+	else m_logger << INFO << hname << " was not found in map" << LQLogger::endmsg;	
+
+	return n;
 }
 
 
@@ -2751,26 +3136,21 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
     toremove.push_back(5);
   }
 
-  toremove.push_back(10);
-  toremove.push_back(11);
   toremove.push_back(8);
   toremove.push_back(9);
   
   vector<snu::KElectron> prompt_electrons;
   for(unsigned int i = 0; i < electrons.size(); i++){
-    if(!isData){  
+    if(!k_isdata){
       bool remove_el=false;
       for(unsigned int j=0; j < toremove.size(); j++){
 	if(electrons.at(i).GetType() == toremove.at(j)) remove_el=true;
       }
-      if(!remove_el) {
-	prompt_electrons.push_back(electrons.at(i));
-      }
-    }
+      if(!remove_el) prompt_electrons.push_back(electrons.at(i));
+    }// Data
     else prompt_electrons.push_back(electrons.at(i));
   }/// loop
   
-
   return prompt_electrons;
 }
 
@@ -2870,7 +3250,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons ,
     bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, usetight);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, SumPt(jets), is_el1_tight,is_el2_tight, cut, type, NBJet( GetJets("ApplyPileUpID")));
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, SumPt(jets), is_el1_tight,is_el2_tight, cut, type);
 
   }
   return ee_weight;
@@ -2885,7 +3265,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons ,
     bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, usetight);
 
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type, NBJet( GetJets("ApplyPileUpID")));
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type);
         
   }
   return ee_weight;
@@ -2905,7 +3285,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
     bool is_el2_tight    = IsTight(k_electrons.at(1),  rho, dxy, biso, eiso, true);
     
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type, NBJet( GetJets("ApplyPileUpID")));
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight, cut, type);
     
   }
   return ee_weight;

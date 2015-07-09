@@ -24,5 +24,7 @@
 #pragma link C++ class HN_FakeStudies+;
 #pragma link C++ class ElectronSF+;
 #pragma link C++ class HNEMu+;
+#pragma link C++ class CHEltrain+;
+#pragma link C++ class CHElJets+;
 
 #endif // __CINT__

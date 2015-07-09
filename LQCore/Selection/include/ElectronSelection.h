@@ -39,6 +39,7 @@ class ElectronSelection : public BaseSelection {
 
   //// Top analysis selection
   void TopTightElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+  void TopTightAIsoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void TopLooseElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void TopVetoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
 

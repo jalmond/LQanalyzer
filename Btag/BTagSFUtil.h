@@ -47,6 +47,8 @@ class BTagSFUtil{
 
   float GetJetSF(int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
+  void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], bool isTag[], int syst, float &wbtag, float &wbtagErr);
+  void GetMisTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], int syst, float &wbtag, float &wbtagErr, int NBJets);
 
  private:
 
@@ -61,7 +63,9 @@ class BTagSFUtil{
   float TagEfficiencyB(float JetPt, float JetEta);
   float TagEfficiencyC(float JetPt, float JetEta);
   float TagEfficiencyLight(float JetPt, float JetEta);
+  float TagSFLight(float JetPt, float JetEta);
 
+  
   float FastSimCorrectionFactor(int JetFlavor, float JetPt, float JetEta, int FastSimSystematic);
   
   TRandom3* rand_;
