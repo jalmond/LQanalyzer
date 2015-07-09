@@ -90,6 +90,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   //### Load Libraries\n'
     config+='   gSystem->Load("libSKTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
+    config+='   gSystem->Load("libMinuit.so");\n'
     config+='   gSystem->Load("libAnalysisCore.so");\n'
     config+='   gSystem->Load("libNtuplecore.so");\n'
     config+='   gSystem->Load("libSelection.so");\n'
