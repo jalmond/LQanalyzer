@@ -37,7 +37,7 @@ TDirectory* HNCommonLeptonFakes::getTemporaryDirectory(void) const
     }
     // Let's try to make this directory:
     tempDir = gROOT->mkdir((dirname.str()).c_str());
-
+    
   }
 
   return tempDir;
@@ -82,173 +82,23 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TFile* file_muon = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_130.root").c_str());
   CheckFile(file_muon);
 
+  TFile* file_muon_mc_20 = TFile::Open( (lqdir + "/data/rootfiles/QCD_mu15_v3_FR20_130b.root").c_str());
+  CheckFile(file_muon_mc_20);
+
+  TFile* file_muon_mc_40 = TFile::Open( (lqdir + "/data/rootfiles/QCD_mu15_v3_FR40_130b.root").c_str());
+  CheckFile(file_muon_mc_40);
+
+  TFile* file_muon_mc_60 = TFile::Open( (lqdir + "/data/rootfiles/QCD_mu15_v3_FR60_130b.root").c_str());
+  CheckFile(file_muon_mc_60);
+
+
+
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
 
     
 
-  /*  
-  _2DEfficiencyMap["fake_eff_dxy05"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_dxy05_El40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_dxy10"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_dxy10_El40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_dxy15"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_dxy15_El40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_dxy20"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_dxy20_El40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_dxy25"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_dxy25_El40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_dxy30"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_dxy30_El40_pt_eta"))->Clone());
-  
-  _2DEfficiencyMap["fake_eff_medium"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_medium_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_tight"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_tight_pt_eta"))->Clone());
 
-  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b100_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b100_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_iso_b090_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_dr3_b090_e050_pt_eta"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_Loosedxy01_NPFiso_b090_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Loosedxy01_Tight_iso_NPFisodr3_b090_e050_pt_eta"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_iso_b050_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b150_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e125_pt_eta"))->Clone());
-
-  
-  _2DEfficiencyMap["fake_eff_iso_b150_e150"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e150_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b060_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b060_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e050_pt_eta"))->Clone());
-
-  
-  _2DEfficiencyMap["fake_eff_iso_b150_e150"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b150_e150_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b125_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b125_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b100_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b100_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b090_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b090_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b080_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b080_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b070_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b070_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b060_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b060_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_iso_b050_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_dr3_b050_e050_pt_eta"))->Clone());
-  
-
-  _2DEfficiencyMap["fake_eff_NPFiso_b050_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b050_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b050_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b050_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b050_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b050_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b050_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b050_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b050_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b050_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b050_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b050_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b070_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b070_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b070_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b070_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b070_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b070_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b070_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b070_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b070_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b070_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b070_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b070_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b080_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b080_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b080_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b080_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b080_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b080_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b080_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b080_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b080_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b080_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b080_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b080_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b090_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b090_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b090_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b090_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b090_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b090_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b090_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b090_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b090_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b090_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b090_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b090_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b100_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b100_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b100_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b100_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b100_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b100_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b100_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b100_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b100_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b100_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b100_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b100_e125_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b125_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b125_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b125_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b125_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b125_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b125_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b125_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b125_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b125_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b125_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b125_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b125_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e050"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e050_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e060"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e060_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e070"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e070_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e080"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e080_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e090"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e090_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e100"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e100_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_NPFiso_b150_e125"] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate_Tight_iso_NPFisodr3_b150_e125_pt_eta"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_close_40" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__close_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_noclose_40" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_noclose_bjet_40" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_bjet_40_pt_eta"))->Clone());
-  
-  _2DEfficiencyMap["fake_eff_close_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__close_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_noclose_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_noclose_bjet_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_bjet_20_pt_eta"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_noclose_ht1_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht1_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_noclose_ht2_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht2_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_noclose_ht3_20" ] = dynamic_cast<TH2F*>((file_fake_Opt->Get("FakeRate__noclose_ht3_20_pt_eta"))->Clone());
-  
-
-  _2DEfficiencyMap["fake_eff_20" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_40" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_40old" ] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_susy" ] = dynamic_cast<TH2F*>((file_fake_med->Get("FakeRate_40_medium_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_60" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_60_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_30" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_30_pt_eta"))->Clone());
-
-  _2DEfficiencyMap["fake_eff_20_loosereg2" ] = dynamic_cast<TH2F*>((file_fake_dxy->Get("FakeRate_20_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_40_loosereg2" ] = dynamic_cast<TH2F*>((file_fake_dxy->Get("FakeRate_40_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_60_loosereg2" ] = dynamic_cast<TH2F*>((file_fake_dxy->Get("FakeRate_60_pt_eta"))->Clone());
-
-
-  _2DEfficiencyMap["fake_eff_20_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_20_0bjet_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_40_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_40_0bjet_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_60_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_60_0bjet_pt_eta"))->Clone());
-  _2DEfficiencyMap["fake_eff_30_nobjet" ] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_30_0bjet_pt_eta"))->Clone());
-  */
   cout << "Pt/eta depenance " << endl;
   /// pt vs eta 
   
@@ -329,6 +179,9 @@ void HNCommonLeptonFakes::InitialiseFake(){
   }  
   
   _2DEfficiencyMap["fake_eff_muon"] = dynamic_cast<TH2F*>((file_muon->Get("h_FOrate3"))->Clone());
+  _2DEfficiencyMap["mc_muon_20"] = dynamic_cast<TH2F*>((file_muon_mc_20->Get("h_FOrate3"))->Clone());
+  _2DEfficiencyMap["mc_muon_40"] = dynamic_cast<TH2F*>((file_muon_mc_40->Get("h_FOrate3"))->Clone());
+  _2DEfficiencyMap["mc_muon_60"] = dynamic_cast<TH2F*>((file_muon_mc_60->Get("h_FOrate3"))->Clone());
  
   _2DEfficiencyMap["fake_eff_100_100_detiso"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_100_detiso"))->Clone());
   _2DEfficiencyMap["fake_eff_090_090_detiso"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_090_detiso"))->Clone());
@@ -442,6 +295,20 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   file_fake_med->Close();
   delete file_fake_med;
+
+  file_muon->Close();
+  delete file_muon;
+  
+  file_muon_mc_20->Close();
+  delete file_muon_mc_20;
+
+  file_muon_mc_40->Close();
+  delete file_muon_mc_40;
+
+  file_muon_mc_60->Close();
+  delete file_muon_mc_60;
+
+
 
   // Now we can close the file:   
   origDir->cd();
@@ -975,8 +842,59 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 }
 
 
+float  HNCommonLeptonFakes::get_dilepton_em_mceventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet, TString tag){
+  if(muons.size()!=1) {
+    return (0.);
+  }
+  if(electrons.size()!=1) {
+    return (0.);
+  }
 
-float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet){
+  float _el1_pt=electrons.at(0).Pt();
+  float _mu1_pt=muons.at(0).Pt();
+
+
+  float _el1_eta=fabs(electrons.at(0).Eta());
+  float _mu1_eta=fabs(muons.at(0).Eta());
+
+  if(m_debug){
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "el1 pT = " << _el1_pt << endl;
+    cout << "mu1 pT = " << _mu1_pt << endl;
+  }
+
+  if(_el1_pt > 60.) _el1_pt = 59.;
+  if(_mu1_pt > 60.) _mu1_pt = 59.;
+
+  float fr1(0.),fr2(0.),r1(0.),r2(0.);
+
+  r1 = 1.;
+  r2 = 1.;
+
+  fr2= getFakeRate_mc_muon("mc_muon_" + tag,_mu1_pt, _mu1_eta);
+  fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"mc_"+tag +"_loosereg2");
+
+  //cout << "\n -------- " << endl;
+  //cout << "Muon pt/eta = " << _mu1_pt << " " << _mu1_eta << endl;
+  //cout << "Electron pt/eta = " << _el1_pt << " " << _el1_eta << endl;
+
+  //cout << "isel1tight = " << isel1tight << " ismu1tight= " << ismu1tight << " " << fr1 <<    " " << fr2 << endl;
+
+  float ev_weight = CalculateDiLepMMWeight(0.,fr1,0.,fr2, isel1tight, ismu1tight);
+  //cout << "ev_weight = " << ev_weight << endl;
+
+  if(ev_weight!=ev_weight){
+    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
+  }
+
+
+  return ev_weight;
+
+}
+
+
+
+float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet, int syst){
 
   if(muons.size()!=1) {
     return (0.);
@@ -1005,27 +923,64 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
 
   r1 = 1.;
   r2 = 1.;
+
+  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
   
   if(nbjet ==0) {
-    
     if( _el1_eta < 1.5) {
       if(_el1_pt > 45.) _el1_pt = 64.;
     }
+    if(_mu1_pt < 50. &&  _mu1_pt > 40.) fr1 *= 1.3;
+  }
+  else {
+    //   if(_mu1_pt < 25.) fr1 *= 0.7; 
   }
   
 
-  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
+  
   fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
   
-  
-  
+  if(nbjet ==0) {
+    if( _el1_eta > 1.5) {
+      if(_el1_pt > 20. && _el1_pt < 40) fr2*= 1.5;
+      if(_el1_pt > 30. && _el1_pt < 40) fr2*= 2.;
+    }
+    else {
+      if(_el1_pt > 25. && _el1_pt < 30) fr2*= 1.3;
+    }
+  }
+
+  if(syst ==1){
+    fr1= getFakeRate_muon(1,_mu1_pt, _mu1_eta);
+    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_20_looseregion2");
+  }
+  if(syst ==-1){
+    fr1= getFakeRate_muon(-1,_mu1_pt, _mu1_eta);
+    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_60_looseregion2");
+
+  }
+
+  if(syst == 3){
+    fr1= getFakeRate_muon(3,_mu1_pt, _mu1_eta);
+    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"HNTight_iso05_40_pt_eta");
+  }
+  if(syst == 4){
+
+    fr1= getFakeRate_muon(4,_mu1_pt, _mu1_eta);
+    //if(getFakeRate_electronEta(0,_el1_pt, _el1_eta,"HNTight_iso07_40_pt_eta") > fr2)
+    //fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"HNTight_iso07_40_pt_eta");
+  }
+
   if(nbjet != 0) {
-    //fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
-    
+    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
   }
   
   if(nbjet ==0) {
-    if(_el1_pt > 100.) fr2 *= 2.5;
+    if(_el1_pt > 90.) {
+      fr1 *= 2.5;
+      fr2 *= 2.5;
+    }
+
   }
   else{
   }
@@ -1133,6 +1088,28 @@ float HNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta){
 
 
 
+float HNCommonLeptonFakes::getFakeRate_mc_muon(TString tag, float pt, float eta){
+
+  float eff_fake(0.);
+  
+  if(pt > 60) pt = 59.;
+  
+  map<TString,TH2F*>::const_iterator mapit;
+
+  mapit = _2DEfficiencyMap.find(tag.Data());
+  
+  if(mapit!=_2DEfficiencyMap.end()){
+    int binx =  mapit->second->FindBin(fabs(eta), pt);
+    eff_fake =  mapit->second->GetBinContent(binx);
+  }
+  else NoHist((tag.Data()));
+
+
+  return eff_fake;
+
+  
+}
+
 float HNCommonLeptonFakes::getFakeRate_electron(int sys,float pt, float ht, TString cut){
    
    float eff_fake(0.);
@@ -1169,10 +1146,12 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
   TString hist = "fake_eff_";
   hist += cut;
   
+  //cout << "hist = " << hist << endl;
   mapit = _2DEfficiencyMap.find(hist.Data());
   if(mapit!=_2DEfficiencyMap.end()){
 
     int binx =  mapit->second->FindBin(pt,eta);
+    //cout << "Bin = " << binx  << endl;
     eff_fake =  mapit->second->GetBinContent(binx);
     if(sys != 0) return mapit->second->GetBinError(binx); 
   }
@@ -1243,48 +1222,155 @@ float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta ){
     else eff_fake= 0.231;
   }
   
-  float up_down=1.;
-  if(sys == -1) up_down = 1.;
-  
-  if(sys !=0) {
-    float err=0.;
+  if(sys == 1) {
+
     if(fabs(eta) < 0.8){
-      if((pt < 20.))  err=0.007;
-      else if(pt < 25) err= 0.004;
-      else if(pt < 30) err= 0.004;
-      else if(pt < 35) err= 0.004;
-      else if(pt < 45) err= 0.011;
-      else err= 0.032;
+      if((pt < 20.))   eff_fake = 0.0772;
+      else if(pt < 25) eff_fake= 0.0679;
+      else if(pt < 30) eff_fake= 0.0561;
+      else if(pt < 35) eff_fake= 0.0581;
+      else if(pt < 45) eff_fake= 0.0771;
+      else  eff_fake= 0.0976;
     }
     else if(fabs(eta) < 1.479){
-      if((pt < 20.))  err=0.008;
-      else if(pt < 25) err= 0.005;
-      else if(pt < 30) err= 0.004;
-      else if(pt < 35) err= 0.008;
-      else if(pt < 45) err= 0.013;
-      else err= 0.039;
+      if((pt < 20.))  eff_fake= 0.0947;
+      else if(pt < 25) eff_fake= 0.0773;
+      else if(pt < 30) eff_fake= 0.0642;
+      else if(pt < 35) eff_fake= 0.0750;
+      else if(pt < 45) eff_fake= 0.0827;
+      else eff_fake= 0.0849;
     }
     else if(fabs(eta) < 2.){
-      if((pt < 20.))  err=0.011;
-      else if(pt < 25) err= 0.007;
-      else if(pt < 30) err= 0.006;
-      else if(pt < 35) err= 0.010;
-      else if(pt < 45) err= 0.019;
-      else err= 0.039;
+      if((pt < 20.))  eff_fake= 0.108;
+      else if(pt < 25) eff_fake= 0.098;
+      else if(pt < 30) eff_fake= 0.0851;
+      else if(pt < 35) eff_fake= 0.0743;
+      else if(pt < 45) eff_fake= 0.123;
+      else eff_fake= 0.055;
     }
     else if(fabs(eta) < 2.5){
-      if((pt < 20.))  err=0.0047;
-      else if(pt < 25) err= 0.012;
-      else if(pt < 30) err= 0.013;
-      else if(pt < 35) err= 0.019;
-      else if(pt < 45) err= 0.031;
-      else err= 0.117;
+      if((pt < 20.))  eff_fake= 0.123;
+      else if(pt < 25) eff_fake= 0.1162;
+      else if(pt < 30) eff_fake= 0.1200;
+      else if(pt < 35) eff_fake= 0.0918;
+      else if(pt < 45) eff_fake= 0.1127;
+      else eff_fake= 0.2590;
     }
-  
-    eff_fake = eff_fake + (up_down*err);
   }
-  
-  
+
+
+  if(sys == -1) {
+
+    if(fabs(eta) < 0.8){
+      if((pt < 20.))   eff_fake = 0.0529;
+      else if(pt < 25) eff_fake= 0.0446;
+      else if(pt < 30) eff_fake= 0.0236;
+      else if(pt < 35) eff_fake= 0.0373;
+      else if(pt < 45) eff_fake= 0.0412;
+      else  eff_fake= 0.0520;
+    }
+    else if(fabs(eta) < 1.479){
+      if((pt < 20.))  eff_fake= 0.0612;
+      else if(pt < 25) eff_fake= 0.0544;
+      else if(pt < 30) eff_fake= 0.0428;
+      else if(pt < 35) eff_fake= 0.0369;
+      else if(pt < 45) eff_fake= 0.0548;
+      else eff_fake= 0.013;
+    }
+    else if(fabs(eta) < 2.){
+      if((pt < 20.))  eff_fake= 0.072;
+      else if(pt < 25) eff_fake= 0.062;
+      else if(pt < 30) eff_fake= 0.056;
+      else if(pt < 35) eff_fake= 0.055;
+      else if(pt < 45) eff_fake= 0.042;
+      else eff_fake= 0.022;
+    }
+    else if(fabs(eta) < 2.5){
+      if((pt < 20.))  eff_fake= 0.095;
+      else if(pt < 25) eff_fake= 0.051;
+      else if(pt < 30) eff_fake= 0.079;
+      else if(pt < 35) eff_fake= 0.074;
+      else if(pt < 45) eff_fake= 0.032;
+      else eff_fake= 0.059;
+    }
+  }
+    
+  if(sys == 3) {
+
+    if(fabs(eta) < 0.8){
+      if((pt < 20.))   eff_fake = 0.0796;
+      else if(pt < 25) eff_fake= 0.0769;
+      else if(pt < 30) eff_fake= 0.0723;
+      else if(pt < 35) eff_fake= 0.0708;
+      else if(pt < 45) eff_fake= 0.105;
+      else  eff_fake= 0.113;
+    }
+    else if(fabs(eta) < 1.479){
+      if((pt < 20.))  eff_fake= 0.089;
+      else if(pt < 25) eff_fake= 0.0743;
+      else if(pt < 30) eff_fake= 0.0757;
+      else if(pt < 35) eff_fake= 0.0994;
+      else if(pt < 45) eff_fake= 0.102;
+      else eff_fake= 0.0833;
+    }
+    else if(fabs(eta) < 2.){
+      if((pt < 20.))  eff_fake= 0.111;
+      else if(pt < 25) eff_fake= 0.108;
+      else if(pt < 30) eff_fake= 0.0989;
+      else if(pt < 35) eff_fake= 0.0983;
+      else if(pt < 45) eff_fake= 0.147;
+      else eff_fake= 0.0038;
+    }
+    else if(fabs(eta) < 2.5){
+      if((pt < 20.))  eff_fake= 0.120;
+      else if(pt < 25) eff_fake= 0.0944;
+      else if(pt < 30) eff_fake= 0.1217;
+      else if(pt < 35) eff_fake= 0.1139;
+      else if(pt < 45) eff_fake= 0.1057;
+      else eff_fake= 0.35;
+    }
+  }
+
+
+
+  if(sys == 4) {
+
+    if(fabs(eta) < 0.8){
+      if((pt < 20.))   eff_fake = 0.0376;
+      else if(pt < 25) eff_fake= 0.0359;
+      else if(pt < 30) eff_fake= 0.0313;
+      else if(pt < 35) eff_fake= 0.0317;
+      else if(pt < 45) eff_fake= 0.04863;
+      else  eff_fake= 0.0554;
+
+    }
+    else if(fabs(eta) < 1.479){
+      if((pt < 20.))  eff_fake= 0.0451;
+      else if(pt < 25) eff_fake= 0.0384;
+      else if(pt < 30) eff_fake= 0.0379;
+      else if(pt < 35) eff_fake= 0.0499;
+      else if(pt < 45) eff_fake= 0.0538;
+      else eff_fake= 0.0425;
+    }
+    else if(fabs(eta) < 2.){
+      if((pt < 20.))  eff_fake= 0.0627;
+      else if(pt < 25) eff_fake= 0.0628;
+      else if(pt < 30) eff_fake= 0.0554;
+      else if(pt < 35) eff_fake= 0.0534;
+      else if(pt < 45) eff_fake= 0.0856;
+      else eff_fake= 0.022;
+    }
+    else if(fabs(eta) < 2.5){
+      if((pt < 20.))  eff_fake= 0.0708;
+      else if(pt < 25) eff_fake= 0.0573;
+      else if(pt < 30) eff_fake= 0.0708;
+      else if(pt < 35) eff_fake= 0.0647;
+      else if(pt < 45) eff_fake= 0.0639;
+      else eff_fake= 0.0201;
+    }
+  }
+
+
   return eff_fake;
 }
 
