@@ -438,20 +438,20 @@ void MuonSelection::TopVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_
     //// VETO MUON SELECTION
     if(( muit->Pt() < 10. )) {
       pass_selection = false;
-      if(m_debug) cout << "HNVetoMuonSelection Fail Pt cut" << endl;
+      if(m_debug) cout << "TopVetoMuonSelection Fail Pt cut" << endl;
     }
     if(!(fabs(muit->Eta()) < 2.5)) {
       pass_selection =false;
-      if(m_debug) cout << "HNVetoMuonSelection Fail Eta cut" << endl;
+      if(m_debug) cout << "TopVetoMuonSelection Fail Eta cut" << endl;
     }
     if(!( LeptonRelIso < 0.2)){
       pass_selection = false;
-      if(m_debug) cout << "HNVetoMuonSelection Fail Isolation cut" << endl;
+      if(m_debug) cout << "TopVetoMuonSelection Fail Isolation cut" << endl;
     }
 
     if(!PassID(MUON_LOOSE, *muit,m_debug)) {
       pass_selection =false;
-      if(m_debug) cout << "HNVetoMuonSelection Fail loose cut" << endl;
+      if(m_debug) cout << "TopVetoMuonSelection Fail loose cut" << endl;
     }
 
     //// Make Loose selection
@@ -477,7 +477,7 @@ void MuonSelection::TopLooseMuonSelection(std::vector<KMuon>& leptonColl , bool 
     //// Muon Loose selection
     if(( muit->Pt() < 20. )) {
       pass_selection = false;
-      if(m_debug) cout << "HNLooseMuonSelection Fail chi2 cut" << endl;
+      if(m_debug) cout << "TopLooseMuonSelection Fail pT cut" << endl;
     }
     if(!(fabs(muit->Eta()) < 2.4)) pass_selection =false;
     if(!PassID(MUON_LOOSE, *muit, m_debug)) pass_selection =false;
@@ -502,28 +502,20 @@ void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m
 
     if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
     else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;    
 
     /// TIGHT MUON SELECTION
-    if(( muit->Pt() < 20. )) {
+    if(( muit->Pt() < 26. )) {
       pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight pt cut " << endl;
+      if(m_debug) cout << "Muon fails TopTight pt cut " << endl;
     }
-    if(!(fabs(muit->Eta()) < 2.4)) {
+    if(!(fabs(muit->Eta()) < 2.1)) {
       pass_selection =false;
       if(m_debug) cout << "Muon fails Tight eta cut " <<endl;
     }
-    if(!( LeptonRelIso < 0.1)) {
+    if(!( LeptonRelIso < 0.12)) {
       pass_selection = false;
       if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;
-    }
-    if(!(fabs(muit->dZ())< 0.10  )) {
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight dZ cut " <<endl;
-    }
-    if(!(fabs(muit->dXY())< 0.005 )){
-      pass_selection = false;
-      if(m_debug) cout << "Muon fails Tight dXY " <<endl;
     }
 
     /// TIGHT MUON from muon POG
@@ -534,6 +526,74 @@ void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m
 
   return;
 }
+
+bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
+  
+  
+  /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
+  bool passID(true);
+  if (id == MUON_LOOSE) {
+    if(!(mu.IsPF() == 1)) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail isPF" << endl;
+    }
+    if(!(mu.IsGlobal()==1 || mu.IsTracker() == 1 )){
+      passID = false; 
+      if(m_debug){
+	cout << "PassID: Fail isGlobal||isTracker" << endl;
+	cout << "PassID: mu.IsGlobal()=  " << mu.IsGlobal() << endl;
+	cout << "PassID: mu.IsTracker()= " << mu.IsTracker() << endl;
+      }
+    }
+  }
+
+
+  else if (id == MUON_TIGHT) {
+    if(!(mu.IsPF() == 1        )){
+      passID = false;
+      if(m_debug)cout << "PassID: Fail isPF" << endl;
+    }
+    if(!(mu.IsGlobal()==1      )) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail isGlobal" << endl;
+    }
+    if( mu.validHits() == 0     ) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail validHit" << endl;
+    }
+    if( mu.validPixHits() == 0) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail validPixelHit" << endl;
+    }
+    if( mu.validStations() <= 1 ) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail validStations" << endl;
+    }
+    if( mu.ActiveLayer() <= 5   ) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail ActiveLayer " << endl;
+    }
+    if( fabs(mu.dXY())    >= 0.2) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail dXY" << endl;
+    }
+    if( fabs(mu.dZ())    >= 0.5) {
+      passID = false;
+      if(m_debug)cout << "PassID: Fail dZ" << endl;
+    }
+    if( mu.GlobalChi2() >=  10.){
+      passID = false;
+      if(m_debug) cout << "PassID: Fail  Chi2" << endl;
+    }
+  }
+  
+  else{
+    cout << "Invalid ID set for muon selection" << endl;
+  }
+  return passID;
+}
+
+
 
 bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
   

@@ -2132,6 +2132,417 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
     
 }
 
+
+double AnalyzerCore::TopElTriggerScaleFactor(float pt, float eta, int syst = 0){
+
+	if(isData) return 1.;
+	
+	if (pt<30) return 1.;
+	
+	double SF = 1.;
+	
+	if(pt<40.){
+		if (eta<0.8) SF = 0.987;
+		else if (eta<1.478) SF = 0.964;
+		else if (eta<2.5) SF = 1.004;
+
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.987+0.012;
+			else if (eta<1.478) SF = 0.964+0.002;
+			else if (eta<2.5) SF = 1.004+0.006; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.987-0.017;
+			else if (eta<1.478) SF = 0.964-0.001;
+			else if (eta<2.5) SF = 1.004-0.006; 
+			
+		}
+	}
+	else if (pt<50){
+		
+		if (eta<0.8) SF = 0.997;
+		else if (eta<1.478) SF = 0.98;
+		else if (eta<2.5) SF = 1.033;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.997+0.001;
+			else if (eta<1.478) SF = 0.98+0.001;
+			else if (eta<2.5) SF = 1.033+0.007; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.997-0.001;
+			else if (eta<1.478) SF = 0.98-0.001;
+			else if (eta<2.5) SF = 1.033-0.007; 
+			
+		}
+	}
+	else if (pt<200){
+		
+		if (eta<0.8) SF = 0.998;
+		else if (eta<1.478) SF = 0.988;
+		else if (eta<2.5) SF = 0.976;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.998+0.002;
+			else if (eta<1.478) SF = 0.988+0.002;
+			else if (eta<2.5) SF = 0.976+0.015; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.998-0.002;
+			else if (eta<1.478) SF = 0.988-0.002;
+			else if (eta<2.5) SF = 0.976-0.012; 
+			
+		}
+	}
+	
+	
+	return SF;
+	
+}
+
+
+double AnalyzerCore::TopElTriggerEff(float pt, float eta){
+
+	// ID && Iso Efficiency
+	//	if(!isData) return 1.;
+	
+	double Eff = 1.;
+	if (pt<30.) return 1.;
+	
+	if(pt<40.){
+		if (eta<0.8) Eff = Eff = 1/0.865;
+		else if (eta<1.478) Eff = 1/0.876;
+		else if (eta<2.5) Eff = 1/0.69;
+	}
+	else if (pt<50){
+		
+  	  if (eta<0.8) Eff = 1/0.895;
+	  else if (eta<1.478) Eff = 1/0.91;
+	  else if (eta<2.5) Eff = 1/0.738;
+
+	}
+	else if (pt<200){
+
+  	  if (eta<0.8) Eff = 1/0.91;
+	  else if (eta<1.478) Eff = 1/0.93;
+	  else if (eta<2.5) Eff = 1/0.753;
+	}
+
+  return Eff;
+  
+}
+
+
+
+double AnalyzerCore::TopElIDIsoScaleFactor(float pt, float eta, int syst = 0){
+	//https://twiki.cern.ch/twili/bin/viewauth/CMS/KoPFAElectronTagAndProbe
+	
+	if(isData) return 1.;
+
+	double SF = 1.;
+	if (pt<30.) return 1.;
+	
+	if( pt<40.){
+		if (eta<0.8) SF = 0.939;
+		else if (eta<1.478) SF = 0.920;
+		else if (eta<2.5) SF = 0.907;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF += 0.003;
+			else if (eta<1.478) SF += 0.002;
+			else if (eta<2.5) SF += 0.005; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.003;
+			else if (eta<1.478) SF -= 0.;
+			else if (eta<2.5) SF -= 0.005; 			
+		}
+	}
+	else if (pt<50){
+		
+		if (eta<0.8) SF = 0.950;
+		else if (eta<1.478) SF = 0.949;
+		else if (eta<2.5) SF = 0.937;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF +=0.001;
+			else if (eta<1.478) SF += 0.002;
+			else if (eta<2.6) SF += 0.008; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.001;
+			else if (eta<1.478) SF -= 0.002;
+			else if (eta<2.6) SF -= 0.008; 
+			
+		}
+	}
+	else if (pt<200){
+		
+		if (eta<0.8) SF = 0.957;
+		else if (eta<1.478) SF = 0.959;
+		else if (eta<2.5) SF = 0.954;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF += 0.001;
+			else if (eta<1.478) SF += 0.003;
+			else if (eta<2.6) SF += 0.011; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.001;
+			else if (eta<1.478) SF -= 0.003;
+			else if (eta<2.6) SF -= 0.01; 
+			
+		}
+	}
+
+	return SF;
+  
+}
+
+
+double AnalyzerCore::TopElIDIsoEff(float pt, float eta){
+
+	// ID && Iso Efficiency
+	//	if(!isData) return 1.;
+
+	
+	double Eff = 1.;
+	
+	if( pt > 30. && pt<40.){
+		if (eta<0.8) Eff = Eff = 1/0.834;
+		else if (eta<1.478) Eff = 1/0.796;
+		else if (eta<2.5) Eff = 1/0.739;
+	}
+	else if (pt<50){
+		
+  	  if (eta<0.8) Eff = 1/0.885;
+	  else if (eta<1.478) Eff = 1/0.878;
+	  else if (eta<2.5) Eff = 1/0.814;
+
+	}
+	else if (pt<200){
+
+  	  if (eta<0.8) Eff = 1/0.908;
+	  else if (eta<1.478) Eff = 1/0.906;
+	  else if (eta<2.5) Eff = 1/0.873;
+	}
+
+  return Eff;
+  
+}
+
+
+double AnalyzerCore::TopMuIDEff(float eta, int syst=0){
+
+	//	if(!isData) return 1.;
+   
+	double Eff = 1.;
+	
+	
+	if (eta<0.9){
+		Eff = 0.9582;
+		if (syst>0) Eff+=0.0001;
+		if (syst<0) Eff-=0.0001;
+	}
+	else if (eta<1.2){
+		Eff = 0.9612;
+		if (syst>0) Eff+=0.0002;
+		if (syst<0) Eff-=0.0002;
+	}
+	else if (eta<2.1){
+		Eff = 0.9535;
+		if (syst>0) Eff += 0.0002;
+		if (syst<0) Eff -= 0.0002;		
+	}
+	else if (eta<2.4){
+		Eff = 0.9495;
+		if (syst>0) Eff += 0.0004;
+		if (syst<0) Eff -=0.0004;
+	}
+
+	return Eff;
+}
+
+
+double AnalyzerCore::TopMuIDSF( float eta, int syst=0){
+
+	if(isData) return 1.;
+	//	if(mu.size() != 1) return 1.;
+   
+	double SF = 1.;
+	
+	//	if ( mu.at(0).Pt() < 20) return 1.;
+	
+	//	float eta = fabs(mu.at(0).Eta());
+	
+	if (eta<0.9){
+		SF = 0.9930;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		SF = 0.9942;
+		if (syst>0) SF+=0.0003;
+		if (syst<0) SF-=0.0003;
+	}
+	else if (eta<2.1){
+		SF = 0.9968;
+		if (syst>0) SF += 0.0002;
+		if (syst<0) SF -= 0.0002;		
+	}
+	else if (eta<2.4){
+		SF = 0.9963;
+		if (syst>0) SF += 0.0006;
+		if (syst<0) SF -=0.0006;
+	}
+
+	return SF;
+}
+
+
+double AnalyzerCore::TopMuIsoEff(float eta, int syst = 0){
+
+	//if(!isData) return 1.;
+	double Eff = 1.;
+	
+	
+	if (eta<0.9){
+		Eff = 0.9289;
+		if (syst>0) Eff+=0.0001;
+		if (syst<0) Eff-=0.0001;
+	}
+	else if (eta<1.2){
+		Eff = 0.9444;
+		if (syst>0) Eff+=0.0002;
+		if (syst<0) Eff-=0.0002;
+	}
+	else if (eta<2.1){
+		Eff = 0.9534;
+		if (syst>0) Eff += 0.0001;
+		if (syst<0) Eff -= 0.0001;		
+	}
+	else if (eta<2.4){
+		Eff = 0.9342;
+		if (syst>0) Eff += 0.0003;
+		if (syst<0) Eff -=0.0003;
+	}
+
+	return Eff;
+}
+
+double AnalyzerCore::TopMuIsoSF( float eta, int syst = 0){
+
+	if(isData) return 1.;
+	//	if(mu.size() != 1) return 1.;
+   
+	double SF = 1.;
+	
+	//if ( mu.at(0).Pt() < 20) return 1.;
+	
+	//	float eta = fabs(mu.at(0).Eta());
+	
+	if (eta<0.9){
+		SF = 0.9959;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		SF = 1.0005;
+		if (syst>0) SF+=0.0004;
+		if (syst<0) SF-=0.0004;
+	}
+	else if (eta<2.1){
+		SF = 1.0027;
+		if (syst>0) SF += 0.0002;
+		if (syst<0) SF -= 0.0002;		
+	}
+	else if (eta<2.4){
+		SF = 1.0633;
+		if (syst>0) SF += 0.0007;
+		if (syst<0) SF -=0.0007;
+	}
+
+	return SF;
+}
+
+
+double AnalyzerCore::TopMuTriggerSF( float eta, int syst = 0){
+
+	if(isData) return 1.;
+	//  if(mu.size() != 1) return 1.;
+	
+	//  float eta = fabs(mu.at(0).Eta());
+	
+	double SF = 1.;
+	
+	if (eta<0.9){
+		SF = 0.9837;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		
+		SF = 0.9656;
+		if (syst>0) SF +=0.0007;
+		if (syst<0) SF -=0.0007;
+	}
+	else if (eta<2.1){
+		
+		SF = 0.9962;
+		if (syst>0) SF += 0.0005;
+		if (syst<0) SF -= 0.0005;
+	}
+	
+	return SF;
+	
+}
+
+double AnalyzerCore::TopMuTriggerEff(float eta, int syst = 0){
+	//  if(isData) return 1.;
+  
+  double Eff = 1.;
+
+  if (eta<0.9){
+	  Eff = 0.9377;
+	  if (syst>0) Eff+=0.0001;
+	  if (syst<0) Eff-=0.0001;
+  }
+  else if (eta<1.2){
+	  Eff = 0.8397;
+	  if (syst>0) Eff +=0.0003;
+	  if (syst<0) Eff -=0.0003;
+  }
+  else if (eta<2.1){
+	  Eff = 0.8179;
+	  if (syst>0) Eff += 0.0002;
+	  if (syst<0) Eff -= 0.0002;
+  }
+
+  return Eff;
+  
+}
+
+
+
+
 void AnalyzerCore::AddTriggerToList(TString triggername){
   
   triggerlist.push_back(triggername);

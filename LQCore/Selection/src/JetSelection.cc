@@ -96,6 +96,62 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
   
 }
 
+
+void JetSelection::JetTopSelection(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
+  
+  std::vector<KJet> pre_jetColl; 
+  std::vector<KJet> alljets = k_lqevent.GetJets();
+
+  //  int number_of_alljets = 0;
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+	  /*
+	  number_of_alljets++;
+
+	  std::cout << " Jet Pt " << jit->Pt() << std::endl;
+	  std::cout << " Jet eta " << jit->Eta() << std::endl;
+	  std::cout << " PassUserID " <<  PassUserID(PFJET_LOOSE, *jit) << endl;
+	  std::cout << " Jet PU Id Loose " <<  jit->PileupJetIDLoose() << endl;
+	  */
+	  
+	  if ( (jit->Pt() >= 30.) && fabs(jit->Eta()) < 2.4   && PassUserID(PFJET_LOOSE, *jit) )//&& jit->PileupJetIDLoose())
+		  {
+			  // additional selection AN-14-227. jetIDEff = 99.99%
+			  if (jit->ElectronEnergyFraction()<0.9 && jit->MuonEnergyFraction()<0.8)
+			  pre_jetColl.push_back(*jit);
+		  }
+  }
+
+  //  std::cout << " ====== JetSelection::JetTopSelection ========= "<< std::endl;
+  //std::cout << " Number of all Jets = " << number_of_alljets << std::endl;
+  //std::cout << " Number of sel Jets = " << pre_jetColl.size() << std::endl;
+	  
+  
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
+    jetIsOK = true;
+    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4) {
+        jetIsOK = false;
+        ilep = muonColl.size();
+      }
+    }/// End of muon loop
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4 ) {
+        jetIsOK = false;
+        ilep = electronColl.size();
+      }
+    }/// End of electron loop
+
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
+  }/// End of Jet loop
+
+
+  // std::cout << " Number of lepveto Jets = " << jetColl.size() << std::endl;
+  
+}
+
+
+
 void JetSelection::JetSelectionLeptonVeto(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
   
   //// This is a basic set of cuts on jets

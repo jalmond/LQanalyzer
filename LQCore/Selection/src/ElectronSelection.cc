@@ -447,7 +447,7 @@ void ElectronSelection::TopLooseElectronSelection(std::vector<KElectron>& lepton
       if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
     }
 
-    if(!(el->TrigMVA()< 0.5)){
+    if(!(el->TrigMVA()> 0.5)){
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail MVA Cut" <<endl;
     }
@@ -518,7 +518,7 @@ void ElectronSelection::TopTightElectronSelection(std::vector<KElectron>& lepton
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail Isolation Cut" <<endl;
     }
-    if(!(el->TrigMVA()< 0.9)){
+    if(!(el->TrigMVA()> 0.9)){
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail MVA Cut" <<endl;
     }
@@ -528,12 +528,6 @@ void ElectronSelection::TopTightElectronSelection(std::vector<KElectron>& lepton
       if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
     }
     
-    if(!(el->dz()<  0.10 )) {
-      pass_selection = false;
-      if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
-    }
-
-
     if(pass_selection){
       leptonColl.push_back(*el);
     }

@@ -165,3 +165,103 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
 
 }
 
+
+void BTagSFUtil::GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], bool isTag[], int syst, float &wbtag, float &wbtagErr ){
+	// 
+	// Get Event-by-Event btag weight
+	//
+	
+	float mcTag = 1.;
+	float mcNoTag = 1.;
+	float dataTag = 1.;
+	float dataNoTag = 1.;
+	float errTag = 0.;
+	float errNoTag = 0.;
+
+	float err1 = 0; 
+	float err2 = 0; 
+	float err3 = 0; 
+	float err4 = 0; 
+
+	//	std::cout << " == BTag Weight Called == " << endl;
+	
+	for(int nj=0; nj<NJets ;nj++){ //Here we loop over all selected jets ( for our case, pt>30, PF loose ID, etc ) 
+
+		int partonFlavor = abs(JetFlav[nj]);
+		float eta = fabs(JetEta[nj]);
+		float x = JetPt[nj];
+		if( partonFlavor==0 ) continue; //for jets with flavor 0, we ignore. 
+
+		float eff = JetTagEfficiency(partonFlavor, x, eta);
+		bool istag = isTag[nj];
+
+		float SF = 0.;
+		float SFerr = 0.;
+
+		if(x<20) x=20; 
+		if(x>800) x=800;
+		
+
+		if(partonFlavor==5 || partonFlavor == 4){ //for b or c. flavJet[indj] refers to the MC-true flavor of the jet
+
+			int JetPtBin = -1;
+			for (int ptbtagbin = 0; ptbtagbin<nBTagPtBins; ptbtagbin++) 
+				if (x>=BTagPtBinEdge[ptbtagbin]) JetPtBin++;
+			
+			SFerr = SFb_error[JetPtBin];
+			SF  = (0.938887+(0.00017124*x))+(-2.76366e-07*(x*x)) + syst*SFerr;
+			
+			if(partonFlavor == 4 ) SFerr *= 2; 
+		}
+		else{
+			
+			float max;
+			float min;
+			if(eta<=0.8){
+				SF = ((1.07541+(0.00231827*x))+(-4.74249e-06*(x*x)))+(2.70862e-09*(x*(x*x)));
+				max = ((1.18638+(0.00314148*x))+(-6.68993e-06*(x*x)))+(3.89288e-09*(x*(x*x)));
+				min = ((0.964527+(0.00149055*x))+(-2.78338e-06*(x*x)))+(1.51771e-09*(x*(x*x)));
+			}
+			else if(eta<=1.6){
+				SF = ((1.05613+(0.00114031*x))+(-2.56066e-06*(x*x)))+(1.67792e-09*(x*(x*x)));
+				max = ((1.16624+(0.00151884*x))+(-3.59041e-06*(x*x)))+(2.38681e-09*(x*(x*x)));
+				min = ((0.946051+(0.000759584*x))+(-1.52491e-06*(x*x)))+(9.65822e-10*(x*(x*x)));
+			}  else if(eta>1.6 && eta<=2.4){
+				SF = ((1.05625+(0.000487231*x))+(-2.22792e-06*(x*x)))+(1.70262e-09*(x*(x*x)));
+				max = ((1.15575+(0.000693344*x))+(-3.02661e-06*(x*x)))+(2.39752e-09*(x*(x*x)));
+				min = ((0.956736+(0.000280197*x))+(-1.42739e-06*(x*x)))+(1.0085e-09*(x*(x*x)));
+			}
+
+			SFerr = fabs(max-SF)>fabs(min-SF)? fabs(max-SF):fabs(min-SF);
+			SF += syst*SFerr;
+		}
+		    		
+		if(istag){
+			mcTag *= eff; 
+			dataTag *= eff*SF; 
+
+			if(partonFlavor==5 || partonFlavor ==4)  err1 += SFerr/SF; ///correlated for b/c
+			else err3 += SFerr/SF; //correlated for light
+      
+		}else{
+			mcNoTag *= (1- eff); 
+			dataNoTag *= (1- eff*SF); 
+      
+			if(partonFlavor==5 || partonFlavor ==4 ) err2 += (-eff*SFerr)/(1-eff*SF); /// /correlated for b/c
+			else err4 +=  (-eff*SFerr)/(1-eff*SF);  ////correlated for light
+      
+		}
+
+		//		std::cout << " For Jet " << nj << ", flav = " <<  partonFlavor << " eff = " << eff << ", istag " << istag << std::endl;
+		
+    
+	}
+
+
+  
+	wbtag = (dataNoTag * dataTag ) / ( mcNoTag * mcTag ); 
+	wbtagErr = sqrt( pow(err1+err2,2) + pow( err3 + err4,2)) * wbtag;  ///un-correlated for b/c and light
+
+	//	std::cout << " Event Weights =  " << wbtag << " +- " << wbtagErr << std::endl;
+}
+
