@@ -119,9 +119,6 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
       kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
       kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
-      for(unsigned int i =0; i < PDFCTEQWeights->size(); i++){
-	cout << "CTEQ " << i << " = " << PDFCTEQWeights->at(i) << endl; 
-      }
     }
   }
   //// Filling vertex variables
