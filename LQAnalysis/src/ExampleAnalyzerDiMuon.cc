@@ -60,6 +60,74 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// The string cut must match a bin label in FillCutFlow function
    FillCutFlow("NoCut", weight);
    
+
+   std::vector<snu::KJet> jetColl             = GetJets("ApplyLeptonVeto");
+   std::vector<snu::KMuon> muonNoCutColl = GetMuons("NoCut");
+
+   if(jetColl.size() < 2) return;
+   if(muonNoCutColl.size() !=2) return;
+   
+   float wmassjj=0.;
+   int indexj1=0;
+   int indexj2=0;
+   for(unsigned int ij=0; ij < jetColl.size()-1; ij++){
+     for(unsigned int ij2=ij+1; ij2 < jetColl.size(); ij2++){
+       snu::KParticle jjtmp = jetColl.at(ij) + jetColl.at(ij2) ;
+       if(fabs(jjtmp.M() - 80.4) < wmassjj) {
+	 wmassjj = fabs(jjtmp.M() - 80.4);
+	 indexj1=ij;
+	 indexj2=ij2;
+       }
+     }
+   }
+
+   float wmassjj_lm=0.;
+   int indexj1_lm=0;
+   int indexj2_lm=0;
+   for(unsigned int ij=0; ij < jetColl.size()-1; ij++){
+     for(unsigned int ij2=ij+1; ij2 < jetColl.size(); ij2++){
+       snu::KParticle jjtmp = jetColl.at(ij) + jetColl.at(ij2) + muonNoCutColl.at(0)+ muonNoCutColl.at(1);
+       if(fabs(jjtmp.M() - 80.4) < wmassjj) {
+         wmassjj_lm = fabs(jjtmp.M() - 80.4);
+         indexj1_lm=ij;
+         indexj2_lm=ij2;
+       }
+     }
+   }
+
+   
+
+   
+   snu::KParticle N1 = muonNoCutColl.at(0) + jetColl.at(indexj1) + jetColl.at(indexj2); 
+   snu::KParticle N2 = muonNoCutColl.at(1) + jetColl.at(indexj1) + jetColl.at(indexj2); 
+
+   
+   snu::KParticle N1_lm = muonNoCutColl.at(0) + jetColl.at(indexj1_lm) + jetColl.at(indexj2_lm);
+   snu::KParticle N2_lm = muonNoCutColl.at(1) + jetColl.at(indexj1_lm) + jetColl.at(indexj2_lm);
+
+
+   if( fabs(N1_lm.M() -50.) < fabs(N2_lm.M()-50.)) FillHist("NMass_50", N1.M(),1., 0.,1000.,1000);
+   else FillHist("NMass_50", N2_lm.M(),1., 0.,1000.,5000);
+
+   if( fabs(N1_lm.M() -60.) < fabs(N2_lm.M() -60.)) FillHist("NMass_60", N1.M(),1., 0.,1000.,1000);
+   else FillHist("NMass_60", N2_lm.M(),1., 0.,1000.,5000);
+
+   if( fabs(N1.M() -100.) < fabs(N2.M()-100.)) FillHist("NMass_100", N1.M(),1., 0.,1000.,1000);
+   else FillHist("NMass_100", N2.M(),1., 0.,1000.,5000);
+
+   if( fabs(N1.M() -300.) < fabs(N2.M() -300.)) FillHist("NMass_300", N1.M(),1., 0.,1000.,1000);
+   else FillHist("NMass_300", N2.M(),1., 0.,1000.,5000);
+
+
+
+   //low mass
+
+
+
+   return;
+
+
+
    ///// Apply some general cuts on event to clean MET
    /// Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
    /// These are applied in AnalyzerCore::PassBasicEventCuts

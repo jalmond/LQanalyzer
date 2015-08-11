@@ -76,6 +76,9 @@ KParticle()
   k_pv_dist_xy=0.;
   k_pv_dist_xy_error=0.;
   k_vertex_index=0;
+
+  k_pt_shifted_up=0.;
+  k_pt_shifted_down=0.;
 }
 
 /**
@@ -147,7 +150,8 @@ KElectron::KElectron(const KElectron& el) :
   k_pv_dist_xy=el.PrimaryVertexDXY();
   k_pv_dist_xy_error=el.PrimaryVertexDXYError();
   k_vertex_index=el.VertexIndex();
-
+  k_pt_shifted_up=el.PtShiftedUp();
+  k_pt_shifted_down=el.PtShiftedDown();
 
 }
 
@@ -221,7 +225,8 @@ void KElectron::Reset()
   k_pv_dist_xy=0.;
   k_pv_dist_xy_error=0.;
   k_vertex_index=0;
-  
+  k_pt_shifted_up=0.;
+  k_pt_shifted_down=0.;
 }
 
 
@@ -292,9 +297,11 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_pv_dist_xy=p.PrimaryVertexDXY();
     k_pv_dist_xy_error=p.PrimaryVertexDXYError();
     k_vertex_index=p.VertexIndex();
+    k_pt_shifted_up=p.PtShiftedUp();
+    k_pt_shifted_down=p.PtShiftedDown();
   }
   
-    return *this;
+  return *this;
 }
 
 
@@ -510,6 +517,16 @@ void KElectron::SetTrkVy(Double_t trkvy){
 void KElectron::SetTrkVz(Double_t trkvz){  
   k_trkvz = trkvz;
 }
+
+void KElectron::SetShiftedEUp(Double_t Eup){
+  k_pt_shifted_up= Eup;
+}
+
+void KElectron::SetShiftedEDown(Double_t Edown){
+  k_pt_shifted_down= Edown;
+}
+
+
 
 
 void KElectron::SetElectronMatchedGenPt(Double_t pt){

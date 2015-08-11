@@ -38,7 +38,7 @@ void GetSigEfficiency(TString path, TString tag){
   double err;
   h->IntegralAndError(0, h->GetNbinsX()+1, err, "");
   cout << "Total efficiency  " << tag << " = " << 100* (h->Integral() / nsig) <<  " +- " << err * 100. / nsig << endl;
-  
+  cout <<"% err = " << 100* err /h->Integral() <<  endl;
 }
 
 

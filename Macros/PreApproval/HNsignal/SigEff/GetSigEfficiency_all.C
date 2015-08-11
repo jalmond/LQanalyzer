@@ -24,7 +24,7 @@ void GetSigEfficiency_all(){
   setTDRStyle();
   //gStyle->SetPalette(1);
   
-  TString path = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee";
+  TString path = "/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee";
   vector<TString> masses;
   masses.push_back("40");
   masses.push_back("50");
@@ -63,6 +63,11 @@ void GetSigEfficiency_all(){
     cout << "\n ----------------" << endl;
     cout << "Total preselection efficiency  " << masses[i] << " = " << 100* (h2->Integral() / nsig) << endl;
     cout << "Total efficiency  " << masses[i] << " = " << 100* (h->Integral() / nsig) << endl;
+    
+    double err;
+    doule int = h->IntegralAndError(1,h->GetNBinsX()+1, err,"");
+    cout << "Stat uncertainty = " <<  err << endl;
+ 
   }
 }
 

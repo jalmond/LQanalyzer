@@ -116,7 +116,9 @@ namespace snu {
     void SetTrkVy(Double_t trkvy);
     void SetTrkVz(Double_t trkvz);
 
-    
+    void SetShiftedEUp(Double_t Eup);
+    void SetShiftedEDown(Double_t Edown);
+
     ///// Functions to call class variables
     
     inline Bool_t  IsEBFiducial() {return bool (fabs(SCEta()) < 1.442);}
@@ -129,7 +131,10 @@ namespace snu {
     inline Double_t  RawEnergy() const {return k_rawenergy;}
     inline Bool_t isEB() const {return k_isEB;}
     inline Bool_t isEE() const {return k_isEE;}
-    
+
+
+    inline Double_t PtShiftedUp() const{ return k_pt_shifted_up;}
+    inline Double_t PtShiftedDown() const{ return k_pt_shifted_down;}
 
     /// Trigger matching
     inline Bool_t MatchedDiElectronTrigger() const {return k_diel_trig_match;}
@@ -242,8 +247,10 @@ namespace snu {
     Double_t k_pv_dist_xy, k_pv_dist_xy_error, k_track_pt, k_track_hitfrac;
     Int_t k_vertex_index;
     Double_t k_eldist, k_cottheta;
+    
+    Double_t k_pt_shifted_up, k_pt_shifted_down;
 
-    ClassDef(KElectron,12);
+    ClassDef(KElectron,13);
   }; 
   
 }//namespace snu

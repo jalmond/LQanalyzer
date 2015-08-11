@@ -84,7 +84,7 @@ then
     
 
     #declare -a input_samples=("SSWmWm" "WZ_py" "ZZ_py" "WW_py" "SSWpWp" "WW_dp" "ttW" "ttZ" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "HtoTauTau" "HtoWW"   "WWW" "WWG" "HtoZZ")
-    declare -a input_samples=("ttbar_new")
+    declare -a input_samples=("DY10to50" "DY50plus")
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA

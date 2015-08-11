@@ -95,6 +95,10 @@ SKHNmue375_nocut         5218963.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 SKHNmue400_nocut         7800044.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue400/
 SKHNmue500_nocut         23209544.     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue500/
 
+SKDY10to50_15_nocut       2827.096        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY10to50/
+SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY50plus/
+
+
 
 
 #######################################################################################################################################
@@ -142,6 +146,8 @@ SKsingleelectron D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/
 ### MADGRAPH
 SKDY10to50        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DY10to50/
 SKDY50plus        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DY50plus/
+SKDY10to50_15       2827.096        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY10to50/
+SKDY50plus_15       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY50plus/
 SKZbb             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Zbb/
 
 ### POWHEG
@@ -279,6 +285,11 @@ SKsingleelectron_dilep D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June
 ### MADGRAPH
 SKDY10to50_dilep        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DY10to50/
 SKDY50plus_dilep        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DY50plus/
+
+SKDY10to50_15_dilep     2827.09          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY10to50/
+SKDY50plus_15_dilep      8382.40         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY50plus/
+
+
 SKZbb_dilep             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Zbb/
 ### POWHEG
 SKDYee_dilep            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DYee/
@@ -412,6 +423,11 @@ singleelectron D	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodD/
 ### MADGRAPH
 DY10to50	2901.7           /data1/DATA/LQNtuples_5_3_14_snu27/MC/DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
 DY50plus	8693.5		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+
+DY10to50_15       2827.09           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
+DY50plus_15       8382.40           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+
+
 
 ### POWHEG
 DYee            1.               /data1/DATA/LQNtuples_5_3_14_snu27/MC/DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/

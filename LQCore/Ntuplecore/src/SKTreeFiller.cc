@@ -119,9 +119,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
       kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
       kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
+      for(unsigned int i =0; i < PDFCTEQWeights->size(); i++){
+	cout << "CTEQ " << i << " = " << PDFCTEQWeights->at(i) << endl; 
+      }
     }
   }
-  
   //// Filling vertex variables
   int nVertices = VertexNDF->size();
   kevent.SetNVertices(nVertices);
@@ -268,6 +270,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetTrkVz(ElectronTrackVz->at(iel));
     /// distance between lepton and PRIMARY analysis vertex
     
+
+    
+
     //cout << "\n ----- " << endl;
     //cout << "Lead vertex dxy = " << ElectronLeadVtxDistXY->at(iel) << endl;
     //cout << "Primary vertex dxy = " << ElectronPrimaryVertexDXY->at(iel) << endl;
@@ -339,6 +344,12 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetConvFitProb(ElectronConvFitProb->at(iel));
     el.SetNBrems(ElectronNumberOfBrems->at(iel));
     el.SetFBrem(ElectronFbrem->at(iel));
+
+    if(ElectronshiftedEup){
+      el.SetShiftedEUp(ElectronshiftedEup->at(iel));
+      el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+    }
+
     if(ElectronDCotTheta){
       el.SetCotTheta(ElectronDCotTheta->at(iel));
       el.SetElDist(ElectronDist->at(iel));
@@ -967,6 +978,11 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetISPF(MuonIsPF->at(ilep));
     muon.SetIsGlobal(MuonIsGlobal->at(ilep));
     muon.SetIsTracker(MuonIsTracker->at(ilep));
+
+    if(MuonshiftedEup){
+      muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
+      muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+    }
 
     
     if(!MuonGlobalEta){

@@ -44,8 +44,8 @@ void EMuSigEff(){
 
     TString im = smasses.at(i);
 
-    TFile * file1 = new TFile(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNmue" + im + "_nocut_5_3_14.root").Data());
-    TFile * file2 = new TFile(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu" + im + "_nocut_5_3_14.root").Data());
+    TFile * file1 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNmue" + im + "_nocut_5_3_14.root").Data());
+    TFile * file2 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu" + im + "_nocut_5_3_14.root").Data());
     
 
     TString cut = "SS_highmass_" + im;
@@ -68,5 +68,11 @@ void EMuSigEff(){
     cout  << " Mass = " << masses.at(i) << endl;
     cout << "mu eacceptance = " << hpass->Integral()/nsig << endl;
     cout << "emu acceptance = " << hpass2->Integral()/nsig2 << endl;
+    
+    hpass->Add(hpass2,1.);
+    double err ;
+    hpass->IntegralAndError(1, hpass->GetNbinsX()+1, err    , "");
+    cout << "%err = " << 100*err/(hpass->Integral())<< endl;; 
+
   }
 }

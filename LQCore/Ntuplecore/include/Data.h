@@ -151,6 +151,13 @@ public :
    std::vector<double>  *ElectronmvatrigV0;
    std::vector<double>  *ElectronmvaNontrigV0;
 
+   std::vector<double>  *ElectronshiftedEup;
+   std::vector<double>  *ElectronshiftedEdown;
+
+   std::vector<double>  *MuonshiftedEup;
+   std::vector<double>  *MuonshiftedEdown;
+
+   
    std::vector<bool>    *MuonHLTSingleIsoMuonMatched;
    std::vector<bool>    *MuonHLTSingleMuonMatched;
    std::vector<bool>    *MuonHLTSingleMuonMatched5;
@@ -872,6 +879,8 @@ public :
    TBranch        *b_passTrackingFailureFilter;   //!
    TBranch        *b_hasVeryForwardPFMuon;   //!
    TBranch        *b_hasJetWithBadUnc;   //!
+   TBranch        *b_ElectronshiftedEup; //!
+   TBranch        *b_ElectronshiftedEdown; //!
    TBranch        *b_ElectronGsfCtfCharge;   //!
    TBranch        *b_ElectronGsfCtfScPixCharge;   //!
    TBranch        *b_ElectronGsfScPixCharge;   //!
@@ -894,6 +903,8 @@ public :
    TBranch        *b_PFJetPileupjetIDpassTightWP; //!
    TBranch        *b_PFJetJetPileupIdflag; //!
    TBranch        *b_PFJetJetPileupMVA; //!
+   TBranch        *b_MuonshiftedEup; //!
+   TBranch        *b_MuonshiftedEdown; //!
    TBranch        *b_MuonHLTSingleIsoMuonMatched;   //!
    TBranch        *b_MuonHLTSingleMuonMatched;   //!
    TBranch        *b_MuonHLTSingleMuonMatched5;   //!

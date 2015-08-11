@@ -17,9 +17,10 @@ void GetEffectiveLuminosity() {
 
   map<TString, double> dirmap;
   // dir name  = xsec
-  /*dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
+  dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
   dirmap["DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball"] = 3503.71 ;
-  dirmap["DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
+  /*
+    dirmap["DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
   dirmap["DYToMuMu_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
   dirmap["DYToTauTau_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
   dirmap["GluGluToHToZZTo4L_M-125_8TeV-powheg-pythia6"] = 0.0524 ;
@@ -45,7 +46,7 @@ void GetEffectiveLuminosity() {
   dirmap["MajoranaNeutrinoToEE_M-70_TuneZ2star_8TeV-alpgen"] =  211.96;
   dirmap["MajoranaNeutrinoToEE_M-80_TuneZ2star_8TeV-alpgen"] =  19.07;
   dirmap["MajoranaNeutrinoToEE_M-90_TuneZ2star_8TeV-alpgen"] =  7.1047;
-  */
+  
   dirmap["MajoranaNeutrinoToEMu_M-40_TuneZ2star_8TeV-alpgen"] =  1516;
   dirmap["MajoranaNeutrinoToEMu_M-60_TuneZ2star_8TeV-alpgen"] =  607.7;
   dirmap["MajoranaNeutrinoToEMu_M-70_TuneZ2star_8TeV-alpgen"] =  211.96;
@@ -86,7 +87,7 @@ void GetEffectiveLuminosity() {
   dirmap["MajoranaNeutrinoToMuE_M-400_TuneZ2star_8TeV-alpgen"] =  0.0063324;
   dirmap["MajoranaNeutrinoToMuE_M-500_TuneZ2star_8TeV-alpgen"] =  0.0021542;
   dirmap["MajoranaNeutrinoToMuE_M-50_TuneZ2star_8TeV-alpgen"] =  1071.1;
-  /*  dirmap["MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen"] =  3.5618;
+  dirmap["MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen"] =  3.5618;
   dirmap["MajoranaNeutrinoToMuMu_M-125_TuneZ2star_8TeV-alpgen"] =  1.0767;
   dirmap["MajoranaNeutrinoToMuMu_M-150_TuneZ2star_8TeV-alpgen"] =  0.4594;
   dirmap["MajoranaNeutrinoToMuMu_M-175_TuneZ2star_8TeV-alpgen"] =  0.23266;
@@ -170,14 +171,15 @@ void GetEffectiveLuminosity() {
   dirmap["T_s-channel_TuneZ2star_8TeV-powheg-tauola"]   = 3.79;
   dirmap["T_t-channel_TuneZ2star_8TeV-powheg-tauola"] = 56.4;
   dirmap["T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola"] =11.1;
-  */
-
+  
   dirmap["MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen"] =  1516.;
-
+  */
+  
+  
   for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
     
     
-    TString dir = "ls /data1/DATA/LQNtuples_5_3_14_snu27/MC/" + it->first + "/*.root > inputlist.txt";
+    TString dir = "ls /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/" + it->first + "/*.root > inputlist.txt";
     system(dir.Data());
     
     

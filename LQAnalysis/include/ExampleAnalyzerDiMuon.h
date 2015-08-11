@@ -30,6 +30,7 @@ class ExampleAnalyzerDiMuon : public AnalyzerCore {
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
 
+
   ClassDef ( ExampleAnalyzerDiMuon, 1);
 };
 #endif

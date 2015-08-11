@@ -92,6 +92,9 @@ namespace snu {
     void SetMuonCocktailCharge(double charge);
     
 
+    void SetShiftedEUp(double pt_up);
+    void SetShiftedEDown(double pt_down);
+
     inline Int_t IsPF() const {return k_muon_ispf;}
     inline Int_t IsGlobal() const {return k_muon_isglobal;}
     inline Int_t IsTracker() const {return k_muon_istracker;}
@@ -165,6 +168,8 @@ namespace snu {
     
     inline Double_t IsoTerm() const {return (k_isor03ch + std::max(0.0, k_isor03n + k_isor03ph - k_MuonPFIsoR03PU));}
     
+    inline Double_t PtShiftedUp() const {return muon_pt_up;}
+    inline Double_t PtShiftedDown() const {return muon_pt_down;}
     
   protected:
     /// Reset function.                                                                  
@@ -185,7 +190,9 @@ namespace snu {
     Double_t muon_ms_pt, muon_ms_eta, muon_ms_phi, muon_ms_charge,  muon_ms_e;
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
-    ClassDef(KMuon,8)
+    Double_t muon_pt_up, muon_pt_down;
+
+    ClassDef(KMuon,9)
   };   
 }//namespace snu
 

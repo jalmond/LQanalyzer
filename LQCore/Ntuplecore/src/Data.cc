@@ -187,6 +187,8 @@ void Data::Reset(){
   HLTInsideDatasetTriggerNames = 0;
   HLTOutsideDatasetTriggerNames = 0;
   passHcalLaserEventFilter=0;
+  ElectronshiftedEup=0;
+  ElectronshiftedEdown=0;
   ElectronGsfCtfCharge = 0;
   ElectronGsfCtfScPixCharge = 0;
   ElectronGsfScPixCharge = 0;
@@ -202,6 +204,8 @@ void Data::Reset(){
   ElectronHasTrackerDrivenSeed = 0;
   ElectronIsEB = 0;
   ElectronIsEE = 0;
+  MuonshiftedEup=0;
+  MuonshiftedEdown=0;
   MuonHLTSingleIsoMuonMatched = 0;
   MuonHLTSingleMuonMatched = 0;
   MuonHLTSingleMuonMatched5 = 0;
@@ -1089,6 +1093,10 @@ void Data::ConnectMuons(){
   ConnectVariable("MuonCocktailTrkVtxDXY", MuonCocktailTrkVtxDXY, b_MuonCocktailTrkVtxDXY);
   ConnectVariable("MuonCocktailTrkVtxDZ", MuonCocktailTrkVtxDZ, b_MuonCocktailTrkVtxDZ);
 
+  ConnectVariable("MuonshiftedEup",MuonshiftedEup,b_MuonshiftedEup);
+  ConnectVariable("MuonshiftedEdown",MuonshiftedEdown,b_MuonshiftedEdown);
+  
+  
   return;}
 
 void Data::ConnectElectrons(){
@@ -1103,6 +1111,10 @@ void Data::ConnectElectrons(){
 
   ConnectVariable("ElectronmvatrigV0", ElectronmvatrigV0, b_ElectronmvatrigV0); 
   ConnectVariable("ElectronmvaNontrigV0", ElectronmvaNontrigV0, b_ElectronmvaNontrigV0); 
+  
+  ConnectVariable("ElectronshiftedEup", ElectronshiftedEup, b_ElectronshiftedEup);
+  ConnectVariable("ElectronshiftedEdown", ElectronshiftedEdown, b_ElectronshiftedEdown);
+
   ConnectVariable("ElectronIsEB", ElectronIsEB, b_ElectronIsEB);
   ConnectVariable("ElectronIsEE", ElectronIsEE, b_ElectronIsEE);
   ConnectVariable("ElectronBeamSpotDXY", ElectronBeamSpotDXY, b_ElectronBeamSpotDXY);

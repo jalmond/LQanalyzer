@@ -791,7 +791,7 @@ else:
             print line
 
 
-    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/"        
+    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/"        
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):
