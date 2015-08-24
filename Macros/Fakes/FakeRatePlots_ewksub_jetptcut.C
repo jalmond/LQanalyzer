@@ -31,8 +31,8 @@ void FakeRatePlots_ewksub(TString path) {
   gStyle->SetPaintTextFormat("4.2f");
   
   vector<TString> plotname;
-  plotname.push_back("_ptbarrel");
-  plotname.push_back("_ptendcap");
+  plotname.push_back("_pt");
+  plotname.push_back("_eta");
   //plotname.push_back("_eta");
   //plotname.push_back("_pt_eta2");
   //plotname.push_back("_pt_eta3");
@@ -52,12 +52,14 @@ void FakeRatePlots_ewksub(TString path) {
     
     for(vector<TString>::iterator it2 = hist_ptcut.begin(); it2!=hist_ptcut.end(); ++it2){
       int rebin=1;
+
+      if(it->Contains("eta")) rebin = 4;
       
-      TH1F* h_pt_num= (TH1F*)fdata->Get(("TightEl"+ *it2+ *it ).Data());
-      TH1F* h_pt_denom= (TH1F*)fdata->Get(("LooseEl"+ *it2+*it).Data());
+      TH1F* h_pt_num= (TH1F*)fdata->Get(("TightElHNTight_"+ *it2+ *it ).Data());
+      TH1F* h_pt_denom= (TH1F*)fdata->Get(("LooseElHNTight_"+ *it2+*it).Data());
       
-      TH1F* h_mcpt_num= (TH1F*)fmc->Get(("TightEl"+*it2+ *it ).Data());
-      TH1F* h_mcpt_denom= (TH1F*)fmc->Get(("LooseEl"+*it2 +*it).Data());
+      TH1F* h_mcpt_num= (TH1F*)fmc->Get(("TightElHNTight_"+*it2+ *it ).Data());
+      TH1F* h_mcpt_denom= (TH1F*)fmc->Get(("LooseElHNTight_"+*it2 +*it).Data());
 
       h_pt_num->Rebin(rebin);
       h_pt_denom->Rebin(rebin);
@@ -89,11 +91,14 @@ void FakeRatePlots_ewksub(TString path) {
       h_pt_num->SetLineWidth(0.3);
      
       h_pt_num->GetXaxis()->SetTitle("El p_{T} [GeV]");
+      if(it->Contains("eta"))       h_pt_num->GetXaxis()->SetTitle("El #eta");
       h_pt_num->GetYaxis()->SetTitle("#epsilon_{T/L}");
       
       h_pt_num->GetYaxis()->SetRangeUser(0.,.5);
       h_pt_num->GetXaxis()->SetRangeUser(15,59.);
       
+
+
       histmap[*it2] = h_pt_num;
 
       cout << "Hist : " << *it2 << endl;
@@ -122,10 +127,7 @@ void FakeRatePlots_ewksub(TString path) {
     legend->AddEntry(histmap.find("60")->second, "away jet pt >" +histmap.find("60")->first+ " GeV", "p");
     legend->Draw("same");
 
-
-
-    
-    
+   
     c1->SaveAs(("/home/jalmond/WebPlots/Fakes/FakeRateEWKSub_jetcuts_" +  *it + ".pdf"));
   }
   

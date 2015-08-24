@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ###### SET WHAT JOBS TO RUN
-runMC=true
-runDoubleMuon=false
+runMC=false
+runDoubleMuon=true
 
 if [[ $runMC  == "true" ]]; 
 then

@@ -170,14 +170,39 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   float pileup_up_sys_factor = 1.;
   float pileup_down_sys_factor = 1.;
 
-
+  float tmp_weight = weight;
   if (MC_pu&&!k_isdata) {
     weight  = weight* reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0)* MCweight;
+    tmp_weight  = tmp_weight * reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0)* MCweight;
+    
     pileup_up_sys_factor = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 1) / reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0);
     pileup_down_sys_factor = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), -1) / reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0);
+    
+    std::vector<TString> triggerslist2;
+    triggerslist2.push_back("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    triggerslist2.push_back("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+
+    if(PassTrigger(triggerslist2, prescale)) tmp_weight *= TriggerScaleFactorEMu();
+    if(!isData){
+      TString fake_loose_label2 = "HNTight_loosereg2";
+
+      std::vector<snu::KElectron> electronAnalysisColltmp = GetElectrons(true,  true, fake_loose_label2);
+
+      std::vector<snu::KMuon> muonstmp = GetMuons("tight");
+      
+      for(std::vector<snu::KElectron>::iterator it = electronAnalysisColltmp.begin(); it != electronAnalysisColltmp.end(); it++){
+	tmp_weight *= ElectronScaleFactor(it->Eta(), it->Pt(), true, 0);
+      }
+
+      for(std::vector<snu::KMuon>::iterator it = muonstmp.begin(); it != muonstmp.end(); it++){
+	tmp_weight *= MuonScaleFactor(it->Eta(), it->Pt(), 0);
+      }
+
+    }
+    
   }
   FillEventCutFlow("NoCut","", 1.);
-  FillEventCutFlow("NoCut_w","", weight);
+  FillEventCutFlow("NoCut_w","", tmp_weight);
   
   GetIDEfficiency(GetElectrons(true, true, "NoCut"), GetMuons("NoCut"),GetJets("ApplyPileUpID"),  weight);
 

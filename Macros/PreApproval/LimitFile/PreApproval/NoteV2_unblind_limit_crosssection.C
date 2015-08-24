@@ -25,13 +25,13 @@ void NoteV2_unblind_limit_crosssection(){
   
   setTDRStyle();
   //gStyle->SetPalette(1);
-  TString path ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_mc_5_3_14.root";
+  TString path ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_mc_5_3_14.root";
   TFile * file = new TFile(path);
   
-  TString fakepath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKnonprompt_dilep_5_3_14.root";
+  TString fakepath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKnonprompt_dilep_5_3_14.root";
   TFile * filefake = new TFile(fakepath);
   
-  TString cfpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKchargeflip_dilep_5_3_14.root";
+  TString cfpath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKchargeflip_dilep_5_3_14.root";
   TFile * filecf = new TFile(cfpath);
   cout << file << " " << filefake << " " << filecf << endl;
   vector<TString> masses;
@@ -46,13 +46,9 @@ void NoteV2_unblind_limit_crosssection(){
   masses.push_back("150");
   masses.push_back("175");
   masses.push_back("200");
-  masses.push_back("225");
   masses.push_back("250");
-  masses.push_back("275");
   masses.push_back("300");
-  masses.push_back("325");
   masses.push_back("350");
-  masses.push_back("375");
   masses.push_back("400");
   masses.push_back("500");
   
@@ -61,21 +57,14 @@ void NoteV2_unblind_limit_crosssection(){
   ///type.push_back("_fg");
   
   std::map<TString, int> mapcut;
-  //std::map<TString, int>::iterator mit; 
     
   mapcut["_default"] = 1;
-  /*mapcut["_lowmass"] = 2;
-    mapcut["_noMe2jj"] = 3;
-    mapcut["_noeeupper"] = 4;
-    mapcut["_noeejjupper"] = 5;
-    mapcut["_nopt10"] = 6;
-  */
   
   for(  std::map<TString, int>::iterator mit = mapcut.begin(); mit!= mapcut.end() ; mit++){
     for(unsigned int j=0; j < type.size(); j++){
       
       //if(type.at(j).Contains("fg") && !mit->first.Contains("default")) continue;
-      TString outfile = "Limit_file_isocheck_default"  + type.at(j) + ".root";
+      TString outfile = "Limit_file_ee_crosssection"  + type.at(j) + ".root";
       TFile* fout = new TFile(outfile.Data(),"RECREATE");
       fout->cd();
       
@@ -110,18 +99,16 @@ void NoteV2_unblind_limit_crosssection(){
 	TString tag = "limithist/" +masses.at(i)+ type.at(j)+  "_default";
 	cout << tag << endl;
 	TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_limithist").Data());
-	cout << hnmc << endl;
+
 	TH1* hnnp =   (TH1F*)filefake->Get((tag + "MassRegion_limithist").Data());
-	cout << hnnp << endl;
 	TH1* hncf =   (TH1F*)filecf->Get((tag + "MassRegion_limithist").Data());
-	cout << hncf << endl;
-	
 	
 	cout << "hnmc->GetBinError(2) = " << hnmc->GetBinError(2) << " hnnp->GetBinError(2) = " << hnnp->GetBinError(2) << " hncf->GetBinError(2) = " << hncf->GetBinError(2) <<  endl;
 	cout << "hnmc->GetBinContent(2) = " << hnmc->GetBinContent(2) << " hnnp->GetBinContent(2) = " << hnnp->GetBinContent(2) << " hncf->GetBinContent(2) = " << hncf->GetBinContent(2) <<  endl;
+	
 	float staterr = sqrt( hnmc->GetBinError(2)*hnmc->GetBinError(2) +  hnnp->GetBinError(2)*hnnp->GetBinError(2) + hncf->GetBinError(2)*hncf->GetBinError(2));
 	
-	TString sigpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
+	TString sigpath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
 	TFile * file_sig = new TFile(sigpath);
 	TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_limithist").Data());
 	TH1F* h_ref= (TH1F*)file_sig->Get(("NoCut_sigeff"));
@@ -136,19 +123,14 @@ void NoteV2_unblind_limit_crosssection(){
 	float cf_nom = hncf->GetBinContent(2);
 	
 	float total_bkg = mc_nom + np_nom + cf_nom;
-	
-	
 	cout << "Mass point : " << masses.at(i)+ type.at(j) << endl;
 
-	cout << "Nsig w = " << sig_nom/h_ref->Integral() << endl;
+	cout << "Nsig eff = " << sig_nom/h_ref->Integral() << endl;
 	cout << "Total bkg = " << total_bkg << endl;
 	cout << "Total fakes = " << np_nom << endl;
 	cout << "Stat err = " << staterr << endl;
 	
 	cout << "TOTAL number of CF = " << cf_nom << endl;
-	
-	cout <<"Number of MC events (weighted) passing mass region: " <<tag  <<  " = " << mc_nom << endl;
-	cout <<"Number of MC events passing mass region: " <<tag  <<  " = " << mc_nom_no_weight << endl;
 	
 	h_sigeff->SetBinContent(i+1, float(sig_nom/h_ref->Integral()));    
 	eff_alp[i] = float(sig_nom/h_ref->Integral());
@@ -162,13 +144,9 @@ void NoteV2_unblind_limit_crosssection(){
 	float nperr = nperrup;
 	if(nperrup < nperrdown) nperr= nperrdown;
 	cout << "NP err = " << nperr << endl;
-	nperr = 0.3;
+	nperr = 0.4;
 
-	float bkgerr = sqrt( pow(nperr*np_nom,2) + pow(bkg_err[i]* (mc_nom),2)  +  pow(.19*(cf_nom),2) );
-	cout << pow(staterr,2) << endl;
-	cout <<  "Fake error = " << nperr*np_nom << endl;
-	cout <<  pow(bkg_err[i]* (mc_nom),2) << " " <<  bkg_err[i] << " "  << mc_nom  << " i = " << i <<endl;
-	cout << pow(.20*(cf_nom),2) << endl;
+	float bkgerr = sqrt( pow(staterr,2) + pow(nperr*np_nom,2) + pow(bkg_err[i]* (mc_nom),2)  +  pow(.12*(cf_nom),2) );
 	h_bkgerr->SetBinContent(i+1,bkgerr);
 	
 	cout << "Bkgerr = " << bkgerr << endl;
@@ -183,7 +161,7 @@ void NoteV2_unblind_limit_crosssection(){
                                  + pow((hn_sig_mc->GetBinContent(15) - sig_nom),2)
                                  + pow((hn_sig_mc->GetBinContent(17) - sig_nom),2)
                                  + pow( 0.06*(sig_nom),2)
-                                 + pow( 0.02*(sig_nom),2)); // PDF acc*Eff uncert
+                                 + pow( 0.02*(sig_nom),2));
 	
 	float err_sig_down = sqrt( pow((hn_sig_mc->GetBinContent(4) - sig_nom),2)
 				   + pow((hn_sig_mc->GetBinContent(6) - sig_nom),2)
@@ -201,14 +179,9 @@ void NoteV2_unblind_limit_crosssection(){
 	float err_sig = err_sig_up; 
 	if(err_sig_up < err_sig_down) err_sig = err_sig_down;
 	
-	cout << "sig err = " << err_sig << endl;
 	err_sig = err_sig/ sig_nom;
 	efferr_alp[i]  = eff_alp[i]   *sqrt(1./hn_sig_mc->GetBinContent(1)   + pow(err_sig,2) );//40
 
-	cout << "sig err = " << err_sig << endl;
-	cout << eff_alp[i] << endl;
-	cout << (1./hn_sig_mc->GetBinContent(1)) << endl;
-	cout << "sig err = " << eff_alp[i]   *sqrt(1./hn_sig_mc->GetBinContent(1)  +  pow(err_sig,2) ) << endl;
       }
       
       for(unsigned int i=0; i < masses.size(); i++){

@@ -19,6 +19,7 @@ void EESigEff(){
   masses.push_back(200);
   masses.push_back(250);
   masses.push_back(300);
+  masses.push_back(350);
   masses.push_back(400);
   masses.push_back(500);
 
@@ -36,6 +37,7 @@ void EESigEff(){
   smasses.push_back("200");
   smasses.push_back("250");
   smasses.push_back("300");
+  smasses.push_back("350");
   smasses.push_back("400");
   smasses.push_back("500");
 
@@ -44,12 +46,12 @@ void EESigEff(){
 
     TString im = smasses.at(i);
 
-    TFile * file1 = new TFile(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + im + "_nocut_5_3_14.root").Data());
+    TFile * file1 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKHNee" + im + "_nocut_5_3_14.root").Data());
     
     TString cut = im +"MassRegion";
     TString hist = (cut + "/h_Nelectrons_"+cut);
     
-    TH1* hnsig =   (TH1F*)file1->Get(("CutFlow/_eventcutflow"));
+    TH1* hnsig =   (TH1F*)file1->Get("NoCut_sigeff");
     
     float nsig = float(hnsig->GetBinContent(2));
     

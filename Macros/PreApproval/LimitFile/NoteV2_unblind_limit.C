@@ -25,13 +25,13 @@ void NoteV2_unblind_limit(){
   
   setTDRStyle();
   //gStyle->SetPalette(1);
-  TString path ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_mc_5_3_14.root";
+  TString path ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_mc_5_3_14.root";
   TFile * file = new TFile(path);
   
-  TString fakepath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKnonprompt_dilep_5_3_14.root";
+  TString fakepath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKnonprompt_dilep_5_3_14.root";
   TFile * filefake = new TFile(fakepath);
   
-  TString cfpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKchargeflip_dilep_5_3_14.root";
+  TString cfpath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKchargeflip_dilep_5_3_14.root";
   TFile * filecf = new TFile(cfpath);
   cout << file << " " << filefake << " " << filecf << endl;
   vector<TString> masses;
@@ -121,7 +121,7 @@ void NoteV2_unblind_limit(){
 	cout << "hnmc->GetBinContent(2) = " << hnmc->GetBinContent(2) << " hnnp->GetBinContent(2) = " << hnnp->GetBinContent(2) << " hncf->GetBinContent(2) = " << hncf->GetBinContent(2) <<  endl;
 	float staterr = sqrt( hnmc->GetBinError(2)*hnmc->GetBinError(2) +  hnnp->GetBinError(2)*hnnp->GetBinError(2) + hncf->GetBinError(2)*hncf->GetBinError(2));
 	
-	TString sigpath ="/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
+	TString sigpath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
 	TFile * file_sig = new TFile(sigpath);
 	TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_limithist").Data());
 	TH1F* h_ref= (TH1F*)file_sig->Get(("NoCut_sigeff"));

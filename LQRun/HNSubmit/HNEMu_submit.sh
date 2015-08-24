@@ -74,7 +74,7 @@ then
     skinput="True"
     useskim="NoCut"
 
-    njobs=2
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
 
@@ -82,7 +82,6 @@ then
     
     declare -a input_samples=("HNemu40" "HNemu50" "HNemu60" "HNemu70" "HNemu80" "HNemu90" "HNemu100" "HNemu125" "HNemu150" "HNemu175" "HNemu200" "HNemu225" "HNemu250" "HNemu275" "HNemu300" "HNemu325" "HNemu350" "HNemu375" "HNemu400" "HNemu500" "HNmue40" "HNmue50" "HNmue60" "HNmue70" "HNmue80" "HNmue90" "HNmue100" "HNmue125" "HNmue150" "HNmue175" "HNmue200" "HNmue225" "HNmue250" "HNmue275" "HNmue300" "HNmue325" "HNmue350" "HNmue375" "HNmue400" "HNmue500")
 
-     declare -a input_samples=("HNemu300"  "HNemu350" "HNemu400" "HNemu500" "HNmue300" "HNmue350" "HNmue400" "HNmue500")
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1

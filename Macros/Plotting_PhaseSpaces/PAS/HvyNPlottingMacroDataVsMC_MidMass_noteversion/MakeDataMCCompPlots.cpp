@@ -160,7 +160,7 @@ int MakePlots(string hist) {
 	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee100_nocut_5_3_14.root"));
         TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
         hsig_40->Rebin(rebin);
         hsig_40->Scale(0.015);
@@ -174,7 +174,7 @@ int MakePlots(string hist) {
 	hsig_40->GetXaxis()->SetRangeUser(xmin,xmax);
 	hsig_40->GetYaxis()->SetRangeUser(ymin,ymax);
 
-	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee300_nocut_5_3_14.root"));
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee300_nocut_5_3_14.root"));
         TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
         hsig_80->Rebin(rebin);
         FixOverUnderFlows(hsig_80, xmax);
@@ -479,10 +479,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   vector<TString> legorder;
   legorder.push_back("Misid. Electron Background");
   legorder.push_back("Mismeas. Charge Background");
-  legorder.push_back("VV");
-  legorder.push_back("VVV");
-  legorder.push_back("t#bar{t}+V");
-  legorder.push_back("Higgs Boson");
+  legorder.push_back("Prompt Background");
   for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
     map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
     legendH->AddEntry(it->second,it->first.Data(),"f");    
@@ -672,6 +669,27 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WWZ",0.4));
     list.push_back(make_pair("WWG",0.4));
   }
+  
+  if(sample.Contains("prompt")){
+    list.push_back(make_pair("WWW",0.25));
+    list.push_back(make_pair("TTWW",0.25));
+    list.push_back(make_pair("TTG",0.25));
+    list.push_back(make_pair("ZZZ",0.25));
+    list.push_back(make_pair("WWZ",0.25));
+    list.push_back(make_pair("WWG",0.25));
+    list.push_back(make_pair("HtoWW",0.25));
+    list.push_back(make_pair("HtoTauTau",0.22));
+    list.push_back(make_pair("ggHtoZZ",0.22));
+    list.push_back(make_pair("WZ_py",0.12));
+    list.push_back(make_pair("ZZ_py",0.09));
+    list.push_back(make_pair("SSWmWm",0.25));
+    list.push_back(make_pair("SSWpWp",0.25));
+    list.push_back(make_pair("WW_dp",0.5));
+    list.push_back(make_pair("ttW",0.25));
+    list.push_back(make_pair("ttZ",0.25));
+  }
+
+
   if(sample.Contains("vgamma")){
     list.push_back(make_pair("Wgamma",0.22));    
   }
@@ -1050,17 +1068,17 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(!showdata) yscale = 1.;
   
   cout << name << endl;
-  if(name.find("eemass")!=string::npos) yscale*=1.3;
+  //if(name.find("eemass")!=string::npos) yscale*=1.3;
   if(name.find("eta")!=string::npos) yscale*=2.;
   if(name.find("MET")!=string::npos) yscale*=1.2;
   if(name.find("e1jj")!=string::npos) yscale*=1.2;
-  if(name.find("e2jj")!=string::npos) yscale*=1.2;
+  if(name.find("e2jj")!=string::npos) yscale*=1.1;
   if(name.find("charge")!=string::npos) yscale*=1.5;
   if(name.find("deltaR")!=string::npos) yscale*=1.5;
   if(name.find("bTag")!=string::npos) yscale*=2.2;
-  if(name.find("eejj")!=string::npos) yscale*=1.2;
+  if(name.find("eejj")!=string::npos) yscale*=1.07;
   if(name.find("dijetsmass")!=string::npos) yscale*=1.5;
-  if(name.find("leadingElectronPt")!=string::npos) yscale*=1.3;
+  if(name.find("leadingElectronPt")!=string::npos) yscale*=1.2;
   if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
   
   float max_data = h_data->GetMaximum()*yscale;
@@ -1421,6 +1439,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > ttv   = InitSample("ttv");
   vector<pair<TString,float> > higgs   = InitSample("higgs");
   vector<pair<TString,float> > vgamma   = InitSample("vgamma");
+  vector<pair<TString,float> > prompt   = InitSample("prompt");
 
 
   /// NP is nonprompt
@@ -1450,6 +1469,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
     if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
     if(listofsamples.at(i) =="vvv")samples.push_back(make_pair(make_pair(vvv,vvvcol),"VVV"));
+    if(listofsamples.at(i) =="prompt")samples.push_back(make_pair(make_pair(prompt,vvcol),"Prompt Background"));
+
     if(listofsamples.at(i) =="vgamma")samples.push_back(make_pair(make_pair(vgamma,vgammacol),"Vgamma"));
     if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs Boson"));
     
