@@ -130,7 +130,7 @@ then
 
     logstep=1000
     declare -a input_samples=("SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "HtoTauTau" "ggHtoZZ" "DY10to50" "DY50plus")
-    declare -a input_samples=("WZ_py")
+
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1

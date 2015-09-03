@@ -150,6 +150,18 @@ SKDY10to50_15       2827.096        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTre
 SKDY50plus_15       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY50plus_15/
 SKZbb             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Zbb/
 
+
+
+SKttbar_mass169      168624.89        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass169/
+SKttbar_mass175      170873.20        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass175/
+SKttbar_matchingdown 88190.43         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingdown/
+SKttbar_matchingup   158474.37        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingup/
+SKttbar_scaledown    161438.73        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaledown/
+SKttbar_scaleup      170377.21        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaleup/
+SKttbar_width_x5     57792.39         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_width_x5/
+
+
+
 ### POWHEG
 SKDYee            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DYee/
 SKDYmm            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DYmm/
@@ -289,6 +301,14 @@ SKDY50plus_dilep        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SK
 SKDY10to50_15_dilep     2827.09          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY10to50_15/
 SKDY50plus_15_dilep      8382.40         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY50plus_15/
 
+SKttbar_mass169_dilep      168624.89	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass169/
+SKttbar_mass175_dilep      170873.20	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass175/
+SKttbar_matchingdown_dilep 88190.43	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingdown/
+SKttbar_matchingup_dilep   158474.37	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingup/
+SKttbar_scaledown_dilep    161438.73	  /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaledown/
+SKttbar_scaleup_dilep      170377.21	  /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaleup/
+SKttbar_width_x5_dilep     57792.39	  /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_width_x5/
+
 
 SKZbb_dilep             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Zbb/
 ### POWHEG
@@ -427,6 +447,13 @@ DY50plus	8693.5		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/DYJetsToLL_M-50_TuneZ2St
 DY10to50_15       2827.09           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
 DY50plus_15       8382.40           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
 
+ttbar_mass169	   168624.89	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass175	   170873.20	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingdown 88190.43	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingup   158474.37        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaledown    161438.73	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaleup      170377.21	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_width_x5	   57792.39	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
 
 
 ### POWHEG

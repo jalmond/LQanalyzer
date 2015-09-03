@@ -49,9 +49,9 @@ void EMuSigEff(){
     TFile * file1 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNmue" + im + "_nocut_5_3_14.root").Data());
     TFile * file2 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu" + im + "_nocut_5_3_14.root").Data());
    
-    TString cut = "SS_highmass_" + im;
+    TString cut = "SS_highmass_exc";// + im;
     //cut = "SS_highmass";
-    if(i < 5) cut = "SS_lowmass_" + im; 
+    //    if(i < 5) cut = "SS_lowmass_" + im; 
     //if(i < 5) cut = "SS_lowmass_80_2";
     TString hist = (cut + "/h_Nelectrons_"+cut);
     

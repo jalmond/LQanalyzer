@@ -51,7 +51,6 @@ int MakeCutFlow_Plots(string configfile){
   system(("mkdir /home/jalmond/WebPlots/" + path).c_str());
   system(("mkdir /home/jalmond/WebPlots/" + path+ "/histograms/").c_str());
   system(("mkdir /home/jalmond/WebPlots/" + path+"/histograms/" + histdir + "/").c_str());
-  cout << "HIST page is set to " << phistname.c_str() << endl;
 
   histpage.open(phistname.c_str());
   page.open(pname.c_str());
@@ -73,8 +72,6 @@ int MakeCutFlow_Plots(string configfile){
 int MakePlots(string hist) {
 
 
-  cout << "\n ---------------------------------------- " << endl;
-  cout << "MakeDataMCCompPlots::MakePlots(string hist) " << endl;
   
   ////////////////////// ////////////////
   ////  MAIN PART OF CODE for user/
@@ -98,7 +95,6 @@ int MakePlots(string hist) {
     cut_name_file >> cutname;
     if(cutname=="END") break;
     allcuts.push_back(cutname);
-    cout << "Added " << cutname << endl;
   }
   
 
@@ -130,14 +126,10 @@ int MakePlots(string hist) {
     for(unsigned int ncut=0; ncut<allcuts.size();  ncut++){
       string name = allcuts.at(ncut) + "/" + h_name+ "_" + allcuts.at(ncut);
        
-	cout << "\n------------------------------------------------------- \n" << endl;
-	cout << "Making histogram " << name << endl;
-	
 	
 	/// Make nominal histogram stack
 	map<TString, TH1*> legmap;
 	
-	cout << "Making Nominal histogram " << endl;
 	THStack* mstack=  MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , true);
 	THStack* mstack_nostat= MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , false);
 
@@ -191,10 +183,7 @@ int MakePlots(string hist) {
 	vstack.push_back(mstack);   	
 	vstack.push_back(mstack_nostat);   	
 
-	cout << " Making canvas" << endl;
-	
 	TCanvas* c = CompDataMC(hdata,hsig_40,hsig_80, vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
-	cout << " Made canvas" << endl;
 
 	string canvasname = c->GetName();
 	canvasname.erase(0,4);
@@ -231,7 +220,6 @@ void MakeCutFlow(string type){
     if(cutname=="END") break;
     cut_label.push_back(cutname);
     cuts.push_back((cutname+ hist +"_" + cutname).c_str());    
-    cout << "Making cutflow for " << hist << " " << cutname << endl;
   }
 
  
@@ -298,7 +286,6 @@ void MakeCutFlow(string type){
       if(sample.Contains("t#bar{t}+V")) sample = "t$\bar{t}$+V";
       float syst = mapit_up->second;
       if(sample.Contains("Prompt")) syst = mapit->second * 0.15;
-      cout << sample << " background = " << mapit->second<< " +- " << mapit_stat->second << " + " << syst << " - " << syst <<  endl;      
    
       
     }
@@ -426,12 +413,12 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
   if(plot_description.empty())plot_description=title;
   histpage << "<tr><td>"<< plot_description <<"</td>"<<endl;
   histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << title.c_str() << ".png\">";
-  histpage << "<img src=\"" << title.c_str() << ".png\" width=\"100%\"/>";
+  histpage << "<a href=\"" << title.c_str() << ".pdf\">";
+  histpage << "<img src=\"" << title.c_str() << ".pdf\" width=\"100%\"/>";
   histpage << "</td>" << endl;
   histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << title.c_str() << "_log.png\">";
-  histpage << "<img src=\"" << title.c_str() << "_log.png\" width=\"100%\"/>";
+  histpage << "<a href=\"" << title.c_str() << "_log.pdf\">";
+  histpage << "<img src=\"" << title.c_str() << "_log.pdf\" width=\"100%\"/>";
   histpage << "</td>" << endl;
 
   
@@ -443,9 +430,9 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
 
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
-  double x1 = 0.6;
+  double x1 = 0.5;
   double y1 = 0.6;
-  double x2 = 0.6;
+  double x2 = 0.5;
   double y2 = 0.9;
 
   
@@ -492,7 +479,6 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   //legorder.push_back("Higgs Boson");
   for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
     map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
-    cout << it->second << " " << it->first.Data() << endl;
     if(it->second)legendH->AddEntry(it->second,it->first.Data(),"f");    
   }
   legendH->SetFillColor(kWhite);
@@ -684,8 +670,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
 
   if(sample.Contains("prompt")){
-    list.push_back(make_pair("mc",0.15));
-    /*list.push_back(make_pair("WZ_py",0.12));
+    //list.push_back(make_pair("mc",0.15));
+    list.push_back(make_pair("WZ_py",0.12));
+    list.push_back(make_pair("ZZ_py",0.12));
       
     list.push_back(make_pair("WWW",0.25));
     list.push_back(make_pair("TTWW",0.25));
@@ -701,7 +688,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("SSWpWp",0.25));
     list.push_back(make_pair("WW_dp",0.5));
     list.push_back(make_pair("ttW",0.25));
-    list.push_back(make_pair("ttZ",0.25));*/
+    list.push_back(make_pair("ttZ",0.25));
   }
 
   if(sample.Contains("vgamma")){
@@ -1056,7 +1043,8 @@ void SetTitles(TH1* hist, string name){
 
   hist->GetXaxis()->SetTitle(xtitle.c_str());
   hist->GetYaxis()->SetTitle(ytitle.c_str());
-
+  hist->GetXaxis()->SetTitleSize(0.05);
+  hist->GetYaxis()->SetTitleSize(0.05);
   return;
 }
 
@@ -1078,9 +1066,9 @@ bool HistInGev(string name){
 float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
   float yscale= 1;
-  if(!showdata) yscale = 1.;
+  if(!showdata) yscale = 1.2;
   
-  if(name.find("eemass")!=string::npos) yscale*=1.3;
+  if(name.find("emujj")!=string::npos) yscale*=1.2;
   if(name.find("eta")!=string::npos) yscale*=2.5;
   if(name.find("MET")!=string::npos) yscale*=1.2;
   if(name.find("e1jj")!=string::npos) yscale*=1.2;
@@ -1196,7 +1184,6 @@ float GetError(TString cut, TString isample, TString type){
   TFile* f =  TFile::Open(( filepath.Data()));
   
   TH1* h = dynamic_cast<TH1*> ((f->Get(cut.Data())->Clone()));
-  cout << h << endl;
   
   if(!h) {
     cout << "Histogram " << cut << " in "  << (path+ fileprefix + isample + filepostfix) << " not found" << endl;
@@ -1301,7 +1288,6 @@ float GetSyst(TString cut, TString syst, pair<vector<pair<TString,float> >,TStri
 
 float Calculate(TString cut, TString variance, pair<vector<pair<TString,float> >,TString > samples ){
   
-  cout << cut << " " << variance << " " << samples.second << endl;
   
   if(samples.second.Contains("NonPrompt")){
     if(variance.Contains("Normal"))  return GetTotal(cut,samples.first) ;  
@@ -1388,7 +1374,6 @@ void SetUpMasterConfig(string name){
 
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<string>& cut_label){
     
-  cout << " /// MakeDataMCComplots::SetUpConfig " << endl;
   /// colours of histograms
   int tcol(0), zzcol(0), fcol(0), zcol(0), wzcol(0), sscol(0),  wwcol(0), wcol(0),  ttvcol(0), higgscol(0), vvvcol(0), vvcol(0), vgammacol(0);
   
@@ -1498,8 +1483,6 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
 TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
-  cout << "CompDataMC" << endl;
-  cout << legend << " " << hdata << " "  << hsig_40 << " " << hsig_80 << " " << hup << " " << hdown << " " << hup_nostat << " " << endl;
   ymax = GetMaximum(hdata, hup, ylog, hname);
   
   string cname;
@@ -1515,12 +1498,28 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   TCanvas* canvas = new TCanvas((cname+ label_plot_type).c_str(), (cname+label_plot_type).c_str(), outputWidth,outputHeight);
   TCanvas* canvas_log = new TCanvas((cname+ label_plot_type+"log").c_str(), (cname+label_plot_type+"log").c_str(), outputWidth,outputHeight);
   
+  // references for T, B, L, R                                                                                                                                         
+     float T = 0.08*outputHeight;
+     float B = 0.15*outputHeight;
+     float L = 0.17*outputWidth;
+     float R = 0.04*outputWidth;
+     canvas->SetFillColor(0);
+     canvas->SetBorderMode(0);
+     canvas->SetFrameFillStyle(0);
+     canvas->SetFrameBorderMode(0);
+     canvas->SetLeftMargin( L/outputWidth );
+     canvas->SetRightMargin( R/outputWidth );
+     canvas->SetTopMargin( T/outputHeight );
+     canvas->SetBottomMargin( B/outputHeight );
+     canvas->SetTickx(0);
+     canvas->SetTicky(0);
+
   float ymax_err = 1.8;
   if(TString(hname).Contains("emujj")) ymax_err = 0.;
   
   std::string title=canvas->GetName();
-  std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".png";
-  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.png";
+  std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".pdf";
+  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.pdf";
   
   ///####################   Standard plot
   //if(TString(hname).Contains("eemass"))canvas->SetLogy();
@@ -1534,7 +1533,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hdata->SetLineColor(kBlack);
   
   // draw data hist to get axis settings
-  hdata->GetYaxis()->SetTitleOffset(1.5);
+  //  hdata->GetYaxis()->SetTitleOffset(1.5);
   hdata->Draw("p9hist");
   TLatex label;
   label.SetTextSize(0.04);
@@ -1543,7 +1542,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   label.SetNDC();
   label.SetTextColor(1);
   label.DrawLatex(0.6 ,0.34,"Low Mass Region");
-  label.DrawLatex(0.6 ,0.4,"e^{#pm} #mu^{#pm} Channel");
+  label.DrawLatex(0.6 ,0.4,"e^{#pm}#mu^{#pm} Channel");
   
 
   //return canvas;  
@@ -1601,13 +1600,12 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hdata->SetLineWidth(2.);
   hdata->Draw( ("same9p9hist"));
   
-  cout << hsig_40 << " " << hsig_80 << endl;
   hsig_40->Draw("hist9same");
   hsig_80->Draw("hist9same");
   
   //return canvas;  
-  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}*V_{#mu N}| = 4E-4 ","l");
-  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}*V_{#mu N}| = 4E-3","l");
+  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}V*_{#mu N}| = 4 #times 10^{-4} ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}V*_{#mu N}| = 4 #times 10^{-3}","l");
 
   legend->Draw();
   //return canvas;  
@@ -1616,7 +1614,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   canvas->Update();
   canvas->RedrawAxis();
 
-  canvas->Print(tpdf.c_str(), ".png");
+  canvas->Print(tpdf.c_str(), ".pdf");
 
 
   //// %%%%%%%%%% PRINT ON LOG
@@ -1627,7 +1625,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   
 
   hdata->GetYaxis()->SetRangeUser(0.01, ymax);
-  hdata->GetYaxis()->SetTitleOffset(1.6);
+  //  hdata->GetYaxis()->SetTitleOffset(1.6);
   hdata->Draw("p9hist");
   
   mcstack.at(0)->Draw("9HIST same");
@@ -1700,7 +1698,6 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   
   for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
     if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
-      cout << "Ration = " << hdev->GetBinContent(i) << "  /  " <<  h_nominal->GetBinContent(i) << endl;
       hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
       //hdev->SetBinContent(i, h_nominal->GetBinContent(i)/ h_nominal->GetBinContent(i));
       hdev->SetBinError(i, 0.01);
@@ -1769,7 +1766,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   CMS_lumi( canvas_log, 2, 11 );
   canvas_log->Update();
   canvas_log->RedrawAxis();
-  canvas_log->Print(tlogpdf.c_str(), ".png");
+  canvas_log->Print(tlogpdf.c_str(), ".pdf");
   gPad->RedrawAxis();
   
   return canvas;
@@ -1815,9 +1812,7 @@ void SetNomBinError(TH1* hnom, TH1* hup, TH1* hdown){
 TH1* MakeErrorBand(TH1* hnom, TH1* hup, TH1* hdown){
 
   TH1* errorband = (TH1*)hnom->Clone("aa");
-  cout << "\n ----- " << endl;
   for(int i=1; i < errorband->GetNbinsX()+1; i++){
-    cout << "Errorband : bin " << i  << " content = " << errorband->GetBinContent(i) << " up = " << 100*( (hup->GetBinContent(i) - errorband->GetBinContent(i))/ errorband->GetBinContent(i)) << " down = " << 100*( (-hdown->GetBinContent(i) + errorband->GetBinContent(i))/ errorband->GetBinContent(i)) << endl; 
 
     float bin_content = (hup->GetBinContent(i)+ hdown->GetBinContent(i))/2.;
     float bin_error = (hup->GetBinContent(i)- hdown->GetBinContent(i))/2.;
@@ -1927,7 +1922,6 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
       lumiText += "8 TeV";
     }
 
-  cout << lumiText << endl;
 
   TLatex latex;
   latex.SetNDC();

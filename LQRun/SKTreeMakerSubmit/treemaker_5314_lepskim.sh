@@ -77,8 +77,7 @@ then
     logstep=1000
     
 
-
-    declare -a input_samples=("DY10to50_15" "DY50plus_15")
+    declare -a input_samples=("ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5")
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA

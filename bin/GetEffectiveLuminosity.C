@@ -17,8 +17,8 @@ void GetEffectiveLuminosity() {
 
   map<TString, double> dirmap;
   // dir name  = xsec
-  dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
-  dirmap["DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball"] = 3503.71 ;
+  //  dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
+  //dirmap["DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball"] = 3503.71 ;
   /*
     dirmap["DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
   dirmap["DYToMuMu_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
@@ -174,12 +174,18 @@ void GetEffectiveLuminosity() {
   
   dirmap["MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen"] =  1516.;
   */
-  
+  //  dirmap["TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  ///  dirmap["TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  //dirmap["TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  //dirmap["TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   
   for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
     
     
-    TString dir = "ls /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/" + it->first + "/*.root > inputlist.txt";
+    TString dir = "ls /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/" + it->first + "/*.root > inputlist.txt";
     system(dir.Data());
     
     

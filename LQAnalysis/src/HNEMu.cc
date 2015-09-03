@@ -84,6 +84,7 @@ HNEMu::HNEMu() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"SS_highmass_200");
   MakeCleverHistograms(sighist,"SS_highmass_250");
   MakeCleverHistograms(sighist,"SS_highmass_300");
+  MakeCleverHistograms(sighist,"SS_highmass_exc");
   MakeCleverHistograms(sighist,"SS_highmass_350");
   MakeCleverHistograms(sighist,"SS_highmass_400");
   MakeCleverHistograms(sighist,"SS_highmass_500");
@@ -646,8 +647,13 @@ void HNEMu::ExecuteEvents()throw( LQError ){
 		  if(l2jjm < 330. &&emujj.M() > 260. && ((electronAnalysisColl.at(0).Pt()> 80. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 80))&& jetColl_lepveto_mva.at(0).Pt() > 35.)
 		    FillCLHist(sighist, "SS_highmass_250", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 
+
+		  
+                  if(emujj.M() > 440.)
+                    FillCLHist(sighist, "SS_highmass_exc", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
+
 		  if(l2jjm < 490. &&emujj.M() > 310. && ((electronAnalysisColl.at(0).Pt()> 110. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 110))&&  jetColl_lepveto_mva.at(0).Pt() > 35.)
-		     FillCLHist(sighist, "SS_highmass_300", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
+		    FillCLHist(sighist, "SS_highmass_300", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 		  if(l2jjm < 590. &&emujj.M() > 370. && ((electronAnalysisColl.at(0).Pt()> 115. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 115))&&   jetColl_lepveto_mva.at(0).Pt() > 35.)
                     FillCLHist(sighist, "SS_highmass_350", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 		  if(l2jjm < 800. &&emujj.M() > 380. && ((electronAnalysisColl.at(0).Pt()> 120. && muons.at(0).Pt() > 40)||  (electronAnalysisColl.at(0).Pt()> 40. && muons.at(0).Pt() > 120))&&  jetColl_lepveto_mva.at(0).Pt() > 35.)

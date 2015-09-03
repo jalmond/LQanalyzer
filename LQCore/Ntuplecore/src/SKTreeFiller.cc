@@ -430,8 +430,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  
 	  if(dr < 0.4){
 	    m_logger << DEBUG << "Truth Matched to electron[GenParticle]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenParticlePt->at(g) << "/" << GenParticleEta->at(g) << "/" << GenParticlePhi->at(g) << "/" <<  GenParticleStatus->at(g) << "/" << GenParticlePdgId->at(g) << "/" << GenParticleMotherIndex->at(g) << LQLogger::endmsg; 
-	    if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g)) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(g)) << LQLogger::endmsg;
-	    
+
+	    if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()) {
+	      if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g)) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(g)) << LQLogger::endmsg;
+	    }else iMother = 4;
 	    /// First check status 3 particles (this is just a check and if status 1 particle is matched it will overright it)
 	    if(GenParticleStatus->at(g) == 3 ){
 	      /// MATCH STABLE STATUS 3 EL to RECO EL
@@ -449,7 +451,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		  }
 		}
 		else{
-		  iMother = GenParticleMotherIndex->at(g);
+		  if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()) iMother = GenParticleMotherIndex->at(g);
                   nDaughter = GenParticleNumDaught->at(g);
                   ipdgid =  GenParticlePdgId->at(g);
                   trueel_index = g;
@@ -471,7 +473,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		    if( sqrt( pow(fabs( GenParticleEta->at(g)  - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)  -GenParticlePhi->at(g2))),2.0)) < 0.1){
 		      if(fabs(GenParticlePdgId->at(g2)) == 15){
 			close_to_tau=true;
-			iMother = g2;
+			if(g2 < GenParticlePdgId->size()) iMother = g2;
 			nDaughter = GenParticleNumDaught->at(g);
 			ipdgid =  GenParticlePdgId->at(g);
 			trueel_index = g;
@@ -1135,12 +1137,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(dr < 0.4){
 	    
 	    m_logger << DEBUG << "Truth Matched to muon[GenParticle]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenParticlePt->at(g) << "/" << GenParticleEta->at(g) << "/" << GenParticlePhi->at(g) << "/" <<  GenParticleStatus->at(g) << "/" << GenParticlePdgId->at(g) << "/" << GenParticleMotherIndex->at(g) << LQLogger::endmsg;
+	    if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()){
 	    
 	    if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g))  << LQLogger::endmsg;
-	    
+	    } else iMother = 4;
 	    if(GenParticleStatus->at(g) == 3 ){
 	      
-	      iMother = GenParticleMotherIndex->at(g);
+	      if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()) iMother = GenParticleMotherIndex->at(g);
 	      nDaughter = GenParticleNumDaught->at(g);
 	      ipdgid =  GenParticlePdgId->at(g);
 	      mutruth_index = g;
@@ -1157,7 +1160,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 		    if( sqrt( pow(fabs( GenParticleEta->at(g)  - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)  -GenParticlePhi->at(g2))),2.0)) < 0.1){
 		      if(fabs(GenParticlePdgId->at(g2)) == 15){
 			close_to_tau=true;
-			iMother = g2;
+			if(g2 < GenParticlePdgId->size()) iMother = g2;
 			nDaughter = GenParticleNumDaught->at(g);
 			ipdgid =  GenParticlePdgId->at(g);
 			mutruth_index = g;

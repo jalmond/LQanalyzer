@@ -424,12 +424,12 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
   if(plot_description.empty())plot_description=title;
   histpage << "<tr><td>"<< plot_description <<"</td>"<<endl;
   histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << title.c_str() << ".png\">";
-  histpage << "<img src=\"" << title.c_str() << ".png\" width=\"100%\"/>";
+  histpage << "<a href=\"" << title.c_str() << ".pdf\">";
+  histpage << "<img src=\"" << title.c_str() << ".pdf\" width=\"100%\"/>";
   histpage << "</td>" << endl;
   histpage <<"<td>"<<endl;
-  histpage << "<a href=\"" << title.c_str() << "_log.png\">";
-  histpage << "<img src=\"" << title.c_str() << "_log.png\" width=\"100%\"/>";
+  histpage << "<a href=\"" << title.c_str() << "_log.pdf\">";
+  histpage << "<img src=\"" << title.c_str() << "_log.pdf\" width=\"100%\"/>";
   histpage << "</td>" << endl;
 
   
@@ -441,9 +441,9 @@ void PrintCanvas(TCanvas* c1, string folder, string plot_description, string tit
 
 TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy){
   
-  double x1 = 0.6;
+  double x1 = 0.5;
   double y1 = 0.6;
-  double x2 = 0.6;
+  double x2 = 0.5;
   double y2 = 0.9;
 
   
@@ -1044,7 +1044,8 @@ void SetTitles(TH1* hist, string name){
   if(name.find("secondJetPt")!=string::npos)xtitle="jet2 p_{T} (GeV)";
 
 
-
+  hist->GetXaxis()->SetTitleSize(0.05);
+  hist->GetYaxis()->SetTitleSize(0.05);
   hist->GetXaxis()->SetTitle(xtitle.c_str());
   hist->GetYaxis()->SetTitle(ytitle.c_str());
 
@@ -1516,10 +1517,26 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   TCanvas* canvas = new TCanvas((cname+ label_plot_type).c_str(), (cname+label_plot_type).c_str(), outputWidth,outputHeight);
   TCanvas* canvas_log = new TCanvas((cname+ label_plot_type+"log").c_str(), (cname+label_plot_type+"log").c_str(), outputWidth,outputHeight);
 
+
+  // references for T, B, L, R                                                                                                                                         
+  float T = 0.08*outputHeight;
+  float B = 0.15*outputHeight;
+  float L = 0.17*outputWidth;
+  float R = 0.04*outputWidth;
+  canvas->SetFillColor(0);
+  canvas->SetBorderMode(0);
+  canvas->SetFrameFillStyle(0);
+  canvas->SetFrameBorderMode(0);
+  canvas->SetLeftMargin( L/outputWidth );
+  canvas->SetRightMargin( R/outputWidth );
+  canvas->SetTopMargin( T/outputHeight );
+  canvas->SetBottomMargin( B/outputHeight );
+  canvas->SetTickx(0);
+  canvas->SetTicky(0);
   
   std::string title=canvas->GetName();
-  std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".png";
-  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.png";
+  std::string tpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+".pdf";
+  std::string tlogpdf = "/home/jalmond/WebPlots/"+ path + "/histograms/"+folder+"/"+title+"_log.pdf";
   
   ///####################   Standard plot
   //if(TString(hname).Contains("eemass"))canvas->SetLogy();
@@ -1533,7 +1550,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hdata->SetLineColor(kBlack);
   
   // draw data hist to get axis settings
-  hdata->GetYaxis()->SetTitleOffset(1.5);
+  //  hdata->GetYaxis()->SetTitleOffset(1.5);
   hdata->Draw("p9hist");
   TLatex label;
   label.SetTextSize(0.04);
@@ -1604,15 +1621,15 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hsig_80->Draw("hist9same");
   
 
-  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}|^{2} = 4E-4 ","l");
-  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}|^{2} = 4E-3","l");
+  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}|^{2} = 4 #times 10^{-4} ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}|^{2} = 4 #times 10^{-3}","l");
 
   legend->Draw();
   
   CMS_lumi( canvas, 2, 11 );
   canvas->Update();
   canvas->RedrawAxis();
-  canvas->Print(tpdf.c_str(), ".png");
+  canvas->Print(tpdf.c_str(), ".pdf");
 
   //// %%%%%%%%%% PRINT ON LOG
   canvas_log->cd();
@@ -1622,7 +1639,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   
 
   hdata->GetYaxis()->SetRangeUser(0.01, ymax);
-  hdata->GetYaxis()->SetTitleOffset(1.6);
+  //  hdata->GetYaxis()->SetTitleOffset(1.6);
   hdata->Draw("p9hist");
   
   mcstack.at(0)->Draw("9HIST same");
@@ -1764,7 +1781,7 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   CMS_lumi( canvas_log, 2, 11 );
   canvas_log->Update();
   canvas_log->RedrawAxis();
-  canvas_log->Print(tlogpdf.c_str(), ".png");
+  canvas_log->Print(tlogpdf.c_str(), ".pdf");
   gPad->RedrawAxis();
   
   return canvas;
