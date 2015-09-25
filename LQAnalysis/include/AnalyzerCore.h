@@ -12,7 +12,6 @@ class EventBase;
 
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-#include "rochcor2012/rochcor2012/rochcor2012jan22.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -36,37 +35,25 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KMuon> GetMuons(TString label);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label, double& w);
-  void MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w) ;
-  void MakeEMUTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w); 
 
-  double GetFakeRateByParam(TString param, TString jetcut, TString looseregion, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  bool cl1, bool cl2);
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);
-  void RunMCCLosureTest(TString label,  std::vector<snu::KJet> jets, TString cut,  float w);
-  void MakeMCCloseplots(TString ajpt, TString label,  TString method, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool closejet, float w1 );
-
-  void RunMCCLosureTestEMU(TString label, std::vector<snu::KJet> jets, TString cut, float w);
 
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
 
-  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets, TString label, float w);
-  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KMuon> muons,  std::vector<snu::KJet> jets, float w);
-    
-  void PlotFakeLeptons( std::vector<snu::KJet> jets, float w);
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   double TriggerScaleFactor( vector<snu::KMuon> mu);;
   double TriggerScaleFactorEMu();
   float GetEEMass(std::vector<snu::KElectron> electrons);
 
-  void FakeBkgBreakDown(std::vector<snu::KElectron> electrons, TString cut, float w);
   double ElectronScaleFactor( double eta, double pt, bool tight, int sys=0);
   double MuonScaleFactor(double eta, double pt, int sys=0);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
-  bool IsTight(snu::KElectron el,double jetrho , double dxy, double biso, double eiso, bool usetight);
-  bool IsTight(snu::KElectron electron,  double rho);
+  bool IsTight(snu::KElectron el , double dxy, double biso, double eiso, bool usetight);
+  bool IsTight(snu::KElectron electron);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
@@ -76,21 +63,11 @@ class AnalyzerCore : public LQCycleBase {
   float CFRate(snu::KElectron el, bool useoldrates=false);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
-  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso,  bool    usetight,TString cut, bool applypucorr);
 
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho);
-
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, bool istight,  double dxy, double biso, double eciso,  TString cut);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, bool istight, double dxy, double biso, double eciso,   TString cut, int type);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> jets,  double rho, bool istight, double dxy, double biso, double eciso,   TString cut, int type);
-  
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, TString cut);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, TString cut, int type);
-
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
-  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons , double rho, int sys =0);
-  float Get_DataDrivenWeightMC_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho, TString tag);
-
+  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons);
+ 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   
@@ -128,7 +105,6 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* FRHist;
   TH2F* MuonSF;
   HNCommonLeptonFakes* m_fakeobj;
-  rochcor2012 *rmcor;
   
   /// Event weights
   Double_t MCweight, weight;
@@ -183,7 +159,7 @@ class AnalyzerCore : public LQCycleBase {
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
-  void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double rho, double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
 
   // Makes clever histograms

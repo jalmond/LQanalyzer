@@ -89,9 +89,7 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
       
       //// Calculate PF isolation
       /// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation
-      if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-      else LeptonRelIso = 9999.;
-      if (LeptonRelIso<0) LeptonRelIso=0.0001;    
+      LeptonRelIso = (muit->RelIso03());
       
       if(apply_relisocut && !( LeptonRelIso < relIso_cut)) pass_selection = false;
       if(m_debug&&apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
@@ -114,15 +112,6 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
       
       if(apply_ID && !PassID(k_id, *muit,m_debug)) pass_selection =false;
       if(m_debug&& apply_ID && !PassID(MUON_TIGHT, *muit)) cout << "Fails Selection::ID cut " << endl;
-      
-      /// ENERGY DEPOSIT
-      (muit->IsoHcalVeto() < HCalDeposit_max && 
-       muit->IsoEcalVeto() < ECalDeposit_max && 
-       (muit->IsoHcalVeto() >= HCalDeposit_min || 
-	muit->IsoEcalVeto() >= ECalDeposit_min) ) ? DepositVeto=true : DepositVeto=false;
-      
-      if(apply_deposit && !DepositVeto) pass_selection = false;
-      if(m_debug&&apply_deposit && !DepositVeto) cout << "Fails DepositVeto " << endl;
       
       
       if(apply_chi2cut && !(muit->GlobalChi2() <chiNdof_cut) && !( muit->GlobalChi2()  >=chiNdofMIN_cut)) pass_selection = false;
@@ -149,9 +138,8 @@ void MuonSelection::HNVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_d
 
     bool pass_selection(true);
     if(muit->Pt() == 0.)   continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
+
 
     //// VETO MUON SELECTION
     if(( muit->Pt() < 10. )) {
@@ -189,15 +177,6 @@ void MuonSelection::HNVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_d
     }
 
 
-    /// ENERGY DEPOSIT
-    (muit->IsoHcalVeto() < 600.0 &&
-     muit->IsoEcalVeto() < 400.0 ) ? DepositVeto=true : DepositVeto=false;
-    if(!DepositVeto) {
-      pass_selection = false;
-      if(m_debug) cout << "HNVetoMuonSelection Fail deposit cut" << endl;
-    }
-
-
     //// Make Loose selection
     if(pass_selection)leptonColl.push_back(*muit);
   }
@@ -213,9 +192,7 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m
     bool pass_selection(true);
 
     if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
     
     //// Muon Loose selection
     if(( muit->Pt() < 15. )) {
@@ -233,14 +210,7 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m
     if( fabs(muit->dXY())    >= 0.2) pass_selection = false;
     if( fabs(muit->dZ())    >= 0.1)  pass_selection = false;
     if(!(muit->GlobalChi2() < 50.)) pass_selection = false;
-
-
-    /// ENERGY DEPOSIT
-    (muit->IsoHcalVeto() < 6.0 &&
-     muit->IsoEcalVeto() < 4.0 ) ? DepositVeto=true : DepositVeto=false;
-    if(!DepositVeto) pass_selection = false;
-  
-
+    
 
     //// Make Loose selection
     if(pass_selection)leptonColl.push_back(*muit);    
@@ -257,10 +227,7 @@ void MuonSelection::HNLooseMuonSelection03(std::vector<KMuon>& leptonColl , bool
 
     bool pass_selection(true);
 
-    if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
 
     //// Muon Loose selection
     if(( muit->Pt() < 15. )) {
@@ -278,12 +245,6 @@ void MuonSelection::HNLooseMuonSelection03(std::vector<KMuon>& leptonColl , bool
     if( fabs(muit->dXY())    >= 0.2) pass_selection = false;
     if( fabs(muit->dZ())    >= 0.1)  pass_selection = false;
     if(!(muit->GlobalChi2() < 50.)) pass_selection = false;
-
-
-    /// ENERGY DEPOSIT
-    (muit->IsoHcalVeto() < 6.0 &&
-     muit->IsoEcalVeto() < 4.0 ) ? DepositVeto=true : DepositVeto=false;
-    if(!DepositVeto) pass_selection = false;
 
 
 
@@ -304,10 +265,7 @@ void MuonSelection::HNLooseMuonSelection05(std::vector<KMuon>& leptonColl , bool
 
     bool pass_selection(true);
 
-    if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR03() + std::max(0.0, muit->SumIsoNHDR03() + muit->SumIsoPHDR03() - 0.5* muit->SumPUIsoR03()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
 
     //// Muon Loose selection
     if(( muit->Pt() < 15. )) {
@@ -327,13 +285,6 @@ void MuonSelection::HNLooseMuonSelection05(std::vector<KMuon>& leptonColl , bool
     if(!(muit->GlobalChi2() < 50.)) pass_selection = false;
 
 
-    /// ENERGY DEPOSIT
-    (muit->IsoHcalVeto() < 6.0 &&
-     muit->IsoEcalVeto() < 4.0 ) ? DepositVeto=true : DepositVeto=false;
-    if(!DepositVeto) pass_selection = false;
-
-
-
     //// Make Loose selection
     if(pass_selection)leptonColl.push_back(*muit);
   }
@@ -347,10 +298,8 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   bool pass_selection(true);
   
   if(muon.Pt() == 0.) return false;
-
-  if (muon.Pt() > 0.01)      LeptonRelIso = (muon.SumIsoCHDR03() + std::max(0.0, muon.SumIsoNHDR03() + muon.SumIsoPHDR03() - 0.5* muon.SumPUIsoR03()))/muon.Pt() ;
-  else LeptonRelIso = 9999.;
-  if (LeptonRelIso<0) LeptonRelIso=0.0001;
+  
+  LeptonRelIso = (muon.RelIso03());
   
   
   /// TIGHT MUON SELECTION
@@ -379,32 +328,11 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   /// TIGHT MUON from muon POG
   if(!PassID(MUON_TIGHT, muon, m_debug)) pass_selection =false;
 
-  /// ENERGY DEPOSIT
-  /// ENERGY DEPOSIT
-  (muon.IsoHcalVeto() < 6.0 &&
-   muon.IsoEcalVeto() < 4.0 ) ? DepositVeto=true : DepositVeto=false;
-  if(!DepositVeto){
-    pass_selection = false;
-    if(m_debug) cout << "Muon fails Tight deposit cut" <<endl;
-  }
-  
   return pass_selection;
 }
 
 void MuonSelection::HNTightHighPtMuonSelection(std::vector<snu::KMuon>& leptonColl) {
 
-  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
-  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
-    if(muit->Pt() > 200.){
-      muit->SetPtEtaPhiM(muit->MuonCocktailPt(), muit->MuonCocktailEta(), muit->MuonCocktailPhi(), muit->M());
-      muit->SetCharge(muit->MuonCocktailCharge());
-      muit->Setdxy(muit->MuonCocktailTrkD0());
-      muit->Setdz(muit->MuonCocktailTrkDz());
-      muit->SetGlobalchi2(muit->MuonCocktailGlobalChi2());
-      if(HNIsTight(*muit, false)) leptonColl.push_back(*muit);
-    }
-    else if(HNIsTight(*muit, false)) leptonColl.push_back(*muit);
-  }
   return;
 }
 
@@ -430,10 +358,7 @@ void MuonSelection::TopVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
     bool pass_selection(true);
-    if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
 
     //// VETO MUON SELECTION
     if(( muit->Pt() < 10. )) {
@@ -448,7 +373,7 @@ void MuonSelection::TopVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_
       pass_selection = false;
       if(m_debug) cout << "HNVetoMuonSelection Fail Isolation cut" << endl;
     }
-
+    
     if(!PassID(MUON_LOOSE, *muit,m_debug)) {
       pass_selection =false;
       if(m_debug) cout << "HNVetoMuonSelection Fail loose cut" << endl;
@@ -470,9 +395,8 @@ void MuonSelection::TopLooseMuonSelection(std::vector<KMuon>& leptonColl , bool 
     bool pass_selection(true);
 
     if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
+
 
     //// Muon Loose selection
     if(( muit->Pt() < 20. )) {
@@ -500,9 +424,7 @@ void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m
 
     if(muit->Pt() == 0.) continue;
 
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
-    else LeptonRelIso = 9999.;
-    if (LeptonRelIso<0) LeptonRelIso=0.0001;
+    LeptonRelIso = (muit->RelIso03());
 
     /// TIGHT MUON SELECTION
     if(( muit->Pt() < 20. )) {

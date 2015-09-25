@@ -85,31 +85,7 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   map_sig["h_ElectronEta_3jets"]   =     new TH1F("h_ElectronEta_3jets_" + name,"electron eta",60,-3.,3.);
   
 
-  map_sig["h_Electron_fbrem"]      =     new TH1F("h_Electron_fbrem_"    + name, "",100, -1., 2.);
-  map_sig["h_Electron_nbrem"]      =     new TH1F("h_Electron_nbrem_"    + name, "", 5,0., 5.);
-  map_sig["h_Electron_dist"]       =     new TH1F("h_Electron_dist_"    + name, "",100, -5., 5.);
-  map_sig["h_Electron_cottheta"]   =     new TH1F("h_Electron_cottheta_" + name,"",100,-1., 1.);
-  map_sig["h_Electron_deltaeta_sctrk_barrel"]   =     new TH1F("h_Electron_deltaeta_sctrk_barrel_"  +name, "", 100, -0.01,.01);
-  map_sig["h_Electron_deltaeta_sctrk_endcap"]   =     new TH1F("h_Electron_deltaeta_sctrk_endcap_"  +name, "", 100, -0.01,.01);
-  
-  map_sig["h_Electron_deltaphi_sctrk_barrel"]   =     new TH1F("h_Electron_deltaphi_sctrk_barrel_"  +name, "", 100, -0.05,.05);
-  map_sig["h_Electron_deltaphi_sctrk_endcap"]   =     new TH1F("h_Electron_deltaphi_sctrk_endcap_"  +name, "", 100, -0.05,.05);
- 
-  map_sig["h_electron_hoe_barrel"] =     new TH1F("h_electron_hoe_barrel_" +name,"Hoe barrel",  50, 0., 0.5);
-  map_sig["h_electron_hoe_endcap"] =     new TH1F("h_electron_hoe_endcap_" +name,"Hoe endcap",  50, 0., 0.5);
-  
-  map_sig["h_Electron_sigmaieta_barrel"] =      new TH1F("h_Electron_sigmaieta_barrel_"  +name, "sigmaieta", 50, 0., 0.1);
-  map_sig["h_Electron_sigmaieta_endcap"] =      new TH1F("h_Electron_sigmaieta_endcap_"  +name, "sigmaieta", 50, 0., 0.1);
-  
-  map_sig["h_Electron_ep"] =    new TH1F("h_Electron_ep_"+name, "h_Electron_ep", 50, 0., 0.1);
-  map_sig["h_Electron_convfitprob"] = new TH1F("h_Electron_convfitprob_"+name, "h_Electron_convfitprob", 50, 0., 1.);
-  map_sig["h_Electron_missinghits"] = new TH1F("h_Electron_missinghits_"+name, "h_Electron_missinghits", 4, 0., 4.);
-  map_sig["h_Electron_matchedconvphoton"] = new TH1F("h_Electron_matchedconvphoton_"+name, "h_Electron_matchedconvphoton", 2, 0., 2.);
-  map_sig["h_Electron_chargeconsistency"] = new TH1F("h_Electron_chargeconsistency_"+name, "h_Electron_chargeconsistency", 2, 0.,2.);
-  
 
-  map_sig2["h_WandNmass"]          =     new TH2F("h_WandNmass_"         + name,"Invariant mass of the W and the N",100,0,2000,100,0,2000);
-  map_sig3["h_3Dparm"]             =     new TH3F("h_3Dpar_"             + name,"m(lljj) and muon p_{T}_{1} and muon p_{T}_{2}",100,0,2000,30,0,300,30,0,300);
   
   /// Muon/Jet/Electron dR
   map_sig["h_njets_inrapgap"]           =     new TH1F("h_njets_inrapgap_" + name,"# jets in Y gap", 6, 0 , 6);
@@ -146,17 +122,8 @@ SignalPlots::SignalPlots(TString name): StdPlots(name){
   
   /// MET plots
   map_sig["h_MET"]                 =     new TH1F("h_MET_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_METraw"]              =     new TH1F("h_METraw_"            + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_METtype1"]            =     new TH1F("h_METtype1_"          + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_METtype01"]           =     new TH1F("h_METtype01_"         + name,"Missing Et",100,0.0,500.0);
   map_sig["h_MET_phi"]             =     new TH1F("h_MET_phi_"           + name,"Missing Et",140,-3.5,3.5);
-  map_sig["h_METraw_phi"]          =     new TH1F("h_METraw_phi_"        + name,"Missing Et",140,-3.5,3.5);
-  map_sig["h_METtype1_phi"]        =     new TH1F("h_METtype1_phi_"      + name,"Missing Et",140,-3.5,3.5);
-  map_sig["h_METtype01_phi"]       =     new TH1F("h_METtype01_phi_"     + name,"Missing Et",140,-3.5,3.5);
-  map_sig["h_SumET"]               =     new TH1F("h_SumET_"             + name,"Sum Et",100,0.0,2000.0);
   map_sig["h_nVertices"]           =     new TH1F("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
-  map_sig["h_samevertex"]          =     new TH1F("h_samevertex_"        + name,"same vertex", 2,0., 2.0); 
-  map_sig["h_el_evvertexmatch"]    =     new TH1F("h_el_evvertexmatch_"  + name, "el vertex " , 2,0., 2.0);
   /// Charge plot
   map_sig["h_sumcharge"]           =     new TH1F("h_sumcharge_"         + name,"Charge of the lepton pair",6,-3,3);
   
@@ -208,7 +175,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
       if(fabs(dphi) > 2.5) {
 	if(leadjet_away){
-	  Fill("h_el_awayjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight, weight_err);
+	  //Fill("h_el_awayjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight, weight_err);
 	  Fill("h_jet_el_ptratio", electrons.at(i).Pt()/ jets[emme].Pt(), weight, weight_err);
 	  Fill("h_el_awayjet_pt", jets[emme].Pt(), weight, weight_err);
 	}
@@ -216,10 +183,10 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       }	
       
       if(dR< min_ejet_Dr) min_ejet_Dr=dR;
-      if(emme == 0)   Fill("h_el_leadjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight, weight_err);
-      Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight, weight_err);
+      //if(emme == 0)   Fill("h_el_leadjet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight, weight_err);
+      //Fill("h_el_jet_emfrac", (jets[emme].NeutralEMEnergyFraction() +jets[emme].ChargedEMEnergyFraction()) , weight, weight_err);
       
-      if(jets[emme].CombinedSecVertexBtag() > 0.679)  Fill("h_dr_el_bjet", dR, weight, weight_err);
+      if(jets[emme].CVSInclV2() > 0.679)  Fill("h_dr_el_bjet", dR, weight, weight_err);/// CHANGE NUMBER
     }
   }
   
@@ -237,9 +204,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   float min_ee_Dr=10000.;
   float min_ee_DPhi=10000.;
   for(UInt_t i=0; i<electrons.size(); i++){
-    if(fabs(electrons.at(i).Eta()) < 1.447)Fill("h_electron_hoe_barrel", electrons.at(i).HoE(),weight, weight_err);
-    else Fill("h_electron_hoe_endcap", electrons.at(i).HoE(),weight, weight_err);
-    for(UInt_t j=0; j<electrons.size(); j++){
+     for(UInt_t j=0; j<electrons.size(); j++){
       if(i==j) continue;
       float dPhi = fabs(TVector2::Phi_mpi_pi(electrons[i].Phi() - electrons[j].Phi() ));
       float dR =electrons[i].DeltaR(electrons[j]);
@@ -413,8 +378,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   int samevertex=-999;
   int vid=0;
   int ev_elvertex=-999;
-  for(std::vector<snu::KElectron>::iterator elit = electrons.begin(); elit != electrons.end(); elit++, iel++){
-    if(iel == 0 ) vid= elit->VertexIndex() ;
+    for(std::vector<snu::KElectron>::iterator elit = electrons.begin(); elit != electrons.end(); elit++, iel++){
+      /* if(iel == 0 ) vid= elit->VertexIndex() ;
     else{
       if(elit->VertexIndex() != vid) samevertex = 0;
       else {
@@ -423,53 +388,15 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 	else ev_elvertex = 0;
       }
     }
-    
-    Fill("h_electrons_phi",elit->Phi(),weight, weight_err);
-    Fill("h_electrons_scphi",elit->SCPhi(),weight, weight_err);
+  */ 
+  Fill("h_electrons_phi",elit->Phi(),weight, weight_err);
     Fill("h_electrons_eta",elit->Eta(),weight, weight_err);
     Fill("h_electrons_sceta",elit->SCEta(),weight, weight_err);
-    Fill("h_ElectronD0", elit->dxy(),weight, weight_err);
-    Fill("h_ElectronDXY", elit->PrimaryVertexDXY(),weight, weight_err);
-    Fill("h_ElectronVDXY", elit->VtxDistXY(),weight, weight_err);
-    Fill("h_ElectronLVDXY", elit->LeadVtxDistXY(),weight, weight_err);
+    Fill("h_ElectronDXY", elit->dxy(),weight, weight_err);
     Fill("h_ElectronDZ", elit->dz(),weight, weight_err);
-    Fill("h_ElectronD0Sig", (elit->PrimaryVertexDXY()/ elit->PrimaryVertexDXYError()),weight, weight_err);
     
-    float EA=GetElectronISOEA(elit->SCEta());
-    float rho = ev.JetRho();
-    float el_iso =  elit->PFChargedHadronIso03() + max( elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() - rho * EA, 0.);
-    float el_iso_noncorr =  elit->PFChargedHadronIso03() +  elit->PFNeutralHadronIso03() + elit->PFPhotonIso03() ;
-    
-    float trkiso = elit->TrkIsoDR03();
-    float ecaliso = elit->ECalIsoDR03();
-    float hcaliso = elit->HCalIsoDR03();
-    Fill("h_Electron_fbrem", elit->FBrem(),weight, weight_err);
-    Fill("h_Electron_nbrem", elit->NBrems() ,weight, weight_err);
-    Fill("h_Electron_dist", elit->Dist() ,weight, weight_err);
-    Fill("h_Electron_cottheta", elit->CotTheta() ,weight, weight_err);
-    
-    if(fabs(elit->Eta()) < 1.447){
-      Fill("h_Electron_deltaeta_sctrk_barrel",  elit->DeltaEta(), weight, weight_err);
-      Fill("h_Electron_deltaphi_sctrk_barrel",  elit->DeltaPhi(), weight, weight_err);
-      Fill("h_Electron_sigmaieta_barrel", elit->SigmaIEtaIEta(), weight, weight_err);
-    }
-    else{
-      Fill("h_Electron_deltaeta_sctrk_endcap",  elit->DeltaEta(), weight, weight_err);
-      Fill("h_Electron_deltaphi_sctrk_endcap",  elit->DeltaPhi(), weight, weight_err);
-      Fill("h_Electron_sigmaieta_endcap", elit->SigmaIEtaIEta(), weight, weight_err);
-    }
-
-    double egamma_e  = elit->CaloEnergy();
-    double egamma_p  = elit->CaloEnergy() / elit->ESuperClusterOverP();
-    double egamma_ep = fabs ( ( 1.0 / egamma_e ) - ( 1.0 / egamma_p ) );
-
-    Fill("h_Electron_ep",egamma_ep, weight, weight_err);
-    Fill("h_Electron_convfitprob",elit->ConvFitProb  (), weight, weight_err);
-    Fill("h_Electron_missinghits",elit->MissingHits(), weight, weight_err);
-    Fill("h_Electron_matchedconvphoton",elit->HasMatchedConvPhot(), weight, weight_err);
-    Fill("h_Electron_chargeconsistency",elit->GsfCtfScPixChargeConsistency(), weight, weight_err);
-    
-
+ 
+    float el_iso =  elit->PFRelIso03();
 
 
     Fill("h_ElectronPt", elit->Pt(),weight, weight_err);
@@ -482,12 +409,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     
     Fill("h_ElectronIso", el_iso,weight, weight_err);
     Fill("h_ElectronRelIso", el_iso/elit->Pt(),weight, weight_err);
-    Fill("h_ElectronRelIso_nocorr", el_iso_noncorr/elit->Pt(),weight, weight_err);
     if(iel==1){
       Fill("h_secondElectronPt", elit->Pt(),weight, weight_err);
-      Fill("h_secondTrkElectronIso", trkiso/elit->Pt(),weight, weight_err);
-      Fill("h_secondEcalElectronIso", ecaliso/elit->Pt(),weight, weight_err);
-      Fill("h_secondHcalElectronIso", hcaliso/elit->Pt(),weight, weight_err);
       Fill("h_secondElectronIso", el_iso/elit->Pt(),weight, weight_err);
       if(fabs(elit->Eta()) < 1.5){
 	Fill("h_secondElectronIso_barrel", el_iso/elit->Pt(),weight, weight_err);
@@ -499,9 +422,6 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     }
     if(iel==0){
       Fill("h_leadingElectronEta",elit->Eta(),weight, weight_err);
-      Fill("h_leadingTrkElectronIso",trkiso/elit->Pt() ,weight, weight_err);
-      Fill("h_leadingEcalElectronIso", ecaliso/elit->Pt() ,weight, weight_err);
-      Fill("h_leadingHcalElectronIso", hcaliso/elit->Pt() ,weight, weight_err);
       Fill("h_leadingElectronIso", el_iso/elit->Pt(),weight, weight_err);
       if(fabs(elit->Eta()) < 1.5){
 	Fill("h_leadingElectronIso_barrel", el_iso/elit->Pt(),weight, weight_err);
@@ -575,18 +495,11 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   if(debug)cout<< "Plotting [5] " << endl;
 
   Fill("h_MET",ev.PFMET(), weight, weight_err);
-  Fill("h_METraw",ev.PFMETRaw(), weight, weight_err);
-  Fill("h_METtype1",ev.PFMETType1(), weight, weight_err);
-  Fill("h_METtype01",ev.PFMETType01(), weight, weight_err);
   Fill("h_MET_phi",ev.PFMETphi(), weight, weight_err);
-  Fill("h_METraw_phi",ev.PFMETRawphi(), weight, weight_err);
-  Fill("h_METtype1_phi",ev.PFMETType1phi(), weight, weight_err);
-  Fill("h_METtype01_phi",ev.PFMETType01phi(), weight, weight_err);
-  Fill("h_SumET",ev.PFSumET(), weight, weight_err);
   Fill("h_nVertices", ev.nVertices(), weight, weight_err);
   
-  Fill("h_samevertex", samevertex, weight, weight_err);
-  Fill("h_el_evvertexmatch" , ev_elvertex, weight, weight_err);
+  //  Fill("h_samevertex", samevertex, weight, weight_err);
+  //  Fill("h_el_evvertexmatch" , ev_elvertex, weight, weight_err);
 
 
   
@@ -603,8 +516,8 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     Fill("h_jets_eta",jets[j].Eta(),weight, weight_err);
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight, weight_err);
     Fill("h_jets_phi",jets[j].Phi(),weight, weight_err);
-    Fill("h_bTag",jets[j].CombinedSecVertexBtag(),weight, weight_err);
-    if(jets.at(j).CombinedSecVertexBtag() > 0.679) nbjet++; 
+    Fill("h_bTag",jets[j].CVSInclV2(),weight, weight_err);
+    if(jets.at(j).CVSInclV2() > 0.679) nbjet++; 
   }
   
   float st = ht + ev.PFMET();
@@ -622,21 +535,6 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 }/// End of Fill
 
 
-  
-float SignalPlots::GetElectronISOEA(float eta){
-
-  Float_t PHONH_03[7]          = {0.13, 0.14, 0.07, 0.09, 0.11, 0.11, 0.14};
-  int ifid=0;
-  if (fabs(eta) < 1.0) ifid = 0;
-  else if (fabs(eta) < 1.479) ifid = 1;
-  else if (fabs(eta) < 2.0) ifid = 2;
-  else if (fabs(eta) < 2.2) ifid = 3;
-  else if (fabs(eta) < 2.3) ifid = 4;
-  else if (fabs(eta) < 2.4) ifid = 5;
-  else ifid = 6;
-  
-  return PHONH_03[ifid];
-}
 
 void SignalPlots::Write() {
  

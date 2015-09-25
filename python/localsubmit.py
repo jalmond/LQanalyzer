@@ -17,7 +17,7 @@ parser.add_option("-p", "--period", dest="period", default="A",help="which data 
 parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
-parser.add_option("-t", "--tree", dest="tree", default="rootTupleTree/tree", help="What is input tree name?")
+parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
 parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
@@ -340,15 +340,8 @@ mcLumi = 1.0
 filechannel=""
 
 if platform.system() == "Linux":
-    version="_5_3_14"
-    if  use5312ntuples == "True":
-        version = "_5_3_12"
-        print "Using Version 5312 ntuples"
-    elif  use538ntuples == "True":
-        version = "_5_3_8"
-        print "Using Version 538 ntuples"
-    else:
-        print "Using Version 5314 ntuples"
+    version="_CAT"
+    print "Using CAT 437 ntuples"
     filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
     
 else:
@@ -791,7 +784,7 @@ else:
             print line
 
 
-    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/"        
+    SKTreeOutput = "/data2/CatNtuples/CMSSW_471/SKTrees/Sep15/"        
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):

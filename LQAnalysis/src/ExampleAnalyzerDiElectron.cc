@@ -255,7 +255,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   int nbjet=0;
    for(unsigned int i=0; i <jetColl_lepveto.size() ; i++){
-    if(jetColl_lepveto.at(i).BtagProb() > 0.679) nbjet++;
+    if(jetColl_lepveto.at(i).CVSInclV2() > 0.679) nbjet++;
    }
 
   ///// SOME STANDARD PLOTS /////

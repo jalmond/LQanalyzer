@@ -53,6 +53,7 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
 
 void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
+  return;
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    

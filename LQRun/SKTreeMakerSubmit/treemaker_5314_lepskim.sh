@@ -3,10 +3,10 @@
 
 ###### SET WHAT JOBS TO RUN
 runMC=true
-runDoubleMuon=false
-runDoubleElectron=false
+runDoubleMuon=true
+runDoubleElectron=true
 runElectronMuon=false
-runSingleMuon=false
+runSingleMuon=true
 runSingleElectron=false
 runSignal=false
 
@@ -76,9 +76,8 @@ then
     loglevel="INFO"
     logstep=1000
     
-
-
-    declare -a input_samples=("DY10to50_15" "DY50plus_15")
+    declare -a input_samples=("WW")
+# "WZ" "ZZ" "DY" "ttbar_mg" "WJet")
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA
@@ -93,7 +92,7 @@ then
     logstep=1000
     
     stream="egamma"
-    declare -a input_samples=("A" "B" "C" "D")
+    declare -a input_samples=("C")
 
     source submit.sh
 fi    
@@ -110,8 +109,8 @@ then
     logstep=1000
     
     stream="muon"
-    declare -a input_samples=("A" "B" "C" "D" )
-#"B" "C" "D")
+    declare -a input_samples=("C" )
+
     source submit.sh
 fi
 ################ ELECTRONMUON DATA
@@ -127,8 +126,8 @@ then
     logstep=1000
     
     stream="emu"
-    declare -a input_samples=("A" "B" "C" "D")
-    declare -a input_samples=("A" )
+
+    declare -a input_samples=("C" )
     source submit.sh
 fi
 ################ SINGLEELECTRON DATA
@@ -143,6 +142,6 @@ then
     logstep=1000
     
     stream="singleelectron"
-    declare -a input_samples=("A" "B" "C" "D")
+    declare -a input_samples =("C")
     source submit.sh
 fi

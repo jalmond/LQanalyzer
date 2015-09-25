@@ -466,6 +466,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     //// Connect chain to Data class                                                                                                                                        
     cycle->Init(chain);
+
     GetMemoryConsumption("Connected All Active Branches");
     
     /// We can now check 
