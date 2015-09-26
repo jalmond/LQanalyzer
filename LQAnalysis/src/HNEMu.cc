@@ -116,14 +116,14 @@ void HNEMu::ExecuteEvents()throw( LQError ){
 
 
 
-float HNEMu::WeightCFEvent(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, bool runchargeflip, bool useoldrates){
+float HNEMu::WeightCFEvent(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, bool runchargeflip){
 
   if(electrons.size()!=1) return 0.;
   if(muons.size()!=1) return 0.;
   
   if(runchargeflip) {
     if(electrons.at(0).Charge() != muons.at(0).Charge()) {
-      float cf1=  CFRate(electrons.at(0), useoldrates);
+      float cf1=  CFRate(electrons.at(0));
 
       return  cf1;
     }// OS requirement

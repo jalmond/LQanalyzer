@@ -20,7 +20,7 @@ void SkimFlatCat::Loop()
    Int_t nselected = 0;
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
-     std::cout << jentry << " :  "<<  fChain->GetEntries() << std::endl; 
+     if(!(jentry%10000)) std::cout << jentry << " :  "<<  fChain->GetEntries() << std::endl; 
      Long64_t ientry = LoadTree(jentry);
    
      if (ientry < 0) break;

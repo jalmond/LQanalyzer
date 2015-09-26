@@ -100,13 +100,13 @@ float HNDiElectron::IsDiLep(std::vector<snu::KElectron> electrons){
   return 0.;
 }
 
-float HNDiElectron::WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates){
+float HNDiElectron::WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip){
 
   if(electrons.size()!=2) return 0.;
   if(runchargeflip) {
     if(electrons.at(0).Charge() != electrons.at(1).Charge()) {
-      float cf1=  CFRate(electrons.at(0), useoldrates);
-      float cf2=  CFRate(electrons.at(1),useoldrates);
+      float cf1=  CFRate(electrons.at(0));
+      float cf2=  CFRate(electrons.at(1));
       return ((cf1/(1.-cf1)) + (cf2/(1.-cf2)));
     }// OS requirement
     else return 0.;
@@ -119,12 +119,6 @@ float HNDiElectron::WeightCFEvent(std::vector<snu::KElectron> electrons, bool ru
   
 }
 
-bool HNDiElectron::CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
-
-
-  return true;
-}
-
 
 
 
@@ -132,10 +126,6 @@ bool HNDiElectron::CheckSignalRegion(  std::vector<snu::KElectron> electrons, st
 void HNDiElectron::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
-  m_logger << INFO << "Number of os mc events = " << m_os_Z_nw  << LQLogger::endmsg; 
-  m_logger << INFO << "Number of os mc events (weighted) = " << m_os_Z  << LQLogger::endmsg; 
-  m_logger << INFO << "Number of ss mc events = " << m_ss_Z_nw  << LQLogger::endmsg; 
-  m_logger << INFO << "Number of ss mc events (weighted)= " << m_ss_Z  << LQLogger::endmsg; 
 }
 
 
@@ -145,8 +135,6 @@ void HNDiElectron::BeginCycle() throw( LQError ){
   
   string analysisdir = getenv("FILEDIR");  
   
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram_69400.root").c_str());
-  if(!k_isdata)    fBTagSF = new BTagSFUtil("CSVM");
 
   //
   //If you wish to output variables to output file use DeclareVariable
@@ -162,8 +150,6 @@ void HNDiElectron::BeginCycle() throw( LQError ){
 HNDiElectron::~HNDiElectron() {
   
   Message("In HNDiElectron Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
-  if(!k_isdata) delete fBTagSF;
 
  }
      

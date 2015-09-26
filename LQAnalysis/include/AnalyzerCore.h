@@ -34,13 +34,12 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KJet>  GetJets(TString label);
   std::vector<snu::KMuon> GetMuons(TString label);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label, double& w);
 
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);
 
 
-  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
+  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
 
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   double TriggerScaleFactor( vector<snu::KMuon> mu);;
@@ -52,7 +51,6 @@ class AnalyzerCore : public LQCycleBase {
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
-  bool IsTight(snu::KElectron el , double dxy, double biso, double eiso, bool usetight);
   bool IsTight(snu::KElectron electron);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
@@ -60,8 +58,7 @@ class AnalyzerCore : public LQCycleBase {
   int NBJet(std::vector<snu::KJet> jets);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KElectron> electrons);
-  float CFRate(snu::KElectron el, bool useoldrates=false);
-  void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
+  float CFRate(snu::KElectron el);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);
@@ -155,7 +152,6 @@ class AnalyzerCore : public LQCycleBase {
   void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy);
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
-  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight, Double_t err);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);

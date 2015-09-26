@@ -26,7 +26,7 @@ class HNEMu : public AnalyzerCore {
   void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  TString name);
   
 
-  float WeightCFEvent(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons,  bool runchargeflip, bool useoldrates=false);  
+  float WeightCFEvent(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons,  bool runchargeflip);  
   float IsDiLep(std::vector<snu::KElectron> electrons);
 
  private:

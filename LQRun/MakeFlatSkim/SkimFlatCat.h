@@ -385,7 +385,7 @@ SkimFlatCat::SkimFlatCat(TTree *tree) : fChain(0)
       // The following code should be used if you want this class to access a chain
       // of trees.
       TChain * chain = new TChain("ntuple/event","");
-      chain->Add("/data2/DATA/cattoflat/MC/WZ_TuneCUETP8M1_13TeV-pythia8/ntuple2.root/ntuple/event");
+      chain->Add("/data2/DATA/cattoflat/MC/DoubleMuon/ntuple1.root/ntuple/event");
 
       tree = chain;
 #endif // SINGLE_TREE

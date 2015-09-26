@@ -123,13 +123,8 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
   
 }
 
-std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString label){
-  
-  double dummy=1.;
-  return GetElectrons(keepcf, keepfake, label, dummy);
-}
 
-std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString label, double& w){
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString label){
   
   bool applyidsf= false;
   std::vector<snu::KElectron> electronColl;
@@ -203,13 +198,13 @@ bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
 }
 
 
-float AnalyzerCore::WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates){
+float AnalyzerCore::WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip){
 
   if(electrons.size()!=2) return 0.;
   if(runchargeflip) {
     if(electrons.at(0).Charge() != electrons.at(1).Charge()) {
-      float cf1=  CFRate(electrons.at(0), useoldrates);
-      float cf2=  CFRate(electrons.at(1),useoldrates);
+      float cf1=  CFRate(electrons.at(0));
+      float cf2=  CFRate(electrons.at(1));
       return ((cf1/(1.-cf1)) + (cf2/(1.-cf2)));
     }// OS requirement
     else return 0.;
@@ -250,16 +245,21 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 
 
 double AnalyzerCore::MuonScaleFactor(double eta, double pt, int sys){
+  if(fabs(eta) > 2.5) return 1.;  
+  if(pt < 10) return 1.;
+  if(sys==0)return 1.;
   return 1.;
   
 }
 
 double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el){
+  if(el.size() !=2) return 0.;
   return 1.;
   
 }
 
 double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu){
+  if(mu.size() != 2) return 0.;
   return 1.;
 
 }
@@ -270,7 +270,11 @@ double AnalyzerCore::TriggerScaleFactorEMu( ){
 
 
 double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_electron , int sys){
-  
+  if(tight_electron){
+    if(fabs(eta) > 2.5) return 1.;
+    if(pt< 10) return 1.;
+  }
+  if(sys==0) return 1.;
   return 1.;
 }
 
@@ -638,23 +642,8 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
 }
 
 
+
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
-
-  if(type==sighist){
-
-    map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
-    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
-    else {
-      mapCLhistSig[hist] = new SignalPlots(hist);
-      sigpit = mapCLhistSig.find(hist);
-      sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
-    }
-  }
-  else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
-}
-
-
-void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, Double_t weight_err){
 
   if(type==sighist){
 
@@ -674,11 +663,11 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
 
   if(type==sighist){
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
-    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w, 0.);
+    if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, electrons, jets, w);
     else {
       mapCLhistSig[hist] = new SignalPlots(hist);
       sigpit = mapCLhistSig.find(hist);
-      sigpit->second->Fill(ev, electrons, jets, w, 0.);
+      sigpit->second->Fill(ev, electrons, jets, w);
     }
   }
   else  m_logger << INFO  <<"Type not set to sighist, is this a mistake?" << LQLogger::endmsg;
@@ -827,7 +816,7 @@ double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
 }
 
 float AnalyzerCore::CFRate(snu::KElectron el){
-  
+  if(el.Pt() < 10.) return 0.;
   return 1. ;
 }
 
@@ -843,7 +832,7 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
 }
 
 
-bool AnalyzerCore::IsTight(snu::KElectron el , double dxy, double biso, double eiso, bool usetight){
+bool AnalyzerCore::IsTight(snu::KElectron el){
   
   cout << "Not optimised for 2015" << endl;
   return eventbase->GetElectronSel()->HNIsTight(el, false);
@@ -851,37 +840,37 @@ bool AnalyzerCore::IsTight(snu::KElectron el , double dxy, double biso, double e
 }
   
 
-bool AnalyzerCore::IsTight(snu::KElectron electron){
-
-  return eventbase->GetElectronSel()->HNIsTight(electron,  false);
-}
-
 vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons, bool keep_chargeflip, bool keepfake){
-  
+  if(electrons.size() == 0)
+    return electrons;
+
+  if(keep_chargeflip&&keepfake){
+    /// NEED TO FILL FOR 13 TEV
+  }
   return electrons;
 }
 
 vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool keepfake){
+  if(muons.size()==0)
+    return muons;
 
+  if(keepfake){
+    /// NEED TO FILL FOR 13 TEV                                                                                                                                                                          
+  }
   return muons;
 }
 
 
-
-
-void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
-  
-  
-}
-
-
 float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons){
-
+  if(k_muons.size()==0 && k_electrons.size()==0) return 0.;
   float em_weight = 0.;
   return em_weight;
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
+
+  if(k_muons.size()==0) return 0.;
+  float em_weight = 0.;
 
   float mm_weight = 0.;
 
@@ -892,7 +881,8 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
 
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons){
-  
+  if(k_electrons.size()==0) return 0.;
+
   return 1.;
 }
 

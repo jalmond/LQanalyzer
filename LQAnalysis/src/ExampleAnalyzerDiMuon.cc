@@ -219,9 +219,6 @@ cout << "Weight = " << weight << endl;
     cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
    }
    
-   /// Correct the muon momentum with rochester corrections
-   CorrectMuonMomentum(muonTightColl);
-   CorrectMuonMomentum(muonHighPtColl);
    
    /// Example of how to get fake weight for dimuon channel
    std::vector<snu::KMuon> muonLooseColl;
@@ -232,23 +229,6 @@ cout << "Weight = " << weight << endl;
    ///////////////////////////////////////////////////////////////////////////////////////////
 
    std::vector<snu::KMuon> muonVetoColl;
-   /// Lower pt cut to 10
-   //eventbase->GetMuonSel()->SetPt(10.);
-   //eventbase->GetMuonSel()->SetEta(2.4);
-   // Use LOOSE definition from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Loose_Muon
-   //eventbase->GetMuonSel()->SetID(BaseSelection::MUON_LOOSE);
-   // Use loose isolation https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation_AN1
-   // Note we use PF based isolation
-   //(∑ET(chHad from PV)+∑ET(neutHad)+∑ET(photons))/pT
-   // Default is 0.12 for Tight and 0.2 for loose.. However this is with 0.4 cone. We use 0.3 cone
-   //eventbase->GetMuonSel()->SetRelIso(0.20);
-   /// These following cuts are essentially large to be extremely loose
-   //eventbase->GetMuonSel()->SetChiNdof(500.);
-   //eventbase->GetMuonSel()->SetBSdxy(2000.);
-   //eventbase->GetMuonSel()->SetBSdz(100.00);
-   //eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
-   
-   // New function applied all selection for veto muons
    eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
 
 
@@ -259,62 +239,11 @@ cout << "Weight = " << weight << endl;
    ///////////////////////////////////////////////////////////////////////////////////////////
    std::vector<snu::KElectron> electronTightColl;
 
-   //// CHOICE OF ELECTRON ID /////////////////////
-   /// Use MEDIUM definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
-   // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter
-   //eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
-
-   /// Select pt of electrons
-   //eventbase->GetElectronSel()->SetPt(20);
-
-   // Use 2.5 eta cut. This is due to the acceptance of the tracker
-   // Barrel |eta| <= 1.479
-   // Endcap 1.479 < |eta| < 2.5
-   // We actually cut on 1.4442<abeta<1.566 . This is due to gap region between barrel and endcap of the ECal
-   //eventbase->GetElectronSel()->SetEta(2.5);
-
-   /// A relative iso cut of 0.15 is already implemented in the EGAMMA_MEDIUM cut.
-   /// Uses PF isolation. Corrected for Pile Up https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaEARhoCorrection
-   /// Default cone size is 0.3.
-   /// 0.15 is medium working point. 0.10 is Tight (recommended)
-   /// Can apply tighter cut by uncommenting the line below and chaning the value
-   //  eventbase->GetElectronSel()->SetRelIso(0.15);
-
-   /// Some IP (dxy, dz) cuts are applied in the ID cut
-   /// |d0| <  0.02 (200 micrometers) default
-   /// |dZ| <  0.10  default
-   /// Can apply tighter cuts using SetBSdxy/SetBSdz
-   //eventbase->GetElectronSel()->SetBSdxy(0.02);
-   //eventbase->GetElectronSel()->SetBSdz(0.10);
-
-   // We can check the charge of the Super Cluster / Tracker / combined electron
-   // SetCheckCharge(true) requires that all 3 are the same
-   //eventbase->GetElectronSel()->SetCheckCharge(true);
-
-   // Some cuts are applied in the ID MEDIUM/TIGHT to reduce conversion electrons
-   // These cuts are on the vertex fit probabilty/missing hits in the tracker
-   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Conversion_Rejection
-   // We can also cut on the presence of any matched conversion https://twiki.cern.ch/twiki/bin/viewauth/CMS/ConversionTools
-   // To apply the passconversionveto use SetApplyConvVeto(true)
-   //eventbase->GetElectronSel()->SetApplyConvVeto(true);
-
-   /// Use the selection function to fill our empty vector with the cuts specified above
-   
-   /// New function applies all tight selection
    eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
 
   
    /// 4) Jets(with lepton veto)
    std::vector<snu::KJet> jetColl_lepveto;
-   /// We use PFJets : AKT jets with dR=0.5
-   /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
-   /// Cuts applied to 1) isolation 2) EM fraction 3) HPD noise rejection
-   //eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-   // 20 GeV is very loose. Needed to keep soft signal muons form heavy neutrinos
-   //eventbase->GetJetSel()->SetPt(20.);
-   // As with electrons the eta cut is chosed to coincide with teh tracker acceptance
-   //eventbase->GetJetSel()->SetEta(2.5);
-   /// To select jets use predefined function
    eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonTightColl, electronTightColl);
 
    ///// SOME STANDARD PLOTS /////
