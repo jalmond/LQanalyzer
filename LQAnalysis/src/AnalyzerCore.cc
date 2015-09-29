@@ -67,25 +67,25 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
   std::vector<snu::KJet> jetColl;
   if(label.Contains("NoLeptonVeto")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-    eventbase->GetJetSel()->SetPt(20.);
+    eventbase->GetJetSel()->SetPt(10.);
     eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->Selection(jetColl);
   }
-  else  if(label.Contains("loosest")){
+  else  if(label.Contains("Loose")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->SetEta(5.);
     eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
   }
   
   
-  else  if(label.Contains("ApplyLeptonVeto")){
+  else  if(label.Contains("Medium")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
-    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->SetEta(2.8);
     eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
   }
-  else if(label.Contains("ApplyPileUpID")){
+  else if(label.Contains("HNJets")){
     eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "veto"));
     
   }
@@ -99,7 +99,8 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
 
   std::vector<snu::KMuon> muonColl;
 
-  if(label.Contains("veto")){
+  if(label.Contains("Veto")){
+    // pt > 10 ; eta < 2.4 ; reliso(03) < 0.6 ; chi2 < 10 ; dZ < 100; dxy < 10; PF; global || tracker
     eventbase->GetMuonSel()->HNVetoMuonSelection(muonColl);
     return  GetTruePrompt(muonColl, true);
   }
@@ -107,32 +108,37 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
   if(k_running_nonprompt) {
     
     eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
-
     return  muonColl;
   }
+  
+  if(label.Contains("Tight")){
+    // pt > 15 ; eta < 2.4 ; reliso(03) < 0.05 ;chi2 < 500 ; dZ< 0.1; dxy < 0.005; PF; global || tracker MUON_TIGHT
 
-  if(label.Contains("tight")){
     eventbase->GetMuonSel()->HNTightMuonSelection(muonColl);
   }
+  
   else if(label.Contains("NoCut")){
     eventbase->GetMuonSel()->Selection(muonColl);
+    return muonColl;
   }
   
-
   return  GetTruePrompt(muonColl,  false);
+
   
 }
 
 
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(TString label){
+  return GetElectrons( false,  false, label);
+}
+
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString label){
   
-  bool applyidsf= false;
   std::vector<snu::KElectron> electronColl;
 
   int icoll(0);
   if(label.Contains("HNTight")){
     icoll++;
-    applyidsf= true;
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
     if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronColl);
@@ -142,10 +148,10 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   }
    
  
-  else if(label.Contains("loose")){    icoll++; eventbase->GetElectronSel()->HNLooseElectronSelection(electronColl);}
+  else if(label.Contains("HNLoose")){    icoll++; eventbase->GetElectronSel()->HNLooseElectronSelection(electronColl);}
 
   // Veto cut
-  else if(label.Contains("veto")){    icoll++; eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);}
+  else if(label.Contains("HNVeto")){    icoll++; eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);}
   
   /// Standard pog ids or susy analysis id
   
@@ -429,7 +435,7 @@ void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler){
   
   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
-
+  
 }
 
 TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
@@ -843,21 +849,36 @@ bool AnalyzerCore::IsTight(snu::KElectron el){
 vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons, bool keep_chargeflip, bool keepfake){
   if(electrons.size() == 0)
     return electrons;
+  
+  vector<snu::KElectron> prompt_electrons;
+  for(unsigned int i = 0; i < electrons.size(); i++){
+    if(!k_isdata){
+      if(keepfake&&keep_chargeflip) prompt_electrons.push_back(electrons.at(i));
+      else if(!electrons.at(i).MCMatched()) prompt_electrons.push_back(electrons.at(i));
+    }// Data
+    else prompt_electrons.push_back(electrons.at(i));
+  }/// loop
 
-  if(keep_chargeflip&&keepfake){
-    /// NEED TO FILL FOR 13 TEV
-  }
-  return electrons;
+  return prompt_electrons;
+
+
 }
 
 vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool keepfake){
-  if(muons.size()==0)
-    return muons;
+  if(muons.size()==0)return muons;
 
-  if(keepfake){
-    /// NEED TO FILL FOR 13 TEV                                                                                                                                                                          
-  }
-  return muons;
+  vector<snu::KMuon> prompt_muons;
+  for(unsigned int i = 0; i < muons.size(); i++){
+    if(!k_isdata){
+
+      if(keepfake) prompt_muons.push_back(muons.at(i));
+      else if(!muons.at(i).MCMatched()) prompt_muons.push_back(muons.at(i));
+    }// Data
+    else prompt_muons.push_back(muons.at(i));
+  }/// loop
+
+  return prompt_muons;
+
 }
 
 

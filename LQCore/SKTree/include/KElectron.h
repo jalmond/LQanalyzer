@@ -75,6 +75,11 @@ namespace snu {
     void SetTrkVy(Double_t trkvy);
     void SetTrkVz(Double_t trkvz);
 
+    void SetTrigMatch(TString match);
+
+
+    bool TriggerMatched(TString path);
+
     ///// Functions to call class variables
     
     inline Bool_t  IsEBFiducial() {return bool (fabs(SCEta()) < 1.442);}
@@ -129,6 +134,9 @@ namespace snu {
     inline Double_t  TrkVx() const {return  k_trkvx;}
     inline Double_t  TrkVy() const {return  k_trkvy;}
     inline Double_t  TrkVz() const {return  k_trkvz;}
+
+    inline TString TrigMatch() const{return k_trig_match;}
+
   protected:
     /// Reset function.                                                                  
     virtual void Reset();    
@@ -145,9 +153,9 @@ namespace snu {
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
     Int_t snu_id;
-    
+    TString k_trig_match;
 
-    ClassDef(KElectron,16);
+    ClassDef(KElectron,17);
   }; 
   
 }//namespace snu

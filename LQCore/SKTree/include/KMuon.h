@@ -51,6 +51,10 @@ namespace snu {
     void SetShiftedEUp(double pt_up);
     void SetShiftedEDown(double pt_down);
 
+    void SetTrigMatch(TString match);
+
+    bool TriggerMatched(TString path);
+
     inline Bool_t IsPF() const {return k_muon_ispf;}
     inline Bool_t IsGlobal() const {return k_muon_isglobal;}
     inline Bool_t IsTracker() const {return k_muon_istracker;}
@@ -82,6 +86,8 @@ namespace snu {
     inline Double_t PtShiftedUp() const {return muon_pt_up;}
     inline Double_t PtShiftedDown() const {return muon_pt_down;}
     
+    inline TString TrigMatch() const{return k_trig_match;}
+
   protected:
     /// Reset function.                                                                  
     virtual void Reset();    
@@ -96,9 +102,10 @@ namespace snu {
     Double_t muon_pt_up, muon_pt_down, k_muon_reliso03, k_muon_reliso04;
 
     Bool_t k_isloose, k_istight, k_matched,k_ismedium, k_issoft ;
-
-
-    ClassDef(KMuon,12)
+    
+    TString k_trig_match;
+    
+    ClassDef(KMuon,13)
   };   
 }//namespace snu
 

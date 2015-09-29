@@ -360,6 +360,10 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+   virtual void     SlimMuons();
+   virtual void     SlimElectrons();
+   virtual void     SlimJets();
+   virtual void     SlimPuppiJets();
 };
 
 #endif
@@ -385,7 +389,7 @@ SkimFlatCat::SkimFlatCat(TTree *tree) : fChain(0)
       // The following code should be used if you want this class to access a chain
       // of trees.
       TChain * chain = new TChain("ntuple/event","");
-      chain->Add("/data2/DATA/cattoflat/MC/DoubleMuon/ntuple1.root/ntuple/event");
+      chain->Add("/data2/DATA/cattoflat/skim/slim/WZ_TuneCUETP8M1_13TeV-pythia8/Skim_1.root");
 
       tree = chain;
 #endif // SINGLE_TREE
@@ -746,10 +750,200 @@ void SkimFlatCat::Show(Long64_t entry)
    if (!fChain) return;
    fChain->Show(entry);
 }
+
+
+void SkimFlatCat::SlimElectrons()
+{
+  std::vector<int > remove_obj;
+  for(unsigned int im =0; im < electrons_pt->size(); im++){
+    bool rem =false;
+    if( electrons_pt->at(im) < 10) rem = true;
+    if( fabs(electrons_eta->at(im)) > 2.8 )rem = true;
+    if(rem) remove_obj.push_back(im);
+  }
+
+  int nrm = 0;
+  for(unsigned int im =0; im < remove_obj.size(); im++){
+    electrons_absIso03->erase(electrons_absIso03->begin() + remove_obj.at(im) - nrm);
+    electrons_absIso04->erase(electrons_absIso04->begin() + remove_obj.at(im) - nrm);
+    electrons_chIso03->erase(electrons_chIso03->begin() + remove_obj.at(im) - nrm);
+    electrons_chIso04->erase(electrons_chIso04->begin() + remove_obj.at(im) - nrm);
+    electrons_dxy->erase(electrons_dxy->begin() + remove_obj.at(im) - nrm);
+    electrons_dz->erase(electrons_dz->begin() + remove_obj.at(im) - nrm);
+    electrons_energy->erase(electrons_energy->begin() + remove_obj.at(im) - nrm);
+    electrons_eta->erase(electrons_eta->begin() + remove_obj.at(im) - nrm);
+    electrons_isGsfCtfScPixChargeConsistent->erase(electrons_isGsfCtfScPixChargeConsistent->begin() + remove_obj.at(im) - nrm);
+    electrons_m->erase(electrons_m->begin() + remove_obj.at(im) - nrm);
+    electrons_nhIso03->erase(electrons_nhIso03->begin() + remove_obj.at(im) - nrm);
+    electrons_nhIso04->erase(electrons_nhIso04->begin() + remove_obj.at(im) - nrm);
+    electrons_phIso03->erase(electrons_phIso03->begin() + remove_obj.at(im) - nrm);
+    electrons_phIso04->erase(electrons_phIso04->begin() + remove_obj.at(im) - nrm);
+    electrons_phi->erase(electrons_phi->begin() + remove_obj.at(im) - nrm);
+    electrons_pt->erase(electrons_pt->begin() + remove_obj.at(im) - nrm);
+    electrons_puChIso03->erase(electrons_puChIso03->begin() + remove_obj.at(im) - nrm);
+    electrons_puChIso04->erase(electrons_puChIso04->begin() + remove_obj.at(im) - nrm);
+    electrons_q->erase(electrons_q->begin() + remove_obj.at(im) - nrm);
+    electrons_relIso03->erase(electrons_relIso03->begin() + remove_obj.at(im) - nrm);
+    electrons_relIso04->erase(electrons_relIso04->begin() + remove_obj.at(im) - nrm);
+    electrons_scEta->erase(electrons_scEta->begin() + remove_obj.at(im) - nrm);
+    electrons_shiftedEnDown->erase(electrons_shiftedEnDown->begin() + remove_obj.at(im) - nrm);
+    electrons_shiftedEnUp->erase(electrons_shiftedEnUp->begin() + remove_obj.at(im) - nrm);
+    electrons_x->erase(electrons_x->begin() + remove_obj.at(im) - nrm);
+    electrons_y->erase(electrons_y->begin() + remove_obj.at(im) - nrm);
+    electrons_z->erase(electrons_z->begin() + remove_obj.at(im) - nrm);
+    electrons_electronID_snu->erase(electrons_electronID_snu->begin() + remove_obj.at(im) - nrm);
+
+    nrm++;
+  }
+  SlimBool( electrons_electronID_loose, remove_obj);
+  SlimBool( electrons_electronID_medium, remove_obj);
+  SlimBool( electrons_electronID_tight, remove_obj);
+  SlimBool( electrons_electronID_veto, remove_obj);
+  SlimBool( electrons_isPF, remove_obj);
+  SlimBool( electrons_mcMatched, remove_obj);
+  SlimBool( electrons_passConversionVeto, remove_obj);
+
+
+}
+
+void SkimFlatCat::SlimMuons()
+{
+  std::vector<int > remove_obj;
+  for(unsigned int im =0; im < muon_pt->size(); im++){
+    bool rem =false;
+    if( muon_pt->at(im) < 10) rem = true;
+    if( fabs(muon_eta->at(im)) > 2.8 )rem = true;
+    if(rem) remove_obj.push_back(im);
+  }
+  
+  int nrm = 0;
+  for(unsigned int im =0; im < remove_obj.size(); im++){
+    muon_pt->erase(muon_pt->begin() + remove_obj.at(im) - nrm);
+    muon_eta->erase(muon_eta->begin() + remove_obj.at(im) - nrm);
+    muon_dxy->erase(muon_dxy->begin() + remove_obj.at(im) - nrm);
+    muon_dz->erase(muon_dz->begin() + remove_obj.at(im) - nrm);
+    muon_energy->erase(muon_energy->begin() + remove_obj.at(im) - nrm);
+    muon_m->erase(muon_m->begin() + remove_obj.at(im) - nrm);
+    muon_normchi->erase(muon_normchi->begin() + remove_obj.at(im) - nrm);
+    muon_phi->erase(muon_phi->begin() + remove_obj.at(im) - nrm);
+    muon_q->erase(muon_q->begin() + remove_obj.at(im) - nrm);
+    muon_relIso03->erase(muon_relIso03->begin() + remove_obj.at(im) - nrm);
+    muon_relIso04->erase(muon_relIso04->begin() + remove_obj.at(im) - nrm);
+    muon_shiftedEdown->erase(muon_shiftedEdown->begin() + remove_obj.at(im) - nrm);
+    muon_shiftedEup->erase(muon_shiftedEup->begin() + remove_obj.at(im) - nrm);
+    muon_x->erase(muon_x->begin() + remove_obj.at(im) - nrm);
+    muon_y->erase(muon_y->begin() + remove_obj.at(im) - nrm);
+    muon_z->erase(muon_z->begin() + remove_obj.at(im) - nrm);
+    muon_matchedstations->erase(muon_matchedstations->begin() + remove_obj.at(im) - nrm);
+    muon_trackerlayers->erase(muon_trackerlayers->begin() + remove_obj.at(im) - nrm);
+    muon_validhits->erase(muon_validhits->begin() + remove_obj.at(im) - nrm);
+    muon_validmuonhits->erase(muon_validmuonhits->begin() + remove_obj.at(im) - nrm);
+    muon_validpixhits->erase(muon_validpixhits->begin() + remove_obj.at(im) - nrm);
+    
+    nrm++;
+  }
+  SlimBool( muon_isGlobal, remove_obj);
+  SlimBool( muon_isLoose,remove_obj);
+  SlimBool( muon_isMedium,remove_obj);
+  SlimBool( muon_isPF,remove_obj);
+  SlimBool( muon_isSoft,remove_obj);
+  SlimBool( muon_isTight,remove_obj);
+  SlimBool( muon_isTracker,remove_obj);
+  SlimBool( muon_matched,remove_obj);
+}
+void  SkimFlatCat::SlimBool(std::vector<bool>* vbool, std::vector<int> torm){
+  vector<bool> test;
+  for(unsigned int i =0 ; i < vbool->size(); i++){
+    test.push_back(vbool->at(i));
+  }
+  
+  vbool->clear();
+  bool keep = true;
+  for(unsigned int i =0 ; i <test.size(); i++){
+    for(unsigned int k = 0; k < torm.size(); k++){
+      if(i == torm.at(k)) keep = false;
+    }
+    if(keep){
+      vbool->push_back(test.at(i));
+    }
+  }
+  
+}
+
+void SkimFlatCat::SlimJets()
+{
+  std::vector<int > remove_obj;
+  for(unsigned int im =0; im < jets_pt->size(); im++){
+    bool rem =false;
+    if( jets_pt->at(im) < 10) rem = true;
+    if(rem) remove_obj.push_back(im);
+  }
+  
+  int nrm = 0;
+  for(unsigned int im =0; im < remove_obj.size(); im++){
+    jets_CVSInclV2->erase(jets_CVSInclV2->begin() + remove_obj.at(im) - nrm);
+    jets_energy->erase(jets_energy->begin() + remove_obj.at(im) - nrm);
+    jets_eta->erase(jets_eta->begin() + remove_obj.at(im) - nrm);
+    jets_isPFId->erase(jets_isPFId->begin() + remove_obj.at(im) - nrm);
+    jets_m->erase(jets_m->begin() + remove_obj.at(im) - nrm);
+    jets_phi->erase(jets_phi->begin() + remove_obj.at(im) - nrm);
+    jets_pt->erase(jets_pt->begin() + remove_obj.at(im) - nrm);
+    jets_shiftedEnDown->erase(jets_shiftedEnDown->begin() + remove_obj.at(im) - nrm);
+    jets_shiftedEnUp->erase(jets_shiftedEnUp->begin() + remove_obj.at(im) - nrm);
+    jets_smearedRes->erase(jets_smearedRes->begin() + remove_obj.at(im) - nrm);
+    jets_smearedResDown->erase(jets_smearedResDown->begin() + remove_obj.at(im) - nrm);
+    jets_smearedResUp->erase(jets_smearedResUp->begin() + remove_obj.at(im) - nrm);
+    jets_vtx3DSig->erase(jets_vtx3DSig->begin() + remove_obj.at(im) - nrm);
+    jets_vtxMass->erase(jets_vtxMass->begin() + remove_obj.at(im) - nrm);
+    jets_vtx3DVal->erase(jets_vtx3DVal->begin() + remove_obj.at(im) - nrm);
+    jets_hadronFlavour->erase(jets_hadronFlavour->begin() + remove_obj.at(im) - nrm);
+    jets_partonFlavour->erase(jets_partonFlavour->begin() + remove_obj.at(im) - nrm);
+    jets_partonPdgId->erase(jets_partonPdgId->begin() + remove_obj.at(im) - nrm);
+    jets_vtxNtracks->erase(jets_vtxNtracks->begin() + remove_obj.at(im) - nrm);
+
+    nrm++;
+  }
+
+  SlimBool( jets_isLoose, remove_obj);
+  SlimBool( jets_isTight, remove_obj);
+  SlimBool( jets_isTightLepVetoJetID, remove_obj);
+
+}
+
+void SkimFlatCat::SlimPuppiJets()
+{
+  std::vector<int > remove_obj;
+  for(unsigned int im =0; im < jetsPuppi_pt->size(); im++){
+    bool rem =false;
+    if( jetsPuppi_pt->at(im) < 10) rem = true;
+    if(rem) remove_obj.push_back(im);
+  }
+
+  int nrm = 0;
+  for(unsigned int im =0; im < remove_obj.size(); im++){
+    jetsPuppi_CVSInclV2->erase(jetsPuppi_CVSInclV2->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_eta->erase(jetsPuppi_eta->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_m->erase(jetsPuppi_m->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_phi->erase(jetsPuppi_phi->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_pt->erase(jetsPuppi_pt->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_vtx3DSig->erase(jetsPuppi_vtx3DSig->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_vtxMass->erase(jetsPuppi_vtxMass->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_vtx3DVal->erase(jetsPuppi_vtx3DVal->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_hadronFlavour->erase(jetsPuppi_hadronFlavour->begin() + remove_obj.at(im) - nrm);
+    jetsPuppi_partonFlavour->erase(jetsPuppi_partonFlavour->begin() + remove_obj.at(im) - nrm);
+
+    nrm++;
+  }
+
+
+}
+
+
 Int_t SkimFlatCat::Cut(Long64_t entry)
 {
 
   bool pass_lep_pt = false;
+  
   for(unsigned int im=0; im < muon_pt->size(); im++){
     if(muon_pt->at(im) > 15) pass_lep_pt = true;
   }

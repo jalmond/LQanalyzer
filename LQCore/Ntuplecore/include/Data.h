@@ -107,16 +107,19 @@ public :
    Int_t           run;
    Int_t           lumi;
    Int_t           event;
+
    std::vector<float>   *gen_pt;
    std::vector<std::string>  *vtrignames;
    std::vector<int>     *vtrigps;
+   std::vector<std::string>  *muon_trigmatch;
+   std::vector<std::string>  *electron_trigmatch;
    std::vector<float>   *gen_eta;
    std::vector<float>   *gen_phi;
    std::vector<float>   *gen_energy;
    std::vector<int>     *gen_status;
    std::vector<int>     *gen_pdgid;
    std::vector<int>     *gen_motherindex;
-   Bool_t          HNHENoiseFilter;
+   Bool_t          HBHENoiseFilter;
    Bool_t          csctighthaloFilter;
    Bool_t          ecalDCTRFilter;
    Bool_t          eeBadScFilter;
@@ -179,6 +182,7 @@ public :
    std::vector<double>  *electrons_y;
    std::vector<double>  *electrons_z;
    std::vector<double>  *jets_CVSInclV2;
+   std::vector<double>  *jets_chargedEmEnergyFraction;
    std::vector<double>  *jets_energy;
    std::vector<double>  *jets_eta;
    std::vector<double>  *jets_isPFId;
@@ -273,6 +277,9 @@ public :
    TBranch        *b_vtrignames;   //!                                                                                                                        
    TBranch        *b_vtrigps;   //!   
 
+   TBranch        *b_muon_trigmatch;   //!
+   TBranch        *b_electron_trigmatch;   //!
+
    TBranch        *b_run;   //!                                                                                                                                                                                                                                              
    TBranch        *b_lumi;   //!                                                                                                                                                                                                                                             
    TBranch        *b_event;   //!                                                                                                                                                                                                                                            
@@ -283,7 +290,7 @@ public :
    TBranch        *b_gen_status;   //!                                                                                                                                                                                                                                       
    TBranch        *b_gen_pdgid;   //!                                                                                                                                                                                                                                        
    TBranch        *b_gen_motherindex;   //!                                                                                                                                                                                                                                  
-   TBranch        *b_HNHENoiseFilter;   //!                                                                                                                                                                                                                                  
+   TBranch        *b_HBHENoiseFilter;   //!                                                                                                                                                                                                                                  
    TBranch        *b_csctighthaloFilter;   //!                                                                                                                                                                                                                               
    TBranch        *b_ecalDCTRFilter;   //!                                                                                                                                                                                                                                   
    TBranch        *b_eeBadScFilter;   //!                                                                                                                                                                                                                                    
@@ -346,6 +353,8 @@ public :
    TBranch        *b_electrons_y;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_z;   //!                                                                                                                                                                                                                                      
    TBranch        *b_jets_CVSInclV2;   //!                                                                                                                                                                                                                                   
+   TBranch        *b_jets_chargedEmEnergyFraction;   //!
+
    TBranch        *b_jets_energy;   //!                                                                                                                                                                                                                                      
    TBranch        *b_jets_eta;   //!                                                                                                                                                                                                                                         
    TBranch        *b_jets_isPFId;   //!                                                                                                                                                                                                                                      

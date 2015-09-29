@@ -42,7 +42,7 @@ KParticle()
   k_trkvy=0.;
   k_trkvz=0.;
   k_gsf_ctscpix_charge=false;
-
+  k_trig_match="";
 }
 
 /**
@@ -80,7 +80,7 @@ KElectron::KElectron(const KElectron& el) :
   k_trkvy= el.TrkVy();
   k_trkvz= el.TrkVz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
-
+  k_trig_match= el.TrigMatch();
 }
 
 
@@ -119,7 +119,7 @@ void KElectron::Reset()
   k_abs_iso03=0.;
   k_abs_iso04=0.;
   k_gsf_ctscpix_charge=false;
-
+  k_trig_match="";
 
 }
 
@@ -156,12 +156,19 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_trkvz= p.TrkVz();
     k_abs_iso03=p.PFAbsIso03();
     k_abs_iso04=p.PFAbsIso04();
-
+    k_trig_match= p.TrigMatch();
   }
   
   return *this;
 }
 
+
+
+bool KElectron::TriggerMatched(TString path){
+  TString trig = k_trig_match;
+  if(trig.Contains(path)) return true;
+  return false;
+}
 
 
 ///// SETTING CLASS VARIABLES
@@ -274,4 +281,8 @@ void KElectron::SetTrkVy(Double_t trkvy){
 }
 void KElectron::SetTrkVz(Double_t trkvz){  
   k_trkvz = trkvz;
+}
+
+void KElectron::SetTrigMatch(TString match){
+  k_trig_match = match;
 }

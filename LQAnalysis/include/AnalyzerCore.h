@@ -34,6 +34,7 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KJet>  GetJets(TString label);
   std::vector<snu::KMuon> GetMuons(TString label);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label);
+  std::vector<snu::KElectron> GetElectrons( TString label);
 
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);

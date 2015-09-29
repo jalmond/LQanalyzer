@@ -97,7 +97,10 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-    
+  
+  for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
+    //    cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
+  }
 
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
@@ -132,23 +135,40 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   if(k_isdata){
     cout << " k_channel = " << k_channel << endl;
     if(k_channel.Contains("singleMuon")){
-      AddTriggerToList("HLT_Mu5_v");
+      AddTriggerToList("HLT_IsoMu");
+      AddTriggerToList("HLT_Mu");
+      AddTriggerToList("HLT_TkMu");
     }
     else if(k_channel.Contains("Muon")){
-      AddTriggerToList("HLT_Mu40_eta2p1_v");
+      AddTriggerToList("HLT_IsoMu");
+      AddTriggerToList("HLT_Mu");
+      AddTriggerToList("HLT_TkMu");
     }
     cout << "k_channel = " << k_channel << endl;
     if(k_channel.Contains("Electron")){
-      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+      AddTriggerToList("HLT_DoubleEle");
+      AddTriggerToList("HLT_Ele");
     }
     
     if(k_channel.Contains("EMu")){
-      AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
     }
   }
   else {
-    AddTriggerToList("HLT_Mu5_v");
-
+    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
+    AddTriggerToList("HLT_IsoMu");
+    AddTriggerToList("HLT_Mu");
+    AddTriggerToList("HLT_TkMu");
+    AddTriggerToList("HLT_DoubleEle");
+    AddTriggerToList("HLT_Ele");
   }
   
   return;

@@ -107,7 +107,7 @@ if useskinput == "True":
 elif useskinput == "true":
     print "Using SKTrees as input."
 else:
-    print "Using LQntuples as input"    
+    print "Using CATntuples as input"    
 
 ########  Sample specific configuration ###############
 ## set the job conguration set for a specific sample###
@@ -159,9 +159,10 @@ if not cycle == "SKTreeMaker":
         if not cycle == "SKTreeMakerDiLep":
             if not useskinput == "True":
                 if not useskinput == "true":
-                    update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
-                    if not  update == "N":
-                        useskinput="True"
+                    print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
+                    #update = raw_input("You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees.")
+ #                   if not  update == "N":
+  #                      useskinput="True"
 
 ##########################################################
 ### Make tmp directory for job
@@ -201,14 +202,14 @@ if number_of_cores > 1:
     if useskinput == "True":
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
-        if number_of_cores > 30:
-            number_of_cores = 30
+        if number_of_cores > 15:
+            number_of_cores = 15
             print "Number of sub jobs is set to high. Reset to default of 30."
     elif useskinput == "true":
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
-        if number_of_cores > 30:
-            number_of_cores= 30
+        if number_of_cores > 15:
+            number_of_cores= 15
             print "Number of sub jobs is set to high. Reset to default of 30."
     else:
         if number_of_cores > 5:
@@ -232,7 +233,7 @@ if mc:
 else:
     datatype="data"
 
-if sample == "AtoD":
+if sample == "ALL":
     datatype="data"
 
 if datatype == "mc":
@@ -253,7 +254,7 @@ else:
 #list has only size ==1 currently
 
 ##################################################################################################################
-##### Specify if the job is running on SKTrees or LQNtuples
+##### Specify if the job is running on SKTrees or CATNtuples
 ##################################################################################################################
 original_sample = sample
 if useskinput == "true":
@@ -436,7 +437,7 @@ tmpwork = "/data1/"+ getpass.getuser()
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
     
-workspace = "/data1/"+ getpass.getuser() + "/LQ_SKTreeOutput/"
+workspace = "/data1/"+ getpass.getuser() + "/CAT_SKTreeOutput/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample
@@ -617,7 +618,7 @@ if number_of_cores < 10:
     wait_sub = 5
 
 if DEBUG == "True":
-    print "Running LQAnalyzer jobs for: " + getpass.getuser()
+    print "Running CATAnalyzer jobs for: " + getpass.getuser()
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
@@ -784,7 +785,7 @@ else:
             print line
 
 
-    SKTreeOutput = "/data2/CatNtuples/CMSSW_471/SKTrees/Sep15/"        
+    SKTreeOutput = "/data2/CatNtuples/CMSSW_472/SKTrees/Sep15/"        
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):

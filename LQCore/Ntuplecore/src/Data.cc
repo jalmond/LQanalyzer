@@ -221,6 +221,7 @@ void Data::Reset(){
   electrons_y = 0;
   electrons_z = 0;
   jets_CVSInclV2 = 0;
+  jets_chargedEmEnergyFraction = 0;
   jets_energy = 0;
   jets_eta = 0;
   jets_isPFId = 0;
@@ -312,6 +313,9 @@ void Data::Reset(){
   muon_validpixhits = 0;
   vtrignames = 0;
   vtrigps = 0;
+  muon_trigmatch = 0;
+  electron_trigmatch = 0;
+
  
 }
 
@@ -372,9 +376,9 @@ void Data::ConnectEvent(){
 
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
  
-  ConnectVariable("HNHENoiseFilter", HNHENoiseFilter, b_HNHENoiseFilter);
-  ConnectVariable("csctighthaloFilter", csctighthaloFilter, b_csctighthaloFilter);
-  ConnectVariable("ecalDCTRFilter", ecalDCTRFilter, b_ecalDCTRFilter);
+  ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
+  ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
+  ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
   ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
   ConnectVariable("goodVertices", goodVertices, b_goodVertices);
   
@@ -397,22 +401,10 @@ void Data::ConnectTrigger(){
   
   //#####   Trigger branches
   //  ConnectVariable("HLTInsideDatasetTriggerNames", HLTInsideDatasetTriggerNames, b_HLTInsideDatasetTriggerNames);
-  ConnectVariable("hlt_2el33", hlt_2el33, b_hlt_2el33);
-  ConnectVariable("hlt_el12", hlt_el12, b_hlt_el12);
-  ConnectVariable("hlt_el16_el12_8" ,hlt_el16_el12_8, b_hlt_el16_el12_8);
-  ConnectVariable("hlt_el17", hlt_el17, b_hlt_el17);
-  ConnectVariable("hlt_el17_el12", hlt_el17_el12, b_hlt_el17_el12);
-  ConnectVariable("hlt_el23_el12", hlt_el23_el12, b_hlt_el23_el12);
-  ConnectVariable("hlt_el23_el12dz", hlt_el23_el12dz, b_hlt_el23_el12dz);
-  ConnectVariable("hlt_ele27eta2p1", hlt_ele27eta2p1, b_hlt_ele27eta2p1);
-  ConnectVariable("hlt_mu17_el12", hlt_mu17_el12, b_hlt_mu17_el12);
-  ConnectVariable("hlt_mu17_mu8", hlt_mu17_mu8, b_hlt_mu17_mu8);
-  ConnectVariable("hlt_mu17_tkmu8", hlt_mu17_tkmu8, b_hlt_mu17_tkmu8);
-  ConnectVariable("hlt_mu8_el17", hlt_mu8_el17, b_hlt_mu8_el17);
-
   ConnectVariable("vtrignames",vtrignames, b_vtrignames);
   ConnectVariable("vtrigps",vtrigps,b_vtrigps);
-  
+  ConnectVariable("muon_trigmatch", muon_trigmatch, b_muon_trigmatch);
+  ConnectVariable("electron_trigmatch", electron_trigmatch, b_electron_trigmatch);
   
   return;
   
@@ -507,12 +499,10 @@ void Data::ConnectPFJets(){
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);
   /// TLV variables
   ConnectVariable("jets_CVSInclV2", jets_CVSInclV2, b_jets_CVSInclV2);
+  ConnectVariable("jets_chargedEmEnergyFraction",jets_chargedEmEnergyFraction,b_jets_chargedEmEnergyFraction);
   ConnectVariable("jets_energy", jets_energy, b_jets_energy);
-  m_logger << INFO << "jets_eta ="<<jets_eta<< LQLogger::endmsg;
 
   ConnectVariable("jets_eta",jets_eta,b_jets_eta);
-  m_logger << INFO << "jets_eta ="<<jets_eta<< LQLogger::endmsg;
-  
   ConnectVariable("jets_hadronFlavour",jets_hadronFlavour,b_jets_hadronFlavour);
   ConnectVariable("jets_isLoose",jets_isLoose,b_jets_isLoose);
   ConnectVariable("jets_isPFId",jets_isPFId, b_jets_isPFId);

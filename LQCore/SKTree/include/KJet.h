@@ -40,7 +40,10 @@ namespace snu {
     
     /// BTAG
     void SetCVSInclV2(double btag);
-
+    void SetVtxMass(double mass);
+    void SetVtx3DVal(double val);
+    void SetVtx3DSig(double sig);
+    void SetVtxNTracks(int ntrk);
     /// Tracking
 
     /// Energy fractions
@@ -48,6 +51,8 @@ namespace snu {
     
     //flavour
     void SetJetPartonFlavour(int pf);
+    void SetJetHadronFlavour(int pf);
+    void SetJetPartonPdgId(int pf);
 
     /// JET CORRECTIONS
     void SetJetRawPt(double rawpt);
@@ -57,6 +62,7 @@ namespace snu {
     void SetJetScaledUpEnergy(double jetscaleEup);
     void SetJetSmearedDownEnergy(double jetsmearEdown);
     void SetJetSmearedUpEnergy(double jetsmearEup);
+    void SetJetSmearedEnergy(double jetsmearEup);
     
     
     /// ID
@@ -79,18 +85,24 @@ namespace snu {
     /// Energy Fraction
     inline Double_t ChargedEMEnergyFraction() const {return k_jet_chargeEmEF;}
     // flavour
-    inline Double_t PartonFlavour() const {return k_jet_partonflavour;}
+    inline Int_t PartonFlavour() const {return k_jet_partonflavour;}
+    inline Int_t HadronFlavour() const {return k_jet_hadronflavour;}
+    inline Int_t PartonPdgId() const {return k_jet_partonpdgid;}
 
     /// Tracking Variables
     
+    inline Double_t VtxMass() const {return k_vtx_mass;}
+    inline Double_t Vtx3DVal() const {return k_vtx_3dval;}
+    inline Double_t Vtx3DSig() const {return k_vtx_3dsig;}
+    inline Int_t VtxNtrack() const {return k_vtx_ntrack;}
 
     // Errors
     inline Double_t JECUncertainty() const {return k_jet_error_jec;}
-
     inline Double_t ScaledDownEnergy() const {return k_jet_scaled_down_energy;}
     inline Double_t ScaledUpEnergy() const {return k_jet_scaled_up_energy;}
     inline Double_t SmearedDownEnergy() const {return k_jet_smeared_down_energy;}
     inline Double_t SmearedUpEnergy() const {return k_jet_smeared_up_energy;}
+    inline Double_t SmearedEnergy() const {return k_jet_smeared_energy;}
 
     inline Double_t RawPt() const {return k_jet_pt_raw;}
     inline Double_t RawE() const {return k_jet_energy_raw;}
@@ -108,24 +120,26 @@ namespace snu {
     
     Double_t k_jet_pt_raw, k_jet_energy_raw;
     /// BTAG variables  
-    Double_t k_jet_cvsv2;
+    Double_t k_jet_cvsv2, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
+    
+    Int_t k_vtx_ntrack;
 
     /// Energy Fraction     
     Double_t k_jet_chargeEmEF;
     
     // flavour          
-    Double_t k_jet_partonflavour;
+    Int_t k_jet_partonflavour, k_jet_hadronflavour, k_jet_partonpdgid;
     
     /// Tracking Variables
     
     // Errors
-    Double_t  k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_smeared_down_energy,k_jet_smeared_up_energy;
+    Double_t  k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_smeared_down_energy,k_jet_smeared_up_energy, k_jet_smeared_energy;
     
     Bool_t k_jet_passpileup_loose, k_jet_passpileup_medium ,k_jet_passpileup_tight;
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,8)
+    ClassDef(KJet,9)
   }; 
   
 

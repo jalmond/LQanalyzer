@@ -33,7 +33,9 @@ KMuon::KMuon() :
   k_istight(0),
   k_matched(0),
   k_ismedium(0),
-  k_issoft(0)
+  k_issoft(0),
+  
+  k_trig_match("")
 
 {
   //Reset();
@@ -70,7 +72,8 @@ KMuon::KMuon(const KMuon& muon) :
   k_istight(muon.k_istight), 
   k_matched(muon.k_matched), 
   k_ismedium(muon.k_ismedium),
-  k_issoft(muon.k_issoft)
+  k_issoft(muon.k_issoft),
+  k_trig_match(muon.k_trig_match)
 {
 }
   
@@ -111,6 +114,8 @@ void KMuon::Reset()
   k_ismedium=0;
   k_issoft=0;
   k_matched=0;
+
+  k_trig_match= "";
 }
 
 
@@ -142,6 +147,7 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muonVtx=p.muonVtx();
 	k_muonVty=p.muonVty();
 	k_muonVtz=p.muonVtz();
+	k_trig_match= p.TrigMatch();
     }
     
     return *this;
@@ -154,6 +160,12 @@ KMuon& KMuon::operator= (const KMuon& p)
 std::string KMuon::Type() const
 {
     return "KMuon";
+}
+
+bool KMuon::TriggerMatched(TString path){
+  TString trig = k_trig_match;
+  if(trig.Contains(path)) return true;
+  return false;
 }
 
 //void KMuon::SetMuonVtxIndex(int ivertex){
@@ -266,4 +278,9 @@ void KMuon::SetRelIso03(double iso03){
 
 void KMuon::SetRelIso04(double iso04){
   k_muon_reliso04= iso04;
+}
+
+
+void KMuon::SetTrigMatch(TString match){
+  k_trig_match= match;
 }

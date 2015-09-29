@@ -29,10 +29,21 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   std::vector<bool> vHLTInsideDatasetTriggerDecisions;
   std::vector<int> vHLTInsideDatasetTriggerPrescales;
   
+  if(trignames.size() == 0 ){
+    for (UInt_t i=0; i< vtrignames->size(); i++) {
+      std::string tgname = vtrignames->at(i);
+      Int_t ps = vtrigps->at(i);
+      vHLTInsideDatasetTriggerNames.push_back(tgname);
+      if(ps > 0) vHLTInsideDatasetTriggerDecisions.push_back(true);
+      else vHLTInsideDatasetTriggerDecisions.push_back(false);
+      vHLTInsideDatasetTriggerPrescales.push_back(ps);
+    }
+  }
+    
   for (std::vector<TString>::reverse_iterator it (trignames.end());
        it != std::vector<TString>::reverse_iterator (trignames.begin());
        ++it) {
-    
+
     bool trigger_exists(false);
     for (UInt_t i=0; i< vtrignames->size(); i++) {
       
@@ -57,145 +68,6 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
     } // loop over input triggers
     //if(!trigger_exists) m_logger << WARNING << "Trigger: " << *it << " does not exist" << LQLogger::endmsg;
   }// loop of selected triggers  
-  //ktrigger.SetHLTInsideDatasetTriggerNames(vHLTInsideDatasetTriggerNames);
-  //  ktrigger.SetHLTInsideDatasetTriggerDecisions(vHLTInsideDatasetTriggerDecisions);
-  //ktrigger.SetHLTInsideDatasetTriggerPrescales(vHLTInsideDatasetTriggerPrescales);
-  
-  
-  
-  if(hlt_2el33){
-    vHLTInsideDatasetTriggerNames.push_back("HLTDoubleEle33CaloIdLGsfTrkIdVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_2el33);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTDoubleEle33CaloIdLGsfTrkIdVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_el17_el12){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle17Ele12CaloIdLTrackIdLIsoVLDZ");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_el17_el12);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle17Ele12CaloIdLTrackIdLIsoVLDZ");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_el23_el12){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle23Ele12CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_el23_el12);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle23Ele12CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_el23_el12dz){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle23Ele12CaloIdLTrackIdLIsoVLDZ");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_el23_el12dz);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle23Ele12CaloIdLTrackIdLIsoVLDZ");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_ele27eta2p1){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle27eta2p1WPLooseGsfTriCentralPFJet30");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_ele27eta2p1);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle27eta2p1WPLooseGsfTriCentralPFJet30");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_el12){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle12CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_el12);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle12CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_el17){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle17CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_el17);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle17CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_el16_el12_8){
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle16Ele12Ele8CaloIdLTrackIdL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_el16_el12_8);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTEle16Ele12Ele8CaloIdLTrackIdL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_mu17_mu8){
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu17TrkIsoVVLMu8TrkIsoVVLDZ");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_mu17_mu8);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu17TrkIsoVVLMu8TrkIsoVVLDZ");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_mu17_tkmu8){
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu17TrkIsoVVLTkMu8TrkIsoVVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_mu17_tkmu8);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu17TrkIsoVVLTkMu8TrkIsoVVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_mu17_el12){
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_mu17_el12);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-  if(hlt_mu8_el17){
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(true);
-    vHLTInsideDatasetTriggerPrescales.push_back(hlt_mu8_el17);
-  }
-  else{
-    vHLTInsideDatasetTriggerNames.push_back("HLTMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVL");
-    vHLTInsideDatasetTriggerDecisions.push_back(false);
-    vHLTInsideDatasetTriggerPrescales.push_back(0);
-  }
-
-
   
   ktrigger.SetHLTInsideDatasetTriggerNames(vHLTInsideDatasetTriggerNames);
   ktrigger.SetHLTInsideDatasetTriggerDecisions(vHLTInsideDatasetTriggerDecisions);
@@ -275,7 +147,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   /// MET filter cuts/checks
 
   kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
-  kevent.SetPassHBHENoiseFilter(HNHENoiseFilter);
+  kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
   kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
   kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
 
@@ -302,8 +174,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     /// Kinematic Variables
     el.SetPtEtaPhiE(electrons_pt->at(iel),electrons_eta->at(iel), electrons_phi->at(iel),electrons_energy->at(iel));
     
+    el.SetTrigMatch(electron_trigmatch->at(iel));
     el.SetSCEta(electrons_scEta->at(iel));
-    
+   
     el.Setdz( electrons_dz->at(iel));
     el.Setdxy(electrons_dxy->at(iel) );
 
@@ -405,8 +278,6 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     
 
     jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
-
-    
     jet.SetJetPassLooseID(jets_isLoose->at(ijet));
     jet.SetJetPassTightID(jets_isTight->at(ijet));
     jet.SetJetPassTightLepVetoID(jets_isTightLepVetoJetID->at(ijet));
@@ -422,22 +293,23 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     
     /// BTAG variables
     jet.SetCVSInclV2(jets_CVSInclV2->at(ijet));
-    //jet.SetVtxMass(jets_vtxMass->at(ijet));
-    //jet.SetVtx3DVal(jets_vtx3DVal->at(ijet));
-    //jet.SetVtx3DSig(jets_vtx3DSig->at(ijet));
-    //jet.SetVtxNTracks(jets_vtxNtracks->at(ijet));
+    jet.SetVtxMass(jets_vtxMass->at(ijet));
+    jet.SetVtx3DVal(jets_vtx3DVal->at(ijet));
+    jet.SetVtx3DSig(jets_vtx3DSig->at(ijet));
+    jet.SetVtxNTracks(jets_vtxNtracks->at(ijet));
     
     // flavour
     jet.SetJetPartonFlavour(jets_partonFlavour->at(ijet));
-    //jet.SetJetHadronFlavour(jets_hadronFlavour->at(ijet));    
-    //jet.SetJetPartonPdgId(jets_partonPdgId->at(ijet));
-
+    jet.SetJetHadronFlavour(jets_hadronFlavour->at(ijet));    
+    jet.SetJetPartonPdgId(jets_partonPdgId->at(ijet));
+    
+    jet.SetJetChargedEmEF(jets_chargedEmEnergyFraction->at(ijet));
     /// JEC and uncertainties
     jet.SetJetScaledDownEnergy(jets_shiftedEnDown->at(ijet));
     jet.SetJetScaledUpEnergy(jets_shiftedEnUp->at(ijet));
     jet.SetJetSmearedDownEnergy(jets_smearedResDown->at(ijet));
     jet.SetJetSmearedUpEnergy(jets_smearedResUp->at(ijet));
-    //jet.SetJetSmearedEnergy(jets_smearedRes->at(ijet));
+    jet.SetJetSmearedEnergy(jets_smearedRes->at(ijet));
     
     jets.push_back(jet);
   }// end of jet 
@@ -467,8 +339,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   for (UInt_t ilep=0; ilep< muon_eta->size(); ilep++) {
     KMuon muon;
     m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
-    
-
+   
+    muon.SetTrigMatch(muon_trigmatch->at(ilep));
+      
     /// GENERAL
     
     muon.SetISPF(muon_isPF->at(ilep));
@@ -486,7 +359,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     
     muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
-    muon.SetCharge(muon_q->at(ilep));
+    muon.SetCharge(int(muon_q->at(ilep)));
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
  

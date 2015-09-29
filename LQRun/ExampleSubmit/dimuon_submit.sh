@@ -8,12 +8,11 @@ if [[ $runMC  == "true" ]];
 then
     source functions.sh
     cycle="ExampleAnalyzerDiMuon"
-    skinput="No"
-    useskim="NoCut"
+    skinput="True"
     outputdir=$LQANALYZER_DIR"/data/output/CAT/Muon/"
     #### JOB CONFIGURATION
     njobs=1
-    data_lumi="AtoD"
+    data_lumi="ALL"
     loglevel="INFO"
     logstep=1000
     nevents=100000
