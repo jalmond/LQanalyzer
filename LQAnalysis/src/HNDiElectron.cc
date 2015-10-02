@@ -43,7 +43,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   }
 
   /// Further analysis selection phase spaces only used for analysis selection
-  MakeCleverHistograms(sighist,"NoCut");
+  MakeCleverHistograms(sighist_ee,"NoCut");
 
   
 }

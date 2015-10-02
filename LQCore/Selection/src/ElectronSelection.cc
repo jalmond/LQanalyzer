@@ -51,6 +51,33 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
  
 }
 
+void ElectronSelection::PogID(std::vector<KElectron>& leptonColl, TString ID){
+
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
+    
+    if(ID.Contains("Veto"))ElectronID = PassUserID(EGAMMA_VETO, *el,false);
+    else     if(ID.Contains("Loose"))ElectronID = PassUserID(EGAMMA_LOOSE, *el,false);
+    else     if(ID.Contains("Medium"))ElectronID = PassUserID(EGAMMA_MEDIUM, *el,false);
+    else     if(ID.Contains("Tight"))ElectronID = PassUserID(EGAMMA_TIGHT, *el,false);
+    
+    bool pass_selection = true;
+
+    if(!ElectronID) pass_selection = false;
+    if(!(fabs(el->SCEta()) < 2.5))  pass_selection = false;
+    if((el->Pt() < 10.))pass_selection = false;
+    
+    if(pass_selection){
+      leptonColl.push_back(*el);
+    }
+
+  }// end of el loop
+
+  return;
+}
+
+
 void ElectronSelection::HNVetoElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
 
@@ -100,7 +127,7 @@ void ElectronSelection::HNLooseElectronSelection( std::vector<KElectron>& lepton
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
 
     bool pass_selection = true;
-    ElectronID = PassUserID(EGAMMA_FAKELOOSE, false, *el, 0.5, m_debug);
+    ElectronID = PassUserID(EGAMMA_FAKELOOSE, true, *el, 0.5, m_debug);
     
     ///List of cuts
     if(!ElectronID) {
@@ -144,6 +171,9 @@ void ElectronSelection::HNLooseElectronSelection( std::vector<KElectron>& lepton
 
 
 bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
+
+  // currently set to pog tight cuts
+
   float dxycut = -999.;
   float isocut= -999;
   if(fabs(el.SCEta())<1.566 ){
@@ -197,10 +227,10 @@ bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
     }
   }
 
-  //  if(!el.GsfCtfScPixChargeConsistency()) {
-  //pass_selection = false;
-  //if(m_debug) cout << "HNTightElectronSelection:Fail Charge Cons. Cut" <<endl;
-  //}
+  if(!el.GsfCtfScPixChargeConsistency()) {
+    pass_selection = false;
+    if(m_debug) cout << "HNTightElectronSelection:Fail Charge Cons. Cut" <<endl;
+  }
   
   if(!(fabs(el.SCEta()) < 2.5)){
     pass_selection = false;
@@ -219,8 +249,6 @@ bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
   return pass_selection;
   
 }
-
-
 
 
 void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonColl, bool m_debug) {
@@ -356,7 +384,6 @@ void ElectronSelection::TopTightElectronSelection(std::vector<KElectron>& lepton
       if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
     }
     float LeptonRelIsoDR03= el->PFRelIso03();
-    float LeptonRelIsoDR04=  el->PFRelIso04();
 
     ///List of cuts
     //              if(!ElectronID) {
@@ -497,6 +524,38 @@ bool ElectronSelection::PassUserID(ID id,bool usetight, snu::KElectron el, float
 
 
 bool ElectronSelection::PassUserID_FakeLoose2015 (snu::KElectron el, bool usetight,  float looseisocut, bool m_debug){
+  
+  int id = el.SNUID();
+  bool pass_veto_noiso = false;
+  bool pass_loose_noiso = false;
+  bool pass_medium_noiso = false;
+  bool pass_tight_noiso = false;
+  if(id >= 1000){
+    pass_tight_noiso = true;
+    id = id - 1000;
+    if(id >= 100){
+      pass_medium_noiso= true;
+      id = id-100;
+
+      if(id >= 10){
+	pass_loose_noiso= true;
+	id = id - 10;
+	if(id >= 1)pass_veto_noiso= true; 
+      }
+    }
+  }
+  
+  if(usetight){
+    if(!pass_tight_noiso) return false;
+  }
+  else  if(!pass_medium_noiso) return false;
+  if(!(fabs(el.SCEta()) < 2.5)) return false;
+  
+  if((el.Pt() < 10.)) return false;
+
+  if( el.PFRelIso03() < looseisocut) return false;
+
+  if(!(fabs(el.dxy())< 0.01 )) return false;
 
   return true;
 }

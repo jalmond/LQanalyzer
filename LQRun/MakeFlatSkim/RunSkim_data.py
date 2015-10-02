@@ -2,9 +2,10 @@ import os, getpass, sys
 import time
 from functions import *
 
-sampledir = ["DoubleMuon", "DoubleEG", "SingleMuon"]
-
-period=["C"]
+version = "v7-4-2"
+sampledir = ["DoubleMuon", "DoubleEG", "SingleMuon", "MuonEG"]
+sampledir = ["DoubleEG", "SingleMuon", "MuonEG"]
+period=["periodC"]
 
 for i in sampledir:
    output=i
@@ -24,7 +25,7 @@ for i in sampledir:
          os.system("mkdir " + output)
          os.system("mkdir " + output + "/output/")
          
-      os.system("ls /data2/DATA/cattoflat/Data/" + output + " > " + output + "/list.txt" )
+      os.system("ls /data2/DATA/cattoflat/Data/"+ version+ "/" + output + " > " + output + "/list.txt" )
       
       fr = open(output + "/list.txt" , 'r')
       counter=0
@@ -40,7 +41,7 @@ for i in sampledir:
             os.system("mkdir " + output+ "/" + str(j))
             
          configfile=open(output+ "/"  + str(j) + "/" + runscript,'w')
-         configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/Data/" + output,output+ "/list.txt",j, output))
+         configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/Data/"+ version+ "/" + output,output+ "/list.txt",j, output))
          configfile.close()
          
          configfileC=open(output+ "/" + str(j) + "/" + runscriptC,'w')
@@ -63,14 +64,17 @@ for i in sampledir:
                job_finised=True
 
 
-      if not (os.path.exists("/data2/DATA/cattoflat/skim/" + i)):
-         os.system("mkdir " + "/data2/DATA/cattoflat/skim/" + i)
+      if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version)):
+         os.system("mkdir " + "/data2/DATA/cattoflat/skim/"+ version)
 
-      if not (os.path.exists("/data2/DATA/cattoflat/skim/" + output)):
-         os.system("mkdir " + "/data2/DATA/cattoflat/skim/" + output)
 
-      print "Moving samples to /data2/DATA/cattoflat/skim/" + output    
-      os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/" + output )
+      if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + i)):
+                  os.system("mkdir " + "/data2/DATA/cattoflat/skim/"+ version+ "/" + i)
+      if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + output)):
+         os.system("mkdir " + "/data2/DATA/cattoflat/skim/"+ version+ "/" + output)
+
+      print "Moving samples to /data2/DATA/cattoflat/skim/"+ version+ "/" + output    
+      os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/"+ version+ "/" + output )
    
       os.system("rm -r " + output)
     

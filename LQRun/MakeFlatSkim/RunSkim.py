@@ -2,6 +2,8 @@ import os, getpass, sys
 import time
 from functions import *
 
+
+version = "v7-4-2"
 sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
              "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
@@ -38,10 +40,10 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
              "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
              "TT_TuneCUETP8M1_13TeV-powheg-pythi8",
-             "GluGlu_HToMuMu_M125_13TeV_powheg_pythia8"
+            "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"
              ]
 
-skip=26
+skip=0
 counter=0
 
 for i in sampledir:
@@ -56,12 +58,12 @@ for i in sampledir:
       os.system("mkdir " + output)
       os.system("mkdir " + output + "/output/")
    else:
-      os.system("rm -r " + output + "/*")
-      if not (os.path.exists(output + "/output/")):
-         os.system("mkdir " + output + "/output/")
+      os.system("rm -rf " + output)
+      os.system("mkdir " + output)
+      os.system("mkdir " + output + "/output/")
               
       
-   os.system("ls /data2/DATA/cattoflat/MC/" + i + " > " + output + "/list.txt" )
+   os.system("ls /data2/DATA/cattoflat/MC/" + version + "/" + i + " > " + output + "/list.txt" )
 
    fr = open(output + "/list.txt" , 'r')
    counter=0
@@ -77,7 +79,7 @@ for i in sampledir:
          os.system("mkdir " + output+ "/" + str(j))
          
       configfile=open(output+ "/"  + str(j) + "/" + runscript,'w')
-      configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/MC/" + output,output+ "/list.txt",j, output))
+      configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/MC/" + version + "/"+ output,output+ "/list.txt",j, output))
       configfile.close()
 
       configfileC=open(output+ "/" + str(j) + "/" + runscriptC,'w')
@@ -100,12 +102,15 @@ for i in sampledir:
             job_finised=True
 
 
-   if not (os.path.exists("/data2/DATA/cattoflat/skim/" + i)):
-      os.system("mkdir " + "/data2/DATA/cattoflat/skim/" + i)
+   if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version)):
+      os.system("mkdir " + "/data2/DATA/cattoflat/skim/" + version)
+          
+   if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + i)):
+      os.system("mkdir " + "/data2/DATA/cattoflat/skim/" + version+ "/"+ i)
 
       
-   print "Moving samples to /data2/DATA/cattoflat/skim/" + i    
-   os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/" + i )
-   print "mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/" + i 
+   print "Moving samples to /data2/DATA/cattoflat/skim/" + version+ "/"+ i    
+   os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/"+ version+ "/" + i )
+   print "mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/" + version+ "/"+ i 
    
    os.system("rm -rf " + output)

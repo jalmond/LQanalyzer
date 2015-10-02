@@ -104,13 +104,17 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPfMvaSumET( metPfMva_sumet->at(0));
   kevent.SetPfMvaMETphi( metPfMva_phi->at(0));
 
-
   
+
   /// Filling event variables
-  if(run==1) kevent.SetIsData(false);
-  else kevent.SetIsData(true);
-  if(!isData&&genWeight)kevent.SetWeight(genWeight);
-  else kevent.SetWeight(0.);
+
+
+  kevent.SetIsData(isData);
+
+  if(!isData&&genWeight){
+    if(genWeight > 0.) kevent.SetWeight(1.);
+    else kevent.SetWeight(-1.);
+  }
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
@@ -127,10 +131,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetGenX2(genWeightX2);
   kevent.SetGenQ(genWeightQ);
   
-  //kevent.SetVertexX(vertices_x->at(0));
-  //kevent.SetVertexY(vertices_y->at(0));
-  // kevent.SetVertexZ(vertices_z->at(0));
-  // kevent.SetVertexNDOF(vertices_ndof->at(0));
+  //  kevent.SetVertexX(vertices_x->at(0));
+  //  kevent.SetVertexY(vertices_y->at(0));
+  //  kevent.SetVertexZ(vertices_z->at(0));
+  //  kevent.SetVertexNDOF(vertices_ndof->at(0));
   
   /// MET filter cuts/checks
 
@@ -285,9 +289,22 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jet.SetJetPileupIDMVA(jets_isPFId->at(ijet));
 
     if(jets_isPFId){ 
-      jet.SetJetPileupIDLooseWP(true);
-      jet.SetJetPileupIDMediumWP(true);
-      jet.SetJetPileupIDTightWP(true);
+      if(std::abs(jets_eta->at(ijet)) < 2.6){
+	if(jets_isPFId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
+	else jet.SetJetPileupIDLooseWP(false);
+	if(jets_isPFId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
+	else jet.SetJetPileupIDMediumWP(false);
+	if(jets_isPFId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
+	else jet.SetJetPileupIDTightWP(false);
+      }
+      else{
+	if(jets_isPFId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
+        else jet.SetJetPileupIDLooseWP(false);
+        if(jets_isPFId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
+	else jet.SetJetPileupIDMediumWP(false);
+        if(jets_isPFId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
+	else jet.SetJetPileupIDTightWP(false);
+      }
     }
     
     

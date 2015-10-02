@@ -32,8 +32,7 @@ parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_D
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-N", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
-parser.add_option("-M", "--use538ntuples", dest="use538ntuples", default=True, help="use538ntuples? add use5384ntuples='True' to run on these samples")
+parser.add_option("-N", "--useCATv742ntuples", dest="useCATv742ntuples", default=True, help="' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
@@ -67,8 +66,7 @@ Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
-use5312ntuples = options.use5312ntuples
-use538ntuples = options.use538ntuples
+useCATv742ntuples = options.useCATv742ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
@@ -142,12 +140,10 @@ if not len(splitsample)==1:
         if "runevent" in splitsample[conf]:
             conf+=1
             runevent = splitsample[conf]
-        if "use5312ntuples" in splitsample[conf]:
+        if "useCATv742ntuples" in splitsample[conf]:
             conf+=1
-            use5312ntuples = splitsample[conf]
-        if "use538ntuples" in splitsample[conf]:
-            conf+=1
-            use584ntuples = splitsample[conf]
+            useCATv742ntuples = splitsample[conf]
+
 
             
 ####################
@@ -204,13 +200,13 @@ if number_of_cores > 1:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
             number_of_cores = 15
-            print "Number of sub jobs is set to high. Reset to default of 30."
+            print "Number of sub jobs is reset to default of 15"
     elif useskinput == "true":
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
             number_of_cores= 15
-            print "Number of sub jobs is set to high. Reset to default of 30."
+            print "Number of sub jobs is reset to default of 15"
     else:
         if number_of_cores > 5:
             if not cycle == "SKTreeMaker":
@@ -342,7 +338,7 @@ filechannel=""
 
 if platform.system() == "Linux":
     version="_CAT"
-    print "Using CAT 437 ntuples"
+    print "Using CAT v7-4-2 ntuples"
     filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
     
 else:
@@ -487,19 +483,12 @@ if runcf == "True":
     print "sample --> " + outsamplename
 if not mc:
     outsamplename = outsamplename +  "_" + channel
-    if use538ntuples == "True":
-        outsamplename = outsamplename + "_5_3_8"
-    elif use5312ntuples == "True":
-        outsamplename = outsamplename + "_5_3_12"
-    else:
-        outsamplename = outsamplename + "_5_3_14"
+    if useCATv742ntuples == "True":
+        outsamplename = outsamplename + "_catv4_7_2"
+
 else:
-    if use538ntuples == "True":
-        outsamplename = outsamplename + "_5_3_8"
-    elif use5312ntuples == "True":
-        outsamplename = outsamplename + "_5_3_12"
-    else:
-        outsamplename = outsamplename + "_5_3_14"
+    if useCATv742ntuples == "True":
+                outsamplename = outsamplename + "_catv4_7_2"
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"

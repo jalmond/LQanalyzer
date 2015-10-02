@@ -31,6 +31,8 @@ public :
    Int_t           event;
    vector<string>  *vtrignames;
    vector<int>     *vtrigps;
+   std::vector<std::string>  *muon_trigmatch;
+   std::vector<std::string>  *electron_trigmatch;
    vector<float>   *gen_pt;
    vector<float>   *gen_eta;
    vector<float>   *gen_phi;
@@ -98,6 +100,7 @@ public :
    vector<double>  *electrons_y;
    vector<double>  *electrons_z;
    vector<double>  *jets_CVSInclV2;
+   std::vector<double>  *jets_chargedEmEnergyFraction;
    vector<double>  *jets_energy;
    vector<double>  *jets_eta;
    vector<double>  *jets_isPFId;
@@ -194,6 +197,8 @@ public :
    TBranch        *b_event;   //!
    TBranch        *b_vtrignames;   //!
    TBranch        *b_vtrigps;   //!
+   TBranch        *b_muon_trigmatch;   //!
+   TBranch        *b_electron_trigmatch;   //!
    TBranch        *b_gen_pt;   //!
    TBranch        *b_gen_eta;   //!
    TBranch        *b_gen_phi;   //!
@@ -261,6 +266,7 @@ public :
    TBranch        *b_electrons_y;   //!
    TBranch        *b_electrons_z;   //!
    TBranch        *b_jets_CVSInclV2;   //!
+   TBranch        *b_jets_chargedEmEnergyFraction;   //!
    TBranch        *b_jets_energy;   //!
    TBranch        *b_jets_eta;   //!
    TBranch        *b_jets_isPFId;   //!
@@ -437,6 +443,8 @@ void SkimFlatCat::Init(TTree *tree)
    // Set object pointer
    vtrignames = 0;
    vtrigps = 0;
+   muon_trigmatch=0;
+   electron_trigmatch=0;
    gen_pt = 0;
    gen_eta = 0;
    gen_phi = 0;
@@ -473,6 +481,7 @@ void SkimFlatCat::Init(TTree *tree)
    electrons_y = 0;
    electrons_z = 0;
    jets_CVSInclV2 = 0;
+   jets_chargedEmEnergyFraction=0;
    jets_energy = 0;
    jets_eta = 0;
    jets_isPFId = 0;
@@ -573,6 +582,8 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("vtrignames", &vtrignames, &b_vtrignames);
    fChain->SetBranchAddress("vtrigps", &vtrigps, &b_vtrigps);
+   fChain->SetBranchAddress("muon_trigmatch", &muon_trigmatch, b_muon_trigmatch);
+   fChain->SetBranchAddress("electron_trigmatch", &electron_trigmatch, b_electron_trigmatch);
    fChain->SetBranchAddress("gen_pt", &gen_pt, &b_gen_pt);
    fChain->SetBranchAddress("gen_eta", &gen_eta, &b_gen_eta);
    fChain->SetBranchAddress("gen_phi", &gen_phi, &b_gen_phi);
@@ -640,6 +651,7 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("electrons_y", &electrons_y, &b_electrons_y);
    fChain->SetBranchAddress("electrons_z", &electrons_z, &b_electrons_z);
    fChain->SetBranchAddress("jets_CVSInclV2", &jets_CVSInclV2, &b_jets_CVSInclV2);
+   fChain->SetBranchAddress("jets_chargedEmEnergyFraction",&jets_chargedEmEnergyFraction, b_jets_chargedEmEnergyFraction);
    fChain->SetBranchAddress("jets_energy", &jets_energy, &b_jets_energy);
    fChain->SetBranchAddress("jets_eta", &jets_eta, &b_jets_eta);
    fChain->SetBranchAddress("jets_isPFId", &jets_isPFId, &b_jets_isPFId);
@@ -881,6 +893,7 @@ void SkimFlatCat::SlimJets()
   
   int nrm = 0;
   for(unsigned int im =0; im < remove_obj.size(); im++){
+    jets_chargedEmEnergyFraction->erase(jets_chargedEmEnergyFraction->begin() + remove_obj.at(im) - nrm);
     jets_CVSInclV2->erase(jets_CVSInclV2->begin() + remove_obj.at(im) - nrm);
     jets_energy->erase(jets_energy->begin() + remove_obj.at(im) - nrm);
     jets_eta->erase(jets_eta->begin() + remove_obj.at(im) - nrm);

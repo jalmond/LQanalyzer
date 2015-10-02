@@ -40,7 +40,6 @@ clean::
 	(cd LQCore/Selection; make clean)
 	(cd LQAnalysis; make clean)
 	(cd HNCommonLeptonFakes/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/libHNCommonLeptonFakes.so)
-	(cd rochcor2012/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/librochcor2012.so)
 
 distclean::
 	(cd LQCore/SKTree; make distclean)

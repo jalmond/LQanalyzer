@@ -184,7 +184,9 @@ void Data::Reset(){
   /// clear vectors
 
   // Set object pointer
-
+  
+  run=0;
+  isData=0;
   gen_pt = 0;
   gen_eta = 0;
   gen_phi = 0;
@@ -315,7 +317,7 @@ void Data::Reset(){
   vtrigps = 0;
   muon_trigmatch = 0;
   electron_trigmatch = 0;
-
+  
  
 }
 
@@ -371,6 +373,7 @@ void Data::ConnectVariables(bool setall){
 void Data::ConnectEvent(){
 
   ConnectVariable("run", run, b_run);
+  ConnectVariable("IsData", isData, b_isData);  
   ConnectVariable("lumi",lumi , b_lumi);
   ConnectVariable("event", event, b_event);
 
@@ -577,7 +580,7 @@ void Data::ConnectTruth(){
   ConnectVariable("gen_pdgid",gen_pdgid ,b_gen_pdgid );
   ConnectVariable("gen_motherindex",gen_motherindex ,b_gen_motherindex );
 
-  ConnectVariable("pdfWeight", pdfWeight, b_pdfWeight);
+  //  ConnectVariable("pdfWeight", pdfWeight, b_pdfWeight);
   
   return;
 }

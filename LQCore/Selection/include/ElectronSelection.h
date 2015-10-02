@@ -21,6 +21,10 @@ class ElectronSelection : public BaseSelection {
   void Selection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);		 
   void BasicSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void SkimSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+
+  // POG 
+  void PogID(std::vector<snu::KElectron>& leptonColl, TString ID);
+
   
   //// HN analysis selection
   void HNTightElectronSelection(std::vector<snu::KElectron>& leptonColl,  bool m_debug= false);

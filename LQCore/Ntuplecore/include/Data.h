@@ -151,9 +151,9 @@ public :
    Float_t         puWeightDn;
    Float_t         puWeightUp;
    std::vector<float>   *pdfWeight;
-   Int_t           triggers_;
-   std::string         triggers_first[100];
-   Int_t           triggers_second[100];   //[triggers_]      
+   ///   Int_t           triggers_;
+   //   std::string         triggers_first[100];
+   //   Int_t           triggers_second[100];   //[triggers_]      
    std::vector<double>  *electrons_absIso03;
    std::vector<double>  *electrons_absIso04;
    std::vector<double>  *electrons_chIso03;
@@ -280,7 +280,9 @@ public :
    TBranch        *b_muon_trigmatch;   //!
    TBranch        *b_electron_trigmatch;   //!
 
-   TBranch        *b_run;   //!                                                                                                                                                                                                                                              
+   TBranch        *b_run;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_isData;   //!                                                                                                                                                                                                                                             
+ 
    TBranch        *b_lumi;   //!                                                                                                                                                                                                                                             
    TBranch        *b_event;   //!                                                                                                                                                                                                                                            
    TBranch        *b_gen_pt;   //!                                                                                                                                                                                                                                           
@@ -322,9 +324,9 @@ public :
    TBranch        *b_puWeightDn;   //!                                                                                                                                                                                                                                       
    TBranch        *b_puWeightUp;   //!                                                                                                                                                                                                                                       
    TBranch        *b_pdfWeight;   //!                                                                                                                                                                                                                                        
-   TBranch        *b_triggers_;   //!                                                                                                                                                                                                                                        
-   TBranch        *b_triggers_first;   //!                                                                                                                                                                                                                                   
-   TBranch        *b_triggers_second;   //!                                                                                                                                                                                                                                  
+   //   TBranch        *b_triggers_;   //!                                                                                                                                                                                                                                        
+   //   TBranch        *b_triggers_first;   //!                                                                                                                                                                                                                                   
+   //   TBranch        *b_triggers_second;   //!                                                                                                                                                                                                                                  
    TBranch        *b_electrons_absIso03;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_absIso04;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_chIso03;   //!                                                                                                                                                                                                                                

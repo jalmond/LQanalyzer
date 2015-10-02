@@ -152,11 +152,11 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
     while(getline (fin,word)){
 
       TFile * file = TFile::Open(word.c_str());
-      TH1I*  EventCounter = (TH1I*) (file ->Get("LJFilter/EventCount/EventCounter"));
-      if(!EventCounter) throw LQError( "LJFilter/EventCount/EventCount NOT found!!!",   LQError::StopExecution );
+      TH1F*  EventCounter = (TH1F*) (file ->Get("hNEvent"));
+      if(!EventCounter) throw LQError( "hNEvent NOT found!!!",   LQError::StopExecution );
 
       total_events_beforeskim += EventCounter->GetBinContent(1);
-      total_events_afterskim += EventCounter->GetBinContent(2);
+      total_events_afterskim += EventCounter->GetBinContent(1);
       file->Close();
       delete file;
       ifile++;
