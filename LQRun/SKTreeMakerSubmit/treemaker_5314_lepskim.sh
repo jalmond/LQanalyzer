@@ -2,12 +2,12 @@
 ### sets all configurable variables to defaul values
 
 ###### SET WHAT JOBS TO RUN
-runMC=true
+runMC=false
 runDoubleMuon=false
 runDoubleElectron=false
 runElectronMuon=false
-runSingleMuon=false
-runSingleElectron=false
+runSingleMuon=true
+runSingleElectron=true
 runSignal=false
 
 if [[ $1  == "ALL" ]]; 
@@ -71,13 +71,16 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
     
-
-    declare -a input_samples=("ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5")
+    
+    declare -a input_samples=("ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5" "ttbar_central")
+    declare -a input_samples=("W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets"  "Z3Jets" "Z4Jets")
+    declare -a input_samples=("ttbar_central")
+    declare -a input_samples=("CH150PU")
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA
@@ -127,7 +130,7 @@ then
     
     stream="emu"
     declare -a input_samples=("A" "B" "C" "D")
-    declare -a input_samples=("A" )
+
     source submit.sh
 fi
 ################ SINGLEELECTRON DATA
@@ -142,6 +145,27 @@ then
     logstep=1000
     
     stream="singleelectron"
+    declare -a input_samples=("C" "D")
+    source submit.sh
+fi
+
+
+################ SINGLEMUON DATA
+### submit this configured job (uses bin/submit.sh)
+if [[ $runSingleMuon  == "true" ]];
+then
+    source functions.sh
+    cycle="SKTreeMaker"
+    njobs=30
+    data_lumi="AtoD"
+    loglevel="INFO"
+    logstep=1000
+
+    stream="singlemuon"
     declare -a input_samples=("A" "B" "C" "D")
     source submit.sh
 fi
+
+
+
+

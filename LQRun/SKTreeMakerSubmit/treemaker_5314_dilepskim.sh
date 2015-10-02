@@ -60,7 +60,7 @@ then
     declare -a input_samples=("SSWmWm" "WZ_py" "ZZ_py" "WW_py" "SSWpWp" "WW_dp" "ttW" "ttZ" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "HtoTauTau" "HtoWW"   "WWW" "WWG" "HtoZZ")
     declare -a input_samples=("DY10to50_15" "DY50plus_15") 
     declare -a input_samples=("ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5")
-
+     declare -a input_samples=("HtoZZ")
     source submit.sh
 fi
 

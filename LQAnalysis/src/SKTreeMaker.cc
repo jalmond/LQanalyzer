@@ -96,7 +96,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   int nlep = skim_electrons.size() + skim_muons.size();
   bool pass15gevlep = false;
   if(skim_electrons.size() > 0){
-    if(skim_electrons.at(0).Pt()> 10 ) pass15gevlep = true;
+    if(skim_electrons.at(0).Pt()> 15 ) pass15gevlep = true;
   }
   if(skim_muons.size() > 0){
     if(skim_muons.at(0).Pt()> 15 ) pass15gevlep = true;

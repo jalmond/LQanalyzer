@@ -1,4 +1,4 @@
-tre ### SKTrees ##########
+### SKTrees ##########
 ##################
 
 ##### NO CUTS/SKIMS
@@ -159,7 +159,7 @@ SKttbar_matchingup   158474.37        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKT
 SKttbar_scaledown    161438.73        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaledown/
 SKttbar_scaleup      170377.21        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaleup/
 SKttbar_width_x5     57792.39         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_width_x5/
-
+SKttbar_central       1.              /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_central/
 
 
 ### POWHEG
@@ -218,7 +218,7 @@ SKZZtotttt        10719880.38     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees
 
 ### higgs ###
 SKggHtoZZ         18990782.44      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ggHtoZZ/
-SKHtoZZ           15652260.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoZZ/
+SKHtoZZ           15637781.        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/HtoZZ/
 SKHtoTauTau       5478020.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoTauTau/
 SKHtoWW           769720.          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoWW/
 
@@ -364,7 +364,7 @@ SKZZtotttt_dilep        10719880.38     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 
 ### higgs ######
 SKggHtoZZ_dilep         18990782.44     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ggHtoZZ/
-SKHtoZZ_dilep           15652260.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoZZ/
+SKHtoZZ_dilep           15637781.       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/HtoZZ/
 SKHtoTauTau_dilep       5478020.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoTauTau/
 SKHtoWW_dilep           769720.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoWW/
 
@@ -447,13 +447,24 @@ DY50plus	8693.5		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/DYJetsToLL_M-50_TuneZ2St
 DY10to50_15       2827.09           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
 DY50plus_15       8382.40           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
 
-ttbar_mass169	   168624.89	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_mass175	   170873.20	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_matchingdown 88190.43	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_matchingup   158474.37        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_scaledown    161438.73	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_scaleup      170377.21	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_width_x5	   57792.39	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass169	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass175	   168480.03	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingdown 88190.4375	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingup   158474.375        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaledown    167891.7188	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaleup      179009.6875	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_width_x5	   57792.39844	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_central	   262243.375	    /data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/
+
+CH120PU        273509.8125        /data2/MC/CHsample/LQNtuple/CH120/                            
+CHm120PU       137442.125         /data2/MC/CHsample/LQNtuple/CHm120/                           
+CH110PU        273509.8125                /data2/MC/CHsample/LQNtuple/CH110/                    
+CH100PU        272135.4062            /data2/MC/CHsample/LQNtuple/CH100/                        
+CH90PU         274846.4688        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/CH90/
+CH130PU        274884.25          /data2/MC/CHsample/LQNtuple/CH130/                            
+CH140PU        274884.25          /data2/MC/CHsample/LQNtuple/CH140/                            
+CH150PU        274884.25          /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/CH150/
+   
 
 
 ### POWHEG
@@ -485,7 +496,7 @@ Zbb		147000		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZbbToLL_massive_M-50_TuneZ2s
 
 ### HIGGS
 ggHtoZZ		18990782.44	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/GluGluToHToZZTo4L_M-125_8TeV-powheg-pythia6/
-HtoZZ		15652260.	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/
+HtoZZ		15637781	 /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6/
 HtoTauTau	5478020.	 /data1/DATA/LQNtuples_5_3_14_snu27/MC/WH_ZH_TTH_HToTauTau_M-125_lepdecay_8TeV-pythia6-tauola/
 HtoWW		769720.		 /data1/DATA/LQNtuples_5_3_14_snu27/MC/WH_ZH_TTH_HToWW_M-125_8TeV-pythia6/
 

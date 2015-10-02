@@ -174,14 +174,19 @@ void GetEffectiveLuminosity() {
   
   dirmap["MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen"] =  1516.;
   */
-  //  dirmap["TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
-  ///  dirmap["TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
-  //dirmap["TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
-  //dirmap["TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+  dirmap["TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   dirmap["TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   dirmap["TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   dirmap["TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   
+  dirmap["TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
+
+  dirmap["WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6"] = 0.0320;
+
+
   for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
     
     

@@ -229,9 +229,20 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
     
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
+
+  if(! (eventbase->GetEvent().EventNumber() == 1496722 || eventbase->GetEvent().EventNumber() ==12782241)) return;
+  m_logger <<INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << INFO<< "isData = " << isData << LQLogger::endmsg;
   
+  m_logger << INFO<< "NJet (no cuts = " << GetJets("NoLeptonVeto").size() << LQLogger::endmsg;
+  m_logger << INFO<< "NJet = " << GetJets("ApplyPileUpID").size() << LQLogger::endmsg;
+  m_logger << INFO<< "NMuons = " << GetMuons("NoCut").size() << LQLogger::endmsg;
+  m_logger << INFO<< "NElectrons = " << GetElectrons(true, true, "NoCut").size() << LQLogger::endmsg;
+  for(unsigned int i = 0; i < GetJets("NoLeptonVeto").size() ; i++){
+    cout << "jet pt /eta = " << GetJets("NoLeptonVeto").at(i).Pt() << " / " <<   GetJets("NoLeptonVeto").at(i).Eta()  << LQLogger::endmsg;
+  }
+  return;
+
   Double_t weight_err = 1.;
    
 

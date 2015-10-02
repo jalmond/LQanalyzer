@@ -1075,11 +1075,11 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(name.find("eta")!=string::npos) yscale*=2.;
   if(name.find("MET")!=string::npos) yscale*=1.2;
   if(name.find("e1jj")!=string::npos) yscale*=1.2;
-  if(name.find("e2jj")!=string::npos) yscale*=1.1;
+  if(name.find("e2jj")!=string::npos) yscale*=1.18;
   if(name.find("charge")!=string::npos) yscale*=1.5;
   if(name.find("deltaR")!=string::npos) yscale*=1.5;
   if(name.find("bTag")!=string::npos) yscale*=2.2;
-  if(name.find("eejj")!=string::npos) yscale*=1.07;
+  if(name.find("eejj")!=string::npos) yscale*=1.2;
   if(name.find("dijetsmass")!=string::npos) yscale*=1.5;
   if(name.find("leadingElectronPt")!=string::npos) yscale*=1.2;
   if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
@@ -1990,7 +1990,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
           latex.SetTextSize(cmsTextSize*t);
           latex.SetTextAlign(align_);
           latex.DrawLatex(posX_, posY_, cmsText);
-          if( writeExtraText )
+          if( true )
             {
               latex.SetTextFont(extraTextFont);
               latex.SetTextAlign(align_);
@@ -1999,7 +1999,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
             }
         }
     }
-  else if( writeExtraText )
+  else if( true )
     {
       if( iPosX==0)
         {

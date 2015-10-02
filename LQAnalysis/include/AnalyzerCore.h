@@ -54,9 +54,9 @@ class AnalyzerCore : public LQCycleBase {
   void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KMuon> muons,  std::vector<snu::KJet> jets, float w);
     
   void PlotFakeLeptons( std::vector<snu::KJet> jets, float w);
-  double TriggerScaleFactor( vector<snu::KElectron> el);;
-  double TriggerScaleFactor( vector<snu::KMuon> mu);;
-  double TriggerScaleFactorEMu();
+  double TriggerScaleFactor( vector<snu::KElectron> el, int sys=0);;
+  double TriggerScaleFactor( vector<snu::KMuon> mu, int sys=0);;
+  double TriggerScaleFactorEMu(int sys=0);
   float GetEEMass(std::vector<snu::KElectron> electrons);
 
   void FakeBkgBreakDown(std::vector<snu::KElectron> electrons, TString cut, float w);

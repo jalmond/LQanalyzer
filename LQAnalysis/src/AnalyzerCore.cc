@@ -1914,26 +1914,38 @@ double AnalyzerCore::MuonScaleFactor(double eta, double pt, int sys){
   
 }
 
-double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el){
+double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, int sys){
   if(isData) return 1.;
   if(el.size() != 2) return 1.;
   float pt = el.at(1).Pt();
-  if( pt < 30.) return 0.92;
-  else return 0.96;
+  float scale =1.;
+  if(sys==1) scale = 1.06;
+  if(sys==-1) scale = 0.94;
+  if( pt < 30.)   return 0.92*scale;
+  else {
+    return 0.96*scale;
+  }
   
 }
 
-double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu){
+double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu, int sys){
   if(isData) return 1.;
   if(mu.size() != 2) return 1.;
   float eta = fabs(mu.at(1).Eta());
-  if( eta < 1.) return 0.9;
-  else return 0.81;
+  float scale = 1.;
+  if(sys==1) scale = 1.03;
+  if(sys==-1) scale = 0.97;
+  if( eta < 1.) return 0.9 * scale;
+  }
+  else return 0.81*scale;
 
 }
-double AnalyzerCore::TriggerScaleFactorEMu( ){
+double AnalyzerCore::TriggerScaleFactorEMu( int sys){
   // numbers from AN2012_330_v11 
-  return 0.93;
+  float scale =1.;
+  if(sys==1) scale = 1.06;
+  if(sys==-1) scale = 0.94;
+  return 0.93*scale;
 }
 
 

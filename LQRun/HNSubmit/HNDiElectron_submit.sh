@@ -185,7 +185,7 @@ then
     source functions.sh
     
     cycle="HNDiElectron"
-    skinput="True"
+#    skinput="True"
     useskim="DiLep"
     
     njobs=1
@@ -193,7 +193,7 @@ then
 
     loglevel="INFO"
 
-    loglevel="DEBUG"
+    loglevel="INFO"
     logstep=1000
     declare -a input_samples=( "DY10to50" "DY50plus" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
 

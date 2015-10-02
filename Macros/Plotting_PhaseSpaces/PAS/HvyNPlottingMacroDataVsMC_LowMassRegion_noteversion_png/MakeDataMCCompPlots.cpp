@@ -451,9 +451,9 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
-    x1 = 0.6;
+    x1 = 0.5;
     y1 = 0.5;
-    x2 = 0.9;
+    x2 = 0.8;
     y2 = 0.9;
   }
   else{
@@ -1081,7 +1081,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(name.find("charge")!=string::npos) yscale*=1.5;
   if(name.find("deltaR")!=string::npos) yscale*=1.5;
   if(name.find("bTag")!=string::npos) yscale*=2.5;
-  if(name.find("eejj")!=string::npos) yscale*=1.2;
+  if(name.find("eejj")!=string::npos) yscale*=1.3;
   if(name.find("dijetmass")!=string::npos) yscale*=1.5;
   if(name.find("leadingElectronPt")!=string::npos) yscale*=1.3;
   if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
@@ -2001,7 +2001,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
           latex.SetTextSize(cmsTextSize*t);
           latex.SetTextAlign(align_);
           latex.DrawLatex(posX_, posY_, cmsText);
-          if( writeExtraText )
+          if( true )
             {
               latex.SetTextFont(extraTextFont);
               latex.SetTextAlign(align_);
@@ -2010,7 +2010,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
             }
         }
     }
-  else if( writeExtraText )
+  else if( true )
     {
       if( iPosX==0)
         {
