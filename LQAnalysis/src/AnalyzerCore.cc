@@ -1922,10 +1922,8 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, int sys){
   if(sys==1) scale = 1.06;
   if(sys==-1) scale = 0.94;
   if( pt < 30.)   return 0.92*scale;
-  else {
-    return 0.96*scale;
-  }
-  
+  else  return 0.96*scale;
+
 }
 
 double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu, int sys){
@@ -1936,7 +1934,6 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu, int sys){
   if(sys==1) scale = 1.03;
   if(sys==-1) scale = 0.97;
   if( eta < 1.) return 0.9 * scale;
-  }
   else return 0.81*scale;
 
 }
