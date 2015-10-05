@@ -3,28 +3,18 @@
 
 ###### SET WHAT JOBS TO RUN
 runMC=false
-runDoubleMuon=false
+
+runDoubleMuon=true
 runDoubleElectron=false
+runSingleMuon=false
 runElectronMuon=false
-runSingleMuon=true
-runSingleElectron=true
-runSignal=false
 
 if [[ $1  == "ALL" ]]; 
 then
     runMC=true
     runDoubleMuon=true
     runDoubleElectron=true
-    runElectronMuon=true
     runSingleMuon=true
-    runSingleElectron=true
-fi
-
-if [[ $1  == "HN" ]];
-then
-    runMC=true
-    runDoubleMuon=true
-    runDoubleElectron=true
     runElectronMuon=true
 fi
 
@@ -34,36 +24,18 @@ then
     runMC=true
     runDoubleMuon=false
     runDoubleElectron=false
-    runElectronMuon=false
     runSingleMuon=false
-    runSingleElectron=false
 fi
 
 if [[ $1  == "DATA" ]];
 then
     runMC=false
-    runDoubleMuon=false
+    runDoubleMuon=true
     runDoubleElectron=true
-    runElectronMuon=false
-    runSingleMuon=false
-    runSingleElectron=false
+    runSingleMuon=true
+    runElectronMuon=true
 fi    
 
-
-if [[ $runSignal  == "true" ]];
-then
-    source functions.sh
-    cycle="SKTreeMaker"
-    #### JOB CONFIGURATION
-    njobs=30
-    data_lumi="AtoD"
-    loglevel="INFO"
-    logstep=1000
-
-    declare -a input_samples=("HNmumu50")
-
-    source submit.sh
-fi
 
 
 if [[ $runMC  == "true" ]]; 
@@ -71,18 +43,36 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=1
-    data_lumi="AtoD"
+    njobs=30
+    data_lumi="C"
     loglevel="INFO"
     logstep=1000
     
-    
-    declare -a input_samples=("ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5" "ttbar_central")
-    declare -a input_samples=("W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets"  "Z3Jets" "Z4Jets")
-    declare -a input_samples=("ttbar_central")
-    declare -a input_samples=("CH150PU")
+    declare -a input_samples=("WZ" "ZZ" "WW" "WJets" "DY10to50" "DY50plus" "TTJets_MG5"  "QCD_mu20to30" "QCD_mu30to50" "QCD_mu50to80" "QCD_mu80to120" "QCD_mu120to170" "QCD_mu170to300" "QCD_mu300to470" "QCD_mu470to600" "QCD_mu600to800" "QCD_mu800to1000" "QCD_mu1000toINF" "QCD_em20to30" "QCD_em30to50" "QCD_em50to80" "QCD_em80to120" "QCD_em120to170" "QCD_em170to300" "QCD_em300toINF" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttHtobb" "ttHnobb" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
+
     source submit.sh
 fi    
+
+
+################ DOUBLEMUON DATA
+### submit this configured job (uses bin/submit.sh)
+if [[ $runSingleMuon  == "true" ]];
+then
+    source functions.sh
+    cycle="SKTreeMaker"
+
+    njobs=30
+    data_lumi="C" ### This should == input_samples
+    loglevel="INFO"
+    logstep=1000
+    
+    stream="singlemuon"
+    declare -a input_samples=("C" )
+
+    source submit.sh
+fi
+
+
 ################ DOUBLEELECTRON DATA
 ### submit this configured job (uses bin/submit.sh)
 if [[ $runDoubleElectron  == "true" ]];
@@ -90,12 +80,12 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     njobs=30
-    data_lumi="AtoD"
+    data_lumi="C"
     loglevel="INFO"
     logstep=1000
     
     stream="egamma"
-    declare -a input_samples=("A" "B" "C" "D")
+    declare -a input_samples=("C")
 
     source submit.sh
 fi    
@@ -107,65 +97,31 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     njobs=30
-    data_lumi="AtoD"
+    data_lumi="C" ### This should == input_samples  
     loglevel="INFO"
     logstep=1000
     
     stream="muon"
-    declare -a input_samples=("A" "B" "C" "D" )
-#"B" "C" "D")
+    declare -a input_samples=("C" )
+
     source submit.sh
 fi
-################ ELECTRONMUON DATA
-### submit this configured job (uses bin/submit.sh)
 
 if [[ $runElectronMuon  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=1
-    data_lumi="AtoD"
+
+    njobs=30
+    data_lumi="C" ### This should == input_samples
     loglevel="INFO"
     logstep=1000
-    
+
+
     stream="emu"
-    declare -a input_samples=("A" "B" "C" "D")
+    declare -a input_samples=("C" )
 
     source submit.sh
 fi
-################ SINGLEELECTRON DATA
-### submit this configured job (uses bin/submit.sh)
-if [[ $runSingleElectron  == "true" ]];
-then
-    source functions.sh
-    cycle="SKTreeMaker"
-    njobs=30
-    data_lumi="AtoD"
-    loglevel="INFO"
-    logstep=1000
-    
-    stream="singleelectron"
-    declare -a input_samples=("C" "D")
-    source submit.sh
-fi
-
-
-################ SINGLEMUON DATA
-### submit this configured job (uses bin/submit.sh)
-if [[ $runSingleMuon  == "true" ]];
-then
-    source functions.sh
-    cycle="SKTreeMaker"
-    njobs=30
-    data_lumi="AtoD"
-    loglevel="INFO"
-    logstep=1000
-
-    stream="singlemuon"
-    declare -a input_samples=("A" "B" "C" "D")
-    source submit.sh
-fi
-
-
 
 

@@ -7,7 +7,7 @@
  #                                                                         #
  ###########################################################################
 
-all: rocher fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
+all: fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
 
 sktree::
 	(cd LQCore/SKTree; make)
@@ -30,8 +30,6 @@ analysis::
 fakes::
 	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
-rocher::	
-	(cd rochcor2012/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ; rm librochcor2012.so ; cp ${LQANALYZER_DIR}/rochcor2012/Root/librochcor2012.so   .; cd ${LQANALYZER_DIR})
 
 
 clean::
@@ -42,7 +40,6 @@ clean::
 	(cd LQCore/Selection; make clean)
 	(cd LQAnalysis; make clean)
 	(cd HNCommonLeptonFakes/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/libHNCommonLeptonFakes.so)
-	(cd rochcor2012/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/librochcor2012.so)
 
 distclean::
 	(cd LQCore/SKTree; make distclean)

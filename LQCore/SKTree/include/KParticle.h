@@ -41,31 +41,26 @@ namespace snu {
     ///Charge of the particle.
     Int_t Charge() const;    
     // Type of particle
-    PartType GetType() const;
+    //PartType GetType() const;
     
-    // is particle loose or tight in definition
-    LooseTight looseTight() const;
     
     // particle index
-    int ParticleIndex() const; 
+    //    int ParticleIndex() const; 
 
     // index of mother particle
-    int MotherIndex() const;
+    //    int MotherIndex() const;
     
     // index of daughter particle
-    int NDaughter() const;
+    //    int NDaughter() const;
     
-    int MotherPdgId() const;
+    //    int MotherPdgId() const;
   
   
     ///Set the class members of the particle.
     void SetCharge(Int_t c);        
-    void SetLooseTight( LooseTight istight);
-    void SetType(PartType partType);
-    void SetTruthParticleIndex(int truemu_index);
-    void SetMotherIndex(int iMother);
-    void SetMotherPdgId(int MotherPDGID);
-    void SetNDaughter(int iDaughter);
+    //    void SetMotherIndex(int iMother);
+    //void SetMotherPdgId(int MotherPDGID);
+    //void SetNDaughter(int iDaughter);
   
   
     ///So we know what type of particle this is at run time.
@@ -93,14 +88,12 @@ namespace snu {
     
   private:
     
-    PartType partType_;
-    LooseTight looseTight_;    
-    Int_t k_index, k_mindex, k_dindex, k_mother_pdgid;
+    //Int_t k_index, k_mindex, k_dindex, k_mother_pdgid;
     ///Private member variable to hold the charge.
     Int_t m_charge;
   
     
-  ClassDef(KParticle,6);
+  ClassDef(KParticle,7);
   }; // class KParticle
   
 } // namespace snu

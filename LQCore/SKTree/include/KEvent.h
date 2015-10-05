@@ -26,73 +26,64 @@ namespace snu {
     /// MET variabkes
     void SetPFMET(double met); ///defailt MET for analysis
     void SetPFMETphi(double metphi);
-    void SetPFMETRaw(double met); 
-    void SetPFMETRawphi(double phi); 
-    void SetPFMETType1(double met);
-    void SetPFMETType1phi(double phi);
-    void SetPFMETType01(double met); 
-    void SetPFMETType01phi(double phi); 
     void SetPFSumET(double sumet);
     
-    /// systematics PF
-    void SetPFMETElectronEnDown (double met_elen_down);
-    void SetPFMETElectronEnUp (double met_elen_up);
-    void SetPFMETJetEnDown (double met_jetem_down);
-    void SetPFMETJetEnUp (double met_jetem_up);
-    void SetPFMETJetResDown (double  met_jetres_down);
-    void SetPFMETJetResUp (double  met_jetres_up);
-    void SetPFMETMuonEnDown (double met_muonen_down);    
-    void SetPFMETMuonEnUp (double met_muonen_up);    
-    void SetPFMETUnclusteredDown  (double met_unclust_down);
-    void SetPFMETUnclusteredUp  (double met_unclust_up);
-    
-    /// GENMET
-    void SetGenMETTrue( double genmettrue);
-    void SetGenMETPhiTrue( double genmetphitrue);
-    void SetGenSumEtTrue( double gensumettrue);
-    void SetGenMETCalo( double genmetcalo);
-    void SetGenMETPhiCalo( double genmetphicalo);
-    void SetGenSumEtCalo( double gensumetcalo);
+    void SetPuppiMET(double met); /// puppi MET for analysis
+    void SetPuppiMETphi(double metphi);
+    void SetPuppiSumET(double sumet);
+
+    void SetNoHFMET(double met); /// puppi MET for analysis
+    void SetNoHFMETphi(double metphi);
+    void SetNoHFSumET(double sumet);
+
+
+    void SetPfMvaMET(double met); /// puppi MET for analysis
+    void SetPfMvaMETphi(double metphi);
+    void SetPfMvaSumET(double sumet);
+
 
     
     /// PDF
-    void SetPDFCTEQWeight( std::vector<double> pdf);
-    void SetPDFMSTWWeight( std::vector<double> pdf);
-    void SetPDFNNPDFWeight( std::vector<double> pdf);
+    //void SetPDFCTEQWeight( std::vector<double> pdf);
+    //void SetPDFMSTWWeight( std::vector<double> pdf);
+    //void SetPDFNNPDFWeight( std::vector<double> pdf);
     
     /// Process ID
-    void SetProcessID(int id);
     void SetLumiSection(int ls);
     /// Vertex
     void SetNVertices(int nvert);
-    void SetVertexIndex(int ivertex);
-    void SetVertexIsFake(bool isfakeV);
-    void SetIsGoodEvent(bool isgood);
+    
+    void SetNGoodVertices(int nvert);
+
+    //    void SetVertexIsFake(bool isfakeV);
+    void SetIsGoodEvent(int isgood);
     void SetVertexX(double vX);
     void SetVertexY(double vY);
     void SetVertexZ(double vZ);    
+    void SetVertexNDOF(double ndof);    
 
     /// Event
     void SetWeight(double weight);
-    
+    void SetGenId1(int  id1);
+    void SetGenId2(int  id2);
+    void SetLHEWeight(double  lhe);
+    void SetGenX1(double  x1);
+    void SetGenX2(double  x2);
+    void SetGenQ(double  Q);
+
     void SetEventNumber(int ev);
     void SetRunNumber(int rn);
     void SetIsData(bool isdata);
     
     // Jet rhos
-    void SetJetRho(double jetrho);    
+    //void SetJetRho(double jetrho);    
     
     /// MET filters
-    void SetIsTrackingFailure(bool fail);
-    void SetPassTrackingFailureFilter(bool pass) ;
-    void SetPassBeamHaloFilterLoose(bool pass);
-    void SetPassBeamHaloFilterTight(bool pass);
-    void SetPassBadEESupercrystalFilter(bool pass);
-    void SetPassEcalDeadCellBoundaryEnergyFilter(bool pass);
+
+    void SetPassCSCHaloFilterTight(bool pass);
     void SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass);
-    void SetPassEcalLaserCorrFilter(bool pass);
     void SetPassHBHENoiseFilter(bool pass);
-    void SetPassHcalLaserEventFilter(bool pass);
+    void SetPassBadEESupercrystalFilter(bool pass);
 
     /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
@@ -102,40 +93,32 @@ namespace snu {
     
     /// MET variables
     inline Double_t PFMET() const {return k_PF_MET;}
-    inline Double_t PFMETRaw() const {return k_PF_METraw;}
-    inline Double_t PFMETType1() const {return k_PF_METtype1;}
-    inline Double_t PFMETType01() const {return k_PF_METtype01;}
-
     inline Double_t PFMETphi() const {return k_PF_METphi;}
-    inline Double_t PFMETRawphi() const {return k_PF_METrawphi;}
-    inline Double_t PFMETType1phi() const {return k_PF_METtype1phi;}
-    inline Double_t PFMETType01phi() const {return k_PF_METtype01phi;}
 
     inline Double_t PFSumET() const {return k_PF_SumET;}
     
-    
-    inline Double_t PFMET_El_EnUp() const {return k_PF_MET_el_enup;}
-    inline Double_t PFMET_El_EnDown() const {return k_PF_MET_el_endown;}
-    inline Double_t PFMET_Jet_EnUp() const {return k_PF_MET_jet_enup;}
-    inline Double_t PFMET_Jet_EnDown() const {return k_PF_MET_jet_endown;}
-    inline Double_t PFMET_Jet_ResUp() const {return k_PF_MET_jet_resup;}
-    inline Double_t PFMET_Jet_ResDown() const {return k_PF_MET_jet_resdown;}
-    inline Double_t PFMET_Muon_EnUp() const {return k_PF_MET_muon_enup;}
-    inline Double_t PFMET_Muon_EnDown() const {return k_PF_MET_muon_endown;}
-    inline Double_t PFMET_Unclust_Up() const {return k_PF_MET_unclust_up;}
-    inline Double_t PFMET_Unclust_Down() const {return k_PF_MET_unclust_down;}
-    
-    /// PDF 
-    inline std::vector<Double_t> PDFCTEQWeight() const {return k_pdf_cteq;}
-    inline std::vector<Double_t> PDFMSTWWeight() const {return k_pdf_mstw;}
-    inline std::vector<Double_t> PDFNNPDFWeight() const {return k_pdf_nnpdf;}
+
+    inline Double_t PuppiMET() const {return k_Puppi_MET;}
+    inline Double_t PuppiMETphi() const {return k_Puppi_METphi;}
+    inline Double_t PuppiSumET() const {return k_Puppi_SumET;}
+
+    inline Double_t NoHFMET() const {return k_NoHF_MET;}
+    inline Double_t NoHFMETphi() const {return k_NoHF_METphi;}
+    inline Double_t NoHFSumET() const {return k_NoHF_SumET;}
+
+    inline Double_t PfMvaMET() const {return k_PfMva_MET;}
+    inline Double_t PfMvaMETphi() const {return k_PfMva_METphi;}
+    inline Double_t PfMvaSumET() const {return k_PfMva_SumET;}
+
+
+    //inline std::vector<Double_t> PDFCTEQWeight() const {return k_pdf_cteq;}
+    //inline std::vector<Double_t> PDFMSTWWeight() const {return k_pdf_mstw;}
+    //inline std::vector<Double_t> PDFNNPDFWeight() const {return k_pdf_nnpdf;}
     
     
     /// ProcessID
-    inline Int_t ProcessID()  const {return k_process_id;}
+
     inline Int_t LumiSection()  const {return k_lumisec;}
-    /// Jet rho
-    inline Double_t JetRho() const {return k_jetrho;}
 
     /// Event specific
     inline Double_t MCWeight() const{return k_mcweight;}
@@ -145,35 +128,32 @@ namespace snu {
     
     // Vertex
     inline Int_t nVertices()  const {return k_nvertices;}
-    inline Int_t VertexIndex()  const {return k_ivertex;}
-    inline Bool_t IsFakeVertex() const {return k_isfakeV;}
+    inline Int_t nGoodVertices()  const {return k_ngoodvertices;}
+
     inline Bool_t HasGoodPrimaryVertex() const {return k_isgoodevent;}
     inline Double_t VertexX() const {return k_vertexX;}
     inline Double_t VertexY() const {return k_vertexY;}
     inline Double_t VertexZ() const {return k_vertexZ;}
+    inline Double_t VertexNDOF() const {return k_vertexNDOF;}
 
-    inline Double_t GenMETTrue() const {return k_genmettrue;}
-    inline Double_t GenMETPhiTrue() const {return k_genmetphitrue;}
-    inline Double_t GenSumEtTrue() const {return k_gensumettrue;}
-    inline Double_t GenMETCalo() const {return k_genmetcalo;}
-    inline Double_t GenMETPhiCalo() const {return k_genmetphicalo;}
-    inline Double_t GenSumEtCalo() const {return k_gensumetcalo;}
+
     
     /// MET filters
-    inline Bool_t   IsTrackingFailure() const {return k_isTrackingFailure ;}
-    inline Bool_t   PassTrackingFailureFilter() const {return  k_passTrackingFailureFilter ;}
-    inline Bool_t   PassBeamHaloFilterLoose() const {return   k_passBeamHaloFilterLoose;}
-    inline Bool_t   PassBeamHaloFilterTight() const {return   k_passBeamHaloFilterTight;}
-    inline Bool_t   PassBadEESupercrystalFilter() const {return  k_passBadEESupercrystalFilter ;}
-    inline Bool_t   PassEcalDeadCellBoundaryEnergyFilter() const {return  k_passEcalDeadCellBoundaryEnergyFilter ;}
+    inline Bool_t   PassCSCHaloFilterTight() const {return   k_passCSCHaloFilterTight;}
     inline Bool_t   PassEcalDeadCellTriggerPrimitiveFilter() const {return   k_passEcalDeadCellTriggerPrimitiveFilter;}
-    inline Bool_t   PassEcalLaserCorrFilter() const {return    k_passEcalLaserCorrFilter;}
     inline Bool_t   PassHBHENoiseFilter() const {return  k_passHBHENoiseFilter ;}
-    inline Bool_t   PassHcalLaserEventFilter() const {return  k_passHcalLaserEventFilter ;}
+    inline Bool_t   PassBadEESupercrystalFilter() const {return  k_passBadEESupercrystalFilter ;}
 
     //Pileup reweighting
     inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
     
+    inline Double_t LHEWeight() const{return k_lheweight;}
+    inline Int_t Id1() const {return k_pdf_id1;}
+    inline Int_t Id2() const {return k_pdf_id2;}
+    inline Double_t Q() const {return k_pdf_q;}
+    inline Double_t x1() const {return k_pdf_x1;}
+    inline Double_t x2() const {return k_pdf_x2;}
+			
     
     virtual void Reset();    
   protected:
@@ -182,22 +162,20 @@ namespace snu {
   private:
     /// decalre private functions
     
-    Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex, k_process_id, k_lumisec;
-    Double_t k_vertexX,k_vertexY,k_vertexZ,  k_jetrho, k_mcweight;
-    std::vector<Double_t> k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
-    Double_t k_genmettrue, k_genmetphitrue,k_gensumettrue, k_genmetcalo, k_genmetphicalo,k_gensumetcalo;
-    Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
-    Double_t k_PF_METraw, k_PF_METtype1, k_PF_METtype01;
-    Double_t k_PF_METrawphi, k_PF_METtype1phi, k_PF_METtype01phi;
-    Double_t k_PF_MET_el_enup,k_PF_MET_el_endown, k_PF_MET_jet_enup,k_PF_MET_jet_endown, k_PF_MET_jet_resup,k_PF_MET_jet_resdown, k_PF_MET_muon_enup,k_PF_MET_muon_endown, k_PF_MET_unclust_up,k_PF_MET_unclust_down;
-    
-    Bool_t k_isfakeV;
+    Int_t    k_EventNumber, k_RunNumber,k_nvertices,  k_lumisec, k_ngoodvertices,k_pdf_id1, k_pdf_id2;
+    Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
+    //std::vector<Double_t> k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
+    Double_t k_PF_MET, k_PF_METphi, k_PF_SumET ;
+    Double_t k_Puppi_MET, k_Puppi_METphi, k_Puppi_SumET ;
+    Double_t k_NoHF_MET, k_NoHF_METphi, k_NoHF_SumET ;
+    Double_t k_PfMva_MET, k_PfMva_METphi, k_PfMva_SumET ;
+
     Bool_t k_isData, k_isgoodevent;
-    Bool_t k_isTrackingFailure, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
+    Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter;
     Double_t  k_PileUpInteractionsTrue;
     
-
-    ClassDef(KEvent,13)
+    
+    ClassDef(KEvent,16)
   }; 
   
 }//namespace snu

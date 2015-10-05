@@ -28,7 +28,7 @@ fi
 export LQANALYZER_DIR=${PWD}
 
 
-export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/Dec14/"
+export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATOct15/"
 
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above

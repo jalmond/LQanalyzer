@@ -35,8 +35,8 @@ class SKTreeMakerNoCut : public AnalyzerCore {
   snu::KEvent out_event;
   snu::KTrigger out_trigger;
 
-  int pass_eventcut;
   int nevents;
+  int pass_eventcut;
   int pass_vertexcut;
 
   ClassDef ( SKTreeMakerNoCut, 1);

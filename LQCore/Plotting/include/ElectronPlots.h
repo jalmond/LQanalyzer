@@ -20,7 +20,7 @@ class ElectronPlots : public StdPlots{
   inline std::map<TString, TH1*> GetMap() const{return map_el;}
 
   void Fill(TString name, Double_t value, Double_t weight);
-  void Fill(Double_t weight, std::vector<snu::KElectron> el, double rho);
+  void Fill(Double_t weight, std::vector<snu::KElectron> el);
   void Write();
 
  private:

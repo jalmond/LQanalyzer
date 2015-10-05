@@ -26,10 +26,8 @@ class SKTreeFiller : public Data, public AnalysisBase {
   ~SKTreeFiller();
 
   std::vector<snu::KMuon> GetAllMuons();
-  std::vector<snu::KTau> GetAllTaus();
   std::vector<snu::KElectron> GetAllElectrons();
   std::vector<snu::KJet> GetAllJets();
-  std::vector<snu::KJet> GetAllCaloJets();
   std::vector<snu::KGenJet> GetAllGenJets();
   snu::KEvent GetEventInfo();
   snu::KTrigger GetTriggerInfo(std::vector<TString> triglist);

@@ -49,7 +49,7 @@ void ExampleAnalyzerElectronMuon::InitialiseAnalysis() throw( LQError ) {
 
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
-   MakeCleverHistograms(sighist, "ElectronMuonEvents");
+   MakeCleverHistograms(sighist_em, "ElectronMuonEvents");
 
    
    return;
@@ -138,7 +138,7 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
     if(electronTightColl.at(0).Charge() != muonTightColl.at(0).Charge()){      
       
       /// Fill Standardset of cuts forall objects with pileup reweighting applied
-      FillCLHist(sighist, "ElectronMuonEvents", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
+      FillCLHist(sighist_em, "ElectronMuonEvents", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, (weight*pileup_reweight*id_scalefactor));
       
     }
   }// OS 

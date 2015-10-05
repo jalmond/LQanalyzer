@@ -2,9 +2,8 @@
 #define Reweight_h
 
 class TFile;
-class TH1D;
-class TString;
 class TH1F;
+class TString;
 class TDirectory;
 
 class Reweight {
@@ -25,10 +24,10 @@ class Reweight {
   TFile* fileDataUP_;
   TFile* fileDataDOWN_;
 
-  TH1D* h_MCmod_;
-  TH1D* h_Data_;
-  TH1D* h_Data_up_;
-  TH1D* h_Data_down_;
+  TH1F* h_MCmod_;
+  TH1F* h_Data_;
+  TH1F* h_Data_up_;
+  TH1F* h_Data_down_;
 
 };
 

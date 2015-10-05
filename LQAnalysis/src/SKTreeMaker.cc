@@ -33,24 +33,17 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 }
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
-  
-  FillCutFlow("NoCut", 1);
 
   if(!PassBasicEventCuts()){
     m_logger << DEBUG << "Fail MET filter cuts" << LQLogger::endmsg;
     throw LQError( "Fails basic cuts",  LQError::SkipEvent );
   }  
-  FillCutFlow("EventCut", 1);
   
-  std::vector<TString> triggerslist;
-  triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()){
     m_logger <<  DEBUG << "Event FAILS HasGoodPrimaryVertex " << LQLogger::endmsg;
     throw LQError( "Has no PV",  LQError::SkipEvent );
   }
-  FillCutFlow("VertexCut", 1);
-
  
   //////////////////////////////////////////////////////
   //////////// Select objetcs
@@ -77,7 +70,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
   eventbase->GetJetSel()->SetPt(10);
-  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->SetEta(3.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
   //###### GenJet Selection ##########
@@ -87,9 +80,9 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
   eventbase->GetElectronSel()->SetPt(10); 
-  eventbase->GetElectronSel()->SetEta(5.); 
+  eventbase->GetElectronSel()->SetEta(2.5); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
-  eventbase->GetElectronSel()->SetPt(10);
+  eventbase->GetElectronSel()->SetPt(15);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
@@ -104,9 +97,10 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-    
-
-  FillCutFlow("DiLep", 1);
+  
+  for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
+    //    cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
+  }
 
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
@@ -141,75 +135,40 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   if(k_isdata){
     cout << " k_channel = " << k_channel << endl;
     if(k_channel.Contains("singleMuon")){
-      AddTriggerToList("HLT_Mu5_v");
-      AddTriggerToList("HLT_Mu8_v");
-      AddTriggerToList("HLT_Mu12_v");
-      AddTriggerToList("HLT_Mu17_v");
-      AddTriggerToList("HLT_Mu24_v");
-      AddTriggerToList("HLT_Mu24_v");
-      AddTriggerToList("HLT_Mu40_eta2p1_v");
-      AddTriggerToList("HLT_IsoMu24_eta2p1_v");
+      AddTriggerToList("HLT_IsoMu");
+      AddTriggerToList("HLT_Mu");
+      AddTriggerToList("HLT_TkMu");
     }
     else if(k_channel.Contains("Muon")){
-      AddTriggerToList("HLT_Mu40_eta2p1_v");
-      AddTriggerToList("HLT_IsoMu24_eta2p1_v");
-      AddTriggerToList("HLT_Mu17_TkMu8_v");
-      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v");
-      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v");
-      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
-      AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
+      AddTriggerToList("HLT_IsoMu");
+      AddTriggerToList("HLT_Mu");
+      AddTriggerToList("HLT_TkMu");
     }
     cout << "k_channel = " << k_channel << endl;
     if(k_channel.Contains("Electron")){
-      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-      AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-      AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-      AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-      AddTriggerToList("HLT_Ele27_WP80_v");
-      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
-      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_v");
-      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_30_20_v");
-      AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet45_35_25_v");
-      AddTriggerToList("HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass50_v");
-      AddTriggerToList("HLT_Ele20_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC4_Mass50_v");
+      AddTriggerToList("HLT_DoubleEle");
+      AddTriggerToList("HLT_Ele");
     }
     
     if(k_channel.Contains("EMu")){
-      AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-      AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
     }
   }
   else {
-    AddTriggerToList("HLT_Mu5_v");
-    AddTriggerToList("HLT_Mu8_v");
-    AddTriggerToList("HLT_Mu12_v");
-    AddTriggerToList("HLT_Mu17_v");
-    AddTriggerToList("HLT_Mu24_v");
-    AddTriggerToList("HLT_Mu24_v");
-    AddTriggerToList("HLT_Mu40_eta2p1_v");
-    AddTriggerToList("HLT_IsoMu24_eta2p1_v");
-    AddTriggerToList("HLT_Mu40_eta2p1_v");
-    AddTriggerToList("HLT_IsoMu24_eta2p1_v");
-    AddTriggerToList("HLT_Mu17_TkMu8_v");
-    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFJet30_v");
-    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_v");
-    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet30_30_20_v");
-    AddTriggerToList("HLT_IsoMu17_eta2p1_TriCentralPFNoPUJet45_35_25_v");
-    AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-    AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
-    AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-    AddTriggerToList("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-    AddTriggerToList("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-    AddTriggerToList("HLT_Ele27_WP80_v");
-    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFJet30_v");
-    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_v");
-    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TriCentralPFNoPUJet30_30_20_v");
-    AddTriggerToList("HLT_Ele25_CaloIdVT_CaloIsoVL_TrkIdVL_TrkIsoT_TriCentralPFNoPUJet45_35_25_v");
-    AddTriggerToList("HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass50_v");
-    AddTriggerToList("HLT_Ele20_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC4_Mass50_v");
-    AddTriggerToList("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-    AddTriggerToList("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
+    AddTriggerToList("HLT_IsoMu");
+    AddTriggerToList("HLT_Mu");
+    AddTriggerToList("HLT_TkMu");
+    AddTriggerToList("HLT_DoubleEle");
+    AddTriggerToList("HLT_Ele");
   }
   
   return;

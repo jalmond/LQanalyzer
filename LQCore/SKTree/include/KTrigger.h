@@ -37,7 +37,7 @@ namespace snu {
     std::vector<bool> k_HLTInsideDatasetTriggerDecisions;
     std::vector<int> k_HLTInsideDatasetTriggerPrescales;
 
-    ClassDef(KTrigger,1)
+    ClassDef(KTrigger,2)
   }; 
   
 }//namespace snu

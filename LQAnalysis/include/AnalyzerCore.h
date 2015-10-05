@@ -7,12 +7,14 @@ class EventBase;
 class MuonPlots;
 class ElectronPlots;
 class JetPlots;
-class SignalPlots;
+class SignalPlotsEE;
+class SignalPlotsMM;
+class SignalPlotsEM;
+class TriLeptonPlots;
 class EventBase;
 
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-#include "rochcor2012/rochcor2012/rochcor2012jan22.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -34,20 +36,17 @@ class AnalyzerCore : public LQCycleBase {
 
   std::vector<snu::KJet>  GetJets(TString label);
   std::vector<snu::KMuon> GetMuons(TString label);
+  std::vector<snu::KMuon> GetMuons(TString label, bool keepfakes);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label, double& w);
-  void MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w) ;
-  void MakeEMUTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w); 
+  std::vector<snu::KElectron> GetElectrons( TString label);
 
-  double GetFakeRateByParam(TString param, TString jetcut, TString looseregion, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  bool cl1, bool cl2);
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);
-  void RunMCCLosureTest(TString label,  std::vector<snu::KJet> jets, TString cut,  float w);
-  void MakeMCCloseplots(TString ajpt, TString label,  TString method, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool closejet, float w1 );
-
-  void RunMCCLosureTestEMU(TString label, std::vector<snu::KJet> jets, TString cut, float w);
 
 
+  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
+
+<<<<<<< HEAD
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
 
   void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets, TString label, float w);
@@ -58,39 +57,36 @@ class AnalyzerCore : public LQCycleBase {
   double TriggerScaleFactor( vector<snu::KMuon> mu, int sys=0);;
   double TriggerScaleFactorEMu(int sys=0);
   float GetEEMass(std::vector<snu::KElectron> electrons);
+=======
+  double TriggerScaleFactor( vector<snu::KElectron> el);;
+  double TriggerScaleFactor( vector<snu::KMuon> mu);;
+  double TriggerScaleFactorEMu();
+  float GetZMass(std::vector<snu::KMuon> muons);
+  float GetZMass(std::vector<snu::KElectron> electrons);
+>>>>>>> cat
 
-  void FakeBkgBreakDown(std::vector<snu::KElectron> electrons, TString cut, float w);
   double ElectronScaleFactor( double eta, double pt, bool tight, int sys=0);
   double MuonScaleFactor(double eta, double pt, int sys=0);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
-  bool IsTight(snu::KElectron el,double jetrho , double dxy, double biso, double eiso, bool usetight);
-  bool IsTight(snu::KElectron electron,  double rho);
+  bool IsTight(snu::KElectron electron);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
   int NBJet(std::vector<snu::KJet> jets);
+  bool Zcandidate(vector<snu::KMuon> muons, float interval, bool require_os=true);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
+  bool SameCharge(std::vector<snu::KMuon> muons);
   bool SameCharge(std::vector<snu::KElectron> electrons);
-  float CFRate(snu::KElectron el, bool useoldrates=false);
-  void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
-  std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
-  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso,  bool    usetight,TString cut, bool applypucorr);
-
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho);
-
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, bool istight,  double dxy, double biso, double eciso,  TString cut);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, bool istight, double dxy, double biso, double eciso,   TString cut, int type);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, std::vector<snu::KJet> jets,  double rho, bool istight, double dxy, double biso, double eciso,   TString cut, int type);
   
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, TString cut);
-  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, TString cut, int type);
+  float CFRate(snu::KElectron el);
+  std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
 
+  float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
-  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons , double rho, int sys =0);
-  float Get_DataDrivenWeightMC_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, double rho, TString tag);
-
+  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons);
+ 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   
@@ -98,7 +94,7 @@ class AnalyzerCore : public LQCycleBase {
   vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KJet> jet);
   // enum for plotting functions/classes
-  enum histtype {muhist, elhist, jethist, sighist};
+  enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist};
   
   
   //
@@ -128,7 +124,6 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* FRHist;
   TH2F* MuonSF;
   HNCommonLeptonFakes* m_fakeobj;
-  rochcor2012 *rmcor;
   
   /// Event weights
   Double_t MCweight, weight;
@@ -139,7 +134,10 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<TString> triggerlist;
 
   //// Making cleaver hist maps
-  map<TString, SignalPlots*> mapCLhistSig;
+  map<TString, TriLeptonPlots*> mapCLhistTriLep;
+  map<TString, SignalPlotsEE*> mapCLhistSigEE;
+  map<TString, SignalPlotsMM*> mapCLhistSigMM;
+  map<TString, SignalPlotsEM*> mapCLhistSigEM;
   map<TString, ElectronPlots*> mapCLhistEl;
   map<TString, MuonPlots*> mapCLhistMu;
   map<TString, JetPlots*> mapCLhistJet;
@@ -177,13 +175,11 @@ class AnalyzerCore : public LQCycleBase {
   void FillHist(TString histname, float value, float w , float xmin[], int nbins=0);
   void FillHist(TString histname, float value1, float value2, float w , float x[], int nbinsx, float y[], int nbinsy);
   void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy);
+
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
-  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight, Double_t err);
-  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KJet> jets,double weight);
-  void FillCLHist(histtype type, TString hist, snu::KEvent ev, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
-  void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double rho, double weight);
+  void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
 
   // Makes clever histograms

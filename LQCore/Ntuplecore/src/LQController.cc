@@ -152,11 +152,11 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
     while(getline (fin,word)){
 
       TFile * file = TFile::Open(word.c_str());
-      TH1I*  EventCounter = (TH1I*) (file ->Get("LJFilter/EventCount/EventCounter"));
-      if(!EventCounter) throw LQError( "LJFilter/EventCount/EventCount NOT found!!!",   LQError::StopExecution );
+      TH1F*  EventCounter = (TH1F*) (file ->Get("hNEvent"));
+      if(!EventCounter) throw LQError( "hNEvent NOT found!!!",   LQError::StopExecution );
 
       total_events_beforeskim += EventCounter->GetBinContent(1);
-      total_events_afterskim += EventCounter->GetBinContent(2);
+      total_events_afterskim += EventCounter->GetBinContent(1);
       file->Close();
       delete file;
       ifile++;
@@ -179,13 +179,9 @@ void LQController::SetChannel(TString ch){
 }
 void LQController::SetDataPeriod(TString period){
   
-  if( period == "A") k_period = "A";
-  else if( period == "B") k_period = "B";
-  else if( period == "C") k_period = "C";
+  if( period == "C") k_period = "C";
   else if( period == "D") k_period = "D";
-  else if( period == "AtoB") k_period = "AtoB";
-  else if( period == "AtoC") k_period = "AtoC";
-  else if( period == "AtoD") k_period = "AtoD";
+  else if( period == "ALL") k_period = "AtoD";
   else {
     m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
     throw LQError( "Data Period not correctly set!!!",
@@ -193,13 +189,10 @@ void LQController::SetDataPeriod(TString period){
   }
   
   
-  if( period == "A") target_luminosity = 887.501;
-  else if( period == "B") target_luminosity = 4443.;
-  else if( period == "C") target_luminosity = 7114.;
-  else if( period == "D") target_luminosity = 7318.;
-  else if( period == "AtoB") target_luminosity = (887.501 + 4443.);
-  else if( period == "AtoC") target_luminosity = (887.501 + 4443. + 7114.);
-  else target_luminosity = (887.501 + 4443. + 7114. + 7318.);
+  if( period == "C") target_luminosity = 15.478;
+  else if( period == "D") target_luminosity = 0.;
+  else if( period == "ALL") target_luminosity = 15.478;
+  else target_luminosity = 15.478;
 
   
 }
@@ -466,6 +459,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     //// Connect chain to Data class                                                                                                                                        
     cycle->Init(chain);
+
     GetMemoryConsumption("Connected All Active Branches");
     
     /// We can now check 

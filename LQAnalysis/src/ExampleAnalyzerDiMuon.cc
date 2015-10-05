@@ -8,353 +8,173 @@
  ***************************************************************************/
 
 /// Local includes
-#include "ExampleAnalyzerDiMuon.h"
+ #include "ExampleAnalyzerDiMuon.h"
 
-//Core includes
-#include "Reweight.h"
-#include "EventBase.h"                                                                                                                           
-#include "BaseSelection.h"
+ //Core includes
+ #include "Reweight.h"
+ #include "EventBase.h"                                                                                                                           
+ #include "BaseSelection.h"
 
-//// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (ExampleAnalyzerDiMuon);
-
-
-/**
- *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
- *
- */
-ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
-
-  
-  // To have the correct name in the log:                                                                                                                            
-  SetLogName("ExampleAnalyzerDiMuon");
-
-  Message("In ExampleAnalyzerDiMuon constructor", INFO);
-  //
-  // This function sets up Root files and histograms Needed in ExecuteEvents
-  InitialiseAnalysis();
-}
+ //// Needed to allow inheritance for use in LQCore/core classes
+ ClassImp (ExampleAnalyzerDiMuon);
 
 
-void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
-  
-  /// Initialise histograms
-  MakeHistograms();  
-  //
-  // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
-  //
+ /**
+  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
+  *
+  */
+ ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
 
-   Message("Making clever hists for Z ->ll test code", INFO);
 
-   return;
+   // To have the correct name in the log:                                                                                                                            
+   SetLogName("ExampleAnalyzerDiMuon");
+
+   Message("In ExampleAnalyzerDiMuon constructor", INFO);
+   //
+   // This function sets up Root files and histograms Needed in ExecuteEvents
+   InitialiseAnalysis();
+   MakeCleverHistograms(sighist_mm,"DiMuon");
+   MakeCleverHistograms(sighist_mm,"SSMuon");
+   MakeCleverHistograms(trilephist,"TriMuon");
+   
  }
 
 
+ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
+
+   /// Initialise histograms
+   MakeHistograms();  
+   //
+   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
+   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+   //
+
+    Message("Making clever hists for Z ->ll test code", INFO);
+
+    return;
+  }
+
+
 void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
+  
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
-   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
-   /// The string cut must match a bin label in FillCutFlow function
    FillCutFlow("NoCut", weight);
+  
+   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you see this is out of date please comment
    
-
-   std::vector<snu::KJet> jetColl             = GetJets("loosest");
-   
-   
-   if(jetColl.size() > 1){
-     cout << "\n ------------------------  " << endl;
-     cout << "Size of jets  = " << jetColl.size() << endl;
-     
-     int njet=0;
-     for(int ij = 0 ; ij < jetColl.size(); ij++){
-       if(jetColl.at(ij).PileupJetIDLoose()) njet++;
-       else cout << "Jet failed PileupJetIDLoose: jet mva = " << jetColl.at(ij).PileupJetIDMVA() << endl;
-     }
-     cout << "Size of jets passing PileupJetIDLoose  = " << njet << endl;
-   }
-   return;
-   
-   std::vector<snu::KMuon> muonNoCutColl = GetMuons("NoCut");
-   
-   if(jetColl.size() < 2) return;
-   if(muonNoCutColl.size() !=2) return;
-   
-   float wmassjj=0.;
-   int indexj1=0;
-   int indexj2=0;
-   for(unsigned int ij=0; ij < jetColl.size()-1; ij++){
-     for(unsigned int ij2=ij+1; ij2 < jetColl.size(); ij2++){
-       snu::KParticle jjtmp = jetColl.at(ij) + jetColl.at(ij2) ;
-       if(fabs(jjtmp.M() - 80.4) < wmassjj) {
-	 wmassjj = fabs(jjtmp.M() - 80.4);
-	 indexj1=ij;
-	 indexj2=ij2;
-       }
-     }
-   }
-
-   float wmassjj_lm=0.;
-   int indexj1_lm=0;
-   int indexj2_lm=0;
-   for(unsigned int ij=0; ij < jetColl.size()-1; ij++){
-     for(unsigned int ij2=ij+1; ij2 < jetColl.size(); ij2++){
-       snu::KParticle jjtmp = jetColl.at(ij) + jetColl.at(ij2) + muonNoCutColl.at(0)+ muonNoCutColl.at(1);
-       if(fabs(jjtmp.M() - 80.4) < wmassjj) {
-         wmassjj_lm = fabs(jjtmp.M() - 80.4);
-         indexj1_lm=ij;
-         indexj2_lm=ij2;
-       }
-     }
-   }
-
-   
-
-   
-   snu::KParticle N1 = muonNoCutColl.at(0) + jetColl.at(indexj1) + jetColl.at(indexj2); 
-   snu::KParticle N2 = muonNoCutColl.at(1) + jetColl.at(indexj1) + jetColl.at(indexj2); 
-
-   
-   snu::KParticle N1_lm = muonNoCutColl.at(0) + jetColl.at(indexj1_lm) + jetColl.at(indexj2_lm);
-   snu::KParticle N2_lm = muonNoCutColl.at(1) + jetColl.at(indexj1_lm) + jetColl.at(indexj2_lm);
-
-
-   if( fabs(N1_lm.M() -50.) < fabs(N2_lm.M()-50.)) FillHist("NMass_50", N1.M(),1., 0.,1000.,1000);
-   else FillHist("NMass_50", N2_lm.M(),1., 0.,1000.,5000);
-
-   if( fabs(N1_lm.M() -60.) < fabs(N2_lm.M() -60.)) FillHist("NMass_60", N1.M(),1., 0.,1000.,1000);
-   else FillHist("NMass_60", N2_lm.M(),1., 0.,1000.,5000);
-
-   if( fabs(N1.M() -100.) < fabs(N2.M()-100.)) FillHist("NMass_100", N1.M(),1., 0.,1000.,1000);
-   else FillHist("NMass_100", N2.M(),1., 0.,1000.,5000);
-
-   if( fabs(N1.M() -300.) < fabs(N2.M() -300.)) FillHist("NMass_300", N1.M(),1., 0.,1000.,1000);
-   else FillHist("NMass_300", N2.M(),1., 0.,1000.,5000);
-
-
-
-   //low mass
-
-
-
-   return;
-
-
-
-   ///// Apply some general cuts on event to clean MET
-   /// Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
-   /// These are applied in AnalyzerCore::PassBasicEventCuts
-   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
+   if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
    FillCutFlow("EventCut", weight);
 
-   
-   /// Trigger List (specific to muons channel)
+
+
+   /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu
+
    std::vector<TString> triggerslist;
-   triggerslist.push_back("HLT_Mu17_TkMu8_v");
-      
+   triggerslist.push_back("HLT_IsoMu24_eta2p1_v");
    if(!PassTrigger(triggerslist, prescale)) return;
-   
-   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
-   
    FillCutFlow("TriggerCut", weight);
+
+   /* // #### CAT::: trigger matching information is stored for muons and electrons for:
+   ///HLT_IsoMu24_eta2p1_v
+   ///HLT_Mu17_Mu8_DZ_v
+   ///HLT_Mu17_TkMu8_DZ_v
+   ///HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v
+   ///HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v
+   ///HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v
+   ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v
+   ///HLT_Ele12_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v
+   ///HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v
+   ///HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v
+   ///HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v
+   ///HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
+   ///HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
+   ///HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v
+   ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
+   ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_
+   ///HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v
+   ///HLT_Ele27_eta2p1_WPLoose_Gsf_TriCentralPFJet30_v
+   */
+
    m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
-   
-   
-   /// Check the event has a "Good" Primary vertex
-   /// Good is taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/TrackingPFGJob:
-   /// defined as : !isFake && ndof > 4 && |z| <= 24 cm && position.Rho <= 2cm (rho = radius of vertex)
-   /// Cut is coded in SKTreeFiller and stored in KEvent class as HasGoodPrimaryVertex()
-   /// More info on primary vertex can be found https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideOfflinePrimaryVertexProduction (LQNtuples use offlinePrimaryVertices)
-   // isFake is true if the vertex is based on the beam spot (as no reconstructed vertex is found
+
 
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
-   
+   /// Has Good Primary vertex:
+   /// if ( vtx.ndof() > 4 &&
+   //   ( (maxAbsZ <=0 ) || std::abs(vtx.z()) <= 24 ) &&
+   //( (maxd0 <=0 ) || std::abs(vtx.position().rho()) <= 2 ) &&
+   //!(vtx.isFake() ) ){
    FillCutFlow("VertexCut", weight);
+
+   /// List of preset muon collections
+   std::vector<snu::KMuon> muonColl = GetMuons("NoCut");  /// No cuts applied
+   std::vector<snu::KMuon> muonVetoColl = GetMuons("HNVeto");  // veto selection
+   std::vector<snu::KMuon> muonLooseColl = GetMuons("HNLoose");  // loose selection
+   std::vector<snu::KMuon> muonTightColl = GetMuons("HNTight"); // tight selection : NonPrompt MC lep removed
    
-   /// Use the number of vertices in the event to check effect of pileup reweighting
+
+   for(std::vector<snu::KMuon>::iterator it = muonColl.begin(); it!= muonColl.end(); it++){
+     //cout << "Muon pt = " << it->Pt() << endl;
+     //cout << "Muon eta =" << it->Eta() << endl;
+     //cout << "Muon match =" << it->TriggerMatched("HLT_IsoMu24_eta2p1") << endl;
+   }
+   
+   
+   /// List of preset jet collections
+   std::vector<snu::KJet> jetColl             = GetJets("NoLeptonVeto"); // All jets
+   std::vector<snu::KJet> jetColl_loose       = GetJets("Loose"); // pt > 10; eta < 5. ; PFlep veto
+   std::vector<snu::KJet> jetColl_medium      = GetJets("Medium");// pt > 20 ; eta < 2.5; PFlep veto
+   std::vector<snu::KJet> jetColl_hn          = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
+
+   std::vector<snu::KElectron> electronColl        = GetElectrons("POGTight");          
+
+   if(jetColl_hn.size() < 2) return;
+
+   
+   
    numberVertices = eventbase->GetEvent().nVertices();   
+   
+   
    
    float pileup_reweight=(1.0);
    if (!k_isdata) {
-     /// Here is an alternative method to Fill a histogram. 
-     /// The histogram with name "h_nvtx_norw"/"h_nvtx_rw" were not declared in the MakeHistogram code. 
-     /// To avoid adding this by hand we can just use FillHist() function with 3 additional inputs i.e., xmin, xmax and nbinsx          
-     pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
+     /// Currently this is done using on the fly method: waiting for official method
+     //pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue())); //* MCweight;
+     pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices())); //* MCweight;
+     //weight *= pileup_reweight;
    }
-   
-   //////////////////////////////////////////////////////
-   //////////// Select objetcs
-   //////////////////////////////////////////////////////   
+   //cout << "MCweight = " << MCweight << endl;
 
 
-   /// 1) Tight Muons                       || eventbase->GetMuonSel()->HNTightMuonSelection
-   /// 2) Loose Muons for veto              || eventbase->GetMuonSel()->HNVetoMuonSelection
-   /// 3) TightElectrons (for jet veto)     || eventbase->GetElectronSel()->HNTightElectronSelection
-   /// 4) Jets(with lepton veto)
-   
-   ///////////////////////////////////////////////////////////////////////////////////////////
-   /// 1) Tight Muons       
-   ///////////////////////////////////////////////////////////////////////////////////////////
-   std::vector<snu::KMuon> muonTightColl;
-   //eventbase->GetMuonSel()->SetPt(20.);
-   /// ID are explained in https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
-   // eventbase->GetMuonSel()->SetID(BaseSelection::MUON_TIGHT);
-      
-   /// Standard cut of 2.4 which is the Muon Spectrometer coverage
-   //eventbase->GetMuonSel()->SetEta(2.4);
-   
-   /// χ2/ndof of the global-muon track fit. To suppress hadronic punch-through and muons from decays in flight.
-   /// TIGHT ID includes χ2/ndof < 10
-   // To tighten or add use SetChiNdof(X);
-   //eventbase->GetMuonSel()->SetChiNdof(10.);
-
-   /// TIGHT ID includes dxy < 2 mm  amd dz < 5 mm
-   /// FOr our analysis we tighten to 50 micrometers and 1 mm respectively
-   //eventbase->GetMuonSel()->SetBSdxy(0.005);
-   //eventbase->GetMuonSel()->SetBSdz(0.10);
-   
-   /// Use PF isolation DR=0.3
-   /// (∑ET(chHad from PV)+∑ET(neutHad)+∑ET(photons))/pT < 0.1
-   //eventbase->GetMuonSel()->SetRelIso(0.1);
-   //eventbase->GetMuonSel()->SetDeposits(4.0,6.0);
-   
-   /// New function applies all tight selection
-   eventbase->GetMuonSel()->HNTightMuonSelection(muonTightColl);
-   
-   std::vector<snu::KMuon> muonHighPtColl;
-   eventbase->GetMuonSel()->HNTightHighPtMuonSelection(muonHighPtColl);
-   
-   for(std::vector<snu::KMuon>::iterator it = muonTightColl.begin(); it!= muonTightColl.end(); it++){
-cout << "Weight = " << weight << endl;
-     weight *= MuonScaleFactor(it->Eta(), it->Pt());
-cout << "Weight = " << weight << endl;
-    cout << "Tight muon pt = " << it->Pt() << " " << it->Eta() << " " << it->Phi() << endl; 
-   }
-   
-   /// Correct the muon momentum with rochester corrections
-   CorrectMuonMomentum(muonTightColl);
-   CorrectMuonMomentum(muonHighPtColl);
-   
-   /// Example of how to get fake weight for dimuon channel
-   std::vector<snu::KMuon> muonLooseColl;
-   eventbase->GetMuonSel()->HNLooseMuonSelection(muonLooseColl);
-   
-   ///////////////////////////////////////////////////////////////////////////////////////////
-   /// 2) Loose Muons for veto
-   ///////////////////////////////////////////////////////////////////////////////////////////
-
-   std::vector<snu::KMuon> muonVetoColl;
-   /// Lower pt cut to 10
-   //eventbase->GetMuonSel()->SetPt(10.);
-   //eventbase->GetMuonSel()->SetEta(2.4);
-   // Use LOOSE definition from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Loose_Muon
-   //eventbase->GetMuonSel()->SetID(BaseSelection::MUON_LOOSE);
-   // Use loose isolation https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation_AN1
-   // Note we use PF based isolation
-   //(∑ET(chHad from PV)+∑ET(neutHad)+∑ET(photons))/pT
-   // Default is 0.12 for Tight and 0.2 for loose.. However this is with 0.4 cone. We use 0.3 cone
-   //eventbase->GetMuonSel()->SetRelIso(0.20);
-   /// These following cuts are essentially large to be extremely loose
-   //eventbase->GetMuonSel()->SetChiNdof(500.);
-   //eventbase->GetMuonSel()->SetBSdxy(2000.);
-   //eventbase->GetMuonSel()->SetBSdz(100.00);
-   //eventbase->GetMuonSel()->SetDeposits(400.0,600.0);
-   
-   // New function applied all selection for veto muons
-   eventbase->GetMuonSel()->HNVetoMuonSelection(muonVetoColl);
-
-
-
-   
-   ///////////////////////////////////////////////////////////////////////////////////////////
-   /// 3) Tight Electrons
-   ///////////////////////////////////////////////////////////////////////////////////////////
-   std::vector<snu::KElectron> electronTightColl;
-
-   //// CHOICE OF ELECTRON ID /////////////////////
-   /// Use MEDIUM definition from https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipes#Cut_based_electron_Identificatio
-   // This cuts on shower shape/ PF isoaltion/ tracker hits / Impact Parameter
-   //eventbase->GetElectronSel()->SetID(BaseSelection::EGAMMA_MEDIUM);
-
-   /// Select pt of electrons
-   //eventbase->GetElectronSel()->SetPt(20);
-
-   // Use 2.5 eta cut. This is due to the acceptance of the tracker
-   // Barrel |eta| <= 1.479
-   // Endcap 1.479 < |eta| < 2.5
-   // We actually cut on 1.4442<abeta<1.566 . This is due to gap region between barrel and endcap of the ECal
-   //eventbase->GetElectronSel()->SetEta(2.5);
-
-   /// A relative iso cut of 0.15 is already implemented in the EGAMMA_MEDIUM cut.
-   /// Uses PF isolation. Corrected for Pile Up https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaEARhoCorrection
-   /// Default cone size is 0.3.
-   /// 0.15 is medium working point. 0.10 is Tight (recommended)
-   /// Can apply tighter cut by uncommenting the line below and chaning the value
-   //  eventbase->GetElectronSel()->SetRelIso(0.15);
-
-   /// Some IP (dxy, dz) cuts are applied in the ID cut
-   /// |d0| <  0.02 (200 micrometers) default
-   /// |dZ| <  0.10  default
-   /// Can apply tighter cuts using SetBSdxy/SetBSdz
-   //eventbase->GetElectronSel()->SetBSdxy(0.02);
-   //eventbase->GetElectronSel()->SetBSdz(0.10);
-
-   // We can check the charge of the Super Cluster / Tracker / combined electron
-   // SetCheckCharge(true) requires that all 3 are the same
-   //eventbase->GetElectronSel()->SetCheckCharge(true);
-
-   // Some cuts are applied in the ID MEDIUM/TIGHT to reduce conversion electrons
-   // These cuts are on the vertex fit probabilty/missing hits in the tracker
-   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Conversion_Rejection
-   // We can also cut on the presence of any matched conversion https://twiki.cern.ch/twiki/bin/viewauth/CMS/ConversionTools
-   // To apply the passconversionveto use SetApplyConvVeto(true)
-   //eventbase->GetElectronSel()->SetApplyConvVeto(true);
-
-   /// Use the selection function to fill our empty vector with the cuts specified above
-   
-   /// New function applies all tight selection
-   eventbase->GetElectronSel()->HNTightElectronSelection(electronTightColl);
-
-  
-   /// 4) Jets(with lepton veto)
-   std::vector<snu::KJet> jetColl_lepveto;
-   /// We use PFJets : AKT jets with dR=0.5
-   /// Select the ID choose for Jets https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
-   /// Cuts applied to 1) isolation 2) EM fraction 3) HPD noise rejection
-   //eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-   // 20 GeV is very loose. Needed to keep soft signal muons form heavy neutrinos
-   //eventbase->GetJetSel()->SetPt(20.);
-   // As with electrons the eta cut is chosed to coincide with teh tracker acceptance
-   //eventbase->GetJetSel()->SetEta(2.5);
-   /// To select jets use predefined function
-   eventbase->GetJetSel()->JetHNSelection(jetColl_lepveto, muonTightColl, electronTightColl);
-
-   ///// SOME STANDARD PLOTS /////
-   ////  Z-> mumu            //////
-
-   if (muonTightColl.size() == 2) {                   
-     snu::KParticle Z = muonTightColl.at(0) + muonTightColl.at(1);
-     if(muonTightColl.at(0).Charge() != muonTightColl.at(1).Charge()){      
-       
-       /// Method of plotting single histogram
-       FillHist("zpeak_mumu", Z.M(), weight, 0., 200.,400);
-
-       /// Standard set of histograms for muons/jets/electrons.. with no corrections
-       FillCLHist(sighist, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight);
-
-       /// Standard set of histograms with pileup reweighting applied
-       FillCLHist(sighist, "DiMuonWPURW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight*pileup_reweight);
-       
-       if(muonVetoColl.size() ==2){
-	 FillCLHist(sighist, "DiMuonLooseVeto", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_lepveto, weight*pileup_reweight);
-       }       
-     } /// OS muons
-   }//// 2Muon (Tight) Loop
-   
+   if (Zcandidate(muonTightColl, 20., true)){
+     ////Make NVTX plotsfor reweighting
      
-  return;
+     if(isData) FillHist("Nvtx_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+     else  FillHist("Nvtx_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight, 0. , 50., 50);
+   }
+   
+   if(muonTightColl.size() ==2) {
+     
+     /// Method of plotting single histogram
+     FillHist("zpeak_mumu_noPUrw", GetZMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
+     FillHist("zpeak_mumu", GetZMass(muonTightColl), weight, 0., 200.,400);
+     
+     /// Standard set of histograms for muons/jets/electrons.. with no corrections
+     FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+     if(SameCharge(muonTightColl))    FillCLHist(sighist_mm, "SSMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+   }
+
+   if(muonLooseColl.size() == 3) {
+     if(eventbase->GetEvent().NoHFMET() > 30){
+       if(jetColl_hn.size() > 1) FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+     }
+   }
+
+   
+   return;
 }// End of execute event loop
   
 
@@ -371,7 +191,7 @@ void ExampleAnalyzerDiMuon::BeginCycle() throw( LQError ){
   Message("In begin Cycle", INFO);
   
   string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
 
   //
   //If you wish to output variables to output file use DeclareVariable

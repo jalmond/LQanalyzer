@@ -16,55 +16,41 @@ KEvent::KEvent() :
   k_EventNumber(0),
   k_RunNumber(0),
   k_nvertices(0),
-  k_ivertex(0),
-  k_process_id(0),
   k_lumisec(0),
+  k_ngoodvertices(0),
+  k_pdf_id1(0),
+  k_pdf_id2(0),
+
   k_vertexX(0.),
   k_vertexY(0.),
   k_vertexZ(0.), 
-  k_jetrho(0.),
+  k_vertexNDOF(0.), 
   k_mcweight(0.),
-  k_pdf_cteq(),
-  k_pdf_mstw(),
-  k_pdf_nnpdf(),
-  k_genmettrue(0.),
-  k_genmetphitrue(0.),
-  k_gensumettrue(0.),
-  k_genmetcalo(0.),
-  k_genmetphicalo(0.),
-  k_gensumetcalo(0.),
+  k_lheweight(0.),
+  k_pdf_q(0.),
+  k_pdf_x1(0.),
+  k_pdf_x2(0.),
+
   k_PF_MET(0.), 
   k_PF_METphi(0.),
   k_PF_SumET(0.), 
-  k_PF_METraw(0.),
-  k_PF_METrawphi(0.),
-  k_PF_METtype1(0.),
-  k_PF_METtype1phi(0.),
-  k_PF_METtype01(0.),
-  k_PF_METtype01phi(0.),
-  k_PF_MET_el_enup(0.),
-  k_PF_MET_el_endown(0.),
-  k_PF_MET_jet_enup(0.),
-  k_PF_MET_jet_endown(0.),
-  k_PF_MET_jet_resup(0.),
-  k_PF_MET_jet_resdown(0.),
-  k_PF_MET_muon_enup(0.),
-  k_PF_MET_muon_endown(0.),
-  k_PF_MET_unclust_up(0.),
-  k_PF_MET_unclust_down(0.),
-  k_isfakeV(false), 
-  k_isgoodevent(false),
+  k_Puppi_MET(0.),
+  k_Puppi_METphi(0.),
+  k_Puppi_SumET(0.),
+  k_NoHF_MET(0.),
+  k_NoHF_METphi(0.),
+  k_NoHF_SumET(0.),
+  k_PfMva_MET(0.),
+  k_PfMva_METphi(0.),
+  k_PfMva_SumET(0.),
+  
   k_isData(false), 
-  k_isTrackingFailure(false),
-  k_passTrackingFailureFilter(false),
-  k_passBeamHaloFilterLoose(false),
-  k_passBeamHaloFilterTight(false),
+  k_isgoodevent(false),
+
   k_passBadEESupercrystalFilter(false),
-  k_passEcalDeadCellBoundaryEnergyFilter(false),
+  k_passCSCHaloFilterTight(false),
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
-  k_passEcalLaserCorrFilter(false),
   k_passHBHENoiseFilter(false),
-  k_passHcalLaserEventFilter(false),
   k_PileUpInteractionsTrue(0.)
 {
 
@@ -78,55 +64,41 @@ KEvent::KEvent(const KEvent& ev) :
   k_EventNumber(ev.k_EventNumber),
   k_RunNumber(ev.k_RunNumber),
   k_nvertices(ev.k_nvertices),
-  k_ivertex(ev.k_ivertex),
-  k_process_id(ev.k_process_id),
   k_lumisec(ev.k_lumisec),
+  k_ngoodvertices(ev.k_ngoodvertices),
+  k_pdf_id1(ev.k_pdf_id1),
+  k_pdf_id2(ev.k_pdf_id2),
+
   k_vertexX(ev.k_vertexX),
   k_vertexY(ev.k_vertexY),
   k_vertexZ(ev.k_vertexZ),
-  k_pdf_cteq(ev.k_pdf_cteq),
-  k_pdf_mstw(ev.k_pdf_mstw),
-  k_pdf_nnpdf(ev.k_pdf_nnpdf),
-  k_genmettrue(ev.k_genmettrue),
-  k_genmetphitrue(ev.k_genmetphitrue),
-  k_gensumettrue(ev.k_gensumettrue),
-  k_genmetcalo(ev.k_genmetcalo),
-  k_genmetphicalo(ev.k_genmetphicalo),
-  k_gensumetcalo(ev.k_gensumetcalo),
+  k_vertexNDOF(ev.k_vertexNDOF),
+  k_mcweight(ev.k_mcweight),
+  k_lheweight(ev.k_lheweight),
+  k_pdf_q(ev.k_pdf_q),
+  k_pdf_x1(ev.k_pdf_x1),
+  k_pdf_x2(ev.k_pdf_x2),
+
   k_PF_MET(ev.k_PF_MET),
   k_PF_METphi(ev.k_PF_METphi),
   k_PF_SumET(ev.k_PF_SumET),
-  k_PF_METraw(ev.k_PF_METraw),
-  k_PF_METrawphi(ev.k_PF_METrawphi),
-  k_PF_METtype1(ev.k_PF_METtype1),
-  k_PF_METtype1phi(ev.k_PF_METtype1phi),
-  k_PF_METtype01(ev.k_PF_METtype01),
-  k_PF_METtype01phi(ev.k_PF_METtype01phi),
-  k_PF_MET_el_enup(ev.k_PF_MET_el_enup),
-  k_PF_MET_el_endown(ev.k_PF_MET_el_endown),
-  k_PF_MET_jet_enup(ev.k_PF_MET_jet_enup),
-  k_PF_MET_jet_endown(ev.k_PF_MET_jet_endown),
-  k_PF_MET_jet_resup(ev.k_PF_MET_jet_resup),
-  k_PF_MET_jet_resdown(ev.k_PF_MET_jet_resdown),
-  k_PF_MET_muon_enup(ev.k_PF_MET_muon_enup),
-  k_PF_MET_muon_endown(ev.k_PF_MET_muon_endown),
-  k_PF_MET_unclust_up(ev.k_PF_MET_unclust_up),
-  k_PF_MET_unclust_down(ev.k_PF_MET_unclust_down),
-  k_jetrho(ev.k_jetrho),
-  k_mcweight(ev.k_mcweight),
-  k_isfakeV(ev.k_isfakeV),
+  k_Puppi_MET(ev.k_Puppi_MET),
+  k_Puppi_METphi(ev.k_Puppi_METphi),
+  k_Puppi_SumET(ev.k_Puppi_SumET),
+  k_NoHF_MET(ev.k_NoHF_MET),
+  k_NoHF_METphi(ev.k_NoHF_METphi),
+  k_NoHF_SumET(ev.k_NoHF_SumET),
+  k_PfMva_MET(ev.k_PfMva_MET),
+  k_PfMva_METphi(ev.k_PfMva_METphi),
+  k_PfMva_SumET(ev.k_PfMva_SumET),
+
   k_isData(ev.k_isData),
   k_isgoodevent(ev.k_isgoodevent),
-  k_isTrackingFailure(ev.k_isTrackingFailure),
-  k_passTrackingFailureFilter(ev.k_passTrackingFailureFilter),
-  k_passBeamHaloFilterLoose(ev.k_passBeamHaloFilterLoose),
-  k_passBeamHaloFilterTight(ev.k_passBeamHaloFilterTight),
+
   k_passBadEESupercrystalFilter(ev.k_passBadEESupercrystalFilter),
-  k_passEcalDeadCellBoundaryEnergyFilter(ev.k_passEcalDeadCellBoundaryEnergyFilter),
+  k_passCSCHaloFilterTight(ev.k_passCSCHaloFilterTight),
   k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
-  k_passEcalLaserCorrFilter(ev.k_passEcalLaserCorrFilter),
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
-  k_passHcalLaserEventFilter(ev.k_passHcalLaserEventFilter),
   k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue)
 {
 }
@@ -142,55 +114,42 @@ void KEvent::Reset()
   k_EventNumber= 0;
   k_RunNumber= 0;
   k_nvertices= 0;
-  k_ivertex= 0;
-  k_process_id= 0;
-  k_lumisec=0;
+  k_lumisec=0; 
+  k_ngoodvertices= 0;
+  k_pdf_id1=0;
+  k_pdf_id2=0;
+
   k_vertexX= 0.;
   k_vertexY= 0.;
   k_vertexZ= 0.;
+  k_vertexNDOF= 0.;
+  k_mcweight= 0.;
+  k_lheweight= 0.;
+  k_pdf_q=0.;
+  k_pdf_x1= 0.;
+  k_pdf_x2=0.;
+
   k_PF_MET= 0.;
   k_PF_SumET= 0.;
   k_PF_METphi= 0.;
-  k_PF_METraw= 0.;
-  k_PF_METtype1= 0.;
-  k_PF_METtype01= 0.;
-  k_PF_METrawphi= 0.;
-  k_PF_METtype1phi= 0.;
-  k_PF_METtype01phi= 0.;
-  k_pdf_cteq.clear();
-  k_pdf_mstw.clear(); 
-  k_pdf_nnpdf.clear();
-  k_genmettrue = 0.;
-  k_genmetphitrue= 0.;
-  k_gensumettrue= 0.;
-  k_genmetcalo= 0.;
-  k_genmetphicalo= 0.;
-  k_gensumetcalo= 0.;
-  k_PF_MET_el_enup= 0.;
-  k_PF_MET_el_endown= 0.;
-  k_PF_MET_jet_enup= 0.;
-  k_PF_MET_jet_endown= 0.;
-  k_PF_MET_jet_resup= 0.;
-  k_PF_MET_jet_resdown= 0.;
-  k_PF_MET_muon_enup= 0.;
-  k_PF_MET_muon_endown= 0.;
-  k_PF_MET_unclust_up= 0.;
-  k_PF_MET_unclust_down= 0.;
-  k_jetrho= 0.;
-  k_mcweight= 0.;
-  k_isfakeV= false;
+  k_Puppi_MET= 0; 
+  k_Puppi_METphi= 0;
+  k_Puppi_SumET= 0;
+  k_NoHF_MET= 0;
+  k_NoHF_METphi= 0;
+  k_NoHF_SumET= 0;
+  k_PfMva_MET= 0;
+  k_PfMva_METphi= 0;
+  k_PfMva_SumET= 0;
+
+
   k_isData= false;
   k_isgoodevent = false;
-  k_isTrackingFailure= false;
-  k_passTrackingFailureFilter= false;
-  k_passBeamHaloFilterLoose= false;
-  k_passBeamHaloFilterTight= false;
+
   k_passBadEESupercrystalFilter= false;
-  k_passEcalDeadCellBoundaryEnergyFilter= false;
+  k_passCSCHaloFilterTight= false;
   k_passEcalDeadCellTriggerPrimitiveFilter= false;
-  k_passEcalLaserCorrFilter= false;
   k_passHBHENoiseFilter= false;
-  k_passHcalLaserEventFilter= false;
   k_PileUpInteractionsTrue = 0.;
 
 
@@ -201,62 +160,46 @@ void KEvent::Reset()
 KEvent& KEvent::operator= (const KEvent& p)
 {
     if (this != &p) {
-      k_isData=p.IsData();
+
       k_EventNumber=p.EventNumber();
       k_RunNumber=p.RunNumber();
-
-      k_process_id= p.ProcessID();
+      k_nvertices= p.nVertices();
       k_lumisec= p.LumiSection();
-      k_PF_MET= p.PFMET();
-      k_PF_METphi= p.PFMETphi();
-      k_PF_SumET = p.PFSumET();
-      k_PF_METraw = p.PFMETRaw();
-      k_PF_METrawphi = p.PFMETRawphi();
-      k_PF_METtype1 = p.PFMETType1();
-      k_PF_METtype1phi = p.PFMETType1phi();
-      k_PF_METtype01 = p.PFMETType01();
-      k_PF_METtype01phi = p.PFMETType01phi();
-      k_pdf_cteq = p.PDFCTEQWeight();
-      k_pdf_mstw = p.PDFMSTWWeight();
-      k_pdf_nnpdf = p.PDFNNPDFWeight();
-
-      k_genmettrue = p.GenMETTrue();
-      k_genmetphitrue=  p.GenMETPhiTrue();
-      k_gensumettrue=  p.GenSumEtTrue();
-      k_genmetcalo=  p.GenMETCalo();
-      k_genmetphicalo=  p.GenMETPhiCalo();
-      k_gensumetcalo=  p.GenSumEtCalo();
-     
-
-      k_PF_MET_el_enup = p.PFMET_El_EnUp();
-      k_PF_MET_el_endown  = p.PFMET_El_EnDown();
-      k_PF_MET_jet_enup = p.PFMET_Jet_EnUp();
-      k_PF_MET_jet_endown = p.PFMET_Jet_EnDown();
-      k_PF_MET_jet_resup = p.PFMET_Jet_ResUp();
-      k_PF_MET_jet_resdown  = p.PFMET_Jet_ResDown();
-      k_PF_MET_muon_enup = p.PFMET_Muon_EnUp();
-      k_PF_MET_muon_endown= p.PFMET_Muon_EnDown();
-      k_PF_MET_unclust_up = p.PFMET_Unclust_Up();
-      k_PF_MET_unclust_down  = p.PFMET_Unclust_Down();
+      k_ngoodvertices = p.nGoodVertices();
+      k_pdf_id1 = p.Id1();
+      k_pdf_id2 = p.Id2();
       
       k_vertexX=p.VertexX();
       k_vertexY=p.VertexY();
       k_vertexZ=p.VertexZ();
-      k_nvertices= p.nVertices();
-      k_isfakeV=p.IsFakeVertex(); 
-      k_jetrho=p.JetRho();
-      k_isgoodevent= p.HasGoodPrimaryVertex();
+      k_vertexNDOF=p.VertexNDOF();
       k_mcweight = p.MCWeight();
-      k_isTrackingFailure = p.IsTrackingFailure();
-      k_passTrackingFailureFilter = p.PassTrackingFailureFilter();
-      k_passBeamHaloFilterLoose = p.PassBeamHaloFilterLoose();
-      k_passBeamHaloFilterTight = p.PassBeamHaloFilterTight();
+      k_lheweight = p.LHEWeight();
+      k_pdf_q = p.Q();
+      k_pdf_x1 = p.x1();
+      k_pdf_x2 = p.x2();
+      
+      
+      k_PF_MET= p.PFMET();
+      k_PF_METphi= p.PFMETphi();
+      k_PF_SumET = p.PFSumET();
+      k_Puppi_MET= p.PuppiMET();
+      k_Puppi_METphi= p.PuppiMETphi();
+      k_Puppi_SumET = p.PuppiSumET();
+      k_NoHF_MET= p.NoHFMET();
+      k_NoHF_METphi= p.NoHFMETphi();
+      k_NoHF_SumET = p.NoHFSumET();
+      k_PfMva_MET= p.PfMvaMET();
+      k_PfMva_METphi= p.PfMvaMETphi();
+      k_PfMva_SumET = p.PfMvaSumET();
+
+      k_isData=p.IsData();
+      k_isgoodevent= p.HasGoodPrimaryVertex();
+
       k_passBadEESupercrystalFilter = p.PassBadEESupercrystalFilter();
-      k_passEcalDeadCellBoundaryEnergyFilter = p.PassEcalDeadCellBoundaryEnergyFilter();
+      k_passCSCHaloFilterTight = p.PassCSCHaloFilterTight();
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
-      k_passEcalLaserCorrFilter = p.PassEcalLaserCorrFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
-      k_passHcalLaserEventFilter = p.PassHcalLaserEventFilter();
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
     }
     
@@ -264,44 +207,22 @@ KEvent& KEvent::operator= (const KEvent& p)
 }
 
 //// SET CLASS VARIBALES
-void KEvent::SetIsTrackingFailure(bool fail){
-  k_isTrackingFailure = fail;
-}
 
-void KEvent::SetPassTrackingFailureFilter(bool pass){
-  k_passTrackingFailureFilter= pass;
-}
-
-void KEvent::SetPassBeamHaloFilterLoose(bool pass){
-  k_passBeamHaloFilterLoose = pass;
-}
-
-void KEvent::SetPassBeamHaloFilterTight(bool pass){
-  k_passBeamHaloFilterTight = pass;
+void KEvent::SetPassCSCHaloFilterTight(bool pass){
+  k_passCSCHaloFilterTight = pass;
 }
 
 void KEvent::SetPassBadEESupercrystalFilter(bool pass){
   k_passBadEESupercrystalFilter = pass;
 }
 
-void KEvent::SetPassEcalDeadCellBoundaryEnergyFilter(bool pass){
-  k_passEcalDeadCellBoundaryEnergyFilter = pass;
-}
 
 void KEvent::SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass){
   k_passEcalDeadCellTriggerPrimitiveFilter = pass;
 }
 
-void KEvent::SetPassEcalLaserCorrFilter(bool pass){
-  k_passEcalLaserCorrFilter= pass;
-}
-
 void KEvent::SetPassHBHENoiseFilter(bool pass){
   k_passHBHENoiseFilter= pass;
-}
-void KEvent::SetPassHcalLaserEventFilter(bool pass){
-
-  k_passHcalLaserEventFilter = pass;
 }
 
 void KEvent::SetPileUpInteractionsTrue(double npu){
@@ -312,49 +233,8 @@ void KEvent::SetWeight(double mcweight){
   k_mcweight = mcweight;
 }
 
-void KEvent::SetJetRho(double jetrho){
-
-  k_jetrho = jetrho;
-}
 
 
-
-///
-
-void KEvent::SetGenMETTrue(double genmettrue){
-  k_genmettrue = genmettrue;
-}
-void KEvent::SetGenMETPhiTrue(double genmetphitrue){
-  k_genmetphitrue = genmetphitrue;
-}
-void KEvent::SetGenSumEtTrue(double gensumettrue){
-  k_gensumettrue = gensumettrue;
-}
-
-void KEvent::SetGenMETCalo(double genmetcalo){
-  k_genmetcalo = genmetcalo;
-}
-void KEvent::SetGenMETPhiCalo(double genmetphicalo){
-  k_genmetphicalo = genmetphicalo;
-}
-void KEvent::SetGenSumEtCalo(double gensumetcalo){
-  k_gensumetcalo = gensumetcalo;
-}
-
-///PDF weights
-
-void KEvent::SetPDFCTEQWeight(vector<double> pdfw){
-  k_pdf_cteq = pdfw;
-}
-
-void KEvent::SetPDFMSTWWeight(vector<double> pdfw){
-  k_pdf_mstw= pdfw;
-}
-
-void KEvent::SetPDFNNPDFWeight(vector<double> pdfw){
-  k_pdf_nnpdf =pdfw;
-}
-/// Filling Event variables
 
 void KEvent::SetEventNumber(int ev){
   k_EventNumber = ev;
@@ -383,63 +263,43 @@ void KEvent::SetPFSumET(double sumet){
   k_PF_SumET =sumet;
 }
 
-
-void KEvent::SetPFMETRaw(double met){
-  k_PF_METraw = met;
+void KEvent::SetPuppiMET(double met){
+  k_Puppi_MET = met;
 }
 
-void KEvent::SetPFMETRawphi(double phi){
-  k_PF_METrawphi = phi;
+void KEvent::SetPuppiMETphi(double metphi){
+  k_Puppi_METphi = metphi;
 }
 
-void KEvent::SetPFMETType1(double met){
-  k_PF_METtype1 = met;
+void KEvent::SetPuppiSumET(double sumet){
+  k_Puppi_SumET =sumet;
 }
 
-void KEvent::SetPFMETType1phi(double phi){
-  k_PF_METtype1phi = phi;
+void KEvent::SetNoHFMET(double met){
+  k_NoHF_MET = met;
 }
 
-void KEvent::SetPFMETType01(double met){
-  k_PF_METtype01 = met;
+void KEvent::SetNoHFMETphi(double metphi){
+  k_NoHF_METphi = metphi;
 }
 
-void KEvent::SetPFMETType01phi(double phi){
-  k_PF_METtype01phi = phi;
+void KEvent::SetNoHFSumET(double sumet){
+  k_NoHF_SumET =sumet;
 }
 
 
+void KEvent::SetPfMvaMET(double met){
+  k_PfMva_MET = met;
+}
 
-void KEvent::SetPFMETElectronEnDown (double met_elen_down){
-  k_PF_MET_el_endown = met_elen_down;
+void KEvent::SetPfMvaMETphi(double metphi){
+  k_PfMva_METphi = metphi;
 }
-void KEvent::SetPFMETElectronEnUp (double met_elen_up){
-  k_PF_MET_el_enup= met_elen_up;
+
+void KEvent::SetPfMvaSumET(double sumet){
+  k_PfMva_SumET =sumet;
 }
-void KEvent::SetPFMETJetEnDown (double met_jeten_down){
-  k_PF_MET_jet_endown = met_jeten_down;
-}
-void KEvent::SetPFMETJetEnUp (double met_jeten_up){
-  k_PF_MET_jet_enup = met_jeten_up;
-}
-void KEvent::SetPFMETJetResDown (double  met_jetres_down){
-  k_PF_MET_jet_resdown = met_jetres_down;
-}
-void KEvent::SetPFMETJetResUp (double  met_jetres_up){
-  k_PF_MET_jet_resup= met_jetres_up;
-}
-void KEvent::SetPFMETMuonEnDown (double met_muonen_down){
-  k_PF_MET_muon_endown= met_muonen_down;
-}
-void KEvent::SetPFMETMuonEnUp (double met_muonen_up){
-  k_PF_MET_muon_enup= met_muonen_up;
-}
-void KEvent::SetPFMETUnclusteredDown  (double met_unclust_down){
-  k_PF_MET_unclust_down = met_unclust_down;
-}
-void KEvent::SetPFMETUnclusteredUp  (double met_unclust_up){
-  k_PF_MET_unclust_up = met_unclust_up;
-}
+
 
 
 
@@ -449,26 +309,25 @@ void KEvent::SetNVertices(int nvert){
   k_nvertices = nvert;
 }
 
-void KEvent::SetVertexIndex(int ivertex){
-  k_ivertex = ivertex;
-}
-
-void KEvent::SetProcessID(int id){
-  k_process_id = id;
-}
 
 void KEvent::SetLumiSection(int ls){
   k_lumisec = ls;
 }
 
 
-void KEvent::SetVertexIsFake(bool isfakeV){
-  k_isfakeV = isfakeV;
+
+void KEvent::SetIsGoodEvent(int nvert){
+  if(nvert > 0) k_isgoodevent = true;
+  else k_isgoodevent = false;
 }
 
-void KEvent::SetIsGoodEvent(bool isgood){
-  k_isgoodevent = isgood;
+
+
+/// Settizang Vertex Variables
+void KEvent::SetNGoodVertices(int nvert){
+  k_ngoodvertices = nvert;
 }
+
 
 void KEvent::SetVertexX(double vX){
   k_vertexX = vX;
@@ -481,6 +340,38 @@ void KEvent::SetVertexY(double vY){
 void KEvent::SetVertexZ(double vZ){
   k_vertexZ = vZ;
 }
+
+void KEvent::SetVertexNDOF(double vNDOF){
+  k_vertexNDOF = vNDOF;
+}
+
+void KEvent::SetGenId1(int id1){
+  k_pdf_id1 = id1;
+}
+
+void KEvent::SetGenId2(int id2){
+  k_pdf_id2 = id2;
+}
+
+
+void KEvent::SetGenQ(double q ){
+  k_pdf_q = q;
+}
+
+
+void KEvent::SetGenX1(double x1){
+  k_pdf_x1 = x1;
+}
+
+
+void KEvent::SetLHEWeight(double lw){
+  k_lheweight = lw;
+}
+
+void KEvent::SetGenX2(double x2){
+  k_pdf_x2 = x2;
+}
+
 
 
 

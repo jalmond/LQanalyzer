@@ -14,8 +14,5 @@
 #pragma link C++ class JetSelection+;  
 #pragma link C++ class GenJetSelection+;  
 #pragma link C++ class MuonSelection+;  
-#pragma link C++ class TauSelection+;
-
-
 
 #endif // __CINT__

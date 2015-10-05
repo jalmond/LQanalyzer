@@ -56,216 +56,16 @@ void HNCommonLeptonFakes::InitialiseFake(){
   /// List files with fake rates
 
   string lqdir = getenv("LQANALYZER_DIR");
-  TFile* file_fake_Opt  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateOpt.root").c_str());
-  CheckFile(file_fake_Opt);
-  TFile* file_fake  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate2807.root").c_str());
-  CheckFile(file_fake);
 
-  TFile* file_mc  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_0110.root").c_str());
-  CheckFile(file_mc);
-  
-  TFile* file_fake_Opt2  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate0309.root").c_str());
-  CheckFile(file_fake_Opt2);
-
-  TFile* file_fake_data  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_dataoct.root").c_str());
-  CheckFile(file_fake_data);
-
-  TFile* file_fake_dec  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate_datanov.root").c_str());
-  CheckFile(file_fake_dec);
-
-  TFile* file_fake_med  = TFile::Open( (lqdir + "/data/rootfiles/FakeRateMedium.root").c_str());
-  CheckFile(file_fake_med);
-
-  TFile* file_fake_dxy =  TFile::Open( (lqdir + "/data/rootfiles/FakeRatedxy.root").c_str());
-  CheckFile(file_fake_dxy);
-
-  TFile* file_muon = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_130.root").c_str());
-  CheckFile(file_muon);
-
-  TFile* file_muon_mc_20 = TFile::Open( (lqdir + "/data/rootfiles/QCD_mu15_v3_FR20_130b.root").c_str());
-  CheckFile(file_muon_mc_20);
-
-  TFile* file_muon_mc_40 = TFile::Open( (lqdir + "/data/rootfiles/QCD_mu15_v3_FR40_130b.root").c_str());
-  CheckFile(file_muon_mc_40);
-
-  TFile* file_muon_mc_60 = TFile::Open( (lqdir + "/data/rootfiles/QCD_mu15_v3_FR60_130b.root").c_str());
-  CheckFile(file_muon_mc_60);
+  //  TFile* file_fake  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate2807.root").c_str());
+  //CheckFile(file_fake);
 
 
 
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
 
-    
-
-
-  cout << "Pt/eta depenance " << endl;
-  /// pt vs eta 
-  
-  std::vector<TString> jetcut;
-  jetcut.push_back("20");
-  jetcut.push_back("30");
-  jetcut.push_back("40");
-  jetcut.push_back("60");
-  for(unsigned int ij = 0 ; ij < jetcut.size() ; ij++){
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_pt_eta"))->Clone());
-    /// add bjet dep
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_pt_eta_nocb"))->Clone());
-
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"b_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"nob_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_pt_eta"))->Clone());
-
-    
-    cout << "Ht depenance and Pt " << endl;
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht1_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht2_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht3_pt_eta_nocb"))->Clone());
-    
-    cout << "Ht depenance and Pt: bjet " << endl;
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht1_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_ht1_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht2_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_ht2_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht3_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_0bjet_ht3_pt_eta_nocb"))->Clone());
-    
-    cout << "Ht depenance and Pt: bjet " << endl;
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht1_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_ht1_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht2_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_ht2_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht3_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_bjet_ht3_pt_eta_nocb"))->Clone());
-    cout << "Ht depenance and Pt " << endl;
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht1_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht2_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht3_pt_eta_nocb"))->Clone());
-
-    cout << "Ht depenance and Pt: bjet " << endl;
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht1_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_ht1_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht2_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_ht2_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_0bjet_ht3_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_0bjet_ht3_pt_eta_nocb"))->Clone());
-
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht1_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_ht1_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht2_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_ht2_pt_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_bjet_ht3_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_bjet_ht3_pt_eta_nocb"))->Clone());
-
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht1_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht2_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"ht3_pt_eta"))->Clone());
-
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht1_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht1_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht2_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht2_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht3_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"ht3_pt_eta"))->Clone());
-    
-    
-    cout << "Ht depenance: close bjet " << endl;
-    
-    /// ht dependance
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_ht_eta_cb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_ht_eta_nocb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_ht_eta_cb"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_ht_eta_nocb"))->Clone());
-
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_"+ jetcut.at(ij)+"_ht_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_ht_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_relaxed_ipcut"+ jetcut.at(ij)+"_ht_eta"))->Clone());
-    cout << "Pt depenance: close bjet " << endl;
-    // pt dependance
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_pt_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_closebjet_"+ jetcut.at(ij)+"_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_pt_loosereg1"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_noclosebjet_"+ jetcut.at(ij)+"_pt_eta"))->Clone());
-
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_cb_pt_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_closebjet_relaxed_ipcut"+ jetcut.at(ij)+"_pt_eta"))->Clone());
-    _2DEfficiencyMap["fake_eff_mc_"+ jetcut.at(ij)+"_nocb_pt_loosereg2"] = dynamic_cast<TH2F*>((file_mc->Get("MCEl_noclosebjet_relaxed_ipcut"+ jetcut.at(ij)+"_pt_eta"))->Clone());
-  }  
-  
-  _2DEfficiencyMap["fake_eff_muon"] = dynamic_cast<TH2F*>((file_muon->Get("h_FOrate3"))->Clone());
-  _2DEfficiencyMap["mc_muon_20"] = dynamic_cast<TH2F*>((file_muon_mc_20->Get("h_FOrate3"))->Clone());
-  _2DEfficiencyMap["mc_muon_40"] = dynamic_cast<TH2F*>((file_muon_mc_40->Get("h_FOrate3"))->Clone());
-  _2DEfficiencyMap["mc_muon_60"] = dynamic_cast<TH2F*>((file_muon_mc_60->Get("h_FOrate3"))->Clone());
  
-  _2DEfficiencyMap["fake_eff_100_100_detiso"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_100_detiso"))->Clone());
-  _2DEfficiencyMap["fake_eff_090_090_detiso"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_090_detiso"))->Clone());
-  _2DEfficiencyMap["fake_eff_090_050_detiso"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b090_e050_detiso"))->Clone());
-  _2DEfficiencyMap["fake_eff_100_100"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b100_e100"))->Clone());
-  _2DEfficiencyMap["fake_eff_090_090"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b090_e090"))->Clone());
-  _2DEfficiencyMap["fake_eff_090_050"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_b090_e050"))->Clone());
-  
-  _2DEfficiencyMap["fake_eff_medium"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_medium"))->Clone());
-  _2DEfficiencyMap["fake_eff_tight"] = dynamic_cast<TH2F*>((file_fake_Opt2->Get("FakeRate_tight"))->Clone());
-
-  std::vector <TString> datajetcut;
-  datajetcut.push_back("20");
-  datajetcut.push_back("30");
-  datajetcut.push_back("40");
-  datajetcut.push_back("60");
-
-  std::vector <TString> region;
-  region.push_back("looseregion1");
-  region.push_back("looseregion2");
-
-  std::vector <TString> cut;
-  cut.push_back("pt_eta");
-  cut.push_back("pt_eta_cb");
-  cut.push_back("pt_eta_nocb");
-  cut.push_back("ht_eta");
-  cut.push_back("bjet_pt_eta");
-  cut.push_back("0bjet_pt_eta");
-  cut.push_back("ht_eta_cb");
-  cut.push_back("pt_eta_cb");
-  cut.push_back("ht_eta_nocb");
-  cut.push_back("pt_eta_nocb");
-  cut.push_back("pt_eta_ht1_nocb");
-  cut.push_back("pt_eta_ht3_nocb");
-  cut.push_back("pt_eta_ht1");
-  cut.push_back("pt_eta_ht3");
-  cut.push_back("bjet_pt_eta_ht1_nocb");
-  cut.push_back("bjet_pt_eta_ht3_nocb");
-  cut.push_back("0bjet_pt_eta_ht1_nocb");
-  cut.push_back("0bjet_pt_eta_ht3_nocb");
-  cut.push_back("bjet_pt_eta_nocb");
-  cut.push_back("0bjet_pt_eta_nocb");
-  
-  for(unsigned int fi = 0; fi < region.size() ; fi++){
-    for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
-      for(unsigned int fk = 0; fk < cut.size() ; fk++){
-	if( region.at(fi).Contains("2")){
-	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_dec->Get("FakeRate_HNTight_relaxedip_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
-	}
-	else{
-	  _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(fi)] = dynamic_cast<TH2F*>((file_fake_dec->Get("FakeRate_HNTight_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
-	  
-	}
-      }
-    }
-  }
-  
-  std::vector <TString> cut2;
-  cut2.push_back("40_pt_eta");
-  
-  
-  std::vector <TString> region2;
-  region2.push_back("susy_pog");
-  region2.push_back("medium_pog");
-  region2.push_back("tight_pog");
-  region2.push_back("HNTight_iso05");
-  region2.push_back("HNTight_iso07");
-  region2.push_back("electronTightColl_dr03_b10_e10");
-  region2.push_back("electronTightColl_dr03_b09_e09");
-  region2.push_back("electronTightColl_dr03_b09_e05");
-  for(unsigned int fi = 0; fi < region2.size() ; fi++){
-    for(unsigned int fk = 0; fk < cut2.size() ; fk++){
-      _2DEfficiencyMap["fake_eff_" + region2.at(fi) + "_" + cut2.at(fk)] = dynamic_cast<TH2F*>((file_fake_data->Get("FakeRate_" + region2.at(fi) + "_" + cut2.at(fk)))->Clone());
-    }
-  }
-
-
-  cout << "HNCommonLeptonFakes : Initializing" << endl;
-  for(map<TString, TH2F*>::iterator mit = _2DEfficiencyMap.begin(); mit != _2DEfficiencyMap.end(); mit++){
-    if(!mit->second){
-      cout << "Failed " << mit->first << endl;
-      failedinitialisation=true;
-    }
-  }
 
   if(failedinitialisation){
     cout << "Not all histograms could be initialised, this is a bug so am exiting" << endl;
@@ -276,38 +76,10 @@ void HNCommonLeptonFakes::InitialiseFake(){
     cout << "WRHNCommonLeptonFakes : Default setting in MeV" <<  endl;
     cout << "WRHNCommonLeptonFakes : To Use GeV set third argument of constructor true" << endl;
   }
-  file_fake_Opt->Close();
-  delete file_fake_Opt;
+
+  //  file_fake->Close();
+  // delete file_fake;
   
-  file_fake_data->Close();
-  delete file_fake_data;
-
-  file_fake_dec->Close();
-  delete file_fake_dec;
-
-  file_fake_dxy->Close();
-  delete file_fake_dxy;
-  file_fake->Close();
-  delete file_fake;
-  
-  file_mc->Close();
-  delete file_mc;
-
-  file_fake_med->Close();
-  delete file_fake_med;
-
-  file_muon->Close();
-  delete file_muon;
-  
-  file_muon_mc_20->Close();
-  delete file_muon_mc_20;
-
-  file_muon_mc_40->Close();
-  delete file_muon_mc_40;
-
-  file_muon_mc_60->Close();
-  delete file_muon_mc_60;
-
 
 
   // Now we can close the file:   

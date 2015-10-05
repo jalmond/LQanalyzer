@@ -2,8 +2,6 @@
 #define HNDiElectron_h
 
 #include "AnalyzerCore.h"
-#include "BTagSFUtil.h"
-
 
 class HNDiElectron : public AnalyzerCore {
 
@@ -22,22 +20,10 @@ class HNDiElectron : public AnalyzerCore {
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillCutFlow(TString cut, float w);
-  void FillEventCutFlow(TString cut, TString label, float w);
-  void FillIsoCutFlow(TString cut, float w);
-  void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  TString name);
-  
-  bool LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
-  bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, float evmet, bool runchargeflip , std::vector<float> cuts, TString opt);
-  bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, int bjetwp, float evmet, bool runchargeflip , std::vector<float> cuts,  TString opt);
-  bool MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
-  bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
-  bool CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
-  
-  void DoAnalysis(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KMuon> muon, std::vector<snu::KElectron> electronveto, bool run_cf, bool run_np, int nbjet, float w,  TString label, float pileupup, float pileupdown, TString reg);
+  void FillEventCutFlow(TString cut, TString label , float weight);
 
 
-
-  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates=false);  
+  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);  
   float IsDiLep(std::vector<snu::KElectron> electrons);
 
  private:
@@ -48,18 +34,7 @@ class HNDiElectron : public AnalyzerCore {
   /// Vectors for output objetcs
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
-  float m_os_Z_nw;
-  float m_ss_Z_nw;
-  float m_os_Z;
-  float m_ss_Z;
-
-  BTagSFUtil *fBTagSF;
-
-  float k_met, k_eemass, k_eejjmass, k_e1jjmass, k_e2jjmass,  k_st, k_ht;
-  int k_njet, k_nbjet_l, k_nbjet_m, k_nbjet_t;
-  float  k_el1eta, k_el2eta;
-  float k_weight, k_el1pt, k_el2pt, k_j1pt, k_jjmass;
-  bool k_cl1bjet, k_cl2bjet,k_cll1bjet, k_cll2bjet; 
+ 
 
   ClassDef ( HNDiElectron, 1);
 };
