@@ -13,30 +13,33 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
   /// Mass plots
   map_sig["h_jjmass"]                 =     new TH1F("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",100,0.,500.);
   map_sig["h_leadjetmass"]            =     new TH1F("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.);
-  map_sig["h_oseemass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os muons",100,0,500);
-  map_sig["h_e1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
-  map_sig["h_e2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
-  map_sig["h_eemass"]                 =     new TH1F("h_llumass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
-  map_sig["h_eejjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_osllmass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os muons",100,0,500);
+  map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
+  map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
+  map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
+  map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
   
-  /// Muon plots  
-  map_sig["h_MuonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading muon eta",60,-3.,3.);
-  map_sig["h_MuonPt"]               =     new TH1F("h_LeptonPt_"          + name,"muon pt",100,0,500);
-  map_sig["h_leadingMuonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading muon pt",100,0,500);
-  map_sig["h_secondMuonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary muon pt",60,0,300);
-  map_sig["h_leadingMuonEta"]       =     new TH1F("h_leadingLeptonEta_"  + name,"leading muon eta",60,-3.,3.);
-  map_sig["h_secondMuonEta"]        =     new TH1F("h_secondLeptonEta_"   + name,"second muon eta",60,-3.,3.);
-  map_sig["h_MuonIso"]              =     new TH1F("h_LeptonIso_"         + name,"leading muon relIso",50,0,10.);
-  map_sig["h_MuonRelIso"]           =     new TH1F("h_LeptonRelIso_"      + name,"leading muon relIso",100,0,1.);
-  map_sig["h_MuonDZ"]               =     new TH1F("h_LeptonDZ_"          + name," leading muon DZ", 400, -0.5 , 0.5);
-  map_sig["h_MuonDXY"]              =     new TH1F("h_LeptonDXY_"         + name," leading muon DXY", 1000, -0.25 , 0.25);
+  /// Lepton plots  
+  map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_LeptonPt"]               =     new TH1F("h_LeptonPt_"          + name,"lepton pt",100,0,500);
+  map_sig["h_LeptonPhi"]              =     new TH1F("h_LeptonPhi_"          + name,"lepton pt",70,-3.5,3.5);
+  map_sig["h_leadingLeptonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
+  map_sig["h_secondLeptonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
+  map_sig["h_leadingLeptonRelIso"]    =     new TH1F("h_leadingLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
+  map_sig["h_secondLeptonRelIso"]    =     new TH1F("h_secondLeptonRelIso_"      + name,"second lepton relIso",100,0,1.);
+  map_sig["h_leadingLeptonEta"]       =     new TH1F("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_secondLeptonEta"]        =     new TH1F("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
+  map_sig["h_LeptonIso"]              =     new TH1F("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10.);
+  map_sig["h_LeptonRelIso"]           =     new TH1F("h_LeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
+  map_sig["h_LeptonDZ"]               =     new TH1F("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
+  map_sig["h_LeptonDXY"]              =     new TH1F("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
   
   
-  /// Muon/Jet/Muon dR
-  map_sig["h_MuonJetdR"]            =     new TH1F("h_LeptonJetdR_"       + name,"muon jet dR",50,0,5);
-  map_sig["h_MuonAwayJetdR"]        =     new TH1F("h_LeptonAwayJetdR_"   + name, "away jet dr", 50,0,5);
-  map_sig["h_leadMuondR"]           =     new TH1F("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5);
-  map_sig["h_leadMuondPhi"]         =     new TH1F("h_leadLeptondPhi_"    + name,"leading muon dPhi",50,-5,5);
+  /// Lepton/Jet/Lepton dR
+  map_sig["h_LeptonJetdR"]            =     new TH1F("h_LeptonJetdR_"       + name,"lepton jet dR",50,0,5);
+  map_sig["h_LeptonAwayJetdR"]        =     new TH1F("h_LeptonAwayJetdR_"   + name, "away jet dr", 50,0,5);
+  map_sig["h_leadLeptondR"]           =     new TH1F("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5);
+  map_sig["h_leadLeptondPhi"]         =     new TH1F("h_leadLeptondPhi_"    + name,"leading lepton dPhi",50,-5,5);
   map_sig["h_leadJetdR"]                =     new TH1F("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
   map_sig["h_leadJetdPhi"]              =     new TH1F("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
 
@@ -54,8 +57,8 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
   map_sig["h_Nbjets"]                 =     new TH1F("h_Nbjets_"            + name,"number of b jets",5,0,5);
 
   /// dPhi/MT
-  map_sig["h_MTmuon"]               =     new TH1F("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
-  map_sig["h_dphi_METmuon"]         =     new TH1F("h_dphi_METlepton_"  + name , "METlepdphi", 50, -5., 5.);
+  map_sig["h_MTlepton"]               =     new TH1F("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
+  map_sig["h_dphi_METlepton"]         =     new TH1F("h_dphi_METlepton_"  + name , "METlepdphi", 50, -5., 5.);
  
   
   /// MET plots
@@ -68,7 +71,7 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
 
   map_sig["h_nVertices"]              =     new TH1F("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
   /// Charge plot
-  map_sig["h_sumcharge"]              =     new TH1F("h_sumcharge_"         + name,"Charge of the muon pair",6,-3,3);
+  map_sig["h_sumcharge"]              =     new TH1F("h_sumcharge_"         + name,"Charge of the lepton pair",6,-3,3);
 
   /// Number of objects
   map_sig["h_Nmuons"]                 =     new TH1F("h_Nmuons_"           + name,"number of mu",5,0,5);
@@ -112,15 +115,15 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
 
     
-  float min_ee_Dr=10000.;
-  float min_ee_DPhi=10000.;
+  float min_ll_Dr=10000.;
+  float min_ll_DPhi=10000.;
   for(UInt_t i=0; i<muons.size(); i++){
      for(UInt_t j=0; j<muons.size(); j++){
       if(i==j) continue;
       float dPhi = fabs(TVector2::Phi_mpi_pi(muons[i].Phi() - muons[j].Phi() ));
       float dR =muons[i].DeltaR(muons[j]);
-      if(dR < min_ee_Dr) min_ee_Dr = dR;
-      if(dPhi < min_ee_DPhi) min_ee_DPhi = dPhi;
+      if(dR < min_ll_Dr) min_ll_Dr = dR;
+      if(dPhi < min_ll_DPhi) min_ll_DPhi = dPhi;
      }
   }
 
@@ -138,14 +141,14 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   }
 
   
-  if(muons.size()!=0)Fill("h_leadMuondR",min_ee_Dr,weight);
-  if(muons.size()!=0)Fill("h_leadMuondPhi",min_ee_DPhi,weight);
+  if(muons.size()!=0)Fill("h_leadLeptondR",min_ll_Dr,weight);
+  if(muons.size()!=0)Fill("h_leadLeptondPhi",min_ll_DPhi,weight);
 
 
   if(jets.size()!=0){
     if(muons.size()!=0){
-      Fill("h_MuonJetdR",min_ejet_Dr,weight);
-      Fill("h_MuonAwayJetdR",min_eleadawayjet_Dr,weight);
+      Fill("h_LeptonJetdR",min_ejet_Dr,weight);
+      Fill("h_LeptonAwayJetdR",min_eleadawayjet_Dr,weight);
     }
     if(jets.size() > 1)Fill("h_leadJetdR",min_jj_Dr,weight);
     if(jets.size() > 1)Fill("h_leadJetdPhi",min_jj_DPhi,weight);
@@ -187,32 +190,32 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     }
   }
   if(muons.size()>=2){
-      if(muons[0].Charge() != muons[1].Charge())   Fill("h_oseemass", (muons[0]+muons[1]).M(),weight);
+      if(muons[0].Charge() != muons[1].Charge())   Fill("h_osllmass", (muons[0]+muons[1]).M(),weight);
   }
   
   int iel(0);
  
   for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++, iel++){
   
-    Fill("h_MuonPt", muit->Pt(),weight);
-    Fill("h_Muons_phi",muit->Phi(),weight);
-    Fill("h_Muons_eta",muit->Eta(),weight);
-    Fill("h_MuonDXY", muit->dXY(),weight);
-    Fill("h_MuonDZ", muit->dZ(),weight);
+    Fill("h_LeptonPt", muit->Pt(),weight);
+    Fill("h_LeptonPhi",muit->Phi(),weight);
+    Fill("h_LeptonEta",muit->Eta(),weight);
+    Fill("h_LeptonDXY", muit->dXY(),weight);
+    Fill("h_LeptonDZ", muit->dZ(),weight);
      
     float mu_reliso_03 =  muit->RelIso03();
     
     
-    Fill("h_MuonRelIso", mu_reliso_03,weight);
+    Fill("h_LeptonRelIso", mu_reliso_03,weight);
     if(iel==1){
-      Fill("h_secondMuonPt", muit->Pt(),weight);
-      Fill("h_secondMuonIso", mu_reliso_03,weight);
-      Fill("h_secondMuonEta",muit->Eta(),weight);
+      Fill("h_secondLeptonPt", muit->Pt(),weight);
+      Fill("h_secondLeptonIso", mu_reliso_03,weight);
+      Fill("h_secondLeptonEta",muit->Eta(),weight);
     }
     if(iel==0){
-      Fill("h_leadingMuonEta",muit->Eta(),weight);
-      Fill("h_leadingMuonIso", mu_reliso_03,weight);
-      Fill("h_leadingMuonPt", muit->Pt(),weight);
+      Fill("h_leadingLeptonEta",muit->Eta(),weight);
+      Fill("h_leadingLeptonIso", mu_reliso_03,weight);
+      Fill("h_leadingLeptonPt", muit->Pt(),weight);
     }
     
     sum_charge += muit->Charge();
@@ -224,8 +227,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   for(unsigned int i=0 ; i < muons.size(); i++){
     float dphi = fabs(TVector2::Phi_mpi_pi(muons.at(i).Phi()- ev.PFMETphi()));
     float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos( dphi)));
-    Fill("h_MTmuon",MT, weight);
-    Fill("h_dphi_METmuon",dphi, weight);
+    Fill("h_MTlepton",MT, weight);
+    Fill("h_dphi_METlepton",dphi, weight);
   }
 
   if(debug)cout<< "Plotting [5] " << endl;

@@ -205,7 +205,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
 
   return  GetTruePrompt(electronColl, keepcf, keepfake); 
-  
+
 }
 
 

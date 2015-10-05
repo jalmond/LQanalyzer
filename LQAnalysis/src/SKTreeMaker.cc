@@ -34,16 +34,6 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
 
-  if(!PassBasicEventCuts()){
-    m_logger << DEBUG << "Fail MET filter cuts" << LQLogger::endmsg;
-    throw LQError( "Fails basic cuts",  LQError::SkipEvent );
-  }  
-  
-
-  if (!eventbase->GetEvent().HasGoodPrimaryVertex()){
-    m_logger <<  DEBUG << "Event FAILS HasGoodPrimaryVertex " << LQLogger::endmsg;
-    throw LQError( "Has no PV",  LQError::SkipEvent );
-  }
  
   //////////////////////////////////////////////////////
   //////////// Select objetcs

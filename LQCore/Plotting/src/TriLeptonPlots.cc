@@ -52,6 +52,8 @@ TriLeptonPlots::TriLeptonPlots(TString name): StdPlots(name){
 
 void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight) {
   
+  Fill("h_Nmuons" ,muons.size(), weight);
+  Fill("h_Nelectrons" ,electrons.size(), weight);
 
   
   if(electrons.size()==2){

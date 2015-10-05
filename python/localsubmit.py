@@ -194,6 +194,8 @@ if platform.system() == "Linux":
 
     os.system("rm " + filename)
 
+nj_def=number_of_cores
+
 if number_of_cores > 1:
     if useskinput == "True":
         if (40 - n_previous_jobs) < number_of_cores:
@@ -201,12 +203,24 @@ if number_of_cores > 1:
         if number_of_cores > 15:
             number_of_cores = 15
             print "Number of sub jobs is reset to default of 15"
+        if cycle == "SKTreeMaker":
+            number_of_cores=nj_def
+        if cycle == "SKTreeMakerNoCut":
+            number_of_cores=nj_def
+        if not cycle == "SKTreeMakerDiLep":
+             number_of_cores=nj_def
     elif useskinput == "true":
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
             number_of_cores= 15
             print "Number of sub jobs is reset to default of 15"
+        if cycle == "SKTreeMaker":
+            number_of_cores=nj_def
+        if cycle == "SKTreeMakerNoCut":
+            number_of_cores=nj_def
+        if not cycle == "SKTreeMakerDiLep":
+            number_of_cores=nj_def
     else:
         if number_of_cores > 5:
             if not cycle == "SKTreeMaker":

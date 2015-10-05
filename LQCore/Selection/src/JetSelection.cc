@@ -40,7 +40,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
     
     bool pileupjet=false;
     if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
-    
+    pileupjet=true;
 
 
     if(apply_ID) {
@@ -66,7 +66,8 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
   std::vector<KJet> alljets = k_lqevent.GetJets();
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-    if ( (jit->Pt() >= 20.) && fabs(jit->Eta()) < 2.5   && jit->PassLooseID() && jit->PileupJetIDLoose())  pre_jetColl.push_back(*jit);
+    //if ( (jit->Pt() >= 20.) && fabs(jit->Eta()) < 2.5   && jit->PassLooseID() && jit->PileupJetIDLoose())  pre_jetColl.push_back(*jit);
+    if ( (jit->Pt() >= 20.) && fabs(jit->Eta()) < 2.5   && jit->PassLooseID())  pre_jetColl.push_back(*jit);
     
   }
   

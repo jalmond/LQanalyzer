@@ -453,9 +453,17 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legorder.push_back("DY");
   legorder.push_back("Diboson");
   legorder.push_back("ttbar");
-  for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
-    map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
-    if(it->second)legendH->AddEntry(it->second,it->first.Data(),"f");    
+
+  if(map_legend.size()  < 3){
+    for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++) {
+      legendH->AddEntry(it->second, it->first,"f");
+    }
+  }else{
+    for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
+      map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
+      if(it->second)legendH->AddEntry(it->second,it->first.Data(),"f");    
+      
+    }
   }
   legendH->SetFillColor(kWhite);
   legendH->SetTextFont(42);

@@ -108,7 +108,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    //( (maxd0 <=0 ) || std::abs(vtx.position().rho()) <= 2 ) &&
    //!(vtx.isFake() ) ){
    FillCutFlow("VertexCut", weight);
-
+   
    /// List of preset muon collections
    std::vector<snu::KMuon> muonColl = GetMuons("NoCut");  /// No cuts applied
    std::vector<snu::KMuon> muonVetoColl = GetMuons("HNVeto");  // veto selection
@@ -131,7 +131,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
    std::vector<snu::KElectron> electronColl        = GetElectrons("POGTight");          
 
-   if(jetColl_hn.size() < 2) return;
+   //  if(jetColl_hn.size() < 2) return;
 
    
    
@@ -142,13 +142,14 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    float pileup_reweight=(1.0);
    if (!k_isdata) {
      /// Currently this is done using on the fly method: waiting for official method
-     //pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue())); //* MCweight;
+     //pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue())) * MCweight;
      pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices())); //* MCweight;
-     //weight *= pileup_reweight;
+     weight *= pileup_reweight;
    }
    //cout << "MCweight = " << MCweight << endl;
 
-
+   FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10.);
+   
    if (Zcandidate(muonTightColl, 20., true)){
      ////Make NVTX plotsfor reweighting
      
@@ -159,8 +160,8 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if(muonTightColl.size() ==2) {
      
      /// Method of plotting single histogram
-     FillHist("zpeak_mumu_noPUrw", GetZMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
-     FillHist("zpeak_mumu", GetZMass(muonTightColl), weight, 0., 200.,400);
+     FillHist("zpeak_mumu_noPUrw", GetZMass(muonTightColl), weight, 0., 200.,400);
+     FillHist("zpeak_mumu", GetZMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
      
      /// Standard set of histograms for muons/jets/electrons.. with no corrections
      FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
