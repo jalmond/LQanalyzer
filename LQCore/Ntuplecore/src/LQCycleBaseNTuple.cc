@@ -16,7 +16,7 @@
 
 ClassImp( LQCycleBaseNTuple);
 
-LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false), k_sample_name(""), sample_entries(-999), output_interval(10000), events_to_process(-1){
+LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false), k_sample_name(""), sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
 
 
  
@@ -87,6 +87,10 @@ void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
 
 void LQCycleBaseNTuple::SetDataType( bool type){  
   k_isdata = type;
+}
+
+void LQCycleBaseNTuple::SetMCPeriod( int period){
+  k_mcperiod= period;
 }
 
 void LQCycleBaseNTuple::SetNPStatus( bool type){

@@ -34,6 +34,10 @@
    // This function sets up Root files and histograms Needed in ExecuteEvents
    InitialiseAnalysis();
    MakeCleverHistograms(sighist_mm,"DiMuon");
+   MakeCleverHistograms(sighist_mm,"DiMuon_tightjet");
+   MakeCleverHistograms(sighist_mm,"DiMuon_mediumjet");
+   MakeCleverHistograms(sighist_mm,"DiMuon_PRW");
+   MakeCleverHistograms(sighist_mm,"DiMuon_BJet");
    MakeCleverHistograms(sighist_mm,"SSMuon");
    MakeCleverHistograms(trilephist,"TriMuon");
    
@@ -61,7 +65,11 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
-   FillCutFlow("NoCut", weight);
+  FillCutFlow("NoCut", weight);
+  FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
+  
+  if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+  else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
   
    ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you see this is out of date please comment
    
@@ -73,9 +81,12 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu
 
    std::vector<TString> triggerslist;
-   triggerslist.push_back("HLT_IsoMu24_eta2p1_v");
+   triggerslist.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
+   //ListTriggersAvailable();
+
    if(!PassTrigger(triggerslist, prescale)) return;
    FillCutFlow("TriggerCut", weight);
+
 
    /* // #### CAT::: trigger matching information is stored for muons and electrons for:
    ///HLT_IsoMu24_eta2p1_v
@@ -108,7 +119,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    //( (maxd0 <=0 ) || std::abs(vtx.position().rho()) <= 2 ) &&
    //!(vtx.isFake() ) ){
    FillCutFlow("VertexCut", weight);
-
+   
    /// List of preset muon collections
    std::vector<snu::KMuon> muonColl = GetMuons("NoCut");  /// No cuts applied
    std::vector<snu::KMuon> muonVetoColl = GetMuons("HNVeto");  // veto selection
@@ -127,43 +138,52 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    std::vector<snu::KJet> jetColl             = GetJets("NoLeptonVeto"); // All jets
    std::vector<snu::KJet> jetColl_loose       = GetJets("Loose"); // pt > 10; eta < 5. ; PFlep veto
    std::vector<snu::KJet> jetColl_medium      = GetJets("Medium");// pt > 20 ; eta < 2.5; PFlep veto
+   std::vector<snu::KJet> jetColl_tight       = GetJets("Tight");// pt > 20 ; eta < 2.5; PFlep veto
    std::vector<snu::KJet> jetColl_hn          = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
+   
+   
 
    std::vector<snu::KElectron> electronColl        = GetElectrons("POGTight");          
-
-   if(jetColl_hn.size() < 2) return;
-
    
+   int njet = jetColl_hn.size();
+   FillHist("GenWeight_NJet" , njet*MCweight + MCweight*0.1, 1., -6. , 6., 12);
+
    
    numberVertices = eventbase->GetEvent().nVertices();   
-   
-   
    
    float pileup_reweight=(1.0);
    if (!k_isdata) {
      /// Currently this is done using on the fly method: waiting for official method
-     //pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue())); //* MCweight;
-     pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices())); //* MCweight;
-     //weight *= pileup_reweight;
+     
+     pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod)* MCweight;
+
    }
-   //cout << "MCweight = " << MCweight << endl;
 
-
+   FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);
+   
    if (Zcandidate(muonTightColl, 20., true)){
      ////Make NVTX plotsfor reweighting
      
      if(isData) FillHist("Nvtx_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-     else  FillHist("Nvtx_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight, 0. , 50., 50);
+     else  FillHist("Nvtx_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
    }
    
    if(muonTightColl.size() ==2) {
      
      /// Method of plotting single histogram
-     FillHist("zpeak_mumu_noPUrw", GetZMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
-     FillHist("zpeak_mumu", GetZMass(muonTightColl), weight, 0., 200.,400);
+     FillHist("zpeak_mumu_noPUrw", GetZMass(muonTightColl), weight, 0., 200.,400);
+     FillHist("zpeak_mumu", GetZMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
+     
      
      /// Standard set of histograms for muons/jets/electrons.. with no corrections
-     FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+
+     FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight);
+     FillCLHist(sighist_mm, "DiMuon_loosejet", eventbase->GetEvent(), muonTightColl,electronColl,jetColl, weight*pileup_reweight);
+     FillCLHist(sighist_mm, "DiMuon_tightjet", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_tight, weight*pileup_reweight);
+     FillCLHist(sighist_mm, "DiMuon_mediumjet", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_medium, weight*pileup_reweight);
+     FillCLHist(sighist_mm, "DiMuon_PRW", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+     if(NBJet(jetColl_hn) > 0)      FillCLHist(sighist_mm, "DiMuon_BJet", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+ 
      if(SameCharge(muonTightColl))    FillCLHist(sighist_mm, "SSMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
    }
 

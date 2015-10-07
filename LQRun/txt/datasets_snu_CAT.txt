@@ -6,12 +6,12 @@
 #######################################################################################################################################
 
 WZ	            14995.95          /data2/DATA/cattoflat/MC/v7-4-2/WZ_TuneCUETP8M1_13TeV-pythia8/ 
-ZZ                  4686.23           /data2/DATA/cattoflat/MC/v7-4-2/ZZ_TuneCUETP8M1_13TeV-pythia8/
+ZZ                  64686.233          /data2/DATA/cattoflat/MC/v7-4-2/ZZ_TuneCUETP8M1_13TeV-pythia8/
 WW	            8974.87           /data2/DATA/cattoflat/MC/v7-4-2/WW_TuneCUETP8M1_13TeV-pythia8/
-WJets	            392.53            /data2/DATA/cattoflat/MC/v7-4-2/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
+WJets	            268.86            /data2/DATA/cattoflat/MC/v7-4-2/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
 TTJets_MG5          13896.80          /data2/DATA/cattoflat/MC/v7-4-2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
-DY10to50	    1671.17           /data2/DATA/cattoflat/MC/v7-4-2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
-DY50plus	    4784.10           /data2/DATA/cattoflat/MC/v7-4-2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
+DY10to50	    1219.8           /data2/DATA/cattoflat/MC/v7-4-2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
+DY50plus	    3210.8           /data2/DATA/cattoflat/MC/v7-4-2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
 QCD_mu20to30        0.01899990511     /data2/DATA/cattoflat/MC/v7-4-2/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
 QCD_mu30to50        0.07040024177     /data2/DATA/cattoflat/MC/v7-4-2/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
 QCD_mu50to80        0.2637257901      /data2/DATA/cattoflat/MC/v7-4-2/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
@@ -36,30 +36,34 @@ singletop_tbarW     28089.88764       /data2/DATA/cattoflat/MC/v7-4-2/ST_tW_anti
 singletop_tW        27966.29213       /data2/DATA/cattoflat/MC/v7-4-2/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
 ttHtobb             7776599.446       /data2/DATA/cattoflat/MC/v7-4-2/ttHTobb_M125_13TeV_powheg_pythia8/
 ttHnobb             7514033.215       /data2/DATA/cattoflat/MC/v7-4-2/ttHToNonbb_M125_13TeV_powheg_pythia8/
-ttWJetsToLNu        219538.1944       /data2/DATA/cattoflat/MC/v7-4-2/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
-ttWJetsToQQ         723927.0833       /data2/DATA/cattoflat/MC/v7-4-2/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
-ttZToLLNuNu         219538.1944       /data2/DATA/cattoflat/MC/v7-4-2/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
-ttZToQQ             335931.8996       /data2/DATA/cattoflat/MC/v7-4-2/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
+ttWJetsToLNu        111964.5       /data2/DATA/cattoflat/MC/v7-4-2/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
+ttWJetsToQQ         381014.3       /data2/DATA/cattoflat/MC/v7-4-2/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
+ttZToLLNuNu         82937.4       /data2/DATA/cattoflat/MC/v7-4-2/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
+ttZToQQ             157714.5       /data2/DATA/cattoflat/MC/v7-4-2/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
 vhf_Htomm           1.                /data2/DATA/cattoflat/MC/v7-4-2/VBF_HToMuMu_M125_13TeV_powheg_pythia8/
 ggHtomm             1.                /data2/DATA/cattoflat/MC/v7-4-2/GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/
 
 singlemuon          C                 /data2/DATA/cattoflat/Data/v7-4-2/SingleMuon/periodC/
+singlemuon          D                 /data2/DATA/cattoflat/Data/v7-4-2/SingleMuon/periodD/
 
 egamma              C                 /data2/DATA/cattoflat/Data/v7-4-2/DoubleEG/periodC/
+egamma              D                 /data2/DATA/cattoflat/Data/v7-4-2/DoubleEG/periodD/
 
 muon                C                 /data2/DATA/cattoflat/Data/v7-4-2/DoubleMuon/periodC/
+muon                D                 /data2/DATA/cattoflat/Data/v7-4-2/DoubleMuon/periodD/
 
 emu		    C		       /data2/DATA/cattoflat/Data/v7-4-2/MuonEG/periodC/
+emu		    D		       /data2/DATA/cattoflat/Data/v7-4-2/MuonEG/periodD/
 
 
 #### Single lepton skims: SKTrees
 SKWZ		    14995.945       /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/WZ/
 SKZZ		    64686.233       /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ZZ/   
 SKWW		    8974.873        /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/WW/   
-SKWJet		    392.533         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/WJet/   
+SKWJets		    268.863         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/WJets/   
 SKTTJets_MG5	    13896.80        /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/TTJets_MG5/
-SKDY10to50	    1671.17         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/DY10to50/
-SKDY50plus	    4784.10         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/DY50plus/ 
+SKDY10to50	    1219.8         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/DY10to50/
+SKDY50plus	    3210.8         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/DY50plus/ 
 SKQCD_mu20to30	    0.01899990511   /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/QCD_mu20to30/    
 SKQCD_mu30to50	    0.07040024177   /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/QCD_mu30to50/    
 SKQCD_mu50to80	    0.2637257901    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/QCD_mu50to80/   
@@ -84,14 +88,71 @@ SKsingletop_tbarW   28089.88764     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC
 SKsingletop_tW	    27966.29213     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/singletop_tW/ 
 SKttHtobb	    7776599.446     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttHtobb/ 
 SKttHnobb	    7514033.215     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttHnobb/ 
-SKttWJetsToLNu	    219538.1944     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttWJetsToLNu/
-SKttWJetsToQQ	    723927.0833     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttWJetsToQQ/
-SKttZToLLNuNu	    178315.4122     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttZToLLNuNu/
-SKttZToQQ	    335931.8996     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttZToQQ/
+SKttWJetsToLNu	    111964.5     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttWJetsToLNu/
+SKttWJetsToQQ	    381014.3     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttWJetsToQQ/
+SKttZToLLNuNu	    82937.4     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttZToLLNuNu/
+SKttZToQQ	    157714.5     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ttZToQQ/
 SKvhf_Htomm	    1.              /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/vhf_Htomm/  
 SKggHtomm	    1.              /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/ggHtomm/   
 
 SKsinglemuon	    C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/SingleMuon/periodC/ 
+SKsinglemuon	    D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/SingleMuon/periodD/ 
+
 SKegamma	    C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/DoubleElectron/periodC/
+SKegamma	    D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/DoubleElectron/periodD/
+
 SKmuon		    C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/DoubleMuon/periodC/
+SKmuon		    D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/DoubleMuon/periodD/
+
 SKemu		    C	 /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/ElectronMuon/periodC/
+SKemu		    D	 /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/ElectronMuon/periodD/
+
+
+### Dilepton skims
+SKWZ_dilep                14995.945       /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/WZ/
+SKZZ_dilep                64686.233       /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ZZ/
+SKWW_dilep                8974.873        /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/WW/
+SKWJets_dilep              268.86         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/WJets/
+SKTTJets_MG5_dilep        13896.80        /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/TTJets_MG5/
+SKDY10to50_dilep          1219.8         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/DY10to50/
+SKDY50plus_dilep          3210.8         /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/DY50plus/
+SKQCD_mu20to30_dilep      0.01899990511   /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu20to30/
+SKQCD_mu30to50_dilep      0.07040024177   /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu30to50/
+SKQCD_mu50to80_dilep      0.2637257901    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu50to80/
+SKQCD_mu80to120_dilep     1.061044003     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu80to120/
+SKQCD_mu120to170_dilep    8.569880182     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu120to170/
+SKQCD_mu170to300_dilep    33.41531838     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu170to300/
+SKQCD_mu300to470_dilep    500.0182859     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu300to470/
+SKQCD_mu470to600_dilep    2987.354538     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu470to600/
+SKQCD_mu600to800_dilep    10600.04062     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu600to800/
+SKQCD_mu800to1000_dilep   61279.74626     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu800to1000/
+SKQCD_mu1000toINF_dilep   190015.2438     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_mu1000toINF/
+SKQCD_em20to30_dilep      0.01645606707   /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em20to30/
+SKQCD_em30to50_dilep      0.03452855882   /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em30to50/
+SKQCD_em50to80_dilep      0.2639840404    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em50to80/
+SKQCD_em80to120_dilep     2.903722857     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em80to120/
+SKQCD_em120to170_dilep    17.81801677     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em120to170/
+SKQCD_em170to300_dilep    50.31214035     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em170to300/
+SKQCD_em300toINF_dilep    410.7462222     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/QCD_em300toINF/
+SKsingletop_tbar_dilep    20943.79246     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/singletop_tbar/
+SKsingletop_t_dilep       24259.6677      /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/singletop_t/
+SKsingletop_tbarW_dilep   28089.88764     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/singletop_tbarW/
+SKsingletop_tW_dilep      27966.29213     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/singletop_tW/
+SKttHtobb_dilep           7776599.446     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ttHtobb/
+SKttHnobb_dilep           7514033.215     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ttHnobb/
+SKttWJetsToLNu_dilep      111964.5     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ttWJetsToLNu/
+SKttWJetsToQQ_dilep       381014.3     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ttWJetsToQQ/
+SKttZToLLNuNu_dilep       82937.4     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ttZToLLNuNu/
+SKttZToQQ_dilep           157714.5     /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ttZToQQ/
+SKvhf_Htomm_dilep         1.              /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/vhf_Htomm/
+SKggHtomm_dilep           1.              /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/ggHtomm/
+
+SKsinglemuon_dilep        C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/SingleMuon/periodC/
+SKsinglemuon_dilep        D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/SingleMuon/periodD/
+SKegamma_dilep            C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/DoubleElectron/periodC/
+SKegamma_dilep            D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/DoubleElectron/periodD/
+SKmuon_dilep              C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/DoubleMuon/periodC/
+SKmuon_dilep              D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/DoubleMuon/periodD/
+SKemu_dilep               C    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/ElectronMuon/periodC/
+SKemu_dilep               D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/DataDiLep1510/ElectronMuon/periodD/
+

@@ -34,24 +34,7 @@ SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electr
 
 void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   
-  FillCutFlow("NoCut", 1);
-
-  if(!PassBasicEventCuts()){
-    m_logger << DEBUG << "Fail MET filter cuts" << LQLogger::endmsg;
-    throw LQError( "Fails basic cuts",  LQError::SkipEvent );
-  }  
-  FillCutFlow("EventCut", 1);
   
-  std::vector<TString> triggerslist;
-  triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
-
-  if (!eventbase->GetEvent().HasGoodPrimaryVertex()){
-    m_logger <<  DEBUG << "Event FAILS HasGoodPrimaryVertex " << LQLogger::endmsg;
-    throw LQError( "Has no PV",  LQError::SkipEvent );
-  }
-  FillCutFlow("VertexCut", 1);
-
- 
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
@@ -62,20 +45,20 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
   eventbase->GetMuonSel()->SetPt(10); 
-  eventbase->GetMuonSel()->SetEta(2.5);
+  eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
 
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim
   /// Apart from eta/pt muons are required to have a global OR tracker track && be PF
-  eventbase->GetMuonSel()->SetPt(15);
+  eventbase->GetMuonSel()->SetPt(10);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(20);
-  eventbase->GetJetSel()->SetEta(2.5);
+  eventbase->GetJetSel()->SetPt(10);
+  eventbase->GetJetSel()->SetEta(3.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
   //###### GenJet Selection ##########
@@ -96,9 +79,16 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   /// select events  with 2 leptons with pt > 15
   if(! ((nlep > 1) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   
-  if(skim_electrons.size() > 0) {
-    if(skim_electrons.at(0).Pt() < 15.)  throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  } 
+  bool pass15gev=false;
+  
+  if(skim_electrons.size() >0 ) {
+    if(skim_electrons.at(0).Pt() > 15.) pass15gev= true;
+  }
+  if(skim_muons.size() > 0){
+    if(skim_muons.at(0).Pt() > 15.)  pass15gev= true;
+  }
+  if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+
 
   FillCutFlow("DiLep", 1);
 

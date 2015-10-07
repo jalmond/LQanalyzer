@@ -192,6 +192,7 @@ class AnalyzerCore : public LQCycleBase {
 
   //// Event related                                                                                                                                              
   bool PassTrigger(std::vector<TString> list, int& prescale);
+  void ListTriggersAvailable();
   bool PassBasicEventCuts();
 
 };
