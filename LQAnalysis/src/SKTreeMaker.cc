@@ -34,6 +34,8 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
 
+  std::vector<snu::KMuon> muonTightColl = GetMuons("HNTight"); // tight selection : NonPrompt MC lep removed
+
  
   //////////////////////////////////////////////////////
   //////////// Select objetcs
@@ -47,7 +49,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
   eventbase->GetMuonSel()->SetPt(10); 
-  eventbase->GetMuonSel()->SetEta(2.5);
+  eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
 
   Message("Skimming Muons", DEBUG);
@@ -70,7 +72,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
   eventbase->GetElectronSel()->SetPt(10); 
-  eventbase->GetElectronSel()->SetEta(2.5); 
+  eventbase->GetElectronSel()->SetEta(5.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
   eventbase->GetElectronSel()->SetPt(15);
   eventbase->GetElectronSel()->SetEta(2.5);
@@ -86,16 +88,18 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   }
   
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
-  if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  
+  if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) {
+    cout << "Throwing away event that has two tight muons: " << endl;
+    throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  }
   for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
     //    cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
   }
-
+  
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
   out_truth   = eventbase->GetTruth();
-  
+
   return;
 }// End of execute event loop
   

@@ -36,8 +36,8 @@ Reweight::Reweight(TString filename){
   tempDir->cd();
   
   h_Data_ = 0;
-  h_Data_ = dynamic_cast<TH1F*>((fileData_->Get("reweight_nvtx"))->Clone());;  
-  //h_Data_up_ = dynamic_cast<TH1F*>((fileDataUP_->Get("reweight_nvtx_up"))->Clone());;  
+  h_Data_ = dynamic_cast<TH1F*>((fileData_->Get("reweight_nvtx_periodC"))->Clone());;  
+  h_Data_up_ = dynamic_cast<TH1F*>((fileData_->Get("reweight_nvtx_periodD"))->Clone());;  
   //h_Data_down_ = dynamic_cast<TH1F*>((fileDataDOWN_->Get("reweight_nvtx_down"))->Clone());;  
   
   
@@ -80,9 +80,10 @@ Reweight::Reweight(TString filename){
 Reweight::~Reweight(){
 }
 
-double Reweight::GetWeight(int nvtx, int sys){
-  if(sys==1) return h_Data_->GetBinContent( nvtx  );
-  else if(sys==-1) return h_Data_->GetBinContent( nvtx  );
+double Reweight::GetWeight(int nvtx, int period){
+
+  if(period == 1) return h_Data_->GetBinContent( nvtx  ); 
+  else return h_Data_up_->GetBinContent( nvtx  );
   
   return h_Data_->GetBinContent( nvtx  );
   

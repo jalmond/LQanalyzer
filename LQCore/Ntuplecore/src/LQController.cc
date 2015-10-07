@@ -190,9 +190,9 @@ void LQController::SetDataPeriod(TString period){
   
   
   if( period == "C") target_luminosity = 15.478;
-  else if( period == "D") target_luminosity = 0.;
-  else if( period == "ALL") target_luminosity = 15.478;
-  else target_luminosity = 15.478;
+  else if( period == "D") target_luminosity =210.09;
+  else if( period == "ALL") target_luminosity = 225.57;
+  else target_luminosity = 225.57;
 
   
 }
@@ -497,7 +497,11 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
+    if(k_period.Contains("AtoD")) cycle->SetMCPeriod(2); 
+    else if(k_period.Contains("C")) cycle->SetMCPeriod(1); 
 
+
+    
     // calculate weight from input 
     float ev_weight =  CalculateWeight();
     

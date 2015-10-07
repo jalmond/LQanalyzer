@@ -265,7 +265,9 @@ void MakeCutFlow(string type){
       totalerrdown += (mapit_down->second*mapit_down->second); 
       total_staterr += mapit_stat->second*mapit_stat->second;
       TString sample = mapit->first;
+      if(sample.Contains("t#bar{t}")) sample = "t$\bar{t}$";
       if(sample.Contains("t#bar{t}+V")) sample = "t$\bar{t}$+V";
+
       cout << sample << " background = " << mapit->second<< " +- " << mapit_stat->second << " + " << mapit_up->second << " - " << mapit_down->second <<  endl;      
    
       
@@ -329,6 +331,7 @@ void MakeCutFlow(string type){
       
       TString sample = mapit->first;
       if(sample.Contains("t#bar{t}+V")) sample = "t$\\bar{t}$+V";
+      if(sample.Contains("t#bar{t}")) sample = "t$\\bar{t}$";
       if(mapit->second!=0.0){
 	ofile << sample + "&" <<  mapit->second << "& $\\pm$& "  << mapit_stat->second <<  "&$^{+" <<  mapit_up->second << "}_{-" <<  mapit_down->second  << "}$" ; 
 	ofile  <<  "\\"  << "\\" << endl;	   
@@ -366,8 +369,8 @@ void MakeCutFlow(string type){
     
     histpage << "<tr><td>"<< "cutflow " + cut_label.at(i_cut)  <<"</td>"<<endl;
     histpage <<"<td>"<<endl;
-    histpage << "<a href=\"" << cut_label.at(i_cut)  << ".png\">";
-    histpage << "Cutflow: " + cut_label.at(i_cut)  + ".png</p>";
+    histpage << "<a href=\"" << cut_label.at(i_cut)  << ".pdf\">";
+    histpage << "Cutflow: " + cut_label.at(i_cut)  + ".pdf</p>";
     histpage << "</td>" << endl;
   }
 
@@ -420,8 +423,8 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   /// 
   if((hlegdata->GetBinContent(nbinsX*0.8) / hlegdata->GetMaximum()) < 0.5){
-    x1 = 0.5;
-    y1 = 0.5;
+    x1 = 0.6;
+    y1 = 0.6;
     x2 = 0.8;
     y2 = 0.9;
   }
@@ -439,7 +442,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legendH->SetTextFont(42);
   
   legendH->SetBorderSize(0);
-  legendH->SetTextSize(0.03);
+  legendH->SetTextSize(0.025);
   
 
   if(rundata) 	legendH->AddEntry(hlegdata,"Data","pE");
@@ -450,9 +453,12 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   //  legorder.push_back("Misid. Lepton Background");
   //  legorder.push_back("Mismeas. Charge Background");
   //  legorder.push_back("Prompt Background");
-  legorder.push_back("DY");
   legorder.push_back("Diboson");
-  legorder.push_back("ttbar");
+  legorder.push_back("t#bar{t}");
+  //  legorder.push_back("QCD");
+  legorder.push_back("DY 10 < m(ll) < 50");
+  legorder.push_back("DY m(ll) > 50");
+
 
   if(map_legend.size()  < 3){
     for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++) {
@@ -518,8 +524,11 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
   
-  if(sample.Contains("dy_")){
-    //    list.push_back(make_pair("DY10to50",0.2));    
+  if(sample.Contains("dylow_")){
+    list.push_back(make_pair("DY10to50",0.2));
+  }
+
+  if(sample.Contains("dyhigh_")){
     list.push_back(make_pair("DY50plus",0.2));    
   }
   
@@ -535,9 +544,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   if(sample.Contains("qcd"))
     {
-      list.push_back(make_pair("QCD_mu20to30",0.30));
-      list.push_back(make_pair("QCD_mu30to50",0.30));
-      list.push_back(make_pair("QCD_mu50to80",0.30));
+      //list.push_back(make_pair("QCD_mu20to30",0.30));
+      //list.push_back(make_pair("QCD_mu30to50",0.30));
+      //list.push_back(make_pair("QCD_mu50to80",0.30));
       list.push_back(make_pair("QCD_mu80to120",0.30));
       list.push_back(make_pair("QCD_mu120to170",0.30));
       list.push_back(make_pair("QCD_mu170to300",0.30));
@@ -955,6 +964,8 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
 
   float yscale= 2;
   if(!showdata) yscale = 3.;
+
+  //  if(ylog) yscale*= 1000;
   
   if(name.find("eemass")!=string::npos) yscale*=1.3;
   if(name.find("eta")!=string::npos) yscale*=2.5;
@@ -971,6 +982,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   
   float max_data = h_data->GetMaximum()*yscale;
   float max_bkg = h_up->GetMaximum()*yscale;
+
 
   
   if(max_data > max_bkg) return max_data;
@@ -1301,7 +1313,8 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > vv = InitSample("vv");
   
   // Zjet
-  vector<pair<TString,float> > z = InitSample("dy_");
+  vector<pair<TString,float> > zlow = InitSample("dylow_");
+  vector<pair<TString,float> > zhigh = InitSample("dyhigh_");
 
   vector<pair<TString,float> > w = InitSample("wjet_");
 
@@ -1321,9 +1334,10 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   
   for( unsigned int i = 0; i < listofsamples.size(); i++){
     if(listofsamples.at(i) =="vv")samples.push_back(make_pair(make_pair(vv,vvcol),"Diboson"));
-    if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,zcol),"DY"));
+    if(listofsamples.at(i) =="dylow")samples.push_back(make_pair(make_pair(zlow,wcol),"DY 10 < m(ll) < 50"));
+    if(listofsamples.at(i) =="dyhigh")samples.push_back(make_pair(make_pair(zhigh,zcol),"DY m(ll) > 50"));
     if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,tcol),"Top"));
-    if(listofsamples.at(i) =="ttbar")samples.push_back(make_pair(make_pair(ttbar,tcol),"ttbar"));
+    if(listofsamples.at(i) =="ttbar")samples.push_back(make_pair(make_pair(ttbar,tcol),"t#bar{t}"));
     if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(w,wcol),"Wjet"));
 
     if(listofsamples.at(i) =="prompt")samples.push_back(make_pair(make_pair(prompt,vvcol),"Prompt Background"));
@@ -1401,7 +1415,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   label.SetNDC();
   label.SetTextColor(1);
   //  //#  label.DrawLatex(0.6 ,0.34,"High Mass Region");
-  //#  label.DrawLatex(0.6 ,0.4,"e^{#pm}#mu^{#pm} Channel");
+  label.DrawLatex(0.6 ,0.4,"Nvtx reweighted");
   
 
   //return canvas;  
@@ -1467,12 +1481,13 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
 
   //// %%%%%%%%%% PRINT ON LOG
   canvas_log->cd();
+  canvas_log->SetLogy();     
   
   gPad->SetLogz(1);
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
 
-  //hdata->GetYaxis()->SetRangeUser(0.01, ymax);
+  hdata->GetYaxis()->SetRangeUser(0.01, ymax*10000.);
   hdata->GetYaxis()->SetTitleOffset(1.6);
   hdata->Draw("p9hist");
   
@@ -1747,13 +1762,13 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
     }
   else if ( iPeriod==4 )
     {
-      lumiText += lumi_13TeV;
+      lumiText += lumi_13TeV_C;
       lumiText += " (13 TeV)";
     }
   else if ( iPeriod==7 )
     {
       if( outOfFrame ) lumiText += "#scale[0.85]{";
-      lumiText += lumi_13TeV;
+      lumiText += lumi_13TeV_C;
       lumiText += " (13 TeV)";
       lumiText += " + ";
       lumiText += lumi_8TeV;
@@ -1791,6 +1806,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
 
   pad->cd();
 
+  writeExtraText=true;
   float posX_;
   if( iPosX%10<=1 )
     {

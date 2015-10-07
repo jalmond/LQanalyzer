@@ -16,7 +16,8 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
   map_sig["h_osllmass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os muons",100,0,500);
   map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
   map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
-  map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
+  map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",500,0,500);
+  map_sig["h_lljmass"]                =     new TH1F("h_lljmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
   map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
   
   /// Lepton plots  
@@ -209,12 +210,12 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonRelIso", mu_reliso_03,weight);
     if(iel==1){
       Fill("h_secondLeptonPt", muit->Pt(),weight);
-      Fill("h_secondLeptonIso", mu_reliso_03,weight);
+      Fill("h_secondLeptonRelIso", mu_reliso_03,weight);
       Fill("h_secondLeptonEta",muit->Eta(),weight);
     }
     if(iel==0){
       Fill("h_leadingLeptonEta",muit->Eta(),weight);
-      Fill("h_leadingLeptonIso", mu_reliso_03,weight);
+      Fill("h_leadingLeptonRelIso", mu_reliso_03,weight);
       Fill("h_leadingLeptonPt", muit->Pt(),weight);
     }
     

@@ -40,7 +40,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
     
     bool pileupjet=false;
     if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
-    pileupjet=true;
+    pileupjet=false;
 
 
     if(apply_ID) {

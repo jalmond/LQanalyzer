@@ -40,6 +40,7 @@ public:
   void DeleteInputVariables();
   void CloseFiles();
   void SetDataType(bool type);
+  void SetMCPeriod(int period);
   void SetNPStatus( bool type);
   void SetCFStatus( bool type);
   void SetSampleName( TString sample);
@@ -52,6 +53,7 @@ public:
   
   /// Bool to tell if sample is data or MC in analysis code
   bool k_isdata;
+  int k_mcperiod;
   bool k_running_nonprompt;
   bool k_running_chargeflip;
   TString k_sample_name;

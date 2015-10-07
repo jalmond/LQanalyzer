@@ -100,7 +100,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
     eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "veto"));
   }
   else if(label.Contains("HNJets")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "veto"));
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("HNTight"), GetElectrons(false, false, "POGTight"));
     
   }
   
@@ -490,6 +490,14 @@ void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
   return;
 }
 
+
+void AnalyzerCore::ListTriggersAvailable(){
+  cout << "Set of triggers you can use are: " << endl;
+  for(unsigned int i=0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
+    cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i)<< " has prescale " << eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales().at(i)<< endl;
+  }
+  return;
+}
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler){
   
   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
