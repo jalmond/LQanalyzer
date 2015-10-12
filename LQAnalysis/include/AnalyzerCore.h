@@ -46,24 +46,12 @@ class AnalyzerCore : public LQCycleBase {
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
 
-<<<<<<< HEAD
-  float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip, bool useoldrates);
 
-  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KJet> jets, TString label, float w);
-  void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KMuon> muons,  std::vector<snu::KJet> jets, float w);
-    
-  void PlotFakeLeptons( std::vector<snu::KJet> jets, float w);
-  double TriggerScaleFactor( vector<snu::KElectron> el, int sys=0);;
-  double TriggerScaleFactor( vector<snu::KMuon> mu, int sys=0);;
-  double TriggerScaleFactorEMu(int sys=0);
-  float GetEEMass(std::vector<snu::KElectron> electrons);
-=======
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   double TriggerScaleFactor( vector<snu::KMuon> mu);;
   double TriggerScaleFactorEMu();
   float GetZMass(std::vector<snu::KMuon> muons);
   float GetZMass(std::vector<snu::KElectron> electrons);
->>>>>>> cat
 
   double ElectronScaleFactor( double eta, double pt, bool tight, int sys=0);
   double MuonScaleFactor(double eta, double pt, int sys=0);
