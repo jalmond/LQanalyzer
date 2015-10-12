@@ -64,11 +64,10 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
-  
+
+  /// Apply MC weight for MCatnlo samples
   weight*= MCweight;
 
-  std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
-  FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
   
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
@@ -94,7 +93,6 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   FillCutFlow("TriggerCut", weight);
   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
-  FillHist("Njets_passtrigger", jetColl_hn.size() ,weight, 0. , 5., 5);
 
   
   //ListTriggersAvailable(); // uncomment this line to list off available triggers in the same
@@ -113,7 +111,6 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Use the number of vertices in the event to check effect of pileup reweighting
   numberVertices = eventbase->GetEvent().nVertices();   
   
-  FillHist("Njets_vertex", jetColl_hn.size() ,weight, 0. , 5., 5);
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////
@@ -123,10 +120,13 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muonColl = GetMuons("HNLoose");  // loose selection
   
   /// Get tight jets : Can call NoLeptonVeto/Loose/Medium/Tight/HNJets
-  //std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
+  std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
   std::vector<snu::KJet> jetColl_nlv  = GetJets("NoLeptonVeto");
   std::vector<snu::KJet> jetColl_loose  = GetJets("Loose");
-  
+
+  FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
+
+
   // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
   std::vector<snu::KElectron> electronLooseColl        = GetElectrons("POGLoose");
   std::vector<snu::KElectron> electronColl             = GetElectrons("POGTight");

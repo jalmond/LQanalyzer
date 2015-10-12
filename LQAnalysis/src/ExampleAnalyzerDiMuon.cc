@@ -65,9 +65,6 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
   /// Apply the gen weight 
   weight*=MCweight;
 
-  std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
-
-  FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);  
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -94,8 +91,6 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if(!PassTrigger(triggerslist, prescale)) return;
    FillCutFlow("TriggerCut", weight);
    // Trigger matching is done using KMuon::TriggerMatched(TString) which returns a bool
-
-   FillHist("Njets_trigger", jetColl_hn.size() ,weight, 0. , 5., 5);
 
    /* // #### CAT::: trigger matching information is stored for muons and electrons for:
    ///HLT_IsoMu24_eta2p1_v
@@ -129,7 +124,6 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    //!(vtx.isFake() ) ){
    FillCutFlow("VertexCut", weight);
    
-   FillHist("Njets_vertex", jetColl_hn.size() ,weight, 0. , 5., 5);
 
    /// List of preset muon collections : Can call also POGSoft/POGLoose/POGMedium/POGTight
    std::vector<snu::KMuon> muonColl = GetMuons("NoCut");  /// No cuts applied
@@ -151,9 +145,9 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    std::vector<snu::KJet> jetColl_medium      = GetJets("Medium");// pt > 20 ; eta < 2.5; PFlep veto
    std::vector<snu::KJet> jetColl_tight       = GetJets("Tight");// pt > 20 ; eta < 2.5; PFlep veto
    std::vector<snu::KJet> jetColl_tightlepvto = GetJets("TightLepVeto");// pt > 20 ; eta < 2.5; PFlep veto + IDlepveto
-   //   std::vector<snu::KJet> jetColl_hn          = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
+   std::vector<snu::KJet> jetColl_hn          = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
    
-   //   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
+   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
    /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
    std::vector<snu::KElectron> electronColl        = GetElectrons("POGTight");          
