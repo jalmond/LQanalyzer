@@ -33,7 +33,6 @@ class ElectronSelection : public BaseSelection {
   // Main tight function
 
   void HNLooseElectronSelection( std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
-  
   void HNVetoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
 
   //// Top analysis selection
@@ -46,7 +45,7 @@ class ElectronSelection : public BaseSelection {
   bool PassUserID(ID id,bool usetight,snu::KElectron el , float isocut, bool m_debug= false);
   bool PassUserID(ID id,snu::KElectron el, bool m_debug= false);
   bool PassUserID_FakeLoose2015 (snu::KElectron el, bool usetight, float isocut, bool m_debug=false);
-
+  bool PassHNVeto(snu::KElectron el);
     
 };
 #endif

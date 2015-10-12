@@ -3,11 +3,12 @@
 
 ###### SET WHAT JOBS TO RUN
 runMC=false
+runDoubleMuon=false
 
-runDoubleMuon=true
 runDoubleElectron=false
 runSingleMuon=false
 runElectronMuon=false
+runSingleElectron=true
 
 if [[ $1  == "ALL" ]]; 
 then
@@ -16,6 +17,8 @@ then
     runDoubleElectron=true
     runSingleMuon=true
     runElectronMuon=true
+    runSingleElectron=true
+
 fi
 
 
@@ -25,6 +28,7 @@ then
     runDoubleMuon=false
     runDoubleElectron=false
     runSingleMuon=false
+    runSingleElectron=false
 fi
 
 if [[ $1  == "DATA" ]];
@@ -34,6 +38,8 @@ then
     runDoubleElectron=true
     runSingleMuon=true
     runElectronMuon=true
+    runSingleElectron=true
+
 fi    
 
 
@@ -73,6 +79,25 @@ then
 fi
 
 
+################ DOUBLEMUON DATA
+### submit this configured job (uses bin/submit.sh)
+if [[ $runSingleElectron  == "true" ]];
+then
+    source functions.sh
+    cycle="SKTreeMaker"
+    njobs=30
+    data_lumi="ALL" ### This should == input_samples
+    loglevel="INFO"
+    logstep=1000
+
+    stream="singleelectron"
+    declare -a input_samples=("C" )
+
+    source submit.sh
+fi
+
+
+
 ################ DOUBLEELECTRON DATA
 ### submit this configured job (uses bin/submit.sh)
 if [[ $runDoubleElectron  == "true" ]];
@@ -85,7 +110,7 @@ then
     logstep=1000
     
     stream="egamma"
-    declare -a input_samples=("C" "D")
+    declare -a input_samples=("D")
 
     source submit.sh
 fi    

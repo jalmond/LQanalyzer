@@ -55,6 +55,9 @@ muon                D                 /data2/DATA/cattoflat/Data/v7-4-2/DoubleMu
 emu		    C		       /data2/DATA/cattoflat/Data/v7-4-2/MuonEG/periodC/
 emu		    D		       /data2/DATA/cattoflat/Data/v7-4-2/MuonEG/periodD/
 
+singleelectron	    C		       /data2/DATA/cattoflat/Data/v7-4-2/SingleElectron/periodC/
+singleelectron	    D		       /data2/DATA/cattoflat/Data/v7-4-2/SingleElectron/periodD/
+
 
 #### Single lepton skims: SKTrees
 SKWZ		    14995.945       /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MC/WZ/
@@ -107,6 +110,8 @@ SKmuon		    D    /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/DoubleMuon/perio
 SKemu		    C	 /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/ElectronMuon/periodC/
 SKemu		    D	 /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/ElectronMuon/periodD/
 
+SKsingleelectron    C	 /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/SingleElectron/periodC/
+SKsingleelectron    D	 /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/Data/SingleElectron/periodD/
 
 ### Dilepton skims
 SKWZ_dilep                14995.945       /data2/CatNtuples/CMSSW_472/SKTrees/Sep15/MCDiLep1510/WZ/

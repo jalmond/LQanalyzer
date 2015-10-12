@@ -61,12 +61,12 @@ void ElectronSelection::PogID(std::vector<KElectron>& leptonColl, TString ID){
     else     if(ID.Contains("Loose"))ElectronID = PassUserID(EGAMMA_LOOSE, *el,false);
     else     if(ID.Contains("Medium"))ElectronID = PassUserID(EGAMMA_MEDIUM, *el,false);
     else     if(ID.Contains("Tight"))ElectronID = PassUserID(EGAMMA_TIGHT, *el,false);
-    
+    else {cout << "Electron ID " << ID<< " not found" << endl; exit(EXIT_FAILURE);}
     bool pass_selection = true;
-
+    
     if(!ElectronID) pass_selection = false;
     if(!(fabs(el->SCEta()) < 2.5))  pass_selection = false;
-    if((el->Pt() < 10.))pass_selection = false;
+    if((el->Pt() < 15.))pass_selection = false;
     
     if(pass_selection){
       leptonColl.push_back(*el);
@@ -129,6 +129,7 @@ void ElectronSelection::HNLooseElectronSelection( std::vector<KElectron>& lepton
     bool pass_selection = true;
     ElectronID = PassUserID(EGAMMA_FAKELOOSE, true, *el, 0.5, m_debug);
     
+    
     ///List of cuts
     if(!ElectronID) {
       pass_selection = false;
@@ -143,9 +144,9 @@ void ElectronSelection::HNLooseElectronSelection( std::vector<KElectron>& lepton
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Pt Cut" <<endl;
     }
-    
-    
-    if((el->HasMatchedConvPhot())) {
+
+
+    if((!el->HasMatchedConvPhot())) {
       pass_selection = false;
       if(m_debug)  cout << "HNLooseElectronSelection:Fail Conv Cut" <<endl;
     }
@@ -154,10 +155,7 @@ void ElectronSelection::HNLooseElectronSelection( std::vector<KElectron>& lepton
       pass_selection = false;
       if(m_debug) cout << "HNLooseElectronSelection:Fail Charge Cons. Cut" <<endl;
     }
-    /*if(!(fabs(el->dxy())< 0.01 )) {
-      pass_selection = false;
-      if(m_debug)  cout << "HNLooseElectronSelection:Fail dxy Cut: " << el->dxy() <<endl;
-      }*/
+    
     
     if(pass_selection){
       leptonColl.push_back(*el);
@@ -181,8 +179,8 @@ bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
     isocut = 0.0354;
   }
   else{
-    dxycut = 0.0646;
-    isocut = 0.0351;
+    isocut = 0.0646;
+    dxycut = 0.0351;
   }
   /// from https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
   
@@ -206,12 +204,14 @@ bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail ID Cut" <<endl;
   }
-  if((el.HasMatchedConvPhot() ) ) {
-    pass_selection = false;
-    if(m_debug)  cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
-  }
   
+  //cout << "el.HasMatchedConvPhot() = " << el.HasMatchedConvPhot() << endl;
+  if((!el.HasMatchedConvPhot() ) ) {
+    pass_selection = false;
+    if(m_debug) cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
+  }
 
+  
 
   bool usedr3=true;
   if(usedr3){
@@ -227,11 +227,12 @@ bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
     }
   }
 
+
   if(!el.GsfCtfScPixChargeConsistency()) {
     pass_selection = false;
     if(m_debug) cout << "HNTightElectronSelection:Fail Charge Cons. Cut" <<endl;
   }
-  
+
   if(!(fabs(el.SCEta()) < 2.5)){
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
@@ -240,11 +241,13 @@ bool ElectronSelection::HNIsTight(KElectron el, bool m_debug=true){
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
   }
+
   
   if(!(fabs(el.dxy())< dxycut )) {
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail dxy Cut: " << el.dxy() <<endl;
   }
+
 
   return pass_selection;
   
@@ -255,6 +258,7 @@ void ElectronSelection::HNTightElectronSelection(std::vector<KElectron>& leptonC
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
 
   int iel(0);
+
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++, iel++){
     if(m_debug)  cout << "Electron (HNTightElectronSelection) # " << iel << endl;
     if(HNIsTight(*el,  m_debug)){
@@ -334,9 +338,9 @@ void ElectronSelection::TopLooseElectronSelection(std::vector<KElectron>& lepton
     LeptonRelIsoDR03 = el->PFRelIso03();
     LeptonRelIsoDR04 = el->PFRelIso04();
 
-    if((el->HasMatchedConvPhot())){
+    if((!el->HasMatchedConvPhot())){
       pass_selection = false;
-      if(m_debug)  cout << "HNLooseElectronSelection:Fail Conv Cut" <<endl;
+        if(m_debug)  cout << "HNLooseElectronSelection:Fail Conv Cut" <<endl;
     }
     
     if(!(el->dxy()< 0.04 )) {
@@ -391,9 +395,9 @@ void ElectronSelection::TopTightElectronSelection(std::vector<KElectron>& lepton
     //      if(m_debug)  cout << "HNTightElectronSelection:Fail ID Cut" <<endl;
     //}
 
-    if((el->HasMatchedConvPhot() )){
+    if((!el->HasMatchedConvPhot() )){
       pass_selection = false;
-      if(m_debug)  cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
+        if(m_debug)  cout << "HNTightElectronSelection:Fail Conv Cut" <<endl;
     }
     if(!(LeptonRelIsoDR03 <  0.1)){
       pass_selection = false;
@@ -451,7 +455,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
     /// extra cut to reduce conversions
     /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
-    if(apply_convcut && (el->HasMatchedConvPhot()) ) {
+    if(apply_convcut && (!el->HasMatchedConvPhot()) ) {
       pass_selection = false; 
       if(m_debug)cout << "Selection: Fail Conversion Cut" << endl;
     }
@@ -514,6 +518,9 @@ bool ElectronSelection::PassUserID(ID id,bool usetight, snu::KElectron el, float
   else if ( id == EGAMMA_MEDIUM  ) return  el.PassMedium();
   else if ( id == EGAMMA_LOOSE   ) return  el.PassLoose();
   else if ( id == EGAMMA_VETO    ) return  el.PassVeto();
+  else if ( id == EGAMMA_HNTIGHT   ) return  el.PassTight();
+  else if ( id == EGAMMA_HNLOOSE   ) return  PassUserID_FakeLoose2015( el, usetight, looseisocut, m_debug);
+  else if ( id == EGAMMA_HNVETO   ) return   PassHNVeto(el);
   else if ( id == EGAMMA_FAKELOOSE ) return PassUserID_FakeLoose2015( el, usetight, looseisocut, m_debug);
   else {
     cout << "Invalid ID set for electron selection" << endl;
@@ -522,6 +529,19 @@ bool ElectronSelection::PassUserID(ID id,bool usetight, snu::KElectron el, float
   
 }
 
+bool ElectronSelection::PassHNVeto(snu::KElectron el){
+  int id = el.SNUID();
+  if(id ==0) return false;
+  if(!(fabs(el.SCEta()) < 2.5)) return false;
+  
+  if((el.Pt() < 10.)) return false;
+  
+  if( el.PFRelIso03() > 0.6) return false;
+
+  //if(!(fabs(el.dxy())< 0.1 )) return false;
+  
+  return true;
+}
 
 bool ElectronSelection::PassUserID_FakeLoose2015 (snu::KElectron el, bool usetight,  float looseisocut, bool m_debug){
   
@@ -553,9 +573,9 @@ bool ElectronSelection::PassUserID_FakeLoose2015 (snu::KElectron el, bool usetig
   
   if((el.Pt() < 10.)) return false;
 
-  if( el.PFRelIso03() < looseisocut) return false;
+  if( el.PFRelIso03() > looseisocut) return false;
 
-  if(!(fabs(el.dxy())< 0.01 )) return false;
+  if(!(fabs(el.dxy())< 0.1 )) return false;
 
   return true;
 }

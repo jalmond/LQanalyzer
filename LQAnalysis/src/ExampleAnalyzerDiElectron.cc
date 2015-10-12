@@ -50,6 +50,10 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist_ee, "DiElectron");
+   MakeCleverHistograms(sighist_ee, "DiElectron_PRW");
+   MakeCleverHistograms(sighist_ee, "DiElectron_BJet");
+   MakeCleverHistograms(sighist_ee, "SSElectron");
+   MakeCleverHistograms(trilephist,"TriElectron");
 
    
    return;
@@ -61,72 +65,145 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
+  weight*= MCweight;
+
+  std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
+  FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
+  
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   FillCutFlow("NoCut", weight);
-  
+  FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
+
+
+  if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+  else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+
+
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   FillCutFlow("EventCut", weight);
+
   
   /// Trigger List 
   std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-  //  if(!PassTrigger(triggerslist, prescale)) return;
+  triggerslist.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+  // This trigger will be  Unprescaled till L = 7E33 (may be used for this whole year) 
+  // https://indico.cern.ch/event/370510/contribution/1/attachments/1161160/1671811/EleTriggers_Arun_28Sept_v1.pdf
+  if(!PassTrigger(triggerslist, prescale)) return;
   
+
   FillCutFlow("TriggerCut", weight);
   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
+  FillHist("Njets_passtrigger", jetColl_hn.size() ,weight, 0. , 5., 5);
+
   
-  
+  //ListTriggersAvailable(); // uncomment this line to list off available triggers in the same
+
+  // Trigger matching is done using KElectron::TriggerMatched(TString) which returns a bool
+
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
   FillCutFlow("VertexCut", weight);
+  /// Has Good Primary vertex:
+  /// if ( vtx.ndof() > 4 &&
+  //   ( (maxAbsZ <=0 ) || std::abs(vtx.z()) <= 24 ) &&
+  //( (maxd0 <=0 ) || std::abs(vtx.position().rho()) <= 2 ) &&
+  //!(vtx.isFake() ) ){
+
 
   /// Use the number of vertices in the event to check effect of pileup reweighting
   numberVertices = eventbase->GetEvent().nVertices();   
   
+  FillHist("Njets_vertex", jetColl_hn.size() ,weight, 0. , 5., 5);
+  //////////////////////////////////////////////////////
+  //////////// Select objetcs
+  //////////////////////////////////////////////////////
+
+  
+  // Get loose muons for veto: Can call  POGSoft/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight
+  std::vector<snu::KMuon> muonColl = GetMuons("HNLoose");  // loose selection
+  
+  /// Get tight jets : Can call NoLeptonVeto/Loose/Medium/Tight/HNJets
+  //std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
+  std::vector<snu::KJet> jetColl_nlv  = GetJets("NoLeptonVeto");
+  std::vector<snu::KJet> jetColl_loose  = GetJets("Loose");
+  
+  // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
+  std::vector<snu::KElectron> electronLooseColl        = GetElectrons("POGLoose");
+  std::vector<snu::KElectron> electronColl             = GetElectrons("POGTight");
+  
+  std::vector<snu::KElectron> electronHNLooseColl  = GetElectrons("HNLoose");
+  std::vector<snu::KElectron> electronHNVetoColl   = GetElectrons("HNVeto");
+  std::vector<snu::KElectron> electronHNTightColl   = GetElectrons("HNTight");
+  
+  FillHist("NJets_nlv" , jetColl_nlv.size(), weight, 0., 5., 5);
+  FillHist("NJets_loose" , jetColl_loose.size(), weight, 0., 5., 5);
+
+  FillHist("NElectrons_hnloose" ,  electronHNLooseColl.size(), weight, 0., 5., 5);
+  FillHist("NElectrons_hnveto" ,   electronHNVetoColl.size(), weight, 0., 5., 5);
+  FillHist("NElectrons_hntight" ,  electronHNTightColl.size(), weight, 0., 5., 5);
+  FillHist("NElectrons_pogloose" ,  electronLooseColl.size(), weight, 0., 5., 5);
+  FillHist("NElectrons_pogtight" ,  electronColl.size(), weight, 0., 5., 5);
+
+  
+  //FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
+  
+  int njet = jetColl_hn.size();
+  FillHist("GenWeight_NJet" , njet*MCweight + MCweight*0.1, 1., -6. , 6., 12);
+
+  
+
   /// Correct MC for pileup   
   
   float pileup_reweight (1.);
   if (!k_isdata) {
-    pileup_reweight = reweightPU->GetWeight(numberVertices); //*MCWeight;
+    /// Currently this is done using on the fly method: waiting for official method
+
+    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
+    // k_mcperiod is set depending on what data you are comparing to:
+    // k_mcperiod= 1 for period C only
+    // k_mcperiod = 2 for period C+D
+    
+    // k_mcperiod is set depending on data_lumi="" in your run script
   }
   
+
+  if(electronColl.size() ==2) {
+    if(electronColl.at(0).Pt() > 25. && electronColl.at(1).Pt() > 15. ){
+      FillHist("Njets_dilepton", jetColl_hn.size() ,weight, 0. , 5., 5);
+      FillCutFlow("DiEl_tight", weight);
+      /// Method of plotting single histogram
+      FillHist("zpeak_ee_noPUrw", GetZMass(electronColl), weight, 0., 200.,400);
+      FillHist("zpeak_ee", GetZMass(electronColl), weight*pileup_reweight, 0., 200.,400);
+      
+      /// Standard set of histograms for muons/jets/electrons.. with no corrections
+      FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
+      
+      /// Standard set of histograms for muons/jets/electrons.. with no corrections
+      FillCLHist(sighist_ee, "DiElectron_PRW", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+      
+      /// Count number of bjets (Medium WP in event)
+      int nbjet=0;
+      for(unsigned int i=0; i <jetColl_hn.size() ; i++){
+	if(jetColl_hn.at(i).CVSInclV2() > 0.89) nbjet++;
+      }
+      
+      /// OR use NBJet(jets) function
+      if(njet > 2 && NBJet(jetColl_hn) > 0)      FillCLHist(sighist_ee, "DiElectron_BJet", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+      
+      if(SameCharge(electronColl))  FillCLHist(sighist_ee, "SSElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+      
+    }
+  }
   
-  //////////////////////////////////////////////////////
-  //////////// Select objetcs
-  //////////////////////////////////////////////////////   
-  
-  std::vector<snu::KElectron> electrond_POGTightColl = GetElectrons("POGTight");
-  //  std::vector<snu::KElectron> electrond_POGTightColl = GetElectrons("POGTight", false, false );   pass bools to remove CF or Fake electrons in MC
-  std::vector<snu::KElectron> electron_HNTightColl = GetElectrons("HNTight");
-
-
-  std::vector<snu::KJet> jetColl = GetJets("Loose");
-
-  ///////////////////////////////////////////////////////////////////////////////////////////
-
-  std::vector<snu::KElectron> electronVetoColl =  GetElectrons("POGVeto"); // can also use HNVeto which is even looser
-
-  std::vector<snu::KMuon> muonTightColl = GetMuons("HNTight");
-
-  
-  std::vector<snu::KJet> jetColl_lepveto = GetJets("Tight");
-
-
-  int nbjet=0;
-   for(unsigned int i=0; i <jetColl_lepveto.size() ; i++){
-     if(jetColl_lepveto.at(i).CVSInclV2() > 0.89) nbjet++;
-   }
-   
-   ///// SOME STANDARD PLOTS /////
-   ////  Z-> ee              //////
-   if (Zcandidate(electrond_POGTightColl, 50.)){
-     
-     /// Fill Standard set of cuts for all objects with NO corrections    
-     FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electrond_POGTightColl,jetColl_lepveto, weight);
-     FillCutFlow("DiEl_tight",weight); 
-   }
     
-   
+  if(electronLooseColl.size() == 3) {
+    FillHist("MET", eventbase->GetEvent().NoHFMET() ,weight, 0. , 100., 20);
+    
+    if(eventbase->GetEvent().NoHFMET() > 30){
+      FillCLHist(trilephist, "TriElectron", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+    }
+  }
+
   
   return;
 }// End of execute event loop
@@ -146,7 +223,7 @@ void ExampleAnalyzerDiElectron::BeginCycle() throw( LQError ){
   Message("In begin Cycle", INFO);
   
   string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
 
   //
   //If you wish to output variables to output file use DeclareVariable

@@ -58,17 +58,31 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
   return;
   
 }
+void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl){
+  return JetHNSelection (jetColl, muonColl, electronColl, 20., 2.5, true, "Loose");
+} 
 
-
-void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
+void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, float ptcut, float etacut, bool pileupID, TString ID ) {
+  
   
   std::vector<KJet> pre_jetColl; 
   std::vector<KJet> alljets = k_lqevent.GetJets();
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-    //if ( (jit->Pt() >= 20.) && fabs(jit->Eta()) < 2.5   && jit->PassLooseID() && jit->PileupJetIDLoose())  pre_jetColl.push_back(*jit);
-    if ( (jit->Pt() >= 20.) && fabs(jit->Eta()) < 2.5   && jit->PassLooseID())  pre_jetColl.push_back(*jit);
     
+    bool pass_pileupID = jit->PileupJetIDLoose();
+    if(!pileupID) pass_pileupID = true; 
+    
+    if(ID.Contains("Loose")){
+      if ( (jit->Pt() >= ptcut) && fabs(jit->Eta()) < etacut   && jit->PassLooseID()&&pass_pileupID)  pre_jetColl.push_back(*jit);
+    }
+    else if(ID.Contains("TightLepVeto")){
+      if ( (jit->Pt() >= ptcut) && fabs(jit->Eta()) < etacut   && jit->PassTightLepVetoID()&&pass_pileupID)  pre_jetColl.push_back(*jit);
+    } 
+    else if(ID.Contains("Tight")){
+      if ( (jit->Pt() >= ptcut) && fabs(jit->Eta()) < etacut   && jit->PassTightID()&&pass_pileupID)  pre_jetColl.push_back(*jit);
+    } 
+    else {cout << "Jet ID " << ID << " not found" << endl; exit(EXIT_FAILURE);}
   }
   
 
