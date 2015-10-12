@@ -36,6 +36,7 @@ class JetSelection : public BaseSelection {
   void JetSelectionRealLeptonVeto(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
   void JetSelectionRealLeptonVetoV2(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
   void JetHNSelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl); 
+  void JetHNSelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, float ptcut, float etacut, bool pileupID, TString ID );
 
 };
 

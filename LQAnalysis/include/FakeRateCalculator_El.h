@@ -20,7 +20,6 @@ class FakeRateCalculator_El : public AnalyzerCore {
   
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
-  bool IsTight(snu::KElectron el,  double jetrho , double dxy, double biso, double eiso,  bool usetight);
 
 
   void GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets,std::vector<snu::KJet> alljets, TString tag, double w);
@@ -31,7 +30,7 @@ class FakeRateCalculator_El : public AnalyzerCore {
 
   
   void MakeMCPlots(TString label, snu::KElectron electron, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, double w);
-  float GetPrescale( std::vector<snu::KElectron> electrons, bool passlow, bool passhigh);
+  float GetPrescale( std::vector<snu::KElectron> electrons, bool passlow, bool passhigh, bool highest);
   bool  UseEvent(std::vector<snu::KElectron> electrons,  vector<snu::KJet> jets, float pcut,float precale_weight, float w);
   bool  UseEventAllMT(std::vector<snu::KElectron> electrons,  vector<snu::KJet> jets, float pcut,float precale_weight, float w);
 

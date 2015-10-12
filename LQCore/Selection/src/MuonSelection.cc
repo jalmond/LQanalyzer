@@ -331,10 +331,43 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   return pass_selection;
 }
 
-void MuonSelection::HNTightHighPtMuonSelection(std::vector<snu::KMuon>& leptonColl) {
+bool MuonSelection::POGID(KMuon muon, TString ID){
 
-  return;
+  bool pass_selection(true);
+
+  if(muon.Pt() == 0.) return false;
+
+  LeptonRelIso = (muon.RelIso04());
+
+
+  /// TIGHT MUON SELECTION
+  if(( muon.Pt() < 10. )) {
+    pass_selection = false;
+  }
+  if(!(fabs(muon.Eta()) < 2.4)) {
+    pass_selection =false;
+  }
+
+  if(!( LeptonRelIso < 0.12)) {
+    pass_selection = false;
+  }
+
+  if(ID.Contains("Loose")) {
+    if(! muon.IsLoose ())  pass_selection = false;
+  }
+  if(ID.Contains("Medium")) {
+    if(! muon.IsMedium ())  pass_selection = false;
+  }
+  if(ID.Contains("Tight")) {
+    if(! muon.IsTight ())  pass_selection = false;
+  }
+  if(ID.Contains("Soft")) {
+    if(! muon.IsSoft ())  pass_selection = false;
+  }
+
+  return pass_selection;
 }
+
 
 void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_debug) {
   
@@ -347,6 +380,22 @@ void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_
   
   return;
 }
+
+
+void MuonSelection::POGMuonSelection(std::vector<KMuon>& leptonColl, TString id) {
+
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
+
+    if(POGID(*muit, id)) leptonColl.push_back(*muit);
+  }
+
+  return;
+}
+
+
+
 
 
 ////////// PREDEFINED MUON SELECTIONS FOR TOP ANALYSIS
@@ -460,7 +509,7 @@ void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m
 bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
   
   
-  /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
+  /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonIdRun2
   bool passID(true);
   if (id == MUON_LOOSE) {
     if(!(mu.IsPF() == 1)) {

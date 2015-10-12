@@ -4,8 +4,7 @@ from functions import *
 
 version = "v7-4-2"
 sampledir = ["DoubleMuon", "DoubleEG", "SingleMuon", "MuonEG"]
-sampledir = ["DoubleEG", "SingleMuon", "MuonEG"]
-period=["periodC"]
+period=["periodC" , "periodD"]
 
 for i in sampledir:
    output=i
@@ -19,15 +18,15 @@ for i in sampledir:
          os.system("mkdir " + output + "/output/")
 
    for p in period:      
-      output = output + "/" + p
+      poutput = output + "/" + p
 
-      if not (os.path.exists(output)):
-         os.system("mkdir " + output)
-         os.system("mkdir " + output + "/output/")
+      if not (os.path.exists(poutput)):
+         os.system("mkdir " + poutput)
+         os.system("mkdir " + poutput + "/output/")
          
-      os.system("ls /data2/DATA/cattoflat/Data/"+ version+ "/" + output + " > " + output + "/list.txt" )
+      os.system("ls /data2/DATA/cattoflat/Data/"+ version+ "/" + poutput + " > " + poutput + "/list.txt" )
       
-      fr = open(output + "/list.txt" , 'r')
+      fr = open(poutput + "/list.txt" , 'r')
       counter=0
       for line in fr:
          if ".root" in line:
@@ -37,26 +36,26 @@ for i in sampledir:
       runscript= "SkimFlatCat.h"
       runscriptC="SkimFlatCat.C"
       for j in range(1,counter+1):
-         if not (os.path.exists(output+ "/" + str(j))):
-            os.system("mkdir " + output+ "/" + str(j))
+         if not (os.path.exists(poutput+ "/" + str(j))):
+            os.system("mkdir " + poutput+ "/" + str(j))
             
-         configfile=open(output+ "/"  + str(j) + "/" + runscript,'w')
-         configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/Data/"+ version+ "/" + output,output+ "/list.txt",j, output))
+         configfile=open(poutput+ "/"  + str(j) + "/" + runscript,'w')
+         configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/Data/"+ version+ "/" + poutput,poutput+ "/list.txt",j, poutput))
          configfile.close()
          
-         configfileC=open(output+ "/" + str(j) + "/" + runscriptC,'w')
-         configfileC.write(makeNtupleMakerC(output + "/" +  str(j),output+ "/list.txt", j))
+         configfileC=open(poutput+ "/" + str(j) + "/" + runscriptC,'w')
+         configfileC.write(makeNtupleMakerC(poutput + "/" +  str(j),poutput+ "/list.txt", j))
          configfileC.close()
       
-         os.system("root -l -q -b " +  output+ "/" + str(j) + "/SkimFlatCat.C &> " + output + "/" + str(j) + "/log.txt&" )
+         os.system("root -l -q -b " +  poutput+ "/" + str(j) + "/SkimFlatCat.C &> " + poutput + "/" + str(j) + "/log.txt&" )
       
 
       job_finised=False
       while not job_finised:
          time.sleep(20.)
-         os.system("ls " +  output+ "/output/ > " + output + "/checkoutput.txt")
+         os.system("ls " +  poutput+ "/output/ > " + poutput + "/checkoutput.txt")
          count=0
-         for line in open( output + "/checkoutput.txt", 'r'):
+         for line in open( poutput + "/checkoutput.txt", 'r'):
             if ".root" in line:
                count = count+1
 
@@ -70,11 +69,11 @@ for i in sampledir:
 
       if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + i)):
                   os.system("mkdir " + "/data2/DATA/cattoflat/skim/"+ version+ "/" + i)
-      if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + output)):
-         os.system("mkdir " + "/data2/DATA/cattoflat/skim/"+ version+ "/" + output)
+      if not (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + poutput)):
+         os.system("mkdir " + "/data2/DATA/cattoflat/skim/"+ version+ "/" + poutput)
 
-      print "Moving samples to /data2/DATA/cattoflat/skim/"+ version+ "/" + output    
-      os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/skim/"+ version+ "/" + output )
+      print "Moving samples to /data2/DATA/cattoflat/skim/"+ version+ "/" + poutput    
+      os.system("mv "  +  poutput+ "/output/*.root /data2/DATA/cattoflat/skim/"+ version+ "/" + poutput )
    
-      os.system("rm -r " + output)
+      os.system("rm -r " + poutput)
     

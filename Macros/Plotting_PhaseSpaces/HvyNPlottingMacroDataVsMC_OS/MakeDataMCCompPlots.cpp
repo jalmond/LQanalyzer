@@ -152,7 +152,7 @@ int MakePlots(string hist) {
 	/// Make data histogram
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
-	float ymin (0.001), ymax( 1000000.);
+	float ymin (0.00001), ymax( 100000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
 
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
@@ -848,6 +848,7 @@ void SetTitles(TH1* hist, string name){
   if(name.find("h_MT")!=string::npos) xtitle="M_{T} (GeV)";
   if(name.find("h_dphi_METe")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{el})";
   if(name.find("h_dphi_METm")!=string::npos) xtitle="#Delta (#phi_{E^{miss}_{T}} - #phi_{mu})";
+  if(name.find("h_NoHFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
 
   if(name.find("h_jet_emfra")!=string::npos) xtitle="Jet EMFrac";
   if(name.find("jet_el_ptratio")!=string::npos) xtitle="El p_{T}/ Jet p_{T}";
@@ -858,6 +859,7 @@ void SetTitles(TH1* hist, string name){
   if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV)";
   if(name.find("MuonD0")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
+  if(name.find("LeptonPt")!=string::npos)xtitle="Lepton p_{T} (GeV/c)";
   if(name.find("leadingLeptonPt")!=string::npos)xtitle="Leading lepton p_{T} (GeV/c)";
   if(name.find("secondLeptonPt")!=string::npos)xtitle="Second lepton p_{T} (GeV/c)";
   if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
@@ -873,8 +875,8 @@ void SetTitles(TH1* hist, string name){
   if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
-  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV/c^{2})";
+  if(name.find("lljjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
+  if(name.find("llmass")!=string::npos)xtitle="#mu#mu invariant mass (GeV/c^{2})";
   if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
   if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
 
@@ -969,15 +971,16 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   
   if(name.find("eemass")!=string::npos) yscale*=1.3;
   if(name.find("eta")!=string::npos) yscale*=2.5;
-  if(name.find("MET")!=string::npos) yscale*=1.2;
+  if(name.find("MET")!=string::npos) yscale*=10.2;
   if(name.find("e1jj")!=string::npos) yscale*=1.2;
+  if(name.find("Nje")!=string::npos) yscale*=10.;
   if(name.find("l2jj")!=string::npos) yscale*=1.3;
   if(name.find("charge")!=string::npos) yscale*=1.5;
   if(name.find("deltaR")!=string::npos) yscale*=1.5;
   if(name.find("bTag")!=string::npos) yscale*=2.5;
   if(name.find("emujj")!=string::npos) yscale*=1.3;
   if(name.find("dijetmass")!=string::npos) yscale*=1.5;
-  if(name.find("leadingLeptonPt")!=string::npos) yscale*=1.3;
+  if(name.find("LeptonPt")!=string::npos) yscale*=0.7;
   if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
   
   float max_data = h_data->GetMaximum()*yscale;
@@ -1415,7 +1418,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   label.SetNDC();
   label.SetTextColor(1);
   //  //#  label.DrawLatex(0.6 ,0.34,"High Mass Region");
-  label.DrawLatex(0.6 ,0.4,"Nvtx reweighted");
+  //  label.DrawLatex(0.6 ,0.4,"Nvtx reweighted");
   
 
   //return canvas;  
@@ -1806,7 +1809,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
 
   pad->cd();
 
-  writeExtraText=true;
+  //  writeExtraText=true;
   float posX_;
   if( iPosX%10<=1 )
     {

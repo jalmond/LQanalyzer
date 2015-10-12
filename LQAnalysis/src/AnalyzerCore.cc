@@ -79,14 +79,14 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
   if(label.Contains("NoLeptonVeto")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->SetEta(5.);
     eventbase->GetJetSel()->Selection(jetColl);
   }
   else  if(label.Contains("Loose")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
     eventbase->GetJetSel()->SetEta(5.);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
+    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("HNVeto"), GetElectrons(false,false, "HNVeto"));
   }
   
   
@@ -94,16 +94,17 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
     eventbase->GetJetSel()->SetEta(2.8);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
+    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("HNVeto"), GetElectrons(false,false, "HNVeto"));
   }
   else  if(label.Contains("Tight")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("veto"), GetElectrons(false, false, "veto"));
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("HNVeto"), GetElectrons(false, false, "HNVeto"), 20., 2.5, false, label );
   }
   else if(label.Contains("HNJets")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("HNTight"), GetElectrons(false, false, "POGTight"));
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("NoCut"), GetElectrons("HNVeto"), 20., 2.5, false, "Loose");
     
   }
-  
+  else {cout << "Jet collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
+    
   return jetColl;
   
 }
@@ -123,9 +124,15 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label, bool keepfakes){
     return  muonColl;
   }
 
-
+  if(label.Contains("POG")){
+    if(label.Contains("Loose")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Loose");
+    else if(label.Contains("Medium")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Medium");
+    else if(label.Contains("Tight")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Tight");
+    else if(label.Contains("Soft")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Soft");
+    else {cout << "Muon collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
+  }
   
-  if(label.Contains("HNVeto")){
+  else if(label.Contains("HNVeto")){
     // pt > 10 ; eta < 2.4 ; reliso(03) < 0.6 ; chi2 < 10 ; dZ < 100; dxy < 10; PF; global || tracker
     eventbase->GetMuonSel()->HNVetoMuonSelection(muonColl);
     return  GetTruePrompt(muonColl, keepfakes);
@@ -147,7 +154,8 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label, bool keepfakes){
   }
   
   else {
-    eventbase->GetMuonSel()->Selection(muonColl);
+    cout << "GetMuons:: label " << label << " does not exist: filling vector with all muons with no cuts applied" << endl;
+    exit(EXIT_FAILURE);
   }
 
   return  GetTruePrompt(muonColl, keepfakes);
@@ -170,16 +178,17 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     icoll++;
 
     if(label.Contains("Veto")) eventbase->GetElectronSel()->PogID(electronColl, "Veto");
-    if(label.Contains("Loose")) eventbase->GetElectronSel()->PogID(electronColl, "Loose");
-    if(label.Contains("Medium")) eventbase->GetElectronSel()->PogID(electronColl, "Medium");
-    if(label.Contains("Tight")) eventbase->GetElectronSel()->PogID(electronColl, "Tight");
+    else if(label.Contains("Loose")) eventbase->GetElectronSel()->PogID(electronColl, "Loose");
+    else if(label.Contains("Medium")) eventbase->GetElectronSel()->PogID(electronColl, "Medium");
+    else if(label.Contains("Tight")) eventbase->GetElectronSel()->PogID(electronColl, "Tight");
+    else {cout << "Electron collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
   }
   else if(label.Contains("HNTight")){
     icoll++;
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
     if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronColl);
-    else eventbase->GetElectronSel()->HNTightElectronSelection(_electronColl, keepfake);
+    else eventbase->GetElectronSel()->HNTightElectronSelection(_electronColl, false);
 
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
@@ -190,9 +199,6 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   // Veto cut
   else if(label.Contains("HNVeto")){    icoll++; eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);}
   
-  /// Standard pog ids or susy analysis id
-  
-  
   
   else if(label.Contains("NoCutPtEta")){ 
     icoll++;
@@ -201,7 +207,10 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     eventbase->GetElectronSel()->Selection(electronColl);
   }
   else if(label.Contains("NoCut")){     icoll++;eventbase->GetElectronSel()->Selection(electronColl);}
-  else {     icoll++;eventbase->GetElectronSel()->Selection(electronColl);}
+  else {
+    cout << "GetElectrons:: label " << label << " does not exist: filling vector with all muons with no cuts applied" << endl;
+    cout << "Electron collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
+
 
 
   return  GetTruePrompt(electronColl, keepcf, keepfake); 

@@ -54,8 +54,11 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
   
   Fill("h_Nmuons" ,muons.size(), weight);
   Fill("h_Nelectrons" ,electrons.size(), weight);
+  if(! (muons.size()==3 || electrons.size()==3 || (electrons.size() == 2 && muons.size() ==1) || (electrons.size() == 1 && muons.size() ==2) )) return;
+  if(electrons.size() == 3 && muons.size() > 0) return;
+  if(electrons.size() > 0 && muons.size() ==3) return;
 
-  
+
   if(electrons.size()==2){
     if(electrons[0].Charge() != electrons[1].Charge())   Fill("h_osllmass", (electrons[0]+electrons[1]).M(),weight);
   }
@@ -78,23 +81,48 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
     if(muons[1].Charge() != muons[2].Charge())    Fill("h_osllmass", (muons[1]+muons[2]).M(),weight);
     int imu=0;
     for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++, imu++){
-      Fill("h_Lepton_Pt", muit->Pt(),weight);
-      Fill("h_Lepton_eta",muit->Eta(),weight);
+      Fill("h_LeptonPt", muit->Pt(),weight);
+      Fill("h_LeptonEta",muit->Eta(),weight);
       if(imu ==0) {
-	Fill("h_firstLepton_Pt", muit->Pt(),weight);
-	Fill("h_firstLepton_eta",muit->Eta(),weight);
+	Fill("h_leadingLeptonPt", muit->Pt(),weight);
+	Fill("h_leadingLeptonEta",muit->Eta(),weight);
       }
       if(imu ==1) {
-        Fill("h_secondLepton_Pt", muit->Pt(),weight);
-        Fill("h_secondLepton_eta",muit->Eta(),weight);
+        Fill("h_secondLeptonPt", muit->Pt(),weight);
+        Fill("h_secondLeptonEta",muit->Eta(),weight);
       }
       if(imu ==2) {
-        Fill("h_thirdLepton_Pt", muit->Pt(),weight);
-        Fill("h_thirdLepton_eta",muit->Eta(),weight);
+        Fill("h_thirdLeptonPt", muit->Pt(),weight);
+        Fill("h_thirdLeptonEta",muit->Eta(),weight);
       }
       
     }   
   }
+
+  if(electrons.size()==3){
+    if(electrons[0].Charge() != electrons[1].Charge())    Fill("h_osllmass", (electrons[0]+electrons[1]).M(),weight);
+    if(electrons[0].Charge() != electrons[2].Charge())    Fill("h_osllmass", (electrons[0]+electrons[2]).M(),weight);
+    if(electrons[1].Charge() != electrons[2].Charge())    Fill("h_osllmass", (electrons[1]+electrons[2]).M(),weight);
+    int imu=0;
+    for(std::vector<snu::KElectron>::iterator muit = electrons.begin(); muit != electrons.end(); muit++, imu++){
+      Fill("h_LeptonPt", muit->Pt(),weight);
+      Fill("h_LeptonEta",muit->Eta(),weight);
+      if(imu ==0) {
+        Fill("h_leadingLeptonPt", muit->Pt(),weight);
+        Fill("h_leadingLeptonEta",muit->Eta(),weight);
+      }
+      if(imu ==1) {
+        Fill("h_secondLeptonPt", muit->Pt(),weight);
+        Fill("h_secondLeptonEta",muit->Eta(),weight);
+      }
+      if(imu ==2) {
+        Fill("h_thirdLeptonPt", muit->Pt(),weight);
+	Fill("h_thirdLeptonEta",muit->Eta(),weight);
+      }
+
+    }
+  }
+
 
  
   Fill("h_Njets",jets.size(), weight);
