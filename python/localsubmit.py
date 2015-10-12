@@ -443,7 +443,7 @@ check_array = []
 # Setup work area on var tmp
 ###################################################
 
-tmpwork = "/data1/"+ getpass.getuser()
+tmpwork = "/data2/"+ getpass.getuser()
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
     
