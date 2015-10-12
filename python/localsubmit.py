@@ -443,11 +443,11 @@ check_array = []
 # Setup work area on var tmp
 ###################################################
 
-tmpwork = "/data2/"+ getpass.getuser()
+tmpwork = "/data2/CAT_SKTreeOutput/"+ getpass.getuser()
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
     
-workspace = "/data1/"+ getpass.getuser() + "/CAT_SKTreeOutput/"
+workspace = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() 
 
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
