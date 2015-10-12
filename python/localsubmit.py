@@ -165,7 +165,7 @@ if not cycle == "SKTreeMaker":
 ############################################################
 
 if os.path.exists("job_output"):
-    os/system("rm -r job_output/")
+    os.system("rm -r job_output/")
     
 if not os.path.exists("job_output"):
     os.system("mkdir job_output/")

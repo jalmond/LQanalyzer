@@ -7,7 +7,7 @@ runDoubleMuon=true
 
 ## RUN PARAMETERS
 job_cycle="ExampleAnalyzerDiMuon"
-job_data_lumi="ALL"   ###  "C" = period C only   "ALL"  = period C+D
+job_data_lumi="C"   ###  "C" = period C only   "ALL"  = period C+D
 job_stream="muon" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset 
 job_skinput="True" 
 
