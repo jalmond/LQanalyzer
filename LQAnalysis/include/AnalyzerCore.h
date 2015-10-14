@@ -47,13 +47,14 @@ class AnalyzerCore : public LQCycleBase {
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
 
 
+
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   double TriggerScaleFactor( vector<snu::KMuon> mu);;
   double TriggerScaleFactorEMu();
   float GetZMass(std::vector<snu::KMuon> muons);
   float GetZMass(std::vector<snu::KElectron> electrons);
 
-  double ElectronScaleFactor( double eta, double pt, bool tight, int sys=0);
+  double ElectronScaleFactor( double eta, double pt, TString ID, int sys=0);
   double MuonScaleFactor(double eta, double pt, int sys=0);
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);

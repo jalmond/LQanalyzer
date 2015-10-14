@@ -322,11 +322,207 @@ double AnalyzerCore::TriggerScaleFactorEMu( ){
 
 
 
-double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_electron , int sys){
-  if(tight_electron){
-    if(fabs(eta) > 2.5) return 1.;
-    if(pt< 10) return 1.;
+double AnalyzerCore::ElectronScaleFactor( double eta, double pt, TString ID , int sys){
+
+  double sf=1.;
+  if(ID.Contains("POG")){
+    if(ID.Contains("Veto")){
+      
+      if(eta < -1.566 ) {
+	if( pt < 20.) sf = 1.02;
+	else if( pt < 30.) sf = 0.99;
+	else if( pt < 40.) sf = 1.00;
+	else if( pt < 50.) sf = 1.01;
+	else sf = 0.99;
+      }
+      else  if(eta < -1.4442) {
+	if( pt < 20.) sf = 0.77;
+        else if( pt < 30.) sf = 0.99;
+        else if( pt < 40.) sf = 1.00;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 0.93;
+      }
+      else  if(eta < -0.8) {
+	if( pt < 20.) sf = 1.05;
+	else if( pt < 30.) sf = 0.93;
+	else if( pt < 40.) sf = 0.99;
+	else if( pt < 50.) sf = 0.99;
+	else sf = 0.99;
+      }
+      else  if(eta < 0.0) {
+	if( pt < 20.) sf = 0.98;
+        else if( pt < 30.) sf = 0.96;
+        else if( pt < 40.) sf = 0.99;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 1.00;
+      }
+
+      else  if(eta < 0.8) {
+	if( pt < 20.) sf = 1.02;
+        else if( pt < 30.) sf = 0.98;
+        else if( pt < 40.) sf = 0.99;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 0.99;
+      }
+
+      else  if(eta < 1.4442) {
+	if( pt < 20.) sf = 1.11;
+        else if( pt < 30.) sf = 0.96;
+        else if( pt < 40.) sf = 0.99;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 0.99;
+      }
+
+      else  if(eta < 1.566) {
+	if( pt < 20.) sf = 0.95;
+        else if( pt < 30.) sf = 0.99;
+        else if( pt < 40.) sf = 0.99;
+        else if( pt < 50.) sf = 1.00;
+        else sf = 0.93;
+      }
+
+      else  if(eta < 2.5) {
+	if( pt < 20.) sf = 1.09;
+        else if( pt < 30.) sf = 0.95;
+        else if( pt < 40.) sf = 1.00;
+        else if( pt < 50.) sf = 1.00;
+        else sf = 1.01;
+      }
+    }
+    else  if(ID.Contains("Loose")){
+
+      if(eta < -1.566 ) {
+        if( pt < 20.) sf = 1.08;
+        else if( pt < 30.) sf = 0.98;
+        else if( pt < 40.) sf = 0.99;
+        else if( pt < 50.) sf = 1.00;
+        else sf = 0.99;
+      }
+      else  if(eta < -1.4442) {
+        if( pt < 20.) sf = 0.83;
+        else if( pt < 30.) sf = 1.01;
+        else if( pt < 40.) sf = 1.01;
+        else if( pt < 50.) sf = 0.97;
+        else sf = 0.96;
+      }
+      else  if(eta < -0.8) {
+        if( pt < 20.) sf = 1.01;
+        else if( pt < 30.) sf = 0.93;
+        else if( pt < 40.) sf = 0.99;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 0.97;
+      }
+      else  if(eta < 0.0) {
+        if( pt < 20.) sf = 0.98;
+        else if( pt < 30.) sf = 0.97;
+        else if( pt < 40.) sf = 0.97;
+        else if( pt < 50.) sf = 0.98;
+        else sf = 0.99;
+      }
+
+      else  if(eta < 0.8) {
+        if( pt < 20.) sf = 1.09;
+        else if( pt < 30.) sf = 0.97;
+        else if( pt < 40.) sf = 0.98;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 1.00;
+      }
+
+      else  if(eta < 1.4442) {
+        if( pt < 20.) sf = 1.12;
+        else if( pt < 30.) sf = 0.97;
+        else if( pt < 40.) sf = 0.97;
+        else if( pt < 50.) sf = 0.98;
+        else sf = 1.00;
+      }
+
+      else  if(eta < 1.566) {
+        if( pt < 20.) sf = 1.00;
+        else if( pt < 30.) sf = 0.97;
+        else if( pt < 40.) sf = 0.98;
+        else if( pt < 50.) sf = 1.00;
+        else sf = 0.91;
+      }
+
+      else  if(eta < 2.5) {
+        if( pt < 20.) sf = 1.07;
+        else if( pt < 30.) sf = 0.94;
+        else if( pt < 40.) sf = 1.00;
+        else if( pt < 50.) sf = 1.00;
+        else sf = 1.01;
+      }
+    }
+    else  if(ID.Contains("Tight")){
+
+      if(eta < -1.566 ) {
+        if( pt < 20.) sf = 1.05;
+        else if( pt < 30.) sf = 0.98;
+        else if( pt < 40.) sf = 0.97;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 0.98;
+      }
+      else  if(eta < -1.4442) {
+        if( pt < 20.) sf = 0.95;
+        else if( pt < 30.) sf = 1.04;
+        else if( pt < 40.) sf = 1.01;
+        else if( pt < 50.) sf = 0.94;
+        else sf = 0.92;
+      }
+      else  if(eta < -0.8) {
+        if( pt < 20.) sf = 1.02;
+        else if( pt < 30.) sf = 0.91;
+        else if( pt < 40.) sf = 0.97;
+        else if( pt < 50.) sf = 0.98;
+        else sf = 0.96;
+      }
+      else  if(eta < 0.0) {
+        if( pt < 20.) sf = 1.01;
+        else if( pt < 30.) sf = 0.95;
+        else if( pt < 40.) sf = 0.95;
+        else if( pt < 50.) sf = 0.97;
+        else sf = 0.97;
+      }
+
+      else  if(eta < 0.8) {
+        if( pt < 20.) sf = 1.01;
+        else if( pt < 30.) sf = 0.99;
+        else if( pt < 40.) sf = 0.97;
+        else if( pt < 50.) sf = 0.97;
+        else sf = 0.99;
+      }
+
+      else  if(eta < 1.4442) {
+        if( pt < 20.) sf = 1.16;
+        else if( pt < 30.) sf = 0.99;
+        else if( pt < 40.) sf = 0.95;
+        else if( pt < 50.) sf = 0.98;
+        else sf = 0.97;
+      }
+
+      else  if(eta < 1.566) {
+        if( pt < 20.) sf = 0.99;
+        else if( pt < 30.) sf = 0.97;
+        else if( pt < 40.) sf = 0.98;
+        else if( pt < 50.) sf = 0.96;
+        else sf = 1.04;
+      }
+
+      else  if(eta < 2.5) {
+        if( pt < 20.) sf = 1.06;
+        else if( pt < 30.) sf = 0.95;
+        else if( pt < 40.) sf = 0.96;
+        else if( pt < 50.) sf = 0.99;
+        else sf = 0.99;
+      }
+    }
+
+    return sf;
+    // https://indico.cern.ch/event/370511/contribution/3/attachments/1168717/1687113/tnP_EGM_Oct_12.pdf
   }
+  
+  if(fabs(eta) > 2.5) return 1.;
+  if(pt< 10) return 1.;
+  
   if(sys==0) return 1.;
   return 1.;
 }
