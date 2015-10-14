@@ -73,7 +73,7 @@ then
 
     
     declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
-     declare -a input_samples=("singletop_t")
+
 
     source submit.sh $1
 fi
