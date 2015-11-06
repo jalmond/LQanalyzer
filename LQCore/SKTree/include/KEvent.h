@@ -87,7 +87,9 @@ namespace snu {
 
     /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
-				   
+    void SetPUWeight(double puweight);
+    void SetPUWeightPSigma(double puweight);
+    void SetPUWeightMSigma(double puweight);
     
     //// Functions to call in analysis code/selection code
     
@@ -136,7 +138,7 @@ namespace snu {
     inline Double_t VertexZ() const {return k_vertexZ;}
     inline Double_t VertexNDOF() const {return k_vertexNDOF;}
 
-
+    
     
     /// MET filters
     inline Bool_t   PassCSCHaloFilterTight() const {return   k_passCSCHaloFilterTight;}
@@ -146,7 +148,10 @@ namespace snu {
 
     //Pileup reweighting
     inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
-    
+    inline Double_t PileUpWeight() const {return k_pu_weight;}
+    inline Double_t PileUpWeightUp() const {return k_pu_p_weight;}
+    inline Double_t PileUpWeightDown() const {return k_pu_m_weight;}
+
     inline Double_t LHEWeight() const{return k_lheweight;}
     inline Int_t Id1() const {return k_pdf_id1;}
     inline Int_t Id2() const {return k_pdf_id2;}
@@ -172,10 +177,10 @@ namespace snu {
 
     Bool_t k_isData, k_isgoodevent;
     Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter;
-    Double_t  k_PileUpInteractionsTrue;
+    Double_t  k_PileUpInteractionsTrue, k_pu_weight, k_pu_p_weight, k_pu_m_weight;
     
     
-    ClassDef(KEvent,16)
+    ClassDef(KEvent,17)
   }; 
   
 }//namespace snu

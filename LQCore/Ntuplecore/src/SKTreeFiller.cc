@@ -92,18 +92,21 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPFSumET( met_sumet->at(0));
   kevent.SetPFMETphi( met_phi->at(0));
   
-  kevent.SetPuppiMET( metPuppi_pt->at(0));
-  kevent.SetPuppiSumET( metPuppi_sumet->at(0));
-  kevent.SetPuppiMETphi( metPuppi_phi->at(0));
-  
-  kevent.SetNoHFMET( metNoHF_pt->at(0));
-  kevent.SetNoHFSumET( metNoHF_sumet->at(0));
-  kevent.SetNoHFMETphi( metNoHF_phi->at(0));
-
-  kevent.SetPfMvaMET( metPfMva_pt->at(0));
-  kevent.SetPfMvaSumET( metPfMva_sumet->at(0));
-  kevent.SetPfMvaMETphi( metPfMva_phi->at(0));
-
+  if(metPuppi_pt->at(0)){
+    kevent.SetPuppiMET( metPuppi_pt->at(0));
+    kevent.SetPuppiSumET( metPuppi_sumet->at(0));
+    kevent.SetPuppiMETphi( metPuppi_phi->at(0));
+  }
+  if(metNoHF_pt->at(0)){
+    kevent.SetNoHFMET( metNoHF_pt->at(0));
+    kevent.SetNoHFSumET( metNoHF_sumet->at(0));
+    kevent.SetNoHFMETphi( metNoHF_phi->at(0));
+  }
+  if(metPfMva_pt->at(0)){
+    kevent.SetPfMvaMET( metPfMva_pt->at(0));
+    kevent.SetPfMvaSumET( metPfMva_sumet->at(0));
+    kevent.SetPfMvaMETphi( metPfMva_phi->at(0));
+  }
   
 
   /// Filling event variables
@@ -119,9 +122,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   
-  //  kevent.SetPUWeight(puWeight);
-  //kevent.SetPUWeightPSigma(puWeightDn);
-  //kevent.SetPUWeightMSigma(puWeightUp);
+  kevent.SetPUWeight(puWeight);
+  kevent.SetPUWeightPSigma(puWeightDn);
+  kevent.SetPUWeightMSigma(puWeightUp);
 
   kevent.SetGenId1(genWeight_id1);
   kevent.SetGenId2(genWeight_id2);
@@ -200,7 +203,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
 
     /// set Charge variables
-    el.SetCharge(int(electrons_q->at(iel)));
+    el.SetCharge(electrons_q->at(iel));
     el.SetGsfCtfScPixCharge(electrons_isGsfCtfScPixChargeConsistent->at(iel));
     
     
@@ -240,7 +243,6 @@ void SKTreeFiller::ERRORMessage(TString comment){
 
 
 std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
-
 
   std::vector<KGenJet> genjets;
   if(!LQinput){
@@ -285,23 +287,23 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jet.SetJetPassTightID(jets_isTight->at(ijet));
     jet.SetJetPassTightLepVetoID(jets_isTightLepVetoJetID->at(ijet));
     
-    jet.SetJetPileupIDMVA(jets_isPFId->at(ijet));
+    jet.SetJetPileupIDMVA(jets_PileupJetId->at(ijet));
 
-    if(jets_isPFId){ 
+    if(jets_PileupJetId){ 
       if(std::abs(jets_eta->at(ijet)) < 2.6){
-	if(jets_isPFId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
+	if(jets_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
 	else jet.SetJetPileupIDLooseWP(false);
-	if(jets_isPFId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
+	if(jets_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
 	else jet.SetJetPileupIDMediumWP(false);
-	if(jets_isPFId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
+	if(jets_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
 	else jet.SetJetPileupIDTightWP(false);
       }
       else{
-	if(jets_isPFId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
+	if(jets_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
         else jet.SetJetPileupIDLooseWP(false);
-        if(jets_isPFId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
+        if(jets_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
 	else jet.SetJetPileupIDMediumWP(false);
-        if(jets_isPFId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
+        if(jets_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
 	else jet.SetJetPileupIDTightWP(false);
       }
     }
@@ -375,7 +377,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     
     muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
-    muon.SetCharge(int(muon_q->at(ilep)));
+    muon.SetCharge(muon_q->at(ilep));
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
  

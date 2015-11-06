@@ -226,7 +226,7 @@ void Data::Reset(){
   jets_chargedEmEnergyFraction = 0;
   jets_energy = 0;
   jets_eta = 0;
-  jets_isPFId = 0;
+  jets_PileupJetId = 0;
   jets_m = 0;
   jets_phi = 0;
   jets_pt = 0;
@@ -508,7 +508,7 @@ void Data::ConnectPFJets(){
   ConnectVariable("jets_eta",jets_eta,b_jets_eta);
   ConnectVariable("jets_hadronFlavour",jets_hadronFlavour,b_jets_hadronFlavour);
   ConnectVariable("jets_isLoose",jets_isLoose,b_jets_isLoose);
-  ConnectVariable("jets_isPFId",jets_isPFId, b_jets_isPFId);
+  ConnectVariable("jets_PileupJetId",jets_PileupJetId, b_jets_PileupJetId);
 
   ConnectVariable("jets_isTight",jets_isTight,b_jets_isTight);
   ConnectVariable("jets_isTightLepVetoJetID",jets_isTightLepVetoJetID,b_jets_isTightLepVetoJetID);

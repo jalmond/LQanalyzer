@@ -172,7 +172,7 @@ public :
    std::vector<double>  *electrons_pt;
    std::vector<double>  *electrons_puChIso03;
    std::vector<double>  *electrons_puChIso04;
-   std::vector<double>  *electrons_q;
+   std::vector<int>  *electrons_q;
    std::vector<double>  *electrons_relIso03;
    std::vector<double>  *electrons_relIso04;
    std::vector<double>  *electrons_scEta;
@@ -185,7 +185,7 @@ public :
    std::vector<double>  *jets_chargedEmEnergyFraction;
    std::vector<double>  *jets_energy;
    std::vector<double>  *jets_eta;
-   std::vector<double>  *jets_isPFId;
+   std::vector<double>  *jets_PileupJetId;
    std::vector<double>  *jets_m;
    std::vector<double>  *jets_phi;
    std::vector<double>  *jets_pt;
@@ -227,7 +227,7 @@ public :
    std::vector<double>  *muon_normchi;
    std::vector<double>  *muon_phi;
    std::vector<double>  *muon_pt;
-   std::vector<double>  *muon_q;
+   std::vector<int>  *muon_q;
    std::vector<double>  *muon_relIso03;
    std::vector<double>  *muon_relIso04;
    std::vector<double>  *muon_shiftedEdown;
@@ -359,7 +359,7 @@ public :
 
    TBranch        *b_jets_energy;   //!                                                                                                                                                                                                                                      
    TBranch        *b_jets_eta;   //!                                                                                                                                                                                                                                         
-   TBranch        *b_jets_isPFId;   //!                                                                                                                                                                                                                                      
+   TBranch        *b_jets_PileupJetId;   //!                                                                                                                                                                                                                                      
    TBranch        *b_jets_m;   //!                                                                                                                                                                                                                                           
    TBranch        *b_jets_phi;   //!                                                                                                                                                                                                                                         
    TBranch        *b_jets_pt;   //!                                                                                                                                                                                                                                          

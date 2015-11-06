@@ -51,7 +51,10 @@ KEvent::KEvent() :
   k_passCSCHaloFilterTight(false),
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
   k_passHBHENoiseFilter(false),
-  k_PileUpInteractionsTrue(0.)
+  k_PileUpInteractionsTrue(0.),
+  k_pu_weight(0.),
+  k_pu_p_weight(0.),
+  k_pu_m_weight(0.)
 {
 
 }
@@ -99,7 +102,10 @@ KEvent::KEvent(const KEvent& ev) :
   k_passCSCHaloFilterTight(ev.k_passCSCHaloFilterTight),
   k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
-  k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue)
+  k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue),
+  k_pu_weight(ev.k_pu_weight),
+  k_pu_p_weight(ev.k_pu_p_weight),
+  k_pu_m_weight(ev.k_pu_m_weight)
 {
 }
 
@@ -151,6 +157,9 @@ void KEvent::Reset()
   k_passEcalDeadCellTriggerPrimitiveFilter= false;
   k_passHBHENoiseFilter= false;
   k_PileUpInteractionsTrue = 0.;
+  k_pu_weight = 0.;
+  k_pu_p_weight=0.;
+  k_pu_m_weight = 0.;
 
 
 }
@@ -201,6 +210,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
+      k_pu_weight = p.PileUpWeight();
+      k_pu_p_weight= p.PileUpWeightUp();
+      k_pu_m_weight= p.PileUpWeightDown();
     }
     
     return *this;
@@ -228,6 +240,20 @@ void KEvent::SetPassHBHENoiseFilter(bool pass){
 void KEvent::SetPileUpInteractionsTrue(double npu){
   k_PileUpInteractionsTrue = npu;
 }
+
+void KEvent::SetPUWeight(double puw){
+  k_pu_weight = puw;
+}
+
+void KEvent::SetPUWeightMSigma(double puw){
+  k_pu_m_weight = puw;
+}
+
+void KEvent::SetPUWeightPSigma(double puw){
+  k_pu_p_weight = puw;
+}
+
+
 
 void KEvent::SetWeight(double mcweight){
   k_mcweight = mcweight;
