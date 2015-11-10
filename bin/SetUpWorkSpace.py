@@ -1,6 +1,6 @@
-import os
+import os,getpass
 from GetAnalysisRootFiles import *
-
+from CleanUp import *
 
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
 
@@ -21,7 +21,14 @@ if not LQANALYZER_DIR == "None" :
 		os.system("mkdir " + outfiledir)
 		print "Making data/output directory in $LQANALYZER_DIR"
 
-		
+
+	EightTeVdataOne="/data1/" + getpass.getuser() + "/LQ_SKTreeOutput/"
+	EightTeVdataTwo="/data2/" + getpass.getuser() + "/LQ_SKTreeOutput/"
+	 
+	CleanUpLogs("/data1/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+	CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+	CleanUpLogs(EightTeVdataOne)
+	CleanUpLogs(EightTeVdataTwo)	
 	GetFiles(rootfiledir)
 	
 else:
