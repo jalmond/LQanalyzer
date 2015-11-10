@@ -89,7 +89,6 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) {
-    cout << "Throwing away event that has two tight muons: " << endl;
     throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   }
   for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){

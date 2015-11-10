@@ -240,10 +240,9 @@ public :
    std::vector<double>  *slimmedGenJets_m;
    std::vector<double>  *slimmedGenJets_phi;
    std::vector<double>  *slimmedGenJets_pt;
-   std::vector<double>  *vertices_ndof;
-   std::vector<double>  *vertices_x;
-   std::vector<double>  *vertices_y;
-   std::vector<double>  *vertices_z;
+   std::vector<double>  *vertex_X;
+   std::vector<double>  *vertex_Y;
+   std::vector<double>  *vertex_Z;
    std::vector<bool>    *electrons_electronID_loose;
    std::vector<bool>    *electrons_electronID_medium;
    std::vector<bool>    *electrons_electronID_tight;
@@ -414,10 +413,9 @@ public :
    TBranch        *b_slimmedGenJets_m;   //!                                                                                                                                                                                                                                 
    TBranch        *b_slimmedGenJets_phi;   //!                                                                                                                                                                                                                               
    TBranch        *b_slimmedGenJets_pt;   //!                                                                                                                                                                                                                                
-   TBranch        *b_vertices_ndof;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_vertices_x;   //!                                                                                                                                                                                                                                       
-   TBranch        *b_vertices_y;   //!                                                                                                                                                                                                                                       
-   TBranch        *b_vertices_z;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_vertex_X;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_vertex_Y;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_vertex_Z;   //!                                                                                                                                                                                                                                       
    TBranch        *b_electrons_electronID_loose;   //!                                                                                                                                                                                                                       
    TBranch        *b_electrons_electronID_medium;   //!          
    TBranch        *b_electrons_electronID_tight;   //!                                                                                                                                                                                                                       

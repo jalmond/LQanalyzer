@@ -24,6 +24,8 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
     ktrigger = *k_inputtrigger;
     return ktrigger;
   }
+  m_logger << DEBUG << "Filling trigger Info" << LQLogger::endmsg;
+
 
   std::vector<std::string> vHLTInsideDatasetTriggerNames;
   std::vector<bool> vHLTInsideDatasetTriggerDecisions;
@@ -88,31 +90,45 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   /// MET variables
   // PF met
 
+  m_logger << DEBUG << "Filling Event Info" << LQLogger::endmsg;
+  
   kevent.SetPFMET( met_pt->at(0));
   kevent.SetPFSumET( met_sumet->at(0));
   kevent.SetPFMETphi( met_phi->at(0));
   
-  if(metPuppi_pt->at(0)){
+  m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
+  if(metPuppi_pt){
     kevent.SetPuppiMET( metPuppi_pt->at(0));
+    m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
     kevent.SetPuppiSumET( metPuppi_sumet->at(0));
+  m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
     kevent.SetPuppiMETphi( metPuppi_phi->at(0));
+    m_logger << DEBUG << "Filling Event Info [5]" << LQLogger::endmsg;
   }
-  if(metNoHF_pt->at(0)){
+  if(metNoHF_pt->size() > 0){
+    m_logger << DEBUG << "Filling Event Info [6]"  << metNoHF_pt << LQLogger::endmsg;
     kevent.SetNoHFMET( metNoHF_pt->at(0));
+    m_logger << DEBUG << "Filling Event Info [7]" << LQLogger::endmsg;
     kevent.SetNoHFSumET( metNoHF_sumet->at(0));
+    m_logger << DEBUG << "Filling Event Info [8]" << LQLogger::endmsg;
     kevent.SetNoHFMETphi( metNoHF_phi->at(0));
+    m_logger << DEBUG << "Filling Event Info [9]" << LQLogger::endmsg;
   }
-  if(metPfMva_pt->at(0)){
+  if(metPfMva_pt){
+    m_logger << DEBUG << "Filling Event Info [10]" << LQLogger::endmsg;
     kevent.SetPfMvaMET( metPfMva_pt->at(0));
+    m_logger << DEBUG << "Filling Event Info [11]" << LQLogger::endmsg;
     kevent.SetPfMvaSumET( metPfMva_sumet->at(0));
+    m_logger << DEBUG << "Filling Event Info [12]" << LQLogger::endmsg;
     kevent.SetPfMvaMETphi( metPfMva_phi->at(0));
   }
   
+  m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
 
-  /// Filling event variables
+    /// Filling event variables
 
 
-  kevent.SetIsData(isData);
+    kevent.SetIsData(isData);
 
   if(!isData&&genWeight){
     if(genWeight > 0.) kevent.SetWeight(1.);
@@ -173,6 +189,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     }
     return electrons;
   }
+
+  m_logger << DEBUG << "Filling electron Info" << LQLogger::endmsg;
   
 
   for (UInt_t iel=0; iel< electrons_eta->size(); iel++) {
@@ -254,6 +272,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     return genjets;
   }
 
+  m_logger << DEBUG << "Filling genevent Info" << LQLogger::endmsg;
 
   for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
     KGenJet jet;
@@ -427,6 +446,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     return vtruth;
   }
   
+  m_logger << DEBUG << "Filling truth Info" << LQLogger::endmsg;
   for (UInt_t it=0; it< gen_pt->size(); it++ ) {
     
     KTruth truthp;

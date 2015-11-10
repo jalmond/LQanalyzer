@@ -144,7 +144,6 @@ if not len(splitsample)==1:
             conf+=1
             useCATv742ntuples = splitsample[conf]
 
-
             
 ####################
 ####
@@ -243,6 +242,12 @@ singlejob = number_of_cores==1
 mc = len(sample)>1
 if mc:
     datatype="mc"
+    if "D1" in sample:
+        mc = 0
+        datatype="data"
+    if "D2" in sample:
+        mc = 0
+        datatype="data"
 else:
     datatype="data"
 
@@ -355,13 +360,14 @@ filechannel=""
 
 if platform.system() == "Linux":
     version="_CAT"
-    print "Using CAT v7-4-2 ntuples"
+    print "Using CAT v7-4-4 ntuples"
     filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
     
 else:
     filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
 if not mc:
+    print "Running on data " 
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
@@ -373,6 +379,7 @@ if not mc:
     tar_lumi=1.
     filechannel = channel+"_"
 else:
+    print "Running on MC"
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
@@ -792,7 +799,7 @@ else:
             print line
 
 
-    SKTreeOutput = "/data2/CatNtuples/CMSSW_472/SKTrees/Sep15/"        
+    SKTreeOutput = "/data2/CatNtuples/v7-4-4/SKTrees/Sep15/"        
 
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":

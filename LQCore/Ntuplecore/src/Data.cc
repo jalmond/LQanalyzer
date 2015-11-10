@@ -281,10 +281,9 @@ void Data::Reset(){
   slimmedGenJets_m = 0;
   slimmedGenJets_phi = 0;
   slimmedGenJets_pt = 0;
-  vertices_ndof = 0;
-  vertices_x = 0;
-  vertices_y = 0;
-  vertices_z = 0;
+  vertex_X = 0;
+  vertex_Y = 0;
+  vertex_Z = 0;
   electrons_electronID_loose = 0;
   electrons_electronID_medium = 0;
   electrons_electronID_tight = 0;
@@ -392,11 +391,10 @@ void Data::ConnectEvent(){
   ConnectVariable("puWeightUp",puWeightUp, b_puWeightUp);
   ConnectVariable("puWeightDn",puWeightDn, b_puWeightDn);
 
-  ConnectVariable("vertices_ndof",vertices_ndof, b_vertices_ndof);
-  ConnectVariable("vertices_x",vertices_x, b_vertices_x);
-  ConnectVariable("vertices_y",vertices_y, b_vertices_y);
-  ConnectVariable("vertices_z",vertices_z, b_vertices_z);
- 
+  ConnectVariable("vertex_X",vertex_X, b_vertex_X);
+  ConnectVariable("vertex_Y",vertex_Y, b_vertex_Y);
+  ConnectVariable("vertex_Z",vertex_Z, b_vertex_Z);
+
   return;}
 
 
