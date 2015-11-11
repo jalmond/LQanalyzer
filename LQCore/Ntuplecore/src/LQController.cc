@@ -179,6 +179,9 @@ void LQController::SetChannel(TString ch){
 }
 void LQController::SetDataPeriod(TString period){
   
+  if( period == "All") period = "ALL";
+
+ 
   if( period == "C") k_period = "C";
   else if( period == "D1") k_period = "D1";
   else if( period == "D2") k_period = "D2";
@@ -190,11 +193,11 @@ void LQController::SetDataPeriod(TString period){
   }
   
   
-  if( period == "C") target_luminosity = 15.478;
+  if( period == "C") target_luminosity = 16.345;
   else if( period == "D1") target_luminosity =552.673;
   else if( period == "D2") target_luminosity =711.213;
-  else if( period == "ALL") target_luminosity = 1263.89 ;
-  else target_luminosity = 1263.89;
+  else if( period == "ALL") target_luminosity = 16.345 + 552.673 + 711.213;
+  else target_luminosity = 16.345 + 552.673 + 711.213;
 
   
 }

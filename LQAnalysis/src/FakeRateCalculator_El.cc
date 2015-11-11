@@ -46,6 +46,9 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
   
+  MakeCleverHistograms(sighist_ee, "SingleLooseElJet");
+
+
   return;
 }
 
@@ -60,14 +63,11 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<TString> triggerslist_17;
   triggerslist_17.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
 
-
   std::vector<TString> triggerslist_23;
   triggerslist_23.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
 
   std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-  triggerslist.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
-  triggerslist.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
+  triggerslist.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
 
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
@@ -75,9 +75,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   numberVertices = eventbase->GetEvent().nVertices();   
   
   if (MC_pu&&!k_isdata) {
-    weight  = weight * reweightPU->GetWeight( eventbase->GetEvent().nVertices(), k_mcperiod)*MCweight;
-
+    //weight  = weight * reweightPU->GetWeight( eventbase->GetEvent().nVertices(), k_mcperiod)*MCweight;
+    weight = weight * MCweight * eventbase->GetEvent().PileUpWeight();
   }
+  
   
   
   std::vector<snu::KElectron> electronLooseColl = GetElectrons("HNLoose");
@@ -85,6 +86,30 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   if(electronLooseColl.size()==0) return;
   
+  
+  if(!isData){
+    for(std::vector<snu::KElectron>::iterator it = electronTightColl.begin(); it != electronTightColl.end(); it++){
+      weight *=  ElectronScaleFactor(it->Eta(), it->Pt(), true);
+    }
+  }
+  
+
+  std::vector<snu::KJet> jetCollTight = GetJets("HNJets");
+  std::vector<snu::KJet> jetColl           = GetJets("NoLeptonVeto");
+
+  std::vector<snu::KMuon> muonColl = GetMuons("HNLoose");  // loose selection
+ 
+  if(PassTrigger(triggerslist, prescale) ){
+    if(electronTightColl.size() ==2) {
+      if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
+	if(!isData) FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(), 0., 200.,400);
+	else FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight, 0., 200.,400);
+	FillHist("zpeak_ee", GetZMass(electronTightColl), weight, 0., 200.,400);
+	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
+      }
+    }
+  }
+
   float prescale_trigger =  GetPrescale(electronLooseColl, PassTrigger(triggerslist_12, prescale), PassTrigger(triggerslist_17, prescale), PassTrigger( triggerslist_23, prescale)); 
 
   if(electronLooseColl.at(0).Pt() >= 25.){
@@ -97,14 +122,20 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     if(!PassTrigger(triggerslist_12, prescale) ) return;
   }
 
-  std::vector<snu::KJet> jetCollTight = GetJets("HNJets");
-  std::vector<snu::KJet> jetColl           = GetJets("NoLeptonVeto");
   
-  if(isData) weight*= prescale;
+  if(isData) weight*= prescale_trigger;
+  
   
   MakeFakeRatePlots("HNTight", electronTightColl, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
-
-
+  
+  if(electronLooseColl.size() == 1){
+    if(jetCollTight.size() >=1) {
+      if(jetCollTight.at(0).Pt() > 40.){
+	FillCLHist(sighist_ee, "SingleLooseElJet", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
+      }
+    }
+  }
+    
   
   return;
 }// End of execute event loop
@@ -117,14 +148,14 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     if(electrons.at(0).Pt() >= 25.){
 
       if(passhighest){
-        //prescale_trigger = (16.95) / 19789 ; //// 20 + GeV bins
+        prescale_trigger = (29.091) / 1280.231 ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else   if(electrons.at(0).Pt() >= 20.){
 
       if(passhigh){
-	//prescale_trigger = (16.95) / 19789 ; //// 20 + GeV bins
+	prescale_trigger = (45.24) / 1280.231 ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
@@ -132,7 +163,7 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     else{
       /// if single el event and low pt use 8 GeV trigger
       if(passlow){
-        //prescale_trigger = (3.546650) / 19789 ;
+        prescale_trigger = (29.091) / 1280.231;
       }
       else prescale_trigger = 0.;
     }
