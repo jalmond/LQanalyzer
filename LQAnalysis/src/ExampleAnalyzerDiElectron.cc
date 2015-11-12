@@ -158,12 +158,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   if (!k_isdata) {
     /// Currently this is done using on the fly method: waiting for official method
 
-    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-    // k_mcperiod is set depending on what data you are comparing to:
-    // k_mcperiod= 1 for period C only
-    // k_mcperiod = 2 for period C+D
-    
-    // k_mcperiod is set depending on data_lumi="" in your run script
+    //pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
+    pileup_reweight = eventbase->GetEvent().PileUpWeight();
   }
   
 
@@ -189,7 +185,6 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       
       /// OR use NBJet(jets) function
       if(njet > 2 && NBJet(jetColl_hn) > 0)      FillCLHist(sighist_ee, "DiElectron_BJet", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
-      
       if(SameCharge(electronColl))  FillCLHist(sighist_ee, "SSElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
       
     }

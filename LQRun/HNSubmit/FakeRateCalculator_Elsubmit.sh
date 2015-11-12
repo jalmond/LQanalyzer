@@ -17,7 +17,7 @@ job_loglevel="INFO"
 job_njobs=15
 
 version_tag=${CATVERSION}
-echo "version_tag  = " + $version_tag
+
 ########################################################################
 
 
@@ -139,8 +139,8 @@ then
      then
      echo "source hadd.sh " ${outputdir_data} " " ${job_cycle} "_data_cat"${version_tag}".root "${outputdir_data}"/"${job_cycle}"*"
      
-     source hadd.sh ${outputdir_data} ${job_cycle}_data_cat"${version_tag}".root ${outputdir_data}"/"${job_cycle}*
+     source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${version_tag}.root ${outputdir_data}/${job_cycle}*
      echo ${outputdir_data}"/"${job_cycle}"_data_cat"${version_tag}".root "
-     mv  ${outputdir_data}/${job_cycle}_data_cat"${version_tag}".root  ${outputdir_mc}
+     mv  ${outputdir_data}/${job_cycle}_data_cat${version_tag}.root  ${outputdir_mc}
  fi
 fi
