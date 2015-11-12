@@ -360,7 +360,7 @@ filechannel=""
 
 if platform.system() == "Linux":
     version="_CAT"
-    print "Using CAT v7-4-4 ntuples"
+    print "Using CAT " + os.getenv("CATVERSION") + " ntuples"
     filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
     
 else:
@@ -509,11 +509,11 @@ if runcf == "True":
 if not mc:
     outsamplename = outsamplename +  "_" + channel
     if useCATv742ntuples == "True":
-        outsamplename = outsamplename + "_catv4_7_2"
+        outsamplename = outsamplename + "_cat" + os.getenv("CATVERSION")
 
 else:
     if useCATv742ntuples == "True":
-                outsamplename = outsamplename + "_catv4_7_2"
+                outsamplename = outsamplename + "_cat"+ os.getenv("CATVERSION")
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
@@ -799,7 +799,7 @@ else:
             print line
 
 
-    SKTreeOutput = "/data2/CatNtuples/v7-4-4/SKTrees/Sep15/"        
+    SKTreeOutput = "/data2/CatNtuples/" + os.getenv("CATVERSION")+ "/SKTrees/Sep15/"        
 
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":

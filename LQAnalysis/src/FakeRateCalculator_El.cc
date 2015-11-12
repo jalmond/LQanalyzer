@@ -123,7 +123,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
 
   
-  if(isData) weight*= prescale_trigger;
+  if(!isData) weight*= prescale_trigger;
   
   
   MakeFakeRatePlots("HNTight", electronTightColl, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  

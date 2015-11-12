@@ -1,7 +1,7 @@
 #!/bin/sh
 
-runData=false
-runMC=false
+runData=true
+runMC=true
 runQCD=false
 
 
@@ -103,7 +103,7 @@ if [[ $runData  == "true" ]];
 then
     source functions.sh
 
-cycle=$job_cycle
+    cycle=$job_cycle
     data_lumi=$job_data_lumi
     stream=$job_stream
     useskim=$job_useskim
@@ -134,13 +134,13 @@ cycle=$job_cycle
         mv  ${outputdir_data}/*.root ${output_datafile}
 
 
-    fi
-    if [[  $job_data_lumi  != "C" ]];
-        then
-        echo "source hadd.sh " ${outputdir_data} " " ${job_cycle} "_data_cat"+${version_tag}+".root "${job_cycle}"*"
-
-        source hadd.sh ${outputdir_data} ${job_cycle}_data_cat"+${version_tag}+".root ${job_cycle}*
-        echo ${outputdir_data}"/"${job_cycle}"_data_cat"+${version_tag}+".root "
-        mv  ${outputdir_data}/${job_cycle}_data_cat"+${version_tag}+".root  ${outputdir_mc}
-    fi
+ fi
+ if [[  $job_data_lumi  != "C" ]];
+     then
+     echo "source hadd.sh " ${outputdir_data} " " ${job_cycle} "_data_cat"${version_tag}".root "${outputdir_data}"/"${job_cycle}"*"
+     
+     source hadd.sh ${outputdir_data} ${job_cycle}_data_cat"${version_tag}".root ${outputdir_data}"/"${job_cycle}*
+     echo ${outputdir_data}"/"${job_cycle}"_data_cat"${version_tag}".root "
+     mv  ${outputdir_data}/${job_cycle}_data_cat"${version_tag}".root  ${outputdir_mc}
+ fi
 fi

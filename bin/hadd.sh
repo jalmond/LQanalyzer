@@ -1,6 +1,4 @@
 #! /bin/sh
 
-cd $1
-rm $2
-hadd $2 $3
-cd -
+rm $1$2
+hadd $1$2 $3 
