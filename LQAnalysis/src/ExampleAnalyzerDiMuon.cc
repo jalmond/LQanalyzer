@@ -34,12 +34,11 @@
    // This function sets up Root files and histograms Needed in ExecuteEvents
    InitialiseAnalysis();
    MakeCleverHistograms(sighist_mm,"DiMuon");
-   MakeCleverHistograms(sighist_mm,"DiMuon_tightjet");
-   MakeCleverHistograms(sighist_mm,"DiMuon_mediumjet");
-   MakeCleverHistograms(sighist_mm,"DiMuon_PRW");
    MakeCleverHistograms(sighist_mm,"DiMuon_BJet");
    MakeCleverHistograms(sighist_mm,"SSMuon");
    MakeCleverHistograms(trilephist,"TriMuon");
+   MakeCleverHistograms(trilephist,"TriMuon_noB");
+   MakeCleverHistograms(trilephist,"TriMuon_nomet");
    MakeCleverHistograms(trilephist,"TriMuonEl");
    
  }
@@ -162,14 +161,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    float pileup_reweight=(1.0);
    if (!k_isdata) {
      /// Currently this is done using on the fly method: waiting for official method
-     
-     pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-     
-     // k_mcperiod is set depending on what datayou arecomparing to:
-     // k_mcperiod= 1 for periodC only
-     // k_mcperiod = 2 for period C+D
-
-     // k_mcperiod is set depending on data_lumi="" in your run script
+     pileup_reweight = eventbase->GetEvent().PileUpWeight();
 
    }
 
@@ -193,10 +185,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
        
        
        /// Standard set of histograms for muons/jets/electrons.. with no corrections
-       FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight);
-       
-       /// Standard set of histograms for muons/jets/electrons.. with no corrections
-       FillCLHist(sighist_mm, "DiMuon_PRW", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+       FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
        
        
        
@@ -206,13 +195,17 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
      }
    }
 
-   if(muonLooseColl.size() == 3) {
-     if(eventbase->GetEvent().NoHFMET() > 30){
-        FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+   if(muonLooseColl.size() == 3&&electronColl.size()==0) {
+     if(muonLooseColl.at(2).Pt() > 25.){
+       if( NBJet(jetColl_hn) == 0) FillCLHist(trilephist, "TriMuon_nomet", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+       if(eventbase->GetEvent().PFMET() > 30){
+	 FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+	 if( NBJet(jetColl_hn) == 0) FillCLHist(trilephist, "TriMuon_noB", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+       }
      }
    }
    if(muonLooseColl.size() == 2 && electronLooseColl.size() == 1){
-     if(eventbase->GetEvent().NoHFMET() > 30){
+     if(eventbase->GetEvent().PFMET() > 30){
        FillCLHist(trilephist, "TriMuonEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
      }
    }

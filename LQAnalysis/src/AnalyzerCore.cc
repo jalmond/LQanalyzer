@@ -165,7 +165,7 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label, bool keepfakes){
 
 
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(TString label){
-  return GetElectrons( true,  true, label);
+  return GetElectrons( false,  true, label);
 }
 
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString label){
@@ -1126,10 +1126,14 @@ bool AnalyzerCore::Zcandidate(std::vector<snu::KElectron> electrons, float inter
 
 }
 
-bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons){
-
+bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runningcf){
+  
   if(electrons.size()!=2) return false;
-  if(electrons.at(0).Charge() == electrons.at(1).Charge()) return true;
+  if(!runningcf){
+    if(electrons.at(0).Charge() == electrons.at(1).Charge()) return true;
+  }
+  else     if(electrons.at(0).Charge() != electrons.at(1).Charge()) return true;
+
   return false;
 }
 
@@ -1157,6 +1161,63 @@ double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
 
 float AnalyzerCore::CFRate(snu::KElectron el){
   if(el.Pt() < 10.) return 0.;
+  Double_t frac = 0. ;
+  float pt = el.Pt();
+  Double_t p0 = 0. ;
+  Double_t p1 = 0. ;
+
+
+  Double_t scale_factor_EE = 1. ;
+  Double_t scale_factor_BB = 1. ;
+
+  float eta = el.Eta();
+  
+  //--root fitting
+  if( fabs(eta) <= 0.9 ) { // inner BB region
+
+    scale_factor_BB = 1.22 ; // BB
+
+    p0 = 3.31e-05 ; p1 = -6.5e-04 ; // root fit
+    // p0 = 2.8e-05 ; p1 = 0. ;// UK eye fit
+
+    frac = p0 + p1*(1./pt) ;
+    if( 1./pt < 0.017 ){
+      p0 = 1.92e-04 ; p1 = -0.011 ;
+      frac = max(p0 + p1*(1./pt), frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+
+  }else if( fabs(eta) > 0.9 && fabs(eta) <= 1.4442 ){ // outer BB region
+    scale_factor_BB = 1.22 ; // BB
+    p0 = 2.21e-04 ; p1 = -5.1e-03 ; // root fit
+    //    p0 = 1.2e-04 ; p1 = 0. ; // UK eye fit
+    frac = p0 + p1*(1./pt) ;
+    if( 1./pt < 0.02 ){
+      p0 = 6.35e-04 ; p1 = -0.027 ;
+      frac = max(p0 + p1*(1./pt), frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+    
+  } else {  // fabs(eta) > 1.4
+    
+    
+    scale_factor_EE = 1.40 ; //
+
+    //--region:  1/pt > 0.02
+    p0 = 4.91e-04 ; p1 = -0.952e-02 ;
+    frac = p0 + p1*(1./pt) ;
+
+    if( (1./pt) <= 0.02 ){
+      p0 = 2.70e-03 ;  p1 = -1.21e-01 ;
+      frac = max(p0 + p1*(1./pt), frac) ;
+    }
+    frac *= scale_factor_EE ;
+  }
+  
+  return float(frac) ;
+
   return 1. ;
 }
 
@@ -1179,6 +1240,21 @@ bool AnalyzerCore::IsTight(snu::KElectron el){
 
 }
   
+bool AnalyzerCore::IsCF(snu::KElectron el){
+  vector<snu::KTruth> truth =  eventbase->GetTruth();
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23 ||
+	 fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24){
+	if(eventbase->GetTruth().at(ig).PdgId() * el.Charge() > 0 ) return true;
+	else return false;
+      }
+    }
+  }
+  return false;
+}
 
 vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electrons, bool keep_chargeflip, bool keepfake){
   if(electrons.size() == 0)
@@ -1188,7 +1264,9 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
   for(unsigned int i = 0; i < electrons.size(); i++){
     if(!k_isdata){
       if(keepfake&&keep_chargeflip) prompt_electrons.push_back(electrons.at(i));
-      else if(electrons.at(i).MCMatched()) prompt_electrons.push_back(electrons.at(i));
+      else if(keep_chargeflip&&electrons.at(i).MCMatched()) prompt_electrons.push_back(electrons.at(i));
+      else if(keepfake&&!IsCF(electrons.at(i))) prompt_electrons.push_back(electrons.at(i)); 
+      else if(electrons.at(i).MCMatched() && !IsCF(electrons.at(i))) prompt_electrons.push_back(electrons.at(i));
     }// Data
     else prompt_electrons.push_back(electrons.at(i));
   }/// loop

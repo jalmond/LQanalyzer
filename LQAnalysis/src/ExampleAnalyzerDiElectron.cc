@@ -50,10 +50,17 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist_ee, "DiElectron");
-   MakeCleverHistograms(sighist_ee, "DiElectron_PRW");
+   MakeCleverHistograms(sighist_ee, "DiElectron_EE");
+   MakeCleverHistograms(sighist_ee, "DiElectron_EB");
+   MakeCleverHistograms(sighist_ee, "DiElectron_BB");
    MakeCleverHistograms(sighist_ee, "DiElectron_BJet");
    MakeCleverHistograms(sighist_ee, "SSElectron");
+   MakeCleverHistograms(sighist_ee, "SSElectron_DiJet");
+   MakeCleverHistograms(sighist_ee, "SSElectron_DiJet_ChargeConsistency");
+
    MakeCleverHistograms(trilephist,"TriElectron");
+   MakeCleverHistograms(trilephist,"TriElectron_nomet");
+   MakeCleverHistograms(trilephist,"TriElectron_noB");
 
    
    return;
@@ -81,6 +88,38 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   FillCutFlow("EventCut", weight);
+  
+  vector<snu::KTruth> truth =  eventbase->GetTruth();
+  
+  int match_el(0), match_mu(0), match_t(0), match_q(0);
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) match_el++;
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) match_el++;
+    }
+    else if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 13){
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) match_mu++;
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) match_mu++;
+    }
+    else if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 15){
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) match_t++;
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) match_t++;
+    }
+    else if(fabs(eventbase->GetTruth().at(ig).PdgId()) != 23 && fabs(eventbase->GetTruth().at(ig).PdgId()) != 24){
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) match_q++;
+      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) match_q++;
+    }
+    
+  }
+  FillHist("Decay_WZ_el", match_el ,weight, 0. , 5., 5);
+  FillHist("Decay_WZ_mu", match_mu ,weight, 0. , 5., 5);
+  FillHist("Decay_WZ_t", match_t ,weight, 0. , 5., 5);
+  FillHist("Decay_WZ_q", match_q ,weight, 0. , 5., 5);
+  
 
   
   /// Trigger List 
@@ -130,7 +169,27 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
   std::vector<snu::KElectron> electronLooseColl        = GetElectrons("POGLoose");
   std::vector<snu::KElectron> electronColl             = GetElectrons("POGTight");
+
+  // Sets weight to weight if not running chargeflip bkg estimate or events are S
+  if(k_running_chargeflip) weight              *= WeightCFEvent(electronColl, k_running_chargeflip);
+    
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+    
+    
+    //    cout << "Particle pdgid = " << eventbase->GetTruth().at(ig).PdgId() << " status = " << eventbase->GetTruth().at(ig).GenStatus() << "  mother = " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << endl;
+  }
+  //  cout << "\n" << endl;
   
+  if(electronLooseColl.size() ==3 ) {
+    FillHist("Decay_WZ_el_threeloosereco", match_el ,weight, 0. , 5., 5);
+    if(eventbase->GetEvent().PFMET() > 30){
+      FillHist("Decay_WZ_el_threeloosereco_metcut", match_el ,weight, 0. , 5., 5);
+    }
+  }
+
+
   std::vector<snu::KElectron> electronHNLooseColl  = GetElectrons("HNLoose");
   std::vector<snu::KElectron> electronHNVetoColl   = GetElectrons("HNVeto");
   std::vector<snu::KElectron> electronHNTightColl   = GetElectrons("HNTight");
@@ -162,6 +221,11 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     pileup_reweight = eventbase->GetEvent().PileUpWeight();
   }
   
+  if(!isData){
+    for(unsigned int iel=0; iel < electronColl.size(); iel++){
+      weight*= ElectronScaleFactor(electronColl.at(iel).Eta(), electronColl.at(iel).Pt(), "POGTight", 0);
+    }
+  }
 
   if(electronColl.size() ==2) {
     if(electronColl.at(0).Pt() > 25. && electronColl.at(1).Pt() > 15. ){
@@ -172,11 +236,21 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       FillHist("zpeak_ee", GetZMass(electronColl), weight*pileup_reweight, 0., 200.,400);
       
       /// Standard set of histograms for muons/jets/electrons.. with no corrections
-      FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
+      FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
       
-      /// Standard set of histograms for muons/jets/electrons.. with no corrections
-      FillCLHist(sighist_ee, "DiElectron_PRW", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+      if(electronColl.at(0).IsEEFiducial() && electronColl.at(1).IsEEFiducial()) 
+	FillCLHist(sighist_ee, "DiElectron_EE", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
       
+      if(electronColl.at(0).IsEBFiducial() && electronColl.at(1).IsEBFiducial())
+        FillCLHist(sighist_ee, "DiElectron_BB", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+      
+      if(electronColl.at(0).IsEBFiducial() && electronColl.at(1).IsEEFiducial())
+        FillCLHist(sighist_ee, "DiElectron_EB", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+      if(electronColl.at(1).IsEBFiducial() && electronColl.at(0).IsEEFiducial())
+        FillCLHist(sighist_ee, "DiElectron_EB", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+
+           
+
       /// Count number of bjets (Medium WP in event)
       int nbjet=0;
       for(unsigned int i=0; i <jetColl_hn.size() ; i++){
@@ -185,17 +259,46 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       
       /// OR use NBJet(jets) function
       if(njet > 2 && NBJet(jetColl_hn) > 0)      FillCLHist(sighist_ee, "DiElectron_BJet", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
-      if(SameCharge(electronColl))  FillCLHist(sighist_ee, "SSElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+
+
       
+      if(SameCharge(electronColl, k_running_chargeflip))  {
+
+	cout << "SS event " << endl;	
+	cout << "Electron 1 eta/phi/pt =" <<  electronColl.at(0).Eta() << " / " << electronColl.at(0).Phi() << " / " << electronColl.at(0).Pt() << endl;
+	cout << "Electron 2 eta/phi/pt =" <<  electronColl.at(1).Eta() << " / " << electronColl.at(1).Phi() << " / " << electronColl.at(1).Pt() << endl;
+	for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+	  if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+	  if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+	  
+	  if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
+	    cout << "eventbase->GetTruth().at(ig).Eta = " << eventbase->GetTruth().at(ig).Eta() << " eventbase->GetTruth().at(ig).Phi = " << eventbase->GetTruth().at(ig).Phi() << " eventbase->GetTruth().at(ig).Pt = " << eventbase->GetTruth().at(ig).Pt() << endl;
+	    if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) cout << "matched to Z" << endl;
+	    if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) cout << "matched to W" << endl;
+	  }
+	}
+	
+
+	FillCLHist(sighist_ee, "SSElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+	
+	if (njet >= 2) {
+	  FillCLHist(sighist_ee, "SSElectron_DiJet", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+	  if(electronColl.at(0).GsfCtfScPixChargeConsistency() && electronColl.at(1).GsfCtfScPixChargeConsistency())
+	    FillCLHist(sighist_ee, "SSElectron_DiJet_ChargeConsistency", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
+	}
+      }      
     }
   }
   
     
-  if(electronLooseColl.size() == 3) {
-    FillHist("MET", eventbase->GetEvent().NoHFMET() ,weight, 0. , 100., 20);
-    
-    if(eventbase->GetEvent().NoHFMET() > 30){
-      FillCLHist(trilephist, "TriElectron", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+  if(electronLooseColl.size() == 3 && muonColl.size() == 0) {
+    if(electronLooseColl.at(0).Pt() > 25. && electronLooseColl.at(2).Pt() > 25. ){
+      FillHist("MET", eventbase->GetEvent().PFMET() ,weight, 0. , 100., 20);
+      if( NBJet(jetColl_hn) == 0)FillCLHist(trilephist, "TriElectron_nomet", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+      if(eventbase->GetEvent().PFMET() > 30){
+	FillCLHist(trilephist, "TriElectron", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+	if( NBJet(jetColl_hn) == 0)       FillCLHist(trilephist, "TriElectron_noB", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+      }
     }
   }
 

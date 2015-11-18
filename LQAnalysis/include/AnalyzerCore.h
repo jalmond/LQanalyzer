@@ -45,6 +45,7 @@ class AnalyzerCore : public LQCycleBase {
 
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
+  bool IsCF(snu::KElectron el);
 
 
 
@@ -67,7 +68,7 @@ class AnalyzerCore : public LQCycleBase {
   bool Zcandidate(vector<snu::KMuon> muons, float interval, bool require_os=true);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KMuon> muons);
-  bool SameCharge(std::vector<snu::KElectron> electrons);
+  bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   
   float CFRate(snu::KElectron el);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);

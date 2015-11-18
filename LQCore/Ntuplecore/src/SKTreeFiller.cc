@@ -99,30 +99,37 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   if(metPuppi_pt){
     kevent.SetPuppiMET( metPuppi_pt->at(0));
-    m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
     kevent.SetPuppiSumET( metPuppi_sumet->at(0));
-  m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
     kevent.SetPuppiMETphi( metPuppi_phi->at(0));
-    m_logger << DEBUG << "Filling Event Info [5]" << LQLogger::endmsg;
   }
   if(metNoHF_pt->size() > 0){
-    m_logger << DEBUG << "Filling Event Info [6]"  << metNoHF_pt << LQLogger::endmsg;
     kevent.SetNoHFMET( metNoHF_pt->at(0));
-    m_logger << DEBUG << "Filling Event Info [7]" << LQLogger::endmsg;
     kevent.SetNoHFSumET( metNoHF_sumet->at(0));
-    m_logger << DEBUG << "Filling Event Info [8]" << LQLogger::endmsg;
     kevent.SetNoHFMETphi( metNoHF_phi->at(0));
-    m_logger << DEBUG << "Filling Event Info [9]" << LQLogger::endmsg;
   }
   if(metPfMva_pt){
-    m_logger << DEBUG << "Filling Event Info [10]" << LQLogger::endmsg;
     kevent.SetPfMvaMET( metPfMva_pt->at(0));
-    m_logger << DEBUG << "Filling Event Info [11]" << LQLogger::endmsg;
     kevent.SetPfMvaSumET( metPfMva_sumet->at(0));
-    m_logger << DEBUG << "Filling Event Info [12]" << LQLogger::endmsg;
     kevent.SetPfMvaMETphi( metPfMva_phi->at(0));
   }
-  
+
+  kevent.SetPFMETShift(1, 1, sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
+  kevent.SetPFMETShift(-1,1, sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
+  kevent.SetPFMETShift(1,2, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
+  kevent.SetPFMETShift(-1,2, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
+  kevent.SetPFMETShift(1,3, sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
+  kevent.SetPFMETShift(-1,3, sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
+  kevent.SetPFSumEtShift(1,3, met_unclusteredEn_SumEt_up);
+  kevent.SetPFSumEtShift(-1,3, met_unclusteredEn_SumEt_down);
+  kevent.SetPFMETShift(1,4, sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
+  kevent.SetPFMETShift(-1,4, sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
+  kevent.SetPFSumEtShift(1,4, met_jetEn_SumEt_up);
+  kevent.SetPFSumEtShift(-1,4, met_jetEn_SumEt_down);
+  kevent.SetPFMETShift(1,5, sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
+  kevent.SetPFMETShift(-1,5, sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
+  kevent.SetPFSumEtShift(1,5, met_jetRes_SumEt_up);
+  kevent.SetPFSumEtShift(-1,5, met_jetRes_SumEt_down);
+
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
 
     /// Filling event variables
@@ -237,6 +244,16 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassLoose(electrons_electronID_loose->at(iel));
     el.SetPassMedium(electrons_electronID_medium->at(iel));
     el.SetPassTight(electrons_electronID_tight->at(iel));
+    
+    /// HEEP
+    el.SetPassHEEP(electrons_electronID_heep->at(iel));
+
+    // MVA
+    el.SetPassMVATrigMedium(electrons_electronID_mva_trig_medium->at(iel));
+    el.SetPassMVATrigTight(electrons_electronID_mva_trig_tight->at(iel));
+    el.SetPassMVANoTrigMedium(electrons_electronID_mva_medium->at(iel));
+    el.SetPassMVANoTrigTight(electrons_electronID_mva_tight->at(iel));
+
     el.SetIsPF(electrons_isPF->at(iel));
     el.SetIsMCMatched(electrons_mcMatched->at(iel));
     el.SetHasMatchedConvPhot(electrons_passConversionVeto->at(iel));

@@ -210,6 +210,33 @@ public :
    std::vector<double>  *met_phi;
    std::vector<double>  *met_pt;
    std::vector<double>  *met_sumet;
+   Double_t        met_muonEn_Px_up;
+   Double_t        met_muonEn_Py_up;
+   Double_t        met_muonEn_Px_down;
+   Double_t        met_muonEn_Py_down;
+   Double_t        met_electronEn_Px_up;
+   Double_t        met_electronEn_Py_up;
+   Double_t        met_electronEn_Px_down;
+   Double_t        met_electronEn_Py_down;
+   Double_t        met_unclusteredEn_Px_up;
+   Double_t        met_unclusteredEn_Py_up;
+   Double_t        met_unclusteredEn_Px_down;
+   Double_t        met_unclusteredEn_Py_down;
+   Double_t        met_unclusteredEn_SumEt_down;
+   Double_t        met_unclusteredEn_SumEt_up;
+   Double_t        met_jetEn_Px_up;
+   Double_t        met_jetEn_Py_up;
+   Double_t        met_jetEn_Px_down;
+   Double_t        met_jetEn_Py_down;
+   Double_t        met_jetEn_SumEt_up;
+   Double_t        met_jetEn_SumEt_down;
+   Double_t        met_jetRes_Px_up;
+   Double_t        met_jetRes_Py_up;
+   Double_t        met_jetRes_Px_down;
+   Double_t        met_jetRes_Py_down;
+   Double_t        met_jetRes_SumEt_up;
+   Double_t        met_jetRes_SumEt_down;
+
    std::vector<double>  *metNoHF_phi;
    std::vector<double>  *metNoHF_pt;
    std::vector<double>  *metNoHF_sumet;
@@ -250,6 +277,11 @@ public :
    std::vector<bool>    *electrons_isPF;
    std::vector<bool>    *electrons_mcMatched;
    std::vector<bool>    *electrons_passConversionVeto;
+   std::vector<bool>    *electrons_electronID_heep;
+   std::vector<bool>    *electrons_electronID_mva_medium;
+   std::vector<bool>    *electrons_electronID_mva_tight;
+   std::vector<bool>    *electrons_electronID_mva_trig_medium;
+   std::vector<bool>    *electrons_electronID_mva_trig_tight;
    std::vector<bool>    *jets_isLoose;
    std::vector<bool>    *jets_isTight;
    std::vector<bool>    *jets_isTightLepVetoJetID;
@@ -392,6 +424,33 @@ public :
    TBranch        *b_metPuppi_phi;   //!                                                                                                                                                                                                                                     
    TBranch        *b_metPuppi_pt;   //!                                                                                                                                                                                                                                      
    TBranch        *b_metPuppi_sumet;   //!                                                                                                                                                                                                                                   
+   TBranch        *b_met_muonEn_Px_up;   //!
+   TBranch        *b_met_muonEn_Py_up;   //!
+   TBranch        *b_met_muonEn_Px_down;   //!
+   TBranch        *b_met_muonEn_Py_down;   //!
+   TBranch        *b_met_electronEn_Px_up;   //!
+   TBranch        *b_met_electronEn_Py_up;   //!
+   TBranch        *b_met_electronEn_Px_down;   //!
+   TBranch        *b_met_electronEn_Py_down;   //!
+   TBranch        *b_met_unclusteredEn_Px_up;   //!
+   TBranch        *b_met_unclusteredEn_Py_up;   //!
+   TBranch        *b_met_unclusteredEn_Px_down;   //!
+   TBranch        *b_met_unclusteredEn_Py_down;   //!
+   TBranch        *b_met_unclusteredEn_SumEt_down;   //!
+   TBranch        *b_met_unclusteredEn_SumEt_up;   //!
+   TBranch        *b_met_jetEn_Px_up;   //!
+   TBranch        *b_met_jetEn_Py_up;   //!
+   TBranch        *b_met_jetEn_Px_down;   //!
+   TBranch        *b_met_jetEn_Py_down;   //!
+   TBranch        *b_met_jetEn_SumEt_up;   //!
+   TBranch        *b_met_jetEn_SumEt_down;   //!
+   TBranch        *b_met_jetRes_Px_up;   //!
+   TBranch        *b_met_jetRes_Py_up;   //!
+   TBranch        *b_met_jetRes_Px_down;   //!
+   TBranch        *b_met_jetRes_Py_down;   //!
+   TBranch        *b_met_jetRes_SumEt_up;   //!
+   TBranch        *b_met_jetRes_SumEt_down;   //!
+
    TBranch        *b_muon_dxy;   //!                                                                                                                                                                                                                                         
    TBranch        *b_muon_dz;   //!                                                                                                                                                                                                                                          
    TBranch        *b_muon_energy;   //!                                                                                                                                                                                                                                      
@@ -423,6 +482,14 @@ public :
    TBranch        *b_electrons_isPF;   //!                                                                                                                                                                                                                                   
    TBranch        *b_electrons_mcMatched;   //!                                                                                                                                                                                                                              
    TBranch        *b_electrons_passConversionVeto;   //!                                                                                                                                                                                                                     
+   TBranch        *b_electrons_electronID_heep;   //!
+   
+   TBranch        *b_electrons_electronID_mva_medium;   //!
+   TBranch        *b_electrons_electronID_mva_tight;   //!
+   TBranch        *b_electrons_electronID_mva_trig_medium;   //!
+   TBranch        *b_electrons_electronID_mva_trig_tight;   //!
+
+
    TBranch        *b_jets_isLoose;   //!                                                                                                                                                                                                                                     
    TBranch        *b_jets_isTight;   //!                                                                                                                                                                                                                                     
    TBranch        *b_jets_isTightLepVetoJetID;   //!                                                                                                                                                                                                                         

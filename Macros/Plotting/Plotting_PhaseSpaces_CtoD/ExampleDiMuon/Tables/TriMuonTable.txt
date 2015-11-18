@@ -5,16 +5,16 @@
 \hline
 Source & \multicolumn{4}{c}{} \\
 \hline
-DY 10 < m(ll) < 50&0.5& $\pm$& 0.5&$^{+0.1}_{-0.1}$\\
-DY m(ll) > 50&15.7& $\pm$& 1.9&$^{+3.1}_{-3.1}$\\
-Diboson&20.3& $\pm$& 0.7&$^{+2.9}_{-2.9}$\\
-t$\bar{t}$&22.5& $\pm$& 0.7&$^{+3.8}_{-3.8}$\\
+DY$\rightarrow$ ll; 10 < m(ll) < 50&2.0& $\pm$& 1.4&$^{+0.4}_{-0.4}$\\
+DY$\rightarrow$ ll; m(ll) > 50&26.5& $\pm$& 8.8&$^{+5.3}_{-5.3}$\\
+WZ,ZZ,WW&97.5& $\pm$& 4.4&$^{+13.8}_{-13.8}$\\
+t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&80.3& $\pm$& 3.0&$^{+13.4}_{-13.4}$\\
 \hline
-Total&58.9& $\pm$&2.2&$^{+5.7}_{-5.7}$\\
+Total&206.3& $\pm$&10.4&$^{+20.0}_{-20.0}$\\
 \hline
-Data&  \multicolumn{4}{c}{$61.0$}\\
+Data&  \multicolumn{4}{c}{$178.0$}\\
 \hline
-Signficance&  \multicolumn{4}{c}{$+0.2\sigma$}\\
+Signficance&  \multicolumn{4}{c}{$-1.1\sigma$}\\
 \hline
 \hline
 \end{tabular}

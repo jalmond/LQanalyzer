@@ -81,11 +81,11 @@ then
     data_lumi=$job_data_lumi
     stream=$job_stream
     useskim=$job_useskim
-    skinput="True"
+    skinput=${job_skinput}
     njobs=$job_njobs
     outputdir=${outputdir_mc}
 
-    declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
+    declare -a input_samples=("DY10to50" "DY50plus" "WJets" "TTJets_MG5" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
     
     source submit.sh $1
 fi
@@ -100,10 +100,9 @@ then
     data_lumi=$job_data_lumi
     stream=$job_stream
     useskim=$job_useskim
-    skinput="True"
+    skinput=${job_skinput}
     njobs=$job_njobs
 
-    skinput="True"
 
     outputdir=${outputdir_data}
     

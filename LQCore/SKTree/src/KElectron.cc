@@ -35,6 +35,11 @@ KParticle()
   pass_loose=false;
   pass_medium=false;
   pass_tight=false;
+  pass_heep=false;
+  pass_trigmva_medium=false;
+  pass_trigmva_tight=false;
+  pass_notrigmva_medium=false;
+  pass_notrigmva_tight=false;
   k_mc_matched=false;
   k_isPF=false;
   snu_id = -999;
@@ -73,6 +78,11 @@ KElectron::KElectron(const KElectron& el) :
   pass_loose=el.PassLoose();
   pass_medium=el.PassMedium();
   pass_tight=el.PassTight();
+  pass_heep=el.PassHEEP();
+  pass_trigmva_medium=el.PassTrigMVAMedium();
+  pass_trigmva_tight=el.PassTrigMVATight(); 
+  pass_notrigmva_medium=el.PassNotrigMVAMedium();
+  pass_notrigmva_tight=el.PassNotrigMVATight();
   k_mc_matched=el.MCMatched();
   k_isPF=el.IsPF();
   snu_id = el.SNUID();
@@ -110,6 +120,11 @@ void KElectron::Reset()
   pass_loose=false;
   pass_medium=false;
   pass_tight=false;
+  pass_heep=false;
+  pass_trigmva_medium=false;
+  pass_trigmva_tight=false;
+  pass_notrigmva_medium=false;
+  pass_notrigmva_tight=false;
   k_mc_matched=false;
   k_isPF=false;
   snu_id = -999;
@@ -148,6 +163,11 @@ KElectron& KElectron::operator= (const KElectron& p)
     pass_loose=p.PassLoose();
     pass_medium=p.PassMedium();
     pass_tight=p.PassTight();
+    pass_heep=p.PassHEEP();
+    pass_trigmva_medium=p.PassTrigMVAMedium();
+    pass_trigmva_tight=p.PassTrigMVATight();
+    pass_notrigmva_medium=p.PassNotrigMVAMedium();
+    pass_notrigmva_tight=p.PassNotrigMVATight();
     k_mc_matched=p.MCMatched();
     k_isPF=p.IsPF();
     snu_id = p.SNUID();
@@ -264,6 +284,27 @@ void KElectron::SetPassMedium(Bool_t medium){
 void KElectron::SetPassTight(Bool_t tight){
   pass_tight= tight;
 }
+
+void KElectron::SetPassHEEP(Bool_t pass){
+  pass_heep= pass;
+}
+
+void KElectron::SetPassMVATrigMedium(Bool_t pass){
+  pass_trigmva_medium= pass;
+}
+
+void KElectron::SetPassMVATrigTight(Bool_t pass){
+  pass_trigmva_tight= pass;
+}
+
+void KElectron::SetPassMVANoTrigMedium(Bool_t pass){
+  pass_notrigmva_medium= pass;
+}
+
+void KElectron::SetPassMVANoTrigTight(Bool_t pass){
+  pass_notrigmva_tight= pass;
+}
+
 
 void KElectron::SetIsPF(Bool_t isPF){
   k_isPF=isPF;

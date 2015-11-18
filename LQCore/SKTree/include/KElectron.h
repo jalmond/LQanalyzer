@@ -40,6 +40,12 @@ namespace snu {
     void SetPassLoose(Bool_t pass);
     void SetPassMedium(Bool_t pass);
     void SetPassTight(Bool_t pass);
+    void SetPassHEEP(Bool_t pass);
+
+    void SetPassMVATrigMedium(Bool_t pass);
+    void SetPassMVATrigTight(Bool_t pass);
+    void SetPassMVANoTrigMedium(Bool_t pass);
+    void SetPassMVANoTrigTight(Bool_t pass);
     
     void SetIsPF(Bool_t ispf);
     void SetIsMCMatched(Bool_t ismatch);
@@ -99,7 +105,18 @@ namespace snu {
     inline Bool_t PassLoose() const{return pass_loose;}
     inline Bool_t PassMedium() const{return pass_medium;}
     inline Bool_t PassTight() const{return pass_tight;}
+
+    // HEEP ID 6.0
+    inline Bool_t PassHEEP() const{return pass_heep;}
+
+    // MVA ID
+    inline Bool_t PassTrigMVAMedium() const{return pass_trigmva_medium;}
+    inline Bool_t PassTrigMVATight() const{return pass_trigmva_tight;}
+    inline Bool_t PassNotrigMVAMedium() const{return pass_notrigmva_medium;}
+    inline Bool_t PassNotrigMVATight() const{return pass_notrigmva_tight;}
     
+    
+   
     inline Bool_t IsPF() const{return k_isPF;}
     inline Bool_t MCMatched() const{return k_mc_matched;}
     inline Int_t SNUID() const{return snu_id;}
@@ -149,13 +166,13 @@ namespace snu {
     Double_t k_dxy, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
     
-    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched, k_isPF,k_hasmatchconvphot;
+    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched, k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight ;
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
     Int_t snu_id;
     TString k_trig_match;
 
-    ClassDef(KElectron,17);
+    ClassDef(KElectron,18);
   }; 
   
 }//namespace snu

@@ -1,9 +1,8 @@
-DiElectron
-DiElectron_PRW
-DiElectron_BJet
 SSElectron
+SSElectron_DiJet
+SSElectron_DiJet_ChargeConsistency
 END
-
+DiElectron
 DiMuon_mediumjet
 DiMuon_tightjet
 DiMuon_BJet

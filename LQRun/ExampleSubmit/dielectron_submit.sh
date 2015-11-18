@@ -3,6 +3,7 @@
 ###### SET WHAT JOBS TO RUN
 runMC=true
 runDoubleElectron=true
+runCF=true
 
 ## RUN PARAMETERS
 job_cycle="ExampleAnalyzerDiElectron"
@@ -10,12 +11,15 @@ job_useskim="DiLep" ### "Lepton" for single lepton skim   "DiLep" for dilepton s
 job_stream="egamma" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset
 job_skinput="True"
 
+
 job_data_lumi="ALL"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
-job_njobs=15
+job_njobs=1
 
 version_tag=${CATVERSION}
+
+
 
 ############################################################
 
@@ -46,6 +50,22 @@ echo $output_datafile
 
 
 
+if [[ $1  == "debug"  ]];
+then
+    job_njobs=1
+    runMC=true
+    runDoubleElectron=false
+    runCF=false
+
+    if [[ $2  == "DEBUG"  ]];
+	then
+	job_loglevel="DEBUG"
+	
+    fi
+fi
+
+
+
 
 if [[ ! -d "${outputdir_mc}" ]]; then
     mkdir ${outputdir_mc}
@@ -63,14 +83,22 @@ if [[ $1  == "MC"  ]];
 then
     runMC=true
     runDoubleElectron=false
+    runCF=false
 fi
 
 if [[ $1  == "DATA"  ]];
 then
     runMC=false
     runDoubleElectron=true
+    runCF=false
 fi
 
+if [[ $1  == "CF"  ]];
+then
+    runMC=false
+    runDoubleElectron=false
+    runCF=true
+fi
 
 
 ########################################################################
@@ -85,15 +113,25 @@ then
     data_lumi=$job_data_lumi
     stream=$job_stream
     useskim=$job_useskim
-    skinput="True"
+    skinput=$job_skinput
     njobs=$job_njobs
     outputdir=${outputdir_mc}
 
-    
-    declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
+    if [[ $1  == "debug"  ]];
+	then
+	declare -a input_samples=("DY50plus")
+	declare -a input_samples=("$2")
+	source submit.sh $1
 
+    fi
+    if [[ $1  != "debug"  ]];
+	then
 
-    source submit.sh $1
+	declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WJets" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
+	
+	
+	source submit.sh $1
+    fi
 fi
 
 
@@ -137,15 +175,66 @@ then
     fi
     if [[  $job_data_lumi  != "C" ]];
         then
-        echo "source hadd.sh " ${outputdir_data} " " ${job_cycle} "_data_cat"${version_tag}".root "${job_cycle}"*"
+        echo "source hadd.sh " ${outputdir_data} " " ${job_cycle}"_data_cat"${version_tag}".root "   ${outputdir_data}"/"${job_cycle}"*"${version_tag}".root"
 	
-        source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${version_tag}.root ${outputdir_data}/${job_cycle}*
+        source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${version_tag}.root ${outputdir_data}/${job_cycle}*${version_tag}.root
         echo ${outputdir_data}"/"${job_cycle}"_data_cat"${version_tag}".root "
         mv  ${outputdir_data}/${job_cycle}_data_cat${version_tag}.root  ${outputdir_mc}
     fi
     
 fi
 
+
+
+################ DOUBLEELECTRON DATA
+if [[ $runCF  == "true" ]];
+then
+    source functions.sh
+
+    cycle=$job_cycle
+    data_lumi=$job_data_lumi
+    stream=$job_stream
+    useskim=$job_useskim
+    skinput="True"
+    njobs=$job_njobs
+    
+    runcf="True"
+    skinput="True"
+
+    outputdir=${outputdir_data}
+
+    if [[ $job_data_lumi  == "ALL" ]];
+        then
+        declare -a input_samples=("C" "D1" "D2")
+    fi
+
+    if [[ $job_data_lumi  == "C" ]];
+        then
+        declare -a input_samples=("C")
+    fi
+
+    source submit.sh $1
+
+
+
+    if [[ $job_data_lumi  == "C" ]];
+        then
+        echo "Ran only period C"
+
+        mv  ${outputdir_data}/*.root ${output_datafile}
+
+
+    fi
+    if [[  $job_data_lumi  != "C" ]];
+        then
+        echo "source hadd.sh " ${outputdir_data} " " ${job_cycle}"_data_cat"${version_tag}".root "   ${outputdir_data}"/"${job_cycle}"*"${version_tag}".root"
+
+        source hadd.sh ${outputdir_data} ${job_cycle}_SKchargeflip_cat${version_tag}.root ${outputdir_data}/${job_cycle}_chargeflip*${version_tag}.root
+        echo ${outputdir_data}"/"${job_cycle}"_SKchargeflip_cat"${version_tag}".root "
+        mv  ${outputdir_data}/${job_cycle}_SKchargeflip_cat${version_tag}.root  ${outputdir_mc}
+    fi
+
+fi
 
 
 

@@ -185,6 +185,7 @@ void Data::Reset(){
 
   // Set object pointer
   
+  // kEvent
   run=0;
   isData=0;
   gen_pt = 0;
@@ -195,6 +196,8 @@ void Data::Reset(){
   gen_pdgid = 0;
   gen_motherindex = 0;
   pdfWeight = 0;
+  
+  //kElectron
   electrons_absIso03 = 0;
   electrons_absIso04 = 0;
   electrons_chIso03 = 0;
@@ -222,6 +225,7 @@ void Data::Reset(){
   electrons_x = 0;
   electrons_y = 0;
   electrons_z = 0;
+
   jets_CVSInclV2 = 0;
   jets_chargedEmEnergyFraction = 0;
   jets_energy = 0;
@@ -291,6 +295,11 @@ void Data::Reset(){
   electrons_isPF = 0;
   electrons_mcMatched = 0;
   electrons_passConversionVeto = 0;
+  electrons_electronID_heep = 0;
+  electrons_electronID_mva_medium = 0;
+  electrons_electronID_mva_tight = 0;
+  electrons_electronID_mva_trig_medium = 0;
+  electrons_electronID_mva_trig_tight = 0;
   jets_isLoose = 0;
   jets_isTight = 0;
   jets_isTightLepVetoJetID = 0;
@@ -465,6 +474,11 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_electronID_veto", electrons_electronID_veto, b_electrons_electronID_veto);
   ConnectVariable("electrons_electronID_tight", electrons_electronID_tight, b_electrons_electronID_tight);
   ConnectVariable("electrons_electronID_snu", electrons_electronID_snu, b_electrons_electronID_snu);
+  ConnectVariable("electrons_electronID_heep", electrons_electronID_heep ,b_electrons_electronID_heep);
+  ConnectVariable("electrons_electronID_mva_medium",electrons_electronID_mva_medium,b_electrons_electronID_mva_medium);
+  ConnectVariable("electrons_electronID_mva_tight",electrons_electronID_mva_tight,b_electrons_electronID_mva_tight);
+  ConnectVariable("electrons_electronID_mva_trig_medium",electrons_electronID_mva_trig_medium,b_electrons_electronID_mva_trig_medium);
+  ConnectVariable("electrons_electronID_mva_trig_tight",electrons_electronID_mva_trig_tight,b_electrons_electronID_mva_trig_tight);
   ConnectVariable("electrons_energy", electrons_energy, b_electrons_energy);
   ConnectVariable("electrons_eta", electrons_eta, b_electrons_eta);
   ConnectVariable("electrons_isPF", electrons_isPF, b_electrons_isPF);
@@ -545,8 +559,33 @@ void Data::ConnectMET(){
   ConnectVariable("metPfMva_pt", metPfMva_pt , b_metPfMva_pt);
   ConnectVariable("metPfMva_sumet", metPfMva_sumet , b_metPfMva_sumet);
 
+  ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
+  ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
+  ConnectVariable("met_muonEn_Px_down", met_muonEn_Px_down, b_met_muonEn_Px_down);
+  ConnectVariable("met_muonEn_Py_down", met_muonEn_Py_down, b_met_muonEn_Py_down);
+  ConnectVariable("met_electronEn_Px_up", met_electronEn_Px_up, b_met_electronEn_Px_up);
+  ConnectVariable("met_electronEn_Py_up", met_electronEn_Py_up, b_met_electronEn_Py_up);
+  ConnectVariable("met_electronEn_Px_down", met_electronEn_Px_down, b_met_electronEn_Px_down);
+  ConnectVariable("met_electronEn_Py_down", met_electronEn_Py_down, b_met_electronEn_Py_down);
+  ConnectVariable("met_unclusteredEn_Px_up", met_unclusteredEn_Px_up, b_met_unclusteredEn_Px_up);
+  ConnectVariable("met_unclusteredEn_Py_up", met_unclusteredEn_Py_up, b_met_unclusteredEn_Py_up);
+  ConnectVariable("met_unclusteredEn_Px_down", met_unclusteredEn_Px_down, b_met_unclusteredEn_Px_down);
+  ConnectVariable("met_unclusteredEn_Py_down", met_unclusteredEn_Py_down, b_met_unclusteredEn_Py_down);
+  ConnectVariable("met_unclusteredEn_SumEt_down", met_unclusteredEn_SumEt_down, b_met_unclusteredEn_SumEt_down);
+  ConnectVariable("met_unclusteredEn_SumEt_up", met_unclusteredEn_SumEt_up, b_met_unclusteredEn_SumEt_up);
+  ConnectVariable("met_jetEn_Px_up", met_jetEn_Px_up, b_met_jetEn_Px_up);
+  ConnectVariable("met_jetEn_Py_up", met_jetEn_Py_up, b_met_jetEn_Py_up);
+  ConnectVariable("met_jetEn_Px_down", met_jetEn_Px_down, b_met_jetEn_Px_down);
+  ConnectVariable("met_jetEn_Py_down", met_jetEn_Py_down, b_met_jetEn_Py_down);
+  ConnectVariable("met_jetEn_SumEt_down", met_jetEn_SumEt_down, b_met_jetEn_SumEt_down);
+  ConnectVariable("met_jetEn_SumEt_up", met_jetEn_SumEt_up, b_met_jetEn_SumEt_up);
+  ConnectVariable("met_jetRes_Px_up", met_jetRes_Px_up, b_met_jetRes_Px_up);
+  ConnectVariable("met_jetRes_Py_up", met_jetRes_Py_up, b_met_jetRes_Py_up);
+  ConnectVariable("met_jetRes_Px_down", met_jetRes_Px_down, b_met_jetRes_Px_down);
+  ConnectVariable("met_jetRes_Py_down", met_jetRes_Py_down, b_met_jetRes_Py_down);
+  ConnectVariable("met_jetRes_SumEt_down", met_jetRes_SumEt_down, b_met_jetRes_SumEt_down);
+  ConnectVariable("met_jetRes_SumEt_up", met_jetRes_SumEt_up, b_met_jetRes_SumEt_up);
   
-
   return;
 }
 

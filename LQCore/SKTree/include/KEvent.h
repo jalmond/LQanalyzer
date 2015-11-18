@@ -41,6 +41,9 @@ namespace snu {
     void SetPfMvaMETphi(double metphi);
     void SetPfMvaSumET(double sumet);
 
+    // MET systematics
+    void SetPFMETShift(int dir, int type, double val);
+    void SetPFSumETShift(int dir, int type, double val);
 
     
     /// PDF
@@ -96,9 +99,43 @@ namespace snu {
     /// MET variables
     inline Double_t PFMET() const {return k_PF_MET;}
     inline Double_t PFMETphi() const {return k_PF_METphi;}
-
     inline Double_t PFSumET() const {return k_PF_SumET;}
     
+    inline Double_t PFMETShifted (int dir, int type) const{
+      if(dir > 0){
+	if(type==0) return k_PF_MET;
+	if(type==1) return k_PF_MET_MuonEn_up;
+	if(type==2) return k_PF_MET_ElectronEn_up;
+	if(type==3) return k_PF_MET_JetEn_up;
+	if(type==4) return k_PF_MET_JetRes_up;
+	if(type==5) return k_PF_MET_unclusteredEn_up;
+      }
+      else{
+	if(type==0) return k_PF_MET;
+	if(type==1) return k_PF_MET_MuonEn_down;
+	if(type==2) return k_PF_MET_ElectronEn_down;
+	if(type==3) return k_PF_MET_JetEn_down;
+	if(type==4) return k_PF_MET_JetRes_down;
+	if(type==5) return k_PF_MET_unclusteredEn_down;
+      }
+      return k_PF_MET;
+    }
+    inline Double_t PFSumETShifted(int dir, int type) const{
+      if(dir > 0){
+        if(type==0) return k_PF_SumET;
+        if(type==3) return k_PF_SumET_JetEn_up;
+        if(type==4) return k_PF_SumET_JetRes_up;
+        if(type==5) return k_PF_SumET_unclusteredEn_up;
+      }
+      else{
+        if(type==0) return k_PF_SumET;
+        if(type==3) return k_PF_SumET_JetEn_down;
+        if(type==4) return k_PF_SumET_JetRes_down;
+        if(type==5) return k_PF_SumET_unclusteredEn_down;
+      }
+      return k_PF_SumET;
+    }
+
 
     inline Double_t PuppiMET() const {return k_Puppi_MET;}
     inline Double_t PuppiMETphi() const {return k_Puppi_METphi;}
@@ -174,13 +211,18 @@ namespace snu {
     Double_t k_Puppi_MET, k_Puppi_METphi, k_Puppi_SumET ;
     Double_t k_NoHF_MET, k_NoHF_METphi, k_NoHF_SumET ;
     Double_t k_PfMva_MET, k_PfMva_METphi, k_PfMva_SumET ;
+    Double_t k_PF_MET_MuonEn_up,k_PF_MET_MuonEn_down; 
+    Double_t k_PF_MET_ElectronEn_up,k_PF_MET_ElectronEn_down; 
+    Double_t k_PF_MET_JetEn_up,k_PF_MET_JetEn_down, k_PF_SumET_JetEn_up, k_PF_SumET_JetEn_down; 
+    Double_t k_PF_MET_JetRes_up,k_PF_MET_JetRes_down, k_PF_SumET_JetRes_up, k_PF_SumET_JetRes_down; 
+    Double_t k_PF_MET_unclusteredEn_up,k_PF_MET_unclusteredEn_down, k_PF_SumET_unclusteredEn_up, k_PF_SumET_unclusteredEn_down; 
 
     Bool_t k_isData, k_isgoodevent;
     Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter;
     Double_t  k_PileUpInteractionsTrue, k_pu_weight, k_pu_p_weight, k_pu_m_weight;
     
     
-    ClassDef(KEvent,17)
+    ClassDef(KEvent,18)
   }; 
   
 }//namespace snu

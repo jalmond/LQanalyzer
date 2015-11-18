@@ -23,7 +23,7 @@ def CleanUpLogs(path):
                         if int(date) > 5:
                             print "Log file older than one week: Removing " + logspace1 + entries[8]
                             os.system(" rm -r " + logspace1 + "/" + entries[8])
-                    elif int(date_file) > (int(date)+5):
+                    elif int(date_file) < (int(date)-5):
                         print "Log file older than one week: Removing " + logspace1 + entries[8]   
                         os.system(" rm -r " + logspace1 + "/" + entries[8])        
 

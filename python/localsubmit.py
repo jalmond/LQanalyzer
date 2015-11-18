@@ -920,6 +920,7 @@ else:
         if number_of_cores == 1:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
         else:
+            os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
         if DEBUG == "True":
             print "Non merged output :" +Finaloutputdir

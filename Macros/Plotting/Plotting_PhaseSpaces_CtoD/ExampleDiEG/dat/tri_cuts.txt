@@ -1,3 +1,2 @@
-DiElectron
-TriElectron
+TriElectron_noB
 END

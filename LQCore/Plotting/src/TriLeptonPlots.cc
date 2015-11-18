@@ -14,9 +14,10 @@ TriLeptonPlots::TriLeptonPlots(TString name): StdPlots(name){
   map_sig["h_jets_eta"]               =     new TH1F("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
 
   map_sig["h_osllmass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os electrons",100,0,500);
-  map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_llljjmass"]               =     new TH1F("h_llljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
   map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
   map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second electron",100,0,1000);
+  map_sig["h_dijetmass"]               =     new TH1F("h_dijetmass_"          + name,"Invariant mass of the two leading jets" ,100,0,1000);
 
   map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
   map_sig["h_LeptonPt"]               =     new TH1F("h_LeptonPt_"          + name,"lepton pt",100,0,500);
@@ -58,6 +59,9 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
   if(electrons.size() == 3 && muons.size() > 0) return;
   if(electrons.size() > 0 && muons.size() ==3) return;
 
+  Fill("h_Nmuons" ,muons.size(), weight);
+  Fill("h_Nelectrons" ,electrons.size(), weight);
+
 
   if(electrons.size()==2){
     if(electrons[0].Charge() != electrons[1].Charge())   Fill("h_osllmass", (electrons[0]+electrons[1]).M(),weight);
@@ -65,16 +69,7 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
   if(muons.size()==2){
     if(muons[0].Charge() != muons[1].Charge())   Fill("h_osllmass", (muons[0]+muons[1]).M(),weight);
   }
-  if(electrons.size()==3){
-    if(electrons[0].Charge() != electrons[1].Charge())    Fill("h_osllmass", (electrons[0]+electrons[1]).M(),weight);
-    if(electrons[0].Charge() != electrons[2].Charge())    Fill("h_osllmass", (electrons[0]+electrons[2]).M(),weight);
-    if(electrons[1].Charge() != electrons[2].Charge())    Fill("h_osllmass", (electrons[1]+electrons[2]).M(),weight);
-    int iel=0;
-    for(std::vector<snu::KElectron>::iterator elit = electrons.begin(); elit != electrons.end(); elit++, iel++){
-      Fill("h_Lepton_Pt", elit->Pt(),weight);
-      Fill("h_Lepton_eta",elit->Eta(),weight);
-    }    
-  }
+
   if(muons.size()==3){
     if(muons[0].Charge() != muons[1].Charge())    Fill("h_osllmass", (muons[0]+muons[1]).M(),weight);
     if(muons[0].Charge() != muons[2].Charge())    Fill("h_osllmass", (muons[0]+muons[2]).M(),weight);
@@ -96,7 +91,18 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
         Fill("h_thirdLeptonEta",muit->Eta(),weight);
       }
       
-    }   
+    }
+    if(jets.size() >1){
+      snu::KParticle jj = jets[0] + jets[1];
+      snu::KParticle l1jj = muons[0] + jets[0] + jets[1];
+      snu::KParticle l2jj = muons[1] + jets[0] + jets[1];
+      snu::KParticle llljj = muons[0] + muons[1] + muons[2] + jets[0] + jets[1];
+      Fill("h_l1jjmass", l1jj.M() ,weight);
+      Fill("h_l2jjmass", l2jj.M() ,weight);
+      Fill("h_llljjmass", llljj.M() ,weight);
+      Fill("h_dijetmass", jj.M() ,weight);
+
+    }
   }
 
   if(electrons.size()==3){
@@ -121,9 +127,39 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
       }
 
     }
+    if(jets.size() >1){
+      snu::KParticle jj = jets[0] + jets[1];
+      snu::KParticle l1jj = electrons[0] + jets[0] + jets[1];
+      snu::KParticle l2jj = electrons[1] + jets[0] + jets[1];
+      snu::KParticle llljj = electrons[0] + electrons[1] + electrons[2] + jets[0] + jets[1];
+      Fill("h_l1jjmass", l1jj.M() ,weight);
+      Fill("h_l2jjmass", l2jj.M() ,weight);
+      Fill("h_llljjmass", llljj.M() ,weight);
+      Fill("h_dijetmass", jj.M() ,weight);
+
+    }
+ 
   }
-
-
+  
+  int sum_charge=0;
+  for(std::vector<snu::KElectron>::iterator muit = electrons.begin(); muit != electrons.end(); muit++){
+    sum_charge+= muit->Charge();
+  }
+  for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++){
+    sum_charge+= muit->Charge();
+  }
+  if(fabs(sum_charge)!=1){
+    for(std::vector<snu::KElectron>::iterator muit = electrons.begin(); muit != electrons.end(); muit++){
+      cout << "Electron charge = " <<  muit->Charge() << endl;
+    }
+    for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++){
+      cout << "Muon Charge = " << muit->Charge() << endl;
+    }
+    cout << "Sum charge = " << sum_charge << endl;
+  }
+  
+  Fill("h_sumcharge",sum_charge, weight);
+  
  
   Fill("h_Njets",jets.size(), weight);
   
