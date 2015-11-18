@@ -1,0 +1,24 @@
+# Specify_location_of_data/mc
+mcpath	        /home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ElectronFake/periodCtoD/
+datapath	/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ElectronFake/periodCtoD/FakeRateCalculator_El_data_catv7-4-4.root
+datadrivenpath	/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ElectronFake/periodCtoD/
+# Specify_the_list_of_hists_to_plot
+plottingpath	dat/hnhist_config.txt
+cutpath		dat/hn_cuts.txt
+# file_prefix
+prefix		FakeRateCalculator_El_SK
+postfix		_catv7-4-4.root	
+# NAME_THE_OUTPUT_DIR
+outputdir  HN13TeV_ExampleCode_Nov15_sk_periodCtoD_ELFake
+histdir    CATNov15
+# CONFIGURE_HISTOGRAMS
+showdata   true
+usenp      false
+ylog	   true
+# List_the_samples_to_be_included
+samples	   dylow
+samples	   dyhigh
+samples	   wjet
+samples    ttbar
+#samples	   qcd
+END

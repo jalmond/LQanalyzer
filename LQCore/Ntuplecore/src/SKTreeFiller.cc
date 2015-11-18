@@ -119,16 +119,16 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetPFMETShift(-1,2, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
   kevent.SetPFMETShift(1,3, sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
   kevent.SetPFMETShift(-1,3, sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
-  kevent.SetPFSumEtShift(1,3, met_unclusteredEn_SumEt_up);
-  kevent.SetPFSumEtShift(-1,3, met_unclusteredEn_SumEt_down);
+  kevent.SetPFSumETShift(1,3, met_unclusteredEn_SumEt_up);
+  kevent.SetPFSumETShift(-1,3, met_unclusteredEn_SumEt_down);
   kevent.SetPFMETShift(1,4, sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
   kevent.SetPFMETShift(-1,4, sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
-  kevent.SetPFSumEtShift(1,4, met_jetEn_SumEt_up);
-  kevent.SetPFSumEtShift(-1,4, met_jetEn_SumEt_down);
+  kevent.SetPFSumETShift(1,4, met_jetEn_SumEt_up);
+  kevent.SetPFSumETShift(-1,4, met_jetEn_SumEt_down);
   kevent.SetPFMETShift(1,5, sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
   kevent.SetPFMETShift(-1,5, sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
-  kevent.SetPFSumEtShift(1,5, met_jetRes_SumEt_up);
-  kevent.SetPFSumEtShift(-1,5, met_jetRes_SumEt_down);
+  kevent.SetPFSumETShift(1,5, met_jetRes_SumEt_up);
+  kevent.SetPFSumETShift(-1,5, met_jetRes_SumEt_down);
 
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
 
