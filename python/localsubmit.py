@@ -361,8 +361,10 @@ filechannel=""
 if platform.system() == "Linux":
     version="_CAT"
     print "Using CAT " + os.getenv("CATVERSION") + " ntuples"
-    filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
-    
+    if mc:
+        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT+mc_' + os.getenv("CATVERSION") +  '.txt'
+    else:
+        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data.txt'
 else:
     filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
