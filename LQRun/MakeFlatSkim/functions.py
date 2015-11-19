@@ -1,5 +1,30 @@
 import os
 
+def makeEmail(users, version, type):
+    config= 'Dear ' + users + ',\n'
+    config+= '\n'
+    if "MC" in type:
+        config+='The MC skims for catversion ' + version + ' are now ready at /data2/DATA/cattoflat/skim/' + version +'/'    
+    else:
+        config+='The skims for catversion ' + version + ' are now ready at /data2/DATA/cattoflat/skim/' + version +'/'    
+    config+= '\n'
+    config+= 'Thanks,\n'
+    config+= 'John,\n'
+
+    config+= '\n'
+    if "MC" in type:
+        config+= 'The name/nevents/sum_gen_weights/xsec*filt_eff/lumi/local_path for these samples are listed below\n'
+
+        lumilist=open("/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_v7-4-5.txt","r")
+        for line in lumilist:
+            if "/data2/DATA/cattoflat/MC/" in line:
+                config+= line 
+    
+    return config
+        
+            
+
+
 def makeNtupleMakerH(sample,samplelist,j, output):
 
     ntuplemaker=open("SkimFlatCat.h","r")

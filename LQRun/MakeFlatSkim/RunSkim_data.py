@@ -2,9 +2,9 @@ import os, getpass, sys
 import time
 from functions import *
 
-version = "v7-4-2"
-sampledir = ["DoubleMuon", "DoubleEG", "SingleMuon", "MuonEG"]
-period=["periodC" , "periodD"]
+version = os.getenv("CATVERSION")
+sampledir = ["DoubleMuon", "DoubleEG", "SingleMuon", "MuonEG" "SingleElectron", "SingleMuon"]
+period=["periodC_rereco" , "periodD", "periodD_rereco"]
 
 for i in sampledir:
    output=i
