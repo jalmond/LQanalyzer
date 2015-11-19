@@ -20,7 +20,7 @@ map<TString, TString> lqmap;
 map<TString, Double_t> map_lumi;
 map<TString, Double_t> neventmap;
 map<TString, Double_t> n_w_eventmap;
-void GetEffectiveLuminosity() {
+void GetEffectiveLuminosity(TString version="v7") {
   
   dirmap.clear();
   lqmap.clear();
@@ -108,11 +108,12 @@ void GetEffectiveLuminosity() {
   lqmap["QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8"] ="QCD_em300toINF";
   
 
-  TString version = TString(getenv("CATVERSION"));  
+  TString def_version = TString(getenv("CATVERSION"));  
   for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
     
 
-
+    if(!version.Contains("v7") ) version = def_version;
+    
     TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist.txt";
     
     bool use_sum_genweight(false);
