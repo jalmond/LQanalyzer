@@ -4,11 +4,24 @@
 ###### SET WHAT JOBS TO RUN
 runMC=false
 runDoubleMuon=false
-
 runDoubleElectron=false
 runSingleMuon=false
 runElectronMuon=false
-runSingleElectron=true
+runSingleElectron=false
+
+
+## RUN PARAMETERS
+job_cycle="SKTreeMaker"
+
+job_data_lumi="ALL"  ###  "C" = period C only   "ALL"  = period C+D
+job_logstep=1000
+job_loglevel="INFO"
+job_njobs=30
+
+version_tag=${CATVERSION}
+############################################################
+
+
 
 if [[ $1  == "ALL" ]]; 
 then
@@ -49,15 +62,24 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=30
-    data_lumi="ALL"
-    loglevel="DEBUG"
-    logstep=1000
-    
-    declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WZ" "ZZ" "WW" "WJets")
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
 
-  
-    source submit.sh
+    if [[ $1  == "debug"  ]];
+	then
+	
+	declare -a input_samples=("$2")
+	source submit.sh
+    fi
+    
+    if [[ $1  != "debug"  ]];
+	then
+	
+	declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WZ" "ZZ" "WW" "WJets")
+	source submit.sh
+    fi
 fi    
 
 
@@ -68,10 +90,10 @@ then
     source functions.sh
     cycle="SKTreeMaker"
 
-    njobs=30
-    data_lumi="ALL" ### This should == input_samples
-    loglevel="INFO"
-    logstep=1000
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
     
     stream="singlemuon"
     declare -a input_samples=("C" "D1" "D2")
@@ -86,11 +108,11 @@ if [[ $runSingleElectron  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=30
-    data_lumi="ALL" ### This should == input_samples
-    loglevel="INFO"
-    logstep=1000
-
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
+    
     stream="singleelectron"
     declare -a input_samples=("C" "D1" "D2" )
     source submit.sh
@@ -104,10 +126,10 @@ if [[ $runDoubleElectron  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=30
-    data_lumi="ALL"
-    loglevel="INFO"
-    logstep=1000
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
     
     stream="egamma"
     declare -a input_samples=("C" "D1" "D2")
@@ -121,11 +143,11 @@ if [[ $runDoubleMuon  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=30
-    data_lumi="ALL" ### This should == input_samples  
-    loglevel="INFO"
-    logstep=1000
-    
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
+        
     stream="muon"
     declare -a input_samples=("C" "D1" "D2")
 
@@ -137,11 +159,11 @@ then
     source functions.sh
     cycle="SKTreeMaker"
 
-    njobs=30
-    data_lumi="ALL" ### This should == input_samples
-    loglevel="INFO"
-    logstep=1000
-
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
+    
 
     stream="emu"
     declare -a input_samples=("C" "D1" "D2" )
@@ -155,14 +177,25 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=30
-    data_lumi="ALL"
-    loglevel="INFO"
-    logstep=1000
+    njobs=$job_njobs
+    data_lumi=$job_data_lumi
+    loglevel=$job_loglevel
+    logstep=$job_logstep
 
-    declare -a input_samples=("QCD_mu20to30" "QCD_mu30to50" "QCD_mu50to80" "QCD_mu80to120" "QCD_mu120to170" "QCD_mu170to300" "QCD_mu300to470" "QCD_mu470to600" "QCD_mu600to800" "QCD_mu800to1000" "QCD_mu1000toINF" "QCD_em20to30" "QCD_em30to50" "QCD_em50to80" "QCD_em80to120" "QCD_em120to170" "QCD_em170to300" "QCD_em300toINF" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttHtobb" "ttHnobb" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ" "vhf_Htomm" "ggHtomm")
-
-    source submit.sh
+   if [[ $1  == "debug"  ]];
+       then
+       
+       declare -a input_samples=("$2")
+       source submit.sh
+   fi
+   
+   if [[ $1  != "debug"  ]];
+       then
+       
+       declare -a input_samples=("QCD_mu20to30" "QCD_mu30to50" "QCD_mu50to80" "QCD_mu80to120" "QCD_mu120to170" "QCD_mu170to300" "QCD_mu300to470" "QCD_mu470to600" "QCD_mu600to800" "QCD_mu800to1000" "QCD_mu1000toINF" "QCD_em20to30" "QCD_em30to50" "QCD_em50to80" "QCD_em80to120" "QCD_em120to170" "QCD_em170to300" "QCD_em300toINF" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttHtobb" "ttHnobb" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ" "vhf_Htomm" "ggHtomm")
+       
+       source submit.sh
+   fi
 fi
 
 

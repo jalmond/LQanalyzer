@@ -183,7 +183,7 @@ void GetEffectiveLuminosity(TString version="") {
     std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-    lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/v7-4-4/SKTrees/Sep15/MC/" << version <<"/"  << mit2->second << "/" <<endl;
+    lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << version <<"/"  << mit2->second << "/" <<endl;
   }
 
   
@@ -195,7 +195,7 @@ void GetEffectiveLuminosity(TString version="") {
     std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-    lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/v7-4-4/SKTrees/Sep15/MCDiLep1510/" << version <<"/"  << mit2->second << "/" <<endl;
+    lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep1510/" << version <<"/"  << mit2->second << "/" <<endl;
   }
   
   string lfile2 =  "/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";

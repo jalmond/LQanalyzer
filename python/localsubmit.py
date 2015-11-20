@@ -364,7 +364,7 @@ if platform.system() == "Linux":
     if mc:
         filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' + os.getenv("CATVERSION") +  '.txt'
     else:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data.txt'
+        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  + os.getenv("CATVERSION") +'.txt'
 else:
     filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
@@ -801,7 +801,17 @@ else:
             print line
 
 
-    SKTreeOutput = "/data2/CatNtuples/" + os.getenv("CATVERSION")+ "/SKTrees/Sep15/"        
+
+    SKTreeOutput_pre = "/data2/CatNtuples/" + os.getenv("CATVERSION")
+    if not os.path.exists(SKTreeOutput_pre):
+        os.system("mkdir " + SKTreeOutput_pre)
+
+    SKTreeOutput_pre2 = "/data2/CatNtuples/" + os.getenv("CATVERSION") + "/SKTrees/"
+    if not os.path.exists(SKTreeOutput_pre2):
+        os.system("mkdir " + SKTreeOutput_pre2)
+                    
+        
+    SKTreeOutput = "/data2/CatNtuples/" + os.getenv("CATVERSION")+ "/SKTrees/"        
 
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
