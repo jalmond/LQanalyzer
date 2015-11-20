@@ -31,7 +31,8 @@ then
     logstep=1000
 #    nevents=10000
 
-    declare -a input_samples=("WZ" "ZZ" "WW")
+    declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WZ" "ZZ" "WW" "WJets")
+
     
     stream="muon"
 

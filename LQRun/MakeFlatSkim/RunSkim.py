@@ -44,6 +44,32 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              ]
            
 
+sampledir= [             "QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-470to600_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-50to80_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-20to30_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-800to1000_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-170to300_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-300to470_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+                                      "ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
+                                      "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
+                                      "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
+                                      "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
+                                      "TT_TuneCUETP8M1_13TeV-powheg-pythi8",
+                                      "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"
+                                      ]
+
+
 skip=0
 counter=0
 
@@ -72,6 +98,8 @@ for i in sampledir:
       if ".root" in line:
          counter=counter+1
 
+   if counter==0:
+      continue;
 
    runscript= "SkimFlatCat.h"
    runscriptC="SkimFlatCat.C"

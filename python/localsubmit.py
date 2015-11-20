@@ -362,7 +362,7 @@ if platform.system() == "Linux":
     version="_CAT"
     print "Using CAT " + os.getenv("CATVERSION") + " ntuples"
     if mc:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT+mc_' + os.getenv("CATVERSION") +  '.txt'
+        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' + os.getenv("CATVERSION") +  '.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data.txt'
 else:
@@ -385,10 +385,10 @@ else:
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
-            if len(entries)==3:
+            if len(entries)==6:
                 if sample == entries[0]:
-                    eff_lumi = entries[1]
-                    inDS = entries[2]
+                    eff_lumi = entries[4]
+                    inDS = entries[5]
 InputDir = inDS    
 
 ##################################################################################################################

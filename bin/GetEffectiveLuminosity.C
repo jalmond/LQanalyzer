@@ -9,6 +9,7 @@
 #include "TString.h"
 #include <iomanip>
 #include <sstream>
+#include "TSystem.h"
 
 #include <map>
 
@@ -198,7 +199,8 @@ void GetEffectiveLuminosity(TString version="") {
   }
   
   string lfile2 =  "/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
-  gSystem->Exec("mv " + lfile + " > " + lfile2);
+  TSystem* g;
+  int test = g->Exec(("mv " + lfile + " > " + lfile2).c_str());
 
   return;
   
