@@ -17,6 +17,12 @@
 #include "JetPlots.h"
 #include "SignalPlots.h"
 
+// STD includes
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+
 
 //ROOT includes
 #include <TFile.h>
@@ -56,6 +62,13 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   rmcor = new rochcor2012();
+
+  
+  SetupJECUncertainty("FlavorQCD");
+  SetupJECUncertainty("FlavorPureQuark");
+  SetupJECUncertainty("FlavorPureBottom");
+  SetupJECUncertainty("FlavorPureCharm");
+  SetupJECUncertainty("FlavorPureGluon");
 
 }
 
@@ -130,7 +143,113 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
   
 }
 
+float AnalyzerCore::GetJECUncertainty(TString type, float eta, float pt, bool up){
 
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > >::iterator mapit;
+  mapit = JECUncMap.find(type);
+  if(mapit == JECUncMap.end()) {cout<< "ERROR, " << type  << " not found in JEC Uncertainty MAP" << endl; return -999.;}
+
+  
+  float bin_boundary(-999.);
+  int etabin(-999);
+
+  std::map<float, std::vector<float> > ptmap = mapit->second.at(0);
+
+  std::vector<float> etabins;  
+  for(std::map<float, std::vector<float> >::iterator it = ptmap.begin(); it!= ptmap.end(); it++){
+    etabins.push_back(it->first);
+  }
+  /// Add last bin by hand
+  etabins.push_back(5.4);
+  
+  for(int i=0; i < etabins.size()-1 ; i++){
+    if(eta >= etabins.at(i) && eta < etabins.at(i+1)){  bin_boundary = float(etabins.at(i)) ; break;}
+  }
+  
+  std::vector<float> ptbins;
+  unsigned int iit(0);
+  
+
+  for(std::map<float, std::vector<float> >::iterator pit = ptmap.begin();  pit != ptmap.end(); pit++){
+    if(float(pit->first) == float(bin_boundary)) {ptbins = pit->second; }
+  }
+  
+  int ptbin(-999);
+  if(pt >= ptbins.at(ptbins.size() - 1)) ptbin = ptbins.size() - 1;
+  for(unsigned int j = 0 ; j < ptbins.size()-1; j++){
+    if( pt >= ptbins.at(j)  && pt < ptbins.at(j+1)) {ptbin=j; break;}
+  }
+  
+
+  std::map<float, std::vector<float> > upmap = mapit->second.at(1); 
+  std::map<float, std::vector<float> > downmap = mapit->second.at(2); 
+  
+  std::map<float, std::vector<float> >::iterator mapit_unc;
+  if(up) mapit_unc =  mapit->second.at(1).find(bin_boundary);
+  else mapit_unc =  mapit->second.at(2).find(bin_boundary);
+  
+  float unc = mapit_unc->second.at(ptbin); 
+
+  return unc;
+  }
+  
+void AnalyzerCore::SetupJECUncertainty(TString type){
+  
+  string analysisdir = getenv("LQANALYZER_DIR");
+  
+  string file = analysisdir + "/data/JEC/Summer13_V5_DATA_UncertaintySources_AK5PF.txt";
+  ifstream jec_file(file.c_str());
+  
+  bool found_unc(false);
+  int nline(0);
+  std::map<float, std::vector<float> > etaptmap, eta_uncupmap, eta_uncdownmap;
+
+  string sline;
+  
+  while(getline(jec_file,sline) ){
+    
+    std::istringstream is( sline );
+
+    if(found_unc && nline==0){nline++; continue;}
+    if(found_unc && nline==1){
+      float eta_min, eta_max, test;
+      is >> eta_min;
+      is >> eta_max;
+      is >> test;
+      cout << "Eta min = " << eta_min << endl;
+      if(eta_min==5.0) found_unc=false;
+      std::vector<float> ptbin, unc_up, unc_down;
+      bool finalbin(false);
+      for(int i=0; i < 150; i++){
+	float tmp;
+	is >> tmp;
+	if((i %3) == 0) {ptbin.push_back(tmp); cout << "ptbin = " << tmp ; if(tmp==3276.5) finalbin=true;}
+	if((i %3) == 1) {unc_up.push_back(tmp); cout << " unc up = " << tmp ;}
+	if((i %3) == 2) {unc_down.push_back(tmp); cout << " unc down = " << tmp ;}
+	if((i %3) == 2 && finalbin) break;
+      }
+      
+      etaptmap[eta_min] = ptbin;
+      eta_uncupmap[eta_min] =  unc_up;
+      eta_uncdownmap[eta_min] = unc_down;
+      continue;
+    }
+        
+    if(sline.find(type)!=string::npos) {  cout << "FOUND " << sline << endl; found_unc=true;	continue;}
+    if(sline=="END") break;
+    if(sline.find("CorrelationGroupMPFInSitu")!=string::npos) break;
+    
+  }
+  std::vector<std::map<float, std::vector<float> > > vec_unc;
+  vec_unc.push_back(etaptmap);
+  vec_unc.push_back(eta_uncupmap);
+  vec_unc.push_back(eta_uncdownmap);
+
+  
+  JECUncMap[type] = vec_unc;
+  return;
+  
+}
 std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
 
   std::vector<snu::KMuon> muonColl;
@@ -2150,6 +2269,8 @@ AnalyzerCore::~AnalyzerCore(){
   
   Message("In AnalyzerCore Destructor" , INFO);
   if(FRHist) delete FRHist;
+
+  JECUncMap.clear();
 
   for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
     delete it->second;
