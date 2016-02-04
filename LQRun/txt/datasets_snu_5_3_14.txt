@@ -456,6 +456,8 @@ ttbar_scaleup      179009.6875	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT
 ttbar_width_x5	   57792.39844	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_central	   262243.375	    /data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/
 
+ttbar_CT10_pythia		   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_weights_CT10_TuneP11C-8TeV-powheg-pythia6-tauola/
+ttbar_CT10_herwig		   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_weights_CT10_AUET2_8TeV-powheg-herwig/
 CH120PU        273509.8125        /data2/MC/CHsample/LQNtuple/CH120/                            
 CHm120PU       137442.125         /data2/MC/CHsample/LQNtuple/CHm120/                           
 CH110PU        273509.8125                /data2/MC/CHsample/LQNtuple/CH110/                    

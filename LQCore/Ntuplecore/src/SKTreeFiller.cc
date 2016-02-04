@@ -116,9 +116,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   if(!isData){
     if(PDFCTEQWeights){
       /// This will have to take in a vector for any systematic studies
-      kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
-      kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
-      kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
+      //kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
+      //kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
+      //kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
     }
   }
   //// Filling vertex variables
@@ -342,10 +342,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetNBrems(ElectronNumberOfBrems->at(iel));
     el.SetFBrem(ElectronFbrem->at(iel));
 
-    if(ElectronshiftedEup){
-      el.SetShiftedEUp(ElectronshiftedEup->at(iel));
-      el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
-    }
+    //if(ElectronshiftedEup){
+    //  el.SetShiftedEUp(ElectronshiftedEup->at(iel));
+    //  el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+    // }
 
     if(ElectronDCotTheta){
       el.SetCotTheta(ElectronDCotTheta->at(iel));
@@ -978,10 +978,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetIsGlobal(MuonIsGlobal->at(ilep));
     muon.SetIsTracker(MuonIsTracker->at(ilep));
 
-    if(MuonshiftedEup){
-      muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
-      muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
-    }
+    //if(MuonshiftedEup){
+    //  muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
+    //  muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+    // }
 
     
     if(!MuonGlobalEta){
