@@ -2,19 +2,19 @@
 
 ###### SET WHAT JOBS TO RUN
 runMC=true
-runDoubleMuon=true
+runDoubleMuon=false
 
 
 ## RUN PARAMETERS
 job_cycle="ExampleAnalyzerDiMuon"
 job_data_lumi="ALL"   ###  "C" = period C only   "ALL"  = period C+D
 job_stream="muon" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset 
-job_skinput="True" 
+job_skinput="False" 
 
 job_useskim="DiLep" ### "Lepton" for single lepton skim   "DiLep" for dilepton skim
 job_logstep=1000
-job_loglevel="INFO"
-job_njobs=15
+job_loglevel="DEBUG"
+job_njobs=1
 
 version_tag=${CATVERSION}
 
@@ -86,7 +86,7 @@ then
     outputdir=${outputdir_mc}
 
     declare -a input_samples=("DY10to50" "DY50plus" "WJets" "TTJets_MG5" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
-    
+    declare -a input_samples=("WZ")
     source submit.sh $1
 fi
 
@@ -102,8 +102,6 @@ then
     useskim=$job_useskim
     skinput=${job_skinput}
     njobs=$job_njobs
-
-
     outputdir=${outputdir_data}
     
     if [[ $job_data_lumi  == "ALL" ]];
@@ -123,7 +121,7 @@ then
     if [[ $job_data_lumi  == "C" ]]; 
 	then
 	echo "Ran only period C"
-
+	
 	mv  ${outputdir_data}/*.root ${output_datafile}
 
 

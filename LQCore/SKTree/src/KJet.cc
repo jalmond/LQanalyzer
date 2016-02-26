@@ -19,7 +19,9 @@ KParticle()
   k_jet_passTightLepVetoID=false;
   k_jet_energy_raw=0.;
   k_jet_pt_raw=0.;
-  k_jet_cvsv2= 0.;
+  k_jet_csv2= 0.;
+  k_jet_cmva2 = 0.;
+  k_jet_jetprobbjet= 0.;
   k_vtx_mass= 0.;
   k_vtx_3dval= 0.;
   k_vtx_3dsig= 0.;
@@ -53,7 +55,10 @@ KJet::KJet(const KJet& jet) :
   k_jet_passTightLepVetoID=jet.PassTightLepVetoID();
   k_jet_energy_raw=jet.RawE();
   k_jet_pt_raw=jet.RawPt();
-  k_jet_cvsv2= jet.CVSInclV2();
+  k_jet_csv2= jet.BJetTaggerValue(CSV2);
+  k_jet_cmva2= jet.BJetTaggerValue(CMVA2);
+  k_jet_jetprobbjet = jet.BJetTaggerValue(JETPROB);
+
   k_vtx_mass= jet.VtxMass();
   k_vtx_3dval= jet.Vtx3DVal();
   k_vtx_3dsig= jet.Vtx3DSig();
@@ -88,7 +93,11 @@ void KJet::Reset()
     k_jet_passTightLepVetoID=false;
     k_jet_energy_raw=0.;
     k_jet_pt_raw=0.;
-    k_jet_cvsv2= 0.;
+    k_jet_csv2= 0.;
+    k_jet_cmva2= 0.;
+    k_jet_jetprobbjet = 0.;
+
+
     k_vtx_mass= 0.;
     k_vtx_3dval= 0.;
     k_vtx_3dsig= 0.;
@@ -122,7 +131,9 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_passTightLepVetoID=p.PassTightLepVetoID();
       k_jet_energy_raw=p.RawE();
       k_jet_pt_raw=p.RawPt();
-      k_jet_cvsv2= p.CVSInclV2();
+      k_jet_csv2= p.BJetTaggerValue(CSV2);
+      k_jet_cmva2= p.BJetTaggerValue(CMVA2);
+      k_jet_jetprobbjet =p.BJetTaggerValue(JETPROB);
       k_vtx_mass= p.VtxMass();
       k_vtx_3dval= p.Vtx3DVal();
       k_vtx_3dsig= p.Vtx3DSig();
@@ -147,6 +158,15 @@ KJet& KJet::operator= (const KJet& p)
     return *this;
 }
 
+
+
+
+double KJet::BJetTaggerValue(tagger tag) const{
+  if(tag == CSV2) return k_jet_csv2;
+  if(tag == CMVA2) return k_jet_cmva2;
+  if(tag == JETPROB) return k_jet_jetprobbjet;
+  return -999.;
+}
 
 //// POG ID CUTS
 
@@ -181,11 +201,12 @@ void KJet::SetJetPileupIDMVA(double mva){
 }
 /// BTAG variables
 
-void KJet::SetCVSInclV2(double btag){
-  k_jet_cvsv2 = btag;
+
+void KJet::SetBTagInfo(tagger tag, float value){
+  if(tag == CSV2)       k_jet_csv2 = value;
+  if(tag == CMVA2)      k_jet_cmva2 = value;
+  if(tag == JETPROB)    k_jet_jetprobbjet = value;
 }
-
-
  
 /// Jet energy fractions
 

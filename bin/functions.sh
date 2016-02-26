@@ -15,14 +15,14 @@ xsec=-1.
 targetlumi=-1.
 efflumi=-1.
 remove="True"
-skinput="False"
+skinput="True"
 useCATv742ntuples="True"
 runevent=-1
 DEBUG="False"
 useskim="Lepton"
 runnp="False"
 runcf="False"
-
+catversion=""
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 

@@ -25,6 +25,7 @@ class TBranch;
 namespace snu{
   class KMuon;
   class KElectron;
+  class KPhoton;
   class KEvent;
   class KJet;
   class KGenJet;
@@ -75,6 +76,7 @@ public :
    void ConnectEvent();
    void ConnectMuons();
    void ConnectElectrons();
+   void ConnectPhotons();
    void ConnectPFJets();
 
    void ConnectTruth();
@@ -82,7 +84,9 @@ public :
    void ConnectAllBranches();
    void ConnectMET();
    void SetLQNtupleInputType(bool lq);
-     
+   std::string GetCatVersion(bool runLQ);
+   void SetCatVersion(std::string cv);
+
 
    bool LQinput;
    Long64_t nentries;
@@ -92,21 +96,29 @@ public :
    /// If needed (using SKTree input)
    std::vector<snu::KMuon>     *k_inputmuons;
    std::vector<snu::KElectron>     *k_inputelectrons;
+   std::vector<snu::KPhoton>     *k_inputphotons;
    std::vector<snu::KJet>     *k_inputjets;
    std::vector<snu::KGenJet>     *k_inputgenjets;
    snu::KEvent     *k_inputevent;
    snu::KTrigger     *k_inputtrigger;
    std::vector<snu::KTruth>     *k_inputtruth;
 
-
+   
    Bool_t          isData;
+   Double_t        lumiSilver;
+   Double_t        lumiGolden;
+
    std::vector<TBranch*> m_inputbranches;
 
+   std::string CatVersion;
+   std::string CatVersion_nt;
 
    // Declaration of leaf types
    Int_t           run;
    Int_t           lumi;
    Int_t           event;
+   Int_t           lumiMaskGold;
+   Int_t           lumiMaskSilver;
 
    std::vector<float>   *gen_pt;
    std::vector<std::string>  *vtrignames;
@@ -147,9 +159,12 @@ public :
    Float_t         genWeightX1;
    Float_t         genWeightX2;
    Float_t         lheWeight;
-   Float_t         puWeight;
-   Float_t         puWeightDn;
-   Float_t         puWeightUp;
+   Float_t         puWeightGold;
+   Float_t         puWeightGoldDn;
+   Float_t         puWeightGoldUp;
+ Float_t         puWeightSilver;
+   Float_t         puWeightSilverDn;
+   Float_t         puWeightSilverUp;
    std::vector<float>   *pdfWeight;
    ///   Int_t           triggers_;
    //   std::string         triggers_first[100];
@@ -181,7 +196,28 @@ public :
    std::vector<double>  *electrons_x;
    std::vector<double>  *electrons_y;
    std::vector<double>  *electrons_z;
-   std::vector<double>  *jets_CVSInclV2;
+   std::vector<double>  *photons_chargedHadronIso;
+   std::vector<double>  *photons_chargedHadronIsoWithEA;
+   std::vector<double>  *photons_energy;
+   std::vector<double>  *photons_eta;
+   std::vector<double>  *photons_hovere;
+   std::vector<double>  *photons_neutralHadronIso;
+   std::vector<double>  *photons_neutralHadronIsoWithEA;
+   std::vector<double>  *photons_phi;
+   std::vector<double>  *photons_photonIso;
+   std::vector<double>  *photons_photonIsoWithEA;
+   std::vector<double>  *photons_pt;
+   std::vector<double>  *photons_puChargedHadronIso;
+   std::vector<double>  *photons_r9;
+   std::vector<double>  *photons_rhoIso;
+   std::vector<double>  *photons_sceta;
+   std::vector<double>  *photons_scphi;
+   std::vector<double>  *photons_scpreshowerenergy;
+   std::vector<double>  *photons_scrawenergy;
+   std::vector<double>  *photons_sigmaietaieta;
+   std::vector<double>  *jets_CSVInclV2;
+   std::vector<double>  *jets_JetProbBJet;
+   std::vector<double>  *jets_CMVAV2;
    std::vector<double>  *jets_chargedEmEnergyFraction;
    std::vector<double>  *jets_energy;
    std::vector<double>  *jets_eta;
@@ -197,16 +233,6 @@ public :
    std::vector<double>  *jets_vtx3DSig;
    std::vector<double>  *jets_vtx3DVal;
    std::vector<double>  *jets_vtxMass;
-   std::vector<double>  *jetsPuppi_CVSInclV2;
-   std::vector<double>  *jetsPuppi_eta;
-   std::vector<double>  *jetsPuppi_hadronFlavour;
-   std::vector<double>  *jetsPuppi_m;
-   std::vector<double>  *jetsPuppi_partonFlavour;
-   std::vector<double>  *jetsPuppi_phi;
-   std::vector<double>  *jetsPuppi_pt;
-   std::vector<double>  *jetsPuppi_vtx3DSig;
-   std::vector<double>  *jetsPuppi_vtx3DVal;
-   std::vector<double>  *jetsPuppi_vtxMass;
    std::vector<double>  *met_phi;
    std::vector<double>  *met_pt;
    std::vector<double>  *met_sumet;
@@ -262,19 +288,22 @@ public :
    std::vector<double>  *muon_x;
    std::vector<double>  *muon_y;
    std::vector<double>  *muon_z;
-   std::vector<double>  *slimmedGenJets_energy;
-   std::vector<double>  *slimmedGenJets_eta;
-   std::vector<double>  *slimmedGenJets_m;
-   std::vector<double>  *slimmedGenJets_phi;
-   std::vector<double>  *slimmedGenJets_pt;
-   std::vector<double>  *vertex_X;
-   std::vector<double>  *vertex_Y;
-   std::vector<double>  *vertex_Z;
+   std::vector<float>   *genjet_pt;
+   std::vector<float>   *genjet_eta;
+   std::vector<float>   *genjet_phi;
+   std::vector<float>   *genjet_energy;
+   std::vector<float>   *genjet_emf;
+   std::vector<float>   *genjet_hadf;
+   std::vector<int>     *genjet_pdgid;
+   Double_t        vertex_X;
+   Double_t        vertex_Y;
+   Double_t        vertex_Z;
    std::vector<bool>    *electrons_electronID_loose;
    std::vector<bool>    *electrons_electronID_medium;
    std::vector<bool>    *electrons_electronID_tight;
    std::vector<bool>    *electrons_electronID_veto;
    std::vector<bool>    *electrons_isPF;
+   std::vector<bool>    *electrons_isTrigMVAValid;
    std::vector<bool>    *electrons_mcMatched;
    std::vector<bool>    *electrons_passConversionVeto;
    std::vector<bool>    *electrons_electronID_heep;
@@ -294,6 +323,13 @@ public :
    std::vector<bool>    *muon_isTracker;
    std::vector<bool>    *muon_matched;
    std::vector<int>     *electrons_electronID_snu;
+   std::vector<bool>    *photons_haspixseed;
+   std::vector<bool>    *photons_mcMatched;
+   std::vector<bool>    *photons_passelectronveto;
+   std::vector<bool>    *photons_photonID_loose;
+   std::vector<bool>    *photons_photonID_medium;
+   std::vector<bool>    *photons_photonID_mva;
+   std::vector<bool>    *photons_photonID_tight;
    std::vector<int>     *jets_hadronFlavour;
    std::vector<int>     *jets_partonFlavour;
    std::vector<int>     *jets_partonPdgId;
@@ -313,8 +349,13 @@ public :
 
    TBranch        *b_run;   //!                                                                                                                                                                                                                                             
    TBranch        *b_isData;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_lumiSilver;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_lumiGolden;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_CatVersion_nt;   //!                                                                                                                                                                                                                                             
  
    TBranch        *b_lumi;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_lumiMaskGold;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_lumiMaskSilver;   //!                                                                                                                                                                                                                                             
    TBranch        *b_event;   //!                                                                                                                                                                                                                                            
    TBranch        *b_gen_pt;   //!                                                                                                                                                                                                                                           
    TBranch        *b_gen_eta;   //!                                                                                                                                                                                                                                          
@@ -351,9 +392,14 @@ public :
    TBranch        *b_genWeightX1;   //!                                                                                                                                                                                                                                      
    TBranch        *b_genWeightX2;   //!                                                                                                                                                                                                                                      
    TBranch        *b_lheWeight;   //!                                                                                                                                                                                                                                        
-   TBranch        *b_puWeight;   //!                                                                                                                                                                                                                                         
-   TBranch        *b_puWeightDn;   //!                                                                                                                                                                                                                                       
-   TBranch        *b_puWeightUp;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_puWeightGold;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldDn;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_puWeightGoldUp;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_puWeightSilver;   //!			     
+   TBranch        *b_puWeightSilverDn;   //!		
+   TBranch        *b_puWeightSilverUp;   //!		
+
+
    TBranch        *b_pdfWeight;   //!                                                                                                                                                                                                                                        
    //   TBranch        *b_triggers_;   //!                                                                                                                                                                                                                                        
    //   TBranch        *b_triggers_first;   //!                                                                                                                                                                                                                                   
@@ -385,7 +431,10 @@ public :
    TBranch        *b_electrons_x;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_y;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_z;   //!                                                                                                                                                                                                                                      
-   TBranch        *b_jets_CVSInclV2;   //!                                                                                                                                                                                                                                   
+   TBranch        *b_jets_CSVInclV2;   //!                                                                                                                                                                                                                                   
+   TBranch        *b_jets_JetProbBJet; //!
+   TBranch        *b_jets_CMVAV2; //!
+
    TBranch        *b_jets_chargedEmEnergyFraction;   //!
 
    TBranch        *b_jets_energy;   //!                                                                                                                                                                                                                                      
@@ -402,16 +451,7 @@ public :
    TBranch        *b_jets_vtx3DSig;   //!                                                                                                                                                                                                                                    
    TBranch        *b_jets_vtx3DVal;   //!                                                                                                                                                                                                                                    
    TBranch        *b_jets_vtxMass;   //!                                                                                                                                                                                                                                     
-   TBranch        *b_jetsPuppi_CVSInclV2;   //!                                                                                                                                                                                                                              
-   TBranch        *b_jetsPuppi_eta;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_jetsPuppi_hadronFlavour;   //!                                                                                                                                                                                                                          
-   TBranch        *b_jetsPuppi_m;   //!                                                                                                                                                                                                                                      
-   TBranch        *b_jetsPuppi_partonFlavour;   //!                                                                                                                                                                                                                          
-   TBranch        *b_jetsPuppi_phi;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_jetsPuppi_pt;   //!                                                                                                                                                                                                                                     
-   TBranch        *b_jetsPuppi_vtx3DSig;   //!                    
-   TBranch        *b_jetsPuppi_vtx3DVal;   //!                                                                                                                                                                                                                               
-   TBranch        *b_jetsPuppi_vtxMass;   //!                                                                                                                                                                                                                                
+
    TBranch        *b_met_phi;   //!                                                                                                                                                                                                                                          
    TBranch        *b_met_pt;   //!                                                                                                                                                                                                                                           
    TBranch        *b_met_sumet;   //!                                                                                                                                                                                                                                        
@@ -467,11 +507,33 @@ public :
    TBranch        *b_muon_x;   //!                                                                                                                                                                                                                                           
    TBranch        *b_muon_y;   //!                                                                                                                                                                                                                                           
    TBranch        *b_muon_z;   //!                                                                                                                                                                                                                                           
-   TBranch        *b_slimmedGenJets_energy;   //!                                                                                                                                                                                                                            
-   TBranch        *b_slimmedGenJets_eta;   //!                                                                                                                                                                                                                               
-   TBranch        *b_slimmedGenJets_m;   //!                                                                                                                                                                                                                                 
-   TBranch        *b_slimmedGenJets_phi;   //!                                                                                                                                                                                                                               
-   TBranch        *b_slimmedGenJets_pt;   //!                                                                                                                                                                                                                                
+   TBranch        *b_photons_chargedHadronIso;   //!
+   TBranch        *b_photons_chargedHadronIsoWithEA;   //!
+   TBranch        *b_photons_energy;   //!
+   TBranch        *b_photons_eta;   //!
+   TBranch        *b_photons_hovere;   //!
+   TBranch        *b_photons_neutralHadronIso;   //!
+   TBranch        *b_photons_neutralHadronIsoWithEA;   //!
+   TBranch        *b_photons_phi;   //!
+   TBranch        *b_photons_photonIso;   //!
+   TBranch        *b_photons_photonIsoWithEA;   //!
+   TBranch        *b_photons_pt;   //!
+   TBranch        *b_photons_puChargedHadronIso;   //!
+   TBranch        *b_photons_r9;   //!
+   TBranch        *b_photons_rhoIso;   //!
+   TBranch        *b_photons_sceta;   //!
+   TBranch        *b_photons_scphi;   //!
+   TBranch        *b_photons_scpreshowerenergy;   //!
+   TBranch        *b_photons_scrawenergy;   //!
+   TBranch        *b_photons_sigmaietaieta;   //!
+
+   TBranch        *b_genjet_pt;   //!
+   TBranch        *b_genjet_eta;   //!
+   TBranch        *b_genjet_phi;   //!
+   TBranch        *b_genjet_energy;   //!
+   TBranch        *b_genjet_emf;   //!
+   TBranch        *b_genjet_hadf;   //!
+   TBranch        *b_genjet_pdgid;   //!
    TBranch        *b_vertex_X;   //!                                                                                                                                                                                                                                       
    TBranch        *b_vertex_Y;   //!                                                                                                                                                                                                                                       
    TBranch        *b_vertex_Z;   //!                                                                                                                                                                                                                                       
@@ -480,6 +542,7 @@ public :
    TBranch        *b_electrons_electronID_tight;   //!                                                                                                                                                                                                                       
    TBranch        *b_electrons_electronID_veto;   //!                                                                                                                                                                                                                        
    TBranch        *b_electrons_isPF;   //!                                                                                                                                                                                                                                   
+   TBranch        *b_electrons_isTrigMVAValid;   //!                                                                                                                                                                                                                                   
    TBranch        *b_electrons_mcMatched;   //!                                                                                                                                                                                                                              
    TBranch        *b_electrons_passConversionVeto;   //!                                                                                                                                                                                                                     
    TBranch        *b_electrons_electronID_heep;   //!
@@ -502,6 +565,14 @@ public :
    TBranch        *b_muon_isTracker;   //!                                                                                                                                                                                                                                   
    TBranch        *b_muon_matched;   //!                                                                                                                                                                                                                                     
    TBranch        *b_electrons_electronID_snu;   //!                                                                                                                                                                                                                         
+   TBranch        *b_photons_haspixseed;   //!
+   TBranch        *b_photons_mcMatched;   //!
+   TBranch        *b_photons_passelectronveto;   //!
+   TBranch        *b_photons_photonID_loose;   //!
+   TBranch        *b_photons_photonID_medium;   //!
+   TBranch        *b_photons_photonID_mva;   //!
+   TBranch        *b_photons_photonID_tight;   //!
+
    TBranch        *b_jets_hadronFlavour;   //!                                                                                                                                                                                                                               
    TBranch        *b_jets_partonFlavour;   //!                                                                                                                                                                                                                               
    TBranch        *b_jets_partonPdgId;   //!                                                                                                                                                                                                                                 
@@ -520,6 +591,7 @@ public :
    TBranch        *b_inputgenjets;
    TBranch        *b_inputevent;
    TBranch        *b_inputelectrons;
+   TBranch        *b_inputphotons;
 
 
 

@@ -75,7 +75,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Apply MC weight for MCatnlo samples
   weight*= MCweight;
 
-  
+
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   FillCutFlow("NoCut", weight);
@@ -95,7 +95,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
     
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-    if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
 
     if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
       if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) match_el++;
@@ -156,26 +156,26 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   
   // Get loose muons for veto: Can call  POGSoft/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight
-  std::vector<snu::KMuon> muonColl = GetMuons("HNLoose");  // loose selection
+  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_POG_LOOSE); // loose selection
   
   /// Get tight jets : Can call NoLeptonVeto/Loose/Medium/Tight/HNJets
-  std::vector<snu::KJet> jetColl_hn  = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
-  std::vector<snu::KJet> jetColl_nlv  = GetJets("NoLeptonVeto");
-  std::vector<snu::KJet> jetColl_loose  = GetJets("Loose");
+  std::vector<snu::KJet> jetColl_hn  = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
+  std::vector<snu::KJet> jetColl_nlv  = GetJets(BaseSelection::JET_NOLEPTONVETO);
+  std::vector<snu::KJet> jetColl_loose  = GetJets(BaseSelection::JET_LOOSE);
 
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
 
   // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
-  std::vector<snu::KElectron> electronLooseColl        = GetElectrons("POGLoose");
-  std::vector<snu::KElectron> electronColl             = GetElectrons("POGTight");
+  std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
+  std::vector<snu::KElectron> electronColl             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
 
   // Sets weight to weight if not running chargeflip bkg estimate or events are S
   if(k_running_chargeflip) weight              *= WeightCFEvent(electronColl, k_running_chargeflip);
     
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-    if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
     
     
     //    cout << "Particle pdgid = " << eventbase->GetTruth().at(ig).PdgId() << " status = " << eventbase->GetTruth().at(ig).GenStatus() << "  mother = " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << endl;
@@ -190,9 +190,9 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   }
 
 
-  std::vector<snu::KElectron> electronHNLooseColl  = GetElectrons("HNLoose");
-  std::vector<snu::KElectron> electronHNVetoColl   = GetElectrons("HNVeto");
-  std::vector<snu::KElectron> electronHNTightColl   = GetElectrons("HNTight");
+  std::vector<snu::KElectron> electronHNLooseColl  = GetElectrons(BaseSelection::ELECTRON_HN_FAKELOOSE);
+  std::vector<snu::KElectron> electronHNVetoColl   = GetElectrons(BaseSelection::ELECTRON_HN_VETO);
+  std::vector<snu::KElectron> electronHNTightColl   = GetElectrons(BaseSelection::ELECTRON_HN_TIGHT);
   
   FillHist("NJets_nlv" , jetColl_nlv.size(), weight, 0., 5., 5);
   FillHist("NJets_loose" , jetColl_loose.size(), weight, 0., 5., 5);
@@ -215,10 +215,9 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   float pileup_reweight (1.);
   if (!k_isdata) {
-    /// Currently this is done using on the fly method: waiting for official method
+    /// use silver or gold
 
-    //pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-    pileup_reweight = eventbase->GetEvent().PileUpWeight();
+    pileup_reweight = eventbase->GetEvent().PileUpWeight(snu::KEvent::silver);
   }
   
   if(!isData){
@@ -254,7 +253,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       /// Count number of bjets (Medium WP in event)
       int nbjet=0;
       for(unsigned int i=0; i <jetColl_hn.size() ; i++){
-	if(jetColl_hn.at(i).CVSInclV2() > 0.89) nbjet++;
+	if(jetColl_hn.at(i).CSVInclV2() > 0.89) nbjet++;
       }
       
       /// OR use NBJet(jets) function

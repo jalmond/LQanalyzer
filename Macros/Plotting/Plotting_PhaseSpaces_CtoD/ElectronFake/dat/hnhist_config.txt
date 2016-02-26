@@ -1,6 +1,9 @@
 h_MTlepton 2 0. 150
 h_PFMET 1 0. 100.
 h_LeptonPt  1 10. 50.
+h_LeptonEta 2 -2.5 2.5
+h_Njets 1 0 6
+h_jets_pt 2 0. 105.
 END
 h_Njets 1 0 6
 h_PFMET 1 0. 100.

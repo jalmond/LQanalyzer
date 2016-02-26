@@ -26,6 +26,7 @@
 #include <TString.h>
 
 #include <KElectron.h>
+#include <KPhoton.h>
 
 
 template < class T >

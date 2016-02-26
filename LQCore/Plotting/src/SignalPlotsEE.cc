@@ -206,8 +206,8 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonDXY", elit->dxy(),weight);
     Fill("h_LeptonDZ", elit->dz(),weight);
      
-    float el_reliso_03 =  elit->PFRelIso03();
-    float el_iso_03 = elit->PFAbsIso03();
+    float el_reliso_03 =  elit->PFRelIso(0.3);
+    float el_iso_03 = elit->PFAbsIso(0.3);
     
     
     Fill("h_LeptonIso", el_iso_03,weight);
@@ -230,7 +230,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   //// Fillplots
   for(unsigned int i=0 ; i < electrons.size(); i++){
-    float dphi = fabs(TVector2::Phi_mpi_pi(electrons.at(i).Phi()- ev.PFMETphi()));
+    float dphi = fabs(TVector2::Phi_mpi_pi(electrons.at(i).Phi()- ev.METPhi(snu::KEvent::pfmet)));
     float MT = sqrt(2.* electrons.at(i).Et()*ev.PFMET() * (1 - cos( dphi)));
     Fill("h_MTlepton",MT, weight);
     Fill("h_dphi_METlepton",dphi, weight);
@@ -239,12 +239,12 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   if(debug)cout<< "Plotting [5] " << endl;
 
   Fill("h_PFMET",ev.PFMET(), weight);
-  Fill("h_PFMET_phi",ev.PFMETphi(), weight);
+  Fill("h_PFMET_phi",ev.METPhi(snu::KEvent::pfmet), weight);
   Fill("h_nVertices", ev.nVertices(), weight);
   
 
-  Fill("h_NoHFMET",ev.NoHFMET(), weight);
-  Fill("h_NoHFMET_phi",ev.NoHFMETphi(), weight);
+  Fill("h_NoHFMET",ev.MET(snu::KEvent::nohf), weight);
+  Fill("h_NoHFMET_phi",ev.METPhi(snu::KEvent::nohf), weight);
 
   
   Fill("h_Nvtx",ev.nVertices(), weight);
@@ -262,8 +262,8 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_jets_eta",jets[j].Eta(),weight);
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
-    Fill("h_bTag",jets[j].CVSInclV2(),weight);
-    if(jets.at(j).CVSInclV2() > 0.89) nbjet++; 
+    Fill("h_bTag",jets[j].CSVInclV2(),weight);
+    if(jets.at(j).CSVInclV2() > 0.89) nbjet++; 
   }
   
   float st = ht + ev.PFMET();

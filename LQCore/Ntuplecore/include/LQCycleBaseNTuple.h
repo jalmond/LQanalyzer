@@ -53,17 +53,18 @@ public:
   
   /// Bool to tell if sample is data or MC in analysis code
   bool k_isdata;
-  int k_mcperiod;
+
   bool k_running_nonprompt;
   bool k_running_chargeflip;
   TString k_sample_name;
   TString k_channel;
-TString muscale_fitParametersFile;
+  TString muscale_fitParametersFile;
   
   // How many entries in the fullsample
   double sample_entries;
   int output_interval;
   int events_to_process;
+  int k_mcperiod;
   /// Declare an output variable
   template< class T >
     TBranch* DeclareVariable( T& obj, const char* name,

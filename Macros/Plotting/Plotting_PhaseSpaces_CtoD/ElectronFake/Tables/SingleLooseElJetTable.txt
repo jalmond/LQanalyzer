@@ -5,16 +5,14 @@
 \hline
 Source & \multicolumn{4}{c}{} \\
 \hline
-DY 10 < m(ll) < 50&515.0& $\pm$& 7.0&$^{+103.0}_{-103.0}$\\
-DY m(ll) > 50&4386.8& $\pm$& 11.7&$^{+877.4}_{-877.4}$\\
-Wjet&22097.0& $\pm$& 101.1&$^{+3314.5}_{-3314.5}$\\
-t$\bar{t}$&2209.4& $\pm$& 2.9&$^{+552.3}_{-552.3}$\\
+Wjets&28543.4& $\pm$& 182.1&$^{+4281.5}_{-4281.5}$\\
+t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&2954.5& $\pm$& 5.3&$^{+738.6}_{-738.6}$\\
 \hline
-Total&29208.1& $\pm$&102.1&$^{+3474.4}_{-3474.4}$\\
+Total&31497.9& $\pm$&182.2&$^{+4344.8}_{-4344.8}$\\
 \hline
-Data&  \multicolumn{4}{c}{$4615.0$}\\
+Data&  \multicolumn{4}{c}{$5430.0$}\\
 \hline
-Signficance&  \multicolumn{4}{c}{$-7.1\sigma$}\\
+Signficance&  \multicolumn{4}{c}{$-6.0\sigma$}\\
 \hline
 \hline
 \end{tabular}

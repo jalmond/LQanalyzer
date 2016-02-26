@@ -20,11 +20,12 @@ using namespace std;
 #include "KTruth.h"
 #include "KTrigger.h"
 #include "KEvent.h"
+#include "KPhoton.h"
 
 class LQEvent {
 
  public:
-  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el, std::vector<snu::KJet> jets, std::vector<snu::KGenJet> genjets,std::vector<snu::KTruth> truth, snu::KTrigger tr,  snu::KEvent ev);
+  LQEvent(std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el,  std::vector<snu::KPhoton> photons, std::vector<snu::KJet> jets, std::vector<snu::KGenJet> genjets,std::vector<snu::KTruth> truth, snu::KTrigger tr,  snu::KEvent ev);
 
   ///Copy constructor
   LQEvent(const LQEvent& evb);
@@ -36,6 +37,7 @@ class LQEvent {
   
   inline std::vector<snu::KMuon> GetMuons() const {return k_muons;}
   inline std::vector<snu::KElectron> GetElectrons() const {return k_electrons;}
+  inline std::vector<snu::KPhoton> GetPhotons() const {return k_photons;}
   inline std::vector<snu::KTruth> GetTruth() const {return k_truth;}
   inline std::vector<snu::KJet> GetJets() const {return k_jets;}
   inline std::vector<snu::KGenJet> GetGenJets() const {return k_genjets;}
@@ -47,6 +49,7 @@ class LQEvent {
  private:
   std::vector<snu::KMuon> k_muons;
   std::vector<snu::KElectron> k_electrons;
+  std::vector<snu::KPhoton> k_photons;
   std::vector<snu::KTruth> k_truth;
   std::vector<snu::KJet> k_jets;
   std::vector<snu::KGenJet> k_genjets;

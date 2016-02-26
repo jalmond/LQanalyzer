@@ -29,6 +29,7 @@ class SKTreeMaker : public AnalyzerCore {
   /// Vectors for output objetcs
   std::vector<snu::KMuon> out_muons;
   std::vector<snu::KElectron> out_electrons;
+  std::vector<snu::KPhoton> out_photons;
   std::vector<snu::KJet> out_jets;
   std::vector<snu::KGenJet> out_genjets;
   std::vector<snu::KTruth> out_truth;

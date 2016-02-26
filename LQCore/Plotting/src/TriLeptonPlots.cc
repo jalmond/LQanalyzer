@@ -164,12 +164,12 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
   Fill("h_Njets",jets.size(), weight);
   
   Fill("h_PFMET",ev.PFMET(), weight);
-  Fill("h_PFMET_phi",ev.PFMETphi(), weight);
+  Fill("h_PFMET_phi",ev.METPhi(snu::KEvent::pfmet), weight);
   Fill("h_nVertices", ev.nVertices(), weight);
 
 
-  Fill("h_NoHFMET",ev.NoHFMET(), weight);
-  Fill("h_NoHFMET_phi",ev.NoHFMETphi(), weight);
+  Fill("h_NoHFMET",ev.MET(snu::KEvent::nohf), weight);
+  Fill("h_NoHFMET_phi",ev.METPhi(snu::KEvent::nohf), weight);
   
   for(UInt_t j=0; j < jets.size(); j++){
     Fill("h_jets_pt", jets[j].Pt(),weight);

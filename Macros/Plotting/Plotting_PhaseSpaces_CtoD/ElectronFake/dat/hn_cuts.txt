@@ -1,4 +1,5 @@
 SingleLooseElJet
+SingleTightElJet
 END
 
 DiMuon_mediumjet

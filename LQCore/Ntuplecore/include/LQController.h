@@ -18,6 +18,13 @@ class LQController  {
 
  public:
   
+  enum _catversion {none,
+		    v744,
+		    v745,
+		    v762,
+		    v763};
+
+
   //// constructors
   LQController();
   virtual ~LQController();
@@ -39,7 +46,7 @@ class LQController  {
   void SetCycleName(TString cyclename);
   void AddLibraries(TString libname);  
   void SetJobName(TString name);
-  void SetInputList(TString list);
+  void SetInputList(TString list) throw( LQError );
   void SetFullInputList(TString list);
   void SetDataType(TString settype);
   void SetLogLevel(TString level);
@@ -55,6 +62,11 @@ class LQController  {
   void SetChannel(TString channel);
   void SetInputChain(TChain* ch);
   void SetLQInput(bool lq);
+  _catversion GetCatVersion(std::string filepath)  throw( LQError ); 
+  bool CheckBranch(LQController::_catversion dir_version, std::string ntuple_version, std::string env_version);
+
+
+
   /// Other class functions
   void RunEvent(Long64_t ev);
   void RunNtupleEvent(Long64_t ev);
@@ -96,7 +108,8 @@ class LQController  {
   TString channel;
   TString k_period;
   bool kLQInput;
-  
+  _catversion catversion_lq;
+
   TH1F* h_timing_hist;
   TH1F* h_virtmemory_hist;
   TH1F* h_physicalmemory_hist;

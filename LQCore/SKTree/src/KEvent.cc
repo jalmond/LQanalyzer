@@ -20,7 +20,8 @@ KEvent::KEvent() :
   k_ngoodvertices(0),
   k_pdf_id1(0),
   k_pdf_id2(0),
-
+  k_lumi_mask_silver(0),
+  k_lumi_mask_gold(0),
   k_vertexX(0.),
   k_vertexY(0.),
   k_vertexZ(0.), 
@@ -34,15 +35,9 @@ KEvent::KEvent() :
   k_PF_MET(0.), 
   k_PF_METphi(0.),
   k_PF_SumET(0.), 
-  k_Puppi_MET(0.),
-  k_Puppi_METphi(0.),
-  k_Puppi_SumET(0.),
   k_NoHF_MET(0.),
   k_NoHF_METphi(0.),
   k_NoHF_SumET(0.),
-  k_PfMva_MET(0.),
-  k_PfMva_METphi(0.),
-  k_PfMva_SumET(0.),
   k_PF_MET_MuonEn_up(0.),
   k_PF_MET_MuonEn_down(0.),
   k_PF_MET_ElectronEn_up(0.),
@@ -60,7 +55,6 @@ KEvent::KEvent() :
   k_PF_SumET_unclusteredEn_up(0.),
   k_PF_SumET_unclusteredEn_down(0.),
 
-
   k_isData(false), 
   k_isgoodevent(false),
 
@@ -69,9 +63,15 @@ KEvent::KEvent() :
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
   k_passHBHENoiseFilter(false),
   k_PileUpInteractionsTrue(0.),
-  k_pu_weight(0.),
-  k_pu_p_weight(0.),
-  k_pu_m_weight(0.)
+  k_pu_silver_weight(0.),
+  k_pu_silver_p_weight(0.),
+  k_pu_silver_m_weight(0.),
+  k_pu_gold_weight(0.),
+  k_pu_gold_p_weight(0.),
+  k_pu_gold_m_weight(0.),
+  k_catversion(""),
+  k_lumimask(snu::KEvent::missing)
+
 {
 
 }
@@ -88,7 +88,8 @@ KEvent::KEvent(const KEvent& ev) :
   k_ngoodvertices(ev.k_ngoodvertices),
   k_pdf_id1(ev.k_pdf_id1),
   k_pdf_id2(ev.k_pdf_id2),
-
+  k_lumi_mask_silver(ev.k_lumi_mask_silver),
+  k_lumi_mask_gold(ev.k_lumi_mask_gold),
   k_vertexX(ev.k_vertexX),
   k_vertexY(ev.k_vertexY),
   k_vertexZ(ev.k_vertexZ),
@@ -102,15 +103,9 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_MET(ev.k_PF_MET),
   k_PF_METphi(ev.k_PF_METphi),
   k_PF_SumET(ev.k_PF_SumET),
-  k_Puppi_MET(ev.k_Puppi_MET),
-  k_Puppi_METphi(ev.k_Puppi_METphi),
-  k_Puppi_SumET(ev.k_Puppi_SumET),
   k_NoHF_MET(ev.k_NoHF_MET),
   k_NoHF_METphi(ev.k_NoHF_METphi),
   k_NoHF_SumET(ev.k_NoHF_SumET),
-  k_PfMva_MET(ev.k_PfMva_MET),
-  k_PfMva_METphi(ev.k_PfMva_METphi),
-  k_PfMva_SumET(ev.k_PfMva_SumET),
   k_PF_MET_MuonEn_up(ev.k_PF_MET_MuonEn_up),
   k_PF_MET_MuonEn_down(ev.k_PF_MET_MuonEn_down),
   k_PF_MET_ElectronEn_up(ev.k_PF_MET_ElectronEn_up),
@@ -134,9 +129,15 @@ KEvent::KEvent(const KEvent& ev) :
   k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
   k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue),
-  k_pu_weight(ev.k_pu_weight),
-  k_pu_p_weight(ev.k_pu_p_weight),
-  k_pu_m_weight(ev.k_pu_m_weight)
+  k_pu_silver_weight(ev.k_pu_silver_weight),
+  k_pu_silver_p_weight(ev.k_pu_silver_p_weight),
+  k_pu_silver_m_weight(ev.k_pu_silver_m_weight),
+  k_pu_gold_weight(ev.k_pu_gold_weight),
+  k_pu_gold_p_weight(ev.k_pu_gold_p_weight),
+  k_pu_gold_m_weight(ev.k_pu_gold_m_weight),
+  k_catversion(ev.k_catversion),
+  k_lumimask(ev.k_lumimask)
+
 {
 }
 
@@ -155,7 +156,8 @@ void KEvent::Reset()
   k_ngoodvertices= 0;
   k_pdf_id1=0;
   k_pdf_id2=0;
-
+  k_lumi_mask_silver=0;
+  k_lumi_mask_gold=0;
   k_vertexX= 0.;
   k_vertexY= 0.;
   k_vertexZ= 0.;
@@ -169,15 +171,9 @@ void KEvent::Reset()
   k_PF_MET= 0.;
   k_PF_SumET= 0.;
   k_PF_METphi= 0.;
-  k_Puppi_MET= 0; 
-  k_Puppi_METphi= 0;
-  k_Puppi_SumET= 0;
   k_NoHF_MET= 0;
   k_NoHF_METphi= 0;
   k_NoHF_SumET= 0;
-  k_PfMva_MET= 0;
-  k_PfMva_METphi= 0;
-  k_PfMva_SumET= 0;
   k_PF_MET_MuonEn_up = 0.;
   k_PF_MET_MuonEn_down = 0.;
   k_PF_MET_ElectronEn_up = 0.;
@@ -202,10 +198,14 @@ void KEvent::Reset()
   k_passEcalDeadCellTriggerPrimitiveFilter= false;
   k_passHBHENoiseFilter= false;
   k_PileUpInteractionsTrue = 0.;
-  k_pu_weight = 0.;
-  k_pu_p_weight=0.;
-  k_pu_m_weight = 0.;
-
+  k_pu_silver_weight = 0.;
+  k_pu_silver_p_weight=0.;
+  k_pu_silver_m_weight = 0.;
+  k_pu_gold_weight = 0.;
+  k_pu_gold_p_weight=0.;
+  k_pu_gold_m_weight = 0.;
+  k_catversion="";
+  k_lumimask=missing;
 
 }
 
@@ -222,7 +222,8 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_ngoodvertices = p.nGoodVertices();
       k_pdf_id1 = p.Id1();
       k_pdf_id2 = p.Id2();
-      
+      k_lumi_mask_silver = p.LumiMaskSilver();
+      k_lumi_mask_gold = p.LumiMaskGold();
       k_vertexX=p.VertexX();
       k_vertexY=p.VertexY();
       k_vertexZ=p.VertexZ();
@@ -232,36 +233,29 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pdf_q = p.Q();
       k_pdf_x1 = p.x1();
       k_pdf_x2 = p.x2();
-      
-      
-      k_PF_MET= p.PFMET();
-      k_PF_METphi= p.PFMETphi();
-      k_PF_SumET = p.PFSumET();
-      k_Puppi_MET= p.PuppiMET();
-      k_Puppi_METphi= p.PuppiMETphi();
-      k_Puppi_SumET = p.PuppiSumET();
-      k_NoHF_MET= p.NoHFMET();
-      k_NoHF_METphi= p.NoHFMETphi();
-      k_NoHF_SumET = p.NoHFSumET();
-      k_PfMva_MET= p.PfMvaMET();
-      k_PfMva_METphi= p.PfMvaMETphi();
-      k_PfMva_SumET = p.PfMvaSumET();
-      k_PF_MET_MuonEn_up = p.PFMETShifted(1,1);
-      k_PF_MET_MuonEn_down = p.PFMETShifted(-1,1);
-      k_PF_MET_ElectronEn_up = p.PFMETShifted(1,2);
-      k_PF_MET_ElectronEn_down = p.PFMETShifted(-1,2);
-      k_PF_MET_JetEn_up = p.PFMETShifted(1,3);
-      k_PF_MET_JetEn_down = p.PFMETShifted(-1,3);
-      k_PF_SumET_JetEn_up = p.PFSumETShifted(1,3);
-      k_PF_SumET_JetEn_down = p.PFSumETShifted(-1,3);
-      k_PF_MET_JetRes_up = p.PFMETShifted(1,4);
-      k_PF_MET_JetRes_down = p.PFMETShifted(-1,4);
-      k_PF_SumET_JetRes_up = p.PFSumETShifted(1,4);
-      k_PF_SumET_JetRes_down = p.PFSumETShifted(-1,4);
-      k_PF_MET_unclusteredEn_up = p.PFMETShifted(1,5);
-      k_PF_MET_unclusteredEn_down = p.PFMETShifted(-1,5);
-      k_PF_SumET_unclusteredEn_up = p.PFSumETShifted(1,5);
-      k_PF_SumET_unclusteredEn_down = p.PFSumETShifted(-1,5);
+            
+      k_PF_MET= p.MET(pfmet);
+      k_PF_METphi= p.METPhi(pfmet);
+      k_PF_SumET = p.SumET(pfmet);
+      k_NoHF_MET= p.MET(nohf);
+      k_NoHF_METphi= p.METPhi(nohf);
+      k_NoHF_SumET = p.SumET(nohf);
+      k_PF_MET_MuonEn_up = p.PFMETShifted(up,MuonEn);
+      k_PF_MET_MuonEn_down = p.PFMETShifted(down,MuonEn);
+      k_PF_MET_ElectronEn_up = p.PFMETShifted(up,ElectronEn);
+      k_PF_MET_ElectronEn_down = p.PFMETShifted(down,ElectronEn);
+      k_PF_MET_JetEn_up = p.PFMETShifted(up,JetEn);
+      k_PF_MET_JetEn_down = p.PFMETShifted(down,JetEn);
+      k_PF_SumET_JetEn_up = p.PFSumETShifted(up,JetEn);
+      k_PF_SumET_JetEn_down = p.PFSumETShifted(down,JetEn);
+      k_PF_MET_JetRes_up = p.PFMETShifted(up,JetRes);
+      k_PF_MET_JetRes_down = p.PFMETShifted(down,JetRes);
+      k_PF_SumET_JetRes_up = p.PFSumETShifted(up,JetRes);
+      k_PF_SumET_JetRes_down = p.PFSumETShifted(down,JetRes);
+      k_PF_MET_unclusteredEn_up = p.PFMETShifted(up,Unclustered);
+      k_PF_MET_unclusteredEn_down = p.PFMETShifted(down,Unclustered);
+      k_PF_SumET_unclusteredEn_up = p.PFSumETShifted(up,Unclustered);
+      k_PF_SumET_unclusteredEn_down = p.PFSumETShifted(down,Unclustered);
 
       k_isData=p.IsData();
       k_isgoodevent= p.HasGoodPrimaryVertex();
@@ -271,15 +265,25 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
-      k_pu_weight = p.PileUpWeight();
-      k_pu_p_weight= p.PileUpWeightUp();
-      k_pu_m_weight= p.PileUpWeightDown();
+      k_pu_silver_weight = p.PileUpWeight_Silver(none);	
+      k_pu_silver_p_weight= p.PileUpWeight_Silver(up);
+      k_pu_silver_m_weight= p.PileUpWeight_Silver(down);
+      k_pu_gold_weight = p.PileUpWeight_Gold(none);
+      k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
+      k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
+
+      k_catversion = p.CatVersion();
+      k_lumimask = p.GetJSON();
     }
     
     return *this;
 }
 
 //// SET CLASS VARIBALES
+void KEvent::SetCatVersion(std::string cat){
+  k_catversion = cat;
+  std::cout << "k_catversion = " << k_catversion << endl;
+}
 
 void KEvent::SetPassCSCHaloFilterTight(bool pass){
   k_passCSCHaloFilterTight = pass;
@@ -288,7 +292,6 @@ void KEvent::SetPassCSCHaloFilterTight(bool pass){
 void KEvent::SetPassBadEESupercrystalFilter(bool pass){
   k_passBadEESupercrystalFilter = pass;
 }
-
 
 void KEvent::SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass){
   k_passEcalDeadCellTriggerPrimitiveFilter = pass;
@@ -302,18 +305,20 @@ void KEvent::SetPileUpInteractionsTrue(double npu){
   k_PileUpInteractionsTrue = npu;
 }
 
-void KEvent::SetPUWeight(double puw){
-  k_pu_weight = puw;
-}
+void KEvent::SetPUWeight(json type, syst_dir sys, double puw){
+  if(type==silver){
+    if(sys==none)  k_pu_silver_weight = puw;
+    if(sys==up)  k_pu_silver_p_weight = puw;
+    if(sys==down)  k_pu_silver_m_weight = puw;
+  }
+  else  if(type==gold){
+    if(sys==none)  k_pu_gold_weight = puw;
+    if(sys==up)  k_pu_gold_p_weight = puw;
+    if(sys==down)  k_pu_gold_m_weight = puw;
+  }
+  else {std::cout<< "PileUp weight not set correctly" << std::endl; exit(1);}
 
-void KEvent::SetPUWeightMSigma(double puw){
-  k_pu_m_weight = puw;
 }
-
-void KEvent::SetPUWeightPSigma(double puw){
-  k_pu_p_weight = puw;
-}
-
 
 
 void KEvent::SetWeight(double mcweight){
@@ -338,86 +343,55 @@ void KEvent::SetIsData(bool isdata){
 
 
 //// Setting Missing ET variables
-void KEvent::SetPFMET(double met){
-  k_PF_MET = met;
-}
 
-void KEvent::SetPFMETphi(double metphi){
-  k_PF_METphi = metphi;
-}
-
-void KEvent::SetPFSumET(double sumet){
-  k_PF_SumET =sumet;
-}
-
-void KEvent::SetPuppiMET(double met){
-  k_Puppi_MET = met;
-}
-
-void KEvent::SetPuppiMETphi(double metphi){
-  k_Puppi_METphi = metphi;
-}
-
-void KEvent::SetPuppiSumET(double sumet){
-  k_Puppi_SumET =sumet;
-}
-
-void KEvent::SetNoHFMET(double met){
-  k_NoHF_MET = met;
-}
-
-void KEvent::SetNoHFMETphi(double metphi){
-  k_NoHF_METphi = metphi;
-}
-
-void KEvent::SetNoHFSumET(double sumet){
-  k_NoHF_SumET =sumet;
-}
-
-
-void KEvent::SetPfMvaMET(double met){
-  k_PfMva_MET = met;
-}
-
-void KEvent::SetPfMvaMETphi(double metphi){
-  k_PfMva_METphi = metphi;
-}
-
-void KEvent::SetPfMvaSumET(double sumet){
-  k_PfMva_SumET =sumet;
-}
-
-void KEvent::SetPFMETShift(int dir, int type, double val){
-  if(dir > 0){
-    if(type==1)  k_PF_MET_MuonEn_up = val;
-    if(type==2)  k_PF_MET_ElectronEn_up= val;
-    if(type==3)  k_PF_MET_JetEn_up= val;
-    if(type==4)  k_PF_MET_JetRes_up= val;
-    if(type==5)  k_PF_MET_unclusteredEn_up= val;
-  }
-  else{
-    if(type==1)  k_PF_MET_MuonEn_down= val;
-    if(type==2)  k_PF_MET_ElectronEn_down= val;
-    if(type==3)  k_PF_MET_JetEn_down= val;
-    if(type==4)  k_PF_MET_JetRes_down= val;
-    if(type==5)  k_PF_MET_unclusteredEn_down= val;
+void KEvent::SetMET(met_type type, double met, double metphi, double sumet){
+  if(type == pfmet){
+    k_PF_MET = met;
+    k_PF_METphi = metphi;
+    k_PF_SumET =sumet;
   }
 
+  else if(type== nohf){
+    k_NoHF_MET = met;
+    k_NoHF_METphi = metphi;
+    k_NoHF_SumET =sumet;
+  }
+
+  else {cout << "Problem setting MET" << endl; exit(0) ;}
 }
 
-void KEvent::SetPFSumETShift(int dir, int type, double val){
-  if(dir > 0){
-    if(type==3)  k_PF_SumET_JetEn_up= val;
-    if(type==4)  k_PF_SumET_JetRes_up= val;
-    if(type==5)  k_PF_SumET_unclusteredEn_up= val;
+void KEvent::SetPFMETShift(syst_dir dir, met_syst type, double val){
+  if(dir == up){
+    if(type==MuonEn)  k_PF_MET_MuonEn_up = val;
+    if(type==ElectronEn)  k_PF_MET_ElectronEn_up= val;
+    if(type==JetEn)  k_PF_MET_JetEn_up= val;
+    if(type==JetRes)  k_PF_MET_JetRes_up= val;
+    if(type==Unclustered)  k_PF_MET_unclusteredEn_up= val;
   }
-  else{
-    
-    if(type==3)  k_PF_SumET_JetEn_down= val;
-    if(type==4)  k_PF_SumET_JetRes_down= val;
-    if(type==5)  k_PF_SumET_unclusteredEn_down= val;
+  else if (dir == down){
+    if(type==MuonEn)  k_PF_MET_MuonEn_down= val;
+    if(type==ElectronEn)  k_PF_MET_ElectronEn_down= val;
+    if(type==JetEn)  k_PF_MET_JetEn_down= val;
+    if(type==JetRes)  k_PF_MET_JetRes_down= val;
+    if(type==Unclustered)  k_PF_MET_unclusteredEn_down= val;
   }
-  
+  else {cout << "Problem setting MET shifted values" << endl ; exit(0);}
+}
+
+void KEvent::SetPFSumETShift(syst_dir dir, met_syst type, double val){
+  if(dir == up){
+    if(type==JetEn)  k_PF_SumET_JetEn_up= val;
+    if(type==JetRes)  k_PF_SumET_JetRes_up= val;
+    if(type==Unclustered)  k_PF_SumET_unclusteredEn_up= val;
+  }
+  else if (dir == down){
+    if(type==JetEn)  k_PF_SumET_JetEn_down= val;
+    if(type==JetRes)  k_PF_SumET_JetRes_down= val;
+    if(type==Unclustered)  k_PF_SumET_unclusteredEn_down= val;
+  }
+ 
+  else {cout << "Problem setting SumET shifted values" <<endl ; exit(0);}
+
 }
 
 
@@ -434,10 +408,114 @@ void KEvent::SetLumiSection(int ls){
 }
 
 
-
+void KEvent::SetLumiMask(json type, int mask){
+  if(type==silver) k_lumi_mask_silver=mask;
+  else if(type==gold) k_lumi_mask_gold=mask;
+  else {std::cout<< "LumiMask not set correctly" << std::endl; exit(1);}
+}
 void KEvent::SetIsGoodEvent(int nvert){
   if(nvert > 0) k_isgoodevent = true;
   else k_isgoodevent = false;
+}
+
+void KEvent::SetJSON(json js){
+  k_lumimask = js;
+}
+
+Bool_t KEvent::LumiMask(json js){
+
+  if(js== silver){
+    if(k_lumi_mask_silver==1) return true;
+    else return false;
+  }
+  else if(js==gold){
+    if(k_lumi_mask_gold==1) return true;
+    else return false;
+  }
+  else if(js==missing) return true;
+  else return false;
+}
+
+
+Double_t KEvent::PileUpWeight(json js, int sys){
+  if(k_lumimask==missing) return -999;
+  if(TString(k_catversion).Contains("v7-4-")) return -999;
+  else if(js==silver) return PileUpWeight_Silver(sys);
+  else if(js==gold) return PileUpWeight_Gold(sys);
+  else return -999;
+}
+
+///New forCAT v7-4-5 (MET systematics in one function)
+Double_t KEvent::PFMETShifted (syst_dir dir, met_syst type) const{
+  
+  if(TString(k_catversion).Contains("v7-4-4")) return 1.;
+  if(dir == up){
+    if(type==None) return k_PF_MET;
+    else if(type==MuonEn) return k_PF_MET_MuonEn_up;
+    else if(type==ElectronEn) return k_PF_MET_ElectronEn_up;
+    else if(type==JetEn) return k_PF_MET_JetEn_up;
+    else if(type==JetRes) return k_PF_MET_JetRes_up;
+    else if(type==Unclustered) return k_PF_MET_unclusteredEn_up;
+    else return -999.;
+  }
+  else  if(dir == down){
+    if(type==None) return k_PF_MET;
+    else if(type==MuonEn) return k_PF_MET_MuonEn_down;
+    else if(type==ElectronEn) return k_PF_MET_ElectronEn_down;
+    else if(type==JetEn) return k_PF_MET_JetEn_down;
+    else if(type==JetRes) return k_PF_MET_JetRes_down;
+    else if(type==Unclustered) return k_PF_MET_unclusteredEn_down;
+    else return-999.;
+
+  }
+  return k_PF_MET;
+}
+
+Double_t KEvent::PFSumETShifted(syst_dir dir, met_syst type) const{
+  if(TString(k_catversion).Contains("v7-4-4")) return 1.;
+  if(dir == up){
+    if(type==None) return k_PF_SumET;
+    if(type==JetEn) return k_PF_SumET_JetEn_up;
+    if(type==JetRes) return k_PF_SumET_JetRes_up;
+    if(type==Unclustered) return k_PF_SumET_unclusteredEn_up;
+  }
+  else if(dir == down){
+    if(type==None) return k_PF_SumET;
+    if(type==JetEn) return k_PF_SumET_JetEn_down;
+    if(type==JetRes) return k_PF_SumET_JetRes_down;
+    if(type==Unclustered) return k_PF_SumET_unclusteredEn_down;
+  }
+  return k_PF_SumET;
+}
+
+
+Double_t KEvent::MET(met_type type) const{
+  
+  if(k_lumimask == gold && type == nohf) return -999.;
+
+  if (type == pfmet) return k_PF_MET;
+  else if(type == nohf) return k_NoHF_MET;
+  
+  return -999.;
+}
+ 
+Double_t KEvent::METPhi(met_type type) const{
+  
+  if(k_lumimask == gold && type == nohf) return -999.;
+
+  if (type == pfmet) return k_PF_METphi;
+  else if(type == nohf) return k_NoHF_METphi;
+
+  return -999.;
+}
+
+Double_t KEvent::SumET(met_type type) const{
+  
+  if(k_lumimask == gold && type == nohf) return -999.;
+
+  if (type == pfmet) return k_PF_SumET;
+  else if(type == nohf) return k_NoHF_SumET;
+  return -999.;
 }
 
 
@@ -448,27 +526,15 @@ void KEvent::SetNGoodVertices(int nvert){
 }
 
 
-void KEvent::SetVertexX(double vX){
+void KEvent::SetVertexInfo(double vX, double vY, double vZ, double NDOF){
   k_vertexX = vX;
-}
-
-void KEvent::SetVertexY(double vY){
   k_vertexY = vY;
-}
-
-void KEvent::SetVertexZ(double vZ){
   k_vertexZ = vZ;
+  k_vertexNDOF = NDOF;
 }
 
-void KEvent::SetVertexNDOF(double vNDOF){
-  k_vertexNDOF = vNDOF;
-}
-
-void KEvent::SetGenId1(int id1){
+void KEvent::SetGenId(int id1, int id2){
   k_pdf_id1 = id1;
-}
-
-void KEvent::SetGenId2(int id2){
   k_pdf_id2 = id2;
 }
 
@@ -478,17 +544,13 @@ void KEvent::SetGenQ(double q ){
 }
 
 
-void KEvent::SetGenX1(double x1){
+void KEvent::SetGenX(double x1, double x2){
   k_pdf_x1 = x1;
+  k_pdf_x2 = x2;
 }
-
 
 void KEvent::SetLHEWeight(double lw){
   k_lheweight = lw;
-}
-
-void KEvent::SetGenX2(double x2){
-  k_pdf_x2 = x2;
 }
 
 

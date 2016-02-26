@@ -47,7 +47,13 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   //
   
   MakeCleverHistograms(sighist_ee, "SingleLooseElJet");
+  MakeCleverHistograms(sighist_ee, "SingleTightElJet");
 
+  MakeCleverHistograms(sighist_ee, "HLT_Ele23_WPLoose_Gsf");
+  MakeCleverHistograms(sighist_ee, "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30");
+  MakeCleverHistograms(sighist_ee, "HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30");
+  MakeCleverHistograms(sighist_ee, "HLT_Ele23_CaloIdL_TrackIdL_IsoVL");
+  MakeCleverHistograms(sighist_ee, "HLT_Ele33_CaloIdM_TrackIdM_PFJet30");
 
   return;
 }
@@ -57,14 +63,40 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
    
+
+  //for(unsigned int i=0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size() ; i++){
+  //  cout << "Trigger = " << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
+  //  }
+  
   std::vector<TString> triggerslist_12;
-  triggerslist_12.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+  triggerslist_12.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_");
   
   std::vector<TString> triggerslist_17;
-  triggerslist_17.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
+  triggerslist_17.push_back("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
 
   std::vector<TString> triggerslist_23;
   triggerslist_23.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
+
+  std::vector<TString> triggerslist_23jet;
+  triggerslist_23jet.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
+
+  std::vector<TString> triggerslist_23_nops;
+  triggerslist_23_nops.push_back("HLT_Ele23_WPLoose_Gsf_v");
+
+
+
+
+  std::vector<TString> triggerslist_33;
+  triggerslist_33.push_back("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
+
+  std::vector<TString> triggerslist_33jet;
+  triggerslist_33jet.push_back("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
+
+  std::vector<TString> triggerslist_33jetM;
+  triggerslist_33jetM.push_back("HLT_Ele33_CaloIdM_TrackIdM_PFJet30_v");
+
+
+
 
   std::vector<TString> triggerslist;
   triggerslist.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
@@ -75,16 +107,66 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   numberVertices = eventbase->GetEvent().nVertices();   
   
   if (MC_pu&&!k_isdata) {
-    //weight  = weight * reweightPU->GetWeight( eventbase->GetEvent().nVertices(), k_mcperiod)*MCweight;
-    weight = weight * MCweight * eventbase->GetEvent().PileUpWeight();
+    weight = weight * MCweight * eventbase->GetEvent().PileUpWeight(snu::KEvent::silver);
   }
   
   
   
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons("HNLoose");
-  std::vector<snu::KElectron> electronTightColl = GetElectrons("POGTight");
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(BaseSelection::ELECTRON_HN_FAKELOOSE);
+  std::vector<snu::KElectron> electronTightColl = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
 
-  if(electronLooseColl.size()==0) return;
+  /*  cout << " " << endl;
+  if(electronLooseColl.size() !=  electronTightColl.size() ) {
+    cout << "electronLooseColl.size() =  "<<  electronLooseColl.size() << " : electronTightColl.size()  = "  << electronTightColl.size()  << endl;
+    
+    std::vector<snu::KElectron> allelectrons = GetElectrons(true, true, "NoCut");
+    for (std::vector<snu::KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+      if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
+      if(!(fabs(el->SCEta()) < 2.5))  continue;
+      if((!el->HasMatchedConvPhot())) continue;
+      if(!el->GsfCtfScPixChargeConsistency())continue; 
+      
+      int id = el->SNUID();
+      bool pass_veto_noiso = false;
+      bool pass_loose_noiso = false;
+      bool pass_medium_noiso = false;
+      bool pass_tight_noiso = false;
+      if(id >= 1000){
+	pass_tight_noiso = true;
+	id = id - 1000;
+	if(id >= 100){
+	  pass_medium_noiso= true;
+	  id = id-100;
+
+	  if(id >= 10){
+	    pass_loose_noiso= true;
+	    id = id - 10;
+	    if(id >= 1)pass_veto_noiso= true;
+	  }
+	}
+      }
+
+      
+      cout << " el->PassTight() = " <<  el->PassTight() << endl;
+      cout << "el->SNUID() = " << el->SNUID() << endl;
+      cout << " pass_tight_noiso = " << pass_tight_noiso << endl;
+      float looseisocut=0.;
+      float dxycut=0.;
+      if(fabs(el->SCEta()) < 1.5 ) looseisocut = 0.0354;
+      else looseisocut = 0.0646;
+      if(fabs(el->SCEta()) < 1.5 )  dxycut = 0.0111;
+      else dxycut=0.0351;
+
+      if( el->PFRelIso03() > looseisocut)  cout << "Pass iso = False: iso=" <<  el->PFRelIso03() <<  " eta = " << el->SCEta() << endl;
+      else cout << "Passiso = True" << endl;
+      if(!(fabs(el->dxy())< dxycut))  cout << "Pass dxy = False: dxy = " << el->dxy()<<  " eta = " <<el->SCEta() << endl;
+      else cout << "Passdxy = True" << endl;
+      
+    }  
+    
+  }
+  */
+  if(electronLooseColl.size()<1) return;
   
   
   if(!isData){
@@ -94,15 +176,18 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
   
 
-  std::vector<snu::KJet> jetCollTight = GetJets("HNJets");
-  std::vector<snu::KJet> jetColl           = GetJets("NoLeptonVeto");
+  std::vector<snu::KJet> jetCollTight = GetJets(BaseSelection::JET_HN);
+  std::vector<snu::KJet> jetColl           = GetJets(BaseSelection::JET_NOLEPTONVETO);
 
-  std::vector<snu::KMuon> muonColl = GetMuons("HNLoose");  // loose selection
+  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
  
+  if(muonColl.size() > 0) return;
+
+
   if(PassTrigger(triggerslist, prescale) ){
     if(electronTightColl.size() ==2) {
       if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
-	if(!isData) FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(), 0., 200.,400);
+	if(!isData) FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(snu::KEvent::silver), 0., 200.,400);
 	else FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight, 0., 200.,400);
 	FillHist("zpeak_ee", GetZMass(electronTightColl), weight, 0., 200.,400);
 	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
@@ -110,17 +195,29 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
   }
 
-  float prescale_trigger =  GetPrescale(electronLooseColl, PassTrigger(triggerslist_12, prescale), PassTrigger(triggerslist_17, prescale), PassTrigger( triggerslist_23, prescale)); 
+  float prescale_trigger =  GetPrescale(electronLooseColl, PassTrigger(triggerslist_12, prescale), PassTrigger(triggerslist_17, prescale), PassTrigger( triggerslist_23, prescale), PassTrigger(triggerslist_33, prescale)); 
 
+  if(electronLooseColl.at(0).Pt() >= 35.){
+    if(PassTrigger(triggerslist_33jet, prescale) ) FillCLHist(sighist_ee, "HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, (weight* (0.122 + 71.370) / 1914.) );
+    if(PassTrigger(triggerslist_33jetM, prescale) ) FillCLHist(sighist_ee, "HLT_Ele33_CaloIdM_TrackIdM_PFJet30", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, (weight* (0.175 + 76.882) / 1914.) );
+    
+  }
+  
+  
   if(electronLooseColl.at(0).Pt() >= 25.){
-    if(!PassTrigger(triggerslist_23, prescale) ) return;
+    if(PassTrigger(triggerslist_23_nops, prescale) ) FillCLHist(sighist_ee, "HLT_Ele23_WPLoose_Gsf", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, (weight* (15.244 + 1618.137 + 272.786) / 1914.) );
+    if(PassTrigger(triggerslist_23jet, prescale) ) FillCLHist(sighist_ee, "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, (weight* (0.062 + 69.435) / 1914.) );
+    if(PassTrigger(triggerslist_23, prescale) ) FillCLHist(sighist_ee, "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, (weight* (0.229 + 71.132) / 1914.) );
+    
   }
-  else  if(electronLooseColl.at(0).Pt() >= 20.){
+  return;
+  
+  /*  else  if(electronLooseColl.at(0).Pt() >= 20.){
     if(!PassTrigger(triggerslist_17, prescale) ) return;
-  }
-  else if(electronLooseColl.at(0).Pt() >= 15.){
+    }
+    else if(electronLooseColl.at(0).Pt() >= 15.){
     if(!PassTrigger(triggerslist_12, prescale) ) return;
-  }
+    }*/
 
   
   if(!isData) weight*= prescale_trigger;
@@ -131,44 +228,61 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(electronLooseColl.size() == 1){
     if(jetCollTight.size() >=1) {
       if(jetCollTight.at(0).Pt() > 40.){
-	FillCLHist(sighist_ee, "SingleLooseElJet", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
+	FillCLHist(sighist_ee, "SingleLooseElJet", eventbase->GetEvent(), muonColl,electronLooseColl,jetCollTight, weight);
       }
     }
   }
+
+  if(electronTightColl.size() == 1&& electronLooseColl.size() == 1&& muonColl.size()==0){
+    if(jetCollTight.size() >=1) {
+      if(jetCollTight.at(0).Pt() > 40.){
+        FillCLHist(sighist_ee, "SingleTightElJet", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
+      }
+    }
+  }
+  
     
   
   return;
 }// End of execute event loop
 
 
-float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons, bool passlow, bool passhigh, bool passhighest){
+float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons, bool pass4, bool pass3, bool pass2, bool pass1){
   
   float prescale_trigger= 1.;
   if(electrons.size() ==1){
-    if(electrons.at(0).Pt() >= 25.){
 
-      if(passhighest){
-        prescale_trigger = (29.091) / 1280.231 ; //// 20 + GeV bins
+    if(electrons.at(0).Pt() >= 35.){
+
+      if(pass1){
+        prescale_trigger = (71.370+0.122) / 1914. ; //// 20 + GeV bins
+      }
+      else prescale_trigger = 0.;
+    }
+    else  if(electrons.at(0).Pt() >= 25.){
+
+      if(pass2)
+        prescale_trigger = (69.435+0.062) / 1914. ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else   if(electrons.at(0).Pt() >= 20.){
 
-      if(passhigh){
-	prescale_trigger = (45.24) / 1280.231 ; //// 20 + GeV bins
+      if(pass3){
+	prescale_trigger = (20.696+2.284) / 1914. ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
-
+  
     else{
       /// if single el event and low pt use 8 GeV trigger
-      if(passlow){
-        prescale_trigger = (29.091) / 1280.231;
+      if(pass4){
+        prescale_trigger = (66.952+2.284) / 1914.;
       }
       else prescale_trigger = 0.;
     }
-  }
-
+  
+  if(electrons.at(0).Pt() < 15.) return 0.;
   if(prescale_trigger == 0.) return 0.;
   if(k_isdata) return 1.;
   
@@ -225,10 +339,10 @@ bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std
     Double_t MT=0;
     Double_t METdphi=0;
     for(unsigned int w = 0; w < electrons.size();  w++){
-      METdphi = TVector2::Phi_mpi_pi(electrons.at(w).Phi()- eventbase->GetEvent().NoHFMETphi());
-      MT = sqrt(2.* electrons.at(w).Et()*eventbase->GetEvent().NoHFMET() * (1 - cos( METdphi)));
+      METdphi = TVector2::Phi_mpi_pi(electrons.at(w).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::nohf));
+      MT = sqrt(2.* electrons.at(w).Et()*eventbase->GetEvent().MET(snu::KEvent::nohf) * (1 - cos( METdphi)));
       
-      if(( (eventbase->GetEvent().NoHFMET() < 20) && (MT < 25.)) ) {
+      if(( (eventbase->GetEvent().MET(snu::KEvent::nohf) < 20) && (MT < 25.)) ) {
 	
         for (unsigned int ielT=0; ielT < electrons.size(); ielT++){
           for(unsigned int ij=0; ij < jets.size(); ij++){
@@ -258,7 +372,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
   int nbjet(0);
   float tmp_deltaR=1000.;
   for(unsigned int ij =0 ; ij < jets.size() ; ij++){
-    if(jets.at(ij).CVSInclV2() > 0.89) nbjet++;
+    if(jets.at(ij).CSVInclV2() > 0.89) nbjet++;
     if(loose_el.at(0).DeltaR(jets.at(ij)) < tmp_deltaR) tmp_deltaR = loose_el.at(0).DeltaR(jets.at(ij));
   }
   
@@ -266,7 +380,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
   float awayjetpt = 0.;
   for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
     if(loose_el.at(0).DeltaR(alljets.at(ij)) < 0.5) {
-      if(alljets.at(ij).CVSInclV2() > 0.89) closebjet = true;
+      if(alljets.at(ij).CSVInclV2() > 0.89) closebjet = true;
     }     
     float dphi =fabs(TVector2::Phi_mpi_pi(loose_el.at(0).Phi()- alljets.at(ij).Phi()));
     if(dphi > 2.5) awayjetpt = alljets.at(ij).Pt();

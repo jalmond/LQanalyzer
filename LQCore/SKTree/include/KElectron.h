@@ -23,6 +23,9 @@ namespace snu {
     KElectron& operator= (const KElectron& obj);
     
     
+    float ScaleFactor(const std::string& name, int sign) const ;
+
+
     // set kinematic variables
     void SetSCEta(Double_t sceta);
     
@@ -42,6 +45,8 @@ namespace snu {
     void SetPassTight(Bool_t pass);
     void SetPassHEEP(Bool_t pass);
 
+    
+
     void SetPassMVATrigMedium(Bool_t pass);
     void SetPassMVATrigTight(Bool_t pass);
     void SetPassMVANoTrigMedium(Bool_t pass);
@@ -52,18 +57,13 @@ namespace snu {
 
     
     /// set ISO variables
-    void SetPFChargedHadronIso03(Double_t pf_ch_03);
-    void SetPFPhotonIso03(Double_t pf_ph_03);
-    void SetPFNeutralHadronIso03(Double_t pf_ne_03);
-    void SetPFChargedHadronIso04(Double_t pf_ch_03);
-    void SetPFPhotonIso04(Double_t pf_ph_03);
-    void SetPFNeutralHadronIso04(Double_t pf_ne_03);
+    void SetPFChargedHadronIso(Double_t cone,Double_t pf_ch);
+    void SetPFPhotonIso(Double_t cone,Double_t pf_ph);
+    void SetPFNeutralHadronIso(Double_t cone,Double_t pf_ne);
+
     
-    void SetPFRelIso03(Double_t pf_rel_03);
-    void SetPFRelIso04(Double_t pf_rel_04);
-    
-    void SetPFAbsIso03(Double_t pf_abs_03);
-    void SetPFAbsIso04(Double_t pf_abs_04);
+    void SetPFRelIso(Double_t cone, Double_t pf_rel);
+    void SetPFAbsIso(Double_t cone, Double_t pf_abs);
 
     
     // set charge variables
@@ -82,7 +82,7 @@ namespace snu {
     void SetTrkVz(Double_t trkvz);
 
     void SetTrigMatch(TString match);
-
+    void SetIsTrigMVAValid(bool b);
 
     bool TriggerMatched(TString path);
 
@@ -128,20 +128,40 @@ namespace snu {
     // Conversion variables
     inline Bool_t HasMatchedConvPhot() const {return k_hasmatchconvphot;}
     
+
+    inline Bool_t IsTrigMVAValid() const{return k_istrigmvavalid;}
     
     // Isolation Variables
-    inline Double_t PFChargedHadronIso03() const {return k_pf_chargedhad_iso03;}
-    inline Double_t PFPhotonIso03() const {return k_pf_photon_iso03;}
-    inline Double_t PFNeutralHadronIso03() const {return k_pf_neutral_iso03;}
-    inline Double_t PFChargedHadronIso04() const {return k_pf_chargedhad_iso04;}
-    inline Double_t PFPhotonIso04() const {return k_pf_photon_iso04;}
-    inline Double_t PFNeutralHadronIso04() const {return k_pf_neutral_iso04;}
-			
-    inline Double_t PFRelIso03() const {return k_rel_iso03;}
-    inline Double_t PFRelIso04() const {return k_rel_iso04;}
-    inline Double_t PFAbsIso03() const {return k_abs_iso03;}
-    inline Double_t PFAbsIso04() const {return k_abs_iso04;}
+    inline Double_t PFChargedHadronIso(double cone) const {
+      if(cone == 0.3)   return k_pf_chargedhad_iso03;
+      else  if(cone == 0.4)  return k_pf_chargedhad_iso04;
+      else return -999.;
+    }
+    
+    inline Double_t PFPhotonIso(double cone) const {
+      if(cone == 0.3)   return k_pf_photon_iso03;
+      else  if(cone == 0.4)  return k_pf_photon_iso04;
+      else return -999.;
+    }
+    
+    inline Double_t PFNeutralHadronIso(double cone) const {
+      if(cone == 0.3)   return k_pf_neutral_iso03;
+      else  if(cone == 0.4)  return k_pf_neutral_iso04;
+      else return -999.;
+    }
 
+		
+    inline Double_t PFRelIso(double cone) const {
+      if(cone == 0.3)   return k_rel_iso03;
+      else  if(cone == 0.4)   return k_rel_iso04;
+      else return -999.;
+    }
+
+    inline Double_t PFAbsIso(double cone) const {
+      if(cone == 0.3)   return k_abs_iso03;
+      else  if(cone == 0.4)   return k_abs_iso04;
+      else return -999.;
+    }
     
     /// VtxDist with vertex chosen to be primary   
     inline Double_t  dxy() const {return  k_dxy;}
@@ -166,7 +186,7 @@ namespace snu {
     Double_t k_dxy, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
     
-    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched, k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight ;
+    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched, k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, k_istrigmvavalid ;
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
     Int_t snu_id;

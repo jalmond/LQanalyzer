@@ -17,7 +17,7 @@ BaseSelection::BaseSelection() {
   chiNdofMIN_cut = 0.;
   dxy_cut = 100000.;
   dxyMIN_cut = -1000000.;
-  k_id = EGAMMA_MEDIUM;
+  k_id = ELECTRON_HN_TIGHT;
   
   apply_ptcut=false;
   apply_etacut=false;
@@ -131,7 +131,7 @@ void BaseSelection::reset(){
   chiNdofMIN_cut = 0.;
   dxy_cut = 100000.;
   dxyMIN_cut = -1000000.;
-  k_id = EGAMMA_MEDIUM;
+  k_id = ELECTRON_HN_TIGHT;
   applypileuptool=false;
   apply_ptcut=false;
   apply_etacut=false;

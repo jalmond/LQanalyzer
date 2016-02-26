@@ -20,13 +20,14 @@
 #include "SignalPlotsEM.h"
 #include "TriLeptonPlots.h"
 
-
 //ROOT includes
 #include <TFile.h>
 
 
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
+
+  lumimask= snu::KEvent::missing;
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
@@ -71,148 +72,114 @@ float AnalyzerCore::GetZMass(std::vector<snu::KMuon> muons){
 }
 
 
-
-
-std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
+std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
   
   std::vector<snu::KJet> jetColl;
-  if(label.Contains("NoLeptonVeto")){
+  
+  if( jetid == BaseSelection::JET_HN){
+    //= loose + pileupID
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "Loose");
+  }
+  else if(jetid == BaseSelection::JET_NOLEPTONVETO){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
     eventbase->GetJetSel()->SetEta(5.);
     eventbase->GetJetSel()->Selection(jetColl);
   }
-  else  if(label.Contains("Loose")){
+  else  if(jetid == BaseSelection::JET_LOOSE){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
     eventbase->GetJetSel()->SetEta(5.);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("HNVeto"), GetElectrons(false,false, "HNVeto"));
+    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(false,false, BaseSelection::ELECTRON_HN_VETO));
   }
   
   
-  else  if(label.Contains("Medium")){
-    eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-    eventbase->GetJetSel()->SetPt(20.);
-    eventbase->GetJetSel()->SetEta(2.8);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("HNVeto"), GetElectrons(false,false, "HNVeto"));
+  else  if(jetid == BaseSelection::JET_TIGHT){
+    /// Uses pileup + tight ID
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "tight" );
   }
-  else  if(label.Contains("Tight")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("HNVeto"), GetElectrons(false, false, "HNVeto"), 20., 2.5, false, label );
-  }
-  else if(label.Contains("HNJets")){
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons("NoCut"), GetElectrons("HNVeto"), 20., 2.5, false, "Loose");
-    
-  }
-  else {cout << "Jet collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
+  else {cout << "Jet collection  not found" << endl; exit(EXIT_FAILURE);}
     
   return jetColl;
   
 }
 
-std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label ){
-  return GetMuons(label, true);
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid){
+  return GetMuons(muid, true);
 }
 
-std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label, bool keepfakes){
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keepfakes){
 
   std::vector<snu::KMuon> muonColl;
-
-
-  if(k_running_nonprompt) {
-
-    eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
-    return  muonColl;
-  }
-
-  if(label.Contains("POG")){
-    if(label.Contains("Loose")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Loose");
-    else if(label.Contains("Medium")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Medium");
-    else if(label.Contains("Tight")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Tight");
-    else if(label.Contains("Soft")) eventbase->GetMuonSel()->POGMuonSelection(muonColl, "Soft");
-    else {cout << "Muon collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
-  }
   
-  else if(label.Contains("HNVeto")){
-    // pt > 10 ; eta < 2.4 ; reliso(03) < 0.6 ; chi2 < 10 ; dZ < 100; dxy < 10; PF; global || tracker
-    eventbase->GetMuonSel()->HNVetoMuonSelection(muonColl);
-    return  GetTruePrompt(muonColl, keepfakes);
-  }
+  if(muid == BaseSelection::MUON_POG_TIGHT  ||
+     muid == BaseSelection::MUON_POG_MEDIUM||
+     muid == BaseSelection::MUON_POG_LOOSE)
+    {eventbase->GetMuonSel()->SelectMuons(muonColl, muid, 15., 2.5);}
+
+  
+  else if(muid == BaseSelection::MUON_HN_TIGHT){
     
-  else if(label.Contains("HNTight")){
-    // pt > 15 ; eta < 2.4 ; reliso(03) < 0.05 ;chi2 < 500 ; dZ< 0.1; dxy < 0.005; PF; global || tracker MUON_TIGHT
-
-    eventbase->GetMuonSel()->HNTightMuonSelection(muonColl);
-  }
-
-  else if(label.Contains("HNLoose")){
-    eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
+    if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.5);
+    else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.5);
   }
   
-  
-  else if(label.Contains("NoCut")){
+  else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, 15., 2.5);}
+
+  // Veto cut
+  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 15., 2.5);}
+
+  else if(muid == BaseSelection::MUON_NOCUT){
     eventbase->GetMuonSel()->Selection(muonColl);
   }
   
   else {
-    cout << "GetMuons:: label " << label << " does not exist: filling vector with all muons with no cuts applied" << endl;
+    cout << "GetMuons::  does not exist: filling vector with all muons with no cuts applied" << endl;
     exit(EXIT_FAILURE);
   }
-
+  
   return  GetTruePrompt(muonColl, keepfakes);
-
   
 }
 
 
-std::vector<snu::KElectron> AnalyzerCore::GetElectrons(TString label){
-  return GetElectrons( false,  true, label);
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(BaseSelection::ID elid){
+  return GetElectrons( true,  true, elid);
 }
 
-std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString label){
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid){
   
   std::vector<snu::KElectron> electronColl;
+  
+  if(elid == BaseSelection::ELECTRON_POG_TIGHT  || 
+     elid ==  BaseSelection::ELECTRON_POG_MEDIUM|| 
+     elid == BaseSelection::ELECTRON_POG_VETO   ||
+     elid == BaseSelection::ELECTRON_POG_LOOSE) 
+    {eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 15., 2.5);}
+  
 
-  int icoll(0);
-
-  if(label.Contains("POG")){
-    icoll++;
-
-    if(label.Contains("Veto")) eventbase->GetElectronSel()->PogID(electronColl, "Veto");
-    else if(label.Contains("Loose")) eventbase->GetElectronSel()->PogID(electronColl, "Loose");
-    else if(label.Contains("Medium")) eventbase->GetElectronSel()->PogID(electronColl, "Medium");
-    else if(label.Contains("Tight")) eventbase->GetElectronSel()->PogID(electronColl, "Tight");
-    else {cout << "Electron collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
-  }
-  else if(label.Contains("HNTight")){
-    icoll++;
+  else if(elid == BaseSelection::ELECTRON_HN_TIGHT){
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
-    if(k_running_nonprompt) eventbase->GetElectronSel()->HNLooseElectronSelection(_electronColl);
-    else eventbase->GetElectronSel()->HNTightElectronSelection(_electronColl, false);
-
+    if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE, 20., 2.5);
+    else eventbase->GetElectronSel()->SelectElectrons(_electronColl,BaseSelection::ELECTRON_HN_TIGHT, 20., 2.5);
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
    
- 
-  else if(label.Contains("HNLoose")){    icoll++; eventbase->GetElectronSel()->HNLooseElectronSelection(electronColl);}
-
+  else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE, 20., 2.5);}
+  
   // Veto cut
-  else if(label.Contains("HNVeto")){    icoll++; eventbase->GetElectronSel()->HNVetoElectronSelection(electronColl);}
+  else if(elid == BaseSelection::ELECTRON_HN_VETO){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_VETO, 20., 2.5);}
   
   
-  else if(label.Contains("NoCutPtEta")){ 
-    icoll++;
+  else if(elid == BaseSelection::ELECTRON_PTETA){
     eventbase->GetElectronSel()->SetPt(20.);
     eventbase->GetElectronSel()->SetEta(2.5);
     eventbase->GetElectronSel()->Selection(electronColl);
   }
-  else if(label.Contains("NoCut")){     icoll++;eventbase->GetElectronSel()->Selection(electronColl);}
-  else {
-    cout << "GetElectrons:: label " << label << " does not exist: filling vector with all muons with no cuts applied" << endl;
-    cout << "Electron collection " << label<< " not found" << endl; exit(EXIT_FAILURE);}
-
-
-
+  else if(elid == BaseSelection::ELECTRON_NOCUT){ eventbase->GetElectronSel()->Selection(electronColl);}
+  else  eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 15., 2.5);
+    
   return  GetTruePrompt(electronColl, keepcf, keepfake); 
 
 }
@@ -222,12 +189,12 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
 bool AnalyzerCore::HasCloseLBJet(snu::KElectron el){
 
-  std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
+  std::vector<snu::KJet> alljets = GetJets(BaseSelection::JET_NOLEPTONVETO);
 
   bool cl = false;
   for(unsigned int ij =0; ij < alljets.size(); ij++){
     if(el.DeltaR(alljets.at(ij)) < 0.5){
-      if(alljets.at(ij).CVSInclV2() > 0.605) cl = true;
+      if(alljets.at(ij).CSVInclV2() > 0.605) cl = true;
     }
   }
 
@@ -237,12 +204,12 @@ bool AnalyzerCore::HasCloseLBJet(snu::KElectron el){
 
 bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
 
-  std::vector<snu::KJet> alljets = GetJets("NoLeptonVeto");
+  std::vector<snu::KJet> alljets = GetJets(BaseSelection::JET_NOLEPTONVETO);
   
   bool cl = false;
   for(unsigned int ij =0; ij < alljets.size(); ij++){
     if(el.DeltaR(alljets.at(ij)) < 0.5){
-      if(alljets.at(ij).CVSInclV2() > 0.89) cl = true;
+      if(alljets.at(ij).CSVInclV2() > 0.89) cl = true;
     }
   }
 
@@ -595,7 +562,7 @@ AnalyzerCore::~AnalyzerCore(){
 //###   IMPORTANT BASE FUNCTION: SETS UP EVENT FOR ALL CYCLES
 //###
 
-void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
+void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) throw( LQError ) {
   
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
@@ -612,7 +579,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     m_logger << INFO <<  "Processing entry " << entry <<  "/" << nentries << LQLogger::endmsg;
 
   }
-
+  
   snu::KEvent eventinfo = GetEventInfo();
   
   if(k_isdata){
@@ -625,6 +592,17 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     weight= ev_weight; 
   }
   
+  /// Default silver
+  /// For v-7-6-2 default is set to gold because met is broken
+
+  if(TString(eventinfo.CatVersion()).Contains("v7-6-3"))lumimask = snu::KEvent::gold;
+  else if(TString(eventinfo.CatVersion()).Contains("v7-6-2"))lumimask = snu::KEvent::gold;
+
+  /// If version of SKTree has no lumi mask then silver json is run.
+  else if(eventinfo.CatVersion().empty()) lumimask = snu::KEvent::missing;
+  /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
+  else if(TString(eventinfo.CatVersion()).Contains("v7-4")) lumimask = snu::KEvent::missing;
+  else  lumimask = snu::KEvent::silver;
   //
   // creates object that stores all SKTree classes	
   //                                                                                                        
@@ -634,14 +612,55 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   std::vector<snu::KJet> skjets= GetAllJets();
   std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
   
-  
-  
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(),  skjets, skgenjets,GetTruthParticles(), triggerinfo,eventinfo);
+  /// Flat Cat ntuples use silver json... By default weight in MC is normalised to silver luminosity. 
+  /// If running on gold json then the weight needs correcting for golden json lumi
+   
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
   
   eventbase = new EventBase(lqevent);
+
+  if(lumimask == snu::KEvent::gold) MCweight*= SilverToGoldJsonReweight(per);
+  eventbase->GetEvent().SetJSON(lumimask);
+  
+}
+
+
+float AnalyzerCore::SilverToGoldJsonReweight(TString p){
+  
+  if(eventbase->GetEvent().CatVersion().empty()) return 0.;
+  if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-4")) return 0.;
+  
+  if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-")){
+    
+    if (p == "C") return 1.;
+    if (p == "D") return 2246.327/2613.019;
+    if (p == "CtoD") return 2263.552 / 2630.245;
+    
+    ///  SILVER                GOLD
+    /// period C = 17.226    17.226
+    /// period D = 2613.019  2246.327 
+    /// total C+D = 2630.245 2263.552
+  }
+  
+  return 1.;
+}
+
+void AnalyzerCore::ClassInfo(){
+  
+  /*if(eventinfo.CatVersion().empty()){ 
+    m_logger << INFO << "Catuple version is v7-4-X. Only basic infomation is available." << LQLogger::endmsg;
+    
+  }
+    
+  else if(TString(eventinfo.CatVersion()).Contains("v7-6-2")){
+    m_logger << INFO <<  "Running on catuples version " << eventinfo.CatVersion() << LQLogger::endmsg;
+    
+    
+    }*/
+
 }
 
 float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
@@ -741,7 +760,7 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
   
   //// ELECTRON PLOTs                                                                                          
   if(type==elhist) mapCLhistEl[clhistname] = new ElectronPlots(clhistname);
-  //// MUON PLOTs                                                                                              
+  //// BaseSelection::MUON PLOTs                                                                                              
   if(type==muhist) mapCLhistMu[clhistname] = new MuonPlots(clhistname);
   /// JET PLOTs                                                                                                
   if(type==jethist) mapCLhistJet[clhistname] = new JetPlots(clhistname);
@@ -1142,7 +1161,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
   
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).CVSInclV2() > 0.89) nbjet++;
+    if(jets.at(ij).CSVInclV2() > 0.89) nbjet++;
   }
   return nbjet;
 }
@@ -1222,7 +1241,7 @@ float AnalyzerCore::CFRate(snu::KElectron el){
 }
 
 bool AnalyzerCore::IsTight(snu::KMuon muon){
-  /// ADD TIGHT MUON REQUIREMENT
+  /// ADD TIGHT BaseSelection::MUON REQUIREMENT
   float reliso= muon.RelIso03();
 
   if(( reliso >= 0.05)) return false;
@@ -1236,7 +1255,7 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
 bool AnalyzerCore::IsTight(snu::KElectron el){
   
   cout << "Not optimised for 2015" << endl;
-  return eventbase->GetElectronSel()->HNIsTight(el, false);
+  return eventbase->GetElectronSel()->PassUserID(BaseSelection::ELECTRON_HN_TIGHT,el);
 
 }
   
@@ -1244,7 +1263,7 @@ bool AnalyzerCore::IsCF(snu::KElectron el){
   vector<snu::KTruth> truth =  eventbase->GetTruth();
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-    if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
     if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
       if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23 ||
 	 fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24){
@@ -1303,7 +1322,6 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
 float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
 
   if(k_muons.size()==0) return 0.;
-  float em_weight = 0.;
 
   float mm_weight = 0.;
 

@@ -15,7 +15,7 @@ def makeEmail(users, version, type):
     if "MC" in type:
         config+= 'The name/nevents/sum_gen_weights/xsec*filt_eff/lumi/local_path for these samples are listed below\n'
 
-        lumilist=open("/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_v7-4-5.txt","r")
+        lumilist=open("/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_"+ version+".txt","r")
         for line in lumilist:
             if "/data2/DATA/cattoflat/MC/" in line:
                 config+= line 

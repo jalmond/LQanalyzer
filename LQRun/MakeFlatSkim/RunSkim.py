@@ -41,34 +41,21 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
              "TT_TuneCUETP8M1_13TeV-powheg-pythi8",
              "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"
-             ]
-           
+             "WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8",
+             "WW_DoubleScattering_13TeV-pythia8",
+             "WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
+             "GluGlu_HToMuMu_M125_13TeV_powheg_pythia8",
+             "GJet_Pt-20to40_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8",
+             "GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8",
+             "TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8",
+             "WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
+             "ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
+             "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"]
 
-sampledir= [             "QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-470to600_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-50to80_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-20to30_EMEnriched_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-800to1000_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-170to300_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-300to470_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-                                      "ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
-                                      "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
-                                      "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
-                                      "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
-                                      "TT_TuneCUETP8M1_13TeV-powheg-pythi8",
-                                      "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"
-                                      ]
-
+sampledir  = ["QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+              "QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+              "QCD_Pt_30to80_bcToE_TuneCUETP8M1_13TeV_pythia8",
+              "WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8"]
 
 skip=0
 counter=0

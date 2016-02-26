@@ -25,8 +25,8 @@ namespace snu {
     ///Return the type of this object, i.e. KMuon.h              
     virtual std::string Type() const;
     
-    void SetRelIso03(double reliso03);
-    void SetRelIso04(double reliso04);;
+    void SetRelIso(double cone, double reliso);
+
 
     void SetMCMatched(bool matched);
 

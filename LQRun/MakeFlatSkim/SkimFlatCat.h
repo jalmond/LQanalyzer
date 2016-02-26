@@ -29,6 +29,8 @@ public :
    Int_t           run;
    Int_t           lumi;
    Int_t           event;
+   Float_t         CatVersion;
+   Bool_t          IsData;
    vector<string>  *vtrignames;
    vector<int>     *vtrigps;
    std::vector<std::string>  *muon_trigmatch;
@@ -48,18 +50,8 @@ public :
    Int_t           GenTTCat;
    Int_t           genWeight_id1;
    Int_t           genWeight_id2;
-   Int_t           hlt_2el33;
-   Int_t           hlt_el12;
-   Int_t           hlt_el16_el12_8;
-   Int_t           hlt_el17;
-   Int_t           hlt_el17_el12;
-   Int_t           hlt_el23_el12;
-   Int_t           hlt_el23_el12dz;
-   Int_t           hlt_ele27eta2p1;
-   Int_t           hlt_mu17_el12;
-   Int_t           hlt_mu17_mu8;
-   Int_t           hlt_mu17_tkmu8;
-   Int_t           hlt_mu8_el17;
+   Int_t           lumiMaskGold;
+   Int_t           lumiMaskSilver;
    Int_t           nGoodPV;
    Int_t           nPV;
    Int_t           nTrueInteraction;
@@ -68,9 +60,12 @@ public :
    Float_t         genWeightX1;
    Float_t         genWeightX2;
    Float_t         lheWeight;
-   Float_t         puWeight;
-   Float_t         puWeightDn;
-   Float_t         puWeightUp;
+   Float_t         puWeightGold;
+   Float_t         puWeightGoldDn;
+   Float_t         puWeightGoldUp;
+   Float_t         puWeightSilver;
+   Float_t         puWeightSilverDn;
+   Float_t         puWeightSilverUp;
    vector<float>   *pdfWeight;
    vector<double>  *electrons_absIso03;
    vector<double>  *electrons_absIso04;
@@ -100,6 +95,8 @@ public :
    vector<double>  *electrons_y;
    vector<double>  *electrons_z;
    vector<double>  *jets_CVSInclV2;
+   vector<double>  *jets_CSVInclV2;
+   vector<double>  *jets_JetProbBJet;
    std::vector<double>  *jets_chargedEmEnergyFraction;
    vector<double>  *jets_energy;
    vector<double>  *jets_eta;
@@ -237,6 +234,8 @@ public :
    TBranch        *b_gen_status;   //!
    TBranch        *b_gen_pdgid;   //!
    TBranch        *b_gen_motherindex;   //!
+   TBranch        *b_CatVersion;   //!
+   TBranch        *b_IsData;   //!
    TBranch        *b_HNHENoiseFilter;   //!
    TBranch        *b_csctighthaloFilter;   //!
    TBranch        *b_ecalDCTRFilter;   //!
@@ -245,18 +244,6 @@ public :
    TBranch        *b_GenTTCat;   //!
    TBranch        *b_genWeight_id1;   //!
    TBranch        *b_genWeight_id2;   //!
-   TBranch        *b_hlt_2el33;   //!
-   TBranch        *b_hlt_el12;   //!
-   TBranch        *b_hlt_el16_el12_8;   //!
-   TBranch        *b_hlt_el17;   //!
-   TBranch        *b_hlt_el17_el12;   //!
-   TBranch        *b_hlt_el23_el12;   //!
-   TBranch        *b_hlt_el23_el12dz;   //!
-   TBranch        *b_hlt_ele27eta2p1;   //!
-   TBranch        *b_hlt_mu17_el12;   //!
-   TBranch        *b_hlt_mu17_mu8;   //!
-   TBranch        *b_hlt_mu17_tkmu8;   //!
-   TBranch        *b_hlt_mu8_el17;   //!
    TBranch        *b_nGoodPV;   //!
    TBranch        *b_nPV;   //!
    TBranch        *b_nTrueInteraction;   //!
@@ -265,9 +252,12 @@ public :
    TBranch        *b_genWeightX1;   //!
    TBranch        *b_genWeightX2;   //!
    TBranch        *b_lheWeight;   //!
-   TBranch        *b_puWeight;   //!
-   TBranch        *b_puWeightDn;   //!
-   TBranch        *b_puWeightUp;   //!
+   TBranch        *b_puWeightGold;   //!
+   TBranch        *b_puWeightGoldDn;   //!
+   TBranch        *b_puWeightGoldUp;   //!
+   TBranch        *b_puWeightSilver;   //!
+   TBranch        *b_puWeightSilverDn;   //!
+   TBranch        *b_puWeightSilverUp;   //!
    TBranch        *b_pdfWeight;   //!
    TBranch        *b_electrons_absIso03;   //!
    TBranch        *b_electrons_absIso04;   //!
@@ -639,6 +629,7 @@ void SkimFlatCat::Init(TTree *tree)
    muon_validhits = 0;
    muon_validmuonhits = 0;
    muon_validpixhits = 0;
+   
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -659,6 +650,8 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("gen_status", &gen_status, &b_gen_status);
    fChain->SetBranchAddress("gen_pdgid", &gen_pdgid, &b_gen_pdgid);
    fChain->SetBranchAddress("gen_motherindex", &gen_motherindex, &b_gen_motherindex);
+   fChain->SetBranchAddress("CatVersion", &CatVersion, &b_CatVersion);
+   fChain->SetBranchAddress("IsData", &IsData, &b_IsData);
    fChain->SetBranchAddress("HNHENoiseFilter", &HNHENoiseFilter, &b_HNHENoiseFilter);
    fChain->SetBranchAddress("csctighthaloFilter", &csctighthaloFilter, &b_csctighthaloFilter);
    fChain->SetBranchAddress("ecalDCTRFilter", &ecalDCTRFilter, &b_ecalDCTRFilter);
@@ -667,18 +660,6 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("GenTTCat", &GenTTCat, &b_GenTTCat);
    fChain->SetBranchAddress("genWeight_id1", &genWeight_id1, &b_genWeight_id1);
    fChain->SetBranchAddress("genWeight_id2", &genWeight_id2, &b_genWeight_id2);
-   fChain->SetBranchAddress("hlt_2el33", &hlt_2el33, &b_hlt_2el33);
-   fChain->SetBranchAddress("hlt_el12", &hlt_el12, &b_hlt_el12);
-   fChain->SetBranchAddress("hlt_el16_el12_8", &hlt_el16_el12_8, &b_hlt_el16_el12_8);
-   fChain->SetBranchAddress("hlt_el17", &hlt_el17, &b_hlt_el17);
-   fChain->SetBranchAddress("hlt_el17_el12", &hlt_el17_el12, &b_hlt_el17_el12);
-   fChain->SetBranchAddress("hlt_el23_el12", &hlt_el23_el12, &b_hlt_el23_el12);
-   fChain->SetBranchAddress("hlt_el23_el12dz", &hlt_el23_el12dz, &b_hlt_el23_el12dz);
-   fChain->SetBranchAddress("hlt_ele27eta2p1", &hlt_ele27eta2p1, &b_hlt_ele27eta2p1);
-   fChain->SetBranchAddress("hlt_mu17_el12", &hlt_mu17_el12, &b_hlt_mu17_el12);
-   fChain->SetBranchAddress("hlt_mu17_mu8", &hlt_mu17_mu8, &b_hlt_mu17_mu8);
-   fChain->SetBranchAddress("hlt_mu17_tkmu8", &hlt_mu17_tkmu8, &b_hlt_mu17_tkmu8);
-   fChain->SetBranchAddress("hlt_mu8_el17", &hlt_mu8_el17, &b_hlt_mu8_el17);
    fChain->SetBranchAddress("nGoodPV", &nGoodPV, &b_nGoodPV);
    fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
    fChain->SetBranchAddress("nTrueInteraction", &nTrueInteraction, &b_nTrueInteraction);
@@ -687,9 +668,12 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("genWeightX1", &genWeightX1, &b_genWeightX1);
    fChain->SetBranchAddress("genWeightX2", &genWeightX2, &b_genWeightX2);
    fChain->SetBranchAddress("lheWeight", &lheWeight, &b_lheWeight);
-   fChain->SetBranchAddress("puWeight", &puWeight, &b_puWeight);
-   fChain->SetBranchAddress("puWeightDn", &puWeightDn, &b_puWeightDn);
-   fChain->SetBranchAddress("puWeightUp", &puWeightUp, &b_puWeightUp);
+   fChain->SetBranchAddress("puWeightGold", &puWeightGold, &b_puWeightGold);
+   fChain->SetBranchAddress("puWeightGoldDn", &puWeightGoldDn, &b_puWeightGoldDn);
+   fChain->SetBranchAddress("puWeightGoldUp", &puWeightGoldUp, &b_puWeightGoldUp);
+   fChain->SetBranchAddress("puWeightSilver", &puWeightSilver, &b_puWeightSilver);
+   fChain->SetBranchAddress("puWeightSilverDn", &puWeightSilverDn, &b_puWeightSilverDn);
+   fChain->SetBranchAddress("puWeightSilverUp", &puWeightSilverUp, &b_puWeightSilverUp);
    fChain->SetBranchAddress("pdfWeight", &pdfWeight, &b_pdfWeight);
    fChain->SetBranchAddress("electrons_absIso03", &electrons_absIso03, &b_electrons_absIso03);
    fChain->SetBranchAddress("electrons_absIso04", &electrons_absIso04, &b_electrons_absIso04);

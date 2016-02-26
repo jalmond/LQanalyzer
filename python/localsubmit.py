@@ -1,7 +1,7 @@
-################################################################### 
-### configure Job
-#################################################################### 
-timeWait=1#
+###################################################################
+###configure Job
+####################################################################
+###timeWait=1#
 
 ###################################################
 ### Make Input File
@@ -38,6 +38,7 @@ parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
+parser.add_option("-v", "--catversion", dest="catversion", default="", help="What cat version?")
 
 
 ###################################################
@@ -62,6 +63,7 @@ xsec = float(options.xsec)
 tar_lumi = float(options.targetlumi)
 eff_lumi = float(options.efflumi)
 data_lumi = options.data_lumi
+catversion = options.catversion
 Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
@@ -143,7 +145,9 @@ if not len(splitsample)==1:
         if "useCATv742ntuples" in splitsample[conf]:
             conf+=1
             useCATv742ntuples = splitsample[conf]
-
+        if "catversion" in splitsample[conf]:
+            conf+=1
+            catversion = splitsample[conf]
             
 ####################
 ####
@@ -358,37 +362,59 @@ inDS = ""
 mcLumi = 1.0
 filechannel=""
 
-if platform.system() == "Linux":
-    version="_CAT"
-    print "Using CAT " + os.getenv("CATVERSION") + " ntuples"
-    if mc:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' + os.getenv("CATVERSION") +  '.txt'
-    else:
-        filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  + os.getenv("CATVERSION") +'.txt'
-else:
-    filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
+catversions = ["v7-6-3",
+               "v7-6-2",
+               "v7-4-5"]
 
-if not mc:
-    print "Running on data " 
-    for line in open(filename, 'r'):
-        if not line.startswith("#"):
-            entries = line.split()
-            if len(entries)==3:
-                if channel ==entries[0] and sample == entries[1]:
-                    inDS = entries[2]
-    sample = "period"+sample
-    eff_lumi=1.
-    tar_lumi=1.
-    filechannel = channel+"_"
-else:
-    print "Running on MC"
-    for line in open(filename, 'r'):
-        if not line.startswith("#"):
-            entries = line.split()
-            if len(entries)==6:
-                if sample == entries[0]:
-                    eff_lumi = entries[4]
-                    inDS = entries[5]
+sample_catversion = ""
+
+#### Check latest tag/version for DS.
+iversion=0
+while inDS == "":
+    if platform.system() == "Linux":
+        version="_CAT"
+        sample_catversion = catversions[iversion]
+
+        if catversion != "":
+            sample_catversion = catversion
+       
+
+        print "Using CAT " + catversions[iversion] + " ntuples"
+        if mc:
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' + catversions[iversion] +  '.txt'
+        else:
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  + catversions[iversion] +'.txt'
+    else:
+        filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
+        
+    if not mc:
+        print "Running on data " 
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==3:
+                    if channel ==entries[0] and sample == entries[1]:
+                        inDS = entries[2]
+        sample = "period"+sample
+        eff_lumi=1.
+        tar_lumi=1.
+        filechannel = channel+"_"
+    else:
+        print "Running on MC"
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==6:
+                    if sample == entries[0]:
+                        eff_lumi = entries[4]
+                        inDS = entries[5]
+    iversion = iversion +1                
+    if inDS == "":
+        print "Sample is not available in " + filename + ". Will look in previous compatable version"
+        if iversion == len(catversions):
+            print "Input dataset is not available: Exiting"
+            sys.exit()
+        
 InputDir = inDS    
 
 ##################################################################################################################
@@ -511,11 +537,11 @@ if runcf == "True":
 if not mc:
     outsamplename = outsamplename +  "_" + channel
     if useCATv742ntuples == "True":
-        outsamplename = outsamplename + "_cat" + os.getenv("CATVERSION")
+        outsamplename = outsamplename + "_cat" + sample_catversion
 
 else:
     if useCATv742ntuples == "True":
-                outsamplename = outsamplename + "_cat"+ os.getenv("CATVERSION")
+                outsamplename = outsamplename + "_cat"+ sample_catversion
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
@@ -802,16 +828,16 @@ else:
 
 
 
-    SKTreeOutput_pre = "/data2/CatNtuples/" + os.getenv("CATVERSION")
+    SKTreeOutput_pre = "/data2/CatNtuples/" + sample_catversion
     if not os.path.exists(SKTreeOutput_pre):
         os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre2 = "/data2/CatNtuples/" + os.getenv("CATVERSION") + "/SKTrees/"
+    SKTreeOutput_pre2 = "/data2/CatNtuples/" + sample_catversion + "/SKTrees/"
     if not os.path.exists(SKTreeOutput_pre2):
         os.system("mkdir " + SKTreeOutput_pre2)
                     
         
-    SKTreeOutput = "/data2/CatNtuples/" + os.getenv("CATVERSION")+ "/SKTrees/"        
+    SKTreeOutput = "/data2/CatNtuples/" + sample_catversion + "/SKTrees/"        
 
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
@@ -823,24 +849,28 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 
-            if original_channel =="egamma":
-                Finaloutputdir += "DoubleElectron/"
+            if original_channel =="DoubleEG":
+                Finaloutputdir += "DoubleEG/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="muon":
+            if original_channel =="DoubleMuon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="emu":
-                Finaloutputdir += "ElectronMuon/"
+            if original_channel =="MuonEG":
+                Finaloutputdir += "MuonEG/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="singlemuon":
+            if original_channel =="SingleMuon":
                 Finaloutputdir += "SingleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="singleelectron":
+            if original_channel =="SingleElectron":
                 Finaloutputdir += "SingleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="SinglePhoton":
+                Finaloutputdir += "SinglePhoton/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
             Finaloutputdir += "period" + original_sample + "/"
@@ -863,18 +893,23 @@ else:
             Finaloutputdir = SKTreeOutput + "DataNoCut/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-            if original_channel =="egamma":
+            if original_channel =="DoubleElectron":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="muon":
+            if original_channel =="DoubleMuon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="emu":
-                Finaloutputdir += "ElectronMuon/"
-            if not os.path.exists(Finaloutputdir):
-                os.system("mkdir " + Finaloutputdir)
+            if original_channel =="MuonEG":
+                Finaloutputdir += "MuonEG/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="SinglePhoton":
+                Finaloutputdir += "SinglePhoton/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+                     
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
@@ -890,26 +925,30 @@ else:
         if not os.path.exists(SKTreeOutput):
             os.system("mkdir " + SKTreeOutput)
         if not mc:
-            Finaloutputdir = SKTreeOutput + "DataDiLep1510/"
+            Finaloutputdir = SKTreeOutput + "DataDiLeptonSkim/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-            if original_channel =="egamma":
+            if original_channel =="DoubleElectron":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="muon":
+            if original_channel =="DoubleMuon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="emu":
-                Finaloutputdir += "ElectronMuon/"
+            if original_channel =="MuonEG":
+                Finaloutputdir += "MuonEG/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="SinglePhoton":
+                Finaloutputdir += "SinglePhoton/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
         else:
-            Finaloutputdir = SKTreeOutput + "MCDiLep1510/"
+            Finaloutputdir = SKTreeOutput + "MCDiLep/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
             Finaloutputdir +=  original_sample + "/"

@@ -12,12 +12,18 @@ class MuonSelection : public BaseSelection {
   static const Double_t AreaHcalMu[5];
 
  public:
+
+  Bool_t MuonID;
+
   MuonSelection(LQEvent ev);
   ~MuonSelection();
   
   MuonSelection& operator= (const MuonSelection& obj);
   MuonSelection(const MuonSelection& bs);
-  
+
+  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, float ptcut, float etacut);
+  bool PassUserID(ID id, snu::KMuon mu);
+
   bool PassID(ID id, snu::KMuon mu, bool m_debug = false);
   
   //// General Selection
@@ -31,17 +37,15 @@ class MuonSelection : public BaseSelection {
   //// HN analysis selection
   bool HNIsTight(snu::KMuon muon,  bool m_debug = false);
   bool POGID(snu::KMuon muon, TString ID);
-  void POGMuonSelection(std::vector<snu::KMuon>& leptonColl, TString id); 
-  void HNTightMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
-  void HNLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
-  void HNLooseMuonSelection03(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
-  void HNLooseMuonSelection05(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
-  void HNVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+
+  bool HNTightMuonSelection(snu::KMuon mu);
+  bool HNLooseMuonSelection(snu::KMuon mu);
+  bool HNVetoMuonSelection(snu::KMuon mu);
 
   //// Top analysis selection
-  void TopTightMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
-  void TopLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
-  void TopVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+  bool TopTightMuonSelection(snu::KMuon mu);
+  bool TopLooseMuonSelection(snu::KMuon mu);
+  bool TopVetoMuonSelection(snu::KMuon mu);
 
 
   

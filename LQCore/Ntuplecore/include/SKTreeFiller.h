@@ -10,6 +10,7 @@
 //class KMuon;
 #include "KMuon.h"
 #include "KElectron.h"
+#include "KPhoton.h"
 #include "KJet.h"
 #include "KGenJet.h"
 #include "KEvent.h"
@@ -27,6 +28,7 @@ class SKTreeFiller : public Data, public AnalysisBase {
 
   std::vector<snu::KMuon> GetAllMuons();
   std::vector<snu::KElectron> GetAllElectrons();
+  std::vector<snu::KPhoton> GetAllPhotons();
   std::vector<snu::KJet> GetAllJets();
   std::vector<snu::KGenJet> GetAllGenJets();
   snu::KEvent GetEventInfo();

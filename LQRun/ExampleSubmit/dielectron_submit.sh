@@ -9,7 +9,7 @@ runCF=true
 job_cycle="ExampleAnalyzerDiElectron"
 job_useskim="DiLep" ### "Lepton" for single lepton skim   "DiLep" for dilepton skim
 job_stream="egamma" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset
-job_skinput="True"
+job_skinput="False"
 
 
 job_data_lumi="ALL"  ###  "C" = period C only   "ALL"  = period C+D
@@ -128,7 +128,7 @@ then
 	then
 
 	declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WJets" "WZ" "ZZ" "WW" "singletop_tbar" "singletop_t" "singletop_tbarW" "singletop_tW" "ttWJetsToLNu" "ttWJetsToQQ" "ttZToLLNuNu" "ttZToQQ")
-	
+	declare -a input_samples=("WZ")
 	
 	source submit.sh $1
     fi

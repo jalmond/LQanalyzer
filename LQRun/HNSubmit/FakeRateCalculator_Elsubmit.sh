@@ -14,7 +14,7 @@ job_skinput="True"
 job_useskim="Lepton" ### "Lepton" for single lepton skim   "DiLep" for dilepton skim
 job_logstep=1000
 job_loglevel="INFO"
-job_njobs=15
+job_njobs=30
 
 version_tag=${CATVERSION}
 
@@ -70,6 +70,8 @@ fi
 if [[ $1  == "QCD"  ]];
 then
     runQCD=true
+    runMC=false
+    runData=false
 fi
 
 if [[ $1  == "DATA"  ]];
@@ -91,11 +93,30 @@ then
     outputdir=${outputdir_mc}
 
     declare -a input_samples=("DY10to50" "DY50plus" "TTJets_MG5" "WJets")
+    declare -a input_samples=("TTJets_MG5" "WJets")
+    
+    source submit.sh  $1
+
+fi
+
+if [[ $runQCD  == "true" ]];
+then
+    source functions.sh
+
+    cycle=$job_cycle
+    data_lumi=$job_data_lumi
+    stream=$job_stream
+    useskim=$job_useskim
+    skinput="True"
+    njobs=$job_njobs
+    outputdir=${outputdir_mc}
+
+    declare -a input_samples=("QCD_em20to30" "QCD_em30to50" "QCD_em50to80" "QCD_em80to120"  "QCD_em120to170" "QCD_em170to300" "QCD_em300toINF")
 
     source submit.sh  $1
 
-
 fi
+
 
 
 
@@ -123,6 +144,13 @@ then
         then
         declare -a input_samples=("C")
     fi
+    
+    if [[ $1  == "DEBUG" ]];
+        then
+	njobs=1
+        declare -a input_samples=("C")
+    fi
+
 
     source submit.sh $1
 

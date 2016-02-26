@@ -1,3 +1,4 @@
+
 #include "SKTreeFiller.h"
 #include <stdio.h>  
 
@@ -84,58 +85,49 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   snu::KEvent kevent;
   if(!LQinput){
     kevent = *k_inputevent;
+    if(TString(CatVersion).Contains("v7-4")){
+      if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
+    }
     return kevent;
   }
 
-  /// MET variables
-  // PF met
-
   m_logger << DEBUG << "Filling Event Info" << LQLogger::endmsg;
   
-  kevent.SetPFMET( met_pt->at(0));
-  kevent.SetPFSumET( met_sumet->at(0));
-  kevent.SetPFMETphi( met_phi->at(0));
-  
+  // New variable to set catversion. Add this to flat ntuples for next iteration
+
+  kevent.SetCatVersion(CatVersion);
+
+  kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
-  if(metPuppi_pt){
-    kevent.SetPuppiMET( metPuppi_pt->at(0));
-    kevent.SetPuppiSumET( metPuppi_sumet->at(0));
-    kevent.SetPuppiMETphi( metPuppi_phi->at(0));
+  if(metNoHF_pt){
+    if(metNoHF_pt->size() > 0) kevent.SetMET(snu::KEvent::nohf, metNoHF_pt->at(0),  metNoHF_phi->at(0), metNoHF_sumet->at(0));
   }
-  if(metNoHF_pt->size() > 0){
-    kevent.SetNoHFMET( metNoHF_pt->at(0));
-    kevent.SetNoHFSumET( metNoHF_sumet->at(0));
-    kevent.SetNoHFMETphi( metNoHF_phi->at(0));
-  }
-  if(metPfMva_pt){
-    kevent.SetPfMvaMET( metPfMva_pt->at(0));
-    kevent.SetPfMvaSumET( metPfMva_sumet->at(0));
-    kevent.SetPfMvaMETphi( metPfMva_phi->at(0));
-  }
-
-  kevent.SetPFMETShift(1, 1, sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
-  kevent.SetPFMETShift(-1,1, sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
-  kevent.SetPFMETShift(1,2, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
-  kevent.SetPFMETShift(-1,2, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
-  kevent.SetPFMETShift(1,3, sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
-  kevent.SetPFMETShift(-1,3, sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
-  kevent.SetPFSumETShift(1,3, met_unclusteredEn_SumEt_up);
-  kevent.SetPFSumETShift(-1,3, met_unclusteredEn_SumEt_down);
-  kevent.SetPFMETShift(1,4, sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
-  kevent.SetPFMETShift(-1,4, sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
-  kevent.SetPFSumETShift(1,4, met_jetEn_SumEt_up);
-  kevent.SetPFSumETShift(-1,4, met_jetEn_SumEt_down);
-  kevent.SetPFMETShift(1,5, sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
-  kevent.SetPFMETShift(-1,5, sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
-  kevent.SetPFSumETShift(1,5, met_jetRes_SumEt_up);
-  kevent.SetPFSumETShift(-1,5, met_jetRes_SumEt_down);
-
+  
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
-
-    /// Filling event variables
-
-
-    kevent.SetIsData(isData);
+  if(met_unclusteredEn_Px_up){
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
+    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up);
+    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down);
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
+    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up);
+    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down);
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
+    
+    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up);
+    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down);
+  }
+  m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
+  
+  /// Filling event variables
+    
+  kevent.SetIsData(isData);
 
   if(!isData&&genWeight){
     if(genWeight > 0.) kevent.SetWeight(1.);
@@ -145,22 +137,26 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   
-  kevent.SetPUWeight(puWeight);
-  kevent.SetPUWeightPSigma(puWeightDn);
-  kevent.SetPUWeightMSigma(puWeightUp);
+  if(puWeightSilver){
+    kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::none,puWeightSilver);
+    kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down,puWeightSilverDn);
+    kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  puWeightSilverUp);
+    kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::none,puWeightGold);
+    kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,puWeightGoldDn);
+    kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  puWeightGoldUp);
+  }
+  if(lumiMaskSilver){
+    kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
+    kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
+  }
 
-  kevent.SetGenId1(genWeight_id1);
-  kevent.SetGenId2(genWeight_id2);
+  kevent.SetGenId(genWeight_id1, genWeight_id2);
 
   kevent.SetLHEWeight(lheWeight);
-  kevent.SetGenX1(genWeightX1);
-  kevent.SetGenX2(genWeightX2);
+  kevent.SetGenX(genWeightX1, genWeightX2);
   kevent.SetGenQ(genWeightQ);
   
-  //  kevent.SetVertexX(vertices_x->at(0));
-  //  kevent.SetVertexY(vertices_y->at(0));
-  //  kevent.SetVertexZ(vertices_z->at(0));
-  //  kevent.SetVertexNDOF(vertices_ndof->at(0));
+  kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
   
   /// MET filter cuts/checks
 
@@ -186,6 +182,52 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 }
 
 
+std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
+
+  std::vector<KPhoton> photons;
+
+  if(!LQinput){
+    for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
+      photons.push_back(*kit);
+    }
+    return photons;
+  }
+  for (UInt_t iph=0; iph< photons_eta->size(); iph++) {
+    KPhoton ph;
+
+    ph.SetPtEtaPhiE(photons_pt->at(iph),photons_eta->at(iph), photons_phi->at(iph),photons_energy->at(iph));
+
+    ph.SetIsLoose(photons_photonID_loose->at(iph));
+    ph.SetIsMedium(photons_photonID_medium->at(iph));
+    ph.SetIsTight(photons_photonID_tight->at(iph));
+    ph.SetPassMVA(photons_photonID_mva->at(iph));
+    ph.SetMCMatched(photons_mcMatched->at(iph));
+    ph.SetHasPixSeed(photons_haspixseed->at(iph));
+    ph.SetPassElVeto(photons_passelectronveto->at(iph));
+
+    ph.SetChargedHadIsoNoEA(photons_chargedHadronIso->at(iph));
+    ph.SetpuChargedHadIsoNoEA(photons_puChargedHadronIso->at(iph));
+    ph.SetNeutalHadIsoNoEA(photons_neutralHadronIso->at(iph));
+    ph.SetPhotonIsoNoEA(photons_photonIso->at(iph));
+    ph.SetRhoIso(photons_rhoIso->at(iph));
+    ph.SetChargedHadIso(photons_chargedHadronIsoWithEA->at(iph));
+    ph.SetPhotonIso(photons_photonIsoWithEA->at(iph));
+    ph.SetNeutalHadIso(photons_neutralHadronIsoWithEA->at(iph));
+    ph.SetSigmaIetaIeta(photons_sigmaietaieta->at(iph));
+    ph.SetR9(photons_r9->at(iph));
+    ph.SetHoverE(photons_hovere->at(iph));
+    ph.SetSCEta(photons_sceta->at(iph));
+    ph.SetSCPhi(photons_scphi->at(iph));
+    ph.SetSCRawE(photons_scrawenergy->at(iph));
+    ph.SetSCPreShowerE(photons_scpreshowerenergy->at(iph));
+    
+    photons.push_back(ph);
+  }
+  std::sort( photons.begin(), photons.end(), isHigherPt );
+
+  return photons;
+
+}
 
 std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
@@ -212,19 +254,19 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.Setdz( electrons_dz->at(iel));
     el.Setdxy(electrons_dxy->at(iel) );
 
-    el.SetPFChargedHadronIso03(electrons_puChIso03->at(iel));
-    el.SetPFPhotonIso03(electrons_phIso03->at(iel));
-    el.SetPFNeutralHadronIso03(electrons_nhIso03->at(iel));
-    el.SetPFRelIso03(electrons_relIso03->at(iel));
+    el.SetPFChargedHadronIso(0.3, electrons_puChIso03->at(iel));
+    el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
+    el.SetPFNeutralHadronIso(0.3,electrons_nhIso03->at(iel));
+    el.SetPFRelIso(0.3,electrons_relIso03->at(iel));
     
     
-    el.SetPFChargedHadronIso04(electrons_puChIso04->at(iel));
-    el.SetPFPhotonIso04(electrons_phIso04->at(iel));
-    el.SetPFNeutralHadronIso04(electrons_nhIso04->at(iel));
-    el.SetPFRelIso04(electrons_relIso04->at(iel));
+    el.SetPFChargedHadronIso(0.4,electrons_puChIso04->at(iel));
+    el.SetPFPhotonIso(0.4,electrons_phIso04->at(iel));
+    el.SetPFNeutralHadronIso(0.4,electrons_nhIso04->at(iel));
+    el.SetPFRelIso(0.4,electrons_relIso04->at(iel));
     
-    el.SetPFAbsIso03(electrons_absIso03->at(iel));
-    el.SetPFAbsIso04(electrons_absIso04->at(iel));
+    el.SetPFAbsIso(0.3,electrons_absIso03->at(iel));
+    el.SetPFAbsIso(0.4,electrons_absIso04->at(iel));
 
 
     /// set Charge variables
@@ -255,6 +297,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassMVANoTrigTight(electrons_electronID_mva_tight->at(iel));
 
     el.SetIsPF(electrons_isPF->at(iel));
+    el.SetIsTrigMVAValid(electrons_isTrigMVAValid->at(iel));
     el.SetIsMCMatched(electrons_mcMatched->at(iel));
     el.SetHasMatchedConvPhot(electrons_passConversionVeto->at(iel));
     
@@ -291,11 +334,12 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 
   m_logger << DEBUG << "Filling genevent Info" << LQLogger::endmsg;
 
-  for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
+  for (UInt_t ijet=0; ijet< genjet_pt->size(); ijet++) {
     KGenJet jet;
-    jet.SetPtEtaPhiE(slimmedGenJets_pt->at(ijet), slimmedGenJets_eta->at(ijet), slimmedGenJets_phi->at(ijet), slimmedGenJets_energy->at(ijet));
-    //jet.SetGenJetEMF(GenJetEMF->at(ijet));
-    //jet.SetGenJetHADF(GenJetHADF->at(ijet));
+    jet.SetPtEtaPhiE(genjet_pt->at(ijet), genjet_eta->at(ijet), genjet_phi->at(ijet), genjet_energy->at(ijet));
+    jet.SetGenJetEMF(genjet_emf->at(ijet));
+    jet.SetGenJetHADF(genjet_hadf->at(ijet));
+    jet.SetGenJetPDGID(int(genjet_hadf->at(ijet)));
     genjets.push_back(jet);
   }
   return genjets;
@@ -346,7 +390,10 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     
     
     /// BTAG variables
-    jet.SetCVSInclV2(jets_CVSInclV2->at(ijet));
+    if(jets_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSV2, jets_CSVInclV2->at(ijet));
+    if(jets_CMVAV2)    jet.SetBTagInfo(snu::KJet::CMVA2, jets_CMVAV2->at(ijet));
+    if(jets_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jets_JetProbBJet->at(ijet)); 
+
     jet.SetVtxMass(jets_vtxMass->at(ijet));
     jet.SetVtx3DVal(jets_vtx3DVal->at(ijet));
     jet.SetVtx3DSig(jets_vtx3DSig->at(ijet));
@@ -417,8 +464,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
  
-    muon.SetRelIso03(muon_relIso03->at(ilep));
-    muon.SetRelIso04(muon_relIso04->at(ilep));
+    muon.SetRelIso(0.3,muon_relIso03->at(ilep));
+    muon.SetRelIso(0.4,muon_relIso04->at(ilep));
 
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));

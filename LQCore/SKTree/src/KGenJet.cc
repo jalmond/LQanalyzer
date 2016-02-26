@@ -17,7 +17,7 @@ KGenJet::KGenJet() :
   k_genjet_p = 0.;
   k_genjet_emf = 0.;
   k_genjet_hadf = 0.;
-  
+  k_genjet_pdgid =0;
 }
 
 /**
@@ -29,6 +29,7 @@ KGenJet::KGenJet(const KGenJet& gjet) :
   k_genjet_p = gjet.P();
   k_genjet_emf = gjet.EMF() ;
   k_genjet_hadf = gjet.HADF();
+  k_genjet_pdgid = gjet.PdgId();
 }
 
 
@@ -41,6 +42,7 @@ void KGenJet::Reset()
   k_genjet_p = 0.;
   k_genjet_emf = 0. ;
   k_genjet_hadf = 0.; 
+  k_genjet_pdgid=0;
 
 }
 
@@ -52,12 +54,17 @@ KGenJet& KGenJet::operator= (const KGenJet& p)
       k_genjet_p = p.P();
       k_genjet_emf = p.EMF() ;
       k_genjet_hadf = p.HADF();
+      k_genjet_pdgid = p.PdgId();
     }
     
     return *this;
 }
 
 //// SET CLASS VARIBALES
+
+void KGenJet::SetGenJetPDGID(int p){
+  k_genjet_pdgid = p;
+}
 
 void KGenJet::SetGenJetP(double p){
   k_genjet_p = p;

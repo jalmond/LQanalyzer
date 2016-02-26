@@ -27,8 +27,9 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
+LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
   
+  catversion_lq = none;
   chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
   h_timing_hist->GetYaxis()->SetTitle("Time (s)");
@@ -170,36 +171,101 @@ std::pair<Double_t, Double_t>  LQController::GetTotalEvents() throw (LQError){
 
 void LQController::SetChannel(TString ch){
   
-  if     (ch == "muon")  channel = "Muon";
-  else if     (ch == "egamma")  channel = "Electron";
-  else if     (ch == "emu")  channel = "EMu";
-  else if     (ch == "singlemuon")      channel = "singleMuon";
-  else if     (ch == "singleelectron")  channel = "singleElectron";
+  if(catversion_lq== none) {
+    m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+    throw LQError( "This is because catversion was not set... Fix this    ",          LQError::StopExecution );
+  }
+  if(catversion_lq == v744 || catversion_lq == v745){
+    if     (ch == "muon")  channel = "Muon";
+    else if     (ch == "egamma")  channel = "Electron";
+    else if     (ch == "emu")  channel = "EMu";
+    else if     (ch == "singlemuon")      channel = "singleMuon";
+    else if     (ch == "singleelectron")  channel = "singleElectron";
+    else if     (ch == "photon")throw LQError( "Photon channel is not available in v74X catuples. Use v76X",LQError::SkipCycle);
+  }
+  
+  else {
+    if     (ch == "DoubleMuon")  channel = "DoubleMuon";
+    else if     (ch == "DoubleEG")  channel = "DoubleEG";
+    else if     (ch == "MuonEG")  channel = "MuonEG";
+    else if     (ch == "SingleMuon")      channel = "SingleMuon";
+    else if     (ch == "SingleElectron")  channel = "SingleElectron";
+    else if     (ch == "SinglePhoton")  channel = "SinglePhoton";
+    else throw LQError( "No channel set. Not names have changed in v76X+",LQError::SkipCycle);
+  }
   
 }
 void LQController::SetDataPeriod(TString period){
   
-  if( period == "All") period = "ALL";
+  if(catversion_lq== none) {
+    m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+    throw LQError( "This is because catversion was not set... Fix this  ",            LQError::StopExecution );
+  }
 
- 
+  if(catversion_lq == v744){
+  if( period == "All") period = "ALL";
   if( period == "C") k_period = "C";
   else if( period == "D1") k_period = "D1";
   else if( period == "D2") k_period = "D2";
-  else if( period == "ALL") k_period = "AtoD";
+  else if( period == "ALL") k_period = "CtoD";
   else {
     m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
     throw LQError( "Data Period not correctly set!!!",
 		   LQError::StopExecution );
   }
   
-  
   if( period == "C") target_luminosity = 16.345;
+  /// D1/2 are for v74X
   else if( period == "D1") target_luminosity =552.673;
   else if( period == "D2") target_luminosity =711.213;
   else if( period == "ALL") target_luminosity = 16.345 + 552.673 + 711.213;
   else target_luminosity = 16.345 + 552.673 + 711.213;
-
   
+  }
+  else   if(catversion_lq == v745){
+
+    if( period == "All") period = "ALL";
+
+    if( period == "C") k_period = "C";
+    /// from v761 rereco data has just period D
+    else if( period == "D1") k_period = "D1";
+    else if( period == "D2") k_period = "D2";
+    else if( period == "ALL") k_period = "CtoD";
+    else {
+      m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+      throw LQError( "Data Period not correctly set!!!",
+		     LQError::StopExecution );
+    }
+
+    
+    if( period == "C") target_luminosity = 16.345;
+    else if( period == "D1") target_luminosity =887.308;
+    else if( period == "D2") target_luminosity =1011.515;
+
+    else if( period == "ALL") target_luminosity = 16.345 + 887.308 + 1011.515;
+    else target_luminosity = 16.345 + + 887.308 + 1011.515;
+  }
+  else if(catversion_lq == v762 || catversion_lq == v763){
+
+    if( period == "All") period = "ALL";
+
+    if( period == "C") k_period = "C";
+    /// from v761 rereco data has just period D
+    else if( period == "D") k_period = "D";
+    else if( period == "ALL") k_period = "CtoD";
+    else {
+      m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+      throw LQError( "Data Period not correctly set!!!",
+                     LQError::StopExecution );
+    }
+
+
+    if( period == "C") target_luminosity = 17.226;
+    else if( period == "D") target_luminosity =2613.019;
+    else if( period == "ALL") target_luminosity = 17.226 + 2613.019;
+    else target_luminosity = 17.226 + 2613.019;
+  }
+
 }
 
 void LQController::SetTotalMCEvents(int ev){
@@ -219,8 +285,25 @@ void LQController::SetJobName(TString name){
   
 
 
-void LQController::SetInputList(TString list){
+void LQController::SetInputList(TString list) throw( LQError ){
   filelist = list;
+
+  if(filelist == "0") throw LQError( "No input filelist",
+				     LQError::StopExecution );
+
+  if(filelist.Contains("NULL")){
+    throw LQError( "Filelist is null!!!",
+		   LQError::StopExecution );
+  }
+  std::ifstream fin(filelist.Data());
+  std::string word;
+
+  if(fin.is_open()){
+    while(getline (fin,word)){
+      catversion_lq = GetCatVersion(word); 
+      break;
+    }
+  }
 }
 
 void LQController::SetFullInputList(TString list){
@@ -406,6 +489,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     GetMemoryConsumption("Ran Begin Cycle");
 
+    
     if(!kLQInput){
       /// Use SKTree input
 
@@ -496,16 +580,30 @@ void LQController::ExecuteCycle() throw( LQError ) {
     cycle->SetCFStatus(runcf);
     cycle->SetSampleName(jobName);
     
+    
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list    
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
-    if(k_period.Contains("AtoD")) cycle->SetMCPeriod(2); 
+    
+    if(k_period.Contains("CtoD")) cycle->SetMCPeriod(2); 
     else if(k_period.Contains("C")) cycle->SetMCPeriod(1); 
+    
+    /// Check the current branch is upto date wrt the catuples
+    /// in v762 cycle->GetCatVersion not working for flatcatuples. Setting manualy
+    if (catversion_lq == v762) cycle->SetCatVersion("v7-6-2");
+    if (catversion_lq == v763) cycle->SetCatVersion("v7-6-3");
+    
+    string catversion_env = getenv("CATVERSION");
 
+    m_logger << DEBUG << " GetCatVersion = " << cycle->GetCatVersion(kLQInput) << endl;
 
+    /// For cattuples pre v76X set the catversion by hand since it is not set in ntuples
+    /// this is set only if directory path has v-7-4-X in the name 
+    if(catversion_lq == v744)cycle->SetCatVersion("7-4-4");
+    if(catversion_lq == v745)cycle->SetCatVersion("7-4-5");
     
     // calculate weight from input 
     float ev_weight =  CalculateWeight();
@@ -530,8 +628,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     h_timing_hist->Fill("BeginCycle", timer.RealTime());
     timer.Start();
     FillMemoryHists("BeginCycle");
-    
-   
+       
     int m_nSkippedEvents(0);
     int m_nProcessedEvents(0);
 
@@ -544,9 +641,12 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	Bool_t skipEvent = kFALSE;
 	try {
 	  cycle->GetEntry(list_entry);
-	  cycle->SetUpEvent(list_entry,ev_weight);
+	  cycle->SetUpEvent(list_entry,ev_weight,k_period);
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
+	  if(list_entry==0){
+	    if(!CheckBranch(catversion_lq,  cycle->GetCatVersion(kLQInput), catversion_env)) throw LQError( "Error in catversion.... Either you need to update LQanalyzer or you are running on a directory name which does not contain the catuple version in the path ",LQError::SkipCycle);
+	  }
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
 	} catch( const LQError& error ) {
@@ -565,9 +665,12 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << LQLogger::endmsg;
 
 	if(cycle->GetEventNumber() == single_ev){
-	  cycle->SetUpEvent(jentry, ev_weight);
+	  cycle->SetUpEvent(jentry, ev_weight,k_period);
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
+	  if(jentry==n_ev_to_skip){
+            if(!CheckBranch(catversion_lq,  cycle->GetCatVersion(kLQInput), catversion_env)) throw LQError( "Error in catversion.... Either you need to update LQanalyzer or you are running on a directory name which does not contain the catuple version in the path ",LQError::SkipCycle);
+          }
 	  cycle->ExecuteEvents();
 	  cycle->EndEvent();
 	  break;
@@ -585,13 +688,16 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  cycle->GetEntry(jentry);
 	  
 	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
-	  cycle->SetUpEvent(jentry, ev_weight);
+	  cycle->SetUpEvent(jentry, ev_weight,k_period);
 	  
 	  m_logger << DEBUG << "cycle->BeginEvent " << LQLogger::endmsg;
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();   
 	  /// executes analysis code
 	  m_logger << DEBUG << "cycle->ExecuteEvent " << LQLogger::endmsg;
+	  if(jentry==n_ev_to_skip){
+            if(!CheckBranch(catversion_lq,  cycle->GetCatVersion(kLQInput), catversion_env)) throw LQError( "Error in catversion.... Either you need to update LQanalyzer or you are running on a directory name which does not contain the catuple version in the path ",LQError::SkipCycle);
+          }
 	  cycle->ExecuteEvents();
 	  // cleans up any pointers etc.
 	  cycle->EndEvent();
@@ -678,6 +784,51 @@ void LQController::SetLQInput(bool lq){
   kLQInput=lq;
 }
 
+bool LQController::CheckBranch(LQController::_catversion dir_version, std::string ntuple_version, std::string version_env){
+  TString ntuple_path(ntuple_version);
+  TString env_path(version_env);
+
+  LQController::_catversion nt_version=none;
+  if(ntuple_path.Contains("7-6-3")) nt_version=v763;
+  else if(ntuple_path.Contains("7-6-2")) nt_version=v762;
+  else if(ntuple_path.Contains("7-4-5")) nt_version= v745;
+  else if(ntuple_path.Contains("7-4-4")) nt_version= v744;
+
+  //  cout << "CheckBranch : ntuple_path= "<<  ntuple_path << " and " << nt_version << " " << dir_version << endl;
+  //  should be empty for v74XX
+  if((dir_version == v744 || dir_version == v745)) {
+    return true;
+  }
+  //if(ntuple_path.Contains("")) return true;
+  
+  if(nt_version == none)return false;
+  if(nt_version  != dir_version) return false;
+  
+  
+  LQController::_catversion env_version=none;
+  if(env_path.Contains("7-6-3")) env_version=v763;
+  else if(env_path.Contains("7-6-2")) env_version=v762;
+  else if(env_path.Contains("7-4-5")) env_version= v745;
+  else if(env_path.Contains("7-4-4")) env_version= v744;
+
+  if( int(env_version) < int(nt_version)) return false;
+
+  return true;
+  
+}
+  
+
+LQController::_catversion  LQController::GetCatVersion(std::string filepath) throw(LQError){
+  TString ts_path(filepath); 
+  
+  if(ts_path.Contains("7-6-3")) return v763;
+  else if(ts_path.Contains("7-6-2")) return v762;
+  else if(ts_path.Contains("7-4-5")) return v745;
+  else if(ts_path.Contains("7-4-4")) return v744;
+  
+  else throw LQError( "CATVERSION cannot be found in input dir name... If you are running your own sample make give the input dir a name with /v-X-X-X/ corresponding to catversion you are using!",   LQError::StopExecution );
+
+}
 
 float LQController::CalculateWeight() throw(LQError) {
   

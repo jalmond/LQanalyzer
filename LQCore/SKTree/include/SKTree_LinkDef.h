@@ -27,6 +27,10 @@
 #pragma link C++ class std::vector<snu::KElectron>+;
 #pragma link C++ class std::vector<snu::KElectron*>+;
 
+#pragma link C++ class snu::KPhoton+;
+#pragma link C++ class std::vector<snu::KPhoton>+;
+#pragma link C++ class std::vector<snu::KPhoton*>+;
+
 #pragma link C++ class snu::KTau+;
 #pragma link C++ class std::vector<snu::KTau>+;
 #pragma link C++ class std::vector<snu::KTau*>+;

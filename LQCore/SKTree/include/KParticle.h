@@ -21,7 +21,7 @@ namespace snu {
     
     enum PartType{notfake, jet, cjet, bjet, chargemisid, chargemisid_photonconv, photonfake, nonfake_photonconv,  NOPARTICLE, unknown, fromtau,misidmuon};
     enum LooseTight{Loose, Tight, Other};
-    
+   
     
     ///Default Constructor with a 0 4-vector.
     KParticle();
@@ -93,7 +93,7 @@ namespace snu {
     Int_t m_charge;
   
     
-  ClassDef(KParticle,7);
+  ClassDef(KParticle,8);
   }; // class KParticle
   
 } // namespace snu

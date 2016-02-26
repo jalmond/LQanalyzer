@@ -12,6 +12,20 @@ namespace snu {
   
   class KJet : public KParticle {
   public:
+
+
+    enum tagger{CSV2,
+		CMVA2,
+		JETPROB};
+    
+    enum wp{loose,
+	    medium,
+	    tight};
+    
+    enum syst_dir{none,
+                  down,
+                  up};
+
     KJet();
     
     ///Copy constructor
@@ -39,7 +53,7 @@ namespace snu {
     //// Pileup MVA to be added
     
     /// BTAG
-    void SetCVSInclV2(double btag);
+    void SetBTagInfo(tagger tag, float val);
     void SetVtxMass(double mass);
     void SetVtx3DVal(double val);
     void SetVtx3DSig(double sig);
@@ -80,8 +94,9 @@ namespace snu {
     
    
     /// BTAG variables
-    inline Double_t CVSInclV2() const {return k_jet_cvsv2;}
- 
+    Double_t BJetTaggerValue(tagger tag) const; 
+    inline Double_t CSVInclV2() const {return BJetTaggerValue(CSV2);}
+
     /// Energy Fraction
     inline Double_t ChargedEMEnergyFraction() const {return k_jet_chargeEmEF;}
     // flavour
@@ -120,7 +135,7 @@ namespace snu {
     
     Double_t k_jet_pt_raw, k_jet_energy_raw;
     /// BTAG variables  
-    Double_t k_jet_cvsv2, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
+    Double_t k_jet_csv2 ,k_jet_cmva2, k_jet_jetprobbjet, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
     
     Int_t k_vtx_ntrack;
 
@@ -139,7 +154,7 @@ namespace snu {
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,9)
+    ClassDef(KJet,10)
   }; 
   
 

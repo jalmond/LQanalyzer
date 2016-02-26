@@ -1,3 +1,4 @@
+
 // $Id: SKTreeMakerDiLep.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
@@ -22,14 +23,14 @@ ClassImp (SKTreeMakerDiLep);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0), out_jets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMakerDiLep");
-
-
-
-
+  
+  
+  
+  
 }
 
 void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
@@ -54,6 +55,15 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(10);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
+
+  //####### PHOTONS
+  std::vector<snu::KElectron> skim_photons;
+  eventbase->GetPhotonSel()->SetPt(10);
+  eventbase->GetPhotonSel()->SetEta(3.);
+  eventbase->GetPhotonSel()->BasicSelection(out_photons);
+
+
+
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
@@ -98,7 +108,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   
   return;
 }// End of execute event loop
-  
+
 
 
 void SKTreeMakerDiLep::EndCycle()throw( LQError ){
@@ -113,6 +123,8 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
 
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
   DeclareVariable(out_electrons, "KElectrons", "LQTree");
+  DeclareVariable(out_photons, "KPhotons");
+
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
   DeclareVariable(out_genjets, "KGenJets");
@@ -122,40 +134,55 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
 
   //// Set triggers available in sktree
   triggerlist.clear();
-
+  
+  
   if(k_isdata){
-    if(k_channel.Contains("Electron")){
-      AddTriggerToList("HLTDoubleEle33CaloIdLGsfTrkIdVL");
-      AddTriggerToList("HLTEle17Ele12CaloIdLTrackIdLIsoVLDZ");
-      AddTriggerToList("HLTEle23Ele12CaloIdLTrackIdLIsoVL");
-      AddTriggerToList("HLTEle23Ele12CaloIdLTrackIdLIsoVLDZ");
-      AddTriggerToList("HLTEle27eta2p1WPLooseGsfTriCentralPFJet30");
-      AddTriggerToList("HLTEle12CaloIdLTrackIdLIsoVL");
-      AddTriggerToList("HLTEle17CaloIdLTrackIdLIsoVL");
-      AddTriggerToList("HLTEle16Ele12Ele8CaloIdLTrackIdL");
+    if(k_channel.Contains("DoubleMuon")){
+      AddTriggerToList("HLT_IsoMu");
+      AddTriggerToList("HLT_Mu");
+      AddTriggerToList("HLT_TkMu");
     }
-
-    if(k_channel.Contains("EMu")){
-      AddTriggerToList("HLTMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVL");
-      AddTriggerToList("HLTMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVL");
+    if(k_channel.Contains("SingleMuon")){
+      AddTriggerToList("HLT_IsoMu");
+      AddTriggerToList("HLT_Mu");
+      AddTriggerToList("HLT_TkMu");
+    }
+    if(k_channel.Contains("SinglePhoton")){
+      AddTriggerToList("HLT_Photon");
+    }
+    cout << "k_channel = " << k_channel << endl;
+    if(k_channel.Contains("DoubleEG")){
+      AddTriggerToList("HLT_DoubleEle");
+      AddTriggerToList("HLT_Ele");
+      AddTriggerToList("HLT_DoublePhoton");
+    }
+    
+    if(k_channel.Contains("MuonEG")){
+      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+      AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
     }
   }
   else {
-    AddTriggerToList("HLTMu17TrkIsoVVLMu8TrkIsoVVLDZ");
-    AddTriggerToList("HLTMu17TrkIsoVVLTkMu8TrkIsoVVL");
-    AddTriggerToList("HLTDoubleEle33CaloIdLGsfTrkIdVL");
-    AddTriggerToList("HLTEle17Ele12CaloIdLTrackIdLIsoVLDZ");
-    AddTriggerToList("HLTEle23Ele12CaloIdLTrackIdLIsoVL");
-    AddTriggerToList("HLTEle23Ele12CaloIdLTrackIdLIsoVLDZ");
-    AddTriggerToList("HLTEle27eta2p1WPLooseGsfTriCentralPFJet30");
-    AddTriggerToList("HLTEle12CaloIdLTrackIdLIsoVL");
-    AddTriggerToList("HLTEle17CaloIdLTrackIdLIsoVL");
-    AddTriggerToList("HLTEle16Ele12Ele8CaloIdLTrackIdL");
-    AddTriggerToList("HLTMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVL");
-    AddTriggerToList("HLTMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVL");
-
+    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
+    AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
+    AddTriggerToList("HLT_IsoMu");
+    AddTriggerToList("HLT_Mu");
+    AddTriggerToList("HLT_TkMu");
+    AddTriggerToList("HLT_DoubleEle");
+    AddTriggerToList("HLT_Ele");
+    AddTriggerToList("HLT_DoublePhoton");
+    AddTriggerToList("HLT_Photon");
   }
 
+  
+  
+    
 
   return;
   
@@ -201,6 +228,7 @@ void SKTreeMakerDiLep::ClearOutputVectors() throw (LQError){
   //
   out_muons.clear();
   out_electrons.clear();
+  out_photons.clear();
   out_jets.clear();
   out_genjets.clear();
   out_truth.clear();

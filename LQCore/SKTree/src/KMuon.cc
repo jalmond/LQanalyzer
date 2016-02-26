@@ -271,13 +271,10 @@ void KMuon::SetMCMatched(bool ismatched){
 }
 
 
-void KMuon::SetRelIso03(double iso03){
-  k_muon_reliso03= iso03;
-}
+void KMuon::SetRelIso(double cone, double iso){
+  if(cone == 0.3) k_muon_reliso03= iso;
+  else if(cone ==  0.4) k_muon_reliso04= iso;
 
-
-void KMuon::SetRelIso04(double iso04){
-  k_muon_reliso04= iso04;
 }
 
 

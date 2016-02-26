@@ -13,8 +13,8 @@ void LQCycleBaseExec::BeginEvent()throw( LQError ){
 
 }
 
-void LQCycleBaseExec::SetUpEvent(Long64_t jentry , float weight)throw( LQError ){
-  m_logger << INFO << "Default SetUpEvent function with "  << jentry << " and weight "<< weight  << LQLogger::endmsg;
+void LQCycleBaseExec::SetUpEvent(Long64_t jentry , float weight, TString per)throw( LQError ){
+  m_logger << INFO << "Default SetUpEvent function with "  << jentry << " and weight "<< weight << " and period "<< per << LQLogger::endmsg;
 }
 
 void LQCycleBaseExec::ExecuteEvents()throw( LQError ){

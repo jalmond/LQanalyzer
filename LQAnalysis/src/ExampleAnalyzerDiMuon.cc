@@ -8,62 +8,70 @@
  ***************************************************************************/
 
 /// Local includes
- #include "ExampleAnalyzerDiMuon.h"
+#include "ExampleAnalyzerDiMuon.h"
 
- //Core includes
- #include "Reweight.h"
- #include "EventBase.h"                                                                                                                           
- #include "BaseSelection.h"
+//Core includes
+#include "Reweight.h"
+#include "EventBase.h"                                                                                                                           
+#include "BaseSelection.h"
 
- //// Needed to allow inheritance for use in LQCore/core classes
- ClassImp (ExampleAnalyzerDiMuon);
+
+//// Needed to allow inheritance for use in LQCore/core classes
+ClassImp (ExampleAnalyzerDiMuon);
 
 
  /**
   *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
   *
   */
- ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
+ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
+  
+  
+  // To have the correct name in the log:                                                                                                                            
+  SetLogName("ExampleAnalyzerDiMuon");
+  
+  Message("In ExampleAnalyzerDiMuon constructor", INFO);
+  //
+  // This function sets up Root files and histograms Needed in ExecuteEvents
+  InitialiseAnalysis();
+  MakeCleverHistograms(sighist_mm,"DiMuon");
+  MakeCleverHistograms(sighist_mm,"DiMuon_BJet");
+  MakeCleverHistograms(sighist_mm,"SSMuon");
+  MakeCleverHistograms(trilephist,"TriMuon");
+  MakeCleverHistograms(trilephist,"TriMuon_noB");
+  MakeCleverHistograms(trilephist,"TriMuon_nomet");
+  MakeCleverHistograms(trilephist,"TriMuonEl");
+  
+}
 
 
-   // To have the correct name in the log:                                                                                                                            
-   SetLogName("ExampleAnalyzerDiMuon");
+void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
+  
+  /// Initialise histograms
+  MakeHistograms();  
+  //
+  // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
+  // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
+  //
+  
+  Message("Making clever hists for Z ->ll test code", INFO);
+  
+  //// default is silver, excpept in v7-6-2 ... set to gold if you use gold json in analysis
+  /// only available in v7-6-X branch and newer
+  //lumimask = snu::KEvent::gold;
 
-   Message("In ExampleAnalyzerDiMuon constructor", INFO);
-   //
-   // This function sets up Root files and histograms Needed in ExecuteEvents
-   InitialiseAnalysis();
-   MakeCleverHistograms(sighist_mm,"DiMuon");
-   MakeCleverHistograms(sighist_mm,"DiMuon_BJet");
-   MakeCleverHistograms(sighist_mm,"SSMuon");
-   MakeCleverHistograms(trilephist,"TriMuon");
-   MakeCleverHistograms(trilephist,"TriMuon_noB");
-   MakeCleverHistograms(trilephist,"TriMuon_nomet");
-   MakeCleverHistograms(trilephist,"TriMuonEl");
-   
- }
-
-
- void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
-   
-   /// Initialise histograms
-   MakeHistograms();  
-   //
-   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
-   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
-   //
-
-   Message("Making clever hists for Z ->ll test code", INFO);
-   
-   return;
- }
+  return;
+}
 
 
 void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
   /// Apply the gen weight 
   weight*=MCweight;
-
+  
+  /// Acts on data to remove bad reconstructed event 
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
+  
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -79,9 +87,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
    FillCutFlow("EventCut", weight);
 
-
-
-   /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu
+   /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
    std::vector<TString> triggerslist;
    triggerslist.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
@@ -125,10 +131,10 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    
 
    /// List of preset muon collections : Can call also POGSoft/POGLoose/POGMedium/POGTight
-   std::vector<snu::KMuon> muonColl = GetMuons("NoCut");  /// No cuts applied
-   std::vector<snu::KMuon> muonVetoColl = GetMuons("HNVeto");  // veto selection
-   std::vector<snu::KMuon> muonLooseColl = GetMuons("HNLoose");  // loose selection
-   std::vector<snu::KMuon> muonTightColl = GetMuons("HNTight"); // tight selection : NonPrompt MC lep removed
+   std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_NOCUT);  /// No cuts applied
+   std::vector<snu::KMuon> muonVetoColl = GetMuons(BaseSelection::MUON_HN_VETO);  // veto selection
+   std::vector<snu::KMuon> muonLooseColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
+   std::vector<snu::KMuon> muonTightColl = GetMuons(BaseSelection::MUON_HN_TIGHT); // tight selection : NonPrompt MC lep removed
    
 
    for(std::vector<snu::KMuon>::iterator it = muonColl.begin(); it!= muonColl.end(); it++){
@@ -139,30 +145,29 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    
    
    /// List of preset jet collections : NoLeptonVeto/Loose/Medium/Tight/TightLepVeto/HNJets
-   std::vector<snu::KJet> jetColl             = GetJets("NoLeptonVeto"); // All jets
-   std::vector<snu::KJet> jetColl_loose       = GetJets("Loose"); // pt > 10; eta < 5. ; PFlep veto
-   std::vector<snu::KJet> jetColl_medium      = GetJets("Medium");// pt > 20 ; eta < 2.5; PFlep veto
-   std::vector<snu::KJet> jetColl_tight       = GetJets("Tight");// pt > 20 ; eta < 2.5; PFlep veto
-   std::vector<snu::KJet> jetColl_tightlepvto = GetJets("TightLepVeto");// pt > 20 ; eta < 2.5; PFlep veto + IDlepveto
-   std::vector<snu::KJet> jetColl_hn          = GetJets("HNJets");// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
+   std::vector<snu::KJet> jetColl             = GetJets(BaseSelection::JET_NOLEPTONVETO); // All jets
+   std::vector<snu::KJet> jetColl_loose       = GetJets(BaseSelection::JET_LOOSE); // pt > 10; eta < 5. ; PFlep veto
+   std::vector<snu::KJet> jetColl_tight       = GetJets(BaseSelection::JET_TIGHT);// pt > 20 ; eta < 2.5; PFlep veto
+   std::vector<snu::KJet> jetColl_hn          = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
    
    FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
    /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
-   std::vector<snu::KElectron> electronColl        = GetElectrons("POGTight");          
-   std::vector<snu::KElectron> electronLooseColl        = GetElectrons("POGLoose");          
+   std::vector<snu::KElectron> electronColl             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
+   std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
+
    
    int njet = jetColl_hn.size();
    FillHist("GenWeight_NJet" , njet*MCweight + MCweight*0.1, 1., -6. , 6., 12);
 
-   
    numberVertices = eventbase->GetEvent().nVertices();   
    
    float pileup_reweight=(1.0);
    if (!k_isdata) {
-     /// Currently this is done using on the fly method: waiting for official method
-     pileup_reweight = eventbase->GetEvent().PileUpWeight();
-
+     // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
+     if(eventbase->GetEvent().CatVersion().empty()) pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
+     else if(!eventbase->GetEvent().CatVersion().find("v7-6")) pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
+     else pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
    }
 
    FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);

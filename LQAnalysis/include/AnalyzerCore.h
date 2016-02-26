@@ -13,35 +13,46 @@ class SignalPlotsEM;
 class TriLeptonPlots;
 class EventBase;
 
+#include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 
 class AnalyzerCore : public LQCycleBase {
   
  public:
+ 
+  enum period  {C,
+		D,
+		CtoD,};
   
-  // Default constructor
+  //Default constructor
+   
   AnalyzerCore();
 
   //destructor
   virtual ~AnalyzerCore();
 
   // SetUpEvent CORE function: accesses event in ntuple
-  virtual void SetUpEvent(Long64_t entry, float ev_weight)throw( LQError );
+  virtual void SetUpEvent(Long64_t entry, float ev_weight, TString per)throw( LQError );
   virtual void EndEvent()throw( LQError );
   virtual void WriteHistograms()throw( LQError );
 
 
   TDirectory*   getTemporaryDirectory(void) const;
 
-  std::vector<snu::KJet>  GetJets(TString label);
-  std::vector<snu::KMuon> GetMuons(TString label);
-  std::vector<snu::KMuon> GetMuons(TString label, bool keepfakes);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString label);
-  std::vector<snu::KElectron> GetElectrons( TString label);
+  std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid);
+  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid);
+  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, bool keepfakes);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
+  std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
 
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);
+
+
+
+  void ClassInfo();
+  float SilverToGoldJsonReweight(TString p);
 
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
@@ -117,6 +128,8 @@ class AnalyzerCore : public LQCycleBase {
   
   /// Event weights
   Double_t MCweight, weight;
+
+  snu::KEvent::json lumimask;
 
   // used to get trigger prescale
   Int_t prescale;

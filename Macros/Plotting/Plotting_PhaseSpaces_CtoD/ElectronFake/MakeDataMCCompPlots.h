@@ -42,7 +42,7 @@ void MakeCutFlow(std::string hist);
 int MakeCutFlow_Plots(string configfile);
 void PrintCanvas(TCanvas* c1, std::string folder, std::string plotdesciption,  std::string title);
 bool repeat(string hname);
-TLegend* MakeLegend(map<TString, TH1*> legmap,TH1* h_legdata, bool rundata, bool log);
+TLegend* MakeLegend(map<TString, TH1*> legmap,TH1* h_legdata, bool rundata, bool log, float ymax, float xmax);
 TH1* MakeDataHist(string name, double xmin, double xmax, TH1* h_up,bool ylog , int rebin);
 void CheckHist(TH1* h);
 void CheckSamples(int nsamples);
@@ -52,7 +52,7 @@ void SetErrors(TH1* hist, float normerr, bool usestat);
 TH1* MakeStackUp(map<TString, TH1*> map_of_stacks, TString clonename);
 TH1* MakeStackDown(map<TString, TH1*> map_of_stacks, TString clonename);
 TH1* MakeSumHist(THStack* thestack);
-float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name);
+float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax);
 void SetTitles(TH1* hist, string name);
 bool HistInGev(string name);
 void fixOverlay();
@@ -68,7 +68,7 @@ float GetSyst(TString cut, TString syst, pair<vector<pair<TString,float> >,TStri
 float GetSystPercent(TString cut, TString syst, pair<vector<pair<TString,float> >,TString > samples );
 void setZ(bool useAlpgen);
 float Calculate(TString cut, TString variance,  pair<vector<pair<TString,float> >, TString >  samples);
-void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples , vector<string>& cut_label);
+void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples , vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label);
 void  SetUpMasterConfig(std::string filename);
 
 ////// For cutflow
@@ -110,6 +110,7 @@ std::ofstream histpage;
 vector<string> cuts;
 vector<string> allcuts;
 vector<string> listofsamples;
+vector<string> listofsamples_ss;
 
 //// Standard bkg folders
 string  mcloc="";

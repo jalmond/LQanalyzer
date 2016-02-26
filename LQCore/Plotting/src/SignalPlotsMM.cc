@@ -226,7 +226,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   //// Fillplots
   for(unsigned int i=0 ; i < muons.size(); i++){
-    float dphi = fabs(TVector2::Phi_mpi_pi(muons.at(i).Phi()- ev.PFMETphi()));
+    float dphi = fabs(TVector2::Phi_mpi_pi(muons.at(i).Phi()- ev.METPhi(snu::KEvent::pfmet)));
     float MT = sqrt(2.* muons.at(i).Et()*ev.PFMET() * (1 - cos( dphi)));
     Fill("h_MTlepton",MT, weight);
     Fill("h_dphi_METlepton",dphi, weight);
@@ -235,12 +235,12 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   if(debug)cout<< "Plotting [5] " << endl;
 
   Fill("h_PFMET",ev.PFMET(), weight);
-  Fill("h_PFMET_phi",ev.PFMETphi(), weight);
+  Fill("h_PFMET_phi",ev.METPhi(snu::KEvent::pfmet), weight);
   Fill("h_nVertices", ev.nVertices(), weight);
   
 
-  Fill("h_NoHFMET",ev.NoHFMET(), weight);
-  Fill("h_NoHFMET_phi",ev.NoHFMETphi(), weight);
+  Fill("h_NoHFMET",ev.MET(snu::KEvent::nohf), weight);
+  Fill("h_NoHFMET_phi",ev.METPhi(snu::KEvent::nohf), weight);
 
   
   Fill("h_Nvtx",ev.nVertices(), weight);
@@ -258,8 +258,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_jets_eta",jets[j].Eta(),weight);
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
-    Fill("h_bTag",jets[j].CVSInclV2(),weight);
-    if(jets.at(j).CVSInclV2() > 0.89) nbjet++; 
+    Fill("h_bTag",jets[j].CSVInclV2(),weight);
+    if(jets.at(j).CSVInclV2() > 0.89) nbjet++; 
   }
   
   float st = ht + ev.PFMET();
