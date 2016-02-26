@@ -1,0 +1,28 @@
+########################
+### CATTUPLES ########## 
+#######################
+
+
+#######################################################################################################################################
+# sample     Nevents  Sum(GenWeights)  xsec*Eff   Effective lumi    LocalPath #####################################################################################
+#######################################################################################################################################
+
+
+QCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu600to800_pythia8  3984898.0 3984898.0 25.1 158792.1  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_30to80_bcToE_pythia8  14695018.0 14695018.0 405623.4 36.2  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt_30to80_bcToE_TuneCUETP8M1_13TeV_pythia8/
+WpWp_qcd_madgraph  120000.0 120000.0 0.0 7802340.5  /data2/DATA/cattoflat/MC/v7-6-3/WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8/
+
+
+#### Single lepton skims: SKTrees
+SKQCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu1000toINF_pythia8/
+SKQCD_mu600to800_pythia8  3984898.0 3984898.0 25.1 158792.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu600to800_pythia8/
+SKQCD_30to80_bcToE_pythia8  14695018.0 14695018.0 405623.4 36.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_30to80_bcToE_pythia8/
+SKWpWp_qcd_madgraph  120000.0 120000.0 0.0 7802340.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/WpWp_qcd_madgraph/
+
+
+#### Single lepton skims: SKTrees
+SKQCD_mu1000toINF_pythia8_dilep  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu1000toINF_pythia8/
+SKQCD_mu600to800_pythia8_dilep  3984898.0 3984898.0 25.1 158792.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu600to800_pythia8/
+SKQCD_30to80_bcToE_pythia8_dilep  14695018.0 14695018.0 405623.4 36.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_30to80_bcToE_pythia8/
+SKWpWp_qcd_madgraph_dilep  120000.0 120000.0 0.0 7802340.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WpWp_qcd_madgraph/
