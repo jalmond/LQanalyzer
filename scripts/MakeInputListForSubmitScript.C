@@ -40,7 +40,8 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "" << endl;
   
-  lumi_file << " declare -a input_samples=('" ;
+  lumi_file << " declare -a input_samples('')" ;
+  lumi_file << " declare -a all_mc=('" ;
   
 
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
