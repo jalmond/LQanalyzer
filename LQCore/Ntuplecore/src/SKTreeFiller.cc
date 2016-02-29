@@ -1,4 +1,3 @@
-
 #include "SKTreeFiller.h"
 #include <stdio.h>  
 
@@ -17,9 +16,37 @@ SKTreeFiller::SKTreeFiller() :Data() {
 
 SKTreeFiller::~SKTreeFiller() {};
 
+
+bool SKTreeFiller::SkipTrigger(TString tname){
+  
+  m_logger << DEBUG << "Trigger: " << tname << LQLogger::endmsg;  
+  /// Remove extra unnecisary  triggers (from v7-6-4+ this will not be needed))
+  if((tname.Contains("Jpsi")
+       || tname.Contains("NoFilters")
+       || tname.Contains("Upsilon")
+       || tname.Contains("7p5")
+       || tname.Contains("Save")
+       || tname.Contains("R9Id")
+       || tname.Contains("PFMET")
+       || tname.Contains("PFHT")
+       || tname.Contains("NoHE")
+       || tname.Contains("HE10")
+       || tname.Contains("PFJet50")
+       || tname.Contains("Boost")
+       || tname.Contains("LooseIso")
+       || tname.Contains("MediumIso")
+      || tname.Contains("Mass")
+       || tname.Contains("Central")
+       || tname.Contains("MW")
+       || tname.Contains("EBOnly_VBF")
+      || tname.Contains("dEta18"))) return true;
+  
+  return false;
+}
+
+
 snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
-
   
   if(!LQinput){
     ktrigger = *k_inputtrigger;
@@ -32,6 +59,7 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   std::vector<bool> vHLTInsideDatasetTriggerDecisions;
   std::vector<int> vHLTInsideDatasetTriggerPrescales;
   
+
   if(trignames.size() == 0 ){
     for (UInt_t i=0; i< vtrignames->size(); i++) {
       std::string tgname = vtrignames->at(i);
@@ -48,14 +76,17 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
        ++it) {
 
     bool trigger_exists(false);
-    for (UInt_t i=0; i< vtrignames->size(); i++) {
+    for (UInt_t i=0 ; i< vtrignames->size(); i++) {
       
       std::string tgname = vtrignames->at(i);
       Int_t ps = vtrigps->at(i);
 
       TString tmpHLT = vtrignames->at(i);
+      if((TString(CatVersion).Contains("v7-6-2"))&& LQinput){
+	if(SkipTrigger(tmpHLT)) continue;
+      }
       if ( tmpHLT.BeginsWith(*it)){
-
+	
 	trigger_exists = true;
 	bool double_count_trig = false;
 	for(std::vector<std::string>::iterator vit = vHLTInsideDatasetTriggerNames.begin(); vit != vHLTInsideDatasetTriggerNames.end(); vit++){
@@ -390,8 +421,8 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     
     
     /// BTAG variables
-    if(jets_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSV2, jets_CSVInclV2->at(ijet));
-    if(jets_CMVAV2)    jet.SetBTagInfo(snu::KJet::CMVA2, jets_CMVAV2->at(ijet));
+    if(jets_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSVv2, jets_CSVInclV2->at(ijet));
+    if(jets_CMVAV2)    jet.SetBTagInfo(snu::KJet::cMVAv2, jets_CMVAV2->at(ijet));
     if(jets_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jets_JetProbBJet->at(ijet)); 
 
     jet.SetVtxMass(jets_vtxMass->at(ijet));
@@ -497,40 +528,33 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
   
 
-std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
+std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   
   m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;
 
+  int counter=0;
+
   if(!LQinput){
 
-    for(std::vector<KTruth>::iterator kit  = k_inputtruth->begin(); kit != k_inputtruth->end(); kit++){
+    for(std::vector<KTruth>::iterator kit  = k_inputtruth->begin(); kit != k_inputtruth->end(); kit++, counter++){
+      if(counter == np)  break;
       vtruth.push_back(*kit);
     }
     return vtruth;
   }
   
   m_logger << DEBUG << "Filling truth Info" << LQLogger::endmsg;
-  for (UInt_t it=0; it< gen_pt->size(); it++ ) {
+  
+  for (UInt_t it=0; it< gen_pt->size(); it++ , counter++) {
     
+    if(counter == np)  break;
     KTruth truthp;
     truthp.SetPtEtaPhiE(gen_pt->at(it), gen_eta->at(it), gen_phi->at(it), gen_energy->at(it));
-    /*truthp.SetParticlePx(GenParticlePx->at(it));
-      truthp.SetParticlePy(GenParticlePy->at(it));
-      truthp.SetParticlePz(GenParticlePz->at(it));
-      if(GenParticleVX){
-      truthp.SetParticleVx(GenParticleVX->at(it));
-	truthp.SetParticleVy(GenParticleVY->at(it));
-	truthp.SetParticleVz(GenParticleVZ->at(it));
-	}*/
-      truthp.SetParticlePdgId(gen_pdgid->at(it));
-      truthp.SetParticleStatus(gen_status->at(it));
-      
-      //truthp.SetParticleNDaughter(GenParticleNumDaught->at(it));
-      
-      truthp.SetParticleIndexMother(gen_motherindex->at(it));
-      vtruth.push_back(truthp);  
-      
+    truthp.SetParticlePdgId(gen_pdgid->at(it));
+    truthp.SetParticleStatus(gen_status->at(it));
+    truthp.SetParticleIndexMother(gen_motherindex->at(it));
+    vtruth.push_back(truthp);  
   }
   
   return vtruth;

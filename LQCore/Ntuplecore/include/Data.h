@@ -111,7 +111,6 @@ public :
    std::vector<TBranch*> m_inputbranches;
 
    std::string CatVersion;
-   std::string CatVersion_nt;
 
    // Declaration of leaf types
    Int_t           run;
@@ -351,7 +350,7 @@ public :
    TBranch        *b_isData;   //!                                                                                                                                                                                                                                             
    TBranch        *b_lumiSilver;   //!                                                                                                                                                                                                                                             
    TBranch        *b_lumiGolden;   //!                                                                                                                                                                                                                                             
-   TBranch        *b_CatVersion_nt;   //!                                                                                                                                                                                                                                             
+   TBranch        *b_CatVersion;   //!                                                                                                                                                                                                                                             
  
    TBranch        *b_lumi;   //!                                                                                                                                                                                                                                             
    TBranch        *b_lumiMaskGold;   //!                                                                                                                                                                                                                                             

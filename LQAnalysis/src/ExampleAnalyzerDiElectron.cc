@@ -222,7 +222,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   if(!isData){
     for(unsigned int iel=0; iel < electronColl.size(); iel++){
-      weight*= ElectronScaleFactor(electronColl.at(iel).Eta(), electronColl.at(iel).Pt(), "POGTight", 0);
+      weight*= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronColl);
     }
   }
 
@@ -231,8 +231,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       FillHist("Njets_dilepton", jetColl_hn.size() ,weight, 0. , 5., 5);
       FillCutFlow("DiEl_tight", weight);
       /// Method of plotting single histogram
-      FillHist("zpeak_ee_noPUrw", GetZMass(electronColl), weight, 0., 200.,400);
-      FillHist("zpeak_ee", GetZMass(electronColl), weight*pileup_reweight, 0., 200.,400);
+      FillHist("zpeak_ee_noPUrw", GetDiLepMass(electronColl), weight, 0., 200.,400);
+      FillHist("zpeak_ee", GetDiLepMass(electronColl), weight*pileup_reweight, 0., 200.,400);
       
       /// Standard set of histograms for muons/jets/electrons.. with no corrections
       FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);

@@ -46,10 +46,10 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
 
-  bool HasCloseBJet(snu::KElectron el);
-  bool HasCloseLBJet(snu::KElectron el);
+  bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium);
+  int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium);
 
-
+  int AssignnNumberOfTruth();
 
   void ClassInfo();
   float SilverToGoldJsonReweight(TString p);
@@ -59,15 +59,15 @@ class AnalyzerCore : public LQCycleBase {
   bool IsCF(snu::KElectron el);
 
 
-
   double TriggerScaleFactor( vector<snu::KElectron> el);;
   double TriggerScaleFactor( vector<snu::KMuon> mu);;
   double TriggerScaleFactorEMu();
-  float GetZMass(std::vector<snu::KMuon> muons);
-  float GetZMass(std::vector<snu::KElectron> electrons);
+  float GetDiLepMass(std::vector<snu::KMuon> muons);
+  float GetDiLepMass(std::vector<snu::KElectron> electrons);
 
-  double ElectronScaleFactor( double eta, double pt, TString ID, int sys=0);
-  double MuonScaleFactor(double eta, double pt, int sys=0);
+  double ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KElectron> el, int sys=0);
+  double MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys=0);
+
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
@@ -75,7 +75,7 @@ class AnalyzerCore : public LQCycleBase {
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
-  int NBJet(std::vector<snu::KJet> jets);
+
   bool Zcandidate(vector<snu::KMuon> muons, float interval, bool require_os=true);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KMuon> muons);

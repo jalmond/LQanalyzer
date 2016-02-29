@@ -185,8 +185,8 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
        FillHist("Njets_dimuon", jetColl_hn.size() ,weight, 0. , 5., 5);
        
        /// Method of plotting single histogram
-       FillHist("zpeak_mumu_noPUrw", GetZMass(muonTightColl), weight, 0., 200.,400);
-       FillHist("zpeak_mumu", GetZMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
+       FillHist("zpeak_mumu_noPUrw", GetDiLepMass(muonTightColl), weight, 0., 200.,400);
+       FillHist("zpeak_mumu", GetDiLepMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
        
        
        /// Standard set of histograms for muons/jets/electrons.. with no corrections

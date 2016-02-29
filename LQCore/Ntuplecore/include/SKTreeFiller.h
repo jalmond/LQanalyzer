@@ -33,10 +33,11 @@ class SKTreeFiller : public Data, public AnalysisBase {
   std::vector<snu::KGenJet> GetAllGenJets();
   snu::KEvent GetEventInfo();
   snu::KTrigger GetTriggerInfo(std::vector<TString> triglist);
-  std::vector<snu::KTruth>  GetTruthParticles();
+  std::vector<snu::KTruth>  GetTruthParticles(int np=30);
   void ERRORMessage(TString comment);
   snu::KParticle::PartType partType;
-  
+
+  bool SkipTrigger(TString trigname);
   Int_t VertexN;
   Bool_t *goodVerticies;
   

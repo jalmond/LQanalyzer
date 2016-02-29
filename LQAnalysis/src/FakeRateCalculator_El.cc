@@ -170,9 +170,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   
   if(!isData){
-    for(std::vector<snu::KElectron>::iterator it = electronTightColl.begin(); it != electronTightColl.end(); it++){
-      weight *=  ElectronScaleFactor(it->Eta(), it->Pt(), true);
-    }
+    weight *=  ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT,electronTightColl);
   }
   
 
@@ -187,9 +185,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(PassTrigger(triggerslist, prescale) ){
     if(electronTightColl.size() ==2) {
       if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
-	if(!isData) FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(snu::KEvent::silver), 0., 200.,400);
-	else FillHist("zpeak_ee_noPUrw", GetZMass(electronTightColl), weight, 0., 200.,400);
-	FillHist("zpeak_ee", GetZMass(electronTightColl), weight, 0., 200.,400);
+	if(!isData) FillHist("zpeak_ee_noPUrw", GetDiLepMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(snu::KEvent::silver), 0., 200.,400);
+	else FillHist("zpeak_ee_noPUrw", GetDiLepMass(electronTightColl), weight, 0., 200.,400);
+	FillHist("zpeak_ee", GetDiLepMass(electronTightColl), weight, 0., 200.,400);
 	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
       }
     }

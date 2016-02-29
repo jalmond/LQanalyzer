@@ -9,18 +9,33 @@
 #include "TLorentzVector.h"
 
 namespace snu {
+
+
+  // pfJetProbabilityBJetTags
+  const double WP_BTAG_JPL = 0.245; // 0.275
+  const double WP_BTAG_JPM = 0.515; // 0.545
+  const double WP_BTAG_JPT = 0.760; // 0.790
+  // pfCombinedInclusiveSecondaryVertexV2BJetTags
+  const double WP_BTAG_CSVv2L = 0.460; // 0.605
+  const double WP_BTAG_CSVv2M = 0.800; // 0.89
+  const double WP_BTAG_CSVv2T = 0.935; // 0.97
+  // pfCombinedMVAV2BJetTags
+  const double WP_BTAG_cMVAv2L = -0.715; // -
+  const double WP_BTAG_cMVAv2M =  0.185; // -
+  const double WP_BTAG_cMVAv2T =  0.875; // -
+
   
   class KJet : public KParticle {
   public:
 
 
-    enum tagger{CSV2,
-		CMVA2,
+    enum Tagger{CSVv2,
+		cMVAv2,
 		JETPROB};
     
-    enum wp{loose,
-	    medium,
-	    tight};
+    enum WORKING_POINT{Loose=0,
+		       Medium,
+		       Tight};
     
     enum syst_dir{none,
                   down,
@@ -53,7 +68,7 @@ namespace snu {
     //// Pileup MVA to be added
     
     /// BTAG
-    void SetBTagInfo(tagger tag, float val);
+    void SetBTagInfo(Tagger tag, float val);
     void SetVtxMass(double mass);
     void SetVtx3DVal(double val);
     void SetVtx3DSig(double sig);
@@ -94,8 +109,28 @@ namespace snu {
     
    
     /// BTAG variables
-    Double_t BJetTaggerValue(tagger tag) const; 
-    inline Double_t CSVInclV2() const {return BJetTaggerValue(CSV2);}
+    Double_t BJetTaggerValue(Tagger tag) const; 
+    inline Double_t CSVInclV2() const {return BJetTaggerValue(CSVv2);}
+    inline Bool_t IsBTagged(Tagger tag, WORKING_POINT  wp) const {
+      if(tag== CSVv2){
+	if(wp==Loose) return (BJetTaggerValue(tag) > WP_BTAG_CSVv2L);
+	if(wp==Medium) return (BJetTaggerValue(tag) > WP_BTAG_CSVv2M);
+	if(wp==Tight) return (BJetTaggerValue(tag) > WP_BTAG_CSVv2T);
+      }
+      if(tag== cMVAv2){
+	if(wp==Loose) return (BJetTaggerValue(tag) > WP_BTAG_cMVAv2L);
+	if(wp==Medium) return (BJetTaggerValue(tag) > WP_BTAG_cMVAv2M);
+	if(wp==Tight) return (BJetTaggerValue(tag) > WP_BTAG_cMVAv2T);
+      }
+      if(tag== JETPROB ){
+	if(wp==Loose) return (BJetTaggerValue(tag) > WP_BTAG_JPL);
+        if(wp==Medium) return (BJetTaggerValue(tag) > WP_BTAG_JPM);
+        if(wp==Tight) return (BJetTaggerValue(tag) > WP_BTAG_JPT);
+      }
+      return true;
+    }
+
+    float scaleFactor(Tagger tag, WORKING_POINT wp, syst_dir systDir) const;
 
     /// Energy Fraction
     inline Double_t ChargedEMEnergyFraction() const {return k_jet_chargeEmEF;}

@@ -168,6 +168,80 @@ bool KMuon::TriggerMatched(TString path){
   return false;
 }
 
+
+float KMuon::ScaleFactor(const std::string& name, int sign) const {
+  //need to fill errors.
+  
+  //# Muon SF reference https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffsRun2
+  //## Retrieve data from the cmsdoc web page:
+  //##   https://cmsdoc.cern.ch/cms/Physics/muon/ReferenceEfficiencies/Run2015/25ns/MuonID_Z_RunCD_Reco76X_Feb15.json
+  //##   https://cmsdoc.cern.ch/cms/Physics/muon/ReferenceEfficiencies/Run2015/25ns/MuonIso_Z_RunCD_Reco76X_Feb15.json
+
+  float eta = fabs(this->Eta());
+  
+  float fsign = 1.;
+  if(sign == 0) fsign =0.;
+  if(sign == -1) fsign =-1.;
+  if (name == "POG_TightID"){
+    ///    # Values of "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1 + MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"
+
+    if (this->Pt()>20. && this->Pt() <= 25.){
+      if      ( eta <=  0.900)    return (0.97535*1.0036)  + fsign*(0.02);
+      else if ( eta <=  1.200)    return (0.97775*1.0038)  + fsign*(0.06);
+      else if ( eta <=  2.100)    return (0.99295*0.9998)  + fsign*(0.06);
+      else if ( eta <=  2.400)    return (0.97845*1.0062)  + fsign*(0.06);
+      else return 1.;
+
+    }
+    else if (this->Pt()>25. && this->Pt() <= 30.){
+      if      ( eta <=  0.900)    return (0.9828099*0.9977)  + fsign*(0.02);
+      else if ( eta <=  1.200)    return (0.9761207*0.99956)  + fsign*(0.06);
+      else if ( eta <=  2.100)    return (0.989996*1.0020)  + fsign*(0.06);
+      else if ( eta <=  2.400)    return (0.976407*0.99873)  + fsign*(0.06);
+      else return 1.;
+
+    }
+    else if (this->Pt()>30. && this->Pt() <= 40.){
+      if      ( eta <=  0.900)    return (0.986640*1.00087)  + fsign*(0.02);
+      else if ( eta <=  1.200)    return (0.98037*1.00118)  + fsign*(0.06);
+      else if ( eta <=  2.100)    return (0.99230*1.002168)  + fsign*(0.06);
+      else if ( eta <=  2.400)    return (0.9783080*0.99957)  + fsign*(0.06);
+      else return 1.;
+
+      
+    }
+    else if (this->Pt()>40. && this->Pt() <= 50.){
+      if      ( eta <=  0.900)    return (0.987302*0.99954)  + fsign*(0.02);
+      else if ( eta <=  1.200)    return (0.9801*0.9994)  + fsign*(0.06);
+      else if ( eta <=  2.100)    return (0.99125*1.000058)  + fsign*(0.06);
+      else if ( eta <=  2.400)    return (0.9775*0.999581)  + fsign*(0.06);
+      else return 1.;
+
+
+    }
+    else if (this->Pt()>50. && this->Pt() <= 60.){
+      if      ( eta <=  0.900)    return (0.98227*1.00027)  + fsign*(0.02);
+      else if ( eta <=  1.200)    return (0.97658*0.999814)  + fsign*(0.06);
+      else if ( eta <=  2.100)    return (0.989061*1.000066)  + fsign*(0.06);
+      else if ( eta <=  2.400)    return (0.97276*1.000374)  + fsign*(0.06);
+      else return 1.;
+
+
+    }
+    else if (this->Pt()>60. && this->Pt() <= 120.){
+      if      ( eta <=  0.900)    return (0.98566*0.999541)  + fsign*(0.02);
+      else if ( eta <=  1.200)    return (0.9777*1.00047)  + fsign*(0.06);
+      else if ( eta <=  2.100)    return (0.9929*1.000415)  + fsign*(0.06);
+      else if ( eta <=  2.400)    return (0.9784*1.001068)  + fsign*(0.06);
+      else return 1.;
+
+    }
+
+  }
+  return 1.; 
+}
+
+
 //void KMuon::SetMuonVtxIndex(int ivertex){
 //  i_muonVtx = ivertex;
 //}

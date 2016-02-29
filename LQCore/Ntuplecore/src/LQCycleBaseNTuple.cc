@@ -16,7 +16,7 @@
 
 ClassImp( LQCycleBaseNTuple);
 
-LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false), k_sample_name(""), sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
+LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false), k_sample_name(""), k_classname(""), sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
 
 
  
@@ -103,6 +103,10 @@ void LQCycleBaseNTuple::SetCFStatus( bool type){
 
 void LQCycleBaseNTuple::SetSampleName( TString name){
   k_sample_name = name;
+}
+
+void LQCycleBaseNTuple::SetAnalyzerClassName( TString c){
+  k_classname= c;
 }
 
 void LQCycleBaseNTuple::SetDataChannel( TString channel){

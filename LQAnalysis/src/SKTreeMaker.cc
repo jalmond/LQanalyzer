@@ -38,9 +38,6 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-
-  //if(eventbase->GetEvent().EventNumber() == 28681993) cout << "JOHN : " << eventbase->GetEvent().LumiSection() << endl;
-
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
@@ -76,11 +73,9 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
   std::vector<snu::KElectron> skim_photons;
-  eventbase->GetPhotonSel()->SetPt(10);
+  eventbase->GetPhotonSel()->SetPt(15);
   eventbase->GetPhotonSel()->SetEta(3.);
   eventbase->GetPhotonSel()->BasicSelection(out_photons);
-
-
 
 
   int nlep = skim_electrons.size() + skim_muons.size();
@@ -96,17 +91,15 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) {
     throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   }
-  //  for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
-    //    cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
-  // }
+
+  //for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
+  //  cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
+  //}
   
   out_event   = eventbase->GetEvent();
-  //string catversion = getenv("CATVERSION");
-  std::cout << "catversion = " << out_event.CatVersion() << std::endl;
-  //  out_event.SetCatVersion(catversion);
   out_trigger = eventbase->GetTrigger();
   out_truth   = eventbase->GetTruth();
-
+  
   return;
 }// End of execute event loop
   
@@ -157,7 +150,9 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_Ele");
       AddTriggerToList("HLT_DoublePhoton");
     }
-
+    if(k_channel.Contains("SingleElectron")){
+      AddTriggerToList("HLT_Ele");
+    }
     if(k_channel.Contains("MuonEG")){
       AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
       AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");

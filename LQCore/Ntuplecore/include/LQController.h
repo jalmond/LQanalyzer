@@ -41,6 +41,8 @@ class LQController  {
   double GetPhysicalMemoryConsumption();
   void FillMemoryHists(std::string binname);
 
+  int VersionStamp(LQController::_catversion cat_version );
+
   /// List of functions to configure job
   void SetTreeName(TString treename);
   void SetCycleName(TString cyclename);
@@ -62,6 +64,8 @@ class LQController  {
   void SetChannel(TString channel);
   void SetInputChain(TChain* ch);
   void SetLQInput(bool lq);
+  std::string SetNTCatVersion(LQController::_catversion dir_version);
+
   _catversion GetCatVersion(std::string filepath)  throw( LQError ); 
   bool CheckBranch(LQController::_catversion dir_version, std::string ntuple_version, std::string env_version);
 

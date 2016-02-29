@@ -44,6 +44,7 @@ public:
   void SetNPStatus( bool type);
   void SetCFStatus( bool type);
   void SetSampleName( TString sample);
+  void SetAnalyzerClassName( TString name); 
   void SetDataChannel(TString channel);
 
   void SetNSampleEvents(double nev);
@@ -58,6 +59,7 @@ public:
   bool k_running_chargeflip;
   TString k_sample_name;
   TString k_channel;
+  TString k_classname;
   TString muscale_fitParametersFile;
   
   // How many entries in the fullsample

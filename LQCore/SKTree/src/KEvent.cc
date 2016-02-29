@@ -282,7 +282,6 @@ KEvent& KEvent::operator= (const KEvent& p)
 //// SET CLASS VARIBALES
 void KEvent::SetCatVersion(std::string cat){
   k_catversion = cat;
-  std::cout << "k_catversion = " << k_catversion << endl;
 }
 
 void KEvent::SetPassCSCHaloFilterTight(bool pass){

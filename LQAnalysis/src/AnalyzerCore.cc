@@ -57,14 +57,14 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
 
 }
 
-float AnalyzerCore::GetZMass(std::vector<snu::KElectron> electrons){
+float AnalyzerCore::GetDiLepMass(std::vector<snu::KElectron> electrons){
 
   if(electrons.size() != 2) return 0.;
   snu::KParticle p = electrons.at(0) + electrons.at(1);
   return p.M();
 }
 
-float AnalyzerCore::GetZMass(std::vector<snu::KMuon> muons){
+float AnalyzerCore::GetDiLepMass(std::vector<snu::KMuon> muons){
 
   if(muons.size() != 2) return 0.;
   snu::KParticle p = muons.at(0) + muons.at(1);
@@ -187,34 +187,18 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
 
 
-bool AnalyzerCore::HasCloseLBJet(snu::KElectron el){
+bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKING_POINT wp){
 
   std::vector<snu::KJet> alljets = GetJets(BaseSelection::JET_NOLEPTONVETO);
 
   bool cl = false;
   for(unsigned int ij =0; ij < alljets.size(); ij++){
     if(el.DeltaR(alljets.at(ij)) < 0.5){
-      if(alljets.at(ij).CSVInclV2() > 0.605) cl = true;
+      if(alljets.at(ij).IsBTagged(tag,wp )) cl = true;
     }
   }
 
   return cl;
-
-}
-
-bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
-
-  std::vector<snu::KJet> alljets = GetJets(BaseSelection::JET_NOLEPTONVETO);
-  
-  bool cl = false;
-  for(unsigned int ij =0; ij < alljets.size(); ij++){
-    if(el.DeltaR(alljets.at(ij)) < 0.5){
-      if(alljets.at(ij).CSVInclV2() > 0.89) cl = true;
-    }
-  }
-
-  return cl;
-
 }
 
 
@@ -264,12 +248,17 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 
 
 
-double AnalyzerCore::MuonScaleFactor(double eta, double pt, int sys){
-  if(fabs(eta) > 2.5) return 1.;  
-  if(pt < 10) return 1.;
-  if(sys==0)return 1.;
-  return 1.;
+double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys){
+  float sf= 1.;
   
+  std::string sid= "";
+  if(muid==BaseSelection::MUON_POG_TIGHT) sid= "POG_TightID_ISO";
+  else cout << "MuonScaleFactor has no SFs for ID " << endl;
+
+  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
+    sf *= itmu->ScaleFactor(sid, sys);
+  }
+  return 1.;
 }
 
 double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el){
@@ -289,210 +278,22 @@ double AnalyzerCore::TriggerScaleFactorEMu( ){
 
 
 
-double AnalyzerCore::ElectronScaleFactor( double eta, double pt, TString ID , int sys){
+double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KElectron> el, int sys){
+  float sf= 1.;
 
-  double sf=1.;
-  if(ID.Contains("POG")){
-    if(ID.Contains("Veto")){
-      
-      if(eta < -1.566 ) {
-	if( pt < 20.) sf = 1.02;
-	else if( pt < 30.) sf = 0.99;
-	else if( pt < 40.) sf = 1.00;
-	else if( pt < 50.) sf = 1.01;
-	else sf = 0.99;
-      }
-      else  if(eta < -1.4442) {
-	if( pt < 20.) sf = 0.77;
-        else if( pt < 30.) sf = 0.99;
-        else if( pt < 40.) sf = 1.00;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 0.93;
-      }
-      else  if(eta < -0.8) {
-	if( pt < 20.) sf = 1.05;
-	else if( pt < 30.) sf = 0.93;
-	else if( pt < 40.) sf = 0.99;
-	else if( pt < 50.) sf = 0.99;
-	else sf = 0.99;
-      }
-      else  if(eta < 0.0) {
-	if( pt < 20.) sf = 0.98;
-        else if( pt < 30.) sf = 0.96;
-        else if( pt < 40.) sf = 0.99;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 1.00;
-      }
+  std::string sid= "";
+  if(elid==BaseSelection::ELECTRON_POG_TIGHT)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-tight";
+  else if(elid==BaseSelection::ELECTRON_POG_MVATrig) sid="mvaEleID-Spring15-25ns-Trig-V1-wp90";
+  else cout << "ElectronScaleFactor has no SFs for ID " << endl;
 
-      else  if(eta < 0.8) {
-	if( pt < 20.) sf = 1.02;
-        else if( pt < 30.) sf = 0.98;
-        else if( pt < 40.) sf = 0.99;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 0.99;
-      }
-
-      else  if(eta < 1.4442) {
-	if( pt < 20.) sf = 1.11;
-        else if( pt < 30.) sf = 0.96;
-        else if( pt < 40.) sf = 0.99;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 0.99;
-      }
-
-      else  if(eta < 1.566) {
-	if( pt < 20.) sf = 0.95;
-        else if( pt < 30.) sf = 0.99;
-        else if( pt < 40.) sf = 0.99;
-        else if( pt < 50.) sf = 1.00;
-        else sf = 0.93;
-      }
-
-      else  if(eta < 2.5) {
-	if( pt < 20.) sf = 1.09;
-        else if( pt < 30.) sf = 0.95;
-        else if( pt < 40.) sf = 1.00;
-        else if( pt < 50.) sf = 1.00;
-        else sf = 1.01;
-      }
-    }
-    else  if(ID.Contains("Loose")){
-
-      if(eta < -1.566 ) {
-        if( pt < 20.) sf = 1.08;
-        else if( pt < 30.) sf = 0.98;
-        else if( pt < 40.) sf = 0.99;
-        else if( pt < 50.) sf = 1.00;
-        else sf = 0.99;
-      }
-      else  if(eta < -1.4442) {
-        if( pt < 20.) sf = 0.83;
-        else if( pt < 30.) sf = 1.01;
-        else if( pt < 40.) sf = 1.01;
-        else if( pt < 50.) sf = 0.97;
-        else sf = 0.96;
-      }
-      else  if(eta < -0.8) {
-        if( pt < 20.) sf = 1.01;
-        else if( pt < 30.) sf = 0.93;
-        else if( pt < 40.) sf = 0.99;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 0.97;
-      }
-      else  if(eta < 0.0) {
-        if( pt < 20.) sf = 0.98;
-        else if( pt < 30.) sf = 0.97;
-        else if( pt < 40.) sf = 0.97;
-        else if( pt < 50.) sf = 0.98;
-        else sf = 0.99;
-      }
-
-      else  if(eta < 0.8) {
-        if( pt < 20.) sf = 1.09;
-        else if( pt < 30.) sf = 0.97;
-        else if( pt < 40.) sf = 0.98;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 1.00;
-      }
-
-      else  if(eta < 1.4442) {
-        if( pt < 20.) sf = 1.12;
-        else if( pt < 30.) sf = 0.97;
-        else if( pt < 40.) sf = 0.97;
-        else if( pt < 50.) sf = 0.98;
-        else sf = 1.00;
-      }
-
-      else  if(eta < 1.566) {
-        if( pt < 20.) sf = 1.00;
-        else if( pt < 30.) sf = 0.97;
-        else if( pt < 40.) sf = 0.98;
-        else if( pt < 50.) sf = 1.00;
-        else sf = 0.91;
-      }
-
-      else  if(eta < 2.5) {
-        if( pt < 20.) sf = 1.07;
-        else if( pt < 30.) sf = 0.94;
-        else if( pt < 40.) sf = 1.00;
-        else if( pt < 50.) sf = 1.00;
-        else sf = 1.01;
-      }
-    }
-    else  if(ID.Contains("Tight")){
-
-      if(eta < -1.566 ) {
-        if( pt < 20.) sf = 1.05;
-        else if( pt < 30.) sf = 0.98;
-        else if( pt < 40.) sf = 0.97;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 0.98;
-      }
-      else  if(eta < -1.4442) {
-        if( pt < 20.) sf = 0.95;
-        else if( pt < 30.) sf = 1.04;
-        else if( pt < 40.) sf = 1.01;
-        else if( pt < 50.) sf = 0.94;
-        else sf = 0.92;
-      }
-      else  if(eta < -0.8) {
-        if( pt < 20.) sf = 1.02;
-        else if( pt < 30.) sf = 0.91;
-        else if( pt < 40.) sf = 0.97;
-        else if( pt < 50.) sf = 0.98;
-        else sf = 0.96;
-      }
-      else  if(eta < 0.0) {
-        if( pt < 20.) sf = 1.01;
-        else if( pt < 30.) sf = 0.95;
-        else if( pt < 40.) sf = 0.95;
-        else if( pt < 50.) sf = 0.97;
-        else sf = 0.97;
-      }
-
-      else  if(eta < 0.8) {
-        if( pt < 20.) sf = 1.01;
-        else if( pt < 30.) sf = 0.99;
-        else if( pt < 40.) sf = 0.97;
-        else if( pt < 50.) sf = 0.97;
-        else sf = 0.99;
-      }
-
-      else  if(eta < 1.4442) {
-        if( pt < 20.) sf = 1.16;
-        else if( pt < 30.) sf = 0.99;
-        else if( pt < 40.) sf = 0.95;
-        else if( pt < 50.) sf = 0.98;
-        else sf = 0.97;
-      }
-
-      else  if(eta < 1.566) {
-        if( pt < 20.) sf = 0.99;
-        else if( pt < 30.) sf = 0.97;
-        else if( pt < 40.) sf = 0.98;
-        else if( pt < 50.) sf = 0.96;
-        else sf = 1.04;
-      }
-
-      else  if(eta < 2.5) {
-        if( pt < 20.) sf = 1.06;
-        else if( pt < 30.) sf = 0.95;
-        else if( pt < 40.) sf = 0.96;
-        else if( pt < 50.) sf = 0.99;
-        else sf = 0.99;
-      }
-    }
-
-    return sf;
-    // https://indico.cern.ch/event/370511/contribution/3/attachments/1168717/1687113/tnP_EGM_Oct_12.pdf
+  for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
+    sf *= itel->ScaleFactor(sid, sys);
   }
-  
-  if(fabs(eta) > 2.5) return 1.;
-  if(pt< 10) return 1.;
-  
-  if(sys==0) return 1.;
+ 
   return 1.;
 }
+
+
 
 void AnalyzerCore::AddTriggerToList(TString triggername){
   
@@ -615,7 +416,11 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   /// Flat Cat ntuples use silver json... By default weight in MC is normalised to silver luminosity. 
   /// If running on gold json then the weight needs correcting for golden json lumi
    
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(), triggerinfo,eventinfo);
+  /// np == numberof particles you want to store at truth info. 30 is default unless running nocut sktree OR signal
+  int np =  AssignnNumberOfTruth();
+
+  
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
@@ -627,7 +432,17 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   
 }
 
+int AnalyzerCore::AssignnNumberOfTruth(){
+  int np = 30;
+  if(k_classname.Contains("SKTreeMakeNoCut")) np = 1000;
 
+  /// List of signal samples
+  /// G.Yu needs to add signal here
+ 
+  if(k_sample_name.Contains("Majornana"))  np = 1000; 
+  
+  return np;
+}
 float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   
   if(eventbase->GetEvent().CatVersion().empty()) return 0.;
@@ -666,7 +481,6 @@ void AnalyzerCore::ClassInfo(){
 float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
 
   float sumpt=0.;
-  
   for(std::vector<snu::KJet>::iterator it = particles.begin(); it != particles.end(); it++){
     sumpt += it->Pt();
   }
@@ -696,8 +510,6 @@ bool AnalyzerCore::isPrompt(long pdgid) {
   else if (pdgid == 90) return true; // N
   else return false;
 }
-
-
 
 void AnalyzerCore::EndEvent()throw( LQError ){
 
@@ -1157,12 +969,11 @@ bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runnin
 }
 
 
-int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
-  
+int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WORKING_POINT wp){
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(jets.at(ij).CSVInclV2() > 0.89) nbjet++;
-  }
+    if(jets.at(ij).IsBTagged(tag,wp ) )nbjet++;
+       }
   return nbjet;
 }
 
@@ -1254,7 +1065,6 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
 
 bool AnalyzerCore::IsTight(snu::KElectron el){
   
-  cout << "Not optimised for 2015" << endl;
   return eventbase->GetElectronSel()->PassUserID(BaseSelection::ELECTRON_HN_TIGHT,el);
 
 }

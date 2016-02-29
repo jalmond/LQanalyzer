@@ -73,7 +73,8 @@ tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
 
-original_channel = channel
+new_channel = channel.replace(":", "")
+original_channel = new_channel
 
 
 list_of_extra_lib=[]
@@ -173,7 +174,7 @@ if os.path.exists("job_output"):
 if not os.path.exists("job_output"):
     os.system("mkdir job_output/")
 
-local_sub_dir= "job_output/" + sample + '_' + channel + '_' + now()
+local_sub_dir= "job_output/" + sample + '_' + new_channel + '_' + now()
     
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
@@ -213,8 +214,8 @@ if number_of_cores > 1:
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
             number_of_cores=nj_def
-        if not cycle == "SKTreeMakerDiLep":
-             number_of_cores=nj_def
+        if cycle == "SKTreeMakerDiLep":
+            number_of_cores=nj_def
     elif useskinput == "true":
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
@@ -225,7 +226,7 @@ if number_of_cores > 1:
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
             number_of_cores=nj_def
-        if not cycle == "SKTreeMakerDiLep":
+        if cycle == "SKTreeMakerDiLep":
             number_of_cores=nj_def
     else:
         if number_of_cores > 5:
@@ -282,13 +283,13 @@ original_sample = sample
 if useskinput == "true":
     if not mc:
         if useskim == "Lepton":
-            channel="SK" + channel
+            new_channel="SK" + new_channel
         else:
             if useskim == "NoCut":
-                channel="SK" + channel + "_nocut"
+                new_channel="SK" + new_channel + "_nocut"
             else:
                 if useskim == "DiLep":
-                    channel="SK" + channel + "_dilep"
+                    new_channel="SK" + new_channel + "_dilep"
 
     else:
         if useskim == "Lepton":
@@ -303,13 +304,13 @@ elif useskinput == "True":
 
     if not mc:
         if useskim == "Lepton":
-            channel="SK" + channel
+            new_channel="SK" + new_channel
         else:
             if useskim == "NoCut":
-                channel="SK" + channel + "_nocut"
+                new_channel="SK" + new_channel + "_nocut"
             else:
                 if useskim == "DiLep":
-                    channel="SK" + channel + "_dilep"
+                    new_channel="SK" + new_channel + "_dilep"
     else:
         if useskim == "Lepton":
             sample="SK" + sample
@@ -322,7 +323,7 @@ elif useskinput == "True":
                 
 print "Input sample = " + sample
 if not mc:
-    print "Input channel = " + channel
+    print "Input channel = " + new_channel
 
 ##############################################################################################
 #### Check if sktrees are located on current machines  (not used when running on cmsX at snu)                        
@@ -334,26 +335,26 @@ if platform.system() != "Linux":
 
     localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
     if not mc:        
-        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + channel  + sample
+        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + new_channel  + sample
     else:
         localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/mc/"  + sample
     
     if not os.path.exists(localDir):
         print "No files in current location: Will copy them over"
-        CopySKTrees(channel,sample,mc,"True")
+        CopySKTrees(new_channel,sample,mc,"True")
     elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item))) == 0:
         print "No files are located locally: Will copy from cms21 machine"
-        CopySKTrees(channel,sample,mc,"True")
+        CopySKTrees(new_channel,sample,mc,"True")
     else:
         update = raw_input("Files already located on current machine. Do you want these updating? Yes/No")
         if update == "Yes":
             print "Updating local sktree"
-            CopySKTrees(channel,sample,mc,"True")
+            CopySKTrees(new_channel,sample,mc,"True")
         elif update == "yes":
             print "Updating local sktree"
-            CopySKTrees(channel,sample,mc,"True")
+            CopySKTrees(new_channel,sample,mc,"True")
         else:
-            CheckPathInFile(channel,sample,mc)
+            CheckPathInFile(new_channel,sample,mc)
             
 ##################################################################################################################
 #Find the DS name (and lumi if MC) from txt/datasets.txt
@@ -367,6 +368,7 @@ catversions = ["v7-6-3",
                "v7-4-5"]
 
 sample_catversion = ""
+output_catversion=os.getenv("CATVERSION")
 
 #### Check latest tag/version for DS.
 iversion=0
@@ -375,32 +377,41 @@ while inDS == "":
         version="_CAT"
         sample_catversion = catversions[iversion]
 
+
         if catversion != "":
             sample_catversion = catversion
-       
+            output_catversion = catversion
 
-        print "Using CAT " + catversions[iversion] + " ntuples"
+        print "Using CAT " +sample_catversion + " ntuples"
         if mc:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' + catversions[iversion] +  '.txt'
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
         else:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  + catversions[iversion] +'.txt'
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
-        
+
+    print "Using " + filename    
     if not mc:
-        print "Running on data " 
+        print "Running on data "
+        print new_channel + " " + sample
+        if not (os.path.exists(filename)):
+            iversion = iversion +1
+            continue
         for line in open(filename, 'r'):
             if not line.startswith("#"):
                 entries = line.split()
                 if len(entries)==3:
-                    if channel ==entries[0] and sample == entries[1]:
+                    if new_channel ==entries[0] and sample == entries[1]:
                         inDS = entries[2]
         sample = "period"+sample
         eff_lumi=1.
         tar_lumi=1.
-        filechannel = channel+"_"
+        filechannel = new_channel+"_"
     else:
         print "Running on MC"
+        if not (os.path.exists(filename)):
+            iversion = iversion +1
+            continue
         for line in open(filename, 'r'):
             if not line.startswith("#"):
                 entries = line.split()
@@ -410,11 +421,15 @@ while inDS == "":
                         inDS = entries[5]
     iversion = iversion +1                
     if inDS == "":
+        if catversion != "":
+            print "Input dataset is not available in specifies catversion: Exiting"
+            sys.exit()
         print "Sample is not available in " + filename + ". Will look in previous compatable version"
         if iversion == len(catversions):
             print "Input dataset is not available: Exiting"
             sys.exit()
-        
+
+    
 InputDir = inDS    
 
 ##################################################################################################################
@@ -535,13 +550,13 @@ if runcf == "True":
     outsamplename = "chargeflip_" + outsamplename
     print "sample --> " + outsamplename
 if not mc:
-    outsamplename = outsamplename +  "_" + channel
+    outsamplename = outsamplename +  "_" + new_channel
     if useCATv742ntuples == "True":
-        outsamplename = outsamplename + "_cat" + sample_catversion
+        outsamplename = outsamplename + "_cat" + output_catversion
 
 else:
     if useCATv742ntuples == "True":
-                outsamplename = outsamplename + "_cat"+ sample_catversion
+                outsamplename = outsamplename + "_cat"+ output_catversion
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
@@ -553,7 +568,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -578,7 +593,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -605,7 +620,7 @@ for line in fr:
         fwrite = open(filelist, 'a')
         fwrite.write(line)
         #configfile=open(runscript,'w')
-        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
+        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
         #configfile.close()
         filesprocessed+=1
         fwrite.close()        

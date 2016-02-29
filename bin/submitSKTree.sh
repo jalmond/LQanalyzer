@@ -13,14 +13,14 @@ runSinglePhoton=false
 
 ## RUN PARAMETERS
 
-job_data_lumi="ALL"  ###  "C" = period C only   "ALL"  = period C+D
+job_data_lumi="CtoD"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=30
 job_skim="Lepton"
 
 submit_skinput="true"
-submit_version_tag=${CATVERSION}
+submit_version_tag=""
 submit_file_tag=""
 submit_file_list=""
 submit_catversion=${CATVERSION}
@@ -41,7 +41,38 @@ if [[ $submit_analyzer_name == "" ]];
     echo "Need to set submit_analyzer_name: use -a CLASSNAME when submitting"
     exit 1
 fi
-echo job_cycle = $job_cycle
+
+#### HARDCODE the skinput for sktreemakers
+if [[ $submit_analyzer_name == "SKTreeMaker" ]];
+    then 
+    submit_skinput="false"
+    if [[ $submit_version_tag == "" ]];
+	then 
+	echo "When running SKTreeMaker you need to specify the catversion: -c "
+	exit 1
+    fi
+fi
+if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
+    then
+    submit_skinput="false"
+    if [[ $submit_version_tag == "" ]];
+        then
+        echo "When running SKTreeMaker you need to specify the catversion: -c "
+        exit 1
+    fi
+    
+fi
+if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
+    then
+    submit_skinput="true"
+  if [[ $submit_version_tag == "" ]];
+      then
+      echo "When running SKTreeMaker you need to specify the catversion: -c "
+      exit 1
+  fi
+
+fi
+
 
 outputdir_cat=$LQANALYZER_DIR"/data/output/CAT/"
 outputdir_analyzer=$LQANALYZER_DIR"/data/output/CAT/"$submit_analyzer_name
@@ -57,16 +88,16 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
 	mkdir ${outputdir_analyzer}
 	echo "Making " + ${outputdir_analyzer}
     fi
-    if [[ $job_data_lumi  == "ALL" ]];
+    if [[ $job_data_lumi  == "CtoD" ]];
 	then
 	dir_tag="periodCtoD/"
     fi
 fi
 
 outputdir_mc=${outputdir_analyzer}"/"${dir_tag}
-outputdir_data=${outputdir_mc}${dir_tag}"/Data/"
+outputdir_data=${outputdir_mc}"/Data/"
 echo $outputdir_data
-output_datafile=${outputdir_mc}"/"$job_cycle"_data_cat"${submit_version_tag}".root"
+output_datafile=${outputdir_mc}"/"$job_cycle"_data_cat"${submit_catversion}".root"
 echo $output_datafile
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
@@ -89,9 +120,9 @@ fi
 #	then 
 #	if [[  $job_data_lumi  != "C" ]];
 #	    then
-#	    source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${submit_version_tag}.root ${outputdir_data}/${job_cycle}*
-#	    echo ${outputdir_data}"/"${job_cycle}"_data_cat"${submit_version_tag}".root "
-#	    mv  ${outputdir_data}/${job_cycle}_data_cat${submit_version_tag}.root  ${outputdir_mc}
+#	    source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${submit_catversion}.root ${outputdir_data}/${job_cycle}*
+#	    echo ${outputdir_data}"/"${job_cycle}"_data_cat"${submit_catversion}".root "
+#	    mv  ${outputdir_data}/${job_cycle}_data_cat${submit_catversion}.root  ${outputdir_mc}
 #	fi
 #	if [[ $job_data_lumi  == "C" ]];
 #	    then
@@ -108,8 +139,14 @@ fi
 ### submit this configured job (uses bin/submit.sh)
 if [[ $runDATA  == "true" ]];
     then
+    ARG1=$submit_sampletag
+    eval "streams=(\${$ARG1[@]})"
     for istream in ${streams[@]}: 
       do
+      if [[ $istream == "" ]];
+	  then
+	  continue
+      fi
       
       source functions.sh
       cycle=${job_cycle}
@@ -121,10 +158,11 @@ if [[ $runDATA  == "true" ]];
       logstep=$job_logstep
       stream=${istream}
       outputdir=${outputdir_data}
-
+      catversion=${submit_version_tag}
     
       ARG=data_periods
       eval "input_samples=(\${$ARG[@]})"
+
 
       source submit.sh
       #mergeData
@@ -134,6 +172,9 @@ fi
 
 
 if [[ $runMC  == "true" ]];
+    echo running mc
+    echo submit_file_tag = $submit_file_tag
+    echo submit_file_list = $submit_file_list
     then
     source functions.sh
     cycle=${job_cycle}
@@ -144,6 +185,7 @@ if [[ $runMC  == "true" ]];
     loglevel=$job_loglevel
     logstep=$job_logstep
     outputdir=${outputdir_mc}
+    catversion=${submit_version_tag}
 
     if [[ $submit_file_tag  != ""  ]];
         then

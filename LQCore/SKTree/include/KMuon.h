@@ -29,6 +29,7 @@ namespace snu {
 
 
     void SetMCMatched(bool matched);
+    float ScaleFactor(const std::string& name, int sign) const ;
 
     void Setdz(double dz);
     void Setdxy(double dxy);

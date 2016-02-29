@@ -197,79 +197,62 @@ bool KElectron::TriggerMatched(TString path){
 
 float KElectron::ScaleFactor(const std::string& name, int sign) const {
   
+  float fsign =1.;
+  if(sign == 0) fsign =0.;
+  if(sign == -1) fsign =-1.;
+
+
+  //need to fill errors. 
+  float eta = fabs(this->Eta());
   if (name == "mvaEleID-Spring15-25ns-Trig-V1-wp90"){
     
   }
-  
-  if (name == "cutBasedElectronID-Spring15-25ns-V1-standalone-tight"){
+  /// ID SF from  https://arun-afs.web.cern.ch/arun-afs/Fits_Data_ID_76X_AbsEta/CutBasedID_TightWP_76X_18Feb.txt
+  else if (name == "cutBasedElectronID-Spring15-25ns-V1-standalone-tight"){
     if (this->Pt()>10. && this->Pt() <= 20.){
-      if      ( this->Eta()>-2.5 && this->Eta() <= -2.0)      return (0.358/0.286) + sign*(0.02);
-      else if ( this->Eta()>-2.0 && this->Eta() <= -1.566)    return (0.328/0.288)  + sign*(0.06);
-      else if ( this->Eta()>-1.566 && this->Eta() <= -1.444 ) return (0.228/0.168)  + sign*(0.01);
-      else if ( this->Eta()>-1.444 && this->Eta() <= -0.8)    return (0.397/0.303)  + sign*(0.01);
-      else if ( this->Eta()>-0.800 && this->Eta() <= 0.)      return (0.408/0.339)  + sign*(0.01);
-      else if ( this->Eta()>0.0 && this->Eta() <= 0.8)        return (0.407/0.344)  + sign*(0.02);
-      else if ( this->Eta()>0.8 && this->Eta() <= 1.444)      return (0.391/0.298)  + sign*(0.02);
-      else if ( this->Eta()>1.444 && this->Eta() <= 1.566)    return (0.244/0.164)  + sign*(0.02);
-      else if ( this->Eta()>1.566 && this->Eta() <= 2.0)      return (0.308/0.284)  + sign*(0.02);
-      else if ( this->Eta()>2.0 && this->Eta() <= 2.5)        return (0.344/0.293)  + sign*(0.01);
+      if      ( eta <=  0.800)    return (0.421/0.419)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.412/0.383)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.279/0.244)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.347/0.344)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.401/0.379)  + fsign*(0.06);
       else return 1.;
     }
-    else  if (this->Pt()>15. && this->Pt() <= 25.){
-      if      ( this->Eta()>-2.5 && this->Eta() <= -2.0)      return (0.506/0.478)  + sign*(0.02);
-      else if ( this->Eta()>-2.0 && this->Eta() <= -1.566)    return (0.486/0.494)  + sign*(0.06);
-      else if ( this->Eta()>-1.566 && this->Eta() <= -1.444 ) return (0.344/0.290)  + sign*(0.01);
-      else if ( this->Eta()>-1.444 && this->Eta() <= -0.8)    return (0.523/0.498)  + sign*(0.01);
-      else if ( this->Eta()>-0.800 && this->Eta() <= 0.)      return (0.541/0.531)  + sign*(0.01);
-      else if ( this->Eta()>0.0 && this->Eta() <= 0.8)        return (0.532/0.535)  + sign*(0.02);
-      else if ( this->Eta()>0.8 && this->Eta() <= 1.444)      return (0.522/0.494)  + sign*(0.02);
-      else if ( this->Eta()>1.444 && this->Eta() <= 1.566)    return (0.300/0.283)  + sign*(0.02);
-      else if ( this->Eta()>1.566 && this->Eta() <= 2.0)      return (0.499/0.488)  + sign*(0.02);
-      else if ( this->Eta()>2.0 && this->Eta() <= 2.5)        return (0.509/0.482)  + sign*(0.01);
+    else  if (this->Pt()>20. && this->Pt() <= 30.){
+      if      ( eta <=  0.800)    return (0.547/0.553)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.515/0.521)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.321/0.322)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.487/0.512)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.538/0.538)  + fsign*(0.06);
+
+    }   
+    else  if (this->Pt()>30. && this->Pt() <= 40.){
+      if      ( eta <=  0.800)    return (0.655/0.667)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.643/0.649)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.461/0.474)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.625/0.644)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.645/0.647)  + fsign*(0.06);
       else return 1.;
     }   
-    else  if (this->Pt()>15. && this->Pt() <= 25.){
-      if      ( this->Eta()>-2.5 && this->Eta() <= -2.0)      return (0.625/0.610)  + sign*(0.02);
-      else if ( this->Eta()>-2.0 && this->Eta() <= -1.566)    return (0.617/0.637)  + sign*(0.06);
-      else if ( this->Eta()>-1.566 && this->Eta() <= -1.444 ) return (0.469/0.462)  + sign*(0.01);
-      else if ( this->Eta()>-1.444 && this->Eta() <= -0.8)    return (0.640/0.647)  + sign*(0.01);
-      else if ( this->Eta()>-0.800 && this->Eta() <= 0.)      return (0.650/0.674)  + sign*(0.01);
-      else if ( this->Eta()>0.0 && this->Eta() <= 0.8)        return (0.652/0.674)  + sign*(0.02);
-      else if ( this->Eta()>0.8 && this->Eta() <= 1.444)      return (0.642/0.644)  + sign*(0.02);
-      else if ( this->Eta()>1.444 && this->Eta() <= 1.566)    return (0.449/0.455)  + sign*(0.02);
-      else if ( this->Eta()>1.566 && this->Eta() <= 2.0)      return (0.615/0.636)  + sign*(0.02);
-      else if ( this->Eta()>2.0 && this->Eta() <= 2.5)        return (0.626/0.612)  + sign*(0.01);
+    else  if (this->Pt()>40. && this->Pt() <= 50.){
+      if      ( eta <=  0.800)    return (0.731/0.745)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.724/0.731)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.604/0.608)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.718/0.723)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.719/0.712)  + fsign*(0.06);
       else return 1.;
     }   
-    else  if (this->Pt()>15. && this->Pt() <= 25.){
-      if      ( this->Eta()>-2.5 && this->Eta() <= -2.0)      return (0.698/0.691)  + sign*(0.02);
-      else if ( this->Eta()>-2.0 && this->Eta() <= -1.566)    return (0.707/0.720)  + sign*(0.06);
-      else if ( this->Eta()>-1.566 && this->Eta() <= -1.444 ) return (0.603/0.607)  + sign*(0.01);
-      else if ( this->Eta()>-1.444 && this->Eta() <= -0.8)    return (0.721/0.743)  + sign*(0.01);
-      else if ( this->Eta()>-0.800 && this->Eta() <= 0.)      return (0.725/0.758)  + sign*(0.01);
-      else if ( this->Eta()>0.0 && this->Eta() <= 0.8)        return (0.729/0.758)  + sign*(0.02);
-      else if ( this->Eta()>0.8 && this->Eta() <= 1.444)      return (0.720/0.740)  + sign*(0.02);
-      else if ( this->Eta()>1.444 && this->Eta() <= 1.566)    return (0.576/0.602)  + sign*(0.02);
-      else if ( this->Eta()>1.566 && this->Eta() <= 2.0)      return (0.709/0.720)  + sign*(0.02);
-      else if ( this->Eta()>2.0 && this->Eta() <= 2.5)        return (0.694/0.691)  + sign*(0.01);
+    else  if (this->Pt()>50. && this->Pt() <= 200.){
+      if      ( eta <=  0.800)    return (0.782/0.795)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.769/0.784)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.649/0.645)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.772/0.768)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.771/0.753)  + fsign*(0.06);
       else return 1.;
     }   
-    else  if (this->Pt()>15. && this->Pt() <= 25.){
-      if      ( this->Eta()>-2.5 && this->Eta() <= -2.0)      return (0.741/0.742)  + sign*(0.02);
-      else if ( this->Eta()>-2.0 && this->Eta() <= -1.566)    return (0.757/0.772)  + sign*(0.06);
-      else if ( this->Eta()>-1.566 && this->Eta() <= -1.444 ) return (0.617/0.653)  + sign*(0.01);
-      else if ( this->Eta()>-1.444 && this->Eta() <= -0.8)    return (0.765/0.800)  + sign*(0.01);
-      else if ( this->Eta()>-0.800 && this->Eta() <= 0.)      return (0.774/0.811)  + sign*(0.01);
-      else if ( this->Eta()>0.0 && this->Eta() <= 0.8)        return (0.779/0.810)  + sign*(0.02);
-      else if ( this->Eta()>0.8 && this->Eta() <= 1.444)      return (0.762/0.797)  + sign*(0.02);
-      else if ( this->Eta()>1.444 && this->Eta() <= 1.566)    return (0.618/0.651)  + sign*(0.02);
-      else if ( this->Eta()>1.566 && this->Eta() <= 2.0)      return (0.766/0.772)  + sign*(0.02);
-      else if ( this->Eta()>2.0 && this->Eta() <= 2.5)        return (0.742/0.741)  + sign*(0.01);
-      else return 1.;
-    }   
-  
-    
   }
+  else {cout << "The ID " << name << " has no SFs" << endl; }
+  
+  return 1.;
 }
 
 

@@ -44,18 +44,28 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8",
              "WW_DoubleScattering_13TeV-pythia8",
              "WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
+             "WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
+             "ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"  ,
              "GluGlu_HToMuMu_M125_13TeV_powheg_pythia8",
              "GJet_Pt-20to40_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8",
              "GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8",
              "TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8",
              "WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
              "ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
-             "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"]
-
-sampledir  = ["QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-              "QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
-              "QCD_Pt_30to80_bcToE_TuneCUETP8M1_13TeV_pythia8",
-              "WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8"]
+             "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"
+             "QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+             "QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8",
+             "QCD_Pt_30to80_bcToE_TuneCUETP8M1_13TeV_pythia8",
+             "WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8",
+             "ZZTo4L_13TeV_powheg_pythia8",
+             "ZZTo4L_13TeV-amcatnloFXFX-pythia8",
+             "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
+             "ZZTo2L2Nu_13TeV_powheg_pythia8",
+             "WWTo2L2Nu_13TeV-powheg",
+             "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
+             "WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8",
+             "WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"             
+             ]
 
 skip=0
 counter=0
@@ -67,6 +77,9 @@ for i in sampledir:
    
    output=i
    print "Making dir: " + output
+
+   if (os.path.exists("/data2/DATA/cattoflat/skim/"+ version+ "/" + i)):
+      continue
    
    if not (os.path.exists(output)):
       os.system("mkdir " + output)

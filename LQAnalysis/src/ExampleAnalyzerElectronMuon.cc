@@ -130,7 +130,7 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
     /// For MC reweight event to correct for ID efficiency in MC/DATA
     float id_scalefactor(1.);
     if(!isData){
-      id_scalefactor *=  ElectronScaleFactor(electronTightColl.at(0).Eta(), electronTightColl.at(0).Pt(), true);
+      id_scalefactor *=  ElectronScaleFactor(BaseSelection::ELECTRON_HN_TIGHT, electronTightColl);
     }
     
     // reconstruct dilepton system

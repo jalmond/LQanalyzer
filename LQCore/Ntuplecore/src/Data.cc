@@ -197,7 +197,7 @@ void Data::Reset(){
   gen_pdgid = 0;
   gen_motherindex = 0;
   pdfWeight = 0;
-  //CatVersion="";
+  //  CatVersion="";
   //kElectron
   electrons_absIso03 = 0;
   electrons_absIso04 = 0;
@@ -386,8 +386,6 @@ std::string  Data::GetCatVersion(bool runLQ){
 }
 
 void Data::SetCatVersion(std::string cv){
-  //  k_inputevent->SetCatVersion(cv);
-  
   CatVersion=cv;
 }
 
@@ -446,12 +444,17 @@ void Data::ConnectEvent(){
   ConnectVariable("lumi",lumi , b_lumi);
   ConnectVariable("event", event, b_event);
   
-  // new for v7-6-2
   // new for v7-4-6
-
-  ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
-  ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
-
+  if(TString(CatVersion).Contains("v7-6")){
+    ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
+    ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
+    ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
+    ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
+    ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
+    ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
+    ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
+    ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
+  }
 
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
  
@@ -464,13 +467,6 @@ void Data::ConnectEvent(){
   ConnectVariable("nGoodPV", nGoodPV, b_nGoodPV);
   ConnectVariable("nPV", nPV, b_nPV);
   
-  /// New for v7-4-6
-  ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
-  ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
-  ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
-  ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
-  ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
-  ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
 
 
   ConnectVariable("vertex_X",vertex_X, b_vertex_X);
@@ -614,14 +610,19 @@ void Data::ConnectElectrons(){
 
 void Data::ConnectPFJets(){
 
-  m_logger << INFO << "ConnectPFJets : "<< LQLogger::endmsg;
+  m_logger << DEBUG << "ConnectPFJets : "<< LQLogger::endmsg;
 
   //#####   Jet branches
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);
   /// TLV variables
-  ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
-  ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
-  ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
+
+  if(TString(CatVersion).Contains("v7-6")){
+    ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
+    ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
+    ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
+  }
+
+
   ConnectVariable("jets_chargedEmEnergyFraction",jets_chargedEmEnergyFraction,b_jets_chargedEmEnergyFraction);
   ConnectVariable("jets_energy", jets_energy, b_jets_energy);
 
@@ -657,7 +658,8 @@ void Data::ConnectMET(){
   ConnectVariable("met_phi",met_phi , b_met_phi);
   ConnectVariable("met_pt", met_pt , b_met_pt);
   ConnectVariable("met_sumet", met_sumet , b_met_sumet);
-  //  ConnectVariable("metPuppi_pt",metPuppi_pt , b_metPuppi_pt);
+
+  ConnectVariable("metPuppi_pt",metPuppi_pt , b_metPuppi_pt);
   //ConnectVariable("metPuppi_phi",metPuppi_phi , b_metPuppi_phi);
   //ConnectVariable("metPuppi_sumet", metPuppi_sumet , b_metPuppi_sumet);
   ConnectVariable("metNoHF_phi",metNoHF_phi , b_metNoHF_phi);
@@ -703,14 +705,18 @@ void Data::ConnectTruth(){
 
   //  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
 
-  ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
-  ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);
-  ConnectVariable("genjet_phi",genjet_phi ,b_genjet_phi);
-  ConnectVariable("genjet_energy",genjet_energy ,b_genjet_energy);
-  ConnectVariable("genjet_emf",genjet_emf ,b_genjet_emf);
-  ConnectVariable("genjet_hadf",genjet_hadf ,b_genjet_hadf);
-  ConnectVariable("genjet_pdgid",genjet_pdgid ,b_genjet_pdgid);
-
+  if(TString(CatVersion).Contains("v7-6")){
+    ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
+    ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);
+    ConnectVariable("genjet_phi",genjet_phi ,b_genjet_phi);
+    ConnectVariable("genjet_energy",genjet_energy ,b_genjet_energy);
+    ConnectVariable("genjet_emf",genjet_emf ,b_genjet_emf);
+    ConnectVariable("genjet_hadf",genjet_hadf ,b_genjet_hadf);
+    ConnectVariable("genjet_pdgid",genjet_pdgid ,b_genjet_pdgid);
+  }
+  else{
+    
+  }
   ConnectVariable("genWeightQ",genWeightQ, b_genWeightQ);
   ConnectVariable("genWeightX1",genWeightX1, b_genWeightX1);
   ConnectVariable("genWeightX2",genWeightX2, b_genWeightX2);

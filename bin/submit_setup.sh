@@ -88,10 +88,10 @@ while [ "$1" != "" ]; do
         
 	-S | --SampleTag  )     shift
                                 submit_sampletag=$1
+				echo "Setting SampleTag = " $submit_sampletag
                                 ;;
 	-c | --CatVersion)      shift
-	                        submit_catversion=$1
-				submit_version_tag=$1
+				submit_version_tag="$1"
 				;;
 	-l | --file_tag_list)   shift
 	                        submit_catvlist=$1
@@ -134,7 +134,7 @@ done
 declare -a streams=("")
 declare -a mc_input=("")
 declare -a data_periods=("")
-
+declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
 
 
 if [[ $job_data_lumi == "ALL" ]];
@@ -172,58 +172,59 @@ if [[ $submit_sampletag  == "ALL" ]];
     runMC=true
     submit_file_list="all_mc"
     runDATA=true
-    declare -a  streams=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
 fi
 if [[ $submit_sampletag  == "MC" ]];
     then
     runMC=true
     submit_file_list="all_mc"
-    
+
 fi
 
+declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true
-    declare -a  streams=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
+
 fi    
+
+declare -a DoubleEG=("DoubleEG")
 
 if [[ $submit_sampletag  == "DoubleEG" ]];
     then
     runDATA=true
-    declare -a streams=("DoubleEG")
 fi
 
+declare -a DoubleMuon=("DoubleMuon")
 if [[ $submit_sampletag  == "DoubleMuon" ]];
     then
     runDATA=true
-    declare -a streams=("DoubleMuon")
-    
 fi
 
+declare -a MuonEG=("MuonEG")
 if [[ $submit_sampletag  == "MuonEG" ]];
     then
     runDATA=true
-    declare -a streams=("MuonEG")
     
 fi
 
+declare -a SinglePhoton=("SinglePhoton")
 if [[ $submit_sampletag  == "SinglePhoton" ]];
     then
     runDATA=true
-    declare -a streams=("SinglePhoton")
-    
 fi
+
+declare -a SingleElectron=("SingleElectron")
 
 if [[ $submit_sampletag  == "SingleElectron" ]];
     then
     runDATA=true
-    declare -a streams=("SingleElectron")
 fi
+
+declare -a SingleMuon=("SingleMuon")
 
 if [[ $submit_sampletag  == "SingleMuon" ]];
     then
     runDATA=true
-    declare -a  streams=("SingleMuon")
 fi
 
 
