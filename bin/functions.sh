@@ -22,7 +22,7 @@ DEBUG="False"
 useskim="Lepton"
 runnp="False"
 runcf="False"
-catversion=""
+catversion=$CATVERSION
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 

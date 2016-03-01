@@ -1,7 +1,6 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-
 function usage
 {
     echo "usage: submitSKTree.sh [[[-a analyzer] [-S samples] [-f file_tag ] [-sktree usesktree ([-skim skim])] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (catversion) (*search*)][-g (*search*)]]"
@@ -23,14 +22,19 @@ function rungroupedlist
 
 function runlist
 {
+
+    specified_catversion=true
     if [[ $submit_catvlist  == "" ]];
 	then
 	submit_catvlist=${CATVERSION}
+	specified_catversion=false
     fi
     
 
     echo "Reading:" ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt 
     echo "Options for -s | --SampleTag are:"
+
+    LISTOFSAMPLES=()
     cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt | while read line
       do
       if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
@@ -39,19 +43,84 @@ function runlist
 	  if [[ $submit_searchlist == "" ]];
 	      then
 	      echo ${sline}
+	      LISTOFSAMPLES+=(${sline})
 	  fi
 	  if [[ $submit_searchlist != "" ]];
 	      then
 	      if [[ $sline == *${submit_searchlist}* ]];
 		  then 
 		  echo ${sline}
+		  LISTOFSAMPLES+=(${sline})
 	      fi
 	  fi
       fi
     done
 
-}
+    if [[ $specified_catversion == "false" ]];
+	then
+	#Get number of catversions
+	for ic in  ${list_of_catversions[@]}:
+	  do
 
+	  if [[ $ic == $CATVERSION ]];
+	      then continue;
+	  fi
+	  if [[ $ic == *"v7-4"* ]];
+	      then
+	      echo "For catversion "  $ic " the naming changed. Run sktee -l " $ic
+	      continue;
+          fi
+
+	  echo "Following samples are not available in latest catversion:" 
+	  echo "Catversion: " + ${ic}
+	  cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${ic}.txt | while read line
+	    do
+	    if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+		then
+		sline=$(echo $line | head -n1 | awk '{print $1}')
+		if [[ $submit_searchlist == "" ]];
+		    then
+		    isDuplicate=false
+		    for il in  ${LISTOFSAMPLES[@]}:
+		      do
+		      if [[ $sline == $il ]];
+			  then
+			  isDuplicate=true
+		      fi
+		    done
+		    if [[ $isDuplicate == "false" ]];
+			then
+			echo $sline
+			LISTOFSAMPLES+=(${sline})
+		    fi
+		fi
+		if [[ $submit_searchlist != "" ]];
+		    then
+		    isDuplicate=false
+		    if [[ $sline == *${submit_searchlist}* ]];
+			then
+			for il in  ${LISTOFSAMPLES[@]}:
+			  do
+			  if [[ $sline == $il ]];
+			      then
+			      isDuplicate=true
+			  fi
+			done
+			if [[ $isDuplicate == "false" ]];
+			    then
+			    echo $sline
+			    LISTOFSAMPLES+=(${sline})
+			fi
+		    fi
+		fi
+	    fi
+	  done
+	done
+    fi
+
+}				
+    
+				
 while [ "$1" == "" ]; do
     usage
     exit
@@ -107,18 +176,18 @@ while [ "$1" != "" ]; do
                                 ;;
 
 	-h | --help )           usage
-	                        echo "Tag :   Options                                                                       | DEFAULT PARAMETER     | COMMENT           "
-	                        echo "-a :    HNDiElectron/ExampleDiMuon                                                    | default = ''          | 'Name of analysis class'                "
-	                        echo "-S :    ALL/DATA/MC/DoubleEG/DoubleMuon/MuonEG/SingeMuon/SinglePhoton/SingleElectron  | default = ''          | 'DATA runs ALL data. MC runs ALL MC (same as -fl all_mc''                "
-                                echo "-sktree :   true/false or True/False                                                  | default=True          | 'Set False to run on CATuples, if True then also set -s/--useskim'               "
-                                echo "-s :    NoCuts/Lepton/DiLepton                                                        | default=Lepton        | 'Set False to run on CATuples'               "
-                                echo "-n :    #number of subjobs                                                            | default=30            | ''                "
-				echo "-f :    file_tag (i.e., DY10to50_MCatNLO)                                             | default = ''          | 'For running single MC samples: For full list run bash script.sh  -l|--file_tag_list'"
-				echo "-fl:    file_list (i.e., diboson_pythia,dy_mcatnlo)                                   | default = 'all_mc'    | 'For running on list of MC samples. For full list run bash script.sh  -g|--file_tag_groups'"
-				echo "-c :    catversion of inputfile (only needed if not running default/latest)           | default = $CATVERSION |"
-				echo "-d :    debug mode : INFO/DEBUG/WARNING                                               | default = INFO        |"
-				echo "-p :    period to normalise to : C/D/CtoD(ALL)                                        | default = ALL         |"
-				echo "-o :    setoutput directory. Does not work for SKTreeMaker Code.                      | default=$LQANALZER_DIR/data/output/CAT/{class}/periodX/  |"
+	                        echo "Tag :   Options                                                                                 | DEFAULT PARAMETER     | COMMENT           "
+	                        echo "-a :    HNDiElectron/ExampleDiMuon                                                              | default = ''          | 'Name of analysis class'                "
+	                        echo "-S :    ALL/DATA/MC/DoubleEG/DoubleMuon/MuonEG/SingeMuon/SinglePhoton/SingleElectron            | default = ''          | 'DATA runs ALL data. MC runs ALL MC (same as -fl all_mc''                "
+                                echo "-sktree :   true/false or True/False                                                            | default=True          | 'Set False to run on CATuples, if True then also set -s/--useskim'               "
+                                echo "-s :    NoCuts/Lepton/DiLepton                                                                  | default=Lepton        | 'Set False to run on CATuples'               "
+                                echo "-n :    #number of subjobs                                                                      | default=30            | ''                "
+				echo "-f :    file_tag (i.e., DY10to50_MCatNLO)                                                       | default = ''          | 'For running single MC samples: For full list run bash script.sh  -l|--file_tag_list'"
+				echo "-fl:    file_list (i.e., diboson_pythia,dy_mcatnlo)                                             | default = 'all_mc'    | 'For running on list of MC samples. For full list run bash script.sh  -g|--file_tag_groups'"
+				echo "-c :    catversion of inputfile (only needed if not running default/latest)                     | default = $CATVERSION |"
+				echo "-d :    debug mode : INFO/DEBUG/WARNING                                                         | default = INFO        |"
+				echo "-p :    period to normalise to : C/D/CtoD(ALL)                                                  | default = ALL         |"
+				echo "-o :    setoutput directory. Does not work for SKTreeMaker Code.                                | default=$LQANALZER_DIR/data/output/CAT/{class}/periodX/  |"
 				exit
                                 ;;
         * )                     usage
@@ -184,8 +253,14 @@ declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectro
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true
-
 fi    
+declare -a  DATADILEP=("DoubleMuon" "DoubleEG" "MuonEG")
+if [[ $submit_sampletag  == "DATADILEP" ]];
+    then
+    runDATA=true
+fi
+
+
 
 declare -a DoubleEG=("DoubleEG")
 

@@ -8,7 +8,7 @@ runCF=true
 ## RUN PARAMETERS
 job_cycle="ExampleAnalyzerDiElectron"
 job_useskim="DiLep" ### "Lepton" for single lepton skim   "DiLep" for dilepton skim
-job_stream="egamma" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset
+job_stream="DoubleEG" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset
 job_skinput="False"
 
 

@@ -60,6 +60,7 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   std::vector<int> vHLTInsideDatasetTriggerPrescales;
   
 
+  /// trignames should only be empty id user is running on Catuples and not SKTreeMaker. In this case all triggers are used 
   if(trignames.size() == 0 ){
     for (UInt_t i=0; i< vtrignames->size(); i++) {
       std::string tgname = vtrignames->at(i);
@@ -70,38 +71,37 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
       vHLTInsideDatasetTriggerPrescales.push_back(ps);
     }
   }
-    
-  for (std::vector<TString>::reverse_iterator it (trignames.end());
-       it != std::vector<TString>::reverse_iterator (trignames.begin());
-       ++it) {
 
-    bool trigger_exists(false);
-    for (UInt_t i=0 ; i< vtrignames->size(); i++) {
-      
-      std::string tgname = vtrignames->at(i);
-      Int_t ps = vtrigps->at(i);
+  
+  /// vtrigname is vector of ALL triggers in Catuples
+  for (UInt_t i=0 ; i< vtrignames->size(); i++) {
+    // trignames is vector of trigger names that we want to store in SKTrees
+    // trigname contains names substrings X (where X is for example "HLT_mu") and we store all triggers that start with X
+
+    std::string tgname = vtrignames->at(i);
+    if(TString(CatVersion).Contains("v7-6-2")) {
+      if(SkipTrigger(TString(tgname)))continue;
+    }
+
+    Int_t ps = vtrigps->at(i);
+
+    for (std::vector<TString>::reverse_iterator it (trignames.end());
+	 it != std::vector<TString>::reverse_iterator (trignames.begin());
+	 ++it) {
 
       TString tmpHLT = vtrignames->at(i);
-      if((TString(CatVersion).Contains("v7-6-2"))&& LQinput){
-	if(SkipTrigger(tmpHLT)) continue;
-      }
       if ( tmpHLT.BeginsWith(*it)){
 	
-	trigger_exists = true;
-	bool double_count_trig = false;
-	for(std::vector<std::string>::iterator vit = vHLTInsideDatasetTriggerNames.begin(); vit != vHLTInsideDatasetTriggerNames.end(); vit++){
-	  if(vit->compare(*it) == 0) double_count_trig = true;
-	}
-	if(!double_count_trig){
-	  vHLTInsideDatasetTriggerNames.push_back(tgname);
-	  if(ps > 0) vHLTInsideDatasetTriggerDecisions.push_back(true);
-	  else vHLTInsideDatasetTriggerDecisions.push_back(false);
-	  vHLTInsideDatasetTriggerPrescales.push_back(ps);
-	}// double count check
-      } // can use start of trig name to add many triggers
-    } // loop over input triggers
-    //if(!trigger_exists) m_logger << WARNING << "Trigger: " << *it << " does not exist" << LQLogger::endmsg;
-  }// loop of selected triggers  
+	vHLTInsideDatasetTriggerNames.push_back(tgname);
+	if(ps > 0) vHLTInsideDatasetTriggerDecisions.push_back(true);
+	else vHLTInsideDatasetTriggerDecisions.push_back(false);
+	vHLTInsideDatasetTriggerPrescales.push_back(ps);
+	
+	// if trigger is accepted break from loop
+	break;
+      }
+    } // end of trignames loop
+  }// loop of all triggers  
   
   ktrigger.SetHLTInsideDatasetTriggerNames(vHLTInsideDatasetTriggerNames);
   ktrigger.SetHLTInsideDatasetTriggerDecisions(vHLTInsideDatasetTriggerDecisions);

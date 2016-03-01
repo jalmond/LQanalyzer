@@ -208,8 +208,9 @@ if number_of_cores > 1:
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
-            number_of_cores = 15
-            print "Number of sub jobs is reset to default of 15"
+            if not "SKTreeMaker" in cycle:
+                number_of_cores = 15
+                print "Number of sub jobs is reset to default of 15"
         if cycle == "SKTreeMaker":
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
@@ -220,8 +221,9 @@ if number_of_cores > 1:
         if (40 - n_previous_jobs) < number_of_cores:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
-            number_of_cores= 15
-            print "Number of sub jobs is reset to default of 15"
+            if not "SKTreeMaker"in cycle:
+                number_of_cores= 15
+                print "Number of sub jobs is reset to default of 15"
         if cycle == "SKTreeMaker":
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
@@ -940,11 +942,11 @@ else:
         if not os.path.exists(SKTreeOutput):
             os.system("mkdir " + SKTreeOutput)
         if not mc:
-            Finaloutputdir = SKTreeOutput + "DataDiLeptonSkim/"
+            Finaloutputdir = SKTreeOutput + "DataDiLep/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-            if original_channel =="DoubleElectron":
-                Finaloutputdir += "DoubleElectron/"
+            if original_channel =="DoubleEG":
+                Finaloutputdir += "DoubleEG/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
             if original_channel =="DoubleMuon":

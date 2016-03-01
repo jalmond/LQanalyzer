@@ -7,8 +7,8 @@ runDoubleMuon=false
 
 ## RUN PARAMETERS
 job_cycle="ExampleAnalyzerDiMuon"
-job_data_lumi="ALL"   ###  "C" = period C only   "ALL"  = period C+D
-job_stream="muon" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset 
+job_data_lumi="CtoD"   ###  "C" = period C only   "ALL" or "CtoD"  = period C+D
+job_stream="DoubleMuon" ### "egamma" for DoubleEG dataset "muon" for DoubleMuon dataset 
 job_skinput="False" 
 
 job_useskim="DiLep" ### "Lepton" for single lepton skim   "DiLep" for dilepton skim

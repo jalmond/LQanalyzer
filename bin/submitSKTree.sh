@@ -1,6 +1,9 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
+declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+
+
 
 ###### SET WHAT JOBS TO RUN
 runMC=false
@@ -34,6 +37,7 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
 
+exit 1
 ## RUN PARAMETERS
 job_cycle="$submit_analyzer_name"
 if [[ $submit_analyzer_name == "" ]];
@@ -172,9 +176,7 @@ fi
 
 
 if [[ $runMC  == "true" ]];
-    echo running mc
-    echo submit_file_tag = $submit_file_tag
-    echo submit_file_list = $submit_file_list
+
     then
     source functions.sh
     cycle=${job_cycle}

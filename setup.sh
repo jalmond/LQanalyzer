@@ -28,7 +28,10 @@ fi
 export LQANALYZER_DIR=${PWD}
 export CATVERSION=v7-6-3
 
-export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATOct15/"
+alias sktree="bash submitSKTree.sh"
+
+
+export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
 
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
