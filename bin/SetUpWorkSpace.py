@@ -30,6 +30,9 @@ if not LQANALYZER_DIR == "None" :
 	CleanUpLogs(EightTeVdataOne)
 	CleanUpLogs(EightTeVdataTwo)	
 	GetFiles(rootfiledir)
+	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
+	os.system("cp " + localfiledir + "/data*.txt " + txtfiledir)
+	os.system("cp " + localfiledir + "/list_all_mc.sh " + txtfiledir)
 	
 else:
 	print "Area is not setup. Cannot make directories needed for analysis"

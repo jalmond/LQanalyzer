@@ -41,8 +41,6 @@ if not os.path.exists(march16dir):
     os.system("rm -r " + april15dir)
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
-    os.system("cp " + localfiledir + "/data*.txt " + txtfiledir)
-    os.system("cp " + localfiledir + "/list_all_mc.sh " + txtfiledir)
     
     print "using branch for first time: All codes are being recompiled"
     os.system("source bin/make_clean_newbranch.sh")

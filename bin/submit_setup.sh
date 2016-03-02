@@ -3,7 +3,7 @@
 
 function usage
 {
-    echo "usage: submitSKTree.sh [[[-a analyzer] [-S samples] [-f file_tag ] [-sktree usesktree ([-skim skim])] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (catversion) (*search*)][-g (*search*)]]"
+    echo "usage: sktree [[[-a analyzer] [-S samples] [-f file_tag ] [-sktree usesktree ([-skim skim])] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (catversion) (*search*)][-g (*search*)]]"
 }
 
 function rungroupedlist
@@ -18,6 +18,54 @@ function rungroupedlist
 	  echo ""
       fi
     done
+}
+
+
+function listavailable
+{
+    
+    echo "List of available samples at SNU. With latest available catversion are: "
+    
+    
+    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt | while read line
+      do
+      if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+	  then
+	  sline=$(echo $line | head -n1 | awk '{print $5}')
+	  echo ${sline}
+      fi
+    done
+
+    echo ""
+    echo "List of samples not available in latest available catversion are:"
+    
+    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt | while read line
+      do
+      echo "Missing: since miniAOD not available"
+      if [[ $line == *"Missing:"* ]];
+	  then
+	  sline=$(echo $line | head -n1 | awk '{print $1}')
+	  echo ${sline}
+      fi
+    done
+
+    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt | while read line
+      do
+      echo "Catuples available: Can create sktrees on request: type sktree -r samplename "
+    if [[ $line == *"Available:"* ]];
+	then
+	sline=$(echo $line | head -n1 | awk '{print $1}')
+	echo ${sline}
+    fi
+    done
+}
+
+
+function sendrequest
+{
+    source mail.sh $request_sample
+    cat email.txt | mail -s "SKTree request" jalmond@cern.ch
+    rm email.txt
 }
 
 function runlist
@@ -67,7 +115,7 @@ function runlist
 	  fi
 	  if [[ $ic == *"v7-4"* ]];
 	      then
-	      echo "For catversion "  $ic " the naming changed. Run sktee -l " $ic
+	      echo "For catversion "  $ic " the naming changed. Run sktree -l " $ic
 	      continue;
           fi
 
@@ -154,7 +202,11 @@ while [ "$1" != "" ]; do
 	-n | --njobs )          shift
 	                        job_njobs=$1
 				;;
-        
+        -r | --requestSKtree )  shift
+	                        request_sample=$1
+	                        sendrequest
+				exit 1
+                                ;;        
 	-S | --SampleTag  )     shift
                                 submit_sampletag=$1
 				echo "Setting SampleTag = " $submit_sampletag
@@ -168,6 +220,11 @@ while [ "$1" != "" ]; do
 	                        runlist
 				exit 1
 				;;
+        -A | --AvailableCatuples) shift
+                                listavailable
+                                exit 1
+                                ;;
+
 	-g | --file_tag_groups) shift
                                 submit_catvlist=$1
                                 submit_searchlist=$2
@@ -198,6 +255,27 @@ done
 
 
 ############################################################
+
+
+if [[ $submit_analyzer_name ==  "" ]];
+    then
+    echo "No analyzer set: set with -a"
+    echo "List of Classes are:"
+    cat ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h" | while read line
+      do
+      if [[ $line == *"C++ class"* ]];
+          then
+	  if [[ $line != *"AnalyzerCore"* ]];
+	      then
+	      sline=$(echo $line | head -n1 | awk '{print $5}')
+	      suffix="+;"
+	      sline=${sline%$suffix}
+	      echo $sline
+	  fi
+      fi
+    done
+    
+fi
 
 
 declare -a streams=("")

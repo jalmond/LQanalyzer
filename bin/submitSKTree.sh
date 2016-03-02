@@ -31,6 +31,7 @@ submit_sampletag=""
 submit_catvlist=""
 submit_searchlist=""
 submit_analyzer_name=""
+request_sample=""
 
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
@@ -38,6 +39,7 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 source submit_setup.sh
 
 exit 1
+
 ## RUN PARAMETERS
 job_cycle="$submit_analyzer_name"
 if [[ $submit_analyzer_name == "" ]];

@@ -1,0 +1,1 @@
+echo "This is a request for the sample $1 to be made" >> email.txt 

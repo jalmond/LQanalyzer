@@ -39,6 +39,10 @@ void MakeInputListForSubmitScript(){
   lumi_file << "#######################" << endl;
   lumi_file << "" << endl;
   lumi_file << "" << endl;
+
+  lumi_file << "source list_user_mc.sh" << endl;
+  lumi_file << "" << endl;
+  lumi_file << "" << endl;
   
   lumi_file << " declare -a input_samples=('WZ_pythia8')" << endl;;
   lumi_file << "" << endl;

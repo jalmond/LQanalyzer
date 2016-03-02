@@ -92,6 +92,7 @@ void MakeDataInputFile(TString version=""){
 
 
   string lfile2 =  "/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
+  gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
     
