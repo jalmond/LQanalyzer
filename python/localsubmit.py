@@ -157,7 +157,8 @@ if not len(splitsample)==1:
         if "catversion" in splitsample[conf]:
             conf+=1
             catversion = splitsample[conf]
-            
+print ""
+
 ####################
 ####
 ####################
@@ -168,21 +169,18 @@ if not cycle == "SKTreeMaker":
             if not useskinput == "True":
                 if not useskinput == "true":
                     print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
-                    #update = raw_input("You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees.")
- #                   if not  update == "N":
-  #                      useskinput="True"
-
+                    
 ##########################################################
 ### Make tmp directory for job
 ############################################################
-
-if os.path.exists("job_output"):
-    os.system("rm -r job_output/")
+  
+if os.path.exists(os.getenv("LQANALYZER_DIR") + "/LQRun/job_output"):
+    os.system("rm -r " + os.getenv("LQANALYZER_DIR") + "/LQRun/job_output/")
     
-if not os.path.exists("job_output"):
-    os.system("mkdir job_output/")
+if not os.path.exists(os.getenv("LQANALYZER_DIR") + "/LQRun/job_output"):
+    os.system("mkdir " + os.getenv("LQANALYZER_DIR") + "/LQRun/job_output")
 
-local_sub_dir= "job_output/" + sample + '_' + new_channel + '_' + now()
+local_sub_dir= os.getenv("LQANALYZER_DIR") + "/LQRun/job_output/" + sample + '_' + new_channel + '_' + now()
     
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
@@ -837,7 +835,7 @@ if not JobOutput:
         
     if not number_of_cores == 1:
         os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
-        os.system("mv "+ output + "/Job_1/runJob_1.C .")
+        os.system("mv "+ output + "/Job_1/runJob_1.C " + local_sub_dir)
     print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
     os.system("rm -r " + output)    
     os.system("rm -r " + local_sub_dir)    
