@@ -319,6 +319,7 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
     fi
 
 fi
+echo "LQanalyzer::sktree :: INFO :: Analyzer = " $job_cycle
 
 
 if [[ $runDATA  == "true" ]];
@@ -538,7 +539,6 @@ if [[ $runDATA  == "true" ]];
     fi
 fi
 
-echo "LQanalyzer::sktree :: INFO :: Analyzer = " $job_cycle
 echo "LQanalyzer::sktree :: INFO :: Number of subjobs = " $job_njobs  
 echo "LQanalyzer::sktree :: INFO :: loglevel = " $job_loglevel
 
@@ -592,8 +592,10 @@ if [[ $runDATA  == "true" ]];
 fi
 
 
-echo "LQanalyzer::sktree :: INFO :: output directory = " ${job_output_dir}
-
+if [[ $job_cycle != *"SKTreeMaker"* ]];
+    then
+    echo "LQanalyzer::sktree :: INFO :: output directory = " ${job_output_dir}
+fi
 
 ################  DATA################################################
 ### submit this configured job (uses bin/submit.sh)
