@@ -1,0 +1,16 @@
+echo  "Add new catversion to:"
+echo "setup.sh"
+echo "LQCore/Ntuplecore/src/LQController.cc"
+echo "python/localsubmit.py"
+echo "bin/submitSKTree.sh"
+echo "update bin/Branch.txt"
+echo "update bin/CATVERSION.txt"
+
+echo ""
+echo "run:"
+echo "source runGetEffLumi.sh"
+echo "source runInputListMaker.sh"
+echo "source runMakeDataInputFile.sh"
+
+echo "commit new txt files"
+echo "run scripts/git_newbranch.sh"

@@ -3,7 +3,7 @@
 
 function usage
 {
-    echo "usage: sktree [[[-a analyzer] [-S samples] [-f file_tag ] [-sktree usesktree [-skim skim] [-fa file_array]] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (*search*)(catversion) ][-g (*search*)]]"
+    echo "usage: sktree [[[-a analyzer] [-S samples] [-i file_tag ] [-sktree usesktree [-skim skim] [-list file_array]] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (*search*)(catversion) ][-g (*search*)]]"
 }
 
 
@@ -221,8 +221,13 @@ function runlist
     
     if [[ $submit_skim  == "" ]];
         then
-	echo "sktree -L <ntuple version>"
-	echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
+	echo "sktree -L <skim>"
+	echo "Need to set skim: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
+	echo "Can also specify catversion AND/OR search filter list (after skim)"
+	echo "example 1) sktree -L FLATCAT"
+	echo "example 2) sktree -L FLATCAT v7-6-3"
+	echo "example 3) sktree -L SKTree_LeptonSkim QCD v7-6-2"
+	echo "example 4) sktree -L SKTree_DiLepSkim v7-6-3 DY"
 	exit 1
     fi
     if [[ $submit_skim  == "FLATCAT" ]];
@@ -254,7 +259,7 @@ function runlist
 
     echo "For <ntuple version>(or skim)= " $submit_skim " run jobs with command:"
     
-    echo "'sktree -a <analyzer/classname> -s " $submit_skim "  -f <proccesnames>':"
+    echo "'sktree -a <analyzer/classname> -s " $submit_skim "  -i <proccesnames>':"
     echo ""
     echo "List of proccesnames for skim " $submit_skim " available in cattuple version " $submit_catvlist " is:"
     
@@ -327,7 +332,7 @@ function runlist
 	  echo processname = $il
 	done
 	echo ""
-	echo "If you want this sktree run 'sktree -a SKTreeMakerNoCut -f processname' "
+	echo "If you want this sktree run 'sktree -a SKTreeMakerNoCut -i processname' "
 	echo ""
     fi
     if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
@@ -338,7 +343,7 @@ function runlist
           echo processname = $il
         done
 	echo ""
-        echo "If you want this sktree run 'sktree -a SKTreeMaker -f processname' "
+        echo "If you want this sktree run 'sktree -a SKTreeMaker -i <processname>' "
         echo ""
     fi
 
@@ -351,7 +356,7 @@ function runlist
 
         done
 	echo ""
-	echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -f processname' "
+	echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <processname>' "
 	echo ""
     fi
     
@@ -481,10 +486,10 @@ while [ "$1" != "" ]; do
         -a | --analysis_name )  shift
                                 submit_analyzer_name=$1
 				;;
-        -f | --file_tag )       shift
+        -i | --input )          shift
                                 submit_file_tag=$1
                                 ;;
-	-fa | --file_list )     shift
+	-list | --inputlist )   shift
                                 submit_file_list=$1
                                 ;;
 	
@@ -496,9 +501,11 @@ while [ "$1" != "" ]; do
                                 ;;
 	-sktree | --usesktrees )shift
                                 submit_skinput="$1"
+				changed_skinput=true
                                 ;;
         -s | --useskim )        shift
                                 job_skim="$1"
+				changed_skim=true
                                 ;;
 	-n | --njobs )          shift
 	                        job_njobs=$1
@@ -510,7 +517,6 @@ while [ "$1" != "" ]; do
                                 ;;        
 	-S | --SampleTag  )     shift
                                 submit_sampletag=$1
-				echo "Setting SampleTag = " $submit_sampletag
                                 ;;
 	-c | --CatVersion)      shift
 				submit_version_tag="$1"
@@ -542,6 +548,9 @@ while [ "$1" != "" ]; do
                             	submit_file_tag=$1
 				getdatasetname
 				exit 1
+				;;
+        -o | --output)          shift
+	                        job_output_dir=$1
                                 ;;
 
 
@@ -557,15 +566,15 @@ while [ "$1" != "" ]; do
 				echo "###########################Running command##################################################################################"
 				echo "-a     |   HNDiElectron/ExampleDiMuon                         | default = ''        | Name of analysis class              |"
 	                        echo "-S     |   ALL/DATA/MC/DoubleEG/DoubleMuon/                   | default = ''        | DATA runs ALL data. MC runs ALL MC  |"
-				echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | (same as -fa all_mc                 | "
+				echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | (same as -list all_mc               | "
                                 echo "-sktree|   true/false or True/False                           | default=True        | Set 'False' to run on CATuples,     | "
 				echo "       |                                                      |                     |  if True then also set -s/--useskim | " 
 				echo "       |                                                      |                     |  if -s == CATFLAT sktree set False  | " 
                                 echo "-s     |  SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim    | default=Lepton      | Sets skim to use                    | "
 				echo "       |  FLATCAT sets input to faltcatuple not sktee         |                     | NoCuts/Lepton/DiLepton  still worl  | "
                                 echo "-n     |   #number of subjobs  (any number < 15)              | default=15          | default is 5 is -sktree=False       | "
-				echo "-f     |   (i.e., DY10to50_MCatNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
-				echo "-fa    |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
+				echo "-i     |   (i.e., DY10to50_MCatNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
+				echo "-list  |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
 				echo "-c     |   catversion of inputfile atest)                     | default = ${CATVERSION}    | (only needed if not running         | "
 				echo "       |                                                      |                     | default/latest)                     | " 
 				echo "-d     |   debug mode : INFO/DEBUG/WARNING                    | default = INFO      |                                     | "
@@ -582,7 +591,7 @@ while [ "$1" != "" ]; do
 
 				echo "-g       |                                                    | default = ''        | returns a list of available input   |"
 				echo "         |                                                    |                     | arrays to input with:               |"
-				echo "         |                                                    |                     | sktree -fa command                  |" 
+				echo "         |                                                    |                     | sktree -list command                |" 
 				echo "-dataset |  file_tag (i.e., DY10to50_MCatNLO)                 | default = ''        | returns datasetname.                |"
 				echo "         |                                                    |                     | Only available from v7-6-3          |"  
 				echo "-r       |   sktree -A to see possible samples                | default = ''        | sends email request to make sktree  |"

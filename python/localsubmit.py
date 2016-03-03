@@ -103,16 +103,14 @@ if DEBUG == "True":
 
 print "Running : " + cycle
 
-if useskim == "FLATCAT":
-    useskinput="True"
-elif useskim == "SKTree_NoSkim":
+if useskim == "SKTree_NoSkim":
     useskim ="NoCut"
-elif useskim == "SKTree_Lepton":
+elif useskim == "SKTree_LeptonSkim":
     useskim ="Lepton"
-elif useskim == "SKTree_DiLep":
+elif useskim == "SKTree_DiLepSkim":
     useskim="DiLep"
 
-    
+
 if useskinput == "True": 
     print "Using SKTrees as input."
 elif useskinput == "true":

@@ -116,9 +116,15 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a singletop=('singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg') " << endl;
 
-  string lfile2 =  "/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/list_all_mc.sh";
 
-  gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+  string lqdir = getenv("LQANALYZER_DIR");
+  TString user = TString(getenv("USER"));
+
+
+  string lfile2 =  lqdir + "/LQRun/txt/list_all_mc.sh";
+
+  if(USER.Contains("jalmond"))
+    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
 

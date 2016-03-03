@@ -396,13 +396,12 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   /// Default silver
   /// For v-7-6-2 default is set to gold because met is broken
 
-  if(TString(eventinfo.CatVersion()).Contains("v7-6-3"))lumimask = snu::KEvent::gold;
-  else if(TString(eventinfo.CatVersion()).Contains("v7-6-2"))lumimask = snu::KEvent::gold;
+  if(VersionStamp(TString(eventinfo.CatVersion())) == 3) lumimask = snu::KEvent::gold; 
 
   /// If version of SKTree has no lumi mask then silver json is run.
   else if(eventinfo.CatVersion().empty()) lumimask = snu::KEvent::missing;
   /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
-  else if(TString(eventinfo.CatVersion()).Contains("v7-4")) lumimask = snu::KEvent::missing;
+  else if(VersionStamp(TString(eventinfo.CatVersion())) < 3) lumimask = snu::KEvent::missing;
   else  lumimask = snu::KEvent::silver;
   //
   // creates object that stores all SKTree classes	
@@ -430,6 +429,16 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   if(lumimask == snu::KEvent::gold) MCweight*= SilverToGoldJsonReweight(per);
   eventbase->GetEvent().SetJSON(lumimask);
   
+}
+
+int AnalyzerCore::VersionStamp(TString cversion){
+  
+  if(cversion.Contains("v7-4-4")) return 1;
+  else if(cversion.Contains("v7-4-5")) return 2;
+  else if(cversion.Contains("v7-6-2") || cversion.Contains("v7-6-3")  ) return 3;
+  
+  return 3;
+ 
 }
 
 int AnalyzerCore::AssignnNumberOfTruth(){

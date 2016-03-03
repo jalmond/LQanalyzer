@@ -53,6 +53,7 @@ class AnalyzerCore : public LQCycleBase {
 
   void ClassInfo();
   float SilverToGoldJsonReweight(TString p);
+  int VersionStamp(TString cversion);
 
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
