@@ -85,7 +85,7 @@ function listavailable
     echo ""
     echo "List of available samples at SNU. With catversion " ${submit_catvlist}
     echo ""
-    echo "Processname  --> datasetname"  
+    echo "Samplename  --> datasetname"  
     while read line
       do
       if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
@@ -251,17 +251,17 @@ function runlist
     if [[ $check_path == "" ]];
 	then
 	echo "Invalid option for ntuple version: "
-	echo "sktree -L <ntuple version>"
+	echo "sktree -L <skim>"
         echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
 	exit 1
     fi
     
 
-    echo "For <ntuple version>(or skim)= " $submit_skim " run jobs with command:"
+    echo "For <skim>= " $submit_skim " run jobs with command:"
     
     echo "'sktree -a <analyzer/classname> -s " $submit_skim "  -i <proccesnames>':"
     echo ""
-    echo "List of proccesnames for skim " $submit_skim " available in cattuple version " $submit_catvlist " is:"
+    echo "List of samplenames for skim " $submit_skim " available in cattuple version " $submit_catvlist " is:"
     
     declare -a LISTOFSAMPLES=()
     declare -a UNPROCESSED=()
@@ -329,10 +329,10 @@ function runlist
 	echo "Samples that have local flat catuples but no lepton skim are:"
 	for il in  ${UNPROCESSED[@]};
 	  do
-	  echo processname = $il
+	  echo samplename = $il
 	done
 	echo ""
-	echo "If you want this sktree run 'sktree -a SKTreeMakerNoCut -i processname' "
+	echo "If you want this sktree run 'sktree -a SKTreeMakerNoCut -i <samplename>' "
 	echo ""
     fi
     if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
@@ -340,10 +340,10 @@ function runlist
         echo "Samples that have local flat catuples but no lepton skim are:"
         for il in  ${UNPROCESSED[@]};
           do
-          echo processname = $il
+          echo samplename = $il
         done
 	echo ""
-        echo "If you want this sktree run 'sktree -a SKTreeMaker -i <processname>' "
+        echo "If you want this sktree run 'sktree -a SKTreeMaker -i <samplename>' "
         echo ""
     fi
 
@@ -352,11 +352,11 @@ function runlist
 	echo "Samples that have local flat catuples but no dilepton skim are:"
         for il in  ${UNPROCESSED[@]};
           do
-          echo processname = $il
+          echo samplename = $il
 
         done
 	echo ""
-	echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <processname>' "
+	echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename>' "
 	echo ""
     fi
     
@@ -378,12 +378,11 @@ function runlist
 	      continue;
           fi
 
-	  echo "Following samples are not available in: " $CATVERSION 
-	  echo "Catversion: " ${ic}
+	  echo "Following samples are available in Catversion: " ${ic} " but not in: " $CATVERSION
 
 	  if [[ $submit_skim  == "SKTree_NoSkim" ]];
 	      then
-	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MC/"
+	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCNoCut/"
 	  fi
 	  if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
 	      then
@@ -407,7 +406,7 @@ function runlist
 		    for il in  ${LISTOFSAMPLES[@]};
 		      do
 
-		      if [[ $sline == $il ]];
+		      if [[ $sline == *${il}* ]];
 			  then
 			  isDuplicate=true
 		      fi
@@ -440,7 +439,7 @@ function runlist
 			then
 			for il in  ${LISTOFSAMPLES[@]};
 			  do
-			  if [[ $sline == $il ]];
+			  if [[ $sline == *${il}* ]];
 			      then
 			      isDuplicate=true
 			  fi

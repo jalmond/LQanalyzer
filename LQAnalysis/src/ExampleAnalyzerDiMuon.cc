@@ -92,7 +92,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    std::vector<TString> triggerslist;
    triggerslist.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
    //ListTriggersAvailable();
-   
+
    if(!PassTrigger(triggerslist, prescale)) return;
    FillCutFlow("TriggerCut", weight);
    // Trigger matching is done using KMuon::TriggerMatched(TString) which returns a bool

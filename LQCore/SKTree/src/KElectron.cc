@@ -205,9 +205,93 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
   //need to fill errors. 
   float eta = fabs(this->Eta());
   if (name == "mvaEleID-Spring15-25ns-Trig-V1-wp90"){
-    
+    return 1.;
   }
   /// ID SF from  https://arun-afs.web.cern.ch/arun-afs/Fits_Data_ID_76X_AbsEta/CutBasedID_TightWP_76X_18Feb.txt
+  else if (name == "cutBasedElectronID-Spring15-25ns-V1-standalone-loose"){
+    if (this->Pt()>10. && this->Pt() <= 20.){
+      if      ( eta <=  0.800)    return (0.661/0.655)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.684/0.635)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.480/0.448)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.612/0.596)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.667/0.642)  + fsign*(0.06);
+      else return 1.;
+    }
+    else  if (this->Pt()>20. && this->Pt() <= 30.){
+      if      ( eta <=  0.800)    return (0.779/0.787)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.762/0.769)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.502/0.514)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.731/0.747)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.764/0.760)  + fsign*(0.06);
+
+    }   
+    else  if (this->Pt()>30. && this->Pt() <= 40.){
+      if      ( eta <=  0.800)    return (0.868/0.877)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.862/0.870)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.668/0.679)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.836/0.845)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.837/0.834)  + fsign*(0.06);
+      else return 1.;
+    }   
+    else  if (this->Pt()>40. && this->Pt() <= 50.){
+      if      ( eta <=  0.800)    return (0.913/0.922)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.912/0.921)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.794/0.809)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.894/0.889)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.877/0.865)  + fsign*(0.06);
+      else return 1.;
+    }   
+    else  if (this->Pt()>50. && this->Pt() <= 200.){
+      if      ( eta <=  0.800)    return (0.927/0.937)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.925/0.935)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.806/0.819)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.914/0.901)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.890/0.876)  + fsign*(0.06);
+      else return 1.;
+    }   
+  }
+  else if (name == "cutBasedElectronID-Spring15-25ns-V1-standalone-medium"){
+    if (this->Pt()>10. && this->Pt() <= 20.){
+      if      ( eta <=  0.800)    return (0.555/0.551)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.556/0.510)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.352/0.324)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.443/0.450)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.524/0.506)  + fsign*(0.06);
+      else return 1.;
+    }
+    else  if (this->Pt()>20. && this->Pt() <= 30.){
+      if      ( eta <=  0.800)    return (0.674/0.694)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.650/0.661)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.391/0.406)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.593/0.633)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.655/0.664)  + fsign*(0.06);
+
+    }
+    else  if (this->Pt()>30. && this->Pt() <= 40.){
+      if      ( eta <=  0.800)    return (0.783/0.795)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.770/0.780)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.541/0.570)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.743/0.762)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.736/0.764)  + fsign*(0.06);
+      else return 1.;
+    }
+    else  if (this->Pt()>40. && this->Pt() <= 50.){
+      if      ( eta <=  0.800)    return (0.839/0.851)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.830/0.841)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.694/0.707)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.828/0.834)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.823/0.818)  + fsign*(0.06);
+      else return 1.;
+    }
+    else  if (this->Pt()>50. && this->Pt() <= 200.){
+      if      ( eta <=  0.800)    return (0.867/0.877)  + fsign*(0.02);
+      else if ( eta <=  1.444)    return (0.855/0.867)  + fsign*(0.06);
+      else if ( eta <=  1.566)    return (0.727/0.729)  + fsign*(0.06);
+      else if ( eta <=  2.000)    return (0.869/0.864)  + fsign*(0.06);
+      else if ( eta <=  2.500)    return (0.851/0.843)  + fsign*(0.06);
+      else return 1.;
+    }
+  }
   else if (name == "cutBasedElectronID-Spring15-25ns-V1-standalone-tight"){
     if (this->Pt()>10. && this->Pt() <= 20.){
       if      ( eta <=  0.800)    return (0.421/0.419)  + fsign*(0.02);
@@ -224,7 +308,7 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
       else if ( eta <=  2.000)    return (0.487/0.512)  + fsign*(0.06);
       else if ( eta <=  2.500)    return (0.538/0.538)  + fsign*(0.06);
 
-    }   
+    }
     else  if (this->Pt()>30. && this->Pt() <= 40.){
       if      ( eta <=  0.800)    return (0.655/0.667)  + fsign*(0.02);
       else if ( eta <=  1.444)    return (0.643/0.649)  + fsign*(0.06);
@@ -232,7 +316,7 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
       else if ( eta <=  2.000)    return (0.625/0.644)  + fsign*(0.06);
       else if ( eta <=  2.500)    return (0.645/0.647)  + fsign*(0.06);
       else return 1.;
-    }   
+    }
     else  if (this->Pt()>40. && this->Pt() <= 50.){
       if      ( eta <=  0.800)    return (0.731/0.745)  + fsign*(0.02);
       else if ( eta <=  1.444)    return (0.724/0.731)  + fsign*(0.06);
@@ -240,7 +324,7 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
       else if ( eta <=  2.000)    return (0.718/0.723)  + fsign*(0.06);
       else if ( eta <=  2.500)    return (0.719/0.712)  + fsign*(0.06);
       else return 1.;
-    }   
+    }
     else  if (this->Pt()>50. && this->Pt() <= 200.){
       if      ( eta <=  0.800)    return (0.782/0.795)  + fsign*(0.02);
       else if ( eta <=  1.444)    return (0.769/0.784)  + fsign*(0.06);
@@ -248,8 +332,10 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
       else if ( eta <=  2.000)    return (0.772/0.768)  + fsign*(0.06);
       else if ( eta <=  2.500)    return (0.771/0.753)  + fsign*(0.06);
       else return 1.;
-    }   
+    }
   }
+
+
   else {cout << "The ID " << name << " has no SFs" << endl; }
   
   return 1.;

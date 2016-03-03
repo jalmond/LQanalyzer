@@ -96,7 +96,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
   
   else  if(jetid == BaseSelection::JET_TIGHT){
     /// Uses pileup + tight ID
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "tight" );
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "Tight" );
   }
   else {cout << "Jet collection  not found" << endl; exit(EXIT_FAILURE);}
     
@@ -283,6 +283,8 @@ double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KE
 
   std::string sid= "";
   if(elid==BaseSelection::ELECTRON_POG_TIGHT)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-tight";
+  else if(elid==BaseSelection::ELECTRON_POG_MEDIUM)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-medium";
+  else if(elid==BaseSelection::ELECTRON_POG_LOOSE)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-loose";
   else if(elid==BaseSelection::ELECTRON_POG_MVATrig) sid="mvaEleID-Spring15-25ns-Trig-V1-wp90";
   else cout << "ElectronScaleFactor has no SFs for ID " << endl;
 

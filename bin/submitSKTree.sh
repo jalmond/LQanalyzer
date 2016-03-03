@@ -101,7 +101,7 @@ if [[ $submit_file_tag  != ""  ]];
       done
     if [[ $file_tag_exists == "false" ]];
 	then
-	echo "ProcessName is Invalid 'sktree -i <processname>'"
+	echo "Samplename is Invalid 'sktree -i <samplename>'"
 	echo "Check options using 'sktree -l' "
 	exit 1
     fi
@@ -130,8 +130,8 @@ if [[ $submit_file_tag  == ""  ]];
             echo "No input files were specified"
 	    echo "Use either:"
 	    echo "sktree -S <SAMPLELIST>   : run 'sktree -h' for list of options"
-	    echo "sktree -i <FILENAME>     : run 'sktree -l' or 'sktree -L' for list of options "
-	    echo "sktree -list <FILEARRAY> : run 'sktree -g' for list of options  "
+	    echo "sktree -i <SAMPLENAME>     : run 'sktree -l' or 'sktree -L' for list of options "
+	    echo "sktree -list <SAMPLEARRAY> : run 'sktree -g' for list of options  "
             exit 1
         fi
 
@@ -287,15 +287,18 @@ fi
 
 outputdir_mc=${outputdir_analyzer}"/"${dir_tag}
 outputdir_data=${outputdir_mc}"/Data/"
-if [[ $runDATA  == "true" ]];
-    then
-    job_output_dir=$outputdir_data
-fi
-if [[ $runMC  == "true" ]];
-    then
-    job_output_dir=$outputdir_mc
-fi
 
+if [[ $job_output_dir == "" ]]
+    then
+    if [[ $runDATA  == "true" ]];
+	then
+	job_output_dir=$outputdir_data
+    fi
+    if [[ $runMC  == "true" ]];
+	then
+	job_output_dir=$outputdir_mc
+    fi
+fi
 output_datafile=${outputdir_mc}"/"$job_cycle"_data_cat"${submit_catversion}".root"
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
@@ -310,6 +313,11 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
 	mkdir ${outputdir_data}
 	echo "Making " + ${outputdir_data}
     fi
+     if [[ ! -d "${job_output_dir}" ]]; then
+	 mkdir ${job_output_dir}
+	 echo "Making " + ${job_output_dir}
+    fi
+
 fi
 
 
@@ -614,7 +622,7 @@ if [[ $runDATA  == "true" ]];
       loglevel=$job_loglevel
       logstep=$job_logstep
       stream=${istream}
-      outputdir=${outputdir_data}
+      outputdir=${job_output_dir}
       catversion=${submit_version_tag}
     
       ARG=data_periods
@@ -639,7 +647,7 @@ if [[ $runMC  == "true" ]];
     data_lumi=$job_data_lumi
     loglevel=$job_loglevel
     logstep=$job_logstep
-    outputdir=${outputdir_mc}
+    outputdir=${job_output_dir}
     catversion=${submit_version_tag}
 
     if [[ $submit_file_tag  != ""  ]];
