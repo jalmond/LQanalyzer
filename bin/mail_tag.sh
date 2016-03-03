@@ -1,6 +1,6 @@
-Dear $1
+echo "Dear " $1 >> email.txt
+echo " " >> email.txt
+echo "A new tag named "$CATVERSION" is now available in LQanalyzer." >> email.txt
 
-A new tag named $CATVERSION is now available in LQanalyzer.
-
-Thanks,
-John
+echo "Thanks," >> email.txt
+echo "John" >> email.txt
