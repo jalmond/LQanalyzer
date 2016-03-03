@@ -29,7 +29,7 @@ export LQANALYZER_DIR=${PWD}
 export CATVERSION=v7-6-3
 
 alias sktree="bash submitSKTree.sh"
-
+alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/git_newbranch.sh"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
 

@@ -13,4 +13,4 @@ echo "source runInputListMaker.sh"
 echo "source runMakeDataInputFile.sh"
 
 echo "commit new txt files"
-echo "run scripts/git_newbranch.sh"
+echo "run 'new_git_tag'"
