@@ -43,7 +43,7 @@ if [[ $sendemail == "true" ]];
       do
       
       source mail_tag.sh $i
-      cat email.txt | mail -s "SKTree request" jalmond@cern.ch
+      cat email.txt | mail -s "New LQAnalyzer Tag Ready" jalmond@cern.ch
       rm email.txt
     done
 fi
