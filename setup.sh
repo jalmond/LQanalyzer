@@ -10,6 +10,8 @@
 ##################################################################################
 
 # Greet the user
+echo "This is master branch: please checkout a tag: FOr latest tag see https://twiki.cern.ch/twiki/bin/viewauth/CMS/SNULQNtuples"
+exit 1
 echo "Setting up environment for compiling/running LQAnalzer with SKTree"
 
 if [ $LQANALYZER_DIR ]; then
