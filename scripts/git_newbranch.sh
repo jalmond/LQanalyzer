@@ -1,2 +1,3 @@
-git checkout -b CatAnalyzer_13TeV_$CATVERSION
-git push origin CatAnalyzer_13TeV_$CATVERSION
+git commit -a
+git tag $CATVERSION
+git push --tags
