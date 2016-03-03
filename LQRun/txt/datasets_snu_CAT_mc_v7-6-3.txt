@@ -15,8 +15,31 @@ GJet_20to40_pythia8  24739908.0 24739908.0 218.6 113168.7  /data2/DATA/cattoflat
 GJet_40plus_pythia8  41770920.0 41770920.0 863.1 48395.9  /data2/DATA/cattoflat/MC/v7-6-3/GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/
 ggHtomm_Powheg  250000.0 250000.0 0.0 25756414.0  /data2/DATA/cattoflat/MC/v7-6-3/GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/
 QCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_em120to170_pythia8  36202408.0 36202408.0 62964.0 575.0  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu120to170_pythia8  7971018.0 7971018.0 25190.5 316.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_em15to20_pythia8  5471097.0 5471097.0 2302200.0 2.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-15to20_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_em170to300_pythia8  11518871.0 11518871.0 18810.0 612.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu170to300_pythia8  7910182.0 7910182.0 8654.5 914.0  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-170to300_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_em20to30_pythia8  9184399.0 9184399.0 5352960.0 1.7  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-20to30_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu20to30_pythia8  31680404.0 31680404.0 2960198.4 10.7  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu300to470_pythia8  7845620.0 7845620.0 797.4 9839.6  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-300to470_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_em300toINF_pythia8  7340308.0 7340308.0 1350.0 5437.3  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-300toInf_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_DoubleEM_30to40_pythia8  17831368.0 17831368.0 24300.0 733.8  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-30to40_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/
+QCD_mu30to50_pythia8  29938364.0 29938364.0 1652471.5 18.1  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_DoubleEM_30toInf_pythia8  37835432.0 37835432.0 259296.0 145.9  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCUETP8M1_13TeV_Pythia8/
+QCD_DoubleEM_40toInf_pythia8  19958876.0 19958876.0 108240.0 184.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/
+QCD_mu470to600_pythia8  3841262.0 3841262.0 79.0 48607.9  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-470to600_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_em50to80_pythia8  22463814.0 22463814.0 2890800.0 7.8  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-50to80_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu50to80_pythia8  20378392.0 20378392.0 437504.1 46.6  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
 QCD_mu600to800_pythia8  3984898.0 3984898.0 25.1 158792.1  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-600to800_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu800to1000_pythia8  3666110.0 3666110.0 4.7 778802.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-800to1000_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_em80to120_pythia8  35467092.0 35467092.0 350000.0 101.3  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
+QCD_mu80to120_pythia8  13730591.0 13730591.0 106033.7 129.5  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
+QCD_170to250_bcToE_pythia8  9571764.0 9571764.0 2635.8 3631.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt_170to250_bcToE_TuneCUETP8M1_13TeV_pythia8/
+QCD_20to30_bcToE_pythia8  10600780.0 10600780.0 328999.9 32.2  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt_20to30_bcToE_TuneCUETP8M1_13TeV_pythia8/
+QCD_250toInf_bcToE_pythia8  10018865.0 10018865.0 711.9 14072.9  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt_250toInf_bcToE_TuneCUETP8M1_13TeV_pythia8/
 QCD_30to80_bcToE_pythia8  14695018.0 14695018.0 405623.4 36.2  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt_30to80_bcToE_TuneCUETP8M1_13TeV_pythia8/
+QCD_80to170_bcToE_pythia8  15345084.0 15345084.0 38104.4 402.7  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt_80to170_bcToE_TuneCUETP8M1_13TeV_pythia8/
 singletop_s_MCatNLO  998400.0 621945.9 3.4 185103.0  /data2/DATA/cattoflat/MC/v7-6-3/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/
 singletop_tbar_Powheg  1630900.0 1630900.0 26.1 62568.3  /data2/DATA/cattoflat/MC/v7-6-3/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
 singletop_t_Powheg  3299200.0 3299200.0 43.8 75326.9  /data2/DATA/cattoflat/MC/v7-6-3/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
@@ -28,6 +51,7 @@ TT_MG5  10215131.0 10215131.0 831.8 12281.3  /data2/DATA/cattoflat/MC/v7-6-3/TTJ
 ttWJetsToLNu_MCatNLO  250307.0 129001.0 0.2 631429.2  /data2/DATA/cattoflat/MC/v7-6-3/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
 ttWJetsToQQ_MCatNLO  831847.0 429599.0 0.4 1057604.6  /data2/DATA/cattoflat/MC/v7-6-3/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
 ttZToQQ_MCatNLO  747000.0 350106.0 0.5 660951.5  /data2/DATA/cattoflat/MC/v7-6-3/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
+TT_powheg  41850304.0 41850304.0 831.8 50315.4  /data2/DATA/cattoflat/MC/v7-6-3/TT_TuneCUETP8M1_13TeV-powheg-pythia8/
 vhf_Htomm_Powheg  249200.0 249200.0 0.0 300854272.0  /data2/DATA/cattoflat/MC/v7-6-3/VBF_HToMuMu_M125_13TeV_powheg_pythia8/
 WG_lnuG_madgraph  6102260.0 6102260.0 405.3 15057.2  /data2/DATA/cattoflat/MC/v7-6-3/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
 WJets_MCatNLO  24156124.0 16521035.0 61526.7 268.5  /data2/DATA/cattoflat/MC/v7-6-3/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
@@ -41,6 +65,8 @@ WZZ_MCatNLO  249800.0 218986.0 0.1 3935058.5  /data2/DATA/cattoflat/MC/v7-6-3/WZ
 WZ_pythia8  1000000.0 1000000.0 47.1 21217.9  /data2/DATA/cattoflat/MC/v7-6-3/WZ_TuneCUETP8M1_13TeV-pythia8/
 WpWp_madgraph  145800.0 145800.0 0.0 7063953.5  /data2/DATA/cattoflat/MC/v7-6-3/WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8/
 WpWp_qcd_madgraph  120000.0 120000.0 0.0 7802340.5  /data2/DATA/cattoflat/MC/v7-6-3/WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8/
+ZG_llG_MCatNLO  4424816.0 3027812.0 117.9 25689.0  /data2/DATA/cattoflat/MC/v7-6-3/ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
+ZZ_llnunu_powheg  7112800.0 7112800.0 0.6 12611348.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZTo2L2Nu_13TeV_powheg_pythia8/
 ZZ_llqq_MCatNLO  15301695.0 9660541.0 3.2 3000168.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/
 ZZ_llll_MCatNLO  10747136.0 7416622.0 1.2 6119325.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZTo4L_13TeV-amcatnloFXFX-pythia8/
 ZZ_llll_powheg  6669188.0 6669188.0 1.3 5309863.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZTo4L_13TeV_powheg_pythia8/
@@ -57,8 +83,31 @@ SKGJet_20to40_pythia8  24739908.0 24739908.0 218.6 113168.7 /data2/CatNtuples/v7
 SKGJet_40plus_pythia8  41770920.0 41770920.0 863.1 48395.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/GJet_40plus_pythia8/
 SKggHtomm_Powheg  250000.0 250000.0 0.0 25756414.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ggHtomm_Powheg/
 SKQCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu1000toINF_pythia8/
+SKQCD_em120to170_pythia8  36202408.0 36202408.0 62964.0 575.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em120to170_pythia8/
+SKQCD_mu120to170_pythia8  7971018.0 7971018.0 25190.5 316.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu120to170_pythia8/
+SKQCD_em15to20_pythia8  5471097.0 5471097.0 2302200.0 2.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em15to20_pythia8/
+SKQCD_em170to300_pythia8  11518871.0 11518871.0 18810.0 612.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em170to300_pythia8/
+SKQCD_mu170to300_pythia8  7910182.0 7910182.0 8654.5 914.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu170to300_pythia8/
+SKQCD_em20to30_pythia8  9184399.0 9184399.0 5352960.0 1.7 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em20to30_pythia8/
+SKQCD_mu20to30_pythia8  31680404.0 31680404.0 2960198.4 10.7 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu20to30_pythia8/
+SKQCD_mu300to470_pythia8  7845620.0 7845620.0 797.4 9839.6 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu300to470_pythia8/
+SKQCD_em300toINF_pythia8  7340308.0 7340308.0 1350.0 5437.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em300toINF_pythia8/
+SKQCD_DoubleEM_30to40_pythia8  17831368.0 17831368.0 24300.0 733.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_DoubleEM_30to40_pythia8/
+SKQCD_mu30to50_pythia8  29938364.0 29938364.0 1652471.5 18.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu30to50_pythia8/
+SKQCD_DoubleEM_30toInf_pythia8  37835432.0 37835432.0 259296.0 145.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_DoubleEM_30toInf_pythia8/
+SKQCD_DoubleEM_40toInf_pythia8  19958876.0 19958876.0 108240.0 184.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_DoubleEM_40toInf_pythia8/
+SKQCD_mu470to600_pythia8  3841262.0 3841262.0 79.0 48607.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu470to600_pythia8/
+SKQCD_em50to80_pythia8  22463814.0 22463814.0 2890800.0 7.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em50to80_pythia8/
+SKQCD_mu50to80_pythia8  20378392.0 20378392.0 437504.1 46.6 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu50to80_pythia8/
 SKQCD_mu600to800_pythia8  3984898.0 3984898.0 25.1 158792.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu600to800_pythia8/
+SKQCD_mu800to1000_pythia8  3666110.0 3666110.0 4.7 778802.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu800to1000_pythia8/
+SKQCD_em80to120_pythia8  35467092.0 35467092.0 350000.0 101.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em80to120_pythia8/
+SKQCD_mu80to120_pythia8  13730591.0 13730591.0 106033.7 129.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu80to120_pythia8/
+SKQCD_170to250_bcToE_pythia8  9571764.0 9571764.0 2635.8 3631.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_170to250_bcToE_pythia8/
+SKQCD_20to30_bcToE_pythia8  10600780.0 10600780.0 328999.9 32.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_20to30_bcToE_pythia8/
+SKQCD_250toInf_bcToE_pythia8  10018865.0 10018865.0 711.9 14072.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_250toInf_bcToE_pythia8/
 SKQCD_30to80_bcToE_pythia8  14695018.0 14695018.0 405623.4 36.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_30to80_bcToE_pythia8/
+SKQCD_80to170_bcToE_pythia8  15345084.0 15345084.0 38104.4 402.7 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_80to170_bcToE_pythia8/
 SKsingletop_s_MCatNLO  998400.0 621945.9 3.4 185103.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/singletop_s_MCatNLO/
 SKsingletop_tbar_Powheg  1630900.0 1630900.0 26.1 62568.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/singletop_tbar_Powheg/
 SKsingletop_t_Powheg  3299200.0 3299200.0 43.8 75326.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/singletop_t_Powheg/
@@ -70,6 +119,7 @@ SKTT_MG5  10215131.0 10215131.0 831.8 12281.3 /data2/CatNtuples/v7-6-3/SKTrees/M
 SKttWJetsToLNu_MCatNLO  250307.0 129001.0 0.2 631429.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttWJetsToLNu_MCatNLO/
 SKttWJetsToQQ_MCatNLO  831847.0 429599.0 0.4 1057604.6 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttWJetsToQQ_MCatNLO/
 SKttZToQQ_MCatNLO  747000.0 350106.0 0.5 660951.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttZToQQ_MCatNLO/
+SKTT_powheg  41850304.0 41850304.0 831.8 50315.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/TT_powheg/
 SKvhf_Htomm_Powheg  249200.0 249200.0 0.0 300854272.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/vhf_Htomm_Powheg/
 SKWG_lnuG_madgraph  6102260.0 6102260.0 405.3 15057.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/WG_lnuG_madgraph/
 SKWJets_MCatNLO  24156124.0 16521035.0 61526.7 268.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/WJets_MCatNLO/
@@ -83,6 +133,8 @@ SKWZZ_MCatNLO  249800.0 218986.0 0.1 3935058.5 /data2/CatNtuples/v7-6-3/SKTrees/
 SKWZ_pythia8  1000000.0 1000000.0 47.1 21217.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/WZ_pythia8/
 SKWpWp_madgraph  145800.0 145800.0 0.0 7063953.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/WpWp_madgraph/
 SKWpWp_qcd_madgraph  120000.0 120000.0 0.0 7802340.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/WpWp_qcd_madgraph/
+SKZG_llG_MCatNLO  4424816.0 3027812.0 117.9 25689.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ZG_llG_MCatNLO/
+SKZZ_llnunu_powheg  7112800.0 7112800.0 0.6 12611348.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ZZ_llnunu_powheg/
 SKZZ_llqq_MCatNLO  15301695.0 9660541.0 3.2 3000168.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ZZ_llqq_MCatNLO/
 SKZZ_llll_MCatNLO  10747136.0 7416622.0 1.2 6119325.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ZZ_llll_MCatNLO/
 SKZZ_llll_powheg  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ZZ_llll_powheg/
@@ -99,8 +151,31 @@ SKGJet_20to40_pythia8_dilep  24739908.0 24739908.0 218.6 113168.7 /data2/CatNtup
 SKGJet_40plus_pythia8_dilep  41770920.0 41770920.0 863.1 48395.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/GJet_40plus_pythia8/
 SKggHtomm_Powheg_dilep  250000.0 250000.0 0.0 25756414.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ggHtomm_Powheg/
 SKQCD_mu1000toINF_pythia8_dilep  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu1000toINF_pythia8/
+SKQCD_em120to170_pythia8_dilep  36202408.0 36202408.0 62964.0 575.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em120to170_pythia8/
+SKQCD_mu120to170_pythia8_dilep  7971018.0 7971018.0 25190.5 316.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu120to170_pythia8/
+SKQCD_em15to20_pythia8_dilep  5471097.0 5471097.0 2302200.0 2.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em15to20_pythia8/
+SKQCD_em170to300_pythia8_dilep  11518871.0 11518871.0 18810.0 612.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em170to300_pythia8/
+SKQCD_mu170to300_pythia8_dilep  7910182.0 7910182.0 8654.5 914.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu170to300_pythia8/
+SKQCD_em20to30_pythia8_dilep  9184399.0 9184399.0 5352960.0 1.7 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em20to30_pythia8/
+SKQCD_mu20to30_pythia8_dilep  31680404.0 31680404.0 2960198.4 10.7 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu20to30_pythia8/
+SKQCD_mu300to470_pythia8_dilep  7845620.0 7845620.0 797.4 9839.6 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu300to470_pythia8/
+SKQCD_em300toINF_pythia8_dilep  7340308.0 7340308.0 1350.0 5437.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em300toINF_pythia8/
+SKQCD_DoubleEM_30to40_pythia8_dilep  17831368.0 17831368.0 24300.0 733.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_DoubleEM_30to40_pythia8/
+SKQCD_mu30to50_pythia8_dilep  29938364.0 29938364.0 1652471.5 18.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu30to50_pythia8/
+SKQCD_DoubleEM_30toInf_pythia8_dilep  37835432.0 37835432.0 259296.0 145.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_DoubleEM_30toInf_pythia8/
+SKQCD_DoubleEM_40toInf_pythia8_dilep  19958876.0 19958876.0 108240.0 184.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_DoubleEM_40toInf_pythia8/
+SKQCD_mu470to600_pythia8_dilep  3841262.0 3841262.0 79.0 48607.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu470to600_pythia8/
+SKQCD_em50to80_pythia8_dilep  22463814.0 22463814.0 2890800.0 7.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em50to80_pythia8/
+SKQCD_mu50to80_pythia8_dilep  20378392.0 20378392.0 437504.1 46.6 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu50to80_pythia8/
 SKQCD_mu600to800_pythia8_dilep  3984898.0 3984898.0 25.1 158792.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu600to800_pythia8/
+SKQCD_mu800to1000_pythia8_dilep  3666110.0 3666110.0 4.7 778802.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu800to1000_pythia8/
+SKQCD_em80to120_pythia8_dilep  35467092.0 35467092.0 350000.0 101.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em80to120_pythia8/
+SKQCD_mu80to120_pythia8_dilep  13730591.0 13730591.0 106033.7 129.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu80to120_pythia8/
+SKQCD_170to250_bcToE_pythia8_dilep  9571764.0 9571764.0 2635.8 3631.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_170to250_bcToE_pythia8/
+SKQCD_20to30_bcToE_pythia8_dilep  10600780.0 10600780.0 328999.9 32.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_20to30_bcToE_pythia8/
+SKQCD_250toInf_bcToE_pythia8_dilep  10018865.0 10018865.0 711.9 14072.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_250toInf_bcToE_pythia8/
 SKQCD_30to80_bcToE_pythia8_dilep  14695018.0 14695018.0 405623.4 36.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_30to80_bcToE_pythia8/
+SKQCD_80to170_bcToE_pythia8_dilep  15345084.0 15345084.0 38104.4 402.7 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_80to170_bcToE_pythia8/
 SKsingletop_s_MCatNLO_dilep  998400.0 621945.9 3.4 185103.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/singletop_s_MCatNLO/
 SKsingletop_tbar_Powheg_dilep  1630900.0 1630900.0 26.1 62568.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/singletop_tbar_Powheg/
 SKsingletop_t_Powheg_dilep  3299200.0 3299200.0 43.8 75326.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/singletop_t_Powheg/
@@ -112,6 +187,7 @@ SKTT_MG5_dilep  10215131.0 10215131.0 831.8 12281.3 /data2/CatNtuples/v7-6-3/SKT
 SKttWJetsToLNu_MCatNLO_dilep  250307.0 129001.0 0.2 631429.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttWJetsToLNu_MCatNLO/
 SKttWJetsToQQ_MCatNLO_dilep  831847.0 429599.0 0.4 1057604.6 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttWJetsToQQ_MCatNLO/
 SKttZToQQ_MCatNLO_dilep  747000.0 350106.0 0.5 660951.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttZToQQ_MCatNLO/
+SKTT_powheg_dilep  41850304.0 41850304.0 831.8 50315.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/TT_powheg/
 SKvhf_Htomm_Powheg_dilep  249200.0 249200.0 0.0 300854272.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/vhf_Htomm_Powheg/
 SKWG_lnuG_madgraph_dilep  6102260.0 6102260.0 405.3 15057.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WG_lnuG_madgraph/
 SKWJets_MCatNLO_dilep  24156124.0 16521035.0 61526.7 268.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WJets_MCatNLO/
@@ -125,9 +201,66 @@ SKWZZ_MCatNLO_dilep  249800.0 218986.0 0.1 3935058.5 /data2/CatNtuples/v7-6-3/SK
 SKWZ_pythia8_dilep  1000000.0 1000000.0 47.1 21217.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WZ_pythia8/
 SKWpWp_madgraph_dilep  145800.0 145800.0 0.0 7063953.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WpWp_madgraph/
 SKWpWp_qcd_madgraph_dilep  120000.0 120000.0 0.0 7802340.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WpWp_qcd_madgraph/
+SKZG_llG_MCatNLO_dilep  4424816.0 3027812.0 117.9 25689.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZG_llG_MCatNLO/
+SKZZ_llnunu_powheg_dilep  7112800.0 7112800.0 0.6 12611348.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_llnunu_powheg/
 SKZZ_llqq_MCatNLO_dilep  15301695.0 9660541.0 3.2 3000168.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_llqq_MCatNLO/
 SKZZ_llll_MCatNLO_dilep  10747136.0 7416622.0 1.2 6119325.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_llll_MCatNLO/
 SKZZ_llll_powheg_dilep  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_llll_powheg/
 SKZZ_pythia8_dilep  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_pythia8/
 SKttHnobb_Powheg_dilep  3945824.0 3945824.0 0.5 7801154.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHnobb_Powheg/
 SKttHtobb_Powheg_dilep  3772012.0 3772012.0 0.5 7457517.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHtobb_Powheg/
+
+##################################################################
+#### Missing/Not produced samples in this version are listed below 
+#### Missing : means miniAOD not available 
+#### Available: means miniAOD/catuples available but no sktree made. 
+##################################################################
+Missing: DY5to50_madgraph   /DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: GluGluToZZTo2e2mu   /GluGluToZZTo2e2mu_BackgroundOnly_13TeV_MCFM/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: GluGluToZZTo2mu2tau   /GluGluToZZTo2mu2tau_BackgroundOnly_13TeV_MCFM/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: GluGluToZZTo4mu   /GluGluToZZTo4mu_BackgroundOnly_13TeV_MCFM/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: QCD_15to20_bcToE_pythia8   /QCD_Pt_15to20_bcToE_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: QCD_em30to50_pythia8   /QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: QCD_mu15to20_pythia8   /QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: TT_powheg_pythia6   /TT_TuneZ2star_13TeV-powheg-pythia6-tauola/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: WW_MCatNLO   /WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: ZZZ_MCatNLO   /ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Missing: ttZToLLNuNu_MCatNLO   /TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_1000to1400_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_10to15_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_1400to1800_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt-15TTo7000_TuneZ2star-Flat_13TeV_pythia6/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_1800to2400_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_2400to3200_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_3200toInf_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_5to10_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_600to800_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_800to1000_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneEE5C_13TeV-amcatnlo-herwigpp/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-scaledown-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-scaleup-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneEE5C_13TeV-powheg-herwigpp/RunIIFall15MiniAODv1-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_mtop1665_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_mtop1695_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_mtop1715_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_mtop1735_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_13TeV-powheg-scaledown-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+Available[not produced]: /TT_TuneCUETP8M1_13TeV-powheg-scaleup-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM

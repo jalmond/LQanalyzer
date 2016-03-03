@@ -15,8 +15,12 @@
 
 void MakeDataInputFile(TString version=""){
   
+
+  TString def_version = TString(getenv("CATVERSION"));
+  if(!version.Contains("v7") ) version = def_version;
+
   ofstream lumi_file;
-  string lfile =  "dataset_list_data_" + string(version.Data()) + ".txt";
+  string lfile =  "datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
   lumi_file.open(lfile.c_str());
   lumi_file.setf(ios::fixed,ios::floatfield);
   lumi_file.precision(1);

@@ -32,6 +32,8 @@ void GetEffectiveLuminosity(TString version="") {
   std::vector<TString> missing_samples2;
 
   if(CheckMaps()) return;
+  TString def_version = TString(getenv("CATVERSION"));
+  if(!version.Contains("v7") ) version = def_version;
   
   map<TString, TString> missing_map= GetMissingMap(version);
   vector<TString> vec_available = GetAvailableMap(version);
@@ -40,11 +42,10 @@ void GetEffectiveLuminosity(TString version="") {
   map<TString, Double_t> dirmap = GetXSecMap(); 
   map<TString, TString> lqmap = GetLQMap();
   
-  
-  TString def_version = TString(getenv("CATVERSION"));  
+
   for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
     
-    if(!version.Contains("v7") ) version = def_version;
+
     
     TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist.txt";
     
@@ -135,7 +136,6 @@ void GetEffectiveLuminosity(TString version="") {
 	  name_countedfile >> filen;
 	  if(TString(filen).Contains(".root"))counter_counted++;
 	}
-	cout << "Numer of files complete = "  << counter_counted  << endl;
 	if(counter_counted == counter) JobDone=true;
       }
       TString haddcommand = "hadd  " + mit->first + "/output/Output.root " +  mit->first + "/output/*.root ";
@@ -164,7 +164,7 @@ void GetEffectiveLuminosity(TString version="") {
 
   
   ofstream lumi_file;
-  string lfile =  "dataset_list_mc_" + string(version.Data()) + ".txt";
+  string lfile =  "datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
   lumi_file.open(lfile.c_str());
   lumi_file.setf(ios::fixed,ios::floatfield); 
   lumi_file.precision(1);
@@ -214,7 +214,7 @@ void GetEffectiveLuminosity(TString version="") {
   lumi_file << "" << endl;
   lumi_file << "##################################################################" << endl;
   lumi_file << "#### Missing/Not produced samples in this version are listed below " << endl;
-  lumi_file << "#### Missing: means miniAOD not available " << endl;
+  lumi_file << "#### Missing : means miniAOD not available " << endl;
   lumi_file << "#### Available: means miniAOD/catuples available but no sktree made. " << endl;
   lumi_file << "##################################################################" << endl;
 

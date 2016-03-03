@@ -40,7 +40,7 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "" << endl;
 
-  lumi_file << "source list_user_mc.sh" << endl;
+  lumi_file << "source ${LQANALYZER_DIR}/LQRun/txt/list_user_mc.sh" << endl;
   lumi_file << "" << endl;
   lumi_file << "" << endl;
   
@@ -63,7 +63,48 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a dy_mcatnlo=('DY10to50_MCatNLO' 'DY50plus_MCatNLO') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a qcd=('QCD_mu1000toINF_pythia8' 'QCD_em120to170_pythia8' 'QCD_mu120to170_pythia8' 'QCD_em170to300_pythia8' 'QCD_mu170to300_pythia8' 'QCD_em20to30_pythia8' 'QCD_mu20to30_pythia8' 'QCD_mu300to470_pythia8' 'QCD_em300toINF_pythia8' 'QCD_DoubleEM_30to40_pythia8' 'QCD_em30to50_pythia8' 'QCD_mu30to50_pythia8' 'QCD_DoubleEM_30toInf_pythia8' 'QCD_DoubleEM_40toInf_pythia8' 'QCD_mu470to600_pythia8' 'QCD_em50to80_pythia8' 'QCD_mu50to80_pythia8' 'QCD_mu600to800_pythia8' 'QCD_mu800to1000_pythia8' 'QCD_em80to120_pythia8' 'QCD_mu80to120_pythia8' 'QCD_170to250_bcToE_pythia8' 'QCD_20to30_bcToE_pythia8' 'QCD_250toInf_bcToE_pythia8' 'QCD_30to80_bcToE_pythia8' 'QCD_80to170_bcToE_pythia8' ) " << endl;
+
+  lumi_file << "declare -a qcd=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("QCD")) continue;
+    bool last=true;
+    for(std::map<TString, TString>::iterator mit2 =next(mit); mit2 != lqmap.end();++mit2){
+      if(mit2->second.Contains("QCD")) last=false;
+    }
+    if(!last)lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+  } lumi_file << "') " << endl;
+  lumi_file << "" << endl;
+  
+  lumi_file << "declare -a qcd_mu=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("QCD_mu")) continue;
+    bool last=true;
+    for(std::map<TString, TString>::iterator mit2 =next(mit); mit2 != lqmap.end();++mit2){
+      if(mit2->second.Contains("QCD_mu")) last=false;
+    }   
+    if(!last)lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+  } lumi_file << "') " << endl;
+  lumi_file << "" << endl;
+  
+  lumi_file << "declare -a qcd_eg=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("QCD")) continue;
+    if(mit->second.Contains("QCD_mu")) continue;
+    bool last=true;
+    for(std::map<TString, TString>::iterator mit2 =next(mit); mit2 != lqmap.end();++mit2){
+      if(mit2->second.Contains("QCD")) {
+	if(!mit->second.Contains("QCD_mu")) {
+	  last=false;
+	}
+      }
+    }
+    if(!last)lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+  } lumi_file << "') " << endl;
+  lumi_file << "" << endl;
+
 
   lumi_file << "" << endl;
   lumi_file << "declare -a hn_mm=('WZ_pythia8' 'ZZ_pythia8' 'WpWp_madgraph' 'WpWp_qcd_madgraph'  'ttWJetsToLNu_MCatNLO' 'ttWJetsToQQ_MCatNLO' 'ttZToLLNuNu_MCatNLO' 'ttZToQQ_MCatNLO') " << endl;

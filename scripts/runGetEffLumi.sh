@@ -3,3 +3,4 @@ root -b -l <<EOF
 GetEffectiveLuminosity("$1");
 .q;
 EOF
+bash cleanup.sh

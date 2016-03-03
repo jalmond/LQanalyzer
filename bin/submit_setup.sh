@@ -3,13 +3,15 @@
 
 function usage
 {
-    echo "usage: sktree [[[-a analyzer] [-S samples] [-f file_tag ] [-sktree usesktree ([-skim skim])] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (catversion) (*search*)][-g (*search*)]]"
+    echo "usage: sktree [[[-a analyzer] [-S samples] [-f file_tag ] [-sktree usesktree [-skim skim] [-fa file_array]] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (*search*)(catversion) ][-g (*search*)]]"
 }
+
+
 
 function rungroupedlist
 {
     echo ""
-    cat ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh | while read line
+    while read line
       do
       if [[ $line == *"declare"* ]];
 	  then
@@ -17,48 +19,166 @@ function rungroupedlist
 	  echo ${sline}
 	  echo ""
       fi
-    done
+    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
+    
+    echo ""
+    echo "Arrays made by user"
+
+    while read line
+      do
+      if [[ $line == *"declare"* ]];
+          then
+          sline=$(echo $line | cut -d "" -f2-)
+          echo ${sline}
+          echo ""
+      fi
+    done < ${LQANALYZER_DIR}/LQRun/txt/list_user_mc.sh
+
 }
 
+function getdatasetname
+{
+    
+    while read line
+      do
+      if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+          then
+
+	  if [[ $line == *$submit_file_tag* ]];
+	       then
+	      sline=$(echo $line | head -n1 | awk '{print $6}')
+	      echo ${sline}
+	  fi
+      fi
+    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt
+    
+}
 
 function listavailable
 {
     
-    echo "List of available samples at SNU. With latest available catversion are: "
+    if [[ $submit_searchlist == *"v7"* ]];
+        then
+        tmp_submit_searchlist=$submit_catvlist
+        tmp_submit_catvlist=$submit_searchlist
+        submit_catvlist=$tmp_submit_catvlist
+        submit_searchlist=$tmp_submit_searchlist
+    fi
+    if [[ $submit_catvlist != *"v7"* ]];
+	then
+	if [[ $submit_catvlist != "" ]];
+	    then
+	    tmp_submit_searchlist=$submit_catvlist
+	    tmp_submit_catvlist=$submit_searchlist
+	    submit_catvlist=$tmp_submit_catvlist
+	    submit_searchlist=$tmp_submit_searchlist
+	fi
+    fi
     
+    specified_catversion=true
+    if [[ $submit_catvlist  == "" ]];
+        then
+        submit_catvlist=${CATVERSION}
+        specified_catversion=false
+    fi
     
-    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt | while read line
+    echo ""
+    echo "List of available samples at SNU. With catversion " ${submit_catvlist}
+    echo ""
+    echo "Processname  --> datasetname"  
+    while read line
       do
       if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
 	  then
-	  sline=$(echo $line | head -n1 | awk '{print $5}')
-	  echo ${sline}
+	  if [[ $submit_searchlist == "" ]];
+	      then
+	      sline1=$(echo $line | head -n1 | awk '{print $1}')
+	      sline2=$(echo $line | head -n1 | awk '{print $6}')
+	      echo ${sline1} "--> "  ${sline2}
+	  fi
+	   if [[ $submit_searchlist != "" ]];
+              then
+	       if [[ $line == *${submit_searchlist}* ]];
+		   then
+		   sline1=$(echo $line | head -n1 | awk '{print $1}')
+		   sline2=$(echo $line | head -n1 | awk '{print $6}')
+		   echo ${sline1} "--> "  ${sline2}
+	       fi
+	   fi
       fi
-    done
-
+    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    echo ""
+    echo ""
     echo ""
     echo "List of samples not available in latest available catversion are:"
-    
-    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt | while read line
+    echo ""
+    echo "Missing: since miniAOD not available"
+
+    while read line
       do
-      echo "Missing: since miniAOD not available"
       if [[ $line == *"Missing:"* ]];
 	  then
-	  sline=$(echo $line | head -n1 | awk '{print $1}')
-	  echo ${sline}
+	  sline=$(echo $line | head -n1 | awk '{print $2}')
+	  if [[ $submit_searchlist == "" ]];
+              then
+	      echo ${sline}
+	  fi
+	  if [[ $submit_searchlist != "" ]];
+	      then
+	      if [[ $line == *${submit_searchlist}* ]];
+		  then
+		  echo ${sline}
+	      fi
+	  fi
       fi
-    done
+    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    echo ""
+    echo ""
+    echo ""
+    echo "Catuples available at kisti: Can create flatcatuples->sktrees on request: type 'sktree -r datasetname' "
 
-    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${CATVERSION}.txt | while read line
+    while read line
       do
-      echo "Catuples available: Can create sktrees on request: type sktree -r samplename "
-    if [[ $line == *"Available:"* ]];
+    if [[ $line == *"Available[not produced]"* ]];
 	then
-	sline=$(echo $line | head -n1 | awk '{print $1}')
-	echo ${sline}
+	sline=$(echo $line | head -n1 | awk '{print $3}')
+	if [[ $submit_searchlist == "" ]];
+	    then
+	    echo ${sline}
+	fi
+	if [[ $submit_searchlist != "" ]];
+	    then
+	    if [[ $line == *${submit_searchlist}* ]];
+		then
+		echo ${sline}
+	    fi
+	fi
     fi
-    done
+    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+
+    echo ""
+    echo ""
+    if [[ $specified_catversion == "true" ]];
+	then
+	echo "To check availability of SKTrees"
+	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} ${submit_catvlist} "'" 
+	echo "For Lepton skim run 'sktree -L SKTree_Lepton " ${submit_searchlist} ${submit_catvlist} "'" 
+	echo "For DiLepton skim run 'sktree -L SKTree_Dilepon " ${submit_searchlist} ${submit_catvlist} "'" 
+	
+    fi
+    if [[ $specified_catversion != "true" ]];
+        then
+	echo "To check availability of SKTrees"
+	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} "'"
+	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist}  "'"
+	echo "For DiLpton skim run 'sktree -L SKTree_DileponSkim " ${submit_searchlist}  "'"
+	
+    fi
+
+    
 }
+
+
 
 
 function sendrequest
@@ -70,7 +190,26 @@ function sendrequest
 
 function runlist
 {
-
+    
+    if [[ $submit_searchlist == *"v7"* ]];
+	then
+	tmp_submit_searchlist=$submit_catvlist
+	tmp_submit_catvlist=$submit_searchlist
+	submit_catvlist=$tmp_submit_catvlist
+	submit_searchlist=$tmp_submit_searchlist
+    fi
+    if [[ $submit_catvlist != *"v7"* ]];
+	then
+        if [[ $submit_catvlist != "" ]];
+            then
+            tmp_submit_searchlist=$submit_catvlist
+            tmp_submit_catvlist=$submit_searchlist
+            submit_catvlist=$tmp_submit_catvlist
+            submit_searchlist=$tmp_submit_searchlist
+        fi
+    fi
+    
+    
     specified_catversion=true
     if [[ $submit_catvlist  == "" ]];
 	then
@@ -78,36 +217,151 @@ function runlist
 	specified_catversion=false
     fi
     
+    check_path=""
+    
+    if [[ $submit_skim  == "" ]];
+        then
+	echo "sktree -L <ntuple version>"
+	echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
+	exit 1
+    fi
+    if [[ $submit_skim  == "FLATCAT" ]];
+        then
+        check_path="/data2/DATA/cattoflat/MC/"
+    fi
+    
+    if [[ $submit_skim  == "SKTree_NoSkim" ]];
+	then
+        check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCNoCut/"
+    fi
+    if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
+	then
+	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MC/"
+    fi
+    if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
+	then
+	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCDiLep/"
+    fi
+    
+    if [[ $check_path == "" ]];
+	then
+	echo "Invalid option for ntuple version: "
+	echo "sktree -L <ntuple version>"
+        echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
+	exit 1
+    fi
+    
 
-    echo "Reading:" ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt 
-    echo "Options for -s | --SampleTag are:"
-
-    LISTOFSAMPLES=()
-    cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt | while read line
+    echo "For <ntuple version>(or skim)= " $submit_skim " run jobs with command:"
+    
+    echo "'sktree -a <analyzer/classname> -s " $submit_skim "  -f <proccesnames>':"
+    echo ""
+    echo "List of proccesnames for skim " $submit_skim " available in cattuple version " $submit_catvlist " is:"
+    
+    declare -a LISTOFSAMPLES=()
+    declare -a UNPROCESSED=()
+    
+    while read line
       do
-      if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+      if [[ $line == *${check_path}* ]];
 	  then
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
+	  sline2=$(echo $line | head -n1 | awk '{print $6}')
 	  if [[ $submit_searchlist == "" ]];
 	      then
-	      echo ${sline}
-	      LISTOFSAMPLES+=(${sline})
+	      prefix="SK"
+	      suffix="_dilep"
+	      if [[ $sline == *${prefix}* ]];
+		  then
+		  sline=${sline:2}		  
+	      fi
+	      if [[ $sline == *${suffix}* ]];
+                  then
+		  sline=${sline%$suffix}
+	      fi
+	      
+	      if [[ ! -d "${sline2}" ]]; then
+		  UNPROCESSED+=(${sline})
+	      elif test "$(ls -A "$sline2")"; then
+		  echo ${sline}
+		  LISTOFSAMPLES+=(${sline})
+	      else
+		  UNPROCESSED+=(${sline})
+	      fi
 	  fi
+	  
 	  if [[ $submit_searchlist != "" ]];
 	      then
 	      if [[ $sline == *${submit_searchlist}* ]];
 		  then 
-		  echo ${sline}
-		  LISTOFSAMPLES+=(${sline})
+		  prefix="SK"
+		  suffix="_dilep"
+		  if [[ $sline == *${prefix}* ]];
+		      then
+		      sline=${sline:2}
+		  fi
+		  if [[ $sline == *${suffix}* ]];
+		      then
+		      sline=${sline%$suffix}
+		  fi
+
+		  if [[ ! -d "${sline2}" ]]; then
+		      UNPROCESSED+=(${sline})
+		  elif test "$(ls -A "$sline2")"; then
+		      echo ${sline}
+		      LISTOFSAMPLES+=(${sline})
+		  else
+		      UNPROCESSED+=(${sline})
+		  fi
 	      fi
 	  fi
       fi
-    done
+      
+    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    echo ""
+    if [[ $submit_skim  == "SKTree_NoSkim" ]];
+        then
+	echo "Samples that have local flat catuples but no lepton skim are:"
+	for il in  ${UNPROCESSED[@]};
+	  do
+	  echo processname = $il
+	done
+	echo ""
+	echo "If you want this sktree run 'sktree -a SKTreeMakerNoCut -f processname' "
+	echo ""
+    fi
+    if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
+        then
+        echo "Samples that have local flat catuples but no lepton skim are:"
+        for il in  ${UNPROCESSED[@]};
+          do
+          echo processname = $il
+        done
+	echo ""
+        echo "If you want this sktree run 'sktree -a SKTreeMaker -f processname' "
+        echo ""
+    fi
+
+    if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
+        then
+	echo "Samples that have local flat catuples but no dilepton skim are:"
+        for il in  ${UNPROCESSED[@]};
+          do
+          echo processname = $il
+
+        done
+	echo ""
+	echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -f processname' "
+	echo ""
+    fi
+    
+    
+
 
     if [[ $specified_catversion == "false" ]];
 	then
 	#Get number of catversions
-	for ic in  ${list_of_catversions[@]}:
+	for ic in  ${list_of_catversions[@]};
 	  do
 
 	  if [[ $ic == $CATVERSION ]];
@@ -115,22 +369,39 @@ function runlist
 	  fi
 	  if [[ $ic == *"v7-4"* ]];
 	      then
-	      echo "For catversion "  $ic " the naming changed. Run sktree -l " $ic
+	      echo "For catversion "  $ic " the naming changed. Run 'sktree -L " $submit_skim " " $ic "'"
 	      continue;
           fi
 
-	  echo "Following samples are not available in latest catversion:" 
-	  echo "Catversion: " + ${ic}
-	  cat ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${ic}.txt | while read line
+	  echo "Following samples are not available in: " $CATVERSION 
+	  echo "Catversion: " ${ic}
+
+	  if [[ $submit_skim  == "SKTree_NoSkim" ]];
+	      then
+	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MC/"
+	  fi
+	  if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
+	      then
+              check_path="/data2/CatNtuples/"${ic}"/SKTrees/MC/"
+          fi
+	  if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
+	      then
+	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCDiLep/"
+	  fi
+
+	  while read line
 	    do
-	    if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+	    if [[ $line == *${check_path}* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
+		sline2=$(echo $line | head -n1 | awk '{print $6}')
+
 		if [[ $submit_searchlist == "" ]];
 		    then
 		    isDuplicate=false
-		    for il in  ${LISTOFSAMPLES[@]}:
+		    for il in  ${LISTOFSAMPLES[@]};
 		      do
+
 		      if [[ $sline == $il ]];
 			  then
 			  isDuplicate=true
@@ -138,8 +409,23 @@ function runlist
 		    done
 		    if [[ $isDuplicate == "false" ]];
 			then
-			echo $sline
-			LISTOFSAMPLES+=(${sline})
+			prefix="SK"
+			suffix="_dilep"
+			if [[ $sline == *${prefix}* ]];
+			    then
+			    sline=${sline:2}
+			fi
+			if [[ $sline == *${suffix}* ]];
+			    then
+			    sline=${sline%$suffix}
+			fi
+			
+			if [[ -d "${sline2}" ]]; then
+			    if test "$(ls -A "$sline2")"; then
+				echo ${sline}
+				LISTOFSAMPLES+=(${sline})
+			    fi
+			fi
 		    fi
 		fi
 		if [[ $submit_searchlist != "" ]];
@@ -147,7 +433,7 @@ function runlist
 		    isDuplicate=false
 		    if [[ $sline == *${submit_searchlist}* ]];
 			then
-			for il in  ${LISTOFSAMPLES[@]}:
+			for il in  ${LISTOFSAMPLES[@]};
 			  do
 			  if [[ $sline == $il ]];
 			      then
@@ -156,26 +442,41 @@ function runlist
 			done
 			if [[ $isDuplicate == "false" ]];
 			    then
-			    echo $sline
-			    LISTOFSAMPLES+=(${sline})
+			    prefix="SK"
+			    suffix="_dilep"
+			    if [[ $sline == *${prefix}* ]];
+				then
+				sline=${sline:2}
+			    fi
+			    if [[ $sline == *${suffix}* ]];
+				then
+				sline=${sline%$suffix}
+			    fi
+			    if [[  -d "${sline2}" ]]; then
+				
+				if test "$(ls -A "$sline2")"; then
+				    echo ${sline}
+				    LISTOFSAMPLES+=(${sline})
+				fi
+			    fi
 			fi
 		    fi
 		fi
 	    fi
-	  done
+	  done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${ic}.txt
 	done
-    fi
+      fi
 
 }				
     
-				
+
 while [ "$1" == "" ]; do
     usage
     exit
 done
 
 while [ "$1" != "" ]; do
-	
+    
     case $1 in
         -a | --analysis_name )  shift
                                 submit_analyzer_name=$1
@@ -183,7 +484,7 @@ while [ "$1" != "" ]; do
         -f | --file_tag )       shift
                                 submit_file_tag=$1
                                 ;;
-	-fl | --file_list )     shift
+	-fa | --file_list )     shift
                                 submit_file_list=$1
                                 ;;
 	
@@ -215,15 +516,34 @@ while [ "$1" != "" ]; do
 				submit_version_tag="$1"
 				;;
 	-l | --file_tag_list)   shift
-	                        submit_catvlist=$1
-				submit_searchlist=$2
+				submit_skim="FLATCAT"
+				submit_searchlist=$1
+				submit_catvlist=$2
 	                        runlist
 				exit 1
 				;;
-        -A | --AvailableCatuples) shift
-                                listavailable
+        -L | --sktree_tag_list) shift
+                                submit_skim=$1
+                                submit_searchlist=$2
+				submit_catvlist=$3
+                                runlist
                                 exit 1
                                 ;;
+
+        -A | --AvailableCatuples) shift
+	                        submit_catvlist=$1
+				submit_searchlist=$2
+				listavailable
+                                exit 1
+                                ;;
+
+
+	-dataset | --GetDataSetName)  shift
+                            	submit_file_tag=$1
+				getdatasetname
+				exit 1
+                                ;;
+
 
 	-g | --file_tag_groups) shift
                                 submit_catvlist=$1
@@ -233,18 +553,46 @@ while [ "$1" != "" ]; do
                                 ;;
 
 	-h | --help )           usage
-	                        echo "Tag :   Options                                                                                 | DEFAULT PARAMETER     | COMMENT           "
-	                        echo "-a :    HNDiElectron/ExampleDiMuon                                                              | default = ''          | 'Name of analysis class'                "
-	                        echo "-S :    ALL/DATA/MC/DoubleEG/DoubleMuon/MuonEG/SingeMuon/SinglePhoton/SingleElectron            | default = ''          | 'DATA runs ALL data. MC runs ALL MC (same as -fl all_mc''                "
-                                echo "-sktree :   true/false or True/False                                                            | default=True          | 'Set False to run on CATuples, if True then also set -s/--useskim'               "
-                                echo "-s :    NoCuts/Lepton/DiLepton                                                                  | default=Lepton        | 'Set False to run on CATuples'               "
-                                echo "-n :    #number of subjobs                                                                      | default=30            | ''                "
-				echo "-f :    file_tag (i.e., DY10to50_MCatNLO)                                                       | default = ''          | 'For running single MC samples: For full list run bash script.sh  -l|--file_tag_list'"
-				echo "-fl:    file_list (i.e., diboson_pythia,dy_mcatnlo)                                             | default = 'all_mc'    | 'For running on list of MC samples. For full list run bash script.sh  -g|--file_tag_groups'"
-				echo "-c :    catversion of inputfile (only needed if not running default/latest)                     | default = $CATVERSION |"
-				echo "-d :    debug mode : INFO/DEBUG/WARNING                                                         | default = INFO        |"
-				echo "-p :    period to normalise to : C/D/CtoD(ALL)                                                  | default = ALL         |"
-				echo "-o :    setoutput directory. Does not work for SKTreeMaker Code.                                | default=$LQANALZER_DIR/data/output/CAT/{class}/periodX/  |"
+	                        echo "Tag    |   Options                                            | DEFAULT PARAMETER   | COMMENT                             | "
+				echo "###########################Running command##################################################################################"
+				echo "-a     |   HNDiElectron/ExampleDiMuon                         | default = ''        | Name of analysis class              |"
+	                        echo "-S     |   ALL/DATA/MC/DoubleEG/DoubleMuon/                   | default = ''        | DATA runs ALL data. MC runs ALL MC  |"
+				echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | (same as -fa all_mc                 | "
+                                echo "-sktree|   true/false or True/False                           | default=True        | Set 'False' to run on CATuples,     | "
+				echo "       |                                                      |                     |  if True then also set -s/--useskim | " 
+				echo "       |                                                      |                     |  if -s == CATFLAT sktree set False  | " 
+                                echo "-s     |  SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim    | default=Lepton      | Sets skim to use                    | "
+				echo "       |  FLATCAT sets input to faltcatuple not sktee         |                     | NoCuts/Lepton/DiLepton  still worl  | "
+                                echo "-n     |   #number of subjobs  (any number < 15)              | default=15          | default is 5 is -sktree=False       | "
+				echo "-f     |   (i.e., DY10to50_MCatNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
+				echo "-fa    |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
+				echo "-c     |   catversion of inputfile atest)                     | default = ${CATVERSION}    | (only needed if not running         | "
+				echo "       |                                                      |                     | default/latest)                     | " 
+				echo "-d     |   debug mode : INFO/DEBUG/WARNING                    | default = INFO      |                                     | "
+				echo "-p     |   period to run in data/normalise inMC: C/D/CtoD(ALL)| default = CtoD      | Only change if you wish to run      | "
+				echo "       |                                                      |                     | on a single data period             | "
+				echo "-o     |   setoutput directory.                               | default= ''         | Does not work for SKTreeMaker Code. |"
+				
+				
+				echo "###########################Other command#####################################################################################"
+				echo "-l       |   (can give search/catversion as an option )       | default = ''        | returns a list of available         | "
+				echo "         |   i.e.  sktree -l QCD  OR  sktree -l DY v7-6-3     |                     | datasets in each catversion         |"
+				echo "-L       | can give search/skim/catversion as on option)      | default = ''        | returns a list of available         | "
+				echo "         |  use like 'sktree -L DiLep QCD                     |                     | sktrees  in each catversion         |" 
+
+				echo "-g       |                                                    | default = ''        | returns a list of available input   |"
+				echo "         |                                                    |                     | arrays to input with:               |"
+				echo "         |                                                    |                     | sktree -fa command                  |" 
+				echo "-dataset |  file_tag (i.e., DY10to50_MCatNLO)                 | default = ''        | returns datasetname.                |"
+				echo "         |                                                    |                     | Only available from v7-6-3          |"  
+				echo "-r       |   sktree -A to see possible samples                | default = ''        | sends email request to make sktree  |"
+				echo "         |                                                                          | that is not current available at snu|"
+				
+				echo "-A       |   can speficy catversion and searc                 | default = ${CATVERSION}    | lists missing samples due to no     |"
+				echo "         |                                                    |                     | MiniAOD and available samples       |"
+				echo "         |                                                    |                     | that can be processed               |"        
+
+
 				exit
                                 ;;
         * )                     usage
@@ -261,7 +609,7 @@ if [[ $submit_analyzer_name ==  "" ]];
     then
     echo "No analyzer set: set with -a"
     echo "List of Classes are:"
-    cat ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h" | while read line
+    while read line
       do
       if [[ $line == *"C++ class"* ]];
           then
@@ -273,13 +621,12 @@ if [[ $submit_analyzer_name ==  "" ]];
 	      echo $sline
 	  fi
       fi
-    done
-    
+    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+    exit 1
 fi
 
 
-declare -a streams=("")
-declare -a mc_input=("")
+#declare -a streams=("")
 declare -a data_periods=("")
 declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
 
@@ -381,4 +728,35 @@ if [[ $submit_sampletag  == "SingleMuon" ]];
 fi
 
 
+declare -a FULLLISTOFSAMPLES=()
 
+for iclist in  ${list_of_catversions[@]};
+  do
+  
+  if [[ $iclist == *"v7-4"* ]];
+      then
+      continue;
+  fi
+  
+  while read line
+    do
+    if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+	then
+	sline=$(echo $line | head -n1 | awk '{print $1}')
+	
+	isDuplicate=false
+	for il in  ${FULLLISTOFSAMPLES[@]};
+	  do
+	  if [[ $sline == $il ]];
+	      then
+	      isDuplicate=true
+	  fi
+	done
+	if [[ $isDuplicate == "false" ]];
+	    then
+	    FULLLISTOFSAMPLES+=(${sline})
+	fi
+    fi
+  done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${iclist}.txt
+
+done

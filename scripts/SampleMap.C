@@ -147,6 +147,7 @@ vector<TString>  GetAvailableMap(TString cversion){
 
   if(cversion.Contains("v7-4"))   return available;
   if(cversion.Contains("v7-6-2")) return available;
+
   std::map<TString, TString> mapdir = GetLQMap();
 
   
@@ -161,7 +162,7 @@ vector<TString>  GetAvailableMap(TString cversion){
   }
   system("rm inputlist.txt"); 
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
-    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).c_str());
+    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
     std::string datasetname="";
     bool missing=true;
 
@@ -235,7 +236,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
   }
   system("rm inputlist.txt");
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
-    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).c_str());
+    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
     std::string datasetname="";
     bool missing=true;
 
@@ -264,7 +265,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
     }
     if(missing){
       for(std::map<TString, TString>::iterator mit =mapdir.begin(); mit != mapdir.end();++mit){
-	if(TString(datasetname).Contains(mit->first)) map_missing[mit->first]= TString(datasetname);
+	if(TString(datasetname).Contains(mit->first)) map_missing[mit->second]= TString(datasetname);
       }
     }
   }   
@@ -356,7 +357,7 @@ map<TString, TString>  GetLQMap(){
   lqmap["ZZTo4L_13TeV_powheg_pythia8"] = "ZZ_llll_powheg";
   lqmap["ZZTo4L_13TeV-amcatnloFXFX-pythia8"] = "ZZ_llll_MCatNLO";
   lqmap["ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8"] = "ZZ_llqq_MCatNLO";
-  lqmap["ZZTo2L2Nu_13TeV_powheg_pythia8"] = "ZZ_lllnu_powheg";
+  lqmap["ZZTo2L2Nu_13TeV_powheg_pythia8"] = "ZZ_llnunu_powheg";
   lqmap["WWTo2L2Nu_13TeV-powheg"] = "WW_llnn_powheg";
   lqmap["WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8"] = "WZ_llqq_MCatNLO";
   lqmap["WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8"] = "WN_lllnu_powheg";
