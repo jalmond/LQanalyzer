@@ -5,7 +5,7 @@ function usage
 {
 
     echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
-    echo "              [-skim skim] [-list file_array] [-p data_period]"
+    echo "              [-s skim] [-list file_array] [-p data_period]"
     echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
     echo "              [-h ][-l <args> ][-g <args>] [-A <args>]"
     
@@ -182,8 +182,8 @@ function listavailable
 	then
 	echo "To check availability of SKTrees"
 	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} ${submit_catvlist} "'" 
-	echo "For Lepton skim run 'sktree -L SKTree_Lepton " ${submit_searchlist} ${submit_catvlist} "'" 
-	echo "For DiLepton skim run 'sktree -L SKTree_Dilepon " ${submit_searchlist} ${submit_catvlist} "'" 
+	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist} ${submit_catvlist} "'" 
+	echo "For DiLepton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist} ${submit_catvlist} "'" 
 	
     fi
     if [[ $specified_catversion != "true" ]];
@@ -191,7 +191,7 @@ function listavailable
 	echo "To check availability of SKTrees"
 	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} "'"
 	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist}  "'"
-	echo "For DiLpton skim run 'sktree -L SKTree_DileponSkim " ${submit_searchlist}  "'"
+	echo "For DiLpton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist}  "'"
 	
     fi
 

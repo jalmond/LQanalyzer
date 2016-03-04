@@ -2,7 +2,7 @@
 ### sets all configurable variables to defaul values
 
 declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
-
+declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "NoCut" "Lepton" "DiLep")
 
 
 ###### SET WHAT JOBS TO RUN
@@ -90,6 +90,27 @@ if [[ $submit_analyzer_name !=  "" ]];
     fi
 fi
 
+if [[ $changed_skim == "true" ]];
+then
+    skimisok=false
+    for iskim in  ${list_of_skims[@]};
+    do
+	if [[ $job_skim == $iskim ]];
+	then
+	    skimisok=true
+	fi
+    done
+    if [[ $skimisok == "false" ]];
+    then
+	echo "LQanalyzer::sktree :: ERROR :: Invalid skim -s <skim> "
+	echo "Allowed values are:"
+	  for iskim in  ${list_of_skims[@]};
+	  do
+	      echo $iskim
+	  done
+	  exit 1
+    fi
+fi
 
 
 if [[ $submit_file_tag  != ""  ]];
