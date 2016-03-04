@@ -121,8 +121,6 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         config+='   analysis.SetEffectiveLuminosity(' + str(eff_lumi)+');\n'
     if not runevent ==-1:
         config+='   analysis.RunEvent(' + str(runevent)+');\n'
-    if not tar_lumi ==-1.:    
-        config+='   analysis.SetTargetLuminosity('+ str(tar_lumi) +');\n'
     if not nevents ==-1:
         config+='   analysis.SetNEventsToProcess(' + str(nevents) + ');\n'
     if not skipev ==-1:
@@ -131,6 +129,8 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         config+='   analysis.SetOutPutStep(' + str(outstep) + ');\n'
     if not period  =="":
         config+='   analysis.SetDataPeriod("' + period + '");\n'
+    if not tar_lumi ==-1.:
+        config+='   analysis.SetTargetLuminosity('+ str(tar_lumi) +');\n'
     if not datatype =="":
         config+='   analysis.SetDataType("' + datatype + '");\n'
     if not totalmcevents == -1 :

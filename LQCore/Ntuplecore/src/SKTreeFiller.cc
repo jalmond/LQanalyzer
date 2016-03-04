@@ -217,6 +217,9 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
 
   std::vector<KPhoton> photons;
 
+  if(TString(CatVersion).Contains("v7-4")) return photons;
+  
+
   if(!LQinput){
     for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
       photons.push_back(*kit);

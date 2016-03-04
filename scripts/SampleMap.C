@@ -6,6 +6,7 @@ map<TString, TString>  GetLQMap();
 map<TString, Double_t>  GetXSecMap();
 map<TString, TString>  GetMissingMap(TString cversion);
 vector<TString>  GetAvailableMap(TString cversion);
+map<TString, TString>  GetDatasetNames(TString cversion);
 
 bool CheckMaps();
 
@@ -215,6 +216,42 @@ vector<TString>  GetAvailableMap(TString cversion){
   return available;
 }
 
+map<TString, TString>  GetDatasetNames(TString cversion){
+
+  map<TString, TString> datasets;
+  std::map<TString, TString> mapdir = GetLQMap();
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist.txt";
+  system(dir.Data());
+  std::ifstream fin("inputlist.txt");
+  std::string word;
+  vector<std::string> input_datasetlist;
+  while ( fin >> word ) {
+    input_datasetlist.push_back(word);
+  }
+  system("rm inputlist.txt");
+  for(unsigned int i=0; i < input_datasetlist.size(); i++){
+    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::string datasetname="";
+    if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
+    
+    std::string dataword;
+    int id=0;
+    while ( fdin >> dataword ) {
+      id++;
+      if(id==8) datasetname=dataword;
+      if(TString(dataword).Contains("0000/catTuple")){
+      }
+    }
+    
+    for(std::map<TString, TString>::iterator mit =mapdir.begin(); mit != mapdir.end();++mit){
+      if(TString(datasetname).Contains(mit->first)) datasets[mit->second]= TString(datasetname);
+    }
+  }
+  
+  return datasets;
+}
+  
+
 map<TString, TString>  GetMissingMap(TString cversion){
 
   map<TString, TString> map_missing;
@@ -223,8 +260,6 @@ map<TString, TString>  GetMissingMap(TString cversion){
   if(cversion.Contains("v7-6-2")) return map_missing;
 
   std::map<TString, TString> mapdir = GetLQMap();
-
-
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist.txt";
   system(dir.Data());
 

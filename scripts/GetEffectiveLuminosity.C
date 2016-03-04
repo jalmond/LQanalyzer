@@ -36,7 +36,9 @@ void GetEffectiveLuminosity(TString version="") {
   
   map<TString, TString> missing_map= GetMissingMap(version);
   vector<TString> vec_available = GetAvailableMap(version);
-  
+
+  map<TString, TString> datasets =  GetDatasetNames(version);
+ 
     
   map<TString, Double_t> dirmap = GetXSecMap(); 
   map<TString, TString> lqmap = GetLQMap();
@@ -227,6 +229,17 @@ void GetEffectiveLuminosity(TString version="") {
     lumi_file <<"Available[not produced]: " << *it << endl;
   }
   
+
+  lumi_file << "" << endl;
+  lumi_file << "##################################################################" << endl;
+  lumi_file << "#### FULL Name of MINIAODS 
+  lumi_file << "##################################################################" << endl;
+
+  for(map<TString, TString>::iterator it = datasets.begin(); it!= datasets.end(); it++){
+    lumi_file << "DATASET: " << it->first << "   " << it->second << endl;
+  }
+
+
   lumi_file << "################################################################ " << endl;
   lumi_file << "#### Private produced samples : Not made in batch at kisti" << endl;
   lumi_file << "##################################################################" << endl;
