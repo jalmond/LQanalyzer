@@ -50,13 +50,27 @@ void MakeInputListForSubmitScript(){
   
 
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
-
+    
     cout << mit->first << " " << mit->second << endl;
     if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
     else  lumi_file << mit->second ;
   }
-    lumi_file << "') " << endl; 
+  lumi_file << "') " << endl; 
+  
+  
+  lumi_file << "" << endl;
+  lumi_file << " declare -a mc_noqcd=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(mit->second.Contains("QCD")) continue;
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+    
+  }
+    lumi_file << "') " << endl;
 
+
+    
   lumi_file << "" << endl;
   lumi_file << "" << endl;
   lumi_file << "declare -a diboson_pythia=('WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8')" << endl;
@@ -123,7 +137,7 @@ void MakeInputListForSubmitScript(){
 
   string lfile2 =  lqdir + "/LQRun/txt/list_all_mc.sh";
 
-  if(USER.Contains("jalmond"))
+  if(user.Contains("jalmond"))
     gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 

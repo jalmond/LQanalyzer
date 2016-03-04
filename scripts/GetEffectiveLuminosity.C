@@ -236,7 +236,7 @@ void GetEffectiveLuminosity(TString version="") {
   string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
 
   TString user = TString(getenv("USER"));
-  if(USER.Contains("jalmond"))  
+  if(user.Contains("jalmond"))  
     gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
 
 

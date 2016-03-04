@@ -1,2 +1,2 @@
-sktree -a  SKTreeMaker -list tmplist  -c v7-6-3
-sktree -a  SKTreeMakerDiLep -list tmplist  -c v7-6-3
+sktree -a  SKTreeMaker -list mc_noqcd  -c v7-6-3
+sktree -a  SKTreeMakerDiLep -list mc_noqcd  -c v7-6-3

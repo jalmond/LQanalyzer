@@ -98,7 +98,7 @@ void MakeDataInputFile(TString version=""){
   TString user = TString(getenv("USER"));
 
   string lfile2 =   lqdir+ "/LQRun/txt/datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
-  if(USER.Contains("jalmond"))
+  if(user.Contains("jalmond"))
     gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
