@@ -39,6 +39,7 @@ submit_sampletag=""
 submit_catvlist=""
 submit_searchlist=""
 submit_analyzer_name=""
+set_submit_analyzer_name=false
 request_sample=""
 
 ### Get predefined lists
@@ -46,45 +47,52 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
 
-
+if [[ $set_submit_analyzer_name == "true" ]];
+then
+    if [[ $submit_analyzer_name ==  "" ]];
+    then
+	echo "LQanalyzer::sktree :: ERROR :: Analyzer is invalid: 'sktree -a <analyzer/class>'"
+	exit 1
+    fi
+fi
 
 if [[ $submit_analyzer_name !=  "" ]];
-    then
+then
     analyzer_found=false
     while read line
-      do
-      if [[ $line == *"C++ class"* ]];
-          then
-          if [[ $line != *"AnalyzerCore"* ]];
-              then
-              sline=$(echo $line | head -n1 | awk '{print $5}')
-              suffix="+;"
-              sline=${sline%$suffix}
-              if [[ $sline == $submit_analyzer_name ]];
-		  then
-		  analyzer_found=true
-	      fi
-          fi
-      fi
+    do
+	if [[ $line == *"C++ class"* ]];
+        then
+	    if [[ $line != *"AnalyzerCore"* ]];
+	    then
+		sline=$(echo $line | head -n1 | awk '{print $5}')
+		suffix="+;"
+		sline=${sline%$suffix}
+		if [[ $sline == $submit_analyzer_name ]];
+		then
+		    analyzer_found=true
+		fi
+	    fi
+	fi
     done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
     
     if [[ $analyzer_found == "false" ]];
-	then 
+    then 
 	echo ""
 	echo "LQanalyzer::sktree :: ERROR :: Analyzer is invalid: 'sktree -a <analyzer/class>'"
 	echo "Allowed Analyzers are:"
 	while read line
-	  do
-	  if [[ $line == *"C++ class"* ]];
-	      then
-	      if [[ $line != *"AnalyzerCore"* ]];
-		  then
-		  sline=$(echo $line | head -n1 | awk '{print $5}')
-		  suffix="+;"
-		  sline=${sline%$suffix}
-		  echo $sline
-	      fi
-	  fi
+	do
+	    if [[ $line == *"C++ class"* ]];
+	    then
+		if [[ $line != *"AnalyzerCore"* ]];
+		then
+		    sline=$(echo $line | head -n1 | awk '{print $5}')
+		    suffix="+;"
+		    sline=${sline%$suffix}
+			echo $sline
+		fi
+	    fi
 	done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
 	exit 1
     fi
@@ -227,12 +235,6 @@ fi
 ## RUN PARAMETERS
 job_cycle="$submit_analyzer_name"
 
-if [[ $submit_analyzer_name == "" ]];
-    then
-    echo "Need to set submit_analyzer_name: use 'sktree -a <analyzer/classname>' when submitting"
-    exit 1
-fi
-
 
 
 #### HARDCODE the skinput for sktreemakers
@@ -345,6 +347,28 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
     fi
 
 fi
+
+if [[ $submit_analyzer_name ==  "" ]];
+    then
+    echo "No analyzer set: set with -a"
+    echo "List of Classes are:"
+    while read line
+      do
+      if [[ $line == *"C++ class"* ]];
+          then
+          if [[ $line != *"AnalyzerCore"* ]];
+              then
+              sline=$(echo $line | head -n1 | awk '{print $5}')
+              suffix="+;"
+              sline=${sline%$suffix}
+              echo $sline
+          fi
+      fi
+    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+    exit 1
+fi
+
+
 echo "LQanalyzer::sktree :: INFO :: Analyzer = "${job_cycle}
 
 
@@ -585,6 +609,15 @@ njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "${job_n
 if [[ $changed_job_njobs == "true" ]];
     then
     njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "$job_njobs 
+    
+    if [[ $job_cycle != *"SKTreeMaker"* ]];
+    then
+	if [[ $job_njobs -gt 15 ]];
+	then
+	    echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-15)"
+	    job_njobs=15
+	fi
+    fi
 fi
 
 echo $njobs_output_message

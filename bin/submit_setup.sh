@@ -517,6 +517,7 @@ while [ "$1" != "" ]; do
     case $1 in
         -a | --analysis_name )  shift
                                 submit_analyzer_name=$1
+				set_submit_analyzer_name=true
 				;;
         -i | --input )          shift
                                 submit_file_tag=$1
@@ -668,26 +669,6 @@ done
 
 ############################################################
 
-
-if [[ $submit_analyzer_name ==  "" ]];
-    then
-    echo "No analyzer set: set with -a"
-    echo "List of Classes are:"
-    while read line
-      do
-      if [[ $line == *"C++ class"* ]];
-          then
-	  if [[ $line != *"AnalyzerCore"* ]];
-	      then
-	      sline=$(echo $line | head -n1 | awk '{print $5}')
-	      suffix="+;"
-	      sline=${sline%$suffix}
-	      echo $sline
-	  fi
-      fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
-    exit 1
-fi
 
 
 #declare -a streams=("")
