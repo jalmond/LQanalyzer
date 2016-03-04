@@ -15,10 +15,6 @@ for line in fr:
 
 if os.path.exists("LQRun/Macros/"):
     os.system("rm -r LQRun/Macros/")
-if os.path.exists("LQRun/job_output/"):
-    os.system("rm -r LQRun/job_output/")
-if os.path.exists("LQRun/runJob_1.C"):
-    os.system("rm LQRun/runJob_1.C")
 if os.path.exists("LQCycle/"):
     print "Cleaning up directory that failed to be removed by git merge"
     os.system("rm -r LQCycle/")
