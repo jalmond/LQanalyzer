@@ -31,7 +31,7 @@ changed_job_output_dir=false
 changed_job_loglevel=false
 changed_job_data_lumi=false
 changed_job_njobs=false 
-submit_version_tag=""
+submit_version_tag=${CATVERSION}
 submit_file_tag=""
 submit_file_list=""
 submit_catversion=${CATVERSION}
@@ -42,20 +42,68 @@ submit_analyzer_name=""
 set_submit_analyzer_name=false
 request_sample=""
 
+######## NEW FOR TAG v7-6-3.2
+job_nevents=-1
+job_nskip=-1
+job_run_fake=False
+job_run_flip=False
+check_all_catversions=false
+
+if [[ $check_all_catversions == "true" ]];
+    then
+    submit_version_tag=""
+    if [[ $changed_submit_version_tag == "true" ]];
+	then
+	echo "LQanalyzer::sktree :: ERROR :: Catversion was set with -c, while you chose to look at all catversions wit -ac option. This is not possible."
+	exit 1
+     fi
+fi
+
+if [[ $job_run_fake != "False" ]];
+    then
+    if [[ $job_run_fake != "True" ]];
+	then
+	echo "LQanalyzer::sktree :: ERROR :: Wrong setting for -fake. use -fake 'True'. It is false by default".
+	exit 1
+  fi
+fi
+if [[ $job_run_flip != "False" ]];
+    then
+    if [[ $job_run_flip != "True" ]];
+	then
+        echo "LQanalyzer::sktree :: ERROR :: Wrong setting for -flip. use -flip 'True'. It is false by default".
+	exit 1
+  fi
+fi
+
+
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
 
 if [[ $set_submit_analyzer_name == "true" ]];
-then
-    if [[ $submit_analyzer_name ==  "" ]];
     then
-	echo "LQanalyzer::sktree :: ERROR :: Analyzer is invalid: 'sktree -a <analyzer/class>'"
+    if [[ $submit_analyzer_name ==  "" ]];
+	then
+	echo "No analyzer set: set with -a"
+	echo "List of Classes are:"
+	while read line
+	  do
+	  if [[ $line == *"C++ class"* ]];
+	      then
+	      if [[ $line != *"AnalyzerCore"* ]];
+		  then
+		  sline=$(echo $line | head -n1 | awk '{print $5}')
+		  suffix="+;"
+		  sline=${sline%$suffix}
+		  echo $sline
+	      fi
+	  fi
+	done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
 	exit 1
     fi
 fi
-
 if [[ $submit_analyzer_name !=  "" ]];
 then
     analyzer_found=false
@@ -98,6 +146,31 @@ then
     fi
 fi
 
+function mergeoutput
+{
+    if [[ $job_cycle != *"SKTreeMaker"* ]];
+        then
+
+        if [[ $job_data_lumi  == "C" ]];
+            then
+            mv  ${outputdir_data}/*.root ${output_datafile}/${job_cycle}_data_cat${version_tag}.root
+
+
+        elif [[ $job_data_lumi  == "D" ]];
+            then
+            mv  ${outputdir_data}/*.root ${output_datafile}/${job_cycle}_data_cat${version_tag}.root
+
+        else
+            echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat"${submit_catversion}".root "${outputdir_data}"/"${job_cycle}"*"
+            source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${submit_catversion}.root ${outputdir_data}/${job_cycle}*
+            echo ${outputdir_data}"/"${job_cycle}"_data_cat"${submit_catversion}".root "
+            mv  ${outputdir_data}/${job_cycle}_data_cat${submit_catversion}.root  ${outputdir_mc}
+            echo ""
+        fi
+    fi
+
+}
+
 if [[ $changed_skim == "true" ]];
 then
     skimisok=false
@@ -124,6 +197,25 @@ fi
 if [[ $submit_file_tag  != ""  ]];
     then
     ARG_SINGLE_FILE="FULLLISTOFSAMPLES"
+    if [[ $job_skim == "SKTree_NoSkim" ]];then
+	ARG_SINGLE_FILE="FULLLISTOFSAMPLESNOCUT"
+    fi
+    if [[ $job_skim == "NoCut" ]];then
+	ARG_SINGLE_FILE="FULLLISTOFSAMPLESNOCUT"
+    fi
+    if [[ $job_skim == "SKTree_LeptonSkim" ]];then
+	ARG_SINGLE_FILE="FULLLISTOFSAMPLESLEPTON"
+    fi
+    if [[ $job_skim == "Lepton" ]];then
+	ARG_SINGLE_FILE="FULLLISTOFSAMPLESLEPTON"
+    fi
+    if [[ $job_skim == "SKTree_DiLepSkim" ]];then
+	ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
+    fi
+    if [[ $job_skim == "DiLep" ]];then
+	ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
+    fi
+
     eval test_single_file=(\${$ARG_SINGLE_FILE[@]})
     file_tag_exists=false
     for all_files in ${test_single_file[@]};
@@ -176,7 +268,7 @@ fi
     
 if [[ $submit_file_list  != ""  ]];
     then
-
+    valid_list_samples=0
     ARGTEST=$submit_file_list
     eval test_array=(\${$ARGTEST[@]})
     array_exists=false
@@ -185,6 +277,58 @@ if [[ $submit_file_list  != ""  ]];
             then
 	    echo "Input list is invalid: 'sktree -list list'"
 	    echo "Check lists using 'sktree -g'"
+	    exit 1
+	fi
+	
+	for part_of_list in ${test_array[@]}; do
+	    if [[ $part_of_list == "" ]];
+		then
+		echo "LQanalyzer::sktree :: ERROR :: Check input list. You have missing sample ''."
+                exit 1
+	    fi
+	    ARG_SINGLE_FILE="FULLLISTOFSAMPLES"
+	    if [[ $job_skim == "SKTree_NoSkim" ]];then
+		ARG_SINGLE_FILE="FULLLISTOFSAMPLESNOCUT"
+	    fi
+	    if [[ $job_skim == "NoCut" ]];then
+		ARG_SINGLE_FILE="FULLLISTOFSAMPLESNOCUT"
+	    fi
+	    if [[ $job_skim == "SKTree_LeptonSkim" ]];then
+		ARG_SINGLE_FILE="FULLLISTOFSAMPLESLEPTON"
+	    fi
+	    if [[ $job_skim == "Lepton" ]];then
+		ARG_SINGLE_FILE="FULLLISTOFSAMPLESLEPTON"
+	    fi
+	    if [[ $job_skim == "SKTree_DiLepSkim" ]];then
+		ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
+	    fi
+	    if [[ $job_skim == "DiLep" ]];then
+		ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
+	    fi
+
+	    
+	    eval test_single_file=(\${$ARG_SINGLE_FILE[@]})
+	    file_tag_exists=false
+	    for all_files in ${test_single_file[@]};
+	      do
+	      if [[ $all_files == $part_of_list ]];
+		  then
+		  file_tag_exists=true
+	      fi
+	    done
+	    if [[ $file_tag_exists == "false" ]];
+		then
+		echo "###################################################################################################################"
+		echo "LQanalyzer::sktree :: WARNING :: Check input list. "$part_of_list" is not a valid input name for latest catversion"
+		echo "###################################################################################################################"
+		echo "Check options using 'sktree -l. If your sample is missing run 'sktree -A' "
+	    else
+		valid_list_samples=$((valid_list_samples+1))
+	    fi
+	done
+	if [[ $valid_list_samples -eq 0 ]];
+	    then
+	    echo "LQanalyzer::sktree :: ERROR :: All input list is invalid. Exiting"
 	    exit 1
 	fi
 
@@ -236,6 +380,14 @@ fi
 job_cycle="$submit_analyzer_name"
 
 
+if [[ $changed_submit_version_tag == "false" ]];
+    then
+    
+    if [[ $submit_analyzer_name == *"SKTreeMaker" ]];
+	then
+	submit_version_tag=""
+    fi
+fi
 
 #### HARDCODE the skinput for sktreemakers
 if [[ $submit_analyzer_name == "SKTreeMaker" ]];
@@ -658,6 +810,7 @@ if [[ $submit_version_tag != "" ]];
 	    echo "LQanalyzer::sktree :: INFO :: Catversion for flat catuples  = "${submit_version_tag}
 	fi
     fi
+    else  echo "LQanalyzer::sktree :: INFO :: User opted to check all catversions for input" 
 fi
 
 
@@ -723,6 +876,10 @@ if [[ $runDATA  == "true" ]];
 	  continue
       fi
       
+      nevents=${job_nevents}
+      skipevent=${job_nskip}
+      runnp=${job_run_fake}
+      runcf=${job_run_flip}
       source functions.sh
       cycle=${job_cycle}
       skinput=${submit_skinput}
@@ -759,6 +916,10 @@ if [[ $runMC  == "true" ]];
     logstep=$job_logstep
     outputdir=${job_output_dir}
     catversion=${submit_version_tag}
+    nevents=${job_nevents}
+    skipevent=${job_nskip}
+    runnp=${job_run_fake}
+    runcf=${job_run_flip}
 
     if [[ $submit_file_tag  != ""  ]];
         then
@@ -775,30 +936,4 @@ if [[ $runMC  == "true" ]];
 	source submit.sh
     fi
 fi
-
-function mergeoutput
-{
-    if [[ $job_cycle == *"SKTreeMaker"* ]];
-	then
-	
-	if [[ $job_data_lumi  == "C" ]];
-	    then
-            mv  ${outputdir_data}/*.root ${output_datafile}/${job_cycle}_data_cat${version_tag}.root
-	    
-	    
-	elif [[ $job_data_lumi  == "D" ]];
-	    then
-	    mv  ${outputdir_data}/*.root ${output_datafile}/${job_cycle}_data_cat${version_tag}.root
-	    
-	else
-            echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat"${submit_catversion}".root "${outputdir_data}"/"${job_cycle}"*"
-            source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${submit_catversion}.root ${outputdir_data}/${job_cycle}*
-            echo ${outputdir_data}"/"${job_cycle}"_data_cat"${submit_catversion}".root "
-            mv  ${outputdir_data}/${job_cycle}_data_cat${submit_catversion}.root  ${outputdir_mc}
-	    echo ""
-	fi
-    fi
-    
-}
-
 

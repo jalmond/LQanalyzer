@@ -5,8 +5,10 @@ function usage
 {
 
     echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
-    echo "              [-s skim] [-list file_array] [-p data_period]"
+    echo "              [-s skim] [-list file_array] [-p data_period] "
     echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
+    echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion]"
+    echo "              [-fake runfake ] [-flip runflip]"     
     echo "              [-h ][-l <args> ][-g <args>] [-A <args>]"
     
 }
@@ -40,6 +42,7 @@ function rungroupedlist
     done < ${LQANALYZER_DIR}/LQRun/txt/list_user_mc.sh
 
 }
+
 
 function getdatasetname
 {
@@ -88,13 +91,15 @@ function listavailable
           allowed_catversion=true
       fi
     done
-    if [[ $allowed_catversion == "false" ]];
-        then
-        echo "Catversion " $submit_catvlist " is not allowed"
-        exit 1
+    if [[ $submit_catvlist != "" ]];
+	then
+        if [[ $allowed_catversion == "false" ]];
+            then
+            echo "Catversion " $submit_catvlist " is not allowed"
+            exit 1
+        fi
     fi
-
-
+    
     specified_catversion=true
     if [[ $submit_catvlist  == "" ]];
         then
@@ -237,11 +242,15 @@ function runlist
 	  allowed_catversion=true
       fi
     done
-    if [[ $allowed_catversion == "false" ]];
+    if [[ $submit_catvlist != "" ]];
 	then
-	echo "Catversion " $submit_catvlist " is not allowed"
-	exit 1
+	if [[ $allowed_catversion == "false" ]];
+	    then
+	    echo "Catversion " $submit_catvlist " is not allowed"
+	    exit 1
+	fi
     fi
+
     specified_catversion=true
     if [[ $submit_catvlist  == "" ]];
 	then
@@ -557,6 +566,9 @@ while [ "$1" != "" ]; do
 	-c | --CatVersion)      shift
 				submit_version_tag="$1"
 				;;
+        -ac | --AllCatVersion)  shift
+                                check_all_catversions=$1
+                                ;;
 	-l | --file_tag_list)   shift
 				submit_skim="FLATCAT"
 				submit_searchlist=$1
@@ -598,6 +610,24 @@ while [ "$1" != "" ]; do
 				exit 1
                                 ;;
 
+        -fake | --run_fake_analyzer)    shift
+                                job_run_fake=$1
+                                exit 1
+                                ;;
+        -flip | --run_flip_analyzer) shift
+                                job_run_flip=$1
+                                exit 1
+                                ;;
+        -events | --number_of_events) shift
+	                        job_nevents=$1
+				exit 1
+				;;
+	-nskip | --number_of_events) shift
+                                job_nskip=$1
+                                exit 1
+				;;
+
+
 	-h | --help )        	shift
 	                        usage
                          	other_commands=$1 
@@ -622,16 +652,35 @@ while [ "$1" != "" ]; do
 				    echo "       |                                                      |                     |                                     |"
 				    echo "-list  |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
 				    echo "       |                                                      |                     |                                     |"
-				    echo "-c     |   catversion of inputfile atest)                     | default = ${CATVERSION}    | (only needed if not running         | "
+				    echo "-c     |   catversion of inputfile                            | default = ${CATVERSION}    | (only needed if not running         | "
 				    echo "       |                                                      |                     | default/latest)                     | " 
+                                    echo "-ac    |   true/false                                         | default = 'false'   | Check all catversions for input     | "
+                                    echo "       |                                                      |                     | Rare: only set true if a sample is  |" 
+                                    echo "       |                                                      |                     | not available in  ${CATVERSION}            |"
+                                    echo "       |                                                      |                     |                                     |" 
 				    echo "-d     |   debug mode : INFO/DEBUG/WARNING                    | default = INFO      |                                     | "
 				    echo "       |                                                      |                     |                                     |"
 				    echo "-p     |   period to run in data/normalise inMC: C/D/CtoD(ALL)| default = CtoD      | Only change if you wish to run      | "
 				    echo "       |                                                      |                     | on a single data period             | "
-				    echo "       |                                                      |                     |                                     |"
-				    echo "-o     |   setoutput directory.                               | default= ''         | Does not work for SKTreeMaker Code. |"
-				    echo ""
-				    echo "Run 'sktree -h all' for more commands"
+                                    echo "-o     |   setoutput directory.                               | default= ''         | Does not work for SKTreeMaker Code. |"
+                                    echo ""
+				    echo "Run 'sktree -h all' or 'sktree -h  debug' for more commands"
+				fi
+				
+				if [[ $other_commands == "debug" ]];
+				    then
+                                    echo "###########################Other command#####################################################################################"
+                                    echo "Tag    |   Options                                            | DEFAULT PARAMETER   | COMMENT                             | "
+				    
+                                    echo "__________________________________________________________________________________________________________________________|"
+   
+				    echo "-events|   number of events to process                        |  default = ''       |                                     |"
+				    echo "-nskip |   number of events to skip                           |  default = ''       |                                     |"				    
+				    echo "       |                                                      |                     |                                     |"a
+				    echo "-fake  |   set flag for fake analyzer                         |  default = 'false'  |                                     |"
+				    echo "-flip  |   set flag for charge flip analyzer                  |  default = 'false'  |                                     |"
+				    
+
 				fi
 
 				if [[ $other_commands == "all" ]];
@@ -774,21 +823,43 @@ fi
 
 
 declare -a FULLLISTOFSAMPLES=()
+declare -a FULLLISTOFSAMPLESNOCUT=()
+declare -a FULLLISTOFSAMPLESLEPTON=()
+declare -a FULLLISTOFSAMPLESDILEP=()
+
+
+if [[ $check_all_catversions != "true" ]];
+    then
+    if [[ $check_all_catversions != "false" ]];
+	then
+	if [[ $check_all_catversions == "" ]];
+	    then
+	    echo "No input for -ac command: this should be '-ac true', since false is default"
+	    exit 1
+	fi
+	
+	echo "wrong setting for -ac command: this should be '-ac true', since false is default" 
+	exit 1
+    fi
+fi
+ 
 
 for iclist in  ${list_of_catversions[@]};
   do
-  
-  if [[ $iclist == *"v7-4"* ]];
+  if [[ $check_all_catversions != "true" ]];
       then
-      continue;
+      if [[ $iclist != ${list_of_catversions[0]} ]];
+	  then
+	  continue
+      fi
   fi
-  
   while read line
     do
     if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
 	then
 	sline=$(echo $line | head -n1 | awk '{print $1}')
-	
+	sline2=$(echo $line | head -n1 | awk '{print $6}')
+
 	isDuplicate=false
 	for il in  ${FULLLISTOFSAMPLES[@]};
 	  do
@@ -799,9 +870,140 @@ for iclist in  ${list_of_catversions[@]};
 	done
 	if [[ $isDuplicate == "false" ]];
 	    then
-	    FULLLISTOFSAMPLES+=(${sline})
+	    
+	    if [[ -d "${sline2}" ]]; then
+		if test "$(ls -A "$sline2")"; then
+		    FULLLISTOFSAMPLES+=(${sline})
+		    fi
+	    fi
 	fi
     fi
   done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${iclist}.txt
 
 done
+for iclist in  ${list_of_catversions[@]};
+  do
+
+  while read line
+    do
+    if [[ $line == *"/data2/CatNtuples/"${iclist}"/SKTrees/MCNoCut/"* ]];
+        then
+        sline=$(echo $line | head -n1 | awk '{print $1}')
+        sline2=$(echo $line | head -n1 | awk '{print $6}')
+
+	prefix="SK"
+	suffix="_nocut"
+	if [[ $sline == *${prefix}* ]];
+	    then
+	    sline=${sline:2}
+	fi
+	if [[ $sline == *${suffix}* ]];
+	    then
+	    sline=${sline%$suffix}
+	fi
+	
+	
+        isDuplicate=false
+        for il in  ${FULLLISTOFSAMPLESNOCUT[@]};
+          do
+
+          if [[ $sline == $il ]];
+              then
+              isDuplicate=true
+          fi
+        done
+        if [[ $isDuplicate == "false" ]];
+            then
+	    if [[ -d "${sline2}" ]]; then
+                if test "$(ls -A "$sline2")"; then
+                    FULLLISTOFSAMPLESNOCUT+=(${sline})
+		fi
+	    fi
+        fi
+    fi
+  done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${iclist}.txt
+
+done
+
+
+for iclist in  ${list_of_catversions[@]};
+  do
+
+  while read line
+    do
+    if [[ $line == *"/data2/CatNtuples/"${iclist}"/SKTrees/MC/"* ]];
+        then
+        sline=$(echo $line | head -n1 | awk '{print $1}')
+        sline2=$(echo $line | head -n1 | awk '{print $6}')
+
+	prefix="SK"
+	if [[ $sline == *${prefix}* ]];
+	    then
+	    sline=${sline:2}
+	fi
+	
+        isDuplicate=false
+        for il in  ${FULLLISTOFSAMPLESLEPTON[@]};
+          do
+          if [[ $sline == $il ]];
+              then
+              isDuplicate=true
+          fi
+        done
+        if [[ $isDuplicate == "false" ]];
+            then
+	    if [[ -d "${sline2}" ]]; then
+                if test "$(ls -A "$sline2")"; then
+                    FULLLISTOFSAMPLESLEPTON+=(${sline})
+                fi
+            fi
+        fi
+    fi
+  done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${iclist}.txt
+
+done
+
+for iclist in  ${list_of_catversions[@]};
+  do
+
+  while read line
+    do
+    if [[ $line == *"/data2/CatNtuples/"${iclist}"/SKTrees/MCDiLep/"* ]];
+        then
+        sline=$(echo $line | head -n1 | awk '{print $1}')
+        sline2=$(echo $line | head -n1 | awk '{print $6}')
+
+	prefix="SK"
+	suffix="_dilep"
+	if [[ $sline == *${prefix}* ]];
+	    then
+	    sline=${sline:2}
+	fi
+	if [[ $sline == *${suffix}* ]];
+	    then
+	    sline=${sline%$suffix}
+	fi
+	
+        isDuplicate=false
+        for il in  ${FULLLISTOFSAMPLESDILEP[@]};
+          do
+          if [[ $sline == $il ]];
+              then
+              isDuplicate=true
+          fi
+        done
+        if [[ $isDuplicate == "false" ]];
+            then
+	    if [[ -d "${sline2}" ]]; then
+                if test "$(ls -A "$sline2")"; then
+                    FULLLISTOFSAMPLESDILEP+=(${sline})
+                fi
+            fi
+        fi
+    fi
+  done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${iclist}.txt
+
+done
+
+
+

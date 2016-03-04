@@ -13,6 +13,8 @@
 
 #include <map>
 #include "SampleMap.C"
+float GetEventsProcessed(std::string file);
+float GetEventsPassed(std::string file);
 
 // defined in boost/utility.hpp, by the way
 template <typename Iter>
@@ -23,9 +25,29 @@ Iter next(Iter iter)
 
 void MakeInputListForSubmitScript(){
   
-  map<TString, TString> lqmap = GetLQMap();
-  
 
+    
+  map<TString, TString> lqmap_tmp = GetLQMap();
+  map<TString, TString> lqmap;
+  for(std::map<TString, TString>::iterator mit =lqmap_tmp.begin(); mit != lqmap_tmp.end();++mit){
+    TString def_version = TString(getenv("CATVERSION"));
+    
+    TString dir = "ls /data2/DATA/cattoflat/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist.txt";
+    system(dir.Data());
+    std::ifstream fin("inputlist.txt");
+    std::string word;
+    float number_events_processed(0.);
+    float number_events_passed(0.);
+    while ( fin >> word ) {
+      number_events_processed+= GetEventsProcessed(word);
+      number_events_passed+= GetEventsPassed(word);
+    }
+    if(number_events_processed !=0 ) lqmap[mit->first] = mit->second;
+    system("rm inputlist.txt");
+  }
+
+    
+    
   ofstream lumi_file;
   string lfile =  "list_all_mc.sh";
   
@@ -148,4 +170,24 @@ void MakeInputListForSubmitScript(){
 
   return;
   
+}
+
+float GetEventsProcessed(std::string filename){
+  TFile* file = TFile::Open(filename.c_str());
+  //  cout << file << endl;
+  TH1F*  EventCounter = (TH1F*) (file ->Get("ntuple/hNEvent"));
+
+  float value = EventCounter->GetBinContent(1);
+  file->Close();
+  return value;
+}
+
+float GetEventsPassed(std::string filename){
+  TFile* file = TFile::Open(filename.c_str());
+
+  TH1F*  EventCounter = (TH1F*) (file ->Get("ntuple/hNEvent"));
+
+  float value = EventCounter->GetBinContent(1);
+  file->Close();
+  return value;
 }

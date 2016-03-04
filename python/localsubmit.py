@@ -22,7 +22,7 @@ parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many 
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
-parser.add_option("-k", "--skip", dest="skip", default=-1, help="Set number of events to skip")
+parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set number of events to skip")
 parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
@@ -56,7 +56,7 @@ runcf = options.runcf
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
 number_of_events_per_job= int(options.nevents)
-skipev = int(options.skip)
+skipev = int(options.skipevent)
 dataType = options.datatype
 totalev = int(options.totalev)
 xsec = float(options.xsec)
@@ -207,7 +207,7 @@ if platform.system() == "Linux":
     for line in open(filename, 'r'):
         n_previous_jobs+=1
 
-    if n_previous_jobs > 40:
+    if n_previous_jobs > 39:
         number_of_cores = 1
         print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
 
@@ -441,9 +441,12 @@ while inDS == "":
         if catversion != "":
             print "Input dataset is not available in specifies catversion: Exiting"
             sys.exit()
-        print "Sample is not available in " + filename + ". Will look in previous compatable version"
+        print "LQAnalyzer :: WARNING :: Sample is not available in " + filename + ". Will look in previous compatable version. Need input from user if this is ok or a mistake."
+        update = raw_input("This is likely because you have not changed the name of the input file. Since CATVERSION v7-6-3 these were changed. Is using anolder version of catuples ok for what you are doing? If you wish to use an older sample type Y. If not change input. run 'sktree -l' for options" )
+        if not  update == "Y":
+            sys.exit()
         if iversion == len(catversions):
-            print "Input dataset is not available: Exiting"
+            print "LQAnalyzer :: ERROR :: Input dataset is not available: Exiting"
             sys.exit()
 
     
