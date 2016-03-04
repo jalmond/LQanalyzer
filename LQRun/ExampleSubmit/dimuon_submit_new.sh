@@ -5,3 +5,4 @@ sktree -a ExampleAnalyzerDiMuon  -list dimuon_list -s SKTree_DiLepSkim -n 15
 #sktree -a ExampleAnalyzerDiMuon -list singletop -s SKTree_DiLepSkim -n 15 
 #sktree -a ExampleAnalyzerDiMuon -i TT_MG5  -s SKTree_DiLepSkim -n 15 
 #sktree -a ExampleAnalyzerDiMuon -i WJets_MCatNLO -s SKTree_DiLepSkim -n 15
+sktree -a ExampleAnalyzerDiMuon  -S DoubleMuon  -s SKTree_DiLepSkim -n 15

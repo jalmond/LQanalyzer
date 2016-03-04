@@ -173,14 +173,23 @@ if not cycle == "SKTreeMaker":
 ##########################################################
 ### Make tmp directory for job
 ############################################################
-  
-if os.path.exists(os.getenv("LQANALYZER_DIR") + "/LQRun/job_output"):
-    os.system("rm -r " + os.getenv("LQANALYZER_DIR") + "/LQRun/job_output/")
-    
-if not os.path.exists(os.getenv("LQANALYZER_DIR") + "/LQRun/job_output"):
-    os.system("mkdir " + os.getenv("LQANALYZER_DIR") + "/LQRun/job_output")
 
-local_sub_dir= os.getenv("LQANALYZER_DIR") + "/LQRun/job_output/" + sample + '_' + new_channel + '_' + now()
+tmpwork = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
+if not (os.path.exists(tmpwork)):
+    os.system("mkdir " + tmpwork)
+
+if not (os.path.exists(tmpwork + "/" + cycle)):
+    os.system("mkdir " + tmpwork + "/" + cycle)
+    
+if os.path.exists(tmpwork + "/" + cycle + "/job_output/"):
+    os.system("rm -r " + tmpwork + "/" + cycle+ "/job_output/")
+
+   
+if not os.path.exists(tmpwork + "/" + cycle+ "/job_output/"):
+    os.system("mkdir " + tmpwork + "/" + cycle+ "/job_output/")
+
+local_sub_dir=  tmpwork + "/" + cycle+ "/job_output/"  + sample + '_' + new_channel + '_' + now()
+
     
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
@@ -504,9 +513,6 @@ check_array = []
 # Setup work area on var tmp
 ###################################################
 
-tmpwork = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
-if not (os.path.exists(tmpwork)):
-    os.system("mkdir " + tmpwork)
     
 workspace = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
 
