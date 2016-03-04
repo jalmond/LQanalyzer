@@ -37,7 +37,7 @@ git push --tags
 if [[ $sendemail == "true" ]];
     then
 
-    declare -a list_users=( "jalmond@cern.ch" ) 
+    declare -a list_users=( "jalmond@cern.ch" "jae.sung.kim@cern.ch" ) 
     
     for i in  ${list_users[@]};
       do
