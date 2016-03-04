@@ -13,38 +13,45 @@
 
 #include <map>
 
-#include "SampleMap.C"
-
 float GetEventsProcessed(std::string file);
 float GetEventsPassed(std::string file);
 float GetSumWeights(std::string filename);
 
+map<TString, TString>  map_cv;
 map<TString, Double_t> map_lumi;
 map<TString, Double_t> neventmap;
 map<TString, Double_t> n_w_eventmap;
-void GetEffectiveLuminosity(TString version="") {
+void GetEffectiveLuminosityPrivateSamples(){
   
+
+  TString version="";;
+   
+  
+  map_cv.clear();
   map_lumi.clear();
   neventmap.clear();
   n_w_eventmap.clear();
-  std::vector<TString> missing_samples;
-  std::vector<TString> missing_samples2;
-
-  if(CheckMaps()) return;
-  TString def_version = TString(getenv("CATVERSION"));
-  if(!version.Contains("v7") ) version = def_version;
   
-  map<TString, TString> missing_map= GetMissingMap(version);
-  vector<TString> vec_available = GetAvailableMap(version);
+  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////
+  /// This is an example... xsmap/lqmap and catversion_map need to be filled  with private sample information
+  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////  ////
   
-    
-  map<TString, Double_t> dirmap = GetXSecMap(); 
-  map<TString, TString> lqmap = GetLQMap();
+  map<TString, Double_t> xsmap;
+  /// key=  "Name of FlatCatuple dir"  = xsec;
+  //xsmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] =0.000828308;
   
-
-  for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
-    
-
+  map<TString, TString> lqmap;
+  //  key=  "Name of FlatCatuple dir"  = name to use in sktree -i <SAMPLENAME> 
+  //lqmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] ="vhf_Htomm_Powheg";
+  
+  //// version must be the version in the directoy name of your flat catuples 
+  map<TString, TString> catversion_map;
+  //catversion_map["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] = "v7-6-3"; /// This specifies what directory to look in
+  
+  for(std::map<TString, Double_t>::iterator mit =xsmap.begin(); mit != xsmap.end();++mit){
+    std::map<TString, TString>::iterator mitv = catversion_map.find(mit->first);
+    if(mitv== catversion_map.end()) {cout << "Error in naming datasets in map" << endl; return;}
+    version= mitv->second;
     
     TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist.txt";
     
@@ -57,7 +64,7 @@ void GetEffectiveLuminosity(TString version="") {
     
     std::ifstream fin("inputlist.txt");
     std::string word;
-   
+    
     float number_events_processed(0.);
     float number_events_passed(0.);
     float sum_of_weights(0.);
@@ -69,9 +76,11 @@ void GetEffectiveLuminosity(TString version="") {
       }
       sum_of_weights = number_events_processed;
       if(number_events_processed ==0 ) {
-	missing_samples.push_back(mit->first);
-	missing_samples2.push_back(mit->second);
-	continue;
+	cout << "Problem with input files. Are they in the correct local path?" << endl;
+        cout <<"FlatCatuples: /data2/DATA/cattoflat/MC/CATVERSION/" << endl;
+        cout <<"SKTrees: Lepton Skim : /data2/CatNtuples/CATVERSION/SKTrees/MC/" << endl;
+        cout <<"SKTrees:DiLepton Skim : /data2/CatNtuples/CATVERSION/SKTrees/MCDiLep/" << endl;
+        return;
       }
     }
     else{
@@ -82,9 +91,11 @@ void GetEffectiveLuminosity(TString version="") {
 	filelist.push_back(word);
       }
       if(number_events_processed ==0 ) {
-	missing_samples.push_back(mit->first);
-	missing_samples2.push_back(mit->second);
-	continue;
+	cout << "Problem with input files. Are they in the correct local path?" << endl;
+	cout <<"FlatCatuples: /data2/DATA/cattoflat/MC/CATVERSION/" << endl;
+	cout <<"SKTrees: Lepton Skim : /data2/CatNtuples/CATVERSION/SKTrees/MC/" << endl;
+	cout <<"SKTrees:DiLepton Skim : /data2/CatNtuples/CATVERSION/SKTrees/MCDiLep/" << endl;
+	return;
       }
       TString command1 = "rm -r "+ mit->first;
       TString command2 = "mkdir "+ mit->first;
@@ -159,6 +170,7 @@ void GetEffectiveLuminosity(TString version="") {
     map_lumi[mit->first] = lumi;
     neventmap[mit->first]=number_events_processed;
     n_w_eventmap[mit->first]=sum_of_weights;
+    map_cv[mit->first] = version;
   } 
 
   
@@ -180,7 +192,7 @@ void GetEffectiveLuminosity(TString version="") {
   lumi_file << "" << endl;
   for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
     std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);    
-    std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);    
+    std::map<TString, Double_t>::iterator mit3 = xsmap.find(mit->first);    
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);    
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);    
     lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /data2/DATA/cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;
@@ -191,7 +203,7 @@ void GetEffectiveLuminosity(TString version="") {
   lumi_file << "#### Single lepton skims: SKTrees" << endl;
   for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
     std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-    std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
+    std::map<TString, Double_t>::iterator mit3 = xsmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
     lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
@@ -203,7 +215,7 @@ void GetEffectiveLuminosity(TString version="") {
   lumi_file << "#### Single lepton skims: SKTrees" << endl;
   for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
     std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
-    std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
+    std::map<TString, Double_t>::iterator mit3 = xsmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
     lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
@@ -211,40 +223,17 @@ void GetEffectiveLuminosity(TString version="") {
   
 
   lumi_file << "" << endl;
-  lumi_file << "##################################################################" << endl;
-  lumi_file << "#### Missing/Not produced samples in this version are listed below " << endl;
-  lumi_file << "#### Missing : means miniAOD not available " << endl;
-  lumi_file << "#### Available: means miniAOD/catuples available but no sktree made. " << endl;
-  lumi_file << "##################################################################" << endl;
-
-  //map<TString, TString> missing_map= GetMissingMap();
-  //vector<TString> vec_available = GetAvailableMap();
-
-  for(map<TString, TString>::iterator it = missing_map.begin(); it!= missing_map.end(); it++){
-    lumi_file << "Missing: " << it->first << "   " << it->second << endl;
-  }
-  for(vector<TString>::iterator it= vec_available.begin(); it!= vec_available.end(); it++){
-    lumi_file <<"Available[not produced]: " << *it << endl;
-  }
   
-  lumi_file << "################################################################ " << endl;
-  lumi_file << "#### Private produced samples : Not made in batch at kisti" << endl;
-  lumi_file << "##################################################################" << endl;
-  
-
   string lqdir = getenv("LQANALYZER_DIR");
-  string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
-
-  TString user = TString(getenv("USER"));
-  if(USER.Contains("jalmond"))  
-    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
-
+  string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_private.txt";
 
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
+
 
   return;
   
 }
+
 
 
 float GetEventsProcessed(std::string filename){

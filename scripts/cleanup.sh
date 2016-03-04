@@ -4,6 +4,7 @@ rm *so
 rm *.d
 rm -r DY*
 rm -r T*
+rm -r Au*
 rm -r W*
 rm -r QCD_Pt-*
 rm -r ST_*

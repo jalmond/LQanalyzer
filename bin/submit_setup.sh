@@ -3,7 +3,12 @@
 
 function usage
 {
-    echo "usage: sktree [[[-a analyzer] [-S samples] [-i file_tag ] [-sktree usesktree [-skim skim] [-list file_array]] [-d debug_mode] [-c catversion] [-o outputdir] [-p data_period] ] | [-h][-l (*search*)(catversion) ][-g (*search*)]]"
+
+    echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
+    echo "              [-skim skim] [-list file_array] [-p data_period]"
+    echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
+    echo "              [-h ][-l <args> ][-g <args>] [-A <args>]"
+    
 }
 
 
@@ -75,6 +80,21 @@ function listavailable
 	fi
     fi
     
+    allowed_catversion=false
+    for iac in  ${list_of_catversions[@]};
+      do
+      if [[ $iac == $submit_catvlist ]];
+          then
+          allowed_catversion=true
+      fi
+    done
+    if [[ $allowed_catversion == "false" ]];
+        then
+        echo "Catversion " $submit_catvlist " is not allowed"
+        exit 1
+    fi
+
+
     specified_catversion=true
     if [[ $submit_catvlist  == "" ]];
         then
@@ -209,7 +229,19 @@ function runlist
         fi
     fi
     
-    
+    allowed_catversion=false
+    for iac in  ${list_of_catversions[@]};
+      do
+      if [[ $iac == $submit_catvlist ]];
+	  then
+	  allowed_catversion=true
+      fi
+    done
+    if [[ $allowed_catversion == "false" ]];
+	then
+	echo "Catversion " $submit_catvlist " is not allowed"
+	exit 1
+    fi
     specified_catversion=true
     if [[ $submit_catvlist  == "" ]];
 	then
@@ -272,6 +304,7 @@ function runlist
 	  then
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  sline2=$(echo $line | head -n1 | awk '{print $6}')
+
 	  if [[ $submit_searchlist == "" ]];
 	      then
 	      prefix="SK"
@@ -494,20 +527,23 @@ while [ "$1" != "" ]; do
 	
 	-d | --debug_mode )     shift
 	                        job_loglevel="$1"
+				changed_job_loglevel=true
                                 ;;
         -p | --data_period )    shift
                                 job_data_lumi="$1"
+				changed_job_data_lumi=true
                                 ;;
-	-sktree | --usesktrees )shift
-                                submit_skinput="$1"
-				changed_skinput=true
-                                ;;
+#	-sktree | --usesktrees )shift
+#                                submit_skinput="$1"
+#				changed_skinput=true
+#                                ;;
         -s | --useskim )        shift
                                 job_skim="$1"
 				changed_skim=true
                                 ;;
 	-n | --njobs )          shift
 	                        job_njobs=$1
+				changed_job_njobs=true
 				;;
         -r | --requestSKtree )  shift
 	                        request_sample=$1
@@ -550,6 +586,7 @@ while [ "$1" != "" ]; do
 				;;
         -o | --output)          shift
 	                        job_output_dir=$1
+				changed_job_output_dir=true
                                 ;;
 
 
@@ -560,51 +597,70 @@ while [ "$1" != "" ]; do
 				exit 1
                                 ;;
 
-	-h | --help )           usage
-	                        echo "Tag    |   Options                                            | DEFAULT PARAMETER   | COMMENT                             | "
-				echo "###########################Running command##################################################################################"
-				echo "-a     |   HNDiElectron/ExampleDiMuon                         | default = ''        | Name of analysis class              |"
-	                        echo "-S     |   ALL/DATA/MC/DoubleEG/DoubleMuon/                   | default = ''        | DATA runs ALL data. MC runs ALL MC  |"
-				echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | (same as -list all_mc               | "
-                                echo "-sktree|   true/false or True/False                           | default=True        | Set 'False' to run on CATuples,     | "
-				echo "       |                                                      |                     |  if True then also set -s/--useskim | " 
-				echo "       |                                                      |                     |  if -s == CATFLAT sktree set False  | " 
-                                echo "-s     |  SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim    | default=Lepton      | Sets skim to use                    | "
-				echo "       |  FLATCAT sets input to faltcatuple not sktee         |                     | NoCuts/Lepton/DiLepton  still worl  | "
-                                echo "-n     |   #number of subjobs  (any number < 15)              | default=15          | default is 5 is -sktree=False       | "
-				echo "-i     |   (i.e., DY10to50_MCatNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
-				echo "-list  |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
-				echo "-c     |   catversion of inputfile atest)                     | default = ${CATVERSION}    | (only needed if not running         | "
-				echo "       |                                                      |                     | default/latest)                     | " 
-				echo "-d     |   debug mode : INFO/DEBUG/WARNING                    | default = INFO      |                                     | "
-				echo "-p     |   period to run in data/normalise inMC: C/D/CtoD(ALL)| default = CtoD      | Only change if you wish to run      | "
-				echo "       |                                                      |                     | on a single data period             | "
-				echo "-o     |   setoutput directory.                               | default= ''         | Does not work for SKTreeMaker Code. |"
-				
-				
-				echo "###########################Other command#####################################################################################"
-				echo "-l       |   (can give search/catversion as an option )       | default = ''        | returns a list of available         | "
-				echo "         |   i.e.  sktree -l QCD  OR  sktree -l DY v7-6-3     |                     | datasets in each catversion         |"
-				echo "-L       | can give search/skim/catversion as on option)      | default = ''        | returns a list of available         | "
-				echo "         |  use like 'sktree -L DiLep QCD                     |                     | sktrees  in each catversion         |" 
+	-h | --help )        	shift
+	                        usage
+                         	other_commands=$1 
+				if [[ $other_commands == "" ]];
+				    then
+				    echo "###########################Running command##################################################################################"
+				    echo "Tag    |   Options                                            | DEFAULT PARAMETER   | COMMENT                             | "
+				    echo "__________________________________________________________________________________________________________________________|"
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-a     |   HNDiElectron/ExampleDiMuon/etc                     | default = ''        | Name of analysis class              |"
+				    echo "       |   'sktree -a' lists options                          |                     |                                     |"
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-S     |   ALL/DATA/MC/DoubleEG/DoubleMuon/                   | default = ''        | 'DATA' runs every data dataset.     |"
+				    echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | 'MC' runs every MC sample           |"
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-s     |   SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim   | default='Lepton'    | Sets skim to use:                   | "
+				    echo "       |   FLATCAT sets input to flatcatuple not sktee        |                     | NoCuts/Lepton/DiLeptonstill work    | "
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-n     |   #number of subjobs  (any number < 15)              | default=15          | default is 5 is -sktree=False       | "
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-i     |   (i.e., DY10to50_MCatNLO) run 'sktree -L' for more  | default = ''        | For running single MC samples:      | "
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-list  |   (i.e., diboson_pythia) run 'sktree -g' for more    | default = ''        | For running on list of MC samples.  | "
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-c     |   catversion of inputfile atest)                     | default = ${CATVERSION}    | (only needed if not running         | "
+				    echo "       |                                                      |                     | default/latest)                     | " 
+				    echo "-d     |   debug mode : INFO/DEBUG/WARNING                    | default = INFO      |                                     | "
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-p     |   period to run in data/normalise inMC: C/D/CtoD(ALL)| default = CtoD      | Only change if you wish to run      | "
+				    echo "       |                                                      |                     | on a single data period             | "
+				    echo "       |                                                      |                     |                                     |"
+				    echo "-o     |   setoutput directory.                               | default= ''         | Does not work for SKTreeMaker Code. |"
+				    echo ""
+				    echo "Run 'sktree -h all' for more commands"
+				fi
 
-				echo "-g       |                                                    | default = ''        | returns a list of available input   |"
-				echo "         |                                                    |                     | arrays to input with:               |"
-				echo "         |                                                    |                     | sktree -list command                |" 
-				echo "-dataset |  file_tag (i.e., DY10to50_MCatNLO)                 | default = ''        | returns datasetname.                |"
-				echo "         |                                                    |                     | Only available from v7-6-3          |"  
-				echo "-r       |   sktree -A to see possible samples                | default = ''        | sends email request to make sktree  |"
-				echo "         |                                                                          | that is not current available at snu|"
-				
-				echo "-A       |   can speficy catversion and searc                 | default = ${CATVERSION}    | lists missing samples due to no     |"
-				echo "         |                                                    |                     | MiniAOD and available samples       |"
-				echo "         |                                                    |                     | that can be processed               |"        
-
-
+				if [[ $other_commands == "all" ]];
+	  			    then
+				    echo "###########################Other command#####################################################################################"
+				    echo "Tag    |   Options                                            | DEFAULT PARAMETER   | COMMENT                             | "
+				    
+				    echo "__________________________________________________________________________________________________________________________|"
+				    echo "-l       | (can give search/catversion as an option )         | default = ''        | returns a list of available         | "
+				    echo "         | i.e.  sktree -l QCD  OR  sktree -l DY v7-6-3       |                     | datasets in each catversion         |"
+				    echo "-L       | can give search/skim/catversion as on option)      | default = ''        | returns a list of available         | "
+				    echo "         | use like 'sktree -L DiLep QCD                      |                     | sktrees  in each catversion         |" 
+				    echo "         |                                                    |                     |                                     |"
+				    echo "-g       |                                                    | default = ''        | returns a list of available input   |"
+				    echo "         |                                                    |                     | arrays to input with:               |"
+				    echo "         |                                                    |                     | sktree -list command                |" 
+				    echo "-dataset | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
+				    echo "         |                                                    |                     | Only available from v7-6-3          |"  
+				    echo "-r       | sktree -A to see possible samples                  | default = ''        | sends email request to make sktree  |"
+				    echo "         |                                                    |                     | that is not current available at snu|"
+				    echo "         |                                                    |                     |                                     |"
+				    echo "-A       | can speficy catversion and search                  | default = ${CATVERSION}    | lists missing samples due to no     |"
+				    echo "         |                                                    |                     | MiniAOD and available samples       |"
+				    echo "         |                                                    |                     | that can be processed               |"        
+				    
+				fi
 				exit
                                 ;;
         * )                     usage
-                                exit 1
+	exit 1
     esac
     shift
 done

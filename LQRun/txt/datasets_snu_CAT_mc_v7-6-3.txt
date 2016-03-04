@@ -264,3 +264,8 @@ Available[not produced]: /TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8/RunIIFal
 Available[not produced]: /TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 Available[not produced]: /TT_TuneCUETP8M1_13TeV-powheg-scaledown-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 Available[not produced]: /TT_TuneCUETP8M1_13TeV-powheg-scaleup-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+
+
+##################################################################
+#### Private produced samples : Not made in batch at kisti
+##################################################################
