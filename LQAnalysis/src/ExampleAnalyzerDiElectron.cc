@@ -217,7 +217,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   if (!k_isdata) {
     /// use silver or gold
 
-    pileup_reweight = eventbase->GetEvent().PileUpWeight(snu::KEvent::silver);
+    pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
   }
   
   if(!isData){
@@ -263,17 +263,17 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       
       if(SameCharge(electronColl, k_running_chargeflip))  {
 
-	cout << "SS event " << endl;	
-	cout << "Electron 1 eta/phi/pt =" <<  electronColl.at(0).Eta() << " / " << electronColl.at(0).Phi() << " / " << electronColl.at(0).Pt() << endl;
-	cout << "Electron 2 eta/phi/pt =" <<  electronColl.at(1).Eta() << " / " << electronColl.at(1).Phi() << " / " << electronColl.at(1).Pt() << endl;
+	//cout << "SS event " << endl;	
+	//cout << "Electron 1 eta/phi/pt =" <<  electronColl.at(0).Eta() << " / " << electronColl.at(0).Phi() << " / " << electronColl.at(0).Pt() << endl;
+	//cout << "Electron 2 eta/phi/pt =" <<  electronColl.at(1).Eta() << " / " << electronColl.at(1).Phi() << " / " << electronColl.at(1).Pt() << endl;
 	for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
 	  if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
 	  if(eventbase->GetTruth().at(ig).IndexMother() >= eventbase->GetTruth().size())continue;
 	  
 	  if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
-	    cout << "eventbase->GetTruth().at(ig).Eta = " << eventbase->GetTruth().at(ig).Eta() << " eventbase->GetTruth().at(ig).Phi = " << eventbase->GetTruth().at(ig).Phi() << " eventbase->GetTruth().at(ig).Pt = " << eventbase->GetTruth().at(ig).Pt() << endl;
-	    if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) cout << "matched to Z" << endl;
-	    if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) cout << "matched to W" << endl;
+	    //cout << "eventbase->GetTruth().at(ig).Eta = " << eventbase->GetTruth().at(ig).Eta() << " eventbase->GetTruth().at(ig).Phi = " << eventbase->GetTruth().at(ig).Phi() << " eventbase->GetTruth().at(ig).Pt = " << eventbase->GetTruth().at(ig).Pt() << endl;
+	    //if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 23) cout << "matched to Z" << endl;
+	    //if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 24) cout << "matched to W" << endl;
 	  }
 	}
 	

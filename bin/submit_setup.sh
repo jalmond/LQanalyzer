@@ -19,13 +19,31 @@ function usage
 function rungroupedlist
 {
     echo ""
+    runFull=false
+    if [[ $submit_searchlist == "list" ]];
+	then
+	runFull=true
+    elif [[ $submit_searchlist != "" ]];
+	then
+	echo "Invalid option for 'sktree -g': Use 'sktree -g' or 'sktree -g list' "
+	exit 1
+    fi
+    
     while read line
       do
       if [[ $line == *"declare"* ]];
 	  then
 	  sline=$(echo $line | cut -d "" -f2-)
-	  echo ${sline}
-	  echo ""
+	  if [[ $runFull == "false" ]];
+	      then
+	      sline=${sline/"="/" "}
+	      sline2=$(echo $sline | head -n1 | awk '{print $3}')
+	      echo $sline2
+	  else 
+	      echo $sline
+	      echo ""
+	  fi
+	  
       fi
     done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
     
@@ -37,8 +55,16 @@ function rungroupedlist
       if [[ $line == *"declare"* ]];
           then
           sline=$(echo $line | cut -d "" -f2-)
-          echo ${sline}
-          echo ""
+	  if [[ $runFull == "false" ]];
+	      then
+	      sline=${sline/"="/" "}
+	      sline2=$(echo $sline | head -n1 | awk '{print $3}')
+	      echo $sline2
+	      
+	  else
+	      echo $sline
+	      echo ""
+          fi
       fi
     done < ${LQANALYZER_DIR}/LQRun/txt/list_user_mc.sh
 
@@ -86,6 +112,7 @@ function getinfo_dataset
 	elif [[ $submit_catvlist == *"v7-4"*  ]];
 	    then
 	    echo "LQanalyzer::sktree :: ERROR :: 'sktree -dataset <samplename>' only works for v7-6-3 and newer" 
+	    exit 
         fi
     fi
 
@@ -93,7 +120,13 @@ function getinfo_dataset
         then
         submit_catvlist=${CATVERSION}
     fi
-	    
+    if [[ $submit_file_tag == "" ]];
+	then
+	echo "Need a dataset is input"
+	exit 1
+    fi
+    
+
     while read line
       do
       if [[ $line == *$getinfo_string* ]];
@@ -105,6 +138,9 @@ function getinfo_dataset
 	      if [[ $getinfo_tag == "2" ]];
 		  then
 		  sline=$(echo $line | head -n1 | awk '{print $2}')
+	      elif [[ $getinfo_tag == "3" ]];
+                  then
+		  sline=$(echo $line | head -n1 | awk '{print $3}')
 	      elif [[ $getinfo_tag == "4" ]];
 		  then
 		  sline=$(echo $line | head -n1 | awk '{print $4}')
@@ -116,7 +152,7 @@ function getinfo_dataset
 		  
 	      fi
 	      echo ${sline}
-	      
+      
 	  fi
       fi
       
@@ -126,8 +162,8 @@ function getinfo_dataset
 
 function getdatasetname
 {
-    getinfo_tag=6
-    getinfo_string="/data2/DATA/cattoflat/MC/"
+    getinfo_tag=3
+    getinfo_string="DATASET:"
     getinfo_dataset
 }
 
@@ -363,23 +399,51 @@ function runlist
 	echo "example 4) sktree -L SKTree_DiLepSkim v7-6-3 DY"
 	exit 1
     fi
+    
     if [[ $submit_skim  == "FLATCAT" ]];
         then
         check_path="/data2/DATA/cattoflat/MC/"
     fi
-    
-    if [[ $submit_skim  == "SKTree_NoSkim" ]];
-	then
-        check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCNoCut/"
+
+    isNoCut=false
+    isLepton=false
+    isDiLep=false
+    if [[ $submit_skim  == "SKTree_NoSkim" ]]; then 
+	isNoCut=true 
+    fi
+    if [[ $submit_skim  == "NoSkim" ]];
+        then
+	isNoCut=true
     fi
     if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
 	then
-	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MC/"
+	isLepton=true
+    fi
+    if [[ $submit_skim  == "Lepton" ]];
+	then
+	isLepton=true
     fi
     if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
+        then
+	isDiLep=true
+    fi
+    if [[ $submit_skim  == "DiLep" ]];
+	then
+	isDiLep=true
+    fi
+    if [[ $isNoCut  == "true" ]];
+	then
+        check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCNoCut/"
+    fi
+    if [[ $isLepton  == "true" ]];
+	then
+	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MC/"
+    fi
+    if [[ $isDiLep  == "true" ]];
 	then
 	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCDiLep"
     fi
+
     
     if [[ $check_path == "" ]];
 	then
@@ -390,10 +454,6 @@ function runlist
     fi
     
 
-    echo "For <skim>= " $submit_skim " run jobs with command:"
-    
-    echo "'sktree -a <analyzer/classname> -s " $submit_skim "  -i <samplename>':"
-    echo ""
     echo "List of samplenames for skim " $submit_skim " available in cattuple version " $submit_catvlist " are:"
     
     declare -a LISTOFSAMPLES=()
@@ -458,44 +518,73 @@ function runlist
       
     done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
     echo ""
-    if [[ $submit_skim  == "SKTree_NoSkim" ]];
+    
+    missing_comment="LQanalyzer::sktree :: HELP :: If the sample you are looking for is not in the list above run 'sktree -A "$submit_catvlist"'"$'\n'
+    missing_comment+="LQanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is missing then we need to wait for the miniAOD to be produced\n"
+    missing_comment+="LQanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is available at kisti then run 'sktree -r DATASETNAME' to request this sample\n"
+    missing_comment+="LQanalyzer::sktree :: HELP :: If 'sktree -A' shows sample is not there then no catuple exists: run 'sktree -rcat DATASETNAME' to request this catuple"
+
+    if [[ $isNoCut  == "true" ]];
         then
-	echo "Samples that have local flat catuples but no lepton skim are:"
+
+	counter=${#UNPROCESSED[@]}
+        if [[ $counter -ne 0 ]];
+            then
+	    echo "Samples that have local flat catuples but no NoCutskim are:"
+	else  echo -e  $missing_comment
+	fi
 	for il in  ${UNPROCESSED[@]};
 	  do
 	  echo samplename = $il
 	done
 	echo ""
-	echo "If you want this sktree run 'sktree -a SKTreeMakerNoCut -i <samplename> -c "$submit_catvlist"'"
-	echo ""
+	if [[ $counter -ne 0 ]];
+	    then
+	    echo "If you want any of these sktrees run 'sktree -a SKTreeMakerNoCut -i <samplename> -c "$submit_catvlist"'"
+	fi
     fi
-    if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
+    if [[ $isLepton  == "true" ]];
         then
-        echo "Samples that have local flat catuples but no lepton skim are:"
+	counter=${#UNPROCESSED[@]}
+	    if [[ $counter -ne 0 ]];
+		then
+		echo "Samples that have local flat catuples but no lepton skim are:"
+	    else    echo -e "$missing_comment"
+	    fi
         for il in  ${UNPROCESSED[@]};
           do
           echo samplename = $il
         done
 	echo ""
-        echo "If you want this sktree run 'sktree -a SKTreeMaker -i <samplename>  -c "$submit_catvlist"'"
-        echo ""
+	if [[ $counter -ne 0 ]];
+	    then
+	    echo "If you want this sktree run 'sktree -a SKTreeMaker -i <samplename>  -c "$submit_catvlist"'"
+	    echo ""
+	fi
     fi
 
-    if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
+    if [[ $isDiLep  == "true" ]];
         then
-	echo "Samples that have local flat catuples but no dilepton skim are:"
-        for il in  ${UNPROCESSED[@]};
-          do
-          echo samplename = $il
+	counter=${#UNPROCESSED[@]}
+	    if [[ $counter -ne 0 ]];
+		then
+		echo "Samples that have local flat catuples but no dilepton skim are:"
+	    else   echo -e $missing_comment
 
-        done
-	echo ""
-	echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
-	echo ""
+	    fi
+	    for il in  ${UNPROCESSED[@]};
+	      do
+	      echo samplename = $il
+	      
+	    done
+	    echo ""
+	    if [[ $counter -ne 0 ]];
+		then
+		echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
+		echo ""
+	    fi
     fi
     
-    
-
 
     if [[ $specified_catversion == "false" ]];
 	then
@@ -622,9 +711,11 @@ while [ "$1" != "" ]; do
 				;;
         -i | --input )          shift
                                 submit_file_tag=$1
+				set_submit_file_tag=true
                                 ;;
 	-list | --inputlist )   shift
                                 submit_file_list=$1
+				set_submit_file_list=true
                                 ;;
 	
 	-d | --debug_mode )     shift
@@ -659,6 +750,7 @@ while [ "$1" != "" ]; do
                                 ;;        
 	-S | --SampleTag  )     shift
                                 submit_sampletag=$1
+				set_submit_sampletag=true
                                 ;;
 	-c | --CatVersion)      shift
 				submit_version_tag="$1"
@@ -714,8 +806,7 @@ while [ "$1" != "" ]; do
 
 
 	-g | --file_tag_groups) shift
-                                submit_catvlist=$1
-                                submit_searchlist=$2
+                                submit_searchlist=$1
                                 rungroupedlist
 				exit 1
                                 ;;

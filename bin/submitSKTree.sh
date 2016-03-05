@@ -3,6 +3,8 @@
 
 declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "NoCut" "Lepton" "DiLep")
+declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingeMuon" "SinglePhoton" "SingleElectron")
+
 
 
 ###### SET WHAT JOBS TO RUN
@@ -41,6 +43,7 @@ submit_searchlist=""
 submit_analyzer_name=""
 set_submit_analyzer_name=false
 request_sample=""
+submit_skim=""
 
 ######## NEW FOR TAG v7-6-3.2
 job_nevents=-1
@@ -48,40 +51,48 @@ job_nskip=-1
 job_run_fake=False
 job_run_flip=False
 check_all_catversions=false
-
-
-if [[ $check_all_catversions == "true" ]];
-    then
-    submit_version_tag=""
-    if [[ $changed_submit_version_tag == "true" ]];
-	then
-	echo "LQanalyzer::sktree :: ERROR :: Catversion was set with -c, while you chose to look at all catversions wit -ac option. This is not possible."
-	exit 1
-     fi
-fi
-
-if [[ $job_run_fake != "False" ]];
-    then
-    if [[ $job_run_fake != "True" ]];
-	then
-	echo "LQanalyzer::sktree :: ERROR :: Wrong setting for -fake. use -fake 'True'. It is false by default".
-	exit 1
-  fi
-fi
-if [[ $job_run_flip != "False" ]];
-    then
-    if [[ $job_run_flip != "True" ]];
-	then
-        echo "LQanalyzer::sktree :: ERROR :: Wrong setting for -flip. use -flip 'True'. It is false by default".
-	exit 1
-  fi
-fi
-
+set_submit_file_tag=false
+set_submit_file_list=false
+set_submit_sampletag=false
 
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
+
+############## Check flags for fake/flip analysis
+if [[ $job_run_fake != "False" ]];
+    then
+    if [[ $job_run_fake != "True" ]];
+        then
+	echo "LQanalyzer::sktree :: ERROR :: Wrong setting for -fake. use -fake 'True'. It is false by default".
+        exit 1
+  fi
+fi
+if [[ $job_run_flip != "False" ]];
+    then
+    if [[ $job_run_flip != "True" ]];
+        then
+        echo "LQanalyzer::sktree :: ERROR :: Wrong setting for -flip. use -flip 'True'. It is false by default".
+        exit 1
+  fi
+fi
+
+
+########### safe guard wrong catversion setting
+if [[ $check_all_catversions == "true" ]];
+    then
+    submit_version_tag=""
+    if [[ $changed_submit_version_tag == "true" ]];
+        then
+        echo "LQanalyzer::sktree :: ERROR :: Catversion was set with -c, while you chose to look at all catversions wit -ac option. This is not possible."
+        exit 1
+     fi
+fi
+
+
+
+
 
 if [[ $set_submit_analyzer_name == "true" ]];
     then
@@ -317,7 +328,40 @@ if [[ $submit_file_tag  == ""  ]];
 	then
 	if [[ $submit_sampletag == ""  ]];
             then
-            echo "Qanalyzer::sktree :: ERROR :: No input files were specified"
+	    
+	    if [[ $set_submit_sampletag  == "true"  ]];
+		then
+		echo "LQanalyzer::sktree :: ERROR :: no input of sktree -s <SAMPLE>"
+		echo  "Options are:"
+		for isample in ${list_of_sampletags[@]};
+		  do
+		  echo $isample
+		done
+		exit 1
+	    fi
+
+	    if [[ $set_submit_file_tag  == "true"  ]];
+                then
+		  echo "LQanalyzer::sktree :: ERROR :: no input of sktree -i <samplename> " 
+		  submit_skim=$job_skim
+		  submit_searchlist=""
+		  submit_catvlist=$submit_version_tag
+		  runlist
+		  exit 1
+	    fi
+
+	    if [[ $set_submit_file_list  == "true"  ]];
+                then
+		echo "LQanalyzer::sktree :: ERROR :: no input of sktree -list <list> "
+		submit_searchlist=""
+		submit_catvlist=$submit_version_tag
+		rungroupedlist
+		echo "LQanalyzer::sktree :: HELP :: to check content of list run 'sktree -g list'"
+		echo "LQanalyzer::sktree :: HELP :: You can add your own list to "$LQANALYZER_DIR"/LQRun/txt/list_user_mc.sh"
+		exit 1
+            fi
+	    
+            echo "LQanalyzer::sktree :: ERROR :: No input files were specified"
 	    echo "Use either:"
 	    echo "sktree -S <SAMPLELIST>   : run 'sktree -h' for list of options"
 	    echo "sktree -i <SAMPLENAME>     : run 'sktree -l' or 'sktree -L' for list of options "
@@ -605,7 +649,15 @@ fi
 
 echo "LQanalyzer::sktree :: INFO :: Analyzer = "${job_cycle}
 
+if [[ $job_run_flip == "True" ]];
+    then
+    echo "LQanalyzer::sktree :: INFO :: RunFlip = True"
+fi
 
+if [[ $job_run_fake == "True" ]];
+    then
+    echo "LQanalyzer::sktree :: INFO ::RunFake= True"
+fi
 if [[ $runDATA  == "true" ]];
     then
     ARGPERIOD=data_periods
@@ -901,6 +953,17 @@ if [[ $runMC  == "true" ]];
 	 echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_input_samples[*]}
     fi
     
+fi
+
+if [[ $job_nevents != -1 ]];
+    then 
+    echo "LQanalyzer::sktree :: INFO :: Set number of events per subjob to : "$job_nevents 
+fi
+
+if [[ $job_nskip != -1 ]];
+    then
+    echo "LQanalyzer::sktree :: INFO :: Set number of events to skip: "$job_nskip
+    echo "LQanalyzer::sktree :: INFO :: This is only useful for debugging failed jobs"
 fi
 
 if [[ $runDATA  == "true" ]];

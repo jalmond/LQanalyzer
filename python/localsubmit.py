@@ -441,7 +441,8 @@ while inDS == "":
         if catversion != "":
             print "Input dataset is not available in specifies catversion: Exiting"
             sys.exit()
-        print "LQAnalyzer :: WARNING :: Sample is not available in " + filename + ". Will look in previous compatable version. Need input from user if this is ok or a mistake."
+        print "LQAnalyzer :: WARNING :: Sample is not available in " + filename + "."
+        print "Will look in previous compatable version. Need input from user if this is ok or a mistake."
         update = raw_input("This is likely because you have not changed the name of the input file. Since CATVERSION v7-6-3 these were changed. Is using anolder version of catuples ok for what you are doing? If you wish to use an older sample type Y. If not change input. run 'sktree -l' for options" )
         if not  update == "Y":
             sys.exit()

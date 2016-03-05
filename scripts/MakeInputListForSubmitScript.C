@@ -24,17 +24,15 @@ Iter next(Iter iter)
 }
 
 void MakeInputListForSubmitScript(){
-  
-
     
   map<TString, TString> lqmap_tmp = GetLQMap();
   map<TString, TString> lqmap;
   for(std::map<TString, TString>::iterator mit =lqmap_tmp.begin(); mit != lqmap_tmp.end();++mit){
     TString def_version = TString(getenv("CATVERSION"));
     
-    TString dir = "ls /data2/DATA/cattoflat/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist.txt";
+    TString dir = "ls /data2/DATA/cattoflat/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
     system(dir.Data());
-    std::ifstream fin("inputlist.txt");
+    std::ifstream fin("inputlist_lists.txt");
     std::string word;
     float number_events_processed(0.);
     float number_events_passed(0.);
@@ -43,7 +41,7 @@ void MakeInputListForSubmitScript(){
       number_events_passed+= GetEventsPassed(word);
     }
     if(number_events_processed !=0 ) lqmap[mit->first] = mit->second;
-    system("rm inputlist.txt");
+    system("rm inputlist_lists.txt");
   }
 
     
@@ -99,7 +97,7 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a dy_mcatnlo=('DY10to50_MCatNLO' 'DY50plus_MCatNLO') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a dimuon_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MG5' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg')" << endl;
+  lumi_file << "declare -a dilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MG5' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg')" << endl;
   
   lumi_file << "" << endl;
 

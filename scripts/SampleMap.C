@@ -152,16 +152,16 @@ vector<TString>  GetAvailableMap(TString cversion){
   std::map<TString, TString> mapdir = GetLQMap();
 
   
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   system(dir.Data());
   
-  std::ifstream fin("inputlist.txt");
+  std::ifstream fin("inputlist_map.txt");
   std::string word;
   vector<std::string> input_datasetlist;
   while ( fin >> word ) {
     input_datasetlist.push_back(word);
   }
-  system("rm inputlist.txt"); 
+  system("rm inputlist_map.txt"); 
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
     std::string datasetname="";
@@ -220,15 +220,15 @@ map<TString, TString>  GetDatasetNames(TString cversion){
 
   map<TString, TString> datasets;
   std::map<TString, TString> mapdir = GetLQMap();
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   system(dir.Data());
-  std::ifstream fin("inputlist.txt");
+  std::ifstream fin("inputlist_map.txt");
   std::string word;
   vector<std::string> input_datasetlist;
   while ( fin >> word ) {
     input_datasetlist.push_back(word);
   }
-  system("rm inputlist.txt");
+  system("rm inputlist_map.txt");
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
     std::string datasetname="";
@@ -260,16 +260,16 @@ map<TString, TString>  GetMissingMap(TString cversion){
   if(cversion.Contains("v7-6-2")) return map_missing;
 
   std::map<TString, TString> mapdir = GetLQMap();
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   system(dir.Data());
 
-  std::ifstream fin("inputlist.txt");
+  std::ifstream fin("inputlist_map.txt");
   std::string word;
   vector<std::string> input_datasetlist;
   while ( fin >> word ) {
     input_datasetlist.push_back(word);
   }
-  system("rm inputlist.txt");
+  system("rm inputlist_map.txt");
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
     std::string datasetname="";

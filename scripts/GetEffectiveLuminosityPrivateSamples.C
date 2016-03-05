@@ -53,7 +53,7 @@ void GetEffectiveLuminosityPrivateSamples(){
     if(mitv== catversion_map.end()) {cout << "Error in naming datasets in map" << endl; return;}
     version= mitv->second;
     
-    TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist.txt";
+    TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist_private.txt";
     
     bool use_sum_genweight(false);
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
@@ -62,7 +62,7 @@ void GetEffectiveLuminosityPrivateSamples(){
     system(dir.Data());
     
     
-    std::ifstream fin("inputlist.txt");
+    std::ifstream fin("inputlist_private.txt");
     std::string word;
     
     float number_events_processed(0.);
@@ -164,7 +164,7 @@ void GetEffectiveLuminosityPrivateSamples(){
     std::cout.precision(10);
     std::cout <<mit->first << "    nevents =  " << number_events_processed << " sum of weights =  " << sum_of_weights << " eff lumi = " << lumi <<std::endl;
     
-    system("rm inputlist.txt");
+    system("rm inputlist_private.txt");
     system(("rm -r " +  mit->first).Data());
     
     map_lumi[mit->first] = lumi;

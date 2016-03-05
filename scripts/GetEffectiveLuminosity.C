@@ -48,7 +48,7 @@ void GetEffectiveLuminosity(TString version="") {
     
 
     
-    TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist.txt";
+    TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
     
     bool use_sum_genweight(false);
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
@@ -57,7 +57,7 @@ void GetEffectiveLuminosity(TString version="") {
     system(dir.Data());
     
     
-    std::ifstream fin("inputlist.txt");
+    std::ifstream fin("inputlist_efflumi.txt");
     std::string word;
    
     float number_events_processed(0.);
@@ -155,7 +155,7 @@ void GetEffectiveLuminosity(TString version="") {
     std::cout.precision(10);
     std::cout <<mit->first << "    nevents =  " << number_events_processed << " sum of weights =  " << sum_of_weights << " eff lumi = " << lumi <<std::endl;
     
-    system("rm inputlist.txt");
+    system("rm inputlist_efflumi.txt");
     system(("rm -r " +  mit->first).Data());
     
     map_lumi[mit->first] = lumi;
@@ -216,7 +216,7 @@ void GetEffectiveLuminosity(TString version="") {
   lumi_file << "##################################################################" << endl;
   lumi_file << "#### Missing/Not produced samples in this version are listed below " << endl;
   lumi_file << "#### Missing : means miniAOD not available " << endl;
-  lumi_file << "#### Available: means miniAOD/catuples available but no sktree made. " << endl;
+  lumi_file << "#### Available: means miniAOD/catuples available but no flatcatuples/sktree made. " << endl;
   lumi_file << "##################################################################" << endl;
 
   //map<TString, TString> missing_map= GetMissingMap();
@@ -232,7 +232,7 @@ void GetEffectiveLuminosity(TString version="") {
 
   lumi_file << "" << endl;
   lumi_file << "##################################################################" << endl;
-  lumi_file << "#### FULL Name of MINIAODS 
+  lumi_file << "#### FULL Name of MINIAODS " << endl;
   lumi_file << "##################################################################" << endl;
 
   for(map<TString, TString>::iterator it = datasets.begin(); it!= datasets.end(); it++){

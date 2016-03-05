@@ -3,4 +3,3 @@ root -b -l <<EOF
 MakeInputListForSubmitScript();
 .q;
 EOF
-bash cleanup.sh

@@ -61,7 +61,14 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
   
-  
+  /// Apply the gen weight
+  weight*=MCweight;
+
+  /// Acts on data to remove bad reconstructed event
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
+
+
+
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   FillCutFlow("NoCut", weight);
@@ -96,7 +103,8 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
   
   float pileup_reweight (1.);
   if (MC_pu&&!k_isdata) {
-    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
+    pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
+
   }
   
     
@@ -161,7 +169,8 @@ void ExampleAnalyzerElectronMuon::BeginCycle() throw( LQError ){
   Message("In begin Cycle", INFO);
   
   string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
+
 
   //
   //If you wish to output variables to output file use DeclareVariable

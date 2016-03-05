@@ -1,16 +1,18 @@
 todelete=""
 sendemail=false
 
+itag=".2"
+tagname=$CATVERSION$itag
+
 if [[ $1 == "" ]];
     then
-    echo "Need to specify -d (which deletes tag if committed by mistake) and or -e (sends email about new tag)"
-    exit 1
+    echo "Making new tag "$tagname
 fi
 
 if [[ $1 == "-d" ]];
     then
-    git tag -d $CATVERSION
-    git push origin :refs/tags/$CATVERSION
+    git tag -d $tagname
+    git push origin :refs/tags/$tagname
     
     if [[ $2 ==  "-e" ]];
 	then
@@ -23,15 +25,15 @@ if [[ $1 == "-e" ]];
     sendemail=true;
     if [[ $2 == "-d" ]];
     then
-	git tag -d $CATVERSION
-	git push origin :refs/tags/$CATVERSION
+	git tag -d $tagname
+	git push origin :refs/tags/$tagname
     fi
 fi
 
 
 git commit -a
 git push
-git tag $CATVERSION
+git tag $tagname
 git push --tags
 
 if [[ $sendemail == "true" ]];
