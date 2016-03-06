@@ -450,11 +450,11 @@ void Data::ConnectEvent(int setting_data){
   
   // new for v7-4-6
   if(!TString(CatVersion).Contains("v7-4")){
-    if( (setting_data == 0) || (setting_data == 2)){
+    if( (setting_data == 1) || (setting_data == 3)){
       ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
       ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
     }
-    if( (setting_data ==1) || (setting_data ==2)){
+    if( (setting_data ==2) || (setting_data ==3)){
       ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
       ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
       ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
@@ -713,7 +713,7 @@ void Data::ConnectTruth(int setting_data){
   //#####   Truth branches
 
   //  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
-  if(setting_data == 0) return;
+  if(setting_data == 1) return;
   if(!TString(CatVersion).Contains("v7-4")){
     ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
     ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);

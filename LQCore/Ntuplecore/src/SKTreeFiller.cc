@@ -77,7 +77,8 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   for (UInt_t i=0 ; i< vtrignames->size(); i++) {
     // trignames is vector of trigger names that we want to store in SKTrees
     // trigname contains names substrings X (where X is for example "HLT_mu") and we store all triggers that start with X
-
+    
+    
     std::string tgname = vtrignames->at(i);
     if(TString(CatVersion).Contains("v7-6-2")) {
       if(SkipTrigger(TString(tgname)))continue;
