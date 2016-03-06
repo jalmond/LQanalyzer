@@ -506,7 +506,6 @@ fi
 ## RUN PARAMETERS
 job_cycle="$submit_analyzer_name"
 
-echo $changed_submit_version_tag
 if [[ $changed_submit_version_tag == "false" ]];
     then
     
@@ -516,7 +515,6 @@ if [[ $changed_submit_version_tag == "false" ]];
     fi
 fi
 
-echo $submit_version_tag "submit_version_tag"
 #### HARDCODE the skinput for sktreemakers
 if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     then 
