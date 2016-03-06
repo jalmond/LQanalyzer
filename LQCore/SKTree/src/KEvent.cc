@@ -265,10 +265,10 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
-      k_pu_silver_weight = p.PileUpWeight_Silver(none);	
+      k_pu_silver_weight = p.PileUpWeight_Silver(central);	
       k_pu_silver_p_weight= p.PileUpWeight_Silver(up);
       k_pu_silver_m_weight= p.PileUpWeight_Silver(down);
-      k_pu_gold_weight = p.PileUpWeight_Gold(none);
+      k_pu_gold_weight = p.PileUpWeight_Gold(central);
       k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
       k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
 
@@ -306,12 +306,12 @@ void KEvent::SetPileUpInteractionsTrue(double npu){
 
 void KEvent::SetPUWeight(json type, syst_dir sys, double puw){
   if(type==silver){
-    if(sys==none)  k_pu_silver_weight = puw;
+    if(sys==central)  k_pu_silver_weight = puw;
     if(sys==up)  k_pu_silver_p_weight = puw;
     if(sys==down)  k_pu_silver_m_weight = puw;
   }
   else  if(type==gold){
-    if(sys==none)  k_pu_gold_weight = puw;
+    if(sys==central)  k_pu_gold_weight = puw;
     if(sys==up)  k_pu_gold_p_weight = puw;
     if(sys==down)  k_pu_gold_m_weight = puw;
   }

@@ -178,17 +178,14 @@ tmpwork = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
-if not (os.path.exists(tmpwork + "/" + cycle)):
-    os.system("mkdir " + tmpwork + "/" + cycle)
+timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now()
+if not (os.path.exists(timestamp_dir)):
+    os.system("mkdir " + timestamp_dir)
     
-if os.path.exists(tmpwork + "/" + cycle + "/job_output/"):
-    os.system("rm -r " + tmpwork + "/" + cycle+ "/job_output/")
+if not os.path.exists(timestamp_dir+"/job_output/"):
+    os.system("mkdir " + timestamp_dir+"/job_output/")
 
-   
-if not os.path.exists(tmpwork + "/" + cycle+ "/job_output/"):
-    os.system("mkdir " + tmpwork + "/" + cycle+ "/job_output/")
-
-local_sub_dir=  tmpwork + "/" + cycle+ "/job_output/"  + sample + '_' + new_channel + '_' + now()
+local_sub_dir=  timestamp_dir + "/job_output/"  + sample + '_' + new_channel + '_' + now()
 
     
 if not os.path.exists(local_sub_dir):
@@ -523,7 +520,12 @@ workspace = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample
+
+
 output=workspace + sample + "_" + now() + "/"
+if not mc:
+    output=workspace + new_channel+  sample + "_" + now() + "/"
+
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"
 if not (os.path.exists(output)):
@@ -849,7 +851,7 @@ if not JobOutput:
     print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
     os.system("rm -r " + output)    
     os.system("rm -r " + local_sub_dir)    
-    
+    os.system("rm -r " + timestamp_dir)
 
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
     
@@ -1020,6 +1022,7 @@ else:
             os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
         os.system("rm -r " + local_sub_dir)
+        os.system("rm -r " + timestamp_dir)
         print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename
         if doMerge:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
@@ -1035,7 +1038,7 @@ else:
         
 if os.path.exists(local_sub_dir):
     os.system("rm -r " + local_sub_dir)
-
+    os.system("rm -r " + timestamp_dir)
 end_time = time.time()
 total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"

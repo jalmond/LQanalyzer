@@ -177,10 +177,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   }
   else{
     if(!TString(CatVersion).Contains("v7-4")) {
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::none,puWeightSilver);
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::central,puWeightSilver);
       kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down,puWeightSilverDn);
       kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  puWeightSilverUp);
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::none,puWeightGold);
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::central,puWeightGold);
       kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,puWeightGoldDn);
       kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  puWeightGoldUp);
     }

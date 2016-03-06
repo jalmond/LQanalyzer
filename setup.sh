@@ -41,21 +41,32 @@ export LQANALYZER_SRC_PATH=${LQANALYZER_DIR}/LQAnalysis/src/
 export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
-if [[ "$HOSTNAME" == "cms1" ]]
+if [[ "$HOSTNAME" == "cms1" ]];
 then 
     export OBJ=obj/slc6_cms1
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms1
-elif [[ "$HOSTNAME" == "cms5" || "$HOSTNAME" == "cms6" ]]
+elif [[ "$HOSTNAME" == "cms5" ]];
 then
-    export OBJ=obj/slc6
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6/
-elif [[ "$HOSTNAME" == "cms3" ]]
+    export OBJ=obj/slc6_cms5
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms5/
+    
+elif [[  "$HOSTNAME" == "cms6" ]];
+then
+    export OBJ=obj/slc6_cms6
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms6/
+
+elif [[ "$HOSTNAME" == "cms3" ]];
 then
     export OBJ=obj/slc5_cms3
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms3/
+elif [[ "$HOSTNAME" == "cms4" ]];
+then
+    export OBJ=obj/slc5_cms4
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms4/
 else
-    export OBJ=obj/slc5
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5/
+    export OBJ=obj/slc5_cms2
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms2/
+
 fi
 
 export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/

@@ -119,11 +119,11 @@ void GetEffectiveLuminosityPrivateSamples(){
       }
       
       
-      TString command4 = "rm log/checkoutput.txt";
-      TString command5= "ls   /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/  > log/checkoutput.txt";
+      TString command4 = "rm log/checkoutput_private.txt";
+      TString command5= "ls   /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/  > log/checkoutput_private.txt";
       system(command4.Data());
       system(command5.Data());
-      TString filename_fs = "log/checkoutput.txt";
+      TString filename_fs = "log/checkoutput_private.txt";
       ifstream name_file(filename_fs.Data());
       int counter=0;
       while(!name_file.eof()) {
@@ -135,10 +135,10 @@ void GetEffectiveLuminosityPrivateSamples(){
      
       bool JobDone=false;
       while (JobDone==false){
-	TString command6= "ls  "  + mit->first + "/output/ > log/checkcounted.txt";
+	TString command6= "ls  "  + mit->first + "/output/ > log/checkcounted_private.txt";
 	system(command6.Data());
 	
-	TString filename_counted = "log/checkcounted.txt";
+	TString filename_counted = "log/checkcounted_private.txt";
 	ifstream name_countedfile(filename_counted.Data());
 	int counter_counted=0;
 	while(!name_countedfile.eof()) {

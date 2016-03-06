@@ -26,6 +26,7 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 
+march16dir2 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v2/"
 march16dir = os.getenv("LQANALYZER_LIB_PATH")+ "/March16/"
 oct15dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/Oct15/"
 april15dir = os.getenv("LQANALYZER_LIB_PATH")+ "/April15/"
@@ -34,10 +35,14 @@ localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
 txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 
-if not os.path.exists(march16dir):
-    os.system("mkdir " + march16dir)
-    os.system("rm -r " + oct15dir)
-    os.system("rm -r " + april15dir)
+if not os.path.exists(march16dir2):
+    os.system("mkdir " + march16dir2)
+    if os.path.exists(march16dir):
+        os.system("rm -r " + march16dir)
+    if os.path.exists(oct15dir):    
+        os.system("rm -r " + oct15dir)
+    if os.path.exists(april15dir):
+        os.system("rm -r " + april15dir)
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
     
