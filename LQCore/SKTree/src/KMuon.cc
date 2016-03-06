@@ -9,23 +9,23 @@ ClassImp(KMuon)
  */
 KMuon::KMuon() :
   KParticle(),
-  k_dz(0.),
-  k_dxy(0.),
-  k_globmuon_chi2(0.),
-  k_muonVtx(0.),
-  k_muonVty(0.),
-  k_muonVtz(0.),
+  k_dz(-999.),
+  k_dxy(-999.),
+  k_globmuon_chi2(-999.),
+  k_muonVtx(-999.),
+  k_muonVty(-999.),
+  k_muonVtz(-999.),
   
   k_muon_valid_hits(-999), 
   k_muon_valid_pixhits(-999),
   k_muon_valid_stations(-999),
   k_muon_layer_with_meas(-999),
-  k_muon_ispf(-999),
-  k_muon_isglobal(-999),
-  k_muon_istracker(-999),
+  k_muon_ispf(0),
+  k_muon_isglobal(0),
+  k_muon_istracker(0),
 
-  muon_pt_up(0.), 
-  muon_pt_down(0.),
+  muon_pt_up(-999.), 
+  muon_pt_down(-999.),
   k_muon_reliso03(-999.),
   k_muon_reliso04(-999.),
   
@@ -86,34 +86,34 @@ KMuon::~KMuon()
 void KMuon::Reset()
 {
   KParticle::Reset();
-  k_dz=0.;
-  k_dxy=0.;
-  k_globmuon_chi2=0;
-  k_muonVtx=0.;
-  k_muonVty=0.;
-  k_muonVtz=0.;
+  k_dz=-999.;
+  k_dxy=-999.;
+  k_globmuon_chi2=-999;
+  k_muonVtx=-999.;
+  k_muonVty=-999.;
+  k_muonVtz=-999.;
   
-  k_muon_valid_hits=0;
-  k_muon_valid_pixhits=0;
-  k_muon_valid_stations=0;
-  k_muon_layer_with_meas=0;
+  k_muon_valid_hits=-999;
+  k_muon_valid_pixhits=-999;
+  k_muon_valid_stations=-999;
+  k_muon_layer_with_meas=-999;
 
   
-  k_muon_ispf=0;
-  k_muon_isglobal=0;
-  k_muon_istracker=0;
+  k_muon_ispf=false;
+  k_muon_isglobal=false;
+  k_muon_istracker=false;
   
   muon_pt_up=0.;
   muon_pt_down=0.;
   k_muon_reliso03=-999.;
   k_muon_reliso04=-999.;
 
-  k_isloose=0;
-  k_istight=0;
-  k_matched=0;
-  k_ismedium=0;
-  k_issoft=0;
-  k_matched=0;
+  k_isloose=false;
+  k_istight=false;
+  k_matched=false;
+  k_ismedium=false;
+  k_issoft=false;
+  k_matched=false;
 
   k_trig_match= "";
 }

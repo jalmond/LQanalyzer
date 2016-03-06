@@ -14,28 +14,28 @@ ClassImp(KPhoton)
 KPhoton::KPhoton() :
   KParticle()
 {
-  k_ph_chhadiso_noEA=0.; 
-  k_ph_puchhadiso_noEA=0.; 
-  k_ph_nhadiso_noEA=0.; 
-  k_ph_phiso_noEA=0.; 
-  k_ph_rhoiso=0.; 
-  k_ph_chhadiso=0.; 
-  k_ph_photoniso=0.; 
-  k_ph_nhadiso=0.; 
-  k_ph_sigietaieta=0.; 
-  k_ph_r9=0.; 
-  k_ph_hovere=0.; 
-  k_ph_sceta=0.; 
-  k_ph_scphi=0.; 
-  k_ph_scrawe=0.; 
-  k_ph_scpreshower_e=0.;
-  k_ph_isloose=0; 
-  k_ph_ismedium=0; 
-  k_ph_istight=0; 
-  k_ph_passmva=0; 
-  k_mc_matched=0; 
-  k_ph_haspixseed=0;
-  k_ph_passelveto=0;
+  k_ph_chhadiso_noEA=-999.; 
+  k_ph_puchhadiso_noEA=-999.; 
+  k_ph_nhadiso_noEA=-999.; 
+  k_ph_phiso_noEA=-999.; 
+  k_ph_rhoiso=-999.; 
+  k_ph_chhadiso=-999.; 
+  k_ph_photoniso=-999.; 
+  k_ph_nhadiso=-999.; 
+  k_ph_sigietaieta=-999.; 
+  k_ph_r9=-999.; 
+  k_ph_hovere=-999.; 
+  k_ph_sceta=-999.; 
+  k_ph_scphi=-999.; 
+  k_ph_scrawe=-999.; 
+  k_ph_scpreshower_e=-999.;
+  k_ph_isloose=false; 
+  k_ph_ismedium=false; 
+  k_ph_istight=false; 
+  k_ph_passmva=false; 
+  k_mc_matched=false; 
+  k_ph_haspixseed=false;
+  k_ph_passelveto=false;
   
 }
 
@@ -78,28 +78,28 @@ KPhoton::~KPhoton()
 void KPhoton::Reset()
 {
   KParticle::Reset();
-  k_ph_chhadiso_noEA=0.;
-  k_ph_puchhadiso_noEA=0.;
-  k_ph_nhadiso_noEA=0.;
-  k_ph_phiso_noEA=0.;
-  k_ph_rhoiso=0.;
-  k_ph_chhadiso=0.;
-  k_ph_photoniso=0.;
-  k_ph_nhadiso=0.;
-  k_ph_sigietaieta=0.;
-  k_ph_r9=0.;
-  k_ph_hovere=0.;
-  k_ph_sceta=0.;
-  k_ph_scphi=0.;
-  k_ph_scrawe=0.;
-  k_ph_scpreshower_e=0.;
-  k_ph_isloose=0;
-  k_ph_ismedium=0;
-  k_ph_istight=0;
-  k_ph_passmva=0;
-  k_mc_matched=0;
-  k_ph_haspixseed=0;
-  k_ph_passelveto=0;
+  k_ph_chhadiso_noEA=-999.;
+  k_ph_puchhadiso_noEA=-999.;
+  k_ph_nhadiso_noEA=-999.;
+  k_ph_phiso_noEA=-999.;
+  k_ph_rhoiso=-999.;
+  k_ph_chhadiso=-999.;
+  k_ph_photoniso=-999.;
+  k_ph_nhadiso=-999.;
+  k_ph_sigietaieta=-999.;
+  k_ph_r9=-999.;
+  k_ph_hovere=-999.;
+  k_ph_sceta=-999.;
+  k_ph_scphi=-999.;
+  k_ph_scrawe=-999.;
+  k_ph_scpreshower_e=-999.;
+  k_ph_isloose=false;
+  k_ph_ismedium=false;
+  k_ph_istight=false;
+  k_ph_passmva=false;
+  k_mc_matched=false;
+  k_ph_haspixseed=false;
+  k_ph_passelveto=false;
 
 
 }

@@ -130,63 +130,70 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
+  /// Since some versions of catuples have no metNoHF due to bug in met code 
+
   if(metNoHF_pt){
     if(metNoHF_pt->size() > 0) kevent.SetMET(snu::KEvent::nohf, metNoHF_pt->at(0),  metNoHF_phi->at(0), metNoHF_sumet->at(0));
   }
   
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
-  if(met_unclusteredEn_Px_up){
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
-    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up);
-    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down);
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
-    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up);
-    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down);
-    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
-    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
-    
-    kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up);
-    kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down);
+  
+  if(!TString(CatVersion).Contains("v7-4")){
+    if(met_unclusteredEn_Px_up){
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
+      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up);
+      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down);
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
+      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up);
+      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down);
+      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
+      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
+      
+      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up);
+      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down);
+    }
   }
   m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
   
   /// Filling event variables
     
   kevent.SetIsData(isData);
-
-  if(!isData&&genWeight){
-    if(genWeight > 0.) kevent.SetWeight(1.);
-    else kevent.SetWeight(-1.);
-  }
   kevent.SetRunNumber(run);
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   
-  if(puWeightSilver){
-    kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::none,puWeightSilver);
-    kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down,puWeightSilverDn);
-    kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  puWeightSilverUp);
-    kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::none,puWeightGold);
-    kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,puWeightGoldDn);
-    kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  puWeightGoldUp);
+  if(isData){
+    if(!TString(CatVersion).Contains("v7-4")) {
+      kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
+      kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
+    }
   }
-  if(lumiMaskSilver){
-    kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
-    kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
+  else{
+    if(!TString(CatVersion).Contains("v7-4")) {
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::none,puWeightSilver);
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down,puWeightSilverDn);
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  puWeightSilverUp);
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::none,puWeightGold);
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,puWeightGoldDn);
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  puWeightGoldUp);
+    }
+
+    kevent.SetGenId(genWeight_id1, genWeight_id2);
+    kevent.SetLHEWeight(lheWeight);
+    kevent.SetGenX(genWeightX1, genWeightX2);
+    kevent.SetGenQ(genWeightQ);
+    if(genWeight > 0.) kevent.SetWeight(1.);
+    else kevent.SetWeight(-1.);
+    //if(pdfWeight->size() != 0)    m_logger << INFO << "pdfWeight size=" << pdfWeight->size() << " " << pdfWeight->at(0) << " " << pdfWeight->at(1) <<LQLogger::endmsg;
+    
+    
   }
-
-  kevent.SetGenId(genWeight_id1, genWeight_id2);
-
-  kevent.SetLHEWeight(lheWeight);
-  kevent.SetGenX(genWeightX1, genWeightX2);
-  kevent.SetGenQ(genWeightQ);
-  
   kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
   
   /// MET filter cuts/checks
@@ -331,7 +338,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassMVANoTrigTight(electrons_electronID_mva_tight->at(iel));
 
     el.SetIsPF(electrons_isPF->at(iel));
-    el.SetIsTrigMVAValid(electrons_isTrigMVAValid->at(iel));
+    if(electrons_isTrigMVAValid) el.SetIsTrigMVAValid(electrons_isTrigMVAValid->at(iel));
     el.SetIsMCMatched(electrons_mcMatched->at(iel));
     el.SetHasMatchedConvPhot(electrons_passConversionVeto->at(iel));
     
@@ -357,6 +364,8 @@ void SKTreeFiller::ERRORMessage(TString comment){
 std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 
   std::vector<KGenJet> genjets;
+
+  if(isData) return genjets;
   if(!LQinput){
     if(k_inputgenjets){
       for(std::vector<KGenJet>::iterator kit  = k_inputgenjets->begin(); kit != k_inputgenjets->end(); kit++){
@@ -366,14 +375,22 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     return genjets;
   }
 
-  m_logger << DEBUG << "Filling genevent Info" << LQLogger::endmsg;
-
+  if(TString(CatVersion).Contains("v7-4")) {
+    for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
+      KGenJet jet;
+      jet.SetPtEtaPhiE(slimmedGenJets_pt->at(ijet), slimmedGenJets_eta->at(ijet), slimmedGenJets_phi->at(ijet), slimmedGenJets_energy->at(ijet));
+      genjets.push_back(jet);
+    }
+    return genjets;
+  }
+  
   for (UInt_t ijet=0; ijet< genjet_pt->size(); ijet++) {
     KGenJet jet;
     jet.SetPtEtaPhiE(genjet_pt->at(ijet), genjet_eta->at(ijet), genjet_phi->at(ijet), genjet_energy->at(ijet));
     jet.SetGenJetEMF(genjet_emf->at(ijet));
     jet.SetGenJetHADF(genjet_hadf->at(ijet));
     jet.SetGenJetPDGID(int(genjet_hadf->at(ijet)));
+    
     genjets.push_back(jet);
   }
   return genjets;
@@ -536,6 +553,8 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;
 
+  if(isData) return vtruth;
+  
   int counter=0;
 
   if(!LQinput){

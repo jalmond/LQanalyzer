@@ -14,23 +14,23 @@ ClassImp(KElectron)
 KElectron::KElectron() :
 KParticle()
 {
-  k_sceta=0;
-  k_dxy=0;
-  k_dz=0;
+  k_sceta=-999;
+  k_dxy=-999;
+  k_dz=-999;
   k_gsf_ctscpix_charge=false;
   k_hasmatchconvphot=false; 
-  k_pf_chargedhad_iso03=0.;
-  k_pf_photon_iso03=0.;
-  k_pf_neutral_iso03=0.;
-  k_pf_chargedhad_iso04=0.;
-  k_pf_photon_iso04=0.;
-  k_pf_neutral_iso04=0.;
-  k_rel_iso03=0.;
-  k_rel_iso04=0.;
-  k_abs_iso03=0.;
-  k_abs_iso04=0.;
-  k_pt_shifted_up=0.;
-  k_pt_shifted_down=0.;
+  k_pf_chargedhad_iso03=-999;
+  k_pf_photon_iso03=-999;
+  k_pf_neutral_iso03=-999;
+  k_pf_chargedhad_iso04=-999;
+  k_pf_photon_iso04=-999;
+  k_pf_neutral_iso04=-999;
+  k_rel_iso03=-999;
+  k_rel_iso04=-999;
+  k_abs_iso03=-999;
+  k_abs_iso04=-999;
+  k_pt_shifted_up=-999;
+  k_pt_shifted_down=-999;
   pass_veto=false;
   pass_loose=false;
   pass_medium=false;
@@ -44,9 +44,9 @@ KParticle()
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
-  k_trkvx=0.;
-  k_trkvy=0.;
-  k_trkvz=0.;
+  k_trkvx=-999;
+  k_trkvy=-999;
+  k_trkvz=-999;
   k_gsf_ctscpix_charge=false;
   k_trig_match="";
 }
@@ -103,21 +103,21 @@ KElectron::~KElectron()
 void KElectron::Reset()
 {
   KParticle::Reset();
-  k_sceta=0;
-  k_dxy=0;
+  k_sceta=-999;
+  k_dxy=-999;
   k_dz=0;
   k_gsf_ctscpix_charge=false;
   k_hasmatchconvphot=false;
-  k_pf_chargedhad_iso03=0.;
-  k_pf_photon_iso03=0.;
-  k_pf_neutral_iso03=0.;
-  k_pf_chargedhad_iso04=0.;
-  k_pf_photon_iso04=0.;
-  k_pf_neutral_iso04=0.;
-  k_rel_iso03=0.;
-  k_rel_iso04=0.;
-  k_pt_shifted_up=0.;
-  k_pt_shifted_down=0.;
+  k_pf_chargedhad_iso03=-999;
+  k_pf_photon_iso03=-999;
+  k_pf_neutral_iso03=-999;
+  k_pf_chargedhad_iso04=-999;
+  k_pf_photon_iso04=-999;
+  k_pf_neutral_iso04=-999;
+  k_rel_iso03=-999;
+  k_rel_iso04=-999;
+  k_pt_shifted_up=-999;
+  k_pt_shifted_down=-999;
   pass_veto=false;
   pass_loose=false;
   pass_medium=false;
@@ -131,11 +131,11 @@ void KElectron::Reset()
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
-  k_trkvx=0.;
-  k_trkvy=0.;
-  k_trkvz=0.;
-  k_abs_iso03=0.;
-  k_abs_iso04=0.;
+  k_trkvx=-999;
+  k_trkvy=-999;
+  k_trkvz=-999;
+  k_abs_iso03=-999;
+  k_abs_iso04=-999;
   k_gsf_ctscpix_charge=false;
   k_trig_match="";
 

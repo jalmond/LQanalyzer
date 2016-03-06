@@ -24,7 +24,7 @@
 #include <TFile.h>
 
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
+AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false) {
 
 
   lumimask= snu::KEvent::missing;
@@ -398,19 +398,21 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   /// Default silver
   /// For v-7-6-2 default is set to gold because met is broken
 
-  if(VersionStamp(TString(eventinfo.CatVersion())) == 3) lumimask = snu::KEvent::gold; 
-
-  /// If version of SKTree has no lumi mask then silver json is run.
-  else if(eventinfo.CatVersion().empty()) lumimask = snu::KEvent::missing;
-  /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
-  else if(VersionStamp(TString(eventinfo.CatVersion())) < 3) lumimask = snu::KEvent::missing;
-  else  lumimask = snu::KEvent::silver;
+  if(!reset_lumi_mask) {
+    if(VersionStamp(TString(eventinfo.CatVersion())) == 3) lumimask = snu::KEvent::gold; 
+    
+    /// If version of SKTree has no lumi mask then silver json is run.
+    else if(eventinfo.CatVersion().empty()) lumimask = snu::KEvent::missing;
+    /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
+    else if(VersionStamp(TString(eventinfo.CatVersion())) < 3) lumimask = snu::KEvent::missing;
+    else  lumimask = snu::KEvent::silver;
+  }
   //
   // creates object that stores all SKTree classes	
   //                                                                                                        
-
-  snu::KTrigger triggerinfo = GetTriggerInfo(triggerlist);
   
+  snu::KTrigger triggerinfo = GetTriggerInfo(triggerlist);
+    
   std::vector<snu::KJet> skjets= GetAllJets();
   std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
   
@@ -430,6 +432,14 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
 
   if(lumimask == snu::KEvent::gold) MCweight*= SilverToGoldJsonReweight(per);
   eventbase->GetEvent().SetJSON(lumimask);
+  
+}
+
+
+void AnalyzerCore::ResetLumiMask(snu::KEvent::json flag){
+  
+  reset_lumi_mask=true;
+  lumimask=flag;
   
 }
 

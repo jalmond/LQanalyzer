@@ -189,7 +189,7 @@ namespace snu {
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,10)
+    ClassDef(KJet,11)
   }; 
   
 

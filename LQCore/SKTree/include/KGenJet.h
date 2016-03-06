@@ -40,7 +40,7 @@ namespace snu {
     
     Double_t k_genjet_p, k_genjet_emf, k_genjet_hadf;
     Int_t k_genjet_pdgid;
-    ClassDef(KGenJet,2)
+    ClassDef(KGenJet,3)
   }; 
   
 

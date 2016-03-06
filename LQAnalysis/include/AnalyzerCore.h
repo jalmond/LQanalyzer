@@ -131,7 +131,7 @@ class AnalyzerCore : public LQCycleBase {
   Double_t MCweight, weight;
 
   snu::KEvent::json lumimask;
-
+  bool reset_lumi_mask;
   // used to get trigger prescale
   Int_t prescale;
   
@@ -172,6 +172,9 @@ class AnalyzerCore : public LQCycleBase {
   //// Plotting 
   TH1* GetHist(TString hname);
   TH2* GetHist2D(TString hname);
+
+  /// Changed  Default json file
+  void ResetLumiMask(snu::KEvent::json flag);
 
   /// Fills hist in maphist
   void FillHist(TString histname, float value, float w );

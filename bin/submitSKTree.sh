@@ -54,6 +54,7 @@ check_all_catversions=false
 set_submit_file_tag=false
 set_submit_file_list=false
 set_submit_sampletag=false
+set_sktreemaker_debug=false
 
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
@@ -505,23 +506,26 @@ fi
 ## RUN PARAMETERS
 job_cycle="$submit_analyzer_name"
 
-
+echo $changed_submit_version_tag
 if [[ $changed_submit_version_tag == "false" ]];
     then
     
-    if [[ $submit_analyzer_name == *"SKTreeMaker" ]];
+    if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
 	then
 	submit_version_tag=""
     fi
 fi
 
+echo $submit_version_tag "submit_version_tag"
 #### HARDCODE the skinput for sktreemakers
 if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     then 
     submit_skinput=false
     job_skim="FLATCAT"
-    
-    job_njobs=30
+    if [[ $set_sktreemaker_debug == "false" ]];
+	then
+	job_njobs=30
+    fi
     if [[ $submit_version_tag == "" ]];
 	then 
 	echo "When running SKTreeMaker you need to specify the catversion: -c "
@@ -538,7 +542,10 @@ if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
     submit_skinput=false
     job_skim="FLATCAT"
     
-    job_njobs=30
+    if [[ $set_sktreemaker_debug == "false" ]];
+        then
+	job_njobs=30
+    fi
     if [[ $submit_version_tag == "" ]];
         then
         echo "When running SKTreeMaker you need to specify the catversion: -c "
@@ -557,19 +564,22 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
     then
     submit_skinput=true
     job_skim="SKTree_LeptonSkim"
-    job_njobs=30
-  if [[ $submit_version_tag == "" ]];
-      then
-      echo "When running SKTreeMaker you need to specify the catversion: -c "
-      echo "Options are: "
-      for ic in  ${list_of_catversions[@]};
-	do
-	echo $ic
-      done
-      
-      exit 1
-  fi
-
+    if [[ $set_sktreemaker_debug == "false" ]];
+	then
+        job_njobs=30
+    fi
+    if [[ $submit_version_tag == "" ]];
+	then
+	echo "When running SKTreeMaker you need to specify the catversion: -c "
+	echo "Options are: "
+	for ic in  ${list_of_catversions[@]};
+	  do
+	  echo $ic
+	done
+	
+	exit 1
+    fi
+    
 fi
 
 

@@ -15,45 +15,45 @@ KEvent::KEvent() :
   TObject(),
   k_EventNumber(0),
   k_RunNumber(0),
-  k_nvertices(0),
-  k_lumisec(0),
-  k_ngoodvertices(0),
-  k_pdf_id1(0),
-  k_pdf_id2(0),
-  k_lumi_mask_silver(0),
-  k_lumi_mask_gold(0),
-  k_vertexX(0.),
-  k_vertexY(0.),
-  k_vertexZ(0.), 
-  k_vertexNDOF(0.), 
-  k_mcweight(0.),
-  k_lheweight(0.),
-  k_pdf_q(0.),
-  k_pdf_x1(0.),
-  k_pdf_x2(0.),
+  k_nvertices(-999),
+  k_lumisec(-999),
+  k_ngoodvertices(-999),
+  k_pdf_id1(-999),
+  k_pdf_id2(-999),
+  k_lumi_mask_silver(-999),
+  k_lumi_mask_gold(-999),
+  k_vertexX(-999.),
+  k_vertexY(-999.),
+  k_vertexZ(-999.), 
+  k_vertexNDOF(-999.), 
+  k_mcweight(-999.),
+  k_lheweight(-999.),
+  k_pdf_q(-999.),
+  k_pdf_x1(-999.),
+  k_pdf_x2(-999.),
 
-  k_PF_MET(0.), 
-  k_PF_METphi(0.),
-  k_PF_SumET(0.), 
-  k_NoHF_MET(0.),
-  k_NoHF_METphi(0.),
-  k_NoHF_SumET(0.),
-  k_PF_MET_MuonEn_up(0.),
-  k_PF_MET_MuonEn_down(0.),
-  k_PF_MET_ElectronEn_up(0.),
-  k_PF_MET_ElectronEn_down(0.),
-  k_PF_MET_JetEn_up(0.),
-  k_PF_MET_JetEn_down(0.),
-  k_PF_SumET_JetEn_up(0.),
-  k_PF_SumET_JetEn_down(0.),
-  k_PF_MET_JetRes_up(0.),
-  k_PF_MET_JetRes_down(0.),
-  k_PF_SumET_JetRes_up(0.),
-  k_PF_SumET_JetRes_down(0.),
-  k_PF_MET_unclusteredEn_up(0.),
-  k_PF_MET_unclusteredEn_down(0.),
-  k_PF_SumET_unclusteredEn_up(0.),
-  k_PF_SumET_unclusteredEn_down(0.),
+  k_PF_MET(-999.), 
+  k_PF_METphi(-999.),
+  k_PF_SumET(-999.), 
+  k_NoHF_MET(-999.),
+  k_NoHF_METphi(-999.),
+  k_NoHF_SumET(-999.),
+  k_PF_MET_MuonEn_up(-999.),
+  k_PF_MET_MuonEn_down(-999.),
+  k_PF_MET_ElectronEn_up(-999.),
+  k_PF_MET_ElectronEn_down(-999.),
+  k_PF_MET_JetEn_up(-999.),
+  k_PF_MET_JetEn_down(-999.),
+  k_PF_SumET_JetEn_up(-999.),
+  k_PF_SumET_JetEn_down(-999.),
+  k_PF_MET_JetRes_up(-999.),
+  k_PF_MET_JetRes_down(-999.),
+  k_PF_SumET_JetRes_up(-999.),
+  k_PF_SumET_JetRes_down(-999.),
+  k_PF_MET_unclusteredEn_up(-999.),
+  k_PF_MET_unclusteredEn_down(-999.),
+  k_PF_SumET_unclusteredEn_up(-999.),
+  k_PF_SumET_unclusteredEn_down(-999.),
 
   k_isData(false), 
   k_isgoodevent(false),
@@ -62,13 +62,13 @@ KEvent::KEvent() :
   k_passCSCHaloFilterTight(false),
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
   k_passHBHENoiseFilter(false),
-  k_PileUpInteractionsTrue(0.),
-  k_pu_silver_weight(0.),
-  k_pu_silver_p_weight(0.),
-  k_pu_silver_m_weight(0.),
-  k_pu_gold_weight(0.),
-  k_pu_gold_p_weight(0.),
-  k_pu_gold_m_weight(0.),
+  k_PileUpInteractionsTrue(-999.),
+  k_pu_silver_weight(-999.),
+  k_pu_silver_p_weight(-999.),
+  k_pu_silver_m_weight(-999.),
+  k_pu_gold_weight(-999.),
+  k_pu_gold_p_weight(-999.),
+  k_pu_gold_m_weight(-999.),
   k_catversion(""),
   k_lumimask(snu::KEvent::missing)
 
@@ -149,47 +149,47 @@ KEvent::~KEvent()
 void KEvent::Reset()
 {
   
-  k_EventNumber= 0;
-  k_RunNumber= 0;
-  k_nvertices= 0;
-  k_lumisec=0; 
-  k_ngoodvertices= 0;
-  k_pdf_id1=0;
-  k_pdf_id2=0;
-  k_lumi_mask_silver=0;
-  k_lumi_mask_gold=0;
-  k_vertexX= 0.;
-  k_vertexY= 0.;
-  k_vertexZ= 0.;
-  k_vertexNDOF= 0.;
-  k_mcweight= 0.;
-  k_lheweight= 0.;
-  k_pdf_q=0.;
-  k_pdf_x1= 0.;
-  k_pdf_x2=0.;
+  k_EventNumber= -999;
+  k_RunNumber= -999;
+  k_nvertices= -999;
+  k_lumisec=-999; 
+  k_ngoodvertices= -999;
+  k_pdf_id1=-999;
+  k_pdf_id2=-999;
+  k_lumi_mask_silver=-999;
+  k_lumi_mask_gold=-999;
+  k_vertexX= -999.;
+  k_vertexY= -999.;
+  k_vertexZ= -999.;
+  k_vertexNDOF= -999.;
+  k_mcweight= -999.;
+  k_lheweight= -999.;
+  k_pdf_q=-999.;
+  k_pdf_x1= -999.;
+  k_pdf_x2=-999.;
 
-  k_PF_MET= 0.;
-  k_PF_SumET= 0.;
-  k_PF_METphi= 0.;
-  k_NoHF_MET= 0;
-  k_NoHF_METphi= 0;
-  k_NoHF_SumET= 0;
-  k_PF_MET_MuonEn_up = 0.;
-  k_PF_MET_MuonEn_down = 0.;
-  k_PF_MET_ElectronEn_up = 0.;
-  k_PF_MET_ElectronEn_down = 0.;
-  k_PF_MET_JetEn_up = 0.;
-  k_PF_MET_JetEn_down = 0.;
-  k_PF_SumET_JetEn_up = 0.;
-  k_PF_SumET_JetEn_down = 0.;
-  k_PF_MET_JetRes_up = 0.;
-  k_PF_MET_JetRes_down = 0.;
-  k_PF_SumET_JetRes_up = 0.;
-  k_PF_SumET_JetRes_down = 0.;
-  k_PF_MET_unclusteredEn_up = 0.;
-  k_PF_MET_unclusteredEn_down = 0.;
-  k_PF_SumET_unclusteredEn_up = 0.;
-  k_PF_SumET_unclusteredEn_down = 0.;
+  k_PF_MET= -999.;
+  k_PF_SumET= -999.;
+  k_PF_METphi= -999.;
+  k_NoHF_MET= -999;
+  k_NoHF_METphi= -999;
+  k_NoHF_SumET= -999;
+  k_PF_MET_MuonEn_up = -999.;
+  k_PF_MET_MuonEn_down = -999.;
+  k_PF_MET_ElectronEn_up = -999.;
+  k_PF_MET_ElectronEn_down = -999.;
+  k_PF_MET_JetEn_up = -999.;
+  k_PF_MET_JetEn_down = -999.;
+  k_PF_SumET_JetEn_up = -999.;
+  k_PF_SumET_JetEn_down = -999.;
+  k_PF_MET_JetRes_up = -999.;
+  k_PF_MET_JetRes_down = -999.;
+  k_PF_SumET_JetRes_up = -999.;
+  k_PF_SumET_JetRes_down = -999.;
+  k_PF_MET_unclusteredEn_up = -999.;
+  k_PF_MET_unclusteredEn_down = -999.;
+  k_PF_SumET_unclusteredEn_up = -999.;
+  k_PF_SumET_unclusteredEn_down = -999.;
   
   k_isData= false;
   k_isgoodevent = false;
@@ -197,13 +197,13 @@ void KEvent::Reset()
   k_passCSCHaloFilterTight= false;
   k_passEcalDeadCellTriggerPrimitiveFilter= false;
   k_passHBHENoiseFilter= false;
-  k_PileUpInteractionsTrue = 0.;
-  k_pu_silver_weight = 0.;
-  k_pu_silver_p_weight=0.;
-  k_pu_silver_m_weight = 0.;
-  k_pu_gold_weight = 0.;
-  k_pu_gold_p_weight=0.;
-  k_pu_gold_m_weight = 0.;
+  k_PileUpInteractionsTrue = -999.;
+  k_pu_silver_weight = -999.;
+  k_pu_silver_p_weight=-999.;
+  k_pu_silver_m_weight = -999.;
+  k_pu_gold_weight = -999.;
+  k_pu_gold_p_weight=-999.;
+  k_pu_gold_m_weight = -999.;
   k_catversion="";
   k_lumimask=missing;
 
@@ -265,12 +265,12 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
-      k_pu_silver_weight = p.PileUpWeight_Silver(none);	
-      k_pu_silver_p_weight= p.PileUpWeight_Silver(up);
-      k_pu_silver_m_weight= p.PileUpWeight_Silver(down);
-      k_pu_gold_weight = p.PileUpWeight_Gold(none);
-      k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
-      k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
+      k_pu_silver_weight = p.PileUpWeight_Silver(0);	
+      k_pu_silver_p_weight= p.PileUpWeight_Silver(1);
+      k_pu_silver_m_weight= p.PileUpWeight_Silver(-1);
+      k_pu_gold_weight = p.PileUpWeight_Gold(0);
+      k_pu_gold_p_weight= p.PileUpWeight_Gold(1);
+      k_pu_gold_m_weight= p.PileUpWeight_Gold(-1);
 
       k_catversion = p.CatVersion();
       k_lumimask = p.GetJSON();

@@ -106,7 +106,7 @@ namespace snu {
     
     TString k_trig_match;
     
-    ClassDef(KMuon,13)
+    ClassDef(KMuon,14)
   };   
 }//namespace snu
 

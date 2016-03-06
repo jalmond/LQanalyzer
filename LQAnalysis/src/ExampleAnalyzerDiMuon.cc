@@ -41,7 +41,7 @@ ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  
   MakeCleverHistograms(trilephist,"TriMuon_noB");
   MakeCleverHistograms(trilephist,"TriMuon_nomet");
   MakeCleverHistograms(trilephist,"TriMuonEl");
-  
+
 }
 
 
@@ -56,9 +56,14 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
   
   Message("Making clever hists for Z ->ll test code", INFO);
   
-  //// default is silver, excpept in v7-6-2 ... set to gold if you use gold json in analysis
   /// only available in v7-6-X branch and newer
-  //lumimask = snu::KEvent::gold;
+  //// default lumimask is silver ////
+  //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
+  ///When METNoHF isfixed the default will be back to silver
+  /// set to gold if you want to use gold json in analysis
+  /// To set uncomment the line below:
+  //ResetLumiMask(snu::KEvent::gold);
+
 
   return;
 }

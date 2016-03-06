@@ -51,7 +51,14 @@ void ExampleAnalyzerElectronMuon::InitialiseAnalysis() throw( LQError ) {
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
    MakeCleverHistograms(sighist_em, "ElectronMuonEvents");
 
-   
+   /// only available in v7-6-X branch and newer
+   //// default lumimask is silver ////
+   //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
+   ///  When METNoHF is fixed the default will be back to silver
+   /// set to gold if you want to use gold json in analysis
+   /// To set uncomment the line below:
+   //ResetLumiMask(snu::KEvent::gold);
+
    return;
 }
 

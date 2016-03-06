@@ -15,25 +15,25 @@ namespace snu {
   public:
 
 
-    enum json{missing,
-	      silver,
-	      gold};
+    enum json{missing=0,
+	      silver=1,
+	      gold=2};
 
-    enum met_syst{None,
-		  MuonEn,
-		  ElectronEn,
-		  JetEn,
-		  JetRes,
-		  Unclustered};
+    enum met_syst{None=0,
+		  MuonEn=1,
+		  ElectronEn=2,
+		  JetEn=3,
+		  JetRes=4,
+		  Unclustered=5};
 
-    enum met_type{pfmet,
-		  puppi,
-		  nohf,
-		  pfmva};
+    enum met_type{pfmet=0,
+		  puppi=1,
+		  nohf=2,
+		  pfmva=3};
     
-    enum syst_dir{none,
-		  down,
-		  up};
+    enum syst_dir{none=0,
+		  down=1,
+		  up=2};
 
     KEvent();
     
@@ -149,14 +149,14 @@ namespace snu {
 
     inline Double_t PileUpWeight_Silver(int sys) const{
       if(sys == 0)return k_pu_silver_weight;
-      else if(sys == -1)return k_pu_silver_p_weight;
-      else if(sys == 1)return k_pu_silver_m_weight;
+      else if(sys == 1)return k_pu_silver_p_weight;
+      else if(sys == -1)return k_pu_silver_m_weight;
       else return -999.;
     }
     inline Double_t PileUpWeight_Gold(int sys) const{
       if(sys == 0)return k_pu_gold_weight;
-      else if(sys == -1)return k_pu_gold_p_weight;
-      else if(sys == 1)return k_pu_gold_m_weight;
+      else if(sys == 1)return k_pu_gold_p_weight;
+      else if(sys == -1)return k_pu_gold_m_weight;
       else return -999.;
     }
     
@@ -194,7 +194,7 @@ namespace snu {
     std::string k_catversion;
     json k_lumimask;    
 
-    ClassDef(KEvent,23);
+    ClassDef(KEvent,24);
   }; 
   
 }//namespace snu

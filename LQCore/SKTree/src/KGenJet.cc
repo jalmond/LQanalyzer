@@ -14,10 +14,10 @@ ClassImp(KGenJet)
 KGenJet::KGenJet() :
   KParticle()  
 {
-  k_genjet_p = 0.;
-  k_genjet_emf = 0.;
-  k_genjet_hadf = 0.;
-  k_genjet_pdgid =0;
+  k_genjet_p = -999.;
+  k_genjet_emf = -999.;
+  k_genjet_hadf = -999.;
+  k_genjet_pdgid =-999;
 }
 
 /**
@@ -39,10 +39,10 @@ KGenJet::~KGenJet()
 
 void KGenJet::Reset()
 {
-  k_genjet_p = 0.;
-  k_genjet_emf = 0. ;
-  k_genjet_hadf = 0.; 
-  k_genjet_pdgid=0;
+  k_genjet_p = -999.;
+  k_genjet_emf = -999. ;
+  k_genjet_hadf = -999.; 
+  k_genjet_pdgid=-999;
 
 }
 

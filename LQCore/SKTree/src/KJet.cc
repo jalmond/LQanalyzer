@@ -17,29 +17,29 @@ KParticle()
   k_jet_passLooseID=false;
   k_jet_passTightID=false;
   k_jet_passTightLepVetoID=false;
-  k_jet_energy_raw=0.;
-  k_jet_pt_raw=0.;
-  k_jet_csv2= 0.;
-  k_jet_cmva2 = 0.;
-  k_jet_jetprobbjet= 0.;
-  k_vtx_mass= 0.;
-  k_vtx_3dval= 0.;
-  k_vtx_3dsig= 0.;
-  k_vtx_ntrack= 0;
-  k_jet_chargeEmEF=0.;
-  k_jet_partonflavour=0;
-  k_jet_hadronflavour=0;
-  k_jet_partonpdgid=0;
-  k_jet_error_jec=0.;
-  k_jet_scaled_down_energy=0.;
-  k_jet_scaled_up_energy=0.;
-  k_jet_smeared_down_energy=0.;
-  k_jet_smeared_up_energy=0.;
-  k_jet_smeared_energy=0.;
+  k_jet_energy_raw=-999.;
+  k_jet_pt_raw=-999.;
+  k_jet_csv2= -999.;
+  k_jet_cmva2 = -999.;
+  k_jet_jetprobbjet= -999.;
+  k_vtx_mass= -999.;
+  k_vtx_3dval= -999.;
+  k_vtx_3dsig= -999.;
+  k_vtx_ntrack= -999;
+  k_jet_chargeEmEF=-999.;
+  k_jet_partonflavour=-999;
+  k_jet_hadronflavour=-999;
+  k_jet_partonpdgid=-999;
+  k_jet_error_jec=-999.;
+  k_jet_scaled_down_energy=-999.;
+  k_jet_scaled_up_energy=-999.;
+  k_jet_smeared_down_energy=-999.;
+  k_jet_smeared_up_energy=-999.;
+  k_jet_smeared_energy=-999.;
   k_jet_passpileup_loose=false;
   k_jet_passpileup_medium=false;
   k_jet_passpileup_tight=false;
-  k_jet_pileup_mva=0.;
+  k_jet_pileup_mva=-999.;
   
 }
 
@@ -91,31 +91,31 @@ void KJet::Reset()
     k_jet_passLooseID=false;
     k_jet_passTightID=false;
     k_jet_passTightLepVetoID=false;
-    k_jet_energy_raw=0.;
-    k_jet_pt_raw=0.;
-    k_jet_csv2= 0.;
-    k_jet_cmva2= 0.;
-    k_jet_jetprobbjet = 0.;
+    k_jet_energy_raw=-999.;
+    k_jet_pt_raw=-999.;
+    k_jet_csv2= -999.;
+    k_jet_cmva2= -999.;
+    k_jet_jetprobbjet = -999.;
 
 
-    k_vtx_mass= 0.;
-    k_vtx_3dval= 0.;
-    k_vtx_3dsig= 0.;
-    k_vtx_ntrack= 0;
-    k_jet_chargeEmEF=0.;
-    k_jet_partonflavour=0;
-    k_jet_hadronflavour=0;
-    k_jet_partonpdgid=0;
-    k_jet_error_jec=0.;
-    k_jet_scaled_down_energy=0.;
-    k_jet_scaled_up_energy=0.;
-    k_jet_smeared_down_energy=0.;
-    k_jet_smeared_up_energy=0.;
-    k_jet_smeared_energy=0.;
+    k_vtx_mass= -999.;
+    k_vtx_3dval= -999.;
+    k_vtx_3dsig= -999.;
+    k_vtx_ntrack= -999;
+    k_jet_chargeEmEF=-999.;
+    k_jet_partonflavour=-999;
+    k_jet_hadronflavour=-999;
+    k_jet_partonpdgid=-999;
+    k_jet_error_jec=-999.;
+    k_jet_scaled_down_energy=-999.;
+    k_jet_scaled_up_energy=-999.;
+    k_jet_smeared_down_energy=-999.;
+    k_jet_smeared_up_energy=-999.;
+    k_jet_smeared_energy=-999.;
     k_jet_passpileup_loose=false;
     k_jet_passpileup_medium=false;
     k_jet_passpileup_tight=false;
-    k_jet_pileup_mva=0.;
+    k_jet_pileup_mva=-999.;
 
 }
 

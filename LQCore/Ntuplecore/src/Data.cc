@@ -107,7 +107,7 @@ Long64_t Data::LoadTree(Long64_t entry)
    return centry;
 }
 
-void Data::Init(TTree *tree)
+void Data::Init(TTree *tree, int setting_data)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -158,7 +158,7 @@ void Data::Init(TTree *tree)
   Int_t cachesize=100000000;
   fChain->SetCacheSize(cachesize);
   if(LQinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
-  ConnectVariables(false); // -> false means not ALL branches are loaded
+  ConnectVariables(false, setting_data); // -> false means not ALL branches are loaded
 
   //fChain->GetEntry(0,0);
   fChain->StopCacheLearningPhase();
@@ -323,6 +323,10 @@ void Data::Reset(){
   genjet_emf = 0;
   genjet_hadf = 0;
   genjet_pdgid = 0;
+  slimmedGenJets_energy = 0;
+  slimmedGenJets_eta = 0;
+  slimmedGenJets_phi = 0;
+  slimmedGenJets_pt = 0;
 
   electrons_electronID_loose = 0;
   electrons_electronID_medium = 0;
@@ -390,7 +394,7 @@ void Data::SetCatVersion(std::string cv){
 }
 
 
-void Data::ConnectVariables(bool setall){
+void Data::ConnectVariables(bool setall, int setting_data){
 
   /// set all controlls which cranches are set 
   //#####   EVENT branches
@@ -424,20 +428,20 @@ void Data::ConnectVariables(bool setall){
     
   }  
   else{
-    ConnectEvent();
+    ConnectEvent(setting_data);
     ConnectMuons();
     ConnectMET();
     ConnectElectrons();
     ConnectPhotons();
     ConnectPFJets();
-    ConnectTruth();
+    ConnectTruth(setting_data);
     ConnectTrigger();
     
     if(setall) ConnectAllBranches();
   }
   return;
 }
-void Data::ConnectEvent(){
+void Data::ConnectEvent(int setting_data){
 
   ConnectVariable("run", run, b_run);
   ConnectVariable("IsData", isData, b_isData);  
@@ -445,17 +449,20 @@ void Data::ConnectEvent(){
   ConnectVariable("event", event, b_event);
   
   // new for v7-4-6
-  if(TString(CatVersion).Contains("v7-6")){
-    ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
-    ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
-    ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
-    ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
-    ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
-    ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
-    ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
-    ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
+  if(!TString(CatVersion).Contains("v7-4")){
+    if( (setting_data == 0) || (setting_data == 2)){
+      ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
+      ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
+    }
+    if( (setting_data ==1) || (setting_data ==2)){
+      ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
+      ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
+      ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
+      ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
+      ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
+      ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
+    }
   }
-
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
  
   ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
@@ -479,7 +486,6 @@ void Data::ConnectEvent(){
 void Data::ConnectTrigger(){
   
   //#####   Trigger branches
-  //  ConnectVariable("HLTInsideDatasetTriggerNames", HLTInsideDatasetTriggerNames, b_HLTInsideDatasetTriggerNames);
   ConnectVariable("vtrignames",vtrignames, b_vtrignames);
   ConnectVariable("vtrigps",vtrigps,b_vtrigps);
   ConnectVariable("muon_trigmatch", muon_trigmatch, b_muon_trigmatch);
@@ -493,8 +499,6 @@ void Data::ConnectTrigger(){
 void Data::ConnectMuons(){
   
   //#####   Muon branches
-  //ConnectVariable("MuonshiftedEdown",MuonshiftedEdown,b_MuonshiftedEdown);
-
   ConnectVariable("muon_isPF", muon_isPF , b_muon_isPF);
   ConnectVariable("muon_pt"  , muon_pt, b_muon_pt);
   ConnectVariable("muon_eta" , muon_eta , b_muon_eta);
@@ -530,34 +534,36 @@ void Data::ConnectMuons(){
 
 
 void Data::ConnectPhotons(){
-  ConnectVariable("photons_pt",photons_pt , b_photons_pt);
-  ConnectVariable("photons_eta",photons_eta , b_photons_eta);
-  ConnectVariable("photons_phi",photons_phi , b_photons_phi);
-  ConnectVariable("photons_energy",photons_energy , b_photons_energy);
-  ConnectVariable("photons_chargedHadronIso", photons_chargedHadronIso , b_photons_chargedHadronIso);
-  ConnectVariable("photons_puChargedHadronIso", photons_puChargedHadronIso, b_photons_puChargedHadronIso);
-  ConnectVariable("photons_neutralHadronIso", photons_neutralHadronIso, b_photons_neutralHadronIso);
-  ConnectVariable("photons_photonIso", photons_photonIso, b_photons_photonIso);
-  ConnectVariable("photons_rhoIso", photons_rhoIso, b_photons_rhoIso);
-  ConnectVariable("photons_chargedHadronIsoWithEA", photons_chargedHadronIsoWithEA, b_photons_chargedHadronIsoWithEA);
-  ConnectVariable("photons_neutralHadronIsoWithEA", photons_neutralHadronIsoWithEA, b_photons_neutralHadronIsoWithEA);
-  ConnectVariable("photons_photonIsoWithEA", photons_photonIsoWithEA, b_photons_photonIsoWithEA);
-  ConnectVariable("photons_sigmaietaieta", photons_sigmaietaieta, b_photons_sigmaietaieta);
-  ConnectVariable("photons_r9", photons_r9, b_photons_r9);
-  ConnectVariable("photons_hovere", photons_hovere, b_photons_hovere);
-  ConnectVariable("photons_sceta", photons_sceta, b_photons_sceta);
-  ConnectVariable("photons_scphi", photons_scphi, b_photons_scphi);
-  ConnectVariable("photons_scrawenergy", photons_scrawenergy, b_photons_scrawenergy);
-  ConnectVariable("photons_scpreshowerenergy", photons_scpreshowerenergy, b_photons_scpreshowerenergy);
-  ConnectVariable("photons_photonID_loose", photons_photonID_loose, b_photons_photonID_loose);
-  ConnectVariable("photons_photonID_medium", photons_photonID_medium, b_photons_photonID_medium);
-  ConnectVariable("photons_photonID_tight", photons_photonID_tight, b_photons_photonID_tight);
-  ConnectVariable("photons_photonID_mva", photons_photonID_mva, b_photons_photonID_mva);
-  ConnectVariable("photons_mcMatched", photons_mcMatched, b_photons_mcMatched);
-  ConnectVariable("photons_haspixseed", photons_haspixseed, b_photons_haspixseed);
-  ConnectVariable("photons_passelectronveto",photons_passelectronveto , b_photons_passelectronveto);
-
-
+  
+  if(!TString(CatVersion).Contains("v7-4")){
+    ConnectVariable("photons_pt",photons_pt , b_photons_pt);
+    ConnectVariable("photons_eta",photons_eta , b_photons_eta);
+    ConnectVariable("photons_phi",photons_phi , b_photons_phi);
+    ConnectVariable("photons_energy",photons_energy , b_photons_energy);
+    ConnectVariable("photons_chargedHadronIso", photons_chargedHadronIso , b_photons_chargedHadronIso);
+    ConnectVariable("photons_puChargedHadronIso", photons_puChargedHadronIso, b_photons_puChargedHadronIso);
+    ConnectVariable("photons_neutralHadronIso", photons_neutralHadronIso, b_photons_neutralHadronIso);
+    ConnectVariable("photons_photonIso", photons_photonIso, b_photons_photonIso);
+    ConnectVariable("photons_rhoIso", photons_rhoIso, b_photons_rhoIso);
+    ConnectVariable("photons_chargedHadronIsoWithEA", photons_chargedHadronIsoWithEA, b_photons_chargedHadronIsoWithEA);
+    ConnectVariable("photons_neutralHadronIsoWithEA", photons_neutralHadronIsoWithEA, b_photons_neutralHadronIsoWithEA);
+    ConnectVariable("photons_photonIsoWithEA", photons_photonIsoWithEA, b_photons_photonIsoWithEA);
+    ConnectVariable("photons_sigmaietaieta", photons_sigmaietaieta, b_photons_sigmaietaieta);
+    ConnectVariable("photons_r9", photons_r9, b_photons_r9);
+    ConnectVariable("photons_hovere", photons_hovere, b_photons_hovere);
+    ConnectVariable("photons_sceta", photons_sceta, b_photons_sceta);
+    ConnectVariable("photons_scphi", photons_scphi, b_photons_scphi);
+    ConnectVariable("photons_scrawenergy", photons_scrawenergy, b_photons_scrawenergy);
+    ConnectVariable("photons_scpreshowerenergy", photons_scpreshowerenergy, b_photons_scpreshowerenergy);
+    ConnectVariable("photons_photonID_loose", photons_photonID_loose, b_photons_photonID_loose);
+    ConnectVariable("photons_photonID_medium", photons_photonID_medium, b_photons_photonID_medium);
+    ConnectVariable("photons_photonID_tight", photons_photonID_tight, b_photons_photonID_tight);
+    ConnectVariable("photons_photonID_mva", photons_photonID_mva, b_photons_photonID_mva);
+    ConnectVariable("photons_mcMatched", photons_mcMatched, b_photons_mcMatched);
+    ConnectVariable("photons_haspixseed", photons_haspixseed, b_photons_haspixseed);
+    ConnectVariable("photons_passelectronveto",photons_passelectronveto , b_photons_passelectronveto);
+  }
+  
  }
 
 void Data::ConnectElectrons(){
@@ -583,7 +589,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_energy", electrons_energy, b_electrons_energy);
   ConnectVariable("electrons_eta", electrons_eta, b_electrons_eta);
   ConnectVariable("electrons_isPF", electrons_isPF, b_electrons_isPF);
-  ConnectVariable("electrons_isTrigMVAValid", electrons_isTrigMVAValid, b_electrons_isTrigMVAValid);
+  if(!TString(CatVersion).Contains("v7-4"))  ConnectVariable("electrons_isTrigMVAValid", electrons_isTrigMVAValid, b_electrons_isTrigMVAValid);
   ConnectVariable("electrons_m", electrons_m, b_electrons_m);
   ConnectVariable("electrons_mcMatched", electrons_mcMatched, b_electrons_mcMatched);
   ConnectVariable("electrons_nhIso03", electrons_nhIso03, b_electrons_nhIso03);
@@ -616,12 +622,14 @@ void Data::ConnectPFJets(){
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);
   /// TLV variables
 
-  if(TString(CatVersion).Contains("v7-6")){
+  if(!TString(CatVersion).Contains("v7-4")){
     ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
     ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
     ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
   }
-
+  else{
+    ConnectVariable("jets_CVSInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
+  }
 
   ConnectVariable("jets_chargedEmEnergyFraction",jets_chargedEmEnergyFraction,b_jets_chargedEmEnergyFraction);
   ConnectVariable("jets_energy", jets_energy, b_jets_energy);
@@ -659,7 +667,7 @@ void Data::ConnectMET(){
   ConnectVariable("met_pt", met_pt , b_met_pt);
   ConnectVariable("met_sumet", met_sumet , b_met_sumet);
 
-  ConnectVariable("metPuppi_pt",metPuppi_pt , b_metPuppi_pt);
+  //ConnectVariable("metPuppi_pt",metPuppi_pt , b_metPuppi_pt);
   //ConnectVariable("metPuppi_phi",metPuppi_phi , b_metPuppi_phi);
   //ConnectVariable("metPuppi_sumet", metPuppi_sumet , b_metPuppi_sumet);
   ConnectVariable("metNoHF_phi",metNoHF_phi , b_metNoHF_phi);
@@ -669,43 +677,44 @@ void Data::ConnectMET(){
   //ConnectVariable("metPfMva_pt", metPfMva_pt , b_metPfMva_pt);
   //ConnectVariable("metPfMva_sumet", metPfMva_sumet , b_metPfMva_sumet);
 
-  ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
-  ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
-  ConnectVariable("met_muonEn_Px_down", met_muonEn_Px_down, b_met_muonEn_Px_down);
-  ConnectVariable("met_muonEn_Py_down", met_muonEn_Py_down, b_met_muonEn_Py_down);
-  ConnectVariable("met_electronEn_Px_up", met_electronEn_Px_up, b_met_electronEn_Px_up);
-  ConnectVariable("met_electronEn_Py_up", met_electronEn_Py_up, b_met_electronEn_Py_up);
-  ConnectVariable("met_electronEn_Px_down", met_electronEn_Px_down, b_met_electronEn_Px_down);
-  ConnectVariable("met_electronEn_Py_down", met_electronEn_Py_down, b_met_electronEn_Py_down);
-  ConnectVariable("met_unclusteredEn_Px_up", met_unclusteredEn_Px_up, b_met_unclusteredEn_Px_up);
-  ConnectVariable("met_unclusteredEn_Py_up", met_unclusteredEn_Py_up, b_met_unclusteredEn_Py_up);
-  ConnectVariable("met_unclusteredEn_Px_down", met_unclusteredEn_Px_down, b_met_unclusteredEn_Px_down);
-  ConnectVariable("met_unclusteredEn_Py_down", met_unclusteredEn_Py_down, b_met_unclusteredEn_Py_down);
-  ConnectVariable("met_unclusteredEn_SumEt_down", met_unclusteredEn_SumEt_down, b_met_unclusteredEn_SumEt_down);
-  ConnectVariable("met_unclusteredEn_SumEt_up", met_unclusteredEn_SumEt_up, b_met_unclusteredEn_SumEt_up);
-  ConnectVariable("met_jetEn_Px_up", met_jetEn_Px_up, b_met_jetEn_Px_up);
-  ConnectVariable("met_jetEn_Py_up", met_jetEn_Py_up, b_met_jetEn_Py_up);
-  ConnectVariable("met_jetEn_Px_down", met_jetEn_Px_down, b_met_jetEn_Px_down);
-  ConnectVariable("met_jetEn_Py_down", met_jetEn_Py_down, b_met_jetEn_Py_down);
-  ConnectVariable("met_jetEn_SumEt_down", met_jetEn_SumEt_down, b_met_jetEn_SumEt_down);
-  ConnectVariable("met_jetEn_SumEt_up", met_jetEn_SumEt_up, b_met_jetEn_SumEt_up);
-  ConnectVariable("met_jetRes_Px_up", met_jetRes_Px_up, b_met_jetRes_Px_up);
-  ConnectVariable("met_jetRes_Py_up", met_jetRes_Py_up, b_met_jetRes_Py_up);
-  ConnectVariable("met_jetRes_Px_down", met_jetRes_Px_down, b_met_jetRes_Px_down);
-  ConnectVariable("met_jetRes_Py_down", met_jetRes_Py_down, b_met_jetRes_Py_down);
-  ConnectVariable("met_jetRes_SumEt_down", met_jetRes_SumEt_down, b_met_jetRes_SumEt_down);
-  ConnectVariable("met_jetRes_SumEt_up", met_jetRes_SumEt_up, b_met_jetRes_SumEt_up);
-  
+  if(!TString(CatVersion).Contains("v7-4")){
+    ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
+    ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
+    ConnectVariable("met_muonEn_Px_down", met_muonEn_Px_down, b_met_muonEn_Px_down);
+    ConnectVariable("met_muonEn_Py_down", met_muonEn_Py_down, b_met_muonEn_Py_down);
+    ConnectVariable("met_electronEn_Px_up", met_electronEn_Px_up, b_met_electronEn_Px_up);
+    ConnectVariable("met_electronEn_Py_up", met_electronEn_Py_up, b_met_electronEn_Py_up);
+    ConnectVariable("met_electronEn_Px_down", met_electronEn_Px_down, b_met_electronEn_Px_down);
+    ConnectVariable("met_electronEn_Py_down", met_electronEn_Py_down, b_met_electronEn_Py_down);
+    ConnectVariable("met_unclusteredEn_Px_up", met_unclusteredEn_Px_up, b_met_unclusteredEn_Px_up);
+    ConnectVariable("met_unclusteredEn_Py_up", met_unclusteredEn_Py_up, b_met_unclusteredEn_Py_up);
+    ConnectVariable("met_unclusteredEn_Px_down", met_unclusteredEn_Px_down, b_met_unclusteredEn_Px_down);
+    ConnectVariable("met_unclusteredEn_Py_down", met_unclusteredEn_Py_down, b_met_unclusteredEn_Py_down);
+    ConnectVariable("met_unclusteredEn_SumEt_down", met_unclusteredEn_SumEt_down, b_met_unclusteredEn_SumEt_down);
+    ConnectVariable("met_unclusteredEn_SumEt_up", met_unclusteredEn_SumEt_up, b_met_unclusteredEn_SumEt_up);
+    ConnectVariable("met_jetEn_Px_up", met_jetEn_Px_up, b_met_jetEn_Px_up);
+    ConnectVariable("met_jetEn_Py_up", met_jetEn_Py_up, b_met_jetEn_Py_up);
+    ConnectVariable("met_jetEn_Px_down", met_jetEn_Px_down, b_met_jetEn_Px_down);
+    ConnectVariable("met_jetEn_Py_down", met_jetEn_Py_down, b_met_jetEn_Py_down);
+    ConnectVariable("met_jetEn_SumEt_down", met_jetEn_SumEt_down, b_met_jetEn_SumEt_down);
+    ConnectVariable("met_jetEn_SumEt_up", met_jetEn_SumEt_up, b_met_jetEn_SumEt_up);
+    ConnectVariable("met_jetRes_Px_up", met_jetRes_Px_up, b_met_jetRes_Px_up);
+    ConnectVariable("met_jetRes_Py_up", met_jetRes_Py_up, b_met_jetRes_Py_up);
+    ConnectVariable("met_jetRes_Px_down", met_jetRes_Px_down, b_met_jetRes_Px_down);
+    ConnectVariable("met_jetRes_Py_down", met_jetRes_Py_down, b_met_jetRes_Py_down);
+    ConnectVariable("met_jetRes_SumEt_down", met_jetRes_SumEt_down, b_met_jetRes_SumEt_down);
+    ConnectVariable("met_jetRes_SumEt_up", met_jetRes_SumEt_up, b_met_jetRes_SumEt_up);
+  }
   return;
 }
 
-void Data::ConnectTruth(){
+void Data::ConnectTruth(int setting_data){
 
   //#####   Truth branches
 
   //  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
-
-  if(TString(CatVersion).Contains("v7-6")){
+  if(setting_data == 0) return;
+  if(!TString(CatVersion).Contains("v7-4")){
     ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
     ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);
     ConnectVariable("genjet_phi",genjet_phi ,b_genjet_phi);
@@ -715,18 +724,19 @@ void Data::ConnectTruth(){
     ConnectVariable("genjet_pdgid",genjet_pdgid ,b_genjet_pdgid);
   }
   else{
-    
+    ConnectVariable("slimmedGenJets_eta", slimmedGenJets_eta,b_slimmedGenJets_eta);
+    ConnectVariable("slimmedGenJets_pt", slimmedGenJets_pt,b_slimmedGenJets_pt);
+    ConnectVariable("slimmedGenJets_phi", slimmedGenJets_phi,b_slimmedGenJets_phi);
+    ConnectVariable("slimmedGenJets_energy", slimmedGenJets_energy,b_slimmedGenJets_energy);
   }
+ 
   ConnectVariable("genWeightQ",genWeightQ, b_genWeightQ);
   ConnectVariable("genWeightX1",genWeightX1, b_genWeightX1);
   ConnectVariable("genWeightX2",genWeightX2, b_genWeightX2);
-
   ConnectVariable("lheWeight",lheWeight, b_lheWeight);
   ConnectVariable("genWeight",genWeight, b_genWeight);
-
   ConnectVariable("genWeight_id1",genWeight_id1, b_genWeight_id1);
   ConnectVariable("genWeight_id2", genWeight_id2, b_genWeight_id2);
-  
   ConnectVariable("gen_pt",gen_pt ,b_gen_pt );
   ConnectVariable("gen_eta",gen_eta ,b_gen_eta );
   ConnectVariable("gen_phi",gen_phi ,b_gen_phi );
@@ -799,6 +809,7 @@ bool Data::ConnectVariable(  const char* branchName,
   // Check if the branch actually exists:                                      
   TBranch* branch_info;
   if( ! (branch_info = fChain->GetBranch( branchName ) ) ) {    
+    m_logger << INFO << "Branch NOT FOUND " << branchName << LQLogger::endmsg;
     return false;
   }
 

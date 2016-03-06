@@ -33,6 +33,7 @@ ExampleAnalyzerDiElectron::ExampleAnalyzerDiElectron() :  AnalyzerCore(),  out_e
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
+
 }
 
 
@@ -62,6 +63,14 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(trilephist,"TriElectron_nomet");
    MakeCleverHistograms(trilephist,"TriElectron_noB");
 
+
+   /// only available in v7-6-X branch and newer
+   //// default lumimask is silver ////
+   //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
+   ///When METNoHF isfixed the default will be back to silver
+   /// set to gold if you want to use gold json in analysis
+   /// To set uncomment the line below:
+   //ResetLumiMask(snu::KEvent::gold);
    
    return;
 }

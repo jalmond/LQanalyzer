@@ -43,7 +43,7 @@ namespace snu {
     
     Int_t k_gen_pdgid, k_gen_status, k_gen_indexmum,  k_gen_index;
 
-    ClassDef(KTruth,7)
+    ClassDef(KTruth,8)
   }; 
   
 }//namespace snu

@@ -99,7 +99,7 @@ namespace snu {
     Bool_t k_ph_isloose, k_ph_ismedium, k_ph_istight, k_ph_passmva, k_mc_matched, k_ph_haspixseed, k_ph_passelveto;
     
 
-    ClassDef(KPhoton,1);
+    ClassDef(KPhoton,2);
   }; 
   
 }//namespace snu

@@ -15,11 +15,11 @@ KTruth::KTruth() :
 KParticle()
 {
 
-  k_gen_index=0; 
+  k_gen_index=-999; 
 
-  k_gen_pdgid=0; 
-  k_gen_status=0;
-  k_gen_indexmum=0;
+  k_gen_pdgid=-999; 
+  k_gen_status=-999;
+  k_gen_indexmum=-999;
 }
 
 /**
@@ -43,10 +43,10 @@ KTruth::~KTruth()
 void KTruth::Reset()
 {
   KParticle::Reset();
-  k_gen_index=0;
-  k_gen_pdgid=0;
-  k_gen_status=0;
-  k_gen_indexmum=0;
+  k_gen_index=-999;
+  k_gen_pdgid=-999;
+  k_gen_status=-999;
+  k_gen_indexmum=-999;
   
 }
 

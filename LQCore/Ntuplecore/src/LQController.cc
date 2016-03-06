@@ -567,8 +567,11 @@ void LQController::ExecuteCycle() throw( LQError ) {
     cycle->SetCatVersion(SetNTCatVersion(catversion_lq));
 
     //// Connect chain to Data class                                                                                                                                        
-    cycle->Init(chain);
-
+    if(inputType!=NOTSET) {
+      if(inputType == data) cycle->Init(chain,1 );
+      else  cycle->Init(chain, 2);
+    }
+    else cycle->Init(chain,3); 
     GetMemoryConsumption("Connected All Active Branches");
     
     /// We can now check 
@@ -672,7 +675,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {
 	cycle->GetEntry(jentry);	
 	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << LQLogger::endmsg;
-
 	if(cycle->GetEventNumber() == single_ev){
 	  cycle->SetUpEvent(jentry, ev_weight,k_period);
 	  cycle->ClearOutputVectors();

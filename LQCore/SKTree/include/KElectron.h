@@ -192,7 +192,7 @@ namespace snu {
     Int_t snu_id;
     TString k_trig_match;
 
-    ClassDef(KElectron,18);
+    ClassDef(KElectron,19);
   }; 
   
 }//namespace snu

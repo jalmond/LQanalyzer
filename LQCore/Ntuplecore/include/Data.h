@@ -54,7 +54,7 @@ public :
    Int_t    GetEntry(Long64_t entry);
    Int_t    Cut(Long64_t entry);
    Long64_t LoadTree(Long64_t entry);
-   void Init(TTree *tree);
+   void Init(TTree *tree, int data_setting);
    Bool_t   Notify(); //remove if possible
    void     Show(Long64_t entry = -1); //remove if possible
    TTree* GetInputTree();
@@ -71,15 +71,15 @@ public :
 			  T*& variable, TBranch* br);   
 
    void Reset();
-   void ConnectVariables(Bool_t setall);
+   void ConnectVariables(Bool_t setall, int data_setting);
 
-   void ConnectEvent();
+   void ConnectEvent(int data_setting);
    void ConnectMuons();
    void ConnectElectrons();
    void ConnectPhotons();
    void ConnectPFJets();
 
-   void ConnectTruth();
+   void ConnectTruth(int data_setting);
    void ConnectTrigger();
    void ConnectAllBranches();
    void ConnectMET();
@@ -294,6 +294,10 @@ public :
    std::vector<float>   *genjet_emf;
    std::vector<float>   *genjet_hadf;
    std::vector<int>     *genjet_pdgid;
+   std::vector<double>  *slimmedGenJets_energy;
+   std::vector<double>  *slimmedGenJets_eta;
+   std::vector<double>  *slimmedGenJets_phi;
+   std::vector<double>  *slimmedGenJets_pt;
    Double_t        vertex_X;
    Double_t        vertex_Y;
    Double_t        vertex_Z;
@@ -533,6 +537,10 @@ public :
    TBranch        *b_genjet_emf;   //!
    TBranch        *b_genjet_hadf;   //!
    TBranch        *b_genjet_pdgid;   //!
+   TBranch        *b_slimmedGenJets_energy;   //!                                                                                                                                                                                                                            
+   TBranch        *b_slimmedGenJets_eta;   //!                                                                                                                                                                                                                               
+   TBranch        *b_slimmedGenJets_phi;   //!                                                                                                                                                                                                                               
+   TBranch        *b_slimmedGenJets_pt;   //!    
    TBranch        *b_vertex_X;   //!                                                                                                                                                                                                                                       
    TBranch        *b_vertex_Y;   //!                                                                                                                                                                                                                                       
    TBranch        *b_vertex_Z;   //!                                                                                                                                                                                                                                       

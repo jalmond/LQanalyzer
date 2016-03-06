@@ -10,7 +10,7 @@ function usage
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion]"
     echo "              [-fake runfake ] [-flip runflip]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
-    echo "              [-dataset input_file ] [-xsec input_file] [-efflumi input_file]"
+    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file]"
 
 }
 
@@ -108,11 +108,12 @@ function getinfo_dataset
         if [[ $allowed_catversion == "false" ]];
             then
             echo "LQanalyzer::sktree :: ERROR :: Catversion "$submit_catvlist" is not allowed"
-            exit 1
+	    exit 1
 	elif [[ $submit_catvlist == *"v7-4"*  ]];
-	    then
-	    echo "LQanalyzer::sktree :: ERROR :: 'sktree -dataset <samplename>' only works for v7-6-3 and newer" 
-	    exit 
+            then
+            echo "LQanalyzer::sktree :: ERROR :: 'sktree -D' only works for v7-6-2 and newer"
+            exit 1
+
         fi
     fi
 
@@ -160,6 +161,93 @@ function getinfo_dataset
 
 }
 
+function getalldatasetinfo
+{
+    allowed_catversion=false
+    for iac in  ${list_of_catversions[@]};
+      do
+      if [[ $iac == $submit_catvlist ]];
+          then
+          allowed_catversion=true
+      fi
+    done
+    if [[ $submit_catvlist != "" ]];
+        then
+        if [[ $allowed_catversion == "false" ]];
+            then
+            echo "LQanalyzer::sktree :: ERROR :: Catversion "$submit_catvlist" is not allowed"
+            exit 1
+	elif [[ $submit_catvlist == *"v7-4"*  ]];
+            then
+            echo "LQanalyzer::sktree :: ERROR :: 'sktree -D' only works for v7-6-2 and newer"
+            exit
+        fi
+    fi
+    
+    if [[ $submit_catvlist  == "" ]];
+        then
+        submit_catvlist=${CATVERSION}
+    fi
+    echo "######################################################################################"
+    echo "LQAnalyzer::sktree :: INFO :: Looking up information for "$submit_catvlist 
+    echo "######################################################################################"
+    echo ""
+    echo "https://github.com/vallot/CATTools/blob/"$submit_catvlist"/CatProducer/python/catDefinitions_cfi.py"
+    echo ""
+
+    curl https://github.com/vallot/CATTools/blob/"$submit_catvlist"/CatProducer/python/catDefinitions_cfi.py >> gitfile.txt
+    echo "######################################################################################"
+
+
+    echo ""
+    declare -a ProdInfo=( "globalTag_mc" "globalTag_rd" "bunchCrossing" "lumiJSON" "lumiJSONSilver" "pileupMCmap" "JetEnergyCorrection" )
+    
+    while read line
+      do
+      
+      for ipr in  ${ProdInfo[@]};
+      	do
+	if [[  $line == *$ipr* ]];
+	  then
+	    
+	    if [[ $ipr != "bunchCrossing" ]];
+		then
+		sline2=$(echo $line | head -n1 | awk '{print $5}')
+		sline2=${sline2:14}
+		
+		sline3=$(echo $line | head -n1 | awk '{print $10}')
+		sline4=${sline3:27}
+		sline5=${sline4//<span/" "}
+		if [[ $sline2 == $ipr ]];
+		    then
+		    echo $ipr"=" $sline5
+		fi
+	    else
+		sline2=$(echo $line | head -n1 | awk '{print $5}')
+		sline2=${sline2:14}
+
+                sline3=$(echo $line | head -n1 | awk '{print $9}')
+                sline4=${sline3:14}
+                sline5=${sline4//td>/" "}
+		sline5=${sline5////" "}
+                sline5=${sline5//</" "}
+		sline5=${sline5//span>/" "}
+
+                if [[ $sline2 == $ipr ]];
+                    then
+                    echo $ipr"=" $sline5
+                fi
+
+		
+	    fi
+	    
+	fi
+      done
+    done <  gitfile.txt
+
+    rm gitfile.txt
+
+}
 function getdatasetname
 {
     getinfo_tag=3
@@ -738,6 +826,10 @@ while [ "$1" != "" ]; do
 	                        job_njobs=$1
 				changed_job_njobs=true
 				;;
+        -ns| --njobs_skmaker )  shift
+	                        set_sktreemaker_debug=true				
+                                ;;
+
         -r | --requestSKtree )  shift
 	                        request_sample=$1
 	                        sendrequest
@@ -754,6 +846,7 @@ while [ "$1" != "" ]; do
                                 ;;
 	-c | --CatVersion)      shift
 				submit_version_tag="$1"
+				changed_submit_version_tag=true
 				;;
         -ac | --AllCatVersion)  shift
                                 check_all_catversions=$1
@@ -779,7 +872,12 @@ while [ "$1" != "" ]; do
 				listavailable
                                 exit 1
                                 ;;
-
+				
+	-D | --GetProductionInfo)  shift
+                                submit_catvlist=$1
+                                getalldatasetinfo
+                                exit 1
+                                ;;
 
 	-dataset | --GetDataSetName)  shift
                             	submit_file_tag=$1
@@ -891,6 +989,10 @@ while [ "$1" != "" ]; do
 				    echo "-g       |                                                    | default = ''        | returns a list of available input   |"
 				    echo "         |                                                    |                     | arrays to input with:               |"
 				    echo "         |                                                    |                     | sktree -list command                |" 
+				    echo "         |                                                    |                     | Only available from v7-6-3          |"
+                                    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+				    
+				    
 				    echo "-dataset | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
 				    echo "         |                                                    |                     | Only available from v7-6-3          |"  
                                     echo "-xsec    | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns dataset xsec                |"
@@ -1019,6 +1121,17 @@ if [[ $submit_sampletag  == "SingleMuon" ]];
     then
     runDATA=true
 fi
+
+if [[ $submit_version_tag == *"v7-4"* ]];
+    then
+    declare -a SingleElectron=("singleelectron")
+    declare -a SingleMuon=("singlemuon")
+    declare -a DoubleMuon=("muon")
+    declare -a MuonEG=("emu")
+    declare -a DoubleEG=("egamma")
+fi
+
+
 
 
 declare -a FULLLISTOFSAMPLES=()
