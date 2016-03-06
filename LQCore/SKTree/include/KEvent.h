@@ -93,9 +93,9 @@ namespace snu {
     
     /// New for CAT v7-4-6 (silver/gold json files)
     Bool_t LumiMask(json js);
-    Double_t PileUpWeight(json js, int sys=0);
-    Double_t PFMETShifted (syst_dir dir, met_syst type) const;
-    Double_t PFSumETShifted(syst_dir dir,met_syst type) const;
+    Double_t PileUpWeight(json js, syst_dir dir=none);
+    Double_t PFMETShifted (met_syst type,syst_dir dir) const;
+    Double_t PFSumETShifted(met_syst type,syst_dir dir) const;
     Double_t MET(met_type type=pfmet) const;
     Double_t METPhi(met_type type=pfmet) const;
     Double_t SumET(met_type type=pfmet) const;
@@ -147,16 +147,16 @@ namespace snu {
     inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
 
 
-    inline Double_t PileUpWeight_Silver(int sys) const{
-      if(sys == 0)return k_pu_silver_weight;
-      else if(sys == 1)return k_pu_silver_p_weight;
-      else if(sys == -1)return k_pu_silver_m_weight;
+    inline Double_t PileUpWeight_Silver(syst_dir sys) const{
+      if(sys == none)return k_pu_silver_weight;
+      else if(sys == up)return k_pu_silver_p_weight;
+      else if(sys == down)return k_pu_silver_m_weight;
       else return -999.;
     }
-    inline Double_t PileUpWeight_Gold(int sys) const{
-      if(sys == 0)return k_pu_gold_weight;
-      else if(sys == 1)return k_pu_gold_p_weight;
-      else if(sys == -1)return k_pu_gold_m_weight;
+    inline Double_t PileUpWeight_Gold(syst_dir sys) const{
+      if(sys == none)return k_pu_gold_weight;
+      else if(sys == up)return k_pu_gold_p_weight;
+      else if(sys == down)return k_pu_gold_m_weight;
       else return -999.;
     }
     

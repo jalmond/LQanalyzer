@@ -18,13 +18,13 @@ class LQController  {
 
  public:
   
-  enum _catversion {none,
-		    v744,
-		    v745,
-		    v762,
-		    v763};
+  enum _catversion {none=0,
+		    v744=1,
+		    v745=2,
+		    v762=3,
+		    v763=4};
 
-
+  
   //// constructors
   LQController();
   virtual ~LQController();

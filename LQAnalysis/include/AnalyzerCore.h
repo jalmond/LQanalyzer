@@ -21,9 +21,9 @@ class AnalyzerCore : public LQCycleBase {
   
  public:
  
-  enum period  {C,
-		D,
-		CtoD,};
+  enum period  {C=0,
+		D=1,
+		CtoD=2};
   
   //Default constructor
    

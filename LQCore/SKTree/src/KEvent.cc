@@ -240,22 +240,22 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_NoHF_MET= p.MET(nohf);
       k_NoHF_METphi= p.METPhi(nohf);
       k_NoHF_SumET = p.SumET(nohf);
-      k_PF_MET_MuonEn_up = p.PFMETShifted(up,MuonEn);
-      k_PF_MET_MuonEn_down = p.PFMETShifted(down,MuonEn);
-      k_PF_MET_ElectronEn_up = p.PFMETShifted(up,ElectronEn);
-      k_PF_MET_ElectronEn_down = p.PFMETShifted(down,ElectronEn);
-      k_PF_MET_JetEn_up = p.PFMETShifted(up,JetEn);
-      k_PF_MET_JetEn_down = p.PFMETShifted(down,JetEn);
-      k_PF_SumET_JetEn_up = p.PFSumETShifted(up,JetEn);
-      k_PF_SumET_JetEn_down = p.PFSumETShifted(down,JetEn);
-      k_PF_MET_JetRes_up = p.PFMETShifted(up,JetRes);
-      k_PF_MET_JetRes_down = p.PFMETShifted(down,JetRes);
-      k_PF_SumET_JetRes_up = p.PFSumETShifted(up,JetRes);
-      k_PF_SumET_JetRes_down = p.PFSumETShifted(down,JetRes);
-      k_PF_MET_unclusteredEn_up = p.PFMETShifted(up,Unclustered);
-      k_PF_MET_unclusteredEn_down = p.PFMETShifted(down,Unclustered);
-      k_PF_SumET_unclusteredEn_up = p.PFSumETShifted(up,Unclustered);
-      k_PF_SumET_unclusteredEn_down = p.PFSumETShifted(down,Unclustered);
+      k_PF_MET_MuonEn_up = p.PFMETShifted(MuonEn,up);
+      k_PF_MET_MuonEn_down = p.PFMETShifted(MuonEn,down);
+      k_PF_MET_ElectronEn_up = p.PFMETShifted(ElectronEn,up);
+      k_PF_MET_ElectronEn_down = p.PFMETShifted(ElectronEn,down);
+      k_PF_MET_JetEn_up = p.PFMETShifted(JetEn,up);
+      k_PF_MET_JetEn_down = p.PFMETShifted(JetEn,down);
+      k_PF_SumET_JetEn_up = p.PFSumETShifted(JetEn,up);
+      k_PF_SumET_JetEn_down = p.PFSumETShifted(JetEn,down);
+      k_PF_MET_JetRes_up = p.PFMETShifted(JetRes,up);
+      k_PF_MET_JetRes_down = p.PFMETShifted(JetRes,down);
+      k_PF_SumET_JetRes_up = p.PFSumETShifted(JetRes,up);
+      k_PF_SumET_JetRes_down = p.PFSumETShifted(JetRes,down);
+      k_PF_MET_unclusteredEn_up = p.PFMETShifted(Unclustered,up);
+      k_PF_MET_unclusteredEn_down = p.PFMETShifted(Unclustered,down);
+      k_PF_SumET_unclusteredEn_up = p.PFSumETShifted(Unclustered,up);
+      k_PF_SumET_unclusteredEn_down = p.PFSumETShifted(Unclustered,down);
 
       k_isData=p.IsData();
       k_isgoodevent= p.HasGoodPrimaryVertex();
@@ -265,12 +265,12 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
-      k_pu_silver_weight = p.PileUpWeight_Silver(0);	
-      k_pu_silver_p_weight= p.PileUpWeight_Silver(1);
-      k_pu_silver_m_weight= p.PileUpWeight_Silver(-1);
-      k_pu_gold_weight = p.PileUpWeight_Gold(0);
-      k_pu_gold_p_weight= p.PileUpWeight_Gold(1);
-      k_pu_gold_m_weight= p.PileUpWeight_Gold(-1);
+      k_pu_silver_weight = p.PileUpWeight_Silver(none);	
+      k_pu_silver_p_weight= p.PileUpWeight_Silver(up);
+      k_pu_silver_m_weight= p.PileUpWeight_Silver(down);
+      k_pu_gold_weight = p.PileUpWeight_Gold(none);
+      k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
+      k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
 
       k_catversion = p.CatVersion();
       k_lumimask = p.GetJSON();
@@ -436,7 +436,7 @@ Bool_t KEvent::LumiMask(json js){
 }
 
 
-Double_t KEvent::PileUpWeight(json js, int sys){
+Double_t KEvent::PileUpWeight(json js, syst_dir sys){
   if(k_lumimask==missing) return -999;
   if(TString(k_catversion).Contains("v7-4-")) return -999;
   else if(js==silver) return PileUpWeight_Silver(sys);
@@ -445,9 +445,9 @@ Double_t KEvent::PileUpWeight(json js, int sys){
 }
 
 ///New forCAT v7-4-5 (MET systematics in one function)
-Double_t KEvent::PFMETShifted (syst_dir dir, met_syst type) const{
+Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{
   
-  if(TString(k_catversion).Contains("v7-4-4")) return 1.;
+  if(TString(k_catversion).Contains("v7-4-4")) return k_PF_MET;
   if(dir == up){
     if(type==None) return k_PF_MET;
     else if(type==MuonEn) return k_PF_MET_MuonEn_up;
@@ -470,8 +470,8 @@ Double_t KEvent::PFMETShifted (syst_dir dir, met_syst type) const{
   return k_PF_MET;
 }
 
-Double_t KEvent::PFSumETShifted(syst_dir dir, met_syst type) const{
-  if(TString(k_catversion).Contains("v7-4-4")) return 1.;
+Double_t KEvent::PFSumETShifted(met_syst type,syst_dir dir) const{
+  if(TString(k_catversion).Contains("v7-4-4")) return k_PF_SumET;
   if(dir == up){
     if(type==None) return k_PF_SumET;
     if(type==JetEn) return k_PF_SumET_JetEn_up;
