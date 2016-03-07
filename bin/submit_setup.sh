@@ -1115,6 +1115,15 @@ if [[ $submit_sampletag  == "SingleElectron" ]];
     runDATA=true
 fi
 
+declare -a SingleLepton=("SingleElectron" "SingleMuon")
+
+if [[ $submit_sampletag  == "SingleLepton" ]];
+    then
+    runDATA=true
+fi
+
+
+
 declare -a SingleMuon=("SingleMuon")
 
 if [[ $submit_sampletag  == "SingleMuon" ]];
