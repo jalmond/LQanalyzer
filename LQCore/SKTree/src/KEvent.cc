@@ -437,7 +437,7 @@ Bool_t KEvent::LumiMask(json js){
 
 
 Double_t KEvent::PileUpWeight(json js, syst_dir sys){
-  if(k_lumimask==missing) return -999;
+  if(k_lumimask==missing) { cout << "No lumimasl " << endl; return -999;}
   if(TString(k_catversion).Contains("v7-4-")) return -999;
   else if(js==silver) return PileUpWeight_Silver(sys);
   else if(js==gold) return PileUpWeight_Gold(sys);

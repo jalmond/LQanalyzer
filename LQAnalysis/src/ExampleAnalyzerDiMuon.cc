@@ -71,6 +71,8 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
 
 void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
+  eventbase->GetEvent().SetJSON(lumimask);
+  
   /// Apply the gen weight 
   weight*=MCweight;
   
@@ -171,10 +173,10 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if (!k_isdata) {
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
      if(eventbase->GetEvent().CatVersion().empty()) pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-     else if(!eventbase->GetEvent().CatVersion().find("v7-6")) pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-     else pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask,snu::KEvent::central);
+     else if(eventbase->GetEvent().CatVersion().find("v7-4") !=std::string::npos)  pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
+     else   pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask,snu::KEvent::central);
    }
-
+   
    FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);
    
    if (Zcandidate(muonTightColl, 20., true)){

@@ -112,11 +112,12 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   
 }
 
-snu::KEvent SKTreeFiller::GetEventInfo(){
+snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
  
   snu::KEvent kevent;
   if(!LQinput){
     kevent = *k_inputevent;
+    kevent.SetJSON(js);
     if(TString(CatVersion).Contains("v7-4")){
       if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
     }
@@ -128,7 +129,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   // New variable to set catversion. Add this to flat ntuples for next iteration
 
   kevent.SetCatVersion(CatVersion);
-
+  kevent.SetJSON(js);
   kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 

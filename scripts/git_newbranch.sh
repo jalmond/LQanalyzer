@@ -1,7 +1,7 @@
 todelete=""
 sendemail=false
 
-itag=".2"
+itag=".3"
 tagname=$CATVERSION$itag
 
 if [[ $1 == "" ]];
@@ -39,13 +39,13 @@ git push --tags
 if [[ $sendemail == "true" ]];
     then
 
-    declare -a list_users=( "jalmond@cern.ch" "jae.sung.kim@cern.ch" ) 
+    declare -a list_users=( "jalmond@cern.ch" "jae.sung.kim@cern.ch" "junho.choi@cern.ch") 
     
     for i in  ${list_users[@]};
       do
       
       source mail_tag.sh $i
-      cat email.txt | mail -s "New LQAnalyzer Tag Ready" $i
+      cat email.txt | mail -s "New LQAnalyzer Tag Ready" $i -c jalmond@cern.ch
       rm email.txt
     done
 fi

@@ -178,7 +178,7 @@ tmpwork = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
-timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now()
+timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")
 if not (os.path.exists(timestamp_dir)):
     os.system("mkdir " + timestamp_dir)
     
@@ -524,7 +524,7 @@ out_end=sample
 
 output=workspace + sample + "_" + now() + "/"
 if not mc:
-    output=workspace + new_channel+  sample + "_" + now() + "/"
+    output=workspace + new_channel+  sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/" 
 
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"

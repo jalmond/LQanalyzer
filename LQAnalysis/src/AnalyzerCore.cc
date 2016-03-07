@@ -383,7 +383,18 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
 
   }
   
-  snu::KEvent eventinfo = GetEventInfo();
+  /// Default silver
+  /// For v-7-6-2 default is set to gold because met is broken
+
+  if(!reset_lumi_mask) {
+    if(VersionStamp(TString(CatVersion)) == 3) lumimask = snu::KEvent::gold;
+
+    /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
+    else if(VersionStamp(TString(CatVersion)) < 3) lumimask = snu::KEvent::missing;
+    else  lumimask = snu::KEvent::silver;
+  }
+
+  snu::KEvent eventinfo = GetEventInfo(lumimask);
   
   if(k_isdata){
     if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
@@ -395,18 +406,6 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
     weight= ev_weight; 
   }
   
-  /// Default silver
-  /// For v-7-6-2 default is set to gold because met is broken
-
-  if(!reset_lumi_mask) {
-    if(VersionStamp(TString(eventinfo.CatVersion())) == 3) lumimask = snu::KEvent::gold; 
-    
-    /// If version of SKTree has no lumi mask then silver json is run.
-    else if(eventinfo.CatVersion().empty()) lumimask = snu::KEvent::missing;
-    /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
-    else if(VersionStamp(TString(eventinfo.CatVersion())) < 3) lumimask = snu::KEvent::missing;
-    else  lumimask = snu::KEvent::silver;
-  }
   //
   // creates object that stores all SKTree classes	
   //                                                                                                        
@@ -431,16 +430,18 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   eventbase = new EventBase(lqevent);
 
   if(lumimask == snu::KEvent::gold) MCweight*= SilverToGoldJsonReweight(per);
-  eventbase->GetEvent().SetJSON(lumimask);
-  
+
+
 }
 
 
 void AnalyzerCore::ResetLumiMask(snu::KEvent::json flag){
   
+  if(flag !=  snu::KEvent::gold){
+    if(flag !=  snu::KEvent::silver)    {m_logger << ERROR << "Wrong setting for ResetLumiMask" << LQLogger::endmsg; exit(0);}
+  }
   reset_lumi_mask=true;
   lumimask=flag;
-  
 }
 
 int AnalyzerCore::VersionStamp(TString cversion){
