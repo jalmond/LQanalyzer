@@ -38,6 +38,7 @@ txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
 old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
 
+
 if not os.path.exists(march16dir2):
     os.system("mkdir " + march16dir2)
     if os.path.exists(march16dir):
@@ -58,7 +59,7 @@ if not os.path.exists(march16dir2):
     os.system("source bin/make_clean_newbranch.sh")
     
 
-fakelib = os.getenv("LQANALYZER_LIB_PATH") + "libHNCommonLeptonFakes.so"
+fakelib = os.getenv("LQANALYZER_LIB_PATH") + "/libHNCommonLeptonFakes.so"
 
 if not os.path.exists(fakelib):
     os.system("source bin/make_fake_lib.sh")

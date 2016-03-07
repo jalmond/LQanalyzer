@@ -33,13 +33,10 @@ echo $tag_exists
 rm gitcheck.txt
 
 
-###### commit with no tag name
-cp $LQANALYZER_DIR/scripts/setup/branch_setup.sh $LQANALYZER_DIR/setup.sh
-git commit -a
-git push
-
 cp $LQANALYZER_DIR/scripts/setup/tag_setup.sh $LQANALYZER_DIR/setup.sh
 git commit -a
+
+#"New Tag: "$tagname  
 
 if [[ $1 == "" ]];
     then
@@ -50,6 +47,7 @@ fi
 
 if [[ $tag_exists == "true" ]];
     then
+    echo "Deleting branch "$tagname
     git tag -d $tagname
     git push origin :refs/tags/$tagname
     
