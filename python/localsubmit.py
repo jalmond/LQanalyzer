@@ -524,7 +524,7 @@ out_end=sample
 
 output=workspace + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
 if not mc:
-    output=workspace + new_channel+  sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/" 
+    output=workspace + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/" 
 
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"
@@ -572,11 +572,11 @@ if runcf == "True":
 if not mc:
     outsamplename = outsamplename +  "_" + new_channel
     if useCATv742ntuples == "True":
-        outsamplename = outsamplename + "_cat" + output_catversion
+        outsamplename = outsamplename + "_cat_" + output_catversion
 
 else:
     if useCATv742ntuples == "True":
-                outsamplename = outsamplename + "_cat"+ output_catversion
+                outsamplename = outsamplename + "_cat_"+ output_catversion
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"

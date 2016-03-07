@@ -3,7 +3,7 @@
 
 declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "NoCut" "Lepton" "DiLep")
-declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingeMuon" "SinglePhoton" "SingleElectron")
+declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 
 
 
@@ -36,7 +36,7 @@ changed_job_njobs=false
 submit_version_tag=${CATVERSION}
 submit_file_tag=""
 submit_file_list=""
-submit_catversion=${CATVERSION}
+submit_version_tag=${CATVERSION}
 submit_sampletag=""
 submit_catvlist=""
 submit_searchlist=""
@@ -168,18 +168,50 @@ function mergeoutput
 
         if [[ $job_data_lumi  == "C" ]];
             then
-            mv  ${outputdir_data}/*.root ${output_datafile}/${job_cycle}_data_cat${version_tag}.root
+            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
 
 
         elif [[ $job_data_lumi  == "D" ]];
             then
-            mv  ${outputdir_data}/*.root ${output_datafile}/${job_cycle}_data_cat${version_tag}.root
+            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
 
         else
-            echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat"${submit_catversion}".root "${outputdir_data}"/"${job_cycle}"*"
-            source hadd.sh ${outputdir_data} ${job_cycle}_data_cat${submit_catversion}.root ${outputdir_data}/${job_cycle}*
-            echo ${outputdir_data}"/"${job_cycle}"_data_cat"${submit_catversion}".root "
-            mv  ${outputdir_data}/${job_cycle}_data_cat${submit_catversion}.root  ${outputdir_mc}
+	    output_file_skim_tag=$1
+	    
+	    if [[ $job_skim == "FLATCAT" ]];
+		then
+		output_file_skim_tag=$output_file_skim_tag"_cat_"$submit_version_tag
+
+	    fi
+	    if [ $job_skim == "SKTree_NoSkim" ] || [ $job_skim == "NoCut" ];
+		  then
+                output_file_skim_tag="SK"$output_file_skim_tag"_nocut_cat_"$submit_version_tag
+            fi
+	    
+	    if [ $job_skim == "SKTree_LeptonSkim" ] || [ $job_skim == "Lepton" ];
+		then
+		output_file_skim_tag="SK"$output_file_skim_tag"_cat_"$submit_version_tag
+	    fi
+	    
+	    if [ $job_skim == "SKTree_DiLepSkim" ] || [ $job_skim == "DiLep" ];
+		then
+		output_file_skim_tag="SK"$output_file_skim_tag"_dilep_cat_"$submit_version_tag
+	    fi
+	    
+	    echo "############################################################################################################################################################"
+	    echo "############################################################################################################################################################"
+	    echo "############################################################################################################################################################"
+	    echo "MERGING DATA: Periods C + D"
+	    echo " "
+	    echo "Command:"
+            echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat_"${submit_version_tag}".root "${outputdir_data}${job_cycle}"'*'"$output_file_skim_tag"'*'"
+            echo "############################################################################################################################################################"
+	    echo ""
+            source hadd.sh ${outputdir_data} ${job_cycle}_data_cat_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
+	    echo ""
+            echo "merged output sent to -----> "${outputdir_data}${job_cycle}"_data_cat_"${submit_version_tag}".root "
+            mv  ${outputdir_data}/${job_cycle}_data_cat_${submit_version_tag}.root  ${outputdir_mc}
+
             echo ""
         fi
     fi
@@ -475,9 +507,20 @@ if [[ $submit_sampletag  != ""  ]];
 	if [[ $counter -eq 0 ]];
 	    then
 	    echo "LQanalyzer::sktree :: ERROR :: Input list is invalid: 'sktree -S samples'"
-	    echo "LQanalyzer::sktree :: HELP :: run 'sktree -h' for options"
+	    echo "LQanalyzer::sktree :: HELP :: possible inputs are:"
+	    for ilist in  ${list_of_sampletags[@]};
+	      do
+	      eval samplelist=(\${$ilist[@]})
+	      if [[ $ilist == "MC" ]];
+		  then
+		   echo $ilist"  =  ( All availble MC )"
+		  else
+		  echo $ilist"  =  (${samplelist[*]})"   
+	      fi
+
+	    done
 	    exit 1
-    fi
+	fi
 
 	list_isdata=true
 	if [[ $submit_sampletag == "MC" ]];
@@ -600,7 +643,30 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
 fi
 
 outputdir_mc=${outputdir_analyzer}"/"${dir_tag}
-outputdir_data=${outputdir_mc}"/Data/"
+outputdir_data=${outputdir_mc}"Data/"
+
+if [[ $runDATA == "true" ]];
+    then
+    if [[ $job_skim == *"No"* ]];
+	then echo "LQanalyzer::sktree :: ERROR :: There are no NoCut skims for data"
+	exit 1
+    fi
+    ARGDATASKIM=$submit_sampletag
+    eval out_streams_skimcheck=(\${$ARGDATASKIM[@]})
+    
+    for stream_check in ${out_streams_skimcheck[@]};
+    do
+      if [[ $stream_check == *"Single"* ]];
+	  then
+	  echo "LQanalyzer::sktree :: ERROR :: There are no DiLepton skims for "$stream_check" in catversion "$submit_version_tag
+ 
+	  exit 1
+      fi
+    done
+    echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_streams[*]}
+
+
+fi
 
 if [[ $job_output_dir == "" ]]
     then
@@ -613,7 +679,7 @@ if [[ $job_output_dir == "" ]]
 	job_output_dir=$outputdir_mc
     fi
 fi
-output_datafile=${outputdir_mc}"/"$job_cycle"_data_cat"${submit_catversion}".root"
+output_datafile=${outputdir_mc}"/"$job_cycle"_data_cat_"${submit_version_tag}".root"
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
     then
@@ -630,8 +696,13 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
      if [[ ! -d "${job_output_dir}" ]]; then
 	 mkdir ${job_output_dir}
 	 echo "Making " + ${job_output_dir}
-    fi
-
+	 if [[ ! -d "${job_output_dir}" ]]; then
+	     echo "LQanalyzer::sktree :: ERROR :: Output directory is set by user. "
+	     echo "LQanalyzer::sktree :: ERROR :: Make Directory ried but failed"
+	     echo "LQanalyzer::sktree :: ERROR :: User needs to make directory."
+	 fi
+     fi
+	 
 fi
 
 if [[ $submit_analyzer_name ==  "" ]];
@@ -1022,11 +1093,14 @@ if [[ $runDATA  == "true" ]];
 	  continue
       fi
       
+      ### set all inputs to default in functions.sh
+      source functions.sh
+
+      #### change input to those specified in sktree command
       nevents=${job_nevents}
       skipevent=${job_nskip}
       runnp=${job_run_fake}
       runcf=${job_run_flip}
-      source functions.sh
       cycle=${job_cycle}
       skinput=${submit_skinput}
       useskim=${job_skim}
@@ -1043,7 +1117,7 @@ if [[ $runDATA  == "true" ]];
 
       
       source submit.sh
-      mergeoutput
+      mergeoutput $istream
       
     done
 fi
@@ -1052,7 +1126,10 @@ fi
 if [[ $runMC  == "true" ]];
 
     then
+    ### set all inputs to default in functions.sh
     source functions.sh
+    
+    #### change input to those specified in sktree command
     cycle=${job_cycle}
     skinput=${submit_skinput}
     useskim=${job_skim}

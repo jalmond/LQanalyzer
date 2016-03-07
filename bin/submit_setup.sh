@@ -74,6 +74,74 @@ getinfo_tag=0
 getinfo_string=""
 
 
+#function checkdata
+#{
+#    if [[ $submit_sampletag == "" ]];
+#	then
+#	echo "ERROR in checkdata"
+#	exit 1
+#    fi
+#    eval check_list=(\${$submit_sampletag[@]})
+#	
+#    for idlist in  ${check_list[@]};##
+#
+#      do
+#      data_isok=false
+#      slined="/data2/DATA/cattoflat/Data/"
+#      if [[ $job_skim == *"No"* ]];
+#          then
+#          echo "LQanalyzer::sktree :: ERROR :: There are no NoCut skims for "$idlist
+#          echo  "LQanalyzer::sktree :: HELP :: Change skim"
+#          exit 1
+#      fi
+#      if [[ $job_skim == *"Lepton"* ]];
+#          then
+#          slined="/data2/CatNtuples/"${submit_version_tag}"/SKTrees/Data/"
+#      fi
+#      if [[ $job_skim == *"DiLep"* ]];
+#          then
+#          slined="/data2/CatNtuples/"${submit_version_tag}"/SKTrees/DataDiLep/"
+#      fi
+#      
+#      dirtag_date=$idlist
+#      if [[ $submit_version_tag == *"v7-4" ]];
+#	  then
+#	  if [[ $idlist == "emu" ]]
+#	      then
+#	      dirtag_date=ElectronMuon
+#	  fi
+#	  if [[$idlist== "electron" ]]
+#	      then
+#	      dirtag_date=DoubleElectron
+#	  fi
+#	  if [[$idlist== "muon" ]];
+#	      then
+#	      dirtag_date=DoubleMuon
+#	  fi
+#	  if [[$idlist== "singlemuon" ]];
+#	      then
+#	      dirtag_date=SingleMuon
+#	  fi
+#	  if [[$idlist== "singleelectron" ]];
+#	      then
+#	      dirtag_date=SingleElectron
+#	  fi
+#      fi
+#      slined=$slined$dirtag_date
+#      
+#      if [[ -d "${slined}" ]]; then
+#          if test "$(ls -A "$slined")"; then
+#              data_isok=true
+#          fi
+#      fi
+#      if [[ $data_isok == "false" ]];
+#          then
+#          echo "Data sample "$dirtag_date" is not available for catversion "$submit_version_tag" and skim "$job_skim
+#          exit 1
+#      fi
+#    done
+#}
+
 function getinfo_dataset
 { 
     
@@ -1073,6 +1141,8 @@ declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectro
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true
+
+
 fi    
 declare -a  DATADILEP=("DoubleMuon" "DoubleEG" "MuonEG")
 if [[ $submit_sampletag  == "DATADILEP" ]];
@@ -1140,7 +1210,10 @@ if [[ $submit_version_tag == *"v7-4"* ]];
     declare -a DoubleEG=("egamma")
 fi
 
-
+#if [[ $submit_version_tag != "" ]];
+#    then
+#    #checkdata
+#fi
 
 
 declare -a FULLLISTOFSAMPLES=()
