@@ -33,7 +33,6 @@ changed_job_output_dir=false
 changed_job_loglevel=false
 changed_job_data_lumi=false
 changed_job_njobs=false 
-submit_version_tag=${CATVERSION}
 submit_file_tag=""
 submit_file_list=""
 submit_version_tag=${CATVERSION}

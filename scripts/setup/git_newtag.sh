@@ -16,6 +16,7 @@ echo "    export CATTAG=" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "else" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    export CATTAG=$CATVERSION"$itag >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "fi" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 
 sendemail=false
 
