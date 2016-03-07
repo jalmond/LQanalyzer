@@ -3,7 +3,7 @@ if [[ $LQANALYZER_DIR == "" ]];
     source $LQANALYZER_DIR/setup.sh
 fi
 
-itag=".3"
+itag=".4"
 tagname=$CATVERSION$itag
 
 rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
