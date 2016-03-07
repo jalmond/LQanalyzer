@@ -26,6 +26,7 @@ git commit -a
 git push
 
 cp $LQANALYZER_DIR/scripts/setup/tag_setup.sh $LQANALYZER_DIR/setup.sh
+git commit -a
 
 if [[ $1 == "" ]];
     then
