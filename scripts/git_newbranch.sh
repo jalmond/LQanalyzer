@@ -1,3 +1,11 @@
+source $LQANALYZER_DIR/setup.sh
+
+if [[ $CATTAG == "" ]];
+    then
+    echo "You need to set tag name in setup.sh"
+    exit 1
+fi
+
 todelete=""
 sendemail=false
 

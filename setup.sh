@@ -12,6 +12,8 @@
 # Greet the user
 echo "Setting up environment for compiling/running LQAnalzer with SKTree"
 
+export CATTAG=v7-6-3.3
+
 if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
     return 1
@@ -27,7 +29,8 @@ fi
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 export CATVERSION=v7-6-3
-export CATTAG=v7-6-3.3
+
+source CheckTag.sh
 
 alias sktree="bash submitSKTree.sh"
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/git_newbranch.sh"
