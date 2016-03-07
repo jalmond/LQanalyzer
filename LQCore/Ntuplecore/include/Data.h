@@ -54,7 +54,7 @@ public :
    Int_t    GetEntry(Long64_t entry);
    Int_t    Cut(Long64_t entry);
    Long64_t LoadTree(Long64_t entry);
-   void Init(TTree *tree, int data_setting);
+   void Init(TTree *tree);
    Bool_t   Notify(); //remove if possible
    void     Show(Long64_t entry = -1); //remove if possible
    TTree* GetInputTree();
@@ -87,10 +87,16 @@ public :
    std::string GetCatVersion(bool runLQ);
    void SetCatVersion(std::string cv);
 
+   void SetLQNtupleInputType(int dataflag);
+
+
+
+
+
 
    bool LQinput;
    Long64_t nentries;
-
+   int setting_ntuple_data;
    // Declaration of leaf types
 
    /// If needed (using SKTree input)

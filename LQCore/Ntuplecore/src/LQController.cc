@@ -568,12 +568,14 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     //// Connect chain to Data class                                                                                                                                        
     if(inputType!=NOTSET) {
-      if(inputType == data) cycle->Init(chain,1 );
-      else  cycle->Init(chain, 2);
+      if(inputType == data) cycle->SetLQNtupleInputType(1 );
+      else if(inputType == mc)  cycle->SetLQNtupleInputType(2 );
     }
-    else cycle->Init(chain,3); 
+    else cycle->SetLQNtupleInputType(3 );
+
+
     GetMemoryConsumption("Connected All Active Branches");
-    
+    cycle->Init(chain); 
     /// We can now check 
     // a) is this Data?
     // b) how many events in sample
@@ -598,6 +600,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       cycle->SetDataType(alt_isdata);
       GetMemoryConsumption("Accessed branch to specify isData");
     }
+
 
     cycle->SetNPStatus(runnp);
     cycle->SetCFStatus(runcf);

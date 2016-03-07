@@ -38,7 +38,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),setting_ntuple_data(-1)
   
 {
 
@@ -107,7 +107,7 @@ Long64_t Data::LoadTree(Long64_t entry)
    return centry;
 }
 
-void Data::Init(TTree *tree, int setting_data)
+void Data::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -158,7 +158,8 @@ void Data::Init(TTree *tree, int setting_data)
   Int_t cachesize=100000000;
   fChain->SetCacheSize(cachesize);
   if(LQinput)fChain->SetBranchStatus("*",0);// disbles all branches                                                                                                                      
-  ConnectVariables(false, setting_data); // -> false means not ALL branches are loaded
+  if(setting_ntuple_data < 0) return;
+  ConnectVariables(false, setting_ntuple_data); // -> false means not ALL branches are loaded
 
   //fChain->GetEntry(0,0);
   fChain->StopCacheLearningPhase();
@@ -376,6 +377,11 @@ void Data::Reset(){
   
  
 }
+
+void Data::SetLQNtupleInputType(int dataflag){
+  setting_ntuple_data= dataflag;
+}
+
 
 void Data::SetLQNtupleInputType(bool lq){
   LQinput= lq;
