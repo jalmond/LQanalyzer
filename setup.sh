@@ -27,6 +27,7 @@ fi
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 export CATVERSION=v7-6-3
+export CATTAG=v7-6-3.3
 
 alias sktree="bash submitSKTree.sh"
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/git_newbranch.sh"

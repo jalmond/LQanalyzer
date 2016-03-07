@@ -225,7 +225,6 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   float pileup_reweight (1.);
   if (!k_isdata) {
     /// use silver or gold
-
     pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
   }
   

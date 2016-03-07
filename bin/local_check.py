@@ -10,7 +10,8 @@ for line in fr:
     if sline == 1:
         print "..."
     sline=sline+1
-    
+
+print "Running on tag : " +  os.getenv("CATTAG")    
    
 
 if os.path.exists("LQRun/Macros/"):
