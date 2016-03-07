@@ -12,7 +12,7 @@
 # Greet the user
 echo "Setting up environment for compiling/running LQAnalzer with SKTree"
 
-export CATTAG=v7-6-3.3
+export CATTAG=
 
 if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
