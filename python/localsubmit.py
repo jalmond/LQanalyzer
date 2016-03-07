@@ -522,7 +522,7 @@ if not (os.path.exists(workspace)):
 out_end=sample
 
 
-output=workspace + sample + "_" + now() + "/"
+output=workspace + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
 if not mc:
     output=workspace + new_channel+  sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/" 
 
