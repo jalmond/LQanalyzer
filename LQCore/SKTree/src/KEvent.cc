@@ -472,6 +472,7 @@ Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{
 
 Double_t KEvent::PFSumETShifted(met_syst type,syst_dir dir) const{
   if(TString(k_catversion).Contains("v7-4-4")) return k_PF_SumET;
+ 
   if(dir == up){
     if(type==None) return k_PF_SumET;
     if(type==JetEn) return k_PF_SumET_JetEn_up;
@@ -490,7 +491,7 @@ Double_t KEvent::PFSumETShifted(met_syst type,syst_dir dir) const{
 
 Double_t KEvent::MET(met_type type) const{
   
-  if(k_lumimask == gold && type == nohf) return -999.;
+  if(k_lumimask == silver ) return k_NoHF_MET;
 
   if (type == pfmet) return k_PF_MET;
   else if(type == nohf) return k_NoHF_MET;
@@ -500,7 +501,7 @@ Double_t KEvent::MET(met_type type) const{
  
 Double_t KEvent::METPhi(met_type type) const{
   
-  if(k_lumimask == gold && type == nohf) return -999.;
+  if(k_lumimask == silver ) return k_NoHF_METphi;
 
   if (type == pfmet) return k_PF_METphi;
   else if(type == nohf) return k_NoHF_METphi;
@@ -510,8 +511,8 @@ Double_t KEvent::METPhi(met_type type) const{
 
 Double_t KEvent::SumET(met_type type) const{
   
-  if(k_lumimask == gold && type == nohf) return -999.;
-
+  if(k_lumimask == silver ) return k_NoHF_SumET;
+ 
   if (type == pfmet) return k_PF_SumET;
   else if(type == nohf) return k_NoHF_SumET;
   return -999.;
