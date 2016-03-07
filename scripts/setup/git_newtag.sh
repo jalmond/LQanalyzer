@@ -2,19 +2,19 @@ if [[ $LQANALYZER_DIR == "" ]];
     then
     source $LQANALYZER_DIR/setup.sh
 fi
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
 
 itag=".3"
 tagname=$CATVERSION$itag
 
+rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "tag_numerator='"$itag"'"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "if [[ $1 == "" ];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "if [[ '$1' == "branch" ];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    then" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    export CATTAG=" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "else" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "    export CATTAG=$CATVERSION$tag_numerator" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "    export CATTAG=$CATVERSION"$itag >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "fi" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 
 todelete=""
