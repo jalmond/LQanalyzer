@@ -71,7 +71,6 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
 
 void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
-  eventbase->GetEvent().SetJSON(lumimask);
   
   /// Apply the gen weight 
   weight*=MCweight;
@@ -178,7 +177,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    }
    
    FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);
-   
+
    if (Zcandidate(muonTightColl, 20., true)){
      ////Make NVTX plotsfor reweighting
      
