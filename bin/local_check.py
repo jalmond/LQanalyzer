@@ -34,6 +34,8 @@ april15dir = os.getenv("LQANALYZER_LIB_PATH")+ "/April15/"
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
 txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
+old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
+old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
 
 if not os.path.exists(march16dir2):
     os.system("mkdir " + march16dir2)
@@ -45,6 +47,11 @@ if not os.path.exists(march16dir2):
         os.system("rm -r " + april15dir)
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
+
+    if os.path.exists(old_lib_slc5):
+        os.system("rm -r " + old_lib_slc5)
+    if os.path.exists(old_lib_slc6):
+        os.system("rm -r " + old_lib_slc6)
     
     print "using branch for first time: All codes are being recompiled"
     os.system("source bin/make_clean_newbranch.sh")
