@@ -872,10 +872,13 @@ if [[ $job_loglevel != "ERROR" ]]
     if [[ $job_loglevel != "WARNING" ]]
 	then
 	if [[ $job_loglevel != "INFO" ]]
-	    then
-	    echo "LQanalyzer::sktree :: ERROR :: loglevel = "${job_loglevel}
-	    echo "This is invalid: 'sktree -h' for options"
-	    exit 1
+	then
+	    if [[ $job_loglevel != "DEBUG" ]]
+            then
+		echo "LQanalyzer::sktree :: ERROR :: loglevel = "${job_loglevel}
+		echo "This is invalid: 'sktree -h' for options"
+		exit 1
+	    fi
 	fi
     fi
 fi
