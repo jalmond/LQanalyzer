@@ -10,8 +10,6 @@ void MuonPlots::Fill(Double_t weight, std::vector<snu::KMuon> muons){
   int imu(0);
   for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit!=muons.end(); muit++,imu++){
 
-    StdPlots::Fill(weight, muons.size(), muit->Pt(), muit->Eta(), muit->Phi());
-    
     Fill("h_charge",muit->Charge(), weight); 
     
   }

@@ -22,8 +22,6 @@ void JetPlots::Fill(Double_t weight, std::vector<snu::KJet> jets){
 
   int ijet(0);
   for(std::vector<snu::KJet>::iterator jit = jets.begin(); jit!=jets.end(); jit++,ijet++){
-    StdPlots::Fill(weight, jets.size(), jit->Pt(), jit->Eta(), jit->Phi());
-    
 
   }
 }

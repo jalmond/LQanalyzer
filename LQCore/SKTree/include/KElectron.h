@@ -53,8 +53,9 @@ namespace snu {
     void SetPassMVANoTrigTight(Bool_t pass);
     
     void SetIsPF(Bool_t ispf);
+    void SetIsChargeFlip(Bool_t iscf);
     void SetIsMCMatched(Bool_t ismatch);
-
+    void SetIsFromTau(Bool_t istau);
     
     /// set ISO variables
     void SetPFChargedHadronIso(Double_t cone,Double_t pf_ch);
@@ -93,8 +94,8 @@ namespace snu {
       
     /// // Kinematic variables
     inline Double_t  SCEta() const {return k_sceta;}
-
-
+    
+    
     inline Double_t PtShiftedUp() const{ return k_pt_shifted_up;}
     inline Double_t PtShiftedDown() const{ return k_pt_shifted_down;}
 
@@ -119,6 +120,8 @@ namespace snu {
    
     inline Bool_t IsPF() const{return k_isPF;}
     inline Bool_t MCMatched() const{return k_mc_matched;}
+    inline Bool_t MCIsCF() const{return k_is_cf;}
+    inline Bool_t MCFromTau() const{return k_is_fromtau;}
     inline Int_t SNUID() const{return snu_id;}
 
     // charge variables
@@ -186,13 +189,13 @@ namespace snu {
     Double_t k_dxy, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
     
-    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched, k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, k_istrigmvavalid ;
+    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, k_istrigmvavalid ;
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
     Int_t snu_id;
     TString k_trig_match;
 
-    ClassDef(KElectron,19);
+    ClassDef(KElectron,20);
   }; 
   
 }//namespace snu

@@ -228,7 +228,6 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
 
   if(TString(CatVersion).Contains("v7-4")) return photons;
   
-
   if(!LQinput){
     for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
       photons.push_back(*kit);
@@ -236,8 +235,9 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
     return photons;
   }
   for (UInt_t iph=0; iph< photons_eta->size(); iph++) {
+    if(photons_pt->at(iph) != photons_pt->at(iph)) continue;
     KPhoton ph;
-
+    
     ph.SetPtEtaPhiE(photons_pt->at(iph),photons_eta->at(iph), photons_phi->at(iph),photons_energy->at(iph));
 
     ph.SetIsLoose(photons_photonID_loose->at(iph));
@@ -283,11 +283,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
   }
 
   m_logger << DEBUG << "Filling electron Info" << LQLogger::endmsg;
-  
 
   for (UInt_t iel=0; iel< electrons_eta->size(); iel++) {
+    if(electrons_pt->at(iel) != electrons_pt->at(iel)) continue;
     KElectron el;
-    
+
     /// Kinematic Variables
     el.SetPtEtaPhiE(electrons_pt->at(iel),electrons_eta->at(iel), electrons_phi->at(iel),electrons_energy->at(iel));
     
@@ -341,13 +341,60 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     el.SetIsPF(electrons_isPF->at(iel));
     if(electrons_isTrigMVAValid) el.SetIsTrigMVAValid(electrons_isTrigMVAValid->at(iel));
-    el.SetIsMCMatched(electrons_mcMatched->at(iel));
+    //el.SetIsMCMatched(electrons_mcMatched->at(iel));
     el.SetHasMatchedConvPhot(electrons_passConversionVeto->at(iel));
     
     el.SetTrkVx(electrons_x->at(iel));
     el.SetTrkVy(electrons_y->at(iel));
     el.SetTrkVz(electrons_z->at(iel));
+    
+    //// Set Is ChargeFlip
+    bool self_match= false;
+    bool from_tau = false;
 
+    for (UInt_t it=0; it< gen_pt->size(); it++ ){
+      if(gen_motherindex->at(it) <= 0)continue;
+      if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+      if(gen_pt->at(it) < 5) continue;
+      
+      if(fabs(gen_pdgid->at(it)) == 11){
+	
+	double match_eta =electrons_eta->at(iel);
+	double match_phi =electrons_phi->at(iel);
+	
+
+	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+
+	if (dr < 0.3){
+	  
+	  float pdgid = 0.;
+	  int mindex= it;
+	  while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
+	    pdgid = gen_pdgid->at(mindex);
+	    mindex=gen_motherindex->at(mindex);
+	  }
+	  if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+	    
+	    if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+	    else     el.SetIsChargeFlip(false);
+	    
+	    self_match=true; break;
+	  }
+	  else {
+	    while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
+	      mindex=gen_motherindex->at(mindex);
+	    }
+	    if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) { 
+	      if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+	      else     el.SetIsChargeFlip(false);
+	      from_tau=true; self_match=true; break;}
+	  }
+	}
+      }
+    }//end electron truth
+    el.SetIsMCMatched(self_match);
+    el.SetIsFromTau(from_tau);
+    
     electrons.push_back(el);
   }
   std::sort( electrons.begin(), electrons.end(), isHigherPt );
@@ -413,8 +460,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   
   for (UInt_t ijet=0; ijet< jets_eta->size(); ijet++) {
     KJet jet;
-    
-
+    if(jets_pt->at(ijet) != jets_pt->at(ijet)) continue;
     jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
     jet.SetJetPassLooseID(jets_isLoose->at(ijet));
     jet.SetJetPassTightID(jets_isTight->at(ijet));
@@ -492,6 +538,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   
   for (UInt_t ilep=0; ilep< muon_eta->size(); ilep++) {
     KMuon muon;
+    if(muon_pt->at(ilep) != muon_pt->at(ilep)) continue;
     m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
    
     muon.SetTrigMatch(muon_trigmatch->at(ilep));
@@ -539,6 +586,50 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetTrackVz(muon_z->at(ilep));
 
     
+    //// Set Is ChargeFlip
+    bool self_match= false;
+    bool from_tau = false;
+    for (UInt_t it=0; it< gen_pt->size(); it++ ){
+      if(gen_motherindex->at(it) <= 0)continue;
+      if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+      if(gen_pt->at(it) < 5.) continue;
+      if(fabs(gen_pdgid->at(it)) == 13){
+	
+        double match_eta =muon_eta->at(ilep);
+        double match_phi =muon_phi->at(ilep);
+	
+        double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+
+        if (dr < 0.3){
+
+          float pdgid = 0.;
+          int mindex= it;
+          while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
+            pdgid = gen_pdgid->at(mindex);
+            mindex=gen_motherindex->at(mindex);
+          }
+          if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+
+            if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+            else     muon.SetIsChargeFlip(false);
+
+            self_match=true; break;
+          }
+          else {
+            while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
+              mindex=gen_motherindex->at(mindex);
+            }
+            if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+              if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+              else     muon.SetIsChargeFlip(false);
+              from_tau=true; self_match=true; break;}
+          }
+        }
+      }
+    }//end electron truth
+    muon.SetMCMatched(self_match);
+    muon.SetIsFromTau(from_tau);
+
     /// Fill vector
     muons.push_back(muon);
   }
@@ -569,7 +660,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   }
   
   m_logger << DEBUG << "Filling truth Info" << LQLogger::endmsg;
-  
+
   for (UInt_t it=0; it< gen_pt->size(); it++ , counter++) {
     
     if(counter == np)  break;

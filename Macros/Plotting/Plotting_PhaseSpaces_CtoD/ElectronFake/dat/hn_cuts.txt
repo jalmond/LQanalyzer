@@ -1,8 +1,0 @@
-SingleLooseElJet
-SingleTightElJet
-END
-
-DiMuon_mediumjet
-DiMuon_tightjet
-DiMuon_BJet
-END

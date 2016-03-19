@@ -17,7 +17,7 @@ class StdPlots {
     emu        =3
   };
   
-  TH1F *h_particles, *h_pt, *h_eta, *h_phi;
+
   const Double_t Mass_W;
     
  protected:
@@ -31,7 +31,7 @@ class StdPlots {
   virtual ~StdPlots();
   StdPlots(const StdPlots& p);
   
-  void Fill(Double_t weight, Int_t N, Double_t pt, Double_t eta, Double_t phi);
+  void Fill();
   void Write();
   
 };

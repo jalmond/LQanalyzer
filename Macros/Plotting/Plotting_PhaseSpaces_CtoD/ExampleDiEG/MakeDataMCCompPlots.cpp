@@ -579,15 +579,15 @@ vector<pair<TString,float> >  InitSample (TString sample){
   vector<pair<TString,float> > list;  
   
   if(sample.Contains("dylow_")){
-    list.push_back(make_pair("DY10to50",0.2));
+    list.push_back(make_pair("DY10to50_MCatNLO",0.2));
   }
 
   if(sample.Contains("dyhigh_")){
-    list.push_back(make_pair("DY50plus",0.2));    
+    list.push_back(make_pair("DY50plus_MCatNLO",0.2));    
   }
   if(sample.Contains("dy_")){
-    list.push_back(make_pair("DY10to50",0.2));
-    list.push_back(make_pair("DY50plus",0.2));
+    list.push_back(make_pair("DY10to50_MCatNLO",0.2));
+    list.push_back(make_pair("DY50plus_MCatNLO",0.2));
   }
 
 
@@ -595,15 +595,16 @@ vector<pair<TString,float> >  InitSample (TString sample){
     
   ///// Top samples //////////////////    
   if(sample.Contains("top")){
-    list.push_back(make_pair("singletop_tbar",0.25));
-    list.push_back(make_pair("singletop_tbarW",0.25));
-    list.push_back(make_pair("singletop_t",0.25));
-    //    list.push_back(make_pair("singletop_tW",0.25));
-    list.push_back(make_pair("TTJets_MG5",0.25));
-    list.push_back(make_pair("ttWJetsToLNu",0.25));
-    list.push_back(make_pair("ttWJetsToQQ",0.25));
-    list.push_back(make_pair("ttZToLLNuNu",0.25));
-    list.push_back(make_pair("ttZToQQ",0.25));
+    list.push_back(make_pair("singletop_tbar_Powheg",0.25));
+    list.push_back(make_pair("singletop_s_MCatNLO",0.25));
+    list.push_back(make_pair("singletop_t_Powheg",0.25));
+    list.push_back(make_pair("singletop_tbarW_Powheg",0.25));
+    list.push_back(make_pair("singletop_tW_Powheg",0.25));
+    list.push_back(make_pair("TT_MG5",0.25));
+    //    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
+    //list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
+    //list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
+
   }
   if(sample.Contains("ttbar")){
     list.push_back(make_pair("TTJets_MG5",0.25));
@@ -635,9 +636,9 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   //////// Diboson ////////
   if(sample.Contains("vv")){    
-    list.push_back(make_pair("WZ",0.15));
-    list.push_back(make_pair("ZZ",0.15));
-    list.push_back(make_pair("WW",0.15));
+    list.push_back(make_pair("WZ_pythia8",0.15));
+    list.push_back(make_pair("ZZ_pythia8",0.15));
+    list.push_back(make_pair("WW_pythia8",0.15));
   }
   if(sample.Contains("ww")){
     list.push_back(make_pair("WW",0.15));
@@ -651,7 +652,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   //// Wjets
   if(sample.Contains("wjet_")){
-    list.push_back(make_pair("WJets",0.15));
+    list.push_back(make_pair("WJets_MCatNLO",0.15));
   }
 
   if(sample.Contains("prompt")){

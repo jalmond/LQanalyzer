@@ -32,6 +32,9 @@ KMuon::KMuon() :
   k_isloose(0),
   k_istight(0),
   k_matched(0),
+  k_is_cf(0),
+  k_is_fromtau(0),
+
   k_ismedium(0),
   k_issoft(0),
   
@@ -71,6 +74,9 @@ KMuon::KMuon(const KMuon& muon) :
   k_isloose(muon.k_isloose),
   k_istight(muon.k_istight), 
   k_matched(muon.k_matched), 
+  k_is_cf(muon.k_is_cf),
+  k_is_fromtau(muon.k_is_fromtau),
+  
   k_ismedium(muon.k_ismedium),
   k_issoft(muon.k_issoft),
   k_trig_match(muon.k_trig_match)
@@ -111,9 +117,11 @@ void KMuon::Reset()
   k_isloose=false;
   k_istight=false;
   k_matched=false;
+  k_is_cf=false;
+  k_is_fromtau=false;
+
   k_ismedium=false;
   k_issoft=false;
-  k_matched=false;
 
   k_trig_match= "";
 }
@@ -142,6 +150,9 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_issoft = p.IsSoft();
         k_ismedium = p.IsMedium();
 	k_matched = p.MCMatched();
+	k_is_cf=p.MCIsCF();
+	k_is_fromtau=p.MCFromTau();
+
 	k_muon_reliso03 = p.RelIso03();
 	k_muon_reliso04 = p.RelIso04();
 	k_muonVtx=p.muonVtx();
@@ -166,6 +177,15 @@ bool KMuon::TriggerMatched(TString path){
   TString trig = k_trig_match;
   if(trig.Contains(path)) return true;
   return false;
+}
+
+void KMuon::SetIsFromTau(bool istau){
+  k_is_fromtau=istau;
+}
+
+
+void KMuon::SetIsChargeFlip(bool iscf){
+  k_is_cf=iscf;
 }
 
 

@@ -38,7 +38,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),setting_ntuple_data(-1)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),setting_ntuple_data(-1),TargetLumi(0.)
   
 {
 
@@ -393,6 +393,10 @@ std::string  Data::GetCatVersion(bool runLQ){
     return CatVersion;
   }
   else return k_inputevent->CatVersion();
+}
+
+void Data::SetTargetLumi(float tlumi){
+  TargetLumi=tlumi;
 }
 
 void Data::SetCatVersion(std::string cv){

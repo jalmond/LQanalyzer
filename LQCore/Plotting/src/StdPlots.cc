@@ -9,52 +9,31 @@ StdPlots::StdPlots():  Mass_W(80.398) {
 }
 
 StdPlots::StdPlots(TString name): Mass_W(80.398) {  
-
-  h_particles = new TH1F("h_N_"+name,      "Number of "+name,   50,0,50);
-  h_pt        = new TH1F("h_"+name+"_pt",  name+" p_{t} (GeV)", 500,0,500);
-  h_eta       = new TH1F("h_"+name+"_eta", name+" #eta",        100,-5,5);
-  h_phi       = new TH1F("h_"+name+"_phi", name+" #phi",        100,-3.1415926535,3.1415926535);
+  std::cout << name << std::endl;
 
 }
 
 StdPlots::StdPlots(const StdPlots& s): Mass_W(80.398){
   
-  h_particles=s.h_particles;
-  h_pt=s.h_pt;
-  h_eta=s.h_eta;
-  h_phi=s.h_phi;
 }
 
 StdPlots& StdPlots::operator= (const StdPlots& p)
 {
   if (this != &p) {
-    h_particles =p.h_particles;
-    h_pt        =p.h_pt;
-    h_eta       =p.h_eta;
-    h_phi       =p.h_phi;
   }
   return *this;
 }
 
 StdPlots::~StdPlots() {
-  delete h_particles;
-  delete h_pt;
-  delete h_eta;
-  delete h_phi;
+
 }
 
-void StdPlots::Fill(Double_t weight, Int_t N, Double_t pt, Double_t eta, Double_t phi) {
-  h_particles->Fill(N,weight/N);
-  h_pt->Fill(pt,weight);
-  h_eta->Fill(eta,weight);
-  h_phi->Fill(phi,weight);
+void StdPlots::Fill(){
+
 }
 
 void StdPlots::Write() {
- h_particles->Write();
- h_pt->Write();
- h_eta->Write();
- h_phi->Write();
+
 }
 
 

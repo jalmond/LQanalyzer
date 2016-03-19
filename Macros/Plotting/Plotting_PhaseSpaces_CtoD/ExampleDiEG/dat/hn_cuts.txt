@@ -1,5 +1,15 @@
+DiElectron
+DiElectronID
+DiElectronIDRECO
+DiElectronNoPRW
+DiElectronNoTrigger
+DiElectron_Zpeak_chargeconsistency
+DiElectron_Zpeak
+DiElectron_HLT23
+END
 SSElectron
 SSElectron_DiJet
+END
 SSElectron_DiJet_ChargeConsistency
 END
 DiElectron

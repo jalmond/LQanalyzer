@@ -24,7 +24,7 @@
 #include <TFile.h>
 
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false) {
+AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false) {
 
 
   lumimask= snu::KEvent::missing;
@@ -46,13 +46,30 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   //// FakeRate Input file           
   //////////////////////////////////////////////////////////////////////                                                                                                   
   string analysisdir = getenv("FILEDIR");
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_TightWP_76X_18Feb.txt_SF2D.root").c_str());
+    
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    ElectronSF_Tight =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "eleRECO.txt.egamma_SF2D.root").c_str());
 
-  TDirectory* tempDir = getTemporaryDirectory();
-  tempDir->cd();
- 
-  origDir->cd();
-  
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    ElectronRECO =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+
+
   string lqdir = getenv("LQANALYZER_DIR");
+  //  rmcor = new rochcor2015();
 
 
 }
@@ -161,15 +178,15 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   else if(elid == BaseSelection::ELECTRON_HN_TIGHT){
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
-    if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE, 20., 2.5);
-    else eventbase->GetElectronSel()->SelectElectrons(_electronColl,BaseSelection::ELECTRON_HN_TIGHT, 20., 2.5);
+    if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE, 15., 2.5);
+    else eventbase->GetElectronSel()->SelectElectrons(_electronColl,BaseSelection::ELECTRON_HN_TIGHT, 15., 2.5);
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
    
-  else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE, 20., 2.5);}
+  else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE, 10., 2.5);}
   
   // Veto cut
-  else if(elid == BaseSelection::ELECTRON_HN_VETO){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_VETO, 20., 2.5);}
+  else if(elid == BaseSelection::ELECTRON_HN_VETO){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_VETO, 10., 2.5);}
   
   
   else if(elid == BaseSelection::ELECTRON_PTETA){
@@ -261,19 +278,37 @@ double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> 
   return 1.;
 }
 
-double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el){
-  if(el.size() !=2) return 0.;
+double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname){
+  
+  ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgHLTScaleFactorMeasurements
+  /// https://lathomas.web.cern.ch/lathomas/SUSYMultiLepton/TriggerEff/trigger_RA5ID_2110pb.pdf
+  
+  // Single Lepton
+  if (trigname.Contains("HLT_IsoMu20")) return 0.986;
+  if (trigname.Contains("HLT_Ele23_WPLoose_Gsf")) return 0.936;
+
+  /// Dilepton
+  if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ")) return 0.997*0.997*0.998;
+  if (trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return 0.995*0.998;
+  if (trigname.Contains("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW")) return 0.997;
+  
+  if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL")) return 0.982*0.985;
+  if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_OR_TkMu8_TrkIsoVVL_DZ")) return 0.982*0.985*.973;
+  
+  if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")) return 0.988*0.997*0.980*0.994;
+  if (trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL")) return 0.989*0.997*0.982*0.994;
+  
+
+  /// Trilepton
+  if (trigname.Contains("HLT_TripleMu_12_10_5")) return  0.992*0.986*0.981* 0.982;
+  if (trigname.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return  0.981*0.95;
+  if (trigname.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL")) return 0.966*1.005;
+  if (trigname.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL")) return 0.990*1.003*0.991*0.998;
+  
+
+
   return 1.;
   
-}
-
-double AnalyzerCore::TriggerScaleFactor( vector<snu::KMuon> mu){
-  if(mu.size() != 2) return 0.;
-  return 1.;
-
-}
-double AnalyzerCore::TriggerScaleFactorEMu( ){
-    return 1.;
 }
 
 
@@ -289,12 +324,116 @@ double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KE
   else cout << "ElectronScaleFactor has no SFs for ID " << endl;
 
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
-    sf *= itel->ScaleFactor(sid, sys);
+    
+    if(itel->Pt() > 200.) {sf *= 1.; continue;}
+    if(elid==BaseSelection::ELECTRON_POG_TIGHT) {
+      int bin =  ElectronSF_Tight->FindBin(fabs(itel->SCEta()), itel->Pt());
+      sf *= ElectronSF_Tight->GetBinContent(bin);
+    }
   }
  
-  return 1.;
+  return sf;
 }
 
+double AnalyzerCore::ElectronRecoScaleFactor(vector<snu::KElectron> el){
+
+  float sf= 1.;
+  for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
+    if(itel->Pt() > 200.) {sf *= 1.; continue;}
+    int bin =  ElectronRECO->FindBin(fabs(itel->SCEta()), itel->Pt());
+    sf *= ElectronRECO->GetBinContent(bin);
+  }
+  
+
+  return sf;
+}
+
+float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent::json flag){
+
+  /// Function applies weight to MC 
+  /// Depends on trigger 
+  /// 
+
+  if(isData) return 1.;
+  if(flag ==  snu::KEvent::gold){
+
+    //  brilcalc lumi -u /pb 
+    // --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json 
+    // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON.txt 
+    //--hltpath ""
+
+    /// Electron triggers
+    // Double Electron
+    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
+    
+    // Single Electon
+    else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.596)/tlumi);
+    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489 + 9.613)/tlumi);
+    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+4.368)/tlumi);
+    else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+49.594)/tlumi);
+    else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+2.214)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+5.497)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.395)/tlumi);
+    else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.791+0.133)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf")) return ((16.548+1364.998+934.860)/tlumi);
+
+    // TriLepton Electron
+    else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2300.617)/tlumi);
+    
+    /// Muon Triggers
+    // Double Muon
+    else  if(triggername.Contains("HLT_Mu17_Mu8_DZ_v"))  return (151.616/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_Mu8_SameSign_DZ_v"))  return (2318.348/tlumi);
+    else  if(triggername.Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return( (2318.348) /tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
+    // single muon
+    else  if(triggername.Contains("HLT_Mu8_v")) return ((0.001+0.763)/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_v")) return ((218.121)/tlumi);
+    else  if(triggername.Contains("HLT_Mu20_v")) return (108.842/tlumi);
+    else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801) /tlumi);
+
+    /// multilepton
+    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
+    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858)/tlumi);
+    else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
+    else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858) /tlumi);
+    else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617) /tlumi);
+    else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617) /tlumi);
+    else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( 2318.348 /tlumi);
+    else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617) /tlumi);
+  }
+  else if(flag ==  snu::KEvent::silver) {
+
+    //  brilcalc lumi -u /pb
+    // --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json
+    // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_silver.txt
+    //--hltpath ""
+    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2672.217)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2672.976)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2449.620)/tlumi);
+
+    // Single Lepton
+    else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.609)/tlumi);
+    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+5.113)/tlumi);
+    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+11.006)/tlumi);
+    else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+58.056)/tlumi);
+    else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+3.987)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+6.428)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.968)/tlumi);
+
+    else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.133+6.771)/tlumi);
+    // TriLepton
+    else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2672.976)/tlumi);
+
+    //// Fill when silver json file is  usable  
+  }
+  return 1.;
+}
 
 
 void AnalyzerCore::AddTriggerToList(TString triggername){
@@ -358,8 +497,10 @@ AnalyzerCore::~AnalyzerCore(){
   mapCLhistTriLep.clear();
 
 
-  
-  }
+  delete ElectronSF_Tight;
+  delete ElectronRECO;
+  //  delete rmcor;
+}
 
 //###
 //###   IMPORTANT BASE FUNCTION: SETS UP EVENT FOR ALL CYCLES
@@ -405,8 +546,8 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
     MCweight = eventinfo.MCWeight(); //Get MC weight here FIX ME                                                              
     weight= ev_weight; 
   }
-  
-  //
+
+ //
   // creates object that stores all SKTree classes	
   //                                                                                                        
   
@@ -420,7 +561,6 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
    
   /// np == numberof particles you want to store at truth info. 30 is default unless running nocut sktree OR signal
   int np =  AssignnNumberOfTruth();
-
   
   LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
   
@@ -429,8 +569,17 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   
   eventbase = new EventBase(lqevent);
 
-  if(lumimask == snu::KEvent::gold) MCweight*= SilverToGoldJsonReweight(per);
+  if(lumimask == snu::KEvent::gold){
+    if(!k_isdata){
+      weight*= SilverToGoldJsonReweight(per);
 
+      if(!changed_target_lumi){
+	TargetLumi *= SilverToGoldJsonReweight(per);
+	changed_target_lumi=true;
+      }
+    }
+    
+  }
 
 }
 
@@ -456,7 +605,7 @@ int AnalyzerCore::VersionStamp(TString cversion){
 
 int AnalyzerCore::AssignnNumberOfTruth(){
   int np = 30;
-  if(k_classname.Contains("SKTreeMakeNoCut")) np = 1000;
+  if(k_classname.Contains("SKTreeMakerNoCut")) np = 1000;
 
   /// List of signal samples
   /// G.Yu needs to add signal here
@@ -473,13 +622,13 @@ float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-")){
     
     if (p == "C") return 1.;
-    if (p == "D") return 2246.327/2613.019;
-    if (p == "CtoD") return 2263.552 / 2630.245;
+    if (p == "D") return 2300.617 /2672.976;
+    if (p == "CtoD") return 2318.348 / 2690.707;
     
-    ///  SILVER                GOLD
-    /// period C = 17.226    17.226
-    /// period D = 2613.019  2246.327 
-    /// total C+D = 2630.245 2263.552
+    ///            GOLD      SILVER
+    /// period C = 17.731    17.731
+    /// period D = 2300.617   2672.976 
+    /// total C+D = 2318.348  2690.707
   }
   
   return 1.;
@@ -1113,11 +1262,12 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
   
   vector<snu::KElectron> prompt_electrons;
   for(unsigned int i = 0; i < electrons.size(); i++){
+
     if(!k_isdata){
       if(keepfake&&keep_chargeflip) prompt_electrons.push_back(electrons.at(i));
       else if(keep_chargeflip&&electrons.at(i).MCMatched()) prompt_electrons.push_back(electrons.at(i));
-      else if(keepfake&&!IsCF(electrons.at(i))) prompt_electrons.push_back(electrons.at(i)); 
-      else if(electrons.at(i).MCMatched() && !IsCF(electrons.at(i))) prompt_electrons.push_back(electrons.at(i));
+      else if(keepfake&&! electrons.at(i).MCIsCF()) prompt_electrons.push_back(electrons.at(i)); 
+      else if(electrons.at(i).MCMatched() && !electrons.at(i).MCIsCF()) prompt_electrons.push_back(electrons.at(i));
     }// Data
     else prompt_electrons.push_back(electrons.at(i));
   }/// loop
@@ -1143,6 +1293,20 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
   return prompt_muons;
 
 }
+
+/*
+void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
+  
+  vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
+  int imu(0);
+  for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
+    float qter =1.; /// uncertainty
+    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
+    else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
+    it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
+  }
+}
+*/
 
 
 float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons){

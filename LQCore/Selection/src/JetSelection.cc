@@ -72,7 +72,8 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
     
     bool pass_pileupID = jit->PileupJetIDLoose();
     if(!pileupID) pass_pileupID = true; 
-    
+    pass_pileupID = true;
+      
     if(ID.Contains("Loose")){
       if ( (jit->Pt() >= ptcut) && fabs(jit->Eta()) < etacut   && jit->PassLooseID()&&pass_pileupID)  pre_jetColl.push_back(*jit);
     }

@@ -1,5 +1,6 @@
 h_llmass   2 20. 500.
-h_LeptonPt  2 10. 500.
+h_leadingLeptonPt  2 10. 500.
+h_secondLeptonPt  2 10. 500.
 h_LeptonEta 2 -2.5 2.5
 h_Njets 1 0 6
 h_PFMET 2 0. 300.

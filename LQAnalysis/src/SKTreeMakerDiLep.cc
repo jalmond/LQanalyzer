@@ -57,22 +57,20 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
 
   //####### PHOTONS
-  std::vector<snu::KElectron> skim_photons;
-  eventbase->GetPhotonSel()->SetPt(10);
-  eventbase->GetPhotonSel()->SetEta(3.);
-  eventbase->GetPhotonSel()->BasicSelection(out_photons);
-
-
+  //  std::vector<snu::KElectron> skim_photons;
+  //eventbase->GetPhotonSel()->SetPt(20);
+  //eventbase->GetPhotonSel()->SetEta(3.);
+  //eventbase->GetPhotonSel()->BasicSelection(out_photons);
 
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(10);
+  eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(3.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
   //###### GenJet Selection ##########
-  if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
+  //if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
   
   //###### Electron Selection ########
   Message("Selecting electrons", DEBUG);
@@ -104,7 +102,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
 
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
-  out_truth   = eventbase->GetTruth();
+  //out_truth   = eventbase->GetTruth();
   
   return;
 }// End of execute event loop
@@ -141,11 +139,19 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");
       AddTriggerToList("HLT_TkMu");
+      AddTriggerToList("HLT_TripleMu");
+      AddTriggerToList("HLT_DiMu");
+
+
     }
     if(k_channel.Contains("SingleMuon")){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");
       AddTriggerToList("HLT_TkMu");
+      AddTriggerToList("HLT_TripleMu");
+      AddTriggerToList("HLT_DiMu");
+
+
     }
     if(k_channel.Contains("SinglePhoton")){
       AddTriggerToList("HLT_Photon");
@@ -163,6 +169,8 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
       AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
       AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
+      AddTriggerToList("HLT_Mu8_DiEle12");
+      AddTriggerToList("HLT_Ele16_Ele12");
     }
   }
   else {
@@ -171,13 +179,22 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
     AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
     AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
-    AddTriggerToList("HLT_IsoMu");
-    AddTriggerToList("HLT_Mu");
-    AddTriggerToList("HLT_TkMu");
     AddTriggerToList("HLT_DoubleEle");
-    AddTriggerToList("HLT_Ele");
     AddTriggerToList("HLT_DoublePhoton");
-    AddTriggerToList("HLT_Photon");
+    AddTriggerToList("HLT_Ele17_Ele12_CaloIdL");
+    AddTriggerToList("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+    AddTriggerToList("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v");
+    AddTriggerToList("HLT_Mu20_Mu10_SameSign_DZ");
+    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
+    AddTriggerToList("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL");
+    AddTriggerToList("HLT_Mu17_Mu8_SameSign_DZ");
+    AddTriggerToList("HLT_Ele23_WpLoose");
+    AddTriggerToList("HLT_TripleMu");
+    AddTriggerToList("HLT_DiMu");
+    AddTriggerToList("HLT_Mu8_DiEle12");
+    AddTriggerToList("HLT_Ele16_Ele12");
+    AddTriggerToList("HLT_IsoMu20");
+
   }
 
   

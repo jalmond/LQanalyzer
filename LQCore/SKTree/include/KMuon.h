@@ -47,6 +47,8 @@ namespace snu {
     void SetIsLoose(bool isLoose);
     void SetIsTight(bool isTight);
     void SetIsMedium(bool isMedium);
+    void SetIsChargeFlip(Bool_t iscf);
+    void SetIsFromTau(Bool_t istau);
     void SetIsSoft(bool isSoft);
 
     void SetShiftedEUp(double pt_up);
@@ -78,6 +80,8 @@ namespace snu {
     inline Bool_t   IsMedium () const {return k_ismedium;}
     inline Bool_t   IsSoft () const {return k_issoft;}
     inline Bool_t   MCMatched () const {return k_matched;}
+    inline Bool_t MCIsCF() const{return k_is_cf;}
+    inline Bool_t MCFromTau() const{return k_is_fromtau;}
 
 
     inline Double_t RelIso03()  const {return k_muon_reliso03;}
@@ -102,11 +106,11 @@ namespace snu {
 
     Double_t muon_pt_up, muon_pt_down, k_muon_reliso03, k_muon_reliso04;
 
-    Bool_t k_isloose, k_istight, k_matched,k_ismedium, k_issoft ;
+    Bool_t k_isloose, k_istight, k_matched,k_is_cf,k_is_fromtau,k_ismedium, k_issoft ;
     
     TString k_trig_match;
     
-    ClassDef(KMuon,14)
+    ClassDef(KMuon,15)
   };   
 }//namespace snu
 

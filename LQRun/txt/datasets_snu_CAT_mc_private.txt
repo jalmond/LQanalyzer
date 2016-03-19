@@ -8,9 +8,22 @@
 #######################################################################################################################################
 
 
+HN150_mumumu_VmuN_0p1  100000.0 100000.0 0.0 219250160.0  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN150_mumumu_width_AUTO_VmuN_0p1/
+HN40_mumumu_VmuN_0p1  100000.0 100000.0 8.6 11621.2  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN40_mumumu_width_AUTO_VmuN_0p1/
+HN60_mumumu_VmuN_0p1  100000.0 100000.0 3.4 29274.0  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN60_mumumu_width_AUTO_VmuN_0p1/
+HN700_mumumu_VmuN_0p1  100000.0 100000.0 0.0 37821480960.0  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN700_mumumu_width_AUTO_VmuN_0p1/
+
+
 #### Single lepton skims: SKTrees
-
+SKHN150_mumumu_VmuN_0p1  100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN150_mumumu_VmuN_0p1/
+SKHN40_mumumu_VmuN_0p1  100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN40_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1  100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1  100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN700_mumumu_VmuN_0p1/
 
 
 #### Single lepton skims: SKTrees
+SKHN150_mumumu_VmuN_0p1_dilep  100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN150_mumumu_VmuN_0p1/
+SKHN40_mumumu_VmuN_0p1_dilep  100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN40_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1_dilep  100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1_dilep  100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN700_mumumu_VmuN_0p1/
 

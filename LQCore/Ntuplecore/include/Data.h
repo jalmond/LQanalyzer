@@ -86,6 +86,7 @@ public :
    void SetLQNtupleInputType(bool lq);
    std::string GetCatVersion(bool runLQ);
    void SetCatVersion(std::string cv);
+   void SetTargetLumi(float tlumi);
 
    void SetLQNtupleInputType(int dataflag);
 
@@ -96,7 +97,7 @@ public :
 
    bool LQinput;
    Long64_t nentries;
-   int setting_ntuple_data;
+
    // Declaration of leaf types
 
    /// If needed (using SKTree input)
@@ -109,6 +110,7 @@ public :
    snu::KTrigger     *k_inputtrigger;
    std::vector<snu::KTruth>     *k_inputtruth;
 
+   int setting_ntuple_data;
    
    Bool_t          isData;
    Double_t        lumiSilver;
@@ -117,7 +119,7 @@ public :
    std::vector<TBranch*> m_inputbranches;
 
    std::string CatVersion;
-
+   float TargetLumi;
    // Declaration of leaf types
    Int_t           run;
    Int_t           lumi;

@@ -60,7 +60,7 @@ WW_doublescattering  844954.0 844954.0 1.6 515215.8  /data2/DATA/cattoflat/MC/v7
 WW_pythia8  988418.0 988418.0 113.8 8683.6  /data2/DATA/cattoflat/MC/v7-6-3/WW_TuneCUETP8M1_13TeV-pythia8/
 WZ_lllnu_MCatNLO  12542004.0 8248027.5 5.3 1568066.1  /data2/DATA/cattoflat/MC/v7-6-3/WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
 WZ_llqq_MCatNLO  21285766.0 12749017.0 5.6 2278644.8  /data2/DATA/cattoflat/MC/v7-6-3/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/
-WN_lllnu_powheg  2000000.0 2000000.0 4.4 451502.9  /data2/DATA/cattoflat/MC/v7-6-3/WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/
+WZ_lllnu_powheg  2000000.0 2000000.0 4.4 451502.9  /data2/DATA/cattoflat/MC/v7-6-3/WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/
 WZZ_MCatNLO  249800.0 218986.0 0.1 3935058.5  /data2/DATA/cattoflat/MC/v7-6-3/WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
 WZ_pythia8  1000000.0 1000000.0 47.1 21217.9  /data2/DATA/cattoflat/MC/v7-6-3/WZ_TuneCUETP8M1_13TeV-pythia8/
 WpWp_madgraph  145800.0 145800.0 0.0 7063953.5  /data2/DATA/cattoflat/MC/v7-6-3/WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8/
@@ -74,6 +74,10 @@ ZZ_pythia8  985600.0 985600.0 16.9 58285.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZ_T
 ttHnobb_Powheg  3945824.0 3945824.0 0.5 7801154.5  /data2/DATA/cattoflat/MC/v7-6-3/ttHToNonbb_M125_13TeV_powheg_pythia8/
 ttHtobb_Powheg  3772012.0 3772012.0 0.5 7457517.0  /data2/DATA/cattoflat/MC/v7-6-3/ttHTobb_M125_13TeV_powheg_pythia8/
 
+HN150_mumumu_VmuN_0p1 100000.0 100000.0 0.0 219250160.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN150_mumumu_width_AUTO_VmuN_0p1/
+HN40_mumumu_VmuN_0p1 100000.0 100000.0 8.6 11621.2 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN40_mumumu_width_AUTO_VmuN_0p1/
+HN60_mumumu_VmuN_0p1 100000.0 100000.0 3.4 29274.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN60_mumumu_width_AUTO_VmuN_0p1/
+HN700_mumumu_VmuN_0p1 100000.0 100000.0 0.0 37821480960.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN700_mumumu_width_AUTO_VmuN_0p1/
 
 #### Single lepton skims: SKTrees
 SKDY10to50_MCatNLO  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/DY10to50_MCatNLO/
@@ -128,7 +132,7 @@ SKWW_doublescattering  844954.0 844954.0 1.6 515215.8 /data2/CatNtuples/v7-6-3/S
 SKWW_pythia8  988418.0 988418.0 113.8 8683.6 /data2/CatNtuples/v7-6-3/SKTrees/MC/WW_pythia8/
 SKWZ_lllnu_MCatNLO  12542004.0 8248027.5 5.3 1568066.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/WZ_lllnu_MCatNLO/
 SKWZ_llqq_MCatNLO  21285766.0 12749017.0 5.6 2278644.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/WZ_llqq_MCatNLO/
-SKWN_lllnu_powheg  2000000.0 2000000.0 4.4 451502.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/WN_lllnu_powheg/
+SKWZ_lllnu_powheg  2000000.0 2000000.0 4.4 451502.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/WZ_lllnu_powheg/
 SKWZZ_MCatNLO  249800.0 218986.0 0.1 3935058.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/WZZ_MCatNLO/
 SKWZ_pythia8  1000000.0 1000000.0 47.1 21217.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/WZ_pythia8/
 SKWpWp_madgraph  145800.0 145800.0 0.0 7063953.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/WpWp_madgraph/
@@ -142,8 +146,12 @@ SKZZ_pythia8  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MC
 SKttHnobb_Powheg  3945824.0 3945824.0 0.5 7801154.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttHnobb_Powheg/
 SKttHtobb_Powheg  3772012.0 3772012.0 0.5 7457517.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttHtobb_Powheg/
 
+SKHN150_mumumu_VmuN_0p1 100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN150_mumumu_VmuN_0p1/
+SKHN40_mumumu_VmuN_0p1 100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN40_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1 100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1 100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN700_mumumu_VmuN_0p1/
 
-#### Single lepton skims: SKTrees
+#### Dilepton skims: SKTrees
 SKDY10to50_MCatNLO_dilep  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/DY10to50_MCatNLO/
 SKDY50plus_MCatNLO_dilep  121212392.0 81236728.0 6024.2 13485.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/DY50plus_MCatNLO/
 SKDY50plus_madgraph_dilep  9004328.0 9004328.0 6025.2 1494.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/DY50plus_madgraph/
@@ -196,7 +204,7 @@ SKWW_doublescattering_dilep  844954.0 844954.0 1.6 515215.8 /data2/CatNtuples/v7
 SKWW_pythia8_dilep  988418.0 988418.0 113.8 8683.6 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WW_pythia8/
 SKWZ_lllnu_MCatNLO_dilep  12542004.0 8248027.5 5.3 1568066.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WZ_lllnu_MCatNLO/
 SKWZ_llqq_MCatNLO_dilep  21285766.0 12749017.0 5.6 2278644.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WZ_llqq_MCatNLO/
-SKWN_lllnu_powheg_dilep  2000000.0 2000000.0 4.4 451502.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WN_lllnu_powheg/
+SKWZ_lllnu_powheg_dilep  2000000.0 2000000.0 4.4 451502.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WZ_lllnu_powheg/
 SKWZZ_MCatNLO_dilep  249800.0 218986.0 0.1 3935058.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WZZ_MCatNLO/
 SKWZ_pythia8_dilep  1000000.0 1000000.0 47.1 21217.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WZ_pythia8/
 SKWpWp_madgraph_dilep  145800.0 145800.0 0.0 7063953.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/WpWp_madgraph/
@@ -209,11 +217,47 @@ SKZZ_llll_powheg_dilep  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6
 SKZZ_pythia8_dilep  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_pythia8/
 SKttHnobb_Powheg_dilep  3945824.0 3945824.0 0.5 7801154.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHnobb_Powheg/
 SKttHtobb_Powheg_dilep  3772012.0 3772012.0 0.5 7457517.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHtobb_Powheg/
+SKHN150_mumumu_VmuN_0p1_dilep 100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN150_mumumu_VmuN_0p1/
+SKHN40_mumumu_VmuN_0p1_dilep 100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN40_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1_dilep 100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1_dilep 100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN700_mumumu_VmuN_0p1/
+
+
+
+#### Trlepton skims: SKTrees
+SKDY10to50_MCatNLO_trilep  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/DY10to50_MCatNLO/
+SKDY50plus_MCatNLO_trilep  121212392.0 81236728.0 6024.2 13485.1 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/DY50plus_MCatNLO/
+SKDY50plus_madgraph_trilep  9004328.0 9004328.0 6025.2 1494.4 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/DY50plus_madgraph/
+SKsingletop_s_MCatNLO_trilep  998400.0 621945.9 3.4 185103.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/singletop_s_MCatNLO/
+SKsingletop_tbar_Powheg_trilep  1630900.0 1630900.0 26.1 62568.3 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/singletop_tbar_Powheg/
+SKsingletop_t_Powheg_trilep  3299200.0 3299200.0 43.8 75326.9 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/singletop_t_Powheg/
+SKsingletop_tbarW_Powheg_trilep  999400.0 999400.0 35.6 28073.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/singletop_tbarW_Powheg/
+SKsingletop_tW_Powheg_trilep  1000000.0 1000000.0 35.6 28089.9 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/singletop_tW_Powheg/
+SKTT_MCatNLO_trilep  38475772.0 12771412.0 831.8 15354.7 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/TT_MCatNLO/
+SKttWJetsToLNu_MCatNLO_trilep  250307.0 129001.0 0.2 631429.2 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttWJetsToLNu_MCatNLO/
+SKttWJetsToQQ_MCatNLO_trilep  831847.0 429599.0 0.4 1057604.6 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttWJetsToQQ_MCatNLO/
+SKttZToQQ_MCatNLO_trilep  747000.0 350106.0 0.5 660951.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttZToQQ_MCatNLO/
+SKWJets_MCatNLO_trilep  24156128.0 16521035.0 61526.7 268.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WJets_MCatNLO/
+SKWW_llnn_powheg_trilep  1930376.0 1930376.0 12.2 158513.4 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WW_llnn_powheg/
+SKWW_doublescattering_trilep  844954.0 844954.0 1.6 515215.8 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WW_doublescattering/
+SKWW_pythia8_trilep  988418.0 988418.0 113.8 8683.6 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WW_pythia8/
+SKWZ_lllnu_MCatNLO_trilep  12542004.0 8248027.5 5.3 1568066.1 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WZ_lllnu_MCatNLO/
+SKWZ_llqq_MCatNLO_trilep  21285766.0 12749017.0 5.6 2278644.8 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WZ_llqq_MCatNLO/
+SKWZ_lllnu_powheg_trilep  2000000.0 2000000.0 4.4 451502.9 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WZ_lllnu_powheg/
+SKWZZ_MCatNLO_trilep  249800.0 218986.0 0.1 3935058.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WZZ_MCatNLO/
+SKWZ_pythia8_trilep  1000000.0 1000000.0 47.1 21217.9 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WZ_pythia8/
+SKWpWp_madgraph_trilep  145800.0 145800.0 0.0 7063953.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WpWp_madgraph/
+SKWpWp_qcd_madgraph_trilep  120000.0 120000.0 0.0 7802340.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WpWp_qcd_madgraph/
+SKZZ_llnunu_powheg_trilep  7112800.0 7112800.0 0.6 12611348.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_llnunu_powheg/
+SKZZ_llqq_MCatNLO_trilep  15301695.0 9660541.0 3.2 3000168.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_llqq_MCatNLO/
+SKZZ_llll_MCatNLO_trilep  10747136.0 7416622.0 1.2 6119325.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_llll_MCatNLO/
+SKZZ_llll_powheg_trilep  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_llll_powheg/
+SKZZ_pythia8_trilep  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_pythia8/
 
 ##################################################################
 #### Missing/Not produced samples in this version are listed below 
 #### Missing : means miniAOD not available 
-#### Available: means miniAOD/catuples available but no sktree made. 
+#### Available: means miniAOD/catuples available but no flatcatuples/sktree made. 
 ##################################################################
 Missing: DY5to50_madgraph   /DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 Missing: GluGluToZZTo2e2mu   /GluGluToZZTo2e2mu_BackgroundOnly_13TeV_MCFM/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
@@ -325,13 +369,13 @@ DATASET: TT_scaleup_MCatNLO   /TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-scaleup-py
 DATASET: TT_scaleup_powheg   /TT_TuneCUETP8M1_13TeV-powheg-scaleup-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WG_lnuG_madgraph   /WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WJets_MCatNLO   /WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
-DATASET: WN_lllnu_powheg   /WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WW_MCatNLO   /WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WW_doublescattering   /WW_DoubleScattering_13TeV-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WW_llnn_powheg   /WWTo2L2Nu_13TeV-powheg/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WW_pythia8   /WW_TuneCUETP8M1_13TeV-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WZZ_MCatNLO   /WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WZ_lllnu_MCatNLO   /WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
+DATASET: WZ_lllnu_powheg   /WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WZ_llqq_MCatNLO   /WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WZ_pythia8   /WZ_TuneCUETP8M1_13TeV-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
 DATASET: WpWp_madgraph   /WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM
@@ -359,3 +403,7 @@ DATASET: vhf_Htomm_Powheg   /VBF_HToMuMu_M125_13TeV_powheg_pythia8/RunIIFall15Mi
 ################################################################ 
 #### Private produced samples : Not made in batch at kisti
 ##################################################################
+ 
+ 
+ 
+

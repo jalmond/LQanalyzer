@@ -16,6 +16,8 @@ class EventBase;
 #include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
+//#include "rochcor76x/rochcor2015.h"
+
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -60,13 +62,14 @@ class AnalyzerCore : public LQCycleBase {
   bool IsCF(snu::KElectron el);
 
 
-  double TriggerScaleFactor( vector<snu::KElectron> el);;
-  double TriggerScaleFactor( vector<snu::KMuon> mu);;
-  double TriggerScaleFactorEMu();
+  double TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu, TString trigname);;
+
   float GetDiLepMass(std::vector<snu::KMuon> muons);
   float GetDiLepMass(std::vector<snu::KElectron> electrons);
 
   double ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KElectron> el, int sys=0);
+  double ElectronRecoScaleFactor(vector<snu::KElectron> el);
+
   double MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys=0);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
@@ -125,13 +128,18 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH2*> maphist2D;
   TH2F* FRHist;
   TH2F* MuonSF;
+  TH2F* ElectronSF_Tight;
+  TH2F* ElectronRECO;
   HNCommonLeptonFakes* m_fakeobj;
   
+
   /// Event weights
   Double_t MCweight, weight;
 
   snu::KEvent::json lumimask;
   bool reset_lumi_mask;
+  bool changed_target_lumi;
+
   // used to get trigger prescale
   Int_t prescale;
   
@@ -146,6 +154,8 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, MuonPlots*> mapCLhistMu;
   map<TString, JetPlots*> mapCLhistJet;
   
+  float ApplyPrescale(TString triggername, float tlumi, snu::KEvent::json flag);
+
   //
   // Function that closes rootfile
   //

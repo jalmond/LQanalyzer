@@ -7,6 +7,7 @@ map<TString, Double_t>  GetXSecMap();
 map<TString, TString>  GetMissingMap(TString cversion);
 vector<TString>  GetAvailableMap(TString cversion);
 map<TString, TString>  GetDatasetNames(TString cversion);
+map<TString, TString>  GetTriLepMap();
 
 bool CheckMaps();
 
@@ -312,6 +313,47 @@ map<TString, TString>  GetMissingMap(TString cversion){
   return map_missing;
 }
 
+map<TString, TString>  GetTriLepMap(){
+
+  map<TString, TString> trimap;
+  
+  trimap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY50plus_MCatNLO";
+  trimap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY10to50_MCatNLO";
+  trimap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY50plus_madgraph";
+  trimap["DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY5to50_madgraph";
+
+  trimap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbar_Powheg";
+  trimap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_t_Powheg";
+  trimap["ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbarW_Powheg";
+  trimap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tW_Powheg";
+  trimap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"] = "singletop_s_MCatNLO";
+  trimap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="TT_MCatNLO";
+  trimap["TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8"] ="ttWJetsToLNu_MCatNLO";
+  trimap["TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8"] ="ttWJetsToQQ_MCatNLO";
+  trimap["TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] ="ttZToLLNuNu_MCatNLO";
+  trimap["TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] ="ttZToQQ_MCatNLO";
+  trimap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="WJets_MCatNLO";
+  trimap["WW_TuneCUETP8M1_13TeV-pythia8"] ="WW_pythia8";
+  trimap["WZ_TuneCUETP8M1_13TeV-pythia8"] ="WZ_pythia8";
+  trimap["ZZ_TuneCUETP8M1_13TeV-pythia8"] ="ZZ_pythia8";
+  trimap["ZZTo4L_13TeV_powheg_pythia8"] = "ZZ_llll_powheg";
+  trimap["ZZTo4L_13TeV-amcatnloFXFX-pythia8"] = "ZZ_llll_MCatNLO";
+  trimap["ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8"] = "ZZ_llqq_MCatNLO";
+  trimap["ZZTo2L2Nu_13TeV_powheg_pythia8"] = "ZZ_llnunu_powheg";
+  trimap["WWTo2L2Nu_13TeV-powheg"] = "WW_llnn_powheg";
+  trimap["WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8"] = "WZ_llqq_MCatNLO";
+  trimap["WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8"] = "WZ_lllnu_powheg";
+  trimap["WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "WZ_lllnu_MCatNLO";
+  trimap["WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8"] = "WpWp_madgraph";
+  trimap["WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8"] = "WpWp_qcd_madgraph";
+  trimap["WW_DoubleScattering_13TeV-pythia8"] = "WW_doublescattering";
+  trimap["WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WZZ_MCatNLO";
+  trimap["ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "ZZZ_MCatNLO";
+  trimap["WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WW_MCatNLO";
+
+  return trimap;
+}
+  
 map<TString, TString>  GetLQMap(){
 
   map<TString, TString> lqmap;
@@ -395,7 +437,7 @@ map<TString, TString>  GetLQMap(){
   lqmap["ZZTo2L2Nu_13TeV_powheg_pythia8"] = "ZZ_llnunu_powheg";
   lqmap["WWTo2L2Nu_13TeV-powheg"] = "WW_llnn_powheg";
   lqmap["WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8"] = "WZ_llqq_MCatNLO";
-  lqmap["WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8"] = "WN_lllnu_powheg";
+  lqmap["WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8"] = "WZ_lllnu_powheg";
   lqmap["WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "WZ_lllnu_MCatNLO";
   lqmap["WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8"] = "WpWp_madgraph";
   lqmap["WpWpJJ_QCD_TuneCUETP8M1_13TeV-madgraph-pythia8"] = "WpWp_qcd_madgraph";

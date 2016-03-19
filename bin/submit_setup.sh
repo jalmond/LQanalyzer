@@ -465,6 +465,7 @@ function listavailable
 	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} ${submit_catvlist} "'" 
 	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist} ${submit_catvlist} "'" 
 	echo "For DiLepton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist} ${submit_catvlist} "'" 
+	echo "For TriLepton skim run 'sktree -L SKTree_TriLepSkim " ${submit_searchlist} ${submit_catvlist} "'" 
 	
     fi
     if [[ $specified_catversion != "true" ]];
@@ -472,7 +473,8 @@ function listavailable
 	echo "To check availability of SKTrees"
 	echo "For No skim run 'sktree -L SKTree_NoSkim " ${submit_searchlist} "'"
 	echo "For Lepton skim run 'sktree -L SKTree_LeptonSkim " ${submit_searchlist}  "'"
-	echo "For DiLpton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist}  "'"
+	echo "For DiLepton skim run 'sktree -L SKTree_DiLepSkim " ${submit_searchlist}  "'"
+	echo "For TriLepton skim run 'sktree -L SKTree_TriLepSkim " ${submit_searchlist}  "'"
 	
     fi
 
@@ -547,7 +549,7 @@ function runlist
     if [[ $submit_skim  == "" ]];
         then
 	echo "sktree -L <skim>"
-	echo "Need to set skim: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
+	echo "Need to set skim: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim/SKTree_TriLepSkim"
 	echo "Can also specify catversion AND/OR search filter list (after skim)"
 	echo "example 1) sktree -L FLATCAT"
 	echo "example 2) sktree -L FLATCAT v7-6-3"
@@ -564,6 +566,7 @@ function runlist
     isNoCut=false
     isLepton=false
     isDiLep=false
+    isTriLep=false
     if [[ $submit_skim  == "SKTree_NoSkim" ]]; then 
 	isNoCut=true 
     fi
@@ -583,6 +586,11 @@ function runlist
         then
 	isDiLep=true
     fi
+    if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
+        then
+        isTriLep=true
+    fi
+
     if [[ $submit_skim  == "DiLep" ]];
 	then
 	isDiLep=true
@@ -594,18 +602,34 @@ function runlist
     if [[ $isLepton  == "true" ]];
 	then
 	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MC/"
+	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+            then
+            check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/Sep15/MC/"
+        fi
     fi
     if [[ $isDiLep  == "true" ]];
 	then
 	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCDiLep"
+	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+	    then
+	    check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/Sep15/MCDiLep"
+	fi
+    fi
+    if [[ $isTriLep  == "true" ]];
+        then
+        check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCTriLep"
+        if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+            then
+            check_path=""
+        fi
     fi
 
-    
+    echo $check_path
     if [[ $check_path == "" ]];
 	then
 	echo "Invalid option for ntuple version: "
 	echo "sktree -L <skim>"
-        echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim"
+        echo "Need to set ntuple version: Options are FLATCAT/SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim/SKTree_TriLepSkim"
 	exit 1
     fi
     
@@ -741,7 +765,29 @@ function runlist
 	    fi
     fi
     
+    if [[ $isTriLep  == "true" ]];
+        then
+        counter=${#UNPROCESSED[@]}
+            if [[ $counter -ne 0 ]];
+                then
+                echo "Samples that have local flat catuples but no dilepton skim are:"
+            else   echo -e $missing_comment
 
+            fi
+            for il in  ${UNPROCESSED[@]};
+              do
+              echo samplename = $il
+
+            done
+            echo ""
+            if [[ $counter -ne 0 ]];
+                then
+                echo "If you want this sktree run 'sktree -a SKTreeMakerTriLep -i <samplename> -c "$submit_catvlist"'"
+                echo ""
+            fi
+    fi
+
+    
     if [[ $specified_catversion == "false" ]];
 	then
 	#Get number of catversions
@@ -771,6 +817,10 @@ function runlist
 	      then
 	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCDiLep"
 	  fi
+	  if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
+              then
+              check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCTriLep"
+          fi
 
 	  while read line
 	    do
@@ -1005,8 +1055,8 @@ while [ "$1" != "" ]; do
 				    echo "-S     |   ALL/DATA/MC/DoubleEG/DoubleMuon/                   | default = ''        | 'DATA' runs every data dataset.     |"
 				    echo "       |   MuonEG/SingeMuon/SinglePhoton/SingleElectron       |                     | 'MC' runs every MC sample           |"
 				    echo "       |                                                      |                     |                                     |"
-				    echo "-s     |   SKTree_NoSkim/SKTree_LeptonSkim/SKTree_DiLepSkim   | default='Lepton'    | Sets skim to use:                   | "
-				    echo "       |   FLATCAT sets input to flatcatuple not sktee        |                     | NoCuts/Lepton/DiLeptonstill work    | "
+				    echo "-s     |SKTree_NoSkim/SKTree_LeptonSkim/SKTree_Di[Tri]LepSkim | default='Lepton'    | Sets skim to use:                   | "
+				    echo "       |  FLATCAT sets input to flatcatuple not sktee         |                     | NoCuts/Lepton/DiLeptonstill work    | "
 				    echo "       |                                                      |                     |                                     |"
 				    echo "-n     |   #number of subjobs  (any number < 15)              | default=15          | default is 5 is -sktree=False       | "
 				    echo "       |                                                      |                     |                                     |"
@@ -1220,6 +1270,7 @@ declare -a FULLLISTOFSAMPLES=()
 declare -a FULLLISTOFSAMPLESNOCUT=()
 declare -a FULLLISTOFSAMPLESLEPTON=()
 declare -a FULLLISTOFSAMPLESDILEP=()
+declare -a FULLLISTOFSAMPLESTRILEP=()
 
 
 if [[ $check_all_catversions != "true" ]];
@@ -1269,6 +1320,12 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
 	then
 	job_skim=SKTree_LeptonSkim
     fi
+    if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
+        then
+        job_skim=SKTree_DiLepSkim
+    fi
+
+
 fi
 
 
@@ -1363,7 +1420,13 @@ if [[ $MakeFullLists == "true" ]];
 	if [[ $job_skim == "SKTree_LeptonSkim" ]];
 	    then	
 	    
-	    if [[ $line == *"/data2/CatNtuples/"${iclist}"/SKTrees/MC/"* ]];
+	    checkline="/data2/CatNtuples/"${iclist}"/SKTrees/MC/"
+            if [[ ${iclist} == *"v7-4-4"* ]];
+                then
+                checkline="/data2/CatNtuples/"${iclist}"/SKTrees/Sep15/MC/"
+            fi
+
+            if [[ $line == *$checkline* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
 		sline2=$(echo $line | head -n1 | awk '{print $6}')
@@ -1394,7 +1457,14 @@ if [[ $MakeFullLists == "true" ]];
 	fi  
 	if [[ $job_skim == "SKTree_DiLepSkim" ]];
 	    then
-	    if [[ $line == *"/data2/CatNtuples/"${iclist}"/SKTrees/MCDiLep"* ]];
+	    checkline="/data2/CatNtuples/"${iclist}"/SKTrees/MCDiLep"
+	    if [[ ${iclist} == *"v7-4-4"* ]];
+		then
+		checkline="/data2/CatNtuples/"${iclist}"/SKTrees/Sep15/MCDiLep"
+	    fi
+
+
+	    if [[ $line == *$checkline* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
 		sline2=$(echo $line | head -n1 | awk '{print $6}')
@@ -1415,6 +1485,49 @@ if [[ $MakeFullLists == "true" ]];
 		do
 		  if [[ $sline == $il ]];
 		      then
+		      isDuplicate=true
+		  fi
+		done
+		if [[ $isDuplicate == "false" ]];
+		    then
+		    if [[ -d "${sline2}" ]]; then
+			if test "$(ls -A "$sline2")"; then
+			    FULLLISTOFSAMPLESDILEP+=(${sline})
+			fi
+		    fi
+		fi
+	    fi
+	fi    
+	if [[ $job_skim == "SKTree_TriLepSkim" ]];
+	    then
+	    checkline="/data2/CatNtuples/"${iclist}"/SKTrees/MCTriLep"
+	    if [[ ${iclist} == *"v7-4-4"* ]];
+		then
+		checkline="/data2/CatNtuples/"${iclist}"/SKTrees/Sep15/MCTriLep"
+	    fi
+	    
+	    
+	    if [[ $line == *$checkline* ]];
+		then
+		sline=$(echo $line | head -n1 | awk '{print $1}')
+		sline2=$(echo $line | head -n1 | awk '{print $6}')
+		
+		prefix="SK"
+		suffix="_dilep"
+		if [[ $sline == *${prefix}* ]];
+		    then
+		    sline=${sline:2}
+		fi
+		if [[ $sline == *${suffix}* ]];
+		    then
+		    sline=${sline%$suffix}
+		fi
+		
+		isDuplicate=false
+		for il in  ${FULLLISTOFSAMPLESTRILEP[@]};
+		  do
+		  if [[ $sline == $il ]];
+			  then
 		      isDuplicate=true
 		  fi
 		done

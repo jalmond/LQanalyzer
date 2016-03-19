@@ -55,7 +55,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(10);
+  eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(3.5);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
@@ -66,18 +66,19 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
   eventbase->GetElectronSel()->SetPt(10); 
-  eventbase->GetElectronSel()->SetEta(5.); 
+  eventbase->GetElectronSel()->SetEta(3.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
   eventbase->GetElectronSel()->SetPt(15);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
+  
   
   std::vector<snu::KElectron> skim_photons;
   eventbase->GetPhotonSel()->SetPt(15);
   eventbase->GetPhotonSel()->SetEta(3.);
   eventbase->GetPhotonSel()->BasicSelection(out_photons);
 
-
+  
   int nlep = skim_electrons.size() + skim_muons.size();
   bool pass15gevlep = false;
   if(skim_electrons.size() > 0){
@@ -135,11 +136,16 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");
       AddTriggerToList("HLT_TkMu");
+      AddTriggerToList("HLT_TripleMu");
+      AddTriggerToList("HLT_DiMu");
     }
     if(k_channel.Contains("SingleMuon")){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");
       AddTriggerToList("HLT_TkMu");
+      AddTriggerToList("HLT_TripleMu");
+      AddTriggerToList("HLT_DiMu");
+
     }
     if(k_channel.Contains("SinglePhoton")){
       AddTriggerToList("HLT_Photon");
@@ -159,21 +165,40 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
       AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
       AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
+      AddTriggerToList("HLT_Mu8_DiEle12");
+      AddTriggerToList("HLT_Ele16_Ele12");
     }
   }
   else {
-    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
-    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
     AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
-    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
     AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
-    AddTriggerToList("HLT_IsoMu");
-    AddTriggerToList("HLT_Mu");
-    AddTriggerToList("HLT_TkMu");
-    AddTriggerToList("HLT_DoubleEle");
-    AddTriggerToList("HLT_Ele");
+    AddTriggerToList("HLT_IsoMu17");
+    AddTriggerToList("HLT_IsoMu18");
+    AddTriggerToList("HLT_IsoMu20");
+    AddTriggerToList("HLT_IsoMu22");
+    AddTriggerToList("HLT_IsoMu27_v");
+    AddTriggerToList("HLT_Mu8");
+    AddTriggerToList("HLT_Mu17");
+    AddTriggerToList("HLT_Mu20");
+    AddTriggerToList("HLT_DoubleEle24");
+    AddTriggerToList("HLT_DoubleEle8");
+    AddTriggerToList("HLT_DoubleEle33");
+    AddTriggerToList("HLT_Ele8");
+    AddTriggerToList("HLT_Ele12");
+    AddTriggerToList("HLT_Ele17");
+    AddTriggerToList("HLT_Ele18");
+    AddTriggerToList("HLT_Ele23");
+    AddTriggerToList("HLT_Ele33");
+    AddTriggerToList("HLT_Ele32_eta2p1");
+    AddTriggerToList("HLT_Ele27_eta2p1");
+    AddTriggerToList("HLT_Ele22_eta2p1");
     AddTriggerToList("HLT_DoublePhoton");
-    AddTriggerToList("HLT_Photon");
+    AddTriggerToList("HLT_Photon36_R9Id90");
+    AddTriggerToList("HLT_Photon50_R9Id90");
+    AddTriggerToList("HLT_Photon90_R9Id90");
+    AddTriggerToList("HLT_TripleMu");
+    AddTriggerToList("HLT_DiMu");
+
   }
 
   

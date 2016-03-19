@@ -2,8 +2,9 @@
 ### sets all configurable variables to defaul values
 
 declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
-declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "NoCut" "Lepton" "DiLep")
+declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
+declare -a  oldcat=("v7-4-4" "v7-4-5")
 
 
 
@@ -196,6 +197,11 @@ function mergeoutput
 		then
 		output_file_skim_tag="SK"$output_file_skim_tag"_dilep_cat_"$submit_version_tag
 	    fi
+	    if [[ $job_skim == "SKTree_TriLepSkim" ]] ;
+		then
+		output_file_skim_tag="SK"$output_file_skim_tag"_trilep_cat_"$submit_version_tag
+            fi
+
 	    
 	    echo "############################################################################################################################################################"
 	    echo "############################################################################################################################################################"
@@ -257,6 +263,9 @@ if [[ $submit_file_tag  != ""  ]];
     if [[ $job_skim == "SKTree_DiLepSkim" ]];then
 	ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
     fi
+    if [[ $job_skim == "SKTree_TriLepSkim" ]];then
+        ARG_SINGLE_FILE="FULLLISTOFSAMPLESTRILEP"
+    fi
     if [[ $job_skim == "DiLep" ]];then
 	ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
     fi
@@ -277,7 +286,6 @@ if [[ $submit_file_tag  != ""  ]];
 	if [[ $check_all_catversions == "false" ]];
 	    then
 	    
-	    declare -a  oldcat=("v7-4-4" "v7-4-5")
 	    isoldname=false
 	    for oclist in  ${oldcat[@]};
 	      do
@@ -442,6 +450,9 @@ if [[ $submit_file_list  != ""  ]];
 	    if [[ $job_skim == "SKTree_DiLepSkim" ]];then
 		ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
 	    fi
+	    if [[ $job_skim == "SKTree_TriLepSkim" ]];then
+                ARG_SINGLE_FILE="FULLLISTOFSAMPLESTRILEP"
+            fi
 	    if [[ $job_skim == "DiLep" ]];then
 		ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
 	    fi
@@ -622,7 +633,27 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
     
 fi
 
+if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
+    then
+    submit_skinput=true
+    job_skim="SKTree_DiLepSkim"
+    if [[ $set_sktreemaker_debug == "false" ]];
+        then
+        job_njobs=30
+    fi
+    if [[ $submit_version_tag == "" ]];
+	then
+	echo "When running SKTreeMaker you need to specify the catversion: -c "
+        echo "Options are: "
+        for ic in  ${list_of_catversions[@]};
+          do
+          echo $ic
+        done
 
+        exit 1
+    fi
+
+fi
 outputdir_cat=$LQANALYZER_DIR"/data/output/CAT/"
 outputdir_analyzer=$LQANALYZER_DIR"/data/output/CAT/"$submit_analyzer_name
 dir_tag="periodC/"
@@ -650,19 +681,37 @@ if [[ $runDATA == "true" ]];
 	then echo "LQanalyzer::sktree :: ERROR :: There are no NoCut skims for data"
 	exit 1
     fi
+    
     ARGDATASKIM=$submit_sampletag
     eval out_streams_skimcheck=(\${$ARGDATASKIM[@]})
-    
-    for stream_check in ${out_streams_skimcheck[@]};
-    do
-      if [[ $stream_check == *"Single"* ]];
-	  then
-	  echo "LQanalyzer::sktree :: ERROR :: There are no DiLepton skims for "$stream_check" in catversion "$submit_version_tag
- 
-	  exit 1
-      fi
-    done
+    if [[ $job_skim == *"DiLep"* ]];
+	then
+	for stream_check in ${out_streams_skimcheck[@]};
+	  do
+	  if [[ $stream_check == *"Single"* ]];
+	      then
+	      echo "LQanalyzer::sktree :: ERROR :: There are no DiLepton skims for "$stream_check" in catversion "$submit_version_tag
+	      
+	      exit 1
+	  fi
+	done
+    fi
+    if [[ $job_skim == *"TriLep"* ]];
+        then
+        for stream_check in ${out_streams_skimcheck[@]};
+          do
+          if [[ $stream_check == *"Single"* ]];
+              then
+              echo "LQanalyzer::sktree :: ERROR :: There are no TriLepton skims for "$stream_check" in catversion "$submit_version_tag
+
+              exit 1
+          fi
+        done
+    fi
+
     echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_streams[*]}
+
+    
 
 
 fi
@@ -676,6 +725,7 @@ if [[ $job_output_dir == "" ]]
     if [[ $runMC  == "true" ]];
 	then
 	job_output_dir=$outputdir_mc
+	
     fi
 fi
 output_datafile=${outputdir_mc}"/"$job_cycle"_data_cat_"${submit_version_tag}".root"
@@ -839,7 +889,17 @@ elif [[ $job_skim == "SKTree_DiLepSkim" ]]
 	echo "Fix submission"
 	exit 1
     fi
-    
+elif [[ $job_skim == "SKTree_TriLepSkim" ]]
+    then
+    echo $skim_output_message
+    if [[ $submit_skinput == "false" ]];
+	then
+        echo "LQanalyzer::sktree :: ERROR :: skim set  to SKTree_TriLepSkim: Yet you set -sktree <false>"
+	echo "Fix submission"
+        exit 1
+    fi
+
+
 elif [[ $job_skim == "NoCut" ]]
     then
     echo $skim_output_message
@@ -952,29 +1012,24 @@ if [[ $job_loglevel != "ERROR" ]]
 	fi
     fi
 fi
-if [[ $runDATA  == "true" ]];
-    then
-    if [[ $submit_file_list  != ""  ]];
-	then
-	echo "Running on data"
-	echo "ARRAY of files specified with sktree -list: This is not allowed for data"
-	exit 1
-    fi
-fi
+
 
 njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "${job_njobs}" (Default)"
 if [[ $changed_job_njobs == "true" ]];
     then
-    njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "$job_njobs 
     
     if [[ $job_cycle != *"SKTreeMaker"* ]];
     then
-	if [[ $job_njobs -gt 15 ]];
-	then
+	if [[ $job_njobs -eq 311 ]];
+	    then
+	    job_njobs=-300
+	elif [[ $job_njobs -gt 15 ]];
+	    then
 	    echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-15)"
 	    job_njobs=15
 	fi
     fi
+    njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "$job_njobs 
 fi
 
 echo $njobs_output_message
@@ -1108,7 +1163,12 @@ if [[ $runDATA  == "true" ]];
       loglevel=$job_loglevel
       logstep=$job_logstep
       stream=${istream}
-      outputdir=${job_output_dir}
+      if [[ $changed_job_output_dir == "true" ]];
+	  then
+	  outputdir=${job_output_dir}
+      else
+	  outputdir=$outputdir_data
+      fi
       catversion=${submit_version_tag}
     
       ARG=data_periods

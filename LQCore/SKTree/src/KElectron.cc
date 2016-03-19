@@ -41,6 +41,8 @@ KParticle()
   pass_notrigmva_medium=false;
   pass_notrigmva_tight=false;
   k_mc_matched=false;
+  k_is_cf=false;
+  k_is_fromtau=false;
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
@@ -49,6 +51,7 @@ KParticle()
   k_trkvz=-999;
   k_gsf_ctscpix_charge=false;
   k_trig_match="";
+
 }
 
 /**
@@ -85,6 +88,8 @@ KElectron::KElectron(const KElectron& el) :
   pass_notrigmva_medium=el.PassNotrigMVAMedium();
   pass_notrigmva_tight=el.PassNotrigMVATight();
   k_mc_matched=el.MCMatched();
+  k_is_cf=el.MCIsCF();
+  k_is_fromtau=el.MCFromTau();
   k_isPF=el.IsPF();
   k_istrigmvavalid=el.IsTrigMVAValid();
   snu_id = el.SNUID();
@@ -93,6 +98,7 @@ KElectron::KElectron(const KElectron& el) :
   k_trkvz= el.TrkVz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
   k_trig_match= el.TrigMatch();
+
 }
 
 
@@ -128,6 +134,8 @@ void KElectron::Reset()
   pass_notrigmva_medium=false;
   pass_notrigmva_tight=false;
   k_mc_matched=false;
+  k_is_cf=false;
+  k_is_fromtau=false;
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
@@ -139,6 +147,7 @@ void KElectron::Reset()
   k_gsf_ctscpix_charge=false;
   k_trig_match="";
 
+  
 }
 
 
@@ -172,6 +181,8 @@ KElectron& KElectron::operator= (const KElectron& p)
     pass_notrigmva_medium=p.PassNotrigMVAMedium();
     pass_notrigmva_tight=p.PassNotrigMVATight();
     k_mc_matched=p.MCMatched();
+    k_is_cf =p.MCIsCF();
+    k_is_fromtau=p.MCFromTau();
     k_isPF=p.IsPF();
     k_istrigmvavalid=p.IsTrigMVAValid();
     snu_id = p.SNUID();
@@ -181,6 +192,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_abs_iso03=p.PFAbsIso(0.3);
     k_abs_iso04=p.PFAbsIso(0.4);
     k_trig_match= p.TrigMatch();
+
   }
   
   return *this;
@@ -345,6 +357,14 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
 
 ///// SETTING CLASS VARIABLES
 
+void KElectron::SetIsFromTau(bool istau){
+  k_is_fromtau=istau;
+}
+
+
+void KElectron::SetIsChargeFlip(bool iscf){
+  k_is_cf=iscf;
+}
 void KElectron::SetSCEta(Double_t sceta){
   k_sceta = sceta;
 }

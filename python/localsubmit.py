@@ -221,8 +221,9 @@ if number_of_cores > 1:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
             if not "SKTreeMaker" in cycle:
-                number_of_cores = 15
-                print "Number of sub jobs is reset to default of 15"
+                if number_of_cores < 100:
+                    number_of_cores = 15
+                    print "Number of sub jobs is reset to default of 15"
         if cycle == "SKTreeMaker":
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
@@ -234,8 +235,9 @@ if number_of_cores > 1:
             number_of_cores = 40 - n_previous_jobs
         if number_of_cores > 15:
             if not "SKTreeMaker"in cycle:
-                number_of_cores= 15
-                print "Number of sub jobs is reset to default of 15"
+                if number_of_cores < 100:
+                    number_of_cores= 15
+                    print "Number of sub jobs is reset to default of 15"
         if cycle == "SKTreeMaker":
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
@@ -250,6 +252,8 @@ if number_of_cores > 1:
                         number_of_cores = 5
                         print "Number of sub jobs is set to high. Reset to default of 5."
 
+if number_of_cores <  -100:
+    number_of_cores=30
 if number_of_cores < 0:
     number_of_cores=1
 ##################################################################################################################            
@@ -304,6 +308,10 @@ if useskinput == "true":
             else:
                 if useskim == "DiLep":
                     new_channel="SK" + new_channel + "_dilep"
+                else:
+                    if useskim == "TriLep":
+                        new_channel="SK" + new_channel + "_trilep"
+                                            
 
     else:
         if useskim == "Lepton":
@@ -314,6 +322,10 @@ if useskinput == "true":
             else:
                 if useskim == "DiLep":
                     sample="SK" + sample + "_dilep"
+                else:
+                    if useskim == "TriLep":
+                        sample="SK" + sample + "_trilep"
+                                            
 elif useskinput == "True":
 
     if not mc:
@@ -325,6 +337,10 @@ elif useskinput == "True":
             else:
                 if useskim == "DiLep":
                     new_channel="SK" + new_channel + "_dilep"
+                else:
+                    if useskim == "TriLep":
+                        new_channel="SK" + new_channel + "_trilep"
+                                            
     else:
         if useskim == "Lepton":
             sample="SK" + sample
@@ -334,6 +350,10 @@ elif useskinput == "True":
             else:
                 if useskim == "DiLep":
                     sample="SK" + sample + "_dilep"
+                else:
+                    if useskim == "TriLep":
+                        sample="SK" + sample + "_trilep"
+                                            
                 
 print "Input sample = " + sample
 if not mc:
@@ -379,7 +399,8 @@ filechannel=""
 
 catversions = ["v7-6-3",
                "v7-6-2",
-               "v7-4-5"]
+               "v7-4-5",
+               "v7-4-4"]
 
 sample_catversion = ""
 output_catversion=os.getenv("CATVERSION")
@@ -989,6 +1010,35 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
+
+    if cycle == "SKTreeMakerTriLep":
+        doMerge=False
+        if not os.path.exists(SKTreeOutput):
+            os.system("mkdir " + SKTreeOutput)
+        if not mc:
+            Finaloutputdir = SKTreeOutput + "DataTriLep/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            if original_channel =="DoubleEG":
+                Finaloutputdir += "DoubleEG/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="MuonEG":
+                Finaloutputdir += "MuonEG/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="DoubleMuon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+        else:
+            Finaloutputdir = SKTreeOutput + "MCTriLep/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir +=  original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+                                
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)

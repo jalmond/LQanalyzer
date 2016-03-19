@@ -974,7 +974,7 @@ void SkimFlatCat::SlimJets()
   std::vector<int > remove_obj;
   for(unsigned int im =0; im < jets_pt->size(); im++){
     bool rem =false;
-    if( jets_pt->at(im) < 10) rem = true;
+    if( jets_pt->at(im) < 20) rem = true;
     if(rem) remove_obj.push_back(im);
   }
   
@@ -1045,10 +1045,10 @@ Int_t SkimFlatCat::Cut(Long64_t entry)
   bool pass_lep_pt = false;
   
   for(unsigned int im=0; im < muon_pt->size(); im++){
-    if(muon_pt->at(im) > 15) pass_lep_pt = true;
+    if(muon_pt->at(im) > 10) pass_lep_pt = true;
   }
   for(unsigned int im=0; im < electrons_pt->size(); im++){
-    if(electrons_pt->at(im) > 15) pass_lep_pt = true;
+    if(electrons_pt->at(im) > 10) pass_lep_pt = true;
   }
   if(pass_lep_pt) return 1;
   

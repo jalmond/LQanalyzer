@@ -42,7 +42,7 @@ void GetEffectiveLuminosity(TString version="") {
     
   map<TString, Double_t> dirmap = GetXSecMap(); 
   map<TString, TString> lqmap = GetLQMap();
-  
+  map<TString, TString> trilepmap = GetTriLepMap();
 
   for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
     
@@ -202,7 +202,7 @@ void GetEffectiveLuminosity(TString version="") {
   
   lumi_file << "" << endl;
   lumi_file << "" << endl;
-  lumi_file << "#### Single lepton skims: SKTrees" << endl;
+  lumi_file << "#### Dilepton skims: SKTrees" << endl;
   for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
     std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
@@ -211,6 +211,23 @@ void GetEffectiveLuminosity(TString version="") {
     lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
   }
   
+
+
+
+  lumi_file << "" << endl;
+  lumi_file << "" << endl;
+  lumi_file << "#### Trlepton skims: SKTrees" << endl;
+  for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
+    std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
+    std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
+    std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
+    std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
+    std::map<TString, TString>::iterator check_trilep = trilepmap.find(mit->first);
+    if(check_trilep != trilepmap.end())  lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
+  }
+
+
+
 
   lumi_file << "" << endl;
   lumi_file << "##################################################################" << endl;
