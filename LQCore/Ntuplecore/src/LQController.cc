@@ -594,6 +594,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else{
       /// Get answer from input ntuple
       m_logger <<  INFO << chain <<  LQLogger::endmsg;
+      cycle->LoadTree(1);
       cycle->GetInputTree()->GetEntry(1,0);/// Get first entry in ntuple
       bool alt_isdata =  cycle->isData;
       if(alt_isdata) inputType = data;
@@ -656,6 +657,9 @@ void LQController::ExecuteCycle() throw( LQError ) {
       for(unsigned int list_entry = 0; list_entry < list_to_run.size(); list_entry++){
 	Bool_t skipEvent = kFALSE;
 	try {
+	  Long64_t ifentry =      cycle->LoadTree(list_entry);
+	  if (ifentry < 0) break;
+
 	  cycle->GetEntry(list_entry);
 	  cycle->SetUpEvent(list_entry,ev_weight,k_period);
 	  cycle->ClearOutputVectors();
@@ -677,6 +681,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     }/// check size of list loop
     else if(run_single_event){
       for (Long64_t jentry = n_ev_to_skip; jentry < nevents_to_process; jentry++ ) {
+	Long64_t ifentry =	cycle->LoadTree(jentry);
+	if (ifentry < 0) break;
 	cycle->GetEntry(jentry);	
 	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << LQLogger::endmsg;
 	if(cycle->GetEventNumber() == single_ev){
@@ -699,7 +705,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	Bool_t skipEvent = kFALSE;
         try {
 	  m_logger << DEBUG << "cycle->GetEvent " << LQLogger::endmsg;
-
+	  Long64_t ifentry =cycle->LoadTree(jentry);
+	  if (ifentry < 0) break;    
 	  cycle->GetEntry(jentry);
 	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	  cycle->SetUpEvent(jentry, ev_weight,k_period);

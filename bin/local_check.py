@@ -27,6 +27,7 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 
+march16dir3 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v3/"
 march16dir2 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v2/"
 march16dir = os.getenv("LQANALYZER_LIB_PATH")+ "/March16/"
 oct15dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/Oct15/"
@@ -39,10 +40,12 @@ old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
 old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
 
 
-if not os.path.exists(march16dir2):
-    os.system("mkdir " + march16dir2)
+if not os.path.exists(march16dir3):
+    os.system("mkdir " + march16dir3)
     if os.path.exists(march16dir):
         os.system("rm -r " + march16dir)
+    if os.path.exists(march16dir2):
+        os.system("rm -r " + march16dir2)
     if os.path.exists(oct15dir):    
         os.system("rm -r " + oct15dir)
     if os.path.exists(april15dir):

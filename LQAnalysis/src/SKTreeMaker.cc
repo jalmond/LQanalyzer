@@ -129,7 +129,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   //// Set triggers available in sktree
   triggerlist.clear();
 
-  if(k_isdata){
+  if(isData){
     cout << " k_channel = " << k_channel << endl;
 
     if(k_channel.Contains("DoubleMuon")){

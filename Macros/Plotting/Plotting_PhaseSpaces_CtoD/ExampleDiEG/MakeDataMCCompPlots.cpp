@@ -607,7 +607,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
 
   }
   if(sample.Contains("ttbar")){
-    list.push_back(make_pair("TTJets_MG5",0.25));
+    list.push_back(make_pair("TT_MG5",0.25));
   }
 
   if(sample.Contains("ttbarV")){

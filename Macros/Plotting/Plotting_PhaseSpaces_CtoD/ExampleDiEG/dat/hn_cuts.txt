@@ -1,6 +1,6 @@
-DiElectron
-DiElectronID
+DiElectron_noTM
 DiElectronIDRECO
+END
 DiElectronNoPRW
 DiElectronNoTrigger
 DiElectron_Zpeak_chargeconsistency

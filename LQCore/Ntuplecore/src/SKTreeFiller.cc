@@ -351,28 +351,41 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     //// Set Is ChargeFlip
     bool self_match= false;
     bool from_tau = false;
-
+    
     for (UInt_t it=0; it< gen_pt->size(); it++ ){
       if(gen_motherindex->at(it) <= 0)continue;
       if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
       if(gen_pt->at(it) < 5) continue;
       
-      if(fabs(gen_pdgid->at(it)) == 11){
-	
-	double match_eta =electrons_eta->at(iel);
-	double match_phi =electrons_phi->at(iel);
-	
+      if(gen_pdgid->at(gen_motherindex->at(it)) == 22 ){
 
-	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
-
-	if (dr < 0.3){
+	for (UInt_t it2=0; it2< gen_pt->size(); it2++ ){
+	  if(gen_motherindex->at(it2) <= 0)continue;
+	  if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
 	  
-	  float pdgid = 0.;
-	  int mindex= it;
+	}
+      }
+      double match_eta =electrons_eta->at(iel);
+      double match_phi =electrons_phi->at(iel);
+      double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+      
+      if (dr < 0.3){
+
+	if(gen_pdgid->at(it) == 22 ){
+	  self_match=false;
+	  el.SetIsChargeFlip(true);
+	  if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 15)from_tau=true;
+	}
+
+	float pdgid = 0.;
+	int mindex= it;
+	if((fabs(gen_pdgid->at(mindex)) == 11)){
+	  
 	  while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
 	    pdgid = gen_pdgid->at(mindex);
 	    mindex=gen_motherindex->at(mindex);
 	  }
+	  
 	  if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
 	    
 	    if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
@@ -381,18 +394,43 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    self_match=true; break;
 	  }
 	  else {
-	    while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
-	      mindex=gen_motherindex->at(mindex);
+	    if((fabs(gen_pdgid->at(mindex)) == 15)){
+	      while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
+		mindex=gen_motherindex->at(mindex);
+	      }
+	      if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) { 
+		if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+		else     el.SetIsChargeFlip(false);
+		from_tau=true; self_match=true; break;}
+	      
 	    }
-	    if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) { 
-	      if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+	    else{
+	      /// In case mother not correctly stored (DY10-50)
+	      
+	      if(gen_pdgid->at(it) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
 	      else     el.SetIsChargeFlip(false);
-	      from_tau=true; self_match=true; break;}
+	      
+	      self_match=true; break;
+	    }
 	  }
 	}
-      }
+	else{
+	  self_match=false;
+	  el.SetIsChargeFlip(false);
+	  if((fabs(gen_pdgid->at(mindex)) == 15)){
+	    from_tau=true;
+	    self_match=true; 
+	    break;
+	  }
+	  else from_tau=false;
+	}
+      }// end of dR
     }//end electron truth
+    
     el.SetIsMCMatched(self_match);
+
+    //    if(!self_match && (electrons_pt->at(iel) > 15.)){
+
     el.SetIsFromTau(from_tau);
     
     electrons.push_back(el);
@@ -400,7 +438,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
   std::sort( electrons.begin(), electrons.end(), isHigherPt );
   
   return electrons;
-}
+  }
 
 
 void SKTreeFiller::ERRORMessage(TString comment){
@@ -589,25 +627,27 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     //// Set Is ChargeFlip
     bool self_match= false;
     bool from_tau = false;
+
     for (UInt_t it=0; it< gen_pt->size(); it++ ){
       if(gen_motherindex->at(it) <= 0)continue;
       if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-      if(gen_pt->at(it) < 5.) continue;
-      if(fabs(gen_pdgid->at(it)) == 13){
-	
-        double match_eta =muon_eta->at(ilep);
-        double match_phi =muon_phi->at(ilep);
-	
-        double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+      if(gen_pt->at(it) < 5) continue;
 
-        if (dr < 0.3){
+      double match_eta =muon_eta->at(ilep);
+      double match_phi =muon_phi->at(ilep);
+      double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
 
-          float pdgid = 0.;
-          int mindex= it;
-          while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
+      if (dr < 0.3){
+
+        float pdgid = 0.;
+        int mindex= it;
+        if((fabs(gen_pdgid->at(mindex)) == 11)){
+
+          while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
             pdgid = gen_pdgid->at(mindex);
             mindex=gen_motherindex->at(mindex);
           }
+
           if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
 
             if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
@@ -616,17 +656,40 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             self_match=true; break;
           }
           else {
-            while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
-              mindex=gen_motherindex->at(mindex);
+            if((fabs(gen_pdgid->at(mindex)) == 15)){
+              while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
+                mindex=gen_motherindex->at(mindex);
+              }
+              if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+                if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+                else     muon.SetIsChargeFlip(false);
+                from_tau=true; self_match=true; break;}
+
             }
-            if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
-              if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+            else{
+              /// In case mother not correctly stored (DY10-50)
+
+              if(gen_pdgid->at(it) * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
               else     muon.SetIsChargeFlip(false);
-              from_tau=true; self_match=true; break;}
+
+              self_match=true; break;
+            }
           }
         }
+        else{
+	  self_match=false;
+          muon.SetIsChargeFlip(false);
+          if((fabs(gen_pdgid->at(mindex)) == 15)){
+            from_tau=true;
+            self_match=true;
+            break;
+          }
+          else from_tau=false;
+	}
       }
-    }//end electron truth
+    }//end muon truth
+
+
     muon.SetMCMatched(self_match);
     muon.SetIsFromTau(from_tau);
 

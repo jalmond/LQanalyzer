@@ -16,10 +16,10 @@ showdata   true
 usenp      false
 ylog	   true
 # List_the_samples_to_be_included
-#samples    top
-#samples    wjets
-#samples    vv
-#samples	   dylow
+samples    top
+samples    wjets
+samples    vv
+samples	   dylow
 samples	   dyhigh
 #samples_ss    chargeflip
 #samples_ss    top

@@ -134,7 +134,7 @@ void SKTreeMakerTriLep::BeginCycle() throw( LQError ){
   triggerlist.clear();
   
   
-  if(k_isdata){
+  if(isData){
     if(k_channel.Contains("DoubleMuon")){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");

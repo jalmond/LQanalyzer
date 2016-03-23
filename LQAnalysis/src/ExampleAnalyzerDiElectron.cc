@@ -52,6 +52,7 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
 
    MakeCleverHistograms(sighist_ee, "DiElectron");
+   MakeCleverHistograms(sighist_ee, "DiElectron_noTM");
    MakeCleverHistograms(sighist_ee, "DiElectronID");
    MakeCleverHistograms(sighist_ee, "DiElectronIDRECO");
    MakeCleverHistograms(sighist_ee, "DiElectron_HLT23");
@@ -191,8 +192,12 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
 
   std::vector<snu::KElectron> electronColl             = GetElectrons(false, false, BaseSelection::ELECTRON_POG_TIGHT);
-
-
+  std::vector<snu::KElectron> electronColl_all             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
+  
+  FillHist("TruthMatchingAll", weight, electronColl_all.size(), 0., 6.,6);
+  FillHist("TruthMatching", weight, electronColl.size(), 0., 6.,6);
+ 
+  
   float weight_trigger_sf = TriggerScaleFactor(electronColl, muonColl, analysis_trigger);
   FillHist("TriggerSFWeight" , weight_trigger_sf, 1., 0. , 2., 200);
   
@@ -250,8 +255,20 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   }
   
 
+  if(electronColl_all.size() == 2 ) {
+
+    if(electronColl_all.at(0).Pt() > 20. && electronColl_all.at(1).Pt() > 15. ){
+      if(PassTrigger(triggerslist, prescale)){
+
+        FillCLHist(sighist_ee, "DiElectron_noTM", eventbase->GetEvent(), muonColl,electronColl_all,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
+      }
+    }
+  }
+
+      
   if(electronColl.size() == 2 ) {
-    if(electronColl.at(0).Pt() > 20. && electronColl.at(1).Pt() > 15. ){
+    
+   if(electronColl.at(0).Pt() > 20. && electronColl.at(1).Pt() > 15. ){
       
       FillHist("Njets_dilepton", jetColl_hn.size() ,weight, 0. , 5., 5);
       FillCutFlow("DiEl_tight", weight);
@@ -295,19 +312,19 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
   
+  
     
-    
-    
-    if(electronLooseColl.size() == 3 && muonColl.size() == 0) {
-      if(electronLooseColl.at(0).Pt() > 25. && electronLooseColl.at(2).Pt() > 25. ){
-	FillHist("MET", eventbase->GetEvent().PFMET() ,weight, 0. , 100., 20);
-	if( NBJet(jetColl_hn) == 0)FillCLHist(trilephist, "TriElectron_nomet", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
-	if(eventbase->GetEvent().PFMET() > 30){
-	  FillCLHist(trilephist, "TriElectron", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
-	  if( NBJet(jetColl_hn) == 0)       FillCLHist(trilephist, "TriElectron_noB", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
-	}
+  
+  if(electronLooseColl.size() == 3 && muonColl.size() == 0) {
+    if(electronLooseColl.at(0).Pt() > 25. && electronLooseColl.at(2).Pt() > 25. ){
+      FillHist("MET", eventbase->GetEvent().PFMET() ,weight, 0. , 100., 20);
+      if( NBJet(jetColl_hn) == 0)FillCLHist(trilephist, "TriElectron_nomet", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+      if(eventbase->GetEvent().PFMET() > 30){
+	FillCLHist(trilephist, "TriElectron", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+	if( NBJet(jetColl_hn) == 0)       FillCLHist(trilephist, "TriElectron_noB", eventbase->GetEvent(), muonColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
       }
     }
+  }
     
 
   return;

@@ -57,9 +57,8 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 
 
 void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
-  
-  
-  //  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
+    
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
 
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   
@@ -92,28 +91,29 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   numberVertices = eventbase->GetEvent().nVertices();   
   
-  cout << weight << " " << MCweight << " " << lumimask << " " <<  eventbase->GetEvent().PileUpWeight(lumimask,snu::KEvent::central) << endl;
-
   if (!k_isdata) {
     weight = weight * MCweight * eventbase->GetEvent().PileUpWeight(lumimask,snu::KEvent::central);
   }
-  cout << "AFTER" << endl;
-  cout << weight << endl;
 
   
   std::vector<snu::KElectron> electronLooseColl = GetElectrons(BaseSelection::ELECTRON_HN_FAKELOOSE);
   std::vector<snu::KElectron> electronTightColl = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
+  float id_weight=1.;
+  float reco_weight=1.;
+  if(!isData){
+    for(unsigned int iel=0; iel < electronLooseColl.size(); iel++){
+      id_weight*= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronLooseColl);
+      reco_weight *= ElectronRecoScaleFactor(electronLooseColl);
 
-  cout << ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT,electronTightColl) << " TargetLumi=" << TargetLumi << endl;
+    }
+    weight*= id_weight;
+    weight*= reco_weight;
+  }
+
 
   if(electronLooseColl.size()<1) return;
   
   
-  if(!isData){
-    weight *=  ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT,electronTightColl);
-  }
-  
-
   std::vector<snu::KJet> jetCollTight = GetJets(BaseSelection::JET_HN);
   std::vector<snu::KJet> jetColl           = GetJets(BaseSelection::JET_NOLEPTONVETO);
 
@@ -123,27 +123,22 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   /// Check single leton legs
   if(electronTightColl.size() ==2) {
-    if( PassTrigger(triggerslist_12leg, prescale) ||  PassTrigger(triggerslist_23, prescale)){
-      if( (PassTrigger(triggerslist_12leg, prescale) && electronTightColl.at(1).Pt() < 25.) ||
-	  (PassTrigger(triggerslist_23leg, prescale) && electronTightColl.at(1).Pt() > 25.) )
-	{
-	  float pr_weight= 0.243+ 4.977/TargetLumi; //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v
-	  if( (PassTrigger(triggerslist_12leg, prescale) && electronTightColl.at(1).Pt() < 25.) ) pr_weight= 0.221 + 3.953; //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
-
-	  if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
-	    FillCLHist(sighist_ee, "DiElectron_SingleLeg", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
-	  }
-	}
+    if( PassTrigger(triggerslist_12leg, prescale) &&  PassTrigger(triggerslist_23, prescale)){
+      if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15){
+	float pr_weight= ApplyPrescale("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
+	pr_weight *= ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi,lumimask); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
+	
+	FillCLHist(sighist_ee, "DiElectron_SingleLeg", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
+      }
     }
   }
-
+  
   if(PassTrigger(triggerslist, prescale) ){
     if(electronTightColl.size() ==2) {
       if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
-	if(!isData) FillHist("zpeak_ee_noPUrw", GetDiLepMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(snu::KEvent::gold), 0., 200.,400);
-	else FillHist("zpeak_ee_noPUrw", GetDiLepMass(electronTightColl), weight, 0., 200.,400);
-	FillHist("zpeak_ee", GetDiLepMass(electronTightColl), weight, 0., 200.,400);
-	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
+	float pr_weight= ApplyPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
+
+	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
       }
     }
   }
@@ -160,7 +155,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	}
       }
     }
-    
   }
   
 
@@ -208,21 +202,21 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     if(electrons.at(0).Pt() >= 35.){
       //HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass1){
-        prescale_trigger = (0.129 + 5.247) / fake_total_lum ; //// 20 + GeV bins
+        prescale_trigger = ApplyPrescale("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30", fake_total_lum, lumimask); //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else  if(electrons.at(0).Pt() >= 25.){
       //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass2)
-        prescale_trigger = (0.066 + 3.083) / fake_total_lum ; //// 20 + GeV bins
+        prescale_trigger =  ApplyPrescale("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30", fake_total_lum, lumimask) ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else   if(electrons.at(0).Pt() >= 20.){
       //HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass3){
-	prescale_trigger = (2.418 + 2.177) / fake_total_lum ; //// 20 + GeV bins
+	prescale_trigger =  ApplyPrescale("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30", fake_total_lum, lumimask) ;
       }
       else prescale_trigger = 0.;
     }
@@ -230,17 +224,17 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     else   if(electrons.at(0).Pt() >= 15.){
       //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_
       if(pass4){
-        prescale_trigger = (2.418 + 8.800) / fake_total_lum ; //// 20 + GeV bins
+        prescale_trigger = ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_", fake_total_lum, lumimask) ;
       }
       else prescale_trigger = 0.;
     }
 
-  
+
     else{
 
       /// if single el event and low pt use 8 GeV trigger
       if(pass5){
-        prescale_trigger = (0.012 + 0.532) / fake_total_lum;
+        prescale_trigger = ApplyPrescale("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v", fake_total_lum, lumimask) ;
       }
       else prescale_trigger = 0.;
     }
@@ -502,8 +496,6 @@ for(unsigned int k = 0 ; k <  eventbase->GetGenJets().size(); k++){
     FillHist(("LooseEl" + tag + "_pt_ht").Data(), el_pt, SumPt(jets)-awayjetpt, w, ptbins, 9 , htbins, 5);
     FillHist(("LooseEl" + tag + "_ht_eta").Data(), SumPt(jets) - awayjetpt,fabs(loose_el.at(0).Eta()), w, htbins, 5 , etabins, 2);
     FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  w, ptbins, 9 , etabins2, 4);
-
-    if( ( SumPt(jets)-awayjetpt ) < 0. ) cout << "ht is = " << ( SumPt(jets)-awayjetpt ) << endl;
 
     if(nbjet > 0){
       FillHist(("LooseEl" + tag + "_bjet_eta").Data(), loose_el.at(0).Eta(), w, -2.5, 2.5,50);

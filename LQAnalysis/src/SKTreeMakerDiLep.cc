@@ -55,7 +55,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(10);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
-
+  
   //####### PHOTONS
   //  std::vector<snu::KElectron> skim_photons;
   //eventbase->GetPhotonSel()->SetPt(20);
@@ -81,7 +81,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetElectronSel()->SetPt(10);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
-  
+
   int nlep = skim_electrons.size() + skim_muons.size();
     
   /// select events  with 2 leptons with pt > 15
@@ -134,7 +134,7 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
   triggerlist.clear();
   
   
-  if(k_isdata){
+  if(isData){
     if(k_channel.Contains("DoubleMuon")){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");
