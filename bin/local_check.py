@@ -26,7 +26,7 @@ if os.path.exists("LQCycle/"):
     print "Cleaning up directory that failed to be removed by git merge"
     os.system("rm -r LQCycle/")
 
-
+tag_dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
 march16dir3 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v3/"
 march16dir2 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v2/"
 march16dir = os.getenv("LQANALYZER_LIB_PATH")+ "/March16/"
@@ -40,8 +40,10 @@ old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
 old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
 
 
-if not os.path.exists(march16dir3):
-    os.system("mkdir " + march16dir3)
+if not os.path.exists(tag_dir):
+    os.system("mkdir " + tag_dir)
+    if os.path.exists(march16dir3):
+        os.system("rm -r " + march16dir3)
     if os.path.exists(march16dir):
         os.system("rm -r " + march16dir)
     if os.path.exists(march16dir2):
@@ -53,6 +55,32 @@ if not os.path.exists(march16dir3):
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
 
+    logdir =  os.getenv("LQANALYZER_LOG_8TeV_PATH")
+    if os.path.exists(logdir):
+        os.system("rm -r "+logdir)
+
+    old_out=os.getenv("LQANALYZER_DIR")+"/data/output/CAT/"
+
+    new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")
+    print "cleaning up home directory"
+    if not os.path.exists(new_out):
+        os.system("mkdir " + new_out)
+
+    new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/"
+    if not os.path.exists(new_out):
+        os.system("mkdir " + new_out)
+        new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/"
+        os.system("mkdir " + new_out)
+        new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/"
+        os.system("mkdir " + new_out)
+        new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/CAT/"
+        os.system("mkdir " + new_out)
+        os.system("mv "+ old_out + "/* " + new_out)
+        print "Moving output to " + new_out
+        if os.path.exists(old_out):
+            os.system("rm -r " + os.getenv("LQANALYZER_DIR")+"/data/output/")
+            
+        
     if os.path.exists(old_lib_slc5):
         os.system("rm -r " + old_lib_slc5)
     if os.path.exists(old_lib_slc6):

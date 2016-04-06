@@ -697,9 +697,10 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     fi
 
 fi
-outdir="/data2/CAT_SKTreeOutput/"$USER"/LQanalyzer/"
+
+outdir="/data2/CAT_SKTreeOutput/JobOutPut/"$USER"/LQanalyzer/"
 if [[ ! -d "${outdir}" ]]; then
-    mkdir "/data2/CAT_SKTreeOutput/"$USER
+    mkdir "/data2/CAT_SKTreeOutput/JobOutPut/"$USER
     mkdir ${outdir}
 fi
 

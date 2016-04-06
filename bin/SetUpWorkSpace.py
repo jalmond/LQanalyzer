@@ -3,6 +3,7 @@ from GetAnalysisRootFiles import *
 from CleanUp import *
 
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
+LQANALYZER_LOG= str(os.getenv("LQANALYZER_LOG_PATH"))
 
 if not LQANALYZER_DIR == "None" :
 	datadir = LQANALYZER_DIR + "/data/"	
@@ -27,6 +28,7 @@ if not LQANALYZER_DIR == "None" :
 	 
 	CleanUpLogs("/data1/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
 	CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+	CleanUpJobLogs(LQANALYZER_LOG)
 	CleanUpLogs(EightTeVdataOne)
 	CleanUpLogs(EightTeVdataTwo)	
 	GetFiles(rootfiledir)
