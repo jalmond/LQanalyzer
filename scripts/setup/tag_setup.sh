@@ -110,11 +110,13 @@ fi
 ### Load useful functions
 source ${LQANALYZER_BIN_PATH}/cleanup.sh 
 ### make directories that git does not allow to store
-python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
-export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
+
+export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
 
 export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
+
+python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 
 # Setup root area and other paths
  
