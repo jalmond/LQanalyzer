@@ -109,7 +109,9 @@ elif useskim == "SKTree_LeptonSkim":
     useskim ="Lepton"
 elif useskim == "SKTree_DiLepSkim":
     useskim="DiLep"
-
+elif useskim == "SKTree_TriLepSkim":
+    useskim="TriLep"
+        
 
 if useskinput == "True": 
     print "Using SKTrees as input."
@@ -196,29 +198,34 @@ if not os.path.exists(local_sub_dir):
 ##################################################################################################################
 
 import platform
+username = os.getenv("user")
 if platform.system() == "Linux":
-    os.system("top -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
+    os.system("top  -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
     filename = local_sub_dir +'/toplog'
 
     n_previous_jobs=0
+    njob_user=0
     for line in open(filename, 'r'):
         n_previous_jobs+=1
-
-    if n_previous_jobs > 39:
-        number_of_cores = 1
-        print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
+        if username in line:
+            njob_user+=1
+        
+    if n_previous_jobs > 10:
+        number_of_cores = 2
+        print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
 
         for line in open(filename, 'r'):
             print line
-
+    if njob_user  > 5:
+        number_of_cores = 1
     os.system("rm " + filename)
 
-nj_def=number_of_cores
+nj_def=30
 
 if number_of_cores > 1:
     if useskinput == "True":
-        if (40 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 40 - n_previous_jobs
+        if (12 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 12 - n_previous_jobs
         if number_of_cores > 15:
             if not "SKTreeMaker" in cycle:
                 if number_of_cores < 100:
@@ -230,9 +237,12 @@ if number_of_cores > 1:
             number_of_cores=nj_def
         if cycle == "SKTreeMakerDiLep":
             number_of_cores=nj_def
+        if cycle == "SKTreeMakerTriLep":
+            number_of_cores=nj_def
+                            
     elif useskinput == "true":
-        if (40 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 40 - n_previous_jobs
+        if (12 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 12 - n_previous_jobs
         if number_of_cores > 15:
             if not "SKTreeMaker"in cycle:
                 if number_of_cores < 100:
@@ -244,6 +254,9 @@ if number_of_cores > 1:
             number_of_cores=nj_def
         if cycle == "SKTreeMakerDiLep":
             number_of_cores=nj_def
+        if cycle == "SKTreeMakerTriLep":
+            number_of_cores=nj_def
+                            
     else:
         if number_of_cores > 5:
             if not cycle == "SKTreeMaker":
@@ -1031,6 +1044,10 @@ else:
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+                                 
         else:
             Finaloutputdir = SKTreeOutput + "MCTriLep/"
             if not os.path.exists(Finaloutputdir):

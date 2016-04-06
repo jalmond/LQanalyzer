@@ -93,6 +93,15 @@ void MakeDataInputFile(TString version=""){
     //lumi_file << ""<< endl;
   }
   
+  TString SKTreeOutputTriLep="/data2/CatNtuples/"+ version + "/SKTrees/DataTriLep/";
+
+  for(unsigned int i = 0 ; i < samples.size() ; i++){
+    for(unsigned int j = 0 ; j < periods.size() ; j++){
+      lumi_file << "SK" << samples.at(i) << "_trilep"  << samples_space.at(i) <<"            " << periods.at(j) <<   "        " <<  SKTreeOutputTriLep +  samples.at(i) << "/period" <<  periods.at(j)<< "/" << endl;
+    }
+    //lumi_file << ""<< endl;
+  }
+
 
   string lqdir = getenv("LQANALYZER_DIR");
   TString user = TString(getenv("USER"));

@@ -650,6 +650,8 @@ function runlist
 	      then
 	      prefix="SK"
 	      suffix="_dilep"
+              suffix2="_trilep"
+
 	      if [[ $sline == *${prefix}* ]];
 		  then
 		  sline=${sline:2}		  
@@ -658,7 +660,10 @@ function runlist
                   then
 		  sline=${sline%$suffix}
 	      fi
-	      
+	      if [[ $sline == *${suffix2}* ]];
+                  then
+                  sline=${sline%$suffix2}
+              fi
 	      if [[ ! -d "${sline2}" ]]; then
 		  UNPROCESSED+=(${sline})
 	      elif test "$(ls -A "$sline2")"; then
@@ -675,6 +680,7 @@ function runlist
 		  then 
 		  prefix="SK"
 		  suffix="_dilep"
+		  suffix2="_trilep"
 		  if [[ $sline == *${prefix}* ]];
 		      then
 		      sline=${sline:2}
@@ -683,6 +689,10 @@ function runlist
 		      then
 		      sline=${sline%$suffix}
 		  fi
+		  if [[ $sline == *${suffix2}* ]];
+                      then
+                      sline=${sline%$suffix2}
+                  fi
 
 		  if [[ ! -d "${sline2}" ]]; then
 		      UNPROCESSED+=(${sline})
@@ -770,7 +780,7 @@ function runlist
         counter=${#UNPROCESSED[@]}
             if [[ $counter -ne 0 ]];
                 then
-                echo "Samples that have local flat catuples but no dilepton skim are:"
+                echo "Samples that have local flat catuples but no trilepton skim are:"
             else   echo -e $missing_comment
 
             fi
@@ -844,6 +854,7 @@ function runlist
 			then
 			prefix="SK"
 			suffix="_dilep"
+			suffix2="_trilep"
 			if [[ $sline == *${prefix}* ]];
 			    then
 			    sline=${sline:2}
@@ -852,7 +863,10 @@ function runlist
 			    then
 			    sline=${sline%$suffix}
 			fi
-			
+			if [[ $sline == *${suffix2}* ]];
+                            then
+                            sline=${sline%$suffix2}
+                        fi
 			if [[ -d "${sline2}" ]]; then
 			    if test "$(ls -A "$sline2")"; then
 				echo ${sline}
@@ -877,6 +891,7 @@ function runlist
 			    then
 			    prefix="SK"
 			    suffix="_dilep"
+			    suffix2="_trilep"
 			    if [[ $sline == *${prefix}* ]];
 				then
 				sline=${sline:2}
@@ -885,6 +900,10 @@ function runlist
 				then
 				sline=${sline%$suffix}
 			    fi
+			    if [[ $sline == *${suffix2}* ]];
+                                then
+                                sline=${sline%$suffix2}
+                            fi
 			    if [[  -d "${sline2}" ]]; then
 				
 				if test "$(ls -A "$sline2")"; then
@@ -1513,7 +1532,7 @@ if [[ $MakeFullLists == "true" ]];
 		sline2=$(echo $line | head -n1 | awk '{print $6}')
 		
 		prefix="SK"
-		suffix="_dilep"
+		suffix="_trilep"
 		if [[ $sline == *${prefix}* ]];
 		    then
 		    sline=${sline:2}
@@ -1535,7 +1554,7 @@ if [[ $MakeFullLists == "true" ]];
 		    then
 		    if [[ -d "${sline2}" ]]; then
 			if test "$(ls -A "$sline2")"; then
-			    FULLLISTOFSAMPLESDILEP+=(${sline})
+			    FULLLISTOFSAMPLESTRILEP+=(${sline})
 			fi
 		    fi
 		fi

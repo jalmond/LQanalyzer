@@ -48,3 +48,10 @@ SKMuonEG_dilep                    C        /data2/CatNtuples/v7-6-3/SKTrees/Data
 SKMuonEG_dilep                    D        /data2/CatNtuples/v7-6-3/SKTrees/DataDiLep/MuonEG/periodD/
 SKSinglePhoton_dilep              C        /data2/CatNtuples/v7-6-3/SKTrees/DataDiLep/SinglePhoton/periodC/
 SKSinglePhoton_dilep              D        /data2/CatNtuples/v7-6-3/SKTrees/DataDiLep/SinglePhoton/periodD/
+
+SKDoubleEG_trilep                  C        /data2/CatNtuples/v7-6-3/SKTrees/DataTriLep/DoubleEG/periodC/
+SKDoubleEG_trilep                  D        /data2/CatNtuples/v7-6-3/SKTrees/DataTriLep/DoubleEG/periodD/
+SKMuonEG_trilep                    C        /data2/CatNtuples/v7-6-3/SKTrees/DataTriLep/MuonEG/periodC/
+SKMuonEG_trilep                    D        /data2/CatNtuples/v7-6-3/SKTrees/DataTriLep/MuonEG/periodD/
+SKDoubleMuon_trilep                C        /data2/CatNtuples/v7-6-3/SKTrees/DataTriLep/DoubleMuon/periodC/
+SKDoubleMuon_trilep                D        /data2/CatNtuples/v7-6-3/SKTrees/DataTriLep/DoubleMuon/periodD/
