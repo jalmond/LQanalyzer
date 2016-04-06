@@ -198,7 +198,7 @@ if not os.path.exists(local_sub_dir):
 ##################################################################################################################
 
 import platform
-username = os.getenv("user")
+username = str(os.getenv("USER"))
 if platform.system() == "Linux":
     os.system("top  -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
     filename = local_sub_dir +'/toplog'
