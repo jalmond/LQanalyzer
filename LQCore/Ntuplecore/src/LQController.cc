@@ -502,7 +502,15 @@ void LQController::ExecuteCycle() throw( LQError ) {
     /// Call BeginCycle by hand
     cycle->MakeOutPutFile(completename);
     cycle->SetDataChannel(channel);
+    if(inputType!=NOTSET) {
+      // This is if set by user:
+      if(inputType == data) cycle->SetDataType(true);
+      else if(inputType == mc) cycle->SetDataType(false);
+      else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
+    }
+
     cycle->BeginCycle();
+
     cycle->ClearOutputVectors();
 
     GetMemoryConsumption("Ran Begin Cycle");
@@ -828,7 +836,7 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
     return true;
   }
 
-  
+
   if(nt_version == none)return false;
   if(nt_version  != dir_version) return false;
   

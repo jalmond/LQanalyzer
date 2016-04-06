@@ -57,6 +57,9 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   map_sig["h_bTag"]                   =     new TH1F("h_bTag_"              + name,"bTag discrimant",100,-1,3);
   map_sig["h_Njets"]                  =     new TH1F("h_Njets_"             + name,"number of jets",10,0,10);
   map_sig["h_Nbjets"]                 =     new TH1F("h_Nbjets_"            + name,"number of b jets",5,0,5);
+  map_sig["h_lep_jet_dphi"]           =      new TH1F("h_lep_jet_dphi_"            + name,"dphi lepton jets", 50, 0., 5.);
+  map_sig["h_awayjet_chargedem_frac"]         =      new TH1F("h_awayjet_chargedem_frac_"   + name,"charged em frac", 50, 0., 1.);
+
 
   /// dPhi/MT
   map_sig["h_MTlepton"]               =     new TH1F("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
@@ -263,7 +266,12 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].CSVInclV2(),weight);
-    if(jets.at(j).CSVInclV2() > 0.89) nbjet++; 
+    if(jets.at(j).IsBTagged(KJet::CSVv2, KJet::Medium)) nbjet++; 
+    for(unsigned int iel2=0 ; iel2 < electrons.size(); iel2++){
+      float dphi =fabs(TVector2::Phi_mpi_pi(electrons.at(iel2).Phi()- jets.at(j).Phi()));
+      Fill("h_lep_jet_dphi", dphi,weight);
+      if(dphi > 2.5)  Fill("h_awayjet_chargedem_frac", (jets.at(j).ChargedEMEnergyFraction()), weight);
+    }
   }
   
   float st = ht + ev.PFMET();

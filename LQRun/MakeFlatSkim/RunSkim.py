@@ -67,6 +67,10 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"             
              ]
 
+sampledir = ["MajoranaNeutrinoToMM_M-40_TuneZ2star_13TeV-alpgen",
+             "MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen",
+             "MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen",
+             "MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]
 skip=0
 counter=0
 

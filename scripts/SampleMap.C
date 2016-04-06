@@ -140,6 +140,19 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["GluGluToZZTo2mu2tau_BackgroundOnly_13TeV_MCFM"]=0.003194;
    dirmap["GluGluToZZTo4mu_BackgroundOnly_13TeV_MCFM"]=0.001586;
 
+   dirmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]=0.0;
+   dirmap["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"]=8.6;
+   dirmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]=3.4;
+   dirmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]=0.0;
+
+   dirmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]=21.56;
+   dirmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;
+   dirmap["MajoranaNeutrinoToEE_M-500_TuneZ2star_13TeV-alpgen"]=7.831E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_TuneZ2star_13TeV-alpgen"]=5.375E-07;
+   dirmap["MajoranaNeutrinoToMM_M-40_TuneZ2star_13TeV-alpgen"]=21.56;
+   dirmap["MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;
+   dirmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]=7.831E-05;
+   dirmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]=5.375E-07;
 
    return dirmap;
 }
@@ -456,6 +469,20 @@ map<TString, TString>  GetLQMap(){
   lqmap["GluGluToZZTo4mu_BackgroundOnly_13TeV_MCFM"]="GluGluToZZTo4mu";
 
   
+  lqmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]="HN150_mumumu_VmuN_0p1";
+  lqmap["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"]="HN40_mumumu_VmuN_0p1";
+  lqmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]="HN60_mumumu_VmuN_0p1";
+  lqmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]="HN700_mumumu_VmuN_0p1";
+  lqmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]="HN_EE_M40";
+  lqmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]="HN_EE_M100";
+  lqmap["MajoranaNeutrinoToEE_M-500_TuneZ2star_13TeV-alpgen"]="HN_EE_M500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_TuneZ2star_13TeV-alpgen"]="HN_EE_M1500";
+  lqmap["MajoranaNeutrinoToMM_M-40_TuneZ2star_13TeV-alpgen"]="HN_MM_M40";
+  lqmap["MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen"]="HN_MM_M100";
+  lqmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]="HN_MM_M500";
+  lqmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]="HN_MM_M1500";
+
+ 
   return lqmap;
 }
 

@@ -4,7 +4,7 @@ using namespace std;
 
 bool HNVetoElectronSelection(snu::KElectron el){
 
-  if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;
+  //if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;
 
   // VETO ID (pog:no dxy and no iso)
   int id = el.SNUID();
@@ -17,7 +17,7 @@ bool HNVetoElectronSelection(snu::KElectron el){
 }
 
 
-bool HNLooseElectronSelection( KElectron el , bool usetight, float isocut) {
+bool HNLooseElectronSelection( KElectron el , bool usetight, bool loosend0, float isocut) {
   
   if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;
   /// from https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
@@ -25,7 +25,9 @@ bool HNLooseElectronSelection( KElectron el , bool usetight, float isocut) {
   bool pass_selection = true;
   
   ///List of cuts
-  if(!PassUserID_FakeLoose( el, usetight, isocut))  pass_selection = false; // No POG ID with no iso or dxy
+  if(!PassUserID_FakeLoose( el, usetight,loosend0, isocut))  pass_selection = false; // No POG ID with no iso or dxy
+  
+
   if((!el.HasMatchedConvPhot()))   pass_selection = false;
   if(!el.GsfCtfScPixChargeConsistency()) pass_selection = false;
   
@@ -90,7 +92,7 @@ bool HNTightElectronSelection(KElectron el ){
 }
 
 
-bool PassUserID_FakeLoose (snu::KElectron el, bool usetight,  float looseisocut){
+bool PassUserID_FakeLoose (snu::KElectron el, bool usetight, bool loosend0,  float looseisocut){
   
   int id = el.SNUID();
   bool pass_medium_noiso = false;
@@ -109,8 +111,19 @@ bool PassUserID_FakeLoose (snu::KElectron el, bool usetight,  float looseisocut)
   }
   else  if(!pass_medium_noiso) return false;
   
+  if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 )  return false;
+
   if( el.PFRelIso(0.3) > looseisocut) return false;   
-  if(!(fabs(el.dxy())< 100.))  return false;
+
+  if(!loosend0){
+    if(fabs(el.SCEta()) < 1.479){
+      if(!(fabs(el.dxy())< 0.0111))  return false;
+    }
+    else{
+      if(!(fabs(el.dxy())< 0.0351))  return false;
+    }
+  }
+  //  if(!(fabs(el.dxy())< 100.))  return false;
 
   return true;
 }

@@ -14,7 +14,11 @@ if [[ $CATVERSION ==  "v7-6-3" ]];
     then
 	echo "This tag has a fix in pileup weights" >> email.txt
     fi
-    
+    if [[ $CATTAG == "v7-6-3.5" ]];
+	then
+	echo "This tag includes trilepton skims. Prescale function. ID+RECO SFS for electrons, Trigger SFs">> email.txt
+fi
+
 fi
 
 

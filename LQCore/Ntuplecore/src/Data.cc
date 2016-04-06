@@ -272,6 +272,37 @@ void Data::Reset(){
   met_phi = 0;
   met_pt = 0;
   met_sumet = 0;
+  met_unclusteredEn_Px_down = 0;
+  met_unclusteredEn_Px_up = 0;
+  met_unclusteredEn_Py_down = 0;
+  met_unclusteredEn_Py_up = 0;
+  met_unclusteredEn_SumEt_down = 0;
+  met_unclusteredEn_SumEt_up = 0;
+
+  met_jetEn_Px_down = 0;  
+  met_jetEn_Py_down = 0;
+  met_jetEn_Py_up = 0;
+  met_jetEn_SumEt_down = 0;
+  met_jetEn_SumEt_up = 0;
+  met_jetRes_Px_down = 0;
+  met_jetRes_Px_up = 0;
+  met_jetRes_Py_down = 0;
+  met_jetRes_Py_up = 0;
+  met_jetRes_SumEt_down = 0;
+  met_jetRes_SumEt_up = 0;
+
+  met_jetEn_Px_up = 0;
+  met_jetEn_Py_down = 0;
+  met_jetEn_Py_up = 0;
+  met_jetEn_SumEt_down = 0;
+  met_jetEn_SumEt_up = 0;
+  met_jetRes_Px_down = 0;
+  met_jetRes_Px_up = 0;
+  met_jetRes_Py_down = 0;
+  met_jetRes_Py_up = 0;
+  met_jetRes_SumEt_down = 0;
+  met_jetRes_SumEt_up = 0;
+
   metNoHF_phi = 0;
   metNoHF_pt = 0;
   metNoHF_sumet = 0;
@@ -393,6 +424,7 @@ std::string  Data::GetCatVersion(bool runLQ){
     return CatVersion;
   }
   else return k_inputevent->CatVersion();
+  
 }
 
 void Data::SetTargetLumi(float tlumi){

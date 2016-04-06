@@ -45,13 +45,18 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
+
+  //ResetLumiMask(snu::KEvent::gold);
   
   MakeCleverHistograms(sighist_ee, "SingleLooseElJet");
   MakeCleverHistograms(sighist_ee, "SingleTightElJet");
 
   MakeCleverHistograms(sighist_ee, "DiElectron");
   MakeCleverHistograms(sighist_ee, "DiElectron_SingleLeg");
+  MakeCleverHistograms(sighist_ee, "Use40_loose");
+  MakeCleverHistograms(sighist_ee, "Use40_tight");
 
+  MakeCleverHistograms(sighist_ee, "SingleElectron_unprescaled");
   return;
 }
 
@@ -61,15 +66,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
 
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
-  
-  std::vector<TString> triggerslist_8;
-  triggerslist_8.push_back("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v");
 
   std::vector<TString> triggerslist_12;
-  triggerslist_12.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_");
+  triggerslist_12.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
   
   std::vector<TString> triggerslist_18;
-  triggerslist_18.push_back("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
+  triggerslist_18.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
+
  
   std::vector<TString> triggerslist_23;
   triggerslist_23.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
@@ -77,14 +80,21 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<TString> triggerslist_33;
   triggerslist_33.push_back("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
 
+
+
+  // analysis trigger
   std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+  triggerslist.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
 
-
+  
   std::vector<TString> triggerslist_12leg;
   triggerslist_12leg.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-  std::vector<TString> triggerslist_23leg;
-  triggerslist_23leg.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
+  std::vector<TString> triggerslist_17leg;
+  triggerslist_17leg.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
+
+
+  std::vector<TString> triggerslist_singlelep;
+  triggerslist_singlelep.push_back("HLT_Ele23_WPLoose_Gsf_v");
 
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
@@ -97,7 +107,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   
   std::vector<snu::KElectron> electronLooseColl = GetElectrons(BaseSelection::ELECTRON_HN_FAKELOOSE);
-  std::vector<snu::KElectron> electronTightColl = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
+  //  loose  = tight : rel iso < 0.5 dxy < 100;
+  std::vector<snu::KElectron> electronTightColl = GetElectrons(BaseSelection::ELECTRON_HN_TIGHT);
+
   float id_weight=1.;
   float reco_weight=1.;
   if(!isData){
@@ -111,22 +123,42 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
 
 
-  if(electronLooseColl.size()<1) return;
-  
-  
   std::vector<snu::KJet> jetCollTight = GetJets(BaseSelection::JET_HN);
   std::vector<snu::KJet> jetColl           = GetJets(BaseSelection::JET_NOLEPTONVETO);
 
+
+
+  if(electronLooseColl.size()<1) return;
   std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
- 
   if(muonColl.size() > 0) return;
+  
+  ///triggerslist_singlelep.push_back("HLT_Ele23_WPLoose_Gsf");
+
+  float trigger_ps_singlelepweight= ApplyPrescale("HLT_Ele23_WPLoose_Gsf_v", TargetLumi,lumimask);
+
+  if(electronTightColl.size() ==1) {
+    if(PassTrigger(triggerslist_singlelep, prescale) ){
+      FillCLHist(sighist_ee, "SingleElectron_unprescaled", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*trigger_ps_singlelepweight);
+    }
+
+  }
+  
+
 
   /// Check single leton legs
   if(electronTightColl.size() ==2) {
-    if( PassTrigger(triggerslist_12leg, prescale) &&  PassTrigger(triggerslist_23, prescale)){
-      if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15){
-	float pr_weight= ApplyPrescale("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
-	pr_weight *= ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi,lumimask); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
+    if( PassTrigger(triggerslist_12leg, prescale)){
+      if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
+        float pr_weight=ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi,lumimask); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
+
+        FillCLHist(sighist_ee, "DiElectron_SingleLeg", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
+      }
+    }
+  }
+  if(electronTightColl.size() ==2) {
+    if(PassTrigger(triggerslist_17leg, prescale)){
+      if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
+	float pr_weight= ApplyPrescale("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
 	
 	FillCLHist(sighist_ee, "DiElectron_SingleLeg", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
       }
@@ -135,37 +167,35 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   if(PassTrigger(triggerslist, prescale) ){
     if(electronTightColl.size() ==2) {
-      if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
-	float pr_weight= ApplyPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
-
+      if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15. ){
+	float pr_weight= ApplyPrescale("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi,lumimask);
 	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
       }
     }
   }
-
-  if(isData&& ( eventbase->GetEvent().LumiMask(lumimask))) {
-    
-    if(PassTrigger(triggerslist, prescale) ){
-      if(electronTightColl.size() ==2) {
-	if(electronTightColl.at(0).Pt() > 25. && electronTightColl.at(1).Pt() > 15. ){
-	  if(!isData) FillHist("zpeak_ee_gold_noPUrw", GetDiLepMass(electronTightColl), weight/eventbase->GetEvent().PileUpWeight(snu::KEvent::gold), 0., 200.,400);
-	  else FillHist("zpeak_ee_gold_noPUrw", GetDiLepMass(electronTightColl), weight, 0., 200.,400);
-	  FillHist("zpeak_gold_ee", GetDiLepMass(electronTightColl), weight, 0., 200.,400);
-	  FillCLHist(sighist_ee, "DiElectron_gold", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
-	}
-      }
-    }
-  }
   
 
-  float prescale_trigger =  GetPrescale(electronLooseColl, PassTrigger(triggerslist_8, prescale),  PassTrigger(triggerslist_12, prescale), PassTrigger(triggerslist_18, prescale), PassTrigger( triggerslist_23, prescale), PassTrigger(triggerslist_33, prescale), TargetLumi); 
+  if(electronLooseColl.size()!= 1) return;
+
+  float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_12, prescale), PassTrigger(triggerslist_18, prescale), PassTrigger( triggerslist_23, prescale), PassTrigger(triggerslist_33, prescale), TargetLumi); 
 
 
-  if(!isData) weight*= prescale_trigger;
-  
+  weight*= prescale_trigger;
   
   MakeFakeRatePlots("HNTight", electronTightColl, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
   
+
+  
+  bool useevent40 = UseEvent(electronLooseColl , jetColl, 40., prescale_trigger, weight);
+  if(useevent40){
+    if(jetCollTight.size() >=1) {
+      FillCLHist(sighist_ee, "Use40_loose", eventbase->GetEvent(), muonColl,electronLooseColl,jetCollTight, weight);
+      FillCLHist(sighist_ee, "Use40_tight", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight);
+    }
+  }
+  
+  
+
   if(electronLooseColl.size() == 1){
     if(jetCollTight.size() >=1) {
       if(jetCollTight.at(0).Pt() > 40.){
@@ -188,11 +218,11 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 }// End of execute event loop
 
 
-float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons, bool pass5, bool pass4, bool pass3, bool pass2, bool pass1, float fake_total_lum ){
+float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,  bool pass4, bool pass3, bool pass2, bool pass1, float fake_total_lum ){
   
   float prescale_trigger= 1.;
   if(electrons.size() ==1){
-    /// 10 - 15  HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v* 
+
     /// 15 - 20  HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_*
     /// 20 - 25  HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_*
     /// 25 - 35  HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_* 
@@ -202,46 +232,40 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     if(electrons.at(0).Pt() >= 35.){
       //HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass1){
-        prescale_trigger = ApplyPrescale("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30", fake_total_lum, lumimask); //// 20 + GeV bins
+        prescale_trigger = ApplyPrescale("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum, lumimask); //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else  if(electrons.at(0).Pt() >= 25.){
       //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30
-      if(pass2)
-        prescale_trigger =  ApplyPrescale("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30", fake_total_lum, lumimask) ; //// 20 + GeV bins
+
+      if(pass2){
+        prescale_trigger =  ApplyPrescale("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum, lumimask) ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else   if(electrons.at(0).Pt() >= 20.){
       //HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass3){
-	prescale_trigger =  ApplyPrescale("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30", fake_total_lum, lumimask) ;
+	prescale_trigger =  ApplyPrescale("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum, lumimask) ;
       }
       else prescale_trigger = 0.;
     }
-
     else   if(electrons.at(0).Pt() >= 15.){
       //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_
       if(pass4){
-        prescale_trigger = ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_", fake_total_lum, lumimask) ;
+        prescale_trigger = ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum, lumimask) ;
       }
       else prescale_trigger = 0.;
     }
-
-
     else{
-
-      /// if single el event and low pt use 8 GeV trigger
-      if(pass5){
-        prescale_trigger = ApplyPrescale("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v", fake_total_lum, lumimask) ;
-      }
-      else prescale_trigger = 0.;
+      prescale_trigger = 0.;
     }
-  
+  }
+  if(prescale_trigger == 0.) return 0.;
   if(k_isdata) return 1.;
   if(electrons.at(0).Pt() < 10.) return 0.;
-  if(prescale_trigger == 0.) return 0.;
+  
 
   
   return prescale_trigger;
@@ -275,7 +299,7 @@ void FakeRateCalculator_El::MakeFakeRatePlots(TString label, std::vector<snu::KE
     if(useevent30)GetFakeRates(electrons, electrons_tight, jets, alljets,  label+"_allmc_30", (prescale_w * w));
     if(useevent40)GetFakeRates(electrons, electrons_tight, jets, alljets,  label+"_allmc_40", (prescale_w * w));
     if(useevent60)GetFakeRates(electrons, electrons_tight, jets, alljets,  label+"_allmc_60", (prescale_w * w));
-  }
+  } 
 
   if(truth_match){
 
@@ -291,16 +315,16 @@ void FakeRateCalculator_El::MakeFakeRatePlots(TString label, std::vector<snu::KE
 bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std::vector< snu::KJet> jets, float awayjetcut, float precale_weight, float wt){
   
   bool useevent = false;
+  if(electrons.size() != 1) return false;
   if(precale_weight != 0.){
-    
     /// Z and W veto
     Double_t MT=0;
     Double_t METdphi=0;
     for(unsigned int w = 0; w < electrons.size();  w++){
-      METdphi = TVector2::Phi_mpi_pi(electrons.at(w).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::nohf));
-      MT = sqrt(2.* electrons.at(w).Et()*eventbase->GetEvent().MET(snu::KEvent::nohf) * (1 - cos( METdphi)));
-      
-      if(( (eventbase->GetEvent().MET(snu::KEvent::nohf) < 20) && (MT < 25.)) ) {
+      METdphi = TVector2::Phi_mpi_pi(electrons.at(w).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
+      MT = sqrt(2.* electrons.at(w).Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
+
+      if(( (eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20) && (MT < 25.)) ) {
 	
         for (unsigned int ielT=0; ielT < electrons.size(); ielT++){
           for(unsigned int ij=0; ij < jets.size(); ij++){
@@ -317,7 +341,7 @@ bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std
 }
 
 void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets,  std::vector<snu::KJet> alljets, TString tag, double w){
-
+    
   Float_t ptbins[10] = { 10., 15.,20.,25.,30.,35.,45.,60.,100., 200.};
   Float_t ptbinsb[8] = { 10., 15.,20.,30.,45.,60.,100., 200.};
   Float_t etabin[2] = { 0.,  2.5};
@@ -330,7 +354,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
   int nbjet(0);
   float tmp_deltaR=1000.;
   for(unsigned int ij =0 ; ij < jets.size() ; ij++){
-    if(jets.at(ij).CSVInclV2() > 0.89) nbjet++;
+    if(jets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) nbjet++;
     if(loose_el.at(0).DeltaR(jets.at(ij)) < tmp_deltaR) tmp_deltaR = loose_el.at(0).DeltaR(jets.at(ij));
   }
   
@@ -338,7 +362,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
   float awayjetpt = 0.;
   for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
     if(loose_el.at(0).DeltaR(alljets.at(ij)) < 0.5) {
-      if(alljets.at(ij).CSVInclV2() > 0.89) closebjet = true;
+      if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) closebjet = true;
     }     
     float dphi =fabs(TVector2::Phi_mpi_pi(loose_el.at(0).Phi()- alljets.at(ij).Phi()));
     if(dphi > 2.5) awayjetpt = alljets.at(ij).Pt();
@@ -612,7 +636,7 @@ void FakeRateCalculator_El::GetHSTRates(std::vector<snu::KElectron> loose_el, st
 void FakeRateCalculator_El::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
-  m_logger<< INFO << "Number of events that pass 17 GeV trigger = " << n_17_pass  << LQLogger::endmsg;
+  m_logger<< INFO << "Number of events that pass 1 7GeV trigger = " << n_17_pass  << LQLogger::endmsg;
   m_logger<< INFO << "Number of events that pass 17 GeV + jet trigger = " << n_17_jet_pass  << LQLogger::endmsg;
   m_logger<< INFO << "Number of events that pass 17 GeV || jet trigger = " << n_17_17_jet_pass  << LQLogger::endmsg;
 

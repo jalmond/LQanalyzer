@@ -38,6 +38,8 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
@@ -78,7 +80,6 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetPhotonSel()->SetEta(3.);
   eventbase->GetPhotonSel()->BasicSelection(out_photons);
 
-  
   int nlep = skim_electrons.size() + skim_muons.size();
   bool pass15gevlep = false;
   if(skim_electrons.size() > 0){
@@ -87,16 +88,11 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   if(skim_muons.size() > 0){
     if(skim_muons.at(0).Pt()> 15 ) pass15gevlep = true;
   }
-  
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) {
     throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   }
 
-  //for(unsigned int i = 0; i < eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().size(); i++){
-  //  cout << eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames().at(i) << endl;
-  //}
-  
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
   out_truth   = eventbase->GetTruth();
@@ -129,7 +125,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   //// Set triggers available in sktree
   triggerlist.clear();
 
-  if(isData){
+  if(k_isdata){
     cout << " k_channel = " << k_channel << endl;
 
     if(k_channel.Contains("DoubleMuon")){

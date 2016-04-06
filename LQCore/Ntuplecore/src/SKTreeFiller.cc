@@ -142,23 +142,25 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
   
   if(!TString(CatVersion).Contains("v7-4")){
     if(met_unclusteredEn_Px_up){
-      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up*met_unclusteredEn_Px_up + met_unclusteredEn_Py_up*met_unclusteredEn_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down*met_unclusteredEn_Px_down + met_unclusteredEn_Py_down*met_unclusteredEn_Py_up));
-      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up);
-      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down);
-      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up*met_jetEn_Px_up + met_jetEn_Py_up*met_jetEn_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down*met_jetEn_Px_down + met_jetEn_Py_down*met_jetEn_Py_up));
-      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up);
-      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down);
-      kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up*met_jetRes_Px_up + met_jetRes_Py_up*met_jetRes_Py_up));
-      kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down*met_jetRes_Px_down + met_jetRes_Py_down*met_jetRes_Py_up));
-      
-      kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up);
-      kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down);
+      if(met_unclusteredEn_Px_up->at(0)){
+	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
+	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
+	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
+	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_down*met_electronEn_Px_down + met_electronEn_Py_down*met_electronEn_Py_up));
+	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_up->at(0)*met_unclusteredEn_Px_up->at(0) + met_unclusteredEn_Py_up->at(0)*met_unclusteredEn_Py_up->at(0)));
+	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::Unclustered,sqrt(met_unclusteredEn_Px_down->at(0)*met_unclusteredEn_Px_down->at(0) + met_unclusteredEn_Py_down->at(0)*met_unclusteredEn_Py_up->at(0)));
+	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::Unclustered,met_unclusteredEn_SumEt_up->at(0));
+	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::Unclustered,met_unclusteredEn_SumEt_down->at(0));
+	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetEn,      sqrt(met_jetEn_Px_up->at(0)*met_jetEn_Px_up->at(0) + met_jetEn_Py_up->at(0)*met_jetEn_Py_up->at(0)));
+	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_up->at(0)));
+	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
+	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
+	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0)));
+	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down->at(0)*met_jetRes_Px_down->at(0) + met_jetRes_Py_down->at(0)*met_jetRes_Py_up->at(0)));
+	
+	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up->at(0));
+	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down->at(0));
+      }
     }
   }
   m_logger << DEBUG << "Filling Event Info [4]" << LQLogger::endmsg;
@@ -282,10 +284,13 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     return electrons;
   }
 
-  m_logger << DEBUG << "Filling electron Info" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling electron Info " << electrons_eta->size() << LQLogger::endmsg;
+  
 
   for (UInt_t iel=0; iel< electrons_eta->size(); iel++) {
-    if(electrons_pt->at(iel) != electrons_pt->at(iel)) continue;
+    
+    if(electrons_pt->at(iel) != electrons_pt->at(iel))    continue;
+    
     KElectron el;
 
     /// Kinematic Variables
@@ -323,7 +328,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetShiftedEUp(electrons_shiftedEnUp->at(iel));
       el.SetShiftedEDown(electrons_shiftedEnDown->at(iel));
     }
-    
+    m_logger << DEBUG << "TEST 2 " << electrons_pt->at(iel) << LQLogger::endmsg;
+
     el.SetSNUID(electrons_electronID_snu->at(iel));
     el.SetPassVeto(electrons_electronID_veto->at(iel));
     el.SetPassLoose(electrons_electronID_loose->at(iel));
@@ -332,6 +338,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     
     /// HEEP
     el.SetPassHEEP(electrons_electronID_heep->at(iel));
+    m_logger << DEBUG << "TEST 2 " << electrons_pt->at(iel) << LQLogger::endmsg;
 
     // MVA
     el.SetPassMVATrigMedium(electrons_electronID_mva_trig_medium->at(iel));
@@ -351,82 +358,86 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     //// Set Is ChargeFlip
     bool self_match= false;
     bool from_tau = false;
+    m_logger << DEBUG << "TEST GEN " <<  LQLogger::endmsg;
     
-    for (UInt_t it=0; it< gen_pt->size(); it++ ){
-      if(gen_motherindex->at(it) <= 0)continue;
-      if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-      if(gen_pt->at(it) < 5) continue;
-      
-      if(gen_pdgid->at(gen_motherindex->at(it)) == 22 ){
-
-	for (UInt_t it2=0; it2< gen_pt->size(); it2++ ){
-	  if(gen_motherindex->at(it2) <= 0)continue;
-	  if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+    if(gen_pt){
+      for (UInt_t it=0; it< gen_pt->size(); it++ ){
+	if(gen_motherindex->at(it) <= 0)continue;
+	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	if(gen_pt->at(it) < 5) continue;
+	
+	if(gen_pdgid->at(gen_motherindex->at(it)) == 22 ){
 	  
+	  for (UInt_t it2=0; it2< gen_pt->size(); it2++ ){
+	    if(gen_motherindex->at(it2) <= 0)continue;
+	    if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	    
+	  }
 	}
-      }
-      double match_eta =electrons_eta->at(iel);
-      double match_phi =electrons_phi->at(iel);
-      double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
-      
-      if (dr < 0.3){
-
-	if(gen_pdgid->at(it) == 22 ){
-	  self_match=false;
-	  el.SetIsChargeFlip(true);
-	  if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 15)from_tau=true;
-	}
-
-	float pdgid = 0.;
-	int mindex= it;
-	if((fabs(gen_pdgid->at(mindex)) == 11)){
+	double match_eta =electrons_eta->at(iel);
+	double match_phi =electrons_phi->at(iel);
+	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+	
+	if (dr < 0.3){
 	  
-	  while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
-	    pdgid = gen_pdgid->at(mindex);
-	    mindex=gen_motherindex->at(mindex);
+	  if(gen_pdgid->at(it) == 22 ){
+	    self_match=false;
+	    el.SetIsChargeFlip(true);
+	    if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 15)from_tau=true;
 	  }
 	  
-	  if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+	  float pdgid = 0.;
+	  int mindex= it;
+	  if((fabs(gen_pdgid->at(mindex)) == 11)){
 	    
-	    if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
-	    else     el.SetIsChargeFlip(false);
-	    
-	    self_match=true; break;
-	  }
-	  else {
-	    if((fabs(gen_pdgid->at(mindex)) == 15)){
-	      while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
-		mindex=gen_motherindex->at(mindex);
-	      }
-	      if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) { 
-		if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
-		else     el.SetIsChargeFlip(false);
-		from_tau=true; self_match=true; break;}
-	      
+	    while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
+	      pdgid = gen_pdgid->at(mindex);
+	      mindex=gen_motherindex->at(mindex);
 	    }
-	    else{
-	      /// In case mother not correctly stored (DY10-50)
+	    
+	    if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
 	      
-	      if(gen_pdgid->at(it) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+	      if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
 	      else     el.SetIsChargeFlip(false);
 	      
 	      self_match=true; break;
 	    }
+	    else {
+	      if((fabs(gen_pdgid->at(mindex)) == 15)){
+		while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
+		  mindex=gen_motherindex->at(mindex);
+		}
+		if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) { 
+		  if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+		  else     el.SetIsChargeFlip(false);
+		  from_tau=true; self_match=true; break;}
+		
+	      }
+	      else{
+		/// In case mother not correctly stored (DY10-50)
+		
+		if(gen_pdgid->at(it) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+		else     el.SetIsChargeFlip(false);
+		
+		self_match=true; break;
+	      }
+	    }
 	  }
-	}
-	else{
-	  self_match=false;
-	  el.SetIsChargeFlip(false);
-	  if((fabs(gen_pdgid->at(mindex)) == 15)){
-	    from_tau=true;
-	    self_match=true; 
+	  else{
+	    self_match=false;
+	    el.SetIsChargeFlip(false);
+	    if((fabs(gen_pdgid->at(mindex)) == 15)){
+	      from_tau=true;
+	      self_match=true; 
 	    break;
+	    }
+	    else from_tau=false;
 	  }
-	  else from_tau=false;
-	}
-      }// end of dR
-    }//end electron truth
-    
+	}// end of dR
+      }//end electron truth
+    }
+    m_logger << DEBUG << "TEST END GEN " << electrons_pt->at(iel) << LQLogger::endmsg;
+
     el.SetIsMCMatched(self_match);
 
     //    if(!self_match && (electrons_pt->at(iel) > 15.)){
@@ -435,11 +446,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     
     electrons.push_back(el);
   }
+  m_logger << DEBUG << "END electrons " << LQLogger::endmsg;
   std::sort( electrons.begin(), electrons.end(), isHigherPt );
   
   return electrons;
-  }
-
+}
 
 void SKTreeFiller::ERRORMessage(TString comment){
   
@@ -628,67 +639,68 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     bool self_match= false;
     bool from_tau = false;
 
-    for (UInt_t it=0; it< gen_pt->size(); it++ ){
-      if(gen_motherindex->at(it) <= 0)continue;
-      if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-      if(gen_pt->at(it) < 5) continue;
-
-      double match_eta =muon_eta->at(ilep);
-      double match_phi =muon_phi->at(ilep);
-      double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
-
-      if (dr < 0.3){
-
-        float pdgid = 0.;
-        int mindex= it;
-        if((fabs(gen_pdgid->at(mindex)) == 11)){
-
-          while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
-            pdgid = gen_pdgid->at(mindex);
-            mindex=gen_motherindex->at(mindex);
-          }
-
-          if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
-
-            if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
-            else     muon.SetIsChargeFlip(false);
-
-            self_match=true; break;
-          }
-          else {
-            if((fabs(gen_pdgid->at(mindex)) == 15)){
-              while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
-                mindex=gen_motherindex->at(mindex);
-              }
-              if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
-                if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
-                else     muon.SetIsChargeFlip(false);
-                from_tau=true; self_match=true; break;}
-
-            }
-            else{
-              /// In case mother not correctly stored (DY10-50)
-
-              if(gen_pdgid->at(it) * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
-              else     muon.SetIsChargeFlip(false);
-
-              self_match=true; break;
-            }
-          }
-        }
-        else{
-	  self_match=false;
-          muon.SetIsChargeFlip(false);
-          if((fabs(gen_pdgid->at(mindex)) == 15)){
-            from_tau=true;
-            self_match=true;
-            break;
-          }
-          else from_tau=false;
+    if(gen_pt){
+      for (UInt_t it=0; it< gen_pt->size(); it++ ){
+	if(gen_motherindex->at(it) <= 0)continue;
+	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	if(gen_pt->at(it) < 5) continue;
+	
+	double match_eta =muon_eta->at(ilep);
+	double match_phi =muon_phi->at(ilep);
+	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+	
+	if (dr < 0.3){
+	  
+	  float pdgid = 0.;
+	  int mindex= it;
+	  if((fabs(gen_pdgid->at(mindex)) == 11)){
+	    
+	    while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
+	      pdgid = gen_pdgid->at(mindex);
+	      mindex=gen_motherindex->at(mindex);
+	    }
+	    
+	    if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+	      
+	      if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+	      else     muon.SetIsChargeFlip(false);
+	      
+	      self_match=true; break;
+	    }
+	    else {
+	      if((fabs(gen_pdgid->at(mindex)) == 15)){
+		while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
+		  mindex=gen_motherindex->at(mindex);
+		}
+		if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+		  if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+		  else     muon.SetIsChargeFlip(false);
+		  from_tau=true; self_match=true; break;}
+		
+	      }
+	      else{
+		/// In case mother not correctly stored (DY10-50)
+		
+		if(gen_pdgid->at(it) * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+		else     muon.SetIsChargeFlip(false);
+		
+		self_match=true; break;
+	      }
+	    }
+	  }
+	  else{
+	    self_match=false;
+	    muon.SetIsChargeFlip(false);
+	    if((fabs(gen_pdgid->at(mindex)) == 15)){
+	      from_tau=true;
+	      self_match=true;
+	      break;
+	    }
+	    else from_tau=false;
+	  }
 	}
-      }
-    }//end muon truth
-
+      }//end muon truth
+    }
 
     muon.SetMCMatched(self_match);
     muon.SetIsFromTau(from_tau);
@@ -722,7 +734,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     return vtruth;
   }
   
-  m_logger << DEBUG << "Filling truth Info" << LQLogger::endmsg;
+  m_logger << DEBUG << "Filling truth Info: " << gen_pt->size() << LQLogger::endmsg;
 
   for (UInt_t it=0; it< gen_pt->size(); it++ , counter++) {
     

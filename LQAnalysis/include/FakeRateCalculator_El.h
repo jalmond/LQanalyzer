@@ -30,7 +30,7 @@ class FakeRateCalculator_El : public AnalyzerCore {
 
   
   void MakeMCPlots(TString label, snu::KElectron electron, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, double w);
-  float GetPrescale( std::vector<snu::KElectron> electrons, bool superlow, bool passlow, bool passhigh, bool highest, bool passshighest, float fake_total_lum);
+  float GetPrescale( std::vector<snu::KElectron> electrons,  bool passlow, bool passhigh, bool highest, bool passshighest, float fake_total_lum);
   bool  UseEvent(std::vector<snu::KElectron> electrons,  vector<snu::KJet> jets, float pcut,float precale_weight, float w);
   bool  UseEventAllMT(std::vector<snu::KElectron> electrons,  vector<snu::KJet> jets, float pcut,float precale_weight, float w);
 

@@ -70,6 +70,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   string lqdir = getenv("LQANALYZER_DIR");
   //  rmcor = new rochcor2015();
+  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
 
 
 }
@@ -144,9 +145,11 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keep
   else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, 15., 2.5);}
 
   // Veto cut
-  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 15., 2.5);}
+  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 10., 2.5);}
 
   else if(muid == BaseSelection::MUON_NOCUT){
+    eventbase->GetMuonSel()->SetPt(0.); 
+    eventbase->GetMuonSel()->SetEta(5.);    
     eventbase->GetMuonSel()->Selection(muonColl);
   }
   
@@ -178,12 +181,13 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   else if(elid == BaseSelection::ELECTRON_HN_TIGHT){
     /// This is the vector of electrons with optimie cuts
     std::vector<snu::KElectron> _electronColl;
-    if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE, 15., 2.5);
+    if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0, 15., 2.5);
     else eventbase->GetElectronSel()->SelectElectrons(_electronColl,BaseSelection::ELECTRON_HN_TIGHT, 15., 2.5);
     electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
   }
    
   else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE, 10., 2.5);}
+  else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0, 10., 2.5);}
   
   // Veto cut
   else if(elid == BaseSelection::ELECTRON_HN_VETO){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_VETO, 10., 2.5);}
@@ -194,7 +198,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     eventbase->GetElectronSel()->SetEta(2.5);
     eventbase->GetElectronSel()->Selection(electronColl);
   }
-  else if(elid == BaseSelection::ELECTRON_NOCUT){ eventbase->GetElectronSel()->Selection(electronColl);}
+  else if(elid == BaseSelection::ELECTRON_NOCUT){  eventbase->GetElectronSel()->SetPt(0.);   eventbase->GetElectronSel()->SetEta(5.); eventbase->GetElectronSel()->Selection(electronColl);}
   else  eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 15., 2.5);
     
   return  GetTruePrompt(electronColl, keepcf, keepfake); 
@@ -364,6 +368,7 @@ float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent:
 
     /// Electron triggers
     // Double Electron
+
     if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858)/tlumi);
     else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617)/tlumi);
     else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
@@ -377,7 +382,7 @@ float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent:
     else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+5.497)/tlumi);
     else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.395)/tlumi);
     else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.791+0.133)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf")) return ((16.548+1364.998+934.860)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf_v")) return ((16.548+1364.998+934.860)/tlumi);
 
     // TriLepton Electron
     else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2300.617)/tlumi);
@@ -496,7 +501,7 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistTriLep.clear();
 
-
+  delete m_fakeobj;
   delete ElectronSF_Tight;
   delete ElectronRECO;
   //  delete rmcor;
@@ -611,6 +616,7 @@ int AnalyzerCore::AssignnNumberOfTruth(){
   /// G.Yu needs to add signal here
  
   if(k_sample_name.Contains("Majornana"))  np = 1000; 
+if(k_sample_name.Contains("HN"))  np = 1000; 
   
   return np;
 }
@@ -1330,7 +1336,20 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons){
   if(k_electrons.size()==0) return 0.;
 
-  return 1.;
+  float ee_weight = 0.;
+  if(k_electrons.size()==2){
+    
+    
+
+    bool is_el1_tight    = IsTight(k_electrons.at(0));
+    bool is_el2_tight    = IsTight(k_electrons.at(1));
+
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(electrons, is_el1_tight,is_el2_tight); 
+    
+  }
+  return ee_weight;
+
 }
 
 

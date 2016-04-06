@@ -55,6 +55,9 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist_ee, "DiElectron_noTM");
    MakeCleverHistograms(sighist_ee, "DiElectronID");
    MakeCleverHistograms(sighist_ee, "DiElectronIDRECO");
+   MakeCleverHistograms(sighist_ee, "SIGNAL");
+   MakeCleverHistograms(sighist_ee, "SS_SIGNAL");
+   MakeCleverHistograms(sighist_ee, "OS_SIGNAL");
    MakeCleverHistograms(sighist_ee, "DiElectron_HLT23");
    MakeCleverHistograms(sighist_ee, "DiElectronNoPRW");
    MakeCleverHistograms(sighist_ee, "DiElectronNoTrigger");
@@ -90,6 +93,16 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
+
+  ///// SIGNAL PLOTS
+  /*  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(fabs(genBColl[ig].PdgId()) == 11){
+
+      
+    }
+    }*/
+  
+
   /// Apply MC weight for MCatnlo samples
   // MC weight = gen weight * lumimask weight
   // gen wieght = 1, -1
@@ -99,8 +112,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   /// Apply json file if gold json is used. if lumimask == silver this does nothing  
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
-
-
+  
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   FillCutFlow("NoCut", weight);
@@ -170,7 +182,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   
   // Get loose muons for veto: Can call  POGSoft/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight
-  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_POG_LOOSE); // loose selection
+  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_NOCUT); // loose selection
   
   /// Get tight jets : Can call NoLeptonVeto/Loose/Medium/Tight/HNJets
   std::vector<snu::KJet> jetColl_hn  = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
@@ -179,18 +191,31 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
-
   
+  cout << " " << endl;
+  
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
 
-  //for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-  //if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-    //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-    //cout << ig << " pdgid= " << eventbase->GetTruth().at(ig).PdgId() <<  " eta = " << eventbase->GetTruth().at(ig).Eta() << " pt=" << eventbase->GetTruth().at(ig).Pt() <<  " status = " << eventbase->GetTruth().at(ig).GenStatus() << " motherindex = " << eventbase->GetTruth().at(ig).IndexMother() << endl;
-  //}
+    if(eventbase->GetTruth().at(ig).PdgId() == 90 && eventbase->GetTruth().at(ig).GenStatus() == 22)  FillHist("N_mass", eventbase->GetTruth().at(ig).M() ,weight, 0. , 2500., 2500);
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 24 && eventbase->GetTruth().at(ig).GenStatus()== 22){
+      cout << eventbase->GetTruth().at(ig).PdgId() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " << eventbase->GetTruth().at(ig).M() << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< endl;
+      if(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() == 90)  FillHist("W2_mass", eventbase->GetTruth().at(ig).M() ,weight, 0. , 1500., 500);
+      else if(eventbase->GetTruth().at(ig).M() == eventbase->GetTruth().at(ig).M())   FillHist("W1_mass", eventbase->GetTruth().at(ig).M() ,weight, 0. , 5000., 500);
+    }
+  }
   
       // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
   std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
 
+  std::vector<snu::KElectron> electronColl_nocut             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
+
+  //for(unsigned int iel = 0 ; iel < electronColl_nocut.size() ; iel++){
+  // cout << "RECO " << electronColl_nocut.at(iel).Eta() << " " << electronColl_nocut.at(iel).Phi() << " " << electronColl_nocut.at(iel).Pt() << endl;
+  // }
+
+  
   std::vector<snu::KElectron> electronColl             = GetElectrons(false, false, BaseSelection::ELECTRON_POG_TIGHT);
   std::vector<snu::KElectron> electronColl_all             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
   
@@ -212,6 +237,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("NJets_nlv" , jetColl_nlv.size(), weight, 0., 5., 5);
   FillHist("NJets_loose" , jetColl_loose.size(), weight, 0., 5., 5);
 
+  FillHist("NElectrons_nocut", electronColl_nocut.size(), weight, 0., 5., 5);
   FillHist("NElectrons_hnloose" ,  electronHNLooseColl.size(), weight, 0., 5., 5);
   FillHist("NElectrons_hnveto" ,   electronHNVetoColl.size(), weight, 0., 5., 5);
   FillHist("NElectrons_hntight" ,  electronHNTightColl.size(), weight, 0., 5., 5);
@@ -244,6 +270,11 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   }
   FillHist("IDWeight" ,  id_weight,1.,  0. , 2., 200);
   FillHist("RecoWeight" ,  reco_weight, 1., 0. , 2., 200);
+
+  FillCLHist(sighist_ee, "SIGNAL", eventbase->GetEvent(), muonColl,electronColl_nocut,jetColl_hn, weight*pileup_reweight);
+  if(SameCharge(electronColl_nocut))    FillCLHist(sighist_ee, "SS_SIGNAL", eventbase->GetEvent(), muonColl,electronColl_nocut,jetColl_hn, weight*pileup_reweight);
+  else     FillCLHist(sighist_ee, "OS_SIGNAL", eventbase->GetEvent(), muonColl,electronColl_nocut,jetColl_hn, weight*pileup_reweight);
+  
 
   
   if(PassTrigger(triggerslist_23, prescale)){

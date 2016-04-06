@@ -35,7 +35,9 @@ SKTreeMakerTriLep::SKTreeMakerTriLep() :  AnalyzerCore(), out_muons(0), out_elec
 
 void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   
-  
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+
+
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
@@ -85,6 +87,15 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   int nlep = skim_electrons.size() + skim_muons.size();
     
   /// select events  with 2 leptons with pt > 15
+  
+  if(nlep == 2){
+    if(skim_electrons.size() == 2){
+      if(skim_electrons.at(0).Charge() == skim_electrons.at(1).Charge()) nlep = 3;
+    }
+    if(skim_muons.size() == 2){
+      if(skim_muons.at(0).Charge() == skim_muons.at(1).Charge()) nlep = 3;
+    }
+  }
   if(! ((nlep > 2) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   
   bool pass15gev=false;
@@ -134,7 +145,7 @@ void SKTreeMakerTriLep::BeginCycle() throw( LQError ){
   triggerlist.clear();
   
   
-  if(isData){
+  if(k_isdata){
     if(k_channel.Contains("DoubleMuon")){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");

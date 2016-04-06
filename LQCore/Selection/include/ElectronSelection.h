@@ -41,7 +41,7 @@ class ElectronSelection : public BaseSelection {
 
   
   //// IDS
-  bool PassUserID(ID id,snu::KElectron el ,bool usetight, float isocut);
+  bool PassUserID(ID id,snu::KElectron el ,bool usetight, bool loosend0, float isocut);
   bool PassUserID(ID id,snu::KElectron el);
   bool PassUserID_FakeLoose(snu::KElectron el, bool usetight, float isocut);
   bool PassHNVeto(snu::KElectron el);

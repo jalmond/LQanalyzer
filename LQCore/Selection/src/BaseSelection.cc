@@ -149,7 +149,7 @@ void BaseSelection::reset(){
 
 void BaseSelection::SetPt(Double_t minPt) {
   apply_ptcut=true;
-  minPt ? pt_cut_min=minPt : pt_cut_min=10.0;
+  minPt ? pt_cut_min=minPt : pt_cut_min=0.0;
   pt_cut_max=10000.0;
 
 }

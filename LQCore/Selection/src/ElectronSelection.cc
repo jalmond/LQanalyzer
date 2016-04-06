@@ -21,10 +21,6 @@ void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl , bool
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
-    if ( m_debug&& ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 )) cout << "BasicSelection::Fail EtaCrack" << endl;
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    
-    
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min ){
       leptonColl.push_back(*el);
     }
@@ -41,10 +37,11 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
-    
+
     if ( m_debug&& ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 )) cout <<"SkimSelection::Fail EtaCrack" <<endl;
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    
+
+
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min){
       leptonColl.push_back(*el);
     }
@@ -67,9 +64,9 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID e
     
     //// DEFAULT cuts
     //// Require it is not in crack
-
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    
+
+
     bool pass_selection = true;
     ElectronID = PassUserID(elid, *el);
     if(!ElectronID)  pass_selection = false;
@@ -94,9 +91,9 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     
     //// DEFAULT cuts
     //// Require it is not in crack
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    
+
     bool pass_selection = true;
+    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
     
     ////  ID cut : need to optimise cuts
     /// Default is medium
@@ -134,11 +131,13 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
       pass_selection = false;
       if(m_debug)cout << "Selection: Fail Eta Cut" << endl;
     }
+    
 
     if(apply_ptcut && ! (el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max)) {
       pass_selection = false; 
       if(m_debug)cout << "Selection: Fail Pt Cut" << endl;
     }
+
     /// impact parameter cuts
     if(apply_dzcut && !(fabs(el->dz())<  dz_cut )) {
       pass_selection = false;
@@ -163,10 +162,10 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
   
 bool ElectronSelection::PassUserID(ID id, snu::KElectron el){
-  return PassUserID(id, el,true, 0.5);
+  return PassUserID(id, el,true,false, 0.5);
 }
 
-bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool usetight,float looseisocut){
+bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool usetight,bool loosend0,float looseisocut){
   
   if ( id == ELECTRON_POG_TIGHT         )  return  el.PassTight();
   else if ( id == ELECTRON_POG_MEDIUM   )  return  el.PassMedium();
@@ -174,7 +173,8 @@ bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool usetight,float
   else if ( id == ELECTRON_POG_VETO     )  return  el.PassVeto();
   else if ( id == ELECTRON_HN_TIGHT     )  {return  HNTightElectronSelection(el); }
   else if ( id == ELECTRON_HN_VETO      )  return  HNVetoElectronSelection(el);
-  else if ( id == ELECTRON_HN_FAKELOOSE )  return  HNLooseElectronSelection(el,  usetight, looseisocut);
+  else if ( id == ELECTRON_HN_FAKELOOSE )  return  HNLooseElectronSelection(el,  usetight, loosend0, looseisocut);
+  else if ( id == ELECTRON_HN_FAKELOOSE_NOD0 )  return  HNLooseElectronSelection(el,  usetight, true, looseisocut);
   else if ( id == ELECTRON_TOP_TIGHT     ) return  TopTightElectronSelection(el);
   else if ( id == ELECTRON_TOP_VETO      ) return  TopVetoElectronSelection(el);
   else if ( id == ELECTRON_TOP_LOOSE     ) return  TopLooseElectronSelection(el);

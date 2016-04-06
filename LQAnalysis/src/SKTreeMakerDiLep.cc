@@ -35,7 +35,9 @@ SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electr
 
 void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   
-  
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+
+
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
@@ -134,7 +136,7 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
   triggerlist.clear();
   
   
-  if(isData){
+  if(k_isdata){
     if(k_channel.Contains("DoubleMuon")){
       AddTriggerToList("HLT_IsoMu");
       AddTriggerToList("HLT_Mu");

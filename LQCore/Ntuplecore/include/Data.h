@@ -251,25 +251,26 @@ public :
    Double_t        met_electronEn_Py_up;
    Double_t        met_electronEn_Px_down;
    Double_t        met_electronEn_Py_down;
-   Double_t        met_unclusteredEn_Px_up;
-   Double_t        met_unclusteredEn_Py_up;
-   Double_t        met_unclusteredEn_Px_down;
-   Double_t        met_unclusteredEn_Py_down;
-   Double_t        met_unclusteredEn_SumEt_down;
-   Double_t        met_unclusteredEn_SumEt_up;
-   Double_t        met_jetEn_Px_up;
-   Double_t        met_jetEn_Py_up;
-   Double_t        met_jetEn_Px_down;
-   Double_t        met_jetEn_Py_down;
-   Double_t        met_jetEn_SumEt_up;
-   Double_t        met_jetEn_SumEt_down;
-   Double_t        met_jetRes_Px_up;
-   Double_t        met_jetRes_Py_up;
-   Double_t        met_jetRes_Px_down;
-   Double_t        met_jetRes_Py_down;
-   Double_t        met_jetRes_SumEt_up;
-   Double_t        met_jetRes_SumEt_down;
-
+   std::vector<double>        *met_unclusteredEn_Px_up;
+   std::vector<double>        *met_unclusteredEn_Py_up;
+   std::vector<double>        *met_unclusteredEn_Px_down;
+   std::vector<double>        *met_unclusteredEn_Py_down;
+   std::vector<double>        *met_unclusteredEn_SumEt_down;
+   std::vector<double>        *met_unclusteredEn_SumEt_up;
+   
+   std::vector<double>        *met_jetEn_Px_up;
+   std::vector<double>        *met_jetEn_Py_up;
+   std::vector<double>        *met_jetEn_Px_down;
+   std::vector<double>        *met_jetEn_Py_down;
+   std::vector<double>        *met_jetEn_SumEt_up;
+   std::vector<double>        *met_jetEn_SumEt_down;
+   std::vector<double>        *met_jetRes_Px_up;
+   std::vector<double>        *met_jetRes_Py_up;
+   std::vector<double>        *met_jetRes_Px_down;
+   std::vector<double>        *met_jetRes_Py_down;
+   std::vector<double>        *met_jetRes_SumEt_up;
+   std::vector<double>        *met_jetRes_SumEt_down;
+   
    std::vector<double>  *metNoHF_phi;
    std::vector<double>  *metNoHF_pt;
    std::vector<double>  *metNoHF_sumet;
