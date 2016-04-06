@@ -733,7 +733,8 @@ if DEBUG == "True":
 for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
-    runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
+#    runcommand = "ssh cms1 'cd " +  os.getenv("LQANALYZER_DIR") + "; source queue_setup.sh; nohup root.exe -l -q -b " +  script + "&>" + log + "&'"
+    runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&'"
     if singlejob:
         print "Running single job " + script 
         runcommand = "root.exe -l -q -b " +  script 

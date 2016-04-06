@@ -140,10 +140,10 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["GluGluToZZTo2mu2tau_BackgroundOnly_13TeV_MCFM"]=0.003194;
    dirmap["GluGluToZZTo4mu_BackgroundOnly_13TeV_MCFM"]=0.001586;
 
-   dirmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]=0.0;
+   dirmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]=0.0004561;
    dirmap["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"]=8.6;
-   dirmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]=3.4;
-   dirmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]=0.0;
+   dirmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]=3.416;
+   dirmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]=0.000002644;
 
    dirmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]=21.56;
    dirmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;

@@ -53,7 +53,7 @@ def CleanUpLogs(path):
                 entries = line2.split()
                 if not len(entries)==2:
 
-                    if os.getenv("HOSTNAME") in line2:
+                    if str(os.getenv("HOSTNAME")) in line2:
                         os.system("ps ux | grep 'root.exe' &> " + logspace1 + "/pslog")
                         filename = logspace1 + "/pslog"
                         
