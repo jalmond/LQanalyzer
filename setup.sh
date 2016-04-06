@@ -29,7 +29,7 @@ fi
 export LQANALYZER_DIR=${PWD}
 
 ##### Check that this is not the branch and a tag was checked out
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh branch
+source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -112,7 +112,9 @@ source ${LQANALYZER_BIN_PATH}/cleanup.sh
 ### make directories that git does not allow to store
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 export LQANALYZER_OUTPUT_PATH=${LQANALYZER_DIR}/data/output/
-export LQANALYZER_LOG_PATH=${LQANALYZER_DIR}/data/logfiles/
+
+export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
+export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
 
 # Setup root area and other paths
  
@@ -160,6 +162,11 @@ export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}
 
 python bin/local_check.py
+
+if [ ! -d ${LQANALYZER_LOG_PATH} ]; then
+    echo Directory ${LQANALYZER_LOG_PATH} does not exist ... creating it
+    mkdir ${LQANALYZER_LOG_PATH}
+fi
 
 echo "Running analysis from" $HOSTNAME " in directory: " 
 
