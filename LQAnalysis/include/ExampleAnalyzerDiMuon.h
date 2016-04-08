@@ -2,8 +2,6 @@
 #define ExampleAnalyzerDiMuon_h
 
 #include "AnalyzerCore.h"
-
-
 class ExampleAnalyzerDiMuon : public AnalyzerCore {
 
  public:

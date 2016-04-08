@@ -26,6 +26,7 @@ ClassImp (ExampleAnalyzerDiMuon);
   */
 ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
   
+  rmcor = new rochcor2015();
   
   // To have the correct name in the log:                                                                                                                            
   SetLogName("ExampleAnalyzerDiMuon");
@@ -142,6 +143,8 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    std::vector<snu::KMuon> muonLooseColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
    std::vector<snu::KMuon> muonTightColl = GetMuons(BaseSelection::MUON_HN_TIGHT); // tight selection : NonPrompt MC lep removed
    
+   CorrectMuonMomentum(muonTightColl);
+
 
    for(std::vector<snu::KMuon>::iterator it = muonColl.begin(); it!= muonColl.end(); it++){
      //cout << "Muon pt = " << it->Pt() << endl;

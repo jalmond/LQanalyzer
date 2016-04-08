@@ -16,8 +16,8 @@ class EventBase;
 #include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-//#include "rochcor76x/rochcor2015.h"
-
+#include "rochcor2015/rochcor2015.h"
+#include "rochcor2015/RoccoR.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -93,6 +93,10 @@ class AnalyzerCore : public LQCycleBase {
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons);
  
+
+  void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
+
+
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   
@@ -132,7 +136,8 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* ElectronSF_Tight;
   TH2F* ElectronRECO;
   HNCommonLeptonFakes* m_fakeobj;
-  
+
+
 
   /// Event weights
   Double_t MCweight, weight;
@@ -212,6 +217,8 @@ class AnalyzerCore : public LQCycleBase {
   bool PassTrigger(std::vector<TString> list, int& prescale);
   void ListTriggersAvailable();
   bool PassBasicEventCuts();
+
+  rochcor2015 *rmcor;
 
 };
 #endif

@@ -69,9 +69,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
 
   string lqdir = getenv("LQANALYZER_DIR");
-  //  rmcor = new rochcor2015();
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
-
+  rmcor = new rochcor2015();
+  
 
 }
 
@@ -501,10 +501,11 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistTriLep.clear();
 
+  delete   rmcor ;
+  
   delete m_fakeobj;
   delete ElectronSF_Tight;
   delete ElectronRECO;
-  //  delete rmcor;
 }
 
 //###
@@ -1313,19 +1314,18 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
 
 }
 
-/*
 void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   
   vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
-    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
+   if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
   }
 }
-*/
+
 
 
 float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons){
