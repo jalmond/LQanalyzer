@@ -145,6 +145,9 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]=3.416;
    dirmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]=0.000002644;
 
+   dirmap["tthwA_3l4j_hc130A30_emu_catcut"] = 0.000373;
+   dirmap["tthwA_3l4j_hc130A30_3mu_catcut"] = 0.000373;
+
    dirmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]=21.56;
    dirmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;
    dirmap["MajoranaNeutrinoToEE_M-500_TuneZ2star_13TeV-alpgen"]=7.831E-05;
@@ -468,11 +471,13 @@ map<TString, TString>  GetLQMap(){
   lqmap["GluGluToZZTo2mu2tau_BackgroundOnly_13TeV_MCFM"]="GluGluToZZTo2mu2tau";
   lqmap["GluGluToZZTo4mu_BackgroundOnly_13TeV_MCFM"]="GluGluToZZTo4mu";
 
-  
+ 
   lqmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]="HN150_mumumu_VmuN_0p1";
   lqmap["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"]="HN40_mumumu_VmuN_0p1";
   lqmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]="HN60_mumumu_VmuN_0p1";
   lqmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]="HN700_mumumu_VmuN_0p1";
+  lqmap["tthwA_3l4j_hc130A30_emu_catcut"]="tthwA_3l4j_hc130A30_emu";
+  lqmap["tthwA_3l4j_hc130A30_3mu_catcut"]="tthwA_3l4j_hc130A30_3mu";
   lqmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]="HN_EE_M40";
   lqmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]="HN_EE_M100";
   lqmap["MajoranaNeutrinoToEE_M-500_TuneZ2star_13TeV-alpgen"]="HN_EE_M500";

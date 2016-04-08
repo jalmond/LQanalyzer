@@ -101,6 +101,70 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   /// Apply json file if gold json is used. if lumimask == silver this does nothing  
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
+
+
+  if(IsSignal()){
+    //ListTriggersAvailable();
+    vector<int> pt1;
+    pt1.push_back(35);
+    pt1.push_back(25);
+    pt1.push_back(25);
+    pt1.push_back(25);
+    pt1.push_back(30);
+    pt1.push_back(30);
+    pt1.push_back(20);
+    pt1.push_back(25);
+    pt1.push_back(30);
+    pt1.push_back(120);
+    pt1.push_back(20);
+    pt1.push_back(25);
+    vector<int>pt2;
+    pt2.push_back(35);
+    pt2.push_back(25);
+    pt2.push_back(10);
+    pt2.push_back(10);
+    pt2.push_back(10);
+    pt2.push_back(15);
+    pt2.push_back(15);
+    pt2.push_back(10);
+    pt2.push_back(10);
+    pt2.push_back(10);
+    pt2.push_back(15);
+    pt2.push_back(15);
+
+
+    std::vector<TString> lists_triggers;
+    lists_triggers.push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v");
+    lists_triggers.push_back("HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v");
+    lists_triggers.push_back("HLT_Ele22_eta2p1_WPLoose_Gsf_v");
+    lists_triggers.push_back("HLT_Ele23_WPLoose_Gsf_v");
+    lists_triggers.push_back("HLT_Ele27_WPLoose_Gsf_v");
+    lists_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+    lists_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+    lists_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+    lists_triggers.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_HT200");
+    lists_triggers.push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
+    lists_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+    lists_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+    for(unsigned int i=0; i < lists_triggers.size(); i++){
+      FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator_nojet", lists_triggers );
+    }
+    if(GetJets(BaseSelection::JET_HN).size() > 1){
+      for(unsigned int i=0; i < lists_triggers.size(); i++){
+	std::vector<TString> trig; trig.push_back(lists_triggers.at(i));
+	FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator", lists_triggers );
+	if(PassTrigger(trig, prescale))  {
+	  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator",lists_triggers );
+	  
+	  if(GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).size() ==2) {
+	    FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon",lists_triggers );
+	    if(GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).at(0).Pt() > pt1.at(i) && GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt",lists_triggers );
+	  }
+	}
+      }
+    }
+  }
+
   
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
@@ -366,6 +430,23 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   return;
 }// End of execute event loop
   
+
+void HNDiElectron::FillTriggerEfficiency(TString cut, float weight, TString label, std::vector<TString> list){
+
+  if(GetHist("TriggerEfficiency_" + label)) {
+    GetHist("TriggerEfficiency_"+label)->Fill(cut,weight);
+
+  }
+  else{
+    int ntrig = list.size();
+    AnalyzerCore::MakeHistograms("TriggerEfficiency_"+label,ntrig,0.,float(ntrig));
+
+    for(unsigned int it=0; it < list.size(); it++){
+      GetHist("TriggerEfficiency_"+label)->GetXaxis()->SetBinLabel(it+1,list.at(it));
+    }
+  }
+  
+}
 
 
 

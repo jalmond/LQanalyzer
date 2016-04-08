@@ -52,6 +52,7 @@ class AnalyzerCore : public LQCycleBase {
   int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium);
 
   int AssignnNumberOfTruth();
+  bool IsSignal();
 
   void ClassInfo();
   float SilverToGoldJsonReweight(TString p);

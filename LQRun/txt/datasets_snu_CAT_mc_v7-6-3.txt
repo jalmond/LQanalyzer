@@ -80,12 +80,12 @@ ZZ_llll_powheg  6669188.0 6669188.0 1.3 5309863.0  /data2/DATA/cattoflat/MC/v7-6
 ZZ_pythia8  985600.0 985600.0 16.9 58285.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZ_TuneCUETP8M1_13TeV-pythia8/
 ttHnobb_Powheg  3945824.0 3945824.0 0.5 7801154.5  /data2/DATA/cattoflat/MC/v7-6-3/ttHToNonbb_M125_13TeV_powheg_pythia8/
 ttHtobb_Powheg  3772012.0 3772012.0 0.5 7457517.0  /data2/DATA/cattoflat/MC/v7-6-3/ttHTobb_M125_13TeV_powheg_pythia8/
-
 HN150_mumumu_VmuN_0p1 100000.0 100000.0 0.0 219250160.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN150_mumumu_width_AUTO_VmuN_0p1/
 HN40_mumumu_VmuN_0p1 100000.0 100000.0 8.6 11621.2 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN40_mumumu_width_AUTO_VmuN_0p1/
 HN60_mumumu_VmuN_0p1 100000.0 100000.0 3.4 29274.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN60_mumumu_width_AUTO_VmuN_0p1/
 HN700_mumumu_VmuN_0p1 100000.0 100000.0 0.0 37821480960.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN700_mumumu_width_AUTO_VmuN_0p1/
-
+tthwA_3l4j_hc130A30_emu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/DATA/cattoflat/MC/v7-6-3/tthwA_3l4j_hc130A30_emu_catcut/
+tthwA_3l4j_hc130A30_3mu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/DATA/cattoflat/MC/v7-6-3/tthwA_3l4j_hc130A30_3mu_catcut/
 
 #### Single lepton skims: SKTrees
 SKDY10to50_MCatNLO  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/DY10to50_MCatNLO/
@@ -106,6 +106,9 @@ SKHN150_mumumu_VmuN_0p1 100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6
 SKHN40_mumumu_VmuN_0p1 100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN40_mumumu_VmuN_0p1/
 SKHN60_mumumu_VmuN_0p1 100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN60_mumumu_VmuN_0p1/
 SKHN700_mumumu_VmuN_0p1 100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN700_mumumu_VmuN_0p1/
+SKtthwA_3l4j_hc130A30_emu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/tthwA_3l4j_hc130A30_emu_catcut/
+SKtthwA_3l4j_hc130A30_3mu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/tthwA_3l4j_hc130A30_3mu_catcut/
+
 
 SKQCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu1000toINF_pythia8/
 SKQCD_em120to170_pythia8  36202408.0 36202408.0 62964.0 575.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em120to170_pythia8/
@@ -246,7 +249,8 @@ SKZZ_llll_powheg_dilep  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6
 SKZZ_pythia8_dilep  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_pythia8/
 SKttHnobb_Powheg_dilep  3945824.0 3945824.0 0.5 7801154.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHnobb_Powheg/
 SKttHtobb_Powheg_dilep  3772012.0 3772012.0 0.5 7457517.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHtobb_Powheg/
-
+SKtthwA_3l4j_hc130A30_emu_catcut_dilep 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/tthwA_3l4j_hc130A30_emu_catcut/
+SKtthwA_3l4j_hc130A30_3mu_catcut_dilep 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/tthwA_3l4j_hc130A30_3mu_catcut
 
 #### Trlepton skims: SKTrees
 SKDY10to50_MCatNLO_trilep  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/DY10to50_MCatNLO/

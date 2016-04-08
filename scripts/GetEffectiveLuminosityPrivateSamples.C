@@ -186,6 +186,8 @@ void GetEffectiveLuminosityPrivateSamples(){
 
   
   ofstream lumi_file;
+  lumi_file.precision(10);
+
   string lfile =  "datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
   lumi_file.open(lfile.c_str());
   lumi_file.setf(ios::fixed,ios::floatfield); 

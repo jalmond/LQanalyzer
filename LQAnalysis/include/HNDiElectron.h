@@ -31,6 +31,9 @@ class HNDiElectron : public AnalyzerCore {
   bool MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
 
+  void FillTriggerEfficiency(TString cut, float w, TString label,  std::vector<TString> list);
+
+
  private:
   
   //

@@ -197,12 +197,21 @@ if not os.path.exists(local_sub_dir):
 #### HARD CODE THE MAXIMUM number of subjobs
 ##################################################################################################################
 
+large_sample=False
+if "TT" in sample:
+    large_sample=True
+if "DY50"  in sample:
+    large_sample=True
+
+
+
 import platform
+BusyMachine=False
 username = str(os.getenv("USER"))
 if platform.system() == "Linux":
     os.system("top  -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
     filename = local_sub_dir +'/toplog'
-
+    
     n_previous_jobs=0
     njob_user=0
     for line in open(filename, 'r'):
@@ -220,8 +229,22 @@ if platform.system() == "Linux":
         number_of_cores = 1
     os.system("rm " + filename)
 
+    os.system("top  -n 1 -b | grep 'cmsRun' &> " + local_sub_dir + "/toplog2")
+    filename2 = local_sub_dir +'/toplog2'
+    for line in open(filename2, 'r'):
+        n_previous_jobs+=1
+
+    if n_previous_jobs > 10:
+        BusyMachine=True
+    os.system("rm " + filename2)    
 nj_def=30
 
+
+if large_sample == True:
+    if BusyMachine == True:
+        print "Machine is busy"
+        
+        
 if number_of_cores > 1:
     if useskinput == "True":
         if (12 - n_previous_jobs) < number_of_cores:
@@ -269,6 +292,13 @@ if number_of_cores <  -100:
     number_of_cores=30
 if number_of_cores < 0:
     number_of_cores=1
+
+if number_of_cores < 5:
+    if "DY" in sample:
+        number_of_cores = 10
+    if "TT " in sample:
+        number_of_cores = 10
+
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
 ##################################################################################################################
@@ -734,7 +764,7 @@ for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
 #    runcommand = "ssh cms1 'cd " +  os.getenv("LQANALYZER_DIR") + "; source queue_setup.sh; nohup root.exe -l -q -b " +  script + "&>" + log + "&'"
-    runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&'"
+    runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if singlejob:
         print "Running single job " + script 
         runcommand = "root.exe -l -q -b " +  script 

@@ -653,9 +653,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  
 	  float pdgid = 0.;
 	  int mindex= it;
-	  if((fabs(gen_pdgid->at(mindex)) == 11)){
+	  if((fabs(gen_pdgid->at(mindex)) == 13)){
 	    
-	    while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
+	    while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
 	      pdgid = gen_pdgid->at(mindex);
 	      mindex=gen_motherindex->at(mindex);
 	    }

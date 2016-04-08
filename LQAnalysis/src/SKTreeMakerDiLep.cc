@@ -78,7 +78,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
   eventbase->GetElectronSel()->SetPt(10); 
-  eventbase->GetElectronSel()->SetEta(5.); 
+  eventbase->GetElectronSel()->SetEta(3.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
   eventbase->GetElectronSel()->SetPt(10);
   eventbase->GetElectronSel()->SetEta(2.5);

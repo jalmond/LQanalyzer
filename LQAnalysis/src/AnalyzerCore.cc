@@ -175,7 +175,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
      elid ==  BaseSelection::ELECTRON_POG_MEDIUM|| 
      elid == BaseSelection::ELECTRON_POG_VETO   ||
      elid == BaseSelection::ELECTRON_POG_LOOSE) 
-    {eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 15., 2.5);}
+    {eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 10., 2.5);}
   
 
   else if(elid == BaseSelection::ELECTRON_HN_TIGHT){
@@ -273,7 +273,7 @@ double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> 
   float sf= 1.;
   
   std::string sid= "";
-  if(muid==BaseSelection::MUON_POG_TIGHT) sid= "POG_TightID_ISO";
+  if(muid==BaseSelection::MUON_POG_TIGHT) sid= "POG_TightID";
   else cout << "MuonScaleFactor has no SFs for ID " << endl;
 
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
@@ -609,17 +609,30 @@ int AnalyzerCore::VersionStamp(TString cversion){
 }
 
 int AnalyzerCore::AssignnNumberOfTruth(){
-  int np = 30;
-  if(k_classname.Contains("SKTreeMakerNoCut")) np = 1000;
+  int np = 1000;
+  if(k_classname.Contains("SKTreeMaker")) np = 1000;
+  if(k_classname.Contains("SKTreeMakerDiLep")) np = 0;
+  if(k_classname.Contains("SKTreeMakerTriLep")) np = 0;
+
+  if(k_classname.Contains("SKTreeMaker")){
+    if(k_sample_name.Contains("QCD") && !k_sample_name.Contains("mad")) np = 0;
+  }
 
   /// List of signal samples
   /// G.Yu needs to add signal here
- 
-  if(k_sample_name.Contains("Majornana"))  np = 1000; 
-if(k_sample_name.Contains("HN"))  np = 1000; 
+  
+  if(IsSignal()) np = 1000;
   
   return np;
 }
+
+bool AnalyzerCore::IsSignal(){
+  
+  if(k_sample_name.Contains("Majornana")) return true;
+  if(k_sample_name.Contains("HN")) return true;
+  return false;
+}
+
 float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   
   if(eventbase->GetEvent().CatVersion().empty()) return 0.;
