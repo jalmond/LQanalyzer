@@ -190,6 +190,7 @@ std::vector<KTau> SKTreeFiller::GetAllTaus(){
     return taus;
   }
 
+
   m_logger << DEBUG << "Filling Tau" << LQLogger::endmsg;
   for(UInt_t itau = 0; itau < HPSTauPhi->size(); itau++){
 
@@ -213,6 +214,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     }
     return electrons;
   }
+
 
   
   m_logger << DEBUG << "Filling Electron" << LQLogger::endmsg;
@@ -258,7 +260,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetLeadVtxDistZ(ElectronLeadVtxDistZ->at(iel));
     
     el.SetVtxIndex(ElectronVtxIndex->at(iel));
-    el.SetPrimaryVertexDXY(ElectronPrimaryVertexDXY->at(iel));
+    el.SetPrimaryVertexDXY(ElectronLeadVtxDistXY->at(iel));
     el.SetPrimaryVertexDXYError(ElectronPrimaryVertexDXYError->at(iel));
     el.SetTrackPt(ElectronTrackPt->at(iel));
     el.SetTrackValidFractionOfHits(ElectronTrackValidFractionOfHits->at(iel));
@@ -343,8 +345,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetFBrem(ElectronFbrem->at(iel));
 
     if(ElectronshiftedEup){
-      el.SetShiftedEUp(ElectronshiftedEup->at(iel));
-      el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+      if(ElectronshiftedEup->size() > 0) {
+	el.SetShiftedEUp(ElectronshiftedEup->at(iel));
+	el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+      }
     }
 
     if(ElectronDCotTheta){
@@ -421,7 +425,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	int eltruth_index=0;
 	bool photon_conv(false);
 	//// Loop over main truth collection to search for matced truth particle
-	for(unsigned int g =0; g < GenParticleP->size(); g++, eltruth_index++){
+	for(unsigned int g =0; g < 25 ; g++, eltruth_index++){
 	  /// If already matched no need to continue
 	  if(matched_electron) continue;
 	  float status_3_dr= 10000.;
@@ -431,7 +435,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(dr < 0.4){
 	    m_logger << DEBUG << "Truth Matched to electron[GenParticle]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenParticlePt->at(g) << "/" << GenParticleEta->at(g) << "/" << GenParticlePhi->at(g) << "/" <<  GenParticleStatus->at(g) << "/" << GenParticlePdgId->at(g) << "/" << GenParticleMotherIndex->at(g) << LQLogger::endmsg; 
 
-	    if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()) {
+	    if(GenParticleMotherIndex->at(g) < 25) {
 	      if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g)) << " " << GenParticleStatus->at(GenParticleMotherIndex->at(g)) << LQLogger::endmsg;
 	    }else iMother = 4;
 	    /// First check status 3 particles (this is just a check and if status 1 particle is matched it will overright it)
@@ -451,7 +455,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		  }
 		}
 		else{
-		  if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()) iMother = GenParticleMotherIndex->at(g);
+		  if(GenParticleMotherIndex->at(g) < 25) iMother = GenParticleMotherIndex->at(g);
                   nDaughter = GenParticleNumDaught->at(g);
                   ipdgid =  GenParticlePdgId->at(g);
                   trueel_index = g;
@@ -466,14 +470,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      if(fabs(GenParticlePdgId->at(g)) == 11){
 		bool close_to_tau=false;
 		/// check if status 1 electron is matched to tau (as this could be from a tau decay)
-		for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+		for(unsigned int g2 =0; g2 < 25; g2++){
 		  if(GenParticlePdgId->at(g2) == 2212) continue;
 		  if(GenParticleStatus->at(g2) == 3){
 		    
 		    if( sqrt( pow(fabs( GenParticleEta->at(g)  - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)  -GenParticlePhi->at(g2))),2.0)) < 0.1){
 		      if(fabs(GenParticlePdgId->at(g2)) == 15){
 			close_to_tau=true;
-			if(g2 < GenParticlePdgId->size()) iMother = g2;
+			if(g2 < 25) iMother = g2;
 			nDaughter = GenParticleNumDaught->at(g);
 			ipdgid =  GenParticlePdgId->at(g);
 			trueel_index = g;
@@ -486,7 +490,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		if(!close_to_tau) {
 		  
 		  /// Check there is no "CLOSER" status 1 electron 
-		  for(unsigned int g2 =g+1; g2 < GenParticleP->size(); g2++){
+		  for(unsigned int g2 =g+1; g2 < 25; g2++){
 		    if(GenParticleStatus->at(g2) == 1){
 		      if(fabs(GenParticlePdgId->at(g2)) == 11){
 			double dr_el2 = sqrt( pow(fabs( match_eta - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g2))),2.0));
@@ -511,7 +515,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		  
 		  //// check there is no status 1 photon close by
 		  
-		  for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+		  for(unsigned int g2 =0; g2 < 25; g2++){
 		    if(GenParticlePdgId->at(g2) == 22){
 		      if(GenParticleStatus->at(g) == 1){
 			double dr_elph = sqrt( pow(fabs( GenParticleEta->at(g) - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)   -GenParticlePhi->at(g2))),2.0));
@@ -569,7 +573,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    
 	    /// If photon is not from an electron then it is assigned as a fake (in less it matches to a status 3 electron ) 
 	    if(ipdgid == 22){
-	    for(unsigned int g =0; g < GenParticleP->size(); g++){
+	    for(unsigned int g =0; g < 25; g++){
 	    if(GenParticleStatus->at(g) == 3){
 	    if(fabs(GenParticlePdgId->at(g)) ==11){
 	    
@@ -775,6 +779,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     return genjets;
   }
 
+
   for (UInt_t ijet=0; ijet< GenJetEnergy->size(); ijet++) {
     KGenJet jet;
     jet.SetPtEtaPhiE(GenJetPt->at(ijet), GenJetEta->at(ijet), GenJetPhi->at(ijet), GenJetEnergy->at(ijet));
@@ -797,6 +802,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
     return jets;
   }
+
 
   m_logger << DEBUG << "Filling PFJets" << LQLogger::endmsg;
  
@@ -898,21 +904,33 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jet.SetJetL2L3ResJEC(PFJetL2L3ResJEC->at(ijet));
     jet.SetJetL2RelJEC(PFJetL2RelJEC->at(ijet));
     jet.SetJetL3AbsJEC(PFJetL3AbsJEC->at(ijet));
+    m_logger << DEBUG << "Fill SKTree2 jetuncertainty" << LQLogger::endmsg;
+
     if(PFJetL5BottomJEC){
       jet.SetJetL5BottomJEC(PFJetL5BottomJEC->at(ijet));
       jet.SetJetL5CharmJEC(PFJetL5CharmJEC->at(ijet));
       jet.SetJetL5UDSJEC(PFJetL5UDSJEC->at(ijet));
       jet.SetJetL5GluonJEC(PFJetL5GluonJEC->at(ijet));
     }
+    m_logger << DEBUG << "Fill SKTree3 jetuncertainty" << LQLogger::endmsg;
+
     if(PFJetScaledDownEnergy&&PFJetScaledUpEnergy&&PFJetScaledDownPt&&PFJetScaledUpPt&&PFJetSmearedDownEnergy&&PFJetSmearedUpEnergy&&PFJetSmearedDownPt&&PFJetSmearedUpPt){
-      jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
-      jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
-      jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
-      jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
-      jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
-      jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
-      jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
-      jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+      if(PFJetScaledDownEnergy->size() > 0){
+	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
+	
+	jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
+	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
+	
+	jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
+	jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
+	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
+	
+	jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
+	jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
+	jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
+	jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
+	jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+      }
     }
     else{
       jet.SetJetScaledDownEnergy(-999.);
@@ -944,6 +962,7 @@ std::vector<KJet> SKTreeFiller::GetAllCaloJets(){
 
     return jets;
   }
+
   for (UInt_t ijet=0; ijet< CaloJetEta->size(); ijet++) {
     KJet jet;
     jet.SetPtEtaPhiE(CaloJetPt->at(ijet), CaloJetEta->at(ijet), CaloJetPhi->at(ijet), CaloJetEnergy->at(ijet));
@@ -965,6 +984,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     }  
     return muons;
   }
+
   m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
 
   int ims=0;
@@ -972,6 +992,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     KMuon muon;
     m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
     
+    m_logger << DEBUG << MuonIsPF << " " << MuonIsGlobal << " " << MuonIsTracker << LQLogger::endmsg;
 
     /// GENERAL
     muon.SetISPF(MuonIsPF->at(ilep));
@@ -979,11 +1000,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetIsTracker(MuonIsTracker->at(ilep));
 
     if(MuonshiftedEup){
-      muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
-      muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+      if(MuonshiftedEup->size() > 0){
+	muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
+	muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+      }
     }
 
-    
     if(!MuonGlobalEta){
       muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
       muon.SetCharge(MuonCharge->at(ilep));
@@ -1129,7 +1151,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	int MotherPdgId(-999);
 	int mutruth_index=0;
 	bool photon_conv(false);
-	for(unsigned int g =0; g < GenParticleP->size(); g++, mutruth_index++){
+	for(unsigned int g =0; g < 25 ; g++, mutruth_index++){
 	  if(matched_muon) continue;
 	  
 	  double dr = sqrt(pow(fabs( match_eta - GenParticleEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g))),2.0));
@@ -1137,13 +1159,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(dr < 0.4){
 	    
 	    m_logger << DEBUG << "Truth Matched to muon[GenParticle]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenParticlePt->at(g) << "/" << GenParticleEta->at(g) << "/" << GenParticlePhi->at(g) << "/" <<  GenParticleStatus->at(g) << "/" << GenParticlePdgId->at(g) << "/" << GenParticleMotherIndex->at(g) << LQLogger::endmsg;
-	    if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()){
+	    if(GenParticleMotherIndex->at(g) < 25){
 	    
 	    if(GenParticleMotherIndex->at(g) != -1)   m_logger << DEBUG << "Mother PDGID = " << GenParticlePdgId->at(GenParticleMotherIndex->at(g))  << LQLogger::endmsg;
 	    } else iMother = 4;
 	    if(GenParticleStatus->at(g) == 3 ){
 	      
-	      if(GenParticleMotherIndex->at(g) < GenParticlePdgId->size()) iMother = GenParticleMotherIndex->at(g);
+	      if(GenParticleMotherIndex->at(g) < 25) iMother = GenParticleMotherIndex->at(g);
 	      nDaughter = GenParticleNumDaught->at(g);
 	      ipdgid =  GenParticlePdgId->at(g);
 	      mutruth_index = g;
@@ -1154,13 +1176,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	      if(fabs(GenParticlePdgId->at(g)) == 13){
 		bool close_to_tau=false;
 		/// check if status 1 muon is matched to tau (as this could be from a tau decay)
-		for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+		for(unsigned int g2 =0; g2 < 25; g2++){
 		  if(GenParticlePdgId->at(g2) == 2212) continue;
 		  if(GenParticleStatus->at(g2) == 3){
 		    if( sqrt( pow(fabs( GenParticleEta->at(g)  - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)  -GenParticlePhi->at(g2))),2.0)) < 0.1){
 		      if(fabs(GenParticlePdgId->at(g2)) == 15){
 			close_to_tau=true;
-			if(g2 < GenParticlePdgId->size()) iMother = g2;
+			if(g2 < 25) iMother = g2;
 			nDaughter = GenParticleNumDaught->at(g);
 			ipdgid =  GenParticlePdgId->at(g);
 			mutruth_index = g;
@@ -1171,7 +1193,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 		  }
 		  if(!close_to_tau) {
 		    /// Check there is no "CLOSER" status 1 muon
-		    for(unsigned int g2 =g+1; g2 < GenParticleP->size(); g2++){
+		    for(unsigned int g2 =g+1; g2 < 25; g2++){
 		      if(GenParticleStatus->at(g2) == 1){
 			if(fabs(GenParticlePdgId->at(g2)) == 13){
 			  double dr_mu2 = sqrt( pow(fabs( match_eta - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi -GenParticlePhi->at(g2))),2.0));
@@ -1195,7 +1217,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 		    
 		    //// check there is no status 1 photon close by
 		    
-		    for(unsigned int g2 =0; g2 < GenParticleP->size(); g2++){
+		    for(unsigned int g2 =0; g2 < 25; g2++){
 		      if(GenParticlePdgId->at(g2) == 22){
 			if(GenParticleStatus->at(g) == 1){
 			  double dr_muph = sqrt( pow(fabs( GenParticleEta->at(g) - GenParticleEta->at(g2)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( GenParticlePhi->at(g)   -GenParticlePhi->at(g2))),2.0));
@@ -1224,7 +1246,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  }
 	}
 	if(ipdgid!=-999) matched_muon= true;
-	for(unsigned int g =0; g < GenZMuPdgId->size(); g++){
+	for(unsigned int g =0; g <GenZMuPdgId->size(); g++){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenZMuPdgId->at(g))==13)){
@@ -1373,27 +1395,37 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
   m_logger << DEBUG << "Filling Truth" << LQLogger::endmsg;
   std::vector<snu::KTruth> vtruth;
   if(!LQinput){
-
-    for(std::vector<KTruth>::iterator kit  = k_inputtruth->begin(); kit != k_inputtruth->end(); kit++){
-      vtruth.push_back(*kit);
+    int itr(0);
+    for(std::vector<KTruth>::iterator kit  = k_inputtruth->begin(); kit != k_inputtruth->end(); kit++, itr++){
+      if(itr < 25.){
+	vtruth.push_back(*kit);
+      }
     }
 
     return vtruth;
   }
 
-
-  for (UInt_t it=0; it< GenParticleEta->size(); it++ ) {
+  
+  for (UInt_t it=0; it< GenParticlePt->size(); it++ ) {
+    if(it > 24) continue;
     
     KTruth truthp;
-    truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(it), GenParticleEnergy->at(it));
-    truthp.SetParticlePx(GenParticlePx->at(it));
-    truthp.SetParticlePy(GenParticlePy->at(it));
-    truthp.SetParticlePz(GenParticlePz->at(it));
+    if(GenParticlePt->at(it)) truthp.SetPtEtaPhiE(GenParticlePt->at(it), GenParticleEta->at(it), GenParticlePhi->at(it), GenParticleEnergy->at(it));
+
+
+    if(GenParticlePx->at(it)){
+      
+      truthp.SetParticlePx(GenParticlePx->at(it));
+      truthp.SetParticlePy(GenParticlePy->at(it));
+
+      truthp.SetParticlePz(GenParticlePz->at(it));
+    }
     if(GenParticleVX){
       truthp.SetParticleVx(GenParticleVX->at(it));
       truthp.SetParticleVy(GenParticleVY->at(it));
       truthp.SetParticleVz(GenParticleVZ->at(it));
     }
+
     truthp.SetParticlePdgId(GenParticlePdgId->at(it));
     truthp.SetParticleStatus(GenParticleStatus->at(it));
    
@@ -1402,6 +1434,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetParticleIndexMother(GenParticleMotherIndex->at(it));
     truthp.SetTauDecayMode(GenParticleTauDecayMode->at(it));
     
+
     float charge_truth = -999.;
     if(fabs(GenParticlePdgId->at(it) )== 1 || fabs(GenParticlePdgId->at(it) )== 3 || fabs(GenParticlePdgId->at(it) )== 5) charge_truth = -1./3.;
     else if(fabs(GenParticlePdgId->at(it) )== 2 || fabs(GenParticlePdgId->at(it) )== 4 || fabs(GenParticlePdgId->at(it) )== 6) charge_truth = 2./3.;
@@ -1410,7 +1443,6 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     else if(fabs(GenParticlePdgId->at(it) )== 22 || fabs(GenParticlePdgId->at(it) )== 23) charge_truth = 0.;
     else if(fabs(GenParticlePdgId->at(it) )== 24) charge_truth =1.;
     else charge_truth = -999.;
-    
     if(GenParticlePdgId->at(it) < 0) charge_truth *=-1.;
     
     truthp.SetCharge(int(charge_truth));
@@ -1681,7 +1713,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
     truthp.SetCharge(int(charge_truth));
     vtruth.push_back(truthp);
   }
-
+  
 
   
   return vtruth;

@@ -34,30 +34,10 @@ SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0), ou
 
 void SKTreeMaker::ExecuteEvents()throw( LQError ){
   
-  FillCutFlow("NoCut", 1);
-
-  if(!PassBasicEventCuts()){
-    m_logger << DEBUG << "Fail MET filter cuts" << LQLogger::endmsg;
-    throw LQError( "Fails basic cuts",  LQError::SkipEvent );
-  }  
-  FillCutFlow("EventCut", 1);
-  
-  std::vector<TString> triggerslist;
-  triggerslist.clear(); /// PassTrigger will check ALL triggers if no entries are filled
-
-  if (!eventbase->GetEvent().HasGoodPrimaryVertex()){
-    m_logger <<  DEBUG << "Event FAILS HasGoodPrimaryVertex " << LQLogger::endmsg;
-    throw LQError( "Has no PV",  LQError::SkipEvent );
-  }
-  FillCutFlow("VertexCut", 1);
-
  
   //////////////////////////////////////////////////////
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
-  
-
-  //if(eventbase->GetEvent().EventNumber() == 28681993) cout << "JOHN : " << eventbase->GetEvent().LumiSection() << endl;
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
@@ -70,7 +50,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim
   /// Apart from eta/pt muons are required to have a global OR tracker track && be PF
-  eventbase->GetMuonSel()->SetPt(15);
+  eventbase->GetMuonSel()->SetPt(10);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
 
@@ -96,10 +76,10 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   int nlep = skim_electrons.size() + skim_muons.size();
   bool pass15gevlep = false;
   if(skim_electrons.size() > 0){
-    if(skim_electrons.at(0).Pt()> 15 ) pass15gevlep = true;
+    if(skim_electrons.at(0).Pt()> 10 ) pass15gevlep = true;
   }
   if(skim_muons.size() > 0){
-    if(skim_muons.at(0).Pt()> 15 ) pass15gevlep = true;
+    if(skim_muons.at(0).Pt()> 10 ) pass15gevlep = true;
   }
   
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
@@ -138,7 +118,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
 
   //// Set triggers available in sktree
   triggerlist.clear();
-  if(k_isdata){
+  if(isData){
     cout << " k_channel = " << k_channel << endl;
     if(k_channel.Contains("singleMuon")){
       AddTriggerToList("HLT_Mu5_v");
@@ -151,6 +131,8 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
       AddTriggerToList("HLT_IsoMu24_eta2p1_v");
     }
     else if(k_channel.Contains("Muon")){
+      AddTriggerToList("HLT_Mu8_v");
+      AddTriggerToList("HLT_Mu17_v");
       AddTriggerToList("HLT_Mu40_eta2p1_v");
       AddTriggerToList("HLT_IsoMu24_eta2p1_v");
       AddTriggerToList("HLT_Mu17_TkMu8_v");

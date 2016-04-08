@@ -230,19 +230,69 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 void HNDiElectron::ExecuteEvents()throw( LQError ){
     
 
-  if(! (eventbase->GetEvent().EventNumber() == 1496722 || eventbase->GetEvent().EventNumber() ==12782241)) return;
-  m_logger <<INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << INFO<< "isData = " << isData << LQLogger::endmsg;
+  vector<int> events;
+  events.push_back(34296386);
+  events.push_back(41493515);
+  events.push_back(67451924);
+  events.push_back(46089866);
+  events.push_back(60480225);
+  events.push_back(8914644);
+  events.push_back(6718812);
+  events.push_back(68637640);
+  events.push_back(27936276);
+  events.push_back(29054654);
+  events.push_back(20957900);
+  events.push_back(35122701);
+  events.push_back(15799343);
+  events.push_back(53825316);
+  events.push_back(9145181);
+  events.push_back(755885);
+  events.push_back(36855030);
+  events.push_back(24883853);
+  events.push_back(41007515);
+  events.push_back(18538588);
+  events.push_back(20311209);
+  events.push_back(50706290);
+  events.push_back(28911596);
+  events.push_back(16995222);
   
-  m_logger << INFO<< "NJet (no cuts = " << GetJets("NoLeptonVeto").size() << LQLogger::endmsg;
-  m_logger << INFO<< "NJet = " << GetJets("ApplyPileUpID").size() << LQLogger::endmsg;
-  m_logger << INFO<< "NMuons = " << GetMuons("NoCut").size() << LQLogger::endmsg;
-  m_logger << INFO<< "NElectrons = " << GetElectrons(true, true, "NoCut").size() << LQLogger::endmsg;
-  for(unsigned int i = 0; i < GetJets("NoLeptonVeto").size() ; i++){
-    cout << "jet pt /eta = " << GetJets("NoLeptonVeto").at(i).Pt() << " / " <<   GetJets("NoLeptonVeto").at(i).Eta()  << LQLogger::endmsg;
+  /*  bool keepevent=false;
+  for(unsigned int i=0; i < events.size(); i++){
+    if(eventbase->GetEvent().EventNumber() == events.at(i)) keepevent=true;
   }
-  return;
+  //  if(!keepevent)return;
 
+  m_logger <<INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  
+  vector<snu::KMuon> muons;
+  eventbase->GetMuonSel()->Selection(muons); 
+  m_logger << INFO<< "NMuons = " << muons.size() << LQLogger::endmsg;
+
+  m_logger << INFO<< "charge, phi, eta, pT, status, motherID" << endl;
+  m_logger << INFO<< "Reco variables"<< LQLogger::endmsg;
+
+  for(unsigned int im=0; im< muons.size(); im++){
+    m_logger << INFO<< muons.at(im).Charge() << " " << muons.at(im).Phi() << "  " << muons.at(im).Eta() << " " << muons.at(im).Pt() <<  LQLogger::endmsg;
+  }
+  m_logger << INFO<< "MatchedGenParticle variables"  <<  LQLogger::endmsg;
+  for(unsigned int im=0; im < muons.size(); im++){
+    m_logger << INFO<< muons.at(im).MuonMatchedGenParticlePhi() << " " <<  muons.at(im).MuonMatchedGenParticleEta()  << " " <<  muons.at(im).MuonMatchedGenParticlePt() <<  LQLogger::endmsg;
+  }
+  
+  m_logger << INFO<< "Truth/Gen Information" << LQLogger::endmsg;
+  m_logger << INFO<< "pdgid / charge / phi / eta / pt / status / mother pdgid"  <<  LQLogger::endmsg;
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if( fabs(eventbase->GetTruth().at(ig).PdgId()) == 13) {
+      if(eventbase->GetTruth().at(ig).PdgId()== -13 )m_logger << INFO<< eventbase->GetTruth().at(ig).PdgId()  << "  " << 1 << " " <<  eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()  <<  LQLogger::endmsg;
+      if(eventbase->GetTruth().at(ig).PdgId()== 13 )m_logger << INFO<< eventbase->GetTruth().at(ig).PdgId()  << "  " << -1 << " " <<  eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()  <<  LQLogger::endmsg;
+    }
+  }
+    
+  cout << " \n " << endl;
+
+  return;
+  */
   Double_t weight_err = 1.;
    
 
@@ -268,15 +318,12 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
     FillHist("NoCut_sigeff", 1. ,w_for_sigeff, 0. , 2., 2);
     
-    
-    cout << "Default event weight = " << eventbase->GetEvent().MCWeight() << endl;
     // For PDF syst.
     for(unsigned int icteq = 0 ; icteq < eventbase->GetEvent().PDFCTEQWeight().size() ; icteq++){
       m_logger << DEBUG << "CTEQ size = " << eventbase->GetEvent().PDFCTEQWeight().size() << LQLogger::endmsg;
 
       FillHist(("sum_cteq"), icteq, w_for_sigeff*eventbase->GetEvent().PDFCTEQWeight().at(icteq)/ eventbase->GetEvent().PDFCTEQWeight().at(0) , 0., eventbase->GetEvent().PDFCTEQWeight().size(), eventbase->GetEvent().PDFCTEQWeight().size());
 
-      cout << "cteq weight = " <<  eventbase->GetEvent().PDFCTEQWeight().at(icteq) << endl;
       FillHist(("cteq10_reweight"), eventbase->GetEvent().PDFCTEQWeight().at(icteq), 1. , 0., 10000.,1000.);
       FillHist(("cteq10_reweight_norm"), eventbase->GetEvent().PDFCTEQWeight().at(icteq)/eventbase->GetEvent().PDFCTEQWeight().at(0), 1. , 0., 10.,1000.);
     }
@@ -327,7 +374,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //////////////////////////////////////////////////////   
 
   std::vector<snu::KElectron> test_elcoll                   = GetElectrons(false, false, "HNTight_loosereg2");
-  
 
   TString fake_loose_region = "";
   TString fake_loose_label = "";
@@ -413,7 +459,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   if(!isData)weight*= TriggerScaleFactor( electronAnalysisColl);
 
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
-
 
   
   FillEventCutFlow("TriggerCut", "", weight);
@@ -1427,6 +1472,29 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   }
   if(HighMassCheckSignalRegion(electronAnalysisColl, jetColl_lepveto_mva, k_running_chargeflip) ){
     if((nbjet==0) && ( (eventbase->GetEvent().PFMET()  < 35.))){
+      if(electronAnalysisColl.at(0).Pt() > 300. ){
+	cout << "El |eta| = " << fabs(electronAnalysisColl.at(0).Eta()) << endl;
+	cout << "El |SCEta| =  " << fabs(electronAnalysisColl.at(0).SCEta()) << endl;
+	cout << "El MissingHits() = " << electronAnalysisColl.at(0).MissingHits()  << endl;
+	cout << "El MissingLostHits()  = " << electronAnalysisColl.at(0).MissingLostHits() << endl;
+	cout << "El ConvFitProb ()  = " << electronAnalysisColl.at(0).ConvFitProb()<< endl;
+	cout << "El NBrems() = " << electronAnalysisColl.at(0).NBrems() << endl;
+	cout << "El FBrem = " << electronAnalysisColl.at(0).FBrem() << endl;
+	cout << "El Dist= " << electronAnalysisColl.at(0).Dist() << endl;
+	cout << "El CotTheta() = " << electronAnalysisColl.at(0).CotTheta()<< endl;
+	
+
+	cout << "pt of electron = " << electronAnalysisColl.at(0).Pt() << endl;
+
+	cout << "track pt = " << electronAnalysisColl.at(0).TrackPt() << endl;
+	cout << "TrackValidHitFraction() = " << electronAnalysisColl.at(0).TrackValidHitFraction() << endl;
+
+	double egamma_e  = electronAnalysisColl.at(0).CaloEnergy();
+	double egamma_p  = electronAnalysisColl.at(0).CaloEnergy() / electronAnalysisColl.at(0).ESuperClusterOverP();
+	double egamma_ep = fabs ( ( 1.0 / egamma_e ) - ( 1.0 / egamma_p ) );
+	cout << "CaloEnergy = " << egamma_e << " egamma_p = " << egamma_p << "  e/p =" << egamma_ep << endl;
+	
+      }
       FillHist("HighMass_fakecomp", 0, weight , 0., 3.,3);
       FillHist("HighMass_fakecomp", 1, weight_sf , 0., 3.,3);
       FillHist("HighMass_fakecomp", 2, weight_df , 0., 3.,3);

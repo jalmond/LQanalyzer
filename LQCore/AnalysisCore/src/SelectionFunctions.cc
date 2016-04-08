@@ -62,7 +62,6 @@ bool SelectionFunctions::TriggerSelector(std::vector<TString> triggernames, std:
     for (UInt_t i=0; i<inputtriggers.size(); i++) {
       TString tmpHLT = inputtriggers[i];
       if ( tmpHLT.BeginsWith(*it) && triggerdecision[i] ) {
-	//cout<< inputtriggers[i] << " has fired"<<endl;
 	//cout<< "is prescaled by "<<HLTPrescales[i]<<endl<<endl;
 	prescaler=HLTPrescales[i]; 
         return true;

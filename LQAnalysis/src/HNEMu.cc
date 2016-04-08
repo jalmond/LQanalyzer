@@ -573,7 +573,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
 	float l2jjm = l2jj.M();
 
 	if(emujj.M() > 80.){
-	  if ((jj.M() < 110.) && (jj.M() > 45)) {
+	  if ((jj.M() < 110.) && (jj.M() > 50)) {
 	    if(jetColl_lepveto_mva.at(0).Pt() > 30.){
 	      if(emu.M() > 15){
 		if(eventbase->GetEvent().PFMET() < 35. && nbjet ==0){

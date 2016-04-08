@@ -1,4 +1,5 @@
 #include <string.h>
+
 #include "TChain.h"
 #include "TFile.h"
 #include "TH1.h"
@@ -12,19 +13,27 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLatex.h"
+#include <map>
 
 //#include "Macro.h"
 void setTDRStyle();
 
 
 
-void GetSigEfficiency_all(){
+void staterr(){
   
   
   setTDRStyle();
   //gStyle->SetPalette(1);
+  TString path ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_mc_5_3_14.root";
+  TFile * file = new TFile(path);
   
-  TString path = "/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee";
+  TString fakepath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKnonprompt_dilep_5_3_14.root";
+  TFile * filefake = new TFile(fakepath);
+  
+  TString cfpath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectro/HNDiElectron_SKchargeflip_dilep_5_3_14.root";
+  TFile * filecf = new TFile(cfpath);
+  cout << file << " " << filefake << " " << filecf << endl;
   vector<TString> masses;
   masses.push_back("40");
   masses.push_back("50");
@@ -47,27 +56,72 @@ void GetSigEfficiency_all(){
   masses.push_back("400");
   masses.push_back("500");
   
+  vector<TString> type;
+  type.push_back("");
+  ///type.push_back("_fg");
+  
+  std::map<TString, int> mapcut;
+  //std::map<TString, int>::iterator mit; 
+    
+  mapcut["_default"] = 1;
+  /*mapcut["_lowmass"] = 2;
+    mapcut["_noMe2jj"] = 3;
+    mapcut["_noeeupper"] = 4;
+    mapcut["_noeejjupper"] = 5;
+    mapcut["_nopt10"] = 6;
+  */
+  
+  for(  std::map<TString, int>::iterator mit = mapcut.begin(); mit!= mapcut.end() ; mit++){
+    for(unsigned int j=0; j < type.size(); j++){
+      
+      //if(type.at(j).Contains("fg") && !mit->first.Contains("default")) continue;
 
-  for(int i=0; i < masses.size(); i++){
-    TFile * file = new TFile(path + masses[i] + "_nocut_5_3_14.root");
-    
-    TH1* hnsig =   (TH1F*)file->Get(("eventcutflow"));
-    float nsig = float(hnsig->GetBinContent(2)); 
-    
-    TString hist = masses[i] + "MassRegion/h_Nelectrons_" + masses[i] + "MassRegion";
-    TH1* h =  (TH1*)file->Get(hist.Data());
-    
-    TString hist2 = "Preselection_m1_40/h_Nelectrons_Preselection_m1_40";
-    TH1* h2 =  (TH1*)file->Get(hist2.Data());
+      
+      TH1F* h_sigeff = new TH1F("h_sigeff","h_sigeff", 20,0.,20.);
+      TH1F* h_sigefferr = new TH1F("h_sigefferr","h_sigefferr", 20,0.,20.);
 
-    cout << "\n ----------------" << endl;
-    cout << "Total preselection efficiency  " << masses[i] << " = " << 100* (h2->Integral() / nsig) << endl;
-    cout << "Total efficiency  " << masses[i] << " = " << 100* (h->Integral() / nsig) << endl;
-    
-    double err;
-    double i = h->IntegralAndError(1,h->GetNBinsX()+1, err,"");
-    cout << "Stat uncertainty = " <<  err   << endl;
- 
+      Double_t eff_alp[20];
+      
+      
+      Double_t k_factor=1.34;
+      Double_t mass[]     = {40.    , 50.     , 60.     , 70.     , 80.     , 90.     , 100.    , 125.    , 150.    , 175.     , 200.     ,  250.      , 300.     ,  350.      , 400.      , 500. };
+      Int_t result []     = {11    , 11     , 11     , 11     , 11     , 23     , 23     , 11     ,   7    , 3       , 3       , 4         , 4       ,  4        , 4        , 4};
+      Double_t bkg_err[]  = {0.2, 0.2 , 0.2, 0.2 , 0.2 , 0.1831 , 0.1831 , 0.1831 , 0.1831 , 0.1831  , 0.1831  , 0.1831    , 0.1831  ,  0.1831   , 0.1831   , 0.1831};
+      Double_t xsec_alp[] = {1516  , 1071.1 , 607.7  , 211.96 , 19.07  , 7.1047 , 3.5618 , 1.0767 , 0.4594 , 0.23266 , 0.13127 , 0.050928  , 0.023214,  0.011705 , 0.006332 , 0.002154};
+      Double_t q2[] =       {0.1010,0.1005  , 0.0999 , 0.0989 , 0.0832 , 0.0658 , 0.0554 , 0.0362 , 0.0219 , 0.0107  , 0.0032  , 0.0132    , 0.0245  ,  0.0329   , 0.0392   , 0.0463}; 
+      Double_t efferr_alp[20];
+      
+      
+      for(unsigned int i=0; i < 16; i++){
+        cout << "Mass = " << mass[i] << endl;
+	
+	TString tag = "limithist/" +masses.at(i)+ type.at(j)+  "_default";
+	TH1* hnmc =   (TH1F*)file->Get((tag + "MassRegion_limithist").Data());
+	TH1* hnnp =   (TH1F*)filefake->Get((tag + "MassRegion_limithist").Data());
+	TH1* hncf =   (TH1F*)filecf->Get((tag + "MassRegion_limithist").Data());
+	
+	
+	TString sigpath ="/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKHNee" + masses.at(i) + "_nocut_5_3_14.root";
+	TFile * file_sig = new TFile(sigpath);
+	TH1* hn_sig_mc  = (TH1F*)file_sig->Get((tag + "MassRegion_limithist").Data());
+	TH1F* h_ref= (TH1F*)file_sig->Get(("NoCut_sigeff"));
+	
+	float sig_nomnow = hn_sig_mc->GetBinContent(1);
+	float sig_nom = hn_sig_mc->GetBinContent(2);
+	
+	
+	h_sigeff->SetBinContent(i+1, float(sig_nom/h_ref->Integral()));    
+	eff_alp[i] = float(sig_nom/h_ref->Integral());
+
+	float err_sig = 0.;
+	cout << "sig eff = " << 100* float(sig_nom/h_ref->Integral()) << " +- " << 100*eff_alp[i]   *sqrt(1./hn_sig_mc->GetBinContent(1) ) << endl;
+	cout << "sig err in % = " <<  100*sqrt(1/hn_sig_mc->GetBinContent(1) ) << endl;
+	err_sig = err_sig/ sig_nom;
+	efferr_alp[i]  = eff_alp[i]   *sqrt(1./hn_sig_mc->GetBinContent(1)   + pow(err_sig,2) );//40
+
+      }
+
+    }
   }
 }
 

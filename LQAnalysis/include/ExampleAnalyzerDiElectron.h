@@ -23,6 +23,17 @@ class ExampleAnalyzerDiElectron : public AnalyzerCore {
   void FillCutFlow(TString cut, float w);
  private:
   
+  int n_0;
+  int n_1;
+  int n_2;
+  int n_3;
+  int n_4;
+  int n_5;
+  int n_6a;
+  int n_6b;
+  int n_6c;
+  int n_6d;
+  int n_7;
   //
   // The output variables 
   //

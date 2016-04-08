@@ -28,13 +28,13 @@ then
     source functions.sh
     cycle="SKTreeMakerNoCut"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
-    loglevel="INFO"
+    loglevel="DEBUG"
     logstep=1000
-#    nevents=10000
-    declare -a input_samples=("CH90PU")
-    
+
+    declare -a input_samples=("CH90PU" "CH100PU" "CH110PU" "CH120PU" "CHm120PU" "CH130PU" "CH140PU" "CH150PU")
+    declare -a input_samples=("TestSample_chs")
     stream="muon"
 
     source submit.sh

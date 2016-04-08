@@ -1,4 +1,4 @@
-### SKTrees ##########
+/### SKTrees ##########
 ##################
 
 ##### NO CUTS/SKIMS
@@ -127,15 +127,15 @@ SKemu		 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronM
 SKemu		 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodC/
 SKemu		 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodD/
 
-SKsinglemuon	 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleMuon/periodA/
-SKsinglemuon	 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleMuon/periodB/
-SKsinglemuon	 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleMuon/periodC/
-SKsinglemuon	 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleMuon/periodD/
+SKsinglemuon	 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodA/
+SKsinglemuon	 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodB/
+SKsinglemuon	 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodC/
+SKsinglemuon	 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodD/
 
-SKsingleelectron A	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleElectron/periodA/
-SKsingleelectron B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleElectron/periodB/
-SKsingleelectron C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleElectron/periodC/
-SKsingleelectron D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/SingleElectron/periodD/
+SKsingleelectron A	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodA/
+SKsingleelectron B	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodB/
+SKsingleelectron C	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodC/
+SKsingleelectron D	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodD/
 
 
 ########################################################################
@@ -448,6 +448,8 @@ DY10to50_15       2827.09           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/D
 DY50plus_15       8382.40           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
 
 ttbar_mass169	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass171	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass171_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass173	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass173_5_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_mass175	   168480.03	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_matchingdown 88190.4375	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_matchingup   158474.375        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
@@ -455,6 +457,17 @@ ttbar_scaledown    167891.7188	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT
 ttbar_scaleup      179009.6875	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_width_x5	   57792.39844	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_central	   262243.375	    /data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_pow	   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_CT10_TuneZ2star_8TeV-powheg-tauola/
+ttbar_pow_her	   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC//TT_CT10_AUET2_8TeV-powheg-herwig/
+
+TTH                1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTH_Inclusive_M-125_8TeV_pythia6/
+
+
+TestSample        1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TestSample/
+TestSample_chs        1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TestSample_chs/
+
+SKTestSample    1.                /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/TestSample/
+SKTestSample_chs    1.                /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/TestSample_chs/
 
 CH120PU        273509.8125        /data2/MC/CHsample/LQNtuple/CH120/                            
 CHm120PU       137442.125         /data2/MC/CHsample/LQNtuple/CHm120/                           
@@ -462,8 +475,8 @@ CH110PU        273509.8125                /data2/MC/CHsample/LQNtuple/CH110/
 CH100PU        272135.4062            /data2/MC/CHsample/LQNtuple/CH100/                        
 CH90PU         274846.4688        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/CH90/
 CH130PU        274884.25          /data2/MC/CHsample/LQNtuple/CH130/                            
-CH140PU        274884.25          /data2/MC/CHsample/LQNtuple/CH140/                            
-CH150PU        274884.25          /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/CH150/
+CH140PU        274884.25          /data2/MC/CHsample/LQNtuple/CH140/
+CH150PU        274884.25          /data2/MC/CHsample/LQNtuple/CH150/
    
 
 
@@ -561,7 +574,8 @@ topDIL		461277.43	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_FullLeptMGDecays_
 topHAD		460656.55	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_HadronicMGDecays_8TeV-madgraph/
 topLJ		93722.93	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
 ttbar           29588.256       /data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_new	1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
+ttbarMS_check	1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
+				
 ### EXTRA STAT
 W1Jets		3781.307	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
 W2Jets		18803.881	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/

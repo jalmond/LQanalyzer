@@ -3,11 +3,11 @@
 
 ###### SET WHAT JOBS TO RUN
 runMC=false
-runDoubleMuon=false
+runDoubleMuon=true
 runDoubleElectron=false
 runElectronMuon=false
 runSingleMuon=true
-runSingleElectron=true
+runSingleElectron=false
 runSignal=false
 
 if [[ $1  == "ALL" ]]; 
@@ -71,16 +71,16 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=1
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
     
     
-    declare -a input_samples=("ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5" "ttbar_central")
-    declare -a input_samples=("W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets"  "Z3Jets" "Z4Jets")
-    declare -a input_samples=("ttbar_central")
-    declare -a input_samples=("CH150PU")
+    declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "Wgamma" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW")
+
+
+    
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA
@@ -112,8 +112,8 @@ then
     logstep=1000
     
     stream="muon"
-    declare -a input_samples=("A" "B" "C" "D" )
-#"B" "C" "D")
+
+    declare -a input_samples=("A" "B" "C" "D")
     source submit.sh
 fi
 ################ ELECTRONMUON DATA

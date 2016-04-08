@@ -393,7 +393,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
     if(_el2_pt > 60.) _el2_pt = 59.;
   }
   else{
-    if(_el2_pt > 100.) highpt = true;
+    //    if(_el2_pt > 100.) highpt = true;
     if(_el1_pt > 60.) _el1_pt = 59.;
     if(_el2_pt > 60.) _el2_pt = 59.;
   }
@@ -746,8 +746,8 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
   if(nbjet ==0) {
     if(highpt){
-      fr1 *= 2.5;
-      fr2 *= 2.5;
+      //      fr1 *= 2.5;
+      //fr2 *= 2.5;
     }
   }
   else{

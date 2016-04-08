@@ -16,12 +16,6 @@ void ElectronSelection::BasicSelection(std::vector<KElectron>& leptonColl , bool
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
-    if ( m_debug&& ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 )) cout << "BasicSelection::Fail EtaCrack" << endl;
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    if ( m_debug&& ( el->CaloEnergy()==0 )) cout <<"BasicSelection::Fail Zero CaloE" <<endl;
-    if ( el->CaloEnergy()==0 ) continue;
-    
-    
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min ){
       leptonColl.push_back(*el);
     }
@@ -38,11 +32,6 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
-    
-    if ( m_debug&& ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 )) cout <<"SkimSelection::Fail EtaCrack" <<endl;
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    if ( m_debug&& ( el->CaloEnergy()==0 )) cout <<"SkimSelection::Fail Zero CaloE" <<endl;
-    if ( el->CaloEnergy()==0 ) continue;
     
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min){
       leptonColl.push_back(*el);
@@ -257,7 +246,7 @@ bool ElectronSelection::HNIsTight(KElectron el,  double rho, double dxycut, doub
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Eta Cut" <<endl;
   }
-  if(!(el.Pt() > 15.)) {
+  if(!(el.Pt() > 10.)) {
     pass_selection = false;
     if(m_debug)  cout << "HNTightElectronSelection:Fail Pt Cut" <<endl;
   }

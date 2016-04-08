@@ -185,7 +185,7 @@ then
     source functions.sh
     
     cycle="HNDiElectron"
-#    skinput="True"
+    skinput="True"
     useskim="DiLep"
     
     njobs=1
@@ -197,7 +197,7 @@ then
     logstep=1000
     declare -a input_samples=( "DY10to50" "DY50plus" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
 
-    declare -a input_samples=( "DY10to50")
+    declare -a input_samples=( "DY50plus")
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
@@ -252,7 +252,7 @@ then
     logstep=1000
     
     declare -a input_samples=( "A" "B" "C" "D")
-
+    declare -a input_samples=( "C" )
     stream="egamma"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"

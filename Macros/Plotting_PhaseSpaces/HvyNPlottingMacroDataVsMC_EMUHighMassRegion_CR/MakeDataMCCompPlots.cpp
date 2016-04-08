@@ -160,7 +160,7 @@ int MakePlots(string hist) {
 	float ymin (0.1), ymax( 1000000.);
 	ymax = GetMaximum(hdata, hup, ylog, name);
   
-	TFile* file_sig40 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu40_nocut_5_3_14.root"));
+	TFile* file_sig40 =  TFile::Open(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu40_nocut_5_3_14.root"));
         TH1* hsig_40 = dynamic_cast<TH1*> ((file_sig40->Get(name.c_str()))->Clone());
         hsig_40->Rebin(rebin);
         hsig_40->Scale(0.0002);
@@ -174,7 +174,7 @@ int MakePlots(string hist) {
 	hsig_40->GetXaxis()->SetRangeUser(xmin,xmax);
 	hsig_40->GetYaxis()->SetRangeUser(ymin,ymax);
 
-	TFile* file_sig80 =  TFile::Open(("/home/jalmond/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu80_nocut_5_3_14.root"));
+	TFile* file_sig80 =  TFile::Open(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu80_nocut_5_3_14.root"));
         TH1* hsig_80 = dynamic_cast<TH1*> ((file_sig80->Get(name.c_str()))->Clone());
         hsig_80->Rebin(rebin);
         FixOverUnderFlows(hsig_80, xmax);

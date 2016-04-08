@@ -46,13 +46,13 @@ void EMuSigEff(){
 
     TString im = smasses.at(i);
 
+    
     TFile * file1 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNmue" + im + "_nocut_5_3_14.root").Data());
     TFile * file2 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectronMuon/HNEMu_SKHNemu" + im + "_nocut_5_3_14.root").Data());
    
-    TString cut = "SS_highmass_exc";// + im;
-    //cut = "SS_highmass";
-    //    if(i < 5) cut = "SS_lowmass_" + im; 
-    //if(i < 5) cut = "SS_lowmass_80_2";
+    TString cut = "SS_highmass_" + im;
+    if(i < 5) cut = "SS_lowmass_" + im; 
+
     TString hist = (cut + "/h_Nelectrons_"+cut);
     
     TH1* hnsig =   (TH1F*)file1->Get(("CutFlow/_eventcutflow"));
@@ -65,16 +65,25 @@ void EMuSigEff(){
     TH1*  hpass = (TH1F*)file1->Get(hist);
     TH1*  hpass2 = (TH1F*)file2->Get(hist);
     
+
+    float nsignow = float(hnsig->GetBinContent(1) + hnsig2->GetBinContent(1));;
+    float nev_pass =  ( (hpass->Integral() + hpass2->Integral())/ (nsig+ nsig2))  * nsignow;
+
+    float err = sqrt(nev_pass) / nev_pass;
+
+
+
     cout  << " \n ------- " << endl;
     cout  << " Mass = " << masses.at(i) << endl;
     cout << "mu eacceptance = " << hpass->Integral()/nsig << endl;
     cout << "emu acceptance = " << hpass2->Integral()/nsig2 << endl;
     
     hpass->Add(hpass2,1.);
-    double err ;
+    err *= (100.*hpass->Integral()/ (nsig+nsig2));
+
     hpass->IntegralAndError(1, hpass->GetNbinsX()+1, err    , "");
-    cout << "Average = " << hpass->Integral()/(nsig + nsig2) << endl;
-    cout << "%err = " << 100*err/(hpass->Integral())<< endl;; 
+    cout << "Average = " << 100.*hpass->Integral()/(nsig + nsig2) << endl;
+    cout << "%err = " <<err<< endl;; 
 
   }
 }

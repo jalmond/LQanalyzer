@@ -8,7 +8,7 @@ void GetPDFUncert_400(){
   setTDRStyle();
   //gStyle->SetPalette(1);
   
-  TString spath = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee400_nocut_5_3_14.root";
+  TString spath = "/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee400_nocut_5_3_14.root";
   
   TFile * _file = new TFile(spath);
   

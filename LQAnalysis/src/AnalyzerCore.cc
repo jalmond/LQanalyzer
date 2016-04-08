@@ -2143,6 +2143,7 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
 
 void AnalyzerCore::AddTriggerToList(TString triggername){
   
+  cout << "Adding " << triggername << endl;
   triggerlist.push_back(triggername);
 }
 
@@ -2424,7 +2425,7 @@ bool AnalyzerCore::PassBasicEventCuts(){
   }
   //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
   if (eventbase->GetEvent().PassBadEESupercrystalFilter()) {
-    pass = false;
+     pass = false;
     m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
   }
   //ECAL Laser correction filter (only mandatory for 53X rereco of 2012A+B, i.e., Jul13 rereco; An optional filter for 2012C prompt reco Mandatory for Jan2013 ReReco)
@@ -2435,7 +2436,7 @@ bool AnalyzerCore::PassBasicEventCuts(){
   //Tracking POG filters (new. Only work on AOD >=53X)
   if(eventbase->GetEvent().PassTrackingFailureFilter()){
     m_logger << DEBUG << "Event Fails PassTrackingFailureFilter" << LQLogger::endmsg;
-    pass = false;
+       pass = false;
   }
   return pass;
 }

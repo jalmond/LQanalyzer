@@ -188,7 +188,7 @@ if platform.system() == "Linux":
     for line in open(filename, 'r'):
         n_previous_jobs+=1
 
-    if n_previous_jobs > 40:
+    if n_previous_jobs > 30:
         number_of_cores = 1
         print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
 
@@ -199,16 +199,16 @@ if platform.system() == "Linux":
 
 if number_of_cores > 1:
     if useskinput == "True":
-        if (40 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 40 - n_previous_jobs
-        if number_of_cores > 30:
-            number_of_cores = 30
+        if (20 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 20 - n_previous_jobs
+        if number_of_cores > 15:
+            number_of_cores = 15
             print "Number of sub jobs is set to high. Reset to default of 30."
     elif useskinput == "true":
-        if (40 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 40 - n_previous_jobs
-        if number_of_cores > 30:
-            number_of_cores= 30
+        if (20 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 20 - n_previous_jobs
+        if number_of_cores > 15:
+            number_of_cores= 15
             print "Number of sub jobs is set to high. Reset to default of 30."
     else:
         if number_of_cores > 5:
@@ -791,7 +791,8 @@ else:
             print line
 
 
-    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/"
+    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"
+    #/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/" /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"
    
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":

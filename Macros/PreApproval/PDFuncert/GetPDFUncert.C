@@ -8,23 +8,23 @@ void GetPDFUncert(){
   setTDRStyle();
   //gStyle->SetPalette(1);
   
-  TString spath = "/home/jalmond/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee40_nocut_5_3_14.root";
+  TString spath = "/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron/HNDiElectron_SKHNee700_nocut_5_3_14.root";
   
   TFile * _file = new TFile(spath);
   
-  TH1* h_cteq_total = (TH1*)_file->Get("limithist/40_defaultMassRegion_limithist_cteq");
+  TH1* h_cteq_total = (TH1*)_file->Get("limithist/700_defaultMassRegion_limithist_cteq");
   TH1* h_cteq_sum =  (TH1*)_file->Get("sum_cteq");
   h_cteq_total->Divide(h_cteq_sum);
   
-  TH1* h_mstw_total = (TH1*)_file->Get("limithist/40_defaultMassRegion_limithist_mstw");
+  TH1* h_mstw_total = (TH1*)_file->Get("limithist/700_defaultMassRegion_limithist_mstw");
   TH1* h_mstw_sum =  (TH1*)_file->Get("sum_mstw");
   h_mstw_total->Divide(h_mstw_sum);
   
-  TH1* h_nnpdf_total = (TH1*)_file->Get("limithist/40_defaultMassRegion_limithist_nnpdf");
+  TH1* h_nnpdf_total = (TH1*)_file->Get("limithist/700_defaultMassRegion_limithist_nnpdf");
   TH1* h_nnpdf_sum =  (TH1*)_file->Get("sum_nnpdf");
   h_nnpdf_total->Divide(h_nnpdf_sum);
 
-  TH1* h_nominal = (TH1*)_file->Get("limithist/40_defaultMassRegion_limithist");
+  TH1* h_nominal = (TH1*)_file->Get("limithist/700_defaultMassRegion_limithist");
 
   TH1F* h_ref= (TH1F*)_file->Get(("NoCut_sigeff"));
   float nom = h_nominal->GetBinContent(2)/h_ref->Integral();
@@ -127,7 +127,7 @@ void GetPDFUncert(){
   legendH->AddEntry(h_nnpdf_total, "NNPDF20", "p");
   legendH->Draw();
   
-  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/PDFSyst/mN_40_acc_eff_pdf.pdf"));
+  c1->SaveAs(("/home/jalmond/WebPlots/PreApproval/PDFSyst/mN_700_acc_eff_pdf.pdf"));
   
 
 }

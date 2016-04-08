@@ -354,7 +354,7 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   
   
   /// TIGHT MUON SELECTION
-  if(( muon.Pt() < 15. )) {
+  if(( muon.Pt() < 10. )) {
     pass_selection = false;
     if(m_debug) cout << "Muon fails Tight pt cut " << endl;
   }

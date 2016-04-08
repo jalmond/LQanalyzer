@@ -42,10 +42,31 @@ void EESigEff(){
   smasses.push_back("500");
 
 
+  vector <int> nev;
+  nev.push_back(100000);
+  nev.push_back(50000);
+  nev.push_back(100000);
+  nev.push_back(50000);
+  nev.push_back(100000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+  nev.push_back(50000);
+
+
+
   for(unsigned int i = 0 ; i < masses.size(); ++i){
 
     TString im = smasses.at(i);
-
+    int nevents = nev.at(i);
+    cout << "nevents = " <<  nev.at(i) << endl; 
     TFile * file1 = new TFile(("/home/jalmond/HeavyNeutrino/Analysis/LQanalyzer/data/output/SSElectron_PreApproval/HNDiElectron_SKHNee" + im + "_nocut_5_3_14.root").Data());
     
     TString cut = im +"MassRegion";
@@ -53,13 +74,21 @@ void EESigEff(){
     
     TH1* hnsig =   (TH1F*)file1->Get("NoCut_sigeff");
     
+    TH1* hnsignow = (TH1F*)file1->Get("_eventcutflow");
     float nsig = float(hnsig->GetBinContent(2));
-    
-    
+    float nsignow = float(hnsignow->GetBinContent(1));
+
     TH1*  hpass = (TH1F*)file1->Get(hist);
     
     cout  << " \n ------- " << endl;
     cout  << " Mass = " << masses.at(i) << endl;
-    cout << "mu eacceptance = " << hpass->Integral()/nsig << endl;
+    
+    float nev_pass =  (hpass->Integral()/nsig)  * float(nevents);
+
+    cout << "nev = " << nsignow << endl;
+    float err = sqrt(nev_pass) / nev_pass;
+    
+    err *= (100.*hpass->Integral()/nsig);
+    cout << "mu eacceptance = " << 100*hpass->Integral()/nsig <<  " +/- "<< err  <<  endl;
   }
 }

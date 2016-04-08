@@ -480,13 +480,13 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   //  for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
   
   vector<TString> legorder;
-  legorder.push_back("Misid. Lepton Background");
-  legorder.push_back("Mismeas. Charge Background");
+  legorder.push_back("Misid. lepton background");
+  legorder.push_back("Mismeas. charge background");
   //legorder.push_back("WZ");
   //legorder.push_back("ZZ");
   //legorder.push_back("SS");
   //legorder.push_back("VV");
-  legorder.push_back("Prompt Background");
+  legorder.push_back("Prompt background");
   //legorder.push_back("VVV");
   //legorder.push_back("t#bar{t}+V");
   //legorder.push_back("Higgs Boson");
@@ -964,14 +964,14 @@ void SetTitles(TH1* hist, string name){
   if(name.find("h_jet_emfra")!=string::npos) xtitle="Jet EMFrac";
   if(name.find("jet_el_ptratio")!=string::npos) xtitle="El p_{T}/ Jet p_{T}";
 
-  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
-  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV/c^{2})";
-  if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
-  if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV)";
+  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV)";
+  if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV)";
+  if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV)";
     
   if(name.find("muons_eta")!=string::npos)xtitle="Muon #eta";
   if(name.find("muons_phi")!=string::npos)xtitle="Muon #phi";
-  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV/c)";
+  if(name.find("MuonPt")!=string::npos)xtitle="Muon p_{T} (GeV)";
   if(name.find("MuonD0")!=string::npos)xtitle="d0";
   if(name.find("MuonD0Sig")!=string::npos)xtitle="d0/#Sigma_{d0}";
   if(name.find("leadingMuonPt")!=string::npos)xtitle="Lead p_{T} (GeV)";
@@ -980,21 +980,21 @@ void SetTitles(TH1* hist, string name){
   
   if(name.find("jets_pt")!=string::npos)xtitle="Jet p_{T} (GeV)";
 
-  if(name.find("leadingLeptonPt")!=string::npos)xtitle="Leading lepton p_{T} (GeV/c)";
-  if(name.find("secondLeptonPt")!=string::npos)xtitle="Trailing lepton p_{T} (GeV/c)";
+  if(name.find("leadingLeptonPt")!=string::npos)xtitle="Leading lepton p_{T} (GeV)";
+  if(name.find("secondLeptonPt")!=string::npos)xtitle="Trailing lepton p_{T} (GeV)";
   
   if(name.find("electrons_eta")!=string::npos)xtitle="Electron #eta";
   if(name.find("electrons_phi")!=string::npos)xtitle="Electron #phi";
   if(name.find("el_pt")!=string::npos)xtitle="Electron p_{T} (GeV)";
-  if(name.find("leadingElectronPt")!=string::npos)xtitle="Leading electron p_{T} (GeV/c)";
-  if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV/c)";
+  if(name.find("leadingElectronPt")!=string::npos)xtitle="Leading electron p_{T} (GeV)";
+  if(name.find("secondElectronPt")!=string::npos)xtitle="Trailing electron p_{T} (GeV)";
   if(name.find("thirdELectronPt")!=string::npos)xtitle="Third electron p_{T} (GeV)";
   
-  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
-  if(name.find("emujj_lowmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV/c^{2})";
-  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV/c^{2})";
-  if(name.find("l2jj")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
-  if(name.find("l1jj")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2}])";
+  if(name.find("emujjmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV)";
+  if(name.find("emujj_lowmass")!=string::npos)xtitle="e^{#pm}#mu^{#pm}jj invariant mass (GeV)";
+  if(name.find("emumass")!=string::npos)xtitle="emu invariant mass (GeV)";
+  if(name.find("l2jj")!=string::npos)xtitle="l_{2}jj invariant mass (GeV)";
+  if(name.find("l1jj")!=string::npos)xtitle="l_{1}jj invariant mass (GeV])";
 
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
@@ -1018,9 +1018,9 @@ void SetTitles(TH1* hist, string name){
   if(name.find("mumujjmass")!=string::npos)xtitle="m(#mu#mujj) (GeV)";
 
   if(name.find("leadElectronJetdR")!=string::npos)xtitle="min#Delta R(e_j)";
-  if(name.find("e1jjmass")!=string::npos)xtitle="e_{1}jj invariant mass (GeV/c^{2})";
-  if(name.find("e2jjmass")!=string::npos)xtitle="e_{2}jj invariant mass (GeV/c^{2})";
-  if(name.find("eejjmass")!=string::npos)xtitle="e^{#pm}e^{#pm}jj invariant mass (GeV/c^{2})";
+  if(name.find("e1jjmass")!=string::npos)xtitle="e_{1}jj invariant mass (GeV)";
+  if(name.find("e2jjmass")!=string::npos)xtitle="e_{2}jj invariant mass (GeV)";
+  if(name.find("eejjmass")!=string::npos)xtitle="e^{#pm}e^{#pm}jj invariant mass (GeV)";
 
   if(name.find("leadingMuonIso")!=string::npos)xtitle="PF Iso #mu_{1} (GeV)";
   if(name.find("secondMuonIso")!=string::npos)xtitle="PF Iso #mu_{2} (GeV)";
@@ -1086,7 +1086,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(name.find("eta")!=string::npos) yscale*=2.5;
   if(name.find("MET")!=string::npos) yscale*=1.2;
   if(name.find("e1jj")!=string::npos) yscale*=1.2;
-  if(name.find("l2jj")!=string::npos) yscale*=1.25;
+  if(name.find("l2jj")!=string::npos) yscale*=1.3;
   if(name.find("charge")!=string::npos) yscale*=1.5;
   if(name.find("deltaR")!=string::npos) yscale*=1.5;
   if(name.find("bTag")!=string::npos) yscale*=2.5;
@@ -1479,13 +1479,13 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
     if(listofsamples.at(i) =="ttv")samples.push_back(make_pair(make_pair(ttv,ttvcol),"t#bar{t}+V"));
     if(listofsamples.at(i) =="vvv")samples.push_back(make_pair(make_pair(vvv,vvvcol),"VVV"));
-    if(listofsamples.at(i) =="prompt")samples.push_back(make_pair(make_pair(prompt,vvcol),"Prompt Background"));
+    if(listofsamples.at(i) =="prompt")samples.push_back(make_pair(make_pair(prompt,vvcol),"Prompt background"));
     if(listofsamples.at(i) =="vgamma")samples.push_back(make_pair(make_pair(vgamma,vgammacol),"Vgamma"));
     if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,higgscol),"Higgs Boson"));
     
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
-    if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"Misid. Lepton Background"));   
-    if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"Mismeas. Charge Background"));   
+    if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"Misid. lepton background"));   
+    if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"Mismeas. charge background"));   
   }
 
   ///// Fix cut flow code
@@ -1560,8 +1560,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   label.SetTextFont(42);
   label.SetNDC();
   label.SetTextColor(1);
-  label.DrawLatex(0.6 ,0.34,"Low Mass Region");
-  label.DrawLatex(0.6 ,0.4,"e^{#pm}#mu^{#pm} Channel");
+  label.DrawLatex(0.6 ,0.34,"Low-mass region");
+  label.DrawLatex(0.6 ,0.4,"e^{#pm}#mu^{#pm} channel");
   
 
   //return canvas;  
@@ -1624,8 +1624,8 @@ TCanvas* CompDataMC(TH1* hdata, TH1* hsig_40, TH1* hsig_80, vector<THStack*> mcs
   hsig_80->Draw("hist9same");
   
   //return canvas;  
-  legend->AddEntry(hsig_40, "m_{N} = 40 GeV/c^{2}, |V_{eN}V*_{#mu N}| = 4#times10^{-4} ","l");
-  legend->AddEntry(hsig_80, "m_{N} = 80 GeV/c^{2}, |V_{eN}V*_{#mu N}| = 4#times10^{-3}","l");
+  legend->AddEntry(hsig_40, "m_{N} = 40 GeV, |V_{eN}V*_{#mu N}| = 4#times10^{-4} ","l");
+  legend->AddEntry(hsig_80, "m_{N} = 80 GeV, |V_{eN}V*_{#mu N}| = 4#times10^{-3}","l");
 
   legend->Draw();
   //return canvas;  
@@ -2007,7 +2007,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
           latex.SetTextSize(cmsTextSize*t);
           latex.SetTextAlign(align_);
           latex.DrawLatex(posX_, posY_, cmsText);
-          if( true )
+          if( writeExtraText )
             {
               latex.SetTextFont(extraTextFont);
               latex.SetTextAlign(align_);
@@ -2016,7 +2016,7 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
             }
         }
     }
-  else if( true )
+  else if( writeExtraText )
     {
       if( iPosX==0)
         {

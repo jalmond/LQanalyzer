@@ -183,9 +183,27 @@ void Data::Reset(){
   /// clear vectors
 
   // Set object pointer
+  run=0;
+  Weight=0;
+  isData=0;
+  event=0;
+  ls=0;
+  isPhysDeclared=0;
+  isPrimaryVertex=0;
+  ProcessID=0;
+  isTrackingFailure=0;
+  passBadEESupercrystalFilter=0;
+  passBeamHaloFilterTight=0;
+  passEcalDeadCellTriggerPrimitiveFilter=0;
+  passEcalDeadCellBoundaryEnergyFilter=0;passHBHENoiseFilter=0;
+  passEcalLaserCorrFilter=0;
+  passTrackingFailureFilter=0;
+  passBeamHaloFilterLoose=0;
+  
   HLTKey = 0;
   HLTInsideDatasetTriggerNames = 0;
   HLTOutsideDatasetTriggerNames = 0;
+  HLTFilterName = 0;
   passHcalLaserEventFilter=0;
   ElectronshiftedEup=0;
   ElectronshiftedEdown=0;
@@ -216,6 +234,10 @@ void Data::Reset(){
   MuonHLTDoubleMuonMatched = 0;
   MuonHLTEMuMatched8 = 0;
   MuonHLTEMuMatched17 = 0;
+  PFJetPileupjetIDpassLooseWP = 0;
+  PFJetPileupjetIDpassMediumWP = 0;
+  PFJetPileupjetIDpassTightWP = 0;
+
    PhotonHasMatchedConvPhot = 0;
    PhotonHasMatchedPromptEle = 0;
    PhotonHasPixelSeed = 0;
@@ -225,6 +247,11 @@ void Data::Reset(){
    HLTInsideDatasetTriggerDecisions = 0;
    HLTOutsideDatasetTriggerDecisions = 0;
    VertexIsFake = 0;
+   CaloJetEnergy = 0;
+   CaloJetEta = 0;
+   CaloJetPhi = 0;
+   CaloJetPt = 0;
+
    CaloMET = 0;
    CaloMETPhi = 0;
    CaloSumET = 0;
@@ -297,6 +324,10 @@ void Data::Reset(){
    ElectronTrkIsoPAT = 0;
    ElectronVtxDistXY = 0;
    ElectronVtxDistZ = 0;
+   ElectronmvaNontrigV0 = 0;
+   ElectronmvatrigV0 = 0;
+   ElectronshiftedEdown = 0;
+   ElectronshiftedEup = 0;
    GenWElectronEnergy = 0;
    GenWElectronEta = 0;
    GenWElectronP = 0;
@@ -528,6 +559,10 @@ void Data::Reset(){
    MuonEta = 0;
    MuonEtaError = 0;
    MuonGlobalChi2 = 0;
+   MuonGlobalE = 0;
+   MuonGlobalEta = 0;
+   MuonGlobalPhi = 0;
+   MuonGlobalPt = 0;
    MuonHLTSingleIsoMuonMatchEta = 0;
    MuonHLTSingleIsoMuonMatchPhi = 0;
    MuonHLTSingleIsoMuonMatchPt = 0;
@@ -540,6 +575,11 @@ void Data::Reset(){
    MuonMatchedGenParticleEta = 0;
    MuonMatchedGenParticlePhi = 0;
    MuonMatchedGenParticlePt = 0;
+   MuonMuonSpecE = 0;
+   MuonMuonSpecEta = 0;
+   MuonMuonSpecPhi = 0;
+   MuonMuonSpecPt = 0;
+
    MuonOverlapCompatibility = 0;
    MuonP = 0;
    MuonPFIsoR03ChargedHadron = 0;
@@ -583,6 +623,9 @@ void Data::Reset(){
    MuonTrkVz = 0;
    MuonVtxDistXY = 0;
    MuonVtxDistZ = 0;
+   MuonshiftedEdown = 0;
+   MuonshiftedEup = 0;
+
    PFCandEnergyLeptLink = 0;
    PFCandEtaLeptLink = 0;
    PFCandPhiLeptLink = 0;
@@ -647,6 +690,20 @@ void Data::Reset(){
    PFMETPhiType1Cor = 0;
    PFMETType1Cor = 0;
    PFSumETType1Cor = 0;
+   PFMETType01XYCorElectronEnDown = 0;
+   PFMETType01XYCorElectronEnUp = 0;
+   PFMETType01XYCorJetEnDown = 0;
+   PFMETType01XYCorJetEnUp = 0;
+   PFMETType01XYCorJetResDown = 0;
+   PFMETType01XYCorJetResUp = 0;
+   PFMETType01XYCorMuonEnDown = 0;
+   PFMETType01XYCorMuonEnUp = 0;
+   PFMETType01XYCorUnclusteredDown = 0;
+   PFMETType01XYCorUnclusteredUp = 0;
+   PFMETPhiType1Cor = 0;
+   PFMETType1Cor = 0;
+   PFSumETType1Cor = 0;
+
    PhotonAlpha = 0;
    PhotonChi2ConvPhot = 0;
    PhotonDPhiTracksAtVtxConvPhot = 0;
@@ -707,6 +764,9 @@ void Data::Reset(){
    HLTFilterObjEta = 0;
    HLTFilterObjPhi = 0;
    HLTFilterObjPt = 0;
+   CaloJetPassLooseID = 0;
+   CaloJetPassTightID = 0;
+
    ElectronCharge = 0;
    ElectronClassif = 0;
    ElectronMissingHits = 0;
@@ -793,6 +853,7 @@ void Data::Reset(){
    PFJetElectronMultiplicity = 0;
    PFJetHFEMMultiplicity = 0;
    PFJetHFHadronMultiplicity = 0;
+   PFJetJetPileupIdflag = 0;
    PFJetMuonMultiplicity = 0;
    PFJetNConstituents = 0;
    PFJetNeutralHadronMultiplicity = 0;
@@ -912,7 +973,7 @@ void Data::ConnectEvent(){
   ConnectVariable("Weight", Weight, b_Weight);
   ConnectVariable("isPhysDeclared", isPhysDeclared, b_isPhysDeclared);
   ConnectVariable("isPrimaryVertex", isPrimaryVertex, b_isPrimaryVertex);
-
+  
   ConnectVariable("isTrackingFailure", isTrackingFailure, b_isTrackingFailure);
   ConnectVariable("passHBHENoiseFilter", passHBHENoiseFilter, b_passHBHENoiseFilter);
   ConnectVariable("passBadEESupercrystalFilter", passBadEESupercrystalFilter, b_passBadEESupercrystalFilter);
@@ -922,6 +983,7 @@ void Data::ConnectEvent(){
   ConnectVariable("passEcalLaserCorrFilter", passEcalLaserCorrFilter, b_passEcalLaserCorrFilter);
   ConnectVariable("passTrackingFailureFilter", passTrackingFailureFilter, b_passTrackingFailureFilter);
   ConnectVariable("passBeamHaloFilterTight", passBeamHaloFilterTight, b_passBeamHaloFilterTight);
+  
   
   ConnectVariable("VertexIsFake", VertexIsFake, b_VertexIsFake);
   ConnectVariable("VertexChi2", VertexChi2, b_VertexChi2);
