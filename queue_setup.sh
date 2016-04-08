@@ -10,8 +10,6 @@
 ##################################################################################
 
 # Greet the user
-echo "Setting up environment for compiling/running LQAnalzer with SKTree"
-
 
 if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
@@ -29,7 +27,7 @@ fi
 export LQANALYZER_DIR=${PWD}
 
 ##### Check that this is not the branch and a tag was checked out
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh branch
+source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -116,7 +114,6 @@ export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyz
 export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
 
-python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 
 # Setup root area and other paths
  
@@ -163,14 +160,11 @@ export PATH=${LQANALYZER_BIN_PATH}:${PATH}
 export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}
 
-python bin/local_check.py
 
 if [ ! -d ${LQANALYZER_LOG_PATH} ]; then
     echo Directory ${LQANALYZER_LOG_PATH} does not exist ... creating it
     mkdir ${LQANALYZER_LOG_PATH}
 fi
-
-echo "Running analysis from" $HOSTNAME " in directory: " 
 
 #clean up all emacs tmp files
 clean_emacs
