@@ -192,6 +192,7 @@ void Data::Reset(){
   isPrimaryVertex=0;
   ProcessID=0;
   isTrackingFailure=0;
+  isBeamScraping=0;
   passBadEESupercrystalFilter=0;
   passBeamHaloFilterTight=0;
   passEcalDeadCellTriggerPrimitiveFilter=0;
@@ -974,6 +975,7 @@ void Data::ConnectEvent(){
   ConnectVariable("isPhysDeclared", isPhysDeclared, b_isPhysDeclared);
   ConnectVariable("isPrimaryVertex", isPrimaryVertex, b_isPrimaryVertex);
   
+  ConnectVariable("isBeamScraping", isBeamScraping, b_isBeamScraping);
   ConnectVariable("isTrackingFailure", isTrackingFailure, b_isTrackingFailure);
   ConnectVariable("passHBHENoiseFilter", passHBHENoiseFilter, b_passHBHENoiseFilter);
   ConnectVariable("passBadEESupercrystalFilter", passBadEESupercrystalFilter, b_passBadEESupercrystalFilter);
@@ -1624,7 +1626,6 @@ void Data::ConnectAllBranches(){
   ConnectVariable("isBPTX0", isBPTX0);
   ConnectVariable("isBSCBeamHalo", isBSCBeamHalo);
   ConnectVariable("isBSCMinBias", isBSCMinBias);
-  ConnectVariable("isBeamScraping", isBeamScraping);
   
   ConnectVariable("passCaloBoundaryDRFilter", passCaloBoundaryDRFilter);
   ConnectVariable("passEcalMaskedCellDRFilter", passEcalMaskedCellDRFilter);

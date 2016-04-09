@@ -99,8 +99,6 @@ SKDY10to50_15_nocut       2827.096        /data1/LocalNtuples/Tag27_CMSSW_5_3_20
 SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY50plus_15/
 
 
-
-
 #######################################################################################################################################
 #######################################################################################################################################
 ##### LEPTON SKIMS
@@ -436,6 +434,8 @@ singleelectron C	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodC/
 singleelectron D	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodD/ 						    
 
 
+TESTGB 1. /data4/DATA/LQNtuples/MC/TestSample/
+
 ### MC ############################################################
 # Sample	Inte.lumi(/pb)	localpath
 ##################################################################
@@ -531,7 +531,7 @@ ZZtollqq_mg	790824.82	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo2L2Q_TuneZ
 ZZtollll_mg	27163220.34	  /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/
 
 ###PYTHIA DIBOSON
-WZ_py           301122.644       /data1/DATA/LQNtuples_5_3_14_snu27/MC/WZ_TuneZ2star_8TeV_pythia6_tauola/
+WZ_py           301122.644       /data4/DATA/LQNtuples/MC/WZ_TuneZ2star_8TeV_pythia6_tauola/
 ZZ_py           555109.777       /data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZ_TuneZ2star_8TeV_pythia6_tauola/
 WW_py           182363.161       /data1/DATA/LQNtuples_5_3_14_snu27/MC/WW_TuneZ2star_8TeV_pythia6_tauola/
 

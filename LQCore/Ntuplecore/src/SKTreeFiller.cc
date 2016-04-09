@@ -164,6 +164,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   
   /// MET filter cuts/checks
   kevent.SetIsTrackingFailure(isTrackingFailure);
+  kevent.SetIsBeamScraping(isBeamScraping);
   kevent.SetPassTrackingFailureFilter(passTrackingFailureFilter);
   kevent.SetPassBeamHaloFilterLoose(passBeamHaloFilterLoose);
   if(passBeamHaloFilterTight)kevent.SetPassBeamHaloFilterTight(passBeamHaloFilterTight);
@@ -343,14 +344,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetConvFitProb(ElectronConvFitProb->at(iel));
     el.SetNBrems(ElectronNumberOfBrems->at(iel));
     el.SetFBrem(ElectronFbrem->at(iel));
-
+    m_logger << DEBUG <<ElectronshiftedEup->size() <<  " " << ElectronshiftedEdown->size() << " " << iel<<  LQLogger::endmsg;
     if(ElectronshiftedEup){
       if(ElectronshiftedEup->size() > 0) {
-	el.SetShiftedEUp(ElectronshiftedEup->at(iel));
-	el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+	//el.SetShiftedEUp(ElectronshiftedEup->at(iel));
+	//el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
       }
     }
-
+    m_logger << DEBUG << "Filling electronElectronDCotTheta  " << LQLogger::endmsg;
     if(ElectronDCotTheta){
       el.SetCotTheta(ElectronDCotTheta->at(iel));
       el.SetElDist(ElectronDist->at(iel));
@@ -1001,8 +1002,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     if(MuonshiftedEup){
       if(MuonshiftedEup->size() > 0){
-	muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
-	muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+	//muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
+	//muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
       }
     }
 

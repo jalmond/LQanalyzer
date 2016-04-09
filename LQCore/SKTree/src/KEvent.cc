@@ -56,6 +56,7 @@ KEvent::KEvent() :
   k_isgoodevent(false),
   k_isData(false), 
   k_isTrackingFailure(false),
+  k_isbeamscrape(false),
   k_passTrackingFailureFilter(false),
   k_passBeamHaloFilterLoose(false),
   k_passBeamHaloFilterTight(false),
@@ -118,6 +119,7 @@ KEvent::KEvent(const KEvent& ev) :
   k_isData(ev.k_isData),
   k_isgoodevent(ev.k_isgoodevent),
   k_isTrackingFailure(ev.k_isTrackingFailure),
+  k_isbeamscrape(ev.k_isbeamscrape),
   k_passTrackingFailureFilter(ev.k_passTrackingFailureFilter),
   k_passBeamHaloFilterLoose(ev.k_passBeamHaloFilterLoose),
   k_passBeamHaloFilterTight(ev.k_passBeamHaloFilterTight),
@@ -182,6 +184,7 @@ void KEvent::Reset()
   k_isData= false;
   k_isgoodevent = false;
   k_isTrackingFailure= false;
+  k_isbeamscrape=false;
   k_passTrackingFailureFilter= false;
   k_passBeamHaloFilterLoose= false;
   k_passBeamHaloFilterTight= false;
@@ -248,6 +251,7 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_isgoodevent= p.HasGoodPrimaryVertex();
       k_mcweight = p.MCWeight();
       k_isTrackingFailure = p.IsTrackingFailure();
+      k_isbeamscrape =p.IsBeamScraping();
       k_passTrackingFailureFilter = p.PassTrackingFailureFilter();
       k_passBeamHaloFilterLoose = p.PassBeamHaloFilterLoose();
       k_passBeamHaloFilterTight = p.PassBeamHaloFilterTight();
@@ -267,6 +271,10 @@ KEvent& KEvent::operator= (const KEvent& p)
 void KEvent::SetIsTrackingFailure(bool fail){
   k_isTrackingFailure = fail;
 }
+void KEvent::SetIsBeamScraping(bool fail){
+  k_isbeamscrape= fail;
+}
+
 
 void KEvent::SetPassTrackingFailureFilter(bool pass){
   k_passTrackingFailureFilter= pass;

@@ -84,6 +84,7 @@ namespace snu {
     
     /// MET filters
     void SetIsTrackingFailure(bool fail);
+    void SetIsBeamScraping(bool fail);
     void SetPassTrackingFailureFilter(bool pass) ;
     void SetPassBeamHaloFilterLoose(bool pass);
     void SetPassBeamHaloFilterTight(bool pass);
@@ -160,6 +161,7 @@ namespace snu {
     inline Double_t GenSumEtCalo() const {return k_gensumetcalo;}
     
     /// MET filters
+    inline Bool_t   IsBeamScraping() const {return k_isbeamscrape;}
     inline Bool_t   IsTrackingFailure() const {return k_isTrackingFailure ;}
     inline Bool_t   PassTrackingFailureFilter() const {return  k_passTrackingFailureFilter ;}
     inline Bool_t   PassBeamHaloFilterLoose() const {return   k_passBeamHaloFilterLoose;}
@@ -193,11 +195,11 @@ namespace snu {
     
     Bool_t k_isfakeV;
     Bool_t k_isData, k_isgoodevent;
-    Bool_t k_isTrackingFailure, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
+    Bool_t k_isTrackingFailure,k_isbeamscrape, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,13)
+    ClassDef(KEvent,14)
   }; 
   
 }//namespace snu

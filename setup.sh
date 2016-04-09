@@ -20,9 +20,13 @@ fi
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     export root_setup="/usr/local/bin/thisroot.sh"
+elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+then 
+    source /share/apps/root_v5_34_32/root/bin/thisroot.sh
 else
     export root_setup=$HOME"/root/root/bin/thisroot.sh"
 fi    
+
 
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
@@ -30,6 +34,10 @@ export LQANALYZER_DIR=${PWD}
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/Dec14/"
 
+if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+then
+    export LQANALYZER_FILE_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/LQAnalysis/April15/"
+fi
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code

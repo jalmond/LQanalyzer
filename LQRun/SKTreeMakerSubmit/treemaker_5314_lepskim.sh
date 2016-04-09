@@ -71,15 +71,15 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
     
     
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "Wgamma" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW")
-
-
+    declare -a input_samples=("TESTGB")
+#    declare -a input_samples=("WZ_py")
     
     source submit.sh
 fi    

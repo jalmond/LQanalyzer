@@ -439,11 +439,10 @@ check_array = []
 # Setup work area on var tmp
 ###################################################
 
-tmpwork = "/data2/"+ getpass.getuser()
-if not (os.path.exists(tmpwork)):
-    os.system("mkdir " + tmpwork)
-    
-workspace = "/data2/"+ getpass.getuser() + "/LQ_SKTreeOutput/"
+if not (os.path.exists("/data2/LQ_SKTreeOutput/")):
+    os.system("mkdir /data2/LQ_SKTreeOutput/")
+
+workspace = "/data2/LQ_SKTreeOutput/"+ getpass.getuser() 
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample
@@ -790,9 +789,9 @@ else:
         if DEBUG == "True":
             print line
 
-
-    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"
-    #/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/" /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"
+    SKTreeOutput = "/data4/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/"
+    if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"  
    
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":

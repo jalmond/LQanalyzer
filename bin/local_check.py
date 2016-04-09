@@ -52,16 +52,16 @@ if not os.path.exists(april15dir):
     os.system("source bin/make_clean_newbranch.sh")
     
 
-fakelib = os.getenv("LQANALYZER_LIB_PATH") + "libHNCommonLeptonFakes.so"
+fakelib = os.getenv("LQANALYZER_LIB_PATH") + "/libHNCommonLeptonFakes.so"
 
 if not os.path.exists(fakelib):
     os.system("source bin/make_fake_lib.sh")
 
-btaglib = os.getenv("LQANALYZER_LIB_PATH") + "BTagSFUtil_C.so"
+btaglib = os.getenv("LQANALYZER_LIB_PATH") + "/BTagSFUtil_C.so"
 if not os.path.exists(btaglib):
         os.system("source bin/make_btag_lib.sh")
 
-rocherlib = os.getenv("LQANALYZER_LIB_PATH") + "librochcor2012.so"
+rocherlib = os.getenv("LQANALYZER_LIB_PATH") + "/librochcor2012.so"
 
 if not os.path.exists(rocherlib):
         os.system("source bin/make_rocher_lib.sh")
