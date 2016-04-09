@@ -256,26 +256,30 @@ else:
 ##### Specify if the job is running on SKTrees or LQNtuples
 ##################################################################################################################
 original_sample = sample
+host_postfix=""
+if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    host_postfix="_cluster"
+
 if useskinput == "true":
     if not mc:
         if useskim == "Lepton":
-            channel="SK" + channel
+            channel="SK" + host_postfix + "_" + channel
         else:
             if useskim == "NoCut":
-                channel="SK" + channel + "_nocut"
+                channel="SK" + host_postfix + "_" + channel + "_nocut"
             else:
                 if useskim == "DiLep":
-                    channel="SK" + channel + "_dilep"
+                    channel="SK" + host_postfix + "_" + channel + "_dilep"
 
     else:
         if useskim == "Lepton":
-            sample="SK" + sample
+            sample="SK" + host_postfix + "_" + sample
         else:
             if useskim == "NoCut":
-                sample="SK" + sample + "_nocut"
+                sample="SK" + host_postfix + "_" + sample + "_nocut"
             else:
                 if useskim == "DiLep":
-                    sample="SK" + sample + "_dilep"
+                    sample="SK" + host_postfix + "_" + sample + "_dilep"
 elif useskinput == "True":
 
     if not mc:
