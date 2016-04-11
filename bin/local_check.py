@@ -42,8 +42,8 @@ old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
 
 if not os.path.exists(april16dir):
     os.system("mkdir " + april16dir)
-    if os.path.exists(april16dir):
-        os.system("rm -r " + april16dir)
+    if os.path.exists(april15dir):
+        os.system("rm -r " + april15dir)
                      
     if os.path.exists(decdir):
              os.system("rm -r " + decdir)
