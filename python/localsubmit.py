@@ -73,7 +73,8 @@ tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
 
-original_channel = channel
+new_channel = channel.replace(":", "")
+original_channel = new_channel
 
 
 list_of_extra_lib=[]
@@ -167,36 +168,62 @@ if not cycle == "SKTreeMaker":
 ### Make tmp directory for job
 ############################################################
 
-if not os.path.exists("job_output"):
-    os.system("mkdir job_output/")
+tmpwork = "/data2/LQ_SKTreeOutput/"+ getpass.getuser() + "/"
+if not (os.path.exists(tmpwork)):
+    os.system("mkdir " + tmpwork)
 
-local_sub_dir= "job_output/" + sample + '_' + channel + '_' + now()
+timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")
+if not (os.path.exists(timestamp_dir)):
+    os.system("mkdir " + timestamp_dir)
+
+if not os.path.exists(timestamp_dir+"/job_output/"):
+    os.system("mkdir " + timestamp_dir+"/job_output/")
     
+local_sub_dir=  timestamp_dir + "/job_output/"  + sample + '_' + new_channel + '_' + now()
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
+
+        
+
+                        
         
 ##################################################################################################################
 #### HARD CODE THE MAXIMUM number of subjobs
 ##################################################################################################################
 
 import platform
+username = str(os.getenv("USER"))
 if platform.system() == "Linux":
     os.system("top -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
     filename = local_sub_dir +'/toplog'
 
     n_previous_jobs=0
+    njob_user=0
     for line in open(filename, 'r'):
         n_previous_jobs+=1
-
-    if n_previous_jobs > 30:
+        if username in line:
+            njob_user+=1
+            
+    if n_previous_jobs > 20:
         number_of_cores = 1
-        print "Number of subjobs is reduced to 1, since there are over 40 subjobs running on this machine."
+        print "Number of subjobs is reduced to 1, since there are over 20 subjobs running on this machine."
 
         for line in open(filename, 'r'):
             print line
-
+    if njob_user  > 10:
+        number_of_cores = 1
     os.system("rm " + filename)
 
+    os.system("top  -n 1 -b | grep 'cmsRun' &> " + local_sub_dir + "/toplog2")
+    filename2 = local_sub_dir +'/toplog2'
+    for line in open(filename2, 'r'):
+        n_previous_jobs+=1
+    os.system("rm " + filename2)
+    if n_previous_jobs > 20:
+        number_of_cores = 1
+        print "Number of subjobs is reduced to 1, since there are over 20 subjobs running on this machine."
+                        
+        
 if number_of_cores > 1:
     if useskinput == "True":
         if (20 - n_previous_jobs) < number_of_cores:
@@ -218,6 +245,11 @@ if number_of_cores > 1:
                         number_of_cores = 5
                         print "Number of sub jobs is set to high. Reset to default of 5."
 
+if "SKTreeMaker" in cycle:
+    if number_of_cores > 0:
+        number_of_cores = 30
+       
+    
 if number_of_cores < 0:
     number_of_cores=1
 ##################################################################################################################            
@@ -263,13 +295,13 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 if useskinput == "true":
     if not mc:
         if useskim == "Lepton":
-            channel="SK" + host_postfix + "_" + channel
+            new_channel="SK" + host_postfix + "_" + new_channel
         else:
             if useskim == "NoCut":
-                channel="SK" + host_postfix + "_" + channel + "_nocut"
+                new_channel="SK" + host_postfix + "_" + new_channel + "_nocut"
             else:
                 if useskim == "DiLep":
-                    channel="SK" + host_postfix + "_" + channel + "_dilep"
+                    new_channel="SK" + host_postfix + "_" + new_channel + "_dilep"
 
     else:
         if useskim == "Lepton":
@@ -284,13 +316,13 @@ elif useskinput == "True":
 
     if not mc:
         if useskim == "Lepton":
-            channel="SK" + channel
+            new_channel="SK" + new_channel
         else:
             if useskim == "NoCut":
-                channel="SK" + channel + "_nocut"
+                new_channel="SK" + new_channel + "_nocut"
             else:
                 if useskim == "DiLep":
-                    channel="SK" + channel + "_dilep"
+                    new_channel="SK" + new_channel + "_dilep"
     else:
         if useskim == "Lepton":
             sample="SK" + sample
@@ -303,7 +335,7 @@ elif useskinput == "True":
                 
 print "Input sample = " + sample
 if not mc:
-    print "Input channel = " + channel
+    print "Input channel = " + new_channel
 
 ##############################################################################################
 #### Check if sktrees are located on current machines  (not used when running on cmsX at snu)                        
@@ -315,26 +347,26 @@ if platform.system() != "Linux":
 
     localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/" 
     if not mc:        
-        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + channel  + sample
+        localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/data/" + new_channel  + sample
     else:
         localDir = os.getenv("LQANALYZER_DIR")+ "/data/input/mc/"  + sample
     
     if not os.path.exists(localDir):
         print "No files in current location: Will copy them over"
-        CopySKTrees(channel,sample,mc,"True")
+        CopySKTrees(new_channel,sample,mc,"True")
     elif  sum(1 for item in os.listdir(localDir) if isfile(join(localDir, item))) == 0:
         print "No files are located locally: Will copy from cms21 machine"
-        CopySKTrees(channel,sample,mc,"True")
+        CopySKTrees(new_channel,sample,mc,"True")
     else:
         update = raw_input("Files already located on current machine. Do you want these updating? Yes/No")
         if update == "Yes":
             print "Updating local sktree"
-            CopySKTrees(channel,sample,mc,"True")
+            CopySKTrees(new_channel,sample,mc,"True")
         elif update == "yes":
             print "Updating local sktree"
-            CopySKTrees(channel,sample,mc,"True")
+            CopySKTrees(new_channel,sample,mc,"True")
         else:
-            CheckPathInFile(channel,sample,mc)
+            CheckPathInFile(new_channel,sample,mc)
             
 ##################################################################################################################
 #Find the DS name (and lumi if MC) from txt/datasets.txt
@@ -363,12 +395,12 @@ if not mc:
         if not line.startswith("#"):
             entries = line.split()
             if len(entries)==3:
-                if channel ==entries[0] and sample == entries[1]:
+                if new_channel ==entries[0] and sample == entries[1]:
                     inDS = entries[2]
     sample = "period"+sample
     eff_lumi=1.
     tar_lumi=1.
-    filechannel = channel+"_"
+    filechannel = new_channel+"_"
 else:
     for line in open(filename, 'r'):
         if not line.startswith("#"):
@@ -446,11 +478,16 @@ check_array = []
 if not (os.path.exists("/data2/LQ_SKTreeOutput/")):
     os.system("mkdir /data2/LQ_SKTreeOutput/")
 
-workspace = "/data2/LQ_SKTreeOutput/"+ getpass.getuser() 
+workspace = "/data2/LQ_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
 out_end=sample
-output=workspace + sample + "_" + now() + "/"
+
+output=workspace + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
+if not mc:
+    output=workspace + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/"
+        
+        
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"
 if not (os.path.exists(output)):
@@ -495,7 +532,7 @@ if runcf == "True":
     outsamplename = "chargeflip_" + outsamplename
     print "sample --> " + outsamplename
 if not mc:
-    outsamplename = outsamplename +  "_" + channel
+    outsamplename = outsamplename +  "_" + new_channel
     if use538ntuples == "True":
         outsamplename = outsamplename + "_5_3_8"
     elif use5312ntuples == "True":
@@ -520,7 +557,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -545,7 +582,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -572,7 +609,7 @@ for line in fr:
         fwrite = open(filelist, 'a')
         fwrite.write(line)
         #configfile=open(runscript,'w')
-        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
+        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
         #configfile.close()
         filesprocessed+=1
         fwrite.close()        
@@ -783,7 +820,8 @@ if not JobOutput:
     print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
     os.system("rm -r " + output)    
     os.system("rm -r " + local_sub_dir)    
-    
+    os.system("rm -r " + timestamp_dir)
+        
 
     print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
     
@@ -793,9 +831,10 @@ else:
         if DEBUG == "True":
             print line
 
-    SKTreeOutput = "/data4/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/"
+
+    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"  
     if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"  
+        SKTreeOutput = "/data4/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/"
    
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
@@ -914,9 +953,13 @@ else:
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
         if number_of_cores == 1:
+            os.system("rm " + Finaloutputdir + outfile + "/*.root")
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
         else:
+            os.system("rm " + Finaloutputdir +  "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
+
+            
         if DEBUG == "True":
             print "Non merged output :" +Finaloutputdir
 
@@ -931,6 +974,8 @@ else:
             os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
         os.system("rm -r " + local_sub_dir)
+        os.system("rm -r " + timestamp_dir)
+                
         print "Log files are sent to  --> "  + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename
         if doMerge:
             print "All sampless finished: OutFile:"  + cycle + "_" + filechannel + outsamplename + ".root -->" + Finaloutputdir
@@ -946,6 +991,8 @@ else:
         
 if os.path.exists(local_sub_dir):
     os.system("rm -r " + local_sub_dir)
+    os.system("rm -r " + timestamp_dir)
+        
 
 end_time = time.time()
 total_time=end_time- start_time

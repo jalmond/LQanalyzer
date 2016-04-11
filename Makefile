@@ -31,7 +31,8 @@ fakes::
 	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
 rocher::	
-	(cd rochcor2012/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ; rm librochcor2012.so ; cp ${LQANALYZER_DIR}/rochcor2012/Root/librochcor2012.so   .; cd ${LQANALYZER_DIR})
+	(bash bin/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
+
 
 
 clean::
@@ -41,8 +42,8 @@ clean::
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
 	(cd LQAnalysis; make clean)
-	(cd HNCommonLeptonFakes/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/libHNCommonLeptonFakes.so)
-	(cd rochcor2012/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/librochcor2012.so)
+	(bash bin/clean_fake.sh)
+	(bash bin/clean_rochor.sh)
 
 distclean::
 	(cd LQCore/SKTree; make distclean)
@@ -51,3 +52,5 @@ distclean::
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
 	(cd LQAnalysis; make distclean)	
+	(bash bin/clean_fake.sh)
+	(bash bin/clean_rochor.sh)

@@ -436,6 +436,20 @@ singleelectron D	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodD/
 
 TESTGB 1. /data4/DATA/LQNtuples/MC/TestSample/
 
+
+QCD_1000_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_1000_mu/
+QCD_15-20_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_15-20_mu/
+QCD_20-30_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_20-30_mu/
+QCD_30-50_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_30-50_mu/
+QCD_50-80_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_50-80_mu/
+QCD_800-1000_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_800-1000_mu/
+QCD_120-170_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_120-170_mu/
+QCD_170-300_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_170-300_mu/
+QCD_300-470_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_300-470_mu/
+QCD_470-600_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_470-600_mu/
+QCD_600-800_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_600-800_mu/
+QCD_80-120_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_80-120_mu/
+
 ### MC ############################################################
 # Sample	Inte.lumi(/pb)	localpath
 ##################################################################

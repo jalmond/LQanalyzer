@@ -344,7 +344,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetConvFitProb(ElectronConvFitProb->at(iel));
     el.SetNBrems(ElectronNumberOfBrems->at(iel));
     el.SetFBrem(ElectronFbrem->at(iel));
-    m_logger << DEBUG <<ElectronshiftedEup->size() <<  " " << ElectronshiftedEdown->size() << " " << iel<<  LQLogger::endmsg;
+
     if(ElectronshiftedEup){
       if(ElectronshiftedEup->size() > 0) {
 	//el.SetShiftedEUp(ElectronshiftedEup->at(iel));
