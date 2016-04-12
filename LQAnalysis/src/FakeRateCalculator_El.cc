@@ -932,6 +932,7 @@ void FakeRateCalculator_El::ClearOutputVectors() throw(LQError) {
 
 bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std::vector< snu::KJet> jets, float awayjetcut, float precale_weight, float wt){
   
+  if(wt < 0.) return false;
   bool useevent = false;
   if(precale_weight != 0.){
     
@@ -959,6 +960,7 @@ bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std
 }
 
 bool FakeRateCalculator_El::UseEventAllMT(std::vector<snu::KElectron> electrons,  std::vector< snu::KJet> jets, float awayjetcut, float precale_weight, float wt){
+  if(wt < 0.) return false;
 
   bool useevent = false;
   if(precale_weight != 0.){
@@ -1064,7 +1066,6 @@ void FakeRateCalculator_El::MakeMCFakeratePlots(TString label, bool pass_single_
 
 void FakeRateCalculator_El::MakePlotsMCAwaJetPt(TString label,float awayjetptcut, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets , std::vector<snu::KJet> alljets, double w){
   
-  Float_t stbins[12]   = { 35.,40., 45., 50., 60., 80., 100., 150.,200., 250., 300, 400.};
   Float_t ptbins[7]   = { 10.,15.,20.,25.,30.,40.,60.};
   Float_t htbins[6]   = { 20., 40., 75., 100., 200., 400.};
   Float_t etabinsmc[3] = { 0.,  1.479, 2.5};

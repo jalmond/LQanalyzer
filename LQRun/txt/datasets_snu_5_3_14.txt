@@ -1,12 +1,9 @@
 cluster_ntuple_path /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
 cms_ntuple_path /data1/DATA/LQNtuples_5_3_14_snu27/MC/
 
+########################	
 ##### SKTrees ##########
-##################
-
-
-
-##### NO CUTS/SKIMS
+#######################
 
 ###HN signal
 #######################################################################################################################################
@@ -58,7 +55,7 @@ SKHNee500_nocut		23208151.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June
 SKHNee600_nocut		58506729.08	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee600/
 SKHNee700_nocut		130502192.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee700/
 
-SKHNemu40_nocut          65.95580292           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu40/
+SKHNemu40_nocut          65.95580292    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu40/
 SKHNemu50_nocut          89.43515778            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu50/
 SKHNemu60_nocut          157.9545898          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu60/
 SKHNemu70_nocut          457.5957642          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu70/
@@ -100,7 +97,7 @@ SKHNmue375_nocut         5218963.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 SKHNmue400_nocut         7800044.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue400/
 SKHNmue500_nocut         23209544.     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue500/
 
-SKDY10to50_15_nocut       2827.096        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY10to50_15/
+SKDY10to50_15_nocut       2827.096      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY10to50_15/
 SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY50plus_15/
 
 

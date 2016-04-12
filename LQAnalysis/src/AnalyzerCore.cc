@@ -175,9 +175,9 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   
   bool applyidsf= false;
   std::vector<snu::KElectron> electronColl;
-
+ 
   float dxy= 0.01; float biso= 0.09;    float eiso= 0.05;  bool usetight_id= true;
-
+  w*=1.;
   int icoll(0);
   if(label.Contains("HNTight_loosereg2")){
     icoll++;
@@ -509,7 +509,7 @@ bool AnalyzerCore::HasCloseBJet(snu::KElectron el){
 void AnalyzerCore::RunMCCLosureTestEMU(TString label, std::vector<snu::KJet> jets, TString cut, float w){
   
   w=1;
-
+  cut = "";
   if(jets.size() <  2 ) return;
   if(!isData){
     if(k_running_nonprompt){
@@ -2570,6 +2570,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
 
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, Double_t weight_err){
 
+  weight_err=0.;
   if(type==sighist){
 
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
@@ -3153,6 +3154,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
 
 float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool    usetight,TString cut, bool applypucorr){
   
+
   if(k_electrons.size()==1){
     bool is_el1_tight    = IsTight(k_electrons.at(0), rho, dxy, biso, eiso,  usetight);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
@@ -3160,7 +3162,9 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
     TString rcut = cut;
     
     float r = 1.;
-
+    if(njets==0) r = 1.;
+    if(nbjets==0) r = 1.;
+    if(applypucorr) r=1.;
 
     float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
     

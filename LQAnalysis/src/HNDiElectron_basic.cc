@@ -273,8 +273,8 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
     Nmass.push_back(225.);
     Nmass.push_back(250.);
     Nmass.push_back(275.);
-
-    for(int imass=0; imass < Nmass.size(); imass++){
+    
+    for(unsigned int imass=0; imass < Nmass.size(); imass++){
       float mass = Nmass.at(imass);
       std::ostringstream buff;
       buff<<mass;
@@ -2034,7 +2034,7 @@ void HNDiElectron_basic::ExecuteEvents()throw( LQError ){
 
   }
 
-  if(pass_presel_cut&& (nbjet!=0) || (eventbase->GetEvent().PFMET() > 50.)) 
+  if(pass_presel_cut&& ((nbjet!=0) || (eventbase->GetEvent().PFMET() > 50.))) 
     FillCLHist(sighist, "HighMETBJetCR",eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight, weight_err);
   
   
@@ -2075,6 +2075,8 @@ float HNDiElectron_basic::WeightCFEvent(std::vector<snu::KElectron> electrons, b
 }
 
 bool HNDiElectron_basic::CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
+
+  if(name.Contains("testtest")) w=0.;
   if(electrons.size() != 2 ) return false ;
   if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;

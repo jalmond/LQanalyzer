@@ -37,7 +37,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),  k_inputjets(0), k_inputgenjets(0)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),  k_inputjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0)
   
 {
 

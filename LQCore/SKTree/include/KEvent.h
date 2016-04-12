@@ -185,16 +185,18 @@ namespace snu {
     /// decalre private functions
     
     Int_t    k_EventNumber, k_RunNumber,k_nvertices, k_ivertex, k_process_id, k_lumisec;
-    Double_t k_vertexX,k_vertexY,k_vertexZ,  k_jetrho, k_mcweight;
+    Double_t k_vertexX,k_vertexY,k_vertexZ;
+    Double_t k_jetrho,k_mcweight;
     std::vector<Double_t> k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
     Double_t k_genmettrue, k_genmetphitrue,k_gensumettrue, k_genmetcalo, k_genmetphicalo,k_gensumetcalo;
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET;
-    Double_t k_PF_METraw, k_PF_METtype1, k_PF_METtype01;
-    Double_t k_PF_METrawphi, k_PF_METtype1phi, k_PF_METtype01phi;
+    Double_t k_PF_METraw, k_PF_METrawphi,k_PF_METtype1, k_PF_METtype1phi,k_PF_METtype01,k_PF_METtype01phi;
+
     Double_t k_PF_MET_el_enup,k_PF_MET_el_endown, k_PF_MET_jet_enup,k_PF_MET_jet_endown, k_PF_MET_jet_resup,k_PF_MET_jet_resdown, k_PF_MET_muon_enup,k_PF_MET_muon_endown, k_PF_MET_unclust_up,k_PF_MET_unclust_down;
+
+
+    Bool_t k_isfakeV,k_isgoodevent,k_isData;
     
-    Bool_t k_isfakeV;
-    Bool_t k_isData, k_isgoodevent;
     Bool_t k_isTrackingFailure,k_isbeamscrape, k_passTrackingFailureFilter, k_passBeamHaloFilterLoose,k_passBeamHaloFilterTight, k_passBadEESupercrystalFilter, k_passEcalDeadCellBoundaryEnergyFilter, k_passEcalDeadCellTriggerPrimitiveFilter, k_passEcalLaserCorrFilter, k_passHBHENoiseFilter, k_passHcalLaserEventFilter;
     Double_t  k_PileUpInteractionsTrue;
     

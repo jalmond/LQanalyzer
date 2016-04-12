@@ -95,12 +95,13 @@ public :
 
    /// If needed (using SKTree input)
    std::vector<snu::KMuon>     *k_inputmuons;
+   std::vector<snu::KElectron>     *k_inputelectrons;
    std::vector<snu::KJet>     *k_inputjets;
    std::vector<snu::KGenJet>     *k_inputgenjets;
    snu::KEvent     *k_inputevent;
    snu::KTrigger     *k_inputtrigger;
    std::vector<snu::KTruth>     *k_inputtruth;
-   std::vector<snu::KElectron>     *k_inputelectrons;
+
 
    Bool_t          isData;
    Bool_t          isBPTX0;
