@@ -235,7 +235,7 @@ void AnalyzerCore::SetupJECUncertainty(TString type){
       continue;
     }
         
-    if(sline.find(type)!=string::npos) {  cout << "FOUND " << sline << endl; found_unc=true;	continue;}
+    if(sline.find(type)!=string::npos) {  found_unc=true;	continue;}
     if(sline=="END") break;
     if(sline.find("CorrelationGroupMPFInSitu")!=string::npos) break;
     
