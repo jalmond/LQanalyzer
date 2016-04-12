@@ -185,13 +185,12 @@ then
     source functions.sh
     
     cycle="HNDiElectron"
-#    skinput="True"
+    skinput="True"
     useskim="DiLep"
     
     njobs=1
     data_lumi="AtoD"
 
-    loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000
