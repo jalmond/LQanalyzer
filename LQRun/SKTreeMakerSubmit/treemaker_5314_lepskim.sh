@@ -71,16 +71,13 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=100
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
     
     
-    declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "Wgamma" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW")
-    declare -a input_samples=("QCD_1000_mu" "QCD_15-20_mu" "QCD_20-30_mu" "QCD_30-50_mu" "QCD_50-80_mu" "QCD_800-1000_mu" "QCD_120-170_mu" "QCD_170-300_mu" "QCD_300-470_mu" "QCD_470-600_mu" "QCD_600-800_mu" "QCD_80-120_mu")
-
-    declare -a input_samples=("DY10to50")
+    declare -a input_samples=("CH90PU")
 
     source submit.sh
 fi    

@@ -1,11 +1,52 @@
-cluster_ntuple_path /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
-cms_ntuple_path /data1/DATA/LQNtuples_5_3_14_snu27/MC/
+#####  PATH on SNU cluster machines  (For LQNtuples only)
+cluster_ntuple_path                 /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/
+cluster_mc_ntuple_path_2014         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
+cluster_data_ntuple_path_2014	    /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
+cluster_mc_ntuple_path_2015         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2015/MC/
+cluster_mc_ntuple_path_2016         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/
+cluster_mc_ntuplepath_chargedhiggs  /data2/MC/CHsample/LQNtuple/
+###### PATH on cms1-6 machines (For LQNtuples only)
+cms_mc_ntuple_path_2014            /data1/DATA/LQNtuples_5_3_14_snu27/MC/
+cms_data_ntuple_path_2014          /data1/DATA/LQNtuples_5_3_14_snu27/MC/
+cms_mc_ntuple_path_2015            /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/
+cms_mc_ntuple_path_2016            /data2/DATA/LQNtuples_5_3_14_snu27_2016/MC/
+cms_mc_ntuplepath_chargedhiggs     /data2/MC/CHsample/LQNtuple/
+
+#################   DIR INFORMATION
+############  LQNtuples_5_3_14_snu27/   this uses CMSSW 5_3_14
+############  LQNtuples_5_3_14_snu27_2015/   this uses CMSSW 5_3_20. Lepton shifted pt was added + pdf changed
+############  LQNtuples_5_3_14_snu27_2016/   this uses CMSSW 5_3_14 for QCD muon samples.
+############  LQNtuples_5_3_14_snu27_2016_chs/  CMSSW 5_3_20 for all other samples. Other samples also have pdfweights fixed and chs jets used
+###########    /data2/MC/CHsample/LQNtuple/    <FILL IN BY GBYU>
+
+
+# Structure of File:
+# - First list of all SKtees
+#  -- NoCut         (name  prefix = SK   name postfix = _nocut)
+#  -- Lepton skim   (name  prefix = SK   name postfix =)
+#  -- DiLepton skim (name  prefix = SK   name postfix = _dilep)
+#
+# --- For each skim The samples are split into the version 
+#     version 1 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/ 
+#     version 2 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/
+#     version 3 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/
+#
+#
+# - LQNtuples are listed
+
+
+
 
 ########################	
 ##### SKTrees ##########
-#######################
+#
+######################
+#
+#  NOCUT LIST
+######################
 
-###HN signal
+############ Tag27_CMSSW_5_3_14 ##############################################################################
+###### Following sktrees are made from LQNtuples_5_3_14_snu27  LQntuples
 #######################################################################################################################################
 # sample	      Effective lumi	Path ##########################################################################################
 #######################################################################################################################################
@@ -56,47 +97,49 @@ SKHNee600_nocut		58506729.08	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June
 SKHNee700_nocut		130502192.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee700/
 
 SKHNemu40_nocut          65.95580292    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu40/
-SKHNemu50_nocut          89.43515778            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu50/
-SKHNemu60_nocut          157.9545898          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu60/
-SKHNemu70_nocut          457.5957642          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu70/
-SKHNemu80_nocut          4991.819824         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu80/
-SKHNemu90_nocut          14074.34473         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu90/
-SKHNemu100_nocut         13923.72        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu100/
-SKHNemu125_nocut         46434.47        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu125/
+SKHNemu50_nocut          89.43515778    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu50/
+SKHNemu60_nocut          157.9545898    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu60/
+SKHNemu70_nocut          457.5957642    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu70/
+SKHNemu80_nocut          4991.819824    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu80/
+SKHNemu90_nocut          14074.34473    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu90/
+SKHNemu100_nocut         13923.72       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu100/
+SKHNemu125_nocut         46434.47       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu125/
 SKHNemu150_nocut         108826.73       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu150/
 SKHNemu175_nocut         177056.65       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu175/
 SKHNemu200_nocut         380856.25       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu200/
-SKHNemu225_nocut         235949.8438       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu225/
-SKHNemu250_nocut         981680.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu250/
-SKHNemu275_nocut         1476592.75        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu275/
-SKHNemu300_nocut         2153743.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu300/
+SKHNemu225_nocut         235949.8438     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu225/
+SKHNemu250_nocut         981680.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu250/
+SKHNemu275_nocut         1476592.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu275/
+SKHNemu300_nocut         2153743.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu300/
 SKHNemu325_nocut         3064043.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu325/
-SKHNemu350_nocut         4271508.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu350/
-SKHNemu375_nocut         5851044.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu375/
-SKHNemu400_nocut         7895426.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu400/
-SKHNemu500_nocut         22836320.     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu500/
+SKHNemu350_nocut         4271508.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu350/
+SKHNemu375_nocut         5851044.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu375/
+SKHNemu400_nocut         7895426.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu400/
+SKHNemu500_nocut         22836320.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu500/
 
-SKHNmue40_nocut          9.497          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue40/
-SKHNmue50_nocut          92.79712677           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue50/
-SKHNmue60_nocut          163.7173004          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue60/
-SKHNmue70_nocut          463.2525024          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue70/
-SKHNmue80_nocut          4708.652344         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue80/
-SKHNmue90_nocut          13877.29297         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue90/
-SKHNmue100_nocut         12493.12109        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue100/
-SKHNmue125_nocut         46436.33203        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue125/
-SKHNmue150_nocut         107962.5625       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue150/
-SKHNmue175_nocut         213165.1406       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue175/
-SKHNmue200_nocut         380863.875       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue200/
-SKHNmue225_nocut         592485.6875       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue225/
-SKHNmue250_nocut         942408.875       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue250/
-SKHNmue275_nocut         1458900.625      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue275/
-SKHNmue300_nocut         2132075.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue300/
+SKHNmue40_nocut          9.497           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue40/
+SKHNmue50_nocut          92.79712677     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue50/
+SKHNmue60_nocut          163.7173004     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue60/
+SKHNmue70_nocut          463.2525024     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue70/
+SKHNmue80_nocut          4708.652344     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue80/
+SKHNmue90_nocut          13877.29297     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue90/
+SKHNmue100_nocut         12493.12109     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue100/
+SKHNmue125_nocut         46436.33203     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue125/
+SKHNmue150_nocut         107962.5625     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue150/
+SKHNmue175_nocut         213165.1406     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue175/
+SKHNmue200_nocut         380863.875      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue200/
+SKHNmue225_nocut         592485.6875     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue225/
+SKHNmue250_nocut         942408.875      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue250/
+SKHNmue275_nocut         1458900.625     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue275/
+SKHNmue300_nocut         2132075.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue300/
 SKHNmue325_nocut         2916957.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue325/
-SKHNmue350_nocut         4236992.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue350/
-SKHNmue375_nocut         5218963.5      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue375/
-SKHNmue400_nocut         7800044.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue400/
-SKHNmue500_nocut         23209544.     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue500/
+SKHNmue350_nocut         4236992.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue350/
+SKHNmue375_nocut         5218963.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue375/
+SKHNmue400_nocut         7800044.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue400/
+SKHNmue500_nocut         23209544.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue500/
 
+############ Tag27_CMSSW_5_3_20 ##############################################################################
+###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
 SKDY10to50_15_nocut       2827.096      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY10to50_15/
 SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY50plus_15/
 
@@ -111,6 +154,9 @@ SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/S
 #######################################################################################################################################
 # channel    period	Path ##########################################################################################
 #######################################################################################################################################
+
+############ Tag27_CMSSW_5_3_14 ##############################################################################
+###### Following sktrees are made from LQNtuples_5_3_14_snu27 LQNtuples
 
 SKmuon		 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleMuon/periodA/
 SKmuon		 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleMuon/periodB/
@@ -127,39 +173,14 @@ SKemu		 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronM
 SKemu		 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodC/
 SKemu		 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodD/
 
-SKsinglemuon	 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodA/
-SKsinglemuon	 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodB/
-SKsinglemuon	 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodC/
-SKsinglemuon	 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodD/
-
-SKsingleelectron A	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodA/
-SKsingleelectron B	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodB/
-SKsingleelectron C	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodC/
-SKsingleelectron D	/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodD/
-
-
 ########################################################################
 ### MC #############
 ########################################################################
-
 ### DY ###
-### MADGRAPH
+
 SKDY10to50        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DY10to50/
 SKDY50plus        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DY50plus/
-SKDY10to50_15       2827.096        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY10to50_15/
-SKDY50plus_15       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY50plus_15/
 SKZbb             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Zbb/
-
-
-
-SKttbar_mass169      168624.89        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass169/
-SKttbar_mass175      170873.20        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass175/
-SKttbar_matchingdown 88190.43         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingdown/
-SKttbar_matchingup   158474.37        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingup/
-SKttbar_scaledown    161438.73        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaledown/
-SKttbar_scaleup      170377.21        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaleup/
-SKttbar_width_x5     57792.39         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_width_x5/
-SKttbar_central       1.              /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_central/
 
 
 ### POWHEG
@@ -191,7 +212,6 @@ SKstbar_tW        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/
 SKst_sch          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tch/
 SKst_tch          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tch/
 SKst_tW           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tW/
-SKst_tW           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/st_tW/ 
 SKtopDIL          461277.43      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topDIL/
 SKtopHAD          460656.55      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topHAD/
 SKtopLJ           93722.93       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topLJ/
@@ -219,7 +239,6 @@ SKZZtotttt        10719880.38     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees
 
 ### higgs ###
 SKggHtoZZ         18990782.44      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ggHtoZZ/
-SKHtoZZ           15637781.        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/HtoZZ/
 SKHtoTauTau       5478020.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoTauTau/
 SKHtoWW           769720.          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoWW/
 
@@ -260,11 +279,45 @@ SKQCD_250_350_BCtoE 19600.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTree
 SKQCD_350_EM        382497.9062	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_350_EM/
 SKQCD_350_BCtoE     81446.75	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_350_BCtoE/
 SKQCD		    1.		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD/
+
+
+
+############ Tag27_CMSSW_5_3_20 ##############################################################################
+###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
+SKsinglemuon     A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodA/
+SKsinglemuon     B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodB/
+SKsinglemuon     C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodC/
+SKsinglemuon     D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodD/
+
+SKsingleelectron A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodA/
+SKsingleelectron B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodB/
+SKsingleelectron C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodC/
+SKsingleelectron D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodD/
+
+###### ###### ###### MC
+SKDY10to50_15       2827.096      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY10to50_15/
+SKDY50plus_15       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY50plus_15/
+SKttbar_mass169      168624.89        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass169/
+SKttbar_mass175      170873.20        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass175/
+SKttbar_matchingdown 88190.43         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingdown/
+SKttbar_matchingup   158474.37        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingup/
+SKttbar_scaledown    161438.73        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaledown/
+SKttbar_scaleup      170377.21        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaleup/
+SKttbar_width_x5     57792.39         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_width_x5/
+SKttbar_central       1.              /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_central/
+SKHtoZZ           15637781.        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/HtoZZ/
+
+
+
 ########################################################################
 ########################################################################
 ### DILEPTON SKIM
 ########################################################################
 ########################################################################
+
+
+############ Tag27_CMSSW_5_3_14 ##############################################################################
+###### Following sktrees are made from LQNtuples_5_3_14_snu27 LQNtuples
 SKmuon_dilep           A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodA/
 SKmuon_dilep           B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodB/
 SKmuon_dilep           C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodC/
@@ -280,15 +333,6 @@ SKemu_dilep            B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June
 SKemu_dilep            C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodC/
 SKemu_dilep            D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodD/
 
-SKsinglemuon_dilep     A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleMuon/periodA/
-SKsinglemuon_dilep     B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleMuon/periodB/
-SKsinglemuon_dilep     C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleMuon/periodC/
-SKsinglemuon_dilep     D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleMuon/periodD/
-
-SKsingleelectron_dilep A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleElectron/periodA/
-SKsingleelectron_dilep B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleElectron/periodB/
-SKsingleelectron_dilep C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleElectron/periodC/
-SKsingleelectron_dilep D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/SingleElectron/periodD/
 
 ###############################################################
 ### MC  #########
@@ -298,18 +342,6 @@ SKsingleelectron_dilep D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June
 ### MADGRAPH
 SKDY10to50_dilep        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DY10to50/
 SKDY50plus_dilep        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DY50plus/
-
-SKDY10to50_15_dilep     2827.09          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY10to50_15/
-SKDY50plus_15_dilep      8382.40         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY50plus_15/
-
-SKttbar_mass169_dilep      168624.89	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass169/
-SKttbar_mass175_dilep      170873.20	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass175/
-SKttbar_matchingdown_dilep 88190.43	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingdown/
-SKttbar_matchingup_dilep   158474.37	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingup/
-SKttbar_scaledown_dilep    161438.73	  /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaledown/
-SKttbar_scaleup_dilep      170377.21	  /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaleup/
-SKttbar_width_x5_dilep     57792.39	  /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_width_x5/
-
 
 SKZbb_dilep             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Zbb/
 ### POWHEG
@@ -365,7 +397,6 @@ SKZZtotttt_dilep        10719880.38     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 
 ### higgs ######
 SKggHtoZZ_dilep         18990782.44     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ggHtoZZ/
-SKHtoZZ_dilep           15637781.       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/HtoZZ/
 SKHtoTauTau_dilep       5478020.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoTauTau/
 SKHtoWW_dilep           769720.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoWW/
 
@@ -405,296 +436,330 @@ SKQCD_350_EM_dilep        382497.9062   /data1/LocalNtuples/Tag27_CMSSW_5_3_14/S
 SKQCD_350_BCtoE_dilep     81446.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_350_BCtoE/
 SKQCD_dilep    1.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD/
 
+
+############ Tag27_CMSSW_5_3_20 ##############################################################################
+###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
+
+SKDY10to50_15_dilep     2827.09          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY10to50_15/
+SKDY50plus_15_dilep      8382.40         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY50plus_15/
+
+SKttbar_mass169_dilep      168624.89       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass169/
+SKttbar_mass175_dilep      170873.20       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass175/
+SKttbar_matchingdown_dilep 88190.43        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingdown/
+SKttbar_matchingup_dilep   158474.37       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingup/
+SKttbar_scaledown_dilep    161438.73      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaledown/
+SKttbar_scaleup_dilep      170377.21      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaleup/
+SKttbar_width_x5_dilep     57792.39       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_width_x5/
+
+SKHtoZZ_dilep           15637781.       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/HtoZZ/
+
+
+###### Following sktrees are made with a different setup of sktreemaker
+#### uses Tag27_CMSSW_5_3_20 and Tag27_CMSSW_5_3_20_2015 and Tag27_CMSSW_5_3_20_2016
+#### pt requirement is dropped to 10 GeV for skim of lepton
+#### no cuts on vertec or MET fileter cuts are applied (needed for gbyu)
+SKmuon_looseskim           A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodA/
+SKmuon_looseskim           B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodB/
+SKmuon_looseskim           C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodC/
+SKmuon_looseskim           D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodD/
+
+SKsinglemuon_looseskim     A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodA/
+SKsinglemuon_looseskim     B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodB/
+SKsinglemuon_looseskim     C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodC/
+SKsinglemuon_looseskim     D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodD/
+
+
+
+
 ######################################################################
 ### LQNtuples ########################################################
 ####
 ### DATA# ############################################################
 # channel Period localpath
 ############################################################
-egamma A    /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleElectron/periodA/
-egamma B    /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleElectron/periodB/
-egamma C    /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleElectron/periodC/
-egamma D    /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleElectron/periodD/
+#cms_data_ntuple_path_2014     /data1/DATA/LQNtuples_5_3_14_snu27/Data/
+############################################################
 
-muon A	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodA/
-muon B 	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodB/
-muon C 	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodC/
-muon D 	 /data1/DATA/LQNtuples_5_3_14_snu27/Data/DoubleMuon/periodD/
+egamma A    cms_ntuple_path_2014 DoubleElectron/periodA/
+egamma B    cms_ntuple_path_2014 DoubleElectron/periodB/
+egamma C    cms_ntuple_path_2014 DoubleElectron/periodC/
+egamma D    cms_ntuple_path_2014 DoubleElectron/periodD/
 
-emu A       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodA/
-emu B       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodB/
-emu C       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodC/
-emu D       /data1/DATA/LQNtuples_5_3_14_snu27/Data/MuEG/periodD/
+muon A	 cms_ntuple_path_2014 DoubleMuon/periodA/
+muon B 	 cms_ntuple_path_2014 DoubleMuon/periodB/
+muon C 	 cms_ntuple_path_2014 DoubleMuon/periodC/
+muon D 	 cms_ntuple_path_2014 DoubleMuon/periodD/
 
-singlemuon A    /data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleMuon/periodA/ 
-singlemuon B    /data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleMuon/periodB/ 
-singlemuon C    /data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleMuon/periodC/ 
-singlemuon D    /data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleMuon/periodD/ 
+emu A       cms_ntuple_path_2014 MuEG/periodA/
+emu B       cms_ntuple_path_2014 MuEG/periodB/
+emu C       cms_ntuple_path_2014 MuEG/periodC/
+emu D       cms_ntuple_path_2014 MuEG/periodD/
 
-singleelectron A	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodA/ 						    
-singleelectron B	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodB/ 						    
-singleelectron C	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodC/ 						    
-singleelectron D	/data1/DATA/LQNtuples_5_3_14_snu27/Data/SingleElectron/periodD/ 						    
+singlemuon A    cms_ntuple_path_2014 SingleMuon/periodA/ 
+singlemuon B    cms_ntuple_path_2014 SingleMuon/periodB/ 
+singlemuon C    cms_ntuple_path_2014 SingleMuon/periodC/ 
+singlemuon D    cms_ntuple_path_2014 SingleMuon/periodD/ 
 
-
-TESTGB 1. /data4/DATA/LQNtuples/MC/TestSample/
-
-
-QCD_1000_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_1000_mu/
-QCD_15-20_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_15-20_mu/
-QCD_20-30_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_20-30_mu/
-QCD_30-50_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_30-50_mu/
-QCD_50-80_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_50-80_mu/
-QCD_800-1000_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_800-1000_mu/
-QCD_120-170_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_120-170_mu/
-QCD_170-300_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_170-300_mu/
-QCD_300-470_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_300-470_mu/
-QCD_470-600_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_470-600_mu/
-QCD_600-800_mu	 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_600-800_mu/
-QCD_80-120_mu 1. /data1/DATA/LQNtuples_5_3_14_snu27_2016/MC/QCD_80-120_mu/
-
-### MC ############################################################
-# Sample	Inte.lumi(/pb)	localpath
-##################################################################
-#### DRELL YAN
-### MADGRAPH
-DY10to50	2901.7          DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
-DY50plus	8693.5		DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
-
-DY10to50_15       2827.09           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
-DY50plus_15       8382.40           /data1/DATA/LQNtuples_5_3_14_snu27_2015/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
-
-ttbar_mass169	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_mass171	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass171_5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_mass173	   168667.625	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass173_5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_mass175	   168480.03	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_matchingdown 88190.4375	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_matchingup   158474.375        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_scaledown    167891.7188	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_scaleup      179009.6875	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_width_x5	   57792.39844	    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_central	   262243.375	   TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/
-ttbar_pow	   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_CT10_TuneZ2star_8TeV-powheg-tauola/
-ttbar_pow_her	   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC//TT_CT10_AUET2_8TeV-powheg-herwig/
-
-TTH                1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TTH_Inclusive_M-125_8TeV_pythia6/
+singleelectron A	cms_ntuple_path_2014 SingleElectron/periodA/ 						    
+singleelectron B	cms_ntuple_path_2014 SingleElectron/periodB/ 						    
+singleelectron C	cms_ntuple_path_2014 SingleElectron/periodC/ 						    
+singleelectron D	cms_ntuple_path_2014 SingleElectron/periodD/ 						    
 
 
-TestSample        1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TestSample/
-TestSample_chs        1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TestSample_chs/
-
-SKTestSample    1.                /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/TestSample/
-SKTestSample_chs    1.                /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/TestSample_chs/
-
-ttbar_CT10_pythia		   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_weights_CT10_TuneP11C-8TeV-powheg-pythia6-tauola/
-ttbar_CT10_herwig		   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_weights_CT10_AUET2_8TeV-powheg-herwig/
-CH120PU        273509.8125        /data2/MC/CHsample/LQNtuple/CH120/                            
-CHm120PU       137442.125         /data2/MC/CHsample/LQNtuple/CHm120/                           
-CH110PU        273509.8125                /data2/MC/CHsample/LQNtuple/CH110/                    
-CH100PU        272135.4062            /data2/MC/CHsample/LQNtuple/CH100/                        
-CH90PU         274846.4688        /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/CH90/
-CH130PU        274884.25          /data2/MC/CHsample/LQNtuple/CH130/                            
-CH140PU        274884.25          /data2/MC/CHsample/LQNtuple/CH140/
-CH150PU        274884.25          /data2/MC/CHsample/LQNtuple/CH150/
-   
-
+############################################################
+#cms_mc_ntuple_path_2014     /data1/DATA/LQNtuples_5_3_14_snu27/MC/
+############################################################
 
 ### POWHEG
-DYee            1.              DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/
-DYmm            1.              DYToMuMu_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/
-DYtt            1.              DYToTauTau_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/
-
+DYee            1.    cms_ntuple_path_2014          DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/
+DYmm            1.    cms_ntuple_path_2014          DYToMuMu_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/
+DYtt            1.    cms_ntuple_path_2014          DYToTauTau_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/
 ### Wjets
-Wjets           1538.562        WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/
+Wjets           1538.562   cms_ntuple_path_2014     WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/
 
 ### Same Sign analysis
-SSWmWm		1084518.452     WmWmqq_8TeV-madgraph/
-SSWpWp		402840.451	WpWpqq_8TeV-madgraph/
-WW_dp		1418676.646	WW_DoubleScattering_8TeV-pythia8/
-ttW		845025.862	TTWJets_8TeV-madgraph/
-ttZ		1207816.13	TTZJets_8TeV-madgraph_v2/
-WWW		2684057.442	WWWJets_8TeV-madgraph/
-TTWW		106931760.	TTWWJets_8TeV-madgraph/
-TTG		33055.40	TTGJets_8TeV-madgraph/
-ZZZ		40692610.	ZZZNoGstarJets_8TeV-madgraph/
-WZZ		11449740.	WZZNoGstarJets_8TeV-madgraph/ 
-WWZ		3510805.75	WWZNoGstarJets_8TeV-madgraph/
-WWG		407426.125	WWGJets_8TeV-madgraph/
+SSWmWm		1084518.452  cms_ntuple_path_2014       WmWmqq_8TeV-madgraph/
+SSWpWp		402840.451   cms_ntuple_path_2014	WpWpqq_8TeV-madgraph/
+WW_dp		1418676.646  cms_ntuple_path_2014	WW_DoubleScattering_8TeV-pythia8/
+ttW		845025.862   cms_ntuple_path_2014	TTWJets_8TeV-madgraph/
+ttZ		1207816.13   cms_ntuple_path_2014	TTZJets_8TeV-madgraph_v2/
+WWW		2684057.442  cms_ntuple_path_2014	WWWJets_8TeV-madgraph/
+TTWW		106931760.   cms_ntuple_path_2014	TTWWJets_8TeV-madgraph/
+TTG		33055.40     cms_ntuple_path_2014	TTGJets_8TeV-madgraph/
+ZZZ		40692610.    cms_ntuple_path_2014	ZZZNoGstarJets_8TeV-madgraph/
+WZZ		11449740.    cms_ntuple_path_2014	WZZNoGstarJets_8TeV-madgraph/ 
+WWZ		3510805.75   cms_ntuple_path_2014	WWZNoGstarJets_8TeV-madgraph/
+WWG		407426.125   cms_ntuple_path_2014	WWGJets_8TeV-madgraph/
 
 ### BOSON + bb
-Wbb		517443.59	WbbJetsToLNu_Massive_TuneZ2star_8TeV-madgraph-pythia6_tauola/
-Zbb		147000		ZbbToLL_massive_M-50_TuneZ2star_8TeV-madgraph-pythia6_tauola/
+Wbb		517443.59  cms_ntuple_path_2014	WbbJetsToLNu_Massive_TuneZ2star_8TeV-madgraph-pythia6_tauola/
+Zbb		147000	   cms_ntuple_path_2014	ZbbToLL_massive_M-50_TuneZ2star_8TeV-madgraph-pythia6_tauola/
 
 
 ### HIGGS
-ggHtoZZ		18990782.44	GluGluToHToZZTo4L_M-125_8TeV-powheg-pythia6/
-HtoZZ		15637781	 /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6/
-HtoTauTau	5478020.	WH_ZH_TTH_HToTauTau_M-125_lepdecay_8TeV-pythia6-tauola/
-HtoWW		769720.		WH_ZH_TTH_HToWW_M-125_8TeV-pythia6/
+ggHtoZZ		18990782.44 cms_ntuple_path_2014	GluGluToHToZZTo4L_M-125_8TeV-powheg-pythia6/
+HtoZZ		15637781    cms_ntuple_path_2014	 /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6/
+HtoTauTau	5478020.    cms_ntuple_path_2014	WH_ZH_TTH_HToTauTau_M-125_lepdecay_8TeV-pythia6-tauola/
+HtoWW		769720.	    cms_ntuple_path_2014	WH_ZH_TTH_HToWW_M-125_8TeV-pythia6/
 
 ### Boson+ gamma
-Wgamma		10403.722	WGToLNuG_TuneZ2star_8TeV-madgraph-tauola/
-Zgamma		49684.472	ZGToLLG_8TeV-madgraph/
-WgammaE		53576.196	WGstarToLNu2E_TuneZ2star_8TeV-madgraph-tauola/
-WgammaMu	156730.		WGstarToLNu2Mu_TuneZ2star_7TeV-madgraph-tauola/
-WgammaTau	148800.		WGstarToLNu2Tau_TuneZ2star_7TeV-madgraph-tauola/
-
+Wgamma		10403.722  cms_ntuple_path_2014    	WGToLNuG_TuneZ2star_8TeV-madgraph-tauola/
+Zgamma		49684.472  cms_ntuple_path_2014	        ZGToLLG_8TeV-madgraph/
+WgammaE		53576.196   cms_ntuple_path_2014	WGstarToLNu2E_TuneZ2star_8TeV-madgraph-tauola/
+WgammaMu	156730.	   cms_ntuple_path_2014	        WGstarToLNu2Mu_TuneZ2star_7TeV-madgraph-tauola/
+WgammaTau	148800.	   cms_ntuple_path_2014	        WGstarToLNu2Tau_TuneZ2star_7TeV-madgraph-tauola/
 
 ### MADGRAPGH DIBOSON
-WW_mg		332629.0	 WWJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
-WZtollqq_mg	1457837.72	 WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
-WZtoqqln_mg	1836275.25	 WZJetsTo2QLNu_8TeV-madgraph/
-WZtollln_mg	1910000.0	 WZJetsTo3LNu_TuneZ2_8TeV-madgraph-tauola/
-ZZtollnn_mg	2617628.83	 ZZJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
-ZZtollqq_mg	790824.82	 ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
-ZZtollll_mg	27163220.34	 ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/
+WW_mg		332629.0   cms_ntuple_path_2014	 WWJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
+WZtollqq_mg	1457837.72  cms_ntuple_path_2014	 WZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
+WZtoqqln_mg	1836275.25 cms_ntuple_path_2014	 WZJetsTo2QLNu_8TeV-madgraph/
+WZtollln_mg	1910000.0  cms_ntuple_path_2014	 WZJetsTo3LNu_TuneZ2_8TeV-madgraph-tauola/
+ZZtollnn_mg	2617628.83  cms_ntuple_path_2014	 ZZJetsTo2L2Nu_TuneZ2star_8TeV-madgraph-tauola/
+ZZtollqq_mg	790824.82   cms_ntuple_path_2014	 ZZJetsTo2L2Q_TuneZ2star_8TeV-madgraph-tauola/
+ZZtollll_mg	27163220.34   cms_ntuple_path_2014	 ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/
 
 ###PYTHIA DIBOSON
-WZ_py           301122.644       /data4/DATA/LQNtuples/MC/WZ_TuneZ2star_8TeV_pythia6_tauola/
-ZZ_py           555109.777      ZZ_TuneZ2star_8TeV_pythia6_tauola/
-WW_py           182363.161      WW_TuneZ2star_8TeV_pythia6_tauola/
+WZ_py           301122.644    cms_ntuple_path_2014   WZ_TuneZ2star_8TeV_pythia6_tauola/
+ZZ_py           555109.777    cms_ntuple_path_2014   ZZ_TuneZ2star_8TeV_pythia6_tauola/
+WW_py           182363.161    cms_ntuple_path_2014   WW_TuneZ2star_8TeV_pythia6_tauola/
 
 ### POWHEG
-ZZtoeemm	8474476.51	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo2e2mu_8TeV-powheg-pythia6/	
-ZZtoeett	4662767.40	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo2e2tau_8TeV-powheg-pythia6/	
-ZZtommtt	4662829.65	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo2mu2tau_8TeV-powheg-pythia6/	
-ZZtoeeee	19491483.55	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo4e_8TeV-powheg-pythia6/	
-ZZtommmm	19491093.49	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo4mu_8TeV-powheg-pythia6/	
-ZZtotttt	10719880.38	/data1/DATA/LQNtuples_5_3_14_snu27/MC/ZZTo4tau_8TeV-powheg-pythia6/	
+ZZtoeemm	8474476.51  cms_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo2e2mu_8TeV-powheg-pythia6/	
+ZZtoeett	4662767.40  cms_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo2e2tau_8TeV-powheg-pythia6/	
+ZZtommtt	4662829.65  cms_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo2mu2tau_8TeV-powheg-pythia6/	
+ZZtoeeee	19491483.55 cms_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo4e_8TeV-powheg-pythia6/	
+ZZtommmm	19491093.49 cms_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo4mu_8TeV-powheg-pythia6/	
+ZZtotttt	10719880.38 cms_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo4tau_8TeV-powheg-pythia6/	
 
 ### QCD
-QCD_mumu	54.2		QCD2MuMu_2MupPtEtaFilterFilter_8TeV-pythia6/ 
-QCD_30-40_EM2	497.0		QCD_Pt-30to40_doubleEMEnriched_TuneZ2star_8TeV-pythia6/
-QCD_40_EM2	86.0		QCD_Pt-40_doubleEMEnriched_TuneZ2star_8TeV-pythia6/
+QCD_mumu	54.2	 cms_ntuple_path_2014	QCD2MuMu_2MupPtEtaFilterFilter_8TeV-pythia6/ 
+QCD_30-40_EM2	497.0	 cms_ntuple_path_2014	QCD_Pt-30to40_doubleEMEnriched_TuneZ2star_8TeV-pythia6/
+QCD_40_EM2	86.0	 cms_ntuple_path_2014 	QCD_Pt-40_doubleEMEnriched_TuneZ2star_8TeV-pythia6/
 
 ### QCD SINGLE LEP
-QCD_20_30_EM	12.0		QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/
-QCD_20_30_BCtoE	10.4		QCD_Pt_20_30_BCtoE_TuneZ2star_8TeV_pythia6/
-QCD_30_80_EM	7.17		QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6/
-QCD_30_80_BCtoE 12.26		QCD_Pt_30_80_BCtoE_TuneZ2star_8TeV_pythia6/ 
-QCD_80_170_EM    188.           QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6/	
-QCD_80_170_BCtoE 149.86         QCD_Pt_80_170_BCtoE_TuneZ2star_8TeV_pythia6/
-QCD_170_250_EM    6910.91       QCD_Pt_170_250_EMEnriched_TuneZ2star_8TeV_pythia6/	
-QCD_170_250_BCtoE 3082.50	QCD_Pt_170_250_BCtoE_TuneZ2star_8TeV_pythia6/
-QCD_250_350_EM    62166.73      QCD_Pt_250_350_EMEnriched_TuneZ2star_8TeV_pythia6/	
-QCD_250_350_BCtoE 19623.52      QCD_Pt_250_350_BCtoE_TuneZ2star_8TeV_pythia6/
-QCD_350_EM        382497.9062   QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/
-QCD_350_BCtoE     81446.75      QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/
-
+QCD_20_30_EM	12.0	cms_ntuple_path_2014	QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_20_30_BCtoE	10.4	cms_ntuple_path_2014 	QCD_Pt_20_30_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_30_80_EM	7.17	cms_ntuple_path_2014	QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_30_80_BCtoE 12.26	cms_ntuple_path_2014	QCD_Pt_30_80_BCtoE_TuneZ2star_8TeV_pythia6/ 
+QCD_80_170_EM    188.      cms_ntuple_path_2014     QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6/	
+QCD_80_170_BCtoE 149.86    cms_ntuple_path_2014     QCD_Pt_80_170_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_170_250_EM    6910.91  cms_ntuple_path_2014     QCD_Pt_170_250_EMEnriched_TuneZ2star_8TeV_pythia6/	
+QCD_170_250_BCtoE 3082.50  cms_ntuple_path_2014	QCD_Pt_170_250_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_250_350_EM    62166.73 cms_ntuple_path_2014      QCD_Pt_250_350_EMEnriched_TuneZ2star_8TeV_pythia6/	
+QCD_250_350_BCtoE 19623.52 cms_ntuple_path_2014     QCD_Pt_250_350_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_350_EM        382497.9062 cms_ntuple_path_2014  QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_350_BCtoE     81446.75  cms_ntuple_path_2014    QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/
 
 ### TOP
-stbar_sch	79530.67	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
-stbar_tch	63031.66	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
-stbar_tW	44455.85	/data1/DATA/LQNtuples_5_3_14_snu27/MC/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
-st_sch		68591.28	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_s-channel_TuneZ2star_8TeV-powheg-tauola/
-st_tch		66635.23	/data1/DATA/LQNtuples_5_3_14_snu27/MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_sch	79530.67  	cms_mc_ntuple_path_2014 /MC/Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_tch	63031.66	cms_mc_ntuple_path_2014 /MC/Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_tW	44455.85	cms_mc_ntuple_path_2014 /MC/Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
+st_sch		68591.28	cms_mc_ntuple_path_2014 /MC/T_s-channel_TuneZ2star_8TeV-powheg-tauola/
+st_tch		66635.23	cms_mc_ntuple_path_2014 /MC/T_t-channel_TuneZ2star_8TeV-powheg-tauola/
 st_tW		44834.054	T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
-topDIL		461277.43	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_FullLeptMGDecays_8TeV-madgraph-tauola/
-topHAD		460656.55	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_HadronicMGDecays_8TeV-madgraph/
-topLJ		93722.93	/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
-ttbar           29588.256      TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
-ttbarMS_check	1.		/data1/DATA/LQNtuples_5_3_14_snu27/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
+topDIL		461277.43	cms_mc_ntuple_path_2014 /MC/TTJets_FullLeptMGDecays_8TeV-madgraph-tauola/
+topHAD		460656.55	cms_mc_ntuple_path_2014 /MC/TTJets_HadronicMGDecays_8TeV-madgraph/
+topLJ		93722.93	cms_mc_ntuple_path_2014 /MC/TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
+ttbar           29588.256       cms_mc_ntuple_path_2014  TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
+ttbarMS_check	1.		cms_mc_ntuple_path_2014 /MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
 				
 ### EXTRA STAT
-W1Jets		3781.307	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
-W2Jets		18803.881	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/
-W3Jets		29514.73	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/
-W4Jets		62889.11	/data1/DATA/LQNtuples_5_3_14_snu27/MC/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W1Jets		3781.307	cms_mc_ntuple_path_2014 /MC/W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W2Jets		18803.881	cms_mc_ntuple_path_2014 /MC/W2JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W3Jets		29514.73	cms_mc_ntuple_path_2014 /MC/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W4Jets		62889.11	cms_mc_ntuple_path_2014 /MC/W4JetsToLNu_TuneZ2Star_8TeV-madgraph/
 		
-Z1Jets		43081.069	/data1/DATA/LQNtuples_5_3_14_snu27/MC/DY1JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
-Z2Jets		120296.22	/data1/DATA/LQNtuples_5_3_14_snu27/MC/DY2JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
-Z3Jets		215566.44	/data1/DATA/LQNtuples_5_3_14_snu27/MC/DY3JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
-Z4Jets		277455.84	/data1/DATA/LQNtuples_5_3_14_snu27/MC/DY4JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
+Z1Jets		43081.069	cms_mc_ntuple_path_2014 /MC/DY1JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
+Z2Jets		120296.22	cms_mc_ntuple_path_2014 /MC/DY2JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
+Z3Jets		215566.44	cms_mc_ntuple_path_2014 /MC/DY3JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
+Z4Jets		277455.84	cms_mc_ntuple_path_2014 /MC/DY4JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
 
-##########################################
+#########################################
 ### HN signal ###
 ##########################################
-HNmumu40	64.31		MajoranaNeutrinoToMuMu_M-40_TuneZ2star_8TeV-alpgen/
-HNmumu50	46.68		MajoranaNeutrinoToMuMu_M-50_TuneZ2star_8TeV-alpgen/
-HNmumu60	162.56		MajoranaNeutrinoToMuMu_M-60_TuneZ2star_8TeV-alpgen/
-HNmumu70	235.87		MajoranaNeutrinoToMuMu_M-70_TuneZ2star_8TeV-alpgen/
-HNmumu80	5201.57		MajoranaNeutrinoToMuMu_M-80_TuneZ2star_8TeV-alpgen/
-HNmumu90	7037.03		MajoranaNeutrinoToMuMu_M-90_TuneZ2star_8TeV-alpgen/
-HNmumu100	14036.72        MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen/
-HNmumu125	46242.46        MajoranaNeutrinoToMuMu_M-125_TuneZ2star_8TeV-alpgen/
-HNmumu150	108826.73       MajoranaNeutrinoToMuMu_M-150_TuneZ2star_8TeV-alpgen/
-HNmumu175	214442.23       MajoranaNeutrinoToMuMu_M-175_TuneZ2star_8TeV-alpgen/
-HNmumu200	380833.40       MajoranaNeutrinoToMuMu_M-200_TuneZ2star_8TeV-alpgen/
-HNmumu225	627546.73       MajoranaNeutrinoToMuMu_M-225_TuneZ2star_8TeV-alpgen/
-HNmumu250	979699.29       MajoranaNeutrinoToMuMu_M-250_TuneZ2star_8TeV-alpgen/
-HNmumu275	1476651.80      MajoranaNeutrinoToMuMu_M-275_TuneZ2star_8TeV-alpgen/
-HNmumu300	2153700.35      MajoranaNeutrinoToMuMu_M-300_TuneZ2star_8TeV-alpgen/
-HNmumu325	3063798.49      MajoranaNeutrinoToMuMu_M-325_TuneZ2star_8TeV-alpgen/
-HNmumu350	4271251.60      MajoranaNeutrinoToMuMu_M-350_TuneZ2star_8TeV-alpgen/
-HNmumu375	5826499.35      MajoranaNeutrinoToMuMu_M-375_TuneZ2star_8TeV-alpgen/
-HNmumu400	7879056.73      MajoranaNeutrinoToMuMu_M-400_TuneZ2star_8TeV-alpgen/
-HNmumu500	23208151.52     MajoranaNeutrinoToMuMu_M-500_TuneZ2star_8TeV-alpgen/
-HNmumu600	58506729.08     MajoranaNeutrinoToMuMu_M-600_TuneZ2star_8TeV-alpgen/
-HNmumu700	130502192.5     MajoranaNeutrinoToMuMu_M-700_TuneZ2star_8TeV-alpgen/
+HNmumu40	64.31		cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-40_TuneZ2star_8TeV-alpgen/
+HNmumu50	46.68		cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-50_TuneZ2star_8TeV-alpgen/
+HNmumu60	162.56		cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-60_TuneZ2star_8TeV-alpgen/
+HNmumu70	235.87		cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-70_TuneZ2star_8TeV-alpgen/
+HNmumu80	5201.57		cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-80_TuneZ2star_8TeV-alpgen/
+HNmumu90	7037.03		cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-90_TuneZ2star_8TeV-alpgen/
+HNmumu100	14036.72        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-100_TuneZ2star_8TeV-alpgen/
+HNmumu125	46242.46        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-125_TuneZ2star_8TeV-alpgen/
+HNmumu150	108826.73       cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-150_TuneZ2star_8TeV-alpgen/
+HNmumu175	214442.23       cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-175_TuneZ2star_8TeV-alpgen/
+HNmumu200	380833.40       cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-200_TuneZ2star_8TeV-alpgen/
+HNmumu225	627546.73       cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-225_TuneZ2star_8TeV-alpgen/
+HNmumu250	979699.29       cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-250_TuneZ2star_8TeV-alpgen/
+HNmumu275	1476651.80      cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-275_TuneZ2star_8TeV-alpgen/
+HNmumu300	2153700.35      cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-300_TuneZ2star_8TeV-alpgen/
+HNmumu325	3063798.49      cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-325_TuneZ2star_8TeV-alpgen/
+HNmumu350	4271251.60      cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-350_TuneZ2star_8TeV-alpgen/
+HNmumu375	5826499.35      cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-375_TuneZ2star_8TeV-alpgen/
+HNmumu400	7879056.73      cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-400_TuneZ2star_8TeV-alpgen/
+HNmumu500	23208151.52     cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-500_TuneZ2star_8TeV-alpgen/
+HNmumu600	58506729.08     cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-600_TuneZ2star_8TeV-alpgen/
+HNmumu700	130502192.5     cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-700_TuneZ2star_8TeV-alpgen/
 
-HNee40        64.31		MajoranaNeutrinoToEE_M-40_TuneZ2star_8TeV-alpgen/
-HNee50        46.68		MajoranaNeutrinoToEE_M-50_TuneZ2star_8TeV-alpgen/
-HNee60        162.56		MajoranaNeutrinoToEE_M-60_TuneZ2star_8TeV-alpgen/
-HNee70        235.87		MajoranaNeutrinoToEE_M-70_TuneZ2star_8TeV-alpgen/
-HNee80        5201.57		MajoranaNeutrinoToEE_M-80_TuneZ2star_8TeV-alpgen/
-HNee90        7037.03		MajoranaNeutrinoToEE_M-90_TuneZ2star_8TeV-alpgen/
-HNee100       14036.72		MajoranaNeutrinoToEE_M-100_TuneZ2star_8TeV-alpgen/
-HNee125       46242.46		MajoranaNeutrinoToEE_M-125_TuneZ2star_8TeV-alpgen/
-HNee150       108826.73		MajoranaNeutrinoToEE_M-150_TuneZ2star_8TeV-alpgen/
-HNee175       214442.23		MajoranaNeutrinoToEE_M-175_TuneZ2star_8TeV-alpgen/
-HNee200       380833.40		MajoranaNeutrinoToEE_M-200_TuneZ2star_8TeV-alpgen/
-HNee225       627546.73		MajoranaNeutrinoToEE_M-225_TuneZ2star_8TeV-alpgen/
-HNee250       979699.29		MajoranaNeutrinoToEE_M-250_TuneZ2star_8TeV-alpgen/
-HNee275       1476651.80	MajoranaNeutrinoToEE_M-275_TuneZ2star_8TeV-alpgen/
-HNee300       2153700.35	MajoranaNeutrinoToEE_M-300_TuneZ2star_8TeV-alpgen/
-HNee325       3063798.49	MajoranaNeutrinoToEE_M-325_TuneZ2star_8TeV-alpgen/
-HNee350       4271251.60	MajoranaNeutrinoToEE_M-350_TuneZ2star_8TeV-alpgen/
-HNee375       5826499.35	MajoranaNeutrinoToEE_M-375_TuneZ2star_8TeV-alpgen/
-HNee400       7879056.73	MajoranaNeutrinoToEE_M-400_TuneZ2star_8TeV-alpgen/
-HNee500       23208151.52	MajoranaNeutrinoToEE_M-500_TuneZ2star_8TeV-alpgen/
-HNee600       58506729.08	MajoranaNeutrinoToEE_M-600_TuneZ2star_8TeV-alpgen/
-HNee700       130502192.52	MajoranaNeutrinoToEE_M-700_TuneZ2star_8TeV-alpgen/
+HNee40        64.31		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-40_TuneZ2star_8TeV-alpgen/
+HNee50        46.68		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-50_TuneZ2star_8TeV-alpgen/
+HNee60        162.56		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-60_TuneZ2star_8TeV-alpgen/
+HNee70        235.87		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-70_TuneZ2star_8TeV-alpgen/
+HNee80        5201.57		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-80_TuneZ2star_8TeV-alpgen/
+HNee90        7037.03		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-90_TuneZ2star_8TeV-alpgen/
+HNee100       14036.72		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-100_TuneZ2star_8TeV-alpgen/
+HNee125       46242.46		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-125_TuneZ2star_8TeV-alpgen/
+HNee150       108826.73		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-150_TuneZ2star_8TeV-alpgen/
+HNee175       214442.23		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-175_TuneZ2star_8TeV-alpgen/
+HNee200       380833.40		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-200_TuneZ2star_8TeV-alpgen/
+HNee225       627546.73		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-225_TuneZ2star_8TeV-alpgen/
+HNee250       979699.29		cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-250_TuneZ2star_8TeV-alpgen/
+HNee275       1476651.80	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-275_TuneZ2star_8TeV-alpgen/
+HNee300       2153700.35	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-300_TuneZ2star_8TeV-alpgen/
+HNee325       3063798.49	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-325_TuneZ2star_8TeV-alpgen/
+HNee350       4271251.60	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-350_TuneZ2star_8TeV-alpgen/
+HNee375       5826499.35	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-375_TuneZ2star_8TeV-alpgen/
+HNee400       7879056.73	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-400_TuneZ2star_8TeV-alpgen/
+HNee500       23208151.52	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-500_TuneZ2star_8TeV-alpgen/
+HNee600       58506729.08	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-600_TuneZ2star_8TeV-alpgen/
+HNee700       130502192.52	cms_mc_ntuple_path_2014  MajoranaNeutrinoToEE_M-700_TuneZ2star_8TeV-alpgen/
 
-HNemu40        64.31             MajoranaNeutrinoToEMu_M-40_TuneZ2star_8TeV-alpgen/
-HNemu50        46.68             MajoranaNeutrinoToEMu_M-50_TuneZ2star_8TeV-alpgen/
-HNemu60        162.56            MajoranaNeutrinoToEMu_M-60_TuneZ2star_8TeV-alpgen/
-HNemu70        235.87            MajoranaNeutrinoToEMu_M-70_TuneZ2star_8TeV-alpgen/
-HNemu80        5201.57           MajoranaNeutrinoToEMu_M-80_TuneZ2star_8TeV-alpgen/
-HNemu90        7037.03           MajoranaNeutrinoToEMu_M-90_TuneZ2star_8TeV-alpgen/
-HNemu100       14036.72          MajoranaNeutrinoToEMu_M-100_TuneZ2star_8TeV-alpgen/
-HNemu125       46242.46          MajoranaNeutrinoToEMu_M-125_TuneZ2star_8TeV-alpgen/
-HNemu150       108826.73         MajoranaNeutrinoToEMu_M-150_TuneZ2star_8TeV-alpgen/
-HNemu175       214442.23         MajoranaNeutrinoToEMu_M-175_TuneZ2star_8TeV-alpgen/
-HNemu200       380833.40         MajoranaNeutrinoToEMu_M-200_TuneZ2star_8TeV-alpgen/
-HNemu225       627546.73         MajoranaNeutrinoToEMu_M-225_TuneZ2star_8TeV-alpgen/
-HNemu250       979699.29         MajoranaNeutrinoToEMu_M-250_TuneZ2star_8TeV-alpgen/
-HNemu275       1476651.80        MajoranaNeutrinoToEMu_M-275_TuneZ2star_8TeV-alpgen/
-HNemu300       2153700.35        MajoranaNeutrinoToEMu_M-300_TuneZ2star_8TeV-alpgen/
-HNemu325       3063798.49        MajoranaNeutrinoToEMu_M-325_TuneZ2star_8TeV-alpgen/
-HNemu350       4271251.60        MajoranaNeutrinoToEMu_M-350_TuneZ2star_8TeV-alpgen/
-HNemu375       5826499.35        MajoranaNeutrinoToEMu_M-375_TuneZ2star_8TeV-alpgen/
-HNemu400       7879056.73        MajoranaNeutrinoToEMu_M-400_TuneZ2star_8TeV-alpgen/
-HNemu500       23208151.52       MajoranaNeutrinoToEMu_M-500_TuneZ2star_8TeV-alpgen/
+HNemu40        64.31             cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-40_TuneZ2star_8TeV-alpgen/
+HNemu50        46.68             cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-50_TuneZ2star_8TeV-alpgen/
+HNemu60        162.56            cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-60_TuneZ2star_8TeV-alpgen/
+HNemu70        235.87            cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-70_TuneZ2star_8TeV-alpgen/
+HNemu80        5201.57           cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-80_TuneZ2star_8TeV-alpgen/
+HNemu90        7037.03           cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-90_TuneZ2star_8TeV-alpgen/
+HNemu100       14036.72          cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-100_TuneZ2star_8TeV-alpgen/
+HNemu125       46242.46          cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-125_TuneZ2star_8TeV-alpgen/
+HNemu150       108826.73         cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-150_TuneZ2star_8TeV-alpgen/
+HNemu175       214442.23         cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-175_TuneZ2star_8TeV-alpgen/
+HNemu200       380833.40         cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-200_TuneZ2star_8TeV-alpgen/
+HNemu225       627546.73         cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-225_TuneZ2star_8TeV-alpgen/
+HNemu250       979699.29         cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-250_TuneZ2star_8TeV-alpgen/
+HNemu275       1476651.80        cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-275_TuneZ2star_8TeV-alpgen/
+HNemu300       2153700.35        cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-300_TuneZ2star_8TeV-alpgen/
+HNemu325       3063798.49        cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-325_TuneZ2star_8TeV-alpgen/
+HNemu350       4271251.60        cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-350_TuneZ2star_8TeV-alpgen/
+HNemu375       5826499.35        cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-375_TuneZ2star_8TeV-alpgen/
+HNemu400       7879056.73        cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-400_TuneZ2star_8TeV-alpgen/
+HNemu500       23208151.52       cms_mc_ntuple_path_2014  MajoranaNeutrinoToEMu_M-500_TuneZ2star_8TeV-alpgen/
 
 
-HNmue40        64.31             MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen/
-HNmue50        46.68             MajoranaNeutrinoToMuE_M-50_TuneZ2star_8TeV-alpgen/
-HNmue60        162.56            MajoranaNeutrinoToMuE_M-60_TuneZ2star_8TeV-alpgen/
-HNmue70        235.87            MajoranaNeutrinoToMuE_M-70_TuneZ2star_8TeV-alpgen/
-HNmue80        5201.57           MajoranaNeutrinoToMuE_M-80_TuneZ2star_8TeV-alpgen/
-HNmue90        7037.03           MajoranaNeutrinoToMuE_M-90_TuneZ2star_8TeV-alpgen/
-HNmue100       14036.72          MajoranaNeutrinoToMuE_M-100_TuneZ2star_8TeV-alpgen/
-HNmue125       46242.46          MajoranaNeutrinoToMuE_M-125_TuneZ2star_8TeV-alpgen/
-HNmue150       108826.73         MajoranaNeutrinoToMuE_M-150_TuneZ2star_8TeV-alpgen/
-HNmue175       214442.23         MajoranaNeutrinoToMuE_M-175_TuneZ2star_8TeV-alpgen/
-HNmue200       380833.40         MajoranaNeutrinoToMuE_M-200_TuneZ2star_8TeV-alpgen/
-HNmue225       627546.73         MajoranaNeutrinoToMuE_M-225_TuneZ2star_8TeV-alpgen/
-HNmue250       979699.29         MajoranaNeutrinoToMuE_M-250_TuneZ2star_8TeV-alpgen/
-HNmue275       1476651.80        MajoranaNeutrinoToMuE_M-275_TuneZ2star_8TeV-alpgen/
-HNmue300       2153700.35         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/MajoranaNeutrinoToMuE_M-325_TuneZ2star_8TeV-alpgen/
-HNmue325       3063798.49        MajoranaNeutrinoToMuE_M-325_TuneZ2star_8TeV-alpgen/
-HNmue350       4271251.60        MajoranaNeutrinoToMuE_M-350_TuneZ2star_8TeV-alpgen/
-HNmue375       5826499.35        MajoranaNeutrinoToMuE_M-375_TuneZ2star_8TeV-alpgen/
-HNmue400       7879056.73        MajoranaNeutrinoToMuE_M-400_TuneZ2star_8TeV-alpgen/
-HNmue500       23208151.52       MajoranaNeutrinoToMuE_M-500_TuneZ2star_8TeV-alpgen/
+HNmue40        64.31             cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-40_TuneZ2star_8TeV-alpgen/
+HNmue50        46.68             cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-50_TuneZ2star_8TeV-alpgen/
+HNmue60        162.56            cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-60_TuneZ2star_8TeV-alpgen/
+HNmue70        235.87            cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-70_TuneZ2star_8TeV-alpgen/
+HNmue80        5201.57           cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-80_TuneZ2star_8TeV-alpgen/
+HNmue90        7037.03           cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-90_TuneZ2star_8TeV-alpgen/
+HNmue100       14036.72          cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-100_TuneZ2star_8TeV-alpgen/
+HNmue125       46242.46          cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-125_TuneZ2star_8TeV-alpgen/
+HNmue150       108826.73         cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-150_TuneZ2star_8TeV-alpgen/
+HNmue175       214442.23         cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-175_TuneZ2star_8TeV-alpgen/
+HNmue200       380833.40         cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-200_TuneZ2star_8TeV-alpgen/
+HNmue225       627546.73         cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-225_TuneZ2star_8TeV-alpgen/
+HNmue250       979699.29         cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-250_TuneZ2star_8TeV-alpgen/
+HNmue275       1476651.80        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-275_TuneZ2star_8TeV-alpgen/
+HNmue300       2153700.35        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-300_TuneZ2star_8TeV-alpgen/
+HNmue325       3063798.49        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-325_TuneZ2star_8TeV-alpgen/
+HNmue350       4271251.60        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-350_TuneZ2star_8TeV-alpgen/
+HNmue375       5826499.35        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-375_TuneZ2star_8TeV-alpgen/
+HNmue400       7879056.73        cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-400_TuneZ2star_8TeV-alpgen/
+HNmue500       23208151.52       cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuE_M-500_TuneZ2star_8TeV-alpgen/
 
+### MC ############################################################
+# Sample  local_path       Inte.lumi(/pb)  samplename
+##################################################################
+# cms_mc_ntuple_path_2015     /data2/DATA/LQNtuples_5_3_14_snu27_2015/
+##################################################################
+DY10to50_15       2827.09           cms_mc_ntuple_path_2015 DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
+DY50plus_15       8382.40           cms_mc_ntuple_path_2015 DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+ttbar_mass169      168667.625       cms_mc_ntuple_path_2015 TTJets_MSDecays_mass169_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass171      168667.625       cms_mc_ntuple_path_2015 TTJets_MSDecays_mass171_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass173      168667.625       cms_mc_ntuple_path_2015 TTJets_MSDecays_mass173_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass175      168480.03        cms_mc_ntuple_path_2015 TTJets_MSDecays_mass175_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingdown 88190.4375       cms_mc_ntuple_path_2015 TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingup   158474.375       cms_mc_ntuple_path_2015 TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaledown    167891.7188      cms_mc_ntuple_path_2015 TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaleup      179009.6875      cms_mc_ntuple_path_2015 TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_width_x5     57792.39844      cms_mc_ntuple_path_2015 TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_pow          1.               cms_mc_ntuple_path_2015 TT_CT10_TuneZ2star_8TeV-powheg-tauola/
+ttbar_pow_her      1.               cms_mc_ntuple_path_2015 /TT_CT10_AUET2_8TeV-powheg-herwig/
+TTH                1.             cms_mc_ntuple_path_2015 TTH_Inclusive_M-125_8TeV_pythia6/
+TestSample          1.             cms_mc_ntuple_path_2015 TestSample/
+TestSample_chs         1.             cms_mc_ntuple_path_2015 TestSample_chs/
+ttbar_CT10_pythia                1.               cms_mc_ntuple_path_2015 TT_weights_CT10_TuneP11C-8TeV-powheg-pythia6-tauola/
+ttbar_CT10_herwig                  1.               cms_mc_ntuple_path_2015 TT_weights_CT10_AUET2_8TeV-powheg-herwig/
+
+### MC ############################################################
+# Sample  local_path       Inte.lumi(/pb)  samplename
+##################################################################
+# cms_mc_ntuplepath_chargedhiggs  /data2/MC/CHsample/LQNtuple/
+##################################################################
+CH120PU        273509.8125        cms_mc_ntuplepath_chargedhiggs    CH120/
+CHm120PU       137442.125         cms_mc_ntuplepath_chargedhiggs    CHm120/
+CH110PU        273509.8125        cms_mc_ntuplepath_chargedhiggs    CH110/
+CH100PU        272135.4062        cms_mc_ntuplepath_chargedhiggs    CH100/
+CH90PU         274846.4688        cms_mc_ntuplepath_chargedhiggs    CH90/
+CH130PU        274884.25          cms_mc_ntuplepath_chargedhiggs    CH130/
+CH140PU        274884.25          cms_mc_ntuplepath_chargedhiggs    CH140/
+CH150PU        274884.25          cms_mc_ntuplepath_chargedhiggs    CH150/
+
+### MC ############################################################
+# Sample  local_path       Inte.lumi(/pb)  samplename
+##################################################################
+# cms_mc_ntuple_path_2016     /data2/DATA/LQNtuples_5_3_14_snu27_2016/
+##################################################################
+######################    Added by FG on April 7 2016
+QCD_1000_mu      1. cms_mc_ntuple_path_2016 QCD_1000_mu/
+QCD_15-20_mu     1. cms_mc_ntuple_path_2016 QCD_15-20_mu/
+QCD_20-30_mu     1. cms_mc_ntuple_path_2016 QCD_20-30_mu/
+QCD_30-50_mu     1. cms_mc_ntuple_path_2016 QCD_30-50_mu/
+QCD_50-80_mu     1. cms_mc_ntuple_path_2016 QCD_50-80_mu/
+QCD_800-1000_mu  1. cms_mc_ntuple_path_2016 QCD_800-1000_mu/
+QCD_120-170_mu   1. cms_mc_ntuple_path_2016 QCD_120-170_mu/
+QCD_170-300_mu   1. cms_mc_ntuple_path_2016 QCD_170-300_mu/
+QCD_300-470_mu   1. cms_mc_ntuple_path_2016 QCD_300-470_mu/
+QCD_470-600_mu   1. cms_mc_ntuple_path_2016 QCD_470-600_mu/
+QCD_600-800_mu   1. cms_mc_ntuple_path_2016 QCD_600-800_mu/
+QCD_80-120_mu    1. cms_mc_ntuple_path_2016 QCD_80-120_mu/
+######################

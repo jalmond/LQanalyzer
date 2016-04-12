@@ -254,8 +254,6 @@ if platform.system() == "Linux":
         number_of_cores = 1
         print "Number of subjobs is reduced to 1, since there are over 20 subjobs running on this machine."
 
-        for line in open(filename, 'r'):
-            print line
     if njob_user  > 10:
         number_of_cores = 1
     os.system("rm " + filename)
@@ -422,31 +420,58 @@ else:
     filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
 ntuple_path=""
-if not mc:
-    for line in open(filename, 'r'):
-        if not line.startswith("#"):
-            entries = line.split()
-            if len(entries)==2:
-                if "cluster_ntuple_path" == entries[0]:
-                    ntuple_path = entries[1]
-            if len(entries)==3:
-                if new_channel ==entries[0] and sample == entries[1]:
-                    inDS = entries[2]
-    sample = "period"+sample
-    eff_lumi=1.
-    tar_lumi=1.
-    filechannel = new_channel+"_"
+if IsSKTree:
+    if not mc:
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==3:
+                    if new_channel ==entries[0] and sample == entries[1]:
+                        inDS = entries[2]        
+        sample = "period"+sample
+        eff_lumi=1.
+        tar_lumi=1.
+        filechannel = new_channel+"_"
+
+    else:
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==3:
+                    if sample == entries[0]:
+                        eff_lumi = entries[1]
+                        inDS = entries[2]
 else:
+    ntup_path_link=""
+    if not mc:
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==4:
+                    if new_channel ==entries[0] and sample == entries[1]:
+                        inDS = entries[3]
+                        ntup_path_link = entries[2]
+        sample = "period"+sample
+        eff_lumi=1.
+        tar_lumi=1.
+        filechannel = new_channel+"_"
+
+    else:
+        for line in open(filename, 'r'):
+            if not line.startswith("#"):
+                entries = line.split()
+                if len(entries)==4:
+                    if sample == entries[0]:
+                        eff_lumi = entries[1]
+                        inDS = entries[3]
+                        ntup_path_link = entries[2]
+                        
     for line in open(filename, 'r'):
         if not line.startswith("#"):
             entries = line.split()
             if len(entries)==2:
-                if "cluster_ntuple_path" == entries[0]:
-                    ntuple_path= entries[1]
-            if len(entries)==3:
-                if sample == entries[0]:
-                    eff_lumi = entries[1]
-                    inDS = entries[2]
+                 if ntup_path_link == entries[0]:
+                     ntuple_path= entries[1]
 
 InputDir = ntuple_path + "/" + inDS    
 if IsSKTree:
@@ -739,8 +764,6 @@ start_time = time.time()
 
 wait_sub = 1
 
-running_batch=True
-
 if number_of_cores < 10:
     wait_sub = 5
 
@@ -758,7 +781,7 @@ for i in range(1,number_of_cores+1):
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".log"
     
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
-    if running_batch == True:
+    if running_batch:
         runcommand = "qsub -V " + batchscript   + "&>" + log 
 
     jobID=0
@@ -775,15 +798,16 @@ for i in range(1,number_of_cores+1):
         elif i==2:
             print "......"
         os.system(runcommand)
+        if running_batch:
+            for line in open(log, 'r'):
+                entries = line.split()
+                if len(entries) > 0:
+                    jobID=entries[2]
+                    array_batchjobs.append(jobID)
 
-        for line in open(log, 'r'):
-            entries = line.split()
-            if len(entries) > 0:
-                jobID=entries[2]
-                array_batchjobs.append(jobID)
-
-for ijob in array_batchjobs:
-    print "Job ["+str(ijob)+"] added to list......."
+if running_batch: 
+    for ijob in array_batchjobs:
+        print "Job ["+str(ijob)+"] added to list......."
 
 ##########################################################
 ## wait and do merging (also remove old log file/rootfiles
