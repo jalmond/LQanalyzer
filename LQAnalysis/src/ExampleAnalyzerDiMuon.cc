@@ -4,7 +4,7 @@
  * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
- *
+for( *
  ***************************************************************************/
 
 /// Local includes
@@ -74,7 +74,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
      cout << "Size of jets  = " << jetColl.size() << endl;
      
      int njet=0;
-     for(int ij = 0 ; ij < jetColl.size(); ij++){
+     for(unsigned int ij = 0 ; ij < jetColl.size(); ij++){
        if(jetColl.at(ij).PileupJetIDLoose()) njet++;
        else cout << "Jet failed PileupJetIDLoose: jet mva = " << jetColl.at(ij).PileupJetIDMVA() << endl;
      }

@@ -41,6 +41,8 @@ ElectronPlots::~ElectronPlots() {
 
 void ElectronPlots::Fill(Double_t weight, std::vector<snu::KElectron> el, double rho){
 
+  if(rho < 0.) cout << "Negative rho" << endl;
+
   int iel(0);
   for(std::vector<snu::KElectron>::iterator elit = el.begin(); elit!=el.end(); elit++,iel++){
     

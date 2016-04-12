@@ -185,7 +185,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
   //// Fills all hists (e/mu/jets/MET)
   bool debug =false;
-  debug=true;
+
   if(debug)cout<< "Plotting [1] " << endl;
   Fill("h_Nelectrons", electrons.size(), weight, weight_err);
   
@@ -346,34 +346,40 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
   
   if(electrons.size() == 1 && muons.size() == 1){
-    cout<< electrons[0].Pt() << " " << electrons[0].Eta() << endl;
-    cout<< muons[0].Pt() << " " << muons[0].Eta() << endl;
+    
     Fill("h_emumass", ((electrons[0]+ muons[0]).M()), weight, weight_err);
-    Fill("h_emujjmass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
-    Fill("h_mujjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    if(jets.size()>1){
+      Fill("h_emujjmass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+      Fill("h_mujjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    }
     Fill("h_MuonPt", muons[0].Pt(), weight, weight_err);
     Fill("h_MuonEta", muons[0].Eta(), weight,weight_err);
+    if(debug)cout<< "Plotting [3aaa] " << endl;
 
-    if(electrons.at(0).Pt() > muons.at(0).Pt()) {
-      Fill("h_l1jjmass", ((electrons[0]+jets[m]+jets[n]).M()), weight, weight_err);
-      Fill("h_l2jjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+    if(jets.size()>1){
+      if(electrons.at(0).Pt() > muons.at(0).Pt()) {
+	Fill("h_l1jjmass", ((electrons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+	Fill("h_l2jjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+      }
+      else{
+	Fill("h_l2jjmass", ((electrons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+	Fill("h_l1jjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
+      }
+      
+      if(electrons.at(0).Pt() > muons.at(0).Pt()) {
+	Fill("h_l1jj_lowmass", ((electrons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
+	Fill("h_l2jj_lowmass", ((muons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
+      }
+      else{
+	Fill("h_l2jj_lowmass", ((electrons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
+	Fill("h_l1jj_lowmass", ((muons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
+      }
+      Fill("h_emujj_lowmass", ((electrons[0]+ muons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
     }
-    else{
-      Fill("h_l2jjmass", ((electrons[0]+jets[m]+jets[n]).M()), weight, weight_err);
-      Fill("h_l1jjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
-    }
-
-    if(electrons.at(0).Pt() > muons.at(0).Pt()) {
-      Fill("h_l1jj_lowmass", ((electrons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
-      Fill("h_l2jj_lowmass", ((muons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
-    }
-    else{
-      Fill("h_l2jj_lowmass", ((electrons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
-      Fill("h_l1jj_lowmass", ((muons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
-    }
-    Fill("h_emujj_lowmass", ((electrons[0]+ muons[0]+jets[lm]+jets[ln]).M()), weight, weight_err);
-    
   }
+  
+  if(debug)cout<< "Plotting [3B] " << endl;
+
   
   int sum_charge(0);
   
@@ -726,6 +732,8 @@ SignalPlots::~SignalPlots() {
 }
 
 void SignalPlots::Fill(TString name, double value, double w, Double_t w_err){
+  
+  if(w_err < 0.) w_err=w;
   std::map<TString, TH1*>::iterator it = map_sig.find(name);
   if(it!= map_sig.end())   it->second->Fill(value, w);
 
@@ -734,6 +742,7 @@ void SignalPlots::Fill(TString name, double value, double w, Double_t w_err){
 }
  
 void SignalPlots::Fill(TString name, double value1, double value2, double w, Double_t w_err){
+  if(w_err < 0.) w_err=w;
    std::map<TString, TH2*>::iterator it = map_sig2.find(name);
    if(it!= map_sig2.end()) it->second->Fill(value1, value2, w);
    else cout << name << " not found in map_sig" << endl;
@@ -743,6 +752,7 @@ void SignalPlots::Fill(TString name, double value1, double value2, double w, Dou
 
 
 void SignalPlots::Fill(TString name, double value1, double value2, double value3, double w, Double_t w_err){
+  if(w_err < 0.) w_err=w;
   std::map<TString, TH3*>::iterator it = map_sig3.find(name);
   if(it!= map_sig3.end()) it->second->Fill(value1, value2, value3, w);
   else cout << name << " not found in map_sig" << endl;

@@ -21,8 +21,8 @@ KParticle::KParticle() :
     partType_( NOPARTICLE),
     k_index(0),
     k_mindex(0),
-    k_mother_pdgid(0),
     k_dindex(0),
+    k_mother_pdgid(0),
     m_charge(0)
 {  
 }
@@ -37,8 +37,8 @@ KParticle::KParticle(const KParticle& p) :
     partType_(p.GetType()),
     k_index(p.ParticleIndex()),
     k_mindex(p.MotherIndex()),
-    k_mother_pdgid(p.MotherPdgId()),
     k_dindex(p.NDaughter()),
+    k_mother_pdgid(p.MotherPdgId()),
     m_charge(p.Charge())
  {
  }

@@ -151,7 +151,6 @@ float AnalyzerCore::GetJECUncertainty(TString type, float eta, float pt, bool up
 
   
   float bin_boundary(-999.);
-  int etabin(-999);
 
   std::map<float, std::vector<float> > ptmap = mapit->second.at(0);
 
@@ -162,12 +161,11 @@ float AnalyzerCore::GetJECUncertainty(TString type, float eta, float pt, bool up
   /// Add last bin by hand
   etabins.push_back(5.4);
   
-  for(int i=0; i < etabins.size()-1 ; i++){
+  for(unsigned int i=0; i < etabins.size()-1 ; i++){
     if(eta >= etabins.at(i) && eta < etabins.at(i+1)){  bin_boundary = float(etabins.at(i)) ; break;}
   }
   
   std::vector<float> ptbins;
-  unsigned int iit(0);
   
 
   for(std::map<float, std::vector<float> >::iterator pit = ptmap.begin();  pit != ptmap.end(); pit++){
@@ -206,6 +204,7 @@ void AnalyzerCore::SetupJECUncertainty(TString type){
 
   string sline;
   
+  Message("Setting up JEC uncertainty vector. This may time some time..." , INFO);
   while(getline(jec_file,sline) ){
     
     std::istringstream is( sline );
@@ -216,16 +215,17 @@ void AnalyzerCore::SetupJECUncertainty(TString type){
       is >> eta_min;
       is >> eta_max;
       is >> test;
-      cout << "Eta min = " << eta_min << endl;
       if(eta_min==5.0) found_unc=false;
+
       std::vector<float> ptbin, unc_up, unc_down;
       bool finalbin(false);
+
       for(int i=0; i < 150; i++){
 	float tmp;
 	is >> tmp;
-	if((i %3) == 0) {ptbin.push_back(tmp); cout << "ptbin = " << tmp ; if(tmp==3276.5) finalbin=true;}
-	if((i %3) == 1) {unc_up.push_back(tmp); cout << " unc up = " << tmp ;}
-	if((i %3) == 2) {unc_down.push_back(tmp); cout << " unc down = " << tmp ;}
+	if((i %3) == 0) {ptbin.push_back(tmp);  if(tmp==3276.5) finalbin=true;}
+	if((i %3) == 1) {unc_up.push_back(tmp);}
+	if((i %3) == 2) {unc_down.push_back(tmp);}
 	if((i %3) == 2 && finalbin) break;
       }
       

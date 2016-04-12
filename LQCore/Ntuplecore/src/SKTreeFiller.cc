@@ -117,9 +117,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   if(!isData){
     if(PDFCTEQWeights){
       /// This will have to take in a vector for any systematic studies
-      //kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
-      //kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
-      //kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
+      if(PDFCTEQWeights->size() > 0){
+	kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
+	kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
+	kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
+      }
     }
   }
   //// Filling vertex variables
@@ -346,8 +348,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     if(ElectronshiftedEup){
       if(ElectronshiftedEup->size() > 0) {
-	//el.SetShiftedEUp(ElectronshiftedEup->at(iel));
-	//el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+	if(ElectronshiftedEup->size() == ElectronHasMatchedConvPhot->size() ){
+	  el.SetShiftedEUp(ElectronshiftedEup->at(iel));
+	  el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+	}
+      }
+      else{
+	el.SetShiftedEUp(0);
+	el.SetShiftedEDown(0.);
       }
     }
     m_logger << DEBUG << "Filling electronElectronDCotTheta  " << LQLogger::endmsg;
@@ -827,11 +835,13 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     m_logger << DEBUG << "Filling JetID WP " << LQLogger::endmsg; 
 
     if(PFJetPileupjetIDpassLooseWP){
-      jet.SetJetPileupIDLooseWP(PFJetPileupjetIDpassLooseWP->at(ijet));
-      jet.SetJetPileupIDMediumWP(PFJetPileupjetIDpassMediumWP->at(ijet));
-      jet.SetJetPileupIDTightWP(PFJetPileupjetIDpassTightWP->at(ijet));
-      jet.SetJetPileupIDFlag(PFJetJetPileupIdflag->at(ijet));
-      jet.SetJetPileupIDMVA(PFJetJetPileupMVA->at(ijet));
+      if(PFJetPileupjetIDpassLooseWP->size() > 0){
+	jet.SetJetPileupIDLooseWP(PFJetPileupjetIDpassLooseWP->at(ijet));
+	jet.SetJetPileupIDMediumWP(PFJetPileupjetIDpassMediumWP->at(ijet));
+	jet.SetJetPileupIDTightWP(PFJetPileupjetIDpassTightWP->at(ijet));
+	jet.SetJetPileupIDFlag(PFJetJetPileupIdflag->at(ijet));
+	jet.SetJetPileupIDMVA(PFJetJetPileupMVA->at(ijet));
+      }
     }
         
     m_logger << DEBUG << "Filling Jet Energy Fraction " << LQLogger::endmsg; 
@@ -1001,8 +1011,14 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     if(MuonshiftedEup){
       if(MuonshiftedEup->size() > 0){
-	//muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
-	//muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+	if(MuonEta->size() == MuonshiftedEup->size()){
+	  muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
+	  muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+	}
+      }
+      else{
+	muon.SetShiftedEUp(0.);
+	muon.SetShiftedEDown(0.);
       }
     }
 
