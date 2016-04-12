@@ -1,4 +1,4 @@
-################################################################### 
+B1;95;0c################################################################### 
 ### configure Job
 #################################################################### 
 timeWait=1#
@@ -420,14 +420,20 @@ else:
     filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
 ntuple_path=""
+ntup_path_link=""
 if IsSKTree:
     if not mc:
         for line in open(filename, 'r'):
             if not line.startswith("#"):
                 entries = line.split()
-                if len(entries)==3:
+                if len(entries)==5:
                     if new_channel ==entries[0] and sample == entries[1]:
-                        inDS = entries[2]        
+                        inDS = entries[4]        
+                        if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                            ntup_path_link = entries[2]
+                        else:
+                            ntup_path_link = entries[3]
+
         sample = "period"+sample
         eff_lumi=1.
         tar_lumi=1.
@@ -437,12 +443,15 @@ if IsSKTree:
         for line in open(filename, 'r'):
             if not line.startswith("#"):
                 entries = line.split()
-                if len(entries)==3:
+                if len(entries)==4:
                     if sample == entries[0]:
                         eff_lumi = entries[1]
-                        inDS = entries[2]
+                        inDS = entries[4]
+                        if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                            ntup_path_link = entries[2]
+                        else:
+                            ntup_path_link = entries[3]
 else:
-    ntup_path_link=""
     if not mc:
         for line in open(filename, 'r'):
             if not line.startswith("#"):
@@ -466,12 +475,12 @@ else:
                         inDS = entries[3]
                         ntup_path_link = entries[2]
                         
-    for line in open(filename, 'r'):
-        if not line.startswith("#"):
-            entries = line.split()
-            if len(entries)==2:
-                 if ntup_path_link == entries[0]:
-                     ntuple_path= entries[1]
+for line in open(filename, 'r'):
+    if not line.startswith("#"):
+        entries = line.split()
+        if len(entries)==2:
+            if ntup_path_link == entries[0]:
+                ntuple_path= entries[1]
 
 dir_break="/"
 if ntuple_path.endswith('/'):
@@ -993,7 +1002,7 @@ else:
             print line
 
 
-    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/"  
+    SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/April16/"  
     if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
         SKTreeOutput = "/data4/LocalNtuples/SKTrees8TeV/Tag27_CMSSW_5_3_20/SKTrees/"
    
@@ -1023,10 +1032,20 @@ else:
                 Finaloutputdir += "SingleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            if original_channel =="singlemuon_chs":
+                Finaloutputdir += "SingleMuonCHS/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
             if original_channel =="singleelectron":
                 Finaloutputdir += "SingleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            if original_channel =="singleelectron_chs":
+                Finaloutputdir += "SingleElectronCHS/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
