@@ -92,6 +92,10 @@ if not os.path.exists(Finaloutputdir):
     else:
         print "Output directory changes to " + Finaloutputdir + ". Creating this directory"
 
+if "/home/" in Finaloutputdir:
+    print "WARNING!!!!!!!!!!!!!!!!!!!!!!!!"
+    print "output directory is set to /home/. Advise to set directory to default (or similar): "+ os.getenv("LQANALYZER_OUTPUT_PATH")
+
 
 list_of_extra_lib=[]
 libname=''

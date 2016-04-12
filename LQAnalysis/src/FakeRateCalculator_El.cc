@@ -52,6 +52,7 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 
 void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
+
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
    
   std::vector<TString> triggerslist_diel;
@@ -190,10 +191,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muonLooseColl = GetMuons("loose");
   std::vector<snu::KMuon> muonTightColl = GetMuons("tight");
   
+  
   if(muonLooseColl.size() > 0)FillHist(("N_mupt_loose"), muonLooseColl.at(0).Pt(), weight, 0., 200., 200);
   if(muonTightColl.size() > 0)FillHist(("N_mupt_tight"), muonTightColl.at(0).Pt(), weight, 0., 200., 200);
 
-  
   if(muonLooseColl.size() > 0) return;
   
   std::vector<snu::KElectron> electronVetoColl = GetElectrons(false, false, "veto");
@@ -876,8 +877,8 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //  DeclareVariable(out_muons, "Signal_Muons");
 
   n_17_jet_pass=0;
   n_17_17_jet_pass=0;

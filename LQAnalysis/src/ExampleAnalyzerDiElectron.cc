@@ -260,8 +260,8 @@ void ExampleAnalyzerDiElectron::BeginCycle() throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //  DeclareVariable(out_muons, "Signal_Muons");
 
   
   return;

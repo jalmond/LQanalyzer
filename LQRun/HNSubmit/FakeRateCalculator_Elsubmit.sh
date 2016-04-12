@@ -41,15 +41,15 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-    outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/MC/"
+    outputdir=$LQANALYZER_DIR"/data/output/ElectronFakes/MC/"
 
 
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar")
     declare -a input_samples=("Wjets" "Wgamma" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW"  )
     declare -a input_samples=( "Wjets" "ttbar")
     source submit.sh  
-    #source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/MC/  FakeRateCalculator_El_mc_5_3_14.root  FakeRateCalculator_El_SK*
-    #mv /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/MC/FakeRateCalculator_El_mc_5_3_14.root /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/
+    #source hadd.sh $LQANALYZER_DIR/data/output/ElectronFakes/MC/  FakeRateCalculator_El_mc_5_3_14.root  FakeRateCalculator_El_SK*
+    #mv $LQANALYZER_DIR/data/output/ElectronFakes/MC/FakeRateCalculator_El_mc_5_3_14.root $LQANALYZER_DIR/data/output/ElectronFakes/
 
 fi
 
@@ -63,13 +63,13 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-    outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD/"
+    outputdir="$LQANALYZER_DIR/data/output/ElectronFakes/QCD/"
     
     declare -a input_samples=("QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_350_EM" "QCD_350_BCtoE" )
 
     source submit.sh
-    source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD/ FakeRateCalculator_El_SKQCD_5_3_14.root FakeRateCalculator_El_SKQCD*
-    mv /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD/FakeRateCalculator_El_SKQCD_5_3_14.root /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/
+    source hadd.sh $LQANALYZER_DIR/data/output/ElectronFakes/QCD/ FakeRateCalculator_El_SKQCD_5_3_14.root FakeRateCalculator_El_SKQCD*
+    mv $LQANALYZER_DIR/data/output/ElectronFakes/QCD/FakeRateCalculator_El_SKQCD_5_3_14.root $LQANALYZER_DIR/data/output/ElectronFakes/
 fi
 
 if [[ $runQCD2  == "true" ]];
@@ -82,13 +82,13 @@ then
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-    outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD2/"
+    outputdir="$LQANALYZER_DIR/data/output/ElectronFakes/QCD2/"
 
     declare -a input_samples=( "QCD_30-40_EM2" "QCD_40_EM2")
 
 
     source submit.sh
-    source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/QCD2/ FakeRateCalculator_El_SKQCD_5_3_14.root FakeRateCalculator_El_SKQCD*
+    source hadd.sh $LQANALYZER_DIR/data/output/ElectronFakes/QCD2/ FakeRateCalculator_El_SKQCD_5_3_14.root FakeRateCalculator_El_SKQCD*
 
 fi
 
@@ -99,19 +99,19 @@ then
     cycle="FakeRateCalculator_El"
     skinput="True"
 
-    njobs=30
+    njobs=3
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
-    stream="egamma"
-    outputdir="/home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/Data/"
+    stream="muon_looseskim"
+    outputdir=${LQANALYZER_DIR}"/data/output/ElectronFakes/Data/"
     
     declare -a input_samples=("C" "D")
 
     source submit.sh $1
 
-    source hadd.sh /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/Data/ FakeRateCalculator_El_data_5_3_14.root FakeRateCalculator_El_period*  
-    mv /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/Data/FakeRateCalculator_El_data_5_3_14.root /home/jalmond/Analysis/LQanalyzer/data/output/ElectronFakes/
+    source hadd.sh $LQANALYZER_DIR/data/output/ElectronFakes/Data/ FakeRateCalculator_El_data_5_3_14.root FakeRateCalculator_El_period*  
+    mv $LQANALYZER_DIR/data/output/ElectronFakes/Data/FakeRateCalculator_El_data_5_3_14.root $LQANALYZER_DIR/data/output/ElectronFakes/
 fi
 
 

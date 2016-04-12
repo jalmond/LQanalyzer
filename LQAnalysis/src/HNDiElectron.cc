@@ -322,20 +322,20 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
       FillHist(("sum_cteq"), icteq, w_for_sigeff*eventbase->GetEvent().PDFCTEQWeight().at(icteq)/ eventbase->GetEvent().PDFCTEQWeight().at(0) , 0., eventbase->GetEvent().PDFCTEQWeight().size(), eventbase->GetEvent().PDFCTEQWeight().size());
 
-      FillHist(("cteq10_reweight"), eventbase->GetEvent().PDFCTEQWeight().at(icteq), 1. , 0., 10000.,1000.);
-      FillHist(("cteq10_reweight_norm"), eventbase->GetEvent().PDFCTEQWeight().at(icteq)/eventbase->GetEvent().PDFCTEQWeight().at(0), 1. , 0., 10.,1000.);
+      FillHist(("cteq10_reweight"), eventbase->GetEvent().PDFCTEQWeight().at(icteq), 1. , 0., 10000.,1000);
+      FillHist(("cteq10_reweight_norm"), eventbase->GetEvent().PDFCTEQWeight().at(icteq)/eventbase->GetEvent().PDFCTEQWeight().at(0), 1. , 0., 10.,1000);
     }
 
     for(unsigned int imstw = 0 ; imstw < eventbase->GetEvent().PDFMSTWWeight().size() ; imstw++){
       m_logger << DEBUG << "MSTW size = " << eventbase->GetEvent().PDFMSTWWeight().size() << LQLogger::endmsg;
       FillHist(("sum_mstw"), imstw, w_for_sigeff*eventbase->GetEvent().PDFMSTWWeight().at(imstw)/eventbase->GetEvent().PDFMSTWWeight().at(0) , 0., eventbase->GetEvent().PDFMSTWWeight().size(), eventbase->GetEvent().PDFMSTWWeight().size());
-      FillHist(("mstw_reweight"), eventbase->GetEvent().PDFMSTWWeight().at(imstw), 1. , 0., 10000.,1000.);
-      FillHist(("mstw_reweight_norm"), eventbase->GetEvent().PDFMSTWWeight().at(imstw)/eventbase->GetEvent().PDFMSTWWeight().at(0), 1. , 0., 10.,1000.);
+      FillHist(("mstw_reweight"), eventbase->GetEvent().PDFMSTWWeight().at(imstw), 1. , 0., 10000.,1000);
+      FillHist(("mstw_reweight_norm"), eventbase->GetEvent().PDFMSTWWeight().at(imstw)/eventbase->GetEvent().PDFMSTWWeight().at(0), 1. , 0., 10.,1000);
     }
     for(unsigned int innpdf = 0 ; innpdf < eventbase->GetEvent().PDFNNPDFWeight().size() ; innpdf++){
       m_logger << DEBUG << "NNPDF size = " << eventbase->GetEvent().PDFNNPDFWeight().size() << LQLogger::endmsg;
       FillHist(("sum_nnpdf"), innpdf, w_for_sigeff*eventbase->GetEvent().PDFNNPDFWeight().at(innpdf)/eventbase->GetEvent().PDFNNPDFWeight().at(0) , 0., eventbase->GetEvent().PDFNNPDFWeight().size(), eventbase->GetEvent().PDFNNPDFWeight().size());
-      FillHist(("nnpdf_reweight"), eventbase->GetEvent().PDFNNPDFWeight().at(innpdf), 1. , 0., 2.,1000.);
+      FillHist(("nnpdf_reweight"), eventbase->GetEvent().PDFNNPDFWeight().at(innpdf), 1. , 0., 2.,1000);
     }
   }
 

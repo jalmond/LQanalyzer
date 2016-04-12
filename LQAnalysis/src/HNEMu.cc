@@ -450,10 +450,10 @@ void HNEMu::ExecuteEvents()throw( LQError ){
     if(jetColl_lepveto_mva.size() > 1){
 
       if(IsTight(muons.at(0)) && IsTight(electronAnalysisColl.at(0), eventbase->GetEvent().JetRho())) 
-	FillHist("TT_presel",1,weight, 0., 2., 2.);
+	FillHist("TT_presel",1,weight, 0., 2., 2);
       else if(!IsTight(muons.at(0)) && !IsTight(electronAnalysisColl.at(0), eventbase->GetEvent().JetRho()))
-	FillHist("LL_presel",1,weight,0., 2.,2.);
-      else FillHist("TL_presel",1,weight,0., 2.,2.);
+	FillHist("LL_presel",1,weight,0., 2.,2);
+      else FillHist("TL_presel",1,weight,0., 2.,2);
 
 
       FillCLHist(sighist, "SS_DiJet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
