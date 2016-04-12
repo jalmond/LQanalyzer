@@ -39,6 +39,9 @@ class AnalyzerCore : public LQCycleBase {
   void MakeTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w) ;
   void MakeEMUTriLeptonPlots(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString jetid, float w); 
 
+  float GetJECUncertainty(TString type, float eta, float pt, bool up);
+  void  SetupJECUncertainty(TString type);
+
   double GetFakeRateByParam(TString param, TString jetcut, TString looseregion, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  bool cl1, bool cl2);
   bool HasCloseBJet(snu::KElectron el);
   bool HasCloseLBJet(snu::KElectron el);
@@ -125,6 +128,9 @@ class AnalyzerCore : public LQCycleBase {
   TDirectory *Dir;
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
+  std::map<TString, std::vector<std::map<float, std::vector<float> > > > JECUncMap;
+
+
   TH2F* FRHist;
   TH2F* MuonSF;
   HNCommonLeptonFakes* m_fakeobj;

@@ -117,9 +117,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   if(!isData){
     if(PDFCTEQWeights){
       /// This will have to take in a vector for any systematic studies
-      kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
-      kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
-      kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
+      //kevent.SetPDFCTEQWeight(*PDFCTEQWeights);
+      //kevent.SetPDFMSTWWeight(*PDFMSTWWeights);
+      //kevent.SetPDFNNPDFWeight(*PDFNNPDFWeights);
     }
   }
   //// Filling vertex variables
@@ -351,6 +351,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       }
     }
     m_logger << DEBUG << "Filling electronElectronDCotTheta  " << LQLogger::endmsg;
+
     if(ElectronDCotTheta){
       el.SetCotTheta(ElectronDCotTheta->at(iel));
       el.SetElDist(ElectronDist->at(iel));

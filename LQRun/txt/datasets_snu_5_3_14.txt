@@ -486,6 +486,8 @@ TestSample_chs        1.             /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/
 SKTestSample    1.                /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/TestSample/
 SKTestSample_chs    1.                /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/TestSample_chs/
 
+ttbar_CT10_pythia		   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_weights_CT10_TuneP11C-8TeV-powheg-pythia6-tauola/
+ttbar_CT10_herwig		   1.		    /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/TT_weights_CT10_AUET2_8TeV-powheg-herwig/
 CH120PU        273509.8125        /data2/MC/CHsample/LQNtuple/CH120/                            
 CHm120PU       137442.125         /data2/MC/CHsample/LQNtuple/CHm120/                           
 CH110PU        273509.8125                /data2/MC/CHsample/LQNtuple/CH110/                    

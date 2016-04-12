@@ -191,7 +191,6 @@ then
     njobs=1
     data_lumi="AtoD"
 
-    loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000

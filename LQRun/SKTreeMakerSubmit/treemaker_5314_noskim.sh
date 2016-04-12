@@ -32,7 +32,6 @@ then
     data_lumi="AtoD"
     loglevel="DEBUG"
     logstep=1000
-
     declare -a input_samples=("CH90PU" "CH100PU" "CH110PU" "CH120PU" "CHm120PU" "CH130PU" "CH140PU" "CH150PU")
     declare -a input_samples=("TestSample_chs")
     stream="muon"
