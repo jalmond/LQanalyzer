@@ -145,7 +145,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   ev_num.push_back(80512298);
 
   bool check_event=false;
-  for(int iev =0; iev < ev_num.size() ; iev++){
+  for(unsigned int iev =0; iev < ev_num.size() ; iev++){
     if(eventbase->GetEvent().RunNumber() == run_num.at(iev)){
       if(eventbase->GetEvent().EventNumber() == ev_num.at(iev))check_event = true;
     }

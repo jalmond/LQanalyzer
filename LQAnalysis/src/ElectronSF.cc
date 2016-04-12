@@ -105,8 +105,8 @@ void ElectronSF::ExecuteEvents()throw( LQError ){
   //// Require 2 or more probe electrons + truth matched 
   if(electrons_fromZ.size() >= 2){
     
-    for(int i=0;i<electrons_fromZ.size()-1;i++){
-      for(int j=i+1;j<electrons_fromZ.size();j++){
+    for(unsigned int i=0;i<electrons_fromZ.size()-1;i++){
+      for(unsigned int j=i+1;j<electrons_fromZ.size();j++){
 
 	vector<snu::KElectron>  electron_probe_pair;
 	electron_probe_pair.push_back(electrons_fromZ.at(i));
@@ -461,6 +461,7 @@ float ElectronSF::WeightCFEvent(std::vector<snu::KElectron> electrons, bool runc
 }
 
 bool ElectronSF::CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
+  if(name.Contains("testetst") )w=1.; 
   if(electrons.size() != 2 ) return false ;
   if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;

@@ -1624,7 +1624,6 @@ void FakeRateCalculator_El_region2::GetFakeRates(std::vector<snu::KElectron> loo
 
   if( tight_el.size() == 1 && jets.size() >= 1){
     float el_pt = tight_el.at(0).Pt();
-    float el_eta = tight_el.at(0).Eta();
     
     // 1D FakeRates
     FillHist(("TightEl" + tag + "_eta").Data(), tight_el.at(0).Eta(), w, -2.5, 2.5,50);
@@ -1782,7 +1781,9 @@ void FakeRateCalculator_El_region2::GetFakeRates(std::vector<snu::KElectron> loo
 
 
 void FakeRateCalculator_El_region2::GetRealEfficiency(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, std::vector<snu::KMuon> muons, double w, float interval,TString tag, double dxycut,  double  barreliso, double endcapiso, bool usetight){
-  
+
+  if(alljets.size() > 10) return;
+  if(muons.size() > 10) return;
   Float_t ptbins[18] = {10.,12.5,15.,17.5, 20.,25.,30.,35.,40.,45.,50.,60., 70., 80., 100., 125., 150., 200.};
   Float_t etabins[5] = { 0., 0.8, 1.479, 2., 2.5};
   

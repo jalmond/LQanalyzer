@@ -98,7 +98,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   float pileup_reweight (1.);
   if (!k_isdata) {
-    //    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
+    pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()))* MCweight;
   }
   
   std::vector<snu::KElectron> electronColl;

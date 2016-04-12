@@ -1341,6 +1341,8 @@ void HNElectronOptimisation::ExecuteEvents()throw( LQError ){
 }// End of execute event loop
 
 bool HNElectronOptimisation::CheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
+
+  if(name.Contains("testetst")) w=0.;
   if(electrons.size() != 2 ) return false ;
   if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
