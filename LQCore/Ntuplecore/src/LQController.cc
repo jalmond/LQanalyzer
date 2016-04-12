@@ -175,6 +175,8 @@ void LQController::SetChannel(TString ch){
   else if     (ch == "emu")  channel = "EMu";
   else if     (ch == "singlemuon")      channel = "singleMuon";
   else if     (ch == "singleelectron")  channel = "singleElectron";
+  else if     (ch == "singlemuon_chs")      channel = "singleMuon";
+  else if     (ch == "singleelectron_chs")  channel = "singleElectron";
   
 }
 void LQController::SetDataPeriod(TString period){

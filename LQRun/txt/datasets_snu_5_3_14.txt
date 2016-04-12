@@ -1,5 +1,4 @@
 #####  PATH on SNU cluster machines  (For LQNtuples only)
-cluster_ntuple_path                 /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/
 cluster_mc_ntuple_path_2014         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
 cluster_data_ntuple_path_2014	    /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
 cluster_mc_ntuple_path_2015         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2015/MC/
@@ -20,21 +19,31 @@ cms_mc_ntuplepath_chargedhiggs     /data2/MC/CHsample/LQNtuple/
 ###########    /data2/MC/CHsample/LQNtuple/    <FILL IN BY GBYU>
 
 
+#####  PATH on SNU cluster machines  (For SKTree only)
+sk_cluster_ntuple_path        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/
+sk_cluster_ntuple_path_void   /data4/ 
+###### PATH on cms1-6 machines (For SKtrees)
+sk_cms_ntuple_path_2014            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/
+sk_cms_ntuple_path_2015            /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/
+sk_cms_ntuple_path_2015_oct        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/
+sk_cms_ntuple_path_2016            /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/April16/
+
+
+
+
 # Structure of File:
 # - First list of all SKtees
 #  -- NoCut         (name  prefix = SK   name postfix = _nocut)
 #  -- Lepton skim   (name  prefix = SK   name postfix =)
 #  -- DiLepton skim (name  prefix = SK   name postfix = _dilep)
 #
-# --- For each skim The samples are split into the version 
-#     version 1 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/ 
+# --- For each skim The samples are split into the version
+#     version 1 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/
 #     version 2 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/
 #     version 3 ) /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/
 #
 #
 # - LQNtuples are listed
-
-
 
 
 ########################	
@@ -50,98 +59,98 @@ cms_mc_ntuplepath_chargedhiggs     /data2/MC/CHsample/LQNtuple/
 #######################################################################################################################################
 # sample	      Effective lumi	Path ##########################################################################################
 #######################################################################################################################################
-SKHNmumu40_nocut        64.31	       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu40/
-SKHNmumu50_nocut        46.68	       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu50/
-SKHNmumu60_nocut        162.56	       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu60/
-SKHNmumu70_nocut        235.87		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu70/
-SKHNmumu80_nocut        5201.57		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu80/
-SKHNmumu90_nocut        7037.03		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu90/
-SKHNmumu100_nocut       14036.72	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu100/
-SKHNmumu125_nocut       46242.46	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu125/
-SKHNmumu150_nocut       108826.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu150/
-SKHNmumu175_nocut       214442.23	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu175/
-SKHNmumu200_nocut       380833.40	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu200/
-SKHNmumu225_nocut       627546.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu225/
-SKHNmumu250_nocut       979699.29	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu250/
-SKHNmumu275_nocut       1476651.80	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu275
-SKHNmumu300_nocut       2153700.35	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu300/
-SKHNmumu325_nocut       3063798.49	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu325/
-SKHNmumu350_nocut       4271251.60	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu350/
-SKHNmumu375_nocut       5826499.35	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu375
-SKHNmumu400_nocut       7879056.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu400/
-SKHNmumu500_nocut       23208151.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu500/
-SKHNmumu600_nocut       58506729.08	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu600/
-SKHNmumu700_nocut       130502192.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmumu700/
+SKHNmumu40_nocut        64.31	       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu40/
+SKHNmumu50_nocut        46.68	       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu50/
+SKHNmumu60_nocut        162.56	       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu60/
+SKHNmumu70_nocut        235.87		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu70/
+SKHNmumu80_nocut        5201.57		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu80/
+SKHNmumu90_nocut        7037.03		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu90/
+SKHNmumu100_nocut       14036.72	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu100/
+SKHNmumu125_nocut       46242.46	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu125/
+SKHNmumu150_nocut       108826.73	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu150/
+SKHNmumu175_nocut       214442.23	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu175/
+SKHNmumu200_nocut       380833.40	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu200/
+SKHNmumu225_nocut       627546.73	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu225/
+SKHNmumu250_nocut       979699.29	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu250/
+SKHNmumu275_nocut       1476651.80	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu275
+SKHNmumu300_nocut       2153700.35	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu300/
+SKHNmumu325_nocut       3063798.49	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu325/
+SKHNmumu350_nocut       4271251.60	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu350/
+SKHNmumu375_nocut       5826499.35	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu375
+SKHNmumu400_nocut       7879056.73	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu400/
+SKHNmumu500_nocut       23208151.52	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu500/
+SKHNmumu600_nocut       58506729.08	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu600/
+SKHNmumu700_nocut       130502192.52	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmumu700/
 
-SKHNee40_nocut		64.31		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee40/
-SKHNee50_nocut		46.68		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee50/
-SKHNee60_nocut		162.56		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee60/
-SKHNee70_nocut		235.87		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee70/
-SKHNee80_nocut		5201.57		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee80/
-SKHNee90_nocut		7037.03		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee90/
-SKHNee100_nocut		14036.72	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee100/
-SKHNee125_nocut		46242.46	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee125/
-SKHNee150_nocut		108826.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee150/
-SKHNee175_nocut		214442.23	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee175/
-SKHNee200_nocut		380833.40	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee200/
-SKHNee225_nocut		627546.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee225/
-SKHNee250_nocut		979699.29	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee250/
-SKHNee275_nocut		1476651.80	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee275/
-SKHNee300_nocut		2153700.35	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee300/
-SKHNee325_nocut		3063798.49	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee325/
-SKHNee350_nocut		4271251.60	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee350/
-SKHNee375_nocut		5826499.35	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee375/
-SKHNee400_nocut		7879056.73	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee400/
-SKHNee500_nocut		23208151.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee500/
-SKHNee600_nocut		58506729.08	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee600/
-SKHNee700_nocut		130502192.52	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNee700/
+SKHNee40_nocut		64.31		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee40/
+SKHNee50_nocut		46.68		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee50/
+SKHNee60_nocut		162.56		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee60/
+SKHNee70_nocut		235.87		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee70/
+SKHNee80_nocut		5201.57		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee80/
+SKHNee90_nocut		7037.03		sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee90/
+SKHNee100_nocut		14036.72	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee100/
+SKHNee125_nocut		46242.46	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee125/
+SKHNee150_nocut		108826.73	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee150/
+SKHNee175_nocut		214442.23	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee175/
+SKHNee200_nocut		380833.40	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee200/
+SKHNee225_nocut		627546.73	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee225/
+SKHNee250_nocut		979699.29	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee250/
+SKHNee275_nocut		1476651.80	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee275/
+SKHNee300_nocut		2153700.35	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee300/
+SKHNee325_nocut		3063798.49	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee325/
+SKHNee350_nocut		4271251.60	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee350/
+SKHNee375_nocut		5826499.35	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee375/
+SKHNee400_nocut		7879056.73	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee400/
+SKHNee500_nocut		23208151.52	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee500/
+SKHNee600_nocut		58506729.08	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee600/
+SKHNee700_nocut		130502192.52	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNee700/
 
-SKHNemu40_nocut          65.95580292    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu40/
-SKHNemu50_nocut          89.43515778    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu50/
-SKHNemu60_nocut          157.9545898    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu60/
-SKHNemu70_nocut          457.5957642    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu70/
-SKHNemu80_nocut          4991.819824    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu80/
-SKHNemu90_nocut          14074.34473    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu90/
-SKHNemu100_nocut         13923.72       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu100/
-SKHNemu125_nocut         46434.47       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu125/
-SKHNemu150_nocut         108826.73       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu150/
-SKHNemu175_nocut         177056.65       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu175/
-SKHNemu200_nocut         380856.25       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu200/
-SKHNemu225_nocut         235949.8438     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu225/
-SKHNemu250_nocut         981680.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu250/
-SKHNemu275_nocut         1476592.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu275/
-SKHNemu300_nocut         2153743.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu300/
-SKHNemu325_nocut         3064043.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu325/
-SKHNemu350_nocut         4271508.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu350/
-SKHNemu375_nocut         5851044.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu375/
-SKHNemu400_nocut         7895426.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu400/
-SKHNemu500_nocut         22836320.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNemu500/
+SKHNemu40_nocut          65.95580292    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu40/
+SKHNemu50_nocut          89.43515778    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu50/
+SKHNemu60_nocut          157.9545898    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu60/
+SKHNemu70_nocut          457.5957642    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu70/
+SKHNemu80_nocut          4991.819824    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu80/
+SKHNemu90_nocut          14074.34473    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu90/
+SKHNemu100_nocut         13923.72       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu100/
+SKHNemu125_nocut         46434.47       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu125/
+SKHNemu150_nocut         108826.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu150/
+SKHNemu175_nocut         177056.65       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu175/
+SKHNemu200_nocut         380856.25       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu200/
+SKHNemu225_nocut         235949.8438     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu225/
+SKHNemu250_nocut         981680.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu250/
+SKHNemu275_nocut         1476592.75      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu275/
+SKHNemu300_nocut         2153743.5       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu300/
+SKHNemu325_nocut         3064043.75      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu325/
+SKHNemu350_nocut         4271508.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu350/
+SKHNemu375_nocut         5851044.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu375/
+SKHNemu400_nocut         7895426.5       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu400/
+SKHNemu500_nocut         22836320.      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNemu500/
 
-SKHNmue40_nocut          9.497           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue40/
-SKHNmue50_nocut          92.79712677     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue50/
-SKHNmue60_nocut          163.7173004     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue60/
-SKHNmue70_nocut          463.2525024     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue70/
-SKHNmue80_nocut          4708.652344     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue80/
-SKHNmue90_nocut          13877.29297     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue90/
-SKHNmue100_nocut         12493.12109     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue100/
-SKHNmue125_nocut         46436.33203     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue125/
-SKHNmue150_nocut         107962.5625     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue150/
-SKHNmue175_nocut         213165.1406     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue175/
-SKHNmue200_nocut         380863.875      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue200/
-SKHNmue225_nocut         592485.6875     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue225/
-SKHNmue250_nocut         942408.875      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue250/
-SKHNmue275_nocut         1458900.625     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue275/
-SKHNmue300_nocut         2132075.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue300/
-SKHNmue325_nocut         2916957.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue325/
-SKHNmue350_nocut         4236992.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue350/
-SKHNmue375_nocut         5218963.5       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue375/
-SKHNmue400_nocut         7800044.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue400/
-SKHNmue500_nocut         23209544.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCNoCut/HNmue500/
+SKHNmue40_nocut          9.497           sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue40/
+SKHNmue50_nocut          92.79712677     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue50/
+SKHNmue60_nocut          163.7173004     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue60/
+SKHNmue70_nocut          463.2525024     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue70/
+SKHNmue80_nocut          4708.652344     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue80/
+SKHNmue90_nocut          13877.29297     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue90/
+SKHNmue100_nocut         12493.12109     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue100/
+SKHNmue125_nocut         46436.33203     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue125/
+SKHNmue150_nocut         107962.5625     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue150/
+SKHNmue175_nocut         213165.1406     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue175/
+SKHNmue200_nocut         380863.875      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue200/
+SKHNmue225_nocut         592485.6875     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue225/
+SKHNmue250_nocut         942408.875      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue250/
+SKHNmue275_nocut         1458900.625     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue275/
+SKHNmue300_nocut         2132075.5       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue300/
+SKHNmue325_nocut         2916957.75      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue325/
+SKHNmue350_nocut         4236992.5       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue350/
+SKHNmue375_nocut         5218963.5       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue375/
+SKHNmue400_nocut         7800044.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue400/
+SKHNmue500_nocut         23209544.       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCNoCut/HNmue500/
 
 ############ Tag27_CMSSW_5_3_20 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
-SKDY10to50_15_nocut       2827.096      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY10to50_15/
-SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCNoCut/DY50plus_15/
+SKDY10to50_15_nocut       2827.096      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY10to50_15/
+SKDY50plus_15_nocut       8382.401      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY50plus_15/
 
 
 #######################################################################################################################################
@@ -158,154 +167,152 @@ SKDY50plus_15_nocut       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/S
 ############ Tag27_CMSSW_5_3_14 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27 LQNtuples
 
-SKmuon		 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleMuon/periodA/
-SKmuon		 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleMuon/periodB/
-SKmuon		 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleMuon/periodC/
-SKmuon		 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleMuon/periodD/
+SKmuon		 A	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleMuon/periodA/
+SKmuon		 B	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleMuon/periodB/
+SKmuon		 C	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleMuon/periodC/
+SKmuon		 D	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleMuon/periodD/
 
-SKegamma	 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleElectron/periodA/
-SKegamma	 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleElectron/periodB/
-SKegamma	 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleElectron/periodC/
-SKegamma	 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/DoubleElectron/periodD/
+SKegamma	 A	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleElectron/periodA/
+SKegamma	 B	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleElectron/periodB/
+SKegamma	 C	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleElectron/periodC/
+SKegamma	 D	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/DoubleElectron/periodD/
 
-SKemu		 A	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodA/
-SKemu		 B	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodB/
-SKemu		 C	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodC/
-SKemu		 D	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/Data/ElectronMuon/periodD/
+SKemu		 A	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/ElectronMuon/periodA/
+SKemu		 B	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/ElectronMuon/periodB/
+SKemu		 C	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/ElectronMuon/periodC/
+SKemu		 D	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/ElectronMuon/periodD/
 
 ########################################################################
 ### MC #############
 ########################################################################
 ### DY ###
 
-SKDY10to50        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DY10to50/
-SKDY50plus        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DY50plus/
-SKZbb             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Zbb/
+SKDY10to50        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY10to50/
+SKDY50plus        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY50plus/
+SKZbb             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Zbb/
 
 
 ### POWHEG
-SKDYee            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DYee/
-SKDYmm            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DYmm/
-SKDYtt            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/DYtt/
+SKDYee            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYee/
+SKDYmm            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYmm/
+SKDYtt            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYtt/
 
-SKZ1Jets          43081.069      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Z1Jets/
-SKZ2Jets          120296.22      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Z2Jets/
-SKZ3Jets          215566.44      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Z3Jets/
-SKZ4Jets          277455.84      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Z4Jets/
+SKZ1Jets          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z1Jets/
+SKZ2Jets          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z2Jets/
+SKZ3Jets          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z3Jets/
+SKZ4Jets          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z4Jets/
 
 
 ### Wjets ###
-SKWjets           1538.562       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Wjets/
-SKWbb             517443.59      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Wbb/
-SKW1Jets          3781.307       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/W1Jets/
-SKW2Jets          18803.881      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/W2Jets/
-SKW3Jets          29514.73       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/W3Jets/
-SKW4Jets          62889.11       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/W4Jets/
+SKWjets           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Wjets/
+SKWbb             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Wbb/
+SKW1Jets          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W1Jets/
+SKW2Jets          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W2Jets/
+SKW3Jets          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W3Jets/
+SKW4Jets          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W4Jets/
 
 
 
 ### Top ###
-SKttbar           29588.256      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ttbar/
-SKstbar_sch       79530.6821     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/stbar_sch/
-SKstbar_tch       63031.661      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/stbar_tch/
-SKstbar_tW        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/stbar_tW/
-SKst_sch          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tch/
-SKst_tch          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tch/
-SKst_tW           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tW/
-SKtopDIL          461277.43      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topDIL/
-SKtopHAD          460656.55      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topHAD/
-SKtopLJ           93722.93       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topLJ/
+SKttbar           29588.256      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ttbar/
+SKstbar_sch       79530.6821     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/stbar_sch/
+SKstbar_tch       63031.661      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/stbar_tch/
+SKstbar_tW        44455.856      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/stbar_tW/
+SKst_sch          68591.293      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/st_tch/
+SKst_tch          66635.23       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/st_tch/
+SKst_tW           44834.054      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/st_tW/
+SKtopDIL          461277.43      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/topDIL/
+SKtopHAD          460656.55      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/topHAD/
+SKtopLJ           93722.93       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/topLJ/
 
 ### Diboson ###
 ### PYTHIA
-SKWZ_py              301122.644     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WZ_py/
-SKZZ_py              555109.777     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZ_py/
-SKWW_py              182363.161     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WW_py/
+SKWZ_py              301122.644     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WZ_py/
+SKZZ_py              555109.777     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZ_py/
+SKWW_py              182363.161     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WW_py/
 ### MADGRAPH
-SKWW_mg            332629.0        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WW_mg/
-SKWZtollqq_mg        1457837.72      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WZtollqq_mg/
-SKWZtoqqln_mg        1836275.25      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WZtoqqln_mg/
-SKWZtollln_mg        1910000.0       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WZtollln_mg/
-SKZZtollnn_mg        2617628.83      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtollnn_mg/
-SKZZtollqq_mg        790824.82       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtollqq_mg/
-SKZZtollll_mg        27163220.34     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtollll_mg/
+SKWW_mg            332629.0        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WW_mg/
+SKWZtollqq_mg        1457837.72      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WZtollqq_mg/
+SKWZtoqqln_mg        1836275.25      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WZtoqqln_mg/
+SKWZtollln_mg        1910000.0       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WZtollln_mg/
+SKZZtollnn_mg        2617628.83      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtollnn_mg/
+SKZZtollqq_mg        790824.82       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtollqq_mg/
+SKZZtollll_mg        27163220.34     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtollll_mg/
 ### POWHEG
-SKZZtoeemm        8474476.51      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtoeemm/
-SKZZtoeett        4662767.40      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtoeett/
-SKZZtommtt        4662829.65      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtommtt/
-SKZZtoeeee        19491483.55     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtoeeee/
-SKZZtommmm        19491093.49     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtommmm/
-SKZZtotttt        10719880.38     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZtotttt/
+SKZZtoeemm        8474476.51      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtoeemm/
+SKZZtoeett        4662767.40      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtoeett/
+SKZZtommtt        4662829.65      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtommtt/
+SKZZtoeeee        19491483.55     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtoeeee/
+SKZZtommmm        19491093.49     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtommmm/
+SKZZtotttt        10719880.38     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZtotttt/
 
 ### higgs ###
-SKggHtoZZ         18990782.44      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ggHtoZZ/
-SKHtoTauTau       5478020.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoTauTau/
-SKHtoWW           769720.          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/HtoWW/
+SKggHtoZZ         18990782.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ggHtoZZ/
+SKHtoTauTau       5478020.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/HtoTauTau/
+SKHtoWW           769720.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/HtoWW/
 
 
 ### OTHER ###
-SKZgamma          49684.472       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Zgamma/
-SKWgammaE         156730.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaE/
-SKWgamma          10403.722       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/Wgamma/
-SKWgammaMu        156730.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaMu/
-SKWgammaTau       148800.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WgammaTau/
-SKSSWmWm          1084518.452     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/SSWmWm/
-SKSSWpWp          402840.451      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/SSWpWp/
-SKWW_dp           1418676.646     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WW_dp/
-SKttW             845025.862      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ttW/
-SKttZ             1207816.13      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ttZ/
-SKWWW             2684057.442     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WWW/
-SKTTWW            106931760.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/TTWW/
-SKTTG             33055.40        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/TTG/
-SKZZZ             40692610.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/ZZZ/
-SKWZZ             11449740.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WZZ/
-SKWWZ             3510805.75       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WWZ/
-SKWWG		  407426.125	   /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/WWG/		  
+SKZgamma          49684.472       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Zgamma/
+SKWgammaE         156730.       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WgammaE/
+SKWgamma          10403.722       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Wgamma/
+SKWgammaMu        156730.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WgammaMu/
+SKWgammaTau       148800.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WgammaTau/
+SKSSWmWm          1084518.452     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/SSWmWm/
+SKSSWpWp          402840.451      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/SSWpWp/
+SKWW_dp           1418676.646     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WW_dp/
+SKttW             845025.862      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ttW/
+SKttZ             1207816.13      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ttZ/
+SKWWW             2684057.442     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WWW/
+SKTTWW            106931760.       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/TTWW/
+SKTTG             33055.40        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/TTG/
+SKZZZ             40692610.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ZZZ/
+SKWZZ             11449740.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WZZ/
+SKWWZ             3510805.75       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WWZ/
+SKWWG		  407426.125	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/WWG/		  
 
 #### QCD ###
-SKQCD_mumu        54.2             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_mumu/
-SKQCD_30-40_EM2   497.0		   /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_30-40_EM2/	
-SKQCD_40_EM2      86.0             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_40_EM2/
-SKQCD_20_30_EM    12.		   /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_20_30_EM/	
-SKQCD_20_30_BCtoE 10.4             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_20_30_BCtoE/
-SKQCD_30_80_EM    7.17             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_30_80_EM/
-SKQCD_30_80_BCtoE 12.3             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_30_80_BCtoE/
-SKQCD_80_170_EM    188.            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_80_170_EM/
-SKQCD_80_170_BCtoE 150.            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_80_170_BCtoE/
-SKQCD_170_250_EM    6910.          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_170_250_EM/
-SKQCD_170_250_BCtoE 3080.          /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_170_250_BCtoE/
-SKQCD_250_350_EM    62200.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_250_350_EM/
-SKQCD_250_350_BCtoE 19600.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_250_350_BCtoE/
-SKQCD_350_EM        382497.9062	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_350_EM/
-SKQCD_350_BCtoE     81446.75	/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD_350_BCtoE/
-SKQCD		    1.		/data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/QCD/
-
+SKQCD_mumu        54.2             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_mumu/
+SKQCD_30-40_EM2   497.0		   sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_30-40_EM2/	
+SKQCD_40_EM2      86.0             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_40_EM2/
+SKQCD_20_30_EM    12.		   sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_20_30_EM/	
+SKQCD_20_30_BCtoE 10.4             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_20_30_BCtoE/
+SKQCD_30_80_EM    7.17             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_30_80_EM/
+SKQCD_30_80_BCtoE 12.3             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_30_80_BCtoE/
+SKQCD_80_170_EM    188.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_80_170_EM/
+SKQCD_80_170_BCtoE 150.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_80_170_BCtoE/
+SKQCD_170_250_EM    6910.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_170_250_EM/
+SKQCD_170_250_BCtoE 3080.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_170_250_BCtoE/
+SKQCD_250_350_EM    62200.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_250_350_EM/
+SKQCD_250_350_BCtoE 19600.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_250_350_BCtoE/
+SKQCD_350_EM        382497.9062	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_350_EM/
+SKQCD_350_BCtoE     81446.75	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_350_BCtoE/
 
 
 ############ Tag27_CMSSW_5_3_20 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
-SKsinglemuon     A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodA/
-SKsinglemuon     B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodB/
-SKsinglemuon     C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodC/
-SKsinglemuon     D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleMuon/periodD/
+SKsinglemuon     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon/periodA/
+SKsinglemuon     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon/periodB/
+SKsinglemuon     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon/periodC/
+SKsinglemuon     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon/periodD/
 
-SKsingleelectron A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodA/
-SKsingleelectron B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodB/
-SKsingleelectron C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodC/
-SKsingleelectron D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/Data/SingleElectron/periodD/
+SKsingleelectron A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodA/
+SKsingleelectron B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodB/
+SKsingleelectron C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodC/
+SKsingleelectron D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodD/
 
 ###### ###### ###### MC
-SKDY10to50_15       2827.096      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY10to50_15/
-SKDY50plus_15       8382.401      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/DY50plus_15/
-SKttbar_mass169      168624.89        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass169/
-SKttbar_mass175      170873.20        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_mass175/
-SKttbar_matchingdown 88190.43         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingdown/
-SKttbar_matchingup   158474.37        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_matchingup/
-SKttbar_scaledown    161438.73        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaledown/
-SKttbar_scaleup      170377.21        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_scaleup/
-SKttbar_width_x5     57792.39         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbar_width_x5/
-SKttbarMS       1.              /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/ttbarMS/
-SKHtoZZ           15637781.        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MC/HtoZZ/
+SKDY10to50_15       2827.096      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MC/DY10to50_15/
+SKDY50plus_15       8382.401      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MC/DY50plus_15/
+SKttbar_mass169      168624.89        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_mass169/
+SKttbar_mass175      170873.20        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_mass175/
+SKttbar_matchingdown 88190.43         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_matchingdown/
+SKttbar_matchingup   158474.37        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_matchingup/
+SKttbar_scaledown    161438.73        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_scaledown/
+SKttbar_scaleup      170377.21        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_scaleup/
+SKttbar_width_x5     57792.39         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_width_x5/
+SKttbarMS       1.              sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbarMS/
+SKHtoZZ           15637781.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/HtoZZ/
 
 
 
@@ -318,20 +325,20 @@ SKHtoZZ           15637781.        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTree
 
 ############ Tag27_CMSSW_5_3_14 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27 LQNtuples
-SKmuon_dilep           A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodA/
-SKmuon_dilep           B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodB/
-SKmuon_dilep           C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodC/
-SKmuon_dilep           D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep/DoubleMuon/periodD/
+SKmuon_dilep           A     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodA/
+SKmuon_dilep           B     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodB/
+SKmuon_dilep           C     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodC/
+SKmuon_dilep           D     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodD/
 
-SKegamma_dilep         A    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/DoubleElectron/periodA/
-SKegamma_dilep         B    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/DoubleElectron/periodB/
-SKegamma_dilep         C    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/DoubleElectron/periodC/
-SKegamma_dilep         D    /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/DoubleElectron/periodD/
+SKegamma_dilep         A    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleElectron/periodA/
+SKegamma_dilep         B    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleElectron/periodB/
+SKegamma_dilep         C    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleElectron/periodC/
+SKegamma_dilep         D    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleElectron/periodD/
 
-SKemu_dilep            A     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510/ElectronMuon/periodA/
-SKemu_dilep            B     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodB/
-SKemu_dilep            C     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodC/
-SKemu_dilep            D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/DataDiLep1510//ElectronMuon/periodD/
+SKemu_dilep            A     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/ElectronMuon/periodA/
+SKemu_dilep            B     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510//ElectronMuon/periodB/
+SKemu_dilep            C     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510//ElectronMuon/periodC/
+SKemu_dilep            D     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510//ElectronMuon/periodD/
 
 
 ###############################################################
@@ -340,225 +347,234 @@ SKemu_dilep            D     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June
 
 ### DY ##################
 ### MADGRAPH
-SKDY10to50_dilep        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DY10to50/
-SKDY50plus_dilep        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DY50plus/
+SKDY10to50_dilep        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DY10to50/
+SKDY50plus_dilep        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DY50plus/
 
-SKZbb_dilep             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Zbb/
+SKZbb_dilep             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Zbb/
 ### POWHEG
-SKDYee_dilep            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DYee/
-SKDYmm_dilep            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DYmm/
-SKDYtt_dilep            1.             /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/DYtt/
+SKDYee_dilep            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DYee/
+SKDYmm_dilep            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DYmm/
+SKDYtt_dilep            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DYtt/
 
-SKZ1Jets_dilep          43081.069      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Z1Jets/
-SKZ2Jets_dilep          120296.22      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Z2Jets/
-SKZ3Jets_dilep          215566.44      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Z3Jets/
-SKZ4Jets_dilep          277455.84      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Z4Jets/
+SKZ1Jets_dilep          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z1Jets/
+SKZ2Jets_dilep          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z2Jets/
+SKZ3Jets_dilep          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z3Jets/
+SKZ4Jets_dilep          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z4Jets/
 
 ### Wjets #########
-SKWjets_dilep           1538.562       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Wjets/
-SKWbb_dilep             517443.59      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Wbb/
-SKW1Jets_dilep          3781.307       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/W1Jets/
-SKW2Jets_dilep          18803.881      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/W2Jets/
-SKW3Jets_dilep          29514.73       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/W3Jets/
-SKW4Jets_dilep          62889.11       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/W4Jets/
+SKWjets_dilep           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Wjets/
+SKWbb_dilep             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Wbb/
+SKW1Jets_dilep          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W1Jets/
+SKW2Jets_dilep          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W2Jets/
+SKW3Jets_dilep          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W3Jets/
+SKW4Jets_dilep          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W4Jets/
 
 ### Top ######### 
-SKttbar_dilep           29588.256      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ttbar/
-SKstbar_sch_dilep       79530.6821     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/stbar_sch/
-SKstbar_tch_dilep       63031.661      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/stbar_tch/
-SKstbar_tW_dilep        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/stbar_tW/
-SKst_sch_dilep          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/st_tch/
-SKst_tch_dilep          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/st_tch/
-SKst_tW_dilep           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/st_tW/
-SKtopDIL_dilep          461277.43      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/topDIL/
-SKtopHAD_dilep          460656.55      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/topHAD/
-SKtopLJ_dilep           93722.93       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/topLJ/
+SKttbar_dilep           29588.256      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ttbar/
+SKstbar_sch_dilep       79530.6821     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/stbar_sch/
+SKstbar_tch_dilep       63031.661      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/stbar_tch/
+SKstbar_tW_dilep        44455.856      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/stbar_tW/
+SKst_sch_dilep          68591.293      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/st_tch/
+SKst_tch_dilep          66635.23       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/st_tch/
+SKst_tW_dilep           44834.054      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/st_tW/
+SKtopDIL_dilep          461277.43      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/topDIL/
+SKtopHAD_dilep          460656.55      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/topHAD/
+SKtopLJ_dilep           93722.93       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/topLJ/
 
 ### Diboson #########
 ### PYTHIA
-SKWZ_py_dilep              301122.644     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WZ_py/
-SKZZ_py_dilep              555109.777     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZ_py/
-SKWW_py_dilep              182363.161     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WW_py/
+SKWZ_py_dilep              301122.644     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WZ_py/
+SKZZ_py_dilep              555109.777     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZ_py/
+SKWW_py_dilep              182363.161     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WW_py/
 ### MADGRAPH
-SKWW_mg_dilep            332629.043      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WW_mg/
-SKWZtollqq_mg_dilep        1457837.72      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WZtollqq_mg/
-SKWZtoqqln_mg_dilep        1836275.25      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WZtoqqln_mg/
-SKWZtollln_mg_dilep        1910000.0       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WZtollln_mg/
-SKZZtollnn_mg_dilep        2617628.84      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtollnn_mg/
-SKZZtollqq_mg_dilep        790824.82       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtollqq_mg/
-SKZZtollll_mg_dilep        27163220.33     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtollll_mg/
+SKWW_mg_dilep            332629.043      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WW_mg/
+SKWZtollqq_mg_dilep        1457837.72      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WZtollqq_mg/
+SKWZtoqqln_mg_dilep        1836275.25      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WZtoqqln_mg/
+SKWZtollln_mg_dilep        1910000.0       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WZtollln_mg/
+SKZZtollnn_mg_dilep        2617628.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtollnn_mg/
+SKZZtollqq_mg_dilep        790824.82       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtollqq_mg/
+SKZZtollll_mg_dilep        27163220.33     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtollll_mg/
 ### POWHEG
-SKZZtoeemm_dilep        8474476.51      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtoeemm/
-SKZZtoeett_dilep        4662767.40      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtoeett/
-SKZZtommtt_dilep        4662829.65      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtommtt/
-SKZZtoeeee_dilep        19491483.55     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtoeeee/
-SKZZtommmm_dilep        19491093.49     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtommmm/
-SKZZtotttt_dilep        10719880.38     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZtotttt/
+SKZZtoeemm_dilep        8474476.51      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtoeemm/
+SKZZtoeett_dilep        4662767.40      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtoeett/
+SKZZtommtt_dilep        4662829.65      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtommtt/
+SKZZtoeeee_dilep        19491483.55     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtoeeee/
+SKZZtommmm_dilep        19491093.49     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtommmm/
+SKZZtotttt_dilep        10719880.38     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZtotttt/
 
 ### higgs ######
-SKggHtoZZ_dilep         18990782.44     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ggHtoZZ/
-SKHtoTauTau_dilep       5478020.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoTauTau/
-SKHtoWW_dilep           769720.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/HtoWW/
+SKggHtoZZ_dilep         18990782.44     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ggHtoZZ/
+SKHtoTauTau_dilep       5478020.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/HtoTauTau/
+SKHtoWW_dilep           769720.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/HtoWW/
 
 ### OTHER ######
-SKZgamma_dilep          49684.472       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Zgamma/
-SKWgammaE_dilep         156730.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WgammaE/
-SKSSWmWm_dilep          1084518.452     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/SSWmWm/
-SKSSWpWp_dilep          402840.451      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/SSWpWp/
-SKWgamma_dilep          10403.722       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/Wgamma/
-SKWgammaMu_dilep        156730.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WgammaMu/
-SKWgammaTau_dilep       148800.         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WgammaTau/
-SKWW_dp_dilep           1418676.646     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WW_dp/
-SKttW_dilep             845025.862      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ttW/
-SKttZ_dilep             1207816.13      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ttZ/
-SKWWW_dilep             2684057.442     /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WWW/
-SKTTWW_dilep            106931760.       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/TTWW/
-SKTTG_dilep             33055.40        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/TTG/
-SKZZZ_dilep             40692610.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/ZZZ/
-SKWZZ_dilep             11449740.        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WZZ/
-SKWWZ_dilep             3510805.75       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WWZ/
-SKWWG_dilep		407426.125	 /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/WWG/		  
+SKZgamma_dilep          49684.472       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Zgamma/
+SKWgammaE_dilep         156730.      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WgammaE/
+SKSSWmWm_dilep          1084518.452     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/SSWmWm/
+SKSSWpWp_dilep          402840.451      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/SSWpWp/
+SKWgamma_dilep          10403.722       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Wgamma/
+SKWgammaMu_dilep        156730.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WgammaMu/
+SKWgammaTau_dilep       148800.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WgammaTau/
+SKWW_dp_dilep           1418676.646     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WW_dp/
+SKttW_dilep             845025.862      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ttW/
+SKttZ_dilep             1207816.13      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ttZ/
+SKWWW_dilep             2684057.442     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WWW/
+SKTTWW_dilep            106931760.       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/TTWW/
+SKTTG_dilep             33055.40        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/TTG/
+SKZZZ_dilep             40692610.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ZZZ/
+SKWZZ_dilep             11449740.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WZZ/
+SKWWZ_dilep             3510805.75       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WWZ/
+SKWWG_dilep		407426.125	 sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/WWG/		  
 #### QCD ######
-SKQCD_mumu_dilep        54.2            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_mumu/
-SKQCD_30-40_EM2_dilep   497.0           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_30-40_EM2/
-SKQCD_40_EM2_dilep      86.0            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_40_EM2/
-SKQCD_20_30_EM_dilep    12.0            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_20_30_EM/
-SKQCD_20_30_BCtoE_dilep 10.4            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_20_30_BCtoE/
-SKQCD_30_80_EM_dilep    7.17            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_30_80_EM/
-SKQCD_30_80_BCtoE_dilep 12.26           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_30_80_BCtoE/
-SKQCD_80_170_EM_dilep    188.           /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_80_170_EM/
-SKQCD_80_170_BCtoE_dilep 149.86         /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_80_170_BCtoE/
-SKQCD_170_250_EM_dilep    6910.91       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_170_250_EM/
-SKQCD_170_250_BCtoE_dilep 3082.50       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_170_250_BCtoE/
-SKQCD_250_350_EM_dilep    62166.73      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_250_350_EM/
-SKQCD_250_350_BCtoE_dilep 19623.52      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_250_350_BCtoE/
-SKQCD_350_EM_dilep        382497.9062   /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_350_EM/ 
-SKQCD_350_BCtoE_dilep     81446.75      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD_350_BCtoE/
-SKQCD_dilep    1.      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MCDiLep1510/QCD/
+SKQCD_mumu_dilep        54.2            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_mumu/
+SKQCD_30-40_EM2_dilep   497.0           sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_30-40_EM2/
+SKQCD_40_EM2_dilep      86.0            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_40_EM2/
+SKQCD_20_30_EM_dilep    12.0            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_20_30_EM/
+SKQCD_20_30_BCtoE_dilep 10.4            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_20_30_BCtoE/
+SKQCD_30_80_EM_dilep    7.17            sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_30_80_EM/
+SKQCD_30_80_BCtoE_dilep 12.26           sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_30_80_BCtoE/
+SKQCD_80_170_EM_dilep    188.           sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_80_170_EM/
+SKQCD_80_170_BCtoE_dilep 149.86         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_80_170_BCtoE/
+SKQCD_170_250_EM_dilep    6910.91       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_170_250_EM/
+SKQCD_170_250_BCtoE_dilep 3082.50       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_170_250_BCtoE/
+SKQCD_250_350_EM_dilep    62166.73      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_250_350_EM/
+SKQCD_250_350_BCtoE_dilep 19623.52      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_250_350_BCtoE/
+SKQCD_350_EM_dilep        382497.9062   sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_350_EM/ 
+SKQCD_350_BCtoE_dilep     81446.75      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_350_BCtoE/
 
 
 ############ Tag27_CMSSW_5_3_20 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
 
-SKDY10to50_15_dilep     2827.09          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY10to50_15/
-SKDY50plus_15_dilep      8382.40         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/DY50plus_15/
+SKDY10to50_15_dilep     2827.09          sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCDiLep1510/DY10to50_15/
+SKDY50plus_15_dilep      8382.40         sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCDiLep1510/DY50plus_15/
 
-SKttbar_mass169_dilep      168624.89       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass169/
-SKttbar_mass175_dilep      170873.20       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_mass175/
-SKttbar_matchingdown_dilep 88190.43        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingdown/
-SKttbar_matchingup_dilep   158474.37       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_matchingup/
-SKttbar_scaledown_dilep    161438.73      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaledown/
-SKttbar_scaleup_dilep      170377.21      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_scaleup/
-SKttbar_width_x5_dilep     57792.39       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/ttbar_width_x5/
+SKttbar_mass169_dilep      168624.89       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_mass169/
+SKttbar_mass175_dilep      170873.20       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_mass175/
+SKttbar_matchingdown_dilep 88190.43        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_matchingdown/
+SKttbar_matchingup_dilep   158474.37       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_matchingup/
+SKttbar_scaledown_dilep    161438.73      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_scaledown/
+SKttbar_scaleup_dilep      170377.21      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_scaleup/
+SKttbar_width_x5_dilep     57792.39       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_width_x5/
 
-SKHtoZZ_dilep           15637781.       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Aug15/MCDiLep1510/HtoZZ/
+SKHtoZZ_dilep           15637781.       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/HtoZZ/
 
 
 ###### Following sktrees are made with a different setup of sktreemaker
 #### uses Tag27_CMSSW_5_3_20 and Tag27_CMSSW_5_3_20_2015 and Tag27_CMSSW_5_3_20_2016
 #### pt requirement is dropped to 10 GeV for skim of lepton
 #### no cuts on vertec or MET fileter cuts are applied (needed for gbyu)
-SKmuon_looseskim           A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodA/
-SKmuon_looseskim           B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodB/
-SKmuon_looseskim           C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodC/
-SKmuon_looseskim           D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/DoubleMuon/periodD/
+SKmuon_looseskim           A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodA/
+SKmuon_looseskim           B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodB/
+SKmuon_looseskim           C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodC/
+SKmuon_looseskim           D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodD/
 
-SKsinglemuon_looseskim     A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodA/
-SKsinglemuon_looseskim     B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodB/
-SKsinglemuon_looseskim     C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodC/
-SKsinglemuon_looseskim     D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleMuon/periodD/
+SKsinglemuon_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodA/
+SKsinglemuon_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodB/
+SKsinglemuon_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodC/
+SKsinglemuon_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodD/
 
-SKsingleelectron_looseskim     A      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleElectron/periodA/
-SKsingleelectron_looseskim     B      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleElectron/periodB/
-SKsingleelectron_looseskim     C      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleElectron/periodC/
-SKsingleelectron_looseskim     D      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/Data/SingleElectron/periodD/
+SKsingleelectron_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodA/
+SKsingleelectron_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodB/
+SKsingleelectron_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodC/
+SKsingleelectron_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodD/
 
+SKsinglemuon_chs_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodA/
+SKsinglemuon_chs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodB/
+SKsinglemuon_chs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodC/
+SKsinglemuon_chs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodD/
+
+SKsingleelectronchs_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodA/
+SKsingleelectronchs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodB/
+SKsingleelectronchs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodC/
+SKsingleelectronchs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodD/
 
 ### CH Signal ###
-SKCH120PU_looseskim_nocut    2735.098145 /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH120PU/
-SKCHm120PU_looseskim_nocut   1374.421143 /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH120PU/
-SKCH110PU_looseskim_nocut    2735.098145 /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH110PU/
-SKCH100PU_looseskim_nocut    2721.354004 /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH100PU/
-SKCH90PU_looseskim_nocut        2748.842285     /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH90PU/
-SKCH130PU_looseskim_nocut    2748.842285 /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH130PU/
-SKCH140PU_looseskim_nocut    2748.842285 /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH140PU/
-SKCH150PU_looseskim_nocut    2748.842285   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/CH150PU/
+SKCH120PU_looseskim_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
+SKCHm120PU_looseskim_nocut   1374.421143 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
+SKCH110PU_looseskim_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH110PU/
+SKCH100PU_looseskim_nocut    2721.354004 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH100PU/
+SKCH90PU_looseskim_nocut        2748.842285     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH90PU/
+SKCH130PU_looseskim_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH130PU/
+SKCH140PU_looseskim_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH140PU/
+SKCH150PU_looseskim_nocut    2748.842285   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH150PU/
 
-SKttbarMSpow_looseskim         85713.03906      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_pow/
-SKttbarMSmatchingdown_looseskim       81563.375        /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_matchingdown/
-SKttbarMSmatchingup_looseskim         146646.875      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_matchingup/
-SKttbarMSscaledown_looseskim         154797.2031      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_scaledown/
-SKttbarMSscaleup_looseskim         163900.8125      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_scaleup/
-SKttbarMSwidth_looseskim         53080.07812      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_width_x5/
-SKttbarMSpow_her_looseskim         109471.45004      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbar_pow_her/
-SKttbarMS_CT10_herwig_looseskim        34127.05078     /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/ttbar_CT10_herwig/
-SKttbarMS_CT10_pythia_looseskim            37112.36328   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MCNoCut/ttbar_CT10_pythia/
+SKttbarMSpow_looseskim         85713.03906      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_pow/
+SKttbarMSmatchingdown_looseskim       81563.375        sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_matchingdown/
+SKttbarMSmatchingup_looseskim         146646.875      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_matchingup/
+SKttbarMSscaledown_looseskim         154797.2031      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_scaledown/
+SKttbarMSscaleup_looseskim         163900.8125      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_scaleup/
+SKttbarMSwidth_looseskim         53080.07812      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_width_x5/
+SKttbarMSpow_her_looseskim         109471.45004      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_pow_her/
+SKttbarMS_CT10_herwig_looseskim        34127.05078     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_herwig/
+SKttbarMS_CT10_pythia_looseskim            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_pythia/
 
-SKttbarMS_looseskim         245371.375      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttbarMS/
+SKttbarMS_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMS/
+SKttbarMSchs_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
 
-SKDY10to50_looseskim        2901.7         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/DY10to50/
-SKDY50plus_looseskim        8693.5         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/DY50plus/
-SKZbb_looseskim             147000         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Zbb/
-SKZ1Jets_looseskim          43081.069      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Z1Jets/
-SKZ2Jets_looseskim          120296.22      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Z2Jets/
-SKZ3Jets_looseskim          215566.44      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Z3Jets/
-SKZ4Jets_looseskim          277455.84      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Z4Jets/
+SKDY10to50_looseskim        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY10to50/
+SKDY50plus_looseskim        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY50plus/
+SKZbb_looseskim             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Zbb/
+SKZ1Jets_looseskim          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z1Jets/
+SKZ2Jets_looseskim          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z2Jets/
+SKZ3Jets_looseskim          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z3Jets/
+SKZ4Jets_looseskim          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z4Jets/
 
 ### Wjets ###
-SKWjets_looseskim           1538.562       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Wjets/
-SKWbb_looseskim             517443.59      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/Wbb/
-SKW1Jets_looseskim          3781.307       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/W1Jets/
-SKW2Jets_looseskim          18803.881      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/W2Jets/
-SKW3Jets_looseskim          29514.73       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/W3Jets/
-SKW4Jets_looseskim          62889.11       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/W4Jets/
+SKWjets_looseskim           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wjets/
+SKWbb_looseskim             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wbb/
+SKW1Jets_looseskim          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W1Jets/
+SKW2Jets_looseskim          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W2Jets/
+SKW3Jets_looseskim          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W3Jets/
+SKW4Jets_looseskim          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W4Jets/
 
 ### Single Top ###
-SKstbar_sch_looseskim       79530.6821     /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/stbar_sch/
-SKstbar_tch_looseskim       63031.661      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/stbar_tch/
-SKstbar_tW_looseskim        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/stbar_tW/
-SKst_sch_looseskim          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/st_sch/
-SKst_tch_looseskim          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/st_tch/
-SKst_tW_looseskim           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/st_tW/
+SKstbar_sch_looseskim       79530.6821     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_sch/
+SKstbar_tch_looseskim       63031.661      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_tch/
+SKstbar_tW_looseskim        44455.856      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_tW/
+SKst_sch_looseskim          68591.293      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_sch/
+SKst_tch_looseskim          66635.23       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_tch/
+SKst_tW_looseskim           44834.054      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_tW/
 
 ### Diboson ###
-SKWZ_py_looseskim              301122.644     /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/WZ_py/
-SKZZ_py_looseskim              555109.777     /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ZZ_py/
-SKWW_py_looseskim              182363.161     /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/WW_py/
+SKWZ_py_looseskim              301122.644     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/WZ_py/
+SKZZ_py_looseskim              555109.777     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ZZ_py/
+SKWW_py_looseskim              182363.161     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/WW_py/
 
 ### TTW/Z/H ###
-SKttW_looseskim             845025.862      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttW/
-SKttZ_looseskim             1207816.13      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/ttZ/
-SKttH_looseskim		  		    7659207.69		/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/TTH/
+SKttW_looseskim             845025.862      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttW/
+SKttZ_looseskim             1207816.13      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttZ/
+SKttH_looseskim		  		    7659207.69		sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/TTH/
 
 ### QCD ###
-SKQCD_mumu_looseskim        54.2             /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_mumu/
-SKQCD_30-40_EM2_looseskim   497.0			   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_30-40_EM2/	
-SKQCD_40_EM2_looseskim      86.0             /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_40_EM2/
-SKQCD_20_30_EM_looseskim    12.			   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_20_30_EM/	
-SKQCD_20_30_BCtoE_looseskim 10.4             /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_20_30_BCtoE/
-SKQCD_30_80_EM_looseskim    7.17             /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_30_80_EM/
-SKQCD_30_80_BCtoE 12.3             /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_30_80_BCtoE/
-SKQCD_80_170_EM_looseskim    188.            /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_80_170_EM/
-SKQCD_80_170_BCtoE_looseskim 150.            /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_80_170_BCtoE/
-SKQCD_170_250_EM_looseskim    6910.          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_170_250_EM/
-SKQCD_170_250_BCtoE_looseskim 3080.          /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_170_250_BCtoE/
-SKQCD_250_350_EM_looseskim    62200.         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_250_350_EM/
-SKQCD_250_350_BCtoE_looseskim 19600.         /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_250_350_BCtoE/
-SKQCD_350_EM_looseskim        382497.9062	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_350_EM/
-SKQCD_350_BCtoE_looseskim     81446.75	   /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_350_BCtoE/
+SKQCD_mumu_looseskim        54.2             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_mumu/
+SKQCD_30-40_EM2_looseskim   497.0			   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-40_EM2/	
+SKQCD_40_EM2_looseskim      86.0             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_40_EM2/
+SKQCD_20_30_EM_looseskim    12.			   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20_30_EM/	
+SKQCD_20_30_BCtoE_looseskim 10.4             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20_30_BCtoE/
+SKQCD_30_80_EM_looseskim    7.17             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30_80_EM/
+SKQCD_30_80_BCtoE 12.3             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30_80_BCtoE/
+SKQCD_80_170_EM_looseskim    188.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80_170_EM/
+SKQCD_80_170_BCtoE_looseskim 150.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80_170_BCtoE/
+SKQCD_170_250_EM_looseskim    6910.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170_250_EM/
+SKQCD_170_250_BCtoE_looseskim 3080.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170_250_BCtoE/
+SKQCD_250_350_EM_looseskim    62200.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_250_350_EM/
+SKQCD_250_350_BCtoE_looseskim 19600.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_250_350_BCtoE/
+SKQCD_350_EM_looseskim        382497.9062	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_350_EM/
+SKQCD_350_BCtoE_looseskim     81446.75	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_350_BCtoE/
 
-SKQCD_1000_mu_looseskim      1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_1000_mu/
-SKQCD_15-20_mu_looseskim     1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_15-20_mu/
-SKQCD_20-30_mu_looseskim     1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_20-30_mu/
-SKQCD_30-50_mu_looseskim     1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_30-50_mu/
-SKQCD_50-80_mu_looseskim     1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_50-80_mu/
-SKQCD_800-1000_mu_looseskim  1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_800-1000_mu/
-SKQCD_120-170_mu_looseskim   1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_120-170_mu/
-SKQCD_170-300_mu_looseskim   1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_170-300_mu/
-SKQCD_300-470_mu_looseskim   1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_300-470_mu/
-SKQCD_470-600_mu_looseskim   1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_470-600_mu/
-SKQCD_600-800_mu_looseskim   1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_600-800_mu/
-SKQCD_80-120_mu_looseskim    1. /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/QCD_80-120_mu/
+SKQCD_1000_mu_looseskim      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
+SKQCD_15-20_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
+SKQCD_20-30_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20-30_mu/
+SKQCD_30-50_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-50_mu/
+SKQCD_50-80_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_50-80_mu/
+SKQCD_800-1000_mu_looseskim  1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_800-1000_mu/
+SKQCD_120-170_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_120-170_mu/
+SKQCD_170-300_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170-300_mu/
+SKQCD_300-470_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_300-470_mu/
+SKQCD_470-600_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_470-600_mu/
+SKQCD_600-800_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_600-800_mu/
+SKQCD_80-120_mu_looseskim    1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80-120_mu/
 ######################
 
 
@@ -596,6 +612,15 @@ singleelectron B	cms_ntuple_path_2014 SingleElectron/periodB/
 singleelectron C	cms_ntuple_path_2014 SingleElectron/periodC/ 						    
 singleelectron D	cms_ntuple_path_2014 SingleElectron/periodD/ 						    
 
+singlemuon_chs A    cms_ntuple_path_2016 SingleMuonCHS/periodA/
+singlemuon_chs B    cms_ntuple_path_2016 SingleMuonCHS/periodB/
+singlemuon_chs C    cms_ntuple_path_2016 SingleMuonCHS/periodC/
+singlemuon_chs D    cms_ntuple_path_2016 SingleMuonCHS/periodD/
+
+singleelectron A        cms_ntuple_path_2016 SingleElectronCHS/periodA/
+singleelectron B        cms_ntuple_path_2016 SingleElectronCHS/periodB/
+singleelectron C        cms_ntuple_path_2016 SingleElectronCHS/periodC/
+singleelectron D        cms_ntuple_path_2016 SingleElectronCHS/periodD/
 
 ############################################################
 #cms_mc_ntuple_path_2014     /data1/DATA/LQNtuples_5_3_14_snu27/MC/
@@ -693,6 +718,7 @@ topHAD		460656.55	cms_mc_ntuple_path_2014 TTJets_HadronicMGDecays_8TeV-madgraph/
 topLJ		93722.93	cms_mc_ntuple_path_2014 TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
 ttbar           29588.256       cms_mc_ntuple_path_2014  TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
 ttbarMS    	1.		cms_mc_ntuple_path_2014 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
+ttbarMSchs    	1.		cms_mc_ntuple_path_2016 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
 				
 ### EXTRA STAT
 W1Jets		3781.307	cms_mc_ntuple_path_2014 W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
