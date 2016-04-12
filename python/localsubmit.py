@@ -477,6 +477,8 @@ InputDir = ntuple_path + "/" + inDS
 if IsSKTree:
     InputDir=inDS
 
+print "Input sample : " + InputDir
+
 ##################################################################################################################
 print "Input directory= " + inDS    ## now have defined what dur contains input files
 ##################################################################################################################                    
