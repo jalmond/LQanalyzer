@@ -253,21 +253,21 @@ if platform.system() == "Linux":
     os.system("rm " + filename2)
     if n_previous_jobs > 20:
         number_of_cores = 1
-        print "Number of subjobs is reduced to 1, since there are over 20 subjobs running on this machine."
+        print "Number of subjobs is reduced to 1, since there are over 20 jobs running on this machine."
                         
-        
+
+IsSKTree=""
+if useskinput == "true":
+    IsSKTree = True
+elif useskinput == "True":
+    IsSKTree = True        
+
 if number_of_cores > 1:
-    if useskinput == "True":
+    if IsSKTree:
         if (20 - n_previous_jobs) < number_of_cores:
             number_of_cores = 20 - n_previous_jobs
         if number_of_cores > 15:
             number_of_cores = 15
-            print "Number of sub jobs is set to high. Reset to default of 30."
-    elif useskinput == "true":
-        if (20 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 20 - n_previous_jobs
-        if number_of_cores > 15:
-            number_of_cores= 15
             print "Number of sub jobs is set to high. Reset to default of 30."
     else:
         if number_of_cores > 5:
@@ -278,7 +278,7 @@ if number_of_cores > 1:
                         print "Number of sub jobs is set to high. Reset to default of 5."
 
 if "SKTreeMaker" in cycle:
-    if number_of_cores > 2:
+    if number_of_cores > 1:
         number_of_cores = 30
        
     
@@ -327,7 +327,8 @@ host_postfix=""
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     host_postfix="_cluster"
 
-if useskinput == "true":
+
+if IsSKTree:
     if not mc:
         if useskim == "Lepton":
             new_channel="SK" + host_postfix + "_" + new_channel
@@ -347,26 +348,7 @@ if useskinput == "true":
             else:
                 if useskim == "DiLep":
                     sample="SK" + host_postfix + "_" + sample + "_dilep"
-elif useskinput == "True":
 
-    if not mc:
-        if useskim == "Lepton":
-            new_channel="SK" + new_channel
-        else:
-            if useskim == "NoCut":
-                new_channel="SK" + new_channel + "_nocut"
-            else:
-                if useskim == "DiLep":
-                    new_channel="SK" + new_channel + "_dilep"
-    else:
-        if useskim == "Lepton":
-            sample="SK" + sample
-        else:
-            if useskim == "NoCut":
-                sample="SK" + sample + "_nocut"
-            else:
-                if useskim == "DiLep":
-                    sample="SK" + sample + "_dilep"
                 
 print "Input sample = " + sample
 if not mc:
@@ -451,7 +433,10 @@ else:
                 if sample == entries[0]:
                     eff_lumi = entries[1]
                     inDS = entries[2]
+
 InputDir = ntuple_path + "/" + inDS    
+if isSKTree:
+    InputDir=inDS
 
 ##################################################################################################################
 print "Input directory= " + inDS    ## now have defined what dur contains input files
@@ -482,20 +467,30 @@ if DEBUG == "True":
                                                                 
 if running_batch:
     number_of_cores= ncore_def
-    
+    os.system("qstat > " +  local_sub_dir + "/check_qsub_all")
+    qsub_all_filename = local_sub_dir +'/check_qsub_all'
+    n_qsub_jobs=0
+    for qsub_all_line in open(qsub_all_filename, 'r'):
+        n_qsub_jobs=n_qsub_jobs+1
+    if n_qsub_jobs > 500:
+        print "WARNING: More than 500 jobs in batch queue."
+    qsub_all_filename.close()
+    os.system("rm " + local_sub_dir + "/check_qsub_all")
     os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/check_qsub")
     qsub_filename = local_sub_dir +'/check_qsub'
-    n_qsub_jobs=0
+    n_user_qsub_jobs=0
     for qsub_line in open(qsub_filename, 'r'):
         if str(getpass.getuser()) in qsub_line:
-            n_qsub_jobs= n_qsub_jobs+ 1
+            n_user_qsub_jobs= n_qsub_jobs+ 1
 
-    if n_qsub_jobs > 500:
-        print "N jobs > 500"
-    if n_qsub_jobs > 150:
+    qsub_filename.close()        
+    os.system("rm " + local_sub_dir + "/check_qsub")
+    if n_user_qsub_jobs > 500:
         number_of_cores=10
+    if n_qsub_jobs > 300:
+        number_of_cores=40
     if n_qsub_jobs > 100:
-        number_of_cores=20
+        number_of_cores=50
         
 ############################################################
 ### Correct user if ncores is > nfiles

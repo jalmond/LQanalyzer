@@ -1,3 +1,3 @@
 make distclean
-source make_btag_lib_new.sh
+source $LQANALYZER_DIR/bin/make/make_btag_lib_new.sh
 make
