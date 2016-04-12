@@ -466,117 +466,117 @@ SKHtoZZ_dilep           15637781.       sk_cluster_ntuple_path  sk_cms_ntuple_pa
 #### uses Tag27_CMSSW_5_3_20 and Tag27_CMSSW_5_3_20_2015 and Tag27_CMSSW_5_3_20_2016
 #### pt requirement is dropped to 10 GeV for skim of lepton
 #### no cuts on vertec or MET fileter cuts are applied (needed for gbyu)
-SKmuon_looseskim           A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodA/
-SKmuon_looseskim           B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodB/
-SKmuon_looseskim           C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodC/
-SKmuon_looseskim           D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodD/
+SKmuon_2016           A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodA/
+SKmuon_2016           B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodB/
+SKmuon_2016           C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodC/
+SKmuon_2016           D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/DoubleMuon/periodD/
 
-SKsinglemuon_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodA/
-SKsinglemuon_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodB/
-SKsinglemuon_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodC/
-SKsinglemuon_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodD/
+SKsinglemuon_2016     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodA/
+SKsinglemuon_2016     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodB/
+SKsinglemuon_2016     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodC/
+SKsinglemuon_2016     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuon/periodD/
 
-SKsingleelectron_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodA/
-SKsingleelectron_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodB/
-SKsingleelectron_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodC/
-SKsingleelectron_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodD/
+SKsingleelectron_2016     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodA/
+SKsingleelectron_2016     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodB/
+SKsingleelectron_2016     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodC/
+SKsingleelectron_2016     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectron/periodD/
 
-SKsinglemuon_chs_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodA/
-SKsinglemuon_chs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodB/
-SKsinglemuon_chs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodC/
-SKsinglemuon_chs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodD/
+SKsinglemuon_chs_2016     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodA/
+SKsinglemuon_chs_2016     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodB/
+SKsinglemuon_chs_2016     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodC/
+SKsinglemuon_chs_2016     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodD/
 
-SKsingleelectron_chs_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodA/
-SKsingleelectron_chs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodB/
-SKsingleelectron_chs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodC/
-SKsingleelectron_chs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodD/
+SKsingleelectron_chs_2016     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodA/
+SKsingleelectron_chs_2016     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodB/
+SKsingleelectron_chs_2016     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodC/
+SKsingleelectron_chs_2016     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodD/
 
 ### CH Signal ###
-SKCH120PU_looseskim_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
-SKCHm120PU_looseskim_nocut   1374.421143 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
-SKCH110PU_looseskim_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH110PU/
-SKCH100PU_looseskim_nocut    2721.354004 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH100PU/
-SKCH90PU_looseskim_nocut        2748.842285     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH90PU/
-SKCH130PU_looseskim_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH130PU/
-SKCH140PU_looseskim_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH140PU/
-SKCH150PU_looseskim_nocut    2748.842285   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH150PU/
+SKCH120PU_2016_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
+SKCHm120PU_2016_nocut   1374.421143 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
+SKCH110PU_2016_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH110PU/
+SKCH100PU_2016_nocut    2721.354004 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH100PU/
+SKCH90PU_2016_nocut        2748.842285     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH90PU/
+SKCH130PU_2016_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH130PU/
+SKCH140PU_2016_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH140PU/
+SKCH150PU_2016_nocut    2748.842285   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH150PU/
 
-SKttbarMSpow_looseskim         85713.03906      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_pow/
-SKttbarMSmatchingdown_looseskim       81563.375        sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_matchingdown/
-SKttbarMSmatchingup_looseskim         146646.875      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_matchingup/
-SKttbarMSscaledown_looseskim         154797.2031      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_scaledown/
-SKttbarMSscaleup_looseskim         163900.8125      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_scaleup/
-SKttbarMSwidth_looseskim         53080.07812      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_width_x5/
-SKttbarMSpow_her_looseskim         109471.45004      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_pow_her/
-SKttbarMS_CT10_herwig_looseskim        34127.05078     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_herwig/
-SKttbarMS_CT10_pythia_looseskim            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_pythia/
+SKttbarMSpow_2016         85713.03906      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_pow/
+SKttbarMSmatchingdown_2016       81563.375        sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_matchingdown/
+SKttbarMSmatchingup_2016         146646.875      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_matchingup/
+SKttbarMSscaledown_2016         154797.2031      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_scaledown/
+SKttbarMSscaleup_2016         163900.8125      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_scaleup/
+SKttbarMSwidth_2016         53080.07812      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_width_x5/
+SKttbarMSpow_her_2016         109471.45004      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbar_pow_her/
+SKttbarMS_CT10_herwig_2016        34127.05078     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_herwig/
+SKttbarMS_CT10_pythia_2016            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_pythia/
 
-SKttbarMS_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMS/
-SKttbarMS_chs_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
+SKttbarMS_2016         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMS/
+SKttbarMS_chs_2016         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
 
-SKDY10to50_looseskim        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY10to50/
-SKDY50plus_looseskim        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY50plus/
-SKZbb_looseskim             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Zbb/
-SKZ1Jets_looseskim          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z1Jets/
-SKZ2Jets_looseskim          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z2Jets/
-SKZ3Jets_looseskim          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z3Jets/
-SKZ4Jets_looseskim          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z4Jets/
+SKDY10to50_2016        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY10to50/
+SKDY50plus_2016        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY50plus/
+SKZbb_2016             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Zbb/
+SKZ1Jets_2016          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z1Jets/
+SKZ2Jets_2016          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z2Jets/
+SKZ3Jets_2016          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z3Jets/
+SKZ4Jets_2016          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Z4Jets/
 
 ### Wjets ###
-SKWjets_looseskim           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wjets/
-SKWbb_looseskim             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wbb/
-SKW1Jets_looseskim          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W1Jets/
-SKW2Jets_looseskim          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W2Jets/
-SKW3Jets_looseskim          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W3Jets/
-SKW4Jets_looseskim          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W4Jets/
+SKWjets_2016           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wjets/
+SKWbb_2016             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wbb/
+SKW1Jets_2016          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W1Jets/
+SKW2Jets_2016          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W2Jets/
+SKW3Jets_2016          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W3Jets/
+SKW4Jets_2016          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/W4Jets/
 
 ### Single Top ###
-SKstbar_sch_looseskim       79530.6821     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_sch/
-SKstbar_tch_looseskim       63031.661      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_tch/
-SKstbar_tW_looseskim        44455.856      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_tW/
-SKst_sch_looseskim          68591.293      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_sch/
-SKst_tch_looseskim          66635.23       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_tch/
-SKst_tW_looseskim           44834.054      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_tW/
+SKstbar_sch_2016       79530.6821     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_sch/
+SKstbar_tch_2016       63031.661      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_tch/
+SKstbar_tW_2016        44455.856      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/stbar_tW/
+SKst_sch_2016          68591.293      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_sch/
+SKst_tch_2016          66635.23       sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_tch/
+SKst_tW_2016           44834.054      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/st_tW/
 
 ### Diboson ###
-SKWZ_py_looseskim              301122.644     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/WZ_py/
-SKZZ_py_looseskim              555109.777     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ZZ_py/
-SKWW_py_looseskim              182363.161     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/WW_py/
+SKWZ_py_2016              301122.644     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/WZ_py/
+SKZZ_py_2016              555109.777     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ZZ_py/
+SKWW_py_2016              182363.161     sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/WW_py/
 
 ### TTW/Z/H ###
-SKttW_looseskim             845025.862      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttW/
-SKttZ_looseskim             1207816.13      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttZ/
-SKttH_looseskim		  		    7659207.69		sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/TTH/
+SKttW_2016             845025.862      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttW/
+SKttZ_2016             1207816.13      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttZ/
+SKttH_2016		  		    7659207.69		sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/TTH/
 
 ### QCD ###
-SKQCD_mumu_looseskim        54.2             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_mumu/
-SKQCD_30-40_EM2_looseskim   497.0			   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-40_EM2/	
-SKQCD_40_EM2_looseskim      86.0             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_40_EM2/
-SKQCD_20_30_EM_looseskim    12.			   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20_30_EM/	
-SKQCD_20_30_BCtoE_looseskim 10.4             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20_30_BCtoE/
-SKQCD_30_80_EM_looseskim    7.17             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30_80_EM/
+SKQCD_mumu_2016        54.2             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_mumu/
+SKQCD_30-40_EM2_2016   497.0			   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-40_EM2/	
+SKQCD_40_EM2_2016      86.0             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_40_EM2/
+SKQCD_20_30_EM_2016    12.			   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20_30_EM/	
+SKQCD_20_30_BCtoE_2016 10.4             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20_30_BCtoE/
+SKQCD_30_80_EM_2016    7.17             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30_80_EM/
 SKQCD_30_80_BCtoE 12.3             sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30_80_BCtoE/
-SKQCD_80_170_EM_looseskim    188.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80_170_EM/
-SKQCD_80_170_BCtoE_looseskim 150.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80_170_BCtoE/
-SKQCD_170_250_EM_looseskim    6910.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170_250_EM/
-SKQCD_170_250_BCtoE_looseskim 3080.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170_250_BCtoE/
-SKQCD_250_350_EM_looseskim    62200.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_250_350_EM/
-SKQCD_250_350_BCtoE_looseskim 19600.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_250_350_BCtoE/
-SKQCD_350_EM_looseskim        382497.9062	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_350_EM/
-SKQCD_350_BCtoE_looseskim     81446.75	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_350_BCtoE/
+SKQCD_80_170_EM_2016    188.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80_170_EM/
+SKQCD_80_170_BCtoE_2016 150.            sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80_170_BCtoE/
+SKQCD_170_250_EM_2016    6910.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170_250_EM/
+SKQCD_170_250_BCtoE_2016 3080.          sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170_250_BCtoE/
+SKQCD_250_350_EM_2016    62200.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_250_350_EM/
+SKQCD_250_350_BCtoE_2016 19600.         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_250_350_BCtoE/
+SKQCD_350_EM_2016        382497.9062	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_350_EM/
+SKQCD_350_BCtoE_2016     81446.75	   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_350_BCtoE/
 
-SKQCD_1000_mu_looseskim      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
-SKQCD_15-20_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
-SKQCD_20-30_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20-30_mu/
-SKQCD_30-50_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-50_mu/
-SKQCD_50-80_mu_looseskim     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_50-80_mu/
-SKQCD_800-1000_mu_looseskim  1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_800-1000_mu/
-SKQCD_120-170_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_120-170_mu/
-SKQCD_170-300_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170-300_mu/
-SKQCD_300-470_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_300-470_mu/
-SKQCD_470-600_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_470-600_mu/
-SKQCD_600-800_mu_looseskim   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_600-800_mu/
-SKQCD_80-120_mu_looseskim    1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80-120_mu/
+SKQCD_1000_mu_2016      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
+SKQCD_15-20_mu_2016     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
+SKQCD_20-30_mu_2016     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20-30_mu/
+SKQCD_30-50_mu_2016     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-50_mu/
+SKQCD_50-80_mu_2016     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_50-80_mu/
+SKQCD_800-1000_mu_2016  1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_800-1000_mu/
+SKQCD_120-170_mu_2016   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_120-170_mu/
+SKQCD_170-300_mu_2016   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170-300_mu/
+SKQCD_300-470_mu_2016   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_300-470_mu/
+SKQCD_470-600_mu_2016   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_470-600_mu/
+SKQCD_600-800_mu_2016   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_600-800_mu/
+SKQCD_80-120_mu_2016    1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80-120_mu/
 ######################
 
 

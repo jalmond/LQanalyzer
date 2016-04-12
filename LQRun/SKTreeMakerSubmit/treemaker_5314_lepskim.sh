@@ -43,10 +43,10 @@ if [[ $1  == "DATA" ]];
 then
     runMC=false
     runDoubleMuon=false
-    runDoubleElectron=true
+    runDoubleElectron=false
     runElectronMuon=false
-    runSingleMuon=true
-    runSingleElectron=false
+    runSingleMuon=false
+    runSingleElectron=true
 fi    
 
 
@@ -76,9 +76,11 @@ then
     loglevel="INFO"
     logstep=1000
     
-    
-    declare -a input_samples=(  "stbar_sch_looseskim" "stbar_tch_looseskim" "stbar_tW_looseskim" "st_sch_looseskim" "st_tch_looseskim" "st_tW_looseskim" "ttbarMS_looseskim" "DY10to50_looseskim" "DY50plus_looseskim" "Wjets_looseskim" "Wbb_looseskim" "Zbb_looseskim" "W1Jets_looseskim" "W2Jets_looseskim" "W3Jets_looseskim" "W4Jets_looseskim" "Z1Jets_looseskim" "Z2Jets_looseskim" "Z3Jets_looseskim" "Z4Jets_looseskim" "ttW_looseskim" "ttZ_looseskim" "WZ_py_looseskim" "ZZ_py_looseskim" "WW_py_looseskim" "QCD_mumu_looseskim" "QCD_20_30_EM_looseskim" "QCD_20_30_BCtoE_looseskim" "QCD_30_80_EM_looseskim" "QCD_30_80_BCtoE_looseskim" "QCD_80_170_EM_looseskim" "QCD_80_170_BCtoE_looseskim" "QCD_170_250_EM_looseskim" "QCD_170_250_BCtoE_looseskim" "QCD_250_350_EM_looseskim" "QCD_250_350_BCtoE_looseskim" "QCD_350_EM_looseskim" "QCD_350_BCtoE_looseskim" "ttbar_mass169_looseskim" "ttbar_mass171_looseskim" "ttbar_mass175_looseskim" "ttbar_matchingdown_looseskim" "ttbar_matchingup_looseskim" "ttbar_pow_looseskim" "ttbar_pow_her_looseskim" "ttbar_scaledown_looseskim" "ttbar_scaleup_looseskim" "ttbar_width_x5_looseskim" "TTH_looseskim" "Wgamma_looseskim" )
+    samples2016="True"
+ 
+    declare -a input_samples=(  "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "ttbarMS" "DY10to50" "DY50plus" "Wjets" "Wbb" "Zbb" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "ttW" "ttZ" "WZ_py" "ZZ_py" "WW_py" "QCD_mumu" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_350_EM" "QCD_350_BCtoE" "ttbar_mass169" "ttbar_mass171" "ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_pow" "ttbar_pow_her" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5" "TTH" "Wgamma" )
 
+    declare -a input_samples=(  "stbar_sch" )
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA
@@ -143,7 +145,7 @@ then
     loglevel="INFO"
     logstep=1000
     
-    stream="singleelectron_looseskim"
+    stream="singleelectron"
     declare -a input_samples=("C" "D")
     source submit.sh
 fi
@@ -160,7 +162,7 @@ then
     loglevel="INFO"
     logstep=1000
 
-    stream="singlemuon_looseskim"
+    stream="singlemuon"
     declare -a input_samples=("A" "B" "C" "D")
     source submit.sh
 fi

@@ -186,7 +186,7 @@ then
     
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
+    #useskim="DiLep"
     
     njobs=1
     data_lumi="AtoD"
@@ -195,9 +195,11 @@ then
     loglevel="INFO"
     logstep=1000
     declare -a input_samples=( "DY10to50" "DY50plus" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
-    
-    declare -a input_samples=("SSWmWm")
-    declare -a input_samples=("st_tW")
+
+    declare -a input_samples=("stbar_sch")
+
+    samples2016="True"
+
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1

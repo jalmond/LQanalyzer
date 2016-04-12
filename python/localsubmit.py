@@ -1,6 +1,6 @@
-################################################################### 
+################################################################## 
 ### configure Job
-#################################################################### 
+################################################################### 
 timeWait=1#
 
 ###################################################
@@ -32,8 +32,7 @@ parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_D
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-N", "--use5312ntuples", dest="use5312ntuples", default=True, help="use5312ntuples? add use5312ntuples='True' to run on these samples")
-parser.add_option("-M", "--use538ntuples", dest="use538ntuples", default=True, help="use538ntuples? add use5384ntuples='True' to run on these samples")
+parser.add_option("-N", "--samples2016", dest="samples2016", default=True, help="samples2016? add samples2016='True' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
@@ -69,8 +68,7 @@ Finaloutputdir = options.outputdir
 remove_workspace=options.remove
 useskinput=options.skinput
 runevent= options.runevent
-use5312ntuples = options.use5312ntuples
-use538ntuples = options.use538ntuples
+samples2016 = options.samples2016
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
@@ -78,6 +76,8 @@ useskim = options.useskim
 new_channel = channel.replace(":", "")
 original_channel = new_channel
 
+
+print "samples2016 = " + str(samples2016)
 
 ##############################
 ### check output dir exists
@@ -118,14 +118,14 @@ for lib in list_of_extra_lib:
     print "Adding " + lib + " to list of Libraies to Load"
 
 
-if DEBUG == "True":
+if str(DEBUG) == "True":
     print "In debug mode"
 
 print "Running : " + cycle
 
-if useskinput == "True": 
+if str(useskinput) == "True": 
     print "Using SKTrees as input."
-elif useskinput == "true":
+elif str(useskinput) == "true":
     print "Using SKTrees as input."
 else:
     print "Using LQntuples as input"    
@@ -163,12 +163,9 @@ if not len(splitsample)==1:
         if "runevent" in splitsample[conf]:
             conf+=1
             runevent = splitsample[conf]
-        if "use5312ntuples" in splitsample[conf]:
+        if "samples2016" in splitsample[conf]:
             conf+=1
-            use5312ntuples = splitsample[conf]
-        if "use538ntuples" in splitsample[conf]:
-            conf+=1
-            use584ntuples = splitsample[conf]
+            samples2016 = splitsample[conf]
 
 ###########################################################################################
 ###########################################################################################
@@ -177,15 +174,15 @@ running_batch=False
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     running_batch=True
 
-if usebatch == "NULL":
-    if running_batch == "True":
+if str(usebatch) == "NULL":
+    if str(running_batch) == "True":
         print "Running batch job:"
     else:
         print "Running standard root interactive job:"
 else:
-    if usebatch == "False":
+    if str(usebatch) == "False":
         running_batch=False
-    elif  usebatch == "false":
+    elif  str(usebatch) == "false":
         running_batch=False
 
 ##########################################################################################
@@ -195,13 +192,13 @@ else:
 ####
 ####################
 
-if not cycle == "SKTreeMaker":
-    if not cycle == "SKTreeMakerNoCut":
-        if not cycle == "SKTreeMakerDiLep":
-            if not useskinput == "True":
-                if not useskinput == "true":
+if not str(cycle) == "SKTreeMaker":
+    if not str(cycle) == "SKTreeMakerNoCut":
+        if not str(cycle) == "SKTreeMakerDiLep":
+            if not str(useskinput) == "True":
+                if not (useskinput) == "true":
                     update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
-                    if not  update == "N":
+                    if not  str(update) == "N":
                         useskinput="True"
 
 ##########################################################
@@ -273,9 +270,9 @@ if platform.system() == "Linux":
                         
 
 IsSKTree=""
-if useskinput == "true":
+if str(useskinput) == "true":
     IsSKTree = True
-elif useskinput == "True":
+elif (useskinput) == "True":
     IsSKTree = True        
 
 if number_of_cores > 1:
@@ -287,13 +284,13 @@ if number_of_cores > 1:
             print "Number of sub jobs is set to high. Reset to default of 30."
     else:
         if number_of_cores > 5:
-            if not cycle == "SKTreeMaker":
-                if not cycle == "SKTreeMakerNoCut":
-                    if not cycle == "SKTreeMakerDiLep":
+            if not str(cycle) == "SKTreeMaker":
+                if not str(cycle) == "SKTreeMakerNoCut":
+                    if not str(cycle) == "SKTreeMakerDiLep":
                         number_of_cores = 5
                         print "Number of sub jobs is set to high. Reset to default of 5."
 
-if "SKTreeMaker" in cycle:
+if "SKTreeMaker" in str(cycle):
     if number_of_cores > 1:
         number_of_cores = 30
        
@@ -340,33 +337,44 @@ else:
 ##################################################################################################################
 original_sample = sample
 host_postfix=""
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    host_postfix="_cluster"
+new_sample_fix=""
+print  str(samples2016) + "samples2016"
+if str(samples2016)=="True":
+    print "TEST"
+    new_sample_fix="_2016"
+    print "new_sample_fix = " + str(new_sample_fix )
 
+elif samples2016 == "true":
+    new_sample_fix="_2016"
+if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    new_sample_fix=""
+
+
+print "new_sample_fix = " + str(new_sample_fix )
 
 if IsSKTree:
     if not mc:
         if useskim == "Lepton":
-            new_channel="SK" + host_postfix +new_channel
+            new_channel="SK" + host_postfix +new_channel + new_sample_fix
         else:
             if useskim == "NoCut":
-                new_channel="SK" + host_postfix + new_channel + "_nocut"
+                new_channel="SK" + host_postfix + new_channel + new_sample_fix+ "_nocut"
             else:
                 if useskim == "DiLep":
-                    new_channel="SK" + host_postfix + new_channel + "_dilep"
+                    new_channel="SK" + host_postfix + new_channel + new_sample_fix+ "_dilep"
 
     else:
         if useskim == "Lepton":
-            sample="SK" + host_postfix +  sample
+            sample="SK" + host_postfix +  sample+ new_sample_fix
         else:
             if useskim == "NoCut":
-                sample="SK" + host_postfix  + sample + "_nocut"
+                sample="SK" + host_postfix  + sample + new_sample_fix +"_nocut"
             else:
                 if useskim == "DiLep":
-                    sample="SK" + host_postfix + sample + "_dilep"
+                    sample="SK" + host_postfix + sample + new_sample_fix+"_dilep"
 
                 
-print "Input sample = " + sample
+print "Input sample = " + sample + str(new_sample_fix)
 if not mc:
     print "Input channel = " + new_channel
 
@@ -410,20 +418,17 @@ filechannel=""
 
 if platform.system() == "Linux":
     version="_5_3_14"
-    if  use5312ntuples == "True":
-        version = "_5_3_12"
-        print "Using Version 5312 ntuples"
-    elif  use538ntuples == "True":
-        version = "_5_3_8"
-        print "Using Version 538 ntuples"
+    if samples2016=="True":
+        print "Using Version 5320 ntuples"
     else:
         print "Using Version 5314 ntuples"
+
     filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu' + version +  '.txt'
     
 else:
     filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
-ntuple_path=""
+
 ntup_path_link=""
 if IsSKTree:
     if not mc:
@@ -447,7 +452,7 @@ if IsSKTree:
         for line in open(filename, 'r'):
             if not line.startswith("#"):
                 entries = line.split()
-                if len(entries)==4:
+                if len(entries)==5:
                     if sample == entries[0]:
                         eff_lumi = entries[1]
                         inDS = entries[4]
@@ -479,6 +484,7 @@ else:
                         inDS = entries[3]
                         ntup_path_link = entries[2]
                         
+ntuple_path=""
 for line in open(filename, 'r'):
     if not line.startswith("#"):
         entries = line.split()
@@ -490,10 +496,7 @@ dir_break="/"
 if ntuple_path.endswith('/'):
     dir_break=""
 
-
 InputDir = ntuple_path + dir_break + inDS    
-if IsSKTree:
-    InputDir=inDS
 
 ##################################################################################################################
 print "Input directory= " + InputDir    ## now have defined what dur contains input files
@@ -654,19 +657,10 @@ if runcf == "True":
     print "sample --> " + outsamplename
 if not mc:
     outsamplename = outsamplename +  "_" + new_channel
-    if use538ntuples == "True":
-        outsamplename = outsamplename + "_5_3_8"
-    elif use5312ntuples == "True":
-        outsamplename = outsamplename + "_5_3_12"
-    else:
-        outsamplename = outsamplename + "_5_3_14"
+    outsamplename = outsamplename + "_5_3_20"
 else:
-    if use538ntuples == "True":
-        outsamplename = outsamplename + "_5_3_8"
-    elif use5312ntuples == "True":
-        outsamplename = outsamplename + "_5_3_12"
-    else:
-        outsamplename = outsamplename + "_5_3_14"
+    outsamplename = outsamplename + "_5_3_20"
+
         
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
@@ -680,7 +674,7 @@ for line in fr:
             configfile=open(runscript,'w')
             configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
             configfile.close()
-            if DEBUG == "True":
+            if str(DEBUG) == "True":
                 print "Making file : " + printedrunscript
             fwrite.write(line)
             filesprocessed+=1
@@ -1011,7 +1005,7 @@ else:
         SKTreeOutput = "/data4/LocalNtuples/SKTrees8TeV/Tag27_CMSSW_5_3_20/SKTrees/"
    
     #do not merge the output when using tree maker code
-    if cycle == "SKTreeMaker":
+    if str(cycle) == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):
             os.system("mkdir  " + SKTreeOutput)
         doMerge=False
@@ -1020,32 +1014,32 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 
-            if original_channel =="egamma":
+            if str(original_channel) =="egamma":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="muon":
+            if str(original_channel) =="muon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="emu":
+            if str(original_channel) =="emu":
                 Finaloutputdir += "ElectronMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="singlemuon":
+            if str(original_channel) =="singlemuon":
                 Finaloutputdir += "SingleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="singlemuon_chs":
+            if str(original_channel) =="singlemuon_chs":
                 Finaloutputdir += "SingleMuonCHS/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
 
-            if original_channel =="singleelectron":
+            if str(original_channel) =="singleelectron":
                 Finaloutputdir += "SingleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="singleelectron_chs":
+            if str(original_channel) =="singleelectron_chs":
                 Finaloutputdir += "SingleElectronCHS/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
@@ -1070,15 +1064,15 @@ else:
             Finaloutputdir = SKTreeOutput + "DataNoCut/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-            if original_channel =="egamma":
+            if str(original_channel) =="egamma":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="muon":
+            if str(original_channel) =="muon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="emu":
+            if str(original_channel) =="emu":
                 Finaloutputdir += "ElectronMuon/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
@@ -1100,15 +1094,15 @@ else:
             Finaloutputdir = SKTreeOutput + "DataDiLep1510/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-            if original_channel =="egamma":
+            if str(original_channel) =="egamma":
                 Finaloutputdir += "DoubleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="muon":
+            if str(original_channel) =="muon":
                 Finaloutputdir += "DoubleMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
-            if original_channel =="emu":
+            if str(original_channel) =="emu":
                 Finaloutputdir += "ElectronMuon/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
