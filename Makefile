@@ -28,10 +28,10 @@ analysis::
 	(cd LQAnalysis; make)
 
 fakes::
-	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+	(bash bin/make/make_fake_helper_lib.sh; cd ${LQANALYZER_DIR} ) 
 
 rocher::	
-	(bash bin/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
+	(bash bin/make/make_rocher_helper.sh; cd ${LQANALYZER_DIR} )
 
 
 

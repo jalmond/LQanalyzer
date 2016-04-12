@@ -62,7 +62,6 @@ void Data::CheckCaching(){
 void Data::GetEvent(Long64_t entry) throw( LQError )
 {
   
-
   m_logger << DEBUG <<  "Number of branches =  " << m_inputbranches.size() << LQLogger::endmsg;
 
   if (!fChain)  throw LQError( "!!! Event is not Loaded", LQError::SkipCycle );
@@ -93,12 +92,22 @@ Int_t Data::GetEntry(Long64_t entry)
 
 Long64_t Data::LoadTree(Long64_t entry)
 {
+
 // Set the environment to read one entry
    if (!fChain) return -5;
+   
+
+   ///m_logger << INFO <<  fChain->LoadTree(entry) << LQLogger::endmsg;
+   //m_logger << INFO << "Entry " << entry << " " << fChain->GetTree()->GetEntries() << LQLogger::endmsg; 
    Long64_t centry = fChain->LoadTree(entry);
    if (centry < 0) return centry;
-   if (!fChain->InheritsFrom(TChain::Class()))  return centry;
+
+   if (!fChain->InheritsFrom(TChain::Class()))  {
+     return centry;
+   }
+   
    TChain *chain = (TChain*)fChain;
+   //m_logger << INFO << chain->GetTreeNumber() << " " << fCurrent << LQLogger::endmsg;
    if (chain->GetTreeNumber() != fCurrent) {
       fCurrent = chain->GetTreeNumber();
       Notify();
@@ -183,23 +192,8 @@ void Data::Reset(){
   /// clear vectors
 
   // Set object pointer
-  run=0;
-  Weight=0;
-  isData=0;
-  event=0;
-  ls=0;
-  isPhysDeclared=0;
-  isPrimaryVertex=0;
-  ProcessID=0;
-  isTrackingFailure=0;
-  isBeamScraping=0;
-  passBadEESupercrystalFilter=0;
-  passBeamHaloFilterTight=0;
-  passEcalDeadCellTriggerPrimitiveFilter=0;
-  passEcalDeadCellBoundaryEnergyFilter=0;passHBHENoiseFilter=0;
-  passEcalLaserCorrFilter=0;
-  passTrackingFailureFilter=0;
-  passBeamHaloFilterLoose=0;
+
+
   
   HLTKey = 0;
   HLTInsideDatasetTriggerNames = 0;
@@ -966,9 +960,19 @@ void Data::ConnectVariables(bool setall){
 }
 void Data::ConnectEvent(){
 
+
+  //fChain->SetBranchAddress("isData", &isData, &b_isData);
+  //fChain->SetBranchStatus("isData",1);
+  //fChain->AddBranchToCache( "isData", kTRUE );
+
+
   ConnectVariable("isData", isData, b_isData);
+
+
   ConnectVariable("ProcessID", ProcessID, b_ProcessID);
+  
   ConnectVariable("run", run, b_run);
+  ConnectVariable("ls", ls, b_ls);
   ConnectVariable("VertexNTracks", VertexNTracks, b_VertexNTracks);
   ConnectVariable("event", event, b_event);
   ConnectVariable("Weight", Weight, b_Weight);
@@ -1002,7 +1006,8 @@ void Data::ConnectEvent(){
   ConnectVariable("PDFCTEQWeights", PDFCTEQWeights, b_PDFCTEQWeights);
   ConnectVariable("PDFMSTWWeights", PDFMSTWWeights, b_PDFMSTWWeights);
   ConnectVariable("PDFNNPDFWeights", PDFNNPDFWeights, b_PDFNNPDFWeights);
-  ConnectVariable("ls", ls, b_ls);
+
+  
   
   return;}
 
@@ -2010,7 +2015,8 @@ d "
 template< typename T >
 bool Data::ConnectVariable(  const char* branchName,
 			     T& variable, TBranch* br){
-  
+
+  m_logger << INFO << "ConnectVariable 1: " << branchName <<  LQLogger::endmsg;  
 
   // Check if the branch actually exists:                                      
   TBranch* branch_info;

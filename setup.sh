@@ -12,6 +12,20 @@
 # Greet the user
 echo "Setting up environment for compiling/running LQAnalzer with SKTree"
 
+if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
+then
+    if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    then
+	echo "Setup failed. LQanalyzer needs to be in /data4/LQAnalyzerCode/"$USER
+	if [ ! -d /data4/LQAnalyzerCode/$USER ]; then
+	    mkdir /data4/LQAnalyzerCode/$USER
+	fi
+	echo "Move the current LQAnalyzer directory to "/data4/LQAnalyzerCode/$USER
+
+	return 
+    fi
+fi
+
 if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
     return 1
@@ -76,14 +90,16 @@ elif [[ "$HOSTNAME" == "cms4" ]];
 then
     export OBJ=obj/slc5_cms4
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms4/
-else
+elif [[ "$HOSTNAME" == "cms2" ]];
+then
     export OBJ=obj/slc5_cms2
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms2/
-
+else
+    export OBJ=obj/clustertmp/
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/clustertmp/
 fi
 
 export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
-
 export LQANALYZER_RUN_PATH=${LQANALYZER_DIR}/LQRun/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
@@ -120,8 +136,14 @@ fi
 
 
 export LQANALYZER_OUTPUT_PATH=/data2/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
-
 export LQANALYZER_LOG_PATH=/data2/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
+
+if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    then
+    export LQANALYZER_OUTPUT_PATH=/data4/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
+    export LQANALYZER_LOG_PATH=/data4/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
+fi
+
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 # Setup root area and other paths
