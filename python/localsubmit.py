@@ -1,4 +1,4 @@
-B1;95;0c################################################################### 
+################################################################### 
 ### configure Job
 #################################################################### 
 timeWait=1#
@@ -1141,7 +1141,8 @@ else:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
         else:
             if  "SKTreeMaker" in cycle:
-                os.system("rm " + Finaloutputdir +  "/*.root")
+                os.system("rm -r " + Finaloutputdir)
+                os.system("mkdir " + Finaloutputdir)
 
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
 

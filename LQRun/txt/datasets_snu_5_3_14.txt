@@ -1,3 +1,6 @@
+############################################################################
+###################  LQNTUPLE PATHS
+############################################################################
 #####  PATH on SNU cluster machines  (For LQNtuples only)
 cluster_mc_ntuple_path_2014         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
 cluster_data_ntuple_path_2014	    /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/MC/
@@ -14,13 +17,15 @@ cms_mc_ntuplepath_chargedhiggs     /data2/MC/CHsample/LQNtuple/
 #################   DIR INFORMATION
 ############  LQNtuples_5_3_14_snu27/   this uses CMSSW 5_3_14
 ############  LQNtuples_5_3_14_snu27_2015/   this uses CMSSW 5_3_20. Lepton shifted pt was added + pdf changed
-############  LQNtuples_5_3_14_snu27_2016/   this uses CMSSW 5_3_14 for QCD muon samples.
-############  LQNtuples_5_3_14_snu27_2016_chs/  CMSSW 5_3_20 for all other samples. Other samples also have pdfweights fixed and chs jets used
+############  LQNtuples_5_3_14_snu27_2016/   this uses CMSSW 5_3_14 for QCD muon samples. CMSSW 5_3_20 for all other samples. Other samples also have pdfweights fixed and chs jets used
 ###########    /data2/MC/CHsample/LQNtuple/    <FILL IN BY GBYU>
 
+############################################################################
+###################  SKTREE PATHS
+############################################################################
 
 #####  PATH on SNU cluster machines  (For SKTree only)
-sk_cluster_ntuple_path        /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/
+sk_cluster_ntuple_path        /data4/LocalNtuples/SKTrees8TeV/Tag27_CMSSW_5_3_20/SKTrees/
 sk_cluster_ntuple_path_void   /data4/ 
 ###### PATH on cms1-6 machines (For SKtrees)
 sk_cms_ntuple_path_2014            /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/
@@ -191,7 +196,6 @@ SKDY10to50        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014
 SKDY50plus        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY50plus/
 SKZbb             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Zbb/
 
-
 ### POWHEG
 SKDYee            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYee/
 SKDYmm            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYmm/
@@ -210,8 +214,6 @@ SKW1Jets          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014
 SKW2Jets          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W2Jets/
 SKW3Jets          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W3Jets/
 SKW4Jets          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W4Jets/
-
-
 
 ### Top ###
 SKttbar           29588.256      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ttbar/
@@ -484,10 +486,10 @@ SKsinglemuon_chs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path
 SKsinglemuon_chs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodC/
 SKsinglemuon_chs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleMuonCHS/periodD/
 
-SKsingleelectronchs_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodA/
-SKsingleelectronchs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodB/
-SKsingleelectronchs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodC/
-SKsingleelectronchs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodD/
+SKsingleelectron_chs_looseskim     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodA/
+SKsingleelectron_chs_looseskim     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodB/
+SKsingleelectron_chs_looseskim     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodC/
+SKsingleelectron_chs_looseskim     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        Data/SingleElectronCHS/periodD/
 
 ### CH Signal ###
 SKCH120PU_looseskim_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/CH120PU/
@@ -510,7 +512,7 @@ SKttbarMS_CT10_herwig_looseskim        34127.05078     sk_cluster_ntuple_path  s
 SKttbarMS_CT10_pythia_looseskim            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCNoCut/ttbar_CT10_pythia/
 
 SKttbarMS_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMS/
-SKttbarMSchs_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
+SKttbarMS_chs_looseskim         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
 
 SKDY10to50_looseskim        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY10to50/
 SKDY50plus_looseskim        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/DY50plus/
@@ -617,10 +619,10 @@ singlemuon_chs B    cms_ntuple_path_2016 SingleMuonCHS/periodB/
 singlemuon_chs C    cms_ntuple_path_2016 SingleMuonCHS/periodC/
 singlemuon_chs D    cms_ntuple_path_2016 SingleMuonCHS/periodD/
 
-singleelectron A        cms_ntuple_path_2016 SingleElectronCHS/periodA/
-singleelectron B        cms_ntuple_path_2016 SingleElectronCHS/periodB/
-singleelectron C        cms_ntuple_path_2016 SingleElectronCHS/periodC/
-singleelectron D        cms_ntuple_path_2016 SingleElectronCHS/periodD/
+singleelectron_chs A        cms_ntuple_path_2016 SingleElectronCHS/periodA/
+singleelectron_chs B        cms_ntuple_path_2016 SingleElectronCHS/periodB/
+singleelectron_chs C        cms_ntuple_path_2016 SingleElectronCHS/periodC/
+singleelectron_chs D        cms_ntuple_path_2016 SingleElectronCHS/periodD/
 
 ############################################################
 #cms_mc_ntuple_path_2014     /data1/DATA/LQNtuples_5_3_14_snu27/MC/
@@ -840,7 +842,7 @@ ttbar_scaledown    167891.7188      cms_mc_ntuple_path_2015 TTJets_MSDecays_scal
 ttbar_scaleup      179009.6875      cms_mc_ntuple_path_2015 TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_width_x5     57792.39844      cms_mc_ntuple_path_2015 TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_pow          1.               cms_mc_ntuple_path_2015 TT_CT10_TuneZ2star_8TeV-powheg-tauola/
-ttbar_pow_her      1.               cms_mc_ntuple_path_2015 /TT_CT10_AUET2_8TeV-powheg-herwig/
+ttbar_pow_her      1.               cms_mc_ntuple_path_2015 TT_CT10_AUET2_8TeV-powheg-herwig/
 TTH                1.             cms_mc_ntuple_path_2015 TTH_Inclusive_M-125_8TeV_pythia6/
 TestSample          1.             cms_mc_ntuple_path_2015 TestSample/
 TestSample_chs         1.             cms_mc_ntuple_path_2015 TestSample_chs/
