@@ -259,6 +259,11 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
     return  GetTruePrompt(muonColl, true);
   }
   
+  if(label.Contains("loose")) {
+    eventbase->GetMuonSel()->HNLooseMuonSelection(muonColl);
+
+    return  muonColl;
+  }
   if(k_running_nonprompt) {
     if(label.Contains("tight_03")){
       eventbase->GetMuonSel()->HNLooseMuonSelection03(muonColl); 

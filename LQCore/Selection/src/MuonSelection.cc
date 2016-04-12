@@ -218,7 +218,7 @@ void MuonSelection::HNLooseMuonSelection(std::vector<KMuon>& leptonColl , bool m
     if (LeptonRelIso<0) LeptonRelIso=0.0001;
     
     //// Muon Loose selection
-    if(( muit->Pt() < 15. )) {
+    if(( muit->Pt() < 10. )) {
       pass_selection = false;
       if(m_debug) cout << "HNLooseMuonSelection Fail chi2 cut" << endl;
     }

@@ -190,6 +190,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muonLooseColl = GetMuons("loose");
   std::vector<snu::KMuon> muonTightColl = GetMuons("tight");
   
+  if(muonLooseColl.size() > 0)FillHist(("N_mupt_loose"), muonLooseColl.at(0).Pt(), weight, 0., 200., 200);
+  if(muonTightColl.size() > 0)FillHist(("N_mupt_tight"), muonTightColl.at(0).Pt(), weight, 0., 200., 200);
+
+  
   if(muonLooseColl.size() > 0) return;
   
   std::vector<snu::KElectron> electronVetoColl = GetElectrons(false, false, "veto");

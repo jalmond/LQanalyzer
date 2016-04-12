@@ -473,14 +473,17 @@ else:
                  if ntup_path_link == entries[0]:
                      ntuple_path= entries[1]
 
-InputDir = ntuple_path + "/" + inDS    
+dir_break="/"
+if ntuple_path.endswith('/'):
+    dir_break=""
+
+
+InputDir = ntuple_path + dir_break + inDS    
 if IsSKTree:
     InputDir=inDS
 
-print "Input sample : " + InputDir
-
 ##################################################################################################################
-print "Input directory= " + inDS    ## now have defined what dur contains input files
+print "Input directory= " + InputDir    ## now have defined what dur contains input files
 ##################################################################################################################                    
 
 ############################################################
