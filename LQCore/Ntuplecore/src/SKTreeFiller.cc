@@ -73,10 +73,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
  
   VertexN = -999;
   
-  
   /// MET variables
   // PF met
   kevent.SetPFMET( PFMETType01XYCor->at(0));
+  m_logger << DEBUG << "Filling Event 2" << LQLogger::endmsg;
+
   kevent.SetPFMETRaw( PFMET->at(0));
   kevent.SetPFMETType1( PFMETType1Cor->at(0));
   kevent.SetPFMETType01( PFMETType01Cor->at(0));
@@ -112,7 +113,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   }
   kevent.SetProcessID(ProcessID);
 
-
+  m_logger << DEBUG << "Filling Event 3" << LQLogger::endmsg;
   if(!isData){
     if(PDFCTEQWeights){
       /// This will have to take in a vector for any systematic studies
@@ -216,8 +217,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     return electrons;
   }
 
-
-  
   m_logger << DEBUG << "Filling Electron" << LQLogger::endmsg;
 
   for (UInt_t iel=0; iel< ElectronEta->size(); iel++) {
@@ -803,7 +802,6 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
     return jets;
   }
-
 
   m_logger << DEBUG << "Filling PFJets" << LQLogger::endmsg;
  

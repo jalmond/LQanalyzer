@@ -23,7 +23,7 @@ DEBUG="False"
 useskim="Lepton"
 runnp="False"
 runcf="False"
-
+usebatch="NULL"
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 
