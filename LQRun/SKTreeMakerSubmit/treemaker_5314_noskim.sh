@@ -1,8 +1,8 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-runSignal=false
-runMC=true
+runSignal=true
+runMC=false
 
 if [[ $runSignal  == "true" ]];
 then
