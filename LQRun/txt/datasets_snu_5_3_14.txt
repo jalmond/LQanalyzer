@@ -191,6 +191,7 @@ SKstbar_tW        44455.856      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/
 SKst_sch          68591.293      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tch/
 SKst_tch          66635.23       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tch/
 SKst_tW           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/st_tW/
+SKst_tW           44834.054      /data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/Oct15/MC/st_tW/ 
 SKtopDIL          461277.43      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topDIL/
 SKtopHAD          460656.55      /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topHAD/
 SKtopLJ           93722.93       /data1/LocalNtuples/Tag27_CMSSW_5_3_14/SKTrees/June14v2/MC/topLJ/

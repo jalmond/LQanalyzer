@@ -79,6 +79,20 @@ new_channel = channel.replace(":", "")
 original_channel = new_channel
 
 
+##############################
+### check output dir exists
+##############################
+
+if not os.path.exists(Finaloutputdir):
+    os.system("mkdir " +Finaloutputdir)
+    
+    if not os.path.exists(Finaloutputdir):
+        print "Output directory changes to " + Finaloutputdir + ". This directory does not exist. Create this directory and rerun."
+        sys.exit()
+    else:
+        print "Output directory changes to " + Finaloutputdir + ". Creating this directory"
+
+
 list_of_extra_lib=[]
 libname=''
 for lib in tmplist_of_extra_lib:
@@ -331,23 +345,23 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 if IsSKTree:
     if not mc:
         if useskim == "Lepton":
-            new_channel="SK" + host_postfix + "_" + new_channel
+            new_channel="SK" + host_postfix +new_channel
         else:
             if useskim == "NoCut":
-                new_channel="SK" + host_postfix + "_" + new_channel + "_nocut"
+                new_channel="SK" + host_postfix + new_channel + "_nocut"
             else:
                 if useskim == "DiLep":
-                    new_channel="SK" + host_postfix + "_" + new_channel + "_dilep"
+                    new_channel="SK" + host_postfix + new_channel + "_dilep"
 
     else:
         if useskim == "Lepton":
-            sample="SK" + host_postfix + "_" + sample
+            sample="SK" + host_postfix +  sample
         else:
             if useskim == "NoCut":
-                sample="SK" + host_postfix + "_" + sample + "_nocut"
+                sample="SK" + host_postfix  + sample + "_nocut"
             else:
                 if useskim == "DiLep":
-                    sample="SK" + host_postfix + "_" + sample + "_dilep"
+                    sample="SK" + host_postfix + sample + "_dilep"
 
                 
 print "Input sample = " + sample
@@ -435,7 +449,7 @@ else:
                     inDS = entries[2]
 
 InputDir = ntuple_path + "/" + inDS    
-if isSKTree:
+if IsSKTree:
     InputDir=inDS
 
 ##################################################################################################################

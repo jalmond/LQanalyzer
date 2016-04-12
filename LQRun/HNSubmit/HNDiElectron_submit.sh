@@ -196,12 +196,14 @@ then
     loglevel="INFO"
     logstep=1000
     declare -a input_samples=( "DY10to50" "DY50plus" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
-
-    declare -a input_samples=( "DY50plus")
+    
+    declare -a input_samples=("SSWmWm")
+    declare -a input_samples=("st_tW")
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-    source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/MC/  HNDiElectron_mc_5_3_14.root HNDiElectron_*
+    
+#source hadd.sh ${LQANALYZER_DIR}/data/output/SSElectron/MC/  HNDiElectron_mc_5_3_14.root HNDiElectron_*
 
 fi
 

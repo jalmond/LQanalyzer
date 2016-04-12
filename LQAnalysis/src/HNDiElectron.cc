@@ -158,8 +158,6 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"70MassRegion");
   MakeCleverHistograms(sighist,"80MassRegion");
   MakeCleverHistograms(sighist,"90MassRegion");
-  MakeCleverHistograms(sighist,"80MassRegion");
-  MakeCleverHistograms(sighist,"90MassRegion");
   MakeCleverHistograms(sighist,"100MassRegion");
   MakeCleverHistograms(sighist,"125MassRegion");
   MakeCleverHistograms(sighist,"150MassRegion");

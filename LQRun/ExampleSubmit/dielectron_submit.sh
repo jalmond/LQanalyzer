@@ -7,7 +7,7 @@ if [[ $runMC  == "true" ]];
 then
     source functions.sh
     cycle="ExampleAnalyzerDiElectron"
-#    skinput="True"
+    skinput="True"
     #useskim="DiLep"
     outputdir=$LQANALYZER_DIR"/data/output/Electron/"
     #### JOB CONFIGURATION
@@ -18,7 +18,7 @@ then
     
     #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma")
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW")
-    declare -a input_samples=("TestSample_chs")
+    declare -a input_samples=("WZ_py")
     source submit.sh $1
 fi
     

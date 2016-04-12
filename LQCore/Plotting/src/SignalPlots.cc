@@ -182,8 +182,10 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
 void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight, Double_t weight_err) {
   
+
   //// Fills all hists (e/mu/jets/MET)
   bool debug =false;
+  debug=true;
   if(debug)cout<< "Plotting [1] " << endl;
   Fill("h_Nelectrons", electrons.size(), weight, weight_err);
   
@@ -342,7 +344,10 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
   
   if(debug)cout<< "Plotting [3] " << endl;  
 
+  
   if(electrons.size() == 1 && muons.size() == 1){
+    cout<< electrons[0].Pt() << " " << electrons[0].Eta() << endl;
+    cout<< muons[0].Pt() << " " << muons[0].Eta() << endl;
     Fill("h_emumass", ((electrons[0]+ muons[0]).M()), weight, weight_err);
     Fill("h_emujjmass", ((electrons[0]+ muons[0]+jets[m]+jets[n]).M()), weight, weight_err);
     Fill("h_mujjmass", ((muons[0]+jets[m]+jets[n]).M()), weight, weight_err);

@@ -17,7 +17,9 @@ if os.path.exists("LQRun/Macros/"):
     os.system("rm -r LQRun/Macros/")
 if os.path.exists("LQRun/job_output/"):
     print "Cleaning up directory that failed to be removed by git merge"
-    os.system("rm -r LQRun/job_output/")
+if os.path.exists("LQRun/ExampleSubmit/job_output/"):
+    print "Cleaning up directory job_output/"
+    os.system("rm -r LQRun/*/job_output/")
 if os.path.exists("LQRun/runJob_1.C"):
     print "Cleaning up file that failed to be removed by git merge"
     os.system("rm LQRun/runJob_1.C")

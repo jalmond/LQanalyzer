@@ -12,7 +12,7 @@ then
     useskim="DiLep"
     outputdir=$LQANALYZER_DIR"/data/output/Muon/"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
