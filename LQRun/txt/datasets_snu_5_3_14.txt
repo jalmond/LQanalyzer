@@ -682,12 +682,12 @@ ZZ_py           555109.777    cms_mc_ntuple_path_2014   ZZ_TuneZ2star_8TeV_pythi
 WW_py           182363.161    cms_mc_ntuple_path_2014   WW_TuneZ2star_8TeV_pythia6_tauola/
 
 ### POWHEG
-ZZtoeemm	8474476.51  cms_mc_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo2e2mu_8TeV-powheg-pythia6/	
-ZZtoeett	4662767.40  cms_mc_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo2e2tau_8TeV-powheg-pythia6/	
-ZZtommtt	4662829.65  cms_mc_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo2mu2tau_8TeV-powheg-pythia6/	
-ZZtoeeee	19491483.55 cms_mc_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo4e_8TeV-powheg-pythia6/	
-ZZtommmm	19491093.49 cms_mc_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo4mu_8TeV-powheg-pythia6/	
-ZZtotttt	10719880.38 cms_mc_ntuple_path_2014	cms_mc_ntuple_path_2014 /MC/ZZTo4tau_8TeV-powheg-pythia6/	
+ZZtoeemm	8474476.51  cms_mc_ntuple_path_2014	 ZZTo2e2mu_8TeV-powheg-pythia6/	
+ZZtoeett	4662767.40  cms_mc_ntuple_path_2014	 ZZTo2e2tau_8TeV-powheg-pythia6/	
+ZZtommtt	4662829.65  cms_mc_ntuple_path_2014	 ZZTo2mu2tau_8TeV-powheg-pythia6/	
+ZZtoeeee	19491483.55 cms_mc_ntuple_path_2014	 ZZTo4e_8TeV-powheg-pythia6/	
+ZZtommmm	19491093.49 cms_mc_ntuple_path_2014	 ZZTo4mu_8TeV-powheg-pythia6/	
+ZZtotttt	10719880.38 cms_mc_ntuple_path_2014	 ZZTo4tau_8TeV-powheg-pythia6/	
 
 ### QCD
 QCD_mumu	54.2	 cms_mc_ntuple_path_2014	QCD2MuMu_2MupPtEtaFilterFilter_8TeV-pythia6/ 
