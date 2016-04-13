@@ -147,6 +147,7 @@ then
     
     stream="singleelectron"
     declare -a input_samples=("C" "D")
+    declare -a input_samples=("A" "B")
     source submit.sh
 fi
 

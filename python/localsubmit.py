@@ -30,9 +30,9 @@ parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="Ho
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
 parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
 parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove the work space?")
-parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
+parser.add_option("-S", "--skinput", dest="skinput", default="True", help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
-parser.add_option("-N", "--samples2016", dest="samples2016", default=True, help="samples2016? add samples2016='True' to run on these samples")
+parser.add_option("-N", "--samples2016", dest="samples2016", default="True", help="samples2016? add samples2016='True' to run on these samples")
 parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
@@ -76,8 +76,6 @@ useskim = options.useskim
 new_channel = channel.replace(":", "")
 original_channel = new_channel
 
-
-print "samples2016 = " + str(samples2016)
 
 ##############################
 ### check output dir exists
@@ -163,9 +161,6 @@ if not len(splitsample)==1:
         if "runevent" in splitsample[conf]:
             conf+=1
             runevent = splitsample[conf]
-        if "samples2016" in splitsample[conf]:
-            conf+=1
-            samples2016 = splitsample[conf]
 
 ###########################################################################################
 ###########################################################################################
@@ -269,7 +264,7 @@ if platform.system() == "Linux":
         print "Number of subjobs is reduced to 1, since there are over 20 jobs running on this machine."
                         
 
-IsSKTree=""
+IsSKTree= False
 if str(useskinput) == "true":
     IsSKTree = True
 elif (useskinput) == "True":
@@ -338,21 +333,16 @@ else:
 original_sample = sample
 host_postfix=""
 new_sample_fix=""
-print  str(samples2016) + "samples2016"
-if str(samples2016)=="True":
-    print "TEST"
+if samples2016 =="True":
     new_sample_fix="_2016"
-    print "new_sample_fix = " + str(new_sample_fix )
-
 elif samples2016 == "true":
     new_sample_fix="_2016"
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     new_sample_fix=""
 
 
-print "new_sample_fix = " + str(new_sample_fix )
-
 if IsSKTree:
+    samples2016="False"
     if not mc:
         if useskim == "Lepton":
             new_channel="SK" + host_postfix +new_channel + new_sample_fix
@@ -491,6 +481,7 @@ for line in open(filename, 'r'):
         if len(entries)==2:
             if ntup_path_link == entries[0]:
                 ntuple_path= entries[1]
+print "ntup_path_link = " +ntup_path_link
 
 dir_break="/"
 if ntuple_path.endswith('/'):

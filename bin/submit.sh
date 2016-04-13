@@ -29,7 +29,7 @@ useskim=$(makeParseVariable 'm' ${useskim})
 runnp=$(makeParseVariable 'P' ${runnp})
 runcf=$(makeParseVariable 'Q' ${runcf})
 usebatch=$(makeParseVariable 'b' ${usebatch})
-samples2016==$(makeParseVariable 'N' ${samples2016})
+samples2016=$(makeParseVariable 'N' ${samples2016})
 
 
 DEBUG=$(makeParseVariable '' ${DEBUG})

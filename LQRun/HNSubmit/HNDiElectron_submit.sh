@@ -8,7 +8,7 @@ runfakes=true
 runflips=true
 
 if [[ $1  == "NP" ]];
-    then
+then
     runfakes=true
     rundata=false
     runmc=false
@@ -17,7 +17,7 @@ if [[ $1  == "NP" ]];
 fi
 
 if [[ $1  == "CF" ]];
-    then
+then
     runfakes=false
     rundata=false
     runmc=false
@@ -26,7 +26,7 @@ if [[ $1  == "CF" ]];
 fi
 
 if [[ $1  == "DATA" ]];
-    then
+then
     runfakes=false
     rundata=true
     runmc=false
@@ -35,7 +35,7 @@ if [[ $1  == "DATA" ]];
 fi
 
 if [[ $1  == "MC" ]];
-    then
+then
     runfakes=false
     rundata=false
     runmc=true
@@ -44,7 +44,7 @@ if [[ $1  == "MC" ]];
 fi
 
 if [[ $1  == "CL" ]];
-    then
+then
     runfakes=false
     rundata=false
     runmc=false
@@ -56,7 +56,7 @@ fi
 
 
 if [[ $1  == "SIG" ]];
-    then
+then
     runfakes=false
     rundata=false
     runmc=false
@@ -65,7 +65,7 @@ if [[ $1  == "SIG" ]];
 fi
 
 if [[ $1  == "testMC" ]];
-    then
+then
     
     rundata=false
     runmc=false
@@ -78,18 +78,18 @@ if [[ $1  == "testMC" ]];
     skinput="True"
     useskim="DiLep"
     loglevel="INFO"
-
+    
     njobs=1
     data_lumi="AtoD"
     nevents=100000000
     
     declare -a input_samples=("ttW")
-
+    
     stream="egamma"
     outputdir="./"
     
     
-    ### submit this configured job (uses bin/submit.sh)
+     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
 fi
 
@@ -113,11 +113,11 @@ then
     nevents=1000000
     loglevel="INFO"
     declare -a input_samples=("A")
-    
+
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     
-    ### submit this configured job (uses bin/submit.sh)
+     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
     
 fi
@@ -125,7 +125,7 @@ fi
 if [[ $1  == "testNP" ]];
 then
     source functions.sh
-
+    
     rundata=false
     runmc=false
     runsig=false
@@ -135,44 +135,44 @@ then
     cycle="HNDiElectron"
     skinput="True"
     useskim="DiLep"
-
+    
     njobs=30
     data_lumi="AtoD"
-
+    
     nevents=10000
     loglevel="INFO"
     runnp="True"
     declare -a input_samples=("C")
-
+    
     stream="egamma"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
-
-    ### submit this configured job (uses bin/submit.sh)
+    
+     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
-
+    
 fi
 
 
 if [[ $runsig  == "true" ]];
 then
-    #signal
+    
     source functions.sh
     
     cycle="HNDiElectron"
     skinput="True"
     useskim="NoCut"
-
+    
     njobs=1
     data_lumi="AtoD"
     loglevel="INFO"
-
+    
     logstep=1000
     
     declare -a input_samples=("HNee40" )
-#"HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400" "HNee500" "HNee600" "HNee700")
+ #"HNee50" "HNee60" "HNee70" "HNee80" "HNee90" "HNee100" "HNee125" "HNee150" "HNee175" "HNee200" "HNee225" "HNee250" "HNee275" "HNee300" "HNee325" "HNee350" "HNee375" "HNee400" "HNee500" "HNee600" "HNee700")
     
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
-    ### submit this configured job (uses bin/submit.sh)
+     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
 fi
 
@@ -181,21 +181,21 @@ fi
 if [[ $runmc  == "true" ]];
 
 then
-
+    
     source functions.sh
     
     cycle="HNDiElectron"
     skinput="True"
-    #useskim="DiLep"
+    useskim="DiLep"
     
     njobs=1
     data_lumi="AtoD"
-
-
+    
+    
     loglevel="INFO"
     logstep=1000
     declare -a input_samples=( "DY10to50" "DY50plus" "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
-
+    
     declare -a input_samples=("stbar_sch")
 
     samples2016="True"

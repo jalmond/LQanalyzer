@@ -16,7 +16,7 @@ then
     
     
     declare -a input_samples=("ttbar_CT10_pythia" "ttbar_CT10_herwig" "CH90PU" "CH100PU" "CH110PU" "CH120PU" "CHm120PU" "CH130PU" "CH140PU" "CH150PU")
-    declare -a input_samples=("CH150PU")
+
     source submit.sh
 fi
 
