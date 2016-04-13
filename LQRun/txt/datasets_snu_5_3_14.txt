@@ -154,8 +154,8 @@ SKHNmue500_nocut         23209544.       sk_cluster_ntuple_path  sk_cms_ntuple_p
 
 ############ Tag27_CMSSW_5_3_20 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
-SKDY10to50_nocut       2827.096      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY10to50/
-SKDY50plus_nocut       8382.401      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY50plus/
+SKDY10to50_nocut       2901.7      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY10to50/
+SKDY50plus_nocut       8693.5      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY50plus/
 
 
 SKCH120PU_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH120PU/
@@ -637,6 +637,9 @@ singleelectron_chs D        cms_ntuple_path_2016 SingleElectronCHS/periodD/
 ############################################################
 #cms_mc_ntuple_path_2014     /data1/DATA/LQNtuples_5_3_14_snu27/MC/
 ############################################################
+DY10to50	2901.7   cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
+DY50plus	8693.5	cms_mc_ntuple_path_2014	DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+
 
 ### POWHEG
 DYee            1.    cms_mc_ntuple_path_2014          DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6/

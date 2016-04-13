@@ -333,6 +333,10 @@ else:
 original_sample = sample
 host_postfix=""
 new_sample_fix=""
+
+if not IsSKTree:
+    samples2016="False"
+
 if samples2016 =="True":
     new_sample_fix="_2016"
 elif samples2016 == "true":
@@ -342,7 +346,6 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 
 
 if IsSKTree:
-    samples2016="False"
     if not mc:
         if useskim == "Lepton":
             new_channel="SK" + host_postfix +new_channel + new_sample_fix
