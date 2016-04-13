@@ -154,8 +154,18 @@ SKHNmue500_nocut         23209544.       sk_cluster_ntuple_path  sk_cms_ntuple_p
 
 ############ Tag27_CMSSW_5_3_20 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
-SKDY10to50_15_nocut       2827.096      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY10to50_15/
-SKDY50plus_15_nocut       8382.401      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY50plus_15/
+SKDY10to50_nocut       2827.096      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY10to50/
+SKDY50plus_nocut       8382.401      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCNoCut/DY50plus/
+
+
+SKCH120PU_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH120PU/
+SKCHm120PU_nocut   1374.421143 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH120PU/
+SKCH110PU_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH110PU/
+SKCH100PU_nocut    2721.354004 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH100PU/
+SKCH90PU_nocut        2748.842285     sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH90PU/
+SKCH130PU_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH130PU/
+SKCH140PU_nocut    2748.842285 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MCNoCut/CH140PU/
+SKCH150PU_nocut    2748.842285   sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MCNoCut/CH150PU/
 
 
 #######################################################################################################################################
@@ -201,19 +211,9 @@ SKDYee            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014
 SKDYmm            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYmm/
 SKDYtt            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DYtt/
 
-SKZ1Jets          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z1Jets/
-SKZ2Jets          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z2Jets/
-SKZ3Jets          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z3Jets/
-SKZ4Jets          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Z4Jets/
-
-
 ### Wjets ###
 SKWjets           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Wjets/
 SKWbb             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Wbb/
-SKW1Jets          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W1Jets/
-SKW2Jets          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W2Jets/
-SKW3Jets          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W3Jets/
-SKW4Jets          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/W4Jets/
 
 ### Top ###
 SKttbar           29588.256      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/ttbar/
@@ -304,17 +304,44 @@ SKsingleelectron C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        D
 SKsingleelectron D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodD/
 
 ###### ###### ###### MC
+SKZ1Jets          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/Z1Jets/
+SKZ2Jets          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/Z2Jets/
+SKZ3Jets          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/Z3Jets/
+SKZ4Jets          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/Z4Jets/
+SKHtoZZ           15637781.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/HtoZZ/
+
+SKW1Jets          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/W1Jets/
+SKW2Jets          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/W2Jets/
+SKW3Jets          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/W3Jets/
+SKW4Jets          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/W4Jets/
 SKDY10to50_15       2827.096      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MC/DY10to50_15/
 SKDY50plus_15       8382.401      sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MC/DY50plus_15/
-SKttbar_mass169      168624.89        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_mass169/
-SKttbar_mass175      170873.20        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_mass175/
-SKttbar_matchingdown 88190.43         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_matchingdown/
-SKttbar_matchingup   158474.37        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_matchingup/
-SKttbar_scaledown    161438.73        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_scaledown/
-SKttbar_scaleup      170377.21        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_scaleup/
-SKttbar_width_x5     57792.39         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbar_width_x5/
-SKttbarMS       1.              sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/ttbarMS/
-SKHtoZZ           15637781.        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/HtoZZ/
+
+SKttbar_mass169      168624.89        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass169/
+SKttbar_mass175      170873.20        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass175/
+SKttbar_mass173      168667.625       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass173/
+SKttbar_mass171      168667.625  sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass171/
+
+SKttbar_matchingdown 88190.43         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_matchingdown/
+SKttbar_matchingup   158474.37        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_matchingup/
+SKttbar_scaledown    161438.73        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_scaledown/
+SKttbar_scaleup      170377.21        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_scaleup/
+SKttbar_width_x5     57792.39         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_width_x5/
+SKttbarMS        245371.375              sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbarMS/
+SKttH            7659207.69             sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/TTH
+
+###### ALTERNATIVE NAMING FOR CH ANALYSIS
+SKttbarMSpow         85713.03906      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_pow/
+SKttbarMSpow_her         109471.45004      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_pow_her/
+SKttbarMSmatchingdown       81563.375        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_matchingdown/
+SKttbarMSmatchingup         146646.875      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_matchingup/
+SKttbarMSscaledown         154797.2031      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_scaledown/
+SKttbarMSscaleup         163900.8125      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_scaleup/
+SKttbarMSwidth         53080.07812      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_width_x5/
+SKttbar_mass169      168624.89        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass169/
+SKttbar_mass175      170873.20        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass175/
+SKttbarMS_CT10_herwig        34127.05078     sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/ttbar_CT10_herwig/
+SKttbarMS_CT10_pythia            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/ttbar_CT10_pythia/
 
 
 
@@ -358,18 +385,10 @@ SKDYee_dilep            1.             sk_cluster_ntuple_path  sk_cms_ntuple_pat
 SKDYmm_dilep            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DYmm/
 SKDYtt_dilep            1.             sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/DYtt/
 
-SKZ1Jets_dilep          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z1Jets/
-SKZ2Jets_dilep          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z2Jets/
-SKZ3Jets_dilep          215566.44      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z3Jets/
-SKZ4Jets_dilep          277455.84      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Z4Jets/
 
 ### Wjets #########
 SKWjets_dilep           1538.562       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Wjets/
 SKWbb_dilep             517443.59      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/Wbb/
-SKW1Jets_dilep          3781.307       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W1Jets/
-SKW2Jets_dilep          18803.881      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W2Jets/
-SKW3Jets_dilep          29514.73       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W3Jets/
-SKW4Jets_dilep          62889.11       sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/W4Jets/
 
 ### Top ######### 
 SKttbar_dilep           29588.256      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/ttbar/
@@ -450,15 +469,6 @@ SKQCD_350_BCtoE_dilep     81446.75      sk_cluster_ntuple_path  sk_cms_ntuple_pa
 
 SKDY10to50_15_dilep     2827.09          sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCDiLep1510/DY10to50_15/
 SKDY50plus_15_dilep      8382.40         sk_cluster_ntuple_path_void  sk_cms_ntuple_path_2015        MCDiLep1510/DY50plus_15/
-
-SKttbar_mass169_dilep      168624.89       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_mass169/
-SKttbar_mass175_dilep      170873.20       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_mass175/
-SKttbar_matchingdown_dilep 88190.43        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_matchingdown/
-SKttbar_matchingup_dilep   158474.37       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_matchingup/
-SKttbar_scaledown_dilep    161438.73      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_scaledown/
-SKttbar_scaleup_dilep      170377.21      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_scaleup/
-SKttbar_width_x5_dilep     57792.39       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/ttbar_width_x5/
-
 SKHtoZZ_dilep           15637781.       sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCDiLep1510/HtoZZ/
 
 
