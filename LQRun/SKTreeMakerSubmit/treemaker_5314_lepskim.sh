@@ -2,12 +2,12 @@
 ### sets all configurable variables to defaul values
 
 ###### SET WHAT JOBS TO RUN
-runMC=true
+runMC=false
 runDoubleMuon=false
 runDoubleElectron=false
 runElectronMuon=false
-runSingleMuon=true
-runSingleElectron=true
+runSingleMuon=false
+runSingleElectron=false
 runSignal=false
 
 if [[ $1  == "ALL" ]]; 
@@ -43,10 +43,10 @@ if [[ $1  == "DATA" ]];
 then
     runMC=false
     runDoubleMuon=false
-    runDoubleElectron=false
-    runElectronMuon=false
+    runDoubleElectron=true
+    runElectronMuon=true
     runSingleMuon=false
-    runSingleElectron=true
+    runSingleElectron=false
 fi    
 
 
@@ -71,13 +71,15 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=30
+    njobs=100
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
     
+    usebatch="False"
     declare -a input_samples=(  "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "ttbarMS" "DY10to50" "DY50plus" "Wjets" "Wbb" "Zbb" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "ttW" "ttZ" "WZ_py" "ZZ_py" "WW_py" "QCD_mumu" "QCD_20_30_EM" "QCD_20_30_BCtoE" "QCD_30_80_EM" "QCD_30_80_BCtoE" "QCD_80_170_EM" "QCD_80_170_BCtoE" "QCD_170_250_EM" "QCD_170_250_BCtoE" "QCD_250_350_EM" "QCD_250_350_BCtoE" "QCD_350_EM" "QCD_350_BCtoE" "ttbar_mass169" "ttbar_mass171" "ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_pow" "ttbar_pow_her" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5" "TTH" "Wgamma" )
     declare -a input_samples=( "DY50plus") 
+    declare -a input_samples=(  "stbar_sch")
     source submit.sh
 fi    
 ################ DOUBLEELECTRON DATA
@@ -86,7 +88,7 @@ if [[ $runDoubleElectron  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=30
+    njobs=300
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
@@ -103,7 +105,7 @@ if [[ $runDoubleMuon  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=30
+    njobs=300
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
@@ -121,7 +123,7 @@ if [[ $runElectronMuon  == "true" ]];
 then
     source functions.sh
     cycle="SKTreeMaker"
-    njobs=30
+    njobs=300
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
