@@ -3,6 +3,7 @@ if [[ $LQANALYZER_DIR == "" ]];
     source $LQANALYZER_DIR/setup.sh
 fi
 
+########## Tag index
 itag=".7"
 tagname=$CATVERSION$itag
 
@@ -24,7 +25,9 @@ fi
 echo "$tagname (HEAD)" >> LatestTag.txt
 while read line
 do
-    echo "$line" >> LatestTag.txt
+    if [[ $line != *"HEAD"* ]];then
+	echo "$line" >> LatestTag.txt
+    fi
 done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 mv LatestTag.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 
