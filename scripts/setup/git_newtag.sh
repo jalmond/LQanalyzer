@@ -26,8 +26,8 @@ while read line
 do
     echo "$line" >> LatestTag.txt
 done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+mv LatestTag.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 
-return
 rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
