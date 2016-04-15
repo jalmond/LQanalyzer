@@ -7,7 +7,7 @@
  #                                                                         #
  ###########################################################################
 
-all: roch fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
+all: tagcheck roch fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
 
 sktree::
 	(cd LQCore/SKTree; make)
@@ -33,6 +33,8 @@ fakes::
 roch::
 	(bash bin/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
+tagcheck::
+	(source bin/CheckNewTagCompiler.sh)
 clean::
 	(cd LQCore/SKTree; make clean)
 	(cd LQCore/Ntuplecore; make clean)
