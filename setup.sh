@@ -51,6 +51,12 @@ if [[ "$HOSTNAME" == "cms1" ]];
 then 
     export OBJ=obj/slc6_cms1
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms1
+elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    then
+    export OBJ=obj/cluster/
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cluster/
+
+
 elif [[ "$HOSTNAME" == "cms5" ]];
 then
     export OBJ=obj/slc6_cms5
@@ -173,4 +179,4 @@ fi
 echo "Running analysis from" $HOSTNAME " in directory: " 
 
 #clean up all emacs tmp files
-clean_emacs
+#clean_emacs

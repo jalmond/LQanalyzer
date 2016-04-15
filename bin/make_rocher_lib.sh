@@ -19,7 +19,7 @@ if [[ ! -f ${LQANALYZER_LIB_PATH}/librochcor2015.so ]] ;
 	rm RoccoR_cc.so
     fi
 
-    source compile_rocher.sh
+    source $LQANALYZER_DIR/rochcor2015/compile_rocher.sh
     cd -
     cd $LQANALYZER_LIB_PATH
     if [[  -f librochcor2015.so ]]; then

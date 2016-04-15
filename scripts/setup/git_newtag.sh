@@ -6,6 +6,22 @@ fi
 itag=".6"
 tagname=$CATVERSION$itag
 
+
+diff  setup.sh scripts/setup/tag_setup.sh >> SetupCheck.txt
+
+setup_is_different="False"
+while read line
+do
+    setup_is_different="True"
+done  < SetupCheck.txt
+
+rm SetupCheck.txt
+if [[ $setup_is_different == "True" ]];
+then
+    echo "setup.sh is changed. Make changes to scripts/setup/tag_setup.sh"
+    return
+fi
+
 rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh

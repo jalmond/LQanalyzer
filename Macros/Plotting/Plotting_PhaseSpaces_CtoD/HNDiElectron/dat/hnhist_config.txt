@@ -1,3 +1,6 @@
+h_l2jj_central_mass 1 0. 1200.
+h_l1jj_central_mass 1 0. 1200.
+h_lljj_central_mass 1 0. 1200.
 h_llmass   10 20. 500.
 h_dijetsmass  10 0. 1200.
 h_l1jjmass   2 50. 1400.

@@ -66,6 +66,26 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     delete infile_sf;
     origDir->cd();
   }
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "MuonID_Z_RunCD_Reco76X_Feb15.root").c_str());
+
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    MuonID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "MuonIso_Z_RunCD_Reco76X_Feb15.root").c_str());
+
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    MuonISO =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
 
 
   string lqdir = getenv("LQANALYZER_DIR");
@@ -272,14 +292,16 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys){
   float sf= 1.;
   
-  std::string sid= "";
-  if(muid==BaseSelection::MUON_POG_TIGHT) sid= "POG_TightID";
-  else cout << "MuonScaleFactor has no SFs for ID " << endl;
-
+  if(isData) return 1.;
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    sf *= itmu->ScaleFactor(sid, sys);
+    if(muid==BaseSelection::MUON_POG_TIGHT) {
+      if(itmu->Pt() <120.&& itmu->Pt() > 20.) {
+	sf*=  MuonID->GetBinContent( MuonID->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+	sf*=  MuonISO->GetBinContent( MuonISO->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+      }
+    }
   }
-  return 1.;
+  return sf;
 }
 
 double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname){
@@ -296,7 +318,7 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
   if (trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return 0.995*0.998;
   if (trigname.Contains("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW")) return 0.997;
   
-  if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL")) return 0.982*0.985;
+  if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ")) return (0.993*0.984*0.980*0.968*0.984);
   if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_OR_TkMu8_TrkIsoVVL_DZ")) return 0.982*0.985*.973;
   
   if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")) return 0.988*0.997*0.980*0.994;
@@ -309,7 +331,6 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
   if (trigname.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL")) return 0.966*1.005;
   if (trigname.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL")) return 0.990*1.003*0.991*0.998;
   
-
 
   return 1.;
   
@@ -506,6 +527,9 @@ AnalyzerCore::~AnalyzerCore(){
   delete m_fakeobj;
   delete ElectronSF_Tight;
   delete ElectronRECO;
+  delete MuonID;
+  delete MuonISO;
+
 }
 
 //###

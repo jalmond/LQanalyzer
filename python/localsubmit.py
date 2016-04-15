@@ -76,6 +76,9 @@ useskim = options.useskim
 new_channel = channel.replace(":", "")
 original_channel = new_channel
 
+MakeWritable="True"
+if str(os.getenv("USER")) == "jalmond":
+    MakeWritable="False"
 
 list_of_extra_lib=[]
 libname=''
@@ -188,8 +191,7 @@ if not os.path.exists(timestamp_dir+"/job_output/"):
     os.system("mkdir " + timestamp_dir+"/job_output/")
 
 local_sub_dir=  timestamp_dir + "/job_output/"  + sample + '_' + new_channel + '_' + now()
-
-    
+  
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
         
@@ -220,8 +222,9 @@ if platform.system() == "Linux":
             njob_user+=1
         
     if n_previous_jobs > 10:
-        number_of_cores = 2
-        print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
+        if number_of_cores > 2:
+            number_of_cores = 2
+            print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
 
         for line in open(filename, 'r'):
             print line
@@ -293,11 +296,13 @@ if number_of_cores <  -100:
 if number_of_cores < 0:
     number_of_cores=1
 
-if number_of_cores < 5:
-    if "DY" in sample:
-        number_of_cores = 10
-    if "TT " in sample:
-        number_of_cores = 10
+if number_of_cores < 6:
+    if number_of_cores > 1:
+        
+        if "DY" in sample:
+            number_of_cores = 10
+        if "TT " in sample:
+            number_of_cores = 10
 
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
@@ -641,7 +646,10 @@ if not mc:
 else:
     if useCATv742ntuples == "True":
                 outsamplename = outsamplename + "_cat_"+ output_catversion
-        
+
+if  "SKTreeMaker" in cycle:            
+    outsamplename = outsamplename +  os.getenv("CATTAG")
+
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
 
@@ -984,7 +992,8 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                
+                if MakeWritable == "True":
+                    os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1020,6 +1029,8 @@ else:
             Finaloutputdir += original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
+                if MakeWritable== "True":
+                    os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1054,7 +1065,8 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-
+                if MakeWritable== "True":
+                    os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerTriLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1086,7 +1098,8 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                                
+                if MakeWritable== "True":
+                    os.system("chmod 777 -R " +  Finaloutputdir)
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)

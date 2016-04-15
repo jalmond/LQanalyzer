@@ -3,7 +3,7 @@ import time
 from functions import *
 
 version = os.getenv("CATVERSION")
-sampledir = ["DoubleMuon", "SingleMuon","SingleMuon"]
+sampledir = ["DoubleMuon", "SingleMuon"]
 period=["periodC" , "periodD"]
 
 for i in sampledir:
@@ -20,7 +20,7 @@ for i in sampledir:
    for p in period:      
       poutput = output + "/" + p
 
-      if not (os.papoutth.exists(poutput)):
+      if not (os.path.exists(poutput)):
          os.system("mkdir " + poutput)
          os.system("mkdir " + poutput + "/output/")
          

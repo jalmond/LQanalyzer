@@ -53,6 +53,8 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
    MakeCleverHistograms(sighist_ee, "SIGNAL");
    MakeCleverHistograms(sighist_ee, "SS_SIGNAL");
+   MakeCleverHistograms(sighist_ee, "SIGNAL_4J");
+   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_4J");
    MakeCleverHistograms(sighist_ee, "SS_SIGNAL_CC");
    MakeCleverHistograms(sighist_ee, "SS_SIGNAL_noZ");
    MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB");
@@ -290,6 +292,18 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     if(electronColl.at(0).Pt() > 20. && electronColl.at(1).Pt() > 15. ){
       
       FillCLHist(sighist_ee, "SIGNAL", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
+      
+      if(jetColl_loose.size() > 3 ) {
+	bool has_forward_jet(false), has_back_jet(false);
+	for(unsigned int ij = 0 ; ij < jetColl_loose.size(); ij++){
+	  if(jetColl_loose.at(ij).Eta() > 2.5) has_forward_jet=true;
+	  if(jetColl_loose.at(ij).Eta() < -2.5) has_back_jet=true;
+	}
+	if(has_forward_jet && has_back_jet)
+	  FillCLHist(sighist_ee, "SIGNAL_4J", eventbase->GetEvent(), muonColl,electronColl,jetColl_loose, weight);
+      } 
+      
+
 
       if(SameCharge(electronColl))  {
 	FillCLHist(sighist_ee, "SS_SIGNAL", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
@@ -297,6 +311,17 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	  if(electronColl.at(0).HasMatchedConvPhot() && electronColl.at(1).HasMatchedConvPhot()){
 	    FillCLHist(sighist_ee, "SS_SIGNAL_CC", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
 	    if(!Zcandidate(electronColl, 20., false)){
+
+	      if(jetColl_loose.size() > 3 ) {
+		bool has_forward_jet(false), has_back_jet(false);
+		for(unsigned int ij = 0 ; ij < jetColl_loose.size(); ij++){
+		  if(jetColl_loose.at(ij).Eta() > 2.5) has_forward_jet=true;
+		  if(jetColl_loose.at(ij).Eta() < -2.5) has_back_jet=true;
+		}
+		if(has_forward_jet && has_back_jet)
+		  FillCLHist(sighist_ee, "SS_SIGNAL_4J", eventbase->GetEvent(), muonColl,electronColl,jetColl_loose, weight);
+	      }
+	      
 	      FillCLHist(sighist_ee, "SS_SIGNAL_noZ", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
 
 	      if(electronColl.at(1).Pt() < 20.)  FillCLHist(sighist_ee, "SS_SIGNAL_LowPt", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
@@ -758,8 +783,8 @@ void HNDiElectron::BeginCycle() throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //  DeclareVariable(out_muons, "Signal_Muons");
 
   
   return;

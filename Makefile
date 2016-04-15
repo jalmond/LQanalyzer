@@ -31,7 +31,7 @@ fakes::
 	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
 roch::
-	(source bin/make_rocher_lib.sh)
+	(bash bin/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
 clean::
 	(cd LQCore/SKTree; make clean)
@@ -40,7 +40,7 @@ clean::
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
 	(cd LQAnalysis; make clean)
-	(source bin/clean_fake.sh)
+	(bash bin/clean_fake.sh)
 
 distclean::
 	(cd LQCore/SKTree; make distclean)
@@ -49,6 +49,6 @@ distclean::
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
 	(cd LQAnalysis; make distclean)	
-	(source bin/clean_fake.sh)
-	(source bin/clean_rochor.sh)	
+	(bash bin/clean_fake.sh)
+	(bash bin/clean_rochor.sh)	
 

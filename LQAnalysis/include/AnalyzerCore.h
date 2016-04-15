@@ -135,6 +135,8 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* MuonSF;
   TH2F* ElectronSF_Tight;
   TH2F* ElectronRECO;
+  TH2F* MuonID;
+  TH2F* MuonISO;
   HNCommonLeptonFakes* m_fakeobj;
 
 

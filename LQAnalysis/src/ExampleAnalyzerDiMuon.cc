@@ -74,7 +74,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
   
   /// Apply the gen weight 
-  weight*=MCweight;
+  if(!isData) weight*=MCweight;
   
   /// Acts on data to remove bad reconstructed event 
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
@@ -97,9 +97,11 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
    std::vector<TString> triggerslist;
-   triggerslist.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
+   triggerslist.push_back("HLT_IsoMu20");
    //ListTriggersAvailable();
-
+   
+   float trigger_ps_weight= ApplyPrescale("HLT_IsoMu20", TargetLumi,lumimask);
+   
    if(!PassTrigger(triggerslist, prescale)) return;
    FillCutFlow("TriggerCut", weight);
    // Trigger matching is done using KMuon::TriggerMatched(TString) which returns a bool
@@ -108,7 +110,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    ///HLT_IsoMu24_eta2p1_v
    ///HLT_Mu17_Mu8_DZ_v
    ///HLT_Mu17_TkMu8_DZ_v
-   ///HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v
+   ///HLT_IsoMu20
    ///HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v
    ///HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v
    ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v
@@ -141,17 +143,11 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_NOCUT);  /// No cuts applied
    std::vector<snu::KMuon> muonVetoColl = GetMuons(BaseSelection::MUON_HN_VETO);  // veto selection
    std::vector<snu::KMuon> muonLooseColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
-   std::vector<snu::KMuon> muonTightColl = GetMuons(BaseSelection::MUON_HN_TIGHT); // tight selection : NonPrompt MC lep removed
+   std::vector<snu::KMuon> muonTightColl = GetMuons(BaseSelection::MUON_HN_TIGHT,false); // tight selection : NonPrompt MC lep removed
    
    CorrectMuonMomentum(muonTightColl);
+   float muon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
 
-
-   for(std::vector<snu::KMuon>::iterator it = muonColl.begin(); it!= muonColl.end(); it++){
-     //cout << "Muon pt = " << it->Pt() << endl;
-     //cout << "Muon eta =" << it->Eta() << endl;
-     //cout << "Muon match =" << it->TriggerMatched("HLT_IsoMu24_eta2p1") << endl;
-   }
-   
    
    /// List of preset jet collections : NoLeptonVeto/Loose/Medium/Tight/TightLepVeto/HNJets
    std::vector<snu::KJet> jetColl             = GetJets(BaseSelection::JET_NOLEPTONVETO); // All jets
@@ -165,6 +161,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    std::vector<snu::KElectron> electronColl             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
    std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
 
+   float weight_trigger_sf = TriggerScaleFactor(electronColl, muonTightColl, "HLT_IsoMu20");
    
    int njet = jetColl_hn.size();
    FillHist("GenWeight_NJet" , njet*MCweight + MCweight*0.1, 1., -6. , 6., 12);
@@ -174,12 +171,21 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    float pileup_reweight=(1.0);
    if (!k_isdata) {
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
-     if(eventbase->GetEvent().CatVersion().empty()) pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-     else if(eventbase->GetEvent().CatVersion().find("v7-4") !=std::string::npos)  pileup_reweight = reweightPU->GetWeight(int(eventbase->GetEvent().nVertices()), k_mcperiod);
-     else   pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask,snu::KEvent::central);
+     pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
+     
    }
    
    FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);
+
+   
+   if(!isData && !k_running_nonprompt){
+     weight*=muon_id_iso_sf;
+     weight*=pileup_reweight;
+     weight*=weight_trigger_sf;
+     weight*=trigger_ps_weight;
+   }
+
+
 
    if (Zcandidate(muonTightColl, 20., true)){
      ////Make NVTX plotsfor reweighting
@@ -189,38 +195,36 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    }
    
    if(muonTightColl.size() ==2) {
-     if(muonTightColl.at(0).Pt() > 20.){
+     if(muonTightColl.at(1).Pt() > 20.){
        FillCutFlow("DiMu_tight", weight);
        FillHist("Njets_dimuon", jetColl_hn.size() ,weight, 0. , 5., 5);
        
        /// Method of plotting single histogram
        FillHist("zpeak_mumu_noPUrw", GetDiLepMass(muonTightColl), weight, 0., 200.,400);
-       FillHist("zpeak_mumu", GetDiLepMass(muonTightColl), weight*pileup_reweight, 0., 200.,400);
+       FillHist("zpeak_mumu", GetDiLepMass(muonTightColl), weight, 0., 200.,400);
        
        
        /// Standard set of histograms for muons/jets/electrons.. with no corrections
-       FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+       FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight);
        
+       if(njet > 2 && NBJet(jetColl_hn) > 1)      FillCLHist(sighist_mm, "DiMuon_BJet", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight);
        
-       
-       if(njet > 2 && NBJet(jetColl_hn) > 1)      FillCLHist(sighist_mm, "DiMuon_BJet", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
-       
-       if(SameCharge(muonTightColl))    FillCLHist(sighist_mm, "SSMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight*pileup_reweight);
+       if(SameCharge(muonTightColl))    FillCLHist(sighist_mm, "SSMuon", eventbase->GetEvent(), muonTightColl,electronColl,jetColl_hn, weight);
      }
    }
 
    if(muonLooseColl.size() == 3&&electronColl.size()==0) {
      if(muonLooseColl.at(2).Pt() > 25.){
-       if( NBJet(jetColl_hn) == 0) FillCLHist(trilephist, "TriMuon_nomet", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+       if( NBJet(jetColl_hn) == 0) FillCLHist(trilephist, "TriMuon_nomet", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight);
        if(eventbase->GetEvent().PFMET() > 30){
-	 FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
-	 if( NBJet(jetColl_hn) == 0) FillCLHist(trilephist, "TriMuon_noB", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight*pileup_reweight);
+	 FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight);
+	 if( NBJet(jetColl_hn) == 0) FillCLHist(trilephist, "TriMuon_noB", eventbase->GetEvent(), muonLooseColl,electronColl,jetColl_hn, weight);
        }
      }
    }
    if(muonLooseColl.size() == 2 && electronLooseColl.size() == 1){
      if(eventbase->GetEvent().PFMET() > 30){
-       FillCLHist(trilephist, "TriMuonEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_hn, weight*pileup_reweight);
+       FillCLHist(trilephist, "TriMuonEl", eventbase->GetEvent(), muonLooseColl,electronLooseColl,jetColl_hn, weight);
      }
    }
    
@@ -248,8 +252,8 @@ void ExampleAnalyzerDiMuon::BeginCycle() throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //  DeclareVariable(out_muons, "Signal_Muons");
 
   
   return;
