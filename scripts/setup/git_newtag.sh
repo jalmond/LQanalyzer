@@ -21,7 +21,13 @@ then
     echo "setup.sh is changed. Make changes to scripts/setup/tag_setup.sh"
     return
 fi
+echo "$tagname (HEAD)" >> LatestTag.txt
+while read line
+do
+    echo "$line" >> LatestTag.txt
+done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 
+return
 rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh

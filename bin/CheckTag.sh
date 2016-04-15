@@ -22,9 +22,11 @@ fi
 latest_tag=""
 while read line
 do
-    if [[ $line == "v"* ]];
+    if [[ $line == *"HEAD"* ]];
     then
-	latest_tag=$line
+	sline=$(echo $line | head -n1 | awk '{print $1}')
+	latest_tag=$sline
+	echo $sline
     fi
 done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 
