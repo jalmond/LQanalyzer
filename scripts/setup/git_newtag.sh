@@ -3,7 +3,7 @@ if [[ $LQANALYZER_DIR == "" ]];
     source $LQANALYZER_DIR/setup.sh
 fi
 
-itag=".6"
+itag=".7"
 tagname=$CATVERSION$itag
 
 
