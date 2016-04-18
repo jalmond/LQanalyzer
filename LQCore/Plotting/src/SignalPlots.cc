@@ -408,20 +408,43 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
         int p_forward_jet(0), m_forward_jet(0);
         int index_f(-999), index_b(-999);
         vector<int> central_jets;
+	float most_forward=0.;
+	float most_backward=0.;
+
         for(unsigned int ij = 0 ; ij < jets.size(); ij++){
-          if(jets[ij].Eta() > 1.5) { index_f= ij;p_forward_jet++;            
+          if(jets[ij].Eta() > 1.5) { 
+	    if(jets[ij].Eta() > most_forward){
+	      index_f= ij;
+	      most_forward=jets[ij].Eta();
+	    }
+	    p_forward_jet++;            
+	    Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
+	    Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+	    
+	  }
+          else if(jets[ij].Eta() < -1.5) { 
+	    if(jets[ij].Eta() < most_backward){
+	      index_b=ij;
+	      most_backward=jets[ij].Eta();
+	    }
+	    m_forward_jet++;
+	    
+	    Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
+            Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+	  }
+	  else{
 	    Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
 	    Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
 	  }
-          if(jets[ij].Eta() < -1.5) { index_b=ij; m_forward_jet++;
-	    Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
-            Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+	}
 
-	  }
-          if(fabs(jets[ij].Eta() ) < 1.5) central_jets.push_back(ij);
-        }
+	for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+	  if(ij == index_b) continue;
+	  if(ij == index_f) continue;
+	  central_jets.push_back( ij);
+	}
         if( (p_forward_jet >= 1) && (index_b >= 1)) {
-
+	  
 	  for(unsigned int ic = 0; ic < central_jets.size(); ic++){
 	    
 	    Fill("h_central_jet_pt", jets[ic].Pt(),weight, weight_err);

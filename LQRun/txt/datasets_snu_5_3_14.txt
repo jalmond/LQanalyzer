@@ -292,6 +292,21 @@ SKQCD_350_EM        382497.9062	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014 
 SKQCD_350_BCtoE     81446.75	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_350_BCtoE/
 
 
+SKQCD_1000_mu      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
+SKQCD_15-20_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
+SKQCD_20-30_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20-30_mu/
+SKQCD_30-50_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-50_mu/
+SKQCD_50-80_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_50-80_mu/
+SKQCD_800-1000_mu  1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_800-1000_mu/
+SKQCD_120-170_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_120-170_mu/
+SKQCD_170-300_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170-300_mu/
+SKQCD_300-470_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_300-470_mu/
+SKQCD_470-600_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_470-600_mu/
+SKQCD_600-800_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_600-800_mu/
+SKQCD_80-120_mu    1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80-120_mu/
+
+
+
 ############ Tag27_CMSSW_5_3_20 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27_2015 LQNtuples
 SKsinglemuon     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon/periodA/
@@ -468,6 +483,20 @@ SKQCD_250_350_EM_dilep    62166.73      sk_cluster_ntuple_path  sk_cms_ntuple_pa
 SKQCD_250_350_BCtoE_dilep 19623.52      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_250_350_BCtoE/
 SKQCD_350_EM_dilep        382497.9062   sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_350_EM/ 
 SKQCD_350_BCtoE_dilep     81446.75      sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MCDiLep1510/QCD_350_BCtoE/
+
+
+SKQCD_1000_mu_dilep      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_1000_mu/
+SKQCD_15-20_mu_dilep     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_15-20_mu/
+SKQCD_20-30_mu_dilep     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_20-30_mu/
+SKQCD_30-50_mu_dilep     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_30-50_mu/
+SKQCD_50-80_mu_dilep     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_50-80_mu/
+SKQCD_800-1000_mu_dilep  1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_800-1000_mu/
+SKQCD_120-170_mu_dilep   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_120-170_mu/
+SKQCD_170-300_mu_dilep   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_170-300_mu/
+SKQCD_300-470_mu_dilep   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_300-470_mu/
+SKQCD_470-600_mu_dilep   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_470-600_mu/
+SKQCD_600-800_mu_dilep   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_600-800_mu/
+SKQCD_80-120_mu_dilep    1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MCDiLep1510/QCD_80-120_mu/
 
 SKttbar_matchingdown_dilep 88190.43         sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MCDiLep1510/ttbar_matchingdown/
 SKttbar_matchingup_dilep   158474.37        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MCDiLep1510/ttbar_matchingup/
