@@ -76,6 +76,7 @@ class AnalyzerCore : public LQCycleBase {
   int NBJet(std::vector<snu::KJet> jets);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KElectron> electrons);
+  bool SameCharge(std::vector<snu::KMuon> muons);
   float CFRate(snu::KElectron el, bool useoldrates=false);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);

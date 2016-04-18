@@ -390,6 +390,62 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
     }
   }
   
+  if(muons.size() > 1){
+    if(jets.size()>3){
+      int p_forward_jet(0), m_forward_jet(0);
+      int index_f(-999), index_b(-999);
+      vector<int> central_jets;
+      float most_forward=0.;
+      float most_backward=0.;
+
+      for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+	if(jets[ij].Eta() > 1.5) {
+	  if(jets[ij].Eta() > most_forward){
+	    index_f= ij;
+	    most_forward=jets[ij].Eta();
+	  }
+	  p_forward_jet++;
+	  Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
+	  Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+
+	}
+	else if(jets[ij].Eta() < -1.5) {
+	  if(jets[ij].Eta() < most_backward){
+	    index_b=ij;
+	    most_backward=jets[ij].Eta();
+	  }
+	  m_forward_jet++;
+
+	  Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
+	  Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+	}
+	else{
+	  Fill("h_central_jet_pt", jets[ij].Pt(),weight, weight_err);
+	  Fill("h_central_jet_eta", jets[ij].Eta(),weight, weight_err);
+	}
+      }
+
+      
+      for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+	if(ij == index_b) continue;
+	if(ij == index_f) continue;
+	central_jets.push_back( ij);
+      }
+      if( (p_forward_jet >= 1) && (index_b >= 1)) {
+	
+	for(unsigned int ic = 0; ic < central_jets.size()-1; ic++){
+
+	  for(unsigned int ic2 =ic+1; ic2 <central_jets.size(); ic2++){
+	    Fill("h_l2jj_central_mass", (muons[1]+jets[ic]+jets[ic2]).M(),weight, weight_err);
+	    Fill("h_lljj_central_mass", (muons[0] + muons[1]+jets[ic]+jets[ic2]).M(),weight, weight_err);
+	    Fill("h_l1jj_central_mass", (muons[0]+jets[ic]+jets[ic2]).M(),weight, weight_err);
+	  }
+	}
+      }
+    }
+  }
+
+
   if(debug)cout<< "Plotting [3B] " << endl;
 
   
@@ -433,10 +489,12 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
             Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
 	  }
 	  else{
-	    Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
-	    Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+	    Fill("h_central_jet_pt", jets[ij].Pt(),weight, weight_err);
+	    Fill("h_central_jet_eta", jets[ij].Eta(),weight, weight_err);
 	  }
 	}
+
+	
 
 	for(unsigned int ij = 0 ; ij < jets.size(); ij++){
 	  if(ij == index_b) continue;
@@ -445,12 +503,6 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 	}
         if( (p_forward_jet >= 1) && (index_b >= 1)) {
 	  
-	  for(unsigned int ic = 0; ic < central_jets.size(); ic++){
-	    
-	    Fill("h_central_jet_pt", jets[ic].Pt(),weight, weight_err);
-	    Fill("h_central_jet_eta", jets[ic].Eta(),weight, weight_err);
-	  }
-
           for(unsigned int ic = 0; ic < central_jets.size()-1; ic++){
 
             for(unsigned int ic2 =ic+1; ic2 <central_jets.size(); ic2++){
@@ -460,6 +512,65 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
             }
           }
         }
+      }
+    }
+    
+    if(electrons.size()==1 && muons.size() == 1){
+      if(jets.size()>1){
+
+	if(jets.size()>3){
+	  int p_forward_jet(0), m_forward_jet(0);
+	  int index_f(-999), index_b(-999);
+	  vector<int> central_jets;
+	  float most_forward=0.;
+	  float most_backward=0.;
+
+	  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+	    if(jets[ij].Eta() > 1.5) {
+	      if(jets[ij].Eta() > most_forward){
+		index_f= ij;
+		most_forward=jets[ij].Eta();
+	      }
+	      p_forward_jet++;
+	      Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
+	      Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+
+	    }
+	    else if(jets[ij].Eta() < -1.5) {
+	      if(jets[ij].Eta() < most_backward){
+		index_b=ij;
+		most_backward=jets[ij].Eta();
+	      }
+	      m_forward_jet++;
+
+	      Fill("h_forward_jet_pt", jets[ij].Pt(),weight, weight_err);
+	      Fill("h_forward_jet_eta", jets[ij].Eta(),weight, weight_err);
+	    }
+	    else{
+	      Fill("h_central_jet_pt", jets[ij].Pt(),weight, weight_err);
+	      Fill("h_central_jet_eta", jets[ij].Eta(),weight, weight_err);
+	    }
+	  }
+
+
+
+	  for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+	    if(ij == index_b) continue;
+	    if(ij == index_f) continue;
+	    central_jets.push_back( ij);
+	  }
+	  if( (p_forward_jet >= 1) && (index_b >= 1)) {
+
+	    for(unsigned int ic = 0; ic < central_jets.size()-1; ic++){
+
+	      for(unsigned int ic2 =ic+1; ic2 <central_jets.size(); ic2++){
+		Fill("h_l2jj_central_mass", (muons[0]+jets[ic]+jets[ic2]).M(),weight, weight_err);
+		Fill("h_lljj_central_mass", (electrons[0] + muons[0]+jets[ic]+jets[ic2]).M(),weight, weight_err);
+		Fill("h_l1jj_central_mass", (electrons[0]+jets[ic]+jets[ic2]).M(),weight, weight_err);
+	      }
+	    }
+	  }
+	}
       }
     }
 

@@ -842,6 +842,53 @@ float  HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVect
 }
 
 
+
+float  HNCommonLeptonFakes::get_dilepton_mm_mceventweight(std::vector<TLorentzVector> muons,  bool ismu1tight, bool isel1tight, int nbjet, TString tag){
+  if(muons.size()!=2) {
+    return (0.);
+  }
+
+
+  float _mu1_pt=muons.at(0).Pt();
+  float _mu2_pt=muons.at(0).Pt();
+
+
+  float _mu1_eta=fabs(muons.at(0).Eta());
+  float _mu2_eta=fabs(muons.at(1).Eta());
+
+  if(m_debug){
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+  }
+
+
+  if(_mu1_pt > 60.) _mu1_pt = 59.;
+  if(_mu2_pt > 60.) _mu2_pt = 59.;
+
+  float fr1(0.),fr2(0.),r1(0.),r2(0.);
+
+  r1 = 1.;
+  r2 = 1.;
+  fr1= getFakeRate_mc_muon("mc_muon_" + tag,_mu1_pt, _mu1_eta);
+  fr2= getFakeRate_mc_muon("mc_muon_" + tag,_mu2_pt, _mu2_eta);
+  
+  //cout << "\n -------- " << endl;                                                                                                                                                                                                                                            
+  //cout << "Muon pt/eta = " << _mu1_pt << " " << _mu1_eta << endl;                                                                                                                                                                                                            
+  //cout << "Electron pt/eta = " << _el1_pt << " " << _el1_eta << endl;                                                                                                                                                                                                        
+
+  //cout << "isel1tight = " << isel1tight << " ismu1tight= " << ismu1tight << " " << fr1 <<    " " << fr2 << endl;                                                                                                                                                             
+
+  float ev_weight = CalculateDiLepMMWeight(0.,fr1,0.,fr2, isel1tight, ismu1tight);
+  //cout << "ev_weight = " << ev_weight << endl;                                                                                                                                                                                                                               
+
+  if(ev_weight!=ev_weight){
+    cout << "(r1, r2, fr1, fr2) = (" << r1 << ", " << r2 << ", " <<  fr1 << ", " << fr2 << ")" << endl;
+  }
+
+
+  return ev_weight;
+
+}
+
 float  HNCommonLeptonFakes::get_dilepton_em_mceventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet, TString tag){
   if(muons.size()!=1) {
     return (0.);

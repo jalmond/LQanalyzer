@@ -2963,6 +2963,13 @@ bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons){
   return false;
 }
 
+
+bool AnalyzerCore::SameCharge(std::vector<snu::KMuon> muons){
+
+  if(muons.size()!=2) return false;
+  if(muons.at(0).Charge() == muons.at(1).Charge()) return true;
+  return false;
+}
 int AnalyzerCore::NBJet(std::vector<snu::KJet> jets){
   
   int nbjet=0;
@@ -3170,6 +3177,21 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
      
      
    }
+
+
+   if(k_muons.size()==2){
+
+     bool is_mu1_tight    = IsTight(k_muons.at(0));
+     bool is_el1_tight    = IsTight(k_muons.at(1));
+
+
+     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+
+     em_weight =m_fakeobj->get_dilepton_mm_mceventweight(muons, is_mu1_tight,is_el1_tight, NBJet( GetJets("ApplyPileUpID")), tag);
+
+
+   }
+
    return em_weight;
 
  }

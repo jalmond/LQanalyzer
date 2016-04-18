@@ -124,6 +124,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"OSee_DiJet");
   */
   MakeCleverHistograms(sighist,"TChannel");
+  MakeCleverHistograms(sighist,"TChannel_muon");
   /*
   MakeCleverHistograms(sighist,"Preselection");
   MakeCleverHistograms(sighist,"Preselection_m1_40");
@@ -289,7 +290,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// Trigger List 
   std::vector<TString> triggerslist;  
   triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-
+  triggerslist.push_back("HLT_Mu17_TkMu8_v");
+  triggerslist.push_back("HLT_Mu17_Mu8_v");
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
   
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) throw LQError( "Fails basic cuts",  LQError::SkipEvent );

@@ -375,10 +375,10 @@ SKtth            7659207.69             sk_cluster_ntuple_path  sk_cms_ntuple_pa
 
 ############ Tag27_CMSSW_5_3_14 ##############################################################################
 ###### Following sktrees are made from LQNtuples_5_3_14_snu27 LQNtuples
-SKmuon_dilep           A     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodA/
-SKmuon_dilep           B     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodB/
-SKmuon_dilep           C     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodC/
-SKmuon_dilep           D     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep/DoubleMuon/periodD/
+SKmuon_dilep           A     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleMuon/periodA/
+SKmuon_dilep           B     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleMuon/periodB/
+SKmuon_dilep           C     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleMuon/periodC/
+SKmuon_dilep           D     sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleMuon/periodD/
 
 SKegamma_dilep         A    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleElectron/periodA/
 SKegamma_dilep         B    sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        DataDiLep1510/DoubleElectron/periodB/
