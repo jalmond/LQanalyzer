@@ -580,6 +580,9 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     if not running_batch:
         number_of_cores = 1
         print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME"))
+
+if ncore_def == 1:
+    number_of_cores = 1
                                                    
 ############################################################
 ### Correct user if ncores is > nfiles
