@@ -124,7 +124,6 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"OSee_DiJet");
   */
   MakeCleverHistograms(sighist,"TChannel");
-  MakeCleverHistograms(sighist,"TChannel_muon");
   /*
   MakeCleverHistograms(sighist,"Preselection");
   MakeCleverHistograms(sighist,"Preselection_m1_40");
@@ -723,9 +722,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	    cout << jetColl_lepveto_mva.at(ij1).Eta() << endl;
 	  }
         }
-        if(has_forward_jet && has_back_jet)
-	  cout << "Passes TChannel " << endl;
-	  FillCLHist(sighist, "TChannel", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
+        if(has_forward_jet && has_back_jet) FillCLHist(sighist, "TChannel", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
       }
 
 

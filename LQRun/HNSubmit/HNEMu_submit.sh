@@ -1,11 +1,11 @@
 #!/bin/sh
 
 rundata=true
-runmc=false
+runmc=true
 runmc_cl=false
 runsig=false
 runfakes=true
-runflips=false
+runflips=true
 
 if [[ $1  == "NP" ]];
     then
@@ -159,11 +159,9 @@ then
     logstep=1000
 
     declare -a input_samples=( "A" "B" "C" "D")
-
-
-    #stream="emu"
-    stream="muon"
     
+
+    stream="emu"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/"
     ### submit this configured job (uses bin/submit.sh)
@@ -191,8 +189,7 @@ if [[ $runfakes  == "true" ]];
     runnp="True"
     declare -a input_samples=("A" "B" "C" "D")
 
-    #stream="emu"
-    stream="muon"
+    stream="emu"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectronMuon/"
 

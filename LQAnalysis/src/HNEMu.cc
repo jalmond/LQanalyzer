@@ -38,7 +38,9 @@ HNEMu::HNEMu() :  AnalyzerCore(),  out_electrons(0) {
   k_weight=0.;
   k_l1pt=0., k_l2pt=0., k_j1pt=0., k_jjmass=0., k_jjmass_lowmass=0.;
   k_l1eta=0., k_l2eta=0.;
-  
+
+  MakeCleverHistograms(sighist,"TChannel");
+  /*
   MakeCleverHistograms(sighist,"TriLepEECR");
   MakeCleverHistograms(sighist,"TriLepMMCR");
   MakeCleverHistograms(sighist,"TriLepCR");
@@ -113,7 +115,7 @@ HNEMu::HNEMu() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"SSemu_4Jet");
   MakeCleverHistograms(sighist,"SSemu_BJet");
   MakeCleverHistograms(sighist,"SSemu_0BJet");
-
+  */
 }
 
 
@@ -461,6 +463,9 @@ void HNEMu::ExecuteEvents()throw( LQError ){
       FillCLHist(sighist, "SS_DiJet_iso2", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight_iso2);
       FillCLHist(sighist, "SS_DiJet_up", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight_up);
       FillCLHist(sighist, "SS_DiJet_down", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight_down);
+
+      
+
       if(nbjet==0){
 	FillCLHist(sighist, "SS_0bjet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
       }
@@ -675,6 +680,19 @@ void HNEMu::ExecuteEvents()throw( LQError ){
       if(jetColl_lepveto_mva.size() == 1&& emu.M() > 100.)  
 	FillCLHist(sighist, "SSemu_1Jet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
       
+      if(jetColl_lepveto_mva.size() > 3 ) {
+        bool has_forward_jet(false), has_back_jet(false);
+        for(unsigned int ij = 0 ; ij < jetColl_lepveto_mva.size(); ij++){
+          if(jetColl_lepveto_mva.at(ij).Eta() > 1.5) has_forward_jet=true;
+          if(jetColl_lepveto_mva.at(ij).Eta() < -1.5) has_back_jet=true;
+          cout << "Passes selection ll jjjj " << endl;
+          for(unsigned int ij1=0; ij1 < jetColl_lepveto_mva.size(); ij1++){
+            cout << jetColl_lepveto_mva.at(ij1).Eta() << endl;
+          }
+        }
+        if(has_forward_jet && has_back_jet)FillCLHist(sighist, "TChannel", eventbase->GetEvent(), muons,electronAnalysisColl,jetColl_lepveto_mva, weight);
+      }
+
       if(jetColl_lepveto_mva.size() > 1){
 	FillCLHist(sighist, "SSemu_DiJet", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight);
 	FillCLHist(sighist, "SSemu_DiJet_up", eventbase->GetEvent(), muons ,electronAnalysisColl,jetColl_lepveto_mva, weight_up);
