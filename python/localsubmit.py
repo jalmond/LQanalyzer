@@ -371,7 +371,7 @@ if IsSKTree:
                     sample="SK" + host_postfix + sample + new_sample_fix+"_dilep"
 
                 
-print "Input sample : " + sample + str(new_sample_fix)
+print "Input sample : "   + sample
 if not mc:
     print "Input channel  : " + new_channel
 
