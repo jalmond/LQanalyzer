@@ -59,7 +59,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   }
 
   /// Further analysis selection phase spaces only used for analysis selection
-  MakeCleverHistograms(sighist,"NoCut");
+  /*MakeCleverHistograms(sighist,"NoCut");
   MakeCleverHistograms(sighist,"Top");
   MakeCleverHistograms(sighist,"SSee_gt1jet_noZ");
   MakeCleverHistograms(sighist,"SSee_gt1jet_Z");
@@ -122,7 +122,9 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"SSee_DiJet_m4_40");
   MakeCleverHistograms(sighist,"SSee_DiJet");
   MakeCleverHistograms(sighist,"OSee_DiJet");
-
+  */
+  MakeCleverHistograms(sighist,"TChannel");
+  /*
   MakeCleverHistograms(sighist,"Preselection");
   MakeCleverHistograms(sighist,"Preselection_m1_40");
   MakeCleverHistograms(sighist,"Preselection_m4_40");
@@ -208,7 +210,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"HighMETCR_HighMassRegion");
   MakeCleverHistograms(sighist,"HighMETCR_HighMassRegion_m1_40");
   MakeCleverHistograms(sighist,"HighMETCR_HighMassRegion_m4_40");
-  
+  */
 }
 
 
@@ -228,69 +230,6 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 void HNDiElectron::ExecuteEvents()throw( LQError ){
     
 
-  vector<int> events;
-  events.push_back(34296386);
-  events.push_back(41493515);
-  events.push_back(67451924);
-  events.push_back(46089866);
-  events.push_back(60480225);
-  events.push_back(8914644);
-  events.push_back(6718812);
-  events.push_back(68637640);
-  events.push_back(27936276);
-  events.push_back(29054654);
-  events.push_back(20957900);
-  events.push_back(35122701);
-  events.push_back(15799343);
-  events.push_back(53825316);
-  events.push_back(9145181);
-  events.push_back(755885);
-  events.push_back(36855030);
-  events.push_back(24883853);
-  events.push_back(41007515);
-  events.push_back(18538588);
-  events.push_back(20311209);
-  events.push_back(50706290);
-  events.push_back(28911596);
-  events.push_back(16995222);
-  
-  /*  bool keepevent=false;
-  for(unsigned int i=0; i < events.size(); i++){
-    if(eventbase->GetEvent().EventNumber() == events.at(i)) keepevent=true;
-  }
-  //  if(!keepevent)return;
-
-  m_logger <<INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  
-  vector<snu::KMuon> muons;
-  eventbase->GetMuonSel()->Selection(muons); 
-  m_logger << INFO<< "NMuons = " << muons.size() << LQLogger::endmsg;
-
-  m_logger << INFO<< "charge, phi, eta, pT, status, motherID" << endl;
-  m_logger << INFO<< "Reco variables"<< LQLogger::endmsg;
-
-  for(unsigned int im=0; im< muons.size(); im++){
-    m_logger << INFO<< muons.at(im).Charge() << " " << muons.at(im).Phi() << "  " << muons.at(im).Eta() << " " << muons.at(im).Pt() <<  LQLogger::endmsg;
-  }
-  m_logger << INFO<< "MatchedGenParticle variables"  <<  LQLogger::endmsg;
-  for(unsigned int im=0; im < muons.size(); im++){
-    m_logger << INFO<< muons.at(im).MuonMatchedGenParticlePhi() << " " <<  muons.at(im).MuonMatchedGenParticleEta()  << " " <<  muons.at(im).MuonMatchedGenParticlePt() <<  LQLogger::endmsg;
-  }
-  
-  m_logger << INFO<< "Truth/Gen Information" << LQLogger::endmsg;
-  m_logger << INFO<< "pdgid / charge / phi / eta / pt / status / mother pdgid"  <<  LQLogger::endmsg;
-
-  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-    if( fabs(eventbase->GetTruth().at(ig).PdgId()) == 13) {
-      if(eventbase->GetTruth().at(ig).PdgId()== -13 )m_logger << INFO<< eventbase->GetTruth().at(ig).PdgId()  << "  " << 1 << " " <<  eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()  <<  LQLogger::endmsg;
-      if(eventbase->GetTruth().at(ig).PdgId()== 13 )m_logger << INFO<< eventbase->GetTruth().at(ig).PdgId()  << "  " << -1 << " " <<  eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()  <<  LQLogger::endmsg;
-    }
-  }
-    
-  cout << " \n " << endl;
-
-  return;
-  */
   Double_t weight_err = 1.;
    
 
@@ -299,8 +238,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   //GetIDEfficiency(GetElectrons(true, true, "NoCut"), GetJets("ApplyPileUpID"), "", weight);
   
-  if(true){
+  if(false){
     float w_for_sigeff = weight;
+    cout << " eventbase->GetEvent().PileUpInteractionsTrue() " << endl;
+    cout <<eventbase->GetEvent().PileUpInteractionsTrue() << endl;
     w_for_sigeff*= reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0)* MCweight;
     
     TString tmp_fake_loose_label = "HNTight_loosereg2";
@@ -433,6 +374,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl_lepveto     = GetJets("ApplyLeptonVeto");
   std::vector<snu::KJet> jetColl_lepveto_mva = GetJets("ApplyPileUpID");
 
+  
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonVetoColl, electronNoCutColl,jetColl_lepveto_mva, weight);
 
   RunMCCLosureTest("loosereg2", jetColl_lepveto_mva,"",weight);
@@ -551,9 +493,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     
   }
   
-  
-  
-  
+   
   
   /// in IsDiLep: weight is set to 0 if event does not contain 2 elecrons 20/15 gev cuts
   bool dilep_event = false;
@@ -750,6 +690,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
   
+  if(dilep_event){
+    cout << " jetColl_lepveto_mva.size() " <<   jetColl_lepveto_mva.size() << endl;
+    for(unsigned int i=0; i < jetColl_lepveto_mva.size() ; i++){
+      cout << jetColl_lepveto_mva.at(i).Eta() << endl;
+    }
+  }
+
   bool dijet_event= true;
   if(jetColl_lepveto_mva.size() < 2) dijet_event = false;
   
@@ -762,6 +709,23 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       
       FillCLHist(sighist, "Preselection", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
       FillEventCutFlow("Presel","",weight);
+
+
+      if(jetColl_lepveto_mva.size() > 3 ) {
+        bool has_forward_jet(false), has_back_jet(false);
+	for(unsigned int ij = 0 ; ij < jetColl_lepveto_mva.size(); ij++){
+          if(jetColl_lepveto_mva.at(ij).Eta() > 1.5) has_forward_jet=true;
+          if(jetColl_lepveto_mva.at(ij).Eta() < -1.5) has_back_jet=true;
+	  cout << "Passes selection ll jjjj " << endl;
+	  for(unsigned int ij1=0; ij1 < jetColl_lepveto_mva.size(); ij1++){
+	    cout << jetColl_lepveto_mva.at(ij1).Eta() << endl;
+	  }
+        }
+        if(has_forward_jet && has_back_jet)
+	  cout << "Passes TChannel " << endl;
+	  FillCLHist(sighist, "TChannel", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
+      }
+
 
       if(nbjet==0)   FillEventCutFlow("Presel_nobjet","",weight);
       
@@ -796,9 +760,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     if(fabs(eventbase->GetTruth().at(ig).Eta()) > 3.) continue;
     genBColl.push_back(eventbase->GetTruth().at(ig));
   }
-  
-  for(unsigned int ij=0; ij < jetColl_lepveto_mva.size(); ij++){
-    for(unsigned int ig=0; ig < genBColl.size(); ig++){
+  if(!isData){
+    for(unsigned int ij=0; ij < jetColl_lepveto_mva.size(); ij++){
+      for(unsigned int ig=0; ig < genBColl.size(); ig++){
 	if(jetColl_lepveto_mva.at(ij).DeltaR(genBColl.at(ig)) < 0.3 ){
 	  jetFlavour = int(fabs(genBColl[ig].PdgId()));
 	  break;
@@ -806,36 +770,36 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	else{
 	  jetFlavour = 21;
 	}
-    }
-    if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour, jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ){
-      b_found = true;
-    }
-    
-    if (jetFlavour==4 || jetFlavour==5) {
-      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), -1) )
-        b_foundEffDown = true;
-      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), +1) )
-        b_foundEffUp = true;
-    }
-    else
-      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ) {
-        b_foundEffDown = true;
-        b_foundEffUp = true;
       }
-    
-    if (jetFlavour==1 || jetFlavour==2 || jetFlavour==3 || jetFlavour==21) {
-      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), -1) )
-        b_foundMissDown = true;
-      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), +1) )
-        b_foundMissUp = true;
-    }
-    else
-      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ) {
-        b_foundMissDown = true;
-        b_foundMissUp = true;
+      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour, jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ){
+	b_found = true;
       }
+      
+      if (jetFlavour==4 || jetFlavour==5) {
+	if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), -1) )
+	  b_foundEffDown = true;
+	if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), +1) )
+	  b_foundEffUp = true;
+      }
+      else
+	if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ) {
+	  b_foundEffDown = true;
+	  b_foundEffUp = true;
+	}
+      
+      if (jetFlavour==1 || jetFlavour==2 || jetFlavour==3 || jetFlavour==21) {
+	if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), -1) )
+	  b_foundMissDown = true;
+	if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), +1) )
+	  b_foundMissUp = true;
+      }
+      else
+	if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour,jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ) {
+	  b_foundMissDown = true;
+	  b_foundMissUp = true;
+	}
+    }
   }
-  
   
   float event_met = eventbase->GetEvent().PFMET();
   float event_met_jesup = eventbase->GetEvent().PFMET_Jet_EnUp() ;

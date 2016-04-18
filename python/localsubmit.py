@@ -194,9 +194,10 @@ if not str(cycle) == "SKTreeMaker":
         if not str(cycle) == "SKTreeMakerDiLep":
             if not str(useskinput) == "True":
                 if not (useskinput) == "true":
-                    update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
-                    if not  str(update) == "N":
-                        useskinput="True"
+                    print "Running on LQNtuples"
+#update = raw_input("You are running on LQntuples. This will be cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees. Will change settings to run on SKTrees: Type 'N' if you wish to stick to LQntuples.")
+                    #if not  str(update) == "N":
+                    #    useskinput="True"
 
 ##########################################################
 ### Make tmp directory for job
@@ -248,9 +249,9 @@ if platform.system() == "Linux":
         if username in line:
             njob_user+=1
             
-    if n_previous_jobs > 20:
+    if n_previous_jobs > 15:
         number_of_cores = 1
-        print "Number of subjobs is reduced to 1, since there are over 20 subjobs running on this machine."
+        print "Number of subjobs is reduced to 1, since there are over 15 subjobs running on this machine."
 
     if njob_user  > 10:
         number_of_cores = 1
@@ -261,11 +262,10 @@ if platform.system() == "Linux":
     for line in open(filename2, 'r'):
         n_previous_jobs+=1
     os.system("rm " + filename2)
-    if n_previous_jobs > 20:
+    if n_previous_jobs > 15:
         number_of_cores = 1
-        print "Number of subjobs is reduced to 1, since there are over 20 jobs running on this machine."
-                        
-
+        print "Number of subjobs is reduced to 1, since there are over 15 jobs running on this machine."
+        
 IsSKTree= False
 if str(useskinput) == "true":
     IsSKTree = True
@@ -274,18 +274,20 @@ elif (useskinput) == "True":
 
 if number_of_cores > 1:
     if IsSKTree:
-        if (20 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 20 - n_previous_jobs
-        if number_of_cores > 15:
-            number_of_cores = 15
-            print "Number of sub jobs is set to high. Reset to default of 30."
+        if (15 - n_previous_jobs) < number_of_cores:
+            number_of_cores = 15 - n_previous_jobs
+        if number_of_cores > 10:
+            number_of_cores = 10
+            if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                print "Number of sub jobs is set too high. Reset to default of 30."
     else:
         if number_of_cores > 5:
             if not str(cycle) == "SKTreeMaker":
                 if not str(cycle) == "SKTreeMakerNoCut":
                     if not str(cycle) == "SKTreeMakerDiLep":
                         number_of_cores = 5
-                        print "Number of sub jobs is set to high. Reset to default of 5."
+                        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                            print "Number of sub jobs is set too high. Reset to default of 5."
 
 if "SKTreeMaker" in str(cycle):
     if number_of_cores > 1:
@@ -559,16 +561,25 @@ if running_batch:
                 if l_s in sample:
                     running_large_sample=True
             if running_large_sample:
-                if number_of_cores > 200:
-                    number_of_cores=200
+                if number_of_cores > 100:
+                    number_of_cores=100
             else:
                 if n_user_qsub_jobs > 300:
                     number_of_cores=5
                 if n_user_qsub_jobs > 200:
-                    number_of_cores=50
+                    number_of_cores=15
+                if n_user_qsub_jobs > 100:
+                    number_of_cores=20
+                else:
+                    number_of_cores=30
         else:
             if number_of_cores > 100:
                 number_of_cores = 100
+
+if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    if not running_batch:
+        number_of_cores = 1
+        print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME")
 
 ############################################################
 ### Correct user if ncores is > nfiles
@@ -1153,6 +1164,11 @@ else:
                 Finaloutputdir += "SingleElectronCHS/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            if str(original_channel) =="muon_lowpt":
+                Finaloutputdir += "DoubleMuParked/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
 
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
@@ -1189,6 +1205,10 @@ else:
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
+            if str(original_channel) =="muon_lowpt":
+                Finaloutputdir += "DoubleMuParked/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
         else:
             Finaloutputdir = SKTreeOutput + "MCNoCut/"
             if not os.path.exists(Finaloutputdir):
@@ -1196,6 +1216,7 @@ else:
             Finaloutputdir += original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
+
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):

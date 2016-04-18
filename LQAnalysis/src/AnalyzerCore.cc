@@ -131,7 +131,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
   else  if(label.Contains("ApplyLeptonVeto")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
-    eventbase->GetJetSel()->SetEta(2.5);
+    eventbase->GetJetSel()->SetEta(5.);
     eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
   }
   else if(label.Contains("ApplyPileUpID")){
@@ -2681,7 +2681,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
   if(type==sighist){
-
+    if(!hist.Contains("TCha")) return; 
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
     else {
