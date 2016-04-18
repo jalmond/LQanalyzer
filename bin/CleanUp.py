@@ -64,9 +64,10 @@ def CleanUpLogs(path):
                                 n_previous_jobs+=1
                                 
                         if n_previous_jobs == 0:
-                            os.system(" rm -r " + logspace1 + "/" + entries[8])
-                            is_deleted=True
-                            print "Deleting directory "  + logspace1 + "/" + entries[8] +" since this is made on " + os.getenv("HOSTNAME") + " but no jobs running on this machine."
+                            if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                                is_deleted=True
+                                os.system(" rm -r " + logspace1 + "/" + entries[8])
+                                print "Deleting directory "  + logspace1 + "/" + entries[8] +" since this is made on " + os.getenv("HOSTNAME") + " but no jobs running on this machine."
                           
                     nfiles=0
                     if (os.path.exists(logspace1 + "/" + entries[8] +"/output/")):
