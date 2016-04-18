@@ -3,8 +3,8 @@
 
 ###### SET WHAT JOBS TO RUN
 
-runMC=true
-runDoubleMuon=false
+runMC=false
+runDoubleMuon=true
 runDoubleElectron=false
 runElectronMuon=false
 runSingleMuon=false

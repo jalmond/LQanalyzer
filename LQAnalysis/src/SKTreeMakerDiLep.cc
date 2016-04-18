@@ -51,7 +51,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim
   /// Apart from eta/pt muons are required to have a global OR tracker track && be PF
-  eventbase->GetMuonSel()->SetPt(15);
+  eventbase->GetMuonSel()->SetPt(10);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
 
@@ -79,10 +79,6 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   /// select events  with 2 leptons with pt > 15
   if(! ((nlep > 1) )) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   
-  if(skim_electrons.size() > 0) {
-    if(skim_electrons.at(0).Pt() < 15.)  throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  } 
-
   FillCutFlow("DiLep", 1);
 
   out_event   = eventbase->GetEvent();
