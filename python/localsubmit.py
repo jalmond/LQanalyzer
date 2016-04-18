@@ -579,8 +579,8 @@ if running_batch:
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     if not running_batch:
         number_of_cores = 1
-        print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME")
-
+        print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME"))
+                                                   
 ############################################################
 ### Correct user if ncores is > nfiles
 ############################################################
@@ -589,7 +589,8 @@ if number_of_cores > number_of_files:
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
 
-############################################################                                                                                                                                                                               ### Do not change njobs if using batch 
+############################################################  
+### Do not change njobs if using batch 
 ############################################################                                                                                                                                                                                
 
 ############################################################

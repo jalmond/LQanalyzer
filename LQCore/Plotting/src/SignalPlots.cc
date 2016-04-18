@@ -430,7 +430,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
 
           for(unsigned int ic = 0; ic < central_jets.size()-1; ic++){
 
-            for(unsigned int ic2 =ic+1; ic <central_jets.size(); ic++){
+            for(unsigned int ic2 =ic+1; ic2 <central_jets.size(); ic2++){
               Fill("h_l2jj_central_mass", (electrons[1]+jets[ic]+jets[ic2]).M(),weight, weight_err);
               Fill("h_lljj_central_mass", (electrons[0] + electrons[1]+jets[ic]+jets[ic2]).M(),weight, weight_err);
               Fill("h_l1jj_central_mass", (electrons[0]+jets[ic]+jets[ic2]).M(),weight, weight_err);
