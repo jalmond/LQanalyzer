@@ -685,11 +685,8 @@ void HNEMu::ExecuteEvents()throw( LQError ){
         for(unsigned int ij = 0 ; ij < jetColl_lepveto_mva.size(); ij++){
           if(jetColl_lepveto_mva.at(ij).Eta() > 1.5) has_forward_jet=true;
           if(jetColl_lepveto_mva.at(ij).Eta() < -1.5) has_back_jet=true;
-          cout << "Passes selection ll jjjj " << endl;
-          for(unsigned int ij1=0; ij1 < jetColl_lepveto_mva.size(); ij1++){
-            cout << jetColl_lepveto_mva.at(ij1).Eta() << endl;
-          }
         }
+	if(has_forward_jet && has_back_jet)cout << "Passes selection ll jjjj " << endl;
         if(has_forward_jet && has_back_jet)FillCLHist(sighist, "TChannel", eventbase->GetEvent(), muons,electronAnalysisColl,jetColl_lepveto_mva, weight);
       }
 
