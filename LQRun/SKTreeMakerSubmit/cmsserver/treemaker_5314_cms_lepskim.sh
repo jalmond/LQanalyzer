@@ -71,7 +71,7 @@ then
     source functions.sh
     cycle="SKTreeMaker"
     #### JOB CONFIGURATION
-    njobs=300
+    njobs=30
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
