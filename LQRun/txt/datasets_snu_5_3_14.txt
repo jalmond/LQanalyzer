@@ -291,6 +291,20 @@ SKQCD_250_350_BCtoE 19600.         sk_cluster_ntuple_path  sk_cms_ntuple_path_20
 SKQCD_350_EM        382497.9062	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_350_EM/
 SKQCD_350_BCtoE     81446.75	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/QCD_350_BCtoE/
 
+SKWtollln_new  12979.30   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/Wtollln_new/
+
+SKHN70_mumumu_new 3907.78   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN70_mumumu_new/
+SKHN90_mumumu_new 42337.00   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN90_mumumu_new/
+SKHN100_mumumu_new 88888.88   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN100_mumumu_new/
+SKHN150_mumumu_new 732600.73   sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN150_mumumu_new/
+SKHN200_mumumu_new 2361832.78  sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN200_mumumu_new/
+SKHN300_mumumu_new 11446886.44  sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN300_mumumu_new/
+SKHN400_mumumu_new 36049026.67  sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN400_mumumu_new/
+SKHN500_mumumu_new 91996320.14  sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN500_mumumu_new/
+SKHN700_mumumu_new 414937759.33  sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN700_mumumu_new/
+SKHN1000_mumumu_new 2393489707.99  sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/HN1000_mumumu_new/
+
+
 
 SKQCD_1000_mu      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
 SKQCD_15-20_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
@@ -784,9 +798,27 @@ Z2Jets		120296.22	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 DY2JetsTo
 Z3Jets		215566.44	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 DY3JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
 Z4Jets		277455.84	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 DY4JetsToLL_M-50_TuneZ2Star_8TeV-madgraph/
 
+Wtollln_new  12979.30   cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Wtollln_MadGraph_8TeV_PU/
+
+
 #########################################
 ### HN signal ###
 ##########################################
+
+
+##Trilepton
+HN70_mumumu_new 3907.78 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri70_MadGraph_8TeV_mumumu_PU/
+HN90_mumumu_new 42337.00 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri90_MadGraph_8TeV_mumumu_PU/
+HN100_mumumu_new 88888.88 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri100_MadGraph_8TeV_mumumu_PU/
+HN150_mumumu_new 732600.73 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri150_MadGraph_8TeV_mumumu_PU/
+HN200_mumumu_new 2361832.78 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri200_MadGraph_8TeV_mumumu_PU/
+HN300_mumumu_new 11446886.44 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri300_MadGraph_8TeV_mumumu_PU/
+HN400_mumumu_new 36049026.67 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri400_MadGraph_8TeV_mumumu_PU/
+HN500_mumumu_new 91996320.14 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri500_MadGraph_8TeV_mumumu_PU/
+HN700_mumumu_new 414937759.33 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri700_MadGraph_8TeV_mumumu_PU/
+HN1000_mumumu_new 2393489707.99 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 HNtri1000_MadGraph_8TeV_mumumu_PU/
+
+## Dilepton
 HNmumu40	64.31		cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-40_TuneZ2star_8TeV-alpgen/
 HNmumu50	46.68		cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-50_TuneZ2star_8TeV-alpgen/
 HNmumu60	162.56		cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014  MajoranaNeutrinoToMuMu_M-60_TuneZ2star_8TeV-alpgen/
