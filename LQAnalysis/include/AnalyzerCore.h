@@ -72,6 +72,7 @@ class AnalyzerCore : public LQCycleBase {
   double ElectronRecoScaleFactor(vector<snu::KElectron> el);
 
   double MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys=0);
+  double MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys=0);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
@@ -134,9 +135,18 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* FRHist;
   TH2F* MuonSF;
   TH2F* ElectronSF_Tight;
+  TH2F* ElectronSF_Medium;
+  TH2F* ElectronSF_Loose;
+  TH2F* ElectronSF_Veto;
   TH2F* ElectronRECO;
-  TH2F* MuonID;
-  TH2F* MuonISO;
+  TH2F* MuonID_tight;
+  TH2F* MuonID_medium;
+  TH2F* MuonID_loose;
+  TH2F* MuonISO_tight_tightID;
+  TH2F* MuonISO_tight_mediumID;
+  TH2F* MuonISO_loose_tightID;
+  TH2F* MuonISO_loose_mediumID;
+  TH2F* MuonISO_loose_looseID;
   HNCommonLeptonFakes* m_fakeobj;
 
 

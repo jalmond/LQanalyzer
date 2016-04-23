@@ -157,6 +157,31 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]=7.831E-05;
    dirmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]=5.375E-07;
 
+   dirmap["MajoranaNeutrinoToEE_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToEE_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToEE_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToEE_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToEE_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToEE_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToEE_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]=1.076E+01;
+   dirmap["MajoranaNeutrinoToEE_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]=2.8378E-02;
+   dirmap["MajoranaNeutrinoToEE_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=3.8151E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=2.6865E-07;
+   dirmap["MajoranaNeutrinoToMuMu_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]=1.076E+01;
+   dirmap["MajoranaNeutrinoToMuMu_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]=2.8378E-02;
+   dirmap["MajoranaNeutrinoToMuMu_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=3.8151E-05;
+   dirmap["MajoranaNeutrinoToMuMu_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=1.076E+01;
+
    return dirmap;
 }
 
@@ -487,6 +512,32 @@ map<TString, TString>  GetLQMap(){
   lqmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]="HN_MM_M500";
   lqmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]="HN_MM_M1500";
 
+  lqmap["MajoranaNeutrinoToEE_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_40";
+  lqmap["MajoranaNeutrinoToEE_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_100";
+  lqmap["MajoranaNeutrinoToEE_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_1500";
+  lqmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_40";
+  lqmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_100";
+  lqmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_500";
+  lqmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_1500";
+  lqmap["MajoranaNeutrinoToEE_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_40";
+  lqmap["MajoranaNeutrinoToEE_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_100";
+  lqmap["MajoranaNeutrinoToEE_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_1500";
+  lqmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_40";
+  lqmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_100";
+  lqmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_500";
+  lqmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_1500";
+  lqmap["MajoranaNeutrinoToEE_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_40";
+  lqmap["MajoranaNeutrinoToEE_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_100";
+  lqmap["MajoranaNeutrinoToEE_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_1500";
+  lqmap["MajoranaNeutrinoToMuMu_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_40";
+  lqmap["MajoranaNeutrinoToMuMu_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_100";
+  lqmap["MajoranaNeutrinoToMuMu_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_500";
+  lqmap["MajoranaNeutrinoToMuMu_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_1500";
+
+  
  
   return lqmap;
 }

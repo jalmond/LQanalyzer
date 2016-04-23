@@ -47,14 +47,14 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
-  eventbase->GetMuonSel()->SetPt(10); 
+  eventbase->GetMuonSel()->SetPt(8.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
 
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim
   /// Apart from eta/pt muons are required to have a global OR tracker track && be PF
-  eventbase->GetMuonSel()->SetPt(10);
+  eventbase->GetMuonSel()->SetPt(8.);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
 
@@ -68,7 +68,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
   eventbase->GetJetSel()->SetPt(20);
-  eventbase->GetJetSel()->SetEta(3.5);
+  eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
   //###### GenJet Selection ##########
@@ -77,10 +77,10 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   //###### Electron Selection ########
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
-  eventbase->GetElectronSel()->SetPt(10); 
+  eventbase->GetElectronSel()->SetPt(8.); 
   eventbase->GetElectronSel()->SetEta(5.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
-  eventbase->GetElectronSel()->SetPt(10);
+  eventbase->GetElectronSel()->SetPt(8.);
   eventbase->GetElectronSel()->SetEta(2.5);
   eventbase->GetElectronSel()->SkimSelection(skim_electrons);
   
@@ -101,10 +101,10 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   bool pass15gev=false;
   
   if(skim_electrons.size() >0 ) {
-    if(skim_electrons.at(0).Pt() > 15.) pass15gev= true;
+    if(skim_electrons.at(0).Pt() > 12.) pass15gev= true;
   }
   if(skim_muons.size() > 0){
-    if(skim_muons.at(0).Pt() > 15.)  pass15gev= true;
+    if(skim_muons.at(0).Pt() > 12.)  pass15gev= true;
   }
   if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 

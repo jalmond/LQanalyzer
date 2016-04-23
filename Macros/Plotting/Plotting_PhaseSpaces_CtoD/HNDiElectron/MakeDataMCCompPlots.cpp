@@ -130,13 +130,13 @@ int MakePlots(string hist) {
       if(TString(allcuts.at(ncut)).Contains("SS"))isSS = true;
       
       
-	
 	/// Make nominal histogram stack
 	map<TString, TH1*> legmap;
 	THStack* mstack;
 	if(!isSS) mstack= MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , true);
 	else  mstack=MakeStack(samples_ss, "Nominal",name, xmin, xmax, legmap, rebin , true);
-
+	
+	
 	THStack* mstack_nostat;
 	if(!isSS)mstack_nostat = MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , false);
 	else mstack_nostat = MakeStack(samples_ss , "Nominal",name, xmin, xmax, legmap, rebin , false);
@@ -154,7 +154,8 @@ int MakePlots(string hist) {
 	
 	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
 	
-	/// Make data histogram
+
+
 	ylog=false;
 	if(TString(name).Contains("llmass")){ylog=true;}
 	if(TString(name).Contains("LeptonPt")){ylog=true;}
@@ -177,7 +178,6 @@ int MakePlots(string hist) {
         vector<THStack*> vstack;		
 	vstack.push_back(mstack);   	
 	vstack.push_back(mstack_nostat);   	
-
 	
 	TCanvas* c = CompDataMC(hdata,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 
@@ -489,7 +489,6 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
     y2 = 0.9;
   }
   
-  cout << "Test" << endl;
   TLegend* legendH = new TLegend(x1,y1,x2,y2);
   legendH->SetFillColor(kWhite);
   legendH->SetTextFont(42);
@@ -503,13 +502,13 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   //  for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
   
   vector<TString> legorder;
-  legorder.push_back("DY#rightarrow ll; 10 < m(ll) < 50");
-  legorder.push_back("Wjets");
-  legorder.push_back("DY#rightarrow ll; m(ll) > 50");
-  legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
-  legorder.push_back("WZ,ZZ,WW");
-  legorder.push_back("Mismeas. Charge Background");
-  legorder.push_back("Misid. Lepton Background");
+  //legorder.push_back("DY#rightarrow ll; 10 < m(ll) < 50");
+  //legorder.push_back("Wjets");
+  //legorder.push_back("DY#rightarrow ll; m(ll) > 50");
+  //legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
+  //legorder.push_back("WZ,ZZ,WW");
+  //legorder.push_back("Mismeas. Charge Background");
+    legorder.push_back("Misid. Lepton Background");
   
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
@@ -681,7 +680,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("Wgamma",0.22));    
   }
   if(sample.Contains("nonprompt")){
-    list.push_back(make_pair("nonprompt",0.34));
+    list.push_back(make_pair("nonprompt",0.4));
   }
 
   if(sample.Contains("chargeflip")){
@@ -712,7 +711,7 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
   
   THStack* stack = new THStack(clonename.c_str(), clonename.c_str());
   
-  bool debug(false);
+  bool debug(true);
   if(type.Contains("Nominal")) debug=true;
 
   TString fileloc = "";
@@ -728,8 +727,8 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
       if(it->first.first.at(0).first.Contains("nonprompt"))fileloc=mcloc;
     }    
     
+    cout << it->first.first.at(0).first << endl;
     CheckSamples( it->first.first.size() );
-    
     int isample=0;
     TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix).Data());
     if(!file) cout << "Could not open " << fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix << endl;
@@ -737,6 +736,7 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     gROOT->cd();
     TDirectory* tempDir = 0;
     int counter = 0;
+
     while (not tempDir) {
       std::stringstream dirname;
       dirname << "WRHNCommonLeptonFakes_%i" << counter;
@@ -746,10 +746,11 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
       }      
       tempDir = gROOT->mkdir((dirname.str()).c_str());      
     }
-            
     tempDir->cd();
 
-    TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
+    cout << clonename.c_str() << endl;
+   TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
+   cout << h_tmp << endl;
 
     while(!h_tmp) {
       isample++;
@@ -965,6 +966,14 @@ void SetTitles(TH1* hist, string name){
   if(name.find("llmass")!=string::npos)xtitle="ll invariant mass (GeV/c^{2})";
   if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
   if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+  if(name.find("l2jj_centralmass")!=string::npos)xtitle="l_{2}jj (central jets) invariant mass (GeV)";
+  if(name.find("lljj_centralmass")!=string::npos)xtitle="lljj (central jets) invariant mass (GeV)";
+  if(name.find("l1jj_centralmass")!=string::npos)xtitle="l1jj (central jets) invariant mass (GeV)";
+  if(name.find("forward_jet_pt")!=string::npos)xtitle="Forward Jet p_{T} (GeV)";
+  if(name.find("forward_jet_eta")!=string::npos)xtitle="Forward Jet #eta";
+  if(name.find("central_jet_pt")!=string::npos)xtitle="Central Jet p_{T} (GeV)";
+  if(name.find("central_jet_eta")!=string::npos)xtitle="Central Jet #eta";
+
 
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
@@ -1101,6 +1110,8 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax){
     yscale*=1.5;
     if(ylog) yscale*=100.;
   }
+
+  yscale*=1.5;
 
   //  if(name.find("Eta")!=string::npos) yscale/=2.;
   float max_data = h_data->GetMaximum()*yscale;
@@ -1472,7 +1483,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("nonprompt",0.34));
+  np.push_back(make_pair("nonprompt",0.4));
   
   vector<pair<TString,float> > cf;
   cf.push_back(make_pair("chargeflip",0.12));

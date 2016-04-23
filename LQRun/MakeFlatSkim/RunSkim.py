@@ -69,6 +69,7 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              ]
 
 
+sampledir = ["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]
 
 file_list_all="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_v7-6-3.txt"
 
@@ -81,7 +82,7 @@ for line in open(file_list_all, 'r'):
             if i in line:
                 sample_in_list="True"
         if sample_in_list == "False":
-            print "Missing sample " + line
+            #print "Missing sample " + line
             missing_sample="True"
 
 

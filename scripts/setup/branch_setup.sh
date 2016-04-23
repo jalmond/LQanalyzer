@@ -38,7 +38,7 @@ alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
-
+export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code

@@ -9,7 +9,7 @@ cutpath		dat/hn_cuts.txt
 prefix		ExampleAnalyzerDiMuon_SK
 postfix		_dilep_cat_v7-6-3.root
 # NAME_THE_OUTPUT_DIR
-outputdir  HN13TeV_MuonExampleCode_v763_6_skdilep_rocher_trigger_periodCtoD_LJApril16
+outputdir  HN13TeV_MuonExampleCode_v763_6_skdilep_rocher_isotrigger_periodCtoD_LJApril16
 histdir    CATNov15
 # CONFIGURE_HISTOGRAMS
 showdata   true

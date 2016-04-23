@@ -29,7 +29,7 @@ fi
 export LQANALYZER_DIR=${PWD}
 
 ##### Check that this is not the branch and a tag was checked out
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
+source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -38,7 +38,7 @@ alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
-
+export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code
@@ -51,12 +51,13 @@ if [[ "$HOSTNAME" == "cms1" ]];
 then 
     export OBJ=obj/slc6_cms1
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms1
+
 elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
     then
     export OBJ=obj/cluster/
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cluster/
-
 elif [[ "$HOSTNAME" == "cms5" ]];
+
 then
     export OBJ=obj/slc6_cms5
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms5/

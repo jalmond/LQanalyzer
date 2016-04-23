@@ -993,7 +993,7 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 if MakeWritable == "True":
-                    os.system("chmod 777 -R " +  Finaloutputdir)
+                    os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1030,7 +1030,7 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 if MakeWritable== "True":
-                    os.system("chmod 777 -R " +  Finaloutputdir)
+                    os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1066,7 +1066,7 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 if MakeWritable== "True":
-                    os.system("chmod 777 -R " +  Finaloutputdir)
+                    os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerTriLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1099,7 +1099,7 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
                 if MakeWritable== "True":
-                    os.system("chmod 777 -R " +  Finaloutputdir)
+                    os.system("chmod 755 -R " +  Finaloutputdir)
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)
@@ -1154,3 +1154,5 @@ end_time = time.time()
 total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
+
+#  LocalWords:  Finaloutputdir

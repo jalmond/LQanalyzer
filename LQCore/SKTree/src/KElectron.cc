@@ -43,6 +43,9 @@ KParticle()
   k_mc_matched=false;
   k_is_cf=false;
   k_is_fromtau=false;
+  k_mother_type=0;
+  k_mother_index=-1;
+  k_mc_index=-1;
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
@@ -65,7 +68,7 @@ KElectron::KElectron(const KElectron& el) :
   k_dxy= el.dxy();
   k_dz= el.dz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
-  k_hasmatchconvphot= el.HasMatchedConvPhot();
+  k_hasmatchconvphot= el.PassesConvVeto();
   k_pf_chargedhad_iso03= el.PFChargedHadronIso(0.3);
   k_pf_photon_iso03 = el.PFPhotonIso(0.3);
   k_pf_neutral_iso03= el.PFNeutralHadronIso(0.3);
@@ -90,6 +93,9 @@ KElectron::KElectron(const KElectron& el) :
   k_mc_matched=el.MCMatched();
   k_is_cf=el.MCIsCF();
   k_is_fromtau=el.MCFromTau();
+  k_mother_type=el.MotherPdgId();
+  k_mother_index=el.MotherTruthIndex();
+  k_mc_index=el.MCTruthIndex();
   k_isPF=el.IsPF();
   k_istrigmvavalid=el.IsTrigMVAValid();
   snu_id = el.SNUID();
@@ -136,6 +142,9 @@ void KElectron::Reset()
   k_mc_matched=false;
   k_is_cf=false;
   k_is_fromtau=false;
+  k_mother_type=0;
+  k_mother_index=-1;
+  k_mc_index=-1;
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
@@ -160,7 +169,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_dxy= p.dxy();
     k_dz= p.dz();
     k_gsf_ctscpix_charge= p.GsfCtfScPixChargeConsistency();
-    k_hasmatchconvphot= p.HasMatchedConvPhot();
+    k_hasmatchconvphot= p.PassesConvVeto();
     k_pf_chargedhad_iso03= p.PFChargedHadronIso(0.3);
     k_pf_photon_iso03 = p.PFPhotonIso(0.3);
     k_pf_neutral_iso03= p.PFNeutralHadronIso(0.3);
@@ -183,6 +192,9 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_mc_matched=p.MCMatched();
     k_is_cf =p.MCIsCF();
     k_is_fromtau=p.MCFromTau();
+    k_mother_type=p.MotherPdgId();
+    k_mother_index=p.MotherTruthIndex();
+    k_mc_index=p.MCTruthIndex();
     k_isPF=p.IsPF();
     k_istrigmvavalid=p.IsTrigMVAValid();
     snu_id = p.SNUID();
@@ -360,6 +372,20 @@ float KElectron::ScaleFactor(const std::string& name, int sign) const {
 void KElectron::SetIsFromTau(bool istau){
   k_is_fromtau=istau;
 }
+
+void KElectron::SetMotherType(int type){
+  k_mother_type=type;
+}
+
+
+void KElectron::SetMotherTruthIndex(int mindex){
+  k_mother_index=mindex;
+}
+
+void KElectron::SetMCTruthIndex(int tindex){
+  k_mc_index=tindex;
+}
+
 
 
 void KElectron::SetIsChargeFlip(bool iscf){

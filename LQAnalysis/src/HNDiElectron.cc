@@ -51,6 +51,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
 
+   MakeCleverHistograms(sighist_ee, "TChannel");
    MakeCleverHistograms(sighist_ee, "SIGNAL");
    MakeCleverHistograms(sighist_ee, "SS_SIGNAL");
    MakeCleverHistograms(sighist_ee, "SIGNAL_4J");
@@ -98,6 +99,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 
   ///// SIGNAL PLOTS
+  FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
 
   if(!isData)weight*= MCweight;
   
@@ -170,7 +172,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
-  FillCutFlow("NoCut", weight);
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
 
   if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
@@ -308,7 +309,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       if(SameCharge(electronColl))  {
 	FillCLHist(sighist_ee, "SS_SIGNAL", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
 	if(electronColl.at(0).GsfCtfScPixChargeConsistency() && electronColl.at(1).GsfCtfScPixChargeConsistency()){
-	  if(electronColl.at(0).HasMatchedConvPhot() && electronColl.at(1).HasMatchedConvPhot()){
+	  if(electronColl.at(0).PassesConvVeto() && electronColl.at(1).PassesConvVeto()){
 	    FillCLHist(sighist_ee, "SS_SIGNAL_CC", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
 	    if(!Zcandidate(electronColl, 20., false)){
 
@@ -331,6 +332,25 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	      
 	      if(jetColl_hn.size() == 1 && (GetDiLepMass(electronColl) > 100. )) FillCLHist(sighist_ee, "SS_SIGNAL_1Jet", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
 	      if(jetColl_hn.size() > 1 ) FillCLHist(sighist_ee, "SS_SIGNAL_Presel", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
+	      
+	      if(jetColl_hn.size() > 3 ) {
+		bool has_forward_jet(false), has_back_jet(false);
+		for(unsigned int ij = 0 ; ij < jetColl_hn.size(); ij++){
+		  if(jetColl_hn.at(ij).Eta() > 1.5) has_forward_jet=true;
+		  if(jetColl_hn.at(ij).Eta() < -1.5) has_back_jet=true;
+		  cout << "Passes selection ll jjjj " << endl;
+		  for(unsigned int ij1=0; ij1 < jetColl_hn.size(); ij1++){
+		    cout << jetColl_hn.at(ij1).Eta() << endl;
+		  }
+		}
+		if(has_forward_jet && has_back_jet){
+		  FillCLHist(sighist_ee, "TChannel", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
+		  FillHist("SigTchannel" , 1., MCweight,  0. , 2., 2);
+		}
+		
+	      }
+
+
 
 	      if(NBJet(jetColl_hn, snu::KJet::CSVv2, snu::KJet::Medium) == 0){
 		if(electronColl.at(0).IsEBFiducial()   && electronColl.at(1).IsEBFiducial())       FillCLHist(sighist_ee, "SS_SIGNAL_BB_noB", eventbase->GetEvent(),   muonColl,electronColl,jetColl_hn, weight);

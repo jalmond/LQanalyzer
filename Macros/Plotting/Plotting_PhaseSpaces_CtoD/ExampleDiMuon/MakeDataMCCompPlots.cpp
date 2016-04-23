@@ -588,7 +588,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
 
   if(sample.Contains("dyhigh_")){
-    list.push_back(make_pair("DY50plus_MCatNLO",0.2));    
+    list.push_back(make_pair("DY50plus_madgraph",0.2));    
   }
   if(sample.Contains("dy_")){
     list.push_back(make_pair("DY10to50_MCatNLO",0.2));

@@ -57,6 +57,36 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root").c_str());
+
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    ElectronSF_Medium =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_LooseWP_76X_18Feb.txt_SF2D.root").c_str());
+
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    ElectronSF_Loose =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_VetoWP_76X_18Feb.txt_SF2D.root").c_str());
+
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    ElectronSF_Veto =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+  if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "eleRECO.txt.egamma_SF2D.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
@@ -71,7 +101,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
-    MuonID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonID_tight =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonID_medium =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonID_loose =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
     infile_sf->Close();
     delete infile_sf;
     origDir->cd();
@@ -81,12 +113,15 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
-    MuonISO =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonISO_tight_tightID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonISO_tight_mediumID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonISO_loose_tightID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonISO_loose_mediumID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    MuonISO_loose_looseID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
     infile_sf->Close();
     delete infile_sf;
     origDir->cd();
   }
-
 
   string lqdir = getenv("LQANALYZER_DIR");
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
@@ -118,16 +153,20 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
     //= loose + pileupID
     eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "Loose");
   }
+  else if( jetid == BaseSelection::JET_HN_TChannel){
+    //= loose + pileupID
+    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 5., false, "Loose");
+  }
   else if(jetid == BaseSelection::JET_NOLEPTONVETO){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(5.);
+    eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->Selection(jetColl);
   }
   else  if(jetid == BaseSelection::JET_LOOSE){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(5.);
+    eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(false,false, BaseSelection::ELECTRON_HN_VETO));
   }
   
@@ -288,18 +327,48 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 }
 
 
+double AnalyzerCore::MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys){
+  float sf= 1.;
 
-double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys){
+  if(isData) return 1.;
+  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
+    if(itmu->Pt() <120.&& itmu->Pt() > 20.) {
+      if(muid==BaseSelection::MUON_POG_TIGHT) {
+        sf*=  MuonISO_tight_tightID->GetBinContent( MuonISO_tight_tightID->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+      }
+      
+      else if(muid==BaseSelection::MUON_POG_MEDIUM) {
+	sf*=  MuonISO_loose_mediumID->GetBinContent( MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+      }
+      else if(muid==BaseSelection::MUON_POG_LOOSE) {
+	sf*=  MuonISO_loose_looseID->GetBinContent( MuonISO_loose_looseID->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+      }
+    }
+  }
+  return sf;
+}
+
+double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys){
   float sf= 1.;
   
   if(isData) return 1.;
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
     if(muid==BaseSelection::MUON_POG_TIGHT) {
       if(itmu->Pt() <120.&& itmu->Pt() > 20.) {
-	sf*=  MuonID->GetBinContent( MuonID->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
-	sf*=  MuonISO->GetBinContent( MuonISO->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+	sf*=  MuonID_tight->GetBinContent( MuonID_tight->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
       }
     }
+    else if(muid==BaseSelection::MUON_POG_MEDIUM) {
+      if(itmu->Pt() <120.&& itmu->Pt() > 20.) {
+        sf*=  MuonID_medium->GetBinContent( MuonID_medium->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+      }
+    }
+    else if(muid==BaseSelection::MUON_POG_LOOSE) {
+      if(itmu->Pt() <120.&& itmu->Pt() > 20.) {
+        sf*=  MuonID_loose->GetBinContent( MuonID_loose->FindBin( fabs(itmu->Eta()), itmu->Pt()) );
+      }
+    }
+
   }
   return sf;
 }
@@ -355,6 +424,19 @@ double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KE
       int bin =  ElectronSF_Tight->FindBin(fabs(itel->SCEta()), itel->Pt());
       sf *= ElectronSF_Tight->GetBinContent(bin);
     }
+    else  if(elid==BaseSelection::ELECTRON_POG_MEDIUM) {
+      int bin =  ElectronSF_Medium->FindBin(fabs(itel->SCEta()), itel->Pt());
+      sf *= ElectronSF_Medium->GetBinContent(bin);
+    }
+    else  if(elid==BaseSelection::ELECTRON_POG_LOOSE) {
+      int bin =  ElectronSF_Loose->FindBin(fabs(itel->SCEta()), itel->Pt());
+      sf *= ElectronSF_Loose->GetBinContent(bin);
+    }
+    else  if(elid==BaseSelection::ELECTRON_POG_VETO) {
+      int bin =  ElectronSF_Veto->FindBin(fabs(itel->SCEta()), itel->Pt());
+      sf *= ElectronSF_Veto->GetBinContent(bin);
+    }
+    else sf *=1.;
   }
  
   return sf;
@@ -526,9 +608,18 @@ AnalyzerCore::~AnalyzerCore(){
   
   delete m_fakeobj;
   delete ElectronSF_Tight;
+  delete ElectronSF_Medium;
+  delete ElectronSF_Loose;
+  delete ElectronSF_Veto;
   delete ElectronRECO;
-  delete MuonID;
-  delete MuonISO;
+  delete MuonID_tight;
+  delete MuonID_medium;
+  delete MuonID_loose;
+  delete MuonISO_tight_tightID;
+  delete MuonISO_tight_mediumID;
+  delete MuonISO_loose_tightID;
+  delete MuonISO_loose_mediumID;
+  delete MuonISO_loose_looseID;
 
 }
 
@@ -1174,7 +1265,19 @@ bool AnalyzerCore::Zcandidate(std::vector<snu::KElectron> electrons, float inter
 
 bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runningcf){
   
+  if(electrons.size() > 2){
+    int p_charge=0;
+    int m_charge=0;
+    for(unsigned int iel = 0 ; iel < electrons.size() ; iel++){
+      if(electrons.at(iel).Charge() < 0 ) m_charge++;
+      if(electrons.at(iel).Charge() > 0 ) p_charge++;
+    }
+    if(p_charge > 1) return true;
+    if(m_charge > 1) return true;
+  }
   if(electrons.size()!=2) return false;
+
+
   if(!runningcf){
     if(electrons.at(0).Charge() == electrons.at(1).Charge()) return true;
   }

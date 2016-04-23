@@ -28,7 +28,7 @@ bool HNLooseElectronSelection( KElectron el , bool usetight, bool loosend0, floa
   if(!PassUserID_FakeLoose( el, usetight,loosend0, isocut))  pass_selection = false; // No POG ID with no iso or dxy
   
 
-  if((!el.HasMatchedConvPhot()))   pass_selection = false;
+  if((!el.PassesConvVeto()))   pass_selection = false;
   if(!el.GsfCtfScPixChargeConsistency()) pass_selection = false;
   
   return pass_selection;
@@ -67,7 +67,7 @@ bool HNIsTight(KElectron el, double dxycut, double isocut,  bool usetight){
   
   ///List of cuts
   if(!id) pass_selection = false;  
-  if((!el.HasMatchedConvPhot() ) )  pass_selection = false;
+  if(!el.PassesConvVeto() )  pass_selection = false;
   
   bool usedr3=true;
   if(usedr3){

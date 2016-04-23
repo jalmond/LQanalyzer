@@ -107,7 +107,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
     /// extra cut to reduce conversions
     /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
-    if(apply_convcut && (!el->HasMatchedConvPhot()) ) {
+    if(apply_convcut && (!el->PassesConvVeto()) ) {
       pass_selection = false; 
       if(m_debug)cout << "Selection: Fail Conversion Cut" << endl;
     }

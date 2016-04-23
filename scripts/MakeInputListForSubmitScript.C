@@ -87,7 +87,31 @@ void MakeInputListForSubmitScript(){
     else  lumi_file << mit->second ;
     
   }
-    lumi_file << "') " << endl;
+  lumi_file << "') " << endl;
+  
+  lumi_file << "" << endl;
+  lumi_file << " declare -a hn_alp_lll_ee=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("schan")) continue;
+    if(mit->second.Contains("mm")) continue;
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+  lumi_file << "') " << endl;
+
+  lumi_file << "" << endl;
+  lumi_file << " declare -a hn_alp_lll_mm=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("schan")) continue;
+    if(mit->second.Contains("ee")) continue;
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+  lumi_file << "') " << endl;
 
 
     

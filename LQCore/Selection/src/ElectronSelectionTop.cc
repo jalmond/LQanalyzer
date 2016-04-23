@@ -23,7 +23,7 @@ bool TopLooseElectronSelection(KElectron el){
   LeptonRelIsoDR03 = el.PFRelIso(0.3);
   LeptonRelIsoDR04 = el.PFRelIso(0.4);
 
-  if((!el.HasMatchedConvPhot()))  pass_selection = false;
+  if((!el.PassesConvVeto()))  pass_selection = false;
   if(!(el.dxy()< 0.04 ))  pass_selection = false;
 
   if(pass_selection)  return true;
@@ -37,7 +37,7 @@ bool TopTightElectronSelection(KElectron el){
   bool pass_selection = true;
   // exclude EB-EE transition region
   if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;
-  if((!el.HasMatchedConvPhot() )) pass_selection = false;
+  if((!el.PassesConvVeto() )) pass_selection = false;
   float LeptonRelIsoDR03= el.PFRelIso(0.3);
   if(!(LeptonRelIsoDR03 <  0.1))  pass_selection = false;
   if(!(el.dxy()< 0.02 ))  pass_selection = false;
