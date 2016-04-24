@@ -182,7 +182,8 @@ void GetEffectiveLuminosity() {
   //dirmap["TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   //dirmap["TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   
-  dirmap["TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
+  dirmap["TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola"] = 1.;
+  //TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
 
   //  dirmap["WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6"] = 0.0320;
 
@@ -190,7 +191,9 @@ void GetEffectiveLuminosity() {
   for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
     
     
-    TString dir = "ls /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/" + it->first + "/*.root > inputlist.txt";
+    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/*.root > inputlist.txt";
+
+
     system(dir.Data());
     
     
@@ -207,10 +210,10 @@ void GetEffectiveLuminosity() {
     
     
    
-    float lumi = number_events_processed / it->second;
+    float lumi = number_events_processed / 1.;
 
     std::cout.precision(10);
-    std::cout << it->first << "    " << lumi << std::endl;
+    std::cout <<" lumi    " << lumi << std::endl;
     
     system("rm inputlist.txt");
   }    
