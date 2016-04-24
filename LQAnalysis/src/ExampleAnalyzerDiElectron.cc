@@ -93,238 +93,90 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-  return;
-  std::vector<snu::KElectron> electronColl_truthcheck             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
-  for(unsigned int iel=0; iel < electronColl_truthcheck.size(); iel++){
+  std::vector<snu::KElectron> electronColl_nocut_truth             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
+  
+  FillHist("Nelectrons" , electronColl_nocut_truth.size(), 1.,  0. , 5., 5);
+  
+  int n_prompt(0);
+  int n_cf(0);
+  int n_conv(0);
+  int n_tau(0);
+  int n_fake(0);
+  for(unsigned int iel=0; iel < electronColl_nocut_truth.size(); iel++){
+    if(electronColl_nocut_truth.at(iel).MCIsPrompt()) n_prompt++;
+    else n_fake++;
+    if(electronColl_nocut_truth.at(iel).MCIsCF()) n_cf++;
+    if(electronColl_nocut_truth.at(iel).MCIsFromConversion()) n_conv++;
+    if(electronColl_nocut_truth.at(iel).MCFromTau()) n_tau++;
+    FillHist("el_pdgid", fabs(electronColl_nocut_truth.at(iel).MCMatchedPdgId()),  fabs(electronColl_nocut_truth.at(iel).MotherPdgId()), 1., 0., 1000., 1000, 0., 1000., 1000); 
+  }
+  
+  FillHist("electron_prompt_breakdown", n_prompt,n_fake, 1., 0., 4, 4, 0., 4., 4);
+  FillHist("electron_cf_breakdown", n_cf, n_prompt,1., 0., 4, 4, 0., 5., 5);
+  FillHist("electron_conv_breakdown", n_conv,n_prompt, 1., 0., 4, 4, 0., 5., 5);
+  FillHist("electron_tau_breakdown", n_tau,n_prompt, 1., 0., 4, 4, 0., 5., 5);
+  
+
+  if(n_prompt > 3){
+    for(unsigned int iel=0; iel < electronColl_nocut_truth.size(); iel++){
+      cout << "eta " << electronColl_nocut_truth.at(iel).Eta() << endl;
+      cout << "phi " << electronColl_nocut_truth.at(iel).Phi() << endl;
+      cout << "pt " << electronColl_nocut_truth.at(iel).Pt() << endl;
+      cout << "isprompt= " << electronColl_nocut_truth.at(iel).MCIsPrompt() << endl;
+      cout << "mc pdgid = " << electronColl_nocut_truth.at(iel).MCMatchedPdgId() << endl;
+      cout << "mc index = " <<  electronColl_nocut_truth.at(iel).MCTruthIndex() << endl;
+      cout << "mother pdgid = " <<  electronColl_nocut_truth.at(iel).MotherPdgId()<< endl;
+      cout << "motherindex= " <<electronColl_nocut_truth.at(iel).MotherTruthIndex()<< endl;
+
+      cout << "Mother type = " << electronColl_nocut_truth.at(iel).GetMotherType() << endl;
+      cout << "Particle type = " << electronColl_nocut_truth.at(iel).GetParticleType() << endl;
+
+      for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+	if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
+	if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
+	if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+	if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+	cout << ig << " " << eventbase->GetTruth().at(ig).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig).IndexMother() << endl;
+	cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
+      }
+    }
+  }
     
+  int n_muon_prompt(0);
+  std::vector<snu::KMuon> muonColl_truth = GetMuons(BaseSelection::MUON_POG_TIGHT);
+  for(unsigned int im=0; im < muonColl_truth.size() ; im++){
+    if(muonColl_truth.at(im).MCIsPrompt() ) n_muon_prompt++; 
+  }
+  if(!SameCharge(muonColl_truth)) return;
+  if(muonColl_truth.size()!=2) return;
+  if(n_muon_prompt == 2) {
+    cout << "2 SS PROMPT MUON " << endl;
+    for(unsigned int im=0; im < muonColl_truth.size() ; im++){
+      if(muonColl_truth.at(im).MCIsPrompt() ) cout << "Prompt muon " << muonColl_truth.at(im).Eta() << " " << muonColl_truth.at(im).Phi() << " " << muonColl_truth.at(im).Pt() << endl;
+      cout << "mc pdgid = " <<muonColl_truth.at(im).MCMatchedPdgId() << endl;
+      cout << "mc index = " << muonColl_truth.at(im).MCTruthIndex() << endl;
+      cout << "mother pdgid = " << muonColl_truth.at(im).MotherPdgId()<< endl;
+      cout << "motherindex= " <<muonColl_truth.at(im).MotherTruthIndex()<< endl;
+      cout << "Is from conversion = " << muonColl_truth.at(im).MCIsFromConversion()<< endl;
+    }
     for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
       if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
       if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
       if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
       if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-      
-      double match_eta =electronColl_truthcheck.at(iel).Eta();
-      double match_phi =electronColl_truthcheck.at(iel).Phi();
-      double dr = sqrt( pow(fabs( match_eta - eventbase->GetTruth().at(ig).Eta()),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - eventbase->GetTruth().at(ig).Phi())),2.0));
-      
-      if (dr < 0.1){
-	if(eventbase->GetTruth().at(ig).GenStatus() != 1) continue;
-	
-	float pdgid = 0.;
-	int mindex= ig;
-	
-	while ( (fabs(eventbase->GetTruth().at(mindex).PdgId()) == 11)) {
-  
-	  pdgid = eventbase->GetTruth().at(mindex).PdgId();
-	  cout << "mother  " << eventbase->GetTruth().at(eventbase->GetTruth().at(mindex).IndexMother()).PdgId() << endl;
-	  mindex=eventbase->GetTruth().at(mindex).IndexMother();
-	}
-	if(eventbase->GetTruth().at(mindex).PdgId() == 13){
-	  for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
-	    //if(eventbase->GetTruth().at(ig2).Pt() != eventbase->GetTruth().at(ig2).Pt()) continue;
-	    if(eventbase->GetTruth().at(ig2).Pt() < 0.1) continue;
-	    int mother_wz=eventbase->GetTruth().at(ig2).IndexMother();
-	    if(mother_wz < 0) continue;
-	    cout << ig2 << " " << eventbase->GetTruth().at(ig2).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig2).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig2).IndexMother() << endl;
-	  }
-
-	}
-	//if(gen_status->at(mindex) == 2)
-	  // cout << "Matched lepton has first non electron anchestor = " << eventbase->GetTruth().at(mindex).PdgId() << " with status " << eventbase->GetTruth().at(mindex).GenStatus() << endl;
-      
-      }
+      cout << ig << " " << eventbase->GetTruth().at(ig).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig).IndexMother() << endl;
+      cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
     }
-  } 
-  return;
+
+
+  }
+
+  //GetHist("electron_breakdown")->GetXaxis()->SetBinLabel(1,"N_Prompt");
   
-    
-      //std::vector<snu::KElectron> electronColl_truthcheck             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
-  int first_truth=0;
-  if(SameCharge(electronColl_truthcheck)){
-    //cout << "SS electron event (nel >= 2):" << endl;
-    
-    for(unsigned int iel=0; iel < electronColl_truthcheck.size(); iel++){
-      //cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      //cout << "El " << iel+1 << " pt / eta / phi  = " << electronColl_truthcheck.at(iel).Pt() << " / " << electronColl_truthcheck.at(iel).Eta() << " / " <<electronColl_truthcheck.at(iel).Phi() << endl;
-      //cout << "IsMatched() = " << electronColl_truthcheck.at(iel).MCMatched() << endl;
-      //cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      bool macthed_truth=false;
-      for(unsigned int ig=first_truth; ig < eventbase->GetTruth().size(); ig++){
-	if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
-	if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
-	if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-	if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-	
-	double match_eta =electronColl_truthcheck.at(iel).Eta();
-	double match_phi =electronColl_truthcheck.at(iel).Phi();
-	double dr = sqrt( pow(fabs( match_eta - eventbase->GetTruth().at(ig).Eta()),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - eventbase->GetTruth().at(ig).Phi())),2.0));
-	
-	if (dr < 0.1){
 
-	  float pdgid = 0.;
-          int mindex= ig;
-	  
-	  if((fabs(eventbase->GetTruth().at(mindex).PdgId()) == 11)){
-	    macthed_truth=true;
-	    //cout << "Truth ELECTRON : dR matched to reco electron (dR < 0.1)" << endl;
-	    //cout << "Truth info: " << endl;
-	    //cout << "pt/eta/phi = " << eventbase->GetTruth().at(ig).Pt() << "/" << eventbase->GetTruth().at(ig).Eta() << " / " <<eventbase->GetTruth().at(ig).Phi() << endl;
-	    float pdgid = 0.;
-	    int mindex= ig;
-	    
-	    //cout << "PdgId = " << eventbase->GetTruth().at(mindex).PdgId() << endl;
-	    //cout << "Status = " << eventbase->GetTruth().at(mindex).GenStatus() << endl;
-	    //cout << "Mother PdgId = " <<eventbase->GetTruth().at(eventbase->GetTruth().at(mindex).IndexMother()).PdgId() << endl;
-	    //cout << "Mother Status = " << eventbase->GetTruth().at(eventbase->GetTruth().at(mindex).IndexMother()).GenStatus() << endl;
-	    
-	    
-	    while( (fabs(eventbase->GetTruth().at(mindex).PdgId()) == 11)){
-	      pdgid = eventbase->GetTruth().at(mindex).PdgId();
-	      mindex = eventbase->GetTruth().at(mindex).IndexMother();
-	    }// matched el pdgid
-
-	    vector<int> mother_prompt;
-	    mother_prompt.push_back(23);
-	    mother_prompt.push_back(-24);
-	    mother_prompt.push_back(24);
-	    mother_prompt.push_back(15);
-	    mother_prompt.push_back(-15);
-	    bool lep_prompt=false;
-	    for(unsigned int ip=0; ip < mother_prompt.size(); ip++){
-	      if( eventbase->GetTruth().at(mindex).PdgId()  == mother_prompt.at(ip)) lep_prompt=true;
-	    }
-	    if(!lep_prompt){
-	      cout << "Matched lepton has first non electron anchestor = " << eventbase->GetTruth().at(mindex).PdgId() << " with status " << eventbase->GetTruth().at(mindex).GenStatus() << endl;
-	      cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-	      cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-	      cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-	      cout << "Matched electron. But this electron is NOT froma W or Z " << endl;
-	      
-	      cout << "In this event W/Z decays include" << endl;
-	      
-	      vector<int> mothers;
-	      for(unsigned int ip=0; ip < mother_prompt.size(); ip++){
-		//cout << "Looking at " << mother_prompt.at(ip) << endl;
-		//cout << "Resetting daughters " << endl;
-
-		
-		for(unsigned int ig2=first_truth; ig2 < eventbase->GetTruth().size(); ig2++){
-		  //if(eventbase->GetTruth().at(ig2).Pt() != eventbase->GetTruth().at(ig2).Pt()) continue;
-                  if(eventbase->GetTruth().at(ig2).Pt() < 0.1) continue;
-                  int mother_wz=eventbase->GetTruth().at(ig2).IndexMother();
-                  if(mother_wz < 0) continue;
-		  cout << ig2 << " " << eventbase->GetTruth().at(ig2).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig2).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig2).IndexMother() << endl;
-		}
-		vector<int> daughters;
-		
-		for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
-		  if(eventbase->GetTruth().at(ig2).Pt() != eventbase->GetTruth().at(ig2).Pt()) continue;
-		  if(eventbase->GetTruth().at(ig2).Pt() < .1) continue;
-		  int mother_wz=eventbase->GetTruth().at(ig2).IndexMother();
-		  if(mother_wz < 0) continue;
-		  
-		  if( eventbase->GetTruth().at(mother_wz).PdgId() == mother_prompt.at(ip)){
-		    bool repeat_mother(false);
-		    for(unsigned int im=0; im < mothers.size(); im++){
-		      if(mother_wz == mothers.at(im) ) repeat_mother=true;
-		    }
-		    if(repeat_mother)continue;
-		    
-		    int gm=mother_wz;
-		    while( eventbase->GetTruth().at(gm).PdgId() == mother_prompt.at(ip)){
-		      mothers.push_back(gm);
-		      gm = eventbase->GetTruth().at(gm).IndexMother();
-		    }
-		  }
-		  else continue;
-		  int daughter = ig2;
-		  
-		  int counter=0;
-		  while (eventbase->GetTruth().at(daughter).PdgId() == mother_prompt.at(ip)){
-		    counter++; 
-		    if(counter > 10) break;
-		    for(unsigned int ig3=first_truth; ig3 < eventbase->GetTruth().size(); ig3++){
-		      if(eventbase->GetTruth().at(ig3).Pt() != eventbase->GetTruth().at(ig3).Pt()) continue;
-		      if(eventbase->GetTruth().at(ig3).Pt() < 0.1) continue;
-			if(eventbase->GetTruth().at(ig3).IndexMother() == daughter){
-			  if((eventbase->GetTruth().at(daughter).PdgId() == mother_prompt.at(ip))){
-			    mother_wz=daughter;
-			    mothers.push_back(mother_wz);
-			    daughter=ig3;
-			  }
-			}
-		    }
-		  }
-		  if(counter > 10) continue;
- 
-		  daughters.push_back(daughter);
-		  for(unsigned int ig3=first_truth; ig3 < eventbase->GetTruth().size(); ig3++){
-		    if(eventbase->GetTruth().at(ig3).Pt() < 0.1) continue;
-		    if(eventbase->GetTruth().at(ig3).Pt() != eventbase->GetTruth().at(ig3).Pt()) continue;
-		    if(eventbase->GetTruth().at(ig3).IndexMother() == mother_wz){
-		      if(eventbase->GetTruth().at(ig3).PdgId() != eventbase->GetTruth().at(daughter).PdgId())daughters.push_back(ig3);
-		    }
-		  }
-		  
-		  //cout << eventbase->GetTruth().at(mother_wz).PdgId() << " --> " ;
-		  if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == 23) cout << "Z --> " ;
-		  if(eventbase->GetTruth().at(ig2).PdgId() == 24) cout << "W+ --> " ;
-		  if(eventbase->GetTruth().at(ig2).PdgId() == -24) cout << "W- --> " ;
-		  if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == 15 ) cout << "tau --> " ;
-		  
-		  bool electron_decay=false;
-		  int el_daughter=-1;
-		  for(unsigned int id=0; id < daughters.size(); id++){
-		    if(id==0) cout << " " << eventbase->GetTruth().at(daughters.at(id)).PdgId() ;
-		    else  cout << " , " << eventbase->GetTruth().at(daughters.at(id)).PdgId() ;
-		    if(fabs(eventbase->GetTruth().at(daughters.at(id)).PdgId()) == 11) {el_daughter= daughters.at(id);electron_decay=true;}
-		  }
-		  cout << " \n" << endl;
-		  if(electron_decay){
-		    cout << "Gen Electron from W : pt/eta/phi = " << eventbase->GetTruth().at(el_daughter).Pt() << "/" << eventbase->GetTruth().at(el_daughter).Eta() << " / " <<eventbase->GetTruth().at(el_daughter).Phi() << endl;
-		    cout << "Reco Electron " << iel+1 << " pt / eta / phi  = " << electronColl_truthcheck.at(iel).Pt() << " / " << electronColl_truthcheck.at(iel).Eta() << " / " <<electronColl_truthcheck.at(iel).Phi() << endl;
-		    cout << "IsMatched() = " << electronColl_truthcheck.at(iel).MCMatched() << endl;
-		    
-		    for(unsigned int iel2=0; iel2 < electronColl_truthcheck.size(); iel2++){
-		      cout << "Reco Electron " << iel+1 << " pt / eta / phi  = " << electronColl_truthcheck.at(iel2).Pt() << " / " << electronColl_truthcheck.at(iel).Eta() << " / " <<electronColl_truthcheck.at(iel2).Phi() << endl;
-		      cout << "Reco Electron " << iel+1 << " moter pdgid = " << electronColl_truthcheck.at(iel2).MotherPdgId() << " " << electronColl_truthcheck.at(iel2).MotherTruthIndex() << " " << electronColl_truthcheck.at(iel2).MCMatched() <<  endl;
-		    }
-		    for(unsigned int ig4=first_truth; ig4 < eventbase->GetTruth().size(); ig4++){
-		      if(eventbase->GetTruth().at(ig4).Pt() < 0.1) continue;
-		      if(eventbase->GetTruth().at(ig4).Pt() != eventbase->GetTruth().at(ig4).Pt()) continue;
-		      if(fabs(eventbase->GetTruth().at(ig4).PdgId() == 11)){
-			cout << "pt/eta/phi = " << eventbase->GetTruth().at(ig4).Pt() << "/" << eventbase->GetTruth().at(ig4).Eta() << " / " <<eventbase->GetTruth().at(ig4).Phi() << " mother = " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig4).IndexMother()).PdgId() << endl;
-			
-		      }
-		    }
-		  }
-		  
-		}
-	      }
-	      
-	    }
-	    
-	    break;
-	  }
-	  else{
-	    //cout << "Truth NOT Electron :  dR matched to reco electron (dR < 0.1)" << endl;
-	    //cout << "Truth info: " << endl;
-            //cout << "pt/eta/phi = " << eventbase->GetTruth().at(ig).Pt() << "/" << eventbase->GetTruth().at(ig).Eta() << " / " <<eventbase->GetTruth().at(ig).Phi() << endl;
-            float pdgid = 0.;
-            int mindex= ig;
-
-            //cout << "NOT Electron: PdgId = " << eventbase->GetTruth().at(mindex).PdgId() << endl;
-            //cout << "NOT Electron: Status = " << eventbase->GetTruth().at(mindex).GenStatus() << endl;
-            //cout << "NOT Electron: Mother PdgId = " <<eventbase->GetTruth().at(eventbase->GetTruth().at(mindex).IndexMother()).PdgId() << endl;
-            //cout << "NOT Electron: Mother Status = " << eventbase->GetTruth().at(eventbase->GetTruth().at(mindex).IndexMother()).GenStatus() << endl;
-	    
-	  }
-	}// dR IF
-      }/// loop on truth
-      //if(!macthed_truth) cout << "######################################## NO Truth electron within dR = 0.1 ##############################" << endl;
-  }// loop on reco 
-    }// SS
-    else return;
+  
+  
+  
   return;
 
   /// Apply MC weight for MCatnlo samples

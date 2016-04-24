@@ -14,13 +14,19 @@ namespace snu {
   public:
 
 
-    enum MotherType{none=0,
-		    Z=1,
-		    W=2,
-		    ZorW=3,
-		    pion=4
+    enum ElectronType{PROMPT=0,
+		      FAKE=1,
+		      PHOTONFAKE=2,
+		      CONV_CF=3,
+		      CONV_NONECF=4,
+		      CF=5,
     };
-
+    enum ElectronMotherType{none=0,
+			    Z=1,
+			    W=2,
+			    ZorW=3,
+			    pion=4,
+    };
 
     KElectron();
     
@@ -64,9 +70,12 @@ namespace snu {
     
     void SetIsPF(Bool_t ispf);
     void SetIsChargeFlip(Bool_t iscf);
-    void SetIsMCMatched(Bool_t ismatch);
+    void SetIsPhotonConversion(Bool_t isconv);
     void SetIsFromTau(Bool_t istau);
-    void SetMotherType(Int_t type);
+    void SetIsMCMatched(Bool_t ismatch);
+    
+    void SetMCMatchedPdgId(Int_t pg);
+    void SetMotherPdgId(Int_t pg);
     void SetMotherTruthIndex(Int_t mindex);
     void SetMCTruthIndex(Int_t t_index);
     /// set ISO variables
@@ -129,24 +138,36 @@ namespace snu {
     inline Bool_t PassNotrigMVATight() const{return pass_notrigmva_tight;}
     
     
-   
-    inline Bool_t IsPF() const{return k_isPF;}
     inline Bool_t MCMatched() const{return k_mc_matched;}
+    inline Bool_t IsPF() const{return k_isPF;}
+    inline Bool_t MCIsPrompt() const{return k_mc_matched;}
     inline Bool_t MCIsCF() const{return k_is_cf;}
+    inline Bool_t MCIsFromConversion() const{return k_is_conv;}
     inline Bool_t MCFromTau() const{return k_is_fromtau;}
-    inline Int_t MotherPdgId() const{return k_mother_type;}
+    inline Int_t MCMatchedPdgId() const{return k_mc_pdgid;}
+    inline Int_t MotherPdgId() const{return k_mother_pdgid;}
     inline Int_t MotherTruthIndex() const{return k_mother_index;}
     inline Int_t MCTruthIndex() const{return k_mc_index;}
     
     inline Int_t SNUID() const{return snu_id;}
 
-    inline KElectron::MotherType GetparticleType() const{ 
-      if(k_mother_type == 23) return KElectron::Z;     
-      if(fabs(k_mother_type) == 24) return KElectron::W;     
-      if(k_mother_type == -99999 ) return KElectron::ZorW;
-      return  KElectron::pion;
+    inline KElectron::ElectronType GetParticleType() const{ 
+      if(k_is_conv&&k_is_cf) return KElectron::CONV_CF;
+      if(k_is_conv&&!k_is_cf)   return KElectron::CONV_NONECF; 
+      if(k_is_cf)  return KElectron::CF;
+      if(k_mc_matched) return KElectron::PROMPT;
+      if(k_mc_pdgid==22) return KElectron::PHOTONFAKE;
+      return KElectron::FAKE;
+
     }
 
+    inline KElectron::ElectronMotherType GetMotherType() const{
+      if(k_mother_pdgid == 23) return KElectron::Z;
+      if(fabs(k_mother_pdgid) == 24) return KElectron::W;
+      if(k_mother_pdgid == -99999 ) return KElectron::ZorW;
+      return  KElectron::pion;
+
+    }
     // charge variables
     
     inline Bool_t GsfCtfScPixChargeConsistency()  const {return k_gsf_ctscpix_charge;}
@@ -212,10 +233,10 @@ namespace snu {
     Double_t k_dxy, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
     
-    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, k_istrigmvavalid ;
+    Bool_t k_gsf_ctscpix_charge,pass_tight, pass_veto, pass_medium, pass_loose, k_mc_matched,  k_is_cf,k_is_conv, k_is_fromtau,k_isPF,k_hasmatchconvphot, pass_heep, pass_trigmva_medium, pass_trigmva_tight, pass_notrigmva_medium, pass_notrigmva_tight, k_istrigmvavalid ;
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
-    Int_t snu_id,k_mother_type,k_mother_index, k_mc_index;
+    Int_t snu_id,k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
     TString k_trig_match;
     
 

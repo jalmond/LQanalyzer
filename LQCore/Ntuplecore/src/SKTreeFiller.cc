@@ -286,7 +286,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
   m_logger << DEBUG << "Filling electron Info " << electrons_eta->size() << LQLogger::endmsg;
   
-
+  vector<int> matched_truth;
   for (UInt_t iel=0; iel< electrons_eta->size(); iel++) {
     
     if(electrons_pt->at(iel) != electrons_pt->at(iel))    continue;
@@ -363,11 +363,13 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     int mother_index=-1;
     int mother_pdgid=-1;
     int matched_index=-1;
+    int mc_pdgid=-1;
     bool matched_in_Dr=false;
 
     if(gen_pt){
+      
+      vector<int> matched_gen; 
       float min_Dr=0.1;
-      int index_closest_status1_el=-1;
       for (UInt_t it=0; it< gen_pt->size(); it++ ){
 	if(gen_motherindex->at(it) <= 0)continue;
 	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
@@ -380,66 +382,161 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	/// Matching using instructions on
 	/// https://indico.cern.ch/event/292928/contributions/1650088/attachments/547844/755123/talk_electron_contribution.pdf
 	/// 
-	
+	bool already_mathced=false;
+	for(unsigned int im=0; im > matched_truth.size();im++){
+	  if(it == unsigned(matched_truth.at(im))) already_mathced=true;
+	}
+	if(already_mathced) continue;
+
 	/// Match requires to status 1 electron
 	if(gen_status->at(it) != 1) continue;
 	if(fabs(gen_pdgid->at(it)) != 11) continue;
 
-	if (dr < min_Dr){
-	  /// find closest match in dR to status 1
-	  matched_in_Dr=true;
-	  min_Dr= dr;
-	  index_closest_status1_el=it;
-	  /// set index of matched status 1 electron
-	  matched_index=it;
-	}
-      }// end of gen llop to find status 1 electron
-      
-      
-      /// Find closest non electron ancesteror
-      float pdgid = 0.;
-      int mindex= index_closest_status1_el;
-   
-      while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
-	pdgid = gen_pdgid->at(mindex);
-	mindex=gen_motherindex->at(mindex);
-      }
-
-      // pdgid is now electron : mindex = index for mother of non electron ancestor
-
-      if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
-	/// Check if el from Z/W is CF
-	if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
-	else     el.SetIsChargeFlip(false);
-
-	mother_index=mindex;
-	mother_pdgid=gen_pdgid->at(mindex);
-	isprompt=true; /// means is prompt
-      }
-      else {
-	if(gen_status->at(mindex) == 2){
-	  if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; }
-	  if(gen_pdgid->at(mindex) == 15){
-	    isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
-	    // Check if el from tau  is CF
-	    if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
-	    else     el.SetIsChargeFlip(false);
+	if(matched_in_Dr){
+	  if(gen_motherindex->at(it) == gen_motherindex->at(matched_index)){
+	    if (dr < 0.1){
+	      // in case 2+ electrons from same mother electron (conversion) also match in pt
+	      if( fabs(gen_pt->at(it)-electrons_pt->at(iel)) < fabs(gen_pt->at(matched_index)-electrons_pt->at(iel))) matched_index=it;
+	    }
+	  }
+	  else if ((dr < min_Dr) ){
+	    
+	    /// find closest match in dR to status 1
+	    matched_in_Dr=true;
+	    min_Dr= dr;
+	    
+	    /// set index of matched status 1 electron
+	    matched_index=it;
+	    
 	  }
 	}
-	else {
-	  /// using new method for matching: These events are set as prompt 
-	  isprompt=true;mother_pdgid=-99999; mother_index=mindex; from_tau=false; 
+	else{
+	  if ((dr < min_Dr) ){
+	    
+	    /// find closest match in dR to status 1
+	    matched_in_Dr=true;
+	    min_Dr= dr;
+	    
+	    /// set index of matched status 1 electron
+	    matched_index=it;
+	    
+	  }
+	}
+      }// end of gen llop to find status 1 electron
+
+
+      ///// treat case where there is a matched status 1 electron:
+      //// classify into prompt:Fake:FromTau
+
+      if(matched_in_Dr){
+	/// Find closest non electron ancesteror
+	float pdgid = gen_pdgid->at(matched_index);
+
+	// mc_pdgid = closest matched status 1 pdgid
+	mc_pdgid= int(pdgid);
+
+	// mindex = mother index: will loop to find first non el mother
+	int mindex= matched_index;
+
+	while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
+	  pdgid = gen_pdgid->at(mindex);
+	  mindex=gen_motherindex->at(mindex);
+	}
+	/// pdgid is now of electron from non electron mother
+	//  mindex = index for mother of non electron ancestor
+	
+	if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+	  /// Check if el from Z/W is CF
 	  
-	  /// check if this electron is CF
+	  int n_el_from_el=0;
+	  float charge_sum=0.;
+	  /// Loop over electrons: Find mother of matched status 1 and see what other daughters there are:
+	  /// In case of a conversion i.e  Z->ee->eephoton->eeee the status 23 electorn decays to 3 electrons e+e+e- or e-e-e+
+	  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+	    if(gen_motherindex->at(itx) <= 0)continue;
+	    if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	    if(gen_pt->at(itx) < 0.1) continue;
+	    if(fabs(gen_pdgid->at(itx)) ==11) {
+	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { charge_sum+= gen_pdgid->at(itx); n_el_from_el++;}
+	    }
+	  }
+	  
+	  /// Set if conversion i.ei e->eee
+	  /// Two methods: 
+	  /// 1) check pdgid of status 1 el vs mother. if < 0 it is a converison
+	  /// 2) In case closest status 1 el is not opposite charge truth check number of electrons from mother if 3 it is a conversion
+	  if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  el.SetIsPhotonConversion(true);
+	  else  el.SetIsPhotonConversion(false);
+	  if(n_el_from_el ==3&& (fabs(charge_sum) == 11))  el.SetIsPhotonConversion(true); 
+	  
+	  /// Check if it is a chargeflip.
+	  /// Either from a conversion or just reconstructed charge is wrong
 	  if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
 	  else     el.SetIsChargeFlip(false);
+	  
+	  mother_index=mindex;
+	  mother_pdgid=gen_pdgid->at(mindex);
+	  isprompt=true; /// means is prompt
+	}/// end of Z/W
+	else {
+	  if(gen_status->at(mindex) == 2){
+	    if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;}
+	    if(fabs(gen_pdgid->at(mindex)) == 15){
+	      isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
+	      // Check if el from tau  is CF
+	 
+	      int n_el_from_el=0;
+	      float charge_sum=0.;
+	      for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+		if(gen_motherindex->at(itx) <= 0)continue;
+		if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+		if(gen_pt->at(itx) < 0.1) continue;
+		if(fabs(gen_pdgid->at(itx)) ==11) {
+		  if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { charge_sum+= gen_pdgid->at(itx); n_el_from_el++;
+		  }
+		}
+	      }// end of truth loop to check Conv
+	      if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  el.SetIsPhotonConversion(true);
+	      else  el.SetIsPhotonConversion(false);
+	      if(n_el_from_el ==3&& (fabs(charge_sum) == 11))  el.SetIsPhotonConversion(true);
+	      
+	      if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+	      else     el.SetIsChargeFlip(false);
+	    }
+	  }/// end of status 2 check
+	  else {
+	    /// using new method for matching: These events are set as prompt 
+	    isprompt=true;mother_pdgid=-99999; mother_index=mindex; from_tau=false; 
+	    
+	    int n_el_from_eg=0;  
+	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+	      if(gen_motherindex->at(itx) <= 0)continue;
+	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	      if(gen_pt->at(itx) < 0.1) continue;
+	      if(fabs(gen_pdgid->at(itx)) ==11) {
+		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) {  n_el_from_eg++;
+		}
+	      }
+	      /// Need to check how often e->egamma status1 gives 3 reco electrons: in this case currently reco matched to e is not tagged as photon conv..
+	      //if(fabs(gen_pdgid->at(itx)) ==22) {
+	      // if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) {  n_el_from_eg++;
+	      //	  cout << "photon from same mother as matched electron: status =" <<gen_status->at(itx) << endl;
+	      //	}
+	      //}
+	    } // end of truth loop to check Conv
+	    
+	    if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  el.SetIsPhotonConversion(true);
+	    else  el.SetIsPhotonConversion(false);
+	    if(n_el_from_eg ==3)  el.SetIsPhotonConversion(true);
 
+	    if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+	    else     el.SetIsChargeFlip(false);
+	    
+	  }  
 	}
-      }  
-    }
-    /// In case no status 1 electron is found : classify electron
-    if(!matched_in_Dr){
-      if(gen_pt){
+      }      /// In case no status 1 electron is found : classify electron fake
+      else{
+	if(gen_pt){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
 	    if(gen_motherindex->at(it) <= 0)continue;
 	    if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
@@ -448,17 +545,22 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    double match_eta =electrons_eta->at(iel);
 	    double match_phi =electrons_phi->at(iel);
 	    double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+	  
+	    bool already_mathced=false;
+	    for(unsigned int im=0; im > matched_truth.size();im++){
+	      if(it == unsigned(matched_truth.at(im))) already_mathced=true;
+	    }
+	    
+	    // in coversion case  2 matched electrons to one photon
+	    if(fabs(gen_pdgid->at(it)) != 22 && already_mathced) continue;
 	    
 	    if (dr <0.1){
 	      matched_in_Dr=true;
 	      int mindex= gen_motherindex->at(it);
 	      float pdgid = gen_pdgid->at(it);
-	      int status = gen_status->at(it);
-
-	      /// Unlikely to have moter as electron but just in case
-	      while ( (fabs(gen_pdgid->at(mindex)) == 11)) {
-		pdgid = gen_pdgid->at(mindex);
-		status = gen_status->at(mindex);
+	      
+	      /// Unlikely to have mother as electron but just in case
+	      while ( (fabs(gen_pdgid->at((mindex))) == 11)) {
 		mindex=gen_motherindex->at(mindex);
 	      }
 	      // isprompt = false since it failed status 1 matching
@@ -467,27 +569,38 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      mother_pdgid=gen_pdgid->at(mindex);
 	      mother_index=mindex;
 	      matched_index = it;
+	      mc_pdgid= int(gen_pdgid->at(it));
 	      if(fabs(pdgid) == 22) {
-		from_tau=false;
-		break;
+		if(fabs(mother_pdgid) == 11){
+		  el.SetIsPhotonConversion(true);
+		  if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+		  else     el.SetIsChargeFlip(false);
+		}
+		else el.SetIsPhotonConversion(false);
 	      }
+	      from_tau=false;
+	      break;
+	      
 	      if(fabs(pdgid) == 15)from_tau=true;
 	    }// dr req
 	  }// loop over gen vector
-      }// require gen info
-    }// no status 1 match
-    
+	}// require gen info
+      }// no status 1 match
+    }
+    matched_truth.push_back(matched_index);
     if(!matched_in_Dr){
       el.SetIsMCMatched(false);
       el.SetIsFromTau(false);
-      el.SetMotherType(0);
+      el.SetMCMatchedPdgId(-1);
+      el.SetMotherPdgId(0);
       el.SetMotherTruthIndex(-1);
-      el.SetMCTruthIndex(matched_index);
+      el.SetMCTruthIndex(-1);
     }
     else{
       el.SetIsMCMatched(isprompt);
       el.SetIsFromTau(from_tau);
-      el.SetMotherType(mother_pdgid);
+      el.SetMotherPdgId(mother_pdgid);
+      el.SetMCMatchedPdgId(mc_pdgid);
       el.SetMotherTruthIndex(mother_index);
       el.SetMCTruthIndex(matched_index);
     }
@@ -632,7 +745,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
   m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
 
-  
+  vector<int> matched_truth;
   for (UInt_t ilep=0; ilep< muon_eta->size(); ilep++) {
     KMuon muon;
     if(muon_pt->at(ilep) != muon_pt->at(ilep)) continue;
@@ -684,74 +797,226 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     
     //// Set Is ChargeFlip
-    bool self_match= false;
+    bool isprompt= false;
     bool from_tau = false;
+    m_logger << DEBUG << "TEST GEN " <<  LQLogger::endmsg;
+
+    int mother_index=-1;
+    int mother_pdgid=-1;
+    int matched_index=-1;
+    int mc_pdgid=-1;
+    bool matched_in_Dr=false;
 
     if(gen_pt){
+      float min_Dr=0.1;
       for (UInt_t it=0; it< gen_pt->size(); it++ ){
-	if(gen_motherindex->at(it) <= 0)continue;
-	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-	if(gen_pt->at(it) < 5) continue;
+        if(gen_motherindex->at(it) <= 0)continue;
+        if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+        if(gen_pt->at(it) < 0.1) continue;
 	
 	double match_eta =muon_eta->at(ilep);
 	double match_phi =muon_phi->at(ilep);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
 	
-	if (dr < 0.1){
-	  
-	  float pdgid = 0.;
-	  int mindex= it;
-	  if((fabs(gen_pdgid->at(mindex)) == 13)){
-	    
-	    while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
-	      pdgid = gen_pdgid->at(mindex);
-	      mindex=gen_motherindex->at(mindex);
-	    }
-	    
-	    if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
-	      
-	      if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
-	      else     muon.SetIsChargeFlip(false);
-	      
-	      self_match=true; break;
-	    }
-	    else {
-	      if((fabs(gen_pdgid->at(mindex)) == 15)){
-		while ( (fabs(gen_pdgid->at(mindex)) == 15)) {
-		  mindex=gen_motherindex->at(mindex);
-		}
-		if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
-		  if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
-		  else     muon.SetIsChargeFlip(false);
-		  from_tau=true; self_match=true; break;}
-		
-	      }
-	      else{
-		/// In case mother not correctly stored (DY10-50)
-		
-		if(gen_pdgid->at(it) * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
-		else     muon.SetIsChargeFlip(false);
-		
-		self_match=true; break;
-	      }
+	/// Matching using instructions on
+        /// https://indico.cern.ch/event/292928/contributions/1650088/attachments/547844/755123/talk_electron_contribution.pdf
+        ///
+
+	bool already_mathced=false;
+	for(unsigned int im=0; im > matched_truth.size();im++){
+	  if(it == unsigned(matched_truth.at(im))) already_mathced=true;
+	}
+	if(already_mathced) continue;
+
+        /// Match requires to status 1 muon
+        if(gen_status->at(it) != 1) continue;
+        if(fabs(gen_pdgid->at(it)) != 13) continue;
+	
+	if(matched_in_Dr){
+	  if(gen_motherindex->at(it) == gen_motherindex->at(matched_index)){
+	    if (dr < 0.1){
+	      // in case 2+ electrons from same mother electron (conversion) also match in pt
+	      if( fabs(gen_pt->at(it)-muon_pt->at(ilep)) < fabs(gen_pt->at(matched_index)-muon_pt->at(ilep))) matched_index=it;
 	    }
 	  }
-	  else{
-	    self_match=false;
-	    muon.SetIsChargeFlip(false);
-	    if((fabs(gen_pdgid->at(mindex)) == 15)){
-	      from_tau=true;
-	      self_match=true;
-	      break;
-	    }
-	    else from_tau=false;
+	  else   if (dr < min_Dr){
+	    /// find closest match in dR to status 1
+	    matched_in_Dr=true;
+	    min_Dr= dr;
+
+	    /// set index of matched status 1 muon
+	    matched_index=it;
 	  }
 	}
-      }//end muon truth
+	else if (dr < min_Dr){
+          /// find closest match in dR to status 1
+          matched_in_Dr=true;
+          min_Dr= dr;
+	  
+	  /// set index of matched status 1 muon
+          matched_index=it;
+        }
+      }// end of gen llop to find status 1 muon
+
+      ///// treat case where there is a matched status 1 muon:
+      //// classify into prompt:Fake:FromTau
+
+      
+      if(matched_in_Dr){
+        /// Find closest non muon ancesteror
+        float pdgid = gen_pdgid->at(matched_index);
+
+        // mc_pdgid = closest matched status 1 pdgid
+        mc_pdgid= int(pdgid);
+
+        // mindex = mother index: will loop to find first non el mother
+        int mindex= matched_index;
+
+        while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
+          pdgid = gen_pdgid->at(mindex);
+          mindex=gen_motherindex->at(mindex);
+        }
+        /// pdgid is now of muon from non muon mother
+        //  mindex = index for mother of non muon ancestor
+
+        if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
+	  /// Check if it is a chargeflip.
+          if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+          else     muon.SetIsChargeFlip(false);
+
+	  int n_mu_from_mother=0;
+	  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+	    if(gen_motherindex->at(itx) <= 0)continue;
+	    if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	    if(gen_pt->at(itx) < 0.1) continue;
+	    if(fabs(gen_pdgid->at(itx)) ==13) {
+	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+	    }
+	  }
+	  if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+          mother_index=mindex;
+          mother_pdgid=gen_pdgid->at(mindex);
+          isprompt=true; /// means is prompt
+        }/// end of Z/W
+        else {
+          if(gen_status->at(mindex) == 2){
+            if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;}
+            if(fabs(gen_pdgid->at(mindex)) == 15){
+              isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
+              // Check if el from tau  is CF
+
+	      if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
+              else     muon.SetIsChargeFlip(false);
+
+	      int n_mu_from_mother=0;
+	      for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+		if(gen_motherindex->at(itx) <= 0)continue;
+		if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+		if(gen_pt->at(itx) < 0.1) continue;
+		if(fabs(gen_pdgid->at(itx)) ==13) {
+		  if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+		}
+	      }
+	      if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+
+            }
+          }/// end of status 2 check
+          else {
+            /// using new method for matching: These events are set as prompt
+            isprompt=true;mother_pdgid=-99999; mother_index=mindex; from_tau=false;
+
+            if(pdgid * muon_q->at(ilep) > 0 )    muon.SetIsChargeFlip(true);
+            else     muon.SetIsChargeFlip(false);
+	    int n_mu_from_mother=0;
+	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+	      if(gen_motherindex->at(itx) <= 0)continue;
+	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+	      if(gen_pt->at(itx) < 0.1) continue;
+	      if(fabs(gen_pdgid->at(itx)) ==13) {
+		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+	      }
+	    }
+	    if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+          }
+        }
+      }      /// In case no status 1 muon is found : classify muon fake
+      else{
+        if(gen_pt){
+	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
+            if(gen_motherindex->at(it) <= 0)continue;
+            if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+            if(gen_pt->at(it) < 0.1) continue;
+
+	    bool already_mathced=false;
+	    for(unsigned int im=0; im > matched_truth.size();im++){
+	      if(it == unsigned(matched_truth.at(im))) already_mathced=true;
+	    }
+	    if(already_mathced) continue;
+
+            double match_eta =muon_eta->at(ilep);
+            double match_phi =muon_phi->at(ilep);
+            double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+
+            if (dr <0.1){
+              matched_in_Dr=true;
+              int mindex= gen_motherindex->at(it);
+              float pdgid = gen_pdgid->at(it);
+	      
+	      /// Unlikely to have mother as muon but just in case
+              while ( (fabs(gen_pdgid->at(mindex)) == 13)) {
+                mindex=gen_motherindex->at(mindex);
+              }
+              // isprompt = false since it failed status 1 matching
+              isprompt=false;
+              /// mother index of first non muon
+              mother_pdgid=gen_pdgid->at(mindex);
+              mother_index=mindex;
+              matched_index = it;
+	      mc_pdgid= int(pdgid);
+              if(fabs(pdgid) == 22) {
+                from_tau=false;
+                break;
+              }
+              if(fabs(pdgid) == 15)from_tau=true;
+	      
+	      if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 13){
+		int n_mu_from_mother=0;
+		for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+		  if(gen_motherindex->at(itx) <= 0)continue;
+		  if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
+		  if(gen_pt->at(itx) < 0.1) continue;
+		  if(fabs(gen_pdgid->at(itx)) ==13) {
+		    if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+		  }
+		}
+		if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+	      }else{
+		muon.SetIsPhotonConversion(false);
+	      }
+	    }// dr req
+          }// loop over gen vector
+        }// require gen info
+      }// no status 1 match
+    }
+    matched_truth.push_back(matched_index);
+
+    if(!matched_in_Dr){
+      muon.SetMCMatched(false);
+      muon.SetIsFromTau(false);
+      muon.SetMCMatchedPdgId(-1);
+      muon.SetMotherPdgId(0);
+      muon.SetMotherTruthIndex(-1);
+      muon.SetMCTruthIndex(-1);
+    }
+    else{
+      muon.SetMCMatched(isprompt);
+      muon.SetIsFromTau(from_tau);
+      muon.SetMotherPdgId(mother_pdgid);
+      muon.SetMCMatchedPdgId(mc_pdgid);
+      muon.SetMotherTruthIndex(mother_index);
+      muon.SetMCTruthIndex(matched_index);
     }
 
-    muon.SetMCMatched(self_match);
-    muon.SetIsFromTau(from_tau);
 
     /// Fill vector
     muons.push_back(muon);
