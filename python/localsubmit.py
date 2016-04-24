@@ -554,7 +554,7 @@ if running_batch:
     running_large_sample=False
     large_samples = []
     large_samples.append("DY")
-    large_samples.append("TT")
+    large_samples.append("ttbar")
     if not  "SKTreeMaker" in str(cycle):
         if mc:
             for l_s in  large_samples:

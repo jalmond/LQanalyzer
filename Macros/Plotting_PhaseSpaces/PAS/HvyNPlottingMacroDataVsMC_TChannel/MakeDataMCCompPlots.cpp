@@ -668,7 +668,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("Wgamma",0.22));    
   }
   if(sample.Contains("nonprompt")){
-    list.push_back(make_pair("nonprompt",0.34));
+    list.push_back(make_pair("nonprompt",0.4));
   }
 
   if(sample.Contains("chargeflip")){
@@ -1430,7 +1430,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("nonprompt",0.34));
+  np.push_back(make_pair("nonprompt",0.4));
   
   vector<pair<TString,float> > cf;
   cf.push_back(make_pair("chargeflip",0.12));
