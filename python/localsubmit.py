@@ -571,7 +571,7 @@ if running_batch:
                 if n_user_qsub_jobs > 100:
                     number_of_cores=20
                 else:
-                    number_of_cores=30
+                    number_of_cores=60
         else:
             if number_of_cores > 100:
                 number_of_cores = 100

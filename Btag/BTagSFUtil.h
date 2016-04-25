@@ -48,6 +48,16 @@ class BTagSFUtil{
   float GetJetSF(int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
 
+  void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], int JetFlav[], int isTag[], int syst, float &wbtag, float &wbtagErr, int what_mc);
+
+  void GetBTagEvtWeightSF(int NJets, float JetPt[], float JetEta[], float JetFlav[], bool isTag[], int syst, float &wbtag, float &wbtagErr);
+  //void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], int JetFlav[], int isTag[], int syst, float &wbtag, float &wbtagErr, int what_mc);
+  void GetMisTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], int syst, float &wbtag, float &wbtagErr, int NBjets);
+  void GetMisTagEvtWeight_Y(int NJets, float JetPt[], float JetEta[], float JetFlav[], int syst, float &wbtag, float &wbtagErr, int NBjets,bool combo[], float &weight_case);  
+  void GetMisTagEvtWeightVbb(int NJets, float JetPt[], float JetEta[], bool btag_f[], int mtag, int syst, float &wbtag, float &wbtagErr, int NBjets);
+  void GetMisTagEvtWeightVHF(int NJets, float JetPt[], float JetEta[], bool btag_f[], int mtag, int syst, float &wbtag, float &wbtagErr, int NBjets);
+
+  
  private:
 
   void GetBTagPayload(TString BTagAlgorithm, TString DataPeriod);
@@ -57,7 +67,32 @@ class BTagSFUtil{
   float ScaleFactorLight(float JetPt, float JetEta, int SystematicFlag);
   float ScaleFactorJet(int JetFlavor, float JetPt, float JetEta, int SystematicFlag);
 
-  float JetTagEfficiency(int JetFlavor, float JetPt, float JetEta);
+  float JetTagEfficiency(int JetFlavor, float JetPt, float JetEta, int what_mc);
+
+  float TagEfficiencyB_tt(float JetPt, float JetEta);
+  float TagEfficiencyC_tt(float JetPt, float JetEta);
+  float TagEfficiencyLight_tt(float JetPt, float JetEta);
+
+  float TagEfficiencyB_st(float JetPt, float JetEta);
+  float TagEfficiencyC_st(float JetPt, float JetEta);
+  float TagEfficiencyLight_st(float JetPt, float JetEta);
+
+  float TagEfficiencyB_VV(float JetPt, float JetEta);
+  float TagEfficiencyC_VV(float JetPt, float JetEta);
+  float TagEfficiencyLight_VV(float JetPt, float JetEta);
+
+  float TagEfficiencyB_VJ(float JetPt, float JetEta);
+  float TagEfficiencyC_VJ(float JetPt, float JetEta);
+  float TagEfficiencyLight_VJ(float JetPt, float JetEta);
+
+  float TagEfficiencyB_ttx(float JetPt, float JetEta);
+  float TagEfficiencyC_ttx(float JetPt, float JetEta);
+  float TagEfficiencyLight_ttx(float JetPt, float JetEta);
+
+  float TagEfficiencyB_QCD(float JetPt, float JetEta);
+  float TagEfficiencyC_QCD(float JetPt, float JetEta);
+  float TagEfficiencyLight_QCD(float JetPt, float JetEta);
+
   float TagEfficiencyB(float JetPt, float JetEta);
   float TagEfficiencyC(float JetPt, float JetEta);
   float TagEfficiencyLight(float JetPt, float JetEta);
@@ -83,6 +118,10 @@ class BTagSFUtil{
   float FastSimPtBinEdge[50], FastSimEtaBinEdge[50][3];
   float FastSimCF[50][2][3];
   float FastSimCF_error[50][2][3];
-    
+
+ 
+
+
+  
 };
 

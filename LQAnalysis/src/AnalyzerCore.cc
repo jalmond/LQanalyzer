@@ -10,12 +10,14 @@
 /// Local includes 
 #include "AnalyzerCore.h"
 #include "EventBase.h"
+#include "TTFitter.h"
 
 //Plotting                                                      
 #include "MuonPlots.h"
 #include "ElectronPlots.h"
 #include "JetPlots.h"
 #include "SignalPlots.h"
+
 
 // STD includes
 #include <iostream>
@@ -131,7 +133,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString label){
   else  if(label.Contains("ApplyLeptonVeto")){
     eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
     eventbase->GetJetSel()->SetPt(20.);
-    eventbase->GetJetSel()->SetEta(5.);
+    eventbase->GetJetSel()->SetEta(2.5);
     eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons("veto"), GetElectrons(false,false, "veto"));
   }
   else if(label.Contains("ApplyPileUpID")){
@@ -2265,6 +2267,419 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
     
 }
 
+
+
+
+
+
+double AnalyzerCore::TopElTriggerScaleFactor(float pt, float eta, int syst = 0){
+
+	if(isData) return 1.;
+	
+	if (pt<30) return 1.;
+	
+	double SF = 1.;
+	
+	if(pt<40.){
+		if (eta<0.8) SF = 0.987;
+		else if (eta<1.478) SF = 0.964;
+		else if (eta<2.5) SF = 1.004;
+
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.987+0.012;
+			else if (eta<1.478) SF = 0.964+0.002;
+			else if (eta<2.5) SF = 1.004+0.006; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.987-0.017;
+			else if (eta<1.478) SF = 0.964-0.001;
+			else if (eta<2.5) SF = 1.004-0.006; 
+			
+		}
+	}
+	else if (pt<50){
+		
+		if (eta<0.8) SF = 0.997;
+		else if (eta<1.478) SF = 0.98;
+		else if (eta<2.5) SF = 1.033;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.997+0.001;
+			else if (eta<1.478) SF = 0.98+0.001;
+			else if (eta<2.5) SF = 1.033+0.007; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.997-0.001;
+			else if (eta<1.478) SF = 0.98-0.001;
+			else if (eta<2.5) SF = 1.033-0.007; 
+			
+		}
+	}
+	else if (pt<200){
+		
+		if (eta<0.8) SF = 0.998;
+		else if (eta<1.478) SF = 0.988;
+		else if (eta<2.5) SF = 0.976;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF = 0.998+0.002;
+			else if (eta<1.478) SF = 0.988+0.002;
+			else if (eta<2.5) SF = 0.976+0.015; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF = 0.998-0.002;
+			else if (eta<1.478) SF = 0.988-0.002;
+			else if (eta<2.5) SF = 0.976-0.012; 
+			
+		}
+	}
+	
+	
+	return SF;
+	
+}
+
+
+double AnalyzerCore::TopElTriggerEff(float pt, float eta){
+
+	// ID && Iso Efficiency
+	//	if(!isData) return 1.;
+	
+	double Eff = 1.;
+	if (pt<30.) return 1.;
+	
+	if(pt<40.){
+		if (eta<0.8) Eff = Eff = 1./0.865;
+		else if (eta<1.478) Eff = 1./0.876;
+		else if (eta<2.5) Eff = 1./0.69;
+	}
+	else if (pt<50){
+		
+  	  if (eta<0.8) Eff = 1./0.895;
+	  else if (eta<1.478) Eff = 1./0.91;
+	  else if (eta<2.5) Eff = 1./0.738;
+
+	}
+	else if (pt<200){
+
+  	  if (eta<0.8) Eff = 1./0.91;
+	  else if (eta<1.478) Eff = 1./0.93;
+	  else if (eta<2.5) Eff = 1./0.753;
+	}
+
+	return Eff;
+  
+}
+
+
+
+double AnalyzerCore::TopElIDIsoScaleFactor(float pt, float eta, int syst = 0){
+	//https://twiki.cern.ch/twili/bin/viewauth/CMS/KoPFAElectronTagAndProbe
+	
+	if(isData) return 1.;
+
+	double SF = 1.;
+	if (pt<30.) return 1.;
+	
+	if( pt<40.){
+		if (eta<0.8) SF = 0.939;
+		else if (eta<1.478) SF = 0.920;
+		else if (eta<2.5) SF = 0.907;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF += 0.003;
+			else if (eta<1.478) SF += 0.002;
+			else if (eta<2.5) SF += 0.005; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.003;
+			else if (eta<1.478) SF -= 0.;
+			else if (eta<2.5) SF -= 0.005; 			
+		}
+	}
+	else if (pt<50){
+		
+		if (eta<0.8) SF = 0.950;
+		else if (eta<1.478) SF = 0.949;
+		else if (eta<2.5) SF = 0.937;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF +=0.001;
+			else if (eta<1.478) SF += 0.002;
+			else if (eta<2.6) SF += 0.008; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.001;
+			else if (eta<1.478) SF -= 0.002;
+			else if (eta<2.6) SF -= 0.008; 
+			
+		}
+	}
+	else if (pt<200){
+		
+		if (eta<0.8) SF = 0.957;
+		else if (eta<1.478) SF = 0.959;
+		else if (eta<2.5) SF = 0.954;
+		
+		if (syst>0){
+			
+			if (eta<0.8) SF += 0.001;
+			else if (eta<1.478) SF += 0.003;
+			else if (eta<2.6) SF += 0.011; 
+			
+		}
+		if (syst<0){
+			
+			if (eta<0.8) SF -= 0.001;
+			else if (eta<1.478) SF -= 0.003;
+			else if (eta<2.6) SF -= 0.01; 
+			
+		}
+	}
+
+	return SF;
+  
+}
+
+
+double AnalyzerCore::TopElIDIsoEff(float pt, float eta){
+
+	// ID && Iso Efficiency
+	//	if(!isData) return 1.;
+
+	
+	double Eff = 1.;
+	
+	if( pt > 30. && pt<40.){
+		if (eta<0.8) Eff = 1./0.834;
+		else if (eta<1.478) Eff = 1./0.796;
+		else if (eta<2.5) Eff = 1./0.739;
+	}
+	else if (pt<50){
+		
+  	  if (eta<0.8) Eff = 1./0.885;
+	  else if (eta<1.478) Eff = 1./0.878;
+	  else if (eta<2.5) Eff = 1./0.814;
+
+	}
+	else if (pt<200){
+
+  	  if (eta<0.8) Eff = 1./0.908;
+	  else if (eta<1.478) Eff = 1./0.906;
+	  else if (eta<2.5) Eff = 1./0.873;
+	}
+
+	return Eff;
+  
+}
+
+
+double AnalyzerCore::TopMuIDEff(float eta, int syst=0){
+
+	//	if(!isData) return 1.;
+   
+	double Eff = 1.;
+	
+	
+	if (eta<0.9){
+		Eff = 0.9582;
+		if (syst>0) Eff+=0.0001;
+		if (syst<0) Eff-=0.0001;
+	}
+	else if (eta<1.2){
+		Eff = 0.9612;
+		if (syst>0) Eff+=0.0002;
+		if (syst<0) Eff-=0.0002;
+	}
+	else if (eta<2.1){
+		Eff = 0.9535;
+		if (syst>0) Eff += 0.0002;
+		if (syst<0) Eff -= 0.0002;		
+	}
+	else if (eta<2.4){
+		Eff = 0.9495;
+		if (syst>0) Eff += 0.0004;
+		if (syst<0) Eff -=0.0004;
+	}
+
+	return Eff;
+}
+
+
+double AnalyzerCore::TopMuIDSF( float eta, int syst=0){
+
+	if(isData) return 1.;
+	//	if(mu.size() != 1) return 1.;
+   
+	double SF = 1.;
+	
+	//	if ( mu.at(0).Pt() < 20) return 1.;
+	
+	//	float eta = fabs(mu.at(0).Eta());
+	
+	if (eta<0.9){
+		SF = 0.9930;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		SF = 0.9942;
+		if (syst>0) SF+=0.0003;
+		if (syst<0) SF-=0.0003;
+	}
+	else if (eta<2.1){
+		SF = 0.9968;
+		if (syst>0) SF += 0.0002;
+		if (syst<0) SF -= 0.0002;		
+	}
+	else if (eta<2.4){
+		SF = 0.9963;
+		if (syst>0) SF += 0.0006;
+		if (syst<0) SF -=0.0006;
+	}
+
+	return SF;
+}
+
+
+double AnalyzerCore::TopMuIsoEff(float eta, int syst = 0){
+
+	//if(!isData) return 1.;
+	double Eff = 1.;
+	
+	
+	if (eta<0.9){
+		Eff = 0.9289;
+		if (syst>0) Eff+=0.0001;
+		if (syst<0) Eff-=0.0001;
+	}
+	else if (eta<1.2){
+		Eff = 0.9444;
+		if (syst>0) Eff+=0.0002;
+		if (syst<0) Eff-=0.0002;
+	}
+	else if (eta<2.1){
+		Eff = 0.9534;
+		if (syst>0) Eff += 0.0001;
+		if (syst<0) Eff -= 0.0001;		
+	}
+	else if (eta<2.4){
+		Eff = 0.9342;
+		if (syst>0) Eff += 0.0003;
+		if (syst<0) Eff -=0.0003;
+	}
+
+	return Eff;
+}
+
+double AnalyzerCore::TopMuIsoSF( float eta, int syst = 0){
+
+	if(isData) return 1.;
+	//	if(mu.size() != 1) return 1.;
+   
+	double SF = 1.;
+	
+	//if ( mu.at(0).Pt() < 20) return 1.;
+	
+	//	float eta = fabs(mu.at(0).Eta());
+	
+	if (eta<0.9){
+		SF = 0.9959;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		SF = 1.0005;
+		if (syst>0) SF+=0.0004;
+		if (syst<0) SF-=0.0004;
+	}
+	else if (eta<2.1){
+		SF = 1.0027;
+		if (syst>0) SF += 0.0002;
+		if (syst<0) SF -= 0.0002;		
+	}
+	else if (eta<2.4){
+		SF = 1.0633;
+		if (syst>0) SF += 0.0007;
+		if (syst<0) SF -=0.0007;
+	}
+
+	return SF;
+}
+
+
+double AnalyzerCore::TopMuTriggerSF( float eta, int syst = 0){
+
+	if(isData) return 1.;
+	//  if(mu.size() != 1) return 1.;
+	
+	//  float eta = fabs(mu.at(0).Eta());
+	
+	double SF = 1.;
+	
+	if (eta<0.9){
+		SF = 0.9837;
+		if (syst>0) SF+=0.0002;
+		if (syst<0) SF-=0.0002;
+	}
+	else if (eta<1.2){
+		
+		SF = 0.9656;
+		if (syst>0) SF +=0.0007;
+		if (syst<0) SF -=0.0007;
+	}
+	else if (eta<2.1){
+		
+		SF = 0.9962;
+		if (syst>0) SF += 0.0005;
+		if (syst<0) SF -= 0.0005;
+	}
+	
+	return SF;
+	
+}
+
+double AnalyzerCore::TopMuTriggerEff(float eta, int syst = 0){
+	//  if(isData) return 1.;
+  
+  double Eff = 1.;
+
+  if (eta<0.9){
+	  Eff = 0.9377;
+	  if (syst>0) Eff+=0.0001;
+	  if (syst<0) Eff-=0.0001;
+  }
+  else if (eta<1.2){
+	  Eff = 0.8397;
+	  if (syst>0) Eff +=0.0003;
+	  if (syst<0) Eff -=0.0003;
+  }
+  else if (eta<2.1){
+	  Eff = 0.8179;
+	  if (syst>0) Eff += 0.0002;
+	  if (syst<0) Eff -= 0.0002;
+  }
+
+  return Eff;
+  
+}
+
+
 void AnalyzerCore::AddTriggerToList(TString triggername){
   
   cout << "Adding " << triggername << endl;
@@ -2567,6 +2982,64 @@ bool AnalyzerCore::PassBasicEventCuts(){
   return pass;
 }
 
+bool AnalyzerCore::PassBasicTopEventCuts(){
+  
+  bool pass (true);
+    ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
+  /// The recommendations of the MET group regarding noise cleaning are summarized in the talk https://indico.cern.ch/getFile.py/access?subContId=1&contribId=4&resId=0&materialId=slides&confId=172431
+  
+  //CSC tight beam halo filter
+  // if (!eventbase->GetEvent().PassBeamHaloFilterTight()) {
+  //   pass = false;
+  //   m_logger << DEBUG << "Event Fails PassBeamHaloFilterTight " << LQLogger::endmsg;
+  // }
+  // //HCAL laser filter (post-ICHEP: updated to reduce over-tagging rate in channels with low Bias Voltage)
+  
+  // //ECAL dead cell trigger primitive (TP) filter
+  // if(eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
+  //   pass = false;
+  //   m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
+  // }
+  // if(  eventbase->GetEvent().PassEcalDeadCellBoundaryEnergyFilter()) {
+  //   pass = false;
+  //   m_logger << DEBUG << "Event Fails PassEcalDeadCellBoundaryEnergyFilter" << LQLogger::endmsg;
+  // }
+  // //Tracking failure filter
+  // if (eventbase->GetEvent().IsTrackingFailure()) {
+  //   pass = false;
+  //   m_logger << DEBUG << "Event Fails IsTrackingFailure" << LQLogger::endmsg; 
+  // }
+  // //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
+  // if (eventbase->GetEvent().PassBadEESupercrystalFilter()) {
+  //    pass = false;
+  //   m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
+  // }
+  // //ECAL Laser correction filter (only mandatory for 53X rereco of 2012A+B, i.e., Jul13 rereco; An optional filter for 2012C prompt reco Mandatory for Jan2013 ReReco)
+  // if(eventbase->GetEvent().PassEcalLaserCorrFilter()) {
+  //   pass = false;
+  //   m_logger << DEBUG << "Event Fails PassEcalLaserCorrFilter" << LQLogger::endmsg;
+  // }
+  // //Tracking POG filters (new. Only work on AOD >=53X)
+  // if(eventbase->GetEvent().PassTrackingFailureFilter()){
+  //   m_logger << DEBUG << "Event Fails PassTrackingFailureFilter" << LQLogger::endmsg;
+  //      pass = false;
+  // }
+  // //  return pass;
+
+  if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
+    pass = false; 
+    m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
+  }
+  //HCAL laser filter (post-ICHEP: updated to reduce over-tagging rate in channels with low Bias Voltage)
+  
+  
+  if (eventbase->GetEvent().IsBeamScraping() ){
+	  pass = false;
+	  m_logger << DEBUG << "Event Fails Scraping events " << LQLogger::endmsg;
+  }
+  
+  return pass;
+}
 
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins){
@@ -2681,7 +3154,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
   if(type==sighist){
-    if(!hist.Contains("TCha")) return; 
+
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
     if(sigpit !=mapCLhistSig.end()) sigpit->second->Fill(ev, muons, electrons, jets,w, 0.);
     else {
@@ -2730,6 +3203,9 @@ void AnalyzerCore::WriteHistograms() throw (LQError){
   // This function is called after the cycle is ran. It wrues all histograms to the output file. This function is not used by user. But by the contrioller code.
   WriteHists();
   WriteCLHists();
+
+  WriteNtp();
+  WriteProfile();
 }
 
   
@@ -3337,6 +3813,85 @@ vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KJet> j){
 }
 
 
+
+void AnalyzerCore::MakeNtp(TString hname, TString myvar){
+
+	mapntp[hname] =  new TNtupleD(hname.Data(),hname.Data(),myvar.Data());
+}
+
+
+void AnalyzerCore::MakeProfile(TString hname, int nbins, float xmin, float xmax, float ymin, float ymax){
+
+	mapprof[hname] =  new TProfile(hname.Data(),hname.Data(),nbins,xmin,xmax,ymin,ymax);
+}
+
+
+void AnalyzerCore::FillNtp(TString hname, Double_t myinput[]){
+
+	if (GetNtp(hname)) GetNtp(hname)->Fill(myinput);
+	else m_logger << INFO << hname << " was NOT found. Check you ntp. " << LQLogger::endmsg;
+
+	return;
+}
+
+
+void AnalyzerCore::FillProfile(TString histname, float xvalue, float yvalue, float w){
+	
+	if(GetProfile(histname)) GetProfile(histname)->Fill(xvalue, yvalue, w);  /// Plots Z peak                                   
+	else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
+	
+	return;
+}
+
+
+// //
+void AnalyzerCore::WriteNtp(){
+
+  /// Open Output rootfile
+  m_outputFile->cd();
+
+  for(map<TString, TNtupleD*>::iterator mapit = mapntp.begin(); mapit != mapntp.end(); mapit++){
+	  mapit->second->Write();
+  }
+
+  return;
+}
+// //
+
+
+
+void AnalyzerCore::WriteProfile(){
+
+  /// Open Output rootfile
+  m_outputFile->cd();
+
+  for(map<TString, TProfile*>::iterator mapit = mapprof.begin(); mapit != mapprof.end(); mapit++){
+    mapit->second->Write();
+  }
+  
+  return;
+}
+
+// //
+TNtupleD* AnalyzerCore::GetNtp(TString hname){
+
+	TNtupleD* n = NULL;
+	std::map<TString, TNtupleD*>::iterator mapit = mapntp.find(hname);
+	if (mapit != mapntp.end()) return mapit->second;
+	else m_logger << INFO << hname << " was not found in map" << LQLogger::endmsg;	
+
+	return n;
+}
+
+TProfile* AnalyzerCore::GetProfile(TString hname){
+
+  TProfile* h = NULL;
+  std::map<TString, TProfile*>::iterator mapit = mapprof.find(hname);
+  if(mapit != mapprof.end()) return mapit->second;
+  else m_logger << INFO  << hname << " was not found in map" << LQLogger::endmsg;
+
+  return h;
+}
 
 
 

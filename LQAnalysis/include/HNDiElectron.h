@@ -2,7 +2,7 @@
 #define HNDiElectron_h
 
 #include "AnalyzerCore.h"
-#include "BTagSFUtil.h"
+//#include "BTagSFUtil.h"
 
 
 class HNDiElectron : public AnalyzerCore {
@@ -53,7 +53,7 @@ class HNDiElectron : public AnalyzerCore {
   float m_os_Z;
   float m_ss_Z;
 
-  BTagSFUtil *fBTagSF;
+  //  BTagSFUtil *fBTagSF;
 
   float k_met, k_eemass, k_eejjmass, k_e1jjmass, k_e2jjmass,  k_st, k_ht;
   int k_njet, k_nbjet_l, k_nbjet_m, k_nbjet_t;
