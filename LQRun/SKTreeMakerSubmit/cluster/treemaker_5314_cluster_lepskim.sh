@@ -80,7 +80,8 @@ then
     declare -a input_samples=(  "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "ttbarMS" "DY10to50" "DY50plus" "Wjets" "Wbb" "Zbb" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "ttW" "ttZ" "WZ_py" "ZZ_py" "WW_py" "QCD_mumu" "ttbar_mass169" "ttbar_mass171" "ttbar_mass175" "ttbar_matchingdown" "ttbar_matchingup" "ttbar_pow" "ttbar_pow_her" "ttbar_scaledown" "ttbar_scaleup" "ttbar_width_x5" "TTH" "Wgamma" "SSWmWm" "SSWpWp" "WW_dp" "WWW" "TTWW" "TTG" "ZZZ" "WWZ" "WWG" "Wbb" "ggHtoZZ" "HtoZZ" "HtoTauTau" "HtoWW" "Zgamma" "WgammaMu" "WgammaE" "WgammaTau" "WW_mg" "WZtollqq_mg" "WZtoqqln_mg" "WZtollln_mg" "ZZtollnn_mg" "ZZtollqq_mg" "ZZtollll_mg" "ZZtoeemm" "ZZtoeett" "ZZtommtt" "ZZtoeeee" "ZZtommmm" "ZZtotttt" "topDIL" "topHAD" "topLJ"  "ttbar_mass173" "ttbar_CT10_pythia" "ttbar_CT10_herwig" "QCD_1000_mu" "QCD_15-20_mu" "QCD_20-30_mu" "QCD_30-50_mu" "QCD_50-80_mu" "QCD_120-170_mu" "QCD_800-1000_mu" "QCD_170-300_mu" "QCD_300-470_mu" "QCD_470-600_mu" "QCD_600-800_mu" "QCD_80-120_mu"  "WZZ") 
     
      declare -a input_samples=( "HN70_mumumu_new" "HN90_mumumu_new" "HN100_mumumu_new" "HN150_mumumu_new" "HN200_mumumu_new" "HN300_mumumu_new" "HN400_mumumu_new" "HN500_mumumu_new" "HN700_mumumu_new" "HN1000_mumumu_new" "Wtollln_new" )
-      declare -a input_samples=( "ttbarMSchs")
+     declare -a input_samples=( "ttbarMSchs")
+     declare -a input_samples=( "HN40_mumumu_new" "HN50_mumumu_new" "HN60_mumumu_new")
     source submit.sh
 
 fi    
