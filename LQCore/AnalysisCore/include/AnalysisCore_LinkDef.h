@@ -8,5 +8,6 @@
 
 #pragma link C++ class Reweight+;
 #pragma link C++ class SelectionFunctions+;
+#pragma link C++ class TTFitter+;
 
 #endif // __CINT__

@@ -182,8 +182,8 @@ void GetEffectiveLuminosity() {
   //dirmap["TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   //dirmap["TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   
-  dirmap["TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola"] = 1.;
-  //TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
+  //  dirmap["TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
+  dirmap["TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola"] = 252.89;
 
   //  dirmap["WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6"] = 0.0320;
 

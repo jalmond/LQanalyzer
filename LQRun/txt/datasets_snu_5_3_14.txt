@@ -160,7 +160,7 @@ SKDY50plus_nocut       8693.5      sk_cluster_ntuple_path_void  sk_cms_ntuple_pa
 
 
 SKCH120PU_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH120PU/
-SKCHm120PU_nocut   1374.421143 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH120PU/
+SKCHm120PU_nocut   1374.421143 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CHm120PU/
 SKCH110PU_nocut    2735.098145 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH110PU/
 SKCH100PU_nocut    2721.354004 sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH100PU/
 SKCH90PU_nocut        2748.842285     sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/CH90PU/
@@ -379,7 +379,7 @@ SKttbar_mass169      168624.89        sk_cluster_ntuple_path  sk_cms_ntuple_path
 SKttbar_mass175      170873.20        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass175/
 SKttbarMS_CT10_herwig        34127.05078     sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/ttbar_CT10_herwig/
 SKttbarMS_CT10_pythia            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/ttbar_CT10_pythia/
-SKttbarMSchs         245371.375      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
+SKttbarMSchs         218199.217      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
 SKtth            7659207.69             sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/TTH/
 
 

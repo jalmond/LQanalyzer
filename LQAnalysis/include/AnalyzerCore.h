@@ -1,7 +1,8 @@
 #ifndef AnalyzerCore_H
 #define AnalyzerCore_H
 
-//forward declarations                                                                                                                                            
+//forward declarations
+
 class Reweight;
 class EventBase;
 class MuonPlots;
@@ -9,10 +10,16 @@ class ElectronPlots;
 class JetPlots;
 class SignalPlots;
 class EventBase;
+class TTFitter;
 
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 #include "rochcor2012/rochcor2012/rochcor2012jan22.h"
+#include "BTagSFUtil.h"
+
+#include "TNtupleD.h"
+#include "TNtuple.h"
+#include "TProfile.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -97,6 +104,22 @@ class AnalyzerCore : public LQCycleBase {
 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
+  double TopElTriggerEff(float pt, float eta);
+  double TopElTriggerScaleFactor(float pt, float eta, int syst);
+  
+  double TopElIDIsoEff(float pt, float eta);
+  double TopElIDIsoScaleFactor(float pt, float eta, int syst);
+  
+  double TopMuIDEff(float eta, int syst);
+  double TopMuIsoEff(float eta, int syst);
+  double TopMuTriggerEff(float eta, int syst);
+
+  double TopMuIDSF( float eta, int syst);
+  double TopMuIsoSF( float eta, int syst);
+  double TopMuTriggerSF( float eta, int syst);
+  
+
+
   
   vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
@@ -119,7 +142,9 @@ class AnalyzerCore : public LQCycleBase {
   /// Pileup Reweighting class
   static const Bool_t MC_pu = true;
   Reweight *reweightPU;
-
+  BTagSFUtil *fBTagSF;
+  TTFitter *myfit;
+  
   //// Event base pointer. Used to get all objects for analysis
   EventBase* eventbase;
   
@@ -129,9 +154,21 @@ class AnalyzerCore : public LQCycleBase {
   TDirectory *Dir;
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
+  map<TString, TProfile*> mapprof;
+  map<TString, TNtupleD*> mapntp;
   std::map<TString, std::vector<std::map<float, std::vector<float> > > > JECUncMap;
 
+  
+  void MakeProfile(TString hname, int nbins, float xmin, float xmax, float ymin, float ymax);
+  TProfile* GetProfile(TString hname);
+  void FillProfile(TString hname, float xvalue, float yvalue, float w);
+  void WriteProfile();
 
+  void MakeNtp(TString hname, TString myvar);
+  TNtupleD* GetNtp(TString hname);
+  void FillNtp(TString hname, Double_t myinput[]);  
+  void WriteNtp();
+  
   TH2F* FRHist;
   TH2F* MuonSF;
   HNCommonLeptonFakes* m_fakeobj;
@@ -165,7 +202,11 @@ class AnalyzerCore : public LQCycleBase {
   void MakeHistograms(TString hname, int nbins, float xbins[]);
   void MakeHistograms2D(TString hname, int nbinsx, float xbins[], int nbinsy, float ybins[]);
   void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax);
-    //
+
+  //  void MakeNtp(TString hname, TString myvar);
+  //void MakeProfile(TString hname, TString myvar);
+
+  //
     // Makes temporary dir
     //
     TDirectory* GetTemporaryDirectory(void) const;                                                                                                                                 
@@ -204,6 +245,7 @@ class AnalyzerCore : public LQCycleBase {
   //// Event related                                                                                                                                              
   bool PassTrigger(std::vector<TString> list, int& prescale);
   bool PassBasicEventCuts();
+  bool PassBasicTopEventCuts();
 
 };
 #endif
