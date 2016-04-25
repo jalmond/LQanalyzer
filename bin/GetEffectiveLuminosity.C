@@ -210,7 +210,7 @@ void GetEffectiveLuminosity() {
     
     
    
-    float lumi = number_events_processed / 1.;
+    float lumi = number_events_processed / 252.89;
 
     std::cout.precision(10);
     std::cout <<" lumi    " << lumi << std::endl;

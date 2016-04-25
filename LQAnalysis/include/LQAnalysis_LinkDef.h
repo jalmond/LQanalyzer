@@ -26,7 +26,6 @@
 #pragma link C++ class ElectronSF+;
 #pragma link C++ class HNEMu+;
 
-#pragma link C++ class CHEJ_sync+;
 #pragma link C++ class CHEJ_bestfit+;
 #pragma link C++ class CHMJ_bestfit+;
 
