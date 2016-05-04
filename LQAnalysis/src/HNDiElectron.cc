@@ -123,7 +123,12 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
   MakeCleverHistograms(sighist,"SSee_DiJet");
   MakeCleverHistograms(sighist,"OSee_DiJet");
   */
-  MakeCleverHistograms(sighist,"TChannel");
+  //  MakeCleverHistograms(sighist,"TChannel");
+  MakeCleverHistograms(sighist,"CH1");
+  MakeCleverHistograms(sighist,"CH2");
+  MakeCleverHistograms(sighist,"CH3");
+  MakeCleverHistograms(sighist,"CH4");
+  MakeCleverHistograms(sighist,"CH5");
   /*
   MakeCleverHistograms(sighist,"Preselection");
   MakeCleverHistograms(sighist,"Preselection_m1_40");
@@ -240,8 +245,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   if(false){
     float w_for_sigeff = weight;
-    cout << " eventbase->GetEvent().PileUpInteractionsTrue() " << endl;
-    cout <<eventbase->GetEvent().PileUpInteractionsTrue() << endl;
     w_for_sigeff*= reweightPU->GetWeight(int(eventbase->GetEvent().PileUpInteractionsTrue()), 0)* MCweight;
     
     TString tmp_fake_loose_label = "HNTight_loosereg2";
@@ -285,6 +288,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   if(!PassBasicEventCuts())  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
   
+
   FillEventCutFlow("EventCut", "",weight);
   /// Trigger List 
   std::vector<TString> triggerslist;  
@@ -330,9 +334,47 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electronAnalysisColl_withfakes         = GetElectrons(false, true, fake_loose_label);
 
 
-  float id_sf_up_sys_factor = 1.;
-  float id_sf_down_sys_factor = 1.;
+  
+  std::vector<snu::KJet> jetColl_lepveto_mva = GetJets("ApplyPileUpID");
+  int jetFlavour1=-999999;
+  bool nbjet_sf=0;
+  std::vector<snu::KTruth> genBColl1;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).Pt() < 10.) continue;
+    if(fabs(eventbase->GetTruth().at(ig).Eta()) > 3.) continue;
+    genBColl1.push_back(eventbase->GetTruth().at(ig));
+  }
+  if(!isData){
+    for(unsigned int ij=0; ij < jetColl_lepveto_mva.size(); ij++){
+      for(unsigned int ig=0; ig < genBColl1.size(); ig++){
+        if(jetColl_lepveto_mva.at(ij).DeltaR(genBColl1.at(ig)) < 0.3 ){
+          jetFlavour1 = int(fabs(genBColl1[ig].PdgId()));
+          break;
+        }
+        else{
+          jetFlavour1 = 21;
+        }
+      }
+      if ( fBTagSF->IsTagged(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag(), jetFlavour1, jetColl_lepveto_mva.at(ij).Pt(), jetColl_lepveto_mva.at(ij).Eta(), 0) ){
+	nbjet_sf++;
+      }
+    }
+  }
+  
 
+  return;
+
+  int nbjet_m_ch=0;
+  for(unsigned int ij=0; ij <jetColl_lepveto_mva.size(); ij++){
+    if(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag() > 0.679) nbjet_m_ch++;
+  }
+  
+  int nbjet(0);
+  if(isData)  nbjet = nbjet_m_ch;
+  else nbjet = nbjet_sf;
+
+
+  float id_sf_down_sys_factor(1.), id_sf_up_sys_factor(1.);
   if(!isData){
     for(std::vector<snu::KElectron>::iterator it = electronAnalysisColl.begin(); it != electronAnalysisColl.end(); it++){
       weight *= ElectronScaleFactor(it->Eta(), it->Pt(), true, 0);
@@ -340,6 +382,47 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       id_sf_down_sys_factor  *= ( ElectronScaleFactor(it->Eta(), it->Pt(), true, -1) / ElectronScaleFactor(it->Eta(), it->Pt(), true, 0));
     }
   }
+
+  // Require now dilepton trigger passed                                                                                                               
+  if(isData){
+    if(!PassTrigger(triggerslist, prescale))  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  }
+  if(!isData)weight*= TriggerScaleFactor( electronAnalysisColl);
+
+
+  std::vector<snu::KMuon> muonVetoColl  = GetMuons("veto");
+  //*************** ADDED FOR GBYU 
+  if (electronAnalysisColl.size()==1){
+    if(electronAnalysisColl.at(0).Pt() > 30){
+      if(GetElectrons(false, false, "veto").size() == 1){
+	if(GetMuons("veto").size()==0){
+	  FillCLHist(sighist, "CH1", eventbase->GetEvent(), muonVetoColl, electronAnalysisColl,jetColl_lepveto_mva, weight);
+	  if(jetColl_lepveto_mva.size() > 3){
+	    FillCLHist(sighist, "CH2", eventbase->GetEvent(), muonVetoColl, electronAnalysisColl,jetColl_lepveto_mva, weight);
+	    
+	    if(eventbase->GetEvent().PFMET() > 20.){
+	      if(nbjet >= 1){
+		FillCLHist(sighist, "CH3", eventbase->GetEvent(), muonVetoColl, electronAnalysisColl,jetColl_lepveto_mva, weight);
+	       
+		if(nbjet >= 2){
+		  FillCLHist(sighist, "CH4", eventbase->GetEvent(), muonVetoColl, electronAnalysisColl,jetColl_lepveto_mva, weight);
+
+		  if(nbjet >= 3){
+		    FillCLHist(sighist, "CH5", eventbase->GetEvent(), muonVetoColl, electronAnalysisColl,jetColl_lepveto_mva, weight);
+		    
+		  } 
+		} 
+
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  } 
+  
+  return;
+
   
   vector<snu::KTruth> truth =  eventbase->GetTruth();
   
@@ -366,13 +449,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
 
   /// MUONS
-  std::vector<snu::KMuon> muonVetoColl  = GetMuons("veto");
+
   std::vector<snu::KMuon> muonNoCutColl = GetMuons("NoCut");
 
   /// JETS
   std::vector<snu::KJet> jetColl             = GetJets("NoLeptonVeto");
   std::vector<snu::KJet> jetColl_lepveto     = GetJets("ApplyLeptonVeto");
-  std::vector<snu::KJet> jetColl_lepveto_mva = GetJets("ApplyPileUpID");
+
 
   
   FillCLHist(sighist, "NoCut", eventbase->GetEvent(), muonVetoColl, electronNoCutColl,jetColl_lepveto_mva, weight);
@@ -389,14 +472,16 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     if(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag() > 0.679) nbjet_m++;
     if(jetColl_lepveto_mva.at(ij).CombinedSecVertexBtag() > 0.244) nbjet_l++;
   }
-  int nbjet = nbjet_m;
+  
+  /// ------ FOR GBY
+  //int nbjet = nbjet_m;
   
 
   // Require now dilepton trigger passed
-  if(isData){
-    if(!PassTrigger(triggerslist, prescale))  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
-  }
-  if(!isData)weight*= TriggerScaleFactor( electronAnalysisColl);
+  //if(isData){
+  // if(!PassTrigger(triggerslist, prescale))  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  //}
+  //if(!isData)weight*= TriggerScaleFactor( electronAnalysisColl);
 
   //// if the trigger that fired the event is prescaled you can reweight the event accordingly using the variable prescale
 
@@ -677,12 +762,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
   
-  if(dilep_event){
-    cout << " jetColl_lepveto_mva.size() " <<   jetColl_lepveto_mva.size() << endl;
-    for(unsigned int i=0; i < jetColl_lepveto_mva.size() ; i++){
-      cout << jetColl_lepveto_mva.at(i).Eta() << endl;
-    }
-  }
 
   bool dijet_event= true;
   if(jetColl_lepveto_mva.size() < 2) dijet_event = false;
@@ -698,10 +777,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       for(unsigned int ij = 0 ; ij < jetColl_lepveto_mva.size(); ij++){
 	if(jetColl_lepveto_mva.at(ij).Eta() > 1.5) has_forward_jet=true;
 	if(jetColl_lepveto_mva.at(ij).Eta() < -1.5) has_back_jet=true;
-	cout << "Passes selection ll jjjj " << endl;
-	for(unsigned int ij1=0; ij1 < jetColl_lepveto_mva.size(); ij1++){
-	  cout << jetColl_lepveto_mva.at(ij1).Eta() << endl;
-	}
       }
       if(has_forward_jet && has_back_jet) FillCLHist(sighist, "TChannel", eventbase->GetEvent(), muonVetoColl,electronAnalysisColl,jetColl_lepveto_mva, weight);
     }
@@ -2532,7 +2607,7 @@ HNDiElectron::~HNDiElectron() {
   
   Message("In HNDiElectron Destructor" , INFO);
   if(!k_isdata)delete reweightPU;
-  if(!k_isdata) delete fBTagSF;
+  //if(!k_isdata) delete fBTagSF;
 
  }
      
