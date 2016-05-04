@@ -80,7 +80,7 @@ class AnalyzerCore : public LQCycleBase {
   float CFRate(snu::KElectron el, bool useoldrates=false);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
-  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso,  bool    usetight,TString cut, bool applypucorr);
+  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso,  bool    usetight,TString cut);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho);
 

@@ -3219,6 +3219,9 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
   return em_weight;
 }
 
+
+
+
 float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
 
   float mm_weight = 0.;
@@ -3301,7 +3304,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
 
 
 
-float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool    usetight,TString cut, bool applypucorr){
+float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, bool    usetight,TString cut){
   
 
   if(k_electrons.size()==1){
@@ -3311,9 +3314,6 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
     TString rcut = cut;
     
     float r = 1.;
-    if(njets==0) r = 1.;
-    if(nbjets==0) r = 1.;
-    if(applypucorr) r=1.;
 
     float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
     
