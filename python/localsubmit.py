@@ -539,7 +539,7 @@ if running_batch:
     if n_qsub_jobs > 500:
         print "WARNING: More than 500 jobs in batch queue. If job is small and uses dilepton skim consider running on cms1-6"
     
-    #### Allow each user to submit 300 jobs at a time.
+    #### Allow each user to submit 300 jobs at a time.???
 
     os.system("rm " + local_sub_dir + "/check_qsub_all")
     os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/check_qsub")
@@ -554,7 +554,7 @@ if running_batch:
     running_large_sample=False
     large_samples = []
     large_samples.append("DY")
-    large_samples.append("TT")
+    large_samples.append("ttbar")
     if not  "SKTreeMaker" in str(cycle):
         if mc:
             for l_s in  large_samples:
@@ -566,12 +566,19 @@ if running_batch:
             else:
                 if n_user_qsub_jobs > 300:
                     number_of_cores=5
-                if n_user_qsub_jobs > 200:
+                elif n_user_qsub_jobs > 200:
                     number_of_cores=15
-                if n_user_qsub_jobs > 100:
+                elif n_user_qsub_jobs > 100:
                     number_of_cores=20
-                else:
+                elif n_user_qsub_jobs > 60:
                     number_of_cores=30
+                elif n_user_qsub_jobs > 40:
+                    number_of_cores=50
+                else:
+                    if n_qsub_jobs < 30:
+                        number_of_cores=100
+                    else:
+                         number_of_cores=50
         else:
             if number_of_cores > 100:
                 number_of_cores = 100
