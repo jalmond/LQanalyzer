@@ -8,7 +8,7 @@ itag=".1"
 tagname=$CATVERSION$itag
 
 
-diff  setup.sh scripts/setup/tag_setup.sh >> SetupCheck.txt
+diff  $LQANALYZER_DIR/setup.sh $LQANALYZER_DIR/scripts/setup/tag_setup.sh >> SetupCheck.txt
 
 setup_is_different="False"
 while read line
@@ -27,6 +27,10 @@ while read line
 do
     if [[ $line != *"HEAD"* ]];then
 	echo "$line" >> LatestTag.txt
+    else
+	suffix = "(HEAD)"
+	sline=${line%$suffix}
+	echo "$sline" >> LatestTag.txt
     fi
 done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 mv LatestTag.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
