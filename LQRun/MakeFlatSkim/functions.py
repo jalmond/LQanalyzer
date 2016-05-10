@@ -25,11 +25,16 @@ def makeEmail(users, version, type):
             
 
 
-def makeNtupleMakerH(sample,samplelist,j, output):
+def makeNtupleMakerH(sample,samplelist,j, output, isdata):
 
-    ntuplemaker=open("SkimFlatCat.h","r")
-    config=""
+    skimfilename="SkimFlatCat.h"
+    if isdata:
+        skimfilename="SkimFlatCat_data.h"
         
+        
+    ntuplemaker=open(skimfilename,"r")
+    config=""
+    
     for line in ntuplemaker:
         if "chain->Add(" in line:
             config+=makeConfigFileH(sample,samplelist,j) +"\n"
@@ -101,9 +106,14 @@ def makeConfigFileSlimH(sample, samplelist,j):
                                                         
 
 
-def makeNtupleMakerC(out,samplelist, j):
+def makeNtupleMakerC(out,samplelist, j, isdata):
 
-    ntuplemaker=open("SkimFlatCat.C","r")
+    skimfilename="SkimFlatCat.C"
+
+    if isdata:
+        skimfilename="SkimFlatCat_data.C"
+
+    ntuplemaker=open(skimfilename,"r")
     config=""
 
     for line in ntuplemaker:

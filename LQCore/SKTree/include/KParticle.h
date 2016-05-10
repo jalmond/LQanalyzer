@@ -33,7 +33,7 @@ namespace snu {
     KParticle(const KParticle& p);
     
     ///Construct from 4-vector components
-    KParticle(Double_t px, Double_t py, Double_t pz, Double_t e);
+    KParticle(Float_t px, Float_t py, Float_t pz, Float_t e);
   
     ///So far the destructor does nothing.
     virtual ~KParticle();

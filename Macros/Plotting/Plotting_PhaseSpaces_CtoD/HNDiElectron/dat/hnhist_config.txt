@@ -1,3 +1,13 @@
+h_lljjjj_mass 2 0. 1200.
+h_l1jjjj_mass 2 0. 1200.
+h_l2jjjj_mass 2 0. 1200.
+h_lljjjj_os_mass 2 0. 1200.
+h_l1jjjj_os_mass 2 0. 1200.
+h_l2jjjj_os_mass 2 0. 1200.
+h_lljjjj_ss_mass 2 0. 1200.
+h_l1jjjj_ss_mass 2 0. 1200.
+h_l2jjjj_ss_mass 2 0. 1200.		 
+END
 h_l2jj_centralmass 10 0. 1200.
 h_l1jj_centralmass 10 0. 1200.
 h_lljj_centralmass 10 0. 1200.

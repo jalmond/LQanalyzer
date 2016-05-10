@@ -279,7 +279,7 @@ int LQController::VersionStamp(LQController::_catversion cat_version ){
   if(cat_version == none) return 0;
   if(cat_version == v744) return 1;
   if(cat_version == v745) return 2;
-  if(cat_version == v762 || cat_version == v763) return 3;
+  if((cat_version == v762) || (cat_version == v763) || (cat_version == v764) ) return 3;
 
   return -1;
 }
@@ -813,6 +813,7 @@ std::string LQController::SetNTCatVersion(LQController::_catversion dir_version)
   if (dir_version == v745) return ("v7-4-5");
   if (dir_version == v762) return ("v7-6-2");
   if (dir_version == v763) return ("v7-6-3");
+  if (dir_version == v764) return ("v7-6-4");
   return "";
 }
 
@@ -825,7 +826,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   TString env_path(version_env);
 
   LQController::_catversion nt_version=none;
-  if(ntuple_path.Contains("7-6-3")) nt_version=v763;
+  if(ntuple_path.Contains("7-6-4")) nt_version=v764;
+  else if(ntuple_path.Contains("7-6-3")) nt_version=v763;
   else if(ntuple_path.Contains("7-6-2")) nt_version=v762;
   else if(ntuple_path.Contains("7-4-5")) nt_version= v745;
   else if(ntuple_path.Contains("7-4-4")) nt_version= v744;
@@ -842,7 +844,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   
   
   LQController::_catversion env_version=none;
-  if(env_path.Contains("7-6-3")) env_version=v763;
+  if(env_path.Contains("7-6-4")) env_version=v764;
+  else if(env_path.Contains("7-6-3")) env_version=v763;
   else if(env_path.Contains("7-6-2")) env_version=v762;
   else if(env_path.Contains("7-4-5")) env_version= v745;
   else if(env_path.Contains("7-4-4")) env_version= v744;
@@ -857,7 +860,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
 LQController::_catversion  LQController::GetCatVersion(std::string filepath) throw(LQError){
   TString ts_path(filepath); 
   
-  if(ts_path.Contains("7-6-3")) return v763;
+  if(ts_path.Contains("7-6-4")) return v764;
+  else if(ts_path.Contains("7-6-3")) return v763;
   else if(ts_path.Contains("7-6-2")) return v762;
   else if(ts_path.Contains("7-4-5")) return v745;
   else if(ts_path.Contains("7-4-4")) return v744;

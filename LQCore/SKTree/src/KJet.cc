@@ -22,6 +22,9 @@ KParticle()
   k_jet_csv2= -999.;
   k_jet_cmva2 = -999.;
   k_jet_jetprobbjet= -999.;
+  k_jet_icsvc_vs_l=-999.;
+  k_jet_cc_vs_lt=-999.;
+  k_jet_cc_vs_bt=-999.;
   k_vtx_mass= -999.;
   k_vtx_3dval= -999.;
   k_vtx_3dsig= -999.;
@@ -58,6 +61,9 @@ KJet::KJet(const KJet& jet) :
   k_jet_csv2= jet.BJetTaggerValue(CSVv2);
   k_jet_cmva2= jet.BJetTaggerValue(cMVAv2);
   k_jet_jetprobbjet = jet.BJetTaggerValue(JETPROB);
+  k_jet_icsvc_vs_l=jet.BJetTaggerValue(iCSVCvsL);
+  k_jet_cc_vs_lt=jet.BJetTaggerValue(CCvsLT);
+  k_jet_cc_vs_bt=jet.BJetTaggerValue(CCvsBT);
 
   k_vtx_mass= jet.VtxMass();
   k_vtx_3dval= jet.Vtx3DVal();
@@ -96,6 +102,9 @@ void KJet::Reset()
     k_jet_csv2= -999.;
     k_jet_cmva2= -999.;
     k_jet_jetprobbjet = -999.;
+    k_jet_icsvc_vs_l=-999.;
+    k_jet_cc_vs_lt=999.;
+    k_jet_cc_vs_bt=-999.;
 
 
     k_vtx_mass= -999.;
@@ -134,6 +143,10 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_csv2= p.BJetTaggerValue(CSVv2);
       k_jet_cmva2= p.BJetTaggerValue(cMVAv2);
       k_jet_jetprobbjet =p.BJetTaggerValue(JETPROB);
+      k_jet_icsvc_vs_l=p.BJetTaggerValue(iCSVCvsL);
+      k_jet_cc_vs_lt=p.BJetTaggerValue(CCvsLT);
+      k_jet_cc_vs_bt=p.BJetTaggerValue(CCvsBT);
+
       k_vtx_mass= p.VtxMass();
       k_vtx_3dval= p.Vtx3DVal();
       k_vtx_3dsig= p.Vtx3DSig();
@@ -280,8 +293,11 @@ float KJet::scaleFactor(Tagger tag, WORKING_POINT cutType, syst_dir syst) const 
 
 double KJet::BJetTaggerValue(Tagger tag) const{
   if(tag == CSVv2) return k_jet_csv2;
-  if(tag == cMVAv2) return k_jet_cmva2;
-  if(tag == JETPROB) return k_jet_jetprobbjet;
+  else if(tag == cMVAv2) return k_jet_cmva2;
+  else if(tag == JETPROB) return k_jet_jetprobbjet;
+  else if (tag ==iCSVCvsL) return k_jet_icsvc_vs_l ;
+  else if (tag == CCvsLT) return k_jet_cc_vs_lt;
+  else if (tag == CCvsBT) return k_jet_cc_vs_bt;
   return -999.;
 }
 
@@ -319,12 +335,21 @@ void KJet::SetJetPileupIDMVA(double mva){
 /// BTAG variables
 
 
-void KJet::SetBTagInfo(Tagger tag, float value){
+void KJet::SetBTagInfo(Tagger tag, double value){
   if(tag == CSVv2)       k_jet_csv2 = value;
-  if(tag == cMVAv2)      k_jet_cmva2 = value;
-  if(tag == JETPROB)    k_jet_jetprobbjet = value;
+  else if(tag == cMVAv2)      k_jet_cmva2 = value;
+  else if(tag == JETPROB)    k_jet_jetprobbjet = value;
+  else if (tag ==iCSVCvsL)  k_jet_icsvc_vs_l = value;
+  else if (tag == CCvsLT)  k_jet_cc_vs_lt = value;
+  else if (tag == CCvsBT)  k_jet_cc_vs_bt = value;
 }
  
+void KJet::SetCTagInfo(Tagger tag, double value){
+  if (tag == iCSVCvsL)  k_jet_icsvc_vs_l = value;
+  else if (tag == CCvsLT)  k_jet_cc_vs_lt = value;
+  else if (tag == CCvsBT)  k_jet_cc_vs_bt = value;
+}
+
 /// Jet energy fractions
 
 void KJet::SetJetChargedEmEF(double chargeEmEF){

@@ -138,6 +138,20 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
     if(metNoHF_pt->size() > 0) kevent.SetMET(snu::KEvent::nohf, metNoHF_pt->at(0),  metNoHF_phi->at(0), metNoHF_sumet->at(0));
   }
   
+  if(TString(CatVersion).Contains("v7-6-4")){
+    if(PDFWeights){
+      if(PDFWeights->size() > 0){
+	kevent.SetPDFWeights(*PDFWeights);
+      }
+    }
+    if(ScaleWeights){
+      if(ScaleWeights->size() > 0){
+      kevent.SetScaleWeights(*ScaleWeights);
+      }
+    }
+  }
+
+
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
   
   if(!TString(CatVersion).Contains("v7-4")){
@@ -180,12 +194,20 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
   }
   else{
     if(!TString(CatVersion).Contains("v7-4")) {
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::central,puWeightSilver);
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down,puWeightSilverDn);
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  puWeightSilverUp);
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::central,puWeightGold);
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,puWeightGoldDn);
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  puWeightGoldUp);
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::central,double(puWeightSilver));
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down, double(puWeightSilverDn));
+      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  double(puWeightSilverUp));
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::central,double(puWeightGold));
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn));
+      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  double(puWeightGoldUp));
+      
+      if(TString(CatVersion).Contains("v7-6-4")) {
+	if(puWeightGold_xs71000){
+	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::central,double(puWeightGold_xs71000));
+	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn_xs71000));
+	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::up,  double(puWeightGoldUp_xs71000));
+	}
+      }
     }
 
     kevent.SetGenId(genWeight_id1, genWeight_id2);
@@ -194,7 +216,6 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
     kevent.SetGenQ(genWeightQ);
     if(genWeight > 0.) kevent.SetWeight(1.);
     else kevent.SetWeight(-1.);
-    //if(pdfWeight->size() != 0)    m_logger << INFO << "pdfWeight size=" << pdfWeight->size() << " " << pdfWeight->at(0) << " " << pdfWeight->at(1) <<LQLogger::endmsg;
     
     
   }
@@ -485,10 +506,24 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  mother_index=mindex;
 	  mother_pdgid=gen_pdgid->at(mindex);
 	  isprompt=true; /// means is prompt
+	  
 	}/// end of Z/W
 	else {
 	  if(gen_status->at(mindex) == 2){
-	    if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;}
+	    if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
+
+	      if(gen_isprompt->at(matched_index)){
+		cout << "matched FAKE, but isPrompt flag??" << endl;
+		cout << "------------------CF "<< endl;
+		cout << "gen_isprompt = " << gen_isprompt->at(matched_index)  << endl;
+		cout << "gen_isdecayedleptonhadron = " <<gen_isdecayedleptonhadron->at(matched_index)  << endl;
+		cout << "gen_isdirecthadrondecayproduct  = " <<gen_isdirecthadrondecayproduct->at(matched_index)  << endl;
+		cout << "gen_ishardprocess  = " << gen_ishardprocess->at(matched_index)  << endl;
+		cout << "gen_istaudecayproduct =  " << gen_istaudecayproduct->at(matched_index)  << endl;
+		cout << "gen_isprompttaudecayproduct =  " <<  gen_isprompttaudecayproduct->at(matched_index)  << endl;
+	      }
+	      
+	    }
 	    if(fabs(gen_pdgid->at(mindex)) == 15){
 	      isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
 	      // Check if el from tau  is CF
@@ -534,6 +569,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    if(pdgid * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
 	    else     el.SetIsChargeFlip(false);
 	    
+
 	  }  
 	}
       }      /// In case no status 1 electron is found : classify electron fake
@@ -573,22 +609,22 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      matched_index = it;
 	      mc_pdgid= int(gen_pdgid->at(it));
 	      if(fabs(pdgid) == 22) {
+		
 		el.SetIsPhotonConversion(true);
-		// Check if it is a chargeflip (from looking at mother electron)
-		if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 11){
-		  if(gen_pdgid->at(gen_motherindex->at(it)) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
-		  else     el.SetIsChargeFlip(false);
-		}
+		
+		if(gen_pdgid->at(gen_motherindex->at(it)) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
+		else     el.SetIsChargeFlip(false);
+		
 		from_tau=false;
 		break;
-	      }
+	    }
 	      if(fabs(pdgid) == 15)from_tau=true;
 	    }// dr req
 	  }// loop over gen vector
 	}// require gen info
       }// no status 1 match
     }/// END OF TRUTH MATCHING
-
+    
     matched_truth.push_back(matched_index);
     ///matched_index is index which matches reco muon with smallest dR
     ///- If multiple status 1 muons are matched look at closest in pt
@@ -604,6 +640,30 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetMCTruthIndex(-1);
     }
     else{
+      
+      if(!isprompt){
+	
+        if((gen_isprompt->at(matched_index) ==1 )&& (gen_status->at(matched_index) == 1)){
+	  
+	  //cout << "gen_istaudecayproduct =  " << gen_istaudecayproduct->at(matched_index)  << endl;
+	  //cout << "gen_isprompttaudecayproduct =  " <<  gen_isprompttaudecayproduct->at(matched_index)  << endl;
+	  if(!(gen_istaudecayproduct->at(matched_index)   || gen_isprompttaudecayproduct->at(matched_index))){
+	    
+	    cout << "matched as prompt yet status flag is not prompt" << endl;
+	    cout << "matched_index = " << matched_index << endl;
+	    cout << "reco "<< electrons_pt->at(iel)<< " " << electrons_eta->at(iel)  << " " << electrons_phi->at(iel) << endl;;
+	    for (UInt_t it=0; it< gen_pt->size(); it++ ){
+	      if(gen_motherindex->at(it) <= 0)continue;
+	      if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	      if(gen_pt->at(it) < 0.1) continue;
+	      cout << it << " " << gen_pt->at(it)  << " " << gen_eta->at(it) << " " << gen_phi->at(it)<< " " << gen_pdgid->at(it) << "  " << gen_status->at(it) << " " << gen_pdgid->at(gen_motherindex->at(it)) <<" "  <<  gen_motherindex->at(it) << " " << gen_isprompt->at(it)  <<endl;
+	      
+	    }
+	  }
+	}
+      }
+      
+      //if(gen_isprompt->at(matched_index) 
       el.SetIsMCMatched(isprompt);
       el.SetIsFromTau(from_tau);
       el.SetMotherPdgId(mother_pdgid);
@@ -709,7 +769,16 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     if(jets_CSVInclV2) jet.SetBTagInfo(snu::KJet::CSVv2, jets_CSVInclV2->at(ijet));
     if(jets_CMVAV2)    jet.SetBTagInfo(snu::KJet::cMVAv2, jets_CMVAV2->at(ijet));
     if(jets_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jets_JetProbBJet->at(ijet)); 
-
+    
+    if(jets_iCSVCvsL) {
+      if(jets_iCSVCvsL->size() > 0)jet.SetCTagInfo(snu::KJet::iCSVCvsL, jets_iCSVCvsL->at(ijet));
+    }
+    if(jets_CCvsLT){
+      if(jets_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KJet::CCvsLT, jets_CCvsLT->at(ijet));
+    }
+    if(jets_CCvsBT){
+      if(jets_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KJet::CCvsBT, jets_CCvsBT->at(ijet));
+    }
     jet.SetVtxMass(jets_vtxMass->at(ijet));
     jet.SetVtx3DVal(jets_vtx3DVal->at(ijet));
     jet.SetVtx3DSig(jets_vtx3DSig->at(ijet));
@@ -1021,6 +1090,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetMCTruthIndex(-1);
     }
     else{
+
       muon.SetMCMatched(isprompt);
       muon.SetIsFromTau(from_tau);
       muon.SetMotherPdgId(mother_pdgid);
@@ -1065,10 +1135,26 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     
     if(counter == np)  break;
     KTruth truthp;
-    truthp.SetPtEtaPhiE(gen_pt->at(it), gen_eta->at(it), gen_phi->at(it), gen_energy->at(it));
+    truthp.SetPtEtaPhiE(double(gen_pt->at(it)), double(gen_eta->at(it)), double(gen_phi->at(it)), double(gen_energy->at(it)));
     truthp.SetParticlePdgId(gen_pdgid->at(it));
     truthp.SetParticleStatus(gen_status->at(it));
     truthp.SetParticleIndexMother(gen_motherindex->at(it));
+    
+    if(TString(CatVersion).Contains("v7-6-4")) {
+      // To save space set a single int as the flag. 
+      // 
+      int truth_flag = 0;
+      if(gen_isprompt->at(it)) truth_flag+=1;
+      if(gen_isdecayedleptonhadron->at(it)) truth_flag+=10;
+      if(gen_istaudecayproduct->at(it)) truth_flag+=100;
+      if(gen_isprompttaudecayproduct->at(it)) truth_flag+=1000;
+      if(gen_isdirecthadrondecayproduct->at(it)) truth_flag+=10000;
+      if(gen_ishardprocess->at(it)) truth_flag+=100000;
+      if(gen_fromhardprocess->at(it)) truth_flag+=1000000;
+      if(gen_fromhardprocess_beforeFSR->at(it)) truth_flag+=10000000;
+      truthp.SetStatusFlag(truth_flag);
+    }
+    
     vtruth.push_back(truthp);  
   }
   

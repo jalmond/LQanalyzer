@@ -18,6 +18,7 @@ class EventBase;
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 #include "rochcor2015/rochcor2015.h"
 #include "rochcor2015/RoccoR.h"
+#include "BTag/BTagSFUtil.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -50,6 +51,8 @@ class AnalyzerCore : public LQCycleBase {
 
   bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium);
   int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium);
+
+  int IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp);
 
   int AssignnNumberOfTruth();
   bool IsSignal();
@@ -216,6 +219,8 @@ class AnalyzerCore : public LQCycleBase {
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
+  std::map<TString,BTagSFUtil*> SetupBTagger(std::vector<TString> taggers, std::vector<TString> wps);
+
 
   // Makes clever histograms
   void MakeCleverHistograms(histtype type, TString clhistname );
@@ -231,6 +236,8 @@ class AnalyzerCore : public LQCycleBase {
   bool PassBasicEventCuts();
 
   rochcor2015 *rmcor;
+  std::map<TString,BTagSFUtil*> MapBTagSF;
+  //  BTagSFUtil *lBTagSF, *hBTagSF;
 
 };
 #endif

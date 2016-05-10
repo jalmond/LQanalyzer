@@ -54,11 +54,11 @@ void GetEffectiveLuminosityPrivateSamples(){
 
   //// version must be the version in the directoy name of your flat catuples 
   map<TString, TString> catversion_map;
-  //catversion_map["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] = "v7-6-3"; /// This specifies what directory to look in
-  catversion_map["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-3";
-  catversion_map["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-3";
-  catversion_map["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-3";
-  catversion_map["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-3";
+  //catversion_map["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] = "v7-6-4"; /// This specifies what directory to look in
+  catversion_map["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-4";
+  catversion_map["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-4";
+  catversion_map["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-4";
+  catversion_map["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"] = "v7-6-4";
   for(std::map<TString, Double_t>::iterator mit =xsmap.begin(); mit != xsmap.end();++mit){
     std::map<TString, TString>::iterator mitv = catversion_map.find(mit->first);
     if(mitv== catversion_map.end()) {cout << "Error in naming datasets in map" << endl; return;}

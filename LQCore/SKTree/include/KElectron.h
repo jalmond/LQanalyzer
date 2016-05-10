@@ -240,7 +240,7 @@ namespace snu {
     TString k_trig_match;
     
 
-    ClassDef(KElectron,21);
+    ClassDef(KElectron,22);
   }; 
   
 }//namespace snu

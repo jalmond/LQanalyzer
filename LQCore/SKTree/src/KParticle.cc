@@ -54,7 +54,7 @@ KParticle::KParticle(const TLorentzVector& p) :
 {
 }
 
-KParticle::KParticle(Double_t px, Double_t py, Double_t pz, Double_t e) :
+KParticle::KParticle(Float_t px, Float_t py, Float_t pz, Float_t e) :
     TLorentzVector(px, py, pz, e),
     //partType_( NOPARTICLE),
     //k_index(0),

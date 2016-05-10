@@ -76,9 +76,6 @@ useskim = options.useskim
 new_channel = channel.replace(":", "")
 original_channel = new_channel
 
-MakeWritable="True"
-if str(os.getenv("USER")) == "jalmond":
-    MakeWritable="False"
 
 list_of_extra_lib=[]
 libname=''
@@ -167,6 +164,7 @@ print ""
 ####################
 ####
 ####################
+
 
 if not cycle == "SKTreeMaker":
     if not cycle == "SKTreeMakerNoCut":
@@ -445,7 +443,8 @@ inDS = ""
 mcLumi = 1.0
 filechannel=""
 
-catversions = ["v7-6-3",
+catversions = ["v7-6-4",
+               "v7-6-3",
                "v7-6-2",
                "v7-4-5",
                "v7-4-4"]
@@ -992,8 +991,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                if MakeWritable == "True":
-                    os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1029,8 +1027,7 @@ else:
             Finaloutputdir += original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                if MakeWritable== "True":
-                    os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1065,8 +1062,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                if MakeWritable== "True":
-                    os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerTriLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1098,8 +1094,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                if MakeWritable== "True":
-                    os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 755 -R " +  Finaloutputdir)
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)

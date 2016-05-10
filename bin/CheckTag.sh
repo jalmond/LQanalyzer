@@ -29,7 +29,6 @@ do
     fi
 done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
 
-
 if [[ $latest_tag == $CATTAG ]];then
     
     echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"

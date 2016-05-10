@@ -69,14 +69,12 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              ]
 
 
-sampledir = ["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]
-
-file_list_all="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_v7-6-3.txt"
+file_list_all="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_" + version +".txt"
 
 missing_sample="False"
 for line in open(file_list_all, 'r'):
     
-    if "/data2/DATA/cattoflat/MC/v7-6-3/" in line:
+    if ("/data2/DATA/cattoflat/MC/" + version +"/") in line:
         sample_in_list="False"
         for i in sampledir:
             if i in line:
@@ -127,11 +125,11 @@ for i in sampledir:
          os.system("mkdir " + output+ "/" + str(j))
          
       configfile=open(output+ "/"  + str(j) + "/" + runscript,'w')
-      configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/MC/" + version + "/"+ output,output+ "/list.txt",j, output))
+      configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/MC/" + version + "/"+ output,output+ "/list.txt",j, output,False))
       configfile.close()
 
       configfileC=open(output+ "/" + str(j) + "/" + runscriptC,'w')
-      configfileC.write(makeNtupleMakerC(output + "/" +  str(j),output+ "/list.txt", j))
+      configfileC.write(makeNtupleMakerC(output + "/" +  str(j),output+ "/list.txt", j, False))
       configfileC.close()
       
       os.system("root -l -q -b " +  output+ "/" + str(j) + "/SkimFlatCat.C &> " + output + "/" + str(j) + "/log.txt&" )

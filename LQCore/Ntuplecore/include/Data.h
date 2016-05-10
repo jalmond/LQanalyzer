@@ -22,6 +22,8 @@
 class TTree;
 class TBranch;
 
+typedef std::vector<double> VDouble;
+
 namespace snu{
   class KMuon;
   class KElectron;
@@ -127,17 +129,28 @@ public :
    Int_t           lumiMaskGold;
    Int_t           lumiMaskSilver;
 
-   std::vector<float>   *gen_pt;
+
    std::vector<std::string>  *vtrignames;
    std::vector<int>     *vtrigps;
    std::vector<std::string>  *muon_trigmatch;
    std::vector<std::string>  *electron_trigmatch;
+   std::vector<float>   *gen_pt;
    std::vector<float>   *gen_eta;
    std::vector<float>   *gen_phi;
    std::vector<float>   *gen_energy;
+   std::vector<float>   *ScaleWeights;
+   std::vector<float>   *PDFWeights;
+   std::vector<float>   *genjet_pt;
+   std::vector<float>   *genjet_eta;
+   std::vector<float>   *genjet_phi;
+   std::vector<float>   *genjet_energy;
+   std::vector<float>   *genjet_emf;
+   std::vector<float>   *genjet_hadf;
+   std::vector<int>     *genjet_pdgid;
    std::vector<int>     *gen_status;
    std::vector<int>     *gen_pdgid;
    std::vector<int>     *gen_motherindex;
+
    Bool_t          HBHENoiseFilter;
    Bool_t          csctighthaloFilter;
    Bool_t          ecalDCTRFilter;
@@ -169,13 +182,15 @@ public :
    Float_t         puWeightGold;
    Float_t         puWeightGoldDn;
    Float_t         puWeightGoldUp;
- Float_t         puWeightSilver;
+   Float_t         puWeightGoldDn_xs71000;
+   Float_t         puWeightGoldUp_xs71000;
+   Float_t         puWeightGold_xs71000;
+
+   Float_t         puWeightSilver;
    Float_t         puWeightSilverDn;
    Float_t         puWeightSilverUp;
-   std::vector<float>   *pdfWeight;
-   ///   Int_t           triggers_;
-   //   std::string         triggers_first[100];
-   //   Int_t           triggers_second[100];   //[triggers_]      
+   
+
    std::vector<double>  *electrons_absIso03;
    std::vector<double>  *electrons_absIso04;
    std::vector<double>  *electrons_chIso03;
@@ -194,7 +209,7 @@ public :
    std::vector<double>  *electrons_pt;
    std::vector<double>  *electrons_puChIso03;
    std::vector<double>  *electrons_puChIso04;
-   std::vector<int>  *electrons_q;
+
    std::vector<double>  *electrons_relIso03;
    std::vector<double>  *electrons_relIso04;
    std::vector<double>  *electrons_scEta;
@@ -225,7 +240,10 @@ public :
    std::vector<double>  *jets_CSVInclV2;
    std::vector<double>  *jets_JetProbBJet;
    std::vector<double>  *jets_CMVAV2;
-   std::vector<double>  *jets_chargedEmEnergyFraction;
+    std::vector<double>        *jets_iCSVCvsL;   
+    std::vector<double>        *jets_CCvsLT;   
+    std::vector<double>        *jets_CCvsBT;
+      std::vector<double>  *jets_chargedEmEnergyFraction;
    std::vector<double>  *jets_energy;
    std::vector<double>  *jets_eta;
    std::vector<double>  *jets_PileupJetId;
@@ -288,7 +306,6 @@ public :
    std::vector<double>  *muon_normchi;
    std::vector<double>  *muon_phi;
    std::vector<double>  *muon_pt;
-   std::vector<int>  *muon_q;
    std::vector<double>  *muon_relIso03;
    std::vector<double>  *muon_relIso04;
    std::vector<double>  *muon_shiftedEdown;
@@ -296,13 +313,7 @@ public :
    std::vector<double>  *muon_x;
    std::vector<double>  *muon_y;
    std::vector<double>  *muon_z;
-   std::vector<float>   *genjet_pt;
-   std::vector<float>   *genjet_eta;
-   std::vector<float>   *genjet_phi;
-   std::vector<float>   *genjet_energy;
-   std::vector<float>   *genjet_emf;
-   std::vector<float>   *genjet_hadf;
-   std::vector<int>     *genjet_pdgid;
+
    std::vector<double>  *slimmedGenJets_energy;
    std::vector<double>  *slimmedGenJets_eta;
    std::vector<double>  *slimmedGenJets_phi;
@@ -310,6 +321,21 @@ public :
    Double_t        vertex_X;
    Double_t        vertex_Y;
    Double_t        vertex_Z;
+   
+
+   std::vector<int>  *electrons_q;
+   std::vector<int>  *muon_q;
+
+   
+   std::vector<bool>    *gen_isprompt;
+   std::vector<bool>    *gen_isdecayedleptonhadron;
+   std::vector<bool>    *gen_istaudecayproduct;
+   std::vector<bool>    *gen_isprompttaudecayproduct;
+   std::vector<bool>    *gen_isdirecthadrondecayproduct;
+   std::vector<bool>    *gen_ishardprocess;
+   std::vector<bool>    *gen_fromhardprocess;
+   std::vector<bool>    *gen_fromhardprocess_beforeFSR;
+
    std::vector<bool>    *electrons_electronID_loose;
    std::vector<bool>    *electrons_electronID_medium;
    std::vector<bool>    *electrons_electronID_tight;
@@ -355,6 +381,17 @@ public :
    // List of branches                                                                                                                                                                                                                                                       
    TBranch        *b_vtrignames;   //!                                                                                                                        
    TBranch        *b_vtrigps;   //!   
+
+   TBranch        *b_gen_isprompt;   //!
+   TBranch        *b_gen_isdecayedleptonhadron;   //!
+   TBranch        *b_gen_istaudecayproduct;   //!
+   TBranch        *b_gen_isprompttaudecayproduct;   //!
+   TBranch        *b_gen_isdirecthadrondecayproduct;   //!
+   TBranch        *b_gen_ishardprocess;   //!
+   TBranch        *b_gen_fromhardprocess;   //!
+   TBranch        *b_gen_fromhardprocess_beforeFSR;   //!
+   TBranch        *b_ScaleWeights;   //!
+   TBranch        *b_PDFWeights;   //!
 
    TBranch        *b_muon_trigmatch;   //!
    TBranch        *b_electron_trigmatch;   //!
@@ -410,12 +447,10 @@ public :
    TBranch        *b_puWeightSilver;   //!			     
    TBranch        *b_puWeightSilverDn;   //!		
    TBranch        *b_puWeightSilverUp;   //!		
+   TBranch        *b_puWeightGoldDn_xs71000;   //!
+   TBranch        *b_puWeightGoldUp_xs71000;   //!
+   TBranch        *b_puWeightGold_xs71000;   //!
 
-
-   TBranch        *b_pdfWeight;   //!                                                                                                                                                                                                                                        
-   //   TBranch        *b_triggers_;   //!                                                                                                                                                                                                                                        
-   //   TBranch        *b_triggers_first;   //!                                                                                                                                                                                                                                   
-   //   TBranch        *b_triggers_second;   //!                                                                                                                                                                                                                                  
    TBranch        *b_electrons_absIso03;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_absIso04;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_chIso03;   //!                                                                                                                                                                                                                                
@@ -446,6 +481,9 @@ public :
    TBranch        *b_jets_CSVInclV2;   //!                                                                                                                                                                                                                                   
    TBranch        *b_jets_JetProbBJet; //!
    TBranch        *b_jets_CMVAV2; //!
+   TBranch        *b_jets_iCSVCvsL;   //!
+   TBranch        *b_jets_CCvsLT;   //!
+   TBranch        *b_jets_CCvsBT;   //!
 
    TBranch        *b_jets_chargedEmEnergyFraction;   //!
 

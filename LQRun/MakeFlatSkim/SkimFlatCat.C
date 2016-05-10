@@ -25,7 +25,7 @@ void SkimFlatCat::Loop()
    
      if (ientry < 0) break;
      nb = fChain->GetEntry(jentry);   nbytes += nb;
-     bool notsignal=true;
+     bool notsignal=false;
      if(notsignal){
        SlimJets();
        SlimMuons();

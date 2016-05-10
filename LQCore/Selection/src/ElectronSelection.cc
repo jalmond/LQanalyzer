@@ -38,9 +38,6 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
 
-    if ( m_debug&& ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 )) cout <<"SkimSelection::Fail EtaCrack" <<endl;
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-
 
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min){
       leptonColl.push_back(*el);

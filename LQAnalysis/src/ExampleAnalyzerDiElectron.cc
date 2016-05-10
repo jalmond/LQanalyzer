@@ -105,6 +105,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   for(unsigned int iel=0; iel < electronColl_nocut_truth.size(); iel++){
     if(electronColl_nocut_truth.at(iel).MCIsPrompt()) n_prompt++;
     else n_fake++;
+
     if(electronColl_nocut_truth.at(iel).MCIsCF()) n_cf++;
     if(electronColl_nocut_truth.at(iel).MCIsFromConversion()) n_conv++;
     if(electronColl_nocut_truth.at(iel).MCFromTau()) n_tau++;
@@ -116,8 +117,37 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("electron_conv_breakdown", n_conv,n_prompt, 1., 0., 4, 4, 0., 5., 5);
   FillHist("electron_tau_breakdown", n_tau,n_prompt, 1., 0., 4, 4, 0., 5., 5);
   
+  /// Can count number of bjets using IsBTagged function in KJet class 
+  int nbjet_just_using_discriminant=0;
+  for(unsigned int ij =0; ij < GetJets(BaseSelection::JET_HN).size(); ij++){
+    if(GetJets(BaseSelection::JET_HN).at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Tight)) nbjet_just_using_discriminant++;
+  }
 
-  if(n_prompt > 3){
+  
+  /// Updated way to cound bjets using NBJet function
+  /// NBJet counts number of bjets, but varies the value of btag disciminant as expained in 
+  /// 2a) on https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
+
+  /// Allowed input for taggers are:
+  /// snu::KJet::CSVv2
+  /// snu::KJet::cMVAv2
+  /// Allowed values for WP are:
+  /// snu::KJet::Loose
+  /// snu::KJet::Medium
+  /// snu::KJet::Tight
+  int nbjet_using_btagsf = NBJet(GetJets(BaseSelection::JET_HN), snu::KJet::CSVv2, snu::KJet::Tight);
+  
+  /// Can also check invidual jets using IsBTagged function in AnalyzerCore
+  int nbjet_just_using_sf(0);
+  for(unsigned int ij =0; ij < GetJets(BaseSelection::JET_HN).size(); ij++){
+    if(IsBTagged(GetJets(BaseSelection::JET_HN).at(ij), snu::KJet::CSVv2, snu::KJet::Tight)) nbjet_just_using_sf++;
+  }
+  
+
+  std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
+  CorrectMuonMomentum(muons);
+
+  /*if(n_prompt > 3){
     for(unsigned int iel=0; iel < electronColl_nocut_truth.size(); iel++){
       cout << "eta " << electronColl_nocut_truth.at(iel).Eta() << endl;
       cout << "phi " << electronColl_nocut_truth.at(iel).Phi() << endl;
@@ -140,44 +170,26 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 	cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
       }
     }
-  }
-    
-  int n_muon_prompt(0);
+    }*/
+
   std::vector<snu::KMuon> muonColl_truth = GetMuons(BaseSelection::MUON_POG_TIGHT);
   for(unsigned int im=0; im < muonColl_truth.size() ; im++){
-    if(muonColl_truth.at(im).MCIsPrompt() ) n_muon_prompt++; 
   }
-  if(!SameCharge(muonColl_truth)) return;
-  if(muonColl_truth.size()!=2) return;
-  if(n_muon_prompt == 2) {
-    cout << "2 SS PROMPT MUON " << endl;
-    for(unsigned int im=0; im < muonColl_truth.size() ; im++){
-      if(muonColl_truth.at(im).MCIsPrompt() ) cout << "Prompt muon " << muonColl_truth.at(im).Eta() << " " << muonColl_truth.at(im).Phi() << " " << muonColl_truth.at(im).Pt() << endl;
-      cout << "mc pdgid = " <<muonColl_truth.at(im).MCMatchedPdgId() << endl;
-      cout << "mc index = " << muonColl_truth.at(im).MCTruthIndex() << endl;
-      cout << "mother pdgid = " << muonColl_truth.at(im).MotherPdgId()<< endl;
-      cout << "motherindex= " <<muonColl_truth.at(im).MotherTruthIndex()<< endl;
-      cout << "Is from conversion = " << muonColl_truth.at(im).MCIsFromConversion()<< endl;
-    }
-    for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-      if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
-      if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
-      if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-      if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-      cout << ig << " " << eventbase->GetTruth().at(ig).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig).IndexMother() << endl;
-      cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
-    }
-
-
+  /*cout << "mc pdgid = " <<muonColl_truth.at(im).MCMatchedPdgId() << endl;
+    cout << "mc index = " << muonColl_truth.at(im).MCTruthIndex() << endl;
+    cout << "mother pdgid = " << muonColl_truth.at(im).MotherPdgId()<< endl;
+    cout << "motherindex= " <<muonColl_truth.at(im).MotherTruthIndex()<< endl;
+    cout << "Is from conversion = " << muonColl_truth.at(im).MCIsFromConversion()<< endl;
   }
-
-  //GetHist("electron_breakdown")->GetXaxis()->SetBinLabel(1,"N_Prompt");
-  
-
-  
-  
-  
-  return;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
+    if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+    cout << ig << " " << eventbase->GetTruth().at(ig).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig).IndexMother() << endl;
+    cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
+  }
+  */
 
   /// Apply MC weight for MCatnlo samples
   // MC weight = gen weight * lumimask weight

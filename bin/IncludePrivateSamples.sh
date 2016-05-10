@@ -1,11 +1,11 @@
-# This does the followin:
+# This does the following:
 # Loops over paths for Flatcatuples/NocutSKim/LeptonSkim/DiLeptonSKim 
 # Loops over catversions
 # Loops over each line in datasets_snu_CAT_mc_private.txt and adds the line to the correct input list
 # if the sample is new it emails jalmond@cern.ch to include in the global list
 # if the sample is already in the global list it deletes it from datasets_snu_CAT_mc_private.txt
 
-declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_paths=("/data2/DATA/cattoflat/MC/" "/SKTrees/MCNoCut/" "/SKTrees/MC/" "/SKTrees/MCDiLep/")
 
 declare -a PRIVATELIST=()

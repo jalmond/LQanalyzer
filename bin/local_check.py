@@ -49,6 +49,7 @@ if not os.path.exists(tag_dir):
 
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
+    os.system("cp " + localfiledir + "/*.csv " + snufiledir )
 
     logdir =  os.getenv("LQANALYZER_LOG_8TeV_PATH")
     if os.path.exists(logdir):
@@ -82,15 +83,15 @@ if not os.path.exists(tag_dir):
         os.system("rm -r " + old_lib_slc6)
     
     print "using branch for first time: All codes are being recompiled"
-    os.system("source bin/make_clean_newbranch.sh")
+    os.system("source bin/Make/make_clean_newbranch.sh")
     
 
 fakelib = os.getenv("LQANALYZER_LIB_PATH") + "/libHNCommonLeptonFakes.so"
 
 if not os.path.exists(fakelib):
-    os.system("source bin/make_fake_lib.sh")
+    os.system("source bin/Make/make_fake_lib.sh")
 
 
 rocherlib = os.getenv("LQANALYZER_LIB_PATH") + "/librochcor2015.so"
 if not os.path.exists(rocherlib):
-    os.system("source bin/make_rocher_lib.sh")
+    os.system("source bin/Make/make_rocher_lib.sh")

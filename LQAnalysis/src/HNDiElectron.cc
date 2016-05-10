@@ -295,13 +295,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       FillCLHist(sighist_ee, "SIGNAL", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
       
       if(jetColl_loose.size() > 3 ) {
-	bool has_forward_jet(false), has_back_jet(false);
-	for(unsigned int ij = 0 ; ij < jetColl_loose.size(); ij++){
-	  if(jetColl_loose.at(ij).Eta() > 2.5) has_forward_jet=true;
-	  if(jetColl_loose.at(ij).Eta() < -2.5) has_back_jet=true;
-	}
-	if(has_forward_jet && has_back_jet)
-	  FillCLHist(sighist_ee, "SIGNAL_4J", eventbase->GetEvent(), muonColl,electronColl,jetColl_loose, weight);
+	FillCLHist(sighist_ee, "SIGNAL_4J", eventbase->GetEvent(), muonColl,electronColl,jetColl_loose, weight);
       } 
       
 

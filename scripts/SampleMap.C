@@ -79,6 +79,8 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8"]=831.76;
    dirmap["TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8"]=831.76;
    dirmap["TT_TuneZ2star_13TeV-powheg-pythia6-tauola"]=831.76;
+   dirmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=0.1901;
+   dirmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=0.01499;
 
    dirmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] =61526.7;
 
@@ -434,9 +436,9 @@ map<TString, TString>  GetLQMap(){
   lqmap["TT_TuneCUETP8M1_mtop1715_13TeV-powheg-pythia8"]="TT_powheg_mtop1715";
   lqmap["TT_TuneCUETP8M1_mtop1735_13TeV-powheg-pythia8"]="TT_powheg_mtop1735";
   lqmap["TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8"]="TT_powheg_mtop1755";
-  lqmap["TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8"]="TT_powheg_mtop1785";
-  
-
+  lqmap["TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8"]="TT_powheg_mtop1785"; 
+  lqmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100";
+  lqmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10";
   lqmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="WJets_MCatNLO";
   lqmap["WW_TuneCUETP8M1_13TeV-pythia8"] ="WW_pythia8";
   lqmap["WZ_TuneCUETP8M1_13TeV-pythia8"] ="WZ_pythia8";

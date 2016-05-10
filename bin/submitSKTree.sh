@@ -1,12 +1,14 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
 
+##### New for sktreemaker only
+logger=""
 
 ###### SET WHAT JOBS TO RUN
 runMC=false
@@ -44,6 +46,8 @@ submit_analyzer_name=""
 set_submit_analyzer_name=false
 request_sample=""
 submit_skim=""
+submit_cat_tag=""
+submit_cat_tag2=""
 
 ######## NEW FOR TAG v7-6-3.2
 job_nevents=-1
@@ -611,6 +615,8 @@ if [[ $changed_submit_version_tag == "false" ]];
     fi
 fi
 
+
+
 #### HARDCODE the skinput for sktreemakers
 if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     then 
@@ -765,7 +771,7 @@ if [[ $runDATA == "true" ]];
     fi
 
     echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_streams[*]}
-
+    logger = logger + " " + ${out_streams[*]}
     
 
 
@@ -864,7 +870,7 @@ if [[ $runDATA  == "true" ]];
         fi
 	if [[ $counter -gt 2 ]];
             then
-	    echo "Number of periods > 2"
+	    echo "Number of periods >2"
             echo "Problem with initialising 'sktree -p'"
             exit 1
         fi
@@ -1146,6 +1152,7 @@ if [[ $runMC  == "true" ]];
     if [[ $submit_file_tag  != ""  ]];
       then
         echo "LQanalyzer::sktree :: INFO :: Single File to process = "${submit_file_tag}  
+	logger = logger + " " + ${submit_file_tag} 
     fi
     if [[ $submit_file_list  != ""  ]];
 	then
@@ -1193,6 +1200,45 @@ if [[ $job_cycle != *"SKTreeMaker"* ]];
     then
     echo $outputdir_output_message
 fi
+
+
+if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
+    then
+    
+    echo "--User =" $USER " :" >> sktree_logger.txt
+    echo "--Date:" >> sktree_logger.txt 
+    date >> sktree_logger.txt
+    echo "--Comment on reason for making sktrees (first time, bug fix, new variable?):" >> sktree_logger.txt
+    echo -e "\n" >>sktree_logger.txt
+    
+    cp sktree_logger.txt sktree_logger_tmp.txt
+    emacs -nw  sktree_logger.txt
+    if diff sktree_logger.txt sktree_logger_tmp.txt  >/dev/null ; then
+	echo "No comment added: exiting process"
+	rm sktree_logger.txt
+	rm sktree_logger_tmp.txt
+	exit 1
+    else
+	echo "Commented added to log:"
+    fi
+    
+    if [[ -f "/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log" ]]; then
+	while read line
+	  do
+	  echo $line >> sktree_logger.txt
+	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	
+	echo -e "\n" >> sktree_logger.txt
+	
+	cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+    else
+	cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+    fi
+    rm sktree_logger.txt
+    rm sktree_logger_tmp.txt
+fi
+exit 1
+
 
 ################  DATA################################################
 ### submit this configured job (uses bin/submit.sh)

@@ -66,15 +66,15 @@ void KGenJet::SetGenJetPDGID(int p){
   k_genjet_pdgid = p;
 }
 
-void KGenJet::SetGenJetP(double p){
+void KGenJet::SetGenJetP(float p){
   k_genjet_p = p;
 }
 
-void KGenJet::SetGenJetEMF(double emf){
+void KGenJet::SetGenJetEMF(float emf){
   k_genjet_emf = emf;  
 }
 
-void KGenJet::SetGenJetHADF(double hadf){
+void KGenJet::SetGenJetHADF(float hadf){
   k_genjet_hadf = hadf;
   
 }

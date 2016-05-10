@@ -70,8 +70,6 @@ int MakeCutFlow_Plots(string configfile){
 
 
 int MakePlots(string hist) {
-
-
   
   ////////////////////// ////////////////
   ////  MAIN PART OF CODE for user/
@@ -502,13 +500,13 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   //  for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
   
   vector<TString> legorder;
-  //legorder.push_back("DY#rightarrow ll; 10 < m(ll) < 50");
+  legorder.push_back("DY#rightarrow ll; 10 < m(ll) < 50");
   //legorder.push_back("Wjets");
-  //legorder.push_back("DY#rightarrow ll; m(ll) > 50");
-  //legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
+  legorder.push_back("DY#rightarrow ll; m(ll) > 50");
+  legorder.push_back("t#bar{t}");
   //legorder.push_back("WZ,ZZ,WW");
   //legorder.push_back("Mismeas. Charge Background");
-    legorder.push_back("Misid. Lepton Background");
+  legorder.push_back("Misid. Lepton Background");
   
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
@@ -605,13 +603,11 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("singletop_tbarW_Powheg",0.25));
     list.push_back(make_pair("singletop_tW_Powheg",0.25));
     list.push_back(make_pair("TT_MG5",0.25));
-    //    //    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
-    //list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
-    //list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
+    list.push_back(make_pair("ttZToLLNuNu_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
+    list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
 
-  }
-  if(sample.Contains("top")){
-    list.push_back(make_pair("TT_MG5",0.25));
   }
 
   if(sample.Contains("ttbarV")){
@@ -635,7 +631,10 @@ vector<pair<TString,float> >  InitSample (TString sample){
   //////// Diboson ////////
   if(sample.Contains("vv")){    
     list.push_back(make_pair("WZ_pythia8",0.15));
-    list.push_back(make_pair("ZZ_pythia8",0.15));
+    //list.push_back(make_pair("ZZ_pythia8",0.15));
+    
+list.push_back(make_pair("WpWp_madgraph",0.15));
+    list.push_back(make_pair("WpWp_qcd_madgraph",0.15));
   }
 
   if(sample.Contains("ss")){
