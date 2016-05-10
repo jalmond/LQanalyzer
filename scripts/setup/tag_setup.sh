@@ -17,7 +17,7 @@ setupok=False
 
 while read line
   do
-  if [[ $line == "LANG" ]]; then
+  if [[ $line == *"LANG"* ]]; then
       setupok=True
   fi
 done < ~/.bash_profile
@@ -27,7 +27,7 @@ if [[ $setupok == "False" ]]; then
     echo 'LANG="en_US.utf-8"'
     echo 'LC_COLLATE="lt_LT.utf-8"'
     echo 'LC_TIME="en_DK.utf-8"'
-    exit 1
+    return 1
 fi
 
 if [ $LQANALYZER_DIR ]; then
