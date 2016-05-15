@@ -540,7 +540,7 @@ void SignalPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vect
       }
     }
   }
-  cout << electrons.size() << " " << muons.size() << " " << jets.size() << endl;
+
   if(electrons.size()==1 && muons.size() == 1){
     if(jets.size()>1){
       

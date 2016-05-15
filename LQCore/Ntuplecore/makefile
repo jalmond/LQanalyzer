@@ -30,7 +30,7 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 $(LQANALYZER_BIN_PATH)/run_lqanalyzer: run_lqanalyzer.o $(SHLIBFILE)                                                                           
 	@echo "Linking " $(LD) $(LDFLAGS) $@                                                                                                                     
 	@$(LD) $(LDFLAGS) $(OBJDIR)/run_lqanalyzer.o -L$(LQANALYZER_LIB_PATH) -lNtuplecore -lSKTree -lHist -lAnalysisCore   \
-		$(ROOTLIBS) -lPyROOT  -o $@ 
+		$(ROOTLIBS) -lPyROOT -lMinuit -o $@ 
 
 run_lqanalyzer.o: app/run_lqanalyzer.cxx                                                                                                       
 	@echo "Compiling $<"                                                                                                                    

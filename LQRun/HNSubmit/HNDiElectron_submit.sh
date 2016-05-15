@@ -188,17 +188,19 @@ then
     skinput="True"
     #useskim="DiLep"
     
-    njobs=30
+    njobs=100
     data_lumi="AtoD"
     
     
     loglevel="INFO"
     logstep=1000
     declare -a input_samples=( "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
-    declare -a input_samples=( "ttbarMS" "ttZ" "ttW" "TTH" "Wjets" "DY50plus" "DY10to50" "ZZ_py" "WZ_py" "WW_py" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" )
-    samples2016="True"
+    declare -a input_samples=( "ttZ" "ttW" "TTH" "Wjets" "DY50plus" "DY10to50" "ZZ_py" "WZ_py" "WW_py" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wbb" "Zbb" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma" "TTWW" "TTG")
+    #declare -a input_samples=( "QCD_1000_mu" "QCD_15-20_mu" "QCD_20-30_mu" "QCD_30-50_mu" "QCD_50-80_mu" "QCD_800-1000_mu" "QCD_120-170_mu" "QCD_170-300_mu" "QCD_300-470_mu" "QCD_470-600_mu" "QCD_600-800_mu" "QCD_80-120_mu") 
+    
+    #samples2016="True"
     #usebatch="False"
-
+    
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
@@ -247,14 +249,14 @@ then
     skinput="True"
     #useskim="DiLep"
 
-    njobs=30
+    njobs=100
     data_lumi="AtoD"
     loglevel="INFO"
 
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=( "A" "B" "C" "D")
+    declare -a input_samples=("A" "B" "C" "D")
     stream="singleelectron"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
@@ -274,14 +276,14 @@ if [[ $runfakes  == "true" ]];
     #useskim="DiLep"
     loglevel="INFO"
 
-    njobs=30
+    njobs=100
     data_lumi="AtoD"
     
     logstep=1000
     
     runnp="True"
     declare -a input_samples=("A" "B" "C" "D") 
-    
+
     stream="singleelectron"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
 

@@ -2265,6 +2265,85 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
     
 }
 
+
+double AnalyzerCore::TopElTriggerScaleFactor(float pt, float eta, int syst = 0){
+
+  if(isData) return 1.;
+  
+  if (pt<30) return 1.;
+  
+  double SF = 1.;
+  
+  if(pt<40.){
+    if (eta<0.8) SF = 0.987;
+    else if (eta<1.478) SF = 0.964;
+    else if (eta<2.5) SF = 1.004;
+
+    if (syst>0){
+      
+      if (eta<0.8) SF = 0.987+0.012;
+      else if (eta<1.478) SF = 0.964+0.002;
+      else if (eta<2.5) SF = 1.004+0.006; 
+      
+    }
+    if (syst<0){
+      
+      if (eta<0.8) SF = 0.987-0.017;
+      else if (eta<1.478) SF = 0.964-0.001;
+      else if (eta<2.5) SF = 1.004-0.006; 
+      
+    }
+  }
+  else if (pt<50){
+    
+    if (eta<0.8) SF = 0.997;
+    else if (eta<1.478) SF = 0.98;
+    else if (eta<2.5) SF = 1.033;
+    
+    if (syst>0){
+      
+      if (eta<0.8) SF = 0.997+0.001;
+      else if (eta<1.478) SF = 0.98+0.001;
+      else if (eta<2.5) SF = 1.033+0.007; 
+      
+    }
+    if (syst<0){
+      
+      if (eta<0.8) SF = 0.997-0.001;
+      else if (eta<1.478) SF = 0.98-0.001;
+      else if (eta<2.5) SF = 1.033-0.007; 
+      
+    }
+  }
+  else if (pt<200){
+    
+    if (eta<0.8) SF = 0.998;
+    else if (eta<1.478) SF = 0.988;
+    else if (eta<2.5) SF = 0.976;
+    
+    if (syst>0){
+      
+      if (eta<0.8) SF = 0.998+0.002;
+      else if (eta<1.478) SF = 0.988+0.002;
+      else if (eta<2.5) SF = 0.976+0.015; 
+      
+    }
+    if (syst<0){
+      
+      if (eta<0.8) SF = 0.998-0.002;
+      else if (eta<1.478) SF = 0.988-0.002;
+      else if (eta<2.5) SF = 0.976-0.012; 
+      
+    }
+  }
+  
+  
+  return SF;
+  
+}
+
+
+
 void AnalyzerCore::AddTriggerToList(TString triggername){
   
   cout << "Adding " << triggername << endl;
@@ -2680,7 +2759,6 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
 
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
-  if(!( hist.Contains("TChan"))|| (   hist.Contains("SSee_DiJet"))) return;
   if(type==sighist){
     
     map<TString, SignalPlots*>::iterator sigpit = mapCLhistSig.find(hist);
@@ -3314,8 +3392,13 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
     TString rcut = cut;
     
     float r = 1.;
+    if( k_electrons.at(0).Pt() < 20.) r = 0.82;
+    else if( k_electrons.at(0).Pt() < 30.) r = 0.85;
+    else if( k_electrons.at(0).Pt() < 40.) r = 0.96;
+    else if( k_electrons.at(0).Pt() < 50.) r = 0.92;
+    else r = 0.95;
 
-    float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
+    float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), "pt_eta_40_looseregion2");
     
     float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
     return w;

@@ -309,18 +309,18 @@ SKHN1000_mumumu_new 2393489707.99  sk_cluster_ntuple_path  sk_cms_ntuple_path_20
 
 
 
-SKQCD_1000_mu      1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
-SKQCD_15-20_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
-SKQCD_20-30_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20-30_mu/
-SKQCD_30-50_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-50_mu/
-SKQCD_50-80_mu     1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_50-80_mu/
-SKQCD_800-1000_mu  1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_800-1000_mu/
-SKQCD_120-170_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_120-170_mu/
-SKQCD_170-300_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170-300_mu/
-SKQCD_300-470_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_300-470_mu/
-SKQCD_470-600_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_470-600_mu/
-SKQCD_600-800_mu   1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_600-800_mu/
-SKQCD_80-120_mu    1. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80-120_mu/
+SKQCD_1000_mu      3873970. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_1000_mu/
+SKQCD_15-20_mu     1722681. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_15-20_mu/
+SKQCD_20-30_mu     8486904. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_20-30_mu/
+SKQCD_30-50_mu     9560265. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_30-50_mu/
+SKQCD_50-80_mu     10365230. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_50-80_mu/
+SKQCD_800-1000_mu  4107853. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_800-1000_mu/
+SKQCD_120-170_mu  8501935. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_120-170_mu/
+SKQCD_170-300_mu   7669947. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_170-300_mu/
+SKQCD_300-470_mu   7832261. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_300-470_mu/
+SKQCD_470-600_mu   3783069. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_470-600_mu/
+SKQCD_600-800_mu   4119000. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_600-800_mu/
+SKQCD_80-120_mu    9163642. sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/QCD_80-120_mu/
 
 
 
@@ -692,8 +692,8 @@ muon_lowpt D   cluster_data_ntuple_path_2016   cms_data_ntuple_path_2016 DoubleM
 ############################################################
 #cms_mc_ntuple_path_2014     /data1/DATA/LQNtuples_5_3_14_snu27/MC/
 ############################################################
-DY10to50	2901.7   cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
-DY50plus	8693.5	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014	DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+DY10to50	2901.7   cluster_mc_ntuple_path_2016  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
+DY50plus	8693.5	cluster_mc_ntuple_path_2016  cms_mc_ntuple_path_2014	DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
 
 
 ### POWHEG

@@ -371,8 +371,8 @@ void MakeCutFlow(string type){
     
     histpage << "<tr><td>"<< "cutflow " + cut_label.at(i_cut)  <<"</td>"<<endl;
     histpage <<"<td>"<<endl;
-    histpage << "<a href=\"" << cut_label.at(i_cut)  << ".png\">";
-    histpage << "Cutflow: " + cut_label.at(i_cut)  + ".png</p>";
+    histpage << "<a href=\"" << cut_label.at(i_cut)  << ".pdf\">";
+    histpage << "Cutflow: " + cut_label.at(i_cut)  + ".pdf</p>";
     histpage << "</td>" << endl;
   }
 
@@ -453,8 +453,14 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   vector<TString> legorder;
   legorder.push_back("Misid. lepton background");
-  legorder.push_back("Mismeas. charge background");
-  legorder.push_back("Prompt background");
+  legorder.push_back("Wjet");
+  legorder.push_back("DY");
+  legorder.push_back("QCD");
+  legorder.push_back("ttbar");
+  legorder.push_back("Top");
+  legorder.push_back("VV");
+  legorder.push_back("t#bar{t}+V");
+
   for(unsigned int ileg = 0; ileg < legorder.size() ; ileg++){
     map<TString, TH1*>::iterator it = map_legend.find(legorder.at(ileg));
     if(it->second)legendH->AddEntry(it->second,it->first.Data(),"f");    
@@ -515,6 +521,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   if(sample.Contains("dy_")){
     list.push_back(make_pair("DY10to50",0.2));    
     list.push_back(make_pair("DY50plus",0.2));    
+    list.push_back(make_pair("Zbb",0.2));
   }
   
   if(sample.Contains("dyplusbb")){
@@ -534,12 +541,24 @@ vector<pair<TString,float> >  InitSample (TString sample){
   }
   
   if(sample.Contains("ttbar")){
-    list.push_back(make_pair("ttbar",0.25));
+    list.push_back(make_pair("ttbarMS",0.25));
   }
   
   if(sample.Contains("qcd"))
     {
-      list.push_back(make_pair("QCDEl",0.30));
+      list.push_back(make_pair("QCD_1000_mu",0.30));
+      list.push_back(make_pair("QCD_15-20_mu",0.30));
+      list.push_back(make_pair("QCD_20-30_mu",0.30));
+      list.push_back(make_pair("QCD_30-50_mu",0.30));
+      list.push_back(make_pair("QCD_50-80_mu",0.30));
+      list.push_back(make_pair("QCD_80-120_mu",0.30));
+      list.push_back(make_pair("QCD_120-170_mu",0.30));
+      list.push_back(make_pair("QCD_170-300_mu",0.30));
+      list.push_back(make_pair("QCD_300-470_mu",0.30));
+      list.push_back(make_pair("QCD_470-600_mu",0.30));
+      list.push_back(make_pair("QCD_600-800_mu",0.30));
+      list.push_back(make_pair("QCD_800-1000_mu",0.30));
+
     }
 
   if(sample.Contains("ttv")){
@@ -569,10 +588,17 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_py",0.20));
     list.push_back(make_pair("ZZ_py",0.20));
     list.push_back(make_pair("WW_py",0.25));
-    //list.push_back(make_pair("Wgamma",0.22));
-    list.push_back(make_pair("SSWmWm",0.4));
-    list.push_back(make_pair("SSWpWp",0.4));
-    list.push_back(make_pair("WW_dp",0.5));
+    list.push_back(make_pair("Wgamma",0.22));
+    list.push_back(make_pair("WgammaE",0.22));
+    list.push_back(make_pair("HtoTauTau",0.22));
+    list.push_back(make_pair("HtoWW",0.3));
+    list.push_back(make_pair("ggHtoZZ",0.22));
+    list.push_back(make_pair("TTWW",0.4));
+    list.push_back(make_pair("TTG",0.4));
+    list.push_back(make_pair("TTH",0.4));
+    //list.push_back(make_pair("SSWmWm",0.4));
+    //list.push_back(make_pair("SSWpWp",0.4));
+    // list.push_back(make_pair("WW_dp",0.5));
   }
   if(sample.Contains("vv_mg")){
     list.push_back(make_pair("WZtollqq_mg",0.25));
@@ -617,6 +643,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   //// Wjets
   if(sample.Contains("wjet_")){
     list.push_back(make_pair("Wjets",0.15));
+    list.push_back(make_pair("Wbb",0.15));
   }
   if(sample.Contains("wjetplusbb")){
     list.push_back(make_pair("Wjets",0.15));
@@ -1048,6 +1075,10 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name){
   if(!showdata) yscale = 2.;
   
   yscale*=1.2;
+  if(name.find("ElectronEta")!=string::npos) yscale*=2.;
+  if(name.find("dxy")!=string::npos) yscale*=2.;    
+
+  if(name.find("h_MT")!=string::npos) yscale*=2.;
   if(name.find("central")!=string::npos) yscale*=2.;
   if(name.find("Njet")!=string::npos) yscale*=2.;
   if(name.find("forward")!=string::npos) yscale*=2.;
@@ -1526,7 +1557,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   label.SetTextFont(42);
   label.SetNDC();
   label.SetTextColor(1);
-  label.DrawLatex(0.6 ,0.45,"T-Channel e^{#pm} e^{#pm} channel");
+  label.DrawLatex(0.6 ,0.45,"CH- e channel");
   
 
   //return canvas;  
