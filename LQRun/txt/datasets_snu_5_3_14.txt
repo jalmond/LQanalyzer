@@ -203,8 +203,8 @@ SKemu		 D	sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        Data/ElectronMu
 ########################################################################
 ### DY ###
 
-SKDY10to50        2901.7         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY10to50/
-SKDY50plus        8693.5         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY50plus/
+SKDY10to50        3270.160645         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY10to50/
+SKDY50plus        8790.539062         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/DY50plus/
 SKZbb             147000         sk_cluster_ntuple_path  sk_cms_ntuple_path_2014        MC/Zbb/
 
 ### POWHEG

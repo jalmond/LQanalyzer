@@ -196,15 +196,15 @@ void GetEffectiveLuminosity() {
   dirmap["QCD_800-1000_mu"] = 3.57*0.1033;
   dirmap["QCD_1000_mu"] = 0.774*0.1097;*/
   //TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
->>>>>>> LQanalyzer_April2016_8TeV
 
   //  dirmap["WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6"] = 0.0320;
 
 
   for(std::map<TString, double>::const_iterator mit = dirmap.begin(); mit != dirmap.end();mit++){
     
-    
-    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/" + TString(mit->first) + "/*.root > inputlist.txt";
+    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/*.root > inputlist.txt";
+
+    // + TString(mit->first) + "/*.root > inputlist.txt";
 
 
     system(dir.Data());
@@ -223,10 +223,10 @@ void GetEffectiveLuminosity() {
     
     
    
-    float lumi = number_events_processed / 252.89;
+    float lumi = number_events_processed / 3503.71;
 
     std::cout.precision(10);
-    std::cout << TString(mit->first) <<  " lumi    " << lumi << std::endl;
+    std::cout << " DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph lumi    " << lumi << std::endl;
     
     system("rm inputlist.txt");
   }    
