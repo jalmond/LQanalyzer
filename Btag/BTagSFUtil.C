@@ -213,7 +213,6 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
       
     //downgrade tagged to untagged
     if( isBTagged && coin > Btag_SF ) {newBTag = false;}
-
   }
 
   return newBTag;

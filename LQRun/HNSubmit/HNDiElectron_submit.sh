@@ -5,7 +5,7 @@ runmc=true
 runmc_cl=false
 runsig=false
 runfakes=true
-runflips=true
+runflips=false
 
 if [[ $1  == "NP" ]];
 then
@@ -186,7 +186,7 @@ then
     
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
+    #useskim="DiLep"
     
     njobs=100
     data_lumi="AtoD"
@@ -195,9 +195,12 @@ then
     loglevel="INFO"
     logstep=1000
     declare -a input_samples=( "SSWmWm" "SSWpWp" "WW_dp" "ttW" "ttZ" "WWW" "TTWW" "TTG" "ZZZ" "WZZ" "WWZ" "WWG" "WW_py" "WZ_py" "ZZ_py" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma")
+    declare -a input_samples=( "ttZ" "ttW" "TTH" "Wjets" "DY50plus" "DY10to50" "ZZ_py" "WZ_py" "WW_py" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wbb" "Zbb" "HtoWW" "WW_py"  "HtoTauTau" "ggHtoZZ" "WgammaE" "Wgamma" "TTWW" "TTG")
+    #declare -a input_samples=( "QCD_1000_mu" "QCD_15-20_mu" "QCD_20-30_mu" "QCD_30-50_mu" "QCD_50-80_mu" "QCD_800-1000_mu" "QCD_120-170_mu" "QCD_170-300_mu" "QCD_300-470_mu" "QCD_470-600_mu" "QCD_600-800_mu" "QCD_80-120_mu") 
+    
     #samples2016="True"
     #usebatch="False"
-
+    
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
@@ -244,7 +247,7 @@ then
 
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
+    #useskim="DiLep"
 
     njobs=100
     data_lumi="AtoD"
@@ -253,8 +256,8 @@ then
     loglevel="INFO"
     logstep=1000
     
-    declare -a input_samples=( "A" "B" "C" "D")
-    stream="egamma"
+    declare -a input_samples=("A" "B" "C" "D")
+    stream="singleelectron"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)
@@ -270,18 +273,18 @@ if [[ $runfakes  == "true" ]];
     ### FAKE
     cycle="HNDiElectron"
     skinput="True"
-    useskim="DiLep"
+    #useskim="DiLep"
     loglevel="INFO"
 
-    njobs=300
+    njobs=100
     data_lumi="AtoD"
     
     logstep=1000
     
     runnp="True"
     declare -a input_samples=("A" "B" "C" "D") 
-    
-    stream="egamma"
+
+    stream="singleelectron"
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
 
 

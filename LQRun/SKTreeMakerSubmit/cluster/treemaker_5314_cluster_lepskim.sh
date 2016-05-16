@@ -3,7 +3,7 @@
 
 ###### SET WHAT JOBS TO RUN
 runMC=true
-runDoubleMuon=true
+runDoubleMuon=false
 runDoubleElectron=false
 runElectronMuon=false
 runSingleMuon=false
@@ -82,6 +82,7 @@ then
      declare -a input_samples=( "HN70_mumumu_new" "HN90_mumumu_new" "HN100_mumumu_new" "HN150_mumumu_new" "HN200_mumumu_new" "HN300_mumumu_new" "HN400_mumumu_new" "HN500_mumumu_new" "HN700_mumumu_new" "HN1000_mumumu_new" "Wtollln_new" )
      declare -a input_samples=( "ttbarMSchs")
      declare -a input_samples=( "HN40_mumumu_new" "HN50_mumumu_new" "HN60_mumumu_new")
+      declare -a input_samples=( "DY10to50" "DY50plus")
     source submit.sh
 
 fi    

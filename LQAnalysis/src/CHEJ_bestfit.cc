@@ -404,14 +404,7 @@ void CHEJ_bestfit::ExecuteEvents()throw( LQError ){
 	  fBTagSF->GetBTagEvtWeight(njets,jetPt_all,jetEta_all,jetFlav_all,btag_all,0,Bweight,BweightErr,ttbar);
 	  //		fBTagSF->GetBTagEvtWeight(4,jetPt_f,jetEta_f,jetFlav_f,btag_f,0,Bweight,BweightErr,ttbar);
 
-		/*
-		float bw_up = 1.0, bw_down = 1.0;
-		fBTagSF->GetBTagEvtWeight(4,jetPt_f,jetEta_f,jetFlav_f,btag_f,-1,bw_down,BweightErr,ttbar);
-		fBTagSF->GetBTagEvtWeight(4,jetPt_f,jetEta_f,jetFlav_f,btag_f,1,bw_up,BweightErr,ttbar);
 
-		Bw_down_syst_factor = bw_down/Bweight;
-		Bw_up_syst_factor = bw_up/Bweight;
-		*/
 	}
 	
 

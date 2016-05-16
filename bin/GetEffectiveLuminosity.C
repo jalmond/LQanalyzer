@@ -17,7 +17,7 @@ void GetEffectiveLuminosity() {
 
   map<TString, double> dirmap;
   // dir name  = xsec
-  //  dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
+  dirmap["DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph"] = 11050 ;
   //dirmap["DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball"] = 3503.71 ;
   /*
     dirmap["DYToEE_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6"] = 1. ;
@@ -182,16 +182,29 @@ void GetEffectiveLuminosity() {
   //dirmap["TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   //dirmap["TTJets_MSDecays_width_x5_TuneZ2star_8TeV-madgraph-tauola"] =  234.;
   
-  //  dirmap["TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
-  dirmap["TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola"] = 252.89;
+
+  /*dirmap["QCD_15-20_mu"]= 702200000*0.0039 ;
+  dirmap["QCD_20-30_mu"] = 287000000*0.0065;
+  dirmap["QCD_30-50_mu"] = 66090000*0.0122;
+  dirmap["QCD_50-80_mu"] = 8082000*0.0218;
+  dirmap["QCD_80-120_mu"] = 1024000*0.0395;
+  dirmap["QCD_120-170_mu"] = 157800*0.0473;
+  dirmap["QCD_170-300_mu"] = 34020*0.0676;
+  dirmap["QCD_300-470_mu"] = 1757*0.0864;
+  dirmap["QCD_470-600_mu"] = 115.2*0.1024;
+  dirmap["QCD_600-800_mu"] = 27.01*0.0996;
+  dirmap["QCD_800-1000_mu"] = 3.57*0.1033;
+  dirmap["QCD_1000_mu"] = 0.774*0.1097;*/
+  //TTH_Inclusive_M-125_8TeV_pythia6"] = 1.;
+>>>>>>> LQanalyzer_April2016_8TeV
 
   //  dirmap["WH_ZH_TTH_HToZZ_M-125_8TeV-pythia6"] = 0.0320;
 
 
-  for(map<TString, double>::iterator it = dirmap.begin(); it != dirmap.end();it++){
+  for(std::map<TString, double>::const_iterator mit = dirmap.begin(); mit != dirmap.end();mit++){
     
     
-    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/*.root > inputlist.txt";
+    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/" + TString(mit->first) + "/*.root > inputlist.txt";
 
 
     system(dir.Data());
@@ -213,7 +226,7 @@ void GetEffectiveLuminosity() {
     float lumi = number_events_processed / 252.89;
 
     std::cout.precision(10);
-    std::cout <<" lumi    " << lumi << std::endl;
+    std::cout << TString(mit->first) <<  " lumi    " << lumi << std::endl;
     
     system("rm inputlist.txt");
   }    

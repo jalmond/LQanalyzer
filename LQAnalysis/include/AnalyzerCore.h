@@ -64,6 +64,7 @@ class AnalyzerCore : public LQCycleBase {
   void GetIDEfficiency( std::vector<snu::KElectron> electronNoCutColl, std::vector<snu::KMuon> muons,  std::vector<snu::KJet> jets, float w);
     
   void PlotFakeLeptons( std::vector<snu::KJet> jets, float w);
+  double TopElTriggerScaleFactor(float pt, float eta, int syst=0);
   double TriggerScaleFactor( vector<snu::KElectron> el, int sys=0);;
   double TriggerScaleFactor( vector<snu::KMuon> mu, int sys=0);;
   double TriggerScaleFactorEMu(int sys=0);
@@ -87,7 +88,7 @@ class AnalyzerCore : public LQCycleBase {
   float CFRate(snu::KElectron el, bool useoldrates=false);
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
-  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso,  bool    usetight,TString cut, bool applypucorr);
+  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso,  bool    usetight,TString cut);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, double rho);
 
@@ -105,7 +106,6 @@ class AnalyzerCore : public LQCycleBase {
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   double TopElTriggerEff(float pt, float eta);
-  double TopElTriggerScaleFactor(float pt, float eta, int syst);
   
   double TopElIDIsoEff(float pt, float eta);
   double TopElIDIsoScaleFactor(float pt, float eta, int syst);

@@ -2272,83 +2272,6 @@ double AnalyzerCore::ElectronScaleFactor( double eta, double pt, bool tight_elec
 
 
 
-double AnalyzerCore::TopElTriggerScaleFactor(float pt, float eta, int syst = 0){
-
-	if(isData) return 1.;
-	
-	if (pt<30) return 1.;
-	
-	double SF = 1.;
-	
-	if(pt<40.){
-		if (eta<0.8) SF = 0.987;
-		else if (eta<1.478) SF = 0.964;
-		else if (eta<2.5) SF = 1.004;
-
-		if (syst>0){
-			
-			if (eta<0.8) SF = 0.987+0.012;
-			else if (eta<1.478) SF = 0.964+0.002;
-			else if (eta<2.5) SF = 1.004+0.006; 
-			
-		}
-		if (syst<0){
-			
-			if (eta<0.8) SF = 0.987-0.017;
-			else if (eta<1.478) SF = 0.964-0.001;
-			else if (eta<2.5) SF = 1.004-0.006; 
-			
-		}
-	}
-	else if (pt<50){
-		
-		if (eta<0.8) SF = 0.997;
-		else if (eta<1.478) SF = 0.98;
-		else if (eta<2.5) SF = 1.033;
-		
-		if (syst>0){
-			
-			if (eta<0.8) SF = 0.997+0.001;
-			else if (eta<1.478) SF = 0.98+0.001;
-			else if (eta<2.5) SF = 1.033+0.007; 
-			
-		}
-		if (syst<0){
-			
-			if (eta<0.8) SF = 0.997-0.001;
-			else if (eta<1.478) SF = 0.98-0.001;
-			else if (eta<2.5) SF = 1.033-0.007; 
-			
-		}
-	}
-	else if (pt<200){
-		
-		if (eta<0.8) SF = 0.998;
-		else if (eta<1.478) SF = 0.988;
-		else if (eta<2.5) SF = 0.976;
-		
-		if (syst>0){
-			
-			if (eta<0.8) SF = 0.998+0.002;
-			else if (eta<1.478) SF = 0.988+0.002;
-			else if (eta<2.5) SF = 0.976+0.015; 
-			
-		}
-		if (syst<0){
-			
-			if (eta<0.8) SF = 0.998-0.002;
-			else if (eta<1.478) SF = 0.988-0.002;
-			else if (eta<2.5) SF = 0.976-0.012; 
-			
-		}
-	}
-	
-	
-	return SF;
-	
-}
-
-
 double AnalyzerCore::TopElTriggerEff(float pt, float eta){
 
 	// ID && Iso Efficiency
@@ -2358,7 +2281,7 @@ double AnalyzerCore::TopElTriggerEff(float pt, float eta){
 	if (pt<30.) return 1.;
 	
 	if(pt<40.){
-		if (eta<0.8) Eff = Eff = 1./0.865;
+		if (eta<0.8)  Eff = 1./0.865;
 		else if (eta<1.478) Eff = 1./0.876;
 		else if (eta<2.5) Eff = 1./0.69;
 	}
@@ -2676,6 +2599,81 @@ double AnalyzerCore::TopMuTriggerEff(float eta, int syst = 0){
   }
 
   return Eff;
+}
+
+double AnalyzerCore::TopElTriggerScaleFactor(float pt, float eta, int syst ){
+
+  if(isData) return 1.;
+  
+  if (pt<30) return 1.;
+  
+  double SF = 1.;
+  
+  if(pt<40.){
+    if (eta<0.8) SF = 0.987;
+    else if (eta<1.478) SF = 0.964;
+    else if (eta<2.5) SF = 1.004;
+
+    if (syst>0){
+      
+      if (eta<0.8) SF = 0.987+0.012;
+      else if (eta<1.478) SF = 0.964+0.002;
+      else if (eta<2.5) SF = 1.004+0.006; 
+      
+    }
+    if (syst<0){
+      
+      if (eta<0.8) SF = 0.987-0.017;
+      else if (eta<1.478) SF = 0.964-0.001;
+      else if (eta<2.5) SF = 1.004-0.006; 
+      
+    }
+  }
+  else if (pt<50){
+    
+    if (eta<0.8) SF = 0.997;
+    else if (eta<1.478) SF = 0.98;
+    else if (eta<2.5) SF = 1.033;
+    
+    if (syst>0){
+      
+      if (eta<0.8) SF = 0.997+0.001;
+      else if (eta<1.478) SF = 0.98+0.001;
+      else if (eta<2.5) SF = 1.033+0.007; 
+      
+    }
+    if (syst<0){
+      
+      if (eta<0.8) SF = 0.997-0.001;
+      else if (eta<1.478) SF = 0.98-0.001;
+      else if (eta<2.5) SF = 1.033-0.007; 
+      
+    }
+  }
+  else if (pt<200){
+    
+    if (eta<0.8) SF = 0.998;
+    else if (eta<1.478) SF = 0.988;
+    else if (eta<2.5) SF = 0.976;
+    
+    if (syst>0){
+      
+      if (eta<0.8) SF = 0.998+0.002;
+      else if (eta<1.478) SF = 0.988+0.002;
+      else if (eta<2.5) SF = 0.976+0.015; 
+      
+    }
+    if (syst<0){
+      
+      if (eta<0.8) SF = 0.998-0.002;
+      else if (eta<1.478) SF = 0.988-0.002;
+      else if (eta<2.5) SF = 0.976-0.012; 
+      
+    }
+  }
+  
+  
+  return SF;
   
 }
 
@@ -3694,6 +3692,9 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
   return em_weight;
 }
 
+
+
+
 float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons){
 
   float mm_weight = 0.;
@@ -3776,7 +3777,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons, 
 
 
 
-float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, int njets, int nbjets, double rho, double dxy, double biso, double eiso, bool    usetight,TString cut, bool applypucorr){
+float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, double rho, double dxy, double biso, double eiso, bool    usetight,TString cut){
   
 
   if(k_electrons.size()==1){
@@ -3786,11 +3787,13 @@ float  AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons, 
     TString rcut = cut;
     
     float r = 1.;
-    if(njets==0) r = 1.;
-    if(nbjets==0) r = 1.;
-    if(applypucorr) r=1.;
+    if( k_electrons.at(0).Pt() < 20.) r = 0.82;
+    else if( k_electrons.at(0).Pt() < 30.) r = 0.85;
+    else if( k_electrons.at(0).Pt() < 40.) r = 0.96;
+    else if( k_electrons.at(0).Pt() < 50.) r = 0.92;
+    else r = 0.95;
 
-    float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), cut);
+    float f = m_fakeobj->getFakeRate_electronEta(0, k_electrons.at(0).Pt(), fabs(k_electrons.at(0).Eta()), "pt_eta_40_looseregion2");
     
     float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
     return w;
