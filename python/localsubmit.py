@@ -299,7 +299,7 @@ if number_of_cores < 0:
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
 ##################################################################################################################
-singlejob = number_of_cores==1            
+
 
 
 
@@ -598,6 +598,7 @@ if number_of_cores > number_of_files:
     number_of_cores = number_of_files
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
+singlejob = number_of_cores==1            
 
 ############################################################  
 ### Do not change njobs if using batch 
