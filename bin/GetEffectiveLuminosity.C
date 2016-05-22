@@ -202,7 +202,7 @@ void GetEffectiveLuminosity() {
 
   for(std::map<TString, double>::const_iterator mit = dirmap.begin(); mit != dirmap.end();mit++){
     
-    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/*.root > inputlist.txt";
+    TString dir = "ls /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/*.root > inputlist.txt";
 
     // + TString(mit->first) + "/*.root > inputlist.txt";
 
@@ -223,7 +223,7 @@ void GetEffectiveLuminosity() {
     
     
    
-    float lumi = number_events_processed / 3503.71;
+    float lumi = number_events_processed / 252.89;
 
     std::cout.precision(10);
     std::cout << " DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph lumi    " << lumi << std::endl;

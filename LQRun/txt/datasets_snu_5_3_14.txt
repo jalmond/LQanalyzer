@@ -379,7 +379,7 @@ SKttbar_mass169      168624.89        sk_cluster_ntuple_path  sk_cms_ntuple_path
 SKttbar_mass175      170873.20        sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/ttbar_mass175/
 SKttbarMS_CT10_herwig        34127.05078     sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/ttbar_CT10_herwig/
 SKttbarMS_CT10_pythia            37112.36328   sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MCNoCut/ttbar_CT10_pythia/
-SKttbarMSchs         218199.217      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
+SKttbarMSchs        225662.8906      sk_cluster_ntuple_path  sk_cms_ntuple_path_2016        MC/ttbarMSchs/
 SKtth            7659207.69             sk_cluster_ntuple_path  sk_cms_ntuple_path_2015_oct        MC/TTH/
 
 
@@ -788,7 +788,7 @@ topHAD		460656.55	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 TTJets_Ha
 topLJ		93722.93	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 TTJets_SemiLeptMGDecays_8TeV-madgraph-tauola/
 ttbar           29588.256       cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014  TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
 ttbarMS    	1.		cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
-ttbarMSchs    	1.		cluster_mc_ntuple_path_2016      cms_mc_ntuple_path_2016 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
+ttbarMSchs    	225662.8906		cluster_mc_ntuple_path_2016      cms_mc_ntuple_path_2016 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
 				
 ### EXTRA STAT
 W1Jets		3781.307	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 W1JetsToLNu_TuneZ2Star_8TeV-madgraph/

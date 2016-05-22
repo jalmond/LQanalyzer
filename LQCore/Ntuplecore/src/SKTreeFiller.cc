@@ -917,10 +917,10 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     m_logger << DEBUG << "Fill SKTree2 jetuncertainty" << LQLogger::endmsg;
 
     if(PFJetL5BottomJEC){
-      jet.SetJetL5BottomJEC(PFJetL5BottomJEC->at(ijet));
-      jet.SetJetL5CharmJEC(PFJetL5CharmJEC->at(ijet));
-      jet.SetJetL5UDSJEC(PFJetL5UDSJEC->at(ijet));
-      jet.SetJetL5GluonJEC(PFJetL5GluonJEC->at(ijet));
+      //jet.SetJetL5BottomJEC(PFJetL5BottomJEC->at(ijet));
+      //jet.SetJetL5CharmJEC(PFJetL5CharmJEC->at(ijet));
+      //jet.SetJetL5UDSJEC(PFJetL5UDSJEC->at(ijet));
+      //jet.SetJetL5GluonJEC(PFJetL5GluonJEC->at(ijet));
     }
     m_logger << DEBUG << "Fill SKTree3 jetuncertainty" << LQLogger::endmsg;
 
