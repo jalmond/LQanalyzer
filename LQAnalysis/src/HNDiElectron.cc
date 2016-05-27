@@ -226,6 +226,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl_nlv  = GetJets(BaseSelection::JET_NOLEPTONVETO);
   std::vector<snu::KJet> jetColl_loose  = GetJets(BaseSelection::JET_LOOSE);
 
+  std::vector<snu::KJet> JET_HN_TChannel  = GetJets(BaseSelection::JET_HN_TChannel);
+
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
   

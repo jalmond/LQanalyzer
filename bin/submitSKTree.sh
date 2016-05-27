@@ -770,11 +770,8 @@ if [[ $runDATA == "true" ]];
         done
     fi
 
-    echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_streams[*]}
-    logger = logger + " " + ${out_streams[*]}
-    
-
-
+    logger+=${out_streams_skimcheck[*]}":"
+   
 fi
 
 if [[ $job_output_dir == "" ]]
@@ -1152,15 +1149,16 @@ if [[ $runMC  == "true" ]];
     if [[ $submit_file_tag  != ""  ]];
       then
         echo "LQanalyzer::sktree :: INFO :: Single File to process = "${submit_file_tag}  
-	logger = logger + " " + ${submit_file_tag} 
+	logger+=${submit_file_tag}":"
     fi
     if [[ $submit_file_list  != ""  ]];
 	then
         ARGOUT=$submit_file_list
         eval out_input_samples=(\${$ARGOUT[@]})
-	 echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_input_samples[*]}
+	echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_input_samples[*]}
+	logger+=${out_input_samples[*]}":"
+	    
     fi
-    
 fi
 
 if [[ $job_nevents != -1 ]];
@@ -1205,14 +1203,35 @@ fi
 if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     then
     
+    echo "------------------------------------------------------------------------------------------------------" >> sktree_logger.txt
     echo "--User =" $USER " :" >> sktree_logger.txt
     echo "--Date:" >> sktree_logger.txt 
     date >> sktree_logger.txt
     echo "--Comment on reason for making sktrees (first time, bug fix, new variable?):" >> sktree_logger.txt
-    echo -e "\n" >>sktree_logger.txt
-    
+    echo "-- If testing just add 'TEST' after Message: and this will leave no comment in the change log">> sktree_logger.txt
+    echo -e "" >> sktree_logger.txt
+    echo "Message:" >> sktree_logger.txt
+    echo -e "" >> sktree_logger.txt
+    echo "--Samples:" >> sktree_logger.txt
+    echo $logger >> sktree_logger.txt
+    echo "------------------------------------------------------------------------------------------------------" >> sktree_logger.txt
     cp sktree_logger.txt sktree_logger_tmp.txt
-    emacs -nw  sktree_logger.txt
+    
+    cat_editor=""
+    while read line
+    do
+
+	prefix="editor = "
+	if [[ $line == $prefix* ]];
+	then
+            line=${line:${#prefix}}
+	    cat_editor=$line
+        fi
+    done < ${LQANALYZER_DIR}/bin/catconfig
+    echo $cat_editor' sktree_logger.txt'  >> edit.sh
+    
+    source edit.sh
+
     if diff sktree_logger.txt sktree_logger_tmp.txt  >/dev/null ; then
 	echo "No comment added: exiting process"
 	rm sktree_logger.txt
@@ -1222,22 +1241,41 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
 	echo "Commented added to log:"
     fi
     
-    if [[ -f "/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log" ]]; then
-	while read line
-	  do
-	  echo $line >> sktree_logger.txt
-	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
-	
-	echo -e "\n" >> sktree_logger.txt
-	
-	cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
-    else
-	cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+    makelog="True"
+    while read line
+    do
+	if [[ $line == "Message: TEST" ]];
+	then
+	    makelog="False"
+	fi
+	if [[ $line == "Message:TEST" ]];
+        then
+            makelog="False"
+        fi
+
+    done < sktree_logger.txt
+    
+    
+    if [[ $makelog == "True" ]];
+    then
+	if [[ -f "/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log" ]]; then
+	    while read line
+	    do
+		echo $line >> sktree_logger.txt
+	    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	    
+	    echo -e "\n" >> sktree_logger.txt
+	    
+	    cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	else
+	    cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	fi
     fi
+    rm message.txt
+    rm edit.sh
     rm sktree_logger.txt
     rm sktree_logger_tmp.txt
 fi
-exit 1
 
 
 ################  DATA################################################
@@ -1245,7 +1283,7 @@ exit 1
 ######################################################################
 if [[ $runDATA  == "true" ]];
     then
-        
+    
 
     ARG1=$submit_sampletag
     eval streams=(\${$ARG1[@]})
@@ -1274,6 +1312,7 @@ if [[ $runDATA  == "true" ]];
       loglevel=$job_loglevel
       logstep=$job_logstep
       stream=${istream}
+
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}

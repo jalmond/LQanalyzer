@@ -149,6 +149,9 @@ map<TString,  Double_t>  GetXSecMap(){
 
    dirmap["tthwA_3l4j_hc130A30_emu_catcut"] = 0.000373;
    dirmap["tthwA_3l4j_hc130A30_3mu_catcut"] = 0.000373;
+   
+   dirmap["HN_pair_WR600_Zp400_HN100"] = 1.; 
+
 
    dirmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]=21.56;
    dirmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;
@@ -513,6 +516,8 @@ map<TString, TString>  GetLQMap(){
   lqmap["MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen"]="HN_MM_M100";
   lqmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]="HN_MM_M500";
   lqmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]="HN_MM_M1500";
+
+  lqmap["HN_pair_WR600_Zp400_HN100"] = "HN_pair_WR600_Zp400_HN100";
 
   lqmap["MajoranaNeutrinoToEE_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_40";
   lqmap["MajoranaNeutrinoToEE_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_100";

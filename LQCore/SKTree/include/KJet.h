@@ -32,7 +32,6 @@ namespace snu {
     enum Tagger{CSVv2=0,
 		cMVAv2,
 		JETPROB,
-		iCSVCvsL,
 		CCvsLT,
 		CCvsBT  };
     
@@ -174,7 +173,7 @@ namespace snu {
     
     Double_t k_jet_pt_raw, k_jet_energy_raw;
     /// BTAG variables  
-    Double_t k_jet_csv2 ,k_jet_cmva2, k_jet_jetprobbjet, k_jet_icsvc_vs_l, k_jet_cc_vs_lt,k_jet_cc_vs_bt, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
+    Double_t k_jet_csv2 ,k_jet_cmva2, k_jet_jetprobbjet, k_jet_cc_vs_lt,k_jet_cc_vs_bt, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
     
     Int_t k_vtx_ntrack;
 

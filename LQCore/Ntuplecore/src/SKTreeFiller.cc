@@ -649,16 +649,16 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  //cout << "gen_isprompttaudecayproduct =  " <<  gen_isprompttaudecayproduct->at(matched_index)  << endl;
 	  if(!(gen_istaudecayproduct->at(matched_index)   || gen_isprompttaudecayproduct->at(matched_index))){
 	    
-	    cout << "matched as prompt yet status flag is not prompt" << endl;
-	    cout << "matched_index = " << matched_index << endl;
-	    cout << "reco "<< electrons_pt->at(iel)<< " " << electrons_eta->at(iel)  << " " << electrons_phi->at(iel) << endl;;
-	    for (UInt_t it=0; it< gen_pt->size(); it++ ){
-	      if(gen_motherindex->at(it) <= 0)continue;
-	      if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-	      if(gen_pt->at(it) < 0.1) continue;
-	      cout << it << " " << gen_pt->at(it)  << " " << gen_eta->at(it) << " " << gen_phi->at(it)<< " " << gen_pdgid->at(it) << "  " << gen_status->at(it) << " " << gen_pdgid->at(gen_motherindex->at(it)) <<" "  <<  gen_motherindex->at(it) << " " << gen_isprompt->at(it)  <<endl;
+	    //cout << "matched as prompt yet status flag is not prompt" << endl;
+	    //cout << "matched_index = " << matched_index << endl;
+	    //cout << "reco "<< electrons_pt->at(iel)<< " " << electrons_eta->at(iel)  << " " << electrons_phi->at(iel) << endl;;
+	    //for (UInt_t it=0; it< gen_pt->size(); it++ ){
+	    //	      if(gen_motherindex->at(it) <= 0)continue;
+	    //if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
+	    //if(gen_pt->at(it) < 0.1) continue;
+	    //cout << it << " " << gen_pt->at(it)  << " " << gen_eta->at(it) << " " << gen_phi->at(it)<< " " << gen_pdgid->at(it) << "  " << gen_status->at(it) << " " << gen_pdgid->at(gen_motherindex->at(it)) <<" "  <<  gen_motherindex->at(it) << " " << gen_isprompt->at(it)  <<endl;
 	      
-	    }
+	    //}
 	  }
 	}
       }
@@ -770,9 +770,9 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     if(jets_CMVAV2)    jet.SetBTagInfo(snu::KJet::cMVAv2, jets_CMVAV2->at(ijet));
     if(jets_JetProbBJet)  jet.SetBTagInfo(snu::KJet::JETPROB, jets_JetProbBJet->at(ijet)); 
     
-    if(jets_iCSVCvsL) {
-      if(jets_iCSVCvsL->size() > 0)jet.SetCTagInfo(snu::KJet::iCSVCvsL, jets_iCSVCvsL->at(ijet));
-    }
+    //if(jets_iCSVCvsL) {
+    //      if(jets_iCSVCvsL->size() > 0)jet.SetCTagInfo(snu::KJet::iCSVCvsL, jets_iCSVCvsL->at(ijet));
+    //    }
     if(jets_CCvsLT){
       if(jets_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KJet::CCvsLT, jets_CCvsLT->at(ijet));
     }

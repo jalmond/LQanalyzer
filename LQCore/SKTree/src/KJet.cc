@@ -22,7 +22,6 @@ KParticle()
   k_jet_csv2= -999.;
   k_jet_cmva2 = -999.;
   k_jet_jetprobbjet= -999.;
-  k_jet_icsvc_vs_l=-999.;
   k_jet_cc_vs_lt=-999.;
   k_jet_cc_vs_bt=-999.;
   k_vtx_mass= -999.;
@@ -61,7 +60,6 @@ KJet::KJet(const KJet& jet) :
   k_jet_csv2= jet.BJetTaggerValue(CSVv2);
   k_jet_cmva2= jet.BJetTaggerValue(cMVAv2);
   k_jet_jetprobbjet = jet.BJetTaggerValue(JETPROB);
-  k_jet_icsvc_vs_l=jet.BJetTaggerValue(iCSVCvsL);
   k_jet_cc_vs_lt=jet.BJetTaggerValue(CCvsLT);
   k_jet_cc_vs_bt=jet.BJetTaggerValue(CCvsBT);
 
@@ -102,7 +100,6 @@ void KJet::Reset()
     k_jet_csv2= -999.;
     k_jet_cmva2= -999.;
     k_jet_jetprobbjet = -999.;
-    k_jet_icsvc_vs_l=-999.;
     k_jet_cc_vs_lt=999.;
     k_jet_cc_vs_bt=-999.;
 
@@ -143,7 +140,6 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_csv2= p.BJetTaggerValue(CSVv2);
       k_jet_cmva2= p.BJetTaggerValue(cMVAv2);
       k_jet_jetprobbjet =p.BJetTaggerValue(JETPROB);
-      k_jet_icsvc_vs_l=p.BJetTaggerValue(iCSVCvsL);
       k_jet_cc_vs_lt=p.BJetTaggerValue(CCvsLT);
       k_jet_cc_vs_bt=p.BJetTaggerValue(CCvsBT);
 
@@ -295,7 +291,6 @@ double KJet::BJetTaggerValue(Tagger tag) const{
   if(tag == CSVv2) return k_jet_csv2;
   else if(tag == cMVAv2) return k_jet_cmva2;
   else if(tag == JETPROB) return k_jet_jetprobbjet;
-  else if (tag ==iCSVCvsL) return k_jet_icsvc_vs_l ;
   else if (tag == CCvsLT) return k_jet_cc_vs_lt;
   else if (tag == CCvsBT) return k_jet_cc_vs_bt;
   return -999.;
@@ -339,14 +334,12 @@ void KJet::SetBTagInfo(Tagger tag, double value){
   if(tag == CSVv2)       k_jet_csv2 = value;
   else if(tag == cMVAv2)      k_jet_cmva2 = value;
   else if(tag == JETPROB)    k_jet_jetprobbjet = value;
-  else if (tag ==iCSVCvsL)  k_jet_icsvc_vs_l = value;
   else if (tag == CCvsLT)  k_jet_cc_vs_lt = value;
   else if (tag == CCvsBT)  k_jet_cc_vs_bt = value;
 }
  
 void KJet::SetCTagInfo(Tagger tag, double value){
-  if (tag == iCSVCvsL)  k_jet_icsvc_vs_l = value;
-  else if (tag == CCvsLT)  k_jet_cc_vs_lt = value;
+  if (tag == CCvsLT)  k_jet_cc_vs_lt = value;
   else if (tag == CCvsBT)  k_jet_cc_vs_bt = value;
 }
 

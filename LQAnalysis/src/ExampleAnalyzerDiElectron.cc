@@ -15,6 +15,8 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
+using namespace snu;
+
 //// Needed to allow inheritance for use in LQCore/core classes
 ClassImp (ExampleAnalyzerDiElectron);
 
@@ -93,36 +95,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-  std::vector<snu::KElectron> electronColl_nocut_truth             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
-  
-  FillHist("Nelectrons" , electronColl_nocut_truth.size(), 1.,  0. , 5., 5);
-  
-  int n_prompt(0);
-  int n_cf(0);
-  int n_conv(0);
-  int n_tau(0);
-  int n_fake(0);
-  for(unsigned int iel=0; iel < electronColl_nocut_truth.size(); iel++){
-    if(electronColl_nocut_truth.at(iel).MCIsPrompt()) n_prompt++;
-    else n_fake++;
 
-    if(electronColl_nocut_truth.at(iel).MCIsCF()) n_cf++;
-    if(electronColl_nocut_truth.at(iel).MCIsFromConversion()) n_conv++;
-    if(electronColl_nocut_truth.at(iel).MCFromTau()) n_tau++;
-    FillHist("el_pdgid", fabs(electronColl_nocut_truth.at(iel).MCMatchedPdgId()),  fabs(electronColl_nocut_truth.at(iel).MotherPdgId()), 1., 0., 1000., 1000, 0., 1000., 1000); 
-  }
   
-  FillHist("electron_prompt_breakdown", n_prompt,n_fake, 1., 0., 4, 4, 0., 4., 4);
-  FillHist("electron_cf_breakdown", n_cf, n_prompt,1., 0., 4, 4, 0., 5., 5);
-  FillHist("electron_conv_breakdown", n_conv,n_prompt, 1., 0., 4, 4, 0., 5., 5);
-  FillHist("electron_tau_breakdown", n_tau,n_prompt, 1., 0., 4, 4, 0., 5., 5);
-  
-  /// Can count number of bjets using IsBTagged function in KJet class 
-  int nbjet_just_using_discriminant=0;
-  for(unsigned int ij =0; ij < GetJets(BaseSelection::JET_HN).size(); ij++){
-    if(GetJets(BaseSelection::JET_HN).at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Tight)) nbjet_just_using_discriminant++;
-  }
-
   
   /// Updated way to cound bjets using NBJet function
   /// NBJet counts number of bjets, but varies the value of btag disciminant as expained in 
@@ -280,9 +254,9 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
   
-  cout << " " << endl;
   
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
 
@@ -299,12 +273,19 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronColl_nocut             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
 
+  std::vector<snu::KElectron> electronColl             = GetElectrons( BaseSelection::ELECTRON_POG_TIGHT);
+  for(unsigned int iel=0; iel < electronColl.size(); iel++){
+    int index_truth = electronColl.at(iel).MCTruthIndex();
+    bool isprompt   = eventbase->GetTruth().at(index_truth).StatusFlag(KTruth::isprompt);
+  }
+  
+
+
+
   //for(unsigned int iel = 0 ; iel < electronColl_nocut.size() ; iel++){
   // cout << "RECO " << electronColl_nocut.at(iel).Eta() << " " << electronColl_nocut.at(iel).Phi() << " " << electronColl_nocut.at(iel).Pt() << endl;
   // }
 
-  
-  std::vector<snu::KElectron> electronColl             = GetElectrons(false, false, BaseSelection::ELECTRON_POG_TIGHT);
   std::vector<snu::KElectron> electronColl_all             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
   
   FillHist("TruthMatchingAll", weight, electronColl_all.size(), 0., 6.,6);
@@ -340,10 +321,18 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Correct MC for pileup   
   
   float pileup_reweight (1.);
-  if (!k_isdata) {
+  if (!isData) {
     /// use silver or gold
+    /// Weights use:
+    //  pileupCalc.py -i Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt 
+    // --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 PileUpData_Dn.root
     pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
   }
+  
+  /// using AltPileUpWeight for minbias xs = 71000
+  // pileup_reweight = eventbase->GetEvent().AltPileUpWeight(lumimask);
+  
+
   FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
   
   float id_weight=1.;
