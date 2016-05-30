@@ -789,6 +789,7 @@ topLJ		93722.93	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 TTJets_Semi
 ttbar           29588.256       cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014  TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/
 ttbarMS    	1.		cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
 ttbarMSchs    	225662.8906		cluster_mc_ntuple_path_2016      cms_mc_ntuple_path_2016 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/		
+sync       1.    cluster_mc_ntuple_path_2016      cms_mc_ntuple_path_2016        /SYNC/
 				
 ### EXTRA STAT
 W1Jets		3781.307	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 W1JetsToLNu_TuneZ2Star_8TeV-madgraph/

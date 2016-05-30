@@ -98,19 +98,19 @@ then
     cycle="CHEJ_bestfit"
 #	cycle="CHEJ_Ana"
 #	cycle="CHEltrain"
-    skinput="True"
+    skinput="False"
     useskim=""
     
-    njobs=60
+    njobs=1
     data_lumi="AtoD"
-    loglevel="INFO"
+    loglevel="DEBUG"
 
     logstep=1000
 #	nevents=10000
 	
 #	declare -a input_samples=("ttbarMS" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "Wjets" "DY50plus" "DY10to50" "WW_py" "ZZ_py" "WW_py" "ttW" "ttZ" "QCD_20_30_EM" "QCD_30_80_EM" "QCD_80_170_EM" "QCD_170_250_EM" "QCD_250_350_EM" "QCD_350_EM" "QCD_20_30_BCtoE" "QCD_30_80_BCtoE" "QCD_80_170_BCtoE" "QCD_170_250_BCtoE" "QCD_250_350_BCtoE" "QCD_350_BCtoE")
 
-	declare -a input_samples=("ttbarMS")
+	declare -a input_samples=("sync")
 #	declare -a input_samples=("Wjets" "DY50plus" "DY10to50")
 #	declare -a input_samples=("ZZ_py" "WZ_py" "WW_py")
 #	declare -a input_samples=("stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW")
