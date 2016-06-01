@@ -76,41 +76,25 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   /// MET variables
   // PF met
   kevent.SetPFMET( PFMETType01XYCor->at(0));
+  kevent.SetPFMETx( PFMETxType01XYCor->at(0));
+  kevent.SetPFMETy( PFMETyType01XYCor->at(0));
   m_logger << DEBUG << "Filling Event 2" << LQLogger::endmsg;
 
   kevent.SetPFMETRaw( PFMET->at(0));
+  kevent.SetPFMETxRaw( PFMETx->at(0));
+  kevent.SetPFMETyRaw( PFMETy->at(0));
+
   kevent.SetPFMETType1( PFMETType1Cor->at(0));
   kevent.SetPFMETType01( PFMETType01Cor->at(0));
   kevent.SetPFMETphi( PFMETPhiType01XYCor->at(0));
   kevent.SetPFMETRawphi( PFMETPhi->at(0));
   kevent.SetPFMETType1phi( PFMETPhiType1Cor->at(0));
+  
   kevent.SetPFMETType01phi( PFMETPhiType01Cor->at(0));
  
   kevent.SetPFSumET( PFSumETType01XYCor->at(0));
   
-  if(!isData){
-    if(GenMETCalo){
-      kevent.SetGenMETCalo(GenMETCalo->at(0));
-      kevent.SetGenMETPhiCalo(GenMETPhiCalo->at(0));
-      kevent.SetGenSumEtCalo(GenSumETCalo->at(0));
-      kevent.SetGenMETTrue(GenMETTrue->at(0));
-      kevent.SetGenMETPhiTrue(GenMETPhiTrue->at(0));
-      kevent.SetGenSumEtTrue(GenSumETTrue->at(0));
-      
-    }
-  }
-  if(PFMETType01XYCorElectronEnDown){
-    kevent.SetPFMETElectronEnDown(PFMETType01XYCorElectronEnDown->at(0));
-    kevent.SetPFMETElectronEnUp(PFMETType01XYCorElectronEnUp->at(0));
-    kevent.SetPFMETJetEnDown(PFMETType01XYCorJetEnDown->at(0));
-    kevent.SetPFMETJetEnUp(PFMETType01XYCorJetEnUp->at(0));
-    kevent.SetPFMETJetResDown( PFMETType01XYCorJetResDown->at(0));
-    kevent.SetPFMETJetResUp( PFMETType01XYCorJetResUp->at(0));
-    kevent.SetPFMETMuonEnDown(PFMETType01XYCorMuonEnDown->at(0));
-    kevent.SetPFMETMuonEnUp(PFMETType01XYCorMuonEnUp->at(0));
-    kevent.SetPFMETUnclusteredDown(PFMETType01XYCorUnclusteredDown->at(0));
-    kevent.SetPFMETUnclusteredUp(PFMETType01XYCorUnclusteredUp->at(0));
-  }
+
   kevent.SetProcessID(ProcessID);
 
   m_logger << DEBUG << "Filling Event 3" << LQLogger::endmsg;
@@ -195,6 +179,7 @@ std::vector<KTau> SKTreeFiller::GetAllTaus(){
   }
 
 
+  return taus;
   m_logger << DEBUG << "Filling Tau" << LQLogger::endmsg;
   for(UInt_t itau = 0; itau < HPSTauPhi->size(); itau++){
 
@@ -221,83 +206,86 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
   m_logger << DEBUG << "Filling Electron" << LQLogger::endmsg;
 
-  for (UInt_t iel=0; iel< ElectronEta->size(); iel++) {
+  for (UInt_t iel=0; iel< ElectronLooseEta->size(); iel++) {
     KElectron el;
     
     /// Kinematic Variables
-    el.SetPtEtaPhiE(ElectronPt->at(iel),ElectronEta->at(iel),ElectronPhi->at(iel),ElectronEnergy->at(iel));
-    el.SetisEB(ElectronIsEB->at(iel));
-    el.SetisEE(ElectronIsEE->at(iel));
+    el.SetPtEtaPhiE(ElectronLoosePt->at(iel),ElectronLooseEta->at(iel),ElectronLoosePhi->at(iel),ElectronLooseEnergy->at(iel));
+    m_logger << DEBUG << "Filling ElectronLoose ID Bit "<< LQLogger::endmsg;
+    el.SetPx(ElectronLoosePx->at(iel));
+    el.SetPy(ElectronLoosePy->at(iel));
+    el.SetisEB(ElectronLooseIsEB->at(iel));
+    el.SetisEE(ElectronLooseIsEE->at(iel));
 
-    el.SetSCEta(ElectronSCEta->at(iel));
-    el.SetSCPhi(ElectronSCPhi->at(iel));
-    el.SetSCPt(ElectronSCPt->at(iel));
-    el.SetRawEnergy(ElectronSCRawEnergy->at(iel));
+    el.SetSCEta(ElectronLooseSCEta->at(iel));
+    el.SetSCPhi(ElectronLooseSCPhi->at(iel));
+    el.SetSCPt(ElectronLooseSCPt->at(iel));
+    el.SetRawEnergy(ElectronLooseSCRawEnergy->at(iel));
     
-    m_logger << DEBUG << "Filling Electron ID Bit "<< LQLogger::endmsg;
+    m_logger << DEBUG << "Filling ElectronLoose ID Bit "<< LQLogger::endmsg;
     
-    if(ElectronmvatrigV0){
-      el.SetElectronTrigMVA(ElectronmvatrigV0->at(iel));
-      el.SetElectronMVA(ElectronmvaNontrigV0->at(iel));
+    if(ElectronLoosemvatrigV0){
+      el.SetElectronTrigMVA(ElectronLoosemvatrigV0->at(iel));
+      el.SetElectronMVA(ElectronLoosemvaNontrigV0->at(iel));
     }
     
 
-    m_logger << DEBUG << "Filling Electron ID variablest "<< LQLogger::endmsg;
+    m_logger << DEBUG << "Filling ElectronLoose ID variablest "<< LQLogger::endmsg;
     /// set ID variables
     
-    el.SetTrackerDrivenSeed(ElectronHasTrackerDrivenSeed->at(iel));
-    el.SetEcalDrivenSeed(ElectronHasEcalDrivenSeed->at(iel));
-    el.SetDeltaEtaTrkSC(ElectronDeltaEtaTrkSC->at(iel));
-    el.SetDeltaPhiTrkSC(ElectronDeltaPhiTrkSC->at(iel));
-    el.SetSigmaIEtaIEta(ElectronSigmaIEtaIEta->at(iel));
-    el.SetHoE(ElectronHoE->at(iel));
-    el.SetcaloEnergy(ElectronCaloEnergy->at(iel));
-    el.SetESuperClusterOverP(ElectronESuperClusterOverP->at(iel));
+    el.SetTrackerDrivenSeed(ElectronLooseHasTrackerDrivenSeed->at(iel));
+    el.SetEcalDrivenSeed(ElectronLooseHasEcalDrivenSeed->at(iel));
+    el.SetDeltaEtaTrkSC(ElectronLooseDeltaEtaTrkSC->at(iel));
+    el.SetDeltaPhiTrkSC(ElectronLooseDeltaPhiTrkSC->at(iel));
+    el.SetSigmaIEtaIEta(ElectronLooseSigmaIEtaIEta->at(iel));
+    el.SetHoE(ElectronLooseHoE->at(iel));
+    el.SetcaloEnergy(ElectronLooseCaloEnergy->at(iel));
+    el.SetESuperClusterOverP(ElectronLooseESuperClusterOverP->at(iel));
 
-    m_logger << DEBUG << "Filling Electron vertex info "<< LQLogger::endmsg;
+    m_logger << DEBUG << "Filling ElectronLoose vertex info "<< LQLogger::endmsg;
     //// distance of closest vertex to lepton
-    el.SetVtxDistXY(ElectronVtxDistXY->at(iel));
-    el.SetVtxDistZ(ElectronVtxDistZ->at(iel));
-    el.SetLeadVtxDistXY(ElectronLeadVtxDistXY->at(iel));
-    el.SetLeadVtxDistZ(ElectronLeadVtxDistZ->at(iel));
+    el.SetVtxDistXY(ElectronLooseVtxDistXY->at(iel));
+    el.SetVtxDistZ(ElectronLooseVtxDistZ->at(iel));
+    el.SetLeadVtxDistXY(ElectronLooseLeadVtxDistXY->at(iel));
+    el.SetLeadVtxDistZ(ElectronLooseLeadVtxDistZ->at(iel));
     
-    el.SetVtxIndex(ElectronVtxIndex->at(iel));
-    el.SetPrimaryVertexDXY(ElectronLeadVtxDistXY->at(iel));
-    el.SetPrimaryVertexDXYError(ElectronPrimaryVertexDXYError->at(iel));
-    el.SetTrackPt(ElectronTrackPt->at(iel));
-    el.SetTrackValidFractionOfHits(ElectronTrackValidFractionOfHits->at(iel));
-    el.SetTrkVx(ElectronTrackVx->at(iel));
-    el.SetTrkVy(ElectronTrackVy->at(iel));
-    el.SetTrkVz(ElectronTrackVz->at(iel));
+    el.SetVtxIndex(ElectronLooseVtxIndex->at(iel));
+    el.SetPrimaryVertexDXY(ElectronLooseLeadVtxDistXY->at(iel));
+    el.SetPrimaryVertexDXYError(ElectronLoosePrimaryVertexDXYError->at(iel));
+    el.SetTrackPt(ElectronLooseTrackPt->at(iel));
+    el.SetTrackValidFractionOfHits(ElectronLooseTrackValidFractionOfHits->at(iel));
+    el.SetTrkVx(ElectronLooseTrackVx->at(iel));
+    el.SetTrkVy(ElectronLooseTrackVy->at(iel));
+    el.SetTrkVz(ElectronLooseTrackVz->at(iel));
     /// distance between lepton and PRIMARY analysis vertex
     
 
     
 
     //cout << "\n ----- " << endl;
-    //cout << "Lead vertex dxy = " << ElectronLeadVtxDistXY->at(iel) << endl;
-    //cout << "Primary vertex dxy = " << ElectronPrimaryVertexDXY->at(iel) << endl;
-    //cout << "Closest vertex dxy = " << ElectronVtxDistXY->at(iel) << endl;
+    //cout << "Lead vertex dxy = " << ElectronLooseLeadVtxDistXY->at(iel) << endl;
+    //cout << "Primary vertex dxy = " << ElectronLoosePrimaryVertexDXY->at(iel) << endl;
+    //cout << "Closest vertex dxy = " << ElectronLooseVtxDistXY->at(iel) << endl;
   
     if(VertexN != -1){
       //cout << "Setting dz for electron, using method 1 : vertexN = " <<  VertexN << endl;
-      //cout << "ElectronTrackVz =  " << ElectronTrackVz->at(iel)<< " : VertexZ = " << VertexZ->at(VertexN) << endl;
-      el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(VertexN));
-      el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)));
+      //cout << "ElectronLooseTrackVz =  " << ElectronLooseTrackVz->at(iel)<< " : VertexZ = " << VertexZ->at(VertexN) << endl;
+      el.Setdz( ElectronLooseTrackVz->at(iel) - VertexZ->at(VertexN));
+      el.Setdxy( sqrt(pow(ElectronLooseTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronLooseTrackVy->at(iel)-VertexY->at(VertexN),2)));
       if(VertexN != 0){
-	//cout << "Setting dxy of electron " << ElectronTrackVx->at(iel) <<  " " << VertexX->at(VertexN) << " " << ElectronTrackVy->at(iel)<< " " << VertexY->at(VertexN) << endl;
+	//cout << "Setting dxy of electron " << ElectronLooseTrackVx->at(iel) <<  " " << VertexX->at(VertexN) << " " << ElectronLooseTrackVy->at(iel)<< " " << VertexY->at(VertexN) << endl;
 	//cout << "vertex = " << VertexN << endl;
       }
-      //cout << "electron vertex = " << ElectronVtxIndex->at(iel) << " event vertex = " << VertexN << endl; 
-      //cout << "event dxy = " << sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(VertexN),2)) << endl; 
-      //cout << "event dxy (el vertex) = " << sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ElectronVtxIndex->at(iel)),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ElectronVtxIndex->at(iel)),2)) << endl; 
+      //cout << "electron vertex = " << ElectronLooseVtxIndex->at(iel) << " event vertex = " << VertexN << endl; 
+      //cout << "event dxy = " << sqrt(pow(ElectronLooseTrackVx->at(iel)-VertexX->at(VertexN),2)+pow(ElectronLooseTrackVy->at(iel)-VertexY->at(VertexN),2)) << endl; 
+      //cout << "event dxy (el vertex) = " << sqrt(pow(ElectronLooseTrackVx->at(iel)-VertexX->at(ElectronLooseVtxIndex->at(iel)),2)+pow(ElectronLooseTrackVy->at(iel)-VertexY->at(ElectronLooseVtxIndex->at(iel)),2)) << endl; 
     }
     else if (VertexN == -999.){
 
       snu::KEvent ev = SKTreeFiller::GetEventInfo();
-      cout << "ElectronTrackVz =  " << ElectronTrackVz->at(iel) << " : VertexZ = " << VertexZ->at(ev.VertexIndex()) << " : VertexN = " << ev.VertexIndex() << endl;
-      el.Setdz( ElectronTrackVz->at(iel) - VertexZ->at(ev.VertexIndex()));
-      el.Setdxy( sqrt(pow(ElectronTrackVx->at(iel)-VertexX->at(ev.VertexIndex()),2)+pow(ElectronTrackVy->at(iel)-VertexY->at(ev.VertexIndex()),2)));
+      cout << "ElectronLooseTrackVz =  " << ElectronLooseTrackVz->at(iel) << " : VertexZ = " << VertexZ->at(ev.VertexIndex()) << " : VertexN = " << ev.VertexIndex() << endl;
+      el.Setdz( ElectronLooseTrackVz->at(iel) - VertexZ->at(ev.VertexIndex()));
+      el.Setdxy( sqrt(pow(ElectronLooseTrackVx->at(iel)-VertexX->at(ev.VertexIndex()),2)+pow(ElectronLooseTrackVy->at(iel)-VertexY->at(ev.VertexIndex()),2)));
     }
     else {
       el.Setdz( -999.);
@@ -306,51 +294,55 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     m_logger << DEBUG << "Filling isolation variables " << LQLogger::endmsg;
     /// Set Isolation variables
-    m_logger << DEBUG << ElectronTrkIsoDR03 << " " << ElectronEcalIsoDR03 << " " << ElectronHcalIsoDR03 << LQLogger::endmsg;
+    m_logger << DEBUG << ElectronLooseTrkIsoDR03 << " " << ElectronLooseEcalIsoDR03 << " " << ElectronLooseHcalIsoDR03 << LQLogger::endmsg;
 
-    el.SetTrkIsoDR03(ElectronTrkIsoDR03->at(iel));
-    el.SetECalIsoDR03(ElectronEcalIsoDR03->at(iel));
-    el.SetHCalIsoDR03(ElectronHcalIsoDR03->at(iel));
-    if(ElectronTrkIsoPAT){
-      el.SetTrkIsoDR04(ElectronTrkIsoPAT->at(iel));
-      el.SetECalIsoDR04(ElectronEcalIsoPAT->at(iel));
-      el.SetHCalIsoDR04(ElectronHcalIsoPAT->at(iel));
+    el.SetTrkIsoDR03(ElectronLooseTrkIsoDR03->at(iel));
+    el.SetECalIsoDR03(ElectronLooseEcalIsoDR03->at(iel));
+    el.SetHCalIsoDR03(ElectronLooseHcalIsoDR03->at(iel));
+    if(ElectronLooseTrkIsoPAT){
+      el.SetTrkIsoDR04(ElectronLooseTrkIsoPAT->at(iel));
+      el.SetECalIsoDR04(ElectronLooseEcalIsoPAT->at(iel));
+      el.SetHCalIsoDR04(ElectronLooseHcalIsoPAT->at(iel));
     }
     m_logger << DEBUG << "Filling PF03 isolation variables " << LQLogger::endmsg;
     
-    el.SetPFChargedHadronIso03(ElectronPFChargedHadronIso03->at(iel));
-    el.SetPFPhotonIso03(ElectronPFPhotonIso03->at(iel));
-    el.SetPFNeutralHadronIso03(ElectronPFNeutralHadronIso03->at(iel));
+    el.SetPFChargedHadronIso03(ElectronLoosePFChargedHadronIso03->at(iel));
+    el.SetPFPhotonIso03(ElectronLoosePFPhotonIso03->at(iel));
+    el.SetPFNeutralHadronIso03(ElectronLoosePFNeutralHadronIso03->at(iel));
 
     m_logger << DEBUG << "Filling PF04 isolation variables " << LQLogger::endmsg;
-    el.SetPFChargedHadronIso04(ElectronPFChargedHadronIso04->at(iel));
-    el.SetPFPhotonIso04(ElectronPFPhotonIso04->at(iel));
-    el.SetPFNeutralHadronIso04(ElectronPFNeutralHadronIso04->at(iel));
+    el.SetPFChargedHadronIso04(ElectronLoosePFChargedHadronIso04->at(iel));
+    el.SetPFPhotonIso04(ElectronLoosePFPhotonIso04->at(iel));
+    el.SetPFNeutralHadronIso04(ElectronLoosePFNeutralHadronIso04->at(iel));
     
     m_logger << DEBUG << "Filling electron charge variables " << LQLogger::endmsg;
 
     /// set Charge variables
-    el.SetCharge(ElectronCharge->at(iel));
-    el.SetGsfCtfScPixCharge(ElectronGsfCtfScPixCharge->at(iel));
-    el.SetGsfScPixCharge(ElectronGsfScPixCharge->at(iel));
-    el.SetGsfCtfCharge(ElectronGsfCtfCharge->at(iel));
+    el.SetCharge(ElectronLooseCharge->at(iel));
+    el.SetGsfCtfScPixCharge(ElectronLooseGsfCtfScPixCharge->at(iel));
+    el.SetGsfScPixCharge(ElectronLooseGsfScPixCharge->at(iel));
+    el.SetGsfCtfCharge(ElectronLooseGsfCtfCharge->at(iel));
     
     m_logger << DEBUG << "Filling electron conversion variables " << LQLogger::endmsg;
 
     /// set conversion variables
-    el.SetMissingHits(ElectronMissingHitsEG->at(iel));
-    el.SetMissingLostHits(ElectronMissingHits->at(iel));
-    el.SetHasMatchedConvPhot(ElectronHasMatchedConvPhot->at(iel));
+    el.SetMissingHits(ElectronLooseMissingHitsEG->at(iel));
+    el.SetMissingLostHits(ElectronLooseMissingHits->at(iel));
+    el.SetHasMatchedConvPhot(ElectronLooseHasMatchedConvPhot->at(iel));
 
-    el.SetConvFitProb(ElectronConvFitProb->at(iel));
-    el.SetNBrems(ElectronNumberOfBrems->at(iel));
-    el.SetFBrem(ElectronFbrem->at(iel));
+    el.SetConvFitProb(ElectronLooseConvFitProb->at(iel));
+    el.SetNBrems(ElectronLooseNumberOfBrems->at(iel));
+    el.SetFBrem(ElectronLooseFbrem->at(iel));
 
-    if(ElectronshiftedEup){
-      if(ElectronshiftedEup->size() > 0) {
-	if(ElectronshiftedEup->size() == ElectronHasMatchedConvPhot->size() ){
-	  el.SetShiftedEUp(ElectronshiftedEup->at(iel));
-	  el.SetShiftedEDown(ElectronshiftedEdown->at(iel));
+    if(ElectronLooseshiftedEup){
+      if(ElectronLooseshiftedEup->size() > 0) {
+	if(ElectronLooseshiftedEup->size() == ElectronLooseHasMatchedConvPhot->size() ){
+	  el.SetShiftedEUp(ElectronLooseshiftedEup->at(iel));
+	  el.SetShiftedEDown(ElectronLooseshiftedEdown->at(iel));
+          el.SetShiftedExUp(ElectronLooseshiftedExup->at(iel));
+          el.SetShiftedExDown(ElectronLooseshiftedExdown->at(iel));
+          el.SetShiftedEyUp(ElectronLooseshiftedEyup->at(iel));
+          el.SetShiftedEyDown(ElectronLooseshiftedEydown->at(iel));
 	}
       }
       else{
@@ -358,25 +350,25 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	el.SetShiftedEDown(0.);
       }
     }
-    m_logger << DEBUG << "Filling electronElectronDCotTheta  " << LQLogger::endmsg;
+    m_logger << DEBUG << "Filling electronElectronLooseDCotTheta  " << LQLogger::endmsg;
 
-    if(ElectronDCotTheta){
-      el.SetCotTheta(ElectronDCotTheta->at(iel));
-      el.SetElDist(ElectronDist->at(iel));
+    if(ElectronLooseDCotTheta){
+      el.SetCotTheta(ElectronLooseDCotTheta->at(iel));
+      el.SetElDist(ElectronLooseDist->at(iel));
     }
     
     
     m_logger << DEBUG << "Filling trigmatch variable" << LQLogger::endmsg;
 
-    el.SetHLTDoubleElMatched(ElectronHLTDoubleEleMatched->at(iel));
-    if(ElectronHLTSingleEleMatched17)el.SetHLTSingleElMatched17(ElectronHLTSingleEleMatched17->at(iel));
-    if(ElectronHLTSingleEleMatched8)el.SetHLTSingleElMatched8(ElectronHLTSingleEleMatched8->at(iel));
-    if(ElectronHLTSingleEleMatched)el.SetHLTSingleElMatched8(ElectronHLTSingleEleMatched->at(iel));
-    el.SetHLTSingleElWP80Matched(ElectronHLTSingleEleWP80Matched->at(iel));
+    el.SetHLTDoubleElMatched(ElectronLooseHLTDoubleEleMatched->at(iel));
+    if(ElectronLooseHLTSingleEleMatched17)el.SetHLTSingleElMatched17(ElectronLooseHLTSingleEleMatched17->at(iel));
+    if(ElectronLooseHLTSingleEleMatched8)el.SetHLTSingleElMatched8(ElectronLooseHLTSingleEleMatched8->at(iel));
+    if(ElectronLooseHLTSingleEleMatched)el.SetHLTSingleElMatched8(ElectronLooseHLTSingleEleMatched->at(iel));
+    el.SetHLTSingleElWP80Matched(ElectronLooseHLTSingleEleWP80Matched->at(iel));
 
 
-    if(ElectronHLTEMuMatched8)el.SetHLTEMuMatched8(ElectronHLTEMuMatched8->at(iel));
-    if(ElectronHLTEMuMatched17)el.SetHLTEMuMatched17(ElectronHLTEMuMatched17->at(iel));
+    if(ElectronLooseHLTEMuMatched8)el.SetHLTEMuMatched8(ElectronLooseHLTEMuMatched8->at(iel));
+    if(ElectronLooseHLTEMuMatched17)el.SetHLTEMuMatched17(ElectronLooseHLTEMuMatched17->at(iel));
 
     m_logger << DEBUG << "Filling El Truth variables " << LQLogger::endmsg;
     
@@ -399,9 +391,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     */
     /// truth info
     if(!isData){
-      el.SetElectronMatchedGenPt(ElectronMatchedGenParticlePt->at(iel));
-      el.SetElectronMatchedGenEta(ElectronMatchedGenParticleEta->at(iel));
-      el.SetElectronMatchedGenPhi(ElectronMatchedGenParticlePhi->at(iel));
+      el.SetElectronMatchedGenPt(ElectronLooseMatchedGenParticlePt->at(iel));
+      el.SetElectronMatchedGenEta(ElectronLooseMatchedGenParticleEta->at(iel));
+      el.SetElectronMatchedGenPhi(ElectronLooseMatchedGenParticlePhi->at(iel));
       
       
       bool matched_electron(false);
@@ -412,24 +404,24 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       double match_pt =0.;
       double match_eta =0.;
       double match_phi =0.;
-      if(fabs(ElectronMatchedGenParticlePt->at(iel)) != 999){
-	match_pt = ElectronMatchedGenParticlePt->at(iel);
-	match_eta = ElectronMatchedGenParticleEta->at(iel);
-	match_phi = ElectronMatchedGenParticlePhi->at(iel);
+      if(fabs(ElectronLooseMatchedGenParticlePt->at(iel)) != 999){
+	match_pt = ElectronLooseMatchedGenParticlePt->at(iel);
+	match_eta = ElectronLooseMatchedGenParticleEta->at(iel);
+	match_phi = ElectronLooseMatchedGenParticlePhi->at(iel);
       }
       else{
-	match_pt = ElectronPt->at(iel);
-	match_eta = ElectronEta->at(iel);
-	match_phi = ElectronPhi->at(iel);
+	match_pt = ElectronLoosePt->at(iel);
+	match_eta = ElectronLooseEta->at(iel);
+	match_phi = ElectronLoosePhi->at(iel);
       }
       
-      m_logger << DEBUG <<  "Electron Charge  = " << ElectronCharge->at(iel) << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Electron Eta  = " << match_eta << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Electron Phi  = " << match_phi << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Electron Pt  = " <<  match_pt << LQLogger::endmsg;
+      m_logger << DEBUG <<  "ElectronLoose Charge  = " << ElectronLooseCharge->at(iel) << LQLogger::endmsg;
+      m_logger << DEBUG <<  "ElectronLoose Eta  = " << match_eta << LQLogger::endmsg;
+      m_logger << DEBUG <<  "ElectronLoose Phi  = " << match_phi << LQLogger::endmsg;
+      m_logger << DEBUG <<  "ElectronLoose Pt  = " <<  match_pt << LQLogger::endmsg;
       
       
-      if(ElectronPt->at(iel) > 10.) {
+      if(ElectronLoosePt->at(iel) > 10.) {
 	int MotherPdgId(-999);
 	int eltruth_index=0;
 	bool photon_conv(false);
@@ -609,7 +601,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  eltruth_index++;
 	  
 	  if((fabs(GenZMuPdgId->at(g))==11)){
-	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenZMuPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(ElectronLooseEta->at(iel) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronLoosePhi ->at(iel) -GenZMuPhi->at(g))),2.0) );
 	    m_logger << DEBUG << "Truth Matched to electron[GenZMu]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenZMuPt->at(g) << "/" << GenZMuEta->at(g) << "/" << GenZMuPhi->at(g) << "/" <<  GenZMuStatus->at(g) << "/" << GenZMuPdgId->at(g) << "/" << GenZMuMotherIndex->at(g) << LQLogger::endmsg;
 	    if(dr < 0.2){
 	      ipdgid =  GenZMuPdgId->at(g);
@@ -624,7 +616,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(matched_electron) continue;
 	  eltruth_index++;
 	  if((fabs(GenZTauPdgId->at(g))==11)){
-	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenZTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenZTauPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(ElectronLooseEta->at(iel) - GenZTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronLoosePhi ->at(iel) -GenZTauPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to electron[GenZTau]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenZTauPt->at(g) << "/" << GenZTauEta->at(g) << "/" << GenZTauPhi->at(g) <<  "/" << GenZTauPhi->at(g) << "/" <<  GenZTauStatus->at(g) << "/" << GenZTauPdgId->at(g) << "/" << GenZTauMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenZTauPdgId->at(g);
@@ -645,7 +637,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(matched_electron) continue;
 	  eltruth_index++;
 	  if((fabs(GenZElectronPdgId->at(g))==11)){
-	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenZElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenZElectronPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(ElectronLooseEta->at(iel) - GenZElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronLoosePhi ->at(iel) -GenZElectronPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to electron[GenZElectron]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenZElectronPt->at(g) << "/" << GenZElectronEta->at(g) << "/" << GenZElectronPhi->at(g) << "/" <<  GenZElectronStatus->at(g) << "/" << GenZElectronPdgId->at(g) << "/" << GenZElectronMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenZElectronPdgId->at(g);
@@ -661,7 +653,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  eltruth_index++;
 	  
 	  if((fabs(GenWMuPdgId->at(g))==11)){
-	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenWMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenWMuPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(ElectronLooseEta->at(iel) - GenWMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronLoosePhi ->at(iel) -GenWMuPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to electron[GenWMu]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWMuPt->at(g) << "/" << GenWMuEta->at(g) << "/" << GenWMuPhi->at(g) <<  "/" <<  GenWMuStatus->at(g) << "/" << GenWMuPdgId->at(g) << "/" << GenWMuMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenWMuPdgId->at(g);
@@ -676,7 +668,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(matched_electron) continue;
 	  eltruth_index++;
 	  if((fabs(GenWTauPdgId->at(g))==11)){
-	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenWTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenWTauPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(ElectronLooseEta->at(iel) - GenWTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronLoosePhi ->at(iel) -GenWTauPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to electron[GenWTau]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWTauPt->at(g) << "/" << GenWTauEta->at(g) << "/" << GenWTauPhi->at(g) <<  "/" << GenWTauPhi->at(g) << "/" <<  GenWTauStatus->at(g) << "/" << GenWTauPdgId->at(g) << "/" << GenWTauMotherIndex->at(g) << LQLogger::endmsg;            
 	      ipdgid =  GenWTauPdgId->at(g);
@@ -695,7 +687,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(matched_electron) continue;
 	  eltruth_index++;
 	  if((fabs(GenWElectronPdgId->at(g))==11)){
-	    double dr = sqrt( pow(fabs(ElectronEta->at(iel) - GenWElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronPhi ->at(iel) -GenWElectronPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(ElectronLooseEta->at(iel) - GenWElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(ElectronLoosePhi ->at(iel) -GenWElectronPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to electron[GenWElectron]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWElectronPt->at(g) << "/" << GenWElectronEta->at(g) << "/" << GenWElectronPhi->at(g) << "/" <<  GenWElectronStatus->at(g) << "/" << GenWElectronPdgId->at(g) << "/" << GenWElectronMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenWElectronPdgId->at(g);
@@ -710,7 +702,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  //cout << "Is prompt (MotherPdgId = "  << MotherPdgId << ") "<< endl;
 	  //if ( ElectronCharge->at(iel)* ipdgid  > 0) cout << "Is chargeflip" << endl; 
 	  
-	  if ( ElectronCharge->at(iel)* ipdgid  > 0)   partType = KParticle::chargemisid;
+	  if ( ElectronLooseCharge->at(iel)* ipdgid  > 0)   partType = KParticle::chargemisid;
 	  else partType = KParticle::notfake;
 
 	  if(fabs(MotherPdgId) ==15){
@@ -817,6 +809,8 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   for (UInt_t ijet=0; ijet< PFJetEta->size(); ijet++) {
     KJet jet;
     m_logger << DEBUG << "PFJeta = " << PFJetEta->at(ijet) << LQLogger::endmsg;
+    jet.SetPx(PFJetPx->at(ijet));
+    jet.SetPy(PFJetPy->at(ijet));
     if(!(PFJetPt && PFJetEta && PFJetPhi && PFJetEnergy )) ERRORMessage("PFJetPtEtaPhi");
     else jet.SetPtEtaPhiE(PFJetPt->at(ijet), PFJetEta->at(ijet), PFJetPhi->at(ijet), PFJetEnergy->at(ijet));
     if(!PFJetEnergyRaw)ERRORMessage("PFJetEnergyRaw");
@@ -936,10 +930,18 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
 	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
 	
 	jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
+	jet.SetJetScaledUpPx(PFJetScaledUpPx->at(ijet));
+	jet.SetJetScaledUpPy(PFJetScaledUpPy->at(ijet));
 	jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
 	jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
 	jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
+	jet.SetJetSmearedDownPx(PFJetSmearedDownPx->at(ijet));
+	jet.SetJetSmearedDownPy(PFJetSmearedDownPy->at(ijet));
 	jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+        jet.SetJetSmearedDownPx(PFJetSmearedDownPx->at(ijet));
+        jet.SetJetSmearedUpPx(PFJetSmearedUpPx->at(ijet));
+        jet.SetJetSmearedDownPy(PFJetSmearedDownPy->at(ijet));
+        jet.SetJetSmearedUpPy(PFJetSmearedUpPy->at(ijet));
       }
     }
     else{
@@ -998,22 +1000,26 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   m_logger << DEBUG << "Filling Muons" << LQLogger::endmsg;
 
   int ims=0;
-  for (UInt_t ilep=0; ilep< MuonEta->size(); ilep++) {
+  for (UInt_t ilep=0; ilep< MuonLooseEta->size(); ilep++) {
     KMuon muon;
     m_logger << DEBUG << "Filling global pt/eta ... " << LQLogger::endmsg;
     
-    m_logger << DEBUG << MuonIsPF << " " << MuonIsGlobal << " " << MuonIsTracker << LQLogger::endmsg;
+    m_logger << DEBUG << MuonLooseIsPF << " " << MuonLooseIsGlobal << " " << MuonLooseIsTracker << LQLogger::endmsg;
 
     /// GENERAL
-    muon.SetISPF(MuonIsPF->at(ilep));
-    muon.SetIsGlobal(MuonIsGlobal->at(ilep));
-    muon.SetIsTracker(MuonIsTracker->at(ilep));
+    muon.SetISPF(MuonLooseIsPF->at(ilep));
+    muon.SetIsGlobal(MuonLooseIsGlobal->at(ilep));
+    muon.SetIsTracker(MuonLooseIsTracker->at(ilep));
 
-    if(MuonshiftedEup){
-      if(MuonshiftedEup->size() > 0){
-	if(MuonEta->size() == MuonshiftedEup->size()){
-	  muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
-	  muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+    if(MuonLooseshiftedEup){
+      if(MuonLooseshiftedEup->size() > 0){
+	if(MuonLooseEta->size() == MuonLooseshiftedEup->size()){
+	  muon.SetShiftedEUp(MuonLooseshiftedEup->at(ilep));
+	  muon.SetShiftedEDown(MuonLooseshiftedEdown->at(ilep));
+	  muon.SetShiftedExUp(MuonLooseshiftedExup->at(ilep));
+          muon.SetShiftedExDown(MuonLooseshiftedExdown->at(ilep));
+	  muon.SetShiftedEyUp(MuonLooseshiftedEyup->at(ilep));
+          muon.SetShiftedEyDown(MuonLooseshiftedEydown->at(ilep));
 	}
       }
       else{
@@ -1022,24 +1028,26 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }
     }
 
-    if(!MuonGlobalEta){
-      muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
-      muon.SetCharge(MuonCharge->at(ilep));
+    muon.SetPx(MuonLoosePx->at(ilep));
+    muon.SetPy(MuonLoosePy->at(ilep));
+    if(!MuonLooseGlobalEta){
+      muon.SetPtEtaPhiE(MuonLoosePt->at(ilep),MuonLooseEta->at(ilep),MuonLoosePhi->at(ilep),MuonLooseEnergy->at(ilep));
+      muon.SetCharge(MuonLooseCharge->at(ilep));
     }else{
-      if(MuonIsGlobal->at(ilep)){
-	muon.SetPtEtaPhiM(MuonGlobalPt->at(ilep), MuonGlobalEta->at(ilep),MuonGlobalPhi->at(ilep), 0.105658367);            
-	muon.SetCharge(MuonGlobalCharge->at(ilep));
+      if(MuonLooseIsGlobal->at(ilep)){
+	muon.SetPtEtaPhiM(MuonLooseGlobalPt->at(ilep), MuonLooseGlobalEta->at(ilep),MuonLooseGlobalPhi->at(ilep), 0.105658367);            
+	muon.SetCharge(MuonLooseGlobalCharge->at(ilep));
       }
     }
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
-    if(MuonMuonSpecPt){
+    if(MuonLooseMuonSpecPt){
       
-      if(MuonMuonSpecCharge->at(ilep) !=-999. && MuonMuonSpecCharge->at(ilep) !=0){
-	muon.SetMuonMSPt(MuonMuonSpecPt->at(ims));
-	muon.SetMuonMSEta(MuonMuonSpecEta->at(ims));
-	muon.SetMuonMSPhi(MuonMuonSpecPhi->at(ims));
-	muon.SetMuonMSCharge(MuonMuonSpecCharge->at(ims));
+      if(MuonLooseMuonSpecCharge->at(ilep) !=-999. && MuonLooseMuonSpecCharge->at(ilep) !=0){
+	muon.SetMuonMSPt(MuonLooseMuonSpecPt->at(ims));
+	muon.SetMuonMSEta(MuonLooseMuonSpecEta->at(ims));
+	muon.SetMuonMSPhi(MuonLooseMuonSpecPhi->at(ims));
+	muon.SetMuonMSCharge(MuonLooseMuonSpecCharge->at(ims));
 	ims++;
       }
       else{
@@ -1051,83 +1059,83 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }
     }
     m_logger << DEBUG << "Filling tracker ... " << LQLogger::endmsg;
-    if(MuonTrackerCharge){
-      muon.SetMuonIDPt(MuonPt->at(ilep));
-      muon.SetMuonIDEta(MuonEta->at(ilep));
-      muon.SetMuonIDPhi(MuonPhi->at(ilep));
-      muon.SetMuonIDCharge(MuonTrackerCharge->at(ilep));  
+    if(MuonLooseTrackerCharge){
+      muon.SetMuonIDPt(MuonLoosePt->at(ilep));
+      muon.SetMuonIDEta(MuonLooseEta->at(ilep));
+      muon.SetMuonIDPhi(MuonLoosePhi->at(ilep));
+      muon.SetMuonIDCharge(MuonLooseTrackerCharge->at(ilep));  
     }
-    muon.SetPtErr(MuonPtError->at(ilep));
-    muon.SetEtaErr(MuonEtaError->at(ilep));
+    muon.SetPtErr(MuonLoosePtError->at(ilep));
+    muon.SetEtaErr(MuonLooseEtaError->at(ilep));
    
-    muon.SetMuonVtxIndex(MuonBestTrackVtxIndex->at(ilep));    
+    muon.SetMuonVtxIndex(MuonLooseBestTrackVtxIndex->at(ilep));    
     
     m_logger << DEBUG << "Filling isolation ... " << LQLogger::endmsg;
     /// Isolation
-    muon.SetISOR03ChargedHad(MuonPFIsoR03ChargedHadron->at(ilep));
-    muon.SetISOR03NeutralHad(MuonPFIsoR03NeutralHadron->at(ilep));
-    muon.SetISOR03Photon(MuonPFIsoR03Photon->at(ilep));       
-    muon.SetISOR04ChargedHad(MuonPFIsoR04ChargedHadron->at(ilep));
-    muon.SetISOR04NeutralHad(MuonPFIsoR04NeutralHadron->at(ilep));
-    muon.SetISOR04Photon(MuonPFIsoR04Photon->at(ilep)); 
-    muon.SetIsolationEcalVeto(MuonEcalVetoIso->at(ilep));
-    muon.SetIsolationHcalVeto(MuonHcalVetoIso->at(ilep));
+    muon.SetISOR03ChargedHad(MuonLoosePFIsoR03ChargedHadron->at(ilep));
+    muon.SetISOR03NeutralHad(MuonLoosePFIsoR03NeutralHadron->at(ilep));
+    muon.SetISOR03Photon(MuonLoosePFIsoR03Photon->at(ilep));       
+    muon.SetISOR04ChargedHad(MuonLoosePFIsoR04ChargedHadron->at(ilep));
+    muon.SetISOR04NeutralHad(MuonLoosePFIsoR04NeutralHadron->at(ilep));
+    muon.SetISOR04Photon(MuonLoosePFIsoR04Photon->at(ilep)); 
+    muon.SetIsolationEcalVeto(MuonLooseEcalVetoIso->at(ilep));
+    muon.SetIsolationHcalVeto(MuonLooseHcalVetoIso->at(ilep));
 
 
     /// PU correction
-    muon.SetPileUp_R03(MuonPFIsoR03PU->at(ilep));
-    muon.SetPileUp_R04(MuonPFIsoR04PU->at(ilep));
+    muon.SetPileUp_R03(MuonLoosePFIsoR03PU->at(ilep));
+    muon.SetPileUp_R04(MuonLoosePFIsoR04PU->at(ilep));
     
     ////////// TRACK
     /// Imapct parameter 
     
-    muon.SetTrackVx(MuonTrkVx->at(ilep));
-    muon.SetTrackVy(MuonTrkVy->at(ilep));
-    muon.SetTrackVz(MuonTrkVz->at(ilep));
-    muon.SetVertexDistXY(MuonVtxDistXY->at(ilep));
+    muon.SetTrackVx(MuonLooseTrkVx->at(ilep));
+    muon.SetTrackVy(MuonLooseTrkVy->at(ilep));
+    muon.SetTrackVz(MuonLooseTrkVz->at(ilep));
+    muon.SetVertexDistXY(MuonLooseVtxDistXY->at(ilep));
 
     m_logger << DEBUG << "Filling IP  ... " << LQLogger::endmsg;
 
-    muon.Setdz(MuonBestTrackVtxDistZ->at(ilep)); 
-    muon.Setdxy(MuonBestTrackVtxDistXY->at(ilep));
-    muon.Setdxy_pat(MuonPrimaryVertexDXY->at(ilep));
-    muon.Setdxyerr_pat(MuonPrimaryVertexDXYError->at(ilep));
-    muon.SetD0( MuonTrkD0->at(ilep));
-    muon.SetD0Error (MuonTrkD0Error->at(ilep));
+    muon.Setdz(MuonLooseBestTrackVtxDistZ->at(ilep)); 
+    muon.Setdxy(MuonLooseBestTrackVtxDistXY->at(ilep));
+    muon.Setdxy_pat(MuonLoosePrimaryVertexDXY->at(ilep));
+    muon.Setdxyerr_pat(MuonLoosePrimaryVertexDXYError->at(ilep));
+    muon.SetD0( MuonLooseTrkD0->at(ilep));
+    muon.SetD0Error (MuonLooseTrkD0Error->at(ilep));
     //// chi2
-    muon.SetGlobalchi2( MuonGlobalChi2->at(ilep));
+    muon.SetGlobalchi2( MuonLooseGlobalChi2->at(ilep));
         
     /// hits
-    muon.SetValidHits( MuonGlobalTrkValidHits->at(ilep));
-    muon.SetPixelValidHits(  MuonTrkPixelHits->at(ilep));
-    muon.SetValidStations( MuonStationMatches->at(ilep));
-    muon.SetLayersWithMeasurement ( MuonTrackLayersWithMeasurement->at(ilep));
+    muon.SetValidHits( MuonLooseGlobalTrkValidHits->at(ilep));
+    muon.SetPixelValidHits(  MuonLooseTrkPixelHits->at(ilep));
+    muon.SetValidStations( MuonLooseStationMatches->at(ilep));
+    muon.SetLayersWithMeasurement ( MuonLooseTrackLayersWithMeasurement->at(ilep));
 
     /// TrigMatching
-    if(MuonHLTDoubleMuonMatched){
-      muon.SetHLTDoubleMuMatched(MuonHLTDoubleMuonMatched->at(ilep));
+    if(MuonLooseHLTDoubleMuonMatched){
+      muon.SetHLTDoubleMuMatched(MuonLooseHLTDoubleMuonMatched->at(ilep));
       
     }
-    if(MuonHLTSingleMuonMatched)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched->at(ilep));
-    if(MuonHLTSingleMuonMatched5)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched5->at(ilep));
-    if(MuonHLTSingleMuonMatched8)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched8->at(ilep));
-    if(MuonHLTSingleMuonMatched12)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched12->at(ilep));
-    if(MuonHLTSingleMuonMatched17)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched17->at(ilep));
-    if(MuonHLTSingleMuonMatched24)muon.SetHLTSingleMuMatched(MuonHLTSingleMuonMatched24->at(ilep));
+    if(MuonLooseHLTSingleMuonMatched)muon.SetHLTSingleMuMatched(MuonLooseHLTSingleMuonMatched->at(ilep));
+    if(MuonLooseHLTSingleMuonMatched5)muon.SetHLTSingleMuMatched(MuonLooseHLTSingleMuonMatched5->at(ilep));
+    if(MuonLooseHLTSingleMuonMatched8)muon.SetHLTSingleMuMatched(MuonLooseHLTSingleMuonMatched8->at(ilep));
+    if(MuonLooseHLTSingleMuonMatched12)muon.SetHLTSingleMuMatched(MuonLooseHLTSingleMuonMatched12->at(ilep));
+    if(MuonLooseHLTSingleMuonMatched17)muon.SetHLTSingleMuMatched(MuonLooseHLTSingleMuonMatched17->at(ilep));
+    if(MuonLooseHLTSingleMuonMatched24)muon.SetHLTSingleMuMatched(MuonLooseHLTSingleMuonMatched24->at(ilep));
 
-    if(MuonHLTEMuMatched8)muon.SetHLTEMuMatched8(MuonHLTEMuMatched8->at(ilep));
-    if(MuonHLTEMuMatched17)muon.SetHLTEMuMatched17(MuonHLTEMuMatched17->at(ilep));
+    if(MuonLooseHLTEMuMatched8)muon.SetHLTEMuMatched8(MuonLooseHLTEMuMatched8->at(ilep));
+    if(MuonLooseHLTEMuMatched17)muon.SetHLTEMuMatched17(MuonLooseHLTEMuMatched17->at(ilep));
     
     
-    if(MuonHLTSingleIsoMuonMatched)muon.SetHLTSingleMuIsoMatched(MuonHLTSingleIsoMuonMatched->at(ilep));
+    if(MuonLooseHLTSingleIsoMuonMatched)muon.SetHLTSingleMuIsoMatched(MuonLooseHLTSingleIsoMuonMatched->at(ilep));
     
-    muon.SetMuonCocktailPt(MuonCocktailPt->at(ilep));
-    muon.SetMuonCocktailEta(MuonCocktailEta->at(ilep));
-    muon.SetMuonCocktailPhi(MuonCocktailPhi->at(ilep));
-    muon.SetMuonCocktailGlobalChi2(MuonCocktailGlobalChi2->at(ilep));
-    muon.SetMuonCocktailTrkD0(MuonCocktailTrkVtxDXY->at(ilep));
-    muon.SetMuonCocktailTrkDz(MuonCocktailTrkVtxDZ->at(ilep));
-    muon.SetMuonCocktailCharge(MuonCocktailCharge->at(ilep));
+    muon.SetMuonCocktailPt(MuonLooseCocktailPt->at(ilep));
+    muon.SetMuonCocktailEta(MuonLooseCocktailEta->at(ilep));
+    muon.SetMuonCocktailPhi(MuonLooseCocktailPhi->at(ilep));
+    muon.SetMuonCocktailGlobalChi2(MuonLooseCocktailGlobalChi2->at(ilep));
+    muon.SetMuonCocktailTrkD0(MuonLooseCocktailTrkVtxDXY->at(ilep));
+    muon.SetMuonCocktailTrkDz(MuonLooseCocktailTrkVtxDZ->at(ilep));
+    muon.SetMuonCocktailCharge(MuonLooseCocktailCharge->at(ilep));
 
 
         
@@ -1135,9 +1143,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     /// truth info
     if(!isData){
-      muon.SetMuonMatchedGenParticleEta(MuonMatchedGenParticleEta->at(ilep));
-      muon.SetMuonMatchedGenParticlePhi(MuonMatchedGenParticlePhi->at(ilep));
-      muon.SetMuonMatchedGenParticlePt(MuonMatchedGenParticlePt->at(ilep));
+      muon.SetMuonMatchedGenParticleEta(MuonLooseMatchedGenParticleEta->at(ilep));
+      muon.SetMuonMatchedGenParticlePhi(MuonLooseMatchedGenParticlePhi->at(ilep));
+      muon.SetMuonMatchedGenParticlePt(MuonLooseMatchedGenParticlePt->at(ilep));
       
       bool matched_muon(false);
       int iMother(-999),nDaughter(-999), ipdgid(-999), truemu_index(-999);
@@ -1147,23 +1155,23 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       double match_pt =0.;
       double match_eta =0.;
       double match_phi =0.;
-      if(fabs(MuonMatchedGenParticlePt->at(ilep)) != 999){
-        match_pt = MuonMatchedGenParticlePt->at(ilep);
-        match_eta = MuonMatchedGenParticleEta->at(ilep);
-        match_phi = MuonMatchedGenParticlePhi->at(ilep);
+      if(fabs(MuonLooseMatchedGenParticlePt->at(ilep)) != 999){
+        match_pt = MuonLooseMatchedGenParticlePt->at(ilep);
+        match_eta = MuonLooseMatchedGenParticleEta->at(ilep);
+        match_phi = MuonLooseMatchedGenParticlePhi->at(ilep);
       }
       else{
-        match_pt = MuonPt->at(ilep);
-        match_eta = MuonEta->at(ilep);
-        match_phi = MuonPhi->at(ilep);
+        match_pt = MuonLoosePt->at(ilep);
+        match_eta = MuonLooseEta->at(ilep);
+        match_phi = MuonLoosePhi->at(ilep);
       }
 
-      m_logger << DEBUG <<  "Muon Charge  = " << MuonCharge->at(ilep) << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Muon Eta  = " << match_eta << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Muon Phi  = " << match_phi << LQLogger::endmsg;
-      m_logger << DEBUG <<  "Muon Pt  = " <<  match_pt << LQLogger::endmsg;
+      m_logger << DEBUG <<  "MuonLoose Charge  = " << MuonLooseCharge->at(ilep) << LQLogger::endmsg;
+      m_logger << DEBUG <<  "MuonLoose Eta  = " << match_eta << LQLogger::endmsg;
+      m_logger << DEBUG <<  "MuonLoose Phi  = " << match_phi << LQLogger::endmsg;
+      m_logger << DEBUG <<  "MuonLoose Pt  = " <<  match_pt << LQLogger::endmsg;
 
-      if(MuonPt->at(ilep) > 10.) {
+      if(MuonLoosePt->at(ilep) > 10.) {
 	int MotherPdgId(-999);
 	int mutruth_index=0;
 	bool photon_conv(false);
@@ -1266,7 +1274,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenZMuPdgId->at(g))==13)){
-	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi ->at(ilep) -GenZMuPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(MuonLooseEta->at(ilep) - GenZMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonLoosePhi ->at(ilep) -GenZMuPhi->at(g))),2.0) );
 	    m_logger << DEBUG << "Truth Matched to muon[GenZMu]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenZMuPt->at(g) << "/" << GenZMuEta->at(g) << "/" << GenZMuPhi->at(g) << "/" <<  GenZMuStatus->at(g) << "/" << GenZMuPdgId->at(g) << "/" << GenZMuMotherIndex->at(g) << LQLogger::endmsg;
 	    if(dr < 0.2){
 	      ipdgid =  GenZMuPdgId->at(g);
@@ -1280,7 +1288,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenZTauPdgId->at(g))==13)){
-	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi ->at(ilep) -GenZTauPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(MuonLooseEta->at(ilep) - GenZTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonLoosePhi ->at(ilep) -GenZTauPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to muon[GenZTau]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenZTauPt->at(g) << "/" << GenZTauEta->at(g) << "/" << GenZTauPhi->at(g) <<  "/" << GenZTauPhi->at(g) << "/" <<  GenZTauStatus->at(g) << "/" << GenZTauPdgId->at(g) << "/"<< GenZTauMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenZTauPdgId->at(g);
@@ -1299,7 +1307,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenZElectronPdgId->at(g))==13)){
-	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenZElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi ->at(ilep) -GenZElectronPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(MuonLooseEta->at(ilep) - GenZElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonLoosePhi ->at(ilep) -GenZElectronPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to muon[GenZElectron]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenZElectronPt->at(g) << "/" << GenZElectronEta->at(g) << "/" << GenZElectronPhi->at(g) << "/" <<  GenZElectronStatus->at(g) << "/" << GenZElectronPdgId->at(g) << "/" << GenZElectronMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenZElectronPdgId->at(g);
@@ -1314,7 +1322,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenWMuPdgId->at(g))==13)){
-	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenWMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi ->at(ilep) -GenWMuPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(MuonLooseEta->at(ilep) - GenWMuEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonLoosePhi ->at(ilep) -GenWMuPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to muon[GenWMu]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWMuPt->at(g) << "/" <<  GenWMuEta->at(g) << "/" << GenWMuPhi->at(g) <<  "/" <<  GenWMuStatus->at(g) << "/" << GenWMuPdgId->at(g) << "/" << GenWMuMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenWMuPdgId->at(g);
@@ -1329,7 +1337,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenWTauPdgId->at(g))==13)){
-	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenWTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi ->at(ilep) -GenWTauPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(MuonLooseEta->at(ilep) - GenWTauEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonLoosePhi ->at(ilep) -GenWTauPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to muon[GenWTau]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWTauPt->at(g) << "/" << GenWTauEta->at(g) << "/" << GenWTauPhi->at(g) <<  "/" << GenWTauPhi->at(g) << "/" <<  GenWTauStatus->at(g) << "/" << GenWTauPdgId->at(g) << "/" << GenWTauMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenWTauPdgId->at(g);
@@ -1349,7 +1357,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  if(matched_muon) continue;
 	  mutruth_index++;
 	  if((fabs(GenWElectronPdgId->at(g))==13)){
-	    double dr = sqrt( pow(fabs(MuonEta->at(ilep) - GenWElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonPhi ->at(ilep)-GenWElectronPhi->at(g))),2.0) );
+	    double dr = sqrt( pow(fabs(MuonLooseEta->at(ilep) - GenWElectronEta->at(g)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi(MuonLoosePhi ->at(ilep)-GenWElectronPhi->at(g))),2.0) );
 	    if(dr < 0.2){
 	      m_logger << DEBUG << "Truth Matched to electron[GenWElectron]"  << "Pt/Eta/Phi/Status/PDGID/MOTHER PDGID = " << GenWElectronPt->at(g) << "/" << GenWElectronEta->at(g) << "/" << GenWElectronPhi->at(g) << "/" <<  GenWElectronStatus->at(g) << "/" << GenWElectronPdgId->at(g) << "/" << GenWElectronMotherIndex->at(g) << LQLogger::endmsg;
 	      ipdgid =  GenWElectronPdgId->at(g);
@@ -1360,7 +1368,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	}
 	
 	if (isPrompt( MotherPdgId)){
-	  if ( MuonCharge->at(ilep)* ipdgid  > 0)   partType = KParticle::chargemisid;
+	  if ( MuonLooseCharge->at(ilep)* ipdgid  > 0)   partType = KParticle::chargemisid;
 	  else partType = KParticle::notfake;
 	}
 	else {
@@ -1400,7 +1408,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
   }
   
   std::sort( muons.begin(), muons.end(), isHigherPt );
-  m_logger << DEBUG << "End of Muon Filling" << LQLogger::endmsg;
+  m_logger << DEBUG << "End of MuonLoose Filling" << LQLogger::endmsg;
   return muons;
   }
 

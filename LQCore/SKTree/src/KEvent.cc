@@ -34,9 +34,13 @@ KEvent::KEvent() :
   k_genmetphicalo(0.),
   k_gensumetcalo(0.),
   k_PF_MET(0.), 
+  k_PF_METx(0.), 
+  k_PF_METy(0.), 
   k_PF_METphi(0.),
   k_PF_SumET(0.), 
   k_PF_METraw(0.),
+  k_PF_METxraw(0.),
+  k_PF_METyraw(0.),
   k_PF_METrawphi(0.),
   k_PF_METtype1(0.),
   k_PF_METtype1phi(0.),
@@ -98,9 +102,13 @@ KEvent::KEvent(const KEvent& ev) :
   k_genmetphicalo(ev.k_genmetphicalo),
   k_gensumetcalo(ev.k_gensumetcalo),
   k_PF_MET(ev.k_PF_MET),
+  k_PF_METx(ev.k_PF_METx),
+  k_PF_METy(ev.k_PF_METy),
   k_PF_METphi(ev.k_PF_METphi),
   k_PF_SumET(ev.k_PF_SumET),
   k_PF_METraw(ev.k_PF_METraw),
+  k_PF_METxraw(ev.k_PF_METxraw),
+  k_PF_METyraw(ev.k_PF_METyraw),
   k_PF_METrawphi(ev.k_PF_METrawphi),
   k_PF_METtype1(ev.k_PF_METtype1),
   k_PF_METtype1phi(ev.k_PF_METtype1phi),
@@ -152,9 +160,13 @@ void KEvent::Reset()
   k_vertexY= 0.;
   k_vertexZ= 0.;
   k_PF_MET= 0.;
+  k_PF_METx= 0.;
+  k_PF_METy= 0.;
   k_PF_SumET= 0.;
   k_PF_METphi= 0.;
   k_PF_METraw= 0.;
+  k_PF_METxraw= 0.;
+  k_PF_METyraw= 0.;
   k_PF_METtype1= 0.;
   k_PF_METtype01= 0.;
   k_PF_METrawphi= 0.;
@@ -212,9 +224,13 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_process_id= p.ProcessID();
       k_lumisec= p.LumiSection();
       k_PF_MET= p.PFMET();
+      k_PF_METx= p.PFMETx();
+      k_PF_METy= p.PFMETy();
       k_PF_METphi= p.PFMETphi();
       k_PF_SumET = p.PFSumET();
       k_PF_METraw = p.PFMETRaw();
+      k_PF_METxraw = p.PFMETxRaw();
+      k_PF_METyraw = p.PFMETyRaw();
       k_PF_METrawphi = p.PFMETRawphi();
       k_PF_METtype1 = p.PFMETType1();
       k_PF_METtype1phi = p.PFMETType1phi();
@@ -384,6 +400,13 @@ void KEvent::SetPFMET(double met){
   k_PF_MET = met;
 }
 
+void KEvent::SetPFMETx(double metx){
+  k_PF_METx = metx;
+}
+
+void KEvent::SetPFMETy(double mety){
+  k_PF_METy = mety;
+}
 void KEvent::SetPFMETphi(double metphi){
   k_PF_METphi = metphi;
 }
@@ -395,6 +418,14 @@ void KEvent::SetPFSumET(double sumet){
 
 void KEvent::SetPFMETRaw(double met){
   k_PF_METraw = met;
+}
+
+void KEvent::SetPFMETxRaw(double metx){
+  k_PF_METxraw = metx;
+}
+
+void KEvent::SetPFMETyRaw(double mety){
+  k_PF_METyraw = mety;
 }
 
 void KEvent::SetPFMETRawphi(double phi){

@@ -78,6 +78,9 @@ namespace snu {
 
     /// JET CORRECTIONS
     void SetJetRawPt(double rawpt);
+    void SetJetRawPx(double rawpx);
+    void SetJetRawPy(double rawpy);
+
     void SetJetRawEnergy(double rawe);
     void SetJetL1FastJetJEC(double L1FastJetJEC);
     void SetJetL2L3ResJEC(double L2L3ResJEC);
@@ -88,6 +91,7 @@ namespace snu {
     void SetJetL5UDSJEC(double JetL5UDSJEC);
     void SetJetL5GluonJEC(double JetL5GluonJEC);
     void SetJetJECUnc(double jecunc);
+
     void SetJetScaledDownEnergy(double jetscaleEdown);
     void SetJetScaledUpEnergy(double jetscaleEup);
     void SetJetScaledDownPt(double jetscalePtdown);
@@ -97,6 +101,18 @@ namespace snu {
     void SetJetSmearedDownPt(double jetsmearPtdown);
     void SetJetSmearedUpPt(double jetsmearPtup);
     
+    // px
+    void SetJetScaledDownPx(double jetscalePxdown);
+    void SetJetScaledUpPx(double jetscalePxup);
+    void SetJetSmearedDownPx(double jetsmearPxdown);
+    void SetJetSmearedUpPx(double jetsmearPxup);
+
+    // py
+    void SetJetScaledDownPy(double jetscalePydown);
+    void SetJetScaledUpPy(double jetscalePyup);
+    void SetJetSmearedDownPy(double jetsmearPydown);
+    void SetJetSmearedUpPy(double jetsmearPyup);
+
     
     /// ID
     inline Int_t PassLooseID() const {return k_jet_passLooseID;}
@@ -172,7 +188,19 @@ namespace snu {
     inline Double_t SmearedDownPt() const {return k_jet_smeared_down_pt;}
     inline Double_t SmearedUpPt() const {return k_jet_smeared_up_pt;}
 
+    inline Double_t ScaledDownPx() const {return k_jet_scaled_down_px;}
+    inline Double_t ScaledUpPx() const {return k_jet_scaled_up_px;}
+    inline Double_t SmearedDownPx() const {return k_jet_smeared_down_px;}
+    inline Double_t SmearedUpPx() const {return k_jet_smeared_up_px;}
+
+    inline Double_t ScaledDownPy() const {return k_jet_scaled_down_py;}
+    inline Double_t ScaledUpPy() const {return k_jet_scaled_up_py;}
+    inline Double_t SmearedDownPy() const {return k_jet_smeared_down_py;}
+    inline Double_t SmearedUpPy() const {return k_jet_smeared_up_py;}
+
     inline Double_t RawPt() const {return k_jet_pt_raw;}
+    inline Double_t RawPx() const {return k_jet_px_raw;}
+    inline Double_t RawPy() const {return k_jet_py_raw;}
     inline Double_t RawE() const {return k_jet_energy_raw;}
     
 
@@ -187,7 +215,7 @@ namespace snu {
     /// Multiplicities  
     Int_t  k_jet_chargeMult,k_jet_neutralMult,k_jet_chargeHadMult,k_jet_neutralHadMult,k_jet_muonMult,k_jet_elMult,k_jet_phMult,k_jet_hfemMult,k_jet_hfhadronMult;
     
-    Double_t k_jet_pt_raw, k_jet_energy_raw;
+    Double_t k_jet_pt_raw, k_jet_energy_raw, k_jet_px_raw,k_jet_py_raw;
     /// BTAG variables  
     Double_t k_jet_SecVertBtag,k_jet_TCHPT,k_jet_JetProbBtag;
 
@@ -203,12 +231,14 @@ namespace snu {
     
     // Errors
     Double_t k_jet_l1fastjet_jec,k_jet_l2l3res_jec,k_jet_l2rel_jec,k_jet_l3abs_jec, k_jet_l5bottom_jec, k_jet_l5charm_jec,k_jet_l5uds_jec,k_jet_l5gluon_jec, k_jet_error_jec,k_jet_scaled_down_energy,k_jet_scaled_up_energy,k_jet_scaled_down_pt,k_jet_scaled_up_pt,k_jet_smeared_down_energy,k_jet_smeared_up_energy,k_jet_smeared_down_pt,k_jet_smeared_up_pt;
+    Double_t k_jet_scaled_down_px,k_jet_scaled_up_px, k_jet_smeared_down_px,k_jet_smeared_up_px;
+    Double_t k_jet_scaled_down_py,k_jet_scaled_up_py, k_jet_smeared_down_py,k_jet_smeared_up_py;
     
     Bool_t k_jet_passpileup_loose, k_jet_passpileup_medium ,k_jet_passpileup_tight;
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,5)
+    ClassDef(KJet,6)
   }; 
   
 

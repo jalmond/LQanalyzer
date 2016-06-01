@@ -14,7 +14,7 @@ cms_data_ntuple_path_2014          /data1/DATA/LQNtuples_5_3_14_snu27/Data/
 cms_mc_ntuple_path_2015            /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/
 cms_mc_ntuple_path_2016            /data2/DATA/LQNtuples_5_3_14_snu27_2016/MC/
 cms_mc_ntuplepath_chargedhiggs     /data2/MC/CHsample/LQNtuple/
-
+cluster_mc_ntuple_pf_path_2016     /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_PF2PAT
 #################   DIR INFORMATION
 ############  LQNtuples_5_3_14_snu27/   this uses CMSSW 5_3_14
 ############  LQNtuples_5_3_14_snu27_2015/   this uses CMSSW 5_3_20. Lepton shifted pt was added + pdf changed
@@ -777,6 +777,8 @@ QCD_350_EM        382497.9062 cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_20
 QCD_350_BCtoE     81446.75  cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014    QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/
 
 ### TOP
+
+stbar_tch_pf    63031.66        cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014 Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
 stbar_sch	79530.67  	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
 stbar_tch	63031.66	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
 stbar_tW	44455.85	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/

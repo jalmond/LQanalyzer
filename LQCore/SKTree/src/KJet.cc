@@ -63,12 +63,22 @@ KParticle()
   k_jet_scaled_up_energy=0.;
   k_jet_scaled_down_pt=0.;
   k_jet_scaled_up_pt=0.;
+  k_jet_scaled_down_px=0.;
+  k_jet_scaled_up_px=0.;
+  k_jet_scaled_down_py=0.;
+  k_jet_scaled_up_py=0.;
   k_jet_smeared_down_energy=0.;
   k_jet_smeared_up_energy=0.;
   k_jet_smeared_down_pt=0.;
   k_jet_smeared_up_pt=0.;
+  k_jet_smeared_down_px=0.;
+  k_jet_smeared_up_px=0.;
+  k_jet_smeared_down_py=0.;
+  k_jet_smeared_up_py=0.;
   k_jet_energy_raw=0.;
   k_jet_pt_raw=0.;
+  k_jet_px_raw=0.;
+  k_jet_py_raw=0.;
   
 }
 
@@ -127,12 +137,22 @@ KJet::KJet(const KJet& jet) :
   k_jet_scaled_up_energy=jet.ScaledUpEnergy();
   k_jet_scaled_down_pt=jet.ScaledDownPt();
   k_jet_scaled_up_pt=jet.ScaledUpPt();
+  k_jet_scaled_down_px=jet.ScaledDownPx();
+  k_jet_scaled_up_px=jet.ScaledUpPx();
+  k_jet_scaled_down_py=jet.ScaledDownPy();
+  k_jet_scaled_up_py=jet.ScaledUpPy();
   k_jet_smeared_down_energy=jet.SmearedDownEnergy();
   k_jet_smeared_up_energy=jet.SmearedUpEnergy();
   k_jet_smeared_down_pt=jet.SmearedDownPt();
   k_jet_smeared_up_pt=jet.SmearedUpPt();
+  k_jet_smeared_down_px=jet.SmearedDownPx();
+  k_jet_smeared_up_px=jet.SmearedUpPx();
+  k_jet_smeared_down_py=jet.SmearedDownPy();
+  k_jet_smeared_up_py=jet.SmearedUpPy();
   k_jet_energy_raw=jet.RawE();
   k_jet_pt_raw = jet.RawPt();
+  k_jet_px_raw = jet.RawPx();
+  k_jet_py_raw = jet.RawPy();
 
   
 }
@@ -194,12 +214,22 @@ void KJet::Reset()
     k_jet_scaled_up_energy=0.;
     k_jet_scaled_down_pt=0.;
     k_jet_scaled_up_pt=0.;
+    k_jet_scaled_down_px=0.;
+    k_jet_scaled_up_px=0.;
+    k_jet_scaled_down_py=0.;
+    k_jet_scaled_up_py=0.;
     k_jet_smeared_down_energy=0.;
     k_jet_smeared_up_energy=0.;
     k_jet_smeared_down_pt=0.;
     k_jet_smeared_up_pt=0.;
+    k_jet_smeared_down_px=0.;
+    k_jet_smeared_up_px=0.;
+    k_jet_smeared_down_py=0.;
+    k_jet_smeared_up_py=0.;
     k_jet_energy_raw=0.;
     k_jet_pt_raw = 0.;
+    k_jet_px_raw = 0.;
+    k_jet_py_raw = 0.;
 
 
 }
@@ -263,13 +293,24 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_scaled_down_energy=p.ScaledDownEnergy();
       k_jet_scaled_up_energy=p.ScaledUpEnergy();
       k_jet_scaled_down_pt=p.ScaledDownPt();
-      k_jet_scaled_up_pt=p.ScaledUpPt();
+      k_jet_scaled_up_pt=p.ScaledUpPy();
+      k_jet_scaled_down_px=p.ScaledDownPx();
+      k_jet_scaled_up_px=p.ScaledUpPx();
+      k_jet_scaled_down_py=p.ScaledDownPy();
+      k_jet_scaled_up_py=p.ScaledUpPy();
       k_jet_smeared_down_energy=p.SmearedDownEnergy();
       k_jet_smeared_up_energy=p.SmearedUpEnergy();
       k_jet_smeared_down_pt=p.SmearedDownPt();
       k_jet_smeared_up_pt=p.SmearedUpPt();
+      k_jet_smeared_down_px=p.SmearedDownPx();
+      k_jet_smeared_up_px=p.SmearedUpPx();
+      k_jet_smeared_down_py=p.SmearedDownPy();
+      k_jet_smeared_up_py=p.SmearedUpPy();
+      
       k_jet_energy_raw=p.RawE();
       k_jet_pt_raw = p.RawPt();
+      k_jet_px_raw = p.RawPx();
+      k_jet_py_raw = p.RawPy();
 
     }
 
@@ -442,6 +483,13 @@ void KJet::SetJetRawPt(double rawpt){
   k_jet_pt_raw=rawpt;
 }
 
+void KJet::SetJetRawPx(double rawpx){
+  k_jet_px_raw=rawpx;
+}
+
+void KJet::SetJetRawPy(double rawpy){
+  k_jet_py_raw=rawpy;
+}
 void KJet::SetJetRawEnergy(double rawe){
   k_jet_energy_raw=rawe;
 }
@@ -490,6 +538,24 @@ void KJet::SetJetScaledDownPt(double jetscalePtdown){
 void KJet::SetJetScaledUpPt(double jetscalePtup){
   k_jet_scaled_up_pt=jetscalePtup;
 }
+
+void KJet::SetJetScaledDownPx(double jetscalePxdown){
+  k_jet_scaled_down_px=jetscalePxdown;
+}
+void KJet::SetJetScaledUpPx(double jetscalePxup){
+  k_jet_scaled_up_px=jetscalePxup;
+}
+
+
+
+void KJet::SetJetScaledDownPy(double jetscalePydown){
+  k_jet_scaled_down_py=jetscalePydown;
+}
+void KJet::SetJetScaledUpPy(double jetscalePyup){
+  k_jet_scaled_up_py=jetscalePyup;
+}
+
+
 void KJet::SetJetSmearedDownEnergy(double jetsmearEdown){
   k_jet_smeared_down_energy=jetsmearEdown;
 }
@@ -502,3 +568,19 @@ void KJet::SetJetSmearedDownPt(double jetsmearPtdown){
 void KJet::SetJetSmearedUpPt(double jetsmearPtup){
   k_jet_smeared_up_pt=jetsmearPtup;
 }
+
+void KJet::SetJetSmearedDownPx(double jetsmearPxdown){
+  k_jet_smeared_down_px=jetsmearPxdown;
+}
+void KJet::SetJetSmearedUpPx(double jetsmearPxup){
+  k_jet_smeared_up_px=jetsmearPxup;
+}
+
+void KJet::SetJetSmearedDownPy(double jetsmearPydown){
+  k_jet_smeared_down_py=jetsmearPydown;
+}
+void KJet::SetJetSmearedUpPy(double jetsmearPyup){
+  k_jet_smeared_up_py=jetsmearPyup;
+}
+
+

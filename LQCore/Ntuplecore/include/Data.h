@@ -127,21 +127,21 @@ public :
    Bool_t          passTrackingFailureFilter;
    Bool_t          hasVeryForwardPFMuon;
    Bool_t          hasJetWithBadUnc;
-   std::vector<bool>    *ElectronGsfCtfCharge;
-   std::vector<bool>    *ElectronGsfCtfScPixCharge;
-   std::vector<bool>    *ElectronGsfScPixCharge;
-   std::vector<bool>    *ElectronHLTDoubleEleMatched;
-   std::vector<bool>    *ElectronHLTSingleEleMatched;
-   std::vector<bool>    *ElectronHLTSingleEleMatched17;
-   std::vector<bool>    *ElectronHLTSingleEleMatched8;
-   std::vector<bool>    *ElectronHLTSingleEleWP80Matched;
-   std::vector<bool>    *ElectronHLTEMuMatched8;
-   std::vector<bool>    *ElectronHLTEMuMatched17;
-   std::vector<bool>    *ElectronHasEcalDrivenSeed;
-   std::vector<bool>    *ElectronHasMatchedConvPhot;
-   std::vector<bool>    *ElectronHasTrackerDrivenSeed;
-   std::vector<bool>    *ElectronIsEB;
-   std::vector<bool>    *ElectronIsEE;
+   std::vector<bool>    *ElectronLooseGsfCtfCharge;
+   std::vector<bool>    *ElectronLooseGsfCtfScPixCharge;
+   std::vector<bool>    *ElectronLooseGsfScPixCharge;
+   std::vector<bool>    *ElectronLooseHLTDoubleEleMatched;
+   std::vector<bool>    *ElectronLooseHLTSingleEleMatched;
+   std::vector<bool>    *ElectronLooseHLTSingleEleMatched17;
+   std::vector<bool>    *ElectronLooseHLTSingleEleMatched8;
+   std::vector<bool>    *ElectronLooseHLTSingleEleWP80Matched;
+   std::vector<bool>    *ElectronLooseHLTEMuMatched8;
+   std::vector<bool>    *ElectronLooseHLTEMuMatched17;
+   std::vector<bool>    *ElectronLooseHasEcalDrivenSeed;
+   std::vector<bool>    *ElectronLooseHasMatchedConvPhot;
+   std::vector<bool>    *ElectronLooseHasTrackerDrivenSeed;
+   std::vector<bool>    *ElectronLooseIsEB;
+   std::vector<bool>    *ElectronLooseIsEE;
 
    std::vector<bool>    *PFJetPileupjetIDpassLooseWP;
    std::vector<bool>    *PFJetPileupjetIDpassMediumWP;
@@ -149,27 +149,37 @@ public :
    std::vector<int>     *PFJetJetPileupIdflag;
    std::vector<double>  *PFJetJetPileupMVA;
    
-   std::vector<double>  *ElectronmvatrigV0;
-   std::vector<double>  *ElectronmvaNontrigV0;
+   std::vector<double>  *ElectronLoosemvatrigV0;
+   std::vector<double>  *ElectronLoosemvaNontrigV0;
 
-   std::vector<double>  *ElectronshiftedEup;
-   std::vector<double>  *ElectronshiftedEdown;
+   std::vector<double>  *ElectronLooseshiftedEup;
+   std::vector<double>  *ElectronLooseshiftedEdown;
 
-   std::vector<double>  *MuonshiftedEup;
-   std::vector<double>  *MuonshiftedEdown;
+   std::vector<double>  *ElectronLooseshiftedExup;
+   std::vector<double>  *ElectronLooseshiftedExdown;
+
+   std::vector<double>  *ElectronLooseshiftedEyup;
+   std::vector<double>  *ElectronLooseshiftedEydown;
+
+   std::vector<double>  *MuonLooseshiftedEup;
+   std::vector<double>  *MuonLooseshiftedEdown;
+   std::vector<double>  *MuonLooseshiftedExup;
+   std::vector<double>  *MuonLooseshiftedExdown;
+   std::vector<double>  *MuonLooseshiftedEyup;
+   std::vector<double>  *MuonLooseshiftedEydown;
 
    
-   std::vector<bool>    *MuonHLTSingleIsoMuonMatched;
-   std::vector<bool>    *MuonHLTSingleMuonMatched;
-   std::vector<bool>    *MuonHLTSingleMuonMatched5;
-   std::vector<bool>    *MuonHLTSingleMuonMatched8;
-   std::vector<bool>    *MuonHLTSingleMuonMatched12;
-   std::vector<bool>    *MuonHLTSingleMuonMatched17;
-   std::vector<bool>    *MuonHLTSingleMuonMatched24;
-   std::vector<bool>    *MuonHLTEMuMatched8;
-   std::vector<bool>    *MuonHLTEMuMatched17;
+   std::vector<bool>    *MuonLooseHLTSingleIsoMuonMatched;
+   std::vector<bool>    *MuonLooseHLTSingleMuonMatched;
+   std::vector<bool>    *MuonLooseHLTSingleMuonMatched5;
+   std::vector<bool>    *MuonLooseHLTSingleMuonMatched8;
+   std::vector<bool>    *MuonLooseHLTSingleMuonMatched12;
+   std::vector<bool>    *MuonLooseHLTSingleMuonMatched17;
+   std::vector<bool>    *MuonLooseHLTSingleMuonMatched24;
+   std::vector<bool>    *MuonLooseHLTEMuMatched8;
+   std::vector<bool>    *MuonLooseHLTEMuMatched17;
 
-   std::vector<bool>    *MuonHLTDoubleMuonMatched;
+   std::vector<bool>    *MuonLooseHLTDoubleMuonMatched;
    std::vector<bool>    *PhotonHasMatchedConvPhot;
    std::vector<bool>    *PhotonHasMatchedPromptEle;
    std::vector<bool>    *PhotonHasPixelSeed;
@@ -199,69 +209,71 @@ public :
    std::vector<double>  *CaloMETUncorrType1Cor;
    std::vector<double>  *CaloSumETType1Cor;
    std::vector<double>  *CaloSumETUncorrType1Cor;
-   std::vector<double>  *ElectronBeamSpotDXY;
-   std::vector<double>  *ElectronBeamSpotDXYError;
-   std::vector<double>  *ElectronCaloEnergy;
-   std::vector<double>  *ElectronConvFitProb;
-   std::vector<double>  *ElectronDCotTheta;
-   std::vector<double>  *ElectronDeltaEtaTrkSC;
-   std::vector<double>  *ElectronDeltaPhiTrkSC;
-   std::vector<double>  *ElectronDist;
-   std::vector<double>  *ElectronE1x5OverE5x5;
-   std::vector<double>  *ElectronE2x5OverE5x5;
-   std::vector<double>  *ElectronESuperClusterOverP;
-   std::vector<double>  *ElectronEcalIsoDR03;
-   std::vector<double>  *ElectronEcalIsoPAT;
-   std::vector<double>  *ElectronEnergy;
-   std::vector<double>  *ElectronEta;
-   std::vector<double>  *ElectronFbrem;
-   std::vector<double>  *ElectronHLTDoubleEleMatchEta;
-   std::vector<double>  *ElectronHLTDoubleEleMatchPhi;
-   std::vector<double>  *ElectronHLTDoubleEleMatchPt;
-   std::vector<double>  *ElectronHLTSingleEleMatchEta;
-   std::vector<double>  *ElectronHLTSingleEleMatchPhi;
-   std::vector<double>  *ElectronHLTSingleEleMatchPt;
-   std::vector<double>  *ElectronHLTSingleEleWP80MatchEta;
-   std::vector<double>  *ElectronHLTSingleEleWP80MatchPhi;
-   std::vector<double>  *ElectronHLTSingleEleWP80MatchPt;
-   std::vector<double>  *ElectronHcalIsoD1DR03;
-   std::vector<double>  *ElectronHcalIsoD2DR03;
-   std::vector<double>  *ElectronHcalIsoDR03;
-   std::vector<double>  *ElectronHcalIsoDR03FullCone;
-   std::vector<double>  *ElectronHcalIsoPAT;
-   std::vector<double>  *ElectronHoE;
-   std::vector<double>  *ElectronLeadVtxDistXY;
-   std::vector<double>  *ElectronLeadVtxDistZ;
-   std::vector<double>  *ElectronMatchedGenParticleEta;
-   std::vector<double>  *ElectronMatchedGenParticlePhi;
-   std::vector<double>  *ElectronMatchedGenParticlePt;
-   std::vector<double>  *ElectronPFChargedHadronIso03;
-   std::vector<double>  *ElectronPFChargedHadronIso04;
-   std::vector<double>  *ElectronPFNeutralHadronIso03;
-   std::vector<double>  *ElectronPFNeutralHadronIso04;
-   std::vector<double>  *ElectronPFPhotonIso03;
-   std::vector<double>  *ElectronPFPhotonIso04;
-   std::vector<double>  *ElectronPhi;
-   std::vector<double>  *ElectronPrimaryVertexDXY;
-   std::vector<double>  *ElectronPrimaryVertexDXYError;
-   std::vector<double>  *ElectronPt;
-   std::vector<double>  *ElectronPtHeep;
-   std::vector<double>  *ElectronRelIsoPAT;
-   std::vector<double>  *ElectronSCEta;
-   std::vector<double>  *ElectronSCPhi;
-   std::vector<double>  *ElectronSCPt;
-   std::vector<double>  *ElectronSCRawEnergy;
-   std::vector<double>  *ElectronSigmaEtaEta;
-   std::vector<double>  *ElectronSigmaIEtaIEta;
-   std::vector<double>  *ElectronTrackPt;
-   std::vector<double>  *ElectronTrackValidFractionOfHits;
-   std::vector<double>  *ElectronTrackVx;
-   std::vector<double>  *ElectronTrackVy;
-   std::vector<double>  *ElectronTrackVz;
-   std::vector<double>  *ElectronTrkIsoDR03;
-   std::vector<double>  *ElectronTrkIsoPAT;
-   std::vector<double>  *ElectronVtxDistXY;
-   std::vector<double>  *ElectronVtxDistZ;
+   std::vector<double>  *ElectronLooseBeamSpotDXY;
+   std::vector<double>  *ElectronLooseBeamSpotDXYError;
+   std::vector<double>  *ElectronLooseCaloEnergy;
+   std::vector<double>  *ElectronLooseConvFitProb;
+   std::vector<double>  *ElectronLooseDCotTheta;
+   std::vector<double>  *ElectronLooseDeltaEtaTrkSC;
+   std::vector<double>  *ElectronLooseDeltaPhiTrkSC;
+   std::vector<double>  *ElectronLooseDist;
+   std::vector<double>  *ElectronLooseE1x5OverE5x5;
+   std::vector<double>  *ElectronLooseE2x5OverE5x5;
+   std::vector<double>  *ElectronLooseESuperClusterOverP;
+   std::vector<double>  *ElectronLooseEcalIsoDR03;
+   std::vector<double>  *ElectronLooseEcalIsoPAT;
+   std::vector<double>  *ElectronLooseEnergy;
+   std::vector<double>  *ElectronLooseEta;
+   std::vector<double>  *ElectronLooseFbrem;
+   std::vector<double>  *ElectronLooseHLTDoubleEleMatchEta;
+   std::vector<double>  *ElectronLooseHLTDoubleEleMatchPhi;
+   std::vector<double>  *ElectronLooseHLTDoubleEleMatchPt;
+   std::vector<double>  *ElectronLooseHLTSingleEleMatchEta;
+   std::vector<double>  *ElectronLooseHLTSingleEleMatchPhi;
+   std::vector<double>  *ElectronLooseHLTSingleEleMatchPt;
+   std::vector<double>  *ElectronLooseHLTSingleEleWP80MatchEta;
+   std::vector<double>  *ElectronLooseHLTSingleEleWP80MatchPhi;
+   std::vector<double>  *ElectronLooseHLTSingleEleWP80MatchPt;
+   std::vector<double>  *ElectronLooseHcalIsoD1DR03;
+   std::vector<double>  *ElectronLooseHcalIsoD2DR03;
+   std::vector<double>  *ElectronLooseHcalIsoDR03;
+   std::vector<double>  *ElectronLooseHcalIsoDR03FullCone;
+   std::vector<double>  *ElectronLooseHcalIsoPAT;
+   std::vector<double>  *ElectronLooseHoE;
+   std::vector<double>  *ElectronLooseLeadVtxDistXY;
+   std::vector<double>  *ElectronLooseLeadVtxDistZ;
+   std::vector<double>  *ElectronLooseMatchedGenParticleEta;
+   std::vector<double>  *ElectronLooseMatchedGenParticlePhi;
+   std::vector<double>  *ElectronLooseMatchedGenParticlePt;
+   std::vector<double>  *ElectronLoosePFChargedHadronIso03;
+   std::vector<double>  *ElectronLoosePFChargedHadronIso04;
+   std::vector<double>  *ElectronLoosePFNeutralHadronIso03;
+   std::vector<double>  *ElectronLoosePFNeutralHadronIso04;
+   std::vector<double>  *ElectronLoosePFPhotonIso03;
+   std::vector<double>  *ElectronLoosePFPhotonIso04;
+   std::vector<double>  *ElectronLoosePhi;
+   std::vector<double>  *ElectronLoosePrimaryVertexDXY;
+   std::vector<double>  *ElectronLoosePrimaryVertexDXYError;
+   std::vector<double>  *ElectronLoosePt;
+   std::vector<double>  *ElectronLoosePx;
+   std::vector<double>  *ElectronLoosePy;
+   std::vector<double>  *ElectronLoosePtHeep;
+   std::vector<double>  *ElectronLooseRelIsoPAT;
+   std::vector<double>  *ElectronLooseSCEta;
+   std::vector<double>  *ElectronLooseSCPhi;
+   std::vector<double>  *ElectronLooseSCPt;
+   std::vector<double>  *ElectronLooseSCRawEnergy;
+   std::vector<double>  *ElectronLooseSigmaEtaEta;
+   std::vector<double>  *ElectronLooseSigmaIEtaIEta;
+   std::vector<double>  *ElectronLooseTrackPt;
+   std::vector<double>  *ElectronLooseTrackValidFractionOfHits;
+   std::vector<double>  *ElectronLooseTrackVx;
+   std::vector<double>  *ElectronLooseTrackVy;
+   std::vector<double>  *ElectronLooseTrackVz;
+   std::vector<double>  *ElectronLooseTrkIsoDR03;
+   std::vector<double>  *ElectronLooseTrkIsoPAT;
+   std::vector<double>  *ElectronLooseVtxDistXY;
+   std::vector<double>  *ElectronLooseVtxDistZ;
    std::vector<double>  *GenWElectronEnergy;
    std::vector<double>  *GenWElectronEta;
    std::vector<double>  *GenWElectronP;
@@ -465,89 +477,91 @@ public :
    std::vector<double>  *HPSTauVLooseIsolationDiscr;
    std::vector<double>  *HPSTauVtxDistXY;
    std::vector<double>  *HPSTauVtxDistZ;
-   std::vector<double>  *MuonBackToBackCompatibility;
-   std::vector<double>  *MuonBeamSpotDXY;
-   std::vector<double>  *MuonBeamSpotDXYError;
-   std::vector<double>  *MuonBestTrackVtxDistXY;
-   std::vector<double>  *MuonBestTrackVtxDistZ;
-   std::vector<double>  *MuonCocktailEta;
-   std::vector<double>  *MuonCocktailEtaError;
-   std::vector<double>  *MuonCocktailGlobalChi2;
-   std::vector<double>  *MuonCocktailP;
-   std::vector<double>  *MuonCocktailPhi;
-   std::vector<double>  *MuonCocktailPhiError;
-   std::vector<double>  *MuonCocktailPt;
-   std::vector<double>  *MuonCocktailPtError;
-   std::vector<double>  *MuonCocktailQOverPError;
-   std::vector<double>  *MuonCocktailTrkD0;
-   std::vector<double>  *MuonCocktailTrkD0Error;
-   std::vector<double>  *MuonCocktailTrkDz;
-   std::vector<double>  *MuonCocktailTrkDzError;
-   std::vector<double>  *MuonCocktailTrkVtxDXY;
-   std::vector<double>  *MuonCocktailTrkVtxDZ;
-   std::vector<double>  *MuonCocktailTrkValidFractionOfHits;
-   std::vector<double>  *MuonCosmicCompatibility;
-   std::vector<double>  *MuonEcalIso;
-   std::vector<double>  *MuonEcalVetoIso;
-   std::vector<double>  *MuonEnergy;
-   std::vector<double>  *MuonEta;
-   std::vector<double>  *MuonEtaError;
-   std::vector<double>  *MuonGlobalChi2;
-   std::vector<double>  *MuonHLTSingleIsoMuonMatchEta;
-   std::vector<double>  *MuonHLTSingleIsoMuonMatchPhi;
-   std::vector<double>  *MuonHLTSingleIsoMuonMatchPt;
-   std::vector<double>  *MuonHLTSingleMuonMatchEta;
-   std::vector<double>  *MuonHLTSingleMuonMatchPhi;
-   std::vector<double>  *MuonHLTSingleMuonMatchPt;
-   std::vector<double>  *MuonHOIso;
-   std::vector<double>  *MuonHcalIso;
-   std::vector<double>  *MuonHcalVetoIso;
-   std::vector<double>  *MuonMatchedGenParticleEta;
-   std::vector<double>  *MuonMatchedGenParticlePhi;
-   std::vector<double>  *MuonMatchedGenParticlePt;
-   std::vector<double>  *MuonOverlapCompatibility;
-   std::vector<double>  *MuonP;
-   std::vector<double>  *MuonPFIsoR03ChargedHadron;
-   std::vector<double>  *MuonPFIsoR03ChargedParticle;
-   std::vector<double>  *MuonPFIsoR03NeutralHadron;
-   std::vector<double>  *MuonPFIsoR03NeutralHadronHT;
-   std::vector<double>  *MuonPFIsoR03PU;
-   std::vector<double>  *MuonPFIsoR03Photon;
-   std::vector<double>  *MuonPFIsoR03PhotonHT;
-   std::vector<double>  *MuonPFIsoR04ChargedHadron;
-   std::vector<double>  *MuonPFIsoR04ChargedParticle;
-   std::vector<double>  *MuonPFIsoR04NeutralHadron;
-   std::vector<double>  *MuonPFIsoR04NeutralHadronHT;
-   std::vector<double>  *MuonPFIsoR04PU;
-   std::vector<double>  *MuonPFIsoR04Photon;
-   std::vector<double>  *MuonPFIsoR04PhotonHT;
-   std::vector<double>  *MuonPhi;
-   std::vector<double>  *MuonPhiError;
-   std::vector<double>  *MuonPrimaryVertexDXY;
-   std::vector<double>  *MuonPrimaryVertexDXYError;
-   std::vector<double>  *MuonPt;
-   std::vector<double>  *MuonPtError;
-   std::vector<double>  *MuonQOverPError;
-   std::vector<double>  *MuonTimeCompatibility;
-   std::vector<double>  *MuonTrackChi2;
-   std::vector<double>  *MuonTrackerIsoSumPT;
-   std::vector<double>  *MuonTrkD0;
-   std::vector<double>  *MuonTrkD0Error;
-   std::vector<double>  *MuonTrkDz;
-   std::vector<double>  *MuonTrkDzError;
-   std::vector<double>  *MuonTrkEta;
-   std::vector<double>  *MuonTrkEtaError;
-   std::vector<double>  *MuonTrkIso;
-   std::vector<double>  *MuonTrkPhi;
-   std::vector<double>  *MuonTrkPhiError;
-   std::vector<double>  *MuonTrkPt;
-   std::vector<double>  *MuonTrkPtError;
-   std::vector<double>  *MuonTrkValidFractionOfHits;
-   std::vector<double>  *MuonTrkVx;
-   std::vector<double>  *MuonTrkVy;
-   std::vector<double>  *MuonTrkVz;
-   std::vector<double>  *MuonVtxDistXY;
-   std::vector<double>  *MuonVtxDistZ;
+   std::vector<double>  *MuonLooseBackToBackCompatibility;
+   std::vector<double>  *MuonLooseBeamSpotDXY;
+   std::vector<double>  *MuonLooseBeamSpotDXYError;
+   std::vector<double>  *MuonLooseBestTrackVtxDistXY;
+   std::vector<double>  *MuonLooseBestTrackVtxDistZ;
+   std::vector<double>  *MuonLooseCocktailEta;
+   std::vector<double>  *MuonLooseCocktailEtaError;
+   std::vector<double>  *MuonLooseCocktailGlobalChi2;
+   std::vector<double>  *MuonLooseCocktailP;
+   std::vector<double>  *MuonLooseCocktailPhi;
+   std::vector<double>  *MuonLooseCocktailPhiError;
+   std::vector<double>  *MuonLooseCocktailPt;
+   std::vector<double>  *MuonLooseCocktailPtError;
+   std::vector<double>  *MuonLooseCocktailQOverPError;
+   std::vector<double>  *MuonLooseCocktailTrkD0;
+   std::vector<double>  *MuonLooseCocktailTrkD0Error;
+   std::vector<double>  *MuonLooseCocktailTrkDz;
+   std::vector<double>  *MuonLooseCocktailTrkDzError;
+   std::vector<double>  *MuonLooseCocktailTrkVtxDXY;
+   std::vector<double>  *MuonLooseCocktailTrkVtxDZ;
+   std::vector<double>  *MuonLooseCocktailTrkValidFractionOfHits;
+   std::vector<double>  *MuonLooseCosmicCompatibility;
+   std::vector<double>  *MuonLooseEcalIso;
+   std::vector<double>  *MuonLooseEcalVetoIso;
+   std::vector<double>  *MuonLooseEnergy;
+   std::vector<double>  *MuonLooseEta;
+   std::vector<double>  *MuonLooseEtaError;
+   std::vector<double>  *MuonLooseGlobalChi2;
+   std::vector<double>  *MuonLooseHLTSingleIsoMuonMatchEta;
+   std::vector<double>  *MuonLooseHLTSingleIsoMuonMatchPhi;
+   std::vector<double>  *MuonLooseHLTSingleIsoMuonMatchPt;
+   std::vector<double>  *MuonLooseHLTSingleMuonMatchEta;
+   std::vector<double>  *MuonLooseHLTSingleMuonMatchPhi;
+   std::vector<double>  *MuonLooseHLTSingleMuonMatchPt;
+   std::vector<double>  *MuonLooseHOIso;
+   std::vector<double>  *MuonLooseHcalIso;
+   std::vector<double>  *MuonLooseHcalVetoIso;
+   std::vector<double>  *MuonLooseMatchedGenParticleEta;
+   std::vector<double>  *MuonLooseMatchedGenParticlePhi;
+   std::vector<double>  *MuonLooseMatchedGenParticlePt;
+   std::vector<double>  *MuonLooseOverlapCompatibility;
+   std::vector<double>  *MuonLooseP;
+   std::vector<double>  *MuonLoosePFIsoR03ChargedHadron;
+   std::vector<double>  *MuonLoosePFIsoR03ChargedParticle;
+   std::vector<double>  *MuonLoosePFIsoR03NeutralHadron;
+   std::vector<double>  *MuonLoosePFIsoR03NeutralHadronHT;
+   std::vector<double>  *MuonLoosePFIsoR03PU;
+   std::vector<double>  *MuonLoosePFIsoR03Photon;
+   std::vector<double>  *MuonLoosePFIsoR03PhotonHT;
+   std::vector<double>  *MuonLoosePFIsoR04ChargedHadron;
+   std::vector<double>  *MuonLoosePFIsoR04ChargedParticle;
+   std::vector<double>  *MuonLoosePFIsoR04NeutralHadron;
+   std::vector<double>  *MuonLoosePFIsoR04NeutralHadronHT;
+   std::vector<double>  *MuonLoosePFIsoR04PU;
+   std::vector<double>  *MuonLoosePFIsoR04Photon;
+   std::vector<double>  *MuonLoosePFIsoR04PhotonHT;
+   std::vector<double>  *MuonLoosePhi;
+   std::vector<double>  *MuonLoosePhiError;
+   std::vector<double>  *MuonLoosePrimaryVertexDXY;
+   std::vector<double>  *MuonLoosePrimaryVertexDXYError;
+   std::vector<double>  *MuonLoosePt;
+   std::vector<double>  *MuonLoosePx;
+   std::vector<double>  *MuonLoosePy;
+   std::vector<double>  *MuonLoosePtError;
+   std::vector<double>  *MuonLooseQOverPError;
+   std::vector<double>  *MuonLooseTimeCompatibility;
+   std::vector<double>  *MuonLooseTrackChi2;
+   std::vector<double>  *MuonLooseTrackerIsoSumPT;
+   std::vector<double>  *MuonLooseTrkD0;
+   std::vector<double>  *MuonLooseTrkD0Error;
+   std::vector<double>  *MuonLooseTrkDz;
+   std::vector<double>  *MuonLooseTrkDzError;
+   std::vector<double>  *MuonLooseTrkEta;
+   std::vector<double>  *MuonLooseTrkEtaError;
+   std::vector<double>  *MuonLooseTrkIso;
+   std::vector<double>  *MuonLooseTrkPhi;
+   std::vector<double>  *MuonLooseTrkPhiError;
+   std::vector<double>  *MuonLooseTrkPt;
+   std::vector<double>  *MuonLooseTrkPtError;
+   std::vector<double>  *MuonLooseTrkValidFractionOfHits;
+   std::vector<double>  *MuonLooseTrkVx;
+   std::vector<double>  *MuonLooseTrkVy;
+   std::vector<double>  *MuonLooseTrkVz;
+   std::vector<double>  *MuonLooseVtxDistXY;
+   std::vector<double>  *MuonLooseVtxDistZ;
    std::vector<double>  *PFCandEnergyLeptLink;
    std::vector<double>  *PFCandEtaLeptLink;
    std::vector<double>  *PFCandPhiLeptLink;
@@ -591,7 +605,11 @@ public :
    std::vector<double>  *PFJetPhi;
    std::vector<double>  *PFJetPhotonEnergyFraction;
    std::vector<double>  *PFJetPt;
+   std::vector<double>  *PFJetPx;
+   std::vector<double>  *PFJetPy;
    std::vector<double>  *PFJetPtRaw;
+   std::vector<double>  *PFJetPxRaw;
+   std::vector<double>  *PFJetPyRaw;
    std::vector<double>  *PFJetSimpleSecondaryVertexHighEffBTag;
    std::vector<double>  *PFJetSimpleSecondaryVertexHighPurBTag;
    std::vector<double>  *PFJetSoftElectronByIP3dBTag;
@@ -602,6 +620,8 @@ public :
    std::vector<double>  *PFJetTrackCountingHighEffBTag;
    std::vector<double>  *PFJetTrackCountingHighPurBTag;
    std::vector<double>  *PFMET;
+   std::vector<double>  *PFMETx;
+   std::vector<double>  *PFMETy;
    std::vector<double>  *PFMETPhi;
    std::vector<double>  *PFMETSig;
    std::vector<double>  *PFMETSigMatrixDXX;
@@ -624,6 +644,8 @@ public :
    std::vector<double>  *PFMETSigMatrixDYYType01XYCor;
    std::vector<double>  *PFMETSigType01XYCor;
    std::vector<double>  *PFMETType01XYCor;
+   std::vector<double>  *PFMETxType01XYCor;
+   std::vector<double>  *PFMETyType01XYCor;
    std::vector<double>  *PFSumETType01XYCor;
    std::vector<double>  *PFMETPhiType1Cor;
    std::vector<double>  *PFMETSigMatrixDXXType1Cor;
@@ -693,22 +715,22 @@ public :
    std::vector<std::vector<float> > *HLTFilterObjEta;
    std::vector<std::vector<float> > *HLTFilterObjPhi;
    std::vector<std::vector<float> > *HLTFilterObjPt;
-   std::vector<int>     *ElectronCharge;
-   std::vector<int>     *ElectronClassif;
-   std::vector<int>     *ElectronMissingHits;
-   std::vector<int>     *ElectronMissingHitsEG;
-   std::vector<int>     *ElectronNumberOfBrems;
-   std::vector<int>     *ElectronOverlaps;
-   std::vector<int>     *ElectronPassEGammaIDEoP;
-   std::vector<int>     *ElectronPassEGammaIDLoose;
-   std::vector<int>     *ElectronPassEGammaIDMedium;
-   std::vector<int>     *ElectronPassEGammaIDTight;
-   std::vector<int>     *ElectronPassEGammaIDTrigTight;
-   std::vector<int>     *ElectronPassEGammaIDTrigWP70;
-   std::vector<int>     *ElectronPassEGammaIDVeto;
-   std::vector<int>     *ElectronPassId;
-   std::vector<int>     *ElectronPassIsoPAT;
-   std::vector<int>     *ElectronVtxIndex;
+   std::vector<int>     *ElectronLooseCharge;
+   std::vector<int>     *ElectronLooseClassif;
+   std::vector<int>     *ElectronLooseMissingHits;
+   std::vector<int>     *ElectronLooseMissingHitsEG;
+   std::vector<int>     *ElectronLooseNumberOfBrems;
+   std::vector<int>     *ElectronLooseOverlaps;
+   std::vector<int>     *ElectronLoosePassEGammaIDEoP;
+   std::vector<int>     *ElectronLoosePassEGammaIDLoose;
+   std::vector<int>     *ElectronLoosePassEGammaIDMedium;
+   std::vector<int>     *ElectronLoosePassEGammaIDTight;
+   std::vector<int>     *ElectronLoosePassEGammaIDTrigTight;
+   std::vector<int>     *ElectronLoosePassEGammaIDTrigWP70;
+   std::vector<int>     *ElectronLoosePassEGammaIDVeto;
+   std::vector<int>     *ElectronLoosePassId;
+   std::vector<int>     *ElectronLoosePassIsoPAT;
+   std::vector<int>     *ElectronLooseVtxIndex;
    std::vector<int>     *GenWElectronMotherIndex;
    std::vector<int>     *GenWElectronNumDaught;
    std::vector<int>     *GenWElectronPdgId;
@@ -751,24 +773,24 @@ public :
    std::vector<int>     *HPSTauIsCaloTau;
    std::vector<int>     *HPSTauIsPFTau;
    std::vector<int>     *HPSTauVtxIndex;
-   std::vector<int>     *MuonBestTrackVtxIndex;
-   std::vector<int>     *MuonCharge;
-   std::vector<int>     *MuonCocktailCharge;
-   std::vector<int>     *MuonCocktailRefitID;
-   std::vector<int>     *MuonCocktailTrkHits;
-   std::vector<int>     *MuonGlobalTrkValidHits;
-   std::vector<int>     *MuonIsGlobal;
-   std::vector<int>     *MuonIsPF;
-   std::vector<int>     *MuonIsTracker;
-   std::vector<int>     *MuonPassID;
-   std::vector<int>     *MuonPixelHits;
-   std::vector<int>     *MuonSegmentMatches;
-   std::vector<int>     *MuonStationMatches;
-   std::vector<int>     *MuonTrackLayersWithMeasurement;
-   std::vector<int>     *MuonTrkHits;
-   std::vector<int>     *MuonTrkHitsTrackerOnly;
-   std::vector<int>     *MuonTrkPixelHits;
-   std::vector<int>     *MuonVtxIndex;
+   std::vector<int>     *MuonLooseBestTrackVtxIndex;
+   std::vector<int>     *MuonLooseCharge;
+   std::vector<int>     *MuonLooseCocktailCharge;
+   std::vector<int>     *MuonLooseCocktailRefitID;
+   std::vector<int>     *MuonLooseCocktailTrkHits;
+   std::vector<int>     *MuonLooseGlobalTrkValidHits;
+   std::vector<int>     *MuonLooseIsGlobal;
+   std::vector<int>     *MuonLooseIsPF;
+   std::vector<int>     *MuonLooseIsTracker;
+   std::vector<int>     *MuonLoosePassID;
+   std::vector<int>     *MuonLoosePixelHits;
+   std::vector<int>     *MuonLooseSegmentMatches;
+   std::vector<int>     *MuonLooseStationMatches;
+   std::vector<int>     *MuonLooseTrackLayersWithMeasurement;
+   std::vector<int>     *MuonLooseTrkHits;
+   std::vector<int>     *MuonLooseTrkHitsTrackerOnly;
+   std::vector<int>     *MuonLooseTrkPixelHits;
+   std::vector<int>     *MuonLooseVtxIndex;
    std::vector<int>     *PFCandChargeLeptLink;
    std::vector<int>     *PFJetBestVertexTrackAssociationIndex;
    std::vector<int>     *PFJetChargedHadronMultiplicity;
@@ -803,35 +825,39 @@ public :
    std::vector<double>  *CaloJetPhi;
    std::vector<int>     *CaloJetPassLooseID;
    std::vector<int>     *CaloJetPassTightID;
-   std::vector<double>  *MuonGlobalE;
-   std::vector<double>  *MuonGlobalEta;
-   std::vector<double>  *MuonGlobalPhi;
-   std::vector<double>  *MuonGlobalPt;
-   std::vector<double>  *MuonMuonSpecE;
-   std::vector<double>  *MuonMuonSpecEta;
-   std::vector<double>  *MuonMuonSpecPhi;
-   std::vector<double>  *MuonMuonSpecPt;
+   std::vector<double>  *MuonLooseGlobalE;
+   std::vector<double>  *MuonLooseGlobalEta;
+   std::vector<double>  *MuonLooseGlobalPhi;
+   std::vector<double>  *MuonLooseGlobalPt;
+   std::vector<double>  *MuonLooseMuonSpecE;
+   std::vector<double>  *MuonLooseMuonSpecEta;
+   std::vector<double>  *MuonLooseMuonSpecPhi;
+   std::vector<double>  *MuonLooseMuonSpecPt;
    std::vector<double>  *PFJetScaledDownEnergy;
    std::vector<double>  *PFJetScaledDownPt;
+   std::vector<double>  *PFJetScaledDownPx;
+   std::vector<double>  *PFJetScaledDownPy;
    std::vector<double>  *PFJetScaledUpEnergy;
    std::vector<double>  *PFJetScaledUpPt;
+   std::vector<double>  *PFJetScaledUpPx;
+   std::vector<double>  *PFJetScaledUpPy;
    std::vector<double>  *PFJetSmearedDownEnergy;
    std::vector<double>  *PFJetSmearedDownPt;
+   std::vector<double>  *PFJetSmearedDownPx;
+   std::vector<double>  *PFJetSmearedDownPy;
    std::vector<double>  *PFJetSmearedUpEnergy;
    std::vector<double>  *PFJetSmearedUpPt;
-   std::vector<double>  *PFMETType01XYCorElectronEnDown;
-   std::vector<double>  *PFMETType01XYCorElectronEnUp;
-   std::vector<double>  *PFMETType01XYCorJetEnDown;
-   std::vector<double>  *PFMETType01XYCorJetEnUp;
-   std::vector<double>  *PFMETType01XYCorJetResDown;
-   std::vector<double>  *PFMETType01XYCorJetResUp;
-   std::vector<double>  *PFMETType01XYCorMuonEnDown;
-   std::vector<double>  *PFMETType01XYCorMuonEnUp;
-   std::vector<double>  *PFMETType01XYCorUnclusteredDown;
+   std::vector<double>  *PFJetSmearedUpPx;
+   std::vector<double>  *PFJetSmearedUpPy;
    std::vector<double>  *PFMETType01XYCorUnclusteredUp;
-   std::vector<int>     *MuonGlobalCharge;
-   std::vector<int>     *MuonMuonSpecCharge;
-   std::vector<int>     *MuonTrackerCharge;
+   std::vector<double>  *PFMETType01XYCorUnclusteredDown;
+   std::vector<double>  *PFMETxType01XYCorUnclusteredUp;
+   std::vector<double>  *PFMETxType01XYCorUnclusteredDown;
+   std::vector<double>  *PFMETyType01XYCorUnclusteredUp;
+   std::vector<double>  *PFMETyType01XYCorUnclusteredDown;
+   std::vector<int>     *MuonLooseGlobalCharge;
+   std::vector<int>     *MuonLooseMuonSpecCharge;
+   std::vector<int>     *MuonLooseTrackerCharge;
 
    
    
@@ -880,42 +906,52 @@ public :
    TBranch        *b_passTrackingFailureFilter;   //!
    TBranch        *b_hasVeryForwardPFMuon;   //!
    TBranch        *b_hasJetWithBadUnc;   //!
-   TBranch        *b_ElectronshiftedEup; //!
-   TBranch        *b_ElectronshiftedEdown; //!
-   TBranch        *b_ElectronGsfCtfCharge;   //!
-   TBranch        *b_ElectronGsfCtfScPixCharge;   //!
-   TBranch        *b_ElectronGsfScPixCharge;   //!
-   TBranch        *b_ElectronHLTDoubleEleMatched;   //!
-   TBranch        *b_ElectronHLTSingleEleMatched;   //!
-   TBranch        *b_ElectronHLTSingleEleMatched8;   //!
-   TBranch        *b_ElectronHLTSingleEleMatched17;   //!
-   TBranch        *b_ElectronHLTSingleEleWP80Matched;   //!
-   TBranch        *b_ElectronHLTEMuMatched8;   //!
-   TBranch        *b_ElectronHLTEMuMatched17;   //!
-   TBranch        *b_ElectronHasEcalDrivenSeed;   //!
-   TBranch        *b_ElectronHasMatchedConvPhot;   //!
-   TBranch        *b_ElectronHasTrackerDrivenSeed;   //!
-   TBranch        *b_ElectronIsEB;   //!
-   TBranch        *b_ElectronIsEE;   //!
-   TBranch        *b_ElectronmvatrigV0;   //!
-   TBranch        *b_ElectronmvaNontrigV0;   //!
+   TBranch        *b_ElectronLooseshiftedEup; //!
+   TBranch        *b_ElectronLooseshiftedEdown; //!
+   TBranch        *b_ElectronLooseshiftedExup; //!                                                                                                                                    
+   TBranch        *b_ElectronLooseshiftedExdown; //!      
+
+   TBranch        *b_ElectronLooseshiftedEyup; //!                                                                                                                                    
+   TBranch        *b_ElectronLooseshiftedEydown; //!   
+
+   TBranch        *b_ElectronLooseGsfCtfCharge;   //!
+   TBranch        *b_ElectronLooseGsfCtfScPixCharge;   //!
+   TBranch        *b_ElectronLooseGsfScPixCharge;   //!
+   TBranch        *b_ElectronLooseHLTDoubleEleMatched;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleMatched;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleMatched8;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleMatched17;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleWP80Matched;   //!
+   TBranch        *b_ElectronLooseHLTEMuMatched8;   //!
+   TBranch        *b_ElectronLooseHLTEMuMatched17;   //!
+   TBranch        *b_ElectronLooseHasEcalDrivenSeed;   //!
+   TBranch        *b_ElectronLooseHasMatchedConvPhot;   //!
+   TBranch        *b_ElectronLooseHasTrackerDrivenSeed;   //!
+   TBranch        *b_ElectronLooseIsEB;   //!
+   TBranch        *b_ElectronLooseIsEE;   //!
+   TBranch        *b_ElectronLoosemvatrigV0;   //!
+   TBranch        *b_ElectronLoosemvaNontrigV0;   //!
    TBranch        *b_PFJetPileupjetIDpassLooseWP; //!
    TBranch        *b_PFJetPileupjetIDpassMediumWP; //!
    TBranch        *b_PFJetPileupjetIDpassTightWP; //!
    TBranch        *b_PFJetJetPileupIdflag; //!
    TBranch        *b_PFJetJetPileupMVA; //!
-   TBranch        *b_MuonshiftedEup; //!
-   TBranch        *b_MuonshiftedEdown; //!
-   TBranch        *b_MuonHLTSingleIsoMuonMatched;   //!
-   TBranch        *b_MuonHLTSingleMuonMatched;   //!
-   TBranch        *b_MuonHLTSingleMuonMatched5;   //!
-   TBranch        *b_MuonHLTSingleMuonMatched8;   //!
-   TBranch        *b_MuonHLTSingleMuonMatched12;   //!
-   TBranch        *b_MuonHLTSingleMuonMatched17;   //!
-   TBranch        *b_MuonHLTSingleMuonMatched24;   //!
-   TBranch        *b_MuonHLTDoubleMuonMatched;   //!
-   TBranch        *b_MuonHLTEMuMatched8;   //!
-   TBranch        *b_MuonHLTEMuMatched17;   //!
+   TBranch        *b_MuonLooseshiftedEup; //!
+   TBranch        *b_MuonLooseshiftedEdown; //!
+   TBranch        *b_MuonLooseshiftedExup; //!                                                                                                                                       
+   TBranch        *b_MuonLooseshiftedExdown; //!  
+   TBranch        *b_MuonLooseshiftedEyup; //!                                                                                                                                        
+   TBranch        *b_MuonLooseshiftedEydown; //!  
+   TBranch        *b_MuonLooseHLTSingleIsoMuonMatched;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatched;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatched5;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatched8;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatched12;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatched17;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatched24;   //!
+   TBranch        *b_MuonLooseHLTDoubleMuonMatched;   //!
+   TBranch        *b_MuonLooseHLTEMuMatched8;   //!
+   TBranch        *b_MuonLooseHLTEMuMatched17;   //!
    TBranch        *b_PhotonHasMatchedConvPhot;   //!
    TBranch        *b_PhotonHasMatchedPromptEle;   //!
    TBranch        *b_PhotonHasPixelSeed;   //!
@@ -945,69 +981,71 @@ public :
    TBranch        *b_CaloMETUncorrType1Cor;   //!
    TBranch        *b_CaloSumETType1Cor;   //!
    TBranch        *b_CaloSumETUncorrType1Cor;   //!
-   TBranch        *b_ElectronBeamSpotDXY;   //!
-   TBranch        *b_ElectronBeamSpotDXYError;   //!
-   TBranch        *b_ElectronCaloEnergy;   //!
-   TBranch        *b_ElectronConvFitProb;   //!
-   TBranch        *b_ElectronDCotTheta;   //!
-   TBranch        *b_ElectronDeltaEtaTrkSC;   //!
-   TBranch        *b_ElectronDeltaPhiTrkSC;   //!
-   TBranch        *b_ElectronDist;   //!
-   TBranch        *b_ElectronE1x5OverE5x5;   //!
-   TBranch        *b_ElectronE2x5OverE5x5;   //!
-   TBranch        *b_ElectronESuperClusterOverP;   //!
-   TBranch        *b_ElectronEcalIsoDR03;   //!
-   TBranch        *b_ElectronEcalIsoPAT;   //!
-   TBranch        *b_ElectronEnergy;   //!
-   TBranch        *b_ElectronEta;   //!
-   TBranch        *b_ElectronFbrem;   //!
-   TBranch        *b_ElectronHLTDoubleEleMatchEta;   //!
-   TBranch        *b_ElectronHLTDoubleEleMatchPhi;   //!
-   TBranch        *b_ElectronHLTDoubleEleMatchPt;   //!
-   TBranch        *b_ElectronHLTSingleEleMatchEta;   //!
-   TBranch        *b_ElectronHLTSingleEleMatchPhi;   //!
-   TBranch        *b_ElectronHLTSingleEleMatchPt;   //!
-   TBranch        *b_ElectronHLTSingleEleWP80MatchEta;   //!
-   TBranch        *b_ElectronHLTSingleEleWP80MatchPhi;   //!
-   TBranch        *b_ElectronHLTSingleEleWP80MatchPt;   //!
-   TBranch        *b_ElectronHcalIsoD1DR03;   //!
-   TBranch        *b_ElectronHcalIsoD2DR03;   //!
-   TBranch        *b_ElectronHcalIsoDR03;   //!
-   TBranch        *b_ElectronHcalIsoDR03FullCone;   //!
-   TBranch        *b_ElectronHcalIsoPAT;   //!
-   TBranch        *b_ElectronHoE;   //!
-   TBranch        *b_ElectronLeadVtxDistXY;   //!
-   TBranch        *b_ElectronLeadVtxDistZ;   //!
-   TBranch        *b_ElectronMatchedGenParticleEta;   //!
-   TBranch        *b_ElectronMatchedGenParticlePhi;   //!
-   TBranch        *b_ElectronMatchedGenParticlePt;   //!
-   TBranch        *b_ElectronPFChargedHadronIso03;   //!
-   TBranch        *b_ElectronPFChargedHadronIso04;   //!
-   TBranch        *b_ElectronPFNeutralHadronIso03;   //!
-   TBranch        *b_ElectronPFNeutralHadronIso04;   //!
-   TBranch        *b_ElectronPFPhotonIso03;   //!
-   TBranch        *b_ElectronPFPhotonIso04;   //!
-   TBranch        *b_ElectronPhi;   //!
-   TBranch        *b_ElectronPrimaryVertexDXY;   //!
-   TBranch        *b_ElectronPrimaryVertexDXYError;   //!
-   TBranch        *b_ElectronPt;   //!
-   TBranch        *b_ElectronPtHeep;   //!
-   TBranch        *b_ElectronRelIsoPAT;   //!
-   TBranch        *b_ElectronSCEta;   //!
-   TBranch        *b_ElectronSCPhi;   //!
-   TBranch        *b_ElectronSCPt;   //!
-   TBranch        *b_ElectronSCRawEnergy;   //!
-   TBranch        *b_ElectronSigmaEtaEta;   //!
-   TBranch        *b_ElectronSigmaIEtaIEta;   //!
-   TBranch        *b_ElectronTrackPt;   //!
-   TBranch        *b_ElectronTrackValidFractionOfHits;   //!
-   TBranch        *b_ElectronTrackVx;   //!
-   TBranch        *b_ElectronTrackVy;   //!
-   TBranch        *b_ElectronTrackVz;   //!
-   TBranch        *b_ElectronTrkIsoDR03;   //!
-   TBranch        *b_ElectronTrkIsoPAT;   //!
-   TBranch        *b_ElectronVtxDistXY;   //!
-   TBranch        *b_ElectronVtxDistZ;   //!
+   TBranch        *b_ElectronLooseBeamSpotDXY;   //!
+   TBranch        *b_ElectronLooseBeamSpotDXYError;   //!
+   TBranch        *b_ElectronLooseCaloEnergy;   //!
+   TBranch        *b_ElectronLooseConvFitProb;   //!
+   TBranch        *b_ElectronLooseDCotTheta;   //!
+   TBranch        *b_ElectronLooseDeltaEtaTrkSC;   //!
+   TBranch        *b_ElectronLooseDeltaPhiTrkSC;   //!
+   TBranch        *b_ElectronLooseDist;   //!
+   TBranch        *b_ElectronLooseE1x5OverE5x5;   //!
+   TBranch        *b_ElectronLooseE2x5OverE5x5;   //!
+   TBranch        *b_ElectronLooseESuperClusterOverP;   //!
+   TBranch        *b_ElectronLooseEcalIsoDR03;   //!
+   TBranch        *b_ElectronLooseEcalIsoPAT;   //!
+   TBranch        *b_ElectronLooseEnergy;   //!
+   TBranch        *b_ElectronLooseEta;   //!
+   TBranch        *b_ElectronLooseFbrem;   //!
+   TBranch        *b_ElectronLooseHLTDoubleEleMatchEta;   //!
+   TBranch        *b_ElectronLooseHLTDoubleEleMatchPhi;   //!
+   TBranch        *b_ElectronLooseHLTDoubleEleMatchPt;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleMatchEta;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleMatchPhi;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleMatchPt;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleWP80MatchEta;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleWP80MatchPhi;   //!
+   TBranch        *b_ElectronLooseHLTSingleEleWP80MatchPt;   //!
+   TBranch        *b_ElectronLooseHcalIsoD1DR03;   //!
+   TBranch        *b_ElectronLooseHcalIsoD2DR03;   //!
+   TBranch        *b_ElectronLooseHcalIsoDR03;   //!
+   TBranch        *b_ElectronLooseHcalIsoDR03FullCone;   //!
+   TBranch        *b_ElectronLooseHcalIsoPAT;   //!
+   TBranch        *b_ElectronLooseHoE;   //!
+   TBranch        *b_ElectronLooseLeadVtxDistXY;   //!
+   TBranch        *b_ElectronLooseLeadVtxDistZ;   //!
+   TBranch        *b_ElectronLooseMatchedGenParticleEta;   //!
+   TBranch        *b_ElectronLooseMatchedGenParticlePhi;   //!
+   TBranch        *b_ElectronLooseMatchedGenParticlePt;   //!
+   TBranch        *b_ElectronLoosePFChargedHadronIso03;   //!
+   TBranch        *b_ElectronLoosePFChargedHadronIso04;   //!
+   TBranch        *b_ElectronLoosePFNeutralHadronIso03;   //!
+   TBranch        *b_ElectronLoosePFNeutralHadronIso04;   //!
+   TBranch        *b_ElectronLoosePFPhotonIso03;   //!
+   TBranch        *b_ElectronLoosePFPhotonIso04;   //!
+   TBranch        *b_ElectronLoosePhi;   //!
+   TBranch        *b_ElectronLoosePrimaryVertexDXY;   //!
+   TBranch        *b_ElectronLoosePrimaryVertexDXYError;   //!
+   TBranch        *b_ElectronLoosePt;   //!
+   TBranch        *b_ElectronLoosePx;   //!
+   TBranch        *b_ElectronLoosePy;   //!
+   TBranch        *b_ElectronLoosePtHeep;   //!
+   TBranch        *b_ElectronLooseRelIsoPAT;   //!
+   TBranch        *b_ElectronLooseSCEta;   //!
+   TBranch        *b_ElectronLooseSCPhi;   //!
+   TBranch        *b_ElectronLooseSCPt;   //!
+   TBranch        *b_ElectronLooseSCRawEnergy;   //!
+   TBranch        *b_ElectronLooseSigmaEtaEta;   //!
+   TBranch        *b_ElectronLooseSigmaIEtaIEta;   //!
+   TBranch        *b_ElectronLooseTrackPt;   //!
+   TBranch        *b_ElectronLooseTrackValidFractionOfHits;   //!
+   TBranch        *b_ElectronLooseTrackVx;   //!
+   TBranch        *b_ElectronLooseTrackVy;   //!
+   TBranch        *b_ElectronLooseTrackVz;   //!
+   TBranch        *b_ElectronLooseTrkIsoDR03;   //!
+   TBranch        *b_ElectronLooseTrkIsoPAT;   //!
+   TBranch        *b_ElectronLooseVtxDistXY;   //!
+   TBranch        *b_ElectronLooseVtxDistZ;   //!
    TBranch        *b_GenWElectronEnergy;   //!
    TBranch        *b_GenWElectronEta;   //!
    TBranch        *b_GenWElectronP;   //!
@@ -1211,89 +1249,91 @@ public :
    TBranch        *b_HPSTauVLooseIsolationDiscr;   //!
    TBranch        *b_HPSTauVtxDistXY;   //!
    TBranch        *b_HPSTauVtxDistZ;   //!
-   TBranch        *b_MuonBackToBackCompatibility;   //!
-   TBranch        *b_MuonBeamSpotDXY;   //!
-   TBranch        *b_MuonBeamSpotDXYError;   //!
-   TBranch        *b_MuonBestTrackVtxDistXY;   //!
-   TBranch        *b_MuonBestTrackVtxDistZ;   //!
-   TBranch        *b_MuonCocktailEta;   //!
-   TBranch        *b_MuonCocktailEtaError;   //!
-   TBranch        *b_MuonCocktailGlobalChi2;   //!
-   TBranch        *b_MuonCocktailP;   //!
-   TBranch        *b_MuonCocktailPhi;   //!
-   TBranch        *b_MuonCocktailPhiError;   //!
-   TBranch        *b_MuonCocktailPt;   //!
-   TBranch        *b_MuonCocktailPtError;   //!
-   TBranch        *b_MuonCocktailQOverPError;   //!
-   TBranch        *b_MuonCocktailTrkD0;   //!
-   TBranch        *b_MuonCocktailTrkD0Error;   //!
-   TBranch        *b_MuonCocktailTrkDz;   //!
-   TBranch        *b_MuonCocktailTrkVtxDXY;   //!
-   TBranch        *b_MuonCocktailTrkVtxDZ;   //!
-   TBranch        *b_MuonCocktailTrkDzError;   //!
-   TBranch        *b_MuonCocktailTrkValidFractionOfHits;   //!
-   TBranch        *b_MuonCosmicCompatibility;   //!
-   TBranch        *b_MuonEcalIso;   //!
-   TBranch        *b_MuonEcalVetoIso;   //!
-   TBranch        *b_MuonEnergy;   //!
-   TBranch        *b_MuonEta;   //!
-   TBranch        *b_MuonEtaError;   //!
-   TBranch        *b_MuonGlobalChi2;   //!
-   TBranch        *b_MuonHLTSingleIsoMuonMatchEta;   //!
-   TBranch        *b_MuonHLTSingleIsoMuonMatchPhi;   //!
-   TBranch        *b_MuonHLTSingleIsoMuonMatchPt;   //!
-   TBranch        *b_MuonHLTSingleMuonMatchEta;   //!
-   TBranch        *b_MuonHLTSingleMuonMatchPhi;   //!
-   TBranch        *b_MuonHLTSingleMuonMatchPt;   //!
-   TBranch        *b_MuonHOIso;   //!
-   TBranch        *b_MuonHcalIso;   //!
-   TBranch        *b_MuonHcalVetoIso;   //!
-   TBranch        *b_MuonMatchedGenParticleEta;   //!
-   TBranch        *b_MuonMatchedGenParticlePhi;   //!
-   TBranch        *b_MuonMatchedGenParticlePt;   //!
-   TBranch        *b_MuonOverlapCompatibility;   //!
-   TBranch        *b_MuonP;   //!
-   TBranch        *b_MuonPFIsoR03ChargedHadron;   //!
-   TBranch        *b_MuonPFIsoR03ChargedParticle;   //!
-   TBranch        *b_MuonPFIsoR03NeutralHadron;   //!
-   TBranch        *b_MuonPFIsoR03NeutralHadronHT;   //!
-   TBranch        *b_MuonPFIsoR03PU;   //!
-   TBranch        *b_MuonPFIsoR03Photon;   //!
-   TBranch        *b_MuonPFIsoR03PhotonHT;   //!
-   TBranch        *b_MuonPFIsoR04ChargedHadron;   //!
-   TBranch        *b_MuonPFIsoR04ChargedParticle;   //!
-   TBranch        *b_MuonPFIsoR04NeutralHadron;   //!
-   TBranch        *b_MuonPFIsoR04NeutralHadronHT;   //!
-   TBranch        *b_MuonPFIsoR04PU;   //!
-   TBranch        *b_MuonPFIsoR04Photon;   //!
-   TBranch        *b_MuonPFIsoR04PhotonHT;   //!
-   TBranch        *b_MuonPhi;   //!
-   TBranch        *b_MuonPhiError;   //!
-   TBranch        *b_MuonPrimaryVertexDXY;   //!
-   TBranch        *b_MuonPrimaryVertexDXYError;   //!
-   TBranch        *b_MuonPt;   //!
-   TBranch        *b_MuonPtError;   //!
-   TBranch        *b_MuonQOverPError;   //!
-   TBranch        *b_MuonTimeCompatibility;   //!
-   TBranch        *b_MuonTrackChi2;   //!
-   TBranch        *b_MuonTrackerIsoSumPT;   //!
-   TBranch        *b_MuonTrkD0;   //!
-   TBranch        *b_MuonTrkD0Error;   //!
-   TBranch        *b_MuonTrkDz;   //!
-   TBranch        *b_MuonTrkDzError;   //!
-   TBranch        *b_MuonTrkEta;   //!
-   TBranch        *b_MuonTrkEtaError;   //!
-   TBranch        *b_MuonTrkIso;   //!
-   TBranch        *b_MuonTrkPhi;   //!
-   TBranch        *b_MuonTrkPhiError;   //!
-   TBranch        *b_MuonTrkPt;   //!
-   TBranch        *b_MuonTrkPtError;   //!
-   TBranch        *b_MuonTrkValidFractionOfHits;   //!
-   TBranch        *b_MuonTrkVx;   //!
-   TBranch        *b_MuonTrkVy;   //!
-   TBranch        *b_MuonTrkVz;   //!
-   TBranch        *b_MuonVtxDistXY;   //!
-   TBranch        *b_MuonVtxDistZ;   //!
+   TBranch        *b_MuonLooseBackToBackCompatibility;   //!
+   TBranch        *b_MuonLooseBeamSpotDXY;   //!
+   TBranch        *b_MuonLooseBeamSpotDXYError;   //!
+   TBranch        *b_MuonLooseBestTrackVtxDistXY;   //!
+   TBranch        *b_MuonLooseBestTrackVtxDistZ;   //!
+   TBranch        *b_MuonLooseCocktailEta;   //!
+   TBranch        *b_MuonLooseCocktailEtaError;   //!
+   TBranch        *b_MuonLooseCocktailGlobalChi2;   //!
+   TBranch        *b_MuonLooseCocktailP;   //!
+   TBranch        *b_MuonLooseCocktailPhi;   //!
+   TBranch        *b_MuonLooseCocktailPhiError;   //!
+   TBranch        *b_MuonLooseCocktailPt;   //!
+   TBranch        *b_MuonLooseCocktailPtError;   //!
+   TBranch        *b_MuonLooseCocktailQOverPError;   //!
+   TBranch        *b_MuonLooseCocktailTrkD0;   //!
+   TBranch        *b_MuonLooseCocktailTrkD0Error;   //!
+   TBranch        *b_MuonLooseCocktailTrkDz;   //!
+   TBranch        *b_MuonLooseCocktailTrkVtxDXY;   //!
+   TBranch        *b_MuonLooseCocktailTrkVtxDZ;   //!
+   TBranch        *b_MuonLooseCocktailTrkDzError;   //!
+   TBranch        *b_MuonLooseCocktailTrkValidFractionOfHits;   //!
+   TBranch        *b_MuonLooseCosmicCompatibility;   //!
+   TBranch        *b_MuonLooseEcalIso;   //!
+   TBranch        *b_MuonLooseEcalVetoIso;   //!
+   TBranch        *b_MuonLooseEnergy;   //!
+   TBranch        *b_MuonLooseEta;   //!
+   TBranch        *b_MuonLooseEtaError;   //!
+   TBranch        *b_MuonLooseGlobalChi2;   //!
+   TBranch        *b_MuonLooseHLTSingleIsoMuonMatchEta;   //!
+   TBranch        *b_MuonLooseHLTSingleIsoMuonMatchPhi;   //!
+   TBranch        *b_MuonLooseHLTSingleIsoMuonMatchPt;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatchEta;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatchPhi;   //!
+   TBranch        *b_MuonLooseHLTSingleMuonMatchPt;   //!
+   TBranch        *b_MuonLooseHOIso;   //!
+   TBranch        *b_MuonLooseHcalIso;   //!
+   TBranch        *b_MuonLooseHcalVetoIso;   //!
+   TBranch        *b_MuonLooseMatchedGenParticleEta;   //!
+   TBranch        *b_MuonLooseMatchedGenParticlePhi;   //!
+   TBranch        *b_MuonLooseMatchedGenParticlePt;   //!
+   TBranch        *b_MuonLooseOverlapCompatibility;   //!
+   TBranch        *b_MuonLooseP;   //!
+   TBranch        *b_MuonLoosePFIsoR03ChargedHadron;   //!
+   TBranch        *b_MuonLoosePFIsoR03ChargedParticle;   //!
+   TBranch        *b_MuonLoosePFIsoR03NeutralHadron;   //!
+   TBranch        *b_MuonLoosePFIsoR03NeutralHadronHT;   //!
+   TBranch        *b_MuonLoosePFIsoR03PU;   //!
+   TBranch        *b_MuonLoosePFIsoR03Photon;   //!
+   TBranch        *b_MuonLoosePFIsoR03PhotonHT;   //!
+   TBranch        *b_MuonLoosePFIsoR04ChargedHadron;   //!
+   TBranch        *b_MuonLoosePFIsoR04ChargedParticle;   //!
+   TBranch        *b_MuonLoosePFIsoR04NeutralHadron;   //!
+   TBranch        *b_MuonLoosePFIsoR04NeutralHadronHT;   //!
+   TBranch        *b_MuonLoosePFIsoR04PU;   //!
+   TBranch        *b_MuonLoosePFIsoR04Photon;   //!
+   TBranch        *b_MuonLoosePFIsoR04PhotonHT;   //!
+   TBranch        *b_MuonLoosePhi;   //!
+   TBranch        *b_MuonLoosePhiError;   //!
+   TBranch        *b_MuonLoosePrimaryVertexDXY;   //!
+   TBranch        *b_MuonLoosePrimaryVertexDXYError;   //!
+   TBranch        *b_MuonLoosePt;   //!
+   TBranch        *b_MuonLoosePx;   //!
+   TBranch        *b_MuonLoosePy;   //!
+   TBranch        *b_MuonLoosePtError;   //!
+   TBranch        *b_MuonLooseQOverPError;   //!
+   TBranch        *b_MuonLooseTimeCompatibility;   //!
+   TBranch        *b_MuonLooseTrackChi2;   //!
+   TBranch        *b_MuonLooseTrackerIsoSumPT;   //!
+   TBranch        *b_MuonLooseTrkD0;   //!
+   TBranch        *b_MuonLooseTrkD0Error;   //!
+   TBranch        *b_MuonLooseTrkDz;   //!
+   TBranch        *b_MuonLooseTrkDzError;   //!
+   TBranch        *b_MuonLooseTrkEta;   //!
+   TBranch        *b_MuonLooseTrkEtaError;   //!
+   TBranch        *b_MuonLooseTrkIso;   //!
+   TBranch        *b_MuonLooseTrkPhi;   //!
+   TBranch        *b_MuonLooseTrkPhiError;   //!
+   TBranch        *b_MuonLooseTrkPt;   //!
+   TBranch        *b_MuonLooseTrkPtError;   //!
+   TBranch        *b_MuonLooseTrkValidFractionOfHits;   //!
+   TBranch        *b_MuonLooseTrkVx;   //!
+   TBranch        *b_MuonLooseTrkVy;   //!
+   TBranch        *b_MuonLooseTrkVz;   //!
+   TBranch        *b_MuonLooseVtxDistXY;   //!
+   TBranch        *b_MuonLooseVtxDistZ;   //!
    TBranch        *b_PFCandEnergyLeptLink;   //!
    TBranch        *b_PFCandEtaLeptLink;   //!
    TBranch        *b_PFCandPhiLeptLink;   //!
@@ -1337,7 +1377,13 @@ public :
    TBranch        *b_PFJetPhi;   //!
    TBranch        *b_PFJetPhotonEnergyFraction;   //!
    TBranch        *b_PFJetPt;   //!
+   TBranch        *b_PFJetPx;   //!
+   TBranch        *b_PFJetPy;   //!
    TBranch        *b_PFJetPtRaw;   //!
+
+   TBranch        *b_PFJetPxRaw;   //!
+
+   TBranch        *b_PFJetPyRaw;   //!
    TBranch        *b_PFJetSimpleSecondaryVertexHighEffBTag;   //!
    TBranch        *b_PFJetSimpleSecondaryVertexHighPurBTag;   //!
    TBranch        *b_PFJetSoftElectronByIP3dBTag;   //!
@@ -1348,6 +1394,8 @@ public :
    TBranch        *b_PFJetTrackCountingHighEffBTag;   //!
    TBranch        *b_PFJetTrackCountingHighPurBTag;   //!
    TBranch        *b_PFMET;   //!
+   TBranch        *b_PFMETx;   //!
+   TBranch        *b_PFMETy;   //!
    TBranch        *b_PFMETPhi;   //!
    TBranch        *b_PFMETSig;   //!
    TBranch        *b_PFMETSigMatrixDXX;   //!
@@ -1370,6 +1418,8 @@ public :
    TBranch        *b_PFMETSigMatrixDYYType01XYCor;   //!
    TBranch        *b_PFMETSigType01XYCor;   //!
    TBranch        *b_PFMETType01XYCor;   //!
+   TBranch        *b_PFMETxType01XYCor;   //!
+   TBranch        *b_PFMETyType01XYCor;   //!
    TBranch        *b_PFSumETType01XYCor;   //!
    TBranch        *b_PFMETPhiType1Cor;   //!
    TBranch        *b_PFMETSigMatrixDXXType1Cor;   //!
@@ -1439,22 +1489,22 @@ public :
    TBranch        *b_HLTFilterObjEta;   //!
    TBranch        *b_HLTFilterObjPhi;   //!
    TBranch        *b_HLTFilterObjPt;   //!
-   TBranch        *b_ElectronCharge;   //!
-   TBranch        *b_ElectronClassif;   //!
-   TBranch        *b_ElectronMissingHits;   //!
-   TBranch        *b_ElectronMissingHitsEG;   //!
-   TBranch        *b_ElectronNumberOfBrems;   //!
-   TBranch        *b_ElectronOverlaps;   //!
-   TBranch        *b_ElectronPassEGammaIDEoP;   //!
-   TBranch        *b_ElectronPassEGammaIDLoose;   //!
-   TBranch        *b_ElectronPassEGammaIDMedium;   //!
-   TBranch        *b_ElectronPassEGammaIDTight;   //!
-   TBranch        *b_ElectronPassEGammaIDTrigTight;   //!
-   TBranch        *b_ElectronPassEGammaIDTrigWP70;   //!
-   TBranch        *b_ElectronPassEGammaIDVeto;   //!
-   TBranch        *b_ElectronPassId;   //!
-   TBranch        *b_ElectronPassIsoPAT;   //!
-   TBranch        *b_ElectronVtxIndex;   //!
+   TBranch        *b_ElectronLooseCharge;   //!
+   TBranch        *b_ElectronLooseClassif;   //!
+   TBranch        *b_ElectronLooseMissingHits;   //!
+   TBranch        *b_ElectronLooseMissingHitsEG;   //!
+   TBranch        *b_ElectronLooseNumberOfBrems;   //!
+   TBranch        *b_ElectronLooseOverlaps;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDEoP;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDLoose;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDMedium;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDTight;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDTrigTight;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDTrigWP70;   //!
+   TBranch        *b_ElectronLoosePassEGammaIDVeto;   //!
+   TBranch        *b_ElectronLoosePassId;   //!
+   TBranch        *b_ElectronLoosePassIsoPAT;   //!
+   TBranch        *b_ElectronLooseVtxIndex;   //!
    TBranch        *b_GenWElectronMotherIndex;   //!
    TBranch        *b_GenWElectronNumDaught;   //!
    TBranch        *b_GenWElectronPdgId;   //!
@@ -1497,24 +1547,24 @@ public :
    TBranch        *b_HPSTauIsCaloTau;   //!
    TBranch        *b_HPSTauIsPFTau;   //!
    TBranch        *b_HPSTauVtxIndex;   //!
-   TBranch        *b_MuonBestTrackVtxIndex;   //!
-   TBranch        *b_MuonCharge;   //!
-   TBranch        *b_MuonCocktailCharge;   //!
-   TBranch        *b_MuonCocktailRefitID;   //!
-   TBranch        *b_MuonCocktailTrkHits;   //!
-   TBranch        *b_MuonGlobalTrkValidHits;   //!
-   TBranch        *b_MuonIsGlobal;   //!
-   TBranch        *b_MuonIsPF;   //!
-   TBranch        *b_MuonIsTracker;   //!
-   TBranch        *b_MuonPassID;   //!
-   TBranch        *b_MuonPixelHits;   //!
-   TBranch        *b_MuonSegmentMatches;   //!
-   TBranch        *b_MuonStationMatches;   //!
-   TBranch        *b_MuonTrackLayersWithMeasurement;   //!
-   TBranch        *b_MuonTrkHits;   //!
-   TBranch        *b_MuonTrkHitsTrackerOnly;   //!
-   TBranch        *b_MuonTrkPixelHits;   //!
-   TBranch        *b_MuonVtxIndex;   //!
+   TBranch        *b_MuonLooseBestTrackVtxIndex;   //!
+   TBranch        *b_MuonLooseCharge;   //!
+   TBranch        *b_MuonLooseCocktailCharge;   //!
+   TBranch        *b_MuonLooseCocktailRefitID;   //!
+   TBranch        *b_MuonLooseCocktailTrkHits;   //!
+   TBranch        *b_MuonLooseGlobalTrkValidHits;   //!
+   TBranch        *b_MuonLooseIsGlobal;   //!
+   TBranch        *b_MuonLooseIsPF;   //!
+   TBranch        *b_MuonLooseIsTracker;   //!
+   TBranch        *b_MuonLoosePassID;   //!
+   TBranch        *b_MuonLoosePixelHits;   //!
+   TBranch        *b_MuonLooseSegmentMatches;   //!
+   TBranch        *b_MuonLooseStationMatches;   //!
+   TBranch        *b_MuonLooseTrackLayersWithMeasurement;   //!
+   TBranch        *b_MuonLooseTrkHits;   //!
+   TBranch        *b_MuonLooseTrkHitsTrackerOnly;   //!
+   TBranch        *b_MuonLooseTrkPixelHits;   //!
+   TBranch        *b_MuonLooseVtxIndex;   //!
    TBranch        *b_PFCandChargeLeptLink;   //!
    TBranch        *b_PFJetBestVertexTrackAssociationIndex;   //!
    TBranch        *b_PFJetChargedHadronMultiplicity;   //!
@@ -1556,39 +1606,43 @@ public :
    TBranch        *b_CaloJetPassLooseID;   //!                                                                   
    TBranch        *b_CaloJetPassTightID;   //!   
    
-   TBranch        *b_MuonGlobalE;   //!
-   TBranch        *b_MuonGlobalEta;   //!
-   TBranch        *b_MuonGlobalPhi;   //!
-   TBranch        *b_MuonGlobalPt;   //!
-   TBranch        *b_MuonMuonSpecE;   //!
-   TBranch        *b_MuonMuonSpecEta;   //!
-   TBranch        *b_MuonMuonSpecPhi;   //!
-   TBranch        *b_MuonMuonSpecPt;   //!
+   TBranch        *b_MuonLooseGlobalE;   //!
+   TBranch        *b_MuonLooseGlobalEta;   //!
+   TBranch        *b_MuonLooseGlobalPhi;   //!
+   TBranch        *b_MuonLooseGlobalPt;   //!
+   TBranch        *b_MuonLooseMuonSpecE;   //!
+   TBranch        *b_MuonLooseMuonSpecEta;   //!
+   TBranch        *b_MuonLooseMuonSpecPhi;   //!
+   TBranch        *b_MuonLooseMuonSpecPt;   //!
    
    TBranch        *b_PFJetScaledDownEnergy;   //!
    TBranch        *b_PFJetScaledDownPt;   //!
+   TBranch        *b_PFJetScaledDownPx;   //!
+   TBranch        *b_PFJetScaledDownPy;   //!
    TBranch        *b_PFJetScaledUpEnergy;   //!
    TBranch        *b_PFJetScaledUpPt;   //!
+   TBranch        *b_PFJetScaledUpPx;   //!
+   TBranch        *b_PFJetScaledUpPy;   //!
 
    TBranch        *b_PFJetSmearedDownEnergy;   //!
    TBranch        *b_PFJetSmearedDownPt;   //!
+   TBranch        *b_PFJetSmearedDownPx;   //!
+   TBranch        *b_PFJetSmearedDownPy;   //!
    TBranch        *b_PFJetSmearedUpEnergy;   //!
    TBranch        *b_PFJetSmearedUpPt;   //!
+   TBranch        *b_PFJetSmearedUpPx;   //!
+   TBranch        *b_PFJetSmearedUpPy;   //!
 
-   TBranch        *b_PFMETType01XYCorElectronEnDown;   //!
-   TBranch        *b_PFMETType01XYCorElectronEnUp;   //!
-   TBranch        *b_PFMETType01XYCorJetEnDown;   //!
-   TBranch        *b_PFMETType01XYCorJetEnUp;   //!
-   TBranch        *b_PFMETType01XYCorJetResDown;   //!
-   TBranch        *b_PFMETType01XYCorJetResUp;   //!
-   TBranch        *b_PFMETType01XYCorMuonEnDown;   //!
-   TBranch        *b_PFMETType01XYCorMuonEnUp;   //!
    TBranch        *b_PFMETType01XYCorUnclusteredDown;   //!
    TBranch        *b_PFMETType01XYCorUnclusteredUp;   //!
+   TBranch        *b_PFMETxType01XYCorUnclusteredDown;   //!                                                                                                                     
+   TBranch        *b_PFMETxType01XYCorUnclusteredUp;   //!    
+   TBranch        *b_PFMETyType01XYCorUnclusteredDown;   //!                                                                                                                     
+   TBranch        *b_PFMETyType01XYCorUnclusteredUp;   //!    
 
-   TBranch        *b_MuonGlobalCharge;   //!
-   TBranch        *b_MuonMuonSpecCharge;   //!
-   TBranch        *b_MuonTrackerCharge;   //!
+   TBranch        *b_MuonLooseGlobalCharge;   //!
+   TBranch        *b_MuonLooseMuonSpecCharge;   //!
+   TBranch        *b_MuonLooseTrackerCharge;   //!
 };
 
 #endif

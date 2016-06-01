@@ -8,7 +8,7 @@ ClassImp(KMuon)
  *Default constructor.
  */
 KMuon::KMuon() :
-KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isor04ch(0.),k_isor04n(0.),k_isor04ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_MuonPFIsoR04PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999), i_muonVtx(-999),muon_ck_pt(0.),muon_ck_eta(0.), muon_ck_phi(0.), muon_ck_chi2(0.), muon_ck_trkd0(0.),muon_ck_trkdz(0.), muon_ck_charge(0.), k_dimuon_trig_match(-999.), k_muon_trig_match(-999.),k_isomuon_trig_match(-999.), k_muon_trig_match5(-999.),k_muon_trig_match8(-999.),k_muon_trig_match12(-999.),k_muon_trig_match17(-999.),k_muon_trig_match24(-999.),k_emu_trig_match8(-999.),k_emu_trig_match17(-999.), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0), muon_ms_e(0.),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0), muon_pt_up(0.), muon_pt_down(0.)
+KParticle(),k_pterror(0.),k_etaerror(0.),k_isor03ch(0.),k_isor03n(0.),k_isor03ph(0.),k_isor04ch(0.),k_isor04n(0.),k_isor04ph(0.),k_isoEcalveto(0.),k_isoHcalveto(0.),k_MuonPFIsoR03PU(0.),k_MuonPFIsoR04PU(0.),k_muonVtx(0.),k_muonVty(0.),k_muonVtz(0.),k_muongen_pt(0.),k_muongen_eta(0.),k_muongen_phi(0.),k_dz(0.),k_dxy(0.),k_d0(0.),k_d0err(0.),k_globmuon_chi2(0.),k_dxy_pat(0.),k_dxyerr_pat(0.),k_vtxdistxy(0.),k_muon_valid_hits(-999), k_muon_valid_pixhits(-999), k_muon_valid_stations(-999), k_muon_layer_with_meas(-999),k_muon_ispf(-999), k_muon_isglobal(-999),k_muon_istracker(-999), i_muonVtx(-999),muon_ck_pt(0.),muon_ck_eta(0.), muon_ck_phi(0.), muon_ck_chi2(0.), muon_ck_trkd0(0.),muon_ck_trkdz(0.), muon_ck_charge(0.), k_dimuon_trig_match(-999.), k_muon_trig_match(-999.),k_isomuon_trig_match(-999.), k_muon_trig_match5(-999.),k_muon_trig_match8(-999.),k_muon_trig_match12(-999.),k_muon_trig_match17(-999.),k_muon_trig_match24(-999.),k_emu_trig_match8(-999.),k_emu_trig_match17(-999.), muon_ms_pt(0.), muon_ms_eta(0.), muon_ms_phi(0.), muon_ms_charge(0), muon_ms_e(0.),muon_id_pt(0.), muon_id_eta(0.), muon_id_phi(0.), muon_id_charge(0), muon_pt_up(0.), muon_pt_down(0.),muon_px_up(0.), muon_px_down(0.),muon_py_up(0.), muon_py_down(0.)
  {
   //Reset();
 }
@@ -79,7 +79,11 @@ KMuon::KMuon(const KMuon& muon) :
   muon_id_phi(muon.muon_id_phi),
   muon_id_charge(muon.muon_id_charge),
   muon_pt_up(muon.muon_pt_up),
-  muon_pt_down(muon.muon_pt_down)
+  muon_pt_down(muon.muon_pt_down),
+  muon_px_up(muon.muon_px_up),
+  muon_px_down(muon.muon_px_down),
+  muon_py_up(muon.muon_py_up),
+  muon_py_down(muon.muon_py_down)
 {
 }
 
@@ -153,6 +157,10 @@ void KMuon::Reset()
   muon_id_charge= 0.;
   muon_pt_up=0.;
   muon_pt_down=0.;
+  muon_px_up=0.;
+  muon_px_down=0.;
+  muon_py_up=0.;
+  muon_py_down=0.;
 }
 
 
@@ -223,6 +231,10 @@ KMuon& KMuon::operator= (const KMuon& p)
 	muon_id_charge= p.MuonIDCharge();
 	muon_pt_up = p.PtShiftedUp();
 	muon_pt_down = p.PtShiftedDown();
+        muon_px_up = p.PxShiftedUp();
+        muon_px_down = p.PxShiftedDown();
+        muon_py_up = p.PyShiftedUp();
+        muon_py_down = p.PyShiftedDown();
     }
     
     return *this;
@@ -511,4 +523,20 @@ void KMuon::SetShiftedEUp(double pt_up){
 
 void KMuon::SetShiftedEDown(double pt_down){
   muon_pt_down= pt_down;
+}
+
+void KMuon::SetShiftedExUp(double px_up){
+  muon_px_up= px_up;
+}
+
+void KMuon::SetShiftedExDown(double px_down){
+  muon_px_down= px_down;
+}
+
+void KMuon::SetShiftedEyUp(double py_up){
+  muon_py_up= py_up;
+}
+
+void KMuon::SetShiftedEyDown(double py_down){
+  muon_py_down= py_down;
 }
