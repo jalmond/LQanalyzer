@@ -946,14 +946,16 @@ ttbar_CT10_herwig                  1.               cluster_mc_ntuple_path_2015 
 ##################################################################
 # cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs  /data2/MC/CHsample/LQNtuple/
 ##################################################################
-CH120PU        273509.8125        cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH120/
-CHm120PU       137442.125         cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CHm120/
-CH110PU        273509.8125        cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH110/
-CH100PU        272135.4062        cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH100/
-CH90PU         274846.4688        cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH90/
-CH130PU        274884.25          cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH130/
-CH140PU        274884.25          cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH140/
-CH150PU        274884.25          cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs    CH150/
+CH120PU_pf        273509.8125        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH120/
+CHm120PU_pf       137442.125         cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CHm120/
+CH110PU_pf        273509.8125        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH110/
+CH100PU_pf        272135.4062        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH100/
+CH90PU_pf         274846.4688        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH90/
+CH130PU_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH130/
+CH140PU_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH140/
+CH150PU_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH150/
+CH110_mt171.5_pf 273509.8125     cluster_mc_ntuple_pf_path_2016    cms_mc_ntuplepath_chargedhiggs   SIGNAL/CH110_mt171.5/
+CH110_mt173.5_pf 273509.8125     cluster_mc_ntuple_pf_path_2016	      cms_mc_ntuplepath_chargedhiggs   SIGNAL/CH110_mt173.5/
 
 ### MC ############################################################
 # Sample  local_path       Inte.lumi(/pb)  samplename

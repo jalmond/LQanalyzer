@@ -84,7 +84,8 @@ then
      declare -a input_samples=( "HN40_mumumu_new" "HN50_mumumu_new" "HN60_mumumu_new")
       declare -a input_samples=( "DY10to50" "DY50plus")
       declare -a input_samples=( "QCD_30-40_EM2" "QCD_40_EM2")
-      declare -a input_samples=( "stbar_tch_pf")
+      declare -a input_samples=( "CH90PU_pf" "CH100PU_pf" "CH110PU_pf" "CH120PU_pf" "CH120mPU_pf" "CH130PU_pf" "CH140PU_pf" "CH150PU_pf" "CH110_mt171.5_pf" "CH110_mt173.5_pf")
+       declare -a input_samples=(  "CH110_mt171.5_pf" "CH110_mt173.5_pf")
     source submit.sh
 
 fi    
