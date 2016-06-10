@@ -1167,6 +1167,11 @@ else:
                 Finaloutputdir += "SingleMuonCHS/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            if str(original_channel) =="singlemuon_pf":
+                Finaloutputdir += "SingleMuon_pf/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
 
             if str(original_channel) =="singleelectron":
                 Finaloutputdir += "SingleElectron/"
@@ -1176,6 +1181,11 @@ else:
                 Finaloutputdir += "SingleElectronCHS/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            if str(original_channel) =="singleelectron_pf":
+                Finaloutputdir += "SingleElectron_pf/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
             if str(original_channel) =="muon_lowpt":
                 Finaloutputdir += "DoubleMuParked/"
                 if not os.path.exists(Finaloutputdir):

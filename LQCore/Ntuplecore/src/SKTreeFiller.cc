@@ -780,7 +780,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     return genjets;
   }
 
-
+  if(isData) return genjets;
   for (UInt_t ijet=0; ijet< GenJetEnergy->size(); ijet++) {
     KGenJet jet;
     jet.SetPtEtaPhiE(GenJetPt->at(ijet), GenJetEta->at(ijet), GenJetPhi->at(ijet), GenJetEnergy->at(ijet));
@@ -917,34 +917,48 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
       //jet.SetJetL5GluonJEC(PFJetL5GluonJEC->at(ijet));
     }
     m_logger << DEBUG << "Fill SKTree3 jetuncertainty" << LQLogger::endmsg;
+    
+    if(!isData){
+      if(PFJetScaledDownEnergy&&PFJetScaledUpEnergy&&PFJetScaledDownPt&&PFJetScaledUpPt&&PFJetSmearedDownEnergy&&PFJetSmearedUpEnergy&&PFJetSmearedDownPt&&PFJetSmearedUpPt){
+	if(PFJetScaledDownEnergy->size() > 0){
+	  m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
+	  
+	  jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
+	  m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
+	  
+	  
+	  jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
+	  jet.SetJetScaledDownPx(PFJetScaledDownPx->at(ijet));
+	  jet.SetJetScaledDownPy(PFJetScaledDownPy->at(ijet));
 
-    if(PFJetScaledDownEnergy&&PFJetScaledUpEnergy&&PFJetScaledDownPt&&PFJetScaledUpPt&&PFJetSmearedDownEnergy&&PFJetSmearedUpEnergy&&PFJetSmearedDownPt&&PFJetSmearedUpPt){
-      if(PFJetScaledDownEnergy->size() > 0){
-	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
-	
-	jet.SetJetScaledDownEnergy(PFJetScaledDownEnergy->at(ijet));
-	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
-	
-	jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
-	jet.SetJetScaledDownPt(PFJetScaledDownPt->at(ijet));
-	m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
-	
-	jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
-	jet.SetJetScaledUpPx(PFJetScaledUpPx->at(ijet));
-	jet.SetJetScaledUpPy(PFJetScaledUpPy->at(ijet));
-	jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
-	jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
-	jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
-	jet.SetJetSmearedDownPx(PFJetSmearedDownPx->at(ijet));
-	jet.SetJetSmearedDownPy(PFJetSmearedDownPy->at(ijet));
-	jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
-        jet.SetJetSmearedDownPx(PFJetSmearedDownPx->at(ijet));
-        jet.SetJetSmearedUpPx(PFJetSmearedUpPx->at(ijet));
-        jet.SetJetSmearedDownPy(PFJetSmearedDownPy->at(ijet));
-        jet.SetJetSmearedUpPy(PFJetSmearedUpPy->at(ijet));
+	  jet.SetJetScaledUpEnergy(PFJetScaledUpEnergy->at(ijet));
+	  m_logger << DEBUG << "Fill SKTree4 jetuncertainty" << LQLogger::endmsg;
+	  
+	  jet.SetJetScaledUpPt(PFJetScaledUpPt->at(ijet));
+	  jet.SetJetScaledUpPx(PFJetScaledUpPx->at(ijet));
+	  jet.SetJetScaledUpPy(PFJetScaledUpPy->at(ijet));
+	  jet.SetJetSmearedDownEnergy(PFJetSmearedDownEnergy->at(ijet));
+	  jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
+	  jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
+	  jet.SetJetSmearedDownPx(PFJetSmearedDownPx->at(ijet));
+	  jet.SetJetSmearedDownPy(PFJetSmearedDownPy->at(ijet));
+	  jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+	  jet.SetJetSmearedUpPx(PFJetSmearedUpPx->at(ijet));
+	  jet.SetJetSmearedUpPy(PFJetSmearedUpPy->at(ijet));
+	}
+      }
+      else{
+	jet.SetJetScaledDownEnergy(-999.);
+	jet.SetJetScaledUpEnergy(-999.);
+	jet.SetJetScaledDownPt(-999.);
+	jet.SetJetScaledUpPt(-999.);
+	jet.SetJetSmearedDownEnergy(-999.);
+	jet.SetJetSmearedUpEnergy(-999.);
+	jet.SetJetSmearedDownPt(-999.);
+	jet.SetJetSmearedUpPt(-999.);
       }
     }
-    else{
+      else{
       jet.SetJetScaledDownEnergy(-999.);
       jet.SetJetScaledUpEnergy(-999.);
       jet.SetJetScaledDownPt(-999.);
@@ -1428,7 +1442,8 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(){
 
     return vtruth;
   }
-
+  
+  if(isData) return vtruth;
   
   for (UInt_t it=0; it< GenParticlePt->size(); it++ ) {
     if(it > 24) continue;

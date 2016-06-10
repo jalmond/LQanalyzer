@@ -8,13 +8,15 @@ cluster_mc_ntuple_path_2015         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27
 cluster_mc_ntuple_path_2016         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/
 cluster_data_ntuple_path_2016         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/Data/
 cluster_mc_ntuplepath_chargedhiggs  /data4/DATA/LQNtuples/CHsample/LQNtuple/
+cluster_mc_ntuple_pf_path_2016     /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_PF2PAT/MC/
+cluster_data_ntuple_pf_path_2016    /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_PF2PAT/Data/ 
 ###### PATH on cms1-6 machines (For LQNtuples only)
 cms_mc_ntuple_path_2014            /data1/DATA/LQNtuples_5_3_14_snu27/MC/
 cms_data_ntuple_path_2014          /data1/DATA/LQNtuples_5_3_14_snu27/Data/
 cms_mc_ntuple_path_2015            /data2/DATA/LQNtuples_5_3_14_snu27_2015/MC/
 cms_mc_ntuple_path_2016            /data2/DATA/LQNtuples_5_3_14_snu27_2016/MC/
 cms_mc_ntuplepath_chargedhiggs     /data2/MC/CHsample/LQNtuple/
-cluster_mc_ntuple_pf_path_2016     /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_PF2PAT
+
 #################   DIR INFORMATION
 ############  LQNtuples_5_3_14_snu27/   this uses CMSSW 5_3_14
 ############  LQNtuples_5_3_14_snu27_2015/   this uses CMSSW 5_3_20. Lepton shifted pt was added + pdf changed
@@ -686,6 +688,16 @@ singleelectron_chs B        cluster_data_ntuple_path_2016  cms_data_ntuple_path_
 singleelectron_chs C        cluster_data_ntuple_path_2016  cms_data_ntuple_path_2016 SingleElectronCHS/periodC/
 singleelectron_chs D        cluster_data_ntuple_path_2016  cms_data_ntuple_path_2016 SingleElectronCHS/periodD/
 
+singlemuon_pf A cluster_data_ntuple_pf_path_2016   cms_data_ntuple_path_2016 SingleMuon/periodA/
+singlemuon_pf B    cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleMuon/periodB/
+singlemuon_pf C    cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleMuon/periodC/
+singlemuon_pf D    cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleMuon/periodD/
+
+singleelectron_pf A        cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleElectron/periodA/
+singleelectron_pf B        cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleElectron/periodB/
+singleelectron_pf C        cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleElectron/periodC/
+singleelectron_pf D        cluster_data_ntuple_pf_path_2016  cms_data_ntuple_path_2016 SingleElectron/periodD/
+
 muon_lowpt D   cluster_data_ntuple_path_2016   cms_data_ntuple_path_2016 DoubleMuParked/periodD/
 
 
@@ -778,7 +790,7 @@ QCD_350_BCtoE     81446.75  cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014
 
 ### TOP
 
-stbar_tch_pf    63031.66        cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014 Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
+
 stbar_sch	79530.67  	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
 stbar_tch	63031.66	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
 stbar_tW	44455.85	cluster_mc_ntuple_path_2014  cms_mc_ntuple_path_2014 Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
@@ -947,7 +959,7 @@ ttbar_CT10_herwig                  1.               cluster_mc_ntuple_path_2015 
 # cluster_mc_ntuplepath_chargedhiggs   cms_mc_ntuplepath_chargedhiggs  /data2/MC/CHsample/LQNtuple/
 ##################################################################
 CH120PU_pf        273509.8125        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH120/
-CHm120PU_pf       137442.125         cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CHm120/
+CH120mPU_pf       137442.125         cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH120m/
 CH110PU_pf        273509.8125        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH110/
 CH100PU_pf        272135.4062        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH100/
 CH90PU_pf         274846.4688        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH90/
@@ -977,3 +989,57 @@ QCD_600-800_mu   1. cluster_mc_ntuple_path_2016 cms_mc_ntuple_path_2016 QCD_600-
 QCD_80-120_mu    1. cluster_mc_ntuple_path_2016 cms_mc_ntuple_path_2016 QCD_80-120_mu/
 ######################
 
+###PYTHIA DIBOSON
+WZ_py_pf           1.    cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014   WZ_TuneZ2star_8TeV_pythia6_tauola/
+ZZ_py_pf       1.    cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014   ZZ_TuneZ2star_8TeV_pythia6_tauola/
+WW_py_pf         1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   WW_TuneZ2star_8TeV_pythia6_tauola/
+
+
+DY10to50_pf       1.    cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
+DY50plus_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+
+### Wjets
+Wjets_pf		1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/
+
+
+ttbar_mass171_pf       1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_mass171_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_mass173_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_mass173_5_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingdown_pf  1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTJets_MSDecays_matchingdown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_matchingup_pf   1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_matchingup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaledown_pf   1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_scaledown_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_scaleup_pf    1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
+ttbar_CT10_pythia_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TT_weights_CT10_TuneP11C-8TeV-powheg-pythia6-tauola/
+ttbar_CT10_herwig_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TT_weights_CT10_AUET2_8TeV-powheg-herwig/
+TTH_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTH_Inclusive_M-125_8TeV_pythia6/
+ttW_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTWJets_8TeV-madgraph/
+ttZ_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTZJets_8TeV-madgraph_v2/ 
+
+
+### EXTRA STAT
+W1Jets_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  W1JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W2Jets_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  W2JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W3Jets_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  W3JetsToLNu_TuneZ2Star_8TeV-madgraph/
+W4Jets_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  W4JetsToLNu_TuneZ2Star_8TeV-madgraph/
+
+### QCD SINGLE LEP
+QCD_20_30_EM_pf    1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_20_30_EMEnriched_TuneZ2star_8TeV_pythia6/ 
+QCD_20_30_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_20_30_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_30_80_EM_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_30_80_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_30_80_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_30_80_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_80_170_EM_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_80_170_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_80_170_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_80_170_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_170_250_EM_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_170_250_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_170_250_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_170_250_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_250_350_EM_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_250_350_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_250_350_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_250_350_BCtoE_TuneZ2star_8TeV_pythia6/
+QCD_350_EM_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/
+QCD_350_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/
+
+QCD_15_mu_pf cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6/
+
+stbar_sch_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_tch_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
+stbar_tW_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 Tbar_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
+st_sch_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 T_s-channel_TuneZ2star_8TeV-powheg-tauola/
+st_tch_pf  1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 T_t-channel_TuneZ2star_8TeV-powheg-tauola/
+st_tW_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 T_tW-channel-DR_TuneZ2star_8TeV-powheg-tauola/
