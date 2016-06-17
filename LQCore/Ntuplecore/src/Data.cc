@@ -38,7 +38,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),setting_ntuple_data(-1),TargetLumi(0.)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),setting_ntuple_data(-1),TargetLumi(0.),k_flags(0)
   
 {
 
@@ -215,6 +215,7 @@ void Data::Reset(){
   electrons_chIso03 = 0;
   electrons_chIso04 = 0;
   electrons_dxy = 0;
+  electrons_sigdxy = 0;
   electrons_dz = 0;
   electrons_energy = 0;
   electrons_eta = 0;
@@ -326,6 +327,7 @@ void Data::Reset(){
   //metPuppi_pt = 0;
   //metPuppi_sumet = 0;
   muon_dxy = 0;
+  muon_sigdxy = 0;
   muon_dz = 0;
   muon_energy = 0;
   muon_eta = 0;
@@ -422,6 +424,10 @@ void Data::Reset(){
  
 }
 
+void Data::SetFlags(std::vector<TString> flags){
+  k_flags= flags;
+}
+
 void Data::SetLQNtupleInputType(int dataflag){
   setting_ntuple_data= dataflag;
 }
@@ -516,7 +522,7 @@ void Data::ConnectEvent(int setting_data){
       ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
       ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
       ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
-      if(TString(CatVersion).Contains("v7-6-4")){
+      if(TString(CatVersion).Contains("v7-6-5")){
 	ConnectVariable("puWeightGold_xs71000",puWeightGold_xs71000, b_puWeightGold_xs71000);
 	ConnectVariable("puWeightGoldUp_xs71000",puWeightGoldUp_xs71000, b_puWeightGoldUp_xs71000);
 	ConnectVariable("puWeightGoldDn_xs71000",puWeightGoldDn_xs71000, b_puWeightGoldDn_xs71000);
@@ -568,6 +574,7 @@ void Data::ConnectMuons(){
 
   
   ConnectVariable("muon_dxy",muon_dxy , b_muon_dxy);
+  ConnectVariable("muon_sigdxy",muon_sigdxy , b_muon_sigdxy);
   ConnectVariable("muon_dz",muon_dz , b_muon_dz);
   ConnectVariable("muon_energy",muon_energy , b_muon_energy);
   ConnectVariable("muon_isLoose",muon_isLoose , b_muon_isLoose);
@@ -637,6 +644,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_chIso03", electrons_chIso03, b_electrons_chIso03);
   ConnectVariable("electrons_chIso04", electrons_chIso04, b_electrons_chIso04);
   ConnectVariable("electrons_dxy", electrons_dxy, b_electrons_dxy);
+  ConnectVariable("electrons_sigdxy", electrons_sigdxy, b_electrons_sigdxy);
   ConnectVariable("electrons_dz", electrons_dz, b_electrons_dz);
   ConnectVariable("electrons_electronID_loose", electrons_electronID_loose, b_electrons_electronID_loose);
   ConnectVariable("electrons_electronID_medium", electrons_electronID_medium, b_electrons_electronID_medium);
@@ -688,7 +696,7 @@ void Data::ConnectPFJets(){
     ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
     ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
     ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
-    if(TString(CatVersion).Contains("v7-6-4")){
+    if(TString(CatVersion).Contains("v7-6-5")){
       ConnectVariable("jets_iCSVCvsL", jets_iCSVCvsL, b_jets_iCSVCvsL);
       ConnectVariable("jets_CCvsLT", jets_CCvsLT, b_jets_CCvsLT);
       ConnectVariable("jets_CCvsBT",jets_CCvsBT,b_jets_CCvsBT);
@@ -812,7 +820,7 @@ void Data::ConnectTruth(int setting_data){
   ConnectVariable("gen_pdgid",gen_pdgid ,b_gen_pdgid );
   ConnectVariable("gen_motherindex",gen_motherindex ,b_gen_motherindex );
   
-  if(TString(CatVersion).Contains("v7-6-4")){
+  if(TString(CatVersion).Contains("v7-6-5")){
     ConnectVariable("gen_isprompt" ,gen_isprompt ,b_gen_isprompt);
     ConnectVariable("gen_isdecayedleptonhadron" ,gen_isdecayedleptonhadron ,b_gen_isdecayedleptonhadron);
     ConnectVariable("gen_istaudecayproduct" , gen_istaudecayproduct, b_gen_istaudecayproduct);

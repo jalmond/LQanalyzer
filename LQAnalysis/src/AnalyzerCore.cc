@@ -697,6 +697,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
 
   if(!reset_lumi_mask) {
     if(VersionStamp(TString(CatVersion)) == 3) lumimask = snu::KEvent::gold;
+    else if(VersionStamp(TString(CatVersion)) == 4) lumimask = snu::KEvent::gold;
 
     /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
     else if(VersionStamp(TString(CatVersion)) < 3) lumimask = snu::KEvent::missing;
@@ -766,6 +767,7 @@ int AnalyzerCore::VersionStamp(TString cversion){
   if(cversion.Contains("v7-4-4")) return 1;
   else if(cversion.Contains("v7-4-5")) return 2;
   else if(cversion.Contains("v7-6-2") || cversion.Contains("v7-6-3") || cversion.Contains("v7-6-4")   ) return 3;
+  else if(cversion.Contains("v7-6-5")) return 4;
   
   return 3;
  
@@ -801,7 +803,19 @@ float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   if(eventbase->GetEvent().CatVersion().empty()) return 0.;
   if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-4")) return 0.;
   
-  if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-")){
+  if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-5")){
+
+    if (p == "C") return 1.;
+    if (p == "D") return 2300.547 / 2672.906;
+    if (p == "CtoD") return 2318.278 / 2690.637;
+
+    ///            GOLD      SILVER
+    /// period C = 17.731    17.731
+    /// period D = 2300.547   2672.906
+    /// total C+D = 2318.278  2690.637
+  }
+
+  else if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-")){
     
     if (p == "C") return 1.;
     if (p == "D") return 2300.617 /2672.976;

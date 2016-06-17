@@ -22,6 +22,7 @@ DEBUG="False"
 useskim="Lepton"
 runnp="False"
 runcf="False"
+skflag=""
 catversion=""
 
 function makeParseVariable() {

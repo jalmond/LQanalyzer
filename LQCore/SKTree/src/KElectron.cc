@@ -16,6 +16,7 @@ KParticle()
 {
   k_sceta=-999;
   k_dxy=-999;
+  k_dxy_sig=-999;
   k_dz=-999;
   k_gsf_ctscpix_charge=false;
   k_hasmatchconvphot=false; 
@@ -68,6 +69,7 @@ KElectron::KElectron(const KElectron& el) :
   
   k_sceta= el.SCEta();
   k_dxy= el.dxy();
+  k_dxy_sig= el.dxySig();
   k_dz= el.dz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
   k_hasmatchconvphot= el.PassesConvVeto();
@@ -121,6 +123,7 @@ void KElectron::Reset()
   KParticle::Reset();
   k_sceta=-999;
   k_dxy=-999;
+  k_dxy_sig=-999;
   k_dz=0;
   k_gsf_ctscpix_charge=false;
   k_hasmatchconvphot=false;
@@ -173,6 +176,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     KParticle::operator=(p);
     k_sceta= p.SCEta();
     k_dxy= p.dxy();
+    k_dxy_sig= p.dxySig();
     k_dz= p.dz();
     k_gsf_ctscpix_charge= p.GsfCtfScPixChargeConsistency();
     k_hasmatchconvphot= p.PassesConvVeto();
@@ -420,7 +424,9 @@ void KElectron::Setdz(double d_z){
 void KElectron::Setdxy(double d_xy){ 
   k_dxy = d_xy;
 }
- 
+void KElectron::Setdxy_sig(double d_xysig){
+  k_dxy_sig = d_xysig;
+}
 
  
 void KElectron::SetPFChargedHadronIso(Double_t cone, Double_t pf_ch){

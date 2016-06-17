@@ -91,11 +91,7 @@ public :
    void SetTargetLumi(float tlumi);
 
    void SetLQNtupleInputType(int dataflag);
-
-
-
-
-
+   void SetFlags(std::vector<TString> v_flags);
 
    bool LQinput;
    Long64_t nentries;
@@ -122,6 +118,7 @@ public :
 
    std::string CatVersion;
    float TargetLumi;
+   std::vector<TString>  k_flags;
    // Declaration of leaf types
    Int_t           run;
    Int_t           lumi;
@@ -196,6 +193,7 @@ public :
    std::vector<double>  *electrons_chIso03;
    std::vector<double>  *electrons_chIso04;
    std::vector<double>  *electrons_dxy;
+   std::vector<double>  *electrons_sigdxy;
    std::vector<double>  *electrons_dz;
    std::vector<double>  *electrons_energy;
    std::vector<double>  *electrons_eta;
@@ -299,6 +297,7 @@ public :
    std::vector<double>  *metPuppi_pt;
    std::vector<double>  *metPuppi_sumet;
    std::vector<double>  *muon_dxy;
+   std::vector<double>  *muon_sigdxy;
    std::vector<double>  *muon_dz;
    std::vector<double>  *muon_energy;
    std::vector<double>  *muon_eta;
@@ -456,6 +455,7 @@ public :
    TBranch        *b_electrons_chIso03;   //!                                                                                                                                                                                                                                
    TBranch        *b_electrons_chIso04;   //!                                                                                                                                                                                                                                
    TBranch        *b_electrons_dxy;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_electrons_sigdxy;   //!                                                                                                                                                                                                                                    
    TBranch        *b_electrons_dz;   //!                                                                                                                                                                                                                                     
    TBranch        *b_electrons_energy;   //!                                                                                                                                                                                                                                 
    TBranch        *b_electrons_eta;   //!                                                                                                                                                                                                                                    
@@ -542,6 +542,7 @@ public :
    TBranch        *b_met_jetRes_SumEt_down;   //!
 
    TBranch        *b_muon_dxy;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_muon_sigdxy;   //!                                                                                                                                                                                                                                         
    TBranch        *b_muon_dz;   //!                                                                                                                                                                                                                                          
    TBranch        *b_muon_energy;   //!                                                                                                                                                                                                                                      
    TBranch        *b_muon_eta;   //!                                                                                                                                                                                                                                         

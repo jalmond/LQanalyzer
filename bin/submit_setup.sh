@@ -10,7 +10,7 @@ function usage
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion]"
     echo "              [-fake runfake ] [-flip runflip]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
-    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file]"
+    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
     echo "              [-tagdiff <tagname>  -sktreelog  ]   "
 
  
@@ -230,6 +230,8 @@ function getinfo_dataset
     done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
 
 }
+
+
 
 function getalldatasetinfo
 {
@@ -1143,6 +1145,10 @@ while [ "$1" != "" ]; do
                                 getalldatasetinfo
                                 exit 1
                                 ;;
+        -userflag          )    shift
+                                submit_skflag=$1
+				;;
+
 
 	-dataset | --GetDataSetName)  shift
                             	submit_file_tag=$1
@@ -1176,6 +1182,9 @@ while [ "$1" != "" ]; do
 
         -fake | --run_fake_analyzer)    shift
                                 job_run_fake=$1
+                                 ;;
+        -m                  )    shift
+                                submit_sk_message=$1
                                 ;;
         -flip | --run_flip_analyzer) shift
                                 job_run_flip=$1
@@ -1262,6 +1271,7 @@ while [ "$1" != "" ]; do
 				    echo "         |                                                    |                     | Only available from v7-6-4          |"
 
 				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+				    echo "-userflag| Get user flag   flag1,flag2                        | default = ""        |  pass in string                     |"
 				    
 				    
 				    echo "-dataset | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"

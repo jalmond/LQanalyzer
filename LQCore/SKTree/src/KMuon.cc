@@ -11,6 +11,7 @@ KMuon::KMuon() :
   KParticle(),
   k_dz(-999.),
   k_dxy(-999.),
+  k_dxy_sig(-999.),
   k_globmuon_chi2(-999.),
   k_muonVtx(-999.),
   k_muonVty(-999.),
@@ -57,6 +58,7 @@ KMuon::KMuon(const KMuon& muon) :
   KParticle(muon),
   k_dz(muon.k_dz),
   k_dxy(muon.k_dxy),
+  k_dxy_sig(muon.k_dxy_sig),
   k_globmuon_chi2(muon.k_globmuon_chi2),
   k_muonVtx(muon.k_muonVtx),
   k_muonVty(muon.k_muonVty),
@@ -106,6 +108,7 @@ void KMuon::Reset()
   KParticle::Reset();
   k_dz=-999.;
   k_dxy=-999.;
+  k_dxy_sig=-999.;
   k_globmuon_chi2=-999;
   k_muonVtx=-999.;
   k_muonVty=-999.;
@@ -153,7 +156,8 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muon_isglobal = p.IsGlobal();
 	k_muon_istracker = p.IsTracker();
 	k_dz=p.dZ();
-	k_dxy=p.dXY();
+	k_dxy=-999.;
+	k_dxy_sig=p.dXYSig();
 	k_globmuon_chi2=p.GlobalChi2();
 	k_muon_valid_hits=p.validHits();
 	k_muon_valid_pixhits=p.validPixHits();
@@ -247,6 +251,11 @@ void KMuon::Setdz(double dz){
 void KMuon::Setdxy(double dxy){
 
   k_dxy = dxy;
+}
+
+void KMuon::Setdxy_sig(double dxysig){
+
+  k_dxy_sig = dxysig;
 }
 
 

@@ -1,11 +1,10 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-declare -a list_of_catversions=("v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
-
 
 ##### New for sktreemaker only
 logger=""
@@ -29,6 +28,8 @@ job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
 
+submit_sk_message=""
+submit_skflag=""
 submit_skinput=true
 changed_skinput=false
 changed_submit_version_tag=false
@@ -64,6 +65,7 @@ set_sktreemaker_debug=false
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
+
 
 ############## Check flags for fake/flip analysis
 if [[ $job_run_fake != "False" ]];
@@ -461,6 +463,8 @@ fi
 
 
     
+
+
 if [[ $submit_file_list  != ""  ]];
     then
     valid_list_samples=0
@@ -1211,6 +1215,9 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     echo "-- If testing just add 'TEST' after Message: and this will leave no comment in the change log">> sktree_logger.txt
     echo -e "" >> sktree_logger.txt
     echo "Message:" >> sktree_logger.txt
+    if [[ $submit_sk_message != "" ]];	then
+	echo $submit_sk_message >> sktree_logger.txt 
+    fi
     echo -e "" >> sktree_logger.txt
     echo "--Samples:" >> sktree_logger.txt
     echo $logger >> sktree_logger.txt
@@ -1230,29 +1237,33 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     done < ${LQANALYZER_DIR}/bin/catconfig
     echo $cat_editor' sktree_logger.txt'  >> edit.sh
     
-    source edit.sh
-
-    if diff sktree_logger.txt sktree_logger_tmp.txt  >/dev/null ; then
-	echo "No comment added: exiting process"
-	rm sktree_logger.txt
-	rm sktree_logger_tmp.txt
-	exit 1
-    else
-	echo "Commented added to log:"
+    
+    if [[ $submit_sk_message == "" ]];
+        then
+	source edit.sh
+	
+	if diff sktree_logger.txt sktree_logger_tmp.txt  >/dev/null ; then
+	    echo "No comment added: exiting process"
+	    rm sktree_logger.txt
+	    rm sktree_logger_tmp.txt
+	    exit 1
+	else
+	    echo "Commented added to log:"
+	fi
     fi
     
     makelog="True"
     while read line
-    do
-	if [[ $line == "Message: TEST" ]];
-	then
-	    makelog="False"
-	fi
-	if [[ $line == "Message:TEST" ]];
-        then
-            makelog="False"
-        fi
-
+      do
+      if [[ $line == "Message: TEST" ]];
+	  then
+	  makelog="False"
+      fi
+      if [[ $line == "Message:TEST" ]];
+	  then
+	  makelog="False"
+      fi
+      
     done < sktree_logger.txt
     
     
@@ -1307,6 +1318,7 @@ if [[ $runDATA  == "true" ]];
       cycle=${job_cycle}
       skinput=${submit_skinput}
       useskim=${job_skim}
+      skflag=${submit_skflag}
       njobs=$job_njobs
       data_lumi=$job_data_lumi
       loglevel=$job_loglevel
@@ -1354,6 +1366,7 @@ if [[ $runMC  == "true" ]];
     skinput=${submit_skinput}
     useskim=${job_skim}
     njobs=$job_njobs
+    skflag=${submit_skflag}
     data_lumi=$job_data_lumi
     loglevel=$job_loglevel
     logstep=$job_logstep

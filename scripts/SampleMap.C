@@ -200,6 +200,7 @@ vector<TString>  GetAvailableMap(TString cversion){
 
   
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  std::cout << dir  << std::endl;
   system(dir.Data());
   
   std::ifstream fin("inputlist_map.txt");
@@ -230,9 +231,6 @@ vector<TString>  GetAvailableMap(TString cversion){
 	}
       }
     }
-    
-    
-    
     
     TString dir2 = "ls /data2/DATA/cattoflat/MC/" +  cversion +"/ > inputsnu.txt"  ;
     system(dir2.Data());
@@ -268,6 +266,7 @@ map<TString, TString>  GetDatasetNames(TString cversion){
   map<TString, TString> datasets;
   std::map<TString, TString> mapdir = GetLQMap();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  std::cout << dir  << std::endl;
   system(dir.Data());
   std::ifstream fin("inputlist_map.txt");
   std::string word;
@@ -283,9 +282,13 @@ map<TString, TString>  GetDatasetNames(TString cversion){
     
     std::string dataword;
     int id=0;
+    int id_check=-1;
     while ( fdin >> dataword ) {
       id++;
-      if(id==8) datasetname=dataword;
+      if (TString(dataword) == "DataSetName") id_check = id+2;
+      if(id==id_check) {
+        if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+      }
       if(TString(dataword).Contains("0000/catTuple")){
       }
     }
@@ -308,6 +311,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
 
   std::map<TString, TString> mapdir = GetLQMap();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  std::cout << dir << std::endl;
   system(dir.Data());
 
   std::ifstream fin("inputlist_map.txt");
@@ -325,10 +329,14 @@ map<TString, TString>  GetMissingMap(TString cversion){
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
 
     std::string dataword;
+    int id_check=-1;
     int id=0;
     while ( fdin >> dataword ) {
       id++;
-      if(id==8) datasetname=dataword;
+      if (TString(dataword) == "DataSetName") id_check = id+2;
+      if(id==id_check) {
+	if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+      }
       if(TString(dataword).Contains("0000/catTuple")){
 	missing=false;
       }

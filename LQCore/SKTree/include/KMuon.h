@@ -47,6 +47,7 @@ namespace snu {
 
     void Setdz(double dz);
     void Setdxy(double dxy);
+    void Setdxy_sig(double dxysig);
     void SetGlobalchi2(double glob_chi2);
     void SetValidHits(int validhits);
     void SetPixelValidHits(int valid_pix_hits);
@@ -92,8 +93,8 @@ namespace snu {
 
     inline Double_t dZ() const {return k_dz;}
     inline Double_t dXY() const {return k_dxy;}
-
-
+    inline Double_t dXYSig() const {return k_dxy_sig;}
+    
     inline Double_t GlobalChi2() const {return k_globmuon_chi2;}
 
     inline Bool_t   IsLoose () const {return k_isloose;}
@@ -145,7 +146,7 @@ namespace snu {
   private:
     /// decalre private functions
   
-    Double_t k_dz, k_dxy ,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
+    Double_t k_dz, k_dxy ,k_dxy_sig,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
 
@@ -156,7 +157,7 @@ namespace snu {
 
     TString k_trig_match;
     
-    ClassDef(KMuon,17)
+    ClassDef(KMuon,18)
   };   
 }//namespace snu
 

@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
+LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
   
   catversion_lq = none;
   chain = NULL;
@@ -109,6 +109,15 @@ void LQController::SetInputChain(TChain* ch){
   chain = ch;
 }
 
+void LQController::SetUserFlag(TString flag){
+  
+  //stringstream ss(flag); // Turn the string into a stream.
+  //std::string tok;
+  
+  //  while(getline(ss, tok, delimiter)) {
+  v_user_flags.push_back(flag);
+  //  }
+}
 
 void LQController::SetDataType(TString settype){
   
@@ -271,6 +280,29 @@ void LQController::SetDataPeriod(TString period){
     else if( period == "ALL") target_luminosity = 17.731 + 2672.976;
     else target_luminosity = 17.731 + 2672.976;
   }
+  else if(VersionStamp(catversion_lq) == 4 ){
+
+    if( period == "All") period = "ALL";
+
+    if( period == "C") k_period = "C";
+    /// from v761 rereco data has just period D
+    else if( period == "D") k_period = "D";
+    else if( period == "CtoD") k_period = "CtoD";
+    else if( period == "ALL") k_period = "CtoD";
+    else {
+      m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+      throw LQError( "Data Period not correctly set!!!",
+                     LQError::StopExecution );
+    }
+
+    /// brilcalc lumi -u /pb --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt
+    if( period == "C") target_luminosity = 17.731;
+    else if( period == "D") target_luminosity = 2672.906;
+    else if( period == "CtoD") target_luminosity = 17.731 + 2672.906;
+    else if( period == "ALL") target_luminosity = 17.731 + 2672.906;
+    else target_luminosity = 17.731 + 2672.906;
+  }
+
 
 }
 
@@ -280,6 +312,7 @@ int LQController::VersionStamp(LQController::_catversion cat_version ){
   if(cat_version == v744) return 1;
   if(cat_version == v745) return 2;
   if((cat_version == v762) || (cat_version == v763) || (cat_version == v764) ) return 3;
+  if((cat_version == v765)) return 4;
 
   return -1;
 }
@@ -574,7 +607,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     cycle->SetCatVersion(SetNTCatVersion(catversion_lq));
     cycle->SetTargetLumi(target_luminosity);
-
+    cycle->SetFlags(v_user_flags);
     //// Connect chain to Data class                                                                                                                                        
     if(inputType!=NOTSET) {
       if(inputType == data) cycle->SetLQNtupleInputType(1 );
@@ -814,6 +847,7 @@ std::string LQController::SetNTCatVersion(LQController::_catversion dir_version)
   if (dir_version == v762) return ("v7-6-2");
   if (dir_version == v763) return ("v7-6-3");
   if (dir_version == v764) return ("v7-6-4");
+  if (dir_version == v765) return ("v7-6-5");
   return "";
 }
 
@@ -826,7 +860,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   TString env_path(version_env);
 
   LQController::_catversion nt_version=none;
-  if(ntuple_path.Contains("7-6-4")) nt_version=v764;
+  if(ntuple_path.Contains("7-6-5")) nt_version=v765;
+  else if(ntuple_path.Contains("7-6-4")) nt_version=v764;
   else if(ntuple_path.Contains("7-6-3")) nt_version=v763;
   else if(ntuple_path.Contains("7-6-2")) nt_version=v762;
   else if(ntuple_path.Contains("7-4-5")) nt_version= v745;
@@ -844,7 +879,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   
   
   LQController::_catversion env_version=none;
-  if(env_path.Contains("7-6-4")) env_version=v764;
+  if(env_path.Contains("7-6-5")) env_version=v765;
+  else if(env_path.Contains("7-6-4")) env_version=v764;
   else if(env_path.Contains("7-6-3")) env_version=v763;
   else if(env_path.Contains("7-6-2")) env_version=v762;
   else if(env_path.Contains("7-4-5")) env_version= v745;
@@ -860,7 +896,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
 LQController::_catversion  LQController::GetCatVersion(std::string filepath) throw(LQError){
   TString ts_path(filepath); 
   
-  if(ts_path.Contains("7-6-4")) return v764;
+  if(ts_path.Contains("7-6-5")) return v765;
+  else if(ts_path.Contains("7-6-4")) return v764;
   else if(ts_path.Contains("7-6-3")) return v763;
   else if(ts_path.Contains("7-6-2")) return v762;
   else if(ts_path.Contains("7-4-5")) return v745;

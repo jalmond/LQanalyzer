@@ -138,7 +138,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
     if(metNoHF_pt->size() > 0) kevent.SetMET(snu::KEvent::nohf, metNoHF_pt->at(0),  metNoHF_phi->at(0), metNoHF_sumet->at(0));
   }
   
-  if(TString(CatVersion).Contains("v7-6-4")){
+  if(TString(CatVersion).Contains("v7-6-5")){
     if(PDFWeights){
       if(PDFWeights->size() > 0){
 	kevent.SetPDFWeights(*PDFWeights);
@@ -201,7 +201,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
       kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn));
       kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  double(puWeightGoldUp));
       
-      if(TString(CatVersion).Contains("v7-6-4")) {
+      if(TString(CatVersion).Contains("v7-6-5")) {
 	if(puWeightGold_xs71000){
 	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::central,double(puWeightGold_xs71000));
 	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn_xs71000));
@@ -322,6 +322,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
    
     el.Setdz( electrons_dz->at(iel));
     el.Setdxy(electrons_dxy->at(iel) );
+    if(electrons_sigdxy)el.Setdxy_sig(electrons_sigdxy->at(iel) );
 
     el.SetPFChargedHadronIso(0.3, electrons_puChIso03->at(iel));
     el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
@@ -855,6 +856,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));
+    if(muon_sigdxy)muon.Setdxy_sig(muon_sigdxy->at(ilep));
     //// chi2
     muon.SetGlobalchi2( muon_normchi->at(ilep));
         
@@ -1140,7 +1142,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     truthp.SetParticleStatus(gen_status->at(it));
     truthp.SetParticleIndexMother(gen_motherindex->at(it));
     
-    if(TString(CatVersion).Contains("v7-6-4")) {
+    if(TString(CatVersion).Contains("v7-6-5")) {
       // To save space set a single int as the flag. 
       // 
       int truth_flag = 0;
