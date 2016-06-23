@@ -49,7 +49,30 @@ namespace snu {
     void SetPFMETMuonEnUp (double met_muonen_up);    
     void SetPFMETUnclusteredDown  (double met_unclust_down);
     void SetPFMETUnclusteredUp  (double met_unclust_up);
-    
+
+    void SetPFMETxElectronEnDown (double metx_elen_down);
+    void SetPFMETxElectronEnUp (double metx_elen_up);
+    void SetPFMETxJetEnDown (double metx_jetem_down);
+    void SetPFMETxJetEnUp (double metx_jetem_up);
+    void SetPFMETxJetResDown (double  metx_jetres_down);
+    void SetPFMETxJetResUp (double  metx_jetres_up);
+    void SetPFMETxMuonEnDown (double metx_muonen_down);
+    void SetPFMETxMuonEnUp (double metx_muonen_up);
+    void SetPFMETxUnclusteredDown  (double metx_unclust_down);
+    void SetPFMETxUnclusteredUp  (double metx_unclust_up);
+
+    void SetPFMETyElectronEnDown (double mety_elen_down);
+    void SetPFMETyElectronEnUp (double mety_elen_up);
+    void SetPFMETyJetEnDown (double mety_jetem_down);
+    void SetPFMETyJetEnUp (double mety_jetem_up);
+    void SetPFMETyJetResDown (double  mety_jetres_down);
+    void SetPFMETyJetResUp (double  mety_jetres_up);
+    void SetPFMETyMuonEnDown (double mety_muonen_down);
+    void SetPFMETyMuonEnUp (double mety_muonen_up);
+    void SetPFMETyUnclusteredDown  (double mety_unclust_down);
+    void SetPFMETyUnclusteredUp  (double mety_unclust_up);
+
+
     /// GENMET
     void SetGenMETTrue( double genmettrue);
     void SetGenMETPhiTrue( double genmetphitrue);
@@ -134,6 +157,27 @@ namespace snu {
     inline Double_t PFMET_Unclust_Up() const {return k_PF_MET_unclust_up;}
     inline Double_t PFMET_Unclust_Down() const {return k_PF_MET_unclust_down;}
     
+    inline Double_t PFMETx_El_EnUp() const {return k_PF_METx_el_enup;}
+    inline Double_t PFMETx_El_EnDown() const {return k_PF_METx_el_endown;}
+    inline Double_t PFMETx_Jet_EnUp() const {return k_PF_METx_jet_enup;}
+    inline Double_t PFMETx_Jet_EnDown() const {return k_PF_METx_jet_endown;}
+    inline Double_t PFMETx_Jet_ResUp() const {return k_PF_METx_jet_resup;}
+    inline Double_t PFMETx_Jet_ResDown() const {return k_PF_METx_jet_resdown;}
+    inline Double_t PFMETx_Muon_EnUp() const {return k_PF_METx_muon_enup;}
+    inline Double_t PFMETx_Muon_EnDown() const {return k_PF_METx_muon_endown;}
+    inline Double_t PFMETx_Unclust_Up() const {return k_PF_METx_unclust_up;}
+    inline Double_t PFMETx_Unclust_Down() const {return k_PF_METx_unclust_down;}
+
+    inline Double_t PFMETy_El_EnUp() const {return k_PF_METy_el_enup;}
+    inline Double_t PFMETy_El_EnDown() const {return k_PF_METy_el_endown;}
+    inline Double_t PFMETy_Jet_EnUp() const {return k_PF_METy_jet_enup;}
+    inline Double_t PFMETy_Jet_EnDown() const {return k_PF_METy_jet_endown;}
+    inline Double_t PFMETy_Jet_ResUp() const {return k_PF_METy_jet_resup;}
+    inline Double_t PFMETy_Jet_ResDown() const {return k_PF_METy_jet_resdown;}
+    inline Double_t PFMETy_Muon_EnUp() const {return k_PF_METy_muon_enup;}
+    inline Double_t PFMETy_Muon_EnDown() const {return k_PF_METy_muon_endown;}
+    inline Double_t PFMETy_Unclust_Up() const {return k_PF_METy_unclust_up;}
+    inline Double_t PFMETy_Unclust_Down() const {return k_PF_METy_unclust_down;}
     /// PDF 
     inline std::vector<Double_t> PDFCTEQWeight() const {return k_pdf_cteq;}
     inline std::vector<Double_t> PDFMSTWWeight() const {return k_pdf_mstw;}
@@ -201,7 +245,8 @@ namespace snu {
     Double_t k_PF_METraw,k_PF_METxraw,k_PF_METyraw, k_PF_METrawphi,k_PF_METtype1, k_PF_METtype1phi,k_PF_METtype01,k_PF_METtype01phi;
 
     Double_t k_PF_MET_el_enup,k_PF_MET_el_endown, k_PF_MET_jet_enup,k_PF_MET_jet_endown, k_PF_MET_jet_resup,k_PF_MET_jet_resdown, k_PF_MET_muon_enup,k_PF_MET_muon_endown, k_PF_MET_unclust_up,k_PF_MET_unclust_down;
-
+    Double_t k_PF_METx_el_enup,k_PF_METx_el_endown, k_PF_METx_jet_enup,k_PF_METx_jet_endown, k_PF_METx_jet_resup,k_PF_METx_jet_resdown, k_PF_METx_muon_enup,k_PF_METx_muon_endown, k_PF_METx_unclust_up,k_PF_METx_unclust_down;
+    Double_t k_PF_METy_el_enup,k_PF_METy_el_endown, k_PF_METy_jet_enup,k_PF_METy_jet_endown, k_PF_METy_jet_resup,k_PF_METy_jet_resdown, k_PF_METy_muon_enup,k_PF_METy_muon_endown, k_PF_METy_unclust_up,k_PF_METy_unclust_down;
 
     Bool_t k_isfakeV,k_isgoodevent,k_isData;
     
@@ -209,7 +254,7 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue;
     
 
-    ClassDef(KEvent,16)
+    ClassDef(KEvent,17)
   }; 
   
 }//namespace snu

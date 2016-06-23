@@ -6,6 +6,7 @@ cluster_mc_ntuple_path_2014         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27
 cluster_data_ntuple_path_2014	    /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27/Data/
 cluster_mc_ntuple_path_2015         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2015/MC/
 cluster_mc_ntuple_path_2016         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/MC/
+cluster_mc_ntuple_path_2016v2         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016_V2/MC/
 cluster_data_ntuple_path_2016         /data4/DATA/LQNtuples/LQNtuples_5_3_14_snu27_2016/Data/
 cluster_mc_ntuplepath_chargedhiggs  /data4/DATA/LQNtuples/CHsample/LQNtuple/
 ###### PATH on cms1-6 machines (For LQNtuples only)
@@ -694,6 +695,10 @@ muon_lowpt D   cluster_data_ntuple_path_2016   cms_data_ntuple_path_2016 DoubleM
 ############################################################
 DY10to50	2901.7   cluster_mc_ntuple_path_2016  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
 DY50plus	8693.5	cluster_mc_ntuple_path_2016  cms_mc_ntuple_path_2014	DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+
+DY10to50_2016v2        2901.7   cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
+DY50plus_2016v2        8693.5  cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014    DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
+
 
 
 ### POWHEG

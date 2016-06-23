@@ -56,6 +56,26 @@ KEvent::KEvent() :
   k_PF_MET_muon_endown(0.),
   k_PF_MET_unclust_up(0.),
   k_PF_MET_unclust_down(0.),
+  k_PF_METx_el_enup(0.),
+  k_PF_METx_el_endown(0.),
+  k_PF_METx_jet_enup(0.),
+  k_PF_METx_jet_endown(0.),
+  k_PF_METx_jet_resup(0.),
+  k_PF_METx_jet_resdown(0.),
+  k_PF_METx_muon_enup(0.),
+  k_PF_METx_muon_endown(0.),
+  k_PF_METx_unclust_up(0.),
+  k_PF_METx_unclust_down(0.),
+  k_PF_METy_el_enup(0.),
+  k_PF_METy_el_endown(0.),
+  k_PF_METy_jet_enup(0.),
+  k_PF_METy_jet_endown(0.),
+  k_PF_METy_jet_resup(0.),
+  k_PF_METy_jet_resdown(0.),
+  k_PF_METy_muon_enup(0.),
+  k_PF_METy_muon_endown(0.),
+  k_PF_METy_unclust_up(0.),
+  k_PF_METy_unclust_down(0.),
   k_isfakeV(false), 
   k_isgoodevent(false),
   k_isData(false), 
@@ -124,6 +144,26 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_MET_muon_endown(ev.k_PF_MET_muon_endown),
   k_PF_MET_unclust_up(ev.k_PF_MET_unclust_up),
   k_PF_MET_unclust_down(ev.k_PF_MET_unclust_down),
+  k_PF_METx_el_enup(ev.k_PF_METx_el_enup),
+  k_PF_METx_el_endown(ev.k_PF_METx_el_endown),
+  k_PF_METx_jet_enup(ev.k_PF_METx_jet_enup),
+  k_PF_METx_jet_endown(ev.k_PF_METx_jet_endown),
+  k_PF_METx_jet_resup(ev.k_PF_METx_jet_resup),
+  k_PF_METx_jet_resdown(ev.k_PF_METx_jet_resdown),
+  k_PF_METx_muon_enup(ev.k_PF_METx_muon_enup),
+  k_PF_METx_muon_endown(ev.k_PF_METx_muon_endown),
+  k_PF_METx_unclust_up(ev.k_PF_METx_unclust_up),
+  k_PF_METx_unclust_down(ev.k_PF_METx_unclust_down),
+  k_PF_METy_el_enup(ev.k_PF_METy_el_enup),
+  k_PF_METy_el_endown(ev.k_PF_METy_el_endown),
+  k_PF_METy_jet_enup(ev.k_PF_METy_jet_enup),
+  k_PF_METy_jet_endown(ev.k_PF_METy_jet_endown),
+  k_PF_METy_jet_resup(ev.k_PF_METy_jet_resup),
+  k_PF_METy_jet_resdown(ev.k_PF_METy_jet_resdown),
+  k_PF_METy_muon_enup(ev.k_PF_METy_muon_enup),
+  k_PF_METy_muon_endown(ev.k_PF_METy_muon_endown),
+  k_PF_METy_unclust_up(ev.k_PF_METy_unclust_up),
+  k_PF_METy_unclust_down(ev.k_PF_METy_unclust_down),
   k_isfakeV(ev.k_isfakeV),
   k_isgoodevent(ev.k_isgoodevent),
   k_isData(ev.k_isData),
@@ -191,6 +231,26 @@ void KEvent::Reset()
   k_PF_MET_muon_endown= 0.;
   k_PF_MET_unclust_up= 0.;
   k_PF_MET_unclust_down= 0.;
+  k_PF_METx_el_enup= 0.;
+  k_PF_METx_el_endown= 0.;
+  k_PF_METx_jet_enup= 0.;
+  k_PF_METx_jet_endown= 0.;
+  k_PF_METx_jet_resup= 0.;
+  k_PF_METx_jet_resdown= 0.;
+  k_PF_METx_muon_enup= 0.;
+  k_PF_METx_muon_endown= 0.;
+  k_PF_METx_unclust_up= 0.;
+  k_PF_METx_unclust_down= 0.;
+  k_PF_METy_el_enup= 0.;
+  k_PF_METy_el_endown= 0.;
+  k_PF_METy_jet_enup= 0.;
+  k_PF_METy_jet_endown= 0.;
+  k_PF_METy_jet_resup= 0.;
+  k_PF_METy_jet_resdown= 0.;
+  k_PF_METy_muon_enup= 0.;
+  k_PF_METy_muon_endown= 0.;
+  k_PF_METy_unclust_up= 0.;
+  k_PF_METy_unclust_down= 0.;
   k_jetrho= 0.;
   k_mcweight= 0.;
   k_isfakeV= false;
@@ -259,6 +319,28 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_PF_MET_unclust_up = p.PFMET_Unclust_Up();
       k_PF_MET_unclust_down  = p.PFMET_Unclust_Down();
       
+      k_PF_METx_el_enup = p.PFMETx_El_EnUp();
+      k_PF_METx_el_endown  = p.PFMETx_El_EnDown();
+      k_PF_METx_jet_enup = p.PFMETx_Jet_EnUp();
+      k_PF_METx_jet_endown = p.PFMETx_Jet_EnDown();
+      k_PF_METx_jet_resup = p.PFMETx_Jet_ResUp();
+      k_PF_METx_jet_resdown  = p.PFMETx_Jet_ResDown();
+      k_PF_METx_muon_enup = p.PFMETx_Muon_EnUp();
+      k_PF_METx_muon_endown= p.PFMETx_Muon_EnDown();
+      k_PF_METx_unclust_up = p.PFMETx_Unclust_Up();
+      k_PF_METx_unclust_down  = p.PFMETx_Unclust_Down();
+
+
+      k_PF_METy_el_enup = p.PFMETy_El_EnUp();
+      k_PF_METy_el_endown  = p.PFMETy_El_EnDown();
+      k_PF_METy_jet_enup = p.PFMETy_Jet_EnUp();
+      k_PF_METy_jet_endown = p.PFMETy_Jet_EnDown();
+      k_PF_METy_jet_resup = p.PFMETy_Jet_ResUp();
+      k_PF_METy_jet_resdown  = p.PFMETy_Jet_ResDown();
+      k_PF_METy_muon_enup = p.PFMETy_Muon_EnUp();
+      k_PF_METy_muon_endown= p.PFMETy_Muon_EnDown();
+      k_PF_METy_unclust_up = p.PFMETy_Unclust_Up();
+      k_PF_METy_unclust_down  = p.PFMETy_Unclust_Down();
       k_vertexX=p.VertexX();
       k_vertexY=p.VertexY();
       k_vertexZ=p.VertexZ();
@@ -479,6 +561,71 @@ void KEvent::SetPFMETUnclusteredDown  (double met_unclust_down){
 }
 void KEvent::SetPFMETUnclusteredUp  (double met_unclust_up){
   k_PF_MET_unclust_up = met_unclust_up;
+}
+
+
+void KEvent::SetPFMETxElectronEnDown (double metx_elen_down){
+  k_PF_METx_el_endown = metx_elen_down;
+}
+void KEvent::SetPFMETxElectronEnUp (double metx_elen_up){
+  k_PF_METx_el_enup= metx_elen_up;
+}
+void KEvent::SetPFMETxJetEnDown (double metx_jeten_down){
+  k_PF_METx_jet_endown = metx_jeten_down;
+}
+void KEvent::SetPFMETxJetEnUp (double metx_jeten_up){
+  k_PF_METx_jet_enup = metx_jeten_up;
+}
+void KEvent::SetPFMETxJetResDown (double  metx_jetres_down){
+  k_PF_METx_jet_resdown = metx_jetres_down;
+}
+void KEvent::SetPFMETxJetResUp (double  metx_jetres_up){
+  k_PF_METx_jet_resup= metx_jetres_up;
+}
+void KEvent::SetPFMETxMuonEnDown (double metx_muonen_down){
+  k_PF_METx_muon_endown= metx_muonen_down;
+}
+void KEvent::SetPFMETxMuonEnUp (double metx_muonen_up){
+  k_PF_METx_muon_enup= metx_muonen_up;
+}
+void KEvent::SetPFMETxUnclusteredDown  (double metx_unclust_down){
+  k_PF_METx_unclust_down = metx_unclust_down;
+}
+void KEvent::SetPFMETxUnclusteredUp  (double metx_unclust_up){
+  k_PF_METx_unclust_up = metx_unclust_up;
+}
+
+
+
+void KEvent::SetPFMETyElectronEnDown (double mety_elen_down){
+  k_PF_METy_el_endown = mety_elen_down;
+}
+void KEvent::SetPFMETyElectronEnUp (double mety_elen_up){
+  k_PF_METy_el_enup= mety_elen_up;
+}
+void KEvent::SetPFMETyJetEnDown (double mety_jeten_down){
+  k_PF_METy_jet_endown = mety_jeten_down;
+}
+void KEvent::SetPFMETyJetEnUp (double mety_jeten_up){
+  k_PF_METy_jet_enup = mety_jeten_up;
+}
+void KEvent::SetPFMETyJetResDown (double  mety_jetres_down){
+  k_PF_METy_jet_resdown = mety_jetres_down;
+}
+void KEvent::SetPFMETyJetResUp (double  mety_jetres_up){
+  k_PF_METy_jet_resup= mety_jetres_up;
+}
+void KEvent::SetPFMETyMuonEnDown (double mety_muonen_down){
+  k_PF_METy_muon_endown= mety_muonen_down;
+}
+void KEvent::SetPFMETyMuonEnUp (double mety_muonen_up){
+  k_PF_METy_muon_enup= mety_muonen_up;
+}
+void KEvent::SetPFMETyUnclusteredDown  (double mety_unclust_down){
+  k_PF_METy_unclust_down = mety_unclust_down;
+}
+void KEvent::SetPFMETyUnclusteredUp  (double mety_unclust_up){
+  k_PF_METy_unclust_up = mety_unclust_up;
 }
 
 

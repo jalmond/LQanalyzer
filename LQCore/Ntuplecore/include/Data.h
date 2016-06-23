@@ -154,11 +154,22 @@ public :
 
    std::vector<double>  *ElectronshiftedEup;
    std::vector<double>  *ElectronshiftedEdown;
-
+   std::vector<double>  *ElectronshiftedExup;
+   std::vector<double>  *ElectronshiftedExdown;
+   
+   std::vector<double>  *ElectronshiftedEyup;
+   std::vector<double>  *ElectronshiftedEydown;
    std::vector<double>  *MuonshiftedEup;
    std::vector<double>  *MuonshiftedEdown;
 
+   std::vector<double>  *MuonshiftedExup;
+   std::vector<double>  *MuonshiftedExdown;
+   std::vector<double>  *MuonshiftedEyup;
+   std::vector<double>  *MuonshiftedEydown;
    
+   std::vector<double>  *ElectronPx;
+   std::vector<double>  *ElectronPy;
+
    std::vector<bool>    *MuonHLTSingleIsoMuonMatched;
    std::vector<bool>    *MuonHLTSingleMuonMatched;
    std::vector<bool>    *MuonHLTSingleMuonMatched5;
@@ -689,6 +700,31 @@ public :
    std::vector<double>  *VertexYErr;
    std::vector<double>  *VertexZ;
    std::vector<double>  *VertexZErr;
+
+   std::vector<double>  *MuonPx;
+   std::vector<double>  *MuonPy;
+   std::vector<double>  *PFJetPx;
+   std::vector<double>  *PFJetPy;
+   std::vector<double>  *PFJetPxRaw;
+   std::vector<double>  *PFJetPyRaw;
+   std::vector<double>  *PFMETx;
+   std::vector<double>  *PFMETy;
+   std::vector<double>  *PFMETxType01XYCor;
+   std::vector<double>  *PFMETyType01XYCor;
+   std::vector<double>  *PFJetScaledDownPx;
+   std::vector<double>  *PFJetScaledDownPy;
+   std::vector<double>  *PFJetScaledUpPx;
+   std::vector<double>  *PFJetScaledUpPy;
+   std::vector<double>  *PFJetSmearedDownPx;
+   std::vector<double>  *PFJetSmearedDownPy;
+
+   std::vector<double>  *PFMETxType01XYCorUnclusteredUp;
+   std::vector<double>  *PFMETxType01XYCorUnclusteredDown;
+   std::vector<double>  *PFMETyType01XYCorUnclusteredUp;
+   std::vector<double>  *PFMETyType01XYCorUnclusteredDown;
+   std::vector<double>  *PFJetSmearedUpPx;
+   std::vector<double>  *PFJetSmearedUpPy;
+   
    std::vector<float>   *PileUpInteractionsTrue;
    std::vector<std::vector<float> > *HLTFilterObjEta;
    std::vector<std::vector<float> > *HLTFilterObjPhi;
@@ -844,6 +880,44 @@ public :
 
    std::vector<TBranch*> m_inputbranches;
    // List of branches
+
+   TBranch        *b_ElectronshiftedExup; //!                                                                                                                                    
+   TBranch        *b_ElectronshiftedExdown; //!      
+   
+   TBranch        *b_ElectronshiftedEyup; //!                                                                                                                                    
+   TBranch        *b_ElectronshiftedEydown; //!   
+   TBranch        *b_MuonshiftedExup; //!                                                                                                                                       
+   TBranch        *b_MuonshiftedExdown; //!  
+   TBranch        *b_MuonshiftedEyup; //!                                                                                                                                        
+   TBranch        *b_MuonshiftedEydown; //!  
+   TBranch        *b_ElectronPx;   //!
+   TBranch        *b_ElectronPy;   //!
+   TBranch        *b_MuonPx;   //!
+   TBranch        *b_MuonPy;   //!
+   TBranch        *b_PFJetPx;   //!
+   TBranch        *b_PFJetPy;   //!
+   TBranch        *b_PFJetPxRaw;   //!
+   
+   TBranch        *b_PFJetPyRaw;   //!
+   TBranch        *b_PFMETx;   //!
+   TBranch        *b_PFMETy;   //!
+   TBranch        *b_PFMETxType01XYCor;   //!
+   TBranch        *b_PFMETyType01XYCor;   //!
+   TBranch        *b_PFJetScaledDownPx;   //!
+   TBranch        *b_PFJetScaledDownPy;   //!
+   TBranch        *b_PFJetScaledUpPx;   //!
+   TBranch        *b_PFJetScaledUpPy;   //!
+   
+   TBranch        *b_PFJetSmearedDownPx;   //!
+   TBranch        *b_PFJetSmearedDownPy;   //!
+   TBranch        *b_PFJetSmearedUpPx;   //!
+   TBranch        *b_PFJetSmearedUpPy;   //!
+   TBranch        *b_PFMETxType01XYCorUnclusteredDown;   //!                                                                                                                     
+   TBranch        *b_PFMETxType01XYCorUnclusteredUp;   //!    
+   TBranch        *b_PFMETyType01XYCorUnclusteredDown;   //!                                                                                                                     
+   TBranch        *b_PFMETyType01XYCorUnclusteredUp;   //!    
+   
+   
 
    TBranch        *b_inputmuons;
    TBranch        *b_inputtrigger;

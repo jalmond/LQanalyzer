@@ -88,6 +88,12 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
  
   kevent.SetPFSumET( PFSumETType01XYCor->at(0));
   
+  kevent.SetPFMETx( PFMETxType01XYCor->at(0));
+  kevent.SetPFMETy( PFMETyType01XYCor->at(0));
+  kevent.SetPFMETxRaw( PFMETx->at(0));
+  kevent.SetPFMETyRaw( PFMETy->at(0));
+
+
   if(!isData){
     if(GenMETCalo){
       kevent.SetGenMETCalo(GenMETCalo->at(0));
@@ -110,6 +116,12 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETMuonEnUp(PFMETType01XYCorMuonEnUp->at(0));
     kevent.SetPFMETUnclusteredDown(PFMETType01XYCorUnclusteredDown->at(0));
     kevent.SetPFMETUnclusteredUp(PFMETType01XYCorUnclusteredUp->at(0));
+  }
+  if(PFMETxType01XYCorUnclusteredUp){
+    kevent.SetPFMETxUnclusteredDown(PFMETxType01XYCorUnclusteredDown->at(0));
+    kevent.SetPFMETxUnclusteredUp(PFMETxType01XYCorUnclusteredUp->at(0));
+    kevent.SetPFMETyUnclusteredDown(PFMETyType01XYCorUnclusteredDown->at(0));
+    kevent.SetPFMETyUnclusteredUp(PFMETyType01XYCorUnclusteredUp->at(0));
   }
   kevent.SetProcessID(ProcessID);
 
@@ -234,6 +246,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetSCPt(ElectronSCPt->at(iel));
     el.SetRawEnergy(ElectronSCRawEnergy->at(iel));
     
+    if(ElectronPx){
+      el.SetPx(ElectronPx->at(iel));
+      el.SetPy(ElectronPy->at(iel));
+      
+      el.SetShiftedExUp(ElectronshiftedExup->at(iel));
+      el.SetShiftedExDown(ElectronshiftedExdown->at(iel));
+      el.SetShiftedEyUp(ElectronshiftedEyup->at(iel));
+      el.SetShiftedEyDown(ElectronshiftedEydown->at(iel));
+    }
     m_logger << DEBUG << "Filling Electron ID Bit "<< LQLogger::endmsg;
     
     if(ElectronmvatrigV0){
@@ -834,6 +855,11 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
 
     m_logger << DEBUG << "Filling JetID WP " << LQLogger::endmsg; 
 
+    if(PFJetPx){
+      jet.SetPx(PFJetPx->at(ijet));
+      jet.SetPy(PFJetPy->at(ijet));
+    }
+
     if(PFJetPileupjetIDpassLooseWP){
       if(PFJetPileupjetIDpassLooseWP->size() > 0){
 	jet.SetJetPileupIDLooseWP(PFJetPileupjetIDpassLooseWP->at(ijet));
@@ -940,6 +966,17 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
 	jet.SetJetSmearedUpEnergy(PFJetSmearedUpEnergy->at(ijet));
 	jet.SetJetSmearedDownPt(PFJetSmearedDownPt->at(ijet));
 	jet.SetJetSmearedUpPt(PFJetSmearedUpPt->at(ijet));
+	if(PFJetScaledDownPx){
+	  jet.SetJetScaledDownPx(PFJetScaledDownPx->at(ijet));
+	  jet.SetJetScaledDownPy(PFJetScaledDownPy->at(ijet));
+	  jet.SetJetScaledUpPx(PFJetScaledUpPx->at(ijet));
+	  jet.SetJetScaledUpPy(PFJetScaledUpPy->at(ijet));
+	  jet.SetJetSmearedDownPx(PFJetSmearedDownPx->at(ijet));
+	  jet.SetJetSmearedDownPy(PFJetSmearedDownPy->at(ijet));
+	  jet.SetJetSmearedUpPx(PFJetSmearedUpPx->at(ijet));
+	  jet.SetJetSmearedUpPy(PFJetSmearedUpPy->at(ijet));
+	}
+	
       }
     }
     else{
@@ -1014,6 +1051,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	if(MuonEta->size() == MuonshiftedEup->size()){
 	  muon.SetShiftedEUp(MuonshiftedEup->at(ilep));
 	  muon.SetShiftedEDown(MuonshiftedEdown->at(ilep));
+	  if(MuonshiftedExup){
+	    muon.SetShiftedExUp(MuonshiftedExup->at(ilep));
+	    muon.SetShiftedExDown(MuonshiftedExdown->at(ilep));
+	    muon.SetShiftedEyUp(MuonshiftedEyup->at(ilep));
+	    muon.SetShiftedEyDown(MuonshiftedEydown->at(ilep));
+	  }
 	}
       }
       else{
@@ -1022,15 +1065,15 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }
     }
 
-    if(!MuonGlobalEta){
-      muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
-      muon.SetCharge(MuonCharge->at(ilep));
-    }else{
-      if(MuonIsGlobal->at(ilep)){
-	muon.SetPtEtaPhiM(MuonGlobalPt->at(ilep), MuonGlobalEta->at(ilep),MuonGlobalPhi->at(ilep), 0.105658367);            
-	muon.SetCharge(MuonGlobalCharge->at(ilep));
-      }
-    }
+    //if(!MuonGlobalEta){
+    muon.SetPtEtaPhiE(MuonPt->at(ilep),MuonEta->at(ilep),MuonPhi->at(ilep),MuonEnergy->at(ilep));
+    muon.SetCharge(MuonCharge->at(ilep));
+    //}else{
+    // if(MuonIsGlobal->at(ilep)){//
+    //muon.SetPtEtaPhiM(MuonGlobalPt->at(ilep), MuonGlobalEta->at(ilep),MuonGlobalPhi->at(ilep), 0.105658367);           / //
+    //	muon.SetCharge(MuonGlobalCharge->at(ilep));
+    // }
+    //
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
     if(MuonMuonSpecPt){
