@@ -117,53 +117,10 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     if(IsBTagged(GetJets(BaseSelection::JET_HN).at(ij), snu::KJet::CSVv2, snu::KJet::Tight)) nbjet_just_using_sf++;
   }
   
-
-  std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
-  CorrectMuonMomentum(muons);
-
-  /*if(n_prompt > 3){
-    for(unsigned int iel=0; iel < electronColl_nocut_truth.size(); iel++){
-      cout << "eta " << electronColl_nocut_truth.at(iel).Eta() << endl;
-      cout << "phi " << electronColl_nocut_truth.at(iel).Phi() << endl;
-      cout << "pt " << electronColl_nocut_truth.at(iel).Pt() << endl;
-      cout << "isprompt= " << electronColl_nocut_truth.at(iel).MCIsPrompt() << endl;
-      cout << "mc pdgid = " << electronColl_nocut_truth.at(iel).MCMatchedPdgId() << endl;
-      cout << "mc index = " <<  electronColl_nocut_truth.at(iel).MCTruthIndex() << endl;
-      cout << "mother pdgid = " <<  electronColl_nocut_truth.at(iel).MotherPdgId()<< endl;
-      cout << "motherindex= " <<electronColl_nocut_truth.at(iel).MotherTruthIndex()<< endl;
-
-      cout << "Mother type = " << electronColl_nocut_truth.at(iel).GetMotherType() << endl;
-      cout << "Particle type = " << electronColl_nocut_truth.at(iel).GetParticleType() << endl;
-
-      for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-	if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
-	if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
-	if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-	if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-	cout << ig << " " << eventbase->GetTruth().at(ig).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig).IndexMother() << endl;
-	cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
-      }
-    }
-    }*/
-
   std::vector<snu::KMuon> muonColl_truth = GetMuons(BaseSelection::MUON_POG_TIGHT);
   for(unsigned int im=0; im < muonColl_truth.size() ; im++){
   }
-  /*cout << "mc pdgid = " <<muonColl_truth.at(im).MCMatchedPdgId() << endl;
-    cout << "mc index = " << muonColl_truth.at(im).MCTruthIndex() << endl;
-    cout << "mother pdgid = " << muonColl_truth.at(im).MotherPdgId()<< endl;
-    cout << "motherindex= " <<muonColl_truth.at(im).MotherTruthIndex()<< endl;
-    cout << "Is from conversion = " << muonColl_truth.at(im).MCIsFromConversion()<< endl;
-  }
-  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-    if(eventbase->GetTruth().at(ig).Pt() != eventbase->GetTruth().at(ig).Pt()) continue;
-    if(eventbase->GetTruth().at(ig).Pt() < 0.1) continue;
-    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-    cout << ig << " " << eventbase->GetTruth().at(ig).PdgId() << " : mother " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() << " :  " << eventbase->GetTruth().at(ig).IndexMother() << endl;
-    cout << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Phi() << " " << eventbase->GetTruth().at(ig).Pt() <<endl;
-  }
-  */
+
 
   /// Apply MC weight for MCatnlo samples
   // MC weight = gen weight * lumimask weight
@@ -196,7 +153,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   // This trigger will be  Unprescaled till L = 7E33 (may be used for this whole year) 
   // https://indico.cern.ch/event/370510/contribution/1/attachments/1161160/1671811/EleTriggers_Arun_28Sept_v1.pdf
-  //if(!PassTrigger(triggerslist, prescale)) return;
+  if(!PassTrigger(triggerslist, prescale)) return;
   
   /// Target lumi = total lumi in json file. 
   /// ApplyPrescale reweights the MC to the luminosity of the trigger you are using

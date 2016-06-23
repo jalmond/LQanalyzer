@@ -85,6 +85,9 @@ SignalPlotsEM::SignalPlotsEM(TString name): StdPlots(name){
 
 void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight) {
   
+
+  if(muons.size() != 1) return;
+  if(electrons.size() != 1) return;
   bool debug =false;
   if(debug)cout<< "Plotting [1] " << endl;
   Fill("h_Nelectrons", electrons.size(), weight);
@@ -211,8 +214,7 @@ void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   for(std::vector<snu::KElectron>::iterator elit = electrons.begin(); elit != electrons.end(); elit++, iel++){
   
     Fill("h_LeptonPt", elit->Pt(),weight);
-    Fill("h_Leptons_phi",elit->Phi(),weight);
-    Fill("h_Leptons_eta",elit->Eta(),weight);
+    Fill("h_LeptonEta",elit->Eta(),weight);
     Fill("h_LeptonDXY", elit->dxy(),weight);
     Fill("h_LeptonDZ", elit->dz(),weight);
      

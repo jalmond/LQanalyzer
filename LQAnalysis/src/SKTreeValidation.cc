@@ -37,9 +37,9 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   InitialiseAnalysis();
   MakeCleverHistograms(sighist_mm,"DiMuon");
   MakeCleverHistograms(sighist_mm,"DiMuon_truthmatched");
-  MakeCleverHistograms(sighist_mm,"DiElectron");
-  MakeCleverHistograms(sighist_mm,"DiElectron_truthmatched");
-  MakeCleverHistograms(sighist_mm,"ElMuon");
+  MakeCleverHistograms(sighist_ee,"DiElectron");
+  MakeCleverHistograms(sighist_ee,"DiElectron_truthmatched");
+  MakeCleverHistograms(sighist_em,"ElMuon");
 
 
 }
@@ -95,12 +95,12 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
    std::vector<TString> triggerslist_mu;
-   triggerslist_mu.push_back("HLT_IsoMu20");
+   triggerslist_mu.push_back("HLT_IsoMu20_v");
    std::vector<TString> triggerslist_el;
    triggerslist_el.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
    std::vector<TString> triggerslist_emu;
    triggerslist_emu.push_back("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-   triggerslist_emu.push_back("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoV");
+   triggerslist_emu.push_back("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoV_v");
    
    float mu_trigger_ps_weight= ApplyPrescale("HLT_IsoMu20", TargetLumi,lumimask);
    float el_trigger_ps_weight= ApplyPrescale("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi,lumimask);
@@ -164,7 +164,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
    /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
    std::vector<snu::KElectron> electronTightColl             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
-   std::vector<snu::KElectron> electronTightTruthMatchedColl             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT,false);
+   std::vector<snu::KElectron> electronTightTruthMatchedColl             = GetElectrons(false,false,BaseSelection::ELECTRON_POG_TIGHT);
    std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
 
    
@@ -253,7 +253,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    }
 
    if(emu_pass&&(electronTightColl.size() == 1)&& (muonTightColl.size() ==1)) {
-     if(electronTightColl.Charge() != muonTightColl.Charge()){
+     if(electronTightColl.at(0).Charge() != muonTightColl.at(0).Charge()){
        if((muonTightColl.at(0).Pt() > 20. )&&( electronTightColl.at(0).Pt() < 20.)){
 	 /// Method of plotting single histogram
 	 
