@@ -3040,8 +3040,13 @@ bool AnalyzerCore::PassBasicTopEventCuts(){
 }
 
 
-void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins){
+void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins){                                                                                                                                                                   
+  FillHist("", histname, value, w, xbins, nbins);
+}
+
+void AnalyzerCore::FillHist(TString label, TString histname, float value, float w, float xbins[], int nbins){
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  histname= histname+label;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);
   
   else{
@@ -3057,7 +3062,13 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[
 }
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins){
+  FillHist("", histname, value, w, xmin, xmax, nbins);
+}
+
+
+void AnalyzerCore::FillHist(TString label, TString histname, float value, float w, float xmin, float xmax, int nbins){
   
+  histname= histname+label;                                                                                                                                                                                                                                                    
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  
   else{
@@ -3105,9 +3116,14 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
 }
 
 
-
 void AnalyzerCore::FillHist(TString histname, float value, float w){
+  FillHist("",histname, value, w);
+}
 
+
+void AnalyzerCore::FillHist(TString label, TString histname, float value, float w){
+  
+  histname= histname+label;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  /// Plots Z peak                                   
   else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
   
@@ -3629,9 +3645,11 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
+    //    std::cout << "No corr : " << tlv_muons[imu].Pt() << "eta:  " <<  tlv_muons[imu].Eta() << " phi: " << tlv_muons[imu].Phi() << " mass: " << tlv_muons[imu] << 
     if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), 0, qter);
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
+    
   }
 }
 
@@ -3841,7 +3859,7 @@ vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KJet> j){
 
 void AnalyzerCore::MakeNtp(TString hname, TString myvar){
 
-	mapntp[hname] =  new TNtupleD(hname.Data(),hname.Data(),myvar.Data());
+  mapntp[hname] =  new TNtupleD(hname.Data(),hname.Data(),myvar.Data());
 }
 
 

@@ -994,6 +994,10 @@ WZ_py_pf           1.    cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014
 ZZ_py_pf       1.    cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014   ZZ_TuneZ2star_8TeV_pythia6_tauola/
 WW_py_pf         1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   WW_TuneZ2star_8TeV_pythia6_tauola/
 
+### BOSON + bb
+Wbb_pf             1.   cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014  WbbJetsToLNu_Massive_TuneZ2star_8TeV-madgraph-pythia6_tauola/
+Zbb_pf     1.  		     cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014	 ZbbToLL_massive_M-50_TuneZ2star_8TeV-madgraph-pythia6_tauola/
+
 
 DY10to50_pf       1.    cluster_mc_ntuple_pf_path_2016  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
 DY50plus_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
@@ -1001,6 +1005,8 @@ DY50plus_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   DY
 ### Wjets
 Wjets_pf		1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014   WJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball/
 
+
+ttbarMS_pf         1.            cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_central_TuneZ2star_8TeV-madgraph-tauola/
 
 ttbar_mass171_pf       1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_mass171_5_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_mass173_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TTJets_MSDecays_mass173_5_TuneZ2star_8TeV-madgraph-tauola/
@@ -1010,6 +1016,9 @@ ttbar_scaledown_pf   1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014
 ttbar_scaleup_pf    1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTJets_MSDecays_scaleup_TuneZ2star_8TeV-madgraph-tauola/
 ttbar_CT10_pythia_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TT_weights_CT10_TuneP11C-8TeV-powheg-pythia6-tauola/
 ttbar_CT10_herwig_pf     1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TT_weights_CT10_AUET2_8TeV-powheg-herwig/
+ttbar_pow_pf          1.              cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 TT_CT10_TuneZ2star_8TeV-powheg-tauola/
+
+
 TTH_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTH_Inclusive_M-125_8TeV_pythia6/
 ttW_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTWJets_8TeV-madgraph/
 ttZ_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014  TTZJets_8TeV-madgraph_v2/ 
@@ -1035,7 +1044,7 @@ QCD_250_350_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014
 QCD_350_EM_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_350_EMEnriched_TuneZ2star_8TeV_pythia6/
 QCD_350_BCtoE_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_350_BCtoE_TuneZ2star_8TeV_pythia6/
 
-QCD_15_mu_pf cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6/
+QCD_15_mu_pf    1.  cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 QCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6/
 
 stbar_sch_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 Tbar_s-channel_TuneZ2star_8TeV-powheg-tauola/
 stbar_tch_pf 1.   cluster_mc_ntuple_pf_path_2016 cms_mc_ntuple_path_2014 Tbar_t-channel_TuneZ2star_8TeV-powheg-tauola/
@@ -1096,3 +1105,4 @@ SKQCD_250_350_EM_pf    62200.         sk_cluster_ntuple_path  sk_cms_ntuple_path
 SKQCD_250_350_BCtoE_pf 19600.         sk_cluster_ntuple_path  sk_cms_ntuple_path_pf        MC/QCD_250_350_BCtoE_pf/
 SKQCD_350_EM_pf        382497.9062       sk_cluster_ntuple_path  sk_cms_ntuple_path_pf        MC/QCD_350_EM_pf/
 SKQCD_350_BCtoE_pf     81446.75          sk_cluster_ntuple_path  sk_cms_ntuple_path_pf        MC/QCD_350_BCtoE_pf/
+

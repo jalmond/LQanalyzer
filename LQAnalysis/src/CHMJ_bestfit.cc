@@ -356,6 +356,7 @@ void CHMJ_bestfit::ExecuteEvents()throw( LQError ){
 
 			jetFlav_f[i] = fabs(jetFlavour);
 			jets_f[i] = tempjet;
+			std::cout << "tempjet pt = " <<  tempjet.Pt() << "  eta = " << tempjet.Eta() << endl;
 			jetPt_f[i] = jetColl.at(this_idx).Pt();
 			jetEta_f[i] = jetColl.at(this_idx).Eta();	   
 
@@ -403,7 +404,7 @@ void CHMJ_bestfit::ExecuteEvents()throw( LQError ){
 	float Bw_down_syst_factor = 1.0, Bw_up_syst_factor = 1.0;
 	
 	if (!k_isdata){
-	  fBTagSF->GetBTagEvtWeight(njets,jetPt_all,jetEta_all,jetFlav_all,btag_all,0,Bweight,BweightErr,ttbar);
+	  //fBTagSF->GetBTagEvtWeight(njets,jetPt_all,jetEta_all,jetFlav_all,btag_all,0,Bweight,BweightErr,ttbar);
 		
 	}
 
@@ -506,7 +507,7 @@ void CHMJ_bestfit::ExecuteEvents()throw( LQError ){
 	
 	TLorentzVector Mu_vec;
 	Mu_vec.SetPtEtaPhiE(Mu.Pt(),Mu.Eta(),Mu.Phi(),Mu.E());
-
+	std::cout << "Mu.Pt() = " << Mu.Pt() << " eta="  << Mu.Eta() << endl;
 	float sigmalep = 0.5*fabs(Evt.PFMET_Muon_EnUp()-METv) + 0.5*fabs(Evt.PFMET_Muon_EnDown()-METv);
 	if (fabs(Mu.Eta())>1.5) sigmalep =  (sigmalep > 0.015*Mu_vec.Pt() ) ? sigmalep : 0.015*Mu_vec.Pt() ;  // Et difference is too small, so assign 1% 
 	else sigmalep =  (sigmalep > 0.01*Mu_vec.Pt() ) ? sigmalep : 0.01*Mu_vec.Pt() ;  // Et difference is too small, so assign 1% 
@@ -519,6 +520,7 @@ void CHMJ_bestfit::ExecuteEvents()throw( LQError ){
 	int ntype = 14;	
 	bool highpt_fit = false;
 
+	
 	myfit->Fit(Mu_vec,sigmalep,jets_f,btag_f,sum_jetraw,met,metraw, addjets,ntype, debug, highpt_fit);
 
 

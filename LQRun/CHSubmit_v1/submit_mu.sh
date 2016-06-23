@@ -1,8 +1,8 @@
 #!/bin/sh
 
 rundata=false
-rundataMu=true
-runmc=false
+rundataMu=false
+runmc=true
 runmcEl=false
 runsig=false
 
@@ -65,12 +65,12 @@ then
 	skinput="True"
     useskim=""
     
-    njobs=30
+    njobs=1
     data_lumi="AtoD"
 
     loglevel="INFO"
     logstep=1000
-	nevents=-1
+    nevents=100
 	
 #	declare -a input_samples=("ttbar" "topLJ" "topHAD" "topDIL" "stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" "W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "Wjets" "DY50plus" "WW_py" "ZZ_py" "WZ_py" "QCD_20_30_EM" "QCD_30_80_EM" "QCD_80_170_EM" "QCD_170_250_EM" "QCD_250_350_EM" "QCD_350_EM" "QCD_20_30_BCtoE" "QCD_30_80_BCtoE" "QCD_80_170_BCtoE" "QCD_170_250_BCtoE" "QCD_350_BCtoE")
 #		declare -a input_samples=("W1Jets" "W2Jets" "W3Jets" "W4Jets" "Z1Jets" "Z2Jets" "Z3Jets" "Z4Jets" "WZ_py")
@@ -81,7 +81,7 @@ then
 #	declare -a input_samples=("stbar_sch" "stbar_tch" "stbar_tW" "st_sch" "st_tch" "st_tW" )
 	declare -a input_samples=("QCD_20_30_EM" "QCD_30_80_EM" "QCD_80_170_EM" "QCD_170_250_EM" "QCD_250_350_EM" "QCD_350_EM" "QCD_20_30_BCtoE" "QCD_30_80_BCtoE" "QCD_80_170_BCtoE" "QCD_170_250_BCtoE" "QCD_250_350_BCtoE" "QCD_350_BCtoE" "QCD_mumu")
 #	declare -a input_samples=("CH90PU" "CH100PU" "CH110PU" "CH120PU" "CH130PU" "CH140PU" "CH150PU")
-
+	declare -a input_samples=("ttbarMS_pf") 
 #	outputdir=$LQANALYZER_DIR"/data/output/SMTSCorr/test/"
 	outputdir=$LQANALYZER_DIR"/data/output/CHMJ_087cut/highpt/"
 	

@@ -211,6 +211,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     
     /// Kinematic Variables
     el.SetPtEtaPhiE(ElectronLoosePt->at(iel),ElectronLooseEta->at(iel),ElectronLoosePhi->at(iel),ElectronLooseEnergy->at(iel));
+
     m_logger << DEBUG << "Filling ElectronLoose ID Bit "<< LQLogger::endmsg;
     el.SetPx(ElectronLoosePx->at(iel));
     el.SetPy(ElectronLoosePy->at(iel));
@@ -1044,15 +1045,17 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     muon.SetPx(MuonLoosePx->at(ilep));
     muon.SetPy(MuonLoosePy->at(ilep));
-    if(!MuonLooseGlobalEta){
-      muon.SetPtEtaPhiE(MuonLoosePt->at(ilep),MuonLooseEta->at(ilep),MuonLoosePhi->at(ilep),MuonLooseEnergy->at(ilep));
-      muon.SetCharge(MuonLooseCharge->at(ilep));
-    }else{
-      if(MuonLooseIsGlobal->at(ilep)){
-	muon.SetPtEtaPhiM(MuonLooseGlobalPt->at(ilep), MuonLooseGlobalEta->at(ilep),MuonLooseGlobalPhi->at(ilep), 0.105658367);            
-	muon.SetCharge(MuonLooseGlobalCharge->at(ilep));
-      }
-    }
+    //if(!MuonLooseGlobalEta){
+    muon.SetPtEtaPhiE(MuonLoosePt->at(ilep),MuonLooseEta->at(ilep),MuonLoosePhi->at(ilep),MuonLooseEnergy->at(ilep));
+    muon.SetCharge(MuonLooseCharge->at(ilep));
+    //    }else{
+    //      if(MuonLooseIsGlobal->at(ilep)){
+    //	muon.SetPtEtaPhiM(MuonLooseGlobalPt->at(ilep), MuonLooseGlobalEta->at(ilep),MuonLooseGlobalPhi->at(ilep), 0.105658367);            
+    //	muon.SetCharge(MuonLooseGlobalCharge->at(ilep));
+    //      }
+    //}
+
+    std::cout << "muon mass = " << muon.M() << std::endl;
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;
     if(MuonLooseMuonSpecPt){

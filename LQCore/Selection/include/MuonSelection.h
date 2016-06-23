@@ -42,7 +42,8 @@ class MuonSelection : public BaseSelection {
   void TopLooseMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   void TopVetoMuonSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
 
-
+  void TopTightMuonSelectionv1(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
+  void TopVetoMuonSelectionv1(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);
   
   //// General 
   void SetDeposits(Double_t ECalDeposit, Double_t HCalDeposit);

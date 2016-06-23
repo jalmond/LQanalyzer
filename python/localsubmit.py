@@ -590,12 +590,17 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 
 if ncore_def == 1:
     number_of_cores = 1
+
+
+if "ttbarMS" in sample:
+    number_of_cores = number_of_files
                                                    
 ############################################################
 ### Correct user if ncores is > nfiles
 ############################################################
 if number_of_cores > number_of_files:
     number_of_cores = number_of_files
+
 print "Splitting job into " + str(number_of_cores) + " subjobs"
 
 singlejob = number_of_cores==1            

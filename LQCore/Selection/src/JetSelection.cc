@@ -211,7 +211,8 @@ void JetSelection::JetTopSelection(std::vector<KJet>& jetColl, std::vector<KMuon
   std::vector<KJet> alljets = k_lqevent.GetJets();
 
   //  int number_of_alljets = 0;
-  
+
+   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 	
     if ( (jit->Pt() >= 30.) && fabs(jit->Eta()) < 2.4   && PassUserID(PFJET_LOOSE, *jit) && jit->PileupJetIDLoose() )
@@ -249,6 +250,255 @@ void JetSelection::JetTopSelection(std::vector<KJet>& jetColl, std::vector<KMuon
   
 }
 
+void JetSelection::JetchsTopSelectionv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {                                                       
+  JetchsTopSelectionv1(jetColl, muonColl, electronColl,0);
+}
+
+void JetSelection::JetchsTopSelectionv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, int method) {                                                       
+  std::vector<KJet> pre_jetColl;                                                                   
+  std::vector<KJet> alljets = k_lqevent.GetJets();                                                                                                                                   
+
+  //  int number_of_alljets = 0;                                                                    
+
+
+                                                                                                    
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){               
+    float jet_pt = jit->Pt();
+    if(method==1) jet_pt= jit->ScaledUpPt();
+    if(method==2) jet_pt= jit->ScaledDownPt();
+    if(method==3) jet_pt= jit->SmearedUpPt();
+    if(method==4) jet_pt= jit->SmearedDownPt(); 
+    //std::cout << method << " pt = " << jet_pt << endl;
+    if ( (jet_pt >= 30.) && fabs(jit->Eta()) < 2.4   && PassUserID(PFJET_LOOSE, *jit))
+      // && jit->PileupJetIDLoose() )                                                                              
+      {                                                                                             
+	// additional selection AN-14-227. jetIDEff = 99.99%                                        
+	//      if (jit->MuonEnergyFraction()<0.8)                                                  
+	pre_jetColl.push_back(*jit);                                                              
+      }                                                                                             
+  }                                                                                                 
+  
+  //std::cout  << method << " njotes = " << pre_jetColl.size() << std::endl;
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {                                        
+    jetIsOK = true;                                                                                 
+    /*    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {                                         
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                      
+	jetIsOK = false;                                                                            
+	ilep = muonColl.size();                                                                     
+      }                                                                                             
+    }/// End of muon loop                                                                           
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {                                     
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                  
+	jetIsOK = false;                                                                            
+	ilep = electronColl.size();                                                                 
+      }                                                                                             
+    }/// End of electron loop                                                                      
+*/ 
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );                                            
+  }/// End of Jet loop                                                                              
+
+}
+
+void JetSelection::JetchsTopSelectionJESv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, int up) {                                                       
+
+  std::vector<KJet> pre_jetColl;                                                                   
+  std::vector<KJet> alljets = k_lqevent.GetJets();                                                                                                                                   
+  //  int number_of_alljets = 0;                                                                    
+
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){               
+
+    float jet_pt = (up > 0) ? jit->ScaledUpPt() : jit->ScaledDownPt();
+    
+    if ( (jet_pt >= 30.) && fabs(jit->Eta()) < 2.4   && PassUserID(PFJET_LOOSE, *jit))
+      // && jit->PileupJetIDLoose() )                                                                               
+      {                                                                                             
+	// additional selection AN-14-227. jetIDEff = 99.99%                                        
+	//      if (jit->MuonEnergyFraction()<0.8)                                                  
+	pre_jetColl.push_back(*jit);                                                              
+      }                                                                                             
+  }                                                                                                 
+  
+  
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {                                        
+    jetIsOK = true;                                                                                 
+
+    /*    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {                                         
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                      
+	jetIsOK = false;                                                                            
+	ilep = muonColl.size();                                                                     
+      }                                                                                             
+    }/// End of muon loop                                                                           
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {                                     
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                  
+	jetIsOK = false;                                                                            
+	ilep = electronColl.size();                                                                 
+      }                                                                                             
+    }/// End of electron loop                                                                      
+    */
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );                                            
+  }/// End of Jet loop                                                                              
+}
+
+
+void JetSelection::JetchsTopSelectionJERv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, int up) {                                                       
+  std::vector<KJet> pre_jetColl;                                                                   
+  std::vector<KJet> alljets = k_lqevent.GetJets();                                                                                                                                   
+  //  int number_of_alljets = 0;                                                                    
+                                                                                                    
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){               
+
+    float jet_pt = (up > 0) ? jit->SmearedUpPt() : jit->SmearedDownPt();
+    
+    if ( (jet_pt >= 30.) && fabs(jit->Eta()) < 2.4   && PassUserID(PFJET_LOOSE, *jit))
+      // && jit->PileupJetIDLoose() )    
+      {                                                                                             
+	// additional selection AN-14-227. jetIDEff = 99.99%                                        
+	//      if (jit->MuonEnergyFraction()<0.8)                                                  
+	pre_jetColl.push_back(*jit);                                                              
+      }                                                                                             
+  }                                                                                                 
+   
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {                                        
+    jetIsOK = true;                                                                                 
+    /*    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {                                         
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                      
+	jetIsOK = false;                                                                            
+	ilep = muonColl.size();                                                                     
+      }                                                                                             
+    }/// End of muon loop                                                                           
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {                                     
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                  
+	jetIsOK = false;                                                                            
+	ilep = electronColl.size();                                                                 
+      }                                                                                             
+    }/// End of electron loop                                                                      
+    */
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );                                            
+  }/// End of Jet loop                                                                              
+
+}
+
+void JetSelection::JetchsTopUESelectionv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl,std::vector<KElectron> electronColl) {  
+  JetchsTopUESelectionv1(jetColl, muonColl, electronColl,0);
+}
+
+void JetSelection::JetchsTopUESelectionv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl,std::vector<KElectron> electronColl, int method) {  
+                                                              
+  std::vector<KJet> pre_jetColl;                                                                    
+  std::vector<KJet> alljets = k_lqevent.GetJets(); 
+  //  int number_of_alljets = 0;                                                         
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){    
+    
+    float jet_pt = jit->Pt();                                                                                                                                                                                                                                                   
+    if(method==1) jet_pt= jit->ScaledUpPt();                                                                                                                                                                                                                                    
+    if(method==2) jet_pt= jit->ScaledDownPt();                                                                                                                                                                                                                                  
+    if(method==3) jet_pt= jit->SmearedUpPt();                                                                                                                                                                                                                                   
+    if(method==4) jet_pt= jit->SmearedDownPt();                                                                                                                                                                                                                                 
+                                                    
+    if ( (jet_pt >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))
+      // && jit->PileupJetIDLoose())                                                                                
+      {                                                                                 
+	// additional selection AN-14-227. jetIDEff = 99.99%                      
+	// if (jit->MuonEnergyFraction()<0.8)                                           
+	pre_jetColl.push_back(*jit);                                                  
+      }                                                                                 
+  }                                                                                                   
+
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {                                        
+    /*    jetIsOK = true;                                                                                 
+    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {                                         
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5) {                                       
+	jetIsOK = false;                                                                            
+	ilep = muonColl.size();                                                                     
+      }                                                                                             
+    }/// End of muon loop                                                                           
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {                                     
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                  
+	jetIsOK = false;                                                                            
+	ilep = electronColl.size();                                                                 
+      }                                                                                             
+    }/// End of electron loop                                                                          
+    */
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );                                            
+  }/// End of Jet loop                            
+
+}
+
+void JetSelection::JetchsTopUESelectionJESv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl,std::vector<KElectron> electronColl, int up) {  
+                                                              
+  std::vector<KJet> pre_jetColl;                                                                    
+  std::vector<KJet> alljets = k_lqevent.GetJets(); 
+  //  int number_of_alljets = 0;                                                         
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){    
+    float jet_pt = (up > 0) ? jit->ScaledUpPt() : jit->ScaledDownPt();    
+    if ( (jet_pt >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))
+      // && jit->PileupJetIDLoose())                                                                                
+      {                                                                                 
+	// additional selection AN-14-227. jetIDEff = 99.99%                      
+	// if (jit->MuonEnergyFraction()<0.8)                                           
+	pre_jetColl.push_back(*jit);                                                  
+      }                                                                                 
+  }                                                                                                   
+
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {                                        
+    jetIsOK = true;                                                                                 
+    /*    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {                                         
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5) {                                       
+	jetIsOK = false;                                                                            
+	ilep = muonColl.size();                                                                     
+      }                                                                                             
+    }/// End of muon loop                                                                           
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {                                     
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                  
+	jetIsOK = false;                                                                            
+	ilep = electronColl.size();                                                                 
+      }                                                                                             
+    }/// End of electron loop                                                                          
+    */
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );                                            
+  }/// End of Jet loop                            
+
+}
+
+void JetSelection::JetchsTopUESelectionJERv1(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl,std::vector<KElectron> electronColl, int up) {  
+                                                              
+  std::vector<KJet> pre_jetColl;                                                                    
+  std::vector<KJet> alljets = k_lqevent.GetJets(); 
+  //  int number_of_alljets = 0;                                                         
+  
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){    
+    float jet_pt = (up > 0) ? jit->SmearedUpPt() : jit->SmearedDownPt();    
+    if ( (jit->Pt() >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))
+      // && jit->PileupJetIDLoose())                                                                                
+      {                                                                                 
+	// additional selection AN-14-227. jetIDEff = 99.99%                      
+	// if (jit->MuonEnergyFraction()<0.8)                                           
+	pre_jetColl.push_back(*jit);                                                  
+      }                                                                                 
+  }                                                                                                   
+
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {                                        
+    jetIsOK = true;                                                                                 
+    /*    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {                                         
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5) {                                       
+	jetIsOK = false;                                                                            
+	ilep = muonColl.size();                                                                     
+      }                                                                                             
+    }/// End of muon loop                                                                           
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {                                     
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {                                  
+	jetIsOK = false;                                                                            
+	ilep = electronColl.size();                                                                 
+      }                                                                                             
+    }/// End of electron loop                                                                          
+    */
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );                                            
+  }/// End of Jet loop                            
+
+}
 
 void JetSelection::JetchsTopSelection(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl) {
   
@@ -267,31 +517,26 @@ void JetSelection::JetchsTopSelection(std::vector<KJet>& jetColl, std::vector<KM
       }
   }
   
-  
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
     jetIsOK = true;
-    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
-      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {
+
+    /*  for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+	if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {
         jetIsOK = false;
         ilep = muonColl.size();
-      }
-    }/// End of muon loop
-    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
-      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {
+	}
+	}/// End of muon loop
+	for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+	if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {
         jetIsOK = false;
         ilep = electronColl.size();
-      }
-    }/// End of electron loop
-
+	}
+	}/// End of electron loop
+    */
     if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
   }/// End of Jet loop
-
   //  std::cout << " ====== JetSelection::JetTopSelection ========= "<< std::endl;
   //std::cout << " Number of all Jets = " << number_of_alljets << std::endl;
-  //std::cout << " Number of sel Jets = " << pre_jetColl.size() << std::endl;
-
-
-  
 }
 
 
@@ -305,13 +550,13 @@ void JetSelection::JetTopUESelection(std::vector<KJet>& jetColl, std::vector<KMu
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 	  
     if ( (jit->Pt() >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit) && jit->PileupJetIDLoose())
-		  {
-			  // additional selection AN-14-227. jetIDEff = 99.99%
-		    if (jit->MuonEnergyFraction()<0.8)
-		      pre_jetColl.push_back(*jit);
-		  }
+      {
+	//	// additional selection AN-14-227. jetIDEff = 99.99%
+	if (jit->MuonEnergyFraction()<0.8)
+	  pre_jetColl.push_back(*jit);
+      }
   }
-
+  
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
     jetIsOK = true;
     for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
@@ -343,34 +588,37 @@ void JetSelection::JetchsTopUESelection(std::vector<KJet>& jetColl, std::vector<
   //  int number_of_alljets = 0;
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-	  
+    
     if ( (jit->Pt() >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))// && jit->PileupJetIDLoose())
-		  {
-			  // additional selection AN-14-227. jetIDEff = 99.99%
-		    // if (jit->MuonEnergyFraction()<0.8)
-		      pre_jetColl.push_back(*jit);
-		  }
+      {
+	// additional selection AN-14-227. jetIDEff = 99.99%
+	// if (jit->MuonEnergyFraction()<0.8)
+	pre_jetColl.push_back(*jit);
+      }
   }
+  
+  
 
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
+    
     jetIsOK = true;
-    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
-      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5) {
-        jetIsOK = false;
-        ilep = muonColl.size();
-      }
-    }/// End of muon loop
-    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
-      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {
-        jetIsOK = false;
-        ilep = electronColl.size();
-      }
+    /*    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+	  if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5) {
+	  jetIsOK = false;
+	  ilep = muonColl.size();
+	  }
+	  }/// End of muon loop
+	  for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+	  if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.5 ) {
+	  jetIsOK = false;
+	  ilep = electronColl.size();
+	  }
     }/// End of electron loop
-
+    */
     if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
   }/// End of Jet loop
-
-
+  
+  
   // std::cout << " Number of lepveto Jets = " << jetColl.size() << std::endl;
   
 }

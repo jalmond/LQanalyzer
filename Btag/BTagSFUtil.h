@@ -49,12 +49,14 @@ class BTagSFUtil{
   bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int SystematicFlag, int FastSimSystematic = 0);
 
   void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], int JetFlav[], int isTag[], int syst, float &wbtag, float &wbtagErr, int what_mc);
+	void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], int JetFlav[], int isTag[], int bsyst, int missyst, float &wbtag, float &wbtagErr, int what_mc);
 
   void GetBTagEvtWeightSF(int NJets, float JetPt[], float JetEta[], float JetFlav[], bool isTag[], int syst, float &wbtag, float &wbtagErr);
   //void GetBTagEvtWeight(int NJets, float JetPt[], float JetEta[], int JetFlav[], int isTag[], int syst, float &wbtag, float &wbtagErr, int what_mc);
   void GetMisTagEvtWeight(int NJets, float JetPt[], float JetEta[], float JetFlav[], int syst, float &wbtag, float &wbtagErr, int NBjets);
   void GetMisTagEvtWeight_Y(int NJets, float JetPt[], float JetEta[], float JetFlav[], int syst, float &wbtag, float &wbtagErr, int NBjets,bool combo[], float &weight_case);  
-  void GetMisTagEvtWeightVbb(int NJets, float JetPt[], float JetEta[], bool btag_f[], int mtag, int syst, float &wbtag, float &wbtagErr, int NBjets);
+  void GetMisTagEvtWeightVbb(int NJets, float JetPt[], float JetEta[], int JetFlav[], int isTag[], int syst, float &wbtag, float &wbtagErr, int what_mc);
+	void GetMisTagEvtWeightVbb(int NJets, float JetPt[], float JetEta[], float JetFlav[], int isTag[], int syst, float &wbtag, float &wbtagErr, int what_mc);
   void GetMisTagEvtWeightVHF(int NJets, float JetPt[], float JetEta[], bool btag_f[], int mtag, int syst, float &wbtag, float &wbtagErr, int NBjets);
 
   

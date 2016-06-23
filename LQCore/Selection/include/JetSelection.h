@@ -42,6 +42,16 @@ class JetSelection : public BaseSelection {
   void JetchsTopSelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl);
   void JetchsTopUESelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl); 
 
+
+  void JetchsTopSelectionv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl);
+  void JetchsTopSelectionv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, int method);
+  void JetchsTopSelectionJESv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, int up);
+  void JetchsTopSelectionJERv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, int up);
+  void JetchsTopUESelectionv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl); 
+  void JetchsTopUESelectionv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, int method); 
+  void JetchsTopUESelectionJESv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, int up); 
+  void JetchsTopUESelectionJERv1(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, int up); 
+
 };
 
 #endif

@@ -423,6 +423,72 @@ void MuonSelection::HNTightMuonSelection(std::vector<KMuon>& leptonColl, bool m_
 
 ////////// PREDEFINED MUON SELECTIONS FOR TOP ANALYSIS
 
+void MuonSelection::TopVetoMuonSelectionv1(std::vector<KMuon>& leptonColl, bool m_debug) {  
+
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();                                            
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){     
+
+    bool pass_selection(true);                                                                   
+    if(muit->Pt() == 0.) continue;                                                              
+    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;                         
+
+    else LeptonRelIso = 9999.;                                                                      
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;                                                        
+    //// VETO MUON SELECTION                                                                        
+    if(( muit->Pt() <= 10. )) {                                                                
+      pass_selection = false;                                                                  
+      if(m_debug) cout << "HNVetoMuonSelection Fail Pt cut" << endl;                               
+    }     
+
+    if(!(fabs(muit->Eta()) < 2.5)) {                                                            
+      pass_selection =false;                                                                   
+      if(m_debug) cout << "HNVetoMuonSelection Fail Eta cut" << endl;                            
+    }                                                                                               
+    //    if(!( LeptonRelIso < 0.2)){                                                                     
+    if(!( LeptonRelIso < 0.3)){                                                                     
+      pass_selection = false;                                                             
+      if(m_debug) cout << "HNVetoMuonSelection Fail Isolation cut" << endl;               
+
+    }                          
+    if (muit->IsGlobal()!=1){                                                                    
+      pass_selection =false;                                                                     
+      if(m_debug) cout << "HNVetoMuonSelection Fail loose cut" << endl;                          
+    }                                                                                                  //// Make Loose selection                                                                       
+    if(pass_selection)leptonColl.push_back(*muit);                                                  
+  }                                                                                                 
+  return;                                                                                           
+}   
+     
+    
+
+void MuonSelection::TopTightMuonSelectionv1(std::vector<KMuon>& leptonColl, bool m_debug) {        
+  
+  std::vector<KMuon> allmuons = k_lqevent.GetMuons();                                                                                                                                                
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){  
+    bool pass_selection(true);                                                                         if(muit->Pt() == 0.) continue;                                                                     if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;                             
+    else LeptonRelIso = 9999.;                                                                      
+    if (LeptonRelIso<0) LeptonRelIso=0.0001;                                                       
+    /// TIGHT MUON SELECTION                                                                        
+    if(( muit->Pt() < 26. )) {                                                                      
+      pass_selection = false;                                                                       
+      if(m_debug) cout << "Muon fails Tight pt cut " << endl;                                       
+    }                                                                                               
+    if(!(fabs(muit->Eta()) < 2.1)) {                                                                
+      pass_selection =false;                                                                        
+      if(m_debug) cout << "Muon fails Tight eta cut " <<endl;                                       
+    }                                                                                               
+    if(!( LeptonRelIso < 0.3)) { // 0.12 in analysis code                                           
+      pass_selection = false;                                                                       
+      if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;                                       }  
+    
+    
+    /// TIGHT MUON from muon POG                                                                    
+    if(!PassID(MUON_TIGHT, *muit, m_debug)) pass_selection =false; 
+    if(pass_selection)  leptonColl.push_back(*muit);                                                
+  }                                                                                         
+                                                                                            
+  return;                                                                                           
+} 
 
 void MuonSelection::TopVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_debug) {
   
@@ -446,7 +512,7 @@ void MuonSelection::TopVetoMuonSelection(std::vector<KMuon>& leptonColl, bool m_
       if(m_debug) cout << "HNVetoMuonSelection Fail Eta cut" << endl;
     }
 
-    if(!( LeptonRelIso < 0.2)){
+    if(!( LeptonRelIso < 0.3)){
 		pass_selection = false;
 		if(m_debug) cout << "HNVetoMuonSelection Fail Isolation cut" << endl;
     }
@@ -477,7 +543,7 @@ void MuonSelection::TopLooseMuonSelection(std::vector<KMuon>& leptonColl , bool 
     bool pass_selection(true);
 
     if(muit->Pt() == 0.) continue;
-    if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
+   if (muit->Pt() > 0.01)      LeptonRelIso = (muit->SumIsoCHDR04() + std::max(0.0, muit->SumIsoNHDR04() + muit->SumIsoPHDR04() - 0.5* muit->SumPUIsoR04()))/muit->Pt() ;
     else LeptonRelIso = 9999.;
     if (LeptonRelIso<0) LeptonRelIso=0.0001;
 
@@ -512,7 +578,7 @@ void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m
     if (LeptonRelIso<0) LeptonRelIso=0.0001;
 
     /// TIGHT MUON SELECTION
-    if(( muit->Pt() < 30. )) {
+    if(( muit->Pt() < 26. )) {
       pass_selection = false;
       if(m_debug) cout << "Muon fails Tight pt cut " << endl;
     }
