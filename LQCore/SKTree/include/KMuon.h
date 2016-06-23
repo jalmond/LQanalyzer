@@ -95,6 +95,11 @@ namespace snu {
     void SetShiftedEUp(double pt_up);
     void SetShiftedEDown(double pt_down);
 
+    void SetShiftedExUp(double px_up);
+    void SetShiftedExDown(double px_down);
+    void SetShiftedEyUp(double py_up);
+    void SetShiftedEyDown(double py_down);
+
     inline Int_t IsPF() const {return k_muon_ispf;}
     inline Int_t IsGlobal() const {return k_muon_isglobal;}
     inline Int_t IsTracker() const {return k_muon_istracker;}
@@ -171,6 +176,11 @@ namespace snu {
     inline Double_t PtShiftedUp() const {return muon_pt_up;}
     inline Double_t PtShiftedDown() const {return muon_pt_down;}
     
+    inline Double_t PxShiftedUp() const {return muon_px_up;}
+    inline Double_t PxShiftedDown() const {return muon_px_down;}
+
+    inline Double_t PyShiftedUp() const {return muon_py_up;}
+    inline Double_t PyShiftedDown() const {return muon_py_down;}    
   protected:
     /// Reset function.                                                                  
     virtual void Reset();    
@@ -191,8 +201,10 @@ namespace snu {
     Double_t muon_id_pt, muon_id_eta, muon_id_phi, muon_id_charge;
     
     Double_t muon_pt_up, muon_pt_down;
+    Double_t muon_px_up, muon_px_down;
+    Double_t muon_py_up, muon_py_down;
 
-    ClassDef(KMuon,9)
+    ClassDef(KMuon,10)
   };   
 }//namespace snu
 

@@ -118,6 +118,11 @@ namespace snu {
 
     void SetShiftedEUp(Double_t Eup);
     void SetShiftedEDown(Double_t Edown);
+    
+    void SetShiftedExUp(Double_t Exup);
+    void SetShiftedExDown(Double_t Exdown);
+    void SetShiftedEyUp(Double_t Eyup);
+    void SetShiftedEyDown(Double_t Eydown);
 
     ///// Functions to call class variables
     
@@ -135,6 +140,11 @@ namespace snu {
 
     inline Double_t PtShiftedUp() const{ return k_pt_shifted_up;}
     inline Double_t PtShiftedDown() const{ return k_pt_shifted_down;}
+    inline Double_t PxShiftedUp() const{ return k_px_shifted_up;}
+    inline Double_t PxShiftedDown() const{ return k_px_shifted_down;}
+    inline Double_t PyShiftedUp() const{ return k_py_shifted_up;}
+    inline Double_t PyShiftedDown() const{ return k_py_shifted_down;}
+
 
     /// Trigger matching
     inline Bool_t MatchedDiElectronTrigger() const {return k_diel_trig_match;}
@@ -228,6 +238,7 @@ namespace snu {
   private:
     /// decalre private functions
 
+    Double_t px, py;
     Bool_t k_isEB,k_isEE,k_trackdrivenseed,k_ecaldrivenseed,k_hasmatchconvphot;
     Int_t k_missinghits, k_missing_lost_hits;
     Double_t k_trkiso_03,k_ecaliso_03,k_hcaliso_03,k_trkiso_04,k_ecaliso_04,k_hcaliso_04, k_delta_etatrkSC,k_delta_phitrkSC ;
@@ -249,8 +260,10 @@ namespace snu {
     Double_t k_eldist, k_cottheta;
     
     Double_t k_pt_shifted_up, k_pt_shifted_down;
+    Double_t k_px_shifted_up, k_px_shifted_down;
+    Double_t k_py_shifted_up, k_py_shifted_down;
 
-    ClassDef(KElectron,13);
+    ClassDef(KElectron,14);
   }; 
   
 }//namespace snu

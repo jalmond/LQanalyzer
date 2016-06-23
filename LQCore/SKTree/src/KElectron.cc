@@ -79,6 +79,11 @@ KParticle()
 
   k_pt_shifted_up=0.;
   k_pt_shifted_down=0.;
+  k_px_shifted_up=0.;
+  k_px_shifted_down=0.;
+  k_py_shifted_up=0.;
+  k_py_shifted_down=0.;
+
 }
 
 /**
@@ -152,6 +157,10 @@ KElectron::KElectron(const KElectron& el) :
   k_vertex_index=el.VertexIndex();
   k_pt_shifted_up=el.PtShiftedUp();
   k_pt_shifted_down=el.PtShiftedDown();
+  k_px_shifted_up=el.PxShiftedUp();
+  k_px_shifted_down=el.PxShiftedDown();
+  k_py_shifted_up=el.PxShiftedUp();
+  k_py_shifted_down=el.PxShiftedDown();
 
 }
 
@@ -227,6 +236,10 @@ void KElectron::Reset()
   k_vertex_index=0;
   k_pt_shifted_up=0.;
   k_pt_shifted_down=0.;
+  k_px_shifted_up=0.;
+  k_px_shifted_down=0.;
+  k_py_shifted_up=0.;
+  k_py_shifted_down=0.;
 }
 
 
@@ -299,6 +312,10 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_vertex_index=p.VertexIndex();
     k_pt_shifted_up=p.PtShiftedUp();
     k_pt_shifted_down=p.PtShiftedDown();
+    k_px_shifted_up=p.PtShiftedUp();
+    k_px_shifted_down=p.PtShiftedDown();
+    k_py_shifted_up=p.PtShiftedUp();
+    k_py_shifted_down=p.PtShiftedDown();
   }
   
   return *this;
@@ -526,6 +543,21 @@ void KElectron::SetShiftedEDown(Double_t Edown){
   k_pt_shifted_down= Edown;
 }
 
+void KElectron::SetShiftedExUp(Double_t Exup){
+  k_px_shifted_up= Exup;
+}
+
+void KElectron::SetShiftedExDown(Double_t Exdown){
+  k_px_shifted_down= Exdown;
+}
+
+void KElectron::SetShiftedEyUp(Double_t Eyup){
+  k_py_shifted_up= Eyup;
+}
+
+void KElectron::SetShiftedEyDown(Double_t Eydown){
+  k_py_shifted_down= Eydown;
+}
 
 
 
