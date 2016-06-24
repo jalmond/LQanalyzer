@@ -699,6 +699,12 @@ DY50plus	8693.5	cluster_mc_ntuple_path_2016  cms_mc_ntuple_path_2014	DYJetsToLL_
 DY10to50_2016v2        2901.7   cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYJetsToLL_M-10To50_TuneZ2Star_8TeV-madgraph/
 DY50plus_2016v2        8693.5  cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014    DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/
 
+DY_200v2 1. cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYToMuMu_M-200_CT10_TuneZ2star_8TeV-powheg-pythia6
+DY_500v2 1. cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYToMuMu_M-500_CT10_TuneZ2star_8TeV-powheg-pythia6
+DY_800v2 1. cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYToMuMu_M-800_CT10_TuneZ2star_8TeV-powheg-pythia6
+DY_1000v2 1. cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYToMuMu_M-1000_CT10_TuneZ2star_8TeV-powheg-pythia6
+DY_1500v2 1. cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYToMuMu_M-1500_CT10_TuneZ2star_8TeV-powheg-pythia6
+DY_2000v2 1. cluster_mc_ntuple_path_2016v2  cms_mc_ntuple_path_2014  DYToMuMu_M-2000_CT10_TuneZ2star_8TeV-powheg-pythia6
 
 
 ### POWHEG

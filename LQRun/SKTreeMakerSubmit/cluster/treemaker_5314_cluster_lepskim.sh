@@ -83,6 +83,7 @@
       declare -a input_samples=( "ttbarMSchs")
       declare -a input_samples=( "HN40_mumumu_new" "HN50_mumumu_new" "HN60_mumumu_new")
       declare -a input_samples=( "DY10to50_2016v2" "DY50plus_2016v2")
+      declare -a input_samples=( "DY_200v2" "DY_500v2" "DY_800v2" "DY_1000v2" "DY_1500v2" "DY_2000v2")
 
     source submit.sh
 
