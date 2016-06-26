@@ -285,9 +285,41 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   fake_loose_label = "HNTight_loosereg2";
   
   //// Get the collection of electrons
-  std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(true, true, fake_loose_label);
+  std::vector<snu::KElectron> electronAnalysisColl                   = GetElectrons(false, false, fake_loose_label);
   std::vector<snu::KElectron> electronAnalysisColl_withfakes         = GetElectrons(true, true,   fake_loose_label);
 
+  std::vector<snu::KJet> jetColl = GetJets("ApplyLeptonVeto");
+
+  if(electronAnalysisColl.size()==1){
+    FillHist("Electron", 1., 1., 0., 10.,10);
+    if(jetColl.size() == 4)     {
+      FillHist("Electron", 2., 1., 0., 10.,10);
+      if(NBJet(jetColl)==2){
+	FillHist("Electron", 3., 1., 0., 10.,10);
+	if(NBJet(jetColl)==3){
+	  FillHist("Electron", 4., 1., 0., 10.,10);
+	  
+	}
+      }
+    } 
+  }
+  std::vector<snu::KMuon> muons  = GetMuons("tight");
+  if(muons.size()==1){
+    FillHist("Muon", 1., 1., 0., 10.,10);
+    if(jetColl.size() == 4)     {
+      FillHist("Muon", 2., 1., 0., 10.,10);
+      if(NBJet(jetColl)==2){
+        FillHist("Muon", 3., 1., 0., 10.,10);
+        if(NBJet(jetColl)==3){
+          FillHist("Muon", 4., 1., 0., 10.,10);
+
+        }
+      }
+    }
+  }
+
+
+  return;
 
   float id_sf_up_sys_factor = 1.;
   float id_sf_down_sys_factor = 1.;
@@ -399,7 +431,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muonNoCutColl = GetMuons("NoCut");
 
   /// JETS
-  std::vector<snu::KJet> jetColl             = GetJets("NoLeptonVeto");
+  std::vector<snu::KJet> jetColls             = GetJets("NoLeptonVeto");
   std::vector<snu::KJet> jetColl_lepveto     = GetJets("ApplyLeptonVeto");
 
 
