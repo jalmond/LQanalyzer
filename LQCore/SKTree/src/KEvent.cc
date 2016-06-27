@@ -22,6 +22,8 @@ KEvent::KEvent() :
   k_pdf_id2(-999),
   k_lumi_mask_silver(-999),
   k_lumi_mask_gold(-999),
+  k_pdf_weights(),
+  k_scale_weights(),
   k_vertexX(-999.),
   k_vertexY(-999.),
   k_vertexZ(-999.), 
@@ -69,6 +71,10 @@ KEvent::KEvent() :
   k_pu_gold_weight(-999.),
   k_pu_gold_p_weight(-999.),
   k_pu_gold_m_weight(-999.),
+  k_pu_gold_xs71000_weight(-999.),
+  k_pu_gold_xs71000_p_weight(-999.),
+  k_pu_gold_xs71000_m_weight(-999.),
+
   k_catversion(""),
   k_lumimask(snu::KEvent::missing)
 
@@ -90,6 +96,9 @@ KEvent::KEvent(const KEvent& ev) :
   k_pdf_id2(ev.k_pdf_id2),
   k_lumi_mask_silver(ev.k_lumi_mask_silver),
   k_lumi_mask_gold(ev.k_lumi_mask_gold),
+  k_pdf_weights(ev.k_pdf_weights),
+  k_scale_weights(ev.k_scale_weights),
+
   k_vertexX(ev.k_vertexX),
   k_vertexY(ev.k_vertexY),
   k_vertexZ(ev.k_vertexZ),
@@ -135,6 +144,10 @@ KEvent::KEvent(const KEvent& ev) :
   k_pu_gold_weight(ev.k_pu_gold_weight),
   k_pu_gold_p_weight(ev.k_pu_gold_p_weight),
   k_pu_gold_m_weight(ev.k_pu_gold_m_weight),
+  k_pu_gold_xs71000_weight(ev.k_pu_gold_xs71000_weight),
+  k_pu_gold_xs71000_p_weight(ev.k_pu_gold_xs71000_p_weight),
+  k_pu_gold_xs71000_m_weight(ev.k_pu_gold_xs71000_m_weight),
+
   k_catversion(ev.k_catversion),
   k_lumimask(ev.k_lumimask)
 
@@ -167,7 +180,8 @@ void KEvent::Reset()
   k_pdf_q=-999.;
   k_pdf_x1= -999.;
   k_pdf_x2=-999.;
-
+  k_pdf_weights.clear();
+  k_scale_weights.clear();
   k_PF_MET= -999.;
   k_PF_SumET= -999.;
   k_PF_METphi= -999.;
@@ -204,6 +218,9 @@ void KEvent::Reset()
   k_pu_gold_weight = -999.;
   k_pu_gold_p_weight=-999.;
   k_pu_gold_m_weight = -999.;
+  k_pu_gold_xs71000_weight = -999.;
+  k_pu_gold_xs71000_p_weight=-999.;
+  k_pu_gold_xs71000_m_weight = -999.;
   k_catversion="";
   k_lumimask=missing;
 
@@ -222,6 +239,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_ngoodvertices = p.nGoodVertices();
       k_pdf_id1 = p.Id1();
       k_pdf_id2 = p.Id2();
+      k_pdf_weights = p.PdfWeights();
+      k_scale_weights = p.ScaleWeights();
+      
       k_lumi_mask_silver = p.LumiMaskSilver();
       k_lumi_mask_gold = p.LumiMaskGold();
       k_vertexX=p.VertexX();
@@ -271,7 +291,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pu_gold_weight = p.PileUpWeight_Gold(central);
       k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
       k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
-
+      k_pu_gold_xs71000_weight = p.AltPileUpWeight_Gold(central);
+      k_pu_gold_xs71000_p_weight = p.AltPileUpWeight_Gold(up);
+      k_pu_gold_xs71000_m_weight = p.AltPileUpWeight_Gold(down);
       k_catversion = p.CatVersion();
       k_lumimask = p.GetJSON();
     }
@@ -319,6 +341,17 @@ void KEvent::SetPUWeight(json type, syst_dir sys, double puw){
 
 }
 
+void KEvent::SetAltPUWeight(json type, syst_dir sys, double puw){
+  if(type==gold){
+    if(sys==central)  k_pu_gold_xs71000_weight = puw;
+    if(sys==up)  k_pu_gold_xs71000_p_weight = puw;
+    if(sys==down)  k_pu_gold_xs71000_m_weight = puw;
+  }
+  else {std::cout<< "PileUp weight not set correctly" << std::endl; exit(1);}
+
+
+  
+}
 
 void KEvent::SetWeight(double mcweight){
   k_mcweight = mcweight;
@@ -444,6 +477,13 @@ Double_t KEvent::PileUpWeight(json js, syst_dir sys){
   else return -999;
 }
 
+Double_t KEvent::AltPileUpWeight(json js, syst_dir sys){
+  if(k_lumimask==missing) { cout << "No lumimasl " << endl; return -999;}
+  else if(js==silver) return -999;
+  else if(js==gold) return AltPileUpWeight_Gold(sys);
+  else return -999;
+}
+
 ///New forCAT v7-4-5 (MET systematics in one function)
 Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{
   
@@ -537,6 +577,15 @@ void KEvent::SetGenId(int id1, int id2){
   k_pdf_id1 = id1;
   k_pdf_id2 = id2;
 }
+
+void KEvent::SetPDFWeights(std::vector<float> pdfweights){
+  k_pdf_weights = pdfweights;
+}
+
+void KEvent::SetScaleWeights(std::vector<float> scaleweights){
+  k_scale_weights= scaleweights;
+}
+
 
 
 void KEvent::SetGenQ(double q ){

@@ -29,9 +29,11 @@ namespace snu {
   public:
 
 
-    enum Tagger{CSVv2,
+    enum Tagger{CSVv2=0,
 		cMVAv2,
-		JETPROB};
+		JETPROB,
+		CCvsLT,
+		CCvsBT  };
     
     enum WORKING_POINT{Loose=0,
 		       Medium,
@@ -68,7 +70,8 @@ namespace snu {
     //// Pileup MVA to be added
     
     /// BTAG
-    void SetBTagInfo(Tagger tag, float val);
+    void SetBTagInfo(Tagger tag, double val);
+    void SetCTagInfo(Tagger tag, double val);
     void SetVtxMass(double mass);
     void SetVtx3DVal(double val);
     void SetVtx3DSig(double sig);
@@ -170,7 +173,7 @@ namespace snu {
     
     Double_t k_jet_pt_raw, k_jet_energy_raw;
     /// BTAG variables  
-    Double_t k_jet_csv2 ,k_jet_cmva2, k_jet_jetprobbjet, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
+    Double_t k_jet_csv2 ,k_jet_cmva2, k_jet_jetprobbjet, k_jet_cc_vs_lt,k_jet_cc_vs_bt, k_vtx_mass, k_vtx_3dval,k_vtx_3dsig;
     
     Int_t k_vtx_ntrack;
 
@@ -189,7 +192,7 @@ namespace snu {
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
    
-    ClassDef(KJet,11)
+    ClassDef(KJet,13)
   }; 
   
 

@@ -19,13 +19,16 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
   map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",500,0,500);
   map_sig["h_lljmass"]                =     new TH1F("h_lljmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
   map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
-  
+  map_sig["h_ll_phi"]                 =     new TH1F("h_ll_phi_"          + name,"dilepton pt",100,-4,4);  
+  map_sig["h_ll_eta"]                 =     new TH1F("h_ll_eta_"          + name,"dilepton pt",100,-5,5);
+  map_sig["h_ll_pt"]                  =     new TH1F("h_ll_pt_"          + name,"dilepton pt",500,0,1000);  
+
   /// Lepton plots  
   map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
   map_sig["h_LeptonPt"]               =     new TH1F("h_LeptonPt_"          + name,"lepton pt",100,0,500);
   map_sig["h_LeptonPhi"]              =     new TH1F("h_LeptonPhi_"          + name,"lepton pt",70,-3.5,3.5);
-  map_sig["h_leadingLeptonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
-  map_sig["h_secondLeptonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
+  map_sig["h_leadingLeptonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading lepton pt",250,0,500);
+  map_sig["h_secondLeptonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary lepton pt",150,0,300);
   map_sig["h_leadingLeptonRelIso"]    =     new TH1F("h_leadingLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
   map_sig["h_secondLeptonRelIso"]    =     new TH1F("h_secondLeptonRelIso_"      + name,"second lepton relIso",100,0,1.);
   map_sig["h_leadingLeptonEta"]       =     new TH1F("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
@@ -182,6 +185,11 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
    
   if(muons.size()>=2){
     Fill("h_llmass", (muons[0]+muons[1]).M(),weight);
+    Fill("h_ll_pt", (muons[0]+muons[1]).Pt(),weight);
+    Fill("h_ll_eta", (muons[0]+muons[1]).Phi(),weight);
+    Fill("h_ll_phi", (muons[0]+muons[1]).Eta(),weight);
+
+    
     if( jets.size()==1) Fill("h_lljmass", (muons[0] + muons[1]+jets[0]).M(),weight);
     if(jets.size()>1){
       Fill("h_l2jjmass", (muons[1]+jets[m]+jets[n]).M(),weight);

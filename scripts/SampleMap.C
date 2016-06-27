@@ -79,6 +79,8 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8"]=831.76;
    dirmap["TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8"]=831.76;
    dirmap["TT_TuneZ2star_13TeV-powheg-pythia6-tauola"]=831.76;
+   dirmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=0.1901;
+   dirmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=0.01499;
 
    dirmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] =61526.7;
 
@@ -147,6 +149,9 @@ map<TString,  Double_t>  GetXSecMap(){
 
    dirmap["tthwA_3l4j_hc130A30_emu_catcut"] = 0.000373;
    dirmap["tthwA_3l4j_hc130A30_3mu_catcut"] = 0.000373;
+   
+   dirmap["HN_pair_WR600_Zp400_HN100"] = 1.; 
+
 
    dirmap["MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen"]=21.56;
    dirmap["MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;
@@ -156,6 +161,31 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen"]=5.678E-02;
    dirmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]=7.831E-05;
    dirmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]=5.375E-07;
+
+   dirmap["MajoranaNeutrinoToEE_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToEE_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToEE_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToEE_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToEE_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToEE_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]=3.593E+00;
+   dirmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.460E-03;
+   dirmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=1.305E-05;
+   dirmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]=9.000E-08;
+   dirmap["MajoranaNeutrinoToEE_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]=1.076E+01;
+   dirmap["MajoranaNeutrinoToEE_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]=2.8378E-02;
+   dirmap["MajoranaNeutrinoToEE_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=3.8151E-05;
+   dirmap["MajoranaNeutrinoToEE_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=2.6865E-07;
+   dirmap["MajoranaNeutrinoToMuMu_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]=1.076E+01;
+   dirmap["MajoranaNeutrinoToMuMu_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]=2.8378E-02;
+   dirmap["MajoranaNeutrinoToMuMu_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=3.8151E-05;
+   dirmap["MajoranaNeutrinoToMuMu_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]=1.076E+01;
 
    return dirmap;
 }
@@ -170,6 +200,7 @@ vector<TString>  GetAvailableMap(TString cversion){
 
   
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  std::cout << dir  << std::endl;
   system(dir.Data());
   
   std::ifstream fin("inputlist_map.txt");
@@ -200,9 +231,6 @@ vector<TString>  GetAvailableMap(TString cversion){
 	}
       }
     }
-    
-    
-    
     
     TString dir2 = "ls /data2/DATA/cattoflat/MC/" +  cversion +"/ > inputsnu.txt"  ;
     system(dir2.Data());
@@ -238,6 +266,7 @@ map<TString, TString>  GetDatasetNames(TString cversion){
   map<TString, TString> datasets;
   std::map<TString, TString> mapdir = GetLQMap();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  std::cout << dir  << std::endl;
   system(dir.Data());
   std::ifstream fin("inputlist_map.txt");
   std::string word;
@@ -253,9 +282,13 @@ map<TString, TString>  GetDatasetNames(TString cversion){
     
     std::string dataword;
     int id=0;
+    int id_check=-1;
     while ( fdin >> dataword ) {
       id++;
-      if(id==8) datasetname=dataword;
+      if (TString(dataword) == "DataSetName") id_check = id+2;
+      if(id==id_check) {
+        if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+      }
       if(TString(dataword).Contains("0000/catTuple")){
       }
     }
@@ -278,6 +311,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
 
   std::map<TString, TString> mapdir = GetLQMap();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  std::cout << dir << std::endl;
   system(dir.Data());
 
   std::ifstream fin("inputlist_map.txt");
@@ -295,10 +329,14 @@ map<TString, TString>  GetMissingMap(TString cversion){
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
 
     std::string dataword;
+    int id_check=-1;
     int id=0;
     while ( fdin >> dataword ) {
       id++;
-      if(id==8) datasetname=dataword;
+      if (TString(dataword) == "DataSetName") id_check = id+2;
+      if(id==id_check) {
+	if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+      }
       if(TString(dataword).Contains("0000/catTuple")){
 	missing=false;
       }
@@ -409,9 +447,9 @@ map<TString, TString>  GetLQMap(){
   lqmap["TT_TuneCUETP8M1_mtop1715_13TeV-powheg-pythia8"]="TT_powheg_mtop1715";
   lqmap["TT_TuneCUETP8M1_mtop1735_13TeV-powheg-pythia8"]="TT_powheg_mtop1735";
   lqmap["TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8"]="TT_powheg_mtop1755";
-  lqmap["TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8"]="TT_powheg_mtop1785";
-  
-
+  lqmap["TT_TuneCUETP8M1_mtop1785_13TeV-powheg-pythia8"]="TT_powheg_mtop1785"; 
+  lqmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100";
+  lqmap["TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10";
   lqmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="WJets_MCatNLO";
   lqmap["WW_TuneCUETP8M1_13TeV-pythia8"] ="WW_pythia8";
   lqmap["WZ_TuneCUETP8M1_13TeV-pythia8"] ="WZ_pythia8";
@@ -487,6 +525,34 @@ map<TString, TString>  GetLQMap(){
   lqmap["MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen"]="HN_MM_M500";
   lqmap["MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]="HN_MM_M1500";
 
+  lqmap["HN_pair_WR600_Zp400_HN100"] = "HN_pair_WR600_Zp400_HN100";
+
+  lqmap["MajoranaNeutrinoToEE_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_40";
+  lqmap["MajoranaNeutrinoToEE_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_100";
+  lqmap["MajoranaNeutrinoToEE_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_ss_1500";
+  lqmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_40";
+  lqmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_100";
+  lqmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_500";
+  lqmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_ss_1500";
+  lqmap["MajoranaNeutrinoToEE_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_40";
+  lqmap["MajoranaNeutrinoToEE_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_100";
+  lqmap["MajoranaNeutrinoToEE_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_ee_os_1500";
+  lqmap["MajoranaNeutrinoToMuMu_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_40";
+  lqmap["MajoranaNeutrinoToMuMu_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_100";
+  lqmap["MajoranaNeutrinoToMuMu_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_500";
+  lqmap["MajoranaNeutrinoToMuMu_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_lll_mm_os_1500";
+  lqmap["MajoranaNeutrinoToEE_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_40";
+  lqmap["MajoranaNeutrinoToEE_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_100";
+  lqmap["MajoranaNeutrinoToEE_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_500";
+  lqmap["MajoranaNeutrinoToEE_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_ee_os_1500";
+  lqmap["MajoranaNeutrinoToMuMu_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_40";
+  lqmap["MajoranaNeutrinoToMuMu_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_100";
+  lqmap["MajoranaNeutrinoToMuMu_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_500";
+  lqmap["MajoranaNeutrinoToMuMu_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen"]="HN_schan_ll_mm_os_1500";
+
+  
  
   return lqmap;
 }

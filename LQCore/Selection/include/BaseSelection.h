@@ -56,12 +56,13 @@ class BaseSelection {
     PFJET_MEDIUM                   = 29,
     PFJET_TIGHT                    = 30,
     JET_HN                         = 31,
-    JET_NOLEPTONVETO               = 32,
-    JET_LOOSE                      = 33,
-    JET_TIGHT                      = 34,
-    PHOTON_POG_LOOSE               = 35, 
-    PHOTON_POG_MEDIUM              = 36, 
-    PHOTON_POG_TIGHT               = 37, 
+    JET_HN_TChannel                = 32,
+    JET_NOLEPTONVETO               = 33,
+    JET_LOOSE                      = 34,
+    JET_TIGHT                      = 35,
+    PHOTON_POG_LOOSE               = 36, 
+    PHOTON_POG_MEDIUM              = 37, 
+    PHOTON_POG_TIGHT               = 38, 
   };
 
   Int_t ifid;

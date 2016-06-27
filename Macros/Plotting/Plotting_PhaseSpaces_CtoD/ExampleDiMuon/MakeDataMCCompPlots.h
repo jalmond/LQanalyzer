@@ -68,7 +68,7 @@ float GetSyst(TString cut, TString syst, pair<vector<pair<TString,float> >,TStri
 float GetSystPercent(TString cut, TString syst, pair<vector<pair<TString,float> >,TString > samples );
 void setZ(bool useAlpgen);
 float Calculate(TString cut, TString variance,  pair<vector<pair<TString,float> >, TString >  samples);
-void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples , vector<string>& cut_label);
+void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples , vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label);
 void  SetUpMasterConfig(std::string filename);
 
 ////// For cutflow
@@ -110,6 +110,7 @@ std::ofstream histpage;
 vector<string> cuts;
 vector<string> allcuts;
 vector<string> listofsamples;
+vector<string> listofsamples_ss;
 
 //// Standard bkg folders
 string  mcloc="";

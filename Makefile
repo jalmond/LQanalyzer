@@ -7,7 +7,7 @@
  #                                                                         #
  ###########################################################################
 
-all: fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
+all: tagcheck btag roch fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
 
 sktree::
 	(cd LQCore/SKTree; make)
@@ -30,7 +30,14 @@ analysis::
 fakes::
 	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
+roch::
+	(bash bin/Make/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
+btag::  
+	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	
+
+tagcheck::
+	(source bin/CheckNewTagCompiler.sh)
 
 clean::
 	(cd LQCore/SKTree; make clean)
@@ -39,7 +46,9 @@ clean::
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
 	(cd LQAnalysis; make clean)
-	(cd HNCommonLeptonFakes/conf/; make clean -f Makefile.StandAlone; rm ${LQANALYZER_LIB_PATH}/libHNCommonLeptonFakes.so)
+	(bash bin/Clean/clean_fake.sh)
+	(bash bin/Clean/clean_rochor.sh)
+	(bash bin/Clean/clean_btag.sh)
 
 distclean::
 	(cd LQCore/SKTree; make distclean)
@@ -48,3 +57,7 @@ distclean::
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
 	(cd LQAnalysis; make distclean)	
+	(bash bin/Clean/clean_fake.sh)
+	(bash bin/Clean/clean_rochor.sh)
+	(bash bin/Clean/clean_btag.sh)
+

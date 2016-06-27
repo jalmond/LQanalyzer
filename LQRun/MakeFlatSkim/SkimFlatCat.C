@@ -25,10 +25,17 @@ void SkimFlatCat::Loop()
    
      if (ientry < 0) break;
      nb = fChain->GetEntry(jentry);   nbytes += nb;
-     
-     if (Cut(ientry) < 0) continue;
+     bool notsignal=false;
+     if(notsignal){
+       SlimJets();
+       SlimMuons();
+       SlimElectrons();
+
+       if (Cut(ientry) < 0) continue;
+     }
+  
+       
      nselected++;
-     
      newtree->Fill();
    }
    std::cout << "Selected " << nselected << " out of " << fChain->GetEntries() << std::endl; 

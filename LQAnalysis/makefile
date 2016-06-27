@@ -14,5 +14,11 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Ntuplecore/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
-INCLUDES += -I$(LQANALYZER_DIR)/Btag/
+INCLUDES += -I${BTAGDIR}
+INCLUDES += -I${ROCHDIR}
 INCLUDES += -I$(LQANALYZER_DIR)
+
+ifeq ($(isSLC),False)
+	CXXFLAGS= -O2 -std=c++0x  -Wall -fPIC
+	CXXFLAGS     += $(ROOTCFLAGS)
+endif

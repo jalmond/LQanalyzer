@@ -1,4 +1,4 @@
-LowMassRegionCR
+MassRegionCR
 MediumMassRegionCR
 END
 SS_SIGNAL_1Jet

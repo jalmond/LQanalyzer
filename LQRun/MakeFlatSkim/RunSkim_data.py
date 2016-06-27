@@ -3,7 +3,7 @@ import time
 from functions import *
 
 version = os.getenv("CATVERSION")
-sampledir = ["DoubleMuon", "SingleMuon","SingleMuon"]
+sampledir = ["DoubleMuon", "SingleMuon"]
 period=["periodC" , "periodD"]
 
 for i in sampledir:
@@ -20,7 +20,7 @@ for i in sampledir:
    for p in period:      
       poutput = output + "/" + p
 
-      if not (os.papoutth.exists(poutput)):
+      if not (os.path.exists(poutput)):
          os.system("mkdir " + poutput)
          os.system("mkdir " + poutput + "/output/")
          
@@ -33,21 +33,21 @@ for i in sampledir:
             counter=counter+1
             
 
-      runscript= "SkimFlatCat.h"
-      runscriptC="SkimFlatCat.C"
+      runscript= "SkimFlatCat_data.h"
+      runscriptC="SkimFlatCat_data.C"
       for j in range(1,counter+1):
          if not (os.path.exists(poutput+ "/" + str(j))):
             os.system("mkdir " + poutput+ "/" + str(j))
             
          configfile=open(poutput+ "/"  + str(j) + "/" + runscript,'w')
-         configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/Data/"+ version+ "/" + poutput,poutput+ "/list.txt",j, poutput))
+         configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/Data/"+ version+ "/" + poutput,poutput+ "/list.txt",j, poutput, True))
          configfile.close()
          
          configfileC=open(poutput+ "/" + str(j) + "/" + runscriptC,'w')
-         configfileC.write(makeNtupleMakerC(poutput + "/" +  str(j),poutput+ "/list.txt", j))
+         configfileC.write(makeNtupleMakerC(poutput + "/" +  str(j),poutput+ "/list.txt", j, True))
          configfileC.close()
-      
-         os.system("root -l -q -b " +  poutput+ "/" + str(j) + "/SkimFlatCat.C &> " + poutput + "/" + str(j) + "/log.txt&" )
+         
+         os.system("root -l -q -b " +  poutput+ "/" + str(j) + "/SkimFlatCat_data.C &> " + poutput + "/" + str(j) + "/log.txt&" )
       
 
       job_finised=False

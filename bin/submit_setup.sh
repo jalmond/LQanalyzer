@@ -10,8 +10,10 @@ function usage
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion]"
     echo "              [-fake runfake ] [-flip runflip]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
-    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file]"
+    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
+    echo "              [-tagdiff <tagname>  -sktreelog  ]   "
 
+ 
 }
 
 
@@ -229,6 +231,8 @@ function getinfo_dataset
 
 }
 
+
+
 function getalldatasetinfo
 {
     allowed_catversion=false
@@ -336,6 +340,120 @@ function getdatasetefflumi
     getinfo_dataset
 }
 
+function print_tag_diff
+{
+    if [[ ${submit_cat_tag} == *"v7"* ]];then
+	
+	if [[ ${submit_cat_tag2} == *"v7"* ]];then
+	    print_tag_diff_twotags 
+	else
+	    print_tag_diff_vs_currenttag	    
+	fi
+    fi
+
+}
+
+function print_tag_diff_twotags
+{
+    declare -a NEWTAGS=()
+    foundtag=False
+    while read line
+      do
+      if [[ $line == *"$submit_cat_tag2"* ]];
+	  then
+	  sline=$(echo $line | head -n1 | awk '{print $1}')
+	  NEWTAGS+=(${sline})
+	  foundtag=True
+      else
+	  if [[ $foundtag == "False" ]]; then
+	      continue
+	  else
+	      if [[ $line == $submit_cat_tag ]]; then
+		  break
+	      fi
+	      NEWTAGS+=(${line})
+	  fi
+      fi
+    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+
+    for ntag in  ${NEWTAGS[@]};
+      do
+      echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+      echo "Tag: " $ntag  "(summary of changes wrt previous tag)"
+      echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+      
+      while read line
+	do
+	echo $line
+      done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_${ntag}.txt
+    done
+    
+}
+
+function print_sktreemaker_logfile
+{
+    if [[ -f /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/${submit_analyzer_name}_${submit_catvlist}.log ]]; then
+	while read line
+	  do
+	  echo $line
+	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/${submit_analyzer_name}_${submit_catvlist}.log 
+    else
+	echo "Invalid input:"
+	echo "sktree -sktreelog <analyzername> <catversion> (i.ie, sktree -sktreelog SKTreeMakerDiLep v7-6-4)"
+    fi
+
+}
+function print_tag_diff_vs_currenttag
+{
+    tag_diff_file=$CATTAGDIR/TagDiff_${submit_cat_tag}.txt
+    
+    latest_tag=""
+    while read line
+      do
+      if [[ $line == *"HEAD"* ]];
+	  then
+	  sline=$(echo $line | head -n1 | awk '{print $1}')
+	  latest_tag=$sline
+      fi
+    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+    
+    if [[ $latest_tag == $CATTAG ]];then
+	
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	echo "Input tag is latest tag"
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    else
+	
+	
+	echo "Summary of difference between current tag and "$submit_cat_tag
+	declare -a NEWTAGS=()
+	while read line
+	  do
+      if [[ $line == *"HEAD"* ]];
+	  then
+	  sline=$(echo $line | head -n1 | awk '{print $1}')
+	  NEWTAGS+=(${sline})
+      else
+	  if [[ $line == $CATTAG ]]; then
+	      break
+	  fi
+	  NEWTAGS+=(${line})
+      fi
+	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+	
+	for ntag in  ${NEWTAGS[@]};
+	  do
+	  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	  echo "Tag: " $ntag  "(summary of changes wrt previous tag)"
+	  echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	  
+	  while read line
+	    do
+	    echo $line
+	  done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_${ntag}.txt
+	done
+    fi
+}
 
 function listavailable
 {
@@ -1009,12 +1127,28 @@ while [ "$1" != "" ]; do
 				listavailable
                                 exit 1
                                 ;;
-				
+        -tagdiff)		shift
+	                        submit_cat_tag=$1
+				submit_cat_tag2=$2
+				print_tag_diff
+				exit 1
+				;;
+        -sktreelog)             shift
+				submit_analyzer_name=$1
+				submit_catvlist=$2
+				print_sktreemaker_logfile
+				exit 1
+                                ;;
+
 	-D | --GetProductionInfo)  shift
                                 submit_catvlist=$1
                                 getalldatasetinfo
                                 exit 1
                                 ;;
+        -userflag          )    shift
+                                submit_skflag=$1
+				;;
+
 
 	-dataset | --GetDataSetName)  shift
                             	submit_file_tag=$1
@@ -1048,6 +1182,9 @@ while [ "$1" != "" ]; do
 
         -fake | --run_fake_analyzer)    shift
                                 job_run_fake=$1
+                                 ;;
+        -m                  )    shift
+                                submit_sk_message=$1
                                 ;;
         -flip | --run_flip_analyzer) shift
                                 job_run_flip=$1
@@ -1112,7 +1249,7 @@ while [ "$1" != "" ]; do
 				    echo "       |                                                      |                     |                                     |"
 				    
 				fi
-
+				
 				if [[ $other_commands == "more" ]];
 	  			    then
 				    echo "###########################Other command#####################################################################################"
@@ -1127,7 +1264,14 @@ while [ "$1" != "" ]; do
 				    echo "         |                                                    |                     | arrays to input with:               |"
 				    echo "         |                                                    |                     | sktree -list command                |" 
 				    echo "         |                                                    |                     | Only available from v7-6-3          |"
-                                    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+                                    
+				    echo "-tagdiff | tagname                                            | default = ''        | print change log between current tag|"
+				    echo "         |                                                    |                     | and <tagname>                       |"
+				    echo "-sktreelog| class name : vatversion                           | default = ''        | print log of sktreemaker            |"
+				    echo "         |                                                    |                     | Only available from v7-6-4          |"
+
+				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+				    echo "-userflag| Get user flag   flag1,flag2                        | default = ""        |  pass in string                     |"
 				    
 				    
 				    echo "-dataset | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"

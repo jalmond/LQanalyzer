@@ -38,9 +38,6 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
 
-    if ( m_debug&& ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 )) cout <<"SkimSelection::Fail EtaCrack" <<endl;
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-
 
     if ( fabs(el->SCEta()) < eta_cut && el->Pt() >= pt_cut_min){
       leptonColl.push_back(*el);
@@ -66,7 +63,6 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID e
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
 
-
     bool pass_selection = true;
     ElectronID = PassUserID(elid, *el);
     if(!ElectronID)  pass_selection = false;
@@ -88,12 +84,11 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
-    
+
     //// DEFAULT cuts
     //// Require it is not in crack
 
     bool pass_selection = true;
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
     
     ////  ID cut : need to optimise cuts
     /// Default is medium
@@ -107,7 +102,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
     /// extra cut to reduce conversions
     /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
-    if(apply_convcut && (!el->HasMatchedConvPhot()) ) {
+    if(apply_convcut && (!el->PassesConvVeto()) ) {
       pass_selection = false; 
       if(m_debug)cout << "Selection: Fail Conversion Cut" << endl;
     }

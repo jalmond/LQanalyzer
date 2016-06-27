@@ -31,7 +31,7 @@ useskim=$(makeParseVariable 'm' ${useskim})
 runnp=$(makeParseVariable 'P' ${runnp})
 runcf=$(makeParseVariable 'Q' ${runcf})
 catversion=$(makeParseVariable 'v' ${catversion})
-
+skflag=$(makeParseVariable 'f' ${catversion})
 DEBUG=$(makeParseVariable 'D' ${DEBUG})
 ################                                                                                                                                                
 
@@ -41,8 +41,8 @@ if [[ $1  == "" ]];
 then
     for i in ${input_samples[@]}
       do
-      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion}
-    done
+      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}
+    done 
   
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
     echo "Checking options"
@@ -50,7 +50,7 @@ elif [[ $1  == "--help"  || $1  == "--h" ]]; then
 else 
     for i in ${input_samples[@]}
     do
-      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples}   ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion}
+      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples}   ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}
     done
 
 fi

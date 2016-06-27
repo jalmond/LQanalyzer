@@ -53,9 +53,8 @@ namespace snu {
 
     
     /// PDF
-    //void SetPDFCTEQWeight( std::vector<double> pdf);
-    //void SetPDFMSTWWeight( std::vector<double> pdf);
-    //void SetPDFNNPDFWeight( std::vector<double> pdf);
+    void SetPDFWeights(std::vector<float> pdfw);
+    void SetScaleWeights(std::vector<float> pdfw);
     
     /// Process ID
     void SetLumiSection(int ls);
@@ -64,7 +63,7 @@ namespace snu {
     void SetNGoodVertices(int nvert);
     void SetIsGoodEvent(int isgood);
     void SetVertexInfo(double vX , double vY, double vZ, double ndof);
-
+    
     /// Event
     void SetWeight(double weight);
     void SetGenId(int  id1, int  id2);
@@ -86,6 +85,7 @@ namespace snu {
     /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
     void SetPUWeight(json type, syst_dir sys, double puweight);
+    void SetAltPUWeight(json type, syst_dir sys, double puweight);
     void SetLumiMask(json type, int mask);
     void SetJSON(json type);
 
@@ -94,20 +94,18 @@ namespace snu {
     /// New for CAT v7-4-6 (silver/gold json files)
     Bool_t LumiMask(json js);
     Double_t PileUpWeight(json js, syst_dir dir=central);
+    Double_t AltPileUpWeight(json js, syst_dir dir=central);
     Double_t PFMETShifted (met_syst type,syst_dir dir) const;
     Double_t PFSumETShifted(met_syst type,syst_dir dir) const;
     Double_t MET(met_type type=pfmet) const;
     Double_t METPhi(met_type type=pfmet) const;
     Double_t SumET(met_type type=pfmet) const;
 
+
     // To make backward compatible
     inline Double_t PFMET() const {return MET(pfmet);}
     //// Functions to call in analysis code/selection code
 
-
-    //inline std::vector<Double_t> PDFCTEQWeight() const {return k_pdf_cteq;}
-    //inline std::vector<Double_t> PDFMSTWWeight() const {return k_pdf_mstw;}
-    //inline std::vector<Double_t> PDFNNPDFWeight() const {return k_pdf_nnpdf;}
     
     inline std::string CatVersion() const {return k_catversion;}
 
@@ -160,6 +158,12 @@ namespace snu {
       else return -999.;
     }
     
+    inline Double_t AltPileUpWeight_Gold(syst_dir sys) const{
+      if(sys == central)return k_pu_gold_xs71000_weight;
+      else if(sys == up)return k_pu_gold_xs71000_p_weight;
+      else if(sys == down)return k_pu_gold_xs71000_m_weight;
+      else return -999.;
+    }
 
     inline Double_t LHEWeight() const{return k_lheweight;}
     inline Int_t Id1() const {return k_pdf_id1;}
@@ -167,7 +171,9 @@ namespace snu {
     inline Double_t Q() const {return k_pdf_q;}
     inline Double_t x1() const {return k_pdf_x1;}
     inline Double_t x2() const {return k_pdf_x2;}
-			
+    
+    inline std::vector<Float_t> PdfWeights() const {return k_pdf_weights;}
+    inline std::vector<Float_t> ScaleWeights() const {return k_scale_weights;}
     
     virtual void Reset();    
   protected:
@@ -177,8 +183,9 @@ namespace snu {
     /// decalre private functions
     
     Int_t    k_EventNumber, k_RunNumber,k_nvertices,  k_lumisec, k_ngoodvertices,k_pdf_id1, k_pdf_id2, k_lumi_mask_silver, k_lumi_mask_gold;
+    std::vector<Float_t> k_pdf_weights, k_scale_weights;
     Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
-    //std::vector<Double_t> k_pdf_cteq,k_pdf_mstw, k_pdf_nnpdf;
+
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET ;
     Double_t k_NoHF_MET, k_NoHF_METphi, k_NoHF_SumET ;
     Double_t k_PF_MET_MuonEn_up,k_PF_MET_MuonEn_down; 
@@ -189,12 +196,14 @@ namespace snu {
 
     Bool_t k_isData, k_isgoodevent;
     Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter;
-    Double_t  k_PileUpInteractionsTrue, k_pu_silver_weight, k_pu_silver_p_weight, k_pu_silver_m_weight,k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight;
+    Double_t  k_PileUpInteractionsTrue, k_pu_silver_weight, k_pu_silver_p_weight, k_pu_silver_m_weight,k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
     
     std::string k_catversion;
     json k_lumimask;    
 
-    ClassDef(KEvent,24);
+
+
+    ClassDef(KEvent,25);
   }; 
   
 }//namespace snu

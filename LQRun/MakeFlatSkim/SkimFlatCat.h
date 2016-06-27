@@ -29,12 +29,45 @@ public :
    Int_t           run;
    Int_t           lumi;
    Int_t           event;
-   Float_t         CatVersion;
+   Double_t        vertex_X;
+   Double_t        vertex_Y;
+   Double_t        vertex_Z;
+   Double_t        met_muonEn_Px_up;
+   Double_t        met_muonEn_Py_up;
+   Double_t        met_muonEn_Px_down;
+   Double_t        met_muonEn_Py_down;
+   Double_t        met_electronEn_Px_up;
+   Double_t        met_electronEn_Py_up;
+   Double_t        met_electronEn_Px_down;
+   Double_t        met_electronEn_Py_down;
+   string          *CatVersion;
    Bool_t          IsData;
    vector<string>  *vtrignames;
    vector<int>     *vtrigps;
    std::vector<std::string>  *muon_trigmatch;
    std::vector<std::string>  *electron_trigmatch;
+   Bool_t          IsData;
+   Bool_t          HBHENoiseFilter;
+   Bool_t          CSCTightHaloFilter;
+   Bool_t          goodVertices;
+   Bool_t          eeBadScFilter;
+   Bool_t          EcalDeadCellTriggerPrimitiveFilter;
+   Float_t         genWeightQ;
+   Float_t         genWeightX1;
+   Float_t         genWeightX2;
+   Int_t           genWeight_id1;
+   Int_t           genWeight_id2;
+   Float_t         genWeight;
+   Float_t         lheWeight;
+
+   vector<bool>    *gen_isprompt;
+   vector<bool>    *gen_isdecayedleptonhadron;
+   vector<bool>    *gen_istaudecayproduct;
+   vector<bool>    *gen_isprompttaudecayproduct;
+   vector<bool>    *gen_isdirecthadrondecayproduct;
+   vector<bool>    *gen_ishardprocess;
+   vector<bool>    *gen_fromhardprocess;
+   vector<bool>    *gen_fromhardprocess_beforeFSR;
    vector<float>   *gen_pt;
    vector<float>   *gen_eta;
    vector<float>   *gen_phi;
@@ -42,31 +75,23 @@ public :
    vector<int>     *gen_status;
    vector<int>     *gen_pdgid;
    vector<int>     *gen_motherindex;
-   Bool_t          HNHENoiseFilter;
-   Bool_t          csctighthaloFilter;
-   Bool_t          ecalDCTRFilter;
-   Bool_t          eeBadScFilter;
-   Bool_t          goodVertices;
-   Int_t           GenTTCat;
-   Int_t           genWeight_id1;
-   Int_t           genWeight_id2;
+
    Int_t           lumiMaskGold;
    Int_t           lumiMaskSilver;
    Int_t           nGoodPV;
    Int_t           nPV;
    Int_t           nTrueInteraction;
-   Float_t         genWeight;
-   Float_t         genWeightQ;
-   Float_t         genWeightX1;
-   Float_t         genWeightX2;
-   Float_t         lheWeight;
+
    Float_t         puWeightGold;
    Float_t         puWeightGoldDn;
    Float_t         puWeightGoldUp;
+   Float_t         puWeightGoldDn_xs71000;
+   Float_t         puWeightGoldUp_xs71000;
+   Float_t         puWeightGold_xs71000;
    Float_t         puWeightSilver;
    Float_t         puWeightSilverDn;
    Float_t         puWeightSilverUp;
-   vector<float>   *pdfWeight;
+
    vector<double>  *electrons_absIso03;
    vector<double>  *electrons_absIso04;
    vector<double>  *electrons_chIso03;
@@ -94,13 +119,18 @@ public :
    vector<double>  *electrons_x;
    vector<double>  *electrons_y;
    vector<double>  *electrons_z;
-   vector<double>  *jets_CVSInclV2;
+
+   vector<double>  *jets_CMVAV2;
    vector<double>  *jets_CSVInclV2;
    vector<double>  *jets_JetProbBJet;
-   std::vector<double>  *jets_chargedEmEnergyFraction;
+   vector<double>  *jets_iCSVCvsL;
+   vector<double>  *jets_CCvsLT;
+   vector<double>  *jets_CCvsBT;
+
+   vector<double>  *jets_PileupJetId;
+   vector<double>  *jets_chargedEmEnergyFraction;
    vector<double>  *jets_energy;
    vector<double>  *jets_eta;
-   vector<double>  *jets_PileupJetId;
    vector<double>  *jets_m;
    vector<double>  *jets_phi;
    vector<double>  *jets_pt;
@@ -112,28 +142,15 @@ public :
    vector<double>  *jets_vtx3DSig;
    vector<double>  *jets_vtx3DVal;
    vector<double>  *jets_vtxMass;
-   vector<double>  *jetsPuppi_CVSInclV2;
-   vector<double>  *jetsPuppi_eta;
-   vector<double>  *jetsPuppi_hadronFlavour;
-   vector<double>  *jetsPuppi_m;
-   vector<double>  *jetsPuppi_partonFlavour;
-   vector<double>  *jetsPuppi_phi;
-   vector<double>  *jetsPuppi_pt;
-   vector<double>  *jetsPuppi_vtx3DSig;
-   vector<double>  *jetsPuppi_vtx3DVal;
-   vector<double>  *jetsPuppi_vtxMass;
+
+
    vector<double>  *met_phi;
    vector<double>  *met_pt;
    vector<double>  *met_sumet;
    vector<double>  *metNoHF_phi;
    vector<double>  *metNoHF_pt;
    vector<double>  *metNoHF_sumet;
-   vector<double>  *metPfMva_phi;
-   vector<double>  *metPfMva_pt;
-   vector<double>  *metPfMva_sumet;
-   vector<double>  *metPuppi_phi;
-   vector<double>  *metPuppi_pt;
-   vector<double>  *metPuppi_sumet;
+
    Double_t        met_muonEn_Px_up;
    Double_t        met_muonEn_Py_up;
    Double_t        met_muonEn_Px_down;
@@ -160,6 +177,7 @@ public :
    vector<double>          *met_jetRes_Py_down;
    vector<double>          *met_jetRes_SumEt_up;
    vector<double>          *met_jetRes_SumEt_down;
+
    vector<double>  *muon_dxy;
    vector<double>  *muon_dz;
    vector<double>  *muon_energy;
@@ -176,15 +194,7 @@ public :
    vector<double>  *muon_x;
    vector<double>  *muon_y;
    vector<double>  *muon_z;
-   vector<double>  *slimmedGenJets_energy;
-   vector<double>  *slimmedGenJets_eta;
-   vector<double>  *slimmedGenJets_m;
-   vector<double>  *slimmedGenJets_phi;
-   vector<double>  *slimmedGenJets_pt;
-   vector<double>  *vertices_ndof;
-   vector<double>  *vertices_x;
-   vector<double>  *vertices_y;
-   vector<double>  *vertices_z;
+
    vector<bool>    *electrons_electronID_loose;
    vector<bool>    *electrons_electronID_medium;
    vector<bool>    *electrons_electronID_tight;
@@ -197,9 +207,12 @@ public :
    vector<bool>    *electrons_isPF;
    vector<bool>    *electrons_mcMatched;
    vector<bool>    *electrons_passConversionVeto;
+   vector<bool>    *electrons_isTrigMVAValid;
+
    vector<bool>    *jets_isLoose;
    vector<bool>    *jets_isTight;
    vector<bool>    *jets_isTightLepVetoJetID;
+
    vector<bool>    *muon_isGlobal;
    vector<bool>    *muon_isLoose;
    vector<bool>    *muon_isMedium;
@@ -208,11 +221,14 @@ public :
    vector<bool>    *muon_isTight;
    vector<bool>    *muon_isTracker;
    vector<bool>    *muon_matched;
+
    vector<int>     *electrons_electronID_snu;
+
    vector<int>     *jets_hadronFlavour;
    vector<int>     *jets_partonFlavour;
    vector<int>     *jets_partonPdgId;
    vector<int>     *jets_vtxNtracks;
+
    vector<int>     *muon_matchedstations;
    vector<int>     *muon_trackerlayers;
    vector<int>     *muon_validhits;
@@ -236,12 +252,20 @@ public :
    TBranch        *b_gen_motherindex;   //!
    TBranch        *b_CatVersion;   //!
    TBranch        *b_IsData;   //!
-   TBranch        *b_HNHENoiseFilter;   //!
-   TBranch        *b_csctighthaloFilter;   //!
-   TBranch        *b_ecalDCTRFilter;   //!
-   TBranch        *b_eeBadScFilter;   //!
+   TBranch        *b_HBHENoiseFilter;   //!                                     
+   TBranch        *b_CSCTightHaloFilter;   //!                                  
+   TBranch        *b_goodVertices;   //!                                        
+   TBranch        *b_eeBadScFilter;   //!                                       
+   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter;   //!             
    TBranch        *b_goodVertices;   //!
-   TBranch        *b_GenTTCat;   //!
+   TBranch        *b_gen_isprompt;   //!
+   TBranch        *b_gen_isdecayedleptonhadron;   //!
+   TBranch        *b_gen_istaudecayproduct;   //!
+   TBranch        *b_gen_isprompttaudecayproduct;   //!
+   TBranch        *b_gen_isdirecthadrondecayproduct;   //!
+   TBranch        *b_gen_ishardprocess;   //!
+   TBranch        *b_gen_fromhardprocess;   //!
+   TBranch        *b_gen_fromhardprocess_beforeFSR;   //!
    TBranch        *b_genWeight_id1;   //!
    TBranch        *b_genWeight_id2;   //!
    TBranch        *b_nGoodPV;   //!
@@ -258,6 +282,9 @@ public :
    TBranch        *b_puWeightSilver;   //!
    TBranch        *b_puWeightSilverDn;   //!
    TBranch        *b_puWeightSilverUp;   //!
+   TBranch        *b_puWeightGoldDn_xs71000;   //!
+   TBranch        *b_puWeightGoldUp_xs71000;   //!
+   TBranch        *b_puWeightGold_xs71000;   //!
    TBranch        *b_pdfWeight;   //!
    TBranch        *b_electrons_absIso03;   //!
    TBranch        *b_electrons_absIso04;   //!
@@ -286,44 +313,35 @@ public :
    TBranch        *b_electrons_x;   //!
    TBranch        *b_electrons_y;   //!
    TBranch        *b_electrons_z;   //!
-   TBranch        *b_jets_CVSInclV2;   //!
-   TBranch        *b_jets_chargedEmEnergyFraction;   //!
-   TBranch        *b_jets_energy;   //!
-   TBranch        *b_jets_eta;   //!
-   TBranch        *b_jets_PileupJetId;   //!
-   TBranch        *b_jets_m;   //!
-   TBranch        *b_jets_phi;   //!
-   TBranch        *b_jets_pt;   //!
-   TBranch        *b_jets_shiftedEnDown;   //!
-   TBranch        *b_jets_shiftedEnUp;   //!
-   TBranch        *b_jets_smearedRes;   //!
-   TBranch        *b_jets_smearedResDown;   //!
-   TBranch        *b_jets_smearedResUp;   //!
-   TBranch        *b_jets_vtx3DSig;   //!
-   TBranch        *b_jets_vtx3DVal;   //!
-   TBranch        *b_jets_vtxMass;   //!
-   TBranch        *b_jetsPuppi_CVSInclV2;   //!
-   TBranch        *b_jetsPuppi_eta;   //!
-   TBranch        *b_jetsPuppi_hadronFlavour;   //!
-   TBranch        *b_jetsPuppi_m;   //!
-   TBranch        *b_jetsPuppi_partonFlavour;   //!
-   TBranch        *b_jetsPuppi_phi;   //!
-   TBranch        *b_jetsPuppi_pt;   //!
-   TBranch        *b_jetsPuppi_vtx3DSig;   //!
-   TBranch        *b_jetsPuppi_vtx3DVal;   //!
-   TBranch        *b_jetsPuppi_vtxMass;   //!
+   TBranch        *b_jets_CMVAV2;   //!                                         
+   TBranch        *b_jets_CSVInclV2;   //!                                      
+   TBranch        *b_jets_JetProbBJet;   //!                                    
+   TBranch        *b_jets_iCSVCvsL;   //!
+   TBranch        *b_jets_CCvsLT;   //!
+   TBranch        *b_jets_CCvsBT;   //!
+   TBranch        *b_jets_PileupJetId;   //!                                    
+   TBranch        *b_jets_chargedEmEnergyFraction;   //!                        
+   TBranch        *b_jets_energy;   //!                                         
+   TBranch        *b_jets_eta;   //!                                            
+   TBranch        *b_jets_m;   //!                                              
+   TBranch        *b_jets_phi;   //!                                            
+   TBranch        *b_jets_pt;   //!                                             
+   TBranch        *b_jets_shiftedEnDown;   //!                                  
+   TBranch        *b_jets_shiftedEnUp;   //!                                    
+   TBranch        *b_jets_smearedRes;   //!                                     
+   TBranch        *b_jets_smearedResDown;   //!                                 
+   TBranch        *b_jets_smearedResUp;   //!                                   
+   TBranch        *b_jets_vtx3DSig;   //!                                       
+   TBranch        *b_jets_vtx3DVal;   //!                                       
+   TBranch        *b_jets_vtxMass;   //!      
+
    TBranch        *b_met_phi;   //!
    TBranch        *b_met_pt;   //!
    TBranch        *b_met_sumet;   //!
    TBranch        *b_metNoHF_phi;   //!
    TBranch        *b_metNoHF_pt;   //!
    TBranch        *b_metNoHF_sumet;   //!
-   TBranch        *b_metPfMva_phi;   //!
-   TBranch        *b_metPfMva_pt;   //!
-   TBranch        *b_metPfMva_sumet;   //!
-   TBranch        *b_metPuppi_phi;   //!
-   TBranch        *b_metPuppi_pt;   //!
-   TBranch        *b_metPuppi_sumet;   //!
+
    TBranch        *b_met_muonEn_Px_up;   //!
    TBranch        *b_met_muonEn_Py_up;   //!
    TBranch        *b_met_muonEn_Px_down;   //!
@@ -366,15 +384,7 @@ public :
    TBranch        *b_muon_x;   //!
    TBranch        *b_muon_y;   //!
    TBranch        *b_muon_z;   //!
-   TBranch        *b_slimmedGenJets_energy;   //!
-   TBranch        *b_slimmedGenJets_eta;   //!
-   TBranch        *b_slimmedGenJets_m;   //!
-   TBranch        *b_slimmedGenJets_phi;   //!
-   TBranch        *b_slimmedGenJets_pt;   //!
-   TBranch        *b_vertices_ndof;   //!
-   TBranch        *b_vertices_x;   //!
-   TBranch        *b_vertices_y;   //!
-   TBranch        *b_vertices_z;   //!
+
    TBranch        *b_electrons_electronID_loose;   //!
    TBranch        *b_electrons_electronID_medium;   //!
    TBranch        *b_electrons_electronID_tight;   //!
@@ -388,6 +398,8 @@ public :
    TBranch        *b_electrons_isPF;   //!
    TBranch        *b_electrons_mcMatched;   //!
    TBranch        *b_electrons_passConversionVeto;   //!
+   TBranch        *b_electrons_isTrigMVAValid;   //!                            
+
    TBranch        *b_jets_isLoose;   //!
    TBranch        *b_jets_isTight;   //!
    TBranch        *b_jets_isTightLepVetoJetID;   //!
@@ -505,7 +517,15 @@ void SkimFlatCat::Init(TTree *tree)
    gen_status = 0;
    gen_pdgid = 0;
    gen_motherindex = 0;
-   pdfWeight = 0;
+   gen_isprompt = 0;
+   gen_isdecayedleptonhadron = 0;
+   gen_istaudecayproduct = 0;
+   gen_isprompttaudecayproduct = 0;
+   gen_isdirecthadrondecayproduct = 0;
+   gen_ishardprocess = 0;
+   gen_fromhardprocess = 0;
+   gen_fromhardprocess_beforeFSR = 0;
+
    electrons_absIso03 = 0;
    electrons_absIso04 = 0;
    electrons_chIso03 = 0;
@@ -533,7 +553,12 @@ void SkimFlatCat::Init(TTree *tree)
    electrons_x = 0;
    electrons_y = 0;
    electrons_z = 0;
-   jets_CVSInclV2 = 0;
+   jets_CMVAV2 = 0;
+   jets_CSVInclV2 = 0;
+   jets_iCSVCvsL = 0;
+   jets_CCvsLT = 0;
+   jets_CCvsBT = 0;
+   jets_JetProbBJet = 0;
    jets_chargedEmEnergyFraction=0;
    jets_energy = 0;
    jets_eta = 0;
@@ -549,28 +574,13 @@ void SkimFlatCat::Init(TTree *tree)
    jets_vtx3DSig = 0;
    jets_vtx3DVal = 0;
    jets_vtxMass = 0;
-   jetsPuppi_CVSInclV2 = 0;
-   jetsPuppi_eta = 0;
-   jetsPuppi_hadronFlavour = 0;
-   jetsPuppi_m = 0;
-   jetsPuppi_partonFlavour = 0;
-   jetsPuppi_phi = 0;
-   jetsPuppi_pt = 0;
-   jetsPuppi_vtx3DSig = 0;
-   jetsPuppi_vtx3DVal = 0;
-   jetsPuppi_vtxMass = 0;
+
    met_phi = 0;
    met_pt = 0;
    met_sumet = 0;
    metNoHF_phi = 0;
    metNoHF_pt = 0;
    metNoHF_sumet = 0;
-   metPfMva_phi = 0;
-   metPfMva_pt = 0;
-   metPfMva_sumet = 0;
-   metPuppi_phi = 0;
-   metPuppi_pt = 0;
-   metPuppi_sumet = 0;
    muon_dxy = 0;
    muon_dz = 0;
    muon_energy = 0;
@@ -587,15 +597,6 @@ void SkimFlatCat::Init(TTree *tree)
    muon_x = 0;
    muon_y = 0;
    muon_z = 0;
-   slimmedGenJets_energy = 0;
-   slimmedGenJets_eta = 0;
-   slimmedGenJets_m = 0;
-   slimmedGenJets_phi = 0;
-   slimmedGenJets_pt = 0;
-   vertices_ndof = 0;
-   vertices_x = 0;
-   vertices_y = 0;
-   vertices_z = 0;
    electrons_electronID_loose = 0;
    electrons_electronID_medium = 0;
    electrons_electronID_tight = 0;
@@ -606,6 +607,7 @@ void SkimFlatCat::Init(TTree *tree)
    electrons_electronID_mva_trig_medium = 0;
    electrons_electronID_mva_trig_tight = 0;
    electrons_isPF = 0;
+   electrons_isTrigMVAValid = 0;
    electrons_mcMatched = 0;
    electrons_passConversionVeto = 0;
    jets_isLoose = 0;
@@ -641,8 +643,16 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("vtrignames", &vtrignames, &b_vtrignames);
    fChain->SetBranchAddress("vtrigps", &vtrigps, &b_vtrigps);
-   fChain->SetBranchAddress("muon_trigmatch", &muon_trigmatch, b_muon_trigmatch);
-   fChain->SetBranchAddress("electron_trigmatch", &electron_trigmatch, b_electron_trigmatch);
+   fChain->SetBranchAddress("muon_trigmatch", &muon_trigmatch, &b_muon_trigmatch);
+   fChain->SetBranchAddress("electron_trigmatch", &electron_trigmatch, &b_electron_trigmatch);
+   fChain->SetBranchAddress("gen_isprompt", &gen_isprompt, &b_gen_isprompt);
+   fChain->SetBranchAddress("gen_isdecayedleptonhadron", &gen_isdecayedleptonhadron, &b_gen_isdecayedleptonhadron);
+   fChain->SetBranchAddress("gen_istaudecayproduct", &gen_istaudecayproduct, &b_gen_istaudecayproduct);
+   fChain->SetBranchAddress("gen_isprompttaudecayproduct", &gen_isprompttaudecayproduct, &b_gen_isprompttaudecayproduct);
+   fChain->SetBranchAddress("gen_isdirecthadrondecayproduct", &gen_isdirecthadrondecayproduct, &b_gen_isdirecthadrondecayproduct);
+   fChain->SetBranchAddress("gen_ishardprocess", &gen_ishardprocess, &b_gen_ishardprocess);
+   fChain->SetBranchAddress("gen_fromhardprocess", &gen_fromhardprocess, &b_gen_fromhardprocess);
+   fChain->SetBranchAddress("gen_fromhardprocess_beforeFSR", &gen_fromhardprocess_beforeFSR, &b_gen_fromhardprocess_beforeFSR);
    fChain->SetBranchAddress("gen_pt", &gen_pt, &b_gen_pt);
    fChain->SetBranchAddress("gen_eta", &gen_eta, &b_gen_eta);
    fChain->SetBranchAddress("gen_phi", &gen_phi, &b_gen_phi);
@@ -652,12 +662,12 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("gen_motherindex", &gen_motherindex, &b_gen_motherindex);
    fChain->SetBranchAddress("CatVersion", &CatVersion, &b_CatVersion);
    fChain->SetBranchAddress("IsData", &IsData, &b_IsData);
-   fChain->SetBranchAddress("HNHENoiseFilter", &HNHENoiseFilter, &b_HNHENoiseFilter);
-   fChain->SetBranchAddress("csctighthaloFilter", &csctighthaloFilter, &b_csctighthaloFilter);
-   fChain->SetBranchAddress("ecalDCTRFilter", &ecalDCTRFilter, &b_ecalDCTRFilter);
-   fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
+   fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
+   fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
    fChain->SetBranchAddress("goodVertices", &goodVertices, &b_goodVertices);
-   fChain->SetBranchAddress("GenTTCat", &GenTTCat, &b_GenTTCat);
+   fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
+   fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
+
    fChain->SetBranchAddress("genWeight_id1", &genWeight_id1, &b_genWeight_id1);
    fChain->SetBranchAddress("genWeight_id2", &genWeight_id2, &b_genWeight_id2);
    fChain->SetBranchAddress("nGoodPV", &nGoodPV, &b_nGoodPV);
@@ -674,7 +684,10 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("puWeightSilver", &puWeightSilver, &b_puWeightSilver);
    fChain->SetBranchAddress("puWeightSilverDn", &puWeightSilverDn, &b_puWeightSilverDn);
    fChain->SetBranchAddress("puWeightSilverUp", &puWeightSilverUp, &b_puWeightSilverUp);
-   fChain->SetBranchAddress("pdfWeight", &pdfWeight, &b_pdfWeight);
+   fChain->SetBranchAddress("puWeightGoldDn_xs71000", &puWeightGoldDn_xs71000, &b_puWeightGoldDn_xs71000);
+   fChain->SetBranchAddress("puWeightGoldUp_xs71000", &puWeightGoldUp_xs71000, &b_puWeightGoldUp_xs71000);
+   fChain->SetBranchAddress("puWeightGold_xs71000", &puWeightGold_xs71000, &b_puWeightGold_xs71000);
+
    fChain->SetBranchAddress("electrons_absIso03", &electrons_absIso03, &b_electrons_absIso03);
    fChain->SetBranchAddress("electrons_absIso04", &electrons_absIso04, &b_electrons_absIso04);
    fChain->SetBranchAddress("electrons_chIso03", &electrons_chIso03, &b_electrons_chIso03);
@@ -702,7 +715,14 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("electrons_x", &electrons_x, &b_electrons_x);
    fChain->SetBranchAddress("electrons_y", &electrons_y, &b_electrons_y);
    fChain->SetBranchAddress("electrons_z", &electrons_z, &b_electrons_z);
-   fChain->SetBranchAddress("jets_CVSInclV2", &jets_CVSInclV2, &b_jets_CVSInclV2);
+   fChain->SetBranchAddress("jets_CMVAV2", &jets_CMVAV2, &b_jets_CMVAV2);
+   fChain->SetBranchAddress("jets_CSVInclV2", &jets_CSVInclV2, &b_jets_CSVInclV2);
+   fChain->SetBranchAddress("jets_JetProbBJet", &jets_JetProbBJet, &b_jets_JetProbBJet);
+   fChain->SetBranchAddress("jets_iCSVCvsL", &jets_iCSVCvsL, &b_jets_iCSVCvsL);
+   fChain->SetBranchAddress("jets_CCvsLT", &jets_CCvsLT, &b_jets_CCvsLT);
+   fChain->SetBranchAddress("jets_CCvsBT", &jets_CCvsBT, &b_jets_CCvsBT);
+
+
    fChain->SetBranchAddress("jets_chargedEmEnergyFraction",&jets_chargedEmEnergyFraction, b_jets_chargedEmEnergyFraction);
    fChain->SetBranchAddress("jets_energy", &jets_energy, &b_jets_energy);
    fChain->SetBranchAddress("jets_eta", &jets_eta, &b_jets_eta);
@@ -718,28 +738,13 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("jets_vtx3DSig", &jets_vtx3DSig, &b_jets_vtx3DSig);
    fChain->SetBranchAddress("jets_vtx3DVal", &jets_vtx3DVal, &b_jets_vtx3DVal);
    fChain->SetBranchAddress("jets_vtxMass", &jets_vtxMass, &b_jets_vtxMass);
-   fChain->SetBranchAddress("jetsPuppi_CVSInclV2", &jetsPuppi_CVSInclV2, &b_jetsPuppi_CVSInclV2);
-   fChain->SetBranchAddress("jetsPuppi_eta", &jetsPuppi_eta, &b_jetsPuppi_eta);
-   fChain->SetBranchAddress("jetsPuppi_hadronFlavour", &jetsPuppi_hadronFlavour, &b_jetsPuppi_hadronFlavour);
-   fChain->SetBranchAddress("jetsPuppi_m", &jetsPuppi_m, &b_jetsPuppi_m);
-   fChain->SetBranchAddress("jetsPuppi_partonFlavour", &jetsPuppi_partonFlavour, &b_jetsPuppi_partonFlavour);
-   fChain->SetBranchAddress("jetsPuppi_phi", &jetsPuppi_phi, &b_jetsPuppi_phi);
-   fChain->SetBranchAddress("jetsPuppi_pt", &jetsPuppi_pt, &b_jetsPuppi_pt);
-   fChain->SetBranchAddress("jetsPuppi_vtx3DSig", &jetsPuppi_vtx3DSig, &b_jetsPuppi_vtx3DSig);
-   fChain->SetBranchAddress("jetsPuppi_vtx3DVal", &jetsPuppi_vtx3DVal, &b_jetsPuppi_vtx3DVal);
-   fChain->SetBranchAddress("jetsPuppi_vtxMass", &jetsPuppi_vtxMass, &b_jetsPuppi_vtxMass);
+
    fChain->SetBranchAddress("met_phi", &met_phi, &b_met_phi);
    fChain->SetBranchAddress("met_pt", &met_pt, &b_met_pt);
    fChain->SetBranchAddress("met_sumet", &met_sumet, &b_met_sumet);
    fChain->SetBranchAddress("metNoHF_phi", &metNoHF_phi, &b_metNoHF_phi);
    fChain->SetBranchAddress("metNoHF_pt", &metNoHF_pt, &b_metNoHF_pt);
    fChain->SetBranchAddress("metNoHF_sumet", &metNoHF_sumet, &b_metNoHF_sumet);
-   fChain->SetBranchAddress("metPfMva_phi", &metPfMva_phi, &b_metPfMva_phi);
-   fChain->SetBranchAddress("metPfMva_pt", &metPfMva_pt, &b_metPfMva_pt);
-   fChain->SetBranchAddress("metPfMva_sumet", &metPfMva_sumet, &b_metPfMva_sumet);
-   fChain->SetBranchAddress("metPuppi_phi", &metPuppi_phi, &b_metPuppi_phi);
-   fChain->SetBranchAddress("metPuppi_pt", &metPuppi_pt, &b_metPuppi_pt);
-   fChain->SetBranchAddress("metPuppi_sumet", &metPuppi_sumet, &b_metPuppi_sumet);
    fChain->SetBranchAddress("met_muonEn_Px_up", &met_muonEn_Px_up, &b_met_muonEn_Px_up);
    fChain->SetBranchAddress("met_muonEn_Py_up", &met_muonEn_Py_up, &b_met_muonEn_Py_up);
    fChain->SetBranchAddress("met_muonEn_Px_down", &met_muonEn_Px_down, &b_met_muonEn_Px_down);
@@ -783,15 +788,7 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("muon_x", &muon_x, &b_muon_x);
    fChain->SetBranchAddress("muon_y", &muon_y, &b_muon_y);
    fChain->SetBranchAddress("muon_z", &muon_z, &b_muon_z);
-   fChain->SetBranchAddress("slimmedGenJets_energy", &slimmedGenJets_energy, &b_slimmedGenJets_energy);
-   fChain->SetBranchAddress("slimmedGenJets_eta", &slimmedGenJets_eta, &b_slimmedGenJets_eta);
-   fChain->SetBranchAddress("slimmedGenJets_m", &slimmedGenJets_m, &b_slimmedGenJets_m);
-   fChain->SetBranchAddress("slimmedGenJets_phi", &slimmedGenJets_phi, &b_slimmedGenJets_phi);
-   fChain->SetBranchAddress("slimmedGenJets_pt", &slimmedGenJets_pt, &b_slimmedGenJets_pt);
-   fChain->SetBranchAddress("vertices_ndof", &vertices_ndof, &b_vertices_ndof);
-   fChain->SetBranchAddress("vertices_x", &vertices_x, &b_vertices_x);
-   fChain->SetBranchAddress("vertices_y", &vertices_y, &b_vertices_y);
-   fChain->SetBranchAddress("vertices_z", &vertices_z, &b_vertices_z);
+
    fChain->SetBranchAddress("electrons_electronID_loose", &electrons_electronID_loose, &b_electrons_electronID_loose);
    fChain->SetBranchAddress("electrons_electronID_medium", &electrons_electronID_medium, &b_electrons_electronID_medium);
    fChain->SetBranchAddress("electrons_electronID_tight", &electrons_electronID_tight, &b_electrons_electronID_tight);
@@ -802,6 +799,7 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("electrons_electronID_mva_trig_medium", &electrons_electronID_mva_trig_medium, &b_electrons_electronID_mva_trig_medium);
    fChain->SetBranchAddress("electrons_electronID_mva_trig_tight", &electrons_electronID_mva_trig_tight, &b_electrons_electronID_mva_trig_tight);
    fChain->SetBranchAddress("electrons_isPF", &electrons_isPF, &b_electrons_isPF);
+   fChain->SetBranchAddress("electrons_isTrigMVAValid", &electrons_isTrigMVAValid, &b_electrons_isTrigMVAValid);
    fChain->SetBranchAddress("electrons_mcMatched", &electrons_mcMatched, &b_electrons_mcMatched);
    fChain->SetBranchAddress("electrons_passConversionVeto", &electrons_passConversionVeto, &b_electrons_passConversionVeto);
    fChain->SetBranchAddress("jets_isLoose", &jets_isLoose, &b_jets_isLoose);
@@ -903,6 +901,7 @@ void SkimFlatCat::SlimElectrons()
   SlimBool( electrons_electronID_mva_tight, remove_obj);
   SlimBool( electrons_electronID_mva_trig_medium, remove_obj);
   SlimBool( electrons_electronID_mva_trig_tight, remove_obj);
+  SlimBool( electrons_isTrigMVAValid, remove_obj);
 }
 
 void SkimFlatCat::SlimMuons()
@@ -981,7 +980,11 @@ void SkimFlatCat::SlimJets()
   int nrm = 0;
   for(unsigned int im =0; im < remove_obj.size(); im++){
     jets_chargedEmEnergyFraction->erase(jets_chargedEmEnergyFraction->begin() + remove_obj.at(im) - nrm);
-    jets_CVSInclV2->erase(jets_CVSInclV2->begin() + remove_obj.at(im) - nrm);
+
+    jets_CMVAV2->erase(jets_CMVAV2->begin() + remove_obj.at(im) - nrm);
+    jets_CSVInclV2->erase(jets_CSVInclV2->begin() + remove_obj.at(im) - nrm);
+    jets_JetProbBJet->erase(jets_JetProbBJet->begin() + remove_obj.at(im) - nrm);
+
     jets_energy->erase(jets_energy->begin() + remove_obj.at(im) - nrm);
     jets_eta->erase(jets_eta->begin() + remove_obj.at(im) - nrm);
     jets_PileupJetId->erase(jets_PileupJetId->begin() + remove_obj.at(im) - nrm);
@@ -1012,28 +1015,6 @@ void SkimFlatCat::SlimJets()
 
 void SkimFlatCat::SlimPuppiJets()
 {
-  std::vector<int > remove_obj;
-  for(unsigned int im =0; im < jetsPuppi_pt->size(); im++){
-    bool rem =false;
-    if( jetsPuppi_pt->at(im) < 10) rem = true;
-    if(rem) remove_obj.push_back(im);
-  }
-
-  int nrm = 0;
-  for(unsigned int im =0; im < remove_obj.size(); im++){
-    jetsPuppi_CVSInclV2->erase(jetsPuppi_CVSInclV2->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_eta->erase(jetsPuppi_eta->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_m->erase(jetsPuppi_m->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_phi->erase(jetsPuppi_phi->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_pt->erase(jetsPuppi_pt->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_vtx3DSig->erase(jetsPuppi_vtx3DSig->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_vtxMass->erase(jetsPuppi_vtxMass->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_vtx3DVal->erase(jetsPuppi_vtx3DVal->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_hadronFlavour->erase(jetsPuppi_hadronFlavour->begin() + remove_obj.at(im) - nrm);
-    jetsPuppi_partonFlavour->erase(jetsPuppi_partonFlavour->begin() + remove_obj.at(im) - nrm);
-
-    nrm++;
-  }
   
   
 }

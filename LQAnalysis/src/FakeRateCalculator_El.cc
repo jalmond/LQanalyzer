@@ -654,8 +654,8 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(out_muons, "Signal_Muons");
 
   n_17_jet_pass=0;
   n_17_17_jet_pass=0;

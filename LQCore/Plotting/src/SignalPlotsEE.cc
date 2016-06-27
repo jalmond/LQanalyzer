@@ -17,9 +17,36 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
   map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second electron",100,0,1000);
   map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading electrons",1000,0,1000);
-  map_sig["h_llpt"]                 =     new TH1F("h_llpt_"           + name,"Invariant mass of the two leading electrons",200,0,1000);
   map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_lljjjj_mass"]             =     new TH1F("h_lljjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l1jjjj_mass"]             =     new TH1F("h_l1jjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l2jjjj_mass"]             =     new TH1F("h_l2jjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_lljjjj_os_mass"]          =     new TH1F("h_lljjjj_os_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l1jjjj_os_mass"]          =     new TH1F("h_l1jjjj_os_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l2jjjj_os_mass"]          =     new TH1F("h_l2jjjj_os_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_lljjjj_ss_mass"]          =     new TH1F("h_lljjjj_ss_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l1jjjj_ss_mass"]          =     new TH1F("h_l1jjjj_ss_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l2jjjj_ss_mass"]          =     new TH1F("h_l2jjjj_ss_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
+
+
   map_sig["h_lljmass"]                =     new TH1F("h_lljmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  
+  /// DiLepton plots
+  map_sig["h_ll_phi"]                 =     new TH1F("h_ll_phi_"          + name,"dilepton pt",100,-4,4);
+  map_sig["h_ll_eta"]                 =     new TH1F("h_ll_eta_"          + name,"dilepton pt",100,-5,5);
+  map_sig["h_ll_pt"]                  =     new TH1F("h_ll_pt_"          + name,"dilepton pt",100,0,1000);
+
+  /// 4J plots
+  map_sig["h_l1jj_central_mass"]               =     new TH1F("h_l1jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
+  map_sig["h_l2jj_central_mass"]               =     new TH1F("h_l2jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
+  map_sig["h_lljj_central_mass"]               =     new TH1F("h_lljj_centralmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
+
+  map_sig["h_forward_jet_pt"]             =     new TH1F("h_forward_jet_pt_"                + name,"h_forward_jet_pt",60,0,300);
+  map_sig["h_central_jet_pt"]             =     new TH1F("h_central_jet_pt_"                + name,"h_central_jet_pt",60,0,300);
+  map_sig["h_forward_jet_eta"]             =     new TH1F("h_forward_jet_eta_"                + name,"h_forward_jet_eta",50,-2.5,2.5);
+  map_sig["h_central_jet_eta"]             =     new TH1F("h_central_jet_eta_"                + name,"h_central_jet_eta",50,-2.5,2.5);
+
+
   
   /// Lepton plots  
   map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
@@ -60,6 +87,11 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   map_sig["h_lep_jet_dphi"]           =      new TH1F("h_lep_jet_dphi_"            + name,"dphi lepton jets", 50, 0., 5.);
   map_sig["h_awayjet_chargedem_frac"]         =      new TH1F("h_awayjet_chargedem_frac_"   + name,"charged em frac", 50, 0., 1.);
 
+  map_sig["h_leading_jets_eta"]               =     new TH1F("h_leading_jets_eta_"          + name,"#eta distribution of the two leading_jets",120,-5,5);
+  map_sig["h_second_jets_eta"]               =     new TH1F("h_second_jets_eta_"          + name,"#eta distribution of the two second_jets",120,-5,5);
+  map_sig["h_third_jets_eta"]               =     new TH1F("h_third_jets_eta_"          + name,"#eta distribution of the two third_jets",120,-5,5);
+  map_sig["h_fourth_jets_eta"]               =     new TH1F("h_fourth_jets_eta_"          + name,"#eta distribution of the two fourth_jets",120,-5,5);
+  map_sig["h_rest_jets_eta"]               =     new TH1F("h_rest_jets_eta_"          + name,"#eta distribution of the two rest_jets",120,-5,5);
 
   /// dPhi/MT
   map_sig["h_MTlepton"]               =     new TH1F("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
@@ -97,6 +129,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   if(debug)cout<< "Plotting [1] " << endl;
   Fill("h_Nelectrons", electrons.size(), weight);
   Fill("h_Nmuons", muons.size(), weight);
+  
   
 
   //// Jet mass variables
@@ -177,6 +210,119 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     }
   }
 
+  if((jets.size()>3) && (electrons.size() == 2)){
+    int p_forward_jet(0), m_forward_jet(0);
+    int index_f(-999), index_b(-999);
+    vector<int> central_jets;
+    float most_forward=0.;
+    float most_backward=0.;
+
+    for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+      if(jets[ij].Eta() > 1.5) {
+	if(jets[ij].Eta() > most_forward){
+	  index_f= ij;
+	  most_forward=jets[ij].Eta();
+	}
+	p_forward_jet++;
+	Fill("h_forward_jet_pt", jets[ij].Pt(),weight);
+	Fill("h_forward_jet_eta", jets[ij].Eta(),weight);
+
+      }
+      else if(jets[ij].Eta() < -1.5) {
+	if(jets[ij].Eta() < most_backward){
+	  index_b=ij;
+	  most_backward=jets[ij].Eta();
+	}
+	m_forward_jet++;
+
+	Fill("h_forward_jet_pt", jets[ij].Pt(),weight);
+	Fill("h_forward_jet_eta", jets[ij].Eta(),weight);
+      }
+      else{
+	Fill("h_central_jet_pt", jets[ij].Pt(),weight);
+	Fill("h_central_jet_eta", jets[ij].Eta(),weight);
+      }
+    }
+    
+    for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+      if(ij == unsigned(index_b)) continue;
+      if(ij == unsigned(index_f)) continue;
+      central_jets.push_back( ij);
+    }
+    
+    for(unsigned int ij = 0 ; ij < jets.size(); ij++){
+      if(ij == unsigned(index_b)) continue;
+      if(ij == unsigned(index_f)) continue;
+      central_jets.push_back( ij);
+    }
+    float ce_dijetmass=9999.9;
+    float ce_dijetmass_tmp=9999.9;
+
+    int c_m(0), c_n(0);
+    for(UInt_t emme=0; emme<central_jets.size(); emme++){
+      for(UInt_t enne=1; enne<central_jets.size(); enne++) {
+	if(emme == enne) continue;
+	ce_dijetmass_tmp = (jets[central_jets[emme]] + jets[central_jets[enne]]).M();
+	if ( fabs(ce_dijetmass_tmp-80.4) < fabs(ce_dijetmass-80.4) ) {
+	  ce_dijetmass = ce_dijetmass_tmp;
+	  c_m = central_jets[emme];
+	  c_n = central_jets[enne];
+	}
+      }
+    }
+    
+    if( (p_forward_jet >= 1) && (m_forward_jet >= 1)) {
+      
+      
+      Fill("h_l2jj_central_mass", (electrons[1]+jets[c_m]+jets[c_n]).M(),weight);
+      Fill("h_lljj_central_mass", (electrons[0] + electrons[1]+jets[c_n]+jets[c_m]).M(),weight);
+      Fill("h_l1jj_central_mass", (electrons[0]+jets[c_n]+jets[c_m]).M(),weight);
+      
+    }
+  }
+
+  /// lljjjj plots
+  if((jets.size()>3) && (electrons.size() == 2)){
+    
+    for(unsigned int ijj = 0; ijj < jets.size() ; ijj++){
+      for(unsigned int ijj2 = 1; ijj2 < jets.size() ; ijj2++){
+	for(unsigned int ijj3 = 2; ijj3< jets.size() ; ijj3++){
+	  for(unsigned int ijj4 = 3; ijj4 < jets.size() ; ijj4++){
+	    if(ijj == ijj2) continue;
+	    if(ijj == ijj3) continue;
+	    if(ijj == ijj4) continue;
+	    if(ijj2 == ijj3) continue;
+	    if(ijj2 == ijj4) continue;
+	    if(ijj3 == ijj4) continue;
+
+	    Fill("h_l1jjjj_mass", (electrons[0]+ jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	    Fill("h_l2jjjj_mass", (electrons[1]+jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	    Fill("h_lljjjj_mass", (electrons[0] + electrons[1]+jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	    if(electrons[0].Charge() == electrons[1].Charge()) {
+	      Fill("h_l1jjjj_ss_mass", (electrons[0]+ jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	      Fill("h_l2jjjj_ss_mass", (electrons[1]+jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	      Fill("h_lljjjj_ss_mass", (electrons[0] + electrons[1]+jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	    }
+	    else{
+	      Fill("h_l1jjjj_os_mass", (electrons[0]+ jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	      Fill("h_l2jjjj_os_mass", (electrons[1]+jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	      Fill("h_lljjjj_os_mass", (electrons[0] + electrons[1]+jets[ijj]+jets[ijj2]+jets[ijj3]+jets[ijj4]).M(),weight);
+	    }
+	  }
+	}
+      }
+    }
+  }
+
+  if(electrons.size() ==2 ){
+    Fill("h_llmass", (electrons[0]+electrons[1]).M(),weight);
+    if(jets.size() >= 2){
+      Fill("h_l1jjmass", (electrons[0] + jets[m] + jets[n]).M(),weight);
+      Fill("h_l2jjmass", (electrons[1] + jets[m] + jets[n]).M(),weight);
+      Fill("h_lljjmass", (electrons[0] +electrons[1] + jets[m] + jets[n]).M(),weight);
+    }
+  }
+
   
   if(leadjetmass != 0.)Fill("h_leadjetmass", leadjetmass,weight);
   
@@ -184,19 +330,11 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
 
    int sum_charge(0);
    
-   if(electrons.size()>=2){
-    Fill("h_llmass", (electrons[0]+electrons[1]).M(),weight);
-    Fill("h_llpt", (electrons[0]+electrons[1]).Pt(),weight);
-    if( jets.size()==1) Fill("h_lljmass", (electrons[0] + electrons[1]+jets[0]).M(),weight);
-    if(jets.size()>1){
-      Fill("h_l2jjmass", (electrons[1]+jets[m]+jets[n]).M(),weight);
-      Fill("h_lljjmass", (electrons[0] + electrons[1]+jets[m]+jets[n]).M(),weight);
-      Fill("h_l1jjmass", (electrons[0]+jets[m]+jets[n]).M(),weight);
 
-    }
-  }
+
   if(electrons.size()>=2){
       if(electrons[0].Charge() != electrons[1].Charge())   Fill("h_osllmass", (electrons[0]+electrons[1]).M(),weight);
+      Fill("h_sumcharge", (electrons[0] +electrons[1]).Charge(), weight);
   }
   
   int iel(0);
@@ -263,6 +401,11 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     if(j==1)Fill("h_secondJetPt", jets[1].Pt(),weight);
     Fill("h_jets_pt", jets[j].Pt(),weight);
     Fill("h_jets_eta",jets[j].Eta(),weight);
+    if(j==0)     Fill("h_leading_jets_eta",jets[j].Eta(),weight);
+    if(j==1)     Fill("h_second_jets_eta",jets[j].Eta(),weight);
+    if(j==2)     Fill("h_third_jets_eta",jets[j].Eta(),weight);
+    if(j==3)     Fill("h_fourth_jets_eta",jets[j].Eta(),weight);
+
     Fill("h_PileupJetIDMVA", jets[j].PileupJetIDMVA(),weight);
     Fill("h_jets_phi",jets[j].Phi(),weight);
     Fill("h_bTag",jets[j].CSVInclV2(),weight);

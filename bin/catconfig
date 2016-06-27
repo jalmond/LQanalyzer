@@ -1,0 +1,4 @@
+[core]
+editor = emacs -nw
+
+[plot]

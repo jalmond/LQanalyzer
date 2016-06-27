@@ -18,3 +18,54 @@ if [[ $CATTAG == "v7-6-3.2" ]];
     echo "You are running on a tag with a bug in pileup weighting. update tag"
     exit 1
 fi
+
+latest_tag=""
+while read line
+do
+    if [[ $line == *"HEAD"* ]];
+    then
+	sline=$(echo $line | head -n1 | awk '{print $1}')
+	latest_tag=$sline
+    fi
+done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+
+if [[ $latest_tag == $CATTAG ]];then
+    
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    echo "Using latest tag "$CATTAG
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+else
+    
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    echo "Newer CATAnalzer tag available: "
+    echo "Current tag "$CATTAG
+    echo "Latest tag is "$latest_tag
+    echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+    declare -a NEWTAGS=()
+    while read line
+    do
+	if [[ $line == *"HEAD"* ]];
+        then
+            sline=$(echo $line | head -n1 | awk '{print $1}')
+	    NEWTAGS+=(${sline})
+	else 
+	    if [[ $line == $CATTAG ]]; then
+		break
+	    fi
+	    NEWTAGS+=(${line})
+	fi
+    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+
+    for ntag in  ${NEWTAGS[@]};
+    do
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	echo "Tag: " $ntag  "(summary of changes wrt previous tag)"
+	echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+	
+	while read line
+	do
+	    echo $line
+	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_${ntag}.txt
+    done
+fi

@@ -16,8 +16,9 @@ class EventBase;
 #include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-//#include "rochcor76x/rochcor2015.h"
-
+#include "rochcor2015/rochcor2015.h"
+#include "rochcor2015/RoccoR.h"
+#include "BTag/BTagSFUtil.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -51,6 +52,8 @@ class AnalyzerCore : public LQCycleBase {
   bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium);
   int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium);
 
+  int IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp);
+
   int AssignnNumberOfTruth();
   bool IsSignal();
 
@@ -72,6 +75,7 @@ class AnalyzerCore : public LQCycleBase {
   double ElectronRecoScaleFactor(vector<snu::KElectron> el);
 
   double MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys=0);
+  double MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys=0);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
@@ -93,6 +97,10 @@ class AnalyzerCore : public LQCycleBase {
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons);
  
+
+  void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
+
+
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   
@@ -130,9 +138,21 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* FRHist;
   TH2F* MuonSF;
   TH2F* ElectronSF_Tight;
+  TH2F* ElectronSF_Medium;
+  TH2F* ElectronSF_Loose;
+  TH2F* ElectronSF_Veto;
   TH2F* ElectronRECO;
+  TH2F* MuonID_tight;
+  TH2F* MuonID_medium;
+  TH2F* MuonID_loose;
+  TH2F* MuonISO_tight_tightID;
+  TH2F* MuonISO_tight_mediumID;
+  TH2F* MuonISO_loose_tightID;
+  TH2F* MuonISO_loose_mediumID;
+  TH2F* MuonISO_loose_looseID;
   HNCommonLeptonFakes* m_fakeobj;
-  
+
+
 
   /// Event weights
   Double_t MCweight, weight;
@@ -199,6 +219,8 @@ class AnalyzerCore : public LQCycleBase {
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);
+  std::map<TString,BTagSFUtil*> SetupBTagger(std::vector<TString> taggers, std::vector<TString> wps);
+
 
   // Makes clever histograms
   void MakeCleverHistograms(histtype type, TString clhistname );
@@ -212,6 +234,10 @@ class AnalyzerCore : public LQCycleBase {
   bool PassTrigger(std::vector<TString> list, int& prescale);
   void ListTriggersAvailable();
   bool PassBasicEventCuts();
+
+  rochcor2015 *rmcor;
+  std::map<TString,BTagSFUtil*> MapBTagSF;
+  //  BTagSFUtil *lBTagSF, *hBTagSF;
 
 };
 #endif

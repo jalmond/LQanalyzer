@@ -82,7 +82,7 @@ def CopySKTrees(channel,sample,mc,docopy):
         finally:    
             f.closed()  
 
-def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf):
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, skflag):
 
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -95,10 +95,14 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
     config+='   gSystem->Load("libHNCommonLeptonFakes.so");\n'
+    #config+='   gSystem->Load("libRoccoR.so");\n'
+    config+='   gSystem->Load("libBTagSFUtil.so");\n'
+    config+='   gSystem->Load("librochcor2015.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("' + lib + ' + .so");\n'
         
     config+='   gSystem->Load("libLQAnalysis.so");\n'
+    
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'
     config+='   TString filename = "' + input + '";\n'
@@ -137,6 +141,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         config+='   analysis.SetTotalMCEvents(' + str(totalmcevents) +');\n'
     if not xsec == -1.:
         config+='   analysis.SetMCCrossSection(' + str(xsec) +');\n'
+    config+='   analysis.SetUserFlag("'+skflag+'");\n'    
     config+='   analysis.RunNonPrompt("' +runnp+'");\n'
     config+='   analysis.RunChargeFlip("' +runcf+'");\n'
     config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        

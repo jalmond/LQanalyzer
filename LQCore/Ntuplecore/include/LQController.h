@@ -22,7 +22,9 @@ class LQController  {
 		    v744=1,
 		    v745=2,
 		    v762=3,
-		    v763=4};
+		    v763=4,
+		    v764=5,
+		    v765=6};
 
   
   //// constructors
@@ -64,6 +66,8 @@ class LQController  {
   void SetChannel(TString channel);
   void SetInputChain(TChain* ch);
   void SetLQInput(bool lq);
+  void SetUserFlag(TString flag);
+
   std::string SetNTCatVersion(LQController::_catversion dir_version);
 
   _catversion GetCatVersion(std::string filepath)  throw( LQError ); 
@@ -103,6 +107,7 @@ class LQController  {
   int n_ev_to_skip;
   
   std::vector<TString> v_libnames;
+  std::vector<TString> v_user_flags;
   std::vector<Long64_t> list_to_run;
   Long64_t single_ev;
   Bool_t run_single_event;

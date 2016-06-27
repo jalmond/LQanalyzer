@@ -7,6 +7,13 @@
 # sample     Nevents  Sum(GenWeights)  xsec*Eff   Effective lumi    LocalPath #####################################################################################
 #######################################################################################################################################
 
+
+HN150_mumumu_VmuN_0p1  100000.0 100000.0 0.0 219250160.0  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN150_mumumu_width_AUTO_VmuN_0p1/
+HN40_mumumu_VmuN_0p1  100000.0 100000.0 8.6 11627.9  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN40_mumumu_width_AUTO_VmuN_0p1/
+HN60_mumumu_VmuN_0p1  100000.0 100000.0 3.4 29274.0  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN60_mumumu_width_AUTO_VmuN_0p1/
+HN700_mumumu_VmuN_0p1  100000.0 100000.0 0.0 37821480960.0  /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN700_mumumu_width_AUTO_VmuN_0p1/
+HN_pair_WR600_Zp400_HN100 50000. 50000.0 1.0 10000.0  /data2/DATA/cattoflat/MC/v7-6-3/HN_pair_WR600_Zp400_HN100/
+
 DY10to50_MCatNLO  30899064.0 22606898.0 18610.0 1214.8  /data2/DATA/cattoflat/MC/v7-6-3/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
 DY50plus_MCatNLO  121212392.0 81236728.0 6024.2 13485.1  /data2/DATA/cattoflat/MC/v7-6-3/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
 DY50plus_madgraph  9004328.0 9004328.0 6025.2 1494.4  /data2/DATA/cattoflat/MC/v7-6-3/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
@@ -14,13 +21,35 @@ GJet_20to40_pythia8  24739912.0 24739912.0 218.6 113168.7  /data2/DATA/cattoflat
 GJet_40plus_pythia8  71613296.0 71613296.0 863.1 82971.3  /data2/DATA/cattoflat/MC/v7-6-3/GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/
 ggHtomm_Powheg  250000.0 250000.0 0.0 25756414.0  /data2/DATA/cattoflat/MC/v7-6-3/GluGlu_HToMuMu_M125_13TeV_powheg_pythia8/
 HN_EE_M100  19999.0 19999.0 0.1 352219.1  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-100_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_ee_os_100  20000.0 20000.0 0.0 704771.3  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_os_100  20000.0 20000.0 0.0 2114165.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_ss_100  20000.0 20000.0 0.0 2114165.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen/
 HN_EE_M1500  20000.0 20000.0 0.0 37209300992.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-1500_TuneZ2star_13TeV-alpgen/
-HN_EE_M40  19997.0 19997.0 21.6 927.5  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-40_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_ee_os_1500  20000.0 20000.0 0.0 74446307328.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_os_1500  20000.0 20000.0 0.0 222222221312.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_ss_1500  20000.0 20000.0 0.0 222222221312.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_ee_os_40  15000.0 15000.0 10.8 1394.1  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_os_40  15000.0 15000.0 3.6 4174.8  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen/
 HN_EE_M500  20000.0 20000.0 0.0 255395232.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-500_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_ee_os_500  20000.0 20000.0 0.0 524232640.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_os_500  20000.0 20000.0 0.0 1532567040.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_ee_ss_500  20000.0 20000.0 0.0 1532567040.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToEE_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen/
 HN_MM_M100  19999.0 19999.0 0.1 352219.1  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen/
 HN_MM_M1500  20000.0 20000.0 0.0 37209300992.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen/
 HN_MM_M40  19998.0 19998.0 21.6 927.6  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMM_M-40_TuneZ2star_13TeV-alpgen/
 HN_MM_M500  20000.0 20000.0 0.0 255395232.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_mm_os_100  20000.0 20000.0 0.0 704771.3  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-100_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_os_100  20000.0 20000.0 0.0 2114165.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-100_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_ss_100  20000.0 20000.0 0.0 2114165.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-100_schan_lll_ss_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_mm_os_1500  20000.0 20000.0 10.8 1858.7  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-1500_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_os_1500  20000.0 20000.0 0.0 222222221312.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-1500_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_ss_1500  20000.0 20000.0 0.0 222222221312.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-1500_schan_lll_ss_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_mm_os_40  20000.0 20000.0 10.8 1858.7  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-40_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_os_40  20000.0 20000.0 3.6 5566.4  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-40_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_ss_40  19999.0 19999.0 3.6 5566.1  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-40_schan_lll_ss_TuneZ2star_13TeV-alpgen/
+HN_schan_ll_mm_os_500  20000.0 20000.0 0.0 524232640.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-500_schan_ll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_os_500  20000.0 20000.0 0.0 1532567040.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-500_schan_lll_os_TuneZ2star_13TeV-alpgen/
+HN_schan_lll_mm_ss_500  20000.0 20000.0 0.0 1532567040.0  /data2/DATA/cattoflat/MC/v7-6-3/MajoranaNeutrinoToMuMu_M-500_schan_lll_ss_TuneZ2star_13TeV-alpgen/
 QCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-1000toInf_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
 QCD_em120to170_pythia8  36202408.0 36202408.0 62964.0 575.0  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/
 QCD_mu120to170_pythia8  7971018.0 7971018.0 25190.5 316.4  /data2/DATA/cattoflat/MC/v7-6-3/QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/
@@ -57,6 +86,7 @@ TT_MCatNLO  38475772.0 12771412.0 831.8 15354.7  /data2/DATA/cattoflat/MC/v7-6-3
 TT_MG5  10215131.0 10215131.0 831.8 12281.3  /data2/DATA/cattoflat/MC/v7-6-3/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
 ttWJetsToLNu_MCatNLO  250307.0 129001.0 0.2 631429.2  /data2/DATA/cattoflat/MC/v7-6-3/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
 ttWJetsToQQ_MCatNLO  831847.0 429599.0 0.4 1057604.6  /data2/DATA/cattoflat/MC/v7-6-3/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/
+ttZToLLNuNu_MCatNLO  394200.0 183200.0 0.3 724397.0  /data2/DATA/cattoflat/MC/v7-6-3/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
 ttZToQQ_MCatNLO  747000.0 350106.0 0.5 660951.5  /data2/DATA/cattoflat/MC/v7-6-3/TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8/
 TT_powheg  97994440.0 97994440.0 831.8 117815.8  /data2/DATA/cattoflat/MC/v7-6-3/TT_TuneCUETP8M1_13TeV-powheg-pythia8/
 vhf_Htomm_Powheg  249200.0 249200.0 0.0 300854272.0  /data2/DATA/cattoflat/MC/v7-6-3/VBF_HToMuMu_M125_13TeV_powheg_pythia8/
@@ -80,14 +110,16 @@ ZZ_llll_powheg  6669188.0 6669188.0 1.3 5309863.0  /data2/DATA/cattoflat/MC/v7-6
 ZZ_pythia8  985600.0 985600.0 16.9 58285.0  /data2/DATA/cattoflat/MC/v7-6-3/ZZ_TuneCUETP8M1_13TeV-pythia8/
 ttHnobb_Powheg  3945824.0 3945824.0 0.5 7801154.5  /data2/DATA/cattoflat/MC/v7-6-3/ttHToNonbb_M125_13TeV_powheg_pythia8/
 ttHtobb_Powheg  3772012.0 3772012.0 0.5 7457517.0  /data2/DATA/cattoflat/MC/v7-6-3/ttHTobb_M125_13TeV_powheg_pythia8/
-HN150_mumumu_VmuN_0p1 100000.0 100000.0 0.0 219250160.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN150_mumumu_width_AUTO_VmuN_0p1/
-HN40_mumumu_VmuN_0p1 100000.0 100000.0 8.6 11621.2 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN40_mumumu_width_AUTO_VmuN_0p1/
-HN60_mumumu_VmuN_0p1 100000.0 100000.0 3.4 29274.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN60_mumumu_width_AUTO_VmuN_0p1/
-HN700_mumumu_VmuN_0p1 100000.0 100000.0 0.0 37821480960.0 /data2/DATA/cattoflat/MC/v7-6-3/13TeV_HN700_mumumu_width_AUTO_VmuN_0p1/
-tthwA_3l4j_hc130A30_emu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/DATA/cattoflat/MC/v7-6-3/tthwA_3l4j_hc130A30_emu_catcut/
-tthwA_3l4j_hc130A30_3mu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/DATA/cattoflat/MC/v7-6-3/tthwA_3l4j_hc130A30_3mu_catcut/
+tthwA_3l4j_hc130A30_3mu  98000.0 98000.0 0.0 262734592.0  /data2/DATA/cattoflat/MC/v7-6-3/tthwA_3l4j_hc130A30_3mu_catcut/
+tthwA_3l4j_hc130A30_emu  98000.0 98000.0 0.0 262734592.0  /data2/DATA/cattoflat/MC/v7-6-3/tthwA_3l4j_hc130A30_emu_catcut/
+
 
 #### Single lepton skims: SKTrees
+SKHN150_mumumu_VmuN_0p1  100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN150_mumumu_VmuN_0p1/
+SKHN40_mumumu_VmuN_0p1  100000.0 100000.0 8.6 11627.9 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN40_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1  100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1  100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN700_mumumu_VmuN_0p1/
+SKHN_pair_WR600_Zp400_HN100 50000.0 50000.0 1. 10000.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_pair_WR600_Zp400_HN100/
 SKDY10to50_MCatNLO  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/DY10to50_MCatNLO/
 SKDY50plus_MCatNLO  121212392.0 81236728.0 6024.2 13485.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/DY50plus_MCatNLO/
 SKDY50plus_madgraph  9004328.0 9004328.0 6025.2 1494.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/DY50plus_madgraph/
@@ -95,21 +127,35 @@ SKGJet_20to40_pythia8  24739912.0 24739912.0 218.6 113168.7 /data2/CatNtuples/v7
 SKGJet_40plus_pythia8  71613296.0 71613296.0 863.1 82971.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/GJet_40plus_pythia8/
 SKggHtomm_Powheg  250000.0 250000.0 0.0 25756414.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ggHtomm_Powheg/
 SKHN_EE_M100  19999.0 19999.0 0.1 352219.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_EE_M100/
+SKHN_schan_ll_ee_os_100  20000.0 20000.0 0.0 704771.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_ee_os_100/
+SKHN_schan_lll_ee_os_100  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_os_100/
+SKHN_schan_lll_ee_ss_100  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_ss_100/
 SKHN_EE_M1500  20000.0 20000.0 0.0 37209300992.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_EE_M1500/
-SKHN_EE_M40  19997.0 19997.0 21.6 927.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_EE_M40/
+SKHN_schan_ll_ee_os_1500  20000.0 20000.0 0.0 74446307328.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_ee_os_1500/
+SKHN_schan_lll_ee_os_1500  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_os_1500/
+SKHN_schan_lll_ee_ss_1500  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_ss_1500/
+SKHN_schan_ll_ee_os_40  15000.0 15000.0 10.8 1394.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_ee_os_40/
+SKHN_schan_lll_ee_os_40  15000.0 15000.0 3.6 4174.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_os_40/
 SKHN_EE_M500  20000.0 20000.0 0.0 255395232.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_EE_M500/
+SKHN_schan_ll_ee_os_500  20000.0 20000.0 0.0 524232640.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_ee_os_500/
+SKHN_schan_lll_ee_os_500  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_os_500/
+SKHN_schan_lll_ee_ss_500  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_ee_ss_500/
 SKHN_MM_M100  19999.0 19999.0 0.1 352219.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_MM_M100/
 SKHN_MM_M1500  20000.0 20000.0 0.0 37209300992.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_MM_M1500/
 SKHN_MM_M40  19998.0 19998.0 21.6 927.6 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_MM_M40/
 SKHN_MM_M500  20000.0 20000.0 0.0 255395232.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_MM_M500/
-SKHN150_mumumu_VmuN_0p1 100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN150_mumumu_VmuN_0p1/
-SKHN40_mumumu_VmuN_0p1 100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN40_mumumu_VmuN_0p1/
-SKHN60_mumumu_VmuN_0p1 100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN60_mumumu_VmuN_0p1/
-SKHN700_mumumu_VmuN_0p1 100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN700_mumumu_VmuN_0p1/
-SKtthwA_3l4j_hc130A30_emu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/tthwA_3l4j_hc130A30_emu_catcut/
-SKtthwA_3l4j_hc130A30_3mu_catcut 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/tthwA_3l4j_hc130A30_3mu_catcut/
-
-
+SKHN_schan_ll_mm_os_100  20000.0 20000.0 0.0 704771.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_mm_os_100/
+SKHN_schan_lll_mm_os_100  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_os_100/
+SKHN_schan_lll_mm_ss_100  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_ss_100/
+SKHN_schan_ll_mm_os_1500  20000.0 20000.0 10.8 1858.7 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_mm_os_1500/
+SKHN_schan_lll_mm_os_1500  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_os_1500/
+SKHN_schan_lll_mm_ss_1500  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_ss_1500/
+SKHN_schan_ll_mm_os_40  20000.0 20000.0 10.8 1858.7 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_mm_os_40/
+SKHN_schan_lll_mm_os_40  20000.0 20000.0 3.6 5566.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_os_40/
+SKHN_schan_lll_mm_ss_40  19999.0 19999.0 3.6 5566.1 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_ss_40/
+SKHN_schan_ll_mm_os_500  20000.0 20000.0 0.0 524232640.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_ll_mm_os_500/
+SKHN_schan_lll_mm_os_500  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_os_500/
+SKHN_schan_lll_mm_ss_500  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/HN_schan_lll_mm_ss_500/
 SKQCD_mu1000toINF_pythia8  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu1000toINF_pythia8/
 SKQCD_em120to170_pythia8  36202408.0 36202408.0 62964.0 575.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_em120to170_pythia8/
 SKQCD_mu120to170_pythia8  7971018.0 7971018.0 25190.5 316.4 /data2/CatNtuples/v7-6-3/SKTrees/MC/QCD_mu120to170_pythia8/
@@ -146,6 +192,7 @@ SKTT_MCatNLO  38475772.0 12771412.0 831.8 15354.7 /data2/CatNtuples/v7-6-3/SKTre
 SKTT_MG5  10215131.0 10215131.0 831.8 12281.3 /data2/CatNtuples/v7-6-3/SKTrees/MC/TT_MG5/
 SKttWJetsToLNu_MCatNLO  250307.0 129001.0 0.2 631429.2 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttWJetsToLNu_MCatNLO/
 SKttWJetsToQQ_MCatNLO  831847.0 429599.0 0.4 1057604.6 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttWJetsToQQ_MCatNLO/
+SKttZToLLNuNu_MCatNLO  394200.0 183200.0 0.3 724397.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttZToLLNuNu_MCatNLO/
 SKttZToQQ_MCatNLO  747000.0 350106.0 0.5 660951.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttZToQQ_MCatNLO/
 SKTT_powheg  97994440.0 97994440.0 831.8 117815.8 /data2/CatNtuples/v7-6-3/SKTrees/MC/TT_powheg/
 SKvhf_Htomm_Powheg  249200.0 249200.0 0.0 300854272.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/vhf_Htomm_Powheg/
@@ -169,13 +216,15 @@ SKZZ_llll_powheg  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6-3/SKT
 SKZZ_pythia8  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ZZ_pythia8/
 SKttHnobb_Powheg  3945824.0 3945824.0 0.5 7801154.5 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttHnobb_Powheg/
 SKttHtobb_Powheg  3772012.0 3772012.0 0.5 7457517.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/ttHtobb_Powheg/
+SKtthwA_3l4j_hc130A30_3mu  98000.0 98000.0 0.0 262734592.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/tthwA_3l4j_hc130A30_3mu/
+SKtthwA_3l4j_hc130A30_emu  98000.0 98000.0 0.0 262734592.0 /data2/CatNtuples/v7-6-3/SKTrees/MC/tthwA_3l4j_hc130A30_emu/
 
 
 #### Dilepton skims: SKTrees
-SKHN150_mumumu_VmuN_0p1_dilep 100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN150_mumumu_VmuN_0p1/
-SKHN40_mumumu_VmuN_0p1_dilep 100000.0 100000.0 8.6 11621.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN40_mumumu_VmuN_0p1/
-SKHN60_mumumu_VmuN_0p1_dilep 100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN60_mumumu_VmuN_0p1/
-SKHN700_mumumu_VmuN_0p1_dilep 100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN700_mumumu_VmuN_0p1/
+SKHN150_mumumu_VmuN_0p1_dilep  100000.0 100000.0 0.0 219250160.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN150_mumumu_VmuN_0p1/
+SKHN40_mumumu_VmuN_0p1_dilep  100000.0 100000.0 8.6 11627.9 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN40_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1_dilep  100000.0 100000.0 3.4 29274.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1_dilep  100000.0 100000.0 0.0 37821480960.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN700_mumumu_VmuN_0p1/
 SKDY10to50_MCatNLO_dilep  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/DY10to50_MCatNLO/
 SKDY50plus_MCatNLO_dilep  121212392.0 81236728.0 6024.2 13485.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/DY50plus_MCatNLO/
 SKDY50plus_madgraph_dilep  9004328.0 9004328.0 6025.2 1494.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/DY50plus_madgraph/
@@ -183,13 +232,35 @@ SKGJet_20to40_pythia8_dilep  24739912.0 24739912.0 218.6 113168.7 /data2/CatNtup
 SKGJet_40plus_pythia8_dilep  71613296.0 71613296.0 863.1 82971.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/GJet_40plus_pythia8/
 SKggHtomm_Powheg_dilep  250000.0 250000.0 0.0 25756414.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ggHtomm_Powheg/
 SKHN_EE_M100_dilep  19999.0 19999.0 0.1 352219.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_EE_M100/
+SKHN_schan_ll_ee_os_100_dilep  20000.0 20000.0 0.0 704771.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_ee_os_100/
+SKHN_schan_lll_ee_os_100_dilep  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_os_100/
+SKHN_schan_lll_ee_ss_100_dilep  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_ss_100/
 SKHN_EE_M1500_dilep  20000.0 20000.0 0.0 37209300992.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_EE_M1500/
-SKHN_EE_M40_dilep  19997.0 19997.0 21.6 927.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_EE_M40/
+SKHN_schan_ll_ee_os_1500_dilep  20000.0 20000.0 0.0 74446307328.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_ee_os_1500/
+SKHN_schan_lll_ee_os_1500_dilep  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_os_1500/
+SKHN_schan_lll_ee_ss_1500_dilep  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_ss_1500/
+SKHN_schan_ll_ee_os_40_dilep  15000.0 15000.0 10.8 1394.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_ee_os_40/
+SKHN_schan_lll_ee_os_40_dilep  15000.0 15000.0 3.6 4174.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_os_40/
 SKHN_EE_M500_dilep  20000.0 20000.0 0.0 255395232.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_EE_M500/
+SKHN_schan_ll_ee_os_500_dilep  20000.0 20000.0 0.0 524232640.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_ee_os_500/
+SKHN_schan_lll_ee_os_500_dilep  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_os_500/
+SKHN_schan_lll_ee_ss_500_dilep  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_ee_ss_500/
 SKHN_MM_M100_dilep  19999.0 19999.0 0.1 352219.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_MM_M100/
 SKHN_MM_M1500_dilep  20000.0 20000.0 0.0 37209300992.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_MM_M1500/
 SKHN_MM_M40_dilep  19998.0 19998.0 21.6 927.6 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_MM_M40/
 SKHN_MM_M500_dilep  20000.0 20000.0 0.0 255395232.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_MM_M500/
+SKHN_schan_ll_mm_os_100_dilep  20000.0 20000.0 0.0 704771.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_mm_os_100/
+SKHN_schan_lll_mm_os_100_dilep  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_os_100/
+SKHN_schan_lll_mm_ss_100_dilep  20000.0 20000.0 0.0 2114165.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_ss_100/
+SKHN_schan_ll_mm_os_1500_dilep  20000.0 20000.0 10.8 1858.7 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_mm_os_1500/
+SKHN_schan_lll_mm_os_1500_dilep  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_os_1500/
+SKHN_schan_lll_mm_ss_1500_dilep  20000.0 20000.0 0.0 222222221312.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_ss_1500/
+SKHN_schan_ll_mm_os_40_dilep  20000.0 20000.0 10.8 1858.7 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_mm_os_40/
+SKHN_schan_lll_mm_os_40_dilep  20000.0 20000.0 3.6 5566.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_os_40/
+SKHN_schan_lll_mm_ss_40_dilep  19999.0 19999.0 3.6 5566.1 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_ss_40/
+SKHN_schan_ll_mm_os_500_dilep  20000.0 20000.0 0.0 524232640.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_ll_mm_os_500/
+SKHN_schan_lll_mm_os_500_dilep  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_os_500/
+SKHN_schan_lll_mm_ss_500_dilep  20000.0 20000.0 0.0 1532567040.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/HN_schan_lll_mm_ss_500/
 SKQCD_mu1000toINF_pythia8_dilep  3938782.0 3938782.0 1.6 2429372.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu1000toINF_pythia8/
 SKQCD_em120to170_pythia8_dilep  36202408.0 36202408.0 62964.0 575.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_em120to170_pythia8/
 SKQCD_mu120to170_pythia8_dilep  7971018.0 7971018.0 25190.5 316.4 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/QCD_mu120to170_pythia8/
@@ -226,6 +297,7 @@ SKTT_MCatNLO_dilep  38475772.0 12771412.0 831.8 15354.7 /data2/CatNtuples/v7-6-3
 SKTT_MG5_dilep  10215131.0 10215131.0 831.8 12281.3 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/TT_MG5/
 SKttWJetsToLNu_MCatNLO_dilep  250307.0 129001.0 0.2 631429.2 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttWJetsToLNu_MCatNLO/
 SKttWJetsToQQ_MCatNLO_dilep  831847.0 429599.0 0.4 1057604.6 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttWJetsToQQ_MCatNLO/
+SKttZToLLNuNu_MCatNLO_dilep  394200.0 183200.0 0.3 724397.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttZToLLNuNu_MCatNLO/
 SKttZToQQ_MCatNLO_dilep  747000.0 350106.0 0.5 660951.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttZToQQ_MCatNLO/
 SKTT_powheg_dilep  97994440.0 97994440.0 831.8 117815.8 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/TT_powheg/
 SKvhf_Htomm_Powheg_dilep  249200.0 249200.0 0.0 300854272.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/vhf_Htomm_Powheg/
@@ -249,8 +321,9 @@ SKZZ_llll_powheg_dilep  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6
 SKZZ_pythia8_dilep  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ZZ_pythia8/
 SKttHnobb_Powheg_dilep  3945824.0 3945824.0 0.5 7801154.5 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHnobb_Powheg/
 SKttHtobb_Powheg_dilep  3772012.0 3772012.0 0.5 7457517.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/ttHtobb_Powheg/
-SKtthwA_3l4j_hc130A30_emu_catcut_dilep 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/tthwA_3l4j_hc130A30_emu_catcut/
-SKtthwA_3l4j_hc130A30_3mu_catcut_dilep 98000.0 98000.0 0.0 262593776.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/tthwA_3l4j_hc130A30_3mu_catcut
+SKtthwA_3l4j_hc130A30_3mu_dilep  98000.0 98000.0 0.0 262734592.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/tthwA_3l4j_hc130A30_3mu/
+SKtthwA_3l4j_hc130A30_emu_dilep  98000.0 98000.0 0.0 262734592.0 /data2/CatNtuples/v7-6-3/SKTrees/MCDiLep/tthwA_3l4j_hc130A30_emu/
+
 
 #### Trlepton skims: SKTrees
 SKDY10to50_MCatNLO_trilep  30899064.0 22606898.0 18610.0 1214.8 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/DY10to50_MCatNLO/
@@ -264,6 +337,7 @@ SKsingletop_tW_Powheg_trilep  1000000.0 1000000.0 35.6 28089.9 /data2/CatNtuples
 SKTT_MCatNLO_trilep  38475772.0 12771412.0 831.8 15354.7 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/TT_MCatNLO/
 SKttWJetsToLNu_MCatNLO_trilep  250307.0 129001.0 0.2 631429.2 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttWJetsToLNu_MCatNLO/
 SKttWJetsToQQ_MCatNLO_trilep  831847.0 429599.0 0.4 1057604.6 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttWJetsToQQ_MCatNLO/
+SKttZToLLNuNu_MCatNLO_trilep  394200.0 183200.0 0.3 724397.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttZToLLNuNu_MCatNLO/
 SKttZToQQ_MCatNLO_trilep  747000.0 350106.0 0.5 660951.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ttZToQQ_MCatNLO/
 SKWJets_MCatNLO_trilep  24156128.0 16521035.0 61526.7 268.5 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WJets_MCatNLO/
 SKWW_llnn_powheg_trilep  1930376.0 1930376.0 12.2 158513.4 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/WW_llnn_powheg/
@@ -281,16 +355,6 @@ SKZZ_llqq_MCatNLO_trilep  15301695.0 9660541.0 3.2 3000168.0 /data2/CatNtuples/v
 SKZZ_llll_MCatNLO_trilep  10747136.0 7416622.0 1.2 6119325.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_llll_MCatNLO/
 SKZZ_llll_powheg_trilep  6669188.0 6669188.0 1.3 5309863.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_llll_powheg/
 SKZZ_pythia8_trilep  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-3/SKTrees/MCTriLep/ZZ_pythia8/
-
-SKHN_EE_M100_nocut  19999.0 19999.0 0.1 352219.1    /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_EE_M100/
-SKHN_EE_M1500_nocut  20000.0 20000.0 0.0 37209300992.0 /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_EE_M1500/
-SKHN_EE_M40_nocut  19997.0 19997.0 21.6 927.5   /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_EE_M40/
-SKHN_EE_M500_nocut  20000.0 20000.0 0.0 255395232.0  /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_EE_M500/
-SKHN_MM_M100_nocut  19999.0 19999.0 0.1 352219.1   /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_MM_M100/
-SKHN_MM_M1500_nocut  20000.0 20000.0 0.0 37209300992.0  /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_MM_M1500/
-SKHN_MM_M40_nocut  19998.0 19998.0 21.6 927.6   /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HN_MM_M40/
-SKHN_MM_M500_nocut  20000.0 20000.0 0.0 255395232.0 /data2/CatNtuples/v7-6-3/SKTrees/MCNoCut/HNMME_M500/
-
 
 ##################################################################
 #### Missing/Not produced samples in this version are listed below 

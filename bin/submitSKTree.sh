@@ -1,12 +1,13 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-declare -a list_of_catversions=("v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
-
+##### New for sktreemaker only
+logger=""
 
 ###### SET WHAT JOBS TO RUN
 runMC=false
@@ -23,10 +24,12 @@ job_data_lumi="CtoD"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=5
-job_skim="SKTree_TriLepSkim"
+job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
 
+submit_sk_message=""
+submit_skflag=""
 submit_skinput=true
 changed_skinput=false
 changed_submit_version_tag=false
@@ -44,6 +47,8 @@ submit_analyzer_name=""
 set_submit_analyzer_name=false
 request_sample=""
 submit_skim=""
+submit_cat_tag=""
+submit_cat_tag2=""
 
 ######## NEW FOR TAG v7-6-3.2
 job_nevents=-1
@@ -60,6 +65,7 @@ set_sktreemaker_debug=false
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
+
 
 ############## Check flags for fake/flip analysis
 if [[ $job_run_fake != "False" ]];
@@ -457,6 +463,8 @@ fi
 
 
     
+
+
 if [[ $submit_file_list  != ""  ]];
     then
     valid_list_samples=0
@@ -611,6 +619,8 @@ if [[ $changed_submit_version_tag == "false" ]];
     fi
 fi
 
+
+
 #### HARDCODE the skinput for sktreemakers
 if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     then 
@@ -764,11 +774,8 @@ if [[ $runDATA == "true" ]];
         done
     fi
 
-    echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_streams[*]}
-
-    
-
-
+    logger+=${out_streams_skimcheck[*]}":"
+   
 fi
 
 if [[ $job_output_dir == "" ]]
@@ -864,7 +871,7 @@ if [[ $runDATA  == "true" ]];
         fi
 	if [[ $counter -gt 2 ]];
             then
-	    echo "Number of periods > 2"
+	    echo "Number of periods >2"
             echo "Problem with initialising 'sktree -p'"
             exit 1
         fi
@@ -1146,14 +1153,16 @@ if [[ $runMC  == "true" ]];
     if [[ $submit_file_tag  != ""  ]];
       then
         echo "LQanalyzer::sktree :: INFO :: Single File to process = "${submit_file_tag}  
+	logger+=${submit_file_tag}":"
     fi
     if [[ $submit_file_list  != ""  ]];
 	then
         ARGOUT=$submit_file_list
         eval out_input_samples=(\${$ARGOUT[@]})
-	 echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_input_samples[*]}
+	echo "LQanalyzer::sktree :: INFO :: ARRAY of samples  to process = "${out_input_samples[*]}
+	logger+=${out_input_samples[*]}":"
+	    
     fi
-    
 fi
 
 if [[ $job_nevents != -1 ]];
@@ -1194,12 +1203,98 @@ if [[ $job_cycle != *"SKTreeMaker"* ]];
     echo $outputdir_output_message
 fi
 
+
+if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
+    then
+    
+    echo "------------------------------------------------------------------------------------------------------" >> sktree_logger.txt
+    echo "--User =" $USER " :" >> sktree_logger.txt
+    echo "--Date:" >> sktree_logger.txt 
+    date >> sktree_logger.txt
+    echo "--Comment on reason for making sktrees (first time, bug fix, new variable?):" >> sktree_logger.txt
+    echo "-- If testing just add 'TEST' after Message: and this will leave no comment in the change log">> sktree_logger.txt
+    echo -e "" >> sktree_logger.txt
+    echo "Message:" >> sktree_logger.txt
+    if [[ $submit_sk_message != "" ]];	then
+	echo $submit_sk_message >> sktree_logger.txt 
+    fi
+    echo -e "" >> sktree_logger.txt
+    echo "--Samples:" >> sktree_logger.txt
+    echo $logger >> sktree_logger.txt
+    echo "------------------------------------------------------------------------------------------------------" >> sktree_logger.txt
+    cp sktree_logger.txt sktree_logger_tmp.txt
+    
+    cat_editor=""
+    while read line
+    do
+
+	prefix="editor = "
+	if [[ $line == $prefix* ]];
+	then
+            line=${line:${#prefix}}
+	    cat_editor=$line
+        fi
+    done < ${LQANALYZER_DIR}/bin/catconfig
+    echo $cat_editor' sktree_logger.txt'  >> edit.sh
+    
+    
+    if [[ $submit_sk_message == "" ]];
+        then
+	source edit.sh
+	
+	if diff sktree_logger.txt sktree_logger_tmp.txt  >/dev/null ; then
+	    echo "No comment added: exiting process"
+	    rm sktree_logger.txt
+	    rm sktree_logger_tmp.txt
+	    exit 1
+	else
+	    echo "Commented added to log:"
+	fi
+    fi
+    
+    makelog="True"
+    while read line
+      do
+      if [[ $line == "Message: TEST" ]];
+	  then
+	  makelog="False"
+      fi
+      if [[ $line == "Message:TEST" ]];
+	  then
+	  makelog="False"
+      fi
+      
+    done < sktree_logger.txt
+    
+    
+    if [[ $makelog == "True" ]];
+    then
+	if [[ -f "/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log" ]]; then
+	    while read line
+	    do
+		echo $line >> sktree_logger.txt
+	    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	    
+	    echo -e "\n" >> sktree_logger.txt
+	    
+	    cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	else
+	    cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	fi
+    fi
+    rm message.txt
+    rm edit.sh
+    rm sktree_logger.txt
+    rm sktree_logger_tmp.txt
+fi
+
+
 ################  DATA################################################
 ### submit this configured job (uses bin/submit.sh)
 ######################################################################
 if [[ $runDATA  == "true" ]];
     then
-        
+    
 
     ARG1=$submit_sampletag
     eval streams=(\${$ARG1[@]})
@@ -1223,11 +1318,13 @@ if [[ $runDATA  == "true" ]];
       cycle=${job_cycle}
       skinput=${submit_skinput}
       useskim=${job_skim}
+      skflag=${submit_skflag}
       njobs=$job_njobs
       data_lumi=$job_data_lumi
       loglevel=$job_loglevel
       logstep=$job_logstep
       stream=${istream}
+
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1269,6 +1366,7 @@ if [[ $runMC  == "true" ]];
     skinput=${submit_skinput}
     useskim=${job_skim}
     njobs=$job_njobs
+    skflag=${submit_skflag}
     data_lumi=$job_data_lumi
     loglevel=$job_loglevel
     logstep=$job_logstep

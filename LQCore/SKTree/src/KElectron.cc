@@ -16,6 +16,7 @@ KParticle()
 {
   k_sceta=-999;
   k_dxy=-999;
+  k_dxy_sig=-999;
   k_dz=-999;
   k_gsf_ctscpix_charge=false;
   k_hasmatchconvphot=false; 
@@ -42,7 +43,12 @@ KParticle()
   pass_notrigmva_tight=false;
   k_mc_matched=false;
   k_is_cf=false;
+  k_is_conv=false;
   k_is_fromtau=false;
+  k_mother_pdgid=-1;
+  k_mc_pdgid=-1;
+  k_mother_index=-1;
+  k_mc_index=-1;
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
@@ -63,9 +69,10 @@ KElectron::KElectron(const KElectron& el) :
   
   k_sceta= el.SCEta();
   k_dxy= el.dxy();
+  k_dxy_sig= el.dxySig();
   k_dz= el.dz();
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
-  k_hasmatchconvphot= el.HasMatchedConvPhot();
+  k_hasmatchconvphot= el.PassesConvVeto();
   k_pf_chargedhad_iso03= el.PFChargedHadronIso(0.3);
   k_pf_photon_iso03 = el.PFPhotonIso(0.3);
   k_pf_neutral_iso03= el.PFNeutralHadronIso(0.3);
@@ -89,7 +96,12 @@ KElectron::KElectron(const KElectron& el) :
   pass_notrigmva_tight=el.PassNotrigMVATight();
   k_mc_matched=el.MCMatched();
   k_is_cf=el.MCIsCF();
+  k_is_conv=el.MCIsFromConversion();
   k_is_fromtau=el.MCFromTau();
+  k_mother_pdgid=el.MotherPdgId();
+  k_mc_pdgid=el.MCMatchedPdgId();
+  k_mother_index=el.MotherTruthIndex();
+  k_mc_index=el.MCTruthIndex();
   k_isPF=el.IsPF();
   k_istrigmvavalid=el.IsTrigMVAValid();
   snu_id = el.SNUID();
@@ -111,6 +123,7 @@ void KElectron::Reset()
   KParticle::Reset();
   k_sceta=-999;
   k_dxy=-999;
+  k_dxy_sig=-999;
   k_dz=0;
   k_gsf_ctscpix_charge=false;
   k_hasmatchconvphot=false;
@@ -135,7 +148,12 @@ void KElectron::Reset()
   pass_notrigmva_tight=false;
   k_mc_matched=false;
   k_is_cf=false;
+  k_is_conv=false;
   k_is_fromtau=false;
+  k_mother_pdgid=-1;
+  k_mc_pdgid=1;
+  k_mother_index=-1;
+  k_mc_index=-1;
   k_isPF=false;
   k_istrigmvavalid=false;
   snu_id = -999;
@@ -158,9 +176,10 @@ KElectron& KElectron::operator= (const KElectron& p)
     KParticle::operator=(p);
     k_sceta= p.SCEta();
     k_dxy= p.dxy();
+    k_dxy_sig= p.dxySig();
     k_dz= p.dz();
     k_gsf_ctscpix_charge= p.GsfCtfScPixChargeConsistency();
-    k_hasmatchconvphot= p.HasMatchedConvPhot();
+    k_hasmatchconvphot= p.PassesConvVeto();
     k_pf_chargedhad_iso03= p.PFChargedHadronIso(0.3);
     k_pf_photon_iso03 = p.PFPhotonIso(0.3);
     k_pf_neutral_iso03= p.PFNeutralHadronIso(0.3);
@@ -182,7 +201,12 @@ KElectron& KElectron::operator= (const KElectron& p)
     pass_notrigmva_tight=p.PassNotrigMVATight();
     k_mc_matched=p.MCMatched();
     k_is_cf =p.MCIsCF();
+    k_is_conv =p.MCIsFromConversion();
     k_is_fromtau=p.MCFromTau();
+    k_mother_pdgid=p.MotherPdgId();
+    k_mc_pdgid=p.MCMatchedPdgId();
+    k_mother_index=p.MotherTruthIndex();
+    k_mc_index=p.MCTruthIndex();
     k_isPF=p.IsPF();
     k_istrigmvavalid=p.IsTrigMVAValid();
     snu_id = p.SNUID();
@@ -361,10 +385,33 @@ void KElectron::SetIsFromTau(bool istau){
   k_is_fromtau=istau;
 }
 
+void KElectron::SetMotherPdgId(int type){
+  k_mother_pdgid=type;
+}
+
+void KElectron::SetMCMatchedPdgId(int type){
+  k_mc_pdgid=type;
+}
+
+void KElectron::SetMotherTruthIndex(int mindex){
+  k_mother_index=mindex;
+}
+
+void KElectron::SetMCTruthIndex(int tindex){
+  k_mc_index=tindex;
+}
+
+
 
 void KElectron::SetIsChargeFlip(bool iscf){
   k_is_cf=iscf;
 }
+
+
+void KElectron::SetIsPhotonConversion(bool isconv){
+  k_is_conv=isconv;
+}
+
 void KElectron::SetSCEta(Double_t sceta){
   k_sceta = sceta;
 }
@@ -377,7 +424,9 @@ void KElectron::Setdz(double d_z){
 void KElectron::Setdxy(double d_xy){ 
   k_dxy = d_xy;
 }
- 
+void KElectron::Setdxy_sig(double d_xysig){
+  k_dxy_sig = d_xysig;
+}
 
  
 void KElectron::SetPFChargedHadronIso(Double_t cone, Double_t pf_ch){

@@ -40,7 +40,7 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
              "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",
              "TT_TuneCUETP8M1_13TeV-powheg-pythi8",
-             "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"
+             "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
              "WpWpJJ_EWK_TuneCUETP8M1_13TeV-madgraph-pythia8",
              "WW_DoubleScattering_13TeV-pythia8",
              "WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
@@ -64,13 +64,26 @@ sampledir = ["WZ_TuneCUETP8M1_13TeV-pythia8",
              "WWTo2L2Nu_13TeV-powheg",
              "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
              "WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8",
-             "WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"             
+             "WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
+             "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"
              ]
 
-sampledir = ["MajoranaNeutrinoToMM_M-40_TuneZ2star_13TeV-alpgen",
-             "MajoranaNeutrinoToMM_M-100_TuneZ2star_13TeV-alpgen",
-             "MajoranaNeutrinoToMM_M-500_TuneZ2star_13TeV-alpgen",
-             "MajoranaNeutrinoToMM_M-1500_TuneZ2star_13TeV-alpgen"]
+
+file_list_all="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_" + version +".txt"
+
+missing_sample="False"
+for line in open(file_list_all, 'r'):
+    
+    if ("/data2/DATA/cattoflat/MC/" + version +"/") in line:
+        sample_in_list="False"
+        for i in sampledir:
+            if i in line:
+                sample_in_list="True"
+        if sample_in_list == "False":
+            #print "Missing sample " + line
+            missing_sample="True"
+
+
 skip=0
 counter=0
 
@@ -112,11 +125,11 @@ for i in sampledir:
          os.system("mkdir " + output+ "/" + str(j))
          
       configfile=open(output+ "/"  + str(j) + "/" + runscript,'w')
-      configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/MC/" + version + "/"+ output,output+ "/list.txt",j, output))
+      configfile.write(makeNtupleMakerH("/data2/DATA/cattoflat/MC/" + version + "/"+ output,output+ "/list.txt",j, output,False))
       configfile.close()
 
       configfileC=open(output+ "/" + str(j) + "/" + runscriptC,'w')
-      configfileC.write(makeNtupleMakerC(output + "/" +  str(j),output+ "/list.txt", j))
+      configfileC.write(makeNtupleMakerC(output + "/" +  str(j),output+ "/list.txt", j, False))
       configfileC.close()
       
       os.system("root -l -q -b " +  output+ "/" + str(j) + "/SkimFlatCat.C &> " + output + "/" + str(j) + "/log.txt&" )

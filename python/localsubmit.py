@@ -39,6 +39,7 @@ parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-v", "--catversion", dest="catversion", default="", help="What cat version?")
+parser.add_option("-f", "--skflag", dest="skflag", default="", help="add input flag?")
 
 
 ###################################################
@@ -72,6 +73,7 @@ useCATv742ntuples = options.useCATv742ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
+skflag=options.skflag
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel
@@ -188,6 +190,7 @@ else:
         running_batch=False
 
 
+
 if not cycle == "SKTreeMaker":
     if not cycle == "SKTreeMakerNoCut":
         if not cycle == "SKTreeMakerDiLep":
@@ -223,8 +226,7 @@ if not os.path.exists(timestamp_dir+"/job_output/"):
     os.system("mkdir " + timestamp_dir+"/job_output/")
 
 local_sub_dir=  timestamp_dir + "/job_output/"  + sample + '_' + new_channel + '_' + now()
-
-    
+  
 if not os.path.exists(local_sub_dir):
     os.system("mkdir " + local_sub_dir)
         
@@ -257,13 +259,14 @@ if platform.system() == "Linux":
     if n_previous_jobs > 10:
         number_of_cores = 2
         if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+
             print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
 
         for line in open(filename, 'r'):
             print line
     if njob_user  > 5:
         number_of_cores = 1
-    os.system("rm " + filename)
+    os.sy∂stem("rm " + filename)
 
     os.system("top  -n 1 -b | grep 'cmsRun' &> " + local_sub_dir + "/toplog2")
     filename2 = local_sub_dir +'/toplog2'
@@ -333,11 +336,13 @@ if number_of_cores <  -100:
 if number_of_cores < 0:
     number_of_cores=1
 
-if number_of_cores < 5:
-    if "DY" in sample:
-        number_of_cores = 10
-    if "TT " in sample:
-        number_of_cores = 10
+if number_of_cores < 6:
+    if number_of_cores > 1:
+        
+        if "DY" in sample:
+            number_of_cores = 10
+        if "TT " in sample:
+            number_of_cores = 10
 
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
@@ -480,7 +485,8 @@ inDS = ""
 mcLumi = 1.0
 filechannel=""
 
-catversions = ["v7-6-3",
+catversions = ["v7-6-4",
+               "v7-6-3",
                "v7-6-2",
                "v7-4-5",
                "v7-4-4"]
@@ -757,7 +763,10 @@ if not mc:
 else:
     if useCATv742ntuples == "True":
                 outsamplename = outsamplename + "_cat_"+ output_catversion
-        
+
+if  "SKTreeMaker" in cycle:            
+    outsamplename = outsamplename +  os.getenv("CATTAG")
+
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
 
@@ -768,7 +777,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf, skflag)) #job, input, sample, ver, output
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -793,7 +802,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf, skflag))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -820,7 +829,7 @@ for line in fr:
         fwrite = open(filelist, 'a')
         fwrite.write(line)
         #configfile=open(runscript,'w')
-        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
+        #configfile.write(makeConfigFile(loglevel,sample, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf, skflag))
         #configfile.close()
         filesprocessed+=1
         fwrite.close()        
@@ -1246,7 +1255,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                
+                os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1282,6 +1291,7 @@ else:
             Finaloutputdir += original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
+                os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1316,7 +1326,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-
+                os.system("chmod 755 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerTriLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1348,7 +1358,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                                
+                os.system("chmod 755 -R " +  Finaloutputdir)
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)
@@ -1403,3 +1413,5 @@ end_time = time.time()
 total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
+
+#  LocalWords:  Finaloutputdir

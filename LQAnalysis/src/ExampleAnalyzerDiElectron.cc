@@ -15,6 +15,8 @@
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
+using namespace snu;
+
 //// Needed to allow inheritance for use in LQCore/core classes
 ClassImp (ExampleAnalyzerDiElectron);
 
@@ -94,14 +96,31 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
 
-  ///// SIGNAL PLOTS
-  /*  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-    if(fabs(genBColl[ig].PdgId()) == 11){
-
-      
-    }
-    }*/
   
+  
+  /// Updated way to cound bjets using NBJet function
+  /// NBJet counts number of bjets, but varies the value of btag disciminant as expained in 
+  /// 2a) on https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
+
+  /// Allowed input for taggers are:
+  /// snu::KJet::CSVv2
+  /// snu::KJet::cMVAv2
+  /// Allowed values for WP are:
+  /// snu::KJet::Loose
+  /// snu::KJet::Medium
+  /// snu::KJet::Tight
+  int nbjet_using_btagsf = NBJet(GetJets(BaseSelection::JET_HN), snu::KJet::CSVv2, snu::KJet::Tight);
+  
+  /// Can also check invidual jets using IsBTagged function in AnalyzerCore
+  int nbjet_just_using_sf(0);
+  for(unsigned int ij =0; ij < GetJets(BaseSelection::JET_HN).size(); ij++){
+    if(IsBTagged(GetJets(BaseSelection::JET_HN).at(ij), snu::KJet::CSVv2, snu::KJet::Tight)) nbjet_just_using_sf++;
+  }
+  
+  std::vector<snu::KMuon> muonColl_truth = GetMuons(BaseSelection::MUON_POG_TIGHT);
+  for(unsigned int im=0; im < muonColl_truth.size() ; im++){
+  }
+
 
   /// Apply MC weight for MCatnlo samples
   // MC weight = gen weight * lumimask weight
@@ -134,7 +153,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   // This trigger will be  Unprescaled till L = 7E33 (may be used for this whole year) 
   // https://indico.cern.ch/event/370510/contribution/1/attachments/1161160/1671811/EleTriggers_Arun_28Sept_v1.pdf
-  //if(!PassTrigger(triggerslist, prescale)) return;
+  if(!PassTrigger(triggerslist, prescale)) return;
   
   /// Target lumi = total lumi in json file. 
   /// ApplyPrescale reweights the MC to the luminosity of the trigger you are using
@@ -192,9 +211,9 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
   
-  cout << " " << endl;
   
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
 
@@ -211,12 +230,19 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronColl_nocut             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
 
+  std::vector<snu::KElectron> electronColl             = GetElectrons( BaseSelection::ELECTRON_POG_TIGHT);
+  for(unsigned int iel=0; iel < electronColl.size(); iel++){
+    int index_truth = electronColl.at(iel).MCTruthIndex();
+    bool isprompt   = eventbase->GetTruth().at(index_truth).StatusFlag(KTruth::isprompt);
+  }
+  
+
+
+
   //for(unsigned int iel = 0 ; iel < electronColl_nocut.size() ; iel++){
   // cout << "RECO " << electronColl_nocut.at(iel).Eta() << " " << electronColl_nocut.at(iel).Phi() << " " << electronColl_nocut.at(iel).Pt() << endl;
   // }
 
-  
-  std::vector<snu::KElectron> electronColl             = GetElectrons(false, false, BaseSelection::ELECTRON_POG_TIGHT);
   std::vector<snu::KElectron> electronColl_all             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
   
   FillHist("TruthMatchingAll", weight, electronColl_all.size(), 0., 6.,6);
@@ -252,10 +278,18 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   /// Correct MC for pileup   
   
   float pileup_reweight (1.);
-  if (!k_isdata) {
+  if (!isData) {
     /// use silver or gold
+    /// Weights use:
+    //  pileupCalc.py -i Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt 
+    // --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 PileUpData_Dn.root
     pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
   }
+  
+  /// using AltPileUpWeight for minbias xs = 71000
+  // pileup_reweight = eventbase->GetEvent().AltPileUpWeight(lumimask);
+  
+
   FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
   
   float id_weight=1.;
@@ -383,8 +417,8 @@ void ExampleAnalyzerDiElectron::BeginCycle() throw( LQError ){
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
-  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
-  DeclareVariable(out_muons, "Signal_Muons");
+  //DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
+  //DeclareVariable(out_muons, "Signal_Muons");
 
   
   return;
