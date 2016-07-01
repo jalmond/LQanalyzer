@@ -43,12 +43,15 @@ void GetEffectiveLuminosity(TString version="") {
   map<TString, Double_t> dirmap = GetXSecMap(); 
   map<TString, TString> lqmap = GetLQMap();
   map<TString, TString> trilepmap = GetTriLepMap();
+  TString analysisdir = TString(getenv("HOSTNAME"));
+  bool cluster = false;
+  if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
 
   for(std::map<TString, Double_t>::iterator mit =dirmap.begin(); mit != dirmap.end();++mit){
-    
 
-    
+  
     TString dir = "ls /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
+    if(cluster) dir = "ls /data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
     
     bool use_sum_genweight(false);
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
@@ -112,6 +115,7 @@ void GetEffectiveLuminosity(TString version="") {
       
       TString command4 = "rm log/checkoutput.txt";
       TString command5= "ls   /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/  > log/checkoutput.txt";
+      if(cluster) command5= "ls   /data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/  > log/checkoutput.txt";
       system(command4.Data());
       system(command5.Data());
       TString filename_fs = "log/checkoutput.txt";
@@ -122,8 +126,8 @@ void GetEffectiveLuminosity(TString version="") {
 	name_file >> filen;
 	if(TString(filen).Contains(".root"))counter++;
       }
-      cout << "Number of files in /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/ = " << counter << endl;
-     
+      if(!cluster)cout << "Number of files in /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/ = " << counter << endl;
+      else cout << "Number of files in //data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/ = " << counter << endl;
       bool JobDone=false;
       while (JobDone==false){
 	TString command6= "ls  "  + mit->first + "/output/ > log/checkcounted.txt";
@@ -166,6 +170,8 @@ void GetEffectiveLuminosity(TString version="") {
   
   ofstream lumi_file;
   string lfile =  "datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
+  if(cluster) lfile =  "datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
+
   lumi_file.open(lfile.c_str());
   lumi_file.setf(ios::fixed,ios::floatfield); 
   lumi_file.precision(1);
@@ -185,7 +191,9 @@ void GetEffectiveLuminosity(TString version="") {
     std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);    
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);    
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);    
-    lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /data2/DATA/cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;
+    if(!cluster)lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /data2/DATA/cattoflat/MC/" << version <<"/"  << mit->first << "/" <<endl;
+    else lumi_file <<  mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << "  /data4/DATA/FlatCatuples/MC/" << version <<"/"  << mit->first << "/" <<endl;
+
   }
 
   lumi_file << "" << endl;
@@ -196,7 +204,9 @@ void GetEffectiveLuminosity(TString version="") {
     std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-    lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
+    if(cluster)lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data4/LocalNtuples/SKTrees13TeV/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
+    else lumi_file <<  "SK" << mit2->second << "  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MC/" << mit2->second << "/" <<endl;
+    
   }
   
   
@@ -208,6 +218,7 @@ void GetEffectiveLuminosity(TString version="") {
     std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
     std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
+
     lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
   }
   
@@ -277,11 +288,13 @@ void GetEffectiveLuminosity(TString version="") {
 
   string lqdir = getenv("LQANALYZER_DIR");
   string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
+  if(cluster) lfile2 =  lqdir + "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
 
   TString user = TString(getenv("USER"));
-  if(user.Contains("jalmond"))  
-    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
-
+  if(user.Contains("jalmond"))  {
+    if(!cluster)gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+    else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+  }
 
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
@@ -313,6 +326,7 @@ float GetEventsPassed(std::string filename){
 float GetSumWeights(std::string filename){
   TFile* file = TFile::Open(filename.c_str());
 
+  cout << "GetSumWeights :: " << endl;
   TDirectory * dir = (TDirectory*)file->Get(TString(filename) + ":/ntuple");
   TTree * tree;
   dir->GetObject("event",tree);

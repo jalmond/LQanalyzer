@@ -1,6 +1,6 @@
 # Specify_location_of_data/mc
 mcpath	        /home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ExampleAnalyzerDiElectron/periodCtoD/
-datapath	/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ExampleAnalyzerDiElectron/periodCtoD/ExampleAnalyzerDiElectron_data_cat_v7-6-3.root
+datapath	/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ExampleAnalyzerDiElectron/periodCtoD/ExampleAnalyzerDiElectron_data_cat_v7-6-2.root
 datadrivenpath	/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/data/output/CAT/ExampleAnalyzerDiElectron/periodCtoD/
 # Specify_the_list_of_hists_to_plot
 plottingpath	dat/hnhist_config.txt

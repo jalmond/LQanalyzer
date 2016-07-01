@@ -92,40 +92,9 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
-  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-
+  //  FillHist("Runnumber",eventbase->GetEvent().RunNumber(),1.,Runs, nRun);
   
-  
-  /// Updated way to cound bjets using NBJet function
-  /// NBJet counts number of bjets, but varies the value of btag disciminant as expained in 
-  /// 2a) on https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods
-
-  /// Allowed input for taggers are:
-  /// snu::KJet::CSVv2
-  /// snu::KJet::cMVAv2
-  /// Allowed values for WP are:
-  /// snu::KJet::Loose
-  /// snu::KJet::Medium
-  /// snu::KJet::Tight
-  int nbjet_using_btagsf = NBJet(GetJets(BaseSelection::JET_HN), snu::KJet::CSVv2, snu::KJet::Tight);
-  
-  /// Can also check invidual jets using IsBTagged function in AnalyzerCore
-  int nbjet_just_using_sf(0);
-  for(unsigned int ij =0; ij < GetJets(BaseSelection::JET_HN).size(); ij++){
-    if(IsBTagged(GetJets(BaseSelection::JET_HN).at(ij), snu::KJet::CSVv2, snu::KJet::Tight)) nbjet_just_using_sf++;
-  }
-  
-  std::vector<snu::KMuon> muonColl_truth = GetMuons(BaseSelection::MUON_POG_TIGHT);
-  for(unsigned int im=0; im < muonColl_truth.size() ; im++){
-  }
-
-
-  /// Apply MC weight for MCatnlo samples
-  // MC weight = gen weight * lumimask weight
-  // gen wieght = 1, -1
-  // lumimask weight = 1 for silver json and lumi_gold/lumi_silver for gold
 
   if(!isData)weight*= MCweight;
   
@@ -209,40 +178,14 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jetColl_loose  = GetJets(BaseSelection::JET_LOOSE);
 
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
-
   
   
-  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-    
-    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
-    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-
-    if(eventbase->GetTruth().at(ig).PdgId() == 90 && eventbase->GetTruth().at(ig).GenStatus() == 22)  FillHist("N_mass", eventbase->GetTruth().at(ig).M() ,weight, 0. , 2500., 2500);
-    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 24 && eventbase->GetTruth().at(ig).GenStatus()== 22){
-      cout << eventbase->GetTruth().at(ig).PdgId() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " << eventbase->GetTruth().at(ig).M() << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< endl;
-      if(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId() == 90)  FillHist("W2_mass", eventbase->GetTruth().at(ig).M() ,weight, 0. , 1500., 500);
-      else if(eventbase->GetTruth().at(ig).M() == eventbase->GetTruth().at(ig).M())   FillHist("W1_mass", eventbase->GetTruth().at(ig).M() ,weight, 0. , 5000., 500);
-    }
-  }
-  
-      // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
+  // Get POG electrons :  Can call POGVeto/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight                                                                                              
   std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
-
   std::vector<snu::KElectron> electronColl_nocut             =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
 
-  std::vector<snu::KElectron> electronColl             = GetElectrons( BaseSelection::ELECTRON_POG_TIGHT);
-  for(unsigned int iel=0; iel < electronColl.size(); iel++){
-    int index_truth = electronColl.at(iel).MCTruthIndex();
-    bool isprompt   = eventbase->GetTruth().at(index_truth).StatusFlag(KTruth::isprompt);
-  }
+  std::vector<snu::KElectron> electronColl             = GetElectrons(false,false, BaseSelection::ELECTRON_POG_TIGHT);
   
-
-
-
-  //for(unsigned int iel = 0 ; iel < electronColl_nocut.size() ; iel++){
-  // cout << "RECO " << electronColl_nocut.at(iel).Eta() << " " << electronColl_nocut.at(iel).Phi() << " " << electronColl_nocut.at(iel).Pt() << endl;
-  // }
-
   std::vector<snu::KElectron> electronColl_all             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
   
   FillHist("TruthMatchingAll", weight, electronColl_all.size(), 0., 6.,6);
@@ -250,6 +193,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
  
   
   float weight_trigger_sf = TriggerScaleFactor(electronColl, muonColl, analysis_trigger);
+  //if(isData) weight_trigger_sf=1.;
   FillHist("TriggerSFWeight" , weight_trigger_sf, 1., 0. , 2., 200);
   
   // Sets weight to weight if not running chargeflip bkg estimate or events are S
@@ -333,7 +277,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       
   if(electronColl.size() == 2 ) {
     
-   if(electronColl.at(0).Pt() > 20. && electronColl.at(1).Pt() > 15. ){
+    if(electronColl.at(0).Pt() > 20. && electronColl.at(1).Pt() > 15. ){
       
       FillHist("Njets_dilepton", jetColl_hn.size() ,weight, 0. , 5., 5);
       FillCutFlow("DiEl_tight", weight);
@@ -378,7 +322,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   }
   
   
-    
+  return;
   
   if(electronLooseColl.size() == 3 && muonColl.size() == 0) {
     if(electronLooseColl.at(0).Pt() > 25. && electronLooseColl.at(2).Pt() > 25. ){

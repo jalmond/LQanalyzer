@@ -26,7 +26,7 @@ void CountGenWeights(std::string outdir,std::string filename, std::string  histf
 
   std::string outputname = outdir + "/" + histfile ;
   TFile *skimfile = new TFile(outputname.c_str(),"recreate");
-  TH1F* h = new TH1F ("sumweight", "sumweight", 0., 2., 2);
+  TH1F* h = new TH1F ("sumweight", "sumweight", 2, 0., 2.);
   h->Fill(1., sum_weight);
   skimfile->Write();
   skimfile->Close();

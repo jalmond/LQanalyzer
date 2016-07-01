@@ -1,7 +1,7 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-declare -a list_of_catversions=("v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
@@ -61,10 +61,26 @@ set_submit_file_list=false
 set_submit_sampletag=false
 set_sktreemaker_debug=false
 
+
+TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+FLATCAT_MC="/data2/DATA/cattoflat/MC/"
+SKTREE_MC="/data2/CatNtuples/"
+if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+then
+    TXTPATH=${LQANALYZER_RUN_PATH}"/txt/Cluster/datasets_snu_cluster_"
+    FLATCAT_MC="/data4/DATA/FlatCatuples/MC/"
+    SKTREE_MC="/data4/LocalNtuples/SKTrees13TeV/"
+fi
+
+
+
+
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
+
+
 
 
 ############## Check flags for fake/flip analysis
@@ -349,7 +365,8 @@ if [[ $submit_file_tag  != ""  ]];
 			isoldname=true;
 		    fi
 		fi
-	      done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${oclist}.txt
+	      done < ${TXTPATH}"CAT_mc_${oclist}.txt"
+
 	    done
 	    
 	    if [[ $isoldname == "true" ]];
@@ -1097,8 +1114,11 @@ if [[ $changed_job_njobs == "true" ]];
 	    job_njobs=-300
 	elif [[ $job_njobs -gt 5 ]];
 	    then
-	    echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-5)"
-	    job_njobs=5
+	    if [ $HOSTNAME != "cmscluster.snu.ac.kr" ];
+	    then
+		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-5)"
+		job_njobs=5
+	    fi
 	fi
     fi
     njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "$job_njobs 

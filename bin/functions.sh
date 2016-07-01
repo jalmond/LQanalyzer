@@ -24,6 +24,8 @@ runnp="False"
 runcf="False"
 skflag=""
 catversion=""
+usebatch="NULL"
+
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 

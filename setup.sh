@@ -30,6 +30,23 @@ if [[ $setupok == "False" ]]; then
     return 1
 fi
 
+
+
+if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
+then
+    if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    then
+        echo "Setup failed. LQanalyzer needs to be in /data4/LQAnalyzerCode/"$USER
+        if [ ! -d /data4/LQAnalyzerCode/$USER ]; then
+            mkdir /data4/LQAnalyzerCode/$USER
+        fi
+        echo "Move the current LQAnalyzer directory to "/data4/LQAnalyzerCode/$USER
+
+        return
+    fi
+fi
+
+
 if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
     return 1
@@ -38,12 +55,19 @@ fi
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     export root_setup="/usr/local/bin/thisroot.sh"
+elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+then
+    source /share/apps/root_v5_34_32/root/bin/thisroot.sh
 else
     export root_setup=$HOME"/root/root/bin/thisroot.sh"
 fi    
 
+
+
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
+
+
 
 ##### Check that this is not the branch and a tag was checked out
 source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
@@ -55,7 +79,16 @@ alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
+
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
+if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+then
+    export LQANALYZER_FILE_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
+    export CATTAGDIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATTag/"
+fi
+
+
+
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
 ### setup paths to be used in analysis code
@@ -115,6 +148,7 @@ fi
 export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
 
 export LQANALYZER_RUN_PATH=${LQANALYZER_DIR}/LQRun/
+export LQANALYZER_CLUSTER_TXT_PATH=${LQANALYZER_DIR}/LQRun/txt/Cluster/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
@@ -152,6 +186,12 @@ export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyz
 
 export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
+
+if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    then
+    export LQANALYZER_OUTPUT_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
+    export LQANALYZER_LOG_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
+fi
 
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
 

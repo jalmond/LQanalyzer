@@ -17,6 +17,7 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
   map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
   map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
   map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",500,0,500);
+  map_sig["h_llpt"]                 =     new TH1F("h_llpt_"           + name,"Invariant pt of the two leading muons",500,0,1000);
   map_sig["h_lljmass"]                =     new TH1F("h_lljmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
   map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
   map_sig["h_ll_phi"]                 =     new TH1F("h_ll_phi_"          + name,"dilepton pt",100,-4,4);  
@@ -185,6 +186,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
    
   if(muons.size()>=2){
     Fill("h_llmass", (muons[0]+muons[1]).M(),weight);
+    Fill("h_llpt", (muons[0]+muons[1]).M(),weight);
     Fill("h_ll_pt", (muons[0]+muons[1]).Pt(),weight);
     Fill("h_ll_eta", (muons[0]+muons[1]).Phi(),weight);
     Fill("h_ll_phi", (muons[0]+muons[1]).Eta(),weight);

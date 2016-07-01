@@ -40,6 +40,7 @@ parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-v", "--catversion", dest="catversion", default="", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="", help="add input flag?")
+parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 
 
 ###################################################
@@ -74,6 +75,8 @@ tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
 skflag=options.skflag
+usebatch =options.usebatch
+
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel
@@ -241,7 +244,7 @@ if "DY50"  in sample:
     large_sample=True
 
 
-
+ncore_def=number_of_cores
 import platform
 BusyMachine=False
 username = str(os.getenv("USER"))
@@ -266,7 +269,7 @@ if platform.system() == "Linux":
             print line
     if njob_user  > 5:
         number_of_cores = 1
-    os.sy∂stem("rm " + filename)
+    os.system("rm " + filename)
 
     os.system("top  -n 1 -b | grep 'cmsRun' &> " + local_sub_dir + "/toplog2")
     filename2 = local_sub_dir +'/toplog2'
@@ -276,7 +279,7 @@ if platform.system() == "Linux":
     if n_previous_jobs > 10:
         BusyMachine=True
     os.system("rm " + filename2)    
-nj_def=30
+nj_def=100
 
 
 if large_sample == True:
@@ -510,12 +513,12 @@ while inDS == "":
         if mc:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/CLUSTER/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
+                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_mc_' +sample_catversion +  '.txt'
 
         else:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/CLUSTER/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_data_'  +sample_catversion +'.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
              
@@ -1198,18 +1201,31 @@ else:
             print line
 
 
-
     SKTreeOutput_pre = output_mounted+"/CatNtuples/" + sample_catversion
-    if not os.path.exists(SKTreeOutput_pre):
-        os.system("mkdir " + SKTreeOutput_pre)
+    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput_pre = "/data4/LocalNtuples/SKTrees13TeV/"+sample_catversion
+        if not os.path.exists(SKTreeOutput_pre):
+            os.system("mkdir " + SKTreeOutput_pre)
+
+    if not  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        if not os.path.exists(SKTreeOutput_pre):
+            os.system("mkdir " + SKTreeOutput_pre)
 
     SKTreeOutput_pre2 = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
-    if not os.path.exists(SKTreeOutput_pre2):
-        os.system("mkdir " + SKTreeOutput_pre2)
-                    
-        
-    SKTreeOutput = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
+    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput_pre2 = SKTreeOutput_pre   + "/SKTrees/"
+        if not os.path.exists(SKTreeOutput_pre2):
+            os.system("mkdir " + SKTreeOutput_pre2)
 
+    if not  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        if not os.path.exists(SKTreeOutput_pre2):
+            os.system("mkdir " + SKTreeOutput_pre2)
+                    
+            
+    SKTreeOutput = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
+    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput = "/data4/LocalNtuples/SKTrees13TeV/"+sample_catversion + "/SKTrees/"
+    
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):
