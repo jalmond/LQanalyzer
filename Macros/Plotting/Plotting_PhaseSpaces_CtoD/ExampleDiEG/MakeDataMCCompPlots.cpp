@@ -499,7 +499,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   vector<TString> legorder;
   legorder.push_back("DY#rightarrow ll; 10 < m(ll) < 50");
-  legorder.push_back("Wjets");
+  //legorder.push_back("Wjets");
   legorder.push_back("DY#rightarrow ll; m(ll) > 50");
   legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
   legorder.push_back("WZ,ZZ,WW");

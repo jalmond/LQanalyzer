@@ -699,11 +699,11 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   /// For v-7-6-2 default is set to gold because met is broken
 
   if(!reset_lumi_mask) {
-    if(VersionStamp(TString(CatVersion)) == 3) lumimask = snu::KEvent::gold;
-    else if(VersionStamp(TString(CatVersion)) == 4) lumimask = snu::KEvent::gold;
+    if(k_cat_version == 3) lumimask = snu::KEvent::gold;
+    else if(k_cat_version == 4) lumimask = snu::KEvent::gold;
 
     /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
-    else if(VersionStamp(TString(CatVersion)) < 3) lumimask = snu::KEvent::missing;
+    else if(k_cat_version < 3) lumimask = snu::KEvent::missing;
     else  lumimask = snu::KEvent::silver;
   }
 
@@ -744,7 +744,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   if(lumimask == snu::KEvent::gold){
     if(!k_isdata){
       weight*= SilverToGoldJsonReweight(per);
-
+      
       if(!changed_target_lumi){
 	TargetLumi *= SilverToGoldJsonReweight(per);
 	changed_target_lumi=true;
@@ -804,25 +804,26 @@ bool AnalyzerCore::IsSignal(){
 float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   
   if(eventbase->GetEvent().CatVersion().empty()) return 0.;
-  int cat_version=VersionStamp(TString(eventbase->GetEvent().CatVersion()));
+
   
-  if(cat_version<= 2)  return 0.;
+  if(k_cat_version<= 2)  return 0.;
   
+  float bad_ls=93.492; //  /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/BeamSpotIssue_JSON.txt
+
   
-  if(cat_version == 4){
+  if(k_cat_version == 4){
     
     /// Updated to silver2 + remove LS
     if (p == "C") return 1.;
-    if (p == "D") return 2195.547 / 2672.906;
-    if (p == "CtoD") return 2213.278 / 2690.637;
-
+    if (p == "D") return (2300.547-bad_ls) / (2672.906 -bad_ls);
+    if (p == "CtoD") return  ((2318.278 - bad_ls) / (2690.637-bad_ls));
     ///            GOLD      SILVER
     /// period C = 17.731    17.731
     /// period D = 2300.547   2672.906
     /// total C+D = 2318.278  2690.637
   }
 
-  else if(cat_version==3){
+  else if(k_cat_version==3){
     
     if (p == "C") return 1.;
     if (p == "D") return 2300.617 /2672.976;

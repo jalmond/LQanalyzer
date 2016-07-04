@@ -295,12 +295,14 @@ void LQController::SetDataPeriod(TString period){
                      LQError::StopExecution );
     }
 
-    /// brilcalc lumi -u /pb --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt
+    /// brilcalc lumi -u /pb --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt
+    float bad_ls=93.492;
     if( period == "C") target_luminosity = 17.731;
-    else if( period == "D") target_luminosity = 2672.906;
-    else if( period == "CtoD") target_luminosity = 17.731 + 2672.906;
-    else if( period == "ALL") target_luminosity = 17.731 + 2672.906;
-    else target_luminosity = 17.731 + 2672.906;
+    else if( period == "D") target_luminosity = 2672.906 -bad_ls;
+    else if( period == "CtoD") target_luminosity = 17.731 + 2672.906 - bad_ls;
+    else if( period == "ALL") target_luminosity = 17.731 + 2672.906 - bad_ls;
+    else target_luminosity = 17.731 + 2672.906 - bad_ls;
+
   }
 
 
@@ -605,6 +607,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       }
     }
 
+    cycle->SetVersion(VersionStamp(catversion_lq));
     cycle->SetCatVersion(SetNTCatVersion(catversion_lq));
     cycle->SetTargetLumi(target_luminosity);
     cycle->SetFlags(v_user_flags);
@@ -727,6 +730,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	cycle->GetEntry(jentry);	
 	if(!(jentry%50000)) m_logger << INFO << "Processing event " << jentry << " " << cycle->GetEventNumber() << LQLogger::endmsg;
 	if(cycle->GetEventNumber() == single_ev){
+	  Long64_t ifentry =cycle->LoadTree(jentry);
+          if (ifentry < 0) break;
 	  cycle->SetUpEvent(jentry, ev_weight,k_period);
 	  cycle->ClearOutputVectors();
 	  cycle->BeginEvent();
@@ -749,6 +754,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 	  Long64_t ifentry =cycle->LoadTree(jentry);
 	  if (ifentry < 0) break;    
 	  cycle->GetEntry(jentry);
+	  m_logger << DEBUG <<   jentry << LQLogger::endmsg;
 	  m_logger << DEBUG << "cycle->SetUpEvent " << LQLogger::endmsg;
 	  cycle->SetUpEvent(jentry, ev_weight,k_period);
 	  

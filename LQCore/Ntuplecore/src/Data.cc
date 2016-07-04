@@ -38,7 +38,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),setting_ntuple_data(-1),TargetLumi(0.),k_flags(0)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_cat_version(-1)
   
 {
 
@@ -96,9 +96,11 @@ Long64_t Data::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
+   m_logger << DEBUG << "LOADING TREE" << LQLogger::endmsg;
    Long64_t centry = fChain->LoadTree(entry);
+   m_logger << DEBUG << "LOADING TREE 2" << LQLogger::endmsg;
    if (centry < 0) return centry;
-   if (!fChain->InheritsFrom(TChain::Class()))  return centry;
+   //if (!fChain->InheritsFrom(TChain::Class()))  return centry;
    TChain *chain = (TChain*)fChain;
    if (chain->GetTreeNumber() != fCurrent) {
       fCurrent = chain->GetTreeNumber();
@@ -190,13 +192,35 @@ void Data::Reset(){
   // kEvent
   //run=0;
   //isData=0;
-  gen_pt = 0;
-  gen_eta = 0;
-  gen_phi = 0;
-  gen_energy = 0;
-  gen_status = 0;
-  gen_pdgid = 0;
-  gen_motherindex = 0;
+
+  //CatVersion = 0;
+  muon_trigmatch = 0;
+  electron_trigmatch = 0;
+  vtrignames = 0;
+  muon_isTracker = 0;
+  muon_isGlobal = 0;
+  muon_isLoose = 0;
+  muon_isMedium = 0;
+  muon_isTight = 0;
+  muon_isSoft = 0;
+  muon_matched = 0;
+  muon_isPF = 0;
+  electrons_electronID_loose = 0;
+  electrons_electronID_medium = 0;
+  electrons_electronID_tight = 0;
+  electrons_electronID_veto = 0;
+  electrons_electronID_mva_medium = 0;
+  electrons_electronID_mva_tight = 0;
+  electrons_electronID_mva_trig_medium = 0;
+  electrons_electronID_mva_trig_tight = 0;
+  electrons_electronID_heep = 0;
+  electrons_mcMatched = 0;
+  electrons_isPF = 0;
+  electrons_passConversionVeto = 0;
+  electrons_isTrigMVAValid = 0;
+  jets_isLoose = 0;
+  jets_isTight = 0;
+  jets_isTightLepVetoJetID = 0;
   gen_isprompt = 0;
   gen_isdecayedleptonhadron = 0;
   gen_istaudecayproduct = 0;
@@ -205,106 +229,100 @@ void Data::Reset(){
   gen_ishardprocess = 0;
   gen_fromhardprocess = 0;
   gen_fromhardprocess_beforeFSR = 0;
-  
-  ScaleWeights = 0;
-  PDFWeights = 0;
-  //  CatVersion="";
-  //kElectron
+  vtrigps = 0;
+  muon_validhits = 0;
+  muon_validmuonhits = 0;
+  muon_matchedstations = 0;
+  muon_validpixhits = 0;
+  muon_trackerlayers = 0;
+  muon_q = 0;
+  electrons_electronID_snu = 0;
+  electrons_q = 0;
+  jets_partonFlavour = 0;
+  jets_hadronFlavour = 0;
+  jets_partonPdgId = 0;
+  jets_vtxNtracks = 0;
+  gen_status = 0;
+  gen_pdgid = 0;
+  gen_motherindex = 0;
+  genjet_pdgid = 0;
+  muon_x = 0;
+  muon_y = 0;
+  muon_z = 0;
+  muon_pt = 0;
+  muon_eta = 0;
+  muon_phi = 0;
+  muon_m = 0;
+  muon_energy = 0;
+  muon_dxy = 0;
+  muon_sigdxy = 0;
+  muon_dz = 0;
+  muon_normchi = 0;
+  muon_relIso03 = 0;
+  muon_relIso04 = 0;
+  muon_shiftedEdown = 0;
+  muon_shiftedEup = 0;
+  electrons_x = 0;
+  electrons_y = 0;
+  electrons_z = 0;
+  electrons_pt = 0;
+  electrons_eta = 0;
+  electrons_phi = 0;
+  electrons_m = 0;
+  electrons_energy = 0;
+  electrons_relIso03 = 0;
+  electrons_relIso04 = 0;
+  electrons_shiftedEnDown = 0;
+  electrons_shiftedEnUp = 0;
   electrons_absIso03 = 0;
   electrons_absIso04 = 0;
   electrons_chIso03 = 0;
   electrons_chIso04 = 0;
-  electrons_dxy = 0;
-  electrons_sigdxy = 0;
-  electrons_dz = 0;
-  electrons_energy = 0;
-  electrons_eta = 0;
-  electrons_isGsfCtfScPixChargeConsistent = 0;
-  electrons_m = 0;
   electrons_nhIso03 = 0;
   electrons_nhIso04 = 0;
   electrons_phIso03 = 0;
   electrons_phIso04 = 0;
-  electrons_phi = 0;
-  electrons_pt = 0;
+  electrons_scEta = 0;
+  electrons_dxy = 0;
+  electrons_sigdxy = 0;
+  electrons_dz = 0;
+  electrons_isGsfCtfScPixChargeConsistent = 0;
   electrons_puChIso03 = 0;
   electrons_puChIso04 = 0;
-  electrons_q = 0;
-  electrons_relIso03 = 0;
-  electrons_relIso04 = 0;
-  electrons_scEta = 0;
-  electrons_shiftedEnDown = 0;
-  electrons_shiftedEnUp = 0;
-  electrons_x = 0;
-  electrons_y = 0;
-  electrons_z = 0;
-  
-  //Photons
-  photons_pt = 0;
-  photons_eta = 0;
-  photons_phi = 0;
-  photons_energy = 0;
-  photons_chargedHadronIso = 0;
-  photons_puChargedHadronIso = 0;
-  photons_neutralHadronIso = 0;
-  photons_photonIso = 0;
-  photons_rhoIso = 0;
-  photons_chargedHadronIsoWithEA = 0;
-  photons_neutralHadronIsoWithEA = 0;
-  photons_photonIsoWithEA = 0;
-  photons_sigmaietaieta = 0;
-  photons_r9 = 0;
-  photons_hovere = 0;
-  photons_sceta = 0;
-  photons_scphi = 0;
-  photons_scrawenergy = 0;
-  photons_scpreshowerenergy = 0;
-
-  // Jets
+  jets_pt = 0;
+  jets_eta = 0;
+  jets_phi = 0;
+  jets_m = 0;
+  jets_energy = 0;
+  jets_vtxMass = 0;
+  jets_vtx3DVal = 0;
+  jets_vtx3DSig = 0;
   jets_CSVInclV2 = 0;
-  jets_JetProbBJet = 0;
-  jets_CMVAV2 = 0;
   jets_iCSVCvsL = 0;
   jets_CCvsLT = 0;
   jets_CCvsBT = 0;
-  
+  jets_JetProbBJet = 0;
+  jets_CMVAV2 = 0;
   jets_chargedEmEnergyFraction = 0;
-  jets_energy = 0;
-  jets_eta = 0;
-  jets_PileupJetId = 0;
-  jets_m = 0;
-  jets_phi = 0;
-  jets_pt = 0;
   jets_shiftedEnDown = 0;
   jets_shiftedEnUp = 0;
   jets_smearedRes = 0;
   jets_smearedResDown = 0;
   jets_smearedResUp = 0;
-  jets_vtx3DSig = 0;
-  jets_vtx3DVal = 0;
-  jets_vtxMass = 0;
-  met_phi = 0;
-  met_pt = 0;
-  met_sumet = 0;
-  met_unclusteredEn_Px_down = 0;
-  met_unclusteredEn_Px_up = 0;
-  met_unclusteredEn_Py_down = 0;
-  met_unclusteredEn_Py_up = 0;
-  met_unclusteredEn_SumEt_down = 0;
-  met_unclusteredEn_SumEt_up = 0;
-
-  met_jetEn_Px_down = 0;  
-  met_jetEn_Py_down = 0;
-  met_jetEn_Py_up = 0;
-  met_jetEn_SumEt_down = 0;
-  met_jetEn_SumEt_up = 0;
-  met_jetRes_Px_down = 0;
-  met_jetRes_Px_up = 0;
-  met_jetRes_Py_down = 0;
-  met_jetRes_Py_up = 0;
-  met_jetRes_SumEt_down = 0;
-  met_jetRes_SumEt_up = 0;
-
+  jets_PileupJetId = 0;
+  gen_pt = 0;
+  gen_eta = 0;
+  gen_phi = 0;
+  gen_energy = 0;
+  genjet_pt = 0;
+  genjet_eta = 0;
+  genjet_phi = 0;
+  genjet_energy = 0;
+  genjet_emf = 0;
+  genjet_hadf = 0;
+  ScaleWeights = 0;
+  PDFWeights = 0;
+  met_jetEn_Px_down = 0;
   met_jetEn_Px_up = 0;
   met_jetEn_Py_down = 0;
   met_jetEn_Py_up = 0;
@@ -316,33 +334,40 @@ void Data::Reset(){
   met_jetRes_Py_up = 0;
   met_jetRes_SumEt_down = 0;
   met_jetRes_SumEt_up = 0;
-
+  met_phi = 0;
+  met_pt = 0;
+  met_sumet = 0;
+  //met_unclusteredEn_Phi_down = 0;
+  //met_unclusteredEn_Phi_up = 0;
+  met_unclusteredEn_Px_down = 0;
+  met_unclusteredEn_Px_up = 0;
+  met_unclusteredEn_Py_down = 0;
+  met_unclusteredEn_Py_up = 0;
+  met_unclusteredEn_SumEt_down = 0;
+  met_unclusteredEn_SumEt_up = 0;
+  /*metNoHF_jetEn_Px_down = 0;
+  metNoHF_jetEn_Px_up = 0;
+  metNoHF_jetEn_Py_down = 0;
+  metNoHF_jetEn_Py_up = 0;
+  metNoHF_jetEn_SumEt_down = 0;
+  metNoHF_jetEn_SumEt_up = 0;
+  metNoHF_jetRes_Px_down = 0;
+  metNoHF_jetRes_Px_up = 0;
+  metNoHF_jetRes_Py_down = 0;
+  metNoHF_jetRes_Py_up = 0;
+  metNoHF_jetRes_SumEt_down = 0;
+  metNoHF_jetRes_SumEt_up = 0;
   metNoHF_phi = 0;
   metNoHF_pt = 0;
   metNoHF_sumet = 0;
-  metPfMva_phi = 0;
-  metPfMva_pt = 0;
-  metPfMva_sumet = 0;
-  //  metPuppi_phi = 0;
-  //metPuppi_pt = 0;
-  //metPuppi_sumet = 0;
-  muon_dxy = 0;
-  muon_sigdxy = 0;
-  muon_dz = 0;
-  muon_energy = 0;
-  muon_eta = 0;
-  muon_m = 0;
-  muon_normchi = 0;
-  muon_phi = 0;
-  muon_pt = 0;
-  muon_q = 0;
-  muon_relIso03 = 0;
-  muon_relIso04 = 0;
-  muon_shiftedEdown = 0;
-  muon_shiftedEup = 0;
-  muon_x = 0;
-  muon_y = 0;
-  muon_z = 0;
+  metNoHF_unclusteredEn_Phi_down = 0;
+  metNoHF_unclusteredEn_Phi_up = 0;
+  metNoHF_unclusteredEn_Px_down = 0;
+  metNoHF_unclusteredEn_Px_up = 0;
+  metNoHF_unclusteredEn_Py_down = 0;
+  metNoHF_unclusteredEn_Py_up = 0;
+  metNoHF_unclusteredEn_SumEt_down = 0;
+  metNoHF_unclusteredEn_SumEt_up = 0;*/
   photons_chargedHadronIso = 0;
   photons_chargedHadronIsoWithEA = 0;
   photons_energy = 0;
@@ -362,43 +387,6 @@ void Data::Reset(){
   photons_scpreshowerenergy = 0;
   photons_scrawenergy = 0;
   photons_sigmaietaieta = 0;
-
-  genjet_pt = 0;
-  genjet_eta = 0;
-  genjet_phi = 0;
-  genjet_energy = 0;
-  genjet_emf = 0;
-  genjet_hadf = 0;
-  genjet_pdgid = 0;
-  slimmedGenJets_energy = 0;
-  slimmedGenJets_eta = 0;
-  slimmedGenJets_phi = 0;
-  slimmedGenJets_pt = 0;
-
-  electrons_electronID_loose = 0;
-  electrons_electronID_medium = 0;
-  electrons_electronID_tight = 0;
-  electrons_electronID_veto = 0;
-  electrons_isPF = 0;
-  electrons_isTrigMVAValid = 0;
-  electrons_mcMatched = 0;
-  electrons_passConversionVeto = 0;
-  electrons_electronID_heep = 0;
-  electrons_electronID_mva_medium = 0;
-  electrons_electronID_mva_tight = 0;
-  electrons_electronID_mva_trig_medium = 0;
-  electrons_electronID_mva_trig_tight = 0;
-  jets_isLoose = 0;
-  jets_isTight = 0;
-  jets_isTightLepVetoJetID = 0;
-  muon_isGlobal = 0;
-  muon_isLoose = 0;
-  muon_isMedium = 0;
-  muon_isPF = 0;
-  muon_isSoft = 0;
-  muon_isTight = 0;
-  muon_isTracker = 0;
-  muon_matched = 0;
   photons_haspixseed = 0;
   photons_mcMatched = 0;
   photons_passelectronveto = 0;
@@ -406,21 +394,7 @@ void Data::Reset(){
   photons_photonID_medium = 0;
   photons_photonID_mva = 0;
   photons_photonID_tight = 0;
-  electrons_electronID_snu = 0;
-  jets_hadronFlavour = 0;
-  jets_partonFlavour = 0;
-  jets_partonPdgId = 0;
-  jets_vtxNtracks = 0;
-  muon_matchedstations = 0;
-  muon_trackerlayers = 0;
-  muon_validhits = 0;
-  muon_validmuonhits = 0;
-  muon_validpixhits = 0;
-  vtrignames = 0;
-  vtrigps = 0;
-  muon_trigmatch = 0;
-  electron_trigmatch = 0;
-  
+
  
 }
 
@@ -496,43 +470,52 @@ void Data::ConnectVariables(bool setall, int setting_data){
     ConnectPhotons();
     ConnectPFJets();
     ConnectTruth(setting_data);
-    ConnectTrigger();
-    
+    ConnectTrigger();    
     if(setall) ConnectAllBranches();
   }
   return;
 }
+
+void Data::SetVersion(int ver){
+  k_cat_version=ver; 
+}
+
 void Data::ConnectEvent(int setting_data){
+  
 
   ConnectVariable("run", run, b_run);
+  
   ConnectVariable("IsData", isData, b_isData);  
   ConnectVariable("lumi",lumi , b_lumi);
   ConnectVariable("event", event, b_event);
-  
+
   // new for v7-4-6
-  if(!TString(CatVersion).Contains("v7-4")){
+  if(k_cat_version > 2){
     if( (setting_data == 1) || (setting_data == 3)){
+      m_logger << INFO << "setting_lumi" << LQLogger::endmsg;
       ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
       ConnectVariable("lumiMaskSilver", lumiMaskSilver, b_lumiMaskSilver);
     }
     if( (setting_data ==2) || (setting_data ==3)){
+
       ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
       ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
       ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
       ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
       ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
       ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
-      if(TString(CatVersion).Contains("v7-6-5")){
+
+      if(k_cat_version >=4){
 	ConnectVariable("puWeightGold_xs71000",puWeightGold_xs71000, b_puWeightGold_xs71000);
 	ConnectVariable("puWeightGoldUp_xs71000",puWeightGoldUp_xs71000, b_puWeightGoldUp_xs71000);
 	ConnectVariable("puWeightGoldDn_xs71000",puWeightGoldDn_xs71000, b_puWeightGoldDn_xs71000);
-
-      }
+	}
     }
   }
   
+
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
- 
+
   ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
   ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
   ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
@@ -542,7 +525,6 @@ void Data::ConnectEvent(int setting_data){
   ConnectVariable("nGoodPV", nGoodPV, b_nGoodPV);
   ConnectVariable("nPV", nPV, b_nPV);
   
-
   
   ConnectVariable("vertex_X",vertex_X, b_vertex_X);
   ConnectVariable("vertex_Y",vertex_Y, b_vertex_Y);
@@ -604,7 +586,7 @@ void Data::ConnectMuons(){
 
 void Data::ConnectPhotons(){
   
-  if(!TString(CatVersion).Contains("v7-4")){
+  if(k_cat_version >2){
     ConnectVariable("photons_pt",photons_pt , b_photons_pt);
     ConnectVariable("photons_eta",photons_eta , b_photons_eta);
     ConnectVariable("photons_phi",photons_phi , b_photons_phi);
@@ -659,7 +641,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_energy", electrons_energy, b_electrons_energy);
   ConnectVariable("electrons_eta", electrons_eta, b_electrons_eta);
   ConnectVariable("electrons_isPF", electrons_isPF, b_electrons_isPF);
-  if(!TString(CatVersion).Contains("v7-4"))  ConnectVariable("electrons_isTrigMVAValid", electrons_isTrigMVAValid, b_electrons_isTrigMVAValid);
+  if(k_cat_version > 2)  ConnectVariable("electrons_isTrigMVAValid", electrons_isTrigMVAValid, b_electrons_isTrigMVAValid);
   ConnectVariable("electrons_m", electrons_m, b_electrons_m);
   ConnectVariable("electrons_mcMatched", electrons_mcMatched, b_electrons_mcMatched);
   ConnectVariable("electrons_nhIso03", electrons_nhIso03, b_electrons_nhIso03);
@@ -692,11 +674,11 @@ void Data::ConnectPFJets(){
   //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);
   /// TLV variables
 
-  if(!TString(CatVersion).Contains("v7-4")){
+  if(k_cat_version > 2){
     ConnectVariable("jets_CSVInclV2", jets_CSVInclV2, b_jets_CSVInclV2);
     ConnectVariable("jets_CMVAV2", jets_CMVAV2, b_jets_CMVAV2);
     ConnectVariable("jets_JetProbBJet", jets_JetProbBJet, b_jets_JetProbBJet);
-    if(TString(CatVersion).Contains("v7-6-5")){
+    if(k_cat_version >=4){
       ConnectVariable("jets_iCSVCvsL", jets_iCSVCvsL, b_jets_iCSVCvsL);
       ConnectVariable("jets_CCvsLT", jets_CCvsLT, b_jets_CCvsLT);
       ConnectVariable("jets_CCvsBT",jets_CCvsBT,b_jets_CCvsBT);
@@ -752,7 +734,7 @@ void Data::ConnectMET(){
   //ConnectVariable("metPfMva_pt", metPfMva_pt , b_metPfMva_pt);
   //ConnectVariable("metPfMva_sumet", metPfMva_sumet , b_metPfMva_sumet);
 
-  if(!TString(CatVersion).Contains("v7-4")){
+  if(k_cat_version > 2){
     ConnectVariable("met_muonEn_Px_up", met_muonEn_Px_up, b_met_muonEn_Px_up);
     ConnectVariable("met_muonEn_Py_up", met_muonEn_Py_up, b_met_muonEn_Py_up);
     ConnectVariable("met_muonEn_Px_down", met_muonEn_Px_down, b_met_muonEn_Px_down);
@@ -789,7 +771,7 @@ void Data::ConnectTruth(int setting_data){
 
   //  ConnectVariable("GenSumETTrue", GenSumETTrue, b_GenSumETTrue);
   if(setting_data == 1) return;
-  if(!TString(CatVersion).Contains("v7-4")){
+  if(k_cat_version > 2){
     ConnectVariable("genjet_pt",genjet_pt ,b_genjet_pt);
     ConnectVariable("genjet_eta",genjet_eta ,b_genjet_eta);
     ConnectVariable("genjet_phi",genjet_phi ,b_genjet_phi);
@@ -820,7 +802,7 @@ void Data::ConnectTruth(int setting_data){
   ConnectVariable("gen_pdgid",gen_pdgid ,b_gen_pdgid );
   ConnectVariable("gen_motherindex",gen_motherindex ,b_gen_motherindex );
   
-  if(TString(CatVersion).Contains("v7-6-5")){
+  if(k_cat_version >= 4){
     ConnectVariable("gen_isprompt" ,gen_isprompt ,b_gen_isprompt);
     ConnectVariable("gen_isdecayedleptonhadron" ,gen_isdecayedleptonhadron ,b_gen_isdecayedleptonhadron);
     ConnectVariable("gen_istaudecayproduct" , gen_istaudecayproduct, b_gen_istaudecayproduct);
@@ -891,6 +873,7 @@ template< typename T >
 bool Data::ConnectVariable(  const char* branchName,
 			     T& variable, TBranch* br){
   
+  m_logger << INFO << "ConnectVariable 1: " << branchName <<  LQLogger::endmsg;
 
   // Check if the branch actually exists:                                      
   TBranch* branch_info;

@@ -263,7 +263,6 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
   
-
   if(electronColl_all.size() == 2 ) {
 
     if(electronColl_all.at(0).Pt() > 20. && electronColl_all.at(1).Pt() > 15. ){
