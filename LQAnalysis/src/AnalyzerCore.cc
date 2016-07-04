@@ -156,6 +156,7 @@ std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> ta
   return tmpmap;
 }
 
+
 float AnalyzerCore::GetDiLepMass(std::vector<snu::KElectron> electrons){
 
   if(electrons.size() != 2) return 0.;
@@ -409,31 +410,33 @@ double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> 
 
 double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname){
   
+  if(isData) return 1.;
 
   ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgHLTScaleFactorMeasurements
   /// https://lathomas.web.cern.ch/lathomas/SUSYMultiLepton/TriggerEff/trigger_RA5ID_2110pb.pdf
   
   // Single Lepton
+
+  if(el.size() == 2){
+    if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return 0.997*0.997*0.998;
+    if (trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return 0.995*0.998;
+    if (trigname.Contains("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v")) return 0.997;
+  }
+
   if(mu.size() == 1){
   if (trigname.Contains("HLT_IsoMu20")) return 0.986;
   }
   if(el.size() == 1){
     if (trigname.Contains("HLT_Ele23_WPLoose_Gsf")) return 0.936;
   }
-  /// Dilepton
-  if(el.size() == 2){
-    if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ")) return 0.997*0.997*0.998;
-    if (trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return 0.995*0.998;
-    if (trigname.Contains("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW")) return 0.997;
-  }
   if(mu.size() == 2){
 
-    if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ")) return (0.993*0.984*0.980*0.968*0.984);
-    if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_OR_TkMu8_TrkIsoVVL_DZ")) return 0.982*0.985*.973;
+    if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")) return (0.993*0.984*0.980*0.968*0.984);
+    if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_OR_TkMu8_TrkIsoVVL_DZ_v")) return 0.982*0.985*.973;
   }
   if( (el.size() == 1) && (mu.size() == 1)){
-    if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL")) return 0.988*0.997*0.980*0.994;
-    if (trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL")) return 0.989*0.997*0.982*0.994;
+    if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return 0.988*0.997*0.980*0.994;
+    if (trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return 0.989*0.997*0.982*0.994;
   }
     
   /// Trilepton
@@ -696,11 +699,11 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   /// For v-7-6-2 default is set to gold because met is broken
 
   if(!reset_lumi_mask) {
-    if(VersionStamp(TString(CatVersion)) == 3) lumimask = snu::KEvent::gold;
-    else if(VersionStamp(TString(CatVersion)) == 4) lumimask = snu::KEvent::gold;
+    if(k_cat_version == 3) lumimask = snu::KEvent::gold;
+    else if(k_cat_version == 4) lumimask = snu::KEvent::gold;
 
     /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
-    else if(VersionStamp(TString(CatVersion)) < 3) lumimask = snu::KEvent::missing;
+    else if(k_cat_version < 3) lumimask = snu::KEvent::missing;
     else  lumimask = snu::KEvent::silver;
   }
 
@@ -741,7 +744,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   if(lumimask == snu::KEvent::gold){
     if(!k_isdata){
       weight*= SilverToGoldJsonReweight(per);
-
+      
       if(!changed_target_lumi){
 	TargetLumi *= SilverToGoldJsonReweight(per);
 	changed_target_lumi=true;
@@ -767,9 +770,9 @@ int AnalyzerCore::VersionStamp(TString cversion){
   if(cversion.Contains("v7-4-4")) return 1;
   else if(cversion.Contains("v7-4-5")) return 2;
   else if(cversion.Contains("v7-6-2") || cversion.Contains("v7-6-3") || cversion.Contains("v7-6-4")   ) return 3;
-  else if(cversion.Contains("v7-6-5")) return 4;
+  else if((cversion.Contains("v7-6-5") || cversion.Contains("v7-6-6"))) return 4;
   
-  return 3;
+  return 4;
  
 }
 
@@ -801,21 +804,26 @@ bool AnalyzerCore::IsSignal(){
 float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   
   if(eventbase->GetEvent().CatVersion().empty()) return 0.;
-  if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-4")) return 0.;
+
   
-  if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-5")){
+  if(k_cat_version<= 2)  return 0.;
+  
+  float bad_ls=93.492; //  /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/BeamSpotIssue_JSON.txt
 
+  
+  if(k_cat_version == 4){
+    
+    /// Updated to silver2 + remove LS
     if (p == "C") return 1.;
-    if (p == "D") return 2300.547 / 2672.906;
-    if (p == "CtoD") return 2318.278 / 2690.637;
-
+    if (p == "D") return (2300.547-bad_ls) / (2672.906 -bad_ls);
+    if (p == "CtoD") return  ((2318.278 - bad_ls) / (2690.637-bad_ls));
     ///            GOLD      SILVER
     /// period C = 17.731    17.731
     /// period D = 2300.547   2672.906
     /// total C+D = 2318.278  2690.637
   }
 
-  else if(TString(eventbase->GetEvent().CatVersion()).Contains("v7-6-")){
+  else if(k_cat_version==3){
     
     if (p == "C") return 1.;
     if (p == "D") return 2300.617 /2672.976;

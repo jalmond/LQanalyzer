@@ -200,6 +200,12 @@ vector<TString>  GetAvailableMap(TString cversion){
 
   
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+
+  bool cluster = false;
+  TString analysisdir = TString(getenv("HOSTNAME"));
+  if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+
   std::cout << dir  << std::endl;
   system(dir.Data());
   
@@ -211,7 +217,10 @@ vector<TString>  GetAvailableMap(TString cversion){
   }
   system("rm inputlist_map.txt"); 
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
-    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
+    if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
+    std::ifstream fdin( (prepath+"/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+
     std::string datasetname="";
     bool missing=true;
 
@@ -220,9 +229,13 @@ vector<TString>  GetAvailableMap(TString cversion){
     
     std::string dataword;
     int id=0;
+    int id_check=-1;
     while ( fdin >> dataword ) {
       id++;
-      if(id==8) datasetname = dataword;
+      if (TString(dataword) == "DataSetName") id_check = id+2;
+      if(id==id_check) {
+        if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+      }
       if(TString(dataword).Contains("0000/catTuple")) {
 	missing=false;
 	if(!(TString(dataword).Contains(cversion))) {
@@ -233,6 +246,8 @@ vector<TString>  GetAvailableMap(TString cversion){
     }
     
     TString dir2 = "ls /data2/DATA/cattoflat/MC/" +  cversion +"/ > inputsnu.txt"  ;
+    if(cluster) dir2 = "ls /data4/DATA/FlatCatuples/MC/" +  cversion +"/ > inputsnu.txt"  ;
+
     system(dir2.Data());
     
     std::ifstream fsin("inputsnu.txt");
@@ -263,9 +278,14 @@ vector<TString>  GetAvailableMap(TString cversion){
 
 map<TString, TString>  GetDatasetNames(TString cversion){
 
+  bool cluster = false;
+  TString analysisdir = TString(getenv("HOSTNAME"));
+  if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
+
   map<TString, TString> datasets;
   std::map<TString, TString> mapdir = GetLQMap();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   std::cout << dir  << std::endl;
   system(dir.Data());
   std::ifstream fin("inputlist_map.txt");
@@ -276,7 +296,11 @@ map<TString, TString>  GetDatasetNames(TString cversion){
   }
   system("rm inputlist_map.txt");
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
-    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+
+    TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
+    if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
+    std::ifstream fdin( (prepath+"/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+
     std::string datasetname="";
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
     
@@ -306,11 +330,16 @@ map<TString, TString>  GetMissingMap(TString cversion){
 
   map<TString, TString> map_missing;
 
+  bool cluster = false;
+  TString analysisdir = TString(getenv("HOSTNAME"));
+  if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
   if(cversion.Contains("v7-4"))   return map_missing;
   if(cversion.Contains("v7-6-2")) return map_missing;
 
   std::map<TString, TString> mapdir = GetLQMap();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+
   std::cout << dir << std::endl;
   system(dir.Data());
 
@@ -322,7 +351,11 @@ map<TString, TString>  GetMissingMap(TString cversion){
   }
   system("rm inputlist_map.txt");
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
-    std::ifstream fdin( ("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
+    if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
+    std::ifstream fdin( (prepath+"/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+
+
     std::string datasetname="";
     bool missing=true;
 
@@ -348,6 +381,16 @@ map<TString, TString>  GetMissingMap(TString cversion){
     if(TString(datasetname).Contains("QCD_HT")) inlqmap=true;
     if(TString(datasetname).Contains("QCD_Pt")) inlqmap=true;
 
+    /// List samples not to include in snu
+    if(TString(input_datasetlist.at(i)).Contains("json")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("mtop_")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("DMJets")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TLJ_powheg")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TLL_powheg")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("powheg_mpiOFF")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TT_powheg_evtgen")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TT_powheg_noCR")) inlqmap=true;
+    
     if(!inlqmap) {
       cout << "LQMap not complete" << endl;
       cout <<  input_datasetlist.at(i) << endl;

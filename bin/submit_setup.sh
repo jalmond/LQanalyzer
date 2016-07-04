@@ -227,7 +227,7 @@ function getinfo_dataset
 	  fi
       fi
       
-    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
 
 }
 
@@ -330,13 +330,14 @@ function getdatasetname
 function getdatasetxsec
 {
     getinfo_tag=4
-    getinfo_string="/data2/DATA/cattoflat/MC/"
+    getinfo_string=$FLATCAT_MC
     getinfo_dataset
 }
 function getdatasetefflumi
 {
     getinfo_tag=5
-    getinfo_string="/data2/DATA/cattoflat/MC/"
+    getinfo_string=$FLATCAT_MC
+
     getinfo_dataset
 }
 
@@ -374,7 +375,7 @@ function print_tag_diff_twotags
 	      NEWTAGS+=(${line})
 	  fi
       fi
-    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+    done < ${CATTAGDIR}/LatestTag.txt
 
     for ntag in  ${NEWTAGS[@]};
       do
@@ -385,7 +386,7 @@ function print_tag_diff_twotags
       while read line
 	do
 	echo $line
-      done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_${ntag}.txt
+      done <  ${CATTAGDIR}/TagDiff_${ntag}.txt
     done
     
 }
@@ -415,7 +416,7 @@ function print_tag_diff_vs_currenttag
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  latest_tag=$sline
       fi
-    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+    done < $CATTAGDIR/LatestTag.txt
     
     if [[ $latest_tag == $CATTAG ]];then
 	
@@ -439,7 +440,7 @@ function print_tag_diff_vs_currenttag
 	  fi
 	  NEWTAGS+=(${line})
       fi
-	done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag.txt
+	done < $CATTAGDIR/LatestTag.txt
 	
 	for ntag in  ${NEWTAGS[@]};
 	  do
@@ -450,7 +451,7 @@ function print_tag_diff_vs_currenttag
 	  while read line
 	    do
 	    echo $line
-	  done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_${ntag}.txt
+	  done < $CATTAGDIR/TagDiff_${ntag}.txt
 	done
     fi
 }
@@ -506,7 +507,7 @@ function listavailable
     echo "Samplename  --> datasetname"  
     while read line
       do
-      if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+      if [[ $line == *$FLATCAT_MC* ]];
 	  then
 	  if [[ $submit_searchlist == "" ]];
 	      then
@@ -524,7 +525,8 @@ function listavailable
 	       fi
 	   fi
       fi
-    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+
     echo ""
     echo ""
     echo ""
@@ -550,7 +552,8 @@ function listavailable
 	      fi
 	  fi
       fi
-    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+
     echo ""
     echo ""
     echo ""
@@ -573,7 +576,7 @@ function listavailable
 	    fi
 	fi
     fi
-    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
 
     echo ""
     echo ""
@@ -675,12 +678,12 @@ function runlist
 	echo "example 4) sktree -L SKTree_DiLepSkim v7-6-3 DY"
 	exit 1
     fi
-    
-    if [[ $submit_skim  == "FLATCAT" ]];
-        then
-        check_path="/data2/DATA/cattoflat/MC/"
-    fi
 
+    if [[ $submit_skim  == "FLATCAT" ]];
+    then
+        check_path=$FLATCAT_MC
+    fi
+    
     isNoCut=false
     isLepton=false
     isDiLep=false
@@ -715,27 +718,27 @@ function runlist
     fi
     if [[ $isNoCut  == "true" ]];
 	then
-        check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCNoCut/"
+        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCNoCut/"
     fi
     if [[ $isLepton  == "true" ]];
 	then
-	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MC/"
+	check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MC/"
 	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
             then
-            check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/Sep15/MC/"
+            check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MC/"
         fi
     fi
     if [[ $isDiLep  == "true" ]];
 	then
-	check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCDiLep"
+	check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCDiLep"
 	if [[ ${submit_catvlist} == *"v7-4-4"* ]];
 	    then
-	    check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/Sep15/MCDiLep"
+	    check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MCDiLep"
 	fi
     fi
     if [[ $isTriLep  == "true" ]];
         then
-        check_path="/data2/CatNtuples/"${submit_catvlist}"/SKTrees/MCTriLep"
+        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCTriLep"
         if [[ ${submit_catvlist} == *"v7-4-4"* ]];
             then
             check_path=""
@@ -824,7 +827,8 @@ function runlist
 	  fi
       fi
       
-    done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${submit_catvlist}.txt
+    done < ${TXTPATH}"CAT_mc_"${submit_catvlist}".txt"
+    
     echo ""
     
     missing_comment="LQanalyzer::sktree :: HELP :: If the sample you are looking for is not in the list above run 'sktree -A "$submit_catvlist"'"$'\n'
@@ -935,19 +939,19 @@ function runlist
 
 	  if [[ $submit_skim  == "SKTree_NoSkim" ]];
 	      then
-	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCNoCut/"
+	      check_path=$SKTREE_MC${ic}"/SKTrees/MCNoCut/"
 	  fi
 	  if [[ $submit_skim  == "SKTree_LeptonSkim" ]];
 	      then
-              check_path="/data2/CatNtuples/"${ic}"/SKTrees/MC/"
+              check_path=$SKTREE_MC${ic}"/SKTrees/MC/"
           fi
 	  if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
 	      then
-	      check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCDiLep"
+	      check_path=$SKTREE_MC${ic}"/SKTrees/MCDiLep"
 	  fi
 	  if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
               then
-              check_path="/data2/CatNtuples/"${ic}"/SKTrees/MCTriLep"
+              check_path=$SKTREE_MC${ic}"/SKTrees/MCTriLep"
           fi
 
 	  while read line
@@ -1033,7 +1037,8 @@ function runlist
 		    fi
 		fi
 	    fi
-	  done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${ic}.txt
+	  done < ${TXTPATH}"CAT_mc_"${ic}".txt"
+
 	done
       fi
 
@@ -1510,13 +1515,14 @@ if [[ $MakeFullLists == "true" ]];
 
       
       #### LOOP OVER INPUT TXT FILE AND CHECK FOR AVAILABLE SAMPLES
+      
       while read line
 	do
 	
 	if [[ $job_skim == "FLATCAT" ]];
 	    then
 	    
-	    if [[ $line == *"/data2/DATA/cattoflat/MC/"* ]];
+	    if [[ $line == *$FLATCAT_MC* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
 		sline2=$(echo $line | head -n1 | awk '{print $6}')
@@ -1543,7 +1549,7 @@ if [[ $MakeFullLists == "true" ]];
 	
 	if [[ $job_skim == "SKTree_NoSkim" ]];
 	    then
-	    if [[ $line == *"/data2/CatNtuples/"${iclist}"/SKTrees/MCNoCut/"* ]];
+	    if [[ $line == *$SKTREE_MC${iclist}"/SKTrees/MCNoCut/"* ]];
 		then
 		sline=$(echo $line | head -n1 | awk '{print $1}')
 		sline2=$(echo $line | head -n1 | awk '{print $6}')
@@ -1579,14 +1585,14 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 	    fi
 	fi
-	
+
 	if [[ $job_skim == "SKTree_LeptonSkim" ]];
 	    then	
 	    
-	    checkline="/data2/CatNtuples/"${iclist}"/SKTrees/MC/"
-            if [[ ${iclist} == *"v7-4-4"* ]];
+	    checkline=$SKTREE_MC${iclist}"/SKTrees/MC/"
+	    if [[ ${iclist} == *"v7-4-4"* ]];
                 then
-                checkline="/data2/CatNtuples/"${iclist}"/SKTrees/Sep15/MC/"
+                checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MC/"
             fi
 
             if [[ $line == *$checkline* ]];
@@ -1620,10 +1626,10 @@ if [[ $MakeFullLists == "true" ]];
 	fi  
 	if [[ $job_skim == "SKTree_DiLepSkim" ]];
 	    then
-	    checkline="/data2/CatNtuples/"${iclist}"/SKTrees/MCDiLep"
+	    checkline=$SKTREE_MC${iclist}"/SKTrees/MCDiLep"
 	    if [[ ${iclist} == *"v7-4-4"* ]];
 		then
-		checkline="/data2/CatNtuples/"${iclist}"/SKTrees/Sep15/MCDiLep"
+		checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MCDiLep"
 	    fi
 
 
@@ -1663,10 +1669,10 @@ if [[ $MakeFullLists == "true" ]];
 	fi    
 	if [[ $job_skim == "SKTree_TriLepSkim" ]];
 	    then
-	    checkline="/data2/CatNtuples/"${iclist}"/SKTrees/MCTriLep"
+	    checkline=$SKTREE_MC${iclist}"/SKTrees/MCTriLep"
 	    if [[ ${iclist} == *"v7-4-4"* ]];
 		then
-		checkline="/data2/CatNtuples/"${iclist}"/SKTrees/Sep15/MCTriLep"
+		checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MCTriLep"
 	    fi
 	    
 	    
@@ -1704,7 +1710,7 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 	    fi
 	fi
-      done < ${LQANALYZER_RUN_PATH}/txt/datasets_snu_CAT_mc_${iclist}.txt
+      done < ${TXTPATH}"CAT_mc_"${iclist}".txt"
     done
     
 fi

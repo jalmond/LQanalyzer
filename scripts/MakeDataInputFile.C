@@ -19,8 +19,13 @@ void MakeDataInputFile(TString version=""){
   TString def_version = TString(getenv("CATVERSION"));
   if(!version.Contains("v7") ) version = def_version;
 
+  bool cluster = false;
+  TString analysisdir = TString(getenv("HOSTNAME"));
+  if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
   ofstream lumi_file;
   string lfile =  "datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
+  if(cluster) lfile =  "datasets_snu_cluster_CAT_data_" + string(version.Data()) + ".txt";
+
   lumi_file.open(lfile.c_str());
   lumi_file.setf(ios::fixed,ios::floatfield);
   lumi_file.precision(1);
@@ -57,7 +62,10 @@ void MakeDataInputFile(TString version=""){
   periods.push_back("D");
   
   TString output="/data2/DATA/cattoflat/Data/" + version + "/";
-  
+
+  if(cluster) output="/data4/DATA/FlatCatuples/Data/" + version + "/";
+
+
   for(unsigned int i = 0 ; i < samples.size() ; i++){
     for(unsigned int j = 0 ; j < periods.size() ; j++){
       lumi_file << samples.at(i)  << samples_space.at(i)<< "            " << periods.at(j) <<   "        " <<  output +  samples.at(i) << "/period" <<  periods.at(j) << "/" << endl;
@@ -67,7 +75,7 @@ void MakeDataInputFile(TString version=""){
 
   
   TString SKTreeOutput="/data2/CatNtuples/"+ version + "/SKTrees/Data/";
-  
+  if(cluster) SKTreeOutput="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/Data/";
 
   lumi_file << ""<< endl;
   lumi_file << "#### Single lepton skims: SKTrees" << endl;
@@ -85,6 +93,8 @@ void MakeDataInputFile(TString version=""){
   
 
   TString SKTreeOutputDiLep="/data2/CatNtuples/"+ version + "/SKTrees/DataDiLep/";
+  if(cluster) SKTreeOutputDiLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataDiLep/";
+
   
   for(unsigned int i = 0 ; i < samples.size() ; i++){
     for(unsigned int j = 0 ; j < periods.size() ; j++){
@@ -94,6 +104,7 @@ void MakeDataInputFile(TString version=""){
   }
   
   TString SKTreeOutputTriLep="/data2/CatNtuples/"+ version + "/SKTrees/DataTriLep/";
+  if(cluster) SKTreeOutputTriLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataTriLep/";
 
   for(unsigned int i = 0 ; i < samples.size() ; i++){
     for(unsigned int j = 0 ; j < periods.size() ; j++){
@@ -107,8 +118,13 @@ void MakeDataInputFile(TString version=""){
   TString user = TString(getenv("USER"));
 
   string lfile2 =   lqdir+ "/LQRun/txt/datasets_snu_CAT_data_" + string(version.Data()) + ".txt";
-  if(user.Contains("jalmond"))
-    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+  if(cluster) lfile2 =   lqdir+ "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_data_" + string(version.Data()) + ".txt";
+
+  if(user.Contains("jalmond")){
+    if(!cluster)gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+    else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+
+  }
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
     

@@ -40,6 +40,7 @@ parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-v", "--catversion", dest="catversion", default="", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="", help="add input flag?")
+parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 
 
 ###################################################
@@ -74,6 +75,8 @@ tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
 skflag=options.skflag
+usebatch =options.usebatch
+
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel
@@ -168,25 +171,60 @@ print ""
 ####################
 
 
+
+###########################################################################################
+###########################################################################################
+### DEFAULT  settings for runnning in batch mode. True for cmscluster.snu.ac.kr
+running_batch=False
+if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    running_batch=True
+
+if str(usebatch) == "NULL":
+    if str(running_batch) == "True":
+        print "%%%%%%%%%%%%%%%%%%%%%%%%"
+        print "Running batch job:"
+        print "%%%%%%%%%%%%%%%%%%%%%%%%"
+    else:
+        print "Running standard root interactive job:"
+else:
+    if str(usebatch) == "False":
+        running_batch=False
+    elif  str(usebatch) == "false":
+        running_batch=False
+
+
+
 if not cycle == "SKTreeMaker":
     if not cycle == "SKTreeMakerNoCut":
         if not cycle == "SKTreeMakerDiLep":
             if not useskinput == "True":
                 if not useskinput == "true":
                     print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
+
+
+output_mounted="/data2"
+if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    output_mounted="/data4"
+
                     
 ##########################################################
 ### Make tmp directory for job
 ############################################################
 
-tmpwork = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
+tmpwork = output_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
 timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")
+    
+while  (os.path.exists(timestamp_dir)):
+    app_dir=1
+    timestamp_dir = timestamp_dir + "_v" + str(app_dir)
+    app_dir = app_dir+1
 if not (os.path.exists(timestamp_dir)):
     os.system("mkdir " + timestamp_dir)
-    
+
+
 if not os.path.exists(timestamp_dir+"/job_output/"):
     os.system("mkdir " + timestamp_dir+"/job_output/")
 
@@ -206,7 +244,7 @@ if "DY50"  in sample:
     large_sample=True
 
 
-
+ncore_def=number_of_cores
 import platform
 BusyMachine=False
 username = str(os.getenv("USER"))
@@ -222,8 +260,9 @@ if platform.system() == "Linux":
             njob_user+=1
         
     if n_previous_jobs > 10:
-        if number_of_cores > 2:
-            number_of_cores = 2
+        number_of_cores = 2
+        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+
             print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
 
         for line in open(filename, 'r'):
@@ -240,12 +279,13 @@ if platform.system() == "Linux":
     if n_previous_jobs > 10:
         BusyMachine=True
     os.system("rm " + filename2)    
-nj_def=30
+nj_def=100
 
 
 if large_sample == True:
     if BusyMachine == True:
-        print "Machine is busy"
+        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+            print "Machine is busy"
         
         
 if number_of_cores > 1:
@@ -256,7 +296,8 @@ if number_of_cores > 1:
             if not "SKTreeMaker" in cycle:
                 if number_of_cores < 100:
                     number_of_cores = 15
-                    print "Number of sub jobs is reset to default of 15"
+                    if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        print "Number of sub jobs is reset to default of 15"
         if cycle == "SKTreeMaker":
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
@@ -273,7 +314,8 @@ if number_of_cores > 1:
             if not "SKTreeMaker"in cycle:
                 if number_of_cores < 100:
                     number_of_cores= 15
-                    print "Number of sub jobs is reset to default of 15"
+                    if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        print "Number of sub jobs is reset to default of 15"
         if cycle == "SKTreeMaker":
             number_of_cores=nj_def
         if cycle == "SKTreeMakerNoCut":
@@ -289,7 +331,8 @@ if number_of_cores > 1:
                 if not cycle == "SKTreeMakerNoCut":
                     if not cycle == "SKTreeMakerDiLep":
                         number_of_cores = 5
-                        print "Number of sub jobs is set to high. Reset to default of 5."
+                        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                            print "Number of sub jobs is set to high. Reset to default of 5."
 
 if number_of_cores <  -100:
     number_of_cores=30
@@ -469,10 +512,16 @@ while inDS == "":
         print "Using CAT " +sample_catversion + " ntuples"
         if mc:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
+            if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_mc_' +sample_catversion +  '.txt'
+
         else:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
+            if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_data_'  +sample_catversion +'.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
+             
 
     print "Using " + filename    
     if not mc:
@@ -542,12 +591,82 @@ number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir
 if DEBUG == "True":
     print "Job has " + str(number_of_files) + " files to process:"
 
+
+
+
+if running_batch:
+    number_of_cores= ncore_def
+    os.system("qstat -u '*'> " +  local_sub_dir + "/check_qsub_all")
+    qsub_all_filename = local_sub_dir +'/check_qsub_all'
+    n_qsub_jobs=0
+    for qsub_all_line in open(qsub_all_filename, 'r'):
+        n_qsub_jobs=n_qsub_jobs+1
+    if n_qsub_jobs > 500:
+        print "WARNING: More than 500 jobs in batch queue. If job is small and uses dilepton skim consider running on cms1-6"
+    
+    #### Allow each user to submit 300 jobs at a time.???
+
+    os.system("rm " + local_sub_dir + "/check_qsub_all")
+    os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/check_qsub")
+    qsub_filename = local_sub_dir +'/check_qsub'
+    n_user_qsub_jobs=0
+    for qsub_line in open(qsub_filename, 'r'):
+        if str(getpass.getuser()) in qsub_line:
+            n_user_qsub_jobs= n_qsub_jobs+ 1
+
+    os.system("rm " + local_sub_dir + "/check_qsub")
+
+    running_large_sample=False
+    large_samples = []
+    large_samples.append("DY")
+    large_samples.append("ttbar")
+    if not  "SKTreeMaker" in str(cycle):
+        if mc:
+            for l_s in  large_samples:
+                if l_s in sample:
+                    running_large_sample=True
+            if running_large_sample:
+                if number_of_cores > 100:
+                    number_of_cores=100
+            else:
+                if n_user_qsub_jobs > 300:
+                    number_of_cores=5
+                elif n_user_qsub_jobs > 200:
+                    number_of_cores=15
+                elif n_user_qsub_jobs > 100:
+                    number_of_cores=20
+                elif n_user_qsub_jobs > 60:
+                    number_of_cores=30
+                elif n_user_qsub_jobs > 40:
+                    number_of_cores=50
+                else:
+                    if n_qsub_jobs < 30:
+                        number_of_cores=100
+                    else:
+                         number_of_cores=50
+        else:
+            if number_of_cores > 100:
+                number_of_cores = 100
+
+if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    if not running_batch:
+        number_of_cores = 1
+        print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME"))
+
+if ncore_def == 1:
+    number_of_cores = 1
 ############################################################
 ### Correct user if ncores is > nfiles
 ############################################################
 if number_of_cores > number_of_files:
     number_of_cores = number_of_files
 print "Splitting job into " + str(number_of_cores) + " subjobs"
+
+
+
+
+
+
 ############################################################
 ### set number of files per job
 ############################################################
@@ -585,7 +704,7 @@ check_array = []
 ###################################################
 
     
-workspace = "/data2/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
+workspace = output_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
 
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
@@ -769,11 +888,28 @@ if number_of_cores < 10:
 
 if DEBUG == "True":
     print "Running CATAnalyzer jobs for: " + getpass.getuser()
+
+array_batchjobs = []
+
 for i in range(1,number_of_cores+1):
+
+    batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + ".sh"
+    batchfile=open(batchscript,'w')
+    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C"))
+    batchfile.close()
+
+    
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
-#    runcommand = "ssh cms1 'cd " +  os.getenv("LQANALYZER_DIR") + "; source queue_setup.sh; nohup root.exe -l -q -b " +  script + "&>" + log + "&'"
+    
+    #runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
+    if running_batch:
+        runcommand = "qsub -V " + batchscript   + "&>" + log 
+
+    jobID=0
+    
+
     if singlejob:
         print "Running single job " + script 
         runcommand = "root.exe -l -q -b " +  script 
@@ -786,6 +922,28 @@ for i in range(1,number_of_cores+1):
         elif i==2:
             print "......"
         os.system(runcommand)
+        if running_batch:
+            for line in open(log, 'r'):
+                entries = line.split()
+                if len(entries) > 0:
+                    jobID=entries[2]
+                    array_batchjobs.append(jobID)
+                    k_batchscript =  output+ "JobKill.sh"
+                    if i==1:
+                        k_batchfile=open(k_batchscript,'w')
+                        k_batchfile.write("qdel  " +str(jobID) +';')
+                    else:
+                        k_batchfile=open(k_batchscript,'a')
+                        k_batchfile.write("qdel  " +str(jobID)+';')
+                    k_batchfile.close()
+
+if running_batch: 
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@"
+    for ijob in array_batchjobs:
+        print "Job ["+str(ijob)+"] added to list......."
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    print "In case user wants to kill job do : source " + output+ "JobKill.sh"
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 
 ##########################################################
 ## wait and do merging (also remove old log file/rootfiles
@@ -812,25 +970,53 @@ if singlejob:
 else:        
     sys.stdout.write('\r'+ '0% of events processed...' )
     sys.stdout.flush()
+
 low_cpu=0
 ncycle=0
 file_iterator=0
 files_done= []
 clear_line='                                                                          '
+failed_macro=""
+failed_log=""
+print ""
 while not JobSuccess:
-    os.system("ps ux &> " + local_sub_dir + "/log")
+
+
+    if running_batch == False:
+        os.system("ps ux &> " + local_sub_dir + "/log")
+    else: 
+        os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/log")
+        
     filename = local_sub_dir +'/log'
     running = False
     
-    for line in open(filename, 'r'):
-        if "root.exe" in line:
-            running = True            
-            splitline  = line.split()
-            if splitline[2] < 0.1:
-                low_cpu+=1
-    if low_cpu > 3:
-        running = False
+    if running_batch == False:
 
+        for line in open(filename, 'r'):
+            if "root.exe" in line:
+                running = True            
+                splitline  = line.split()
+                if splitline[2] < 0.1:
+                    low_cpu+=1
+        if low_cpu > 3:
+            running = False
+
+    else:
+        for line in open(filename, 'r'):
+            for job_id in array_batchjobs:
+                if job_id in line:
+                    running = True
+                    entries = line.split()
+                    ### Check the job is not held/suspended
+                    if len(entries) ==  9:  
+                        if entries[4] == "h":
+                            print "Job " + str(job_id) + " is in held state: killing all jobs"
+                            os.system("source " + output+ "JobKill.sh")
+                            running = False
+                        if entries[4] == "s":    
+                            print "Job " + str(job_id) + " is in suspended state: killing all jobs"
+                            os.system("source " + output+ "JobKill.sh")
+                            running = False
     if not running:
         check_outfile = outputdir + outsamplename +  "_1.root"
         if not (os.path.exists(check_outfile)):
@@ -869,8 +1055,78 @@ while not JobSuccess:
     else:
         nevents_total=0.
         nevent_processed=0.
+
+        if running_batch:
+            ### print jobs running/in queue .... once all running print % completeion
+            for i in range(1,number_of_cores+1):
+                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+
+                while not os.path.exists(check_outfile):
+                    sys.stdout.write('\r' + clear_line)
+                    sys.stdout.flush()
+                    sys.stdout.write('\r'+ 'Current jobs running : [' + str(i-1) + '/' + str(number_of_cores) + ']... '+ str(number_of_cores-i+1) + ' in queue' )
+                    sys.stdout.flush()
+                    time.sleep(5.)
+            if ncycle == 0:
+                sys.stdout.write('\r' + clear_line)
+                sys.stdout.flush()
+                sys.stdout.write('\r'+ 'Current jobs running : [' + str(number_of_cores) + '/' + str(number_of_cores) + ']... ')
+                sys.stdout.flush()
+                time.sleep(2.)
+            #### check job is running. Halted or suspended and if not running is output file missing?
+            os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/log")
+            filename = local_sub_dir +'/log'
+
+            for i in range(1,number_of_cores+1):
+                if not JobOutput:
+                    break
+                job_id_c=array_batchjobs[i-1]
+                job_finished=True
+                for line in open(filename, 'r'):
+                    if job_id_c in line:
+                        job_finished=False
+                        entries = line.split()
+                        if len(entries) ==  9:
+                            if entries[4] == "h":
+                                print "Job " + str(job_id_c) + " is in held state: killing all jobs"
+                                os.system("source " + output+ "JobKill.sh")
+                                number_of_cores=0
+                                JobSuccess=True
+                                JobOutput=False
+                            if entries[4] == "s":
+                                print "Job " + str(job_id_c) + " is in suspended state: killing all jobs"
+                                os.system("source " + output+ "JobKill.sh")
+                                number_of_cores=0
+                                JobSuccess=True
+                                JobOutput=False
+                                
+                if job_finished:
+                    ### job id not in qstat output. Check if rootfile is missing. If so kill job
+                    check_outfile = outputdir + outsamplename +  "_" + str(i)+".root"
+                    if not (os.path.exists(check_outfile)):
+                        failed_macro= output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
+                        failed_log= "runJob_" + str(i) + "log"
+                        JobSuccess=True
+                        JobOutput=False
+                        print "Job " + str(job_id_c) + " is not running or in queue. Output " + str(check_outfile)+ " is missing."
+                        print "Most likely a crash occurred.  So killing all jobs." 
+                        os.system("source " + output+ "JobKill.sh")
+
+                        check_error_outfile = output + "/Job" +  "_" +  str(i) + "/"+ outsamplename+ "_Job_"+ str(i) +".e"+array_batchjobs[i-1] 
+                        print "Error file for job ["+str(job_id_c)+"] shows:"
+                        for line in open(check_error_outfile, 'r'):
+                            print line
+                        print "Run in non-batch mode by setting njobs = 1 in submit.sh file and retry" 
+
+                        
+            os.system("rm  " + local_sub_dir + "/log")
+            
+        ##### Run over log to get % completion                    
         for i in range(1,number_of_cores+1):
             check_outfile = output + "/Job" +  "_" +  str(i) + "/runJob_"+ str(i) +".log"
+            if running_batch == True:
+                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+
             os.system('tail -100 ' + check_outfile + ' > ' + local_sub_dir + '/outlog.txt')
             nevent_processed_i=0.
             nevents_total_i=0.
@@ -900,11 +1156,12 @@ while not JobSuccess:
             sys.stdout.flush()
         else:
             mess="Job Initialising 0% of events processed."
-            sys.stdout.write('\r' + clear_line)
-            sys.stdout.flush()
-            sys.stdout.write('\r'+mess)
-            sys.stdout.flush()
-            time.sleep(2.)
+            if JobOutput:
+                sys.stdout.write('\r' + clear_line)
+                sys.stdout.flush()
+                sys.stdout.write('\r'+mess)
+                sys.stdout.flush()
+                time.sleep(2.)
         if ncomplete_files > file_iterator:
             #print str(ncomplete_files) + "/" + str(number_of_cores) + " jobs completed.  " #Wait " + str(timeWait) + " second..."
             #print ""
@@ -912,7 +1169,15 @@ while not JobSuccess:
         time.sleep(5.)
         ncycle+=1
      
+
+
 if not JobOutput:
+
+    if not running_batch:
+        failed_macro= output+ "Job_1/runJob_1.C"
+        failed_log= "runJob_1.log"
+
+    print ""
     print "Job Failed...."
     if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
         os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
@@ -920,14 +1185,14 @@ if not JobOutput:
         os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
         
     if not number_of_cores == 1:
-        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
-        os.system("mv "+ output + "/Job_1/runJob_1.C " + local_sub_dir)
-    print "Check ./runJob_1.C or " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   +"/runJob_1.log file to debug"
-    os.system("rm -r " + output)    
-    os.system("rm -r " + local_sub_dir)    
-    os.system("rm -r " + timestamp_dir)
-
-    print "log files sent to " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename
+        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
+    print "###########################################################################################################"
+    print "Check crash by running root -q -b " + failed_macro 
+    print "Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
+    print "###########################################################################################################"
+    #os.system("rm -r " + output)    
+    #os.system("rm -r " + local_sub_dir)    
+    #os.system("rm -r " + timestamp_dir)
     
 else:
 
@@ -936,18 +1201,31 @@ else:
             print line
 
 
+    SKTreeOutput_pre = output_mounted+"/CatNtuples/" + sample_catversion
+    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput_pre = "/data4/LocalNtuples/SKTrees13TeV/"+sample_catversion
+        if not os.path.exists(SKTreeOutput_pre):
+            os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre = "/data2/CatNtuples/" + sample_catversion
-    if not os.path.exists(SKTreeOutput_pre):
-        os.system("mkdir " + SKTreeOutput_pre)
+    if not  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        if not os.path.exists(SKTreeOutput_pre):
+            os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre2 = "/data2/CatNtuples/" + sample_catversion + "/SKTrees/"
-    if not os.path.exists(SKTreeOutput_pre2):
-        os.system("mkdir " + SKTreeOutput_pre2)
+    SKTreeOutput_pre2 = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
+    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput_pre2 = SKTreeOutput_pre   + "/SKTrees/"
+        if not os.path.exists(SKTreeOutput_pre2):
+            os.system("mkdir " + SKTreeOutput_pre2)
+
+    if not  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        if not os.path.exists(SKTreeOutput_pre2):
+            os.system("mkdir " + SKTreeOutput_pre2)
                     
-        
-    SKTreeOutput = "/data2/CatNtuples/" + sample_catversion + "/SKTrees/"        
-
+            
+    SKTreeOutput = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
+    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        SKTreeOutput = "/data4/LocalNtuples/SKTrees13TeV/"+sample_catversion + "/SKTrees/"
+    
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
         if not os.path.exists(SKTreeOutput):

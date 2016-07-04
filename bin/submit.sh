@@ -33,6 +33,8 @@ runcf=$(makeParseVariable 'Q' ${runcf})
 catversion=$(makeParseVariable 'v' ${catversion})
 skflag=$(makeParseVariable 'f' ${catversion})
 DEBUG=$(makeParseVariable 'D' ${DEBUG})
+usebatch=$(makeParseVariable 'b' ${usebatch})
+
 ################                                                                                                                                                
 
 #submit     
@@ -41,7 +43,7 @@ if [[ $1  == "" ]];
 then
     for i in ${input_samples[@]}
       do
-      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}
+      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch}
     done 
   
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
@@ -50,7 +52,7 @@ elif [[ $1  == "--help"  || $1  == "--h" ]]; then
 else 
     for i in ${input_samples[@]}
     do
-      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples}   ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}
+      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples}   ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch}
     done
 
 fi

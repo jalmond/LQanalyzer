@@ -86,6 +86,8 @@ public :
    void ConnectAllBranches();
    void ConnectMET();
    void SetLQNtupleInputType(bool lq);
+   void SetVersion(int ver);
+
    std::string GetCatVersion(bool runLQ);
    void SetCatVersion(std::string cv);
    void SetTargetLumi(float tlumi);
@@ -95,7 +97,7 @@ public :
 
    bool LQinput;
    Long64_t nentries;
-
+   int k_cat_version;
    // Declaration of leaf types
 
    /// If needed (using SKTree input)

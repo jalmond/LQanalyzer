@@ -47,7 +47,7 @@ bool SKTreeFiller::SkipTrigger(TString tname){
 
 snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   snu::KTrigger ktrigger;
-  
+
   if(!LQinput){
     ktrigger = *k_inputtrigger;
     return ktrigger;
@@ -115,10 +115,11 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
 snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
  
   snu::KEvent kevent;
+
   if(!LQinput){
     kevent = *k_inputevent;
     kevent.SetJSON(js);
-    if(TString(CatVersion).Contains("v7-4")){
+    if(k_cat_version < 3){
       if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
     }
     return kevent;
@@ -137,8 +138,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
   if(metNoHF_pt){
     if(metNoHF_pt->size() > 0) kevent.SetMET(snu::KEvent::nohf, metNoHF_pt->at(0),  metNoHF_phi->at(0), metNoHF_sumet->at(0));
   }
-  
-  if(TString(CatVersion).Contains("v7-6-5")){
+
+  if(k_cat_version > 3){
+    /// k_cat_version > 3 == v765+
     if(PDFWeights){
       if(PDFWeights->size() > 0){
 	kevent.SetPDFWeights(*PDFWeights);
@@ -154,7 +156,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
 
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
   
-  if(!TString(CatVersion).Contains("v7-4")){
+  if(k_cat_version > 2){
     if(met_unclusteredEn_Px_up){
       if(met_unclusteredEn_Px_up->at(0)){
 	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
@@ -187,13 +189,13 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
   kevent.SetLumiSection(lumi);
   
   if(isData){
-    if(!TString(CatVersion).Contains("v7-4")) {
+    if(k_cat_version > 2){
       kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
       kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
     }
   }
   else{
-    if(!TString(CatVersion).Contains("v7-4")) {
+    if(k_cat_version > 2){
       kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::central,double(puWeightSilver));
       kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down, double(puWeightSilverDn));
       kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  double(puWeightSilverUp));
@@ -201,7 +203,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
       kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn));
       kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  double(puWeightGoldUp));
       
-      if(TString(CatVersion).Contains("v7-6-5")) {
+      if(k_cat_version > 3){
 	if(puWeightGold_xs71000){
 	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::central,double(puWeightGold_xs71000));
 	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn_xs71000));
@@ -249,7 +251,7 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
 
   std::vector<KPhoton> photons;
 
-  if(TString(CatVersion).Contains("v7-4")) return photons;
+  if(k_cat_version < 3) return photons;
   
   if(!LQinput){
     for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
@@ -298,6 +300,7 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
 std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
   std::vector<KElectron> electrons;
+
   if(!LQinput){
     for(std::vector<KElectron>::iterator kit  = k_inputelectrons->begin(); kit != k_inputelectrons->end(); kit++){
       electrons.push_back(*kit);
@@ -316,7 +319,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 
     /// Kinematic Variables
     el.SetPtEtaPhiE(electrons_pt->at(iel),electrons_eta->at(iel), electrons_phi->at(iel),electrons_energy->at(iel));
-    
+
     el.SetTrigMatch(electron_trigmatch->at(iel));
     el.SetSCEta(electrons_scEta->at(iel));
    
@@ -350,7 +353,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetShiftedEUp(electrons_shiftedEnUp->at(iel));
       el.SetShiftedEDown(electrons_shiftedEnDown->at(iel));
     }
-    m_logger << DEBUG << "TEST 2 " << electrons_pt->at(iel) << LQLogger::endmsg;
 
     el.SetSNUID(electrons_electronID_snu->at(iel));
     el.SetPassVeto(electrons_electronID_veto->at(iel));
@@ -360,7 +362,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     
     /// HEEP
     el.SetPassHEEP(electrons_electronID_heep->at(iel));
-    m_logger << DEBUG << "TEST 2 " << electrons_pt->at(iel) << LQLogger::endmsg;
 
     // MVA
     el.SetPassMVATrigMedium(electrons_electronID_mva_trig_medium->at(iel));
@@ -380,7 +381,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     //// Set Is ChargeFlip
     bool isprompt= false;
     bool from_tau = false;
-    m_logger << DEBUG << "TEST GEN " <<  LQLogger::endmsg;
     
     int mother_index=-1;
     int mother_pdgid=-1;
@@ -393,6 +393,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       float min_Dr=0.1;
       /// Loop over all gen particles
       for (UInt_t it=0; it< gen_pt->size(); it++ ){
+
+
 	/// Requirements to make sure no crash or warnings with pt=0
 	if(gen_motherindex->at(it) <= 0)continue;
 	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
@@ -490,7 +492,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { charge_sum+= gen_pdgid->at(itx); n_el_from_el++;}
 	    }
 	  }
-	  
+
 	  /// Set if conversion i.ei e->eee
 	  /// Two methods: 
 	  /// 1) check pdgid of status 1 el vs mother. if < 0 it is a converison
@@ -597,6 +599,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      matched_in_Dr=true;
 	      int mindex= gen_motherindex->at(it);
 	      float pdgid = gen_pdgid->at(it);
+
 	      
 	      /// Unlikely to have mother as electron but just in case
 	      while ( (fabs(gen_pdgid->at((mindex))) == 11)) {
@@ -631,7 +634,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     ///- If multiple status 1 muons are matched look at closest in pt
     ///- In no status 1 is matched set as not prompt butlook for closest particle in dR
     /// - In noparticles within dR < 0.1 matched_in_Dr= false
-
     if(!matched_in_Dr){
       el.SetIsMCMatched(false);
       el.SetIsFromTau(false);
@@ -643,13 +645,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     else{
       
       if(!isprompt){
-	
-        if((gen_isprompt->at(matched_index) ==1 )&& (gen_status->at(matched_index) == 1)){
+	if((gen_isprompt->at(matched_index) ==1 )&& (gen_status->at(matched_index) == 1)){
 	  
 	  //cout << "gen_istaudecayproduct =  " << gen_istaudecayproduct->at(matched_index)  << endl;
 	  //cout << "gen_isprompttaudecayproduct =  " <<  gen_isprompttaudecayproduct->at(matched_index)  << endl;
 	  if(!(gen_istaudecayproduct->at(matched_index)   || gen_isprompttaudecayproduct->at(matched_index))){
-	    
 	    //cout << "matched as prompt yet status flag is not prompt" << endl;
 	    //cout << "matched_index = " << matched_index << endl;
 	    //cout << "reco "<< electrons_pt->at(iel)<< " " << electrons_eta->at(iel)  << " " << electrons_phi->at(iel) << endl;;
@@ -691,7 +691,6 @@ void SKTreeFiller::ERRORMessage(TString comment){
 std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
 
   std::vector<KGenJet> genjets;
-
   if(isData) return genjets;
   if(!LQinput){
     if(k_inputgenjets){
@@ -702,7 +701,7 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     return genjets;
   }
 
-  if(TString(CatVersion).Contains("v7-4")) {
+  if(k_cat_version < 3){
     for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
       KGenJet jet;
       jet.SetPtEtaPhiE(slimmedGenJets_pt->at(ijet), slimmedGenJets_eta->at(ijet), slimmedGenJets_phi->at(ijet), slimmedGenJets_energy->at(ijet));
@@ -734,7 +733,6 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
     return jets;
   }
-  
   
   for (UInt_t ijet=0; ijet< jets_eta->size(); ijet++) {
     KJet jet;
@@ -834,6 +832,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     muon.SetISPF(muon_isPF->at(ilep));
     muon.SetIsGlobal(muon_isGlobal->at(ilep));
+
     muon.SetIsTracker(muon_isTracker->at(ilep));
     muon.SetIsLoose(muon_isLoose->at(ilep));
     muon.SetIsMedium(muon_isMedium->at(ilep));
@@ -873,11 +872,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     muon.SetTrackVy(muon_y->at(ilep));
     muon.SetTrackVz(muon_z->at(ilep));
 
-    
     //// Set Is ChargeFlip
     bool isprompt= false;
     bool from_tau = false;
-    m_logger << DEBUG << "TEST GEN " <<  LQLogger::endmsg;
 
     int mother_index=-1;
     int mother_pdgid=-1;
@@ -1119,7 +1116,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
   std::vector<snu::KTruth> vtruth;
 
   if(isData) return vtruth;
-  
+
   int counter=0;
 
   if(!LQinput){
@@ -1142,7 +1139,7 @@ std::vector<snu::KTruth>   SKTreeFiller::GetTruthParticles(int np){
     truthp.SetParticleStatus(gen_status->at(it));
     truthp.SetParticleIndexMother(gen_motherindex->at(it));
     
-    if(TString(CatVersion).Contains("v7-6-5")) {
+    if(k_cat_version > 3){
       // To save space set a single int as the flag. 
       // 
       int truth_flag = 0;

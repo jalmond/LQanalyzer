@@ -57,19 +57,24 @@ if not os.path.exists(tag_dir):
 
     old_out=os.getenv("LQANALYZER_DIR")+"/data/output/CAT/"
 
-    new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")
+    
+    mount_name="/data2"
+    if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        mount_name="/data4"
+
+    new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")
     print "cleaning up home directory"
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)
 
-    new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/"
+    new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/"
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)
-        new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/"
+        new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/"
         os.system("mkdir " + new_out)
-        new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/"
+        new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/"
         os.system("mkdir " + new_out)
-        new_out="/data2/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/CAT/"
+        new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/data/output/CAT/"
         os.system("mkdir " + new_out)
         os.system("mv "+ old_out + "/* " + new_out)
         print "Moving output to " + new_out

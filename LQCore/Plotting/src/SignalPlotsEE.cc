@@ -17,6 +17,7 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
   map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second electron",100,0,1000);
   map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading electrons",1000,0,1000);
+  map_sig["h_llpt"]                 =     new TH1F("h_llpt_"           + name,"Invariant pt of the two leading electrons",500,0,1000);
   map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
   map_sig["h_lljjjj_mass"]             =     new TH1F("h_lljjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
   map_sig["h_l1jjjj_mass"]             =     new TH1F("h_l1jjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000);
@@ -316,6 +317,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
 
   if(electrons.size() ==2 ){
     Fill("h_llmass", (electrons[0]+electrons[1]).M(),weight);
+    Fill("h_llpt", (electrons[0]+electrons[1]).Pt(),weight);
     if(jets.size() >= 2){
       Fill("h_l1jjmass", (electrons[0] + jets[m] + jets[n]).M(),weight);
       Fill("h_l2jjmass", (electrons[1] + jets[m] + jets[n]).M(),weight);
