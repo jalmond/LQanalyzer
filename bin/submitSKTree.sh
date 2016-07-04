@@ -628,7 +628,7 @@ if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     job_skim="FLATCAT"
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
-	job_njobs=30
+	job_njobs=200
     fi
     if [[ $submit_version_tag == "" ]];
 	then 
@@ -648,7 +648,7 @@ if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
     
     if [[ $set_sktreemaker_debug == "false" ]];
         then
-	job_njobs=30
+	job_njobs=200
     fi
     if [[ $submit_version_tag == "" ]];
         then
@@ -670,7 +670,7 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
     job_skim="SKTree_LeptonSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
-        job_njobs=30
+        job_njobs=200
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -692,7 +692,7 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     job_skim="SKTree_DiLepSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
         then
-        job_njobs=30
+        job_njobs=200
     fi
     if [[ $submit_version_tag == "" ]];
 	then
