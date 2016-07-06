@@ -41,8 +41,13 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   MakeCleverHistograms(sighist_ee,"DiElectron");
   MakeCleverHistograms(sighist_ee,"DiElectron_truthmatched");
   MakeCleverHistograms(sighist_em,"ElMuon");
-
-
+  
+  MakeCleverHistograms(jehist, "DiMuon_dijet");
+  MakeCleverHistograms(jehist, "DiMuon_dijet_tchannel");
+  MakeCleverHistograms(jehist, "EMuon_dijet");
+  MakeCleverHistograms(jehist, "EMuon_dijet_tchannel");
+  MakeCleverHistograms(jehist, "DiElectron_dijet");
+  MakeCleverHistograms(jehist, "DiElectron_dijet_tchannel");
 }
 
 
@@ -153,14 +158,16 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    std::vector<snu::KMuon> muonVetoColl = GetMuons(BaseSelection::MUON_HN_VETO);  // veto selection
    std::vector<snu::KMuon> muonLooseColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
    std::vector<snu::KMuon> muonTightColl = GetMuons(BaseSelection::MUON_POG_TIGHT); // tight selection : NonPrompt MC lep removed
+   std::vector<snu::KMuon> muonTightCorrColl = GetMuons(BaseSelection::MUON_POG_TIGHT); // tight selection : NonPrompt MC lep removed
    std::vector<snu::KMuon> muonTightTruthMatchedColl = GetMuons(BaseSelection::MUON_POG_TIGHT,false); // tight selection : NonPrompt MC lep removed
    
-   CorrectMuonMomentum(muonTightColl);
+   CorrectMuonMomentum(muonTightCorrColl);
    
    /// List of preset jet collections : NoLeptonVeto/Loose/Medium/Tight/TightLepVeto/HNJets
    std::vector<snu::KJet> jetColl             = GetJets(BaseSelection::JET_NOLEPTONVETO); // All jets
    std::vector<snu::KJet> jetColl_hn          = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
-   
+   std::vector<snu::KJet> jetColl_hn_t          = GetJets(BaseSelection::JET_HN_TChannel);
+
    FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
    /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
@@ -226,12 +233,16 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40);
 	   
 	 }
-	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*mu_weight);
-	 CorrectMuonMomentum(muonTightColl);
-	 FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*mu_weight);
-
-	 if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*mu_weight);
-
+	 float ev_weight = weight*altpileup_reweight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight;
+	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+	 
+	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiMuon_dijet", jetColl_hn, ev_weight);
+	 if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
+	 
+	 
+	 if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 
        }
      }
    }
@@ -251,6 +262,9 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	 if(electronTightTruthMatchedColl.size() ==2)            FillCLHist(sighist_ee, "DiElectron_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*el_weight*pileup_reweight_71*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight);
 	 
 	 FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight);
+
+	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiElectron_dijet", jetColl_hn, ev_weight);
+         if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiElectron_dijet_tchannel", jetColl_hn_t, ev_weight);
        }
      }
    }
@@ -268,6 +282,9 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	 FillHist("nvertex_emu_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40);
 	 
 	 FillCLHist(sighist_em, "EMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*emu_weight*pileup_reweight_71);
+	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "EMuon_dijet", jetColl_hn, ev_weight);
+         if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "EMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
+
        }
      }
    }
