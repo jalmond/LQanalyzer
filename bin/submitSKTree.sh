@@ -1117,7 +1117,7 @@ if [[ $changed_job_njobs == "true" ]];
 	    if [ $HOSTNAME != "cmscluster.snu.ac.kr" ];
 	    then
 		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-5)"
-		job_njobs=5
+		job_njobs=20
 	    fi
 	fi
     fi

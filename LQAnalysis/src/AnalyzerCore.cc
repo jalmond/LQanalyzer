@@ -488,7 +488,7 @@ double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KE
 }
 
 double AnalyzerCore::ElectronRecoScaleFactor(vector<snu::KElectron> el){
-
+  
   float sf= 1.;
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     if(itel->Pt() > 200.) {sf *= 1.; continue;}
@@ -516,9 +516,10 @@ float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent:
 
     /// Electron triggers
     // Double Electron
-
-    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617)/tlumi);
+    float bad_ls=93.492;
+    if(k_cat_version<=3) bad_ls=0.;
+    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858 - bad_ls)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617-bad_ls)/tlumi);
     else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
     
     // Single Electon
@@ -548,17 +549,17 @@ float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent:
     else  if(triggername.Contains("HLT_Mu8_v")) return ((0.001+0.763)/tlumi);
     else  if(triggername.Contains("HLT_Mu17_v")) return ((218.121)/tlumi);
     else  if(triggername.Contains("HLT_Mu20_v")) return (108.842/tlumi);
-    else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801) /tlumi);
+    else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801- bad_ls) /tlumi);
 
     /// multilepton
-    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
-    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858)/tlumi);
-    else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
-    else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858) /tlumi);
-    else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617) /tlumi);
-    else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617) /tlumi);
-    else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( 2318.348 /tlumi);
-    else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617) /tlumi);
+    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617- bad_ls)/tlumi);
+    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858- bad_ls)/tlumi);
+    else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617- bad_ls)/tlumi);
+    else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858- bad_ls) /tlumi);
+    else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617- bad_ls) /tlumi);
+    else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617- bad_ls) /tlumi);
+    else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( (2318.348 - bad_ls)/tlumi);
+    else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617- bad_ls) /tlumi);
   }
   else if(flag ==  snu::KEvent::silver) {
 

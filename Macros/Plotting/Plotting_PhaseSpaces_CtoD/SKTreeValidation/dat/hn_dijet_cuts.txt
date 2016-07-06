@@ -1,4 +1,4 @@
-DiElectron_noTM
+DiElectron_DiJet
 END
 DiElectronNoPRW
 DiElectronNoTrigger

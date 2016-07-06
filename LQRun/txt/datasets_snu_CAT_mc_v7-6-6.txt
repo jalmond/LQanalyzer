@@ -8,31 +8,31 @@
 #######################################################################################################################################
 
 
-DY10to50_MCatNLO  30899062.0 22482564.0 18610.0 1208.1  /data4/DATA/FlatCatuples/MC/v7-6-6/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
-DY50plus_MCatNLO  121199528.0 81228008.0 6024.2 13483.6  /data4/DATA/FlatCatuples/MC/v7-6-6/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
-singletop_s_MCatNLO  998400.0 621946.0 3.4 185103.0  /data4/DATA/FlatCatuples/MC/v7-6-6/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/
-singletop_tbar_Powheg  1630900.0 1630900.0 26.1 62568.3  /data4/DATA/FlatCatuples/MC/v7-6-6/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
-singletop_t_Powheg  3299200.0 3299200.0 43.8 75326.9  /data4/DATA/FlatCatuples/MC/v7-6-6/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
-singletop_tbarW_Powheg  999400.0 999400.0 35.6 28073.0  /data4/DATA/FlatCatuples/MC/v7-6-6/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
-singletop_tW_Powheg  1000000.0 1000000.0 35.6 28089.9  /data4/DATA/FlatCatuples/MC/v7-6-6/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
-TT_MG5  10166612.0 10166612.0 831.8 12223.0  /data4/DATA/FlatCatuples/MC/v7-6-6/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
-WW_pythia8  988418.0 988418.0 113.8 8683.6  /data4/DATA/FlatCatuples/MC/v7-6-6/WW_TuneCUETP8M1_13TeV-pythia8/
-WZ_pythia8  1000000.0 1000000.0 47.1 21217.9  /data4/DATA/FlatCatuples/MC/v7-6-6/WZ_TuneCUETP8M1_13TeV-pythia8/
-ZZ_pythia8  985600.0 985600.0 16.9 58285.0  /data4/DATA/FlatCatuples/MC/v7-6-6/ZZ_TuneCUETP8M1_13TeV-pythia8/
+DY10to50_MCatNLO  30899062.0 22482564.0 18610.0 1208.1  /data2/DATA/cattoflat/MC/v7-6-6/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
+DY50plus_MCatNLO  121199528.0 81228008.0 6024.2 13483.6  /data2/DATA/cattoflat/MC/v7-6-6/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/
+singletop_s_MCatNLO  998400.0 621946.0 3.4 185103.0  /data2/DATA/cattoflat/MC/v7-6-6/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/
+singletop_tbar_Powheg  1630900.0 1630900.0 26.1 62568.3  /data2/DATA/cattoflat/MC/v7-6-6/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
+singletop_t_Powheg  3299200.0 3299200.0 43.8 75326.9  /data2/DATA/cattoflat/MC/v7-6-6/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
+singletop_tbarW_Powheg  999400.0 999400.0 35.6 28073.0  /data2/DATA/cattoflat/MC/v7-6-6/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
+singletop_tW_Powheg  1000000.0 1000000.0 35.6 28089.9  /data2/DATA/cattoflat/MC/v7-6-6/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/
+TT_MG5  10166612.0 10166612.0 831.8 12223.0  /data2/DATA/cattoflat/MC/v7-6-6/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/
+WW_pythia8  988418.0 988418.0 113.8 8683.6  /data2/DATA/cattoflat/MC/v7-6-6/WW_TuneCUETP8M1_13TeV-pythia8/
+WZ_pythia8  1000000.0 1000000.0 47.1 21217.9  /data2/DATA/cattoflat/MC/v7-6-6/WZ_TuneCUETP8M1_13TeV-pythia8/
+ZZ_pythia8  985600.0 985600.0 16.9 58285.0  /data2/DATA/cattoflat/MC/v7-6-6/ZZ_TuneCUETP8M1_13TeV-pythia8/
 
 
 #### Single lepton skims: SKTrees
-SKDY10to50_MCatNLO  30899062.0 22482564.0 18610.0 1208.1 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/DY10to50_MCatNLO/
-SKDY50plus_MCatNLO  121199528.0 81228008.0 6024.2 13483.6 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/DY50plus_MCatNLO/
-SKsingletop_s_MCatNLO  998400.0 621946.0 3.4 185103.0 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/singletop_s_MCatNLO/
-SKsingletop_tbar_Powheg  1630900.0 1630900.0 26.1 62568.3 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/singletop_tbar_Powheg/
-SKsingletop_t_Powheg  3299200.0 3299200.0 43.8 75326.9 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/singletop_t_Powheg/
-SKsingletop_tbarW_Powheg  999400.0 999400.0 35.6 28073.0 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/singletop_tbarW_Powheg/
-SKsingletop_tW_Powheg  1000000.0 1000000.0 35.6 28089.9 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/singletop_tW_Powheg/
-SKTT_MG5  10166612.0 10166612.0 831.8 12223.0 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/TT_MG5/
-SKWW_pythia8  988418.0 988418.0 113.8 8683.6 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/WW_pythia8/
-SKWZ_pythia8  1000000.0 1000000.0 47.1 21217.9 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/WZ_pythia8/
-SKZZ_pythia8  985600.0 985600.0 16.9 58285.0 /data4/LocalNtuples/SKTrees13TeV/v7-6-6/SKTrees/MC/ZZ_pythia8/
+SKDY10to50_MCatNLO  30899062.0 22482564.0 18610.0 1208.1 /data2/CatNtuples/v7-6-6/SKTrees/MC/DY10to50_MCatNLO/
+SKDY50plus_MCatNLO  121199528.0 81228008.0 6024.2 13483.6 /data2/CatNtuples/v7-6-6/SKTrees/MC/DY50plus_MCatNLO/
+SKsingletop_s_MCatNLO  998400.0 621946.0 3.4 185103.0 /data2/CatNtuples/v7-6-6/SKTrees/MC/singletop_s_MCatNLO/
+SKsingletop_tbar_Powheg  1630900.0 1630900.0 26.1 62568.3 /data2/CatNtuples/v7-6-6/SKTrees/MC/singletop_tbar_Powheg/
+SKsingletop_t_Powheg  3299200.0 3299200.0 43.8 75326.9 /data2/CatNtuples/v7-6-6/SKTrees/MC/singletop_t_Powheg/
+SKsingletop_tbarW_Powheg  999400.0 999400.0 35.6 28073.0 /data2/CatNtuples/v7-6-6/SKTrees/MC/singletop_tbarW_Powheg/
+SKsingletop_tW_Powheg  1000000.0 1000000.0 35.6 28089.9 /data2/CatNtuples/v7-6-6/SKTrees/MC/singletop_tW_Powheg/
+SKTT_MG5  10166612.0 10166612.0 831.8 12223.0 /data2/CatNtuples/v7-6-6/SKTrees/MC/TT_MG5/
+SKWW_pythia8  988418.0 988418.0 113.8 8683.6 /data2/CatNtuples/v7-6-6/SKTrees/MC/WW_pythia8/
+SKWZ_pythia8  1000000.0 1000000.0 47.1 21217.9 /data2/CatNtuples/v7-6-6/SKTrees/MC/WZ_pythia8/
+SKZZ_pythia8  985600.0 985600.0 16.9 58285.0 /data2/CatNtuples/v7-6-6/SKTrees/MC/ZZ_pythia8/
 
 
 #### Dilepton skims: SKTrees

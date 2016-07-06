@@ -330,9 +330,9 @@ if number_of_cores > 1:
             if not cycle == "SKTreeMaker":
                 if not cycle == "SKTreeMakerNoCut":
                     if not cycle == "SKTreeMakerDiLep":
-                        number_of_cores = 5
+                        number_of_cores = 20
                         if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                            print "Number of sub jobs is set to high. Reset to default of 5."
+                            print "Number of sub jobs is set to high. Reset to default of 5.Input"
 
 if number_of_cores <  -100:
     number_of_cores=30

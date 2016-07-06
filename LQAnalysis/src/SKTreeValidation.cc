@@ -36,6 +36,7 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
   MakeCleverHistograms(sighist_mm,"DiMuon");
+  MakeCleverHistograms(sighist_mm,"DiMuon_corr");
   MakeCleverHistograms(sighist_mm,"DiMuon_truthmatched");
   MakeCleverHistograms(sighist_ee,"DiElectron");
   MakeCleverHistograms(sighist_ee,"DiElectron_truthmatched");
@@ -99,8 +100,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    std::vector<TString> triggerslist_el;
    triggerslist_el.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
    std::vector<TString> triggerslist_emu;
-   triggerslist_emu.push_back("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-   triggerslist_emu.push_back("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoV_v");
+   triggerslist_emu.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+   triggerslist_emu.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v");
    
    float mu_trigger_ps_weight= ApplyPrescale("HLT_IsoMu20", TargetLumi,lumimask);
    float el_trigger_ps_weight= ApplyPrescale("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi,lumimask);
@@ -216,57 +217,57 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    if(mu_pass&&muonTightColl.size() ==2) {
      if(!SameCharge(muonTightColl)){
        if(muonTightColl.at(1).Pt() > 20.){
-	 /// Method of plotting single histogram
-	 if(isData) FillHist("Nvtx_mm_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-	 else  {
-	   FillHist("Nvtx_mm_69_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight_69*mu_weight, 0. , 50., 50);
-	   FillHist("Nvtx_mm_71_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight_71*mu_weight, 0. , 50., 50);
+	 if(GetDiLepMass(muonTightColl) < 120. && GetDiLepMass(muonTightColl)  > 60. ){
+	   FillHist("zpeak_mumu_nopurw", GetDiLepMass(muonTightColl), weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 200.,400);
+	   FillHist("zpeak_mumu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 200.,400);
+	   FillHist("zpeak_mumu_altpurw", GetDiLepMass(muonTightColl), weight*altpileup_reweight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 200.,400);
+	   FillHist("nvertex_mumu_nopurw", eventbase->GetEvent().nVertices(),  weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40);
+	   FillHist("nvertex_mumu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40) ;
+	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40);
+	   
 	 }
-	 
-	 FillHist("zpeak_mumu_noPUrw", GetDiLepMass(muonTightColl), weight*mu_weight, 0., 200.,400);
-	 FillHist("zpeak_mumu", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*mu_weight, 0., 200.,400);
-	 
-	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_69*mu_weight);
-	 if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_69*mu_weight);
+	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*mu_weight);
+	 CorrectMuonMomentum(muonTightColl);
+	 FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*mu_weight);
+
+	 if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*mu_weight);
 
        }
      }
    }
+
    if(el_pass&&electronTightColl.size() ==2) {
      if(!SameCharge(electronTightColl)){
        if(electronTightColl.at(1).Pt() > 20.){
 	 /// Method of plotting single histogram
-	 FillHist("zpeak_ee_noPUrw", GetDiLepMass(muonTightColl), weight*el_weight, 0., 200.,400);
-	 FillHist("zpeak_ee", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*el_weight, 0., 200.,400);
-	 
-	 if(isData) FillHist("Nvtx_ee_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-	 else {
-	   FillHist("Nvtx_ee_69_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight_69*el_weight, 0. , 50., 50);
-	   FillHist("Nvtx_ee_71_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight_71*el_weight, 0. , 50., 50);
+	 if(GetDiLepMass(electronTightColl) < 120. && GetDiLepMass(electronTightColl)  > 60. ){
+	   FillHist("zpeak_ee_nopurw", GetDiLepMass(muonTightColl), weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 200.,400);
+	   FillHist("zpeak_ee_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 200.,400);
+	   FillHist("zpeak_ee_altpurw", GetDiLepMass(muonTightColl), weight*altpileup_reweight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 200.,400);
+	   FillHist("nvertex_ee_nopurw", eventbase->GetEvent().nVertices(),  weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 40.,40);
+	   FillHist("nvertex_ee_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 40.,40) ;
+	   FillHist("nvertex_ee_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 40.,40);
 	 }
-
-	 if(electronTightTruthMatchedColl.size() ==2)            FillCLHist(sighist_ee, "DiElectron_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*el_weight*pileup_reweight_69);
-
-	 FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*el_weight*pileup_reweight_69);
+	 if(electronTightTruthMatchedColl.size() ==2)            FillCLHist(sighist_ee, "DiElectron_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*el_weight*pileup_reweight_71*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight);
+	 
+	 FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight);
        }
      }
    }
-
+   
    if(emu_pass&&(electronTightColl.size() == 1)&& (muonTightColl.size() ==1)) {
      if(electronTightColl.at(0).Charge() != muonTightColl.at(0).Charge()){
        if((muonTightColl.at(0).Pt() > 20. )&&( electronTightColl.at(0).Pt() < 20.)){
 	 /// Method of plotting single histogram
+
+	 FillHist("zpeak_emu_nopurw", GetDiLepMass(muonTightColl), weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 200.,400);
+	 FillHist("zpeak_emu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 200.,400);
+	 FillHist("zpeak_emu_altpurw", GetDiLepMass(muonTightColl), weight*altpileup_reweight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight,0., 200.,400);
+	 FillHist("nvertex_emu_nopurw", eventbase->GetEvent().nVertices(),  weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40);
+	 FillHist("nvertex_emu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40) ;
+	 FillHist("nvertex_emu_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40);
 	 
-	 if(isData) FillHist("Nvtx_em_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-	 else {
-	   FillHist("Nvtx_em_69_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight_69*emu_weight, 0. , 50., 50);
-	   FillHist("Nvtx_em_71_mc",  eventbase->GetEvent().nVertices() ,weight*pileup_reweight_71*emu_weight, 0. , 50., 50);
-	 }
-	 
-	 FillHist("zpeak_emu_noPUrw", GetDiLepMass(muonTightColl), weight*emu_weight, 0., 200.,400);
-	 FillHist("zpeak_emu", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*emu_weight, 0., 200.,400);
-	 
-	 FillCLHist(sighist_em, "EMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*emu_weight*pileup_reweight_69);
+	 FillCLHist(sighist_em, "EMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*emu_weight*pileup_reweight_71);
        }
      }
    }

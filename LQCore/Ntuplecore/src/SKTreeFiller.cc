@@ -325,13 +325,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
    
     el.Setdz( electrons_dz->at(iel));
     el.Setdxy(electrons_dxy->at(iel) );
-    if(electrons_sigdxy)el.Setdxy_sig(electrons_sigdxy->at(iel) );
-
+    if(electrons_sigdxy){
+      if(electrons_sigdxy->size() > 0 )el.Setdxy_sig(electrons_sigdxy->at(iel) );
+    }
     el.SetPFChargedHadronIso(0.3, electrons_puChIso03->at(iel));
     el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
     el.SetPFNeutralHadronIso(0.3,electrons_nhIso03->at(iel));
     el.SetPFRelIso(0.3,electrons_relIso03->at(iel));
     
+    m_logger << DEBUG << "Filling electron Info 2" << LQLogger::endmsg;
     
     el.SetPFChargedHadronIso(0.4,electrons_puChIso04->at(iel));
     el.SetPFPhotonIso(0.4,electrons_phIso04->at(iel));
@@ -346,7 +348,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetCharge(electrons_q->at(iel));
     el.SetGsfCtfScPixCharge(electrons_isGsfCtfScPixChargeConsistent->at(iel));
     
-    
+    m_logger << DEBUG << "Filling electron Info 3" << LQLogger::endmsg;
     /// set conversion variables
     
     if(electrons_shiftedEnDown){
@@ -377,7 +379,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetTrkVx(electrons_x->at(iel));
     el.SetTrkVy(electrons_y->at(iel));
     el.SetTrkVz(electrons_z->at(iel));
-    
+    m_logger << DEBUG << "Filling electron Info 4" << LQLogger::endmsg;    
+
     //// Set Is ChargeFlip
     bool isprompt= false;
     bool from_tau = false;
@@ -388,14 +391,16 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     int mc_pdgid=-1;
     bool matched_in_Dr=false;
 
-    if(gen_pt){
-      // Default deltaR setting for matching
-      float min_Dr=0.1;
-      /// Loop over all gen particles
-      for (UInt_t it=0; it< gen_pt->size(); it++ ){
-
-
-	/// Requirements to make sure no crash or warnings with pt=0
+    if(k_cat_version  > 3){
+      
+      if(gen_pt){
+	// Default deltaR setting for matching
+	float min_Dr=0.1;
+	/// Loop over all gen particles
+	for (UInt_t it=0; it< gen_pt->size(); it++ ){
+	  
+	  
+	  /// Requirements to make sure no crash or warnings with pt=0
 	if(gen_motherindex->at(it) <= 0)continue;
 	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
 	if(gen_pt->at(it) < 0.1) continue;
@@ -404,22 +409,22 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	double match_eta =electrons_eta->at(iel);
 	double match_phi =electrons_phi->at(iel);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
-
+	
 	/// Matching using instructions on
 	/// https://indico.cern.ch/event/292928/contributions/1650088/attachments/547844/755123/talk_electron_contribution.pdf
 	/// 
-
+	
 	/// Match required to status 1 electron
 	if(gen_status->at(it) != 1) continue;
 	if(fabs(gen_pdgid->at(it)) != 11) continue;
-
+	
 	/// Check status 1 electron is not matched already to areco electron
 	bool already_matched=false;
 	for(unsigned int im=0; im > matched_truth.size();im++){
           if(it == unsigned(matched_truth.at(im))) already_matched=true;
         }
         if(already_matched) continue;
-
+	
 
 	if(matched_in_Dr){
 	  /// This is for multiple matched status 1 el.
@@ -672,6 +677,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetMotherTruthIndex(mother_index);
       el.SetMCTruthIndex(matched_index);
     }
+    }
     electrons.push_back(el);
   }
   m_logger << DEBUG << "END electrons " << LQLogger::endmsg;
@@ -881,6 +887,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     int matched_index=-1;
     int mc_pdgid=-1;
     bool matched_in_Dr=false;
+    
+    if(k_cat_version < 3){
 
     if(gen_pt){
       float min_Dr=0.1;
@@ -1097,7 +1105,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetMotherTruthIndex(mother_index);
       muon.SetMCTruthIndex(matched_index);
     }
-
+    }
 
     /// Fill vector
     muons.push_back(muon);

@@ -55,6 +55,7 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
 
    MakeCleverHistograms(sighist_ee, "DiElectron");
    MakeCleverHistograms(sighist_ee, "DiElectron_noTM");
+   MakeCleverHistograms(sighist_ee, "DiElectron_DiJet");
    MakeCleverHistograms(sighist_ee, "DiElectronID");
    MakeCleverHistograms(sighist_ee, "DiElectronIDRECO");
    MakeCleverHistograms(sighist_ee, "SIGNAL");
@@ -95,9 +96,12 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   //  FillHist("Runnumber",eventbase->GetEvent().RunNumber(),1.,Runs, nRun);
   
+  FillHist("weight",weight, 0., 5., 100.);
 
+ 
   if(!isData)weight*= MCweight;
-  
+
+  FillHist("MCweight",MCweight, 0., 5.,100.);
   /// Apply json file if gold json is used. if lumimask == silver this does nothing  
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
   
@@ -149,7 +153,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   if(!isData){
     weight_trigger_23 =  ApplyPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
   }
-  
+  FillHist("weight_trigger_23",weight_trigger_23,0., 5.,100.);
+
   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
 
   
@@ -193,7 +198,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
  
   
   float weight_trigger_sf = TriggerScaleFactor(electronColl, muonColl, analysis_trigger);
-  //if(isData) weight_trigger_sf=1.;
+  if(isData) weight_trigger_sf=1.;
   FillHist("TriggerSFWeight" , weight_trigger_sf, 1., 0. , 2., 200);
   
   // Sets weight to weight if not running chargeflip bkg estimate or events are S
@@ -232,7 +237,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   /// using AltPileUpWeight for minbias xs = 71000
   // pileup_reweight = eventbase->GetEvent().AltPileUpWeight(lumimask);
-  
+  float altpileup_reweight = eventbase->GetEvent().AltPileUpWeight(lumimask);
+  if(isData) altpileup_reweight = 1.;
 
   FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
   
@@ -249,59 +255,53 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("IDWeight" ,  id_weight,1.,  0. , 2., 200);
   FillHist("RecoWeight" ,  reco_weight, 1., 0. , 2., 200);
 
+
   FillCLHist(sighist_ee, "SIGNAL", eventbase->GetEvent(), muonColl,electronColl_nocut,jetColl_hn, weight*pileup_reweight);
   if(SameCharge(electronColl_nocut))    FillCLHist(sighist_ee, "SS_SIGNAL", eventbase->GetEvent(), muonColl,electronColl_nocut,jetColl_hn, weight*pileup_reweight);
   else     FillCLHist(sighist_ee, "OS_SIGNAL", eventbase->GetEvent(), muonColl,electronColl_nocut,jetColl_hn, weight*pileup_reweight);
   
-
-  
-  if(PassTrigger(triggerslist_23, prescale)){
-    if(electronColl.size() ==2) {
-      if(electronColl.at(0).Pt() > 25. && electronColl.at(1).Pt() > 15. ){
-	FillCLHist(sighist_ee, "DiElectron_HLT23", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*weight_trigger_23);
-      }
-    }
-  }
   
   if(electronColl_all.size() == 2 ) {
-
     if(electronColl_all.at(0).Pt() > 20. && electronColl_all.at(1).Pt() > 15. ){
-      if(PassTrigger(triggerslist, prescale)){
+      if(PassTrigger(triggerslist, prescale)){	  
+	FillCLHist(sighist_ee, "DiElectron_noTM", eventbase->GetEvent(), muonColl,electronColl_all,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
+	if(njet > 1) FillCLHist(sighist_ee, "DiElectron_DiJet", eventbase->GetEvent(), muonColl,electronColl_all,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
 
-        FillCLHist(sighist_ee, "DiElectron_noTM", eventbase->GetEvent(), muonColl,electronColl_all,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
       }
     }
   }
-
-      
+  
   if(electronColl.size() == 2 ) {
     
     if(electronColl.at(0).Pt() > 20. && electronColl.at(1).Pt() > 15. ){
       
       FillHist("Njets_dilepton", jetColl_hn.size() ,weight, 0. , 5., 5);
       FillCutFlow("DiEl_tight", weight);
-      
-      /// Method of plotting single histogram
-      FillHist("zpeak_ee_noPUrw", GetDiLepMass(electronColl), weight, 0., 200.,400);
-      FillHist("zpeak_ee", GetDiLepMass(electronColl), weight*pileup_reweight, 0., 200.,400);
-      
       /// Standard set of histograms for muons/jets/electrons.. with no corrections
       
       FillCLHist(sighist_ee, "DiElectronNoPRW", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight);
       FillCLHist(sighist_ee, "DiElectronNoTrigger", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight);
-
+      
       if(PassTrigger(triggerslist, prescale)){
 	
 	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf);
 	FillCLHist(sighist_ee, "DiElectronID" , eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight	);
 	FillCLHist(sighist_ee, "DiElectronIDRECO" , eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
-
+	
 	if(GetDiLepMass(electronColl) < 120. && GetDiLepMass(electronColl)  > 60. ){
 	  if(!SameCharge(electronColl)){
 	    FillCLHist(sighist_ee, "DiElectron_Zpeak", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
 	    if(electronColl.at(0).GsfCtfScPixChargeConsistency() && electronColl.at(1).GsfCtfScPixChargeConsistency()){
 	      FillCLHist(sighist_ee, "DiElectron_Zpeak_chargeconsistency", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
 	      
+	      FillHist("zpeak_ee_nopurw", GetDiLepMass(electronColl), weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 200.,400);
+	      FillHist("zpeak_ee_purw", GetDiLepMass(electronColl), weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 200.,400);
+	      FillHist("zpeak_ee_altpurw", GetDiLepMass(electronColl), weight*altpileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 200.,400);
+	      FillHist("nvertex_ee_nopurw", eventbase->GetEvent().nVertices(),  weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 40.,40);
+	      FillHist("nvertex_ee_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 40.,40);
+	      FillHist("nvertex_ee_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 40.,40);
+
+
 	      
 	      if(electronColl.at(0).IsEEFiducial() && electronColl.at(1).IsEEFiducial()) 
 		FillCLHist(sighist_ee, "DiElectron_EE", eventbase->GetEvent(), muonColl,electronColl,jetColl_hn, weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight);
@@ -319,7 +319,6 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
       }
     }
   }
-  
   
   return;
   

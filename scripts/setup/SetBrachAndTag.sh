@@ -5,6 +5,6 @@ if [[ '-d' == branch ]];
     then
     export CATTAG=
 else
-    export CATTAG=v7-6-4.2
+    export CATTAG=v7-6-6.1
 fi
 
