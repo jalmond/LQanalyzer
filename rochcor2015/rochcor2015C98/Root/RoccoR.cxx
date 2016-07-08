@@ -1,6 +1,8 @@
 #include "TRandom3.h"
 #include "TMath.h"
 #include "RoccoR.h"
+//#include "__utils__/RoccoR.h"
+
 
 int RocRes::getBin(double x, const int NN, const double *b){
     for(int i=0; i<NN; ++i) if(x<b[i+1]) return i;
@@ -68,7 +70,7 @@ void RocRes::dumpParams(){
 
 	
 void RocRes::init(string filename){
-  std::ifstream in(filename.c_str());
+  std::ifstream in(filename);
   char buffer[256];
   char tag[4];
   int type, sys, mem, isdt, var, bin;	
@@ -142,15 +144,21 @@ double RocRes::kSmearDet(double pt, double eta, TYPE type, double v, double u){
 }
 
 double RocRes::kExtraDet(double pt, double eta, int nlayers, double u, double w){
-    int H = getBin(fabs(eta), NETA, BETA);
-    int F = nlayers-NMIN;
-    double  v = ntrk[H][F]+(ntrk[H][F+1]-ntrk[H][F])*w;
-    int     D = getBin(v, NTRK, dtrk[H]);
-    double RD = kDat[H]*Sigma(pt, H, D);
-    double RM = kRes[H]*Sigma(pt, H, F);
-    double x = RD>RM ? sqrt(RD*RD-RM*RM)*cb[H][F].invcdf(u) : 0;
-    if(x<=-1) return 1.0;
-    return 1.0/(1.0 + x); 
+  int H = getBin(fabs(eta), NETA, BETA);
+  int F = nlayers-NMIN;
+  double  v = ntrk[H][F]+(ntrk[H][F+1]-ntrk[H][F])*w;
+  int     D = getBin(v, NTRK, dtrk[H]);
+  double RD = kDat[H]*Sigma(pt, H, D);
+  double RM = kRes[H]*Sigma(pt, H, F);
+  //double x = RD>RM ? sqrt(RD*RD-RM*RM)*cb[H][F].invcdf(u) : 0;
+  double x = 0;
+  if(RD>RM){
+    double rn = cb[H][F].invcdf(u);
+    if(fabs(rn)>5.0) rn = 0.0;  //to protect random number (non-realistic smearing)
+    x = sqrt(RD*RD-RM*RM)*rn;
+  }else x=0;
+  if(x<=-1) return 1.0;
+  return 1.0/(1.0 + x); 
 }
 
 void RocRes::fillFitData(int &H, int &F, int &D, double &xmc, double &xdt, double &Rmc, double &Rdt, double pt, double eta){
@@ -228,7 +236,7 @@ void RocOne::init(std::string filename, int iTYPE, int iSYS, int iMEM){
 
     RR.init(filename);
 
-    std::ifstream in(filename.c_str());
+    std::ifstream in(filename);
     char tag[4];
     int type, sys, mem, isdt, var, bin;	
 

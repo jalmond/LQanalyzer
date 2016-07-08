@@ -5,17 +5,16 @@
 \hline
 Source & \multicolumn{4}{c}{} \\
 \hline
-DY$\rightarrow$ ll; 10 < m(ll) < 50&20449.0& $\pm$& 267.7&$^{+4089.8}_{-4089.8}$\\
-DY$\rightarrow$ ll; m(ll) > 50&778354.9& $\pm$& 464.7&$^{+155671.0}_{-155671.0}$\\
-WZ,ZZ,WW&2080.1& $\pm$& 17.8&$^{+182.9}_{-182.9}$\\
-Wjets&36.2& $\pm$& 23.0&$^{+5.4}_{-5.4}$\\
-t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&7348.0& $\pm$& 38.0&$^{+1682.1}_{-1682.1}$\\
+DY$\rightarrow$ ll; 10 < m(ll) < 50&8702.7& $\pm$& 172.6&$^{+1740.5}_{-1740.5}$\\
+DY$\rightarrow$ ll; m(ll) > 50&681340.7& $\pm$& 407.5&$^{+136268.1}_{-136268.1}$\\
+WZ,ZZ,WW&1184.3& $\pm$& 9.6&$^{+127.6}_{-127.6}$\\
+t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&6087.8& $\pm$& 32.6&$^{+1391.9}_{-1391.9}$\\
 \hline
-Total&808268.2& $\pm$&538.4&$^{+155733.9}_{-155733.9}$\\
+Total&697315.4& $\pm$&443.8&$^{+136286.4}_{-136286.4}$\\
 \hline
-Data&  \multicolumn{4}{c}{$722388.0$}\\
+Data&  \multicolumn{4}{c}{$659019.0$}\\
 \hline
-Signficance&  \multicolumn{4}{c}{$-0.6\sigma$}\\
+Signficance&  \multicolumn{4}{c}{$-0.3\sigma$}\\
 \hline
 \hline
 \end{tabular}

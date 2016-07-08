@@ -12,15 +12,10 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-static const double pi    = TMath::Pi();
-static const double SPiO2 = sqrt(TMath::Pi()/2.0);
-static const double S2    = sqrt(2.0);
-
 struct CrystalBall{
-
-  //static const double pi= ipi;
-  //double SPiO2;// = sqrt(3.14159265358979323846);
-  //static  const double S2;//=sqrt(2.0);
+    static const double pi;
+    static const double SPiO2;
+    static const double S2;
 
     double m;
     double s;
@@ -98,7 +93,9 @@ struct CrystalBall{
 	return m - S2*s*TMath::ErfInverse((D - u/Ns ) / SPiO2);
     }
 };
-
+const double CrystalBall::pi    = TMath::Pi();
+const double CrystalBall::SPiO2 = sqrt(TMath::Pi()/2.0);
+const double CrystalBall::S2    = sqrt(2.0);
 
 class RocRes{
     private:

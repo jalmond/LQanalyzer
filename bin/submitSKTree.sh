@@ -1289,17 +1289,17 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     
     if [[ $makelog == "True" ]];
     then
-	if [[ -f "/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log" ]]; then
+	if [[ -f $LQANALYZER_SKTreeLOG_DIR"/$submit_analyzer_name"_${submit_version_tag}".log" ]]; then
 	    while read line
 	    do
 		echo $line >> sktree_logger.txt
-	    done < /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	    done < $LQANALYZER_SKTreeLOG_DIR"/"$submit_analyzer_name"_${submit_version_tag}.log"
 	    
 	    echo -e "\n" >> sktree_logger.txt
 	    
-	    cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	    cp sktree_logger.txt $LQANALYZER_SKTreeLOG_DIR"/"$submit_analyzer_name"_"${submit_version_tag}".log"
 	else
-	    cp sktree_logger.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"$submit_analyzer_name"_${submit_version_tag}.log
+	    cp sktree_logger.txt $LQANALYZER_SKTreeLOG_DIR"/"$submit_analyzer_name"_"${submit_version_tag}".log"
 	fi
     fi
     rm message.txt

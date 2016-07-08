@@ -246,11 +246,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   float reco_weight=1.;
   
   if(!isData){
-    for(unsigned int iel=0; iel < electronColl.size(); iel++){
-      id_weight*= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronColl);
-      reco_weight *= ElectronRecoScaleFactor(electronColl);
-      
-    }
+    id_weight*= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronColl);
+    reco_weight *= ElectronRecoScaleFactor(electronColl);
   }
   FillHist("IDWeight" ,  id_weight,1.,  0. , 2., 200);
   FillHist("RecoWeight" ,  reco_weight, 1., 0. , 2., 200);

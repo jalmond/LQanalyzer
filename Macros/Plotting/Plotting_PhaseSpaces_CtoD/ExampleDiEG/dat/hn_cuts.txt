@@ -1,4 +1,5 @@
 DiElectron_noTM
+DiElectronIDRECO
 END
 DiElectronNoPRW
 DiElectronNoTrigger

@@ -139,6 +139,147 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   v_wps.push_back("Medium");
   v_wps.push_back("Tight");
   MapBTagSF = SetupBTagger(vtaggers,v_wps);
+
+  mapLumi[254231] = 0.033;
+  mapLumi[254232] = 0.109;
+  mapLumi[254790] = 11.333;
+  mapLumi[254852] = 0.899;
+  mapLumi[254879] = 1.798;
+  mapLumi[254906] = 1.565;
+  mapLumi[254907] = 1.071;
+  mapLumi[254914] = 0.923;
+  mapLumi[256630] = 1.019;
+  mapLumi[256673] = 0.006;
+  mapLumi[256674] = 0.097;
+  mapLumi[256675] = 7.631;
+  mapLumi[256676] = 9.587;
+  mapLumi[256677] = 16.208;
+  mapLumi[256801] = 9.237;
+  mapLumi[256843] = 39.193;
+  mapLumi[256866] = 0.060;
+  mapLumi[256867] = 4.778;
+  mapLumi[256868] = 23.626;
+  mapLumi[256869] = 1.613;
+  mapLumi[256926] = 1.586;
+  mapLumi[256941] = 9.153;
+  mapLumi[257461] = 3.273;
+  mapLumi[257531] = 8.953;
+  mapLumi[257599] = 5.278;
+  mapLumi[257613] = 80.351;
+  mapLumi[257614] = 0.899;
+  mapLumi[257645] = 66.315;
+  mapLumi[257682] = 14.060;
+  mapLumi[257722] = 0.874;
+  mapLumi[257723] = 6.416;
+  mapLumi[257735] = 0.576;
+  mapLumi[257751] = 28.892;
+  mapLumi[257804] = 0.226;
+  mapLumi[257805] = 18.192;
+  mapLumi[257816] = 25.831;
+  mapLumi[257819] = 16.070;
+  mapLumi[257968] = 17.948;
+  mapLumi[257969] = 41.763;
+  mapLumi[258129] = 6.161;
+  mapLumi[258136] = 3.834;
+  mapLumi[258157] = 4.130;
+  mapLumi[258158] = 112.208;
+  mapLumi[258159] = 27.042;
+  mapLumi[258177] = 112.358;
+  mapLumi[258211] = 6.900;
+  mapLumi[258213] = 12.448;
+  mapLumi[258214] = 16.374;
+  mapLumi[258215] = 0.444;
+  mapLumi[258287] = 14.271;
+  mapLumi[258403] = 16.555;
+  mapLumi[258425] = 10.949;
+  mapLumi[258426] = 0.809;
+  mapLumi[258427] = 8.498;
+  mapLumi[258428] = 12.441;
+  mapLumi[258432] = 0.299;
+  mapLumi[258434] = 32.645;
+  mapLumi[258440] = 47.655;
+  mapLumi[258444] = 2.209;
+  mapLumi[258445] = 17.379;
+  mapLumi[258446] = 7.907;
+  mapLumi[258448] = 37.636;
+  mapLumi[258655] = 0.412;
+  mapLumi[258656] = 27.562;
+  mapLumi[258694] = 16.613;
+  mapLumi[258702] = 31.593;
+  mapLumi[258703] = 33.749;
+  mapLumi[258705] = 8.216;
+  mapLumi[258706] = 56.093;
+  mapLumi[258712] = 36.912;
+  mapLumi[258713] = 10.869;
+  mapLumi[258714] = 4.463;
+  mapLumi[258741] = 4.899;
+  mapLumi[258742] = 65.373;
+  mapLumi[258745] = 22.816;
+  mapLumi[258749] = 48.012;
+  mapLumi[258750] = 15.311;
+  mapLumi[259626] = 11.712;
+  mapLumi[259637] = 15.844;
+  mapLumi[259681] = 2.006;
+  mapLumi[259683] = 7.819;
+  mapLumi[259685] = 55.840;
+  mapLumi[259686] = 27.371;
+  mapLumi[259721] = 12.400;
+  mapLumi[259809] = 14.370;
+  mapLumi[259810] = 9.903;
+  mapLumi[259811] = 7.470;
+  mapLumi[259813] = 0.746;
+  mapLumi[259817] = 0.363;
+  mapLumi[259818] = 13.212;
+  mapLumi[259820] = 12.560;
+  mapLumi[259821] = 16.180;
+  mapLumi[259822] = 32.722;
+  mapLumi[259861] = 13.729;
+  mapLumi[259862] = 45.860;
+  mapLumi[259884] = 6.731;
+  mapLumi[259890] = 9.701;
+  mapLumi[259891] = 9.603;
+  mapLumi[260373] = 10.920;
+  mapLumi[260424] = 66.688;
+  mapLumi[260425] = 23.600;
+  mapLumi[260426] = 43.931;
+  mapLumi[260427] = 23.075;
+  mapLumi[260431] = 35.127;
+  mapLumi[260532] = 69.169;
+  mapLumi[260533] = 1.195;
+  mapLumi[260534] = 32.044;
+  mapLumi[260536] = 14.466;
+  mapLumi[260538] = 22.369;
+  mapLumi[260541] = 1.830;
+  mapLumi[260575] = 1.722;
+  mapLumi[260576] = 51.429;
+  mapLumi[260577] = 8.252;
+  mapLumi[260593] = 35.893;
+  mapLumi[260627] = 178.937;
+    
+  mapLumiPerBlack[257613] = 239.38;
+  mapLumiPerBlack[257969] = 238.062;
+  mapLumiPerBlack[258177] = 265.733;
+  mapLumiPerBlack[258448] = 245.419;
+  mapLumiPerBlack[258742] = 296.754;
+  mapLumiPerBlack[259809] = 233.501;
+  mapLumiPerBlack[260424] = 256.388;
+  mapLumiPerBlack[260536] = 242.607;
+  mapLumiPerBlack[260627] = 300.432;
+
+
+  mapLumiNamePerBlack[257613] = "Lumi1";
+  mapLumiNamePerBlack[257969] = "Lumi2";
+  mapLumiNamePerBlack[258177] = "Lumi3";
+  mapLumiNamePerBlack[258448] = "Lumi4";
+  mapLumiNamePerBlack[258742] = "Lumi5";
+  mapLumiNamePerBlack[259809] = "Lumi6";
+  mapLumiNamePerBlack[260424] = "Lumi7";
+  mapLumiNamePerBlack[260536] = "Lumi8";
+  mapLumiNamePerBlack[260627] = "Lumi9";
+
+  
+
+  /// per block
   
   
 }
@@ -171,6 +312,58 @@ float AnalyzerCore::GetDiLepMass(std::vector<snu::KMuon> muons){
   return p.M();
 }
 
+
+bool AnalyzerCore::EtaRegion(TString reg,  std::vector<snu::KElectron> electrons){
+  if(electrons.size() != 2) return false;
+  if(electrons.size() != 2) return false;
+  if(reg.Contains("EE")){
+    if(electrons.at(0).Eta() < 1.5) return false;
+    if(electrons.at(1).Eta() < 1.5) return false;
+    return true;
+  }
+  if(reg.Contains("BB")){
+    if(electrons.at(0).Eta() > 1.5) return false;
+    if(electrons.at(1).Eta() > 1.5) return false;
+    return true;
+  }
+  if(reg.Contains("EB")){
+    if(electrons.at(0).Eta() > 1.5){
+      if(electrons.at(1).Eta() > 1.5) return false;
+    }
+    if(electrons.at(0).Eta() < 1.5){
+      if(electrons.at(1).Eta() < 1.5) return false;
+    }
+    return true;
+  }
+  return false;
+  
+}
+
+
+bool AnalyzerCore::EtaRegion(TString reg,  std::vector<snu::KMuon> muons){
+  
+  if(muons.size() != 2) return false;
+  if(reg.Contains("EE")){
+    if(muons.at(0).Eta() < 1.5) return false;
+    if(muons.at(1).Eta() < 1.5) return false;
+    return true;
+  }
+  if(reg.Contains("BB")){
+    if(muons.at(0).Eta() > 1.5) return false;
+    if(muons.at(1).Eta() > 1.5) return false;
+    return true;
+  }
+  if(reg.Contains("EB")){
+    if(muons.at(0).Eta() > 1.5){
+      if(muons.at(1).Eta() > 1.5) return false;
+    }
+    if(muons.at(0).Eta() < 1.5){
+      if(muons.at(1).Eta() < 1.5) return false;
+    }
+    return true;
+  }
+  return false;
+}
 
 std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
   
@@ -430,7 +623,6 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
     if (trigname.Contains("HLT_Ele23_WPLoose_Gsf")) return 0.936;
   }
   if(mu.size() == 2){
-
     if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")) return (0.993*0.984*0.980*0.968*0.984);
     if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_OR_TkMu8_TrkIsoVVL_DZ_v")) return 0.982*0.985*.973;
   }
@@ -511,55 +703,94 @@ float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent:
 
     //  brilcalc lumi -u /pb 
     // --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json 
-    // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON.txt 
+    // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt 
     //--hltpath ""
 
-    /// Electron triggers
-    // Double Electron
-    float bad_ls=93.492;
-    if(k_cat_version<=3) bad_ls=0.;
-    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858 - bad_ls)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617-bad_ls)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
-    
-    // Single Electon
-    else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.596)/tlumi);
-    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489 + 9.613)/tlumi);
-    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+4.368)/tlumi);
-    else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+49.594)/tlumi);
-    else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+2.214)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+5.497)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.395)/tlumi);
-    else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.791+0.133)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf_v")) return ((16.548+1364.998+934.860)/tlumi);
+    /// NUMBERS FROM GetLumi_Triggers.py SCRIPT
 
-    // TriLepton Electron
-    else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2300.617)/tlumi);
+    /// In v766 path lumi is corrected for removal of bad beamspot LS
+    // https://github.com/vallot/CATTools/commit/aae3e60b194b1bacf2595a33c8fa27f411dac16b
+    if(k_cat_version == 4){
+      if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((2195.827)/tlumi);
+      else if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((2205.344)/tlumi);
+      else if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((1790.18)/tlumi);
+      else if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.512)/tlumi);
+      else if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((11.029)/tlumi);
+      else if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((3.995)/tlumi);
+      else if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((43.813)/tlumi);
+      else if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((4.702)/tlumi);
+      else if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((4.997)/tlumi);
+      else if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((3.011)/tlumi);
+      else if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.138)/tlumi);
+      else if(triggername.Contains("HLT_Ele23_WPLoose_Gsf_v")) return ((2195.685)/tlumi);
+      else if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((2205.344)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_Mu8_DZ_v")) return ((132.074)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_Mu8_SameSign_DZ_v")) return ((2205.345)/tlumi);
+      else if(triggername.Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return ((2205.345)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")) return ((2205.345)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")) return ((942.428)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) return ((2205.345)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v")) return ((942.428)/tlumi);
+      else if(triggername.Contains("HLT_Mu8_v")) return ((0.664)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_v")) return ((188.178)/tlumi);
+      else if(triggername.Contains("HLT_Mu20_v")) return ((92.402)/tlumi);
+      else if(triggername.Contains("HLT_IsoMu20_v")) return ((2195.828)/tlumi);
+      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((2205.344)/tlumi);
+      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((2195.827)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")) return ((942.428)/tlumi);
+      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((2195.827)/tlumi);
+      else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((2205.344)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((2195.827)/tlumi);
+      else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return ((2205.344)/tlumi);
+      else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return ((2205.344)/tlumi);
+      else if(triggername.Contains("HLT_TripleMu_12_10_5")) return ((2205.345)/tlumi);
+      else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return ((2205.344)/tlumi);
+    }
+    else if(k_cat_version < 4){
+      
+      if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858)/tlumi);
+      else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617)/tlumi);
+      else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
     
-    /// Muon Triggers
-    // Double Muon
-    else  if(triggername.Contains("HLT_Mu17_Mu8_DZ_v"))  return (151.616/tlumi);
-    else  if(triggername.Contains("HLT_Mu17_Mu8_SameSign_DZ_v"))  return (2318.348/tlumi);
-    else  if(triggername.Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return( (2318.348) /tlumi);
-    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
-    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
-    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
-    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
-    // single muon
-    else  if(triggername.Contains("HLT_Mu8_v")) return ((0.001+0.763)/tlumi);
-    else  if(triggername.Contains("HLT_Mu17_v")) return ((218.121)/tlumi);
-    else  if(triggername.Contains("HLT_Mu20_v")) return (108.842/tlumi);
-    else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801- bad_ls) /tlumi);
+      // Single Electon
+      else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.596)/tlumi);
+      else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489 + 9.613)/tlumi);
+      else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+4.368)/tlumi);
+      else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+49.594)/tlumi);
+      else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+2.214)/tlumi);
+      else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+5.497)/tlumi);
+      else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.395)/tlumi);
+      else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.791+0.133)/tlumi);
+      else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf_v")) return ((16.548+1364.998+934.860)/tlumi);
 
-    /// multilepton
-    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617- bad_ls)/tlumi);
-    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858- bad_ls)/tlumi);
-    else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617- bad_ls)/tlumi);
-    else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858- bad_ls) /tlumi);
-    else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617- bad_ls) /tlumi);
-    else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617- bad_ls) /tlumi);
-    else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( (2318.348 - bad_ls)/tlumi);
-    else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617- bad_ls) /tlumi);
+      // TriLepton Electron
+      else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2300.617)/tlumi);
+    
+      /// Muon Triggers
+      // Double Muon
+      else  if(triggername.Contains("HLT_Mu17_Mu8_DZ_v"))  return (151.616/tlumi);
+      else  if(triggername.Contains("HLT_Mu17_Mu8_SameSign_DZ_v"))  return (2318.348/tlumi);
+      else  if(triggername.Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return( (2318.348) /tlumi);
+      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
+      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
+      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
+      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
+      // single muon
+      else  if(triggername.Contains("HLT_Mu8_v")) return ((0.001+0.763)/tlumi);
+      else  if(triggername.Contains("HLT_Mu17_v")) return ((218.121)/tlumi);
+      else  if(triggername.Contains("HLT_Mu20_v")) return (108.842/tlumi);
+      else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801) /tlumi);
+
+      /// multilepton
+      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
+      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858)/tlumi);
+      else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
+      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858) /tlumi);
+      else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617) /tlumi);
+      else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617) /tlumi);
+      else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( 2318.348 /tlumi);
+      else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617) /tlumi);
+    }
   }
   else if(flag ==  snu::KEvent::silver) {
 
@@ -809,15 +1040,14 @@ float AnalyzerCore::SilverToGoldJsonReweight(TString p){
   
   if(k_cat_version<= 2)  return 0.;
   
-  float bad_ls=93.492; //  /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/BeamSpotIssue_JSON.txt
-
+  //float bad_ls=93.492; //  /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/BeamSpotIssue_JSON.txt
   
   if(k_cat_version == 4){
     
     /// Updated to silver2 + remove LS
     if (p == "C") return 1.;
-    if (p == "D") return (2300.547-bad_ls) / (2672.906 -bad_ls);
-    if (p == "CtoD") return  ((2318.278 - bad_ls) / (2690.637-bad_ls));
+    if (p == "D") return (2207.055) / (2579.414);
+    if (p == "CtoD") return  (2224.786) / (2597.145);
     ///            GOLD      SILVER
     /// period C = 17.731    17.731
     /// period D = 2300.547   2672.906
@@ -910,6 +1140,10 @@ void AnalyzerCore::ListTriggersAvailable(){
   }
   return;
 }
+
+
+
+
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler){
   
   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
@@ -1037,6 +1271,52 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[
 
 }
 
+
+void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float xmin, float xmax,int nbins, int nlumibins){
+  
+  if(k_cat_version==4){
+    if(nlumibins==10){
+      
+      if(!GetHist(histname+"_perlumi")) {
+	MakeHistograms(histname+"_perlumi", nbins, xmin, xmax);
+	int nbin=0;
+
+	for(std::map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
+	  nbin++;
+	  GetHist(histname+"_perlumi")->GetXaxis()->SetBinLabel(nbin,it->second);
+	}
+      }
+
+
+      for(map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
+	
+        if(!GetHist(histname+"_"+it->second)) {
+          MakeHistograms(histname+"_"+it->second, nbins, xmin, xmax);
+	}
+      } 
+      
+      for(map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
+	if(eventbase->GetEvent().RunNumber()  < it->first) {
+	  map<int,float>::iterator it2 = mapLumiPerBlack.find(it->first);
+	  if(isData){
+	    float neww= w /it2->second;
+	    if(GetHist(histname)) GetHist(histname)->Fill(it->second, neww);
+	  }
+	  else{
+	    float neww = w/TargetLumi;
+	    if(GetHist(histname)) GetHist(histname)->Fill(it->second, neww);
+	    
+	  }
+	  if(GetHist(histname+"_"+it->second)) GetHist(histname+"_"+it->second)->Fill(value,w);
+	} 
+      }
+      
+
+    }// nbins
+  }
+
+}
+
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins){
   
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
@@ -1119,7 +1399,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KElectron
 }
 
 void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jets, double w){
-
+  
   if(type==jethist){
     map<TString, JetPlots*>::iterator jetpit = mapCLhistJet.find(hist);
     if(jetpit !=mapCLhistJet.end()) jetpit->second->Fill(w,jets);
@@ -1600,7 +1880,7 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
-   if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
+    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
   }

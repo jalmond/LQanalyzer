@@ -36,18 +36,27 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
   MakeCleverHistograms(sighist_mm,"DiMuon");
+  MakeCleverHistograms(sighist_mm,"DiMuon_BB");
+  MakeCleverHistograms(sighist_mm,"DiMuon_EE");
+  MakeCleverHistograms(sighist_mm,"DiMuon_EB");
   MakeCleverHistograms(sighist_mm,"DiMuon_corr");
+  MakeCleverHistograms(sighist_mm,"DiMuon_corr_EE");
+  MakeCleverHistograms(sighist_mm,"DiMuon_corr_EB");
+  MakeCleverHistograms(sighist_mm,"DiMuon_corr_BB");
   MakeCleverHistograms(sighist_mm,"DiMuon_truthmatched");
   MakeCleverHistograms(sighist_ee,"DiElectron");
+  MakeCleverHistograms(sighist_ee,"DiElectron_EE");
+  MakeCleverHistograms(sighist_ee,"DiElectron_EB");
+  MakeCleverHistograms(sighist_ee,"DiElectron_BB");
   MakeCleverHistograms(sighist_ee,"DiElectron_truthmatched");
   MakeCleverHistograms(sighist_em,"ElMuon");
   
-  MakeCleverHistograms(jehist, "DiMuon_dijet");
-  MakeCleverHistograms(jehist, "DiMuon_dijet_tchannel");
-  MakeCleverHistograms(jehist, "EMuon_dijet");
-  MakeCleverHistograms(jehist, "EMuon_dijet_tchannel");
-  MakeCleverHistograms(jehist, "DiElectron_dijet");
-  MakeCleverHistograms(jehist, "DiElectron_dijet_tchannel");
+  MakeCleverHistograms(jethist, "DiMuon_dijet");
+  MakeCleverHistograms(jethist, "DiMuon_dijet_tchannel");
+  MakeCleverHistograms(jethist, "EMuon_dijet");
+  MakeCleverHistograms(jethist, "EMuon_dijet_tchannel");
+  MakeCleverHistograms(jethist, "DiElectron_dijet");
+  MakeCleverHistograms(jethist, "DiElectron_dijet_tchannel");
 }
 
 
@@ -100,17 +109,24 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
-   std::vector<TString> triggerslist_mu;
-   triggerslist_mu.push_back("HLT_IsoMu20_v");
-   std::vector<TString> triggerslist_el;
-   triggerslist_el.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
-   std::vector<TString> triggerslist_emu;
-   triggerslist_emu.push_back("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-   triggerslist_emu.push_back("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v");
+   TString muon_trig="HLT_IsoMu20_v";
+   //   TString muon_trig="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
    
-   float mu_trigger_ps_weight= ApplyPrescale("HLT_IsoMu20", TargetLumi,lumimask);
-   float el_trigger_ps_weight= ApplyPrescale("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi,lumimask);
-   float emu_trigger_ps_weight= ApplyPrescale("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v", TargetLumi,lumimask);
+   TString el_trig="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+   TString em1_trig="HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
+   TString em2_trig="HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v";
+
+   std::vector<TString> triggerslist_mu;
+   triggerslist_mu.push_back(muon_trig);
+   std::vector<TString> triggerslist_el;
+   triggerslist_el.push_back(el_trig);
+   std::vector<TString> triggerslist_emu;
+   triggerslist_emu.push_back(em1_trig);
+   triggerslist_emu.push_back(em2_trig);
+   
+   float mu_trigger_ps_weight= ApplyPrescale(muon_trig, TargetLumi,lumimask);
+   float el_trigger_ps_weight= ApplyPrescale(el_trig, TargetLumi,lumimask);
+   float emu_trigger_ps_weight= ApplyPrescale(em1_trig, TargetLumi,lumimask);
    
    
    bool mu_pass= PassTrigger(triggerslist_mu, prescale);
@@ -183,6 +199,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    float muon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
    float el_id_iso_sf= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronTightColl);
    float elmuon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
+   float el_reco_weight = ElectronRecoScaleFactor(electronTightColl);
+
    elmuon_id_iso_sf *= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronTightColl);
    
    int njet = jetColl_hn.size();
@@ -214,6 +232,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
      el_weight*=el_id_iso_sf;
      el_weight*=el_weight_trigger_sf;
      el_weight*=el_trigger_ps_weight;
+     el_weight*=el_reco_weight;
    }
    if(!isData && !k_running_nonprompt){
      emu_weight*=elmuon_id_iso_sf;
@@ -225,18 +244,26 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
      if(!SameCharge(muonTightColl)){
        if(muonTightColl.at(1).Pt() > 20.){
 	 if(GetDiLepMass(muonTightColl) < 120. && GetDiLepMass(muonTightColl)  > 60. ){
-	   FillHist("zpeak_mumu_nopurw", GetDiLepMass(muonTightColl), weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 200.,400);
-	   FillHist("zpeak_mumu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 200.,400);
-	   FillHist("zpeak_mumu_altpurw", GetDiLepMass(muonTightColl), weight*altpileup_reweight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 200.,400);
-	   FillHist("nvertex_mumu_nopurw", eventbase->GetEvent().nVertices(),  weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40);
-	   FillHist("nvertex_mumu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40) ;
-	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight, 0., 40.,40);
-	   
+	   FillHist("zpeak_mumu_nopurw", GetDiLepMass(muonTightColl), weight*mu_weight, 0., 200.,400);
+	   FillHist("zpeak_mumu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*mu_weight, 0., 200.,400);
+	   FillHist("zpeak_mumu_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*mu_weight, 0., 200.,400);
+	   FillHist("nvertex_mumu_nopurw", eventbase->GetEvent().nVertices(),  weight*mu_weight, 0., 40.,40);
+	   FillHist("nvertex_mumu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*mu_weight, 0., 40.,40) ;
+	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*mu_weight, 0., 40.,40);
+	 
+       
 	 }
-	 float ev_weight = weight*altpileup_reweight*mu_trigger_ps_weight*mu_weight_trigger_sf*mu_id_weight*mu_reco_weight;
+	 float ev_weight = weight*pileup_reweight_71*mu_weight;
+	 FillHistPerLumi("zpeak_mumu", GetDiLepMass(muonTightColl), ev_weight, 0., 500., 100., 10);
+	 if(EtaRegion("BB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 if(EtaRegion("EB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 if(EtaRegion("EE",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
 	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
 	 FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-	 
+	 if(EtaRegion("BB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_BB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+         if(EtaRegion("EB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+         if(EtaRegion("EE",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EE", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+
 	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiMuon_dijet", jetColl_hn, ev_weight);
 	 if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
 	 
@@ -248,25 +275,32 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    }
 
    if(el_pass&&electronTightColl.size() ==2) {
-     if(!SameCharge(electronTightColl)){
-       if(electronTightColl.at(1).Pt() > 20.){
-	 /// Method of plotting single histogram
-	 if(GetDiLepMass(electronTightColl) < 120. && GetDiLepMass(electronTightColl)  > 60. ){
-	   FillHist("zpeak_ee_nopurw", GetDiLepMass(muonTightColl), weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 200.,400);
-	   FillHist("zpeak_ee_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 200.,400);
-	   FillHist("zpeak_ee_altpurw", GetDiLepMass(muonTightColl), weight*altpileup_reweight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 200.,400);
-	   FillHist("nvertex_ee_nopurw", eventbase->GetEvent().nVertices(),  weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 40.,40);
-	   FillHist("nvertex_ee_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 40.,40) ;
-	   FillHist("nvertex_ee_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight, 0., 40.,40);
+     //if(!SameCharge(electronTightColl)){
+     if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15.){
+       /// Method of plotting single histogram
+       if(GetDiLepMass(electronTightColl) < 120. && GetDiLepMass(electronTightColl)  > 60. ){
+	   FillHist("zpeak_ee_nopurw", GetDiLepMass(muonTightColl), weight*el_weight, 0., 200.,400);
+	   FillHist("zpeak_ee_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*el_weight, 0., 200.,400);
+	   FillHist("zpeak_ee_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*el_weight, 0., 200.,400);
+	   FillHist("nvertex_ee_nopurw", eventbase->GetEvent().nVertices(),  weight*el_weight, 0., 40.,40);
+	   FillHist("nvertex_ee_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*el_weight, 0., 40.,40) ;
+	   FillHist("nvertex_ee_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*el_weight, 0., 40.,40);
 	 }
-	 if(electronTightTruthMatchedColl.size() ==2)            FillCLHist(sighist_ee, "DiElectron_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*el_weight*pileup_reweight_71*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight);
+
 	 
-	 FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*el_trigger_ps_weight*el_weight_trigger_sf*el_id_weight*el_reco_weight);
+	 float ev_weight = weight*pileup_reweight_71*el_weight;
+         FillHistPerLumi("zpeak_ee", GetDiLepMass(electronTightColl), ev_weight, 0., 500., 100., 10);
+
+	 if(electronTightTruthMatchedColl.size() ==2)            FillCLHist(sighist_ee, "DiElectron_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 if(EtaRegion("BB",electronTightColl))  FillCLHist(sighist_ee, "DiElectron_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+         if(EtaRegion("EB",electronTightColl))  FillCLHist(sighist_ee, "DiElectron_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+         if(EtaRegion("EE",electronTightColl))  FillCLHist(sighist_ee, "DiElectron_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
 
 	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiElectron_dijet", jetColl_hn, ev_weight);
          if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiElectron_dijet_tchannel", jetColl_hn_t, ev_weight);
        }
-     }
+     //}
    }
    
    if(emu_pass&&(electronTightColl.size() == 1)&& (muonTightColl.size() ==1)) {
@@ -274,14 +308,16 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
        if((muonTightColl.at(0).Pt() > 20. )&&( electronTightColl.at(0).Pt() < 20.)){
 	 /// Method of plotting single histogram
 
-	 FillHist("zpeak_emu_nopurw", GetDiLepMass(muonTightColl), weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 200.,400);
-	 FillHist("zpeak_emu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 200.,400);
-	 FillHist("zpeak_emu_altpurw", GetDiLepMass(muonTightColl), weight*altpileup_reweight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight,0., 200.,400);
-	 FillHist("nvertex_emu_nopurw", eventbase->GetEvent().nVertices(),  weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40);
-	 FillHist("nvertex_emu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40) ;
-	 FillHist("nvertex_emu_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*emu_trigger_ps_weight*emu_weight_trigger_sf*emu_id_weight*emu_reco_weight, 0., 40.,40);
+	 FillHist("zpeak_emu_nopurw", GetDiLepMass(muonTightColl), weight*emu_weight, 0., 200.,400);
+	 FillHist("zpeak_emu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*emu_weight, 0., 200.,400);
+	 FillHist("zpeak_emu_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*emu_weight,0., 200.,400);
+	 FillHist("nvertex_emu_nopurw", eventbase->GetEvent().nVertices(),  weight*emu_weight, 0., 40.,40);
+	 FillHist("nvertex_emu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*emu_weight, 0., 40.,40) ;
+	 FillHist("nvertex_emu_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*emu_weight, 0., 40.,40);
 	 
-	 FillCLHist(sighist_em, "EMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*emu_weight*pileup_reweight_71);
+	 float ev_weight = weight*pileup_reweight_71*emu_weight;
+
+	 FillCLHist(sighist_em, "EMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
 	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "EMuon_dijet", jetColl_hn, ev_weight);
          if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "EMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
 

@@ -888,7 +888,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     int mc_pdgid=-1;
     bool matched_in_Dr=false;
     
-    if(k_cat_version < 3){
+    if(k_cat_version > 3){
 
     if(gen_pt){
       float min_Dr=0.1;
@@ -1081,7 +1081,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         }// require gen info
       }// no status 1 match
     }
-
+    
     /// matched_index is index which matches reco muon with smallest dR
     /// - If multiple status 1 muons are matched look at closest in pt
     /// - In no status 1 is matched set as not prompt but look for closest particle in dR 

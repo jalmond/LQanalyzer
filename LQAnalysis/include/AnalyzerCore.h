@@ -49,6 +49,11 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
 
+  bool EtaRegion(TString reg,  std::vector<snu::KMuon> muons);
+  bool EtaRegion(TString reg,  std::vector<snu::KElectron> electrons);
+
+  void FillHistPerLumi(TString histname, float value, float w, float xmin, float xmax,int nbins, int nlumibins);
+
   bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium);
   int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium);
 
@@ -135,6 +140,9 @@ class AnalyzerCore : public LQCycleBase {
   TDirectory *Dir;
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
+  map<int, float> mapLumi; 
+  map<int, float> mapLumiPerBlack;
+  map<int, TString> mapLumiNamePerBlack;
   TH2F* FRHist;
   TH2F* MuonSF;
   TH2F* ElectronSF_Tight;

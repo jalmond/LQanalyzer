@@ -1783,7 +1783,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   
   
   hdev->GetYaxis()->SetTitle( "#frac{Data}{MC}" );
-  hdev->GetYaxis()->SetRangeUser(0.,+2.);
+  hdev->GetYaxis()->SetRangeUser(0.5,+1.5);
   hdev->GetYaxis()->SetNdivisions(9);
   hdev->SetMarkerStyle(20);
   //hdev->SetMarkerSize(2.3);

@@ -3,37 +3,47 @@
 
 #include "StdPlots.h"
 #include "KJet.h"
+/// Root includes                                                                                                                                                                                                                                                                                                                                                         
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TH3F.h"
+
 
 
 class JetPlots : public StdPlots{
+
+  Double_t dijetmass_tmp, dijetmass;
+
  public:
 
   JetPlots();
 
-  // Constructor
+  // Main constructor                                                                                                                                                                                                                                                                                                                                                     
   JetPlots(TString name);
-  
-  /// Destructor
+
+  // Destructor                                                                                                                                                                                                                                                                                                                                                           
   ~JetPlots();
 
-  /// copy constructor
-  JetPlots(const JetPlots& jp);  ///Copy constructor
-  /// assigment operator
-  JetPlots& operator=(const JetPlots& obj);
 
-  /// Fill function
+  /// Get Map                                                                                                                                                                                                                                                                                                                                                             
+  inline std::map<TString, TH1*> GetMap() const{return map_sig;}
+
+  /// copy constructor                                                                                                                                                                                                                                                                                                                                                    
+  JetPlots(const JetPlots& sp);  ///Copy constructor                                                                                                                                                                                                                                                                                                            
+  /// assigment operator                                                                                                                                                                                                                                                                                                                                                  
+  JetPlots& operator=(const JetPlots& obj);
+  float GetElectronISOEA(float eta);
+
+  /// fill functions                                                                                                                                                                                                                                                                                                                                                      
   void Fill(Double_t weight, std::vector<snu::KJet> jets);
   void Fill(TString name, double value, double weight);
 
-  /// Get Map
-  inline std::map<TString, TH1*> GetMap() const{return map_jet;}
-
-
-  // Function that writes out hists
+  /// function to write out hists                                                                                                                                                                                                                                                                                                                                         
   void Write();
-  
+
  private:
-  std::map<TString, TH1*> map_jet; 
+  std::map<TString, TH1*> map_sig;
+
 
   
 };
