@@ -412,19 +412,19 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keep
   if(muid == BaseSelection::MUON_POG_TIGHT  ||
      muid == BaseSelection::MUON_POG_MEDIUM||
      muid == BaseSelection::MUON_POG_LOOSE)
-    {eventbase->GetMuonSel()->SelectMuons(muonColl, muid, 15., 2.5);}
+    {eventbase->GetMuonSel()->SelectMuons(muonColl, muid, 15., 2.4);}
 
   
   else if(muid == BaseSelection::MUON_HN_TIGHT){
     
-    if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.5);
-    else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.5);
+    if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);
+    else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.4);
   }
   
-  else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, 15., 2.5);}
+  else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);}
 
   // Veto cut
-  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 10., 2.5);}
+  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 10., 2.4);}
 
   else if(muid == BaseSelection::MUON_NOCUT){
     eventbase->GetMuonSel()->SetPt(0.); 
@@ -1278,7 +1278,7 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
     if(nlumibins==10){
       
       if(!GetHist(histname+"_perlumi")) {
-	MakeHistograms(histname+"_perlumi", nbins, xmin, xmax);
+	MakeHistograms(histname+"_perlumi", 10, 0., 10.);
 	int nbin=0;
 
 	for(std::map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
@@ -1286,8 +1286,7 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
 	  GetHist(histname+"_perlumi")->GetXaxis()->SetBinLabel(nbin,it->second);
 	}
       }
-
-
+      
       for(map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
 	
         if(!GetHist(histname+"_"+it->second)) {
@@ -1300,11 +1299,11 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
 	  map<int,float>::iterator it2 = mapLumiPerBlack.find(it->first);
 	  if(isData){
 	    float neww= w /it2->second;
-	    if(GetHist(histname)) GetHist(histname)->Fill(it->second, neww);
+	    if(GetHist(histname+"_perlumi")) GetHist(histname)->Fill(it->second, neww);
 	  }
 	  else{
 	    float neww = w/TargetLumi;
-	    if(GetHist(histname)) GetHist(histname)->Fill(it->second, neww);
+	    if(GetHist(histname+"_perlumi")) GetHist(histname)->Fill(it->second, neww);
 	    
 	  }
 	  if(GetHist(histname+"_"+it->second)) GetHist(histname+"_"+it->second)->Fill(value,w);

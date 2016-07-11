@@ -36,6 +36,11 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
   MakeCleverHistograms(sighist_mm,"DiMuon");
+  MakeCleverHistograms(sighist_mm,"DiMuon_noW");
+  MakeCleverHistograms(sighist_mm,"DiMuon_TrigW");
+  MakeCleverHistograms(sighist_mm,"DiMuon_IDW");
+  MakeCleverHistograms(sighist_mm,"DiMuon_puW");
+  MakeCleverHistograms(sighist_mm,"DiMuon_Trigger");
   MakeCleverHistograms(sighist_mm,"DiMuon_BB");
   MakeCleverHistograms(sighist_mm,"DiMuon_EE");
   MakeCleverHistograms(sighist_mm,"DiMuon_EB");
@@ -252,9 +257,17 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	   FillHist("nvertex_mumu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*mu_weight, 0., 40.,40) ;
 	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*mu_weight, 0., 40.,40);
 	   if(mu_pass)FillHist("zpeak_mumu_trigaltpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*mu_weight, 0., 200.,400);
-	   
+
 	 }
+
+	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight);
+	 FillCLHist(sighist_mm, "DiMuon_noW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, 1.);
+	 FillCLHist(sighist_mm, "DiMuon_puW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71);
+	 FillCLHist(sighist_mm, "DiMuon_IDW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf);
 	 if(mu_pass){
+	   FillCLHist(sighist_mm, "DiMuon_Trigger", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf);
+	   FillCLHist(sighist_mm, "DiMuon_TrigW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf*mu_trigger_ps_weight*mu_weight_trigger_sf);
+	   
 	   float ev_weight = weight*pileup_reweight_71*mu_weight;
 	   FillHistPerLumi("zpeak_mumu", GetDiLepMass(muonTightColl), ev_weight, 0., 500., 100., 10);
 	   if(EtaRegion("BB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);

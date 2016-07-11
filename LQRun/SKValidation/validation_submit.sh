@@ -1,5 +1,5 @@
-sktree -a SKTreeValidation -S DoubleEG  -list dilepton_list -s SKTree_LeptonSkim -n 100
-sktree -a SKTreeValidation -S DoubleMuon -s SKTree_LeptonSkim -n 100
+sktree -a SKTreeValidation -S DoubleMuon  -list dilepton_list -s SKTree_LeptonSkim -n 100
+#sktree -a SKTreeValidation -S DoubleMuon -s SKTree_LeptonSkim -n 100
 
 # above line is same as the follwing 6 lines together
 #sktree -a ExampleAnalyzerDiMuon -list dy_mcatnlo -s SKTree_DiLepSkim -n 15 
