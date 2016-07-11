@@ -109,7 +109,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
-   TString muon_trig="HLT_IsoMu20_v";
+   TString muon_trig="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
    //   TString muon_trig="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
    
    TString el_trig="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
@@ -240,36 +240,38 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
      emu_weight*=emu_trigger_ps_weight;
    }
 
-   if(mu_pass&&muonTightColl.size() ==2) {
+   if(muonTightColl.size() ==2) {
      if(!SameCharge(muonTightColl)){
        if(muonTightColl.at(1).Pt() > 20.){
 	 if(GetDiLepMass(muonTightColl) < 120. && GetDiLepMass(muonTightColl)  > 60. ){
+	   
 	   FillHist("zpeak_mumu_nopurw", GetDiLepMass(muonTightColl), weight*mu_weight, 0., 200.,400);
 	   FillHist("zpeak_mumu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*mu_weight, 0., 200.,400);
 	   FillHist("zpeak_mumu_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*mu_weight, 0., 200.,400);
 	   FillHist("nvertex_mumu_nopurw", eventbase->GetEvent().nVertices(),  weight*mu_weight, 0., 40.,40);
 	   FillHist("nvertex_mumu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*mu_weight, 0., 40.,40) ;
 	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*mu_weight, 0., 40.,40);
-	 
-       
+	   if(mu_pass)FillHist("zpeak_mumu_trigaltpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*mu_weight, 0., 200.,400);
+	   
 	 }
-	 float ev_weight = weight*pileup_reweight_71*mu_weight;
-	 FillHistPerLumi("zpeak_mumu", GetDiLepMass(muonTightColl), ev_weight, 0., 500., 100., 10);
-	 if(EtaRegion("BB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 if(EtaRegion("EB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 if(EtaRegion("EE",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-	 if(EtaRegion("BB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_BB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-         if(EtaRegion("EB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-         if(EtaRegion("EE",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EE", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-
-	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiMuon_dijet", jetColl_hn, ev_weight);
-	 if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
-	 
-	 
-	 if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 
+	 if(mu_pass){
+	   float ev_weight = weight*pileup_reweight_71*mu_weight;
+	   FillHistPerLumi("zpeak_mumu", GetDiLepMass(muonTightColl), ev_weight, 0., 500., 100., 10);
+	   if(EtaRegion("BB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	   if(EtaRegion("EB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	   if(EtaRegion("EE",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	   FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	   FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+	   if(EtaRegion("BB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_BB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+	   if(EtaRegion("EB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+	   if(EtaRegion("EE",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EE", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
+	   
+	   if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiMuon_dijet", jetColl_hn, ev_weight);
+	   if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
+	   
+	   
+	   if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	 }
        }
      }
    }
