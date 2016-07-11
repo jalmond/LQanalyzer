@@ -70,7 +70,7 @@ void RocRes::dumpParams(){
 
 	
 void RocRes::init(string filename){
-  std::ifstream in(filename);
+  std::ifstream in(filename.c_str());
   char buffer[256];
   char tag[4];
   int type, sys, mem, isdt, var, bin;	
@@ -236,7 +236,7 @@ void RocOne::init(std::string filename, int iTYPE, int iSYS, int iMEM){
 
     RR.init(filename);
 
-    std::ifstream in(filename);
+    std::ifstream in(filename.c_str());
     char tag[4];
     int type, sys, mem, isdt, var, bin;	
 

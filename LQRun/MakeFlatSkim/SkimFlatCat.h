@@ -97,6 +97,7 @@ public :
    vector<double>  *electrons_chIso03;
    vector<double>  *electrons_chIso04;
    vector<double>  *electrons_dxy;
+   vector<double>  *electrons_sigdxy;
    vector<double>  *electrons_dz;
    vector<double>  *electrons_energy;
    vector<double>  *electrons_eta;
@@ -179,6 +180,7 @@ public :
    vector<double>          *met_jetRes_SumEt_down;
 
    vector<double>  *muon_dxy;
+   vector<double>  *muon_sigdxy;
    vector<double>  *muon_dz;
    vector<double>  *muon_energy;
    vector<double>  *muon_eta;
@@ -291,6 +293,7 @@ public :
    TBranch        *b_electrons_chIso03;   //!
    TBranch        *b_electrons_chIso04;   //!
    TBranch        *b_electrons_dxy;   //!
+   TBranch        *b_electrons_sigdxy;   //!
    TBranch        *b_electrons_dz;   //!
    TBranch        *b_electrons_energy;   //!
    TBranch        *b_electrons_eta;   //!
@@ -369,6 +372,7 @@ public :
    TBranch        *b_met_jetRes_SumEt_up;   //!
    TBranch        *b_met_jetRes_SumEt_down;   //!
    TBranch        *b_muon_dxy;   //!
+   TBranch        *b_muon_sigdxy;   //!
    TBranch        *b_muon_dz;   //!
    TBranch        *b_muon_energy;   //!
    TBranch        *b_muon_eta;   //!
@@ -531,6 +535,7 @@ void SkimFlatCat::Init(TTree *tree)
    electrons_chIso03 = 0;
    electrons_chIso04 = 0;
    electrons_dxy = 0;
+   electrons_sigdxy = 0;
    electrons_dz = 0;
    electrons_energy = 0;
    electrons_eta = 0;
@@ -582,6 +587,7 @@ void SkimFlatCat::Init(TTree *tree)
    metNoHF_pt = 0;
    metNoHF_sumet = 0;
    muon_dxy = 0;
+   muon_sigdxy = 0;
    muon_dz = 0;
    muon_energy = 0;
    muon_eta = 0;
@@ -693,6 +699,7 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("electrons_chIso03", &electrons_chIso03, &b_electrons_chIso03);
    fChain->SetBranchAddress("electrons_chIso04", &electrons_chIso04, &b_electrons_chIso04);
    fChain->SetBranchAddress("electrons_dxy", &electrons_dxy, &b_electrons_dxy);
+   fChain->SetBranchAddress("electrons_sigdxy", &electrons_sigdxy, &b_electrons_sigdxy);
    fChain->SetBranchAddress("electrons_dz", &electrons_dz, &b_electrons_dz);
    fChain->SetBranchAddress("electrons_energy", &electrons_energy, &b_electrons_energy);
    fChain->SetBranchAddress("electrons_eta", &electrons_eta, &b_electrons_eta);
@@ -773,6 +780,7 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("met_jetRes_SumEt_down", &met_jetRes_SumEt_down, &b_met_jetRes_SumEt_down);
 
    fChain->SetBranchAddress("muon_dxy", &muon_dxy, &b_muon_dxy);
+   fChain->SetBranchAddress("muon_sigdxy", &muon_sigdxy, &b_muon_sigdxy);
    fChain->SetBranchAddress("muon_dz", &muon_dz, &b_muon_dz);
    fChain->SetBranchAddress("muon_energy", &muon_energy, &b_muon_energy);
    fChain->SetBranchAddress("muon_eta", &muon_eta, &b_muon_eta);
@@ -863,6 +871,7 @@ void SkimFlatCat::SlimElectrons()
     electrons_chIso03->erase(electrons_chIso03->begin() + remove_obj.at(im) - nrm);
     electrons_chIso04->erase(electrons_chIso04->begin() + remove_obj.at(im) - nrm);
     electrons_dxy->erase(electrons_dxy->begin() + remove_obj.at(im) - nrm);
+    electrons_sigdxy->erase(electrons_sigdxy->begin() + remove_obj.at(im) - nrm);
     electrons_dz->erase(electrons_dz->begin() + remove_obj.at(im) - nrm);
     electrons_energy->erase(electrons_energy->begin() + remove_obj.at(im) - nrm);
     electrons_eta->erase(electrons_eta->begin() + remove_obj.at(im) - nrm);
@@ -919,6 +928,7 @@ void SkimFlatCat::SlimMuons()
     muon_pt->erase(muon_pt->begin() + remove_obj.at(im) - nrm);
     muon_eta->erase(muon_eta->begin() + remove_obj.at(im) - nrm);
     muon_dxy->erase(muon_dxy->begin() + remove_obj.at(im) - nrm);
+    muon_sigdxy->erase(muon_sigdxy->begin() + remove_obj.at(im) - nrm);
     muon_dz->erase(muon_dz->begin() + remove_obj.at(im) - nrm);
     muon_energy->erase(muon_energy->begin() + remove_obj.at(im) - nrm);
     muon_m->erase(muon_m->begin() + remove_obj.at(im) - nrm);

@@ -33,22 +33,22 @@ class rochcor2015 {
   TRandom3 eran;
   TRandom3 sran;
     
-  const double pi = TMath::Pi();
+  static const double pi = 3.14159265358979323846;
   static const double netabin[25];
   static const double anetabin[13];
   
-  static constexpr double mu_mass = 0.105658;
-  static constexpr double genm_smr = 9.09957e+01; //gen mass peak with eta dependent gaussian smearing => better match in Z mass profile vs. eta/phi
-  static constexpr double genm = 91.06; //gen mass peak without smearing => Z mass profile vs. eta/phi in CMS note
+  static const double mu_mass = 0.105658;
+  static const double genm_smr = 9.09957e+01; //gen mass peak with eta dependent gaussian smearing => better match in Z mass profile vs. eta/phi
+  static const double genm = 91.06; //gen mass peak without smearing => Z mass profile vs. eta/phi in CMS note
   
-  static constexpr double mgscl = 1.00139; //rec mass peak scale for MC
-  static constexpr double dgscl = 1.00272; //rec mass peak scale for data
-  static constexpr double mgscl_stat = 2.08589e-05; //stat. error of global factor for mass peak in MC 
-  static constexpr double mgscl_syst = 3.81651e-03; //syst. error of global factor for mass peak in MC  
-  static constexpr double dgscl_stat = 3.24096e-05; //stat. error of global factor for mass peak in data 
-  static constexpr double dgscl_syst = 0.0008; //syst. error of global factor for mass peak in data 
-  static constexpr double dgscl_iter = 1.00026; //one more iteration to fix offset
-  static constexpr double mgscl_iter = 1.00054; //one more iteration to fix offset
+  static const double mgscl = 1.00139; //rec mass peak scale for MC
+  static const double dgscl = 1.00272; //rec mass peak scale for data
+  static const double mgscl_stat = 2.08589e-05; //stat. error of global factor for mass peak in MC 
+  static const double mgscl_syst = 3.81651e-03; //syst. error of global factor for mass peak in MC  
+  static const double dgscl_stat = 3.24096e-05; //stat. error of global factor for mass peak in data 
+  static const double dgscl_syst = 0.0008; //syst. error of global factor for mass peak in data 
+  static const double dgscl_iter = 1.00026; //one more iteration to fix offset
+  static const double mgscl_iter = 1.00054; //one more iteration to fix offset
 
   //-----------------------------------------------
 

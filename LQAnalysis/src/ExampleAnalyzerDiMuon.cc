@@ -76,6 +76,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
   /// Apply the gen weight 
   if(!isData) weight*=MCweight;
   
+
   /// Acts on data to remove bad reconstructed event 
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
   
@@ -97,9 +98,14 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
    std::vector<TString> triggerslist;
-   triggerslist.push_back("HLT_IsoMu20");
-   //ListTriggersAvailable();
+   triggerslist.push_back("HLT_IsoMu20_v2");
+   if(PassTrigger(triggerslist, prescale))   FillHist("HLT_IsoMu20_v2", 1 , weight, 0. , 2., 2);
+
+   std::vector<TString> triggerslist2;
+   triggerslist2.push_back("HLT_IsoMu20_v3");
+   if(PassTrigger(triggerslist2, prescale))   FillHist("HLT_IsoMu20_v3", 1 , weight, 0. , 2., 2);
    
+  
    float trigger_ps_weight= ApplyPrescale("HLT_IsoMu20", TargetLumi,lumimask);
    
    if(!PassTrigger(triggerslist, prescale)) return;
