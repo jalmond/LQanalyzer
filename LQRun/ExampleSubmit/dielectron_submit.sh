@@ -11,7 +11,7 @@ then
     #useskim="DiLep"
     outputdir=$LQANALYZER_DIR"/data/output/Electron/"
     #### JOB CONFIGURATION
-    njobs=1
+    njobs=10
     data_lumi="AtoD"
     loglevel="INFO"
     logstep=1000
@@ -19,6 +19,7 @@ then
     #declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "Wjets" "WZ" "ZZ" "WW" "QCD_30-40_EM2" "QCD_40_EM2" "Wgamma")
     declare -a input_samples=("DY10to50" "DY50plus" "ttbar" "WZ" "ZZ" "WW")
     declare -a input_samples=("WZ_py")
+    nsubjobs=1
     source submit.sh $1
 fi
     
@@ -40,7 +41,8 @@ then
     logstep=1000
 
     declare -a input_samples=("A" "B" "C" "D")
-     declare -a input_samples=("A" )
+    declare -a input_samples=("A" )
+    nsubjobs=10
     source submit.sh $1
 fi     
 

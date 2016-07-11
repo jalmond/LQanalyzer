@@ -39,6 +39,7 @@ parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
+parser.add_option("-f", "--nsubjobs", dest="nsubjobs", default=1, help="Number of subjobs?")
 
 
 ###################################################
@@ -72,6 +73,8 @@ samples2016 = options.samples2016
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
+
+nsubjobs=  options.nsubjobs
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel
@@ -169,6 +172,10 @@ running_batch=False
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     running_batch=True
 
+if number_of_cores == 1:
+    running_batch=False
+    
+    
 if str(usebatch) == "NULL":
     if str(running_batch) == "True":
         print "%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -593,7 +600,8 @@ if ncore_def == 1:
 
 
 if "ttbarMS" in sample:
-    number_of_cores = number_of_files
+    if "CH" in str(cycle): 
+        number_of_cores = number_of_files
                                                    
 ############################################################
 ### Correct user if ncores is > nfiles
@@ -601,7 +609,10 @@ if "ttbarMS" in sample:
 if number_of_cores > number_of_files:
     number_of_cores = number_of_files
 
-print "Splitting job into " + str(number_of_cores) + " subjobs"
+print "Splitting job into " + str(number_of_cores) + " jobs"
+if int(nsubjobs)>1:
+    print "Further splitting each job into " + str(nsubjobs) + " subjobs"
+
 
 singlejob = number_of_cores==1            
 
@@ -647,7 +658,6 @@ check_array = []
 
 if not (os.path.exists(output_mounted+"/LQ_SKTreeOutput/")):
     os.system("mkdir /data2/LQ_SKTreeOutput/")
-
 workspace = output_mounted+"/LQ_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
@@ -714,12 +724,22 @@ printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + 
 for line in fr:
     if nfiles < files_torun:
         if nfiles == 0 :
-            runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
-            configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf)) #job, input, sample, ver, output
-            configfile.close()
+            if int(nsubjobs) > 1:
+                for rj in range (1, int(nsubjobs)+1):
+                    runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + "_"+ str(rj)+".C"
+                    configfile=open(runscript,'w')
+                    configfile.write(makeConfigFileS(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,rj,int(nsubjobs))) #job, input, sample, ver, output                                                                                                                                                                               
+                    configfile.close()
+
+            else:
+                runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
+                print "making " + runscript
+                configfile=open(runscript,'w')
+                configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,int(nsubjobs))) #job, input, sample, ver, output
+                configfile.close()
+                
             if str(DEBUG) == "True":
                 print "Making file : " + printedrunscript
             fwrite.write(line)
@@ -739,12 +759,21 @@ for line in fr:
                 # close files
                 fwrite.close()
                 ### Make next set of scripts
-                runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
+
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
-                configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf))
-                configfile.close()
+                if int(nsubjobs) > 1:
+                    for rj in range (1, int(nsubjobs)+1):
+                        runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + "_"+ str(rj)+".C"
+                        configfile=open(runscript,'w')
+                        configfile.write(makeConfigFileS(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf,rj,int(nsubjobs)))
+                        configfile.close()
+                else:
+                    runscript = output+ "Job_" + str(count) + "/runJob_" + str(count) + ".C"
+                    configfile=open(runscript,'w')
+                    configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,int(nsubjobs))) #job, input, sample, ver, output                                                                                                                                                                               
+                    configfile.close()
+
                 fwrite.write(line)
                 filesprocessed+=1
                 nfiles_file+=1
@@ -829,7 +858,7 @@ if DEBUG == "True":
     print "Running LQAnalyzer jobs for: " + getpass.getuser()
 array_batchjobs = []
 for i in range(1,number_of_cores+1):
-
+    
     batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + ".sh"
     batchfile=open(batchscript,'w')
     batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C"))
@@ -838,17 +867,51 @@ for i in range(1,number_of_cores+1):
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".log"
     
+    
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if running_batch:
         runcommand = "qsub -V " + batchscript   + "&>" + log 
 
-    
+    if int(nsubjobs) > 1:
+        runfile=open(output+ "Job_" + str(i) + "/run.sh",'w')
+        if running_batch:        
+            for j in range(1, int(nsubjobs)+1):
+                batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + "_" + str(j)+ ".sh"
+                batchfile=open(batchscript,'w')
+                batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + "_" + str(j)+ ".C"))
+                batchfile.close()
+                script = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".C"
+                log = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".log"
+                runfile.write("qsub -V " + batchscript   + "&>" + log + "&\n")
+                
+        
+        else:
+            for j in range(1, int(nsubjobs)+1):
+                batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + "_" + str(j)+ ".sh"
+                batchfile=open(batchscript,'w')
+                batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + "_" + str(j)+ ".C"))
+                batchfile.close()
+                script = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".C"
+                if j == 1:
+                    log = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".log"
+                logtmp = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".log"
+                if singlejob:
+                    runfile.write("root.exe -l -q -b " +  script + "\n")
+                else:
+                    runfile.write("root.exe -l -q -b " +  script + "&>" + logtmp + "&\n")
+        runfile.close()        
     jobID=0
     
     if singlejob:
         print "Running single job " + script 
         runcommand = "root.exe -l -q -b " +  script 
+
+        if int(nsubjobs) > 1:
+            runcommand="bash " + output+ "Job_" + str(i) + "/run.sh"
+    
         os.system(runcommand)
+            
+        
     else:
         if i==1:
             print "Running " + script + " . Log file --->  " + log 
@@ -856,21 +919,61 @@ for i in range(1,number_of_cores+1):
             print "Running " + script + " . Log file --->  " + log
         elif i==2:
             print "......"
-        os.system(runcommand)
+            
+
+
+        if int(nsubjobs) > 1:
+            srunfile=open(output+ "Job_" + str(i) + "/run.sh",'r')
+            for line in srunfile:
+                os.system(line)
+            srunfile.close()    
+        else:
+            print runcommand
+            os.system(runcommand)
+
+
         if running_batch:
-            for line in open(log, 'r'):
-                entries = line.split()
-                if len(entries) > 0:
-                    jobID=entries[2]
-                    array_batchjobs.append(jobID)
-                    k_batchscript =  output+ "JobKill.sh"
-                    if i==1:
-                        k_batchfile=open(k_batchscript,'w')
-                        k_batchfile.write("qdel  " +str(jobID) +';')
-                    else:
-                        k_batchfile=open(k_batchscript,'a')
-                        k_batchfile.write("qdel  " +str(jobID)+';')
-                    k_batchfile.close()
+            if int(nsubjobs) > 1:
+                for x in range(1, int(nsubjobs)+1):
+                    logtmp = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(x)+ ".log"
+                    while not os.path.exists(logtmp):
+                        time.sleep(1.)
+                    issubmitted=False
+                    while not issubmitted:
+                        for sline in open(logtmp, 'r'):
+                            if "submitted" in sline:
+                                issubmitted=True
+                    for sline in open(logtmp, 'r'):
+                        entries = sline.split()
+                        if len(entries) > 0:
+                            jobID=entries[2]
+                            array_batchjobs.append(jobID)
+                            k_batchscript =  output+ "JobKill.sh"
+                            if i==1:
+                                k_batchfile=open(k_batchscript,'w')
+                                k_batchfile.write("qdel  " +str(jobID) +';')
+                            else:
+                                k_batchfile=open(k_batchscript,'a')
+                                k_batchfile.write("qdel  " +str(jobID)+';')
+                            k_batchfile.close()
+
+
+            else:
+                for line in open(log, 'r'):
+                    entries = line.split()
+                    if len(entries) > 0:
+                        jobID=entries[2]
+                        array_batchjobs.append(jobID)
+                        k_batchscript =  output+ "JobKill.sh"
+                        if i==1:
+                            k_batchfile=open(k_batchscript,'w')
+                            k_batchfile.write("qdel  " +str(jobID) +';')
+                        else:
+                            k_batchfile=open(k_batchscript,'a')
+                            k_batchfile.write("qdel  " +str(jobID)+';')
+                            k_batchfile.close()
+                            
+                    
 if running_batch: 
     print "@@@@@@@@@@@@@@@@@@@@@@@@@"
     for ijob in array_batchjobs:
@@ -918,7 +1021,7 @@ failed_macro=""
 failed_log=""
 print ""
 while not JobSuccess:
-    
+    print "Check job success"
     if running_batch == False:
         os.system("ps ux &> " + local_sub_dir + "/log")
     else: 
@@ -954,8 +1057,11 @@ while not JobSuccess:
                             print "Job " + str(job_id) + " is in suspended state: killing all jobs"
                             os.system("source " + output+ "JobKill.sh")
                             running = False
+
     if not running:
         check_outfile = outputdir + outsamplename +  "_1.root"
+        if int(nsubjobs) > 1:
+            check_outfile = outputdir + outsamplename +  "_1_1.root"
         if not (os.path.exists(check_outfile)):
             JobSuccess=True
             JobOutput=False
@@ -966,15 +1072,29 @@ while not JobSuccess:
         skipcheck=False
         for check in CompletedJobs:
             if i== check: skipcheck=True
+            
         while not skipcheck:
             skipcheck=True
             check_outfile = outputdir + outsamplename +  "_" +  str(i) + ".root"   
+            all_finished=False
             if (os.path.exists(check_outfile)):
+                all_finished=True
+            else:                
+                if int(nsubjobs) > 1:
+                    all_finished=True
+                    for x in range(1,int(nsubjobs)+1):
+                        check_outfile = outputdir + outsamplename +  "_" +  str(i) + "_" + str(x)+".root"
+                        if (not os.path.exists(check_outfile)):
+                            all_finished=False
+                            
+
+            if all_finished:
                 CompletedJobs.append(i)
-                ncomplete_files+=1
+                ncomplete_files+=int(nsubjobs)
                 files_done.append("Job [" + str(i) + "] completed. Output ="  + check_outfile)
-            
-    if ncomplete_files== number_of_cores :
+                         
+
+    if ncomplete_files== number_of_cores*int(nsubjobs) :
         sys.stdout.write('\r' + clear_line)
         sys.stdout.flush()
         sys.stdout.write('\r'+ '100% of events processed. \n' )
@@ -996,18 +1116,33 @@ while not JobSuccess:
         if running_batch:
             ### print jobs running/in queue .... once all running print % completeion
             for i in range(1,number_of_cores+1):
-                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+                job_id=(i-1)*int(nsubjobs) 
+                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[job_id]
+                
+                if int(nsubjobs) > 1:
+                    for x in range (0, int(nsubjobs)):
+                        check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[job_id+x]
 
-                while not os.path.exists(check_outfile):
-                    sys.stdout.write('\r' + clear_line)
-                    sys.stdout.flush()
-                    sys.stdout.write('\r'+ 'Current jobs running : [' + str(i-1) + '/' + str(number_of_cores) + ']... '+ str(number_of_cores-i+1) + ' in queue' )
-                    sys.stdout.flush()
-                    time.sleep(5.)
+                        while not os.path.exists(check_outfile):
+                            sys.stdout.write('\r' + clear_line)
+                            sys.stdout.flush()
+                            sys.stdout.write('\r'+ 'Current jobs running : [' + str(job_id) + '/' + str(number_of_cores*int(nsubjobs)) + ']... '+ str(int(nsubjobs)*number_of_cores-job_id) + ' in queue' )
+                            sys.stdout.flush()
+                            time.sleep(5.)
+                        else:
+                            "Path exists"
+                else:
+                    while not os.path.exists(check_outfile):
+                        sys.stdout.write('\r' + clear_line)
+                        sys.stdout.flush()
+                        sys.stdout.write('\r'+ 'Current jobs running : [' + str(i-1) + '/' + str(number_of_cores) + ']... '+ str(number_of_cores-i+1) + ' in queue' )
+                        sys.stdout.flush()
+                        time.sleep(5.)
             if ncycle == 0:
                 sys.stdout.write('\r' + clear_line)
                 sys.stdout.flush()
-                sys.stdout.write('\r'+ 'Current jobs running : [' + str(number_of_cores) + '/' + str(number_of_cores) + ']... ')
+                sys.stdout.write('\r'+ 'Current jobs running : [' + str(number_of_cores*int(nsubjobs)) + '/' + str(number_of_cores*int(nsubjobs)) + ']... ')
+
                 sys.stdout.flush()
                 time.sleep(2.)
             #### check job is running. Halted or suspended and if not running is output file missing?
@@ -1017,7 +1152,7 @@ while not JobSuccess:
             for i in range(1,number_of_cores+1):
                 if not JobOutput:
                     break
-                job_id_c=array_batchjobs[i-1]
+                job_id_c=array_batchjobs[(i-1)*int(nsubjobs)]
                 job_finished=True
                 for line in open(filename, 'r'):
                     if job_id_c in line:
@@ -1040,6 +1175,9 @@ while not JobSuccess:
                 if job_finished:
                     ### job id not in qstat output. Check if rootfile is missing. If so kill job
                     check_outfile = outputdir + outsamplename +  "_" + str(i)+".root"
+                    if int(nsubjobs)>1:
+                        check_outfile = outputdir + outsamplename +  "_" + str(i)+"_1.root"
+
                     if not (os.path.exists(check_outfile)):
                         failed_macro= output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
                         failed_log= "runJob_" + str(i) + "log"
@@ -1049,7 +1187,7 @@ while not JobSuccess:
                         print "Most likely a crash occurred.  So killing all jobs." 
                         os.system("source " + output+ "JobKill.sh")
 
-                        check_error_outfile = output + "/Job" +  "_" +  str(i) + "/"+ outsamplename+ "_Job_"+ str(i) +".e"+array_batchjobs[i-1] 
+                        check_error_outfile = output + "/Job" +  "_" +  str(i) + "/"+ outsamplename+ "_Job_"+ str(i) +".e"+array_batchjobs[i*int(nsubjobs)-1] 
                         print "Error file for job ["+str(job_id_c)+"] shows:"
                         for line in open(check_error_outfile, 'r'):
                             print line
@@ -1062,7 +1200,7 @@ while not JobSuccess:
         for i in range(1,number_of_cores+1):
             check_outfile = output + "/Job" +  "_" +  str(i) + "/runJob_"+ str(i) +".log"
             if running_batch == True:
-                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i*int(nsubjobs)-1]
 
             os.system('tail -100 ' + check_outfile + ' > ' + local_sub_dir + '/outlog.txt')
             nevent_processed_i=0.
@@ -1099,6 +1237,7 @@ while not JobSuccess:
                 sys.stdout.write('\r'+mess)
                 sys.stdout.flush()
                 time.sleep(2.)
+        print str(ncomplete_files) 
         if ncomplete_files > file_iterator:
             #print str(ncomplete_files) + "/" + str(number_of_cores) + " jobs completed.  " #Wait " + str(timeWait) + " second..."
             #print ""

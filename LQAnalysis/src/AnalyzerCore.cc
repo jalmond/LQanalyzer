@@ -282,6 +282,20 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
   if(label.Contains("tight")){
     eventbase->GetMuonSel()->HNTightMuonSelection(muonColl);
   }
+  else if(label.Contains("NoCutPtEta_WithFake")){
+    eventbase->GetMuonSel()->SetPt(10.);
+    eventbase->GetMuonSel()->SetEta(2.5);
+    eventbase->GetMuonSel()->Selection(muonColl);
+    return  GetTruePrompt(muonColl,true);
+    
+  }
+  else if(label.Contains("NoCutPtEta")){
+    eventbase->GetMuonSel()->SetPt(10.);
+    eventbase->GetMuonSel()->SetEta(2.5);
+    eventbase->GetMuonSel()->Selection(muonColl);
+
+  }
+
   else if(label.Contains("NoCut")){
     eventbase->GetMuonSel()->Selection(muonColl);
   }
@@ -366,7 +380,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
   else if(label.Contains("NoCutPtEta")){ 
     icoll++;
-    eventbase->GetElectronSel()->SetPt(20.);
+    eventbase->GetElectronSel()->SetPt(10.);
     eventbase->GetElectronSel()->SetEta(2.5);
     eventbase->GetElectronSel()->Selection(electronColl);
   }

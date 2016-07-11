@@ -43,7 +43,7 @@ class LQController  {
   void SetFullInputList(TString list);
   void SetDataType(TString settype);
   void SetLogLevel(TString level);
-  void SetName(TString name, Int_t version, TString dir);
+  void SetName(TString name, Int_t version, TString dir, Int_t subjob = -1);
   void SetTargetLuminosity(float lumi);
   void SetEffectiveLuminosity(float lumi);
   void SetMCCrossSection(float xsec);
@@ -60,6 +60,8 @@ class LQController  {
   void RunNtupleEvent(Long64_t ev);
   void RunNonPrompt(TString np);
   void RunChargeFlip(TString cf);
+  void SplitJob(int nj,int njobs);
+
 
   std::pair< Double_t, Double_t> GetTotalEvents() throw(LQError);
   float CalculateWeight() throw (LQError);
@@ -86,6 +88,10 @@ class LQController  {
   bool m_isInitialized;
   int n_ev_to_skip;
   
+  bool split_job;
+  int nsplit;
+  int number_of_job;
+
   std::vector<TString> v_libnames;
   std::vector<Long64_t> list_to_run;
   Long64_t single_ev;

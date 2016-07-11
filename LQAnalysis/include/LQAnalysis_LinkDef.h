@@ -28,6 +28,5 @@
 
 #pragma link C++ class CHEJ_bestfit+;
 #pragma link C++ class CHMJ_bestfit+;
-#pragma link C++ class CHMuJets_v1_sig_tmp+;
 
 #endif // __CINT__

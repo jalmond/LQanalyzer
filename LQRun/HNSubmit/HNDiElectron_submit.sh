@@ -1,10 +1,10 @@
 #!/bin/sh
 
 rundata=true
-runmc=true
+runmc=false
 runmc_cl=false
 runsig=false
-runfakes=true
+runfakes=false
 runflips=false
 
 if [[ $1  == "NP" ]];
@@ -81,7 +81,7 @@ then
     
     njobs=1
     data_lumi="AtoD"
-    nevents=100000000
+
     
     declare -a input_samples=("ttW")
     
@@ -110,7 +110,7 @@ then
     njobs=1
     data_lumi="AtoD"
     
-    nevents=1000000
+
     loglevel="INFO"
     declare -a input_samples=("A")
 
@@ -188,7 +188,7 @@ then
     skinput="True"
     #useskim="DiLep"
     
-    njobs=100
+    njobs=300
     data_lumi="AtoD"
     
     
@@ -200,8 +200,9 @@ then
     
     #samples2016="True"
     #usebatch="False"
-    
+    declare -a input_samples=("ttbarMS_pf")
 
+    nevents=1000000
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/MC/"
     ### submit this configured job (uses bin/submit.sh)
     source submit.sh $1
@@ -257,7 +258,7 @@ then
     logstep=1000
     
     declare -a input_samples=("A" "B" "C" "D")
-    stream="singleelectron"
+    stream="singlemuon_pf"
 
     outputdir=$LQANALYZER_DIR"/data/output/SSElectron/"
     ### submit this configured job (uses bin/submit.sh)

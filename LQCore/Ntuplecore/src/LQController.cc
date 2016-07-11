@@ -27,7 +27,7 @@
 #include <TSystem.h>
 #include <TChain.h>
 
-LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true){
+LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true), split_job(false), nsplit(-100), number_of_job(-1) {
   
   chain = NULL;
   h_timing_hist = new TH1F ("CycleTiming","Timing", 7,0.,7.);
@@ -83,19 +83,33 @@ void LQController::RunEvent(Long64_t ev){
   single_ev=ev;
 }
 
+void LQController::SplitJob(int nj,int njobs){
+  split_job=true;
+  nsplit= njobs;
+  number_of_job=nj;
+}
+
 void LQController::SetOutPutStep(int step){
   output_step = step;
 }
 
-void LQController::SetName(TString name, Int_t version, TString dir) {
+
+void LQController::SetName(TString name, Int_t version, TString dir, Int_t subjob) {
   
   string out_dir = getenv("LQANALYZER_OUTPUT_PATH");
   if(!dir.Contains("NULL")) out_dir = dir;
   
   completename = TString(out_dir) + name + "_";
-  completename += version;
-  completename += ".root";
+  if(subjob < 0) completename += version;
+  else {
+    completename += version;
+    completename += "_";
+    completename += subjob;
 
+    
+  }
+  completename += ".root";
+  cout << "NAME NAME  = " << completename << endl;
   return;
 }
 
@@ -513,6 +527,14 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
+    if(split_job== true){
+      
+      int job_size = int(nentries / nsplit);
+      n_ev_to_skip = (number_of_job-1) * job_size;
+      nevents_to_process = job_size*number_of_job;
+    }
+
+    
 
     // calculate weight from input 
     float ev_weight =  CalculateWeight();
@@ -522,9 +544,11 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if(nevents_to_process > nentries || (nevents_to_process == -1) ) nevents_to_process = nentries;
     else if( nevents_to_process <=0) throw LQError( "nevents_to_process  is wrongly configured",LQError::SkipCycle);
     else {
-      if(inputType == mc) ev_weight *= (nentries/nevents_to_process);
-      if(inputType == mc) m_logger << INFO << "Weight is recalculated. Since user set a specific number of entries" << LQLogger::endmsg;
-      if(inputType == data) m_logger << WARNING << "Weight is not recalculated (as it is data). Even though user set a number of entries to run on." << LQLogger::endmsg;
+      if(nsplit < 0){
+	if(inputType == mc) ev_weight *= (nentries/nevents_to_process);
+	if(inputType == mc) m_logger << INFO << "Weight is recalculated. Since user set a specific number of entries" << LQLogger::endmsg;
+	if(inputType == data) m_logger << WARNING << "Weight is not recalculated (as it is data). Even though user set a number of entries to run on." << LQLogger::endmsg;
+      }
     }
     cycle->SetNEventsToProcess(nevents_to_process);
     cycle->SetOutPutStep(output_step);

@@ -725,7 +725,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     //// DEFAULT cuts
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    if ( el->CaloEnergy()==0 ) continue;
+    //if ( el->CaloEnergy()==0 ) continue;
     
     bool pass_selection = true;
     

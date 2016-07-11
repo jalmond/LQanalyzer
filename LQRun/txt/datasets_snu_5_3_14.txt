@@ -338,6 +338,18 @@ SKsingleelectron B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        D
 SKsingleelectron C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodC/
 SKsingleelectron D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron/periodD/
 
+SKsinglemuon_pf     A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon_pf/periodA/
+SKsinglemuon_pf     B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon_pf/periodB/
+SKsinglemuon_pf     C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon_pf/periodC/
+SKsinglemuon_pf     D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleMuon_pf/periodD/
+
+SKsingleelectron_pf A      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron_pf/periodA/
+SKsingleelectron_pf B      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron_pf/periodB/
+SKsingleelectron_pf C      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron_pf/periodC/
+SKsingleelectron_pf D      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        Data/SingleElectron_pf/periodD/
+
+
+
 ###### ###### ###### MC
 SKZ1Jets          43081.069      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/Z1Jets/
 SKZ2Jets          120296.22      sk_cluster_ntuple_path  sk_cms_ntuple_path_2015        MC/Z2Jets/
@@ -965,6 +977,8 @@ CH100PU_pf        272135.4062        cluster_mc_ntuple_pf_path_2016   cms_mc_ntu
 CH90PU_pf         274846.4688        cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH90/
 CH130PU_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH130/
 CH140PU_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH140/
+CH140_mt171.5_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH140_mt171.5/
+CH140_mt173.5_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH140_mt173.5/
 CH150PU_pf        274884.25          cluster_mc_ntuple_pf_path_2016   cms_mc_ntuplepath_chargedhiggs    SIGNAL/CH150/
 CH110_mt171.5_pf 273509.8125     cluster_mc_ntuple_pf_path_2016    cms_mc_ntuplepath_chargedhiggs   SIGNAL/CH110_mt171.5/
 CH110_mt173.5_pf 273509.8125     cluster_mc_ntuple_pf_path_2016	      cms_mc_ntuplepath_chargedhiggs   SIGNAL/CH110_mt173.5/

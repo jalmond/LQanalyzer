@@ -23,7 +23,7 @@ useskim="Lepton"
 runnp="False"
 runcf="False"
 usebatch="NULL"
-
+nsubjobs=1
 function makeParseVariable() {
     if ! [ -z ${2} ] 
         then

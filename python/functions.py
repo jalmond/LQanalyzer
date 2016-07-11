@@ -107,7 +107,21 @@ def make_batch_script(workdir, jname, lqdir, macroname):
     return config
 
 
-def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf):
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, njob):
+    
+    if njob == 1:
+        return makeConfigFileS(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf,1,1)
+    
+    config=""
+    for x in range (1, int(njob)+1):
+        config += makeConfigFileS(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, int(x), int(njob))
+    return config
+    
+def makeConfigFileS(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, job, njob):
+
+    splitjob=False
+    if njob > 1:
+        splitjob=True
 
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
@@ -137,7 +151,7 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         config+='   analysis.SetLQInput(false);\n'    
     else :
         config+='   analysis.SetLQInput(true);\n'
-    config+='   analysis.SetJobName("' + sample + "_" + cycle+'");\n'
+
     config+='   analysis.SetInputList(TString(filename));\n'
     config+='   analysis.SetTreeName("'+ tree +'");\n'
     config+='   analysis.SetCycleName("' + cycle + '");\n'
@@ -166,11 +180,21 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
         config+='   analysis.SetMCCrossSection(' + str(xsec) +');\n'
     config+='   analysis.RunNonPrompt("' +runnp+'");\n'
     config+='   analysis.RunChargeFlip("' +runcf+'");\n'
-    config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
-    config+='   analysis.Initialize();\n'
-    config+='   analysis.ExecuteCycle();\n'
 
-    config+='   gSystem->Exec("mv ' + output_tmp + sample + '_' + str(ver) + '.root ' + output + '");\n'
+    if not splitjob:
+        config+='   analysis.SetJobName("' + sample + "_" + cycle+'");\n'
+        config+='   analysis.SetName("' + sample + '",'+ str(ver) +',"'+ output_tmp +'");\n'                        
+        config+='   analysis.Initialize();\n'
+        config+='   analysis.ExecuteCycle();\n'
+        config+='   gSystem->Exec("mv ' + output_tmp + sample + '_' + str(ver) + '.root ' + output + '");\n'
+    else :
+        config+='   analysis.SetJobName("' + sample +'_'+str(job) + "_" + cycle+'");\n'
+        config+='   analysis.SplitJob(' + str(job) + ','+ str(njob) + ');\n'
+        config+='   analysis.SetName("' + sample + '",'+ str(ver)+ ',"'+ output_tmp +'" , ' + str(job) + ' );\n'
+        config+='   analysis.Initialize();\n'
+        config+='   analysis.ExecuteCycle();\n'
+        config+='   gSystem->Exec("mv ' + output_tmp + sample + '_' + str(ver) +'_'+str(job) + '.root ' + output + '");\n'
+
     config+='  \n}'
 
     return config
