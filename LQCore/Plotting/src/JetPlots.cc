@@ -35,7 +35,8 @@ JetPlots::JetPlots(TString name) : StdPlots(name) {
   map_sig["h_third_jets_eta"]               =     new TH1F("h_third_jets_eta_"          + name,"#eta distribution of the two third_jets",120,-5,5);
   map_sig["h_fourth_jets_eta"]               =     new TH1F("h_fourth_jets_eta_"          + name,"#eta distribution of the two fourth_jets",120,-5,5);
   map_sig["h_rest_jets_eta"]               =     new TH1F("h_rest_jets_eta_"          + name,"#eta distribution of the two rest_jets",120,-5,5);
-
+  map_sig["h_leadJetdR"]                =     new TH1F("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
+  map_sig["h_leadJetdPhi"]              =     new TH1F("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
 
 }
 

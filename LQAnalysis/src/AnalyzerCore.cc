@@ -1278,7 +1278,7 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
     if(nlumibins==10){
       
       if(!GetHist(histname+"_perlumi")) {
-	MakeHistograms(histname+"_perlumi", 10, 0., 10.);
+	MakeHistograms(histname+"_perlumi", 9, 0., 9.);
 	int nbin=0;
 
 	for(std::map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
@@ -1293,18 +1293,19 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
           MakeHistograms(histname+"_"+it->second, nbins, xmin, xmax);
 	}
       } 
-      
+
+
       for(map<int,TString>::iterator it = mapLumiNamePerBlack.begin(); it != mapLumiNamePerBlack.end(); it++){
 	if(eventbase->GetEvent().RunNumber()  < it->first) {
 	  map<int,float>::iterator it2 = mapLumiPerBlack.find(it->first);
+	  
 	  if(isData){
 	    float neww= w /it2->second;
-	    if(GetHist(histname+"_perlumi")) GetHist(histname)->Fill(it->second, neww);
+	    if(GetHist(histname+"_perlumi")) GetHist(histname+"_perlumi")->Fill(it->second, neww);
 	  }
 	  else{
 	    float neww = w/TargetLumi;
-	    if(GetHist(histname+"_perlumi")) GetHist(histname)->Fill(it->second, neww);
-	    
+	    if(GetHist(histname+"_perlumi")) GetHist(histname+"_perlumi")->Fill(it->second, neww);
 	  }
 	  if(GetHist(histname+"_"+it->second)) GetHist(histname+"_"+it->second)->Fill(value,w);
 	} 

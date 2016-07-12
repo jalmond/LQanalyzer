@@ -62,8 +62,12 @@ else
     export root_setup=$HOME"/root/root/bin/thisroot.sh"
 fi    
 
+
+
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
+
+
 
 ##### Check that this is not the branch and a tag was checked out
 source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
@@ -75,12 +79,13 @@ alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
-
+export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
     export LQANALYZER_FILE_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
     export CATTAGDIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATTag/"
+    export LQANALYZER_SKTreeLOG_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 fi
 
 
@@ -144,6 +149,7 @@ fi
 export LQANALYZER_OLDLIB_PATH=${LQANALYZER_DIR}/LQLib/
 
 export LQANALYZER_RUN_PATH=${LQANALYZER_DIR}/LQRun/
+export LQANALYZER_CLUSTER_TXT_PATH=${LQANALYZER_DIR}/LQRun/txt/Cluster/
 export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 ### set SKTree path
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
