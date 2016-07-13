@@ -95,6 +95,8 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
 
   out_event   = eventbase->GetEvent();
   out_trigger = eventbase->GetTrigger();
+
+  
   out_truth   = eventbase->GetTruth();
 
    return;

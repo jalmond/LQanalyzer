@@ -317,21 +317,21 @@ bool AnalyzerCore::EtaRegion(TString reg,  std::vector<snu::KElectron> electrons
   if(electrons.size() != 2) return false;
   if(electrons.size() != 2) return false;
   if(reg.Contains("EE")){
-    if(electrons.at(0).Eta() < 1.5) return false;
-    if(electrons.at(1).Eta() < 1.5) return false;
+    if(fabs(electrons.at(0).Eta()) < 1.5) return false;
+    if(fabs(electrons.at(1).Eta()) < 1.5) return false;
     return true;
   }
   if(reg.Contains("BB")){
-    if(electrons.at(0).Eta() > 1.5) return false;
-    if(electrons.at(1).Eta() > 1.5) return false;
+    if(fabs(electrons.at(0).Eta()) > 1.5) return false;
+    if(fabs(electrons.at(1).Eta()) > 1.5) return false;
     return true;
   }
   if(reg.Contains("EB")){
-    if(electrons.at(0).Eta() > 1.5){
-      if(electrons.at(1).Eta() > 1.5) return false;
+    if(fabs(electrons.at(0).Eta()) > 1.5){
+      if(fabs(electrons.at(1).Eta()) > 1.5) return false;
     }
-    if(electrons.at(0).Eta() < 1.5){
-      if(electrons.at(1).Eta() < 1.5) return false;
+    if(fabs(electrons.at(0).Eta()) < 1.5){
+      if(fabs(electrons.at(1).Eta()) < 1.5) return false;
     }
     return true;
   }

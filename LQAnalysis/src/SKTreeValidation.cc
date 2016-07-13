@@ -189,6 +189,10 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    std::vector<snu::KJet> jetColl_hn          = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
    std::vector<snu::KJet> jetColl_hn_t          = GetJets(BaseSelection::JET_HN_TChannel);
 
+
+   cout << "muonVetoColl = " << muonVetoColl.size() << " muonTightColl = " << muonTightColl.size() << endl;
+   cout << "el veto = " <<  GetElectrons(BaseSelection::ELECTRON_POG_VETO).size() << " electronTightColl = " << GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).size() << endl;
+   cout << "jetColl = " << jetColl.size() << " jetColl_hn  = " << jetColl_hn.size() << endl; 
    FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
    /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
@@ -202,6 +206,11 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    float emu_weight_trigger_sf = TriggerScaleFactor(electronTightColl, muonTightColl, "HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
 
    float muon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
+   muon_id_iso_sf *= MuonISOScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0);
+   if(EtaRegion("BB",muonTightColl)) cout << "BB: muon_id_iso_sf = " << muon_id_iso_sf << endl;
+   if(EtaRegion("EB",muonTightColl)) cout << "EB: muon_id_iso_sf = " << muon_id_iso_sf << endl;
+   if(EtaRegion("EE",muonTightColl)) cout << "EE: muon_id_iso_sf = " << muon_id_iso_sf << endl;
+
    float el_id_iso_sf= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronTightColl);
    float elmuon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
    float el_reco_weight = ElectronRecoScaleFactor(electronTightColl);
@@ -247,7 +256,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
    if(muonTightColl.size() ==2) {
      if(!SameCharge(muonTightColl)){
-       if(muonTightColl.at(1).Pt() > 20.){
+       if(muonTightColl.at(1).Pt() > 20.&&muonTightCorrColl.at(1).Pt() > 20.){
 	 if(GetDiLepMass(muonTightColl) < 120. && GetDiLepMass(muonTightColl)  > 60. ){
 	   
 	   FillHist("zpeak_mumu_nopurw", GetDiLepMass(muonTightColl), weight*mu_weight, 0., 200.,400);
@@ -261,7 +270,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	 }
 
 	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight);
-	 FillCLHist(sighist_mm, "DiMuon_noW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, 1.);
+
 	 FillCLHist(sighist_mm, "DiMuon_puW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71);
 	 FillCLHist(sighist_mm, "DiMuon_IDW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf);
 	 if(mu_pass){
@@ -273,7 +282,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	   if(EtaRegion("BB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
 	   if(EtaRegion("EB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
 	   if(EtaRegion("EE",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	   FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+
 	   FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
 	   if(EtaRegion("BB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_BB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
 	   if(EtaRegion("EB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
