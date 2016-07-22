@@ -30,7 +30,7 @@ runnp=$(makeParseVariable 'P' ${runnp})
 runcf=$(makeParseVariable 'Q' ${runcf})
 usebatch=$(makeParseVariable 'b' ${usebatch})
 samples2016=$(makeParseVariable 'N' ${samples2016})
-
+queue=$(makeParseVariable 'q' ${queue})
 
 DEBUG=$(makeParseVariable '' ${DEBUG})
 ################                                                                                                                                                
@@ -41,8 +41,13 @@ if [[ $1  == "" ]];
 then
     for i in ${input_samples[@]}
     do
-      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use538ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${usebatch} ${samples2016}
+	if [[ $1  == *"ttbarMS"* ]];
+	then
+	    queue="exclude_1"
+	fi
+	python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use538ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${usebatch} ${samples2016} ${queue} &> $i"log.txt"&
     done
+
   
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
     echo "Checking options"
@@ -50,7 +55,12 @@ elif [[ $1  == "--help"  || $1  == "--h" ]]; then
 else 
     for i in ${input_samples[@]}
     do
-      python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use5314ntuples}  ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${usebatch} ${samples2016}
+	
+	if [[ $1  == *"ttbarMS"* ]];
+        then
+            queue="exclude_1"
+        fi
+	python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use5314ntuples}  ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${usebatch} ${samples2016} ${queue} &> $i"log.txt"&
     done
 
 fi
