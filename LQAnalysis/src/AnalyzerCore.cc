@@ -65,12 +65,50 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.) {
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   rmcor = new rochcor2012();
 
-  
-  SetupJECUncertainty("FlavorQCD");
+  bool Check_jecSrc = true;
+
+  //  SetupJECUncertainty("FlavorQCD");
   SetupJECUncertainty("FlavorPureQuark");
   SetupJECUncertainty("FlavorPureBottom");
   SetupJECUncertainty("FlavorPureCharm");
   SetupJECUncertainty("FlavorPureGluon");
+  if (Check_jecSrc){
+    // Absolute
+    SetupJECUncertainty("AbsoluteStat");
+    SetupJECUncertainty("AbsoluteScale");
+    SetupJECUncertainty("AbsoluteFlavMap");
+    SetupJECUncertainty("AbsoluteMPFBias");
+    //HighPtExtra
+    SetupJECUncertainty("HighPtExtra");
+    //SinglePion
+    SetupJECUncertainty("SinglePionECAL");
+    SetupJECUncertainty("SinglePionHCAL");
+    // Time
+    SetupJECUncertainty("Time");
+    // RelJER
+    SetupJECUncertainty("RelativeJEREC1");
+    SetupJECUncertainty("RelativeJEREC2");
+    SetupJECUncertainty("RelativeJERHF");
+    // RelFSR
+    SetupJECUncertainty("RelativeFSR");
+    // RelPt
+    SetupJECUncertainty("RelativePtBB");
+    SetupJECUncertainty("RelativePtEC1");
+    SetupJECUncertainty("RelativePtEC2");
+    SetupJECUncertainty("RelativePtHF");
+    // RelStat
+    SetupJECUncertainty("RelativeStatEC2");
+    SetupJECUncertainty("RelativeStatHF");
+    // PileUpDataMC
+    SetupJECUncertainty("PileUpDataMC");
+    // PileUpPt
+    SetupJECUncertainty("PileUpPtBB");
+    SetupJECUncertainty("PileUpPtEC");
+    SetupJECUncertainty("PileUpPtHF");
+    // PileUpBias
+    SetupJECUncertainty("PileUpBias");
+  }
+
 
 }
 
@@ -282,20 +320,6 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString label){
   if(label.Contains("tight")){
     eventbase->GetMuonSel()->HNTightMuonSelection(muonColl);
   }
-  else if(label.Contains("NoCutPtEta_WithFake")){
-    eventbase->GetMuonSel()->SetPt(10.);
-    eventbase->GetMuonSel()->SetEta(2.5);
-    eventbase->GetMuonSel()->Selection(muonColl);
-    return  GetTruePrompt(muonColl,true);
-    
-  }
-  else if(label.Contains("NoCutPtEta")){
-    eventbase->GetMuonSel()->SetPt(10.);
-    eventbase->GetMuonSel()->SetEta(2.5);
-    eventbase->GetMuonSel()->Selection(muonColl);
-
-  }
-
   else if(label.Contains("NoCut")){
     eventbase->GetMuonSel()->Selection(muonColl);
   }
@@ -380,7 +404,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
   else if(label.Contains("NoCutPtEta")){ 
     icoll++;
-    eventbase->GetElectronSel()->SetPt(10.);
+    eventbase->GetElectronSel()->SetPt(20.);
     eventbase->GetElectronSel()->SetEta(2.5);
     eventbase->GetElectronSel()->Selection(electronColl);
   }
@@ -2738,6 +2762,12 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistSig.clear();
   
+  
+  for(map<TString,TNtupleD*>::iterator it = mapntp.begin(); it!= mapntp.end(); it++){ 
+    delete it->second;
+  }
+  mapntp.clear();
+
   }
 
 //###
@@ -3659,11 +3689,9 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
-    //    std::cout << "No corr : " << tlv_muons[imu].Pt() << "eta:  " <<  tlv_muons[imu].Eta() << " phi: " << tlv_muons[imu].Phi() << " mass: " << tlv_muons[imu] << 
     if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), 0, qter);
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), 0, qter);
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
-    
   }
 }
 

@@ -20,8 +20,8 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
   
-    if ( (jit->Pt() >= pt_cut_min) &&  (fabs(jit->Eta()) < eta_cut)){
-      if ( PassUserID(PFJET_LOOSE, *jit) &&    (jit->Pt() >= pt_cut_min) &&  (fabs(jit->Eta()) < eta_cut))  jetColl.push_back(*jit);
+    if ( (jit->Pt() >= pt_cut_min) &&  (fabs(jit->Eta()) < eta_cut) && PassUserID(PFJET_LOOSE, *jit) ){
+      jetColl.push_back(*jit);
     }
        
   }
@@ -471,7 +471,7 @@ void JetSelection::JetchsTopUESelectionJERv1(std::vector<KJet>& jetColl, std::ve
   
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){    
     float jet_pt = (up > 0) ? jit->SmearedUpPt() : jit->SmearedDownPt();    
-    if ( (jit->Pt() >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))
+    if ( (jet_pt >= 10.) && fabs(jit->Eta()) < 2.5   && PassUserID(PFJET_LOOSE, *jit))
       // && jit->PileupJetIDLoose())                                                                                
       {                                                                                 
 	// additional selection AN-14-227. jetIDEff = 99.99%                      

@@ -40,6 +40,7 @@ parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-f", "--nsubjobs", dest="nsubjobs", default=1, help="Number of subjobs?")
+parser.add_option("-q", "--queue", dest="queue", default="", help="which queue?")
 
 
 ###################################################
@@ -54,6 +55,7 @@ logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
 runcf = options.runcf
+queue = options.queue
 usebatch =options.usebatch
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
@@ -79,6 +81,43 @@ nsubjobs=  options.nsubjobs
 new_channel = channel.replace(":", "")
 original_channel = new_channel
 
+queue_command = ""
+if queue  == "exclude_1":
+    queue_command = " -q allbut1 "
+elif queue  == "exclude_2":
+    queue_command = " -q allbut2 "
+elif queue  == "exclude_3":
+    queue_command = " -q allbut3 "
+elif queue  == "exclude_4":
+    queue_command = " -q allbut4 "
+elif queue  == "exclude_5":
+    queue_command = " -q allbut5 "
+elif queue  == "exclude_6":
+    queue_command = " -q allbut6 "
+elif queue  == "exclude_7":
+    queue_command = " -q allbut7 "
+elif queue  == "exclude_8":
+    queue_command = " -q allbut8 "
+elif  queue  == "node_1":
+    queue_command = " -q single1 "
+elif  queue  == "node_2":
+    queue_command = " -q single2 "
+elif  queue  == "node_3":
+    queue_command = " -q single3 "
+elif  queue  == "node_4":
+    queue_command = " -q single4 "
+elif  queue  == "node_5":
+    queue_command = " -q single5 "
+elif  queue  == "node_6":
+    queue_command = " -q single6 "
+elif  queue  == "node_7":
+    queue_command = " -q single7 "
+elif  queue  == "node_8":
+    queue_command = " -q single8 "
+elif  queue  == "all":
+    queue_command = ""
+else:
+    queue_command = " -q single1 "
 
 ##############################
 ### check output dir exists
@@ -571,21 +610,22 @@ if running_batch:
                 if number_of_cores > 100:
                     number_of_cores=100
             else:
-                if n_user_qsub_jobs > 300:
-                    number_of_cores=5
-                elif n_user_qsub_jobs > 200:
-                    number_of_cores=15
-                elif n_user_qsub_jobs > 100:
-                    number_of_cores=20
-                elif n_user_qsub_jobs > 60:
-                    number_of_cores=30
-                elif n_user_qsub_jobs > 40:
-                    number_of_cores=50
-                else:
-                    if n_qsub_jobs < 30:
-                        number_of_cores=100
+                if queue == "all":
+                    if n_user_qsub_jobs > 300:
+                        number_of_cores=5
+                    elif n_user_qsub_jobs > 200:
+                        number_of_cores=15
+                    elif n_user_qsub_jobs > 100:
+                        number_of_cores=20
+                    elif n_user_qsub_jobs > 60:
+                        number_of_cores=30
+                    elif n_user_qsub_jobs > 40:
+                        number_of_cores=50
                     else:
-                         number_of_cores=50
+                        if n_qsub_jobs < 30:
+                            number_of_cores=100
+                        else:
+                            number_of_cores=50
         else:
             if number_of_cores > 100:
                 number_of_cores = 100
@@ -870,8 +910,11 @@ for i in range(1,number_of_cores+1):
     
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if running_batch:
-        runcommand = "qsub -V " + batchscript   + "&>" + log 
-
+        if queue == "":
+            runcommand = "qsub -V " + batchscript   + "&>" + log
+        else:
+            runcommand = "qsub " + queue_command +" -V " + batchscript   + "&>" + log
+            
     if int(nsubjobs) > 1:
         runfile=open(output+ "Job_" + str(i) + "/run.sh",'w')
         if running_batch:        
@@ -882,7 +925,12 @@ for i in range(1,number_of_cores+1):
                 batchfile.close()
                 script = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".C"
                 log = output+ "Job_" + str(i) + "/runJob_" + str(i)  + "_" + str(j)+ ".log"
-                runfile.write("qsub -V " + batchscript   + "&>" + log + "&\n")
+                if queue == "":
+                    runfile.write("qsub -V " + batchscript   + "&>" + log + "&\n")
+                else:
+                    runfile.write("qsub " + queue_command +" -V " + batchscript   + "&>" + log+ "&\n")
+
+
                 
         
         else:
@@ -1237,7 +1285,7 @@ while not JobSuccess:
                 sys.stdout.write('\r'+mess)
                 sys.stdout.flush()
                 time.sleep(2.)
-        print str(ncomplete_files) 
+
         if ncomplete_files > file_iterator:
             #print str(ncomplete_files) + "/" + str(number_of_cores) + " jobs completed.  " #Wait " + str(timeWait) + " second..."
             #print ""
@@ -1423,6 +1471,9 @@ else:
         if os.path.exists(Finaloutputdir + outfile):
             os.system("rm  "  +  Finaloutputdir + "/"  + outfile)
         os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
+        if not os.path.exists(Finaloutputdir +  outfile):
+            print "Error in hadd: exiting code now"
+            sys.exit()
         print "Merged output :" + Finaloutputdir + outfile
     else:
         if not mc:

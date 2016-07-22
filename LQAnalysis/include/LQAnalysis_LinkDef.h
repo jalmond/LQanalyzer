@@ -29,4 +29,11 @@
 #pragma link C++ class CHEJ_bestfit+;
 #pragma link C++ class CHMJ_bestfit+;
 
+#pragma link C++ class CHMuJets_v2_sig_jecSrc+;
+#pragma link C++ class CHMuJets_v2_sig+;
+#pragma link C++ class CHElJets_v2_VJ_jecSrc+;
+#pragma link C++ class CHElJets_v2_sig_jecSrc+;
+#pragma link C++ class CHElJets_v2_sig+;
+#pragma link C++ class CHMuJets_v2_VJ_jecSrc+;
+
 #endif // __CINT__
