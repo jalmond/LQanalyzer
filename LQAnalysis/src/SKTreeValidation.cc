@@ -35,33 +35,85 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
-  MakeCleverHistograms(sighist_mm,"DiMuon");
-  MakeCleverHistograms(sighist_mm,"DiMuon_noW");
-  MakeCleverHistograms(sighist_mm,"DiMuon_TrigW");
-  MakeCleverHistograms(sighist_mm,"DiMuon_IDW");
-  MakeCleverHistograms(sighist_mm,"DiMuon_puW");
-  MakeCleverHistograms(sighist_mm,"DiMuon_Trigger");
-  MakeCleverHistograms(sighist_mm,"DiMuon_BB");
-  MakeCleverHistograms(sighist_mm,"DiMuon_EE");
-  MakeCleverHistograms(sighist_mm,"DiMuon_EB");
-  MakeCleverHistograms(sighist_mm,"DiMuon_corr");
-  MakeCleverHistograms(sighist_mm,"DiMuon_corr_EE");
-  MakeCleverHistograms(sighist_mm,"DiMuon_corr_EB");
-  MakeCleverHistograms(sighist_mm,"DiMuon_corr_BB");
-  MakeCleverHistograms(sighist_mm,"DiMuon_truthmatched");
-  MakeCleverHistograms(sighist_ee,"DiElectron");
-  MakeCleverHistograms(sighist_ee,"DiElectron_EE");
-  MakeCleverHistograms(sighist_ee,"DiElectron_EB");
-  MakeCleverHistograms(sighist_ee,"DiElectron_BB");
-  MakeCleverHistograms(sighist_ee,"DiElectron_truthmatched");
-  MakeCleverHistograms(sighist_em,"ElMuon");
+  std::vector<TString> dimuonIDs;
+  dimuonIDs.push_back("POGTight");
+  dimuonIDs.push_back("POGTightroch_corrected");
+  dimuonIDs.push_back("HNTightroch_corrected");
+  dimuonIDs.push_back("POGTightroch_correctedtruthmatch");
+  for(unsigned int i=0; i < dimuonIDs.size(); i++){
+    MakeCleverHistograms(sighist_mm,"ZMuon"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_noW"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_IDW"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_IDW_69pu"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_puW"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_Trigger"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_BB"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_EE"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"DiMuon_EB"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm, "DiMuon_dijet"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
+  }
   
-  MakeCleverHistograms(jethist, "DiMuon_dijet");
-  MakeCleverHistograms(jethist, "DiMuon_dijet_tchannel");
-  MakeCleverHistograms(jethist, "EMuon_dijet");
-  MakeCleverHistograms(jethist, "EMuon_dijet_tchannel");
-  MakeCleverHistograms(jethist, "DiElectron_dijet");
-  MakeCleverHistograms(jethist, "DiElectron_dijet_tchannel");
+  MakeCleverHistograms(muhist,"KMuonHists");
+  MakeCleverHistograms(muhist,"KMuonHists_POGTIGHT");
+
+  std::vector<TString> electronIDs;
+  electronIDs.push_back("POGTight");
+  electronIDs.push_back("POGTighttruthmatch");
+  for(unsigned int i=0; i < electronIDs.size(); i++){
+    MakeCleverHistograms(sighist_ee,"SingleElectron"+electronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"SingleElectron_noW"+electronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"SingleElectron_IDW"+electronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"SingleElectron_puW"+electronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"SingleElectron_Trigger"+electronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"SingleElectron_Wregion"+electronIDs.at(i));
+    MakeCleverHistograms(sighist_ee, "SingleElectron_dijet"+electronIDs.at(i));
+  }
+
+  std::vector<TString> dielectronIDs;
+  dielectronIDs.push_back("POGTight");
+  dielectronIDs.push_back("POGTighttruthmatch");
+
+  for(unsigned int i=0; i < dielectronIDs.size(); i++){
+    MakeCleverHistograms(sighist_ee,"ZElectron"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_SSPreselection"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_noW"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_IDW"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_puW"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_Trigger"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_Trigger_69pu"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_BB"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_EE"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee,"DiElectron_EB"+dielectronIDs.at(i));
+    MakeCleverHistograms(sighist_ee, "DiElectron_dijet"+dielectronIDs.at(i));
+  }
+  MakeCleverHistograms(elhist,"KElectronHists");
+  MakeCleverHistograms(elhist,"KElectronHists_POGTIGHT");
+
+  std::vector<TString> muonIDs;
+  muonIDs.push_back("POGTightroch_corrected");
+  for(unsigned int i=0; i < muonIDs.size(); i++){
+    MakeCleverHistograms(sighist_mm,"SingleMuon"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"SingleMuon_noW"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"SingleMuon_IDW"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"SingleMuon_puW"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"SingleMuon_Trigger"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_mm,"SingleMuon_Wregion"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_mm, "SingleMuon_dijet"+muonIDs.at(i));
+
+    MakeCleverHistograms(sighist_em,"EMuon"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em,"EMuon_noW"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em,"EMuon_IDW"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em,"EMuon_puW"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em,"EMuon_Trigger"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em,"EMuon_Trigger_69pu"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em, "EMuon_dijet"+muonIDs.at(i));
+    MakeCleverHistograms(sighist_em,"EMuon_SSPreselection"+muonIDs.at(i));
+
+  }
+
 }
 
 
@@ -91,9 +143,8 @@ void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
 
 void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
-  /// Apply the gen weight 
+  /// Apply the gen weight
   if(!isData) weight*=MCweight;
-  
   /// Acts on data to remove bad reconstructed event 
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
   
@@ -107,120 +158,50 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
   else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
   
-   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you see this is out of date please comment
-   
-   if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
+  ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
+  
+  if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
    FillCutFlow("EventCut", weight);
-
+   
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
-   TString muon_trig="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-   //   TString muon_trig="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
+   TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
+   TString dimuon_trigmuon_trig2="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
    
-   TString el_trig="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+   TString muon_trigmuon_trig1="HLT_IsoMu20_v";
+   TString muon_trigmuon_trig2="HLT_IsoTkMu20_v";
+
+   TString diel_trig="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+  
    TString em1_trig="HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
    TString em2_trig="HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v";
+   
+   TString el_trig="HLT_Ele23_WPLoose_Gsf_v";
+
+   std::vector<TString> triggerslist_dimu;
+   triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
+   triggerslist_dimu.push_back(dimuon_trigmuon_trig2);
 
    std::vector<TString> triggerslist_mu;
-   triggerslist_mu.push_back(muon_trig);
+   triggerslist_mu.push_back(muon_trigmuon_trig1);
+   triggerslist_mu.push_back(muon_trigmuon_trig2);
+
+
+   std::vector<TString> triggerslist_diel;
+   triggerslist_diel.push_back(diel_trig);
+
    std::vector<TString> triggerslist_el;
    triggerslist_el.push_back(el_trig);
+
    std::vector<TString> triggerslist_emu;
    triggerslist_emu.push_back(em1_trig);
    triggerslist_emu.push_back(em2_trig);
    
-   float mu_trigger_ps_weight= ApplyPrescale(muon_trig, TargetLumi,lumimask);
-   float el_trigger_ps_weight= ApplyPrescale(el_trig, TargetLumi,lumimask);
-   float emu_trigger_ps_weight= ApplyPrescale(em1_trig, TargetLumi,lumimask);
-   
-   
-   bool mu_pass= PassTrigger(triggerslist_mu, prescale);
-   bool el_pass= PassTrigger(triggerslist_el, prescale);
-   bool emu_pass= PassTrigger(triggerslist_emu, prescale);
-   
 
    FillCutFlow("TriggerCut", weight);
-   // Trigger matching is done using KMuon::TriggerMatched(TString) which returns a bool
-
-   /* // #### CAT::: trigger matching information is stored for muons and electrons for:
-  ///HLT_IsoMu24_eta2p1_v
-  ///HLT_Mu17_Mu8_DZ_v
-  ///HLT_Mu17_TkMu8_DZ_v
-   //HLT_IsoMu20
-   ///HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v
-   ///HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v
-   ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v
-   ///HLT_Ele12_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v
-   ///HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v
-   ///HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v
-   ///HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v
-   ///HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
-   ///HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
-   ///HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v
-   ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
-   ///HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_
-   ///HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v
-   ///HLT_Ele27_eta2p1_WPLoose_Gsf_TriCentralPFJet30_v
-   */
-
-   m_logger << DEBUG << "passedTrigger "<< LQLogger::endmsg;
-
 
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
-   /// Has Good Primary vertex:
-   /// if ( vtx.ndof() > 4 &&
-   //   ( (maxAbsZ <=0 ) || std::abs(vtx.z()) <= 24 ) &&
-   //( (maxd0 <=0 ) || std::abs(vtx.position().rho()) <= 2 ) &&
-   //!(vtx.isFake() ) ){
    FillCutFlow("VertexCut", weight);
-   
-
-   /// List of preset muon collections : Can call also POGSoft/POGLoose/POGMedium/POGTight
-   std::vector<snu::KMuon> muonVetoColl = GetMuons(BaseSelection::MUON_HN_VETO);  // veto selection
-   std::vector<snu::KMuon> muonLooseColl = GetMuons(BaseSelection::MUON_HN_FAKELOOSE);  // loose selection
-   std::vector<snu::KMuon> muonTightColl = GetMuons(BaseSelection::MUON_POG_TIGHT); // tight selection : NonPrompt MC lep removed
-   std::vector<snu::KMuon> muonTightCorrColl = GetMuons(BaseSelection::MUON_POG_TIGHT); // tight selection : NonPrompt MC lep removed
-   std::vector<snu::KMuon> muonTightTruthMatchedColl = GetMuons(BaseSelection::MUON_POG_TIGHT,false); // tight selection : NonPrompt MC lep removed
-   
-   CorrectMuonMomentum(muonTightCorrColl);
-   
-   /// List of preset jet collections : NoLeptonVeto/Loose/Medium/Tight/TightLepVeto/HNJets
-   std::vector<snu::KJet> jetColl             = GetJets(BaseSelection::JET_NOLEPTONVETO); // All jets
-   std::vector<snu::KJet> jetColl_hn          = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; pileup ID
-   std::vector<snu::KJet> jetColl_hn_t          = GetJets(BaseSelection::JET_HN_TChannel);
-
-
-   cout << "muonVetoColl = " << muonVetoColl.size() << " muonTightColl = " << muonTightColl.size() << endl;
-   cout << "el veto = " <<  GetElectrons(BaseSelection::ELECTRON_POG_VETO).size() << " electronTightColl = " << GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).size() << endl;
-   cout << "jetColl = " << jetColl.size() << " jetColl_hn  = " << jetColl_hn.size() << endl; 
-   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
-
-   /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
-   std::vector<snu::KElectron> electronTightColl             = GetElectrons(BaseSelection::ELECTRON_POG_TIGHT);
-   std::vector<snu::KElectron> electronTightTruthMatchedColl             = GetElectrons(false,false,BaseSelection::ELECTRON_POG_TIGHT);
-   std::vector<snu::KElectron> electronLooseColl        = GetElectrons(BaseSelection::ELECTRON_POG_LOOSE);
-
-   
-   float mu_weight_trigger_sf = TriggerScaleFactor(electronTightColl, muonTightColl, "HLT_IsoMu20");
-   float el_weight_trigger_sf = TriggerScaleFactor(electronTightColl, muonTightColl, "HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
-   float emu_weight_trigger_sf = TriggerScaleFactor(electronTightColl, muonTightColl, "HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
-
-   float muon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
-   muon_id_iso_sf *= MuonISOScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0);
-   if(EtaRegion("BB",muonTightColl)) cout << "BB: muon_id_iso_sf = " << muon_id_iso_sf << endl;
-   if(EtaRegion("EB",muonTightColl)) cout << "EB: muon_id_iso_sf = " << muon_id_iso_sf << endl;
-   if(EtaRegion("EE",muonTightColl)) cout << "EE: muon_id_iso_sf = " << muon_id_iso_sf << endl;
-
-   float el_id_iso_sf= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronTightColl);
-   float elmuon_id_iso_sf= MuonScaleFactor(BaseSelection::MUON_POG_TIGHT, muonTightColl,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
-   float el_reco_weight = ElectronRecoScaleFactor(electronTightColl);
-
-   elmuon_id_iso_sf *= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronTightColl);
-   
-   int njet = jetColl_hn.size();
-   FillHist("GenWeight_NJet" , njet*MCweight + MCweight*0.1, 1., -6. , 6., 12);
-
-   numberVertices = eventbase->GetEvent().nVertices();   
    
    float pileup_reweight_69=(1.0);
    float pileup_reweight_71=(1.0);
@@ -228,126 +209,248 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
      pileup_reweight_69 = eventbase->GetEvent().PileUpWeight(lumimask);
      pileup_reweight_71 = eventbase->GetEvent().AltPileUpWeight(lumimask);
-     
    }
    
    FillHist("PileupWeight_69" ,  pileup_reweight_69,weight,  0. , 50., 10);
    FillHist("PileupWeight_71" ,  pileup_reweight_71,weight,  0. , 50., 10);
 
-   float mu_weight=1.;
-   float el_weight=1.;
-   float emu_weight=1.;
-   if(!isData && !k_running_nonprompt){
-     mu_weight*=muon_id_iso_sf;
-     mu_weight*=mu_weight_trigger_sf;
-     mu_weight*=mu_trigger_ps_weight;
-   }
-   if(!isData && !k_running_nonprompt){
-     el_weight*=el_id_iso_sf;
-     el_weight*=el_weight_trigger_sf;
-     el_weight*=el_trigger_ps_weight;
-     el_weight*=el_reco_weight;
-   }
-   if(!isData && !k_running_nonprompt){
-     emu_weight*=elmuon_id_iso_sf;
-     emu_weight*=emu_weight_trigger_sf;
-     emu_weight*=emu_trigger_ps_weight;
-   }
+   ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   //// Electrons plots
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   MakeElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_el, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   MakeElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_el, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTighttruthmatch");
+   FillCLHist(elhist,"KElectronHists", GetElectrons(BaseSelection::ELECTRON_NOCUT), weight);
+   FillCLHist(elhist,"KElectronHists_POGTIGHT", GetElectrons(BaseSelection::ELECTRON_POG_TIGHT), weight);
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ///// DiElectron Validation plots
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   MakeDiElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_diel, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   MakeDiElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_diel, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTighttruthmatch");
+   ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   /// Single Muon Validation plots
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   MakeMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_mu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   /// DiMuon Validation plots
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_correctedtruthmatch");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_HN_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "HNTightroch_corrected");
+   FillCLHist(muhist,"KMuonHists", GetMuons(BaseSelection::MUON_NOCUT), weight);
+   FillCLHist(muhist,"KMuonHists_POGTIGHT", GetMuons(BaseSelection::MUON_POG_TIGHT), weight);
+   ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   // ElectronMuon Validation
+   MakeElMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_emu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
+   ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
 
-   if(muonTightColl.size() ==2) {
-     if(!SameCharge(muonTightColl)){
-       if(muonTightColl.at(1).Pt() > 20.&&muonTightCorrColl.at(1).Pt() > 20.){
-	 if(GetDiLepMass(muonTightColl) < 120. && GetDiLepMass(muonTightColl)  > 60. ){
+   /*
+   if(muonTightColl.size() == 2){
+     bool pass=false;
+     if(muonTightColl.at(0).MCTruthIndex() > 0  && muonTightColl.at(1).MCTruthIndex() > 0){
+       if(eventbase->GetTruth().at(muonTightColl.at(0).MCTruthIndex()).ReadStatusFlag(2) == 0) pass=true;
+       if(eventbase->GetTruth().at(muonTightColl.at(1).MCTruthIndex()).ReadStatusFlag(2) == 0) pass=true;
+     }
+     if(pass){
+       //cout << "Z->mumu is not from hard process???? " << endl;
+       //cout << "muonTightColl.at(0)/Pt/Eta/Phi = " << muonTightColl.at(0).Pt() << " " << muonTightColl.at(0).Eta() << " " << muonTightColl.at(0).Phi() << " conv = " << muonTightColl.at(0).MCIsFromConversion()<< endl;
+       //cout << "muonTightColl.at(1)/Pt/Eta/Phi = " << muonTightColl.at(1).Pt() << " " << muonTightColl.at(1).Eta() << " " << muonTightColl.at(1).Phi() << " conv = " << muonTightColl.at(1).MCIsFromConversion()<< endl;
+       for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+	 if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+	 if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+	 if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 13 && eventbase->GetTruth().at(ig).GenStatus() == 1){
 	   
-	   FillHist("zpeak_mumu_nopurw", GetDiLepMass(muonTightColl), weight*mu_weight, 0., 200.,400);
-	   FillHist("zpeak_mumu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*mu_weight, 0., 200.,400);
-	   FillHist("zpeak_mumu_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*mu_weight, 0., 200.,400);
-	   FillHist("nvertex_mumu_nopurw", eventbase->GetEvent().nVertices(),  weight*mu_weight, 0., 40.,40);
-	   FillHist("nvertex_mumu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*mu_weight, 0., 40.,40) ;
-	   FillHist("nvertex_mumu_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*mu_weight, 0., 40.,40);
-	   if(mu_pass)FillHist("zpeak_mumu_trigaltpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*mu_weight, 0., 200.,400);
+	   int index_mum = ig;
+	   
+	   if(muonTightColl.at(0).MCMatched() &&muonTightColl.at(1).MCMatched()){
+	     if(eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) == 0){
+	       if(eventbase->GetTruth().at(eventbase->GetTruth().at(index_mum).IndexMother()).ReadStatusFlag(1) == 0) return;
+	       if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(index_mum).IndexMother()).PdgId() ) == 15) return;
+	       
+	       cout << "Matched 000 " << endl;
+	       
+	       cout << "Macted 0 = " << muonTightColl.at(0).MCMatched() << endl;
+	       cout << "Macted 1 = " << muonTightColl.at(1).MCMatched() << endl;
+	       cout << eventbase->GetTruth().at(ig).PdgId() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " eta/pt/phi " << eventbase->GetTruth().at(ig).Eta() << "/" << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).Phi() <<  endl;
+	       cout <<  "pdgid = " << eventbase->GetTruth().at(index_mum).PdgId() << " status = " << eventbase->GetTruth().at(index_mum).GenStatus()  << " eta = " << eventbase->GetTruth().at(index_mum).Eta() << " phi = " << eventbase->GetTruth().at(index_mum).Phi() << " pt = " << eventbase->GetTruth().at(index_mum).Pt()<<  endl;
+	       cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+	       cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+	       cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+	       cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+	       cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+	       cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+	       cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+	       cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
 
-	 }
+	       cout << "MOTHER" << endl;
+	       while (fabs(eventbase->GetTruth().at(index_mum).PdgId()) == 13){
+		 index_mum = eventbase->GetTruth().at(index_mum).IndexMother();
+		 cout <<  "mother pdgid = " << eventbase->GetTruth().at(index_mum).PdgId() << " status = " << eventbase->GetTruth().at(index_mum).GenStatus()  << " eta = " << eventbase->GetTruth().at(index_mum).Eta() << " phi = " << eventbase->GetTruth().at(index_mum).Phi() << " pt = " << eventbase->GetTruth().at(index_mum).Pt()<<  endl;
+		 cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+		 cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+		 cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+		 cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+		 cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+		 cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+		 cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+		 cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
+	       }
+	       for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
+		 if(eventbase->GetTruth().at(ig2).IndexMother() <= 0)continue;
+		 if(eventbase->GetTruth().at(ig2).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+		 cout << eventbase->GetTruth().at(ig2).PdgId() << " status = " << eventbase->GetTruth().at(ig2).GenStatus()  << " eta = " << eventbase->GetTruth().at(ig2).Eta() << " phi = " << eventbase->GetTruth().at(ig2).Phi() << " pt = " << eventbase->GetTruth().at(ig2).Pt()<< " mother = " <<  eventbase->GetTruth().at(eventbase->GetTruth().at(ig2).IndexMother()).PdgId()<< " local " << eventbase->GetTruth().at(ig2).IndexMother()<<endl;
+		 
+	       }
+	     }
+	     if(eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) == 1) {
+	       cout << "Matched and isdirecthadrondecayproduct " <<  endl;
+	       cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+               cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+               cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+               cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+               cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+               cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+               cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+               cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
+	       
+	     }
+	     if(eventbase->GetTruth().at(index_mum).StatusFlag() == 1){
+	       if(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).StatusFlag() == 1){
+		 cout << "Matchedand only isprompt " <<  endl;
+		 cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+		 cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+		 cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+		 cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+		 cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+		 cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+		 cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+		 cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
+		 
 
-	 FillCLHist(sighist_mm, "DiMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight);
+	       }	
+	     }
+	   }
+	   if(eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) != 0)  return;
+	   if(eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) != 0) return;
+	   if(eventbase->GetTruth().at(index_mum).StatusFlag() == 1){
+	     if(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).StatusFlag() == 1) return;
+	   }
 
-	 FillCLHist(sighist_mm, "DiMuon_puW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71);
-	 FillCLHist(sighist_mm, "DiMuon_IDW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf);
-	 if(mu_pass){
-	   FillCLHist(sighist_mm, "DiMuon_Trigger", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf);
-	   FillCLHist(sighist_mm, "DiMuon_TrigW", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, weight*pileup_reweight_71*muon_id_iso_sf*mu_trigger_ps_weight*mu_weight_trigger_sf);
-	   
-	   float ev_weight = weight*pileup_reweight_71*mu_weight;
-	   FillHistPerLumi("zpeak_mumu", GetDiLepMass(muonTightColl), ev_weight, 0., 500., 100., 10);
-	   if(EtaRegion("BB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	   if(EtaRegion("EB",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	   if(EtaRegion("EE",muonTightColl))  FillCLHist(sighist_mm, "DiMuon_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	   if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()) == 15) continue;
+	   cout << "Macted 0 = " << muonTightColl.at(0).MCMatched() << endl;
+	   cout << "Macted 1 = " << muonTightColl.at(1).MCMatched() << endl;
+	   cout << eventbase->GetTruth().at(ig).PdgId() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " eta/pt/phi " << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).Phi() <<  endl;
+	   cout <<  "pdgid = " << eventbase->GetTruth().at(index_mum).PdgId() << " status = " << eventbase->GetTruth().at(index_mum).GenStatus()  << " eta = " << eventbase->GetTruth().at(index_mum).Eta() << " phi = " << eventbase->GetTruth().at(index_mum).Phi() << " pt = " << eventbase->GetTruth().at(index_mum).Pt()<<  endl;
+	   cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+	   cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+	   cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+	   cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+	   cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+	   cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+	   cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+	   cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
 
-	   FillCLHist(sighist_mm, "DiMuon_corr", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-	   if(EtaRegion("BB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_BB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-	   if(EtaRegion("EB",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EB", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-	   if(EtaRegion("EE",muonTightCorrColl))  FillCLHist(sighist_mm, "DiMuon_corr_EE", eventbase->GetEvent(), muonTightCorrColl,electronTightColl,jetColl_hn, ev_weight);
-	   
-	   if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiMuon_dijet", jetColl_hn, ev_weight);
-	   if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
-	   
-	   
-	   if(muonTightTruthMatchedColl.size() == 2)         FillCLHist(sighist_mm, "DiMuon_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
+	   cout << "MOTHER" << endl;
+	   while (fabs(eventbase->GetTruth().at(index_mum).PdgId()) == 13){
+	     index_mum = eventbase->GetTruth().at(index_mum).IndexMother();
+	     cout <<  "mother pdgid = " << eventbase->GetTruth().at(index_mum).PdgId() << " status = " << eventbase->GetTruth().at(index_mum).GenStatus()  << " eta = " << eventbase->GetTruth().at(index_mum).Eta() << " phi = " << eventbase->GetTruth().at(index_mum).Phi() << " pt = " << eventbase->GetTruth().at(index_mum).Pt()<<  endl;
+	     cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+	     cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+	     cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+	     cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+	     cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+	     cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+	     cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+	     cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
+	   }
+	   cout << "\n" << endl;
 	 }
        }
+	   
      }
    }
-
-   if(el_pass&&electronTightColl.size() ==2) {
-     //if(!SameCharge(electronTightColl)){
-     if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15.){
-       /// Method of plotting single histogram
-       if(GetDiLepMass(electronTightColl) < 120. && GetDiLepMass(electronTightColl)  > 60. ){
-	   FillHist("zpeak_ee_nopurw", GetDiLepMass(muonTightColl), weight*el_weight, 0., 200.,400);
-	   FillHist("zpeak_ee_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*el_weight, 0., 200.,400);
-	   FillHist("zpeak_ee_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*el_weight, 0., 200.,400);
-	   FillHist("nvertex_ee_nopurw", eventbase->GetEvent().nVertices(),  weight*el_weight, 0., 40.,40);
-	   FillHist("nvertex_ee_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*el_weight, 0., 40.,40) ;
-	   FillHist("nvertex_ee_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*el_weight, 0., 40.,40);
-	 }
-
-	 
-	 float ev_weight = weight*pileup_reweight_71*el_weight;
-         FillHistPerLumi("zpeak_ee", GetDiLepMass(electronTightColl), ev_weight, 0., 500., 100., 10);
-
-	 if(electronTightTruthMatchedColl.size() ==2)            FillCLHist(sighist_ee, "DiElectron_truthmatched", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 if(EtaRegion("BB",electronTightColl))  FillCLHist(sighist_ee, "DiElectron_BB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-         if(EtaRegion("EB",electronTightColl))  FillCLHist(sighist_ee, "DiElectron_EB", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-         if(EtaRegion("EE",electronTightColl))  FillCLHist(sighist_ee, "DiElectron_EE", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-
-	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "DiElectron_dijet", jetColl_hn, ev_weight);
-         if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "DiElectron_dijet_tchannel", jetColl_hn_t, ev_weight);
-       }
-     //}
-   }
+   return;
    
-   if(emu_pass&&(electronTightColl.size() == 1)&& (muonTightColl.size() ==1)) {
-     if(electronTightColl.at(0).Charge() != muonTightColl.at(0).Charge()){
-       if((muonTightColl.at(0).Pt() > 20. )&&( electronTightColl.at(0).Pt() < 20.)){
-	 /// Method of plotting single histogram
+   if(SameCharge(muonTightTruthMatchedColl)){
+     if(muonTightTruthMatchedColl.at(0).MCIsFromConversion()) return;
+     if(muonTightTruthMatchedColl.at(1).MCIsFromConversion()) return;
 
-	 FillHist("zpeak_emu_nopurw", GetDiLepMass(muonTightColl), weight*emu_weight, 0., 200.,400);
-	 FillHist("zpeak_emu_purw", GetDiLepMass(muonTightColl), weight*pileup_reweight_69*emu_weight, 0., 200.,400);
-	 FillHist("zpeak_emu_altpurw", GetDiLepMass(muonTightColl), weight*pileup_reweight_71*emu_weight,0., 200.,400);
-	 FillHist("nvertex_emu_nopurw", eventbase->GetEvent().nVertices(),  weight*emu_weight, 0., 40.,40);
-	 FillHist("nvertex_emu_purw", eventbase->GetEvent().nVertices()  , pileup_reweight_69*weight*emu_weight, 0., 40.,40) ;
-	 FillHist("nvertex_emu_altpurw", eventbase->GetEvent().nVertices(),  pileup_reweight_71*weight*emu_weight, 0., 40.,40);
-	 
-	 float ev_weight = weight*pileup_reweight_71*emu_weight;
-
-	 FillCLHist(sighist_em, "EMuon", eventbase->GetEvent(), muonTightColl,electronTightColl,jetColl_hn, ev_weight);
-	 if(jetColl_hn.size() == 2)          FillCLHist(jethist, "EMuon_dijet", jetColl_hn, ev_weight);
-         if(jetColl_hn_t.size() == 2)          FillCLHist(jethist, "EMuon_dijet_tchannel", jetColl_hn_t, ev_weight);
-
+     
+     //cout << "muonTightTruthMatchedColl.at(0)/Pt/Eta/Phi = " << muonTightTruthMatchedColl.at(0).Pt() << " " << muonTightTruthMatchedColl.at(0).Eta() << " " << muonTightTruthMatchedColl.at(0).Phi() << " conv = " << muonTightTruthMatchedColl.at(0).MCIsFromConversion()<< endl;
+     //cout << "muonTightTruthMatchedColl.at(1)/Pt/Eta/Phi = " << muonTightTruthMatchedColl.at(1).Pt() << " " << muonTightTruthMatchedColl.at(1).Eta() << " " << muonTightTruthMatchedColl.at(1).Phi() << " conv = " << muonTightTruthMatchedColl.at(1).MCIsFromConversion()<< endl;
+     
+     for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+       if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+       if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+       
+       
+       int index_mum = ig;
+       while (fabs(eventbase->GetTruth().at(index_mum).PdgId()) == 13){
+	 index_mum = eventbase->GetTruth().at(index_mum).IndexMother();
+	 cout <<  "mother pdgid = " << eventbase->GetTruth().at(index_mum).PdgId() << " status = " << eventbase->GetTruth().at(index_mum).GenStatus()  << " eta = " << eventbase->GetTruth().at(index_mum).Eta() << " phi = " << eventbase->GetTruth().at(index_mum).Phi() << " pt = " << eventbase->GetTruth().at(index_mum).Pt()<<  endl;
+	 cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+	 cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+	 cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+	 cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+	 cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+	 cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+	 cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+	 cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
        }
      }
    }
+
+
+   if(muonTightTruthMatchedColl.size() == 1){
+     cout << "muonTightTruthMatchedColl.at(0)/Pt/Eta/Phi = " << muonTightTruthMatchedColl.at(0).Pt() << " " << muonTightTruthMatchedColl.at(0).Eta() << " " << muonTightTruthMatchedColl.at(0).Phi() << endl;
+     for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+       if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+       if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+
+       if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 13 && eventbase->GetTruth().at(ig).GenStatus() == 1){
+         cout << eventbase->GetTruth().at(ig).PdgId() << " " << eventbase->GetTruth().at(ig).GenStatus() << " " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " eta/pt/phi " << eventbase->GetTruth().at(ig).Eta() << " " << eventbase->GetTruth().at(ig).Pt() << " " << eventbase->GetTruth().at(ig).Phi() <<  endl;
+
+         int index_mum = ig;
+         while (fabs(eventbase->GetTruth().at(index_mum).PdgId()) == 13){
+           index_mum = eventbase->GetTruth().at(index_mum).IndexMother();
+	   cout <<  "mother pdgid = " << eventbase->GetTruth().at(index_mum).PdgId() << " eta = " << eventbase->GetTruth().at(index_mum).Eta() << " phi = " << eventbase->GetTruth().at(index_mum).Phi() << " pt = " << eventbase->GetTruth().at(index_mum).Pt()<<  endl;
+           cout << "StatusFlag : isprompt = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(7) << endl;
+           cout << "StatusFlag : isdecayedleptonhadron = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(6) << endl;
+           cout << "StatusFlag : istaudecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(5) << endl;
+           cout << "StatusFlag : isprompttaudecayproduct = " <<   eventbase->GetTruth().at(index_mum).ReadStatusFlag(4) << endl;
+           cout << "StatusFlag : isdirecthadrondecayproduct = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(3) << endl;
+           cout << "StatusFlag : ishardprocess = " << eventbase->GetTruth().at(index_mum).ReadStatusFlag(2) << endl;
+           cout << "StatusFlag : fromhardprocess = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(1) << endl;
+           cout << "StatusFlag : fromhardprocess_beforeFSR = " <<  eventbase->GetTruth().at(index_mum).ReadStatusFlag(0) << endl;
+         }
+       }
+     }
+   }
+   */
    
    return;
 }// End of execute event loop
@@ -409,9 +512,423 @@ void SKTreeValidation::FillCutFlow(TString cut, float weight){
   }
 }
 
+void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
+  std::vector<snu::KElectron> electrons =  GetElectrons(elid);
+  std::vector<snu::KJet> jets =  GetJets(jetid);
+
+
+  std::vector<snu::KMuon> muons;
+
+  if(k_running_nonprompt){
+    muid=BaseSelection::MUON_HN_FAKELOOSE;
+    muons = GetMuons(muid,false);
+  }
+  else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
+  else   muons = GetMuons(muid);
+
+  if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
+
+  bool trig_pass= PassTrigger(trignames, prescale);
+
+  /// List of all corrections to be applied
+  float trigger_sf(1.);
+  float id_iso_sf(1.);
+  float trigger_ps(1.);
+
+  float ev_weight(1.);
+
+  if(!isData){
+    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    id_iso_sf =   MuonScaleFactor(muid, muons,0);
+    id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
+
+    /// Tiny effect on unprescaled triggers
+    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * pu_reweight_71*trigger_ps;
+  }
+  if(k_running_nonprompt){
+    ev_weight=1.; /// In case... should not be needed
+    if(muid == BaseSelection::MUON_POG_TIGHT){
+      ev_weight      *=  Get_DataDrivenWeight_M(muons,"POGTIGHT");
+    }
+    if(muid == BaseSelection::MUON_HN_TIGHT){
+      ev_weight      *=  Get_DataDrivenWeight_M(muons,"HNTIGHT");
+    }
+  }
+
+  if(muons.size() ==1){
+    if(muons.at(0).Pt() > 25. ){
+      FillCLHist(sighist_mm, "SingleMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, weight);
+      if(trig_pass){
+	FillHist("nvertex_mu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*trigger_sf*trigger_ps, 0., 40.,40);
+        FillCLHist(sighist_mm, "SingleMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
+	FillHist("nvertex_mu" + tag + "_purw", eventbase->GetEvent().nVertices()  ,  w*trigger_sf*trigger_ps*pu_reweight_69, 0., 40.,40) ;
+	FillHist("nvertex_mu" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*id_iso_sf*trigger_sf*trigger_ps*pu_reweight_71, 0., 40.,40);
+	
+	FillCLHist(sighist_mm, "SingleMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_ps*trigger_sf);
+
+	FillCLHist(sighist_mm, "SingleMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*id_iso_sf*trigger_ps*trigger_sf);
+
+
+	float METdphi = TVector2::Phi_mpi_pi(muons.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
+	float MT=(2.* muons.at(0).Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
+	
+	if(MT > 40. && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 30.) FillCLHist(sighist_mm, "SingleMuon_Wregion"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  
+	if(jets.size() >= 2)          FillCLHist(sighist_mm, "SingleMuon_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+      }
+    }
+  }
+}
+
+
+void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
+  
+  std::vector<snu::KElectron> electrons =  GetElectrons(elid);
+  std::vector<snu::KJet> jets =  GetJets(jetid);
+
+  std::vector<snu::KMuon> muons;
+
+  if(k_running_nonprompt){
+    muid=BaseSelection::MUON_HN_FAKELOOSE;
+    muons = GetMuons(muid,false);
+  }
+  else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
+  else   muons = GetMuons(muid);
+  
+  if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
+  
+  bool trig_pass= PassTrigger(trignames, prescale);
+  
+  /// List of all corrections to be applied
+  float trigger_sf(1.);
+  float id_iso_sf(1.);
+  float trigger_ps(1.);
+
+  float ev_weight(1.);
+  float ev_weight_prevpu(1.);
+
+  if(!isData){
+    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    id_iso_sf =   MuonScaleFactor(muid, muons,0);
+    id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
+    
+    /// Tiny effect on unprescaled triggers
+    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
+    ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight_71*trigger_ps;
+    ev_weight_prevpu = w * trigger_sf * id_iso_sf *  pu_reweight_69*trigger_ps;
+  }
+  if(k_running_nonprompt){
+    ev_weight=1.; /// In case... should not be needed
+    if(muid == BaseSelection::MUON_HN_TIGHT){
+      ev_weight      *=  Get_DataDrivenWeight_MM(muons,"HNTIGHT");
+      ev_weight_prevpu = Get_DataDrivenWeight_MM(muons,"HNTIGHT");
+    }
+    if(muid == BaseSelection::MUON_POG_TIGHT){
+      ev_weight      *=  Get_DataDrivenWeight_MM(muons,"POGTIGHT");
+      ev_weight_prevpu = Get_DataDrivenWeight_MM(muons,"POGTIGHT");
+    }
+  }
+
+  if(muons.size() ==2) {
+    if(!SameCharge(muons)){
+      if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
+	
+	/// Z peak plots
+	if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
+	  if(trig_pass){
+	    FillHist("zpeak_mumu" + tag + "_nopurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf, 0., 200.,400);
+	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 200.,400);
+	    FillHist("zpeak_mumu" + tag + "_altpurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 200.,400);
+	    FillHist("nvertex_mumu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40);
+	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 40.,40) ;
+	    FillHist("nvertex_mumu" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 40.,40);
+	    FillCLHist(sighist_mm, "ZMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  }
+	}
+
+
+	if(trig_pass){
+	  FillCLHist(sighist_mm, "DiMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, w);
+	  FillCLHist(sighist_mm, "DiMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
+	  FillCLHist(sighist_mm, "DiMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_sf*trigger_ps);
+	  FillCLHist(sighist_mm, "DiMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  FillCLHist(sighist_mm, "DiMuon_IDW_69pu"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight_prevpu);
+	  
+	  FillHistPerLumi("DiMuon_llmass"+tag,GetDiLepMass(muons), ev_weight, 0., 200.,20, 10);
+	  FillHistPerLumi("DiMuon_njet"+tag,jets.size(), ev_weight, 0., 10.,10, 10);
+	  FillHistPerLumi("DiMuon_met"+tag,eventbase->GetEvent().MET(snu::KEvent::pfmet), ev_weight, 0., 200.,20, 10);
+	  
+
+	  if(EtaRegion("BB",muons))  FillCLHist(sighist_mm, "DiMuon_BB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  if(EtaRegion("EB",muons))  FillCLHist(sighist_mm, "DiMuon_EB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  if(EtaRegion("EE",muons))  FillCLHist(sighist_mm, "DiMuon_EE"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  
+	  if(jets.size() >= 2)          FillCLHist(sighist_mm, "DiMuon_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	}
+      }
+    }
+    else{
+      if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
+
+        /// Z peak plots
+        if(GetDiLepMass(muons)  > 15. ){
+          if(trig_pass){
+	    if(jets.size() >= 2)          FillCLHist(sighist_mm, "DiMuon_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    
+	  }
+	}
+      }
+    }
+  }
+}
+
+void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
+
+  std::vector<snu::KElectron> electrons ;
+  std::vector<snu::KMuon> muons;
+  if(k_running_nonprompt){
+    muid=BaseSelection::MUON_HN_FAKELOOSE;
+    muons = GetMuons(muid,false);
+    elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
+    electrons             = GetElectrons(true, false,elid);
+  }
+  else if(tag.Contains("truthmatch")) {
+    muons = GetMuons(muid,false);
+    electrons = GetElectrons(true, false,elid);
+  }
+  else {
+    muons = GetMuons(muid);
+    electrons = GetElectrons(elid);
+  }
+
+  if(tag.Contains("roch")){
+    CorrectMuonMomentum(muons);
+  }
+
+  std::vector<snu::KJet> jets =  GetJets(jetid);
+
+
+
+  /// List of all corrections to be applied
+  float trigger_sf(1.);
+  float id_iso_sf(1.);
+  float trigger_ps(1.);
+  float ev_weight(1.);
+
+  if(!isData){
+    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    id_iso_sf =  MuonScaleFactor(muid, muons,0);
+    id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
+    id_iso_sf *= ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
+    id_iso_sf *= ElectronRecoScaleFactor(electrons);
+
+
+    /// Tiny effect on unprescaled triggers
+    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * trigger_ps* pu_reweight_71;
+  }
+
+  bool trig_pass= PassTrigger(trignames, prescale);
+ 
+	    
+  if(k_running_nonprompt){
+    ev_weight=1.; /// In case... should not be needed
+    if(muid == BaseSelection::MUON_HN_TIGHT){
+      ev_weight      *=  Get_DataDrivenWeight_EM(muons,electrons,"HNTIGHT");
+    }
+    if(muid == BaseSelection::MUON_POG_TIGHT){
+      ev_weight      *=  Get_DataDrivenWeight_EM(muons,electrons,"POGTIGHT");
+    }
+  }
+
+  if(muons.size() ==1 && electrons.size() ==1) {
+    if(muons.at(0).Charge() != electrons.at(0).Charge()){
+      if(muons.at(0).Pt() > 20. && electrons.at(0).Pt() > 20.){
+
+	if(trig_pass){
+	  FillCLHist(sighist_em, "EMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
+	  snu::KParticle Z = muons.at(0) + electrons.at(0);
+          if(Z.M() > 15.){
+	    
+	    FillCLHist(sighist_em, "EMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
+	    FillCLHist(sighist_em, "EMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_sf*trigger_ps);
+	    FillCLHist(sighist_em, "EMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  }
+	}
+      }
+    }
+    else{
+      if(muons.at(0).Pt() > 20. && electrons.at(0).Pt() > 20.){
+	if(trig_pass){
+          snu::KParticle Z = muons.at(0) + electrons.at(0);
+          if(Z.M() > 15.){
+	    if(jets.size() >= 2)          FillCLHist(sighist_em, "EMuon_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  }
+	}
+      }
+    }
+  }
+
+  }
+  
+
+
+void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
+  std::vector<snu::KElectron> electrons ;
+  if(k_running_nonprompt){
+    elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
+    electrons             = GetElectrons(true, false,elid);
+  }
+  else if(tag.Contains("truthmatch"))   electrons = GetElectrons(true, false,elid);
+  else   electrons =  GetElectrons(elid);
+
+
+  std::vector<snu::KElectron> electronVetoColl   = GetElectrons(BaseSelection::ELECTRON_HN_VETO);
+
+  std::vector<snu::KMuon> muons =  GetMuons(muid);
+  std::vector<snu::KJet> jets =  GetJets(jetid);
+
+  bool trig_pass= PassTrigger(trignames, prescale);
+  
+  /// List of all corrections to be applied
+  float trigger_sf(1.);
+  float id_iso_sf(1.);
+  float trigger_ps(1.);
+  float reco_weight=1.;
+  
+  float ev_weight(1.); 
+  if(!isData){
+    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
+    reco_weight = ElectronRecoScaleFactor(electrons);
+    /// Tiny effect on unprescaled triggers
+    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight_71*trigger_ps;
+  }
+  if(k_running_nonprompt){
+    ev_weight=1.; /// In case... should not be needed
+    ev_weight      *=  Get_DataDrivenWeight_E(electrons);
+  }
+  if(electrons.size() ==1){
+    if(electrons.at(0).Pt() > 30. ){
+      FillCLHist(sighist_ee, "SingleElectron"+tag, eventbase->GetEvent(), muons,electrons,jets, weight);
+      if(trig_pass){
+	FillCLHist(sighist_ee, "SingleElectron_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_ps*trigger_sf);
+	FillHist("nvertex_el" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*trigger_ps*trigger_sf, 0., 40.,40);
+	FillHist("nvertex_el" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*trigger_ps*trigger_sf*pu_reweight_69, 0., 40.,40) ;
+	FillHist("nvertex_el" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*trigger_ps*trigger_sf*pu_reweight_71, 0., 40.,40);
+	
+	FillCLHist(sighist_ee, "SingleElectron_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_ps*trigger_sf);
+	
+	FillCLHist(sighist_ee, "SingleElectron_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_ps*trigger_sf*id_iso_sf);
+	
+	float METdphi = TVector2::Phi_mpi_pi(electrons.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
+        float MT=(2.* electrons.at(0).Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
+	if(MT > 40. && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 30.) FillCLHist(sighist_ee, "SingleElectron_Wregion"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+        if(jets.size() >= 2)          FillCLHist(sighist_ee, "SingleElectron_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	
+      }
+    }
+  }
+}
+
+
+void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
+
+  std::vector<snu::KElectron> electrons ;
+  if(k_running_nonprompt){
+    elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
+    electrons             = GetElectrons(true, false,elid);
+  }
+  else if(tag.Contains("truthmatch"))   electrons = GetElectrons(true, false,elid);
+  else   electrons =  GetElectrons(elid);
+  
+  std::vector<snu::KElectron> electronVetoColl   = GetElectrons(BaseSelection::ELECTRON_HN_VETO);
+
+  std::vector<snu::KMuon> muons =  GetMuons(muid);
+  std::vector<snu::KJet> jets =  GetJets(jetid);
+
+  bool trig_pass= PassTrigger(trignames, prescale);
+
+  /// List of all corrections to be applied
+  float trigger_sf(1.);
+  float id_iso_sf(1.);
+  float trigger_ps(1.);
+  float reco_weight=1.;
+
+  float ev_weight(1.);
+  float ev_weight_prevpu(1.);
+  if(!isData){
+    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
+    reco_weight = ElectronRecoScaleFactor(electrons);
+    /// Tiny effect on unprescaled triggers
+    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight_71*trigger_ps;
+    ev_weight_prevpu = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight_69*trigger_ps;
+  }
+  if(k_running_nonprompt){
+    ev_weight=1.; /// In case... should not be needed
+    ev_weight      *=  Get_DataDrivenWeight_EE(electrons);
+    ev_weight_prevpu= Get_DataDrivenWeight_EE(electrons);
+
+  }
+
+  if(electrons.size() ==2) {
+    if(!SameCharge(electrons)){
+      if(electrons.at(0).Pt() > 20. && electrons.at(1).Pt() > 20.){
+
+        /// Z peak plots
+        if(GetDiLepMass(electrons) < 120. && GetDiLepMass(electrons)  > 60. ){
+          if(trig_pass){
+            FillHist("zpeak_ee" + tag + "_nopurw", GetDiLepMass(electrons), w*id_iso_sf*trigger_sf, 0., 200.,400);
+            FillHist("zpeak_ee" + tag + "_purw", GetDiLepMass(electrons),    w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 200.,400);
+            FillHist("zpeak_ee" + tag + "_altpurw", GetDiLepMass(electrons), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 200.,400);
+            FillHist("nvertex_ee" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40);
+            FillHist("nvertex_ee" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 40.,40) ;
+            FillHist("nvertex_ee" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 40.,40);
+            FillCLHist(sighist_ee, "ZElectron"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+          }
+        }
+
+        if(trig_pass){
+	  FillCLHist(sighist_ee, "DiElectron"+tag, eventbase->GetEvent(), muons,electrons,jets, w);
+	  FillCLHist(sighist_ee, "DiElectron_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
+
+	  FillCLHist(sighist_ee, "DiElectron_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_sf*trigger_ps);
+	  FillCLHist(sighist_ee, "DiElectron_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  FillCLHist(sighist_ee, "DiElectron_IDW_69pu"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_69*id_iso_sf*trigger_sf*trigger_ps);
+
+          if(EtaRegion("BB",electrons))  FillCLHist(sighist_ee, "DiElectron_BB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+          if(EtaRegion("EB",electrons))  FillCLHist(sighist_ee, "DiElectron_EB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+          if(EtaRegion("EE",electrons))  FillCLHist(sighist_ee, "DiElectron_EE"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+
+          if(jets.size() >= 2)          FillCLHist(sighist_ee, "DiElectron_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  
+	  FillHistPerLumi("DiElectron_llmass"+tag,GetDiLepMass(electrons), ev_weight, 0., 200.,20, 10);
+          FillHistPerLumi("DiElectron_njet"+tag,jets.size(), ev_weight, 0., 10.,10, 10);
+          FillHistPerLumi("DiElectron_met"+tag,eventbase->GetEvent().MET(snu::KEvent::pfmet), ev_weight, 0., 200.,20, 10);
+	}
+      }
+    }
+    else{
+      
+      if(electrons.at(0).Pt() > 20. && electrons.at(1).Pt() > 20.){
+	if(GetDiLepMass(electrons)  > 15. ){
+	  if(trig_pass){
+	    if(jets.size() >= 2)   FillCLHist(sighist_ee, "DiElectron_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    
+	  }
+	}
+      }
+    }
+  }
+}
+  
 void SKTreeValidation::BeginEvent( )throw( LQError ){
-
+  
   Message("In BeginEvent() " , DEBUG);
 
   return;

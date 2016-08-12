@@ -49,6 +49,8 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
 
+  bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
+
   bool EtaRegion(TString reg,  std::vector<snu::KMuon> muons);
   bool EtaRegion(TString reg,  std::vector<snu::KElectron> electrons);
 
@@ -71,7 +73,7 @@ class AnalyzerCore : public LQCycleBase {
   bool IsCF(snu::KElectron el);
 
 
-  double TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu, TString trigname);;
+  double TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu, TString trigname, int direction=0);;
 
   float GetDiLepMass(std::vector<snu::KMuon> muons);
   float GetDiLepMass(std::vector<snu::KElectron> electrons);
@@ -99,11 +101,14 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);
-  float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons);
-  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons);
+  float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString cutID="HN");
+  float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons);
+  float Get_DataDrivenWeight_M(vector<snu::KMuon> k_muons, TString cutID="HN");
+  float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString cut="HN");
  
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
+  void SmearJets(vector<snu::KJet>& k_jets);
 
 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
@@ -141,10 +146,14 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   map<int, float> mapLumi; 
-  map<int, float> mapLumiPerBlack;
-  map<int, TString> mapLumiNamePerBlack;
+  map<int, float> mapLumiPerBlock;
+  map<int, TString> mapLumiNamePerBlock;
+  map<TString,float> trigger_lumi_map_cat4;
   TH2F* FRHist;
   TH2F* MuonSF;
+  TH2F* SingleMuon_C;
+  TH2F* SingleMuon_D1;
+  TH2F* SingleMuon_D2;
   TH2F* ElectronSF_Tight;
   TH2F* ElectronSF_Medium;
   TH2F* ElectronSF_Loose;
@@ -184,6 +193,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, JetPlots*> mapCLhistJet;
   
   float ApplyPrescale(TString triggername, float tlumi, snu::KEvent::json flag);
+  float ApplyPrescale(vector<TString> triggername, float tlumi, snu::KEvent::json flag);  
 
   //
   // Function that closes rootfile

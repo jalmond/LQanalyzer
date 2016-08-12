@@ -39,9 +39,9 @@ class HNCommonLeptonFakes {
 
 
 
-  float get_dilepton_mm_eventweight(std::vector<TLorentzVector> muons, bool isT1, bool isT2);
+  float get_dilepton_mm_eventweight(std::vector<TLorentzVector> muons, bool isT1, bool isT2, TString ID);
 
-  float get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron, bool ismu1tight, bool isel1tight, int nbjet, int syst=0);
+  float get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electron, bool ismu1tight, bool isel1tight, TString cut, int syst=0);
   float get_dilepton_em_mceventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet, TString tag);
 
   
@@ -49,7 +49,7 @@ class HNCommonLeptonFakes {
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons,  bool isel1tight, bool isel2tight);
   
 
-  float getFakeRate_muon(int sys, float pt,  float eta);
+  float getFakeRate_muon(int sys, float pt,  float eta, TString ID);
   float getEfficiency_muon(int sys,float pt, float eta);
 
   float getFakeRate_electron(int sys, float pt,  float eta);
@@ -61,6 +61,7 @@ class HNCommonLeptonFakes {
   float getFakeRate_electronEta(int sys, float pt,  float eta, TString cut);
   float getEfficiency_electron(int sys,float pt, float eta, TString cut);
  
+
 
   void APPLY_scalefactor(bool applysf) ;
 

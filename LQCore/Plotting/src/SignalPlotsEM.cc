@@ -14,16 +14,22 @@ SignalPlotsEM::SignalPlotsEM(TString name): StdPlots(name){
   map_sig["h_jjmass"]                 =     new TH1F("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",100,0.,500.);
   map_sig["h_leadjetmass"]            =     new TH1F("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.);
   map_sig["h_oseemass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os leptons",100,0,500);
-  map_sig["h_e1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading lepton",100,0,1000);
-  map_sig["h_e2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second lepton",100,0,1000);
-  map_sig["h_eemass"]                 =     new TH1F("h_llumass_"           + name,"Invariant mass of the two leading leptons",200,0,1000);
-  map_sig["h_eejjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
+  map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
+  map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",500,0,500);
+  map_sig["h_lljmass"]                =     new TH1F("h_lljmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
+  map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+
   
   /// Lepton plots  
   map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
   map_sig["h_LeptonPt"]               =     new TH1F("h_LeptonPt_"          + name,"lepton pt",100,0,500);
+  map_sig["h_LeptonPhi"]              =     new TH1F("h_LeptonPhi_"          + name,"lepton pt",70,-3.5,3.5);
   map_sig["h_leadingLeptonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
+  map_sig["h_leadingLeptonIso"]    =     new TH1F("h_leadingLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
   map_sig["h_secondLeptonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
+  map_sig["h_secondLeptonIso"]    =     new TH1F("h_secondLeptonRelIso_"      + name,"second lepton relIso",100,0,1.);
+
   map_sig["h_leadingLeptonEta"]       =     new TH1F("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
   map_sig["h_secondLeptonEta"]        =     new TH1F("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
   map_sig["h_LeptonIso"]              =     new TH1F("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10.);
@@ -151,7 +157,7 @@ void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   int nlep = electrons.size() + muons.size();
   if(electrons.size()==0) nlep = 0;
   if(muons.size()==0) nlep=0;
-  if(nlep!=0)Fill("h_leaLeptondR",min_ee_Dr,weight);
+  if(nlep!=0)Fill("h_leadLeptondR",min_ee_Dr,weight);
   if(nlep!=0)Fill("h_leadLeptondPhi",min_ee_DPhi,weight);
 
 
@@ -215,6 +221,7 @@ void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
     Fill("h_LeptonPt", elit->Pt(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
+    Fill("h_LeptonPhi",elit->Phi(),weight);
     Fill("h_LeptonDXY", elit->dxy(),weight);
     Fill("h_LeptonDZ", elit->dz(),weight);
      
@@ -241,8 +248,8 @@ void SignalPlotsEM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++, iel++){
 
     Fill("h_LeptonPt", muit->Pt(),weight);
-    Fill("h_Leptons_phi",muit->Phi(),weight);
-    Fill("h_Leptons_eta",muit->Eta(),weight);
+    Fill("h_LeptonPhi",muit->Phi(),weight);
+    Fill("h_LeptonEta",muit->Eta(),weight);
     Fill("h_LeptonDXY", muit->dXY(),weight);
     Fill("h_LeptonDZ", muit->dZ(),weight);
 

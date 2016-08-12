@@ -38,7 +38,7 @@ def makeConfigFile(filepath, dataset, histfile, cutfile, catversion, samples, cu
     config+='prefix          SKTreeValidation_SK \n'
     config+='postfix         _cat_'+catversion+'.root \n'
     config+='# NAME_THE_OUTPUT_DIR \n'
-    config+='outputdir  HN13TeV_SKTreeValidation_'+cv+'_periodCtoD_' + cut +' \n'
+    config+='outputdir  HN13TeV_SKTreeValidation_'+cv+'_periodCtoD_' + dataset + "_"+ cut +' \n'
     config+='histdir    CAT2015_'+cv+' \n'
     config+='# CONFIGURE_HISTOGRAMS \n'
     config+='showdata   true \n'

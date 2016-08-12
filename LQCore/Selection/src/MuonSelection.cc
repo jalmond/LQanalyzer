@@ -184,20 +184,12 @@ bool MuonSelection::HNLooseMuonSelection(KMuon mu) {
   
   bool pass_selection(true);
   
-  LeptonRelIso = mu.RelIso03();
-  
-  if(!PassID(MUON_POG_LOOSE, mu))  pass_selection =false;
-  
-  if(!( LeptonRelIso < 0.4)) pass_selection = false;
-  if(!(mu.IsGlobal()==1      )) pass_selection = false;
-  if( mu.validHits() == 0     ) pass_selection = false;
-  if( mu.validPixHits() == 0)   pass_selection = false;
-  if( mu.validStations() <= 1 ) pass_selection = false;
-  if( mu.ActiveLayer() <= 5   ) pass_selection = false;
-  if( fabs(mu.dXY())    >= 0.2) pass_selection = false;
-  if( fabs(mu.dZ())    >= 0.1)  pass_selection = false;
-  if(!(mu.GlobalChi2() < 50.)) pass_selection = false;
-  
+  LeptonRelIso = (mu.RelIso04());
+  if(!PassID(MUON_POG_TIGHT, mu)) pass_selection =false;
+  if(!(LeptonRelIso < 0.6)) pass_selection = false;
+  if(( mu.Pt() < 10. ))  pass_selection = false;
+  if(( fabs(mu.Eta()) < 2.4 ))  pass_selection = false;
+
   return pass_selection;
 
 }
@@ -208,15 +200,13 @@ bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
   
   if(muon.Pt() == 0.) return false;
   
-  LeptonRelIso = (muon.RelIso03());
-  
+  LeptonRelIso = (muon.RelIso04());
   
   /// TIGHT MUON SELECTION
-  if(( muon.Pt() < 15. ))  pass_selection = false;
+  if(( muon.Pt() < 10. ))  pass_selection = false;
   if(!(fabs(muon.Eta()) < 2.4))   pass_selection =false;
-  if(!( LeptonRelIso < 0.05))   pass_selection = false;
-  if(!(fabs(muon.dZ())< 0.10  ))     pass_selection = false;
-  if(!(fabs(muon.dXY())< 0.005 ))  pass_selection = false;
+  if(!( LeptonRelIso < 0.1))   pass_selection = false;
+  if(!(fabs(muon.dXY())< 0.05 ))  pass_selection = false;
 
   /// TIGHT MUON from muon POG
   if(!PassID(MUON_POG_TIGHT, muon, m_debug)) pass_selection =false;
@@ -263,9 +253,6 @@ bool MuonSelection::HNTightMuonSelection(KMuon mu) {
   if(HNIsTight(mu))  return true;
   else return false;
 }
-
-
-
 
 
 

@@ -57,9 +57,29 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   string lqdir = getenv("LQANALYZER_DIR");
 
+
+  TFile* file_fake_muon  = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_1.root").c_str());
+  CheckFile(file_fake_muon);
+  TDirectory* tempDir1 = getTemporaryDirectory();
+  tempDir1->cd();
+  
+  _2DEfficiencyMap["fake_Eff_muon_pog"] = dynamic_cast<TH2F*>((file_fake_muon->Get("h_FOrate3"))->Clone());
+  file_fake_muon->Close();
+  delete file_fake_muon;
+  
+  TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_2.root").c_str());
+  CheckFile(file_fake_muon_hn);
+
+
+  _2DEfficiencyMap["fake_Eff_muon_hn_pog"] = dynamic_cast<TH2F*>((file_fake_muon_hn->Get("h_FOrate3"))->Clone());
+  file_fake_muon_hn->Close();
+  delete file_fake_muon_hn;
+
   TFile* file_fake  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate13TeV.root").c_str());
   CheckFile(file_fake);
 
+  // Now we can close the file:
+  origDir->cd();
   std::vector <TString> region;
   region.push_back("looseregion1");
   region.push_back("looseregion2");
@@ -274,7 +294,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_mceventweight(std::vector<TLorentzVe
 
 
 
-float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, int nbjet, int syst){
+float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool ismu1tight, bool isel1tight, TString cut, int syst){
 
   if(muons.size()!=1) {
     return (0.);
@@ -304,66 +324,8 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   r1 = 1.;
   r2 = 1.;
 
-  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
-  
-  if(nbjet ==0) {
-    if( _el1_eta < 1.5) {
-      if(_el1_pt > 45.) _el1_pt = 64.;
-    }
-    if(_mu1_pt < 50. &&  _mu1_pt > 40.) fr1 *= 1.3;
-  }
-  else {
-    //   if(_mu1_pt < 25.) fr1 *= 0.7; 
-  }
-  
-
-  
+  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta,cut);
   fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
-  
-  if(nbjet ==0) {
-    if( _el1_eta > 1.5) {
-      if(_el1_pt > 20. && _el1_pt < 40) fr2*= 1.5;
-      if(_el1_pt > 30. && _el1_pt < 40) fr2*= 2.;
-    }
-    else {
-      if(_el1_pt > 25. && _el1_pt < 30) fr2*= 1.3;
-    }
-  }
-
-  if(syst ==1){
-    fr1= getFakeRate_muon(1,_mu1_pt, _mu1_eta);
-    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_20_looseregion2");
-  }
-  if(syst ==-1){
-    fr1= getFakeRate_muon(-1,_mu1_pt, _mu1_eta);
-    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_60_looseregion2");
-
-  }
-
-  if(syst == 3){
-    fr1= getFakeRate_muon(3,_mu1_pt, _mu1_eta);
-    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"HNTight_iso05_40_pt_eta");
-  }
-  if(syst == 4){
-
-    fr1= getFakeRate_muon(4,_mu1_pt, _mu1_eta);
-    //if(getFakeRate_electronEta(0,_el1_pt, _el1_eta,"HNTight_iso07_40_pt_eta") > fr2)
-    //fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"HNTight_iso07_40_pt_eta");
-  }
-
-  if(nbjet != 0) {
-    fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"bjet_pt_eta_40_looseregion2");
-  }
-  
-  if(nbjet ==0) {
-    if(_el1_pt > 90.) {
-      fr1 *= 2.5;
-      fr2 *= 2.5;
-    }
-
-  }
-  else{
-  }
   
   float fr1_err = 0.;
   float fr2_err = 0.;
@@ -379,7 +341,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
 
 }
 
-float  HNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzVector> muons,bool ismu1tight, bool ismu2tight){
+float  HNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzVector> muons,bool ismu1tight, bool ismu2tight, TString id){
   
   if(muons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
@@ -398,8 +360,8 @@ float  HNCommonLeptonFakes::get_dilepton_mm_eventweight( std::vector<TLorentzVec
   r1 = getEfficiency_muon(0,_mu1_pt, _mu1_eta);
   r2 = getEfficiency_muon(0,_mu2_pt, _mu2_eta);
 
-  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta);
-  fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta);
+  fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, id);
+  fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, id);
   
   float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, ismu1tight, ismu2tight);
 
@@ -455,9 +417,9 @@ float HNCommonLeptonFakes::getEfficiency_electron(int sys, float pt, float eta, 
  
  
 float HNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta){
-   
-   float eff_real(1.);
-
+  
+  float eff_real(1.);
+  /// Will update with eta dependance
   if(sys ==1) eff_real= 1.;
   if(sys ==-1) eff_real=0.9;
   
@@ -561,194 +523,24 @@ float HNCommonLeptonFakes::getFakeRate_electron(int sys,float pt, float eta ){
   return eff_fake;
 }
 
-float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta ){
+float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta , TString ID){
   
   float eff_fake=0.;
   
   if(fabs(eta) > 2.5) return -9999999.;
-  if(pt < 15) return -999999.;
+  if(pt < 10) return -999999.;
   
-  if(fabs(eta) < 0.8){
-    if((pt < 20.))  eff_fake=0.052;
-    else if(pt < 25) eff_fake= 0.050;
-    else if(pt < 30) eff_fake= 0.044;
-    else if(pt < 35) eff_fake= 0.044;
-    else if(pt < 45) eff_fake= 0.067;
-    else eff_fake= 0.076;
+  map<TString,TH2F*>::const_iterator mapit;
+
+  TString label = "fake_Eff_muon_pog";
+  if(ID.Contains("HN"))label="fake_Eff_muon_hn";
+  mapit = _2DEfficiencyMap.find(label);
+
+  if(mapit!=_2DEfficiencyMap.end()){
+    int binx =  mapit->second->FindBin(fabs(eta), pt);
+    eff_fake =  mapit->second->GetBinContent(binx);
   }
-  else if(fabs(eta) < 1.479){
-    if((pt < 20.))  eff_fake=0.060;
-    else if(pt < 25) eff_fake= 0.050;
-    else if(pt < 30) eff_fake= 0.051;
-    else if(pt < 35) eff_fake= 0.066;
-    else if(pt < 45) eff_fake= 0.070;
-    else eff_fake= 0.058;
-  }
-  else if(fabs(eta) < 2.){
-    if((pt < 20.))  eff_fake=0.080;
-    else if(pt < 25) eff_fake= 0.079;
-    else if(pt < 30) eff_fake= 0.071;
-    else if(pt < 35) eff_fake= 0.068;
-    else if(pt < 45) eff_fake= 0.106;
-    else eff_fake= 0.027;
-  }
-  else if(fabs(eta) < 2.5){
-    if((pt < 20.))  eff_fake=0.089;
-    else if(pt < 25) eff_fake= 0.070;
-    else if(pt < 30) eff_fake= 0.091;
-    else if(pt < 35) eff_fake= 0.080;
-    else if(pt < 45) eff_fake= 0.077;
-    else eff_fake= 0.231;
-  }
-  
-  if(sys == 1) {
-
-    if(fabs(eta) < 0.8){
-      if((pt < 20.))   eff_fake = 0.0772;
-      else if(pt < 25) eff_fake= 0.0679;
-      else if(pt < 30) eff_fake= 0.0561;
-      else if(pt < 35) eff_fake= 0.0581;
-      else if(pt < 45) eff_fake= 0.0771;
-      else  eff_fake= 0.0976;
-    }
-    else if(fabs(eta) < 1.479){
-      if((pt < 20.))  eff_fake= 0.0947;
-      else if(pt < 25) eff_fake= 0.0773;
-      else if(pt < 30) eff_fake= 0.0642;
-      else if(pt < 35) eff_fake= 0.0750;
-      else if(pt < 45) eff_fake= 0.0827;
-      else eff_fake= 0.0849;
-    }
-    else if(fabs(eta) < 2.){
-      if((pt < 20.))  eff_fake= 0.108;
-      else if(pt < 25) eff_fake= 0.098;
-      else if(pt < 30) eff_fake= 0.0851;
-      else if(pt < 35) eff_fake= 0.0743;
-      else if(pt < 45) eff_fake= 0.123;
-      else eff_fake= 0.055;
-    }
-    else if(fabs(eta) < 2.5){
-      if((pt < 20.))  eff_fake= 0.123;
-      else if(pt < 25) eff_fake= 0.1162;
-      else if(pt < 30) eff_fake= 0.1200;
-      else if(pt < 35) eff_fake= 0.0918;
-      else if(pt < 45) eff_fake= 0.1127;
-      else eff_fake= 0.2590;
-    }
-  }
-
-
-  if(sys == -1) {
-
-    if(fabs(eta) < 0.8){
-      if((pt < 20.))   eff_fake = 0.0529;
-      else if(pt < 25) eff_fake= 0.0446;
-      else if(pt < 30) eff_fake= 0.0236;
-      else if(pt < 35) eff_fake= 0.0373;
-      else if(pt < 45) eff_fake= 0.0412;
-      else  eff_fake= 0.0520;
-    }
-    else if(fabs(eta) < 1.479){
-      if((pt < 20.))  eff_fake= 0.0612;
-      else if(pt < 25) eff_fake= 0.0544;
-      else if(pt < 30) eff_fake= 0.0428;
-      else if(pt < 35) eff_fake= 0.0369;
-      else if(pt < 45) eff_fake= 0.0548;
-      else eff_fake= 0.013;
-    }
-    else if(fabs(eta) < 2.){
-      if((pt < 20.))  eff_fake= 0.072;
-      else if(pt < 25) eff_fake= 0.062;
-      else if(pt < 30) eff_fake= 0.056;
-      else if(pt < 35) eff_fake= 0.055;
-      else if(pt < 45) eff_fake= 0.042;
-      else eff_fake= 0.022;
-    }
-    else if(fabs(eta) < 2.5){
-      if((pt < 20.))  eff_fake= 0.095;
-      else if(pt < 25) eff_fake= 0.051;
-      else if(pt < 30) eff_fake= 0.079;
-      else if(pt < 35) eff_fake= 0.074;
-      else if(pt < 45) eff_fake= 0.032;
-      else eff_fake= 0.059;
-    }
-  }
-    
-  if(sys == 3) {
-
-    if(fabs(eta) < 0.8){
-      if((pt < 20.))   eff_fake = 0.0796;
-      else if(pt < 25) eff_fake= 0.0769;
-      else if(pt < 30) eff_fake= 0.0723;
-      else if(pt < 35) eff_fake= 0.0708;
-      else if(pt < 45) eff_fake= 0.105;
-      else  eff_fake= 0.113;
-    }
-    else if(fabs(eta) < 1.479){
-      if((pt < 20.))  eff_fake= 0.089;
-      else if(pt < 25) eff_fake= 0.0743;
-      else if(pt < 30) eff_fake= 0.0757;
-      else if(pt < 35) eff_fake= 0.0994;
-      else if(pt < 45) eff_fake= 0.102;
-      else eff_fake= 0.0833;
-    }
-    else if(fabs(eta) < 2.){
-      if((pt < 20.))  eff_fake= 0.111;
-      else if(pt < 25) eff_fake= 0.108;
-      else if(pt < 30) eff_fake= 0.0989;
-      else if(pt < 35) eff_fake= 0.0983;
-      else if(pt < 45) eff_fake= 0.147;
-      else eff_fake= 0.0038;
-    }
-    else if(fabs(eta) < 2.5){
-      if((pt < 20.))  eff_fake= 0.120;
-      else if(pt < 25) eff_fake= 0.0944;
-      else if(pt < 30) eff_fake= 0.1217;
-      else if(pt < 35) eff_fake= 0.1139;
-      else if(pt < 45) eff_fake= 0.1057;
-      else eff_fake= 0.35;
-    }
-  }
-
-
-
-  if(sys == 4) {
-
-    if(fabs(eta) < 0.8){
-      if((pt < 20.))   eff_fake = 0.0376;
-      else if(pt < 25) eff_fake= 0.0359;
-      else if(pt < 30) eff_fake= 0.0313;
-      else if(pt < 35) eff_fake= 0.0317;
-      else if(pt < 45) eff_fake= 0.04863;
-      else  eff_fake= 0.0554;
-
-    }
-    else if(fabs(eta) < 1.479){
-      if((pt < 20.))  eff_fake= 0.0451;
-      else if(pt < 25) eff_fake= 0.0384;
-      else if(pt < 30) eff_fake= 0.0379;
-      else if(pt < 35) eff_fake= 0.0499;
-      else if(pt < 45) eff_fake= 0.0538;
-      else eff_fake= 0.0425;
-    }
-    else if(fabs(eta) < 2.){
-      if((pt < 20.))  eff_fake= 0.0627;
-      else if(pt < 25) eff_fake= 0.0628;
-      else if(pt < 30) eff_fake= 0.0554;
-      else if(pt < 35) eff_fake= 0.0534;
-      else if(pt < 45) eff_fake= 0.0856;
-      else eff_fake= 0.022;
-    }
-    else if(fabs(eta) < 2.5){
-      if((pt < 20.))  eff_fake= 0.0708;
-      else if(pt < 25) eff_fake= 0.0573;
-      else if(pt < 30) eff_fake= 0.0708;
-      else if(pt < 35) eff_fake= 0.0647;
-      else if(pt < 45) eff_fake= 0.0639;
-      else eff_fake= 0.0201;
-    }
-  }
-
+  else NoHist((label.Data()));
 
   return eff_fake;
 }
@@ -859,7 +651,6 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float fr1_err, float fr1, floa
   double termLL = -2.*alpha*(fr2*(fr1));
 
   if(eventtype == 0 || eventtype == 2){
-    // Term for FF events
     termTT += 0.;
     termTL += 0.;
     termLT += 0.;

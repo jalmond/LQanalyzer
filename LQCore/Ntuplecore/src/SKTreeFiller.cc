@@ -518,7 +518,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	}/// end of Z/W
 	else {
 	  if(gen_status->at(mindex) == 2){
-	    if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
+	    if(fabs(gen_pdgid->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
 
 	      if(gen_isprompt->at(matched_index)){
 		cout << "matched FAKE, but isPrompt flag??" << endl;
@@ -744,6 +744,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     KJet jet;
     if(jets_pt->at(ijet) != jets_pt->at(ijet)) continue;
     jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+
     jet.SetJetPassLooseID(jets_isLoose->at(ijet));
     jet.SetJetPassTightID(jets_isTight->at(ijet));
     jet.SetJetPassTightLepVetoID(jets_isTightLepVetoJetID->at(ijet));
@@ -983,7 +984,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         }/// end of Z/W
         else {
           if(gen_status->at(mindex) == 2){
-            if(gen_pdgid->at(mindex) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;}
+            if(fabs(gen_pdgid->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;}
             if(fabs(gen_pdgid->at(mindex)) == 15){
               isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
               // Check if el from tau  is CF

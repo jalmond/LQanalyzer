@@ -76,7 +76,7 @@ fi
 
 
 ### Get predefined lists
-source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
+source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
 
@@ -237,7 +237,8 @@ function mergeoutput
             source hadd.sh ${outputdir_data} ${job_cycle}_data_cat_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
 	    echo ""
             echo "merged output sent to -----> "${outputdir_data}${job_cycle}"_data_cat_"${submit_version_tag}".root "
-            mv  ${outputdir_data}/${job_cycle}_data_cat_${submit_version_tag}.root  ${outputdir_mc}
+	    
+            mv  ${outputdir_data}/${job_cycle}_data_cat_${submit_version_tag}.root  ${outputdir_mc}/${job_cycle}_data_$1_cat_${submit_version_tag}.root
 
             echo ""
         fi
@@ -284,7 +285,7 @@ function mergefake
 	    echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
 	    source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
 
-	    mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_${outname}.root
+	    mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
 
 }
 
