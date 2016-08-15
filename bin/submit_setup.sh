@@ -47,7 +47,7 @@ function rungroupedlist
 	  fi
 	  
       fi
-    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc.sh
+    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
     
     echo ""
     echo "Arrays made by user"

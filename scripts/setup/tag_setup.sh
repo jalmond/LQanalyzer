@@ -54,12 +54,12 @@ fi
 
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
-    export root_setup="/usr/local/bin/thisroot.sh"
+    source /share/apps/root_v5-34-32/root/bin/thisroot.sh 
 elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
     source /share/apps/root_v5_34_32/root/bin/thisroot.sh
 else
-    export root_setup=$HOME"/root/root/bin/thisroot.sh"
+    source /share/apps/root_v5-34-32/root/bin/thisroot.sh
 fi    
 
 

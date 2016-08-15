@@ -30,7 +30,13 @@ void MakeInputListForSubmitScript(){
   for(std::map<TString, TString>::iterator mit =lqmap_tmp.begin(); mit != lqmap_tmp.end();++mit){
     TString def_version = TString(getenv("CATVERSION"));
     
+    TString analysisdir = TString(getenv("HOSTNAME"));
+    bool cluster = false;
+    if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
+
     TString dir = "ls /data2/DATA/cattoflat/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
+    if(cluster) dir = "ls  /data4/DATA/FlatCatuples/MC/" + def_version + "/"+ mit->first + "/*.root > inputlist_lists.txt";
+    
     system(dir.Data());
     std::ifstream fin("inputlist_lists.txt");
     std::string word;
@@ -44,12 +50,13 @@ void MakeInputListForSubmitScript(){
     system("rm inputlist_lists.txt");
   }
 
-    
-    
-  ofstream lumi_file;
-  string lfile =  "list_all_mc_v7-6-6.sh";
   
-  lumi_file.open(lfile.c_str());
+  TString def_version = TString(getenv("CATVERSION"));
+  
+  ofstream lumi_file;
+  TString lfile =  "list_all_mc_" + def_version+".sh";
+  
+  lumi_file.open(lfile.Data());
   lumi_file.setf(ios::fixed,ios::floatfield); 
   lumi_file.precision(1);
   lumi_file << "#!/bin/sh" << endl;
@@ -90,10 +97,44 @@ void MakeInputListForSubmitScript(){
   lumi_file << "') " << endl;
   
   lumi_file << "" << endl;
-  lumi_file << " declare -a hn_alp_lll_ee=('" ;
+ lumi_file << " declare -a ch_wa=('" ;
+ for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+   if(!mit->second.Contains("TTToHcToWA")) continue;
+
+   cout << mit->first << " " << mit->second << endl;
+   if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+   else  lumi_file << mit->second ;
+
+ }
+
+ lumi_file << "') " << endl;
+ lumi_file << "" << endl;
+ 
+ lumi_file << "" << endl;
+ lumi_file << " declare -a ch_wz=('" ;
+ for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+   if(!mit->second.Contains("TTToHcToWZp")) continue;
+   
+   cout << mit->first << " " << mit->second << endl;
+   if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+   else  lumi_file << mit->second ;
+
+ }
+
+
+
+
+  lumi_file << "') " << endl;
+ lumi_file << "" << endl;
+
+ 
+ lumi_file << " declare -a hn_ll_ee=('" ;
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
-    if(!mit->second.Contains("schan")) continue;
-    if(mit->second.Contains("mm")) continue;
+    if(!mit->second.Contains("Schan")) continue;
+    if(mit->second.Contains("_Mu")) continue;
+    if(mit->second.Contains("_EpM")) continue;
+    if(mit->second.Contains("_EmM")) continue;
+
     cout << mit->first << " " << mit->second << endl;
     if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
     else  lumi_file << mit->second ;
@@ -102,19 +143,96 @@ void MakeInputListForSubmitScript(){
   lumi_file << "') " << endl;
 
   lumi_file << "" << endl;
-  lumi_file << " declare -a hn_alp_lll_mm=('" ;
+  lumi_file << " declare -a hn_ll_mm=('" ;
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
-    if(!mit->second.Contains("schan")) continue;
-    if(mit->second.Contains("ee")) continue;
+    if(!mit->second.Contains("Schan")) continue;
+    if(mit->second.Contains("_E")) continue;
+    if(mit->second.Contains("_EpM")) continue;
+    if(mit->second.Contains("_EmM")) continue;
+    
     cout << mit->first << " " << mit->second << endl;
     if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
     else  lumi_file << mit->second ;
 
   }
+
+  lumi_file << "') " << endl;
+
+  lumi_file << "" << endl;
+  lumi_file << " declare -a hn_ll_em=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("Schan")) continue;
+    if(mit->second.Contains("_EpE")) continue;
+    if(mit->second.Contains("_EmE")) continue;
+    if(mit->second.Contains("_Mu")) continue;
+
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+
+  
+
   lumi_file << "') " << endl;
 
 
-    
+
+
+
+  lumi_file << "" << endl;
+  lumi_file << " declare -a hn_mmm=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("__mumumu")) continue;
+    if(!mit->second.Contains("HN")) continue;
+
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+
+
+
+  lumi_file << "') " << endl;
+
+
+  lumi_file << "" << endl;
+  lumi_file << " declare -a hn_ll_tchann_ee=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("Tchan")) continue;
+    if(mit->second.Contains("HN_M")) continue;
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+
+
+
+
+  lumi_file << "') " << endl;
+
+
+
+  lumi_file << "" << endl;
+  lumi_file << " declare -a hn_ll_tchann_mm=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("Tchan")) continue;
+    if(mit->second.Contains("HN_E")) continue;
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+
+
+
+
+  lumi_file << "') " << endl;
+
+
+  
   lumi_file << "" << endl;
   lumi_file << "" << endl;
   lumi_file << "declare -a diboson_pythia=('WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8')" << endl;
@@ -188,8 +306,8 @@ void MakeInputListForSubmitScript(){
   string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_v7-6-6.sh";
 
   if(user.Contains("jalmond"))
-    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
-  gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
+    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").Data());
+  gSystem->Exec(("mv " + lfile +" " + lfile2).Data());
 
 
   return;

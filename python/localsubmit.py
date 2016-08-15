@@ -175,9 +175,7 @@ print ""
 ###########################################################################################
 ###########################################################################################
 ### DEFAULT  settings for runnning in batch mode. True for cmscluster.snu.ac.kr
-running_batch=False
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    running_batch=True
+running_batch=True
 
 if str(usebatch) == "NULL":
     if str(running_batch) == "True":
@@ -191,7 +189,7 @@ else:
         running_batch=False
     elif  str(usebatch) == "false":
         running_batch=False
-
+        
 
 
 if not cycle == "SKTreeMaker":
@@ -260,15 +258,16 @@ if platform.system() == "Linux":
             njob_user+=1
         
     if n_previous_jobs > 10:
-        number_of_cores = 2
-        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-
-            print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
-
+        if not running_batch:
+            number_of_cores = 2
+            if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
+                
         for line in open(filename, 'r'):
             print line
     if njob_user  > 5:
-        number_of_cores = 1
+        if not running_batch:
+            number_of_cores = 1
     os.system("rm " + filename)
 
     os.system("top  -n 1 -b | grep 'cmsRun' &> " + local_sub_dir + "/toplog2")

@@ -236,7 +236,22 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["MajoranaNeutrinoToMumEm_Schannel_V0p1_M-500_13TeV-amcatnlo"] =0.0000006553;
    dirmap["MajoranaNeutrinoToMumEm_Schannel_V0p1_M-1100_13TeV-amcatnlo"] =0.0000004028;
    dirmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-100_13TeV-madgraph"] =0.008149;
-   
+   dirmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-500_13TeV-madgraph"] =0.000006136;
+   dirmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-1100_13TeV-madgraph"] =0.0000008495;
+   dirmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-200_13TeV-madgraph"] =0.00004982;
+   dirmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-100_13TeV-madgraph"] =0.05385;
+   dirmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-200_13TeV-madgraph"] =0.00002925;
+   dirmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-500_13TeV-madgraph"] =0.000002895;
+   dirmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-1100_13TeV-madgraph"] =0.0000003091;
+   dirmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-100_13TeV-madgraph"] =0.008149;
+   dirmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-200_13TeV-madgraph"] =0.00004982;
+   dirmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-500_13TeV-madgraph"] =0.000006136;
+   dirmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-1100_13TeV-madgraph"] =0.0000008495;
+   dirmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-100_13TeV-madgraph"] =0.05385;
+   dirmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-200_13TeV-madgraph"] =0.00002925;
+   dirmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-500_13TeV-madgraph"] =0.000002895;
+   dirmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-1100_13TeV-madgraph"] =0.0000003091;
+
    
    return dirmap;
 }
@@ -694,6 +709,21 @@ map<TString, TString>  GetLQMap(){
   lqmap["MajoranaNeutrinoToMumEm_Schannel_V0p1_M-500_13TeV-amcatnlo"] ="HN_MumEm_Schannel_500";
   lqmap["MajoranaNeutrinoToMumEm_Schannel_V0p1_M-1100_13TeV-amcatnlo"] ="HN_MumEm_Schannel_1100";
   lqmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-100_13TeV-madgraph"] ="HN_EpEp_Tchannel_100";
+  lqmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-500_13TeV-madgraph"] ="HN_EpEp_Tchannel_500";
+  lqmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-1100_13TeV-madgraph"] ="HN_EpEp_Tchannel_1100";
+  lqmap["MajoranaNeutrinoToEpEp_Tchannel_V0p1_M-200_13TeV-madgraph"] ="HN_EpEp_Tchannel_200";
+  lqmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-100_13TeV-madgraph"] ="HN_EmEm_Tchannel_100";
+  lqmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-200_13TeV-madgraph"] ="HN_EmEm_Tchannel_200";
+  lqmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-500_13TeV-madgraph"] ="HN_EmEm_Tchannel_500";
+  lqmap["MajoranaNeutrinoToEmEm_Tchannel_V0p1_M-1100_13TeV-madgraph"] ="HN_EmEm_Tchannel_1100";
+  lqmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-100_13TeV-madgraph"] ="HN_MupMup_Tchannel_100";
+  lqmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-200_13TeV-madgraph"] ="HN_MupMup_Tchannel_200";
+  lqmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-500_13TeV-madgraph"] ="HN_MupMup_Tchannel_500";
+  lqmap["MajoranaNeutrinoToMupMup_Tchannel_V0p1_M-1100_13TeV-madgraph"] ="HN_MupMup_Tchannel_1100";
+  lqmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-100_13TeV-madgraph"] ="HN_MumMum_Tchannel_100";
+  lqmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-200_13TeV-madgraph"] ="HN_MumMum_Tchannel_200";
+  lqmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-500_13TeV-madgraph"] ="HN_MumMum_Tchannel_500";
+  lqmap["MajoranaNeutrinoToMumMum_Tchannel_V0p1_M-1100_13TeV-madgraph"] ="HN_MumMum_Tchannel_1100";
 
   return lqmap;
 }
