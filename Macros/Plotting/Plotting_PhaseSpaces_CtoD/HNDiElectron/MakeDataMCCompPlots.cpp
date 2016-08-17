@@ -5,6 +5,7 @@
 #include "TGraphAsymmErrors.h"
 #include "CMS_lumi.h"
 
+
 int main(int argc, char *argv[]) {
   
   /////////////////////////////////////////////////////
@@ -61,7 +62,7 @@ int MakeCutFlow_Plots(string configfile){
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
   
-  MakeCutFlow(histdir);  
+  //MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
 
   return 1;
@@ -70,6 +71,8 @@ int MakeCutFlow_Plots(string configfile){
 
 
 int MakePlots(string hist) {
+
+
   
   ////////////////////// ////////////////
   ////  MAIN PART OF CODE for user/
@@ -93,6 +96,7 @@ int MakePlots(string hist) {
     string cutname;
     cut_name_file >> cutname;
     if(cutname=="END") break;
+    //cutname = cutname + "POGTight";
     allcuts.push_back(cutname);
   }
   
@@ -124,17 +128,19 @@ int MakePlots(string hist) {
     
     for(unsigned int ncut=0; ncut<allcuts.size();  ncut++){
       string name = allcuts.at(ncut) + "/" + h_name+ "_" + allcuts.at(ncut);
+      if(TString(allcuts.at(ncut)).Contains("purw")) name =  h_name+ "_" + allcuts.at(ncut);
       bool isSS(false);
-      if(TString(allcuts.at(ncut)).Contains("SS"))isSS = true;
+      //if(TString(allcuts.at(ncut)).Contains("SS"))isSS = true;
+
+      cout << "###################### " << name << " ###########################"<< endl;
       
-      
+	
 	/// Make nominal histogram stack
 	map<TString, TH1*> legmap;
 	THStack* mstack;
 	if(!isSS) mstack= MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , true);
 	else  mstack=MakeStack(samples_ss, "Nominal",name, xmin, xmax, legmap, rebin , true);
-	
-	
+
 	THStack* mstack_nostat;
 	if(!isSS)mstack_nostat = MakeStack(samples , "Nominal",name, xmin, xmax, legmap, rebin , false);
 	else mstack_nostat = MakeStack(samples_ss , "Nominal",name, xmin, xmax, legmap, rebin , false);
@@ -152,8 +158,7 @@ int MakePlots(string hist) {
 	
 	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
 	
-
-
+	/// Make data histogram
 	ylog=false;
 	if(TString(name).Contains("llmass")){ylog=true;}
 	if(TString(name).Contains("LeptonPt")){ylog=true;}
@@ -176,6 +181,7 @@ int MakePlots(string hist) {
         vector<THStack*> vstack;		
 	vstack.push_back(mstack);   	
 	vstack.push_back(mstack_nostat);   	
+
 	
 	TCanvas* c = CompDataMC(hdata,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 
@@ -213,8 +219,11 @@ void MakeCutFlow(string type){
     string cutname;
     cut_name_file >> cutname;
     if(cutname=="END") break;
+    //cutname = cutname+"POGTight";
     cut_label.push_back(cutname);
-    cuts.push_back((cutname+ hist +"_" + cutname).c_str());    
+    cout << "$$$$$$$$$ " << hist << " $$$$$$$$$$$$$$$$$$$$" << endl;
+    if(TString(cutname).Contains("purw")) return;
+    else    cuts.push_back((cutname+ hist +"_" + cutname).c_str());    
   }
 
  
@@ -225,22 +234,16 @@ void MakeCutFlow(string type){
   int i_cut(0);
   for(vector<string>::iterator it = cuts.begin(); it!=cuts.end(); it++, i_cut++){
     bool isSS=false;
-    if(TString(*it).Contains("SS"))isSS = true;
-    cout << "!@!@! " << *it << endl; 
+    //if(TString(*it).Contains("SS"))isSS = true;
+
     vector<pair<vector<pair<TString,float> >, TString> > samples;   
     if(!isSS){
       for(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >::iterator it2 = cfsamples.begin(); it2!=cfsamples.end(); it2++){
-	TString n = it2->first.first.at(0).first;
-        TString n2 = it2->second;
-	cout <<" ! " <<  n << " " << n2 << endl;
 	samples.push_back(make_pair(it2->first.first,it2->second));      
       }
     }
     else{
       for(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >::iterator it2 = cfsamples_ss.begin(); it2!=cfsamples_ss.end(); it2++){
-	TString n = it2->first.first.at(0).first;
-	TString n2 = it2->second;
-	cout << n << " " << n2 << endl; 
         samples.push_back(make_pair(it2->first.first,it2->second));
       }
     }
@@ -264,7 +267,7 @@ void MakeCutFlow(string type){
       totalbkg+= Calculate(*it,"Normal",*it2);
       totalbkgup+= Calculate(*it,"Up",*it2);
       totalbkgdown+= Calculate(*it,"Down",*it2);
-
+      
       samples_numbers[it2->second] = Calculate(cutname,"Normal",*it2);
       samples_numbers_up[it2->second] = Calculate(cutname,"Down",*it2);
       samples_numbers_down[it2->second] = Calculate(cutname,"Up",*it2);
@@ -481,12 +484,13 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
     y2 = 0.9;
   }
   else{
-    x1 = 0.55;
+    x1 = 0.6;
     y1 = 0.7;
-    x2 = 0.85;
+    x2 = 0.95;
     y2 = 0.9;
   }
   
+  cout << "Test" << endl;
   TLegend* legendH = new TLegend(x1,y1,x2,y2);
   legendH->SetFillColor(kWhite);
   legendH->SetTextFont(42);
@@ -501,10 +505,11 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   
   vector<TString> legorder;
   legorder.push_back("DY#rightarrow ll; 10 < m(ll) < 50");
-  //legorder.push_back("Wjets");
+  legorder.push_back("Wjets");
   legorder.push_back("DY#rightarrow ll; m(ll) > 50");
-  legorder.push_back("t#bar{t}");
-  //legorder.push_back("WZ,ZZ,WW");
+  legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
+  legorder.push_back("WZ,ZZ,WW");
+  legorder.push_back("QCD");
   //legorder.push_back("Mismeas. Charge Background");
   legorder.push_back("Misid. Lepton Background");
   
@@ -588,8 +593,10 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("DY50plus_MCatNLO",0.2));    
   }
   if(sample.Contains("dy_")){
-    list.push_back(make_pair("DY10to50_MCatNLO",0.2));
-    list.push_back(make_pair("DY50plus_MCatNLO",0.2));
+    //list.push_back(make_pair("DY10to50_MCatNLO",0.2));
+    //list.push_back(make_pair("DY50plus_MCatNLO",0.2));
+    list.push_back(make_pair("DY10to50_MadGraph",0.2));
+    list.push_back(make_pair("DY50plus_MadGraph",0.2));
   }
 
 
@@ -604,43 +611,45 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("singletop_tW_Powheg",0.25));
     list.push_back(make_pair("TT_MG5",0.25));
     list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
+    list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
     list.push_back(make_pair("ttZToLLNuNu_MCatNLO",0.25));
-    list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
-    list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
-
   }
-
-  if(sample.Contains("ttbarV")){
-    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
-    list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
-    //    list.push_back(make_pair("ttZToLLNuNu_MCatNLO",0.25));
-    list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
-
+  if(sample.Contains("ttbar")){
+    list.push_back(make_pair("TT_MG5",0.25));
+    list.push_back(make_pair("ttWJetsToLNu",0.25));
+    list.push_back(make_pair("ttWJetsToQQ",0.25));
+    list.push_back(make_pair("ttZToLLNuNu",0.25));
+    list.push_back(make_pair("ttZToQQ",0.25));
   }
   
   if(sample.Contains("qcd"))
     {
-      //list.push_back(make_pair("QCD_mu20to30",0.30));
-      //list.push_back(make_pair("QCD_mu30to50",0.30));
-      //list.push_back(make_pair("QCD_mu50to80",0.30));
-      list.push_back(make_pair("QCD_em", 0.30));
-      list.push_back(make_pair("QCD_bcToE", 0.30));
+      list.push_back(make_pair("QCD_mu20to30_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu30to50_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu50to80_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu80to120_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu120to170_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu170to300_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu300to470_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu470to600_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu600to800_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu800to1000_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu1000toINF_pythia8",0.30));
     }
 
   
   //////// Diboson ////////
   if(sample.Contains("vv")){    
     list.push_back(make_pair("WZ_pythia8",0.15));
-    //list.push_back(make_pair("ZZ_pythia8",0.15));
-    
-list.push_back(make_pair("WpWp_madgraph",0.15));
+    list.push_back(make_pair("ZZ_pythia8",0.15));
+    list.push_back(make_pair("WW_pythia8",0.15));
     list.push_back(make_pair("WpWp_qcd_madgraph",0.15));
-  }
-
-  if(sample.Contains("ss")){
     list.push_back(make_pair("WpWp_madgraph",0.15));
-    list.push_back(make_pair("WpWp_qcd_madgraph",0.15));
-  }
+    //    list.push_back(make_pair("WZZ_MCatNLO",0.2)); 
+    //    list.push_back(make_pair("WWZ_MCatNLO",0.2)); 
+    //    list.push_back(make_pair("ZZZ_MCatNLO",0.2)); 
+}
   if(sample.Contains("ww")){
     list.push_back(make_pair("WW",0.15));
   }
@@ -678,8 +687,8 @@ list.push_back(make_pair("WpWp_madgraph",0.15));
   if(sample.Contains("vgamma")){
     list.push_back(make_pair("Wgamma",0.22));    
   }
-  if(sample.Contains("nonprompt")){
-    list.push_back(make_pair("nonprompt",0.4));
+  if(sample.Contains("nonprompt_DoubleEG")){
+    list.push_back(make_pair("nonprompt_DoubleEG",0.34));
   }
 
   if(sample.Contains("chargeflip")){
@@ -710,7 +719,7 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
   
   THStack* stack = new THStack(clonename.c_str(), clonename.c_str());
   
-  bool debug(true);
+  bool debug(false);
   if(type.Contains("Nominal")) debug=true;
 
   TString fileloc = "";
@@ -723,19 +732,20 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     if(type.Contains("Nominal")) fileloc = mcloc;
         
     if(!type.Contains("Nominal")) {
-      if(it->first.first.at(0).first.Contains("nonprompt"))fileloc=mcloc;
+      if(it->first.first.at(0).first.Contains("nonprompt_DoubleEG"))fileloc=mcloc;
     }    
     
-    cout << it->first.first.at(0).first << endl;
     CheckSamples( it->first.first.size() );
+    
     int isample=0;
     TFile* file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix).Data());
+    cout << fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix << endl;
     if(!file) cout << "Could not open " << fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix << endl;
+    cout << "file = " << file << endl;
     
     gROOT->cd();
     TDirectory* tempDir = 0;
     int counter = 0;
-
     while (not tempDir) {
       std::stringstream dirname;
       dirname << "WRHNCommonLeptonFakes_%i" << counter;
@@ -745,13 +755,13 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
       }      
       tempDir = gROOT->mkdir((dirname.str()).c_str());      
     }
+            
     tempDir->cd();
-
-    cout << clonename.c_str() << endl;
-   TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
-   cout << h_tmp << endl;
-
-    while(!h_tmp) {
+    
+    cout <<  clonename.c_str() << endl;
+    TH1* h_tmp = dynamic_cast<TH1*> ((file->Get(name.c_str()))->Clone(clonename.c_str()));
+  cout << h_tmp << endl;
+  while(!h_tmp) {
       isample++;
       gROOT->cd();
       file =  TFile::Open((fileloc+ fileprefix + it->first.first.at(isample).first + filepostfix).Data());
@@ -921,6 +931,7 @@ void SetTitles(TH1* hist, string name){
   std::ostringstream str_width;
   str_width<< int(width);
   
+  cout << "Hist " << name << " Add GeV to y title = " << HistInGev(name) << endl;
   if(HistInGev(name)) ytitle = "Entries / " +str_width.str() + " GeV";
   
   if(name.find("h_MET")!=string::npos){
@@ -965,14 +976,6 @@ void SetTitles(TH1* hist, string name){
   if(name.find("llmass")!=string::npos)xtitle="ll invariant mass (GeV/c^{2})";
   if(name.find("l1jjmass")!=string::npos)xtitle="l_{1}jj invariant mass (GeV/c^{2})";
   if(name.find("l2jjmass")!=string::npos)xtitle="l_{2}jj invariant mass (GeV/c^{2})";
-  if(name.find("l2jj_centralmass")!=string::npos)xtitle="l_{2}jj (central jets) invariant mass (GeV)";
-  if(name.find("lljj_centralmass")!=string::npos)xtitle="lljj (central jets) invariant mass (GeV)";
-  if(name.find("l1jj_centralmass")!=string::npos)xtitle="l1jj (central jets) invariant mass (GeV)";
-  if(name.find("forward_jet_pt")!=string::npos)xtitle="Forward Jet p_{T} (GeV)";
-  if(name.find("forward_jet_eta")!=string::npos)xtitle="Forward Jet #eta";
-  if(name.find("central_jet_pt")!=string::npos)xtitle="Central Jet p_{T} (GeV)";
-  if(name.find("central_jet_eta")!=string::npos)xtitle="Central Jet #eta";
-
 
   if(name.find("charge")!=string::npos)xtitle="sum of lepton charge";
 
@@ -1045,6 +1048,7 @@ void SetTitles(TH1* hist, string name){
 bool HistInGev(string name){
   
   bool ingev=false;
+  cout << name << " : ingev =" << ingev << endl;
   if(name.find("ElectronPt")!=string::npos){ ingev=true;cout << "Found ElectronPt" << endl;}
   if(name.find("_pt_")!=string::npos){ ingev=true;cout << "Found _pt_" << endl;}
   if(name.find("pt")!=string::npos){
@@ -1054,6 +1058,8 @@ bool HistInGev(string name){
   if(name.find("mass_")!=string::npos){ ingev=true;cout << "Found mass" << endl;}
   if(name.find("MET")!=string::npos){ ingev=true;cout << "Found MET" << endl;}
   
+  cout << name << " : ingev =" << ingev<< endl;
+
   return ingev;
 
 }
@@ -1099,7 +1105,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax){
     else if(h_data->GetMaximum() > 10000) scale_for_log = 10;
     else if(h_data->GetMaximum() > 1000) scale_for_log = 10;
     yscale*=scale_for_log;
-    //    if(scale_up) yscale*= 10000;
+    if(scale_up) yscale*= 10000;
   }
   else{
     yscale=1.2;
@@ -1109,8 +1115,6 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax){
     yscale*=1.5;
     if(ylog) yscale*=100.;
   }
-
-  yscale*=1.5;
 
   //  if(name.find("Eta")!=string::npos) yscale/=2.;
   float max_data = h_data->GetMaximum()*yscale;
@@ -1335,7 +1339,7 @@ float GetSyst(TString cut, TString syst, pair<vector<pair<TString,float> >,TStri
 
 float Calculate(TString cut, TString variance, pair<vector<pair<TString,float> >,TString > samples ){
   
-  if(samples.second.Contains("NonPrompt")){
+  if(samples.second.Contains("Nonprompt_DoubleEG")){
     if(variance.Contains("Normal"))  return GetTotal(cut,samples.first) ;  
     if(variance.Contains("StatErr")) return GetStatError(cut,samples.first) ;  
   }
@@ -1464,7 +1468,6 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   vector<pair<TString,float> > zz = InitSample("zz");
   vector<pair<TString,float> > wz = InitSample("wz");
   vector<pair<TString,float> > vv = InitSample("vv");
-  vector<pair<TString,float> > ss = InitSample("ss");
   
   // Zjet
   vector<pair<TString,float> > zlow = InitSample("dylow_");
@@ -1482,7 +1485,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 
   /// NP is nonprompt
   vector<pair<TString,float> > np;
-  np.push_back(make_pair("nonprompt",0.4));
+  np.push_back(make_pair("nonprompt_DoubleEG",0.34));
   
   vector<pair<TString,float> > cf;
   cf.push_back(make_pair("chargeflip",0.12));
@@ -1491,22 +1494,20 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples.at(i) =="wz")samples.push_back(make_pair(make_pair(wz,wzcol),"WZ"));
     if(listofsamples.at(i) =="zz")samples.push_back(make_pair(make_pair(zz,zzcol),"ZZ"));
     if(listofsamples.at(i) =="vv")samples.push_back(make_pair(make_pair(vv,zzcol),"WZ,ZZ,WW"));
-    if(listofsamples.at(i) =="ss")samples.push_back(make_pair(make_pair(ss,wcol),"SS"));
     if(listofsamples.at(i) =="dy")samples.push_back(make_pair(make_pair(z,tcol),"DY#rightarrow ll"));
     if(listofsamples.at(i) =="dylow")samples.push_back(make_pair(make_pair(zlow,tcol),"DY#rightarrow ll; 10 < m(ll) < 50"));
     if(listofsamples.at(i) =="dyhigh")samples.push_back(make_pair(make_pair(zhigh,zcol),"DY#rightarrow ll; m(ll) > 50"));
     if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,ttcol),"t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V"));
     if(listofsamples.at(i) =="ttbar")samples.push_back(make_pair(make_pair(ttbar,ttcol),"t#bar{t}"));
-    if(listofsamples.at(i) =="ttbarV")samples.push_back(make_pair(make_pair(ttbarV,ttcol),"t#bar{t}V"));
+    if(listofsamples.at(i) =="ttbarV")samples.push_back(make_pair(make_pair(ttbarV,ttvcol),"t#bar{t}V"));
     if(listofsamples.at(i) =="wjets")samples.push_back(make_pair(make_pair(w,wcol),"Wjets"));
     
     if(listofsamples.at(i) =="prompt")samples.push_back(make_pair(make_pair(prompt,vvcol),"Prompt Background"));
     if(listofsamples.at(i) =="qcd")samples.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
-    if(listofsamples.at(i) =="nonprompt")samples.push_back(make_pair(make_pair(np,fcol),"Misid. Lepton Background"));   
+    if(listofsamples.at(i) =="nonprompt_DoubleEG")samples.push_back(make_pair(make_pair(np,fcol),"Misid. Lepton Background"));   
     if(listofsamples.at(i) =="chargeflip")samples.push_back(make_pair(make_pair(cf,zcol),"Mismeas. Charge Background"));   
   }
   for( unsigned int i = 0; i < listofsamples_ss.size(); i++){
-    cout << "!!!!!!!!!!!! " << listofsamples_ss.at(i) << endl;
     if(listofsamples_ss.at(i) =="ww")samples_ss.push_back(make_pair(make_pair(ww,wwcol),"WW"));
     if(listofsamples_ss.at(i) =="wz")samples_ss.push_back(make_pair(make_pair(wz,wzcol),"WZ"));
     if(listofsamples_ss.at(i) =="zz")samples_ss.push_back(make_pair(make_pair(zz,zzcol),"ZZ"));
@@ -1516,13 +1517,12 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
     if(listofsamples_ss.at(i) =="dyhigh")samples_ss.push_back(make_pair(make_pair(zhigh,zcol),"DY#rightarrow ll; m(ll) > 50"));
     if(listofsamples_ss.at(i) =="top")samples_ss.push_back(make_pair(make_pair(top,ttcol),"t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V"));
     if(listofsamples_ss.at(i) =="ttbar")samples_ss.push_back(make_pair(make_pair(ttbar,ttcol),"t#bar{t}"));
-    if(listofsamples_ss.at(i) =="ttbarV")samples_ss.push_back(make_pair(make_pair(ttbarV,ttcol),"t#bar{t}V"));
-    if(listofsamples_ss.at(i) =="ss")samples_ss.push_back(make_pair(make_pair(ss,wcol),"SS"));
+    if(listofsamples_ss.at(i) =="ttbarV")samples_ss.push_back(make_pair(make_pair(ttbarV,ttvcol),"t#bar{t}V"));
     if(listofsamples_ss.at(i) =="wjets")samples_ss.push_back(make_pair(make_pair(w,wcol),"Wjets"));
     
     if(listofsamples_ss.at(i) =="prompt")samples_ss.push_back(make_pair(make_pair(prompt,vvcol),"Prompt Background"));
     if(listofsamples_ss.at(i) =="qcd")samples_ss.push_back(make_pair(make_pair(QCD,fcol),"QCD"));
-    if(listofsamples_ss.at(i) =="nonprompt")samples_ss.push_back(make_pair(make_pair(np,fcol),"Misid. Lepton Background"));
+    if(listofsamples_ss.at(i) =="nonprompt_DoubleEG")samples_ss.push_back(make_pair(make_pair(np,fcol),"Misid. Lepton Background"));
     if(listofsamples_ss.at(i) =="chargeflip")samples_ss.push_back(make_pair(make_pair(cf,zcol),"Mismeas. Charge Background"));
   }
 
@@ -1582,12 +1582,12 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   if(!TString(hname).Contains("Tri")) {
     //if(!TString(hname).Contains("SSE")) {
       
-    //if(TString(hname).Contains("llmass")){canvas_log->SetLogy();canvas->SetLogy();}
-    //      if(TString(hname).Contains("LeptonPt")){canvas_log->SetLogy();canvas->SetLogy();}
+      if(TString(hname).Contains("llmass")){canvas_log->SetLogy();canvas->SetLogy();}
+      if(TString(hname).Contains("LeptonPt")){canvas_log->SetLogy();canvas->SetLogy();}
       //}
   }
   
-
+  
   canvas->cd();
   
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
@@ -1789,7 +1789,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   
   
   hdev->GetYaxis()->SetTitle( "#frac{Data}{MC}" );
-  hdev->GetYaxis()->SetRangeUser(0.,+2.);
+  hdev->GetYaxis()->SetRangeUser(0.6,+1.4);
   hdev->GetYaxis()->SetNdivisions(9);
   hdev->SetMarkerStyle(20);
   //hdev->SetMarkerSize(2.3);

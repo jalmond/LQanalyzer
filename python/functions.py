@@ -83,7 +83,7 @@ def CopySKTrees(channel,sample,mc,docopy):
             f.closed()  
 
 
-def make_batch_script(workdir, jname, lqdir, macroname):
+def make_batch_script(workdir, jname, lqdir, macroname, cluster):
 
     config='#!/bin/sh'
     config+='\n'
@@ -94,7 +94,11 @@ def make_batch_script(workdir, jname, lqdir, macroname):
     config+='#$ -e ' + workdir + ' \n'
 
     config+='echo "Job started at " `date` \n'
-    config+='cd /share/apps/root_v5_34_32/root/ \n'
+    if cluster:
+        config+='cd /share/apps/root_v5_34_32/root/ \n'
+    else:
+        config+='cd /share/apps/root_v5-34-32/root/ \n'
+
     config+='. bin/thisroot.sh \n'
     config+='cd ' + lqdir + '\n'
 

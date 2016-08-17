@@ -150,142 +150,53 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   v_wps.push_back("Tight");
   MapBTagSF = SetupBTagger(vtaggers,v_wps);
 
-  mapLumi[254231] = 0.033;
-  mapLumi[254232] = 0.109;
-  mapLumi[254790] = 11.333;
-  mapLumi[254852] = 0.899;
-  mapLumi[254879] = 1.798;
-  mapLumi[254906] = 1.565;
-  mapLumi[254907] = 1.071;
-  mapLumi[254914] = 0.923;
-  mapLumi[256630] = 1.019;
-  mapLumi[256673] = 0.006;
-  mapLumi[256674] = 0.097;
-  mapLumi[256675] = 7.631;
-  mapLumi[256676] = 9.587;
-  mapLumi[256677] = 16.208;
-  mapLumi[256801] = 9.237;
-  mapLumi[256843] = 39.193;
-  mapLumi[256866] = 0.060;
-  mapLumi[256867] = 4.778;
-  mapLumi[256868] = 23.626;
-  mapLumi[256869] = 1.613;
-  mapLumi[256926] = 1.586;
-  mapLumi[256941] = 9.153;
-  mapLumi[257461] = 3.273;
-  mapLumi[257531] = 8.953;
-  mapLumi[257599] = 5.278;
-  mapLumi[257613] = 80.351;
-  mapLumi[257614] = 0.899;
-  mapLumi[257645] = 66.315;
-  mapLumi[257682] = 14.060;
-  mapLumi[257722] = 0.874;
-  mapLumi[257723] = 6.416;
-  mapLumi[257735] = 0.576;
-  mapLumi[257751] = 28.892;
-  mapLumi[257804] = 0.226;
-  mapLumi[257805] = 18.192;
-  mapLumi[257816] = 25.831;
-  mapLumi[257819] = 16.070;
-  mapLumi[257968] = 17.948;
-  mapLumi[257969] = 41.763;
-  mapLumi[258129] = 6.161;
-  mapLumi[258136] = 3.834;
-  mapLumi[258157] = 4.130;
-  mapLumi[258158] = 112.208;
-  mapLumi[258159] = 27.042;
-  mapLumi[258177] = 112.358;
-  mapLumi[258211] = 6.900;
-  mapLumi[258213] = 12.448;
-  mapLumi[258214] = 16.374;
-  mapLumi[258215] = 0.444;
-  mapLumi[258287] = 14.271;
-  mapLumi[258403] = 16.555;
-  mapLumi[258425] = 10.949;
-  mapLumi[258426] = 0.809;
-  mapLumi[258427] = 8.498;
-  mapLumi[258428] = 12.441;
-  mapLumi[258432] = 0.299;
-  mapLumi[258434] = 32.645;
-  mapLumi[258440] = 47.655;
-  mapLumi[258444] = 2.209;
-  mapLumi[258445] = 17.379;
-  mapLumi[258446] = 7.907;
-  mapLumi[258448] = 37.636;
-  mapLumi[258655] = 0.412;
-  mapLumi[258656] = 27.562;
-  mapLumi[258694] = 16.613;
-  mapLumi[258702] = 31.593;
-  mapLumi[258703] = 33.749;
-  mapLumi[258705] = 8.216;
-  mapLumi[258706] = 56.093;
-  mapLumi[258712] = 36.912;
-  mapLumi[258713] = 10.869;
-  mapLumi[258714] = 4.463;
-  mapLumi[258741] = 4.899;
-  mapLumi[258742] = 65.373;
-  mapLumi[258745] = 22.816;
-  mapLumi[258749] = 48.012;
-  mapLumi[258750] = 15.311;
-  mapLumi[259626] = 11.712;
-  mapLumi[259637] = 15.844;
-  mapLumi[259681] = 2.006;
-  mapLumi[259683] = 7.819;
-  mapLumi[259685] = 55.840;
-  mapLumi[259686] = 27.371;
-  mapLumi[259721] = 12.400;
-  mapLumi[259809] = 14.370;
-  mapLumi[259810] = 9.903;
-  mapLumi[259811] = 7.470;
-  mapLumi[259813] = 0.746;
-  mapLumi[259817] = 0.363;
-  mapLumi[259818] = 13.212;
-  mapLumi[259820] = 12.560;
-  mapLumi[259821] = 16.180;
-  mapLumi[259822] = 32.722;
-  mapLumi[259861] = 13.729;
-  mapLumi[259862] = 45.860;
-  mapLumi[259884] = 6.731;
-  mapLumi[259890] = 9.701;
-  mapLumi[259891] = 9.603;
-  mapLumi[260373] = 10.920;
-  mapLumi[260424] = 66.688;
-  mapLumi[260425] = 23.600;
-  mapLumi[260426] = 43.931;
-  mapLumi[260427] = 23.075;
-  mapLumi[260431] = 35.127;
-  mapLumi[260532] = 69.169;
-  mapLumi[260533] = 1.195;
-  mapLumi[260534] = 32.044;
-  mapLumi[260536] = 14.466;
-  mapLumi[260538] = 22.369;
-  mapLumi[260541] = 1.830;
-  mapLumi[260575] = 1.722;
-  mapLumi[260576] = 51.429;
-  mapLumi[260577] = 8.252;
-  mapLumi[260593] = 35.893;
-  mapLumi[260627] = 178.937;
-    
-  mapLumiPerBlock[257613] = 239.38;
-  mapLumiPerBlock[257969] = 238.062;
-  mapLumiPerBlock[258177] = 265.733;
-  mapLumiPerBlock[258448] = 245.419;
-  mapLumiPerBlock[258742] = 296.754;
-  mapLumiPerBlock[259809] = 233.501;
-  mapLumiPerBlock[260424] = 256.388;
-  mapLumiPerBlock[260536] = 242.607;
-  mapLumiPerBlock[260627] = 300.432;
-
   
-  mapLumiNamePerBlock[257613] = "Lumi1";
-  mapLumiNamePerBlock[257969] = "Lumi2";
-  mapLumiNamePerBlock[258177] = "Lumi3";
-  mapLumiNamePerBlock[258448] = "Lumi4";
-  mapLumiNamePerBlock[258742] = "Lumi5";
-  mapLumiNamePerBlock[259809] = "Lumi6";
-  mapLumiNamePerBlock[260424] = "Lumi7";
-  mapLumiNamePerBlock[260536] = "Lumi8";
-  mapLumiNamePerBlock[260627] = "Lumi9";
+  ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion4.txt").c_str());
+  if(!runlumi) {
+    cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion4.txt'), exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  string lline;
+  int x=1;
+  while(getline(runlumi,lline) ){
+    std::istringstream is( lline );
+
+    string trigname;
+    float trig_lumi;
+    int run;
+    is >> trigname;
+    if(trigname=="###" ) continue;
+    if(trigname=="END") break;
+    if(trigname=="run" ){
+      is >> run;
+      is >> trig_lumi;
+      cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+      
+      mapLumi[run] = trig_lumi;
+      continue;
+    }
+    if(trigname=="block" ){
+      is >> run;
+      is >> trig_lumi;
+      cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+      
+      mapLumiPerBlock[run] = trig_lumi;
+      ostringstream ss;
+      ss << x;
+      mapLumiNamePerBlock[run]="Lumi"+ss.str();
+      x++;
+      continue;
+    }
+    if(trigname=="bad" ){
+      is >> run;
+      is >> trig_lumi;
+      cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+      mapBadLumi[run] = trig_lumi;
+      continue;
+    }
+  }
+  runlumi.close();
+
 
   cout << "reading luminosity file" << endl;
 
@@ -2076,8 +1987,6 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString 
 
 float AnalyzerCore::Get_DataDrivenWeight_M(vector<snu::KMuon> k_muons, TString cutID){
   if(k_muons.size()!=1) return 0.;
-
-  float m_weight = 0.;
 
   bool is_mu1_tight    = IsTight(k_muons.at(0));
   vector<TLorentzVector> muons=MakeTLorentz(k_muons);

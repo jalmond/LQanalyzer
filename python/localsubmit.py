@@ -629,15 +629,15 @@ if running_batch:
                     number_of_cores=100
             else:
                 if n_user_qsub_jobs > 300:
-                    number_of_cores=5
-                elif n_user_qsub_jobs > 200:
                     number_of_cores=15
-                elif n_user_qsub_jobs > 100:
-                    number_of_cores=20
+                elif n_user_qsub_jobs > 200:
+                    number_of_cores=100
+                elif n_user_qsub_jobs > 150:
+                    number_of_cores=100
                 elif n_user_qsub_jobs > 60:
-                    number_of_cores=30
-                elif n_user_qsub_jobs > 40:
                     number_of_cores=50
+                elif n_user_qsub_jobs > 40:
+                    number_of_cores=20
                 else:
                     if n_qsub_jobs < 30:
                         number_of_cores=100
@@ -647,7 +647,9 @@ if running_batch:
             if number_of_cores > 100:
                 number_of_cores = 100
 
+cluster = False
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    cluster=True
     if not running_batch:
         number_of_cores = 1
         print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME"))
@@ -894,7 +896,7 @@ for i in range(1,number_of_cores+1):
 
     batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + ".sh"
     batchfile=open(batchscript,'w')
-    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C"))
+    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C"),cluster)
     batchfile.close()
 
     

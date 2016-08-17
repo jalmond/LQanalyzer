@@ -62,7 +62,7 @@ int MakeCutFlow_Plots(string configfile){
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
   
-  MakeCutFlow(histdir);  
+  //MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
 
   return 1;

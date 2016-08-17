@@ -146,6 +146,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   map<int, float> mapLumi; 
+  map<int, float> mapBadLumi; 
   map<int, float> mapLumiPerBlock;
   map<int, TString> mapLumiNamePerBlock;
   map<TString,float> trigger_lumi_map_cat4;

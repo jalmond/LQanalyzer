@@ -101,48 +101,24 @@ export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 export isSLC5="False"
 export BTAGDIR=${LQANALYZER_DIR}/BTag/BTagC11/
 export ROCHDIR=${LQANALYZER_DIR}/rochcor2015/rochcor2015C11/
-if [[ "$HOSTNAME" == "cms1" ]];
+if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
-    export OBJ=obj/slc6_cms1
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms1
+    export OBJ=obj/cms21
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21
     
 elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
     then
     export OBJ=obj/cluster/
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cluster/
 
-elif [[ "$HOSTNAME" == "cms5" ]];
+elif [[ "$HOSTNAME" == "cms1" ]];
 then
-    export OBJ=obj/slc6_cms5
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms5/
-    
-elif [[  "$HOSTNAME" == "cms6" ]];
-then
-    export OBJ=obj/slc6_cms6
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms6/
-
-elif [[ "$HOSTNAME" == "cms3" ]];
-then
-    export OBJ=obj/slc5_cms3
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms3/
-    export isSLC5="True"
-    export BTAGDIR=${LQANALYZER_DIR}/BTag/BTagC98/
-    export ROCHDIR=${LQANALYZER_DIR}/rochcor2015/rochcor2015C98/
-
-elif [[ "$HOSTNAME" == "cms4" ]];
-then
-    export OBJ=obj/slc5_cms4
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms4/
-    export isSLC5="True"
-    export BTAGDIR=${LQANALYZER_DIR}/BTag/BTagC98/
-    export ROCHDIR=${LQANALYZER_DIR}/rochcor2015/rochcor2015C98/
+    export OBJ=obj/cms1
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms1/
 
 else
-    export OBJ=obj/slc5_cms2
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc5_cms2/
-    export isSLC5="True"
-    export BTAGDIR=${LQANALYZER_DIR}/BTag/BTagC98/
-    export ROCHDIR=${LQANALYZER_DIR}/rochcor2015/rochcor2015C98/
+    export OBJ=obj/cms2
+    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms2/
 
 fi
 

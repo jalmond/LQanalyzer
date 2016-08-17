@@ -50,7 +50,8 @@ if not os.path.exists(tag_dir):
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
     os.system("cp " + localfiledir + "/*.csv " + snufiledir )
-
+    os.system("cp " + localfiledir + "/*cat*.txt " + snufiledir )
+    
     logdir =  os.getenv("LQANALYZER_LOG_8TeV_PATH")
     if os.path.exists(logdir):
         os.system("rm -r "+logdir)

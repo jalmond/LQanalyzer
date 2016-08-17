@@ -70,6 +70,20 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist_ee, "OS_SIGNAL");
    MakeCleverHistograms(trilephist,"TriElectron");
 
+   MakeCleverHistograms(trilephist,"TriMuon");
+   MakeCleverHistograms(trilephist,"TriMuon_mass");
+   MakeCleverHistograms(trilephist,"TriMuon_dr");
+   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_ttt");
+   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_ttl");
+   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_tll");
+   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_lll");
+
+   MakeCleverHistograms(trilephist,"TriMuon_dr_ttl");
+   MakeCleverHistograms(trilephist,"TriMuon_dr_tll");
+   MakeCleverHistograms(trilephist,"TriMuon_dr_lll");
+   MakeCleverHistograms(trilephist,"TriMuon_pt_dr");
+   MakeCleverHistograms(trilephist,"TriMuon_bjet");
+   MakeCleverHistograms(trilephist,"TriMuon_nobjet");
 
    MakeCleverHistograms(sighist_ee, "LowMassRegion");
    MakeCleverHistograms(sighist_ee, "LowMassRegionCR");
@@ -184,7 +198,47 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   /// Trigger List (unprescaled)
   std::vector<TString> triggerslist;
   triggerslist.push_back(analysis_trigger);
+
+  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection                                                                                                                                                                              
+
   
+  if(muonColl.size() == 3){
+    if(muonColl.at(0).Pt() > 20){
+      if(muonColl.at(1).Pt() > 10){
+        if(muonColl.at(2).Pt() > 10){
+	  
+	  FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+
+	  bool pass_cut1(true);
+          bool pass_cut2(true);
+          for(std::vector<snu::KMuon>::iterator it = muonColl.begin(); it != muonColl.end(); it++){
+            for(std::vector<snu::KMuon>::iterator it2 = it+1; it2 != muonColl.end(); it2++){
+              if(it->Charge() != it2->Charge()){
+                if(it->DeltaR(*it2) < 0.5)  pass_cut1 = false;
+                float mass_dilep = (*it+*it2).M();
+                if(fabs(mass_dilep - 90.) < 10.)  pass_cut2 = false;
+
+              }
+            }
+          }
+          if(pass_cut2){
+            FillCLHist(trilephist, "TriMuon_mass", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+            if(pass_cut1)          {
+              FillCLHist(trilephist, "TriMuon_dr", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+
+              if(muonColl.at(2).Pt() > 15)            FillCLHist(trilephist, "TriMuon_pt_dr", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+              if(NBJet(GetJets(BaseSelection::JET_HN)) == 0){
+                FillCLHist(trilephist, "TriMuon_nobjet", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+              }
+              if(NBJet(GetJets(BaseSelection::JET_HN))> 1) FillCLHist(trilephist, "TriMuon_bjet", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
   if(!PassTrigger(triggerslist, prescale)) return;
   
   /// Target lumi = total lumi in json file. 
@@ -219,7 +273,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   
   // Get loose muons for veto: Can call  POGSoft/POGLoose/POGMedium/POGTight/HNVeto/HNLoose/HNMedium/HNTight
-  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection
+  //  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection
   
   /// Get tight jets : Can call NoLeptonVeto/Loose/Medium/Tight/HNJets
   std::vector<snu::KJet> jetColl_hn  = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
