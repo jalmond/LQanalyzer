@@ -40,8 +40,8 @@ if not LQANALYZER_DIR == "None" :
 	os.system("cp " + localfiledir + "/datasets_snu_cluster_CAT_mc_v* " + cltxtfiledir)
         os.system("cp " + localfiledir + "/datasets_snu_cluster_CAT_data_v* " + cltxtfiledir)
 	os.system("cp " + localfiledir + "/list_all_mc.sh " + txtfiledir)
-	os.system("cp " + localfiledir + "/triggers_catversion* " + txtfiledir)
-	os.system("cp " + localfiledir + "/lumi_catversion* " + txtfiledir)
+	os.system("cp " + localfiledir + "/triggers_catversion* " + rootfiledir)
+	os.system("cp " + localfiledir + "/lumi_catversion* " + rootfiledir)
 
 	os.system("source " +  os.getenv("LQANALYZER_DIR") + "/bin/IncludePrivateSamples.sh")
 else:
