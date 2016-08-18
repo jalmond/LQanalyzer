@@ -896,7 +896,7 @@ for i in range(1,number_of_cores+1):
 
     batchscript =  output+ "Job_" + str(i) + "/runJob_" + str(i) + ".sh"
     batchfile=open(batchscript,'w')
-    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C"),cluster)
+    batchfile.write(make_batch_script(output+ "Job_" + str(i) , outsamplename+ "_Job_" + str(i),str(os.getenv("LQANALYZER_DIR")),"runJob_" + str(i) + ".C",cluster))
     batchfile.close()
 
     
