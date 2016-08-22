@@ -74,9 +74,10 @@ useCATv742ntuples = options.useCATv742ntuples
 tmplist_of_extra_lib=options.LibList
 DEBUG = options.debug
 useskim = options.useskim
-skflag=options.skflag
+skflag = options.skflag
 usebatch =options.usebatch
 
+print "skflag = " + skflag 
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel

@@ -31,7 +31,7 @@ useskim=$(makeParseVariable 'm' ${useskim})
 runnp=$(makeParseVariable 'P' ${runnp})
 runcf=$(makeParseVariable 'Q' ${runcf})
 catversion=$(makeParseVariable 'v' ${catversion})
-skflag=$(makeParseVariable 'f' ${catversion})
+skflag=$(makeParseVariable 'f' ${skflag})
 DEBUG=$(makeParseVariable 'D' ${DEBUG})
 usebatch=$(makeParseVariable 'b' ${usebatch})
 

@@ -773,6 +773,7 @@ float AnalyzerCore::ApplyPrescale(vector<TString> triggernames, float tlumi, snu
   for(unsigned int i=0; i < triggernames.size() ; i++){
     if(ApplyPrescale(triggernames.at(i), tlumi, flag) > trigps) trigps = ApplyPrescale(triggernames.at(i),tlumi, flag) ;
   }
+
   if(trigps  > 1.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be > 1, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
   if(trigps  < 0.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be < 0, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
   

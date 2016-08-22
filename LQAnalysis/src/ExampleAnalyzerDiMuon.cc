@@ -72,7 +72,6 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
 
 void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
-  
   /// Apply the gen weight 
   if(!isData) weight*=MCweight;
   
@@ -106,7 +105,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if(PassTrigger(triggerslist2, prescale))   FillHist("HLT_IsoMu20_v3", 1 , weight, 0. , 2., 2);
    
   
-   float trigger_ps_weight= ApplyPrescale("HLT_IsoMu20", TargetLumi,lumimask);
+   float trigger_ps_weight= ApplyPrescale("HLT_IsoMu20_v", TargetLumi,lumimask);
    
    if(!PassTrigger(triggerslist, prescale)) return;
    FillCutFlow("TriggerCut", weight);

@@ -27,6 +27,8 @@
 #include <TSystem.h>
 #include <TChain.h>
 
+
+
 LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
   
   catversion_lq = none;
@@ -114,9 +116,17 @@ void LQController::SetUserFlag(TString flag){
   //stringstream ss(flag); // Turn the string into a stream.
   //std::string tok;
   
-  //  while(getline(ss, tok, delimiter)) {
-  v_user_flags.push_back(flag);
-  //  }
+  TString flag_div = flag.ReplaceAll(","," ");
+  
+  string sflag = string(flag_div);
+  
+  stringstream ss(sflag); // Insert the string into a stream
+
+  string buf;
+  while (ss >> buf)
+    v_user_flags.push_back(buf);
+  
+  
 }
 
 void LQController::SetDataType(TString settype){
