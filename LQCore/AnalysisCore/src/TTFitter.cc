@@ -583,15 +583,79 @@ void TTFitter::Fit(TLorentzVector Lepton, float Lepsigma, TLorentzVector jets[],
 		minuit->mnexcm("SET NOG",arglist,1,ierflg); // -- no user inputted first derivative
 		if(debug)    std::cout << "3" << std::endl;
 
-		arglist[0] = 10; arglist[1] = 160; arglist[2] = 0.; arglist[3] = 160.;
-		minuit->mnexcm("SCAN",arglist,4,ierflg);
+                arglist[0] = 1;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 2;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 3;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 4;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 6;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 7;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 8;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg);                                                                 
+                arglist[0] = 9;                                                                                          
+                minuit->mnexcm("SCAN",arglist,1,ierflg); 
 
-		arglist[0] = 1000; arglist[1] = 0.1;
+		arglist[0]=5000; arglist[1] = 0.1;
+		minuit->mnexcm("MINIMIZE",arglist,2,ierflg); // calls simplex, then migrad if this fails                          
+		if(debug)    std::cout << "4" << std::endl;                                                                       
+		/*
+		arglist[0] = 5000;                                                                                                
+		minuit->mnexcm("MIGRAD",arglist,1,ierflg); // --                                                                  */
+                                                                                                                          
+                                                                                                                          
+                                                                                                                          
+		//      minuit->mnexcm("MINIMIZE",arglist,0,ierflg); // calls simplex, then migrad if this fails                  
+		//minuit->mnexcm("MIGRAD",arglist,0,ierflg); // --                                                                
+		//minuit->mnexcm("MINOS",arglist,0,ierflg); // --                                                                 
+		minuit->mnstat(tchi2,edm,errdef,npari,nparx,minuit_status); // returns current status of the fitting              
+		if(debug)    std::cout << "5" << std::endl;                                                                       
+		arglist[0]=10000; // --                                                                                           
+		arglist[1]=5.; // --                                                                                              
+		minuit->mnexcm("HESSE",arglist,1,ierflg);  // -- calculates the error matrix. calls the function 10000 times      
+		if(debug)    std::cout << "6" << std::endl;                                                                       
+		//    if(!constrained) minuit->mnexcm("MINOS",arglist,2,ierflg); // -- if unconstrained, calculates the MINOS err\
+ors on parameter [4]                                                                                                      
+  if(debug)    std::cout << "7" << std::endl;                                                            //i.e. top\
+mass. calls the function 10000 times                                                                                      
+  arglist[0]=1; // --                                                                                               
+ if(debug)    std::cout << "8" << std::endl;                                                                       
+ minuit->mnexcm("CAL",arglist,1,ierflg); // --                                                                     
+ if(debug)    std::cout << "9" << std::endl;       
+
+
+
+
+		//		arglist[0] = 10; arglist[1] = 160; arglist[2] = 0.; arglist[3] = 160.;
+		/*
+		arglist[0] = 1;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 2;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 3;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 4;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 6;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 7;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 8;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+		arglist[0] = 9;
+		minuit->mnexcm("SCAN",arglist,1,ierflg);
+
+
+		arglist[0] = 5000; arglist[1] = 0.1;
 		minuit->mnexcm("MINIMIZE",arglist,2,ierflg); // calls simplex, then migrad if this fails
 		if(debug)    std::cout << "4" << std::endl;
 
-		arglist[0] = 5000;
-		minuit->mnexcm("MIGRAD",arglist,2,ierflg); // --
+		//		arglist[0] = 5000;
+		//minuit->mnexcm("MIGRAD",arglist,2,ierflg); // --
 		
 
 		//		minuit->mnexcm("MINIMIZE",arglist,0,ierflg); // calls simplex, then migrad if this fails
@@ -606,7 +670,7 @@ void TTFitter::Fit(TLorentzVector Lepton, float Lepsigma, TLorentzVector jets[],
 		minuit->mnexcm("HESSE",arglist,1,ierflg);  // -- calculates the error matrix. calls the function 10000 times
 		if(debug)    std::cout << "6" << std::endl;
 
-		minuit->mnexcm("MINOS",arglist,1,ierflg); // -- if unconstrained, calculates the MINOS errors on parameter [4]
+		minuit->mnexcm("MINOS",arglist,0,ierflg); // -- if unconstrained, calculates the MINOS errors on parameter [4]
 
 		if(debug)    std::cout << "7" << std::endl;                                                            //i.e. topmass. calls the function 10000 times
 		arglist[0]=1; // --
@@ -615,6 +679,7 @@ void TTFitter::Fit(TLorentzVector Lepton, float Lepsigma, TLorentzVector jets[],
 		//	minuit->mnexcm("CAL",arglist,1,ierflg); // --
 		if(debug)    std::cout << "9" << std::endl;
 
+		*/
 		//Grab the parameters for this fit
 		//returns parameter value and error
 

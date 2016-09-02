@@ -591,8 +591,6 @@ void MuonSelection::TopTightMuonSelection(std::vector<KMuon>& leptonColl, bool m
       if(m_debug) cout << "Muon fails Tight  reliso cut " <<endl;
     }
 	
-
-	
     /// TIGHT MUON from muon POG
     if(!PassID(MUON_TIGHT, *muit, m_debug)) pass_selection =false;
 

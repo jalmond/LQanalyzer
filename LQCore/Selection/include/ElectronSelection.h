@@ -42,7 +42,7 @@ class ElectronSelection : public BaseSelection {
   void TopLooseElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
   void TopVetoElectronSelection(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
 
-  void TopTightElectronSelectionv1(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
+  void TopTightElectronSelectionv1(std::vector<snu::KElectron>& leptonColl, float& iso_el, bool m_debug= false);
   void TopVetoElectronSelectionv1(std::vector<snu::KElectron>& leptonColl, bool m_debug= false);
 
   bool EgammaPogIsTight(snu::KElectron el,  double rho);

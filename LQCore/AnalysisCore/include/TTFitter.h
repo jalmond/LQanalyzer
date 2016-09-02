@@ -18,6 +18,7 @@ class TTFitter {
   TTFitter();
   ~TTFitter();
 
+  //static TMinuit* minuit;
 
   //things i send back from the fitter
   static Double_t Mass[48];

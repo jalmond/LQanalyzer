@@ -405,7 +405,7 @@ void ElectronSelection::TopVetoElectronSelectionv1(std::vector<KElectron>& lepto
   return;
 }
 
-void ElectronSelection::TopTightElectronSelectionv1(std::vector<KElectron>& leptonColl, bool m_debug   ) {
+void ElectronSelection::TopTightElectronSelectionv1(std::vector<KElectron>& leptonColl, float& iso_el, bool m_debug   ) {
 
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
   double rho = k_lqevent.GetEvent().JetRho();
@@ -447,7 +447,8 @@ void ElectronSelection::TopTightElectronSelectionv1(std::vector<KElectron>& lept
     float LeptonRelIsoDR03(0.);
     float ElectronIsoDR03 =  el->PFChargedHadronIso03() + max( el->PFNeutralHadronIso03() + el->PFPhotonIso03() - rho * PHONH_03[ifid],  0.);
     if(el->Pt() > 0.)  LeptonRelIsoDR03 = ElectronIsoDR03/  el->Pt();
-    
+
+    if(m_debug)  cout << "RelIso check = " << LeptonRelIsoDR03 <<    endl;
     ///List of cuts
     //              if(!ElectronID) {
     //      pass_selection = false;
@@ -467,7 +468,6 @@ void ElectronSelection::TopTightElectronSelectionv1(std::vector<KElectron>& lept
       if(m_debug)  cout << "HNTightElectronSelection:Fail MVA Cut" <<endl;
     }
     
-    
     if(!(fabs(el->dxy())< 0.02 )) {
       pass_selection = false;
       if(m_debug)  cout << "HNTightElectronSelection:Fail dZ Cut" <<endl;
@@ -481,6 +481,7 @@ void ElectronSelection::TopTightElectronSelectionv1(std::vector<KElectron>& lept
     
     if(pass_selection){
       leptonColl.push_back(*el);
+      iso_el = LeptonRelIsoDR03;
     }
     
   }// end of el loop
@@ -725,7 +726,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     //// DEFAULT cuts
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-    //if ( el->CaloEnergy()==0 ) continue;
+    if ( el->CaloEnergy()==0 ) continue;
     
     bool pass_selection = true;
     
