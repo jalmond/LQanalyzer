@@ -65,9 +65,18 @@ def CleanUpLogs(path):
                                 n_previous_jobs+=1
                                 
                         if n_previous_jobs == 0:
-                            os.system(" rm -r " + logspace1 + "/" + entries[8])
-                            print "Deleting directory "  + logspace1 + "/" + entries[8] +" since this is made on " + os.getenv("HOSTNAME") + " but no jobs running on this machine."
-                            is_deleted=True
+                            os.system("qstat &> " + logspace1 + "/qstatlog")
+                            filename_qstat = logspace1 + "/qstatlog"
+                            n_previous_qsjobs=0
+                            for psline in open(filename_qstat, 'r'):
+                                if not "grep" in psline:
+                                    n_previous_qsjobs+=1
+                            if n_previous_qsjobs == 0:
+                                os.system(" rm -r " + logspace1 + "/" + entries[8])
+                                print "Deleting directory "  + logspace1 + "/" + entries[8] +" since this is made on " + os.getenv("HOSTNAME") + " but no jobs running on this machine."
+                                is_deleted=True
+
+
                     nfiles=0
                     if (os.path.exists(logspace1 + "/" + entries[8] +"/output/")):
                         os.system("ls -l " + logspace1 + "/" + entries[8] +"/output/ > " + logspace1 + "/rootfile_list.txt")

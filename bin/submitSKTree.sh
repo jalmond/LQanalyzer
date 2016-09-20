@@ -1,7 +1,7 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-declare -a list_of_catversions=("v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v8-0-1" "v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
@@ -20,7 +20,7 @@ runSinglePhoton=false
 
 ## RUN PARAMETERS
 
-job_data_lumi="CtoD"  ###  "C" = period C only   "ALL"  = period C+D
+job_data_lumi="BtoE"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=5
@@ -736,7 +736,7 @@ fi
 outputdir_cat=$outdir"/data/output/CAT/"
 
 outputdir_analyzer=$outdir"/data/output/CAT/"$submit_analyzer_name
-dir_tag="periodC/"
+dir_tag="periodBtoE/"
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
     then
@@ -748,9 +748,9 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
     if [[ ! -d "${outputdir_analyzer}" ]]; then
 	mkdir ${outputdir_analyzer}
     fi
-    if [[ $job_data_lumi  == "CtoD" ]];
+    if [[ $job_data_lumi  == "BtoE" ]]
 	then
-	dir_tag="periodCtoD/"
+	dir_tag="periodBtoE/"
     fi
 fi
 
@@ -771,13 +771,13 @@ if [[ $runDATA == "true" ]];
 	then
 	for stream_check in ${out_streams_skimcheck[@]};
 	  do
-	  if [[ $stream_check == *"Single"* ]];
-	      then
-	      echo "LQanalyzer::sktree :: ERROR :: There are no DiLepton skims for "$stream_check" in catversion "$submit_version_tag
-	      
-	      exit 1
-	  fi
-	done
+	      if [[ $stream_check == *"Single"* ]];
+		        then
+		        echo "LQanalyzer::sktree :: ERROR :: There are no DiLepton skims for "$stream_check" in catversion "$submit_version_tag
+			      
+			      exit 1
+			        fi
+	      done
     fi
     if [[ $job_skim == *"TriLep"* ]];
         then
@@ -835,10 +835,10 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
 	mkdir ${job_output_dir}
 	echo "Making " + ${job_output_dir}
 	if [[ ! -d "${job_output_dir}" ]]; then
-	    echo "LQanalyzer::sktree :: ERROR :: Output directory is set by user. "
-	    echo "LQanalyzer::sktree :: ERROR :: Make Directory ried but failed"
-	    echo "LQanalyzer::sktree :: ERROR :: User needs to make directory."
-	fi
+	        echo "LQanalyzer::sktree :: ERROR :: Output directory is set by user. "
+		    echo "LQanalyzer::sktree :: ERROR :: Make Directory ried but failed"
+    echo "LQanalyzer::sktree :: ERROR :: User needs to make directory."
+fi
     fi
     
 fi
@@ -881,19 +881,12 @@ if [[ $runDATA  == "true" ]];
     ARGPERIOD=data_periods
     eval array_dataperiods=(\${$ARGPERIOD[@]})
     counter=${#array_dataperiods[@]}
-	if [[ $counter -eq 0 ]];
+    if [[ $counter -eq 0 ]];
             then
 	    echo "Number of periods == 0"
-	    echo "Problem with initialising 'sktree -p'" 
+	        echo "Problem with initialising 'sktree -p'" 
             exit 1
         fi
-	if [[ $counter -gt 2 ]];
-            then
-	    echo "Number of periods >2"
-            echo "Problem with initialising 'sktree -p'"
-            exit 1
-        fi
-	
 fi
 
 if [[ $changed_skim == "true" ]];
@@ -903,30 +896,30 @@ if [[ $changed_skim == "true" ]];
 	then
 	
 	if [[ $submit_skinput == "false" ]];
-	    then
-	    if [[ $job_skim != *"CAT"* ]];
-		then 
-		echo "LQanalyzer::sktree :: ERROR :: Invalid skim -s <skim> is set when -sktree <false> is also set. run 'sktree -h' for options "
-		exit 1
-	    fi
-	else
-	    if [[ $job_skim == *"CAT"* ]];
-		then
-		echo "LQanalyzer::sktree :: ERROR :: Invalid skim -s <skim> is set when -sktree <true> is also set. run 'sktree -h' for options "
-		exit 1
-	    fi
-	    
-	fi
+	        then
+	        if [[ $job_skim != *"CAT"* ]];
+		    then 
+		    echo "LQanalyzer::sktree :: ERROR :: Invalid skim -s <skim> is set when -sktree <false> is also set. run 'sktree -h' for options "
+		    exit 1
+		        fi
+		else
+	        if [[ $job_skim == *"CAT"* ]];
+		    then
+		    echo "LQanalyzer::sktree :: ERROR :: Invalid skim -s <skim> is set when -sktree <true> is also set. run 'sktree -h' for options "
+		    exit 1
+		        fi
+		    
+		fi
 	
     fi
     if [[ $changed_skinput  != "true" ]];
 	then
 	if [[ $job_skim == "FLATCAT" ]];
-	    then
-	    submit_skinput=false
-	else
-	    submit_skinput=true
-	fi
+	        then
+	        submit_skinput=false
+		else
+	        submit_skinput=true
+		fi
     fi
     
 fi
@@ -966,8 +959,8 @@ elif [[ $job_skim == "SKTree_LeptonSkim" ]]
     if [[ $submit_skinput == "false" ]];
 	then
 	echo "LQanalyzer::sktree :: ERROR :: skim set  to SKTree_LeptonSkim: Yet you set -sktree <false>"
-	echo "Fix submission"
-	exit 1
+echo "Fix submission"
+exit 1
     fi
     
 elif [[ $job_skim == "SKTree_DiLepSkim" ]]
@@ -1001,15 +994,15 @@ elif [[ $job_skim == "NoCut" ]]
 	exit 1
     fi
     
-	
+    
 elif [[ $job_skim == "Lepton" ]]
     then
     echo $skim_output_message
     if [[ $submit_skinput == "false" ]];
 	then
 	echo "LQanalyzer::sktree :: ERROR :: skim set  to Lepton: Yet you set -sktree <false>"
-	echo "Fix submission"
-	exit 1
+echo "Fix submission"
+exit 1
     fi
     
     elif [[ $job_skim == "DiLep" ]]
@@ -1038,18 +1031,19 @@ if [[ $runMC  == "true" ]];
     if [[ $job_data_lumi == "C" ]];
 	then
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
-	    then
-	    echo $data_lumi_output_message
-	fi
+	        then
+	        echo $data_lumi_output_message
+		fi
     elif [[ $job_data_lumi == "D" ]]
 	then
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
-	    then
-	    echo $data_lumi_output_message
+	        then
+	        echo $data_lumi_output_message
         fi
 	
-    elif [[ $job_data_lumi == "CtoD" ]]
+    elif [[ $job_data_lumi == "BtoE" ]]
 	then
+
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
 	    then
 	    echo $data_lumi_output_message

@@ -46,7 +46,6 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
 
-  //ResetLumiMask(snu::KEvent::gold);
   
   MakeCleverHistograms(sighist_ee, "SingleLooseElJet");
   MakeCleverHistograms(sighist_ee, "SingleTightElJet");
@@ -63,7 +62,6 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 
 void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     
-  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
 
   if(!PassBasicEventCuts()) return;     /// Initial event cuts  
 
@@ -102,7 +100,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   numberVertices = eventbase->GetEvent().nVertices();   
   
   if (!k_isdata) {
-    weight = weight * MCweight * eventbase->GetEvent().PileUpWeight(lumimask,snu::KEvent::central);
+    weight = weight * MCweight * eventbase->GetEvent().PileUpWeight();
   }
 
   
@@ -134,7 +132,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   ///triggerslist_singlelep.push_back("HLT_Ele23_WPLoose_Gsf");
 
-  float trigger_ps_singlelepweight= ApplyPrescale("HLT_Ele23_WPLoose_Gsf_v", TargetLumi,lumimask);
+  float trigger_ps_singlelepweight= WeightByTrigger("HLT_Ele23_WPLoose_Gsf_v", TargetLumi);
 
   if(electronTightColl.size() ==1) {
     if(PassTrigger(triggerslist_singlelep, prescale) ){
@@ -149,7 +147,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(electronTightColl.size() ==2) {
     if( PassTrigger(triggerslist_12leg, prescale)){
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
-        float pr_weight=ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi,lumimask); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
+        float pr_weight=WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
 
         FillCLHist(sighist_ee, "DiElectron_SingleLeg", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
       }
@@ -158,7 +156,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(electronTightColl.size() ==2) {
     if(PassTrigger(triggerslist_17leg, prescale)){
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
-	float pr_weight= ApplyPrescale("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
+	float pr_weight= WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", TargetLumi);
 	
 	FillCLHist(sighist_ee, "DiElectron_SingleLeg", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
       }
@@ -168,7 +166,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(PassTrigger(triggerslist, prescale) ){
     if(electronTightColl.size() ==2) {
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15. ){
-	float pr_weight= ApplyPrescale("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi,lumimask);
+	float pr_weight= WeightByTrigger("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi);
 	FillCLHist(sighist_ee, "DiElectron", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*pr_weight);
       }
     }
@@ -232,7 +230,7 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     if(electrons.at(0).Pt() >= 35.){
       //HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass1){
-        prescale_trigger = ApplyPrescale("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum, lumimask); //// 20 + GeV bins
+        prescale_trigger = WeightByTrigger("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum); //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
@@ -240,21 +238,21 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
       //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30
 
       if(pass2){
-        prescale_trigger =  ApplyPrescale("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum, lumimask) ; //// 20 + GeV bins
+        prescale_trigger =  WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) ; //// 20 + GeV bins
       }
       else prescale_trigger = 0.;
     }
     else   if(electrons.at(0).Pt() >= 20.){
       //HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass3){
-	prescale_trigger =  ApplyPrescale("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum, lumimask) ;
+	prescale_trigger = WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum) ;
       }
       else prescale_trigger = 0.;
     }
     else   if(electrons.at(0).Pt() >= 15.){
       //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_
       if(pass4){
-        prescale_trigger = ApplyPrescale("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum, lumimask) ;
+        prescale_trigger = WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) ;
       }
       else prescale_trigger = 0.;
     }

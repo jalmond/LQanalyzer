@@ -26,7 +26,6 @@ ClassImp (SKTreeValidation);
   */
 SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   
-  rmcor = new rochcor2015();
   
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeValidation");
@@ -45,7 +44,6 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
     MakeCleverHistograms(sighist_mm,"DiMuon"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm,"DiMuon_noW"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm,"DiMuon_IDW"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_IDW_69pu"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm,"DiMuon_puW"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm,"DiMuon_Trigger"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm,"DiMuon_BB"+dimuonIDs.at(i));
@@ -83,7 +81,6 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
     MakeCleverHistograms(sighist_ee,"DiElectron_IDW"+dielectronIDs.at(i));
     MakeCleverHistograms(sighist_ee,"DiElectron_puW"+dielectronIDs.at(i));
     MakeCleverHistograms(sighist_ee,"DiElectron_Trigger"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_Trigger_69pu"+dielectronIDs.at(i));
     MakeCleverHistograms(sighist_ee,"DiElectron_BB"+dielectronIDs.at(i));
     MakeCleverHistograms(sighist_ee,"DiElectron_EE"+dielectronIDs.at(i));
     MakeCleverHistograms(sighist_ee,"DiElectron_EB"+dielectronIDs.at(i));
@@ -108,7 +105,6 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
     MakeCleverHistograms(sighist_em,"EMuon_IDW"+muonIDs.at(i));
     MakeCleverHistograms(sighist_em,"EMuon_puW"+muonIDs.at(i));
     MakeCleverHistograms(sighist_em,"EMuon_Trigger"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em,"EMuon_Trigger_69pu"+muonIDs.at(i));
     MakeCleverHistograms(sighist_em, "EMuon_dijet"+muonIDs.at(i));
     MakeCleverHistograms(sighist_em,"EMuon_SSPreselection"+muonIDs.at(i));
 
@@ -128,14 +124,6 @@ void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
   
   Message("Making clever hists for Z ->ll test code", INFO);
   
-  /// only available in v7-6-X branch and newer
-  //// default lumimask is silver ////
-  //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
-  ///When METNoHF isfixed the default will be back to silver
-  /// set to gold if you want to use gold json in analysis
-  /// To set uncomment the line below:
-  //ResetLumiMask(snu::KEvent::gold);
-
 
   return;
 }
@@ -146,8 +134,6 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   /// Apply the gen weight
   if(!isData) weight*=MCweight;
   /// Acts on data to remove bad reconstructed event 
-  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
-  
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -159,24 +145,25 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
   
   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
-  
-  if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
-   FillCutFlow("EventCut", weight);
+
+
+  //  if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
+  FillCutFlow("EventCut", weight);
    
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
    TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
    TString dimuon_trigmuon_trig2="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
    
-   TString muon_trigmuon_trig1="HLT_IsoMu20_v";
-   TString muon_trigmuon_trig2="HLT_IsoTkMu20_v";
+   TString muon_trigmuon_trig1="HLT_IsoMu22_v";
+   TString muon_trigmuon_trig2="HLT_IsoTkMu22_v";
 
-   TString diel_trig="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+   TString diel_trig="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
-   TString em1_trig="HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
-   TString em2_trig="HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v";
+   TString em1_trig="HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
+   TString em2_trig="HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
    
-   TString el_trig="HLT_Ele23_WPLoose_Gsf_v";
+   TString el_trig="HLT_Ele27_WPTight_Gsf_v";
 
    std::vector<TString> triggerslist_dimu;
    triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
@@ -203,16 +190,16 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
    FillCutFlow("VertexCut", weight);
    
-   float pileup_reweight_69=(1.0);
-   float pileup_reweight_71=(1.0);
+   float pileup_reweight=(1.0);
+
    if (!k_isdata) {
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
-     pileup_reweight_69 = eventbase->GetEvent().PileUpWeight(lumimask);
-     pileup_reweight_71 = eventbase->GetEvent().AltPileUpWeight(lumimask);
+
+     //pileup_reweight = eventbase->GetEvent().PileUpWeight();
+     FillHist("PUWeightvsNVertex",pileup_reweight, eventbase->GetEvent().nVertices(), weight, 0., 5., 500, 0., 60., 60);
    }
    
-   FillHist("PileupWeight_69" ,  pileup_reweight_69,weight,  0. , 50., 10);
-   FillHist("PileupWeight_71" ,  pileup_reweight_71,weight,  0. , 50., 10);
+   FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);
 
    ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -222,8 +209,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
-   MakeElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_el, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
-   MakeElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_el, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTighttruthmatch");
+   MakeElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight,triggerslist_el, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   MakeElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight,triggerslist_el, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTighttruthmatch");
    FillCLHist(elhist,"KElectronHists", GetElectrons(BaseSelection::ELECTRON_NOCUT), weight);
    FillCLHist(elhist,"KElectronHists_POGTIGHT", GetElectrons(BaseSelection::ELECTRON_POG_TIGHT), weight);
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -233,8 +220,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
-   MakeDiElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_diel, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
-   MakeDiElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_diel, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTighttruthmatch");
+   MakeDiElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight,triggerslist_diel, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   MakeDiElectronValidationPlots(BaseSelection::ELECTRON_POG_TIGHT, weight, pileup_reweight, triggerslist_diel, BaseSelection::MUON_POG_TIGHT,BaseSelection::JET_HN, "POGTighttruthmatch");
    ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -243,7 +230,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
-   MakeMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_mu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
+   MakeMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight,triggerslist_mu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -251,10 +238,10 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
-   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
-   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
-   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_correctedtruthmatch");
-   MakeDiMuonValidationPlots(BaseSelection::MUON_HN_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "HNTightroch_corrected");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight, triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_correctedtruthmatch");
+   MakeDiMuonValidationPlots(BaseSelection::MUON_HN_TIGHT, weight, pileup_reweight, triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "HNTightroch_corrected");
    FillCLHist(muhist,"KMuonHists", GetMuons(BaseSelection::MUON_NOCUT), weight);
    FillCLHist(muhist,"KMuonHists_POGTIGHT", GetMuons(BaseSelection::MUON_POG_TIGHT), weight);
    ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
@@ -262,7 +249,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    // ElectronMuon Validation
-   MakeElMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_emu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
+   MakeElMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight,triggerslist_emu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -512,7 +499,7 @@ void SKTreeValidation::FillCutFlow(TString cut, float weight){
   }
 }
 
-void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
+void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight, std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
   std::vector<snu::KElectron> electrons =  GetElectrons(elid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
@@ -544,8 +531,8 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
 
     /// Tiny effect on unprescaled triggers
-    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
-    ev_weight = w * trigger_sf * id_iso_sf * pu_reweight_71*trigger_ps;
+    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * pu_reweight*trigger_ps;
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
@@ -563,12 +550,11 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
       if(trig_pass){
 	FillHist("nvertex_mu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*trigger_sf*trigger_ps, 0., 40.,40);
         FillCLHist(sighist_mm, "SingleMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
-	FillHist("nvertex_mu" + tag + "_purw", eventbase->GetEvent().nVertices()  ,  w*trigger_sf*trigger_ps*pu_reweight_69, 0., 40.,40) ;
-	FillHist("nvertex_mu" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*id_iso_sf*trigger_sf*trigger_ps*pu_reweight_71, 0., 40.,40);
+	FillHist("nvertex_mu" + tag + "_purw", eventbase->GetEvent().nVertices()  ,  w*trigger_sf*trigger_ps*pu_reweight, 0., 40.,40) ;
 	
-	FillCLHist(sighist_mm, "SingleMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_ps*trigger_sf);
+	FillCLHist(sighist_mm, "SingleMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_ps*trigger_sf);
 
-	FillCLHist(sighist_mm, "SingleMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*id_iso_sf*trigger_ps*trigger_sf);
+	FillCLHist(sighist_mm, "SingleMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*id_iso_sf*trigger_ps*trigger_sf);
 
 
 	float METdphi = TVector2::Phi_mpi_pi(muons.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
@@ -583,12 +569,13 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
 }
 
 
-void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
+void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
   
   std::vector<snu::KElectron> electrons =  GetElectrons(elid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
 
   std::vector<snu::KMuon> muons;
+  BaseSelection::ID muid2=muid;
 
   if(k_running_nonprompt){
     muid=BaseSelection::MUON_HN_FAKELOOSE;
@@ -607,7 +594,6 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   float trigger_ps(1.);
 
   float ev_weight(1.);
-  float ev_weight_prevpu(1.);
 
   if(!isData){
     trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
@@ -615,19 +601,19 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
     
     /// Tiny effect on unprescaled triggers
-    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
-    ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight_71*trigger_ps;
-    ev_weight_prevpu = w * trigger_sf * id_iso_sf *  pu_reweight_69*trigger_ps;
+    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight*trigger_ps;
   }
+  
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    if(muid == BaseSelection::MUON_HN_TIGHT){
+    if(muid2 == BaseSelection::MUON_HN_TIGHT){
+
       ev_weight      *=  Get_DataDrivenWeight_MM(muons,"HNTIGHT");
-      ev_weight_prevpu = Get_DataDrivenWeight_MM(muons,"HNTIGHT");
     }
-    if(muid == BaseSelection::MUON_POG_TIGHT){
+    if(muid2 == BaseSelection::MUON_POG_TIGHT){
+
       ev_weight      *=  Get_DataDrivenWeight_MM(muons,"POGTIGHT");
-      ev_weight_prevpu = Get_DataDrivenWeight_MM(muons,"POGTIGHT");
     }
   }
 
@@ -639,11 +625,9 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
 	if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
 	  if(trig_pass){
 	    FillHist("zpeak_mumu" + tag + "_nopurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf, 0., 200.,400);
-	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 200.,400);
-	    FillHist("zpeak_mumu" + tag + "_altpurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 200.,400);
+	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*trigger_sf*pu_reweight, 0., 200.,400);
 	    FillHist("nvertex_mumu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40);
-	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 40.,40) ;
-	    FillHist("nvertex_mumu" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 40.,40);
+	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight, 0., 40.,40) ;
 	    FillCLHist(sighist_mm, "ZMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  }
 	}
@@ -652,9 +636,8 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
 	if(trig_pass){
 	  FillCLHist(sighist_mm, "DiMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, w);
 	  FillCLHist(sighist_mm, "DiMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
-	  FillCLHist(sighist_mm, "DiMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_sf*trigger_ps);
+	  FillCLHist(sighist_mm, "DiMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_sf*trigger_ps);
 	  FillCLHist(sighist_mm, "DiMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
-	  FillCLHist(sighist_mm, "DiMuon_IDW_69pu"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight_prevpu);
 	  
 	  FillHistPerLumi("DiMuon_llmass"+tag,GetDiLepMass(muons), ev_weight, 0., 200.,20, 10);
 	  FillHistPerLumi("DiMuon_njet"+tag,jets.size(), ev_weight, 0., 10.,10, 10);
@@ -684,7 +667,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   }
 }
 
-void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
+void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
   std::vector<snu::KElectron> electrons ;
   std::vector<snu::KMuon> muons;
@@ -726,8 +709,8 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
 
 
     /// Tiny effect on unprescaled triggers
-    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
-    ev_weight = w * trigger_sf * id_iso_sf * trigger_ps* pu_reweight_71;
+    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * trigger_ps* pu_reweight;
   }
 
   bool trig_pass= PassTrigger(trignames, prescale);
@@ -753,7 +736,7 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
           if(Z.M() > 15.){
 	    
 	    FillCLHist(sighist_em, "EMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
-	    FillCLHist(sighist_em, "EMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_sf*trigger_ps);
+	    FillCLHist(sighist_em, "EMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_sf*trigger_ps);
 	    FillCLHist(sighist_em, "EMuon_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  }
 	}
@@ -775,7 +758,7 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
   
 
 
-void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
+void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
   std::vector<snu::KElectron> electrons ;
   if(k_running_nonprompt){
     elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
@@ -804,8 +787,8 @@ void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float
     id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
     reco_weight = ElectronRecoScaleFactor(electrons);
     /// Tiny effect on unprescaled triggers
-    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
-    ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight_71*trigger_ps;
+    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight*trigger_ps;
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
@@ -817,12 +800,11 @@ void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float
       if(trig_pass){
 	FillCLHist(sighist_ee, "SingleElectron_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_ps*trigger_sf);
 	FillHist("nvertex_el" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*trigger_ps*trigger_sf, 0., 40.,40);
-	FillHist("nvertex_el" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*trigger_ps*trigger_sf*pu_reweight_69, 0., 40.,40) ;
-	FillHist("nvertex_el" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*trigger_ps*trigger_sf*pu_reweight_71, 0., 40.,40);
+	FillHist("nvertex_el" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*trigger_ps*trigger_sf*pu_reweight, 0., 40.,40) ;
 	
-	FillCLHist(sighist_ee, "SingleElectron_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_ps*trigger_sf);
+	FillCLHist(sighist_ee, "SingleElectron_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_ps*trigger_sf);
 	
-	FillCLHist(sighist_ee, "SingleElectron_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_ps*trigger_sf*id_iso_sf);
+	FillCLHist(sighist_ee, "SingleElectron_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_ps*trigger_sf*id_iso_sf);
 	
 	float METdphi = TVector2::Phi_mpi_pi(electrons.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
         float MT=(2.* electrons.at(0).Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
@@ -835,7 +817,7 @@ void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float
 }
 
 
-void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
+void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
 
   std::vector<snu::KElectron> electrons ;
   if(k_running_nonprompt){
@@ -859,21 +841,17 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
   float reco_weight=1.;
 
   float ev_weight(1.);
-  float ev_weight_prevpu(1.);
   if(!isData){
     trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
     reco_weight = ElectronRecoScaleFactor(electrons);
     /// Tiny effect on unprescaled triggers
-    trigger_ps= ApplyPrescale(trignames, TargetLumi,lumimask)  ;
-    ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight_71*trigger_ps;
-    ev_weight_prevpu = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight_69*trigger_ps;
+    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight*trigger_ps;
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
     ev_weight      *=  Get_DataDrivenWeight_EE(electrons);
-    ev_weight_prevpu= Get_DataDrivenWeight_EE(electrons);
-
   }
 
   if(electrons.size() ==2) {
@@ -884,11 +862,9 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
         if(GetDiLepMass(electrons) < 120. && GetDiLepMass(electrons)  > 60. ){
           if(trig_pass){
             FillHist("zpeak_ee" + tag + "_nopurw", GetDiLepMass(electrons), w*id_iso_sf*trigger_sf, 0., 200.,400);
-            FillHist("zpeak_ee" + tag + "_purw", GetDiLepMass(electrons),    w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 200.,400);
-            FillHist("zpeak_ee" + tag + "_altpurw", GetDiLepMass(electrons), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 200.,400);
+            FillHist("zpeak_ee" + tag + "_purw", GetDiLepMass(electrons),    w*id_iso_sf*trigger_sf*pu_reweight, 0., 200.,400);
             FillHist("nvertex_ee" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40);
-            FillHist("nvertex_ee" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight_69, 0., 40.,40) ;
-            FillHist("nvertex_ee" + tag + "_altpurw", eventbase->GetEvent().nVertices(), w*id_iso_sf*trigger_sf*pu_reweight_71, 0., 40.,40);
+            FillHist("nvertex_ee" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight, 0., 40.,40) ;
             FillCLHist(sighist_ee, "ZElectron"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
           }
         }
@@ -897,9 +873,9 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
 	  FillCLHist(sighist_ee, "DiElectron"+tag, eventbase->GetEvent(), muons,electrons,jets, w);
 	  FillCLHist(sighist_ee, "DiElectron_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
 
-	  FillCLHist(sighist_ee, "DiElectron_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_71*trigger_sf*trigger_ps);
+	  FillCLHist(sighist_ee, "DiElectron_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_sf*trigger_ps);
 	  FillCLHist(sighist_ee, "DiElectron_IDW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
-	  FillCLHist(sighist_ee, "DiElectron_IDW_69pu"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight_69*id_iso_sf*trigger_sf*trigger_ps);
+
 
           if(EtaRegion("BB",electrons))  FillCLHist(sighist_ee, "DiElectron_BB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
           if(EtaRegion("EB",electrons))  FillCLHist(sighist_ee, "DiElectron_EB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);

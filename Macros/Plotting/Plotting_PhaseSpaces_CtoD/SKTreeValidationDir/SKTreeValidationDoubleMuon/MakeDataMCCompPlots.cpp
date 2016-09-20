@@ -62,7 +62,7 @@ int MakeCutFlow_Plots(string configfile){
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
   
-  //MakeCutFlow(histdir);  
+  MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
 
   return 1;
@@ -609,18 +609,14 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("singletop_t_Powheg",0.25));
     list.push_back(make_pair("singletop_tbarW_Powheg",0.25));
     list.push_back(make_pair("singletop_tW_Powheg",0.25));
-    list.push_back(make_pair("TT_MG5",0.25));
-    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
-    list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
-    list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
-    list.push_back(make_pair("ttZToLLNuNu_MCatNLO",0.25));
+    list.push_back(make_pair("TT_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJets",0.25));
+    list.push_back(make_pair("ttZJets",0.25));
   }
   if(sample.Contains("ttbar")){
-    list.push_back(make_pair("TT_MG5",0.25));
-    list.push_back(make_pair("ttWJetsToLNu",0.25));
-    list.push_back(make_pair("ttWJetsToQQ",0.25));
-    list.push_back(make_pair("ttZToLLNuNu",0.25));
-    list.push_back(make_pair("ttZToQQ",0.25));
+    list.push_back(make_pair("TT_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJets",0.25));
+    list.push_back(make_pair("ttZJets",0.25));
   }
   
   if(sample.Contains("qcd"))
@@ -644,10 +640,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_pythia8",0.15));
     list.push_back(make_pair("ZZ_pythia8",0.15));
     list.push_back(make_pair("WW_pythia8",0.15));
-    list.push_back(make_pair("WpWp_qcd_madgraph",0.15));
-    list.push_back(make_pair("WpWp_madgraph",0.15));
     list.push_back(make_pair("WZZ_MCatNLO",0.2)); 
-    list.push_back(make_pair("WWZ_MCatNLO",0.2)); 
     list.push_back(make_pair("ZZZ_MCatNLO",0.2)); 
 }
   if(sample.Contains("ww")){
@@ -670,15 +663,12 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("TTWW",0.25));
     list.push_back(make_pair("TTG",0.25));
     list.push_back(make_pair("ZZZ",0.25));
-    list.push_back(make_pair("WWZ",0.25));
     list.push_back(make_pair("WWG",0.25));
     list.push_back(make_pair("HtoWW",0.25));
     list.push_back(make_pair("HtoTauTau",0.22));
     list.push_back(make_pair("ggHtoZZ",0.22));
     list.push_back(make_pair("WZ_py",0.12));
     list.push_back(make_pair("ZZ_py",0.09));
-    list.push_back(make_pair("SSWmWm",0.25));
-    list.push_back(make_pair("SSWpWp",0.25));
     list.push_back(make_pair("WW_dp",0.5));
     list.push_back(make_pair("ttW",0.25));
     list.push_back(make_pair("ttZ",0.25));
@@ -1958,13 +1948,13 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
     }
   else if ( iPeriod==4 )
     {
-      lumiText += lumi_13TeV;
+      lumiText += lumi_13TeV_2016_muon_BtoE;
       lumiText += " (13 TeV)";
     }
   else if ( iPeriod==7 )
     {
       if( outOfFrame ) lumiText += "#scale[0.85]{";
-      lumiText += lumi_13TeV;
+      lumiText += lumi_13TeV_2016_muon_BtoE;
       lumiText += " (13 TeV)";
       lumiText += " + ";
       lumiText += lumi_8TeV;

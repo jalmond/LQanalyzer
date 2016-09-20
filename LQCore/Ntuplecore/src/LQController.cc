@@ -314,6 +314,49 @@ void LQController::SetDataPeriod(TString period){
     else target_luminosity = 17.731 + 2672.906 - bad_ls;
 
   }
+  else if(VersionStamp(catversion_lq) == 4 ){
+
+    if( period == "All") period = "ALL";
+    if( period == "C") k_period = "C";
+    /// from v761 rereco data has just period D                                                                                                                                
+    else if( period == "D") k_period = "D";
+    else if( period == "CtoD") k_period = "CtoD";
+    else if( period == "ALL") k_period = "CtoD";
+    else {
+      m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+      throw LQError( "Data Period not correctly set!!!",
+                     LQError::StopExecution );
+    }
+
+    /// brilcalc 
+    if( period == "BtoE") target_luminosity = 15900.;
+    else if( period == "ALL") target_luminosity = 15900.;
+    else target_luminosity = 15900.;
+
+  }
+
+  else if(VersionStamp(catversion_lq) == 5 ){
+
+    if( period == "All") period = "ALL";
+    if( period == "B") k_period = "B";
+    if( period == "C") k_period = "C";
+    if( period == "D") k_period = "D";
+    if( period == "E") k_period = "E";
+    /// from v761 rereco data has just period D                                                                                                                             
+    else if( period == "BtoE") k_period = "BtoE";
+    else if( period == "ALL") k_period = "BtoE";
+    else {
+      m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+      throw LQError( "Data Period not correctly set!!!",
+                     LQError::StopExecution );
+    }
+
+    /// brilcalc                                                                                                                                                              
+    if( period == "BtoE") target_luminosity = 1.;
+    else if( period == "ALL") target_luminosity = 1.;
+    else target_luminosity = 1.;
+
+  }
 
 
 }
@@ -325,7 +368,8 @@ int LQController::VersionStamp(LQController::_catversion cat_version ){
   if(cat_version == v745) return 2;
   if((cat_version == v762) || (cat_version == v763) || (cat_version == v764) ) return 3;
   if((cat_version == v765)||(cat_version == v766)) return 4;
-
+  if((cat_version == v801)) return 5;
+  
   return -1;
 }
 
@@ -670,8 +714,8 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
     
-    if(k_period.Contains("CtoD")) cycle->SetMCPeriod(2); 
-    else if(k_period.Contains("C")) cycle->SetMCPeriod(1); 
+    if(k_period.Contains("BtoE")) cycle->SetMCPeriod(2); 
+    else if(k_period.Contains("B")) cycle->SetMCPeriod(1); 
     
     /// Check the current branch is upto date wrt the catuples
     string catversion_env = getenv("CATVERSION");
@@ -865,6 +909,7 @@ std::string LQController::SetNTCatVersion(LQController::_catversion dir_version)
   if (dir_version == v764) return ("v7-6-4");
   if (dir_version == v765) return ("v7-6-5");
   if (dir_version == v766) return ("v7-6-6");
+  if (dir_version == v801) return ("v8-0-1");
   return "";
 }
 
@@ -877,7 +922,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   TString env_path(version_env);
 
   LQController::_catversion nt_version=none;
-  if(ntuple_path.Contains("7-6-6")) nt_version=v766;
+  if(ntuple_path.Contains("8-0-1")) nt_version=v801;
+  else if(ntuple_path.Contains("7-6-6")) nt_version=v766;
   else if(ntuple_path.Contains("7-6-5")) nt_version=v765;
   else if(ntuple_path.Contains("7-6-4")) nt_version=v764;
   else if(ntuple_path.Contains("7-6-3")) nt_version=v763;
@@ -897,7 +943,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   
   
   LQController::_catversion env_version=none;
-  if(env_path.Contains("7-6-6")) env_version=v766;
+  if(env_path.Contains("8-0-1")) env_version=v801;
+  else if(env_path.Contains("7-6-6")) env_version=v766;
   else if(env_path.Contains("7-6-5")) env_version=v765;
   else if(env_path.Contains("7-6-4")) env_version=v764;
   else if(env_path.Contains("7-6-3")) env_version=v763;
@@ -915,7 +962,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
 LQController::_catversion  LQController::GetCatVersion(std::string filepath) throw(LQError){
   TString ts_path(filepath); 
   
-  if(ts_path.Contains("7-6-6")) return v766;
+  if(ts_path.Contains("8-0-1")) return v801;
+  else if(ts_path.Contains("7-6-6")) return v766;
   else if(ts_path.Contains("7-6-5")) return v765;
   else if(ts_path.Contains("7-6-4")) return v764;
   else if(ts_path.Contains("7-6-3")) return v763;

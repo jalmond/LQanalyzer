@@ -16,8 +16,6 @@ class EventBase;
 #include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-#include "rochcor2015/rochcor2015.h"
-#include "rochcor2015/RoccoR.h"
 #include "BTag/BTagSFUtil.h"
 
 class AnalyzerCore : public LQCycleBase {
@@ -26,7 +24,8 @@ class AnalyzerCore : public LQCycleBase {
  
   enum period  {C=0,
 		D=1,
-		CtoD=2};
+		CtoD=2,
+		BtoE_2016=3};
   
   //Default constructor
    
@@ -65,7 +64,7 @@ class AnalyzerCore : public LQCycleBase {
   bool IsSignal();
 
   void ClassInfo();
-  float SilverToGoldJsonReweight(TString p);
+
   int VersionStamp(TString cversion);
 
 
@@ -149,7 +148,16 @@ class AnalyzerCore : public LQCycleBase {
   map<int, float> mapBadLumi; 
   map<int, float> mapLumiPerBlock;
   map<int, TString> mapLumiNamePerBlock;
-  map<TString,float> trigger_lumi_map_cat4;
+  map<TString,float> trigger_lumi_map_cat2015;
+
+
+
+  map<int, float> mapLumi2016;
+  map<int, float> mapBadLumi2016;
+  map<int, float> mapLumiPerBlock2016;
+  map<int, TString> mapLumiNamePerBlock2016;
+  map<TString,float> trigger_lumi_map_cat2016;
+
   TH2F* FRHist;
   TH2F* MuonSF;
   TH2F* SingleMuon_C;
@@ -175,7 +183,7 @@ class AnalyzerCore : public LQCycleBase {
   /// Event weights
   Double_t MCweight, weight;
 
-  snu::KEvent::json lumimask;
+
   bool reset_lumi_mask;
   bool changed_target_lumi;
 
@@ -193,8 +201,8 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, MuonPlots*> mapCLhistMu;
   map<TString, JetPlots*> mapCLhistJet;
   
-  float ApplyPrescale(TString triggername, float tlumi, snu::KEvent::json flag);
-  float ApplyPrescale(vector<TString> triggername, float tlumi, snu::KEvent::json flag);  
+  float WeightByTrigger(TString triggername, float tlumi);
+  float WeightByTrigger(vector<TString> triggername, float tlumi);  
 
   //
   // Function that closes rootfile
@@ -224,7 +232,6 @@ class AnalyzerCore : public LQCycleBase {
   TH2* GetHist2D(TString hname);
 
   /// Changed  Default json file
-  void ResetLumiMask(snu::KEvent::json flag);
 
   /// Fills hist in maphist
   void FillHist(TString histname, float value, float w );
@@ -254,7 +261,6 @@ class AnalyzerCore : public LQCycleBase {
   void ListTriggersAvailable();
   bool PassBasicEventCuts();
 
-  rochcor2015 *rmcor;
   std::map<TString,BTagSFUtil*> MapBTagSF;
   //  BTagSFUtil *lBTagSF, *hBTagSF;
 

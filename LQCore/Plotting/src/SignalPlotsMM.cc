@@ -74,6 +74,7 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
 
 
   map_sig["h_nVertices"]              =     new TH1F("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
+  map_sig["h_nInteractions"]              =     new TH1F("h_nInteractions_"         + name,"number of even vertices",60,0.0,60.0);
   /// Charge plot
   map_sig["h_sumcharge"]              =     new TH1F("h_sumcharge_"         + name,"Charge of the lepton pair",6,-3,3);
 
@@ -247,7 +248,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
 
   Fill("h_PFMET",ev.PFMET(), weight);
   Fill("h_PFMET_phi",ev.METPhi(snu::KEvent::pfmet), weight);
-  Fill("h_nVertices", ev.nVertices(), weight);
+  Fill("h_nVertices", ev.nVertices(), weight); 
+  Fill("h_nInteractions", ev.PileUpInteractionsTrue(), weight);
   
 
   Fill("h_NoHFMET",ev.MET(snu::KEvent::nohf), weight);

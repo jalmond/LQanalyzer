@@ -26,7 +26,6 @@ ClassImp (ExampleAnalyzerDiMuon);
   */
 ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
   
-  rmcor = new rochcor2015();
   
   // To have the correct name in the log:                                                                                                                            
   SetLogName("ExampleAnalyzerDiMuon");
@@ -63,7 +62,6 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
   ///When METNoHF isfixed the default will be back to silver
   /// set to gold if you want to use gold json in analysis
   /// To set uncomment the line below:
-  //ResetLumiMask(snu::KEvent::gold);
 
 
   return;
@@ -76,9 +74,6 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
   if(!isData) weight*=MCweight;
   
 
-  /// Acts on data to remove bad reconstructed event 
-  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
-  
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -105,7 +100,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if(PassTrigger(triggerslist2, prescale))   FillHist("HLT_IsoMu20_v3", 1 , weight, 0. , 2., 2);
    
   
-   float trigger_ps_weight= ApplyPrescale("HLT_IsoMu20_v", TargetLumi,lumimask);
+   float trigger_ps_weight= WeightByTrigger("HLT_IsoMu20_v", TargetLumi);
    
    if(!PassTrigger(triggerslist, prescale)) return;
    FillCutFlow("TriggerCut", weight);
@@ -176,7 +171,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    float pileup_reweight=(1.0);
    if (!k_isdata) {
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
-     pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
+     pileup_reweight = eventbase->GetEvent().PileUpWeight();
      
    }
    

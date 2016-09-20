@@ -38,7 +38,6 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-  //if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);

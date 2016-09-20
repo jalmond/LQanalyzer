@@ -112,13 +112,12 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   
 }
 
-snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
+snu::KEvent SKTreeFiller::GetEventInfo(){
  
   snu::KEvent kevent;
 
   if(!LQinput){
     kevent = *k_inputevent;
-    kevent.SetJSON(js);
     if(k_cat_version < 3){
       if(!TString(kevent.CatVersion()).Contains("v7-4"))kevent.SetCatVersion(CatVersion);
     }
@@ -130,7 +129,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
   // New variable to set catversion. Add this to flat ntuples for next iteration
 
   kevent.SetCatVersion(CatVersion);
-  kevent.SetJSON(js);
+
   kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
@@ -188,29 +187,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   
-  if(isData){
-    if(k_cat_version > 2){
-      kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
-      kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
-    }
+  if(!isData){
+    kevent.SetPUWeight(snu::KEvent::central,double(puWeightGold));
+    kevent.SetPUWeight(snu::KEvent::down,double(puWeightGoldDn));
+    kevent.SetPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
   }
-  else{
-    if(k_cat_version > 2){
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::central,double(puWeightSilver));
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::down, double(puWeightSilverDn));
-      kevent.SetPUWeight(snu::KEvent::silver,snu::KEvent::up,  double(puWeightSilverUp));
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::central,double(puWeightGold));
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn));
-      kevent.SetPUWeight(snu::KEvent::gold,  snu::KEvent::up,  double(puWeightGoldUp));
-      
-      if(k_cat_version > 3){
-	if(puWeightGold_xs71000){
-	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::central,double(puWeightGold_xs71000));
-	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::down,double(puWeightGoldDn_xs71000));
-	  kevent.SetAltPUWeight(snu::KEvent::gold,  snu::KEvent::up,  double(puWeightGoldUp_xs71000));
-	}
-      }
-    }
 
     kevent.SetGenId(genWeight_id1, genWeight_id2);
     kevent.SetLHEWeight(lheWeight);
@@ -219,17 +200,14 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
     if(genWeight > 0.) kevent.SetWeight(1.);
     else kevent.SetWeight(-1.);
     
-    
-  }
-  kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
+    kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
   
   /// MET filter cuts/checks
 
   
   /// 
-  if(!isData)kevent.SetPileUpInteractionsTrue(nTrueInteraction);
-  else kevent.SetPileUpInteractionsTrue(-999.);
-  
+    kevent.SetPileUpInteractionsTrue(nTrueInteraction);
+      
   kevent.SetNVertices(nPV);
   kevent.SetNGoodVertices(nGoodPV);
   
@@ -239,9 +217,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
 
   kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
   kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
+  kevent.SetPassHBHENoiseIsoFilter(HBHENoiseIsoFilter);
   kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
   kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
-
+  kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
 
   return kevent;
 }
@@ -252,6 +231,7 @@ std::vector<KPhoton> SKTreeFiller::GetAllPhotons(){
   std::vector<KPhoton> photons;
 
   if(k_cat_version < 3) return photons;
+  if(k_cat_version > 4) return photons;
   
   if(!LQinput){
     for(std::vector<KPhoton>::iterator kit  = k_inputphotons->begin(); kit != k_inputphotons->end(); kit++){
@@ -853,6 +833,20 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     
     muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
+    if(k_cat_version > 4){
+      muon.SetRochPt(muon_roch_pt->at(ilep));
+      muon.SetRochEta(muon_roch_eta->at(ilep));
+      muon.SetRochPhi(muon_roch_phi->at(ilep));
+      muon.SetRochE(muon_roch_energy->at(ilep));
+      muon.SetRochM(muon_roch_m->at(ilep));
+    }
+    else{
+      muon.SetRochPt(muon_pt->at(ilep));
+      muon.SetRochEta(muon_eta->at(ilep));
+      muon.SetRochPhi(muon_phi->at(ilep));
+      muon.SetRochE(muon_energy->at(ilep));
+      muon.SetRochM(muon_m->at(ilep));
+    }
     muon.SetCharge(muon_q->at(ilep));
      
     m_logger << DEBUG << "Filling ms pt/eta ... " << LQLogger::endmsg;

@@ -58,8 +58,10 @@ void MakeDataInputFile(TString version=""){
 
 
   vector<TString> periods;
+  periods.push_back("B");
   periods.push_back("C");
   periods.push_back("D");
+  periods.push_back("E");
   
   TString output="/data2/DATA/cattoflat/Data/" + version + "/";
 

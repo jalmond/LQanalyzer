@@ -52,12 +52,6 @@ void ExampleAnalyzerElectronMuon::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist_em, "ElectronMuonEvents");
 
    /// only available in v7-6-X branch and newer
-   //// default lumimask is silver ////
-   //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
-   ///  When METNoHF is fixed the default will be back to silver
-   /// set to gold if you want to use gold json in analysis
-   /// To set uncomment the line below:
-   //ResetLumiMask(snu::KEvent::gold);
 
    return;
 }
@@ -70,10 +64,6 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
   
   /// Apply the gen weight
   weight*=MCweight;
-
-  /// Acts on data to remove bad reconstructed event
-  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
-
 
 
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
@@ -110,7 +100,7 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
   
   float pileup_reweight (1.);
   if (MC_pu&&!k_isdata) {
-    pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
+    pileup_reweight = eventbase->GetEvent().PileUpWeight();
 
   }
   

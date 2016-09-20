@@ -20,8 +20,6 @@ KEvent::KEvent() :
   k_ngoodvertices(-999),
   k_pdf_id1(-999),
   k_pdf_id2(-999),
-  k_lumi_mask_silver(-999),
-  k_lumi_mask_gold(-999),
   k_pdf_weights(),
   k_scale_weights(),
   k_vertexX(-999.),
@@ -64,20 +62,13 @@ KEvent::KEvent() :
   k_passCSCHaloFilterTight(false),
   k_passEcalDeadCellTriggerPrimitiveFilter(false),
   k_passHBHENoiseFilter(false),
+  k_passHBHENoiseIsoFilter(false),
+  k_passTightHalo2016Filter(false),
   k_PileUpInteractionsTrue(-999.),
-  k_pu_silver_weight(-999.),
-  k_pu_silver_p_weight(-999.),
-  k_pu_silver_m_weight(-999.),
   k_pu_gold_weight(-999.),
   k_pu_gold_p_weight(-999.),
   k_pu_gold_m_weight(-999.),
-  k_pu_gold_xs71000_weight(-999.),
-  k_pu_gold_xs71000_p_weight(-999.),
-  k_pu_gold_xs71000_m_weight(-999.),
-
-  k_catversion(""),
-  k_lumimask(snu::KEvent::missing)
-
+  k_catversion("")
 {
 
 }
@@ -94,8 +85,6 @@ KEvent::KEvent(const KEvent& ev) :
   k_ngoodvertices(ev.k_ngoodvertices),
   k_pdf_id1(ev.k_pdf_id1),
   k_pdf_id2(ev.k_pdf_id2),
-  k_lumi_mask_silver(ev.k_lumi_mask_silver),
-  k_lumi_mask_gold(ev.k_lumi_mask_gold),
   k_pdf_weights(ev.k_pdf_weights),
   k_scale_weights(ev.k_scale_weights),
 
@@ -137,19 +126,13 @@ KEvent::KEvent(const KEvent& ev) :
   k_passCSCHaloFilterTight(ev.k_passCSCHaloFilterTight),
   k_passEcalDeadCellTriggerPrimitiveFilter(ev.k_passEcalDeadCellTriggerPrimitiveFilter),
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
+  k_passHBHENoiseIsoFilter(ev.k_passHBHENoiseIsoFilter),
+  k_passTightHalo2016Filter(ev.k_passTightHalo2016Filter),
   k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue),
-  k_pu_silver_weight(ev.k_pu_silver_weight),
-  k_pu_silver_p_weight(ev.k_pu_silver_p_weight),
-  k_pu_silver_m_weight(ev.k_pu_silver_m_weight),
   k_pu_gold_weight(ev.k_pu_gold_weight),
   k_pu_gold_p_weight(ev.k_pu_gold_p_weight),
   k_pu_gold_m_weight(ev.k_pu_gold_m_weight),
-  k_pu_gold_xs71000_weight(ev.k_pu_gold_xs71000_weight),
-  k_pu_gold_xs71000_p_weight(ev.k_pu_gold_xs71000_p_weight),
-  k_pu_gold_xs71000_m_weight(ev.k_pu_gold_xs71000_m_weight),
-
-  k_catversion(ev.k_catversion),
-  k_lumimask(ev.k_lumimask)
+  k_catversion(ev.k_catversion)
 
 {
 }
@@ -169,8 +152,6 @@ void KEvent::Reset()
   k_ngoodvertices= -999;
   k_pdf_id1=-999;
   k_pdf_id2=-999;
-  k_lumi_mask_silver=-999;
-  k_lumi_mask_gold=-999;
   k_vertexX= -999.;
   k_vertexY= -999.;
   k_vertexZ= -999.;
@@ -211,18 +192,14 @@ void KEvent::Reset()
   k_passCSCHaloFilterTight= false;
   k_passEcalDeadCellTriggerPrimitiveFilter= false;
   k_passHBHENoiseFilter= false;
+  k_passHBHENoiseIsoFilter= false;
+  k_passTightHalo2016Filter= false;
+  
   k_PileUpInteractionsTrue = -999.;
-  k_pu_silver_weight = -999.;
-  k_pu_silver_p_weight=-999.;
-  k_pu_silver_m_weight = -999.;
   k_pu_gold_weight = -999.;
   k_pu_gold_p_weight=-999.;
   k_pu_gold_m_weight = -999.;
-  k_pu_gold_xs71000_weight = -999.;
-  k_pu_gold_xs71000_p_weight=-999.;
-  k_pu_gold_xs71000_m_weight = -999.;
   k_catversion="";
-  k_lumimask=missing;
 
 }
 
@@ -242,8 +219,6 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pdf_weights = p.PdfWeights();
       k_scale_weights = p.ScaleWeights();
       
-      k_lumi_mask_silver = p.LumiMaskSilver();
-      k_lumi_mask_gold = p.LumiMaskGold();
       k_vertexX=p.VertexX();
       k_vertexY=p.VertexY();
       k_vertexZ=p.VertexZ();
@@ -284,18 +259,14 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passCSCHaloFilterTight = p.PassCSCHaloFilterTight();
       k_passEcalDeadCellTriggerPrimitiveFilter = p.PassEcalDeadCellTriggerPrimitiveFilter();
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
+      k_passHBHENoiseIsoFilter= p.PassHBHENoiseIsoFilter();
+      k_passTightHalo2016Filter= p.PassTightHalo2016Filter();
+
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
-      k_pu_silver_weight = p.PileUpWeight_Silver(central);	
-      k_pu_silver_p_weight= p.PileUpWeight_Silver(up);
-      k_pu_silver_m_weight= p.PileUpWeight_Silver(down);
       k_pu_gold_weight = p.PileUpWeight_Gold(central);
       k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
       k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
-      k_pu_gold_xs71000_weight = p.AltPileUpWeight_Gold(central);
-      k_pu_gold_xs71000_p_weight = p.AltPileUpWeight_Gold(up);
-      k_pu_gold_xs71000_m_weight = p.AltPileUpWeight_Gold(down);
       k_catversion = p.CatVersion();
-      k_lumimask = p.GetJSON();
     }
     
     return *this;
@@ -321,36 +292,25 @@ void KEvent::SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass){
 void KEvent::SetPassHBHENoiseFilter(bool pass){
   k_passHBHENoiseFilter= pass;
 }
+void KEvent::SetPassHBHENoiseIsoFilter(bool pass){
+  k_passHBHENoiseIsoFilter= pass;
+}
+
+void KEvent::SetPassTightHalo2016Filter(bool pass){
+  k_passTightHalo2016Filter= pass;
+}
+
 
 void KEvent::SetPileUpInteractionsTrue(double npu){
   k_PileUpInteractionsTrue = npu;
 }
 
-void KEvent::SetPUWeight(json type, syst_dir sys, double puw){
-  if(type==silver){
-    if(sys==central)  k_pu_silver_weight = puw;
-    if(sys==up)  k_pu_silver_p_weight = puw;
-    if(sys==down)  k_pu_silver_m_weight = puw;
-  }
-  else  if(type==gold){
-    if(sys==central)  k_pu_gold_weight = puw;
-    if(sys==up)  k_pu_gold_p_weight = puw;
-    if(sys==down)  k_pu_gold_m_weight = puw;
-  }
+void KEvent::SetPUWeight( syst_dir sys, double puw){
+  if(sys==central)  k_pu_gold_weight = puw;
+  else if(sys==up)  k_pu_gold_p_weight = puw;
+  else if(sys==down)  k_pu_gold_m_weight = puw;
   else {std::cout<< "PileUp weight not set correctly" << std::endl; exit(1);}
 
-}
-
-void KEvent::SetAltPUWeight(json type, syst_dir sys, double puw){
-  if(type==gold){
-    if(sys==central)  k_pu_gold_xs71000_weight = puw;
-    if(sys==up)  k_pu_gold_xs71000_p_weight = puw;
-    if(sys==down)  k_pu_gold_xs71000_m_weight = puw;
-  }
-  else {std::cout<< "PileUp weight not set correctly" << std::endl; exit(1);}
-
-
-  
 }
 
 void KEvent::SetWeight(double mcweight){
@@ -440,48 +400,25 @@ void KEvent::SetLumiSection(int ls){
 }
 
 
-void KEvent::SetLumiMask(json type, int mask){
-  if(type==silver) k_lumi_mask_silver=mask;
-  else if(type==gold) k_lumi_mask_gold=mask;
-  else {std::cout<< "LumiMask not set correctly" << std::endl; exit(1);}
-}
+
 void KEvent::SetIsGoodEvent(int nvert){
   if(nvert > 0) k_isgoodevent = true;
   else k_isgoodevent = false;
 }
 
-void KEvent::SetJSON(json js){
-  k_lumimask = js;
-}
-
-Bool_t KEvent::LumiMask(json js){
-
-  if(js== silver){
-    if(k_lumi_mask_silver==1) return true;
-    else return false;
-  }
-  else if(js==gold){
-    if(k_lumi_mask_gold==1) return true;
-    else return false;
-  }
-  else if(js==missing) return true;
-  else return false;
-}
 
 
-Double_t KEvent::PileUpWeight(json js, syst_dir sys){
-  if(k_lumimask==missing) { cout << "No lumimasl " << endl; return -999;}
+Double_t KEvent::PileUpWeight(syst_dir sys){
+
   if(TString(k_catversion).Contains("v7-4-")) return -999;
-  else if(js==silver) return PileUpWeight_Silver(sys);
-  else if(js==gold) return PileUpWeight_Gold(sys);
-  else return -999;
+  return PileUpWeight_Gold(sys);
+  
 }
 
-Double_t KEvent::AltPileUpWeight(json js, syst_dir sys){
-  if(k_lumimask==missing) { cout << "No lumimasl " << endl; return -999;}
-  else if(js==silver) return -999;
-  else if(js==gold) return AltPileUpWeight_Gold(sys);
-  else return -999;
+Double_t KEvent::AltPileUpWeight(syst_dir sys){
+  
+  return AltPileUpWeight_Gold(sys);
+
 }
 
 ///New forCAT v7-4-5 (MET systematics in one function)
@@ -531,7 +468,6 @@ Double_t KEvent::PFSumETShifted(met_syst type,syst_dir dir) const{
 
 Double_t KEvent::MET(met_type type) const{
   
-  if(k_lumimask == silver ) return k_NoHF_MET;
 
   if (type == pfmet) return k_PF_MET;
   else if(type == nohf) return k_NoHF_MET;
@@ -541,7 +477,6 @@ Double_t KEvent::MET(met_type type) const{
  
 Double_t KEvent::METPhi(met_type type) const{
   
-  if(k_lumimask == silver ) return k_NoHF_METphi;
 
   if (type == pfmet) return k_PF_METphi;
   else if(type == nohf) return k_NoHF_METphi;
@@ -551,7 +486,6 @@ Double_t KEvent::METPhi(met_type type) const{
 
 Double_t KEvent::SumET(met_type type) const{
   
-  if(k_lumimask == silver ) return k_NoHF_SumET;
  
   if (type == pfmet) return k_PF_SumET;
   else if(type == nohf) return k_NoHF_SumET;

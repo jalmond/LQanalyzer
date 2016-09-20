@@ -25,7 +25,8 @@ class LQController  {
 		    v763=4,
 		    v764=5,
 		    v765=6,
-		    v766=7};
+		    v766=7,
+		    v801=8};
 
   
   //// constructors

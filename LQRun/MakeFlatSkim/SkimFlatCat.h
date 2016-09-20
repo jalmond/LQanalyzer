@@ -47,7 +47,9 @@ public :
    std::vector<std::string>  *muon_trigmatch;
    std::vector<std::string>  *electron_trigmatch;
    Bool_t          IsData;
+   Bool_t          Flag_globalTightHalo2016Filter;
    Bool_t          HBHENoiseFilter;
+   Bool_t          HBHENoiseIsoFilter;
    Bool_t          CSCTightHaloFilter;
    Bool_t          goodVertices;
    Bool_t          eeBadScFilter;
@@ -188,6 +190,12 @@ public :
    vector<double>  *muon_normchi;
    vector<double>  *muon_phi;
    vector<double>  *muon_pt;
+
+   vector<double>  *muon_roch_pt;
+   vector<double>  *muon_roch_phi;
+   vector<double>  *muon_roch_energy;
+   vector<double>  *muon_roch_eta;
+   vector<double>  *muon_roch_m;
    vector<int>  *muon_q;
    vector<double>  *muon_relIso03;
    vector<double>  *muon_relIso04;
@@ -254,7 +262,9 @@ public :
    TBranch        *b_gen_motherindex;   //!
    TBranch        *b_CatVersion;   //!
    TBranch        *b_IsData;   //!
+   TBranch        *b_Flag_globalTightHalo2016Filter;   //!                                     
    TBranch        *b_HBHENoiseFilter;   //!                                     
+   TBranch        *b_HBHENoiseIsoFilter;   //!                                     
    TBranch        *b_CSCTightHaloFilter;   //!                                  
    TBranch        *b_goodVertices;   //!                                        
    TBranch        *b_eeBadScFilter;   //!                                       
@@ -388,6 +398,13 @@ public :
    TBranch        *b_muon_x;   //!
    TBranch        *b_muon_y;   //!
    TBranch        *b_muon_z;   //!
+
+   TBranch        *b_muon_roch_energy;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_muon_roch_eta;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_muon_roch_phi;   //!                                                                                                                                                                                                                                       
+   TBranch        *b_muon_roch_pt;   //!                                                                                                                                                                                                                                        
+   TBranch        *b_muon_roch_m;   //!                                                                                                                                                                                                                                         
+
 
    TBranch        *b_electrons_electronID_loose;   //!
    TBranch        *b_electrons_electronID_medium;   //!
@@ -596,6 +613,13 @@ void SkimFlatCat::Init(TTree *tree)
    muon_phi = 0;
    muon_pt = 0;
    muon_q = 0;
+
+   muon_roch_phi = 0;
+   muon_roch_pt = 0;
+   muon_roch_energy = 0;
+   muon_roch_eta = 0;
+   muon_roch_m = 0;
+
    muon_relIso03 = 0;
    muon_relIso04 = 0;
    muon_shiftedEdown = 0;
@@ -668,7 +692,9 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("gen_motherindex", &gen_motherindex, &b_gen_motherindex);
    fChain->SetBranchAddress("CatVersion", &CatVersion, &b_CatVersion);
    fChain->SetBranchAddress("IsData", &IsData, &b_IsData);
+   fChain->SetBranchAddress("Flag_globalTightHalo2016Filter", &Flag_globalTightHalo2016Filter, &b_Flag_globalTightHalo2016Filter);
    fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
+   fChain->SetBranchAddress("HBHENoiseIsoFilter", &HBHENoiseIsoFilter, &b_HBHENoiseIsoFilter);
    fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
    fChain->SetBranchAddress("goodVertices", &goodVertices, &b_goodVertices);
    fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
@@ -788,6 +814,14 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("muon_normchi", &muon_normchi, &b_muon_normchi);
    fChain->SetBranchAddress("muon_phi", &muon_phi, &b_muon_phi);
    fChain->SetBranchAddress("muon_pt", &muon_pt, &b_muon_pt);
+   
+   fChain->SetBranchAddress("muon_roch_energy", &muon_roch_energy, &b_muon_roch_energy);
+   fChain->SetBranchAddress("muon_roch_eta", &muon_roch_eta, &b_muon_roch_eta);
+   fChain->SetBranchAddress("muon_roch_m", &muon_roch_m, &b_muon_roch_m);
+   fChain->SetBranchAddress("muon_roch_phi", &muon_roch_phi, &b_muon_roch_phi);
+   fChain->SetBranchAddress("muon_roch_pt", &muon_roch_pt, &b_muon_roch_pt);
+
+
    fChain->SetBranchAddress("muon_q", &muon_q, &b_muon_q);
    fChain->SetBranchAddress("muon_relIso03", &muon_relIso03, &b_muon_relIso03);
    fChain->SetBranchAddress("muon_relIso04", &muon_relIso04, &b_muon_relIso04);
@@ -932,6 +966,13 @@ void SkimFlatCat::SlimMuons()
     muon_dz->erase(muon_dz->begin() + remove_obj.at(im) - nrm);
     muon_energy->erase(muon_energy->begin() + remove_obj.at(im) - nrm);
     muon_m->erase(muon_m->begin() + remove_obj.at(im) - nrm);
+
+    muon_roch_pt->erase(muon_roch_pt->begin() + remove_obj.at(im) - nrm);
+    muon_roch_eta->erase(muon_roch_eta->begin() + remove_obj.at(im) - nrm);
+    muon_roch_energy->erase(muon_roch_energy->begin() + remove_obj.at(im) - nrm);
+    muon_roch_m->erase(muon_roch_m->begin() + remove_obj.at(im) - nrm);
+    muon_roch_phi->erase(muon_roch_phi->begin() + remove_obj.at(im) - nrm);
+
     muon_normchi->erase(muon_normchi->begin() + remove_obj.at(im) - nrm);
     muon_phi->erase(muon_phi->begin() + remove_obj.at(im) - nrm);
     muon_q->erase(muon_q->begin() + remove_obj.at(im) - nrm);

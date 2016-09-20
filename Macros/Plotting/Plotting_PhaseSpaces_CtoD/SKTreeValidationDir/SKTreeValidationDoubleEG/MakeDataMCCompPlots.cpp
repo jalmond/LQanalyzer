@@ -62,7 +62,7 @@ int MakeCutFlow_Plots(string configfile){
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
   
-  MakeCutFlow(histdir);  
+  //MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
 
   return 1;
@@ -509,7 +509,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legorder.push_back("DY#rightarrow ll; m(ll) > 50");
   legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
   legorder.push_back("WZ,ZZ,WW");
-  //legorder.push_back("QCD");
+  legorder.push_back("QCD");
   //legorder.push_back("Mismeas. Charge Background");
   legorder.push_back("Misid. Lepton Background");
   
@@ -609,25 +609,29 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("singletop_t_Powheg",0.25));
     list.push_back(make_pair("singletop_tbarW_Powheg",0.25));
     list.push_back(make_pair("singletop_tW_Powheg",0.25));
-    list.push_back(make_pair("TT_MG5",0.25));
-    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
-    list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
-    list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
-    list.push_back(make_pair("ttZToLLNuNu_MCatNLO",0.25));
+    list.push_back(make_pair("TT_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJets",0.25));
+    list.push_back(make_pair("ttZJets",0.25));
   }
   if(sample.Contains("ttbar")){
-    list.push_back(make_pair("TT_MG5",0.25));
-    list.push_back(make_pair("ttWJetsToLNu",0.25));
-    list.push_back(make_pair("ttWJetsToQQ",0.25));
-    list.push_back(make_pair("ttZToLLNuNu",0.25));
-    list.push_back(make_pair("ttZToQQ",0.25));
+    list.push_back(make_pair("TT_MCatNLO",0.25));
+    list.push_back(make_pair("ttWJets",0.25));
+    list.push_back(make_pair("ttZJets",0.25));
   }
   
   if(sample.Contains("qcd"))
     {
-      list.push_back(make_pair("QCD_DoubleEM_30to40_pythia8",0.30));
-      list.push_back(make_pair("QCD_DoubleEM_30toInf_pythia8",0.30));
-      list.push_back(make_pair("QCD_DoubleEM_40toInf_pythia8",0.30));
+      list.push_back(make_pair("QCD_mu20to30_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu30to50_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu50to80_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu80to120_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu120to170_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu170to300_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu300to470_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu470to600_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu600to800_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu800to1000_pythia8",0.30));
+             list.push_back(make_pair("QCD_mu1000toINF_pythia8",0.30));
     }
 
   
@@ -636,10 +640,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("WZ_pythia8",0.15));
     list.push_back(make_pair("ZZ_pythia8",0.15));
     list.push_back(make_pair("WW_pythia8",0.15));
-    list.push_back(make_pair("WpWp_qcd_madgraph",0.15));
-    list.push_back(make_pair("WpWp_madgraph",0.15));
     list.push_back(make_pair("WZZ_MCatNLO",0.2)); 
-    list.push_back(make_pair("WWZ_MCatNLO",0.2)); 
     list.push_back(make_pair("ZZZ_MCatNLO",0.2)); 
 }
   if(sample.Contains("ww")){
@@ -662,15 +663,12 @@ vector<pair<TString,float> >  InitSample (TString sample){
     list.push_back(make_pair("TTWW",0.25));
     list.push_back(make_pair("TTG",0.25));
     list.push_back(make_pair("ZZZ",0.25));
-    list.push_back(make_pair("WWZ",0.25));
     list.push_back(make_pair("WWG",0.25));
     list.push_back(make_pair("HtoWW",0.25));
     list.push_back(make_pair("HtoTauTau",0.22));
     list.push_back(make_pair("ggHtoZZ",0.22));
     list.push_back(make_pair("WZ_py",0.12));
     list.push_back(make_pair("ZZ_py",0.09));
-    list.push_back(make_pair("SSWmWm",0.25));
-    list.push_back(make_pair("SSWpWp",0.25));
     list.push_back(make_pair("WW_dp",0.5));
     list.push_back(make_pair("ttW",0.25));
     list.push_back(make_pair("ttZ",0.25));

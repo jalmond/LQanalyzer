@@ -25,7 +25,7 @@ Iter next(Iter iter)
 
 void MakeInputListForSubmitScript(){
     
-  map<TString, TString> lqmap_tmp = GetLQMap();
+  map<TString, TString> lqmap_tmp = GetLQMap2016();
   map<TString, TString> lqmap;
   for(std::map<TString, TString>::iterator mit =lqmap_tmp.begin(); mit != lqmap_tmp.end();++mit){
     TString def_version = TString(getenv("CATVERSION"));
@@ -239,9 +239,9 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a dy_mcatnlo=('DY10to50_MCatNLO' 'DY50plus_MCatNLO') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a dilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MG5' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'ttWJetsToLNu_MCatNLO' 'ttWJetsToQQ_MCatNLO' 'ttZToQQ_MCatNLO' 'TTG_MCatNLO' 'ttZToLLNuNu_MCatNLO' 'WpWp_madgraph' 'WpWp_qcd_madgraph' 'ttHnobb_Powheg' 'ttHtobb_Powheg' 'ZZZ_MCatNLO' 'WZZ_MCatNLO')" << endl;
+  lumi_file << "declare -a dilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'ttWJetsToLNu_MCatNLO' 'WWW_MCatNLO' 'ttWJets' 'ttZJets' 'ttHnobb_Powheg' 'ttHtobb_Powheg' 'ZZZ_MCatNLO' 'WZZ_MCatNLO')" << endl;
   
-  lumi_file << "declare -a trilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MG5' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'ZZ_llnunu_powheg' 'ZZ_llqq_MCatNLO' 'ZZ_llll_MCatNLO' 'ZZ_llll_powheg' 'WJets_MCatNLO' 'WW_llnn_powheg' 'WZ_lllnu_powheg' 'WZ_lllnu_MCatNLO' 'WZ_llqq_MCatNLO' 'WN_lllnu_powheg' 'WZZ_MCatNLO' 'ZZZ_MCatNLO')" << endl;
+  lumi_file << "declare -a trilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO5' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'ZZ_pythia8' 'WJets_MCatNLO'  'WZZ_MCatNLO' 'ZZZ_MCatNLO')" << endl;
 
   lumi_file << "" << endl;
 
@@ -303,7 +303,7 @@ void MakeInputListForSubmitScript(){
   TString user = TString(getenv("USER"));
 
 
-  string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_v7-6-6.sh";
+  string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_" + string(def_version) +".sh";
 
   if(user.Contains("jalmond"))
     gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").Data());

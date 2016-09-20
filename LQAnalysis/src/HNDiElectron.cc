@@ -95,12 +95,6 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist_ee, "500MassRegion");
    MakeCleverHistograms(sighist_ee, "1500MassRegion");
    /// only available in v7-6-X branch and newer
-   //// default lumimask is silver ////
-   //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
-   ///When METNoHF isfixed the default will be back to silver
-   /// set to gold if you want to use gold json in analysis
-   /// To set uncomment the line below:
-   //ResetLumiMask(snu::KEvent::gold);
    
    return;
 }
@@ -117,10 +111,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(!isData)weight*= MCweight;
   
-  /// Apply json file if gold json is used. if lumimask == silver this does nothing  
-  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
-
-
   if(IsSignal()){
     //ListTriggersAvailable();
     vector<int> pt1;
@@ -164,6 +154,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     lists_triggers.push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
     lists_triggers.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
     lists_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+    lists_triggers.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_L1JetTauSeeded_v1");
     for(unsigned int i=0; i < lists_triggers.size(); i++){
       FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator_nojet", lists_triggers );
     }
@@ -241,9 +232,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(!PassTrigger(triggerslist, prescale)) return;
   
-  /// Target lumi = total lumi in json file. 
-  /// ApplyPrescale reweights the MC to the luminosity of the trigger you are using
-
 
   if(PassTrigger(triggerslist, prescale)){
     FillCutFlow("TriggerCut", weight);
@@ -251,7 +239,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   /// trigger_weight is for MC only: retruns 1 if data.
   /// Checks the luminosity of the trigger and returns weight that applied to 'weight' will correct for difference in luinosity of json file used in data
-  float trigger_ps_weight= ApplyPrescale(analysis_trigger, TargetLumi,lumimask);
+  float trigger_ps_weight= WeightByTrigger(analysis_trigger, TargetLumi);
 
   FillHist("PSWeight" , trigger_ps_weight, 1., 0. , 2., 200);
 
@@ -306,7 +294,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   float pileup_reweight (1.);
   if (!k_isdata) {
     /// use silver or gold
-    pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
+    pileup_reweight = eventbase->GetEvent().PileUpWeight();
   }
   FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
   

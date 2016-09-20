@@ -27,7 +27,6 @@
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false) {
 
 
-  lumimask= snu::KEvent::missing;
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
@@ -134,8 +133,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
 
     string lqdir = getenv("LQANALYZER_DIR");
-  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
-  rmcor = new rochcor2015();
+    m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
   /// List of taggers
@@ -150,79 +148,146 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   v_wps.push_back("Tight");
   MapBTagSF = SetupBTagger(vtaggers,v_wps);
 
+  if(1){
+    ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2015.txt").c_str());
+    if(!runlumi) {
+      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2015.txt'), exiting ..." << endl;
+      exit(EXIT_FAILURE);
+    }
+    string lline;
+    int x=1;
+    while(getline(runlumi,lline) ){
+      std::istringstream is( lline );
+      
+      string trigname;
+      float trig_lumi;
+      int run;
+      is >> trigname;
+      if(trigname=="###" ) continue;
+      if(trigname=="END") break;
+      if(trigname=="run" ){
+	is >> run;
+	is >> trig_lumi;
+	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	
+	mapLumi[run] = trig_lumi;
+	continue;
+      }
+      if(trigname=="block" ){
+	is >> run;
+	is >> trig_lumi;
+	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	
+	mapLumiPerBlock[run] = trig_lumi;
+	ostringstream ss;
+	ss << x;
+	mapLumiNamePerBlock[run]="Lumi"+ss.str();
+	x++;
+	continue;
+      }
+      if(trigname=="bad" ){
+	is >> run;
+	is >> trig_lumi;
+	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	mapBadLumi[run] = trig_lumi;
+	continue;
+      }
+    }
+    runlumi.close();
+  }
+  if(1){
+    ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2016.txt").c_str());
+    if(!runlumi) {
+      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2016.txt'), exiting ..." << endl;
+      exit(EXIT_FAILURE);
+    }
+    string lline;
+    int x=1;
+    while(getline(runlumi,lline) ){
+      std::istringstream is( lline );
+      
+      string trigname;
+      float trig_lumi;
+      int run;
+      is >> trigname;
+      if(trigname=="###" ) continue;
+      if(trigname=="END") break;
+      if(trigname=="run" ){
+	is >> run;
+	is >> trig_lumi;
+	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	
+	mapLumi2016[run] = trig_lumi;
+	continue;
+      }
+      if(trigname=="block" ){
+	is >> run;
+	is >> trig_lumi;
+	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	
+	mapLumiPerBlock2016[run] = trig_lumi;
+	ostringstream ss;
+	ss << x;
+	mapLumiNamePerBlock2016[run]="Lumi"+ss.str();
+	x++;
+	continue;
+      }
+
+    }
+    runlumi.close();
+  }
   
-  ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion4.txt").c_str());
-  if(!runlumi) {
-    cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion4.txt'), exiting ..." << endl;
-    exit(EXIT_FAILURE);
-  }
-  string lline;
-  int x=1;
-  while(getline(runlumi,lline) ){
-    std::istringstream is( lline );
-
-    string trigname;
-    float trig_lumi;
-    int run;
-    is >> trigname;
-    if(trigname=="###" ) continue;
-    if(trigname=="END") break;
-    if(trigname=="run" ){
-      is >> run;
-      is >> trig_lumi;
-      cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
-      
-      mapLumi[run] = trig_lumi;
-      continue;
-    }
-    if(trigname=="block" ){
-      is >> run;
-      is >> trig_lumi;
-      cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
-      
-      mapLumiPerBlock[run] = trig_lumi;
-      ostringstream ss;
-      ss << x;
-      mapLumiNamePerBlock[run]="Lumi"+ss.str();
-      x++;
-      continue;
-    }
-    if(trigname=="bad" ){
-      is >> run;
-      is >> trig_lumi;
-      cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
-      mapBadLumi[run] = trig_lumi;
-      continue;
-    }
-  }
-  runlumi.close();
-
-
   cout << "reading luminosity file" << endl;
-
-  ifstream triglumi((lqdir + "/data/rootfiles/triggers_catversion4.txt").c_str());
-  if(!triglumi) {
-    cerr << "Did not find "+lqdir + "'data/rootfiles/triggers_catversion4.txt'), exiting ..." << endl;
-    exit(EXIT_FAILURE);
-  }
-  string sline;
-  
-  cout << "Trigname : Lumi pb-1" << endl;
-  while(getline(triglumi,sline) ){
-    std::istringstream is( sline );
+  if(1){
+    ifstream triglumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
+    if(!triglumi) {
+      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
+      exit(EXIT_FAILURE);
+    }
+    string sline;
     
-    string trigname;
-    float trig_lumi;
-    is >> trigname;
-    if(trigname=="###" ) continue;
-    is >> trig_lumi;
-
-    if(trigname=="END") break;
-    cout << trigname << " " << trig_lumi << endl;
-    trigger_lumi_map_cat4[TString(trigname)] = trig_lumi;
-    continue;
+    cout << "Trigname : Lumi pb-1" << endl;
+    while(getline(triglumi,sline) ){
+      std::istringstream is( sline );
+      
+      string trigname;
+      float trig_lumi;
+      is >> trigname;
+      if(trigname=="###" ) continue;
+      is >> trig_lumi;
+      
+      if(trigname=="END") break;
+      cout << trigname << " " << trig_lumi << endl;
+      trigger_lumi_map_cat2015[TString(trigname)] = trig_lumi;
+      continue;
+    }
+    triglumi.close();
   }
-  triglumi.close();
+  if(1){
+    ifstream triglumi2016((lqdir + "/data/rootfiles/triggers_catversion2016_801.txt").c_str());
+    if(!triglumi2016) {
+      cerr << "Did not find "+lqdir + "'data/rootfiles/triggers_catversion2016_801.txt'), exiting ..." << endl;
+      exit(EXIT_FAILURE);
+    }
+    string sline2016;
+    
+    cout << "Trigname : Lumi pb-1" << endl;
+    while(getline(triglumi2016,sline2016) ){
+      std::istringstream is( sline2016 );
+      
+      string trigname;
+      float trig_lumi;
+      is >> trigname;
+      if(trigname=="###" ) continue;
+      is >> trig_lumi;
+      
+      if(trigname=="END") break;
+      cout << trigname << " " << trig_lumi << endl;
+      trigger_lumi_map_cat2016[TString(trigname)] = trig_lumi;
+      continue;
+    }
+    triglumi2016.close();
+  }
   
   
 }
@@ -767,115 +832,158 @@ double AnalyzerCore::ElectronRecoScaleFactor(vector<snu::KElectron> el){
   return sf;
 }
 
-float AnalyzerCore::ApplyPrescale(vector<TString> triggernames, float tlumi, snu::KEvent::json flag){
-  
-  float trigps= -1.;
-  for(unsigned int i=0; i < triggernames.size() ; i++){
-    if(ApplyPrescale(triggernames.at(i), tlumi, flag) > trigps) trigps = ApplyPrescale(triggernames.at(i),tlumi, flag) ;
+float AnalyzerCore::WeightByTrigger(vector<TString> triggernames, float tlumi){
+
+  if(isData){
+    for(unsigned int i=0; i < triggernames.size() ; i++){
+       if(!k_channel.Contains("DoubleMuon")){
+	if(triggernames.at(i).Contains("HLT_Mu17_Mu8_DZ_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_Mu8_SameSign_DZ_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_TrkIsoVVL_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu8_TrkIsoVVL_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_TripleMu_12_10_5")) return -99999.;
+      }
+      if(!k_channel.Contains("SingleMuon")){
+	if(triggernames.at(i).Contains("HLT_Mu8_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu20_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu50_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_IsoMu22_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_IsoTkMu22_")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_IsoMu20_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_IsoTkMu20_")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_IsoMu24_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_IsoTkMu24_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu24_eta2p1_v" )) return -99999.;
+      }
+      if(!k_channel.Contains("DoubleEG")){
+	if(triggernames.at(i).Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return -99999.;
+      }
+      if(!k_channel.Contains("SingleElectron")){
+	// Single Electon                                                                                                                                                       
+	if(triggernames.at(i).Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele23_WPLoose_Gsf_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele27_WPTight_Gsf_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele27_eta2p1_WPLoose_Gsf_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele25_eta2p1_WPTight_Gsf_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Ele45_WPLoose_Gsf_v")) return -99999.;
+      }
+      if(!k_channel.Contains("MuonEG")){
+	if(triggernames.at(i).Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return -99999.;
+	if(triggernames.at(i).Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v")) return -99999.;
+      }
+    }
+    return 1.;
   }
 
-  if(trigps  > 1.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be > 1, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
+
+  float trigps= -1.;
+  for(unsigned int i=0; i < triggernames.size() ; i++){
+    if(WeightByTrigger(triggernames.at(i), tlumi) > trigps) trigps = WeightByTrigger(triggernames.at(i),tlumi) ;
+  }
+
+  //if(trigps  > 1.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be > 1, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
   if(trigps  < 0.) {m_logger << ERROR << "Error in getting weight for trigger prescale. It cannot be < 0, this means trigger lumi >> total lumi"  << LQLogger::endmsg; exit(0);}
   
   return trigps;
  
 }
 
-float AnalyzerCore::ApplyPrescale(TString triggername, float tlumi, snu::KEvent::json flag){
+float AnalyzerCore::WeightByTrigger(TString triggername, float tlumi){
 
   /// Function applies weight to MC 
   /// Depends on trigger 
   /// 
 
   if(isData) return 1.;
-  if(flag ==  snu::KEvent::gold){
-
-    //  brilcalc lumi -u /pb 
-    // --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json 
-    // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt 
-    //--hltpath ""
-
-    /// NUMBERS FROM GetLumi_Triggers.py SCRIPT
-
-    /// In v766 path lumi is corrected for removal of bad beamspot LS
-    // https://github.com/vallot/CATTools/commit/aae3e60b194b1bacf2595a33c8fa27f411dac16b
-    if(k_cat_version == 4){
-      for(map<TString, float>::iterator mit = trigger_lumi_map_cat4.begin(); mit != trigger_lumi_map_cat4.end(); mit++){
-      	if(triggername.Contains(mit->first)) return (mit->second / tlumi);
-      }
-      m_logger << ERROR << "Error in getting weight for trigger prescale. Trigname is not correct or not in map"  << LQLogger::endmsg; exit(0);
+  //  brilcalc lumi -u /pb 
+  // --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json 
+  // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt 
+  //--hltpath ""
+  
+  /// NUMBERS FROM GetLumi_Triggers.py SCRIPT
+  
+  /// In v766 path lumi is corrected for removal of bad beamspot LS
+  // https://github.com/vallot/CATTools/commit/aae3e60b194b1bacf2595a33c8fa27f411dac16b
+  if(k_cat_version == 5){
+    for(map<TString, float>::iterator mit = trigger_lumi_map_cat2016.begin(); mit != trigger_lumi_map_cat2016.end(); mit++){
+      if(triggername.Contains(mit->first)) return (mit->second / tlumi);
     }
-    else if(k_cat_version < 4){
-      
-      if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858)/tlumi);
-      else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617)/tlumi);
-      else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
-    
-      // Single Electon
-      else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.596)/tlumi);
-      else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489 + 9.613)/tlumi);
-      else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+4.368)/tlumi);
-      else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+49.594)/tlumi);
-      else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+2.214)/tlumi);
-      else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+5.497)/tlumi);
-      else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.395)/tlumi);
-      else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.791+0.133)/tlumi);
-      else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf_v")) return ((16.548+1364.998+934.860)/tlumi);
-
-      // TriLepton Electron
-      else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2300.617)/tlumi);
-    
-      /// Muon Triggers
-      // Double Muon
-      else  if(triggername.Contains("HLT_Mu17_Mu8_DZ_v"))  return (151.616/tlumi);
-      else  if(triggername.Contains("HLT_Mu17_Mu8_SameSign_DZ_v"))  return (2318.348/tlumi);
-      else  if(triggername.Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return( (2318.348) /tlumi);
-      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
-      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
-      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
-      else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
-      // single muon
-      else  if(triggername.Contains("HLT_Mu8_v")) return ((0.001+0.763)/tlumi);
-      else  if(triggername.Contains("HLT_Mu17_v")) return ((218.121)/tlumi);
-      else  if(triggername.Contains("HLT_Mu20_v")) return (108.842/tlumi);
-      else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801) /tlumi);
-
-      /// multilepton
-      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
-      else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858)/tlumi);
-      else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
-      else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858) /tlumi);
-      else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617) /tlumi);
-      else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617) /tlumi);
-      else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( 2318.348 /tlumi);
-      else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617) /tlumi);
+    m_logger << ERROR << "Error in getting weight for trigger prescale. Trigname is not correct or not in map"  << LQLogger::endmsg; exit(0);
+  }
+  else if(k_cat_version == 4){
+    for(map<TString, float>::iterator mit = trigger_lumi_map_cat2015.begin(); mit != trigger_lumi_map_cat2015.end(); mit++){
+      if(triggername.Contains(mit->first)) return (mit->second / tlumi);
     }
+    m_logger << ERROR << "Error in getting weight for trigger prescale. Trigname is not correct or not in map"  << LQLogger::endmsg; exit(0);
   }
-  else if(flag ==  snu::KEvent::silver) {
-
-    //  brilcalc lumi -u /pb
-    // --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json
-    // -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_silver.txt
-    //--hltpath ""
-    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2672.217)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2672.976)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2449.620)/tlumi);
-
-    // Single Lepton
-    else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.609)/tlumi);
-    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+5.113)/tlumi);
-    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+11.006)/tlumi);
-    else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+58.056)/tlumi);
-    else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+3.987)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+6.428)/tlumi);
-    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.968)/tlumi);
-
-    else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.133+6.771)/tlumi);
-    // TriLepton
-    else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2672.976)/tlumi);
-
-    //// Fill when silver json file is  usable  
+  else if(k_cat_version < 4){
+    
+    if(triggername.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((16.689+2299.858)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return ((17.731+2300.617)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((16.794+2077.261)/tlumi);
+    
+    // Single Electon
+    else  if(triggername.Contains("HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v")) return ((0.013+0.596)/tlumi);
+    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489 + 9.613)/tlumi);
+    else  if(triggername.Contains("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return ((0.231+4.368)/tlumi);
+    else  if(triggername.Contains("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")) return ((1.094+49.594)/tlumi);
+    else  if(triggername.Contains("HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((2.489+2.214)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return ((0.254+5.497)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((0.068+3.395)/tlumi);
+    else  if(triggername.Contains("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v")) return ((5.791+0.133)/tlumi);
+    else  if(triggername.Contains("HLT_Ele23_WPLoose_Gsf_v")) return ((16.548+1364.998+934.860)/tlumi);
+    
+    // TriLepton Electron
+    else  if(triggername.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")) return ((17.731+2300.617)/tlumi);
+    
+    /// Muon Triggers
+    // Double Muon
+    else  if(triggername.Contains("HLT_Mu17_Mu8_DZ_v"))  return (151.616/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_Mu8_SameSign_DZ_v"))  return (2318.348/tlumi);
+    else  if(triggername.Contains("HLT_Mu20_Mu10_SameSign_DZ_v")) return( (2318.348) /tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return (2318.348/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"))  return (1030.848/tlumi);
+    // single muon
+    else  if(triggername.Contains("HLT_Mu8_v")) return ((0.001+0.763)/tlumi);
+    else  if(triggername.Contains("HLT_Mu17_v")) return ((218.121)/tlumi);
+    else  if(triggername.Contains("HLT_Mu20_v")) return (108.842/tlumi);
+    else  if(triggername.Contains("HLT_IsoMu20_v")) return ((416.746+1899.801) /tlumi);
+    
+    /// multilepton
+    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
+    else if(triggername.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))  return( (16.689+2299.858)/tlumi);
+    else if(triggername.Contains("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (17.731+2300.617)/tlumi);
+    else if(triggername.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return( (16.689+2299.858) /tlumi);
+    else if(triggername.Contains("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v")) return( (17.731+2300.617) /tlumi);
+    else if(triggername.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")) return( (17.731+2300.617) /tlumi);
+    else if(triggername.Contains("HLT_TripleMu_12_10_5")) return( 2318.348 /tlumi);
+    else if(triggername.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return( (17.731+2300.617) /tlumi);
   }
+  
+
   return 1.;
 }
 
@@ -940,7 +1048,6 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistTriLep.clear();
 
-  delete   rmcor ;
   
   delete m_fakeobj;
   delete ElectronSF_Tight;
@@ -988,19 +1095,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
 
   }
   
-  /// Default silver
-  /// For v-7-6-2 default is set to gold because met is broken
-
-  if(!reset_lumi_mask) {
-    if(k_cat_version == 3) lumimask = snu::KEvent::gold;
-    else if(k_cat_version == 4) lumimask = snu::KEvent::gold;
-
-    /// If version of SKTree is v-7-4-X then no lumi mask is needed. Silver json is only present
-    else if(k_cat_version < 3) lumimask = snu::KEvent::missing;
-    else  lumimask = snu::KEvent::silver;
-  }
-
-  snu::KEvent eventinfo = GetEventInfo(lumimask);
+  snu::KEvent eventinfo = GetEventInfo();
   
   if(k_isdata){
     if(ev_weight!=1.) Message("ERROR in setting weights. This is Data...", INFO);
@@ -1021,8 +1116,6 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   std::vector<snu::KJet> skjets= GetAllJets();
   std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
   
-  /// Flat Cat ntuples use silver json... By default weight in MC is normalised to silver luminosity. 
-  /// If running on gold json then the weight needs correcting for golden json lumi
    
   /// np == numberof particles you want to store at truth info. 30 is default unless running nocut sktree OR signal
   int np =  AssignnNumberOfTruth();
@@ -1034,28 +1127,14 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   
   eventbase = new EventBase(lqevent);
 
-  if(lumimask == snu::KEvent::gold){
-    if(!k_isdata){
-      weight*= SilverToGoldJsonReweight(per);
-      if(!changed_target_lumi){
-	TargetLumi *= SilverToGoldJsonReweight(per);
-	changed_target_lumi=true;
-      }
+  if(!k_isdata){
+    if(!changed_target_lumi){
+      changed_target_lumi=true;
     }
-    
   }
 
 }
 
-
-void AnalyzerCore::ResetLumiMask(snu::KEvent::json flag){
-  
-  if(flag !=  snu::KEvent::gold){
-    if(flag !=  snu::KEvent::silver)    {m_logger << ERROR << "Wrong setting for ResetLumiMask" << LQLogger::endmsg; exit(0);}
-  }
-  reset_lumi_mask=true;
-  lumimask=flag;
-}
 
 int AnalyzerCore::VersionStamp(TString cversion){
   
@@ -1063,8 +1142,9 @@ int AnalyzerCore::VersionStamp(TString cversion){
   else if(cversion.Contains("v7-4-5")) return 2;
   else if(cversion.Contains("v7-6-2") || cversion.Contains("v7-6-3") || cversion.Contains("v7-6-4")   ) return 3;
   else if((cversion.Contains("v7-6-5") || cversion.Contains("v7-6-6"))) return 4;
+  else if((cversion.Contains("v8-0-1"))) return 5;
   
-  return 4;
+  return 5;
  
 }
 
@@ -1093,40 +1173,6 @@ bool AnalyzerCore::IsSignal(){
   return false;
 }
 
-float AnalyzerCore::SilverToGoldJsonReweight(TString p){
-  
-  if(eventbase->GetEvent().CatVersion().empty()) return 0.;
-
-  if(k_cat_version<= 2)  return 0.;
-  
-  //float bad_ls=93.492; //  /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/BeamSpotIssue_JSON.txt
-  
-  if(k_cat_version == 4){
-    
-    /// Updated to silver2 + remove LS
-    if (p == "C") return 1.;
-    if (p == "D") return (2207.055) / (2579.414);
-    if (p == "CtoD") return  (2224.786) / (2597.145);
-    ///            GOLD      SILVER
-    /// period C = 17.731    17.731
-    /// period D = 2300.547   2672.906
-    /// total C+D = 2318.278  2690.637
-  }
-
-  else if(k_cat_version==3){
-    
-    if (p == "C") return 1.;
-    if (p == "D") return 2300.617 /2672.976;
-    if (p == "CtoD") return 2318.348 / 2690.707;
-    
-    ///            GOLD      SILVER
-    /// period C = 17.731    17.731
-    /// period D = 2300.617   2672.976 
-    /// total C+D = 2318.348  2690.707
-  }
-  
-  return 1.;
-}
 
 void AnalyzerCore::ClassInfo(){
   
@@ -1293,22 +1339,32 @@ bool AnalyzerCore::PassBasicEventCuts(){
     pass = false;
     m_logger << DEBUG << "Event Fails PassCSCHaloFilterTight " << LQLogger::endmsg;
   }
-
-  if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
-    pass = false; 
-    m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
-  }
-
-  if(!eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
+  
+  if (!eventbase->GetEvent().PassTightHalo2016Filter()) {
     pass = false;
-    m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
+    m_logger << DEBUG << "Event Fails PassTightHalo2016Filter " << LQLogger::endmsg;
   }
-
-  //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
-  if (!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
-    pass = false;
-    m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
-  }
+  
+  //if(isData){
+    if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
+      pass = false; 
+      m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
+    }
+    if (!eventbase->GetEvent().PassHBHENoiseIsoFilter()) {
+      pass = false;
+      m_logger << DEBUG << "Event Fails PassHBHENoiseIsoFilter " << LQLogger::endmsg;
+    }
+    if(!eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
+      pass = false;
+      m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
+    }
+    
+    //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
+    if (!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
+      pass = false;
+      m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
+    }
+    //}
   return pass;
 }
 
@@ -1947,12 +2003,8 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
-    float qter =1.; /// uncertainty
-
-    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
-    else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
-    it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
-    //it->scale(tlv_muons[imu].E()/it->E());
+    if(k_cat_version < 5) continue;
+    it->SetPtEtaPhiE(it->RochPt(), it->RochEta(), it->RochPhi(), it->RochE()); 
   }
 }
 

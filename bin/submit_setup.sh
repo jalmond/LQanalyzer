@@ -147,14 +147,14 @@ getinfo_string=""
 function getinfo_dataset
 { 
     
-    if [[ $submit_file_tag == *"v7"* ]];
+    if [[ $submit_file_tag == *"v8"* ]];
         then
         tmp_submit_file_tag=$submit_catvlist
         tmp_submit_catvlist=$submit_file_tag
         submit_catvlist=$tmp_submit_catvlist
         submit_file_tag=$tmp_submit_file_tag
     fi
-    if [[ $submit_catvlist != *"v7"* ]];
+    if [[ $submit_catvlist != *"v8"* ]];
         then
         if [[ $submit_catvlist != "" ]];
             then
@@ -343,9 +343,9 @@ function getdatasetefflumi
 
 function print_tag_diff
 {
-    if [[ ${submit_cat_tag} == *"v7"* ]];then
+    if [[ ${submit_cat_tag} == *"v8"* ]];then
 	
-	if [[ ${submit_cat_tag2} == *"v7"* ]];then
+	if [[ ${submit_cat_tag2} == *"v8"* ]];then
 	    print_tag_diff_twotags 
 	else
 	    print_tag_diff_vs_currenttag	    
@@ -459,14 +459,14 @@ function print_tag_diff_vs_currenttag
 function listavailable
 {
     
-    if [[ $submit_searchlist == *"v7"* ]];
+    if [[ $submit_searchlist == *"v8"* ]];
         then
         tmp_submit_searchlist=$submit_catvlist
         tmp_submit_catvlist=$submit_searchlist
         submit_catvlist=$tmp_submit_catvlist
         submit_searchlist=$tmp_submit_searchlist
     fi
-    if [[ $submit_catvlist != *"v7"* ]];
+    if [[ $submit_catvlist != *"v8"* ]];
 	then
 	if [[ $submit_catvlist != "" ]];
 	    then
@@ -623,14 +623,14 @@ function sendrequest
 function runlist
 {
     
-    if [[ $submit_searchlist == *"v7"* ]];
+    if [[ $submit_searchlist == *"v8"* ]];
 	then
 	tmp_submit_searchlist=$submit_catvlist
 	tmp_submit_catvlist=$submit_searchlist
 	submit_catvlist=$tmp_submit_catvlist
 	submit_searchlist=$tmp_submit_searchlist
     fi
-    if [[ $submit_catvlist != *"v7"* ]];
+    if [[ $submit_catvlist != *"v8"* ]];
 	then
         if [[ $submit_catvlist != "" ]];
             then
@@ -1314,12 +1314,17 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 
 if [[ $job_data_lumi == "ALL" ]];
     then
-    declare -a data_periods=("C" "D")
+    declare -a data_periods=("B" "C" "D" "E")
 fi
 if [[ $job_data_lumi == "CtoD" ]];
     then
     declare -a data_periods=("C" "D")
 fi
+if [[ $job_data_lumi == "BtoE" ]];
+    then
+    declare -a data_periods=("B" "C" "D" "E")
+fi
+
 if [[ $job_data_lumi == "C" ]];
     then
     declare -a data_periods=("C")

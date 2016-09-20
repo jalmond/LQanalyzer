@@ -151,10 +151,12 @@ public :
    std::vector<int>     *gen_motherindex;
 
    Bool_t          HBHENoiseFilter;
+   Bool_t          HBHENoiseIsoFilter;
    Bool_t          csctighthaloFilter;
    Bool_t          ecalDCTRFilter;
    Bool_t          eeBadScFilter;
    Bool_t          goodVertices;
+   Bool_t          Flag_globalTightHalo2016Filter;
    Int_t           GenTTCat;
    Int_t           genWeight_id1;
    Int_t           genWeight_id2;
@@ -315,6 +317,12 @@ public :
    std::vector<double>  *muon_y;
    std::vector<double>  *muon_z;
 
+   std::vector<double>  *muon_roch_energy;
+   std::vector<double>  *muon_roch_eta;
+   std::vector<double>  *muon_roch_m; 
+   std::vector<double>  *muon_roch_phi;
+   std::vector<double>  *muon_roch_pt;
+
    std::vector<double>  *slimmedGenJets_energy;
    std::vector<double>  *slimmedGenJets_eta;
    std::vector<double>  *slimmedGenJets_phi;
@@ -415,6 +423,8 @@ public :
    TBranch        *b_gen_pdgid;   //!                                                                                                                                                                                                                                        
    TBranch        *b_gen_motherindex;   //!                                                                                                                                                                                                                                  
    TBranch        *b_HBHENoiseFilter;   //!                                                                                                                                                                                                                                  
+   TBranch        *b_HBHENoiseIsoFilter;   //!                                                                                                                                                                                                                                  
+   TBranch       *b_Flag_globalTightHalo2016Filter;  //!
    TBranch        *b_csctighthaloFilter;   //!                                                                                                                                                                                                                               
    TBranch        *b_ecalDCTRFilter;   //!                                                                                                                                                                                                                                   
    TBranch        *b_eeBadScFilter;   //!                                                                                                                                                                                                                                    
@@ -557,6 +567,15 @@ public :
    TBranch        *b_muon_relIso04;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_shiftedEdown;   //!                                                                                                                                                                                                                                
    TBranch        *b_muon_shiftedEup;   //!                                                                                                                                                                                                                                  
+
+   TBranch        *b_muon_roch_eta;   //!                                                                                                                                                                                                                                                                                
+   TBranch        *b_muon_roch_m;   //!       
+
+   TBranch        *b_muon_roch_phi;   //!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+   TBranch        *b_muon_roch_pt;   //!   
+   TBranch        *b_muon_roch_energy;   //!   
+
+
    TBranch        *b_muon_x;   //!                                                                                                                                                                                                                                           
    TBranch        *b_muon_y;   //!                                                                                                                                                                                                                                           
    TBranch        *b_muon_z;   //!                                                                                                                                                                                                                                           

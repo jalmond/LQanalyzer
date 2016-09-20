@@ -254,6 +254,12 @@ void Data::Reset(){
   muon_phi = 0;
   muon_m = 0;
   muon_energy = 0;
+  muon_roch_pt = 0;
+  muon_roch_eta = 0;
+  muon_roch_phi = 0;
+  muon_roch_m = 0;
+  muon_roch_energy = 0;
+
   muon_dxy = 0;
   muon_sigdxy = 0;
   muon_dz = 0;
@@ -505,7 +511,7 @@ void Data::ConnectEvent(int setting_data){
       ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
       ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
 
-      if(k_cat_version >=4){
+      if(k_cat_version ==4){
 	ConnectVariable("puWeightGold_xs71000",puWeightGold_xs71000, b_puWeightGold_xs71000);
 	ConnectVariable("puWeightGoldUp_xs71000",puWeightGoldUp_xs71000, b_puWeightGoldUp_xs71000);
 	ConnectVariable("puWeightGoldDn_xs71000",puWeightGoldDn_xs71000, b_puWeightGoldDn_xs71000);
@@ -517,6 +523,8 @@ void Data::ConnectEvent(int setting_data){
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
 
   ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
+  ConnectVariable("HBHENoiseIsoFilter", HBHENoiseIsoFilter, b_HBHENoiseIsoFilter);
+  ConnectVariable("Flag_globalTightHalo2016Filter",Flag_globalTightHalo2016Filter,b_Flag_globalTightHalo2016Filter);
   ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
   ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
   ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
@@ -554,7 +562,14 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_eta" , muon_eta , b_muon_eta);
   ConnectVariable("muon_isGlobal",muon_isGlobal , b_muon_isGlobal);
 
-  
+  if(k_cat_version >=5){
+    ConnectVariable("muon_roch_pt"  , muon_roch_pt, b_muon_roch_pt);
+    ConnectVariable("muon_roch_eta" , muon_roch_eta , b_muon_roch_eta);
+    ConnectVariable("muon_roch_m",muon_roch_m , b_muon_roch_m);
+    ConnectVariable("muon_roch_phi",muon_roch_phi , b_muon_roch_phi);
+    ConnectVariable("muon_roch_energy",muon_roch_energy , b_muon_roch_energy);
+  }
+ 
   ConnectVariable("muon_dxy",muon_dxy , b_muon_dxy);
   ConnectVariable("muon_sigdxy",muon_sigdxy , b_muon_sigdxy);
   ConnectVariable("muon_dz",muon_dz , b_muon_dz);

@@ -3,18 +3,21 @@
 
 #include <map>
 map<TString, TString>  GetLQMap();
+map<TString, TString>  GetLQMap2016();
 map<TString, Double_t>  GetXSecMap();
+map<TString, Double_t>  GetXSecMap2016();
 map<TString, TString>  GetMissingMap(TString cversion);
 vector<TString>  GetAvailableMap(TString cversion);
 map<TString, TString>  GetDatasetNames(TString cversion);
 map<TString, TString>  GetTriLepMap();
+map<TString, TString>  GetTriLepMap2016();
 
 bool CheckMaps();
 
 bool CheckMaps(){
 
-  map<TString,  Double_t> mapxs = GetXSecMap();
-  map<TString,  TString>  maplq = GetLQMap();
+  map<TString,  Double_t> mapxs = GetXSecMap2016();
+  map<TString,  TString>  maplq = GetLQMap2016();
 
   bool failcheck=false;
   if (mapxs.size() != maplq.size()) {
@@ -40,27 +43,80 @@ bool CheckMaps(){
   return failcheck;
 }
 
+map<TString,  Double_t>  GetXSecMap2016(){
+  map<TString,  Double_t> dirmap;
+  dirmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] =18610.;
+  dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]=5765.4;           
+  dirmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=18610.;
+  dirmap["DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=71310.;
+  dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=5765.4;
+
+  dirmap["ttbb_4FS_ckm_amcatnlo_madspin_pythia8"]=13.93;
+  dirmap["ttHTobb_M125_13TeV_powheg_pythia8"]=0.2934;      
+  dirmap["ttHToNonbb_M125_13TeV_powheg_pythia8"]=0.2151;      
+
+  dirmap["WW_TuneCUETP8M1_13TeV-pythia8"]=118.7;
+  dirmap["WZ_TuneCUETP8M1_13TeV-pythia8"]=47.13;
+  dirmap["ZZ_TuneCUETP8M1_13TeV-pythia8"]=16.523;
+  dirmap["WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]=0.1651;
+  dirmap["WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]=0.1651;
+  dirmap["WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]=0.05565;
+  dirmap["ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]=0.01398;
+
+  dirmap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]=831.76; 
+  dirmap["TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=831.76; 
+  dirmap["TT_TuneCUETP8M1_13TeV-powheg-pythia8"]=831.76;
+  dirmap["TT_TuneCUETP8M1_mtop1695_13TeV-powheg-pythia8"]=831.76;
+  dirmap["TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8"]=831.76;
+  dirmap["TTTo2L2Nu_13TeV-powheg"]=87.31;
+  dirmap["TTTo2L2Nu_13TeV_ScaleDown-powheg"]=87.31;
+  dirmap["TTTo2L2Nu_13TeV_ScaleUp-powheg"]=87.31;
+  dirmap["TTToSemiLeptonic_13TeV-powheg"]=356.4;
+  dirmap["TTToSemiLeptonic_13TeV_ScaleDown-powheg"]=356.4;
+  dirmap["TTToSemiLeptonic_13TeV_ScaleUp-powheg"]=356.4;
+
+  dirmap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"]=3.36; 
+  dirmap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"]=26.38;  
+  dirmap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"]=44.33;    
+  dirmap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"]=35.85;    
+  dirmap["ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"]=35.85;    
+  
+  dirmap["ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]=35.6;
+  dirmap["ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]=35.6;
+
+  dirmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"]=0.000828308;
+  dirmap["GluGlu_HToMuMu_M125_13TeV_powheg_pythia8"]=0.00970632;
+  
+  dirmap["ttWJets_13TeV_madgraphMLM"]=0.61;    
+  dirmap["ttZJets_13TeV_madgraphMLM"]=0.78;      
+
+  dirmap["WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=61526.7;
+  dirmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]=61526.7;
+
+  return dirmap;
+}
 
 map<TString,  Double_t>  GetXSecMap(){
 
    map<TString,  Double_t> dirmap;
-   dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = 6024.2;
+   dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = 5765.4;
    dirmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = 18610. ;
-   dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = 6025.2;
+   dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = 5765.4;
    dirmap["DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] =71310.;
-   dirmap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] =80.95*0.322;
-   dirmap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] =136.02*0.322;
+   dirmap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] = 26.38;
+   dirmap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] =44.33;
    dirmap["ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] =35.6;
    dirmap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] =35.6;
    dirmap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"] = 3.36;
 
-   dirmap["ttHTobb_M125_13TeV_powheg_pythia8"] =0.5058;
-   dirmap["ttHToNonbb_M125_13TeV_powheg_pythia8"] =0.5058;
-   dirmap["GluGlu_HToMuMu_M125_13TeV_powheg_pythia8"] =0.00970632;
-   dirmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] =0.000828308;
+   dirmap["ttHTobb_M125_13TeV_powheg_pythia8"] =0.5058; ////
+   dirmap["ttHToNonbb_M125_13TeV_powheg_pythia8"] =0.5058; ////
+   dirmap["GluGlu_HToMuMu_M125_13TeV_powheg_pythia8"] =0.00970632; ////
+   dirmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] =0.000828308; ////
 
-   dirmap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] =831.76;
+   dirmap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] =831.76; 
    dirmap["TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] =831.76 ;
+
    dirmap["TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8"] =0.2043;
    dirmap["TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8"] =0.4062;
    dirmap["TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] =0.2529 ;
@@ -262,7 +318,7 @@ vector<TString>  GetAvailableMap(TString cversion){
   if(cversion.Contains("v7-4"))   return available;
   if(cversion.Contains("v7-6-2")) return available;
 
-  std::map<TString, TString> mapdir = GetLQMap();
+  std::map<TString, TString> mapdir = GetLQMap2016();
 
   
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
@@ -291,6 +347,7 @@ vector<TString>  GetAvailableMap(TString cversion){
     bool missing=true;
 
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
+    if(TString(input_datasetlist.at(i)).Contains("Run2016")) continue;
 
     
     std::string dataword;
@@ -349,7 +406,7 @@ map<TString, TString>  GetDatasetNames(TString cversion){
   if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
 
   map<TString, TString> datasets;
-  std::map<TString, TString> mapdir = GetLQMap();
+  std::map<TString, TString> mapdir = GetLQMap2016();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   std::cout << dir  << std::endl;
@@ -369,6 +426,7 @@ map<TString, TString>  GetDatasetNames(TString cversion){
 
     std::string datasetname="";
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
+    if(TString(input_datasetlist.at(i)).Contains("Run2016")) continue;
     
     std::string dataword;
     int id=0;
@@ -402,7 +460,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
   if(cversion.Contains("v7-4"))   return map_missing;
   if(cversion.Contains("v7-6-2")) return map_missing;
 
-  std::map<TString, TString> mapdir = GetLQMap();
+  std::map<TString, TString> mapdir = GetLQMap2016();
   TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
   if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
 
@@ -425,6 +483,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
     std::string datasetname="";
     bool missing=true;
 
+    if(TString(input_datasetlist.at(i)).Contains("Run2016")) continue;
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
 
     std::string dataword;
@@ -448,7 +507,13 @@ map<TString, TString>  GetMissingMap(TString cversion){
     if(TString(datasetname).Contains("QCD_Pt")) inlqmap=true;
 
     /// List samples not to include in snu
+    if(TString(input_datasetlist.at(i)).Contains("mpiOFF")) inlqmap=true;    if(TString(input_datasetlist.at(i)).Contains("TH_1L")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TT_powheg_scale")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TT_powheg_herwig")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("json")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("ST_TH")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("alphaS")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("AntitopLeptonicDecay")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("mtop_")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("DMJets")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("TLJ_powheg")) inlqmap=true;
@@ -474,6 +539,42 @@ map<TString, TString>  GetMissingMap(TString cversion){
     cout << mit->first << " "  << mit->second << endl;
   }
   return map_missing;
+}
+
+
+map<TString, TString>  GetTriLepMap2016(){
+  map<TString, TString> trimap;
+
+  trimap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY50plus_MCatNLO";
+  trimap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY10to50_MCatNLO";
+  trimap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY50plus_madgraph";
+  trimap["DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY5to50_madgraph";
+
+  trimap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbar_Powheg";
+  trimap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_t_Powheg";
+  trimap["ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbarW_Powheg";
+  trimap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tW_Powheg";
+  trimap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"] = "singletop_s_MCatNLO";
+  trimap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="TT_MCatNLO";
+
+  trimap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="WJets_MCatNLO";
+  trimap["WW_TuneCUETP8M1_13TeV-pythia8"] ="WW_pythia8";
+  trimap["WZ_TuneCUETP8M1_13TeV-pythia8"] ="WZ_pythia8";
+  trimap["ZZ_TuneCUETP8M1_13TeV-pythia8"] ="ZZ_pythia8";
+
+  trimap["WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WZZ_MCatNLO";
+  trimap["ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "ZZZ_MCatNLO";
+  trimap["WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WWZ_MCatNLO";
+
+  trimap["WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]="WWW_MCatNLO";;
+
+  trimap["ttWJets_13TeV_madgraphMLM"]="ttWJets";
+  trimap["ttZJets_13TeV_madgraphMLM"]="ttZJets";
+  trimap["ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]="singletop_tW_nofullhad_Powheg";
+  trimap["ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]="singletop_tbarW_nofullhad_Powheg";
+
+
+  return trimap;
 }
 
 map<TString, TString>  GetTriLepMap(){
@@ -517,6 +618,62 @@ map<TString, TString>  GetTriLepMap(){
   return trimap;
 }
   
+
+map<TString, TString>  GetLQMap2016(){
+
+  map<TString, TString> lqmap;
+  lqmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY50plus_MCatNLO";
+  lqmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY10to50_MCatNLO";
+  lqmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY50plus_madgraph";
+  lqmap["DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY5to50_madgraph";
+  lqmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="DY10to50_madgraph";
+
+  lqmap["ttbb_4FS_ckm_amcatnlo_madspin_pythia8"]="ttbb_MCatNLO";
+
+  lqmap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbar_Powheg";
+  lqmap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_t_Powheg";
+  lqmap["ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbarW_Powheg";
+  lqmap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tW_Powheg";
+  lqmap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"] = "singletop_s_MCatNLO";
+  lqmap["ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]="singletop_tW_nofullhad_Powheg";
+  lqmap["ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]="singletop_tbarW_nofullhad_Powheg";
+  lqmap["ttHTobb_M125_13TeV_powheg_pythia8"] ="ttHtobb_Powheg";
+  lqmap["ttHToNonbb_M125_13TeV_powheg_pythia8"] ="ttHnobb_Powheg";
+
+  lqmap["GluGlu_HToMuMu_M125_13TeV_powheg_pythia8"] ="ggHtomm_Powheg";
+  lqmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] ="vhf_Htomm_Powheg";
+
+  lqmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="WJets_MCatNLO";
+  lqmap["WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="WJets_madgraph";
+  lqmap["WW_TuneCUETP8M1_13TeV-pythia8"] ="WW_pythia8";
+  lqmap["WZ_TuneCUETP8M1_13TeV-pythia8"] ="WZ_pythia8";
+  lqmap["ZZ_TuneCUETP8M1_13TeV-pythia8"] ="ZZ_pythia8";
+
+  lqmap["WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WZZ_MCatNLO";
+  lqmap["ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "ZZZ_MCatNLO";
+  lqmap["WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WWZ_MCatNLO";
+  lqmap["WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]="WWW_MCatNLO";;
+
+  lqmap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="TT_MCatNLO";
+  lqmap["TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]="TT_madgraph";
+  lqmap["TT_TuneCUETP8M1_13TeV-powheg-pythia8"]="TT_powheg";
+  lqmap["TT_TuneCUETP8M1_mtop1695_13TeV-powheg-pythia8"]="TT_powheg_m169";
+  lqmap["TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8"]="TT_powheg_m171";
+  lqmap["TTTo2L2Nu_13TeV-powheg"]="TT_2l2nu_powheg";
+  lqmap["TTTo2L2Nu_13TeV_ScaleDown-powheg"]="TT_2l2nu_Sup_powheg";
+  lqmap["TTTo2L2Nu_13TeV_ScaleUp-powheg"]="TT_2l2nu_Sdownpowheg";
+  lqmap["TTToSemiLeptonic_13TeV-powheg"]="TT_semilep_powheg";
+  lqmap["TTToSemiLeptonic_13TeV_ScaleDown-powheg"]="TT_semilep_Sup_powheg";
+  lqmap["TTToSemiLeptonic_13TeV_ScaleUp-powheg"]="TT_semilep_Sdown_powheg";
+
+
+  lqmap["ttWJets_13TeV_madgraphMLM"]="ttWJets";
+  lqmap["ttZJets_13TeV_madgraphMLM"]="ttZJets";
+
+
+
+  return lqmap;
+}
 map<TString, TString>  GetLQMap(){
 
   map<TString, TString> lqmap;

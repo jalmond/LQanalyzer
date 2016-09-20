@@ -30,6 +30,8 @@ float relExtraDY = 1.2;
 float extraOverCmsTextSize  = 0.76;
 
 TString lumi_13TeV = "2224.8 pb^{-1}";
+TString lumi_13TeV_2016_muon_BtoE = "15.9 fb^{-1}";
+TString lumi_13TeV_2016_eg_BtoE = "13.0 fb^{-1}";
 TString lumi_13TeV_C = "225.1 pb^{-1}";
 TString lumi_13TeV_fake = "3.4-50.7 pb^{-1}";
 

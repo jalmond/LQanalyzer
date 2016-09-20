@@ -1,10 +1,10 @@
-export CATVERSION=v7-6-6
+export CATVERSION=v8-0-1
 ### If there is a small bug/new code then new subtag is made
-export tag_numerator='.5'
+export tag_numerator='.1'
 if [[ '-d' == branch ]];
     then
     export CATTAG=
 else
-    export CATTAG=v7-6-6.5
+    export CATTAG=v8-0-1.1
 fi
 

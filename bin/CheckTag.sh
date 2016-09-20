@@ -1,7 +1,9 @@
-tagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
+catagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 then
     tagpath=/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATTag/
+else
+    tagpath=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/
 fi
 
 if [[ $USER == "jalmond" ]];
@@ -33,7 +35,7 @@ do
 	sline=$(echo $line | head -n1 | awk '{print $1}')
 	latest_tag=$sline
     fi
-done < $tagpath/LatestTag.txt
+done < $tagpath/LatestTag801.txt
 
 
 if [[ $latest_tag == $CATTAG ]];then
@@ -62,7 +64,7 @@ else
 	    fi
 	    NEWTAGS+=(${line})
 	fi
-    done < $tagpath/LatestTag.txt
+    done < $tagpath/LatestTag801.txt
 
 
     for ntag in  ${NEWTAGS[@]};

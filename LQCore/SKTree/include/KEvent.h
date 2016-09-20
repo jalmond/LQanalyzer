@@ -80,21 +80,21 @@ namespace snu {
     void SetPassCSCHaloFilterTight(bool pass);
     void SetPassEcalDeadCellTriggerPrimitiveFilter(bool pass);
     void SetPassHBHENoiseFilter(bool pass);
+    void SetPassHBHENoiseIsoFilter(bool pass);
     void SetPassBadEESupercrystalFilter(bool pass);
+    void SetPassTightHalo2016Filter(bool pass); 
+    
 
     /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
-    void SetPUWeight(json type, syst_dir sys, double puweight);
-    void SetAltPUWeight(json type, syst_dir sys, double puweight);
-    void SetLumiMask(json type, int mask);
-    void SetJSON(json type);
+    void SetPUWeight(syst_dir sys, double puweight);
+
 
     void SetCatVersion(std::string cat);
     
     /// New for CAT v7-4-6 (silver/gold json files)
-    Bool_t LumiMask(json js);
-    Double_t PileUpWeight(json js, syst_dir dir=central);
-    Double_t AltPileUpWeight(json js, syst_dir dir=central);
+    Double_t PileUpWeight(syst_dir dir=central);
+    Double_t AltPileUpWeight(syst_dir dir=central);
     Double_t PFMETShifted (met_syst type,syst_dir dir) const;
     Double_t PFSumETShifted(met_syst type,syst_dir dir) const;
     Double_t MET(met_type type=pfmet) const;
@@ -109,12 +109,10 @@ namespace snu {
     
     inline std::string CatVersion() const {return k_catversion;}
 
-    inline json GetJSON() const {return k_lumimask;}
     
     /// Lumi
     inline Int_t LumiSection()  const {return k_lumisec;}
-    inline Int_t LumiMaskSilver() const {return k_lumi_mask_silver;}
-    inline Int_t LumiMaskGold() const {return k_lumi_mask_gold;}
+
 
     
     /// Event specific
@@ -139,18 +137,15 @@ namespace snu {
     inline Bool_t   PassCSCHaloFilterTight() const {return   k_passCSCHaloFilterTight;}
     inline Bool_t   PassEcalDeadCellTriggerPrimitiveFilter() const {return   k_passEcalDeadCellTriggerPrimitiveFilter;}
     inline Bool_t   PassHBHENoiseFilter() const {return  k_passHBHENoiseFilter ;}
+    inline Bool_t   PassHBHENoiseIsoFilter() const {return  k_passHBHENoiseIsoFilter ;}
     inline Bool_t   PassBadEESupercrystalFilter() const {return  k_passBadEESupercrystalFilter ;}
+    inline Bool_t   PassTightHalo2016Filter() const {return  k_passTightHalo2016Filter; }
+    
 
     //Pileup reweighting
     inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
 
 
-    inline Double_t PileUpWeight_Silver(syst_dir sys) const{
-      if(sys == central)return k_pu_silver_weight;
-      else if(sys == up)return k_pu_silver_p_weight;
-      else if(sys == down)return k_pu_silver_m_weight;
-      else return -999.;
-    }
     inline Double_t PileUpWeight_Gold(syst_dir sys) const{
       if(sys == central)return k_pu_gold_weight;
       else if(sys == up)return k_pu_gold_p_weight;
@@ -195,15 +190,15 @@ namespace snu {
     Double_t k_PF_MET_unclusteredEn_up,k_PF_MET_unclusteredEn_down, k_PF_SumET_unclusteredEn_up, k_PF_SumET_unclusteredEn_down; 
 
     Bool_t k_isData, k_isgoodevent;
-    Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter;
+
+    Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passTightHalo2016Filter;
     Double_t  k_PileUpInteractionsTrue, k_pu_silver_weight, k_pu_silver_p_weight, k_pu_silver_m_weight,k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
     
     std::string k_catversion;
-    json k_lumimask;    
 
 
 
-    ClassDef(KEvent,25);
+    ClassDef(KEvent,26);
   }; 
   
 }//namespace snu

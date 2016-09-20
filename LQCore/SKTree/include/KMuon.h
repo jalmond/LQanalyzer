@@ -45,6 +45,11 @@ namespace snu {
 
     void SetMCMatched(bool matched);
 
+    void SetRochPt(double pt);
+    void SetRochEta(double eta);
+    void SetRochPhi(double phi);
+    void SetRochM(double m);
+    void SetRochE(double e);
     void Setdz(double dz);
     void Setdxy(double dxy);
     void Setdxy_sig(double dxysig);
@@ -122,6 +127,12 @@ namespace snu {
     
     inline TString TrigMatch() const{return k_trig_match;}
     
+    inline Double_t RochPt() const{return k_roch_pt;}
+    inline Double_t RochPhi() const{return k_roch_phi;}
+    inline Double_t RochEta() const{return k_roch_eta;}
+    inline Double_t RochM() const{return k_roch_m;}
+    inline Double_t RochE() const{return k_roch_e;}
+
     inline KMuon::MuonType GetParticleType() const{
       if(k_is_conv&&k_is_cf) return KMuon::CONV_CF;
       if(k_is_conv&&!k_is_cf)   return KMuon::CONV_NONECF;
@@ -149,15 +160,17 @@ namespace snu {
     Double_t k_dz, k_dxy ,k_dxy_sig,k_globmuon_chi2, k_muonVtx, k_muonVty, k_muonVtz;
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
-
+    
     Double_t muon_pt_up, muon_pt_down, k_muon_reliso03, k_muon_reliso04;
+
+    Double_t k_roch_pt,k_roch_phi,k_roch_eta,k_roch_m,k_roch_e;
 
     Bool_t k_isloose, k_istight, k_matched,k_is_cf,k_is_conv,k_is_fromtau,k_ismedium, k_issoft ;
     Int_t k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
 
     TString k_trig_match;
     
-    ClassDef(KMuon,18)
+    ClassDef(KMuon,19)
   };   
 }//namespace snu
 

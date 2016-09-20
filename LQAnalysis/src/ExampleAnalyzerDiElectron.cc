@@ -79,13 +79,6 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(trilephist,"TriElectron_noB");
 
 
-   /// only available in v7-6-X branch and newer
-   //// default lumimask is silver ////
-   //// In v7-6-2-(current) the default is changed to gold (since METNoHF bug)
-   ///When METNoHF isfixed the default will be back to silver
-   /// set to gold if you want to use gold json in analysis
-   /// To set uncomment the line below:
-   //ResetLumiMask(snu::KEvent::gold);
    
    return;
 }
@@ -102,8 +95,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   if(!isData)weight*= MCweight;
 
   FillHist("MCweight",MCweight, 0., 5.,100.);
-  /// Apply json file if gold json is used. if lumimask == silver this does nothing  
-  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
+
   
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
@@ -138,7 +130,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
   /// trigger_weight is for MC only: retruns 1 if data.
   /// Checks the luminosity of the trigger and returns weight that applied to 'weight' will correct for difference in luinosity of json file used in data
-  float trigger_ps_weight= ApplyPrescale(analysis_trigger, TargetLumi,lumimask);
+  float trigger_ps_weight= WeightByTrigger(analysis_trigger, TargetLumi);
 
   FillHist("PSWeight" , trigger_ps_weight, 1., 0. , 2., 200);
 
@@ -151,7 +143,7 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 
   float weight_trigger_23=1.;
   if(!isData){
-    weight_trigger_23 =  ApplyPrescale("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v", TargetLumi,lumimask);
+    weight_trigger_23 =  WeightByTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v", TargetLumi);
   }
   FillHist("weight_trigger_23",weight_trigger_23,0., 5.,100.);
 
@@ -232,13 +224,10 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
     /// Weights use:
     //  pileupCalc.py -i Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt 
     // --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 PileUpData_Dn.root
-    pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
+    pileup_reweight = eventbase->GetEvent().PileUpWeight();
   }
   
   /// using AltPileUpWeight for minbias xs = 71000
-  // pileup_reweight = eventbase->GetEvent().AltPileUpWeight(lumimask);
-  float altpileup_reweight = eventbase->GetEvent().AltPileUpWeight(lumimask);
-  if(isData) altpileup_reweight = 1.;
 
   FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
   
@@ -293,10 +282,8 @@ void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
 	      
 	      FillHist("zpeak_ee_nopurw", GetDiLepMass(electronColl), weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 200.,400);
 	      FillHist("zpeak_ee_purw", GetDiLepMass(electronColl), weight*pileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 200.,400);
-	      FillHist("zpeak_ee_altpurw", GetDiLepMass(electronColl), weight*altpileup_reweight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 200.,400);
 	      FillHist("nvertex_ee_nopurw", eventbase->GetEvent().nVertices(),  weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 40.,40);
 	      FillHist("nvertex_ee_purw", eventbase->GetEvent().nVertices()  , pileup_reweight*weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 40.,40);
-	      FillHist("nvertex_ee_altpurw", eventbase->GetEvent().nVertices(),  altpileup_reweight*weight*trigger_ps_weight*weight_trigger_sf*id_weight*reco_weight, 0., 40.,40);
 
 
 	      

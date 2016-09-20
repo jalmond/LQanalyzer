@@ -98,6 +98,4 @@ if not os.path.exists(fakelib):
     os.system("source bin/Make/make_fake_lib.sh")
 
 
-rocherlib = os.getenv("LQANALYZER_LIB_PATH") + "/librochcor2015.so"
-if not os.path.exists(rocherlib):
-    os.system("source bin/Make/make_rocher_lib.sh")
+
