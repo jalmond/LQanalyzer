@@ -342,8 +342,8 @@ void GetEffectiveLuminosity(TString version="") {
 
   TString user = TString(getenv("USER"));
   if(user.Contains("jalmond"))  {
-    if(!cluster)gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
-    else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/").c_str());
+    if(!cluster)gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
+    else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
   }
 
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());

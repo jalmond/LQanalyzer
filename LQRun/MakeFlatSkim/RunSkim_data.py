@@ -3,8 +3,8 @@ import time
 from functions import *
 
 version = os.getenv("CATVERSION")
-sampledir = ["DoubleMuon" ]
-period=["periodC" , "periodD", "periodE"]
+sampledir = ["SingleMuon" ]
+period=["periodB" ,"periodC" , "periodD", "periodE"]
 
 for i in sampledir:
  

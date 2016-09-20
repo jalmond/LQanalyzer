@@ -45,8 +45,19 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   //// FakeRate Input file           
   //////////////////////////////////////////////////////////////////////                                                                                                   
   string analysisdir = getenv("FILEDIR");
+
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_TightWP_76X_18Feb.txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "gsf_scalefactor_80X.root").c_str());
+
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    ElectronSF_GSF =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+  if(1){
+    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Tight_txt_SF2D.root").c_str());
     
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -56,7 +67,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Medium_txt_SF2D.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -66,7 +77,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_LooseWP_76X_18Feb.txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Loose_txt_SF2D.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -76,7 +87,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "CutBasedID_VetoWP_76X_18Feb.txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Veto_txt_SF2D.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -96,7 +107,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "MuonID_Z_RunCD_Reco76X_Feb15.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "MuonID_Z_RunBCD_prompt80X_7p65.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -108,7 +119,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "MuonIso_Z_RunCD_Reco76X_Feb15.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "MuonIso_Z_RunBCD_prompt80X_7p65.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -123,13 +134,13 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
 
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root").c_str());
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     
-    SingleMuon_C  =  dynamic_cast<TH2F*> (( infile_sf->Get("runC_IsoMu20_OR_IsoTkMu20_PtEtaBins/abseta_pt_ratio"))->Clone());
-    SingleMuon_D1  =  dynamic_cast<TH2F*> (( infile_sf->Get("runD_IsoMu20_OR_IsoTkMu20_HLTv4p2_PtEtaBins/abseta_pt_ratio"))->Clone());
-    SingleMuon_D2  =  dynamic_cast<TH2F*> (( infile_sf->Get("runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins/abseta_pt_ratio"))->Clone());
+    SingleMuon_274093  =  dynamic_cast<TH2F*> (( infile_sf->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/abseta_pt_ratio"))->Clone());
+    SingleMuon_276097  =  dynamic_cast<TH2F*> (( infile_sf->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/abseta_pt_ratio"))->Clone());
+
   }
 
     string lqdir = getenv("LQANALYZER_DIR");
@@ -196,9 +207,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     runlumi.close();
   }
   if(1){
-    ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2016.txt").c_str());
+    ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
     if(!runlumi) {
-      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2016.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string lline;
@@ -624,10 +635,10 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
   
   if(isData) return 1.;
   
+  //// ONLY SINGLE MUON TRIGGER SCAKE FACTOR ARE UPDATED
+
   ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgHLTScaleFactorMeasurements
-  /// https://lathomas.web.cern.ch/lathomas/SUSYMultiLepton/TriggerEff/trigger_RA5ID_2110pb.pdf
-  
-  // New dilepton SF from AN2015/309 https://indico.cern.ch/event/492286/contributions/1170055/attachments/1226439/1795635/TSG_10022016.pdf
+
 
   if(el.size() == 2){
     //if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return 0.997*0.997*0.998;
@@ -648,24 +659,21 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
   }
 
   if(mu.size() == 1){
-    if (trigname.Contains("HLT_IsoMu20") || trigname.Contains("HLT_IsoTkMu20"))  {
-      ///https://indico.cern.ch/event/462268/contributions/1979019/attachments/1188638/1724574/2015.11.17_MuonPOG_SingleMuTrigEff_SF_KPLee_v2.pdf
+    if (trigname.Contains("HLT_IsoMu22") || trigname.Contains("HLT_IsoTkMu22"))  {
+      /// https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults
       
       float mupt=mu.at(0).Pt();
       if(mupt > 120.) mupt = 119.;
       if(mupt < 20.) mupt = 21.;
-      if(eventbase->GetEvent().RunNumber()  < 255032){
-	float sferr = double(direction)*SingleMuon_C->GetBinError(SingleMuon_C->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	return  (1. + sferr)*SingleMuon_C->GetBinContent( SingleMuon_C->FindBin(  fabs(mu.at(0).Eta()), mupt) );
-      }
-      else	if(eventbase->GetEvent().RunNumber()  < 257820){
-	float sferr = double(direction)*SingleMuon_D1->GetBinError( SingleMuon_D1->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	return  (1. + sferr)*SingleMuon_D1->GetBinContent( SingleMuon_D1->FindBin(  fabs(mu.at(0).Eta()), mupt) );
+      if(eventbase->GetEvent().RunNumber()  < 274093){
+	float sferr = double(direction)*SingleMuon_274093->GetBinError(SingleMuon_274093->FindBin( fabs(mu.at(0).Eta()), mupt) );
+	return  (1. + sferr)*SingleMuon_274093->GetBinContent( SingleMuon_274093->FindBin(  fabs(mu.at(0).Eta()), mupt) );
       }
       else {
-	float sferr = double(direction)*SingleMuon_D2->GetBinError( SingleMuon_D2->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	return  (1. + sferr)*SingleMuon_D2->GetBinContent( SingleMuon_D2->FindBin(  fabs(mu.at(0).Eta()), mupt) );
+	float sferr = double(direction)*SingleMuon_276097->GetBinError( SingleMuon_276097->FindBin( fabs(mu.at(0).Eta()), mupt) );
+	return  (1. + sferr)*SingleMuon_276097->GetBinContent( SingleMuon_276097->FindBin(  fabs(mu.at(0).Eta()), mupt) );
       }
+
     }
   }
   if(el.size() == 1){
@@ -793,6 +801,9 @@ double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KE
     float elpt=itel->Pt();
     if(elpt > 200.) elpt= 199.;
     if(elpt < 20.) elpt= 21.;
+
+    sf *= ElectronSF_GSF->FindBin(fabs(itel->SCEta()), elpt);
+
     if(elid==BaseSelection::ELECTRON_POG_TIGHT) {
       
       int bin =  ElectronSF_Tight->FindBin(fabs(itel->SCEta()), elpt);
@@ -1050,6 +1061,7 @@ AnalyzerCore::~AnalyzerCore(){
 
   
   delete m_fakeobj;
+  delete ElectronSF_GSF;
   delete ElectronSF_Tight;
   delete ElectronSF_Medium;
   delete ElectronSF_Loose;
@@ -1063,9 +1075,9 @@ AnalyzerCore::~AnalyzerCore(){
   delete MuonISO_loose_tightID;
   delete MuonISO_loose_mediumID;
   delete MuonISO_loose_looseID;
-  delete SingleMuon_C;
-  delete SingleMuon_D1;
-  delete SingleMuon_D2;
+  delete SingleMuon_274093;
+  delete SingleMuon_276097;
+
   for(std::map<TString,BTagSFUtil*>::iterator it = MapBTagSF.begin(); it!= MapBTagSF.end(); it++){
     delete it->second;
   }

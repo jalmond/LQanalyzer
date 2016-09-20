@@ -70,7 +70,7 @@ export LQANALYZER_DIR=${PWD}
 
 
 ##### Check that this is not the branch and a tag was checked out
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
+source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -78,7 +78,7 @@ alias sktree="bash submitSKTree.sh"
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 
-export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
+export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
