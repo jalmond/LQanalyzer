@@ -124,10 +124,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     MuonISO_tight_tightID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
-    MuonISO_tight_mediumID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    //MuonISO_tight_mediumID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
     MuonISO_loose_tightID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
-    MuonISO_loose_mediumID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
-    MuonISO_loose_looseID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    //MuonISO_loose_mediumID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_MediumID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
+    //MuonISO_loose_looseID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
     infile_sf->Close();
     delete infile_sf;
     origDir->cd();
@@ -138,11 +138,13 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     
-    SingleMuon_274093  =  dynamic_cast<TH2F*> (( infile_sf->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/abseta_pt_ratio"))->Clone());
-    SingleMuon_276097  =  dynamic_cast<TH2F*> (( infile_sf->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/abseta_pt_ratio"))->Clone());
+    // THESE ARE EFFICIENCIES NOT SFS
+    //SingleMuon_274093  =  dynamic_cast<TH2F*> (( infile_sf->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/XXXXX))->Clone());
+    //    SingleMuon_276097  =  dynamic_cast<TH2F*> (( infile_sf->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/XXXX"))->Clone());
 
   }
 
+  cout << "TEST4" << endl;
     string lqdir = getenv("LQANALYZER_DIR");
     m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   
@@ -206,6 +208,8 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     }
     runlumi.close();
   }
+
+  cout << "TEST2" << endl;
   if(1){
     ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
     if(!runlumi) {
@@ -583,12 +587,12 @@ double AnalyzerCore::MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuo
     }
     
     else if(muid==BaseSelection::MUON_POG_MEDIUM) {
-      sferr = double(sys)*MuonISO_loose_mediumID->GetBinError(MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
-      sf*= (1. + sferr)* MuonISO_loose_mediumID->GetBinContent( MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
+      //sferr = double(sys)*MuonISO_loose_mediumID->GetBinError(MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
+      //sf*= (1. + sferr)* MuonISO_loose_mediumID->GetBinContent( MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
     }
     else if(muid==BaseSelection::MUON_POG_LOOSE) {
-      sferr = double(sys)*MuonISO_loose_looseID->GetBinError(MuonISO_loose_looseID->FindBin( fabs(itmu->Eta()), mupt) );
-      sf*=  (1. + sferr)*MuonISO_loose_looseID->GetBinContent( MuonISO_loose_looseID->FindBin( fabs(itmu->Eta()), mupt) );
+      //sferr = double(sys)*MuonISO_loose_looseID->GetBinError(MuonISO_loose_looseID->FindBin( fabs(itmu->Eta()), mupt) );
+      //sf*=  (1. + sferr)*MuonISO_loose_looseID->GetBinContent( MuonISO_loose_looseID->FindBin( fabs(itmu->Eta()), mupt) );
     }
   }
   return sf;
@@ -666,12 +670,14 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
       if(mupt > 120.) mupt = 119.;
       if(mupt < 20.) mupt = 21.;
       if(eventbase->GetEvent().RunNumber()  < 274093){
-	float sferr = double(direction)*SingleMuon_274093->GetBinError(SingleMuon_274093->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	return  (1. + sferr)*SingleMuon_274093->GetBinContent( SingleMuon_274093->FindBin(  fabs(mu.at(0).Eta()), mupt) );
+	return 1.;
+	//	float sferr = double(direction)*SingleMuon_274093->GetBinError(SingleMuon_274093->FindBin( fabs(mu.at(0).Eta()), mupt) );
+	//return  (1. + sferr)*SingleMuon_274093->GetBinContent( SingleMuon_274093->FindBin(  fabs(mu.at(0).Eta()), mupt) );
       }
       else {
-	float sferr = double(direction)*SingleMuon_276097->GetBinError( SingleMuon_276097->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	return  (1. + sferr)*SingleMuon_276097->GetBinContent( SingleMuon_276097->FindBin(  fabs(mu.at(0).Eta()), mupt) );
+	return 1.;
+	//float sferr = double(direction)*SingleMuon_276097->GetBinError( SingleMuon_276097->FindBin( fabs(mu.at(0).Eta()), mupt) );
+	//return  (1. + sferr)*SingleMuon_276097->GetBinContent( SingleMuon_276097->FindBin(  fabs(mu.at(0).Eta()), mupt) );
       }
 
     }
@@ -1071,12 +1077,12 @@ AnalyzerCore::~AnalyzerCore(){
   delete MuonID_medium;
   delete MuonID_loose;
   delete MuonISO_tight_tightID;
-  delete MuonISO_tight_mediumID;
+  //  delete MuonISO_tight_mediumID;
   delete MuonISO_loose_tightID;
-  delete MuonISO_loose_mediumID;
-  delete MuonISO_loose_looseID;
-  delete SingleMuon_274093;
-  delete SingleMuon_276097;
+  //delete MuonISO_loose_mediumID;
+  //delete MuonISO_loose_looseID;
+  //  delete SingleMuon_274093;
+  //  delete SingleMuon_276097;
 
   for(std::map<TString,BTagSFUtil*>::iterator it = MapBTagSF.begin(); it!= MapBTagSF.end(); it++){
     delete it->second;
