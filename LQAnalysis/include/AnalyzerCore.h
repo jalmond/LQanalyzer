@@ -163,6 +163,7 @@ class AnalyzerCore : public LQCycleBase {
   TH2F* SingleMuon_274093;
   TH2F* SingleMuon_276097;
   TH2F* ElectronSF_Tight;
+  TH2F* ElectronSF_GSF;
   TH2F* ElectronSF_Medium;
   TH2F* ElectronSF_Loose;
   TH2F* ElectronSF_Veto;
