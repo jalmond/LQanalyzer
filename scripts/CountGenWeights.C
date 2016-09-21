@@ -33,6 +33,7 @@ void CountGenWeights(std::string outdir,std::string filename, std::string  histf
   cout << "sum_weight = " << sum_weight << endl;
   TString outputdir2 = TString(outdir) + "/output/";
   TString command3 = "mv "  + TString(outputname) + " " + outputdir2;
+  cout << command3 << endl;
   system(command3.Data());
 
 }

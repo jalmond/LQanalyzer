@@ -188,7 +188,7 @@ bool MuonSelection::HNLooseMuonSelection(KMuon mu) {
   if(!PassID(MUON_POG_TIGHT, mu)) pass_selection =false;
   if(!(LeptonRelIso < 0.6)) pass_selection = false;
   if(( mu.Pt() < 10. ))  pass_selection = false;
-  if(( fabs(mu.Eta()) < 2.4 ))  pass_selection = false;
+  if(( fabs(mu.Eta()) > 2.4 ))  pass_selection = false;
 
   return pass_selection;
 

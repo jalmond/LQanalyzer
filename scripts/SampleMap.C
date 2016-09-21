@@ -44,6 +44,8 @@ bool CheckMaps(){
 map<TString,  Double_t>  GetXSecMap(){
 
    map<TString,  Double_t> dirmap;
+   dirmap["TTTo2L2Nu_13TeV-powheg"] = 89.04809252;
+   dirmap["TTToSemiLeptonic_13TeV-powheg"]=272.151872;
    dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = 6024.2;
    dirmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = 18610. ;
    dirmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = 6025.2;
@@ -54,8 +56,8 @@ map<TString,  Double_t>  GetXSecMap(){
    dirmap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] =35.6;
    dirmap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"] = 3.36;
 
-   dirmap["ttHTobb_M125_13TeV_powheg_pythia8"] =0.5058;
-   dirmap["ttHToNonbb_M125_13TeV_powheg_pythia8"] =0.5058;
+   dirmap["ttHTobb_M125_13TeV_powheg_pythia8"] =0.2934;
+   dirmap["ttHToNonbb_M125_13TeV_powheg_pythia8"] =0.2151;
    dirmap["GluGlu_HToMuMu_M125_13TeV_powheg_pythia8"] =0.00970632;
    dirmap["VBF_HToMuMu_M125_13TeV_powheg_pythia8"] =0.000828308;
 
@@ -451,8 +453,8 @@ map<TString, TString>  GetMissingMap(TString cversion){
     if(TString(input_datasetlist.at(i)).Contains("json")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("mtop_")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("DMJets")) inlqmap=true;
-    if(TString(input_datasetlist.at(i)).Contains("TLJ_powheg")) inlqmap=true;
-    if(TString(input_datasetlist.at(i)).Contains("TLL_powheg")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TLJ_powheg_scale")) inlqmap=true;
+    if(TString(input_datasetlist.at(i)).Contains("TLL_powheg_scale")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("powheg_mpiOFF")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("TT_powheg_evtgen")) inlqmap=true;
     if(TString(input_datasetlist.at(i)).Contains("TT_powheg_noCR")) inlqmap=true;
@@ -520,6 +522,8 @@ map<TString, TString>  GetTriLepMap(){
 map<TString, TString>  GetLQMap(){
 
   map<TString, TString> lqmap;
+  lqmap["TTTo2L2Nu_13TeV-powheg"] = "TTToLLNuNu";
+  lqmap["TTToSemiLeptonic_13TeV-powheg"]="TTToLNuJJ";
   lqmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY50plus_MCatNLO";
   lqmap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY10to50_MCatNLO";
   lqmap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY50plus_madgraph";
@@ -666,16 +670,17 @@ map<TString, TString>  GetLQMap(){
   lqmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"] ="HN60_mumumu";
   lqmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"] ="HN150_mumumu";
   lqmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"] ="HN700_mumumu";
-  lqmap["TTToHcToWA_3l4j_3mu_Mhc130MA30_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_3mu_Mhc130MA3";
-  lqmap["TTToHcToWA_3l4j_3mu_Mhc130MA5_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_3mu_Mhc130MA5";
-  lqmap["TTToHcToWA_3l4j_3mu_Mhc155MA30_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_3mu_Mhc155MA30";
-  lqmap["TTToHcToWA_3l4j_3mu_Mhc90MA5_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_3mu_Mhc90MA5";
-  lqmap["TTToHcToWA_3l4j_emu_Mhc130MA30_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_emu_Mhc130MA30";
-  lqmap["TTToHcToWA_3l4j_emu_Mhc130MA5_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_emu_Mhc130MA5";
-  lqmap["TTToHcToWA_3l4j_emu_Mhc155MA30_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_emu_Mhc155MA30";
-  lqmap["TTToHcToWA_3l4j_emu_Mhc90MA5_5fLO_76Xcatcut"] ="TTToHcToWA_3l4j_emu_Mhc90MA5";
-  lqmap["TTToHcToWZp_3l4j_1e2mu_Mhc155MZp5_5fLO_76Xcatcut"] ="TTToHcToWZp_3l4j_1e2mu_Mhc155MZp5";
-  lqmap["TTToHcToWZp_3l4j_3mu_Mhc155MZp5_5fLO_76Xcatcut"] ="TTToHcToWZp_3l4j_3mu_Mhc155MZp5";
+  lqmap["TTToHcToWA_3l4j_3mu_Mhc130MA30_5fLO_76Xcatcut"] ="tthwA_3mu_hc130A30";
+  lqmap["TTToHcToWA_3l4j_3mu_Mhc130MA5_5fLO_76Xcatcut"] ="tthwA_3mu_hc130A5";
+  lqmap["TTToHcToWA_3l4j_3mu_Mhc155MA30_5fLO_76Xcatcut"] ="tthwA_3mu_hc155A30";
+  lqmap["TTToHcToWA_3l4j_3mu_Mhc90MA5_5fLO_76Xcatcut"] ="tthwA_3mu_hc90A5";
+  lqmap["TTToHcToWA_3l4j_emu_Mhc130MA30_5fLO_76Xcatcut"] ="tthwA_1e2mu_hc130A30";
+  lqmap["TTToHcToWA_3l4j_emu_Mhc130MA5_5fLO_76Xcatcut"] ="tthwA_1e2mu_hc130A5";
+  lqmap["TTToHcToWA_3l4j_emu_Mhc155MA30_5fLO_76Xcatcut"] ="tthwA_1e2mu_hc155A30";
+  lqmap["TTToHcToWA_3l4j_emu_Mhc90MA5_5fLO_76Xcatcut"] ="tthwA_1e2mu_hc90A5";
+  lqmap["TTToHcToWZp_3l4j_1e2mu_Mhc155MZp5_5fLO_76Xcatcut"] ="tthwzp_1e2mu_hc155zp5";
+  lqmap["TTToHcToWZp_3l4j_3mu_Mhc155MZp5_5fLO_76Xcatcut"] ="tthwzp_3mu_hc155zp5";
+
   lqmap["MajoranaNeutrinoToEpEp_Schannel_V0p1_M-100_13TeV-amcatnlo"] ="HN_EpEp_Schannel_100";
   lqmap["MajoranaNeutrinoToEpEp_Schannel_V0p1_M-200_13TeV-amcatnlo"] ="HN_EpEp_Schannel_200";
   lqmap["MajoranaNeutrinoToEpEp_Schannel_V0p1_M-500_13TeV-amcatnlo"] ="HN_EpEp_Schannel_500";

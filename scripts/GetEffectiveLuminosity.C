@@ -11,6 +11,10 @@
 #include <sstream>
 #include "TSystem.h"
 
+#include <unistd.h>
+
+using namespace std;
+
 #include <map>
 
 #include "SampleMap.C"
@@ -91,30 +95,77 @@ void GetEffectiveLuminosity(TString version="") {
 	missing_samples2.push_back(mit->second);
 	continue;
       }
-      TString command1 = "rm -r "+ mit->first;
-      TString command2 = "mkdir "+ mit->first;
-      TString command2b = "mkdir "+ mit->first + "/output/";
+      TString command1 = "rm -r /data2/LQ_SKTreeOutput/Lumi/jalmond/" + mit->first;
+      TString command2 = "mkdir /data2/LQ_SKTreeOutput/Lumi/jalmond/"+ mit->first;
+      TString command2b = "mkdir /data2/LQ_SKTreeOutput/Lumi/jalmond/"+ mit->first + "/output/";
 
       system(command1.Data());
       system(command2.Data());
       system(command2b.Data());
       
       for(unsigned int i=0; i < filelist.size(); i++){
-      std::string istr;
-      std::stringstream out;
-      out << i;
-      istr = out.str();
-      TString command3 = "root -l -b -q \'CountGenWeights.C(\""+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\' &";
-      TString command3b = "root -l -b -q \'CountGenWeights.C(\""+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\' ";
+	cout << filelist.at(i) << endl;
+	
+	std::string istr;
+	std::stringstream out;
+	out << i;
+	istr = out.str();
+	
+	string lqdir = getenv("LQANALYZER_DIR");
+	ofstream outputFile;
+	outputFile.open(("Run_" + istr + ".sh").c_str());
+	outputFile << "#!/bin/sh" << endl;
+	outputFile <<"\n"<< endl;
+	outputFile <<"#$ -S /bin/bash \n"<< endl;
+	outputFile <<"#$ -N Run_" + istr  + "  \n"<< endl;
+	outputFile <<"#$ -wd  /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + " \n"<< endl;
+	outputFile <<"#$ -o  /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + " \n"<< endl;
+	outputFile <<"#$ -e  /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + " \n"<< endl;
+	outputFile <<"echo 'Job started at ' `date` \n"<< endl;
+	outputFile <<"cd /share/apps/root_v5-34-32/root/ \n"<< endl;
+	outputFile <<". bin/thisroot.sh \n"<< endl;
+	outputFile <<"cd " + lqdir + "\n"<< endl;
+	
+	outputFile <<"source setup.sh \n"<< endl;
+	outputFile <<"echo 'PWD= '$PWD \n"<< endl;
+	outputFile <<"cd /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + " \n"<< endl;
+	outputFile <<"root -l -b -q \'CountGenWeights.C(\"/data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\' "<< endl;
+	outputFile <<"echo 'Ran macro 2' \n"<< endl;
+	outputFile <<""<< endl;
+	TString command4a="cp Run_" + istr + ".sh  /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first ;
+        system(command4a.Data());
+	TString command4b="cp CountGenWeights.C /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first ;
+	system(command4b.Data());
+
+	TString command3 = "qsub -V  /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first+ "/Run_" + istr + ".sh";
 	cout << command3 << endl;
-	if(i==0) system(command3.Data());
-	else if(i%10) system(command3.Data());
-	else system(command3b.Data());
+	system(command3.Data());
+	
       }
       
+      bool jobComplete=false;
+      while (!jobComplete){
+	jobComplete=true;
+	for(int i=0; i < filelist.size(); i++){
+	  std::string istr;
+	  std::stringstream out;
+	  out << i;
+
+	  istr = out.str();
+	  std::ifstream infile("/data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first +"/output/hist" + TString(istr) +".root");
+	  if(!infile.good()) {
+	      jobComplete=false;
+	      cout << "File /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
+	      sleep(5);
+	      break;
+	    }
+	}
+      }
+      
+
       
       TString command4 = "rm log/checkoutput.txt";
-      TString command5= "ls   /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/  > log/checkoutput.txt";
+      TString command5= "ls   /data2/DATA/cattoflat/MC/" + version + "/"+  mit->first + "/  > log/checkoutput.txt";
       if(cluster) command5= "ls   /data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/  > log/checkoutput.txt";
       system(command4.Data());
       system(command5.Data());
@@ -126,11 +177,11 @@ void GetEffectiveLuminosity(TString version="") {
 	name_file >> filen;
 	if(TString(filen).Contains(".root"))counter++;
       }
-      if(!cluster)cout << "Number of files in /data2/DATA/cattoflat/MC/" + version + "/"+ mit->first + "/ = " << counter << endl;
-      else cout << "Number of files in //data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/ = " << counter << endl;
+      if(!cluster)cout << "Number of files in /data2/DATA/cattoflat/MC/" + version + "/"+  mit->first + "/ = " << counter << endl;
+      else cout << "Number of files in //data4/DATA/FlatCatuples/MC/" + version + "/"+  mit->first + "/ = " << counter << endl;
       bool JobDone=false;
       while (JobDone==false){
-	TString command6= "ls  "  + mit->first + "/output/ > log/checkcounted.txt";
+	TString command6= "ls   /data2/LQ_SKTreeOutput/Lumi/jalmond/"  +  mit->first + "/output/ > log/checkcounted.txt";
 	system(command6.Data());
 	
 	TString filename_counted = "log/checkcounted.txt";
@@ -143,9 +194,9 @@ void GetEffectiveLuminosity(TString version="") {
 	}
 	if(counter_counted == counter) JobDone=true;
       }
-      TString haddcommand = "hadd  " + mit->first + "/output/Output.root " +  mit->first + "/output/*.root ";
+      TString haddcommand = "hadd   /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + "/output/Output.root  /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + "/output/*.root ";
       system(haddcommand.Data());
-      TFile* file = TFile::Open((mit->first + "/output/Output.root").Data());
+      TFile* file = TFile::Open(( "/data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first + "/output/Output.root").Data());
       TH1F*  SumWCounter = (TH1F*) (file ->Get("sumweight"));
       sum_of_weights = SumWCounter->Integral();
     }
@@ -157,13 +208,13 @@ void GetEffectiveLuminosity(TString version="") {
     if(use_sum_genweight) lumi = sum_of_weights / mit->second;
     
     std::cout.precision(10);
-    std::cout <<mit->first << "    nevents =  " << number_events_processed << " sum of weights =  " << sum_of_weights << " eff lumi = " << lumi <<std::endl;
+    std::cout << "/data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first << "    nevents =  " << number_events_processed << " sum of weights =  " << sum_of_weights << " eff lumi = " << lumi <<std::endl;
     
     system("rm inputlist_efflumi.txt");
-    system(("rm -r " +  mit->first).Data());
+    system(("rm -r   /data2/LQ_SKTreeOutput/Lumi/jalmond/"+mit->first).Data());
     
-    map_lumi[mit->first] = lumi;
-    neventmap[mit->first]=number_events_processed;
+    map_lumi[ mit->first] = lumi;
+    neventmap[ mit->first]=number_events_processed;
     n_w_eventmap[mit->first]=sum_of_weights;
   } 
 
@@ -285,7 +336,6 @@ void GetEffectiveLuminosity(TString version="") {
   lumi_file << "#### Private produced samples : Not made in batch at kisti" << endl;
   lumi_file << "##################################################################" << endl;
   
-
   string lqdir = getenv("LQANALYZER_DIR");
   string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
   if(cluster) lfile2 =  lqdir + "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
