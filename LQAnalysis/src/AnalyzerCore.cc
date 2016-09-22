@@ -840,8 +840,8 @@ double AnalyzerCore::ElectronRecoScaleFactor(vector<snu::KElectron> el){
     float elpt= itel->Pt() ;
     if(itel->Pt() > 200.) elpt=119.;
     if(itel->Pt() < 20.) elpt=21.;
-    int bin =  ElectronRECO->FindBin(fabs(itel->SCEta()), elpt);
-    sf *= ElectronRECO->GetBinContent(bin);
+    //int bin =  ElectronRECO->FindBin(fabs(itel->SCEta()), elpt);
+    //sf *= ElectronRECO->GetBinContent(bin);
   }
   
 
