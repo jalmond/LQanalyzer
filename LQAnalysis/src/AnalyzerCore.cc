@@ -144,9 +144,8 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   }
 
-  cout << "TEST4" << endl;
-    string lqdir = getenv("LQANALYZER_DIR");
-    m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
+  string lqdir = getenv("LQANALYZER_DIR");
+  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
   /// List of taggers
@@ -639,10 +638,10 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
   
   if(isData) return 1.;
   
-  //// ONLY SINGLE MUON TRIGGER SCAKE FACTOR ARE UPDATED
+  //// ONLY SINGLE MUON TRIGGER SCAKE FACTOR ARE UPDATED, OTHERS ARE 2015 SFS
 
   ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgHLTScaleFactorMeasurements
-
+  
 
   if(el.size() == 2){
     //if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return 0.997*0.997*0.998;
@@ -2045,14 +2044,16 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString 
 
   if(k_muons.size()==0) return 0.;
   float mm_weight = 0.;
+  cout << "k_muons.size() = " << k_muons.size() << endl;
   if(k_muons.size()==2){
 
     bool is_mu1_tight    = IsTight(k_muons.at(0));
     bool is_mu2_tight    = IsTight(k_muons.at(1));
     
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
-    mm_weight =m_fakeobj->get_dilepton_mm_eventweight(muons, is_mu1_tight,is_mu2_tight, cutID);
 
+    mm_weight =m_fakeobj->get_dilepton_mm_eventweight(muons, is_mu1_tight,is_mu2_tight, cutID);
+    
   }
   return mm_weight;
 }

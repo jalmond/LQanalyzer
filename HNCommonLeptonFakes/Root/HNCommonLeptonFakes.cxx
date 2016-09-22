@@ -62,14 +62,15 @@ void HNCommonLeptonFakes::InitialiseFake(){
   CheckFile(file_fake_muon);
   TDirectory* tempDir1 = getTemporaryDirectory();
   tempDir1->cd();
-  
+
   _2DEfficiencyMap["fake_Eff_muon_pog"] = dynamic_cast<TH2F*>((file_fake_muon->Get("h_FOrate3"))->Clone());
   file_fake_muon->Close();
   delete file_fake_muon;
   
   TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_2.root").c_str());
   CheckFile(file_fake_muon_hn);
-
+  TDirectory* tempDir1hn = getTemporaryDirectory();
+  tempDir1hn->cd();
 
   _2DEfficiencyMap["fake_Eff_muon_hn_pog"] = dynamic_cast<TH2F*>((file_fake_muon_hn->Get("h_FOrate3"))->Clone());
   file_fake_muon_hn->Close();
@@ -531,12 +532,15 @@ float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta , TStrin
   if(pt < 10) return -999999.;
   
   map<TString,TH2F*>::const_iterator mapit;
-
+  
   TString label = "fake_Eff_muon_pog";
-  if(ID.Contains("HN"))label="fake_Eff_muon_hn";
+  if(ID.Contains("HN"))label="fake_Eff_muon_hn_pog";
+  
+  cout << "label = " << label << endl;
   mapit = _2DEfficiencyMap.find(label);
-
+  
   if(mapit!=_2DEfficiencyMap.end()){
+
     int binx =  mapit->second->FindBin(fabs(eta), pt);
     eff_fake =  mapit->second->GetBinContent(binx);
   }

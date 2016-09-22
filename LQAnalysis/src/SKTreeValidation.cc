@@ -580,6 +580,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   if(k_running_nonprompt){
     muid=BaseSelection::MUON_HN_FAKELOOSE;
     muons = GetMuons(muid,false);
+    cout << "muons size = " << muons.size() << endl;
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
   else   muons = GetMuons(muid);
@@ -615,6 +616,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
 
       ev_weight      *=  Get_DataDrivenWeight_MM(muons,"POGTIGHT");
     }
+
   }
 
   if(muons.size() ==2) {

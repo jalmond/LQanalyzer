@@ -135,7 +135,7 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float p
 
     bool pass_selection(true);
     if(muit->Pt() == 0.)   continue;
-
+    
     MuonID = PassUserID(muid, *muit);
     if(!MuonID)  pass_selection = false;
 
@@ -153,6 +153,7 @@ bool MuonSelection::PassUserID(ID id, snu::KMuon mu){
   if ( id == MUON_POG_MEDIUM) return POGID(mu, MUON_POG_MEDIUM); 
   if ( id == MUON_POG_TIGHT)return POGID(mu, MUON_POG_TIGHT);
   if ( id == MUON_HN_VETO) return HNVetoMuonSelection(mu);
+  
   if ( id == MUON_HN_FAKELOOSE) return HNLooseMuonSelection(mu);
   if ( id == MUON_HN_TIGHT) return HNTightMuonSelection(mu);
   if ( id == MUON_TOP_VETO) return TopVetoMuonSelection(mu);
@@ -183,12 +184,12 @@ bool MuonSelection::HNLooseMuonSelection(KMuon mu) {
   //### THIS SELECTION IS USED FOR MUON FAKES STUDIES
   
   bool pass_selection(true);
-  
+
   LeptonRelIso = (mu.RelIso04());
   if(!PassID(MUON_POG_TIGHT, mu)) pass_selection =false;
   if(!(LeptonRelIso < 0.6)) pass_selection = false;
   if(( mu.Pt() < 10. ))  pass_selection = false;
-  if(( fabs(mu.Eta()) < 2.4 ))  pass_selection = false;
+  if(( fabs(mu.Eta()) > 2.4 ))  pass_selection = false;
 
   return pass_selection;
 
