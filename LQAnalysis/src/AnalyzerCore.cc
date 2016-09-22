@@ -96,7 +96,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     delete infile_sf;
     origDir->cd();
   }
-  if(1){
+  /*  if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "eleRECO.txt.egamma_SF2D.root").c_str());
 
     TDirectory* tempDir = getTemporaryDirectory();
@@ -105,7 +105,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     infile_sf->Close();
     delete infile_sf;
     origDir->cd();
-  }
+    }*/
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "MuonID_Z_RunBCD_prompt80X_7p65.root").c_str());
 
