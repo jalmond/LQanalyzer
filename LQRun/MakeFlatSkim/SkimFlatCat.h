@@ -79,7 +79,6 @@ public :
    vector<int>     *gen_motherindex;
 
    Int_t           lumiMaskGold;
-   Int_t           lumiMaskSilver;
    Int_t           nGoodPV;
    Int_t           nPV;
    Int_t           nTrueInteraction;
@@ -87,12 +86,6 @@ public :
    Float_t         puWeightGold;
    Float_t         puWeightGoldDn;
    Float_t         puWeightGoldUp;
-   Float_t         puWeightGoldDn_xs71000;
-   Float_t         puWeightGoldUp_xs71000;
-   Float_t         puWeightGold_xs71000;
-   Float_t         puWeightSilver;
-   Float_t         puWeightSilverDn;
-   Float_t         puWeightSilverUp;
 
    vector<double>  *electrons_absIso03;
    vector<double>  *electrons_absIso04;
@@ -291,12 +284,6 @@ public :
    TBranch        *b_puWeightGold;   //!
    TBranch        *b_puWeightGoldDn;   //!
    TBranch        *b_puWeightGoldUp;   //!
-   TBranch        *b_puWeightSilver;   //!
-   TBranch        *b_puWeightSilverDn;   //!
-   TBranch        *b_puWeightSilverUp;   //!
-   TBranch        *b_puWeightGoldDn_xs71000;   //!
-   TBranch        *b_puWeightGoldUp_xs71000;   //!
-   TBranch        *b_puWeightGold_xs71000;   //!
    TBranch        *b_pdfWeight;   //!
    TBranch        *b_electrons_absIso03;   //!
    TBranch        *b_electrons_absIso04;   //!
@@ -713,12 +700,6 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetBranchAddress("puWeightGold", &puWeightGold, &b_puWeightGold);
    fChain->SetBranchAddress("puWeightGoldDn", &puWeightGoldDn, &b_puWeightGoldDn);
    fChain->SetBranchAddress("puWeightGoldUp", &puWeightGoldUp, &b_puWeightGoldUp);
-   fChain->SetBranchAddress("puWeightSilver", &puWeightSilver, &b_puWeightSilver);
-   fChain->SetBranchAddress("puWeightSilverDn", &puWeightSilverDn, &b_puWeightSilverDn);
-   fChain->SetBranchAddress("puWeightSilverUp", &puWeightSilverUp, &b_puWeightSilverUp);
-   fChain->SetBranchAddress("puWeightGoldDn_xs71000", &puWeightGoldDn_xs71000, &b_puWeightGoldDn_xs71000);
-   fChain->SetBranchAddress("puWeightGoldUp_xs71000", &puWeightGoldUp_xs71000, &b_puWeightGoldUp_xs71000);
-   fChain->SetBranchAddress("puWeightGold_xs71000", &puWeightGold_xs71000, &b_puWeightGold_xs71000);
 
    fChain->SetBranchAddress("electrons_absIso03", &electrons_absIso03, &b_electrons_absIso03);
    fChain->SetBranchAddress("electrons_absIso04", &electrons_absIso04, &b_electrons_absIso04);

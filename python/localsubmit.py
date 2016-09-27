@@ -18,6 +18,7 @@ parser.add_option("-s", "--stream", dest="stream", default="", help="Which data 
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
 parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
+#parser.add_option("-t", "--tree", dest="tree", default="event", help="What is input tree name?")
 parser.add_option("-o", "--logstep", dest="logstep", default=-1, help="How many events betwene log messages")
 parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How much data are you running on/ needed to weight mc?")
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
@@ -77,9 +78,12 @@ useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
 
-print "skflag = " + skflag 
+if not skflag == "":
+    print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    print "skflag = " + skflag 
 
 new_channel = channel.replace(":", "")
+
 original_channel = new_channel
 
 
@@ -107,6 +111,7 @@ for lib in list_of_extra_lib:
 if DEBUG == "True":
     print "In debug mode"
 
+print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 print "Running : " + cycle
 
 if useskim == "SKTree_NoSkim":
@@ -120,12 +125,14 @@ elif useskim == "SKTree_TriLepSkim":
         
 
 if useskinput == "True": 
+    print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     print "Using SKTrees as input."
 elif useskinput == "true":
+    print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     print "Using SKTrees as input."
 else:
+    print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     print "Using CATntuples as input"    
-
 ########  Sample specific configuration ###############
 ## set the job conguration set for a specific sample###
 #######################################################
@@ -180,9 +187,9 @@ running_batch=True
 
 if str(usebatch) == "NULL":
     if str(running_batch) == "True":
-        print "%%%%%%%%%%%%%%%%%%%%%%%%"
+        print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
         print "Running batch job:"
-        print "%%%%%%%%%%%%%%%%%%%%%%%%"
+        print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     else:
         print "Running standard root interactive job:"
 else:
@@ -913,6 +920,7 @@ for i in range(1,number_of_cores+1):
     
 
     if singlejob:
+        print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
         print "Running single job " + script 
         runcommand = "root.exe -l -q -b " +  script 
         os.system(runcommand)

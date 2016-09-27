@@ -12,7 +12,6 @@ OB * @Package: LQCycles
 #include "FakeRateCalculator_El.h"
 
 //Core includes
-#include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
@@ -78,8 +77,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   std::vector<TString> triggerslist_33;
   triggerslist_33.push_back("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
 
-
-
   // analysis trigger
   std::vector<TString> triggerslist;
   triggerslist.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
@@ -117,7 +114,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
     }
     weight*= id_weight;
-    weight*= reco_weight;
+    //weight*= reco_weight;
   }
 
 
@@ -135,8 +132,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   float trigger_ps_singlelepweight= WeightByTrigger("HLT_Ele23_WPLoose_Gsf_v", TargetLumi);
 
   if(electronTightColl.size() ==1) {
-    if(PassTrigger(triggerslist_singlelep, prescale) ){
-      FillCLHist(sighist_ee, "SingleElectron_unprescaled", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*trigger_ps_singlelepweight);
+    if(PassTrigger(triggerslist_singlelep, prescale,true) ){
+      FillCLHist(sighist_ee, "SingleElectron_unprescale,trued", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*trigger_ps_singlelepweight);
     }
 
   }
@@ -145,7 +142,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   /// Check single leton legs
   if(electronTightColl.size() ==2) {
-    if( PassTrigger(triggerslist_12leg, prescale)){
+    if( PassTrigger(triggerslist_12leg, prescale,true)){
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
         float pr_weight=WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
 
@@ -154,7 +151,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
   }
   if(electronTightColl.size() ==2) {
-    if(PassTrigger(triggerslist_17leg, prescale)){
+    if(PassTrigger(triggerslist_17leg, prescale,true)){
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
 	float pr_weight= WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", TargetLumi);
 	
@@ -163,7 +160,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
   }
   
-  if(PassTrigger(triggerslist, prescale) ){
+  if(PassTrigger(triggerslist, prescale,true) ){
     if(electronTightColl.size() ==2) {
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15. ){
 	float pr_weight= WeightByTrigger("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi);
@@ -175,7 +172,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   if(electronLooseColl.size()!= 1) return;
 
-  float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_12, prescale), PassTrigger(triggerslist_18, prescale), PassTrigger( triggerslist_23, prescale), PassTrigger(triggerslist_33, prescale), TargetLumi); 
+  float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_12, prescale,true), PassTrigger(triggerslist_18, prescale,true), PassTrigger( triggerslist_23, prescale,true), PassTrigger(triggerslist_33, prescale,true), TargetLumi); 
 
 
   weight*= prescale_trigger;
@@ -644,10 +641,6 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
-
-  //
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
@@ -667,7 +660,6 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
 FakeRateCalculator_El::~FakeRateCalculator_El() {
   
   Message("In FakeRateCalculator_El Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
   
 }
 

@@ -11,7 +11,6 @@
 #include "HNDiElectron.h"
 
 //Core includes
-#include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
@@ -111,6 +110,29 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(!isData)weight*= MCweight;
   
+  //vector<snu::KTruth> eventbaseGetTruth();
+  if(SameCharge(GetMuons(BaseSelection::MUON_HN_VETO))){
+    cout << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCMatched() << "  " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCMatched() << endl;
+    cout << "Muon 1 " << endl;
+    cout << "isCF = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsCF() << endl;
+    cout << "is conv = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsFromConversion() << endl;
+    cout << "is from tau = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCFromTau() << endl;
+    cout << "is prompt = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsPrompt() << endl;
+    cout << "matched pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCMatchedPdgId() << endl;
+    cout << "mother pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MotherPdgId() << endl;
+    cout << "--------------------------------- " << endl;
+    cout << "Muon 2 " << endl;
+    cout << "isCF = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCIsCF() << endl;
+    cout << "is conv = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCIsFromConversion() << endl;
+    cout << "is from tau = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCFromTau() << endl;
+    cout << "is prompt = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCIsPrompt() << endl;
+    cout << "matched pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCMatchedPdgId() << endl;
+    cout << "mother pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MotherPdgId() << endl;
+    cout << "--------------------------------- " << endl;
+    cout << "--------------------------------- " << endl;
+
+  }
+  return;
   if(IsSignal()){
     //ListTriggersAvailable();
     vector<int> pt1;
@@ -173,25 +195,24 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       }
     }
   }
-
+  
   
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
-
+  
   if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
   else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-
-  if(!PassBasicEventCuts()) return;     /// Initial event cuts  
+  
+  //if(!PassBasicEventCuts()) return;     /// Initial event cuts  
   FillCutFlow("EventCut", weight);
   
-  TString analysis_trigger="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+  TString analysis_trigger="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   /// Trigger List (unprescaled)
   std::vector<TString> triggerslist;
   triggerslist.push_back(analysis_trigger);
 
   std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection                                                                                                                                                                              
-
   
   if(muonColl.size() == 3){
     if(muonColl.at(0).Pt() > 20){
@@ -229,8 +250,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
 
+  if(!PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", GetElectrons(BaseSelection::ELECTRON_HN_VETO), prescale)) return;
 
-  if(!PassTrigger(triggerslist, prescale)) return;
+  return;
+    //if(!PassTrigger(triggerslist, prescale)) return;
   
 
   if(PassTrigger(triggerslist, prescale)){
@@ -833,8 +856,6 @@ void HNDiElectron::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
 
   //
   //If you wish to output variables to output file use DeclareVariable
@@ -852,7 +873,6 @@ void HNDiElectron::BeginCycle() throw( LQError ){
 HNDiElectron::~HNDiElectron() {
   
   Message("In HNDiElectron Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
   
 }
 

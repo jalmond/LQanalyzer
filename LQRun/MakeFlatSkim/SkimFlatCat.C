@@ -30,10 +30,9 @@ void SkimFlatCat::Loop()
        SlimJets();
        SlimMuons();
        SlimElectrons();
-
        if (Cut(ientry) < 0) continue;
      }
-  
+
        
      nselected++;
      newtree->Fill();

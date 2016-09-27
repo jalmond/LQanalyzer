@@ -5,17 +5,15 @@
 \hline
 Source & \multicolumn{4}{c}{} \\
 \hline
-DY$\rightarrow$ ll; 10 < m(ll) < 50&11.1& $\pm$& 9.0&$^{+2.2}_{-2.2}$\\
-DY$\rightarrow$ ll; m(ll) > 50&671.9& $\pm$& 17.1&$^{+134.4}_{-134.4}$\\
-Misid. Lepton Background&78.3& $\pm$& 6.8&$^{+26.6}_{-26.6}$\\
-WZ,ZZ,WW&18.2& $\pm$& 1.2&$^{+2.0}_{-2.0}$\\
-t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&44.5& $\pm$& 2.6&$^{+9.3}_{-9.3}$\\
+Misid. Lepton Background&565.3& $\pm$& 18.4&$^{+192.2}_{-192.2}$\\
+Wjets&22.6& $\pm$& 35.5&$^{+3.4}_{-3.4}$\\
+t$\bar{t}$,t/$\bar{t}$,t/$\bar{t}$W,t$\bar{t}$V&211.2& $\pm$& 22.4&$^{+52.8}_{-52.8}$\\
 \hline
-Total&824.0& $\pm$&20.7&$^{+137.3}_{-137.3}$\\
+Total&799.2& $\pm$&45.9&$^{+199.4}_{-199.4}$\\
 \hline
-Data&  \multicolumn{4}{c}{$829.0$}\\
+Data&  \multicolumn{4}{c}{$6419.0$}\\
 \hline
-Signficance&  \multicolumn{4}{c}{$+0.0\sigma$}\\
+Signficance&  \multicolumn{4}{c}{$+25.6\sigma$}\\
 \hline
 \hline
 \end{tabular}

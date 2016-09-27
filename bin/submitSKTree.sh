@@ -1395,7 +1395,8 @@ if [[ $runMC  == "true" ]];
         then
 	
         declare -a input_samples=("${submit_file_tag}")
-        echo $submit_file_tag running
+	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+        echo Running $submit_file_tag.........
 	source submit.sh
     fi
     

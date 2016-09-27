@@ -11,7 +11,6 @@
 #include "ExampleAnalyzerDiMuon.h"
 
 //Core includes
-#include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
@@ -244,9 +243,6 @@ void ExampleAnalyzerDiMuon::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
-
   //
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
@@ -263,7 +259,6 @@ void ExampleAnalyzerDiMuon::BeginCycle() throw( LQError ){
 ExampleAnalyzerDiMuon::~ExampleAnalyzerDiMuon() {
   
   Message("In ExampleAnalyzerDiMuon Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
   
 }
 

@@ -11,7 +11,6 @@
 #include "ExampleAnalyzerDiElectron.h"
 
 //Core includes
-#include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
@@ -335,8 +334,6 @@ void ExampleAnalyzerDiElectron::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
 
   //
   //If you wish to output variables to output file use DeclareVariable
@@ -354,7 +351,6 @@ void ExampleAnalyzerDiElectron::BeginCycle() throw( LQError ){
 ExampleAnalyzerDiElectron::~ExampleAnalyzerDiElectron() {
   
   Message("In ExampleAnalyzerDiElectron Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
   
 }
 

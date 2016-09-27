@@ -78,9 +78,7 @@ public :
    vector<int>     *gen_pdgid;
    vector<int>     *gen_motherindex;
 
-   Int_t           lumiMaskGold;
-   Int_t           lumiMaskSilver;
-   Int_t           nGoodPV;
+
    Int_t           nPV;
    Int_t           nTrueInteraction;
 

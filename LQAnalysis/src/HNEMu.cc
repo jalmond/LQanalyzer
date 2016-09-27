@@ -11,7 +11,6 @@
 #include "HNEMu.h"
 
 //Core includes
-#include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
@@ -150,9 +149,6 @@ void HNEMu::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  string analysisdir = getenv("FILEDIR");  
-  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "MyDataPileupHistogram_69400.root").c_str());
 
   //
   //If you wish to output variables to output file use DeclareVariable
@@ -187,8 +183,6 @@ void HNEMu::BeginCycle() throw( LQError ){
 HNEMu::~HNEMu() {
   
   Message("In HNEMu Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
-
  }
      
 

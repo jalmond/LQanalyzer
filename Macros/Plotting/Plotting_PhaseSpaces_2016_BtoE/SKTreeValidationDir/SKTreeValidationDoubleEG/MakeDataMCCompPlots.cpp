@@ -62,7 +62,7 @@ int MakeCutFlow_Plots(string configfile){
   page << "<br> <font size=\"4\"><b> " << message <<  " </b></font> <br><br>" << endl;
   page << "<a href=\"histograms/" +histdir + "/indexCMS.html\">"+ histdir + "</a><br>"; 
   
-  //MakeCutFlow(histdir);  
+  MakeCutFlow(histdir);  
   int M=MakePlots(histdir);  
 
   return 1;
@@ -509,7 +509,7 @@ TLegend* MakeLegend(map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata ,
   legorder.push_back("DY#rightarrow ll; m(ll) > 50");
   legorder.push_back("t#bar{t},t/#bar{t},t/#bar{t}W,t#bar{t}V");
   legorder.push_back("WZ,ZZ,WW");
-  legorder.push_back("QCD");
+  // legorder.push_back("QCD");
   //legorder.push_back("Mismeas. Charge Background");
   legorder.push_back("Misid. Lepton Background");
   

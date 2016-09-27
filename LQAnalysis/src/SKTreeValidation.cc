@@ -11,7 +11,6 @@
 #include "SKTreeValidation.h"
 
 //Core includes
-#include "Reweight.h"
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
@@ -152,22 +151,20 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
-   TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
-   TString dimuon_trigmuon_trig2="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
+  TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
    
    TString muon_trigmuon_trig1="HLT_IsoMu22_v";
    TString muon_trigmuon_trig2="HLT_IsoTkMu22_v";
 
    TString diel_trig="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
-   TString em1_trig="HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
-   TString em2_trig="HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
+   TString em1_trig="HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
    
    TString el_trig="HLT_Ele27_WPTight_Gsf_v";
 
+
    std::vector<TString> triggerslist_dimu;
    triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
-   triggerslist_dimu.push_back(dimuon_trigmuon_trig2);
 
    std::vector<TString> triggerslist_mu;
    triggerslist_mu.push_back(muon_trigmuon_trig1);
@@ -177,12 +174,12 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    std::vector<TString> triggerslist_diel;
    triggerslist_diel.push_back(diel_trig);
 
+
    std::vector<TString> triggerslist_el;
    triggerslist_el.push_back(el_trig);
 
    std::vector<TString> triggerslist_emu;
    triggerslist_emu.push_back(em1_trig);
-   triggerslist_emu.push_back(em2_trig);
    
 
    FillCutFlow("TriggerCut", weight);
@@ -195,7 +192,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    if (!k_isdata) {
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
 
-     //pileup_reweight = eventbase->GetEvent().PileUpWeight();
+     pileup_reweight = TempPileupWeight();
+
      FillHist("PUWeightvsNVertex",pileup_reweight, eventbase->GetEvent().nVertices(), weight, 0., 5., 500, 0., 60., 60);
    }
    
@@ -455,8 +453,6 @@ void SKTreeValidation::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  string analysisdir = getenv("FILEDIR");  
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "SNUCAT_Pileup.root").c_str());
 
   //
   //If you wish to output variables to output file use DeclareVariable
@@ -474,7 +470,6 @@ void SKTreeValidation::BeginCycle() throw( LQError ){
 SKTreeValidation::~SKTreeValidation() {
   
   Message("In SKTreeValidation Destructor" , INFO);
-  if(!k_isdata)delete reweightPU;
   
 }
 
@@ -516,7 +511,7 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
 
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
 
-  bool trig_pass= PassTrigger(trignames, prescale);
+  bool trig_pass= PassTrigger("HLT_IsoMu22", muons, prescale);
 
   /// List of all corrections to be applied
   float trigger_sf(1.);
@@ -526,7 +521,7 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
   float ev_weight(1.);
 
   if(!isData){
-    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =   MuonScaleFactor(muid, muons,0);
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
 
@@ -587,7 +582,8 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
   
-  bool trig_pass= PassTrigger(trignames, prescale);
+  bool trig_pass= PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale);
+
   
   /// List of all corrections to be applied
   float trigger_sf(1.);
@@ -597,7 +593,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   float ev_weight(1.);
 
   if(!isData){
-    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =   MuonScaleFactor(muid, muons,0);
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
     
@@ -694,8 +690,6 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
 
   std::vector<snu::KJet> jets =  GetJets(jetid);
 
-
-
   /// List of all corrections to be applied
   float trigger_sf(1.);
   float id_iso_sf(1.);
@@ -703,7 +697,7 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
   float ev_weight(1.);
 
   if(!isData){
-    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =  MuonScaleFactor(muid, muons,0);
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
     id_iso_sf *= ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
@@ -715,9 +709,8 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
     ev_weight = w * trigger_sf * id_iso_sf * trigger_ps* pu_reweight;
   }
 
-  bool trig_pass= PassTrigger(trignames, prescale);
- 
-	    
+  bool trig_pass= PassTrigger("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v",muons,electrons, prescale);
+    
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
     if(muid == BaseSelection::MUON_HN_TIGHT){
@@ -830,11 +823,11 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
   else   electrons =  GetElectrons(elid);
   
   std::vector<snu::KElectron> electronVetoColl   = GetElectrons(BaseSelection::ELECTRON_HN_VETO);
-
+  
   std::vector<snu::KMuon> muons =  GetMuons(muid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
 
-  bool trig_pass= PassTrigger(trignames, prescale);
+  bool trig_pass= PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", electrons,  prescale);
 
   /// List of all corrections to be applied
   float trigger_sf(1.);
@@ -844,7 +837,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
 
   float ev_weight(1.);
   if(!isData){
-    trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
+    //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0)); /// 
     id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
     reco_weight = ElectronRecoScaleFactor(electrons);
     /// Tiny effect on unprescaled triggers
@@ -882,7 +875,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
           if(EtaRegion("BB",electrons))  FillCLHist(sighist_ee, "DiElectron_BB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
           if(EtaRegion("EB",electrons))  FillCLHist(sighist_ee, "DiElectron_EB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
           if(EtaRegion("EE",electrons))  FillCLHist(sighist_ee, "DiElectron_EE"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
-
+	  
           if(jets.size() >= 2)          FillCLHist(sighist_ee, "DiElectron_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  
 	  FillHistPerLumi("DiElectron_llmass"+tag,GetDiLepMass(electrons), ev_weight, 0., 200.,20, 10);
@@ -894,8 +887,10 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
     else{
       
       if(electrons.at(0).Pt() > 20. && electrons.at(1).Pt() > 20.){
+	cout << "SS: " << tag << endl;
 	if(GetDiLepMass(electrons)  > 15. ){
 	  if(trig_pass){
+	    cout << "SS trigger: " <<  tag << endl;
 	    if(jets.size() >= 2)   FillCLHist(sighist_ee, "DiElectron_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	    
 	  }
