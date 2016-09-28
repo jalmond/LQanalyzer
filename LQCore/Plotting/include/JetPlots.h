@@ -4,9 +4,9 @@
 #include "StdPlots.h"
 #include "KJet.h"
 /// Root includes                                                                                                                                                                                                                                                                                                                                                         
-#include "TH1F.h"
-#include "TH2F.h"
-#include "TH3F.h"
+#include "TH1D.h"
+#include "TH2D.h"
+#include "TH3D.h"
 
 
 

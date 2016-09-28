@@ -88,7 +88,7 @@ KMuon::KMuon(const KMuon& muon) :
   k_roch_eta(muon.k_roch_eta),
   k_roch_phi(muon.k_roch_phi),
   k_roch_m(muon.k_roch_m),
-  k_roch_e(muon.k_roch_eta),
+  k_roch_e(muon.k_roch_e),
 
   k_isloose(muon.k_isloose),
   k_istight(muon.k_istight), 

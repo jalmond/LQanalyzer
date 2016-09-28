@@ -93,6 +93,12 @@ map<TString,  Double_t>  GetXSecMap2016(){
   dirmap["WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"]=61526.7;
   dirmap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]=61526.7;
 
+
+  dirmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]=0.0004561;
+  dirmap["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"]=8.6;
+  dirmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]=3.416;
+  dirmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]=0.000002644;
+
   return dirmap;
 }
 
@@ -321,12 +327,12 @@ vector<TString>  GetAvailableMap(TString cversion){
   std::map<TString, TString> mapdir = GetLQMap2016();
 
   
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/dataset_" + cversion + "/ > inputlist_map.txt";
 
   bool cluster = false;
   TString analysisdir = TString(getenv("HOSTNAME"));
   if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
-  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/dataset_" + cversion + "/ > inputlist_map.txt";
 
   std::cout << dir  << std::endl;
   system(dir.Data());
@@ -341,7 +347,7 @@ vector<TString>  GetAvailableMap(TString cversion){
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
     if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
-    std::ifstream fdin( (prepath+"/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::ifstream fdin( (prepath+"/CATAnalysis2016/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
 
     std::string datasetname="";
     bool missing=true;
@@ -407,8 +413,8 @@ map<TString, TString>  GetDatasetNames(TString cversion){
 
   map<TString, TString> datasets;
   std::map<TString, TString> mapdir = GetLQMap2016();
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
-  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/dataset_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/dataset_" + cversion + "/ > inputlist_map.txt";
   std::cout << dir  << std::endl;
   system(dir.Data());
   std::ifstream fin("inputlist_map.txt");
@@ -422,7 +428,7 @@ map<TString, TString>  GetDatasetNames(TString cversion){
 
     TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
     if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
-    std::ifstream fdin( (prepath+"/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::ifstream fdin( (prepath+"/CATAnalysis2016/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
 
     std::string datasetname="";
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
@@ -461,8 +467,8 @@ map<TString, TString>  GetMissingMap(TString cversion){
   if(cversion.Contains("v7-6-2")) return map_missing;
 
   std::map<TString, TString> mapdir = GetLQMap2016();
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
-  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/dataset_" + cversion + "/ > inputlist_map.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/dataset_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/dataset_" + cversion + "/ > inputlist_map.txt";
 
   std::cout << dir << std::endl;
   system(dir.Data());
@@ -477,7 +483,7 @@ map<TString, TString>  GetMissingMap(TString cversion){
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
     if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
-    std::ifstream fdin( (prepath+"/CATAnalysis/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::ifstream fdin( (prepath+"/CATAnalysis2016/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
 
 
     std::string datasetname="";
@@ -670,6 +676,11 @@ map<TString, TString>  GetLQMap2016(){
   lqmap["ttWJets_13TeV_madgraphMLM"]="ttWJets";
   lqmap["ttZJets_13TeV_madgraphMLM"]="ttZJets";
 
+  
+  lqmap["13TeV_HN150_mumumu_width_AUTO_VmuN_0p1"]="HN150_mumumu_VmuN_0p1";
+  lqmap["13TeV_HN40_mumumu_width_AUTO_VmuN_0p1"]="HN40_mumumu_VmuN_0p1";
+  lqmap["13TeV_HN60_mumumu_width_AUTO_VmuN_0p1"]="HN60_mumumu_VmuN_0p1";
+  lqmap["13TeV_HN700_mumumu_width_AUTO_VmuN_0p1"]="HN700_mumumu_VmuN_0p1";
 
 
   return lqmap;

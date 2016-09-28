@@ -11,79 +11,75 @@ SignalPlotsMM::SignalPlotsMM(TString name): StdPlots(name){
 
  
   /// Mass plots
-  map_sig["h_jjmass"]                 =     new TH1F("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",100,0.,500.);
-  map_sig["h_leadjetmass"]            =     new TH1F("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.);
-  map_sig["h_osllmass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os muons",100,0,500);
-  map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
-  map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
-  map_sig["h_llmass"]                 =     new TH1F("h_llmass_"           + name,"Invariant mass of the two leading muons",500,0,500);
-  map_sig["h_lljmass"]                =     new TH1F("h_lljmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
-  map_sig["h_lljjmass"]               =     new TH1F("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
-  map_sig["h_ll_phi"]                 =     new TH1F("h_ll_phi_"          + name,"dilepton pt",100,-4,4);  
-  map_sig["h_ll_eta"]                 =     new TH1F("h_ll_eta_"          + name,"dilepton pt",100,-5,5);
-  map_sig["h_ll_pt"]                  =     new TH1F("h_ll_pt_"          + name,"dilepton pt",500,0,1000);  
+  map_sig["h_jjmass"]                 =     new TH1D("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",100,0.,500.);
+  map_sig["h_leadjetmass"]            =     new TH1D("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.);
+  map_sig["h_osllmass"]               =     new TH1D("h_osllmass_"          + name,"Invariant mass of the two leading os muons",100,0,500);
+  map_sig["h_l1jjmass"]               =     new TH1D("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading muon",100,0,1000);
+  map_sig["h_l2jjmass"]               =     new TH1D("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
+  map_sig["h_llmass"]                 =     new TH1D("h_llmass_"           + name,"Invariant mass of the two leading muons",500,0,500);
+  map_sig["h_lljmass"]                =     new TH1D("h_lljmass_"           + name,"Invariant mass of the two leading muons",200,0,1000);
+  map_sig["h_lljjmass"]               =     new TH1D("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_ll_phi"]                 =     new TH1D("h_ll_phi_"          + name,"dilepton pt",100,-4,4);  
+  map_sig["h_ll_eta"]                 =     new TH1D("h_ll_eta_"          + name,"dilepton pt",100,-5,5);
+  map_sig["h_ll_pt"]                  =     new TH1D("h_ll_pt_"          + name,"dilepton pt",500,0,1000);  
 
   /// Lepton plots  
-  map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
-  map_sig["h_LeptonPt"]               =     new TH1F("h_LeptonPt_"          + name,"lepton pt",100,0,500);
-  map_sig["h_LeptonPhi"]              =     new TH1F("h_LeptonPhi_"          + name,"lepton pt",70,-3.5,3.5);
-  map_sig["h_leadingLeptonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading lepton pt",250,0,500);
-  map_sig["h_secondLeptonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary lepton pt",150,0,300);
-  map_sig["h_leadingLeptonRelIso"]    =     new TH1F("h_leadingLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
-  map_sig["h_secondLeptonRelIso"]    =     new TH1F("h_secondLeptonRelIso_"      + name,"second lepton relIso",100,0,1.);
-  map_sig["h_leadingLeptonEta"]       =     new TH1F("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
-  map_sig["h_secondLeptonEta"]        =     new TH1F("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
-  map_sig["h_LeptonIso"]              =     new TH1F("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10.);
-  map_sig["h_LeptonRelIso"]           =     new TH1F("h_LeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
-  map_sig["h_LeptonDZ"]               =     new TH1F("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
-  map_sig["h_LeptonDXY"]              =     new TH1F("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
+  map_sig["h_LeptonEta"]              =     new TH1D("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_LeptonPt"]               =     new TH1D("h_LeptonPt_"          + name,"lepton pt",100,0,500);
+  map_sig["h_LeptonPhi"]              =     new TH1D("h_LeptonPhi_"          + name,"lepton pt",70,-3.5,3.5);
+  map_sig["h_leadingLeptonPt"]        =     new TH1D("h_leadingLeptonPt_"   + name,"leading lepton pt",250,0,500);
+  map_sig["h_secondLeptonPt"]         =     new TH1D("h_secondLeptonPt_"    + name,"secondary lepton pt",150,0,300);
+  map_sig["h_leadingLeptonRelIso"]    =     new TH1D("h_leadingLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
+  map_sig["h_secondLeptonRelIso"]    =     new TH1D("h_secondLeptonRelIso_"      + name,"second lepton relIso",100,0,1.);
+  map_sig["h_leadingLeptonEta"]       =     new TH1D("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_secondLeptonEta"]        =     new TH1D("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
+  map_sig["h_LeptonIso"]              =     new TH1D("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10.);
+  map_sig["h_LeptonRelIso"]           =     new TH1D("h_LeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
+  map_sig["h_LeptonDZ"]               =     new TH1D("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
+  map_sig["h_LeptonDXY"]              =     new TH1D("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
   
   
   /// Lepton/Jet/Lepton dR
-  map_sig["h_LeptonJetdR"]            =     new TH1F("h_LeptonJetdR_"       + name,"lepton jet dR",50,0,5);
-  map_sig["h_LeptonAwayJetdR"]        =     new TH1F("h_LeptonAwayJetdR_"   + name, "away jet dr", 50,0,5);
-  map_sig["h_leadLeptondR"]           =     new TH1F("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5);
-  map_sig["h_leadLeptondPhi"]         =     new TH1F("h_leadLeptondPhi_"    + name,"leading lepton dPhi",50,-5,5);
-  map_sig["h_leadJetdR"]                =     new TH1F("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
-  map_sig["h_leadJetdPhi"]              =     new TH1F("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
+  map_sig["h_LeptonJetdR"]            =     new TH1D("h_LeptonJetdR_"       + name,"lepton jet dR",50,0,5);
+  map_sig["h_LeptonAwayJetdR"]        =     new TH1D("h_LeptonAwayJetdR_"   + name, "away jet dr", 50,0,5);
+  map_sig["h_leadLeptondR"]           =     new TH1D("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5);
+  map_sig["h_leadLeptondPhi"]         =     new TH1D("h_leadLeptondPhi_"    + name,"leading lepton dPhi",50,-5,5);
+  map_sig["h_leadJetdR"]                =     new TH1D("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
+  map_sig["h_leadJetdPhi"]              =     new TH1D("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
 
   //// Jet Plots
-  map_sig["h_leadingJetPt"]           =     new TH1F("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
-  map_sig["h_secondJetPt"]            =     new TH1F("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
-  map_sig["h_HT"]                     =     new TH1F("h_HT_"                + name,"sum jet pt",50,0,1000);
-  map_sig["h_ST"]                     =     new TH1F("h_ST_"                + name,"sum event pt",50,0,1000);
-  map_sig["h_jets_pt"]                =     new TH1F("h_jets_pt_"           + name,"jet pt",60,0,300);
-  map_sig["h_jets_eta"]               =     new TH1F("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
-  map_sig["h_jets_phi"]               =     new TH1F("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
-  map_sig["h_PileupJetIDMVA"]         =     new TH1F("h_pileupJetIDMVA_"    + name, "" ,100, -1.,1.);
-  map_sig["h_bTag"]                   =     new TH1F("h_bTag_"              + name,"bTag discrimant",100,-1,3);
-  map_sig["h_Njets"]                  =     new TH1F("h_Njets_"             + name,"number of jets",10,0,10);
-  map_sig["h_Nbjets"]                 =     new TH1F("h_Nbjets_"            + name,"number of b jets",5,0,5);
+  map_sig["h_leadingJetPt"]           =     new TH1D("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
+  map_sig["h_secondJetPt"]            =     new TH1D("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
+  map_sig["h_HT"]                     =     new TH1D("h_HT_"                + name,"sum jet pt",50,0,1000);
+  map_sig["h_ST"]                     =     new TH1D("h_ST_"                + name,"sum event pt",50,0,1000);
+  map_sig["h_jets_pt"]                =     new TH1D("h_jets_pt_"           + name,"jet pt",60,0,300);
+  map_sig["h_jets_eta"]               =     new TH1D("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
+  map_sig["h_jets_phi"]               =     new TH1D("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
+  map_sig["h_PileupJetIDMVA"]         =     new TH1D("h_pileupJetIDMVA_"    + name, "" ,100, -1.,1.);
+  map_sig["h_bTag"]                   =     new TH1D("h_bTag_"              + name,"bTag discrimant",100,-1,3);
+  map_sig["h_Njets"]                  =     new TH1D("h_Njets_"             + name,"number of jets",10,0,10);
+  map_sig["h_Nbjets"]                 =     new TH1D("h_Nbjets_"            + name,"number of b jets",5,0,5);
 
   /// dPhi/MT
-  map_sig["h_MTlepton"]               =     new TH1F("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
-  map_sig["h_dphi_METlepton"]         =     new TH1F("h_dphi_METlepton_"  + name , "METlepdphi", 50, -5., 5.);
+  map_sig["h_MTlepton"]               =     new TH1D("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
+  map_sig["h_dphi_METlepton"]         =     new TH1D("h_dphi_METlepton_"  + name , "METlepdphi", 50, -5., 5.);
  
   
   /// MET plots
-  map_sig["h_PFMET"]                  =     new TH1F("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_PFMET_phi"]              =     new TH1F("h_PFMET_phi_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_PFMET"]                  =     new TH1D("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_PFMET_phi"]              =     new TH1D("h_PFMET_phi_"           + name,"Missing Et",100,-3.2,3.2);
 
-  map_sig["h_NoHFMET"]              =     new TH1F("h_NoHFMET_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_NoHFMET_phi"]          =     new TH1F("h_NoHFMET_phi_"           + name,"Missing Et",100,0.0,500.0);
-
-
-  map_sig["h_nVertices"]              =     new TH1F("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
-  map_sig["h_nInteractions"]              =     new TH1F("h_nInteractions_"         + name,"number of even vertices",60,0.0,60.0);
+  map_sig["h_nVertices"]              =     new TH1D("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
+  map_sig["h_nInteractions"]              =     new TH1D("h_nInteractions_"         + name,"number of even vertices",60,0.0,60.0);
   /// Charge plot
-  map_sig["h_sumcharge"]              =     new TH1F("h_sumcharge_"         + name,"Charge of the lepton pair",6,-3,3);
+  map_sig["h_sumcharge"]              =     new TH1D("h_sumcharge_"         + name,"Charge of the lepton pair",6,-3,3);
 
   /// Number of objects
-  map_sig["h_Nmuons"]                 =     new TH1F("h_Nmuons_"           + name,"number of mu",5,0,5);
-  map_sig["h_Nelectrons"]             =     new TH1F("h_Nelectrons_"           + name,"number of el",5,0,5);
+  map_sig["h_Nmuons"]                 =     new TH1D("h_Nmuons_"           + name,"number of mu",5,0,5);
+  map_sig["h_Nelectrons"]             =     new TH1D("h_Nelectrons_"           + name,"number of el",5,0,5);
 
 
-  map_sig["h_Nvtx"]                   =     new TH1F("h_Nvtx_"            + name,"number of vertices",40,0,40.);
+  map_sig["h_Nvtx"]                   =     new TH1D("h_Nvtx_"            + name,"number of vertices",40,0,40.);
 
 
 }
@@ -251,9 +247,6 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   Fill("h_nVertices", ev.nVertices(), weight); 
   Fill("h_nInteractions", ev.PileUpInteractionsTrue(), weight);
   
-
-  Fill("h_NoHFMET",ev.MET(snu::KEvent::nohf), weight);
-  Fill("h_NoHFMET_phi",ev.METPhi(snu::KEvent::nohf), weight);
 
   
   Fill("h_Nvtx",ev.nVertices(), weight);

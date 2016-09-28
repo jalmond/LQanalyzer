@@ -2,7 +2,7 @@
 #define StdPlots_h
 
 #include <string>
-#include "TH1F.h"
+#include "TH1D.h"
 #include <map>
 
 

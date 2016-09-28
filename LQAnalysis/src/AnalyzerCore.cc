@@ -317,7 +317,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "DataPileUp_2016.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((analysisdir + "DataPileUp_BtoE_2016.root").c_str());
 
 
 }
@@ -1611,12 +1611,12 @@ void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xm
 
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax) {
 
-  maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
+  maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
 }
 
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[]) {
 
-  maphist2D[hname] =  new TH2F(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
+  maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
 }
 
 bool AnalyzerCore::PassBasicEventCuts(){

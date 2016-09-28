@@ -8,40 +8,38 @@ using namespace std;
 TriLeptonPlots::TriLeptonPlots(TString name): StdPlots(name){
 
   TH1::SetDefaultSumw2(true);
-  map_sig["h_Njets"]                  =     new TH1F("h_Njets_"             + name,"number of jets",10,0,10);
-  map_sig["h_Nbjets"]                 =     new TH1F("h_Nbjets_"            + name,"number of b jets",5,0,5);
-  map_sig["h_jets_pt"]                =     new TH1F("h_jets_pt_"           + name,"jet pt",60,0,300);
-  map_sig["h_jets_eta"]               =     new TH1F("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
+  map_sig["h_Njets"]                  =     new TH1D("h_Njets_"             + name,"number of jets",10,0,10);
+  map_sig["h_Nbjets"]                 =     new TH1D("h_Nbjets_"            + name,"number of b jets",5,0,5);
+  map_sig["h_jets_pt"]                =     new TH1D("h_jets_pt_"           + name,"jet pt",60,0,300);
+  map_sig["h_jets_eta"]               =     new TH1D("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
 
-  map_sig["h_osllmass"]               =     new TH1F("h_osllmass_"          + name,"Invariant mass of the two leading os electrons",100,0,500);
-  map_sig["h_llljjmass"]               =     new TH1F("h_llljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
-  map_sig["h_l1jjmass"]               =     new TH1F("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
-  map_sig["h_l2jjmass"]               =     new TH1F("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second electron",100,0,1000);
-  map_sig["h_dijetmass"]               =     new TH1F("h_dijetmass_"          + name,"Invariant mass of the two leading jets" ,100,0,1000);
+  map_sig["h_osllmass"]               =     new TH1D("h_osllmass_"          + name,"Invariant mass of the two leading os electrons",100,0,500);
+  map_sig["h_llljjmass"]               =     new TH1D("h_llljjmass_"         + name,"Invariant mass of the four particles",200,0,2000);
+  map_sig["h_l1jjmass"]               =     new TH1D("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000);
+  map_sig["h_l2jjmass"]               =     new TH1D("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second electron",100,0,1000);
+  map_sig["h_dijetmass"]               =     new TH1D("h_dijetmass_"          + name,"Invariant mass of the two leading jets" ,100,0,1000);
 
-  map_sig["h_LeptonEta"]              =     new TH1F("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
-  map_sig["h_LeptonPt"]               =     new TH1F("h_LeptonPt_"          + name,"lepton pt",100,0,500);
-  map_sig["h_leadingLeptonPt"]        =     new TH1F("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
-  map_sig["h_secondLeptonPt"]         =     new TH1F("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
-  map_sig["h_thirdLeptonPt"]         =     new TH1F("h_thirdLeptonPt_"    + name,"thirdary lepton pt",60,0,300);
-  map_sig["h_leadingLeptonEta"]       =     new TH1F("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
-  map_sig["h_secondLeptonEta"]        =     new TH1F("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
-  map_sig["h_thirdLeptonEta"]        =     new TH1F("h_thirdLeptonEta_"   + name,"third lepton eta",60,-3.,3.);
+  map_sig["h_LeptonEta"]              =     new TH1D("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_LeptonPt"]               =     new TH1D("h_LeptonPt_"          + name,"lepton pt",100,0,500);
+  map_sig["h_leadingLeptonPt"]        =     new TH1D("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
+  map_sig["h_secondLeptonPt"]         =     new TH1D("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
+  map_sig["h_thirdLeptonPt"]         =     new TH1D("h_thirdLeptonPt_"    + name,"thirdary lepton pt",60,0,300);
+  map_sig["h_leadingLeptonEta"]       =     new TH1D("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_secondLeptonEta"]        =     new TH1D("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
+  map_sig["h_thirdLeptonEta"]        =     new TH1D("h_thirdLeptonEta_"   + name,"third lepton eta",60,-3.,3.);
   
 
-  map_sig["h_PFMET"]                  =     new TH1F("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_PFMET_phi"]              =     new TH1F("h_PFMET_phi_"           + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_PFMET"]                  =     new TH1D("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_PFMET_phi"]              =     new TH1D("h_PFMET_phi_"           + name,"Missing Et",100,-3.2,3.2);
 
-  map_sig["h_NoHFMET"]                =     new TH1F("h_NoHFMET_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_NoHFMET_phi"]            =     new TH1F("h_NoHFMET_phi_"           + name,"Missing Et",100,0.0,500.0);
 
-  map_sig["h_nVertices"]              =     new TH1F("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
+  map_sig["h_nVertices"]              =     new TH1D("h_nVertices_"         + name,"number of even vertices",60,0.0,60.0);
   /// Charge plot
-  map_sig["h_sumcharge"]              =     new TH1F("h_sumcharge_"         + name,"Charge of the electron pair",6,-3,3);
+  map_sig["h_sumcharge"]              =     new TH1D("h_sumcharge_"         + name,"Charge of the electron pair",6,-3,3);
 
   /// Number of objects
-  map_sig["h_Nmuons"]                 =     new TH1F("h_Nmuons_"           + name,"number of mu",5,0,5);
-  map_sig["h_Nelectrons"]             =     new TH1F("h_Nelectrons_"           + name,"number of el",5,0,5);
+  map_sig["h_Nmuons"]                 =     new TH1D("h_Nmuons_"           + name,"number of mu",5,0,5);
+  map_sig["h_Nelectrons"]             =     new TH1D("h_Nelectrons_"           + name,"number of el",5,0,5);
 
 
 
@@ -168,8 +166,6 @@ void TriLeptonPlots::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::v
   Fill("h_nVertices", ev.nVertices(), weight);
 
 
-  Fill("h_NoHFMET",ev.MET(snu::KEvent::nohf), weight);
-  Fill("h_NoHFMET_phi",ev.METPhi(snu::KEvent::nohf), weight);
   
   for(UInt_t j=0; j < jets.size(); j++){
     Fill("h_jets_pt", jets[j].Pt(),weight);

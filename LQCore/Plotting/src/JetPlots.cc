@@ -9,34 +9,34 @@ using namespace std;
 JetPlots::JetPlots(TString name) : StdPlots(name) {
 
   TH1::SetDefaultSumw2(true);
-  map_sig["h_jjmass"]                 =     new TH1F("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.);
-  map_sig["h_leadjetmass"]            =     new TH1F("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.);
-  map_sig["h_forward_jet_pt"]             =     new TH1F("h_forward_jet_pt_"                + name,"h_forward_jet_pt",60,0,300);
-  map_sig["h_central_jet_pt"]             =     new TH1F("h_central_jet_pt_"                + name,"h_central_jet_pt",60,0,300);
-  map_sig["h_forward_jet_eta"]             =     new TH1F("h_forward_jet_eta_"                + name,"h_forward_jet_eta",50,-2.5,2.5);
-  map_sig["h_central_jet_eta"]             =     new TH1F("h_central_jet_eta_"                + name,"h_central_jet_eta",50,-2.5,2.5);
+  map_sig["h_jjmass"]                 =     new TH1D("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.);
+  map_sig["h_leadjetmass"]            =     new TH1D("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.);
+  map_sig["h_forward_jet_pt"]             =     new TH1D("h_forward_jet_pt_"                + name,"h_forward_jet_pt",60,0,300);
+  map_sig["h_central_jet_pt"]             =     new TH1D("h_central_jet_pt_"                + name,"h_central_jet_pt",60,0,300);
+  map_sig["h_forward_jet_eta"]             =     new TH1D("h_forward_jet_eta_"                + name,"h_forward_jet_eta",50,-2.5,2.5);
+  map_sig["h_central_jet_eta"]             =     new TH1D("h_central_jet_eta_"                + name,"h_central_jet_eta",50,-2.5,2.5);
   //// Jet Plots
-  map_sig["h_leadingJetPt"]           =     new TH1F("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
-  map_sig["h_secondJetPt"]            =     new TH1F("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
-  map_sig["h_HT"]                     =     new TH1F("h_HT_"                + name,"sum jet pt",50,0,1000);
-  map_sig["h_ST"]                     =     new TH1F("h_ST_"                + name,"sum event pt",50,0,1000);
-  map_sig["h_jets_pt"]                =     new TH1F("h_jets_pt_"           + name,"jet pt",60,0,300);
-  map_sig["h_jets_eta"]               =     new TH1F("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
-  map_sig["h_jets_phi"]               =     new TH1F("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
-  map_sig["h_PileupJetIDMVA"]         =     new TH1F("h_pileupJetIDMVA_"    + name, "" ,100, -1.,1.);
-  map_sig["h_bTag"]                   =     new TH1F("h_bTag_"              + name,"bTag discrimant",100,-1,3);
-  map_sig["h_Njets"]                  =     new TH1F("h_Njets_"             + name,"number of jets",10,0,10);
-  map_sig["h_Nbjets"]                 =     new TH1F("h_Nbjets_"            + name,"number of b jets",5,0,5);
-  map_sig["h_lep_jet_dphi"]           =      new TH1F("h_lep_jet_dphi_"            + name,"dphi lepton jets", 50, 0., 5.);
-  map_sig["h_awayjet_chargedem_frac"]         =      new TH1F("h_awayjet_chargedem_frac_"   + name,"charged em frac", 50, 0., 1.);
+  map_sig["h_leadingJetPt"]           =     new TH1D("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
+  map_sig["h_secondJetPt"]            =     new TH1D("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
+  map_sig["h_HT"]                     =     new TH1D("h_HT_"                + name,"sum jet pt",50,0,1000);
+  map_sig["h_ST"]                     =     new TH1D("h_ST_"                + name,"sum event pt",50,0,1000);
+  map_sig["h_jets_pt"]                =     new TH1D("h_jets_pt_"           + name,"jet pt",60,0,300);
+  map_sig["h_jets_eta"]               =     new TH1D("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
+  map_sig["h_jets_phi"]               =     new TH1D("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
+  map_sig["h_PileupJetIDMVA"]         =     new TH1D("h_pileupJetIDMVA_"    + name, "" ,100, -1.,1.);
+  map_sig["h_bTag"]                   =     new TH1D("h_bTag_"              + name,"bTag discrimant",100,-1,3);
+  map_sig["h_Njets"]                  =     new TH1D("h_Njets_"             + name,"number of jets",10,0,10);
+  map_sig["h_Nbjets"]                 =     new TH1D("h_Nbjets_"            + name,"number of b jets",5,0,5);
+  map_sig["h_lep_jet_dphi"]           =      new TH1D("h_lep_jet_dphi_"            + name,"dphi lepton jets", 50, 0., 5.);
+  map_sig["h_awayjet_chargedem_frac"]         =      new TH1D("h_awayjet_chargedem_frac_"   + name,"charged em frac", 50, 0., 1.);
 
-  map_sig["h_leading_jets_eta"]               =     new TH1F("h_leading_jets_eta_"          + name,"#eta distribution of the two leading_jets",120,-5,5);
-  map_sig["h_second_jets_eta"]               =     new TH1F("h_second_jets_eta_"          + name,"#eta distribution of the two second_jets",120,-5,5);
-  map_sig["h_third_jets_eta"]               =     new TH1F("h_third_jets_eta_"          + name,"#eta distribution of the two third_jets",120,-5,5);
-  map_sig["h_fourth_jets_eta"]               =     new TH1F("h_fourth_jets_eta_"          + name,"#eta distribution of the two fourth_jets",120,-5,5);
-  map_sig["h_rest_jets_eta"]               =     new TH1F("h_rest_jets_eta_"          + name,"#eta distribution of the two rest_jets",120,-5,5);
-  map_sig["h_leadJetdR"]                =     new TH1F("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
-  map_sig["h_leadJetdPhi"]              =     new TH1F("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
+  map_sig["h_leading_jets_eta"]               =     new TH1D("h_leading_jets_eta_"          + name,"#eta distribution of the two leading_jets",120,-5,5);
+  map_sig["h_second_jets_eta"]               =     new TH1D("h_second_jets_eta_"          + name,"#eta distribution of the two second_jets",120,-5,5);
+  map_sig["h_third_jets_eta"]               =     new TH1D("h_third_jets_eta_"          + name,"#eta distribution of the two third_jets",120,-5,5);
+  map_sig["h_fourth_jets_eta"]               =     new TH1D("h_fourth_jets_eta_"          + name,"#eta distribution of the two fourth_jets",120,-5,5);
+  map_sig["h_rest_jets_eta"]               =     new TH1D("h_rest_jets_eta_"          + name,"#eta distribution of the two rest_jets",120,-5,5);
+  map_sig["h_leadJetdR"]                =     new TH1D("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
+  map_sig["h_leadJetdPhi"]              =     new TH1D("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
 
 }
 

@@ -33,80 +33,83 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
-  std::vector<TString> dimuonIDs;
-  dimuonIDs.push_back("POGTight");
-  dimuonIDs.push_back("POGTightroch_corrected");
-  dimuonIDs.push_back("HNTightroch_corrected");
-  dimuonIDs.push_back("POGTightroch_correctedtruthmatch");
-  for(unsigned int i=0; i < dimuonIDs.size(); i++){
-    MakeCleverHistograms(sighist_mm,"ZMuon"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_noW"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_IDW"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_puW"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_Trigger"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_BB"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_EE"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"DiMuon_EB"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm, "DiMuon_dijet"+dimuonIDs.at(i));
-    MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
-  }
-  
-  MakeCleverHistograms(muhist,"KMuonHists");
-  MakeCleverHistograms(muhist,"KMuonHists_POGTIGHT");
 
-  std::vector<TString> electronIDs;
-  electronIDs.push_back("POGTight");
-  electronIDs.push_back("POGTighttruthmatch");
-  for(unsigned int i=0; i < electronIDs.size(); i++){
-    MakeCleverHistograms(sighist_ee,"SingleElectron"+electronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"SingleElectron_noW"+electronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"SingleElectron_IDW"+electronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"SingleElectron_puW"+electronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"SingleElectron_Trigger"+electronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"SingleElectron_Wregion"+electronIDs.at(i));
-    MakeCleverHistograms(sighist_ee, "SingleElectron_dijet"+electronIDs.at(i));
-  }
-
-  std::vector<TString> dielectronIDs;
-  dielectronIDs.push_back("POGTight");
-  dielectronIDs.push_back("POGTighttruthmatch");
-
-  for(unsigned int i=0; i < dielectronIDs.size(); i++){
-    MakeCleverHistograms(sighist_ee,"ZElectron"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_SSPreselection"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_noW"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_IDW"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_puW"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_Trigger"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_BB"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_EE"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee,"DiElectron_EB"+dielectronIDs.at(i));
-    MakeCleverHistograms(sighist_ee, "DiElectron_dijet"+dielectronIDs.at(i));
-  }
-  MakeCleverHistograms(elhist,"KElectronHists");
-  MakeCleverHistograms(elhist,"KElectronHists_POGTIGHT");
-
-  std::vector<TString> muonIDs;
-  muonIDs.push_back("POGTightroch_corrected");
-  for(unsigned int i=0; i < muonIDs.size(); i++){
-    MakeCleverHistograms(sighist_mm,"SingleMuon"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"SingleMuon_noW"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"SingleMuon_IDW"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"SingleMuon_puW"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"SingleMuon_Trigger"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_mm,"SingleMuon_Wregion"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_mm, "SingleMuon_dijet"+muonIDs.at(i));
-
-    MakeCleverHistograms(sighist_em,"EMuon"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em,"EMuon_noW"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em,"EMuon_IDW"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em,"EMuon_puW"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em,"EMuon_Trigger"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em, "EMuon_dijet"+muonIDs.at(i));
-    MakeCleverHistograms(sighist_em,"EMuon_SSPreselection"+muonIDs.at(i));
-
+  if(1){
+    std::vector<TString> dimuonIDs;
+    dimuonIDs.push_back("POGTight");
+    dimuonIDs.push_back("POGTightroch_corrected");
+    dimuonIDs.push_back("HNTightroch_corrected");
+    dimuonIDs.push_back("POGTightroch_correctedtruthmatch");
+    for(unsigned int i=0; i < dimuonIDs.size(); i++){
+      MakeCleverHistograms(sighist_mm,"ZMuon"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_noW"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_IDW"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_puW"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_Trigger"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_BB"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_EE"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"DiMuon_EB"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm, "DiMuon_dijet"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
+    }
+    
+    MakeCleverHistograms(muhist,"KMuonHists");
+    MakeCleverHistograms(muhist,"KMuonHists_POGTIGHT");
+    
+    std::vector<TString> electronIDs;
+    electronIDs.push_back("POGTight");
+    electronIDs.push_back("POGTighttruthmatch");
+    for(unsigned int i=0; i < electronIDs.size(); i++){
+      MakeCleverHistograms(sighist_ee,"SingleElectron"+electronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"SingleElectron_noW"+electronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"SingleElectron_IDW"+electronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"SingleElectron_puW"+electronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"SingleElectron_Trigger"+electronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"SingleElectron_Wregion"+electronIDs.at(i));
+      MakeCleverHistograms(sighist_ee, "SingleElectron_dijet"+electronIDs.at(i));
+    }
+    
+    std::vector<TString> dielectronIDs;
+    dielectronIDs.push_back("POGTight");
+    dielectronIDs.push_back("POGTighttruthmatch");
+    
+    for(unsigned int i=0; i < dielectronIDs.size(); i++){
+      MakeCleverHistograms(sighist_ee,"ZElectron"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_SSPreselection"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_noW"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_IDW"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_puW"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_Trigger"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_BB"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_EE"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_EB"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee, "DiElectron_dijet"+dielectronIDs.at(i));
+    }
+    MakeCleverHistograms(elhist,"KElectronHists");
+    MakeCleverHistograms(elhist,"KElectronHists_POGTIGHT");
+    
+    std::vector<TString> muonIDs;
+    muonIDs.push_back("POGTightroch_corrected");
+    for(unsigned int i=0; i < muonIDs.size(); i++){
+      MakeCleverHistograms(sighist_mm,"SingleMuon"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"SingleMuon_noW"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"SingleMuon_IDW"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"SingleMuon_puW"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"SingleMuon_Trigger"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_mm,"SingleMuon_Wregion"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_mm, "SingleMuon_dijet"+muonIDs.at(i));
+      
+      MakeCleverHistograms(sighist_em,"EMuon"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_em,"EMuon_noW"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_em,"EMuon_IDW"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_em,"EMuon_puW"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_em,"EMuon_Trigger"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_em, "EMuon_dijet"+muonIDs.at(i));
+      MakeCleverHistograms(sighist_em,"EMuon_SSPreselection"+muonIDs.at(i));
+      
+    }
   }
 
 }
@@ -140,9 +143,18 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   FillCutFlow("NoCut", weight);
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
   
-  if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-  else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
-  
+
+  /*
+    std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
+    
+    
+    if(PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale)){
+    
+    if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
+    else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
+    }
+  */
+
   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
 
 
@@ -193,7 +205,6 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
      // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
 
      pileup_reweight = TempPileupWeight();
-
      FillHist("PUWeightvsNVertex",pileup_reweight, eventbase->GetEvent().nVertices(), weight, 0., 5., 500, 0., 60., 60);
    }
    
@@ -575,7 +586,6 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   if(k_running_nonprompt){
     muid=BaseSelection::MUON_HN_FAKELOOSE;
     muons = GetMuons(muid,false);
-    cout << "muons size = " << muons.size() << endl;
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
   else   muons = GetMuons(muid);
@@ -583,13 +593,11 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
   
   bool trig_pass= PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale);
-
   
   /// List of all corrections to be applied
   float trigger_sf(1.);
   float id_iso_sf(1.);
   float trigger_ps(1.);
-
   float ev_weight(1.);
 
   if(!isData){
@@ -609,7 +617,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
       ev_weight      *=  Get_DataDrivenWeight_MM(muons,"HNTIGHT");
     }
     if(muid2 == BaseSelection::MUON_POG_TIGHT){
-
+      
       ev_weight      *=  Get_DataDrivenWeight_MM(muons,"POGTIGHT");
     }
 

@@ -1,3 +1,0 @@
-zpeak_ee 2 20. 500.
-nvertex_ee 1 0. 40.
-END

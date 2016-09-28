@@ -31,7 +31,7 @@ Reweight::Reweight(TString filename){
   tempDir->cd();
   
   h_Data_ = 0;
-  h_Data_ = dynamic_cast<TH1F*>((fileData_->Get("h_VertexNoReweight"))->Clone());;  
+  h_Data_ = dynamic_cast<TH1F*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;  
   
   h_MCmod_ = (TH1F*)fileMC_->Get("h_VertexNoReweight");
   double int_MC_ = h_MCmod_->Integral();
