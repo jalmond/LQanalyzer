@@ -143,17 +143,29 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   FillCutFlow("NoCut", weight);
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
   
-
-  /*
+  bool makePUFile=false;
+  if(makePUFile){
     std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
     
     
     if(PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale)){
-    
-    if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
-    else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
+      
+      
+      if(muons.size() ==2) {
+	if(!SameCharge(muons)){
+	  if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
+	    
+	    if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
+	      
+	      if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
+	      else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
+	    }
+	  }
+	}
+      }
     }
-  */
+    return;
+  }
 
   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
 

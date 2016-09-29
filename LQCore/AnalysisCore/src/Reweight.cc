@@ -29,10 +29,12 @@ Reweight::Reweight(TString filename){
 
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
-  
+  //cout << " filename = " << filename << endl;
   h_Data_ = 0;
   h_Data_ = dynamic_cast<TH1F*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;  
   
+  //cout << "h_Data_ = " << h_Data_ << endl;
+  //
   h_MCmod_ = (TH1F*)fileMC_->Get("h_VertexNoReweight");
   double int_MC_ = h_MCmod_->Integral();
   double int_Data_ = h_Data_->Integral();
