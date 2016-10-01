@@ -133,6 +133,7 @@ if "SKTree_LeptonSkim" in skim:
 if "SKTree_DiLepSkim"in skim:
     sample +="_dilepton"
 
+sample += "_"+cattag
 if username != getpass.getuser():
     print "Issue with username"
     sys.exit()
