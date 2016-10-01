@@ -1602,12 +1602,12 @@ void AnalyzerCore::MakeHistograms(){
 }
 
 void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xbins[]){
-  maphist[hname] =  new TH1F(hname.Data(),hname.Data(),nbins,xbins);
+  maphist[hname] =  new TH1D(hname.Data(),hname.Data(),nbins,xbins);
 }
 
 void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax){
 
-  maphist[hname] =  new TH1F(hname.Data(),hname.Data(),nbins,xmin,xmax);
+  maphist[hname] =  new TH1D(hname.Data(),hname.Data(),nbins,xmin,xmax);
 }
 
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax) {
