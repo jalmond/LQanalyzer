@@ -118,7 +118,7 @@ path_jobinfo="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/Job
 if not os.path.exists(path_jobinfo):
     with open(path_jobinfo, "w") as myfile:
           myfile.write("Summary of CatAnalyzer Processes: month="+month+" year=" +year+"\n")
-    os.system("chmod 775 " + path_jobinfo)
+    os.system("chmod 777 " + path_jobinfo)
 
 if len(sample) < 2:
     sample=stream+"_"+sample
