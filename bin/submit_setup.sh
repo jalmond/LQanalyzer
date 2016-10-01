@@ -1334,6 +1334,10 @@ if [[ $job_data_lumi == "D" ]];
     declare -a data_periods=("D")
 fi
 
+if [[ $job_data_lumi == "E" ]];
+    then
+    declare -a data_periods=("E")
+fi
 
 if [[ $submit_file_tag  != "" ]];
     then

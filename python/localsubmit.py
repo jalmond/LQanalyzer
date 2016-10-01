@@ -6,7 +6,7 @@
 ###################################################
 ### Make Input File
 ###################################################
-import os, getpass, sys
+import os, getpass, sys,ROOT
 from functions import *
 
 from optparse import OptionParser
@@ -27,6 +27,7 @@ parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set n
 parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
+parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
 parser.add_option("-T", "--targetlumi", dest="targetlumi", default=-1., help="How many events in sample?")
 parser.add_option("-E", "--efflumi", dest="efflumi", default=-1., help="How many events in sample?")
 parser.add_option("-O", "--outputdir", dest="outputdir", default="${LQANALYZER_DIR}/data/output/", help="Where do you like output to go?")
@@ -56,6 +57,7 @@ logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
 runcf = options.runcf
+tagger= options.tagger
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
 number_of_events_per_job= int(options.nevents)
@@ -86,7 +88,8 @@ new_channel = channel.replace(":", "")
 
 original_channel = new_channel
 
-
+memoryusage_v=0
+memoryusage_p=0
 list_of_extra_lib=[]
 libname=''
 for lib in tmplist_of_extra_lib:
@@ -633,8 +636,8 @@ if running_batch:
                 if l_s in sample:
                     running_large_sample=True
             if running_large_sample:
-                if number_of_cores > 100:
-                    number_of_cores=100
+                if number_of_cores > 200:
+                    number_of_cores=200
             else:
                 if n_user_qsub_jobs > 300:
                     number_of_cores=15
@@ -890,7 +893,8 @@ if DEBUG == "True":
 ###################################################
 import thread,time
 start_time = time.time()
-
+job_time=0
+lastjob_time=0
 wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
@@ -988,6 +992,17 @@ files_done= []
 clear_line='                                                                          '
 failed_macro=""
 failed_log=""
+
+JobCrash=False
+checkJob=True
+
+check_cluster="_"
+n_cms1=0
+n_cms2=0
+n_cms3=0
+n_cms4=0
+n_cms5=0
+n_cms6=0
 print ""
 while not JobSuccess:
 
@@ -1019,6 +1034,23 @@ while not JobSuccess:
                     entries = line.split()
                     ### Check the job is not held/suspended
                     if len(entries) ==  9:  
+                        idcheck="_"+job_id+"_"
+                        if not idcheck in check_cluster:
+                            if "cms-0-1" in entries[7]:
+                                n_cms1+=1
+                            if "cms-0-2" in entries[7]:
+                                n_cms2+=1
+                            if "cms-0-3" in entries[7]:
+                                n_cms3+=1
+                            if "cms-0-4" in entries[7]:
+                                n_cms4+=1
+                            if "cms-0-5" in entries[7]:
+                                n_cms5+=1
+                            if "cms-0-6" in entries[7]:
+                                n_cms6+=1
+
+                        check_cluster=check_cluster+job_id+"_"
+                        
                         if entries[4] == "h":
                             print "Job " + str(job_id) + " is in held state: killing all jobs"
                             os.system("source " + output+ "JobKill.sh")
@@ -1034,13 +1066,17 @@ while not JobSuccess:
             JobOutput=False
             
     os.system("rm  " + local_sub_dir + "/log")
-            
+    
     for i in range(1,number_of_cores+1):
         skipcheck=False
         for check in CompletedJobs:
             if i== check: skipcheck=True
         while not skipcheck:
             skipcheck=True
+            if checkJob:
+                if sum(1 for item in os.listdir(outputdir) if isfile(join(outputdir, item))) > 0:
+                    job_time = time.time()
+                    checkJob=False
             check_outfile = outputdir + outsamplename +  "_" +  str(i) + ".root"   
             if (os.path.exists(check_outfile)):
                 CompletedJobs.append(i)
@@ -1048,6 +1084,7 @@ while not JobSuccess:
                 files_done.append("Job [" + str(i) + "] completed. Output ="  + check_outfile)
             
     if ncomplete_files== number_of_cores :
+        last_job_time = time.time()
         sys.stdout.write('\r' + clear_line)
         sys.stdout.flush()
         sys.stdout.write('\r'+ '100% of events processed. \n' )
@@ -1127,7 +1164,7 @@ while not JobSuccess:
                         for line in open(check_error_outfile, 'r'):
                             print line
                         print "Run in non-batch mode by setting njobs = 1 in submit.sh file and retry" 
-
+                        JobCrash=True
                         
             os.system("rm  " + local_sub_dir + "/log")
             
@@ -1200,6 +1237,7 @@ if not JobOutput:
     print "Check crash by running root -q -b " + failed_macro 
     print "Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
     print "###########################################################################################################"
+    JobCrash=True
     #os.system("rm -r " + output)    
     #os.system("rm -r " + local_sub_dir)    
     #os.system("rm -r " + timestamp_dir)
@@ -1395,18 +1433,42 @@ else:
         if os.path.exists(Finaloutputdir + outfile):
             os.system("rm  "  +  Finaloutputdir   + outfile)
         os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
+        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger +".txt")
+        f = ROOT.TFile(Finaloutputdir +  outfile)
+        t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
+        t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
+        memoryusage_v=(t.GetBinContent(8)/ number_of_cores)
+        memoryusage_p=(t2.GetBinContent(8)/ number_of_cores)
+        f.Close()
         print "Merged output :" + Finaloutputdir + outfile
     else:
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
         if number_of_cores == 1:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
+            t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
+            t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
+            memoryusage_v=(t.GetBinContent(8)/ number_of_cores)
+            memoryusage_p=(t2.GetBinContent(8)/ number_of_cores)
+            f.Close()
+
         else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
+            
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
+            t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
+            t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
+            memoryusage_v=(t.GetBinContent(8)/ number_of_cores)
+            memoryusage_p=(t2.GetBinContent(8)/ number_of_cores)
+            f.Close()
+
         if DEBUG == "True":
             print "Non merged output :" +Finaloutputdir
-
+    
     if remove_workspace == "True":
         if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
             os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH"))
@@ -1439,5 +1501,42 @@ end_time = time.time()
 total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
+
+statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog" + tagger +".txt"
+statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time"+tagger +".txt"
+
+if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
+    os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+statwrite = open(statfile, 'r')
+statwrite_time = open(statfile_time, 'w')
+for line in statwrite:
+    statwrite_time.write(line)
+
+statwrite_time.write("time " + str(total_time) + " \n")
+statwrite_time.write("job_time  " + str(job_time-start_time)  + " \n")
+statwrite_time.write("last_job_time  " + str(last_job_time-start_time)  + " \n")
+pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger +".txt"
+readfilesize = open(pathfilesize, "r")
+for line in readfilesize:
+    splitline = line.split()
+    if len(splitline) == 9:
+        statwrite_time.write("outputfile_size " + str(splitline[4])  + " \n")
+readfilesize.close()
+os.system("rm " + pathfilesize)
+
+statwrite_time.write("Njobs " +  str(number_of_cores) + " \n") 
+statwrite_time.write("NFiles " + str(number_of_files)  + " \n")
+
+statwrite_time.write("ClusterIDs " + str(n_cms1) + ":" + str(n_cms2) + ":"+ str(n_cms3) + ":"+ str(n_cms4) + ":"+ str(n_cms5) + ":"+ str(n_cms6) + " \n")
+statwrite_time.write("memoryusage_v " + str(memoryusage_v/1000)  + "MB \n") 
+statwrite_time.write("memoryusage_p " + str(memoryusage_p/1000)  + "MB \n") 
+if JobCrash:
+    statwrite_time.write("Success= False \n")
+else:
+    statwrite_time.write("Success= True \n")
+
+statwrite_time.close()
+
+
 
 #  LocalWords:  Finaloutputdir

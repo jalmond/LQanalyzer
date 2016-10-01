@@ -338,10 +338,10 @@ void LQController::SetDataPeriod(TString period){
   else if(VersionStamp(catversion_lq) == 5 ){
 
     if( period == "All") period = "ALL";
-    if( period == "B") k_period = "B";
-    if( period == "C") k_period = "C";
-    if( period == "D") k_period = "D";
-    if( period == "E") k_period = "E";
+    else if( period == "B") k_period = "B";
+    else if( period == "C") k_period = "C";
+    else if( period == "D") k_period = "D";
+    else if( period == "E") k_period = "E";
     /// from v761 rereco data has just period D                                                                                                                             
     else if( period == "BtoE") k_period = "BtoE";
     else if( period == "ALL") k_period = "BtoE";

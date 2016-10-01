@@ -1357,7 +1357,7 @@ if [[ $runDATA  == "true" ]];
       eval input_samples=(\${$ARG[@]})
 
       
-
+      
       source submit.sh
       if [[ ${job_run_fake} == "True" ]];
 	  then
@@ -1390,6 +1390,7 @@ if [[ $runMC  == "true" ]];
     skipevent=${job_nskip}
     runnp=${job_run_fake}
     runcf=${job_run_flip}
+
 
     if [[ $submit_file_tag  != ""  ]];
         then
