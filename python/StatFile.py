@@ -1,13 +1,12 @@
 import os,sys,getpass
 
-from decimal import *
-getcontext().prec = 2
 
 path_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
 path_skel_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
 
 if not os.path.exists(path_master):
     os.system("cp /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
+    os.system("chmod 777 " + path_master)
 
 if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
     os.system("mkdir  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
@@ -29,6 +28,7 @@ file_job=open(path_job,"r")
 file_tmpmaster=open(path_tmpmaster,"r")
 
 path_cluster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".txt"
+path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".log"
 
 
 
@@ -112,6 +112,9 @@ for line in file_cluster:
     splitline = line.split()
     nclusterjobs=splitline[4]+":"+splitline[6]+":"+splitline[8]+":"+splitline[10]+":"+splitline[12]+":"+splitline[14]+":"+splitline[16]+":"+splitline[18]+":"+splitline[20]
 
+if nclusterjobs == "":
+    nclusterjobs=" NULL "
+
 
 
 path_jobinfo="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
@@ -124,9 +127,13 @@ if len(sample) < 2:
     sample=stream+"_"+sample
 
 with open(path_jobinfo, "a") as myfile:
-    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " start_time: "+str(day)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + str(memoryusage_p) + " mem_v: " + str(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
+    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(day)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + str(memoryusage_p) + " mem_v: " + str(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
 
 os.system("rm " + path_cluster)
+
+if os.path.exists(path_log):
+    os.system("rm " + path_log)
+    
 
 if "SKTree_LeptonSkim" in skim:
     sample +="_lepton"

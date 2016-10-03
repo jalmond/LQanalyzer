@@ -38,17 +38,17 @@ for line in file_log:
         if getpass.getuser() in line:
             njobs_user=njobs_user+1
         if "all.q@cms-0-1" in line:
-            njobs_01=njobs_01+1
+            njobs_1=njobs_1+1
         if "all.q@cms-0-2" in line:
-            njobs_02=njobs_02+1
+            njobs_2=njobs_2+1
         if "all.q@cms-0-3" in line:
-            njobs_03=njobs_03+1
+            njobs_3=njobs_3+1
         if "all.q@cms-0-4" in line:
-            njobs_04=njobs_04+1
+            njobs_4=njobs_4+1
         if "all.q@cms-0-5" in line:
-            njobs_05=njobs_05+1
+            njobs_5=njobs_5+1
         if "all.q@cms-0-6" in line:
-            njobs_06=njobs_06+1
+            njobs_6=njobs_6+1
                 
         if "e" in splitline[4]:
             njobs_error=njobs_error+1
