@@ -655,8 +655,8 @@ if running_batch:
                     else:
                          number_of_cores=50
         else:
-            if number_of_cores > 100:
-                number_of_cores = 100
+            if number_of_cores > 200:
+                number_of_cores = 200
 
 cluster = False
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):

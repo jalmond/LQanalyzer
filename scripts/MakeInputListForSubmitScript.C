@@ -293,7 +293,7 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a hn_ee=('WZ_pythia8' 'ZZ_pythia8' 'WpWp_madgraph' 'WpWp_qcd_madgraph'  'ttWJetsToLNu_MCatNLO' 'ttWJetsToQQ_MCatNLO' 'ttZToLLNuNu_MCatNLO' 'ttZToQQ_MCatNLO' 'DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'ttHtobb_Powheg' 'ttHnobb_Powheg' 'WZZ_MCatNLO' 'vhf_Htomm_Powheg' 'ttZToLLNuNu_MCatNLO' 'ggHtomm_Powheg') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_fakeee=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO'  'TT_MG5')" << endl;
+  lumi_file << "declare -a hn_fakeee=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO'  'TT_madgraph')" << endl;
   lumi_file << "" << endl;
   lumi_file << "" << endl;
   lumi_file << "declare -a singletop=('singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg') " << endl;

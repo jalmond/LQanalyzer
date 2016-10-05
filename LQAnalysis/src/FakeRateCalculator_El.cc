@@ -44,7 +44,6 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
-
   
   MakeCleverHistograms(sighist_ee, "SingleLooseElJet");
   MakeCleverHistograms(sighist_ee, "SingleTightElJet");
@@ -130,16 +129,14 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   ///triggerslist_singlelep.push_back("HLT_Ele23_WPLoose_Gsf");
 
   float trigger_ps_singlelepweight= WeightByTrigger("HLT_Ele23_WPLoose_Gsf_v", TargetLumi);
-
+  
   if(electronTightColl.size() ==1) {
     if(PassTrigger(triggerslist_singlelep, prescale,true) ){
-      FillCLHist(sighist_ee, "SingleElectron_unprescale,trued", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*trigger_ps_singlelepweight);
+      FillCLHist(sighist_ee, "SingleElectron_unprescaled", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*trigger_ps_singlelepweight);
     }
-
   }
   
-
-
+  
   /// Check single leton legs
   if(electronTightColl.size() ==2) {
     if( PassTrigger(triggerslist_12leg, prescale,true)){
@@ -178,8 +175,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   weight*= prescale_trigger;
   
   MakeFakeRatePlots("HNTight", electronTightColl, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
-  
-
   
   bool useevent40 = UseEvent(electronLooseColl , jetColl, 40., prescale_trigger, weight);
   if(useevent40){
@@ -227,31 +222,35 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
     if(electrons.at(0).Pt() >= 35.){
       //HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass1){
-        prescale_trigger = WeightByTrigger("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum); //// 20 + GeV bins
+	if(isData) return 1.;
+	prescale_trigger = WeightByTrigger("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum); //// 20 + GeV bins
       }
-      else prescale_trigger = 0.;
+      else prescale_trigger = WeightByTrigger("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum)*0.8;
     }
     else  if(electrons.at(0).Pt() >= 25.){
       //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30
 
       if(pass2){
+	if(isData) return 1.;
         prescale_trigger =  WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) ; //// 20 + GeV bins
       }
-      else prescale_trigger = 0.;
+      else prescale_trigger =  WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) * 0.8; 
     }
     else   if(electrons.at(0).Pt() >= 20.){
       //HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30
       if(pass3){
+	if(isData) return 1.;
 	prescale_trigger = WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum) ;
       }
-      else prescale_trigger = 0.;
+      else prescale_trigger = WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum)*0.8 ;
     }
     else   if(electrons.at(0).Pt() >= 15.){
       //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_
       if(pass4){
+	if(isData) return 1.;
         prescale_trigger = WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) ;
       }
-      else prescale_trigger = 0.;
+      else         prescale_trigger = WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum)*0.8 ;
     }
     else{
       prescale_trigger = 0.;
