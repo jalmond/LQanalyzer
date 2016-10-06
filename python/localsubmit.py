@@ -80,6 +80,11 @@ useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
 
+###### New for 801.7 tag  
+ClusterStatFile = os.getenv("LQANALYZER_DIR")+ "/python/CheckCluster.py"
+os.system("python " + ClusterStatFile + " -x " + tagger)
+
+
 if not skflag == "":
     print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     print "skflag = " + skflag 
@@ -578,6 +583,7 @@ while inDS == "":
 
     
 InputDir = inDS    
+
 
 ##################################################################################################################
 print "Input directory= " + inDS    ## now have defined what dur contains input files
@@ -1537,6 +1543,14 @@ else:
 
 statwrite_time.close()
 
+GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
+os.system("python " + GeneralStatFile + " -x " + tagger)
+
+set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog"+ tagger + ".txt"
+set_logfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time" + tagger + ".txt"
+
+os.system("rm " + set_logfile)
+os.system("rm " + set_logfile_time)
 
 #  LocalWords:  Finaloutputdir

@@ -10,6 +10,7 @@ parser.add_option("-x", "--x", dest="x", default="123",help="tag")
 (options, args) = parser.parse_args()
 filetag=options.x
     
+
 path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".txt"
 path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".log"
 
