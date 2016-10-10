@@ -9,7 +9,7 @@ from optparse import OptionParser
 #Import parser to get options                                                                                                                                                  
 parser = OptionParser()
 parser.add_option("-p", "--period", dest="period", default="A",help="which data period or mc sample")
-parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
+parser.add_option("-s", "--stream", dest="stream", default="NULL", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
 parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
@@ -19,7 +19,7 @@ parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How 
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
 parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set number of events to skip")
-parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
+parser.add_option("-a", "--datatype", dest="datatype", default="NULL", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
 parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
@@ -30,13 +30,13 @@ parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove th
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 parser.add_option("-N", "--useCATv742ntuples", dest="useCATv742ntuples", default=True, help="' to run on these samples")
-parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
+parser.add_option("-L", "--LibList", dest="LibList", default="NULL", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
-parser.add_option("-v", "--catversion", dest="catversion", default="", help="What cat version?")
-parser.add_option("-f", "--skflag", dest="skflag", default="", help="add input flag?")
+parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
+parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 
 
@@ -127,13 +127,16 @@ if not len(splitsample)==1:
 
 running_batch=True
 
+printToScreen=False
 if str(usebatch) == "NULL":
     if str(running_batch) == "True":
-        print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-        print "Running batch job:"
-        print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+        if printToScreen:
+            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+            print "Running batch job:"
+            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     else:
-        print "Running standard root interactive job:"
+        if printToScreen:
+            print "Running standard root interactive job:"
 else:
     if str(usebatch) == "False":
         running_batch=False
@@ -147,7 +150,8 @@ if not cycle == "SKTreeMaker":
         if not cycle == "SKTreeMakerDiLep":
             if not useskinput == "True":
                 if not useskinput == "true":
-                    print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
+                    if printToScreen:
+                        print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
 
 
 output_mounted="/data2"
@@ -250,10 +254,11 @@ elif useskinput == "True":
                     if useskim == "TriLep":
                         sample="SK" + sample + "_trilep"
 
-
-print "Input sample = " + sample
+if printToScreen:
+    print "Input sample = " + sample
 if not mc:
-    print "Input channel = " + new_channel
+    if printToScreen:
+        print "Input channel = " + new_channel
 
 
 
@@ -320,7 +325,8 @@ while inDS == "":
             sample_catversion = catversion
             output_catversion = catversion
 
-        print "Using CAT " +sample_catversion + " ntuples"
+        if printToScreen:
+            print "Using CAT " +sample_catversion + " ntuples"
         if mc:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
             if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
@@ -333,11 +339,12 @@ while inDS == "":
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
 
-
-    print "Using " + filename
+    if printToScreen:
+        print "Using " + filename
     if not mc:
-        print "Running on data "
-        print new_channel + " " + sample
+        if printToScreen:
+            print "Running on data "
+            print new_channel + " " + sample
         if not (os.path.exists(filename)):
             iversion = iversion +1
             continue
@@ -352,7 +359,8 @@ while inDS == "":
         tar_lumi=1.
         filechannel = new_channel+"_"
     else:
-        print "Running on MC"
+        if printToScreen:
+            print "Running on MC"
         if not (os.path.exists(filename)):
             iversion = iversion +1
             continue
@@ -399,11 +407,15 @@ for line in file_log:
     if not "prior" in line:
         njobs=njobs+1
 file_log.close()
-os.system("rm " + path_log)
 
-print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
+if os.path.exists(path_log):
+    os.system("rm " + path_log)
+
+if printToScreen:
+    print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
 if number_of_files < (300- njobs):
-    print "Job is running in background............"
+    if printToScreen:
+        print "Job is running in background............"
     os.system("mkdir " + tmpwork + "/" + tagger)
 
 

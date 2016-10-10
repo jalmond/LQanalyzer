@@ -14,7 +14,7 @@ from optparse import OptionParser
 #Import parser to get options
 parser = OptionParser()
 parser.add_option("-p", "--period", dest="period", default="A",help="which data period or mc sample")
-parser.add_option("-s", "--stream", dest="stream", default="", help="Which data channel- ee,or mumu?")
+parser.add_option("-s", "--stream", dest="stream", default="NULL", help="Which data channel- ee,or mumu?")
 parser.add_option("-j", "--jobs", dest="jobs", default=1, help="Name of Job")
 parser.add_option("-c", "--cycle", dest="cycle", default="Analyzer", help="which cycle")
 parser.add_option("-t", "--tree", dest="tree", default="ntuple/event", help="What is input tree name?")
@@ -24,7 +24,7 @@ parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How 
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
 parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set number of events to skip")
-parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
+parser.add_option("-a", "--datatype", dest="datatype", default="mc", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
 parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
@@ -35,13 +35,13 @@ parser.add_option("-w", "--remove", dest="remove", default=True, help="Remove th
 parser.add_option("-S", "--skinput", dest="skinput", default=True, help="Use SKTree as input?")
 parser.add_option("-R", "--runevent", dest="runevent", default=True, help="Run Specific Event?")
 parser.add_option("-N", "--useCATv742ntuples", dest="useCATv742ntuples", default=True, help="' to run on these samples")
-parser.add_option("-L", "--LibList", dest="LibList", default="", help="Add extra lib files to load")
+parser.add_option("-L", "--LibList", dest="LibList", default="NULL", help="Add extra lib files to load")
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
-parser.add_option("-v", "--catversion", dest="catversion", default="", help="What cat version?")
-parser.add_option("-f", "--skflag", dest="skflag", default="", help="add input flag?")
+parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
+parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 
 
@@ -79,10 +79,12 @@ DEBUG = options.debug
 useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
+#print str(usebatch) + " " + str(skflag) + " " + str(useskim) + " " + str(DEBUG) + " " + str(tmplist_of_extra_lib) + " " + str(useCATv742ntuples) + " " + str(runevent) + " " + str(useskinput) + " " + str(remove_workspace) + " " + str(Finaloutputdir) + " " + str(catversion) + " " + str(data_lumi) + " " + str(eff_lumi) + " " + str(tar_lumi) + " " + str(xsec) + " " + str(totalev) + " " + str(dataType) + " " + str(skipev) + " " + str(number_of_events_per_job) + " " + str(tree) + " " + str(tagger) + " " + str(runcf) + " " + str(runnp) + " " + str(loglevel) + " " + str(logstep) + " " + str(cycle) + " " + str(channel) + " " + str(sample) + " " + str(number_of_cores)
+
 
 ###### New for 801.7 tag  
 ClusterStatFile = os.getenv("LQANALYZER_DIR")+ "/python/CheckCluster.py"
-os.system("python " + ClusterStatFile + " -x " + tagger)
+#os.system("python " + ClusterStatFile + " -x " + tagger)
 
 
 if not skflag == "":
@@ -108,7 +110,7 @@ for lib in tmplist_of_extra_lib:
         list_of_extra_lib.append(libname)
         libname=""
     
-if libname:
+if libname != "NULL":
     if len(list_of_extra_lib) ==0:
         print "Name of library has to contain .so."
    
@@ -145,6 +147,7 @@ else:
 ## set the job conguration set for a specific sample###
 #######################################################
 sample = sample.replace(":", " ")
+
 datatype=""
 splitsample  = sample.split()
 if not len(splitsample)==1:
@@ -257,7 +260,7 @@ if "TT" in sample:
 if "DY50"  in sample:
     large_sample=True
 
-
+print "number_of_cores = " + str(number_of_cores)
 ncore_def=number_of_cores
 import platform
 BusyMachine=False
@@ -959,8 +962,13 @@ for i in range(1,number_of_cores+1):
 
 if running_batch: 
     print "@@@@@@@@@@@@@@@@@@@@@@@@@"
+    path_jobids = "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
+
+    file_jobids = open(path_jobids,"w")
     for ijob in array_batchjobs:
+        file_jobids.write(ijob + "\n")
         print "Job ["+str(ijob)+"] added to list......."
+    file_jobids.close()    
     print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     print "In case user wants to kill job do : source " + output+ "JobKill.sh"
     print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
@@ -1545,7 +1553,7 @@ statwrite_time.close()
 
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
-os.system("python " + GeneralStatFile + " -x " + tagger)
+#os.system("python " + GeneralStatFile + " -x " + tagger)
 
 set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog"+ tagger + ".txt"
 set_logfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time" + tagger + ".txt"

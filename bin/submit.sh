@@ -38,55 +38,25 @@ usebatch=$(makeParseVariable 'b' ${usebatch})
 ################                                                                                                                                                
 
 #submit     
-job_tagger=$RANDOM
-if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}" ]]; then
-    mkdir /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}
-fi
+#job_tagger=$RANDOM
+#if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}" ]]; then
+#    mkdir /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}
+#fi
+sample_list_string=""
+for i in ${input_samples[@]}
+do
+    sample_list_string+="!!"$i 
+done
+echo $sample_list_string
+samplelist=$sample_list_string
+
 if [[ $1  == "" ]]; 
 then
-    for i in ${input_samples[@]}
-      do
-	
-	tagger=$RANDOM
-
-	statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
-	if [[ ! -d "${statdir}" ]]; then
-	    mkdir ${statdir}
-	fi
-
-
-	logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog$tagger.txt
-	logfile_time=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog_time$tagger.txt
-	echo "user "$USER >> $logfile
-	echo $cycle >> $logfile
-	echo $catversion >> $logfile
-	echo $stream >> $logfile
-	echo $njobs >> $logfile
-	echo $data_lumi >> $logfile
-	echo "sample "$i >>  $logfile
-	echo $useskim >> $logfile
-	echo "cattag "$CATTAG >> $logfile
-	date >> $logfile
-	echo "############################" >> $logfile
-	python  ${LQANALYZER_DIR}/python/CATConfig.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
-	if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/${tagger}" ]]; then
-	    python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} 
-	else
-	    if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}/${tagger}/" ]]; then 
-		mkdir /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}/${tagger}/
-	    fi
-	    echo "Running ${i} in background: Check in /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}/${tagger}/${i}.txt"
-	    python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}  ${usebatch} -X ${tagger}&>  /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}/${tagger}/${i}.txt& 
-	fi
-	if [[ -d "/data2/CAT_SKTreeOutput/${USER}/${tagger}" ]]; then
-	    rm -r /data2/CAT_SKTreeOutput/${USER}/${tagger}
-	fi
-    done 
-    if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}/" ]]; then
-        rm -r /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}
-    fi
-    
-  
+    #for i in ${input_samples[@]}
+     # do	
+    tagger=$RANDOM
+    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
+    #done
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
     echo "Checking options"
     python ${LQANALYZER_DIR}/python/localsubmit.py $1
@@ -111,13 +81,13 @@ else
 	echo "cattag "$CATTAG >> $logfile
 	date >> $logfile
 	echo "############################" >> $logfile
-	python ${LQANALYZER_DIR}/python/CATConfig.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
+	python ${LQANALYZER_DIR}/python/CATConfig.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch}  -X ${tagger}
 
 	if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/${tagger}" ]]; then
-            python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
+            python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
 	    else:
             "Running ${i} in background"
-            python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}  ${usebatch} -X ${tagger}&>  /data2/CAT_SKTreeOutput/${USER}/${tagger}/${i}.txt&
+            python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}  ${usebatch}  -X ${tagger}&>  /data2/CAT_SKTreeOutput/${USER}/${tagger}/${i}.txt&
         fi
     done
 

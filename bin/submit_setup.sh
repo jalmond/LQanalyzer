@@ -354,6 +354,21 @@ function print_tag_diff
 
 }
 
+function print_tag_diff7
+{
+    if [[ ${submit_cat_tag} == *"v7"* ]];then
+
+        if [[ ${submit_cat_tag2} == *"v7"* ]];then
+            print_tag_diff_twotags7
+        else
+            print_tag_diff_vs_currenttag
+        fi
+    fi
+
+}
+
+
+
 function print_tag_diff_twotags
 {
     declare -a NEWTAGS=()
@@ -390,6 +405,45 @@ function print_tag_diff_twotags
     done
     
 }
+
+
+function print_tag_diff_twotags7
+{
+    declare -a NEWTAGS=()
+    foundtag=False
+    while read line
+      do
+      if [[ $line == *"$submit_cat_tag2"* ]];
+          then
+          sline=$(echo $line | head -n1 | awk '{print $1}')
+          NEWTAGS+=(${sline})
+          foundtag=True
+      else
+          if [[ $foundtag == "False" ]]; then
+              continue
+          else
+              if [[ $line == $submit_cat_tag ]]; then
+                  break
+              fi
+              NEWTAGS+=(${line})
+          fi
+      fi
+    done < ${CATTAGDIR}/LatestTag.txt
+
+    for ntag in  ${NEWTAGS[@]};
+      do
+      echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+      echo "Tag: " $ntag  "(summary of changes wrt previous tag)"
+      echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+      while read line
+        do
+        echo $line
+      done <  ${CATTAGDIR}/TagDiff_${ntag}.txt
+    done
+
+}
+
 
 function print_sktreemaker_logfile
 {
@@ -1138,6 +1192,13 @@ while [ "$1" != "" ]; do
 				print_tag_diff
 				exit 1
 				;;
+        -tagdiff7)              shift
+                                submit_cat_tag=$1
+                                submit_cat_tag2=$2
+                                print_tag_diff7
+                                exit 1
+                                ;;
+
         -sktreelog)             shift
 				submit_analyzer_name=$1
 				submit_catvlist=$2
