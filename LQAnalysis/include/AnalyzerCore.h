@@ -87,6 +87,7 @@ class AnalyzerCore : public LQCycleBase {
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   bool isPrompt(long pdgid);
+  void TruthPrintOut();
   bool IsTight(snu::KElectron electron);
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);

@@ -224,6 +224,18 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
   triglumi.close();
   
+  cout << "                                                  " << endl;
+  cout << "   ########    ###       ###   ###  ###           " << endl;
+  cout << "   ########    ####      ###   ###  ###           " << endl;
+  cout << "   ###         #####     ###   ###  ###           " << endl;
+  cout << "   ###         ### ##    ###   ###  ###           " << endl;
+  cout << "   ########    ###  ##   ###   ###  ###           " << endl;
+  cout << "   ########    ###   ##  ###   ###  ###           " << endl;
+  cout << "        ###    ###    ## ###   ###  ###           " << endl;
+  cout << "        ###    ###     #####   ###  ###           " << endl;
+  cout << "   ########    ###      ####   ########           " << endl;
+  cout << "   ########    ###       ###   ########           " << endl;
+  cout << "                                                  " << endl;
   
 }
 
@@ -1164,6 +1176,21 @@ std::vector<snu::KElectron> AnalyzerCore::ShiftElectronEnergy(std::vector<snu::K
     shiftedel.push_back(electrons.at(iel));
   }    
   return shiftedel;
+}
+
+
+void AnalyzerCore::TruthPrintOut(){
+  if(isData) return;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){                                                                                                                                                                                                          
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue; 
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig + 1 << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |         |         |" << endl;
+    
+    cout << ig+1 << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi() << " |   " << eventbase->GetTruth().at(ig).IndexMother()  << endl;    
+  }
+
 }
 
 bool AnalyzerCore::isPrompt(long pdgid) {

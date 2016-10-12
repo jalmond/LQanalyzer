@@ -107,6 +107,9 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
+
+  //TruthPrintOut();
+  //return;
   
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
