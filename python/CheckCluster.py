@@ -6,13 +6,15 @@ if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStati
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-x", "--x", dest="x", default="123",help="tag")
+parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 
 (options, args) = parser.parse_args()
 filetag=options.x
+ssample=options.s
     
 
-path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".txt"
-path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".log"
+path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".txt"
+path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + ssample+filetag + ".log"
 
 os.system("qstat -u '*' > " + path_log)
 

@@ -28,6 +28,7 @@ if not LQANALYZER_DIR == "None" :
 	 
 	CleanUpLogs("/data1/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
 	CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+	CleanUpLogs("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ getpass.getuser()+ "/")
 	CleanUpJobLogs(LQANALYZER_LOG)
 	CleanUpLogs(EightTeVdataOne)
 	CleanUpLogs(EightTeVdataTwo)	

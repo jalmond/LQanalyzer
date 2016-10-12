@@ -47,13 +47,10 @@ for i in ${input_samples[@]}
 do
     sample_list_string+="!!"$i 
 done
-echo $sample_list_string
 samplelist=$sample_list_string
 
 if [[ $1  == "" ]]; 
 then
-    #for i in ${input_samples[@]}
-     # do	
     tagger=$RANDOM
     python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
     #done

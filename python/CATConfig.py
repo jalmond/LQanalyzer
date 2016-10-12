@@ -87,7 +87,7 @@ elif useskim == "SKTree_DiLepSkim":
 elif useskim == "SKTree_TriLepSkim":
     useskim="TriLep"
 
-
+original_sample=sample
 sample = sample.replace(":", " ")
 datatype=""
 splitsample  = sample.split()
@@ -392,7 +392,7 @@ isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 
-path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + tagger + ".log"
+path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+original_sample + tagger + ".log"
 
 time.sleep(5.)
 os.system("qstat -u '*' > " + path_log)

@@ -14,11 +14,13 @@ if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStati
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-x", "--x", dest="x", default="123",help="tag")
+parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 
 (options, args) = parser.parse_args()
 filetag=options.x
+sample=options.s
     
-path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time" + filetag + ".txt"
+path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+sample + filetag + ".txt"
 path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag + ".txt"
 
 os.system("cp " + path_master + " " + path_tmpmaster)
@@ -27,8 +29,8 @@ os.system("cp " + path_master + " " + path_tmpmaster)
 file_job=open(path_job,"r")
 file_tmpmaster=open(path_tmpmaster,"r")
 
-path_cluster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".txt"
-path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" + filetag + ".log"
+path_cluster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
+path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
 
 
 

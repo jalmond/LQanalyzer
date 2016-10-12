@@ -84,7 +84,7 @@ usebatch =options.usebatch
 
 ###### New for 801.7 tag  
 ClusterStatFile = os.getenv("LQANALYZER_DIR")+ "/python/CheckCluster.py"
-#os.system("python " + ClusterStatFile + " -x " + tagger)
+#os.system("python " + ClusterStatFile + " -x " + tagger + " -s " + sample)
 
 
 if not skflag == "":
@@ -923,14 +923,16 @@ for i in range(1,number_of_cores+1):
     
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
-    
+    logbatch="Job_" + str(i) + "/runJob_" + str(i) +".o[batchID]"
+
     #runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if running_batch:
         runcommand = "qsub -V " + batchscript   + "&>" + log 
 
     jobID=0
-    
+    first_jobid=0
+
 
     if singlejob:
         print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -939,9 +941,15 @@ for i in range(1,number_of_cores+1):
         os.system(runcommand)
     else:
         if i==1:
-            print "Running " + script + " . Log file --->  " + log 
+            if running_batch:
+                print "Running " + script + " . Log file --->  " + logbatch
+            else:
+                print "Running " + script + " . Log file --->  " + log
         elif i== number_of_cores:
-            print "Running " + script + " . Log file --->  " + log
+            if running_batch:
+                print "Running " + script + " . Log file --->  " + logbatch
+            else:
+                print "Running " + script + " . Log file --->  " + log
         elif i==2:
             print "......"
         os.system(runcommand)
@@ -949,6 +957,8 @@ for i in range(1,number_of_cores+1):
             for line in open(log, 'r'):
                 entries = line.split()
                 if len(entries) > 0:
+                    if jobID ==0:
+                        first_jobid= entries[2]
                     jobID=entries[2]
                     array_batchjobs.append(jobID)
                     k_batchscript =  output+ "JobKill.sh"
@@ -976,9 +986,9 @@ if running_batch:
 ##########################################################
 ## wait and do merging (also remove old log file/rootfiles
 ##########################################################
-check_log= os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/runJob_1.log"
+check_log= os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/"
 if (os.path.exists(check_log)):
-    os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.log")
+    os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
 
 if DEBUG == "True":
     print "Waiting for all jobs to finish before Merging."
@@ -1236,7 +1246,7 @@ if not JobOutput:
 
     if not running_batch:
         failed_macro= output+ "Job_1/runJob_1.C"
-        failed_log= "runJob_1.log"
+        failed_log= "runJob_1.o..."
 
     print ""
     print "Job Failed...."
@@ -1246,7 +1256,7 @@ if not JobOutput:
         os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
         
     if not number_of_cores == 1:
-        os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
+        os.system("mv "+ output + "/*/*.o* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
     print "###########################################################################################################"
     print "Check crash by running root -q -b " + failed_macro 
     print "Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
@@ -1447,7 +1457,7 @@ else:
         if os.path.exists(Finaloutputdir + outfile):
             os.system("rm  "  +  Finaloutputdir   + outfile)
         os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
-        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger +".txt")
+        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
         f = ROOT.TFile(Finaloutputdir +  outfile)
         t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
         t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1460,7 +1470,7 @@ else:
             outfile = cycle + "_" + outsamplename + ".root"
         if number_of_cores == 1:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1472,7 +1482,7 @@ else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
             
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1491,7 +1501,7 @@ else:
             os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
         
         if not number_of_cores == 1:    
-            os.system("mv "+ output + "/*/*.log " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
+            os.system("mv "+ output + "/*/*.o " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
         os.system("rm -r " + local_sub_dir)
         os.system("rm -r " + timestamp_dir)
@@ -1516,8 +1526,8 @@ total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
 
-statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog" + tagger +".txt"
-statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time"+tagger +".txt"
+statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+ original_sample + tagger +".txt"
+statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+original_sample+tagger +".txt"
 
 if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
     os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
@@ -1529,7 +1539,7 @@ for line in statwrite:
 statwrite_time.write("time " + str(total_time) + " \n")
 statwrite_time.write("job_time  " + str(job_time-start_time)  + " \n")
 statwrite_time.write("last_job_time  " + str(last_job_time-start_time)  + " \n")
-pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger +".txt"
+pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
 readfilesize = open(pathfilesize, "r")
 for line in readfilesize:
     splitline = line.split()
@@ -1553,12 +1563,12 @@ statwrite_time.close()
 
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
-#os.system("python " + GeneralStatFile + " -x " + tagger)
+#os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + sample)
 
-set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog"+ tagger + ".txt"
-set_logfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time" + tagger + ".txt"
+set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+original_sample+ tagger + ".txt"
+set_logfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+original_sample + tagger + ".txt"
 
 os.system("rm " + set_logfile)
-os.system("rm " + set_logfile_time)
+#os.system("rm " + set_logfile_time)
 
 #  LocalWords:  Finaloutputdir
