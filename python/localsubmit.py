@@ -650,7 +650,7 @@ if running_batch:
                 elif n_user_qsub_jobs > 200:
                     number_of_cores=50
                 elif n_user_qsub_jobs > 150:
-                    number_of_cores=100
+                    number_of_cores=50
                 elif n_user_qsub_jobs > 60:
                     number_of_cores=100
                 elif n_user_qsub_jobs > 40:
