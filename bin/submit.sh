@@ -69,7 +69,7 @@ then
 	python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} 
 	python ${LQANALYZER_DIR}/python/StatFile.py -x $tagger
 	rm $logfile
-	#rm $logfile_time
+	rm $logfile_time
     done 
   
 elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
