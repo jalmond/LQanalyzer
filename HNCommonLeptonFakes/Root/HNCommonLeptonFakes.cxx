@@ -57,29 +57,27 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   string lqdir = getenv("LQANALYZER_DIR");
 
+  /// MUON FILES
 
   TFile* file_fake_muon  = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_1.root").c_str());
   CheckFile(file_fake_muon);
-  TDirectory* tempDir1 = getTemporaryDirectory();
-  tempDir1->cd();
-  
-  _2DEfficiencyMap["fake_Eff_muon_pog"] = dynamic_cast<TH2F*>((file_fake_muon->Get("h_FOrate3"))->Clone());
-  file_fake_muon->Close();
-  delete file_fake_muon;
+
   
   TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/rootfiles/Total_FRcorr40_2.root").c_str());
   CheckFile(file_fake_muon_hn);
 
-
-  _2DEfficiencyMap["fake_Eff_muon_hn_pog"] = dynamic_cast<TH2F*>((file_fake_muon_hn->Get("h_FOrate3"))->Clone());
-  file_fake_muon_hn->Close();
-  delete file_fake_muon_hn;
-
+  /// ELECRON FILES
   TFile* file_fake  = TFile::Open( (lqdir + "/data/rootfiles/FakeRate13TeV.root").c_str());
   CheckFile(file_fake);
+  
+  ////// MAKE HISTS IN MAP
+  TDirectory* tempDir1 = getTemporaryDirectory();
+  tempDir1->cd();
+  
+  _2DEfficiencyMap["fake_Eff_muon_pog"] = dynamic_cast<TH2F*>((file_fake_muon->Get("h_FOrate3"))->Clone());
 
-  // Now we can close the file:
-  origDir->cd();
+  _2DEfficiencyMap["fake_Eff_muon_hn"] = dynamic_cast<TH2F*>((file_fake_muon_hn->Get("h_FOrate3"))->Clone());
+
   std::vector <TString> region;
   region.push_back("looseregion1");
   region.push_back("looseregion2");
@@ -93,9 +91,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
   std::vector <TString> cut;
   cut.push_back("pt_eta");
 
-  TDirectory* tempDir = getTemporaryDirectory();
-  tempDir->cd();
-
 
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
@@ -103,6 +98,8 @@ void HNCommonLeptonFakes::InitialiseFake(){
       _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
     }
   }
+
+  
 
   if(failedinitialisation){
     cout << "Not all histograms could be initialised, this is a bug so am exiting" << endl;
@@ -117,7 +114,11 @@ void HNCommonLeptonFakes::InitialiseFake(){
   file_fake->Close();
   delete file_fake;
   
+  file_fake_muon->Close();
+  delete file_fake_muon;
 
+  file_fake_muon_hn->Close();
+  delete file_fake_muon_hn;
 
   // Now we can close the file:   
   origDir->cd();
@@ -325,7 +326,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(std::vector<TLorentzVect
   r2 = 1.;
 
   fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta,cut);
-  fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion2");
+  fr2= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"pt_eta_40_looseregion1");
   
   float fr1_err = 0.;
   float fr2_err = 0.;

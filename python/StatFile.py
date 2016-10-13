@@ -107,6 +107,9 @@ for line in file_job:
 file_job.close()
 
 
+if jobcrash =="":
+    jobcrash="Fail"
+
 file_cluster=open(path_cluster,"r")
 for line in file_cluster:
     splitline = line.split()

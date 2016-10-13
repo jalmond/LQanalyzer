@@ -514,6 +514,9 @@ void SKTreeValidation::FillCutFlow(TString cut, float weight){
 
 void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
+  Message("In MakeMuonValidationPlots " , DEBUG);
+  
+
   std::vector<snu::KElectron> electrons =  GetElectrons(elid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
 
@@ -521,8 +524,7 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
   std::vector<snu::KMuon> muons;
 
   if(k_running_nonprompt){
-    muid=BaseSelection::MUON_HN_FAKELOOSE;
-    muons = GetMuons(muid,false);
+    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,false);
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
   else   muons = GetMuons(muid);
@@ -585,18 +587,20 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
 
 void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
   
+
+  
+  Message("In MakeDiMuonValidationPlots " , DEBUG);
   std::vector<snu::KElectron> electrons =  GetElectrons(elid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
 
   std::vector<snu::KMuon> muons;
 
   if(k_running_nonprompt){
-    muid=BaseSelection::MUON_HN_FAKELOOSE;
-    muons = GetMuons(muid,false);
+    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,false);
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
   else   muons = GetMuons(muid);
-  
+
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
   
   bool trig_pass= PassTrigger(trignames, prescale);
@@ -686,13 +690,13 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
 
 void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
+  Message("In MakeElMuonValidationPlots " , DEBUG);
+
   std::vector<snu::KElectron> electrons ;
   std::vector<snu::KMuon> muons;
   if(k_running_nonprompt){
-    muid=BaseSelection::MUON_HN_FAKELOOSE;
-    muons = GetMuons(muid,false);
-    elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
-    electrons             = GetElectrons(true, false,elid);
+    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,false);
+    electrons             = GetElectrons(true, false,BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0);
   }
   else if(tag.Contains("truthmatch")) {
     muons = GetMuons(muid,false);
@@ -708,9 +712,6 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
   }
 
   std::vector<snu::KJet> jets =  GetJets(jetid);
-
-
-
   /// List of all corrections to be applied
   float trigger_sf(1.);
   float id_iso_sf(1.);
@@ -776,10 +777,13 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
 
 
 void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
+
+
+  Message("In MakeElectronValidationPlots " , DEBUG);
+
   std::vector<snu::KElectron> electrons ;
   if(k_running_nonprompt){
-    elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
-    electrons             = GetElectrons(true, false,elid);
+    electrons             = GetElectrons(true, false,BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0);
   }
   else if(tag.Contains("truthmatch"))   electrons = GetElectrons(true, false,elid);
   else   electrons =  GetElectrons(elid);
@@ -837,10 +841,11 @@ void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float
 
 void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID muid, BaseSelection::ID jetid, TString tag){
 
+  Message("In MakeDiElectronValidationPlots" , DEBUG);
+
   std::vector<snu::KElectron> electrons ;
   if(k_running_nonprompt){
-    elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
-    electrons             = GetElectrons(true, false,elid);
+    electrons             = GetElectrons(true, false,BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0);
   }
   else if(tag.Contains("truthmatch"))   electrons = GetElectrons(true, false,elid);
   else   electrons =  GetElectrons(elid);

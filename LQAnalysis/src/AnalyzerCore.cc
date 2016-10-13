@@ -1971,6 +1971,7 @@ void AnalyzerCore::SmearJets(vector<snu::KJet>& k_jets){
 }
 void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   
+  Message("In CorrectMuonMomentum", DEBUG);
   vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
@@ -1986,7 +1987,12 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
 
 
 float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString cut){
-  if(k_muons.size()==0 && k_electrons.size()==0) return 0.;
+
+  Message("In Get_DataDrivenWeight_EM", DEBUG);
+
+  if(k_muons.size()!=1) return 0.;
+  if(k_electrons.size()!=1) return 0.;
+
   bool is_mu1_tight    = IsTight(k_muons.at(0));
   bool is_el1_tight    = IsTight(k_electrons.at(0));
 
@@ -1999,6 +2005,9 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString cutID){
+  
+  Message("In Get_DataDrivenWeight_MM", DEBUG);
+
 
   if(k_muons.size()==0) return 0.;
   float mm_weight = 0.;
@@ -2016,6 +2025,9 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString 
 
 
 float AnalyzerCore::Get_DataDrivenWeight_M(vector<snu::KMuon> k_muons, TString cutID){
+
+  Message("In Get_DataDrivenWeight_M", DEBUG);
+
   if(k_muons.size()!=1) return 0.;
 
   bool is_mu1_tight    = IsTight(k_muons.at(0));
@@ -2038,6 +2050,10 @@ float AnalyzerCore::Get_DataDrivenWeight_M(vector<snu::KMuon> k_muons, TString c
 }
 
 float AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons){
+
+
+  Message("In Get_DataDrivenWeight_EE", DEBUG);
+
   if(k_electrons.size()!=1) return 0.;
 
   bool is_el1_tight    = IsTight(k_electrons.at(0));
@@ -2062,6 +2078,10 @@ float AnalyzerCore::Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons){
 
 
 float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons){
+
+
+  Message("In Get_DataDrivenWeight_EE", DEBUG);
+
   if(k_electrons.size()==0) return 0.;
 
   float ee_weight = 0.;
