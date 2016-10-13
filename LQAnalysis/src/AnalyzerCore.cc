@@ -133,7 +133,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     SingleMuon_D2  =  dynamic_cast<TH2F*> (( infile_sf->Get("runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins/abseta_pt_ratio"))->Clone());
   }
 
-    string lqdir = getenv("LQANALYZER_DIR");
+  string lqdir = getenv("LQANALYZER_DIR");
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
   rmcor = new rochcor2015();
   
@@ -151,9 +151,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   MapBTagSF = SetupBTagger(vtaggers,v_wps);
 
   
-  ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion4.txt").c_str());
+  ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2015.txt").c_str());
   if(!runlumi) {
-    cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion4.txt'), exiting ..." << endl;
+    cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2015.txt'), exiting ..." << endl;
     exit(EXIT_FAILURE);
   }
   string lline;
@@ -200,9 +200,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   cout << "reading luminosity file" << endl;
 
-  ifstream triglumi((lqdir + "/data/rootfiles/triggers_catversion4.txt").c_str());
+  ifstream triglumi((lqdir + "/data/rootfiles/triggers_catversion2015.txt").c_str());
   if(!triglumi) {
-    cerr << "Did not find "+lqdir + "'data/rootfiles/triggers_catversion4.txt'), exiting ..." << endl;
+    cerr << "Did not find "+lqdir + "'data/rootfiles/triggers_catversion2015.txt'), exiting ..." << endl;
     exit(EXIT_FAILURE);
   }
   string sline;
