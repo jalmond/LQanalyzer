@@ -53,7 +53,7 @@ def CleanUpLogs(path):
             if not "date.txt" in line2:
                 entries = line2.split()
                 if not len(entries)==2:
-                    if str(os.getenv("HOSTNAME")) in line2 or "Cluster" in line2 or "statlog" in line2 or "MasterFile_tmp" in line2:
+                    if str(os.getenv("HOSTNAME")) in line2 or "Cluster" in line2 or "statlog" in line2 or "MasterFile_tmp" in line2 or "filesize" in line2:
                         os.system("ps ux | grep 'root.exe' &> " + logspace1 + "/pslog")
                         filename = logspace1 + "/pslog"
                         
