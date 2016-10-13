@@ -648,16 +648,16 @@ if running_batch:
                 if n_user_qsub_jobs > 300:
                     number_of_cores=15
                 elif n_user_qsub_jobs > 200:
-                    number_of_cores=100
+                    number_of_cores=50
                 elif n_user_qsub_jobs > 150:
                     number_of_cores=100
                 elif n_user_qsub_jobs > 60:
-                    number_of_cores=50
+                    number_of_cores=100
                 elif n_user_qsub_jobs > 40:
-                    number_of_cores=20
+                    number_of_cores=100
                 else:
                     if n_qsub_jobs < 30:
-                        number_of_cores=100
+                        number_of_cores=200
                     else:
                          number_of_cores=50
         else:
