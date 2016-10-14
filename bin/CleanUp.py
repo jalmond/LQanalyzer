@@ -50,12 +50,12 @@ def CleanUpLogs(path):
         
         for line2 in open(logspace1 + "/file_dates.txt", 'r'):
             is_deleted=False
-            if not ".txt" in line2:
+            if not "date.txt" in line2:
 
                 entries = line2.split()
                 if not len(entries)==2:
 
-                    if str(os.getenv("HOSTNAME")) in line2:
+                    if str(os.getenv("HOSTNAME")) in line2 or "Cluster" in line2 or "statlog" in line2 or "MasterFile_tmp" in line2 or "filesize" in line2:
                         os.system("ps ux | grep 'root.exe' &> " + logspace1 + "/pslog")
                         filename = logspace1 + "/pslog"
                         
@@ -65,17 +65,16 @@ def CleanUpLogs(path):
                                 n_previous_jobs+=1
                                 
                         if n_previous_jobs == 0:
-                            os.system("qstat &> " + logspace1 + "/qstatlog")
-                            filename_qstat = logspace1 + "/qstatlog"
-                            n_previous_qsjobs=0
-                            for psline in open(filename_qstat, 'r'):
-                                if not "grep" in psline:
-                                    n_previous_qsjobs+=1
-                            if n_previous_qsjobs == 0:
+                            os.system("qstat -u " + getpass.getuser()+ " > " +   logspace1 + "/qsub_del")
+                            qsub_all_filename = logspace1 +'qsub_del'
+                            n_qsub_jobs=0
+                            for qsub_all_line in open(qsub_all_filename, 'r'):
+                                if getpass.getuser() in qsub_all_line:
+                                    n_qsub_jobs=n_qsub_jobs+1
+                            if n_qsub_jobs == 0:
                                 os.system(" rm -r " + logspace1 + "/" + entries[8])
                                 print "Deleting directory "  + logspace1 + "/" + entries[8] +" since this is made on " + os.getenv("HOSTNAME") + " but no jobs running on this machine."
                                 is_deleted=True
-
 
                     nfiles=0
                     if (os.path.exists(logspace1 + "/" + entries[8] +"/output/")):

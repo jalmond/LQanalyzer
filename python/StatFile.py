@@ -1,6 +1,16 @@
 import os,sys,getpass
 
 
+
+def RoundMemory(mem):
+    string_length= len(mem)
+    float_only_mem= mem[:-2]
+    unit_only_mem=  mem[(int(string_length)-2):]
+
+    rounded_float= str(round(float(float_only_mem),2)) + unit_only_mem
+    return rounded_float
+
+
 path_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
 path_skel_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
 
@@ -108,6 +118,8 @@ for line in file_job:
             year=entries[5]
 file_job.close()
 
+if jobcrash =="":
+    jobcrash="Fail"
 
 file_cluster=open(path_cluster,"r")
 for line in file_cluster:
@@ -129,7 +141,7 @@ if len(sample) < 2:
     sample=stream+"_"+sample
 
 with open(path_jobinfo, "a") as myfile:
-    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(day)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + str(memoryusage_p) + " mem_v: " + str(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
+    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(day)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
 
 os.system("rm " + path_cluster)
 

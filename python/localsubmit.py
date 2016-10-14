@@ -194,8 +194,13 @@ print ""
 ###########################################################################################
 ###########################################################################################
 ### DEFAULT  settings for runnning in batch mode. True for cmscluster.snu.ac.kr
-running_batch=True
+running_batch=False
 
+if number_of_cores == 1:
+    print "running_batch = False  (default if njobs = 1)"
+else:
+    running_batch=True
+    
 if str(usebatch) == "NULL":
     if str(running_batch) == "True":
         print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
@@ -655,9 +660,9 @@ if running_batch:
                 elif n_user_qsub_jobs > 150:
                     number_of_cores=100
                 elif n_user_qsub_jobs > 60:
-                    number_of_cores=50
+                    number_of_cores=100
                 elif n_user_qsub_jobs > 40:
-                    number_of_cores=20
+                    number_of_cores=100
                 else:
                     if n_qsub_jobs < 30:
                         number_of_cores=100
@@ -903,7 +908,7 @@ if DEBUG == "True":
 import thread,time
 start_time = time.time()
 job_time=0
-lastjob_time=0
+last_job_time=0
 wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
@@ -923,7 +928,7 @@ for i in range(1,number_of_cores+1):
     
     script = output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
-    logbatch="Job_" + str(i) + "/runJob_" + str(i) +".o[batchID]"
+    logbatch="Job_" + str(i) + "/"+outsamplename+ "_Job_" + str(i)+".o[batchID]"  
 
     #runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
@@ -987,8 +992,10 @@ if running_batch:
 ## wait and do merging (also remove old log file/rootfiles
 ##########################################################
 check_log= os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/"
-if (os.path.exists(check_log)):
-    os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
+if number_of_cores > 1:
+    if (os.path.exists(check_log)):
+        if sum(1 for item in os.listdir(check_log) if isfile(join(check_log, item))) > 0:
+            os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
 
 if DEBUG == "True":
     print "Waiting for all jobs to finish before Merging."
@@ -1130,7 +1137,11 @@ while not JobSuccess:
         if running_batch:
             ### print jobs running/in queue .... once all running print % completeion
             for i in range(1,number_of_cores+1):
-                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+                if number_of_cores == 1:
+                    check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".log"
+                else:
+                    check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+                    
 
                 while not os.path.exists(check_outfile):
                     sys.stdout.write('\r' + clear_line)
@@ -1176,7 +1187,7 @@ while not JobSuccess:
                     check_outfile = outputdir + outsamplename +  "_" + str(i)+".root"
                     if not (os.path.exists(check_outfile)):
                         failed_macro= output+ "Job_" + str(i) + "/runJob_" + str(i) + ".C"
-                        failed_log= "runJob_" + str(i) + "log"
+                        failed_log= outsamplename+ "_Job_" + str(i)+".o"+str(array_batchjobs[i-1])
                         JobSuccess=True
                         JobOutput=False
                         print "Job " + str(job_id_c) + " is not running or in queue. Output " + str(check_outfile)+ " is missing."
@@ -1246,7 +1257,8 @@ if not JobOutput:
 
     if not running_batch:
         failed_macro= output+ "Job_1/runJob_1.C"
-        failed_log= "runJob_1.o..."
+        failed_log= outsamplename+ "_Job_" + str(0)+".o"+str(array_batchjobs[0])
+
 
     print ""
     print "Job Failed...."
@@ -1470,8 +1482,9 @@ else:
             outfile = cycle + "_" + outsamplename + ".root"
         if number_of_cores == 1:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
-            f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
+            
+            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            f = ROOT.TFile(Finaloutputdir +  outfile)
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
             memoryusage_v=(t.GetBinContent(8)/ number_of_cores)
@@ -1501,7 +1514,7 @@ else:
             os.system("mkdir " + os.getenv("LQANALYZER_LOG_PATH")+ "/" + outsamplename)
         
         if not number_of_cores == 1:    
-            os.system("mv "+ output + "/*/*.o " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
+            os.system("mv "+ output + "/*/*.o* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)
         os.system("rm -r " + output)
         os.system("rm -r " + local_sub_dir)
         os.system("rm -r " + timestamp_dir)
@@ -1527,7 +1540,8 @@ print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) 
 print ""
 
 statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+ original_sample + tagger +".txt"
-statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+original_sample+tagger +".txt"
+statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_timetmp_"+original_sample+tagger +".txt"
+statfile_time_complete="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+original_sample+tagger +".txt"
 
 if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
     os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
@@ -1540,13 +1554,17 @@ statwrite_time.write("time " + str(total_time) + " \n")
 statwrite_time.write("job_time  " + str(job_time-start_time)  + " \n")
 statwrite_time.write("last_job_time  " + str(last_job_time-start_time)  + " \n")
 pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
-readfilesize = open(pathfilesize, "r")
-for line in readfilesize:
-    splitline = line.split()
-    if len(splitline) == 9:
-        statwrite_time.write("outputfile_size " + str(splitline[4])  + " \n")
-readfilesize.close()
-os.system("rm " + pathfilesize)
+
+if os.path.exists(pathfilesize):
+    readfilesize = open(pathfilesize, "r")
+    for line in readfilesize:
+        splitline = line.split()
+        if len(splitline) == 9:
+            statwrite_time.write("outputfile_size " + str(splitline[4])  + " \n")
+    readfilesize.close()
+    os.system("rm " + pathfilesize)
+else:
+    statwrite_time.write("outputfile_size 0.0 \n")
 
 statwrite_time.write("Njobs " +  str(number_of_cores) + " \n") 
 statwrite_time.write("NFiles " + str(number_of_files)  + " \n")
@@ -1560,15 +1578,12 @@ else:
     statwrite_time.write("Success= True \n")
 
 statwrite_time.close()
-
+os.system("mv " + statfile_time + " " + statfile_time_complete)
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
 #os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + sample)
 
 set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+original_sample+ tagger + ".txt"
-set_logfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+original_sample + tagger + ".txt"
 
+### Remove file without times
 os.system("rm " + set_logfile)
-#os.system("rm " + set_logfile_time)
-
-#  LocalWords:  Finaloutputdir
