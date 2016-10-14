@@ -982,7 +982,8 @@ if running_batch:
 check_log= os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/"
 if number_of_cores > 1:
     if (os.path.exists(check_log)):
-        os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
+        if sum(1 for item in os.listdir(check_log) if isfile(join(check_log, item))) > 0:
+            os.system("rm " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename + "/*.o*")
 
 if DEBUG == "True":
     print "Waiting for all jobs to finish before Merging."
