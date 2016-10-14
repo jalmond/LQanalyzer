@@ -197,7 +197,7 @@ sample = sample.replace(":", " ")
 sample = sample.replace("!!", " ")
 sample = sample.split()
 istatus_message=2
-winx = 4*len(sample) + 20 +  istatus_message
+winx = 5*len(sample) + 22 +  istatus_message
 winy = 175
 
 start_time = time.time()
@@ -250,9 +250,11 @@ stdscr.addstr(1+list2, summary2_block3, "| Virtual Memory         ",curses.A_STA
 stdscr.addstr(1+list2, summary2_block4, "| OutputFile Size    ",curses.A_STANDOUT)
 stdscr.addstr(1+list2, summary2_block5, "|",curses.A_STANDOUT)
 
-list3=len(sample)+len(sample)+5 + istatus_message + 6
-list3b=len(sample)+len(sample)+len(sample)+10 + istatus_message + 6
-list4=len(sample)+len(sample)+len(sample)+len(sample)+10 + istatus_message + 8
+list3=2*len(sample)+11 + istatus_message 
+list3b=3*len(sample)+16 + istatus_message 
+list3c=4*len(sample)+18 + istatus_message 
+list4=5*len(sample)+20 + istatus_message 
+
 
 remove_from_end= 3 
 
@@ -261,6 +263,7 @@ stdscr.addstr(list4,box_shift,  "Job Status (Summary of latest background proces
 
 stdscr.addstr(list3, box_shift,  "Job Screens:" ,curses.A_UNDERLINE)
 stdscr.addstr(list3b, box_shift,  "Log Files:" ,curses.A_UNDERLINE)
+stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
 import random
 job_tagger=random.random()
@@ -475,7 +478,9 @@ for s in sample:
                 stdscr.addstr(int(x)+istatus_message, summary_block5 ,"|    ",curses.A_DIM) 
 
                 logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                stdscr.addstr(list3b + 1+int(x), box_shift,  "Log files for " + sample[x] + " found at " + str(logpath))
+                outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 
         else:
             stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)) )
@@ -692,8 +697,10 @@ while StillRunning:
                 stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM)
                 stdscr.refresh()
                 
-                logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp,cycle )
-                stdscr.addstr(list3b + 1+int(x), box_shift,  "Log files for " + sample[x] + " found at " + str(logpath))
+                logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                outfilepath=str(Finaloutputdir) + GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 
                 filesize=0.
                 memoryusage_p=0.
