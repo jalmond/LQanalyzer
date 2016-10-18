@@ -143,6 +143,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   FillCutFlow("NoCut", weight);
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
   
+  cout << GetMuons(BaseSelection::MUON_POG_TIGHT).at(1).Pt() << endl;
   bool makePUFile=false;
   if(makePUFile){
     std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);

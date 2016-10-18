@@ -1,12 +1,13 @@
 #############################################################    
 ### configure submisstion of CATANALYZER Jobs                                                                                                                                  ##################################################################    
-import os, getpass, sys,ROOT,time
+import os, getpass, sys,ROOT,time,curses,datetime
 from functions import *
-
-import curses
-
+from datetime import timedelta
 from optparse import OptionParser
 
+
+def SendEmail():
+    print "Sending mail"
 
     
 def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
@@ -200,6 +201,9 @@ istatus_message=2
 winx = 5*len(sample) + 22 +  istatus_message
 winy = 175
 
+crash_output=[]
+crash_outputjob=[]
+
 start_time = time.time()
 
 screen = curses.initscr()
@@ -271,6 +275,11 @@ job_tagger=random.random()
 #### make working directorr
 if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+else:
+    print "Work directory " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger) + " already exists:"
+    print "Removing old directory"
+    os.system("rm " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+    os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
 ### Make directory for job stats
 statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ os.getenv("USER")
@@ -286,6 +295,7 @@ if channel == "":
 #"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/" + str(tagger)+ "/jobid.txt"
 samples_inbackground=[]
 samples_complete=[]
+jobidcrash=[]
 isample=-1
 
 useskimtmp=""
@@ -298,6 +308,8 @@ channeltmp=""
 #### Loop over all samples in job
 for s in sample:
     isample=isample+1
+    
+    isMC = len(s) > 1
     
     #### if sample is submitted this for loop will check job process on cluster and update the screen/terminal
     for x in range(0, len(sample)):
@@ -410,17 +422,24 @@ for s in sample:
             if nrun_per == 0.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block0, "| " +  cycle, curses.A_NORMAL )
-                stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + sample[x], curses.A_NORMAL )
+                if isMC:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + sample[x], curses.A_NORMAL )
+                else:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block2, "| " + skim_print, curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Submitted " , curses.A_NORMAL) 
             else:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_BOLD )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_BOLD )
-                stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_BOLD )
+                if isMC:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_BOLD )
+                else:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
+
                 stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_BOLD )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Running    " , curses.A_BLINK) 
                 if not jobid1 == 0:
-                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2) + "    | " + str(int(jobid2)-int(jobid1)) , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2) + "    | " + str(1+int(jobid2)-int(jobid1)) , curses.A_BOLD)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
@@ -428,12 +447,16 @@ for s in sample:
             if nfin_per == 1.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
-                stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_DIM )
+                if isMC:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_DIM )
+                else:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
+
                 stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Complete " , curses.A_DIM) 
                 job_time = time.time() - start_time
                 if not jobid1 == 0:    
-                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "   | " + str(int(jobid2)-int(jobid1)), curses.A_DIM)
+                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "   | " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block5,"| "  , curses.A_DIM)
  
@@ -446,46 +469,63 @@ for s in sample:
                      stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
                      continue
 
-                stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM) 
-                stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM) 
-                filesize=0.
-                memoryusage_p=0.
-                memoryusage_v=0.
-                outputfile_size=0.
-                first_job_time=0.
-                last_job_time=0.
-                file_job=open(path_job,"r")
-                for line in file_job:
-                    splitline  = line.split()
-                    if len(splitline) < 2:
-                        continue
-                    if "job_time"  == splitline[0]:
-                        first_job_time=float(splitline[1])
-                    if "last_job_time"  == splitline[0]:
-                        last_job_time=float(splitline[1])
-                    if "outputfile_size" == splitline[0]:
-                        outputfile_size=splitline[1]
-                    if "memoryusage_p" ==  splitline[0]:
-                        memoryusage_p=splitline[1]    
-                    if "memoryusage_v" ==  splitline[0]:
-                        memoryusage_v=splitline[1]
-                file_job.close()
-                stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]   ",curses.A_DIM) 
-                stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM) 
-                stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM) 
-                stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM) 
-                stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
-                stdscr.addstr(int(x)+istatus_message, summary_block5 ,"|    ",curses.A_DIM) 
+                crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
 
-                logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
-                stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
+                if os.path.exists(crash_log):
+                    jobidcrash.append(int(x))
+                    stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
+                    stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED    ", curses.A_BLINK)
+                    logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                    stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
+                    crash_output.append( logpath)
+                    crash_outputjob.append(str(jobid1))
+
+                else:
+                    stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM) 
+                    stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM) 
+                    filesize=0.
+                    memoryusage_p=0.
+                    memoryusage_v=0.
+                    outputfile_size=0.
+                    first_job_time=0.
+                    last_job_time=0.
+                    file_job=open(path_job,"r")
+                    for line in file_job:
+                        splitline  = line.split()
+                        if len(splitline) < 2:
+                            continue
+                        if "job_time"  == splitline[0]:
+                            first_job_time=float(splitline[1])
+                        if "last_job_time"  == splitline[0]:
+                            last_job_time=float(splitline[1])
+                        if "outputfile_size" == splitline[0]:
+                            outputfile_size=splitline[1]
+                        if "memoryusage_p" ==  splitline[0]:
+                            memoryusage_p=splitline[1]    
+                        if "memoryusage_v" ==  splitline[0]:
+                            memoryusage_v=splitline[1]
+                    file_job.close()
+                    stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]   ",curses.A_DIM) 
+                    stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM) 
+                    stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM) 
+                    stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM) 
+                    stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5 ,"|    ",curses.A_DIM) 
+
+                    logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                    stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 
         else:
             stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)) )
             stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle )
-            stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x] )
+            if isMC:
+                stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x] )
+            else:
+                stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
             stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print )
             stdscr.addstr(int(x)+istatus_message, summary_block3,"| In Queue " )
             stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|" )
@@ -527,7 +567,12 @@ for s in sample:
             checkqueue=False
             if not os.path.exists("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger):
                 os.system("mkdir  /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
-            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt")
+            now = datetime.datetime.now()
+            diff = datetime.timedelta(days=7)
+            future = now + diff
+            future=future.strftime("%m/%d/%Y")
+
+            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt will be deleted "+ future)
             stdscr.refresh()
             stdscr.addstr(int(isample)+istatus_message, box_shift,  str(int(isample+1)) )
             stdscr.addstr(int(isample)+istatus_message, summary_block0,  "| " + cycle  )
@@ -653,17 +698,23 @@ while StillRunning:
             if nrun_per == 0.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_NORMAL )
-                stdscr.addstr(int(x)+istatus_message, summary_block1, "| " +  sample[x], curses.A_NORMAL )
+                if isMC:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " +  sample[x], curses.A_NORMAL )
+                else:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block2, "| " +  skim_print, curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Submitted " , curses.A_NORMAL)
             else:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_BOLD )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_BOLD )
-                stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_BOLD )
+                if isMC:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_BOLD )
+                else:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_BOLD )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Running    " , curses.A_BLINK)
                 if not jobid1 == 0:
-                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(int(jobid2)-int(jobid1)), curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(1+int(jobid2)-int(jobid1)), curses.A_BOLD)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|" , curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
@@ -672,12 +723,15 @@ while StillRunning:
             if nfin_per == 1.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
-                stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_DIM )
+                if isMC:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_DIM )
+                else:
+                    stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Complete " , curses.A_DIM)
                 job_time = time.time() - start_time
                 if not jobid1 == 0:
-                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(int(jobid2)-int(jobid1)), curses.A_DIM)
+                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_DIM)
 
@@ -692,43 +746,56 @@ while StillRunning:
                         stdscr.refresh()
                         ismerging=False
                     continue
-                
-                stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
-                stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM)
-                stdscr.refresh()
-                
-                logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                outfilepath=str(Finaloutputdir) + GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
-                stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 
-                filesize=0.
-                memoryusage_p=0.
-                memoryusage_v=0.
-                outputfile_size=0.
-                first_job_time=0.
-                last_job_time=0.
-                file_job=open(path_job,"r")
-                for line in file_job:
-                    splitline  = line.split()
-                    if len(splitline) < 2:
-                        continue
-                    if "job_time"  == splitline[0]:
-                        first_job_time=float(splitline[1])
-                    if "last_job_time"  == splitline[0]:
-                        last_job_time=float(splitline[1])
-                    if "outputfile_size" == splitline[0]:
-                        outputfile_size=splitline[1]
-                    if "memoryusage_p" ==  splitline[0]:
-                        memoryusage_p=splitline[1]
-                    if "memoryusage_v" ==  splitline[0]:
-                        memoryusage_v=splitline[1]
-                file_job.close()
-                stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]     ",curses.A_DIM) 
-                stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM)
-                stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM)
-                stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM)
-                stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
+                crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                if os.path.exists(crash_log):
+                    jobidcrash.append(int(x))
+                    stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
+                    stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED      ", curses.A_BLINK)
+                    logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                    stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
+                    crash_output.append(logpath)
+                    crash_outputjob.append(jobid1)
+
+                else:
+                    stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
+                    stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM)
+                    stdscr.refresh()
+                
+                    logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir) + GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                    stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
+
+                    filesize=0.
+                    memoryusage_p=0.
+                    memoryusage_v=0.
+                    outputfile_size=0.
+                    first_job_time=0.
+                    last_job_time=0.
+                    file_job=open(path_job,"r")
+                    for line in file_job:
+                        splitline  = line.split()
+                        if len(splitline) < 2:
+                            continue
+                        if "job_time"  == splitline[0]:
+                            first_job_time=float(splitline[1])
+                        if "last_job_time"  == splitline[0]:
+                            last_job_time=float(splitline[1])
+                        if "outputfile_size" == splitline[0]:
+                            outputfile_size=splitline[1]
+                        if "memoryusage_p" ==  splitline[0]:
+                            memoryusage_p=splitline[1]
+                        if "memoryusage_v" ==  splitline[0]:
+                            memoryusage_v=splitline[1]
+                    file_job.close()
+                    stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]     ",curses.A_DIM) 
+                    stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM)
+                    stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM)
+                    stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM)
+                    stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
 
 
             stdscr.refresh()
@@ -757,8 +824,12 @@ curses.nocbreak()
 curses.endwin()
 
 print "\n"
+print "#"*summary_block6
+print "#"*summary_block6
+
 for i in range(0, winx-remove_from_end):
     if "Job Screens:" in mypad_contents[i]:
+        print "*"*summary_block6
         print  "Job Screens:" + " " *20
     elif  "Log Files:"  in mypad_contents[i]:
         print  "Log Files:" + " " *20
@@ -768,9 +839,61 @@ for i in range(0, winx-remove_from_end):
         print "_"*summary_block6
     if "Log Files:"  in mypad_contents[i]:
         print "_"*summary_block6
+    if "Output Files" in mypad_contents[i]:
+        print "_"*summary_block6
+
 for s in sample:
     path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_" +s + tagger + ".txt"
     os.system("rm " + path_job)
+
+
+crashlog_printout=[]
+
+
+if len(crash_output) > 0:
+    print "\n"
+    print "%"*summary_block6
+    print "%"*summary_block6
+    print "Crash Job Error Message:"
+    print "_"*summary_block6
+    jobids_failed=""
+    for x in jobidcrash:
+        jobids_failed=jobids_failed+str(x+1)+","
+    jobids_failed= jobids_failed[:-1]    
+    print "Job IDs " + jobids_failed + " failed with following error:"
+    print "#"*summary_block6
+
+    Crash_Printed=False
+    for c in crash_output:
+        if Crash_Printed:
+            continue
+        index_crash=0
+        found_crash=False
+        njobs_tried=-1
+        while not found_crash:
+            njobs_tried=njobs_tried+1
+            errlogpath=c
+            errlogpath=errlogpath.replace("Job_*","Job_"+str(njobs_tried+1) +".e"+str(int(crash_outputjob[index_crash])+njobs_tried))
+            while not os.path.exists(errlogpath):
+                index_crash=index_crash+1
+                if index_crash == len(crash_outputjob):
+                    break
+                errlogpath=errlogpath.replace("Job_*","Job_" + str(njobs_tried+1) +".e"+str(int(crash_outputjob[index_crash])+njobs_tried))
+
+            if not os.path.exists(errlogpath):
+                found_crash=True
+                print "Error in locating log file " + errlogpath + ". Could not print out error message from batch jobs"
+            else:
+                file_read_err = open(errlogpath,"r")
+                for rline in file_read_err:
+                    print rline    
+                    found_crash=True
+                    Crash_Printed=True
+        print "#"*summary_block6
+    SendEmail()
+    print " "*summary_block6
+    print "Run the following command to debug job error:"  
+    print "sktree -a " + cycle + " -i " + sample[jobidcrash[0]] + " -s " + useskim + " -d DEBUG -n 1"
 
 
 

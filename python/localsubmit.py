@@ -1260,6 +1260,7 @@ if not JobOutput:
         failed_log= outsamplename+ "_Job_" + str(0)+".o"+str(array_batchjobs[0])
 
 
+   
     print ""
     print "Job Failed...."
     if not os.path.exists(os.getenv("LQANALYZER_LOG_PATH")):
@@ -1269,6 +1270,7 @@ if not JobOutput:
         
     if not number_of_cores == 1:
         os.system("mv "+ output + "/*/*.o* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
+        os.system("mv "+ output + "/*/*.e* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
     print "###########################################################################################################"
     print "Check crash by running root -q -b " + failed_macro 
     print "Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
@@ -1574,6 +1576,15 @@ statwrite_time.write("memoryusage_v " + str(memoryusage_v/1000)  + "MB \n")
 statwrite_time.write("memoryusage_p " + str(memoryusage_p/1000)  + "MB \n") 
 if JobCrash:
     statwrite_time.write("Success= False \n")
+    "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"
+    os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
+    crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
+    writecrashlog = open(crash_log,"w")
+    writecrashlog.write("###########################################################################################################")
+    writecrashlog.write("Check crash by running root -q -b " + failed_macro)
+    writecrashlog.write("Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log)
+    writecrashlog.write("###########################################################################################################")
+    writecrashlog.close()
 else:
     statwrite_time.write("Success= True \n")
 

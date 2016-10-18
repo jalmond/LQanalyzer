@@ -37,11 +37,12 @@ usebatch=$(makeParseVariable 'b' ${usebatch})
 
 ################                                                                                                                                                
 
-#submit     
-#job_tagger=$RANDOM
-#if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}" ]]; then
-#    mkdir /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${job_tagger}
-#fi
+runcommand=$1
+if [[ $njobs == "-j 1" ]]; then
+    runcommand="running single job"
+fi
+
+
 sample_list_string=""
 for i in ${input_samples[@]}
 do
@@ -49,43 +50,39 @@ do
 done
 samplelist=$sample_list_string
 
-if [[ $1  == "" ]]; 
+if [[ $runcommand  == "" ]]; 
 then
     tagger=$RANDOM
     python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
     #done
-elif [[ $1  == "--help"  || $1  == "--h" ]]; then                 
+elif [[ $runcommand  == "--help"  || $runcommand  == "--h" ]]; then                 
     echo "Checking options"
     python ${LQANALYZER_DIR}/python/localsubmit.py $1
 else 
     for i in ${input_samples[@]}
     do
-	tagger=$RANDOM
+        tagger=$RANDOM
         statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
         if [[ ! -d "${statdir}" ]]; then
             mkdir ${statdir}
         fi
-	logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog$tagger.txt
-	logfile_time=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog_time$tagger.txt
-	echo "user "$USER >> $logfile
-	echo $cycle >> $logfile
-	echo $catversion >> $logfile
-	echo $stream >> $logfile
-	echo $njobs >> $logfile
-	echo $data_lumi >> $logfile
-	echo "sample "$i >>  $logfile
-	echo $useskim >> $logfile
-	echo "cattag "$CATTAG >> $logfile
-	date >> $logfile
-	echo "############################" >> $logfile
-	python ${LQANALYZER_DIR}/python/CATConfig.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch}  -X ${tagger}
-
-	if [[ ! -d "/data2/CAT_SKTreeOutput/${USER}/${tagger}" ]]; then
-            python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
-	    else:
-            "Running ${i} in background"
-            python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag}  ${usebatch}  -X ${tagger}&>  /data2/CAT_SKTreeOutput/${USER}/${tagger}/${i}.txt&
-        fi
+	
+        logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog_$i$tagger.txt
+        logfile_time=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog_time_$i$tagger.txt
+        echo "user "$USER >> $logfile
+        echo $cycle >> $logfile
+        echo $catversion >> $logfile
+        echo $stream >> $logfile
+        echo $njobs >> $logfile
+        echo $data_lumi >> $logfile
+        echo "sample "$i >>  $logfile
+        echo $useskim >> $logfile
+        echo "cattag "$CATTAG >> $logfile
+        date >> $logfile
+        echo "############################" >> $logfile
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
+        #rm /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${tagger)/${i}clust.txt
+        rm $logfile_time
     done
 
 fi

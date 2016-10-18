@@ -20,17 +20,47 @@ def CleanUpJobLogs(path):
                     
                       month_file=entries[5]
                       date_file=entries[6]
-                      days_to_keep=7
+                      days_to_keep=5
                               
                       if month_file not in month:
                           if int(date) > int(days_to_keep):
                               print "Log file older than one week: Removing " + logspace1 + entries[8]
                               os.system(" rm -r " + logspace1 + "/" + entries[8])
+                          else:
+                              os.system("ls -l " + logspace1 + "/"+entries[8] +" > " + logspace1 + "/"+entries[8] + "file_dates.txt")
+                              for line3 in open(logspace1 + "/"+entries[8] + "file_dates.txt",'r'):
+                                  if not ".txt" in line3:
+                                      entries_sep = line3.split()
+                                      if not len(entries_sep)==2:
+                                          month_file=entries_sep[5]
+                                          date_file=entries_sep[6]
+                                          if int(date) > int(days_to_keep):
+                                              print "Log file older than one week: Removing " + logspace1 + entries[8] + "/"+entries_sep[8]
+                                              os.system(" rm -r " + logspace1 + "/" + entries[8] + "/"+entries_sep[8])
+                              if os.path.exists(logspace1 + "/"+entries[8] + "file_dates.txt"):                
+                                  os.system("rm " + logspace1 + "/"+entries[8] + "file_dates.txt")
+
                       elif int(date_file) < (int(date)-int(days_to_keep)):
                           print "Log file older than one week: Removing " + logspace1 + entries[8]
                           os.system(" rm -r " + logspace1 + "/" + entries[8])
-                                      
-                                                                                                                                                                                                                                          
+                          
+                      else:
+                          os.system("ls -l " + logspace1 + "/"+entries[8] +" > " + logspace1 + "/"+entries[8] + "file_dates.txt")
+                          for line3 in open(logspace1 + "/"+entries[8] + "file_dates.txt",'r'):
+                              if not ".txt" in line3:
+                                  entries_sep = line3.split()
+                                  if not len(entries_sep)==2:
+                                      month_file=entries_sep[5]
+                                      date_file=entries_sep[6]
+                                      if int(date_file) <  (int(date)-int(days_to_keep)):
+                                          print "Log file older than one week: Removing " + logspace1 + entries[8] + "/"+entries_sep[8]
+                                          os.system(" rm -r " + logspace1 + "/" + entries[8] + "/"+entries_sep[8])
+                          if os.path.exists(logspace1 + "/"+entries[8] + "file_dates.txt"):
+                              os.system("rm " + logspace1 + "/"+entries[8] + "file_dates.txt")
+                      ##### now check inside each directory
+
+                          
+    
     
 def CleanUpLogs(path):
 
