@@ -9,7 +9,51 @@ from optparse import OptionParser
 def SendEmail():
     print "Sending mail"
 
+
+def CrashHelper(defcrashlog):
     
+    crashmessage=[]
+    for cline in defcrashlog:
+        if "vector::_M_range_check" in cline:
+            crashmessage=CrashHelpMessage(0)
+        if "Did not find"  in cline:
+            crashmessage=CrashHelpMessage(1)        
+        if "Muon collection not found" in cline:
+            crashmessage=CrashHelpMessage(2)
+        if "Electron collection not found" in cline:
+            crashmessage=CrashHelpMessage(3)
+        if "Jet collection not found" in cline:
+            crashmessage=CrashHelpMessage(4)
+    for mline in crashmessage:
+        print mline        
+    return
+
+def CrashHelpMessage(crashtype):
+    crashmessage=[]
+    if crashtype == 0:
+        crashmessage.append("Crash likedly caused by attempt to access an element of a vector that does not exist")
+        crashmessage.append("Check in your code places where you access any vector using vec.at(x) or vec[x] that x < vec.size()")
+        crashmessage.append("i.e.,")
+        crashmessage.append("std::vector muons = GetMuons()")
+        crashmessage.append("if(muons.at(0).Pt() > 20.) ...  --> this would cause crash for events with no muons. You must require muons vector size > 0"  )
+        crashmessage.append("__________________________")
+        crashmessage.append("if(muons.size() > 0){ ")
+        crashmessage.append("   if(muons.at(0).Pt() > 20.) ... This will not crash")
+        return crashmessage
+    if crashtype == 1: 
+        crashmessage.append("Crash caused due to missing file. Check that file is located in $LQANALYZER_FILE_DIR directory (use ls $LQANALYZER_FILE_DIR).")
+        crashmessage.append("If file is located in $LQANALYZER_FILE_DIR do:")
+        crashmessage.append("cp $LQANALYZER_FILE_DIR/file  $FILEDIR")
+        crashmessage.append("If file is not located in $LQANALYZER_FILE_DIR email jalmond@cern.ch with crash message")
+    if crashtype == 2:
+        crashmessage.append("Crash caused due to Error in GetMuons input string")
+    if crashtype == 3:
+        crashmessage.append("Crash caused due to Error in GetElectrons input string")
+    if crashtype == 4:
+        crashmessage.append("Crash caused due to Error in GetJets input string")
+
+    return crashmessage
+
 def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
 
     if defskim == "SKTree_NoSkim":
@@ -150,6 +194,12 @@ parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help=
 
 job_time=0.
 
+now = datetime.datetime.now()
+diff = datetime.timedelta(days=7)
+future = now + diff
+future=future.strftime("%m/%d/%Y")
+
+
 ###################################################                                                                                                                            
 #set the local variables using options                                                                                                                                         
 ###################################################                                                                                                                            
@@ -265,8 +315,8 @@ remove_from_end= 3
 stdscr.addstr(list4,box_shift,  "Job Status (Summary of latest background process):" ,curses.A_UNDERLINE)
 #### make a random number for the job ID. This will help make a directory to work in
 
-stdscr.addstr(list3, box_shift,  "Job Screens:" ,curses.A_UNDERLINE)
-stdscr.addstr(list3b, box_shift,  "Log Files:" ,curses.A_UNDERLINE)
+stdscr.addstr(list3, box_shift,  "Job Terminal Output: (will be deleted "+ future +")" ,curses.A_UNDERLINE)
+stdscr.addstr(list3b, box_shift,  "Log Files: (will be deleted "+ future +")" ,curses.A_UNDERLINE)
 stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
 import random
@@ -567,12 +617,8 @@ for s in sample:
             checkqueue=False
             if not os.path.exists("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger):
                 os.system("mkdir  /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
-            now = datetime.datetime.now()
-            diff = datetime.timedelta(days=7)
-            future = now + diff
-            future=future.strftime("%m/%d/%Y")
 
-            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt will be deleted "+ future)
+            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt")
             stdscr.refresh()
             stdscr.addstr(int(isample)+istatus_message, box_shift,  str(int(isample+1)) )
             stdscr.addstr(int(isample)+istatus_message, summary_block0,  "| " + cycle  )
@@ -824,23 +870,26 @@ curses.nocbreak()
 curses.endwin()
 
 print "\n"
-print "#"*summary_block6
-print "#"*summary_block6
-
 for i in range(0, winx-remove_from_end):
-    if "Job Screens:" in mypad_contents[i]:
+    if "Job Terminal Output:" in mypad_contents[i]:
         print "*"*summary_block6
-        print  "Job Screens:" + " " *20
+        print  "Job Terminal Output:(will be deleted "+ future +")" + " " *20
     elif  "Log Files:"  in mypad_contents[i]:
-        print  "Log Files:" + " " *20
+        print  "Log Files:(will be deleted "+ future +")" + " " *20
     else:
         print mypad_contents[i]
-    if "Job " in mypad_contents[i]:
+    if "PostJob " in mypad_contents[i]:
+        print "_"*summary2_block5    
+    elif "Cum.Process" in mypad_contents[i]:
+        print "_"*summary2_block5
+    elif "Terminal" in mypad_contents[i]:
+        print "_"*40
+    elif "Job " in mypad_contents[i]:
         print "_"*summary_block6
     if "Log Files:"  in mypad_contents[i]:
-        print "_"*summary_block6
+        print "_"*40
     if "Output Files" in mypad_contents[i]:
-        print "_"*summary_block6
+        print "_"*40
 
 for s in sample:
     path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_" +s + tagger + ".txt"
@@ -887,12 +936,16 @@ if len(crash_output) > 0:
                 file_read_err = open(errlogpath,"r")
                 for rline in file_read_err:
                     print rline    
+                    crashlog_printout.append(rline)
                     found_crash=True
                     Crash_Printed=True
         print "#"*summary_block6
+
+    CrashHelper(crashlog_printout)
+        
     SendEmail()
     print " "*summary_block6
-    print "Run the following command to debug job error:"  
+    print "Run the following command to help debug job error: command runs crashed job in terminal instead of on batch machine."  
     print "sktree -a " + cycle + " -i " + sample[jobidcrash[0]] + " -s " + useskim + " -d DEBUG -n 1"
 
 

@@ -49,7 +49,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "gsf_scalefactor_80X.root").c_str());
-
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     ElectronSF_GSF =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
@@ -59,7 +59,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Tight_txt_SF2D.root").c_str());
-    
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     ElectronSF_Tight =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
@@ -69,7 +69,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Medium_txt_SF2D.root").c_str());
-
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     ElectronSF_Medium =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
@@ -79,7 +79,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Loose_txt_SF2D.root").c_str());
-
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     ElectronSF_Loose =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
@@ -89,7 +89,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Veto_txt_SF2D.root").c_str());
-
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     ElectronSF_Veto =  dynamic_cast<TH2F*> (( infile_sf->Get("EGamma_SF2D"))->Clone());
@@ -109,7 +109,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     }*/
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "MuonID_Z_RunBCD_prompt80X_7p65.root").c_str());
-
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     MuonID_tight =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
@@ -121,7 +121,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "MuonIso_Z_RunBCD_prompt80X_7p65.root").c_str());
-
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     MuonISO_tight_tightID =  dynamic_cast<TH2F*> (( infile_sf->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"))->Clone());
@@ -136,6 +136,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   if(1){
     TFile *infile_sf = TFile::Open((analysisdir+ "SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root").c_str());
+    CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
     
@@ -175,7 +176,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   if(0){
     ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2015.txt").c_str());
     if(!runlumi) {
-      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2015.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "/data/rootfiles/lumi_catversion2015.txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string lline;
@@ -224,7 +225,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   if(1){
     ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
     if(!runlumi) {
-      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "/data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string lline;
@@ -269,7 +270,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   if(1){
     ifstream triglumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
     if(!triglumi) {
-      cerr << "Did not find "+lqdir + "'data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "/data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string sline;
@@ -292,7 +293,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   if(1){
     ifstream triglumi2016((lqdir + "/data/rootfiles/triggers_catversion2016_801.txt").c_str());
     if(!triglumi2016) {
-      cerr << "Did not find "+lqdir + "'data/rootfiles/triggers_catversion2016_801.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "/data/rootfiles/triggers_catversion2016_801.txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string sline2016;
@@ -434,7 +435,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
     /// Uses pileup + tight ID
     eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "Tight" );
   }
-  else {cout << "Jet collection  not found" << endl; exit(EXIT_FAILURE);}
+  else {cerr << "Jet collection not found" << endl; exit(EXIT_FAILURE);}
   
   SmearJets(jetColl);
 
@@ -474,8 +475,7 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keep
   }
   
   else {
-    cout << "GetMuons::  does not exist: filling vector with all muons with no cuts applied" << endl;
-    exit(EXIT_FAILURE);
+    cerr << "Muon collection not found" << endl; exit(EXIT_FAILURE);
   }
   
   return  GetTruePrompt(muonColl, keepfakes);
@@ -519,8 +519,10 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
     eventbase->GetElectronSel()->Selection(electronColl);
   }
   else if(elid == BaseSelection::ELECTRON_NOCUT){  eventbase->GetElectronSel()->SetPt(0.);   eventbase->GetElectronSel()->SetEta(5.); eventbase->GetElectronSel()->Selection(electronColl);}
-  else  eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 15., 2.5);
-    
+  else {
+    cerr << "Electron collection not found" << endl; exit(EXIT_FAILURE);
+  }
+
   return  GetTruePrompt(electronColl, keepcf, keepfake); 
 
 }
@@ -1177,8 +1179,9 @@ void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 
   if(file) m_logger << INFO << "Analyzer: File " << file->GetName() << " was found." << LQLogger::endmsg;
   else m_logger  << INFO <<"Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << LQLogger::endmsg;
+  cerr << "Did not find file "+ file->GetName() + ", exiting ..." << endl;
 
-  if(!file)  throw LQError( "!!! File is not found", LQError::SkipCycle);
+  if(!file) exit(EXIT_FAILURE);
   return;
 }
 
