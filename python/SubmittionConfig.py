@@ -55,18 +55,20 @@ def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
     file_clust_check_njobs.close()
 
     pre_job_time=GetTime(defsample,defcycle)
+    if pre_job_time == "None":
+        pre_job_time=100.
     njobs_max=250
-    if float(pre_job_time) < 100:
+    if float(pre_job_time) < 100.:
         njobs_max=250
-    elif float(pre_job_time) < 200:
+    elif float(pre_job_time) < 200.:
         njobs_max=150
-    elif float(pre_job_time) < 300:
+    elif float(pre_job_time) < 300.:
         njobs_max=100
-    elif float(pre_job_time) < 500:
+    elif float(pre_job_time) < 500.:
         njobs_max=20
-    elif float(pre_job_time) < 1000:
+    elif float(pre_job_time) < 1000.:
         njobs_max=15
-    elif float(pre_job_time) < 1500:
+    elif float(pre_job_time) < 1500.:
         njobs_max=10
     else:
         njobs_max=5
@@ -92,7 +94,7 @@ def CheckJobHistory(info_type, defsample, defcycle):
 
         info_file_master = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v8-0-1.txt"
         info_file= "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/MasterFile_v8-0-1.txt"
-        #os.system("cp " + info_file_master + " " + info_file)
+        os.system("cp " + info_file_master + " " + info_file)
         read_info_file = open(info_file,"r")
         isuser=False
         iscycle=False
@@ -904,6 +906,7 @@ for s in sample:
     filestatlog.write("cattag " + os.getenv("CATTAG") + " \n")
     filestatlog.write(time.strftime("%c")  + " \n")
     filestatlog.write("############################" + " \n")
+    filestatlog.close()
     blankbuffer = "         "
     command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) 
     command2=command1
@@ -914,11 +917,11 @@ for s in sample:
     stdscr.refresh()
     while checkqueue:
         os.system(command1)
+        
         if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger):
             stdscr.addstr(list4+1, box_shift,  "Queue busy.. please wait")
             stdscr.refresh()
             #time.sleep(5.)
-            
         else:
             os.system("rm -r /data2/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger)
             stdscr.addstr(list4+1, box_shift,  "Submitting sample to queue  " + s)
@@ -1233,7 +1236,7 @@ for i in range(0, winx-remove_from_end):
 
 for s in sample:
     path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_" +s + tagger + ".txt"
-    os.system("rm " + path_job)
+    #os.system("rm " + path_job)
 
 email_subject=""
 if len(output_warning) > 0:

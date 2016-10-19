@@ -36,7 +36,7 @@ declare -a diboson_pythia=('WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8')
 
 declare -a dy_mcatnlo=('DY10to50_MCatNLO' 'DY50plus_MCatNLO') 
 
-declare -a dilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'ttWJetsToLNu_MCatNLO' 'WWW_MCatNLO' 'ttWJets' 'ttZJets' 'ttHnobb_Powheg' 'ttHtobb_Powheg' 'ZZZ_MCatNLO' 'WZZ_MCatNLO')
+declare -a dilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'WWW_MCatNLO' 'ttWJets' 'ttZJets' 'ttHnobb_Powheg' 'ttHtobb_Powheg' 'ZZZ_MCatNLO' 'WZZ_MCatNLO')
 declare -a trilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO5' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'ZZ_pythia8' 'WJets_MCatNLO'  'WZZ_MCatNLO' 'ZZZ_MCatNLO')
 
 declare -a qcd=('') 

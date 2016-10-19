@@ -9,6 +9,10 @@ def RoundMemory(mem):
     rounded_float= str(round(float(float_only_mem),2)) + unit_only_mem
     return rounded_float
 
+def GetMemory(mem):
+    string_length= len(mem)
+    float_only_mem= mem[:-2]
+    return float(float_only_mem)
 
 path_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
 path_skel_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
@@ -28,7 +32,7 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 (options, args) = parser.parse_args()
 filetag=options.x
 sample=options.s
-    
+
 path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+sample + filetag + ".txt"
 path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag + ".txt"
 
@@ -46,8 +50,8 @@ path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + get
 time=0.
 ntimes=0.
 pretime=0.
-premem_v=0.
-premem_p=0.
+premem_v="0MB"
+premem_p="0MB"
 jobtime=0.
 lastjobtime=0.
 cycle=""
@@ -116,8 +120,9 @@ for line in file_job:
             day=entries[0]
             date=entries[2]
             ptime=entries[3] 
-            year=entries[5]
+            year=entries[4]
 file_job.close()
+os.system("rm " + path_job)
 
 if jobcrash =="":
     jobcrash="Fail"
@@ -126,10 +131,10 @@ file_cluster=open(path_cluster,"r")
 for line in file_cluster:
     splitline = line.split()
     nclusterjobs=splitline[4]+":"+splitline[6]+":"+splitline[8]+":"+splitline[10]+":"+splitline[12]+":"+splitline[14]+":"+splitline[16]+":"+splitline[18]+":"+splitline[20]
+file_cluster.close()
 
 if nclusterjobs == "":
     nclusterjobs=" NULL "
-
 
 
 path_jobinfo="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
@@ -188,6 +193,9 @@ for line in file_tmpmaster:
                 if len(splitline) > 2:
                     ntimes = float(splitline[2])
                     pretime = float(splitline[3])
+                    if len(splitline) ==  7:
+                        premem_v = splitline[5]
+                        premem_p = splitline[6]
                     newsample=False
 
 file_tmpmaster.close()
@@ -210,7 +218,8 @@ gap2=" "
 
 time_title=" Average processing time :"
 filesize_title=" Average file size"
-
+memv_title="Memory (Virt.) Usage"
+memp_title="Memory (Phys.) Usage"
 
 if newsample:
     print "Processing sample " + sample + " for the first time"
@@ -225,7 +234,7 @@ if newUser:
     file_newuser_master.write("%%%%%%%%%%%%%%%%%%%%%%%% USER  " + username + " %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
     file_newuser_master.write("########  Code:  " + cycle +"#################################################\n")
     file_newuser_master.write("################ CatVersion : "+ catversion +" \n")
-    file_newuser_master.write("################ " + sample_title + nproc_title + time_title + filesize_title +"\n")
+    file_newuser_master.write("################ " + sample_title + nproc_title + time_title + filesize_title  + memv_title + memp_title +"\n")
     file_newuser_master.write("################\n")
     file_newuser_master.write("####################################################################################\n")
     file_newuser_master.close()
@@ -239,7 +248,7 @@ elif newCycle:
             file_newuser_master.write(line)
             file_newuser_master.write("########  Code:  " + cycle + "   #################################################\n")
             file_newuser_master.write("################ CatVersion : "+ catversion +" \n")
-            file_newuser_master.write("################ " + sample_title + nproc_title + time_title + filesize_title + "\n")
+            file_newuser_master.write("################ " + sample_title + nproc_title + time_title + filesize_title + memv_title + memp_title+ "\n")
             file_newuser_master.write("################\n")
             file_newuser_master.write("####################################################################################\n")
         else:
@@ -254,8 +263,8 @@ file_master=open(path_master,"w")
     
 newtime= ((jobtime*(float(njobs)/float(nfiles))) + (pretime*ntimes)) / (ntimes+1)
 
-new_memoryv = (memoryusage_v + (premem_v*ntimes)) / (ntimes+1)
-new_memoryp = (memoryusage_p + (premem_p*ntimes)) / (ntimes+1)
+new_memoryv = (GetMemory(memoryusage_v) + (GetMemory(premem_v)*ntimes)) / (ntimes+1)
+new_memoryp = (GetMemory(memoryusage_p) + (GetMemory(premem_p)*ntimes)) / (ntimes+1)
 
 
 correctuser=False
@@ -281,12 +290,12 @@ for line in file_tmpmaster2:
              if newsample:
                  if sample_title in line:
                      file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
-                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(newmem_v) + " " + str(newmem_p) + "  \n")
+                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                     file_master.write(line)
              else:
                  if sample in line:
-                     file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + "  \n")
+                     file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                      file_master.write(line)
         else:

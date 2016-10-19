@@ -84,7 +84,7 @@ usebatch =options.usebatch
 
 ###### New for 801.7 tag  
 ClusterStatFile = os.getenv("LQANALYZER_DIR")+ "/python/CheckCluster.py"
-#os.system("python " + ClusterStatFile + " -x " + tagger + " -s " + sample)
+os.system("python " + ClusterStatFile + " -x " + tagger + " -s " + sample)
 
 
 if not skflag == "":
@@ -265,110 +265,22 @@ if "TT" in sample:
 if "DY50"  in sample:
     large_sample=True
 
-print "number_of_cores = " + str(number_of_cores)
+
 ncore_def=number_of_cores
 import platform
 BusyMachine=False
 username = str(os.getenv("USER"))
-if platform.system() == "Linux":
-    os.system("top  -n 1 -b | grep 'root.exe' &> " + local_sub_dir + "/toplog")
-    filename = local_sub_dir +'/toplog'
-    
-    n_previous_jobs=0
-    njob_user=0
-    for line in open(filename, 'r'):
-        n_previous_jobs+=1
-        if username in line:
-            njob_user+=1
-        
-    if n_previous_jobs > 10:
-        if not running_batch:
-            number_of_cores = 2
-            if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                print "Number of subjobs is reduced to 2, since there are over 10 subjobs running on this machine."
-                
-        for line in open(filename, 'r'):
-            print line
-    if njob_user  > 5:
-        if not running_batch:
-            number_of_cores = 1
-    os.system("rm " + filename)
 
-    os.system("top  -n 1 -b | grep 'cmsRun' &> " + local_sub_dir + "/toplog2")
-    filename2 = local_sub_dir +'/toplog2'
-    for line in open(filename2, 'r'):
-        n_previous_jobs+=1
+nj_def=1000    
+if cycle == "SKTreeMaker":
+    number_of_cores=nj_def
+if cycle == "SKTreeMakerNoCut":
+    number_of_cores=nj_def
+if cycle == "SKTreeMakerDiLep":
+    number_of_cores=nj_def
+if cycle == "SKTreeMakerTriLep":
+    number_of_cores=nj_def
 
-    if n_previous_jobs > 10:
-        BusyMachine=True
-    os.system("rm " + filename2)    
-nj_def=100
-
-
-if large_sample == True:
-    if BusyMachine == True:
-        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-            print "Machine is busy"
-        
-        
-if number_of_cores > 1:
-    if useskinput == "True":
-        if (12 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 12 - n_previous_jobs
-        if number_of_cores > 15:
-            if not "SKTreeMaker" in cycle:
-                if number_of_cores < 100:
-                    number_of_cores = 15
-                    if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                        print "Number of sub jobs is reset to default of 15"
-        if cycle == "SKTreeMaker":
-            number_of_cores=nj_def
-        if cycle == "SKTreeMakerNoCut":
-            number_of_cores=nj_def
-        if cycle == "SKTreeMakerDiLep":
-            number_of_cores=nj_def
-        if cycle == "SKTreeMakerTriLep":
-            number_of_cores=nj_def
-                            
-    elif useskinput == "true":
-        if (12 - n_previous_jobs) < number_of_cores:
-            number_of_cores = 12 - n_previous_jobs
-        if number_of_cores > 15:
-            if not "SKTreeMaker"in cycle:
-                if number_of_cores < 100:
-                    number_of_cores= 15
-                    if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                        print "Number of sub jobs is reset to default of 15"
-        if cycle == "SKTreeMaker":
-            number_of_cores=nj_def
-        if cycle == "SKTreeMakerNoCut":
-            number_of_cores=nj_def
-        if cycle == "SKTreeMakerDiLep":
-            number_of_cores=nj_def
-        if cycle == "SKTreeMakerTriLep":
-            number_of_cores=nj_def
-                            
-    else:
-        if number_of_cores > 5:
-            if not cycle == "SKTreeMaker":
-                if not cycle == "SKTreeMakerNoCut":
-                    if not cycle == "SKTreeMakerDiLep":
-                        number_of_cores = 20
-                        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                            print "Number of sub jobs is set to high. Reset to default of 5.Input"
-
-if number_of_cores <  -100:
-    number_of_cores=30
-if number_of_cores < 0:
-    number_of_cores=1
-
-if number_of_cores < 6:
-    if number_of_cores > 1:
-        
-        if "DY" in sample:
-            number_of_cores = 10
-        if "TT " in sample:
-            number_of_cores = 10
 
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
@@ -1497,6 +1409,7 @@ statwrite = open(statfile, 'r')
 statwrite_time = open(statfile_time, 'w')
 for line in statwrite:
     statwrite_time.write(line)
+statwrite.close()
 
 statwrite_time.write("time " + str(total_time) + " \n")
 statwrite_time.write("job_time  " + str(job_time-start_time)  + " \n")
@@ -1536,9 +1449,10 @@ else:
 
 statwrite_time.close()
 os.system("mv " + statfile_time + " " + statfile_time_complete)
+print "mv " + statfile_time + " " + statfile_time_complete
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
-#os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + sample)
+os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample)
 
 set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+original_sample+ tagger + ".txt"
 
