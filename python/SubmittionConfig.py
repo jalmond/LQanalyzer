@@ -1,15 +1,176 @@
-#############################################################    
-### configure submisstion of CATANALYZER Jobs                                                                                                                                  ##################################################################    
+############################################################    
+### configure submisstion of CATANALYZER Jobs                                                                                                                                  #################################################################    
 import os, getpass, sys,ROOT,time,curses,datetime
 from functions import *
 from datetime import timedelta
 from optparse import OptionParser
 
 
-def SendEmail():
-    print "Sending mail"
+large_memory_check=800
+large_file_size=100
+file_increase_warning=2.
+time_increase_warning=2.
 
+def GetListOld():
+    
+    clist=[]
+    clist.append("v8-0-1.7")
+    clist.append("v8-0-1.6")
+    clist.append("v8-0-1.5")
+    clist.append("v8-0-1.4")
+    clist.append("v8-0-1.3")
+    clist.append("v8-0-1.2")
+    clist.append("v8-0-1.1")
+    return clist
 
+def GetListNew():
+    ### change in format (add memory of jobs since v8-0-1.8)
+
+    clist=[]
+    clist.append("v8-0-1.8")
+    return clist
+
+def GetList():
+    
+    clist=GetListNew() + GetListOld()
+    #for ct in GetListNew():
+    return clist
+
+def NewForat(ct):
+    
+    clist = GetListNew()
+    for ctag in clist:
+        if ct == ctag:
+            return True
+    return False
+
+def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
+
+    path_clust_check_njobs="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/clustercheck.txt"
+    os.system("qstat -u '*'  > " +  path_clust_check_njobs)
+    file_clust_check_njobs=open(path_clust_check_njobs ,"r")
+    nrunning=0.
+    for cline in file_clust_check_njobs:
+        nrunning = nrunning + 1.
+    file_clust_check_njobs.close()
+
+    pre_job_time=GetTime(defsample,defcycle)
+    njobs_max=250
+    if float(pre_job_time) < 100:
+        njobs_max=250
+    elif float(pre_job_time) < 200:
+        njobs_max=150
+    elif float(pre_job_time) < 300:
+        njobs_max=100
+    elif float(pre_job_time) < 500:
+        njobs_max=20
+    elif float(pre_job_time) < 1000:
+        njobs_max=15
+    elif float(pre_job_time) < 1500:
+        njobs_max=10
+    else:
+        njobs_max=5
+    
+    if nrunning < 50:
+        return njobs_max
+    else:
+        if njobs_max> 40:
+            return njobs_max - 40
+        else:
+            return njobs_max
+
+def CheckJobHistory(info_type, defsample, defcycle):
+    
+    jobline=""
+    list_tags=GetList()
+    
+    itag=-1
+    while not jobline:
+        itag=itag+1
+        cattag=list_tags[itag]
+        newformat=NewForat(cattag)
+
+        info_file_master = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v8-0-1.txt"
+        info_file= "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/MasterFile_v8-0-1.txt"
+        #os.system("cp " + info_file_master + " " + info_file)
+        read_info_file = open(info_file,"r")
+        isuser=False
+        iscycle=False
+        jobline=""
+        for infoline in read_info_file:
+            if "USER" in infoline:
+                if  os.getenv("USER") in infoline:
+                    isuser=True
+                else:
+                    isuser=False
+            if isuser: 
+                if "Code:" in infoline and defcycle in infoline:
+                    iscycle=True
+                if "Code:" in infoline and not defcycle in infoline:
+                    iscycle=False
+                if iscycle:
+                    if defsample in infoline:
+                        if cattag in infoline:
+                            jobline=infoline
+        read_info_file.close()            
+        if itag == (len(list_tags) - 1):
+            if not jobline:
+                jobline="None"
+    if jobline == "None":
+        return "None"
+
+    sinfoline = jobline.split()
+    if newformat:
+        if len(sinfoline) == 7:
+            if info_type == "MemoryV":
+                return sinfoline[5]
+            if info_type == "MemoryP":
+                return sinfoline[6]
+            if info_type == "Time":
+                return sinfoline[3]
+            if info_type == "FileSize":
+                return sinfoline[4]
+        
+    else:
+        if len(sinfoline) == 5:
+            if info_type == "MemoryV":
+                return "None"
+            if info_type == "MemoryP":
+                return "None"
+            if info_type == "Time":
+                return sinfoline[3]
+            if info_type == "FileSize":
+                return sinfoline[4]
+
+    return "None"        
+
+def GetVirtualMemoryUsage(defsample, defcycle):
+    return CheckJobHistory("MemoryV", defsample, defcycle)
+
+def GetPhysicalMemoryUsage(defsample, defcycle):
+    return CheckJobHistory("MemoryP", defsample, defcycle)
+
+def GetTime(defsample, defcycle):
+    return CheckJobHistory("Time", defsample, defcycle)
+
+def GetFileSize(defsample, defcycle):
+    return CheckJobHistory("FileSize", defsample, defcycle)
+                                
+                
+def SendEmail(jobsummary, deftagger, e_subject, email_user):
+
+    path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
+    file_email=open(path_file_email,"w")
+    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" jalmond@cern.ch')
+    file_email.close()
+
+    filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
+    for eline in jobsummary:
+        filejobsummary.write(eline)
+    filejobsummary.close()    
+    os.system("source " + path_file_email)
+    
+    
 def CrashHelper(defcrashlog):
     
     crashmessage=[]
@@ -146,6 +307,127 @@ def GetOutFilName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,def
         outsamplename=  defcycle +"_data_"+ defchannel + "_cat_" +  str(output_catversion)+ ".root"
     return outsamplename    
 
+def LargeFileSize(fsize):
+    sfilesize=str(fsize)
+    string_length= len(sfilesize)
+    float_only_fsize= sfilesize[:-1]
+    unit_only_fsize=  sfilesize[(int(string_length) - 1):]
+    if unit_only_fsize == "G":
+        return True
+    if  unit_only_fsize == "M":
+        if float(float_only_fsize)> large_file_size:
+            return True
+    return False    
+
+def FileSizeInB(fsize):
+    unit_remove=1
+    if "B" in str(fsize):
+        unit_remove=2
+    sfilesize=str(fsize)
+    string_length= len(sfilesize)
+    float_only_fsize= sfilesize[:-unit_remove]
+    unit_only_fsize=  sfilesize[(int(string_length) - unit_remove):]
+    
+    if "K" in  unit_only_fsize:
+        return float(float_only_fsize)*1000.
+    elif "M" in  unit_only_fsize:
+        return float(float_only_fsize)*1000000.
+    elif "G" in  unit_only_fsize:
+        return float(float_only_fsize)*1000000000.
+    else:
+        return float(float_only_fsize)
+
+def LargeFileSizeIncrease(fsize,defsample, defcycle):
+    if GetFileSize(defsample, defcycle) == "None":
+        return False
+    file_size_prev=   FileSizeInB(GetFileSize(defsample, defcycle))
+    file_size = FileSizeInB(fsize)
+    if file_size > file_increase_warning*file_size_prev:
+        return True
+    else:
+        return False
+    
+
+def TimeIncrease(stime,defsample, defcycle):
+    time_prev=GetTime(defsample, defcycle)
+    if time_prev == "None":
+        return False
+
+    if float(stime) > float(time_prev)*time_increase_warning:
+        return True
+    else:
+        return False
+    
+    
+def LargeMemory(mem):
+    if "GB" in str(mem):
+        return True
+    
+    smem=str(mem)
+    string_length= len(smem)
+    float_only_mem= smem[:-2]
+    if "MB" in smem:
+        if float(float_only_mem) > large_memory_check:
+            return True
+    else:
+        return False
+
+
+def LargePhysicalMemoryIncrease(mem,defsample, defcycle):
+
+    if GetPhysicalMemoryUsage(defsample, defcycle) == "None":
+        return False
+    
+    if not "MB" in str(mem):
+        return False
+    smem=str(mem)
+    string_length= len(smem)
+    float_only_mem= smem[:-2]
+    unit_only_mem=  smem[(int(string_length)-2):]
+
+    rounded_float= str(round(float(float_only_mem),2))
+    if unit_only_mem == "MB":
+        if rounded_float < 300:
+            if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle))*1.4:
+                return True
+            else:
+                return False
+        else:
+             if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle))*1.3:
+                 return True
+             else:
+                 return False
+    return False 
+    
+
+def LargeVirtualMemoryIncrease(mem,defsample, defcycle):
+
+    if GetVirtualMemoryUsage(defsample, defcycle) == "None":
+        return False
+    if not "MB" in str(mem):
+        return False
+    smem=str(mem)
+    string_length= len(smem)
+    float_only_mem= smem[:-2]
+    unit_only_mem=  smem[(int(string_length)-2):]
+
+    rounded_float= str(round(float(float_only_mem),2))
+    if unit_only_mem == "MB":
+        if rounded_float < 300:
+            if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle))*1.4:
+                return True
+            else:
+                return False
+        else:
+             if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle))*1.3:
+                 return True
+             else:
+                 return False
+    return False
+
+
+
+
 def RoundMemory(mem):
     if not "MB" in str(mem):
         return str(mem)
@@ -189,6 +471,7 @@ parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake
 parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
+parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set user email")
 
 #curses.resizeterm
 
@@ -213,6 +496,7 @@ loglevel = options.loglevel
 runnp = options.runnp
 runcf = options.runcf
 tagger= options.tagger
+useremail=options.useremail
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example                                                                                                                  
 tree = options.tree
 number_of_events_per_job= int(options.nevents)
@@ -254,9 +538,9 @@ winy = 175
 crash_output=[]
 crash_outputjob=[]
 
-start_time = time.time()
-
+start_time = time.time()  
 screen = curses.initscr()
+
 
 #screen.border(0)
 screen.refresh()
@@ -294,7 +578,7 @@ summary2_block4=summary2_block3+20
 summary2_block5=summary2_block4+20
 
 
-list2= istatus_message + 6 + len(sample)
+list2= istatus_message + 2 + len(sample)
 stdscr.addstr(list2, box_shift,  "PostJob Summary:",curses.A_UNDERLINE)
 stdscr.addstr(1+list2, box_shift, "Job ",curses.A_STANDOUT)
 stdscr.addstr(1+list2, summary2_block0, "| Cum.Process. Time  ",curses.A_STANDOUT)
@@ -321,6 +605,8 @@ stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
 import random
 job_tagger=random.random()
+
+DoSendEmail=False
 
 #### make working directorr
 if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
@@ -355,10 +641,16 @@ runnptmp=""
 runcftmp=""
 channeltmp=""
 
+output_warning=[]
+
 #### Loop over all samples in job
+
+
+
 for s in sample:
+    njobs_for_submittion=DetermineNjobs(number_of_cores, tagger, s, cycle)
+    #njobs_for_submittion=number_of_cores
     isample=isample+1
-    
     isMC = len(s) > 1
     
     #### if sample is submitted this for loop will check job process on cluster and update the screen/terminal
@@ -558,6 +850,24 @@ for s in sample:
                             memoryusage_v=splitline[1]
                     file_job.close()
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]   ",curses.A_DIM) 
+
+                    if LargeMemory(memoryusage_p):
+                        output_warning.append("WARNING:: Physical memory of job is excess of " + str(large_memory_check) + " MB.")
+                    if LargeMemory(memoryusage_v):
+                        output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
+
+                    if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle):
+                        output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle))
+                    if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle):
+                        output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle))    
+                    if LargeFileSize(outputfile_sizes):
+                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                    if LargeFileSizeIncrease(outputfile_size,sample[x], cycle):
+                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle))
+                    if TimeIncrease(first_job_time,sample[x], cycle):
+                        output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle))
+                        
+                        
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM) 
                     stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM) 
                     stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM) 
@@ -595,7 +905,7 @@ for s in sample:
     filestatlog.write(time.strftime("%c")  + " \n")
     filestatlog.write("############################" + " \n")
     blankbuffer = "         "
-    command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(number_of_cores) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger)
+    command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) 
     command2=command1
     command2 = command2.replace("CATConfig.py", "localsubmit.py")
     command2_background=command2 + "&>  /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"
@@ -838,6 +1148,25 @@ while StillRunning:
                             memoryusage_v=splitline[1]
                     file_job.close()
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]     ",curses.A_DIM) 
+
+
+                    if LargeMemory(memoryusage_p):
+                        output_warning.append("WARNING:: Physical memory of job is excess of " + str(large_memory_check) + " MB.")
+                    if LargeMemory(memoryusage_v):
+                        output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
+
+                    if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle):
+                        output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle))
+                    if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle):
+                        output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle))
+                    if LargeFileSize(outputfile_size):
+                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                    if LargeFileSizeIncrease(outputfile_size,sample[x], cycle):
+                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle))
+                    if TimeIncrease(first_job_time,sample[x], cycle):
+                        output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle))
+
+
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM)
@@ -869,31 +1198,54 @@ curses.echo()
 curses.nocbreak()
 curses.endwin()
 
+job_summary=[]
 print "\n"
 for i in range(0, winx-remove_from_end):
     if "Job Terminal Output:" in mypad_contents[i]:
+        job_summary.append("*"*summary_block6+"\n")
         print "*"*summary_block6
         print  "Job Terminal Output:(will be deleted "+ future +")" + " " *20
+        job_summary.append("Job Terminal Output:(will be deleted "+ future +")\n")
     elif  "Log Files:"  in mypad_contents[i]:
         print  "Log Files:(will be deleted "+ future +")" + " " *20
+        job_summary.append("Log Files:(will be deleted "+ future +")\n")
     else:
         print mypad_contents[i]
+        job_summary.append(mypad_contents[i]+"\n")
     if "PostJob " in mypad_contents[i]:
         print "_"*summary2_block5    
+        job_summary.append("_"*summary2_block5+"\n")
     elif "Cum.Process" in mypad_contents[i]:
         print "_"*summary2_block5
+        job_summary.append("_"*summary2_block5+"\n")
     elif "Terminal" in mypad_contents[i]:
-        print "_"*40
+        print "_"*50
+        job_summary.append("_"*50+"\n")
     elif "Job " in mypad_contents[i]:
         print "_"*summary_block6
+        job_summary.append("_"*summary_block6+"\n")
     if "Log Files:"  in mypad_contents[i]:
         print "_"*40
+        job_summary.append("_"*40+"\n")
     if "Output Files" in mypad_contents[i]:
         print "_"*40
+        job_summary.append("_"*40+"\n")
 
 for s in sample:
     path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_" +s + tagger + ".txt"
     os.system("rm " + path_job)
+
+email_subject=""
+if len(output_warning) > 0:
+    print "\n"
+    print "The job produced the following WARNING MESSAGES:"
+    job_summary.append( "\n")
+    job_summary.append("The job produced the following WARNING MESSAGES:")
+    DoSendEmail=True
+    email_subject=email_subject+"Job WARNING "
+    for s in output_warning:
+        print s
+        job_summary.append(s + "\n")
 
 
 crashlog_printout=[]
@@ -905,13 +1257,19 @@ if len(crash_output) > 0:
     print "%"*summary_block6
     print "Crash Job Error Message:"
     print "_"*summary_block6
+    job_summary.append("\n")
+    job_summary.append("%"*summary_block6+"\n")
+    job_summary.append("%"*summary_block6+"\n")
+    job_summary.append("Crash Job Error Message:\n")
+    job_summary.append("_"*summary_block6+"\n")
     jobids_failed=""
     for x in jobidcrash:
         jobids_failed=jobids_failed+str(x+1)+","
     jobids_failed= jobids_failed[:-1]    
     print "Job IDs " + jobids_failed + " failed with following error:"
     print "#"*summary_block6
-
+    job_summary.append("Job IDs " + jobids_failed + " failed with following error:\n")
+    job_summary.append("#"*summary_block6+"\n")
     Crash_Printed=False
     for c in crash_output:
         if Crash_Printed:
@@ -932,22 +1290,31 @@ if len(crash_output) > 0:
             if not os.path.exists(errlogpath):
                 found_crash=True
                 print "Error in locating log file " + errlogpath + ". Could not print out error message from batch jobs"
+                job_summary.append("Error in locating log file " + errlogpath + ". Could not print out error message from batch jobs\n")
             else:
                 file_read_err = open(errlogpath,"r")
                 for rline in file_read_err:
                     print rline    
+                    job_summary.append(rline+"\n")
                     crashlog_printout.append(rline)
                     found_crash=True
                     Crash_Printed=True
         print "#"*summary_block6
-
+        job_summary.append("#"*summary_block6+"\n")
     CrashHelper(crashlog_printout)
         
-    SendEmail()
+    
     print " "*summary_block6
     print "Run the following command to help debug job error: command runs crashed job in terminal instead of on batch machine."  
     print "sktree -a " + cycle + " -i " + sample[jobidcrash[0]] + " -s " + useskim + " -d DEBUG -n 1"
+    job_summary.append(" "*summary_block6+"\n")
+    job_summary.append("Run the following command to help debug job error: command runs crashed job in terminal instead of on batch machine.\n")
+    job_summary.append("sktree -a " + cycle + " -i " + sample[jobidcrash[0]] + " -s " + useskim + " -d DEBUG -n 1 \n")
+    email_subject=email_subject+"Job CRASH "
+    DoSendEmail=True
 
+if DoSendEmail:
+    SendEmail(job_summary,tagger,email_subject,useremail)
 
 
 ##### CODE WRITEEN TO REMOVE DIRECTORY... THIS WILL BE KEPT UNLESS USER WISHES TO SET RDIR+TRUE

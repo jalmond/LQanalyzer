@@ -1179,7 +1179,7 @@ void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 
   if(file) m_logger << INFO << "Analyzer: File " << file->GetName() << " was found." << LQLogger::endmsg;
   else m_logger  << INFO <<"Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << LQLogger::endmsg;
-  cerr << "Did not find file "+ file->GetName() + ", exiting ..." << endl;
+  cerr << "Did not find file "<< file->GetName()  << ", exiting ..." << endl;
 
   if(!file) exit(EXIT_FAILURE);
   return;

@@ -1098,7 +1098,8 @@ if [[ $job_loglevel != "ERROR" ]]
 fi
 
 
-njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "${job_njobs}" (Default)"
+#njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "${job_njobs}" (Default)"
+
 if [[ $changed_job_njobs == "true" ]];
     then
     
@@ -1218,6 +1219,19 @@ if [[ $job_cycle != *"SKTreeMaker"* ]];
     echo $outputdir_output_message
 fi
 
+
+########## GET EMAIL
+
+cat_email=""
+while read line
+do
+    prefix="email = "
+    if [[ $line == $prefix* ]];
+    then
+        line=${line:${#prefix}}
+        cat_email=$line
+    fi
+done < ${LQANALYZER_DIR}/bin/catconfig
 
 if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     then

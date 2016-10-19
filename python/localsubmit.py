@@ -618,60 +618,6 @@ if DEBUG == "True":
 
 
 
-if running_batch:
-    number_of_cores= ncore_def
-    os.system("qstat -u '*'> " +  local_sub_dir + "/check_qsub_all")
-    qsub_all_filename = local_sub_dir +'/check_qsub_all'
-    n_qsub_jobs=0
-    for qsub_all_line in open(qsub_all_filename, 'r'):
-        n_qsub_jobs=n_qsub_jobs+1
-    if n_qsub_jobs > 500:
-        print "WARNING: More than 500 jobs in batch queue. If job is small and uses dilepton skim consider running on cms1-6"
-    
-    #### Allow each user to submit 300 jobs at a time.???
-
-    os.system("rm " + local_sub_dir + "/check_qsub_all")
-    os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/check_qsub")
-    qsub_filename = local_sub_dir +'/check_qsub'
-    n_user_qsub_jobs=0
-    for qsub_line in open(qsub_filename, 'r'):
-        if str(getpass.getuser()) in qsub_line:
-            n_user_qsub_jobs= n_qsub_jobs+ 1
-
-    os.system("rm " + local_sub_dir + "/check_qsub")
-
-    running_large_sample=False
-    large_samples = []
-    large_samples.append("DY")
-    large_samples.append("ttbar")
-    if not  "SKTreeMaker" in str(cycle):
-        if mc:
-            for l_s in  large_samples:
-                if l_s in sample:
-                    running_large_sample=True
-            if running_large_sample:
-                if number_of_cores > 200:
-                    number_of_cores=200
-            else:
-                if n_user_qsub_jobs > 300:
-                    number_of_cores=15
-                elif n_user_qsub_jobs > 200:
-                    number_of_cores=100
-                elif n_user_qsub_jobs > 150:
-                    number_of_cores=100
-                elif n_user_qsub_jobs > 60:
-                    number_of_cores=100
-                elif n_user_qsub_jobs > 40:
-                    number_of_cores=100
-                else:
-                    if n_qsub_jobs < 30:
-                        number_of_cores=100
-                    else:
-                         number_of_cores=50
-        else:
-            if number_of_cores > 200:
-                number_of_cores = 200
-
 cluster = False
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     cluster=True

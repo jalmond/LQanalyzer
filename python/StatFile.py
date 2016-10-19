@@ -1,7 +1,6 @@
 import os,sys,getpass
 
 
-
 def RoundMemory(mem):
     string_length= len(mem)
     float_only_mem= mem[:-2]
@@ -47,6 +46,8 @@ path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + get
 time=0.
 ntimes=0.
 pretime=0.
+premem_v=0.
+premem_p=0.
 jobtime=0.
 lastjobtime=0.
 cycle=""
@@ -251,8 +252,10 @@ elif newCycle:
 
 file_master=open(path_master,"w")
     
-newtime= (time+ (pretime*ntimes)) / (ntimes+1)
+newtime= ((jobtime*(float(njobs)/float(nfiles))) + (pretime*ntimes)) / (ntimes+1)
 
+new_memoryv = (memoryusage_v + (premem_v*ntimes)) / (ntimes+1)
+new_memoryp = (memoryusage_p + (premem_p*ntimes)) / (ntimes+1)
 
 
 correctuser=False
@@ -278,7 +281,7 @@ for line in file_tmpmaster2:
              if newsample:
                  if sample_title in line:
                      file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
-                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + "  \n")
+                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(newmem_v) + " " + str(newmem_p) + "  \n")
                  else:
                     file_master.write(line)
              else:

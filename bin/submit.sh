@@ -37,6 +37,19 @@ usebatch=$(makeParseVariable 'b' ${usebatch})
 
 ################                                                                                                                                                
 
+########## GET EMAIL                                                                                                                                                                                                              
+
+cat_email=""
+while read line
+do
+    prefix="email = "
+    if [[ $line == $prefix* ]];
+    then
+        line=${line:${#prefix}}
+        cat_email=$line
+    fi
+done < ${LQANALYZER_DIR}/bin/catconfig
+
 runcommand=$1
 if [[ $njobs == "-j 1" ]]; then
     runcommand="running single job"
@@ -53,7 +66,7 @@ samplelist=$sample_list_string
 if [[ $runcommand  == "" ]]; 
 then
     tagger=$RANDOM
-    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
+    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email
     #done
 elif [[ $runcommand  == "--help"  || $runcommand  == "--h" ]]; then                 
     echo "Checking options"
