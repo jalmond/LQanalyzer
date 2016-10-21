@@ -7,7 +7,7 @@ function usage
     echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
     echo "              [-s skim] [-list file_array] [-p data_period] "
     echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
-    echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion]"
+    echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion] [-b run_in_bkg]"
     echo "              [-fake runfake ] [-flip runflip]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
     echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
@@ -1255,6 +1255,10 @@ while [ "$1" != "" ]; do
         -flip | --run_flip_analyzer) shift
                                 job_run_flip=$1
                                 ;;
+        -b | --bkg ) shift
+                                job_run_bkg=$1
+                                ;;
+
         -events | --number_of_events) shift
 	                        job_nevents=$1
 				;;

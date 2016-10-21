@@ -26,6 +26,7 @@ runcf="False"
 skflag="NULL"
 catversion="NULL"
 usebatch="NULL"
+run_in_bkg="False"
 
 function makeParseVariable() {
     if ! [ -z ${2} ] 

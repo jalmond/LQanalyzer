@@ -413,7 +413,7 @@ if os.path.exists(path_log):
 
 if printToScreen:
     print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
-if number_of_files < (300- njobs):
+if number_of_files < (750- njobs):
     if printToScreen:
         print "Job is running in background............"
     os.system("mkdir " + tmpwork + "/" + tagger)

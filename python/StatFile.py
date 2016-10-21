@@ -33,7 +33,7 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 filetag=options.x
 sample=options.s
 
-path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+sample + filetag + ".txt"
+path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
 path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag + ".txt"
 
 os.system("cp " + path_master + " " + path_tmpmaster)
@@ -122,7 +122,6 @@ for line in file_job:
             ptime=entries[3] 
             year=entries[4]
 file_job.close()
-os.system("rm " + path_job)
 
 if jobcrash =="":
     jobcrash="Fail"

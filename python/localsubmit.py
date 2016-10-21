@@ -79,7 +79,6 @@ DEBUG = options.debug
 useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
-#print str(usebatch) + " " + str(skflag) + " " + str(useskim) + " " + str(DEBUG) + " " + str(tmplist_of_extra_lib) + " " + str(useCATv742ntuples) + " " + str(runevent) + " " + str(useskinput) + " " + str(remove_workspace) + " " + str(Finaloutputdir) + " " + str(catversion) + " " + str(data_lumi) + " " + str(eff_lumi) + " " + str(tar_lumi) + " " + str(xsec) + " " + str(totalev) + " " + str(dataType) + " " + str(skipev) + " " + str(number_of_events_per_job) + " " + str(tree) + " " + str(tagger) + " " + str(runcf) + " " + str(runnp) + " " + str(loglevel) + " " + str(logstep) + " " + str(cycle) + " " + str(channel) + " " + str(sample) + " " + str(number_of_cores)
 
 
 ###### New for 801.7 tag  
@@ -765,6 +764,7 @@ if DEBUG == "True":
 ###################################################
 import thread,time
 start_time = time.time()
+start_running_time=0.
 job_time=0
 last_job_time=0
 wait_sub = 1
@@ -834,6 +834,11 @@ for i in range(1,number_of_cores+1):
                     k_batchfile.close()
 
 if running_batch: 
+    
+    if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    
+
     print "@@@@@@@@@@@@@@@@@@@@@@@@@"
     path_jobids = "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
 
@@ -939,7 +944,10 @@ while not JobSuccess:
                                 n_cms6+=1
 
                         check_cluster=check_cluster+job_id+"_"
-                        
+                        if entries[4] == "r":
+                            if start_running_time == 0.:
+                                start_running_time = time.time()
+
                         if entries[4] == "h":
                             print "Job " + str(job_id) + " is in held state: killing all jobs"
                             os.system("source " + output+ "JobKill.sh")
@@ -1399,12 +1407,15 @@ total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
 
-statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+ original_sample + tagger +".txt"
-statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_timetmp_"+original_sample+tagger +".txt"
-statfile_time_complete="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+original_sample+tagger +".txt"
+statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
+statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
+statfile_time_complete="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
 
 if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
     os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
+    os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
+
 statwrite = open(statfile, 'r')
 statwrite_time = open(statfile_time, 'w')
 for line in statwrite:
@@ -1412,8 +1423,8 @@ for line in statwrite:
 statwrite.close()
 
 statwrite_time.write("time " + str(total_time) + " \n")
-statwrite_time.write("job_time  " + str(job_time-start_time)  + " \n")
-statwrite_time.write("last_job_time  " + str(last_job_time-start_time)  + " \n")
+statwrite_time.write("job_time  " + str(job_time-start_running_time)  + " \n")
+statwrite_time.write("last_job_time  " + str(last_job_time-start_running_time)  + " \n")
 pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
 
 if os.path.exists(pathfilesize):
@@ -1435,7 +1446,8 @@ statwrite_time.write("memoryusage_v " + str(memoryusage_v/1000)  + "MB \n")
 statwrite_time.write("memoryusage_p " + str(memoryusage_p/1000)  + "MB \n") 
 if JobCrash:
     statwrite_time.write("Success= False \n")
-    "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"
+    if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
     crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
     writecrashlog = open(crash_log,"w")
@@ -1454,7 +1466,7 @@ GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
 os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample)
 
-set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_"+original_sample+ tagger + ".txt"
+set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
 
 ### Remove file without times
 os.system("rm " + set_logfile)

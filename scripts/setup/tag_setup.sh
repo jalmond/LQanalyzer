@@ -67,6 +67,25 @@ fi
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 
+python ${LQANALYZER_DIR}/scripts/CheckEmailIsSetup.py
+cat_email="NULL"
+while read line
+do
+    prefix="email = "
+    if [[ $line == $prefix* ]];
+    then
+        line=${line:${#prefix}}
+        cat_email=$line
+    fi
+done < ${LQANALYZER_DIR}/bin/catconfig
+if [[ $cat_email  == "NULL" ]];
+then
+    echo "Email not setup. run setup.sh again"
+    export LQANALYZER_DIR=""
+    return 1
+fi
+
+
 
 
 ##### Check that this is not the branch and a tag was checked out
@@ -75,6 +94,7 @@ source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
 alias sktree="bash submitSKTree.sh"
+alias sktree_bkg="bash submitSKTree.sh -b True "
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
 
@@ -171,6 +191,8 @@ if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 fi
 
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
+python ${LQANALYZER_BIN_PATH}/bin/BackUpLogger.py
+python ${LQANALYZER_BIN_PATH}bin/SetupEmailList.py
 
 # Setup root area and other paths
  

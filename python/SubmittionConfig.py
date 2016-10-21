@@ -10,22 +10,22 @@ large_memory_check=800
 large_file_size=100
 file_increase_warning=2.
 time_increase_warning=2.
+######## set 10 process time for which email is sent
+email_time_limit=600.
 
 def GetListOld():
     
+    ### List of tags with stst logging but no memeory values in the Master File
     clist=[]
     clist.append("v8-0-1.7")
     clist.append("v8-0-1.6")
-    clist.append("v8-0-1.5")
-    clist.append("v8-0-1.4")
-    clist.append("v8-0-1.3")
-    clist.append("v8-0-1.2")
-    clist.append("v8-0-1.1")
     return clist
 
 def GetListNew():
-    ### change in format (add memory of jobs since v8-0-1.8)
 
+    ### change in format (add memory of jobs since v8-0-1.8)
+    ### This new format allows job to output WARNING if jobs are using more memory than previously.
+    ### This should help fix any possible memory leaks when the happen
     clist=[]
     clist.append("v8-0-1.8")
     return clist
@@ -46,6 +46,9 @@ def NewForat(ct):
 
 def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
 
+    if ncores_job == 1:
+        return 1.
+    
     path_clust_check_njobs="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/clustercheck.txt"
     os.system("qstat -u '*'  > " +  path_clust_check_njobs)
     file_clust_check_njobs=open(path_clust_check_njobs ,"r")
@@ -76,6 +79,7 @@ def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
     if nrunning < 50:
         return njobs_max
     else:
+        return njobs_max
         if njobs_max> 40:
             return njobs_max - 40
         else:
@@ -161,9 +165,14 @@ def GetFileSize(defsample, defcycle):
                 
 def SendEmail(jobsummary, deftagger, e_subject, email_user):
 
+    if not  os.getenv("USER") == "jalmond":
+        if "jalmond" in email_user:
+            print "Email could not be set since email address is not set correctly in bin/catconfig."
+            return 
+
     path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" jalmond@cern.ch')
+    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     file_email.close()
 
     filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
@@ -474,6 +483,7 @@ parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help=
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set user email")
+parser.add_option("-B", "--bkg", dest="bkg", default="False", help="run in bkg")
 
 #curses.resizeterm
 
@@ -520,6 +530,19 @@ DEBUG = options.debug
 useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
+runinbkg=options.bkg
+
+DoSendEmail=False
+run_in_bkg=False
+if runinbkg == "True":
+    run_in_bkg=True
+    DoSendEmail=True
+    print "Running in background"
+    if not  os.getenv("USER") == "jalmond":
+        if "jalmond" in email_user:
+            print "Email could not be sent since email address is not set correctly in bin/catconfig."
+            print "Please set email address and resubmit job"
+            sys.exit()
 
 skim_print=useskim
 if useskim == "SKTree_LeptonSkim":
@@ -535,7 +558,7 @@ sample = sample.replace("!!", " ")
 sample = sample.split()
 istatus_message=2
 winx = 5*len(sample) + 22 +  istatus_message
-winy = 175
+winy = 180
 
 crash_output=[]
 crash_outputjob=[]
@@ -544,11 +567,11 @@ start_time = time.time()
 screen = curses.initscr()
 
 
-#screen.border(0)
 screen.refresh()
 stdscr = curses.newwin(winx, winy)
-curses.noecho()
-curses.cbreak()
+if not run_in_bkg:
+    curses.noecho()
+    curses.cbreak()
 
 box_shift=0
 summary_block0=4 + box_shift
@@ -559,7 +582,7 @@ summary_block4=summary_block3+15
 summary_block5=summary_block4+27
 summary_block6=summary_block5+60
 
-stdscr.addstr(0, box_shift,  "Job Summary:",curses.A_UNDERLINE)
+stdscr.addstr(0, box_shift,  "Job[" + str(tagger)+"] Summary:",curses.A_UNDERLINE)
 stdscr.addstr(1, box_shift, "Job ",curses.A_STANDOUT)
 stdscr.addstr(1, summary_block0, "| Code Name                   ",curses.A_STANDOUT)
 stdscr.addstr(1, summary_block1, "| Sample Name                   ",curses.A_STANDOUT)
@@ -605,17 +628,10 @@ stdscr.addstr(list3, box_shift,  "Job Terminal Output: (will be deleted "+ futur
 stdscr.addstr(list3b, box_shift,  "Log Files: (will be deleted "+ future +")" ,curses.A_UNDERLINE)
 stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
-import random
-job_tagger=random.random()
-
-DoSendEmail=False
-
 #### make working directorr
 if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 else:
-    print "Work directory " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger) + " already exists:"
-    print "Removing old directory"
     os.system("rm " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
@@ -647,28 +663,45 @@ output_warning=[]
 
 #### Loop over all samples in job
 
-
+for s in sample:
+    ncopies=0
+    for s2 in sample:
+        if s == s2:
+            ncopies=ncopies+1
+    if ncopies > 1:
+        if not run_in_bkg:
+            curses.echo()
+            curses.nocbreak()
+            curses.endwin()
+        print "%"*45
+        print "List of samples contains duplicates. Please fix list"
+        print "%"*45
+        sys.exit()
 
 for s in sample:
+    #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
     njobs_for_submittion=DetermineNjobs(number_of_cores, tagger, s, cycle)
-    #njobs_for_submittion=number_of_cores
     isample=isample+1
+
+    ## set MC bool from the sample length. This is the letter of the data period for data
     isMC = len(s) > 1
     
     #### if sample is submitted this for loop will check job process on cluster and update the screen/terminal
     for x in range(0, len(sample)):
-
+        ### check if sample is already complet. Only update terminal for samples not complete
         sample_complete=False
         for finsamp in samples_complete:
             if sample[x] == finsamp:
                 sample_complete=True
         if sample_complete:
             continue
+        
+        #### Check that the sample is running. Do not update terminal for samples that are not submitted to batch queue
         backgroundsamples=False
         for bs in samples_inbackground:
             if bs == sample[x]:
                 backgroundsamples=True
-
+        ### the following variables are used to print the output sample name that is determined in the localsubmit.py
         useskimtmp=useskim
         ismctmp=  len(sample[x])>1
         sampletmp=sample[x]
@@ -681,19 +714,20 @@ for s in sample:
             #### in case the job id file is not yet filled add while condition
             jobid_exists=True
             while jobid_exists:        
-                path_job_check="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt" 
+                path_job_check="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"  
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
+                    
+            file_job_check=open(path_job_check ,"r")
             jobid1=0
             jobid2=0
-            file_job_check=open(path_job_check ,"r")
             #### check status of job on cluster
             njobs_finished=0.
             nrunning=0.
             nqueue=0.
             njobs_in_total=0.  ### should equal three above
             path_clust_check="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
-            os.system("qstat -u '*'> " +  path_clust_check)
+            os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
             ijob=0
 
             ### loop over job IDS
@@ -772,6 +806,7 @@ for s in sample:
                     stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block2, "| " + skim_print, curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Submitted " , curses.A_NORMAL) 
+                stdscr.refresh()
             else:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_BOLD )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_BOLD )
@@ -788,6 +823,7 @@ for s in sample:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block6 ,"|    ",curses.A_BOLD)    
+                stdscr.refresh()
             if nfin_per == 1.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
@@ -800,18 +836,22 @@ for s in sample:
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Complete " , curses.A_DIM) 
                 job_time = time.time() - start_time
                 if not jobid1 == 0:    
-                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "   | " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
+                    stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block5,"| "  , curses.A_DIM)
  
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM) 
+                stdscr.refresh()
 
-
-                path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+sample[x] + tagger + ".txt"
-                if not os.path.exists(path_job):
-                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
-                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
-                     continue
+                path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
+                ismerging=True
+                while not os.path.exists(path_job):
+                    if ismerging:
+                        stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
+                        stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
+                        stdscr.refresh()
+                        ismerging=False
+                    continue
 
                 crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
 
@@ -825,10 +865,17 @@ for s in sample:
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
                     crash_output.append( logpath)
                     crash_outputjob.append(str(jobid1))
-
+                    stdscr.refresh()
                 else:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM) 
                     stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM) 
+                    stdscr.refresh()
+                    logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir) + GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                    stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
+                    stdscr.refresh()
+                    
                     filesize=0.
                     memoryusage_p=0.
                     memoryusage_v=0.
@@ -859,10 +906,10 @@ for s in sample:
                         output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
 
                     if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle):
-                        output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle))
+                        output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle) + ". This is likely a memory leak introduced recently")
                     if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle):
-                        output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle))    
-                    if LargeFileSize(outputfile_sizes):
+                        output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle) + ". This is likely a memory leak introduced recently")    
+                    if LargeFileSize(outputfile_size):
                         output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
                     if LargeFileSizeIncrease(outputfile_size,sample[x], cycle):
                         output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle))
@@ -874,12 +921,12 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM) 
                     stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM) 
                     stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5 ,"|    ",curses.A_DIM) 
+                    stdscr.refresh()
 
-                    logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
-                    stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
+                    #logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    #outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    #stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
+                    #stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 
         else:
             stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)) )
@@ -893,8 +940,13 @@ for s in sample:
             stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|" )
             stdscr.addstr(int(x)+istatus_message, summary_block5,"|    ")
             stdscr.addstr(int(x)+istatus_message, summary_block6,"|    ")
+            stdscr.refresh()
 
-    logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/statlog_"+ s + tagger + ".txt"
+    ##### New Code looks at submittnig jobs to batch queue        
+    logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
+    if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
+        os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
+
     filestatlog=open(logfile,"w")
     filestatlog.write("user " +  os.getenv("USER")+ " \n")
     filestatlog.write(" -c " + cycle + " \n")
@@ -917,11 +969,147 @@ for s in sample:
     stdscr.refresh()
     while checkqueue:
         os.system(command1)
-        
         if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger):
             stdscr.addstr(list4+1, box_shift,  "Queue busy.. please wait")
             stdscr.refresh()
-            #time.sleep(5.)
+            
+            for x in range(0, len(sample)):
+                sample_complete=False
+                for finsamp in samples_complete:
+                    if sample[x] == finsamp:
+                        sample_complete=True
+            if sample_complete:
+                continue
+            backgroundsamples=False
+            for bs in samples_inbackground:
+                if bs == sample[x]:
+                    backgroundsamples=True
+            useskimtmp=useskim
+            ismctmp=  len(sample[x])>1
+            sampletmp=sample[x]
+            runnptmp=runnp
+            runcftmp=runcf
+            channeltmp=channel
+            if backgroundsamples:
+                jobid_exists=True
+                while jobid_exists:
+                    path_job_check="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"
+                    if  os.path.exists(path_job_check):
+                        jobid_exists=False
+                file_job_check=open(path_job_check ,"r")
+                jobid1=0
+                jobid2=0
+                njobs_finished=0.
+                nrunning=0.
+                nqueue=0.
+                njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                       
+                path_clust_check="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+                os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+                ijob=0
+                for sline in file_job_check:
+                    ssline = sline.split()
+                    if len(ssline) < 1:
+                        continue
+                    line=ssline[0]
+                    if jobid1 == 0:
+                        jobid1=line
+                    jobid2=line
+                    ijob=ijob+1.
+                    njobs_in_total=njobs_in_total+1.
+                    file_clust_check=open(path_clust_check,"r")
+                    job_inqueue=False
+                    for cline in file_clust_check:
+                        splitline  = cline.split()
+                        if len(splitline) < 6:
+                            continue
+                        if not os.getenv("USER")  in cline:
+                            continue
+                        if line == splitline[0]:
+                            job_inqueue=True
+                            if splitline[4] == "r":
+                                nrunning = nrunning + 1.
+                            else:
+                                nqueue = nqueue + 1.
+                    if not job_inqueue:
+                        njobs_finished=njobs_finished+1.
+                    file_clust_check.close()
+                path_clust_check="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "clust.txt"
+                os.system("rm " + path_clust_check)
+                if njobs_in_total == 0:
+                    continue
+                file_job_check.close()
+                if njobs_finished == njobs_in_total:
+                    samples_complete.append(sample[x])
+                nrunning = nrunning + njobs_finished
+                nrun_per = round( (nrunning/float(njobs_in_total)), 2)
+                nfin_per = round( (njobs_finished/float(njobs_in_total)), 2)
+                nscreen_run= "["
+                nscreen_fin= "["
+                for xsr in range(0, 9):
+                    if nrun_per > float(xsr)* 0.1:
+                        nscreen_run+="#"
+                    else:
+                        nscreen_run+="-"
+                if nrun_per == 1.:
+                    nscreen_run+="#"
+                else:
+                    nscreen_run+="-"
+                nscreen_run+="]"
+                for xsr in range(0, 9):
+                    if nfin_per > float(xsr)* 0.1:
+                        nscreen_fin+="#"
+                    else:
+                        nscreen_fin+="-"
+                if nfin_per == 1.:
+                    nscreen_fin+="#"
+                else:
+                    nscreen_fin+="-"
+                nscreen_fin+="]"
+                
+                if nrun_per == 0.:
+                    stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_NORMAL )
+                    stdscr.addstr(int(x)+istatus_message, summary_block0, "| " +  cycle, curses.A_NORMAL )
+                    if isMC:
+                        stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + sample[x], curses.A_NORMAL )
+                    else:
+                        stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
+                    stdscr.addstr(int(x)+istatus_message, summary_block2, "| " + skim_print, curses.A_NORMAL )
+                    stdscr.addstr(int(x)+istatus_message, summary_block3,"| Submitted " , curses.A_NORMAL)
+                    stdscr.refresh()
+                else:
+                    stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_BOLD )
+                    stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_BOLD )
+                    if isMC:
+                        stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_BOLD )
+                    else:
+                        stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
+
+                    stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_BOLD )
+                    stdscr.addstr(int(x)+istatus_message, summary_block3,"| Running    " , curses.A_BLINK)
+                    if not jobid1 == 0:
+                        stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2) + "    | " + str(1+int(jobid2)-int(jobid1)) , curses.A_BOLD)
+                    else:
+                        stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block6 ,"|    ",curses.A_BOLD)
+                    stdscr.refresh()
+                if nfin_per == 1.:
+                    stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
+                    stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
+                    if isMC:
+                        stdscr.addstr(int(x)+istatus_message, summary_block1,  "| " + sample[x], curses.A_DIM )
+                    else:
+                        stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
+                    stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_DIM )
+                    stdscr.addstr(int(x)+istatus_message, summary_block3,"| Complete " , curses.A_DIM)
+                    job_time = time.time() - start_time
+                    if not jobid1 == 0:
+                        stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
+                    else:
+                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| "  , curses.A_DIM)
+                        
+                    stdscr.refresh()
+                    
         else:
             os.system("rm -r /data2/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger)
             stdscr.addstr(list4+1, box_shift,  "Submitting sample to queue  " + s)
@@ -941,6 +1129,7 @@ for s in sample:
             stdscr.addstr(int(isample)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_NORMAL)
             stdscr.addstr(int(isample)+istatus_message, summary_block5,"| Running[---------]   Complete[----------]   ")
             stdscr.addstr(int(isample)+istatus_message, summary_block6,"|    ")
+            stdscr.refresh()
             os.system(command2_background)
             samples_inbackground.append(s)
 
@@ -1063,6 +1252,7 @@ while StillRunning:
                     stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block2, "| " +  skim_print, curses.A_NORMAL )
                 stdscr.addstr(int(x)+istatus_message, summary_block3,"| Submitted " , curses.A_NORMAL)
+                stdscr.refresh()
             else:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_BOLD )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_BOLD )
@@ -1079,6 +1269,7 @@ while StillRunning:
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
                 
                 stdscr.addstr(int(x)+istatus_message, summary_block6 ,"|    ",curses.A_BOLD)
+                stdscr.refresh()
             if nfin_per == 1.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
@@ -1096,7 +1287,8 @@ while StillRunning:
 
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM)
                 stdscr.addstr(int(x)+istatus_message, summary_block6 ,"|    ",curses.A_DIM)
-                path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_"+sample[x] + tagger + ".txt"
+                stdscr.refresh()
+                path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
                     if ismerging:
@@ -1117,7 +1309,7 @@ while StillRunning:
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
                     crash_output.append(logpath)
                     crash_outputjob.append(jobid1)
-
+                    stdscr.refresh()
                 else:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM)
@@ -1174,7 +1366,7 @@ while StillRunning:
                     stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
-
+                    stdscr.refresh()
 
             stdscr.refresh()
 
@@ -1196,10 +1388,10 @@ if redopad:
         stdscr.addstr(i,0, mypad_contents[i])
         stdscr.refresh()
     time.sleep(5.)
-    
-curses.echo()
-curses.nocbreak()
-curses.endwin()
+if not run_in_bkg:    
+    curses.echo()
+    curses.nocbreak()
+    curses.endwin()
 
 job_summary=[]
 print "\n"
@@ -1234,11 +1426,18 @@ for i in range(0, winx-remove_from_end):
         print "_"*40
         job_summary.append("_"*40+"\n")
 
-for s in sample:
-    path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/statlog_time_" +s + tagger + ".txt"
-    #os.system("rm " + path_job)
+path_stat_dir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
+os.system("rm -r " + path_stat_dir)
+
+
+end_job_time = time.time() - start_time
 
 email_subject=""
+if end_job_time > email_time_limit:
+    DoSendEmail=True
+    email_subject=email_subject+"Job time>600s "
+
+
 if len(output_warning) > 0:
     print "\n"
     print "The job produced the following WARNING MESSAGES:"
