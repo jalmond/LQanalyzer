@@ -1,4 +1,5 @@
 # Ignore for commits
+bin/catconfig
 LQRun/*/job_output/
 LQLib/
 data/

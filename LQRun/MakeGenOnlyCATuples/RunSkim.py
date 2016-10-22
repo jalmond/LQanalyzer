@@ -4,46 +4,20 @@ from functions import *
 
 
 version = os.getenv("CATVERSION")
-sampledir = ["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
-             "ttbb_4FS_ckm_amcatnlo_madspin_pythia8",
-             "TT_TuneCUETP8M1_mtop1755_13TeV-powheg-pythia8",
-             "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
-             "ttHTobb_M125_13TeV_powheg_pythia8"
-             ,  "ttWJets_13TeV_madgraphMLM",
-             "DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8", 
-             "ttHToNonbb_M125_13TeV_powheg_pythia8", 
-             "ttZJets_13TeV_madgraphMLM",
-             "DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 
-             "TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8", 
-             "VBF_HToMuMu_M125_13TeV_powheg_pythia8",
-             "DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8", 
-             "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
-             "WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8",
-             "GluGlu_HToMuMu_M125_13TeV_powheg_pythia8",
-             "TTTo2L2Nu_13TeV-powheg",
-             "WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
-             "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1", 
-             "TTTo2L2Nu_13TeV_ScaleDown-powheg", 
-             "WW_TuneCUETP8M1_13TeV-pythia8",
-             "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1",  
-             "TTTo2L2Nu_13TeV_ScaleUp-powheg",  
-             "WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
-             "ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1",  
-             "TTToSemiLeptonic_13TeV-powheg",  
-             "WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
-             "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",  
-             "TTToSemiLeptonic_13TeV_ScaleDown-powheg",  
-             "WZ_TuneCUETP8M1_13TeV-pythia8",
-             "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1",  
-             "TTToSemiLeptonic_13TeV_ScaleUp-powheg",  
-             "WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8",
-             "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1",  
-             "TT_TuneCUETP8M1_13TeV-powheg-pythia8",  
-             "ZZ_TuneCUETP8M1_13TeV-pythia8",
-             "ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1",  
-             "TT_TuneCUETP8M1_mtop1695_13TeV-powheg-pythia8", 
-             "ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8" ]
-sampledir=["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"]
+
+os.system("ls  /data2/DATA/cattoflat/MC/" + version + " > list.txt" )
+
+sampledir =[]
+file_list = open("list.txt")
+for xline in file_list:
+    xline=xline.split()
+    if len(xline) > 0:
+        sampledir.append(xline[0])
+file_list.close()
+
+
+for xline in sampledir:
+    print xline
 
 file_list_all="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/LQRun/txt/datasets_snu_CAT_mc_" + version +".txt"
 
@@ -56,7 +30,6 @@ for line in open(file_list_all, 'r'):
             if i in line:
                 sample_in_list="True"
         if sample_in_list == "False":
-            #print "Missing sample " + line
             missing_sample="True"
 
 
@@ -157,15 +130,15 @@ for i in sampledir:
                job_finised=True
 
 
-   if not (os.path.exists("/data2/DATA/cattoflat/ssskim/"+ version)):
-      os.system("mkdir " + "/data2/DATA/cattoflat/ssskim/" + version)
+   if not (os.path.exists("/data2/DATA/cattoflat/genskim/"+ version)):
+      os.system("mkdir " + "/data2/DATA/cattoflat/genskim/" + version)
           
-   if not (os.path.exists("/data2/DATA/cattoflat/ssskim/"+ version+ "/" + i)):
-      os.system("mkdir " + "/data2/DATA/cattoflat/ssskim/" + version+ "/"+ i)
+   if not (os.path.exists("/data2/DATA/cattoflat/genskim/"+ version+ "/" + i)):
+      os.system("mkdir " + "/data2/DATA/cattoflat/genskim/" + version+ "/"+ i)
 
       
-   print "Moving samples to /data2/DATA/cattoflat/ssskim/" + version+ "/"+ i    
-   os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/ssskim/"+ version+ "/" + i )
-   print "mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/ssskim/" + version+ "/"+ i 
+   print "Moving samples to /data2/DATA/cattoflat/genskim/" + version+ "/"+ i    
+   os.system("mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/genskim/"+ version+ "/" + i )
+   print "mv "  +  output+ "/output/*.root /data2/DATA/cattoflat/genskim/" + version+ "/"+ i 
    
    os.system("rm -rf " + output)

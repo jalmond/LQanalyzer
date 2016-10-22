@@ -191,8 +191,8 @@ if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
 fi
 
 python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
-python ${LQANALYZER_BIN_PATH}/bin/BackUpLogger.py
-python ${LQANALYZER_BIN_PATH}bin/SetupEmailList.py
+python ${LQANALYZER_BIN_PATH}/BackUpLogger.py
+python ${LQANALYZER_BIN_PATH}/SetupEmailList.py
 
 # Setup root area and other paths
  

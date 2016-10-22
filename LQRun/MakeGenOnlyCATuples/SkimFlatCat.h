@@ -27,8 +27,10 @@ public :
 
    // Declaration of leaf types
    Float_t         genWeight;
+   Int_t           event;
 
    TBranch        *b_genWeight;   //!
+   TBranch        *b_event;   //!
 
 
    SkimFlatCat(TTree *tree=0);
@@ -257,6 +259,8 @@ void SkimFlatCat::Init(TTree *tree)
    fChain->SetMakeClass(1);
    
    fChain->SetBranchStatus("*",0);
+   fChain->SetBranchAddress("event", &event, &b_event);
+
    fChain->SetBranchAddress("genWeight", &genWeight, &b_genWeight);
    fChain->SetBranchStatus("genWeight",1);
    Notify();
