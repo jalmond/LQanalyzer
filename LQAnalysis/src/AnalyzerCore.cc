@@ -135,6 +135,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   string lqdir = getenv("LQANALYZER_DIR");
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
+  cout << "TESTTEST" << endl;
   rmcor = new rochcor2015();
   
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
@@ -1977,9 +1978,13 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
 
+    cout << it->Charge() << " " << it->Pt() << " "<< it->Eta() << endl;
     if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
+
+    cout << tlv_muons[imu].Pt() << " " << tlv_muons[imu].Eta() << endl;
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
+    //it->SetPtEtaPhiM(tlv_muons[imu].Pt(), it->Eta(), it->Phi() , it->M());
     //it->scale(tlv_muons[imu].E()/it->E());
   }
 }

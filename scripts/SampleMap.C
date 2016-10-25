@@ -151,7 +151,6 @@ map<TString,  Double_t>  GetXSecMap(){
 
    dirmap["tthwA_3l4j_hc130A30_emu_catcut"] = 0.000373;
    dirmap["tthwA_3l4j_hc130A30_3mu_catcut"] = 0.000373;
-   
    dirmap["HN_pair_WR600_Zp400_HN100"] = 1.; 
 
 

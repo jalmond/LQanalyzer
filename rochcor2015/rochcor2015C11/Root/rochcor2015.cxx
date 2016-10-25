@@ -340,7 +340,9 @@ rochcor2015::~rochcor2015(){
 
 rochcor2015::rochcor2015(){
 
-  muresol1.init("./RoccoR_13tev.txt");
+  string lqdir = getenv("LQANALYZER_DIR");
+
+  muresol1.init(lqdir+"/rochcor2015/rochcor2015C11/Root/RoccoR_13tev.txt");
   muresol1.dumpParams();
   
   eran.SetSeed(123456);
@@ -407,20 +409,20 @@ void rochcor2015::momcor_mc( TLorentzVector& mu, float charge, int ntrk, float& 
     
     //for the momentum tuning - eta,phi,Q correction
     mupt *= cor;
-    
     double gscl = mgscl;
     double gscler = mgscl_stat;    
     
     double u = eran.Rndm();
     double w = eran.Rndm();
     double tune = muresol1.kExtraDet(mupt,mueta,ntrk,u,w);
-    
+
     mupt *= (gscl + gscler_mc_dev*gscler)*(tune*mscl[mu_etabin]);    
-    
+
     double pt_tune = (mupt-md[mu_aetabin])*45.0/(45.0-md[mu_aetabin]);
     mupt = pt_tune;
     
     double momscl = mupt_bfcor/mupt;
+
     qter *= sqrt(momscl*momscl + (1.0-tune)*(1.0-tune));
     
   }

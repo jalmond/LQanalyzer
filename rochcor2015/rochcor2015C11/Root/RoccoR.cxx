@@ -108,7 +108,7 @@ void RocRes::init(string filename){
       }
     }
   }
-
+  cout << "NMIN = " << NMIN << endl;
   for(int H=0; H<NETA; ++H){
     for(int F=0; F<NTRK; ++F){
       cb[H][F].init(0.0, width[H][F], alpha[H][F], power[H][F]);
