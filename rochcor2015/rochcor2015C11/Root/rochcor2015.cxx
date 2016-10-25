@@ -364,7 +364,9 @@ rochcor2015::rochcor2015(){
 
 rochcor2015::rochcor2015(int seed){
 
-  muresol1.init("./RoccoR_13tev.txt");
+  string lqdir = getenv("LQANALYZER_DIR");
+
+  muresol1.init(lqdir+"/rochcor2015/rochcor2015C11/Root/RoccoR_13tev.txt");
   muresol1.dumpParams();
 
   eran.SetSeed(123456);
