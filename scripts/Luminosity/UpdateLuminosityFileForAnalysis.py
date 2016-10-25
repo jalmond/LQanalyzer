@@ -2,49 +2,80 @@ import os,sys, filecmp
 
 from EmailNewEffLumiList import *
 
-def UpdateLumiFile(modlistpath, catversion):
+
+
+def UpdateLumiFile(modlistpath, catversion,isNewSample):
 
     ### xseclist should contain lines that are updated in xsec
     ### samplelist should contain lines for new samples
     samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+".txt"
-    newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+"tmp.txt"                                                               
+    newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+"new.txt"                                                               
     #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
     #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
      
-    
+    ### Make a copy of the original dataset list
     copy_samplelist=[]
     file_samplelist = open(samplelist,"r")
     for line in file_samplelist:
         copy_samplelist.append(line)
     file_samplelist.close()
 
+    if not isNewSample:
+        file_samplelist = open(newsamplelist,"w")
+        ### Make a new tmp list
+        for xline in copy_samplelist:
+            split_current_line=xline.split()
+            replace_line=False
+            if len(split_current_line) == 6:
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        if split_modline[0] == split_current_line[0]:
+                            replace_line=True
+                modlist.close()
+            if not replace_line:
+                file_samplelist.write(xline)
+            else:
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        if split_modline[0] == split_current_line[0]:
+                            file_samplelist.write(line)
+                modlist.close()
+        file_samplelist.close()    
 
-    file_samplelist = open(newsamplelist,"w")
-    
-    for xline in copy_samplelist:
-        split_current_line=xline.split()
-        replace_line=False
-        if len(split_current_line) == 6:
-            modlist=open(modlistpath,"r")
-            for line in modlist:
-                split_modline=line.split()
-                if len(split_modline) == 6:
-                    if split_modline[0] == split_current_line[0]:
-                        replace_line=True
-            modlist.close()
-        if not replace_line:
-            file_samplelist.write(xline)
-        else:
-            modlist=open(modlistpath,"r")
-            for line in modlist:
-                split_modline=line.split()
-                if len(split_modline) == 6:
-                    if split_modline[0] == split_current_line[0]:
+    else:
+        file_samplelist = open(newsamplelist,"w")
+        for xline in copy_samplelist:
+            if "#### CATTuples" in xline:
+                file_samplelist.write(xline)
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                    if not "SKTree" in line:
                         file_samplelist.write(line)
-            modlist.close()
+                modlist.close()
+            elif "#### Single" in xline:
+                file_samplelist.write(xline)
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                        if "SKTree" in line:
+                            if not "MCDiLep" in line:
+                                file_samplelist.write(line)
+                modlist.close()
+            elif "#### Di" in xline:
+                file_samplelist.write(xline)
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                        if "SKTree" in line:
+                            if "MCDiLep" in line:
+                                file_samplelist.write(line)
+                modlist.close()
+            else:
+                file_samplelist.write(xline)
 
-    file_samplelist.close()    
-
+        file_samplelist.close()
 
 def CheckFileFormat(filepath):
 
@@ -66,7 +97,7 @@ def CheckFileFormat(filepath):
 ### ExtractListFromDatasetFile Makes a list of samples located in /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists//dataset-$CATVERSION
 import ExtractListFromDatasetFile
 
-catversion=os.getenv("CATVERSION")
+catversion=str(os.getenv("CATVERSION"))
 
 path_full_sample_list="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+catversion+".txt"
 path_full_sample_list_user="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"+ os.getenv("USER")  +"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
@@ -205,21 +236,29 @@ if os.path.exists(path_full_sample_list):
             print x
             file_newfile.write(x)
         file_newfile.close()
-        tag="new"
-        if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt"):
-            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt")
-        os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh " + path_newfile + " "+tag+" ")
-        if not  os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt"):
-            print  os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh was meant to produce file "+ os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt"
+
+        if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"):
+            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
+        print "\n"
+        os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh " + path_newfile + " new ")
+        print "source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh " + path_newfile + " new "
+        print "\n"
+        if not  os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"):
+            print  os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh was meant to produce file "+ os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"
             print "This file does not exists: exiting...."
             sys.exit()
         else:     
-            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt", catversion)
-            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt")
+            ### update lumifile:
+            isnewsample= len(newsample_list) > 0
+            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, isnewsample)
+            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+".txt"
-            newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
+            newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+"new.txt"
             print "Is the following list of differences correct:"
+            print "\n"
+            print "diff " + samplelist + " " + newsamplelist
             os.system("diff " + samplelist + " " + newsamplelist)
+            print "\n"
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
             if input == "Y":
                 os.system("cp " + newsamplelist + " " + samplelist)
@@ -240,15 +279,16 @@ else:
     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
     new_catversion=True
     
-    if not os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log"):
-        os.system("mkdir "+ os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log") 
+    lqdir = str(os.getenv("LQANALYZER_DIR"))
+    if not os.path.exists(lqdir+"/scripts/Luminosity/log"):
+        os.system("mkdir "+ lqdir+"/scripts/Luminosity/log") 
 
-    os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+os.getenv('CATVERSION')+".txt")
+    os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
 
-    if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log"):
-        os.system("rm -r "+os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log")
+    if os.path.exists(lqdir+"/scripts/Luminosity/log"):
+        os.system("rm -r "+lqdir+"/scripts/Luminosity/log")
             
-    if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/inputlist_efflumi.txt"):
-        os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/inputlist_efflumi.txt")
+    if os.path.exists(lqdir+"/scripts/Luminosity/inputlist_efflumi.txt"):
+        os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
     
     EmailNewList(catversion)    

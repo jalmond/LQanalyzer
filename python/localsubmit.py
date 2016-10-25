@@ -899,9 +899,13 @@ n_cms3=0
 n_cms4=0
 n_cms5=0
 n_cms6=0
-print ""
-while not JobSuccess:
 
+it_counter=0
+
+while not JobSuccess:
+    it_counter+=1
+    sub_counter=0
+    print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
     if running_batch == False:
         os.system("ps ux &> " + local_sub_dir + "/log")
@@ -968,12 +972,12 @@ while not JobSuccess:
         skipcheck=False
         for check in CompletedJobs:
             if i== check: skipcheck=True
-        while not skipcheck:
-            skipcheck=True
+        if not skipcheck:
             if checkJob:
                 if sum(1 for item in os.listdir(outputdir) if isfile(join(outputdir, item))) > 0:
-                    job_time = time.time()
-                    checkJob=False
+                    if not start_running_time == 0.:
+                        job_time = time.time()
+                        checkJob=False
             check_outfile = outputdir + outsamplename +  "_" +  str(i) + ".root"   
             if (os.path.exists(check_outfile)):
                 CompletedJobs.append(i)
@@ -999,6 +1003,10 @@ while not JobSuccess:
     else:
         nevents_total=0.
         nevent_processed=0.
+
+        sub_counter+=1
+        print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
+
 
         if running_batch:
             ### print jobs running/in queue .... once all running print % completeion
@@ -1033,6 +1041,10 @@ while not JobSuccess:
             #### check job is running. Halted or suspended and if not running is output file missing?
             os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/log")
             filename = local_sub_dir +'/log'
+
+
+            sub_counter+=1
+            print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
             for i in range(1,number_of_cores+1):
                 if not JobOutput:
@@ -1125,7 +1137,8 @@ while not JobSuccess:
             file_iterator=ncomplete_files
         time.sleep(1.)
         ncycle+=1
-     
+        sub_counter+=1
+        print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
 
 if not JobOutput:

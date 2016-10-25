@@ -43,7 +43,7 @@ def SendEmail(catversion, catuser, message, jobsummary, maillist) :
 ############### Fill message for reason of making new sample                                                                                                                                                                                                           ##########################################################################################
 ########################################################################################## 
 
-def EmailNewList(catversion, newsamplelist):
+def EmailNewSample(catversion, newsamplelist):
     message = []
    
     if not "v8" in catversion:
@@ -52,8 +52,8 @@ def EmailNewList(catversion, newsamplelist):
     message.append("ADDITIONAL samples added to effective luminosity file for a new cattuple production["+catversion+"]\n")
     message.append("\n")
     message.append("")
-    file_samplelist = open(samplelist,"r")
-    for x in file_xseclist:
+    file_samplelist = open(newsamplelist,"r")
+    for x in file_samplelist:
         message.append(x)
     file_samplelist.close()
     Copy_File=[]
@@ -81,9 +81,10 @@ def EmailNewXsecList(catversion, xseclist):
     Copy_File=[]
     SendEmail(catversion, os.getenv("USER"), message, Copy_File, emaillist)
 
-def EmailNewSamples(catversion):
+def EmailNewList(catversion):
     message = []
-    message.append("This file includes the following new samples: <samplename> \n")
+    message.append("This is a new file for a new cattuple production\n")
+
     if not "v8" in catversion:
         catversion=os.getenv("CATVERSION")
 
@@ -92,12 +93,8 @@ def EmailNewSamples(catversion):
     file_newefflumi=open(path_newefflumi,"r")
 
     Copy_File=[]
-    Copy_File.append("This is a list of differenecs with respect to previous file")
-    difflogpath = os.getenv("LQANALYZER_DIR")+"/scripts/difflog.txt"
-    file_difflog = open(difflogpath,"r")
-    for line in file_difflog:
-        Copy_File.append(line)
-    file_difflog.close()
+    for line in file_newefflumi:
+        Copy_File.append(line+"\n")
     
     emaillist=GetCATAnalyzerMailList()
     SendEmail(catversion, os.getenv("USER"), message, Copy_File, emaillist)

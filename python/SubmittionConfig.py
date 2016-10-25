@@ -324,6 +324,17 @@ def GetOutFilName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,def
     else:
         output_catversion=str(os.getenv("CATVERSION"))
         outsamplename=  defcycle +"_data_"+ defchannel + "_cat_" +  str(output_catversion)+ ".root"
+
+     
+    if "SKTreeMaker" in defcycle:
+        if ismc:
+            if defskim == "DiLep":
+                return "/data2/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
+            elif defskim == "TriLep":
+                return "/data2/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
+            else:
+                return "/data2/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
+                                                    
     return outsamplename    
 
 def LargeFileSize(fsize):

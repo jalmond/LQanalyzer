@@ -8,6 +8,6 @@ root -b -l <<EOF
 GetEffectiveLuminosity("$1","$2","$3");
 .q;
 EOF
-bash cleanup.sh
+#bash cleanup.sh
 cd -
 #python EmailNewEffLumiList.py

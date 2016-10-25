@@ -3,12 +3,12 @@ import os,sys
 def GetListOfDataSets(catversion):
     
     dlist=[]
-    path_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_"+catversion+"/"
+    path_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_"+str(catversion)+"/"
     path_user_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER")
     if not os.path.exists(path_user_datasetlist):
         os.system("mkdir " + path_user_datasetlist)
         
-    current_list=path_user_datasetlist+"/"+catversion+"list.txt"    
+    current_list=path_user_datasetlist+"/"+str(catversion)+"list.txt"    
     os.system("rm " + path_datasetlist + "/*~")
     os.system("ls " + path_datasetlist + " > " + current_list)
     file_current_list=open(current_list,"r")
@@ -22,7 +22,7 @@ def GetListOfDataSets(catversion):
     
 
 
-catversion=os.getenv("CATVERSION")
+catversion=str(os.getenv("CATVERSION"))
 datasetlist=GetListOfDataSets(catversion)
 
 path_full_sample_list_user="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER")+"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
