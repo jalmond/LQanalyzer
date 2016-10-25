@@ -50,51 +50,53 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
 
-   MakeCleverHistograms(sighist_ee, "TChannel");
-   MakeCleverHistograms(sighist_ee, "SIGNAL");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL");
-   MakeCleverHistograms(sighist_ee, "SIGNAL_4J");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_4J");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_CC");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_noZ");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_EE");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB_noB");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_EE_noB");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB_B");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_EE_B");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_LowPt");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_1Jet");
-   MakeCleverHistograms(sighist_ee, "SS_SIGNAL_Presel");
-   MakeCleverHistograms(sighist_ee, "OS_SIGNAL");
-   MakeCleverHistograms(trilephist,"TriElectron");
-
-   MakeCleverHistograms(trilephist,"TriMuon");
-   MakeCleverHistograms(trilephist,"TriMuon_mass");
-   MakeCleverHistograms(trilephist,"TriMuon_dr");
-   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_ttt");
-   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_ttl");
-   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_tll");
-   MakeCleverHistograms(trilephist,"TriMuon_dr_nw_lll");
-
-   MakeCleverHistograms(trilephist,"TriMuon_dr_ttl");
-   MakeCleverHistograms(trilephist,"TriMuon_dr_tll");
-   MakeCleverHistograms(trilephist,"TriMuon_dr_lll");
-   MakeCleverHistograms(trilephist,"TriMuon_pt_dr");
-   MakeCleverHistograms(trilephist,"TriMuon_bjet");
-   MakeCleverHistograms(trilephist,"TriMuon_nobjet");
-
-   MakeCleverHistograms(sighist_ee, "LowMassRegion");
-   MakeCleverHistograms(sighist_ee, "LowMassRegionCR");
-   MakeCleverHistograms(sighist_ee, "MediumMassRegion");
-   MakeCleverHistograms(sighist_ee, "MediumMassRegionCR");
-   MakeCleverHistograms(sighist_ee, "HighMassRegion");
-   MakeCleverHistograms(sighist_ee, "40MassRegion");
-   MakeCleverHistograms(sighist_ee, "100MassRegion");
-   MakeCleverHistograms(sighist_ee, "500MassRegion");
-   MakeCleverHistograms(sighist_ee, "1500MassRegion");
+   bool runall=false;
+   if (runall){
+     MakeCleverHistograms(sighist_ee, "TChannel");
+     MakeCleverHistograms(sighist_ee, "SIGNAL");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL");
+     MakeCleverHistograms(sighist_ee, "SIGNAL_4J");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_4J");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_CC");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_noZ");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_EE");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB_noB");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_EE_noB");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_BB_B");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_EE_B");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_LowPt");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_1Jet");
+     MakeCleverHistograms(sighist_ee, "SS_SIGNAL_Presel");
+     MakeCleverHistograms(sighist_ee, "OS_SIGNAL");
+     MakeCleverHistograms(trilephist,"TriElectron");
+     
+     MakeCleverHistograms(trilephist,"TriMuon");
+     MakeCleverHistograms(trilephist,"TriMuon_mass");
+     MakeCleverHistograms(trilephist,"TriMuon_dr");
+     MakeCleverHistograms(trilephist,"TriMuon_dr_nw_ttt");
+     MakeCleverHistograms(trilephist,"TriMuon_dr_nw_ttl");
+     MakeCleverHistograms(trilephist,"TriMuon_dr_nw_tll");
+     MakeCleverHistograms(trilephist,"TriMuon_dr_nw_lll");
+     
+     MakeCleverHistograms(trilephist,"TriMuon_dr_ttl");
+     MakeCleverHistograms(trilephist,"TriMuon_dr_tll");
+     MakeCleverHistograms(trilephist,"TriMuon_dr_lll");
+     MakeCleverHistograms(trilephist,"TriMuon_pt_dr");
+     MakeCleverHistograms(trilephist,"TriMuon_bjet");
+     MakeCleverHistograms(trilephist,"TriMuon_nobjet");
+     
+     MakeCleverHistograms(sighist_ee, "LowMassRegion");
+     MakeCleverHistograms(sighist_ee, "LowMassRegionCR");
+     MakeCleverHistograms(sighist_ee, "MediumMassRegion");
+     MakeCleverHistograms(sighist_ee, "MediumMassRegionCR");
+     MakeCleverHistograms(sighist_ee, "HighMassRegion");
+     MakeCleverHistograms(sighist_ee, "40MassRegion");
+     MakeCleverHistograms(sighist_ee, "100MassRegion");
+     MakeCleverHistograms(sighist_ee, "500MassRegion");
+     MakeCleverHistograms(sighist_ee, "1500MassRegion");
    /// only available in v7-6-X branch and newer
-   
+   }
    return;
 }
 
@@ -111,7 +113,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   if(!isData)weight*= MCweight;
   
   //vector<snu::KTruth> eventbaseGetTruth();
-  if(SameCharge(GetMuons(BaseSelection::MUON_HN_VETO))){
+  /*  if(SameCharge(GetMuons(BaseSelection::MUON_HN_VETO))){
     cout << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCMatched() << "  " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCMatched() << endl;
     cout << "Muon 1 " << endl;
     cout << "isCF = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsCF() << endl;
@@ -131,7 +133,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     cout << "--------------------------------- " << endl;
     cout << "--------------------------------- " << endl;
 
-  }
+    }*/
   return;
   if(IsSignal()){
     //ListTriggersAvailable();

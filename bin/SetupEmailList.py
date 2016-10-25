@@ -4,7 +4,6 @@ import os,sys
 path_emailconfig = "/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/emailconfig.txt"
 path_catconfig= os.getenv("LQANALYZER_DIR") + "/bin/catconfig"
 
-
 file_catconfig= open(path_catconfig,"r")
 email_address=""
 for line in file_catconfig:

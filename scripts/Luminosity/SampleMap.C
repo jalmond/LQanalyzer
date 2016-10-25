@@ -402,9 +402,13 @@ vector<TString>  GetAvailableMap(TString cversion, TString listpath){
       id++;
       if (TString(dataword) == "DataSetName") id_check = id+2;
       if(id==id_check) {
-	if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
-	else if(TString(dataword).Contains("USER")) datasetname=dataword;
+	if(TString(dataword).Contains("/")){
+	  if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+	  else if(TString(dataword).Contains("USER")) datasetname=dataword;
+	}
+	else datasetname=dataword;
       }
+
       if(TString(dataword).Contains("/catTuple") ) {
 	missing=false;
 	if(!(TString(dataword).Contains(cversion))) {
@@ -480,9 +484,13 @@ map<TString, TString>  GetDatasetNames(TString cversion, TString listpath){
       id++;
       if (TString(dataword) == "DataSetName") id_check = id+2;
       if(id==id_check) {
-        if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
-	else if(TString(dataword).Contains("USER")) datasetname=dataword;
+	if(TString(dataword).Contains("/")){
+	  if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+	  else if(TString(dataword).Contains("USER")) datasetname=dataword;
+	}
+	else  datasetname=dataword;
       }
+      
       if(TString(dataword).Contains("/catTuple")){
       }
     }
@@ -538,13 +546,16 @@ map<TString, TString>  GetMissingMap(TString cversion, TString listpath){
       id++;
       if (TString(dataword) == "DataSetName") id_check = id+2;
       if(id==id_check) {
-	if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
-	else if(TString(dataword).Contains("USER")) datasetname=dataword;
+	if(TString(dataword).Contains("/")){
+	  if(TString(dataword).Contains("MINIAOD")) datasetname=dataword;
+	  else if(TString(dataword).Contains("USER")) datasetname=dataword;
+	}
+	else datasetname=dataword;
       }
       if(TString(dataword).Contains("/catTuple")){
 	missing=false;
       }
-    } 
+    }
 
     bool inlqmap=false;;
 
@@ -554,7 +565,7 @@ map<TString, TString>  GetMissingMap(TString cversion, TString listpath){
     if(TString(input_datasetlist.at(i)).Contains("json")) inlqmap=true;    
 
     if(!inlqmap) {
-      cout << "LQMap not complete" << endl;
+      cout << "LQMap (GetMissingMap) not complete" << endl;
       cout <<  input_datasetlist.at(i) << endl;
       exit(1);
     }

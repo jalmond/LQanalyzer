@@ -13,6 +13,14 @@ time_increase_warning=2.
 ######## set 10 process time for which email is sent
 email_time_limit=600.
 
+
+
+def UpdateOutput(outputlist,outputlist_path):
+    out_file = open(outputlist_path,"w")
+    for x in outputlist:
+        out_file.write(x+"\n")
+    out_file.close()
+    
 def GetListOld():
     
     ### List of tags with stst logging but no memeory values in the Master File
@@ -563,6 +571,10 @@ winy = 180
 crash_output=[]
 crash_outputjob=[]
 
+output_bkg=[]
+for out_x in range(1,winx):
+    output_bkg.append(" "*170)
+
 start_time = time.time()  
 screen = curses.initscr()
 
@@ -632,7 +644,7 @@ stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 else:
-    os.system("rm " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+    os.system("rm -r" + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
 ### Make directory for job stats
@@ -685,9 +697,21 @@ for s in sample:
 
     ## set MC bool from the sample length. This is the letter of the data period for data
     isMC = len(s) > 1
-    
+
+    if run_in_bkg:
+        del output_bkg[:]
+        for out_x in range(1,winx):
+            output_bkg.append(stdscr.instr(out_x, 0))
+        UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")    
     #### if sample is submitted this for loop will check job process on cluster and update the screen/terminal
     for x in range(0, len(sample)):
+        
+        if run_in_bkg:
+            del output_bkg[:]
+            for out_x in range(1,winx):
+                output_bkg.append(stdscr.instr(out_x, 0))
+            UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+
         ### check if sample is already complet. Only update terminal for samples not complete
         sample_complete=False
         for finsamp in samples_complete:
@@ -824,6 +848,11 @@ for s in sample:
                 stdscr.addstr(int(x)+istatus_message, summary_block5,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block6 ,"|    ",curses.A_BOLD)    
                 stdscr.refresh()
+                if run_in_bkg:
+                    del output_bkg[:]
+                    for out_x in range(1,winx):
+                        output_bkg.append(stdscr.instr(out_x, 0))
+                        UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
             if nfin_per == 1.:
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
@@ -1102,6 +1131,11 @@ for s in sample:
                         stdscr.addstr(int(x)+istatus_message, summary_block1, "| " + channel+"_"+sample[x], curses.A_NORMAL )
                     stdscr.addstr(int(x)+istatus_message, summary_block2,  "| " + skim_print, curses.A_DIM )
                     stdscr.addstr(int(x)+istatus_message, summary_block3,"| Complete " , curses.A_DIM)
+                    if run_in_bkg:
+                        del output_bkg[:]
+                        for out_x in range(1,winx):
+                            output_bkg.append(stdscr.instr(out_x, 0))
+                            UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
                     job_time = time.time() - start_time
                     if not jobid1 == 0:
                         stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + "    | " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
@@ -1132,12 +1166,23 @@ for s in sample:
             stdscr.refresh()
             os.system(command2_background)
             samples_inbackground.append(s)
-
+            if run_in_bkg:
+                del output_bkg[:]
+                for out_x in range(1,winx):
+                    output_bkg.append(stdscr.instr(out_x, 0))
+                    UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
 stdscr.refresh()
 StillRunning=True
 while StillRunning:
     StillRunning=False
+
+    if run_in_bkg:
+        del output_bkg[:]
+        for out_x in range(1,winx):
+            output_bkg.append(stdscr.instr(out_x, 0))
+        UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+
     for x in range(0, len(sample)):
         sample_complete=False
         for finsamp in samples_complete:
@@ -1154,6 +1199,12 @@ while StillRunning:
         runnptmp=runnp
         runcftmp=runcf
         channeltmp=channel
+
+        if run_in_bkg:
+            del output_bkg[:]
+            for out_x in range(1,winx):
+                output_bkg.append(stdscr.instr(out_x, 0))
+            UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
         backgroundsamples=False
         for bs in samples_inbackground:
@@ -1271,6 +1322,12 @@ while StillRunning:
                 stdscr.addstr(int(x)+istatus_message, summary_block6 ,"|    ",curses.A_BOLD)
                 stdscr.refresh()
             if nfin_per == 1.:
+                if run_in_bkg:
+                    del output_bkg[:]
+                    for out_x in range(1,winx):
+                        output_bkg.append(stdscr.instr(out_x, 0))
+                        UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
+
                 stdscr.addstr(int(x)+istatus_message, box_shift,  str(int(x+1)), curses.A_DIM )
                 stdscr.addstr(int(x)+istatus_message, summary_block0,  "| " + cycle, curses.A_DIM )
                 if isMC:
@@ -1310,6 +1367,11 @@ while StillRunning:
                     crash_output.append(logpath)
                     crash_outputjob.append(jobid1)
                     stdscr.refresh()
+                    if run_in_bkg:
+                        del output_bkg[:]
+                        for out_x in range(1,winx):
+                            output_bkg.append(stdscr.instr(out_x, 0))
+                            UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
                 else:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM)
@@ -1367,12 +1429,24 @@ while StillRunning:
                     stdscr.addstr(2+list2+int(x), summary2_block4 ,"| " + str(outputfile_size),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block5 ,"| ",curses.A_DIM)
                     stdscr.refresh()
-
+                    if run_in_bkg:
+                        del output_bkg[:]
+                        for out_x in range(1,winx):
+                            output_bkg.append(stdscr.instr(out_x, 0))
+                            UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
             stdscr.refresh()
-
+            if run_in_bkg:
+                del output_bkg[:]
+                for out_x in range(1,winx):
+                    output_bkg.append(stdscr.instr(out_x, 0))
+                    UpdateOutput(output_bkg,"/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt")
 
             
     stdscr.refresh()
+
+#del output_bkg[:]
+#for out_x in range(1,winx):
+#    output_bkg.append(stdscr.instr(out_x, 0))
 
 
 ############## END OF JOB ################3
@@ -1437,6 +1511,8 @@ if end_job_time > email_time_limit:
     DoSendEmail=True
     email_subject=email_subject+"Job time>600s "
 
+if run_in_bkg:
+    os.system("mv /data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt /data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_finished.txt")
 
 if len(output_warning) > 0:
     print "\n"

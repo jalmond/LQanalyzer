@@ -771,6 +771,8 @@ wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
 
+print "start time = " + str(start_time)
+
 if DEBUG == "True":
     print "Running CATAnalyzer jobs for: " + getpass.getuser()
 
@@ -904,7 +906,7 @@ while not JobSuccess:
     if running_batch == False:
         os.system("ps ux &> " + local_sub_dir + "/log")
     else: 
-        os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/log")
+        os.system("qstat -u '*' > " +  local_sub_dir + "/log")
         
     filename = local_sub_dir +'/log'
     running = False
@@ -944,9 +946,6 @@ while not JobSuccess:
                                 n_cms6+=1
 
                         check_cluster=check_cluster+job_id+"_"
-                        if entries[4] == "r":
-                            if start_running_time == 0.:
-                                start_running_time = time.time()
 
                         if entries[4] == "h":
                             print "Job " + str(job_id) + " is in held state: killing all jobs"
@@ -956,6 +955,7 @@ while not JobSuccess:
                             print "Job " + str(job_id) + " is in suspended state: killing all jobs"
                             os.system("source " + output+ "JobKill.sh")
                             running = False
+
     if not running:
         check_outfile = outputdir + outsamplename +  "_1.root"
         if not (os.path.exists(check_outfile)):
@@ -1008,19 +1008,28 @@ while not JobSuccess:
                 else:
                     check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
                     
-
+                if start_running_time == 0.:    
+                    if i == 1:
+                        start_running_time = time.time()    
                 while not os.path.exists(check_outfile):
+                    if i == 1:
+                        start_running_time = time.time()
+
                     sys.stdout.write('\r' + clear_line)
                     sys.stdout.flush()
                     sys.stdout.write('\r'+ 'Current jobs running : [' + str(i-1) + '/' + str(number_of_cores) + ']... '+ str(number_of_cores-i+1) + ' in queue' )
                     sys.stdout.flush()
-                    time.sleep(5.)
+                    if checkJob:
+                        if sum(1 for item in os.listdir(outputdir) if isfile(join(outputdir, item))) > 0:
+                            job_time = time.time()
+                            checkJob=False
+                    time.sleep(1.)
             if ncycle == 0:
                 sys.stdout.write('\r' + clear_line)
                 sys.stdout.flush()
                 sys.stdout.write('\r'+ 'Current jobs running : [' + str(number_of_cores) + '/' + str(number_of_cores) + ']... ')
                 sys.stdout.flush()
-                time.sleep(2.)
+                time.sleep(1.)
             #### check job is running. Halted or suspended and if not running is output file missing?
             os.system("qstat -u " + getpass.getuser()  + " > " +  local_sub_dir + "/log")
             filename = local_sub_dir +'/log'
@@ -1109,12 +1118,12 @@ while not JobSuccess:
                 sys.stdout.flush()
                 sys.stdout.write('\r'+mess)
                 sys.stdout.flush()
-                time.sleep(2.)
+                time.sleep(1.)
         if ncomplete_files > file_iterator:
             #print str(ncomplete_files) + "/" + str(number_of_cores) + " jobs completed.  " #Wait " + str(timeWait) + " second..."
             #print ""
             file_iterator=ncomplete_files
-        time.sleep(5.)
+        time.sleep(1.)
         ncycle+=1
      
 
@@ -1425,6 +1434,11 @@ statwrite.close()
 statwrite_time.write("time " + str(total_time) + " \n")
 statwrite_time.write("job_time  " + str(job_time-start_running_time)  + " \n")
 statwrite_time.write("last_job_time  " + str(last_job_time-start_running_time)  + " \n")
+print "time " + str(total_time)
+print "job_time  " + str(job_time)
+print "start_running_time " + str(start_running_time)
+print "last_job_time " + str(last_job_time)
+
 pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
 
 if os.path.exists(pathfilesize):

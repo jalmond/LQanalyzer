@@ -37,9 +37,8 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 
   //TString path_of_list="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+TString(getenv("CATVERSION"))+".txt";
   
-  bool NewList(false);
-  if (path_of_list.Contains("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/ca")) NewList=true;
-
+  bool NewList(true);
+  if (path_of_list.Contains("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/ca")) NewList=false;
 
   if(CheckMaps(path_of_list)) return;
   TString def_version = TString(getenv("CATVERSION"));
@@ -47,7 +46,7 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 
   map<TString, TString> missing_map;
   vector<TString> vec_available ;
-  if(NewList){
+  if(!NewList){
     missing_map= GetMissingMap(version,path_of_list);
     vec_available = GetAvailableMap(version,path_of_list);
   }
@@ -178,7 +177,7 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 	  std::ifstream infile("/data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root");
 	  if(!infile.good()) {
 	      jobComplete=false;
-	      cout << "File /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
+	      //cout << "File /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
 	      sleep(5);
 	      break;
 	    }
@@ -256,7 +255,7 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
   lumi_file.precision(5);
 
 
-  if(NewList){
+  if(!NewList){
     lumi_file << "########################" << endl;
     lumi_file << "### CATTUPLES ########## "  << endl;
     lumi_file << "#######################" << endl;
@@ -391,11 +390,9 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
   if(cluster) lfile2 =  lqdir + "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
 
   TString user = TString(getenv("USER"));
-  //gSystem->Exec(("diff " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/" + lfile + " > difflog.txt").c_str());
-    
-  //if(!cluster)gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
-  //else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
-    
+  if(!cluster)gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/").c_str());
+  else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
+
   //gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
   return;

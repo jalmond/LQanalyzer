@@ -1,12 +1,15 @@
 import os,sys, filecmp
 
+from EmailNewEffLumiList import *
 
 def UpdateLumiFile(modlistpath, catversion):
 
     ### xseclist should contain lines that are updated in xsec
     ### samplelist should contain lines for new samples
-    samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
-    newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
+    samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+".txt"
+    newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+"tmp.txt"                                                               
+    #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
+    #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
      
     
     copy_samplelist=[]
@@ -78,7 +81,8 @@ new_catversion=False
 newxsec_list=[]
 newsample_list= []
 
-if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"):
+
+if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+".txt"):
     os.system("rm " + path_full_sample_list)
 
 if os.path.exists(path_full_sample_list):
@@ -212,8 +216,8 @@ if os.path.exists(path_full_sample_list):
         else:     
             UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt", catversion)
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + tag +".txt")
-            samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
-            newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
+            samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+".txt"
+            newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
             print "Is the following list of differences correct:"
             os.system("diff " + samplelist + " " + newsamplelist)
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
@@ -225,6 +229,10 @@ if os.path.exists(path_full_sample_list):
                 print "You ignored changes. The sample list will not be updated"
                 
             os.system("rm " + newsamplelist)    
+        if len(newxsec_list) > 0:
+            EmailNewXsecList(catversion,path_newfile)
+        if len(newsample_list) > 0:
+            EmailNewSampleList(catversion,path_newfile)    
             ### finish later
 
 else:
@@ -235,9 +243,12 @@ else:
     if not os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log"):
         os.system("mkdir "+ os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log") 
 
-    os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+TString(getenv('CATVERSION'))+".txt")
+    os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+os.getenv('CATVERSION')+".txt")
+
     if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log"):
         os.system("rm -r "+os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log")
             
     if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/inputlist_efflumi.txt"):
         os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/inputlist_efflumi.txt")
+    
+    EmailNewList(catversion)    
