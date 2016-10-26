@@ -458,7 +458,6 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keep
 
   
   else if(muid == BaseSelection::MUON_HN_TIGHT){
-    
     if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);
     else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.4);
   }
@@ -1179,7 +1178,6 @@ void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
 
   if(file) m_logger << INFO << "Analyzer: File " << file->GetName() << " was found." << LQLogger::endmsg;
   else m_logger  << INFO <<"Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << LQLogger::endmsg;
-  cerr << "Did not find file "<< file->GetName()  << ", exiting ..." << endl;
 
   if(!file) exit(EXIT_FAILURE);
   return;
@@ -2284,6 +2282,7 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
   if(muons.size()==0)return muons;
 
   vector<snu::KMuon> prompt_muons;
+
   for(unsigned int i = 0; i < muons.size(); i++){
     if(!k_isdata){
 
@@ -2292,7 +2291,6 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
     }// Data
     else prompt_muons.push_back(muons.at(i));
   }/// loop
-
   return prompt_muons;
 
 }

@@ -50,6 +50,7 @@ do
     fi
 done < ${LQANALYZER_DIR}/bin/catconfig
 
+echo njobs=$njobs
 runcommand=""
 if [[ $njobs == "-j 1" ]]; then
     runcommand="running single job"

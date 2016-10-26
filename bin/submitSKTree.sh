@@ -1433,10 +1433,13 @@ if [[ $runDATA  == "true" ]];
       fi
       if [[ ${job_run_fake} == "True" ]];
 	  then
-	  mergefake $istream
-      
+	  if [[ ${run_in_bkg} != "True" ]];then
+	      mergefake $istream
+	  fi
       else
-	  mergeoutput $istream
+	  if [[ ${run_in_bkg} != "True" ]];then
+	      mergeoutput $istream
+	  fi
       fi
     done
 fi

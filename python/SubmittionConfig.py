@@ -299,7 +299,7 @@ def GetLogFilePath(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     outlogname = str(os.getenv("LQANALYZER_LOG_PATH")) + "/" + tmpname + "/" + tmpname+"_Job_*"
     return outlogname
 
-def GetOutFilName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
+def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
     tmpname= GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle)
     outsamplename=""
     if ismc:
@@ -482,7 +482,7 @@ parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How 
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
 parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set number of events to skip")
-parser.add_option("-a", "--datatype", dest="datatype", default="mc", help="Is data or mc?")
+parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
 parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
@@ -900,7 +900,9 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED    ", curses.A_BLINK)
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    if "SKTreeMaker" in cycle:
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
                     crash_output.append( logpath)
@@ -911,7 +913,9 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM) 
                     stdscr.refresh()
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir) + GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    if "SKTreeMaker" in cycle:
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
                     stdscr.refresh()
@@ -1372,7 +1376,9 @@ while StillRunning:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED      ", curses.A_BLINK)
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir)  +GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    if "SKTreeMaker" in cycle:
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
                     crash_output.append(logpath)
@@ -1389,7 +1395,10 @@ while StillRunning:
                     stdscr.refresh()
                 
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir) + GetOutFilName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    if "SKTreeMaker" in cycle:
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
 

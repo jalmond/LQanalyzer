@@ -24,7 +24,7 @@ parser.add_option("-d", "--data_lumi", dest="data_lumi", default="A", help="How 
 parser.add_option("-l", "--loglevel", dest="loglevel", default="INFO", help="Set Log output level")
 parser.add_option("-n", "--nevents", dest="nevents", default=-1, help="Set number of events to process")
 parser.add_option("-k", "--skipevent", dest="skipevent", default=-1, help="Set number of events to skip")
-parser.add_option("-a", "--datatype", dest="datatype", default="mc", help="Is data or mc?")
+parser.add_option("-a", "--datatype", dest="datatype", default="", help="Is data or mc?")
 parser.add_option("-e", "--totalev", dest="totalev", default=-1, help="How many events in sample?")
 parser.add_option("-x", "--xsec", dest="xsec", default=-1., help="How many events in sample?")
 parser.add_option("-X", "--tagger", dest="tagger", default="123", help="random number string?")
@@ -290,23 +290,13 @@ singlejob = number_of_cores==1
 mc = len(sample)>1
 if mc:
     datatype="mc"
-    if "D1" in sample:
-        mc = 0
-        datatype="data"
-    if "D2" in sample:
-        mc = 0
-        datatype="data"
-else:
-    datatype="data"
 
-if sample == "ALL":
+else:
     datatype="data"
 
 if datatype == "mc":
     timeWait=10
 
-if not dataType =="":
-    datatype=dataType
 
 ##################################################################################################################
 ### Make a list of input samples: at the moment this is useless. Will add code to include * options in input

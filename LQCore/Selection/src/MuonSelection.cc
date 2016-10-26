@@ -135,7 +135,7 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float p
 
     bool pass_selection(true);
     if(muit->Pt() == 0.)   continue;
-    
+
     MuonID = PassUserID(muid, *muit);
     if(!MuonID)  pass_selection = false;
 
