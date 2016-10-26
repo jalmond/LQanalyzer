@@ -1,7 +1,7 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-#cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
+cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 
 declare -a list_of_catversions=("v8-0-1" "v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
