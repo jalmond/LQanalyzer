@@ -558,7 +558,7 @@ if runinbkg == "True":
     DoSendEmail=True
     print "Running in background"
     if not  os.getenv("USER") == "jalmond":
-        if "jalmond" in email_user:
+        if "jalmond" in useremail:
             print "Email could not be sent since email address is not set correctly in bin/catconfig."
             print "Please set email address and resubmit job"
             sys.exit()
