@@ -39,6 +39,9 @@ cnamelist=[]
 
 file_full_sample_list = open(path_full_sample_list_user,"w")
 for x in datasetlist:
+    print x
+
+for x in datasetlist:
     if "cattuplist_" in x:
         continue
     
@@ -101,6 +104,7 @@ for x in datasetlist:
         for xd in  cnamelist:
             if name == xd:
                 print "This has the same alias name as a previous file. Fix..."
+                print name
                 sys.exit()
         cdatasetlist.append(part_datasetname)
         cnamelist.append(name)

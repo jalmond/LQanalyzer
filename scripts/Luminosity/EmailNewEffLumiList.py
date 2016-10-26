@@ -43,7 +43,7 @@ def SendEmail(catversion, catuser, message, jobsummary, maillist) :
 ############### Fill message for reason of making new sample                                                                                                                                                                                                           ##########################################################################################
 ########################################################################################## 
 
-def EmailNewSample(catversion, newsamplelist):
+def EmailNewSampleList(catversion, newsamplelist):
     message = []
    
     if not "v8" in catversion:
