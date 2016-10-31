@@ -51,10 +51,17 @@ def EmailNewSampleList(catversion, newsamplelist):
 
     message.append("ADDITIONAL samples added to effective luminosity file for a new cattuple production["+catversion+"]\n")
     message.append("\n")
+    message.append("Run with sktree -i <Alias> \n")
+    message.append("\n")
     message.append("")
     file_samplelist = open(newsamplelist,"r")
     for x in file_samplelist:
-        message.append(x)
+        sx=x.split()
+        if len(sx) == 4:
+            message.append("Alias: "+sx[0]+"  ")
+            message.append("DatasetName: "+sx[1]+" ")
+            message.append("Xsec: "+sx[2]+"\n")
+            #message.append(x)
     file_samplelist.close()
     Copy_File=[]
     emaillist=GetCATAnalyzerMailList()
@@ -73,7 +80,12 @@ def EmailNewXsecList(catversion, xseclist):
     message.append("")
     file_xseclist = open(xseclist,"r")
     for x in file_xseclist:
-        message.append(x)
+        sx=x.split()
+        if len(sx) == 4:
+            message.append("Alias: "+sx[0]+"\n")
+            message.append("DatasetName: "+sx[1]+"\n")
+            message.append("New xsec: "+sx[2]+"\n")
+
     file_xseclist.close()    
 
     emaillist=GetCATAnalyzerMailList()
@@ -88,7 +100,7 @@ def EmailNewList(catversion):
     if not "v8" in catversion:
         catversion=os.getenv("CATVERSION")
 
-    path_newefflumi="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion +".txt"
+    path_newefflumi="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion +".txt"
 
     file_newefflumi=open(path_newefflumi,"r")
 

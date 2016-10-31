@@ -1,4 +1,4 @@
-import os,sys
+import os,sys,getpass
 
 
 output_jobinfo_only=False
@@ -24,8 +24,8 @@ if outinfo == "False":
 else:
     output_jobinfo_only=True
 
-bkg_job_file_path="/data2/CAT_SKTreeOutput/jalmond/CLUSTERLOG" + jobid + "/output_bkg.txt"
-finished_path="/data2/CAT_SKTreeOutput/jalmond/CLUSTERLOG" + jobid + "/output_finished.txt"
+bkg_job_file_path="/data2/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
+finished_path="/data2/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
 if not os.path.exists(bkg_job_file_path):
     if not os.path.exists(finished_path):
         "Job ID " + jobid + " does not exist"
@@ -39,6 +39,8 @@ else:
         outline =""
         for x in range(1,len(sline)):
             outline=outline+ " " + sline[x]
+        if not "|" in outline:
+            continue
         if "Terminal Output" in outline:    
             if output_jobinfo_only:
                 file_bkg_job_file_path.close()
@@ -49,5 +51,8 @@ else:
             print "\n"
             print outline
         else:
-            print outline    
+            if not "Cum.Process" in outline:
+                print outline 
+            if "Code" in outline:
+                print "_"*130
     file_bkg_job_file_path.close()

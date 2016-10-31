@@ -153,6 +153,62 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   std::vector<TString> vtaggers;
   vtaggers.push_back("CSVv2");
   //  vtaggers.push_back("cMVAv2");
+
+
+
+  map<TString, vector<TString> > muonIDMaps;
+  map<TString, vector<float>  > muonIDMapf;
+
+  
+  if(1){
+    ifstream muonselconfig((lqdir + "/LQCore/Selection/config/muons.sel").c_str());
+    if(!muonselconfig) {
+      cerr << "Did not find "+lqdir + "/LQCore/Selection/config/muons.sel'), exiting ..." << endl;
+      exit(EXIT_FAILURE);
+    }
+    string muonline;
+
+    while(getline(muonselconfig,muonline) ){
+      vector<TString> string_muonsel;
+      vector<float> float_muonsel;
+      TString idlabel;
+
+      if (TString(muonline).Contains("ptmin")) continue;
+
+      std::istringstream is( muonline );
+      string tmp;
+      float tmpf;
+
+      for (int x =0; x < 22; x++){
+	if ( x%2 ==0) {
+	  is >> tmp;
+	  continue;
+	}
+	
+	if (x > 10 && x < 16){
+	  is >> tmp;
+          string_muonsel.push_back(tmp );
+        }
+
+	if ( x ==1) {is >> idlabel;} 
+	else {
+	  is >> tmpf;
+	  float_muonsel.push_back(tmpf);
+	}
+      }
+      muonIDMaps[idlabel] = string_muonsel;
+      muonIDMapf[idlabel] = float_muonsel;
+    }
+  }
+  
+  for(std::map<TString,vector<TString> >::const_iterator it = muonIDMaps.begin(); it != muonIDMaps.end(); it++){
+    cout << it->first << " : " <<  endl;
+    for (int i=0; i < it->second.size(); i++){
+      cout << it->second.at(i) << endl;
+    }
+  }
+
+  exit(EXIT_FAILURE);
   
   // List of working points
   std::vector<TString> v_wps;

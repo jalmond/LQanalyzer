@@ -250,6 +250,7 @@ if os.path.exists(path_full_sample_list):
         else:     
             ### update lumifile:
             isnewsample= len(newsample_list) > 0
+            
             UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, isnewsample)
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion+".txt"

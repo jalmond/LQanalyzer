@@ -167,7 +167,7 @@ bool MuonSelection::PassUserID(ID id, snu::KMuon mu){
 bool MuonSelection::HNVetoMuonSelection(KMuon mu) {
 
   bool pass_selection(true);
-  LeptonRelIso = mu.RelIso03();
+  LeptonRelIso = mu.RelIso04();
   
   if(!( LeptonRelIso < 0.6)) pass_selection = false;
   if(!(mu.GlobalChi2() < 500.)) pass_selection = false;

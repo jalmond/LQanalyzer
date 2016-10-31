@@ -4,7 +4,7 @@ import os, getpass, sys,ROOT,time,curses,datetime
 from functions import *
 from datetime import timedelta
 from optparse import OptionParser
-
+from QuickHistCheck import *
 
 large_memory_check=800
 large_file_size=100
@@ -171,7 +171,7 @@ def GetFileSize(defsample, defcycle):
     return CheckJobHistory("FileSize", defsample, defcycle)
                                 
                 
-def SendEmail(jobsummary, deftagger, e_subject, email_user):
+def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist):
 
     if not  os.getenv("USER") == "jalmond":
         if "jalmond" in email_user:
@@ -180,7 +180,10 @@ def SendEmail(jobsummary, deftagger, e_subject, email_user):
 
     path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+    if not sendplots:
+        file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+    else:
+        file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -a "'+ plotlist+ '" -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     file_email.close()
 
     filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
@@ -206,7 +209,7 @@ def CrashHelper(defcrashlog):
             crashmessage=CrashHelpMessage(4)
     for mline in crashmessage:
         print mline        
-    return
+    return crashmessage
 
 def CrashHelpMessage(crashtype):
     crashmessage=[]
@@ -503,6 +506,7 @@ parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add inp
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set user email")
 parser.add_option("-B", "--bkg", dest="bkg", default="False", help="run in bkg")
+parser.add_option("-A","--drawhists",dest="drawhists",default="False", help="draw nothing")
 
 #curses.resizeterm
 
@@ -550,6 +554,8 @@ useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
 runinbkg=options.bkg
+quick_draw=options.drawhists
+
 
 DoSendEmail=False
 run_in_bkg=False
@@ -575,6 +581,12 @@ elif useskim == "SKTree_TriLepSkim":
 sample = sample.replace(":", " ")
 sample = sample.replace("!!", " ")
 sample = sample.split()
+
+for s in sample:
+    print s
+    if not s:
+        sys.exit()
+
 istatus_message=2
 winx = 5*len(sample) + 22 +  istatus_message
 winy = 180
@@ -685,8 +697,15 @@ channeltmp=""
 output_warning=[]
 
 #### Loop over all samples in job
+quickdraw=False
+if quick_draw == "True":
+    quickdraw=True
+
+fileoutputlist=[]
 
 for s in sample:
+    if not s:
+        continue
     ncopies=0
     for s2 in sample:
         if s == s2:
@@ -901,6 +920,7 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED    ", curses.A_BLINK)
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    fileoutputlist.append(outfilepath)
                     if "SKTreeMaker" in cycle:
                         outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
@@ -914,6 +934,7 @@ for s in sample:
                     stdscr.refresh()
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    fileoutputlist.append(outfilepath)
                     if "SKTreeMaker" in cycle:
                         outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
@@ -1377,6 +1398,8 @@ while StillRunning:
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED      ", curses.A_BLINK)
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    fileoutputlist.append(outfilepath)
+
                     if "SKTreeMaker" in cycle:
                         outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
@@ -1396,6 +1419,7 @@ while StillRunning:
                 
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
                     outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    fileoutputlist.append(outfilepath)
                     if "SKTreeMaker" in cycle:
                         outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
 
@@ -1486,6 +1510,19 @@ if not run_in_bkg:
     curses.echo()
     curses.nocbreak()
     curses.endwin()
+
+
+iplotsample=-1
+listofplots=""
+for x in fileoutputlist:
+    iplotsample=iplotsample+1
+    if quickdraw:
+        plotallhist(x,"/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ sample[iplotsample] + "_hist.pdf")
+        if not DoSendEmail:
+            os.system("display " + "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ sample[iplotsample] + "_hist.pdf&")
+        listofplots=listofplots+"/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ sample[iplotsample] + "_hist.pdf,"
+#if listofplots:
+listofplots=listofplots[:-1]
 
 job_summary=[]
 print "\n"
@@ -1599,8 +1636,9 @@ if len(crash_output) > 0:
                     Crash_Printed=True
         print "#"*summary_block6
         job_summary.append("#"*summary_block6+"\n")
-    CrashHelper(crashlog_printout)
-        
+    list_crash=CrashHelper(crashlog_printout)
+    for linecrash in list_crash:
+        job_summary.append(linecrash+"\n")
     
     print " "*summary_block6
     print "Run the following command to help debug job error: command runs crashed job in terminal instead of on batch machine."  
@@ -1612,7 +1650,7 @@ if len(crash_output) > 0:
     DoSendEmail=True
 
 if DoSendEmail:
-    SendEmail(job_summary,tagger,email_subject,useremail)
+    SendEmail(job_summary,tagger,email_subject,useremail,quickdraw, listofplots)
 
 
 ##### CODE WRITEEN TO REMOVE DIRECTORY... THIS WILL BE KEPT UNLESS USER WISHES TO SET RDIR+TRUE
@@ -1637,4 +1675,3 @@ if remdir:
         os.system("rm -r /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG*")
     else:
         os.system("rm -r /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) )
-

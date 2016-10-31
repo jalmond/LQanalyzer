@@ -1,7 +1,5 @@
 #!/bin/sh
-############################################################                                                                                                                    
-################# Do not change anything after this line                                                                                                                        
-############################################################                                                                                                                    
+############################################################                                                                                                                  ################# Do not change anything after this line                                                                                                                      ############################################################                                                                                                                    
 
 if [ -z ${LQANALYZER_DIR} ]
     then
@@ -34,6 +32,7 @@ catversion=$(makeParseVariable 'v' ${catversion})
 skflag=$(makeParseVariable 'f' ${skflag})
 DEBUG=$(makeParseVariable 'D' ${DEBUG})
 usebatch=$(makeParseVariable 'b' ${usebatch})
+drawhists=$(makeParseVariable 'A' ${drawhists})
 
 ################                                                                                                                                                
 
@@ -50,7 +49,6 @@ do
     fi
 done < ${LQANALYZER_DIR}/bin/catconfig
 
-echo njobs=$njobs
 runcommand=""
 if [[ $njobs == "-j 1" ]]; then
     runcommand="running single job"
@@ -64,11 +62,16 @@ do
 done
 samplelist=$sample_list_string
 
+
 if [[ $runcommand  == "" ]]; 
 then
     tagger=$1
-    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg}
-    #done
+    statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
+    if [[ ! -d "${statdir}" ]]; then
+        mkdir ${statdir}
+    fi
+    
+    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists}
 else 
     for i in ${input_samples[@]}
     do
@@ -77,9 +80,8 @@ else
         if [[ ! -d "${statdir}" ]]; then
             mkdir ${statdir}
         fi
-	
-        logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog_$i$tagger.txt
-        logfile_time=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/statlog_time_$i$tagger.txt
+	mkdir /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/
+        logfile=/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/$USER/$tagger/statlog_$i$tagger.txt
         echo "user "$USER >> $logfile
         echo $cycle >> $logfile
         echo $catversion >> $logfile
@@ -91,9 +93,9 @@ else
         echo "cattag "$CATTAG >> $logfile
         date >> $logfile
         echo "############################" >> $logfile
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} 
+	rm $logfile
         #rm /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${tagger)/${i}clust.txt
-        rm $logfile_time
     done
 
 fi

@@ -12,7 +12,7 @@
 #include "TSystem.h"
 
 #include <map>
-#include "SampleMap.C"
+#include "Luminosity/SampleMap.C"
 float GetEventsProcessed(std::string file);
 float GetEventsPassed(std::string file);
 
@@ -25,7 +25,9 @@ Iter next(Iter iter)
 
 void MakeInputListForSubmitScript(){
     
-  map<TString, TString> lqmap_tmp = GetLQMap2016();
+  TString path_of_list="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+TString(getenv("CATVERSION"))+".txt";                                              
+
+  map<TString, TString> lqmap_tmp = GetLQMap2016(path_of_list);
   map<TString, TString> lqmap;
   for(std::map<TString, TString>::iterator mit =lqmap_tmp.begin(); mit != lqmap_tmp.end();++mit){
     TString def_version = TString(getenv("CATVERSION"));
@@ -71,7 +73,7 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "" << endl;
   
-  lumi_file << " declare -a input_samples=('WZ_pythia8')" << endl;;
+  lumi_file << " declare -a input_samples=('WZ')" << endl;;
   lumi_file << "" << endl;
   lumi_file << " declare -a all_mc=('" ;
   
@@ -125,10 +127,10 @@ void MakeInputListForSubmitScript(){
 
 
   lumi_file << "') " << endl;
- lumi_file << "" << endl;
+  lumi_file << "" << endl;
 
  
- lumi_file << " declare -a hn_ll_ee=('" ;
+  lumi_file << " declare -a hn_ll_ee=('" ;
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
     if(!mit->second.Contains("Schan")) continue;
     if(mit->second.Contains("_Mu")) continue;
@@ -200,15 +202,13 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << " declare -a hn_ll_tchann_ee=('" ;
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
-    if(!mit->second.Contains("Tchan")) continue;
-    if(mit->second.Contains("HN_M")) continue;
-    cout << mit->first << " " << mit->second << endl;
+    if(!mit->second.Contains("HN_Tchan")) continue;
+    if(mit->second.Contains("mum")) continue;
+    if(mit->second.Contains("mup")) continue;
     if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
     else  lumi_file << mit->second ;
 
   }
-
-
 
 
   lumi_file << "') " << endl;
@@ -218,15 +218,13 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << " declare -a hn_ll_tchann_mm=('" ;
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
-    if(!mit->second.Contains("Tchan")) continue;
-    if(mit->second.Contains("HN_E")) continue;
-    cout << mit->first << " " << mit->second << endl;
+    if(!mit->second.Contains("HN_Tchan")) continue;
+    if(mit->second.Contains("emem")) continue;
+    if(mit->second.Contains("epep")) continue;
     if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
     else  lumi_file << mit->second ;
 
   }
-
-
 
 
   lumi_file << "') " << endl;
@@ -235,13 +233,13 @@ void MakeInputListForSubmitScript(){
   
   lumi_file << "" << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a diboson_pythia=('WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8')" << endl;
+  lumi_file << "declare -a diboson_pythia=('WZ' 'ZZ' 'WW')" << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a dy_mcatnlo=('DY10to50_MCatNLO' 'DY50plus_MCatNLO') " << endl;
+  lumi_file << "declare -a dy_mcatnlo=('DY10to50' 'DY50plus') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a dilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg'  'WWW_MCatNLO' 'ttWJets' 'ttZJets' 'ttHnobb_Powheg' 'ttHtobb_Powheg' 'ZZZ_MCatNLO' 'WZZ_MCatNLO')" << endl;
+  lumi_file << "declare -a dilepton_list=('DY10to50' 'DY50plus' 'WJets' 'WZ' 'ZZ' 'WW'  'TT' 'singletop_s' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg'  'WWW' 'ttWJets' 'ttZJets' 'ttHnobb_Powheg' 'ttHtobb_Powheg' 'ZZZ' 'WZZ')" << endl;
   
-  lumi_file << "declare -a trilepton_list=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO' 'WZ_pythia8' 'ZZ_pythia8' 'WW_pythia8'  'TT_MCatNLO' 'singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'WZZ_MCatNLO' 'ZZZ_MCatNLO')" << endl;
+  lumi_file << "declare -a trilepton_list=('DY10to50' 'DY50plus' 'WJets' 'WZ' 'ZZ' 'WW'  'TT' 'singletop_s' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'WZZ' 'ZZZ')" << endl;
 
   lumi_file << "" << endl;
 
@@ -289,14 +287,14 @@ void MakeInputListForSubmitScript(){
 
 
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_mm=('WZ_pythia8' 'ZZ_pythia8' 'WpWp_madgraph' 'WpWp_qcd_madgraph'  'ttWJetsToLNu_MCatNLO' 'ttWJetsToQQ_MCatNLO' 'ttZToLLNuNu_MCatNLO' 'ttZToQQ_MCatNLO' 'ttHtobb_Powheg' 'ttHnobb_Powheg' 'WZZ_MCatNLO' 'vhf_Htomm_Powheg' 'ttZToLLNuNu_MCatNLO' 'ggHtomm_Powheg') " << endl;
+  lumi_file << "declare -a hn_mm=('WZ' 'ZZ' 'WpWp_madgraph' 'WpWp_qcd_madgraph'  'ttWJetsToLNu' 'ttWJetsToQQ' 'ttZToLLNuNu' 'ttZToQQ' 'ttHtobb_Powheg' 'ttHnobb_Powheg' 'WZZ' 'vhf_Htomm_Powheg' 'ttZToLLNuNu' 'ggHtomm_Powheg') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_ee=('WZ_pythia8' 'ZZ_pythia8' 'WpWp_madgraph' 'WpWp_qcd_madgraph'  'ttWJetsToLNu_MCatNLO' 'ttWJetsToQQ_MCatNLO' 'ttZToLLNuNu_MCatNLO' 'ttZToQQ_MCatNLO' 'DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'ttHtobb_Powheg' 'ttHnobb_Powheg' 'WZZ_MCatNLO' 'vhf_Htomm_Powheg' 'ttZToLLNuNu_MCatNLO' 'ggHtomm_Powheg') " << endl;
+  lumi_file << "declare -a hn_ee=('WZ' 'ZZ' 'WpWp_madgraph' 'WpWp_qcd_madgraph'  'ttWJetsToLNu' 'ttWJetsToQQ' 'ttZToLLNuNu' 'ttZToQQ' 'DY10to50' 'DY50plus' 'ttHtobb_Powheg' 'ttHnobb_Powheg' 'WZZ' 'vhf_Htomm_Powheg' 'ttZToLLNuNu' 'ggHtomm_Powheg') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_fakeee=('DY10to50_MCatNLO' 'DY50plus_MCatNLO' 'WJets_MCatNLO'  'TT_madgraph')" << endl;
+  lumi_file << "declare -a hn_fakeee=('DY10to50' 'DY50plus' 'WJets'  'TT_madgraph')" << endl;
   lumi_file << "" << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a singletop=('singletop_s_MCatNLO' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg') " << endl;
+  lumi_file << "declare -a singletop=('singletop_s' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg') " << endl;
 
 
   string lqdir = getenv("LQANALYZER_DIR");
@@ -306,7 +304,7 @@ void MakeInputListForSubmitScript(){
   string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_" + string(def_version) +".sh";
 
   if(user.Contains("jalmond"))
-    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").Data());
+    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/").Data());
   gSystem->Exec(("mv " + lfile +" " + lfile2).Data());
 
 

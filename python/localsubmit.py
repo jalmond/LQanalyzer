@@ -761,7 +761,6 @@ wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
 
-print "start time = " + str(start_time)
 
 if DEBUG == "True":
     print "Running CATAnalyzer jobs for: " + getpass.getuser()
@@ -895,8 +894,6 @@ it_counter=0
 while not JobSuccess:
     it_counter+=1
     sub_counter=0
-    print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
-
     if running_batch == False:
         os.system("ps ux &> " + local_sub_dir + "/log")
     else: 
@@ -1034,7 +1031,6 @@ while not JobSuccess:
 
 
             sub_counter+=1
-            print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
             for i in range(1,number_of_cores+1):
                 if not JobOutput:
@@ -1477,13 +1473,13 @@ else:
     statwrite_time.write("Success= True \n")
 
 statwrite_time.close()
-os.system("mv " + statfile_time + " " + statfile_time_complete)
 print "mv " + statfile_time + " " + statfile_time_complete
+os.system("mv " + statfile_time + " " + statfile_time_complete)
+
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
 os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample)
 
-set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
-
-### Remove file without times
-os.system("rm " + set_logfile)
+#set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
+#if os.path.exists(set_logfile):
+#    os.system("rm " + set_logfile)

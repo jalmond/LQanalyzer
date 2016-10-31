@@ -38,8 +38,6 @@ cdatasetlist=[]
 cnamelist=[]
 
 file_full_sample_list = open(path_full_sample_list_user,"w")
-for x in datasetlist:
-    print x
 
 for x in datasetlist:
     if "cattuplist_" in x:

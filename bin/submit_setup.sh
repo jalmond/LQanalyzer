@@ -8,9 +8,9 @@ function usage
     echo "              [-s skim] [-list file_array] [-p data_period] "
     echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion] [-b run_in_bkg]"
-    echo "              [-fake runfake ] [-flip runflip]"     
+    echo "              [-fake runfake ] [-flip runflip] [-attachhist drawhist]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
-    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
+    echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
     echo "              [-tagdiff <tagname>  -sktreelog  ]   "
 
  
@@ -203,7 +203,7 @@ function getinfo_dataset
       if [[ $line == *$getinfo_string* ]];
           then
 
-	  if [[ $line == *$submit_file_tag* ]];
+	  if [[ $line == *" "$submit_file_tag" "* ]];
 	      then
 	      sline=""
 	      if [[ $getinfo_tag == "2" ]];
@@ -1179,6 +1179,9 @@ while [ "$1" != "" ]; do
                                 runlist
                                 exit 1
                                 ;;
+        -attachhist)                   shift
+                                submit_draw=$1
+                                ;;
 
         -A | --AvailableCatuples) shift
 	                        submit_catvlist=$1
@@ -1216,7 +1219,7 @@ while [ "$1" != "" ]; do
 				;;
 
 
-	-dataset | --GetDataSetName)  shift
+	-miniaod | --GetDataSetName)  shift
                             	submit_file_tag=$1
 				submit_catvlist=$2
 				getdatasetname
@@ -1344,7 +1347,7 @@ while [ "$1" != "" ]; do
 				    echo "-userflag| Get user flag   flag1,flag2                        | default = ""        |  pass in string                     |"
 				    
 				    
-				    echo "-dataset | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
+				    echo "-miniaod | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
 				    echo "         |                                                    |                     | Only available from v7-6-3          |"  
                                     echo "-xsec    | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns dataset xsec                |"
                                     echo "         |                                                    |                     | Only available from v7-6-3          |"

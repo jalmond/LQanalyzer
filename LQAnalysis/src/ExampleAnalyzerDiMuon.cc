@@ -73,7 +73,9 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    
   FillCutFlow("NoCut", weight);
   
-  
+  if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+  else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
+
 
    if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
    FillCutFlow("EventCut", weight);
@@ -91,7 +93,7 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    
    vector<TString> trignames;
    trignames.push_back(dimuon_trigmuon_trig1);
-   std::vector<snu::KElectron> electrons =  GetElectrons(BaseSelection::ELECTRON_NOCUT);
+   std::vector<snu::KElectron> electrons =  GetElectrons(false,false,BaseSelection::ELECTRON_NOCUT);
    //   std::vector<snu::KElectron> electrons2 =  GetElectrons(BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0);
 
    std::vector<snu::KJet> jets =   GetJets(BaseSelection::JET_HN);
@@ -105,10 +107,12 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    if(!isData){
      //ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight*trigger_ps;
    }
+
    if(jets.size() > 3){
      if(nbjet > 0){
        if(muons.size() ==2) {
-	 if(electrons.size() == 1){
+	 if(electrons.size() >= 1){
+	   cout << "electrons is tight = " << electrons.at(0).PassTight() << endl;
 	   if(!SameCharge(muons)){
 	     if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 10.){
 	       if(eventbase->GetEvent().PFMET() > 30){

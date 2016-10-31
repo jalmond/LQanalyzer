@@ -2,6 +2,7 @@
 ### sets all configurable variables to defaul values
 
 cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
+cp $LQANALYZER_LUMIFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 declare -a list_of_catversions=("v8-0-1" "v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
@@ -31,6 +32,7 @@ changed_skim=false
 job_output_dir=""
 
 job_run_bkg="False"
+submit_draw="False"
 submit_sk_message=""
 submit_skflag=""
 submit_skinput=true
@@ -1375,6 +1377,27 @@ if [[ $runDATA  == "true" ]];
 	  then
 	  continue
       fi
+
+      if [ -f /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt ];
+      then
+	  cp /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt /data2/CAT_SKTreeOutput/$USER/JobID/IDtmp.txt
+	  while read line
+	  do
+              sline1=$(echo $line | head -n1 | awk '{print $1}')
+              sline2=$(echo $line | head -n1 | awk '{print $2}')
+              sline2=$((sline2+1))
+              new_line=$sline1" "$sline2
+              echo $new_line > /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt
+              JobID=$sline2
+	  done < /data2/CAT_SKTreeOutput/${USER}/JobID/IDtmp.txt
+      fi
+      if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
+          tagger=$JobID
+      else
+          tagger=$RANDOM
+      fi
+      
+
       
       ### set all inputs to default in functions.sh
       source functions.sh
@@ -1394,7 +1417,8 @@ if [[ $runDATA  == "true" ]];
       loglevel=$job_loglevel
       logstep=$job_logstep
       stream=${istream}
-
+      drawhists=${submit_draw}
+      
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1466,6 +1490,7 @@ if [[ $runMC  == "true" ]];
     skipevent=${job_nskip}
     runnp=${job_run_fake}
     runcf=${job_run_flip}
+    drawhists=${submit_draw}
 
 
     if [[ $submit_file_tag  != ""  ]];

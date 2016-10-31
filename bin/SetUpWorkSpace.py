@@ -36,7 +36,7 @@ if not LQANALYZER_DIR == "None" :
 	localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 	cltxtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/Cluster/"
-	os.system("cp " + localfiledir + "/list_all_mc*.sh " + txtfiledir)
+	#os.system("cp " + localfiledir + "/list_all_mc*.sh " + txtfiledir)
 	os.system("cp " + localfiledir + "/triggers_catversion* " + rootfiledir)
 	os.system("cp " + localfiledir + "/lumi_catversion* " + rootfiledir)
 
