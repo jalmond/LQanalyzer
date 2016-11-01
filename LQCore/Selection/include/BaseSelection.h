@@ -88,6 +88,23 @@ class BaseSelection {
   LQEvent k_lqevent;
 
 
+  TString AccessStringMap(TString label, TString id);
+  float AccessFloatMap(TString label, TString id);
+  bool CheckCutFloat(TString label, TString id);
+  bool CheckCutString(TString label, TString id);
+  TString GetString(ID id);
+
+
+  map<TString,vector<pair<TString,TString> > > k_stringmap;
+  map<TString,vector<pair<TString,float> > > k_floatmap;
+
+  void SetIDSMap(std::map<TString, vector<pair<TString,TString> > > smap);
+  void SetIDFMap(std::map<TString, vector<pair<TString,float> > > smap);
+
+  void PrintSIDMap();
+  void PrintFIDMap();
+
+
   BaseSelection();
   BaseSelection& operator= (const BaseSelection& obj);
   BaseSelection(const BaseSelection& bs);

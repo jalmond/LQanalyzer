@@ -27,11 +27,6 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 tag_dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
-march16dir3 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v3/"
-march16dir2 = os.getenv("LQANALYZER_LIB_PATH")+ "/March16v2/"
-march16dir = os.getenv("LQANALYZER_LIB_PATH")+ "/March16/"
-oct15dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/Oct15/"
-april15dir = os.getenv("LQANALYZER_LIB_PATH")+ "/April15/"
 
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
@@ -50,7 +45,7 @@ if not os.path.exists(tag_dir):
     print "Copying all latest rootfiles for use in analysis"
     os.system("cp " + localfiledir + "/*.root " + snufiledir )
     os.system("cp " + localfiledir + "/*.csv " + snufiledir )
-    os.system("cp " + localfiledir + "/*cat*.txt " + snufiledir )
+    #os.system("cp " + localfiledir + "/*cat*.txt " + snufiledir )
     
     logdir =  os.getenv("LQANALYZER_LOG_8TeV_PATH")
     if os.path.exists(logdir):

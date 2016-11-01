@@ -37,9 +37,124 @@ BaseSelection::BaseSelection() {
 
 }
 
+////////// PREDEFINED MUON SELECTIONS                                                                                                        
+
+
+TString BaseSelection::GetString(ID id){
+  if ( id == MUON_HN_VETO) return "MUON_HN_VETO";
+  if ( id == MUON_HN_FAKELOOSE) return "MUON_HN_FAKELOOSE";
+  if ( id == MUON_HN_TIGHT) return  "MUON_HN_TIGHT";
+  if ( id == MUON_POG_LOOSE) return "MUON_POG_LOOSE";
+  if ( id == MUON_POG_MEDIUM) return "MUON_POG_MEDIUM";
+  if ( id == MUON_POG_TIGHT) return  "MUON_POG_TIGHT";
+
+
+  if ( id == MUON_TOP_VETO) return  "MUON_TOP_VETO";
+  if ( id == MUON_TOP_LOOSE) return  "MUON_TOP_LOOSE";
+  if ( id == MUON_TOP_TIGHT) return "MUON_TOP_TIGHT";
+  if ( id == ELECTRON_HN_VETO) return "ELECTRON_HN_VETO";
+  if ( id == ELECTRON_HN_FAKELOOSE) return "ELECTRON_HN_FAKELOOSE";
+  if ( id == ELECTRON_HN_FAKELOOSE_NOD0) return "ELECTRON_HN_FAKELOOSE_NODO";
+  if ( id == ELECTRON_HN_TIGHT) return  "ELECTRON_HN_TIGHT";
+  if ( id == ELECTRON_TOP_VETO) return  "ELECTRON_TOP_VETO";
+  if ( id == ELECTRON_TOP_LOOSE) return  "ELECTRON_TOP_LOOSE";
+  if ( id == ELECTRON_TOP_TIGHT) return "ELECTRON_TOP_TIGHT";
+  if ( id == ELECTRON_NOCUT) return "ELECTRON_NOCUT";
+  if ( id == ELECTRON_POG_VETO) return "ELECTRON_POG_VETO";
+  if ( id == ELECTRON_POG_LOOSE) return "ELECTRON_POG_LOOSE";
+  if ( id == ELECTRON_POG_MEDIUM) return "ELECTRON_POG_MEDIUM";
+  if ( id == ELECTRON_POG_TIGHT) return  "ELECTRON_POG_TIGHT";
+
+  
+  cerr << "Did not find ID for object. Please enter TString of ID not enum" << endl;
+  exit(EXIT_FAILURE);
+
+}
+
+
+void BaseSelection::SetIDSMap(std::map<TString, vector<pair<TString, TString> > > smap){
+
+
+  k_stringmap = smap;
+
+}
+
+void BaseSelection::SetIDFMap(std::map<TString, vector<pair<TString,float> > > fmap){
+  k_floatmap = fmap;
+
+}
+
+void BaseSelection::PrintSIDMap(){
+
+
+  for(std::map<TString, vector<pair<TString,TString> > >::iterator it = k_stringmap.begin() ; it != k_stringmap.end(); it++){
+
+    cout << it->first << " : " << it->second.size() << endl;
+  }
+}
+
+void BaseSelection::PrintFIDMap(){
+
+
+  for(std::map<TString, vector<pair<TString,float> > >::iterator it = k_floatmap.begin() ; it != k_floatmap.end();it++){
+
+    cout << it->first << " : " << it->second.size() << endl;
+  }
+  return;
+}
+
+TString BaseSelection::AccessStringMap(TString label, TString id){
+
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = k_stringmap.find(id);
+  if(it == k_stringmap.end()){
+    cerr << "Did not find string " + id +". Please check string in GetBases"<< endl;
+    exit(EXIT_FAILURE);
+  }
+  else{
+    for (unsigned int i=0; i  < it->second.size(); i++){
+      if ( it->second.at(i).first == label) return it->second.at(i).second;
+    }
+  }
+  return "";
+}
+
+float BaseSelection::AccessFloatMap(TString label, TString id){
+
+  std::map<TString, vector<pair<TString,float> > >::iterator it = k_floatmap.find(id);
+  if(it == k_floatmap.end()){
+    cout << " k_floatmap.size() = " <<  k_floatmap.size() << endl;
+    cerr << "Did not find ID " + id + " Please check string in GetBases"<< endl;
+    exit(EXIT_FAILURE);
+  }
+  else{
+    for(unsigned int i=0; i  <it->second.size(); i++){
+      if ( it->second.at(i).first == label) return it->second.at(i).second;
+    }
+  }
+  return -999.;
+}
+
+
+bool BaseSelection::CheckCutString(TString label, TString id){
+
+  if(AccessStringMap(label,id).Contains("true")) return true;
+  else return false;
+
+}
+
+bool BaseSelection::CheckCutFloat(TString label, TString id){
+
+  if(AccessFloatMap(label,id) == -999) return false;
+  else return true;
+
+}
+
+
 BaseSelection& BaseSelection::operator= (const BaseSelection& bs) 
 {
   if(this != &bs){
+    k_stringmap = bs.k_stringmap;
+    k_floatmap = bs.k_floatmap;
     dz_cut = bs.dz_cut;
     pt_cut_max = bs.pt_cut_max;  
     pt_cut_min = bs.pt_cut_min; 
@@ -77,6 +192,9 @@ BaseSelection& BaseSelection::operator= (const BaseSelection& bs)
 
 
 BaseSelection::BaseSelection(const BaseSelection& bs) {
+  
+  k_stringmap = bs.k_stringmap;
+  k_floatmap = bs.k_floatmap;
   dz_cut = bs.dz_cut;
   pt_cut_max = bs.pt_cut_max;  
   pt_cut_min = bs.pt_cut_min; 

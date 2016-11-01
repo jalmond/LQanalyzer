@@ -11,7 +11,7 @@ function usage
     echo "              [-fake runfake ] [-flip runflip] [-attachhist drawhist]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
     echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
-    echo "              [-tagdiff <tagname>  -sktreelog  ]   "
+    echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME ]   "
 
  
 }
@@ -442,6 +442,23 @@ function print_tag_diff_twotags7
       done <  ${CATTAGDIR}/TagDiff_${ntag}.txt
     done
 
+}
+
+
+function printid
+{
+    
+    if [[ $idname == "" ]];then
+	echo "No input given:"
+    else
+	if [[ $idname2 == "" ]];
+	then
+	    python ${LQANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname 
+	else
+	    python ${LQANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname --id2 $idname2
+	fi
+    fi
+    
 }
 
 
@@ -1209,6 +1226,12 @@ while [ "$1" != "" ]; do
 				exit 1
                                 ;;
 
+	-printID )              shift
+	                        idname=$1
+				idname2=$2
+				printid
+				exit 1
+				;;
 	-D | --GetProductionInfo)  shift
                                 submit_catvlist=$1
                                 getalldatasetinfo
@@ -1344,6 +1367,7 @@ while [ "$1" != "" ]; do
 				    echo "         |                                                    |                     | Only available from v7-6-4          |"
 
 				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+				    echo "-printID | any allowed  ID name                               | default = MUON_POG_TIGHT  | returns Info on object id.|"
 				    echo "-userflag| Get user flag   flag1,flag2                        | default = ""        |  pass in string                     |"
 				    
 				    

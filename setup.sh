@@ -121,8 +121,7 @@ export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
 export isSLC5="False"
-export BTAGDIR=${LQANALYZER_DIR}/BTag/BTagC11/
-export ROCHDIR=${LQANALYZER_DIR}/rochcor2015/rochcor2015C11/
+export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/src/BTag/BTagC11/
 if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
     export OBJ=obj/cms21
@@ -192,9 +191,10 @@ if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
     export LQANALYZER_LOG_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 fi
 
-python ${LQANALYZER_BIN_PATH}/SetUpWorkSpace.py
-python ${LQANALYZER_BIN_PATH}/BackUpDirectory.py
-python ${LQANALYZER_BIN_PATH}/SetupEmailList.py
+
+python ${LQANALYZER_DIR}/python/SetUpWorkSpace.py
+python ${LQANALYZER_DIR}/python/BackUpDirectory.py
+python ${LQANALYZER_DIR}/python/SetupEmailList.py
 # Setup root area and other paths
  
 if [[ `which root-config` == "" ]]; then
@@ -241,7 +241,7 @@ export PATH=${LQANALYZER_BIN_PATH}:${PATH}
 export PYTHONPATH=${LQANALYZER_DIR}/python:${PYTHONPATH}
 export PAR_PATH=./:${LQANALYZER_LIB_PATH}
 
-python bin/local_check.py
+python ${LQANALYZER_DIR}/python/local_check.py
 
 if [ ! -d ${LQANALYZER_LOG_PATH} ]; then
     echo Directory ${LQANALYZER_LOG_PATH} does not exist ... creating it

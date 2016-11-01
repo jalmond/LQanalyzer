@@ -1,5 +1,4 @@
 import os,getpass
-from GetAnalysisRootFiles import *
 from CleanUp import *
 
 LQANALYZER_DIR= str(os.getenv("LQANALYZER_DIR"))
@@ -32,7 +31,6 @@ if not LQANALYZER_DIR == "None" :
 	CleanUpJobLogs(LQANALYZER_LOG)
 	CleanUpLogs(EightTeVdataOne)
 	CleanUpLogs(EightTeVdataTwo)	
-	GetFiles(rootfiledir)
 	localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 	cltxtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/Cluster/"

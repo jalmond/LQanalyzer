@@ -992,7 +992,6 @@ while not JobSuccess:
         nevent_processed=0.
 
         sub_counter+=1
-        print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
 
         if running_batch:
@@ -1124,14 +1123,13 @@ while not JobSuccess:
         time.sleep(1.)
         ncycle+=1
         sub_counter+=1
-        print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
 
 if not JobOutput:
 
     if not running_batch:
         failed_macro= output+ "Job_1/runJob_1.C"
-        failed_log= outsamplename+ "_Job_" + str(0)+".o"+str(array_batchjobs[0])
+        failed_log= outsamplename+ "_Job_" + str(0)+".log"
 
 
    

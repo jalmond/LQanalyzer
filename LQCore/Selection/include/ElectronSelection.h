@@ -24,27 +24,13 @@ class ElectronSelection : public BaseSelection {
 
   // POG 
   void PogID(std::vector<snu::KElectron>& leptonColl, ID elid);
-  void SelectElectrons(std::vector<snu::KElectron>& leptonColl,ID id, float ptcut, float etacut);
+  void SelectElectrons(std::vector<snu::KElectron>& leptonColl,ID id, float ptcut=-999., float etacut=-999.);
+  void SelectElectrons(std::vector<snu::KElectron>& leptonColl,TString id, float ptcut=-999., float etacut=-999.);
   
-  //// HN analysis selection
-  //void HNVetoElectronSelection(std::vector<snu::KElectron>& leptonColl);  
-  //void HNLooseElectronSelection( std::vector<snu::KElectron>& leptonColl);
-  //void HNTightElectronSelection(std::vector<snu::KElectron>& leptonColl,  bool m_debug= false);
-  //bool HNIsTight(snu::KElectron el, bool m_debug); 
-  
-
-
-  //// Top analysis selection
-  bool TopTightElectronSelection(snu::KElectron el);
-  bool TopLooseElectronSelection(snu::KElectron el);
-  bool TopVetoElectronSelection(snu::KElectron el);
-
   
   //// IDS
-  bool PassUserID(ID id,snu::KElectron el ,bool usetight, bool loosend0, float isocut);
-  bool PassUserID(ID id,snu::KElectron el);
-  bool PassUserID_FakeLoose(snu::KElectron el, bool usetight, float isocut);
-  bool PassHNVeto(snu::KElectron el);
+  bool PassUserID(TString id,snu::KElectron el);
+
     
 };
 #endif

@@ -48,6 +48,11 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
 
+  void SetupSelectionMuon(std::string path_sel);
+  void SetupSelectionJet(std::string path_sel);
+  void SetupSelectionElectron(std::string path_sel);
+
+
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
 
   bool EtaRegion(TString reg,  std::vector<snu::KMuon> muons);
@@ -151,6 +156,12 @@ class AnalyzerCore : public LQCycleBase {
   map<int, TString> mapLumiNamePerBlock;
   map<TString,float> trigger_lumi_map_cat2015;
 
+  map<TString,vector<pair<TString,TString> > > selectionIDMapsMuon;
+  map<TString,vector<pair<TString,float> > > selectionIDMapfMuon;
+  map<TString,vector<pair<TString,TString> > > selectionIDMapsElectron;
+  map<TString,vector<pair<TString,float> > > selectionIDMapfElectron;
+  map<TString,vector<pair<TString,TString> > > selectionIDMapsJet;
+  map<TString,vector<pair<TString,float> > > selectionIDMapfJet;
 
 
   map<int, float> mapLumi2016;

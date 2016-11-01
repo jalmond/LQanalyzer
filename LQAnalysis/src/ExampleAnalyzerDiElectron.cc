@@ -86,7 +86,8 @@ void ExampleAnalyzerDiElectron::InitialiseAnalysis() throw( LQError ) {
 void ExampleAnalyzerDiElectron::ExecuteEvents()throw( LQError ){
   
 
-  //  FillHist("Runnumber",eventbase->GetEvent().RunNumber(),1.,Runs, nRun);
+  std::vector<snu::KMuon> electronColl_test            = GetMuons(BaseSelection::MUON_POG_TIGHT);
+  return;
   
   FillHist("weight",weight, 0., 5., 100.);
 

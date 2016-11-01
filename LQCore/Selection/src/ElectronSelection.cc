@@ -1,7 +1,5 @@
 #include "ElectronSelection.h"
 
-/// classes that contain analysis specific code
-#include "ElectronSelectionHN.h"
 
 using namespace snu;
 
@@ -52,13 +50,19 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
 
 
 
-///// NEW FUNCTION TO CALL ALL IDS IN CLASS 
-
 void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID elid, float ptcut, float etacut){
+  return SelectElectrons(leptonColl,GetString(elid), ptcut,etacut);
+}
+  
+void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, float ptcut, float etacut){
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
+    if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",elid);
+    if (etacut == -999.) etacut = AccessFloatMap("|etamax|",elid);
+
     //// DEFAULT cuts
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
@@ -155,30 +159,72 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 }
 
 
-  
-bool ElectronSelection::PassUserID(ID id, snu::KElectron el){
-  return PassUserID(id, el,true,false, 0.5);
-}
+bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
 
-bool ElectronSelection::PassUserID(ID id, snu::KElectron el, bool usetight,bool loosend0,float looseisocut){
-  
-  if ( id == ELECTRON_POG_TIGHT         )  return  el.PassTight();
-  else if ( id == ELECTRON_POG_MEDIUM   )  return  el.PassMedium();
-  else if ( id == ELECTRON_POG_LOOSE    )  {return el.PassLoose();}
-  else if ( id == ELECTRON_POG_VETO     )  return  el.PassVeto();
-  else if ( id == ELECTRON_HN_TIGHT     )  {return  HNTightElectronSelection(el); }
-  else if ( id == ELECTRON_HN_VETO      )  return  HNVetoElectronSelection(el);
-  else if ( id == ELECTRON_HN_FAKELOOSE )  return  HNLooseElectronSelection(el,  usetight, loosend0, looseisocut);
-  else if ( id == ELECTRON_HN_FAKELOOSE_NOD0 )  return  HNLooseElectronSelection(el,  usetight, true, looseisocut);
-  else if ( id == ELECTRON_TOP_TIGHT     ) return  TopTightElectronSelection(el);
-  else if ( id == ELECTRON_TOP_VETO      ) return  TopVetoElectronSelection(el);
-  else if ( id == ELECTRON_TOP_LOOSE     ) return  TopLooseElectronSelection(el);
 
-  else {
-    cout << "Invalid ID set for electron selection" << endl;
-    return false;
+  float isomax_b = AccessFloatMap("isomax03_b",id);
+  float isomax_e = AccessFloatMap("isomax03_b",id);
+  float dxymax_b = AccessFloatMap("|dxymax_b|",id);
+  float dxymax_e = AccessFloatMap("|dxymax_e|",id);
+  float dzmax_b = AccessFloatMap("|dzmax_b|",id);
+  float dzmax_e = AccessFloatMap("|dzmax_e|",id);
+
+
+  bool checkisloose= (CheckCutString("IsLoose(POG)",id));
+  bool checkisveto = (CheckCutString("IsVeto(POG)",id));
+  bool checkismedium = (CheckCutString("IsMedium(POG)",id));
+  bool checkistight  = (CheckCutString("IsTight(POG)",id));
+
+  bool checkchargeconsy = (CheckCutString("GsfCtfScPix",id));
+  bool convveto = (CheckCutString("convveto",id));
+  
+
+  LeptonRelIso = el.PFRelIso(0.3);
+  bool pass_selection=true;
+
+  int snuid = el.SNUID();
+
+  bool pass_veto_noiso = false;
+  bool pass_loose_noiso = false;
+  bool pass_medium_noiso = false;
+  bool pass_tight_noiso = false;
+  if(snuid >= 1000){
+    pass_tight_noiso = true;
+    snuid = snuid - 1000;
+    if(snuid >= 100){
+      pass_medium_noiso= true;
+      snuid = snuid-100;
+      if(snuid >= 10){
+	pass_loose_noiso=true;
+	snuid = snuid-10;
+	if(snuid >= 1){
+	  pass_veto_noiso=true;
+	}
+      }
+    }
   }
+
+
+  if(checkisveto && pass_veto_noiso)  pass_selection = false;
+  if(checkisloose && pass_loose_noiso)  pass_selection = false;
+  if(checkismedium && pass_medium_noiso)  pass_selection = false;
+  if(checkistight && pass_medium_noiso)  pass_selection = false;
   
+  if(convveto&& (!el.PassesConvVeto()) )pass_selection = false;
+  if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) pass_selection = false;
+
+  if(fabs(el.SCEta())<1.566 ){  
+    if((LeptonRelIso > isomax_b))  pass_selection = false;
+    if(fabs(el.dxy()) > dxymax_b) pass_selection = false;
+    if(fabs(el.dz()) > dzmax_b) pass_selection = false;
+  }
+  else{
+    if((LeptonRelIso > isomax_e))  pass_selection = false;
+    if(fabs(el.dxy()) > dxymax_e) pass_selection = false;
+    if(fabs(el.dz()) > dzmax_e) pass_selection = false;
+  }
+
+  return pass_selection;
 }
 
 

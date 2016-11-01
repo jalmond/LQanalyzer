@@ -27,6 +27,7 @@
 
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false) {
 
+  bool debug(false);
 
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
@@ -146,7 +147,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
 
   string lqdir = getenv("LQANALYZER_DIR");
-  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
+  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/LQAnalysis/src/HNCommonLeptonFakes/share/");
   
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
   /// List of taggers
@@ -155,60 +156,19 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   //  vtaggers.push_back("cMVAv2");
 
 
-
-  map<TString, vector<TString> > muonIDMaps;
-  map<TString, vector<float>  > muonIDMapf;
-
+  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
+  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
   
-  if(1){
-    ifstream muonselconfig((lqdir + "/LQCore/Selection/config/muons.sel").c_str());
-    if(!muonselconfig) {
-      cerr << "Did not find "+lqdir + "/LQCore/Selection/config/muons.sel'), exiting ..." << endl;
-      exit(EXIT_FAILURE);
-    }
-    string muonline;
-
-    while(getline(muonselconfig,muonline) ){
-      vector<TString> string_muonsel;
-      vector<float> float_muonsel;
-      TString idlabel;
-
-      if (TString(muonline).Contains("ptmin")) continue;
-
-      std::istringstream is( muonline );
-      string tmp;
-      float tmpf;
-
-      for (int x =0; x < 22; x++){
-	if ( x%2 ==0) {
-	  is >> tmp;
-	  continue;
-	}
-	
-	if (x > 10 && x < 16){
-	  is >> tmp;
-          string_muonsel.push_back(tmp );
-        }
-
-	if ( x ==1) {is >> idlabel;} 
-	else {
-	  is >> tmpf;
-	  float_muonsel.push_back(tmpf);
-	}
+  if(debug){
+    for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
+      cout << it->first << endl;
+      for (int i=0 ; i < it->second.size(); i++){
+	cout << it->second.at(i).first << " " << it->second.at(i).second << endl;
       }
-      muonIDMaps[idlabel] = string_muonsel;
-      muonIDMapf[idlabel] = float_muonsel;
     }
   }
-  
-  for(std::map<TString,vector<TString> >::const_iterator it = muonIDMaps.begin(); it != muonIDMaps.end(); it++){
-    cout << it->first << " : " <<  endl;
-    for (int i=0; i < it->second.size(); i++){
-      cout << it->second.at(i) << endl;
-    }
-  }
+  Message("SetupSelection DONE", DEBUG); 
 
-  exit(EXIT_FAILURE);
   
   // List of working points
   std::vector<TString> v_wps;
@@ -229,6 +189,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   cout << "   ########    ###       ###   ########           " << endl;
   cout << "                                                  " << endl;
 
+  cout << "##################################################" << endl;
   if(0){
     ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2015.txt").c_str());
     if(!runlumi) {
@@ -249,7 +210,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
       if(trigname=="run" ){
 	is >> run;
 	is >> trig_lumi;
-	cout << "Run number :" << run <<" = Muon trigger luminosity = " << trig_lumi << ";" << endl;
+	cout << "Run number :" << run <<" = Muon trigger (unprescaled) luminosity = " << trig_lumi << ";" << endl;
 	
 	mapLumi[run] = trig_lumi;
 	continue;
@@ -298,7 +259,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
       if(trigname=="run" ){
 	is >> run;
 	is >> trig_lumi;
-	cout << "Run number "<< run <<" ; Muon luminosity  " << trig_lumi << ";" << endl;
+	cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
 	
 	mapLumi2016[run] = trig_lumi;
 	continue;
@@ -362,10 +323,19 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
       float trig_lumi;
       is >> trigname;
       if(trigname=="###" ) continue;
-      is >> trig_lumi;
+
       
       if(trigname=="END") break;
-      cout << trigname << " " << trig_lumi << endl;
+      if(!TString(trigname).Contains("Lumi")){
+	is >> trig_lumi;
+	cout << trigname << " " << trig_lumi << endl;
+      }
+      else{
+	string tmp;
+	is >> tmp;
+	is >> trig_lumi;
+	cout << trigname << " " << trig_lumi << endl;
+      }
       trigger_lumi_map_cat2016[TString(trigname)] = trig_lumi;
       continue;
     }
@@ -379,6 +349,140 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
 
 }
+
+
+
+void AnalyzerCore::SetupSelectionJet(std::string path_sel){
+}
+
+void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
+  Message("SetupSelectionMuon", DEBUG);
+  ifstream muonselconfig(path_sel.c_str());
+  if(!muonselconfig) {
+    cerr << "Did not find "+ path_sel+", exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  string muonline;
+  int ncuts=0;
+  vector<TString> cutnames;
+  while(getline(muonselconfig,muonline) ){
+    vector<pair<TString,TString> > string_muonsel;
+    vector<pair<TString,float> > float_muonsel;
+    TString idlabel;
+    if (TString(muonline).Contains("webpage")) continue;
+    if (TString(muonline).Contains("ncut")) {
+      std::istringstream is( muonline );
+      string tmp;
+      int itmp;
+      is >> tmp;
+      is >> itmp;
+      ncuts = 2*(itmp +1);
+      continue;
+    }
+    if (TString(muonline).Contains("ptmin")) {
+      std::istringstream is( muonline );
+      string tmp;
+      for (int x =0; x < ncuts; x++){
+	is >> tmp;
+	cutnames.push_back(TString(tmp));
+      }
+    }
+    else{
+      std::istringstream is( muonline );
+      string tmp;
+      float tmpf;
+      for (int x =0; x < ncuts; x++){
+	if ( x%2 ==0) {
+	  is >> tmp;
+	  continue;
+	}
+
+	if (x > 10 && x < 16){
+	  is >> tmp;
+	  string_muonsel.push_back(make_pair(cutnames.at(x),tmp) );
+
+	}
+	else if ( x ==1) {is >> idlabel;}
+	else {
+	  is >> tmpf;
+	  float_muonsel.push_back(make_pair(cutnames.at(x),tmpf));
+	}
+      }
+    }
+    selectionIDMapsMuon[idlabel] = string_muonsel;
+    selectionIDMapfMuon[idlabel] = float_muonsel;
+  }
+}
+
+
+void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
+
+  Message("SetupSelectionElectron", DEBUG);
+
+  //// currently hard coded set of cuts
+
+  ifstream elselconfig(path_sel.c_str());
+  if(!elselconfig) {
+    cerr << "Did not find "+ path_sel+", exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  string elline;
+  vector<TString> cutnames;
+  int ncuts=0;
+  while(getline(elselconfig,elline) ){
+    vector<pair<TString,TString> > string_elsel;
+    vector<pair<TString,float> > float_elsel;
+    TString idlabel;
+    if (TString(elline).Contains("webpage")) continue;
+    if (TString(elline).Contains("ncut")) {
+      std::istringstream is( elline );
+      string tmp;
+      int itmp;
+      is >> tmp;
+      is >> itmp;
+      ncuts = 2*(itmp +1);
+      continue;
+    }
+
+    if (TString(elline).Contains("ptmin")) {
+      std::istringstream is( elline );
+      string tmp;
+      for (int x =0; x < ncuts; x++){
+        is >> tmp;
+        cutnames.push_back(TString(tmp));
+      }
+    }
+    else{
+      std::istringstream is( elline );
+      string tmp;
+      float tmpf;
+
+      for (int x =0; x < ncuts; x++){
+        if ( x%2 ==0) {
+          is >> tmp;
+          continue;
+        }
+
+        if (x > 10 && x < 18){
+          is >> tmp;
+          string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
+        }
+	else  if (x > 26 && x < 30){
+          is >> tmp;
+          string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
+        }
+        else if ( x ==1) {is >> idlabel;}
+        else {
+          is >> tmpf;
+          float_elsel.push_back(make_pair(cutnames.at(x),tmpf));
+        }
+      }
+    }
+    selectionIDMapsElectron[idlabel] = string_elsel;
+    selectionIDMapfElectron[idlabel] = float_elsel;
+  }
+}
+
 
 std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> taggers, std::vector<TString> wps){
   
@@ -550,7 +654,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
      elid ==  BaseSelection::ELECTRON_POG_MEDIUM|| 
      elid == BaseSelection::ELECTRON_POG_VETO   ||
      elid == BaseSelection::ELECTRON_POG_LOOSE) 
-    {eventbase->GetElectronSel()->SelectElectrons(electronColl, elid, 10., 2.5);}
+    {eventbase->GetElectronSel()->SelectElectrons(electronColl, elid,15., 2.5);}
   
 
   else if(elid == BaseSelection::ELECTRON_HN_TIGHT){
@@ -1113,7 +1217,11 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   //
   
   eventbase = new EventBase(lqevent);
-
+    
+  eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron);
+  eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);
+  eventbase->GetMuonSel()->SetIDSMap(selectionIDMapsMuon);
+  eventbase->GetMuonSel()->SetIDFMap(selectionIDMapfMuon);
   if(!k_isdata){
     if(!changed_target_lumi){
       changed_target_lumi=true;

@@ -31,6 +31,8 @@ job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
 
+idname=""
+idname2=""
 job_run_bkg="False"
 submit_draw="False"
 submit_sk_message=""

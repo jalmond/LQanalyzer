@@ -1,0 +1,9 @@
+| ID              |  ptmin  ||etamax| |  isomin04   | isomax04 | IsTight(PAT)  | IsMedium(PAT)  | IsLoose(PAT)   | dxymax  |  dZmax  | chi2max | 
+| MUON_POG_TIGHT  | 10.     | 2.4     |   0.        | 0.15     | true          | false          |  false         | -999.   | -999.   |  -999.  |
+| MUON_POG_MEDIUM | 10.     | 2.4     |   0.        | 0.25     | false         | true           |  false         | -999.   | -999.   | -999.   |
+| MUON_POG_LOOSE  | 10.     | 2.4     |   0.        | 0.25     | false         | false          |  true          | -999.   | -999.   | -999.   |
+| MUON_HN_TIGHT   | 10.     | 2.4     |   0.        | 0.1      | true          | false          |  false         | 0.05    | -999.   | -999.   |
+| MUON_HN_LOOSE   | 10.     | 2.4     |   0.        | 0.60     | true          | false          |  false         | -999.   | -999.   | -999.   |
+| MUON_HN_VETO    | 10.     | 2.4     |   0.        | 0.60     | false         | false          |  true          | 10.     | 100.    | 500.    |
+| MUON_PTETA      | 10.     | 2.4     |   0.        | 1000.    | false         | false          |  false         | 10000.  | 10000.  | 50000.  |
+| MUON_NOCUT      | 0.      | 8.      |   0.        | 1000.    | false         | false          |  false         | 10000.  | 10000.  | 50000.  |

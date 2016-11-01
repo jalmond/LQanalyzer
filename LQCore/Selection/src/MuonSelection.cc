@@ -6,11 +6,11 @@ MuonSelection::MuonSelection(LQEvent ev) :
   BaseSelection()
 {
   k_lqevent = ev;  
+
 };
 
+
 MuonSelection::~MuonSelection() {};
-
-
 
 void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl, bool m_debug) {
 
@@ -32,7 +32,7 @@ void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl, bool m_debug
 	pass_selection =false;
 	if(m_debug) cout << "BasicSelection:: Muon Fails Eta cut " << endl; 
       }
-      if(! (PassID(MUON_POG_LOOSE, *muit, m_debug))){
+      if(! (PassID("MUON_POG_LOOSE", *muit, m_debug))){
 	pass_selection =false;
 	if(m_debug) cout << "BasicSelection:: Muon Fails Loose Selection" << endl;
       }
@@ -64,7 +64,7 @@ void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl , bool m_debug
         pass_selection =false;
         if(m_debug) cout << "SkimSelection:: Muon Fails Eta cut " << endl;
       }
-      if(! (PassID(MUON_POG_LOOSE, *muit, m_debug))){
+      if(! (PassID("MUON_POG_LOOSE", *muit, m_debug))){
         pass_selection =false;
         if(m_debug) cout << "SkimSelection:: Muon Fails Loose Selection" << endl;
       }
@@ -110,8 +110,8 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
       if(apply_dxycut && !(fabs(muit->dXY())< dxy_cut )) pass_selection = false;
       if(m_debug&&apply_dxycut && !(fabs(muit->dXY())< dxy_cut ))cout << "Fails Selection::dxy cut " << endl;
       
-      if(apply_ID && !PassID(k_id, *muit,m_debug)) pass_selection =false;
-      if(m_debug&& apply_ID && !PassID(MUON_POG_TIGHT, *muit)) cout << "Fails Selection::ID cut " << endl;
+      if(apply_ID && !PassID("k_id", *muit,m_debug)) pass_selection =false;
+      if(m_debug&& apply_ID && !PassID("MUON_POG_TIGHT", *muit)) cout << "Fails Selection::ID cut " << endl;
       
       
       if(apply_chi2cut && !(muit->GlobalChi2() <chiNdof_cut) && !( muit->GlobalChi2()  >=chiNdofMIN_cut)) pass_selection = false;
@@ -127,10 +127,18 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
 }  
 
 
-////////// PREDEFINED MUON SELECTIONS
-  
+
 void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float ptcut, float etacut){
+  
+  return SelectMuons(leptonColl, GetString(muid), ptcut, etacut);
+}
+
+void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid, float ptcut, float etacut){
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+
+  if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",muid);
+  if (etacut == -999.) etacut = AccessFloatMap("|etamax|",muid);
+
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
     bool pass_selection(true);
@@ -139,7 +147,8 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float p
     MuonID = PassUserID(muid, *muit);
     if(!MuonID)  pass_selection = false;
 
-    if(( muit->Pt() < ptcut )) pass_selection = false;
+ 
+   if(( muit->Pt() < ptcut )) pass_selection = false;
     if(!(fabs(muit->Eta()) < etacut)) pass_selection = false;
     if(pass_selection)  leptonColl.push_back(*muit);
   }
@@ -147,106 +156,51 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float p
 }
 
 
-bool MuonSelection::PassUserID(ID id, snu::KMuon mu){
+bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
 
-  if ( id == MUON_POG_LOOSE) return POGID(mu, MUON_POG_LOOSE);
-  if ( id == MUON_POG_MEDIUM) return POGID(mu, MUON_POG_MEDIUM); 
-  if ( id == MUON_POG_TIGHT)return POGID(mu, MUON_POG_TIGHT);
-  if ( id == MUON_HN_VETO) return HNVetoMuonSelection(mu);
+  if(mu.Pt() == 0.) return false;
+
+  float isomax = AccessFloatMap("isomax04",id);
+  //float isomin = AccessFloatMap("isomin04",id);
+  float dxymax = AccessFloatMap("|dxymax|",id);
+  //float dxymin = AccessFloatMap("|dxymin|",id);
+  float dzmax = AccessFloatMap("|dzmax|",id);
+  //float dzmin = AccessFloatMap("|dzmin|",id);
+  float chi2max = AccessFloatMap("chi2max",id);
+  //float chi2min = AccessFloatMap("chi2min",id);
+
+  bool checkisomax     = CheckCutFloat("isomax04",id);
+  //bool checkisomin     = CheckCutFloat("isomin04",id);
+  bool checkdxymax      = CheckCutFloat("|dxymax|",id);
+  //bool checkdxymin      = CheckCutFloat("|dxymin|",id);
+  bool checkdzmax       = CheckCutFloat("|dzmax|",id);
+  //bool checkdzmin       = CheckCutFloat("|dzmin|",id);
+  bool checkchi2max     = CheckCutFloat("chi2max",id);
+  //bool checkchi2min     = CheckCutFloat("chi2min",id);
+  bool checkisloose  = (CheckCutString("IsLoose(POG)",id));
+  bool checkismedium = (CheckCutString("IsMedium(POG)",id));
+  bool checkistight  = (CheckCutString("IsTight(POG)",id));
   
-  if ( id == MUON_HN_FAKELOOSE) return HNLooseMuonSelection(mu);
-  if ( id == MUON_HN_TIGHT) return HNTightMuonSelection(mu);
-  if ( id == MUON_TOP_VETO) return TopVetoMuonSelection(mu);
-  if ( id == MUON_TOP_LOOSE) return TopLooseMuonSelection(mu);
-  if ( id == MUON_TOP_TIGHT) return TopTightMuonSelection(mu);
+
+
+  LeptonRelIso = (mu.RelIso04());
+    
+  bool pass_selection=true;
+  if(checkisloose && ! mu.IsLoose ())  pass_selection = false;
+  if(checkismedium && ! mu.IsMedium ())  pass_selection = false;
+  if(checkistight && ! mu.IsTight ())  pass_selection = false;
+  if(checkisomax && (LeptonRelIso > isomax))  pass_selection = false;
+  //if(checkisomin && (LeptonRelIso < isomin))  pass_selection = false;
+  if(checkdxymax && (fabs(mu.dXY()) > dxymax)) pass_selection = false;
+  //if(checkdxymin && (fabs(mu.dXY()) < dxymin)) pass_selection = false;
+  if(checkdzmax && (fabs(mu.dZ()) > dzmax)) pass_selection = false;
+  //if(checkdzmin && (fabs(mu.dZ()) < dzmin)) pass_selection = false;
+  if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)) pass_selection = false;
+  //if(checkchi2min && (fabs(mu.GlobalChi2()) < chi2min)) pass_selection = false;
+
   return false;
   
 }
-
-
-bool MuonSelection::HNVetoMuonSelection(KMuon mu) {
-
-  bool pass_selection(true);
-  LeptonRelIso = mu.RelIso04();
-  
-  if(!( LeptonRelIso < 0.6)) pass_selection = false;
-  if(!(mu.GlobalChi2() < 500.)) pass_selection = false;
-  if(!(fabs(mu.dZ())< 100.  ))  pass_selection = false;
-  if(!(fabs(mu.dXY())< 10.0 )) pass_selection = false;
-  if(!PassID(MUON_POG_LOOSE, mu))  pass_selection =false;
-  
-  //// Make Loose selection
-  return pass_selection;
-}
-
-bool MuonSelection::HNLooseMuonSelection(KMuon mu) {
-  
-  //### THIS SELECTION IS USED FOR MUON FAKES STUDIES
-  
-  bool pass_selection(true);
-
-  LeptonRelIso = (mu.RelIso04());
-  if(!PassID(MUON_POG_TIGHT, mu)) pass_selection =false;
-  if(!(LeptonRelIso < 0.6)) pass_selection = false;
-  if(( mu.Pt() < 10. ))  pass_selection = false;
-  if(( fabs(mu.Eta()) > 2.4 ))  pass_selection = false;
-
-  return pass_selection;
-
-}
-
-bool MuonSelection::HNIsTight(KMuon muon, bool m_debug){
-  
-  bool pass_selection(true);
-  
-  if(muon.Pt() == 0.) return false;
-  
-  LeptonRelIso = (muon.RelIso04());
-  
-  /// TIGHT MUON SELECTION
-  if(( muon.Pt() < 10. ))  pass_selection = false;
-  if(!(fabs(muon.Eta()) < 2.4))   pass_selection =false;
-  if(!( LeptonRelIso < 0.1))   pass_selection = false;
-  if(!(fabs(muon.dXY())< 0.05 ))  pass_selection = false;
-
-  /// TIGHT MUON from muon POG
-  if(!PassID(MUON_POG_TIGHT, muon, m_debug)) pass_selection =false;
-
-  return pass_selection;
-}
-
-
-bool MuonSelection::POGID(KMuon muon, TString ID){
-
-  bool pass_selection(true);
-
-  if(muon.Pt() == 0.) return false;
-
-  LeptonRelIso = (muon.RelIso04());
-
-  if(ID == MUON_POG_LOOSE){
-    if(! muon.IsLoose ())  pass_selection = false;
-    if(!( LeptonRelIso < 0.25)) {
-      pass_selection = false;
-    }
-  }
-  if(ID== MUON_POG_MEDIUM){
-    if(! muon.IsMedium ())  pass_selection = false;
-    if(!( LeptonRelIso < 0.25)) {
-      pass_selection = false;
-    }
-  }
-
-  if(ID== MUON_POG_TIGHT){
-    if(! muon.IsTight ())  pass_selection = false;
-    if(!( LeptonRelIso < 0.15)) {
-      pass_selection = false;
-    }
-  }
-
-  return pass_selection;
-}
-
 
 
 bool MuonSelection::HNTightMuonSelection(KMuon mu) {
@@ -266,7 +220,7 @@ bool MuonSelection::TopVetoMuonSelection(KMuon mu) {
   LeptonRelIso = (mu.RelIso03());
   
   if(!( LeptonRelIso < 0.2))     pass_selection = false;
-  if(!PassID(MUON_POG_LOOSE, mu))      pass_selection =false;
+  if(!PassID("MUON_POG_LOOSE", mu))      pass_selection =false;
   //// Make Loose selection
   
   return pass_selection;
@@ -281,7 +235,7 @@ bool MuonSelection::TopLooseMuonSelection(KMuon mu) {
   if(mu.Pt() == 0.) return false;
   LeptonRelIso = (mu.RelIso03());
 
-  if(!PassID(MUON_POG_LOOSE, mu)) pass_selection =false;
+  if(!PassID("MUON_POG_LOOSE", mu)) pass_selection =false;
   if(!( LeptonRelIso < 0.2)) pass_selection = false;
 
   
@@ -301,7 +255,7 @@ bool MuonSelection::TopTightMuonSelection(KMuon mu) {
   if(!(fabs(mu.dXY())< 0.005 ))   pass_selection = false;
   
   /// TIGHT MUON from muon POG
-  if(!PassID(MUON_POG_TIGHT, mu)) pass_selection =false;
+  if(!PassID("MUON_POG_TIGHT", mu)) pass_selection =false;
   if(mu.Pt() == 0.) return false;
   return pass_selection;
 
@@ -309,12 +263,12 @@ bool MuonSelection::TopTightMuonSelection(KMuon mu) {
 
 
 /// NO LONGER NEEDED
-bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
+bool MuonSelection::PassID(TString id, snu::KMuon mu, bool m_debug){
   
   
   /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonIdRun2
   bool passID(true);
-  if (id == MUON_POG_LOOSE) {
+  if (id == "MUON_POG_LOOSE") {
     if(!(mu.IsPF() == 1)) {
       passID = false;
       if(m_debug)cout << "PassID: Fail isPF" << endl;
@@ -330,7 +284,7 @@ bool MuonSelection::PassID(ID id, snu::KMuon mu, bool m_debug){
   }
 
 
-  else if (id == MUON_POG_TIGHT) {
+  else if (id == "MUON_POG_TIGHT") {
     if(!(mu.IsPF() == 1        )){
       passID = false;
       if(m_debug)cout << "PassID: Fail isPF" << endl;
@@ -396,6 +350,7 @@ MuonSelection& MuonSelection::operator= (const MuonSelection& ms) {
   if(this != &ms){    
     BaseSelection::operator = (ms);
     k_lqevent = ms.k_lqevent;  
+
   }
   return *this;
 };
@@ -403,6 +358,6 @@ MuonSelection& MuonSelection::operator= (const MuonSelection& ms) {
 MuonSelection::MuonSelection(const MuonSelection& ms):
   BaseSelection(ms)
 {
-  k_lqevent = ms.k_lqevent;  
+  k_lqevent = ms.k_lqevent; 
 };
 
