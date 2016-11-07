@@ -1,4 +1,4 @@
-// $Id: ExampleAnalyzerDiMuon.cc 1 2013-11-26 10:23:10Z jalmond $
+1;95;0c// $Id: ExampleAnalyzerDiMuon.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQExampleAnalyzerDiMuon Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
@@ -60,11 +60,11 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
    /// The string cut must match a bin label in FillCutFlow function
    FillCutFlow("NoCut", weight);
    
-   cout << "JES UNC GetJECUncertainty(FlavorPureQuark, 2.2, 100.,true) = " << GetJECUncertainty("FlavorPureQuark", 2.2, 100.,true) << endl;
-   cout << "JES UNC GetJECUncertainty(FlavorPureQuark, 5.2, 1000.,true) = " << GetJECUncertainty("FlavorPureQuark", 5.2, 1000.,true) << endl;
-   cout << "JES UNC GetJECUncertainty(FlavorPureGluon, 0.1, 500.,true) = " << GetJECUncertainty("FlavorPureGluon", 0.1, 500.,true) << endl;
+   //cout << "JES UNC GetJECUncertainty(FlavorPureQuark, 2.2, 100.,true) = " << GetJECUncertainty("FlavorPureQuark", 2.2, 100.,true) << endl;
+   //cout << "JES UNC GetJECUncertainty(FlavorPureQuark, 5.2, 1000.,true) = " << GetJECUncertainty("FlavorPureQuark", 5.2, 1000.,true) << endl;
+   //cout << "JES UNC GetJECUncertainty(FlavorPureGluon, 0.1, 500.,true) = " << GetJECUncertainty("FlavorPureGluon", 0.1, 500.,true) << endl;
 
-   return;
+   //return;
 
    std::vector<snu::KJet> jetColl             = GetJets("loosest");
    

@@ -45,7 +45,7 @@ then
 	then
 	    queue="exclude_1"
 	fi
-	python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use538ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${usebatch} ${samples2016} ${queue} &> $i"log.txt"&
+	python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${use5312ntuples} ${use538ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${usebatch} ${samples2016} ${queue} 
     done
 
   

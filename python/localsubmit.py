@@ -203,9 +203,9 @@ if not len(splitsample)==1:
 
 ###########################################################################################
 ###########################################################################################
-### DEFAULT  settings for runnning in batch mode. True for cmscluster.snu.ac.kr
+### DEFAULT  settings for runnning in batch mode. True for tamsa2.snu.ac.kr
 running_batch=False
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     running_batch=True
 
 if str(usebatch) == "NULL":
@@ -243,7 +243,7 @@ if not str(cycle) == "SKTreeMaker":
 ############################################################
 
 output_mounted="/data2"
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data4"
 
 tmpwork = output_mounted+"/LQ_SKTreeOutput/"+ getpass.getuser() + "/"
@@ -317,7 +317,7 @@ if number_of_cores > 1:
             number_of_cores = 15 - n_previous_jobs
         if number_of_cores > 10:
             number_of_cores = 10
-            if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+            if not "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
                 print "Number of sub jobs is set too high. Reset to default of 30."
     else:
         if number_of_cores > 5:
@@ -325,7 +325,7 @@ if number_of_cores > 1:
                 if not str(cycle) == "SKTreeMakerNoCut":
                     if not str(cycle) == "SKTreeMakerDiLep":
                         number_of_cores = 5
-                        if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        if not "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
                             print "Number of sub jobs is set too high. Reset to default of 5."
 
 if "SKTreeMaker" in str(cycle):
@@ -384,7 +384,7 @@ if samples2016 =="True":
     new_sample_fix="_2016"
 elif samples2016 == "true":
     new_sample_fix="_2016"
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     new_sample_fix=""
 
 
@@ -474,7 +474,7 @@ if IsSKTree:
                 if len(entries)==5:
                     if new_channel ==entries[0] and sample == entries[1]:
                         inDS = entries[4]        
-                        if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
                             ntup_path_link = entries[2]
                         else:
                             ntup_path_link = entries[3]
@@ -492,7 +492,7 @@ if IsSKTree:
                     if sample == entries[0]:
                         eff_lumi = entries[1]
                         inDS = entries[4]
-                        if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
                             ntup_path_link = entries[2]
                         else:
                             ntup_path_link = entries[3]
@@ -504,7 +504,7 @@ else:
                 if len(entries)==5:
                     if new_channel ==entries[0] and sample == entries[1]:
                         inDS = entries[4]
-                        if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
                             ntup_path_link = entries[2]
                         else:
                             ntup_path_link = entries[3]
@@ -521,7 +521,7 @@ else:
                     if sample == entries[0]:
                         eff_lumi = entries[1]
                         inDS = entries[4]
-                        if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+                        if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
                             ntup_path_link = entries[2]
                         else:
                             ntup_path_link = entries[3]
@@ -623,7 +623,7 @@ if running_batch:
             if number_of_cores > 100:
                 number_of_cores = 100
 
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     if not running_batch:
         number_of_cores = 1
         print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME"))
@@ -1177,7 +1177,7 @@ else:
 
 
     SKTreeOutput = "/data1/LocalNtuples/Tag27_CMSSW_5_3_20/SKTrees/April16/"  
-    if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
         SKTreeOutput = "/data4/LocalNtuples/SKTrees8TeV/Tag27_CMSSW_5_3_20/SKTrees/"
    
     #do not merge the output when using tree maker code

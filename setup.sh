@@ -14,7 +14,7 @@ echo "Setting up environment for compiling/running LQAnalzer with SKTree"
 
 if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
 then
-    if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
 	echo "Setup failed. LQanalyzer needs to be in /data4/LQAnalyzerCode/"$USER
 	if [ ! -d /data4/LQAnalyzerCode/$USER ]; then
@@ -35,7 +35,7 @@ fi
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     export root_setup="/usr/local/bin/thisroot.sh"
-elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then 
     source /share/apps/root_v5_34_32/root/bin/thisroot.sh
 else
@@ -49,7 +49,7 @@ export LQANALYZER_DIR=${PWD}
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/Dec14/"
 
-if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     export LQANALYZER_FILE_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/LQAnalysis/April15/"
 fi
@@ -67,7 +67,7 @@ then
     export OBJ=obj/slc6_cms1
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/slc6_cms1
 
-elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
     export OBJ=obj/cluster/
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cluster/
@@ -107,6 +107,10 @@ export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
 
+if [ ! -d ${LQANALYZER_OUTPUT_PATH} ]; then
+     mkdir ${LQANALYZER_OUTPUT_PATH}
+fi
+
 
 if [ ! -d ${LQANALYZER_OLDLIB_PATH} ]; then
     echo Directory ${LQANALYZER_OLDLIB_PATH} does not exist ... creating it
@@ -138,7 +142,7 @@ fi
 export LQANALYZER_OUTPUT_PATH=/data2/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
 export LQANALYZER_LOG_PATH=/data2/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 
-if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
     export LQANALYZER_OUTPUT_PATH=/data4/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
     export LQANALYZER_LOG_PATH=/data4/LQ_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
