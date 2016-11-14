@@ -14,7 +14,6 @@ time_increase_warning=2.
 email_time_limit=600.
 
 
-
 def UpdateOutput(outputlist,outputlist_path):
     out_file = open(outputlist_path,"w")
     for x in outputlist:
@@ -36,6 +35,7 @@ def GetListNew():
     ### This should help fix any possible memory leaks when the happen
     clist=[]
     clist.append("v8-0-1.8")
+    clist.append("v8-0-2")### this will take care of all 802 tags
     return clist
 
 def GetList():
@@ -50,14 +50,19 @@ def NewForat(ct):
     for ctag in clist:
         if ct == ctag:
             return True
+        if ctag in ct:
+            return True
     return False
 
 def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
 
+    if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+        return 1000
+
     if ncores_job == 1:
-        return 1.
+        return 1
     
-    path_clust_check_njobs="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/clustercheck.txt"
+    path_clust_check_njobs="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
     os.system("qstat -u '*'  > " +  path_clust_check_njobs)
     file_clust_check_njobs=open(path_clust_check_njobs ,"r")
     nrunning=0.
@@ -65,7 +70,7 @@ def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
         nrunning = nrunning + 1.
     file_clust_check_njobs.close()
 
-    pre_job_time=GetTime(defsample,defcycle)
+    pre_job_time=GetTime(defsample,defcycle,deftagger)
     if pre_job_time == "None":
         pre_job_time=100.
     njobs_max=250
@@ -93,7 +98,7 @@ def DetermineNjobs(ncores_job, deftagger,defsample,defcycle):
         else:
             return njobs_max
 
-def CheckJobHistory(info_type, defsample, defcycle):
+def CheckJobHistory(info_type, defsample, defcycle, tagger):
     
     jobline=""
     list_tags=GetList()
@@ -104,9 +109,10 @@ def CheckJobHistory(info_type, defsample, defcycle):
         cattag=list_tags[itag]
         newformat=NewForat(cattag)
 
-        info_file_master = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v8-0-1.txt"
-        info_file= "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/MasterFile_v8-0-1.txt"
-        os.system("cp " + info_file_master + " " + info_file)
+        #info_file_master = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
+        info_file= "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+
+        #os.system("cp " + info_file_master + " " + info_file)
         read_info_file = open(info_file,"r")
         isuser=False
         iscycle=False
@@ -158,17 +164,17 @@ def CheckJobHistory(info_type, defsample, defcycle):
 
     return "None"        
 
-def GetVirtualMemoryUsage(defsample, defcycle):
-    return CheckJobHistory("MemoryV", defsample, defcycle)
+def GetVirtualMemoryUsage(defsample, defcycle,tagger):
+    return CheckJobHistory("MemoryV", defsample, defcycle, tagger)
 
-def GetPhysicalMemoryUsage(defsample, defcycle):
-    return CheckJobHistory("MemoryP", defsample, defcycle)
+def GetPhysicalMemoryUsage(defsample, defcycle, tagger):
+    return CheckJobHistory("MemoryP", defsample, defcycle, tagger)
 
-def GetTime(defsample, defcycle):
-    return CheckJobHistory("Time", defsample, defcycle)
+def GetTime(defsample, defcycle, tagger):
+    return CheckJobHistory("Time", defsample, defcycle, tagger)
 
-def GetFileSize(defsample, defcycle):
-    return CheckJobHistory("FileSize", defsample, defcycle)
+def GetFileSize(defsample, defcycle,tagger):
+    return CheckJobHistory("FileSize", defsample, defcycle,tagger)
                                 
                 
 def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist):
@@ -178,12 +184,16 @@ def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist)
             print "Email could not be set since email address is not set correctly in bin/catconfig."
             return 
 
+    plotstring =""
+    for x in plotlist:
+        plotstring = plotstring+" -a " + x + " "
+
     path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
     file_email=open(path_file_email,"w")
     if not sendplots:
         file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     else:
-        file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -a "'+ plotlist+ '" -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     file_email.close()
 
     filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
@@ -370,10 +380,10 @@ def FileSizeInB(fsize):
     else:
         return float(float_only_fsize)
 
-def LargeFileSizeIncrease(fsize,defsample, defcycle):
-    if GetFileSize(defsample, defcycle) == "None":
+def LargeFileSizeIncrease(fsize,defsample, defcycle, tagger):
+    if GetFileSize(defsample, defcycle,tagger) == "None":
         return False
-    file_size_prev=   FileSizeInB(GetFileSize(defsample, defcycle))
+    file_size_prev=   FileSizeInB(GetFileSize(defsample, defcycle, tagger))
     file_size = FileSizeInB(fsize)
     if file_size > file_increase_warning*file_size_prev:
         return True
@@ -381,8 +391,8 @@ def LargeFileSizeIncrease(fsize,defsample, defcycle):
         return False
     
 
-def TimeIncrease(stime,defsample, defcycle):
-    time_prev=GetTime(defsample, defcycle)
+def TimeIncrease(stime,defsample, defcycle, tagger):
+    time_prev=GetTime(defsample, defcycle, tagger)
     if time_prev == "None":
         return False
 
@@ -406,9 +416,9 @@ def LargeMemory(mem):
         return False
 
 
-def LargePhysicalMemoryIncrease(mem,defsample, defcycle):
+def LargePhysicalMemoryIncrease(mem,defsample, defcycle, tagger):
 
-    if GetPhysicalMemoryUsage(defsample, defcycle) == "None":
+    if GetPhysicalMemoryUsage(defsample, defcycle, tagger) == "None":
         return False
     
     if not "MB" in str(mem):
@@ -421,21 +431,21 @@ def LargePhysicalMemoryIncrease(mem,defsample, defcycle):
     rounded_float= str(round(float(float_only_mem),2))
     if unit_only_mem == "MB":
         if rounded_float < 300:
-            if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle))*1.4:
+            if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger))*1.4:
                 return True
             else:
                 return False
         else:
-             if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle))*1.3:
+             if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger))*1.3:
                  return True
              else:
                  return False
     return False 
     
 
-def LargeVirtualMemoryIncrease(mem,defsample, defcycle):
+def LargeVirtualMemoryIncrease(mem,defsample, defcycle, tagger):
 
-    if GetVirtualMemoryUsage(defsample, defcycle) == "None":
+    if GetVirtualMemoryUsage(defsample, defcycle,tagger) == "None":
         return False
     if not "MB" in str(mem):
         return False
@@ -447,12 +457,12 @@ def LargeVirtualMemoryIncrease(mem,defsample, defcycle):
     rounded_float= str(round(float(float_only_mem),2))
     if unit_only_mem == "MB":
         if rounded_float < 300:
-            if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle))*1.4:
+            if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle, tagger))*1.4:
                 return True
             else:
                 return False
         else:
-             if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle))*1.3:
+             if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle,tagger))*1.3:
                  return True
              else:
                  return False
@@ -677,6 +687,16 @@ if not os.path.exists(statdir):
 
 if channel == "":
     channel = NULL
+
+if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+    os.system("cp  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt")
+
+
+jobinfo_file_master = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"
+jobinfo_file= "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/PreMasterFile_"+os.getenv("CATVERSION")+ str(tagger)+".txt"
+os.system("cp " + jobinfo_file_master + " " + jobinfo_file)
+
+
 
 #http://stackoverflow.com/questions/14300770/how-to-noutrefresh-the-multi-line-output-dynamically
 ### split sample and check cluster queue
@@ -970,17 +990,29 @@ for s in sample:
                     if LargeMemory(memoryusage_v):
                         output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
 
-                    if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle):
-                        output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle) + ". This is likely a memory leak introduced recently")
-                    if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle):
-                        output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle) + ". This is likely a memory leak introduced recently")    
-                    if LargeFileSize(outputfile_size):
-                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
-                    if LargeFileSizeIncrease(outputfile_size,sample[x], cycle):
-                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle))
-                    if TimeIncrease(first_job_time,sample[x], cycle):
-                        output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle))
-                        
+                    if isMC:
+                        if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger) + ". This is likely a memory leak introduced recently")
+                        if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle,tagger):
+                                output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger) + ". This is likely a memory leak introduced recently")    
+                        if LargeFileSize(outputfile_size):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                        if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger))
+                        if TimeIncrease(first_job_time,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger))
+                    else:
+                        if LargePhysicalMemoryIncrease(memoryusage_p,channel + "_" + sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" + sample[x], cycle,tagger) + ". This is likely a memory leak introduced recently")
+                        if LargeVirtualMemoryIncrease(memoryusage_v,channel + "_" + sample[x], cycle,tagger):
+                                output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" + sample[x], cycle,tagger) + ". This is likely a memory leak introduced recently")
+                        if LargeFileSize(outputfile_size):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                        if LargeFileSizeIncrease(outputfile_size,channel + "_" + sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" + sample[x], cycle,tagger))
+                        if TimeIncrease(first_job_time,channel + "_" + sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(vsample[x], cycle,tagger))
+     
                         
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM) 
                     stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM) 
@@ -1456,17 +1488,29 @@ while StillRunning:
                     if LargeMemory(memoryusage_v):
                         output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
 
-                    if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle):
-                        output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle))
-                    if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle):
-                        output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle))
-                    if LargeFileSize(outputfile_size):
-                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
-                    if LargeFileSizeIncrease(outputfile_size,sample[x], cycle):
-                        output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle))
-                    if TimeIncrease(first_job_time,sample[x], cycle):
-                        output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle))
-
+                    if isMC:
+                        if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger))
+                        if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger))
+                        if LargeFileSize(outputfile_size):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                        if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger))
+                        if TimeIncrease(first_job_time,sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger))
+                    else:
+                        if LargePhysicalMemoryIncrease(memoryusage_p,channel + "_" +sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" +sample[x], cycle,tagger))
+                        if LargeVirtualMemoryIncrease(memoryusage_v,channel + "_" +sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" +sample[x], cycle,tagger))
+                        if LargeFileSize(outputfile_size):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                        if LargeFileSizeIncrease(outputfile_size,channel + "_" +sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" +sample[x], cycle,tagger))
+                        if TimeIncrease(first_job_time,channel + "_" +sample[x], cycle,tagger):
+                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(channel + "_" +sample[x], cycle,tagger))
+               
 
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block3 ,"| " + RoundMemory(memoryusage_v),curses.A_DIM)
@@ -1513,16 +1557,28 @@ if not run_in_bkg:
 
 
 iplotsample=-1
-listofplots=""
-for x in fileoutputlist:
-    iplotsample=iplotsample+1
-    if quickdraw:
-        plotallhist(x,"/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ sample[iplotsample] + "_hist.pdf")
-        if not DoSendEmail:
-            os.system("display " + "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ sample[iplotsample] + "_hist.pdf&")
-        listofplots=listofplots+"/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ sample[iplotsample] + "_hist.pdf,"
-#if listofplots:
-listofplots=listofplots[:-1]
+listofplots=[]
+
+collist=[]
+#fcol    870       
+#zcol    64
+#wcol    92
+#wwcol   68
+#zzcol   80
+#wzcol   74
+#ttvcol  88
+#tcol    88 
+#ttcol   97
+collist.append(64) 
+collist.append(92) 
+collist.append(68) 
+
+if quickdraw:
+    plotallhist(fileoutputlist,"/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf", collist, tagger)
+    if not DoSendEmail:
+        os.system("display " + "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf&")
+    listofplots.append("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger) + "_hist.pdf")
+
 
 job_summary=[]
 print "\n"

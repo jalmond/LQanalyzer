@@ -7,9 +7,7 @@
 #pragma link C++ nestedclass;
 
 #pragma link C++ class AnalyzerCore+;
-#pragma link C++ class ExampleAnalyzerDiMuon+;
-#pragma link C++ class ExampleAnalyzerDiElectron+;
-#pragma link C++ class ExampleAnalyzerElectronMuon+;
+#pragma link C++ class ExampleAnalyzer+;
 #pragma link C++ class HNDiElectron+;
 #pragma link C++ class FakeRateCalculator_El+;
 #pragma link C++ class SKTreeMaker+;

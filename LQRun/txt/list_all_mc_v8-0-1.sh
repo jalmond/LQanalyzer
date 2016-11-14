@@ -27,7 +27,7 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_user_mc.sh
 
  declare -a hn_mmm=('') 
 
- declare -a hn_ll_tchann_ee=('HN_Tchannel_emem_M-100' 'HN_Tchannel_emem_M-1100' 'HN_Tchannel_emem_M-200' 'HN_Tchannel_emem_M-500' 'HN_Tchannel_epep_M-100' 'HN_Tchannel_epep_M-1100' 'HN_Tchannel_epep_M-200' 'HN_Tchannel_epep_M-500' '') 
+ declare -a hn_ll_tchann_ee=('HN_Tchannel_emem_M-100' 'HN_Tchannel_emem_M-1100' 'HN_Tchannel_emem_M-200' 'HN_Tchannel_emem_M-500' 'HN_Tchannel_epep_M-100' 'HN_Tchannel_epep_M-1100' 'HN_Tchannel_epep_M-200' 'HN_Tchannel_epep_M-500') 
 
  declare -a hn_ll_tchann_mm=('HN_Tchannel_mummum_M-100' 'HN_Tchannel_mummum_M-1100' 'HN_Tchannel_mummum_M-200' 'HN_Tchannel_mummum_M-500' 'HN_Tchannel_mupmup_M-100' 'HN_Tchannel_mupmup_M-1100' 'HN_Tchannel_mupmup_M-200' 'HN_Tchannel_mupmup_M-500' '') 
 

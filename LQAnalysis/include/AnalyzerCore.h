@@ -17,6 +17,9 @@ class EventBase;
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
 #include "BTag/BTagSFUtil.h"
+#include "TNtupleD.h"
+#include "TNtuple.h"
+
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -41,17 +44,26 @@ class AnalyzerCore : public LQCycleBase {
 
 
   TDirectory*   getTemporaryDirectory(void) const;
+ 
+  TString GetStringID(BaseSelection::ID id);
+  std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
-  std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid);
-  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid);
-  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, bool keepfakes);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
-  std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
+  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
+
+  std::vector<snu::KJet>  GetJets(TString jetid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KMuon> GetMuons(TString muid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KMuon> GetMuons(TString muid, bool keepfakes, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString elid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons( TString elid , float ptcut=-999., float etacut = -999.);
 
   void SetupSelectionMuon(std::string path_sel);
   void SetupSelectionJet(std::string path_sel);
   void SetupSelectionElectron(std::string path_sel);
 
+  void FillCutFlow(TString cut, float weight);
 
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
 
@@ -113,7 +125,6 @@ class AnalyzerCore : public LQCycleBase {
  
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
-  void SmearJets(vector<snu::KJet>& k_jets);
 
 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
@@ -150,6 +161,8 @@ class AnalyzerCore : public LQCycleBase {
   TDirectory *Dir;
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
+  map<TString, TNtupleD*> mapntp;
+
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 
   map<int, float> mapLumiPerBlock;
@@ -169,6 +182,8 @@ class AnalyzerCore : public LQCycleBase {
   map<int, float> mapLumiPerBlock2016;
   map<int, TString> mapLumiNamePerBlock2016;
   map<TString,float> trigger_lumi_map_cat2016;
+
+  std::vector<TString> cutflow_list;
 
   TH2F* FRHist;
   TH2F* MuonSF;
@@ -191,6 +206,7 @@ class AnalyzerCore : public LQCycleBase {
   HNCommonLeptonFakes* m_fakeobj;
 
 
+  int n_cutflowcuts;
 
   /// Event weights
   Double_t MCweight, weight;
@@ -226,10 +242,10 @@ class AnalyzerCore : public LQCycleBase {
   // Make Histograms and fill maphist
   //
   void MakeHistograms();
-  void MakeHistograms(TString hname, int nbins, float xmin, float xmax);
-  void MakeHistograms(TString hname, int nbins, float xbins[]);
-  void MakeHistograms2D(TString hname, int nbinsx, float xbins[], int nbinsy, float ybins[]);
-  void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax);
+  void MakeHistograms(TString hname, int nbins, float xmin, float xmax, TString label="");
+  void MakeHistograms(TString hname, int nbins, float xbins[], TString label="");
+  void MakeHistograms2D(TString hname, int nbinsx, float xbins[], int nbinsy, float ybins[], TString label="");
+  void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label="");
     //
     // Makes temporary dir
     //
@@ -246,11 +262,11 @@ class AnalyzerCore : public LQCycleBase {
   /// Changed  Default json file
 
   /// Fills hist in maphist
-  void FillHist(TString histname, float value, float w );
-  void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0);
-  void FillHist(TString histname, float value, float w , float xmin[], int nbins=0);
-  void FillHist(TString histname, float value1, float value2, float w , float x[], int nbinsx, float y[], int nbinsy);
-  void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy);
+  void FillHist(TString histname, float value, float w , TString label="");
+  void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0 , TString label="");
+  void FillHist(TString histname, float value, float w , float xmin[], int nbins=0 , TString label="");
+  void FillHist(TString histname, float value1, float value2, float w , float x[], int nbinsx, float y[], int nbinsy , TString label="");
+  void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy , TString label="");
 
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
@@ -268,6 +284,12 @@ class AnalyzerCore : public LQCycleBase {
   void WriteHists();
   void WriteCLHists();
 
+  void MakeNtp(TString hname, TString myvar);
+  TNtupleD* GetNtp(TString hname);
+  void FillNtp(TString hname, Double_t myinput[]);  
+  void WriteNtp();
+
+
   //// Event related                                                                                                                                              
   float TempPileupWeight();
 
@@ -280,7 +302,7 @@ class AnalyzerCore : public LQCycleBase {
   float GetEff(snu::KElectron el, TString trigname);
 
   void ListTriggersAvailable();
-  bool PassBasicEventCuts();
+  bool PassMETFilter();
 
   std::map<TString,BTagSFUtil*> MapBTagSF;
   //  BTagSFUtil *lBTagSF, *hBTagSF;

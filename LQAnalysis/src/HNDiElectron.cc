@@ -298,8 +298,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
   
-  BaseSelection::ID elid = BaseSelection::ELECTRON_POG_TIGHT;
-  if(k_running_nonprompt) elid= BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0;
+
+  TString elid = "ELECTRON_POG_TIGHT";
+  if(k_running_nonprompt) elid="ELECTRON_HN_FAKELOOSE_NOD0";
 
   std::vector<snu::KElectron> electronColl             = GetElectrons(true, false,elid);
   
@@ -878,27 +879,6 @@ HNDiElectron::~HNDiElectron() {
   
 }
 
-
-void HNDiElectron::FillCutFlow(TString cut, float weight){
-
-  
-  if(GetHist("cutflow")) {
-    GetHist("cutflow")->Fill(cut,weight);
-   
-  }
-  else{
-    AnalyzerCore::MakeHistograms("cutflow", 10,0.,10.);
-
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerWeight");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"TriggerCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(7,"DiEl_tight");
-   
-    
-  }
-}
 
 
 void HNDiElectron::BeginEvent( )throw( LQError ){

@@ -92,9 +92,9 @@ namespace snu {
     void SetJetJECUnc(double jecunc);
     void SetJetScaledDownEnergy(double jetscaleEdown);
     void SetJetScaledUpEnergy(double jetscaleEup);
-    void SetJetSmearedDownEnergy(double jetsmearEdown);
-    void SetJetSmearedUpEnergy(double jetsmearEup);
-    void SetJetSmearedEnergy(double jetsmearEup);
+    void SetSmearedResDown(double jetsmearresdown);
+    void SetSmearedResUp(double jetsmearresup);
+    void SetSmearedRes(double jetsmearresup);
     
     
     /// ID
@@ -153,9 +153,9 @@ namespace snu {
     inline Double_t JECUncertainty() const {return k_jet_error_jec;}
     inline Double_t ScaledDownEnergy() const {return k_jet_scaled_down_energy;}
     inline Double_t ScaledUpEnergy() const {return k_jet_scaled_up_energy;}
-    inline Double_t SmearedDownEnergy() const {return k_jet_smeared_down_energy;}
-    inline Double_t SmearedUpEnergy() const {return k_jet_smeared_up_energy;}
-    inline Double_t SmearedEnergy() const {return k_jet_smeared_energy;}
+    inline Double_t SmearedResDown() const {return k_jet_smeared_down_energy;}
+    inline Double_t SmearedResUp() const {return k_jet_smeared_up_energy;}
+    inline Double_t SmearedRes() const {return k_jet_smeared_energy;}
 
     inline Double_t RawPt() const {return k_jet_pt_raw;}
     inline Double_t RawE() const {return k_jet_energy_raw;}

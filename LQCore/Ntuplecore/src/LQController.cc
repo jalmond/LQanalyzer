@@ -357,6 +357,31 @@ void LQController::SetDataPeriod(TString period){
     else target_luminosity = 1.;
 
   }
+  else if(VersionStamp(catversion_lq) == 6 ){
+
+    if( period == "All") period = "ALL";
+    else if( period == "B") k_period = "B";
+    else if( period == "C") k_period = "C";
+    else if( period == "D") k_period = "D";
+    else if( period == "E") k_period = "E";
+    else if( period == "F") k_period = "F";
+    else if( period == "G") k_period = "G";
+    /// from v761 rereco data has just period D                                                                                                                                 
+    else if( period == "BtoG") k_period = "BtoG";
+    else if( period == "ALL") k_period = "BtoG";
+    else {
+      m_logger << ERROR << "Failed to correctly set data period" << LQLogger::endmsg;
+      throw LQError( "Data Period not correctly set!!!",
+                     LQError::StopExecution );
+    }
+
+    /// brilcalc                                                                                                                                                                
+    if( period == "BtoG") target_luminosity = 1.;
+    else if( period == "ALL") target_luminosity = 1.;
+    else target_luminosity = 1.;
+
+  }
+
 
 
 }
@@ -369,6 +394,7 @@ int LQController::VersionStamp(LQController::_catversion cat_version ){
   if((cat_version == v762) || (cat_version == v763) || (cat_version == v764) ) return 3;
   if((cat_version == v765)||(cat_version == v766)) return 4;
   if((cat_version == v801)) return 5;
+  if((cat_version == v802)) return 6;
   
   return -1;
 }
@@ -714,7 +740,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
     
-    if(k_period.Contains("BtoE")) cycle->SetMCPeriod(2); 
+    if(k_period.Contains("BtoG")) cycle->SetMCPeriod(2); 
     else if(k_period.Contains("B")) cycle->SetMCPeriod(1); 
     
     /// Check the current branch is upto date wrt the catuples
@@ -910,6 +936,7 @@ std::string LQController::SetNTCatVersion(LQController::_catversion dir_version)
   if (dir_version == v765) return ("v7-6-5");
   if (dir_version == v766) return ("v7-6-6");
   if (dir_version == v801) return ("v8-0-1");
+  if (dir_version == v802) return ("v8-0-2");
   return "";
 }
 
@@ -922,7 +949,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   TString env_path(version_env);
 
   LQController::_catversion nt_version=none;
-  if(ntuple_path.Contains("8-0-1")) nt_version=v801;
+  if(ntuple_path.Contains("8-0-2")) nt_version=v802;
+  else if(ntuple_path.Contains("8-0-1")) nt_version=v801;
   else if(ntuple_path.Contains("7-6-6")) nt_version=v766;
   else if(ntuple_path.Contains("7-6-5")) nt_version=v765;
   else if(ntuple_path.Contains("7-6-4")) nt_version=v764;
@@ -943,7 +971,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
   
   
   LQController::_catversion env_version=none;
-  if(env_path.Contains("8-0-1")) env_version=v801;
+  if(env_path.Contains("8-0-2")) env_version=v802;
+  else if(env_path.Contains("8-0-1")) env_version=v801;
   else if(env_path.Contains("7-6-6")) env_version=v766;
   else if(env_path.Contains("7-6-5")) env_version=v765;
   else if(env_path.Contains("7-6-4")) env_version=v764;
@@ -962,7 +991,8 @@ bool LQController::CheckBranch(LQController::_catversion dir_version, std::strin
 LQController::_catversion  LQController::GetCatVersion(std::string filepath) throw(LQError){
   TString ts_path(filepath); 
   
-  if(ts_path.Contains("8-0-1")) return v801;
+  if(ts_path.Contains("8-0-2")) return v802;
+  else if(ts_path.Contains("8-0-1")) return v801;
   else if(ts_path.Contains("7-6-6")) return v766;
   else if(ts_path.Contains("7-6-5")) return v765;
   else if(ts_path.Contains("7-6-4")) return v764;
@@ -991,7 +1021,7 @@ float LQController::CalculateWeight() throw(LQError) {
   m_logger <<  INFO << "Target lumi = " << target_luminosity << " " << effective_luminosity << LQLogger::endmsg;
   if(target_luminosity != 1. || effective_luminosity != 1.){
     m_logger <<  INFO << "Target lumi = " << target_luminosity <<LQLogger::endmsg;
-    if(target_luminosity == 1. ) m_logger << WARNING << "Target_luminosity is set to 1. while effective_luminosity is not. Is this correct?" <<LQLogger::endmsg;
+    //if(target_luminosity == 1. ) m_logger << WARNING << "Target_luminosity is set to 1. while effective_luminosity is not. Is this correct?" <<LQLogger::endmsg;
     if(effective_luminosity == 1. ) m_logger << WARNING <<"Effective_luminosity is set to 1. while target_luminosity is not. Is this correct?" <<LQLogger::endmsg;    
     return (target_luminosity/effective_luminosity);
   }

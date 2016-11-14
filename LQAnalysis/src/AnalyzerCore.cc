@@ -25,13 +25,14 @@
 #include <TFile.h>
 
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false) {
+AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false),n_cutflowcuts(0) {
 
   bool debug(false);
-
+  
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
+  cutflow_list.clear();
   // If running on LQNtuples this is not important.
   // If creating an SKTree ntuple this controls what triggers are accessible
   
@@ -46,10 +47,12 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   //////////////////////////////////////////////////////////////////////  
   //// FakeRate Input file           
   //////////////////////////////////////////////////////////////////////                                                                                                   
-  string analysisdir = getenv("FILEDIR");
+  string analysisdir = getenv("IDFILEDIR");
+  string pileupdir = getenv("PILEUPFILEDIR");
+  string triggerdir = getenv("TRIGGERFILEDIR");
 
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "gsf_scalefactor_80X.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "/gsf_scalefactor_80X.root").c_str());
     CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -59,7 +62,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Tight_txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "/egammaEffi_Tight_txt_SF2D.root").c_str());
     CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -69,7 +72,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Medium_txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "/egammaEffi_Medium_txt_SF2D.root").c_str());
     CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -79,7 +82,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Loose_txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "/egammaEffi_Loose_txt_SF2D.root").c_str());
     CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -89,7 +92,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
     origDir->cd();
   }
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "egammaEffi_Veto_txt_SF2D.root").c_str());
+    TFile *infile_sf = TFile::Open((analysisdir+ "/egammaEffi_Veto_txt_SF2D.root").c_str());
     CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -136,7 +139,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   }
 
   if(1){
-    TFile *infile_sf = TFile::Open((analysisdir+ "SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root").c_str());
+    TFile *infile_sf = TFile::Open((triggerdir+ "SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root").c_str());
     CheckFile(infile_sf);
     TDirectory* tempDir = getTemporaryDirectory();
     tempDir->cd();
@@ -157,8 +160,15 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
 
   SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
+  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
+
   SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
+  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
   
+  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
+  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
+
+
   if(debug){
     for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
       cout << it->first << endl;
@@ -190,59 +200,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   cout << "                                                  " << endl;
 
   cout << "##################################################" << endl;
-  if(0){
-    ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2015.txt").c_str());
-    if(!runlumi) {
-      cerr << "Did not find "+lqdir + "/data/rootfiles/lumi_catversion2015.txt'), exiting ..." << endl;
-      exit(EXIT_FAILURE);
-    }
-    string lline;
-    int x=1;
-    while(getline(runlumi,lline) ){
-      std::istringstream is( lline );
-      
-      string trigname;
-      float trig_lumi;
-      int run;
-      is >> trigname;
-      if(trigname=="###" ) continue;
-      if(trigname=="END") break;
-      if(trigname=="run" ){
-	is >> run;
-	is >> trig_lumi;
-	cout << "Run number :" << run <<" = Muon trigger (unprescaled) luminosity = " << trig_lumi << ";" << endl;
-	
-	mapLumi[run] = trig_lumi;
-	continue;
-      }
-      if(trigname=="block" ){
-	is >> run;
-	is >> trig_lumi;
-	cout << "Run number < " << run <<"; total luminosity  =  " << trig_lumi << ";" << endl;
-	
-	mapLumiPerBlock[run] = trig_lumi;
-	ostringstream ss;
-	ss << x;
-	mapLumiNamePerBlock[run]="Lumi"+ss.str();
-	x++;
-	continue;
-      }
-      if(trigname=="bad" ){
-	is >> run;
-	is >> trig_lumi;
-	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
-	mapBadLumi[run] = trig_lumi;
-	continue;
-      }
-    }
-    runlumi.close();
-  }
-
-
   if(1){
-    ifstream runlumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
+    ifstream runlumi((lqdir + "/data/Luminosity/lumi_catversion2016_" + getenv("CATVERSION")+".txt").c_str());
     if(!runlumi) {
-      cerr << "Did not find "+lqdir + "/data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "/data/Luminosity/lumi_catversion2016_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string lline;
@@ -284,33 +245,11 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
   cout << "Reading Luminosity File" << endl;
+
   if(1){
-    ifstream triglumi((lqdir + "/data/rootfiles/lumi_catversion2016_801.txt").c_str());
-    if(!triglumi) {
-      cerr << "Did not find "+lqdir + "/data/rootfiles/lumi_catversion2016_801.txt'), exiting ..." << endl;
-      exit(EXIT_FAILURE);
-    }
-    string sline;
-    
-    while(getline(triglumi,sline) ){
-      std::istringstream is( sline );
-      
-      string trigname;
-      float trig_lumi;
-      is >> trigname;
-      if(trigname=="###" ) continue;
-      is >> trig_lumi;
-      
-      if(trigname=="END") break;
-      trigger_lumi_map_cat2015[TString(trigname)] = trig_lumi;
-      continue;
-    }
-    triglumi.close();
-  }
-  if(1){
-    ifstream triglumi2016((lqdir + "/data/rootfiles/triggers_catversion2016_801.txt").c_str());
+    ifstream triglumi2016((lqdir + "/data/Luminosity/triggers_catversion2016_" + getenv("CATVERSION")+".txt").c_str());
     if(!triglumi2016) {
-      cerr << "Did not find "+lqdir + "/data/rootfiles/triggers_catversion2016_801.txt'), exiting ..." << endl;
+      cerr << "Did not find "+lqdir + "/data/Luminosity/triggers_catversion2016_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
       exit(EXIT_FAILURE);
     }
     string sline2016;
@@ -344,7 +283,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-  if(!k_isdata) reweightPU = new Reweight((analysisdir + "DataPileUp_BtoE_2016.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((pileupdir + "DataPileUp_BtoE_2016.root").c_str());
   //if(!k_isdata) reweightPU = new Reweight((analysisdir + "DataPileUp_2016.root").c_str());
 
 
@@ -353,6 +292,62 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
 
 void AnalyzerCore::SetupSelectionJet(std::string path_sel){
+  Message("SetupSelectionJet", DEBUG);
+  ifstream jetselconfig(path_sel.c_str());
+  if(!jetselconfig) {
+    cerr << "Did not find "+ path_sel+", exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  string jetline;
+  int ncuts=0;
+  vector<TString> cutnames;
+  while(getline(jetselconfig,jetline) ){
+    vector<pair<TString,TString> > string_jetsel;
+    vector<pair<TString,float> > float_jetsel;
+    TString idlabel;
+    if (TString(jetline).Contains("webpage")) continue;
+    if (TString(jetline).Contains("ncut")) {
+      std::istringstream is( jetline );
+      string tmp;
+      int itmp;
+      is >> tmp;
+      is >> itmp;
+      ncuts = 2*(itmp +1);
+      continue;
+    }
+    if (TString(jetline).Contains("ptmin")) {
+      std::istringstream is( jetline );
+      string tmp;
+      for (int x =0; x < ncuts; x++){
+        is >> tmp;
+        cutnames.push_back(TString(tmp));
+      }
+    }
+    else{
+      std::istringstream is( jetline );
+      string tmp;
+      float tmpf;
+      for (int x =0; x < ncuts; x++){
+        if ( x%2 ==0) {
+          is >> tmp;
+          continue;
+        }
+
+        if (x > 6 && x < 18){
+          is >> tmp;
+          string_jetsel.push_back(make_pair(cutnames.at(x),tmp) );
+
+        }
+        else if ( x ==1) {is >> idlabel;}
+        else {
+          is >> tmpf;
+          float_jetsel.push_back(make_pair(cutnames.at(x),tmpf));
+        }
+      }
+    }
+    selectionIDMapsJet[idlabel] = string_jetsel;
+    selectionIDMapfJet[idlabel] = float_jetsel;
+  }
 }
 
 void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
@@ -565,122 +560,154 @@ bool AnalyzerCore::EtaRegion(TString reg,  std::vector<snu::KMuon> muons){
   return false;
 }
 
-std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
+
+
+
+std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid, float ptcut, float etacut){
+  return GetJets(GetStringID(jetid), ptcut, etacut);
+}
+
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muonid, float ptcut, float etacut){
+  return GetMuons(GetStringID(muonid), ptcut, etacut);
+}
+
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muonid, bool keepfake, float ptcut, float etacut){
+  return GetMuons(GetStringID(muonid), true, ptcut, etacut);
+}
+
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(BaseSelection::ID electronid, float ptcut, float etacut){
+  return GetElectrons(true, true,GetStringID(electronid), ptcut, etacut);
+}
+
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID electronid, float ptcut, float etacut){
+  return GetElectrons(keepcf, keepfake,GetStringID(electronid), ptcut, etacut);
+}
+
+
+
+TString AnalyzerCore::GetStringID(BaseSelection::ID id){
+  if(id == BaseSelection::ELECTRON_POG_VETO ) return "ELECTRON_POG_VETO";
+  if(id == BaseSelection::ELECTRON_POG_LOOSE) return "ELECTRON_POG_LOOSE";
+  if(id == BaseSelection::ELECTRON_POG_MEDIUM) return "ELECTRON_POG_MEDIUM";
+  if(id == BaseSelection::ELECTRON_POG_TIGHT           ) return "ELECTRON_POG_TIGHT";
+  if(id == BaseSelection::ELECTRON_POG_MVATrig) return "ELECTRON_POG_MVATrig";
+  if(id == BaseSelection::ELECTRON_POG_MVANonTrig    ) return "ELECTRON_POG_MVANonTrig";
+  if(id == BaseSelection::ELECTRON_ECAL_FIDUCIAL     ) return "ELECTRON_ECAL_FIDUCIAL";
+  if(id == BaseSelection::ELECTRON_HN_VETO           ) return "ELECTRON_HN_VETO";
+  if(id == BaseSelection::ELECTRON_HN_TIGHT          ) return "ELECTRON_HN_TIGHT";
+  if(id == BaseSelection::ELECTRON_HN_FAKELOOSE      ) return "ELECTRON_HN_FAKELOOSE";
+  if(id == BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0 ) return "ELECTRON_HN_FAKELOOSE_NOD0";
+  if(id == BaseSelection::ELECTRON_TOP_VETO          ) return "ELECTRON_TOP_VETO";
+  if(id == BaseSelection::ELECTRON_TOP_LOOSE         ) return "ELECTRON_TOP_LOOSE";
+  if(id == BaseSelection::ELECTRON_TOP_TIGHT         ) return "ELECTRON_TOP_TIGHT";
+  if(id == BaseSelection::ELECTRON_PTETA             ) return "ELECTRON_PTETA";
+  if(id == BaseSelection::ELECTRON_NOCUT             ) return "ELECTRON_NOCUT";
+  if(id == BaseSelection::MUON_POG_LOOSE             ) return "MUON_POG_LOOSE";
+  if(id == BaseSelection::MUON_POG_MEDIUM            ) return "MUON_POG_MEDIUM";
+  if(id == BaseSelection::MUON_POG_TIGHT             ) return "MUON_POG_TIGHT";
+ if(id == BaseSelection::MUON_HN_VETO               ) return "MUON_HN_VETO";
+ if(id == BaseSelection::MUON_HN_FAKELOOSE          ) return "MUON_HN_FAKELOOSE";
+ if(id == BaseSelection::MUON_HN_TIGHT              ) return "MUON_HN_TIGHT";
+ if(id == BaseSelection::MUON_FAKELOOSE             ) return "MUON_FAKELOOSE";
+ if(id == BaseSelection::MUON_TOP_VETO              ) return "MUON_TOP_VETO";
+ if(id == BaseSelection::MUON_TOP_LOOSE             ) return "MUON_TOP_LOOSE";
+ if(id == BaseSelection::MUON_TOP_TIGHT             ) return "MUON_TOP_TIGHT";
+ if(id == BaseSelection::MUON_PTETA                 ) return "MUON_PTETA";
+ if(id == BaseSelection::MUON_NOCUT                 ) return "MUON_NOCUT";
+ if(id == BaseSelection::PFJET_LOOSE                ) return "PFJET_LOOSE";
+ if(id == BaseSelection::PFJET_MEDIUM               ) return "PFJET_MEDIUM";
+ if(id == BaseSelection::PFJET_TIGHT                ) return "PFJET_TIGHT";
+ if(id == BaseSelection::JET_HN                     ) return "JET_HN";
+ if(id == BaseSelection::JET_HN_TChannel            ) return "JET_HN_TChannel";
+ if(id == BaseSelection::JET_NOLEPTONVETO           ) return "JET_NOLEPTONVETO";
+ if(id == BaseSelection::JET_LOOSE                  ) return "JET_LOOSE";
+ if(id == BaseSelection::JET_TIGHT                  ) return "JET_TIGHT";
+ if(id == BaseSelection::PHOTON_POG_LOOSE           ) return "PHOTON_POG_LOOSE";
+ if(id == BaseSelection::PHOTON_POG_MEDIUM          ) return "PHOTON_POG_MEDIUM";
+ if(id == BaseSelection::PHOTON_POG_TIGHT           ) return "PHOTON_POG_TIGHT";
+ cerr << " ID [--] not found" << endl; exit(EXIT_FAILURE);
+
+}
+
+
+
+std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,float ptcut, float etacut){
   
   std::vector<snu::KJet> jetColl;
   
-  if( jetid == BaseSelection::JET_HN){
-    //= loose + pileupID
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "Loose");
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsJet.find(jetid);
+  if(it== selectionIDMapsJet.end()){
+    cerr << "Jet ID ["+jetid+"] not found" << endl; exit(EXIT_FAILURE);
   }
-  else if( jetid == BaseSelection::JET_HN_TChannel){
-    //= loose + pileupID
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 5., false, "Loose");
+  else {
+    TString muontag="";
+    TString eltag="";
+    for (unsigned int i=0; i  < it->second.size(); i++){
+      if ( it->second.at(i).first == "remove_near_muonID") muontag =  it->second.at(i).second;
+      if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
+    }
+    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(isData,jetColl,jetid, ptcut,etacut);
+    else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
+    else eventbase->GetJetSel()->SelectJets(isData,jetColl, GetMuons(muontag), GetElectrons(eltag) ,jetid, ptcut,etacut);
+    
   }
-  else if(jetid == BaseSelection::JET_NOLEPTONVETO){
-    eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-    eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(2.5);
-    eventbase->GetJetSel()->Selection(jetColl);
-  }
-  else  if(jetid == BaseSelection::JET_LOOSE){
-    eventbase->GetJetSel()->SetID(BaseSelection::PFJET_LOOSE);
-    eventbase->GetJetSel()->SetPt(10.);
-    eventbase->GetJetSel()->SetEta(2.5);
-    eventbase->GetJetSel()->JetSelectionLeptonVeto(jetColl, GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(false,false, BaseSelection::ELECTRON_HN_VETO));
-  }
-  
-  
-  else  if(jetid == BaseSelection::JET_TIGHT){
-    /// Uses pileup + tight ID
-    eventbase->GetJetSel()->JetHNSelection(jetColl,GetMuons(BaseSelection::MUON_HN_VETO), GetElectrons(BaseSelection::ELECTRON_HN_VETO), 20., 2.5, false, "Tight" );
-  }
-  else {cerr << "Jet collection not found" << endl; exit(EXIT_FAILURE);}
-  
-  SmearJets(jetColl);
+
 
   return jetColl;
   
 }
 
-std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid){
-  return GetMuons(muid, true);
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString muid, float ptcut, float etacut){
+  return GetMuons(muid, true, ptcut, etacut);
 }
 
-std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keepfakes){
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString muid, bool keepfakes, float ptcut, float etacut){
 
   std::vector<snu::KMuon> muonColl;
-  
-  if(muid == BaseSelection::MUON_POG_TIGHT  ||
-     muid == BaseSelection::MUON_POG_MEDIUM||
-     muid == BaseSelection::MUON_POG_LOOSE)
-    {eventbase->GetMuonSel()->SelectMuons(muonColl, muid, 15., 2.4);}
 
-  
-  else if(muid == BaseSelection::MUON_HN_TIGHT){
-    if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);
-    else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.4);
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsMuon.find(muid);
+  if(it== selectionIDMapsMuon.end()){
+    cerr << "Muon ID ["+muid+"] not found" << endl; exit(EXIT_FAILURE);
   }
-  
-  else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);}
-
-  // Veto cut
-  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 10., 2.4);}
-
-  else if(muid == BaseSelection::MUON_NOCUT){
-    eventbase->GetMuonSel()->SetPt(0.); 
-    eventbase->GetMuonSel()->SetEta(5.);    
-    eventbase->GetMuonSel()->Selection(muonColl);
-  }
-  
   else {
-    cerr << "Muon collection not found" << endl; exit(EXIT_FAILURE);
+    if (ptcut == -999.)  eventbase->GetMuonSel()->SelectMuons(muonColl,muid);
+    else eventbase->GetMuonSel()->SelectMuons(muonColl,muid, ptcut, etacut);
   }
+  //if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);
+  //else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.4);
   
   return  GetTruePrompt(muonColl, keepfakes);
   
 }
 
 
-std::vector<snu::KElectron> AnalyzerCore::GetElectrons(BaseSelection::ID elid){
-  return GetElectrons( true,  true, elid);
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(TString elid,float ptcut, float etacut){
+  return GetElectrons( true,  true, elid, ptcut, etacut);
 }
 
-std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid){
+std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, TString elid,float ptcut, float etacut){
   
   std::vector<snu::KElectron> electronColl;
-  
-  if(elid == BaseSelection::ELECTRON_POG_TIGHT  || 
-     elid ==  BaseSelection::ELECTRON_POG_MEDIUM|| 
-     elid == BaseSelection::ELECTRON_POG_VETO   ||
-     elid == BaseSelection::ELECTRON_POG_LOOSE) 
-    {eventbase->GetElectronSel()->SelectElectrons(electronColl, elid,15., 2.5);}
-  
 
-  else if(elid == BaseSelection::ELECTRON_HN_TIGHT){
-    /// This is the vector of electrons with optimie cuts
-    std::vector<snu::KElectron> _electronColl;
-    if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0, 15., 2.5);
-    else eventbase->GetElectronSel()->SelectElectrons(_electronColl,BaseSelection::ELECTRON_HN_TIGHT, 15., 2.5);
-    electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
+
+
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsElectron.find(elid);
+  if(it== selectionIDMapsElectron.end()){
+    cerr << "Electron ID ["+elid+"] not found" << endl; exit(EXIT_FAILURE);
   }
-   
-  else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE, 10., 2.5);}
-  else if(elid == BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0, 10., 2.5);}
-  
-  // Veto cut
-  else if(elid == BaseSelection::ELECTRON_HN_VETO){   eventbase->GetElectronSel()->SelectElectrons(electronColl,BaseSelection::ELECTRON_HN_VETO, 10., 2.5);}
-  
-  
-  else if(elid == BaseSelection::ELECTRON_PTETA){
-    eventbase->GetElectronSel()->SetPt(20.);
-    eventbase->GetElectronSel()->SetEta(2.5);
-    eventbase->GetElectronSel()->Selection(electronColl);
-  }
-  else if(elid == BaseSelection::ELECTRON_NOCUT){  eventbase->GetElectronSel()->SetPt(0.);   eventbase->GetElectronSel()->SetEta(5.); eventbase->GetElectronSel()->Selection(electronColl);}
   else {
-    cerr << "Electron collection not found" << endl; exit(EXIT_FAILURE);
+    if (ptcut == -999.)  eventbase->GetElectronSel()->SelectElectrons(electronColl,elid);
+    else eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, ptcut, etacut);
   }
+  
+  //if(elid == "ELECTRON_HN_TIGHT"){
+    /// This is the vector of electrons with optimie cuts
+    //std::vector<snu::KElectron> _electronColl;
+    //if(k_running_nonprompt) eventbase->GetElectronSel()->SelectElectrons(_electronColl, BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0, 15., 2.5);
+    //else eventbase->GetElectronSel()->SelectElectrons(_electronColl,BaseSelection::ELECTRON_HN_TIGHT, 15., 2.5);
+    //electronColl =ShiftElectronEnergy(_electronColl, k_running_chargeflip);
+  // }
+   
 
   return  GetTruePrompt(electronColl, keepcf, keepfake); 
 
@@ -1138,6 +1165,12 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapCLhistTriLep.clear();
 
+
+  for(map<TString,TNtupleD*>::iterator it = mapntp.begin(); it!= mapntp.end(); it++){ 
+    delete it->second;
+  }
+  mapntp.clear();
+
   
   delete m_fakeobj;
   delete ElectronSF_GSF;
@@ -1222,6 +1255,9 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);
   eventbase->GetMuonSel()->SetIDSMap(selectionIDMapsMuon);
   eventbase->GetMuonSel()->SetIDFMap(selectionIDMapfMuon);
+  eventbase->GetJetSel()->SetIDSMap(selectionIDMapsJet);
+  eventbase->GetJetSel()->SetIDFMap(selectionIDMapfJet);
+
   if(!k_isdata){
     if(!changed_target_lumi){
       changed_target_lumi=true;
@@ -1238,6 +1274,7 @@ int AnalyzerCore::VersionStamp(TString cversion){
   else if(cversion.Contains("v7-6-2") || cversion.Contains("v7-6-3") || cversion.Contains("v7-6-4")   ) return 3;
   else if((cversion.Contains("v7-6-5") || cversion.Contains("v7-6-6"))) return 4;
   else if((cversion.Contains("v8-0-1"))) return 5;
+  else if((cversion.Contains("v8-0-2"))) return 6;
   
   return 5;
  
@@ -1333,7 +1370,7 @@ bool AnalyzerCore::isPrompt(long pdgid) {
 }
 
 void AnalyzerCore::EndEvent()throw( LQError ){
-
+  
   delete eventbase;                                                                                                            
 
 }
@@ -1781,26 +1818,30 @@ void AnalyzerCore::MakeHistograms(){
     
 }
 
-void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xbins[]){
+void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xbins[], TString label){
   maphist[hname] =  new TH1D(hname.Data(),hname.Data(),nbins,xbins);
+  maphist[hname]->GetXaxis()->SetTitle(label);
 }
 
-void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax){
+void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax, TString label){
 
   maphist[hname] =  new TH1D(hname.Data(),hname.Data(),nbins,xmin,xmax);
+  maphist[hname]->GetXaxis()->SetTitle("TEST");
 }
 
-void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax) {
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
+  maphist2D[hname]->GetXaxis()->SetTitle(label);
 }
 
-void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[]) {
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[], TString label) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
+  maphist2D[hname]->GetXaxis()->SetTitle(label);
 }
 
-bool AnalyzerCore::PassBasicEventCuts(){
+bool AnalyzerCore::PassMETFilter(){
   
   bool pass (true);
   
@@ -1832,18 +1873,19 @@ bool AnalyzerCore::PassBasicEventCuts(){
     }
     
     //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
-    if (!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
-    }
+    //    if (!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
+    //      pass = false;
+    //      m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
+    //    }
     //}
   return pass;
 }
 
 
 
-void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins){
+void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins , TString label){
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);
   
   else{
@@ -1852,7 +1894,8 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms(histname, nbins, xbins);
+    MakeHistograms(histname, nbins, xbins, label);
+    if(GetHist(histname)) GetHist(histname)->GetXaxis()->SetTitle(label);
     if(GetHist(histname)) GetHist(histname)->Fill(value, w);
   }
 
@@ -1904,7 +1947,7 @@ void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float
 
 }
 
-void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins){
+void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, float xmax, int nbins , TString label){
   
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  
@@ -1914,13 +1957,14 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms(histname, nbins, xmin, xmax);
+    MakeHistograms(histname, nbins, xmin, xmax, label);
+    if(GetHist(histname)) GetHist(histname)->GetXaxis()->SetTitle(label);
     if(GetHist(histname)) GetHist(histname)->Fill(value, w);
   }
   
 }
 
-void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy){
+void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , TString label){
 
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
@@ -1930,13 +1974,14 @@ void AnalyzerCore::FillHist(TString histname, float value1, float value2, float 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax );
+    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , label);
+    if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
     if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
   }
 
 }
 
-void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins){
+void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins , TString label){
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex,valuey, w);
 
@@ -1946,7 +1991,9 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins );
+    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins , label);
+    if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
+    
     if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex, valuey, w);
   }
 
@@ -1954,7 +2001,7 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
 
 
 
-void AnalyzerCore::FillHist(TString histname, float value, float w){
+void AnalyzerCore::FillHist(TString histname, float value, float w , TString label){
 
   if(GetHist(histname)) GetHist(histname)->Fill(value, w);  /// Plots Z peak                                   
   else m_logger << INFO << histname << " was NOT found. Will add the histogram to the hist map on first event." << LQLogger::endmsg;
@@ -2167,6 +2214,51 @@ TH2* AnalyzerCore::GetHist2D(TString hname){
   else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
 
   return h;
+}
+
+
+
+
+void AnalyzerCore::FillCutFlow(TString cut, float weight){
+
+  bool cut_exists=false;
+
+  for(unsigned int i=0; i < cutflow_list.size();  i++){
+    if (cut == cutflow_list.at(i)) cut_exists=true;
+  }
+
+  if (!cut_exists){
+    n_cutflowcuts=n_cutflowcuts+1;
+    if(GetHist("cutflow")) {
+      
+      map<TString, TH1*>::iterator it = maphist.find("cutflow");
+      vector<float> counters;
+      for(int j = 0; j  < n_cutflowcuts ; j++){
+	counters.push_back(it->second->GetBinContent(1+j));
+      }
+      delete it->second;
+      
+      AnalyzerCore::MakeHistograms("cutflow", n_cutflowcuts,0.,float(n_cutflowcuts));
+      for(unsigned int i=0;i < cutflow_list.size();  i++){
+	GetHist("cutflow")->GetXaxis()->SetBinLabel(i+1,cutflow_list.at(i));
+	GetHist("cutflow")->Fill(cutflow_list.at(i), weight);
+      }
+      GetHist("cutflow")->GetXaxis()->SetBinLabel(n_cutflowcuts,cut);
+      cutflow_list.push_back(cut);
+      
+    }
+    else{
+      AnalyzerCore::MakeHistograms("cutflow", n_cutflowcuts,0.,float(n_cutflowcuts));
+      GetHist("cutflow")->GetXaxis()->SetBinLabel(1,cut);
+      GetHist("cutflow")->Fill(cut,weight);
+      cutflow_list.push_back(cut);
+    }
+  }
+  else {
+    if(GetHist("cutflow")) {
+      GetHist("cutflow")->Fill(cut,weight);
+    }
+  }
 }
 
 
@@ -2460,16 +2552,6 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
 }
 
 
-void AnalyzerCore::SmearJets(vector<snu::KJet>& k_jets){
-  
-  vector<TLorentzVector> tlv_jets = MakeTLorentz(k_jets);
-  int imu(0);
-  for(std::vector<snu::KJet>::iterator it = k_jets.begin(); it != k_jets.end(); it++, imu++){
-    if(k_isdata)       it->SetPtEtaPhiE(tlv_jets[imu].Pt(),tlv_jets[imu].Eta(), tlv_jets[imu].Phi(), tlv_jets[imu].E());
-    else it->SetPtEtaPhiE(tlv_jets[imu].Pt()*(it->SmearedEnergy()),tlv_jets[imu].Eta(), tlv_jets[imu].Phi(), tlv_jets[imu].E());
-  }
-  
-}
 void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
 
   Message("In CorrectMuonMomentum", DEBUG);
@@ -2596,6 +2678,46 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons){
 
 
 
+void AnalyzerCore::MakeNtp(TString hname, TString myvar){
+
+  mapntp[hname] =  new TNtupleD(hname.Data(),hname.Data(),myvar.Data());
+}
+
+
+void AnalyzerCore::FillNtp(TString hname, Double_t myinput[]){
+
+  if (GetNtp(hname)) GetNtp(hname)->Fill(myinput);
+  else m_logger << INFO << hname << " was NOT found. Check you ntp. " << LQLogger::endmsg;
+
+  return;
+}
+
+// //
+void AnalyzerCore::WriteNtp(){
+
+  /// Open Output rootfile
+  m_outputFile->cd();
+
+  for(map<TString, TNtupleD*>::iterator mapit = mapntp.begin(); mapit != mapntp.end(); mapit++){
+    mapit->second->Write();
+  }
+
+  return;
+}
+// //
+
+
+
+// //
+TNtupleD* AnalyzerCore::GetNtp(TString hname){
+
+  TNtupleD* n = NULL;
+  std::map<TString, TNtupleD*>::iterator mapit = mapntp.find(hname);
+  if (mapit != mapntp.end()) return mapit->second;
+  else m_logger << INFO << hname << " was not found in map" << LQLogger::endmsg;
+
+  return n;
+}
 
 
 vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KElectron> el){

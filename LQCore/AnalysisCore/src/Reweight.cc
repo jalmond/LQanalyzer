@@ -24,7 +24,7 @@ Reweight::Reweight(TString filename){
   
   fileData_ = TFile::Open( filename, "READ");
   if (!fileData_) cout << "\n\nAt least one of the Nvtx reweighting files could not be opened!\n\n";
-  fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/MCPileUp2016.root", "READ");
+  fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016.root", "READ");
 
 
   TDirectory* tempDir = getTemporaryDirectory();

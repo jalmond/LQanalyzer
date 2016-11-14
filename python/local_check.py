@@ -1,5 +1,9 @@
 import os
 
+def MakeDirectory(dirpath):
+    if not os.path.exists(dirpath):
+        os.system("mkdir " + dirpath)
+
 binDir = os.getenv("LQANALYZER_DIR")+ "/bin/"
 fr = open(binDir + 'Branch.txt', 'r')
 sline=0
@@ -30,6 +34,12 @@ tag_dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
 
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
+snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"
+snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"
+snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"
+snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"
+snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"
+
 txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
 old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
@@ -43,10 +53,27 @@ if not os.path.exists(tag_dir):
     os.system("mkdir " + tag_dir)
 
     print "Copying all latest rootfiles for use in analysis"
-    os.system("cp " + localfiledir + "/*.root " + snufiledir )
-    os.system("cp " + localfiledir + "/*.csv " + snufiledir )
-    #os.system("cp " + localfiledir + "/*cat*.txt " + snufiledir )
-    
+
+    MakeDirectory(snufakefiledir)
+    os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
+    MakeDirectory(snutriggerfiledir)
+    os.system("cp " + localfiledir + "/Trigger/*.root " + snutriggerfiledir)
+    MakeDirectory(snupileupfiledir)
+    os.system("cp " + localfiledir + "/Pileup/*.root "+ snupileupfiledir)
+    MakeDirectory(snuidfiledir)
+    os.system("cp " + localfiledir + "/ID/*.root " + snuidfiledir)
+    MakeDirectory(snubtagfiledir)
+    os.system("cp " + localfiledir + "/BTag/*.csv " + snubtagfiledir)
+
+    if os.path.exists(snufiledir+"/cMVAv2.csv"):
+        os.system("rm  "+snufiledir+"/*.csv")
+    if os.path.exists(snufiledir +"triggers_catversion2016_801.txt") or os.path.exists(snufiledir +"lumi_catversion2016_801.txt"):
+        os.system("rm " + snufiledir+"/*.txt")
+
+    if os.path.exists(snufiledir):
+        os.system("rm -r " + snufiledir)
+
+
     logdir =  os.getenv("LQANALYZER_LOG_8TeV_PATH")
     if os.path.exists(logdir):
         os.system("rm -r "+logdir)

@@ -145,64 +145,52 @@ void SKTreeMakerTriLep::BeginCycle() throw( LQError ){
   
   
   if(k_isdata){
-    if(k_channel.Contains("DoubleMuon")){
-      AddTriggerToList("HLT_IsoMu");
-      AddTriggerToList("HLT_Mu");
-      AddTriggerToList("HLT_TkMu");
-      AddTriggerToList("HLT_TripleMu");
-      AddTriggerToList("HLT_DiMu");
-
-
-    }
-    if(k_channel.Contains("SingleMuon")){
-      AddTriggerToList("HLT_IsoMu");
-      AddTriggerToList("HLT_Mu");
-      AddTriggerToList("HLT_TkMu");
-      AddTriggerToList("HLT_TripleMu");
-      AddTriggerToList("HLT_DiMu");
-
-
-    }
-    if(k_channel.Contains("SinglePhoton")){
-      AddTriggerToList("HLT_Photon");
-    }
-    cout << "k_channel = " << k_channel << endl;
-    if(k_channel.Contains("DoubleEG")){
-      AddTriggerToList("HLT_DoubleEle");
-      AddTriggerToList("HLT_Ele");
-      AddTriggerToList("HLT_DoublePhoton");
-    }
-    
-    if(k_channel.Contains("MuonEG")){
-      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
-      AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
-      AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
-      AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
-      AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
-      AddTriggerToList("HLT_Ele16_Ele12");
-      AddTriggerToList("HLT_Mu8_DiEle12");
-    }
-  }
-  else {
-    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL");
-    AddTriggerToList("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL");
-    AddTriggerToList("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
-    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL");
-    AddTriggerToList("HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL");
-    AddTriggerToList("HLT_DoubleEle");
+    AddTriggerToList("HLT_IsoMu1");
+    AddTriggerToList("HLT_IsoMu2");
+    AddTriggerToList("HLT_IsoTkMu1");
+    AddTriggerToList("HLT_IsoTkMu2");
+    AddTriggerToList("HLT_Mu8");
+    AddTriggerToList("HLT_Mu1");
+    AddTriggerToList("HLT_Mu2");
+    AddTriggerToList("HLT_Mu3");
+    AddTriggerToList("HLT_DoubleEle2");
+    AddTriggerToList("HLT_DoubleEle8");
+    AddTriggerToList("HLT_DoubleEle3");
+    AddTriggerToList("HLT_Ele8");
+    AddTriggerToList("HLT_Ele1");//// 12-16-18                                                                                                                                                                                                                                                                                                   
+    AddTriggerToList("HLT_Ele2");
+    AddTriggerToList("HLT_Ele3");
     AddTriggerToList("HLT_DoublePhoton");
-    AddTriggerToList("HLT_Ele17_Ele12_CaloIdL");
-    AddTriggerToList("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-    AddTriggerToList("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v");
-    AddTriggerToList("HLT_Mu20_Mu10_SameSign_DZ");
-    AddTriggerToList("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
-    AddTriggerToList("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL");
-    AddTriggerToList("HLT_Mu17_Mu8_SameSign_DZ");
-    AddTriggerToList("HLT_Ele23_WpLoose");
+    AddTriggerToList("HLT_Photon36_R9Id90");
+    AddTriggerToList("HLT_Photon50_R9Id90");
+    AddTriggerToList("HLT_Photon90_R9Id90");
     AddTriggerToList("HLT_TripleMu");
     AddTriggerToList("HLT_DiMu");
-    AddTriggerToList("HLT_Ele16_Ele12");
-    AddTriggerToList("HLT_Mu8_DiEle12");
+    
+  }
+  else {
+    AddTriggerToList("HLT_IsoMu1");
+    AddTriggerToList("HLT_IsoMu2");
+    AddTriggerToList("HLT_IsoTkMu1");
+    AddTriggerToList("HLT_IsoTkMu2");
+    AddTriggerToList("HLT_Mu8");
+    AddTriggerToList("HLT_Mu1");
+    AddTriggerToList("HLT_Mu2");
+    AddTriggerToList("HLT_Mu3");
+    AddTriggerToList("HLT_DoubleEle2");
+    AddTriggerToList("HLT_DoubleEle8");
+    AddTriggerToList("HLT_DoubleEle3");
+    AddTriggerToList("HLT_Ele8");
+    AddTriggerToList("HLT_Ele1");//// 12-16-18                                                                                                                                                                                                                                                                                                  
+    AddTriggerToList("HLT_Ele2");
+    AddTriggerToList("HLT_Ele3");
+    AddTriggerToList("HLT_DoublePhoton");
+    AddTriggerToList("HLT_Photon36_R9Id90");
+    AddTriggerToList("HLT_Photon50_R9Id90");
+    AddTriggerToList("HLT_Photon90_R9Id90");
+    AddTriggerToList("HLT_TripleMu");
+    AddTriggerToList("HLT_DiMu");
+
   }
 
   

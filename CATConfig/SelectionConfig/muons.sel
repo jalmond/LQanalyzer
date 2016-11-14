@@ -8,4 +8,3 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
 | MUON_HN_LOOSE   | 10.     | 2.4      |   0.        | 0.60     | true          | false          |  false         | 0.20      | 0.5       | 50.     |
 | MUON_HN_VETO    | 10.     | 2.4      |   0.        | 0.60     | false         | false          |  true          | 0.20      | 0.5       | 50.     |
 | MUON_PTETA      | 10.     | 2.4      |   0.        | 1000.    | false         | false          |  false         | 10000.    | 10000.    | 50000.  |
-| MUON_NOCUT      | 0.      | 8.       |   0.        | 1000.    | false         | false          |  false         | 10000.    | 10000.    | 50000.  |

@@ -19,7 +19,6 @@ class HNDiElectron : public AnalyzerCore {
   
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
-  void FillCutFlow(TString cut, float w);
   void FillEventCutFlow(TString cut, TString label , float weight);
 
 

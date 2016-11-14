@@ -74,9 +74,9 @@ KJet::KJet(const KJet& jet) :
   k_jet_error_jec= jet.JECUncertainty();
   k_jet_scaled_down_energy= jet.ScaledDownEnergy();
   k_jet_scaled_up_energy=jet.ScaledUpEnergy();
-  k_jet_smeared_down_energy= jet.SmearedDownEnergy();
-  k_jet_smeared_up_energy= jet.SmearedUpEnergy();
-  k_jet_smeared_energy= jet.SmearedEnergy();
+  k_jet_smeared_down_energy= jet.SmearedResDown();
+  k_jet_smeared_up_energy= jet.SmearedResUp();
+  k_jet_smeared_energy= jet.SmearedRes();
   k_jet_passpileup_loose=jet.PileupJetIDLoose();
   k_jet_passpileup_medium=jet.PileupJetIDMedium();
   k_jet_passpileup_tight=jet.PileupJetIDTight();
@@ -154,9 +154,9 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_error_jec= p.JECUncertainty();
       k_jet_scaled_down_energy= p.ScaledDownEnergy();
       k_jet_scaled_up_energy=p.ScaledUpEnergy();
-      k_jet_smeared_down_energy= p.SmearedDownEnergy();
-      k_jet_smeared_up_energy= p.SmearedUpEnergy();
-      k_jet_smeared_energy= p.SmearedEnergy();
+      k_jet_smeared_down_energy= p.SmearedResDown();
+      k_jet_smeared_up_energy= p.SmearedResUp();
+      k_jet_smeared_energy= p.SmearedRes();
       k_jet_passpileup_loose=p.PileupJetIDLoose();
       k_jet_passpileup_medium=p.PileupJetIDMedium();
       k_jet_passpileup_tight=p.PileupJetIDTight();
@@ -384,14 +384,14 @@ void KJet::SetJetScaledUpEnergy(double jetscaleEup){
   k_jet_scaled_up_energy=jetscaleEup;
 }
 
-void KJet::SetJetSmearedDownEnergy(double jetsmearEdown){
+void KJet::SetSmearedResDown(double jetsmearEdown){
   k_jet_smeared_down_energy=jetsmearEdown;
 }
-void KJet::SetJetSmearedUpEnergy(double jetsmearEup){
+void KJet::SetSmearedResUp(double jetsmearEup){
   k_jet_smeared_up_energy=jetsmearEup;
 }
 
-void KJet::SetJetSmearedEnergy(double jetsmearE){
+void KJet::SetSmearedRes(double jetsmearE){
   k_jet_smeared_energy=jetsmearE;
 }
 

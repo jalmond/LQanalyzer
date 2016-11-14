@@ -121,7 +121,7 @@ export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
 export isSLC5="False"
-export BTAGDIR=${LQANALYZER_DIR}/LQAnayzer/src/BTag/BTagC11/
+export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/src/BTag/BTagC11/
 if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
     export OBJ=obj/cms21
@@ -152,7 +152,11 @@ export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
-
+export IDFILEDIR=${LQANALYZER_DIR}/data/ID/
+export LUMIFILEDIR=${LQANALYZER_DIR}/data/Luminosity/
+export TRIGGERFILEDIR=${LQANALYZER_DIR}/data/Trigger/
+export BTAGFILEDIR=${LQANALYZER_DIR}/data/BTag/
+export PILEUPFILEDIR=${LQANALYZER_DIR}/data/Pileup/
 
 
 

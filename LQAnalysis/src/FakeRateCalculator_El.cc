@@ -61,7 +61,7 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     
 
-  if(!PassBasicEventCuts()) return;     /// Initial event cuts  
+  if(!PassMETFilter()) return;     /// Initial event cuts  
 
   std::vector<TString> triggerslist_12;
   triggerslist_12.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v");

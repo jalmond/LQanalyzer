@@ -11,7 +11,7 @@ function usage
     echo "              [-fake runfake ] [-flip runflip] [-attachhist drawhist]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
     echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
-    echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME ]   "
+    echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME -updateselection <object>]   "
 
  
 }
@@ -47,7 +47,7 @@ function rungroupedlist
 	  fi
 	  
       fi
-    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
+    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${CATVERSION}.sh
     
     echo ""
     echo "Arrays made by user"
@@ -390,7 +390,7 @@ function print_tag_diff_twotags
 	      NEWTAGS+=(${line})
 	  fi
       fi
-    done < ${CATTAGDIR}/LatestTag801.txt
+    done < ${CATTAGDIR}/LatestTag80X.txt
 
     for ntag in  ${NEWTAGS[@]};
       do
@@ -445,6 +445,10 @@ function print_tag_diff_twotags7
 }
 
 
+function update_selection
+{
+    python ${LQANALYZER_DIR}/python/UpdateSelection.py -s $object
+}
 function printid
 {
     
@@ -487,7 +491,7 @@ function print_tag_diff_vs_currenttag
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  latest_tag=$sline
       fi
-    done < $CATTAGDIR/LatestTag801.txt
+    done < $CATTAGDIR/LatestTag80X.txt
     
     if [[ $latest_tag == $CATTAG ]];then
 	
@@ -1226,6 +1230,11 @@ while [ "$1" != "" ]; do
 				exit 1
                                 ;;
 
+	-updateselection)       shift
+	                        object=$1
+				update_selection
+				exit 1
+				;;
 	-printID )              shift
 	                        idname=$1
 				idname2=$2
@@ -1367,8 +1376,8 @@ while [ "$1" != "" ]; do
 				    echo "         |                                                    |                     | Only available from v7-6-4          |"
 
 				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
-				    echo "-printID | any allowed  ID name                               | default = MUON_POG_TIGHT  | returns Info on object id.|"
-				    echo "-userflag| Get user flag   flag1,flag2                        | default = ""        |  pass in string                     |"
+				    echo "-printID | any allowed  ID name  (i.e., MUON_POG_TIGHT)       | default = ''        | returns Info on object id.|"
+				    echo "-userflag| Get user flag   flag1,flag2                        | default = ''        |  pass in string                     |"
 				    
 				    
 				    echo "-miniaod | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
@@ -1381,9 +1390,11 @@ while [ "$1" != "" ]; do
 				    echo "-r       | sktree -A to see possible samples                  | default = ''        | sends email request to make sktree  |"
 				    echo "         |                                                    |                     | that is not current available at snu|"
 				    echo "         |                                                    |                     |                                     |"
+				    echo "-updateselection | any allowed objectname                           | default = ""  | updates selection file and sends email.|"
 				    echo "-A       | can speficy catversion and search                  | default = ${CATVERSION}    | lists missing samples due to no     |"
 				    echo "         |                                                    |                     | MiniAOD and available samples       |"
 				    echo "         |                                                    |                     | that can be processed               |"        
+				    echo " -attachhist        | set True or False                                            |                     | that can be processed               |"        
 				    
 				fi
 				exit
@@ -1406,7 +1417,7 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 
 if [[ $job_data_lumi == "ALL" ]];
     then
-    declare -a data_periods=("B" "C" "D" "E")
+    declare -a data_periods=("B" "C" "D" "E" "F" "G")
 fi
 if [[ $job_data_lumi == "CtoD" ]];
     then
@@ -1415,6 +1426,15 @@ fi
 if [[ $job_data_lumi == "BtoE" ]];
     then
     declare -a data_periods=("B" "C" "D" "E")
+fi
+if [[ $job_data_lumi == "BtoG" ]];
+    then
+    declare -a data_periods=("B" "C" "D" "E" "F" "G")
+fi
+
+if [[ $job_data_lumi == "B" ]];
+    then
+    declare -a data_periods=("B")
 fi
 
 if [[ $job_data_lumi == "C" ]];
@@ -1429,6 +1449,14 @@ fi
 if [[ $job_data_lumi == "E" ]];
     then
     declare -a data_periods=("E")
+fi
+if [[ $job_data_lumi == "F" ]];
+    then
+    declare -a data_periods=("F")
+fi
+if [[ $job_data_lumi == "G" ]];
+    then
+    declare -a data_periods=("G")
 fi
 
 if [[ $submit_file_tag  != "" ]];
@@ -1456,7 +1484,7 @@ if [[ $submit_sampletag  == "MC" ]];
 
 fi
 
-declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
+declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG"  "SingleElectron" "SingleMuon")
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true

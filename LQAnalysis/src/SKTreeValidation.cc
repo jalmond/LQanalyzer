@@ -133,6 +133,8 @@ void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
 
 void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
+  //ListTriggersAvailable();
+
   /// Apply the gen weight
   if(!isData) weight*=MCweight;
   /// Acts on data to remove bad reconstructed event 
@@ -140,8 +142,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
+  return;
   FillCutFlow("NoCut", weight);
-  FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
   
   bool makePUFile=false;
   if(makePUFile){
@@ -157,8 +159,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 	    
 	    if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
 	      
-	      if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
-	      else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60);
+	      if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60, "N_{vertex}");
+	      else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 60., 60, "N_{vertex}");
 	    }
 	  }
 	}
@@ -170,57 +172,53 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
 
 
-  //  if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
+  if(!PassMETFilter()) return;     /// Initial event cuts : 
   FillCutFlow("EventCut", weight);
    
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
   TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
-   
-   TString muon_trigmuon_trig1="HLT_IsoMu22_v";
-   TString muon_trigmuon_trig2="HLT_IsoTkMu22_v";
-
-   TString diel_trig="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
-   TString em1_trig="HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
-   
-   TString el_trig="HLT_Ele27_WPTight_Gsf_v";
-
-
-   std::vector<TString> triggerslist_dimu;
-   triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
-
-   std::vector<TString> triggerslist_mu;
-   triggerslist_mu.push_back(muon_trigmuon_trig1);
-   triggerslist_mu.push_back(muon_trigmuon_trig2);
-
-
-   std::vector<TString> triggerslist_diel;
-   triggerslist_diel.push_back(diel_trig);
-
-
-   std::vector<TString> triggerslist_el;
-   triggerslist_el.push_back(el_trig);
-
-   std::vector<TString> triggerslist_emu;
+  TString muon_trigmuon_trig1="HLT_IsoMu22_v";
+  TString muon_trigmuon_trig2="HLT_IsoTkMu22_v";
+  
+  TString diel_trig="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+  
+  TString em1_trig="HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
+  
+  TString el_trig="HLT_Ele27_WPTight_Gsf_v";
+  
+  
+  std::vector<TString> triggerslist_dimu;
+  triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
+  
+  std::vector<TString> triggerslist_mu;
+  triggerslist_mu.push_back(muon_trigmuon_trig1);
+  triggerslist_mu.push_back(muon_trigmuon_trig2);
+  
+  std::vector<TString> triggerslist_diel;
+  triggerslist_diel.push_back(diel_trig);
+  
+  std::vector<TString> triggerslist_el;
+  triggerslist_el.push_back(el_trig);
+  
+  std::vector<TString> triggerslist_emu;
    triggerslist_emu.push_back(em1_trig);
    
-
-   FillCutFlow("TriggerCut", weight);
-
+   
+   //   FillCutFlow("TriggerCut", weight);
+   
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
    FillCutFlow("VertexCut", weight);
    
    float pileup_reweight=(1.0);
 
    if (!k_isdata) {
-     // check if catversion is empty. i.ie, v-7-4-X in which case use reweight class to get weight. In v-7-6-X+ pileupweight is stored in KEvent class, for silver/gold json
-
      pileup_reweight = TempPileupWeight();
-     FillHist("PUWeightvsNVertex",pileup_reweight, eventbase->GetEvent().nVertices(), weight, 0., 5., 500, 0., 60., 60);
+     FillHist("PUWeightvsNVertex",pileup_reweight, eventbase->GetEvent().nVertices(), weight, 0., 5., 500, 0., 60., 60, "N_{vertex}");
    }
    
-   FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10);
+   FillHist("PileupWeight" ,  pileup_reweight,weight,  0. , 50., 10, "pu weight");
 
    ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -497,25 +495,6 @@ SKTreeValidation::~SKTreeValidation() {
 }
 
 
-void SKTreeValidation::FillCutFlow(TString cut, float weight){
-
-  
-  if(GetHist("cutflow")) {
-    GetHist("cutflow")->Fill(cut,weight);
-   
-  }
-  else{
-    AnalyzerCore::MakeHistograms("cutflow", 5,0.,5.);
-
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"DiMu_tight");
-   
-    
-  }
-}
 
 void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight, std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
@@ -549,8 +528,9 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
     id_iso_sf =   MuonScaleFactor(muid, muons,0);
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
 
-    /// Tiny effect on unprescaled triggers
+    /// Apply weight to MC to scale to luminosity
     trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+
     ev_weight = w * trigger_sf * id_iso_sf * pu_reweight*trigger_ps;
   }
   if(k_running_nonprompt){
@@ -567,9 +547,9 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
     if(muons.at(0).Pt() > 25. ){
       FillCLHist(sighist_mm, "SingleMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, weight);
       if(trig_pass){
-	FillHist("nvertex_mu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*trigger_sf*trigger_ps, 0., 40.,40);
+	FillHist("nvertex_mu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*trigger_sf*trigger_ps, 0., 40.,40, "N_{vertex}");
         FillCLHist(sighist_mm, "SingleMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
-	FillHist("nvertex_mu" + tag + "_purw", eventbase->GetEvent().nVertices()  ,  w*trigger_sf*trigger_ps*pu_reweight, 0., 40.,40) ;
+	FillHist("nvertex_mu" + tag + "_purw", eventbase->GetEvent().nVertices()  ,  w*trigger_sf*trigger_ps*pu_reweight, 0., 40.,40, "N_{vertex}") ;
 	
 	FillCLHist(sighist_mm, "SingleMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, w*pu_reweight*trigger_ps*trigger_sf);
 
@@ -613,12 +593,14 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   float id_iso_sf(1.);
   float trigger_ps(1.);
   float ev_weight(1.);
-
+  float puweight(1.);
   if(!isData){
     //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0));
     id_iso_sf =   MuonScaleFactor(muid, muons,0);
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
-    
+
+    puweight=TempPileupWeight();
+
     /// Tiny effect on unprescaled triggers
     trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
     ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight*trigger_ps;
@@ -643,10 +625,10 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
 	/// Z peak plots
 	if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
 	  if(trig_pass){
-	    FillHist("zpeak_mumu" + tag + "_nopurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf, 0., 200.,400);
-	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*trigger_sf*pu_reweight, 0., 200.,400);
-	    FillHist("nvertex_mumu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40);
-	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight, 0., 40.,40) ;
+	    FillHist("zpeak_mumu" + tag + "_nopurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf, 0., 200.,400, "m_Z [GeV])");
+	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*trigger_sf*pu_reweight, 0., 200.,400, "m_Z [GeV])");
+	    FillHist("nvertex_mumu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40, "n_{vertex}");
+	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight, 0., 40.,40, "n_{vertex}") ;
 	    FillCLHist(sighist_mm, "ZMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  }
 	}

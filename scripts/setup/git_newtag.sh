@@ -53,7 +53,7 @@ rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export tag_numerator='"$itag"'"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "if [[ '-d' == "branch" ]];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "if [[ '$1' == '"branch"' ]];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    then" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    export CATTAG=" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "else" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
@@ -107,15 +107,5 @@ git tag $tagname
 git push --tags
 
 if [[ $sendemail == "true" ]];
-    then
-
-    declare -a list_users=( "jalmond@cern.ch" "jae.sung.kim@cern.ch" "junho.choi@cern.ch") 
-    
-    for i in  ${list_users[@]};
-      do
-      
-      source mail_tag.sh $i
-      cat email.txt | mail -s "New LQAnalyzer Tag Ready" $i -c jalmond@cern.ch
-      rm email.txt
-    done
+    python $LQANALYZER_DIR/python/NewTagEmail.py -t $tagname
 fi

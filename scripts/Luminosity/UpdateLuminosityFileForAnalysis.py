@@ -117,10 +117,22 @@ if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/Ana
     os.system("rm " + path_full_sample_list)
 
 if os.path.exists(path_full_sample_list):
+
+    check_file = open(path_full_sample_list,"r")
+    correct_file_format=False
+    for line in check_file:
+        if "DY" in line:
+            correct_file_format=True
+    check_file.close()
+    if not correct_file_format:
+        os.system("rm " + path_full_sample_list)
+
+
+if os.path.exists(path_full_sample_list):
     CheckFileFormat(path_full_sample_list)
     #### If list just made is identical to old list no update is done and code exits
     if filecmp.cmp(path_full_sample_list,path_full_sample_list_user):
-        print "List of files in /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_"+catversion + " is unchanged. No update needed"
+        print "List of files in /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_"+catversion + " is unchanged. No update needed"
         os.system("rm " + path_full_sample_list_user)
         sys.exit()
     else:

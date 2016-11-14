@@ -367,12 +367,12 @@ vector<TString>  GetAvailableMap(TString cversion, TString listpath){
 
   std::map<TString, TString> mapdir = GetLQMap2016(listpath);
 
-  TString dir = "ls   /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_" + cversion + "/ > inputlist_map.txt";
+  TString dir = "ls   /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_" + cversion + "/ > inputlist_map.txt";
 
   bool cluster = false;
   TString analysisdir = TString(getenv("HOSTNAME"));
   if(analysisdir.Contains("cmscluster.snu.ac.kr")) cluster=true;
-  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_" + cversion + "/ > inputlist_map.txt";
 
   system(dir.Data());
   
@@ -387,7 +387,7 @@ vector<TString>  GetAvailableMap(TString cversion, TString listpath){
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
     if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
-    std::ifstream fdin( (prepath+"/DataSetLists/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::ifstream fdin( (prepath+"/DataSetLists/datasets_" + cversion + "/" + input_datasetlist.at(i)).Data());
 
     std::string datasetname="";
     bool missing=true;
@@ -456,8 +456,8 @@ map<TString, TString>  GetDatasetNames(TString cversion, TString listpath){
 
   map<TString, TString> datasets;
   std::map<TString, TString> mapdir = GetLQMap2016(listpath);
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_" + cversion + "/ > inputlist_map.txt";
-  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_" + cversion + "/ > inputlist_map.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_" + cversion + "/ > inputlist_map.txt";
 
   system(dir.Data());
   std::ifstream fin("inputlist_map.txt");
@@ -471,7 +471,7 @@ map<TString, TString>  GetDatasetNames(TString cversion, TString listpath){
 
     TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
     if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
-    std::ifstream fdin( (prepath+"/DataSetLists/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::ifstream fdin( (prepath+"/DataSetLists/datasets_" + cversion + "/" + input_datasetlist.at(i)).Data());
 
     std::string datasetname="";
     if(TString(input_datasetlist.at(i)).Contains("Run2015")) continue;
@@ -515,8 +515,8 @@ map<TString, TString>  GetMissingMap(TString cversion, TString listpath){
   if(cversion.Contains("v7-6-2")) return map_missing;
 
   std::map<TString, TString> mapdir = GetLQMap2016(listpath);
-  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_" + cversion + "/ > inputlist_map.txt";
-  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_" + cversion + "/ > inputlist_map.txt";
+  TString dir = "ls  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_" + cversion + "/ > inputlist_map.txt";
+  if(cluster) dir = "ls  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_" + cversion + "/ > inputlist_map.txt";
 
   system(dir.Data());
 
@@ -530,7 +530,7 @@ map<TString, TString>  GetMissingMap(TString cversion, TString listpath){
   for(unsigned int i=0; i < input_datasetlist.size(); i++){
     TString prepath= "/data1/LQAnalyzer_rootfiles_for_analysis";
     if(cluster) prepath="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis";
-    std::ifstream fdin( (prepath+"/DataSetLists/dataset_" + cversion + "/" + input_datasetlist.at(i)).Data());
+    std::ifstream fdin( (prepath+"/DataSetLists/datasets_" + cversion + "/" + input_datasetlist.at(i)).Data());
 
 
     std::string datasetname="";

@@ -34,7 +34,7 @@ filetag=options.x
 sample=options.s
 
 path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
-path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag + ".txt"
+path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
 
 os.system("cp " + path_master + " " + path_tmpmaster)
 
@@ -116,11 +116,18 @@ for line in file_job:
     if "201" in line:
         if "time" not in line:
             entries = line.split()
-            month=entries[1]
-            day=entries[0]
-            date=entries[2]
-            ptime=entries[3] 
-            year=entries[4]
+            if len(entries) == 5:
+                month=entries[1]
+                day=entries[0]
+                date=entries[2]
+                ptime=entries[3] 
+                year=entries[4]
+            else:
+                month=entries[1]
+                day=entries[0]
+                date=entries[2]
+                ptime=entries[3]
+                year=entries[5]
 file_job.close()
 
 if jobcrash =="":
@@ -146,13 +153,16 @@ if len(sample) < 2:
     sample=stream+"_"+sample
 
 with open(path_jobinfo, "a") as myfile:
-    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(day)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
+    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(date)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
 
 os.system("rm " + path_cluster)
 
 if os.path.exists(path_log):
     os.system("rm " + path_log)
     
+
+if "FLATCAT" in skim:  
+    sample +="_lepton"
 
 if "SKTree_LeptonSkim" in skim:
     sample +="_lepton"

@@ -3,7 +3,7 @@ import os,sys
 def GetListOfDataSets(catversion):
     
     dlist=[]
-    path_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_"+str(catversion)+"/"
+    path_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_"+str(catversion)+"/"
     path_user_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER")
     if not os.path.exists(path_user_datasetlist):
         os.system("mkdir " + path_user_datasetlist)
@@ -92,8 +92,8 @@ for x in datasetlist:
     if isMC:    
         if not xsec:
             print "xsec could not be deterined for file " + x
-            if not "kskovpen" in line:
-                sys.exit()
+            #if not "kskovpen" in line:
+            #    sys.exit()
        
         for xd in  cdatasetlist:
             if part_datasetname == xd:

@@ -101,7 +101,7 @@ void HNEMu::ExecuteEvents()throw( LQError ){
   
   FillEventCutFlow("NoCut","", 1.);
 
-  if(!PassBasicEventCuts())  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
+  if(!PassMETFilter())  throw LQError( "Fails basic cuts",  LQError::SkipEvent );
   
   FillEventCutFlow("EventCut", "",weight);
 

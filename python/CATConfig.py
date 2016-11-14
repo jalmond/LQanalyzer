@@ -388,6 +388,11 @@ while inDS == "":
 
 InputDir = inDS
 
+if  not os.path.exists(InputDir):
+    print "No directory " + InputDir
+    sys.exit()
+
+
 isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))

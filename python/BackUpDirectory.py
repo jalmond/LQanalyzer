@@ -8,7 +8,7 @@ def checkLumiFile(backupdir,backup_datelist):
     
 
     nowtime = datetime.datetime.now()
-    diff = datetime.timedelta(days=7)
+    diff = datetime.timedelta(days=14)
     PAST = nowtime - diff
     date_now=nowtime.strftime("%d")
     date_past=PAST.strftime("%d")
@@ -38,7 +38,7 @@ def checkLumiFile(backupdir,backup_datelist):
 def makeBackUp(backupdir,copylist,backup_datelist):
     
     nowtime = datetime.datetime.now()
-    diff = datetime.timedelta(days=7)
+    diff = datetime.timedelta(days=14)
     PAST = nowtime - diff
     date_now=nowtime.strftime("%d")
     date_past=PAST.strftime("%d")
@@ -54,7 +54,7 @@ def makeBackUp(backupdir,copylist,backup_datelist):
             os.system("cp " + xcopy + lastest_backup)
         print "Backing up statfiles in " + lastest_backup
             
-        if len(backup_datelist) > 2:
+        if len(backup_datelist) > 10:
             remove_backup=backupdir+backup_datelist[0]
             if os.path.exists(remove_backup):
                 os.system("rm -r " + remove_backup)
@@ -70,7 +70,7 @@ def makeBackUp(backupdir,copylist,backup_datelist):
             os.system("cp " + xcopy + lastest_backup)
         print "Backing up statfiles in " + lastest_backup
 
-        if len(backup_datelist) > 2:
+        if len(backup_datelist) > 10:
             remove_backup=backupdir+backup_datelist[0]
             if os.path.exists(remove_backup):
                 os.system("rm -r " + remove_backup)
@@ -94,7 +94,7 @@ def editconfig(backup_datelist):
             diff1day = datetime.timedelta(days=1)
             PAST1DAY=nowtime - diff1day
             strpastday= PAST1DAY.strftime("%d-%m-%y")
-            if len(backup_datelist) > 2:
+            if len(backup_datelist) > 10:
                 mod_file_admin = open(path_admin, "w")
                 for xline in copy_admin_file:
                     if not backup_datelist[0] in xline:
@@ -109,7 +109,7 @@ def editconfig(backup_datelist):
                 mod_file_admin.close()
 
 
-    if len(backup_datelist) > 2:
+    if len(backup_datelist) > 10:
         mod_file_admin = open(path_admin, "w")
         for xline in copy_admin_file:
             if not backup_datelist[0] in xline:

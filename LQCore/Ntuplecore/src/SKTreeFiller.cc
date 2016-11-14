@@ -686,7 +686,6 @@ std::vector<KGenJet> SKTreeFiller::GetAllGenJets(){
     }
     return genjets;
   }
-
   if(k_cat_version < 3){
     for (UInt_t ijet=0; ijet< slimmedGenJets_pt->size(); ijet++) {
       KGenJet jet;
@@ -779,9 +778,9 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     /// JEC and uncertainties
     jet.SetJetScaledDownEnergy(jets_shiftedEnDown->at(ijet));
     jet.SetJetScaledUpEnergy(jets_shiftedEnUp->at(ijet));
-    jet.SetJetSmearedDownEnergy(jets_smearedResDown->at(ijet));
-    jet.SetJetSmearedUpEnergy(jets_smearedResUp->at(ijet));
-    jet.SetJetSmearedEnergy(jets_smearedRes->at(ijet));
+    jet.SetSmearedResDown(jets_smearedResDown->at(ijet));
+    jet.SetSmearedResUp(jets_smearedResUp->at(ijet));
+    jet.SetSmearedRes(jets_smearedRes->at(ijet));
     
     jets.push_back(jet);
   }// end of jet 
@@ -887,8 +886,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
     if(gen_pt){
       float min_Dr=0.1;
-      if(muon_q->size() ==2)	cout << ilep << " Muon eta/phi/pt = " << muon_eta->at(ilep) << " / " << muon_phi->at(ilep) << " / " <<muon_pt->at(ilep) <<  endl;
-      cout << gen_pt->size() << endl;
+
       for (UInt_t it=0; it< gen_pt->size(); it++ ){
         if(gen_motherindex->at(it) <= 0)continue;
         if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
@@ -897,7 +895,6 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	double match_eta =muon_eta->at(ilep);
 	double match_phi =muon_phi->at(ilep);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
-	if(muon_q->size() ==2)  cout << "dr (reco/gen) = " <<  dr << " status/pdgid  = " <<  gen_status->at(it) << " " << gen_pdgid->at(it)<<  " " << gen_pdgid->at(gen_motherindex->at(it)) << endl;
 	/// Matching using instructions on
         /// https://indico.cern.ch/event/292928/contributions/1650088/attachments/547844/755123/talk_electron_contribution.pdf
         ///
@@ -923,7 +920,6 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	    /// find closest match in dR to status 1
 	    matched_in_Dr=true;
 	    min_Dr= dr;
-	    if(muon_q->size() ==2)  cout << "Matched " << endl;
 	    /// set index of matched status 1 muon
 	    matched_index=it;
 	  }
@@ -1022,12 +1018,11 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       }      /// In case no status 1 muon is found : classify muon fake
       else{
 	if(muon_q->size() ==2){
-	  cout << "NOT MATCHED" << endl;
 	  for (UInt_t itxx=0; itxx< gen_pt->size(); itxx++ ){
             if(gen_motherindex->at(itxx) <= 0)continue;
             if(gen_motherindex->at(itxx) >= int(gen_pt->size()))continue;
             if(gen_pt->at(itxx) < 0.1) continue;
-	    cout << itxx << " " << gen_pdgid->at(itxx) << " " << gen_pdgid->at(gen_motherindex->at(itxx)) << " " << gen_eta->at(itxx) << " " << gen_phi->at(itxx) << endl;
+	    //cout << itxx << " " << gen_pdgid->at(itxx) << " " << gen_pdgid->at(gen_motherindex->at(itxx)) << " " << gen_eta->at(itxx) << " " << gen_phi->at(itxx) << endl;
 	  }
 
 	}

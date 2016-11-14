@@ -4,10 +4,12 @@
 cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 cp $LQANALYZER_LUMIFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
-declare -a list_of_catversions=("v8-0-1" "v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+declare -a list_of_catversions=("v8-0-2" "v8-0-1" "v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
+
+python $LQANALYZER_DIR/python/CheckSelection.py
 
 ##### New for sktreemaker only
 logger=""
@@ -23,7 +25,7 @@ runSinglePhoton=false
 
 ## RUN PARAMETERS
 
-job_data_lumi="BtoE"  ###  "C" = period C only   "ALL"  = period C+D
+job_data_lumi="ALL"   ### ALL = "BtoG"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=5
@@ -32,6 +34,8 @@ changed_skim=false
 job_output_dir=""
 
 idname=""
+
+object=""
 idname2=""
 job_run_bkg="False"
 submit_draw="False"
@@ -195,14 +199,32 @@ function mergeoutput
     if [[ $job_cycle != *"SKTreeMaker"* ]];
         then
 
-        if [[ $job_data_lumi  == "C" ]];
+        if [[ $job_data_lumi  == "B" ]];
             then
             mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
-
-
+	    
+	    
+        elif [[ $job_data_lumi  == "C" ]];
+        then
+            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+	    
+	    
         elif [[ $job_data_lumi  == "D" ]];
+        then
+            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+	    
+        elif [[ $job_data_lumi  == "E" ]];
             then
             mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+	    
+        elif [[ $job_data_lumi  == "F" ]];
+            then
+            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+
+        elif [[ $job_data_lumi  == "G" ]];
+            then
+            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+
 
         else
 	    output_file_skim_tag=$1
@@ -744,7 +766,7 @@ fi
 outputdir_cat=$outdir"/data/output/CAT/"
 
 outputdir_analyzer=$outdir"/data/output/CAT/"$submit_analyzer_name
-dir_tag="periodBtoE/"
+dir_tag="periodBtoG/"
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
     then
@@ -756,9 +778,9 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
     if [[ ! -d "${outputdir_analyzer}" ]]; then
 	mkdir ${outputdir_analyzer}
     fi
-    if [[ $job_data_lumi  == "BtoE" ]]
+    if [[ $job_data_lumi  == "BtoG" ]]
 	then
-	dir_tag="periodBtoE/"
+	dir_tag="periodBtoG/"
     fi
 fi
 
@@ -1036,7 +1058,13 @@ fi
 
 if [[ $runMC  == "true" ]];
     then
-    if [[ $job_data_lumi == "C" ]];
+    if [[ $job_data_lumi == "B" ]];
+        then
+        if [[ $job_cycle != *"SKTreeMaker"* ]];
+                then
+                echo $data_lumi_output_message
+                fi
+   elif [[ $job_data_lumi == "C" ]];
 	then
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
 	        then
@@ -1048,8 +1076,32 @@ if [[ $runMC  == "true" ]];
 	        then
 	        echo $data_lumi_output_message
         fi
-	
-    elif [[ $job_data_lumi == "BtoE" ]]
+
+    elif [[ $job_data_lumi == "E" ]]
+        then
+	if [[ $job_cycle != *"SKTreeMaker"* ]];
+	    then
+                echo $data_lumi_output_message
+        fi
+
+    elif [[ $job_data_lumi == "F" ]]
+        then
+	if [[ $job_cycle != *"SKTreeMaker"* ]];
+	    then
+                echo $data_lumi_output_message
+        fi
+
+
+    elif [[ $job_data_lumi == "G" ]]
+        then
+	if [[ $job_cycle != *"SKTreeMaker"* ]];
+	    then
+                echo $data_lumi_output_message
+        fi
+
+
+
+    elif [[ $job_data_lumi == "BtoG" ]]
 	then
 
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
@@ -1319,7 +1371,6 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
 	    cp sktree_logger.txt $LQANALYZER_SKTreeLOG_DIR"/"$submit_analyzer_name"_"${submit_version_tag}".log"
 	fi
     fi
-    rm message.txt
     rm edit.sh
     rm sktree_logger.txt
     rm sktree_logger_tmp.txt
