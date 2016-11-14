@@ -275,18 +275,25 @@ if os.path.exists(path_full_sample_list):
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
             if input == "Y":
                 os.system("cp " + newsamplelist + " " + samplelist)
+                os.system("chmod 777 " + samplelist)
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
             else:
                 print "You ignored changes. The sample list will not be updated"
                 
             os.system("rm " + newsamplelist)    
+
+        os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+        file_newlist = open(path_newfile,"r")
+        for line in file_newlist:
+            sline = line.split()
+            if len(sline) == 4:
+                os.system("sktree -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
+
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile)
         if len(newsample_list) > 0:
-            EmailNewSampleList(catversion,path_newfile)    
-            ### finish later
-
+            EmailNewSampleList(catversion,path_newfile)                
 else:
     ### if sample list does not exist then this is first  time it is run with new catversion so cp new list to main list
     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
@@ -303,5 +310,9 @@ else:
             
     if os.path.exists(lqdir+"/scripts/Luminosity/inputlist_efflumi.txt"):
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
+        
+    os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+    os.system('sktree -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
+    os.system('sktree -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     
     EmailNewList(catversion)    

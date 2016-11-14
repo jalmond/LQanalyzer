@@ -204,12 +204,18 @@ void MakeInputListForSubmitScript(){
     if(!mit->second.Contains("HN_Tchan")) continue;
     if(mit->second.Contains("mum")) continue;
     if(mit->second.Contains("mup")) continue;
-    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
-    else  lumi_file << mit->second ;
-
+    bool last=true;
+    for(std::map<TString, TString>::iterator mit2 =next(mit); mit2 != lqmap.end();++mit2){
+      if(mit2->second.Contains("HN_Tchan") && mit2->second.Contains("mu")) last=false;
+    }
+    if (last) lumi_file << mit->second << "' " ;
+    else{
+      if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+      else  lumi_file << mit->second ;
+    }
   }
 
-
+  
   lumi_file << "') " << endl;
 
 
@@ -220,8 +226,15 @@ void MakeInputListForSubmitScript(){
     if(!mit->second.Contains("HN_Tchan")) continue;
     if(mit->second.Contains("emem")) continue;
     if(mit->second.Contains("epep")) continue;
-    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
-    else  lumi_file << mit->second ;
+    for(std::map<TString, TString>::iterator mit2 =next(mit); mit2 != lqmap.end();++mit2){
+      if(mit2->second.Contains("HN_Tchan") &&(mit2->second.Contains("em") ||  mit2->second.Contains("ep")) ) last=false;
+    }
+    if (last) lumi_file << mit->second << "' " ;
+    else{
+      if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+      else  lumi_file << mit->second ;
+    }
+
 
   }
 
@@ -314,8 +327,9 @@ void MakeInputListForSubmitScript(){
 
   string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_" + string(def_version) +".sh";
 
-  if(user.Contains("jalmond"))
-    gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/").Data());
+
+  gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/").Data());
+  gSystem->Exec(("chmod 777  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/" + lfile).Data());
   gSystem->Exec(("mv " + lfile +" " + lfile2).Data());
 
 
