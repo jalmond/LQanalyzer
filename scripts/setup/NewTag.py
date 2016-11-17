@@ -23,7 +23,7 @@ for line in file_newtag:
         sline = line.split()
         if len(sline) == 1:
             sline = sline[0]
-            sline = sline[5:-1]
+            sline = sline[6:-1]
             newtag= str(os.getenv("CATVERSION")) + str(sline)
 
 file_newtag.close()
