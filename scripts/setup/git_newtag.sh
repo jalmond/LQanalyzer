@@ -29,22 +29,22 @@ do
     if [[ $line  == *$tagname* ]]; then
 	notnew_tag=True
     fi	
-done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag801.txt
+done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
 
 if [[ $notnew_tag == "False" ]];then
-    echo "$tagname (HEAD)" >> LatestTag801.txt
+    echo "$tagname (HEAD)" >> LatestTag80X.txt
     
     while read line
     do
 	if [[ $line != *"HEAD"* ]];then
-	    echo "$line" >> LatestTag801.txt
+	    echo "$line" >> LatestTag80X.txt
 	else
 	    suffix="(HEAD)"
 	    sline=${line%$suffix}
-	    echo "$sline" >> LatestTag801.txt
+	    echo "$sline" >> LatestTag80X.txt
 	fi
-    done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag801.txt
-    mv LatestTag801.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag801.txt
+    done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+    mv LatestTag80X.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
 else
     echo "Not adding a new tag"
 fi

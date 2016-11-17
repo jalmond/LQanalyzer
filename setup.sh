@@ -89,7 +89,7 @@ fi
 
 
 ##### Check that this is not the branch and a tag was checked out
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh branch
+source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
