@@ -19,11 +19,11 @@ file_newtag= open(path_newtag,"r")
 
 newtag=""
 for line in file_newtag:
-    if "itag" in line:
+    if "itag=" in line:
         sline = line.split()
-        if len(sline) == 2:
-            sline = sline[1]
-            sline = sline[1:-1]
+        if len(sline) == 1:
+            sline = sline[0]
+            sline = sline[5:-1]
             newtag= str(os.getenv("CATVERSION")) + str(sline)
 
 file_newtag.close()
