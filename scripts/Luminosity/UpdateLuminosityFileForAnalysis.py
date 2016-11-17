@@ -275,7 +275,8 @@ if os.path.exists(path_full_sample_list):
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
             if input == "Y":
                 os.system("cp " + newsamplelist + " " + samplelist)
-                os.system("chmod 777 " + samplelist)
+                if os.getenv("USER") == "jalmond":
+                    os.system("chmod 777 " + samplelist)
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
             else:
