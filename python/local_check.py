@@ -34,6 +34,7 @@ tag_dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
 
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
+snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"
 snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"
 snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"
 snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"
@@ -54,6 +55,8 @@ if not os.path.exists(tag_dir):
 
     print "Copying all latest rootfiles for use in analysis"
 
+    MakeDirectory(snulumifiledir)
+    os.system("cp " + localfiledir + "/Luminosity/*.root " + snulumifiledir)
     MakeDirectory(snufakefiledir)
     os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
     MakeDirectory(snutriggerfiledir)
