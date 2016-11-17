@@ -5,7 +5,7 @@
 
 ###################################################
 ### Make Input File
-###################################################
+####################################################
 import os, getpass, sys,ROOT
 from functions import *
 
@@ -1482,6 +1482,9 @@ if number_of_events_per_job > 0:
     number_of_jobs_for_statfile = 1
 if skipev > 0:
     number_of_jobs_for_statfile = 1
+if JobCrash:
+    number_of_jobs_for_statfile = 1
+
 
 os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample + " -n " + str(number_of_jobs_for_statfile))
 

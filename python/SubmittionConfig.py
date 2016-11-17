@@ -88,7 +88,7 @@ def DetermineNjobs(ncores_job, deftagger,defsample,defcycle,defskim):
         njobs_max=10
     else:
         njobs_max=5
-    
+
     if nrunning < 50:
         return njobs_max
     else:
@@ -484,6 +484,22 @@ def LargeVirtualMemoryIncrease(mem,defsample, defcycle, tagger,defskim):
 
 
 
+def CheckRunningStatus(check_crashfile):
+    if not os.path.exists(check_crashfile):
+        return
+    file_check_crashfile=open(check_crashfile,"r")
+    for line in file_check_crashfile:
+        if " No such file or directory:" in line:
+            print line 
+            sys.exit()
+        if "is not defined" in line:
+            print line 
+            sys.exit()
+        if "SyntaxError: invalid syntax" in line:
+            print line 
+            sys.exit()
+    file_check_crashfile.close()            
+    return
 
 def RoundMemory(mem):
     if not "MB" in str(mem):
@@ -792,6 +808,7 @@ for s in sample:
             if bs == sample[x]:
                 backgroundsamples=True
         ### the following variables are used to print the output sample name that is determined in the localsubmit.py
+
         useskimtmp=useskim
         ismctmp=  len(sample[x])>1
         sampletmp=sample[x]
@@ -808,6 +825,10 @@ for s in sample:
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
                     
+
+
+            #CheckRunningStatus("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
+
             file_job_check=open(path_job_check ,"r")
             jobid1=0
             jobid2=0
@@ -946,7 +967,35 @@ for s in sample:
                         stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
                         stdscr.refresh()
                         ismerging=False
+                    check_crash_stat=False
+                    if check_crash_stat:
+                        check_crashfile="/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"
+                        if not os.path.exists(check_crashfile):
+                            continue
+                        file_check_crashfile=open(check_crashfile,"r")
+                        crash_in_job=False
+                        crashlog=[]
+                        for line in file_check_crashfile:
+                            if " No such file or directory:" in line:
+                                crash_in_job=True
+                                crashlog.append(line)
+                        file_check_crashfile.close()
+                        if crash_in_job:
+                            crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                            if os.path.exists(crash_log):
+                                file_crash=open(crash_log,"a")
+                                for linex in  crashlog:
+                                    file_crash.write(linex)
+                                file_crash.close()
+                            else:
+                                file_crash=open(crash_log,"w")
+                                for linex in  crashlog:
+                                    file_crash.write(linex)
+                                file_crash.close()
+                            break
+
                     continue
+                
 
                 crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
 
@@ -1301,6 +1350,9 @@ while StillRunning:
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
 
+            #CheckRunningStatus("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
+
+
             file_job_check=open(path_job_check ,"r")
             njobs_finished=0.
             nrunning=0.
@@ -1437,6 +1489,35 @@ while StillRunning:
                         stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
                         stdscr.refresh()
                         ismerging=False
+                        
+                    check_crash_stat=False
+                    if check_crash_stat:
+                        check_crashfile="/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt"    
+                        if not os.path.exists(check_crashfile):
+                            continue
+                        file_check_crashfile=open(check_crashfile,"r")
+                        crash_in_job=False
+                        crashlog=[]
+                        for line in file_check_crashfile:
+                            if " No such file or directory:" in line:
+                                crash_in_job=True
+                                crashlog.append(line)
+                        file_check_crashfile.close()
+                        if crash_in_job:
+                            crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"
+                            if os.path.exists(crash_log):
+                                file_crash=open(crash_log,"a")
+                                for linex in  crashlog:
+                                    file_crash.write(linex)
+                                file_crash.close()
+                            else:
+                                file_crash=open(crash_log,"w")
+                                for linex in  crashlog:
+                                    file_crash.write(linex)
+                                file_crash.close()
+                            break
+
+
                     continue
 
                 crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] +"_crash/crashlog.txt"

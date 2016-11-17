@@ -1381,40 +1381,7 @@ if [[ ! -d "${iddir}" ]]; then
     mkdir $iddir
 fi
 
-JobID=""
-if [ -f /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt ];
-then
-    cp /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt /data2/CAT_SKTreeOutput/$USER/JobID/IDtmp.txt
-
-    while read line
-    do
-	sline1=$(echo $line | head -n1 | awk '{print $1}')
-	sline2=$(echo $line | head -n1 | awk '{print $2}')
-	sline2=$((sline2+1))
-	new_line=$sline1" "$sline2
-	echo $new_line > /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt 
-	JobID=$sline2
-    done < /data2/CAT_SKTreeOutput/${USER}/JobID/IDtmp.txt
     
-else
-    if [[ $USER == "jalmond" ]];
-    then
-	echo "Error in  /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt"
-	exit 1
-    fi
-    JobID=$RANDOM
-fi
-    
-
-################  DATA################################################
-### submit this configured job (uses bin/submit.sh)
-######################################################################
-tagger=""
-if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
-          tagger=$JobID
-else
-          tagger=$RANDOM
-fi
 
 runboth="false"
 if [[ $runDATA  == "true" ]];
@@ -1422,6 +1389,7 @@ if [[ $runDATA  == "true" ]];
     if [[ $runMC  == "true" ]];
     then
 	runboth="true"
+	echo "LQanalyzer::sktree :: INFO :: runing MC+DATA, DATA will be run in background"
     fi
 fi
 
@@ -1441,9 +1409,12 @@ if [[ $runDATA  == "true" ]];
 	  continue
       fi
 
+
+      JobID=""
       if [ -f /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt ];
       then
 	  cp /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt /data2/CAT_SKTreeOutput/$USER/JobID/IDtmp.txt
+	  
 	  while read line
 	  do
               sline1=$(echo $line | head -n1 | awk '{print $1}')
@@ -1453,7 +1424,16 @@ if [[ $runDATA  == "true" ]];
               echo $new_line > /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt
               JobID=$sline2
 	  done < /data2/CAT_SKTreeOutput/${USER}/JobID/IDtmp.txt
+	  
+      else
+	  if [[ $USER == "jalmond" ]];
+	  then
+              echo "Error in  /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt"
+              exit 1
+	  fi
+	  JobID=$RANDOM
       fi
+
       if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
           tagger=$JobID
       else
@@ -1541,6 +1521,41 @@ fi
 if [[ $runMC  == "true" ]];
 
     then
+
+    JobID=""
+    
+    if [ -f /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt ];
+    then
+	cp /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt /data2/CAT_SKTreeOutput/$USER/JobID/IDtmp.txt
+	
+	while read line
+	do
+            sline1=$(echo $line | head -n1 | awk '{print $1}')
+            sline2=$(echo $line | head -n1 | awk '{print $2}')
+	    sline2=$((sline2+1))
+            new_line=$sline1" "$sline2
+            echo $new_line > /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt
+            JobID=$sline2
+	done < /data2/CAT_SKTreeOutput/${USER}/JobID/IDtmp.txt
+	
+    else
+	if [[ $USER == "jalmond" ]];
+	then
+            echo "Error in  /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt"
+            exit 1
+	fi
+	JobID=$RANDOM
+    fi
+
+    
+    tagger=""
+    if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
+        tagger=$JobID
+    else
+        tagger=$RANDOM
+    fi
+    
+    
     ### set all inputs to default in functions.sh
     source functions.sh
     
@@ -1570,7 +1585,7 @@ if [[ $runMC  == "true" ]];
         declare -a input_samples=("${submit_file_tag}")
 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
-	echo "LQanalyzer::sktree :: INFO :: JOB ID["$tagger"]"
+	echo "LQanalyzer::sktree :: INFO :: JOB MC ID["$tagger"]"
 
 
 	if [[ ${run_in_bkg} == "True" ]];
@@ -1597,7 +1612,7 @@ if [[ $runMC  == "true" ]];
 	ARG=$submit_file_list
 	eval input_samples=(\${$ARG[@]})
 
-	echo "LQanalyzer::sktree :: INFO :: JOB ID["$tagger"]"
+	echo "LQanalyzer::sktree :: INFO :: MC JOB ID["$tagger"]"
 
 	if [[ ${run_in_bkg} == "True" ]];
         then

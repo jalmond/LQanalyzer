@@ -1399,32 +1399,23 @@ void AnalyzerCore::ListTriggersAvailable(){
 
 float AnalyzerCore::PassTrigger(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, int& prescaler){
 
-  
-  if(k_cat_version != 6){
-    
-    return -999.;
-  }
-  else {
-    /// cat_version 5 runs with MC with unreliable trigger bits. Apply data eff to MC                                                                                                                                                                   
-    
-    if(isData){
-      std::vector<TString> list;
-      list.push_back(trigname);
-      if(PassTrigger(list, prescaler)) return 1.;
-      else return 0.;
-    }
-    if(electrons.size() >= 1 && muons.size() >= 1){
-      float trig_eff(1.);
-      if(trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")){
-	trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
-	trig_eff*= GetEff(muons.at(0), "HLT_Mu8");
-	return trig_eff;
-      }
-      else  return 0.;
-    }
+  if(isData){
+    std::vector<TString> list;
+    list.push_back(trigname);
+    if(PassTrigger(list, prescaler)) return 1.;
     else return 0.;
-    
   }
+  if(electrons.size() >= 1 && muons.size() >= 1){
+    float trig_eff(1.);
+    if(trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")){
+      trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
+      trig_eff*= GetEff(muons.at(0), "HLT_Mu8");
+      return trig_eff;
+    }
+    else  return 0.;
+  }
+  else return 0.;
+  
   return 1.;
 }
 
@@ -1432,33 +1423,26 @@ float AnalyzerCore::PassTrigger(TString trigname,  std::vector<snu::KMuon> muons
 
 float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KElectron> electrons, int& prescaler){
   
-  if(k_cat_version != 6){
-    return -999.;
-  }
-  else {
-    /// cat_version 5 runs with MC with unreliable trigger bits. Apply data eff to MC
-    
-    if(isData){
-      std::vector<TString> list;
-      list.push_back(trigname);
-      if(PassTrigger(list, prescaler)) return 1.;
-      else return 0.;
-    }
-    
-    if(electrons.size() >=2){
-      float trig_eff(1.);
-      if(trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")){
-	
-	trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
-	trig_eff*= GetEff(electrons.at(1), "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-	trig_eff *= 0.995; // DZ efficiency AN2016_228
-	return trig_eff;
-      }
-      else  return 0.;
-    }
+  if(isData){
+    std::vector<TString> list;
+    list.push_back(trigname);
+    if(PassTrigger(list, prescaler)) return 1.;
     else return 0.;
-    
   }
+  
+  if(electrons.size() >=2){
+    float trig_eff(1.);
+    if(trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")){
+      
+      trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
+      trig_eff*= GetEff(electrons.at(1), "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+      trig_eff *= 0.995; // DZ efficiency AN2016_228
+      return trig_eff;
+    }
+    else  return 0.;
+  }
+  else return 0.;  
+
   return 1.;
 }
 
@@ -1588,47 +1572,39 @@ float AnalyzerCore::GetEff(snu::KElectron el, TString trigname){
 
 float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KMuon> muons, int& prescaler){
   
-  if(k_cat_version != 6){
-
-    return -999.;
+  if(isData){
+    std::vector<TString> list;
+    list.push_back(trigname);
+    if(PassTrigger(list, prescaler)) return 1.;
+    else return 0.;
   }
-  else {
-    /// cat_version 5 runs with MC with unreliable trigger bits. Apply data eff to MC                                                                                                                                                                                         
-    if(isData){
-      std::vector<TString> list;
-      list.push_back(trigname);
-      if(PassTrigger(list, prescaler)) return 1.;
-      else return 0.;
-    }
-    
-    if(muons.size() >= 2){
-      float trig_eff(1.);
-      if(trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
-	trig_eff*= GetEff(muons.at(0), "HLT_Mu17");
-	trig_eff*= GetEff(muons.at(1), "HLT_Mu8");
-	return trig_eff;
-      }
-      else return 0.;
-    }
-    
-    if(muons.size() >= 1){
-      if (trigname.Contains("HLT_IsoMu22") || trigname.Contains("HLT_IsoTkMu22"))  {
-	/// https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults                                                                                                                                                            
-	float mupt=muons.at(0).Pt();
-	if(mupt > 500.) mupt = 499.;
-	if(mupt < 25.) mupt = 25.;
-	if(eventbase->GetEvent().RunNumber()  < 274093){
-	  return  SingleMuon_274093->GetBinContent( SingleMuon_274093->FindBin(  fabs(muons.at(0).Eta()), mupt) );
-	}
-	else {
-	  return SingleMuon_276097->GetBinContent( SingleMuon_276097->FindBin(  fabs(muons.at(0).Eta()), mupt) );
-	}
-      }
-      else return 0.;
+  
+  if(muons.size() >= 2){
+    float trig_eff(1.);
+    if(trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
+      trig_eff*= GetEff(muons.at(0), "HLT_Mu17");
+      trig_eff*= GetEff(muons.at(1), "HLT_Mu8");
+      return trig_eff;
     }
     else return 0.;
-
   }
+  
+  if(muons.size() >= 1){
+    if (trigname.Contains("HLT_IsoMu22") || trigname.Contains("HLT_IsoTkMu22"))  {
+      /// https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults                                                                                                                                                            
+      float mupt=muons.at(0).Pt();
+      if(mupt > 500.) mupt = 499.;
+      if(mupt < 25.) mupt = 25.;
+      if(eventbase->GetEvent().RunNumber()  < 274093){
+	return  SingleMuon_274093->GetBinContent( SingleMuon_274093->FindBin(  fabs(muons.at(0).Eta()), mupt) );
+      }
+      else {
+	return SingleMuon_276097->GetBinContent( SingleMuon_276097->FindBin(  fabs(muons.at(0).Eta()), mupt) );
+      }
+    }
+    else return 0.;
+  }
+  else return 0.;
   return 1.;
 }
 
@@ -1772,14 +1748,9 @@ float AnalyzerCore::GetEff(snu::KMuon mu, TString trigname){
 
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler, bool fake_2016 ){
   
-  //if(fake_2016)   
   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
-
-  if(!isData){
-    return 0;
-  }
-  else   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
-  
+ 
+ 
 }
 
 

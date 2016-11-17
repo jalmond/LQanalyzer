@@ -33,7 +33,8 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 (options, args) = parser.parse_args()
 filetag=options.x
 sample=options.s
-njobs=int(options.n)
+njobs_submittest=int(options.n)
+
 
 path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
 path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
@@ -52,6 +53,7 @@ path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + get
 time=0.
 ntimes=0.
 pretime=0.
+prefilesize="0MB"
 premem_v="0MB"
 premem_p="0MB"
 jobtime=0.
@@ -204,9 +206,11 @@ for line in file_tmpmaster:
                 if len(splitline) > 2:
                     ntimes = float(splitline[2])
                     pretime = float(splitline[3])
+                     prefilesize =  splitline[4]
                     if len(splitline) ==  7:
                         premem_v = splitline[5]
                         premem_p = splitline[6]
+                        prefilesize = splitline[4]
                     newsample=False
 
 file_tmpmaster.close()
@@ -276,12 +280,22 @@ newtime= ((jobtime*(float(njobs)/float(nfiles))) + (pretime*ntimes)) / (ntimes+1
 if jobtime < 0.:
     newtime = pretime
 
-if njobs == 1:
-     newtime = pretime
-
 new_memoryv = (GetMemory(memoryusage_v) + (GetMemory(premem_v)*ntimes)) / (ntimes+1)
 new_memoryp = (GetMemory(memoryusage_p) + (GetMemory(premem_p)*ntimes)) / (ntimes+1)
+new_filesize = (GetMemory(filesize)  + (GetMemory(prefilesize)*ntimes)) /  (ntimes+1)
 
+if GetMemory(memoryusage_p) < 0.1:
+    new_memoryp = GetMemory(premem_p)
+if GetMemory(memoryusage_v) < 0.1:
+    new_memoryv = GetMemory(premem_v)
+if GetMemory(filesize) < 0.1:
+    new_filesize=GetMemory(prefilesize)
+
+if njobs_submittest == 1:
+    new_memoryp = GetMemory(premem_p)
+    new_memoryv = GetMemory(premem_v)
+    new_filesize=GetMemory(prefilesize)
+    newtime = pretime
 
 correctuser=False
 correctCode=False
@@ -306,12 +320,12 @@ for line in file_tmpmaster2:
              if newsample:
                  if sample_title in line:
                      file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
-                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
+                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(newfilesize) + "MB " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                     file_master.write(line)
              else:
                  if sample in line:
-                     file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
+                     file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(newfilesize) + "MB " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                      file_master.write(line)
         else:
