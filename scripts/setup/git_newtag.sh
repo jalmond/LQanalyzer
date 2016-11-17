@@ -106,6 +106,6 @@ fi
 git tag $tagname
 git push --tags
 
-if [[ $sendemail == "true" ]];
+if [[ $sendemail == "true" ]]; then
     python $LQANALYZER_DIR/python/NewTagEmail.py -t $tagname
 fi
