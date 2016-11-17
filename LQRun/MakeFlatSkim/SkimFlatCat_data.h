@@ -80,6 +80,7 @@ public :
 
 
    Int_t           nPV;
+   Int_t         nGoodPV;
    Int_t           nTrueInteraction;
 
 

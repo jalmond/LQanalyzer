@@ -144,7 +144,8 @@ bool BaseSelection::CheckCutString(TString label, TString id){
 
 bool BaseSelection::CheckCutFloat(TString label, TString id){
 
-  if(AccessFloatMap(label,id) == -999) return false;
+  if(AccessFloatMap(label,id) == -999.) return false;
+  if(AccessFloatMap(label,id) == 999.) return false;
   else return true;
 
 }

@@ -1,4 +1,4 @@
-ncuts 10
+ncuts 11
 webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
-| ID              |  ptmin  | |etamax| |  isomin04   | isomax04 | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG)   | |dxymax|  |  |dzmax|  | chi2max | 
-| MUON_NOCUT      | 0.      | 8.       |   0.        | 1000.    | false         | false          |  false         | 10000.    | 10000.    | 50000.  |
+| ID              |  ptmin  | |etamax| |  isomin04   | isomax04 | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG)   | |dxymax|  |  |dzmax|  | chi2max | |dxysigmax|  | 
+| MUON_NOCUT      | 0.      | 8.       |   0.        | 1000.    | false         | false          |  false         | 999.      | 999.      | 999.    | 999.         |

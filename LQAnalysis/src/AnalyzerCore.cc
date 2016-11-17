@@ -1818,7 +1818,8 @@ void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xbins[], TStri
 void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xmax, TString label){
 
   maphist[hname] =  new TH1D(hname.Data(),hname.Data(),nbins,xmin,xmax);
-  maphist[hname]->GetXaxis()->SetTitle("TEST");
+  //maphist[hname]->GetXaxis()->SetTitle("TEST");
+  maphist[hname]->GetXaxis()->SetTitle(label);
 }
 
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label) {

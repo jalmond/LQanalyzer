@@ -146,8 +146,9 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   
   bool makePUFile=true;
   if(makePUFile){
-    std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
-    
+    //std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
+    std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TRI_TIGHT");
+    return;
     
     //if(PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale)){
     if(muons.size() ==2) {

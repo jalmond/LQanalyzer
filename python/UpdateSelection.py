@@ -1,21 +1,24 @@
 import os,filecmp,sys
 
+
+    
+def GetCATAnalyzerMailList():
+    maillist=[]
+    path_emailconfig = "/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/emailconfig.txt"
+    file_emailconfig = open(path_emailconfig,"r")
+    for line in file_emailconfig:
+        splitline=line.split()
+        if len(splitline) > 1:
+            print "error in mail list for user " + line
+            sys.exit(1)
+        else:
+            maillist.append(splitline[0])
+    return maillist
+
+
 def SendEmail(localsummary, mastersummary):
 
-    email_user=""
-    configfile = os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
-    file_configfile = open(configfile,"r")
-    for line in file_configfile:
-        if "email" in line:
-            sline = line.split()
-            if len(sline) > 2:
-                email_user= sline[2] 
-    file_configfile.close()
-
-    if not  os.getenv("USER") == "jalmond":
-        if "jalmond" in email_user:
-            print "Email could not be set since email address is not set correctly in bin/catconfig."
-            return
+    email_user=SendEmail()
 
     path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
     file_email=open(path_file_email,"w")

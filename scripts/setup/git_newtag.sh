@@ -4,7 +4,7 @@ if [[ $LQANALYZER_DIR == "" ]];
 fi
 
 ########## Tag index
-itag=".1"
+itag=".2"
 tagname=$CATVERSION$itag
 
 

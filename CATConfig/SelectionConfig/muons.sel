@@ -1,10 +1,16 @@
-ncuts 10
+ncuts 11
 webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
-| ID              |  ptmin  | |etamax| |  isomin04   | isomax04 | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG)   | |dxymax|  |  |dzmax|  | chi2max | 
-| MUON_POG_TIGHT  | 10.     | 2.4      |   0.        | 0.15     | true          | false          |  false         | 0.2       | 0.5       |  10.    |
-| MUON_POG_MEDIUM | 10.     | 2.4      |   0.        | 0.25     | false         | true           |  false         | 1000.     | 100.      |  100.   |
-| MUON_POG_LOOSE  | 10.     | 2.4      |   0.        | 0.25     | false         | false          |  true          | 1000.     | 1000.     | 1000.   |
-| MUON_HN_TIGHT   | 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 0.5       | 10.     |
-| MUON_HN_LOOSE   | 10.     | 2.4      |   0.        | 0.60     | true          | false          |  false         | 0.20      | 0.5       | 50.     |
-| MUON_HN_VETO    | 10.     | 2.4      |   0.        | 0.60     | false         | false          |  true          | 0.20      | 0.5       | 50.     |
-| MUON_PTETA      | 10.     | 2.4      |   0.        | 1000.    | false         | false          |  false         | 10000.    | 10000.    | 50000.  |
+| ID		         	|  ptmin  | |etamax| |  isomin04   | isomax04 | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG)   | |dxymax|  |  |dzmax|  | chi2max | |dxysigmax|  | 
+| MUON_POG_TIGHT       		| 10.     | 2.4      |   0.        | 0.15     | true          | false          |  false         | 0.2       | 0.5       |  10.    | 999.         |
+| MUON_POG_MEDIUM      		| 10.     | 2.4      |   0.        | 0.25     | false         | true           |  false         | 999.      | 100.      |  100.   | 999.         |
+| MUON_POG_LOOSE       		| 10.     | 2.4      |   0.        | 0.25     | false         | false          |  true          | 999.      | 999.      |  999.   | 999.         |
+| MUON_HN_TIGHT        		| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 0.5       | 10.     | 999.         |
+| MUON_HN_LOOSE        		| 10.     | 2.4      |   0.        | 0.60     | true          | false          |  false         | 0.20      | 0.5       | 50.     | 999.         |
+| MUON_HN_VETO         		| 10.     | 2.4      |   0.        | 0.60     | false         | false          |  true          | 0.20      | 0.5       | 50.     | 999.         |
+| MUON_PTETA           		| 10.     | 2.4      |   0.        | 999.     | false         | false          |  false         | 999.      | 999.      | 999.    | 999.         |
+| MUON_HN_TRI_TIGHT    		| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 999.      | 10.     | 3.           |
+| MUON_HN_TRI_LOOSE    		| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 999.      | 10.     | 3.           |
+| MUON_HN_TRI_NODXYCUT_TIGHT    | 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 999.      | 10.     | 3.           |
+| MUON_HN_TRI_NODXYCUT_LOOSE  	| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 999.      | 10.     | 3.           |
+| MUON_HN_TRI_HIGHDXY_TIGHT  	| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 999.      | 10.     | 3.           |
+| MUON_HN_TRI_HIGHDXY_LOOSE  	| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 999.      | 10.     | 3.           |
