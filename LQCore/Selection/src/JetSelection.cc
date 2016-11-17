@@ -142,8 +142,8 @@ void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vect
 
 
 bool JetSelection::PassUserID (ID id, snu::KJet jet){
-  if      ( id == "PFJET_LOOSE"  ) return PassUserID_PFJetLoose  (jet);
-  else if ( id == "PFJET_TIGHT"  ) return PassUserID_PFJetTight  (jet);
+  if      ( id == PFJET_LOOSE  ) return PassUserID_PFJetLoose  (jet);
+  else if ( id == PFJET_TIGHT  ) return PassUserID_PFJetTight  (jet);
   else return false;
 }
 

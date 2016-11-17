@@ -59,7 +59,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
-  
+
   //###### GenJet Selection ##########
   if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
   

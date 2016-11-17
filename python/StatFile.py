@@ -27,11 +27,13 @@ if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStati
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-x", "--x", dest="x", default="123",help="tag")
+parser.add_option("-n", "--n", dest="n", default="123",help="tag")
 parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 
 (options, args) = parser.parse_args()
 filetag=options.x
 sample=options.s
+njobs=int(options.n)
 
 path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
 path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
@@ -271,6 +273,11 @@ elif newCycle:
 file_master=open(path_master,"w")
     
 newtime= ((jobtime*(float(njobs)/float(nfiles))) + (pretime*ntimes)) / (ntimes+1)
+if jobtime < 0.:
+    newtime = pretime
+
+if njobs == 1:
+     newtime = pretime
 
 new_memoryv = (GetMemory(memoryusage_v) + (GetMemory(premem_v)*ntimes)) / (ntimes+1)
 new_memoryp = (GetMemory(memoryusage_p) + (GetMemory(premem_p)*ntimes)) / (ntimes+1)

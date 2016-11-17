@@ -110,7 +110,7 @@ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
    int nbjet = NBJet(GetJets("JET_HN"));
    std::vector<snu::KMuon> muons =GetMuons("MUON_HN_TIGHT",false); 
 
-   bool trig_pass= PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale);
+   bool trig_pass= true;//PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale);
    CorrectMuonMomentum(muons);
    
    double ev_weight = weight;

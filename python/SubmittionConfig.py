@@ -407,7 +407,11 @@ def TimeIncrease(stime,defsample, defcycle, tagger,defskim):
         return False
 
     if float(stime) > float(time_prev)*time_increase_warning:
-        return True
+        if float(stime) < 30.:
+            ##### if time is small this can be an issue with machine not code
+            return False
+        else:
+            return True
     else:
         return False
     
@@ -440,13 +444,13 @@ def LargePhysicalMemoryIncrease(mem,defsample, defcycle, tagger,defskim):
 
     rounded_float= str(round(float(float_only_mem),2))
     if unit_only_mem == "MB":
-        if rounded_float < 300:
-            if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim))*1.4:
+        if float(float_only_mem)  < 300:
+            if (float(float_only_mem)*1000.) > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim))*1.4:
                 return True
             else:
                 return False
         else:
-             if rounded_float > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim))*1.3:
+             if (float(float_only_mem)*1000.)  > FileSizeInB(GetPhysicalMemoryUsage(defsample, defcycle, tagger,defskim))*1.3:
                  return True
              else:
                  return False
@@ -466,13 +470,13 @@ def LargeVirtualMemoryIncrease(mem,defsample, defcycle, tagger,defskim):
 
     rounded_float= str(round(float(float_only_mem),2))
     if unit_only_mem == "MB":
-        if rounded_float < 300:
-            if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle, tagger,defskim))*1.4:
+        if float(float_only_mem) < 300:
+            if (float(float_only_mem)*1000.) > (FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle, tagger,defskim))*1.4):
                 return True
             else:
                 return False
         else:
-             if rounded_float > FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle,tagger,defskim))*1.3:
+             if (float(float_only_mem)*1000.) > ((FileSizeInB(GetVirtualMemoryUsage(defsample, defcycle,tagger,defskim))*1.3)):
                  return True
              else:
                  return False
@@ -533,9 +537,12 @@ parser.add_option("-A","--drawhists",dest="drawhists",default="False", help="dra
 job_time=0.
 
 now = datetime.datetime.now()
-diff = datetime.timedelta(days=7)
+diff = datetime.timedelta(days=3)
+diffweek = datetime.timedelta(days=7)
 future = now + diff
+future_week = now + diffweek
 future=future.strftime("%m/%d/%Y")
+future_week=future_week.strftime("%m/%d/%Y")
 
 
 ###################################################                                                                                                                            
@@ -603,7 +610,6 @@ sample = sample.replace("!!", " ")
 sample = sample.split()
 
 for s in sample:
-    print s
     if not s:
         sys.exit()
 
@@ -680,14 +686,14 @@ stdscr.addstr(list4,box_shift,  "Job Status (Summary of latest background proces
 #### make a random number for the job ID. This will help make a directory to work in
 
 stdscr.addstr(list3, box_shift,  "Job Terminal Output: (will be deleted "+ future +")" ,curses.A_UNDERLINE)
-stdscr.addstr(list3b, box_shift,  "Log Files: (will be deleted "+ future +")" ,curses.A_UNDERLINE)
+stdscr.addstr(list3b, box_shift,  "Log Files: (will be deleted "+ future_week +")" ,curses.A_UNDERLINE)
 stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
 #### make working directorr
 if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 else:
-    os.system("rm -r" + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
+    os.system("rm -r " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
     os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
 
 ### Make directory for job stats
@@ -996,32 +1002,32 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| " + str(round(first_job_time,2)) + "-" +  str(round(last_job_time,2)) + "[s]   ",curses.A_DIM) 
 
                     if LargeMemory(memoryusage_p):
-                        output_warning.append("WARNING:: Physical memory of job is excess of " + str(large_memory_check) + " MB.")
+                        output_warning.append("WARNING:: Physical memory of job " + sample[x]+ "  is excess of " + str(large_memory_check) + " MB.")
                     if LargeMemory(memoryusage_v):
-                        output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
+                        output_warning.append("WARNING:: Virtual memory of job " + sample[x] + " is excess of " + str(large_memory_check) + " MB.")
 
                     if isMC:
                         if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
+                            output_warning.append("WARNING:: Physical memory of job " + sample[x] + " is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
                         if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle,tagger,useskim):
-                                output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")    
+                                output_warning.append("WARNING:: Virtual memory of job " + sample[x] + " is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")    
                         if LargeFileSize(outputfile_size):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
                         if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger,useskim))
                         if TimeIncrease(first_job_time,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Job time per input file increased for " + sample[x] + "  from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
                     else:
                         if LargePhysicalMemoryIncrease(memoryusage_p,channel + "_" + sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" + sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
+                            output_warning.append("WARNING:: Physical memory of job " + sample[x] + " is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" + sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
                         if LargeVirtualMemoryIncrease(memoryusage_v,channel + "_" + sample[x], cycle,tagger,useskim):
-                                output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" + sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
+                                output_warning.append("WARNING:: Virtual memory of job " +sample[x] +" is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" + sample[x], cycle,tagger,useskim) + ". This is likely a memory leak introduced recently")
                         if LargeFileSize(outputfile_size):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
                         if LargeFileSizeIncrease(outputfile_size,channel + "_" + sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" + sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" + sample[x], cycle,tagger,useskim))
                         if TimeIncrease(first_job_time,channel + "_" + sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(vsample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Job time per input file for  " + sample[x] + " increased from " + str(first_job_time) + " compared to previous job time " + GetTime(vsample[x], cycle,tagger,useskim))
      
                         
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM) 
@@ -1494,32 +1500,32 @@ while StillRunning:
 
 
                     if LargeMemory(memoryusage_p):
-                        output_warning.append("WARNING:: Physical memory of job is excess of " + str(large_memory_check) + " MB.")
+                        output_warning.append("WARNING:: Physical memory of job " + sample[x] + "  is excess of " + str(large_memory_check) + " MB.")
                     if LargeMemory(memoryusage_v):
-                        output_warning.append("WARNING:: Virtual memory of job is excess of " + str(large_memory_check) + " MB.")
+                        output_warning.append("WARNING:: Virtual memory of job " + sample[x] + "  is excess of " + str(large_memory_check) + " MB.")
 
                     if isMC:
                         if LargePhysicalMemoryIncrease(memoryusage_p,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Physical memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(sample[x], cycle,tagger,useskim))
                         if LargeVirtualMemoryIncrease(memoryusage_v,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Virtual memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(sample[x], cycle,tagger,useskim))
                         if LargeFileSize(outputfile_size):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
                         if LargeFileSizeIncrease(outputfile_size,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(sample[x], cycle,tagger,useskim))
                         if TimeIncrease(first_job_time,sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Job time per input file for " +  sample[x] +"  increased from " + str(first_job_time) + " compared to previous job time " + GetTime(sample[x], cycle,tagger,useskim))
                     else:
                         if LargePhysicalMemoryIncrease(memoryusage_p,channel + "_" +sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Physical memory of job is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" +sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Physical memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_p) + " compared to previous jobs " + GetPhysicalMemoryUsage(channel + "_" +sample[x], cycle,tagger,useskim))
                         if LargeVirtualMemoryIncrease(memoryusage_v,channel + "_" +sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Virtual memory of job is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" +sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Virtual memory of job " + sample[x] + "  is " + RoundMemory(memoryusage_v) + " compared to previous jobs " + GetVirtualMemoryUsage(channel + "_" +sample[x], cycle,tagger,useskim))
                         if LargeFileSize(outputfile_size):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " greater than " + str(large_file_size) + " MB")
                         if LargeFileSizeIncrease(outputfile_size,channel + "_" +sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Size of output rootfile is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" +sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Size of output rootfile for " + sample[x] + " is " + str(outputfile_size) + " compared to previous jobs " + GetFileSize(channel + "_" +sample[x], cycle,tagger,useskim))
                         if TimeIncrease(first_job_time,channel + "_" +sample[x], cycle,tagger,useskim):
-                            output_warning.append("WARNING:: Job time per input file increased from " + str(first_job_time) + " compared to previous job time " + GetTime(channel + "_" +sample[x], cycle,tagger,useskim))
+                            output_warning.append("WARNING:: Job time per input file " + sample[x] +" increased from " + str(first_job_time) + " compared to previous job time " + GetTime(channel + "_" +sample[x], cycle,tagger,useskim))
                
 
                     stdscr.addstr(2+list2+int(x), summary2_block2 ,"| " + RoundMemory(memoryusage_p),curses.A_DIM)
@@ -1599,8 +1605,8 @@ for i in range(0, winx-remove_from_end):
         print  "Job Terminal Output:(will be deleted "+ future +")" + " " *20
         job_summary.append("Job Terminal Output:(will be deleted "+ future +")\n")
     elif  "Log Files:"  in mypad_contents[i]:
-        print  "Log Files:(will be deleted "+ future +")" + " " *20
-        job_summary.append("Log Files:(will be deleted "+ future +")\n")
+        print  "Log Files:(will be deleted "+ future_week +")" + " " *20
+        job_summary.append("Log Files:(will be deleted "+ future_week +")\n")
     else:
         print mypad_contents[i]
         job_summary.append(mypad_contents[i]+"\n")

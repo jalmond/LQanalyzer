@@ -1476,7 +1476,14 @@ os.system("mv " + statfile_time + " " + statfile_time_complete)
 
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
-os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample)
+number_of_jobs_for_statfile=number_of_cores
+
+if number_of_events_per_job > 0:
+    number_of_jobs_for_statfile = 1
+if skipev > 0:
+    number_of_jobs_for_statfile = 1
+
+os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample + " -n " + str(number_of_jobs_for_statfile))
 
 #set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
 #if os.path.exists(set_logfile):

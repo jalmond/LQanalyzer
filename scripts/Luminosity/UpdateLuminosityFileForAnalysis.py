@@ -280,16 +280,18 @@ if os.path.exists(path_full_sample_list):
                 os.system("rm " + path_full_sample_list_user)
             else:
                 print "You ignored changes. The sample list will not be updated"
-                
+                os.system("rm " + newsamplelist)
+                sys.exit()
             os.system("rm " + newsamplelist)    
 
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
-        file_newlist = open(path_newfile,"r")
-        for line in file_newlist:
-            sline = line.split()
-            if len(sline) == 4:
-                os.system("sktree -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
-
+        if len(newsample_list) > 0:
+            file_newlist = open(path_newfile,"r")
+            for line in file_newlist:
+                sline = line.split()
+                if len(sline) == 4:
+                    os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
+            file_newlist.close()        
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile)
         if len(newsample_list) > 0:
@@ -312,7 +314,7 @@ else:
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
         
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
-    os.system('sktree -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
-    os.system('sktree -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
+    os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
+    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh  -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     
     EmailNewList(catversion)    

@@ -718,7 +718,7 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
     return jets;
   }
-  
+
   for (UInt_t ijet=0; ijet< jets_eta->size(); ijet++) {
     KJet jet;
     if(jets_pt->at(ijet) != jets_pt->at(ijet)) continue;

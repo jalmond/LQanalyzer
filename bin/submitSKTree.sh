@@ -1416,6 +1416,16 @@ else
           tagger=$RANDOM
 fi
 
+runboth="false"
+if [[ $runDATA  == "true" ]];
+    then
+    if [[ $runMC  == "true" ]];
+    then
+	runboth="true"
+    fi
+fi
+
+
 if [[ $runDATA  == "true" ]];
     then
     
@@ -1455,8 +1465,15 @@ if [[ $runDATA  == "true" ]];
       ### set all inputs to default in functions.sh
       source functions.sh
 
-      #### change input to those specified in sktree command
+
       run_in_bkg=${job_run_bkg}
+      #### change input to those specified in sktree command
+      if [[ $runboth  == "false" ]];
+      then
+	  run_in_bkg=${job_run_bkg}
+      else
+	  run_in_bkg="True"
+      fi
       nevents=${job_nevents}
       skipevent=${job_nskip}
       runnp=${job_run_fake}
@@ -1544,6 +1561,7 @@ if [[ $runMC  == "true" ]];
     runnp=${job_run_fake}
     runcf=${job_run_flip}
     drawhists=${submit_draw}
+
 
 
     if [[ $submit_file_tag  != ""  ]];

@@ -184,7 +184,7 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a hn_mmm=('" ;
   for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
-    if(!mit->second.Contains("__mumumu")) continue;
+    if(!mit->second.Contains("_mumumu")) continue;
     if(!mit->second.Contains("HN")) continue;
 
     cout << mit->first << " " << mit->second << endl;
@@ -226,6 +226,7 @@ void MakeInputListForSubmitScript(){
     if(!mit->second.Contains("HN_Tchan")) continue;
     if(mit->second.Contains("emem")) continue;
     if(mit->second.Contains("epep")) continue;
+    bool last=true;
     for(std::map<TString, TString>::iterator mit2 =next(mit); mit2 != lqmap.end();++mit2){
       if(mit2->second.Contains("HN_Tchan") &&(mit2->second.Contains("em") ||  mit2->second.Contains("ep")) ) last=false;
     }
@@ -247,11 +248,11 @@ void MakeInputListForSubmitScript(){
   lumi_file << "" << endl;
   lumi_file << "declare -a diboson_pythia=('WZ' 'ZZ' 'WW' 'WZTo3LNu_powheg' 'ZZTo4L_powheg' )" << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a dy_mcatnlo=('DY10to50' 'DY50plus') " << endl;
+  lumi_file << "declare -a dy_mcatnlo=('DYJets_10to50' 'DYJets') " << endl;
   lumi_file << "" << endl;
-  lumi_file << "declare -a dilepton_list=('DY10to50' 'DY50plus' 'WJets' 'WpWpEWK' 'WpWpQCD'  'WZ' 'ZZ' 'WW'  'TTJets_MG' 'singletop_s' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'WWW' 'ttW' 'ttZ' 'ttH_nonbb' 'ttH_bb' 'ttbb' 'ZZZ' 'WZZ' 'WWW' 'VBF_HToMuMu' 'WGtoLNuG' 'WGtoLNuEE' 'WGtoLNuMM' 'ZGto2LG' )" << endl;
+  lumi_file << "declare -a dilepton_list=('DYJets_10to50' 'DYJets' 'WJets' 'WpWpEWK' 'WpWpQCD'  'WZ' 'ZZ' 'WW'  'TTJets_MG'  'SingleTop_s' 'SingleTbar_t' 'SingleTop_t' 'SingleTbar_tW_noHadron'  'SingleTbar_tW' 'SingleTop_tW_noHadron' 'SingleTop_tW' 'WWW' 'ttW' 'ttZ' 'ttH_nonbb' 'ttH_bb' 'ttbb' 'ZZZ' 'WZZ'  'VBF_HToMuMu' 'WGtoLNuG' 'WGtoLNuEE' 'WGtoLNuMM' 'ZGto2LG' )" << endl;
   
-  lumi_file << "declare -a trilepton_list=('DY10to50' 'DY50plus' 'WJets' 'WZ' 'ZZ' 'WW'  'TTJets_MG' 'singletop_s' 'singletop_tbar_Powheg' 'singletop_t_Powheg' 'singletop_tbarW_Powheg' 'singletop_tW_Powheg' 'WZZ' 'ZZZ' 'WWW'  'WZTo3LNu_powheg' 'ZZTo4L_powheg' )" << endl;
+  lumi_file << "declare -a trilepton_list=('DYJets_10to50' 'DYJets' 'WJets' 'WZ' 'ZZ' 'WW'  'TTJets_MG' 'SingleTop_s' 'SingleTbar_t' 'SingleTop_t' 'SingleTbar_tW_noHadron'  'SingleTbar_tW' 'SingleTop_tW_noHadron' 'SingleTop_tW' 'WZZ' 'ZZZ' 'WWW'  'WZTo3LNu_powheg' 'ZZTo4L_powheg' )" << endl;
 
   lumi_file << "" << endl;
 
@@ -297,11 +298,11 @@ void MakeInputListForSubmitScript(){
 
 
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_mm=('WJets' 'WZ' 'ZZ' 'WW'  'TTJets_MG' 'WpWpEWK' 'WpWpQCD'  'WZZ' 'ZZZ' 'WWW'  'WZTo3LNu_powheg' 'ZZTo4L_powheg' 'ttZ' 'ttW'  'ttH_nonbb' 'ttH_bb' 'ttbb' 'ZZZ' 'WZZ' 'WWW' 'VBF_HToMuMu' 'WGtoLNuG' 'WGtoLNuEE' 'WGtoLNuMM' 'ZGto2LG' )  " << endl;    
+  lumi_file << "declare -a hn_mm=('WJets' 'WZ' 'ZZ' 'WW'  'TTJets_MG' 'WpWpEWK' 'WpWpQCD'  'WZZ' 'ZZZ' 'WWW'  'WZTo3LNu_powheg' 'ZZTo4L_powheg' 'ttZ' 'ttW'  'ttH_nonbb' 'ttH_bb' 'ttbb' 'ZZZ' 'WZZ'  'VBF_HToMuMu' 'WGtoLNuG' 'WGtoLNuEE' 'WGtoLNuMM' 'ZGto2LG' )  " << endl;    
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_ee=('DY10to50' 'DY50plus' 'WJets' 'WZ' 'ZZ' 'WW'  'TTJets_MG' 'WpWpEWK' 'WpWpQCD'  'WZZ' 'ZZZ' 'WWW'  'WZTo3LNu_powheg' 'ZZTo4L_powheg' 'ttZ' 'ttW'  'ttH_nonbb' 'ttH_bb' 'ttbb' 'ZZZ' 'WZZ' 'WWW' 'VBF_HToMuMu' 'WGtoLNuG' 'WGtoLNuEE' 'WGtoLNuMM' 'ZGto2LG' )" << endl;    
+  lumi_file << "declare -a hn_ee=('DYJets_10to50' 'DYJets' 'WJets' 'WZ' 'ZZ' 'WW'  'TTJets_MG' 'WpWpEWK' 'WpWpQCD'  'WZZ' 'ZZZ' 'WWW'  'WZTo3LNu_powheg' 'ZZTo4L_powheg' 'ttZ' 'ttW'  'ttH_nonbb' 'ttH_bb' 'ttbb' 'ZZZ' 'WZZ'  'VBF_HToMuMu' 'WGtoLNuG' 'WGtoLNuEE' 'WGtoLNuMM' 'ZGto2LG' )" << endl;    
   lumi_file << "" << endl;
-  lumi_file << "declare -a hn_fakeee=('DY10to50' 'DY50plus' 'WJets'  'TTJets_MG')" << endl;
+  lumi_file << "declare -a hn_fakeee=('DYJets_10to50' 'DYJets' 'WJets'  'TTJets_MG')" << endl;
   lumi_file << "" << endl;
   lumi_file << "" << endl;
 

@@ -293,13 +293,14 @@ class AnalyzerCore : public LQCycleBase {
   //// Event related                                                                                                                                              
   float TempPileupWeight();
 
-  bool PassTrigger(std::vector<TString> list, int& prescale, bool fake_2016=false);
+  bool  PassTrigger(std::vector<TString> list, int& prescale, bool fake_2016=false);
   float PassTrigger(TString trigname, std::vector<snu::KElectron> electrons, int& prescaler);
   float PassTrigger(TString trigname, std::vector<snu::KMuon> muons, int& prescaler);
   float PassTrigger(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, int& prescaler);
 
   float GetEff(snu::KMuon mu, TString trigname);
   float GetEff(snu::KElectron el, TString trigname);
+
 
   void ListTriggersAvailable();
   bool PassMETFilter();

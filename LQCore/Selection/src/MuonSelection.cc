@@ -138,7 +138,7 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid, fl
 
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",muid);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",muid);
-
+  //cout << "cuts " << ptcut  << " " << etacut << endl;
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
     bool pass_selection(true);
@@ -198,7 +198,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)) pass_selection = false;
   //if(checkchi2min && (fabs(mu.GlobalChi2()) < chi2min)) pass_selection = false;
 
-  return false;
+  return pass_selection;
   
 }
 

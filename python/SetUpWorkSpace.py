@@ -27,6 +27,8 @@ if not LQANALYZER_DIR == "None" :
 	EightTeVdataOne="/data1/" + getpass.getuser() + "/LQ_SKTreeOutput/"
 	EightTeVdataTwo="/data2/" + getpass.getuser() + "/LQ_SKTreeOutput/"
 	 
+	if os.path.exists(os.getenv("LQANALYZER_DIR")+ "/nohup.out"):
+		os.system("rm " +os.getenv("LQANALYZER_DIR")+ "/nohup.out")
 	CleanUpLogs("/data1/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
 	CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
 	CleanUpLogs("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ getpass.getuser()+ "/")

@@ -283,7 +283,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-  if(!k_isdata) reweightPU = new Reweight((pileupdir + "DataPileUp_BtoE_2016.root").c_str());
+  if(!k_isdata) reweightPU = new Reweight((pileupdir + "/DataPileUp_BtoG_2016.root").c_str());
   //if(!k_isdata) reweightPU = new Reweight((analysisdir + "DataPileUp_2016.root").c_str());
 
 
@@ -1038,7 +1038,7 @@ float AnalyzerCore::WeightByTrigger(TString triggername, float tlumi){
   
   /// In v766 path lumi is corrected for removal of bad beamspot LS
   // https://github.com/vallot/CATTools/commit/aae3e60b194b1bacf2595a33c8fa27f411dac16b
-  if(k_cat_version == 5){
+  if(k_cat_version > 4){
     for(map<TString, float>::iterator mit = trigger_lumi_map_cat2016.begin(); mit != trigger_lumi_map_cat2016.end(); mit++){
       if(triggername.Contains(mit->first)) return (mit->second / tlumi);
     }
@@ -1334,7 +1334,7 @@ float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
 void AnalyzerCore::TruthPrintOut(){
   if(isData) return;
   m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-  cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+  //cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
@@ -1394,10 +1394,13 @@ void AnalyzerCore::ListTriggersAvailable(){
 }
 
 
+
+
+
 float AnalyzerCore::PassTrigger(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, int& prescaler){
 
   
-  if(k_cat_version != 5){
+  if(k_cat_version != 6){
     
     return -999.;
   }
@@ -1410,22 +1413,26 @@ float AnalyzerCore::PassTrigger(TString trigname,  std::vector<snu::KMuon> muons
       if(PassTrigger(list, prescaler)) return 1.;
       else return 0.;
     }
-    if(electrons.size() == 1 && muons.size() == 1){
+    if(electrons.size() >= 1 && muons.size() >= 1){
       float trig_eff(1.);
       if(trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")){
 	trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
 	trig_eff*= GetEff(muons.at(0), "HLT_Mu8");
+	return trig_eff;
       }
-      return trig_eff;
+      else  return 0.;
     }
+    else return 0.;
     
   }
   return 1.;
 }
 
+
+
 float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KElectron> electrons, int& prescaler){
   
-  if(k_cat_version != 5){
+  if(k_cat_version != 6){
     return -999.;
   }
   else {
@@ -1438,20 +1445,24 @@ float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KElectron> el
       else return 0.;
     }
     
-    if(electrons.size() ==2){
+    if(electrons.size() >=2){
       float trig_eff(1.);
       if(trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")){
 	
 	trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
 	trig_eff*= GetEff(electrons.at(1), "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
 	trig_eff *= 0.995; // DZ efficiency AN2016_228
+	return trig_eff;
       }
-      return trig_eff;
+      else  return 0.;
     }
+    else return 0.;
     
   }
   return 1.;
 }
+
+
 
 float AnalyzerCore::GetEff(snu::KElectron el, TString trigname){
   float sceta = fabs(el.SCEta());
@@ -1573,9 +1584,11 @@ float AnalyzerCore::GetEff(snu::KElectron el, TString trigname){
   return 1.;
 }
 
+
+
 float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KMuon> muons, int& prescaler){
   
-  if(k_cat_version != 5){
+  if(k_cat_version != 6){
 
     return -999.;
   }
@@ -1588,16 +1601,17 @@ float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KMuon> muons,
       else return 0.;
     }
     
-    if(muons.size() == 2){
+    if(muons.size() >= 2){
       float trig_eff(1.);
       if(trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
 	trig_eff*= GetEff(muons.at(0), "HLT_Mu17");
 	trig_eff*= GetEff(muons.at(1), "HLT_Mu8");
+	return trig_eff;
       }
-      return trig_eff;
+      else return 0.;
     }
     
-    if(muons.size() == 1){
+    if(muons.size() >= 1){
       if (trigname.Contains("HLT_IsoMu22") || trigname.Contains("HLT_IsoTkMu22"))  {
 	/// https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults                                                                                                                                                            
 	float mupt=muons.at(0).Pt();
@@ -1610,12 +1624,15 @@ float AnalyzerCore::PassTrigger(TString trigname, std::vector<snu::KMuon> muons,
 	  return SingleMuon_276097->GetBinContent( SingleMuon_276097->FindBin(  fabs(muons.at(0).Eta()), mupt) );
 	}
       }
+      else return 0.;
     }
-
+    else return 0.;
 
   }
   return 1.;
 }
+
+
 
 
 float AnalyzerCore::GetEff(snu::KMuon mu, TString trigname){
@@ -1692,17 +1709,17 @@ float AnalyzerCore::GetEff(snu::KMuon mu, TString trigname){
   if (trigname == "HLT_Mu8"){
     if(eta < 0.8){
       if( pt < 10)return 0.917;
-      else 	if( pt < 20)return 0.927;
+      else if( pt < 20)return 0.927;
       else if( pt < 25)return 0.931;
-	else if( pt < 30)return 0.932;
-	else if( pt < 35)return 0.932;
-	else if( pt < 40)return 0.933;
-	else if( pt < 50)return 0.933;
-	else if( pt < 75)return 0.929;
-	else if( pt < 100)return 0.924;
-	else if( pt < 200)return 0.920;
-	else if( pt < 300)return 0.901;
-	else  return 0.899;
+      else if( pt < 30)return 0.932;
+      else if( pt < 35)return 0.932;
+      else if( pt < 40)return 0.933;
+      else if( pt < 50)return 0.933;
+      else if( pt < 75)return 0.929;
+      else if( pt < 100)return 0.924;
+      else if( pt < 200)return 0.920;
+      else if( pt < 300)return 0.901;
+      else  return 0.899;
     }
     else   if(eta < 1.25){
       if( pt < 10)return 0.914;
@@ -1752,17 +1769,21 @@ float AnalyzerCore::GetEff(snu::KMuon mu, TString trigname){
 
      
 
+
 bool AnalyzerCore::PassTrigger(vector<TString> list, int& prescaler, bool fake_2016 ){
   
-  if(fake_2016)   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
+  //if(fake_2016)   
+  return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
 
-  
-  if(k_cat_version == 5){
-    return -9999.;
+  if(!isData){
+    return 0;
   }
   else   return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
   
 }
+
+
+
 
 TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
 {
@@ -1904,7 +1925,7 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[
 
 void AnalyzerCore::FillHistPerLumi(TString histname, float value, float w, float xmin, float xmax,int nbins, int nlumibins){
   
-  if(k_cat_version==4){
+  if(k_cat_version > 4){
     if(nlumibins==10){
       
       if(!GetHist(histname+"_perlumi")) {
@@ -2589,7 +2610,7 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString 
   Message("In Get_DataDrivenWeight_MM", DEBUG);
   if(k_muons.size()==0) return 0.;
   float mm_weight = 0.;
-  cout << "k_muons.size() = " << k_muons.size() << endl;
+
   if(k_muons.size()==2){
 
     bool is_mu1_tight    = IsTight(k_muons.at(0));

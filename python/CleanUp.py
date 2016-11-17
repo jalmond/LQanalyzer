@@ -20,7 +20,7 @@ def CleanUpJobLogs(path):
                     
                       month_file=entries[5]
                       date_file=entries[6]
-                      days_to_keep=5
+                      days_to_keep=3
                               
                       if month_file not in month:
                           if int(date) > int(days_to_keep):

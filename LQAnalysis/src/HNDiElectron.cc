@@ -252,9 +252,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
 
-  if(!PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", GetElectrons(BaseSelection::ELECTRON_HN_VETO), prescale)) return;
+  //if(!PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", GetElectrons(BaseSelection::ELECTRON_HN_VETO), prescale)) return;
 
-  return;
+  //return;
     //if(!PassTrigger(triggerslist, prescale)) return;
   
 
