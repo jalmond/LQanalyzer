@@ -165,6 +165,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   float dxymax = AccessFloatMap("|dxymax|",id);
   //float dxymin = AccessFloatMap("|dxymin|",id);
   float dxysigmax = AccessFloatMap("|dxysigmax|",id);
+  float dxysigmin = AccessFloatMap("|dxysigmin|",id);
 
   float dzmax = AccessFloatMap("|dzmax|",id);
   //float dzmin = AccessFloatMap("|dzmin|",id);
@@ -176,7 +177,8 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   bool checkdxymax      = CheckCutFloat("|dxymax|",id);
   //bool checkdxymin      = CheckCutFloat("|dxymin|",id);
   bool checkdzmax       = CheckCutFloat("|dzmax|",id);
-  bool checkdxysig  = CheckCutFloat("|dxysigmax|",id);
+  bool checkdxysigmin  = CheckCutFloat("|dxysigmin|",id);
+  bool checkdxysigmax  = CheckCutFloat("|dxysigmax|",id);
   //bool checkdzmin       = CheckCutFloat("|dzmin|",id);
   bool checkchi2max     = CheckCutFloat("chi2max",id);
   //bool checkchi2min     = CheckCutFloat("chi2min",id);
@@ -203,7 +205,8 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   if(checkisomax && (LeptonRelIso > isomax))  pass_selection = false;
   //if(checkisomin && (LeptonRelIso < isomin))  pass_selection = false;
 
-  if(checkdxysig &&(fabs(mu.dXYSig()) > dxysigmax))  pass_selection = false;
+  if(checkdxysigmin &&(fabs(mu.dXYSig()) < dxysigmin))  pass_selection = false;
+  if(checkdxysigmax &&(fabs(mu.dXYSig()) > dxysigmax))  pass_selection = false;
   //if(checkdxymin && (fabs(mu.dXY()) < dxymin)) pass_selection = false;
 
   //if(checkdzmin && (fabs(mu.dZ()) < dzmin)) pass_selection = false;
