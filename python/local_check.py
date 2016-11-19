@@ -56,7 +56,7 @@ if not os.path.exists(tag_dir):
     print "Copying all latest rootfiles for use in analysis"
 
     MakeDirectory(snulumifiledir)
-    os.system("cp " + localfiledir + "/Luminosity/*.root " + snulumifiledir)
+    os.system("cp " + localfiledir + "/Luminosity/*.txt " + snulumifiledir)
     MakeDirectory(snufakefiledir)
     os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
     MakeDirectory(snutriggerfiledir)

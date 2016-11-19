@@ -196,7 +196,6 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   //if(checkisomin && (LeptonRelIso < isomin))  pass_selection = false;
   if(checkdxymax && (fabs(mu.dXY()) > dxymax)) pass_selection = false;
   if(checkdxysig &&(fabs(mu.dXYSig()) > dxysigmax))  pass_selection = false;
-  cout <<checkdxysig << " " <<  dxysigmax << endl;
   //if(checkdxymin && (fabs(mu.dXY()) < dxymin)) pass_selection = false;
   if(checkdzmax && (fabs(mu.dZ()) > dzmax)) pass_selection = false;
   //if(checkdzmin && (fabs(mu.dZ()) < dzmin)) pass_selection = false;
@@ -314,7 +313,7 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool m_debug){
       passID = false;
       if(m_debug)cout << "PassID: Fail ActiveLayer " << endl;
     }
-    if( fabs(mu.dXY())    >= 0.2) {
+    /*    if( fabs(mu.dXY())    >= 0.2) {
       passID = false;
       if(m_debug)cout << "PassID: Fail dXY" << endl;
     }
@@ -325,7 +324,7 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool m_debug){
     if( mu.GlobalChi2() >=  10.){
       passID = false;
       if(m_debug) cout << "PassID: Fail  Chi2" << endl;
-    }
+      }*/
   }
   
   else{

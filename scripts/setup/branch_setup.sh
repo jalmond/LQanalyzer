@@ -1,7 +1,7 @@
 #! /bin/sh
 # $Id: setup.sh 1 01/12/2013 jalmond $
 ###################################################################################
-# @Project: LQAnalyzer/SKTree - ROOT-based analysis framework for Korea CMS group #
+# @Project: CATAnalyzer/SKTree - ROOT-based analysis framework for Korea CMS group #
 #                                                                                 #
 # @author John Almond       <jalmond@cern.ch>           - SNU                     #
 #                                                                                 #
@@ -10,7 +10,7 @@
 ##################################################################################
 
 # Greet the user
-echo "Setting up environment for compiling/running LQAnalzer with SKTree"
+echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
 
 setupok=False

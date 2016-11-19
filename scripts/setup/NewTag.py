@@ -28,7 +28,7 @@ for line in file_newtag:
 
 file_newtag.close()
 
-#os.system("source " +  str(os.getenv("LQANALYZER_DIR" )) + "/scripts/setup/git_newtag.sh")
+os.system("source " +  str(os.getenv("LQANALYZER_DIR" )) + "/scripts/setup/git_newtag.sh")
 
 if not  os.getenv("USER") == "jalmond":
     if "jalmond" in email_user:

@@ -10,7 +10,7 @@
 ##################################################################################
 
 # Greet the user
-echo "Setting up environment for compiling/running LQAnalzer with SKTree"
+echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
 
 setupok=False
