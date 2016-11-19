@@ -192,7 +192,7 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   if(checkisloose && ! mu.IsLoose ())  pass_selection = false;
   if(checkismedium && ! mu.IsMedium ())  pass_selection = false;
   if(checkdxymax || checkchi2max || checkdzmax) {
-    if(checkistight && ! PassID("MUON_POG_TIGHT",mu, checkdxymax,checkdzmax,checkchi2max))  pass_selection = false;
+    if(checkistight && ! PassID("MUON_POG_TIGHT",mu, !checkdxymax,!checkdzmax,!checkchi2max))  pass_selection = false;
     if(checkdxymax && (fabs(mu.dXY()) > dxymax)) pass_selection = false;
     if(checkdzmax && (fabs(mu.dZ()) > dzmax)) pass_selection = false;
     if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)) pass_selection = false;
@@ -273,7 +273,7 @@ bool MuonSelection::TopTightMuonSelection(KMuon mu) {
 
 
 /// NO LONGER NEEDED
-bool MuonSelection::PassID(TString id, snu::KMuon mu, bool checkdxy, bool checkdz, bool checkchi2, bool m_debug){
+bool MuonSelection::PassID(TString id, snu::KMuon mu, bool cutondxy, bool cutondz, bool cutonchi2, bool m_debug){
   
   
   /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonIdRun2
@@ -319,19 +319,19 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool checkdxy, bool checkd
       passID = false;
       if(m_debug)cout << "PassID: Fail ActiveLayer " << endl;
     }
-    if (checkdxy){
+    if (cutondxy){
       if( fabs(mu.dXY())    >= 0.2) {
 	passID = false;
 	if(m_debug)cout << "PassID: Fail dXY" << endl;
       }
     }
-    if(checkdz){
+    if(cutondz){
       if( fabs(mu.dZ())    >= 0.5) {
 	passID = false;
 	if(m_debug)cout << "PassID: Fail dZ" << endl;
       }
     }
-    if(checkchi2){
+    if(cutonchi2){
       if( mu.GlobalChi2() >=  10.){
 	passID = false;
 	if(m_debug) cout << "PassID: Fail  Chi2" << endl;
