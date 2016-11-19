@@ -18,7 +18,12 @@ def GetCATAnalyzerMailList():
 
 def SendEmail(localsummary, mastersummary):
 
-    email_user=SendEmail()
+    email_user=""
+    maillist = GetCATAnalyzerMailList()
+    for xmail in maillist:
+        email_user=email_user+xmail+","
+    email_user=email_user[:-1]
+
 
     path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
     file_email=open(path_file_email,"w")
