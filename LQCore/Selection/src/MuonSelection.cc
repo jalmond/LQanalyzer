@@ -191,16 +191,22 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   bool pass_selection=true;
   if(checkisloose && ! mu.IsLoose ())  pass_selection = false;
   if(checkismedium && ! mu.IsMedium ())  pass_selection = false;
-  if(checkistight && ! mu.IsTight ())  pass_selection = false;
+  if(checkdxymax || checkchi2max || checkdzmax) {
+    if(checkistight && ! PassID("MUON_POG_TIGHT",mu, checkdxymax,checkdzmax,checkchi2max))  pass_selection = false;
+    if(checkdxymax && (fabs(mu.dXY()) > dxymax)) pass_selection = false;
+    if(checkdzmax && (fabs(mu.dZ()) > dzmax)) pass_selection = false;
+    if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)) pass_selection = false;
+  }
+  else  if(checkistight &&  ! mu.IsTight ())  pass_selection = false;
+
+
   if(checkisomax && (LeptonRelIso > isomax))  pass_selection = false;
   //if(checkisomin && (LeptonRelIso < isomin))  pass_selection = false;
-  if(checkdxymax && (fabs(mu.dXY()) > dxymax)) pass_selection = false;
+
   if(checkdxysig &&(fabs(mu.dXYSig()) > dxysigmax))  pass_selection = false;
   //if(checkdxymin && (fabs(mu.dXY()) < dxymin)) pass_selection = false;
-  if(checkdzmax && (fabs(mu.dZ()) > dzmax)) pass_selection = false;
+
   //if(checkdzmin && (fabs(mu.dZ()) < dzmin)) pass_selection = false;
-  if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)) pass_selection = false;
-  //if(checkchi2min && (fabs(mu.GlobalChi2()) < chi2min)) pass_selection = false;
 
   return pass_selection;
   
@@ -267,7 +273,7 @@ bool MuonSelection::TopTightMuonSelection(KMuon mu) {
 
 
 /// NO LONGER NEEDED
-bool MuonSelection::PassID(TString id, snu::KMuon mu, bool m_debug){
+bool MuonSelection::PassID(TString id, snu::KMuon mu, bool checkdxy, bool checkdz, bool checkchi2, bool m_debug){
   
   
   /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonIdRun2
@@ -313,18 +319,24 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool m_debug){
       passID = false;
       if(m_debug)cout << "PassID: Fail ActiveLayer " << endl;
     }
-    /*    if( fabs(mu.dXY())    >= 0.2) {
-      passID = false;
-      if(m_debug)cout << "PassID: Fail dXY" << endl;
+    if (checkdxy){
+      if( fabs(mu.dXY())    >= 0.2) {
+	passID = false;
+	if(m_debug)cout << "PassID: Fail dXY" << endl;
+      }
     }
-    if( fabs(mu.dZ())    >= 0.5) {
-      passID = false;
-      if(m_debug)cout << "PassID: Fail dZ" << endl;
+    if(checkdz){
+      if( fabs(mu.dZ())    >= 0.5) {
+	passID = false;
+	if(m_debug)cout << "PassID: Fail dZ" << endl;
+      }
     }
-    if( mu.GlobalChi2() >=  10.){
-      passID = false;
-      if(m_debug) cout << "PassID: Fail  Chi2" << endl;
-      }*/
+    if(checkchi2){
+      if( mu.GlobalChi2() >=  10.){
+	passID = false;
+	if(m_debug) cout << "PassID: Fail  Chi2" << endl;
+      }
+    }
   }
   
   else{
