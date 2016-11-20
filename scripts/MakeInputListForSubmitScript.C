@@ -330,7 +330,7 @@ void MakeInputListForSubmitScript(){
 
 
   gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/").Data());
-  gSystem->Exec(("chmod 777  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/" + lfile).Data());
+  if (user.Contains("jalmond"))  gSystem->Exec(("chmod 777  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/" + lfile).Data());
   gSystem->Exec(("mv " + lfile +" " + lfile2).Data());
 
 

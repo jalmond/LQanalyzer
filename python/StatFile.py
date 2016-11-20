@@ -206,7 +206,7 @@ for line in file_tmpmaster:
                 if len(splitline) > 2:
                     ntimes = float(splitline[2])
                     pretime = float(splitline[3])
-                     prefilesize =  splitline[4]
+                    prefilesize =  splitline[4]
                     if len(splitline) ==  7:
                         premem_v = splitline[5]
                         premem_p = splitline[6]

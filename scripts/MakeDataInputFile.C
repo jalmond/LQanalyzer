@@ -17,7 +17,7 @@ void MakeDataInputFile(TString version=""){
   
 
   TString def_version = TString(getenv("CATVERSION"));
-  if(!version.Contains("v7") ) version = def_version;
+  if(!version.Contains("v8") ) version = def_version;
 
   bool cluster = false;
   TString analysisdir = TString(getenv("HOSTNAME"));
