@@ -1,5 +1,5 @@
 ############################################################    
-### configure submisstion of CATANALYZER Jobs                                                                                                                                  #################################################################    
+### configure submisstion of CATANALYZER Jobs                                                                                                                                #################################################################    
 import os, getpass, sys,ROOT,time,curses,datetime
 from functions import *
 from datetime import timedelta
@@ -13,6 +13,65 @@ time_increase_warning=2.
 ######## set 10 process time for which email is sent
 email_time_limit=600.
 
+def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversion, defuseskim, defcycle, defchannel):
+
+    defoutput_file_skim_tag=defchannel
+    if defuseskim == "FLATCAT":
+        defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+    if defuseskim == "SKTree_LeptonSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+    if defuseskim == "SKTree_DiLepSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+
+    if defrunnp == "True":
+        defoutput_file_skim_tag=defchannel
+        foutname="nonprompt"
+        if defuseskim == "FLATCAT":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+            foutname=foutname+"_cat_"+defcatversion
+        if defuseskim == "SKTree_LeptonSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+            foutname="SK"+foutname+"_cat_"+defcatversion
+        if defuseskim == "SKTree_DiLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
+        
+            
+        defFinaloutputdirMC=""
+
+        if "/Fake/" in defFinaloutputdir:
+            defFinaloutputdirMC=defFinaloutputdir
+            defFinaloutputdirMC=defFinaloutputdirMC.replace("Fake/","")
+
+        if defdata_lumi == "ALL" or defdata_lumi=="BtoG":
+            os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
+            os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+".root")
+
+
+    elif defruncf == "True":
+        print ""
+    else:
+        defoutput_file_skim_tag=defchannel
+        if defuseskim == "FLATCAT":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+        if defuseskim == "SKTree_LeptonSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+        if defuseskim == "SKTree_DiLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+
+        defFinaloutputdirMC=""
+
+        if "/Data/" in defFinaloutputdir:
+            defFinaloutputdirMC=defFinaloutputdir
+            defFinaloutputdirMC=defFinaloutputdirMC.replace("Data/","")
+        else:
+            return 
+        
+        
+        output_datafile=defFinaloutputdirMC+"/"+defcycle+"_data_cat_"+ defcatversion+".root"
+        if defdata_lumi == "ALL" or defdata_lumi=="BtoG":
+            os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
+            os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root")
 
 def UpdateOutput(outputlist,outputlist_path):
     out_file = open(outputlist_path,"w")
@@ -321,7 +380,7 @@ def GetLogFilePath(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     outlogname = str(os.getenv("LQANALYZER_LOG_PATH")) + "/" + tmpname + "/" + tmpname+"_Job_*"
     return outlogname
 
-def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle):
+def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle, mergedname):
     tmpname= GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,defcycle)
     outsamplename=""
     if ismc:
@@ -333,7 +392,10 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "TriLep":
             skimtag= "_trilep"
-        outsamplename=  defcycle + "_" + defchannel + "SKnonprompt_"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
+        outsamplename=  defcycle + "_" + defchannel + "_SKnonprompt"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
+        if not mergedname:
+            outsamplename=  defcycle + tmpname + ".root"
+
     elif defruncf == "True":
         output_catversion=str(os.getenv("CATVERSION"))
         skimtag=""
@@ -342,11 +404,15 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
         elif defskim == "TriLep":
             skimtag= "_trilep"
         outsamplename=  defcycle + "_" + defchannel + "SKchargeflip_"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
-    
+        if not mergedname:
+            outsamplename=  defcycle + tmpname + ".root"
+                        
+
     else:
         output_catversion=str(os.getenv("CATVERSION"))
         outsamplename=  defcycle +"_data_"+ defchannel + "_cat_" +  str(output_catversion)+ ".root"
-
+        if not  mergedname:
+            outsamplename=defcycle +"_"+tmpname + ".root"
      
     if "SKTreeMaker" in defcycle:
         if ismc:
@@ -772,6 +838,8 @@ for s in sample:
         print "%"*45
         sys.exit()
 
+runningData=False
+
 for s in sample:
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
     njobs_for_submittion=DetermineNjobs(number_of_cores, tagger, s, cycle,useskim)
@@ -779,7 +847,8 @@ for s in sample:
 
     ## set MC bool from the sample length. This is the letter of the data period for data
     isMC = len(s) > 1
-
+    runningData= not isMC
+    
     if run_in_bkg:
         del output_bkg[:]
         for out_x in range(1,winx):
@@ -1004,10 +1073,10 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED    ", curses.A_BLINK)
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
                     fileoutputlist.append(outfilepath)
                     if "SKTreeMaker" in cycle:
-                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
                     crash_output.append( logpath)
@@ -1018,10 +1087,11 @@ for s in sample:
                     stdscr.addstr(2+list2+int(x), summary2_block0 ,"| " + str(round(job_time,2)) + "[s]",curses.A_DIM) 
                     stdscr.refresh()
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
                     fileoutputlist.append(outfilepath)
                     if "SKTreeMaker" in cycle:
-                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
+
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
                     stdscr.refresh()
@@ -1526,11 +1596,12 @@ while StillRunning:
                     stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                     stdscr.addstr(2+list2+int(x), summary2_block1 ,"| JOB CRASHED      ", curses.A_BLINK)
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir)  +GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
                     fileoutputlist.append(outfilepath)
 
                     if "SKTreeMaker" in cycle:
-                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
+
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +":###CRASH###: No OutputFile for " + sample[x])
                     crash_output.append(logpath)
@@ -1547,10 +1618,11 @@ while StillRunning:
                     stdscr.refresh()
                 
                     logpath=GetLogFilePath(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
-                    outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                    outfilepath=str(Finaloutputdir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
                     fileoutputlist.append(outfilepath)
                     if "SKTreeMaker" in cycle:
-                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle)
+                        outfilepath=GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,False)
+                        
 
                     stdscr.addstr(list3b + 1+int(x), box_shift,  str(1+int(x)) +": Log files for " + sample[x] + " found at " + str(logpath))
                     stdscr.addstr(list3c + 1+int(x), box_shift,   str(1+int(x)) +": OutputFile for " + sample[x] + " = " + str(outfilepath))
@@ -1676,7 +1748,22 @@ if quickdraw:
         os.system("display " + "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger)  + "_hist.pdf&")
     listofplots.append("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/"+ str(tagger) + "_hist.pdf")
 
+mergedoutfilepath=""
+if not ismctmp:
+    if runnptmp == "True":
+        datadir=str(Finaloutputdir)
+        datadir=datadir.replace("Fake/","")
+        mergedoutfilepath=str(datadir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,True)
+    elif runcftmp == "True":
+        datadir=str(Finaloutputdir)
+        datadir=datadir.replace("CF/","")
+        mergedoutfilepath=str(datadir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,True)
+    else:
+        datadir=str(Finaloutputdir)
+        datadir=datadir.replace("Data/","")
+        mergedoutfilepath=str(datadir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,True)
 
+        
 job_summary=[]
 print "\n"
 for i in range(0, winx-remove_from_end):
@@ -1688,6 +1775,13 @@ for i in range(0, winx-remove_from_end):
     elif  "Log Files:"  in mypad_contents[i]:
         print  "Log Files:(will be deleted "+ future_week +")" + " " *20
         job_summary.append("Log Files:(will be deleted "+ future_week +")\n")
+    elif "Output Files:" in mypad_contents[i]:
+        print mypad_contents[i]
+        job_summary.append(mypad_contents[i]+"\n")
+        if not ismctmp:
+            if data_lumi== "ALL":
+                print "Merged output = " +mergedoutfilepath
+                job_summary.append("Merged output = " + mergedoutfilepath+"\n")
     else:
         print mypad_contents[i]
         job_summary.append(mypad_contents[i]+"\n")
@@ -1710,6 +1804,7 @@ for i in range(0, winx-remove_from_end):
         print "_"*40
         job_summary.append("_"*40+"\n")
 
+
 path_stat_dir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
 os.system("rm -r " + path_stat_dir)
 
@@ -1723,6 +1818,8 @@ if end_job_time > email_time_limit:
 
 if run_in_bkg:
     os.system("mv /data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt /data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_finished.txt")
+if runningData:
+    MergeData(runnp,runcf,data_lumi, Finaloutputdir, catversion, useskim, cycle, channel)
 
 if len(output_warning) > 0:
     print "\n"

@@ -201,29 +201,29 @@ function mergeoutput
 
         if [[ $job_data_lumi  == "B" ]];
             then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+            mv  ${outputdir_data}/*"periodB"*${submit_version_tag}*.root ${output_datafile}
 	    
 	    
         elif [[ $job_data_lumi  == "C" ]];
         then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+            mv  ${outputdir_data}/*"periodC"*${submit_version_tag}*.root ${output_datafile}
 	    
 	    
         elif [[ $job_data_lumi  == "D" ]];
         then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+            mv  ${outputdir_data}/*"periodD"*${submit_version_tag}*.root ${output_datafile}
 	    
         elif [[ $job_data_lumi  == "E" ]];
             then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+            mv  ${outputdir_data}/*"periodE"*${submit_version_tag}*.root ${output_datafile}
 	    
         elif [[ $job_data_lumi  == "F" ]];
             then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+            mv  ${outputdir_data}/*"periodF"*${submit_version_tag}*.root ${output_datafile}
 
         elif [[ $job_data_lumi  == "G" ]];
             then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
+            mv  ${outputdir_data}/*"periodG"*${submit_version_tag}*.root ${output_datafile}
 
 
         else
@@ -311,11 +311,17 @@ function mergefake
 
             fi
 
-	    echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
-	    source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
-
-	    mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
-
+	    #echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+	    if [[ $job_data_lumi  == "ALL" ]];
+	    then
+		source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+		mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
+	    fi
+	    if [[ $job_data_lumi  == "BtoG" ]];
+	    then
+                source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+		mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
+            fi
 }
 
 if [[ $changed_skim == "true" ]];
@@ -1505,16 +1511,18 @@ if [[ $runDATA  == "true" ]];
       else
 	  source submit.sh $tagger
       fi
-      if [[ ${job_run_fake} == "True" ]];
-	  then
-	  if [[ ${run_in_bkg} != "True" ]];then
-	      mergefake $istream
-	  fi
-      else
-	  if [[ ${run_in_bkg} != "True" ]];then
-	      mergeoutput $istream
-	  fi
-      fi
+
+      #if [[ ${job_run_fake} == "True" ]];
+#then
+#	  if [[ ${run_in_bkg} != "True" ]];then
+#	      mergefake $istream
+#	  fi
+#      else
+#	  if [[ ${run_in_bkg} != "True" ]];then
+#	      echo ""
+#              mergeoutput $istream
+#	  fi
+#      fi
     done
 fi
 
