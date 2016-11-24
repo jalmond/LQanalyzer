@@ -6,7 +6,7 @@ function usage
 
     echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
     echo "              [-s skim] [-list file_array] [-p data_period] [-q queue]"
-    echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
+    echo "              [-d debug_mode] [-c catversion] [-o outputdir] [-qlist] "
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion] [-b run_in_bkg]"
     echo "              [-fake runfake ] [-flip runflip] [-attachhist drawhist]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
@@ -686,6 +686,23 @@ function sendrequestcat
     rm email.txt
 }
 
+function listqueue
+{
+    
+    qstat -f 
+    echo " " 
+    echo "To select a certain queue use -q <qname> like "
+    while read line
+      do
+	if [[ $line == *"###"* ]];then
+	    echo ""
+	else
+	    echo $line
+	fi
+    done < /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/queuelist.txt
+
+
+}
 
 
 function sendrequest
@@ -1181,6 +1198,10 @@ while [ "$1" != "" ]; do
                                 ;;
 	-q | --queue  )         shift
                                 queuename=$1
+                                ;;
+        -qlist )                shift
+                                listqueue
+	                        exit 1
                                 ;;
 
 	-c | --CatVersion)      shift
