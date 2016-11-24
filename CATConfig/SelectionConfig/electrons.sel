@@ -1,5 +1,8 @@
 ncuts 14
 webpage https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
+###--------------------------------------------------------------------------------------------------------------------------------------------------------
+###  -999. or 999. means no cut applied
+###--------------------------------------------------------------------------------------------------------------------------------------------------------
 | ID                        |  ptmin  | |etamax| |  isomax03_b | isomax03_e | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG) | IsVeto(POG)   | |dxymax_b|  | |dxymax_e| |  |dzmax_b| |  |dzmax_e| | GsfCtfScPix | convveto  |
 | ELECTRON_POG_TIGHT        | 10.     | 2.5     |   0.0354    | 0.0646     | true          | false          |  false       | false         | 0.0111    | 0.0351  | 0.0466   | 0.417    | false       | true      |   
 | ELECTRON_POG_MEDIUM       | 10.     | 2.5     |   0.0766    | 0.0678     | false         | true           |  false       | false         | 0.0118    | 0.0739  | 0.373    | 0.602    | false       | true      |        
