@@ -73,14 +73,21 @@ os.system("rm log")
 filejobsummary.write("\n")
 filejobsummary.write("_"*60+"\n")
 filejobsummary.write("\n")
+filejobsummary.write("CATANALYZER TAG CHANGELOG::\n")
+path_log = "/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_"+newtag+".txt"
+if not os.path.exists(path_log):
+    print "Tag diff log " + path_log + " needs creating"
+    sys.exit()
+file_log = open(path_log,"r")
+for line in file_log:
+    filejobsummary.write(line)
+file_log.close()
+filejobsummary.write("\n")
+filejobsummary.write("_"*60+"\n")
+
+filejobsummary.write("\n")
 filejobsummary.write("New Git Checkout:\n") 
 filejobsummary.write("#"*50+"\n")
-filejobsummary.write("git clone https://github.com/jalmond/LQAnalyzer CATanalyzer\n")
-filejobsummary.write("cd CATanalyzer\n")
-filejobsummary.write("git checkout -b CatAnalyzer_13TeV_"+newtag + " " + newtag+"\n")
-filejobsummary.write("source setup.sh\n")
-filejobsummary.write("#"*50+"\n")
-filejobsummary.write("\n")
 filejobsummary.write("Git Merge(alternative to checking out new directory for each tag):\n")
 filejobsummary.write("#"*55+"\n")
 filejobsummary.write("cd $LQANALYZER_DIR\n")
@@ -105,17 +112,6 @@ filejobsummary.write("XSEC https://twiki.cern.ch/twiki/bin/view/CMS/GenXsecTaskF
 filejobsummary.write("XSEC https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns\n")
 filejobsummary.write("XSEC https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeVInclusive\n")
 
-filejobsummary.write("\n")
-filejobsummary.write("_"*60+"\n")
-filejobsummary.write("CATANALYZER TAG CHANGELOG::\n")
-path_log = "/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_"+newtag+".txt"
-if not os.path.exists(path_log):
-    print "Tag diff log " + path_log + " needs creating"
-    sys.exit()
-file_log = open(path_log,"r")
-for line in file_log:
-    filejobsummary.write(line)
-file_log.close()
 filejobsummary.write("\n")
 filejobsummary.write("_"*60+"\n")
 filejobsummary.write("\n")
