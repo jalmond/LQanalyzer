@@ -145,7 +145,7 @@ if "node" in queue:
 for q in qlist:
     queue_command=queue_command+"all.q@cms-0-"+str(q)+".local,"
 if len(qlist) > 0    :
-     queueok=True
+    queueok=True
     queue_command=queue_command[:-1]
     queue_command=queue_command+'" '
 
