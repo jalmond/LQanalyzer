@@ -1,7 +1,7 @@
 export CATVERSION=v8-0-2
 ### If there is a small bug/new code then new subtag is made
 export tag_numerator='.5'
-if [[  == 'branch' ]];
+if [[ '' == 'branch' ]];
     then
     export CATTAG=
 else
