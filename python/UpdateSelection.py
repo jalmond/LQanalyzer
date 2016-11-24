@@ -4,7 +4,7 @@ import os,filecmp,sys
     
 def GetCATAnalyzerMailList():
     maillist=[]
-    path_emailconfig = "/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/emailconfig.txt"
+    path_emailconfig = os.getenv("LQANALYZER_MOD")+"/emailconfig.txt"
     file_emailconfig = open(path_emailconfig,"r")
     for line in file_emailconfig:
         splitline=line.split()
@@ -85,16 +85,19 @@ parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 (options, args) = parser.parse_args()
 seltag=options.s
 
-path_master = "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Selection/"
+path_master = os.getenv("LQANALYZER_FILE_DIR")+ "/Selection/"
 path_local= os.getenv("LQANALYZER_DIR") + "/CATConfig/SelectionConfig/"
 
 selfile=""
+seltag=""
+if  os.getenv("CATVERSION") == "v7-6-6":
+    seltag="_2015"
 if seltag == "electron":
-    selfile="electrons.sel"
+    selfile="electrons"+seltag+".sel"
 elif seltag == "muon":
-    selfile="muons.sel"
+    selfile="muons"+seltag+".sel"
 elif seltag == "jet":
-    selfile=jets.sel
+    selfile="jets"+seltag+".sel"
 else:
     print "invalid input. must be electron,jet or muon"
 

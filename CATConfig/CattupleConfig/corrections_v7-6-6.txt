@@ -1,0 +1,17 @@
+# --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
+# LABEL    DIRLABEL   rootfilename            hist name    histtype
+# --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
+### EL_ID_POG_TIGHT IDFILEDIR CutBasedID_TightWP_76X_18Feb.txt_SF2D.root EGamma_SF2D TH2F
+### EL_ID_POG_MEDIUM IDFILEDIR CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root EGamma_SF2D TH2F
+### EL_ID_POG_LOOSE  IDFILEDIR CutBasedID_LooseWP_76X_18Feb.txt_SF2D.root EGamma_SF2D TH2F
+### EL_ID_POG_VETO  IDFILEDIR CutBasedID_VetoWP_76X_18Feb.txt_SF2D.root EGamma_SF2D TH2F
+### EL_RECO IDFILEDIR    celeRECO.txt.egamma_SF2D.root eleRECO.txt.egamma_SF2D.root EGamma_SF2D TH2F
+### MUON_ID_POG_LOOSE IDFILEDIR MuonID_Z_RunCD_Reco76X_Feb15.root MC_NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio TH2F
+### MUON_ID_POG_MEDIUM IDFILEDIR MuonID_Z_RunCD_Reco76X_Feb15.root MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio TH2F
+### MUON_ID_POG_TIGHT IDFILEDIR MuonID_Z_RunCD_Reco76X_Feb15.root MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio TH2F
+### MUON_ISO_POG_LOOSE IDFILEDIR MuonIso_Z_RunCD_Reco76X_Feb15.root MC_NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio     TH2F
+### MUON_ISO_POG_TIGHT IDFILEDIR MuonIso_Z_RunCD_Reco76X_Feb15.root MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio  TH2F
+### MUON_TRIGGER_C    TRIGGERFILEDIR SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root runC_IsoMu20_OR_IsoTkMu20_PtEtaBins/abseta_pt_ratio TH2F
+### MUON_TRIGGER_D1  TRIGGERFILEDIR SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root runD_IsoMu20_OR_IsoTkMu20_HLTv4p2_PtEtaBins/abseta_pt_ratio TH2F
+### MUON_TRIGGER_D2  TRIGGERFILEDIR SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root  runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins/abseta_pt_ratio TH2F
+#END         

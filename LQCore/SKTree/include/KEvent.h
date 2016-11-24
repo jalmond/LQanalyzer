@@ -88,13 +88,18 @@ namespace snu {
     /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
     void SetPUWeight(syst_dir sys, double puweight);
+    void SetAltPUWeight(syst_dir sys, double puweight);
+    void SetLumiMask(json type, int mask);
 
 
     void SetCatVersion(std::string cat);
     
     /// New for CAT v7-4-6 (silver/gold json files)
+    Bool_t LumiMask();
     Double_t PileUpWeight(syst_dir dir=central);
     Double_t AltPileUpWeight(syst_dir dir=central);
+
+
     Double_t PFMETShifted (met_syst type,syst_dir dir) const;
     Double_t PFSumETShifted(met_syst type,syst_dir dir) const;
     Double_t MET(met_type type=pfmet) const;
@@ -124,6 +129,10 @@ namespace snu {
     // Vertex
     inline Int_t nVertices()  const {return k_nvertices;}
     inline Int_t nGoodVertices()  const {return k_ngoodvertices;}
+
+    inline Int_t LumiMaskSilver() const {return k_lumi_mask_silver;}
+    inline Int_t LumiMaskGold() const {return k_lumi_mask_gold;}
+
 
     inline Bool_t HasGoodPrimaryVertex() const {return k_isgoodevent;}
     inline Double_t VertexX() const {return k_vertexX;}
@@ -192,13 +201,14 @@ namespace snu {
     Bool_t k_isData, k_isgoodevent;
 
     Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passTightHalo2016Filter;
-    Double_t  k_PileUpInteractionsTrue, k_pu_silver_weight, k_pu_silver_p_weight, k_pu_silver_m_weight,k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
+
+    Double_t  k_PileUpInteractionsTrue, k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
     
     std::string k_catversion;
 
 
 
-    ClassDef(KEvent,26);
+    ClassDef(KEvent,27);
   }; 
   
 }//namespace snu

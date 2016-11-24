@@ -7,13 +7,16 @@
  #                                                                         #
  ###########################################################################
 
-all: tagcheck btag fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
+all: tagcheck btag roch fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
 
 sktree::
 	(cd LQCore/SKTree; make)
 
 Ntuplecore::
 	(cd LQCore/Ntuplecore; make)
+
+roch::
+	(bash bin/Make/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
 AnalysisCore::
 	(cd LQCore/AnalysisCore; make)
@@ -34,7 +37,7 @@ btag::
 	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	
 
 tagcheck::
-	(source bin/CheckNewTagCompiler.sh)
+	(source bin/CheckNewTagCompiler.sh ${CHECKTAGFILE})
 
 clean::
 	(cd LQCore/SKTree; make clean)
@@ -44,6 +47,7 @@ clean::
 	(cd LQCore/Selection; make clean)
 	(cd LQAnalysis; make clean)
 	(bash bin/Clean/clean_fake.sh)
+	(bash bin/Clean/clean_rochor.sh)
 	(bash bin/Clean/clean_btag.sh)
 
 distclean::
@@ -54,5 +58,6 @@ distclean::
 	(cd LQCore/Selection; make distclean)
 	(cd LQAnalysis; make distclean)	
 	(bash bin/Clean/clean_fake.sh)
+	(bash bin/Clean/clean_rochor.sh)
 	(bash bin/Clean/clean_btag.sh)
 

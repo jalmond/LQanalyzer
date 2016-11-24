@@ -2,7 +2,7 @@ import os
 
 def GetCATAnalyzerMailList():
     maillist=[]
-    path_emailconfig = "/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/emailconfig.txt"
+    path_emailconfig = os.getenv("LQANALYZER_MOD") + "emailconfig.txt" 
     file_emailconfig = open(path_emailconfig,"r")
     for line in file_emailconfig:
         splitline=line.split()
@@ -100,7 +100,7 @@ def EmailNewList(catversion):
     if not "v8" in catversion:
         catversion=os.getenv("CATVERSION")
 
-    path_newefflumi="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_"+catversion +".txt"
+    path_newefflumi=os.getenv("LQANALYZER_DATASET_DIR") + "/datasets_snu_CAT_mc_"+catversion +".txt"
 
     file_newefflumi=open(path_newefflumi,"r")
 

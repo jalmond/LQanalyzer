@@ -2,7 +2,7 @@ import os,sys
 
 def GetCATAnalyzerMailList():
     maillist=[]
-    path_emailconfig = "/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/emailconfig.txt"
+    path_emailconfig = os.getenv("LQANALYZER_MOD") +"/emailconfig.txt" 
     file_emailconfig = open(path_emailconfig,"r")
     for line in file_emailconfig:
         splitline=line.split()

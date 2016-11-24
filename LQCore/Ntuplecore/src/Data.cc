@@ -496,7 +496,7 @@ void Data::ConnectEvent(int setting_data){
   ConnectVariable("event", event, b_event);
 
   // new for v7-4-6
-  if(k_cat_version > 2){
+  if(k_cat_version > 2 && k_cat_version < 5){
     if( (setting_data == 1) || (setting_data == 3)){
       m_logger << INFO << "setting_lumi" << LQLogger::endmsg;
       ConnectVariable("lumiMaskGold", lumiMaskGold, b_lumiMaskGold);
@@ -507,15 +507,14 @@ void Data::ConnectEvent(int setting_data){
       ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
       ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
       ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
-      ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
-      ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
-      ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
-
       if(k_cat_version ==4){
+	ConnectVariable("puWeightSilver",puWeightSilver, b_puWeightSilver);
+	ConnectVariable("puWeightSilverUp",puWeightSilverUp, b_puWeightSilverUp);
+	ConnectVariable("puWeightSilverDn",puWeightSilverDn, b_puWeightSilverDn);
 	ConnectVariable("puWeightGold_xs71000",puWeightGold_xs71000, b_puWeightGold_xs71000);
 	ConnectVariable("puWeightGoldUp_xs71000",puWeightGoldUp_xs71000, b_puWeightGoldUp_xs71000);
 	ConnectVariable("puWeightGoldDn_xs71000",puWeightGoldDn_xs71000, b_puWeightGoldDn_xs71000);
-	}
+      }
     }
   }
   
@@ -601,7 +600,7 @@ void Data::ConnectMuons(){
 
 void Data::ConnectPhotons(){
   
-  if(k_cat_version >2){
+  if(k_cat_version >2 && k_cat_version < 5){
     ConnectVariable("photons_pt",photons_pt , b_photons_pt);
     ConnectVariable("photons_eta",photons_eta , b_photons_eta);
     ConnectVariable("photons_phi",photons_phi , b_photons_phi);

@@ -40,6 +40,7 @@ parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
+parser.add_option("-q", "--queue", dest="queue", default="", help="Which queue to use?")
 parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
@@ -57,6 +58,7 @@ logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
 runcf = options.runcf
+queue = options.queue
 tagger= options.tagger
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
@@ -93,6 +95,55 @@ if not skflag == "":
 new_channel = channel.replace(":", "")
 
 original_channel = new_channel
+
+
+queuepath="/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+file_queuepath = open(queuepath,"r")
+for line in file_queuepath:
+    if "#" in line:
+        continue
+    sline = line.split()
+    for s in sline:
+        if "@" in s:
+            queue= s
+file_queuepath.close()
+
+if queue == "None":
+    queue = ""
+
+queue_command = ''
+qlist=[]
+
+if queue:
+    queue_command=' -q '
+if queue == "allq":
+    queue_command=''
+if queue == "fastq":
+    queue_command=queue_command+ ' fastq '
+if queue == "longq":
+    queue_command=queue_command+ ' longq '
+queue=queue.replace("all.q@cms-0-","node")
+queue=queue.replace(".local","")
+if "node1" in queue:
+    qlist.append(1)
+if "node2" in queue:
+    qlist.append(2)
+if "node3" in queue:
+    qlist.append(3)    
+if "node4" in queue:
+    qlist.append(4)
+if "node5" in queue:
+    qlist.append(5)
+if "node6" in queue:
+    qlist.append(6)
+if "node" in queue:
+    queue_command=queue_command+ ' "' 
+for q in qlist:
+    queue_command=queue_command+"all.q@cms-0-"+str(q)+".local,"
+if len(qlist) > 0    :
+    queue_command=queue_command[:-1]
+    queue_command=queue_command+'" '
+
 
 memoryusage_v=0
 memoryusage_p=0
@@ -782,8 +833,10 @@ for i in range(1,number_of_cores+1):
     #runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if running_batch:
-        runcommand = "qsub -V " + batchscript   + "&>" + log 
-
+        if queue == "":
+            runcommand = "qsub -V " + batchscript   + "&>" + log 
+        else:
+            runcommand = "qsub -V  " + queue_command +" " + batchscript   + "&>" + log
     jobID=0
     first_jobid=0
 

@@ -9,7 +9,7 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString Ope
   rand_ = new TRandom3(Seed);
   string lqdir = getenv("LQANALYZER_DIR");
   
-  string CSVFileName = (lqdir + "/data/BTag/" + BTagAlgorithm + ".csv").c_str();
+  string CSVFileName = (lqdir + "/data/BTag/"+getenv("yeartag") + "/"+ BTagAlgorithm + ".csv").c_str();
   BTagCalibration calib(BTagAlgorithm, CSVFileName);
 
   string SystematicFlagBC = "central";

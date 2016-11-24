@@ -1,6 +1,10 @@
 import os
 
 def MakeDirectory(dirpath):
+    predir=dirpath
+    predir=predir.replace(os.getenv("yeartag"),"")
+    if not os.path.exists(predir):
+        os.system("mkdir " + predir)
     if not os.path.exists(dirpath):
         os.system("mkdir " + dirpath)
 
@@ -31,22 +35,29 @@ if os.path.exists("LQCycle/"):
     os.system("rm -r LQCycle/")
 
 tag_dir  = os.getenv("LQANALYZER_LIB_PATH")+ "/" + os.getenv("CATTAG");
+yeartag= str(os.getenv("yeartag"))
 
 localfiledir = os.getenv("LQANALYZER_FILE_DIR")
 snufiledir = os.getenv("FILEDIR")
-snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"
-snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"
-snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"
-snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"
-snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"
-snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"
+snulumifiledir = os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/"+yeartag
+snufakefiledir = os.getenv("LQANALYZER_DIR")+ "/data/Fake/"+yeartag
+snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"+yeartag
+snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"+yeartag
+snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"+yeartag
+snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"+yeartag
 
 txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
 old_lib_slc6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6/"
-
+old_lib_machine_1=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5_cms2/"
+old_lib_machine_2=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5_cms3/"
+old_lib_machine_3=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5_cms4/"
+old_lib_machine_4=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6_cms5/"
+old_lib_machine_5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6_cms6/"
+old_lib_machine_6=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc6_cms1/"
 
 if not os.path.exists(tag_dir):
+
     libpath=os.getenv("LQANALYZER_LIB_PATH")
     if os.path.exists(libpath):
         os.system("rm -r " + libpath)
@@ -55,8 +66,10 @@ if not os.path.exists(tag_dir):
 
     print "Copying all latest rootfiles for use in analysis"
 
+    if not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/80X/") or not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/76X/"):
+        os.system("rm -r " + os.getenv("LQANALYZER_DIR")+ "/data/")
     MakeDirectory(snulumifiledir)
-    os.system("cp " + localfiledir + "/Luminosity/*.txt " + snulumifiledir)
+    os.system("cp " + localfiledir + "/Luminosity/*"+str(os.getenv("CATVERSION"))+".txt " + snulumifiledir)
     MakeDirectory(snufakefiledir)
     os.system("cp " + localfiledir + "/Fake/*.root " + snufakefiledir)
     MakeDirectory(snutriggerfiledir)
@@ -70,8 +83,10 @@ if not os.path.exists(tag_dir):
 
     if os.path.exists(snufiledir+"/cMVAv2.csv"):
         os.system("rm  "+snufiledir+"/*.csv")
-    if os.path.exists(snufiledir +"triggers_catversion2016_801.txt") or os.path.exists(snufiledir +"lumi_catversion2016_801.txt"):
+    if os.path.exists(snufiledir +"/triggers_catversion2016_801.txt") or os.path.exists(snufiledir +"/lumi_catversion2016_801.txt"):
         os.system("rm " + snufiledir+"/*.txt")
+    if os.path.exists(snufiledir +"/Luminosity/triggers_catversion2016_801.txt"):
+        os.system("rm " +snufiledir +"/Luminosity/*2016*")
 
     if os.path.exists(snufiledir):
         os.system("rm -r " + snufiledir)
@@ -113,6 +128,19 @@ if not os.path.exists(tag_dir):
     if os.path.exists(old_lib_slc6):
         os.system("rm -r " + old_lib_slc6)
     
+    if os.path.exists(old_lib_machine_1):
+        os.system("rm -r " + old_lib_machine_1)
+    if os.path.exists(old_lib_machine_2):
+        os.system("rm -r " + old_lib_machine_2)
+    if os.path.exists(old_lib_machine_3):
+        os.system("rm -r " + old_lib_machine_3)
+    if os.path.exists(old_lib_machine_4):
+        os.system("rm -r " + old_lib_machine_4)
+    if os.path.exists(old_lib_machine_5):
+        os.system("rm -r " + old_lib_machine_5)
+    if os.path.exists(old_lib_machine_6):
+        os.system("rm -r " + old_lib_machine_6)
+
     print "using branch for first time: All codes are being recompiled"
     os.system("source bin/Make/make_clean_newbranch.sh")
     

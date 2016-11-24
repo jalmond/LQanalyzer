@@ -63,32 +63,18 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   if(!PassMETFilter()) return;     /// Initial event cuts  
 
-  std::vector<TString> triggerslist_12;
-  triggerslist_12.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
-  
-  std::vector<TString> triggerslist_18;
-  triggerslist_18.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
-
- 
-  std::vector<TString> triggerslist_23;
-  triggerslist_23.push_back("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
-
-  std::vector<TString> triggerslist_33;
-  triggerslist_33.push_back("HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v");
+  TString triggerslist_12="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+  TString triggerslist_18="HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v";
+  TString triggerslist_23="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+  TString triggerslist_33="HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
 
   // analysis trigger
-  std::vector<TString> triggerslist;
-  triggerslist.push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
-
+  TString triggerslist="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
-  std::vector<TString> triggerslist_12leg;
-  triggerslist_12leg.push_back("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-  std::vector<TString> triggerslist_17leg;
-  triggerslist_17leg.push_back("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v");
+  TString triggerslist_12leg = "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v";
+  TString  triggerslist_17leg="HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v";
 
-
-  std::vector<TString> triggerslist_singlelep;
-  triggerslist_singlelep.push_back("HLT_Ele23_WPLoose_Gsf_v");
+  TString triggerslist_singlelep = "HLT_Ele23_WPLoose_Gsf_v";
 
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
@@ -131,7 +117,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   float trigger_ps_singlelepweight= WeightByTrigger("HLT_Ele23_WPLoose_Gsf_v", TargetLumi);
   
   if(electronTightColl.size() ==1) {
-    if(PassTrigger(triggerslist_singlelep, prescale,true) ){
+    if(PassTrigger(triggerslist_singlelep) ){
       FillCLHist(sighist_ee, "SingleElectron_unprescaled", eventbase->GetEvent(), muonColl,electronTightColl,jetCollTight, weight*trigger_ps_singlelepweight);
     }
   }
@@ -139,7 +125,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   
   /// Check single leton legs
   if(electronTightColl.size() ==2) {
-    if( PassTrigger(triggerslist_12leg, prescale,true)){
+    if( PassTrigger(triggerslist_12leg)){
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
         float pr_weight=WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" , TargetLumi); //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
 
@@ -148,7 +134,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
   }
   if(electronTightColl.size() ==2) {
-    if(PassTrigger(triggerslist_17leg, prescale,true)){
+    if(PassTrigger(triggerslist_17leg)){
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15){
 	float pr_weight= WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", TargetLumi);
 	
@@ -157,7 +143,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     }
   }
   
-  if(PassTrigger(triggerslist, prescale,true) ){
+  if(PassTrigger(triggerslist) ){
     if(electronTightColl.size() ==2) {
       if(electronTightColl.at(0).Pt() > 20. && electronTightColl.at(1).Pt() > 15. ){
 	float pr_weight= WeightByTrigger("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi);
@@ -169,7 +155,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   if(electronLooseColl.size()!= 1) return;
 
-  float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_12, prescale,true), PassTrigger(triggerslist_18, prescale,true), PassTrigger( triggerslist_23, prescale,true), PassTrigger(triggerslist_33, prescale,true), TargetLumi); 
+  float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_12), PassTrigger(triggerslist_18), PassTrigger( triggerslist_23), PassTrigger(triggerslist_33), TargetLumi); 
 
 
   weight*= prescale_trigger;

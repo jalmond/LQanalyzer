@@ -15,6 +15,7 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 INCLUDES += -I${BTAGDIR}
+INCLUDES += -I${ROCHDIR}
 INCLUDES += -I$(LQANALYZER_DIR)
 INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/src/
 

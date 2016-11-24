@@ -1,4 +1,4 @@
-#ifndef ExampleAnalyzerDiMuon_h
+#ifndef ExampleAnalyzer_h
 #define ExampleAnalyzer_h
 
 #include "AnalyzerCore.h"

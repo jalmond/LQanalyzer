@@ -59,15 +59,16 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   /// MUON FILES
 
-  TFile* file_fake_muon  = TFile::Open( (lqdir + "/data/Fake/Total_FRcorr40_1.root").c_str());
+  TFile* file_fake_muon  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/Total_FRcorr40_1.root").c_str());
+  cout << "fakemuon path = " <<  (lqdir + "/data/Fake/"+getenv("yeartag")+"/Total_FRcorr40_1.root") << endl;
   CheckFile(file_fake_muon);
 
   
-  TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/Total_FRcorr40_2.root").c_str());
+  TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/Total_FRcorr40_2.root").c_str());
   CheckFile(file_fake_muon_hn);
 
   /// ELECRON FILES
-  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/FakeRate13TeV.root").c_str());
+  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV.root").c_str());
   CheckFile(file_fake);
   
   ////// MAKE HISTS IN MAP
@@ -596,7 +597,7 @@ void HNCommonLeptonFakes::CheckFile(TFile* file){
 
 
 float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight){
- 
+
   
   // Function calculates event weight given r/f of two muons in the event
   double alpha = 1./((1.- fr1)*(1.- fr2));

@@ -25,7 +25,7 @@ Iter next(Iter iter)
 
 void MakeInputListForSubmitScript(){
     
-  TString path_of_list="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+TString(getenv("CATVERSION"))+".txt";                                              
+  TString path_of_list=TString(getenv("LQANALYZER_DATASET_DIR"))+ "/cattuplist_"+TString(getenv("CATVERSION"))+".txt";  
 
   map<TString, TString> lqmap_tmp = GetLQMap2016(path_of_list);
   map<TString, TString> lqmap;
@@ -329,8 +329,8 @@ void MakeInputListForSubmitScript(){
   string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_" + string(def_version) +".sh";
 
 
-  gSystem->Exec(("cp " + lfile + "  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/").Data());
-  if (user.Contains("jalmond"))  gSystem->Exec(("chmod 777  /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/" + lfile).Data());
+  gSystem->Exec(("cp " + lfile + " "+ string(getenv("LQANALYZER_DATASET_DIR"))).Data());
+  if (user.Contains("jalmond"))  gSystem->Exec(("chmod 777 " + string(getenv("LQANALYZER_DATASET_DIR")) + lfile).Data());
   gSystem->Exec(("mv " + lfile +" " + lfile2).Data());
 
 

@@ -64,10 +64,16 @@ KEvent::KEvent() :
   k_passHBHENoiseFilter(false),
   k_passHBHENoiseIsoFilter(false),
   k_passTightHalo2016Filter(false),
+  k_lumi_mask_silver(-999),
+  k_lumi_mask_gold(-999),
   k_PileUpInteractionsTrue(-999.),
   k_pu_gold_weight(-999.),
   k_pu_gold_p_weight(-999.),
   k_pu_gold_m_weight(-999.),
+  k_pu_gold_xs71000_weight(-999.),
+  k_pu_gold_xs71000_p_weight(-999.),
+  k_pu_gold_xs71000_m_weight(-999.),
+
   k_catversion("")
 {
 
@@ -128,10 +134,15 @@ KEvent::KEvent(const KEvent& ev) :
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
   k_passHBHENoiseIsoFilter(ev.k_passHBHENoiseIsoFilter),
   k_passTightHalo2016Filter(ev.k_passTightHalo2016Filter),
+  k_lumi_mask_silver(ev.k_lumi_mask_silver),
+  k_lumi_mask_gold(ev.k_lumi_mask_gold),
   k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue),
   k_pu_gold_weight(ev.k_pu_gold_weight),
   k_pu_gold_p_weight(ev.k_pu_gold_p_weight),
   k_pu_gold_m_weight(ev.k_pu_gold_m_weight),
+  k_pu_gold_xs71000_weight(ev.k_pu_gold_xs71000_weight),
+  k_pu_gold_xs71000_p_weight(ev.k_pu_gold_xs71000_p_weight),
+  k_pu_gold_xs71000_m_weight(ev.k_pu_gold_xs71000_m_weight),
   k_catversion(ev.k_catversion)
 
 {
@@ -162,6 +173,7 @@ void KEvent::Reset()
   k_pdf_x1= -999.;
   k_pdf_x2=-999.;
   k_pdf_weights.clear();
+  
   k_scale_weights.clear();
   k_PF_MET= -999.;
   k_PF_SumET= -999.;
@@ -194,11 +206,16 @@ void KEvent::Reset()
   k_passHBHENoiseFilter= false;
   k_passHBHENoiseIsoFilter= false;
   k_passTightHalo2016Filter= false;
-  
+  k_lumi_mask_silver=-999;
+  k_lumi_mask_gold=-999;
+
   k_PileUpInteractionsTrue = -999.;
   k_pu_gold_weight = -999.;
   k_pu_gold_p_weight=-999.;
   k_pu_gold_m_weight = -999.;
+  k_pu_gold_xs71000_weight = -999.;
+  k_pu_gold_xs71000_p_weight=-999.;
+  k_pu_gold_xs71000_m_weight = -999.;
   k_catversion="";
 
 }
@@ -228,7 +245,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pdf_q = p.Q();
       k_pdf_x1 = p.x1();
       k_pdf_x2 = p.x2();
-            
+           
+
+      
       k_PF_MET= p.MET(pfmet);
       k_PF_METphi= p.METPhi(pfmet);
       k_PF_SumET = p.SumET(pfmet);
@@ -263,6 +282,13 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passTightHalo2016Filter= p.PassTightHalo2016Filter();
 
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
+      k_lumi_mask_silver = p.LumiMaskSilver();
+      k_lumi_mask_gold = p.LumiMaskGold();
+      k_pu_gold_xs71000_weight = p.AltPileUpWeight_Gold(central);
+      k_pu_gold_xs71000_p_weight = p.AltPileUpWeight_Gold(up);
+      k_pu_gold_xs71000_m_weight = p.AltPileUpWeight_Gold(down);
+
+
       k_pu_gold_weight = p.PileUpWeight_Gold(central);
       k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
       k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
@@ -307,11 +333,34 @@ void KEvent::SetPileUpInteractionsTrue(double npu){
 
 void KEvent::SetPUWeight( syst_dir sys, double puw){
   if(sys==central)  k_pu_gold_weight = puw;
-  else if(sys==up)  k_pu_gold_p_weight = puw;
-  else if(sys==down)  k_pu_gold_m_weight = puw;
-  else {std::cout<< "PileUp weight not set correctly" << std::endl; exit(1);}
+  if(sys==up)  k_pu_gold_p_weight = puw;
+  if(sys==down)  k_pu_gold_m_weight = puw;
+  
+}
+
+void KEvent::SetAltPUWeight(syst_dir sys, double puw){
+  if(sys==central)  k_pu_gold_xs71000_weight = puw;
+  if(sys==up)  k_pu_gold_xs71000_p_weight = puw;
+  if(sys==down)  k_pu_gold_xs71000_m_weight = puw;
+  
+}
+
+void KEvent::SetLumiMask(json type, int mask){
+  if(type==silver) k_lumi_mask_silver=mask;
+  else if(type==gold) k_lumi_mask_gold=mask;
+  else {std::cout<< "LumiMask not set correctly" << std::endl; exit(1);}
+}
+
+
+Bool_t KEvent::LumiMask(){
+  
+  if(k_lumi_mask_gold==1) return true;
+  else return false;
 
 }
+
+
+
 
 void KEvent::SetWeight(double mcweight){
   k_mcweight = mcweight;
@@ -407,19 +456,16 @@ void KEvent::SetIsGoodEvent(int nvert){
 }
 
 
-
 Double_t KEvent::PileUpWeight(syst_dir sys){
-
   if(TString(k_catversion).Contains("v7-4-")) return -999;
   return PileUpWeight_Gold(sys);
-  
+
 }
 
 Double_t KEvent::AltPileUpWeight(syst_dir sys){
-  
   return AltPileUpWeight_Gold(sys);
-
 }
+
 
 ///New forCAT v7-4-5 (MET systematics in one function)
 Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{

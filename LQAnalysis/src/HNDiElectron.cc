@@ -184,9 +184,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
     if(GetJets(BaseSelection::JET_HN).size() > 1){
       for(unsigned int i=0; i < lists_triggers.size(); i++){
-	std::vector<TString> trig; trig.push_back(lists_triggers.at(i));
+	TString trig=lists_triggers.at(i);
 	FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator", lists_triggers );
-	if(PassTrigger(trig, prescale))  {
+	if(PassTrigger(trig))  {
 	  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator",lists_triggers );
 	  
 	  if(GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).size() ==2) {
@@ -258,7 +258,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     //if(!PassTrigger(triggerslist, prescale)) return;
   
 
-  if(PassTrigger(triggerslist, prescale)){
+  if(PassTrigger(analysis_trigger)){
     FillCutFlow("TriggerCut", weight);
   }
   
@@ -269,7 +269,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   FillHist("PSWeight" , trigger_ps_weight, 1., 0. , 2., 200);
 
   
-  if(PassTrigger(triggerslist, prescale)){
+  if(PassTrigger(analysis_trigger)){
     FillCutFlow("TriggerWeight", weight);
   }
 

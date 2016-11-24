@@ -1,6 +1,7 @@
 ### Change tag name if not fresh terminal
 current_tag=$CATTAG
-source scripts/setup/SetBrachAndTag.sh
+source $1
+# scripts/setup/SetBrachAndTag.sh
 new_tag=$CATTAG
 if [[ $current_tag != $new_tag ]];then
     echo     "@@@@@@@@@@@@@@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"

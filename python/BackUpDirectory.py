@@ -1,8 +1,7 @@
 import os,datetime,sys,filecmp
 from datetime import timedelta
 
-path_admin = "/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/config.txt"
-
+path_admin = os.getenv("LQANALYZER_MOD")+"/config.txt"
 
 def checkLumiFile(backupdir,backup_datelist):
     
@@ -19,9 +18,10 @@ def checkLumiFile(backupdir,backup_datelist):
         sys.exit()
 
     catversion=os.getenv("CATVERSION")
-    currentfile="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_CAT_mc_" + catversion+".txt"
+    lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
+    currentfile=lumidir+"/datasets_snu_CAT_mc_" + catversion+".txt"
     
-    backupfile = "/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
+    backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
     if not os.path.exists( currentfile):
         print currentfile + " does not exist"
         sys.exit()
@@ -142,7 +142,8 @@ file_admin.close()
 
 if dobackup:
     print "ADMIN: Making backup"
-    checkLumiFile("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/BackUp/",backup_date)
+    lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
+    checkLumiFile(lumidir+"/BackUp/",backup_date)
 
 nowtime2 = datetime.datetime.now()
 for xbackup in backup_date:
@@ -156,9 +157,10 @@ if dobackup:
     copylist.append("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
     makeBackUp("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
     copylist2=[]
-    copylist2.append("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/data* ")
+    lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
+    copylist2.append(lumidir+"/data* ")
 
-    makeBackUp("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/BackUp/",copylist2,backup_date)
+    makeBackUp(lumidir+"/BackUp/",copylist2,backup_date)
     
     
     ### change config file to switch dir names

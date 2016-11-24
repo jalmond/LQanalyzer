@@ -9,6 +9,9 @@
 
 
 #### CATTuples
+HN150_mumumu_VmuN_0p1  100000.00000 100000.00000 0.00046 219250160.00000  /data2/DATA/cattoflat/MC/v8-0-2/13TeV_HN150_mumumu_width_AUTO_VmuN_0p1/
+HN60_mumumu_VmuN_0p1  100000.00000 100000.00000 3.41600 29274.00391  /data2/DATA/cattoflat/MC/v8-0-2/13TeV_HN60_mumumu_width_AUTO_VmuN_0p1/
+HN700_mumumu_VmuN_0p1  100000.00000 100000.00000 0.00000 37821480960.00000  /data2/DATA/cattoflat/MC/v8-0-2/13TeV_HN700_mumumu_width_AUTO_VmuN_0p1/
 HN40_mumumu_VmuN_0p1  100000.00000 100000.00000 8.60500 11621.15039  /data2/DATA/cattoflat/MC/v8-0-2/13TeV_HN40_mumumu_width_AUTO_VmuN_0p1/
 HN_Tchannel_emem_M-100  50000.00000 50000.00000 0.10000 500000.00000  /data2/DATA/cattoflat/MC/v8-0-2/13TeV_HN_Tchannel_emem_M-100/
 HN_Tchannel_emem_M-1100  46125.00000 46125.00000 0.10000 461250.00000  /data2/DATA/cattoflat/MC/v8-0-2/13TeV_HN_Tchannel_emem_M-1100/
@@ -89,6 +92,9 @@ ttbb  3906030.00000 1105980.00000 13.93000 79395.54688  /data2/DATA/cattoflat/MC
 
 
 #### Single_lepton_skims:_SKTrees
+SKHN150_mumumu_VmuN_0p1  100000.00000 100000.00000 0.00046 219250160.00000 /data2/CatNtuples/v8-0-2/SKTrees/MC/HN150_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1  100000.00000 100000.00000 3.41600 29274.00391 /data2/CatNtuples/v8-0-2/SKTrees/MC/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1  100000.00000 100000.00000 0.00000 37821480960.00000 /data2/CatNtuples/v8-0-2/SKTrees/MC/HN700_mumumu_VmuN_0p1/
 SKHN40_mumumu_VmuN_0p1  100000.00000 100000.00000 8.60500 11621.15039 /data2/CatNtuples/v8-0-2/SKTrees/MC/HN40_mumumu_VmuN_0p1/
 SKHN_Tchannel_emem_M-100  50000.00000 50000.00000 0.10000 500000.00000 /data2/CatNtuples/v8-0-2/SKTrees/MC/HN_Tchannel_emem_M-100/
 SKHN_Tchannel_emem_M-1100  46125.00000 46125.00000 0.10000 461250.00000 /data2/CatNtuples/v8-0-2/SKTrees/MC/HN_Tchannel_emem_M-1100/
@@ -169,6 +175,9 @@ SKttbb  3906030.00000 1105980.00000 13.93000 79395.54688 /data2/CatNtuples/v8-0-
 
 
 #### Dilepton_skims:_SKTrees
+SKHN150_mumumu_VmuN_0p1_dilep  100000.00000 100000.00000 0.00046 219250160.00000 /data2/CatNtuples/v8-0-2/SKTrees/MCDiLep/HN150_mumumu_VmuN_0p1/
+SKHN60_mumumu_VmuN_0p1_dilep  100000.00000 100000.00000 3.41600 29274.00391 /data2/CatNtuples/v8-0-2/SKTrees/MCDiLep/HN60_mumumu_VmuN_0p1/
+SKHN700_mumumu_VmuN_0p1_dilep  100000.00000 100000.00000 0.00000 37821480960.00000 /data2/CatNtuples/v8-0-2/SKTrees/MCDiLep/HN700_mumumu_VmuN_0p1/
 SKHN40_mumumu_VmuN_0p1_dilep  100000.00000 100000.00000 8.60500 11621.15039 /data2/CatNtuples/v8-0-2/SKTrees/MCDiLep/HN40_mumumu_VmuN_0p1/
 SKHN_Tchannel_emem_M-100_dilep  50000.00000 50000.00000 0.10000 500000.00000 /data2/CatNtuples/v8-0-2/SKTrees/MCDiLep/HN_Tchannel_emem_M-100/
 SKHN_Tchannel_emem_M-1100_dilep  46125.00000 46125.00000 0.10000 461250.00000 /data2/CatNtuples/v8-0-2/SKTrees/MCDiLep/HN_Tchannel_emem_M-1100/

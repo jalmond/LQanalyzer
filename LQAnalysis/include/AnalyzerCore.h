@@ -16,6 +16,8 @@ class EventBase;
 #include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
+#include "rochcor2015/rochcor2015.h"
+#include "rochcor2015/RoccoR.h"
 #include "BTag/BTagSFUtil.h"
 #include "TNtupleD.h"
 #include "TNtuple.h"
@@ -38,7 +40,7 @@ class AnalyzerCore : public LQCycleBase {
   virtual ~AnalyzerCore();
 
   // SetUpEvent CORE function: accesses event in ntuple
-  virtual void SetUpEvent(Long64_t entry, float ev_weight, TString per)throw( LQError );
+  virtual void SetUpEvent(Long64_t entry, float ev_weight) throw( LQError );
   virtual void EndEvent()throw( LQError );
   virtual void WriteHistograms()throw( LQError );
 
@@ -59,10 +61,15 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString elid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( TString elid , float ptcut=-999., float etacut = -999.);
 
+  bool Is2015Analysis();
   void SetupSelectionMuon(std::string path_sel);
   void SetupSelectionJet(std::string path_sel);
   void SetupSelectionElectron(std::string path_sel);
 
+  void FillCorrectionHist(string label, string dirname, string filename, string histsname, string histtype);
+  void FillCorrectionHists();
+  TH2F* GetCorrectionHist(TString label);
+  bool CheckCorrectionHist(TString label);
   void FillCutFlow(TString cut, float weight);
 
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
@@ -163,6 +170,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH2*> maphist2D;
   map<TString, TNtupleD*> mapntp;
 
+  map<TString, TH2F*>  CorrectionMap;
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 
   map<int, float> mapLumiPerBlock;
@@ -293,10 +301,11 @@ class AnalyzerCore : public LQCycleBase {
   //// Event related                                                                                                                                              
   float TempPileupWeight();
 
-  bool  PassTrigger(std::vector<TString> list, int& prescale, bool fake_2016=false);
-  float PassTrigger(TString trigname, std::vector<snu::KElectron> electrons, int& prescaler);
-  float PassTrigger(TString trigname, std::vector<snu::KMuon> muons, int& prescaler);
-  float PassTrigger(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, int& prescaler);
+  bool  PassTrigger(TString list);
+  bool  PassTrigger(std::vector<std::pair<TString,TString> > list);
+  float TriggerEff(TString trigname, std::vector<snu::KElectron> electrons);
+  float TriggerEff(TString trigname, std::vector<snu::KMuon> muons);
+  float TriggerEff(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
 
   float GetEff(snu::KMuon mu, TString trigname);
   float GetEff(snu::KElectron el, TString trigname);
@@ -307,6 +316,8 @@ class AnalyzerCore : public LQCycleBase {
 
   std::map<TString,BTagSFUtil*> MapBTagSF;
   //  BTagSFUtil *lBTagSF, *hBTagSF;
+  rochcor2015 *rmcor;
 
+  
 };
 #endif

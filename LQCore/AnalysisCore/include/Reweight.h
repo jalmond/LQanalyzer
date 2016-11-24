@@ -3,6 +3,7 @@
 
 class TFile;
 class TH1D;
+class TH1F;
 class TString;
 class TDirectory;
 
@@ -14,7 +15,7 @@ class Reweight {
   Reweight(TString filename);
   ~Reweight();
   
-  double GetWeight(int nvtx);
+  double GetWeight(int nvtx, TString version);
   TDirectory* getTemporaryDirectory(void) const;
 
  private:
@@ -24,6 +25,9 @@ class Reweight {
 
   TH1D* h_MCmod_;
   TH1D* h_Data_;
+  TH1F* h_MCmodF_;
+  TH1F* h_DataF_;
+
 
 };
 

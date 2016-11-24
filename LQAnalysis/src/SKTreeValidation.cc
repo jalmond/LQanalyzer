@@ -143,14 +143,14 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
   FillCutFlow("NoCut", weight);
-  
-  bool makePUFile=true;
+  return;
+  bool makePUFile=false;
   if(makePUFile){
     //std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT);
     std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TRI_TIGHT");
     return;
     
-    //if(PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale)){
+    //if(TriggerEff("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons)){
     if(muons.size() ==2) {
       if(!SameCharge(muons)){
 	if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
@@ -168,7 +168,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
 
-
+  
   
   if(!PassMETFilter()) return;     /// Initial event cuts : 
   FillCutFlow("EventCut", weight);
@@ -211,7 +211,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    FillCutFlow("VertexCut", weight);
    
    float pileup_reweight=(1.0);
-
+   return;
    if (!k_isdata) {
      //pileup_reweight = TempPileupWeight();
      pileup_reweight= eventbase->GetEvent().PileUpWeight();
@@ -514,8 +514,8 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
 
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
 
-  float trig_pass= PassTrigger("HLT_IsoMu22", muons, prescale);
-  //bool trig_pass= PassTrigger(trignames, prescale);
+  float trig_pass= TriggerEff("HLT_IsoMu22", muons);
+  //bool trig_pass= PassTrigger(trignames.at(0));
 
 
   /// List of all corrections to be applied
@@ -592,9 +592,9 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
   
   // returns 1. if event passes trigger bit in data or Eff of trigger Eff(pt_muon) if in MC
-  //float trig_pass= PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale);
+  //float trig_pass= TriggerEff("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons);
   /// returns bool if event passes trigger bit
-  bool trig_pass= PassTrigger(trignames, prescale);
+  bool trig_pass= PassTrigger(trignames.at(0));
   
   /// List of all corrections to be applied
   float trigger_sf(1.);
@@ -608,7 +608,9 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
     id_iso_sf =   MuonScaleFactor(muid, muons,0);
     id_iso_sf *= MuonISOScaleFactor(muid, muons,0);
     
+    // uses cattool 69 mb weight
     //puweight=eventbase->GetEvent().PileUpWeight();
+    /// uses own weight
     puweight=TempPileupWeight();
     
     /// scale to lumi of trigger
@@ -727,9 +729,9 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
     ev_weight = w * trigger_sf * id_iso_sf * trigger_ps* pu_reweight;
   }
 
-  float trig_pass= PassTrigger("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v",muons,electrons, prescale);
+  float trig_pass= TriggerEff("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v",muons,electrons);
   ev_weight*= trig_pass;
-  //bool trig_pass= PassTrigger(trignames, prescale);
+  //bool trig_pass= PassTrigger(trignames);
 
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
@@ -792,8 +794,8 @@ void SKTreeValidation::MakeElectronValidationPlots(BaseSelection::ID elid, float
   std::vector<snu::KMuon> muons =  GetMuons(muid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
 
-  //  bool trig_pass= PassTrigger(trignames, prescale);
-  float trig_pass= PassTrigger(trignames, prescale);
+  //  bool trig_pass= PassTrigger(trignames);
+  float trig_pass= PassTrigger(trignames.at(0));
   
   /// List of all corrections to be applied
   float trigger_sf(1.);
@@ -856,8 +858,8 @@ void SKTreeValidation::MakeDiElectronValidationPlots(BaseSelection::ID elid, flo
   std::vector<snu::KMuon> muons =  GetMuons(muid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
   
-  float trig_pass= PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", electrons,  prescale);
-  //bool trig_pass= PassTrigger(trignames, prescale);
+  float trig_pass= TriggerEff("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", electrons);
+  //bool trig_pass= PassTrigger(trignames.at(0));
   /// List of all corrections to be applied
   float trigger_sf(1.);
   float id_iso_sf(1.);

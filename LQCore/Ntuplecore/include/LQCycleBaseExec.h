@@ -50,7 +50,7 @@ class LQCycleBaseExec :   public virtual LQCycleBaseBase , public SKTreeFiller{
    *   Interates through the ntuple
    *
    **/
-  virtual void SetUpEvent(Long64_t jevent, float ev_weight, TString per)throw( LQError );
+  virtual void SetUpEvent(Long64_t jevent, float ev_weight)throw( LQError );
 
   /**
    *  call before each event. Specific function to clear output vectors

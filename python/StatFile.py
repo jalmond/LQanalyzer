@@ -319,13 +319,15 @@ for line in file_tmpmaster2:
         if correctCode:
              if newsample:
                  if sample_title in line:
-                     file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
-                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(new_filesize) + "MB " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
+                     if not  njobs_submittest == 1:
+                         file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
+                         file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(new_filesize) + "MB " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                     file_master.write(line)
              else:
                  if sample in line:
-                     file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(new_filesize) + "MB " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
+                     if not njobs_submittest == 1:
+                         file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(new_filesize) + "MB " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                      file_master.write(line)
         else:

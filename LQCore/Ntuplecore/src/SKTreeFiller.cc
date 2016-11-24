@@ -123,11 +123,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     }
     return kevent;
   }
+  //  lumimask = snu::KEvent::gold
 
   m_logger << DEBUG << "Filling Event Info" << LQLogger::endmsg;
   
   // New variable to set catversion. Add this to flat ntuples for next iteration
-
   kevent.SetCatVersion(CatVersion);
 
   kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
@@ -183,7 +183,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   /// Filling event variables
     
   kevent.SetIsData(isData);
+  cout << "run = " << run << " " << endl;
   kevent.SetRunNumber(run);
+  cout << "event = " << event << " " << endl;
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   
@@ -191,8 +193,29 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPUWeight(snu::KEvent::central,double(puWeightGold));
     kevent.SetPUWeight(snu::KEvent::down,double(puWeightGoldDn));
     kevent.SetPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
+    if(k_cat_version == 4){
+      if(puWeightGold_xs71000){
+	kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold_xs71000));
+	kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn_xs71000));
+	kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp_xs71000));
+      }
+    }
+    else{
+      kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold));
+      kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn));
+      kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
+    }
   }
-
+  if(isData){
+    if(k_cat_version > 2&&k_cat_version < 5){
+      kevent.SetLumiMask(snu::KEvent::silver, lumiMaskSilver);
+      kevent.SetLumiMask(snu::KEvent::gold,   lumiMaskGold);
+    }
+    else{
+      kevent.SetLumiMask(snu::KEvent::silver, 1);
+      kevent.SetLumiMask(snu::KEvent::gold,   1);
+    }
+  }
     kevent.SetGenId(genWeight_id1, genWeight_id2);
     kevent.SetLHEWeight(lheWeight);
     kevent.SetGenX(genWeightX1, genWeightX2);
@@ -207,9 +230,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   
   /// 
     kevent.SetPileUpInteractionsTrue(nTrueInteraction);
-      
-  kevent.SetNVertices(nPV);
-  kevent.SetNGoodVertices(nGoodPV);
+    
+    kevent.SetNVertices(nPV);
+    kevent.SetNGoodVertices(nGoodPV);
   
   kevent.SetIsGoodEvent(nGoodPV);
 

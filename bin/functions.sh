@@ -9,6 +9,7 @@ outputdir=${LQANALYZER_DIR}/data/output/
 loglevel="INFO"
 remove_workspace="True"
 logstep=-1
+queue="NONE" 
 skipevent=-1
 nevents=-1
 totalev=-1
