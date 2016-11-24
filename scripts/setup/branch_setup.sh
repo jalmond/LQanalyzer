@@ -1,7 +1,7 @@
 #! /bin/sh
 # $Id: setup.sh 1 01/12/2013 jalmond $
 ###################################################################################
-# @Project: CATAnalyzer/SKTree - ROOT-based analysis framework for Korea CMS group #
+# @Project: LQAnalyzer/SKTree - ROOT-based analysis framework for Korea CMS group #
 #                                                                                 #
 # @author John Almond       <jalmond@cern.ch>           - SNU                     #
 #                                                                                 #
@@ -10,8 +10,8 @@
 ##################################################################################
 
 # Greet the user
-echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
+echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
 setupok=False
 
@@ -52,6 +52,7 @@ if [ $LQANALYZER_DIR ]; then
     return 1
 fi
 
+
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     source /share/apps/root_v5-34-32/root/bin/thisroot.sh 
@@ -63,10 +64,38 @@ else
 fi    
 
 
-
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
 
+
+if [[ $1 == *"v7"* ]]; then
+    echo "Setting up tag "$1
+    export CHECKTAGFILE=/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    if [[ ! -f $CHECKTAGFILE ]]; then 
+	export LQANALYZER_DIR=""
+	echo $1 "is not allowed input. Use one of:"
+	
+	source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	for ic in  ${list_of_catversions[@]};
+        do
+            echo $ic
+	done
+	return 1
+    
+    fi
+    export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD2015/"
+    source $LQANALYZER_DIR/bin/setup2015.sh
+    export running2015=True
+    cvdir=$LQANALYZER_DIR/LQLib/$CATVERSION
+    if [[ ! -d "${cvdir}" ]]; then
+        mkdir $cvdir
+        make distclean
+	make
+    fi
+    return 1
+fi
+
+export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
 python ${LQANALYZER_DIR}/scripts/CheckEmailIsSetup.py
 cat_email="NULL"
 while read line
@@ -85,13 +114,44 @@ then
     return 1
 fi
 
-
-
-
 ##### Check that this is not the branch and a tag was checked out
-source $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh branch
+export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+source $CHECKTAGFILE Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
+
+while read line
+do
+    if [[ $line == $CATTAG* ]];
+    then
+	echo "Current tag is buggy. Please update to newer tag."
+        exit
+    fi
+done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+
+export LIBTAG=""
+if [[ $1 != "" ]];then
+
+    export CHECKTAGFILE=/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    if [[ ! -f $CHECKTAGFILE ]]; then
+	export LQANALYZER_DIR=""
+        echo $1 "is not allowed input. Use one of:"
+	
+        source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+        for ic in  ${list_of_catversions[@]};
+        do
+            echo $ic
+	done
+        return 1
+    fi
+    
+    source $CHECKTAGFILE Tag
+    export LIBTAG=$CATVERSION
+fi
+
+export yeartag="80X/"
+
+
 
 alias sktree="bash submitSKTree.sh"
 alias sktree_bkg="nohup bash submitSKTree.sh -b True "
@@ -101,6 +161,7 @@ alias sktree_bkg_log="python python/PrintBkgJob.py"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
 export LQANALYZER_LUMIFILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
+export LQANALYZER_DATASET_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
@@ -110,7 +171,7 @@ then
     export LQANALYZER_SKTreeLOG_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 fi
 
-
+export running2015=False
 
 # Modify to describe your directory structure.
 # all directories are below the LQAnalyser base directory specified above
@@ -122,11 +183,16 @@ export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
 export isSLC5="False"
 export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/src/BTag/BTagC11/
+export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/src/rochcor2015/rochcor2015C11/
 if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
-    export OBJ=obj/cms21
-    export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21
-    
+    if [[ $LIBTAG == *"v"* ]]; then
+	export OBJ=obj/cms21$LIBTAG
+	export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21$LIBTAG/
+    else 
+	export OBJ=obj/cms21
+        export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21/
+    fi
 elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
     then
     export OBJ=obj/cluster/
@@ -152,11 +218,11 @@ export LQANALYZER_BIN_PATH=${LQANALYZER_DIR}/bin/
 export SKTREE_INCLUDE_PATH=${LQANALYZER_DIR}/LQCore/SKTree/include/
 ## setup directory to store analysis rootfiles
 export FILEDIR=${LQANALYZER_DIR}/data/rootfiles/
-export IDFILEDIR=${LQANALYZER_DIR}/data/ID/
-export LUMIFILEDIR=${LQANALYZER_DIR}/data/Luminosity/
-export TRIGGERFILEDIR=${LQANALYZER_DIR}/data/Trigger/
-export BTAGFILEDIR=${LQANALYZER_DIR}/data/BTag/
-export PILEUPFILEDIR=${LQANALYZER_DIR}/data/Pileup/
+export IDFILEDIR=${LQANALYZER_DIR}/data/ID/80X/
+export LUMIFILEDIR=${LQANALYZER_DIR}/data/Luminosity/80X/
+export TRIGGERFILEDIR=${LQANALYZER_DIR}/data/Trigger/80X/
+export BTAGFILEDIR=${LQANALYZER_DIR}/data/BTag/80X/
+export PILEUPFILEDIR=${LQANALYZER_DIR}/data/Pileup/80X/
 
 
 
