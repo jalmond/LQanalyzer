@@ -10,6 +10,8 @@ declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
+declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6")
+
 python $LQANALYZER_DIR/python/CheckSelection.py
 
 ##### New for sktreemaker only
@@ -1332,7 +1334,22 @@ if [[ ! -d "${iddir}" ]]; then
     mkdir $iddir
 fi
 
-    
+qnameisok="false"
+for qname in ${queueoptions[@]};
+do
+    if [[ $queuename  == *${qname}* ]]; then 
+	qnameisok="true"
+    fi
+
+done
+if [[ $qnameisok == "false" ]];then
+    echo "--------------------------------------------------------------------------"
+   
+    echo "Error in Queuename: run  sktree -qlist"
+    echo "--------------------------------------------------------------------------"
+    exit 1
+fi
+
 runboth="false"
 if [[ $runDATA  == "true" ]];
     then

@@ -1,4 +1,4 @@
-###################################################################
+1;95;0c###################################################################
 ###configure Job
 ####################################################################
 ###timeWait=1#
@@ -114,14 +114,18 @@ if queue == "None":
 queue_command = ''
 qlist=[]
 
+queueok=False
 if queue:
     queue_command=' -q '
 if queue == "allq":
     queue_command=''
+    queueok=True
 if queue == "fastq":
     queue_command=queue_command+ ' fastq '
+    queueok=True
 if queue == "longq":
     queue_command=queue_command+ ' longq '
+    queueok=True
 queue=queue.replace("all.q@cms-0-","node")
 queue=queue.replace(".local","")
 if "node1" in queue:
@@ -141,9 +145,14 @@ if "node" in queue:
 for q in qlist:
     queue_command=queue_command+"all.q@cms-0-"+str(q)+".local,"
 if len(qlist) > 0    :
+     queueok=True
     queue_command=queue_command[:-1]
     queue_command=queue_command+'" '
 
+if queue == "None":
+    queue=""
+if not  queue:
+    queue=""
 
 memoryusage_v=0
 memoryusage_p=0
