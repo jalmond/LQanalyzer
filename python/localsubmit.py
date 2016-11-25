@@ -104,9 +104,10 @@ for line in file_queuepath:
         continue
     sline = line.split()
     for s in sline:
-        if "@" in s:
+        if "@" in s or "fast" in s or "all" in s or "long" in s:
             queue= s
 file_queuepath.close()
+
 
 if queue == "None":
     queue = ""
