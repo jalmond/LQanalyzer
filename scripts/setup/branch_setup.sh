@@ -53,9 +53,6 @@ if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
     return 1
 fi
-if [ ! -d $LQANALYZER_DIR/data/ ]; then
-    mkdir  $LQANALYZER_DIR/data/
-fi
 
 
 
@@ -123,7 +120,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE Tag
+source $CHECKTAGFILE branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
