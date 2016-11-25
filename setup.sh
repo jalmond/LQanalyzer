@@ -31,6 +31,11 @@ if [[ $setupok == "False" ]]; then
 fi
 
 
+if [ ! -d $LQANALYZER_DIR/data/ ]; then
+    mkdir  $LQANALYZER_DIR/data/
+fi
+
+
 
 if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
 then

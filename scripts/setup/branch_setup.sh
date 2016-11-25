@@ -31,6 +31,11 @@ if [[ $setupok == "False" ]]; then
 fi
 
 
+if [ ! -d $LQANALYZER_DIR/data/ ]; then
+    mkdir  $LQANALYZER_DIR/data/
+fi
+
+
 
 if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
 then
@@ -116,7 +121,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE Tag
+source $CHECKTAGFILE branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
