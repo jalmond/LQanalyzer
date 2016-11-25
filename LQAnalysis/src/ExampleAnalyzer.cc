@@ -67,7 +67,6 @@ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
   /// Apply the gen weight 
   if(!isData) weight*=MCweight;
     
-  return;
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    

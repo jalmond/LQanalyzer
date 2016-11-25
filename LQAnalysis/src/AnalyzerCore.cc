@@ -201,7 +201,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
   
-  if(TString(getenv("CATVERSION").Contains("v8")){
+  if(TString(getenv("CATVERSION")).Contains("v8")){
     if(TString(getenv("PUFILE")).Contains(".root")){
       if(!k_isdata) reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
     }
