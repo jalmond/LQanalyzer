@@ -31,9 +31,6 @@ if [[ $setupok == "False" ]]; then
 fi
 
 
-if [ ! -d $LQANALYZER_DIR/data/ ]; then
-    mkdir  $LQANALYZER_DIR/data/
-fi
 
 
 
@@ -56,6 +53,11 @@ if [ $LQANALYZER_DIR ]; then
     echo LQANALYZER_DIR is already defined, use a clean shell
     return 1
 fi
+if [ ! -d $LQANALYZER_DIR/data/ ]; then
+    mkdir  $LQANALYZER_DIR/data/
+fi
+
+
 
 
 ## variables that are specific to your machine: Change if noy listed
@@ -121,7 +123,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE branch
+source $CHECKTAGFILE Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -150,7 +152,7 @@ if [[ $1 != "" ]];then
         return 1
     fi
     
-    source $CHECKTAGFILE Tag
+    source $CHECKTAGFILE branch
     export LIBTAG=$CATVERSION
 fi
 
