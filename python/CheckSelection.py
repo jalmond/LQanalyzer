@@ -13,7 +13,7 @@ for i in files_check:
                 print "Fix ncuts in input file path " + path_file
                 sys.exit()
             ncut_el = int(sline[1])
-        elif not "webpage" in line:
+        elif not "webpage" in line and not "###" in line:
             if not len(sline) == (2*ncut_el + 3):
                 print line + " "  + str(len(sline)) + ": FIX in " + path_file
                 sys.exit()
