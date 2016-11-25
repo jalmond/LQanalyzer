@@ -685,7 +685,7 @@ printedqueue=printedqueue.replace("all.q@cms-0-","node")
 printedqueue=printedqueue.replace(".local","")
 printedqueue=printedqueue.replace("node","")
 if printedqueue == "None":
-    printedqueue = "all.q"
+    printedqueue = "fastq"
 
 DoSendEmail=False
 run_in_bkg=False

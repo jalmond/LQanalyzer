@@ -101,11 +101,11 @@ class AnalyzerCore : public LQCycleBase {
   float GetDiLepMass(std::vector<snu::KMuon> muons);
   float GetDiLepMass(std::vector<snu::KElectron> electrons);
 
-  double ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KElectron> el, int sys=0);
+  double ElectronScaleFactor( TString  elid, vector<snu::KElectron> el, int sys=0);
   double ElectronRecoScaleFactor(vector<snu::KElectron> el);
 
-  double MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu, int sys=0);
-  double MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys=0);
+  double MuonScaleFactor(TString  muid, vector<snu::KMuon> mu, int sys=0);
+  double MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys=0);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);

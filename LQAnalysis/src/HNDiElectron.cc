@@ -329,7 +329,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   if(!isData){
     for(unsigned int iel=0; iel < electronColl.size(); iel++){
-      id_weight*= ElectronScaleFactor(BaseSelection::ELECTRON_POG_TIGHT, electronColl);
+      id_weight*= ElectronScaleFactor("ELECTRON_POG_TIGHT", electronColl);
       reco_weight *= ElectronRecoScaleFactor(electronColl);
       
     }

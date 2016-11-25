@@ -201,7 +201,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
   
-  if(TString(getenv("PUFILE")).Contains("v8")){
+  if(TString(getenv("CATVERSION").Contains("v8")){
     if(TString(getenv("PUFILE")).Contains(".root")){
       if(!k_isdata) reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
     }
@@ -745,7 +745,7 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 }
 
 
-double AnalyzerCore::MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys){
+double AnalyzerCore::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
   float sf= 1.;
   float sferr=1.;
   if(isData) return 1.;
@@ -753,17 +753,17 @@ double AnalyzerCore::MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuo
     float mupt=itmu->Pt();
     if(itmu->Pt() >120. )mupt=119.;
     if(itmu->Pt() < 20.) mupt=21.;
-    if(muid==BaseSelection::MUON_POG_TIGHT) {
+    if(muid=="MUON_POG_TIGHT") {
       sferr = double(sys)*GetCorrectionHist("MUON_ISO_POG_TIGHT")->GetBinError( GetCorrectionHist("MUON_ISO_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
       
       sf*= (1. + sferr)*GetCorrectionHist("MUON_ISO_POG_TIGHT")->GetBinContent( GetCorrectionHist("MUON_ISO_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
     }
     
-    else if(muid==BaseSelection::MUON_POG_MEDIUM) {
+    else if(muid=="MUON_POG_MEDIUM") {
       //sferr = double(sys)*MuonISO_loose_mediumID->GetBinError(MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
       //sf*= (1. + sferr)* MuonISO_loose_mediumID->GetBinContent( MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
     }
-    else if(muid==BaseSelection::MUON_POG_LOOSE) {
+    else if(muid=="MUON_POG_LOOSE") {
       sferr = double(sys)*GetCorrectionHist("MUON_ISO_POG_LOOSE")->GetBinError(GetCorrectionHist("MUON_ISO_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
       sf*=  (1. + sferr)*GetCorrectionHist("MUON_ISO_POG_LOOSE")->GetBinContent( GetCorrectionHist("MUON_ISO_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
     }
@@ -771,7 +771,7 @@ double AnalyzerCore::MuonISOScaleFactor(BaseSelection::ID muid, vector<snu::KMuo
   return sf;
 }
 
-double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> mu,int sys){
+double AnalyzerCore::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
   float sf= 1.;
   float sferr=1.;
   if(isData) return 1.;
@@ -780,16 +780,16 @@ double AnalyzerCore::MuonScaleFactor(BaseSelection::ID muid, vector<snu::KMuon> 
     float mupt=itmu->Pt();
     if(itmu->Pt() <20.) mupt= 21.;
     if(itmu->Pt() >120.) mupt= 119.;
-    if(muid==BaseSelection::MUON_POG_TIGHT) {
+    if(muid=="MUON_POG_TIGHT") {
       sferr = double(sys)*GetCorrectionHist("MUON_ID_POG_TIGHT")->GetBinError( GetCorrectionHist("MUON_ID_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
       
       sf*=  (1. + sferr)* GetCorrectionHist("MUON_ID_POG_TIGHT")->GetBinContent( GetCorrectionHist("MUON_ID_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
     }
-    else if(muid==BaseSelection::MUON_POG_MEDIUM) {
+    else if(muid=="MUON_POG_MEDIUM") {
       sferr = double(sys)*GetCorrectionHist("MUON_ID_POG_MEDIUM")->GetBinError(  GetCorrectionHist("MUON_ID_POG_MEDIUM")->FindBin( fabs(itmu->Eta()), mupt) );
       sf*=  (1. + sferr)*GetCorrectionHist("MUON_ID_POG_MEDIUM")->GetBinContent(GetCorrectionHist("MUON_ID_POG_MEDIUM")->FindBin( fabs(itmu->Eta()), mupt) );
     }
-    else if(muid==BaseSelection::MUON_POG_LOOSE) {
+    else if(muid=="MUON_POG_LOOSE") {
       sferr = double(sys)*GetCorrectionHist("MUON_ID_POG_LOOSE")->GetBinError(GetCorrectionHist("MUON_ID_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
       sf*=  (1. + sferr)*GetCorrectionHist("MUON_ID_POG_LOOSE")->GetBinContent( GetCorrectionHist("MUON_ID_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
     }
@@ -1001,16 +1001,11 @@ double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::
 
 
 
-double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KElectron> el, int sys){
+double AnalyzerCore::ElectronScaleFactor( TString elid, vector<snu::KElectron> el, int sys){
   float sf= 1.;
   if(isData) return 1.;
   
   std::string sid= "";
-  if(elid==BaseSelection::ELECTRON_POG_TIGHT)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-tight";
-  else if(elid==BaseSelection::ELECTRON_POG_MEDIUM)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-medium";
-  else if(elid==BaseSelection::ELECTRON_POG_LOOSE)   sid= "cutBasedElectronID-Spring15-25ns-V1-standalone-loose";
-  else if(elid==BaseSelection::ELECTRON_POG_MVATrig) sid="mvaEleID-Spring15-25ns-Trig-V1-wp90";
-  else cout << "ElectronScaleFactor has no SFs for ID " << endl;
 
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     float elpt=itel->Pt();
@@ -1021,25 +1016,25 @@ double AnalyzerCore::ElectronScaleFactor( BaseSelection::ID elid, vector<snu::KE
       sf *= GetCorrectionHist("EL_GSF")->GetBinContent(GetCorrectionHist("EL_GSF")->FindBin(fabs(itel->SCEta()), elpt));
     }
 
-    if(elid==BaseSelection::ELECTRON_POG_TIGHT) {
+    if(elid=="ELECTRON_POG_TIGHT") {
       if(CheckCorrectionHist("EL_ID_POG_TIGHT")){
 	int bin =  GetCorrectionHist("EL_ID_POG_TIGHT")->FindBin(fabs(itel->SCEta()), elpt);
 	sf *= GetCorrectionHist("EL_ID_POG_TIGHT")->GetBinContent(bin);
       }
     }
-    else  if(elid==BaseSelection::ELECTRON_POG_MEDIUM) {
+    else  if(elid=="ELECTRON_POG_MEDIUM") {
       if(CheckCorrectionHist("EL_ID_POG_MEDIUM")){
 	int bin =  GetCorrectionHist("EL_ID_POG_MEDIUM")->FindBin(fabs(itel->SCEta()), elpt);
 	sf *= GetCorrectionHist("EL_ID_POG_MEDIUM")->GetBinContent(bin);
       }
     }
-    else  if(elid==BaseSelection::ELECTRON_POG_LOOSE) {
+    else  if(elid=="ELECTRON_POG_LOOSE") {
       if(CheckCorrectionHist("EL_ID_POG_LOOSE")){
 	int bin =  GetCorrectionHist("EL_ID_POG_LOOSE")->FindBin(fabs(itel->SCEta()), elpt);
 	sf *= GetCorrectionHist("EL_ID_POG_LOOSE")->GetBinContent(bin);
       }
     }
-    else  if(elid==BaseSelection::ELECTRON_POG_VETO) {
+    else  if(elid=="ELECTRON_POG_VETO") {
       if(CheckCorrectionHist("EL_ID_POG_VETO")){
 	int bin =  GetCorrectionHist("EL_ID_POG_VETO")->FindBin(fabs(itel->SCEta()), elpt);
 	sf *= GetCorrectionHist("EL_ID_POG_VETOo")->GetBinContent(bin);

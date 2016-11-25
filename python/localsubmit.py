@@ -110,7 +110,7 @@ file_queuepath.close()
 
 
 if queue == "None":
-    queue = ""
+    queue = "fastq"
 
 queue_command = ''
 qlist=[]
