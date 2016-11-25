@@ -68,7 +68,7 @@ if not os.path.exists(tag_dir):
 
     if not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/80X/") or not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/76X/"):
         os.system("rm -r " + os.getenv("LQANALYZER_DIR")+ "/data/")
-    MakeDirectory((os.getenv("LQANALYZER_DIR")+ "/data/")
+    MakeDirectory((os.getenv("LQANALYZER_DIR")+ "/data/"))
     MakeDirectory(snulumifiledir)
     os.system("cp " + localfiledir + "/Luminosity/*"+str(os.getenv("CATVERSION"))+".txt " + snulumifiledir)
     MakeDirectory(snufakefiledir)
