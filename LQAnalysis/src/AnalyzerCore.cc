@@ -33,6 +33,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
   CorrectionMap.clear();
+  CorrectionMapGraph.clear();
   cutflow_list.clear();
   // If running on LQNtuples this is not important.
   // If creating an SKTree ntuple this controls what triggers are accessible
@@ -581,9 +582,24 @@ void AnalyzerCore::FillCorrectionHists(){
   }
 }
 
+
+
 void AnalyzerCore::FillCorrectionHist(string label, string dirname, string filename, string histsname, string histtype){
 
   TDirectory* origDir = gDirectory;
+
+  if(TString(histtype).Contains("TGraphAsymmErrors")) {
+    TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
+    CheckFile(infile_sf);
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    TGraphAsymmErrors* tmp = (TGraphAsymmErrors*)infile_sf->Get(histsname.c_str())->Clone();
+    CorrectionMapGraph[label] = tmp;
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+
   if(!TString(histtype).Contains("TH2")) return;
   TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
   CheckFile(infile_sf);
@@ -745,6 +761,18 @@ TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
 }
 
 
+double AnalyzerCore::MuonTrackingEffScaleFactor(vector<snu::KMuon> mu){
+  float sf= 1.;
+  if(isData) return 1.;
+  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
+    float mueta=itmu->Eta();
+    if(CheckCorrectionGraph("TRACKING_EFF")){
+      sf*= GetCorrectionGraph("TRACKING_EFF")->Eval(mueta);
+    }
+  }
+  return sf;
+}
+
 double AnalyzerCore::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
   float sf= 1.;
   float sferr=1.;
@@ -753,20 +781,12 @@ double AnalyzerCore::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int 
     float mupt=itmu->Pt();
     if(itmu->Pt() >120. )mupt=119.;
     if(itmu->Pt() < 20.) mupt=21.;
-    if(muid=="MUON_POG_TIGHT") {
-      sferr = double(sys)*GetCorrectionHist("MUON_ISO_POG_TIGHT")->GetBinError( GetCorrectionHist("MUON_ISO_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
-      
-      sf*= (1. + sferr)*GetCorrectionHist("MUON_ISO_POG_TIGHT")->GetBinContent( GetCorrectionHist("MUON_ISO_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
+    if(CheckCorrectionHist("ISO_" + muid)){
+	sferr = double(sys)*GetCorrectionHist("ISO_" + muid)->GetBinError( GetCorrectionHist("ISO_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
+	
+	sf*= (1. + sferr)*GetCorrectionHist("ISO_" + muid)->GetBinContent( GetCorrectionHist("ISO_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
     }
-    
-    else if(muid=="MUON_POG_MEDIUM") {
-      //sferr = double(sys)*MuonISO_loose_mediumID->GetBinError(MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
-      //sf*= (1. + sferr)* MuonISO_loose_mediumID->GetBinContent( MuonISO_loose_mediumID->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-    else if(muid=="MUON_POG_LOOSE") {
-      sferr = double(sys)*GetCorrectionHist("MUON_ISO_POG_LOOSE")->GetBinError(GetCorrectionHist("MUON_ISO_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
-      sf*=  (1. + sferr)*GetCorrectionHist("MUON_ISO_POG_LOOSE")->GetBinContent( GetCorrectionHist("MUON_ISO_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
-    }
+    //else{ m_logger << ERROR << "No ISO scalefactors are available for "<< muid << LQLogger::endmsg; exit(0);}  
   }
   return sf;
 }
@@ -780,20 +800,11 @@ double AnalyzerCore::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,int sys
     float mupt=itmu->Pt();
     if(itmu->Pt() <20.) mupt= 21.;
     if(itmu->Pt() >120.) mupt= 119.;
-    if(muid=="MUON_POG_TIGHT") {
-      sferr = double(sys)*GetCorrectionHist("MUON_ID_POG_TIGHT")->GetBinError( GetCorrectionHist("MUON_ID_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
+    if(CheckCorrectionHist("ID_" + muid)){
+      sferr = double(sys)*GetCorrectionHist("ID_" + muid)->GetBinError( GetCorrectionHist("ID_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
       
-      sf*=  (1. + sferr)* GetCorrectionHist("MUON_ID_POG_TIGHT")->GetBinContent( GetCorrectionHist("MUON_ID_POG_TIGHT")->FindBin( fabs(itmu->Eta()), mupt) );
+      sf*=  (1. + sferr)* GetCorrectionHist("ID_" + muid)->GetBinContent( GetCorrectionHist("ID_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
     }
-    else if(muid=="MUON_POG_MEDIUM") {
-      sferr = double(sys)*GetCorrectionHist("MUON_ID_POG_MEDIUM")->GetBinError(  GetCorrectionHist("MUON_ID_POG_MEDIUM")->FindBin( fabs(itmu->Eta()), mupt) );
-      sf*=  (1. + sferr)*GetCorrectionHist("MUON_ID_POG_MEDIUM")->GetBinContent(GetCorrectionHist("MUON_ID_POG_MEDIUM")->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-    else if(muid=="MUON_POG_LOOSE") {
-      sferr = double(sys)*GetCorrectionHist("MUON_ID_POG_LOOSE")->GetBinError(GetCorrectionHist("MUON_ID_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
-      sf*=  (1. + sferr)*GetCorrectionHist("MUON_ID_POG_LOOSE")->GetBinContent( GetCorrectionHist("MUON_ID_POG_LOOSE")->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-
   }
 
   return sf;
@@ -1006,7 +1017,7 @@ double AnalyzerCore::ElectronScaleFactor( TString elid, vector<snu::KElectron> e
   if(isData) return 1.;
   
   std::string sid= "";
-
+  
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     float elpt=itel->Pt();
     if(elpt > 200.) elpt= 199.;
@@ -1015,33 +1026,13 @@ double AnalyzerCore::ElectronScaleFactor( TString elid, vector<snu::KElectron> e
     if(CheckCorrectionHist("EL_GSF")){
       sf *= GetCorrectionHist("EL_GSF")->GetBinContent(GetCorrectionHist("EL_GSF")->FindBin(fabs(itel->SCEta()), elpt));
     }
-
-    if(elid=="ELECTRON_POG_TIGHT") {
-      if(CheckCorrectionHist("EL_ID_POG_TIGHT")){
-	int bin =  GetCorrectionHist("EL_ID_POG_TIGHT")->FindBin(fabs(itel->SCEta()), elpt);
-	sf *= GetCorrectionHist("EL_ID_POG_TIGHT")->GetBinContent(bin);
-      }
+    
+    if(CheckCorrectionHist("ID_" + elid)){
+	int bin =  GetCorrectionHist("ID_" + elid)->FindBin(fabs(itel->SCEta()), elpt);
+	sf *= GetCorrectionHist("ID_" + elid)->GetBinContent(bin);
     }
-    else  if(elid=="ELECTRON_POG_MEDIUM") {
-      if(CheckCorrectionHist("EL_ID_POG_MEDIUM")){
-	int bin =  GetCorrectionHist("EL_ID_POG_MEDIUM")->FindBin(fabs(itel->SCEta()), elpt);
-	sf *= GetCorrectionHist("EL_ID_POG_MEDIUM")->GetBinContent(bin);
-      }
-    }
-    else  if(elid=="ELECTRON_POG_LOOSE") {
-      if(CheckCorrectionHist("EL_ID_POG_LOOSE")){
-	int bin =  GetCorrectionHist("EL_ID_POG_LOOSE")->FindBin(fabs(itel->SCEta()), elpt);
-	sf *= GetCorrectionHist("EL_ID_POG_LOOSE")->GetBinContent(bin);
-      }
-    }
-    else  if(elid=="ELECTRON_POG_VETO") {
-      if(CheckCorrectionHist("EL_ID_POG_VETO")){
-	int bin =  GetCorrectionHist("EL_ID_POG_VETO")->FindBin(fabs(itel->SCEta()), elpt);
-	sf *= GetCorrectionHist("EL_ID_POG_VETOo")->GetBinContent(bin);
-      }
-    }
-    else sf *=1.;
   }
+
  
   return sf;
 }
@@ -1257,13 +1248,17 @@ AnalyzerCore::~AnalyzerCore(){
   }
   mapntp.clear();
   CorrectionMap.clear();
-  
+  CorrectionMapGraph.clear();
+
   delete m_fakeobj;
   if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
     delete rmcor;
   }
   
   for(map<TString,TH2F*>::iterator it = CorrectionMap.begin(); it != CorrectionMap.end(); it++){
+    delete it->second;
+  }
+  for(map<TString,TGraphAsymmErrors*>::iterator it = CorrectionMapGraph.begin(); it != CorrectionMapGraph.end(); it++){
     delete it->second;
   }
 
@@ -1478,6 +1473,8 @@ void AnalyzerCore::ListTriggersAvailable(){
 
 float AnalyzerCore::TriggerEff(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons){
 
+  Message("In TriggerEff", DEBUG);
+
   if(isData){
     if(PassTrigger(trigname)) return 1.;
     else return 0.;
@@ -1492,7 +1489,8 @@ float AnalyzerCore::TriggerEff(TString trigname,  std::vector<snu::KMuon> muons,
     else  return 0.;
   }
   else return 0.;
-  
+  Message("END CorrectMuonMomentum", DEBUG);
+
   return 1.;
 }
 
@@ -1687,6 +1685,24 @@ bool AnalyzerCore::CheckCorrectionHist(TString label){
     return true;
   }
   else return false;
+}
+bool AnalyzerCore::CheckCorrectionGraph(TString label){
+  map<TString, TGraphAsymmErrors*>::iterator  mapit = CorrectionMapGraph.find(label);
+  if (mapit!= CorrectionMapGraph.end()){
+    return true;
+  }
+  else return false;
+}
+
+TGraphAsymmErrors* AnalyzerCore::GetCorrectionGraph(TString label){
+  map<TString, TGraphAsymmErrors*>::iterator mapit = CorrectionMapGraph.find(label);
+  if (mapit!= CorrectionMapGraph.end()){
+    return mapit->second;
+  }
+  else{
+    m_logger << ERROR << "Could not find correction file with label label" <<  LQLogger::endmsg;
+    exit(0);
+  }
 }
 
 TH2F* AnalyzerCore::GetCorrectionHist(TString label){
@@ -2690,6 +2706,8 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
       it->SetPtEtaPhiE(it->RochPt(), it->RochEta(), it->RochPhi(), it->RochE()); 
     }
   }
+  Message("END CorrectMuonMomentum",DEBUG);
+
 }
 
 

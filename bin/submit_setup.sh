@@ -1442,8 +1442,8 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 
 if [[ $job_data_lumi == "ALL" ]];
     then
-    declare -a data_periods=$catdataperiods
-    #("B" "C" "D" "E" "F" "G")
+    declare -a data_periods=("B" "C" "D" "E" "F" "G")
+	
 fi
 if [[ $job_data_lumi == "CtoD" ]];
     then
@@ -1455,10 +1455,12 @@ if [[ $job_data_lumi == "BtoE" ]];
 fi
 if [[ $job_data_lumi == $catdatatag  ]];
     then
-    declare -a data_periods=$catdataperiods
+    declare -a data_periods=("B" "C" "D" "E" "F" "G")
 fi
 
-for dataperiod in  ${catdataperiods[@]};
+ARG1=catdataperiods
+eval getlist_cv=(\${$ARG1[@]})
+for dataperiod in  ${getlist_cv[@]};
 do
     if [[ $job_data_lumi == $dataperiod ]];
     then

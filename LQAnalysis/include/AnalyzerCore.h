@@ -21,7 +21,7 @@ class EventBase;
 #include "BTag/BTagSFUtil.h"
 #include "TNtupleD.h"
 #include "TNtuple.h"
-
+#include "TGraphAsymmErrors.h"
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -70,6 +70,11 @@ class AnalyzerCore : public LQCycleBase {
   void FillCorrectionHists();
   TH2F* GetCorrectionHist(TString label);
   bool CheckCorrectionHist(TString label);
+
+
+  TGraphAsymmErrors* GetCorrectionGraph(TString label);
+  bool CheckCorrectionGraph(TString label);
+
   void FillCutFlow(TString cut, float weight);
 
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
@@ -106,6 +111,7 @@ class AnalyzerCore : public LQCycleBase {
 
   double MuonScaleFactor(TString  muid, vector<snu::KMuon> mu, int sys=0);
   double MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys=0);
+  double MuonTrackingEffScaleFactor(vector<snu::KMuon> mu);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
@@ -171,6 +177,8 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TNtupleD*> mapntp;
 
   map<TString, TH2F*>  CorrectionMap;
+  map<TString, TGraphAsymmErrors*>  CorrectionMapGraph;
+
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 
   map<int, float> mapLumiPerBlock;
