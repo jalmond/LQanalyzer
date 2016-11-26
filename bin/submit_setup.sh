@@ -1442,8 +1442,16 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 
 if [[ $job_data_lumi == "ALL" ]];
     then
-    declare -a data_periods=("B" "C" "D" "E" "F" "G")
-	
+    if [[ $CATVERSION == "v8-0-2" ]];then
+	declare -a data_periods=("B" "C" "D" "E" "F" "G")
+    fi
+    if [[ $CATVERSION == "v8-0-1" ]];then
+        declare -a data_periods=("B" "C" "D" "E")
+    fi
+    if [[ $CATVERSION == "v7-6-6" ]];then
+        declare -a data_periods=("C" "D")
+    fi
+
 fi
 if [[ $job_data_lumi == "CtoD" ]];
     then
@@ -1454,8 +1462,16 @@ if [[ $job_data_lumi == "BtoE" ]];
     declare -a data_periods=("B" "C" "D" "E")
 fi
 if [[ $job_data_lumi == $catdatatag  ]];
-    then
-    declare -a data_periods=("B" "C" "D" "E" "F" "G")
+then
+    if [[ $CATVERSION == "v8-0-2" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G")
+    fi
+    if [[ $CATVERSION == "v8-0-1" ]];then
+        declare -a data_periods=("B" "C" "D" "E")
+    fi
+    if [[ $CATVERSION == "v7-6-6" ]];then
+        declare -a data_periods=("C" "D")
+    fi
 fi
 
 ARG1=catdataperiods
