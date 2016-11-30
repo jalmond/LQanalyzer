@@ -57,12 +57,11 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID e
 void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, float ptcut, float etacut){
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
 
-
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
     if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",elid);
     if (etacut == -999.) etacut = AccessFloatMap("|etamax|",elid);
-
+    
     //// DEFAULT cuts
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
@@ -163,7 +162,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
 
 
   float isomax_b = AccessFloatMap("isomax03_b",id);
-  float isomax_e = AccessFloatMap("isomax03_b",id);
+  float isomax_e = AccessFloatMap("isomax03_e",id);
   float dxymax_b = AccessFloatMap("|dxymax_b|",id);
   float dxymax_e = AccessFloatMap("|dxymax_e|",id);
   float dzmax_b = AccessFloatMap("|dzmax_b|",id);
@@ -183,7 +182,6 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   bool pass_selection=true;
 
   int snuid = el.SNUID();
-
   bool pass_veto_noiso = false;
   bool pass_loose_noiso = false;
   bool pass_medium_noiso = false;
@@ -191,37 +189,40 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(snuid >= 1000){
     pass_tight_noiso = true;
     snuid = snuid - 1000;
-    if(snuid >= 100){
-      pass_medium_noiso= true;
-      snuid = snuid-100;
-      if(snuid >= 10){
-	pass_loose_noiso=true;
-	snuid = snuid-10;
-	if(snuid >= 1){
-	  pass_veto_noiso=true;
-	}
-      }
-    }
+  }
+  if(snuid >= 100){
+    pass_medium_noiso= true;
+    snuid = snuid-100;
+  }
+  if(snuid >= 10){
+    pass_loose_noiso=true;
+    snuid = snuid-10;
+  }    
+  if(snuid >= 1){
+    pass_veto_noiso=true;
   }
 
 
-  if(checkisveto && pass_veto_noiso)  pass_selection = false;
-  if(checkisloose && pass_loose_noiso)  pass_selection = false;
-  if(checkismedium && pass_medium_noiso)  pass_selection = false;
-  if(checkistight && pass_medium_noiso)  pass_selection = false;
+  bool debug=false;
+  //  if(id.Contains("VETO")) debug=true;
+  if(checkisveto && !pass_veto_noiso)  {pass_selection = false;if(debug){ cout << "Failveto " << endl;}}
+  if(checkisloose && !pass_loose_noiso)  {pass_selection = false;if(debug){ cout << "Failloose " << endl;}}
+  if(checkismedium && !pass_medium_noiso)  {pass_selection = false;if(debug){ cout << "Fail medium" << endl;}}
+  if(checkistight && !pass_tight_noiso)  {pass_selection = false;if(debug){ cout << "Fail tight" << endl;}}
   
-  if(convveto&& (!el.PassesConvVeto()) )pass_selection = false;
-  if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) pass_selection = false;
+  if(convveto&& (!el.PassesConvVeto()) ){pass_selection = false;if(debug){ cout << "Fail convveto" << endl;}}
+  if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) {pass_selection = false;if(debug){ cout << "Fail charge" << endl;}}
 
   if(fabs(el.SCEta())<1.566 ){  
-    if((LeptonRelIso > isomax_b))  pass_selection = false;
-    if(fabs(el.dxy()) > dxymax_b) pass_selection = false;
-    if(fabs(el.dz()) > dzmax_b) pass_selection = false;
+
+    if((LeptonRelIso > isomax_b))  {pass_selection = false;if(debug){ cout << "Fail iso: " << LeptonRelIso << " " << isomax_b << endl;}}
+    if(fabs(el.dxy()) > dxymax_b) {pass_selection = false;if(debug){ cout << "Faildxy " << endl;}}
+    if(fabs(el.dz()) > dzmax_b) {pass_selection = false;if(debug){ cout << "Fail dz" << endl;}}
   }
   else{
-    if((LeptonRelIso > isomax_e))  pass_selection = false;
-    if(fabs(el.dxy()) > dxymax_e) pass_selection = false;
-    if(fabs(el.dz()) > dzmax_e) pass_selection = false;
+    if((LeptonRelIso > isomax_e))  {pass_selection = false;if(debug){ cout << "Fail iso" << LeptonRelIso << " " << isomax_b << endl;}}
+    if(fabs(el.dxy()) > dxymax_e) {pass_selection = false;if(debug){ cout << "Fail dxy" << endl;}}
+    if(fabs(el.dz()) > dzmax_e) {pass_selection = false;if(debug){ cout << "Fail dz" << endl;}}
   }
 
   return pass_selection;

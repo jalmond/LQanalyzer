@@ -89,7 +89,7 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
       
       //// Calculate PF isolation
       /// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation
-      LeptonRelIso = (muit->RelIso03());
+      LeptonRelIso = (muit->RelIso04());
       
       if(apply_relisocut && !( LeptonRelIso < relIso_cut)) pass_selection = false;
       if(m_debug&&apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
@@ -187,29 +187,31 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   bool checkistight  = (CheckCutString("IsTight(POG)",id));
   
 
-
+  bool debug=false;
+  //if(id.Contains("VETO")) debug=true;
   LeptonRelIso = (mu.RelIso04());
-    
+
   bool pass_selection=true;
-  if(checkisloose && ! mu.IsLoose ())  pass_selection = false;
-  if(checkismedium && ! mu.IsMedium ())  pass_selection = false;
+  if(checkisloose && ! mu.IsLoose ()) { pass_selection = false;if(debug){ cout << "Fail isloose" << endl;}}
+  
+  if(checkismedium && ! mu.IsMedium ()) { pass_selection = false;if(debug){ cout << "Fail ismedium"  << endl;}}
   if(checkdxymax || checkchi2max || checkdzmax) {
-    if(checkistight && ! PassID("MUON_POG_TIGHT",mu, !checkdxymax,!checkdzmax,!checkchi2max))  pass_selection = false;
-    if(checkdxymax && (fabs(mu.dXY()) > dxymax)) pass_selection = false;
-    if(checkdzmax && (fabs(mu.dZ()) > dzmax)) pass_selection = false;
-    if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)) pass_selection = false;
+    if(checkistight && ! PassID("MUON_POG_TIGHT",mu, !checkdxymax,!checkdzmax,!checkchi2max)) { pass_selection = false;if(debug){ cout << "Fail pogtight"  << endl;}}
+    if(checkdxymax && (fabs(mu.dXY()) > dxymax)){ pass_selection = false;if(debug){ cout << "Fail dxy "  << endl;}}
+    if(checkdzmax && (fabs(mu.dZ()) > dzmax)){ pass_selection = false;if(debug){ cout << "Fail dZ"  << endl;}}
+    if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)){ pass_selection = false;if(debug){ cout << "Fail GlobalChi2"  << endl;}}
   }
-  else  if(checkistight &&  ! mu.IsTight ())  pass_selection = false;
+  else  if(checkistight &&  ! mu.IsTight ()) { pass_selection = false;if(debug){ cout << "Fail tight"  << endl;}}
 
 
-  if(checkisomax && (LeptonRelIso > isomax))  pass_selection = false;
-  //if(checkisomin && (LeptonRelIso < isomin))  pass_selection = false;
+  if(checkisomax && (LeptonRelIso > isomax)) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
+  //if(checkisomin && (LeptonRelIso < isomin)) { pass_selection = false;if(debug){ cout << "Fail "  << endl;}}
 
-  if(checkdxysigmin &&(fabs(mu.dXYSig()) < dxysigmin))  pass_selection = false;
-  if(checkdxysigmax &&(fabs(mu.dXYSig()) > dxysigmax))  pass_selection = false;
-  //if(checkdxymin && (fabs(mu.dXY()) < dxymin)) pass_selection = false;
+  if(checkdxysigmin &&(fabs(mu.dXYSig()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
+  if(checkdxysigmax &&(fabs(mu.dXYSig()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
+  //if(checkdxymin && (fabs(mu.dXY()) < dxymin)){ pass_selection = false;if(debug){ cout << "Fail "  << endl;}}
 
-  //if(checkdzmin && (fabs(mu.dZ()) < dzmin)) pass_selection = false;
+  //if(checkdzmin && (fabs(mu.dZ()) < dzmin)){ pass_selection = false;if(debug){ cout << "Fail "  << endl;}}
 
   return pass_selection;
   

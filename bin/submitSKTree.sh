@@ -1,7 +1,7 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
 cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 cp $LQANALYZER_LUMIFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
@@ -755,7 +755,7 @@ fi
 outputdir_cat=$outdir"/data/output/CAT/"
 
 outputdir_analyzer=$outdir"/data/output/CAT/"$submit_analyzer_name
-dir_tag="periodBtoG/"
+dir_tag="period"$catdatatag"/"
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
     then

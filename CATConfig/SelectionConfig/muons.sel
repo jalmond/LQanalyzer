@@ -9,7 +9,7 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
 | MUON_POG_LOOSE       		| 10.     | 2.4      |   0.        | 0.25     | false         | false          |  true          | 999.      | 999.      |  999.   | 999.         | 999.         |
 | MUON_HN_TIGHT        		| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 0.5       | 10.     | 999.         | 999.         |
 | MUON_HN_LOOSE        		| 10.     | 2.4      |   0.        | 0.60     | true          | false          |  false         | 0.20      | 0.5       | 50.     | 999.         | 999.         |
-| MUON_HN_VETO         		| 10.     | 2.4      |   0.        | 0.60     | false         | false          |  true          | 0.20      | 0.5       | 50.     | 999.         | 999.         |
+| MUON_HN_VETO         		| 10.     | 2.4      |   0.        | 0.60     | false         | false          |  true          | 10.0      | 100.      | 500.    | 999.         | 999.         |
 | MUON_PTETA           		| 10.     | 2.4      |   0.        | 999.     | false         | false          |  false         | 999.      | 999.      | 999.    | 999.         | 999.         |
 | MUON_HN_TRI_TIGHT    		| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 0.05      | 0.5      | 10.     | 999.         | 3.         |
 | MUON_HN_TRI_LOOSE    		| 10.     | 2.4      |   0.        | 0.6      | true          | false          |  false         | 0.05      | 0.5      | 10.     | 999.         | 3.         |

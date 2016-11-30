@@ -19,7 +19,7 @@ WWW                       |   Triboson						|  vvv              |  433    |	0.2 
 ZZZ                       |   Triboson						|  vvv              |  433    |	0.2     |
 WWZ                       |   Triboson						|  vvv              |  433    |	0.2     |     
 WW                        |   Diboson						|  vv               |  74     | 0.2     |
-WZZ                       |   Diboson						|  vv               |  74     | 0.2     |
+WZZ                       |   Triboson						|  vv               |  74     | 0.2     |
 WZ                        |   Diboson						|  vv               |  74     | 0.2     |
 ZZ                        |   Diboson						|  vv               |  74     | 0.2     |
 WpWpQCD			  |   Diboson						|  vv               |  74     | 0.2     |

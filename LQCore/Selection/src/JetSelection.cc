@@ -30,12 +30,14 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
 
   
 
-void JetSelection::Selection(std::vector<KJet>& jetColl) {
+void JetSelection::Selection(std::vector<KJet>& jetColl, bool isdata, bool smearjets) {
   
   //// This is a basic set of cuts on jets
  
   std::vector<KJet> alljets = k_lqevent.GetJets();
   
+  //  if(!isdata&&smearjets)SmearJets(alljets);
+
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pileupjet=false;
@@ -59,21 +61,22 @@ void JetSelection::Selection(std::vector<KJet>& jetColl) {
   
 }
 
-void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl,  TString ID ,  float ptcut, float etacut ) {
+void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl,  TString ID ,  float ptcut, float etacut, bool smearjets ) {
 
   std::vector<KJet> alljets = k_lqevent.GetJets();
 
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
 
+  //  if(!isdata&&smearjets)SmearJets(alljets);
+
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
     bool pass_selection=true;
-    if (!PassUserID(ID,*jit)) pass_selection=false;
+    if (!PassUserID(*jit,ID)) pass_selection=false;
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  jetColl.push_back(*jit);
   }
 
-  if(!isdata)SmearJets(jetColl);
 
 } 
 
@@ -100,27 +103,35 @@ void JetSelection::SmearJets(vector<snu::KJet>& k_jets){
   }
 }
 
-void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut, float etacut ) {
+void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut, float etacut , bool smearjets) {
   
   std::vector<KJet> pre_jetColl; 
   std::vector<KJet> alljets = k_lqevent.GetJets();
-  
 
+  
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
 
+  //if(!isdata&&smearjets)SmearJets(alljets);  
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pass_selection=true;
-    if (!PassUserID(ID,*jit)) pass_selection=false;
+    if (!PassUserID(*jit,ID)) pass_selection=false;
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
   }
-  
+  //cout << "Number of loose jets = " << pre_jetColl.size() << endl;
+  //cout << "Number of electrons = " << electronColl.size() << endl;
+  //cout << "Number of muons = " << muonColl.size() << endl;
+
+
+
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
     jetIsOK = true;
     for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
       if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4) {
         jetIsOK = false;
+	//cout << "Muon eta/phi = " << muonColl[ilep].Eta() << " " << muonColl[ilep].Phi() << endl;
+        //cout << "Jet eta/phi = " <<  pre_jetColl[ijet].Eta() << " " <<  pre_jetColl[ijet].Phi() << endl;
 
 	ilep = muonColl.size();
       }
@@ -135,7 +146,8 @@ void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vect
     if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
   }/// End of Jet loop
 
-  if(!isdata)SmearJets(jetColl);
+
+
   
 }
 
@@ -148,7 +160,7 @@ bool JetSelection::PassUserID (ID id, snu::KJet jet){
 }
 
 
-bool JetSelection::PassUserID (TString id, snu::KJet jet){ 
+bool JetSelection::PassUserID (snu::KJet jet, TString id){ 
 
   
   bool checkpileupcut  = (CheckCutString("pileup",id));

@@ -43,7 +43,7 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             defFinaloutputdirMC=defFinaloutputdir
             defFinaloutputdirMC=defFinaloutputdirMC.replace("Fake/","")
 
-        if defdata_lumi == "ALL" or defdata_lumi=="BtoG":
+        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
             os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
             os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+".root")
 
@@ -69,7 +69,7 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         
         
         output_datafile=defFinaloutputdirMC+"/"+defcycle+"_data_cat_"+ defcatversion+".root"
-        if defdata_lumi == "ALL" or defdata_lumi=="BtoG":
+        if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
             os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
             os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root")
 

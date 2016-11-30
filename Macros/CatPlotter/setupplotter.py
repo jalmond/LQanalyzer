@@ -152,7 +152,7 @@ for i in list_of_legends:
                     tag2=""
                 elif skim == "SKTree_DiLepSkim":
                     tag="_SK"
-                    tag2="_dilepton"
+                    tag2="_dilep"
 
                 prefix= analyzer + tag
                 postfix= tag2+"_cat_"+catversion+".root"
@@ -254,11 +254,11 @@ if  skim == "SKTree_LeptonSkim":
     tag2=""
 elif skim == "SKTree_DiLepSkim":
     tag="_SK"
-    tag2="_dilepton"
+    tag2="_dilep"
 
 MakeConfFile(inputdir,jobdir,stream,analyzer,tag,tag2,catversion,period,cutlist,list_of_legends_alias)
 
 os.system("source  " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/Code/runjob.sh " + jobdir)
 
 
-os.system("rm -r " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/" + jobdir)
+#os.system("rm -r " + str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/" + jobdir)

@@ -237,14 +237,20 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetIsGoodEvent(nGoodPV);
 
   /// MET filter cuts/checks
-
-  kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
-  kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
-  kevent.SetPassHBHENoiseIsoFilter(HBHENoiseIsoFilter);
-  kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
-  kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
-  kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
-
+  if(k_cat_version > 4){
+    kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
+    kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
+    kevent.SetPassHBHENoiseIsoFilter(HBHENoiseIsoFilter);
+    kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
+    kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
+    kevent.SetPassTightHalo2016Filter(Flag_globalTightHalo2016Filter);
+  }
+  else{
+    kevent.SetPassEcalDeadCellTriggerPrimitiveFilter(ecalDCTRFilter);
+    kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
+    kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
+    kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
+  }
   return kevent;
 }
 

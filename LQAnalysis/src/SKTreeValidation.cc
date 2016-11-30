@@ -38,14 +38,15 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
     std::vector<TString> dimuonIDs;
     //dimuonIDs.push_back("POGTight");
     dimuonIDs.push_back("POGTightroch_corrected");
+    dimuonIDs.push_back("POGTightNoJetSmearroch_corrected");
     //dimuonIDs.push_back("HNTightroch_corrected");
     //dimuonIDs.push_back("POGTightroch_correctedtruthmatch");
     for(unsigned int i=0; i < dimuonIDs.size(); i++){
       MakeCleverHistograms(sighist_mm,"ZMuon"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm,"DiMuon"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm,"DiMuon_puW"+dimuonIDs.at(i));
-      MakeCleverHistograms(sighist_mm,"DiMuon_Trigger"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm, "DiMuon_dijet"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm, "DiMuon_dibjet"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
     }
     
@@ -106,6 +107,30 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
 }
 
 
+
+void SKTreeValidation::FillCutFlow(TString cut, float weight){
+
+
+  if(GetHist("cutflow")) {
+    GetHist("cutflow")->Fill(cut,weight);
+   
+  }
+  else{
+    AnalyzerCore::MakeHistograms("cutflow", 8,0.,8.);
+
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"MuMuCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"OSMuMuJJCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(7,"SSMuMuCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(8,"SSMuMuJJCut");
+   
+    
+  }
+}
+
 void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
@@ -133,7 +158,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
-  FillCutFlow("NoCut", weight);
+  FillCutFlow("NoCut", weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
   bool makePUFile=false;
   if(makePUFile){
     //std::vector<snu::KMuon> muons = GetMuons(BaseSelection::MUON_POG_TIGHT");
@@ -161,7 +186,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   
   
   if(!PassMETFilter()) return;     /// Initial event cuts : 
-  FillCutFlow("EventCut", weight);
+  FillCutFlow("EventCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
    
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
@@ -175,8 +200,15 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   TString em1_trig="HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v";
   
   TString el_trig="HLT_Ele27_WPTight_Gsf_v";
-  
-  
+  if(Is2015Analysis()){
+
+    el_trig="HLT_Ele23_WPLoose_Gsf_v";
+    muon_trigmuon_trig1="HLT_IsoMu20_v";
+    muon_trigmuon_trig2="HLT_IsoTkMu20_v";
+    diel_trig="HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+    em1_trig="HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
+  }
+
   std::vector<TString> triggerslist_dimu;
   triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
   
@@ -194,11 +226,11 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    triggerslist_emu.push_back(em1_trig);
    
    
-   FillCutFlow("TriggerCut", weight);
+   FillCutFlow("TriggerCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
    
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
 
-   FillCutFlow("VertexCut", weight);
+   FillCutFlow("VertexCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
    
    float pileup_reweight=(1.0);
 
@@ -248,7 +280,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    //MakeDiMuonValidationPlots("MUON_POG_TIGHT", weight, pileup_reweight,triggerslist_dimu, "ELECTRON_POG_TIGHT","JET_HN", "POGTight");
-   MakeDiMuonValidationPlots("MUON_POG_TIGHT", weight, pileup_reweight, triggerslist_dimu, "ELECTRON_POG_TIGHT","JET_HN", "POGTightroch_corrected");
+   MakeDiMuonValidationPlots("MUON_POG_TIGHT", weight, pileup_reweight, triggerslist_dimu, "ELECTRON_POG_TIGHT","JET_HN", "POGTightNoJetSmearroch_corrected",false);
+   MakeDiMuonValidationPlots("MUON_POG_TIGHT", weight, pileup_reweight, triggerslist_dimu, "ELECTRON_POG_TIGHT","JET_HN", "POGTightroch_corrected", true);
    //MakeDiMuonValidationPlots("MUON_POG_TIGHT", weight, pileup_reweight,triggerslist_dimu, "ELECTRON_POG_TIGHT","JET_HN", "POGTightroch_correctedtruthmatch");
    //MakeDiMuonValidationPlots("MUON_HN_TIGHT", weight, pileup_reweight, triggerslist_dimu, "ELECTRON_POG_TIGHT","JET_HN", "HNTightroch_corrected");
    FillCLHist(muhist,"KMuonHists", GetMuons("MUON_NOCUT"), weight);
@@ -381,20 +414,44 @@ void SKTreeValidation::MakeMuonValidationPlots(TString muid, float w, float pu_r
 }
 
 
-void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu_reweight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag){
+void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu_reweight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag, bool smearjets){
 
   Message("In MakeDiMuonValidationPlots " , DEBUG);
 
-  
   std::vector<snu::KElectron> electrons =  GetElectrons(elid);
-  std::vector<snu::KJet> jets =  GetJets(jetid);
+  std::vector<snu::KJet> jets =  GetJets(jetid, smearjets);
 
+  int nbjet(0);
+  for(unsigned int ij =0 ; ij < jets.size() ; ij++){
+    if(jets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) nbjet++;
+  }
+  
+
+  if(!isData) w =  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",TargetLumi);
+  
+
+  
+  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  
   std::vector<snu::KMuon> muons;
   if(k_running_nonprompt){
     muons = GetMuons("MUON_HN_FAKELOOSE",false);
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
-  else   muons = GetMuons(muid);
+  else   muons = GetMuons(muid,false);
+
+  cout << jets.size() << " "<< muons.size()  <<  " " << electrons.size() << endl;
+  for(int i=0; i < jets.size() ; i++){
+   cout <<  "Jet " << i+1 << " eta = " << jets.at(i).Eta() << " pt = " << jets.at(i).Pt() << endl;
+  }
+  for(int i=0; i < muons.size() ; i++){
+   cout <<  "Muon " << i+1 << " eta = " << muons.at(i).Eta() << " pt = " << muons.at(i).Pt() << endl;
+  }
+
+  for(int i=0; i < electrons.size() ; i++){
+   cout <<  "Electron " << i+1 << " eta = " << electrons.at(i).Eta() << " pt = " << electrons.at(i).Pt() << endl;
+  }
+  
   if(muons.size() != 2) return;
   
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
@@ -424,9 +481,9 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
     puweight=TempPileupWeight();
     
     /// scale to lumi of trigger
-    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    //trigger_ps= WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");;
     
-    ev_weight = w * trigger_sf * id_iso_sf *  pu_reweight*trigger_ps;
+    ev_weight = w * id_iso_sf *  pu_reweight;
   }
   //cout << trigger_ps << " " << w << " " << trigger_sf << " " << id_iso_sf << " " << pu_reweight << " " << trig_pass << endl;
   if(k_running_nonprompt){
@@ -446,33 +503,38 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
   if(muons.size() ==2) {
     if(!SameCharge(muons)){
       if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
+	FillCutFlow("MuMuCut",  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
+
 	
 	/// Z peak plots
 	if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
 	  FillHist("zpeak_mumu_notrig" + tag + "_nopurw", GetDiLepMass(muons), w, 0., 200.,400);
-          FillHist("zpeak_mumu_notrigscaled" + tag + "_nopurw", GetDiLepMass(muons), w*trigger_sf, 0., 200.,400);	  
 	  if(trig_pass){
-	    FillHist("zpeak_mumu" + tag + "_nopurw", GetDiLepMass(muons), w*id_iso_sf*trigger_sf, 0., 200.,400, "m_Z [GeV])");
-	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*trigger_sf*pu_reweight, 0., 200.,400, "m_Z [GeV])");
-	    FillHist("nvertex_mumu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf*trigger_sf, 0., 40.,40, "n_{vertex}");
-	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*trigger_sf*pu_reweight, 0., 40.,40, "n_{vertex}") ;
+	    FillHist("zpeak_mumu" + tag + "_nopurw", GetDiLepMass(muons), w*id_iso_sf, 0., 200.,400, "m_Z [GeV])");
+	    FillHist("zpeak_mumu" + tag + "_purw", GetDiLepMass(muons),    w*id_iso_sf*pu_reweight, 0., 200.,400, "m_Z [GeV])");
+	    FillHist("nvertex_mumu" + tag + "_nopurw", eventbase->GetEvent().nVertices(),  w*id_iso_sf, 0., 40.,40, "n_{vertex}");
+	    FillHist("nvertex_mumu" + tag + "_purw", eventbase->GetEvent().nVertices()  , w*id_iso_sf*pu_reweight, 0., 40.,40, "n_{vertex}") ;
 	    FillCLHist(sighist_mm, "ZMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  }
 	}
 
-
 	if(trig_pass){
+	 cout <<  "weight= " << w << endl;
 	  FillCLHist(sighist_mm, "DiMuon"+tag, eventbase->GetEvent(), muons,electrons,jets, w);
-	  FillCLHist(sighist_mm, "DiMuon_Trigger"+tag, eventbase->GetEvent(), muons,electrons,jets, w*trigger_sf*trigger_ps);
 	  FillCLHist(sighist_mm, "DiMuon_puW"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
-
 	  
 	  FillHistPerLumi("DiMuon_llmass"+tag,GetDiLepMass(muons), ev_weight, 0., 200.,20, 10);
 	  FillHistPerLumi("DiMuon_njet"+tag,jets.size(), ev_weight, 0., 10.,10, 10);
 	  FillHistPerLumi("DiMuon_met"+tag,eventbase->GetEvent().MET(snu::KEvent::pfmet), ev_weight, 0., 200.,20, 10);
 	  
 	  
-	  if(jets.size() >= 2)          FillCLHist(sighist_mm, "DiMuon_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  if(jets.size() >= 2) {
+	    FillCutFlow("OSMuMuJJCut",  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
+	    FillCLHist(sighist_mm, "OSDiMuon_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    if(nbjet > 1 ) FillCutFlow("DiMuon_dibjet",  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
+	    if(nbjet > 1 && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 50.) FillCutFlow("DiMuon_met",  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi)); 
+	    if(nbjet > 1 && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 50.)             FillCLHist(sighist_mm, "DiMuon_dibjet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  }
 	}
       }
     }
@@ -482,7 +544,11 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
         /// Z peak plots
         if(GetDiLepMass(muons)  > 15. ){
           if(trig_pass){
-	    if(jets.size() >= 2)          FillCLHist(sighist_mm, "DiMuon_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    FillCutFlow("SSMuMuCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
+	    if(jets.size() >= 2){
+	      FillCLHist(sighist_mm, "DiMuon_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	      FillCutFlow("SSMuMuJJCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
+	    }
 	    
 	  }
 	}

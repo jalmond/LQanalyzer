@@ -520,14 +520,22 @@ void Data::ConnectEvent(int setting_data){
   
 
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
-
-  ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
-  ConnectVariable("HBHENoiseIsoFilter", HBHENoiseIsoFilter, b_HBHENoiseIsoFilter);
-  ConnectVariable("Flag_globalTightHalo2016Filter",Flag_globalTightHalo2016Filter,b_Flag_globalTightHalo2016Filter);
-  ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
-  ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
-  ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
-  ConnectVariable("goodVertices", goodVertices, b_goodVertices);
+  if(k_cat_version > 4){
+    ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
+    ConnectVariable("HBHENoiseIsoFilter", HBHENoiseIsoFilter, b_HBHENoiseIsoFilter);
+    ConnectVariable("Flag_globalTightHalo2016Filter",Flag_globalTightHalo2016Filter,b_Flag_globalTightHalo2016Filter);
+    ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
+    ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
+    ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
+    ConnectVariable("goodVertices", goodVertices, b_goodVertices);
+  }
+  if(k_cat_version ==4){
+    ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
+    ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
+    ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
+    ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
+    ConnectVariable("goodVertices", goodVertices, b_goodVertices);
+  }
   
   ConnectVariable("nGoodPV", nGoodPV, b_nGoodPV);
   ConnectVariable("nPV", nPV, b_nPV);

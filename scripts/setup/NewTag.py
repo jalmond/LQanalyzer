@@ -54,7 +54,7 @@ filejobsummary.write("\n")
 filejobsummary.write("_"*60+"\n")
 filejobsummary.write("Summary/Definition:\n")
 filejobsummary.write("\n")
-filejobsummary.write("Data: Periods A-G\n")
+filejobsummary.write("Data: Periods B-G\n")
 os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -D " + os.getenv("CATVERSION") + "> log")
 logfile_cv = open("log","r")
 printout=False
@@ -111,7 +111,7 @@ filejobsummary.write("CATTUPLE("+os.getenv("CATVERSION")+") GOOGLEDOC https://do
 filejobsummary.write("XSEC https://twiki.cern.ch/twiki/bin/view/CMS/GenXsecTaskForce\n")
 filejobsummary.write("XSEC https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns\n")
 filejobsummary.write("XSEC https://twiki.cern.ch/twiki/bin/viewauth/CMS/StandardModelCrossSectionsat13TeVInclusive\n")
-
+filejobsummary.write("CATTop https://twiki.cern.ch/twiki/bin/viewauth/CMS/CATToolsTopAnalysis\n")
 filejobsummary.write("\n")
 filejobsummary.write("_"*60+"\n")
 filejobsummary.write("\n")
