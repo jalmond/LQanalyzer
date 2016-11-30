@@ -67,6 +67,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   //  vtaggers.push_back("cMVAv2");
 
   if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
+    cout << "Setting up 2015 selection " << endl;
     SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons_2015.sel");
     SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons_2015.sel");
     
@@ -77,6 +78,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
     SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets_2015.sel");
   }
   else{
+    cout << "Setting up 2016 selection " << endl;
     SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
     SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
 
@@ -85,7 +87,6 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
     SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
     SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
-
   }
   
   if(debug){
@@ -1484,8 +1485,8 @@ float AnalyzerCore::TriggerEff(TString trigname,  std::vector<snu::KMuon> muons,
   Message("In TriggerEff", DEBUG);
 
   if(isData){
-    if(PassTrigger(trigname)) return 1.;
-    else return 0.;
+    //if(PassTrigger(trigname)) return 1.;
+    //    else return 0.;
   }
   if(electrons.size() >= 1 && muons.size() >= 1){
     float trig_eff(1.);
@@ -1507,8 +1508,8 @@ float AnalyzerCore::TriggerEff(TString trigname,  std::vector<snu::KMuon> muons,
 float AnalyzerCore::TriggerEff(TString trigname, std::vector<snu::KElectron> electrons){
   
   if(isData){
-    if(PassTrigger(trigname)) return 1.;
-    else return 0.;
+    //if(PassTrigger(trigname)) return 1.;
+    //else return 0.;
   }
   
   if(electrons.size() >=2){
@@ -1654,8 +1655,8 @@ float AnalyzerCore::GetEff(snu::KElectron el, TString trigname){
 float AnalyzerCore::TriggerEff(TString trigname, std::vector<snu::KMuon> muons){
   
   if(isData){
-    if(PassTrigger(trigname)) return 1.;
-    else return 0.;
+    ///    if(PassTrigger(trigname)) return 1.;
+    //else return 0.;
   }
   
   if(muons.size() >= 2){

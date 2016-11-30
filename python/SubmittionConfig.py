@@ -132,19 +132,19 @@ def DetermineNjobs(ncores_job, deftagger,defsample,defcycle,defskim):
     pre_job_time=GetTime(defsample,defcycle,deftagger, defskim)
     if pre_job_time == "None":
         pre_job_time=100.
-    njobs_max=250
+    njobs_max=50
     if float(pre_job_time) < 100.:
-        njobs_max=250
+        njobs_max=50
     elif float(pre_job_time) < 200.:
-        njobs_max=150
+        njobs_max=25
     elif float(pre_job_time) < 300.:
-        njobs_max=100
-    elif float(pre_job_time) < 500.:
         njobs_max=20
-    elif float(pre_job_time) < 1000.:
+    elif float(pre_job_time) < 500.:
         njobs_max=15
-    elif float(pre_job_time) < 1500.:
+    elif float(pre_job_time) < 1000.:
         njobs_max=10
+    elif float(pre_job_time) < 1500.:
+        njobs_max=5
     else:
         njobs_max=5
 

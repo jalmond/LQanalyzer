@@ -89,6 +89,7 @@ for line in input_configfile:
     elif "skim" in line and "# " in line:
         sline = line.split()
         skim  = sline[2]
+        print "skim = " + skim
     elif "periodtag" in line:
         sline = line.split()
         periodtag  =sline[2]

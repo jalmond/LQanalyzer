@@ -69,7 +69,6 @@ def GetList():
                     name=sline[3]
             if "DataSetName" in line:
                 if len(sline) == 4:
-                    
                     datasetname = sline[3]
                     if "/" in datasetname:
                         datasetname=datasetname.replace("/"," " )
@@ -77,7 +76,12 @@ def GetList():
                         if len(datasetname_split) > 0:
                             part_datasetname= datasetname_split[0]
                             cdatasetlist.append(part_datasetname)
-                    
-
+                    else:
+                        datasetname_split= datasetname.split()
+                        if len(datasetname_split) > 0:
+                            part_datasetname= datasetname_split[0]
+                            cdatasetlist.append(part_datasetname)
+                            
+                            
 
     return cdatasetlist
