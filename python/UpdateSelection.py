@@ -89,15 +89,15 @@ path_master = os.getenv("LQANALYZER_FILE_DIR")+ "/Selection/"
 path_local= os.getenv("LQANALYZER_DIR") + "/CATConfig/SelectionConfig/"
 
 selfile=""
-seltag=""
+seltmptag=""
 if  os.getenv("CATVERSION") == "v7-6-6":
-    seltag="_2015"
+    seltmptag="_2015"
 if seltag == "electron":
-    selfile="electrons"+seltag+".sel"
+    selfile="electrons"+seltmptag+".sel"
 elif seltag == "muon":
-    selfile="muons"+seltag+".sel"
+    selfile="muons"+seltmptag+".sel"
 elif seltag == "jet":
-    selfile="jets"+seltag+".sel"
+    selfile="jets"+seltmptag+".sel"
 else:
     print "invalid input. must be electron,jet or muon"
 

@@ -81,13 +81,9 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   std::vector <TString> region;
   region.push_back("looseregion1");
-  region.push_back("looseregion2");
 
   std::vector <TString> datajetcut;
-  datajetcut.push_back("20");
-  datajetcut.push_back("30");
   datajetcut.push_back("40");
-  datajetcut.push_back("60");
   
   std::vector <TString> cut;
   cut.push_back("pt_eta");
@@ -204,7 +200,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
   
   TString reg = "looseregion1";
       
-  TString JetPt = "30";
+  TString JetPt = "40";
   //if(fcut.Contains("20")) JetPt = "20";
   //if(fcut.Contains("30")) JetPt = "30";
   //if(fcut.Contains("40")) JetPt = "40";
@@ -274,7 +270,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_mceventweight(std::vector<TLorentzVe
   r2 = 1.;
 
   fr2= getFakeRate_mc_muon("mc_muon_" + tag,_mu1_pt, _mu1_eta);
-  fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"mc_"+tag +"_loosereg2");
+  fr1= getFakeRate_electronEta(0,_el1_pt, _el1_eta,"mc_"+tag +"_loosereg1");
 
   //cout << "\n -------- " << endl;
   //cout << "Muon pt/eta = " << _mu1_pt << " " << _mu1_eta << endl;
@@ -484,12 +480,44 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
 
   if(fabs(eta) > 2.5) return -999999.;
   if(pt < 15) return -999999.;
+  if(pt  > 45.) pt = 44.;
+
+  if(fabs(eta) < 0.5){
+    if(pt < 20.) return 0.15;
+    if(pt < 25.) return 0.16;
+    if(pt < 30.) return 0.19;
+    if(pt < 35.) return 0.33;
+    else return 0.44;
+  }
+  if(fabs(eta) < 1.5){
+    if(pt < 20.) return 0.14;
+    if(pt < 25.) return 0.13;
+    if(pt < 30.) return 0.14;
+    if(pt < 35.) return 0.24;
+    else return 0.40;
+  }
+  
+  if(fabs(eta) < 2.){
+    if(pt < 20.) return 0.23;
+    if(pt < 25.) return 0.21;
+    if(pt < 30.) return 0.21;
+    if(pt < 35.) return 0.40;
+    else return 0.40;
+  }
+  else{
+    if(pt < 20.) return 0.28;
+    if(pt < 25.) return 0.28;
+    if(pt < 30.) return 0.27;
+    if(pt < 35.) return 0.45;
+    else return 0.45;
+  }
 
   map<TString,TH2F*>::const_iterator mapit;
 
   TString hist = "fake_eff_";
   hist += cut;
   
+  cout << hist << endl;
   mapit = _2DEfficiencyMap.find(hist.Data());
   if(mapit!=_2DEfficiencyMap.end()){
 

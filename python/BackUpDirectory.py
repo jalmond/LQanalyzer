@@ -7,7 +7,7 @@ def checkLumiFile(backupdir,backup_datelist):
     
 
     nowtime = datetime.datetime.now()
-    diff = datetime.timedelta(days=14)
+    diff = datetime.timedelta(days=2)
     PAST = nowtime - diff
     date_now=nowtime.strftime("%d")
     date_past=PAST.strftime("%d")
@@ -38,7 +38,7 @@ def checkLumiFile(backupdir,backup_datelist):
 def makeBackUp(backupdir,copylist,backup_datelist):
     
     nowtime = datetime.datetime.now()
-    diff = datetime.timedelta(days=14)
+    diff = datetime.timedelta(days=2)
     PAST = nowtime - diff
     date_now=nowtime.strftime("%d")
     date_past=PAST.strftime("%d")
@@ -144,6 +144,8 @@ if dobackup:
     print "ADMIN: Making backup"
     lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
     checkLumiFile(lumidir+"/BackUp/",backup_date)
+
+
 
 nowtime2 = datetime.datetime.now()
 for xbackup in backup_date:

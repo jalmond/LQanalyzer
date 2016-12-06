@@ -1610,7 +1610,7 @@ void MakeLabel(float rhcol_x, float rhcol_y){
 
   label.DrawLatex(rhcol_x+0.115, rhcol_y + 0.09,"Work In Progress");
   label.SetTextFont(72);
-  label.DrawLatex(rhcol_x, rhcol_y + 0.09,"CMS");
+  label.DrawLatex(rhcol_x, rhcol_y + 0.09,"CMS Preliminary");
 
   return;
 }

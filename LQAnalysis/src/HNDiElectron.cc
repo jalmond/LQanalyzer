@@ -134,7 +134,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     cout << "--------------------------------- " << endl;
 
     }*/
-  return;
   if(IsSignal()){
     //ListTriggersAvailable();
     vector<int> pt1;
@@ -182,16 +181,16 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     for(unsigned int i=0; i < lists_triggers.size(); i++){
       FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator_nojet", lists_triggers );
     }
-    if(GetJets(BaseSelection::JET_HN).size() > 1){
+    if(GetJets("JET_HN").size() > 1){
       for(unsigned int i=0; i < lists_triggers.size(); i++){
 	TString trig=lists_triggers.at(i);
 	FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator", lists_triggers );
 	if(PassTrigger(trig))  {
 	  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator",lists_triggers );
 	  
-	  if(GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).size() ==2) {
+	  if(GetElectrons("ELECTRON_POG_TIGHT").size() ==2) {
 	    FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon",lists_triggers );
-	    if(GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).at(0).Pt() > pt1.at(i) && GetElectrons(BaseSelection::ELECTRON_POG_TIGHT).at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt",lists_triggers );
+	    if(GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt() > pt1.at(i) && GetElectrons("ELECTRON_POG_TIGHT").at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt",lists_triggers );
 	  }
 	}
       }
@@ -214,14 +213,14 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<TString> triggerslist;
   triggerslist.push_back(analysis_trigger);
 
-  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection                                                                                                                                                                              
+  std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO"); // loose selection                                                                                                                                                                              
   
   if(muonColl.size() == 3){
     if(muonColl.at(0).Pt() > 20){
       if(muonColl.at(1).Pt() > 10){
         if(muonColl.at(2).Pt() > 10){
 	  
-	  FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+	  FillCLHist(trilephist, "TriMuon", eventbase->GetEvent(), muonColl, GetElectrons("ELECTRON_HN_VETO"),GetJets("JET_HN"), weight);
 
 	  bool pass_cut1(true);
           bool pass_cut2(true);
@@ -236,15 +235,15 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
             }
           }
           if(pass_cut2){
-            FillCLHist(trilephist, "TriMuon_mass", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+            FillCLHist(trilephist, "TriMuon_mass", eventbase->GetEvent(), muonColl, GetElectrons("ELECTRON_HN_VETO"),GetJets("JET_HN"), weight);
             if(pass_cut1)          {
-              FillCLHist(trilephist, "TriMuon_dr", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+              FillCLHist(trilephist, "TriMuon_dr", eventbase->GetEvent(), muonColl, GetElectrons("ELECTRON_HN_VETO"),GetJets("JET_HN"), weight);
 
-              if(muonColl.at(2).Pt() > 15)            FillCLHist(trilephist, "TriMuon_pt_dr", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
-              if(NBJet(GetJets(BaseSelection::JET_HN)) == 0){
-                FillCLHist(trilephist, "TriMuon_nobjet", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+              if(muonColl.at(2).Pt() > 15)            FillCLHist(trilephist, "TriMuon_pt_dr", eventbase->GetEvent(), muonColl, GetElectrons("ELECTRON_HN_VETO"),GetJets("JET_HN"), weight);
+              if(NBJet(GetJets("JET_HN")) == 0){
+                FillCLHist(trilephist, "TriMuon_nobjet", eventbase->GetEvent(), muonColl, GetElectrons("ELECTRON_HN_VETO"),GetJets("JET_HN"), weight);
               }
-              if(NBJet(GetJets(BaseSelection::JET_HN))> 1) FillCLHist(trilephist, "TriMuon_bjet", eventbase->GetEvent(), muonColl, GetElectrons(BaseSelection::ELECTRON_HN_VETO),GetJets(BaseSelection::JET_HN), weight);
+              if(NBJet(GetJets("JET_HN"))> 1) FillCLHist(trilephist, "TriMuon_bjet", eventbase->GetEvent(), muonColl, GetElectrons("ELECTRON_HN_VETO"),GetJets("JET_HN"), weight);
             }
           }
         }
@@ -252,7 +251,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     }
   }
 
-  //if(!PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", GetElectrons(BaseSelection::ELECTRON_HN_VETO), prescale)) return;
+  //if(!PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", GetElectrons("ELECTRON_HN_VETO"), prescale)) return;
 
   //return;
     //if(!PassTrigger(triggerslist, prescale)) return;
@@ -289,11 +288,11 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //  std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection
   
   /// Get tight jets : Can call NoLeptonVeto/Loose/Medium/Tight/HNJets
-  std::vector<snu::KJet> jetColl_hn  = GetJets(BaseSelection::JET_HN);// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
-  std::vector<snu::KJet> jetColl_nlv  = GetJets(BaseSelection::JET_NOLEPTONVETO);
-  std::vector<snu::KJet> jetColl_loose  = GetJets(BaseSelection::JET_LOOSE);
+  std::vector<snu::KJet> jetColl_hn  = GetJets("JET_HN");// pt > 20 ; eta < 2.5; PFlep veto; NO pileup ID
+  std::vector<snu::KJet> jetColl_nlv  = GetJets("JET_NOLEPTONVETO");
+  std::vector<snu::KJet> jetColl_loose  = GetJets("JET_HN");
 
-  std::vector<snu::KJet> JET_HN_TChannel  = GetJets(BaseSelection::JET_HN_TChannel);
+  std::vector<snu::KJet> JET_HN_TChannel  = GetJets("JET_HN");
 
   FillHist("Njets", jetColl_hn.size() ,weight, 0. , 5., 5);
 
@@ -311,7 +310,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   //if(k_running_chargeflip) weight              *= WeightCFEvent(electronColl, k_running_chargeflip);
   
 
-  std::vector<snu::KElectron> electronHNVetoColl   = GetElectrons(BaseSelection::ELECTRON_HN_VETO);
+  std::vector<snu::KElectron> electronHNVetoColl   = GetElectrons("ELECTRON_HN_VETO");
   
   
 
@@ -330,7 +329,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   if(!isData){
     for(unsigned int iel=0; iel < electronColl.size(); iel++){
       id_weight*= ElectronScaleFactor("ELECTRON_POG_TIGHT", electronColl);
-      reco_weight *= ElectronRecoScaleFactor(electronColl);
       
     }
   }
@@ -341,7 +339,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     weight*= id_weight;
     weight*=reco_weight;
     weight*=pileup_reweight;
-    weight*=weight_trigger_sf;
     weight*=trigger_ps_weight;
   }
 
