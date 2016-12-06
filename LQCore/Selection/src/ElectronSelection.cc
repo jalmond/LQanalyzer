@@ -224,7 +224,6 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
     if(fabs(el.dz()) > dzmax_e) {pass_selection = false;if(debug){ cout << "Fail dz" << endl;}}
   }
   
-  if(el.PassTight()) pass_selection=true;
   return pass_selection;
 }
 

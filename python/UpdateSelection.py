@@ -1,6 +1,4 @@
 import os,filecmp,sys
-
-
     
 def GetCATAnalyzerMailList():
     maillist=[]
@@ -46,7 +44,7 @@ def SendEmail(localsummary, mastersummary):
         for line2 in mastersummary:
             sline2 = line2.split()
             if len(sline2) >1:
-                id2=sline[1]
+                id2=sline2[1]
             else:
                 id2=""
             if id1 == id2:    
