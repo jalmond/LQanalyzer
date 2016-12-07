@@ -212,7 +212,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(convveto&& (!el.PassesConvVeto()) ){pass_selection = false;if(debug){ cout << "Fail convveto" << endl;}}
   if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) {pass_selection = false;if(debug){ cout << "Fail charge" << endl;}}
 
-  if(fabs(el.SCEta())<1.566 ){  
+  if(fabs(el.SCEta())<1.479 ){  
 
     if((LeptonRelIso > isomax_b))  {pass_selection = false;if(debug){ cout << "Fail iso: " << LeptonRelIso << " " << isomax_b << endl;}}
     if(fabs(el.dxy()) > dxymax_b) {pass_selection = false;if(debug){ cout << "Faildxy " << endl;}}
