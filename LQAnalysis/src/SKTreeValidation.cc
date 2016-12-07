@@ -47,6 +47,8 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
       MakeCleverHistograms(sighist_mm,"DiMuon"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm,"DiMuon_puW"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm, "DiMuon_dijet"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm, "DiMuon_01jet"+dimuonIDs.at(i));
+      MakeCleverHistograms(sighist_mm, "DiMuon_2jet"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm, "DiMuon_dibjet"+dimuonIDs.at(i));
       MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
     }
@@ -77,10 +79,14 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
     for(unsigned int i=0; i < dielectronIDs.size(); i++){
       MakeCleverHistograms(sighist_ee,"ZElectron"+dielectronIDs.at(i));
       MakeCleverHistograms(sighist_ee,"DiElectron_SSPreselection"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_SS1Jet"+dielectronIDs.at(i));
+      MakeCleverHistograms(sighist_ee,"DiElectron_SSMet"+dielectronIDs.at(i));
       MakeCleverHistograms(sighist_ee,"DiElectron"+dielectronIDs.at(i));
       MakeCleverHistograms(sighist_ee,"DiElectron_puW"+dielectronIDs.at(i));
       MakeCleverHistograms(sighist_ee,"DiElectron_Trigger"+dielectronIDs.at(i));
       MakeCleverHistograms(sighist_ee, "DiElectron_dijet"+dielectronIDs.at(i));
+
+
     }
     MakeCleverHistograms(elhist,"KElectronHists");
     MakeCleverHistograms(elhist,"KElectronHists_POGTIGHT");
@@ -226,6 +232,12 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
     em1_trig="HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v";
   }
 
+  if(IsDiEl()){
+    vector <snu::KElectron> vecel = GetElectrons("ELECTRON_POG_TIGHT");
+    if(vecel.size() > 1) counter("Diel_pass",weight);
+    else counter("Diel_fail",weight);
+    if(SameCharge(vecel)) counter("SSDiEL",weight);
+  }
   std::vector<TString> triggerslist_dimu;
   triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
   
@@ -243,9 +255,6 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    triggerslist_emu.push_back(em1_trig);
    
    
-   bool trig_pass= PassTrigger(dimuon_trigmuon_trig1) || PassTrigger(dimuon_trigmuon_trig2);
-   
-   if(!trig_pass) return;
    FillCutFlow("TriggerCut",  weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));;
    counter("TriggerCut", weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
 
@@ -422,7 +431,7 @@ void SKTreeValidation::MakeMuonValidationPlots(TString muid, float w, float pu_r
   std::vector<snu::KMuon> muons;
 
   if(k_running_nonprompt){
-    muons = GetMuons("MUON_HN_FAKELOOSE",false);
+    muons = GetMuons("MUON_HN_LOOSE",false);
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
   else   muons = GetMuons(muid);
@@ -502,7 +511,8 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
   for(unsigned int ij =0 ; ij < jets.size() ; ij++){
     if(jets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) nbjet++;
   }
-  
+  if(nbjet == 1) w*= 0.8;
+  if(nbjet == 2) w*= 0.65;
 
   if(!isData) w =  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v",TargetLumi);
   
@@ -510,7 +520,7 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
    
   std::vector<snu::KMuon> muons;
   if(k_running_nonprompt){
-    muons = GetMuons("MUON_HN_FAKELOOSE",false);
+    muons = GetMuons("MUON_HN_LOOSE",false);
   }
   else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
   else   muons = GetMuons(muid,false);
@@ -598,6 +608,11 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
 	    if(nbjet > 1 ) FillCutFlow("DiMuon_dibjet",  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));
 	    if(nbjet > 1 && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 50.) FillCutFlow("DiMuon_met",  w*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi)); 
 	    if(nbjet > 1 && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 50.)             FillCLHist(sighist_mm, "DiMuon_dibjet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    if(muons.at(0).Pt()  < 50.) FillCLHist(sighist_mm, "DiMuon_2jet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	  }
+	  else{
+	    if(muons.at(0).Pt() > 50)FillCLHist(sighist_mm, "DiMuon_01jet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    
 	  }
 	}
       }
@@ -628,7 +643,7 @@ void SKTreeValidation::MakeElMuonValidationPlots(TString muid, float w, float pu
   std::vector<snu::KElectron> electrons ;
   std::vector<snu::KMuon> muons;
   if(k_running_nonprompt){
-    muons = GetMuons("MUON_HN_FAKELOOSE",false);
+    muons = GetMuons("MUON_HN_LOOSE",false);
     electrons             = GetElectrons(true, false,"ELECTRON_HN_FAKELOOSE_NOD0");
   }
   else if(tag.Contains("truthmatch")) {
@@ -779,7 +794,7 @@ void SKTreeValidation::MakeElectronValidationPlots(TString elid, float w, float 
 
 
 void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, float pu_reweight,  std::vector<TString> trignames,TString muid, TString jetid, TString tag){
-
+  counter("MakeDiElectronValidationPlots",w);
   Message("In MakeDiElectronValidationPlots" , DEBUG);
 
   std::vector<snu::KElectron> electrons ;
@@ -806,7 +821,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
   if(!isData){
     //trigger_sf = TriggerScaleFactor(electrons,muons, trignames.at(0)); /// 
     id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
-    reco_weight = ElectronRecoScaleFactor(electrons);
+    //reco_weight = ElectronRecoScaleFactor(electrons);
     /// Tiny effect on unprescaled triggers
     trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
     ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight*trigger_ps*trig_pass;
@@ -815,8 +830,9 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
     ev_weight=1.; /// In case... should not be needed
     ev_weight      *=  Get_DataDrivenWeight_EE(electrons);
   }
-
   if(electrons.size() ==2) {
+    counter("DiEl",w);
+
     if(!SameCharge(electrons)){
       if(electrons.at(0).Pt() > 20. && electrons.at(1).Pt() > 20.){
 
@@ -853,14 +869,15 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
       }
     }
     else{
-      
+      counter("SS",w);
       if(electrons.at(0).Pt() > 20. && electrons.at(1).Pt() > 20.){
-	cout << "SS: " << tag << endl;
+	w*= trig_pass;
 	if(GetDiLepMass(electrons)  > 15. ){
 	  if(trig_pass> 0.){
-	    cout << "SS trigger: " <<  tag << endl;
+	    counter("SS_trigger",w);
 	    if(jets.size() >= 2)   FillCLHist(sighist_ee, "DiElectron_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
-	    
+	    if(jets.size() == 1) FillCLHist(sighist_ee, "DiElectron_SS1Jet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);  
+	    if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 50.) FillCLHist(sighist_ee, "DiElectron_SSMet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  }
 	}
       }

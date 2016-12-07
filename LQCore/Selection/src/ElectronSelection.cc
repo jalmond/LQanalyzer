@@ -168,7 +168,6 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   float dzmax_b = AccessFloatMap("|dzmax_b|",id);
   float dzmax_e = AccessFloatMap("|dzmax_e|",id);
 
-
   bool checkisloose= (CheckCutString("IsLoose(POG)",id));
   bool checkisveto = (CheckCutString("IsVeto(POG)",id));
   bool checkismedium = (CheckCutString("IsMedium(POG)",id));
@@ -224,7 +223,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
     if(fabs(el.dxy()) > dxymax_e) {pass_selection = false;if(debug){ cout << "Fail dxy" << endl;}}
     if(fabs(el.dz()) > dzmax_e) {pass_selection = false;if(debug){ cout << "Fail dz" << endl;}}
   }
-
+  
   return pass_selection;
 }
 

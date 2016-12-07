@@ -7,7 +7,7 @@
 #######################################################################################
 #**************************************************************************************
 # cut DiMuon_puWPOGTightroch_corrected
-# samples skvalidation_config_allmc_noqcd.txt
+# samples skvalidation_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer SKTreeValidation
@@ -36,7 +36,7 @@
 
 #**************************************************************************************
 # cut DiMuon_dijetPOGTightroch_corrected
-# samples skvalidation_config_allmc_noqcd.txt
+# samples skvalidation_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer SKTreeValidation
@@ -64,7 +64,7 @@
 #######################################################################################
 #**************************************************************************************
 # cut DiMuon_dibjetPOGTightroch_corrected
-# samples skvalidation_config_allmc_noqcd.txt
+# samples skvalidation_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer SKTreeValidation

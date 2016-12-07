@@ -1,6 +1,4 @@
 import os,filecmp,sys
-
-
     
 def GetCATAnalyzerMailList():
     maillist=[]
@@ -46,7 +44,7 @@ def SendEmail(localsummary, mastersummary):
         for line2 in mastersummary:
             sline2 = line2.split()
             if len(sline2) >1:
-                id2=sline[1]
+                id2=sline2[1]
             else:
                 id2=""
             if id1 == id2:    
@@ -89,15 +87,15 @@ path_master = os.getenv("LQANALYZER_FILE_DIR")+ "/Selection/"
 path_local= os.getenv("LQANALYZER_DIR") + "/CATConfig/SelectionConfig/"
 
 selfile=""
-seltag=""
+seltmptag=""
 if  os.getenv("CATVERSION") == "v7-6-6":
-    seltag="_2015"
+    seltmptag="_2015"
 if seltag == "electron":
-    selfile="electrons"+seltag+".sel"
+    selfile="electrons"+seltmptag+".sel"
 elif seltag == "muon":
-    selfile="muons"+seltag+".sel"
+    selfile="muons"+seltmptag+".sel"
 elif seltag == "jet":
-    selfile="jets"+seltag+".sel"
+    selfile="jets"+seltmptag+".sel"
 else:
     print "invalid input. must be electron,jet or muon"
 

@@ -183,9 +183,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   /// Filling event variables
     
   kevent.SetIsData(isData);
-  cout << "run = " << run << " " << endl;
   kevent.SetRunNumber(run);
-  cout << "event = " << event << " " << endl;
   kevent.SetEventNumber(event);
   kevent.SetLumiSection(lumi);
   

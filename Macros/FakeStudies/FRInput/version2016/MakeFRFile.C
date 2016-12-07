@@ -21,12 +21,12 @@ bool CheckHist(TH2* h);
 
 void MakeFRRootFile(){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoE/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoG/";
 
-  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-1.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-1.root");
+  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-2.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-2.root");
   if(!fdata)cout << "No Data" << endl;
-
+  if (!fmc) cout << "No MC" << endl;
   /// Set Plotting style
   setTDRStyle();
   gStyle->SetPalette(1);

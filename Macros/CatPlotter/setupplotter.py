@@ -21,7 +21,7 @@ def  MakeConfFile(inputdir,jobname,datastream,analyzer,tag,tag2,catversion,perio
     file_conf = open(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobname +"/Config/configfile.txt" ,"w"  )
     file_conf.write("# Specify_location_of_data/mc\n")
     file_conf.write("mcpath          "+inputdir+"/\n")
-    file_conf.write("datapath          "+inputdir+"/SKTreeValidation_data_"+datastream+"_cat_"+catversion+".root\n")
+    file_conf.write("datapath          "+inputdir+"/"+analyzer+"_data_"+datastream+"_cat_"+catversion+".root\n")
     file_conf.write("datadrivenpath          "+inputdir+"/\n")
     file_conf.write("# Specify_the_list_of_hists_to_plot \n")
     file_conf.write("plottingpath    dat/histfile.txt \n")

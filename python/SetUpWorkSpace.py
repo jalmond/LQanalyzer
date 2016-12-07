@@ -49,7 +49,7 @@ if not LQANALYZER_DIR == "None" :
 	os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
 	os.system("cp " + localfiledir + "/Luminosity/lumi_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
 	os.system("cp " + lumifiledir + "/list_all_mc_"+str(os.getenv("CATVERSION"))+".sh " + txtfiledir)
-	# ADD BACKos.system("cp " + localfiledir + "/Selection/*.sel " + seldir)
+	os.system("cp " + localfiledir + "/Selection/*.sel " + seldir)
 	#os.system("cp " + localfiledir + "/*.csv " + btagfiledir)
 	#os.system("source " +  os.getenv("LQANALYZER_DIR") + "/bin/IncludePrivateSamples.sh")
 else:

@@ -45,7 +45,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
-  eventbase->GetMuonSel()->SetPt(8.); 
+  eventbase->GetMuonSel()->SetPt(5.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
 
@@ -75,7 +75,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   //###### Electron Selection ########
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
-  eventbase->GetElectronSel()->SetPt(8.); 
+  eventbase->GetElectronSel()->SetPt(5.); 
   eventbase->GetElectronSel()->SetEta(3.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
   eventbase->GetElectronSel()->SetPt(8.);

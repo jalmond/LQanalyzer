@@ -110,7 +110,7 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
       if(apply_dxycut && !(fabs(muit->dXY())< dxy_cut )) pass_selection = false;
       if(m_debug&&apply_dxycut && !(fabs(muit->dXY())< dxy_cut ))cout << "Fails Selection::dxy cut " << endl;
       
-      if(apply_ID && !PassID("k_id", *muit,m_debug)) pass_selection =false;
+      if(apply_ID && !PassID(k_id, *muit,m_debug)) pass_selection =false;
       if(m_debug&& apply_ID && !PassID("MUON_POG_TIGHT", *muit)) cout << "Fails Selection::ID cut " << endl;
       
       
