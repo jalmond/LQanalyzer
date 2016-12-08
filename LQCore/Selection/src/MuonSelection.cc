@@ -81,41 +81,47 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
 
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
   int ilep(0);
-  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++, ilep++)
-    { 
+  for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++, ilep++){ 
 
       bool pass_selection(true);      
       if(muit->Pt() == 0.) continue;
-      
-      //// Calculate PF isolation
-      /// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation
-      LeptonRelIso = (muit->RelIso04());
-      
-      if(apply_relisocut && !( LeptonRelIso < relIso_cut)) pass_selection = false;
-      if(m_debug&&apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
-      
+
+      TString MuID=GetString(k_id);
+      if(apply_ID && !PassID(MuID, *muit)) pass_selection =false;
+      if(m_debug&& apply_ID && !PassID(MuID, *muit)) cout << "Fails Selection::ID cut " << endl;
+
+
       if(apply_ptcut && ! ( muit->Pt() > pt_cut_min )) pass_selection = false;
       if(m_debug&&apply_ptcut && ! (muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max)) cout << "Fails Selection::pt cut " << endl;
       
       if(apply_etacut && !(fabs(muit->Eta()) < eta_cut)) pass_selection =false;
       if(m_debug&&apply_etacut && !(fabs(muit->Eta()) < eta_cut))  cout << "Fails Selection::eta cut " << endl;
+
+
+      //// Calculate PF isolation
+      /// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation
+      //LeptonRelIso = (muit->RelIso04());
+      if     (apply_relisocut && RelIsoType.Contains("Default"))    LeptonRelIso=muit->RelIso04();
+      else if(apply_relisocut && RelIsoType.Contains("PFRelIso03")) LeptonRelIso=muit->RelIso03();
+      else   LeptonRelIso=muit->RelIso04();
+      
+      if(apply_relisocut && !( LeptonRelIso < relIso_cut)) pass_selection = false;
+      if(m_debug&&apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
+      
   
       /// impact parameter cuts
       // Uses fabs(recoMu.muonBestTrack()->dxy(vertex->position())) as described in https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Tight_Muon 
       // Also stores dB() on pat::Muon  as dxy_pat
       // Also stores D0 
-
       if(apply_dzcut && !(fabs(muit->dZ())<  dz_cut )) pass_selection = false;
       if(m_debug&&apply_dzcut && !(fabs(muit->dZ())<  dz_cut ))  cout << "Fails Selection::dz cut " << endl;
       if(apply_dxycut && !(fabs(muit->dXY())< dxy_cut )) pass_selection = false;
       if(m_debug&&apply_dxycut && !(fabs(muit->dXY())< dxy_cut ))cout << "Fails Selection::dxy cut " << endl;
       
-      if(apply_ID && !PassID(k_id, *muit,m_debug)) pass_selection =false;
-      if(m_debug&& apply_ID && !PassID("MUON_POG_TIGHT", *muit)) cout << "Fails Selection::ID cut " << endl;
       
-      
-      if(apply_chi2cut && !(muit->GlobalChi2() <chiNdof_cut) && !( muit->GlobalChi2()  >=chiNdofMIN_cut)) pass_selection = false;
-      if(m_debug&&apply_chi2cut && !(muit->GlobalChi2() <chiNdof_cut) && !( muit->GlobalChi2()  >=chiNdofMIN_cut)) cout << "Fails chi2 cut " << endl;
+      if(apply_chi2cut && !( muit->GlobalChi2() < chiNdof_cut && muit->GlobalChi2() >= chiNdofMIN_cut )) pass_selection = false;
+      if(m_debug&&apply_chi2cut && !( muit->GlobalChi2() <chiNdof_cut && muit->GlobalChi2()  >=chiNdofMIN_cut)) cout << "Fails chi2 cut " << endl;
+
       
       //// ADD EXTRA  cut on D0sig? or same vertex?     
       if(pass_selection) leptonColl.push_back(*muit);    
@@ -279,8 +285,8 @@ bool MuonSelection::TopTightMuonSelection(KMuon mu) {
 
 /// NO LONGER NEEDED
 bool MuonSelection::PassID(TString id, snu::KMuon mu, bool cutondxy, bool cutondz, bool cutonchi2, bool m_debug){
-  
-  
+
+
   /// Taken from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonIdRun2
   bool passID(true);
   if (id == "MUON_POG_LOOSE") {
@@ -289,11 +295,11 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool cutondxy, bool cutond
       if(m_debug)cout << "PassID: Fail isPF" << endl;
     }
     if(!(mu.IsGlobal()==1 || mu.IsTracker() == 1 )){
-      passID = false; 
+      passID = false;
       if(m_debug){
-	cout << "PassID: Fail isGlobal||isTracker" << endl;
-	cout << "PassID: mu.IsGlobal()=  " << mu.IsGlobal() << endl;
-	cout << "PassID: mu.IsTracker()= " << mu.IsTracker() << endl;
+        cout << "PassID: Fail isGlobal||isTracker" << endl;
+        cout << "PassID: mu.IsGlobal()=  " << mu.IsGlobal() << endl;
+        cout << "PassID: mu.IsTracker()= " << mu.IsTracker() << endl;
       }
     }
   }
@@ -326,29 +332,30 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool cutondxy, bool cutond
     }
     if (cutondxy){
       if( fabs(mu.dXY())    >= 0.2) {
-	passID = false;
-	if(m_debug)cout << "PassID: Fail dXY" << endl;
+        passID = false;
+        if(m_debug)cout << "PassID: Fail dXY" << endl;
       }
     }
     if(cutondz){
       if( fabs(mu.dZ())    >= 0.5) {
-	passID = false;
-	if(m_debug)cout << "PassID: Fail dZ" << endl;
+        passID = false;
+        if(m_debug)cout << "PassID: Fail dZ" << endl;
       }
     }
     if(cutonchi2){
       if( mu.GlobalChi2() >=  10.){
-	passID = false;
-	if(m_debug) cout << "PassID: Fail  Chi2" << endl;
+        passID = false;
+        if(m_debug) cout << "PassID: Fail  Chi2" << endl;
       }
     }
   }
-  
+
   else{
     cout << "Invalid ID set for muon selection" << endl;
   }
   return passID;
 }
+
 
 
 

@@ -24,6 +24,7 @@ class JetSelection : public BaseSelection {
 
  
   void Selection (std::vector<snu::KJet>& jetColl, bool isdata, bool smearjets=true);
+  void Selection (std::vector<snu::KJet>& jetColl, bool LepVeto, std::vector<snu::KMuon>& muonColl, std::vector<snu::KElectron>& electronColl, bool isdata, bool smearjets);
   void BasicSelection (std::vector<snu::KJet>& jetColl);
   
   bool PassUserID (ID id, snu::KJet jet);
