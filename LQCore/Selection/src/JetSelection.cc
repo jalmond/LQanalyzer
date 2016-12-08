@@ -28,34 +28,76 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
   }
 }
 
-  
+void JetSelection::Selection(std::vector<KJet>& jetColl, bool isdata, bool smearjets){
 
-void JetSelection::Selection(std::vector<KJet>& jetColl, bool isdata, bool smearjets) {
-  
-  //// This is a basic set of cuts on jets
+  std::vector<KJet> alljets = k_lqevent.GetJets();
+  //  if(!isdata&&smearjets)SmearJets(alljets);
+
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+
+    bool pileupjet=false;
+    if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
+
+
+    if(apply_ID) {
+      if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
+           fabs(jit->Eta()) < eta_cut
+           &&PassUserID(k_id, *jit) && !pileupjet)  jetColl.push_back(*jit);
+    }
+    else{
+      if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
+           fabs(jit->Eta()) < eta_cut
+           && PassUserID(PFJET_LOOSE, *jit)&& !pileupjet)  jetColl.push_back(*jit);
+    }
+  }
+
+  BaseSelection::reset();
+  return;
+
+}  
+
+void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl, bool isdata, bool smearjets) {
  
   std::vector<KJet> alljets = k_lqevent.GetJets();
-  
+  std::vector<KJet> prejetColl; 
   //  if(!isdata&&smearjets)SmearJets(alljets);
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pileupjet=false;
     if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
-    pileupjet=false;
 
 
     if(apply_ID) {
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max &&
 	   fabs(jit->Eta()) < eta_cut
-	   &&PassUserID(k_id, *jit) && !pileupjet)  jetColl.push_back(*jit);
+	   &&PassUserID(k_id, *jit) && !pileupjet)  prejetColl.push_back(*jit);
     }
     else{
       if ( jit->Pt() >= pt_cut_min && jit->Pt() < pt_cut_max && 
 	   fabs(jit->Eta()) < eta_cut
-	   && PassUserID(PFJET_LOOSE, *jit)&& !pileupjet)  jetColl.push_back(*jit);
+	   && PassUserID(PFJET_LOOSE, *jit)&& !pileupjet)  prejetColl.push_back(*jit);
+    }
+  } 
+
+  if(LepVeto){
+    for (UInt_t ijet = 0; ijet < prejetColl.size(); ijet++) {
+      jetIsOK = true;
+      for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+        if (muonColl[ilep].DeltaR( prejetColl[ijet] ) < 0.4) {
+          jetIsOK = false;  ilep = muonColl.size();
+        }
+      }/// End of muon loop
+      for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+        if (electronColl[ilep].DeltaR( prejetColl[ijet] ) < 0.4 ) {
+          jetIsOK = false;  ilep = electronColl.size();
+        }
+      }/// End of electron loop
+
+     if (jetIsOK) jetColl.push_back( prejetColl[ijet] );
     }
   }
+  
   BaseSelection::reset();
   return;
   

@@ -30,7 +30,7 @@ class ElectronSelection : public BaseSelection {
   
   //// IDS
   bool PassUserID(TString id,snu::KElectron el);
-
+  bool PassID(snu::KElectron el, ID id);
     
 };
 #endif

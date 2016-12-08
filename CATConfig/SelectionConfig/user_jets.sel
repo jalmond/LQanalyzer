@@ -4,3 +4,4 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
 | JET_HN             | 20.     | 2.5      | false  | true     |  false  |  false         | MUON_HN_VETO         | ELECTRON_HN_VETO         |
 | JET_HN_TChannel    | 20.     | 5.       | false  | true     |  false  |  false         | MUON_HN_VETO         | ELECTRON_HN_VETO         |
 | JET_NOCUT          | 20.     | 2.5      | false  | true     |  false  |  false         | NONE                 | NONE                     |
+| PFJET_TIGHT        | 20.     | 2.5      | false  | false    |  true   |  false         | NONE                 | NONE                     |

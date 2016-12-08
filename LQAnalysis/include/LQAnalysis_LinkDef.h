@@ -17,4 +17,7 @@
 #pragma link C++ class HNEMu+;
 #pragma link C++ class SKTreeValidation+;
 
+
+#pragma link C++ class Dec2016_3l4j_SelFuncTest+;
+
 #endif // __CINT__
