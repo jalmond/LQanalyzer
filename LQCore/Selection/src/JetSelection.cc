@@ -36,7 +36,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool isdata, bool smear
  
   std::vector<KJet> alljets = k_lqevent.GetJets();
   
-  //  if(!isdata&&smearjets)SmearJets(alljets);
+  if(!isdata&&smearjets)SmearJets(alljets);
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
@@ -68,7 +68,7 @@ void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl,  TString 
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
 
-  //if(!isdata&&smearjets)SmearJets(alljets);
+  if(!isdata&&smearjets)SmearJets(alljets);
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
@@ -112,7 +112,7 @@ void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vect
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
 
-  //  if(!isdata&&smearjets)SmearJets(alljets);  
+  if(!isdata&&smearjets)SmearJets(alljets);  
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pass_selection=true;
