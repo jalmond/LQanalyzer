@@ -1498,7 +1498,7 @@ float AnalyzerCore::TriggerEff(TString trigname,  std::vector<snu::KMuon> muons,
 
   if(isData){
     //if(PassTrigger(trigname)) return 1.;
-    //    else return 0.;
+    return 1.;
   }
   if(electrons.size() >= 1 && muons.size() >= 1){
     float trig_eff(1.);
@@ -1521,7 +1521,7 @@ float AnalyzerCore::TriggerEff(TString trigname, std::vector<snu::KElectron> ele
   
   if(isData){
     //if(PassTrigger(trigname)) return 1.;
-    //else return 0.;
+    return 1.;
   }
   
   if(electrons.size() >=2){
@@ -1668,7 +1668,7 @@ float AnalyzerCore::TriggerEff(TString trigname, std::vector<snu::KMuon> muons){
   
   if(isData){
     ///    if(PassTrigger(trigname)) return 1.;
-    //else return 0.;
+    return 1.;
   }
   
   if(muons.size() >= 2){

@@ -500,8 +500,6 @@ void SKTreeValidation::MakeMuonValidationPlots(TString muid, float w, float pu_r
 void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu_reweight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag, bool smearjets){
 
   Message("In MakeDiMuonValidationPlots " , DEBUG);
-
-
   
 
   std::vector<snu::KElectron> electrons =  GetElectrons(elid);
@@ -830,6 +828,9 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
     ev_weight=1.; /// In case... should not be needed
     ev_weight      *=  Get_DataDrivenWeight_EE(electrons);
   }
+  weight              *= WeightCFEvent(electrons, k_running_chargeflip);
+  if(WeightCFEvent(electrons, k_running_chargeflip) == 0.) return;
+  
   if(electrons.size() ==2) {
     counter("DiEl",w);
 
