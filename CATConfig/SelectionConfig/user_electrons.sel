@@ -1,5 +1,0 @@
-ncuts 14
-webpage https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
-| ID                        |  ptmin  | |etamax| |  isomax03_b | isomax03_e | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG) | IsVeto(POG)   | |dxymax_b|  | |dxymax_e| |  |dzmax_b| |  |dzmax_e| | GsfCtfScPix | convveto  |
-| TEST_TIGHT_1              | 10.     | 8.       |   0.01      | 0.03       | true          | false          |  false       | false         | 0.005       | 0.01       | 0.005      | 0.01       | false       | true      |        
-| TEST_TIGHT_2              | 10.     | 8.       |   1000      | 1000.      | true          | false          |  false       | false         | 10000.      | 10000.     | 1000.      | 1000.      | false       | true      |        
