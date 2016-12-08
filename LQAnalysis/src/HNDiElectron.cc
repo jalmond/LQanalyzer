@@ -4,7 +4,7 @@
  * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
- *
+ *d
  ***************************************************************************/
 
 /// Local includes
@@ -106,6 +106,24 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
+  if (GetElectrons("ELECTRON_HN_TIGHT").size() > 1){
+    if((fabs(GetElectrons("ELECTRON_HN_TIGHT").at(0).SCEta()) < 1.5)){
+      if(GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() > 0.0111 ){
+	cout << "GetElectrons(ELECTRON_HN_TIGHT).at(0).dxy() = " << GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() << endl;
+      }
+      if(GetElectrons("ELECTRON_HN_TIGHT").at(0).PFRelIso(0.3) > 0.0354) {
+	cout << "GetElectrons(ELECTRON_HN_TIGHT).at(0).PFRelIso = " << GetElectrons("ELECTRON_HN_TIGHT").at(1).PFRelIso(0.3)  << endl;
+      }
+    }
+    else{
+      if(GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() > 0.0351 ){
+        cout << "GetElectrons(ELECTRON_HN_TIGHT).at(0).dxy() = " << GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() << endl;
+      }
+
+    }
+  }
+  
+  return;
 
   ///// SIGNAL PLOTS
   FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
@@ -189,6 +207,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator",lists_triggers );
 	  
 	  if(GetElectrons("ELECTRON_POG_TIGHT").size() ==2) {
+	    
 	    FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon",lists_triggers );
 	    if(GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt() > pt1.at(i) && GetElectrons("ELECTRON_POG_TIGHT").at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt",lists_triggers );
 	  }
