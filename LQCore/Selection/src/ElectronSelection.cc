@@ -87,12 +87,9 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
 
     /// DEFAULT cuts
-    /// Require it is not in crack
-
     bool pass_selection = true;
 
     /// ID cut : need to optimise cuts
-    /// Default is medium
     if(apply_ID){
       if(GetString(k_id).Contains("POG")) ElectronID = PassID(*el, k_id);
       else ElectronID = PassUserID(k_id, *el);
