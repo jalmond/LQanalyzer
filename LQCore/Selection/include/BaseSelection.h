@@ -136,6 +136,21 @@ class BaseSelection {
   void SetID(ID  id);
   void SetCheckCharge(bool check);
   void SetApplyConvVeto(bool apply);
+
+  Double_t relIsoBarrel_max, relIsoBarrel_min, dxyBarrel_max, dzBarrel_max;//<-Mine
+  Double_t relIsoEndcap_max, relIsoEndcap_min, dxyEndcap_max, dzEndcap_max;//<-Mine
+  TString RelIsoType;
+  Bool_t apply_BESepCut, apply_BETrRegIncl;//<-Mine
+
+  //JB mod.
+  void SetBETrRegIncl(bool include=false);
+  void SetRelIsoBEMax(Double_t BarrelIso, Double_t EndcapIso);
+  void SetRelIsoBEMin(Double_t BarrelIso, Double_t EndcapIso);
+  void SetdxyBEMax(Double_t Barreldxy, Double_t Endcapdxy);
+  void SetdzBEMax(Double_t Barreldz, Double_t Endcapdz);
+  void SetRelIsoType(TString type);
+  //---
+
 };
 
 #endif

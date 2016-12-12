@@ -80,82 +80,97 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TStr
   return;
 }
 
-
-
 void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_debug) {
-  
+
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
-  
+
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
 
-    //// DEFAULT cuts
-    //// Require it is not in crack
-
+    /// DEFAULT cuts
     bool pass_selection = true;
-    
-    ////  ID cut : need to optimise cuts
-    /// Default is medium
+
+    /// ID cut : need to optimise cuts
     if(apply_ID){
-      ElectronID = PassUserID(k_id, *el);
+      if(GetString(k_id).Contains("POG")) ElectronID = PassID(*el, k_id);
+      else ElectronID = PassUserID(k_id, *el);
+
       if(!ElectronID) {
-	pass_selection = false;
-	if(m_debug)cout << "Selection: Fail ID Cut" << endl;
+        pass_selection = false;
+        if(m_debug)cout << "Selection: Fail ID Cut" << endl;
       }
     }
 
-    /// extra cut to reduce conversions
-    /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
-    if(apply_convcut && (!el->PassesConvVeto()) ) {
-      pass_selection = false; 
-      if(m_debug)cout << "Selection: Fail Conversion Cut" << endl;
-    }
-    float LeptonRelIsoDR03(0.);
-    float LeptonRelIsoDR04(0.);
-    LeptonRelIsoDR03 = el->PFRelIso(0.3);
-    LeptonRelIsoDR04 = el->PFRelIso(0.4);
+    //SetRelIso. Default: PFRelIso03
+    float reliso;
+    if     (apply_relisocut && RelIsoType.Contains("Default"))    reliso=el->PFRelIso(0.3); 
+    else if(apply_relisocut && RelIsoType.Contains("PFRelIso04")) reliso=el->PFRelIso(0.4); 
 
-    if(apply_relisocut && !(LeptonRelIsoDR03 < relIso_cut && LeptonRelIsoDR03 >= relIsoMIN_cut)){
+    if(apply_ptcut && !(el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max)){
       pass_selection = false;
-      if(m_debug)cout << "Selection: Fail Isolation Cut" << endl;
+      if(m_debug)cout << "Selection: Fail Pt Cut" << endl;
     }
-
-    //// Check charge consistancy between different detectors
-    if(apply_chargeconst && !el->GsfCtfScPixChargeConsistency()) {
-      pass_selection = false;
-      if(m_debug)cout << "Selection: Fail charge Cut" << endl;
-    }
-    
     if(apply_etacut && !(fabs(el->SCEta()) < eta_cut)) {
       pass_selection = false;
       if(m_debug)cout << "Selection: Fail Eta Cut" << endl;
     }
-    
 
-    if(apply_ptcut && ! (el->Pt() >= pt_cut_min && el->Pt() < pt_cut_max)) {
-      pass_selection = false; 
-      if(m_debug)cout << "Selection: Fail Pt Cut" << endl;
+    //Whether to include EE-EBtransition region(Default: not)
+    if(!apply_BETrRegIncl){
+      if(fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566) pass_selection = false;
+    }
+    //// Check charge consistancy between different detectors
+    if(apply_chargeconst && !el->GsfCtfScPixChargeConsistency()){
+      pass_selection = false;
+      if(m_debug)cout << "Selection: Fail charge Cut" << endl;
+    }
+    /// extra cut to reduce conversions
+    /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
+    if(apply_convcut && (!el->PassesConvVeto()) ) {
+      pass_selection = false;
+      if(m_debug)cout << "Selection: Fail Conversion Cut" << endl;
     }
 
-    /// impact parameter cuts
-    if(apply_dzcut && !(fabs(el->dz())<  dz_cut )) {
-      pass_selection = false;
-      if(m_debug)cout << "Selection: Fail dZ Cut" << endl;
+
+
+    if(apply_BESepCut){
+      if(fabs(el->SCEta())<1.479){
+        if(apply_relisocut && !(reliso < relIsoBarrel_max && reliso >= relIsoBarrel_min)) pass_selection=false;
+        if(apply_dxycut    && !(fabs(el->dxy()) < dxyBarrel_max)) pass_selection=false;
+        if(apply_dzcut     && !(fabs(el->dz()) < dzBarrel_max))   pass_selection=false;
+      }
+      else{
+        if(apply_relisocut && !(reliso < relIsoEndcap_max && reliso >= relIsoEndcap_min)) pass_selection=false;
+        if(apply_dxycut    && !(fabs(el->dxy()) < dxyEndcap_max)) pass_selection=false;
+        if(apply_dzcut     && !(fabs(el->dz()) < dzEndcap_max))   pass_selection=false;
+      }
     }
-    if(apply_dxycut && !( fabs(el->dxy())< dxy_cut )) {
-      pass_selection = false;
-      if(m_debug)cout << "Selection: Fail dxy Cut" << endl;
+    else{
+      if(apply_relisocut   && !(reliso < relIso_cut && reliso >= relIsoMIN_cut)){
+        pass_selection = false;
+        if(m_debug)cout << "Selection: Fail Isolation Cut" << endl;
+      }
+      if(apply_dzcut       && !(fabs(el->dz())<  dz_cut )) {
+        pass_selection = false;
+        if(m_debug)cout << "Selection: Fail dZ Cut" << endl;
+      }
+      if(apply_dxycut      && !( fabs(el->dxy())< dxy_cut )) {
+        pass_selection = false;
+        if(m_debug)cout << "Selection: Fail dxy Cut" << endl;
+      }
     }
-    
+
+
     if(pass_selection){
       leptonColl.push_back(*el);
     }
-    
+
   }// end of el loop
-  
+
   BaseSelection::reset();
-  
+
   return;
 }
+
 
 
 bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
@@ -245,3 +260,26 @@ ElectronSelection::ElectronSelection(const ElectronSelection& ms):
 
 };
 
+bool ElectronSelection::PassID(snu::KElectron el, ID id){
+
+  bool pass_selection=true;  bool debug=false;
+
+  int  snuid = el.SNUID();
+  bool pass_tight_noiso  = false;
+  bool pass_medium_noiso = false;
+  bool pass_loose_noiso  = false;
+  bool pass_veto_noiso   = false;
+
+  if     (snuid >= 1000) pass_tight_noiso  = true;
+  else if(snuid >= 100 ) pass_medium_noiso = true;
+  else if(snuid >= 10  ) pass_loose_noiso  = true;
+  else if(snuid >= 1   ) pass_veto_noiso   = true;
+
+
+  if(id == ELECTRON_POG_VETO   && !pass_veto_noiso)   {pass_selection = false; if(debug){ cout << "Failveto " << endl;}}
+  if(id == ELECTRON_POG_LOOSE  && !pass_loose_noiso)  {pass_selection = false; if(debug){ cout << "Failloose " << endl;}}
+  if(id == ELECTRON_POG_MEDIUM && !pass_medium_noiso) {pass_selection = false; if(debug){ cout << "Fail medium" << endl;}}
+  if(id == ELECTRON_POG_TIGHT  && !pass_tight_noiso)  {pass_selection = false; if(debug){ cout << "Fail tight" << endl;}}
+
+  return pass_selection;
+}

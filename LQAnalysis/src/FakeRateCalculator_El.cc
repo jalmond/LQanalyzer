@@ -110,7 +110,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(muonColl.size() > 0) return;
   
   ///triggerslist_singlelep.push_back("HLT_Ele23_WPLoose_Gsf");
-
+  
   float trigger_ps_singlelepweight= WeightByTrigger("HLT_Ele32_eta2p1_WPTight_Gsf_v", TargetLumi);
   
   if(electronTightColl.size() ==1) {
