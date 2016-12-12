@@ -133,7 +133,7 @@ void Truth_HN_pair::ExecuteEvents()throw( LQError ){
   //TString muon_id = "MUON_POG_TIGHT";
   //TString muon_id = "MUON_HN_VETO";
   TString muon_id = "MUON_NOCUT";
-  BaseSelection::ID muid = BaseSelection::MUON_POG_TIGHT;
+  BaseSelection::ID muid = BaseSelection::MUON_NOCUT;
   //TString muid = "MUON_POG_TIGHT";
   if(k_running_nonprompt) {
     muid= BaseSelection::MUON_POG_LOOSE;
@@ -142,6 +142,8 @@ void Truth_HN_pair::ExecuteEvents()throw( LQError ){
   //std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT",false);
   std::vector<snu::KMuon> muons = GetMuons(muid,false);
   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",false);
+  std::vector<snu::KMuon> muons_tight = GetMuons("MUON_POG_TIGHT",false);
+
   
   /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
   std::vector<snu::KElectron> electrons = GetElectrons("ELECTRON_POG_TIGHT");
@@ -202,8 +204,13 @@ void Truth_HN_pair::ExecuteEvents()throw( LQError ){
       FillHist("dR_jj_HN_1_truth", HN_2_dR_jj, 1., 0., 10., 1000);
       FillHist("dR_jj_HN_2_truth", HN_1_dR_jj, 1., 0., 10., 1000);
     }
+    
+    FillHist("PdgId_mu1_q1", truthColl.at(HN_1_partons_i[0]).PdgId(), 1., -10., 10., 20);
+    FillHist("PdgId_mu1_q2", truthColl.at(HN_1_partons_i[1]).PdgId(), 1., -10., 10., 20);
+    FillHist("PdgId_mu2_q1", truthColl.at(HN_2_partons_i[0]).PdgId(), 1., -10., 10., 20);
+    FillHist("PdgId_mu2_q2", truthColl.at(HN_2_partons_i[1]).PdgId(), 1., -10., 10., 20);
 
-
+    
     FillHist("dR_mu1_q1", truthColl.at(mu_1_index).DeltaR(truthColl.at(HN_1_partons_i[0])), 1., 0., 10., 1000);
     FillHist("dR_mu1_q2", truthColl.at(mu_1_index).DeltaR(truthColl.at(HN_1_partons_i[1])), 1., 0., 10., 1000);
     FillHist("dR_mu2_q1", truthColl.at(mu_2_index).DeltaR(truthColl.at(HN_2_partons_i[0])), 1., 0., 10., 1000);
@@ -311,9 +318,9 @@ void Truth_HN_pair::ExecuteEvents()throw( LQError ){
   if(trig_pass) FillHist("signal_eff", 2., 1., 0., 10., 10); 
   
   //OS+SS
-
-  FillHist("Nmuons", muons.size(), 1., 0., 10., 10);
-  FillHist("Nelectrons", electrons_veto.size(), 1., 0., 10., 10);
+  
+  FillHist("Nmuons", muons_tight.size(), 1., 0., 10., 10);
+  FillHist("Nelectrons", electrons.size(), 1., 0., 10., 10);
   
   if(muons.size() == 2 && electrons_veto.size() == 0) FillHist("signal_eff", 3., 1., 0., 10., 10);
   if(muons.size() == 2 && electrons_veto.size() == 0 && muons.at(1).Pt() > 20){
