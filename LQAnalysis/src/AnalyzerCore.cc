@@ -19,6 +19,7 @@
 #include "SignalPlotsMM.h"
 #include "SignalPlotsEM.h"
 #include "TriLeptonPlots.h"
+#include "HNpairPlotsMM.h"
 
 //ROOT includes
 #include <TFile.h>
@@ -1250,7 +1251,11 @@ AnalyzerCore::~AnalyzerCore(){
     delete it->second;
   }
   mapCLhistTriLep.clear();
-
+  
+  for(map<TString, HNpairPlotsMM*>::iterator it = mapCLhistHNpairMM.begin(); it != mapCLhistHNpairMM.end(); it++){
+    delete it->second;
+  }
+  mapCLhistHNpairMM.clear();
 
   for(map<TString,TNtupleD*>::iterator it = mapntp.begin(); it!= mapntp.end(); it++){ 
     delete it->second;
@@ -1943,7 +1948,8 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
   if(type==sighist_em)  mapCLhistSigEM[clhistname] = new SignalPlotsEM(clhistname);
 
   if(type==trilephist)  mapCLhistTriLep[clhistname] = new TriLeptonPlots(clhistname);
-      
+  if(type==hnpairmm) mapCLhistHNpairMM[clhistname] = new HNpairPlotsMM(clhistname);
+    
   return;
 }
 
@@ -2207,7 +2213,17 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
   else  m_logger << INFO  <<"Type not set to jethist, is this a mistake?" << LQLogger::endmsg;
 
 }
-
+void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, int nbjet){
+  if(type==hnpairmm){
+    map<TString, HNpairPlotsMM*>::iterator HNpairmmit = mapCLhistHNpairMM.find(hist);
+    if(HNpairmmit !=mapCLhistHNpairMM.end()) HNpairmmit->second->Fill(ev, muons, electrons, jets, w, nbjet);
+    else {
+      mapCLhistHNpairMM[hist] = new HNpairPlotsMM(hist);
+      HNpairmmit = mapCLhistHNpairMM.find(hist);
+      HNpairmmit->second->Fill(ev, muons, electrons, jets, w, nbjet);
+    }
+  }
+}
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
   if(type==trilephist){
@@ -2220,6 +2236,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
       trilepit->second->Fill(ev, muons, electrons, jets,w);
     }
   }
+ 
   else if(type==sighist_ee){
 
     map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
@@ -2317,6 +2334,14 @@ void AnalyzerCore::WriteCLHists(){
     Dir = m_outputFile->mkdir(trilepit->first);
     m_outputFile->cd( Dir->GetName() );
     trilepit->second->Write();
+    m_outputFile->cd();
+  }
+
+  for(map<TString, HNpairPlotsMM*>::iterator HNpairmmit = mapCLhistHNpairMM.begin(); HNpairmmit != mapCLhistHNpairMM.end(); HNpairmmit++){
+    
+    Dir = m_outputFile->mkdir(HNpairmmit->first);
+    m_outputFile->cd( Dir->GetName() );
+    HNpairmmit->second->Write();
     m_outputFile->cd();
   }
 

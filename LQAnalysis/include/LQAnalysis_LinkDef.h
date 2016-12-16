@@ -10,7 +10,9 @@
 #pragma link C++ class ExampleAnalyzer+;
 #pragma link C++ class ExampleAnalyzerDiMuon+;
 #pragma link C++ class HN_pair_di_muon+;
+#pragma link C++ class HN_pair_MM+;
 #pragma link C++ class Truth_HN_pair+;
+#pragma link C++ class ChargeFlip_e+;
 #pragma link C++ class HNDiElectron+;
 #pragma link C++ class FakeRateCalculator_El+;
 #pragma link C++ class SKTreeMaker+;
