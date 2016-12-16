@@ -226,43 +226,34 @@ void ChargeFlip_e::ExecuteEvents()throw( LQError ){
     if(fabs(electrons.at(0).Eta()) < 0.9) FillHist("cf_true_B1", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(0).Eta()) > 0.9 && fabs(electrons.at(0).Eta()) < 1.4442)  FillHist("cf_true_B2", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(0).Eta()) > 1.556 && fabs(electrons.at(0).Eta()) < 2.5)  FillHist("cf_true_E", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_true_global_pt", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_true_global_eta", electrons.at(0).Eta(), 1., -3., 3., 12);
   }
   if(electrons.at(0).Charge() * truthColl.at(first_e_match_i).PdgId() > 0){
     if(fabs(electrons.at(0).Eta()) < 0.9) FillHist("cf_false_B1", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(0).Eta()) > 0.9 && fabs(electrons.at(0).Eta()) < 1.4442)  FillHist("cf_false_B2", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(0).Eta()) > 1.556 && fabs(electrons.at(0).Eta()) < 2.5)  FillHist("cf_false_E", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_false_global_pt", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_false_global_eta", electrons.at(0).Eta(), 1., -3., 3., 12);
+    FillHist("which_false", 1.5, 1., 0., 5., 5);
   }
   //2nd e
   if(electrons.at(1).Charge() * truthColl.at(second_e_match_i).PdgId() < 0){
     if(fabs(electrons.at(1).Eta()) < 0.9) FillHist("cf_true_B1", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(1).Eta()) > 0.9 && fabs(electrons.at(1).Eta()) < 1.4442)  FillHist("cf_true_B2", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(1).Eta()) > 1.556 && fabs(electrons.at(1).Eta()) < 2.5)  FillHist("cf_true_E", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_true_global_pt", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_true_global_eta", electrons.at(1).Eta(), 1., -3., 3., 12);
   }
   if(electrons.at(1).Charge() * truthColl.at(second_e_match_i).Charge() > 0){
     if(fabs(electrons.at(1).Eta()) < 0.9) FillHist("cf_false_B1", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(1).Eta()) > 0.9 && fabs(electrons.at(1).Eta()) < 1.4442)  FillHist("cf_false_B2", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
     if(fabs(electrons.at(1).Eta()) > 1.556 && fabs(electrons.at(1).Eta()) < 2.5)  FillHist("cf_false_E", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-  }
+    FillHist("cf_false_global_pt", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
+    FillHist("cf_false_global_eta", electrons.at(1).Eta(), 1., -3., 3., 12);
+    FillHist("which_false", 2.5, 1., 0., 5., 5);
 
-  /*
-  if(electrons.at(0).Charge() * truthColl.at(first_e_match_i).PdgId() < 0){
-    if(electrons.at(0).Eta() <= 1.479) FillHist("cf_true_B", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    if(electrons.at(0).Eta() > 1.479)  FillHist("cf_true_E", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
   }
-  if(electrons.at(0).Charge() * truthColl.at(first_e_match_i).PdgId() > 0){
-    if(electrons.at(0).Eta() <= 1.479) FillHist("cf_false_B", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    if(electrons.at(0).Eta() > 1.479)  FillHist("cf_false_E", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-  }
-  //2nd e
-  if(electrons.at(1).Charge() * truthColl.at(second_e_match_i).PdgId() < 0){
-    if(electrons.at(1).Eta() <= 1.479) FillHist("cf_true_B", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    if(electrons.at(1).Eta() > 1.479)  FillHist("cf_true_E", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-  }
-  if(electrons.at(1).Charge() * truthColl.at(second_e_match_i).Charge() > 0){
-    if(electrons.at(1).Eta() <= 1.479) FillHist("cf_false_B", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    if(electrons.at(1).Eta() > 1.479)  FillHist("cf_false_E", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-  }
-  */
   
 
   return;
