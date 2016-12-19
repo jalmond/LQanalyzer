@@ -132,6 +132,7 @@ class AnalyzerCore : public LQCycleBase {
   bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   
   float CFRate(snu::KElectron el);
+  float CFRate_Run2(snu::KElectron el, TString el_id);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);

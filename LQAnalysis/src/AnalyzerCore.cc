@@ -2679,6 +2679,70 @@ float AnalyzerCore::CFRate(snu::KElectron el){
   return 1. ;
 }
 
+//CFrate for ELECTRON_HN_TIGHT 13 TeV
+float AnalyzerCore::CFRate_Run2(snu::KElectron el, TString el_id){
+  if(el.Pt() < 20.) return 0.;
+  
+  Double_t p_B1_1[2] = {0.};
+  Double_t p_B2_1[2] = {0.};
+  Double_t p_E_1[2] = {0.};
+  
+  Double_t p_B1_2[2] = {0.};
+  Double_t p_B2_2[2] = {0.};
+  Double_t p_E_2[2] = {0.};
+  
+  Double_t scale_factor_EE = 1. ;
+  Double_t scale_factor_BB = 1. ;
+  
+  if(el_id == "ELECTRON_HN_TIGHT"){
+    p_B1_1 = {0.0001261, -0.005951};
+    p_B2_1 = {0.00063, -0.01965};
+    p_E_1 = {0.006827, -0.2198};
+    
+    p_B1_1 = {1.584e-05, 5.337e-05};
+    p_B2_1 = {3.946e-05, 0.0008439};
+    p_E_1 = {0.003153, -0.003891};
+  }
+  
+  Double_t frac = 0. ;
+  float pt_inv = 1. / el.Pt();
+  float eta = el.Eta();
+  
+  //--root fitting
+  if( fabs(eta) <= 0.9 ) { // inner BB region
+    //scale_factor_BB = 1.22 ; // BB
+    frac = p_B1_2[0] + p_B1_2[1] * pt_inv;
+    if( pt_inv < 0.02 ){
+      frac = max(p_B1_1[0] + p_B1_1[1] * pt_inv, frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+
+  }else if( fabs(eta) > 0.9 && fabs(eta) <= 1.4442 ){ // outer BB region
+    //scale_factor_BB = 1.22 ; // BB
+    frac = p_B2_2[0] + p_B2_2[1] * pt_inv;
+    if( pt_inv < 0.025 ){
+      frac = max(p_B2_1[0] + p_B2_1[1] * pt_inv, frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+
+  } else {  // fabs(eta) > 1.4
+    //scale_factor_EE = 1.40;
+    frac = p_E_2[0] + p_E_2[1] * pt_inv;
+    if( pt_inv <= 0.02 ){
+      frac = max(p_E_1[0] + p_E_1[1] * pt_inv, frac);
+    }
+    frac *= scale_factor_EE ;
+  }
+  
+  return float(frac) ;
+  return 1. ;
+
+}
+
+
+
 bool AnalyzerCore::IsTight(snu::KMuon muon){
   /// ADD TIGHT BaseSelection::MUON REQUIREMENT
   float reliso= muon.RelIso04();

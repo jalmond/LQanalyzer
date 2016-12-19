@@ -1,6 +1,6 @@
-// $Id: ChargeFlip_e.cc 1 2013-11-26 10:23:10Z jalmond $
+// $Id: Scale_cf.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQChargeFlip_e Frame - ROOT-based analysis framework for Korea SNU
+ * @Project: LQScale_cf Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
@@ -8,7 +8,7 @@
  ***************************************************************************/
 
 /// Local includes
-#include "ChargeFlip_e.h"
+#include "Scale_cf.h"
 
 //Core includes
 #include "Reweight.h"
@@ -17,20 +17,20 @@
 
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (ChargeFlip_e);
+ClassImp (Scale_cf);
 
 
  /**
   *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
   *
   */
-ChargeFlip_e::ChargeFlip_e() :  AnalyzerCore(), out_muons(0)  {
+Scale_cf::Scale_cf() :  AnalyzerCore(), out_muons(0)  {
   
   
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("ChargeFlip_e");
+  SetLogName("Scale_cf");
   
-  Message("In ChargeFlip_e constructor", INFO);
+  Message("In Scale_cf constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
@@ -55,7 +55,7 @@ ChargeFlip_e::ChargeFlip_e() :  AnalyzerCore(), out_muons(0)  {
 }
 
 
-void ChargeFlip_e::InitialiseAnalysis() throw( LQError ) {
+void Scale_cf::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
   MakeHistograms();  
@@ -77,7 +77,7 @@ void ChargeFlip_e::InitialiseAnalysis() throw( LQError ) {
   return;
 }
 
-void ChargeFlip_e::ExecuteEvents()throw( LQError ){
+void Scale_cf::ExecuteEvents()throw( LQError ){
   
   /// Apply the gen weight 
   if(!isData) weight*=MCweight;
@@ -102,11 +102,11 @@ void ChargeFlip_e::ExecuteEvents()throw( LQError ){
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
   
   TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
-  TString di_electron_trig1="";
+  TString di_electron_trig1="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
   vector<TString> trignames;
-  trignames.push_back(dimuon_trigmuon_trig1);
-        
+  //trignames.push_back(dimuon_trigmuon_trig1);
+  trignames.push_back(di_electron_trig1); 
   //if(!PassTrigger(triggerslist, prescale)) return;
   //FillCutFlow("TriggerCut", weight);
   
@@ -155,7 +155,6 @@ void ChargeFlip_e::ExecuteEvents()throw( LQError ){
   //std::vector<snu::KElectron> electrons = GetElectrons("ELECTRON_POG_TIGHT");
   std::vector<snu::KElectron> electrons = GetElectrons("ELECTRON_HN_TIGHT");
   std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
-  TString el_id = "ELECTRON_HN_TIGHT";
   
   std::vector<snu::KTruth> truthColl;
   eventbase->GetTruthSel()->Selection(truthColl);
@@ -164,7 +163,7 @@ void ChargeFlip_e::ExecuteEvents()throw( LQError ){
 
   if(electrons.size() != 2) return;
   if(muons.size() != 0) return;
-  if(electrons.at(0).MotherPdgId() != 23 || electrons.at(1).MotherPdgId() != 23) return;
+  //if(electrons.at(0).MotherPdgId() != 23 || electrons.at(1).MotherPdgId() != 23) return;
   snu::KParticle Z = electrons.at(0) + electrons.at(1);
   if(Z.M() > 100 || Z.M() < 80) return;
   if(electrons.at(0).Pt() < 25 || electrons.at(1).Pt() < 20) return;
@@ -173,119 +172,116 @@ void ChargeFlip_e::ExecuteEvents()throw( LQError ){
   float MET = eventbase->GetEvent().PFMET();
   if(MET > 30) return;
   
+  bool trig_pass = PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
   
-  //cout << "truthcoll " << truthColl.size() << endl;
-  int mu_1_index, mu_2_index;
-  
-  bool mu_1_tf = false;
-  bool mu_2_tf = false;
-  for(int i = 0; i < truthColl.size(); i++){
-    //cout << i << "\t" << truthColl.at(i).PdgId() << "\t" << truthColl.at(i).IndexMother() << endl;
-    int i_mother = truthColl.at(i).IndexMother();
-    if(fabs( truthColl.at(i).PdgId() ) == 11 && truthColl.at(i_mother).PdgId() == 23 && !mu_1_tf){
-      mu_1_index = i;
-      mu_1_tf = true;
-      continue;
+  if(electrons.at(0).Charge() == electrons.at(1).Charge() && trig_pass){
+    FillHist("M(ee)_data_SS", Z.M(), 1., 0., 200., 200);
+    if(jets.size() == 1){
+      FillHist("M(ee)_data_SS_1jet", Z.M(), 1., 0., 200., 200);
     }
-    if(fabs( truthColl.at(i).PdgId() ) == 11 && truthColl.at(i_mother).PdgId() == 23 && !mu_2_tf && mu_1_tf){
-      mu_2_index = i;
-      mu_2_tf = true;
-    }
-  }
-  //int mu_1_i_mother = truthColl.at(mu_1_index).IndexMother();
-  //int mu_2_i_mother = truthColl.at(mu_2_index).IndexMother();
-  //cout << "mu_1 pdgid : " << truthColl.at(mu_1_index).PdgId() << ", Mother PdgId : " << truthColl.at(mu_1_i_mother).PdgId() << ", Mother index : " << mu_1_i_mother << endl;
-  //cout << "mu_2 pdgid : " << truthColl.at(mu_2_index).PdgId() << ", Mother PdgId : " << truthColl.at(mu_2_i_mother).PdgId() << ", Mother index : " << mu_2_i_mother << endl; 
-  
-  //bool trig_pass = PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
-  
-    
-  float min_dr = 0;
-  int first_e_match_i, second_e_match_i;
-  if(electrons.at(0).DeltaR(truthColl.at(mu_1_index)) < electrons.at(0).DeltaR(truthColl.at(mu_2_index))){
-    first_e_match_i = mu_1_index;
-    second_e_match_i = mu_2_index;
-  }
-  if(electrons.at(0).DeltaR(truthColl.at(mu_1_index)) > electrons.at(0).DeltaR(truthColl.at(mu_2_index))){
-    first_e_match_i = mu_2_index;
-    second_e_match_i =mu_1_index;
-  }
-  float dr_1st_e, dr_2nd_e;
-  dr_1st_e = electrons.at(0).DeltaR(truthColl.at(first_e_match_i));
-  dr_2nd_e = electrons.at(1).DeltaR(truthColl.at(second_e_match_i));
-  
-  if(dr_1st_e > 0.1 || dr_2nd_e > 0.1) return;
-  /*
-    cout << "1st " << electrons.at(0).Charge() << ", " << electrons.at(0).Pt() << ", truth : " << truthColl.at(first_e_match_i).PdgId() << ", " << truthColl.at(first_e_match_i).Pt() << endl;
-  cout << "2nd " << electrons.at(1).Charge() <<", " <<electrons.at(1).Pt() <<", truth : " <<truthColl.at(second_e_match_i).PdgId() << ", " << truthColl.at(second_e_match_i).Pt() << endl;
-  */
-  
+  }  
   bool e1_cf = electrons.at(0).MCIsCF();
   bool e2_cf = electrons.at(1).MCIsCF();
-  bool e1_cf_suoh = true;
-  bool e2_cf_suoh = true;
   
-  cout << "e1_cf : " << e1_cf << endl;
-  cout << "e2_cf : " << e2_cf << endl;
+  if(electrons.at(0).Charge() == electrons.at(1).Charge() && trig_pass && !e1_cf && !e2_cf) FillHist("M(ee)_prompt", Z.M(), 1., 0., 200., 200);
   
+  if(electrons.at(0).Charge() == electrons.at(1).Charge()) return;
   
-  //0.9, 1.4442, 1.556, 2.5
-  
-  //1st e
-  if(electrons.at(0).Charge() * truthColl.at(first_e_match_i).PdgId() < 0){
-    if(fabs(electrons.at(0).Eta()) < 0.9) FillHist("cf_true_B1", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(0).Eta()) > 0.9 && fabs(electrons.at(0).Eta()) < 1.4442)  FillHist("cf_true_B2", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(0).Eta()) > 1.556 && fabs(electrons.at(0).Eta()) < 2.5)  FillHist("cf_true_E", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_true_global_pt", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_true_global_eta", electrons.at(0).Eta(), 1., -3., 3., 12);
+  float cf_1 = 0, cf_2 = 0;
+  float p0, p1;
+  float pt_inv_e1 = 1. / electrons.at(0).Pt();
+  float pt_inv_e2 = 1. / electrons.at(1).Pt();
+  //cf_1
+  if(fabs(electrons.at(0).Eta()) < 0.9){
+    if(pt_inv_e1 < 0.02){
+      p0 = 0.0001261;
+      p1 = -0.005951;
+    }
+    if(pt_inv_e1 > 0.02){
+      p0 = 0.00001584;
+      p1 = 0.00005337;
+    }
+    cf_1 = p0 + p1 * pt_inv_e1;
   }
-  if(electrons.at(0).Charge() * truthColl.at(first_e_match_i).PdgId() > 0){
-    if(fabs(electrons.at(0).Eta()) < 0.9) FillHist("cf_false_B1", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(0).Eta()) > 0.9 && fabs(electrons.at(0).Eta()) < 1.4442)  FillHist("cf_false_B2", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(0).Eta()) > 1.556 && fabs(electrons.at(0).Eta()) < 2.5)  FillHist("cf_false_E", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_false_global_pt", 1. / electrons.at(0).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_false_global_eta", electrons.at(0).Eta(), 1., -3., 3., 12);
-    FillHist("which_false", 1.5, 1., 0., 5., 5);
-    e1_cf_suoh = false;
+  if(fabs(electrons.at(0).Eta()) > 0.9 && fabs(electrons.at(0).Eta()) < 1.4442){
+    if(pt_inv_e1 < 0.025){
+      p0 = 0.00063;
+      p1 = -0.01965;
+    }
+    if(pt_inv_e1 > 0.025){
+      p0 = 0.00003946;
+      p1 = 0.00008439;
+    }
+    cf_1 = p0 +p1 * pt_inv_e1;
+  } 
+  if(fabs(electrons.at(0).Eta()) > 1.556 && fabs(electrons.at(0).Eta()) < 2.5){
+    if(pt_inv_e1 < 0.02){
+      p0 = 0.006827;
+      p1 = -0.2189;
+    }
+    if(pt_inv_e1 > 0.02){
+      p0 = 0.003153;
+      p1 = -0.03891;
+    }
+    cf_1 = p0 +p1 * pt_inv_e1;
+  } 
+  //cf_2
+  if(fabs(electrons.at(1).Eta()) < 0.9){
+    if(pt_inv_e1 < 0.02){
+      p0 = 0.0001261;
+      p1 = -0.005951;
+    }
+    if(pt_inv_e1 > 0.02){
+      p0 = 0.00001584;
+      p1 = 0.00005337;
+    }
+    cf_2 = p0 +p1 * pt_inv_e1;
   }
-  //2nd e
-  if(electrons.at(1).Charge() * truthColl.at(second_e_match_i).PdgId() < 0){
-    if(fabs(electrons.at(1).Eta()) < 0.9) FillHist("cf_true_B1", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(1).Eta()) > 0.9 && fabs(electrons.at(1).Eta()) < 1.4442)  FillHist("cf_true_B2", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(1).Eta()) > 1.556 && fabs(electrons.at(1).Eta()) < 2.5)  FillHist("cf_true_E", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_true_global_pt", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_true_global_eta", electrons.at(1).Eta(), 1., -3., 3., 12);
+  if(fabs(electrons.at(1).Eta()) > 0.9 && fabs(electrons.at(1).Eta()) < 1.4442){
+    if(pt_inv_e1 < 0.025){
+      p0 = 0.00063;
+      p1 = -0.01965;
+    }
+    if(pt_inv_e1 > 0.025){
+      p0 = 0.00003946;
+      p1 = 0.00008439;
+    }
+    cf_2 = p0 +p1 * pt_inv_e1;
   }
-  if(electrons.at(1).Charge() * truthColl.at(second_e_match_i).PdgId() > 0){
-    if(fabs(electrons.at(1).Eta()) < 0.9) FillHist("cf_false_B1", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(1).Eta()) > 0.9 && fabs(electrons.at(1).Eta()) < 1.4442)  FillHist("cf_false_B2", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    if(fabs(electrons.at(1).Eta()) > 1.556 && fabs(electrons.at(1).Eta()) < 2.5)  FillHist("cf_false_E", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_false_global_pt", 1. / electrons.at(1).Pt(), 1., 0., 0.1, 100);
-    FillHist("cf_false_global_eta", electrons.at(1).Eta(), 1., -3., 3., 12);
-    FillHist("which_false", 2.5, 1., 0., 5., 5);
-    e2_cf_suoh = false;
+  if(fabs(electrons.at(1).Eta()) > 1.556 && fabs(electrons.at(1).Eta()) < 2.5){
+    if(pt_inv_e1 < 0.02){
+      p0 = 0.006827;
+      p1 = -0.2189;
+    }
+    if(pt_inv_e1 > 0.02){
+      p0 = 0.003153;
+      p1 = -0.03891;
+    }
+    cf_2 = p0 +p1 * pt_inv_e1;
   }
   
-  if(e1_cf == e1_cf_suoh) FillHist("e1_cf_agree", 1.5, 1., 0., 5., 5);
-  if(e1_cf != e1_cf_suoh) FillHist("e1_cf_agree", 2.5, 1., 0., 5., 5);
+  cout << "cf_1 : " << cf_1 << ", cf_2 : " << cf_2 << endl;
   
-  if(e2_cf == e2_cf_suoh) FillHist("e2_cf_agree", 1.5, 1., 0., 5., 5);
-  if(e2_cf != e2_cf_suoh) FillHist("e2_cf_agree", 2.5, 1., 0., 5., 5);
+  if(electrons.at(0).Charge() != electrons.at(1).Charge() && trig_pass){
+    FillHist("M(ee)_data_CF_pred", Z.M(), cf_1 + cf_2 - cf_1 * cf_2, 0., 200., 200);
+    if(jets.size() == 1){
+      FillHist("M(ee)_data_CF_pred_1jet", Z.M(), cf_1 + cf_2 - cf_1 * cf_2, 0., 200., 200);
 
-  
+    }
+  }
   return;
 }// End of execute event loop
 
 
 
-void ChargeFlip_e::EndCycle()throw( LQError ){
+void Scale_cf::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
 
 }
 
 
-void ChargeFlip_e::BeginCycle() throw( LQError ){
+void Scale_cf::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
@@ -305,15 +301,15 @@ void ChargeFlip_e::BeginCycle() throw( LQError ){
   
 }
 
-ChargeFlip_e::~ChargeFlip_e() {
+Scale_cf::~Scale_cf() {
   
-  Message("In ChargeFlip_e Destructor" , INFO);
+  Message("In Scale_cf Destructor" , INFO);
   if(!k_isdata)delete reweightPU;
   
 }
 
 
-void ChargeFlip_e::FillCutFlow(TString cut, float weight){
+void Scale_cf::FillCutFlow(TString cut, float weight){
 
   
   if(GetHist("cutflow")) {
@@ -334,7 +330,7 @@ void ChargeFlip_e::FillCutFlow(TString cut, float weight){
 }
 
 
-void ChargeFlip_e::BeginEvent( )throw( LQError ){
+void Scale_cf::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -343,20 +339,20 @@ void ChargeFlip_e::BeginEvent( )throw( LQError ){
 
 
 
-void ChargeFlip_e::MakeHistograms(){
+void Scale_cf::MakeHistograms(){
   //// Additional plots to make
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
   Message("Made histograms", INFO);
   /**
-   *  Remove//Overide this ChargeFlip_eCore::MakeHistograms() to make new hists for your analysis
+   *  Remove//Overide this Scale_cfCore::MakeHistograms() to make new hists for your analysis
    **/
   
 }
 
 
-void ChargeFlip_e::ClearOutputVectors() throw(LQError) {
+void Scale_cf::ClearOutputVectors() throw(LQError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

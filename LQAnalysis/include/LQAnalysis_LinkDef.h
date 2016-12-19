@@ -13,6 +13,8 @@
 #pragma link C++ class HN_pair_MM+;
 #pragma link C++ class Truth_HN_pair+;
 #pragma link C++ class ChargeFlip_e+;
+#pragma link C++ class Closure_cf+;
+#pragma link C++ class Scale_cf+;
 #pragma link C++ class HNDiElectron+;
 #pragma link C++ class FakeRateCalculator_El+;
 #pragma link C++ class SKTreeMaker+;
