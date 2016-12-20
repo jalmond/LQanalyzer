@@ -213,6 +213,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
 
 
+
 void AnalyzerCore::SetupSelectionJet(std::string path_sel){
   Message("SetupSelectionJet", DEBUG);
   ifstream jetselconfig(path_sel.c_str());
@@ -270,6 +271,67 @@ void AnalyzerCore::SetupSelectionJet(std::string path_sel){
     }
     selectionIDMapsJet[idlabel] = string_jetsel;
     selectionIDMapfJet[idlabel] = float_jetsel;
+  }
+}
+
+
+void AnalyzerCore::SetupSelectionFatJet(std::string path_sel){
+  Message("SetupSelectionJet", DEBUG);
+  ifstream jetselconfig(path_sel.c_str());
+  if(!jetselconfig) {
+    cerr << "Did not find "+ path_sel+", exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  string jetline;
+  int ncuts=0;
+  vector<TString> cutnames;
+  while(getline(jetselconfig,jetline) ){
+    vector<pair<TString,TString> > string_jetsel;
+    vector<pair<TString,float> > float_jetsel;
+    TString idlabel;
+    if (TString(jetline).Contains("webpage")) continue;
+    if (TString(jetline).Contains("###")) continue;
+    if (TString(jetline).Contains("ncut")) {
+      std::istringstream is( jetline );
+      string tmp;
+      int itmp;
+      is >> tmp;
+      is >> itmp;
+      ncuts = 2*(itmp +1);
+      continue;
+    }
+    if (TString(jetline).Contains("ptmin")) {
+      std::istringstream is( jetline );
+      string tmp;
+      for (int x =0; x < ncuts; x++){
+        is >> tmp;
+        cutnames.push_back(TString(tmp));
+      }
+    }
+    else{
+      std::istringstream is( jetline );
+      string tmp;
+      float tmpf;
+      for (int x =0; x < ncuts; x++){
+        if ( x%2 ==0) {
+          is >> tmp;
+          continue;
+        }
+
+        if (x > 6 && x < 18){
+          is >> tmp;
+          string_jetsel.push_back(make_pair(cutnames.at(x),tmp) );
+
+        }
+        else if ( x ==1) {is >> idlabel;}
+        else {
+          is >> tmpf;
+          float_jetsel.push_back(make_pair(cutnames.at(x),tmpf));
+        }
+      }
+    }
+    selectionIDMapsFatJet[idlabel] = string_jetsel;
+    selectionIDMapfFatJet[idlabel] = float_jetsel;
   }
 }
 
@@ -487,6 +549,10 @@ bool AnalyzerCore::EtaRegion(TString reg,  std::vector<snu::KMuon> muons){
 
 
 
+std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(BaseSelection::ID jetid, float ptcut, float etacut){
+  return GetFatJets(GetStringID(jetid), ptcut, etacut);
+}
+
 
 std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid, float ptcut, float etacut){
   return GetJets(GetStringID(jetid), ptcut, etacut);
@@ -647,6 +713,41 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,  bool smearjets,floa
 
   return jetColl;
   
+}
+
+
+
+std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid,  bool smearjets,float ptcut, float etacut){
+
+  std::vector<snu::KFatJet> fatjetColl;
+
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsFatJet.find(fatjetid);
+  if(it== selectionIDMapsFatJet.end()){
+    cerr << "FatJet ID ["+fatjetid+"] not found" << endl; exit(EXIT_FAILURE);
+  }
+  else {
+    TString muontag="";
+    TString eltag="";
+    for (unsigned int i=0; i  < it->second.size(); i++){
+      if ( it->second.at(i).first == "remove_near_muonID") muontag =  it->second.at(i).second;
+      if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
+    }
+    if(smearjets){
+      if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl,fatjetid, ptcut,etacut);
+      else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
+      else eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,fatjetid, ptcut,etacut);
+
+    }
+    else{
+      if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl,fatjetid, ptcut,etacut,false);
+      else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove fatjets near only one lepton" << endl; exit(EXIT_FAILURE);}
+      else eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,fatjetid, ptcut,etacut,false);
+
+    }
+  }
+
+  return fatjetColl;
+
 }
 
 std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString muid, float ptcut, float etacut){
@@ -1311,7 +1412,6 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     MCweight = eventinfo.MCWeight(); //Get MC weight here FIX ME                                                              
     weight= ev_weight; 
   }
-
  //
   // creates object that stores all SKTree classes	
   //                                                                                                        
@@ -1319,13 +1419,14 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   snu::KTrigger triggerinfo = GetTriggerInfo(triggerlist);
     
   std::vector<snu::KJet> skjets= GetAllJets();
+  std::vector<snu::KFatJet> skfatjets= GetAllFatJets();
   std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
   
    
   /// np == numberof particles you want to store at truth info. 30 is default unless running nocut sktree OR signal
   int np =  AssignnNumberOfTruth();
   
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets,skfatjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
@@ -1338,6 +1439,9 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   eventbase->GetMuonSel()->SetIDFMap(selectionIDMapfMuon);
   eventbase->GetJetSel()->SetIDSMap(selectionIDMapsJet);
   eventbase->GetJetSel()->SetIDFMap(selectionIDMapfJet);
+  eventbase->GetFatJetSel()->SetIDSMap(selectionIDMapsFatJet);
+  eventbase->GetFatJetSel()->SetIDFMap(selectionIDMapfFatJet);
+
 
   if(!k_isdata){
     if(!changed_target_lumi){
@@ -1356,6 +1460,7 @@ int AnalyzerCore::VersionStamp(TString cversion){
   else if((cversion.Contains("v7-6-5") || cversion.Contains("v7-6-6"))) return 4;
   else if((cversion.Contains("v8-0-1"))) return 5;
   else if((cversion.Contains("v8-0-2"))) return 6;
+  else if((cversion.Contains("v8-0-3"))) return 7;
   
   return 5;
  
@@ -1410,6 +1515,17 @@ float AnalyzerCore::SumPt( std::vector<snu::KJet> particles){
   }
   return sumpt;
 }
+
+
+float AnalyzerCore::SumPt( std::vector<snu::KFatJet> particles){
+
+  float sumpt=0.;
+  for(std::vector<snu::KFatJet>::iterator it = particles.begin(); it != particles.end(); it++){
+    sumpt += it->Pt();
+  }
+  return sumpt;
+}
+
   
 
 
@@ -2947,6 +3063,17 @@ vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KJet> j){
   return tl_jet;
 }
 
+
+vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KFatJet> j){
+
+  vector<TLorentzVector> tl_jet;
+  for(vector<KFatJet>::iterator itj=j.begin(); itj!=j.end(); ++itj) {
+    TLorentzVector tmp_j;
+    tmp_j.SetPtEtaPhiM((*itj).Pt(),(*itj).Eta(),(*itj).Phi(),(*itj).M());
+    tl_jet.push_back(tmp_j);
+  }
+  return tl_jet;
+}
 
 
 

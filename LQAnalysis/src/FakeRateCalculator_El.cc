@@ -79,24 +79,23 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
   
   numberVertices = eventbase->GetEvent().nVertices();   
-  
+
   if (!k_isdata) {
-    weight = weight * MCweight * eventbase->GetEvent().PileUpWeight();
+    //weight = weight * MCweight * eventbase->GetEvent().PileUpWeight();
   }
 
   
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true, "ELECTRON_HN_FAKELOOSE");
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true, "ELECTRON16_HN_FAKELOOSE_NOD0");
   //  loose  = tight : rel iso < 0.5 dxy < 100;
-  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true, "ELECTRON_HN_TIGHT");
+  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true, "ELECTRON16_HN_TIGHT");
 
   float id_weight=1.;
   float reco_weight=1.;
   if(!isData){
     for(unsigned int iel=0; iel < electronLooseColl.size(); iel++){
       id_weight*= ElectronScaleFactor("ELECTRON_POG_TIGHT", electronLooseColl);
-
     }
-    weight*= id_weight;
+    //    weight*= id_weight;
     //weight*= reco_weight;
   }
 
@@ -154,12 +153,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_12), PassTrigger(triggerslist_18), PassTrigger( triggerslist_23), PassTrigger(triggerslist_33), TargetLumi); 
 
 
-  weight*= prescale_trigger;
+  // weight*= prescale_trigger;
   
-
   MakeFakeRatePlots("HNTight", electronTightColl, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
-  
-  
+ 
 
   bool useevent40 = UseEvent(electronLooseColl , jetColl, 40., prescale_trigger, weight);
 
@@ -211,7 +208,10 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 	if(isData) return 1.;
 	prescale_trigger = WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum); //// 20 + GeV bins
       }
-      else prescale_trigger = WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum)*0.8;
+      else {
+	if(isData) return 0;
+	prescale_trigger = WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum)*0.8;
+      }
     }
     else  if(electrons.at(0).Pt() >= 25.){
       //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30
@@ -220,7 +220,10 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 	if(isData) return 1.;
         prescale_trigger =  WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) ; //// 20 + GeV bins
       }
-      else prescale_trigger =  WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) * 0.8; 
+      else {
+	if(isData) return 0;
+	prescale_trigger =  WeightByTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) * 0.8; 
+      }
     }
     else   if(electrons.at(0).Pt() >= 20.){
       //HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30
@@ -228,7 +231,10 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 	if(isData) return 1.;
 	prescale_trigger = WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum) ;
       }
-      else prescale_trigger = WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum)*0.8 ;
+      else {
+	if(isData) return 0;
+	prescale_trigger = WeightByTrigger("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v", fake_total_lum)*0.8 ;
+      }
     }
     else   if(electrons.at(0).Pt() >= 15.){
       //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_
@@ -236,7 +242,10 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 	if(isData) return 1.;
         prescale_trigger = WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum) ;
       }
-      else         prescale_trigger = WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum)*0.8 ;
+      else {
+	if(isData) return 0;
+        prescale_trigger = WeightByTrigger("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v", fake_total_lum)*0.8 ;
+      }
     }
     else{
       prescale_trigger = 0.;

@@ -330,7 +330,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
-   MakeDiElectronValidationPlots("ELECTRON_POG_TIGHT", weight, pileup_reweight,triggerslist_diel, "MUON_POG_TIGHT","JET_HN", "POGTight");
+   MakeDiElectronValidationPlots("ELECTRON16_HN_TIGHT", weight, pileup_reweight,triggerslist_diel, "MUON_POG_TIGHT","JET_HN", "POGTight");
    //MakeDiElectronValidationPlots("ELECTRON_POG_TIGHT", weight, pileup_reweight, triggerslist_diel, "MUON_POG_TIGHT","JET_HN", "POGTighttruthmatch");
    ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
@@ -797,7 +797,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
 
   std::vector<snu::KElectron> electrons ;
   if(k_running_nonprompt){
-    electrons             = GetElectrons(true, false,"ELECTRON_HN_FAKELOOSE_NOD0");
+    electrons             = GetElectrons(true, false,"ELECTRON16_HN_FAKELOOSE_NOD0");
   }
   else if(tag.Contains("truthmatch"))   electrons = GetElectrons(true, false,elid);
   else   electrons =  GetElectrons(elid);
@@ -807,7 +807,11 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
   std::vector<snu::KMuon> muons =  GetMuons(muid);
   std::vector<snu::KJet> jets =  GetJets(jetid);
   
-  float trig_pass= TriggerEff("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", electrons);
+  bool trig_pass= PassTrigger("HLT_Ele32_eta2p1_WPTight_Gsf_v");
+  if(!isData) {
+    trig_pass=true;
+    w*=0.8;
+  }
   //bool trig_pass= PassTrigger(trignames.at(0));
   /// List of all corrections to be applied
   float trigger_sf(1.);
@@ -821,7 +825,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
     id_iso_sf=   ElectronScaleFactor(elid, electrons,0); ///MUON_POG_TIGHT == MUON_HN_TIGHT
     //reco_weight = ElectronRecoScaleFactor(electrons);
     /// Tiny effect on unprescaled triggers
-    trigger_ps= WeightByTrigger(trignames, TargetLumi)  ;
+    trigger_ps= WeightByTrigger("HLT_Ele32_eta2p1_WPTight_Gsf_v", TargetLumi)  ;
     ev_weight = w * trigger_sf * id_iso_sf * reco_weight * pu_reweight*trigger_ps*trig_pass;
   }
   if(k_running_nonprompt){

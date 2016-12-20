@@ -23,7 +23,7 @@ ClassImp (SKTreeMakerDiLep);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMakerDiLep::SKTreeMakerDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_fatjets(0),out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMakerDiLep");
@@ -69,6 +69,13 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
+  //###### JET SELECTION  ################                                                                                                                                      
+  Message("Selecting fatjets", DEBUG);
+  eventbase->GetFatJetSel()->SetPt(20);
+  eventbase->GetFatJetSel()->SetEta(5.);
+  eventbase->GetFatJetSel()->BasicSelection(out_fatjets);
+
+
   //###### GenJet Selection ##########
   //if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
   
@@ -125,6 +132,7 @@ void SKTreeMakerDiLep::BeginCycle() throw( LQError ){
 
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
+  DeclareVariable(out_fatjets, "KFatJets");
   DeclareVariable(out_genjets, "KGenJets");
   DeclareVariable(out_trigger, "KTrigger");
   DeclareVariable(out_event, "KEvent");
@@ -234,6 +242,7 @@ void SKTreeMakerDiLep::ClearOutputVectors() throw (LQError){
   out_electrons.clear();
   out_photons.clear();
   out_jets.clear();
+  out_fatjets.clear();
   out_genjets.clear();
   out_truth.clear();
 

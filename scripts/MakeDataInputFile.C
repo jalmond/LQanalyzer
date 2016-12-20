@@ -64,6 +64,8 @@ void MakeDataInputFile(TString version=""){
   periods.push_back("E");
   periods.push_back("F");
   periods.push_back("G");
+  periods.push_back("H_v2");
+  periods.push_back("H_v3");
   
   TString output="/data2/DATA/cattoflat/Data/" + version + "/";
 

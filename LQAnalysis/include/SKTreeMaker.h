@@ -31,6 +31,7 @@ class SKTreeMaker : public AnalyzerCore {
   std::vector<snu::KElectron> out_electrons;
   std::vector<snu::KPhoton> out_photons;
   std::vector<snu::KJet> out_jets;
+  std::vector<snu::KFatJet> out_fatjets;
   std::vector<snu::KGenJet> out_genjets;
   std::vector<snu::KTruth> out_truth;
   snu::KEvent out_event;
@@ -41,6 +42,6 @@ class SKTreeMaker : public AnalyzerCore {
   int pass_eventcut;
   int pass_vertexcut;
 
-  ClassDef ( SKTreeMaker, 2);
+  ClassDef ( SKTreeMaker, 3);
 };
 #endif

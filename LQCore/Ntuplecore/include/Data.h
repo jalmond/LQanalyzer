@@ -30,6 +30,7 @@ namespace snu{
   class KPhoton;
   class KEvent;
   class KJet;
+  class KFatJet;
   class KGenJet;
   class KTrigger;
   class KTruth;
@@ -80,6 +81,7 @@ public :
    void ConnectElectrons();
    void ConnectPhotons();
    void ConnectPFJets();
+   void ConnectPFFatJets();
 
    void ConnectTruth(int data_setting);
    void ConnectTrigger();
@@ -105,6 +107,7 @@ public :
    std::vector<snu::KElectron>     *k_inputelectrons;
    std::vector<snu::KPhoton>     *k_inputphotons;
    std::vector<snu::KJet>     *k_inputjets;
+   std::vector<snu::KFatJet>     *k_inputfatjets;
    std::vector<snu::KGenJet>     *k_inputgenjets;
    snu::KEvent     *k_inputevent;
    snu::KTrigger     *k_inputtrigger;
@@ -156,7 +159,9 @@ public :
    Bool_t          ecalDCTRFilter;
    Bool_t          eeBadScFilter;
    Bool_t          goodVertices;
-   Bool_t          Flag_globalTightHalo2016Filter;
+   Bool_t BadChargedCandidateFilter;
+   Bool_t BadPFMuonFilter;
+ Bool_t          Flag_globalTightHalo2016Filter;
    Int_t           GenTTCat;
    Int_t           genWeight_id1;
    Int_t           genWeight_id2;
@@ -260,6 +265,43 @@ public :
    std::vector<double>  *jets_vtx3DSig;
    std::vector<double>  *jets_vtx3DVal;
    std::vector<double>  *jets_vtxMass;
+
+   std::vector<double>  *fatjets_CSVInclV2;
+   std::vector<double>  *fatjets_JetProbBJet;
+   std::vector<double>  *fatjets_CMVAV2;
+   std::vector<double>        *fatjets_iCSVCvsL;
+   std::vector<double>        *fatjets_CCvsLT;
+   std::vector<double>        *fatjets_CCvsBT;
+   std::vector<double>  *fatjets_chargedEmEnergyFraction;
+   std::vector<double>  *fatjets_energy;
+   std::vector<double>  *fatjets_eta;
+   std::vector<double>  *fatjets_PileupJetId;
+   std::vector<double>  *fatjets_m;
+   std::vector<double>  *fatjets_phi;
+   std::vector<double>  *fatjets_pt;
+   std::vector<double>  *fatjets_shiftedEnDown;
+   std::vector<double>  *fatjets_shiftedEnUp;
+   std::vector<double>  *fatjets_smearedRes;
+   std::vector<double>  *fatjets_smearedResDown;
+   std::vector<double>  *fatjets_smearedResUp;
+   std::vector<double>  *fatjets_vtx3DSig;
+   std::vector<double>  *fatjets_vtx3DVal;
+   std::vector<double>  *fatjets_vtxMass;
+   std::vector<double>  *fatjets_tau1;
+   std::vector<double>  *fatjets_tau2;
+   std::vector<double>  *fatjets_tau3;
+   std::vector<double>  *fatjets_prunedmass;
+   std::vector<double>  *fatjets_softdropmass;
+     
+   std::vector<double>  *fatjets_puppi_pt;
+   std::vector<double>  *fatjets_puppi_eta;
+   std::vector<double>  *fatjets_puppi_phi;
+   std::vector<double>  *fatjets_puppi_m;
+   std::vector<double>  *fatjets_puppi_tau1;
+   std::vector<double>  *fatjets_puppi_tau2;
+   std::vector<double>  *fatjets_puppi_tau3;;
+
+
    std::vector<double>  *met_phi;
    std::vector<double>  *met_pt;
    std::vector<double>  *met_sumet;
@@ -361,6 +403,9 @@ public :
    std::vector<bool>    *jets_isLoose;
    std::vector<bool>    *jets_isTight;
    std::vector<bool>    *jets_isTightLepVetoJetID;
+   std::vector<bool>    *fatjets_isLoose;
+   std::vector<bool>    *fatjets_isTight;
+   std::vector<bool>    *fatjets_isTightLepVetoJetID;
    std::vector<bool>    *muon_isGlobal;
    std::vector<bool>    *muon_isLoose;
    std::vector<bool>    *muon_isMedium;
@@ -381,6 +426,10 @@ public :
    std::vector<int>     *jets_partonFlavour;
    std::vector<int>     *jets_partonPdgId;
    std::vector<int>     *jets_vtxNtracks;
+   std::vector<int>     *fatjets_hadronFlavour;
+   std::vector<int>     *fatjets_partonFlavour;
+   std::vector<int>     *fatjets_partonPdgId;
+   std::vector<int>     *fatjets_vtxNtracks;
    std::vector<int>     *muon_matchedstations;
    std::vector<int>     *muon_trackerlayers;
    std::vector<int>     *muon_validhits;
@@ -427,7 +476,10 @@ public :
    TBranch       *b_Flag_globalTightHalo2016Filter;  //!
    TBranch        *b_csctighthaloFilter;   //!                                                                                                                                                                                                                               
    TBranch        *b_ecalDCTRFilter;   //!                                                                                                                                                                                                                                   
-   TBranch        *b_eeBadScFilter;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_BadChargedCandidateFilter;
+    TBranch        *b_BadPFMuonFilter;
+   TBranch        *b_eeBadScFilter;   //!                                                                                                                                       
+                                                                                             
    TBranch        *b_goodVertices;   //!                                                                                                                                                                                                                                     
    TBranch        *b_GenTTCat;   //!                                                                                                                                                                                                                                         
    TBranch        *b_genWeight_id1;   //!                                                                                                                                                                                                                                    
@@ -509,10 +561,58 @@ public :
    TBranch        *b_jets_shiftedEnUp;   //!                                                                                                                                                                                                                                 
    TBranch        *b_jets_smearedRes;   //!                                                                                                                                                                                                                                  
    TBranch        *b_jets_smearedResDown;   //!                                                                                                                                                                                                                              
-   TBranch        *b_jets_smearedResUp;   //!                                                                                                                                                                                                                                
-   TBranch        *b_jets_vtx3DSig;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_jets_vtx3DVal;   //!                                                                                                                                                                                                                                    
-   TBranch        *b_jets_vtxMass;   //!                                                                                                                                                                                                                                     
+   TBranch        *b_jets_smearedResUp;   //! 
+   TBranch        *b_jets_vtx3DSig;   //! 
+   TBranch        *b_jets_vtx3DVal;   //! 
+   TBranch        *b_jets_vtxMass;   //!                                                                                                                                                                                                               
+   TBranch        *b_fatjets_CSVInclV2;   //!  
+                                                                                                                                                                               
+   TBranch        *b_fatjets_JetProbBJet; //!                                                                                                                                     
+   TBranch        *b_fatjets_CMVAV2; //!                                                                                                                                          
+   TBranch        *b_fatjets_iCSVCvsL;   //!                                                                                                                                      
+   TBranch        *b_fatjets_CCvsLT;   //!                                                                                                                                        
+   TBranch        *b_fatjets_CCvsBT;   //!                                                                                                                                        
+
+   TBranch        *b_fatjets_chargedEmEnergyFraction;   //!                                                                                                                       
+
+   TBranch        *b_fatjets_energy;   //!                                                                                                                                  
+                                                                                                                                                                               
+   TBranch        *b_fatjets_eta;   //!                                                                                                                                        
+                                                                                                                                                                            
+   TBranch        *b_fatjets_PileupJetId;   //!                                                                                                                                
+                                                                                                                                                                            
+   TBranch        *b_fatjets_m;   //!                                                                                                                                          
+                                                                                                                                                                               
+   TBranch        *b_fatjets_phi;   //!                                                                                                                                         
+                                                                                                                                                                               
+   TBranch        *b_fatjets_pt;   //!                                                                                                                                          
+                                                                                                                                                                               
+   TBranch        *b_fatjets_shiftedEnDown;   //!                                                                                                                              
+                                                                                                                                                                               
+   TBranch        *b_fatjets_shiftedEnUp;   //!                                                                                                                                
+                                                                                                                                                                               
+   TBranch        *b_fatjets_smearedRes; 
+   
+   TBranch        *b_fatjets_smearedResUp;   //!                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                     
+   TBranch        *b_fatjets_smearedResDown;   //!      
+
+   TBranch        *b_fatjets_vtx3DSig;   //!                                                                                                                                                                                                               
+   TBranch        *b_fatjets_vtx3DVal;   //!                                                                                                                                                                                                               
+   TBranch        *b_fatjets_vtxMass;   //!     
+   TBranch        *b_fatjets_tau1;
+   TBranch        *b_fatjets_tau2;
+   TBranch        *b_fatjets_tau3;
+   TBranch        *b_fatjets_prunedmass;
+   TBranch        *b_fatjets_softdropmass;
+
+   TBranch        *b_fatjets_puppi_pt;
+   TBranch        *b_fatjets_puppi_eta;
+   TBranch        *b_fatjets_puppi_phi;
+   TBranch        *b_fatjets_puppi_m;
+   TBranch        *b_fatjets_puppi_tau1;
+   TBranch        *b_fatjets_puppi_tau2;
+   TBranch        *b_fatjets_puppi_tau3;
 
    TBranch        *b_met_phi;   //!                                                                                                                                                                                                                                          
    TBranch        *b_met_pt;   //!                                                                                                                                                                                                                                           
@@ -631,7 +731,13 @@ public :
 
    TBranch        *b_jets_isLoose;   //!                                                                                                                                                                                                                                     
    TBranch        *b_jets_isTight;   //!                                                                                                                                                                                                                                     
-   TBranch        *b_jets_isTightLepVetoJetID;   //!                                                                                                                                                                                                                         
+   TBranch        *b_jets_isTightLepVetoJetID;   //!                                                                                                                            
+   TBranch        *b_fatjets_isLoose;   //!                                                                                                                                     
+                                                                                                                                                                                
+   TBranch        *b_fatjets_isTight;   //!                                                                                                                                    
+                                                                                                                                                                                 
+   TBranch        *b_fatjets_isTightLepVetoJetID;   //!  
+                                                                                             
    TBranch        *b_muon_isGlobal;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_isLoose;   //!                                                                                                                                                                                                                                     
    TBranch        *b_muon_isMedium;   //!                                                                                                                                                                                                                                    
@@ -651,19 +757,31 @@ public :
 
    TBranch        *b_jets_hadronFlavour;   //!                                                                                                                                                                                                                               
    TBranch        *b_jets_partonFlavour;   //!                                                                                                                                                                                                                               
-   TBranch        *b_jets_partonPdgId;   //!                                                                                                                                                                                                                                 
-   TBranch        *b_jets_vtxNtracks;   //!                                                                                                                                                                                                                                  
-   TBranch        *b_muon_matchedstations;   //!                                                                                                                                                                                                                             
+   TBranch        *b_jets_partonPdgId;   //!                                                                                                                                                                                 
+   TBranch        *b_jets_vtxNtracks;   //!                                                                                                                                                                                     
+   TBranch        *b_fatjets_hadronFlavour;   //! 
+
+                                                                                                                                                                                 
+   TBranch        *b_fatjets_partonFlavour;   //!                                                                                                                               
+
+                                                                                                                                                                                 
+   TBranch        *b_fatjets_partonPdgId;   //!                                                                                                                              
+
+                                                                                                                                                                                 
+   TBranch        *b_fatjets_vtxNtracks;   //!  
+                                                                                             
+   TBranch        *b_muon_matchedstations;   //!                                             
    TBranch        *b_muon_trackerlayers;   //!                                                                                                                                                                                                                               
-   TBranch        *b_muon_validhits;   //!                                                                                                                                                                                                                                   
-   TBranch        *b_muon_validmuonhits;   //!                                                                                                                                                                                                                               
-   TBranch        *b_muon_validpixhits;   //!     
+   TBranch        *b_muon_validhits;   //!
+   TBranch        *b_muon_validmuonhits;   //! 
+   TBranch        *b_muon_validpixhits;   //!  
 
 
    TBranch        *b_inputmuons;
    TBranch        *b_inputtrigger;
    TBranch        *b_inputtruth;
    TBranch        *b_inputjets;
+   TBranch        *b_inputfatjets;
    TBranch        *b_inputgenjets;
    TBranch        *b_inputevent;
    TBranch        *b_inputelectrons;

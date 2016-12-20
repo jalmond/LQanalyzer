@@ -170,9 +170,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_up->at(0)));
 	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
 	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
+	//// FILL smearing shift on met()
 	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0)));
 	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down->at(0)*met_jetRes_Px_down->at(0) + met_jetRes_Py_down->at(0)*met_jetRes_Py_up->at(0)));
-	
 	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up->at(0));
 	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down->at(0));
       }
@@ -248,6 +248,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPassHBHENoiseFilter(HBHENoiseFilter);
     kevent.SetPassCSCHaloFilterTight(csctighthaloFilter);
     kevent.SetPassBadEESupercrystalFilter(eeBadScFilter);
+  }
+  if(k_cat_version > 6){
+    kevent.SetPassBadChargedCandidateFilter(BadChargedCandidateFilter);
+    kevent.SetPassBadPFMuonFilter(BadPFMuonFilter);
   }
   return kevent;
 }
@@ -818,6 +822,108 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   m_logger << DEBUG << "PFJet size = " << jets.size() << LQLogger::endmsg;
   return jets;
 }
+
+
+
+std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
+
+  std::vector<KFatJet> fatjets;
+
+  if(k_cat_version <  7) return fatjets;
+
+  if(!LQinput){
+
+    for(std::vector<KFatJet>::iterator kit  = k_inputfatjets->begin(); kit != k_inputfatjets->end(); kit++){
+      fatjets.push_back(*kit);
+    }
+    return fatjets;
+  }
+
+  for (UInt_t ijet=0; ijet< fatjets_eta->size(); ijet++) {
+    KFatJet jet;
+    if(fatjets_pt->at(ijet) != fatjets_pt->at(ijet)) continue;
+    jet.SetPtEtaPhiE(fatjets_pt->at(ijet), fatjets_eta->at(ijet), fatjets_phi->at(ijet), fatjets_energy->at(ijet));
+
+    jet.SetJetPassLooseID(fatjets_isLoose->at(ijet));
+    jet.SetJetPassTightID(fatjets_isTight->at(ijet));
+    jet.SetJetPassTightLepVetoID(fatjets_isTightLepVetoJetID->at(ijet));
+
+    jet.SetJetPileupIDMVA(fatjets_PileupJetId->at(ijet));
+
+    if(fatjets_PileupJetId){
+      if(std::abs(fatjets_eta->at(ijet)) < 2.6){
+        if(fatjets_PileupJetId->at(ijet) > 0.3) jet.SetJetPileupIDLooseWP(true);
+        else jet.SetJetPileupIDLooseWP(false);
+        if(fatjets_PileupJetId->at(ijet) > 0.7) jet.SetJetPileupIDMediumWP(true);
+        else jet.SetJetPileupIDMediumWP(false);
+        if(fatjets_PileupJetId->at(ijet) > 0.9)jet.SetJetPileupIDTightWP(true);
+        else jet.SetJetPileupIDTightWP(false);
+      }
+      else{
+        if(fatjets_PileupJetId->at(ijet) > -0.55) jet.SetJetPileupIDLooseWP(true);
+        else jet.SetJetPileupIDLooseWP(false);
+        if(fatjets_PileupJetId->at(ijet) > -0.3) jet.SetJetPileupIDMediumWP(true);
+        else jet.SetJetPileupIDMediumWP(false);
+        if(fatjets_PileupJetId->at(ijet) > -0.1)jet.SetJetPileupIDTightWP(true);
+        else jet.SetJetPileupIDTightWP(false);
+      }
+    }
+
+
+    /// BTAG variables                                                                                                                                                                                                                                                                                          
+    if(fatjets_CSVInclV2) jet.SetBTagInfo(snu::KFatJet::CSVv2, fatjets_CSVInclV2->at(ijet));
+    if(fatjets_CMVAV2)    jet.SetBTagInfo(snu::KFatJet::cMVAv2, fatjets_CMVAV2->at(ijet));
+    if(fatjets_JetProbBJet)  jet.SetBTagInfo(snu::KFatJet::JETPROB, fatjets_JetProbBJet->at(ijet));
+
+    if(fatjets_CCvsLT){
+      if(fatjets_CCvsLT->size() > 0) jet.SetCTagInfo(snu::KFatJet::CCvsLT, fatjets_CCvsLT->at(ijet));
+    }
+    if(fatjets_CCvsBT){
+      if(fatjets_CCvsBT->size() > 0)jet.SetCTagInfo(snu::KFatJet::CCvsBT, fatjets_CCvsBT->at(ijet));
+    }
+    jet.SetVtxMass(fatjets_vtxMass->at(ijet));
+    jet.SetVtx3DVal(fatjets_vtx3DVal->at(ijet));
+    jet.SetVtx3DSig(fatjets_vtx3DSig->at(ijet));
+    jet.SetVtxNTracks(fatjets_vtxNtracks->at(ijet));
+
+    // flavour                                                                                                                                                                                                                                                                                                  
+    jet.SetJetPartonFlavour(fatjets_partonFlavour->at(ijet));
+    jet.SetJetHadronFlavour(fatjets_hadronFlavour->at(ijet));
+    jet.SetJetPartonPdgId(fatjets_partonPdgId->at(ijet));
+
+    jet.SetJetChargedEmEF(fatjets_chargedEmEnergyFraction->at(ijet));
+
+    jet.SetJetScaledDownEnergy(fatjets_shiftedEnDown->at(ijet));
+    jet.SetJetScaledUpEnergy(fatjets_shiftedEnUp->at(ijet));
+    jet.SetSmearedResDown(fatjets_smearedResDown->at(ijet));
+    jet.SetSmearedResUp(fatjets_smearedResUp->at(ijet));
+    jet.SetSmearedRes(fatjets_smearedRes->at(ijet));
+
+
+    jet.SetTau1(fatjets_tau1->at(ijet));
+    jet.SetTau2(fatjets_tau2->at(ijet));
+    jet.SetTau3(fatjets_tau3->at(ijet));
+
+    jet.SetPrunedMass(fatjets_prunedmass->at(ijet));
+    jet.SetSoftDropMass(fatjets_softdropmass->at(ijet));
+
+    jet.SetPuppiTau1(fatjets_puppi_tau1->at(ijet));
+    jet.SetPuppiTau2(fatjets_puppi_tau2->at(ijet));
+    jet.SetPuppiTau3(fatjets_puppi_tau3->at(ijet));
+    jet.SetPuppiPt(fatjets_puppi_pt->at(ijet));
+    jet.SetPuppiEta(fatjets_puppi_eta->at(ijet));
+    jet.SetPuppiPhi(fatjets_puppi_phi->at(ijet));
+    jet.SetPuppiM(fatjets_puppi_m->at(ijet));
+    
+      
+    fatjets.push_back(jet);
+  }// end of jet                                                   
+  std::sort( fatjets.begin(), fatjets.end(), isHigherPt );
+
+  m_logger << DEBUG << "PFJet size = " << fatjets.size() << LQLogger::endmsg;
+  return fatjets;
+}
+
 
 
 std::vector<KMuon> SKTreeFiller::GetAllMuons(){

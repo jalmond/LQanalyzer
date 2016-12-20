@@ -108,6 +108,6 @@ def EmailNewList(catversion):
     for line in file_newefflumi:
         Copy_File.append(line+"\n")
     
-    emaillist=GetCATAnalyzerMailList()
+    emaillist="jalmond@cern.ch"
     SendEmail(catversion, os.getenv("USER"), message, Copy_File, emaillist)
 

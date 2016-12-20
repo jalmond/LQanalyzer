@@ -21,10 +21,10 @@ bool CheckHist(TH2* h);
 
 void MakeFRRootFile(){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoG/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoH/";
 
-  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-2.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-2.root");
+  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-3.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-3.root");
   if(!fdata)cout << "No Data" << endl;
   if (!fmc) cout << "No MC" << endl;
   /// Set Plotting style
@@ -36,10 +36,10 @@ void MakeFRRootFile(){
   fout->cd();
 
   std::vector<TString> fakes40;
-  //  fakes40.push_back("20_pt_eta");
-  //fakes40.push_back("60_pt_eta");
+  fakes40.push_back("20_pt_eta");
+  fakes40.push_back("60_pt_eta");
   fakes40.push_back("40_pt_eta");
-  //fakes40.push_back("30_pt_eta");
+  fakes40.push_back("30_pt_eta");
 
   std::vector<TString> fakes;
   fakes.push_back("HNTight_");
@@ -68,13 +68,13 @@ void MakeFRRootFile(){
 
     TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + name).Data());
     TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((name +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
+    //eff_rate->Add(h_mcpt_num,-1.);
+    //hratedenom->Add(h_mcpt_denom, -1.);
     eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
     eff_rate->Write();
-    TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
-    eff_rate->Draw("colz textE");
-    c1->SaveAs(("/home/jalmond/WebPlots/13TeV/Fakes/2D_ps_hntight_aj40.pdf"));
+    //TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
+    //eff_rate->Draw("colz textE");
+    //c1->SaveAs(("/home/jalmond/WebPlots/13TeV/Fakes/2D_ps_hntight_aj40.pdf"));
     }
   }
   return;

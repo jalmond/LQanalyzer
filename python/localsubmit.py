@@ -349,6 +349,9 @@ singlejob = number_of_cores==1
 
 #### determine if input is data/mc
 mc = len(sample)>1
+if sample == "H_v2" or sample == "H_v3":
+    mc= False
+
 if mc:
     datatype="mc"
 

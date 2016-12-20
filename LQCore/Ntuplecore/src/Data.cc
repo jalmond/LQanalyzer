@@ -11,6 +11,7 @@
 #include "KElectron.h"
 #include "KPhoton.h"
 #include "KJet.h"
+#include "KFatJet.h"
 #include "KGenJet.h"
 #include "KEvent.h"
 #include "KTrigger.h"
@@ -38,7 +39,7 @@
 // STL include(s):                                                                                                      
 #include <sstream>
 
-Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_cat_version(-1)
+Data::Data() : LQCycleBaseNTuple(), LQinput(true), k_inputmuons(0),  k_inputelectrons(0),k_inputphotons(0),  k_inputjets(0),k_inputfatjets(0), k_inputgenjets(0),k_inputevent(0),k_inputtrigger(0),k_inputtruth(0), setting_ntuple_data(-1),TargetLumi(0.),k_flags(0), k_cat_version(-1)
   
 {
 
@@ -221,6 +222,9 @@ void Data::Reset(){
   jets_isLoose = 0;
   jets_isTight = 0;
   jets_isTightLepVetoJetID = 0;
+  fatjets_isLoose = 0;
+  fatjets_isTight = 0;
+  fatjets_isTightLepVetoJetID = 0;
   gen_isprompt = 0;
   gen_isdecayedleptonhadron = 0;
   gen_istaudecayproduct = 0;
@@ -242,6 +246,10 @@ void Data::Reset(){
   jets_hadronFlavour = 0;
   jets_partonPdgId = 0;
   jets_vtxNtracks = 0;
+  fatjets_partonFlavour = 0;
+  fatjets_hadronFlavour = 0;
+  fatjets_partonPdgId = 0;
+  fatjets_vtxNtracks = 0;
   gen_status = 0;
   gen_pdgid = 0;
   gen_motherindex = 0;
@@ -316,6 +324,39 @@ void Data::Reset(){
   jets_smearedResDown = 0;
   jets_smearedResUp = 0;
   jets_PileupJetId = 0;
+  fatjets_pt = 0;
+  fatjets_eta = 0;
+  fatjets_phi = 0;
+  fatjets_m = 0;
+  fatjets_energy = 0;
+  fatjets_vtxMass = 0;
+  fatjets_vtx3DVal = 0;
+  fatjets_vtx3DSig = 0;
+  fatjets_CSVInclV2 = 0;
+  fatjets_iCSVCvsL = 0;
+  fatjets_CCvsLT = 0;
+  fatjets_CCvsBT = 0;
+  fatjets_JetProbBJet = 0;
+  fatjets_CMVAV2 = 0;
+  fatjets_chargedEmEnergyFraction = 0;
+  fatjets_shiftedEnDown = 0;
+  fatjets_shiftedEnUp = 0;
+  fatjets_smearedRes = 0;
+  fatjets_smearedResDown = 0;
+  fatjets_smearedResUp = 0;
+  fatjets_PileupJetId = 0;
+  fatjets_tau1=0;
+  fatjets_tau2=0;
+  fatjets_tau3=0;
+  fatjets_prunedmass=0;
+  fatjets_softdropmass=0;
+  fatjets_puppi_tau1=0;
+  fatjets_puppi_tau2=0;
+  fatjets_puppi_tau3=0;
+  fatjets_puppi_pt=0;
+  fatjets_puppi_eta=0;
+  fatjets_puppi_phi=0;
+  fatjets_puppi_m=0;
   gen_pt = 0;
   gen_eta = 0;
   gen_phi = 0;
@@ -445,6 +486,7 @@ void Data::ConnectVariables(bool setall, int setting_data){
     k_inputelectrons=0;
     k_inputphotons=0;
     k_inputjets=0;
+    k_inputfatjets=0;
     k_inputgenjets=0;
     k_inputevent=0;
     k_inputtrigger=0;
@@ -453,6 +495,7 @@ void Data::ConnectVariables(bool setall, int setting_data){
     b_inputelectrons=0;
     b_inputphotons=0;
     b_inputjets=0;
+    b_inputfatjets=0;
     b_inputgenjets=0;
     b_inputevent=0;
     b_inputtrigger=0;
@@ -460,6 +503,7 @@ void Data::ConnectVariables(bool setall, int setting_data){
 
     ConnectVariable("KEvent", k_inputevent, b_inputevent);
     ConnectVariable("KJets", k_inputjets,b_inputjets );
+    ConnectVariable("KFatJets", k_inputfatjets,b_inputfatjets );
     ConnectVariable("KGenJets", k_inputgenjets,b_inputgenjets );
     ConnectVariable("KMuons", k_inputmuons, b_inputmuons);
     ConnectVariable("KElectrons", k_inputelectrons, b_inputelectrons);
@@ -475,6 +519,7 @@ void Data::ConnectVariables(bool setall, int setting_data){
     ConnectElectrons();
     ConnectPhotons();
     ConnectPFJets();
+    ConnectPFFatJets();
     ConnectTruth(setting_data);
     ConnectTrigger();    
     if(setall) ConnectAllBranches();
@@ -528,6 +573,11 @@ void Data::ConnectEvent(int setting_data){
     ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
     ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
     ConnectVariable("goodVertices", goodVertices, b_goodVertices);
+  }
+  if(k_cat_version > 6){
+    ConnectVariable("BadChargedCandidateFilter",BadChargedCandidateFilter,b_BadChargedCandidateFilter);
+    ConnectVariable("BadPFMuonFilter",BadPFMuonFilter,b_BadPFMuonFilter);
+
   }
   if(k_cat_version ==4){
     ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
@@ -734,6 +784,64 @@ void Data::ConnectPFJets(){
   ConnectVariable("jets_vtx3DVal", jets_vtx3DVal, b_jets_vtx3DVal);
   ConnectVariable("jets_vtx3DSig", jets_vtx3DSig, b_jets_vtx3DSig);
   ConnectVariable("jets_vtxNtracks", jets_vtxNtracks, b_jets_vtxNtracks);
+  return;
+}
+
+
+
+void Data::ConnectPFFatJets(){
+
+  m_logger << DEBUG << "ConnectPFJets : "<< LQLogger::endmsg;
+
+  //#####   Jet branches                                                                                                                                                         
+  //  ConnectVariable("rhoJets", rhoJets, b_rhoJets);                                                                                                                            
+  /// TLV variables                                                                                                                                                              
+
+  if(k_cat_version <  7) return;
+  
+  ConnectVariable("fatjets_CSVInclV2", fatjets_CSVInclV2, b_fatjets_CSVInclV2);
+  ConnectVariable("fatjets_CMVAV2", fatjets_CMVAV2, b_fatjets_CMVAV2);
+  ConnectVariable("fatjets_JetProbBJet", fatjets_JetProbBJet, b_fatjets_JetProbBJet);
+  ConnectVariable("fatjets_iCSVCvsL", fatjets_iCSVCvsL, b_fatjets_iCSVCvsL);
+  ConnectVariable("fatjets_CCvsLT", fatjets_CCvsLT, b_fatjets_CCvsLT);
+  ConnectVariable("fatjets_CCvsBT",fatjets_CCvsBT,b_fatjets_CCvsBT);
+  ConnectVariable("fatjets_chargedEmEnergyFraction",fatjets_chargedEmEnergyFraction,b_fatjets_chargedEmEnergyFraction);
+  ConnectVariable("fatjets_energy", fatjets_energy, b_fatjets_energy);
+  ConnectVariable("fatjets_eta",fatjets_eta,b_fatjets_eta);
+  ConnectVariable("fatjets_hadronFlavour",fatjets_hadronFlavour,b_fatjets_hadronFlavour);
+  ConnectVariable("fatjets_isLoose",fatjets_isLoose,b_fatjets_isLoose);
+  ConnectVariable("fatjets_PileupJetId",fatjets_PileupJetId, b_fatjets_PileupJetId);
+  ConnectVariable("fatjets_isTight",fatjets_isTight,b_fatjets_isTight);
+  ConnectVariable("fatjets_isTightLepVetoJetID",fatjets_isTightLepVetoJetID,b_fatjets_isTightLepVetoJetID);
+  ConnectVariable("fatjets_m",fatjets_m,b_fatjets_m);
+  ConnectVariable("fatjets_partonFlavour",fatjets_partonFlavour,b_fatjets_partonFlavour);
+  ConnectVariable("fatjets_partonPdgId",fatjets_partonPdgId,b_fatjets_partonPdgId);
+  ConnectVariable("fatjets_phi",fatjets_phi,b_fatjets_phi);
+  ConnectVariable("fatjets_pt",fatjets_pt,b_fatjets_pt);
+  ConnectVariable("fatjets_shiftedEnDown",fatjets_shiftedEnDown,b_fatjets_shiftedEnDown);
+  ConnectVariable("fatjets_shiftedEnUp",fatjets_shiftedEnUp,b_fatjets_shiftedEnUp);
+  ConnectVariable("fatjets_smearedRes",fatjets_smearedRes,b_fatjets_smearedRes);
+  ConnectVariable("fatjets_smearedResDown",fatjets_smearedResDown,b_fatjets_smearedResDown);
+  ConnectVariable("fatjets_smearedResUp",fatjets_smearedResUp,b_fatjets_smearedResUp);
+  ConnectVariable("fatjets_vtxMass",fatjets_vtxMass,b_fatjets_vtxMass);
+  ConnectVariable("fatjets_vtx3DVal", fatjets_vtx3DVal, b_fatjets_vtx3DVal);
+  ConnectVariable("fatjets_vtx3DSig", fatjets_vtx3DSig, b_fatjets_vtx3DSig);
+  ConnectVariable("fatjets_vtxNtracks", fatjets_vtxNtracks, b_fatjets_vtxNtracks);
+
+  ConnectVariable("fatjets_tau1",fatjets_tau1,b_fatjets_tau1);
+  ConnectVariable("fatjets_tau2",fatjets_tau2,b_fatjets_tau2);
+  ConnectVariable("fatjets_tau3",fatjets_tau3,b_fatjets_tau3);
+  ConnectVariable("fatjets_prunedmass",fatjets_prunedmass,b_fatjets_prunedmass);
+  ConnectVariable("fatjets_softdropmass",fatjets_softdropmass,b_fatjets_softdropmass);
+  ConnectVariable("fatjets_puppi_tau1",fatjets_puppi_tau1,b_fatjets_puppi_tau1);
+  ConnectVariable("fatjets_puppi_tau2",fatjets_puppi_tau2,b_fatjets_puppi_tau2);
+  ConnectVariable("fatjets_puppi_tau3",fatjets_puppi_tau3,b_fatjets_puppi_tau3);
+  ConnectVariable("fatjets_puppi_eta",fatjets_puppi_eta,b_fatjets_puppi_eta);
+  ConnectVariable("fatjets_puppi_m",fatjets_puppi_m,b_fatjets_puppi_m);
+  ConnectVariable("fatjets_puppi_phi",fatjets_puppi_phi,b_fatjets_puppi_phi);
+  ConnectVariable("fatjets_puppi_pt",fatjets_puppi_pt,b_fatjets_puppi_pt);
+
+  
   return;
 }
 

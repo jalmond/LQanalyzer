@@ -31,6 +31,7 @@ class SKTreeMakerTriLep : public AnalyzerCore {
   std::vector<snu::KElectron> out_electrons;
   std::vector<snu::KPhoton> out_photons;
   std::vector<snu::KJet> out_jets;
+  std::vector<snu::KFatJet> out_fatjets;
   std::vector<snu::KGenJet> out_genjets;
   std::vector<snu::KTruth> out_truth;
   snu::KEvent out_event;

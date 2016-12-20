@@ -44,8 +44,9 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             defFinaloutputdirMC=defFinaloutputdirMC.replace("Fake/","")
 
         if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
-            os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-            os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+".root")
+            if not  "SKTreeMaker" in cycle:
+                os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
+                os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+".root")
 
 
     elif defruncf == "True":
@@ -70,8 +71,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         
         output_datafile=defFinaloutputdirMC+"/"+defcycle+"_data_cat_"+ defcatversion+".root"
         if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
-            os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-            os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root")
+            if not "SKTreeMaker" in cycle:
+
+                os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
+                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root")
 
 def UpdateOutput(outputlist,outputlist_path):
     out_file = open(outputlist_path,"w")
@@ -870,6 +873,9 @@ for s in sample:
 
     ## set MC bool from the sample length. This is the letter of the data period for data
     isMC = len(s) > 1
+    if s == "H_v2" or s == "H_v3":
+        isMC= False
+
     runningData= not isMC
     
     if run_in_bkg:
@@ -903,6 +909,9 @@ for s in sample:
 
         useskimtmp=useskim
         ismctmp=  len(sample[x])>1
+        if sample[x] == "H_v2" or sample[x] == "H_v3":
+            ismctmp= False
+
         sampletmp=sample[x]
         runnptmp=runnp
         runcftmp=runcf
@@ -1249,6 +1258,9 @@ for s in sample:
                     backgroundsamples=True
             useskimtmp=useskim
             ismctmp=  len(sample[x])>1
+            if sample[x] == "H_v2" or sample[x] == "H_v3":
+                ismctmp= False
+
             sampletmp=sample[x]
             runnptmp=runnp
             runcftmp=runcf
@@ -1439,6 +1451,9 @@ while StillRunning:
         
         useskimtmp=useskim
         ismctmp=  len(sample[x])>1
+        if sample[x] == "H_v2" or sample[x] == "H_v3":
+            ismctmp= False
+
         sampletmp=sample[x]
         runnptmp=runnp
         runcftmp=runcf

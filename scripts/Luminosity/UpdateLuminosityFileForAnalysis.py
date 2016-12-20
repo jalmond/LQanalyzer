@@ -306,7 +306,7 @@ else:
     if not os.path.exists(lqdir+"/scripts/Luminosity/log"):
         os.system("mkdir "+ lqdir+"/scripts/Luminosity/log")
  
-    os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh" + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
+    os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
 
     if os.path.exists(lqdir+"/scripts/Luminosity/log"):
         os.system("rm -r "+lqdir+"/scripts/Luminosity/log")

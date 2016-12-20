@@ -22,7 +22,7 @@ ClassImp (SKTreeMaker);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0),  out_photons(0),out_jets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMaker::SKTreeMaker() :  AnalyzerCore(), out_muons(0), out_electrons(0),  out_photons(0),out_jets(0),out_fatjets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMaker");
@@ -55,10 +55,20 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
 
   //###### JET SELECTION  ################
-  Message("Selecting jets", DEBUG);
+  Message("Selecting jets", DEBUG);  eventbase->GetJetSel()->SetPt(20);
+  eventbase->GetJetSel()->SetEta(5.);
+  eventbase->GetJetSel()->BasicSelection(out_jets);
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
+
+
+  //###### FATJET SELECTION  ################                                                                                                                                       
+  Message("Selecting fat jets", DEBUG);
+  eventbase->GetFatJetSel()->SetPt(20);
+  eventbase->GetFatJetSel()->SetEta(5.);
+  eventbase->GetFatJetSel()->BasicSelection(out_fatjets);
+
 
   //###### GenJet Selection ##########
   if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
@@ -116,6 +126,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   DeclareVariable(out_photons, "KPhotons");
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
+  DeclareVariable(out_fatjets, "KFatJets");
   DeclareVariable(out_genjets, "KGenJets");
   DeclareVariable(out_trigger, "KTrigger");
   DeclareVariable(out_event, "KEvent");
@@ -220,6 +231,7 @@ void SKTreeMaker::ClearOutputVectors() throw (LQError){
   out_electrons.clear();
   out_photons.clear();
   out_jets.clear();
+  out_fatjets.clear();
   out_genjets.clear();
   out_truth.clear();
 

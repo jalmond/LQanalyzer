@@ -97,8 +97,8 @@ for x in datasetlist:
        
         for xd in  cdatasetlist:
             if part_datasetname == xd:
-                print "This has the same dataset name as a previous file. Fix..."
-                sys.exit()
+                print part_datasetname + " " + xd+" :This has the same dataset name as a previous file. Fix..."
+                #sys.exit()
         for xd in  cnamelist:
             if name == xd:
                 print "This has the same alias name as a previous file. Fix..."

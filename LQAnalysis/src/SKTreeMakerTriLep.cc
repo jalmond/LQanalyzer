@@ -23,7 +23,7 @@ ClassImp (SKTreeMakerTriLep);
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMakerTriLep::SKTreeMakerTriLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMakerTriLep::SKTreeMakerTriLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_fatjets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeMakerTriLep");
@@ -46,7 +46,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   Message("Selecting Muons", DEBUG);
   std::vector<snu::KMuon> skim_muons;
   /// Apart from eta/pt muons are required to have a global OR tracker track    && be PF
-  eventbase->GetMuonSel()->SetPt(8.); 
+  eventbase->GetMuonSel()->SetPt(5.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
 
@@ -70,13 +70,18 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
+  Message("Selecting fat jets", DEBUG);
+  eventbase->GetFatJetSel()->SetPt(20);
+  eventbase->GetFatJetSel()->SetEta(5.);
+  eventbase->GetFatJetSel()->BasicSelection(out_fatjets);
+
   //###### GenJet Selection ##########
   //if(!k_isdata) eventbase->GetGenJetSel()->BasicSelection(out_genjets);
   
   //###### Electron Selection ########
   Message("Selecting electrons", DEBUG);
   std::vector<snu::KElectron> skim_electrons;
-  eventbase->GetElectronSel()->SetPt(8.); 
+  eventbase->GetElectronSel()->SetPt(5.); 
   eventbase->GetElectronSel()->SetEta(5.); 
   eventbase->GetElectronSel()->BasicSelection(out_electrons); 
   eventbase->GetElectronSel()->SetPt(8.);
@@ -135,6 +140,7 @@ void SKTreeMakerTriLep::BeginCycle() throw( LQError ){
 
   DeclareVariable(out_muons, "KMuons");
   DeclareVariable(out_jets, "KJets");
+  DeclareVariable(out_fatjets, "KFatJets");
   DeclareVariable(out_genjets, "KGenJets");
   DeclareVariable(out_trigger, "KTrigger");
   DeclareVariable(out_event, "KEvent");
@@ -243,6 +249,7 @@ void SKTreeMakerTriLep::ClearOutputVectors() throw (LQError){
   out_electrons.clear();
   out_photons.clear();
   out_jets.clear();
+  out_fatjets.clear();
   out_genjets.clear();
   out_truth.clear();
 

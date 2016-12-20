@@ -64,6 +64,8 @@ KEvent::KEvent() :
   k_passHBHENoiseFilter(false),
   k_passHBHENoiseIsoFilter(false),
   k_passTightHalo2016Filter(false),
+  k_passBadChargedCandFilter(false),
+  k_passBadpfMuonFilter(false),
   k_lumi_mask_silver(-999),
   k_lumi_mask_gold(-999),
   k_PileUpInteractionsTrue(-999.),
@@ -134,6 +136,9 @@ KEvent::KEvent(const KEvent& ev) :
   k_passHBHENoiseFilter(ev.k_passHBHENoiseFilter),
   k_passHBHENoiseIsoFilter(ev.k_passHBHENoiseIsoFilter),
   k_passTightHalo2016Filter(ev.k_passTightHalo2016Filter),
+  k_passBadChargedCandFilter(ev.k_passBadChargedCandFilter),
+  k_passBadpfMuonFilter(ev.k_passBadpfMuonFilter),
+
   k_lumi_mask_silver(ev.k_lumi_mask_silver),
   k_lumi_mask_gold(ev.k_lumi_mask_gold),
   k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue),
@@ -206,6 +211,9 @@ void KEvent::Reset()
   k_passHBHENoiseFilter= false;
   k_passHBHENoiseIsoFilter= false;
   k_passTightHalo2016Filter= false;
+  k_passBadChargedCandFilter=false;
+  k_passBadpfMuonFilter=false;
+  
   k_lumi_mask_silver=-999;
   k_lumi_mask_gold=-999;
 
@@ -280,6 +288,9 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_passHBHENoiseFilter = p.PassHBHENoiseFilter();
       k_passHBHENoiseIsoFilter= p.PassHBHENoiseIsoFilter();
       k_passTightHalo2016Filter= p.PassTightHalo2016Filter();
+      k_passBadChargedCandFilter= p.PassBadChargedCandidateFilter();
+      k_passBadpfMuonFilter=p.PassBadPFMuonFilter();
+
 
       k_PileUpInteractionsTrue = p.PileUpInteractionsTrue();
       k_lumi_mask_silver = p.LumiMaskSilver();
@@ -326,6 +337,14 @@ void KEvent::SetPassTightHalo2016Filter(bool pass){
   k_passTightHalo2016Filter= pass;
 }
 
+void KEvent::SetPassBadChargedCandidateFilter(bool pass){
+  
+  k_passBadChargedCandFilter= pass;
+}
+
+void KEvent::SetPassBadPFMuonFilter(bool pass){
+  k_passBadpfMuonFilter=pass;
+}
 
 void KEvent::SetPileUpInteractionsTrue(double npu){
   k_PileUpInteractionsTrue = npu;

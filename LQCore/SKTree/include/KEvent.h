@@ -83,8 +83,10 @@ namespace snu {
     void SetPassHBHENoiseIsoFilter(bool pass);
     void SetPassBadEESupercrystalFilter(bool pass);
     void SetPassTightHalo2016Filter(bool pass); 
+    void SetPassBadChargedCandidateFilter(bool pass);
+    void SetPassBadPFMuonFilter(bool pass);
+      
     
-
     /// PileUp reweighting (only in MC)
     void SetPileUpInteractionsTrue(double npu);
     void SetPUWeight(syst_dir sys, double puweight);
@@ -149,7 +151,8 @@ namespace snu {
     inline Bool_t   PassHBHENoiseIsoFilter() const {return  k_passHBHENoiseIsoFilter ;}
     inline Bool_t   PassBadEESupercrystalFilter() const {return  k_passBadEESupercrystalFilter ;}
     inline Bool_t   PassTightHalo2016Filter() const {return  k_passTightHalo2016Filter; }
-    
+    inline Bool_t   PassBadChargedCandidateFilter() const {return k_passBadChargedCandFilter;}
+    inline Bool_t   PassBadPFMuonFilter() const {return k_passBadpfMuonFilter;}
 
     //Pileup reweighting
     inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
@@ -200,7 +203,8 @@ namespace snu {
 
     Bool_t k_isData, k_isgoodevent;
 
-    Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passTightHalo2016Filter;
+    Bool_t k_passBadEESupercrystalFilter,k_passCSCHaloFilterTight,k_passEcalDeadCellTriggerPrimitiveFilter,  k_passHBHENoiseFilter, k_passHBHENoiseIsoFilter, k_passTightHalo2016Filter, k_passBadChargedCandFilter, k_passBadpfMuonFilter;
+
 
     Double_t  k_PileUpInteractionsTrue, k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
     
@@ -208,7 +212,7 @@ namespace snu {
 
 
 
-    ClassDef(KEvent,27);
+    ClassDef(KEvent,28);
   }; 
   
 }//namespace snu

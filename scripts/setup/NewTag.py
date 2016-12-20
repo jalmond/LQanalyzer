@@ -92,6 +92,7 @@ filejobsummary.write("Git Merge(alternative to checking out new directory for ea
 filejobsummary.write("#"*55+"\n")
 filejobsummary.write("cd $LQANALYZER_DIR\n")
 filejobsummary.write("git commit -a \n")
+filejobsummary.write("git fetch origin --tags\n")
 filejobsummary.write("git checkout -b CatAnalyzer_13TeV_"+newtag + " " + newtag+"\n")
 filejobsummary.write("git checkout <originalbranchname>\n")
 filejobsummary.write("git merge  CatAnalyzer_13TeV_"+newtag +"\n")

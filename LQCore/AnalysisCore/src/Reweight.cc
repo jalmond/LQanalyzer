@@ -34,6 +34,10 @@ Reweight::Reweight(TString filename){
   if(filename.Contains("BtoG")){
     fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016_802.root", "READ");
   }
+  if(filename.Contains("BtoH")){
+    fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016_802.root", "READ");
+  }
+
 
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
@@ -45,6 +49,12 @@ Reweight::Reweight(TString filename){
   if(filename.Contains("BtoG")){
     h_Data_ = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;
   }
+
+  if(filename.Contains("BtoH")){
+    h_Data_ = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;
+  }
+
+
   //
   if(filename.Contains("BtoE")){
     h_MCmodF_ = (TH1F*)fileMC_->Get("h_VertexNoReweight");

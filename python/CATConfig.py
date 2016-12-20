@@ -168,6 +168,9 @@ if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
 mc = len(sample)>1
+if sample == "H_v2" or sample == "H_v3":
+    mc= False
+
 if mc:
     datatype="mc"
     if "D1" in sample:
@@ -419,7 +422,7 @@ if os.path.exists(path_log):
 
 if printToScreen:
     print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
-if number_of_files < (750- njobs):
+if number_of_files < (1750- njobs):
     if printToScreen:
         print "Job is running in background............"
     os.system("mkdir " + tmpwork + "/" + tagger)
