@@ -7,7 +7,7 @@
 #sktree -a Truth_HN_pair -i HNpair_mumu_WR5000_Zp1500_HN100 -s SKTree_LeptonSkim -n 1
 #sktree -a HN_pair_MM -i HNpair_mumu_WR5000_Zp1500_HN100 -s SKTree_LeptonSkim -n 1
 #sktree -a ChargeFlip_e -i HNpair_mumu_WR5000_Zp1500_HN100 -s SKTree_LeptonSkim -n 1
-#sktree -a Closure_cf -S DoubleEG -s SKTree_DiLepSkim -q fastq
-sktree_bkg -a Closure_cf -S DoubleEG -s SKTree_DiLepSkim -q fastq 
+sktree -a Closure_cf -S DoubleEG -s SKTree_DiLepSkim -q longq
+#sktree_bkg -a Closure_cf -S DoubleEG -s SKTree_DiLepSkim -q longq 
 #sktree -a Closure_cf -i DYJets -s SKTree_LeptonSkim -q fastq
 #sktree -a Closure_cf -S DoubleEG -s SKTree_DiLepSkim -n 1

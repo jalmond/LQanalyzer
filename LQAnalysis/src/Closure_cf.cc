@@ -153,6 +153,7 @@ void Closure_cf::ExecuteEvents()throw( LQError ){
   
   /// can call POGVeto/POGLoose/POGMedium/POGTight/ HNVeto/HNLoose/HNTight/NoCut/NoCutPtEta 
   //std::vector<snu::KElectron> electrons = GetElectrons("ELECTRON_POG_TIGHT");
+  TString el_id = "ELECTRON_HN_TIGHT";
   std::vector<snu::KElectron> electrons = GetElectrons("ELECTRON_HN_TIGHT");
   std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
   
@@ -173,7 +174,7 @@ void Closure_cf::ExecuteEvents()throw( LQError ){
   float MET = eventbase->GetEvent().PFMET();
   if(MET > 30) return;
   bool trig_pass = PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
-    
+  
   bool e1_B_E = true;//barrel : true, endcap : false
   bool e2_B_E = true;
   int BB_EE_EB = 1;//BB : 1, EE : 2, EB : 3
@@ -187,114 +188,55 @@ void Closure_cf::ExecuteEvents()throw( LQError ){
   if(e1_B_E != e2_B_E) BB_EE_EB = 3;
   
   if(electrons.at(0).Charge() == electrons.at(1).Charge() && trig_pass){
-    FillHist("M(ee)_for_fitting_all", Z.M(), 1., 0., 200., 200);
-    FillHist("M(ee)_for_bgd_all", Z.M(), 1., 80., 100., 20);
-    
-    if(BB_EE_EB == 1) FillHist("M(ee)_for_fitting_BB", Z.M(), 1., 0., 200., 200);
-    if(BB_EE_EB == 2) FillHist("M(ee)_for_fitting_EE", Z.M(), 1., 0., 200., 200);
-    if(BB_EE_EB == 3) FillHist("M(ee)_for_fitting_EB", Z.M(), 1., 0., 200., 200);
-    
-    
-    if(BB_EE_EB == 1) FillHist("M(ee)_for_bgd_BB", Z.M(), 1., 80., 100., 20);
-    if(BB_EE_EB == 2) FillHist("M(ee)_for_bgd_EE", Z.M(), 1., 80., 100., 20);
-    if(BB_EE_EB == 3) FillHist("M(ee)_for_bgd_EB", Z.M(), 1., 80., 100., 20);
+    if(isData){
+      FillHist("M(ee)_for_fitting_all", Z.M(), 1., 0., 200., 200);
+      FillHist("M(ee)_for_bgd_all", Z.M(), 1., 80., 100., 20);
+      
+      if(BB_EE_EB == 1) FillHist("M(ee)_for_fitting_BB", Z.M(), 1., 0., 200., 200);
+      if(BB_EE_EB == 2) FillHist("M(ee)_for_fitting_EE", Z.M(), 1., 0., 200., 200);
+      if(BB_EE_EB == 3) FillHist("M(ee)_for_fitting_EB", Z.M(), 1., 0., 200., 200);
+      
+      if(BB_EE_EB == 1) FillHist("M(ee)_for_bgd_BB", Z.M(), 1., 80., 100., 20);
+      if(BB_EE_EB == 2) FillHist("M(ee)_for_bgd_EE", Z.M(), 1., 80., 100., 20);
+      if(BB_EE_EB == 3) FillHist("M(ee)_for_bgd_EB", Z.M(), 1., 80., 100., 20);
+    }
   }
   if(Z.M() > 100 || Z.M() < 80) return;
   
   if(electrons.at(0).Charge() == electrons.at(1).Charge() && trig_pass){
-    FillHist("M(ee)_data_SS", Z.M(), 1., 0., 200., 200);
-    if(jets.size() == 1){
-      FillHist("M(ee)_data_SS_1jet", Z.M(), 1., 0., 200., 200);
+    if(isData){
+      FillHist("M(ee)_data_SS", Z.M(), 1., 0., 200., 200);
+      if(jets.size() == 1){
+	FillHist("M(ee)_data_SS_1jet", Z.M(), 1., 0., 200., 200);
+      }
     }
-  }  
-  bool e1_cf = electrons.at(0).MCIsCF();
-  bool e2_cf = electrons.at(1).MCIsCF();
+    if(!isData){
+      FillHist("M(ee)_DYJets_SS", Z.M(), 1., 0., 200., 200);
+    } 
+  } 
+  //bool e1_cf = electrons.at(0).MCIsCF();
+  //bool e2_cf = electrons.at(1).MCIsCF();
   
   //if(electrons.at(0).Charge() == electrons.at(1).Charge() && trig_pass && !e1_cf && !e2_cf) FillHist("M(ee)_prompt", Z.M(), 1., 0., 200., 200);
   
   if(electrons.at(0).Charge() == electrons.at(1).Charge()) return;
   
-  float cf_1 = 0, cf_2 = 0;
-  float p0, p1;
-  float pt_inv_e1 = 1. / electrons.at(0).Pt();
-  float pt_inv_e2 = 1. / electrons.at(1).Pt();
-  //cf_1
-  if(fabs(electrons.at(0).Eta()) < 0.9){
-    if(pt_inv_e1 < 0.02){
-      p0 = 0.0001261;
-      p1 = -0.005951;
-    }
-    if(pt_inv_e1 > 0.02){
-      p0 = 0.00001584;
-      p1 = 0.00005337;
-    }
-    cf_1 = p0 + p1 * pt_inv_e1;
-  }
-  if(fabs(electrons.at(0).Eta()) > 0.9 && fabs(electrons.at(0).Eta()) < 1.4442){
-    if(pt_inv_e1 < 0.025){
-      p0 = 0.00063;
-      p1 = -0.01965;
-    }
-    if(pt_inv_e1 > 0.025){
-      p0 = 0.00003946;
-      p1 = 0.00008439;
-    }
-    cf_1 = p0 +p1 * pt_inv_e1;
-  } 
-  if(fabs(electrons.at(0).Eta()) > 1.556 && fabs(electrons.at(0).Eta()) < 2.5){
-    if(pt_inv_e1 < 0.02){
-      p0 = 0.006827;
-      p1 = -0.2189;
-    }
-    if(pt_inv_e1 > 0.02){
-      p0 = 0.003153;
-      p1 = -0.03891;
-    }
-    cf_1 = p0 +p1 * pt_inv_e1;
-  } 
-  //cf_2
-  if(fabs(electrons.at(1).Eta()) < 0.9){
-    if(pt_inv_e1 < 0.02){
-      p0 = 0.0001261;
-      p1 = -0.005951;
-    }
-    if(pt_inv_e1 > 0.02){
-      p0 = 0.00001584;
-      p1 = 0.00005337;
-    }
-    cf_2 = p0 +p1 * pt_inv_e1;
-  }
-  if(fabs(electrons.at(1).Eta()) > 0.9 && fabs(electrons.at(1).Eta()) < 1.4442){
-    if(pt_inv_e1 < 0.025){
-      p0 = 0.00063;
-      p1 = -0.01965;
-    }
-    if(pt_inv_e1 > 0.025){
-      p0 = 0.00003946;
-      p1 = 0.00008439;
-    }
-    cf_2 = p0 +p1 * pt_inv_e1;
-  }
-  if(fabs(electrons.at(1).Eta()) > 1.556 && fabs(electrons.at(1).Eta()) < 2.5){
-    if(pt_inv_e1 < 0.02){
-      p0 = 0.006827;
-      p1 = -0.2189;
-    }
-    if(pt_inv_e1 > 0.02){
-      p0 = 0.003153;
-      p1 = -0.03891;
-    }
-    cf_2 = p0 +p1 * pt_inv_e1;
-  }
-  
-  cout << "cf_1 : " << cf_1 << ", cf_2 : " << cf_2 << endl;
+  float cf_1 = CFRate_Run2(electrons.at(0), el_id);
+  float cf_2 = CFRate_Run2(electrons.at(1), el_id);
+
+  //cout << "CFRate_Run2 1st : " << cf_rate << endl;
   
   if(electrons.at(0).Charge() != electrons.at(1).Charge() && trig_pass){
-    FillHist("M(ee)_data_CF_pred", Z.M(), cf_1 + cf_2 - cf_1 * cf_2, 0., 200., 200);
-    if(jets.size() == 1){
-      FillHist("M(ee)_data_CF_pred_1jet", 0.98 * Z.M(), cf_1 + cf_2 - cf_1 * cf_2, 0., 200., 200);
-
-    }
+    if(isData){
+      FillHist("M(ee)_data_CF_pred", 0.98 * Z.M(), cf_1 + cf_2, 0., 200., 200);
+      if(jets.size() == 1){
+	FillHist("M(ee)_data_CF_pred_1jet", 0.98 * Z.M(), cf_1 + cf_2, 0., 200., 200);
+      }
+      if(BB_EE_EB == 1) FillHist("M(ee)_for_pred_BB", 0.98 * Z.M(), cf_1 + cf_2, 80., 100., 20);
+      if(BB_EE_EB == 2) FillHist("M(ee)_for_pred_EE", 0.98 * Z.M(), cf_1 + cf_2, 80., 100., 20);
+      if(BB_EE_EB == 3) FillHist("M(ee)_for_pred_EB", 0.98 * Z.M(), cf_1 + cf_2, 80., 100., 20);
+    }//data plots
+    if(!isData) FillHist("M(ee)_DYJets_CF_pred", 0.98 * Z.M(), cf_1 + cf_2, 0., 200., 200);
   }
   return;
 }// End of execute event loop

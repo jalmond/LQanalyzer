@@ -2699,9 +2699,9 @@ float AnalyzerCore::CFRate_Run2(snu::KElectron el, TString el_id){
     p_B2_1 = {0.00063, -0.01965};
     p_E_1 = {0.006827, -0.2198};
     
-    p_B1_1 = {1.584e-05, 5.337e-05};
-    p_B2_1 = {3.946e-05, 0.0008439};
-    p_E_1 = {0.003153, -0.003891};
+    p_B1_2 = {1.584e-05, 5.337e-05};
+    p_B2_2 = {3.946e-05, 0.0008439};
+    p_E_2 = {0.003153, -0.003891};
   }
   
   Double_t frac = 0. ;
@@ -2717,7 +2717,7 @@ float AnalyzerCore::CFRate_Run2(snu::KElectron el, TString el_id){
     }
     frac = max(frac,0.);
     frac *=scale_factor_BB ;
-
+    
   }else if( fabs(eta) > 0.9 && fabs(eta) <= 1.4442 ){ // outer BB region
     //scale_factor_BB = 1.22 ; // BB
     frac = p_B2_2[0] + p_B2_2[1] * pt_inv;
