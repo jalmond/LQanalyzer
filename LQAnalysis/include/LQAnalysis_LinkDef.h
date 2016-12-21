@@ -8,7 +8,7 @@
 
 #pragma link C++ class AnalyzerCore+;
 #pragma link C++ class ExampleAnalyzer+;
-#pragma link C++ class ExampleAnalyzerDiMuon+;
+#pragma link C++ class DiMuon_plots+;
 #pragma link C++ class HN_pair_di_muon+;
 #pragma link C++ class HN_pair_MM+;
 #pragma link C++ class Truth_HN_pair+;

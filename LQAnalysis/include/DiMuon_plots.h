@@ -1,13 +1,13 @@
-#ifndef ExampleAnalyzerDiMuon_h
-#define ExampleAnalyzerDiMuon_h
+#ifndef DiMuon_plots_h
+#define DiMuon_plots_h
 
 #include "AnalyzerCore.h"
-class ExampleAnalyzerDiMuon : public AnalyzerCore {
+class DiMuon_plots : public AnalyzerCore {
 
  public:
   //// constructors                                                                                                                                                             
-  ExampleAnalyzerDiMuon();
-  ~ExampleAnalyzerDiMuon();
+  DiMuon_plots();
+  ~DiMuon_plots();
 
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
@@ -29,6 +29,6 @@ class ExampleAnalyzerDiMuon : public AnalyzerCore {
   std::vector<snu::KElectron> out_electrons;
 
 
-  ClassDef ( ExampleAnalyzerDiMuon, 1);
+  ClassDef ( DiMuon_plots, 1);
 };
 #endif

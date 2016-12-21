@@ -141,7 +141,10 @@ void ChargeFlip_e::ExecuteEvents()throw( LQError ){
   FillHist("Njets", jets.size() ,weight, 0. , 5., 5);
   
   TString muon_id = "MUON_POG_TIGHT";
-  BaseSelection::ID muid = BaseSelection::MUON_POG_TIGHT;
+
+  //BaseSelection::ID muid = BaseSelection::MUON_POG_TIGHT;
+  BaseSelection::ID muid = BaseSelection::MUON_HN_VETO;
+  
   //TString muid = "MUON_POG_TIGHT";
   if(k_running_nonprompt) {
     muid= BaseSelection::MUON_POG_LOOSE;

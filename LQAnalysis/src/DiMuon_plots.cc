@@ -1,6 +1,6 @@
-// $Id: ExampleAnalyzerDiMuon.cc 1 2013-11-26 10:23:10Z jalmond $
+// $Id: DiMuon_plots.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQExampleAnalyzerDiMuon Frame - ROOT-based analysis framework for Korea SNU
+ * @Project: LQDiMuon_plots Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
@@ -8,7 +8,7 @@
  ***************************************************************************/
 
 /// Local includes
-#include "ExampleAnalyzerDiMuon.h"
+#include "DiMuon_plots.h"
 
 //Core includes
 #include "Reweight.h"
@@ -17,20 +17,20 @@
 
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (ExampleAnalyzerDiMuon);
+ClassImp (DiMuon_plots);
 
 
  /**
   *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
   *
   */
-ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  {
+DiMuon_plots::DiMuon_plots() :  AnalyzerCore(), out_muons(0)  {
   
   
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("ExampleAnalyzerDiMuon");
+  SetLogName("DiMuon_plots");
   
-  Message("In ExampleAnalyzerDiMuon constructor", INFO);
+  Message("In DiMuon_plots constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
@@ -45,7 +45,7 @@ ExampleAnalyzerDiMuon::ExampleAnalyzerDiMuon() :  AnalyzerCore(), out_muons(0)  
 }
 
 
-void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
+void DiMuon_plots::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
   MakeHistograms();  
@@ -68,7 +68,7 @@ void ExampleAnalyzerDiMuon::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
+void DiMuon_plots::ExecuteEvents()throw( LQError ){
 
   /// Apply the gen weight 
   if(!isData) weight*=MCweight;
@@ -685,14 +685,14 @@ void ExampleAnalyzerDiMuon::ExecuteEvents()throw( LQError ){
 
 
 
-void ExampleAnalyzerDiMuon::EndCycle()throw( LQError ){
+void DiMuon_plots::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
 
 }
 
 
-void ExampleAnalyzerDiMuon::BeginCycle() throw( LQError ){
+void DiMuon_plots::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
@@ -712,15 +712,15 @@ void ExampleAnalyzerDiMuon::BeginCycle() throw( LQError ){
   
 }
 
-ExampleAnalyzerDiMuon::~ExampleAnalyzerDiMuon() {
+DiMuon_plots::~DiMuon_plots() {
   
-  Message("In ExampleAnalyzerDiMuon Destructor" , INFO);
+  Message("In DiMuon_plots Destructor" , INFO);
   if(!k_isdata)delete reweightPU;
   
 }
 
 
-void ExampleAnalyzerDiMuon::FillCutFlow(TString cut, float weight){
+void DiMuon_plots::FillCutFlow(TString cut, float weight){
 
   
   if(GetHist("cutflow")) {
@@ -741,7 +741,7 @@ void ExampleAnalyzerDiMuon::FillCutFlow(TString cut, float weight){
 }
 
 
-void ExampleAnalyzerDiMuon::BeginEvent( )throw( LQError ){
+void DiMuon_plots::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -750,20 +750,20 @@ void ExampleAnalyzerDiMuon::BeginEvent( )throw( LQError ){
 
 
 
-void ExampleAnalyzerDiMuon::MakeHistograms(){
+void DiMuon_plots::MakeHistograms(){
   //// Additional plots to make
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
   Message("Made histograms", INFO);
   /**
-   *  Remove//Overide this ExampleAnalyzerDiMuonCore::MakeHistograms() to make new hists for your analysis
+   *  Remove//Overide this DiMuon_plotsCore::MakeHistograms() to make new hists for your analysis
    **/
   
 }
 
 
-void ExampleAnalyzerDiMuon::ClearOutputVectors() throw(LQError) {
+void DiMuon_plots::ClearOutputVectors() throw(LQError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   
