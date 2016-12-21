@@ -11,6 +11,7 @@ class SignalPlotsEE;
 class SignalPlotsMM;
 class SignalPlotsEM;
 class TriLeptonPlots;
+class HNpairPlotsMM;
 class EventBase;
 
 #include "BaseSelection.h"
@@ -135,6 +136,7 @@ class AnalyzerCore : public LQCycleBase {
   bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   
   float CFRate(snu::KElectron el);
+  float CFRate_Run2(snu::KElectron el, TString el_id);
   std::vector<snu::KElectron>  ShiftElectronEnergy(std::vector<snu::KElectron> el, bool applyshift);
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);
@@ -155,7 +157,7 @@ class AnalyzerCore : public LQCycleBase {
   vector<TLorentzVector> MakeTLorentz( vector<snu::KJet> jet);
   vector<TLorentzVector> MakeTLorentz( vector<snu::KFatJet> jet);
   // enum for plotting functions/classes
-  enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist};
+  enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist, hnpairmm};
   
   
   //
@@ -247,6 +249,7 @@ class AnalyzerCore : public LQCycleBase {
 
   //// Making cleaver hist maps
   map<TString, TriLeptonPlots*> mapCLhistTriLep;
+  map<TString, HNpairPlotsMM*> mapCLhistHNpairMM;
   map<TString, SignalPlotsEE*> mapCLhistSigEE;
   map<TString, SignalPlotsMM*> mapCLhistSigMM;
   map<TString, SignalPlotsEM*> mapCLhistSigEM;
@@ -295,6 +298,8 @@ class AnalyzerCore : public LQCycleBase {
 
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight,int nbjet);
+
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KElectron> electrons , double weight);
   void FillCLHist(histtype type, TString hist, vector<snu::KJet> jets , double weight);

@@ -1,5 +1,7 @@
 # Ignore for commits
 bin/catconfig
+CATConfig/SelectionConfig
+LQanalyzer/LQRun/txt
 LQRun/*/job_output/
 LQLib/
 data/
