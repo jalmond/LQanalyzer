@@ -19,4 +19,4 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
 | MUON_HN_TRI_NODXYCUT_VLOOSE    | 10.     | 2.4      |   0.        | 1.0      | true          | false          |  false         | 9999.      | 0.5      | 10.     | 999.         | 999.         |
 | MUON_HN_TRI_HIGHDXY_TIGHT  	| 10.     | 2.4      |   0.        | 0.1      | true          | false          |  false         | 1.      | 0.5      | 10.     | 4.         | 999.         |
 | MUON_HN_TRI_HIGHDXY_LOOSE  	| 10.     | 2.4      |   0.        | 0.6      | true          | false          |  false         | 1.      | 0.5      | 10.     | 4.         | 999.         |
-| MUON_HN_TRI_HIGHDXY_VLOOSE   | 10.     | 2.4      |   0.        | 1.0      | true          | false          |  false         | 1.      | 0.5      | 10.     | 4.         | 999.
+| MUON_HN_TRI_HIGHDXY_VLOOSE   | 10.     | 2.4      |   0.        | 1.0      | true          | false          |  false         | 1.      | 0.5      | 10.     | 4.         | 999.         |
