@@ -19,6 +19,7 @@
 #include "SignalPlotsMM.h"
 #include "SignalPlotsEM.h"
 #include "TriLeptonPlots.h"
+#include "HNpairPlotsMM.h"
 
 //ROOT includes
 #include <TFile.h>
@@ -1351,7 +1352,11 @@ AnalyzerCore::~AnalyzerCore(){
     delete it->second;
   }
   mapCLhistTriLep.clear();
-
+  
+  for(map<TString, HNpairPlotsMM*>::iterator it = mapCLhistHNpairMM.begin(); it != mapCLhistHNpairMM.end(); it++){
+    delete it->second;
+  }
+  mapCLhistHNpairMM.clear();
 
   for(map<TString,TNtupleD*>::iterator it = mapntp.begin(); it!= mapntp.end(); it++){ 
     delete it->second;
@@ -2059,7 +2064,8 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
   if(type==sighist_em)  mapCLhistSigEM[clhistname] = new SignalPlotsEM(clhistname);
 
   if(type==trilephist)  mapCLhistTriLep[clhistname] = new TriLeptonPlots(clhistname);
-      
+  if(type==hnpairmm) mapCLhistHNpairMM[clhistname] = new HNpairPlotsMM(clhistname);
+    
   return;
 }
 
@@ -2323,7 +2329,17 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, vector<snu::KJet> jet
   else  m_logger << INFO  <<"Type not set to jethist, is this a mistake?" << LQLogger::endmsg;
 
 }
-
+void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w, int nbjet){
+  if(type==hnpairmm){
+    map<TString, HNpairPlotsMM*>::iterator HNpairmmit = mapCLhistHNpairMM.find(hist);
+    if(HNpairmmit !=mapCLhistHNpairMM.end()) HNpairmmit->second->Fill(ev, muons, electrons, jets, w, nbjet);
+    else {
+      mapCLhistHNpairMM[hist] = new HNpairPlotsMM(hist);
+      HNpairmmit = mapCLhistHNpairMM.find(hist);
+      HNpairmmit->second->Fill(ev, muons, electrons, jets, w, nbjet);
+    }
+  }
+}
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
 
   if(type==trilephist){
@@ -2336,6 +2352,7 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
       trilepit->second->Fill(ev, muons, electrons, jets,w);
     }
   }
+ 
   else if(type==sighist_ee){
 
     map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
@@ -2433,6 +2450,14 @@ void AnalyzerCore::WriteCLHists(){
     Dir = m_outputFile->mkdir(trilepit->first);
     m_outputFile->cd( Dir->GetName() );
     trilepit->second->Write();
+    m_outputFile->cd();
+  }
+
+  for(map<TString, HNpairPlotsMM*>::iterator HNpairmmit = mapCLhistHNpairMM.begin(); HNpairmmit != mapCLhistHNpairMM.end(); HNpairmmit++){
+    
+    Dir = m_outputFile->mkdir(HNpairmmit->first);
+    m_outputFile->cd( Dir->GetName() );
+    HNpairmmit->second->Write();
     m_outputFile->cd();
   }
 
@@ -2769,6 +2794,70 @@ float AnalyzerCore::CFRate(snu::KElectron el){
 
   return 1. ;
 }
+
+//CFrate for ELECTRON_HN_TIGHT 13 TeV
+float AnalyzerCore::CFRate_Run2(snu::KElectron el, TString el_id){
+  if(el.Pt() < 20.) return 0.;
+  
+  Double_t p_B1_1[2] = {0.};
+  Double_t p_B2_1[2] = {0.};
+  Double_t p_E_1[2] = {0.};
+  
+  Double_t p_B1_2[2] = {0.};
+  Double_t p_B2_2[2] = {0.};
+  Double_t p_E_2[2] = {0.};
+  
+  Double_t scale_factor_EE = 1. ;
+  Double_t scale_factor_BB = 1. ;
+  
+  if(el_id == "ELECTRON_HN_TIGHT"){
+    p_B1_1 = {0.0001261, -0.005951};
+    p_B2_1 = {0.00063, -0.01965};
+    p_E_1 = {0.006827, -0.2198};
+    
+    p_B1_2 = {1.584e-05, 5.337e-05};
+    p_B2_2 = {3.946e-05, 0.0008439};
+    p_E_2 = {0.003153, -0.003891};
+  }
+  
+  Double_t frac = 0. ;
+  float pt_inv = 1. / el.Pt();
+  float eta = el.Eta();
+  
+  //--root fitting
+  if( fabs(eta) <= 0.9 ) { // inner BB region
+    //scale_factor_BB = 1.22 ; // BB
+    frac = p_B1_2[0] + p_B1_2[1] * pt_inv;
+    if( pt_inv < 0.02 ){
+      frac = max(p_B1_1[0] + p_B1_1[1] * pt_inv, frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+    
+  }else if( fabs(eta) > 0.9 && fabs(eta) <= 1.4442 ){ // outer BB region
+    //scale_factor_BB = 1.22 ; // BB
+    frac = p_B2_2[0] + p_B2_2[1] * pt_inv;
+    if( pt_inv < 0.025 ){
+      frac = max(p_B2_1[0] + p_B2_1[1] * pt_inv, frac);
+    }
+    frac = max(frac,0.);
+    frac *=scale_factor_BB ;
+
+  } else {  // fabs(eta) > 1.4
+    //scale_factor_EE = 1.40;
+    frac = p_E_2[0] + p_E_2[1] * pt_inv;
+    if( pt_inv <= 0.02 ){
+      frac = max(p_E_1[0] + p_E_1[1] * pt_inv, frac);
+    }
+    frac *= scale_factor_EE ;
+  }
+  
+  return float(frac) ;
+  return 1. ;
+
+}
+
+
 
 bool AnalyzerCore::IsTight(snu::KMuon muon){
   /// ADD TIGHT BaseSelection::MUON REQUIREMENT

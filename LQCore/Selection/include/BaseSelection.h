@@ -81,6 +81,10 @@ class BaseSelection {
            jpt_cut_min, jpt_cut_max, jeta_cut_min, jeta_cut,
            relIso_cut, relIsoMIN_cut, chiNdof_cut, chiNdofMIN_cut, 
            dxy_cut, dxyMIN_cut, dz_cut;
+  Double_t relIsoBarrel_max, relIsoBarrel_min, dxyBarrel_max, dzBarrel_max,
+           relIsoEndcap_max, relIsoEndcap_min, dxyEndcap_max, dzEndcap_max;
+
+  TString RelIsoType;
 
   Int_t casediscriminator,simpleselection;
 
@@ -114,6 +118,8 @@ class BaseSelection {
   /// bools to tell selector to apply cuts
   Bool_t  apply_ptcut,apply_etacut, apply_jptcut,apply_jetacut, apply_relisocut, apply_chi2cut, apply_dxycut, apply_dzcut, apply_general, apply_deposit;
   Bool_t apply_ID, apply_convcut, apply_chargeconst, applypileuptool;
+  Bool_t apply_BESepCut, apply_BETrRegIncl;
+
   
   ID k_id;
   
@@ -137,19 +143,12 @@ class BaseSelection {
   void SetCheckCharge(bool check);
   void SetApplyConvVeto(bool apply);
 
-  Double_t relIsoBarrel_max, relIsoBarrel_min, dxyBarrel_max, dzBarrel_max;//<-Mine
-  Double_t relIsoEndcap_max, relIsoEndcap_min, dxyEndcap_max, dzEndcap_max;//<-Mine
-  TString RelIsoType;
-  Bool_t apply_BESepCut, apply_BETrRegIncl;//<-Mine
-
-  //JB mod.
   void SetBETrRegIncl(bool include=false);
   void SetRelIsoBEMax(Double_t BarrelIso, Double_t EndcapIso);
   void SetRelIsoBEMin(Double_t BarrelIso, Double_t EndcapIso);
   void SetdxyBEMax(Double_t Barreldxy, Double_t Endcapdxy);
   void SetdzBEMax(Double_t Barreldz, Double_t Endcapdz);
   void SetRelIsoType(TString type);
-  //---
 
 };
 
