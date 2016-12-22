@@ -410,8 +410,9 @@ vector<TString>  GetAvailableMap(TString cversion, TString listpath){
       if(TString(dataword).Contains("/catTuple") ) {
 	missing=false;
 	if(!(TString(dataword).Contains(cversion))) {
+	  cout << "dataword = "<<dataword << endl;
 	  cout << "Datasets do not contain catversion in name" << endl;
-	  exit(1);
+	  //exit(1);
 	}
       }
     }

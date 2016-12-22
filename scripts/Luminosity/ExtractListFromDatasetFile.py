@@ -82,6 +82,7 @@ for x in datasetlist:
         if len(datasetname_split) > 0:
             part_datasetname= datasetname_split[0]
 
+
     if not datasetname:
         print "Dataset name could not be determined for file " + x
         sys.exit()

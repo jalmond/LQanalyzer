@@ -311,8 +311,9 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
       std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
       std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
-      std::map<TString, TString>::iterator check_trilep = trilepmap.find(mit->first);
-      if(check_trilep != trilepmap.end())  lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
+      std::map<TString, TString>::iterator check_trilep= trilepmap.find(mit->first);
+      //if(check_trilep != trilepmap.end())
+     lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
     }
     
     
@@ -393,7 +394,7 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
   if(!cluster)gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_LUMIFILE_DIR")+ "/").c_str()); 
   else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
 
-  //gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
+  gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
   return;
   

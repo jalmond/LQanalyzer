@@ -36,7 +36,7 @@ fi
 
 if [[ $PWD !=  *"/data4/LQAnalyzerCode/"* ]];
 then
-    if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
     then
         echo "Setup failed. LQanalyzer needs to be in /data4/LQAnalyzerCode/"$USER
         if [ ! -d /data4/LQAnalyzerCode/$USER ]; then
@@ -60,7 +60,7 @@ fi
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     source /share/apps/root_v5-34-32/root/bin/thisroot.sh 
-elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
     source /share/apps/root_v5_34_32/root/bin/thisroot.sh
 else
@@ -75,11 +75,20 @@ export LQANALYZER_DIR=${PWD}
 if [[ $1 == *"v7"* ]]; then
     echo "Setting up tag "$1
     export CHECKTAGFILE=/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+    then
+	export CHECKTAGFILE=/data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    fi
+
     if [[ ! -f $CHECKTAGFILE ]]; then 
 	export LQANALYZER_DIR=""
 	echo $1 "is not allowed input. Use one of:"
 	
 	source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+	then
+	    source /data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	fi
 	for ic in  ${list_of_catversions[@]};
         do
             echo $ic
@@ -88,6 +97,11 @@ if [[ $1 == *"v7"* ]]; then
     
     fi
     export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD2015/"
+    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+        then
+	export LQANALYZER_MOD="/data2/LQAnalyzer_rootfiles_for_analysis/CATMOD2015/"
+
+    fi
     source $LQANALYZER_DIR/bin/setup2015.sh
     export running2015=True
     cvdir=$LQANALYZER_DIR/LQLib/$CATVERSION
@@ -100,6 +114,11 @@ if [[ $1 == *"v7"* ]]; then
 fi
 
 export LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+then
+    export LQANALYZER_MOD="/data2/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
+
+fi
 python ${LQANALYZER_DIR}/scripts/CheckEmailIsSetup.py
 cat_email="NULL"
 while read line
@@ -124,6 +143,12 @@ source $CHECKTAGFILE branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
+buglist=/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+then
+    buglist=/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+fi
+
 while read line
 do
     if [[ $line == $CATTAG* ]];
@@ -131,17 +156,27 @@ do
 	echo "Current tag is buggy. Please update to newer tag."
         exit
     fi
-done < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/BuggyTag.txt
+done < $buglist
 
 export LIBTAG=""
 if [[ $1 != "" ]];then
 
     export CHECKTAGFILE=/data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+    then
+	export CHECKTAGFILE=/data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/SetBrachAndTag_$1.sh
+    fi
     if [[ ! -f $CHECKTAGFILE ]]; then
 	export LQANALYZER_DIR=""
         echo $1 "is not allowed input. Use one of:"
 	
-        source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+	then
+            source /data2/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+	else
+	    source /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/$CATVERSION.sh
+
+	fi
         for ic in  ${list_of_catversions[@]};
         do
             echo $ic
@@ -168,11 +203,13 @@ export LQANALYZER_LUMIFILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSet
 export LQANALYZER_DATASET_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
-if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
-    export LQANALYZER_FILE_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis/"
-    export CATTAGDIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATTag/"
-    export LQANALYZER_SKTreeLOG_DIR="/data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
+    export LQANALYZER_FILE_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
+    export LQANALYZER_LUMIFILE_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
+    export LQANALYZER_DATASET_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
+    export LQANALYZER_SKTreeLOG_DIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
+    export CATTAGDIR="/data2/LQAnalyzer_rootfiles_for_analysis/CATTag/"
 fi
 
 export running2015=False
@@ -197,8 +234,8 @@ then
 	export OBJ=obj/cms21
         export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21/
     fi
-elif [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
-    then
+elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+then
     export OBJ=obj/cluster/
     export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cluster/
 
@@ -259,8 +296,8 @@ export LQANALYZER_OUTPUT_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyz
 export LQANALYZER_LOG_PATH=/data2/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 export LQANALYZER_LOG_8TeV_PATH=${LQANALYZER_DIR}/data/logfiles/
 
-if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
-    then
+if [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
+then
     export LQANALYZER_OUTPUT_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/output/
     export LQANALYZER_LOG_PATH=/data4/CAT_SKTreeOutput/JobOutPut/${USER}/LQanalyzer/data/logfiles/
 fi

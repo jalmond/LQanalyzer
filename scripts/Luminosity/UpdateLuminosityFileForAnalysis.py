@@ -95,7 +95,10 @@ def CheckFileFormat(filepath):
     file_fulllist.close()
 
 ### ExtractListFromDatasetFile Makes a list of samples located in /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists//dataset-$CATVERSION
+
 import ExtractListFromDatasetFile
+
+
 
 catversion=str(os.getenv("CATVERSION"))
 
@@ -104,6 +107,7 @@ path_full_sample_list_user=os.getenv("LQANALYZER_DATASET_DIR")+"/"+ os.getenv("U
 
 
 CheckFileFormat(path_full_sample_list_user)
+
 
 
 change_in_xsec=False
@@ -136,6 +140,9 @@ if os.path.exists(path_full_sample_list):
         os.system("rm " + path_full_sample_list_user)
         sys.exit()
     else:
+        
+        print "TEST"
+        sys.exit()
         
         #### check all samples that are in previous sample list are in new sample list
         #### the only reason they will not be is if a dataset file was removed or wrongly modified
@@ -306,6 +313,8 @@ else:
     if not os.path.exists(lqdir+"/scripts/Luminosity/log"):
         os.system("mkdir "+ lqdir+"/scripts/Luminosity/log")
  
+    print "source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt"
+    
     os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
 
     if os.path.exists(lqdir+"/scripts/Luminosity/log"):
@@ -313,9 +322,10 @@ else:
             
     if os.path.exists(lqdir+"/scripts/Luminosity/inputlist_efflumi.txt"):
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
-        
+    
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
     os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh  -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
+    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh  -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     
     EmailNewList(catversion)    
