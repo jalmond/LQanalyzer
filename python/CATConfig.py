@@ -1,10 +1,19 @@
 ###################################################################                                                                         
 ###configure Job                                                                                                                                         ####################################################################                                                                                                           
-###timeWait=1#                                                                                                                                           ###################################################                                                                                                      ### Make Input File                                                                                                                                      ###################################################                                                                                                                            
+###timeWait=1#                                                                                                                                           ###################################################                                                                                                      ### Make Input File                         
+
 import os, getpass, sys,ROOT,time
 from functions import *
 
 from optparse import OptionParser
+
+
+path_jobpre="/data1/"
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/data2/"
+
+
+
 
 #Import parser to get options                                                                                                                                                  
 parser = OptionParser()
@@ -401,7 +410,7 @@ isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 
-path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+original_sample + tagger + ".log"
+path_log=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+original_sample + tagger + ".log"
 
 time.sleep(5.)
 os.system("qstat -u '*' > " + path_log)

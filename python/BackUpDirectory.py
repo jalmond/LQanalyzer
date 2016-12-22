@@ -3,6 +3,10 @@ from datetime import timedelta
 
 path_admin = os.getenv("LQANALYZER_MOD")+"/config.txt"
 
+path_jobpre="/data1/"
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/data2/"
+
 def checkLumiFile(backupdir,backup_datelist):
     
 
@@ -155,9 +159,9 @@ for xbackup in backup_date:
             
 if dobackup:
     copylist=[]
-    copylist.append("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v* ")
-    copylist.append("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
-    makeBackUp("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
+    copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v* ")
+    copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
+    makeBackUp(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
     copylist2=[]
     lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
     copylist2.append(lumidir+"/data* ")

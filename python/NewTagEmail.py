@@ -1,5 +1,14 @@
 import os
 
+path_jobpre="/data1/"
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/data2/"
+
+an_jonpre="/data2/"
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    an_jonpre="/data4/"
+
+
 def SendEmail(cattag, email_user):
 
 
@@ -18,13 +27,13 @@ def SendEmail(cattag, email_user):
             print "Email could not be set since email address is not set correctly in bin/catconfig."
             return
 
-    path_file_email="/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
+    path_file_email=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.sh"
     file_email=open(path_file_email,"w")
-    file_email.write('cat /data2/CAT_SKTreeOutput/' + os.getenv("USER")  + '/email.txt | mail -s "New Tag: ' + cattag + '" '+str(email_user)+'')
+    file_email.write('cat  '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/email.txt | mail -s "New Tag: ' + cattag + '" '+str(email_user)+'')
     file_email.close()
 
-    filejobsummary = open("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.txt","w")
-    tagdiff = "/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_"+cattag+".txt"
+    filejobsummary = open(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/email.txt","w")
+    tagdiff = path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATTag/TagDiff_"+cattag+".txt"
     file_tagdiff=open(tagdiff,"r")
     for eline in file_tagdiff:
         filejobsummary.write(eline)
