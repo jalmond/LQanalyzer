@@ -184,12 +184,12 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
 
         for line in read_file_jobsummary:
             if os.getenv("USER") in line:
-                if defsample in line and defskim in line:
+                if defsample+" " in line and defskim in line:
                     splitline = line.split()
                     nthsplit=0
                     for s in splitline:
                         if nthsplit== 12:
-                            get_nfiles=s
+                            get_nfiles=int(s)
                         nthsplit=nthsplit+1
         read_file_jobsummary.close()
 
@@ -229,7 +229,7 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
         read_file_jobsummary = open(file_jobsummary,"r")
         for line in read_file_jobsummary:
             if os.getenv("USER") in line:
-                if defsample in line and defskim in line:
+                if defsample +" " in line and defskim in line:
                     splitline = line.split()
                     nthsplit=0
                     for s in splitline:
@@ -237,7 +237,7 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
                             gettime_njobs=s
                         if nthsplit==12:
                             gettime_nfiles=s
-                        if nthsplit==14:
+                        if nthsplit==24:
                             gettime_jobtime=s
                         nthsplit=nthsplit+1
         read_file_jobsummary.close()
@@ -247,8 +247,8 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
             continue
         if gettime_njobs < 1:
             continue
-        gettime_jobtime = float(gettime_jobtime) / float(gettime_nfiles) 
-        gettime_jobtime = float(gettime_jobtime) * float(gettime_njobs)
+        gettime_jobtime = float(gettime_jobtime) * float(gettime_nfiles) 
+        gettime_jobtime = float(gettime_jobtime) / float(gettime_njobs)
         avg_time=float(gettime_jobtime)
         return avg_time
     return avg_time
@@ -262,13 +262,8 @@ def DetermineNjobs(longestjobtime, ncores_job, deftagger,defsample,defcycle,defs
     if ncores_job == 1:
         return 1
     
-    expectedjobtime=GetAverageTime(deftagger, defsample, defcycle,defskim)
-    expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)
-    if not longestjobtime == expectedjobtime:
-        for i in range(2, 20):
-            if float(expectedjobtime*float(expectedjobnfiles)/float(i)) < longestjobtime:
-                return i
-    
+    #expectedjobtime=GetAverageTime(deftagger, defsample, defcycle,defskim)
+    #expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)
 
     path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
     os.system("qstat -u '*'  > " +  path_clust_check_njobs)
@@ -296,15 +291,20 @@ def DetermineNjobs(longestjobtime, ncores_job, deftagger,defsample,defcycle,defs
         njobs_max=5
     else:
         njobs_max=5
+    return njobs_max
 
-    if nrunning < 50:
-        return njobs_max
-    else:
-        return njobs_max
-        if njobs_max> 40:
-            return njobs_max - 40
-        else:
-            return njobs_max
+    if expectedjobtime > 1.:
+        if not longestjobtime == expectedjobtime:
+            for ix in range(2, 20):
+                i=20-ix
+                if float(expectedjobtime*float(expectedjobnfiles)/float(i)) < longestjobtime:
+                    expectedjobnfiles_i=int(expectedjobnfiles)
+                    itmp=int(i)
+                    #while (expectedjobnfiles_i % int(i)):
+                    #    expectedjobnfiles=expectedjobnfiles-1
+                    return int(expectedjobnfiles/itmp)
+
+    return njobs_max
 
 def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
 
@@ -876,6 +876,7 @@ output_bkg=[]
 for out_x in range(1,winx):
     output_bkg.append(" "*170)
 
+
 start_time = time.time()  
 screen = curses.initscr()
 
@@ -1019,7 +1020,9 @@ for s in sample:
 
 for s in sample:
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
+
     njobs_for_submittion=DetermineNjobs(longestjob,number_of_cores, tagger, s, cycle,useskim)
+
     isample=isample+1
 
     ## set MC bool from the sample length. This is the letter of the data period for data
