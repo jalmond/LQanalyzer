@@ -71,6 +71,11 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV.root").c_str());
   CheckFile(file_fake);
   
+
+  TFile* file_fakeopt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016_opt.root").c_str());
+  CheckFile(file_fakeopt);
+
+
   ////// MAKE HISTS IN MAP
   TDirectory* tempDir1 = getTemporaryDirectory();
   tempDir1->cd();
@@ -88,7 +93,85 @@ void HNCommonLeptonFakes::InitialiseFake(){
   std::vector <TString> cut;
   cut.push_back("pt_eta");
 
+  std::vector <TString> opt;
+  opt.push_back("b035_e035");
+  opt.push_back("b035_e040");
+  opt.push_back("b035_e045");
+  opt.push_back("b035_e050");
+  opt.push_back("b035_e055");
+  opt.push_back("b035_e060");
+  
+  opt.push_back("b040_e035");
+  opt.push_back("b040_e040");
+  opt.push_back("b040_e045");
+  opt.push_back("b040_e050");
+  opt.push_back("b040_e055");
+  opt.push_back("b040_e060");
 
+  opt.push_back("b060_e035");
+  opt.push_back("b060_e040");
+  opt.push_back("b060_e045");
+  opt.push_back("b060_e050");
+  opt.push_back("b060_e055");
+  opt.push_back("b060_e060");
+
+  opt.push_back("b045_e035");
+  opt.push_back("b045_e040");
+  opt.push_back("b045_e045");
+  opt.push_back("b045_e050");
+  opt.push_back("b045_e055");
+  opt.push_back("b045_e060");
+
+  opt.push_back("b050_e035");
+  opt.push_back("b050_e040");
+  opt.push_back("b050_e045");
+  opt.push_back("b050_e050");
+  opt.push_back("b050_e055");
+  opt.push_back("b050_e060");
+
+  opt.push_back("b055_e035");
+  opt.push_back("b055_e040");
+  opt.push_back("b055_e045");
+  opt.push_back("b055_e050");
+  opt.push_back("b055_e055");
+  opt.push_back("b055_e060");
+
+  opt.push_back("dxy_b050_e100");
+  opt.push_back("dxy_b050_e050");
+  opt.push_back("dxy_b050_e040");
+  opt.push_back("dxy_b050_e025");
+  opt.push_back("dxy_b050_e020");
+  opt.push_back("dxy_b050_e015");
+  
+  opt.push_back("dxy_b025_e100");
+  opt.push_back("dxy_b025_e050");
+  opt.push_back("dxy_b025_e040");
+  opt.push_back("dxy_b025_e025");
+  opt.push_back("dxy_b025_e020");
+  opt.push_back("dxy_b025_e015");
+
+  opt.push_back("dxy_b015_e100");
+  opt.push_back("dxy_b015_e050");
+  opt.push_back("dxy_b015_e040");
+  opt.push_back("dxy_b015_e025");
+  opt.push_back("dxy_b015_e020");
+  opt.push_back("dxy_b015_e015");
+
+  opt.push_back("dxy_b010_e100");
+  opt.push_back("dxy_b010_e050");
+  opt.push_back("dxy_b010_e040");
+  opt.push_back("dxy_b010_e025");
+  opt.push_back("dxy_b010_e020");
+  opt.push_back("dxy_b010_e015");
+
+  opt.push_back("dxy_b008_e100");
+  opt.push_back("dxy_b008_e050");
+  opt.push_back("dxy_b008_e040");
+  opt.push_back("dxy_b008_e025");
+  opt.push_back("dxy_b008_e020");
+  opt.push_back("dxy_b008_e015");
+
+  
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       
@@ -96,7 +179,14 @@ void HNCommonLeptonFakes::InitialiseFake(){
     }
   }
 
-  
+  for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
+    for(unsigned int fk = 0; fk < cut.size() ; fk++){
+      for(unsigned int fl = 0; fl < opt.size() ; fl++){
+      
+	_2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + opt.at(kl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_" + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(kl)))->Clone());
+      }
+    }
+  }
 
   if(failedinitialisation){
     cout << "Not all histograms could be initialised, this is a bug so am exiting" << endl;
@@ -202,7 +292,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
       
   TString JetPt = "40";
   //if(fcut.Contains("20")) JetPt = "20";
-  //if(fcut.Contains("30")) JetPt = "30";
+  //if(fcut.Contains("30")) JletPt = "30";
   //if(fcut.Contains("40")) JetPt = "40";
   //  if(fcut.Contains("60")) JetPt = "60";
 
@@ -235,7 +325,58 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVecto
 
   
   return ev_weight;
+}
+
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut1, TString cut2){
+
+  if(electrons.size()!=2) {
+    cout << "DiLepton event weight requires 2 muons." << endl;
+    return (0.);
   }
+
+  float _el1_pt=electrons.at(0).Pt();
+  float _el2_pt=electrons.at(1).Pt();
+
+
+  //// vectors need to be ordered in pT                                                                                                                                                                                                                                   
+  if(_el1_pt < _el2_pt) return -100000000000.;
+
+
+  float _el1_eta=fabs(electrons.at(0).Eta());
+  float _el2_eta=fabs(electrons.at(1).Eta());
+
+  if(m_debug){
+    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "el1 pT = " << _el1_pt << endl;
+    cout << "el2 pT = " << _el2_pt << endl;
+  }
+
+  if(_el1_pt > 60.) _el1_pt = 59.;
+  if(_el2_pt > 60.) _el2_pt = 59.;
+
+
+  float fr1(0.),fr2(0.),r1(0.),r2(0.);
+
+  r1=1.;
+  r2=1.;
+
+
+  fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut1);
+  fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut2);
+
+  float fr1_err=  getFakeRate_electronEta(1,_el1_pt, _el1_eta,cut1);
+  float fr2_err=  getFakeRate_electronEta(1,_el2_pt, _el2_eta,cut2);
+
+  if(fr1 == 0.)  fr1 = 0.05;
+  if(fr2 == 0.)  fr2 = 0.05;
+
+  // Calculate event weight                                                                                                                                                                                                                                               
+  float ev_weight = CalculateDiLepMMWeight(fr1_err,fr1,fr2_err,fr2, isel1tight, isel2tight, 0);
+
+  return ev_weight;
+}
+
+
 
   
 

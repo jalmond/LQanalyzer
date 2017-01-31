@@ -1,4 +1,3 @@
-// $id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQFakeRateCalculator_El Frame - ROOT-based analysis framework for Korea SNU
 OB * @Package: LQCycles
@@ -155,11 +154,90 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   // weight*= prescale_trigger;
   
-  MakeFakeRatePlots("HNTight", electronTightColl, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
- 
+  MakeFakeRatePlots("HNTight_dxy_b050_e100", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);    
+  MakeFakeRatePlots("HNTight_dxy_b050_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);    
+  MakeFakeRatePlots("HNTight_dxy_b050_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);    
+  MakeFakeRatePlots("HNTight_dxy_b050_e025", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);    
+  MakeFakeRatePlots("HNTight_dxy_b050_e020", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);    
+  MakeFakeRatePlots("HNTight_dxy_b050_e015", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);    
 
+  MakeFakeRatePlots("HNTight_dxy_b025_e100", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b025_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b025_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b025_e025", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b025_e020", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b025_e015", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  MakeFakeRatePlots("HNTight_dxy_b015_e100", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b015_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b015_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b015_e025", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b015_e020", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b015_e015", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  MakeFakeRatePlots("HNTight_dxy_b010_e100", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b010_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b010_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b010_e025", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b010_e020", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b010_e015", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  MakeFakeRatePlots("HNTight_dxy_b008_e100", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b008_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b008_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b008_e025", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b008_e020", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_dxy_b008_e015", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  
+  MakeFakeRatePlots("HNTight_b035_e035", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b035_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b035_e045", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b035_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b035_e055", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b035_e060", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+
+  MakeFakeRatePlots("HNTight_b040_e035", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b040_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b040_e045", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b040_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b040_e055", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b040_e060", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+
+  MakeFakeRatePlots("HNTight_b045_e035", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b045_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b045_e045", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b045_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b045_e055", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b045_e060", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  MakeFakeRatePlots("HNTight_b050_e035", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b050_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b050_e045", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b050_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b050_e055", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b050_e060", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  MakeFakeRatePlots("HNTight_b055_e035", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b055_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b055_e045", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b055_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b055_e055", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b055_e060", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+
+  MakeFakeRatePlots("HNTight_b060_e035", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);  
+  MakeFakeRatePlots("HNTight_b060_e040", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b060_e045", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b060_e050", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b060_e055", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  MakeFakeRatePlots("HNTight_b060_e060", electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, weight);
+  
+  
+  
+  
   bool useevent40 = UseEvent(electronLooseColl , jetColl, 40., prescale_trigger, weight);
-
+  
   if(useevent40){
     if(jetCollTight.size() >=1) {
       FillCLHist(sighist_ee, "Use40_loose", eventbase->GetEvent(), muonColl,electronLooseColl,jetCollTight, weight);
@@ -261,8 +339,12 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 }
 
 
-void FakeRateCalculator_El::MakeFakeRatePlots(TString label, std::vector<snu::KElectron> electrons_tight, std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float w){
+void FakeRateCalculator_El::MakeFakeRatePlots(TString label,  std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float w){
   
+
+  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,true,label);
+
+
   if(electrons.size() == 0 ) return;
   if(prescale_w==0.) return;
   

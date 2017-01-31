@@ -240,6 +240,7 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   }
   std::vector<TString> triggerslist_dimu;
   triggerslist_dimu.push_back(dimuon_trigmuon_trig1);
+  //triggerslist_dimu.push_back(dimuon_trigmuon_trig2);
   
   std::vector<TString> triggerslist_mu;
   triggerslist_mu.push_back(muon_trigmuon_trig1);
@@ -265,7 +266,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
    
    std::vector<snu::KMuon>  mus = GetMuons("MUON_POG_TIGHT");
-
+   
+   cout << "if(GetJets(JET_HN).size() = " << GetJets("JET_HN").size() << endl;
    if(mus.size() ==2) {
 	   
      counter("DiMu", weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", TargetLumi));

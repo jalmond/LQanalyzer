@@ -329,8 +329,8 @@ void MakeInputListForSubmitScript(){
   string lfile2 =  lqdir + "/LQRun/txt/list_all_mc_" + string(def_version) +".sh";
 
 
-  gSystem->Exec(("cp " + lfile + " "+ string(getenv("LQANALYZER_DATASET_DIR"))).Data());
-  if (user.Contains("jalmond"))  gSystem->Exec(("chmod 777 " + string(getenv("LQANALYZER_DATASET_DIR")) + lfile).Data());
+  gSystem->Exec(("cp " + lfile + " "+ string(getenv("LQANALYZER_DATASETFILE_DIR"))).Data());
+  if (user.Contains("jalmond"))  gSystem->Exec(("chmod 777 " + string(getenv("LQANALYZER_DATASETFILE_DIR")) + lfile).Data());
   gSystem->Exec(("mv " + lfile +" " + lfile2).Data());
 
 

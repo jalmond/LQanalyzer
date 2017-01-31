@@ -56,8 +56,6 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);  eventbase->GetJetSel()->SetPt(20);
-  eventbase->GetJetSel()->SetEta(5.);
-  eventbase->GetJetSel()->BasicSelection(out_jets);
   eventbase->GetJetSel()->SetPt(20);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);

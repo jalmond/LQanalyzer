@@ -2,8 +2,8 @@
 ### sets all configurable variables to defaul values
 
 source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
-cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
-cp $LQANALYZER_LUMIFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
+cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
+cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")

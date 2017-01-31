@@ -127,8 +127,8 @@ void MakeDataInputFile(TString version=""){
   if(cluster) lfile2 =   lqdir+ "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_data_" + string(version.Data()) + ".txt";
 
   if(user.Contains("jalmond")){
-    if(!cluster)gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_LUMIFILE_DIR")).c_str());     
-    else gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_LUMIFILE_DIR")).c_str());
+    if(!cluster)gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_DATASETFILE_DIR")).c_str());     
+    else gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_DATASETFILE_DIR")).c_str());
 
   }
   gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());

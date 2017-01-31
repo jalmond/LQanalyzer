@@ -47,6 +47,7 @@ class HNCommonLeptonFakes {
   
 
   float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons,  bool isel1tight, bool isel2tight);
+  float get_dilepton_ee_eventweight(std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut1, TString cut2);
   
 
   float getFakeRate_muon(int sys, float pt,  float eta, TString ID);

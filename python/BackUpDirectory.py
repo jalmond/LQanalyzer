@@ -22,7 +22,7 @@ def checkLumiFile(backupdir,backup_datelist):
         sys.exit()
 
     catversion=os.getenv("CATVERSION")
-    lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
+    lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
     currentfile=lumidir+"/datasets_snu_CAT_mc_" + catversion+".txt"
     
     backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
@@ -146,7 +146,7 @@ file_admin.close()
 
 if dobackup:
     print "ADMIN: Making backup"
-    lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
+    lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
     checkLumiFile(lumidir+"/BackUp/",backup_date)
 
 
@@ -163,7 +163,7 @@ if dobackup:
     copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")
     makeBackUp(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/BackUp/",copylist,backup_date)
     copylist2=[]
-    lumidir=os.getenv("LQANALYZER_LUMIFILE_DIR")
+    lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
     copylist2.append(lumidir+"/data* ")
 
     makeBackUp(lumidir+"/BackUp/",copylist2,backup_date)
