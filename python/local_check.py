@@ -84,9 +84,9 @@ if not os.path.exists(tag_dir):
 
     if os.path.exists(snufiledir+"/cMVAv2.csv"):
         os.system("rm  "+snufiledir+"/*.csv")
-    if os.path.exists(snufiledir +"/triggers_catversion2016_801.txt") or os.path.exists(snufiledir +"/lumi_catversion2016_801.txt"):
+    if os.path.exists(snufiledir +"/triggers_catversion2016_802.txt") or os.path.exists(snufiledir +"/lumi_catversion2016_802.txt"):
         os.system("rm " + snufiledir+"/*.txt")
-    if os.path.exists(snufiledir +"/Luminosity/triggers_catversion2016_801.txt"):
+    if os.path.exists(snufiledir +"/Luminosity/triggers_catversion2016_802.txt"):
         os.system("rm " +snufiledir +"/Luminosity/*2016*")
 
     if os.path.exists(snufiledir):

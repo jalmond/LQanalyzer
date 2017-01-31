@@ -8,8 +8,8 @@ def UpdateLumiFile(modlistpath, catversion,isNewSample):
 
     ### xseclist should contain lines that are updated in xsec
     ### samplelist should contain lines for new samples
-    samplelist=os.getenv("LQANALYZER_LUMIFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
-    newsamplelist=os.getenv("LQANALYZER_LUMIFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"                                                               
+    samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
+    newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"                                                               
     #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
     #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
      
@@ -113,7 +113,7 @@ newxsec_list=[]
 newsample_list= []
 
 
-if not os.path.exists(os.getenv("LQANALYZER_LUMIFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"):
+if not os.path.exists(os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"):
     os.system("rm " + path_full_sample_list)
 
 if os.path.exists(path_full_sample_list):
@@ -265,8 +265,8 @@ if os.path.exists(path_full_sample_list):
             
             UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, isnewsample)
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
-            samplelist=os.getenv("LQANALYZER_LUMIFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
-            newsamplelist=os.getenv("LQANALYZER_LUMIFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"
+            samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
+            newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"
             print "Is the following list of differences correct:"
             print "\n"
             print "diff " + samplelist + " " + newsamplelist

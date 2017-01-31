@@ -42,13 +42,14 @@ if not LQANALYZER_DIR == "None" :
 		CleanUpLogs(EightTeVdataOne)
 		CleanUpLogs(EightTeVdataTwo)	
 	localfiledir = os.getenv("LQANALYZER_FILE_DIR")
-	lumifiledir = os.getenv("LQANALYZER_LUMIFILE_DIR")
+	datasetfiledir = os.getenv("LQANALYZER_DATASETFILE_DIR")
+
 	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 	cltxtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/Cluster/"
 	seldir =os.getenv("LQANALYZER_DIR")+  "/CATConfig/SelectionConfig/"
 	os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
 	os.system("cp " + localfiledir + "/Luminosity/lumi_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
-	os.system("cp " + lumifiledir + "/list_all_mc_"+str(os.getenv("CATVERSION"))+".sh " + txtfiledir)
+	os.system("cp " + datasetfiledir + "/list_all_mc_"+str(os.getenv("CATVERSION"))+".sh " + txtfiledir)
 	os.system("cp " + localfiledir + "/Selection/*.sel " + seldir)
 	#os.system("cp " + localfiledir + "/*.csv " + btagfiledir)
 	#os.system("source " +  os.getenv("LQANALYZER_DIR") + "/bin/IncludePrivateSamples.sh")

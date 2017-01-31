@@ -17,6 +17,8 @@ for i in files_check:
                 sys.exit()
             ncut_el = int(sline[1])
         elif not "webpage" in line and not "###" in line:
+            if not "|" in line:
+                continue
             if not len(sline) == (2*ncut_el + 3):
                 print line + " "  + str(len(sline)) + ": FIX in " + path_file
                 sys.exit()                

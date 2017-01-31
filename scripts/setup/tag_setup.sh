@@ -164,7 +164,7 @@ alias git_commit_lq="bash scripts/setup/git_commit.sh"
 alias sktree_bkg_log="python python/PrintBkgJob.py"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
-export LQANALYZER_LUMIFILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
+export LQANALYZER_DATASETFILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
 export LQANALYZER_DATASET_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/"
 export LQANALYZER_SKTreeLOG_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/"
 export CATTAGDIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATTag/"
