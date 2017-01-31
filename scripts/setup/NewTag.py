@@ -54,7 +54,7 @@ filejobsummary.write("\n")
 filejobsummary.write("_"*60+"\n")
 filejobsummary.write("Summary/Definition:\n")
 filejobsummary.write("\n")
-filejobsummary.write("Data: Periods B-G\n")
+filejobsummary.write("Data: Periods B-H\n")
 os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -D " + os.getenv("CATVERSION") + "> log")
 logfile_cv = open("log","r")
 printout=False
