@@ -2,7 +2,6 @@
 #define AnalyzerCore_H
 
 //forward declarations                                                                                                                                            
-class Reweight;
 class EventBase;
 class MuonPlots;
 class ElectronPlots;
@@ -17,12 +16,13 @@ class EventBase;
 #include "BaseSelection.h"
 #include "LQCycleBase.h"
 #include "HNCommonLeptonFakes/HNCommonLeptonFakes/HNCommonLeptonFakes.h"
-#include "rochcor2015/rochcor2015.h"
-#include "rochcor2015/RoccoR.h"
+
 #include "BTag/BTagSFUtil.h"
 #include "TNtupleD.h"
 #include "TNtuple.h"
 #include "TGraphAsymmErrors.h"
+#include "MCDataCorrections.h"
+
 
 class AnalyzerCore : public LQCycleBase {
   
@@ -31,7 +31,7 @@ class AnalyzerCore : public LQCycleBase {
   enum period  {C=0,
 		D=1,
 		CtoD=2,
-		BtoE_2016=3};
+		BtoH_2016=3};
   
   //Default constructor
    
@@ -46,8 +46,6 @@ class AnalyzerCore : public LQCycleBase {
   virtual void WriteHistograms()throw( LQError );
 
 
-  TDirectory*   getTemporaryDirectory(void) const;
- 
   TString GetStringID(BaseSelection::ID id);
   std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KFatJet>  GetFatJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
@@ -55,6 +53,7 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
 
+  Int_t GetMCPeriod();
   bool IsDiEl();
 
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
@@ -73,17 +72,10 @@ class AnalyzerCore : public LQCycleBase {
   void SetupSelectionFatJet(std::string path_sel);
   void SetupSelectionElectron(std::string path_sel);
 
-  void FillCorrectionHist(string label, string dirname, string filename, string histsname, string histtype);
-  void FillCorrectionHists();
-  TH2F* GetCorrectionHist(TString label);
-  bool CheckCorrectionHist(TString label);
 
-
-  TGraphAsymmErrors* GetCorrectionGraph(TString label);
-  bool CheckCorrectionGraph(TString label);
+  void GetJetTaggerEfficiences(TString taggerWP, snu::KJet::Tagger tag,  snu::KJet::WORKING_POINT wp);
 
   void FillCutFlow(TString cut, float weight);
-
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
 
   bool EtaRegion(TString reg,  std::vector<snu::KMuon> muons);
@@ -91,10 +83,10 @@ class AnalyzerCore : public LQCycleBase {
 
   void FillHistPerLumi(TString histname, float value, float w, float xmin, float xmax,int nbins, int nlumibins);
 
-  bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium);
-  int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium);
+  bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium, int mcperiod=-1);
+  int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium, int mcperiod=-1);
 
-  int IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp);
+  bool IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1);
 
   int AssignnNumberOfTruth();
   bool IsSignal();
@@ -107,18 +99,9 @@ class AnalyzerCore : public LQCycleBase {
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);
   bool IsCF(snu::KElectron el);
 
-
-  double TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu, TString trigname, int direction=0);;
-
   float GetDiLepMass(std::vector<snu::KMuon> muons);
   float GetDiLepMass(std::vector<snu::KElectron> electrons);
 
-  double ElectronScaleFactor( TString  elid, vector<snu::KElectron> el, int sys=0);
-  double ElectronRecoScaleFactor(vector<snu::KElectron> el);
-
-  double MuonScaleFactor(TString  muid, vector<snu::KMuon> mu, int sys=0);
-  double MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys=0);
-  double MuonTrackingEffScaleFactor(vector<snu::KMuon> mu);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
@@ -141,6 +124,7 @@ class AnalyzerCore : public LQCycleBase {
 
   float Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons);
   float Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString cutID="HN");
+  float Get_DataDrivenWeight_MMM(bool geterr, vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_E(vector<snu::KElectron> k_electrons);
   float Get_DataDrivenWeight_M(vector<snu::KMuon> k_muons, TString cutID="HN");
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString cut="HN");
@@ -148,14 +132,15 @@ class AnalyzerCore : public LQCycleBase {
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
 
+  std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KElectron> el);
+  std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KMuon> mu);
+  std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KJet> jet);
+  std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KFatJet> jet);
+
+
 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
-  
-  vector<TLorentzVector> MakeTLorentz( vector<snu::KElectron> el);
-  vector<TLorentzVector> MakeTLorentz( vector<snu::KMuon> mu);
-  vector<TLorentzVector> MakeTLorentz( vector<snu::KJet> jet);
-  vector<TLorentzVector> MakeTLorentz( vector<snu::KFatJet> jet);
   // enum for plotting functions/classes
   enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist, hnpairmm};
   
@@ -175,6 +160,9 @@ class AnalyzerCore : public LQCycleBase {
   static const Bool_t MC_pu = true;
   Reweight *reweightPU;
 
+  MCDataCorrections* mcdata_correction;
+
+
   //// Event base pointer. Used to get all objects for analysis
   EventBase* eventbase;
   
@@ -186,8 +174,6 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH2*> maphist2D;
   map<TString, TNtupleD*> mapntp;
 
-  map<TString, TH2F*>  CorrectionMap;
-  map<TString, TGraphAsymmErrors*>  CorrectionMapGraph;
 
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 
@@ -243,7 +229,10 @@ class AnalyzerCore : public LQCycleBase {
   bool changed_target_lumi;
 
   // used to get trigger prescale
-  Int_t prescale;
+  
+  bool  k_reset_period;
+  int k_mcperiod;
+
   
   std::vector<TString> triggerlist;
 
@@ -277,11 +266,10 @@ class AnalyzerCore : public LQCycleBase {
     //
     // Makes temporary dir
     //
-    TDirectory* GetTemporaryDirectory(void) const;                                                                                                                                 
+  TDirectory* GetTemporaryDirectory(void) const;                                                                                                                                 
   //
   // Checks if a file exists
   //
-  void CheckFile(TFile* file) throw( LQError );
   
   //// Plotting 
   TH1* GetHist(TString hname);
@@ -321,24 +309,13 @@ class AnalyzerCore : public LQCycleBase {
 
 
   //// Event related                                                                                                                                              
-  float TempPileupWeight();
-
   bool  PassTrigger(TString list);
   bool  PassTrigger(std::vector<std::pair<TString,TString> > list);
-  float TriggerEff(TString trigname, std::vector<snu::KElectron> electrons);
-  float TriggerEff(TString trigname, std::vector<snu::KMuon> muons);
-  float TriggerEff(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
-
-  float GetEff(snu::KMuon mu, TString trigname);
-  float GetEff(snu::KElectron el, TString trigname);
-
 
   void ListTriggersAvailable();
   bool PassMETFilter();
 
   std::map<TString,BTagSFUtil*> MapBTagSF;
-  //  BTagSFUtil *lBTagSF, *hBTagSF;
-  rochcor2015 *rmcor;
 
   
 };

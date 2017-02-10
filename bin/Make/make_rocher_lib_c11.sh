@@ -2,11 +2,11 @@ cd $ROCHDIR/conf/
 make -f Makefile.StandAlone
 cd -
 cd $LQANALYZER_LIB_PATH
-if [[ -f librochcor2015.so ]] ;
+if [[ -f librochcor2016.so ]] ;
     then
-    rm librochcor2015.so
+    rm librochcor2016.so
 fi
-cp $ROCHDIR/Root/librochcor2015.so librochcor2015.so
+cp $ROCHDIR/Root/librochcor2016.so librochcor2016.so
 
 cd $LQANALYZER_DIR/LQAnalysis/
 

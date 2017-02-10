@@ -274,6 +274,7 @@ void Data::Reset(){
   muon_normchi = 0;
   muon_relIso03 = 0;
   muon_relIso04 = 0;
+  muon_minirelIso = 0;
   muon_shiftedEdown = 0;
   muon_shiftedEup = 0;
   electrons_x = 0;
@@ -286,6 +287,7 @@ void Data::Reset(){
   electrons_energy = 0;
   electrons_relIso03 = 0;
   electrons_relIso04 = 0;
+  electrons_minirelIso = 0;
   electrons_shiftedEnDown = 0;
   electrons_shiftedEnUp = 0;
   electrons_absIso03 = 0;
@@ -562,6 +564,20 @@ void Data::ConnectEvent(int setting_data){
       }
     }
   }
+  else{
+    ConnectVariable("puWeightGold",puWeightGold, b_puWeightGold);
+    ConnectVariable("puWeightGoldUp",puWeightGoldUp, b_puWeightGoldUp);
+    ConnectVariable("puWeightGoldDn",puWeightGoldDn, b_puWeightGoldDn);
+
+    ConnectVariable("puWeightGoldB",puWeightGoldB, b_puWeightGoldB);
+    ConnectVariable("puWeightGoldC",puWeightGoldC, b_puWeightGoldC);
+    ConnectVariable("puWeightGoldD",puWeightGoldD, b_puWeightGoldD);
+    ConnectVariable("puWeightGoldE",puWeightGoldE, b_puWeightGoldE);
+    ConnectVariable("puWeightGoldF",puWeightGoldF, b_puWeightGoldF);
+    ConnectVariable("puWeightGoldG",puWeightGoldG, b_puWeightGoldG);
+    ConnectVariable("puWeightGoldH",puWeightGoldH, b_puWeightGoldH);
+   
+  }
   
 
   ConnectVariable("nTrueInteraction", nTrueInteraction , b_nTrueInteraction);
@@ -573,12 +589,12 @@ void Data::ConnectEvent(int setting_data){
     ConnectVariable("EcalDeadCellTriggerPrimitiveFilter", ecalDCTRFilter, b_ecalDCTRFilter);
     ConnectVariable("eeBadScFilter",eeBadScFilter , b_eeBadScFilter);
     ConnectVariable("goodVertices", goodVertices, b_goodVertices);
+    if(k_cat_version > 6){
+      ConnectVariable("BadChargedCandidateFilter",BadChargedCandidateFilter,b_BadChargedCandidateFilter);
+      ConnectVariable("BadPFMuonFilter",BadPFMuonFilter,b_BadPFMuonFilter);
+    }
   }
-  if(k_cat_version > 6){
-    ConnectVariable("BadChargedCandidateFilter",BadChargedCandidateFilter,b_BadChargedCandidateFilter);
-    ConnectVariable("BadPFMuonFilter",BadPFMuonFilter,b_BadPFMuonFilter);
 
-  }
   if(k_cat_version ==4){
     ConnectVariable("HBHENoiseFilter", HBHENoiseFilter, b_HBHENoiseFilter);
     ConnectVariable("CSCTightHaloFilter", csctighthaloFilter, b_csctighthaloFilter);
@@ -644,6 +660,7 @@ void Data::ConnectMuons(){
   ConnectVariable("muon_q",muon_q , b_muon_q);
   ConnectVariable("muon_relIso03", muon_relIso03, b_muon_relIso03);
   ConnectVariable("muon_relIso04", muon_relIso04, b_muon_relIso04);
+  ConnectVariable("muon_minirelIso", muon_minirelIso, b_muon_minirelIso);
   ConnectVariable("muon_shiftedEdown", muon_shiftedEdown, b_muon_shiftedEdown);
   ConnectVariable("muon_shiftedEup",muon_shiftedEup , b_muon_shiftedEup);
   ConnectVariable("muon_trackerlayers", muon_trackerlayers, b_muon_trackerlayers);
@@ -728,6 +745,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_q", electrons_q, b_electrons_q);
   ConnectVariable("electrons_relIso03", electrons_relIso03, b_electrons_relIso03);
   ConnectVariable("electrons_relIso04", electrons_relIso04, b_electrons_relIso04);
+  ConnectVariable("electrons_minirelIso", electrons_minirelIso, b_electrons_minirelIso);
   ConnectVariable("electrons_scEta", electrons_scEta, b_electrons_scEta);
   ConnectVariable("electrons_shiftedEnDown", electrons_shiftedEnDown, b_electrons_shiftedEnDown);
   ConnectVariable("electrons_shiftedEnUp", electrons_shiftedEnUp, b_electrons_shiftedEnUp);

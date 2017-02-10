@@ -103,6 +103,19 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
+
+
+  //// Get Jet efficienies
+
+  GetJetTaggerEfficiences("CSVv2M",snu::KJet::CSVv2, snu::KJet::Medium);
+  GetJetTaggerEfficiences("CSVv2L",snu::KJet::CSVv2, snu::KJet::Loose);
+  GetJetTaggerEfficiences("CSVv2T",snu::KJet::CSVv2, snu::KJet::Tight);
+  GetJetTaggerEfficiences("cMVAv2M",snu::KJet::cMVAv2, snu::KJet::Medium);
+  GetJetTaggerEfficiences("cMVAv2L",snu::KJet::cMVAv2, snu::KJet::Loose);
+  GetJetTaggerEfficiences("cMVAv2T",snu::KJet::cMVAv2, snu::KJet::Tight);
+
+  return;
+
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
@@ -322,7 +335,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electronColl             = GetElectrons(true, false,elid);
   
-  float weight_trigger_sf = TriggerScaleFactor(electronColl, muonColl, analysis_trigger);
+  float weight_trigger_sf =  mcdata_correction->TriggerScaleFactor(electronColl, muonColl, analysis_trigger);
   FillHist("TriggerSFWeight" , weight_trigger_sf, 1., 0. , 2., 200);
   
   // Sets weight to weight if not running chargeflip bkg estimate or events are S
@@ -347,7 +360,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   if(!isData){
     for(unsigned int iel=0; iel < electronColl.size(); iel++){
-      id_weight*= ElectronScaleFactor("ELECTRON_POG_TIGHT", electronColl);
+      id_weight*= mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT", electronColl);
       
     }
   }

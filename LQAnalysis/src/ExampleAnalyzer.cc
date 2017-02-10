@@ -84,7 +84,7 @@ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex                                                                              
 
    float pileup_reweight=(1.0);
-   if (!k_isdata) {   pileup_reweight = TempPileupWeight();}
+   if (!k_isdata) {   pileup_reweight = mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent());}
      
    
    TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";

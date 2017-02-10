@@ -162,6 +162,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return -999
 
+
     nit=2
     avg_time=-999
     checkdate = datetime.datetime.now()
@@ -179,6 +180,10 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         year=checkdate.strftime("%y")
 
         file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
+
+        if not os.path.exists(file_jobsummary):
+            return -999
+
         read_file_jobsummary = open(file_jobsummary,"r")
     
 
@@ -226,6 +231,10 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
         year=checkdate.strftime("%y")
 
         file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
+
+        if not os.path.exists(file_jobsummary):
+            return 1.
+
         read_file_jobsummary = open(file_jobsummary,"r")
         for line in read_file_jobsummary:
             if os.getenv("USER") in line:
@@ -258,6 +267,8 @@ def DetermineNjobs(longestjobtime, ncores_job, deftagger,defsample,defcycle,defs
 
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 1000
+
+    
 
     if ncores_job == 1:
         return 1

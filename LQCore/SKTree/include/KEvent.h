@@ -91,6 +91,7 @@ namespace snu {
     void SetPileUpInteractionsTrue(double npu);
     void SetPUWeight(syst_dir sys, double puweight);
     void SetAltPUWeight(syst_dir sys, double puweight);
+    void SetPeriodPileupWeight(double puweightB, double puweightC, double puweightD,double puweightE,double puweightF,double puweightG,double puweightH);
     void SetLumiMask(json type, int mask);
 
 
@@ -157,6 +158,17 @@ namespace snu {
     //Pileup reweighting
     inline Double_t PileUpInteractionsTrue() const{ return k_PileUpInteractionsTrue;}
 
+    inline Double_t PeriodPileUpWeight(int period) const{
+      if (period == 1) return k_pu_gold_weightB;
+      if (period == 2) return k_pu_gold_weightC;
+      if (period == 3) return k_pu_gold_weightD;
+      if (period == 4) return k_pu_gold_weightE;
+      if (period == 5) return k_pu_gold_weightF;
+      if (period == 6) return k_pu_gold_weightG;
+      if (period == 7) return k_pu_gold_weightH;
+      return -999.;
+    }
+
 
     inline Double_t PileUpWeight_Gold(syst_dir sys) const{
       if(sys == central)return k_pu_gold_weight;
@@ -207,12 +219,13 @@ namespace snu {
 
 
     Double_t  k_PileUpInteractionsTrue, k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
-    
+    Double_t k_pu_gold_weightB, k_pu_gold_weightC, k_pu_gold_weightD,k_pu_gold_weightE,k_pu_gold_weightF,k_pu_gold_weightG,k_pu_gold_weightH;
+
     std::string k_catversion;
 
 
 
-    ClassDef(KEvent,28);
+    ClassDef(KEvent,29);
   }; 
   
 }//namespace snu

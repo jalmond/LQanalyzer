@@ -3,7 +3,6 @@ import os,sys, filecmp
 from EmailNewEffLumiList import *
 
 
-
 def UpdateLumiFile(modlistpath, catversion,isNewSample):
 
     ### xseclist should contain lines that are updated in xsec
@@ -141,8 +140,6 @@ if os.path.exists(path_full_sample_list):
         sys.exit()
     else:
         
-        print "TEST"
-        sys.exit()
         
         #### check all samples that are in previous sample list are in new sample list
         #### the only reason they will not be is if a dataset file was removed or wrongly modified
@@ -305,7 +302,15 @@ if os.path.exists(path_full_sample_list):
         if len(newsample_list) > 0:
             EmailNewSampleList(catversion,path_newfile)                
 else:
+
+    
     ### if sample list does not exist then this is first  time it is run with new catversion so cp new list to main list
+
+    #path_full_sample_list=os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+catversion+".txt"
+    #path_full_sample_list_user=os.getenv("LQANALYZER_DATASET_DIR")+"/"+ os.getenv("USER")  +"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
+    
+    
+    
     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
     new_catversion=True
     
@@ -315,6 +320,9 @@ else:
  
     print "source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt"
     
+    #### runGetEffLumi.sh creates dataset input list for analysis
+    ### This takes the list of datasets created above
+    ### It collects samples at SNU and counts events to calculate effective luminosity of each sample
     os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
 
     if os.path.exists(lqdir+"/scripts/Luminosity/log"):

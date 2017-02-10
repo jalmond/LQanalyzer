@@ -771,6 +771,8 @@ void LQController::SetLQInput(bool lq){
 bool LQController::CheckBranch(std::string ntuple_version, std::string version_env){
   TString ntuple_path(ntuple_version);
   TString env_path(version_env);
+
+  if(ntuple_path.Contains("v8-0-3")) return true; ///// REMOVE LINE FOR 805
   if(!ntuple_path.Contains(env_path)) return false;
 
   return true;

@@ -188,6 +188,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   kevent.SetLumiSection(lumi);
   
   if(!isData){
+  
     kevent.SetPUWeight(snu::KEvent::central,double(puWeightGold));
     kevent.SetPUWeight(snu::KEvent::down,double(puWeightGoldDn));
     kevent.SetPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
@@ -202,6 +203,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetAltPUWeight(snu::KEvent::central,double(puWeightGold));
       kevent.SetAltPUWeight(snu::KEvent::down,double(puWeightGoldDn));
       kevent.SetAltPUWeight(snu::KEvent::up,  double(puWeightGoldUp));
+
+      if(k_cat_version > 7){
+	kevent.SetPeriodPileupWeight(double(puWeightGoldB),double(puWeightGoldC),double(puWeightGoldD),double(puWeightGoldE),double(puWeightGoldF),double(puWeightGoldG),double(puWeightGoldH));
+      }
     }
   }
   if(isData){
@@ -214,23 +219,23 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetLumiMask(snu::KEvent::gold,   1);
     }
   }
-    kevent.SetGenId(genWeight_id1, genWeight_id2);
-    kevent.SetLHEWeight(lheWeight);
-    kevent.SetGenX(genWeightX1, genWeightX2);
-    kevent.SetGenQ(genWeightQ);
-    if(genWeight > 0.) kevent.SetWeight(1.);
-    else kevent.SetWeight(-1.);
-    
-    kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
+  kevent.SetGenId(genWeight_id1, genWeight_id2);
+  kevent.SetLHEWeight(lheWeight);
+  kevent.SetGenX(genWeightX1, genWeightX2);
+  kevent.SetGenQ(genWeightQ);
+  if(genWeight > 0.) kevent.SetWeight(1.);
+  else kevent.SetWeight(-1.);
+  
+  kevent.SetVertexInfo(vertex_X, vertex_Y, vertex_Z,0. );
   
   /// MET filter cuts/checks
 
   
   /// 
-    kevent.SetPileUpInteractionsTrue(nTrueInteraction);
+  kevent.SetPileUpInteractionsTrue(nTrueInteraction);
     
-    kevent.SetNVertices(nPV);
-    kevent.SetNGoodVertices(nGoodPV);
+  kevent.SetNVertices(nPV);
+  kevent.SetNGoodVertices(nGoodPV);
   
   kevent.SetIsGoodEvent(nGoodPV);
 
@@ -343,6 +348,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
     el.SetPFNeutralHadronIso(0.3,electrons_nhIso03->at(iel));
     el.SetPFRelIso(0.3,electrons_relIso03->at(iel));
+    m_logger << DEBUG << "Filling electron_minirelIso " << LQLogger::endmsg;
+    el.SetPFRelMiniIso(electrons_minirelIso->at(iel));
     
     m_logger << DEBUG << "Filling electron Info 2" << LQLogger::endmsg;
     
@@ -374,7 +381,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassTight(electrons_electronID_tight->at(iel));
     
     /// HEEP
-    el.SetPassHEEP(electrons_electronID_heep->at(iel));
+    //el.SetPassHEEP(electrons_electronID_heep->at(iel));
 
     // MVA
     el.SetPassMVATrigMedium(electrons_electronID_mva_trig_medium->at(iel));
@@ -985,7 +992,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
  
     muon.SetRelIso(0.3,muon_relIso03->at(ilep));
     muon.SetRelIso(0.4,muon_relIso04->at(ilep));
-
+    muon.SetRelMiniIso(muon_minirelIso->at(ilep));
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));
     if(muon_sigdxy)muon.Setdxy_sig(muon_sigdxy->at(ilep));

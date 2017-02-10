@@ -32,6 +32,7 @@ FakeRateCalculator_El::FakeRateCalculator_El() :  AnalyzerCore(),  out_electrons
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
+
 }
 
 
@@ -92,7 +93,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   float reco_weight=1.;
   if(!isData){
     for(unsigned int iel=0; iel < electronLooseColl.size(); iel++){
-      id_weight*= ElectronScaleFactor("ELECTRON_POG_TIGHT", electronLooseColl);
+      id_weight*= mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT", electronLooseColl);
     }
     //    weight*= id_weight;
     //weight*= reco_weight;

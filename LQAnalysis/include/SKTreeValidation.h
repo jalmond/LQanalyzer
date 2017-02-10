@@ -2,6 +2,7 @@
 #define SKTreeValidation_h
 
 #include "AnalyzerCore.h"
+
 class SKTreeValidation : public AnalyzerCore {
 
  public:
@@ -18,7 +19,7 @@ class SKTreeValidation : public AnalyzerCore {
   
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
-  void MakeDiMuonValidationPlots(TString muid, float w, float pu_weight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag, bool smearjets=true);
+  void MakeDiMuonValidationPlots(TString muid, float w, float pu_weight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag, bool smearjets, int mcperiod);
   void MakeMuonValidationPlots(TString muid, float w, float pu_weight,  std::vector<TString> trignames,TString elid, TString jetid, TString tag);
   void MakeElectronValidationPlots(TString elid, float w, float pu_weight,  std::vector<TString> trignames,TString muid, TString jetid, TString tag);
   

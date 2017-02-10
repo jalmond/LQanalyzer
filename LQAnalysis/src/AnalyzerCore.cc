@@ -9,7 +9,6 @@
 /// Local includes 
 #include "AnalyzerCore.h"
 #include "EventBase.h"
-#include "Reweight.h"
 
 //Plotting                                                      
 #include "MuonPlots.h"
@@ -25,15 +24,13 @@
 #include <TFile.h>
 
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false) {
+AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), k_mcperiod(-1) {
 
   bool debug(false);
   
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
-  CorrectionMap.clear();
-  CorrectionMapGraph.clear();
   cutflow_list.clear();
   // If running on LQNtuples this is not important.
   // If creating an SKTree ntuple this controls what triggers are accessible
@@ -46,25 +43,31 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   /////////////////////////////////////////////////////////////////////// 
   //////// For HN analysis  /////////////////////////////////////////////  
   //////////////////////////////////////////////////////////////////////  
-  //// FakeRate Input file           
+  //// MC Data corrections
   //////////////////////////////////////////////////////////////////////                                                                                                   
-  //string analysisdir = getenv("IDFILEDIR");
-  string pileupdir = getenv("PILEUPFILEDIR");
-  //string triggerdir = getenv("TRIGGERFILEDIR");
 
-  FillCorrectionHists();
+  mcdata_correction = new MCDataCorrections();
 
   string lqdir = getenv("LQANALYZER_DIR");
-  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/LQAnalysis/src/HNCommonLeptonFakes/share/");
+  //m_fakeobj = new HNCommonLeptonFakes(lqdir+"/LQAnalysis/src/HNCommonLeptonFakes/share/");
+
+  //m_datadriven_bkg = new DataDrivenBackgrounds();
+
+  //if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
+  //rmcor = new rochcor2015();
+  //}
   
-  if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
-    rmcor = new rochcor2015();
-  }
+  //rc =  new RoccoR(lqdir + "/data/rochester/80X/rcdata.2016.v3");
+  
+
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
   /// List of taggers
   std::vector<TString> vtaggers;
-  vtaggers.push_back("CSVv2");
-  //  vtaggers.push_back("cMVAv2");
+  vtaggers.push_back("CSVv2Moriond17_2017_1_26_BtoF");
+  vtaggers.push_back("CSVv2Moriond17_2017_1_26_GtoH");
+  vtaggers.push_back("cMVAv2Moriond17_2017_1_26_BtoF");
+  vtaggers.push_back("cMVAv2Moriond17_2017_1_26_GtoH");
+  /// Will add DeepCSV in 805
 
   if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
     cout << "Setting up 2015 selection " << endl;
@@ -202,17 +205,93 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   }
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
-  
-  if(TString(getenv("CATVERSION")).Contains("v8")){
-    if(TString(getenv("PUFILE")).Contains(".root")){
-      if(!k_isdata) reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
-    }
-  }
-
 
 }
 
 
+
+void AnalyzerCore::GetJetTaggerEfficiences(TString taggerWP, KJet::Tagger tag,  KJet::WORKING_POINT wp){
+  // taken frmo https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods#Example_code_AN5  (USE HADRON FLAVOUR)
+
+  // Make tagger efficiency file for btagging 
+  Float_t ptbins[7] = { 20., 40., 60., 80., 100., 120., 3000.};
+  Float_t etabins[5] = { 0., 0.6, 1.2, 1.8, 2.4};
+
+
+  for(unsigned int ij =0; ij < GetJets("JET_NOCUT").size(); ij++){
+    
+    snu::KJet j = GetJets("JET_NOCUT").at(ij);
+    int hadronFlavor = j.HadronFlavour();
+    if( abs(hadronFlavor)==5 ){
+      FillHist("h2_BTaggingEff_"+taggerWP+"_Denom_b" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
+      if( j.IsBTagged( tag, wp)) FillHist("h2_BTaggingEff_"+taggerWP+"_Num_b" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
+    }
+    else if( abs(hadronFlavor)==4 ){
+      FillHist("h2_BTaggingEff_"+taggerWP+"_Denom_c" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
+      if( j.IsBTagged( tag, wp))          FillHist("h2_BTaggingEff_"+taggerWP+"_Num_c" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
+    }
+    else {
+      FillHist("h2_BTaggingEff_"+taggerWP+"_Denom_udsg" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
+      if( j.IsBTagged( tag, wp) )         FillHist("h2_BTaggingEff_"+taggerWP+"_Num_udsg" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
+    }
+  }
+}
+
+int AnalyzerCore::GetMCPeriod(){
+  /// This function returns a period B-H for MC events. 
+  /// It uses a random number and retrunds a period based on the luminosity of each period
+  /// It assumes the trigger used is unprescaled
+
+  if(!k_reset_period) return k_mcperiod;
+  k_reset_period=false;
+  
+  //  double r = ((double) rand() / (RAND_MAX));
+  double r =gRandom->Rndm(); /// random number between 0 and 1
+  
+  
+  /// values obtained from cattuple googledoc
+  // https://docs.google.com/spreadsheets/d/1rWM3AlFKO8IJVaeoQkWZYWwSvicQ1QCXYSzH74QyZqE/edit?alt=json#gid=1689385956
+  // using single muon luminosities (luminosities differ slightky for each dataset but difference is neglibable)
+  double lumi_periodB = 5.929001722;
+  double lumi_periodC = 2.645968083;
+  double lumi_periodD = 4.35344881;
+  double lumi_periodE = 4.049732039;
+  double lumi_periodF = 3.157020934;
+  double lumi_periodG = 7.549615806;
+  double lumi_periodH = 8.545039549 + 0.216782873;
+  double total_lumi = (lumi_periodB+lumi_periodC + lumi_periodD + lumi_periodE + lumi_periodF + lumi_periodG + lumi_periodH) ;
+  
+  vector<double> cum_lumi;
+  cum_lumi.push_back(lumi_periodB/total_lumi); 
+  cum_lumi.push_back((lumi_periodB+lumi_periodC)/total_lumi); 
+  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD)/total_lumi); 
+  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE)/total_lumi); 
+  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi); 
+  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG)/total_lumi); 
+  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH)/total_lumi); 
+  
+  /// returns an int
+
+  /// r = 1       |  period B
+  /// r = 2       |  period C
+  /// r = 3       |  period D
+  /// r = 4       |  period E
+  /// r = 5       |  period F
+  /// r = 6       |  period G
+  /// r = 7       |  period H
+
+  for(unsigned int i=0; i < cum_lumi.size(); i++){
+    if ( r < cum_lumi.at(i)) {
+      k_mcperiod =  (i+1);
+      return k_mcperiod;
+    }
+  }
+
+  /// return period H is for some reason r > cum_lumi.at(max) 'should not happen'
+  return  cum_lumi.size();
+    
+
+}
 
 
 void AnalyzerCore::SetupSelectionJet(std::string path_sel){
@@ -467,19 +546,45 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
 }
 
 
+
+
 std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> taggers, std::vector<TString> wps){
+
+  //// Btagging code for Moriond17 samples
   
+  //// Current use is for HN analyses only.
+  //// HN analysis uses method 2 a) from twiki:
+  //// https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods
+  
+
+  /// If users want to use another method please add additional function and modify BTag/ dir in LQLAnalysis/src/
+
   std::map<TString,BTagSFUtil*>  tmpmap;
   for(std::vector<TString>::const_iterator it = taggers.begin(); it != taggers.end(); it++){
     for(std::vector<TString>::const_iterator it2 = wps.begin(); it2 != wps.end(); it2++){
-      tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", it->Data(), it2->Data());
-      tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("mujets", it->Data(), it2->Data());
+      if (it->Contains("CSVv2")){
+	tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", it->Data(), it2->Data());
+	tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("mujets", it->Data(), it2->Data());
+	// tmpmap[*it +  "_" + *it2 + "_hfcomb"]= new BTagSFUtil("comb", it->Data(), it2->Data());                /// SWITCH ON IF USER NEEDS THIS METHOD  
+	// tmpmap[*it +  "_" + *it2 + "iterativefit"]= new BTagSFUtil("iterativefit", it->Data(), it2->Data());   /// SWITCH ON IF USER NEEDS THIS METHOD
+      }
+      if (it->Contains("cMVA")){
+	tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", it->Data(), it2->Data());
+	tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("ttbar", it->Data(), it2->Data());
+	// tmpmap[*it +  "_" + *it2 + "iterativefit"]= new BTagSFUtil("iterativefit", it->Data(), it2->Data());   /// SWITCH ON IF USER NEEDS THIS METHOD       
+      }
+      if (it->Contains("DeepCVS")){
+	/// TO ADD If requested
+      }
     }
   }
 
   return tmpmap;
 }
 
+
+//################################################################################################  
+//@@@@@@@@@@@@@@@@@@@  ANALYSIS FUNCTIONALITY @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
 
 float AnalyzerCore::GetDiLepMass(std::vector<snu::KElectron> electrons){
 
@@ -548,6 +653,10 @@ bool AnalyzerCore::EtaRegion(TString reg,  std::vector<snu::KMuon> muons){
   return false;
 }
 
+
+
+//################################################################################################ 
+//@@@@@@@@@@@@@@@@@@@  GET SKTREE  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@    
 
 
 std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(BaseSelection::ID jetid, float ptcut, float etacut){
@@ -621,68 +730,6 @@ TString AnalyzerCore::GetStringID(BaseSelection::ID id){
 
 }
 
-
-void AnalyzerCore::FillCorrectionHists(){
-
-  string file = string(getenv("LQANALYZER_DIR")) + "/CATConfig/CattupleConfig/corrections_"+string(getenv("CATVERSION"))+".txt" ;
-  cout << "Correction file = " << file << endl;
-  ifstream corr_file(file.c_str());
-  string sline;
-  while(getline(corr_file,sline) ){
-    std::istringstream is( sline );
-    if(sline.find("###")!=string::npos) {  
-      string tmp;
-      is >> tmp;
-      string label;
-      is >> label;
-      string dirname;
-      is >> dirname;
-      string filename;
-      is >> filename;
-      string histsname;
-      is >> histsname;
-      string histtype;
-      is >> histtype;
-      FillCorrectionHist(label,dirname,filename,histsname,histtype);
-    }
-    if(sline=="#END") break;
-  }
-}
-
-
-
-void AnalyzerCore::FillCorrectionHist(string label, string dirname, string filename, string histsname, string histtype){
-
-  TDirectory* origDir = gDirectory;
-
-  if(TString(histtype).Contains("TGraphAsymmErrors")) {
-    TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
-    CheckFile(infile_sf);
-    TDirectory* tempDir = getTemporaryDirectory();
-    tempDir->cd();
-    TGraphAsymmErrors* tmp = (TGraphAsymmErrors*)infile_sf->Get(histsname.c_str())->Clone();
-    CorrectionMapGraph[label] = tmp;
-    infile_sf->Close();
-    delete infile_sf;
-    origDir->cd();
-  }
-
-  if(!TString(histtype).Contains("TH2")) return;
-  TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
-  CheckFile(infile_sf);
-  TDirectory* tempDir = getTemporaryDirectory();
-  tempDir->cd();
-  TH2F* tmp =  dynamic_cast<TH2F*> (( infile_sf->Get(histsname.c_str()))->Clone());
-  CorrectionMap[label] = tmp;
-  cout << "CorrectionMap["<<label <<"] = " << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
-  infile_sf->Close();
-  delete infile_sf;
-  origDir->cd();
-}
-
-
-
-
 std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,  bool smearjets,float ptcut, float etacut){
   
   std::vector<snu::KJet> jetColl;
@@ -715,7 +762,6 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,  bool smearjets,floa
   return jetColl;
   
 }
-
 
 
 std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid,  bool smearjets,float ptcut, float etacut){
@@ -812,14 +858,21 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
 
 
 
-bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKING_POINT wp){
+bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKING_POINT wp, int period){
 
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO");
+
+  if(period < 0) {
+    Message("period not set in AnalyzerCore::HasCloseBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
+    period=GetMCPeriod();
+  }
 
   bool cl = false;
   for(unsigned int ij =0; ij < alljets.size(); ij++){
     if(el.DeltaR(alljets.at(ij)) < 0.5){
-      if(alljets.at(ij).IsBTagged(tag,wp )) cl = true;
+
+      if(IsBTagged(alljets.at(ij), tag, wp, period))cl = true;
+
     }
   }
 
@@ -848,78 +901,6 @@ float AnalyzerCore::WeightCFEvent(std::vector<snu::KElectron> electrons, bool ru
 
 
 
-TDirectory* AnalyzerCore::getTemporaryDirectory(void) const
-{
-
-  
-  gROOT->cd();
-  TDirectory* tempDir = 0;
-  int counter = 0;
-  while (not tempDir) {
-    // First, let's find a directory name that doesn't exist yet:               
-    std::stringstream dirname;
-    dirname << "AnalyzerCore_%i" << counter;
-    if (gROOT->GetDirectory((dirname.str()).c_str())) {
-      ++counter;
-      continue;
-    }
-    // Let's try to make this directory:                                        
-    tempDir = gROOT->mkdir((dirname.str()).c_str());
-
-  }
-
-  return tempDir;
-}
-
-
-double AnalyzerCore::MuonTrackingEffScaleFactor(vector<snu::KMuon> mu){
-  float sf= 1.;
-  if(isData) return 1.;
-  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    float mueta=itmu->Eta();
-    if(CheckCorrectionGraph("TRACKING_EFF")){
-      sf*= GetCorrectionGraph("TRACKING_EFF")->Eval(mueta);
-    }
-  }
-  return sf;
-}
-
-double AnalyzerCore::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
-  float sf= 1.;
-  float sferr=1.;
-  if(isData) return 1.;
-  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    float mupt=itmu->Pt();
-    if(itmu->Pt() >120. )mupt=119.;
-    if(itmu->Pt() < 20.) mupt=21.;
-    if(CheckCorrectionHist("ISO_" + muid)){
-	sferr = double(sys)*GetCorrectionHist("ISO_" + muid)->GetBinError( GetCorrectionHist("ISO_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
-	
-	sf*= (1. + sferr)*GetCorrectionHist("ISO_" + muid)->GetBinContent( GetCorrectionHist("ISO_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-    //else{ m_logger << ERROR << "No ISO scalefactors are available for "<< muid << LQLogger::endmsg; exit(0);}  
-  }
-  return sf;
-}
-
-double AnalyzerCore::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
-  float sf= 1.;
-  float sferr=1.;
-  if(isData) return 1.;
-  if(mu.size() == 0) return 1.;
-  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    float mupt=itmu->Pt();
-    if(itmu->Pt() <20.) mupt= 21.;
-    if(itmu->Pt() >120.) mupt= 119.;
-    if(CheckCorrectionHist("ID_" + muid)){
-      sferr = double(sys)*GetCorrectionHist("ID_" + muid)->GetBinError( GetCorrectionHist("ID_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
-      
-      sf*=  (1. + sferr)* GetCorrectionHist("ID_" + muid)->GetBinContent( GetCorrectionHist("ID_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-  }
-
-  return sf;
-}
 
 bool AnalyzerCore::TriggerMatch(TString trigname, vector<snu::KMuon> mu){
   
@@ -935,252 +916,7 @@ bool AnalyzerCore::Is2015Analysis(){
   else return false;
 }
 
-double AnalyzerCore::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname, int direction){
-  
-  if(isData) return 1.;
-  
-  //// ONLY SINGLE MUON TRIGGER SCAKE FACTOR ARE UPDATED, OTHERS ARE 2015 SFS
 
-  ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgHLTScaleFactorMeasurements
-  
-  if(Is2015Analysis()){
-    if(el.size() == 2){
-      //if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) return 0.997*0.997*0.998;
-      if (trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")) return 0.995*0.998;
-      if (trigname.Contains("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v")) return 0.997;
-      if (trigname.Contains("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) {
-	float aeta1 = fabs(el.at(0).SCEta());
-	float aeta2 = fabs(el.at(1).SCEta());
-	if ( aeta1 < 1.2 ) {
-	  if      ( aeta2 < 1.2 ) return 0.953 + direction*0.023;
-	  else if ( aeta2 < 2.4 ) return 0.957 + 0.5*direction*0.027;
-	}
-	else if ( aeta1 < 2.4 ) {
-	  if      ( aeta2 < 1.2 ) return 0.967 + 0.5*direction*0.029;
-	  else if ( aeta2 < 2.4 ) return 0.989 - direction*0.031;
-	}
-      }
-    }    
-  
-  if(mu.size() == 1){
-    if (trigname.Contains("HLT_IsoMu20") || trigname.Contains("HLT_IsoTkMu20"))  {
-      ///https://indico.cern.ch/event/462268/contributions/1979019/attachments/1188638/1724574/2015.11.17_MuonPOG_SingleMuTrigEff_SF_KPLee_v2.pdf
-      
-      float mupt=mu.at(0).Pt();
-      if(mupt > 120.) mupt = 119.;
- if(mupt < 20.) mupt = 21.;
-      if(eventbase->GetEvent().RunNumber()  < 255032){
-	if(CheckCorrectionHist("MUON_TRIGGER_C")){
-	  float sferr = double(direction)*GetCorrectionHist("MUON_TRIGGER_C")->GetBinError(GetCorrectionHist("MUON_TRIGGER_C")->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	  return  (1. + sferr)*GetCorrectionHist("MUON_TRIGGER_C")->GetBinContent( GetCorrectionHist("MUON_TRIGGER_C")->FindBin(  fabs(mu.at(0).Eta()), mupt) );
-	}
-      }
-      else if(eventbase->GetEvent().RunNumber()  < 257820){
-	if(CheckCorrectionHist("MUON_TRIGGER_D1")){
-	  float sferr = double(direction)*GetCorrectionHist("MUON_TRIGGER_D1")->GetBinError( GetCorrectionHist("MUON_TRIGGER_D1")->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	  return  (1. + sferr)*GetCorrectionHist("MUON_TRIGGER_D1")->GetBinContent( GetCorrectionHist("MUON_TRIGGER_D1")->FindBin(  fabs(mu.at(0).Eta()), mupt) );
-	}
-      }
-      else {
-	if(CheckCorrectionHist("MUON_TRIGGER_D2")){
-	  float sferr = double(direction)*GetCorrectionHist("MUON_TRIGGER_D2")->GetBinError( GetCorrectionHist("MUON_TRIGGER_D2")->FindBin( fabs(mu.at(0).Eta()), mupt) );
-	  return  (1. + sferr)*GetCorrectionHist("MUON_TRIGGER_D2")->GetBinContent( GetCorrectionHist("MUON_TRIGGER_D2")->FindBin(  fabs(mu.at(0).Eta()), mupt) );
-	}
-      }
-    }
-  }
-  if(el.size() == 1){
-
-    // http://fcouderc.web.cern.ch/fcouderc/EGamma/scaleFactors/moriond2016_76X/eleMVATrig/ScaleFactor_GsfElectronToRECO_passingTrigWP80.txt.egamma_egammaPlots.pdf
-    if (trigname.Contains("HLT_Ele23_WPLoose_Gsf_v")) {
-      float el_eta = el.at(0).SCEta();
-      float el_pt = el.at(0).Pt();
-      if(el_pt < 25.){
-	if(el_eta < -1.56) return 0.928;
-	else if(el_eta < -1.4442) return 0.949;
-	else if(el_eta < -0.8) return 0.964;
-	else if(el_eta < 0.) return 0.963;
-	else if(el_eta < 0.8) return 0.985;
-	else if(el_eta < 1.4442) return 0.966;
-	else if(el_eta < 1.56) return 0.903;
-	else return 0.906;
-      }
-      else  if(el_pt < 35.){
-	if(el_eta < -1.56) return 0.937;
-	else if(el_eta < -1.4442) return 0.973;
-	else if(el_eta < -0.8) return 0.983;
-	else if(el_eta < 0.) return 0.985;
-	else if(el_eta < 0.8) return 1.005;
-        else if(el_eta < 1.4442) return 0.984;
-	else if(el_eta < 1.56) return 0.931;
-	else return 0.920;
-      } 
-      else  if(el_pt < 45.){
-	if(el_eta < -1.56) return 0.953;
-	else if(el_eta < -1.4442) return 0.966;
-	else if(el_eta < -0.8) return 0.985;
-	else if(el_eta < 0.) return 0.986;
-	else if(el_eta < 0.8) return 1.001;
-        else if(el_eta < 1.4442) return 0.986;
-	else if(el_eta < 1.56) return 0.955;
-	else return 0.941;
-      } 
-      else  if(el_pt < 55.){
-	if(el_eta < -1.56) return 0.963;
-	else if(el_eta < -1.4442) return 0.972;
-	else if(el_eta < -0.8) return 0.987;
-	else if(el_eta < 0.) return 0.990;
-	else if(el_eta < 0.8) return 1.003;
-        else if(el_eta < 1.4442) return 0.986;
-	else if(el_eta < 1.56) return 0.950;
-	else return 0.950;
-      } 
-      else{
-	if(el_eta < -1.56) return 0.973;
-	else if(el_eta < -1.4442) return 0.975;
-	else if(el_eta < -0.8) return 0.983;
-	else if(el_eta < 0.) return 0.992;
-	else if(el_eta < 0.8) return 1.;
-        else if(el_eta < 1.4442) return 0.985 ;
-	else if(el_eta < 1.56) return 0.991;
-	else return 0.958;
-      }
-      
-    }
-  } 
-
-  if(mu.size() == 2){
-    //if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")) return (0.993*0.984*0.980*0.968);
-    //if (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_OR_TkMu8_TrkIsoVVL_DZ_v")) return 0.982*0.985*.973;
-    //if (trigname.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) return (0.993*0.984*0.980*0.968);
-    //  new SF frmo AN2015_309_v7.pdf
-    if( (trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")) || (trigname.Contains("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))){
-      float aeta1 = fabs(mu.at(0).Eta());
-      float aeta2 = fabs(mu.at(1).Eta());
-      
-      if ( aeta1 < 1.2 ) {
-	if      ( aeta2 < 1.2 ) return 0.926 + direction*0.022;
-	else if ( aeta2 < 2.4 ) return 0.943 + 0.5*direction*0.026;
-      }
-      else if ( aeta1 < 2.4 ) {
-	if      ( aeta2 < 1.2 ) return 0.958 + 0.5*direction*0.027;
-	else if ( aeta2 < 2.4 ) return 0.926 - direction*0.027;
-      }
-    }
-  }
-       
-  if( (el.size() == 1) && (mu.size() == 1)){
-    if ((trigname.Contains("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) ||  (trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))){
-      float aeta1 = fabs(mu.at(0).Eta());
-      float aeta2 = fabs(el.at(0).SCEta());
-      
-      if ( aeta1 < 1.2 ) {
-	if      ( aeta2 < 1.2 ) return 0.966 + direction*0.022;
-	else if ( aeta2 < 2.4 ) return 0.973 + 0.5*direction*0.025;
-      }
-      else if ( aeta1 < 2.4 ) {
-	if      ( aeta2 < 1.2 ) return 0.981 + 0.5*direction*0.025;
-	else if ( aeta2 < 2.4 ) return 0.984 - direction*0.030;
-      }
-    }
-  }
-  
-  
-  /// Trilepton
-  if (trigname.Contains("HLT_TripleMu_12_10_5")) return  0.992*0.986*0.981* 0.982;
-  if (trigname.Contains("HLT_DiMu9_Ele9_CaloIdL_TrackIdL")) return  0.981*0.95;
-  if (trigname.Contains("HLT_Mu8_DiEle12_CaloIdL_TrackIdL")) return 0.966*1.005;
-  if (trigname.Contains("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL")) return 0.990*1.003*0.991*0.998;
-  
-  }
-  
-  if(el.size() == 2){
-    return 1.;
-  }
-
-  if(mu.size() == 1){
-    if (trigname.Contains("HLT_IsoMu22") || trigname.Contains("HLT_IsoTkMu22"))  {
-      /// https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults
-      
-     return 1.;
-
-    }
-  }
-  if(el.size() == 1){
-    return 1.;
-  } 
-
-  if(mu.size() == 2){
-    return 1.;
-  }
-  
-  
-  
-
-  return 1.;
-  
-}
-
-
-
-double AnalyzerCore::ElectronScaleFactor( TString elid, vector<snu::KElectron> el, int sys){
-  float sf= 1.;
-  if(isData) return 1.;
-  
-  std::string sid= "";
-  
-  for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
-    float elpt=itel->Pt();
-    if(elpt > 200.) elpt= 199.;
-    if(elpt < 20.) elpt= 21.;
-    
-    if(CheckCorrectionHist("EL_GSF")){
-      sf *= GetCorrectionHist("EL_GSF")->GetBinContent(GetCorrectionHist("EL_GSF")->FindBin(fabs(itel->SCEta()), elpt));
-    }
-    
-    if(CheckCorrectionHist("ID_" + elid)){
-	int bin =  GetCorrectionHist("ID_" + elid)->FindBin(fabs(itel->SCEta()), elpt);
-	sf *= GetCorrectionHist("ID_" + elid)->GetBinContent(bin);
-    }
-  }
-
- 
-  return sf;
-}
-
-double AnalyzerCore::ElectronRecoScaleFactor(vector<snu::KElectron> el){
-  
-  if(isData) return 1.;
-  float sf= 1.;
-  for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
-    float elpt= itel->Pt() ;
-    if(itel->Pt() > 200.) elpt=119.;
-    if(itel->Pt() < 20.) elpt=21.;
-    if(CheckCorrectionHist("EL_RECO")){
-      int bin =  GetCorrectionHist("EL_RECO")->FindBin(fabs(itel->SCEta()), elpt);
-      sf *= GetCorrectionHist("EL_RECO")->GetBinContent(bin);
-    }
-  }
-  
-  return sf;
-}
-
-float AnalyzerCore::TempPileupWeight(){
-  
-  if(!TString(getenv("CATVERSION")).Contains("v7-6-6")){
-    if(isData) return 1.;
-    else {
-      if(TString(getenv("PUFILE")).Contains(".root")){
-	return reweightPU->GetWeight(eventbase->GetEvent().nVertices(),TString(getenv("CATVERSION")));
-      }
-    }
-  }
-  else{
-    if(isData) return 1.; 
-    return eventbase->GetEvent().AltPileUpWeight();
-  }
-  return 1.;
-}
 
 float AnalyzerCore::WeightByTrigger(vector<TString> triggernames, float tlumi){
 
@@ -1298,9 +1034,6 @@ AnalyzerCore::~AnalyzerCore(){
 
   Message("In AnalyzerCore Destructor" , INFO);
 
-  if(TString(getenv("PUFILE")).Contains(".root")){
-    if(!k_isdata)  delete reweightPU;
-  }
   if(FRHist) delete FRHist;
 
   for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
@@ -1362,26 +1095,20 @@ AnalyzerCore::~AnalyzerCore(){
     delete it->second;
   }
   mapntp.clear();
-  CorrectionMap.clear();
-  CorrectionMapGraph.clear();
 
   delete m_fakeobj;
-  if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
-    delete rmcor;
-  }
+
+  //if (TString(getenv("CATVERSION")).Contains("v7-6-6")){
+  //delete rmcor;
+  //}
   
-  for(map<TString,TH2F*>::iterator it = CorrectionMap.begin(); it != CorrectionMap.end(); it++){
-    delete it->second;
-  }
-  for(map<TString,TGraphAsymmErrors*>::iterator it = CorrectionMapGraph.begin(); it != CorrectionMapGraph.end(); it++){
-    delete it->second;
-  }
 
   for(std::map<TString,BTagSFUtil*>::iterator it = MapBTagSF.begin(); it!= MapBTagSF.end(); it++){
     delete it->second;
   }
   MapBTagSF.clear();
 
+  delete mcdata_correction;
 }
 
 //###
@@ -1453,7 +1180,15 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
       changed_target_lumi=true;
     }
   }
+  
 
+  /// Setup correction class
+  k_reset_period=true;
+  mcdata_correction->SetMCPeriod(k_mcperiod);
+  mcdata_correction->SetIsData(isData);
+
+  
+  
 }
 
 
@@ -1466,6 +1201,7 @@ int AnalyzerCore::VersionStamp(TString cversion){
   else if((cversion.Contains("v8-0-1"))) return 5;
   else if((cversion.Contains("v8-0-2"))) return 6;
   else if((cversion.Contains("v8-0-3"))) return 7;
+  else if((cversion.Contains("v8-0-4") || cversion.Contains("v8-0-5"))) return 8;
   
   return 5;
  
@@ -1591,15 +1327,6 @@ void AnalyzerCore::EndEvent()throw( LQError ){
 
 }
   
-void AnalyzerCore::CheckFile(TFile* file)throw( LQError ){
-
-  if(file) m_logger << INFO << "Analyzer: File " << file->GetName() << " was found." << LQLogger::endmsg;
-  else m_logger  << INFO <<"Analyzer  " << file->GetName()  << "  : ERROR Rootfile failed to open." << LQLogger::endmsg;
-
-  if(!file) exit(EXIT_FAILURE);
-  return;
-}
-
 
 void AnalyzerCore::ListTriggersAvailable(){
   cout << "Set of triggers you can use are: " << endl;
@@ -1610,387 +1337,8 @@ void AnalyzerCore::ListTriggersAvailable(){
 }
 
 
-
-
-
-float AnalyzerCore::TriggerEff(TString trigname,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons){
-
-  Message("In TriggerEff", DEBUG);
-
-  if(isData){
-    //if(PassTrigger(trigname)) return 1.;
-    return 1.;
-  }
-  if(electrons.size() >= 1 && muons.size() >= 1){
-    float trig_eff(1.);
-    if(trigname.Contains("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")){
-      trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
-      trig_eff*= GetEff(muons.at(0), "HLT_Mu8");
-      return trig_eff;
-    }
-    else  return 0.;
-  }
-  else return 0.;
-  Message("END CorrectMuonMomentum", DEBUG);
-
-  return 1.;
-}
-
-
-
-float AnalyzerCore::TriggerEff(TString trigname, std::vector<snu::KElectron> electrons){
-  
-  if(isData){
-    //if(PassTrigger(trigname)) return 1.;
-    return 1.;
-  }
-  
-  if(electrons.size() >=2){
-    float trig_eff(1.);
-    if(trigname.Contains("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")){
-      
-      trig_eff*= GetEff(electrons.at(0), "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v");
-      trig_eff*= GetEff(electrons.at(1), "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-      trig_eff *= 0.995; // DZ efficiency AN2016_228
-      return trig_eff;
-    }
-    else  return 0.;
-  }
-  else return 0.;  
-
-  return 1.;
-}
-
-
-
-float AnalyzerCore::GetEff(snu::KElectron el, TString trigname){
-  float sceta = fabs(el.SCEta());
-  float pt = el.Pt();
-  if (trigname == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v"){
-    if(sceta < 0.8){
-      if( pt < 20)return 0.005;
-      else if( pt < 25)return 0.418;
-      else if( pt < 30)return 0.964;
-      else if( pt < 35)return 0.975;
-      else if( pt < 40)return 0.981;
-      else if( pt < 50)return 0.984;
-      else if( pt < 75)return 0.986;
-      else if( pt < 100)return 0.988;
-      else if( pt < 200)return 0.985;
-      else if( pt < 300)return 0.978;
-      else  return 0.966;
-    }
-    else   if(sceta < 1.477){
-      if( pt < 20)return 0.005;
-      else if( pt < 25)return 0.357;
-      else if( pt < 30)return 0.966;
-      else if( pt < 35)return 0.981;
-      else if( pt < 40)return 0.985;
-      else if( pt < 50)return 0.987;
-      else if( pt < 75)return 0.988;
-      else if( pt < 100)return 0.990;
-      else if( pt < 200)return 0.988;
-      else if( pt < 300)return 0.991;
-      else return 0.993;
-    }
-    else   if(sceta < 2.0){
-      if( pt < 20)return 0.12;
-      else if( pt < 25)return 0.372;
-      else if( pt < 30)return 0.980;
-      else if( pt < 35)return 0.991;
-      else if( pt < 40)return 0.993;
-      else if( pt < 50)return 0.995;
-      else if( pt < 75)return 0.995;
-      else if( pt < 100)return 0.996;
-      else if( pt < 200)return 0.997;
-      else if( pt < 300)return 0.994;
-      else if( pt < 2000)return 1.00;
-    }
-    else {
-      if( pt < 20)return 0.003;
-      else if( pt < 25)return 0.198;
-      else if( pt < 30)return 0.939;
-      else if( pt < 35)return 0.984;
-      else if( pt < 40)return 0.989;
-      else if( pt < 50)return 0.990;
-      else if( pt < 75)return 0.993;
-      else if( pt < 100)return 0.997;
-      else if( pt < 200)return 0.996;
-      else if( pt < 300)return 1.00;
-      else if( pt < 2000)return 1.00;
-    }
-  }
-  
-  if (trigname == "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v"){
-    if(sceta < 0.8){
-      if( pt < 10)return 0.630;
-      else if( pt < 20)return 0.946;
-      else if( pt < 25)return 0.959;
-      else if( pt < 30)return 0.966;
-      else if( pt < 35)return 0.975;
-      else if( pt < 40)return 0.981;
-      else if( pt < 50)return 0.984;
-      else if( pt < 75)return 0.986;
-      else if( pt < 100)return 0.988;
-      else if( pt < 200)return 0.985;
-      else if( pt < 300)return 0.978;
-      else return 0.966;
-    }
-    else   if(sceta < 1.477){
-      if( pt < 10)return 0.578;
-      else if( pt < 20)return 0.953;
-      else if( pt < 25)return 0.971;
-      else if( pt < 30)return 0.976;
-      else if( pt < 35)return 0.981;
-      else if( pt < 40)return 0.985;
-      else if( pt < 50)return 0.987;
-      else if( pt < 75)return 0.988;
-      else if( pt < 100)return 0.990;
-      else if( pt < 200)return 0.988;
-      else if( pt < 300)return 0.991;
-      else  return 0.993;
-    }
-    else   if(sceta < 2.0){
-      if( pt < 10)return 0.517;
-      else if( pt < 20)return 0.934;
-      else if( pt < 25)return 0.984;
-      else if( pt < 30)return 0.991;
-      else if( pt < 35)return 0.991;
-      else if( pt < 40)return 0.993;
-      else if( pt < 50)return 0.995;
-      else if( pt < 75)return 0.995;
-      else if( pt < 100)return 0.996;
-      else if( pt < 200)return 0.997;
-      else if( pt < 300)return 0.994;
-      else  return 1.0;
-    }
-    else {
-      if( pt < 10)return 0.516;
-      else if( pt < 20)return 0.934;
-      else if( pt < 25)return 0.966;
-      else if( pt < 30)return 0.977;
-      else if( pt < 35)return 0.984;
-      else if( pt < 40)return 0.989;
-      else if( pt < 50)return 0.990;
-      else if( pt < 75)return 0.993;
-      else if( pt < 100)return 0.997;
-      else if( pt < 200)return 0.996;
-      else if( pt < 300)return 1.00;
-      else return 1.00;
-    }
-  }
-  
-  return 1.;
-}
-
-
-
-float AnalyzerCore::TriggerEff(TString trigname, std::vector<snu::KMuon> muons){
-  
-  if(isData){
-    ///    if(PassTrigger(trigname)) return 1.;
-    return 1.;
-  }
-  
-  if(muons.size() >= 2){
-    float trig_eff(1.);
-    if(trigname.Contains("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")){
-      trig_eff*= GetEff(muons.at(0), "HLT_Mu17");
-      trig_eff*= GetEff(muons.at(1), "HLT_Mu8");
-      return trig_eff;
-    }
-    else return 0.;
-  }
-  
-  if(muons.size() >= 1){
-    if (trigname.Contains("HLT_IsoMu22") || trigname.Contains("HLT_IsoTkMu22"))  {
-      /// https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults                                                                                                                                                            
-      float mupt=muons.at(0).Pt();
-      if(mupt > 500.) mupt = 499.;
-      if(mupt < 25.) mupt = 25.;
-      if(eventbase->GetEvent().RunNumber()  < 274093){
-	return  GetCorrectionHist("SingleMuon_274093")->GetBinContent( GetCorrectionHist("SingleMuon_274093")->FindBin(  fabs(muons.at(0).Eta()), mupt) );
-      }
-      else {
-	return GetCorrectionHist("SingleMuon_276097")->GetBinContent( GetCorrectionHist("SingleMuon_276097")->FindBin(  fabs(muons.at(0).Eta()), mupt) );
-      }
-    }
-    else return 0.;
-  }
-  else return 0.;
-  return 1.;
-}
-
-bool AnalyzerCore::CheckCorrectionHist(TString label){
-  map<TString, TH2F*>::iterator  mapit = CorrectionMap.find(label);
-  if (mapit!= CorrectionMap.end()){
-    return true;
-  }
-  else return false;
-}
-bool AnalyzerCore::CheckCorrectionGraph(TString label){
-  map<TString, TGraphAsymmErrors*>::iterator  mapit = CorrectionMapGraph.find(label);
-  if (mapit!= CorrectionMapGraph.end()){
-    return true;
-  }
-  else return false;
-}
-
-TGraphAsymmErrors* AnalyzerCore::GetCorrectionGraph(TString label){
-  map<TString, TGraphAsymmErrors*>::iterator mapit = CorrectionMapGraph.find(label);
-  if (mapit!= CorrectionMapGraph.end()){
-    return mapit->second;
-  }
-  else{
-    m_logger << ERROR << "Could not find correction file with label label" <<  LQLogger::endmsg;
-    exit(0);
-  }
-}
-
-TH2F* AnalyzerCore::GetCorrectionHist(TString label){
-  map<TString, TH2F*>::iterator mapit = CorrectionMap.find(label);
-  if (mapit!= CorrectionMap.end()){
-    return mapit->second;
-  }
-  else{
-    m_logger << ERROR << "Could not find correction file with label label" <<  LQLogger::endmsg;
-    exit(0);
-  }
-}
-
-
-float AnalyzerCore::GetEff(snu::KMuon mu, TString trigname){
-  float eta = fabs(mu.Eta());
-  float pt = mu.Pt();
-  if (trigname == "HLT_Mu17"){
-    if(eta < 0.8){
-      if( pt < 20)return 0.612;
-      else if( pt < 25)return 0.930;
-      else if( pt < 30)return 0.931;
-      else if( pt < 35)return 0.932;
-      else if( pt < 40)return 0.932;
-      else if( pt < 50)return 0.932;
-      else if( pt < 75)return 0.929;
-      else if( pt < 100)return 0.923;
-      else if( pt < 200)return 0.920;
-      else if( pt < 300)return 0.901;
-      else  return 0.899;
-    }
-    else   if(eta < 1.25){
-      if( pt < 20)return 0.591;
-      else if( pt < 25)return 0.914;
-      else if( pt < 30)return 0.917;
-      else if( pt < 35)return 0.916;
-      else if( pt < 40)return 0.916;
-      else if( pt < 50)return 0.917;
-      else if( pt < 75)return 0.914;
-      else if( pt < 100)return 0.911;
-      else if( pt < 200)return 0.903;
-      else if( pt < 300)return 0.871;
-      else return 0.901;
-    }
-    else   if(eta < 1.6){
-      if( pt < 20)return 0.603;
-      else if( pt < 25)return 0.947;
-      else if( pt < 30)return 0.956;
-      else if( pt < 35)return 0.960;
-      else if( pt < 40)return 0.962;
-      else if( pt < 50)return 0.961;
-      else if( pt < 75)return 0.956;
-      else if( pt < 100)return 0.936;
-      else if( pt < 200)return 0.898;
-      else if( pt < 300)return 0.809;
-      else return 0.718;
-    }
-    else   if(eta < 2.2){
-      if( pt < 20)return 0.565;
-      else if( pt < 25)return 0.902;
-      else if( pt < 30)return 0.920;
-      else if( pt < 35)return 0.928;
-      else if( pt < 40)return 0.934;
-      else if( pt < 50)return 0.936;
-      else if( pt < 75)return 0.936;
-      else if( pt < 100)return 0.928;
-      else if( pt < 200)return 0.896;
-      else if( pt < 300)return 0.786;
-      else return 0.703;
-    }
-    else {
-      if( pt < 20)return 0.470;
-      else if( pt < 25)return 0.778;
-      else if( pt < 30)return 0.817;
-      else if( pt < 35)return 0.842;
-      else if( pt < 40)return 0.858;
-      else if( pt < 50)return 0.876;
-      else if( pt < 75)return 0.886;
-      else if( pt < 100)return 0.886;
-      else if( pt < 200)return 0.872;
-      else if( pt < 300)return 0.837;
-      else return 0.700;
-    }
-  }
-  
-  if (trigname == "HLT_Mu8"){
-    if(eta < 0.8){
-      if( pt < 10)return 0.917;
-      else if( pt < 20)return 0.927;
-      else if( pt < 25)return 0.931;
-      else if( pt < 30)return 0.932;
-      else if( pt < 35)return 0.932;
-      else if( pt < 40)return 0.933;
-      else if( pt < 50)return 0.933;
-      else if( pt < 75)return 0.929;
-      else if( pt < 100)return 0.924;
-      else if( pt < 200)return 0.920;
-      else if( pt < 300)return 0.901;
-      else  return 0.899;
-    }
-    else   if(eta < 1.25){
-      if( pt < 10)return 0.914;
-      else if( pt < 20)return 0.918;
-      else if( pt < 25)return 0.921;
-      else if( pt < 30)return 0.922;
-      else if( pt < 35)return 0.920;
-      else if( pt < 40)return 0.920;
-      else if( pt < 50)return 0.920;
-      else if( pt < 75)return 0.917;
-      else if( pt < 100)return 0.913;
-      else if( pt < 200)return 0.905;
-      else if( pt < 300)return 0.876;
-      else return 0.901;
-    }
-    else   if(eta < 1.6){
-      if( pt < 10)return 0.908;
-      else if( pt < 20)return 0.946;
-      else if( pt < 25)return 0.957;
-      else if( pt < 30)return 0.962;
-      else if( pt < 35)return 0.964;
-      else if( pt < 40)return 0.965;
-      else if( pt < 50)return 0.964;
-      else if( pt < 75)return 0.958;
-      else if( pt < 100)return 0.938;
-      else if( pt < 200)return 0.899;
-      else if( pt < 300)return 0.812;
-      else return 0.718;
-    }
-    else   if(eta < 2.2){
-      if( pt < 10)return 0.869;
-      else if( pt < 20)return 0.915;
-      else if( pt < 25)return 0.932;
-      else if( pt < 30)return 0.937;
-      else if( pt < 35)return 0.941;
-      else if( pt < 40)return 0.943;
-      else if( pt < 50)return 0.944;
-      else if( pt < 75)return 0.941;
-      else if( pt < 100)return 0.932;
-      else if( pt < 200)return 0.899;
-      else if( pt < 300)return 0.791;
-      else return 0.711;
-    }
-  }
-  return 1.;
-}
-
+//################################################################################################
+//@@@@@@@@@@@@@@@@@@@  TRIGGER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
      
 
 bool AnalyzerCore::PassTrigger(vector<pair<TString,TString> > list){
@@ -2019,8 +1367,8 @@ bool AnalyzerCore::PassTrigger(TString trig){
  
 }
 
-
-
+////###############################################################################################
+/// @@@@@@@@@@@@@@@@@@@@@@@@@ MISC   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
 {
@@ -2030,7 +1378,7 @@ TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
   while (not tempDir) {
     // First, let's find a directory name that doesn't exist yet:                                              
     std::stringstream dirname;
-    dirname << "HNCommonLeptonFakes_%i" << counter;
+    dirname << "CATAnalzer_%i" << counter;
     if (gROOT->GetDirectory((dirname.str()).c_str())) {
       ++counter;
       continue;
@@ -2045,10 +1393,21 @@ TDirectory* AnalyzerCore::GetTemporaryDirectory(void) const
 }
 
 
+std::vector<TLorentzVector> AnalyzerCore::MakeTLorentz( std::vector<snu::KElectron> el){return mcdata_correction->MakeTLorentz(el);}
+std::vector<TLorentzVector> AnalyzerCore::MakeTLorentz( std::vector<snu::KMuon> mu){return mcdata_correction->MakeTLorentz(mu);}
+std::vector<TLorentzVector> AnalyzerCore::MakeTLorentz( std::vector<snu::KJet> jet){return mcdata_correction->MakeTLorentz(jet);}
+std::vector<TLorentzVector> AnalyzerCore::MakeTLorentz( std::vector<snu::KFatJet> jet){return mcdata_correction->MakeTLorentz(jet);}
+
+
+
 void AnalyzerCore::Message(TString message, LQMsgType type){
   m_logger <<  type << message << LQLogger::endmsg;
 }
 
+
+
+////###############################################################################################                                                                           
+ /// @@@@@@@@@@@@@@@@@@@@@@@@@ HIST   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                                             
 
 void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
   
@@ -2100,70 +1459,6 @@ void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], i
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
   maphist2D[hname]->GetXaxis()->SetTitle(label);
 }
-
-bool AnalyzerCore::PassMETFilter(){
-  
-  bool pass (true);
-  
-  ///https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters
-    
-  if(Is2015Analysis()){
-    if (!eventbase->GetEvent().PassCSCHaloFilterTight()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassCSCHaloFilterTight " << LQLogger::endmsg;
-    }
-
-    if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
-      pass = false; 
-      m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
-    }
-
-    if(!eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
-    }
-
-    //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
-    if (!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
-    }
-  }
-  else{
-    
-    if (!eventbase->GetEvent().PassCSCHaloFilterTight()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassCSCHaloFilterTight " << LQLogger::endmsg;
-    }
-    
-    if (!eventbase->GetEvent().PassTightHalo2016Filter()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassTightHalo2016Filter " << LQLogger::endmsg;
-    }
-    
-    //if(isData){
-    if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
-      pass = false; 
-      m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
-    }
-    if (!eventbase->GetEvent().PassHBHENoiseIsoFilter()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassHBHENoiseIsoFilter " << LQLogger::endmsg;
-    }
-    if(!eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
-      pass = false;
-      m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
-    }
-  }
-    //Bad EE Supercrystal filter (post-ICHEP: extend to include an additional problematic SC --only for 2012)
-    //    if (!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
-    //      pass = false;
-    //      m_logger << DEBUG << "Event Fails PassBadEESupercrystalFilter" << LQLogger::endmsg;
-    //    }
-    //}
-  return pass;
-}
-
 
 
 void AnalyzerCore::FillHist(TString histname, float value, float w, float xbins[], int nbins , TString label){
@@ -2571,6 +1866,59 @@ void AnalyzerCore::FillCutFlow(TString cut, float weight){
   }
 }
 
+////###############################################################################################
+/// @@@@@@@@@@@@@@@@@@@@@@@@@ JETPILEUP   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+
+////############################################################################################### 
+/// @@@@@@@@@@@@@@@@@@@@@@@@@ CUTS   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+
+bool AnalyzerCore::PassMETFilter(){
+
+  bool pass (true);
+  //https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#MiniAOD_8011_ICHEP_dataset
+
+  if (!eventbase->GetEvent().PassTightHalo2016Filter()) {
+    pass = false;    m_logger << DEBUG << "Event Fails PassTightHalo2016Filter " << LQLogger::endmsg;
+  }
+  if (!eventbase->GetEvent().PassHBHENoiseFilter()) {
+    pass = false;
+    m_logger << DEBUG << "Event Fails PassHBHENoiseFilter " << LQLogger::endmsg;
+  }
+  if (!eventbase->GetEvent().PassHBHENoiseIsoFilter()) {
+    pass = false;
+    m_logger << DEBUG << "Event Fails PassHBHENoiseIsoFilter " << LQLogger::endmsg;
+  }
+  if(!eventbase->GetEvent().PassEcalDeadCellTriggerPrimitiveFilter()) {
+    pass = false;
+    m_logger << DEBUG << "Event Fails PassEcalDeadCellTriggerPrimitiveFilter" << LQLogger::endmsg;
+  }
+  
+  if(!eventbase->GetEvent().PassBadChargedCandidateFilter()) {
+    pass = false;
+    m_logger << DEBUG << "Event Fails PassBadChargedCandidateFilterr" << LQLogger::endmsg;
+  }
+
+  if(!eventbase->GetEvent().PassBadPFMuonFilter()) {
+    pass = false;
+    m_logger << DEBUG << "Event Fails  PassBadPFMuonFilter" << LQLogger::endmsg;
+  }
+
+  if (isData){
+    if(!eventbase->GetEvent().PassBadEESupercrystalFilter()) {
+      pass = false;
+      m_logger << DEBUG << "Event FailsPassBadEESupercrystalFilter" << LQLogger::endmsg;
+    }
+  }
+  
+
+  return pass;
+}
+
+
 
 bool AnalyzerCore::Zcandidate(std::vector<snu::KMuon> muons, float interval, bool require_os){
   
@@ -2626,9 +1974,14 @@ bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runnin
 }
 
 
-int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WORKING_POINT wp){
+int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WORKING_POINT wp, int period){
 
   int nbjet=0;
+
+  if(period < 0) {
+    Message("period not set in AnalyzerCore::NBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
+    period=GetMCPeriod();
+  }
 
   TString btag_key_lf("") , btag_key_hf("");
   TString wp_string="";
@@ -2637,8 +1990,19 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
   if(wp == snu::KJet::Tight)wp_string = "Tight";
 
   TString tag_string="";
-  if(tag== snu::KJet::CSVv2) tag_string ="CSVv2";
-  if(tag== snu::KJet::cMVAv2) tag_string = "cMVAv2"; 
+
+  if(period < 6){
+    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_BtoF";
+  }
+  else
+    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_GtoH";
+
+  if(period < 6){
+    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_BtoF";
+  }
+  else
+    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";
+
    
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
@@ -2676,9 +2040,12 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 }
 
 
-int AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp){
+bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod){
 
-  int nbjet=0;
+  if(mcperiod < 0) {
+    Message("mcperiod not set in AnalyzerCore::IsBTagged. Will assign mcperiod for you but this may not give correct behaviour", WARNING);      
+    mcperiod=GetMCPeriod();
+  }
 
   TString btag_key_lf("") , btag_key_hf("");
   TString wp_string="";
@@ -2687,8 +2054,20 @@ int AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POIN
   if(wp == snu::KJet::Tight)wp_string = "Tight";
 
   TString tag_string="";
-  if(tag== snu::KJet::CSVv2) tag_string ="CSVv2";
-  if(tag== snu::KJet::cMVAv2) tag_string = "cMVAv2";
+  if(mcperiod < 6){
+    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_BtoF";
+  }
+  else
+    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_GtoH";
+
+  if(mcperiod < 6){
+    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_BtoF";
+  }
+  else
+    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";
+
+
+
 
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
@@ -2716,9 +2095,7 @@ int AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POIN
         isBtag=true;
     }
   
-  if(isBtag )nbjet++;
-  
-  return nbjet;
+  return isBtag;
 }
 
 double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
@@ -2932,33 +2309,10 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
 
 void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   
-  if(Is2015Analysis()){
-    vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
-    int imu(0);
-    for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
-      float qter =1.; /// uncertainty
-
-      if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
-      else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
-
-      it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
-      //it->SetPtEtaPhiM(tlv_muons[imu].Pt(), it->Eta(), it->Phi() , it->M());
-      //it->scale(tlv_muons[imu].E()/it->E());
-    }
+  mcdata_correction->CorrectMuonMomentum(k_muons);
+  Message("END CorrectMuonMomentum",DEBUG);    
+  return;
     
-  }
-  else{
-    Message("In CorrectMuonMomentum", DEBUG);
-    
-    vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
-    int imu(0);
-    for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
-      if(Is2015Analysis()) continue;
-      it->SetPtEtaPhiE(it->RochPt(), it->RochEta(), it->RochPhi(), it->RochE()); 
-    }
-  }
-  Message("END CorrectMuonMomentum",DEBUG);
-
 }
 
 
@@ -2973,7 +2327,7 @@ float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<s
   bool is_mu1_tight    = IsTight(k_muons.at(0));
   bool is_el1_tight    = IsTight(k_electrons.at(0));
 
-  vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+  vector<TLorentzVector> muons= MakeTLorentz(k_muons);
   vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
 
   float em_weight = m_fakeobj->get_dilepton_em_eventweight(muons, electrons, is_mu1_tight, is_el1_tight, cut, 0);
@@ -2998,6 +2352,25 @@ float AnalyzerCore::Get_DataDrivenWeight_MM(vector<snu::KMuon> k_muons, TString 
     
   }
   return mm_weight;
+}
+
+float AnalyzerCore::Get_DataDrivenWeight_MMM(bool geterr, vector<snu::KMuon> k_muons){
+
+  Message("In Get_DataDrivenWeight_MMM", DEBUG);
+  float mmm_weight = 0.;
+  
+  if(k_muons.size()==3){
+    
+    bool is_mu1_tight = (k_muons.at(0).RelIso04() < 0.1);
+    bool is_mu2_tight = (k_muons.at(1).RelIso04() < 0.1);
+    bool is_mu3_tight = (k_muons.at(2).RelIso04() < 0.1);
+    
+    vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+
+    mmm_weight =m_fakeobj->get_trilepton_mmm_eventweight(geterr, muons, is_mu1_tight,is_mu2_tight, is_mu3_tight);
+
+  }
+    return mmm_weight;
 }
 
 
@@ -3075,7 +2448,6 @@ float AnalyzerCore::Get_DataDrivenWeight_EE(vector<snu::KElectron> k_electrons){
 }
 
 
-
 void AnalyzerCore::MakeNtp(TString hname, TString myvar){
 
   mapntp[hname] =  new TNtupleD(hname.Data(),hname.Data(),myvar.Data());
@@ -3115,53 +2487,6 @@ TNtupleD* AnalyzerCore::GetNtp(TString hname){
   else m_logger << INFO << hname << " was not found in map" << LQLogger::endmsg;
 
   return n;
-}
-
-
-vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KElectron> el){
-
-  vector<TLorentzVector> tl_el;
-  for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
-    TLorentzVector tmp_em;
-    tmp_em.SetPtEtaPhiM((*itel).Pt(),(*itel).Eta(),(*itel).Phi(),(*itel).M());
-    tl_el.push_back(tmp_em);
-  }
-  return tl_el;
-}
-
-vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KMuon> mu){
-  
-  vector<TLorentzVector> tl_mu;
-  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    TLorentzVector tmp_mu;
-    tmp_mu.SetPtEtaPhiM((*itmu).Pt(),(*itmu).Eta(),(*itmu).Phi(),(*itmu).M());
-    tl_mu.push_back(tmp_mu);
-  }
-  return tl_mu;
-}
-
-
-vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KJet> j){
-
-  vector<TLorentzVector> tl_jet;
-  for(vector<KJet>::iterator itj=j.begin(); itj!=j.end(); ++itj) {
-    TLorentzVector tmp_j;
-    tmp_j.SetPtEtaPhiM((*itj).Pt(),(*itj).Eta(),(*itj).Phi(),(*itj).M());
-    tl_jet.push_back(tmp_j);
-  }
-  return tl_jet;
-}
-
-
-vector<TLorentzVector> AnalyzerCore::MakeTLorentz(vector<snu::KFatJet> j){
-
-  vector<TLorentzVector> tl_jet;
-  for(vector<KFatJet>::iterator itj=j.begin(); itj!=j.end(); ++itj) {
-    TLorentzVector tmp_j;
-    tmp_j.SetPtEtaPhiM((*itj).Pt(),(*itj).Eta(),(*itj).Phi(),(*itj).M());
-    tl_jet.push_back(tmp_j);
-  }
-  return tl_jet;
 }
 
 

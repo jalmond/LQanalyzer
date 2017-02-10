@@ -76,6 +76,13 @@ KEvent::KEvent() :
   k_pu_gold_xs71000_p_weight(-999.),
   k_pu_gold_xs71000_m_weight(-999.),
 
+  k_pu_gold_weightB(-999.),
+  k_pu_gold_weightC(-999.),
+  k_pu_gold_weightD(-999.),
+  k_pu_gold_weightE(-999.),
+  k_pu_gold_weightF(-999.),
+  k_pu_gold_weightG(-999.),
+  k_pu_gold_weightH(-999.),
   k_catversion("")
 {
 
@@ -142,12 +149,22 @@ KEvent::KEvent(const KEvent& ev) :
   k_lumi_mask_silver(ev.k_lumi_mask_silver),
   k_lumi_mask_gold(ev.k_lumi_mask_gold),
   k_PileUpInteractionsTrue(ev.k_PileUpInteractionsTrue),
+
   k_pu_gold_weight(ev.k_pu_gold_weight),
   k_pu_gold_p_weight(ev.k_pu_gold_p_weight),
   k_pu_gold_m_weight(ev.k_pu_gold_m_weight),
   k_pu_gold_xs71000_weight(ev.k_pu_gold_xs71000_weight),
   k_pu_gold_xs71000_p_weight(ev.k_pu_gold_xs71000_p_weight),
   k_pu_gold_xs71000_m_weight(ev.k_pu_gold_xs71000_m_weight),
+
+  k_pu_gold_weightB(ev.k_pu_gold_weightB),
+  k_pu_gold_weightC(ev.k_pu_gold_weightC),
+  k_pu_gold_weightD(ev.k_pu_gold_weightD),
+  k_pu_gold_weightE(ev.k_pu_gold_weightE),
+  k_pu_gold_weightF(ev.k_pu_gold_weightF),
+  k_pu_gold_weightG(ev.k_pu_gold_weightG),
+  k_pu_gold_weightH(ev.k_pu_gold_weightH),
+
   k_catversion(ev.k_catversion)
 
 {
@@ -224,6 +241,15 @@ void KEvent::Reset()
   k_pu_gold_xs71000_weight = -999.;
   k_pu_gold_xs71000_p_weight=-999.;
   k_pu_gold_xs71000_m_weight = -999.;
+
+  k_pu_gold_weightB = -999;
+  k_pu_gold_weightC = -999;
+  k_pu_gold_weightD = -999;
+  k_pu_gold_weightE = -999;
+  k_pu_gold_weightF = -999;
+  k_pu_gold_weightG = -999;
+  k_pu_gold_weightH = -999;
+
   k_catversion="";
 
 }
@@ -303,6 +329,15 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pu_gold_weight = p.PileUpWeight_Gold(central);
       k_pu_gold_p_weight= p.PileUpWeight_Gold(up);
       k_pu_gold_m_weight= p.PileUpWeight_Gold(down);
+
+      k_pu_gold_weightB = p.PeriodPileUpWeight(1);
+      k_pu_gold_weightC = p.PeriodPileUpWeight(2);
+      k_pu_gold_weightD = p.PeriodPileUpWeight(3);
+      k_pu_gold_weightE = p.PeriodPileUpWeight(4);
+      k_pu_gold_weightF = p.PeriodPileUpWeight(5);
+      k_pu_gold_weightG = p.PeriodPileUpWeight(6);
+      k_pu_gold_weightH = p.PeriodPileUpWeight(7);
+
       k_catversion = p.CatVersion();
     }
     
@@ -355,6 +390,16 @@ void KEvent::SetPUWeight( syst_dir sys, double puw){
   if(sys==up)  k_pu_gold_p_weight = puw;
   if(sys==down)  k_pu_gold_m_weight = puw;
   
+}
+void KEvent::SetPeriodPileupWeight( double puwB,double puwC,double puwD,double puwE,double puwF,double puwG,double puwH){
+
+  k_pu_gold_weightB = puwB;
+  k_pu_gold_weightC = puwC;
+  k_pu_gold_weightD = puwD;
+  k_pu_gold_weightE = puwE;
+  k_pu_gold_weightF = puwF;
+  k_pu_gold_weightG = puwG;
+  k_pu_gold_weightH = puwH;
 }
 
 void KEvent::SetAltPUWeight(syst_dir sys, double puw){
@@ -484,7 +529,6 @@ Double_t KEvent::PileUpWeight(syst_dir sys){
 Double_t KEvent::AltPileUpWeight(syst_dir sys){
   return AltPileUpWeight_Gold(sys);
 }
-
 
 ///New forCAT v7-4-5 (MET systematics in one function)
 Double_t KEvent::PFMETShifted ( met_syst type, syst_dir dir) const{

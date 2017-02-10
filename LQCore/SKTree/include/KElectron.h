@@ -86,6 +86,7 @@ namespace snu {
 
     
     void SetPFRelIso(Double_t cone, Double_t pf_rel);
+    void SetPFRelMiniIso( Double_t pf_rel);
     void SetPFAbsIso(Double_t cone, Double_t pf_abs);
 
     
@@ -205,6 +206,9 @@ namespace snu {
       else return -999.;
     }
 
+    inline Double_t PFRelMiniIso() const { return k_rel_miniiso; }
+
+
     inline Double_t PFAbsIso(double cone) const {
       if(cone == 0.3)   return k_abs_iso03;
       else  if(cone == 0.4)   return k_abs_iso04;
@@ -230,7 +234,7 @@ namespace snu {
   private:
     /// decalre private functions
 
-    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04;
+    Double_t k_pf_chargedhad_iso03, k_pf_photon_iso03, k_pf_neutral_iso03, k_pf_chargedhad_iso04, k_pf_photon_iso04, k_pf_neutral_iso04, k_rel_iso03, k_rel_iso04, k_rel_miniiso;
     Double_t k_abs_iso03, k_abs_iso04;
     Double_t k_dxy,k_dxy_sig, k_dz,k_trkvx,  k_trkvy,  k_trkvz;
     Double_t k_sceta;
@@ -242,7 +246,7 @@ namespace snu {
     TString k_trig_match;
     
 
-    ClassDef(KElectron,23);
+    ClassDef(KElectron,24);
   }; 
   
 }//namespace snu

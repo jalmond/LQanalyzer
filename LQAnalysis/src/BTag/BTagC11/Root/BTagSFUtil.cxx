@@ -1,8 +1,8 @@
 // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagCalibration
 #include "BTagSFUtil.h"
 #include "BTagCalibrationStandalone.cc"
-#include "BTagEfficienciesTTbarSummer15.C" // Change this to your sample efficiency
-#include "FastSimCorrectionFactorsSummer12.C" // Change this to your sample efficiency
+#include "BTagEfficienciesTTbarMoriond17.C" // Change this to your sample efficiency  
+#include "FastSimCorrectionFactorsSummer12.C" // Change this to your sample efficiency NOT UPDATED
 
 BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString OperatingPoint, int SystematicIndex, TString FastSimDataset, int Seed) {
 
@@ -22,40 +22,39 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString Ope
   }
 
   TaggerCut = -1;
-  TaggerName = BTagAlgorithm;
-  TaggerOP = BTagAlgorithm;
+  if (TString(BTagAlgorithm).Contains("CSVv2")) TaggerName="CSVv2";
+  if (TString(BTagAlgorithm).Contains("cMVAv2")) TaggerName="cMVAv2";
+  
+  TaggerOP = TaggerName;
 
   if (OperatingPoint=="Loose") {
     TaggerOP += "L";
-    if (TaggerName=="CSVv2") TaggerCut = 0.460;
-    if (TaggerName=="cMVAv2") TaggerCut =-0.715;
-    if (TaggerName=="JP") TaggerCut = 0.245;
+    if (TaggerName=="CSVv2") TaggerCut = 0.5426;
+    if (TaggerName=="cMVAv2") TaggerCut =-0.5884;
     reader_bc = new BTagCalibrationReader(&calib, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagBC);
     reader_l  = new BTagCalibrationReader(&calib, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagL);
   } else if (OperatingPoint=="Medium") {
     TaggerOP += "M";
-    if (TaggerName=="CSVv2") TaggerCut = 0.800;
-    if (TaggerName=="cMVAv2") TaggerCut =0.185;
-    if (TaggerName=="JP") TaggerCut = 0.515;
+    if (TaggerName=="CSVv2") TaggerCut = 0.8484;
+    if (TaggerName=="cMVAv2") TaggerCut =0.4432;
     reader_bc = new BTagCalibrationReader(&calib, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagBC);
     reader_l  = new BTagCalibrationReader(&calib, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagL);
   } else if (OperatingPoint=="Tight") {
     TaggerOP += "T";
-    if (TaggerName=="CSVv2") TaggerCut = 0.935;
-    if (TaggerName=="cMVAv2") TaggerCut =0.875;
-    if (TaggerName=="JP") TaggerCut = 0.760;
+    if (TaggerName=="CSVv2") TaggerCut = 0.9535;
+    if (TaggerName=="cMVAv2") TaggerCut =0.9432;
     reader_bc = new BTagCalibrationReader(&calib, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagBC);
     reader_l  = new BTagCalibrationReader(&calib, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagL);
   } 
 
-  if (TaggerCut<0) 
+  if (TaggerCut==-1) 
     cout << " " << TaggerName << " not supported for " << OperatingPoint << " WP" << endl;
 
   FastSimSystematic = 0;
   if (abs(SystematicIndex)>10) FastSimSystematic = SystematicIndex%10;
   GetFastSimPayload(BTagAlgorithm, FastSimDataset);
 
-  if (TaggerCut<0.) 
+  if (TaggerCut==-1) 
     cout << "BTagSFUtil: " << BTagAlgorithm << " not a supported b-tagging algorithm" << endl;
 
 }
@@ -109,12 +108,20 @@ float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
 float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
 
+
+  /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
   float Btag_SF;
 
   float ThisJetPt = JetPt;
   if (abs(JetFlavor)==4 || abs(JetFlavor)==5) {
-    if (JetPt>669.99) ThisJetPt = 669.99;
-  } else if (JetPt>999.99) ThisJetPt = 999.99;
+    if (JetPt>599.99) ThisJetPt = 599.99;
+    if (JetPt < 30.) return 1.;
+  } else {
+    if (JetPt>999.99) ThisJetPt = 999.99;
+    if (JetPt < 20.) return 1.; 
+  }
+  
+  
 
   if (abs(JetFlavor)==5) 
     Btag_SF = reader_bc->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);

@@ -394,7 +394,7 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
   if(!cluster)gSystem->Exec(("cp " + lfile + "  " + getenv("LQANALYZER_DATASETFILE_DIR")+ "/").c_str()); 
   else gSystem->Exec(("cp " + lfile + "  /data4/LocalNtuples/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/").c_str());
 
-  gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
+  //gSystem->Exec(("mv " + lfile +" " + lfile2).c_str());
 
   return;
   

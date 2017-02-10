@@ -3,6 +3,7 @@ LIBRARY = LQAnalysis
 OBJDIR  = $(OBJ)
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src
+SRCDIR2  = helpers
 INCDIR  = include
 
 # Overwrite the default rule defined in Makefile.common                                                                                                                      
@@ -18,6 +19,7 @@ INCLUDES += -I${BTAGDIR}
 INCLUDES += -I${ROCHDIR}
 INCLUDES += -I$(LQANALYZER_DIR)
 INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/src/
+
 
 ifeq ($(isSLC),False)
 	CXXFLAGS= -O2 -std=c++0x  -Wall -fPIC

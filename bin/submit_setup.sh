@@ -1442,6 +1442,10 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 
 if [[ $job_data_lumi == "ALL" ]];
     then
+
+    if [[ $CATVERSION == "v8-0-4" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
     if [[ $CATVERSION == "v8-0-3" ]];then
 	declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
@@ -1467,6 +1471,9 @@ if [[ $job_data_lumi == "BtoE" ]];
 fi
 if [[ $job_data_lumi == $catdatatag  ]];
 then
+    if [[ $CATVERSION == "v8-0-4" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
     if [[ $CATVERSION == "v8-0-3" ]];then
         declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
     fi
@@ -1480,6 +1487,34 @@ then
         declare -a data_periods=("C" "D")
     fi
 fi
+
+
+if [[ $job_data_lumi == "C" ]];
+    then
+    declare -a data_periods=("C")
+fi
+if [[ $job_data_lumi == "D" ]];
+    then
+    declare -a data_periods=("D")                                                                                                                                                                                                                                          
+fi 
+if [[ $job_data_lumi == "E" ]];
+    then
+    declare -a data_periods=("E")
+fi
+if [[ $job_data_lumi == "F" ]];
+    then
+    declare -a data_periods=("F")
+fi
+if [[ $job_data_lumi == "G" ]];
+    then
+    declare -a data_periods=("G")
+fi
+if [[ $job_data_lumi == "H" ]];
+    then
+    declare -a data_periods=("H_v2" "H_v3")
+fi
+
+
 
 ARG1=catdataperiods
 eval getlist_cv=(\${$ARG1[@]})

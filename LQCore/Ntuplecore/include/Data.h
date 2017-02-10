@@ -186,6 +186,13 @@ public :
    Float_t         genWeightX2;
    Float_t         lheWeight;
    Float_t         puWeightGold;
+   Float_t         puWeightGoldB;
+   Float_t         puWeightGoldC;
+   Float_t         puWeightGoldD;
+   Float_t         puWeightGoldE;
+   Float_t         puWeightGoldF;
+   Float_t         puWeightGoldG;
+   Float_t         puWeightGoldH;
    Float_t         puWeightGoldDn;
    Float_t         puWeightGoldUp;
    Float_t         puWeightGoldDn_xs71000;
@@ -219,6 +226,7 @@ public :
 
    std::vector<double>  *electrons_relIso03;
    std::vector<double>  *electrons_relIso04;
+   std::vector<double>  *electrons_minirelIso;
    std::vector<double>  *electrons_scEta;
    std::vector<double>  *electrons_shiftedEnDown;
    std::vector<double>  *electrons_shiftedEnUp;
@@ -353,6 +361,7 @@ public :
    std::vector<double>  *muon_pt;
    std::vector<double>  *muon_relIso03;
    std::vector<double>  *muon_relIso04;
+   std::vector<double>  *muon_minirelIso;
    std::vector<double>  *muon_shiftedEdown;
    std::vector<double>  *muon_shiftedEup;
    std::vector<double>  *muon_x;
@@ -505,6 +514,13 @@ public :
    TBranch        *b_genWeightX2;   //!                                                                                                                                                                                                                                      
    TBranch        *b_lheWeight;   //!                                                                                                                                                                                                                                        
    TBranch        *b_puWeightGold;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldB;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldC;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldD;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldE;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldF;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldG;   //!                                                                                                                                                                                                                                         
+   TBranch        *b_puWeightGoldH;   //!                                                                                                                                                                                                                                         
    TBranch        *b_puWeightGoldDn;   //!                                                                                                                                                                                                                                       
    TBranch        *b_puWeightGoldUp;   //!                                                                                                                                                                                                                                       
    TBranch        *b_puWeightSilver;   //!			     
@@ -536,6 +552,7 @@ public :
    TBranch        *b_electrons_q;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_relIso03;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_relIso04;   //!                                                                                                                                                                                                                               
+   TBranch        *b_electrons_minirelIso;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_scEta;   //!                                                                                                                                                                                                                                  
    TBranch        *b_electrons_shiftedEnDown;   //!                                                                                                                                                                                                                          
    TBranch        *b_electrons_shiftedEnUp;   //!                                                                                                                                                                                                                            
@@ -665,6 +682,7 @@ public :
    TBranch        *b_muon_q;   //!                                                                                                                                                                                                                                           
    TBranch        *b_muon_relIso03;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_relIso04;   //!                                                                                                                                                                                                                                    
+   TBranch        *b_muon_minirelIso;   //!                                                                                                                                                                                                                                    
    TBranch        *b_muon_shiftedEdown;   //!                                                                                                                                                                                                                                
    TBranch        *b_muon_shiftedEup;   //!                                                                                                                                                                                                                                  
 

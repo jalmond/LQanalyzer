@@ -29,6 +29,7 @@ KMuon::KMuon() :
   muon_pt_down(-999.),
   k_muon_reliso03(-999.),
   k_muon_reliso04(-999.),
+  k_muon_relminiiso(-999.),
   
   k_roch_pt(-999.),
   k_roch_eta(-999.),
@@ -83,6 +84,7 @@ KMuon::KMuon(const KMuon& muon) :
   muon_pt_down(muon.muon_pt_down),
   k_muon_reliso03(muon.k_muon_reliso03),
   k_muon_reliso04(muon.k_muon_reliso04),
+  k_muon_relminiiso(muon.k_muon_relminiiso),
 
   k_roch_pt(muon.k_roch_pt),
   k_roch_eta(muon.k_roch_eta),
@@ -139,6 +141,7 @@ void KMuon::Reset()
   muon_pt_down=0.;
   k_muon_reliso03=-999.;
   k_muon_reliso04=-999.;
+  k_muon_relminiiso=-999.;
 
   k_roch_pt=-999.;
   k_roch_eta=-999.;
@@ -201,6 +204,7 @@ KMuon& KMuon::operator= (const KMuon& p)
 
 	k_muon_reliso03 = p.RelIso03();
 	k_muon_reliso04 = p.RelIso04();
+	k_muon_relminiiso = p.RelMiniIso();
 
 	k_roch_pt=p.RochPt();
 	k_roch_eta=p.RochEta();
@@ -401,6 +405,10 @@ void KMuon::SetRelIso(double cone, double iso){
   if(cone == 0.3) k_muon_reliso03= iso;
   else if(cone ==  0.4) k_muon_reliso04= iso;
 
+}
+
+void KMuon::SetRelMiniIso( double iso){
+  k_muon_relminiiso = iso;
 }
 
 

@@ -4,7 +4,9 @@ from functions import *
 
 version = os.getenv("CATVERSION")
 sampledir = ["SingleMuon" , "DoubleMuon"]
-period=["periodB" ,"periodC" , "periodD", "periodE" ,"periodF", "periodG"]
+sampledir = ["DoubleMuon"]
+period=["periodB" ,"periodC" , "periodD", "periodE" ,"periodF", "periodG", "periodH_v2" ,"periodH_v3"]
+period=[ "periodB" ,"periodC" , "periodD", "periodE" ,"periodF", "periodG"]
 
 for i in sampledir:
  
