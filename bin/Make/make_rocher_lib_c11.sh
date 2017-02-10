@@ -8,7 +8,7 @@ if [[ -f librochcor2016.so ]] ;
 fi
 cp $ROCHDIR/Root/librochcor2016.so librochcor2016.so
 
-cd $LQANALYZER_DIR/LQAnalysis/
+cd $LQANALYZER_DIR/LQAnalysis/Helpers/
 
 if [[ $1 == "False" ]]; then
     make distclean

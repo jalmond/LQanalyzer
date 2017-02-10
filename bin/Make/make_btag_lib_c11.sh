@@ -8,7 +8,7 @@ if [[ -f libBTagSFUtil.so ]] ;
 fi
 cp $BTAGDIR/Root/libBTagSFUtil.so libBTagSFUtil.so
 
-cd $LQANALYZER_DIR/LQAnalysis/
+cd $LQANALYZER_DIR/LQAnalysis/Helpers/
 
 if [[ $1 == "False" ]]; then
     make distclean

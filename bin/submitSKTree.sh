@@ -154,7 +154,7 @@ if [[ $set_submit_analyzer_name == "true" ]];
 		  echo $sline
 	      fi
 	  fi
-	done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+	done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
 	exit 1
     fi
 fi
@@ -178,7 +178,7 @@ then
 		fi
 	    fi
 	fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+    done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
     
     if [[ $analyzer_found == "false" ]];
     then 
@@ -197,7 +197,7 @@ then
 			echo $sline
 		fi
 	    fi
-	done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+	done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
 	exit 1
     fi
 fi
@@ -878,7 +878,7 @@ if [[ $submit_analyzer_name ==  "" ]];
               echo $sline
           fi
       fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+    done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
     exit 1
 fi
 

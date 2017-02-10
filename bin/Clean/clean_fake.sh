@@ -1,4 +1,4 @@
-cd $LQANALYZER_DIR/LQAnalysis/src/HNCommonLeptonFakes/conf/; 
+cd $LQANALYZER_DIR/LQAnalysis/Helpers/src/HNCommonLeptonFakes/conf/; 
 make clean -f Makefile.StandAlone; 
 if [[ -f ${LQANALYZER_LIB_PATH}/libHNCommonLeptonFakes.so ]];
     then

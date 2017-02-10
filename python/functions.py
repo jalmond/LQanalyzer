@@ -132,7 +132,10 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     for lib in libraries:
         config+='   gSystem->Load("' + lib + ' + .so");\n'
         
+    config+='   gSystem->Load("libHelpers.so");\n'
     config+='   gSystem->Load("libLQAnalysis.so");\n'
+    config+='   gSystem->Load("libSKTreeMaker.so");\n'
+    config+='   gSystem->Load("libValidation.so");\n'
     
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'
