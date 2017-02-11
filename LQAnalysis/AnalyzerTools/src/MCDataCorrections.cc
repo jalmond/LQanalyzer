@@ -188,7 +188,7 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
     float mupt=itmu->Pt();
 
     if(itmu->Pt() < min_pt) mupt = min_pt+1.;
-    if(itmu->Pt() > max_pt) mupt = max_pt-1.;
+    if(itmu->Pt() >= max_pt) mupt = max_pt-1.;
 
     if(CheckCorrectionHist("ID" +tag+ "_"+ muid)){
       sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );

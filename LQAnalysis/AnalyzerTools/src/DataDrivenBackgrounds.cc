@@ -293,7 +293,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KM
 }
 
 float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons,   TString IDmu, TString method){
-  if(method == "dxy" && IDmu == "MUON_HN_TRI_HIGHDXY_TIGHT") return Get_DataDrivenWeight_MM(geterr, k_muons);
+  if(method == "dxy" && IDmu == "MUON_HN_TRI_TIGHT") return Get_DataDrivenWeight_MM(geterr, k_muons);
   
   float mm_weight = 0.;
 
@@ -311,8 +311,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KM
   float mm_weight = 0.;
 
   if(k_muons.size()==2){
-    bool is_mu1_tight = (k_muons.at(0).RelIso04() < 0.1);
-    bool is_mu2_tight = (k_muons.at(1).RelIso04() < 0.1);
+    bool is_mu1_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),"MUON_HN_TRI_TIGHT");
+    bool is_mu2_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(1),"MUON_HN_TRI_TIGHT");
     
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
     
@@ -329,9 +329,9 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MMM(bool geterr, vector<snu::K
 
   if(k_muons.size()==3){
 
-    bool is_mu1_tight = (k_muons.at(0).RelIso04() < 0.1);
-    bool is_mu2_tight = (k_muons.at(1).RelIso04() < 0.1);
-    bool is_mu3_tight = (k_muons.at(2).RelIso04() < 0.1);
+    bool is_mu1_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),"MUON_HN_TRI_TIGHT");
+    bool is_mu2_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(1),"MUON_HN_TRI_TIGHT");
+    bool is_mu3_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(2),"MUON_HN_TRI_TIGHT");
 
     vector<TLorentzVector> muons=MakeTLorentz(k_muons);
 
@@ -339,6 +339,50 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MMM(bool geterr, vector<snu::K
 
   }
   return mmm_weight;
+}
+
+float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::KMuon> k_muons, TString muid, int n_muons, std::vector<snu::KElectron> k_electrons, TString elid, int n_electrons){
+
+  float this_weight = 0.;
+
+  if( k_muons.size() != n_muons || k_electrons.size() != n_electrons ){
+    //Message("[Get_DataDrivenWeight] number of lepton is wrong..", ERROR);
+    return 0.;
+  }
+
+  std::vector<bool> isT;
+  bool AllTight = true;
+
+  for(unsigned int i=0; i<k_muons.size(); i++){
+    if( dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(i), muid) ){
+      isT.push_back(true);
+    }
+    else{
+      isT.push_back(false);
+      AllTight = false;
+    }
+  }
+  for(unsigned int i=0; i<k_electrons.size(); i++){
+    if( dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(i), elid) ){
+      isT.push_back(true);
+    }
+    else{
+      isT.push_back(false);
+      AllTight = false;
+    }
+  }
+
+  if(AllTight){
+    //Message("[Get_DataDrivenWeight] All leptons pass Tight. Return 0. weight..", DEBUG);
+    return 0.;
+  }
+
+  std::vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+  std::vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+
+  this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons, elid, isT);
+
+  return this_weight;
 }
 
 float DataDrivenBackgrounds::Get_DataDrivenWeight_M(bool geterr, vector<snu::KMuon> k_muons, TString IDmu, TString method){
