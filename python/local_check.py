@@ -45,6 +45,7 @@ snutriggerfiledir = os.getenv("LQANALYZER_DIR")+ "/data/Trigger/"+yeartag
 snupileupfiledir= os.getenv("LQANALYZER_DIR")+ "/data/Pileup/"+yeartag
 snuidfiledir= os.getenv("LQANALYZER_DIR")+ "/data/ID/"+yeartag
 snubtagfiledir = os.getenv("LQANALYZER_DIR")+ "/data/BTag/"+yeartag
+rochdir=os.getenv("LQANALYZER_DIR")+ "/data/rochester/"+yeartag
 
 txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 old_lib_slc5=os.getenv("LQANALYZER_DIR")+ "/LQLib/slc5/"
@@ -81,6 +82,8 @@ if not os.path.exists(tag_dir):
     os.system("cp " + localfiledir + "/ID/*.root " + snuidfiledir)
     MakeDirectory(snubtagfiledir)
     os.system("cp " + localfiledir + "/BTag/*.csv " + snubtagfiledir)
+    MakeDirectory(rochdir)
+    os.system("cp -r " + localfiledir + "/rochester/rcdata.2016.v3/ " + rochdir) 
 
     if os.path.exists(snufiledir+"/cMVAv2.csv"):
         os.system("rm  "+snufiledir+"/*.csv")
