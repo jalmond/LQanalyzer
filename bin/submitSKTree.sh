@@ -190,7 +190,7 @@ then
 		fi
 	    fi
 	fi
-    done < ${LQANALYZER_DIR}$/linkdef_filepath
+    done < ${LQANALYZER_DIR}/$linkdef_filepath
     
     if [[ $analyzer_found == "false" ]];
     then 
