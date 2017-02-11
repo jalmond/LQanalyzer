@@ -3,8 +3,8 @@ import os,sys
 def GetListOfDataSets(catversion):
     
     dlist=[]
-    path_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/dataset_"+str(catversion)+"/"
-    path_user_datasetlist="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER")
+    path_datasetlist=os.getenv("LQANALYZER_DATASET_DIR") + "/datasets_"+str(catversion)+"/"
+    path_user_datasetlist=os.getenv("LQANALYZER_DATASET_DIR") + "/" + os.getenv("USER")
     if not os.path.exists(path_user_datasetlist):
         os.system("mkdir " + path_user_datasetlist)
         
@@ -25,10 +25,10 @@ def GetListOfDataSets(catversion):
 catversion=str(os.getenv("CATVERSION"))
 datasetlist=GetListOfDataSets(catversion)
 
-path_full_sample_list_user="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER")+"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
+path_full_sample_list_user=os.getenv("LQANALYZER_DATASET_DIR") + "/" + os.getenv("USER")+"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
 
-if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER")):
-    os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/" + os.getenv("USER"))
+if not os.path.exists(os.getenv("LQANALYZER_DATASET_DIR") + "/" + os.getenv("USER")):
+    os.system("mkdir " + os.getenv("LQANALYZER_DATASET_DIR") + "/"  + os.getenv("USER"))
 
 
 if os.path.exists(path_full_sample_list_user):
@@ -38,8 +38,6 @@ cdatasetlist=[]
 cnamelist=[]
 
 file_full_sample_list = open(path_full_sample_list_user,"w")
-for x in datasetlist:
-    print x
 
 for x in datasetlist:
     if "cattuplist_" in x:
@@ -58,7 +56,7 @@ for x in datasetlist:
     colour=0
     name=""
     isMC = True
-    if "Run2016" in x:
+    if "Run201" in x:
         isMC=False
     
     for line in file_sample_configfile:
@@ -66,7 +64,7 @@ for x in datasetlist:
         if "name =" in line:
             if len(sline) == 4:
                 name=sline[3]
-        if "DataSetName" in line:
+        if "DataSetName" in line or "DataTetName" in line:
             if len(sline) == 4:
                 datasetname = sline[3]
 
@@ -84,6 +82,7 @@ for x in datasetlist:
         if len(datasetname_split) > 0:
             part_datasetname= datasetname_split[0]
 
+
     if not datasetname:
         print "Dataset name could not be determined for file " + x
         sys.exit()
@@ -94,13 +93,13 @@ for x in datasetlist:
     if isMC:    
         if not xsec:
             print "xsec could not be deterined for file " + x
-            if not "kskovpen" in line:
-                sys.exit()
+            #if not "kskovpen" in line:
+            #    sys.exit()
        
         for xd in  cdatasetlist:
             if part_datasetname == xd:
-                print "This has the same dataset name as a previous file. Fix..."
-                sys.exit()
+                print part_datasetname + " " + xd+" :This has the same dataset name as a previous file. Fix..."
+                #sys.exit()
         for xd in  cnamelist:
             if name == xd:
                 print "This has the same alias name as a previous file. Fix..."

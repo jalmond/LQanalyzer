@@ -41,6 +41,7 @@ namespace snu {
     virtual std::string Type() const;
     
     void SetRelIso(double cone, double reliso);
+    void SetRelMiniIso( double relminiiso);
 
 
     void SetMCMatched(bool matched);
@@ -120,6 +121,7 @@ namespace snu {
 
     inline Double_t RelIso03()  const {return k_muon_reliso03;}
     inline Double_t RelIso04()  const {return k_muon_reliso04;}
+    inline Double_t RelMiniIso()  const {return k_muon_relminiiso;}
 
 
     inline Double_t PtShiftedUp() const {return muon_pt_up;}
@@ -161,7 +163,7 @@ namespace snu {
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
     
-    Double_t muon_pt_up, muon_pt_down, k_muon_reliso03, k_muon_reliso04;
+    Double_t muon_pt_up, muon_pt_down, k_muon_reliso03, k_muon_reliso04,k_muon_relminiiso;
 
     Double_t k_roch_pt,k_roch_phi,k_roch_eta,k_roch_m,k_roch_e;
 
@@ -170,7 +172,7 @@ namespace snu {
 
     TString k_trig_match;
     
-    ClassDef(KMuon,19)
+    ClassDef(KMuon,20)
   };   
 }//namespace snu
 

@@ -1,12 +1,22 @@
 #!/bin/sh
 ### sets all configurable variables to defaul values
 
-cp $LQANALYZER_LUMIFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
+source    /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/${CATVERSION}.sh
+cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
+cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
-declare -a list_of_catversions=("v8-0-1" "v7-6-6" "v7-6-5" "v7-6-4" "v7-6-3" "v7-6-2" "v7-4-5" "v7-4-4")
+
 declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
+
+declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
+
+python $LQANALYZER_DIR/python/CheckSelection.py
+if [[ ! -d  /data2/CAT_SKTreeOutput/${USER}/GoodSelection/ ]]; then
+    echo "Fix selection file and rerun"
+    exit 1
+fi
 
 ##### New for sktreemaker only
 logger=""
@@ -22,7 +32,7 @@ runSinglePhoton=false
 
 ## RUN PARAMETERS
 
-job_data_lumi="BtoE"  ###  "C" = period C only   "ALL"  = period C+D
+job_data_lumi="ALL"   ### ALL = "BtoG"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=5
@@ -30,7 +40,14 @@ job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
 
+make_sktrees="False"
+run_validation="False"
+idname=""
+queuename="None"
+object=""
+idname2=""
 job_run_bkg="False"
+submit_draw="False"
 submit_sk_message=""
 submit_skflag=""
 submit_skinput=true
@@ -85,6 +102,17 @@ source submit_setup.sh
 
 
 
+linkdef_filepath=/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h
+
+if [[ $make_sktrees == "True" ]];
+    then
+    linkdef_filepath=/LQAnalysis/SKTreeMaker/include/SKTreeMaker_LinkDef.h
+fi
+
+if [[ $run_validation == "True" ]];
+    then
+    linkdef_filepath=/LQAnalysis/Validation/include/Validation_LinkDef.h
+fi
 
 ############## Check flags for fake/flip analysis
 if [[ $job_run_fake != "False" ]];
@@ -138,7 +166,7 @@ if [[ $set_submit_analyzer_name == "true" ]];
 		  echo $sline
 	      fi
 	  fi
-	done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+	done < ${LQANALYZER_DIR}/$linkdef_filepath
 	exit 1
     fi
 fi
@@ -162,7 +190,7 @@ then
 		fi
 	    fi
 	fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+    done < ${LQANALYZER_DIR}$/linkdef_filepath
     
     if [[ $analyzer_found == "false" ]];
     then 
@@ -181,7 +209,7 @@ then
 			echo $sline
 		fi
 	    fi
-	done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+	done < ${LQANALYZER_DIR}/$linkdef_filepath
 	exit 1
     fi
 fi
@@ -191,16 +219,9 @@ function mergeoutput
     if [[ $job_cycle != *"SKTreeMaker"* ]];
         then
 
-        if [[ $job_data_lumi  == "C" ]];
+
+	if [[ $job_data_lumi  == "ALL" ]];
             then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
-
-
-        elif [[ $job_data_lumi  == "D" ]];
-            then
-            mv  ${outputdir_data}/*${submit_version_tag}*.root ${output_datafile}
-
-        else
 	    output_file_skim_tag=$1
 	    
 	    if [[ $job_skim == "FLATCAT" ]];
@@ -229,19 +250,17 @@ function mergeoutput
 
 	    
 	    echo "############################################################################################################################################################"
-	    echo "############################################################################################################################################################"
-	    echo "############################################################################################################################################################"
-	    echo "MERGING DATA: Periods C + D"
-	    echo " "
+
+	    echo "MERGED DATA: "
 	    echo "Command:"
-            echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat_"${submit_version_tag}".root "${outputdir_data}${job_cycle}"'*'"$output_file_skim_tag"'*'"
-            echo "############################################################################################################################################################"
-	    echo ""
-            source hadd.sh ${outputdir_data} ${job_cycle}_data_cat_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
+            #echo "source hadd.sh "${outputdir_data}" "${job_cycle}"_data_cat_"${submit_version_tag}".root "${outputdir_data}${job_cycle}"'*'"$output_file_skim_tag"'*'"
+            #echo "############################################################################################################################################################"
+	    #echo ""
+            #source hadd.sh ${outputdir_data} ${job_cycle}_data_cat_${submit_version_tag}.root ${outputdir_data}${job_cycle}'*'${output_file_skim_tag}'*'
 	    echo ""
             echo "merged output sent to -----> "${outputdir_data}${job_cycle}"_data_cat_"${submit_version_tag}".root "
 	    
-            mv  ${outputdir_data}/${job_cycle}_data_cat_${submit_version_tag}.root  ${outputdir_mc}/${job_cycle}_data_$1_cat_${submit_version_tag}.root
+            #mv  ${outputdir_data}/${job_cycle}_data_cat_${submit_version_tag}.root  ${outputdir_mc}/${job_cycle}_data_$1_cat_${submit_version_tag}.root
 
             echo ""
         fi
@@ -285,11 +304,19 @@ function mergefake
 
             fi
 
-	    echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
-	    source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
-
-	    mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
-
+	    #echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+	    if [[ $job_data_lumi  == "ALL" ]];
+	    then
+		#source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+		#mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
+		echo "Merged data will be sent to ---> " +  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
+	    fi
+	    if [[ $job_data_lumi  == $catdatatag ]];
+	    then
+                #source hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
+		#mv  ${outputdir_np}/${job_cycle}_${output_file_skim_tag}.root  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
+		echo "Merged data will be sent to ---> " +  ${outputdir_mc}/${job_cycle}_$1_${outname}.root
+            fi
 }
 
 if [[ $changed_skim == "true" ]];
@@ -354,7 +381,7 @@ if [[ $submit_file_tag  != ""  ]];
 	echo "LQanalyzer::sktree :: ERROR :: Samplename is Invalid for the catversion "$CATVERSION" and skim "$job_skim":" 
 	if [[ $check_all_catversions == "false" ]];
 	    then
-	    
+
 	    isoldname=false
 	    for oclist in  ${oldcat[@]};
 	      do
@@ -740,7 +767,7 @@ fi
 outputdir_cat=$outdir"/data/output/CAT/"
 
 outputdir_analyzer=$outdir"/data/output/CAT/"$submit_analyzer_name
-dir_tag="periodBtoE/"
+dir_tag="period"$catdatatag"/"
 
 if [[  $job_cycle != "SKTreeMaker"* ]];
     then
@@ -752,9 +779,9 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
     if [[ ! -d "${outputdir_analyzer}" ]]; then
 	mkdir ${outputdir_analyzer}
     fi
-    if [[ $job_data_lumi  == "BtoE" ]]
+    if [[ $job_data_lumi  == $catdatatag ]]
 	then
-	dir_tag="periodBtoE/"
+	dir_tag="period"+$catdatatag
     fi
 fi
 
@@ -863,7 +890,7 @@ if [[ $submit_analyzer_name ==  "" ]];
               echo $sline
           fi
       fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/include/LQAnalysis_LinkDef.h"
+    done < ${LQANALYZER_DIR}/$linkdef_filepath
     exit 1
 fi
 
@@ -1032,20 +1059,18 @@ fi
 
 if [[ $runMC  == "true" ]];
     then
-    if [[ $job_data_lumi == "C" ]];
-	then
-	if [[ $job_cycle != *"SKTreeMaker"* ]];
-	        then
-	        echo $data_lumi_output_message
-		fi
-    elif [[ $job_data_lumi == "D" ]]
-	then
-	if [[ $job_cycle != *"SKTreeMaker"* ]];
-	        then
-	        echo $data_lumi_output_message
+    for dataperiod in  ${catdataperiods[@]};
+    do
+    if [[ $job_data_lumi == $dataperiod ]];
+        then
+        if [[ $job_cycle != *"SKTreeMaker"* ]];
+        then
+            echo $data_lumi_output_message
         fi
-	
-    elif [[ $job_data_lumi == "BtoE" ]]
+    fi
+    done
+    
+    if [[ $job_data_lumi == $catdatatag ]]
 	then
 
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
@@ -1315,51 +1340,42 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
 	    cp sktree_logger.txt $LQANALYZER_SKTreeLOG_DIR"/"$submit_analyzer_name"_"${submit_version_tag}".log"
 	fi
     fi
-    rm message.txt
     rm edit.sh
     rm sktree_logger.txt
     rm sktree_logger_tmp.txt
 fi
 
-iddir=/data2/CAT_SKTreeOutput/$USER/JobID/
+#iddir=/data2/CAT_SKTreeOutput/$USER/JobID/ >> declared in catconf now
 if [[ ! -d "${iddir}" ]]; then
     mkdir $iddir
 fi
 
-JobID=""
-if [ -f /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt ];
-then
-    cp /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt /data2/CAT_SKTreeOutput/$USER/JobID/IDtmp.txt
-
-    while read line
-    do
-	sline1=$(echo $line | head -n1 | awk '{print $1}')
-	sline2=$(echo $line | head -n1 | awk '{print $2}')
-	sline2=$((sline2+1))
-	new_line=$sline1" "$sline2
-	echo $new_line > /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt 
-	JobID=$sline2
-    done < /data2/CAT_SKTreeOutput/${USER}/JobID/IDtmp.txt
-    
-else
-    if [[ $USER == "jalmond" ]];
-    then
-	echo "Error in  /data2/CAT_SKTreeOutput/JobOutPut/JobID/ID.txt"
-	exit 1
+qnameisok="false"
+for qname in ${queueoptions[@]};
+do
+    if [[ $queuename  == *${qname}* ]]; then 
+	qnameisok="true"
     fi
-    JobID=$RANDOM
-fi
-    
 
-################  DATA################################################
-### submit this configured job (uses bin/submit.sh)
-######################################################################
-tagger=""
-if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
-          tagger=$JobID
-else
-          tagger=$RANDOM
+done
+if [[ $qnameisok == "false" ]];then
+    echo "--------------------------------------------------------------------------"
+   
+    echo "Error in Queuename: run  sktree -qlist"
+    echo "--------------------------------------------------------------------------"
+    exit 1
 fi
+
+runboth="false"
+if [[ $runDATA  == "true" ]];
+    then
+    if [[ $runMC  == "true" ]];
+    then
+	runboth="true"
+	echo "LQanalyzer::sktree :: INFO :: runing MC+DATA, DATA will be run in background"
+    fi
+fi
+
 
 if [[ $runDATA  == "true" ]];
     then
@@ -1375,12 +1391,54 @@ if [[ $runDATA  == "true" ]];
 	  then
 	  continue
       fi
+
+
+      JobID=""
+      if [ -f $JOBIDTAG ];
+      then
+	  cp $JOBIDTAG $iddir/IDtmp.txt
+	  
+	  while read line
+	  do
+              sline1=$(echo $line | head -n1 | awk '{print $1}')
+              sline2=$(echo $line | head -n1 | awk '{print $2}')
+              sline2=$((sline2+1))
+              new_line=$sline1" "$sline2
+              echo $new_line > $JOBIDTAG
+              JobID=$sline2
+	  done < $iddir/IDtmp.txt
+	  
+      else
+	  if [[ $USER == "jalmond" ]];
+	  then
+              echo "Error in  $JOBIDTAG"
+              exit 1
+	  fi
+	  JobID=$RANDOM
+      fi
+
+      if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
+          tagger=$JobID
+      else
+          tagger=$RANDOM
+      fi
+      
+
       
       ### set all inputs to default in functions.sh
       source functions.sh
 
-      #### change input to those specified in sktree command
+
       run_in_bkg=${job_run_bkg}
+      #### change input to those specified in sktree command
+      if [[ $runboth  == "false" ]];
+      then
+	  run_in_bkg=${job_run_bkg}
+      else
+	  run_in_bkg="True"
+      fi
+      echo "LQanalyzer::sktree :: INFO :: queue ="$queuename
+      queue=${queuename}
       nevents=${job_nevents}
       skipevent=${job_nskip}
       runnp=${job_run_fake}
@@ -1394,7 +1452,8 @@ if [[ $runDATA  == "true" ]];
       loglevel=$job_loglevel
       logstep=$job_logstep
       stream=${istream}
-
+      drawhists=${submit_draw}
+      
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1431,14 +1490,16 @@ if [[ $runDATA  == "true" ]];
       else
 	  source submit.sh $tagger
       fi
+      
       if [[ ${job_run_fake} == "True" ]];
-	  then
+      then
 	  if [[ ${run_in_bkg} != "True" ]];then
 	      mergefake $istream
 	  fi
       else
 	  if [[ ${run_in_bkg} != "True" ]];then
-	      mergeoutput $istream
+	      echo ""
+              mergeoutput $istream
 	  fi
       fi
     done
@@ -1447,12 +1508,49 @@ fi
 if [[ $runMC  == "true" ]];
 
     then
+
+    JobID=""
+    
+    if [ -f $JOBIDTAG ];
+    then
+	cp $JOBIDTAG $iddir/IDtmp.txt
+	
+	while read line
+	do
+            sline1=$(echo $line | head -n1 | awk '{print $1}')
+            sline2=$(echo $line | head -n1 | awk '{print $2}')
+	    sline2=$((sline2+1))
+            new_line=$sline1" "$sline2
+            echo $new_line > $JOBIDTAG
+            JobID=$sline2
+	done < $iddir/IDtmp.txt
+	
+    else
+	if [[ $USER == "jalmond" ]];
+	then
+            echo "Error in  $JOBIDTAG"
+            exit 1
+	fi
+	JobID=$RANDOM
+    fi
+
+    
+    tagger=""
+    if [ "$JobID" -eq "$JobID" ] 2>/dev/null; then
+        tagger=$JobID
+    else
+        tagger=$RANDOM
+    fi
+    
+    
     ### set all inputs to default in functions.sh
     source functions.sh
     
     #### change input to those specified in sktree command
     run_in_bkg=${job_run_bkg}
     cycle=${job_cycle}
+    echo "LQanalyzer::sktree :: INFO :: queue ="$queuename
+    queue=${queuename}
     skinput=${submit_skinput}
     useskim=${job_skim}
     njobs=$job_njobs
@@ -1466,6 +1564,8 @@ if [[ $runMC  == "true" ]];
     skipevent=${job_nskip}
     runnp=${job_run_fake}
     runcf=${job_run_flip}
+    drawhists=${submit_draw}
+
 
 
     if [[ $submit_file_tag  != ""  ]];
@@ -1474,7 +1574,7 @@ if [[ $runMC  == "true" ]];
         declare -a input_samples=("${submit_file_tag}")
 	echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
-	echo "LQanalyzer::sktree :: INFO :: JOB ID["$tagger"]"
+	echo "LQanalyzer::sktree :: INFO :: JOB MC ID["$tagger"]"
 
 
 	if [[ ${run_in_bkg} == "True" ]];
@@ -1501,7 +1601,7 @@ if [[ $runMC  == "true" ]];
 	ARG=$submit_file_list
 	eval input_samples=(\${$ARG[@]})
 
-	echo "LQanalyzer::sktree :: INFO :: JOB ID["$tagger"]"
+	echo "LQanalyzer::sktree :: INFO :: MC JOB ID["$tagger"]"
 
 	if [[ ${run_in_bkg} == "True" ]];
         then

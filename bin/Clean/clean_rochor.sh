@@ -1,6 +1,4 @@
-if [[  $isSLC5 == "True" ]];
-    then
-    bash $LQANALYZER_DIR/bin/Clean/clean_rochor_c98.sh 
-else
+if [[ $CATVERSION == "v7-6-6" ]];
+    then 
     bash $LQANALYZER_DIR/bin/Clean/clean_rochor_c11.sh
 fi

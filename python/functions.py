@@ -1,3 +1,5 @@
+import os
+
 def CheckPathInFile(channel,sample,mc):
     CopySKTrees(channel, sample, mc , "False")
     
@@ -102,7 +104,7 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
     config+='. bin/thisroot.sh \n'
     config+='cd ' + lqdir + '\n'
 
-    config+='source setup.sh \n'
+    config+='source setup.sh ' + os.getenv("CATVERSION") + ' \n'
     config+='echo "PWD= "$PWD \n'
     config+='cd ' + workdir + ' \n'
     config+='root -l -q -b ' + macroname +' \n'
@@ -125,12 +127,15 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   gSystem->Load("libSelection.so");\n'
     config+='   gSystem->Load("libPlotting.so");\n'
     config+='   gSystem->Load("libHNCommonLeptonFakes.so");\n'
-    #config+='   gSystem->Load("libRoccoR.so");\n'
+    config+='   gSystem->Load("librochcor2016");\n'
     config+='   gSystem->Load("libBTagSFUtil.so");\n'
     for lib in libraries:
         config+='   gSystem->Load("' + lib + ' + .so");\n'
         
+    config+='   gSystem->Load("libAnalyzerTools.so");\n'
     config+='   gSystem->Load("libLQAnalysis.so");\n'
+    config+='   gSystem->Load("libSKTreeMaker.so");\n'
+    config+='   gSystem->Load("libValidation.so");\n'
     
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'

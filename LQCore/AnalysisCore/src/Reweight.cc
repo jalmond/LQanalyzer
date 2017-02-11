@@ -22,20 +22,46 @@ Reweight::Reweight(TString filename){
 
   TDirectory* origDir = gDirectory;
   
-  fileData_ = TFile::Open( filename, "READ");
-  if (!fileData_) cout << "\n\nAt least one of the Nvtx reweighting files could not be opened!\n\n";
-  fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/MCPileUp2016.root", "READ");
+  fileData_ = TFile::Open(filename, "READ");
+  if (!fileData_){
+    cout << "\n\nAt least one of the Nvtx reweighting files could not be opened!\n\n";
+    fileData_ = TFile::Open( "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/DataPileUp_BtoG_2016.root", "READ");
+
+  }
+  if(filename.Contains("BtoE")){
+    fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016.root", "READ");
+  }
+  if(filename.Contains("BtoG")){
+    fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016_802.root", "READ");
+  }
+  if(filename.Contains("BtoH")){
+    fileMC_   = new TFile("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Pileup/MCPileUp2016_802.root", "READ");
+  }
 
 
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
   //cout << " filename = " << filename << endl;
   h_Data_ = 0;
-  h_Data_ = dynamic_cast<TH1F*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;  
-  
-  //cout << "h_Data_ = " << h_Data_ << endl;
+  if(filename.Contains("BtoE")){
+    h_DataF_ = dynamic_cast<TH1F*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;  
+  }
+  if(filename.Contains("BtoG")){
+    h_Data_ = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;
+  }
+
+  if(filename.Contains("BtoH")){
+    h_Data_ = dynamic_cast<TH1D*>((fileData_->Get("Nvtx_nocut_data"))->Clone());;
+  }
+
+
   //
-  h_MCmod_ = (TH1F*)fileMC_->Get("h_VertexNoReweight");
+  if(filename.Contains("BtoE")){
+    h_MCmodF_ = (TH1F*)fileMC_->Get("h_VertexNoReweight");
+  }
+  else{
+    h_MCmod_ = (TH1D*)fileMC_->Get("Nvtx_nocut_mc");
+  }
   double int_MC_ = h_MCmod_->Integral();
   double int_Data_ = h_Data_->Integral();
 
@@ -62,10 +88,15 @@ Reweight::~Reweight(){
 }
 
 
-double Reweight::GetWeight(Int_t nvtx){
+double Reweight::GetWeight(Int_t nvtx, TString version){
 
-  return h_Data_->GetBinContent( h_Data_->FindBin(nvtx)  );
-  
+  if(version.Contains("v8-0-1")){
+    return h_DataF_->GetBinContent( h_DataF_->FindBin(nvtx)  );
+  }
+  if(version.Contains("v8-0-2")){
+    return h_Data_->GetBinContent( h_Data_->FindBin(nvtx)  );
+  }  
+  return 1.;
 }
 
 TDirectory* Reweight::getTemporaryDirectory(void) const

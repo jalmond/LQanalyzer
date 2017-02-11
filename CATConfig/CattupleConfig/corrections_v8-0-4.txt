@@ -1,0 +1,25 @@
+# --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
+# LABEL    DIRLABEL   rootfilename            hist name    histtype
+# --------------  --------------  --------------  --------------  --------------  --------------  --------------  -------------- #
+### EL_RECO IDFILEDIR egammaEffi.txt_EGM2D_reco.root EGamma_SF2D  TH2F 
+### ID_ELECTRON_POG_TIGHT IDFILEDIR egammaEffi.txt_EGM2D_tight.root EGamma_SF2D TH2F
+### ID_ELECTRON_POG_MEDIUM IDFILEDIR egammaEffi.txt_EGM2D_medium.root EGamma_SF2D TH2F
+### ID_ELECTRON_POG_LOOSE  IDFILEDIR egammaEffi.txt_EGM2D_loose.root EGamma_SF2D TH2F
+### ID_ELECTRON_POG_VETO  IDFILEDIR egammaEffi.txt_EGM2D_veto.root EGamma_SF2D TH2F
+### ID_BCDEF_MUON_POG_LOOSE IDFILEDIR EfficienciesAndSF_BCDEF.root MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio TH2F
+### ID_BCDEF_MUON_POG_MEDIUM IDFILEDIR EfficienciesAndSF_BCDEF.root MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio TH2F
+### ID_BCDEF_MUON_POG_TIGHT IDFILEDIR EfficienciesAndSF_BCDEF.root MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio TH2F
+### ISO_BCDEF_MUON_POG_LOOSE IDFILEDIR EfficienciesAndSF_ISO_BCDEF.root LooseISO_TightID_pt_eta/abseta_pt_ratio TH2F
+### ISO_BCDEF_MUON_POG_TIGHT IDFILEDIR EfficienciesAndSF_ISO_BCDEF.root TightISO_TightID_pt_eta/abseta_pt_ratio TH2F
+### ID_GH_MUON_POG_LOOSE IDFILEDIR EfficienciesAndSF_GH.root MC_NUM_LooseID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio TH2F
+### ID_GH_MUON_POG_MEDIUM IDFILEDIR EfficienciesAndSF_GH.root MC_NUM_MediumID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio TH2F
+### ID_GH_MUON_POG_TIGHT IDFILEDIR EfficienciesAndSF_GH.root MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/abseta_pt_ratio TH2F
+### ISO_GH_MUON_POG_LOOSE IDFILEDIR EfficienciesAndSF_ISO_GH.root LooseISO_LooseID_pt_eta/abseta_pt_ratio TH2F
+### ISO_GH_MUON_POG_TIGHT IDFILEDIR EfficienciesAndSF_ISO_GH.root TightISO_TightID_pt_eta/abseta_pt_ratio TH2F
+### MUON_MU24_TRIGGER_BCDEF  TRIGGERFILEDIR EfficienciesAndSF_RunBtoF.root IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio TH2F
+### MUON_MU24_TRIGGER_GH  TRIGGERFILEDIR EfficienciesAndSF_Period4.root IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio TH2F
+### MUON_MU50_TRIGGER_BCDEF  TRIGGERFILEDIR EfficienciesAndSF_RunBtoF.root	Mu50_OR_TkMu50_PtEtaBins/abseta_pt_ratio TH2F
+### MUON_MU50_TRIGGER_GH  TRIGGERFILEDIR EfficienciesAndSF_Period4.root	Mu50_OR_TkMu50_PtEtaBins/abseta_pt_ratio TH2F
+### TRACKING_EFF IDFILEDIR ratios.root  ratio_eta  TGraphAsymmErrors
+### ID_MUON_HN_TRI_TIGHT IDFILEDIR MuonID_TRILEP_prompt80x.root abseta_pt_PLOT TH2F
+#END

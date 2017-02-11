@@ -17,6 +17,10 @@
 #pragma link C++ class std::vector<snu::KJet>+;
 #pragma link C++ class std::vector<snu::KJet*>+;
 
+#pragma link C++ class snu::KFatJet+;
+#pragma link C++ class std::vector<snu::KFatJet>+;
+#pragma link C++ class std::vector<snu::KFatJet*>+;
+
 #pragma link C++ class snu::KGenJet+;
 #pragma link C++ class std::vector<snu::KGenJet>+;
 #pragma link C++ class std::vector<snu::KGenJet*>+;

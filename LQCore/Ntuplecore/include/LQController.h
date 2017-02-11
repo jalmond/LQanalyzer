@@ -26,7 +26,8 @@ class LQController  {
 		    v764=5,
 		    v765=6,
 		    v766=7,
-		    v801=8};
+		    v801=8,
+		    v802=9};
 
   
   //// constructors
@@ -45,7 +46,7 @@ class LQController  {
   double GetPhysicalMemoryConsumption();
   void FillMemoryHists(std::string binname);
 
-  int VersionStamp(LQController::_catversion cat_version );
+  int VersionStamp();
 
   /// List of functions to configure job
   void SetTreeName(TString treename);
@@ -70,10 +71,10 @@ class LQController  {
   void SetLQInput(bool lq);
   void SetUserFlag(TString flag);
 
-  std::string SetNTCatVersion(LQController::_catversion dir_version);
+  std::string SetNTCatVersion();
 
   _catversion GetCatVersion(std::string filepath)  throw( LQError ); 
-  bool CheckBranch(LQController::_catversion dir_version, std::string ntuple_version, std::string env_version);
+  bool CheckBranch(std::string ntuple_version, std::string env_version);
 
 
 

@@ -21,10 +21,13 @@ class MuonSelection : public BaseSelection {
   MuonSelection& operator= (const MuonSelection& obj);
   MuonSelection(const MuonSelection& bs);
 
-  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, float ptcut, float etacut);
-  bool PassUserID(ID id, snu::KMuon mu);
+  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, float ptcut=-999., float etacut=-999.);
+  void SelectMuons(std::vector<snu::KMuon>& leptonColl, TString muid, float ptcut=-999., float etacut=-999.);
+  bool MuonPass(snu::KMuon muon, TString muid,  float ptcut=-999., float etacut=-999.);
 
-  bool PassID(ID id, snu::KMuon mu, bool m_debug = false);
+  bool PassUserID(TString id, snu::KMuon mu);
+  bool PassID(TString id, snu::KMuon mu, bool checkdxy=true, bool checkdz=true, bool checkchi2=true, bool m_debug = false);
+
   
   //// General Selection
   void Selection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false); 

@@ -7,13 +7,16 @@
  #                                                                         #
  ###########################################################################
 
-all: tagcheck btag fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
+all: tagcheck btag roch fakes sktree AnalysisCore Ntuplecore plotting selection analysis 
 
 sktree::
 	(cd LQCore/SKTree; make)
 
 Ntuplecore::
 	(cd LQCore/Ntuplecore; make)
+
+roch::
+	(bash bin/Make/make_rocher_lib.sh; cd ${LQANALYZER_DIR} )
 
 AnalysisCore::
 	(cd LQCore/AnalysisCore; make)
@@ -25,16 +28,20 @@ selection::
 	(cd LQCore/Selection; make)
 
 analysis::
-	(cd LQAnalysis; make)
+	(cd LQAnalysis/AnalyzerTools; make)
+	(cd LQAnalysis/Analyzers; make)
+	(cd LQAnalysis/SKTreeMaker; make)
+	(cd LQAnalysis/Validation; make)
+
 
 fakes::
-	(cd HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+	(cd ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
 btag::  
 	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	
 
 tagcheck::
-	(source bin/CheckNewTagCompiler.sh)
+	(source bin/CheckNewTagCompiler.sh ${CHECKTAGFILE})
 
 clean::
 	(cd LQCore/SKTree; make clean)
@@ -42,8 +49,12 @@ clean::
 	(cd LQCore/AnalysisCore; make clean)
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
-	(cd LQAnalysis; make clean)
+	(cd LQAnalysis/AnalyzerTools; make clean)
+	(cd LQAnalysis/Analyzers; make clean)
+	(cd LQAnalysis/SKTreeMaker; make clean)
+	(cd LQAnalysis/Validation; make clean)
 	(bash bin/Clean/clean_fake.sh)
+	(bash bin/Clean/clean_rochor.sh)
 	(bash bin/Clean/clean_btag.sh)
 
 distclean::
@@ -52,7 +63,13 @@ distclean::
 	(cd LQCore/AnalysisCore; make distclean)
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
-	(cd LQAnalysis; make distclean)	
+	(cd LQAnalysis/AnalyzerTools; make distclean)
+	(cd LQAnalysis/Analyzers; make distclean)
+	(cd LQAnalysis/SKTreeMaker; make distclean)
+	(cd LQAnalysis/Validation; make distclean)
+
+
 	(bash bin/Clean/clean_fake.sh)
+	(bash bin/Clean/clean_rochor.sh)
 	(bash bin/Clean/clean_btag.sh)
 

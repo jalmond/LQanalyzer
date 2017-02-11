@@ -14,27 +14,36 @@ def GetMemory(mem):
     float_only_mem= mem[:-2]
     return float(float_only_mem)
 
-path_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
-path_skel_master="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
+path_jobpre="/data1/"
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/data2/"
+
+
+
+path_master=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION") +".txt"
+path_skel_master=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton.txt"
 
 if not os.path.exists(path_master):
-    os.system("cp /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
+    os.system("cp " + path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFileSkeleton_newversion.txt " + path_master )
     os.system("chmod 777 " + path_master)
 
-if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
-    os.system("mkdir  /data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()):
+    os.system("mkdir  " + path_jobpre + "/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
 
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-x", "--x", dest="x", default="123",help="tag")
+parser.add_option("-n", "--n", dest="n", default="123",help="tag")
 parser.add_option("-s", "--s", dest="s", default="123",help="tag")
 
 (options, args) = parser.parse_args()
 filetag=options.x
 sample=options.s
+njobs_submittest=int(options.n)
 
-path_job="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
-path_tmpmaster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag + ".txt"
+
+path_job=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(filetag)+ "/statlog_time_"+sample + filetag + ".txt"
+path_tmpmaster=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/MasterFile_tmp" + filetag +sample+ ".txt"
 
 os.system("cp " + path_master + " " + path_tmpmaster)
 
@@ -42,14 +51,15 @@ os.system("cp " + path_master + " " + path_tmpmaster)
 file_job=open(path_job,"r")
 file_tmpmaster=open(path_tmpmaster,"r")
 
-path_cluster="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
-path_log="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
+path_cluster=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_"+sample + filetag + ".txt"
+path_log=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/Cluster_" +sample+ filetag + ".log"
 
 
 
 time=0.
 ntimes=0.
 pretime=0.
+prefilesize="0MB"
 premem_v="0MB"
 premem_p="0MB"
 jobtime=0.
@@ -116,11 +126,18 @@ for line in file_job:
     if "201" in line:
         if "time" not in line:
             entries = line.split()
-            month=entries[1]
-            day=entries[0]
-            date=entries[2]
-            ptime=entries[3] 
-            year=entries[4]
+            if len(entries) == 5:
+                month=entries[1]
+                day=entries[0]
+                date=entries[2]
+                ptime=entries[3] 
+                year=entries[4]
+            else:
+                month=entries[1]
+                day=entries[0]
+                date=entries[2]
+                ptime=entries[3]
+                year=entries[5]
 file_job.close()
 
 if jobcrash =="":
@@ -136,7 +153,7 @@ if nclusterjobs == "":
     nclusterjobs=" NULL "
 
 
-path_jobinfo="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
+path_jobinfo=path_jobpre +"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+month+"_"+year+".txt"
 if not os.path.exists(path_jobinfo):
     with open(path_jobinfo, "w") as myfile:
           myfile.write("Summary of CatAnalyzer Processes: month="+month+" year=" +year+"\n")
@@ -146,13 +163,16 @@ if len(sample) < 2:
     sample=stream+"_"+sample
 
 with open(path_jobinfo, "a") as myfile:
-    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(day)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
+    myfile.write(username+" "+str(cycle)+" cv: "+str(catversion)+" "+str(cattag)+" sample: "+str(sample)+" skim: "+str(skim)+" njobs: " + str(njobs) + " nfiles: " + str(nfiles) + " sta_time: "+str(date)+" : "+str(month)+" : "+str(year)+" : "+str(ptime)+" proc.time: "+str(time)+ " job_time: "+str(jobtime)+ " last_job_time: " + str(lastjobtime)+ " output_file_size: " + str(filesize) + " mem_p: " + RoundMemory(memoryusage_p) + " mem_v: " + RoundMemory(memoryusage_v)+ " job_complete= "+ jobcrash + " cluster_info: " + nclusterjobs+ " job_cluster: " + str(clusterid) + "\n")
 
 os.system("rm " + path_cluster)
 
 if os.path.exists(path_log):
     os.system("rm " + path_log)
     
+
+if "FLATCAT" in skim:  
+    sample +="_lepton"
 
 if "SKTree_LeptonSkim" in skim:
     sample +="_lepton"
@@ -192,9 +212,11 @@ for line in file_tmpmaster:
                 if len(splitline) > 2:
                     ntimes = float(splitline[2])
                     pretime = float(splitline[3])
+                    prefilesize =  splitline[4]
                     if len(splitline) ==  7:
                         premem_v = splitline[5]
                         premem_p = splitline[6]
+                        prefilesize = splitline[4]
                     newsample=False
 
 file_tmpmaster.close()
@@ -261,10 +283,25 @@ elif newCycle:
 file_master=open(path_master,"w")
     
 newtime= ((jobtime*(float(njobs)/float(nfiles))) + (pretime*ntimes)) / (ntimes+1)
+if jobtime < 0.:
+    newtime = pretime
 
 new_memoryv = (GetMemory(memoryusage_v) + (GetMemory(premem_v)*ntimes)) / (ntimes+1)
 new_memoryp = (GetMemory(memoryusage_p) + (GetMemory(premem_p)*ntimes)) / (ntimes+1)
+new_filesize = (GetMemory(filesize)  + (GetMemory(prefilesize)*ntimes)) /  (ntimes+1)
 
+if GetMemory(memoryusage_p) < 0.1:
+    new_memoryp = GetMemory(premem_p)
+if GetMemory(memoryusage_v) < 0.1:
+    new_memoryv = GetMemory(premem_v)
+if GetMemory(filesize) < 0.1:
+    new_filesize=GetMemory(prefilesize)
+
+if njobs_submittest == 1:
+    new_memoryp = GetMemory(premem_p)
+    new_memoryv = GetMemory(premem_v)
+    new_filesize=GetMemory(prefilesize)
+    newtime = pretime
 
 correctuser=False
 correctCode=False
@@ -288,13 +325,15 @@ for line in file_tmpmaster2:
         if correctCode:
              if newsample:
                  if sample_title in line:
-                     file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
-                     file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
+                     if not  njobs_submittest == 1:
+                         file_master.write("################ " + sample_title + nproc_title + time_title + filesize_title+" \n")
+                         file_master.write("################ "+ sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(new_filesize) + "MB " + str(new_memoryv)+"MB" + " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                     file_master.write(line)
              else:
                  if sample in line:
-                     file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(filesize) + " " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
+                     if not njobs_submittest == 1:
+                         file_master.write("################ "+sample+ gap1 + str(int(ntimes)+1) + gap2 + str(newtime) + " " + str(new_filesize) + "MB " + str(new_memoryv) +"MB"+ " " + str(new_memoryp)+"MB" + "  \n")
                  else:
                      file_master.write(line)
         else:

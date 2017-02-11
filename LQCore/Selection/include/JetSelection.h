@@ -23,20 +23,23 @@ class JetSelection : public BaseSelection {
   JetSelection(const JetSelection& bs);
 
  
-  void Selection (std::vector<snu::KJet>& jetColl);
+  void Selection (std::vector<snu::KJet>& jetColl, bool isdata, bool smearjets=true);
+  void Selection (std::vector<snu::KJet>& jetColl, bool LepVeto, std::vector<snu::KMuon>& muonColl, std::vector<snu::KElectron>& electronColl, bool isdata, bool smearjets);
   void BasicSelection (std::vector<snu::KJet>& jetColl);
   
   bool PassUserID (ID id, snu::KJet jet);
+  bool PassUserID (snu::KJet jet, TString ID);
   bool PassUserID_PFJetLoose( snu::KJet jet);
   bool PassUserID_PFJetMedium( snu::KJet jet);
   bool PassUserID_PFJetTight( snu::KJet jet);
   
-  //// To be used in analysis
-  void JetSelectionLeptonVeto(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
-  void JetSelectionRealLeptonVeto(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
-  void JetSelectionRealLeptonVetoV2(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons);
-  void JetHNSelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl); 
-  void JetHNSelection(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, float ptcut, float etacut, bool pileupID, TString ID );
+  void SmearJets(vector<snu::KJet>& k_jets);
+
+  void SelectJets(bool isdata, std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, TString ID,float ptcut=-999., float etacut=-999., bool smearjets=true);
+  void SelectJets(bool isdata, std::vector<snu::KJet>& jetColl, TString ID,float ptcut=-999., float etacut=-999., bool smearjets=true);
+
+  vector<TLorentzVector> MakeSmearedTLorentz( vector<snu::KJet> jet);
+
 
 };
 

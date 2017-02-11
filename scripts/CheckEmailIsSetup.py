@@ -40,9 +40,9 @@ def AddEmailToConfig(mail_add):
 
 path_config=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
 
-LQANALYZER_MOD="/data1/LQAnalyzer_rootfiles_for_analysis/CATMOD/"
+
 if not os.path.exists(path_config):
-    os.system("cp " + LQANALYZER_MOD + "/catconfig   " +  path_config)
+    os.system("cp " + os.getenv("LQANALYZER_MOD") + "/catconfig   " +  path_config)
     print "File " + path_config + " does not exist. Remaking file"
 
 

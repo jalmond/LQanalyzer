@@ -9,6 +9,7 @@ outputdir=${LQANALYZER_DIR}/data/output/
 loglevel="INFO"
 remove_workspace="True"
 logstep=-1
+queue="NONE" 
 skipevent=-1
 nevents=-1
 totalev=-1
@@ -27,7 +28,7 @@ skflag="NULL"
 catversion="NULL"
 usebatch="NULL"
 run_in_bkg="False"
-
+drawhists="False"
 function makeParseVariable() {
     if ! [ -z ${2} ] 
         then

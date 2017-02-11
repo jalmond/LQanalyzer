@@ -577,99 +577,25 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
   
-  if(sample.Contains("dylow_")){
-    list.push_back(make_pair("DY10to50_MCatNLO",0.2));
-  }
+  if(sample.Contains("prompt")){
 
-  if(sample.Contains("dyhigh_")){
-    list.push_back(make_pair("DY50plus_MCatNLO",0.2));    
-  }
-  if(sample.Contains("dy_")){
-    list.push_back(make_pair("DY10to50_MCatNLO",0.2));
-    list.push_back(make_pair("DY50plus_MCatNLO",0.2));
-  }
-
-
-  
+    list.push_back(make_pair("WWW",0.2));
+    list.push_back(make_pair("WW",0.2));
+    list.push_back(make_pair("WZZ",0.2));
+    list.push_back(make_pair("WZ",0.2));
+    list.push_back(make_pair("ZZ",0.2));
+    list.push_back(make_pair("TT_powheg",0.2));
+    list.push_back(make_pair("WJets",0.2));
     
-  ///// Top samples //////////////////    
-  if(sample.Contains("top")){
-    list.push_back(make_pair("singletop_tbar_Powheg",0.25));
-    list.push_back(make_pair("singletop_s_MCatNLO",0.25));
-    list.push_back(make_pair("singletop_t_Powheg",0.25));
-    list.push_back(make_pair("singletop_tbarW_Powheg",0.25));
-    list.push_back(make_pair("singletop_tW_Powheg",0.25));
-    list.push_back(make_pair("TT_MG5",0.25));
-    //    list.push_back(make_pair("ttWJetsToLNu_MCatNLO",0.25));
-    //list.push_back(make_pair("ttWJetsToQQ_MCatNLO",0.25));
-    //list.push_back(make_pair("ttZToQQ_MCatNLO",0.25));
-
-  }
-  if(sample.Contains("ttbar")){
-    list.push_back(make_pair("TT_MG5",0.25));
-  }
-
-  if(sample.Contains("ttbarV")){
-    list.push_back(make_pair("ttWJetsToLNu",0.25));
-    list.push_back(make_pair("ttWJetsToQQ",0.25));
-    list.push_back(make_pair("ttZToLLNuNu",0.25));
-    list.push_back(make_pair("ttZToQQ",0.25));
-
   }
   
   if(sample.Contains("qcd"))
     {
-      //list.push_back(make_pair("QCD_mu20to30",0.30));
-      //list.push_back(make_pair("QCD_mu30to50",0.30));
-      //list.push_back(make_pair("QCD_mu50to80",0.30));
       list.push_back(make_pair("QCD_em", 0.30));
       list.push_back(make_pair("QCD_bcToE", 0.30));
     }
 
   
-  //////// Diboson ////////
-  if(sample.Contains("vv")){    
-    list.push_back(make_pair("WZ_pythia8",0.15));
-    list.push_back(make_pair("ZZ_pythia8",0.15));
-    list.push_back(make_pair("WW_pythia8",0.15));
-  }
-  if(sample.Contains("ww")){
-    list.push_back(make_pair("WW",0.15));
-  }
-  if(sample.Contains("wz")){
-    list.push_back(make_pair("WZ",0.15));
-  }
-  if(sample.Contains("zz")){
-    list.push_back(make_pair("ZZ",0.15));
-  }
-  
-  //// Wjets
-  if(sample.Contains("wjet_")){
-    list.push_back(make_pair("WJets_MCatNLO",0.15));
-  }
-
-  if(sample.Contains("prompt")){
-    list.push_back(make_pair("WWW",0.25));
-    list.push_back(make_pair("TTWW",0.25));
-    list.push_back(make_pair("TTG",0.25));
-    list.push_back(make_pair("ZZZ",0.25));
-    list.push_back(make_pair("WWZ",0.25));
-    list.push_back(make_pair("WWG",0.25));
-    list.push_back(make_pair("HtoWW",0.25));
-    list.push_back(make_pair("HtoTauTau",0.22));
-    list.push_back(make_pair("ggHtoZZ",0.22));
-    list.push_back(make_pair("WZ_py",0.12));
-    list.push_back(make_pair("ZZ_py",0.09));
-    list.push_back(make_pair("SSWmWm",0.25));
-    list.push_back(make_pair("SSWpWp",0.25));
-    list.push_back(make_pair("WW_dp",0.5));
-    list.push_back(make_pair("ttW",0.25));
-    list.push_back(make_pair("ttZ",0.25));
-  }
-
-  if(sample.Contains("vgamma")){
-    list.push_back(make_pair("Wgamma",0.22));    
-  }
   if(sample.Contains("nonprompt")){
     list.push_back(make_pair("nonprompt",0.34));
   }

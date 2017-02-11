@@ -1,11 +1,11 @@
-###################################################################
+##################################################################
 ###configure Job
 ####################################################################
 ###timeWait=1#
 
 ###################################################
 ### Make Input File
-###################################################
+####################################################
 import os, getpass, sys,ROOT
 from functions import *
 
@@ -40,6 +40,7 @@ parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
+parser.add_option("-q", "--queue", dest="queue", default="", help="Which queue to use?")
 parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
@@ -57,6 +58,7 @@ logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
 runcf = options.runcf
+queue = options.queue
 tagger= options.tagger
 ### THESE ARE OPTIONS THAT CAN BE INCLUDED but not in example
 tree = options.tree
@@ -93,6 +95,69 @@ if not skflag == "":
 new_channel = channel.replace(":", "")
 
 original_channel = new_channel
+
+path_jobpre="/data1/"
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    path_jobpre="/data2/"
+
+    
+queuepath=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
+file_queuepath = open(queuepath,"r")
+for line in file_queuepath:
+    if "#" in line:
+        continue
+    sline = line.split()
+    for s in sline:
+        if "@" in s or "fast" in s or "all" in s or "long" in s:
+            queue= s
+file_queuepath.close()
+
+
+if queue == "None":
+    queue = "fastq"
+
+queue_command = ''
+qlist=[]
+
+queueok=False
+if queue:
+    queue_command=' -q '
+if queue == "allq":
+    queue_command=''
+    queueok=True
+if queue == "fastq":
+    queue_command=queue_command+ ' fastq '
+    queueok=True
+if queue == "longq":
+    queue_command=queue_command+ ' longq '
+    queueok=True
+queue=queue.replace("all.q@cms-0-","node")
+queue=queue.replace(".local","")
+if "node1" in queue:
+    qlist.append(1)
+if "node2" in queue:
+    qlist.append(2)
+if "node3" in queue:
+    qlist.append(3)    
+if "node4" in queue:
+    qlist.append(4)
+if "node5" in queue:
+    qlist.append(5)
+if "node6" in queue:
+    qlist.append(6)
+if "node" in queue:
+    queue_command=queue_command+ ' "' 
+for q in qlist:
+    queue_command=queue_command+"all.q@cms-0-"+str(q)+".local,"
+if len(qlist) > 0    :
+    queueok=True
+    queue_command=queue_command[:-1]
+    queue_command=queue_command+'" '
+
+if queue == "None":
+    queue=""
+if not  queue:
+    queue=""
 
 memoryusage_v=0
 memoryusage_p=0
@@ -225,7 +290,7 @@ if not cycle == "SKTreeMaker":
 
 output_mounted="/data2"
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    output_mounted="/data4"
+    output_mounted="/data5"
 
                     
 ##########################################################
@@ -236,8 +301,8 @@ tmpwork = output_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
-timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")
-    
+timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")+"_"+os.getenv("CATVERSION")
+#timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")    
 while  (os.path.exists(timestamp_dir)):
     app_dir=1
     timestamp_dir = timestamp_dir + "_v" + str(app_dir)
@@ -288,6 +353,9 @@ singlejob = number_of_cores==1
 
 #### determine if input is data/mc
 mc = len(sample)>1
+if sample == "H_v2" or sample == "H_v3":
+    mc= False
+
 if mc:
     datatype="mc"
 
@@ -436,13 +504,9 @@ while inDS == "":
         print "Using CAT " +sample_catversion + " ntuples"
         if mc:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
-            if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_mc_' +sample_catversion +  '.txt'
 
         else:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'
-            if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-                filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/Cluster/datasets_snu_cluster_CAT_data_'  +sample_catversion +'.txt'
     else:
         filename = os.getenv("LQANALYZER_RUN_PATH") + 'txt/datasets_mac.txt'
              
@@ -490,7 +554,9 @@ while inDS == "":
             print "LQAnalyzer :: ERROR :: Input dataset is not available: Exiting"
             sys.exit()
 
-    
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+    inDS=inDS.replace("/data2/","/data4")
+
 InputDir = inDS    
 
 
@@ -520,7 +586,7 @@ if DEBUG == "True":
 
 
 cluster = False
-if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     cluster=True
     if not running_batch:
         number_of_cores = 1
@@ -761,7 +827,6 @@ wait_sub = 1
 if number_of_cores < 10:
     wait_sub = 5
 
-print "start time = " + str(start_time)
 
 if DEBUG == "True":
     print "Running CATAnalyzer jobs for: " + getpass.getuser()
@@ -783,8 +848,10 @@ for i in range(1,number_of_cores+1):
     #runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if running_batch:
-        runcommand = "qsub -V " + batchscript   + "&>" + log 
-
+        if queue == "":
+            runcommand = "qsub -V " + batchscript   + "&>" + log 
+        else:
+            runcommand = "qsub -V  " + queue_command +" " + batchscript   + "&>" + log
     jobID=0
     first_jobid=0
 
@@ -827,12 +894,12 @@ for i in range(1,number_of_cores+1):
 
 if running_batch: 
     
-    if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
-        os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    if not os.path.exists(output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
     
 
     print "@@@@@@@@@@@@@@@@@@@@@@@@@"
-    path_jobids = "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
+    path_jobids = output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
 
     file_jobids = open(path_jobids,"w")
     for ijob in array_batchjobs:
@@ -895,8 +962,6 @@ it_counter=0
 while not JobSuccess:
     it_counter+=1
     sub_counter=0
-    print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
-
     if running_batch == False:
         os.system("ps ux &> " + local_sub_dir + "/log")
     else: 
@@ -995,7 +1060,6 @@ while not JobSuccess:
         nevent_processed=0.
 
         sub_counter+=1
-        print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
 
         if running_batch:
@@ -1034,7 +1098,6 @@ while not JobSuccess:
 
 
             sub_counter+=1
-            print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
             for i in range(1,number_of_cores+1):
                 if not JobOutput:
@@ -1128,14 +1191,13 @@ while not JobSuccess:
         time.sleep(1.)
         ncycle+=1
         sub_counter+=1
-        print      str(it_counter) + " : " + str(sub_counter) + "   " +  str(time.time())   + " st: " + str(start_running_time) + " : " + str(job_time)
 
 
 if not JobOutput:
 
     if not running_batch:
         failed_macro= output+ "Job_1/runJob_1.C"
-        failed_log= outsamplename+ "_Job_" + str(0)+".o"+str(array_batchjobs[0])
+        failed_log= outsamplename+ "_Job_" + str(0)+".log"
 
 
    
@@ -1166,29 +1228,14 @@ else:
 
 
     SKTreeOutput_pre = output_mounted+"/CatNtuples/" + sample_catversion
-    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        SKTreeOutput_pre = "/data4/LocalNtuples/SKTrees13TeV/"+sample_catversion
-        if not os.path.exists(SKTreeOutput_pre):
-            os.system("mkdir " + SKTreeOutput_pre)
-
-    if not  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        if not os.path.exists(SKTreeOutput_pre):
-            os.system("mkdir " + SKTreeOutput_pre)
+    if not os.path.exists(SKTreeOutput_pre):
+        os.system("mkdir " + SKTreeOutput_pre)
 
     SKTreeOutput_pre2 = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
-    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        SKTreeOutput_pre2 = SKTreeOutput_pre   + "/SKTrees/"
-        if not os.path.exists(SKTreeOutput_pre2):
-            os.system("mkdir " + SKTreeOutput_pre2)
-
-    if not  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        if not os.path.exists(SKTreeOutput_pre2):
-            os.system("mkdir " + SKTreeOutput_pre2)
+    if not os.path.exists(SKTreeOutput_pre2):
+        os.system("mkdir " + SKTreeOutput_pre2)
                     
-            
     SKTreeOutput = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
-    if  "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-        SKTreeOutput = "/data4/LocalNtuples/SKTrees13TeV/"+sample_catversion + "/SKTrees/"
     
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
@@ -1349,7 +1396,7 @@ else:
         if os.path.exists(Finaloutputdir + outfile):
             os.system("rm  "  +  Finaloutputdir   + outfile)
         os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
-        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
+        os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
         f = ROOT.TFile(Finaloutputdir +  outfile)
         t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
         t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1363,7 +1410,7 @@ else:
         if number_of_cores == 1:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
             
-            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outfile)
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1375,7 +1422,7 @@ else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
             
-            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
+            os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
             t2 = f.Get("CycleInfo/CyclePhysicalMemoryUsage")
@@ -1419,14 +1466,14 @@ total_time=end_time- start_time
 print "Using " + str(number_of_cores) + " cores: Job time = " + str(total_time) +  " s"
 print ""
 
-statfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
-statfile_time="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
-statfile_time_complete="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
+statfile=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_"+ original_sample + tagger +".txt"
+statfile_time=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_timetmp_"+original_sample+tagger +".txt"
+statfile_time_complete=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger) + "/statlog_time_"+original_sample+tagger +".txt"
 
-if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
-    os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
-if not os.path.exists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
-    os.system("mkdir " + "/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
+if not os.path.exists(path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
+    os.system("mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
+if not os.path.exists(path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
+    os.system("mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
 
 statwrite = open(statfile, 'r')
 statwrite_time = open(statfile_time, 'w')
@@ -1442,7 +1489,7 @@ print "job_time  " + str(job_time)
 print "start_running_time " + str(start_running_time)
 print "last_job_time " + str(last_job_time)
 
-pathfilesize="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
+pathfilesize=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_"+original_sample + tagger +".txt"
 
 if os.path.exists(pathfilesize):
     readfilesize = open(pathfilesize, "r")
@@ -1463,10 +1510,10 @@ statwrite_time.write("memoryusage_v " + str(memoryusage_v/1000)  + "MB \n")
 statwrite_time.write("memoryusage_p " + str(memoryusage_p/1000)  + "MB \n") 
 if JobCrash:
     statwrite_time.write("Success= False \n")
-    if not os.path.exists("/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
-        os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
-    os.system("mkdir " + "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
-    crash_log= "/data2/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
+    if not os.path.exists(output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    os.system("mkdir " + output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
+    crash_log= output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
     writecrashlog = open(crash_log,"w")
     writecrashlog.write("###########################################################################################################")
     writecrashlog.write("Check crash by running root -q -b " + failed_macro)
@@ -1477,13 +1524,23 @@ else:
     statwrite_time.write("Success= True \n")
 
 statwrite_time.close()
-os.system("mv " + statfile_time + " " + statfile_time_complete)
 print "mv " + statfile_time + " " + statfile_time_complete
+os.system("mv " + statfile_time + " " + statfile_time_complete)
+
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
 
-os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample)
+number_of_jobs_for_statfile=number_of_cores
 
-set_logfile="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
+if number_of_events_per_job > 0:
+    number_of_jobs_for_statfile = 1
+if skipev > 0:
+    number_of_jobs_for_statfile = 1
+if JobCrash:
+    number_of_jobs_for_statfile = 1
 
-### Remove file without times
-os.system("rm " + set_logfile)
+
+os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample + " -n " + str(number_of_jobs_for_statfile))
+
+#set_logfile=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_"+original_sample+ tagger + ".txt"
+#if os.path.exists(set_logfile):
+#    os.system("rm " + set_logfile)

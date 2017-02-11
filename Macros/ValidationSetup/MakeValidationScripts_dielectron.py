@@ -3,7 +3,7 @@ from functions import *
 
 ### dimuon
 datasets = ["DoubleEG"]
-cuts = ["DiElectron", "DiElectron_BB", "DiElectron_dijet","DiElectron_EB","DiElectron_EE","DiElectron_IDW","DiElectron_noW","DiElectron_puW","DiElectron_Trigger","DiElectron_SSPreselection","ZElectron"]
+cuts = ["DiElectron", "DiElectron_dijet","DiElectron_IDW","DiElectron_noW","DiElectron_puW","DiElectron_Trigger","DiElectron_SSPreselection","ZElectron"]
 IDs = ["POGTight", "POGTighttruthmatch"]
 
 for x in IDs:

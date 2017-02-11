@@ -5,14 +5,13 @@ function usage
 {
 
     echo "usage: sktree [-a analyzer] [-S samples] [-i input_file ]"
-    echo "              [-s skim] [-list file_array] [-p data_period] "
-    echo "              [-d debug_mode] [-c catversion] [-o outputdir] "
+    echo "              [-s skim] [-list file_array] [-p data_period] [-q queue]"
+    echo "              [-d debug_mode] [-c catversion] [-o outputdir] [-qlist] "
     echo "              [-events number of events] [-nskip events_to_skip] [-ac allversion] [-b run_in_bkg]"
-    echo "              [-fake runfake ] [-flip runflip]"     
+    echo "              [-fake runfake ] [-flip runflip] [-attachhist drawhist]"     
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
-    echo "              [-D <catversion>] [-dataset input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
-    echo "              [-tagdiff <tagname>  -sktreelog  ]   "
-
+    echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
+    echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME -updateselection <object>]   "
  
 }
 
@@ -47,7 +46,7 @@ function rungroupedlist
 	  fi
 	  
       fi
-    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
+    done < ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${CATVERSION}.sh
     
     echo ""
     echo "Arrays made by user"
@@ -147,14 +146,14 @@ getinfo_string=""
 function getinfo_dataset
 { 
     
-    if [[ $submit_file_tag == *"v8"* ]];
+    if [[ $submit_file_tag == *$search_tag* ]];
         then
         tmp_submit_file_tag=$submit_catvlist
         tmp_submit_catvlist=$submit_file_tag
         submit_catvlist=$tmp_submit_catvlist
         submit_file_tag=$tmp_submit_file_tag
     fi
-    if [[ $submit_catvlist != *"v8"* ]];
+    if [[ $submit_catvlist != *$search_tag* ]];
         then
         if [[ $submit_catvlist != "" ]];
             then
@@ -203,7 +202,7 @@ function getinfo_dataset
       if [[ $line == *$getinfo_string* ]];
           then
 
-	  if [[ $line == *$submit_file_tag* ]];
+	  if [[ $line == *" "$submit_file_tag" "* ]];
 	      then
 	      sline=""
 	      if [[ $getinfo_tag == "2" ]];
@@ -343,9 +342,9 @@ function getdatasetefflumi
 
 function print_tag_diff
 {
-    if [[ ${submit_cat_tag} == *"v8"* ]];then
+    if [[ ${submit_cat_tag} == *$search_tag* ]];then
 	
-	if [[ ${submit_cat_tag2} == *"v8"* ]];then
+	if [[ ${submit_cat_tag2} == *$search_tag* ]];then
 	    print_tag_diff_twotags 
 	else
 	    print_tag_diff_vs_currenttag	    
@@ -390,7 +389,7 @@ function print_tag_diff_twotags
 	      NEWTAGS+=(${line})
 	  fi
       fi
-    done < ${CATTAGDIR}/LatestTag801.txt
+    done < ${CATTAGDIR}/LatestTag80X.txt
 
     for ntag in  ${NEWTAGS[@]};
       do
@@ -445,6 +444,27 @@ function print_tag_diff_twotags7
 }
 
 
+function update_selection
+{
+    python ${LQANALYZER_DIR}/python/UpdateSelection.py -s $object
+}
+function printid
+{
+    
+    if [[ $idname == "" ]];then
+	echo "No input given:"
+    else
+	if [[ $idname2 == "" ]];
+	then
+	    python ${LQANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname 
+	else
+	    python ${LQANALYZER_DIR}/python/PrintIDSelection.py --id1 $idname --id2 $idname2
+	fi
+    fi
+    
+}
+
+
 function print_sktreemaker_logfile
 {
     if [[ -f /data1/LQAnalyzer_rootfiles_for_analysis/CATSKTreeMaker/${submit_analyzer_name}_${submit_catvlist}.log ]]; then
@@ -470,7 +490,7 @@ function print_tag_diff_vs_currenttag
 	  sline=$(echo $line | head -n1 | awk '{print $1}')
 	  latest_tag=$sline
       fi
-    done < $CATTAGDIR/LatestTag801.txt
+    done < $CATTAGDIR/LatestTag80X.txt
     
     if [[ $latest_tag == $CATTAG ]];then
 	
@@ -513,14 +533,14 @@ function print_tag_diff_vs_currenttag
 function listavailable
 {
     
-    if [[ $submit_searchlist == *"v8"* ]];
+    if [[ $submit_searchlist == *$search_tag* ]];
         then
         tmp_submit_searchlist=$submit_catvlist
         tmp_submit_catvlist=$submit_searchlist
         submit_catvlist=$tmp_submit_catvlist
         submit_searchlist=$tmp_submit_searchlist
     fi
-    if [[ $submit_catvlist != *"v8"* ]];
+    if [[ $submit_catvlist != *$search_tag* ]];
 	then
 	if [[ $submit_catvlist != "" ]];
 	    then
@@ -665,6 +685,23 @@ function sendrequestcat
     rm email.txt
 }
 
+function listqueue
+{
+    
+    qstat -f 
+    echo " " 
+    echo "To select a certain queue use -q <qname> like "
+    while read line
+      do
+	if [[ $line == *"###"* ]];then
+	    echo ""
+	else
+	    echo $line
+	fi
+    done < /data1/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/queuelist.txt
+
+
+}
 
 
 function sendrequest
@@ -677,14 +714,14 @@ function sendrequest
 function runlist
 {
     
-    if [[ $submit_searchlist == *"v8"* ]];
+    if [[ $submit_searchlist == *$search_tag* ]];
 	then
 	tmp_submit_searchlist=$submit_catvlist
 	tmp_submit_catvlist=$submit_searchlist
 	submit_catvlist=$tmp_submit_catvlist
 	submit_searchlist=$tmp_submit_searchlist
     fi
-    if [[ $submit_catvlist != *"v8"* ]];
+    if [[ $submit_catvlist != *$search_tag* ]];
 	then
         if [[ $submit_catvlist != "" ]];
             then
@@ -1158,6 +1195,14 @@ while [ "$1" != "" ]; do
                                 submit_sampletag=$1
 				set_submit_sampletag=true
                                 ;;
+	-q | --queue  )         shift
+                                queuename=$1
+                                ;;
+        -qlist )                shift
+                                listqueue
+	                        exit 1
+                                ;;
+
 	-c | --CatVersion)      shift
 				submit_version_tag="$1"
 				changed_submit_version_tag=true
@@ -1178,6 +1223,9 @@ while [ "$1" != "" ]; do
 				submit_catvlist=$3
                                 runlist
                                 exit 1
+                                ;;
+        -attachhist)                   shift
+                                submit_draw=$1
                                 ;;
 
         -A | --AvailableCatuples) shift
@@ -1206,6 +1254,17 @@ while [ "$1" != "" ]; do
 				exit 1
                                 ;;
 
+	-updateselection)       shift
+	                        object=$1
+				update_selection
+				exit 1
+				;;
+	-printID )              shift
+	                        idname=$1
+				idname2=$2
+				printid
+				exit 1
+				;;
 	-D | --GetProductionInfo)  shift
                                 submit_catvlist=$1
                                 getalldatasetinfo
@@ -1216,12 +1275,19 @@ while [ "$1" != "" ]; do
 				;;
 
 
-	-dataset | --GetDataSetName)  shift
+	-miniaod | --GetDataSetName)  shift
                             	submit_file_tag=$1
 				submit_catvlist=$2
 				getdatasetname
 				exit 1
 				;;
+        -M                      )  shift
+                                make_sktrees=$1
+                                ;;
+	-V                      )  shift
+	                           run_validation=$1
+				   ;;
+
         -xsec | --GetDataSetXsec)  shift
                                 submit_file_tag=$1
                                 submit_catvlist=$2
@@ -1341,10 +1407,11 @@ while [ "$1" != "" ]; do
 				    echo "         |                                                    |                     | Only available from v7-6-4          |"
 
 				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
-				    echo "-userflag| Get user flag   flag1,flag2                        | default = ""        |  pass in string                     |"
+				    echo "-printID | any allowed  ID name  (i.e., MUON_POG_TIGHT)       | default = ''        | returns Info on object id.|"
+				    echo "-userflag| Get user flag   flag1,flag2                        | default = ''        |  pass in string                     |"
 				    
 				    
-				    echo "-dataset | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
+				    echo "-miniaod | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns datasetname.                |"
 				    echo "         |                                                    |                     | Only available from v7-6-3          |"  
                                     echo "-xsec    | file_tag (i.e., DY10to50_MCatNLO)                  | default = ''        | returns dataset xsec                |"
                                     echo "         |                                                    |                     | Only available from v7-6-3          |"
@@ -1354,9 +1421,11 @@ while [ "$1" != "" ]; do
 				    echo "-r       | sktree -A to see possible samples                  | default = ''        | sends email request to make sktree  |"
 				    echo "         |                                                    |                     | that is not current available at snu|"
 				    echo "         |                                                    |                     |                                     |"
+				    echo "-updateselection | any allowed objectname                           | default = ""  | updates selection file and sends email.|"
 				    echo "-A       | can speficy catversion and search                  | default = ${CATVERSION}    | lists missing samples due to no     |"
 				    echo "         |                                                    |                     | MiniAOD and available samples       |"
 				    echo "         |                                                    |                     | that can be processed               |"        
+				    echo " -attachhist        | set True or False                                            |                     | that can be processed               |"        
 				    
 				fi
 				exit
@@ -1379,7 +1448,24 @@ declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron"
 
 if [[ $job_data_lumi == "ALL" ]];
     then
-    declare -a data_periods=("B" "C" "D" "E")
+
+    if [[ $CATVERSION == "v8-0-4" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
+    if [[ $CATVERSION == "v8-0-3" ]];then
+	declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
+    if [[ $CATVERSION == "v8-0-2" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G")
+    fi
+
+    if [[ $CATVERSION == "v8-0-1" ]];then
+        declare -a data_periods=("B" "C" "D" "E")
+    fi
+    if [[ $CATVERSION == "v7-6-6" ]];then
+        declare -a data_periods=("C" "D")
+    fi
+
 fi
 if [[ $job_data_lumi == "CtoD" ]];
     then
@@ -1389,6 +1475,25 @@ if [[ $job_data_lumi == "BtoE" ]];
     then
     declare -a data_periods=("B" "C" "D" "E")
 fi
+if [[ $job_data_lumi == $catdatatag  ]];
+then
+    if [[ $CATVERSION == "v8-0-4" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
+    if [[ $CATVERSION == "v8-0-3" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G" "H_v2" "H_v3")
+    fi
+    if [[ $CATVERSION == "v8-0-2" ]];then
+        declare -a data_periods=("B" "C" "D" "E" "F" "G")
+    fi
+    if [[ $CATVERSION == "v8-0-1" ]];then
+        declare -a data_periods=("B" "C" "D" "E")
+    fi
+    if [[ $CATVERSION == "v7-6-6" ]];then
+        declare -a data_periods=("C" "D")
+    fi
+fi
+
 
 if [[ $job_data_lumi == "C" ]];
     then
@@ -1396,13 +1501,36 @@ if [[ $job_data_lumi == "C" ]];
 fi
 if [[ $job_data_lumi == "D" ]];
     then
-    declare -a data_periods=("D")
-fi
-
+    declare -a data_periods=("D")                                                                                                                                                                                                                                          
+fi 
 if [[ $job_data_lumi == "E" ]];
     then
     declare -a data_periods=("E")
 fi
+if [[ $job_data_lumi == "F" ]];
+    then
+    declare -a data_periods=("F")
+fi
+if [[ $job_data_lumi == "G" ]];
+    then
+    declare -a data_periods=("G")
+fi
+if [[ $job_data_lumi == "H" ]];
+    then
+    declare -a data_periods=("H_v2" "H_v3")
+fi
+
+
+
+ARG1=catdataperiods
+eval getlist_cv=(\${$ARG1[@]})
+for dataperiod in  ${getlist_cv[@]};
+do
+    if [[ $job_data_lumi == $dataperiod ]];
+    then
+    declare -a data_periods=($dataperiod)
+    fi
+done
 
 if [[ $submit_file_tag  != "" ]];
     then
@@ -1429,7 +1557,7 @@ if [[ $submit_sampletag  == "MC" ]];
 
 fi
 
-declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
+declare -a  DATA=("DoubleMuon" "DoubleEG" "MuonEG"  "SingleElectron" "SingleMuon")
 if [[ $submit_sampletag  == "DATA" ]];
     then
     runDATA=true

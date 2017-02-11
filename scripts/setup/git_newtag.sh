@@ -4,7 +4,7 @@ if [[ $LQANALYZER_DIR == "" ]];
 fi
 
 ########## Tag index
-itag=".7"
+itag=".2"
 tagname=$CATVERSION$itag
 
 
@@ -29,22 +29,22 @@ do
     if [[ $line  == *$tagname* ]]; then
 	notnew_tag=True
     fi	
-done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag801.txt
+done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
 
 if [[ $notnew_tag == "False" ]];then
-    echo "$tagname (HEAD)" >> LatestTag801.txt
+    echo "$tagname (HEAD)" >> LatestTag80X.txt
     
     while read line
     do
 	if [[ $line != *"HEAD"* ]];then
-	    echo "$line" >> LatestTag801.txt
+	    echo "$line" >> LatestTag80X.txt
 	else
 	    suffix="(HEAD)"
 	    sline=${line%$suffix}
-	    echo "$sline" >> LatestTag801.txt
+	    echo "$sline" >> LatestTag80X.txt
 	fi
-    done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag801.txt
-    mv LatestTag801.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag801.txt
+    done  < /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
+    mv LatestTag80X.txt /data1/LQAnalyzer_rootfiles_for_analysis/CATTag/LatestTag80X.txt
 else
     echo "Not adding a new tag"
 fi
@@ -53,7 +53,7 @@ rm $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export CATVERSION="$CATVERSION >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "### If there is a small bug/new code then new subtag is made"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "export tag_numerator='"$itag"'"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-echo "if [[ '-d' == "branch" ]];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
+echo "if [[ \$1 == '"branch"' ]];"  >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    then" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "    export CATTAG=" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
 echo "else" >> $LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
@@ -106,16 +106,6 @@ fi
 git tag $tagname
 git push --tags
 
-if [[ $sendemail == "true" ]];
-    then
-
-    declare -a list_users=( "jalmond@cern.ch" "jae.sung.kim@cern.ch" "junho.choi@cern.ch") 
-    
-    for i in  ${list_users[@]};
-      do
-      
-      source mail_tag.sh $i
-      cat email.txt | mail -s "New LQAnalyzer Tag Ready" $i -c jalmond@cern.ch
-      rm email.txt
-    done
+if [[ $sendemail == "true" ]]; then
+    python $LQANALYZER_DIR/python/NewTagEmail.py -t $tagname
 fi

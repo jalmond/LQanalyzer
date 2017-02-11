@@ -16,15 +16,23 @@ namespace snu {
   const double WP_BTAG_JPM = 0.515; // 0.545
   const double WP_BTAG_JPT = 0.760; // 0.790
   // pfCombinedInclusiveSecondaryVertexV2BJetTags
-  const double WP_BTAG_CSVv2L = 0.460; // 0.605
-  const double WP_BTAG_CSVv2M = 0.800; // 0.89
-  const double WP_BTAG_CSVv2T = 0.935; // 0.97
+  const double WP_BTAG_CSVv2L = 0.5426; // 0.605
+  const double WP_BTAG_CSVv2M = 0.8484; // 0.89
+  const double WP_BTAG_CSVv2T = 0.9535; // 0.97
   // pfCombinedMVAV2BJetTags
-  const double WP_BTAG_cMVAv2L = -0.715; // -
-  const double WP_BTAG_cMVAv2M =  0.185; // -
-  const double WP_BTAG_cMVAv2T =  0.875; // -
+  const double WP_BTAG_cMVAv2L = -0.5884; // -
+  const double WP_BTAG_cMVAv2M =  0.4432; // -
+  const double WP_BTAG_cMVAv2T =  0.9432; // -
 
+  const double WP_CTAG_CVSLTL = -0.48; // -                                                                                                                                                                                
+  const double WP_CTAG_CVSLTM =  -0.1; // -                                                                                                                                                                                
+  const double WP_CTAG_CVSLTT =  0.69; // -                                                                                                                                                                                
+
+  const double WP_CTAG_CVSBTL = -0.17; // -
+  const double WP_CTAG_CVSBTM =  0.08; // -   
+  const double WP_CTAG_CVSBTT =  -0.45; // -   
   
+
   class KJet : public KParticle {
   public:
 
@@ -92,9 +100,9 @@ namespace snu {
     void SetJetJECUnc(double jecunc);
     void SetJetScaledDownEnergy(double jetscaleEdown);
     void SetJetScaledUpEnergy(double jetscaleEup);
-    void SetJetSmearedDownEnergy(double jetsmearEdown);
-    void SetJetSmearedUpEnergy(double jetsmearEup);
-    void SetJetSmearedEnergy(double jetsmearEup);
+    void SetSmearedResDown(double jetsmearresdown);
+    void SetSmearedResUp(double jetsmearresup);
+    void SetSmearedRes(double jetsmearresup);
     
     
     /// ID
@@ -116,24 +124,23 @@ namespace snu {
     inline Double_t CSVInclV2() const {return BJetTaggerValue(CSVv2);}
     inline Bool_t IsBTagged(Tagger tag, WORKING_POINT  wp) const {
       if(tag== CSVv2){
-	if(wp==Loose) return (BJetTaggerValue(tag) > WP_BTAG_CSVv2L);
-	if(wp==Medium) return (BJetTaggerValue(tag) > WP_BTAG_CSVv2M);
-	if(wp==Tight) return (BJetTaggerValue(tag) > WP_BTAG_CSVv2T);
+	if(wp==Loose) return (BJetTaggerValue(tag) >= WP_BTAG_CSVv2L);
+	if(wp==Medium) return (BJetTaggerValue(tag) >= WP_BTAG_CSVv2M);
+	if(wp==Tight) return (BJetTaggerValue(tag) >= WP_BTAG_CSVv2T);
       }
       if(tag== cMVAv2){
-	if(wp==Loose) return (BJetTaggerValue(tag) > WP_BTAG_cMVAv2L);
-	if(wp==Medium) return (BJetTaggerValue(tag) > WP_BTAG_cMVAv2M);
-	if(wp==Tight) return (BJetTaggerValue(tag) > WP_BTAG_cMVAv2T);
+	if(wp==Loose) return (BJetTaggerValue(tag) >= WP_BTAG_cMVAv2L);
+	if(wp==Medium) return (BJetTaggerValue(tag) >= WP_BTAG_cMVAv2M);
+	if(wp==Tight) return (BJetTaggerValue(tag) >= WP_BTAG_cMVAv2T);
       }
       if(tag== JETPROB ){
-	if(wp==Loose) return (BJetTaggerValue(tag) > WP_BTAG_JPL);
-        if(wp==Medium) return (BJetTaggerValue(tag) > WP_BTAG_JPM);
-        if(wp==Tight) return (BJetTaggerValue(tag) > WP_BTAG_JPT);
+	if(wp==Loose) return (BJetTaggerValue(tag) >= WP_BTAG_JPL);
+        if(wp==Medium) return (BJetTaggerValue(tag) >= WP_BTAG_JPM);
+        if(wp==Tight) return (BJetTaggerValue(tag) >= WP_BTAG_JPT);
       }
       return true;
     }
 
-    float scaleFactor(Tagger tag, WORKING_POINT wp, syst_dir systDir) const;
 
     /// Energy Fraction
     inline Double_t ChargedEMEnergyFraction() const {return k_jet_chargeEmEF;}
@@ -153,9 +160,9 @@ namespace snu {
     inline Double_t JECUncertainty() const {return k_jet_error_jec;}
     inline Double_t ScaledDownEnergy() const {return k_jet_scaled_down_energy;}
     inline Double_t ScaledUpEnergy() const {return k_jet_scaled_up_energy;}
-    inline Double_t SmearedDownEnergy() const {return k_jet_smeared_down_energy;}
-    inline Double_t SmearedUpEnergy() const {return k_jet_smeared_up_energy;}
-    inline Double_t SmearedEnergy() const {return k_jet_smeared_energy;}
+    inline Double_t SmearedResDown() const {return k_jet_smeared_down_energy;}
+    inline Double_t SmearedResUp() const {return k_jet_smeared_up_energy;}
+    inline Double_t SmearedRes() const {return k_jet_smeared_energy;}
 
     inline Double_t RawPt() const {return k_jet_pt_raw;}
     inline Double_t RawE() const {return k_jet_energy_raw;}

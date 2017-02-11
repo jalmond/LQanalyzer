@@ -80,6 +80,7 @@ public :
 
 
    Int_t           nPV;
+   Int_t         nGoodPV;
    Int_t           nTrueInteraction;
 
 
@@ -119,6 +120,7 @@ public :
    vector<double>  *jets_CCvsLT;
    vector<double>  *jets_CCvsBT;
 
+
    vector<double>  *jets_PileupJetId;
    vector<double>  *jets_chargedEmEnergyFraction;
    vector<double>  *jets_energy;
@@ -134,6 +136,52 @@ public :
    vector<double>  *jets_vtx3DSig;
    vector<double>  *jets_vtx3DVal;
    vector<double>  *jets_vtxMass;
+
+
+   vector<int>     *fatjets_vtxNtracks;
+   vector<int>     *fatjets_hadronFlavour;
+   vector<int>     *fatjets_partonFlavour;
+   vector<int>     *fatjets_partonPdgId;
+
+   vector<bool>    *fatjets_isLoose;
+   vector<bool>    *fatjets_isTight;
+   vector<bool>    *fatjets_isTightLepVetoJetID;
+
+
+   vector<double>  *fatjets_pt;
+   vector<double>  *fatjets_eta;
+   vector<double>  *fatjets_phi;
+   vector<double>  *fatjets_m;
+   vector<double>  *fatjets_energy;
+   vector<double>  *fatjets_vtxMass;
+   vector<double>  *fatjets_vtx3DVal;
+   vector<double>  *fatjets_vtx3DSig;
+   vector<double>  *fatjets_CSVInclV2;
+   vector<double>  *fatjets_iCSVCvsL;
+   vector<double>  *fatjets_CCvsLT;
+   vector<double>  *fatjets_CCvsBT;
+   vector<double>  *fatjets_JetProbBJet;
+   vector<double>  *fatjets_CMVAV2;
+   vector<double>  *fatjets_chargedEmEnergyFraction;
+   vector<double>  *fatjets_shiftedEnDown;
+   vector<double>  *fatjets_shiftedEnUp;
+   vector<double>  *fatjets_smearedRes;
+   vector<double>  *fatjets_smearedResDown;
+   vector<double>  *fatjets_smearedResUp;
+   vector<double>  *fatjets_PileupJetId;
+   vector<double>  *fatjets_tau1;
+   vector<double>  *fatjets_tau2;
+   vector<double>  *fatjets_tau3;
+   vector<double>  *fatjets_prunedmass;
+   vector<double>  *fatjets_softdropmass;
+   vector<double>  *fatjets_puppi_tau1;
+   vector<double>  *fatjets_puppi_tau2;
+   vector<double>  *fatjets_puppi_tau3;
+   vector<double>  *fatjets_puppi_pt;
+   vector<double>  *fatjets_puppi_eta;
+   vector<double>  *fatjets_puppi_phi;
+   vector<double>  *fatjets_puppi_m;
+
 
 
    vector<double>  *met_phi;
@@ -327,6 +375,51 @@ public :
    TBranch        *b_jets_vtx3DSig;   //!                                       
    TBranch        *b_jets_vtx3DVal;   //!                                       
    TBranch        *b_jets_vtxMass;   //!      
+
+   TBranch        *b_fatjets_vtxNtracks;   //!
+   TBranch        *b_fatjets_pt ;   //!
+   TBranch        *b_fatjets_eta ;   //!
+   TBranch        *b_fatjets_phi ;   //!
+   TBranch        *b_fatjets_m ;   //!
+   TBranch        *b_fatjets_energy ;   //!
+   TBranch        *b_fatjets_vtxMass ;   //!
+   TBranch        *b_fatjets_vtx3DVal ;   //!
+   TBranch        *b_fatjets_vtx3DSig ;   //!
+   TBranch        *b_fatjets_CSVInclV2 ;   //!
+   TBranch        *b_fatjets_iCSVCvsL ;   //!
+   TBranch        *b_fatjets_CCvsLT ;   //!
+   TBranch        *b_fatjets_CCvsBT ;   //!
+   TBranch        *b_fatjets_JetProbBJet ;   //!
+   TBranch        *b_fatjets_CMVAV2 ;   //!
+   TBranch        *b_fatjets_chargedEmEnergyFraction ;   //!
+   TBranch        *b_fatjets_shiftedEnDown ;   //!
+   TBranch        *b_fatjets_shiftedEnUp ;   //!
+   TBranch        *b_fatjets_smearedRes ;   //!
+   TBranch        *b_fatjets_smearedResDown ;   //!
+   TBranch        *b_fatjets_smearedResUp ;   //!
+   TBranch        *b_fatjets_PileupJetId ;   //!
+   TBranch        *b_fatjets_tau1;   //!
+   TBranch        *b_fatjets_tau2;   //!
+   TBranch        *b_fatjets_tau3;   //!
+   TBranch        *b_fatjets_prunedmass;   //!
+   TBranch        *b_fatjets_softdropmass;   //!
+   TBranch        *b_fatjets_puppi_tau1;   //!
+   TBranch        *b_fatjets_puppi_tau2;   //!
+   TBranch        *b_fatjets_puppi_tau3;   //!
+   TBranch        *b_fatjets_puppi_pt;   //!
+   TBranch        *b_fatjets_puppi_eta;   //!
+   TBranch        *b_fatjets_puppi_phi;   //!
+   TBranch        *b_fatjets_puppi_m;   //!
+
+   TBranch        *b_fatjets_hadronFlavour;   //!                                                                                                                                                                                                                                                                                                        
+   TBranch        *b_fatjets_partonFlavour;   //!                                                                                                                           \
+                                                                                                                                                                             
+   TBranch        *b_fatjets_vtxNtracks;   //!                                                                                                  
+   TBranch        *b_fatjets_partonFlavour;   //!                                                                                                                                                                                                                         
+   TBranch        *b_fatjets_vtxNtracks;   //!    
+   TBranch        *b_fatjets_isLoose;   //!                                                                                                                                                                                                                               
+   TBranch        *b_fatjets_isTight;   //!                                                                                                                                                                                                                               
+   TBranch        *b_fatjets_isTightLepVetoJetID;   //!             
 
    TBranch        *b_met_phi;   //!
    TBranch        *b_met_pt;   //!
@@ -574,6 +667,40 @@ void SkimFlatCat_data::Init(TTree *tree)
    jets_vtx3DSig = 0;
    jets_vtx3DVal = 0;
    jets_vtxMass = 0;
+   fatjets_vtxNtracks=0;
+   fatjets_pt = 0;
+   fatjets_eta = 0;
+   fatjets_phi = 0;
+   fatjets_m = 0;
+   fatjets_energy = 0;
+   fatjets_vtxMass = 0;
+   fatjets_vtx3DVal = 0;
+   fatjets_vtx3DSig = 0;
+   fatjets_CSVInclV2 = 0;
+   fatjets_iCSVCvsL = 0;
+   fatjets_CCvsLT = 0;
+   fatjets_CCvsBT = 0;
+   fatjets_JetProbBJet = 0;
+   fatjets_CMVAV2 = 0;
+   fatjets_chargedEmEnergyFraction = 0;
+   fatjets_shiftedEnDown = 0;
+   fatjets_shiftedEnUp = 0;
+   fatjets_smearedRes = 0;
+   fatjets_smearedResDown = 0;
+   fatjets_smearedResUp = 0;
+   fatjets_PileupJetId = 0;
+   fatjets_tau1=0;
+   fatjets_tau2=0;
+   fatjets_tau3=0;
+   fatjets_prunedmass=0;
+   fatjets_softdropmass=0;
+   fatjets_puppi_tau1=0;
+   fatjets_puppi_tau2=0;
+   fatjets_puppi_tau3=0;
+   fatjets_puppi_pt=0;
+   fatjets_puppi_eta=0;
+   fatjets_puppi_phi=0;
+   fatjets_puppi_m=0;
 
    met_phi = 0;
    met_pt = 0;
@@ -619,6 +746,9 @@ void SkimFlatCat_data::Init(TTree *tree)
    jets_isLoose = 0;
    jets_isTight = 0;
    jets_isTightLepVetoJetID = 0;
+   fatjets_isLoose = 0;
+   fatjets_isTight = 0;
+   fatjets_isTightLepVetoJetID = 0;
    muon_isGlobal = 0;
    muon_isLoose = 0;
    muon_isMedium = 0;
@@ -632,6 +762,10 @@ void SkimFlatCat_data::Init(TTree *tree)
    jets_partonFlavour = 0;
    jets_partonPdgId = 0;
    jets_vtxNtracks = 0;
+   fatjets_hadronFlavour = 0;
+   fatjets_partonFlavour = 0;
+   fatjets_vtxNtracks = 0;
+
    muon_matchedstations = 0;
    muon_trackerlayers = 0;
    muon_validhits = 0;
@@ -740,6 +874,49 @@ void SkimFlatCat_data::Init(TTree *tree)
    fChain->SetBranchAddress("jets_vtx3DSig", &jets_vtx3DSig, &b_jets_vtx3DSig);
    fChain->SetBranchAddress("jets_vtx3DVal", &jets_vtx3DVal, &b_jets_vtx3DVal);
    fChain->SetBranchAddress("jets_vtxMass", &jets_vtxMass, &b_jets_vtxMass);
+
+
+   fChain->SetBranchAddress("fatjets_CSVInclV2", &fatjets_CSVInclV2, &b_fatjets_CSVInclV2);
+   fChain->SetBranchAddress("fatjets_CMVAV2", &fatjets_CMVAV2, &b_fatjets_CMVAV2);
+   fChain->SetBranchAddress("fatjets_JetProbBJet", &fatjets_JetProbBJet, &b_fatjets_JetProbBJet);
+   fChain->SetBranchAddress("fatjets_iCSVCvsL", &fatjets_iCSVCvsL, &b_fatjets_iCSVCvsL);
+   fChain->SetBranchAddress("fatjets_CCvsLT", &fatjets_CCvsLT, &b_fatjets_CCvsLT);
+   fChain->SetBranchAddress("fatjets_CCvsBT",&fatjets_CCvsBT,&b_fatjets_CCvsBT);
+   fChain->SetBranchAddress("fatjets_chargedEmEnergyFraction",&fatjets_chargedEmEnergyFraction,&b_fatjets_chargedEmEnergyFraction);
+   fChain->SetBranchAddress("fatjets_energy", &fatjets_energy, &b_fatjets_energy);
+   fChain->SetBranchAddress("fatjets_eta",&fatjets_eta,&b_fatjets_eta);
+   fChain->SetBranchAddress("fatjets_hadronFlavour",&fatjets_hadronFlavour,&b_fatjets_hadronFlavour);
+   fChain->SetBranchAddress("fatjets_isLoose",&fatjets_isLoose,&b_fatjets_isLoose);
+   fChain->SetBranchAddress("fatjets_PileupJetId",&fatjets_PileupJetId, &b_fatjets_PileupJetId);
+   fChain->SetBranchAddress("fatjets_isTight",&fatjets_isTight,&b_fatjets_isTight);
+   fChain->SetBranchAddress("fatjets_isTightLepVetoJetID",&fatjets_isTightLepVetoJetID,&b_fatjets_isTightLepVetoJetID);
+   fChain->SetBranchAddress("fatjets_m",&fatjets_m,&b_fatjets_m);
+   fChain->SetBranchAddress("fatjets_partonFlavour",&fatjets_partonFlavour,&b_fatjets_partonFlavour);
+   fChain->SetBranchAddress("fatjets_phi",&fatjets_phi,&b_fatjets_phi);
+   fChain->SetBranchAddress("fatjets_pt",&fatjets_pt,&b_fatjets_pt);
+   fChain->SetBranchAddress("fatjets_shiftedEnDown",&fatjets_shiftedEnDown,&b_fatjets_shiftedEnDown);
+   fChain->SetBranchAddress("fatjets_shiftedEnUp",&fatjets_shiftedEnUp,&b_fatjets_shiftedEnUp);
+   fChain->SetBranchAddress("fatjets_smearedRes",&fatjets_smearedRes,&b_fatjets_smearedRes);
+   fChain->SetBranchAddress("fatjets_smearedResDown",&fatjets_smearedResDown,&b_fatjets_smearedResDown);
+   fChain->SetBranchAddress("fatjets_smearedResUp",&fatjets_smearedResUp,&b_fatjets_smearedResUp);
+   fChain->SetBranchAddress("fatjets_vtxMass",&fatjets_vtxMass,&b_fatjets_vtxMass);
+   fChain->SetBranchAddress("fatjets_vtx3DVal", &fatjets_vtx3DVal, &b_fatjets_vtx3DVal);
+   fChain->SetBranchAddress("fatjets_vtx3DSig", &fatjets_vtx3DSig, &b_fatjets_vtx3DSig);
+   fChain->SetBranchAddress("fatjets_vtxNtracks", &fatjets_vtxNtracks, &b_fatjets_vtxNtracks);
+
+   fChain->SetBranchAddress("fatjets_tau1",&fatjets_tau1,&b_fatjets_tau1);
+   fChain->SetBranchAddress("fatjets_tau2",&fatjets_tau2,&b_fatjets_tau2);
+   fChain->SetBranchAddress("fatjets_tau3",&fatjets_tau3,&b_fatjets_tau3);
+   fChain->SetBranchAddress("fatjets_prunedmass",&fatjets_prunedmass,&b_fatjets_prunedmass);
+   fChain->SetBranchAddress("fatjets_softdropmass",&fatjets_softdropmass,&b_fatjets_softdropmass);
+   fChain->SetBranchAddress("fatjets_puppi_tau1",&fatjets_puppi_tau1,&b_fatjets_puppi_tau1);
+   fChain->SetBranchAddress("fatjets_puppi_tau2",&fatjets_puppi_tau2,&b_fatjets_puppi_tau2);
+   fChain->SetBranchAddress("fatjets_puppi_tau3",&fatjets_puppi_tau3,&b_fatjets_puppi_tau3);
+   fChain->SetBranchAddress("fatjets_puppi_eta",&fatjets_puppi_eta,&b_fatjets_puppi_eta);
+   fChain->SetBranchAddress("fatjets_puppi_m",&fatjets_puppi_m,&b_fatjets_puppi_m);
+   fChain->SetBranchAddress("fatjets_puppi_phi",&fatjets_puppi_phi,&b_fatjets_puppi_phi);
+   fChain->SetBranchAddress("fatjets_puppi_pt",&fatjets_puppi_pt,&b_fatjets_puppi_pt);
+  
 
    fChain->SetBranchAddress("met_phi", &met_phi, &b_met_phi);
    fChain->SetBranchAddress("met_pt", &met_pt, &b_met_pt);

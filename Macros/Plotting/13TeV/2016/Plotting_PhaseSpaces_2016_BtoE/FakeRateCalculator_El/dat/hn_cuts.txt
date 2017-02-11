@@ -1,7 +1,4 @@
-SingleTightElJet
-SingleLooseElJet
-Use40_loose
-Use40_tight
+SingleElectron_unprescaled
 END
 DiElectronNoPRW
 DiElectronNoTrigger

@@ -28,6 +28,7 @@ KParticle()
   k_pf_neutral_iso04=-999;
   k_rel_iso03=-999;
   k_rel_iso04=-999;
+  k_rel_miniiso=-999;
   k_abs_iso03=-999;
   k_abs_iso04=-999;
   k_pt_shifted_up=-999;
@@ -81,6 +82,7 @@ KElectron::KElectron(const KElectron& el) :
   k_pf_neutral_iso04= el.PFNeutralHadronIso(0.4);
   k_rel_iso03=el.PFRelIso(0.3);
   k_rel_iso04=el.PFRelIso(0.4);
+  k_rel_miniiso=el.PFRelMiniIso();
   k_abs_iso03=el.PFAbsIso(0.3);
   k_abs_iso04=el.PFAbsIso(0.4);
   k_pt_shifted_up=el.PtShiftedUp();
@@ -188,6 +190,7 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_pf_neutral_iso04= p.PFNeutralHadronIso(0.4);
     k_rel_iso03=p.PFRelIso(0.3);
     k_rel_iso04=p.PFRelIso(0.4);
+    k_rel_miniiso=p.PFRelMiniIso();
     k_pt_shifted_up=p.PtShiftedUp();
     k_pt_shifted_down=p.PtShiftedDown();
     pass_veto=p.PassVeto();
@@ -449,6 +452,10 @@ void KElectron::SetPFNeutralHadronIso(Double_t cone,Double_t pf_ne){
 void KElectron::SetPFRelIso(Double_t cone,Double_t reliso){
   if(cone == 0.3)   k_rel_iso03=reliso;
   else  if(cone == 0.4) k_rel_iso04=reliso;
+}
+
+void KElectron::SetPFRelMiniIso(Double_t reliso){
+  k_rel_miniiso=reliso;
 }
 
 void KElectron::SetPFAbsIso(Double_t cone,Double_t absiso){

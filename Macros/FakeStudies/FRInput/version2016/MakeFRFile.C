@@ -21,60 +21,154 @@ bool CheckHist(TH2* h);
 
 void MakeFRRootFile(){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoE/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoH/";
 
-  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-1.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-1.root");
+  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-3.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-3.root");
   if(!fdata)cout << "No Data" << endl;
-
+  if (!fmc) cout << "No MC" << endl;
   /// Set Plotting style
   setTDRStyle();
   gStyle->SetPalette(1);
     
-  TString outfile = "FakeRate13TeV_2016.root";
+  TString outfile = "FakeRate13TeV_2016_opt.root";
   TFile* fout = new TFile(outfile.Data(),"RECREATE");
   fout->cd();
 
   std::vector<TString> fakes40;
-  //  fakes40.push_back("20_pt_eta");
-  //fakes40.push_back("60_pt_eta");
+  fakes40.push_back("20_pt_eta");
+  fakes40.push_back("60_pt_eta");
   fakes40.push_back("40_pt_eta");
-  //fakes40.push_back("30_pt_eta");
+  fakes40.push_back("30_pt_eta");
+
+  std::vector<TString> isocut;
+  isocut.push_back("dxy_b050_e100");
+  isocut.push_back("dxy_b050_e050");
+  isocut.push_back("dxy_b050_e040");
+  isocut.push_back("dxy_b050_e025");
+  isocut.push_back("dxy_b050_e020");
+  isocut.push_back("dxy_b050_e015");
+
+  isocut.push_back("dxy_b025_e100");
+  isocut.push_back("dxy_b025_e050");
+  isocut.push_back("dxy_b025_e040");
+  isocut.push_back("dxy_b025_e025");
+  isocut.push_back("dxy_b025_e020");
+  isocut.push_back("dxy_b025_e015");
+
+  isocut.push_back("dxy_b015_e100");
+  isocut.push_back("dxy_b015_e050");
+  isocut.push_back("dxy_b015_e040");
+  isocut.push_back("dxy_b015_e025");
+  isocut.push_back("dxy_b015_e020");
+  isocut.push_back("dxy_b015_e015");
+
+  isocut.push_back("dxy_b010_e100");
+  isocut.push_back("dxy_b010_e050");
+  isocut.push_back("dxy_b010_e040");
+  isocut.push_back("dxy_b010_e025");
+  isocut.push_back("dxy_b010_e020");
+  isocut.push_back("dxy_b010_e015");
+
+
+  isocut.push_back("dxy_b008_e100");
+  isocut.push_back("dxy_b008_e050");
+  isocut.push_back("dxy_b008_e040");
+  isocut.push_back("dxy_b008_e025");
+  isocut.push_back("dxy_b008_e020");
+  isocut.push_back("dxy_b008_e015");
+
+
+
+  isocut.push_back("b035_e035");
+  isocut.push_back("b035_e040");
+  isocut.push_back("b035_e045");
+  isocut.push_back("b035_e050");
+  isocut.push_back("b035_e055");
+  isocut.push_back("b035_e060");
+  
+  isocut.push_back("b040_e035");
+  isocut.push_back("b040_e040");
+  isocut.push_back("b040_e045");
+  isocut.push_back("b040_e050");
+  isocut.push_back("b040_e055");
+  isocut.push_back("b040_e060");
+
+  isocut.push_back("b045_e035");
+  isocut.push_back("b045_e040");
+  isocut.push_back("b045_e045");
+  isocut.push_back("b045_e050");
+  isocut.push_back("b045_e055");
+  isocut.push_back("b045_e060");
+
+  isocut.push_back("b050_e035");
+  isocut.push_back("b050_e040");
+  isocut.push_back("b050_e045");
+  isocut.push_back("b050_e050");
+  isocut.push_back("b050_e055");
+  isocut.push_back("b050_e060");
+
+
+  isocut.push_back("b055_e035");
+  isocut.push_back("b055_e040");
+  isocut.push_back("b055_e045");
+  isocut.push_back("b055_e050");
+  isocut.push_back("b055_e055");
+  isocut.push_back("b055_e060");
+
+
+  isocut.push_back("b060_e035");
+  isocut.push_back("b060_e040");
+  isocut.push_back("b060_e045");
+  isocut.push_back("b060_e050");
+  isocut.push_back("b060_e055");
+  isocut.push_back("b060_e060");
+
 
   std::vector<TString> fakes;
   fakes.push_back("HNTight_");
 
 
-
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
-      cout << *it2 << endl;
-    if(!CheckFile(fdata))return;
-    if(!CheckFile(fmc))return;
-    TString denom ="LooseEl" + *it + *it2;
-    TString num ="TightEl" + *it + *it2;
-    TH2F* h_pt_num= (TH2F*)fdata->Get(num.Data());
-    TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
+    for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
+      for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
+	cout << *it2 << endl;
+	if(!CheckFile(fdata))return;
+	if(!CheckFile(fmc))return;
+	TString denom ="LooseEl" + *it + *it3 +"_"+ *it2;
+	TString num ="TightEl" + *it +  *it3 +"_"+ *it2;
+	if (!denom.Contains("0")){
+	  denom ="LooseEl" + *it+ *it2;
+	  num ="TightEl" + *it +  *it2;
 
-    cout << h_pt_num << " " << h_pt_denom << endl;
-    CheckHist(h_pt_denom);
-    CheckHist(h_pt_num);
-    TH2F* h_mcpt_num= (TH2F*)fmc->Get(num.Data());
-    TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
-    CheckHist(h_mcpt_denom);
-    CheckHist(h_mcpt_num);
-    
-    TString name = *it2;
+	}
+	TH2F* h_pt_num= (TH2F*)fdata->Get(num.Data());
+	TH2F* h_pt_denom= (TH2F*)fdata->Get(denom.Data());
+	
+	cout << h_pt_num << " " << h_pt_denom << endl;
+	cout << num << " " << denom << endl;
+	CheckHist(h_pt_denom);
+	CheckHist(h_pt_num);
+	TH2F* h_mcpt_num= (TH2F*)fmc->Get(num.Data());
+	TH2F* h_mcpt_denom= (TH2F*)fmc->Get(denom.Data());
+	CheckHist(h_mcpt_denom);
+	CheckHist(h_mcpt_num);
+	cout << "tets" << endl;
 
-    TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + name).Data());
-    TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((name +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
-    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    eff_rate->Write();
-    TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
-    eff_rate->Draw("colz textE");
-    c1->SaveAs(("/home/jalmond/WebPlots/13TeV/Fakes/2D_ps_hntight_aj40.pdf"));
+	TString name = *it2 + *it3;
+	
+	TH2F* eff_rate = (TH2F*)h_pt_num->Clone(("FakeRate_" + name).Data());
+	cout << "tets" << endl;
+	TH2F* hratedenom = (TH2F*)h_pt_denom->Clone((name +"_denom").Data());
+	eff_rate->Add(h_mcpt_num,-1.);
+	hratedenom->Add(h_mcpt_denom, -1.);
+	eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
+	eff_rate->Write();
+
+	//TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
+	//eff_rate->Draw("colz textE");
+    //c1->SaveAs(("/home/jalmond/WebPlots/13TeV/Fakes/2D_ps_hntight_aj40.pdf"));
+      }
     }
   }
   return;
