@@ -21,6 +21,7 @@ class EventBase;
 #include "TGraphAsymmErrors.h"
 #include "MCDataCorrections.h"
 #include "DataDrivenBackgrounds.h"
+#include "HNGenMatching.h"
 
 
 class AnalyzerCore : public LQCycleBase {
@@ -304,6 +305,9 @@ class AnalyzerCore : public LQCycleBase {
 
   std::map<TString,BTagSFUtil*> MapBTagSF;
 
+  //==== (Trilepton) HeavyN stuffs
+
+  HNGenMatching *m_HNgenmatch;
 
   void PutNuPz(TLorentzVector *nu, double Pz);
   void PutNuPz(snu::KParticle *nu, double Pz);

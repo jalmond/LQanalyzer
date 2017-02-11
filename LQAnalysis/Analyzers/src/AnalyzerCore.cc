@@ -181,6 +181,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
     }
     triglumi2016.close();
   }
+
+  //==== HN Gen Matching Class
+  m_HNgenmatch = new HNGenMatching();
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
@@ -1069,7 +1072,10 @@ AnalyzerCore::~AnalyzerCore(){
   //// New class functions for databkg+corrections
   delete mcdata_correction;
   delete m_datadriven_bkg;
-  
+
+  //==== HN Gen Matching
+  delete m_HNgenmatch;
+
 }
 
 //###
@@ -1849,6 +1855,8 @@ void AnalyzerCore::WriteHists(){
     mapit->second->Write();
   }
 
+  //==== HN Gen Matching
+  m_HNgenmatch->WriteHNGenHists();
 
   return;
 }
