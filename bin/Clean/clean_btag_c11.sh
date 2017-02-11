@@ -1,4 +1,4 @@
-cd $LQANALYZER_DIR/LQAnalysis/src/BTag/BTagC11/conf/; 
+cd $LQANALYZER_DIR/LQAnalysis/AnalyzerTools/BTag/BTagC11/conf/; 
 make clean -f Makefile.StandAlone; 
 if [[ -f ${LQANALYZER_LIB_PATH}/libBTagSFUtil.so  ]];
     then
