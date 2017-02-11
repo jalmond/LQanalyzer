@@ -104,6 +104,12 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
 
+  if(GetJets("JET_HN").size() > 0){
+    cout << "Tight pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Tight") << endl;
+    cout << "Medium pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Medium") << endl;
+    cout << "Loose pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Loose") << endl;
+  }
+
   cout << "------------------------" << endl;
   cout << "UserPileupWeight = " << mcdata_correction->UserPileupWeight(eventbase->GetEvent()) << endl;
   cout << "PileupWeightByPeriod = " << mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent()) << endl;

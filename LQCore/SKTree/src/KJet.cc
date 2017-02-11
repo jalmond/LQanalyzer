@@ -167,24 +167,128 @@ KJet& KJet::operator= (const KJet& p)
     return *this;
 }
 
-/*
+
 double KJet::PassPileUpMVA(TString puwp){
-  
+
+  bool pass(true);
+  //https://indico.cern.ch/event/559594/contributions/2257924/attachments/1317046/1973307/PUID_JMAR_2016_07_26_v1.pdf
+
   if(puwp== "Tight"){
-    if(it->Pt() < 10){
-
+    if(fabs(this->Eta()) < 2.5){
+      if(this->Pt() < 30){
+	if(k_jet_pileup_mva < 0.69) pass=false;
+      }
+      else {
+	if(k_jet_pileup_mva < 0.86) pass=false;
+      }
     }
-    else  if(it->Pt() < 20){
-
+    else if(fabs(this->Eta()) < 2.75){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.35) pass=false;
+      }
+      else {
+	if(k_jet_pileup_mva < -0.1) pass=false;
+      }
     }
-    else  if(it->Pt() < 30){
 
+    else if(fabs(this->Eta()) < 3.0){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.26) pass=false;
+      }   
+      else {
+        if(k_jet_pileup_mva < -0.05) pass=false;
+      }
     }
-    else  if(it->Pt() < 50){
 
+    else if(fabs(this->Eta()) < 5.){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.21) pass=false;
+      }   
+      else {
+        if(k_jet_pileup_mva < -0.01) pass=false;
+      }
     }
   }
-*/
+  else  if(puwp== "Medium"){
+    if(fabs(this->Eta()) < 2.5){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < 0.18) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < 0.61) pass=false;
+      }
+    }
+    else if(fabs(this->Eta()) < 2.75){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.55) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.35) pass=false;
+      }
+    }
+
+    else if(fabs(this->Eta()) < 3.0){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.42) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.23) pass=false;
+      }
+    }
+
+    else if(fabs(this->Eta()) < 5.){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.36) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.17) pass=false;
+      }
+    }
+  }
+
+  else  if(puwp== "Loose"){
+    if(fabs(this->Eta()) < 2.5){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.97) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.89) pass=false;
+      }
+    }
+    else if(fabs(this->Eta()) < 2.75){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.68) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.52) pass=false;
+      }
+    }
+
+    else if(fabs(this->Eta()) < 3.0){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.53) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.38) pass=false;
+      }
+    }
+
+    else if(fabs(this->Eta()) < 5.){
+      if(this->Pt() < 30){
+        if(k_jet_pileup_mva < -0.47) pass=false;
+      }
+      else {
+        if(k_jet_pileup_mva < -0.30) pass=false;
+      }
+    }
+  }
+
+
+
+  return pass;
+}
+    
+
 
 
 double KJet::BJetTaggerValue(Tagger tag) const{

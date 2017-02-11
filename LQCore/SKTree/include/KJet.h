@@ -77,6 +77,8 @@ namespace snu {
     //Multiplicities
     //// Pileup MVA to be added
     
+    double PassPileUpMVA(TString puwp);
+
     /// BTAG
     void SetBTagInfo(Tagger tag, double val);
     void SetCTagInfo(Tagger tag, double val);
