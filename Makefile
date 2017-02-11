@@ -35,7 +35,7 @@ analysis::
 
 
 fakes::
-	(cd ${LQANALYZER_DIR}/LQAnalysis/Helpers/src/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/Helpers/src/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+	(cd ${LQANALYZER_DIR}/LQAnalysis/Helpers/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/Helpers/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
 btag::  
 	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	

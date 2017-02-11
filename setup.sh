@@ -223,8 +223,8 @@ export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
 export isSLC5="False"
-export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/Helpers/src/BTag/BTagC11/
-export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/Helpers/src/rochcor2016/
+export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/Helpers/BTag/BTagC11/
+export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/Helpers/rochcor2016/
 if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
     if [[ $LIBTAG == *"v"* ]]; then
