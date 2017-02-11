@@ -12,7 +12,6 @@ function usage
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
     echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
     echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME -updateselection <object>]   "
-
  
 }
 
@@ -1282,6 +1281,13 @@ while [ "$1" != "" ]; do
 				getdatasetname
 				exit 1
 				;;
+        -M                      )  shift
+                                make_sktrees=$1
+                                ;;
+	-V                      )  shift
+	                           run_validation=$1
+				   ;;
+
         -xsec | --GetDataSetXsec)  shift
                                 submit_file_tag=$1
                                 submit_catvlist=$2

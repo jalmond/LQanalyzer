@@ -40,7 +40,8 @@ job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
 
-
+make_sktrees="False"
+run_validation="False"
 idname=""
 queuename="None"
 object=""
@@ -101,6 +102,17 @@ source submit_setup.sh
 
 
 
+linkdef_filepath=/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h
+
+if [[ $make_sktrees == "True" ]];
+    then
+    linkdef_filepath=/LQAnalysis/SKTreeMaker/include/SKTreeMaker_LinkDef.h
+fi
+
+if [[ $run_validation == "True" ]];
+    then
+    linkdef_filepath=/LQAnalysis/Validation/include/Validation_LinkDef.h
+fi
 
 ############## Check flags for fake/flip analysis
 if [[ $job_run_fake != "False" ]];
@@ -154,7 +166,7 @@ if [[ $set_submit_analyzer_name == "true" ]];
 		  echo $sline
 	      fi
 	  fi
-	done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
+	done < ${LQANALYZER_DIR}/$linkdef_filepath
 	exit 1
     fi
 fi
@@ -178,7 +190,7 @@ then
 		fi
 	    fi
 	fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
+    done < ${LQANALYZER_DIR}$/linkdef_filepath
     
     if [[ $analyzer_found == "false" ]];
     then 
@@ -197,7 +209,7 @@ then
 			echo $sline
 		fi
 	    fi
-	done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
+	done < ${LQANALYZER_DIR}/$linkdef_filepath
 	exit 1
     fi
 fi
@@ -878,7 +890,7 @@ if [[ $submit_analyzer_name ==  "" ]];
               echo $sline
           fi
       fi
-    done < ${LQANALYZER_DIR}"/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h"
+    done < ${LQANALYZER_DIR}/$linkdef_filepath
     exit 1
 fi
 

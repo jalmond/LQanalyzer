@@ -139,7 +139,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE branch
+source $CHECKTAGFILE Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -184,7 +184,7 @@ if [[ $1 != "" ]];then
         return 1
     fi
     
-    source $CHECKTAGFILE branch
+    source $CHECKTAGFILE Tag
     export LIBTAG=$CATVERSION
 fi
 
@@ -193,6 +193,8 @@ export yeartag="80X/"
 
 
 alias sktree="bash submitSKTree.sh"
+alias sktreemaker="bash submitSKTree.sh -M True "
+alias sktree_val="bash submitSKTree.sh -V True "
 alias sktree_bkg="nohup bash submitSKTree.sh -b True "
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
@@ -223,8 +225,8 @@ export LQANALYZER_INCLUDE_PATH=${LQANALYZER_DIR}/LQAnalysis/include/
 export LQANALYZER_CORE_PATH=${LQANALYZER_DIR}/LQCore/
 
 export isSLC5="False"
-export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/src/BTag/BTagC11/
-export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/src/rochcor2015/rochcor2015C11/
+export BTAGDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/BTag/BTagC11/
+export ROCHDIR=${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/rochcor2016/
 if [[ "$HOSTNAME" == "cms.snu.ac.kr" ]];
 then 
     if [[ $LIBTAG == *"v"* ]]; then

@@ -193,6 +193,8 @@ export yeartag="80X/"
 
 
 alias sktree="bash submitSKTree.sh"
+alias sktreemaker="bash submitSKTree.sh -M True "
+alias sktree_val="bash submitSKTree.sh -V True "
 alias sktree_bkg="nohup bash submitSKTree.sh -b True "
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
 alias git_commit_lq="bash scripts/setup/git_commit.sh"
