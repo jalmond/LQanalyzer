@@ -12,6 +12,7 @@
 #include "TString.h"
 #include "TH1.h"
 #include "TH2F.h"
+#include "TH2D.h"
 #include "TEfficiency.h"
 #include "TFile.h"
 #include "TLorentzVector.h"
@@ -109,16 +110,27 @@ class HNCommonLeptonFakes {
   /// Adds event by event info to countes
   void AddToTotals(float w,std::pair<float,float> err, bool mu1tight, bool mu2tight);
 
+  //=============
+  //==== Trilep
+  //=============
+
+  //==== dXYSigMin and LooseRelIsoMax to string
   TString DoubleToTString(double this_dXYSig, double this_RelIso);
   void SetTrilepWP(double this_dXYSig, double this_RelIso);
-  void SetUseQCDFake(bool useit); 
+  void SetUseQCDFake(bool useit);
   //==== get PR/FR
   float getTrilepFakeRate_muon(bool geterr, float pt,  float eta, bool applysf=true);
   float getTrilepPromptRate_muon(bool geterr, float pt, float eta);
   //==== get weight
-  float get_dilepton_mm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2); 
+  float get_dilepton_mm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2);
   float get_trilepton_mmm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, bool isT3);
+  float get_eventweight(bool geterr, std::vector<TLorentzVector> muons, TString muid, std::vector<TLorentzVector> electrons, TString elid, std::vector<bool> isT);
 
+  //==== Large dXYSig working poins
+  std::vector<double> GetdXYMins();
+  std::vector<double> GetRelIsoMaxs();
+  //==== After runing get_eventweight, we have # of Loose but not Tight
+  int GetNLooseNotTight();
 
  private:
   /// vector for storing FakeCR strings
@@ -160,5 +172,8 @@ class HNCommonLeptonFakes {
   //==== Trilep fake
   double Current_dXYSig, Current_RelIso;
   bool UseQCDFake;
+  std::vector<double> dXYMins, RelIsoMaxs;
+  int n_Loose_not_Tight;
+
 };
 #endif
