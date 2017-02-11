@@ -295,7 +295,7 @@ if os.path.exists(path_full_sample_list):
             for line in file_newlist:
                 sline = line.split()
                 if len(sline) == 4:
-                    os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
+                    os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
             file_newlist.close()        
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile)
@@ -332,8 +332,8 @@ else:
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
     
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
-    os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
-    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh  -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
-    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh  -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
+    os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
+    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
+    os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     
     EmailNewList(catversion)    
