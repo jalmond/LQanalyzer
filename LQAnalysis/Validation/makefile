@@ -15,8 +15,8 @@ INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Selection/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/Plotting/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQCore/AnalysisCore/include/
 INCLUDES += -I${BTAGDIR}
-INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/Helpers/
-INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/Helpers/include/
+INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/AnalyzerTools/
+INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/AnalyzerTools/include/
 INCLUDES += -I$(LQANALYZER_DIR)/LQAnalysis/Analyzers/include/
 
 

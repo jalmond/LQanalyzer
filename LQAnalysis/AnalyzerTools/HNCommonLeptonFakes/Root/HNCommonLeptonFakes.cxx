@@ -164,7 +164,8 @@ void HNCommonLeptonFakes::InitialiseFake(){
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       for(unsigned int fl = 0; fl < opt.size() ; fl++){
-	//_2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_" + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
+	_2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_" + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
+
       }
     }
   }
@@ -875,10 +876,10 @@ float HNCommonLeptonFakes::get_trilepton_mmm_eventweight(bool geterr, std::vecto
                                                                                                                  
 
 float HNCommonLeptonFakes::get_dilepton_mm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2){
-  return get_dilepton_mm_eventweight("dxy", geterr,  muons, isT1,isT2);
+  return get_dilepton_mm_eventweight("dxy", geterr,  muons, isT1,isT2,"");
 }
 
-float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2){
+float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, TString ID){
 
   if(muons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
@@ -903,8 +904,8 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
     r1 = getEfficiency_muon(0,_mu1_pt, _mu1_eta);
     r2 = getEfficiency_muon(0,_mu2_pt, _mu2_eta);
 
-    fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, "HN");
-    fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, "HN");
+    fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, ID);
+    fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, ID);
   
     float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isT1,isT2);
     

@@ -23,6 +23,7 @@ class MuonSelection : public BaseSelection {
 
   void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, float ptcut=-999., float etacut=-999.);
   void SelectMuons(std::vector<snu::KMuon>& leptonColl, TString muid, float ptcut=-999., float etacut=-999.);
+  bool MuonPass(snu::KMuon muon, TString muid,  float ptcut=-999., float etacut=-999.);
 
   bool PassUserID(TString id, snu::KMuon mu);
   bool PassID(TString id, snu::KMuon mu, bool checkdxy=true, bool checkdz=true, bool checkchi2=true, bool m_debug = false);

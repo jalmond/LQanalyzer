@@ -104,17 +104,29 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
 
+  cout << "------------------------" << endl;
+  cout << "UserPileupWeight = " << mcdata_correction->UserPileupWeight(eventbase->GetEvent()) << endl;
+  cout << "PileupWeightByPeriod = " << mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent()) << endl;
+  cout << "CatPileupWeight = " << mcdata_correction->CatPileupWeight(eventbase->GetEvent(),0) <<  endl;
 
-  //// Get Jet efficienies
 
-  GetJetTaggerEfficiences("CSVv2M",snu::KJet::CSVv2, snu::KJet::Medium);
-  GetJetTaggerEfficiences("CSVv2L",snu::KJet::CSVv2, snu::KJet::Loose);
-  GetJetTaggerEfficiences("CSVv2T",snu::KJet::CSVv2, snu::KJet::Tight);
-  GetJetTaggerEfficiences("cMVAv2M",snu::KJet::cMVAv2, snu::KJet::Medium);
-  GetJetTaggerEfficiences("cMVAv2L",snu::KJet::cMVAv2, snu::KJet::Loose);
-  GetJetTaggerEfficiences("cMVAv2T",snu::KJet::cMVAv2, snu::KJet::Tight);
+  if(GetMuons("MUON_POG_TIGHT").size() == 1){
+    cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT").at(0).Eta() << endl;
+    cout << "MuonTrackingEffScaleFactor = " << mcdata_correction->MuonTrackingEffScaleFactor(GetMuons("MUON_POG_TIGHT")) << endl;
+    cout << "MuonISOScaleFactor = " << mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", GetMuons("MUON_POG_TIGHT"), 0) << endl;
+    cout << "MuonScaleFactor = " << mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT",  GetMuons("MUON_POG_TIGHT"),0) << endl;
+    cout << "TriggerScaleFactor  = " << mcdata_correction->TriggerScaleFactor(GetElectrons("ELECTRON_POG_TIGHT"),  GetMuons("MUON_POG_TIGHT"), "HLT_IsoMu24",0) << endl;
 
+  }
+  if(GetElectrons("ELECTRON_POG_TIGHT").size() == 1){
+    cout << "pt = " << GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt()  << " eta = " <<  GetElectrons("ELECTRON_POG_TIGHT").at(0).Eta() << endl;
+    cout << "ElectronScaleFactor = " << mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT",GetElectrons("ELECTRON_POG_TIGHT"), 0) << endl;
+    cout << "ElectronRecoScaleFactor= " <<mcdata_correction->ElectronRecoScaleFactor(GetElectrons("ELECTRON_POG_TIGHT")) << endl;
+  }
+    
   return;
+
+  
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -381,7 +393,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(k_running_nonprompt){
     weight=1.; /// In case... should not be needed
-    //weight      *=  Get_DataDrivenWeight_EE(electronColl);
+    weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronColl,"ELECTRON_POG_TIGHT", "dijet");
   } 
 
   int nbjet = NBJet(jetColl_hn, snu::KJet::CSVv2, snu::KJet::Medium);

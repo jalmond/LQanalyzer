@@ -43,14 +43,7 @@ class DataDrivenBackgrounds{
  public:
     
   DataDrivenBackgrounds();
-  DataDrivenBackgrounds(EventBase * ev);
   ~DataDrivenBackgrounds();
-
-  DataDrivenBackgrounds(DataDrivenBackgrounds& evbase);
-  DataDrivenBackgrounds& operator= (const DataDrivenBackgrounds& obj);
-  ///Copy constructor                                                                                                                                                                
-  DataDrivenBackgrounds(const DataDrivenBackgrounds& sb);
-
 
   void SetMCPeriod(int mcperiod);
   void SetIsData(bool isdata);
@@ -69,16 +62,17 @@ class DataDrivenBackgrounds{
   /// Fake Backgrounds e+m HN
 
   /// == Dilepton
-  float Get_DataDrivenWeight_EE(bool geterr, std::vector<snu::KElectron> k_electrons);
+  float Get_DataDrivenWeight_EE(bool geterr, std::vector<snu::KElectron> k_electrons, TString ID, TString method);
   float Get_DataDrivenWeight_MM(bool geterr, std::vector<snu::KMuon> k_muons);
-  float Get_DataDrivenWeight_EM(bool geterr,std::vector<snu::KMuon> k_muons, std::vector<snu::KElectron> k_electrons);
+  float Get_DataDrivenWeight_MM(bool geterr, std::vector<snu::KMuon> k_muons,  TString ID, TString method);
+  float Get_DataDrivenWeight_EM(bool geterr,std::vector<snu::KMuon> k_muons, std::vector<snu::KElectron> k_electrons,  TString IDe, TString IDm,  TString method);
 
   /// ===  trilepton
   float Get_DataDrivenWeight_MMM(bool geterr, std::vector<snu::KMuon> k_muons);
 
   /// = single lepton
-  float Get_DataDrivenWeight_E(bool geterr, std::vector<snu::KElectron> k_electrons);
-  float Get_DataDrivenWeight_M(bool geterr, std::vector<snu::KMuon> k_muons, TString id);
+  float Get_DataDrivenWeight_E(bool geterr, std::vector<snu::KElectron> k_electrons ,TString ID, TString method);
+  float Get_DataDrivenWeight_M(bool geterr, std::vector<snu::KMuon> k_muons,  TString ID, TString method);
   
 
 

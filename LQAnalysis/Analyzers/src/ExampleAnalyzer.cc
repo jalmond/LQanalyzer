@@ -88,10 +88,18 @@ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
      
    
    TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
-
-   
+   TString dimuon_trigmuon_trig2="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v";
+   TString dimuon_trigmuon_trig3="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v";
+   TString dimuon_trigmuon_trig4="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
+   // Now you should do an OR of 4 triggers 
+ 
    vector<TString> trignames;
    trignames.push_back(dimuon_trigmuon_trig1);
+   trignames.push_back(dimuon_trigmuon_trig2);
+   trignames.push_back(dimuon_trigmuon_trig3);
+   trignames.push_back(dimuon_trigmuon_trig4);
+
+
    std::vector<snu::KElectron> electrons =  GetElectrons(false,false,"ELECTRON_NOCUT");
    /*
      
@@ -109,8 +117,10 @@ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
    int nbjet = NBJet(GetJets("JET_HN"));
    std::vector<snu::KMuon> muons =GetMuons("MUON_HN_TIGHT",false); 
 
-   bool trig_pass= true;//PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", muons, prescale);
-   CorrectMuonMomentum(muons);
+   bool trig_pass= PassTriggerOR(trignames);
+
+
+   mcdata_correction->CorrectMuonMomentum(muons); /// CorrectMuonMomentum(muons);  will also work as Funcion in AnalyzerCore just calls mcdata_correction function
    
    double ev_weight = weight;
    if(!isData){

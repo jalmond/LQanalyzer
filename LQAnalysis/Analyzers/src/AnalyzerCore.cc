@@ -190,6 +190,13 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 ///// FUNCTION USED TO CREATE BTAG EFFICIENCIES USED BY BTAGSF.cxx CLass
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+void AnalyzerCore::MakeBTagEfficiencyPlots(){
+  GetJetTaggerEfficiences("CSVv2M",snu::KJet::CSVv2, snu::KJet::Medium); 
+  GetJetTaggerEfficiences("CSVv2T",snu::KJet::CSVv2, snu::KJet::Tight); 
+  GetJetTaggerEfficiences("cMVAv2M",snu::KJet::cMVAv2, snu::KJet::Medium); 
+  GetJetTaggerEfficiences("cMVAv2L",snu::KJet::cMVAv2, snu::KJet::Loose); 
+  GetJetTaggerEfficiences("cMVAv2T",snu::KJet::cMVAv2, snu::KJet::Tight);       
+}
 void AnalyzerCore::GetJetTaggerEfficiences(TString taggerWP, KJet::Tagger tag,  KJet::WORKING_POINT wp){
   // taken frmo https://twiki.cern.ch/twiki/bin/view/CMS/BTagSFMethods#Example_code_AN5  (USE HADRON FLAVOUR)
 
@@ -1095,7 +1102,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
     weight = 1.;
   }
   else {
-    MCweight = eventinfo.MCWeight(); //Get MC weight here FIX ME                                                              
+    MCweight = eventinfo.MCWeight(); 
     weight= ev_weight; 
   }
  //
@@ -1130,13 +1137,6 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
   m_datadriven_bkg->SetEventBase(eventbase);
   
-  std::vector<snu::KMuon> muonColl;
-  eventbase->GetMuonSel()->SelectMuons(muonColl,"MUON_POG_TIGHT");
-  cout << "original muon size = " << muonColl.size() << endl;
-
-
-  m_datadriven_bkg->CheckEventBase();
-
   if(!k_isdata){
     if(!changed_target_lumi){
       changed_target_lumi=true;
@@ -1146,7 +1146,8 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
 
   /// Setup correction class
   k_reset_period=true;
-  mcdata_correction->SetMCPeriod(k_mcperiod);
+  
+  mcdata_correction->SetMCPeriod(GetMCPeriod());
   mcdata_correction->SetIsData(isData);
 
   
@@ -1316,6 +1317,15 @@ bool AnalyzerCore::PassTrigger(TString trig){
  
  
 }
+
+
+bool AnalyzerCore::PassTriggerOR(vector<TString> list){
+
+  int  prescaler=1.;
+  return TriggerSelector(list, eventbase->GetTrigger().GetHLTInsideDatasetTriggerNames(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerDecisions(), eventbase->GetTrigger().GetHLTInsideDatasetTriggerPrescales(), prescaler);
+  
+}
+
 
 ////###############################################################################################
 /// @@@@@@@@@@@@@@@@@@@@@@@@@ MISC   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

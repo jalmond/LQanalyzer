@@ -16,42 +16,23 @@
 using namespace snu;
 using namespace std;
 
-DataDrivenBackgrounds::DataDrivenBackgrounds(EventBase* ebase) {
+
+DataDrivenBackgrounds::DataDrivenBackgrounds(){
   
   k_mcperiod=-1;
   corr_isdata=false;
   string lqdir = getenv("LQANALYZER_DIR");
-  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/LQAnalysis/src/HNCommonLeptonFakes/share/");        
-  dd_eventbase= new EventBase(*ebase);
-  
-}
+  m_fakeobj = new HNCommonLeptonFakes(lqdir+"/LQAnalysis/src/HNCommonLeptonFakes/share/");
+  dd_eventbase= 0;
 
-DataDrivenBackgrounds::DataDrivenBackgrounds(){
 
 }
 
 
 DataDrivenBackgrounds::~DataDrivenBackgrounds(){
   delete m_fakeobj;
-  delete dd_eventbase;
+
 }
-
-
-DataDrivenBackgrounds::DataDrivenBackgrounds(DataDrivenBackgrounds& b){
-  
-  dd_eventbase=b.GetEventBase();
-  m_fakeobj=b.GetFakeObj();
-}
-
-DataDrivenBackgrounds& DataDrivenBackgrounds::operator= (const DataDrivenBackgrounds& b){
-  if(this != & b){
-    dd_eventbase=b.GetEventBase();
-    m_fakeobj=b.GetFakeObj();
-  }
-  return *this;
-}
-
-
 
 void DataDrivenBackgrounds::SetEventBase(EventBase* ebase){
   dd_eventbase = ebase;
@@ -61,6 +42,8 @@ void DataDrivenBackgrounds::CheckEventBase(){
   std::vector<snu::KMuon> muonColl;
   dd_eventbase->GetMuonSel()->SelectMuons(muonColl,"MUON_POG_TIGHT");
   cout << "muon size = " << muonColl.size() << endl;
+  if(muonColl.size()  > 0) cout << "new muon size = " << muonColl.size() <<  " " << muonColl.at(0).Pt() << endl;
+
 }
 
 
@@ -272,13 +255,22 @@ float DataDrivenBackgrounds::CFRate_Run2(snu::KElectron el, TString el_id){
 @
 @  Get_DataDrivenWeight X will return the weight for channel X using final rates
 @
-@  Get_TempDataDrivenWeightX will return the weight for functions testing/optimising
+@  Get_TempDataDrivenWeightX will return the weight for functions testing/optimising for dilepton
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 
 
-float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons){
+float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString IDmu, TString IDel, TString method){
 
+  // geterr = true : function returns error not event weight  
+  // k_electrons are loose electrons defined in analysis code 
+  // k_muons are loose muons defined in analysis code 
+  // ID defines which id is used for tight leptons              (currently only "POGTight" for electrons) 
+  // method defines the techinique used to measure fake rates   (currently only "dijet" for electrons) 
+  // @@@@@ CURRENTLY ONLY  POG ID IS USED HERE                                                                                                                                       
+
+  
+  if (method != "dijet") return 0;
 
   if(k_muons.size()!=1) return 0.;
   if(k_electrons.size()!=1) return 0.;
@@ -286,8 +278,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KM
   //// MAKE THIS TAKE IN TSTRING 
   
   /// fix later
-  bool is_mu1_tight    = true;
-  bool is_el1_tight    = true;
+  bool is_mu1_tight    =  dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),IDmu);
+  bool is_el1_tight    =  dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDel);
 
   vector<TLorentzVector> muons= MakeTLorentz(k_muons);
   vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
@@ -296,10 +288,23 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KM
 
   /// last input is for systematics 
   float em_weight = m_fakeobj->get_dilepton_em_eventweight(geterr,muons, electrons, is_mu1_tight, is_el1_tight);
-
+  
   return em_weight;
 }
 
+float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons,   TString IDmu, TString method){
+  if(method == "dxy" && IDmu == "MUON_HN_TRI_HIGHDXY_TIGHT") return Get_DataDrivenWeight_MM(geterr, k_muons);
+  
+  float mm_weight = 0.;
+
+  if(k_muons.size()!=2) return 0.;
+  bool is_mu1_tight=dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),IDmu);
+  bool is_mu2_tight=dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(1),IDmu);
+  vector<TLorentzVector> muons=MakeTLorentz(k_muons);
+  mm_weight =m_fakeobj->get_dilepton_mm_eventweight("dijet",geterr, muons, is_mu1_tight,is_mu2_tight,IDmu);
+
+  return 1.;
+}
 
 float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons){
 
@@ -336,25 +341,22 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MMM(bool geterr, vector<snu::K
   return mmm_weight;
 }
 
-float DataDrivenBackgrounds::Get_DataDrivenWeight_M(bool geterr, vector<snu::KMuon> k_muons,TString id){
+float DataDrivenBackgrounds::Get_DataDrivenWeight_M(bool geterr, vector<snu::KMuon> k_muons, TString IDmu, TString method){
 
   /// two IDs possible  : 
 
-  // HN          : id = "HN"
-  // POG Tight   : id = "POGTight" 
+  // HN          : id = "MUON_HN_TIGHT"
+  // POG Tight   : id = "MUON_POG_TIGHT
 
   if(k_muons.size()!=1) return 0.;
   
   bool is_mu1_tight =false;
 
   TString s_id="fake_Eff_muon_pog"; /// used to select FR Histogram from Map
-  if(id == "HN"){
-    is_mu1_tight = (k_muons.at(0).RelIso04() < 0.1);
-    s_id="fake_Eff_muon_hn";
-  }
-  if(id == "POGTight"){
-    is_mu1_tight = (k_muons.at(0).RelIso04() < 0.1);
-  }
+  if(IDmu == "MUON_HN_TIGHT")    s_id="fake_Eff_muon_hn";
+
+  is_mu1_tight=dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),IDmu);
+
 
   vector<TLorentzVector> muons=MakeTLorentz(k_muons);
 
@@ -366,38 +368,38 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_M(bool geterr, vector<snu::KMu
 
 }
 
-float DataDrivenBackgrounds::Get_DataDrivenWeight_E(bool geterr,vector<snu::KElectron> k_electrons){
+float DataDrivenBackgrounds::Get_DataDrivenWeight_E(bool geterr,vector<snu::KElectron> k_electrons,  TString IDe, TString method){
 
   if(k_electrons.size()!=1) return 0.;
 
-  bool is_el1_tight    =  true;
+  bool is_el1_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDe);
+
   vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
 
-  float r = 1.;
-  if( k_electrons.at(0).Pt() < 20.) r = 0.82;
-  else if( k_electrons.at(0).Pt() < 30.) r = 0.85;
-  else if( k_electrons.at(0).Pt() < 40.) r = 0.96;
-  else if( k_electrons.at(0).Pt() < 50.) r = 0.92;
-  else r = 0.95;
-
   float f=  m_fakeobj->getFakeRate_electronEta(0,k_electrons.at(0).Pt(),fabs(k_electrons.at(0).Eta()),"pt_eta_40_looseregion1");
+  float r=  1.;//m_fakeobj->getPromptRate_electron 
 
   float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
   return w;
 
 }
-float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KElectron> k_electrons){
+float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KElectron> k_electrons,  TString IDe, TString method){
 
 
-  // geterr = true : function returns error not event weight                                                                                                                          // electrons are loose electrons defined in analysis code                                                                                                                           // ID defines which id is used for tight leptons              (currently only "POGTight" for electrons)                                                                             // method defines the techinique used to measure fake rates   (currently only "dijet" for electrons)                                                                                // @@@@@ CURRENTLY ONLY  POG ID IS USED HERE                                                                                                                                        //                                                                                                                                                                                 
-
+  // geterr = true : function returns error not event weight 
+  // electrons are loose electrons defined in analysis code 
+  // ID defines which id is used for tight leptons              (currently only "ELECTRON_POGTIGHT" for electrons) 
+  // method defines the techinique used to measure fake rates   (currently only "dijet" for electrons) 
+  // @@@@@ CURRENTLY ONLY  POG ID IS USED HERE 
+  //                                                                                                                                                                                 
+  if(method != "dijet") return 0.;
   if(k_electrons.size()==0) return 0.;
 
   float ee_weight = 0.;
   if(k_electrons.size()==2){
 
-    bool is_el1_tight    = true;
-    bool is_el2_tight    = true;
+    bool is_el1_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDe);
+    bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDe);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
     ee_weight =m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight,is_el2_tight);
 

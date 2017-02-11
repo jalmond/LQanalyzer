@@ -50,6 +50,23 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
 
 
 
+bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, float ptcut, float etacut){
+
+  bool pass_selection = true;
+
+  if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",elid);
+  if (etacut == -999.) etacut = AccessFloatMap("|etamax|",elid);
+  if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;;
+
+  ElectronID = PassUserID(elid, el);
+  if(!ElectronID)  pass_selection = false;
+
+  if(!(fabs(el.SCEta()) < etacut)) pass_selection = false;
+  if((el.Pt() < ptcut))   pass_selection = false;
+
+  return pass_selection;
+}
+
 void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID elid, float ptcut, float etacut){
   return SelectElectrons(leptonColl,GetString(elid), ptcut,etacut);
 }
@@ -59,21 +76,8 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TStr
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
-    if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",elid);
-    if (etacut == -999.) etacut = AccessFloatMap("|etamax|",elid);
-    
-    //// DEFAULT cuts
-    //// Require it is not in crack
-    if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
+    if(ElectronPass(*el, elid, ptcut,etacut)) leptonColl.push_back(*el);
 
-    bool pass_selection = true;
-    ElectronID = PassUserID(elid, *el);
-    if(!ElectronID)  pass_selection = false;
-
-    if(!(fabs(el->SCEta()) < etacut)) pass_selection = false;
-    if((el->Pt() < ptcut))   pass_selection = false;
-
-    if(pass_selection)  leptonColl.push_back(*el);
 
   }// end of el loop
 
@@ -101,7 +105,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     }
 
     //SetRelIso. Default: PFRelIso03
-    float reliso;
+    float reliso(0.);
     if     (apply_relisocut && RelIsoType.Contains("Default"))    reliso=el->PFRelIso(0.3); 
     else if(apply_relisocut && RelIsoType.Contains("PFRelIso04")) reliso=el->PFRelIso(0.4); 
 

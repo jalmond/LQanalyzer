@@ -28,14 +28,14 @@ selection::
 	(cd LQCore/Selection; make)
 
 analysis::
-	(cd LQAnalysis/Helpers; make)
+	(cd LQAnalysis/AnalyzerTools; make)
 	(cd LQAnalysis/Analyzers; make)
 	(cd LQAnalysis/SKTreeMaker; make)
 	(cd LQAnalysis/Validation; make)
 
 
 fakes::
-	(cd ${LQANALYZER_DIR}/LQAnalysis/Helpers/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/Helpers/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
+	(cd ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/conf/; make -f Makefile.StandAlone; cd ${LQANALYZER_LIB_PATH} ;rm libHNCommonLeptonFakes.so ; cp ${LQANALYZER_DIR}/LQAnalysis/AnalyzerTools/HNCommonLeptonFakes/Root/libHNCommonLeptonFakes.so .; cd ${LQANALYZER_DIR} )
 
 btag::  
 	(bash bin/Make/make_btag_lib.sh; cd ${LQANALYZER_DIR} )	
@@ -49,7 +49,7 @@ clean::
 	(cd LQCore/AnalysisCore; make clean)
 	(cd LQCore/Plotting; make clean)
 	(cd LQCore/Selection; make clean)
-	(cd LQAnalysis/Helpers; make clean)
+	(cd LQAnalysis/AnalyzerTools; make clean)
 	(cd LQAnalysis/Analyzers; make clean)
 	(cd LQAnalysis/SKTreeMaker; make clean)
 	(cd LQAnalysis/Validation; make clean)
@@ -63,7 +63,7 @@ distclean::
 	(cd LQCore/AnalysisCore; make distclean)
 	(cd LQCore/Plotting; make distclean)
 	(cd LQCore/Selection; make distclean)
-	(cd LQAnalysis/Helpers; make distclean)
+	(cd LQAnalysis/AnalyzerTools; make distclean)
 	(cd LQAnalysis/Analyzers; make distclean)
 	(cd LQAnalysis/SKTreeMaker; make distclean)
 	(cd LQAnalysis/Validation; make distclean)

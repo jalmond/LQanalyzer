@@ -94,9 +94,10 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   if(!isData){
     for(unsigned int iel=0; iel < electronLooseColl.size(); iel++){
       id_weight*= mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT", electronLooseColl);
+      reco_weight*=  mcdata_correction->ElectronRecoScaleFactor(electronLooseColl);
     }
-    //    weight*= id_weight;
-    //weight*= reco_weight;
+    weight*= id_weight;
+    weight*= reco_weight;
   }
 
 

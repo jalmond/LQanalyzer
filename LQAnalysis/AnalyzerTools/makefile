@@ -1,5 +1,5 @@
 # Package information
-LIBRARY = Helpers
+LIBRARY = AnalyzerTools
 OBJDIR  = $(OBJ)
 DEPDIR  = $(OBJDIR)/dep
 SRCDIR  = src

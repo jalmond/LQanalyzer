@@ -26,8 +26,8 @@ class ElectronSelection : public BaseSelection {
   void PogID(std::vector<snu::KElectron>& leptonColl, ID elid);
   void SelectElectrons(std::vector<snu::KElectron>& leptonColl,ID id, float ptcut=-999., float etacut=-999.);
   void SelectElectrons(std::vector<snu::KElectron>& leptonColl,TString id, float ptcut=-999., float etacut=-999.);
-  
-  
+  bool ElectronPass(snu::KElectron el, TString elid, float ptcut=-999., float etacut=-999.);
+
   //// IDS
   bool PassUserID(TString id,snu::KElectron el);
   bool PassID(snu::KElectron el, ID id);

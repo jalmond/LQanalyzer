@@ -138,18 +138,29 @@ double MCDataCorrections::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu
   float sferr=1.;
   if(corr_isdata) return 1.;
 
+
   // ref https://indico.cern.ch/event/595070/contributions/2405098/attachments/1388788/2114715/TnPIso12Dic2016.pdf 
+
+  TString tag = "";
+  if(k_mcperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+
 
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
     float mupt=itmu->Pt();
-    if(itmu->Pt() >200. )mupt=199.;
+    if(itmu->Pt() >120. )mupt=119.;
     if(itmu->Pt() < 20.) mupt=21.;
-    if(CheckCorrectionHist("ISO_" + muid)){
-      sferr = double(sys)*GetCorrectionHist("ISO_" + muid)->GetBinError( GetCorrectionHist("ISO_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
+
+
+    if(CheckCorrectionHist("ISO"+tag +"_"+ muid)){
+
+      sferr = double(sys)*GetCorrectionHist("ISO"+tag +"_"+ muid)->GetBinError( GetCorrectionHist("ISO"+tag +"_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
       
-      sf*= (1. + sferr)*GetCorrectionHist("ISO_" + muid)->GetBinContent( GetCorrectionHist("ISO_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
+      sf*= (1. + sferr)*GetCorrectionHist("ISO"+tag +"_"+ muid)->GetBinContent( GetCorrectionHist("ISO"+tag +"_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
     }
   }
+
   return sf;
 }
 
@@ -160,7 +171,13 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
   
   // ref https://indico.cern.ch/event/595070/contributions/2405095/attachments/1388822/2114847/MC_12_12_2016.pdf
 
-  double min_pt = 20., max_pt = 200.;
+  TString tag = "";
+  if(k_mcperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+
+
+  double min_pt = 20., max_pt = 120.;
   if(muid=="MUON_HN_TRI_TIGHT"){
     min_pt = 5.;
     max_pt = 200.;
@@ -173,10 +190,10 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
     if(itmu->Pt() < min_pt) mupt = min_pt+1.;
     if(itmu->Pt() > max_pt) mupt = max_pt-1.;
 
-    if(CheckCorrectionHist("ID_" + muid)){
-      sferr = double(sys)*GetCorrectionHist("ID_" + muid)->GetBinError( GetCorrectionHist("ID_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
+    if(CheckCorrectionHist("ID" +tag+ "_"+ muid)){
+      sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
       
-      sf*=  (1. + sferr)* GetCorrectionHist("ID_" + muid)->GetBinContent( GetCorrectionHist("ID_" + muid)->FindBin( fabs(itmu->Eta()), mupt) );
+      sf*=  (1. + sferr)* GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
     }
   }
 
@@ -279,7 +296,7 @@ float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
 
 
 float MCDataCorrections::PileupWeightByPeriod(snu::KEvent ev){
- 
+  cout << "k_mcperiod = " << k_mcperiod << endl;
   return ev.PeriodPileUpWeight(k_mcperiod);
   
 }

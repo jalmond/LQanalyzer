@@ -134,6 +134,23 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
 
 
 
+bool MuonSelection::MuonPass(snu::KMuon muon, TString muid, float ptcut, float etacut){
+  if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",muid);
+  if (etacut == -999.) etacut = AccessFloatMap("|etamax|",muid);
+  bool pass_selection(true);
+  if(muon.Pt() == 0.)  return  false;
+
+  MuonID = PassUserID(muid, muon);
+  if(!MuonID)  pass_selection = false;
+
+
+  if(( muon.Pt() < ptcut )) pass_selection = false;
+  if(!(fabs(muon.Eta()) < etacut)) pass_selection = false;
+
+  return pass_selection;
+}
+
+
 void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float ptcut, float etacut){
   
   return SelectMuons(leptonColl, GetString(muid), ptcut, etacut);
@@ -147,16 +164,7 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid, fl
   //cout << "cuts " << ptcut  << " " << etacut << endl;
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
-    bool pass_selection(true);
-    if(muit->Pt() == 0.)   continue;
-
-    MuonID = PassUserID(muid, *muit);
-    if(!MuonID)  pass_selection = false;
-
- 
-   if(( muit->Pt() < ptcut )) pass_selection = false;
-    if(!(fabs(muit->Eta()) < etacut)) pass_selection = false;
-    if(pass_selection)  leptonColl.push_back(*muit);
+    if(MuonPass(*muit, muid, ptcut, etacut)) leptonColl.push_back(*muit);
   }
   return;
 }

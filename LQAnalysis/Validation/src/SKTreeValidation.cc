@@ -465,12 +465,8 @@ void SKTreeValidation::MakeMuonValidationPlots(TString muid, float w, float pu_r
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    if(muid == "MUON_POG_TIGHT"){
-      //ev_weight      *=  Get_DataDrivenWeight_M(muons,"POGTIGHT");
-    }
-    if(muid == "MUON_HN_TIGHT"){
-      //ev_weight      *=  Get_DataDrivenWeight_M(muons,"HNTIGHT");
-    }
+    ev_weight      *=   m_datadriven_bkg->Get_DataDrivenWeight_M(false,muons,muid, "dijet");
+
   }
 
   if (!trig_pass) return;
@@ -566,12 +562,8 @@ void SKTreeValidation::MakeDiMuonValidationPlots(TString muid, float w, float pu
   //cout << trigger_ps << " " << w << " " << trigger_sf << " " << id_iso_sf << " " << pu_reweight << " " << trig_pass << endl;
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    if(muid == "MUON_HN_TIGHT"){
-      ///      ev_weight      *=  Get_DataDrivenWeight_MM(muons,"HNTIGHT");
-    }
-    if(muid == "MUON_POG_TIGHT"){
-      ///      ev_weight      *=  Get_DataDrivenWeight_MM(muons,"POGTIGHT");
-    }
+    ev_weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_MM(false,muons,muid, "dijet");
+
 
   }
 
@@ -687,12 +679,7 @@ void SKTreeValidation::MakeElMuonValidationPlots(TString muid, float w, float pu
 
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    if(muid == "MUON_HN_TIGHT"){
-      //ev_weight      *=  Get_DataDrivenWeight_EM(muons,electrons,"HNTIGHT");
-    }
-    if(muid == "MUON_POG_TIGHT"){
-      //ev_weight      *=  Get_DataDrivenWeight_EM(muons,electrons,"POGTIGHT");
-    }
+    ev_weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EM(false,muons,electrons,muid,elid, "dijet");
   }
 
 
@@ -766,7 +753,8 @@ void SKTreeValidation::MakeElectronValidationPlots(TString elid, float w, float 
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    //ev_weight      *=  Get_DataDrivenWeight_E(electrons);
+    ev_weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_E(false,electrons,elid, "dijet");
+
   }
 
 
@@ -828,11 +816,11 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    //    ev_weight      *=  Get_DataDrivenWeight_EE(electrons);
+    ev_weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electrons,elid, "dijet");
   }
-  //  weight              *= WeightCFEvent(electrons, k_running_chargeflip);    FIX AFTER SETTLED
+  weight              *=  m_datadriven_bkg->WeightCFEvent(electrons, k_running_chargeflip);    
   if(!trig_pass) return;
-  //  if(WeightCFEvent(electrons, k_running_chargeflip) == 0.) return;  FIX
+  if( m_datadriven_bkg->WeightCFEvent(electrons, k_running_chargeflip) == 0.) return; 
   
   if(electrons.size() ==2) {
     counter("DiEl",w);

@@ -108,6 +108,7 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vect
   
 }
 
+
 void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl,  TString ID ,  float ptcut, float etacut, bool smearjets ) {
 
   std::vector<KJet> alljets = k_lqevent.GetJets();
@@ -149,6 +150,7 @@ void JetSelection::SmearJets(vector<snu::KJet>& k_jets){
     it->SetPtEtaPhiE(tlv_jets[imu].Pt(), tlv_jets[imu].Eta(),tlv_jets[imu].Phi(),tlv_jets[imu].E());
   }
 }
+
 
 void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut, float etacut , bool smearjets) {
   

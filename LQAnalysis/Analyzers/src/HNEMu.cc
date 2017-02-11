@@ -120,7 +120,7 @@ float HNEMu::WeightCFEvent(std::vector<snu::KElectron> electrons, std::vector<sn
   
   if(runchargeflip) {
     if(electrons.at(0).Charge() != muons.at(0).Charge()) {
-      float cf1=  1.;//CFRate(electrons.at(0));  /// FIX AFTER SETTLED
+      float cf1=  m_datadriven_bkg->CFRate(electrons.at(0));  /// FIX AFTER SETTLED
 
       return  cf1;
     }// OS requirement
