@@ -11,6 +11,7 @@ class SignalPlotsMM;
 class SignalPlotsEM;
 class TriLeptonPlots;
 class HNpairPlotsMM;
+class HNTriLeptonPlots;
 class EventBase;
 
 #include "BaseSelection.h"
@@ -129,7 +130,7 @@ class AnalyzerCore : public LQCycleBase {
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   // enum for plotting functions/classes
-  enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist, hnpairmm};
+  enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist, hnpairmm, hntrilephist};
   
   
   //
@@ -232,6 +233,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, ElectronPlots*> mapCLhistEl;
   map<TString, MuonPlots*> mapCLhistMu;
   map<TString, JetPlots*> mapCLhistJet;
+  map<TString, HNTriLeptonPlots*> mapCLhistHNTriLep;
   
   float WeightByTrigger(TString triggername, float tlumi);
   float WeightByTrigger(vector<TString> triggername, float tlumi);  
