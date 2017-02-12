@@ -419,9 +419,9 @@ def SendEmail(jobsummary, deftagger, e_subject, email_user, sendplots, plotlist)
     path_file_email=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.sh"
     file_email=open(path_file_email,"w")
     if not sendplots:
-        file_email.write('cat "+an_jonpre+"CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     else:
-        file_email.write('cat "+an_jonpre+"CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
+        file_email.write('cat '+an_jonpre+'/CAT_SKTreeOutput/' + os.getenv("USER")  + '/CLUSTERLOG' + str(deftagger) + '/email.txt | mail  '+ plotstring+' -s "Job summary for job ' + str(deftagger) + " " + e_subject + '" '+str(email_user)+'')
     file_email.close()
 
     filejobsummary = open(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+"/email.txt","w")
@@ -1400,7 +1400,7 @@ for s in sample:
     command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue)
     command2=command1
     command2 = command2.replace("CATConfig.py", "localsubmit.py")
-    command2_background=command2 + "&>  "+an_jonpre+"CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"
+    command2_background=command2 + "&>  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"
     checkqueue=True
     stdscr.addstr(list4+1, box_shift,  "Initialise:: sample " + s +  blankbuffer)
     stdscr.refresh()
@@ -1564,15 +1564,15 @@ for s in sample:
                     stdscr.refresh()
                     
         else:
-            os.system("rm -r "+an_jonpre+"CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger)
+            os.system("rm -r "+an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER") +"/"+tagger)
             stdscr.addstr(list4+1, box_shift,  "Submitting sample to queue  " + s)
             stdscr.refresh()
             
             checkqueue=False
             if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger):
-                os.system("mkdir  "+an_jonpre+"CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
+                os.system("mkdir  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger)
 
-            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to "+an_jonpre+"CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt")
+            stdscr.addstr(list3 + 1+int(isample), box_shift,  "Running " + s + " in background: terminal output sent to "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" +  str(tagger) + "/" + tagger + "/" + s + ".txt")
             stdscr.refresh()
             stdscr.addstr(int(isample)+istatus_message, box_shift,  str(int(isample+1)) )
             stdscr.addstr(int(isample)+istatus_message, summary_block0,  "| " + cycle  )
@@ -1937,7 +1937,6 @@ while StillRunning:
 
 
 ############## END OF JOB ################3
-
 mypad_contents = []
 for i in range(0, winx - remove_from_end):
     mypad_contents.append(stdscr.instr(i, 0))
@@ -2131,6 +2130,7 @@ if len(crash_output) > 0:
 
 if DoSendEmail:
     SendEmail(job_summary,tagger,email_subject,useremail,quickdraw, listofplots)
+
 
 
 ##### CODE WRITEEN TO REMOVE DIRECTORY... THIS WILL BE KEPT UNLESS USER WISHES TO SET RDIR+TRUE
