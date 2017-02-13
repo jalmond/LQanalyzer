@@ -14,5 +14,6 @@
 #pragma link C++ class SignalPlotsEM+;
 #pragma link C++ class TriLeptonPlots+;
 #pragma link C++ class StdPlots+;
+#pragma link C++ class HNTriLeptonPlots+;
 
 #endif // __CINT__
