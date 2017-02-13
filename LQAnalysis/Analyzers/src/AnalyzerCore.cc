@@ -19,6 +19,7 @@
 #include "SignalPlotsEM.h"
 #include "TriLeptonPlots.h"
 #include "HNpairPlotsMM.h"
+#include "HNTriLeptonPlots.h"
 
 //ROOT includes
 #include <TFile.h>
@@ -1069,6 +1070,11 @@ AnalyzerCore::~AnalyzerCore(){
   }
   MapBTagSF.clear();
 
+  for(map<TString, HNTriLeptonPlots*>::iterator it = mapCLhistHNTriLep.begin(); it != mapCLhistHNTriLep.end(); it++){
+    delete it->second;
+  }
+  mapCLhistHNTriLep.clear();
+
   //// New class functions for databkg+corrections
   delete mcdata_correction;
   delete m_datadriven_bkg;
@@ -1488,6 +1494,7 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
 
   if(type==trilephist)  mapCLhistTriLep[clhistname] = new TriLeptonPlots(clhistname);
   if(type==hnpairmm) mapCLhistHNpairMM[clhistname] = new HNpairPlotsMM(clhistname);
+  if(type==hntrilephist)  mapCLhistHNTriLep[clhistname] = new HNTriLeptonPlots(clhistname);
     
   return;
 }
@@ -1711,6 +1718,16 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
       trilepit->second->Fill(ev, muons, electrons, jets,w);
     }
   }
+  else if(type==hntrilephist){
+
+    map<TString, HNTriLeptonPlots*>::iterator hntrilepit = mapCLhistHNTriLep.find(hist);
+    if(hntrilepit !=mapCLhistHNTriLep.end()) hntrilepit->second->Fill(ev, muons, electrons, jets,w);
+    else {
+      mapCLhistHNTriLep[hist] = new HNTriLeptonPlots(hist);
+      hntrilepit = mapCLhistHNTriLep.find(hist);
+      hntrilepit->second->Fill(ev, muons, electrons, jets,w);
+    }
+  }
  
   else if(type==sighist_ee){
 
@@ -1752,6 +1769,7 @@ void AnalyzerCore::WriteHistograms() throw (LQError){
   // This function is called after the cycle is ran. It wrues all histograms to the output file. This function is not used by user. But by the contrioller code.
   WriteHists();
   WriteCLHists();
+  WriteNtp();
 }
 
   
@@ -1817,6 +1835,15 @@ void AnalyzerCore::WriteCLHists(){
     Dir = m_outputFile->mkdir(HNpairmmit->first);
     m_outputFile->cd( Dir->GetName() );
     HNpairmmit->second->Write();
+    m_outputFile->cd();
+  }
+
+  for(map<TString, HNTriLeptonPlots*>::iterator hntrilepit = mapCLhistHNTriLep.begin(); hntrilepit != mapCLhistHNTriLep.end(); hntrilepit++){
+
+    //==== (jskim)I don't need director!
+    //Dir = m_outputFile->mkdir(hntrilepit->first);
+    //m_outputFile->cd( Dir->GetName() );
+    hntrilepit->second->Write();
     m_outputFile->cd();
   }
 
