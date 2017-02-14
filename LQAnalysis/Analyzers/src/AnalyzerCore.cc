@@ -462,6 +462,10 @@ void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
 
 	}
 	else if ( x ==1) {is >> idlabel;}
+	else if (x > 26 && x < 28){
+          is >> tmp;
+          string_muonsel.push_back(make_pair(cutnames.at(x),tmp) );
+        }
 	else {
 	  is >> tmpf;
 	  float_muonsel.push_back(make_pair(cutnames.at(x),tmpf));

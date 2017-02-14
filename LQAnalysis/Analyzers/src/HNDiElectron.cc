@@ -103,7 +103,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
-
+  /*
   if(GetJets("JET_HN").size() > 0){
     cout << "Tight pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Tight") << endl;
     cout << "Medium pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Medium") << endl;
@@ -117,15 +117,15 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   cout << "UserPileupWeight = " << mcdata_correction->UserPileupWeight(eventbase->GetEvent()) << endl;
   cout << "PileupWeightByPeriod = " << mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent()) << endl;
   cout << "CatPileupWeight = " << mcdata_correction->CatPileupWeight(eventbase->GetEvent(),0) <<  endl;
-
+  */
 
   if(GetMuons("MUON_POG_TIGHT").size() == 1){
     cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT").at(0).Eta() << " " <<GetMuons("MUON_POG_TIGHT").at(0).IsRochesterCorrected() <<endl;
     cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).RochPt() << endl;
-    cout << "MuonTrackingEffScaleFactor = " << mcdata_correction->MuonTrackingEffScaleFactor(GetMuons("MUON_POG_TIGHT")) << endl;
-    cout << "MuonISOScaleFactor = " << mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", GetMuons("MUON_POG_TIGHT"), 0) << endl;
-    cout << "MuonScaleFactor = " << mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT",  GetMuons("MUON_POG_TIGHT"),0) << endl;
-    cout << "TriggerScaleFactor  = " << mcdata_correction->TriggerScaleFactor(GetElectrons("ELECTRON_POG_TIGHT"),  GetMuons("MUON_POG_TIGHT"), "HLT_IsoMu24",0) << endl;
+    //cout << "MuonTrackingEffScaleFactor = " << mcdata_correction->MuonTrackingEffScaleFactor(GetMuons("MUON_POG_TIGHT")) << endl;
+    //cout << "MuonISOScaleFactor = " << mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", GetMuons("MUON_POG_TIGHT"), 0) << endl;
+    //cout << "MuonScaleFactor = " << mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT",  GetMuons("MUON_POG_TIGHT"),0) << endl;
+    //cout << "TriggerScaleFactor  = " << mcdata_correction->TriggerScaleFactor(GetElectrons("ELECTRON_POG_TIGHT"),  GetMuons("MUON_POG_TIGHT"), "HLT_IsoMu24",0) << endl;
     
   }
 
@@ -135,6 +135,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   }
 
+  return;
   std::vector<snu::KMuon> testmuons =GetMuons("MUON_POG_TIGHT");
 
   CorrectMuonMomentum(testmuons);
