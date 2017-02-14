@@ -275,7 +275,14 @@ def DetermineNjobs(longestjobtime, ncores_job, deftagger,defsample,defcycle,defs
 
     if ncores_job == 1:
         return 1
-    
+
+    if "HN" in defsample and not "SKTreeMaker" in defcycle:
+        if ncores_job > 25:
+            return 25
+        else:
+            return ncores_job
+
+
     #expectedjobtime=GetAverageTime(deftagger, defsample, defcycle,defskim)
     #expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)
 

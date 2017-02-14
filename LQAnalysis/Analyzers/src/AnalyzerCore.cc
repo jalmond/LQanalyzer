@@ -190,6 +190,16 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
 }
 
+
+//float AnalyzerCore::GetCorrectedMET(){                                                                                                                                                                                                                                       
+
+
+//float met_x =eventbase->GetEvent().PFMETx()                                                                                                                                                                                                                                 
+//float met_y =eventbase->GetEvent().PFMETy()                                                                                                                                                                                                                                 
+
+
+//}   
+
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ///// FUNCTION USED TO CREATE BTAG EFFICIENCIES USED BY BTAGSF.cxx CLass
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

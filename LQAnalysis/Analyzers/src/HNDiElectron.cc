@@ -129,11 +129,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     
   }
 
-  if(GetMuons("MUON_POG_TIGHT2").size() == 1){
-    cout << "pt2 = " << GetMuons("MUON_POG_TIGHT2").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT2").at(0).Eta() << " " << GetMuons("MUON_POG_TIGHT2").at(0).IsRochesterCorrected() <<endl;
-    cout << "pt2 = " << GetMuons("MUON_POG_TIGHT2").at(0).RochPt() << endl;
-
-  }
 
   return;
   std::vector<snu::KMuon> testmuons =GetMuons("MUON_POG_TIGHT");
