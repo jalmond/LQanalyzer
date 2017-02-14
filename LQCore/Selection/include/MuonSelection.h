@@ -21,7 +21,7 @@ class MuonSelection : public BaseSelection {
   MuonSelection& operator= (const MuonSelection& obj);
   MuonSelection(const MuonSelection& bs);
 
-  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, float ptcut=-999., float etacut=-999.);
+  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid,   float ptcut=-999., float etacut=-999.);
   void SelectMuons(std::vector<snu::KMuon>& leptonColl, TString muid, float ptcut=-999., float etacut=-999.);
   bool MuonPass(snu::KMuon muon, TString muid,  float ptcut=-999., float etacut=-999.);
 
@@ -30,7 +30,7 @@ class MuonSelection : public BaseSelection {
 
   
   //// General Selection
-  void Selection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false); 
+  void Selection(std::vector<snu::KMuon>& leptonColl, bool applyrochester=true,bool m_debug = false); 
 
   /// selection for treemaker
   void BasicSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);

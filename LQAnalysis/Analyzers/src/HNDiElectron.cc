@@ -108,7 +108,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     cout << "Tight pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Tight") << endl;
     cout << "Medium pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Medium") << endl;
     cout << "Loose pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Loose") << endl;
+    cout <<  GetJets("JET_HN").at(0).Pt() << endl; 
+    cout <<  GetJets("JET_HN").at(0).IsMCSmeared() << endl;
   }
+
 
   cout << "------------------------" << endl;
   cout << "UserPileupWeight = " << mcdata_correction->UserPileupWeight(eventbase->GetEvent()) << endl;
@@ -122,14 +125,21 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     cout << "MuonISOScaleFactor = " << mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", GetMuons("MUON_POG_TIGHT"), 0) << endl;
     cout << "MuonScaleFactor = " << mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT",  GetMuons("MUON_POG_TIGHT"),0) << endl;
     cout << "TriggerScaleFactor  = " << mcdata_correction->TriggerScaleFactor(GetElectrons("ELECTRON_POG_TIGHT"),  GetMuons("MUON_POG_TIGHT"), "HLT_IsoMu24",0) << endl;
-
+    
   }
+
+  std::vector<snu::KMuon> testmuons =GetMuons("MUON_POG_TIGHT");
+
+  CorrectMuonMomentum(testmuons);
+
   if(GetElectrons("ELECTRON_POG_TIGHT").size() == 1){
     cout << "pt = " << GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt()  << " eta = " <<  GetElectrons("ELECTRON_POG_TIGHT").at(0).Eta() << endl;
     cout << "ElectronScaleFactor = " << mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT",GetElectrons("ELECTRON_POG_TIGHT"), 0) << endl;
     cout << "ElectronRecoScaleFactor= " <<mcdata_correction->ElectronRecoScaleFactor(GetElectrons("ELECTRON_POG_TIGHT")) << endl;
   }
     
+
+
   return;
 
   

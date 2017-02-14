@@ -56,6 +56,7 @@ void SKTreeMakerNoCut::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(0.); 
   eventbase->GetMuonSel()->SetEta(5.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
+  SetCorrectedMomentum(out_muons);
 
   std::vector<snu::KElectron> skim_photons;
   eventbase->GetPhotonSel()->SetPt(10);

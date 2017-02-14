@@ -348,8 +348,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPFPhotonIso(0.3,electrons_phIso03->at(iel));
     el.SetPFNeutralHadronIso(0.3,electrons_nhIso03->at(iel));
     el.SetPFRelIso(0.3,electrons_relIso03->at(iel));
+
+
+
     m_logger << DEBUG << "Filling electron_minirelIso " << LQLogger::endmsg;
-    el.SetPFRelMiniIso(electrons_minirelIso->at(iel));
+    if(electrons_minirelIso) el.SetPFRelMiniIso(electrons_minirelIso->at(iel));
     
     m_logger << DEBUG << "Filling electron Info 2" << LQLogger::endmsg;
     
@@ -760,8 +763,15 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   for (UInt_t ijet=0; ijet< jets_eta->size(); ijet++) {
     KJet jet;
     if(jets_pt->at(ijet) != jets_pt->at(ijet)) continue;
-    jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
 
+    if(isData){
+      jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+    }
+    else{
+      jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+      jet*= jets_smearedRes->at(ijet);
+      jet.SetIsMCSmeared(true);
+    }
     jet.SetJetPassLooseID(jets_isLoose->at(ijet));
     jet.SetJetPassTightID(jets_isTight->at(ijet));
     jet.SetJetPassTightLepVetoID(jets_isTightLepVetoJetID->at(ijet));
@@ -973,7 +983,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
     if(k_cat_version > 4){
-      muon.SetRochPt(muon_roch_pt->at(ilep));
+      muon.SetRochPt(muon_pt->at(ilep));
       muon.SetRochEta(muon_roch_eta->at(ilep));
       muon.SetRochPhi(muon_roch_phi->at(ilep));
       muon.SetRochE(muon_roch_energy->at(ilep));
@@ -992,7 +1002,14 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
  
     muon.SetRelIso(0.3,muon_relIso03->at(ilep));
     muon.SetRelIso(0.4,muon_relIso04->at(ilep));
-    muon.SetRelMiniIso(muon_minirelIso->at(ilep));
+    if(muon_minirelIso)muon.SetRelMiniIso(muon_minirelIso->at(ilep));
+
+    if(k_cat_version  > 7){
+      muon.SetMiniAODPt(muon_pt->at(ilep));
+      muon.SetMiniAODRelIso(0.3,muon_relIso03->at(ilep));
+      muon.SetMiniAODRelIso(0.4,muon_relIso04->at(ilep));
+      muon.SetIsRochesterCorrected(false);
+    }
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));
     if(muon_sigdxy)muon.Setdxy_sig(muon_sigdxy->at(ilep));

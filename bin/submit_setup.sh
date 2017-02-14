@@ -1521,7 +1521,6 @@ if [[ $job_data_lumi == "H" ]];
 fi
 
 
-
 ARG1=catdataperiods
 eval getlist_cv=(\${$ARG1[@]})
 for dataperiod in  ${getlist_cv[@]};
@@ -1531,6 +1530,7 @@ do
     declare -a data_periods=($dataperiod)
     fi
 done
+
 
 if [[ $submit_file_tag  != "" ]];
     then

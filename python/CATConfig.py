@@ -87,6 +87,7 @@ usebatch =options.usebatch
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel
+queuename = options.queue
 
 if useskim == "SKTree_NoSkim":
     useskim ="NoCut"
@@ -431,7 +432,12 @@ if os.path.exists(path_log):
 
 if printToScreen:
     print "number_of_files = " + str(number_of_files) + " njobs running in batch = " + str(njobs)
-if number_of_files < (1750- njobs):
+
+njobs_max_allowed = 1750
+if queuename == "long":
+    njobs_max_allowed = 2750
+
+if number_of_files < (njobs_max_allowed- njobs):
     if printToScreen:
         print "Job is running in background............"
     os.system("mkdir " + tmpwork + "/" + tagger)

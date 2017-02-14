@@ -568,9 +568,14 @@ void LQController::ExecuteCycle() throw( LQError ) {
     if((k_period != "NOTSET") && (inputType == data)) m_logger << INFO << "Running on Data: Period " << k_period  << LQLogger::endmsg;
     if((k_period != "NOTSET") && (inputType == mc)) m_logger << INFO << "Running on MC: This will be weighted to represent period " << k_period << " of data" << LQLogger::endmsg;
     
-    
-    if(k_period.Contains("BtoG")) cycle->SetMCPeriod(2); 
-    else if(k_period.Contains("B")) cycle->SetMCPeriod(1); 
+    if(k_period == "B") cycle->SetMCPeriod(1); 
+    else if(k_period == "C") cycle->SetMCPeriod(2); 
+    else if(k_period == "D") cycle->SetMCPeriod(3); 
+    else if(k_period == "E") cycle->SetMCPeriod(4); 
+    else if(k_period == "F") cycle->SetMCPeriod(5); 
+    else if(k_period == "G") cycle->SetMCPeriod(6); 
+    else if(k_period == "H") cycle->SetMCPeriod(7); 
+    else cycle->SetMCPeriod(-1); 
     
     /// Check the current branch is upto date wrt the catuples
     string catversion_env = getenv("CATVERSION");

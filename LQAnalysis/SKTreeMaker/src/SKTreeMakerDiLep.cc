@@ -48,6 +48,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(5.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
+  SetCorrectedMomentum(out_muons);
 
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim
@@ -65,13 +66,13 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(20);
+  eventbase->GetJetSel()->SetPt(15);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
   //###### JET SELECTION  ################                                                                                                                                      
   Message("Selecting fatjets", DEBUG);
-  eventbase->GetFatJetSel()->SetPt(20);
+  eventbase->GetFatJetSel()->SetPt(15);
   eventbase->GetFatJetSel()->SetEta(5.);
   eventbase->GetFatJetSel()->BasicSelection(out_fatjets);
 

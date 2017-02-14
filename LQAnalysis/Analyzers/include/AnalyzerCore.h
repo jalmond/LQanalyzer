@@ -60,8 +60,8 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
-  std::vector<snu::KJet>  GetJets(TString jetid, bool smearjets=true, float ptcut=-999., float etacut = -999.);
-  std::vector<snu::KFatJet>  GetFatJets(TString jetid, bool smearjets=true, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KJet>  GetJets(TString jetid,  float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KFatJet>  GetFatJets(TString jetid,  float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(TString muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(TString muid, bool keepfakes, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString elid, float ptcut=-999., float etacut = -999.);
@@ -119,6 +119,7 @@ class AnalyzerCore : public LQCycleBase {
   bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
+  void SetCorrectedMomentum(vector<snu::KMuon>& k_muons);
 
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KElectron> el);
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KMuon> mu);
@@ -219,7 +220,7 @@ class AnalyzerCore : public LQCycleBase {
   // used to get trigger prescale
   
   bool  k_reset_period;
-  int k_mcperiod;
+  int a_mcperiod;
 
   
   std::vector<TString> triggerlist;

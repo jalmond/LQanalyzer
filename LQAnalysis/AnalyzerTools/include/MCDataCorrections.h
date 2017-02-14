@@ -71,8 +71,8 @@ class MCDataCorrections{
   float PileupWeightByPeriod(snu::KEvent ev);
   float UserPileupWeight(snu::KEvent ev);
   float CatPileupWeight(snu::KEvent ev, int syst=0);
-  void CorrectMuonMomentum(std::vector<snu::KMuon>& k_muons, float genpt= -999.);
-
+  void CorrectMuonMomentum(std::vector<snu::KMuon>& k_muons, std::vector<snu::KTruth> truth);
+  float GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<snu::KTruth> truth);
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KElectron> el);
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KMuon> mu);
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KJet> jet);

@@ -269,6 +269,9 @@ def DetermineNjobs(longestjobtime, ncores_job, deftagger,defsample,defcycle,defs
         return 1000
 
     
+    if ncores_job == -300 or ncores_job == 1:
+        if "SKTreeMaker" in defcycle:
+            return 1
 
     if ncores_job == 1:
         return 1

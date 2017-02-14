@@ -28,11 +28,10 @@ void FatJetSelection::BasicSelection(std::vector<KFatJet>& jetColl) {
   }
 }
 
-void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool isdata, bool smearjets){
-
+void FatJetSelection::Selection(std::vector<KFatJet>& jetColl){
+  
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
-  if(!isdata&&smearjets)SmearFatJets(alljets);
-
+  
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
     bool pileupjet=false;
@@ -56,13 +55,12 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool isdata, bool
 
 }  
 
-void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl, bool isdata, bool smearjets) {
- 
+void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl) {
+  
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
   
-  if(!isdata&&smearjets)SmearFatJets(alljets);
   std::vector<KFatJet> prejetColl; 
-
+  
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pileupjet=false;
@@ -102,55 +100,31 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std
     }
   }
   
-
+  
   BaseSelection::reset();
   return;
   
 }
 
-void FatJetSelection::SelectFatJets(bool isdata, std::vector<KFatJet>& jetColl,  TString ID ,  float ptcut, float etacut, bool smearjets ) {
+void FatJetSelection::SelectFatJets( std::vector<KFatJet>& jetColl,  TString ID ,  float ptcut, float etacut ) {
 
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
-
+  
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
-
-  if(!isdata&&smearjets)SmearFatJets(alljets);
+  
 
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-
+    
     bool pass_selection=true;
     if (!PassUserID(*jit,ID)) pass_selection=false;
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  jetColl.push_back(*jit);
   }
-
-
+  
+  
 } 
 
-
-vector<TLorentzVector> FatJetSelection::MakeSmearedTLorentz(vector<snu::KFatJet> j){
-
-  vector<TLorentzVector> tl_jet;
-  for(vector<KFatJet>::iterator itj=j.begin(); itj!=j.end(); ++itj) {
-    TLorentzVector tmp_j;
-    tmp_j.SetPtEtaPhiE((*itj).Pt(),(*itj).Eta(),(*itj).Phi(),(*itj).E());
-    tmp_j*= itj->SmearedRes();
-    tl_jet.push_back(tmp_j);
-  }
-  return tl_jet;
-}
-
-void FatJetSelection::SmearFatJets(vector<snu::KFatJet>& k_jets){
-
-  vector<TLorentzVector> tlv_jets = MakeSmearedTLorentz(k_jets);
-  int imu(0);
-  for(std::vector<snu::KFatJet>::iterator it = k_jets.begin(); it != k_jets.end(); it++, imu++){
-    
-    it->SetPtEtaPhiE(tlv_jets[imu].Pt(), tlv_jets[imu].Eta(),tlv_jets[imu].Phi(),tlv_jets[imu].E());
-  }
-}
-
-void FatJetSelection::SelectFatJets(bool isdata, std::vector<KFatJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut, float etacut , bool smearjets) {
+void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut , float etacut ) {
   
   std::vector<KFatJet> pre_jetColl; 
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
@@ -159,7 +133,6 @@ void FatJetSelection::SelectFatJets(bool isdata, std::vector<KFatJet>& jetColl, 
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
 
-  if(!isdata&&smearjets)SmearFatJets(alljets);  
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pass_selection=true;

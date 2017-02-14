@@ -336,14 +336,15 @@ BusyMachine=False
 username = str(os.getenv("USER"))
 
 nj_def=1000    
-if cycle == "SKTreeMaker":
-    number_of_cores=nj_def
-if cycle == "SKTreeMakerNoCut":
-    number_of_cores=nj_def
-if cycle == "SKTreeMakerDiLep":
-    number_of_cores=nj_def
-if cycle == "SKTreeMakerTriLep":
-    number_of_cores=nj_def
+if not number_of_cores == 1:
+    if cycle == "SKTreeMaker":
+        number_of_cores=nj_def
+    if cycle == "SKTreeMakerNoCut":
+        number_of_cores=nj_def
+    if cycle == "SKTreeMakerDiLep":
+        number_of_cores=nj_def
+    if cycle == "SKTreeMakerTriLep":
+        number_of_cores=nj_def
 
 
 ##################################################################################################################            

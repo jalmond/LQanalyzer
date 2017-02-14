@@ -25,7 +25,7 @@
 #include <TFile.h>
 
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), k_mcperiod(-1) {
+AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1) {
 
   bool debug(false);
   
@@ -232,10 +232,17 @@ int AnalyzerCore::GetMCPeriod(){
   /// This function returns a period B-H for MC events. 
   /// It uses a random number and retrunds a period based on the luminosity of each period
   /// It assumes the trigger used is unprescaled
-
-  if(!k_reset_period) return k_mcperiod;
+  if(isData) return -1;
+  if(!k_reset_period) return a_mcperiod;
   k_reset_period=false;
   
+
+  if(k_mcperiod > 0) {
+    a_mcperiod = k_mcperiod;
+    return a_mcperiod;
+  }
+    
+
   //  double r = ((double) rand() / (RAND_MAX));
   double r =gRandom->Rndm(); /// random number between 0 and 1
   
@@ -273,8 +280,8 @@ int AnalyzerCore::GetMCPeriod(){
 
   for(unsigned int i=0; i < cum_lumi.size(); i++){
     if ( r < cum_lumi.at(i)) {
-      k_mcperiod =  (i+1);
-      return k_mcperiod;
+      a_mcperiod =  (i+1);
+      return a_mcperiod;
     }
   }
 
@@ -721,7 +728,7 @@ TString AnalyzerCore::GetStringID(BaseSelection::ID id){
 
 }
 
-std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,  bool smearjets,float ptcut, float etacut){
+std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,float ptcut, float etacut){
   
   std::vector<snu::KJet> jetColl;
   
@@ -736,18 +743,10 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,  bool smearjets,floa
       if ( it->second.at(i).first == "remove_near_muonID") muontag =  it->second.at(i).second;
       if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
     }
-    if(smearjets){
-     if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(isData,jetColl,jetid, ptcut,etacut);
-      else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
-      else eventbase->GetJetSel()->SelectJets(isData,jetColl, GetMuons(muontag), GetElectrons(eltag) ,jetid, ptcut,etacut);
     
-    }
-    else{
-      if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(isData,jetColl,jetid, ptcut,etacut,false);
-      else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
-      else eventbase->GetJetSel()->SelectJets(isData,jetColl, GetMuons(muontag), GetElectrons(eltag) ,jetid, ptcut,etacut,false);
-
-    }
+    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(jetColl,jetid, ptcut,etacut);
+    else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
+    else eventbase->GetJetSel()->SelectJets(jetColl, GetMuons(muontag), GetElectrons(eltag) ,jetid, ptcut,etacut);
   }
 
   return jetColl;
@@ -755,7 +754,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,  bool smearjets,floa
 }
 
 
-std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid,  bool smearjets,float ptcut, float etacut){
+std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid, float ptcut, float etacut){
 
   std::vector<snu::KFatJet> fatjetColl;
 
@@ -770,18 +769,10 @@ std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid,  bool smear
       if ( it->second.at(i).first == "remove_near_muonID") muontag =  it->second.at(i).second;
       if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
     }
-    if(smearjets){
-      if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl,fatjetid, ptcut,etacut);
-      else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
-      else eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,fatjetid, ptcut,etacut);
-
-    }
-    else{
-      if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl,fatjetid, ptcut,etacut,false);
-      else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove fatjets near only one lepton" << endl; exit(EXIT_FAILURE);}
-      else eventbase->GetFatJetSel()->SelectFatJets(isData,fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,fatjetid, ptcut,etacut,false);
-
-    }
+    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(fatjetColl,fatjetid, ptcut,etacut);
+    else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
+    else eventbase->GetFatJetSel()->SelectFatJets(fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,fatjetid, ptcut,etacut);
+    
   }
 
   return fatjetColl;
@@ -2277,10 +2268,19 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
 
 void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   
-  mcdata_correction->CorrectMuonMomentum(k_muons);
+  mcdata_correction->CorrectMuonMomentum(k_muons,eventbase->GetTruth());
   Message("END CorrectMuonMomentum",DEBUG);    
   return;
     
+}
+
+
+void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
+  
+  for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
+    it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));
+  }
+  
 }
 
 void AnalyzerCore::MakeNtp(TString hname, TString myvar){

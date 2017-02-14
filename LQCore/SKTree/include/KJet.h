@@ -67,6 +67,8 @@ namespace snu {
     void SetJetPassTightID(int tightID);
     void SetJetPassTightLepVetoID(int tightID);
     
+    void SetIsMCSmeared(bool issmeared);
+
     /// Pileup
     void SetJetPileupIDLooseWP(bool pass);
     void SetJetPileupIDMediumWP(bool pass);
@@ -121,6 +123,8 @@ namespace snu {
     inline Double_t PileupJetIDMVA() const {return k_jet_pileup_mva;}
     
    
+    inline Bool_t IsMCSmeared() const {return k_ismcsmeared;}
+
     /// BTAG variables
     Double_t BJetTaggerValue(Tagger tag) const; 
     inline Double_t CSVInclV2() const {return BJetTaggerValue(CSVv2);}
@@ -200,8 +204,9 @@ namespace snu {
     Bool_t k_jet_passpileup_loose, k_jet_passpileup_medium ,k_jet_passpileup_tight;
     Int_t k_jet_pileup_flag;
     Double_t k_jet_pileup_mva;
-   
-    ClassDef(KJet,13)
+    Bool_t k_ismcsmeared;
+
+    ClassDef(KJet,14)
   }; 
   
 

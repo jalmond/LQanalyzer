@@ -12,7 +12,7 @@ MuonSelection::MuonSelection(LQEvent ev) :
 
 MuonSelection::~MuonSelection() {};
 
-void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl, bool m_debug) {
+void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl,bool m_debug) {
 
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
   int ilep(0);
@@ -76,7 +76,7 @@ void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl , bool m_debug
 
 }
 
-void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
+void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochester, bool m_debug) {
   
 
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
@@ -85,6 +85,16 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
 
       bool pass_selection(true);      
       if(muit->Pt() == 0.) continue;
+
+      if(applyrochester&&! muit->IsRochesterCorrected()) {
+	float origpt = muit->Pt();
+	float origreliso03=muit->RelIso03();
+	float origreliso04=muit->RelIso04();
+	muit->SetPtEtaPhiM(muit->RochPt(), muit->Eta(), muit->Phi(), muit->M());
+	muit->SetRelIso(0.3, origreliso03*origpt/muit->RochPt());
+	muit->SetRelIso(0.4, origreliso04*origpt/muit->RochPt());
+	muit->SetIsRochesterCorrected(true);
+      }
 
       TString MuID=GetString(k_id);
       if(apply_ID && !PassID(MuID, *muit)) pass_selection =false;
@@ -156,14 +166,27 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float p
   return SelectMuons(leptonColl, GetString(muid), ptcut, etacut);
 }
 
-void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid, float ptcut, float etacut){
+void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid,float ptcut, float etacut){
+
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
+  
 
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",muid);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",muid);
-  //cout << "cuts " << ptcut  << " " << etacut << endl;
+  
+  bool applyrochester = CheckCutString("ApplyRoch",muid);
+  
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
-
+    if(applyrochester&&! muit->IsRochesterCorrected()) {
+      float origpt = muit->Pt();
+      float origreliso03=muit->RelIso03();
+      float origreliso04=muit->RelIso04();
+      muit->SetPtEtaPhiM(muit->RochPt(), muit->Eta(), muit->Phi(), muit->M());
+      muit->SetRelIso(0.3, origreliso03*origpt/muit->RochPt());
+      muit->SetRelIso(0.4, origreliso04*origpt/muit->RochPt());
+      muit->SetIsRochesterCorrected(true);
+    }
+    
     if(MuonPass(*muit, muid, ptcut, etacut)) leptonColl.push_back(*muit);
   }
   return;

@@ -90,6 +90,7 @@ void LQCycleBaseNTuple::SetDataType( bool type){
 }
 
 void LQCycleBaseNTuple::SetMCPeriod( int period){
+  m_logger << INFO << "SetMCPeriod : " << k_mcperiod << LQLogger::endmsg;
   k_mcperiod= period;
 }
 

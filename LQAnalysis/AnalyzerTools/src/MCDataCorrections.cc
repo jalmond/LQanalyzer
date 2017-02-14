@@ -356,14 +356,23 @@ TH2F* MCDataCorrections::GetCorrectionHist(TString label){
 
 
 
-void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, float genpt){
+void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<snu::KTruth> truth){
   
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
     double scalefactor = 1.;
+    if(it->IsRochesterCorrected()) return;
     if (corr_isdata) scalefactor = rc->kScaleDT(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(),0,0);
     else {
 	double u1 = gRandom->Rndm();
 	double u2 = gRandom->Rndm();
+
+	int mu_index = it->MCTruthIndex();
+	float genpt(-999.);
+	if(mu_index > 0 && mu_index < truth.size()) {
+	  if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
+	}
+	
+
 	if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), genpt, u1,0, 0);
 	else scalefactor = rc->kScaleAndSmearMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), u1, u2, 0,0);
     }
@@ -391,7 +400,26 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, float g
 
 }
 
+float MCDataCorrections::GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<snu::KTruth> truth){
+  double scalefactor = 1.;
+  if (corr_isdata) scalefactor = rc->kScaleDT(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(),0,0);
+  else {
+    double u1 = gRandom->Rndm();
+    double u2 = gRandom->Rndm();
 
+    int mu_index = muon.MCTruthIndex();
+    float genpt(-999.);
+
+    if(mu_index > 0&& mu_index < truth.size()) {
+      if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
+    }
+
+    if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(), muon.ActiveLayer(), genpt, u1,0, 0);
+    else scalefactor = rc->kScaleAndSmearMC(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(), muon.ActiveLayer(), u1, u2, 0,0);
+  }
+  
+  return (scalefactor*muon.Pt());
+}
 
 vector<TLorentzVector> MCDataCorrections::MakeTLorentz(vector<snu::KElectron> el){
 

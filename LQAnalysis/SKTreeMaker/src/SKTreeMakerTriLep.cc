@@ -49,6 +49,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(5.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
+  SetCorrectedMomentum(out_muons);
 
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim

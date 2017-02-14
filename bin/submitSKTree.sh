@@ -100,8 +100,6 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
 
-
-
 linkdef_filepath=/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h
 
 if [[ $make_sktrees == "True" ]];
@@ -678,6 +676,8 @@ if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
 	job_njobs=200
+    else 
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
 	then 
@@ -698,6 +698,8 @@ if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
     if [[ $set_sktreemaker_debug == "false" ]];
         then
 	job_njobs=200
+    else
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
         then
@@ -720,6 +722,8 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
         job_njobs=200
+    else
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -742,6 +746,8 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     if [[ $set_sktreemaker_debug == "false" ]];
         then
         job_njobs=200
+    else
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -1059,10 +1065,12 @@ fi
 
 if [[ $runMC  == "true" ]];
     then
+    job_data_lumi_exists=false
     for dataperiod in  ${catdataperiods[@]};
     do
     if [[ $job_data_lumi == $dataperiod ]];
         then
+	job_data_lumi_exists=true
         if [[ $job_cycle != *"SKTreeMaker"* ]];
         then
             echo $data_lumi_output_message
@@ -1072,7 +1080,7 @@ if [[ $runMC  == "true" ]];
     
     if [[ $job_data_lumi == $catdatatag ]]
 	then
-
+	job_data_lumi_exists=true
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
 	    then
 	    echo $data_lumi_output_message
@@ -1080,14 +1088,20 @@ if [[ $runMC  == "true" ]];
 	
     elif [[ $job_data_lumi == "ALL" ]]
 	then
+	job_data_lumi_exists=true
+
 	if [[ $job_cycle != *"SKTreeMaker"* ]];
 	    then
 	    echo $data_lumi_output_message
         fi
     else
-	echo "LQanalyzer::sktree :: ERROR :: Invalid setting for data lumi: sktree -p"
-	echo "'sktree -h ' for help."
-        exit 1
+	if [[ $job_data_lumi_exists == "false" ]];
+	then
+	    echo $catdatatag
+	    echo "LQanalyzer::sktree :: ERROR :: Invalid setting for data lumi: sktree -p"
+	    echo "'sktree -h ' for help."
+            exit 1
+	fi
     fi
 fi
 
@@ -1498,7 +1512,6 @@ if [[ $runDATA  == "true" ]];
 	  fi
       else
 	  if [[ ${run_in_bkg} != "True" ]];then
-	      echo ""
               mergeoutput $istream
 	  fi
       fi

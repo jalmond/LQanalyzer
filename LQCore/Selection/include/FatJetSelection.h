@@ -23,8 +23,8 @@ class FatJetSelection : public BaseSelection {
   FatJetSelection(const FatJetSelection& bs);
 
  
-  void Selection (std::vector<snu::KFatJet>& jetColl, bool isdata, bool smearjets=true);
-  void Selection (std::vector<snu::KFatJet>& jetColl, bool LepVeto, std::vector<snu::KMuon>& muonColl, std::vector<snu::KElectron>& electronColl, bool isdata, bool smearjets);
+  void Selection (std::vector<snu::KFatJet>& jetColl);
+  void Selection (std::vector<snu::KFatJet>& jetColl, bool LepVeto, std::vector<snu::KMuon>& muonColl, std::vector<snu::KElectron>& electronColl);
   void BasicSelection (std::vector<snu::KFatJet>& jetColl);
   
   bool PassUserID (ID id, snu::KFatJet jet);
@@ -33,12 +33,10 @@ class FatJetSelection : public BaseSelection {
   bool PassUserID_PFFatJetMedium( snu::KFatJet jet);
   bool PassUserID_PFFatJetTight( snu::KFatJet jet);
   
-  void SmearFatJets(vector<snu::KFatJet>& k_jets);
 
-  void SelectFatJets(bool isdata, std::vector<snu::KFatJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, TString ID,float ptcut=-999., float etacut=-999., bool smearjets=true);
-  void SelectFatJets(bool isdata, std::vector<snu::KFatJet>& jetColl, TString ID,float ptcut=-999., float etacut=-999., bool smearjets=true);
+  void SelectFatJets(std::vector<snu::KFatJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, TString ID,float ptcut=-999., float etacut=-999.);
+  void SelectFatJets(std::vector<snu::KFatJet>& jetColl, TString ID,float ptcut=-999., float etacut=-999.);
 
-  vector<TLorentzVector> MakeSmearedTLorentz( vector<snu::KFatJet> jet);
 
 
 };

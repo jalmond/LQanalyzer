@@ -28,10 +28,9 @@ void JetSelection::BasicSelection(std::vector<KJet>& jetColl) {
   }
 }
 
-void JetSelection::Selection(std::vector<KJet>& jetColl, bool isdata, bool smearjets){
+void JetSelection::Selection(std::vector<KJet>& jetColl){
 
   std::vector<KJet> alljets = k_lqevent.GetJets();
-  if(!isdata&&smearjets)SmearJets(alljets);
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
@@ -56,11 +55,10 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool isdata, bool smear
 
 }  
 
-void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl, bool isdata, bool smearjets) {
+void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl) {
  
   std::vector<KJet> alljets = k_lqevent.GetJets();
   
-  if(!isdata&&smearjets)SmearJets(alljets);
   std::vector<KJet> prejetColl; 
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
@@ -109,14 +107,12 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vect
 }
 
 
-void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl,  TString ID ,  float ptcut, float etacut, bool smearjets ) {
+void JetSelection::SelectJets(std::vector<KJet>& jetColl,  TString ID ,  float ptcut, float etacut) {
 
   std::vector<KJet> alljets = k_lqevent.GetJets();
 
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
-
-  if(!isdata&&smearjets)SmearJets(alljets);
 
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
 
@@ -128,31 +124,7 @@ void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl,  TString 
 
 } 
 
-
-vector<TLorentzVector> JetSelection::MakeSmearedTLorentz(vector<snu::KJet> j){
-
-  vector<TLorentzVector> tl_jet;
-  for(vector<KJet>::iterator itj=j.begin(); itj!=j.end(); ++itj) {
-    TLorentzVector tmp_j;
-    tmp_j.SetPtEtaPhiE((*itj).Pt(),(*itj).Eta(),(*itj).Phi(),(*itj).E());
-    tmp_j*= itj->SmearedRes();
-    tl_jet.push_back(tmp_j);
-  }
-  return tl_jet;
-}
-
-void JetSelection::SmearJets(vector<snu::KJet>& k_jets){
-
-  vector<TLorentzVector> tlv_jets = MakeSmearedTLorentz(k_jets);
-  int imu(0);
-  for(std::vector<snu::KJet>::iterator it = k_jets.begin(); it != k_jets.end(); it++, imu++){
-    
-    it->SetPtEtaPhiE(tlv_jets[imu].Pt(), tlv_jets[imu].Eta(),tlv_jets[imu].Phi(),tlv_jets[imu].E());
-  }
-}
-
-
-void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut, float etacut , bool smearjets) {
+void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut, float etacut) {
   
   std::vector<KJet> pre_jetColl; 
   std::vector<KJet> alljets = k_lqevent.GetJets();
@@ -161,7 +133,7 @@ void JetSelection::SelectJets(bool isdata, std::vector<KJet>& jetColl, std::vect
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
 
-  if(!isdata&&smearjets)SmearJets(alljets);  
+
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pass_selection=true;

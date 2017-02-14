@@ -120,7 +120,7 @@ void ExampleAnalyzer::ExecuteEvents()throw( LQError ){
    bool trig_pass= PassTriggerOR(trignames);
 
 
-   mcdata_correction->CorrectMuonMomentum(muons); /// CorrectMuonMomentum(muons);  will also work as Funcion in AnalyzerCore just calls mcdata_correction function
+   mcdata_correction->CorrectMuonMomentum(muons,eventbase->GetTruth()); /// CorrectMuonMomentum(muons);  will also work as Funcion in AnalyzerCore just calls mcdata_correction function
    
    double ev_weight = weight;
    if(!isData){
