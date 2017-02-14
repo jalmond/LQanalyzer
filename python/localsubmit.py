@@ -1283,7 +1283,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerNoCut":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1319,7 +1319,7 @@ else:
             Finaloutputdir += original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerDiLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1354,7 +1354,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerTriLep":
         doMerge=False
         if not os.path.exists(SKTreeOutput):
@@ -1386,7 +1386,7 @@ else:
             Finaloutputdir +=  original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
-                os.system("chmod 755 -R " +  Finaloutputdir)
+                os.system("chmod 777 -R " +  Finaloutputdir)
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)
