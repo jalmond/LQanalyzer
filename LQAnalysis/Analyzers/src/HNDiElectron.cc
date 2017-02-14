@@ -120,12 +120,19 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 
   if(GetMuons("MUON_POG_TIGHT").size() == 1){
-    cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT").at(0).Eta() << endl;
+    cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT").at(0).Eta() << " " <<GetMuons("MUON_POG_TIGHT").at(0).IsRochesterCorrected() <<endl;
+    cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).RochPt() << endl;
     cout << "MuonTrackingEffScaleFactor = " << mcdata_correction->MuonTrackingEffScaleFactor(GetMuons("MUON_POG_TIGHT")) << endl;
     cout << "MuonISOScaleFactor = " << mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", GetMuons("MUON_POG_TIGHT"), 0) << endl;
     cout << "MuonScaleFactor = " << mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT",  GetMuons("MUON_POG_TIGHT"),0) << endl;
     cout << "TriggerScaleFactor  = " << mcdata_correction->TriggerScaleFactor(GetElectrons("ELECTRON_POG_TIGHT"),  GetMuons("MUON_POG_TIGHT"), "HLT_IsoMu24",0) << endl;
     
+  }
+
+  if(GetMuons("MUON_POG_TIGHT2").size() == 1){
+    cout << "pt2 = " << GetMuons("MUON_POG_TIGHT2").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT2").at(0).Eta() << " " << GetMuons("MUON_POG_TIGHT2").at(0).IsRochesterCorrected() <<endl;
+    cout << "pt2 = " << GetMuons("MUON_POG_TIGHT2").at(0).RochPt() << endl;
+
   }
 
   std::vector<snu::KMuon> testmuons =GetMuons("MUON_POG_TIGHT");
