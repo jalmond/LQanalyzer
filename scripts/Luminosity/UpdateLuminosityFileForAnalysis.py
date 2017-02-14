@@ -312,7 +312,7 @@ else:
     
     
     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
-     os.system("chmod 777 " + path_full_sample_list)
+    os.system("chmod 777 " + path_full_sample_list)
     new_catversion=True
     
     lqdir = str(os.getenv("LQANALYZER_DIR"))

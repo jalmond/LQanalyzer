@@ -40,7 +40,6 @@ MCDataCorrections::MCDataCorrections(bool isdata) {
 }
   
 
-
 MCDataCorrections::~MCDataCorrections(){
   delete rc;
   delete reweightPU;
@@ -148,9 +147,9 @@ double MCDataCorrections::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu
 
 
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    float mupt=itmu->Pt();
-    if(itmu->Pt() >120. )mupt=119.;
-    if(itmu->Pt() < 20.) mupt=21.;
+    float mupt=itmu->MiniAODPt();
+    if(itmu->MiniAODPt() >120. )mupt=119.;
+    if(itmu->MiniAODPt() < 20.) mupt=21.;
 
 
     if(CheckCorrectionHist("ISO"+tag +"_"+ muid)){
@@ -175,8 +174,6 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
   if(k_mcperiod < 6) tag = "_BCDEF";
   else tag = "_GH";
 
-
-
   double min_pt = 20., max_pt = 120.;
   if(muid=="MUON_HN_TRI_TIGHT"){
     min_pt = 5.;
@@ -185,10 +182,10 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
   
   if(mu.size() == 0) return 1.;
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    float mupt=itmu->Pt();
+    float mupt=itmu->MiniAODPt();
 
-    if(itmu->Pt() < min_pt) mupt = min_pt+1.;
-    if(itmu->Pt() >= max_pt) mupt = max_pt-1.;
+    if(itmu->MiniAODPt() < min_pt) mupt = min_pt+1.;
+    if(itmu->MiniAODPt() >= max_pt) mupt = max_pt-1.;
 
     if(CheckCorrectionHist("ID" +tag+ "_"+ muid)){
       sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
@@ -233,7 +230,7 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
       // G+H    https://twiki.cern.ch/twiki/pub/CMS/MuonWorkInProgressAndPagResults/2016.12.14_MuonPOGTriggerSF_KPLee_v1.pdf 
       // BtoF https://indico.cern.ch/event/608200/contributions/2452382/attachments/1401679/2156728/2017.02.05_MuonPOGTriggerSF_KPLee_v1.pdf 
       
-      float mupt=mu.at(0).Pt();
+      float mupt=mu.at(0).MiniAODPt();
       if(mupt >  f2_ptthreshold) mupt = (f2_ptthreshold-1.);
       if(mupt < f1_ptthreshold) mupt = (f1_ptthreshold - 1.);
       if(CheckCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())){
