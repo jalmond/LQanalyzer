@@ -191,14 +191,30 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 }
 
 
-//float AnalyzerCore::GetCorrectedMET(){                                                                                                                                                                                                                                       
 
 
-//float met_x =eventbase->GetEvent().PFMETx()                                                                                                                                                                                                                                 
-//float met_y =eventbase->GetEvent().PFMETy()                                                                                                                                                                                                                                 
+float AnalyzerCore::CorrectedMETRochester(){                                                                                                                                                                                                                                       
+  
+  float met_x =eventbase->GetEvent().PFMETx();                                                                                                                                                                                                                                float met_y =eventbase->GetEvent().PFMETy();                                                                                                                                                                                                                              
+  std::vector<snu::KMuon> muall = GetMuons("MUON_NOCUT_ROCHESTER");
 
+  float px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  for(unsigned int im=0; im < muall.size() ; im++){
+      
+      px_orig+= muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi());
+      py_orig+= muall.at(im).MiniAODPt()*TMath::Sin(muall.at(im).Phi());
+      
+      px_corrected += muall.at(im).Px();
+      py_corrected += muall.at(im).Py();
+      
+  }
+  met_x = met_x + px_orig - px_corrected;	
+  met_y = met_y + py_orig - py_corrected;	
+   
+    
+      return sqrt(met_x*met_x + met_y*met_y);
+}   
 
-//}   
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ///// FUNCTION USED TO CREATE BTAG EFFICIENCIES USED BY BTAGSF.cxx CLass

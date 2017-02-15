@@ -130,13 +130,10 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   // New variable to set catversion. Add this to flat ntuples for next iteration
   kevent.SetCatVersion(CatVersion);
 
-  kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
+  if(isData)  kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
 
-  if(metNoHF_pt){
-    if(metNoHF_pt->size() > 0) kevent.SetMET(snu::KEvent::nohf, metNoHF_pt->at(0),  metNoHF_phi->at(0), metNoHF_sumet->at(0));
-  }
 
   if(k_cat_version > 3){
     /// k_cat_version > 3 == v765+
@@ -150,14 +147,67 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       kevent.SetScaleWeights(*ScaleWeights);
       }
     }
+
   }
 
+
+  if(!isData){
+    float jpx(0.), jpy(0.), sjpx(0.), sjpy(0.), sjpxup(0.), sjpxdown(0.),sjpyup(0.), sjpydown(0.) ;
+    for(unsigned int ij = 0 ; ij < jets_pt->size(); ij++){
+      if(jets_pt->at(ij) < 10.) continue;
+
+      float jets_px = jets_pt->at(ij) *TMath::Cos(jets_phi->at(ij)); 
+      float jets_py = jets_pt->at(ij) *TMath::Sin(jets_phi->at(ij));
+      jpx +=  jets_px;
+      jpy +=  jets_py;
+      
+      sjpx +=  jets_smearedRes->at(ij) *jets_px;
+      sjpy +=  jets_smearedRes->at(ij) *jets_px;
+
+      sjpxup +=  jets_smearedResUp->at(ij) *jets_px;
+      sjpyup +=  jets_smearedResUp->at(ij) *jets_py;
+      
+      sjpxdown +=  jets_smearedResDown->at(ij) *jets_px;
+      sjpydown +=  jets_smearedResDown->at(ij) *jets_py;
+
+    }
+
+    // met_jetRes_Px_up ==met_Px since no smearing is applied in miniaods -> cattools
+    float met_x  = met_jetRes_Px_up->at(0)  +  jpx - sjpx;
+    float met_y  = met_jetRes_Py_up->at(0)  +  jpy - sjpy;
+    float met_newpt = sqrt(met_x*met_x+ met_y*met_y);
+    kevent.SetMET(snu::KEvent::pfmet,  met_newpt, met_phi->at(0),  met_sumet->at(0));
+    
+    float met_x_jer_up  = met_jetRes_Px_up->at(0)  +  jpx - sjpxup;
+    float met_y_jer_up   = met_jetRes_Py_up->at(0)  +  jpy - sjpyup;
+    float met_newpt_jerup = sqrt(met_x_jer_up*met_x_jer_up+ met_y_jer_up*met_y_jer_up);
+    float met_x_jer_down   = met_jetRes_Px_up->at(0)  +  jpx - sjpxdown;
+    float met_y_jer_down  = met_jetRes_Py_up->at(0)  +  jpy -sjpydown;
+    float met_newpt_jerdown = sqrt(met_x_jer_down*met_x_jer_down+ met_y_jer_down*met_y_jer_down);
+
+      
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     met_newpt_jerup);
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     met_newpt_jerdown);
+
+  }
+  
 
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
   
   if(k_cat_version > 2){
     if(met_unclusteredEn_Px_up){
       if(met_unclusteredEn_Px_up->at(0)){
+	
+	// catools use slimmedMETs in MiniAOD
+	// this uses type 1 corrected MET
+	// as explained in here https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss
+	// The type1 corrections is computed from ak4PFJetsCHS jets with pT > 15 GeV,
+	// smearing mc jets
+	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution
+	// change in jet pt needs propagating into MET
+	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/JERCReference
+	/// For details see hete
+	/// https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections 
 	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_up*met_muonEn_Px_up + met_muonEn_Py_up*met_muonEn_Py_up));
 	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::MuonEn,     sqrt(met_muonEn_Px_down*met_muonEn_Px_down + met_muonEn_Py_down*met_muonEn_Py_up));
 	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::ElectronEn, sqrt(met_electronEn_Px_up*met_electronEn_Px_up + met_electronEn_Py_up*met_electronEn_Py_up));
@@ -170,11 +220,12 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetEn,      sqrt(met_jetEn_Px_down->at(0)*met_jetEn_Px_down->at(0) + met_jetEn_Py_down->at(0)*met_jetEn_Py_up->at(0)));
 	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetEn,      met_jetEn_SumEt_up->at(0));
 	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetEn,      met_jetEn_SumEt_down->at(0));
-	//// FILL smearing shift on met()
-	kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0)));
-	kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     sqrt(met_jetRes_Px_down->at(0)*met_jetRes_Px_down->at(0) + met_jetRes_Py_down->at(0)*met_jetRes_Py_up->at(0)));
-	kevent.SetPFSumETShift(snu::KEvent::up,     snu::KEvent::JetRes,     met_jetRes_SumEt_up->at(0));
-	kevent.SetPFSumETShift(snu::KEvent::down,   snu::KEvent::JetRes,     met_jetRes_SumEt_down->at(0));
+
+	/// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py
+	/// jets > 15 GeV in mc smeared. This is not done in cattolls so branches have no change,
+	/// Apply this here
+	/// 
+
       }
     }
   }
@@ -769,6 +820,10 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     }
     else{
       jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+
+      // https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution      
+      /// Measurements show that the jet energy resolution (JER) in data is worse than in the simulation and the jets in MC need to be smeared to describe the data.
+
       jet*= jets_smearedRes->at(ijet);
       jet.SetIsMCSmeared(true);
     }
