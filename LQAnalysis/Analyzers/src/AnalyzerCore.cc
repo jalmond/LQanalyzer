@@ -216,8 +216,8 @@ float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
   if(update_met){
     if(!eventbase->GetEvent().PropagatedRochesterToMET()){
       eventbase->GetEvent().SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), eventbase->GetEvent().METPhi(), eventbase->GetEvent().SumET());
-      eventbase->GetEvent().SetMETx(met_x);
-      eventbase->GetEvent().SetMETy(met_y);
+      eventbase->GetEvent().SetPFMETx(met_x);
+      eventbase->GetEvent().SetPFMETy(met_y);
       eventbase->GetEvent().SetPropagatedRochesterToMET(true);
     }
   }
