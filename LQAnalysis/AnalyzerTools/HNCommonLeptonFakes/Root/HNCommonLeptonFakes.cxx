@@ -184,12 +184,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
   for(int i=0; i<N_dXYMin; i++){
     for(int j=0; j<N_LooseRelIso; j++){
       TString this_wp = DoubleToTString(dXYMin[i], LooseRelIso[j]);
-      _2DEfficiencyMap_Double["FR_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR"))->Clone());
-      _2DEfficiencyMap_Double["FR_QCD_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR_QCD"))->Clone()); 
-      _2DEfficiencyMap_Double["FRSF_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FRSF_QCD"))->Clone());
+      _2DEfficiencyMap_Double["MUON_FR_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR"))->Clone());
+      _2DEfficiencyMap_Double["MUON_FR_QCD_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR_QCD"))->Clone()); 
+      _2DEfficiencyMap_Double["MUON_FRSF_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FRSF_QCD"))->Clone());
     }
   }
-  _2DEfficiencyMap["PR_trilep"] = dynamic_cast<TH2F*>((file_trilep_prompt->Get("PR_pt_abseta"))->Clone());
+  _2DEfficiencyMap["MUON_PR_HN_TRI"] = dynamic_cast<TH2F*>((file_trilep_prompt->Get("PR_pt_abseta"))->Clone());
 
   //==== Large dXYSig muon definitions for systemtatics
   TH1D *hist_dXYMins = (TH1D*)file_trilep_fake->Get("hist_dXYMins");
@@ -722,12 +722,12 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
   if(UseQCDFake) wp = "QCD_"+wp; 
   
   //==== Get FR
-  map<TString,TH2D*>::const_iterator mapit_FR = _2DEfficiencyMap_Double.find("FR_"+wp);
-  map<TString,TH2D*>::const_iterator mapit_FRSF = _2DEfficiencyMap_Double.find("FRSF_"+wp);
+  map<TString,TH2D*>::const_iterator mapit_FR = _2DEfficiencyMap_Double.find("MUON_FR_"+wp);
+  map<TString,TH2D*>::const_iterator mapit_FRSF = _2DEfficiencyMap_Double.find("MUON_FRSF_"+wp);
   
   if(UseQCDFake){
     if( mapit_FR==_2DEfficiencyMap_Double.end()){
-      NoHist("FR_"+DoubleToTString(Current_dXYSig, Current_RelIso));
+      NoHist("MUON_FR_"+DoubleToTString(Current_dXYSig, Current_RelIso));
       return 0.;
     }
     else{
@@ -746,8 +746,8 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
   }
   else{
     if( mapit_FR==_2DEfficiencyMap_Double.end() || mapit_FRSF==_2DEfficiencyMap_Double.end() ){
-      NoHist("FR_"+DoubleToTString(Current_dXYSig, Current_RelIso));
-      NoHist("FRSF_"+DoubleToTString(Current_dXYSig, Current_RelIso));
+      NoHist("MUON_FR_"+DoubleToTString(Current_dXYSig, Current_RelIso));
+      NoHist("MUON_FRSF_"+DoubleToTString(Current_dXYSig, Current_RelIso));
       return 0.;
     }
     else{
@@ -777,7 +777,7 @@ float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float
   if(fabs(eta) >= 2.5) eta = 2.4;
   
   map<TString,TH2F*>::const_iterator mapit;
-  mapit = _2DEfficiencyMap.find("PR_trilep");
+  mapit = _2DEfficiencyMap.find("MUON_PR_HN_TRI_TIGHT");
   
   if(mapit!=_2DEfficiencyMap.end()){
     int binx =  mapit->second->FindBin(pt, abs(eta));
@@ -785,7 +785,7 @@ float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float
     else return mapit->second->GetBinContent(binx);
   }
   else{
-    NoHist("PR_"+DoubleToTString(Current_dXYSig, Current_RelIso));
+    NoHist("MUON_PR_HN_TRI_TIGHT"+DoubleToTString(Current_dXYSig, Current_RelIso));
     return 0.;
   }
   return 0.;
