@@ -785,7 +785,7 @@ float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float
     else return mapit->second->GetBinContent(binx);
   }
   else{
-    NoHist("MUON_PR_HN_TRI_TIGHT"+DoubleToTString(Current_dXYSig, Current_RelIso));
+    NoHist("MUON_PR_HN_TRI_TIGHT");
     return 0.;
   }
   return 0.;
