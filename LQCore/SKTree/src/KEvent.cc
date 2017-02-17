@@ -85,7 +85,8 @@ KEvent::KEvent() :
   k_pu_gold_weightF(-999.),
   k_pu_gold_weightG(-999.),
   k_pu_gold_weightH(-999.),
-  k_catversion("")
+  k_catversion(""),
+  prop_metrc(false)
 {
 
 }
@@ -169,7 +170,8 @@ KEvent::KEvent(const KEvent& ev) :
   k_pu_gold_weightG(ev.k_pu_gold_weightG),
   k_pu_gold_weightH(ev.k_pu_gold_weightH),
 
-  k_catversion(ev.k_catversion)
+  k_catversion(ev.k_catversion),
+  prop_metrc(ev.prop_metrc)
 
 {
 }
@@ -257,7 +259,7 @@ void KEvent::Reset()
   k_pu_gold_weightH = -999;
 
   k_catversion="";
-
+  prop_metrc=false;
 }
 
 
@@ -347,6 +349,7 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pu_gold_weightH = p.PeriodPileUpWeight(7);
 
       k_catversion = p.CatVersion();
+      prop_metrc = p.PropagatedRochesterToMET();
     }
     
     return *this;
@@ -355,6 +358,10 @@ KEvent& KEvent::operator= (const KEvent& p)
 //// SET CLASS VARIBALES
 void KEvent::SetCatVersion(std::string cat){
   k_catversion = cat;
+}
+
+void KEvent::SetPropagatedRochesterToMET(bool hasprop){
+  prop_metrc = hasprop;
 }
 
 void KEvent::SetPassCSCHaloFilterTight(bool pass){
