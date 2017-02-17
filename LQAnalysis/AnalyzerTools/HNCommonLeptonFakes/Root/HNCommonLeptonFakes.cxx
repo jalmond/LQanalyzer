@@ -189,7 +189,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
       _2DEfficiencyMap_Double["MUON_FRSF_"+this_wp] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FRSF_QCD"))->Clone());
     }
   }
-  _2DEfficiencyMap["MUON_PR_HN_TRI"] = dynamic_cast<TH2F*>((file_trilep_prompt->Get("PR_pt_abseta"))->Clone());
+  _2DEfficiencyMap["MUON_PR_HN_TRI_TIGHT"] = dynamic_cast<TH2F*>((file_trilep_prompt->Get("PR_pt_abseta"))->Clone());
 
   //==== Large dXYSig muon definitions for systemtatics
   TH1D *hist_dXYMins = (TH1D*)file_trilep_fake->Get("hist_dXYMins");
