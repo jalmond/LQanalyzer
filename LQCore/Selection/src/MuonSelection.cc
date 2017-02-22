@@ -98,14 +98,14 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochest
 
       TString MuID=GetString(k_id);
       if(apply_ID && !PassID(MuID, *muit)) pass_selection =false;
-      if(m_debug&& apply_ID && !PassID(MuID, *muit)) cout << "Fails Selection::ID cut " << endl;
+      if(m_debug && apply_ID && !PassID(MuID, *muit)) cout << "Fails Selection::ID cut " << endl;
 
 
       if(apply_ptcut && ! ( muit->Pt() > pt_cut_min )) pass_selection = false;
-      if(m_debug&&apply_ptcut && ! (muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max)) cout << "Fails Selection::pt cut " << endl;
+      if(m_debug && apply_ptcut && ! (muit->Pt() >= pt_cut_min && muit->Pt() < pt_cut_max)) cout << "Fails Selection::pt cut " << endl;
       
       if(apply_etacut && !(fabs(muit->Eta()) < eta_cut)) pass_selection =false;
-      if(m_debug&&apply_etacut && !(fabs(muit->Eta()) < eta_cut))  cout << "Fails Selection::eta cut " << endl;
+      if(m_debug && apply_etacut && !(fabs(muit->Eta()) < eta_cut))  cout << "Fails Selection::eta cut " << endl;
 
 
       //// Calculate PF isolation
@@ -116,7 +116,7 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochest
       else   LeptonRelIso=muit->RelIso04();
       
       if(apply_relisocut && !( LeptonRelIso < relIso_cut)) pass_selection = false;
-      if(m_debug&&apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
+      if(m_debug && apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
       
   
       /// impact parameter cuts
@@ -124,10 +124,17 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochest
       // Also stores dB() on pat::Muon  as dxy_pat
       // Also stores D0 
       if(apply_dzcut && !(fabs(muit->dZ())<  dz_cut )) pass_selection = false;
-      if(m_debug&&apply_dzcut && !(fabs(muit->dZ())<  dz_cut ))  cout << "Fails Selection::dz cut " << endl;
+      if(m_debug && apply_dzcut && !(fabs(muit->dZ())<  dz_cut ))  cout << "Fails Selection::dz cut " << endl;
+
       if(apply_dxycut && !(fabs(muit->dXY())< dxy_cut )) pass_selection = false;
-      if(m_debug&&apply_dxycut && !(fabs(muit->dXY())< dxy_cut ))cout << "Fails Selection::dxy cut " << endl;
-      
+      if(m_debug && apply_dxycut && !(fabs(muit->dXY())< dxy_cut ))cout << "Fails Selection::dxy cut " << endl;
+
+      if(apply_dxysigmin && !(fabs(muit->dXYSig()) >= dxySig_min )) pass_selection = false;
+      if(m_debug && apply_dxysigmin && !(fabs(muit->dXYSig()) >= dxySig_min ))cout << "Fails Selection::dxySigMin cut " << endl;
+
+      if(apply_dxysigmax && !(fabs(muit->dXYSig()) < dxySig_max )) pass_selection = false;
+      if(m_debug && apply_dxysigmax && !(fabs(muit->dXYSig()) < dxySig_max ))cout << "Fails Selection::dxySigMin cut " << endl;
+
       
       if(apply_chi2cut && !( muit->GlobalChi2() < chiNdof_cut && muit->GlobalChi2() >= chiNdofMIN_cut )) pass_selection = false;
       if(m_debug&&apply_chi2cut && !( muit->GlobalChi2() <chiNdof_cut && muit->GlobalChi2()  >=chiNdofMIN_cut)) cout << "Fails chi2 cut " << endl;
