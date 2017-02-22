@@ -196,7 +196,20 @@ void MakeInputListForSubmitScript(){
 
 
   lumi_file << "') " << endl;
+  lumi_file << "" << endl;
+  lumi_file << "declare -a hn_moriond_mm=('" ;
+  for(std::map<TString, TString>::iterator mit =lqmap.begin(); mit != lqmap.end();++mit){
+    if(!mit->second.Contains("HNMoriondLL")) continue;
 
+    cout << mit->first << " " << mit->second << endl;
+    if(next(mit)!= lqmap.end()) lumi_file << mit->second << "' '"   ;
+    else  lumi_file << mit->second ;
+
+  }
+
+
+
+  lumi_file << "') " << endl;
 
   lumi_file << "" << endl;
   lumi_file << "declare -a hn_ll_tchann_ee=('" ;

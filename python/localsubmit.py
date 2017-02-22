@@ -336,21 +336,22 @@ BusyMachine=False
 username = str(os.getenv("USER"))
 
 nj_def=1000    
-if not number_of_cores == 1:
-    if cycle == "SKTreeMaker":
-        number_of_cores=nj_def
-    if cycle == "SKTreeMakerNoCut":
-        number_of_cores=nj_def
-    if cycle == "SKTreeMakerDiLep":
-        number_of_cores=nj_def
-    if cycle == "SKTreeMakerTriLep":
-        number_of_cores=nj_def
+if cycle == "SKTreeMaker":
+    number_of_cores=nj_def
+if cycle == "SKTreeMakerNoCut":
+    number_of_cores=nj_def
+if cycle == "SKTreeMakerDiLep":
+    number_of_cores=nj_def
+if cycle == "SKTreeMakerTriLep":
+    number_of_cores=nj_def
 
 
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
 ##################################################################################################################
 singlejob = number_of_cores==1            
+if "SKTreeMaker" in cycle:
+    singlejob=False
 
 #### determine if input is data/mc
 mc = len(sample)>1
@@ -863,16 +864,18 @@ for i in range(1,number_of_cores+1):
         runcommand = "root.exe -l -q -b " +  script 
         os.system(runcommand)
     else:
-        if i==1:
+        if i== number_of_cores:
             if running_batch:
                 print "Running " + script + " . Log file --->  " + logbatch
             else:
                 print "Running " + script + " . Log file --->  " + log
-        elif i== number_of_cores:
+
+        elif i==1:
             if running_batch:
                 print "Running " + script + " . Log file --->  " + logbatch
             else:
                 print "Running " + script + " . Log file --->  " + log
+
         elif i==2:
             print "......"
         os.system(runcommand)
@@ -1066,7 +1069,7 @@ while not JobSuccess:
         if running_batch:
             ### print jobs running/in queue .... once all running print % completeion
             for i in range(1,number_of_cores+1):
-                if number_of_cores == 1:
+                if number_of_cores == 1 and not "SKTreeMaker" in cycle:
                     check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".log"
                 else:
                     check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
@@ -1392,6 +1395,7 @@ else:
         os.system("mkdir " + Finaloutputdir)
     outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:
+        print "doing merge"
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
         if os.path.exists(Finaloutputdir + outfile):
@@ -1406,9 +1410,11 @@ else:
         f.Close()
         print "Merged output :" + Finaloutputdir + outfile
     else:
+        print "not doing merge"
+        
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
-        if number_of_cores == 1:
+        if number_of_cores == 1 and not "SKTreeMaker" in cycle:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
             
             os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")
