@@ -162,7 +162,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       jpy +=  jets_py;
       
       sjpx +=  jets_smearedRes->at(ij) *jets_px;
-      sjpy +=  jets_smearedRes->at(ij) *jets_px;
+      sjpy +=  jets_smearedRes->at(ij) *jets_py;
 
       sjpxup +=  jets_smearedResUp->at(ij) *jets_px;
       sjpyup +=  jets_smearedResUp->at(ij) *jets_py;

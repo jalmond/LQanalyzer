@@ -168,7 +168,7 @@ KJet& KJet::operator= (const KJet& p)
 }
 
 
-double KJet::PassPileUpMVA(TString puwp){
+bool KJet::PassPileUpMVA(TString puwp){
 
   bool pass(true);
   //https://indico.cern.ch/event/559594/contributions/2257924/attachments/1317046/1973307/PUID_JMAR_2016_07_26_v1.pdf
