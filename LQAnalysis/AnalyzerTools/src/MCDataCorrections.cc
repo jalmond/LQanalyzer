@@ -30,7 +30,8 @@ MCDataCorrections::MCDataCorrections() {
   string pileupdir = getenv("PILEUPFILEDIR");
 
   FillCorrectionHists();
-  reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
+  //reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
+
 }
 
 
@@ -42,7 +43,7 @@ MCDataCorrections::MCDataCorrections(bool isdata) {
 
 MCDataCorrections::~MCDataCorrections(){
   delete rc;
-  delete reweightPU;
+  ///  delete reweightPU;
   CorrectionMap.clear();
   CorrectionMapGraph.clear();
 }
@@ -328,7 +329,8 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el){
 float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
   
   if(corr_isdata) return 1.;
-  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
+  return 1.;
+  //return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
 }
 
 
