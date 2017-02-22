@@ -204,18 +204,19 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
   /// Currently only muon scale factors (single) are added by pog
   
   if(corr_isdata) return 1.;
-  if(mu.size() == 1){
 
-    TString s_ptthreshold="";
-    float f1_ptthreshold=-999.;
-    float f2_ptthreshold=-999.;
+  TString s_ptthreshold="";
+  float f1_ptthreshold=-999.;
+  float f2_ptthreshold=-999.;
+  TString DataEffSrcName="", MCEffSrcName="";
 
-    
-    TString tag = "";
-    if(k_mcperiod < 6) tag = "_BCDEF";
-    else tag = "_GH";
-    
-    if (trigname.Contains("HLT_IsoMu") || trigname.Contains("HLT_IsoTkMu"))  {
+  
+  TString tag = "";
+  if(k_mcperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+  
+  if(trigname.Contains("HLT_IsoMu") || trigname.Contains("HLT_IsoTkMu")){
+    if(mu.size()==1){
       if (trigname.Contains("24")){
 	  s_ptthreshold = "24";
 	  f1_ptthreshold = 24.;
@@ -237,9 +238,48 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
 	float sferr = double(direction)*GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->GetBinError(GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->FindBin( fabs(mu.at(0).Eta()), mupt) );
 	return  (1. + sferr)*GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->GetBinContent( GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->FindBin(  fabs(mu.at(0).Eta()), mupt) );
       }
-    }
-  }
+    }//One Muon case to SinglMuTrig Ends
+    else if(mu.size()>=2){
+      if(trigname.Contains("24")){
+        s_ptthreshold  ="24";
+        f1_ptthreshold = 24.;
+        f2_ptthreshold = 500.;
+      }
+      DataEffSrcName = "MUON_MU"+s_ptthreshold+"_TRIGGER_DATA_EFF"+tag;
+      MCEffSrcName   = "MUON_MU"+s_ptthreshold+"_TRIGGER_MC_EFF"+tag;
+      if( !( CheckCorrectionHist(DataEffSrcName) && CheckCorrectionHist(MCEffSrcName) ) ) return 0.;
+
+      std::vector<float> muptColl;
+        for(int i=0; i<mu.size(); i++){
+          float mupt=mu.at(i).MiniAODPt();
+          if     (mupt>f2_ptthreshold){ muptColl.push_back(f2_ptthreshold - 1.); }
+          else if(mupt<f1_ptthreshold){ muptColl.push_back(f1_ptthreshold - 1.); }
+          else                          muptColl.push_back(mupt);
+        }
+      std::vector<float> muetaColl;
+        for(int i=0; i<mu.size(); i++){ muetaColl.push_back(mu.at(i).Eta()); };
+
+      std::vector<float> dataeffColl;
+        for(int i=0; i<mu.size(); i++){ dataeffColl.push_back( GetCorrectionHist(DataEffSrcName)->GetBinContent( GetCorrectionHist(DataEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+
+      std::vector<float> mceffColl;
+        for(int i=0; i<mu.size(); i++){ mceffColl.push_back( GetCorrectionHist(MCEffSrcName)->GetBinContent( GetCorrectionHist(MCEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+        
+      float DataFailProb =1.; for(int i=0; i<mu.size(); i++){ DataFailProb *= (1.-dataeffColl.at(i)); };
+      float MCFailProb   =1.; for(int i=0; i<mu.size(); i++){ MCFailProb   *= (1.-mceffColl.at(i));   };
+      
+      if((1.-MCFailProb)==0.) return 0.;
+      float SF = (1.-DataFailProb)/(1.-MCFailProb);
+
+      return SF;
+      
+
+    }//2 Muon case to SinglMuTrig ends.
+  }//SingleMuTrig case ends.
+
   return 1.;
+
+
 }
 
 double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectron> el, int sys){
