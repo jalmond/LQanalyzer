@@ -59,7 +59,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
   CheckFile(file_trilep_prompt);
 
 
-
   ////// MAKE HISTS IN MAP
   TDirectory* tempDir1 = getTemporaryDirectory();
   tempDir1->cd();

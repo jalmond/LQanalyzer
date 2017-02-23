@@ -59,5 +59,10 @@ EventBase& EventBase::operator= (const EventBase& b){
 }
 
 
+void EventBase::SetEventBase(snu::KEvent ev){
+  k_LQevent->SetEvent(ev);
+
+}
+
 
 

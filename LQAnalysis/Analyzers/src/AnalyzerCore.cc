@@ -195,8 +195,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
 float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
 
-  
-  float met_x =eventbase->GetEvent().PFMETx();                                                                                                            
+  /// function returns corrected met + can be used to set event met to corrected met
+
+  float met_x =eventbase->GetEvent().PFMETx(); 
   float met_y =eventbase->GetEvent().PFMETy();
   std::vector<snu::KMuon> muall = GetMuons(muid_formet);
   
@@ -205,7 +206,7 @@ float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
       
       px_orig+= muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi());
       py_orig+= muall.at(im).MiniAODPt()*TMath::Sin(muall.at(im).Phi());
-      
+      cout << muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi()) << " " << muall.at(im).Px() << endl;
       px_corrected += muall.at(im).Px();
       py_corrected += muall.at(im).Py();
       
@@ -215,10 +216,12 @@ float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
   
   if(update_met){
     if(!eventbase->GetEvent().PropagatedRochesterToMET()){
-      eventbase->GetEvent().SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), eventbase->GetEvent().METPhi(), eventbase->GetEvent().SumET());
-      eventbase->GetEvent().SetPFMETx(met_x);
-      eventbase->GetEvent().SetPFMETy(met_y);
-      eventbase->GetEvent().SetPropagatedRochesterToMET(true);
+      snu::KEvent tempev = eventbase->GetEvent();
+      tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), eventbase->GetEvent().METPhi(), eventbase->GetEvent().SumET());
+      tempev.SetPFMETx(met_x);
+      tempev.SetPFMETy(met_y);
+      tempev.SetPropagatedRochesterToMET(true);
+      eventbase->SetEventBase(tempev);
     }
   }
   return sqrt(met_x*met_x + met_y*met_y);
@@ -1228,7 +1231,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   //
   
   eventbase = new EventBase(lqevent);
-    
+
   eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron);
   eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);
   eventbase->GetMuonSel()->SetIDSMap(selectionIDMapsMuon);

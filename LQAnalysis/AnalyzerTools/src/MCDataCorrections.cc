@@ -415,6 +415,8 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
 	if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), genpt, u1,0, 0);
 	else scalefactor = rc->kScaleAndSmearMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), u1, u2, 0,0);
     }
+    it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+    it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
     it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
   }  
   

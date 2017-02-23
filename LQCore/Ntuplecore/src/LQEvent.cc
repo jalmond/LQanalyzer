@@ -75,3 +75,8 @@ LQEvent& LQEvent::operator= (const LQEvent& evb)
   }  
   return *this;
 }
+
+
+void LQEvent::SetEvent(snu::KEvent ev){
+  k_event=ev;
+}
