@@ -30,7 +30,8 @@ MCDataCorrections::MCDataCorrections() {
   string pileupdir = getenv("PILEUPFILEDIR");
 
   FillCorrectionHists();
-  reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
+  //reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
+
 }
 
 
@@ -42,7 +43,7 @@ MCDataCorrections::MCDataCorrections(bool isdata) {
 
 MCDataCorrections::~MCDataCorrections(){
   delete rc;
-  delete reweightPU;
+  ///  delete reweightPU;
   CorrectionMap.clear();
   CorrectionMapGraph.clear();
 }
@@ -204,18 +205,19 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
   /// Currently only muon scale factors (single) are added by pog
   
   if(corr_isdata) return 1.;
-  if(mu.size() == 1){
 
-    TString s_ptthreshold="";
-    float f1_ptthreshold=-999.;
-    float f2_ptthreshold=-999.;
+  TString s_ptthreshold="";
+  float f1_ptthreshold=-999.;
+  float f2_ptthreshold=-999.;
+  TString DataEffSrcName="", MCEffSrcName="";
 
-    
-    TString tag = "";
-    if(k_mcperiod < 6) tag = "_BCDEF";
-    else tag = "_GH";
-    
-    if (trigname.Contains("HLT_IsoMu") || trigname.Contains("HLT_IsoTkMu"))  {
+  
+  TString tag = "";
+  if(k_mcperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+  
+  if(trigname.Contains("HLT_IsoMu") || trigname.Contains("HLT_IsoTkMu")){
+    if(mu.size()==1){
       if (trigname.Contains("24")){
 	  s_ptthreshold = "24";
 	  f1_ptthreshold = 24.;
@@ -237,9 +239,48 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
 	float sferr = double(direction)*GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->GetBinError(GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->FindBin( fabs(mu.at(0).Eta()), mupt) );
 	return  (1. + sferr)*GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->GetBinContent( GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->FindBin(  fabs(mu.at(0).Eta()), mupt) );
       }
-    }
-  }
+    }//One Muon case to SinglMuTrig Ends
+    else if(mu.size()>=2){
+      if(trigname.Contains("24")){
+        s_ptthreshold  ="24";
+        f1_ptthreshold = 24.;
+        f2_ptthreshold = 500.;
+      }
+      DataEffSrcName = "MUON_MU"+s_ptthreshold+"_TRIGGER_DATA_EFF"+tag;
+      MCEffSrcName   = "MUON_MU"+s_ptthreshold+"_TRIGGER_MC_EFF"+tag;
+      if( !( CheckCorrectionHist(DataEffSrcName) && CheckCorrectionHist(MCEffSrcName) ) ) return 0.;
+
+      std::vector<float> muptColl;
+        for(int i=0; i<mu.size(); i++){
+          float mupt=mu.at(i).MiniAODPt();
+          if     (mupt>f2_ptthreshold){ muptColl.push_back(f2_ptthreshold - 1.); }
+          else if(mupt<f1_ptthreshold){ muptColl.push_back(f1_ptthreshold - 1.); }
+          else                          muptColl.push_back(mupt);
+        }
+      std::vector<float> muetaColl;
+        for(int i=0; i<mu.size(); i++){ muetaColl.push_back(mu.at(i).Eta()); };
+
+      std::vector<float> dataeffColl;
+        for(int i=0; i<mu.size(); i++){ dataeffColl.push_back( GetCorrectionHist(DataEffSrcName)->GetBinContent( GetCorrectionHist(DataEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+
+      std::vector<float> mceffColl;
+        for(int i=0; i<mu.size(); i++){ mceffColl.push_back( GetCorrectionHist(MCEffSrcName)->GetBinContent( GetCorrectionHist(MCEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+        
+      float DataFailProb =1.; for(int i=0; i<mu.size(); i++){ DataFailProb *= (1.-dataeffColl.at(i)); };
+      float MCFailProb   =1.; for(int i=0; i<mu.size(); i++){ MCFailProb   *= (1.-mceffColl.at(i));   };
+      
+      if((1.-MCFailProb)==0.) return 0.;
+      float SF = (1.-DataFailProb)/(1.-MCFailProb);
+
+      return SF;
+      
+
+    }//2 Muon case to SinglMuTrig ends.
+  }//SingleMuTrig case ends.
+
   return 1.;
+
+
 }
 
 double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectron> el, int sys){
@@ -288,7 +329,8 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el){
 float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
   
   if(corr_isdata) return 1.;
-  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
+  return 1.;
+  //return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
 }
 
 
@@ -373,6 +415,8 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
 	if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), genpt, u1,0, 0);
 	else scalefactor = rc->kScaleAndSmearMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), u1, u2, 0,0);
     }
+    it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+    it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
     it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
   }  
   

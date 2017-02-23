@@ -103,6 +103,11 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
+  CorrectedMETRochester("MUON_POG_TIGHT", true);
+  
+
+  return;
+
   /*
   if(GetJets("JET_HN").size() > 0){
     cout << "Tight pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Tight") << endl;
@@ -131,9 +136,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 
   return;
-  std::vector<snu::KMuon> testmuons =GetMuons("MUON_POG_TIGHT");
 
-  CorrectMuonMomentum(testmuons);
+
+
 
   if(GetElectrons("ELECTRON_POG_TIGHT").size() == 1){
     cout << "pt = " << GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt()  << " eta = " <<  GetElectrons("ELECTRON_POG_TIGHT").at(0).Eta() << endl;

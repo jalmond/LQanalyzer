@@ -36,6 +36,8 @@ class LQEvent {
 
   ~LQEvent();
   
+  void SetEvent(snu::KEvent);
+
   inline std::vector<snu::KMuon> GetMuons() const {return k_muons;}
   inline std::vector<snu::KElectron> GetElectrons() const {return k_electrons;}
   inline std::vector<snu::KPhoton> GetPhotons() const {return k_photons;}

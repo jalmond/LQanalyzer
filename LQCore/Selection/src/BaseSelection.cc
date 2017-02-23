@@ -38,11 +38,15 @@ BaseSelection::BaseSelection() {
   apply_BETrRegIncl = false;
   apply_BESepCut    = false;
   apply_relisocut   = false;
+  apply_dxysigmin   = false;     apply_dxysigmax  = false;
   relIsoBarrel_max  = 100000.;   relIsoEndcap_max = 100000.;
   relIsoBarrel_min  = 0.     ;   relIsoEndcap_min = 0.     ;
   dxyBarrel_max     = 100000.;   dxyEndcap_max    = 100000.;
   dzBarrel_max      = 100000.;   dzEndcap_max     = 100000.;
+  dxySig_min        = 0.     ;   dxySig_max       = 100000.;
   RelIsoType        = "Default";
+
+  PUJetIDWP         = "Loose";
 }
 
 ////////// PREDEFINED MUON SELECTIONS                                                                                                        
@@ -198,12 +202,15 @@ BaseSelection& BaseSelection::operator= (const BaseSelection& bs)
     apply_BETrRegIncl = bs.apply_BETrRegIncl;
     apply_BESepCut    = bs.apply_BESepCut;
     apply_relisocut   = bs.apply_relisocut;
+    apply_dxysigmin   = bs.apply_dxysigmin;  apply_dxysigmax  = bs.apply_dxysigmax;
     relIsoBarrel_max  = bs.relIsoBarrel_max; relIsoEndcap_max = bs.relIsoEndcap_max;
     relIsoBarrel_min  = bs.relIsoBarrel_min; relIsoEndcap_min = bs.relIsoEndcap_min;
     dxyBarrel_max     = bs.dxyBarrel_max;    dxyEndcap_max    = bs.dxyEndcap_max;
     dzBarrel_max      = bs.dzBarrel_max;     dzEndcap_max     = bs.dzEndcap_max;
+    dxySig_min        = bs.dxySig_min;       dxySig_max       = bs.dxySig_max;
     RelIsoType        = bs.RelIsoType;
   
+    PUJetIDWP         = bs.PUJetIDWP;
   }
   return *this;
 }
@@ -247,12 +254,15 @@ BaseSelection::BaseSelection(const BaseSelection& bs) {
   apply_BETrRegIncl = bs.apply_BETrRegIncl;
   apply_BESepCut    = bs.apply_BESepCut;
   apply_relisocut   = bs.apply_relisocut;
+  apply_dxysigmin   = bs.apply_dxysigmin;  apply_dxysigmax  = bs.apply_dxysigmax;
   relIsoBarrel_max  = bs.relIsoBarrel_max; relIsoEndcap_max = bs.relIsoEndcap_max;
   relIsoBarrel_min  = bs.relIsoBarrel_min; relIsoEndcap_min = bs.relIsoEndcap_min;
   dxyBarrel_max     = bs.dxyBarrel_max;    dxyEndcap_max    = bs.dxyEndcap_max;
   dzBarrel_max      = bs.dzBarrel_max;     dzEndcap_max     = bs.dzEndcap_max;
+  dxySig_min        = bs.dxySig_min;       dxySig_max       = bs.dxySig_max;
   RelIsoType        = bs.RelIsoType;
 
+  PUJetIDWP         = bs.PUJetIDWP;
 }
 
 
@@ -292,12 +302,15 @@ void BaseSelection::reset(){
   apply_BETrRegIncl = false;
   apply_BESepCut    = false;
   apply_relisocut   = false;
+  apply_dxysigmin   = false;     apply_dxysigmax  = false;
   relIsoBarrel_max  = 100000.;   relIsoEndcap_max = 100000.;
-  relIsoBarrel_min  = 100000.;   relIsoEndcap_min = 100000.;
+  relIsoBarrel_min  = 0.;        relIsoEndcap_min = 0.;
   dxyBarrel_max     = 100000.;   dxyEndcap_max    = 100000.;
   dzBarrel_max      = 100000.;   dzEndcap_max     = 100000.;
+  dxySig_min        = 0.     ;   dxySig_max       = 100000.;
   RelIsoType        = "Default";
 
+  PUJetIDWP         = "Loose";
 }
 
 void BaseSelection::SetPt(Double_t minPt) {
@@ -322,8 +335,14 @@ void BaseSelection::SetID(ID id){
 void BaseSelection::SetCheckCharge(bool check){
   apply_chargeconst = check;
 }
+
 void BaseSelection::SetUseJetPileUp(bool use){
   applypileuptool=use;
+}
+
+void BaseSelection::SetPileUpJetID(bool use, TString pujetidwp){
+  applypileuptool=use;
+  PUJetIDWP=pujetidwp;
 }
 
 void BaseSelection::SetApplyConvVeto(bool apply){
@@ -397,6 +416,16 @@ void BaseSelection::SetBSdxy(Double_t dxyMIN, Double_t set_dxy) {
 void BaseSelection::SetBSdz(Double_t set_dz) {
   apply_dzcut=true;
   set_dz ? dz_cut=set_dz : dz_cut=2.0;
+}
+
+void BaseSelection::SetdxySigMin(Double_t dxySigMin){
+  apply_dxysigmin=true;
+  dxySigMin ? dxySig_min=dxySigMin : 0.;
+}
+
+void BaseSelection::SetdxySigMax(Double_t dxySigMax){
+  apply_dxysigmax=true;
+  dxySigMax ? dxySig_max=dxySigMax : 10000.;
 }
 
 void BaseSelection::SetBETrRegIncl(bool apply){

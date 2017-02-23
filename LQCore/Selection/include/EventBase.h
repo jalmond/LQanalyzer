@@ -57,6 +57,8 @@ class EventBase {
   inline snu::KTrigger GetTrigger() const {return k_LQevent->GetTrigger();}
   inline snu::KEvent GetEvent() const {return k_LQevent->GetEvent();}
 
+  void SetEventBase(snu::KEvent); 
+
   
   ///Copy constructor
   EventBase(const EventBase& sb);
