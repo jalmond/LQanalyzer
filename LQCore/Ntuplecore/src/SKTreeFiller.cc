@@ -130,7 +130,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   // New variable to set catversion. Add this to flat ntuples for next iteration
   kevent.SetCatVersion(CatVersion);
 
-  if(isData)  kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
+  if(isData)  {
+    kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
+    kevent.SetPFMETx(met_jetRes_Px_up->at(0));
+    kevent.SetPFMETy(met_jetRes_Py_up->at(0));
+  }
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
 
