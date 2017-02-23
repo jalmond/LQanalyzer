@@ -118,6 +118,7 @@ class HNCommonLeptonFakes {
   TString DoubleToTString(double this_dXYSig, double this_RelIso);
   void SetTrilepWP(double this_dXYSig, double this_RelIso);
   void SetUseQCDFake(bool useit);
+  void SetDataPeriod(TString period);
   //==== get PR/FR
   float getTrilepFakeRate_muon(bool geterr, float pt,  float eta, bool applysf=true);
   float getTrilepPromptRate_muon(bool geterr, float pt, float eta);
@@ -171,6 +172,7 @@ class HNCommonLeptonFakes {
 
   //==== Trilep fake
   double Current_dXYSig, Current_RelIso;
+  TString DataPeriod;
   bool UseQCDFake;
   std::vector<double> dXYMins, RelIsoMaxs;
   int n_Loose_not_Tight;
