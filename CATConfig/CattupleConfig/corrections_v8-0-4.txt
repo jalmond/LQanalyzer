@@ -21,5 +21,6 @@
 ### MUON_MU50_TRIGGER_BCDEF  TRIGGERFILEDIR EfficienciesAndSF_RunBtoF.root	Mu50_OR_TkMu50_PtEtaBins/abseta_pt_ratio TH2F
 ### MUON_MU50_TRIGGER_GH  TRIGGERFILEDIR EfficienciesAndSF_Period4.root	Mu50_OR_TkMu50_PtEtaBins/abseta_pt_ratio TH2F
 ### TRACKING_EFF IDFILEDIR ratios.root  ratio_eta  TGraphAsymmErrors
-### ID_BCDEF_MUON_HN_TRI_TIGHT IDFILEDIR MuonID_TRILEP_RunBCEDF_rereco_80x.root abseta_pt_PLOT TH2F
+### ID_BCDEF_MUON_HN_TRI_TIGHT IDFILEDIR MuonIDSF_TRILEP_RunBCDEF.root abseta_pt_PLOT TH2F
+### ID_GH_MUON_HN_TRI_TIGHT IDFILEDIR MuonIDSF_TRILEP_RunGH.root abseta_pt_PLOT TH2F
 #END
