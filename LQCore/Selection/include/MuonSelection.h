@@ -21,13 +21,13 @@ class MuonSelection : public BaseSelection {
   MuonSelection& operator= (const MuonSelection& obj);
   MuonSelection(const MuonSelection& bs);
 
-  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, float ptcut, float etacut);
+  void SelectMuons(std::vector<snu::KMuon>& leptonColl, ID muid, bool applyroch,  float ptcut, float etacut);
   bool PassUserID(ID id, snu::KMuon mu);
 
   bool PassID(ID id, snu::KMuon mu, bool m_debug = false);
   
   //// General Selection
-  void Selection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false); 
+  void Selection(std::vector<snu::KMuon>& leptonColl, bool applyroch, bool m_debug = false); 
 
   /// selection for treemaker
   void BasicSelection(std::vector<snu::KMuon>& leptonColl, bool m_debug = false);

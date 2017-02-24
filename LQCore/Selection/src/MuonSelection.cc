@@ -21,6 +21,8 @@ void MuonSelection::BasicSelection( std::vector<KMuon>& leptonColl, bool m_debug
 
       if(muit->Pt() == 0.) continue;
 
+
+
       bool pass_selection = true;
 
       /// ONLY CUT ON PT/ETA/LOOSE ID
@@ -76,7 +78,7 @@ void MuonSelection::SkimSelection( std::vector<KMuon>& leptonColl , bool m_debug
 
 }
 
-void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
+void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochester,bool m_debug) {
   
 
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
@@ -87,9 +89,21 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
       bool pass_selection(true);      
       if(muit->Pt() == 0.) continue;
       
+      if(applyrochester&&! muit->IsRochesterCorrected()) {
+        float origpt = muit->Pt();
+        float origreliso03=muit->RelIso03();
+        float origreliso04=muit->RelIso04();
+        muit->SetPtEtaPhiM(muit->RochPt(), muit->Eta(), muit->Phi(), muit->M());
+        muit->SetRelIso(0.3, origreliso03*origpt/muit->RochPt());
+        muit->SetRelIso(0.4, origreliso04*origpt/muit->RochPt());
+        muit->SetIsRochesterCorrected(true);
+      }
+
+
+
       //// Calculate PF isolation
       /// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation
-      LeptonRelIso = (muit->RelIso03());
+      LeptonRelIso = (muit->RelIso04());
       
       if(apply_relisocut && !( LeptonRelIso < relIso_cut)) pass_selection = false;
       if(m_debug&&apply_relisocut && !( LeptonRelIso < relIso_cut))  cout << "Fails Selection::reliso cut " << endl;
@@ -129,18 +143,33 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool m_debug) {
 
 ////////// PREDEFINED MUON SELECTIONS
   
-void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float ptcut, float etacut){
+void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, bool applyrochester, float ptcut, float etacut){
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
 
     bool pass_selection(true);
     if(muit->Pt() == 0.)   continue;
 
+    if(applyrochester&&! muit->IsRochesterCorrected()) {
+      float origpt = muit->Pt();
+      float origreliso03=muit->RelIso03();
+      float origreliso04=muit->RelIso04();
+      muit->SetPtEtaPhiM(muit->RochPt(), muit->Eta(), muit->Phi(), muit->M());
+      muit->SetRelIso(0.3, origreliso03*origpt/muit->RochPt());
+      muit->SetRelIso(0.4, origreliso04*origpt/muit->RochPt());
+      muit->SetIsRochesterCorrected(true);
+    }
+    
+
     MuonID = PassUserID(muid, *muit);
     if(!MuonID)  pass_selection = false;
 
-    if(( muit->Pt() < ptcut )) pass_selection = false;
-    if(!(fabs(muit->Eta()) < etacut)) pass_selection = false;
+    if(( muit->Pt() < ptcut )) {
+      //cout << "Fail pt " << endl;
+      pass_selection = false;}
+    if(!(fabs(muit->Eta()) < etacut)) {
+      //cout << "Fail eta " << endl;
+      pass_selection = false;}
     if(pass_selection)  leptonColl.push_back(*muit);
   }
   return;
@@ -166,13 +195,14 @@ bool MuonSelection::PassUserID(ID id, snu::KMuon mu){
 bool MuonSelection::HNVetoMuonSelection(KMuon mu) {
 
   bool pass_selection(true);
-  LeptonRelIso = mu.RelIso03();
-  
-  if(!( LeptonRelIso < 0.6)) pass_selection = false;
-  if(!(mu.GlobalChi2() < 500.)) pass_selection = false;
-  if(!(fabs(mu.dZ())< 100.  ))  pass_selection = false;
-  if(!(fabs(mu.dXY())< 10.0 )) pass_selection = false;
-  if(!PassID(MUON_POG_LOOSE, mu))  pass_selection =false;
+  LeptonRelIso = mu.RelIso04();
+  bool debug=false;
+  if(!( LeptonRelIso < 0.6)) {pass_selection = false; if(debug){cout << "Fail iso" << endl;}}
+  if(!(mu.GlobalChi2() < 500.)) {pass_selection = false;if(debug){ cout << "Fail chi2" << endl;}}
+  if(!(fabs(mu.dZ())< 100.  ))  {pass_selection = false; if(debug){cout << "Fail dz" << endl;}}
+  if(!(fabs(mu.dXY())< 10.0 )) {pass_selection = false; if(debug){cout << "Fail dzy" << endl;}}
+  if(!PassID(MUON_POG_LOOSE, mu)) {pass_selection =false; if(debug){cout << "Fail loose" << endl;}}
+
   
   //// Make Loose selection
   return pass_selection;
@@ -237,8 +267,11 @@ bool MuonSelection::POGID(KMuon muon, TString ID){
   }
 
   if(ID== MUON_POG_TIGHT){
-    if(! muon.IsTight ())  pass_selection = false;
+    if(! muon.IsTight ())  {
+      //cout << "Fail " << ID << endl; 
+      pass_selection = false;}
     if(!( LeptonRelIso < 0.15)) {
+      //cout << "Fail isp " << endl;
       pass_selection = false;
     }
   }

@@ -27,9 +27,19 @@ KMuon::KMuon() :
 
   muon_pt_up(-999.), 
   muon_pt_down(-999.),
+  muon_maod_pt(-999.),
+
   k_muon_reliso03(-999.),
   k_muon_reliso04(-999.),
+  k_muon_maod_reliso03(-999.),
+  k_muon_maod_reliso04(-999.),
   
+  k_roch_pt(-999.),
+  k_roch_eta(-999.),
+  k_roch_phi(-999.),
+  k_roch_m(-999.),
+  k_roch_e(-999.),
+
   k_isloose(0),
   k_istight(0),
   k_matched(0),
@@ -45,7 +55,9 @@ KMuon::KMuon() :
   k_mother_index(-1),
   k_mc_index(-1),
   
-  k_trig_match("")
+  k_trig_match(""),
+  k_corrected_rc(false)
+
 
 {
   //Reset();
@@ -75,9 +87,19 @@ KMuon::KMuon(const KMuon& muon) :
 
   muon_pt_up(muon.muon_pt_up),
   muon_pt_down(muon.muon_pt_down),
+  muon_maod_pt(muon.muon_maod_pt),
   k_muon_reliso03(muon.k_muon_reliso03),
   k_muon_reliso04(muon.k_muon_reliso04),
+  k_muon_maod_reliso03(muon.k_muon_maod_reliso03),
+  k_muon_maod_reliso04(muon.k_muon_maod_reliso04),
 
+
+
+  k_roch_pt(muon.k_roch_pt),
+  k_roch_eta(muon.k_roch_eta),
+  k_roch_phi(muon.k_roch_phi),
+  k_roch_m(muon.k_roch_m),
+  k_roch_e(muon.k_roch_e),
 
   k_isloose(muon.k_isloose),
   k_istight(muon.k_istight), 
@@ -93,7 +115,9 @@ KMuon::KMuon(const KMuon& muon) :
   k_mother_index(muon.k_mother_index),
   k_mc_index(muon.k_mc_index),
 
-  k_trig_match(muon.k_trig_match)
+  k_trig_match(muon.k_trig_match),
+  k_corrected_rc(muon.k_corrected_rc)
+
 {
 }
   
@@ -126,8 +150,20 @@ void KMuon::Reset()
   
   muon_pt_up=0.;
   muon_pt_down=0.;
+  muon_maod_pt=0.;
+  k_muon_maod_reliso03=-999.;
+  k_muon_maod_reliso04=-999.;
+
   k_muon_reliso03=-999.;
   k_muon_reliso04=-999.;
+
+  k_roch_pt=-999.;
+  k_roch_eta=-999.;
+  k_roch_phi=-999.;
+  k_roch_m=-999.;
+  k_roch_e=-999.;
+
+
 
   k_isloose=false;
   k_istight=false;
@@ -144,6 +180,8 @@ void KMuon::Reset()
   k_mc_index=-1;
 
   k_trig_match= "";
+  k_corrected_rc=false;
+
 }
 
 
@@ -166,6 +204,8 @@ KMuon& KMuon::operator= (const KMuon& p)
 	//i_muonVtx = p.MuonVertexIndex();       
 	muon_pt_up = p.PtShiftedUp();
 	muon_pt_down = p.PtShiftedDown();
+        muon_maod_pt = p.MiniAODPt();
+
 	k_isloose = p.IsLoose();
 	k_istight = p.IsTight();
 	k_issoft = p.IsSoft();
@@ -182,10 +222,21 @@ KMuon& KMuon::operator= (const KMuon& p)
 
 	k_muon_reliso03 = p.RelIso03();
 	k_muon_reliso04 = p.RelIso04();
+
+        k_muon_maod_reliso03 = p.RelMiniAODIso03();
+        k_muon_maod_reliso04 = p.RelMiniAODIso04();
+	k_roch_pt=p.RochPt();
+        k_roch_eta=p.RochEta();
+        k_roch_phi=p.RochPhi();
+        k_roch_m=p.RochM();
+        k_roch_e=p.RochE();
+
 	k_muonVtx=p.muonVtx();
 	k_muonVty=p.muonVty();
 	k_muonVtz=p.muonVtz();
 	k_trig_match= p.TrigMatch();
+        k_corrected_rc=p.IsRochesterCorrected();
+
     }
     
     return *this;
@@ -210,6 +261,10 @@ void KMuon::SetIsFromTau(bool istau){
   k_is_fromtau=istau;
 }
 
+void KMuon::SetIsRochesterCorrected(bool rccorr){
+  k_corrected_rc=rccorr;
+}
+
 
 void KMuon::SetIsChargeFlip(bool iscf){
   k_is_cf=iscf;
@@ -217,6 +272,33 @@ void KMuon::SetIsChargeFlip(bool iscf){
 
 void KMuon::SetIsPhotonConversion(bool isconv){
   k_is_conv=isconv;
+}
+
+
+
+void KMuon::SetRochM(double m){
+
+  k_roch_m=m;
+}
+
+void KMuon::SetRochPt(double pt){
+
+  k_roch_pt=pt;
+}
+
+void KMuon::SetRochEta(double eta){
+
+  k_roch_eta=eta;
+}
+
+void KMuon::SetRochPhi(double phi){
+
+  k_roch_phi=phi;
+}
+
+void KMuon::SetRochE(double e){
+
+  k_roch_e=e;
 }
 
 
@@ -351,6 +433,17 @@ void KMuon::SetRelIso(double cone, double iso){
   else if(cone ==  0.4) k_muon_reliso04= iso;
 
 }
+
+
+void KMuon::SetMiniAODRelIso (double cone, double iso){
+  if(cone == 0.3) k_muon_maod_reliso03= iso;
+  else if(cone ==  0.4) k_muon_maod_reliso04= iso;
+
+}
+void KMuon::SetMiniAODPt(double maodpt){
+  muon_maod_pt=maodpt;
+}
+
 
 
 void KMuon::SetTrigMatch(TString match){

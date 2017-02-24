@@ -27,9 +27,12 @@ class SKTreeValidation : public AnalyzerCore {
   
   void MakeElMuonValidationPlots(BaseSelection::ID id, float w, float pu_weight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag);
   
+  void counter(TString cut, float w);
 
  private:
   
+  std::map<TString, float> mapcounter;
+
   //
   // The output variables 
   //

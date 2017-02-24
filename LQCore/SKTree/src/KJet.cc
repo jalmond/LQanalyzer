@@ -42,7 +42,7 @@ KParticle()
   k_jet_passpileup_medium=false;
   k_jet_passpileup_tight=false;
   k_jet_pileup_mva=-999.;
-  
+  k_ismcsmeared=false;
 }
 
 /**
@@ -81,6 +81,9 @@ KJet::KJet(const KJet& jet) :
   k_jet_passpileup_medium=jet.PileupJetIDMedium();
   k_jet_passpileup_tight=jet.PileupJetIDTight();
   k_jet_pileup_mva= jet.PileupJetIDMVA();
+  k_ismcsmeared=jet.IsMCSmeared();
+
+
 
 }
 
@@ -122,6 +125,7 @@ void KJet::Reset()
     k_jet_passpileup_medium=false;
     k_jet_passpileup_tight=false;
     k_jet_pileup_mva=-999.;
+    k_ismcsmeared=false;
 
 }
 
@@ -161,7 +165,8 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_passpileup_medium=p.PileupJetIDMedium();
       k_jet_passpileup_tight=p.PileupJetIDTight();
       k_jet_pileup_mva= p.PileupJetIDMVA();
-      
+      k_ismcsmeared=p.IsMCSmeared();
+
     }
 
     return *this;
@@ -297,6 +302,11 @@ double KJet::BJetTaggerValue(Tagger tag) const{
 }
 
 //// POG ID CUTS
+
+void KJet::SetIsMCSmeared(bool issmeared){
+  k_ismcsmeared = issmeared;
+}
+
 
 void KJet::SetJetPassLooseID(int looseID){
 

@@ -135,7 +135,6 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), MCweight(-999.),reset_lumi_mask(fa
 
   string lqdir = getenv("LQANALYZER_DIR");
   m_fakeobj = new HNCommonLeptonFakes(lqdir+"/HNCommonLeptonFakes/share/");
-  cout << "TESTTEST" << endl;
   rmcor = new rochcor2015();
   
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
@@ -353,41 +352,39 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(BaseSelection::ID jetid){
   }
   else {cout << "Jet collection  not found" << endl; exit(EXIT_FAILURE);}
   
-  SmearJets(jetColl);
-
   return jetColl;
   
 }
 
 std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid){
-  return GetMuons(muid, true);
+  return GetMuons(muid, true, true);
 }
 
-std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool keepfakes){
+std::vector<snu::KMuon> AnalyzerCore::GetMuons(BaseSelection::ID muid, bool applyrochester, bool keepfakes){
 
   std::vector<snu::KMuon> muonColl;
   
   if(muid == BaseSelection::MUON_POG_TIGHT  ||
      muid == BaseSelection::MUON_POG_MEDIUM||
      muid == BaseSelection::MUON_POG_LOOSE)
-    {eventbase->GetMuonSel()->SelectMuons(muonColl, muid, 15., 2.4);}
+    {eventbase->GetMuonSel()->SelectMuons(muonColl, muid,applyrochester, 10., 2.4);}
 
   
   else if(muid == BaseSelection::MUON_HN_TIGHT){
     
-    if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);
-    else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.4);
+    if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, applyrochester,10., 2.4);
+    else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT,applyrochester, 10., 2.4);
   }
   
-  else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);}
+  else if(muid == BaseSelection::MUON_HN_FAKELOOSE){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_FAKELOOSE, applyrochester,15., 2.4);}
 
   // Veto cut
-  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO, 10., 2.4);}
+  else if(muid == BaseSelection::MUON_HN_VETO){   eventbase->GetMuonSel()->SelectMuons(muonColl,BaseSelection::MUON_HN_VETO,applyrochester, 10., 2.4);}
 
   else if(muid == BaseSelection::MUON_NOCUT){
     eventbase->GetMuonSel()->SetPt(0.); 
     eventbase->GetMuonSel()->SetEta(5.);    
-    eventbase->GetMuonSel()->Selection(muonColl);
+    eventbase->GetMuonSel()->Selection(muonColl,applyrochester);
   }
   
   else {
@@ -1118,8 +1115,8 @@ float AnalyzerCore::SilverToGoldJsonReweight(TString p){
     
     /// Updated to silver2 + remove LS
     if (p == "C") return 1.;
-    if (p == "D") return (2207.055) / (2579.414);
-    if (p == "CtoD") return  (2224.786) / (2597.145);
+    if (p == "D") return (2149.666) / (2512.343);
+    if (p == "CtoD") return  (2166.93) / (2529.614);
     ///            GOLD      SILVER
     /// period C = 17.731    17.731
     /// period D = 2300.547   2672.906
@@ -1960,16 +1957,6 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
 }
 
 
-void AnalyzerCore::SmearJets(vector<snu::KJet>& k_jets){
-  
-  vector<TLorentzVector> tlv_jets = MakeTLorentz(k_jets);
-  int imu(0);
-  for(std::vector<snu::KJet>::iterator it = k_jets.begin(); it != k_jets.end(); it++, imu++){
-    if(k_isdata)       it->SetPtEtaPhiE(tlv_jets[imu].Pt(),tlv_jets[imu].Eta(), tlv_jets[imu].Phi(), tlv_jets[imu].E());
-    else it->SetPtEtaPhiE(tlv_jets[imu].Pt()*(it->SmearedEnergy()),tlv_jets[imu].Eta(), tlv_jets[imu].Phi(), tlv_jets[imu].E());
-  }
-  
-}
 void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   
   Message("In CorrectMuonMomentum", DEBUG);
@@ -1977,19 +1964,132 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
+    if(it->IsRochesterCorrected()) return;
 
-    cout << it->Charge() << " " << it->Pt() << " "<< it->Eta() << endl;
+    double scalefactor = 1.;
+
     if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
     else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
-
-    cout << tlv_muons[imu].Pt() << " " << tlv_muons[imu].Eta() << endl;
+    scalefactor = tlv_muons[imu].Pt() / it->Pt();
     it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
-    //it->SetPtEtaPhiM(tlv_muons[imu].Pt(), it->Eta(), it->Phi() , it->M());
-    //it->scale(tlv_muons[imu].E()/it->E());
+    it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+    it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
+  }
+  
+  //it->SetPtEtaPhiM(tlv_muons[imu].Pt(), it->Eta(), it->Phi() , it->M());
+  //it->scale(tlv_muons[imu].E()/it->E());
+}
+
+
+
+void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
+
+  vector<TLorentzVector> tlv_muons = MakeTLorentz(k_muons);
+  int imu(0);
+  for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
+    float qter =1.; /// uncertainty                                                                                                                                             
+    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
+    else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
+    
+    it->SetRochPt(tlv_muons[imu].Pt());
+    it->SetRochEta(tlv_muons[imu].Eta());
+    it->SetRochPhi(tlv_muons[imu].Phi());
+    it->SetRochM(tlv_muons[imu].M());
   }
 }
 
 
+
+float AnalyzerCore::CorrectedMETRochester(BaseSelection::ID muid_formet, bool update_met){
+
+  /// function returns corrected met + can be used to set event met to corrected met                                                                                            
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+  std::vector<snu::KMuon> muall = GetMuons(muid_formet);
+
+  float px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  for(unsigned int im=0; im < muall.size() ; im++){
+
+    px_orig+= muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi());
+    py_orig+= muall.at(im).MiniAODPt()*TMath::Sin(muall.at(im).Phi());
+    cout << muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi()) << " " << muall.at(im).Px() << endl;
+    px_corrected += muall.at(im).Px();
+    py_corrected += muall.at(im).Py();
+
+  }
+  met_x = met_x + px_orig - px_corrected;
+  met_y = met_y + py_orig - py_corrected;
+
+  if(update_met){
+    if(!eventbase->GetEvent().PropagatedRochesterToMET()){
+      snu::KEvent tempev = eventbase->GetEvent();
+      tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), eventbase->GetEvent().METPhi(), eventbase->GetEvent().SumET());
+      tempev.SetPFMETx(met_x);
+      tempev.SetPFMETy(met_y);
+      tempev.SetPropagatedRochesterToMET(true);
+      eventbase->SetEventBase(tempev);
+    }
+  }
+  return sqrt(met_x*met_x + met_y*met_y);
+}
+
+
+
+float AnalyzerCore::CorrectedMETElectron(BaseSelection::ID elid_formet, int sys){
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+  std::vector<snu::KElectron> elall = GetElectrons(elid_formet);
+
+  float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
+  for(unsigned int iel=0; iel < elall.size() ; iel++){
+
+
+    px_orig+= elall.at(iel).Px();
+    py_orig+= elall.at(iel).Py();
+    if(sys==1){
+      px_shifted += elall.at(iel).Px()*elall.at(iel).PtShiftedUp();
+    }
+    if(sys==-1){
+      px_shifted += elall.at(iel).Px()*elall.at(iel).PtShiftedDown();
+    }
+
+
+  }
+  met_x = met_x + px_orig - px_shifted;
+  met_y = met_y + py_orig - py_shifted;
+
+
+  return sqrt(met_x*met_x + met_y*met_y);
+
+}
+
+float AnalyzerCore::CorrectedMETMuon(BaseSelection::ID muid_formet, int sys){
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+  std::vector<snu::KMuon> muall = GetMuons(muid_formet);
+
+  float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
+  for(unsigned int imu=0; imu < muall.size() ; imu++){
+
+    px_orig+= muall.at(imu).Px();
+    py_orig+= muall.at(imu).Py();
+    if(sys==1){
+      px_shifted += muall.at(imu).Px()*muall.at(imu).PtShiftedUp();
+    }
+    if(sys==-1){
+      px_shifted += muall.at(imu).Px()*muall.at(imu).PtShiftedDown();
+    }
+  }
+  met_x = met_x + px_orig - px_shifted;
+  met_y = met_y + py_orig - py_shifted;
+
+
+  return sqrt(met_x*met_x + met_y*met_y);
+
+}
 
 float AnalyzerCore::Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString cut){
 

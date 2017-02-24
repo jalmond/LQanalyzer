@@ -307,11 +307,11 @@ void LQController::SetDataPeriod(TString period){
 
     /// brilcalc lumi -u /pb --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/moriond16_normtag.json -i jsonfiles/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver_v2.txt
     float bad_ls=93.492;
-    if( period == "C") target_luminosity = 17.731;
-    else if( period == "D") target_luminosity = 2672.906 -bad_ls;
-    else if( period == "CtoD") target_luminosity = 17.731 + 2672.906 - bad_ls;
-    else if( period == "ALL") target_luminosity = 17.731 + 2672.906 - bad_ls;
-    else target_luminosity = 17.731 + 2672.906 - bad_ls;
+    if( period == "C") target_luminosity = 17.29;
+    else if( period == "D") target_luminosity = 2512.343;
+    else if( period == "CtoD") target_luminosity = 2529.614;
+    else if( period == "ALL") target_luminosity = 2529.614;
+    else target_luminosity = 2529.614;
 
   }
 

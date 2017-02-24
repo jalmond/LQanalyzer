@@ -67,7 +67,7 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
   
   std::vector<KJet> pre_jetColl; 
   std::vector<KJet> alljets = k_lqevent.GetJets();
-  
+
   for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
     
     bool pass_pileupID = jit->PileupJetIDLoose();
@@ -85,10 +85,8 @@ void JetSelection::JetHNSelection(std::vector<KJet>& jetColl, std::vector<KMuon>
     } 
     else {cout << "Jet ID " << ID << " not found" << endl; exit(EXIT_FAILURE);}
   }
-  
-
   //cout << "Number of loose jets = " << pre_jetColl.size() << endl;
-  //cout << "Number of electrons = " << electronColl.size() << endl;
+  //  cout << "Number of electrons = " << electronColl.size() << endl;
   //cout << "Number of muons = " << muonColl.size() << endl;
   
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {

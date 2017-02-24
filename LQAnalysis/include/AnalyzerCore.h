@@ -45,7 +45,7 @@ class AnalyzerCore : public LQCycleBase {
 
   std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid);
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid);
-  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, bool keepfakes);
+  std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, bool applyrochester, bool keepfakes);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid );
 
@@ -108,8 +108,12 @@ class AnalyzerCore : public LQCycleBase {
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString cut="HN");
  
 
+  float CorrectedMETRochester(BaseSelection::ID id, bool updatemet);
+  float CorrectedMETElectron(BaseSelection::ID elid_formet, int syst=0);
+  float CorrectedMETMuon(BaseSelection::ID muid_formet, int syst=0);
+
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
-  void SmearJets(vector<snu::KJet>& k_jets);
+  void SetCorrectedMomentum(vector<snu::KMuon>& k_muons);
 
 
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);

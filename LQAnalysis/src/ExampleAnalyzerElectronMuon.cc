@@ -134,7 +134,7 @@ void ExampleAnalyzerElectronMuon::ExecuteEvents()throw( LQError ){
 
   
   std::vector<snu::KMuon> muonTightColl;
-  eventbase->GetMuonSel()->SelectMuons(muonTightColl, BaseSelection::MUON_HN_TIGHT, 20., 2.5);
+  eventbase->GetMuonSel()->SelectMuons(muonTightColl, BaseSelection::MUON_HN_TIGHT, true, 20., 2.5);
   // muonTightColl= GetMuons(BaseSelection::MUON_HN_TIGHT);
   
   std::vector<snu::KJet> jetColl_lepveto = GetJets(BaseSelection::JET_HN);

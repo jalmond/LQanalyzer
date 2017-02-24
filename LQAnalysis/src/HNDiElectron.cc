@@ -311,7 +311,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     /// use silver or gold
     pileup_reweight = eventbase->GetEvent().PileUpWeight(lumimask);
   }
-  FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
+
+   FillHist("PileupWeight" , pileup_reweight, 1.,  0. , 2., 200);
   
   float id_weight=1.;
   float reco_weight=1.;

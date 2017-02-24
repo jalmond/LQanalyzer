@@ -41,10 +41,18 @@ namespace snu {
     virtual std::string Type() const;
     
     void SetRelIso(double cone, double reliso);
-
+    void SetMiniAODRelIso (double cone, double reliso);
+    void SetMiniAODPt(double maodpt);
+    void SetIsRochesterCorrected(bool corr);
 
     void SetMCMatched(bool matched);
 
+
+    void SetRochPt(double pt);
+    void SetRochEta(double eta);
+    void SetRochPhi(double phi);
+    void SetRochM(double m);
+    void SetRochE(double e);
     void Setdz(double dz);
     void Setdxy(double dxy);
     void Setdxy_sig(double dxysig);
@@ -104,7 +112,7 @@ namespace snu {
     inline Bool_t   MCMatched () const {return k_matched;}
     inline Bool_t MCIsCF() const{return k_is_cf;}
     inline Bool_t MCIsFromConversion() const{return k_is_conv;}
-
+    inline Bool_t IsRochesterCorrected() const{return k_corrected_rc;}
     inline Bool_t MCFromTau() const{return k_is_fromtau;}
     inline Bool_t MCIsPrompt() const{return k_matched;}
     inline Int_t MCMatchedPdgId() const{return k_mc_pdgid;}
@@ -115,13 +123,22 @@ namespace snu {
 
     inline Double_t RelIso03()  const {return k_muon_reliso03;}
     inline Double_t RelIso04()  const {return k_muon_reliso04;}
+    inline Double_t RelMiniAODIso03()  const {return k_muon_maod_reliso03;}
+    inline Double_t RelMiniAODIso04()  const {return k_muon_maod_reliso04;}
 
-
+    inline Double_t MiniAODPt() const {return muon_maod_pt;}
     inline Double_t PtShiftedUp() const {return muon_pt_up;}
     inline Double_t PtShiftedDown() const {return muon_pt_down;}
     
     inline TString TrigMatch() const{return k_trig_match;}
     
+    inline Double_t RochPt() const{return k_roch_pt;}
+    inline Double_t RochPhi() const{return k_roch_phi;}
+    inline Double_t RochEta() const{return k_roch_eta;}
+    inline Double_t RochM() const{return k_roch_m;}
+    inline Double_t RochE() const{return k_roch_e;}
+
+
     inline KMuon::MuonType GetParticleType() const{
       if(k_is_conv&&k_is_cf) return KMuon::CONV_CF;
       if(k_is_conv&&!k_is_cf)   return KMuon::CONV_NONECF;
@@ -150,14 +167,18 @@ namespace snu {
     Int_t k_muon_valid_hits, k_muon_valid_pixhits, k_muon_valid_stations, k_muon_layer_with_meas;
     Bool_t k_muon_ispf, k_muon_isglobal, k_muon_istracker;
 
-    Double_t muon_pt_up, muon_pt_down, k_muon_reliso03, k_muon_reliso04;
+    Double_t muon_pt_up, muon_pt_down,muon_maod_pt, k_muon_reliso03, k_muon_reliso04,k_muon_maod_reliso03, k_muon_maod_reliso04;
+
+    Double_t k_roch_pt,k_roch_phi,k_roch_eta,k_roch_m,k_roch_e;
 
     Bool_t k_isloose, k_istight, k_matched,k_is_cf,k_is_conv,k_is_fromtau,k_ismedium, k_issoft ;
     Int_t k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
 
     TString k_trig_match;
-    
-    ClassDef(KMuon,18)
+    Bool_t k_corrected_rc;
+
+
+    ClassDef(KMuon,19)
   };   
 }//namespace snu
 

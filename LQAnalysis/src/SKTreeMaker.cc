@@ -38,7 +38,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
-  //if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
@@ -47,6 +47,8 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(8.); 
   eventbase->GetMuonSel()->SetEta(3.);
   eventbase->GetMuonSel()->BasicSelection(out_muons, false); /// Muons For SKTree
+  SetCorrectedMomentum(out_muons);
+
 
   Message("Skimming Muons", DEBUG);
   /// Selection for event skim

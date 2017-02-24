@@ -27,6 +27,8 @@ ClassImp (SKTreeValidation);
 SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
   
   rmcor = new rochcor2015();
+
+  mapcounter.clear();
   
   // To have the correct name in the log:                                                                                                                            
   SetLogName("SKTreeValidation");
@@ -52,6 +54,7 @@ SKTreeValidation::SKTreeValidation() :  AnalyzerCore(), out_muons(0)  {
     MakeCleverHistograms(sighist_mm,"DiMuon_EE"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm,"DiMuon_EB"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm, "DiMuon_dijet"+dimuonIDs.at(i));
+    MakeCleverHistograms(sighist_mm, "DiMuon_dibjet"+dimuonIDs.at(i));
     MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
   }
   
@@ -143,16 +146,19 @@ void SKTreeValidation::InitialiseAnalysis() throw( LQError ) {
 
 void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
-  /// Apply the gen weight
   if(!isData) weight*=MCweight;
+  FillCutFlow("NoCut", weight);
+  /// Apply the gen weight
+
+  counter("NoCut",weight);
   /// Acts on data to remove bad reconstructed event 
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
-  
-
+  FillCutFlow("LumiMaskCut", weight);
+  counter("LumiMaskCut", weight);
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
    
-  FillCutFlow("NoCut", weight);
+
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);
   
   if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 50., 50);
@@ -161,8 +167,8 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
   ///#### CAT:::PassBasicEventCuts is updated: uses selections as described in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFilters: If you <b>see this is out of date please comment
   
   if(!PassBasicEventCuts()) return;     /// Initial event cuts : 
-   FillCutFlow("EventCut", weight);
-   
+  FillCutFlow("EventCut", weight);
+  counter("EventCut", weight);
    /// #### CAT::: triggers stored are all HLT_Ele/HLT_DoubleEle/HLT_Mu/HLT_TkMu/HLT_Photon/HLT_DoublePhoton
 
    TString dimuon_trigmuon_trig1="HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v";
@@ -198,10 +204,55 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    triggerslist_emu.push_back(em2_trig);
    
 
+
+   bool trig_pass= PassTrigger(triggerslist_dimu,prescale);
+
+   if(!trig_pass) return;
+
    FillCutFlow("TriggerCut", weight);
+   counter("TriggerCut", weight);
 
    if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex
    FillCutFlow("VertexCut", weight);
+   counter("VertexCut", weight);
+   std::vector<snu::KMuon>  mus = GetMuons(BaseSelection::MUON_POG_TIGHT);
+  
+   if(mus.size() ==2) {
+     FillCutFlow("MuMuCut",  weight);
+     counter("DiMu", weight);
+     
+     //m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+
+     //for(int i=0; i < GetJets(BaseSelection::JET_HN).size() ; i++){
+     ////     //cout << "Jet pt = " <<GetJets(BaseSelection::JET_HN).at(i).Pt() <<" eta = " << GetJets(BaseSelection::JET_HN).at(i).Eta() << endl;
+     //     }
+     
+
+     if(!SameCharge(mus)){
+       if(mus.at(0).Pt() > 20. && mus.at(1).Pt() > 20.){
+	 
+	 /*for(int i=0; i < GetMuons(BaseSelection::MUON_HN_VETO).size() ; i++){
+	     cout << "Muon pt = " << GetMuons(BaseSelection::MUON_HN_VETO).at(i).Pt() << " eta = " << GetMuons(BaseSelection::MUON_HN_VETO).at(i).Eta()  << endl;
+         }
+         for(int i=0; i < GetElectrons(BaseSelection::ELECTRON_HN_VETO).size() ; i++){
+           cout << "Electron pt = " << GetElectrons(BaseSelection::ELECTRON_HN_VETO).at(i).Pt() << " eta = " << GetElectrons(BaseSelection::ELECTRON_HN_VETO).at(i).Eta()  <<endl;
+	   }*/
+         FillCutFlow("OSMuMuCut",  weight);
+	 if(GetJets(BaseSelection::JET_HN).size() == 0) counter("0Jet", weight);
+	 if(GetJets(BaseSelection::JET_HN).size() == 1) counter("1Jet", weight);
+	 if(GetJets(BaseSelection::JET_HN).size() == 2) counter("2Jet", weight);
+	 if(GetJets(BaseSelection::JET_HN).size() == 3) counter("3Jet", weight);
+	 if(GetJets(BaseSelection::JET_HN).size() == 4) counter("4Jet", weight);
+	 if(GetJets(BaseSelection::JET_HN).size() > 4) counter("5Jet", weight);
+	 if(GetJets(BaseSelection::JET_HN).size() > 4){
+	   //m_logger << INFO << "LARGE JETRunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+
+	 }
+
+	 if(GetJets(BaseSelection::JET_HN).size() > 1)   FillCutFlow("OSMuMuJJCut",  weight);
+       }
+     }
+   }
    
    float pileup_reweight_69=(1.0);
    float pileup_reweight_71=(1.0);
@@ -251,10 +302,10 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
    ////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////!!!!!!////////
-   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
+   //MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTight");
    MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_corrected");
-   MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_correctedtruthmatch");
-   MakeDiMuonValidationPlots(BaseSelection::MUON_HN_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "HNTightroch_corrected");
+    // MakeDiMuonValidationPlots(BaseSelection::MUON_POG_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "POGTightroch_correctedtruthmatch");
+  // MakeDiMuonValidationPlots(BaseSelection::MUON_HN_TIGHT, weight, pileup_reweight_69, pileup_reweight_71,triggerslist_dimu, BaseSelection::ELECTRON_POG_TIGHT,BaseSelection::JET_HN, "HNTightroch_corrected");
    FillCLHist(muhist,"KMuonHists", GetMuons(BaseSelection::MUON_NOCUT), weight);
    FillCLHist(muhist,"KMuonHists_POGTIGHT", GetMuons(BaseSelection::MUON_POG_TIGHT), weight);
    ///_______________________________________________________________________________________________________________________________________________________________________________________________________//
@@ -459,6 +510,10 @@ void SKTreeValidation::ExecuteEvents()throw( LQError ){
 
 void SKTreeValidation::EndCycle()throw( LQError ){
   
+  for ( map<TString,float>::iterator itmapcounter = mapcounter.begin(); itmapcounter != mapcounter.end(); itmapcounter++){
+    cout << itmapcounter->first << " has count "<< itmapcounter->second << endl;
+  }
+
   Message("In EndCycle" , INFO);
 
 }
@@ -492,26 +547,6 @@ SKTreeValidation::~SKTreeValidation() {
 }
 
 
-void SKTreeValidation::FillCutFlow(TString cut, float weight){
-
-  
-  if(GetHist("cutflow")) {
-    GetHist("cutflow")->Fill(cut,weight);
-   
-  }
-  else{
-    AnalyzerCore::MakeHistograms("cutflow", 5,0.,5.);
-
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
-    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"DiMu_tight");
-   
-    
-  }
-}
-
 void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
   Message("In MakeMuonValidationPlots " , DEBUG);
@@ -524,9 +559,9 @@ void SKTreeValidation::MakeMuonValidationPlots(BaseSelection::ID muid, float w, 
   std::vector<snu::KMuon> muons;
 
   if(k_running_nonprompt){
-    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,false);
+    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,true,false);
   }
-  else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
+  else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,true,false);
   else   muons = GetMuons(muid);
 
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
@@ -596,13 +631,17 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   std::vector<snu::KMuon> muons;
 
   if(k_running_nonprompt){
-    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,false);
+    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,true,false);
   }
-  else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,false);
+  else if(tag.Contains("truthmatch"))   muons = GetMuons(muid,true,false);
   else   muons = GetMuons(muid);
 
+  FillHist("zpeak_mumu_test" + tag, GetDiLepMass(muons), w, 0., 200.,400);
+
+
   if(tag.Contains("roch"))   CorrectMuonMomentum(muons);
-  
+ 
+
   bool trig_pass= PassTrigger(trignames, prescale);
   
   /// List of all corrections to be applied
@@ -636,8 +675,10 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
   }
 
   if(muons.size() ==2) {
+    
     if(!SameCharge(muons)){
       if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
+	FillCutFlow("MuMuCut",  w);
 	
 	/// Z peak plots
 	if(GetDiLepMass(muons) < 120. && GetDiLepMass(muons)  > 60. ){
@@ -669,24 +710,79 @@ void SKTreeValidation::MakeDiMuonValidationPlots(BaseSelection::ID muid, float w
 	  if(EtaRegion("EB",muons))  FillCLHist(sighist_mm, "DiMuon_EB"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  if(EtaRegion("EE",muons))  FillCLHist(sighist_mm, "DiMuon_EE"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
 	  
-	  if(jets.size() >= 2)          FillCLHist(sighist_mm, "DiMuon_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+
+	  int nbjet(0);
+	  for(unsigned int ij =0 ; ij < jets.size() ; ij++){
+	    if(jets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) nbjet++;
+	  }
+
+
+	  
+	  if(jets.size() >= 2) {
+	    FillCLHist(sighist_mm, "DiMuon_dijet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	    FillCutFlow("OSMuMuJJCut",  w);
+	    if(nbjet > 1 )             FillCLHist(sighist_mm, "DiMuon_dibjet"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+
+	    if(nbjet > 1 ) FillCutFlow("DiMuon_dibjet",  w);
+	    if(nbjet > 1 && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 50.) FillCutFlow("DiMuon_met",  w);
+	  } 
 	}
       }
     }
     else{
       if(muons.at(0).Pt() > 20. && muons.at(1).Pt() > 20.){
-
+	FillCutFlow("SSMuMuCut",  w);
         /// Z peak plots
         if(GetDiLepMass(muons)  > 15. ){
           if(trig_pass){
-	    if(jets.size() >= 2)          FillCLHist(sighist_mm, "DiMuon_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
-	    
+	    if(jets.size() >= 2)   {
+	      FillCLHist(sighist_mm, "DiMuon_SSPreselection"+tag, eventbase->GetEvent(), muons,electrons,jets, ev_weight);
+	      FillCutFlow("SSMuMuJJCut",  w);
+	    }
 	  }
 	}
       }
     }
   }
 }
+
+
+void SKTreeValidation::counter(TString cut, float w){
+  w=1.;
+  map<TString,float>::iterator itmapcounter = mapcounter.find(cut) ;
+  if (itmapcounter == mapcounter.end()){
+    mapcounter[cut] = w;
+  }
+  else{
+    float sum = itmapcounter->second;
+    mapcounter[cut] = sum+w;
+  }
+ 
+}
+void SKTreeValidation::FillCutFlow(TString cut, float weight){
+
+
+  if(GetHist("cutflow")) {
+    GetHist("cutflow")->Fill(cut,weight);
+
+  }
+  else{
+    AnalyzerCore::MakeHistograms("cutflow", 9,0.,9.);
+
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(1,"NoCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(2,"EventCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(3,"TriggerCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(4,"VertexCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(5,"MuMuCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(6,"OSMuMuCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(7,"OSMuMuJJCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(8,"SSMuMuCut");
+    GetHist("cutflow")->GetXaxis()->SetBinLabel(9,"SSMuMuJJCut");
+
+
+  }
+}
+
 
 void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w, float pu_reweight_69, float pu_reweight_71,  std::vector<TString> trignames,BaseSelection::ID elid, BaseSelection::ID jetid, TString tag){
 
@@ -695,11 +791,11 @@ void SKTreeValidation::MakeElMuonValidationPlots(BaseSelection::ID muid, float w
   std::vector<snu::KElectron> electrons ;
   std::vector<snu::KMuon> muons;
   if(k_running_nonprompt){
-    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,false);
+    muons = GetMuons(BaseSelection::MUON_HN_FAKELOOSE,true,false);
     electrons             = GetElectrons(true, false,BaseSelection::ELECTRON_HN_FAKELOOSE_NOD0);
   }
   else if(tag.Contains("truthmatch")) {
-    muons = GetMuons(muid,false);
+    muons = GetMuons(muid,true,false);
     electrons = GetElectrons(true, false,elid);
   }
   else {

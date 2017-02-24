@@ -9,7 +9,6 @@ bool HNVetoElectronSelection(snu::KElectron el){
   // VETO ID (pog:no dxy and no iso)
   int id = el.SNUID();
   if(id < 1) return false;
-
   if( el.PFRelIso(0.3) > 0.6) return false;
   if( el.dxy() > 1.) return false;
 
@@ -67,17 +66,17 @@ bool HNIsTight(KElectron el, double dxycut, double isocut,  bool usetight){
   
   ///List of cuts
   if(!id) pass_selection = false;  
-  if(!el.PassesConvVeto() )  pass_selection = false;
+  if(!el.PassesConvVeto() ){ cout << "Fail conv" << endl;  pass_selection = false;}
   
   bool usedr3=true;
   if(usedr3){
-    if(!(LeptonRelIsoDR03 <  isocut)) pass_selection = false;  
+    if(!(LeptonRelIsoDR03 <  isocut)) {cout << "Fail iso " << endl; pass_selection = false;  }
   }
   else{
-    if(!(LeptonRelIsoDR04 <  isocut)) pass_selection = false; 
+    if(!(LeptonRelIsoDR04 <  isocut)) {cout << "Fail iso " << endl; pass_selection = false;}
   }
-  if(!el.GsfCtfScPixChargeConsistency())   pass_selection = false;
-  if(!(fabs(el.dxy())< dxycut ))  pass_selection = false;
+  if(!el.GsfCtfScPixChargeConsistency())   {cout << "Fail ch " << endl; pass_selection = false;}
+  if(!(fabs(el.dxy())< dxycut ))  {cout << "Failed dxy " << endl; pass_selection = false;}
 
   return pass_selection;
   

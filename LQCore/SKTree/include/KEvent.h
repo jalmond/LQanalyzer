@@ -51,7 +51,11 @@ namespace snu {
     void SetPFMETShift(syst_dir dir, met_syst type, double val);
     void SetPFSumETShift(syst_dir dir, met_syst type, double val);
 
-    
+    void SetPFMETx(double metx);
+    void SetPFMETy(double mety);
+
+    void SetPropagatedRochesterToMET(bool setpr);
+
     /// PDF
     void SetPDFWeights(std::vector<float> pdfw);
     void SetScaleWeights(std::vector<float> pdfw);
@@ -101,9 +105,17 @@ namespace snu {
     Double_t METPhi(met_type type=pfmet) const;
     Double_t SumET(met_type type=pfmet) const;
 
+    inline Bool_t PropagatedRochesterToMET() const {return prop_metrc;}
+
 
     // To make backward compatible
     inline Double_t PFMET() const {return MET(pfmet);}
+
+    inline Double_t PFMETUnSmeared() const {return k_PF_MET_JetRes_up;}
+    inline Double_t PFMETx() const {return k_PF_METx;}
+    inline Double_t PFMETy() const {return k_PF_METy;}
+
+
     //// Functions to call in analysis code/selection code
 
     
@@ -187,6 +199,8 @@ namespace snu {
     Double_t k_vertexX,k_vertexY,k_vertexZ, k_vertexNDOF,  k_mcweight, k_lheweight, k_pdf_q, k_pdf_x1, k_pdf_x2;
 
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET ;
+    Double_t k_PF_METx,k_PF_METy;
+
     Double_t k_NoHF_MET, k_NoHF_METphi, k_NoHF_SumET ;
     Double_t k_PF_MET_MuonEn_up,k_PF_MET_MuonEn_down; 
     Double_t k_PF_MET_ElectronEn_up,k_PF_MET_ElectronEn_down; 
@@ -201,9 +215,10 @@ namespace snu {
     std::string k_catversion;
     json k_lumimask;    
 
+    Bool_t prop_metrc;
 
 
-    ClassDef(KEvent,25);
+    ClassDef(KEvent,26);
   }; 
   
 }//namespace snu

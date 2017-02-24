@@ -131,7 +131,13 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
 
   kevent.SetCatVersion(CatVersion);
   kevent.SetJSON(js);
-  kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
+
+  if(isData)  {
+    kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
+    kevent.SetPFMETx(met_jetRes_Px_up->at(0));
+    kevent.SetPFMETy(met_jetRes_Py_up->at(0));
+  }
+
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
 
@@ -153,6 +159,73 @@ snu::KEvent SKTreeFiller::GetEventInfo(KEvent::json js){
     }
   }
 
+
+  if(!isData){
+    float jpx(0.), jpy(0.), sjpx(0.), sjpy(0.), sjpxup(0.), sjpxdown(0.),sjpyup(0.), sjpydown(0.) ;
+
+    /// only smear jets not close to leptons (use top projection id)
+    for(unsigned int ij = 0 ; ij < jets_pt->size(); ij++){
+      bool close_to_lepton(false);
+      if(jets_pt->at(ij) < 10.) continue;
+      for(unsigned int im=0; im < muon_pt->size(); im++){
+	if(muon_pt->at(im) < 10.) continue;
+	if(fabs(muon_eta->at(im)) > 2.5) continue;
+	// find full definition for 13 TeV
+	//if(muon_relIso04->at(im) > 0.2)  continue;
+        double dr = sqrt( pow(fabs( jets_eta->at(ij) - muon_eta->at(im)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jets_phi->at(ij) - muon_phi->at(im))),2.0));
+	if(dr < 0.4){
+	  close_to_lepton=true;
+	}
+      }
+      for(unsigned int iel=0; iel < electrons_pt->size(); iel++){
+	if(electrons_pt->at(iel) < 10.) continue;
+        if(fabs(electrons_eta->at(iel)) > 2.5) continue;
+	// find full definition for 13 TeV                                                                                                                                          if(electrons_relIso03->at(ilep) > 0.15)  continue;
+        double dr = sqrt( pow(fabs( jets_eta->at(ij) - electrons_eta->at(iel)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( jets_phi->at(ij) - electrons_phi->at(iel))),2.0));
+        if(dr < 0.4){
+          close_to_lepton=true;
+        }
+      }
+      
+      if(close_to_lepton) continue;
+      
+      float jets_px = jets_pt->at(ij) *TMath::Cos(jets_phi->at(ij)); 
+      float jets_py = jets_pt->at(ij) *TMath::Sin(jets_phi->at(ij));
+      jpx +=  jets_px;
+      jpy +=  jets_py;
+      
+      sjpx +=  jets_smearedRes->at(ij) *jets_px;
+      sjpy +=  jets_smearedRes->at(ij) *jets_py;
+
+      sjpxup +=  jets_smearedResUp->at(ij) *jets_px;
+      sjpyup +=  jets_smearedResUp->at(ij) *jets_py;
+      
+      sjpxdown +=  jets_smearedResDown->at(ij) *jets_px;
+      sjpydown +=  jets_smearedResDown->at(ij) *jets_py;
+
+    }
+
+    // met_jetRes_Px_up ==met_Px since no smearing is applied in miniaods -> cattools
+    float met_x  = met_jetRes_Px_up->at(0)  +  jpx - sjpx;
+    float met_y  = met_jetRes_Py_up->at(0)  +  jpy - sjpy;
+    float met_newpt = sqrt(met_x*met_x+ met_y*met_y);
+    kevent.SetMET(snu::KEvent::pfmet,  met_newpt, met_phi->at(0),  met_sumet->at(0));
+    kevent.SetPFMETx(met_x);
+    kevent.SetPFMETy(met_y);
+
+    float met_x_jer_up  = met_jetRes_Px_up->at(0)  +  jpx - sjpxup;
+    float met_y_jer_up   = met_jetRes_Py_up->at(0)  +  jpy - sjpyup;
+    float met_newpt_jerup = sqrt(met_x_jer_up*met_x_jer_up+ met_y_jer_up*met_y_jer_up);
+    float met_x_jer_down   = met_jetRes_Px_up->at(0)  +  jpx - sjpxdown;
+    float met_y_jer_down  = met_jetRes_Py_up->at(0)  +  jpy -sjpydown;
+    float met_newpt_jerdown = sqrt(met_x_jer_down*met_x_jer_down+ met_y_jer_down*met_y_jer_down);
+
+      
+    kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     met_newpt_jerup);
+    kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     met_newpt_jerdown);
+
+  }
+  
 
   m_logger << DEBUG << "Filling Event Info [3]" << LQLogger::endmsg;
   
@@ -743,8 +816,21 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
   for (UInt_t ijet=0; ijet< jets_eta->size(); ijet++) {
     KJet jet;
     if(jets_pt->at(ijet) != jets_pt->at(ijet)) continue;
-    jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
 
+    if(isData){
+      jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+    }
+    else{
+      jet.SetPtEtaPhiE(jets_pt->at(ijet), jets_eta->at(ijet), jets_phi->at(ijet), jets_energy->at(ijet));
+
+      // https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution                                                                                                                 
+      /// Measurements show that the jet energy resolution (JER) in data is worse than in the simulation and the jets in MC need to be smeared to describe the data.            
+
+      jet*= jets_smearedRes->at(ijet);
+      jet.SetIsMCSmeared(true);
+    }
+
+    
     jet.SetJetPassLooseID(jets_isLoose->at(ijet));
     jet.SetJetPassTightID(jets_isTight->at(ijet));
     jet.SetJetPassTightLepVetoID(jets_isTightLepVetoJetID->at(ijet));
@@ -859,6 +945,12 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
  
     muon.SetRelIso(0.3,muon_relIso03->at(ilep));
     muon.SetRelIso(0.4,muon_relIso04->at(ilep));
+
+    muon.SetMiniAODPt(muon_pt->at(ilep));
+    muon.SetMiniAODRelIso(0.3,muon_relIso03->at(ilep));
+    muon.SetMiniAODRelIso(0.4,muon_relIso04->at(ilep));
+    muon.SetIsRochesterCorrected(false);
+
 
     muon.Setdz(muon_dz->at(ilep));
     muon.Setdxy(muon_dxy->at(ilep));

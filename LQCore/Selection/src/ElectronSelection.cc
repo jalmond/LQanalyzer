@@ -58,17 +58,26 @@ void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID e
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+  }
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
+
     //// DEFAULT cuts
     //// Require it is not in crack
     if ( fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566 ) continue;
-
+    
     bool pass_selection = true;
     ElectronID = PassUserID(elid, *el);
-    if(!ElectronID)  pass_selection = false;
+    if(!ElectronID) {
+      //cout << "Fail ID" << endl; 
+      pass_selection = false;}
 
-    if(!(fabs(el->SCEta()) < etacut)) pass_selection = false;
-    if((el->Pt() < ptcut))   pass_selection = false;
+    if(!(fabs(el->SCEta()) < etacut))  {
+      //cout << "Fail  Eta" << endl;
+      pass_selection = false;}
+    if((el->Pt() < ptcut))   {
+      //cout << "Fail pt " << endl; 
+      pass_selection = false;}
 
     if(pass_selection)  leptonColl.push_back(*el);
 
