@@ -1,4 +1,4 @@
-1;95;0cimport os,filecmp,sys
+import os,filecmp,sys
     
 def GetCATAnalyzerMailList():
     maillist=[]
