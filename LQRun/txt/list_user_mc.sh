@@ -11,4 +11,4 @@ declare -a tmplist=('WpWp_qcd_madgraph' 'ZG_llG_MCatNLO' 'ZZ_llnunu_powheg' 'ZZ_
 declare -a tmpall_mc=('TT_powheg' 'WJets' 'WW'  'WZ' 'ZZ' 'DYJets')
 
 declare -a hn=('DYJets_10to50'  'DYJets' 'WW' 'ZZ' 'WZ' 'TTJets_MG')
-
+declare -a new_list=('QCD_Pt-80to120_EMEnriched' 'QCD_Pt-80to120_MuEnriched')

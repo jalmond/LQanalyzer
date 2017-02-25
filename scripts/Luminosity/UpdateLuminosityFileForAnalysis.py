@@ -300,13 +300,28 @@ if os.path.exists(path_full_sample_list):
             os.system("rm " + newsamplelist)    
 
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+
+        list_new=[]
         if len(newsample_list) > 0:
             file_newlist = open(path_newfile3,"r")
             for line in file_newlist:
                 sline = line.split()
                 if len(sline) == 4:
-                    os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
-            file_newlist.close()        
+                    list_new.append(sline[0])
+            file_newlist.close()                                                                                                      
+            os.system("cp " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh")
+            file_userlist = open(os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh","a")
+            addstring = "declare -a new_list=("
+
+            for l in list_new:
+                addstring+="'"+l+"' "
+            addstring+")\n"
+            file_userlist.write(addstring)
+            file_userlist.close()
+            os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
+            
+            os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
+            
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:

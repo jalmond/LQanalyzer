@@ -425,7 +425,11 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if ncores_job == 1:
         return 1
 
+
     expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)                                                                                              
+    if "SKTreeMaker" in defcycle:
+        return expectedjobnfiles
+
     file_debug.write("number of files = " + str(expectedjobnfiles)+"\n")
     
     if expectedjobnfiles < 0:
