@@ -171,7 +171,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
     get_nfiles=0
     while avg_time < 0:
         if nit < 0:
-            return 0.
+            return -999
         nit =nit-1
         #### get previous month                                                                                                                                                 
         checkdate=checkdate-diff
@@ -203,12 +203,12 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         else:
             return get_nfiles
 
-    return get_nfiles
+    return -999
 
 
-def GetAverageTime( deftagger,defsample,defcycle,defskim):
+def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim):
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 1.
+        return -999
     
 
     nit=2
@@ -222,7 +222,7 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
     
     while avg_time < 0:
         if nit < 0:
-            return 0.
+            return -999
         nit =nit-1
         #### get previous month
         checkdate=checkdate-diff
@@ -233,10 +233,12 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
         file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
 
         if not os.path.exists(file_jobsummary):
-            return 1.
+            return -999
 
         read_file_jobsummary = open(file_jobsummary,"r")
         for line in read_file_jobsummary:
+            if not "True" in line:
+                continue
             if os.getenv("USER") in line:
                 if defsample +" " in line and defskim in line:
                     splitline = line.split()
@@ -256,76 +258,308 @@ def GetAverageTime( deftagger,defsample,defcycle,defskim):
             continue
         if gettime_njobs < 1:
             continue
-        gettime_jobtime = float(gettime_jobtime) * float(gettime_nfiles) 
-        gettime_jobtime = float(gettime_jobtime) / float(gettime_njobs)
+
+        if gettinglongest:
+            return (float(gettime_jobtime) * float(gettime_njobs))
+
+        gettime_jobtime = float(gettime_jobtime) / float(gettime_nfiles) 
+        gettime_jobtime = float(gettime_jobtime) * float(gettime_njobs)
         avg_time=float(gettime_jobtime)
         return avg_time
     return avg_time
     
+def FreeSpaceInQueue(jobqueue, deftagger):
 
-def DetermineNjobs(longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim):
+    is_allowed_queue =  jobqueue == "fastq" or jobqueue == "longq"
+    if not is_allowed_queue:
+        return 1000.
 
-    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 1000
+    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
+    os.system("qstat -f   > " +  path_clust_check_njobs)
+    file_clust_check_njobs=open(path_clust_check_njobs ,"r")
+    fastq_ninqueue=0.
+    fastq_nallowedinqueue=0.
+    longq_ninqueue=0.
+    longq_nallowedinqueue=0.
+    for cline in file_clust_check_njobs:
+        if "fastq" in cline:
+            splitline = cline.split()
+            if len(splitline) ==5:
+                qjobinfo=splitline[2]
+                qjobinfo=qjobinfo.replace("/"," ")
+                splitqjobinfo=qjobinfo.split()
+                fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
+                fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
+        if "longq" in cline:
+            splitline = cline.split()
+            if len(splitline) ==5:
+                qjobinfo=splitline[2]
+                qjobinfo=qjobinfo.replace("/"," ")
+                splitqjobinfo=qjobinfo.split()
+                longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
+                longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
+
+    file_clust_check_njobs.close()
+
+    if jobqueue == "fastq":
+        return (fastq_nallowedinqueue - fastq_ninqueue)
+    
+    else:
+        return(longq_nallowedinqueue - longq_ninqueue)
+
 
     
-    if ncores_job == -300 or ncores_job == 1:
+def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger):
+
+    file_debug = open("debug.txt","a")
+    
+    if not ( jobqueue == "fastq" or jobqueue == "longq"):
+        return jobqueue
+
+    file_debug.write("queue ok\n")
+    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
+    os.system("qstat -f   > " +  path_clust_check_njobs)
+    file_clust_check_njobs=open(path_clust_check_njobs ,"r")
+    fastq_ninqueue=0.
+    fastq_nallowedinqueue=0.
+    longq_ninqueue=0.
+    longq_nallowedinqueue=0.
+    for cline in file_clust_check_njobs:
+        if "fastq" in cline:
+            splitline = cline.split()
+            if len(splitline) ==5:
+                qjobinfo=splitline[2]
+                qjobinfo=qjobinfo.replace("/"," ")
+                splitqjobinfo=qjobinfo.split()
+                fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
+                fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
+        if "longq" in cline:
+            splitline = cline.split()
+            if len(splitline) ==5:
+                qjobinfo=splitline[2]
+                qjobinfo=qjobinfo.replace("/"," ")
+                splitqjobinfo=qjobinfo.split()
+                longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
+                longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
+        
+    file_clust_check_njobs.close()
+    file_debug.write("queue fast: fastq_ninqueue=" + str(fastq_ninqueue) + " fastq_nallowedinqueue = " + str(fastq_nallowedinqueue)+ " \n")
+    file_debug.write("queue long: long_ninqueue=" + str(longq_ninqueue) + " longq_nallowedinqueue = " + str(longq_nallowedinqueue)+ " \n")
+    file_debug.write("ncores_job = " + str(ncores_job) + " \n")
+    if jobqueue == "fastq":
+        if ncores_job < (fastq_nallowedinqueue-fastq_ninqueue):
+            file_debug.write("fastq, return " + jobqueue+ "\n")
+            file_debug.close()
+            return jobqueue
+        else:
+            if (float(fastq_ninqueue) / float(fastq_nallowedinqueue)) < 0.9:
+                file_debug.write("fastq2, return " + jobqueue+ "\n")
+                file_debug.close()
+                return jobqueue
+            else:
+                if ncores_job < (longq_nallowedinqueue-longq_ninqueue):
+                    job_summary.append("########################################")
+                    job_summary.append("Changing queue to submit job in empty queue")
+                    job_summary.append("########################################")
+                    file_debug.write("longq, return " + jobqueue+ "\n")
+                    file_debug.close()
+                    return "longq"
+                elif (float(longq_ninqueue)/ float(longq_nallowedinqueue)) < 0.9:
+                    job_summary.append("########################################")
+                    job_summary.append("Changing queue to submit job in empty queue")
+                    job_summary.append("########################################")
+                    file_debug.write("longq2, return " + jobqueue+ "\n")
+                    file_debug.close()
+                    return "longq"
+                else:
+                    return jobqueue
+    else:
+        if ncores_job < (longq_nallowedinqueue-longq_ninqueue):
+            file_debug.write("longq, return " + jobqueue+ "\n")
+            file_debug.close()
+            return jobqueue
+        else:
+            if (float(longq_ninqueue) / float(longq_nallowedinqueue)) < 0.9:
+                file_debug.write("longq2, return " + jobqueue+ "\n")
+                file_debug.close()
+                return jobqueue
+            else:
+                if ncores_job < (fastq_nallowedinqueue-fastq_ninqueue):
+                    job_summary.append("########################################")
+                    job_summary.append("Changing queue to submit job in empty queue")
+                    job_summary.append("########################################")
+                    file_debug.write("fastq, return " + jobqueue+ "\n")
+                    file_debug.close()
+
+                    return "fastq"
+                elif (float(fastq_ninqueue)/ float(fastq_nallowedinqueue)) < 0.9:
+                    job_summary.append("########################################")
+                    job_summary.append("Changing queue to submit job in empty queue")
+                    job_summary.append("########################################")
+                    file_debug.write("fastq2, return " + jobqueue+ "\n")
+                    file_debug.close()
+                    return "fastq"
+                else:
+                    return jobqueue
+
+
+    return jobqueue
+            
+def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall):
+
+    file_debug = open("debug.txt","a")
+
+    tmplongestjobtime=GetAverageTime(True,deftagger, defsample, defcycle,defskim)
+    isLongestJob=False
+    if tmplongestjobtime == longestjobtime:
+        isLongestJob=True
+
+    file_debug.write("deftagger " + deftagger + " defsample = " + defsample + " defskim = " + defskim + " defqueue = " + defqueue + "\n")
+    if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
+        return 1000
+    
+    if ncores_job == -300:
         if "SKTreeMaker" in defcycle:
             return 1
-
+        
     if ncores_job == 1:
         return 1
 
-    if "HN" in defsample and not "SKTreeMaker" in defcycle:
-        if ncores_job > 25:
+    expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)                                                                                              
+    file_debug.write("number of files = " + str(expectedjobnfiles)+"\n")
+    
+    if expectedjobnfiles < 0:
+        jobsummary.append( "current job has not been processed before. Setting number of of jobs to 20 as default.")
+        return 20
+
+
+
+    file_debug.write("queue = " + str(defqueue) + "\n")    
+    #nfreeq=FreeSpaceInQueue(defqueue, deftagger)      run tshi just once per submittion
+    file_debug.write("FreeSpaceInQueue: number of free cores = " + str(nfreeqall) +"\n" )
+
+
+    #### longestjobtime is time[s] to run 1 job on batch system
+    ### for now set addon to 0
+    isbusy_addon=0
+        
+    njobs_long=0            
+    if longestjobtime > 30000:
+        njobs_long=75 + isbusy_addon
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            return njobs_long
+    elif longestjobtime > 15000:
+        njobs_long=50 +isbusy_addon
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            return njobs_long
+    elif longestjobtime >6000:
+        njobs_long=35 +isbusy_addon
+        
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            return njobs_long
+    elif longestjobtime >4000:
+        njobs_long=25 +isbusy_addon
+        
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            return njobs_long
+
+    else:
+        njobs_long=15 +isbusy_addon
+
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            return njobs_long
+
+    file_debug.write("longestjobtime = " + str(longestjobtime)  +"\n" )
+    if longestjobtime < 0.:
+        file_debug.close()
+        return 20
+
+
+    ### expectedjobtime = time per file if ran 1 job in bacth queue
+    expectedjobtime=GetAverageTime(False,deftagger, defsample, defcycle,defskim)
+
+    file_debug.write("expectedjobtime = " + str(expectedjobtime) + "\n")
+    if expectedjobtime  < 0:
+        print "current job has not been processed before. Setting number of of jobs to 20 as default."
+        file_debug.close()
+        return 20
+
+    ## now this is total time expcected to run for all files
+    expectedjobtime = expectedjobtime* expectedjobnfiles
+    file_debug.write("enfiles*xpectedjobtime = " + str(expectedjobtime) + "\n")
+
+    if expectedjobtime > 6000.:
+        if not longestjobtime == expectedjobtime:
+            for ix in range(2, 50):
+                if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
+                    file_debug.close()
+                    return ix
+            file_debug.close()
             return 25
         else:
-            return ncores_job
+            file_debug.close()
+            return 50
 
 
-    #expectedjobtime=GetAverageTime(deftagger, defsample, defcycle,defskim)
-    #expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)
 
-    path_clust_check_njobs=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(deftagger)+ "/clustercheck.txt"
-    os.system("qstat -u '*'  > " +  path_clust_check_njobs)
-    file_clust_check_njobs=open(path_clust_check_njobs ,"r")
-    nrunning=0.
-    for cline in file_clust_check_njobs:
-        nrunning = nrunning + 1.
-    file_clust_check_njobs.close()
+    for i in range(2, 15):
+        file_debug.write("range " + str(i) + "\n")
+            #### IF job will run in less than 10 minutes run max number of jobs                                                                                                                                  
+        for ix in range(i, 15):
+            if (float(expectedjobtime) / float(ix)) < longestjobtime:
+                file_debug.write(str((float(expectedjobtime) / float(ix)))+"\n")
+                file_debug.write("ix = " + str(ix) +"\n")
+                file_debug.close()
+                return ix
 
-    pre_job_time=GetTime(defsample,defcycle,deftagger, defskim)
-    if pre_job_time == "None":
-        pre_job_time=100.
-    njobs_max=50
-    if float(pre_job_time) < 100.:
-        njobs_max=50
-    elif float(pre_job_time) < 200.:
-        njobs_max=25
-    elif float(pre_job_time) < 300.:
-        njobs_max=20
-    elif float(pre_job_time) < 500.:
-        njobs_max=15
-    elif float(pre_job_time) < 1000.:
-        njobs_max=10
-    elif float(pre_job_time) < 1500.:
-        njobs_max=5
-    else:
-        njobs_max=5
-    return njobs_max
+    file_debug.write("After expectedtime \n")
+    
+
+    ##### if < 600 run 2 jobs so job will last 600
+    if expectedjobtime < 600:
+        file_debug.close()
+        return 2
 
     if expectedjobtime > 1.:
         if not longestjobtime == expectedjobtime:
-            for ix in range(2, 20):
-                i=20-ix
-                if float(expectedjobtime*float(expectedjobnfiles)/float(i)) < longestjobtime:
-                    expectedjobnfiles_i=int(expectedjobnfiles)
-                    itmp=int(i)
-                    #while (expectedjobnfiles_i % int(i)):
-                    #    expectedjobnfiles=expectedjobnfiles-1
-                    return int(expectedjobnfiles/itmp)
+            for ix in range(2, 25):
+                if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
+                    file_debug.close()
+                    return ix
+            file_debug.close()
+            return 25    
+        else:
+            file_debug.close()
+            return 50
+    
+    else:
+        pre_job_time=GetTime(defsample,defcycle,deftagger, defskim)
+        if pre_job_time == "None":
+            pre_job_time=100.
+        njobs_max=50
+        if float(pre_job_time) < 100.:
+            njobs_max=50
+        elif float(pre_job_time) < 200.:
+            njobs_max=25
+        elif float(pre_job_time) < 300.:
+            njobs_max=20
+        elif float(pre_job_time) < 500.:
+            njobs_max=15
+        elif float(pre_job_time) < 1000.:
+            njobs_max=10
+        elif float(pre_job_time) < 1500.:
+            njobs_max=5
+        else:
+            njobs_max=5
+        file_debug.close()
+        return njobs_max
 
-    return njobs_max
+    
 
 def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
 
@@ -840,6 +1074,7 @@ quick_draw=options.drawhists
 
 queuepath=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
+QueueForced=False
 for line in file_queuepath:
     if "#" in line:
         continue
@@ -847,6 +1082,7 @@ for line in file_queuepath:
     for s in sline:
         if "@" in s:
             queue= s
+            QueueForced=True
 file_queuepath.close()
 
 
@@ -856,6 +1092,7 @@ printedqueue=printedqueue.replace(".local","")
 printedqueue=printedqueue.replace("node","")
 if printedqueue == "None":
     printedqueue = "fastq"
+    queue = "fastq"
 
 DoSendEmail=False
 run_in_bkg=False
@@ -1034,16 +1271,48 @@ for s in sample:
 
 runningData=False
 longestjob=0.
+njobfiles=0.
+nlongestjobfiles=0.
+nlongjobfiles=0.
 for s in sample:
-    stime=GetAverageTime(tagger, s, cycle,useskim)
+    stime=GetAverageTime(True, tagger, s, cycle,useskim)
+    njobfiles+=GetNFiles(tagger, s, cycle,useskim)
+
+    sstime=stime*GetNFiles(tagger, s, cycle,useskim)
+    if sstime > 6000.:
+        nlongjobfiles=nlongjobfiles+GetNFiles(tagger, s, cycle,useskim)
+            
     if stime > longestjob:
+        nlongestjobfiles=GetNFiles(tagger, s, cycle,useskim)
         longestjob=stime
+        
+njobfiles=njobfiles-nlongjobfiles-nlongestjobfiles
+
+job_summary=[]
+
+file_debug = open("debug.txt","w")
+file_debug.write("DEBUG \n")
+
+nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
 
 for s in sample:
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
 
-    njobs_for_submittion=DetermineNjobs(longestjob,number_of_cores, tagger, s, cycle,useskim)
+    file_debug.close()
+    njobs_for_submittion=DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall)
+    if not QueueForced:
+        newqueue = ChangeQueue(job_summary,printedqueue, njobs_for_submittion, tagger)
+        file_debug = open("debug.txt","a")
+        file_debug.write("newqueue = " + str(newqueue) + "\n")
+        file_debug.close()
 
+        printedqueue=newqueue
+        queue=newqueue
+
+        
+    if os.path.exists("debug.txt"):
+        os.system(" rm debug.txt")
+        
     isample=isample+1
 
     ## set MC bool from the sample length. This is the letter of the data period for data
@@ -2003,7 +2272,7 @@ if not ismctmp:
         mergedoutfilepath=str(datadir) + GetOutFileName(useskimtmp, ismctmp , sampletmp, runnptmp, runcftmp, channeltmp , cycle,True)
 
         
-job_summary=[]
+#job_summary=[]
 print "\n"
 for i in range(0, winx-remove_from_end):
     if "Job Terminal Output:" in mypad_contents[i]:

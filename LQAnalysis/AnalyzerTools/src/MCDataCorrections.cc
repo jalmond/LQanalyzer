@@ -397,6 +397,9 @@ TH2F* MCDataCorrections::GetCorrectionHist(TString label){
 
 void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<snu::KTruth> truth){
   
+
+  /// This function only works to correct muons if rochester correction was not applied in  selection code
+
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
     double scalefactor = 1.;
     if(it->IsRochesterCorrected()) return;

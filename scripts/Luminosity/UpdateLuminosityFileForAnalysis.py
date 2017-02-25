@@ -243,15 +243,25 @@ if os.path.exists(path_full_sample_list):
             os.system("mkdir "+ os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log")
             
         path_newfile=os.getenv("LQANALYZER_DATASET_DIR")+"/"+os.getenv("USER")+"/newfile.txt"
+        #### rename variables later
+        path_newfile2=os.getenv("LQANALYZER_DATASET_DIR")+"/"+os.getenv("USER")+"/newfile2.txt"
+        path_newfile3=os.getenv("LQANALYZER_DATASET_DIR")+"/"+os.getenv("USER")+"/newfile3.txt"
         file_newfile = open(path_newfile,"w")
+        file_newfile2 = open(path_newfile2,"w")
+        file_newfile3 = open(path_newfile3,"w")
         print "Lines to be updated:"
         for x in newxsec_list:
-            print x
+            print "xsec " + x
+            newx=x.split()
             file_newfile.write(x)
+            file_newfile2.write(x)
         for x in newsample_list:
             print x
             file_newfile.write(x)
+            file_newfile3.write(x)
         file_newfile.close()
+        file_newfile2.close()
+        file_newfile3.close()
 
         if os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"):
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
@@ -291,16 +301,16 @@ if os.path.exists(path_full_sample_list):
 
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
         if len(newsample_list) > 0:
-            file_newlist = open(path_newfile,"r")
+            file_newlist = open(path_newfile3,"r")
             for line in file_newlist:
                 sline = line.split()
                 if len(sline) == 4:
                     os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -i " + sline[0] + " -c " + catversion + " -m ' first time sample is made in current catversion'")
             file_newlist.close()        
         if len(newxsec_list) > 0:
-            EmailNewXsecList(catversion,path_newfile)
+            EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
-            EmailNewSampleList(catversion,path_newfile)                
+            EmailNewSampleList(catversion,path_newfile3)                
 else:
 
     

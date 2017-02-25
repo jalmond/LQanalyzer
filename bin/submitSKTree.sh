@@ -35,7 +35,7 @@ runSinglePhoton=false
 job_data_lumi="ALL"   ### ALL = "BtoG"  ###  "C" = period C only   "ALL"  = period C+D
 job_logstep=1000
 job_loglevel="INFO"
-job_njobs=5
+job_njobs=2
 job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""

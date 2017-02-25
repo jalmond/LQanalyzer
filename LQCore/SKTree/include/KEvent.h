@@ -52,7 +52,7 @@ namespace snu {
     void SetPFSumETShift(syst_dir dir, met_syst type, double val);
 
     void SetPFMETx(double metx);
-    void SetPFMETy(double metx);
+    void SetPFMETy(double mety);
     
     void SetPropagatedRochesterToMET(bool setpr);
     /// PDF
