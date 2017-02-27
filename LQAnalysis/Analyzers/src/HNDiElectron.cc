@@ -97,111 +97,30 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
      MakeCleverHistograms(sighist_ee, "1500MassRegion");
    /// only available in v7-6-X branch and newer
    }
+   MakeCleverHistograms(sighist_ee, "SIGNALVALIDATION_EE");
+   MakeCleverHistograms(sighist_mm, "SIGNALVALIDATION_MM");
    return;
 }
 
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
-  CorrectedMETRochester("MUON_POG_TIGHT", true);
-  
-
-  return;
-
-  /*
-  if(GetJets("JET_HN").size() > 0){
-    cout << "Tight pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Tight") << endl;
-    cout << "Medium pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Medium") << endl;
-    cout << "Loose pu id = " << GetJets("JET_HN").at(0).PassPileUpMVA("Loose") << endl;
-    cout <<  GetJets("JET_HN").at(0).Pt() << endl; 
-    cout <<  GetJets("JET_HN").at(0).IsMCSmeared() << endl;
-  }
-
-
-  cout << "------------------------" << endl;
-  cout << "UserPileupWeight = " << mcdata_correction->UserPileupWeight(eventbase->GetEvent()) << endl;
-  cout << "PileupWeightByPeriod = " << mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent()) << endl;
-  cout << "CatPileupWeight = " << mcdata_correction->CatPileupWeight(eventbase->GetEvent(),0) <<  endl;
-  */
-
-  if(GetMuons("MUON_POG_TIGHT").size() == 1){
-    cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).Pt() << " eta = " << GetMuons("MUON_POG_TIGHT").at(0).Eta() << " " <<GetMuons("MUON_POG_TIGHT").at(0).IsRochesterCorrected() <<endl;
-    cout << "pt = " << GetMuons("MUON_POG_TIGHT").at(0).RochPt() << endl;
-    //cout << "MuonTrackingEffScaleFactor = " << mcdata_correction->MuonTrackingEffScaleFactor(GetMuons("MUON_POG_TIGHT")) << endl;
-    //cout << "MuonISOScaleFactor = " << mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", GetMuons("MUON_POG_TIGHT"), 0) << endl;
-    //cout << "MuonScaleFactor = " << mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT",  GetMuons("MUON_POG_TIGHT"),0) << endl;
-    //cout << "TriggerScaleFactor  = " << mcdata_correction->TriggerScaleFactor(GetElectrons("ELECTRON_POG_TIGHT"),  GetMuons("MUON_POG_TIGHT"), "HLT_IsoMu24",0) << endl;
-    
-  }
-
-
-  return;
-
-
-
-
-  if(GetElectrons("ELECTRON_POG_TIGHT").size() == 1){
-    cout << "pt = " << GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt()  << " eta = " <<  GetElectrons("ELECTRON_POG_TIGHT").at(0).Eta() << endl;
-    cout << "ElectronScaleFactor = " << mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT",GetElectrons("ELECTRON_POG_TIGHT"), 0) << endl;
-    cout << "ElectronRecoScaleFactor= " <<mcdata_correction->ElectronRecoScaleFactor(GetElectrons("ELECTRON_POG_TIGHT")) << endl;
-  }
-    
-
-
-  return;
-
-  
-
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-  if (GetElectrons("ELECTRON_HN_TIGHT").size() > 1){
-    if((fabs(GetElectrons("ELECTRON_HN_TIGHT").at(0).SCEta()) < 1.5)){
-      if(GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() > 0.0111 ){
-	cout << "GetElectrons(ELECTRON_HN_TIGHT).at(0).dxy() = " << GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() << endl;
-      }
-      if(GetElectrons("ELECTRON_HN_TIGHT").at(0).PFRelIso(0.3) > 0.0354) {
-	cout << "GetElectrons(ELECTRON_HN_TIGHT).at(0).PFRelIso = " << GetElectrons("ELECTRON_HN_TIGHT").at(1).PFRelIso(0.3)  << endl;
-      }
-    }
-    else{
-      if(GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() > 0.0351 ){
-        cout << "GetElectrons(ELECTRON_HN_TIGHT).at(0).dxy() = " << GetElectrons("ELECTRON_HN_TIGHT").at(0).dxy() << endl;
-      }
-
-    }
-  }
-  
-  return;
-
-  ///// SIGNAL PLOTS
   FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
 
   if(!isData)weight*= MCweight;
   
-  //vector<snu::KTruth> eventbaseGetTruth();
-  /*  if(SameCharge(GetMuons(BaseSelection::MUON_HN_VETO))){
-    cout << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCMatched() << "  " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCMatched() << endl;
-    cout << "Muon 1 " << endl;
-    cout << "isCF = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsCF() << endl;
-    cout << "is conv = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsFromConversion() << endl;
-    cout << "is from tau = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCFromTau() << endl;
-    cout << "is prompt = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCIsPrompt() << endl;
-    cout << "matched pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MCMatchedPdgId() << endl;
-    cout << "mother pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(0).MotherPdgId() << endl;
-    cout << "--------------------------------- " << endl;
-    cout << "Muon 2 " << endl;
-    cout << "isCF = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCIsCF() << endl;
-    cout << "is conv = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCIsFromConversion() << endl;
-    cout << "is from tau = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCFromTau() << endl;
-    cout << "is prompt = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCIsPrompt() << endl;
-    cout << "matched pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MCMatchedPdgId() << endl;
-    cout << "mother pdgid = " << GetMuons(BaseSelection::MUON_HN_VETO).at(1).MotherPdgId() << endl;
-    cout << "--------------------------------- " << endl;
-    cout << "--------------------------------- " << endl;
-
-    }*/
   if(IsSignal()){
+    
+    // Check jet properties
+    
+    FillCLHist(sighist_ee, "SIGNALVALIDATION_EE", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
+    FillCLHist(sighist_mm, "SIGNALVALIDATION_MM", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
+    
+    
+
     //ListTriggersAvailable();
     vector<int> pt1;
     pt1.push_back(35);
@@ -266,6 +185,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   }
   
   
+  return;
+
   /// FillCutFlow(cut, weight) fills a basic TH1 called cutflow. It is used to check number of events passing different cuts
   /// The string cut must match a bin label in FillCutFlow function
   FillHist("GenWeight" , 1., MCweight,  0. , 2., 2);

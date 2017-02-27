@@ -282,7 +282,7 @@ bool KJet::PassPileUpMVA(TString puwp){
       }
     }
   }
-  else return false;
+  else return true;
   /// if wring string is input the function returns false
 
 

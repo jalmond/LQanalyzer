@@ -97,6 +97,7 @@ class BaseSelection {
   float AccessFloatMap(TString label, TString id);
   bool CheckCutFloat(TString label, TString id);
   bool CheckCutString(TString label, TString id);
+  TString GetCutString(TString label, TString id);
   TString GetString(ID id);
 
 

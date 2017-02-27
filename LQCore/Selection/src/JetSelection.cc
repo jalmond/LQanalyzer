@@ -187,13 +187,14 @@ bool JetSelection::PassUserID (ID id, snu::KJet jet){
 bool JetSelection::PassUserID (snu::KJet jet, TString id){ 
 
   
-  bool checkpileupcut  = (CheckCutString("pileup",id));
+  TString pileupcut  = (GetCutString("pileup",id));
   bool checkloosecut = (CheckCutString("LooseID",id));
   bool checktightid =  (CheckCutString("TightID",id));
   bool checktightlvid =  (CheckCutString("TightIDLepVeto",id));
   
   bool pass_selection=true;
-  if (checkpileupcut && !jet.PileupJetIDLoose()) pass_selection=false;
+  /// jet.PassPileUpMVA wil return true unless pileupcut = Tight/Medium/Loose
+  if (!jet.PassPileUpMVA(pileupcut)) pass_selection=false;
   if(checkloosecut && !jet.PassLooseID()) pass_selection=false;
   if(checktightid&&!jet.PassTightID()) pass_selection=false;
   if(checktightlvid&&!jet.PassTightLepVetoID()) pass_selection=false;

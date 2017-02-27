@@ -222,9 +222,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       Fill("h_leadingLeptonEta",muit->Eta(),weight);
       Fill("h_leadingLeptonRelIso", mu_reliso_03,weight);
       Fill("h_leadingLeptonPt", muit->Pt(),weight);
-      if(muit->Pt() < 20.) {
-	cout << " Muon pt = " << muit->Pt() << " : ev = " << ev.EventNumber() << endl; 
-      }
+
     }
     
     sum_charge += muit->Charge();
