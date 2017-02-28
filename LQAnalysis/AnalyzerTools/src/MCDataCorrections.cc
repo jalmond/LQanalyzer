@@ -335,7 +335,7 @@ float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
 
 
 float MCDataCorrections::PileupWeightByPeriod(snu::KEvent ev){
-  cout << "k_mcperiod = " << k_mcperiod << endl;
+
   return ev.PeriodPileUpWeight(k_mcperiod);
   
 }

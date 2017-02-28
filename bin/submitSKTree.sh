@@ -675,7 +675,7 @@ if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     job_skim="FLATCAT"
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
-	job_njobs=200
+	job_njobs=1000
     else 
 	job_njobs=1
     fi
@@ -697,9 +697,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
     
     if [[ $set_sktreemaker_debug == "false" ]];
         then
-	job_njobs=200
+	job_njobs=1000
     else
-	job_njobs=-311
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
         then
@@ -721,9 +721,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
     job_skim="SKTree_LeptonSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
-        job_njobs=200
+        job_njobs=1000
     else
-	job_njobs=-311
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -745,9 +745,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     job_skim="SKTree_DiLepSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
         then
-        job_njobs=200
+        job_njobs=1000
     else
-	job_njobs=-311
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -1141,6 +1141,12 @@ if [[ $job_loglevel != "ERROR" ]]
 fi
 
 
+CATDEBUG="False"
+if [[ $job_loglevel ==  "DEBUG" ]]
+then
+    CATDEBUG="True"
+fi
+
 #njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "${job_njobs}" (Default)"
 
 if [[ $changed_job_njobs == "true" ]];
@@ -1155,7 +1161,7 @@ if [[ $changed_job_njobs == "true" ]];
 	    then
 	    if [ $HOSTNAME != "cmscluster.snu.ac.kr" ];
 	    then
-		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-5)"
+		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (> 200)"
 		job_njobs=200
 	    fi
 	fi
@@ -1467,6 +1473,7 @@ if [[ $runDATA  == "true" ]];
       logstep=$job_logstep
       stream=${istream}
       drawhists=${submit_draw}
+      setnjobs=${changed_job_njobs}
       
       if [[ $changed_job_output_dir == "true" ]];
 	  then
@@ -1567,6 +1574,7 @@ if [[ $runMC  == "true" ]];
     skinput=${submit_skinput}
     useskim=${job_skim}
     njobs=$job_njobs
+    setnjobs=${changed_job_njobs}
     skflag=${submit_skflag}
     data_lumi=$job_data_lumi
     loglevel=$job_loglevel

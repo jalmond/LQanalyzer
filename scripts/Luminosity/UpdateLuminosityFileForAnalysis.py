@@ -314,6 +314,9 @@ if os.path.exists(path_full_sample_list):
             addstring = "declare -a new_list=("
 
             for l in list_new:
+                if os.path.exists("/data2/CatNtuples/"+os.getenv("CATVESION")+"/SKTrees/MC/"+l):
+                    print "Not remaking sktree as this already exists (name must have been deleted from list by  hand to recalculate lumi"
+                    continue
                 addstring+="'"+l+"' "
             addstring+")\n"
             file_userlist.write(addstring)

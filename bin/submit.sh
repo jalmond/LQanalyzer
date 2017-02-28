@@ -9,6 +9,7 @@ fi
 #### FULL LIST OF OPTIONS                                                                                                                                                       
 stream=$(makeParseVariable 's' ${stream})
 njobs=$(makeParseVariable 'j' ${njobs})
+setnjobs=$(makeParseVariable 'J' ${setnjobs})
 cycle=$(makeParseVariable 'c' ${cycle})
 data_lumi=$(makeParseVariable 'd' ${data_lumi})
 outputdir=$(makeParseVariable 'O' ${outputdir})
@@ -71,7 +72,7 @@ then
         mkdir ${statdir}
     fi
     
-    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue}
+    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue} ${setnjobs}
 else 
     for i in ${input_samples[@]}
     do
@@ -93,7 +94,7 @@ else
         echo "cattag "$CATTAG >> $logfile
         date >> $logfile
         echo "############################" >> $logfile
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} 
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs}
 	rm $logfile
         #rm /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${tagger)/${i}clust.txt
     done

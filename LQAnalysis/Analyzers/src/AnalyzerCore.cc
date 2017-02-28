@@ -27,7 +27,7 @@
 
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1) {
 
-  bool debug(false);
+  k_debugmode=false;
   
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
@@ -61,6 +61,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   vtaggers.push_back("cMVAv2Moriond17_2017_1_26_GtoH");
   /// Will add DeepCSV in 805
 
+  if( getenv("CATDEBUG") == "True") k_debugmode=true;
   cout << "Setting up 2016 selection " << endl;
   SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
   SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
@@ -71,7 +72,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
   
-  if(debug){
+  if(k_debugmode){
     for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
       cout << it->first << endl;
       for (unsigned int i=0 ; i < it->second.size(); i++){
@@ -122,7 +123,8 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
       if(trigname=="run" ){
 	is >> run;
 	is >> trig_lumi;
-	cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
+	if(k_debugmode)
+	  cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
 	
 	mapLumi2016[run] = trig_lumi;
 	continue;
@@ -130,7 +132,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
       if(trigname=="block" ){
 	is >> run;
 	is >> trig_lumi;
-	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	if(k_debugmode)cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
 	
 	mapLumiPerBlock2016[run] = trig_lumi;
 	ostringstream ss;
@@ -146,42 +148,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-  cout << "Reading Luminosity File" << endl;
+  if(k_debugmode)cout << "Reading Luminosity File" << endl;
 
-  if(1){
-    ifstream triglumi2016((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt").c_str());
-    if(!triglumi2016) {
-      cerr << "Did not find "+lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
-      exit(EXIT_FAILURE);
-    }
-    string sline2016;
-    
-    cout << "Trigname : Lumi pb-1" << endl;
-    while(getline(triglumi2016,sline2016) ){
-      std::istringstream is( sline2016 );
-      
-      string trigname;
-      float trig_lumi;
-      is >> trigname;
-      if(trigname=="###" ) continue;
-
-      
-      if(trigname=="END") break;
-      if(!TString(trigname).Contains("Lumi")){
-	is >> trig_lumi;
-	cout << trigname << " " << trig_lumi << endl;
-      }
-      else{
-	string tmp;
-	is >> tmp;
-	is >> trig_lumi;
-	cout << trigname << " " << trig_lumi << endl;
-      }
-      trigger_lumi_map_cat2016[TString(trigname)] = trig_lumi;
-      continue;
-    }
-    triglumi2016.close();
-  }
+  SetupLuminosityMap(true);
+  
 
   //==== HN Gen Matching Class
   m_HNgenmatch = new HNGenMatching();
@@ -190,6 +160,64 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
 }
 
+void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
+
+  TString lumitriggerpath="";
+  TString singleperiod = getenv("CATAnalyzerPeriod");
+  
+  if(!initialsetup) {
+    singleperiod=forceperiod;
+    trigger_lumi_map_cat2016.clear();
+  }
+  string lqdir = getenv("LQANALYZER_DIR");
+  if(singleperiod.Contains("None")){
+    lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
+  }
+  else{
+    if(singleperiod== "B")   lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_272007_275376.txt";
+    else if(singleperiod=="C")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_275657_276283.txt";
+    else if(singleperiod=="D")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
+    else if(singleperiod=="E")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
+    else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
+    else if(singleperiod=="G")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
+    else if(singleperiod=="H")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
+    else {  cerr << "Wrong period setting in SetupLuminosityMap"<< endl;  exit(EXIT_FAILURE);}
+  }
+  ifstream triglumi2016(lumitriggerpath.Data());
+  if(!triglumi2016) {
+    cerr << "Did not find period  "+ lumitriggerpath + " exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  
+  string sline2016;
+  
+
+  if(k_debugmode)cout << "Trigname : Lumi pb-1" << endl;
+  while(getline(triglumi2016,sline2016) ){
+    std::istringstream is( sline2016 );
+    
+    string trigname;
+    float trig_lumi;
+    is >> trigname;
+    if(trigname=="###" ) continue;
+    
+    
+    if(trigname=="END") break;
+    if(!TString(trigname).Contains("Lumi")){
+      is >> trig_lumi;
+      if(k_debugmode)cout << trigname << " " << trig_lumi << endl;
+    }
+    else{
+      string tmp;
+      is >> tmp;
+      is >> trig_lumi;
+      if(k_debugmode)cout << trigname << " " << trig_lumi << endl;
+    }
+    trigger_lumi_map_cat2016[TString(trigname)] = trig_lumi;
+    continue;
+  }
+  triglumi2016.close();
+}
 
 
 
@@ -206,7 +234,6 @@ float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
       
       px_orig+= muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi());
       py_orig+= muall.at(im).MiniAODPt()*TMath::Sin(muall.at(im).Phi());
-      cout << muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi()) << " " << muall.at(im).Px() << endl;
       px_corrected += muall.at(im).Px();
       py_corrected += muall.at(im).Py();
       
@@ -1097,6 +1124,8 @@ AnalyzerCore::~AnalyzerCore(){
   
 
   Message("In AnalyzerCore Destructor" , INFO);
+
+  trigger_lumi_map_cat2016.clear();
 
   for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
     delete it->second;
@@ -2055,8 +2084,6 @@ void AnalyzerCore::FillCutFlow(TString cut, float weight){
 
 ////###############################################################################################
 /// @@@@@@@@@@@@@@@@@@@@@@@@@ JETPILEUP   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-
 
 
 

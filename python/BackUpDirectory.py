@@ -28,11 +28,10 @@ def checkLumiFile(backupdir,backup_datelist):
     backupfile = lumidir+"/BackUp/"+backup_datelist[len(backup_datelist)-1] + "/datasets_snu_CAT_mc_" + catversion+".txt"
     if not os.path.exists( currentfile):
         print currentfile + " does not exist"
-        sys.exit()
+
     if not os.path.exists( backupfile):
         print backupfile + " does not exist"
-        sys.exit()
-
+        return
     
         
     if not filecmp.cmp(currentfile,backupfile):
@@ -145,7 +144,6 @@ for line in file_admin:
 file_admin.close()
 
 if dobackup:
-    print "ADMIN: Making backup"
     lumidir=os.getenv("LQANALYZER_DATASETFILE_DIR")
     checkLumiFile(lumidir+"/BackUp/",backup_date)
 
@@ -158,6 +156,8 @@ for xbackup in backup_date:
         print "ADMIN: Backup already made today"
             
 if dobackup:
+    print "ADMIN: Making backup"
+    
     copylist=[]
     copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_v* ")
     copylist.append(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary* ")

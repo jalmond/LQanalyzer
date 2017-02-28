@@ -53,7 +53,7 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
-
+  void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
   bool IsDiEl();
 
@@ -151,8 +151,8 @@ class AnalyzerCore : public LQCycleBase {
   
   /// Pileup Reweighting class
   static const Bool_t MC_pu = true;
-  Reweight *reweightPU;
 
+  bool k_debugmode;
   MCDataCorrections* mcdata_correction;
   DataDrivenBackgrounds* m_datadriven_bkg;
 

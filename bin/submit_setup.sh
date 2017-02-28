@@ -1494,30 +1494,43 @@ then
     fi
 fi
 
+export CATAnalyzerPeriod="None"
+
+if [[ $job_data_lumi == "B" ]];
+    then
+    declare -a data_periods=("B")
+    export CATAnalyzerPeriod="B"
+fi
 
 if [[ $job_data_lumi == "C" ]];
     then
     declare -a data_periods=("C")
+    export CATAnalyzerPeriod="C"
 fi
 if [[ $job_data_lumi == "D" ]];
     then
-    declare -a data_periods=("D")                                                                                                                                                                                                                                          
+    declare -a data_periods=("D")   
+    export CATAnalyzerPeriod="D"                                                                                        
 fi 
 if [[ $job_data_lumi == "E" ]];
     then
     declare -a data_periods=("E")
+    export CATAnalyzerPeriod="E"                                                                                        
 fi
 if [[ $job_data_lumi == "F" ]];
     then
     declare -a data_periods=("F")
+    export CATAnalyzerPeriod="F"                                                                                        
 fi
 if [[ $job_data_lumi == "G" ]];
     then
     declare -a data_periods=("G")
+    export CATAnalyzerPeriod="G"
 fi
 if [[ $job_data_lumi == "H" ]];
     then
     declare -a data_periods=("H_v2" "H_v3")
+    export CATAnalyzerPeriod="H"
 fi
 
 
@@ -1528,6 +1541,7 @@ do
     if [[ $job_data_lumi == $dataperiod ]];
     then
     declare -a data_periods=($dataperiod)
+    export CATAnalyzerPeriod=$dataperiod
     fi
 done
 
