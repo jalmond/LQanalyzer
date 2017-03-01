@@ -33,6 +33,7 @@ runSinglePhoton=false
 ## RUN PARAMETERS
 
 job_data_lumi="ALL"   ### ALL = "BtoG"  ###  "C" = period C only   "ALL"  = period C+D
+job_submitallfiles="false"
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=2
@@ -1474,7 +1475,8 @@ if [[ $runDATA  == "true" ]];
       stream=${istream}
       drawhists=${submit_draw}
       setnjobs=${changed_job_njobs}
-      
+      submitallfiles=${job_submitallfiles}
+
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1586,7 +1588,8 @@ if [[ $runMC  == "true" ]];
     runnp=${job_run_fake}
     runcf=${job_run_flip}
     drawhists=${submit_draw}
-
+    submitallfiles=${job_submitallfiles}
+      
 
 
     if [[ $submit_file_tag  != ""  ]];

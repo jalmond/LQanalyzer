@@ -35,6 +35,8 @@ DEBUG=$(makeParseVariable 'D' ${DEBUG})
 usebatch=$(makeParseVariable 'b' ${usebatch})
 drawhists=$(makeParseVariable 'A' ${drawhists})
 queue=$(makeParseVariable 'q' ${queue}) 
+submitallfiles=$(makeParseVariable 'F' ${submitallfiles})
+
 ################                                                                                                                                                
 
 ########## GET EMAIL                                                                                                                                                                                                              
@@ -72,7 +74,7 @@ then
         mkdir ${statdir}
     fi
     
-    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue} ${setnjobs}
+    python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue} ${setnjobs} ${submitallfiles}
 else 
     for i in ${input_samples[@]}
     do
@@ -94,7 +96,7 @@ else
         echo "cattag "$CATTAG >> $logfile
         date >> $logfile
         echo "############################" >> $logfile
-        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs}
+        python ${LQANALYZER_DIR}/python/localsubmit.py -p ${i} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi} ${remove} ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger}  ${queue} ${setnjobs} 
 	rm $logfile
         #rm /data2/CAT_SKTreeOutput/${USER}/CLUSTERLOG${tagger)/${i}clust.txt
     done

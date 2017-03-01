@@ -110,6 +110,20 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
+  if(eventbase->GetEvent().EventNumber() < 0){
+    if(eventbase->GetEvent().EventNumber() == -394145488){
+      cout << "DEBUGGING" << endl;
+      cout << eventbase->GetEvent().EventNumber()  << endl;
+    
+      cout << eventbase->GetEvent().PFMET()   << " " << eventbase->GetEvent().PFMET()   << endl;
+      cout << eventbase->GetEvent().PFMETShifted(snu::KEvent::Unclustered, snu::KEvent::down) << endl;
+      cout << eventbase->GetEvent().PFMETShifted(snu::KEvent::Unclustered, snu::KEvent::up) << endl;
+      cout << eventbase->GetEvent().PFMETShifted(snu::KEvent::Unclustered, snu::KEvent::central) << endl;
+      
+      cout << met_unclusteredEn_Px_down->at(0) << " " << met_unclusteredEn_Px_up->at(0) << " " << met_unclusteredEn_Py_down->at(0) << " " << met_unclusteredEn_Py_up->at(0)<< endl;
+    }
+  }
+  return;
 
   if(!isData)weight*= MCweight;
 

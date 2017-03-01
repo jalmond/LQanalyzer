@@ -354,6 +354,29 @@ void AnalyzerCore::GetJetTaggerEfficiences(TString taggerWP, KJet::Tagger tag,  
   }
 }
 
+
+int AnalyzerCore::GetDataPeriod(){
+  
+  /// returns 1 for peiord B.... 7 for period H
+  if(eventbase->GetEvent().RunNumber() < 272007) return -1;
+  else  if(eventbase->GetEvent().RunNumber() <= 275376) return 1; 
+  else  if(eventbase->GetEvent().RunNumber() <= 276283) return 2; 
+  else  if(eventbase->GetEvent().RunNumber() <= 276811) return 3; 
+  else  if(eventbase->GetEvent().RunNumber() <= 277420) return 4; 
+  else  if(eventbase->GetEvent().RunNumber() <= 278808) return 5; 
+  else  if(eventbase->GetEvent().RunNumber() <= 280385) return 6; 
+  else  if(eventbase->GetEvent().RunNumber() <= 280385) return 7; 
+  else  if(eventbase->GetEvent().RunNumber() <= 284044) return 7; 
+  else return -1;
+}
+
+int AnalyzerCore::GetPeriod(){
+
+  if(isData) return GetDataPeriod();
+  else return GetMCPeriod();
+
+}
+
 int AnalyzerCore::GetMCPeriod(){
   /// This function returns a period B-H for MC events. 
   /// It uses a random number and retrunds a period based on the luminosity of each period
@@ -976,7 +999,7 @@ bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKI
 
   if(period < 0) {
     Message("period not set in AnalyzerCore::HasCloseBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
-    period=GetMCPeriod();
+    period=GetPeriod();
   }
 
   bool cl = false;
@@ -1282,7 +1305,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   /// Setup correction class
   k_reset_period=true;
   
-  mcdata_correction->SetMCPeriod(GetMCPeriod());
+  mcdata_correction->SetPeriod(GetPeriod());
   mcdata_correction->SetIsData(isData);
 
   
@@ -2194,7 +2217,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 
   if(period < 0) {
     Message("period not set in AnalyzerCore::NBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
-    period=GetMCPeriod();
+    period=GetPeriod();
   }
 
   TString btag_key_lf("") , btag_key_hf("");
@@ -2258,7 +2281,7 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
 
   if(mcperiod < 0) {
     Message("mcperiod not set in AnalyzerCore::IsBTagged. Will assign mcperiod for you but this may not give correct behaviour", WARNING);      
-    mcperiod=GetMCPeriod();
+    mcperiod=GetPeriod();
   }
 
   TString btag_key_lf("") , btag_key_hf("");
@@ -2281,7 +2304,7 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
     if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";
 
 
-
+  /// Data applied no correction. So only mcperiod is set
 
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";

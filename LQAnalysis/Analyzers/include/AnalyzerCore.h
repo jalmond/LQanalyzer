@@ -55,6 +55,9 @@ class AnalyzerCore : public LQCycleBase {
 
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
+  Int_t GetDataPeriod();  
+  int GetPeriod();
+
   bool IsDiEl();
 
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);

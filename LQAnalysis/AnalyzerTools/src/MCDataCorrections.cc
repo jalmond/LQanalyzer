@@ -18,7 +18,7 @@ using namespace std;
 MCDataCorrections::MCDataCorrections() {
   
   corr_isdata=false;
-  k_mcperiod=-1;
+  k_period=-1;
 
   string lqdir = getenv("LQANALYZER_DIR");
   rc =  new RoccoR(lqdir + "/data/rochester/80X/rcdata.2016.v3");  
@@ -49,8 +49,8 @@ MCDataCorrections::~MCDataCorrections(){
 }
 
 
-void MCDataCorrections::SetMCPeriod(int mcperiod){
-  k_mcperiod=mcperiod;
+void MCDataCorrections::SetPeriod(int period){
+  k_period=period;
 }
 
 void MCDataCorrections::SetIsData(bool isdata){
@@ -142,7 +142,7 @@ double MCDataCorrections::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu
   // ref https://indico.cern.ch/event/595070/contributions/2405098/attachments/1388788/2114715/TnPIso12Dic2016.pdf 
 
   TString tag = "";
-  if(k_mcperiod < 6) tag = "_BCDEF";
+  if(k_period < 6) tag = "_BCDEF";
   else tag = "_GH";
 
 
@@ -172,7 +172,7 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
   // ref https://indico.cern.ch/event/595070/contributions/2405095/attachments/1388822/2114847/MC_12_12_2016.pdf
 
   TString tag = "";
-  if(k_mcperiod < 6) tag = "_BCDEF";
+  if(k_period < 6) tag = "_BCDEF";
   else tag = "_GH";
 
   double min_pt = 20., max_pt = 120.;
@@ -213,9 +213,45 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
 
   
   TString tag = "";
-  if(k_mcperiod < 6) tag = "_BCDEF";
+  if(k_period < 6) tag = "_BCDEF";
   else tag = "_GH";
   
+
+  if(trigname == "HLT_Ele25_eta2p1_WPTight_Gsf" || trigname == "HLT_Ele27_WPTight_Gsf" || trigname == "HLT_Ele32_eta2p1_WPTight_Gsf"){
+    //https://indico.cern.ch/event/604912/contributions/2490011/attachments/1418869/2173471/2017.02.27_EGM_Ele25-and-Ele27-trigger-SF_v1.pdf
+    // HLT_Ele27_WPTight_Gsf and HLT_Ele25_eta2p1_WPTight_Gsf are unprescaled
+    //https://indico.cern.ch/event/604911/contributions/2474230/attachments/1411693/2159538/2017.02.13_EGM_Electron-trigger-SF-2016_v1.pdf
+    if(trigname == "HLT_Ele32_eta2p1_WPTight_Gsf") {
+      s_ptthreshold="32";
+      f1_ptthreshold = 35.;
+    }
+    else if(trigname == "HLT_Ele25_eta2p1_WPTight_Gsf"){
+      s_ptthreshold="25";
+      f1_ptthreshold = 25.;
+    }
+    else {
+      s_ptthreshold="27";
+      f1_ptthreshold = 28.;
+    }
+    f2_ptthreshold = 200.;
+    
+    for(unsigned int iel = 0; iel < el.size(); iel++){
+      if(!el.at(iel).TriggerMatched(trigname)) continue;
+      float elpt = el.at(iel).Pt();
+      if(elpt >  f2_ptthreshold) elpt = (f2_ptthreshold-1.);
+      if(elpt < f1_ptthreshold) return 1.;
+      if(CheckCorrectionHist(("ELECTRON_ELE"+s_ptthreshold+"_TRIGGER_SF" + tag).Data())){
+	float sferr = double(direction)*GetCorrectionHist(("ELECTRON_ELE"+s_ptthreshold+"_TRIGGER_SF" + tag).Data())->GetBinError(GetCorrectionHist(("ELECTRON_ELE"+s_ptthreshold+"_TRIGGER_SF" + tag).Data())->FindBin( elpt,  fabs(el.at(iel).Eta())));
+														 
+	return  (1. + sferr)*GetCorrectionHist(("ELECTRON_ELE"+s_ptthreshold+"_TRIGGER_SF" + tag).Data())->GetBinContent(GetCorrectionHist(("ELECTRON_ELE"+s_ptthreshold+"_TRIGGER_SF" + tag).Data())->FindBin( elpt,  fabs(el.at(0).Eta())));
+      }
+    }// el loop
+    return 1.;
+  }
+  if(trigname == "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"){
+    //https://indico.cern.ch/event/604912/contributions/2490014/attachments/1418899/2173461/170227_wertz.pdf
+    
+  }
   if(trigname.Contains("HLT_IsoMu") || trigname.Contains("HLT_IsoTkMu")){
     if(mu.size()==1){
       if (trigname.Contains("24")){
@@ -234,7 +270,7 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
       
       float mupt=mu.at(0).MiniAODPt();
       if(mupt >  f2_ptthreshold) mupt = (f2_ptthreshold-1.);
-      if(mupt < f1_ptthreshold) mupt = (f1_ptthreshold - 1.);
+      if(mupt < f1_ptthreshold) return 1.;
       if(CheckCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())){
 	float sferr = double(direction)*GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->GetBinError(GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->FindBin( fabs(mu.at(0).Eta()), mupt) );
 	return  (1. + sferr)*GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->GetBinContent( GetCorrectionHist(("MUON_MU"+s_ptthreshold+"_TRIGGER"+tag).Data())->FindBin(  fabs(mu.at(0).Eta()), mupt) );
@@ -336,7 +372,7 @@ float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
 
 float MCDataCorrections::PileupWeightByPeriod(snu::KEvent ev){
 
-  return ev.PeriodPileUpWeight(k_mcperiod);
+  return ev.PeriodPileUpWeight(k_period);
   
 }
 

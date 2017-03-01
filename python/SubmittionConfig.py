@@ -405,7 +405,7 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger):
 
     return jobqueue
             
-def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall):
+def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall, submitall):
 
     file_debug = open("debug.txt","a")
 
@@ -422,6 +422,8 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if ncores_job == 1:
         return 1
 
+    if submitall:
+        return 1000
 
     expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)                                                                                              
     if "SKTreeMaker" in defcycle:
@@ -430,13 +432,13 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     file_debug.write("number of files = " + str(expectedjobnfiles)+"\n")
     
     if expectedjobnfiles < 0:
-        jobsummary.append( "current job has not been processed before. Setting number of of jobs to 20 as default.")
-        return 20
+        jobsummary.append( "current sample/skim has not been processed before. Setting number of of jobs to 20 as default.")
+        return 200
 
 
 
     file_debug.write("queue = " + str(defqueue) + "\n")    
-    #nfreeq=FreeSpaceInQueue(defqueue, deftagger)      run tshi just once per submittion
+    #nfreeq=FreeSpaceInQueue(defqueue, deftagger)      run this just once per submittion
     file_debug.write("FreeSpaceInQueue: number of free cores = " + str(nfreeqall) +"\n" )
 
 
@@ -445,40 +447,65 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     isbusy_addon=0
         
     njobs_long=0            
-    if longestjobtime > 30000:
+    if longestjobtime > 90000:
         njobs_long=75 + isbusy_addon
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            return njobs_long
-    elif longestjobtime > 15000:
+            if njobs_long > nfreeqall and nfreeqall > 50:
+                return nfreeqall
+            else:
+                return njobs_long
+    elif longestjobtime > 50000:
         njobs_long=50 +isbusy_addon
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            return njobs_long
-    elif longestjobtime >6000:
+            if njobs_long > nfreeqall and nfreeqall > 35:
+                return nfreeqall
+            else:
+                return njobs_long
+
+    elif longestjobtime >20000:
         njobs_long=35 +isbusy_addon
         
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            return njobs_long
+            if njobs_long > nfreeqall and nfreeqall > 20:
+                return nfreeqall
+            else:
+                return njobs_long
+            
     elif longestjobtime >4000:
         njobs_long=25 +isbusy_addon
         
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            return njobs_long
+            if njobs_long > nfreeqall and nfreeqall > 5:
+                return nfreeqall
+            else:
+                return njobs_long
 
-    else:
-        njobs_long=15 +isbusy_addon
+    elif longestjobtime >1000:
 
+        njobs_long=5 +isbusy_addon
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            return njobs_long
+            if njobs_long > nfreeqall and nfreeqall > 2:
+                return nfreeqall
+            else:
+                return njobs_long
+
+    else:
+         njobs_long=2
+         longestjobtime= longestjobtime/float(njobs_long)
+         if isLongestJob:
+             return njobs_long
+         
+
 
     file_debug.write("longestjobtime = " + str(longestjobtime)  +"\n" )
     if longestjobtime < 0.:
         file_debug.close()
-        return 20
+        return 200
 
 
     ### expectedjobtime = time per file if ran 1 job in bacth queue
@@ -488,13 +515,13 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if expectedjobtime  < 0:
         print "current job has not been processed before. Setting number of of jobs to 20 as default."
         file_debug.close()
-        return 20
+        return 200
 
     ## now this is total time expcected to run for all files
     expectedjobtime = expectedjobtime* expectedjobnfiles
     file_debug.write("enfiles*xpectedjobtime = " + str(expectedjobtime) + "\n")
 
-    if expectedjobtime > 6000.:
+    if expectedjobtime > 10000.:
         if not longestjobtime == expectedjobtime:
             for ix in range(2, 50):
                 if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
@@ -1020,6 +1047,8 @@ parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help=
 parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set user email")
 parser.add_option("-B", "--bkg", dest="bkg", default="False", help="run in bkg")
 parser.add_option("-A","--drawhists",dest="drawhists",default="False", help="draw nothing")
+parser.add_option("-F","--submitallfiles",dest="submitallfiles",default="False", help="force n=1000")
+ 
 
 #curses.resizeterm
 
@@ -1077,7 +1106,10 @@ skflag = options.skflag
 usebatch =options.usebatch
 runinbkg=options.bkg
 quick_draw=options.drawhists
-
+tmpsubmit_allfiles=options.submitallfiles
+submit_allfiles=False
+if tmpsubmit_allfiles == "true":
+    submit_allfiles=True
 
 queuepath=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
@@ -1281,18 +1313,32 @@ longestjob=0.
 njobfiles=0.
 nlongestjobfiles=0.
 nlongjobfiles=0.
+reodered_samplelist=[]
+sample_times=[]
 for s in sample:
     stime=GetAverageTime(True, tagger, s, cycle,useskim)
-    njobfiles+=GetNFiles(tagger, s, cycle,useskim)
+    s_nfile=GetNFiles(tagger, s, cycle,useskim)
+    njobfiles+=s_nfile
 
-    sstime=stime*GetNFiles(tagger, s, cycle,useskim)
-    if sstime > 6000.:
+    ### 30000 is 20 minutes for 25 job
+    if stime > 30000.:
         nlongjobfiles=nlongjobfiles+GetNFiles(tagger, s, cycle,useskim)
-            
+    sample_times.append(stime)        
     if stime > longestjob:
-        nlongestjobfiles=GetNFiles(tagger, s, cycle,useskim)
+        nlongestjobfiles=s_nfile
         longestjob=stime
-        
+
+#if longestjob < 0:
+#    reodered_samplelist=sample
+#else:
+#    for s in sample_ti:
+#        if s not longests:
+#            reodered_samplelist.append(s)#
+
+### work in progress
+#reodered_samplelist=sample
+### work in progress : use sample list for now
+
 njobfiles=njobfiles-nlongjobfiles-nlongestjobfiles
 
 job_summary=[]
@@ -1300,13 +1346,25 @@ job_summary=[]
 file_debug = open("debug.txt","w")
 file_debug.write("DEBUG \n")
 
-nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
 
 for s in sample:
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
 
+    nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
+
+    ## change queue if default is almost full
+    if queue == "fastq" and nfreeqall < 5:
+        queue="longq"
+        printedqueue="longq"
+        nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
+        ### check that second queue is almost not full. If so move back to default queue 
+        if queue == "longq" and nfreeqall < 5:
+            queue="fastq"
+            printedqueue="fastq"
+            nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
+            
     file_debug.close()
-    njobs_for_submittion=DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall)
+    njobs_for_submittion=DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles)
     if not QueueForced:
         newqueue = ChangeQueue(job_summary,printedqueue, njobs_for_submittion, tagger)
         file_debug = open("debug.txt","a")
@@ -1683,7 +1741,7 @@ for s in sample:
     blankbuffer = "         "
     if not queue:
         queue="None"
-    command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue + " -J " + str(setjobs) )
+    command1= "python  " +  os.getenv("LQANALYZER_DIR")+  "/python/CATConfig.py -p " + s + "  -s " + str(channel) + "  -j " + str(njobs_for_submittion) + " -c  " + str(cycle)+ " -o " + str(logstep)+ "  -d " + str(data_lumi) + " -O " + str(Finaloutputdir) + "  -w " + str(remove_workspace)+ " -l  " + str(loglevel) + "  -k " + str(skipev) + "  -n " + str(number_of_events_per_job) + "  -e " + str(totalev) + "  -x " + str(xsec) + "  -T " + str(tar_lumi) + " -E " + str(eff_lumi) + "  -S " + str(useskinput) + " -R " + str(runevent)+ "  -N " + str(useCATv742ntuples) + " -L " + str(tmplist_of_extra_lib) + " -D " + str(DEBUG) + " -m " + str(useskim) + " -P  " + str(runnp) + " -Q " + str(runcf) + " -v " + str(catversion) + " -f " + str(skflag) + " -b " + str(usebatch) + "  -X " + str(tagger) +" -q " + str(queue) + " -J " + str(setjobs) 
     command2=command1
     command2 = command2.replace("CATConfig.py", "localsubmit.py")
     command2_background=command2 + "&>  "+an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + s+".txt&"

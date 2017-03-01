@@ -1165,6 +1165,9 @@ while [ "$1" != "" ]; do
                                 job_data_lumi="$1"
 				changed_job_data_lumi=true
                                 ;;
+        -F | --submitall)       shift
+                                job_submitallfiles="true"
+                                ;;
 #	-sktree | --usesktrees )shift
 #                                submit_skinput="$1"
 #				changed_skinput=true

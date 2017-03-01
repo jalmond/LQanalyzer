@@ -80,6 +80,8 @@ if not os.path.exists(tag_dir):
     os.system("cp " + localfiledir + "/Pileup/*.root "+ snupileupfiledir)
     MakeDirectory(snuidfiledir)
     os.system("cp " + localfiledir + "/ID/*.root " + snuidfiledir)
+    if os.path.exists(snubtagfiledir):
+        os.system("rm -r " + snubtagfiledir)
     MakeDirectory(snubtagfiledir)
     os.system("cp " + localfiledir + "/BTag/*.csv " + snubtagfiledir)
     MakeDirectory(rochdir)
