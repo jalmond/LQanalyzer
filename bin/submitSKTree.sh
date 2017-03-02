@@ -10,7 +10,8 @@ declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
-declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
+#declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
+declare -a queueoptions=("allq" "fastq" "longq"  "None")  
 
 python $LQANALYZER_DIR/python/CheckSelection.py
 if [[ ! -d  /data2/CAT_SKTreeOutput/${USER}/GoodSelection/ ]]; then
