@@ -23,6 +23,7 @@ class EventBase;
 #include "MCDataCorrections.h"
 #include "DataDrivenBackgrounds.h"
 #include "HNGenMatching.h"
+#include "KLepton.h"
 
 
 class AnalyzerCore : public LQCycleBase {
