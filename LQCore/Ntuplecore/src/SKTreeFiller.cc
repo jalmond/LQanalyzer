@@ -154,8 +154,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   }
 
+  
 
-  if(!isData){
+  if(1){
     float jpx(0.), jpy(0.), sjpx(0.), sjpy(0.), sjpxup(0.), sjpxdown(0.),sjpyup(0.), sjpydown(0.) ;
 
     /// only smear jets not close to leptons (use top projection id)
@@ -189,9 +190,14 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       jpx +=  jets_px;
       jpy +=  jets_py;
       
-      sjpx +=  jets_smearedRes->at(ij) *jets_px;
-      sjpy +=  jets_smearedRes->at(ij) *jets_py;
-
+      if(isData){
+	sjpx +=  jets_smearedRes->at(ij) *jets_px;
+	sjpy +=  jets_smearedRes->at(ij) *jets_py;
+      }
+      else{
+	sjpx +=  jets_px;
+        sjpy +=  jets_py;
+      }
       sjpxup +=  jets_smearedResUp->at(ij) *jets_px;
       sjpyup +=  jets_smearedResUp->at(ij) *jets_py;
       

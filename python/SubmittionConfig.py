@@ -190,7 +190,10 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
 
         for line in read_file_jobsummary:
             if os.getenv("USER") in line:
-                if defsample+" " in line and defskim in line:
+                tmpsample=defsample
+                if len(defsample) == 1:
+                    tmpsample="_"+tmpsample+" "
+                if tmpsample in line and defskim in line and defcycle in line:
                     splitline = line.split()
                     nthsplit=0
                     for s in splitline:
@@ -236,7 +239,8 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         if rundebug:        
             file_debug = open("debug.txt","a")
         file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
-                                    
+        if rundebug:
+            file_debug.write(file_jobsummary+"\n")
         if not os.path.exists(file_jobsummary):
             return 100000
 
@@ -245,7 +249,10 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
             if not "True" in line:
                 continue
             if os.getenv("USER") in line:
-                if defsample +" " in line and defskim in line:
+                tmpsample=defsample
+                if len(defsample) == 1:
+                    tmpsample="_"+tmpsample+" "
+                if tmpsample in line and defskim in line and defcycle in line:
                     splitline = line.split()
                     nthsplit=0
                     if len(splitline) < 38:
@@ -273,7 +280,7 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
             if rundebug:
                 file_debug.close()
             return (float(gettime_jobtime) * float(gettime_njobs))
-
+                
         gettime_jobtime = float(gettime_jobtime) / float(gettime_nfiles) 
         gettime_jobtime = float(gettime_jobtime) * float(gettime_njobs)
         avg_time=float(gettime_jobtime)
@@ -435,10 +442,8 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
             
 def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall, submitall, rundebug):
 
-
     if rundebug:
         file_debug = open("debug.txt","a")
-
 
     tmplongestjobtime=GetAverageTime(True,deftagger, defsample, defcycle,defskim,rundebug)
     isLongestJob=False
@@ -562,7 +567,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     #### If expectedjobtime is large then submit 10 or more jobs (as few as will be finihsed bfore longest jobs time)
     if expectedjobtime > 10000.:
         if not longestjobtime == expectedjobtime:
-            for ix in range(10, 50):
+            for ix in range(10, 75):
                 if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
                     if rundebug:
                         file_debug.close()
@@ -1367,19 +1372,34 @@ reodered_samplelist=[]
 sample_times=[]
 
 
-file_debug = open("debug.txt","w")
-file_debug.write("DEBUG \n")
-file_debug.close()
+### rundebug=True will not submit any jobs and debug.txt file will be produced in ./
 rundebug=False
+if rundebug:
+    file_debug = open("debug.txt","w")
+    file_debug.write("DEBUG \n")
+    file_debug.close()
+
+islongjob = []
 for s in sample:
     
     stime=GetAverageTime(True, tagger, s, cycle,useskim,rundebug)
+    if rundebug:
+        file_debug = open("debug.txt","a")
+        file_debug.write(s + " " + str(stime) + "\n")
+        file_debug.close()
     s_nfile=GetNFiles(tagger, s, cycle,useskim)
     njobfiles+=s_nfile
 
     ### 30000 is 20 minutes for 25 job
+    ### time of previous job is > 30000 then this job is sent to longq
+    ### if jobs is > 10000 then number of jobs sent to batch queue is > 10, and chosen so that the time is similar to longest expected job
     if stime > 30000.:
         nlongjobfiles=nlongjobfiles+GetNFiles(tagger, s, cycle,useskim)
+        ### will be true if 25 jobs take > 20 minutes OR the job is a new job
+        islongjob.append(True)
+    else:
+        islongjob.append(False)
+                         
     sample_times.append(stime)        
     
     if stime > longestjob:
@@ -1398,14 +1418,14 @@ if sort_bytime:
     for s in  range(0, len(sorted_times)):
         if rundebug:
             file_debug = open("debug.txt","a")
-            file_debug.write(sorted_times[s]+"\n")
+            file_debug.write(str(sorted_times[s])+"\n")
             file_debug.close()
         
         sorted_time = sorted_times[s]
         for s1 in  range(0, len(sample)):
             if rundebug:
                 file_debug = open("debug.txt","a")
-                file_debug.write("st " + sample_times[s1]+"\n")
+                file_debug.write("st " + str(sample_times[s1])+"\n")
                 file_debug.close()
             stime=orig_sample_times[s1]
             if stime== sorted_time:
@@ -1420,12 +1440,34 @@ if sort_bytime:
 
     sample = sorted_samples
 
+if rundebug:
+    for nsample in range(0, len(sample)):
+        s=sample[nsample]
+        sample_islongjob= islongjob[nsample]
+        file_debug = open("debug.txt","a")
+    if sample_islongjob:
+        file_debug.write(s + " run on longq\n" )
+    else:
+        file_debug.write(s + " run on fastq\n" )
+    file_debug.close()
+                                
+    curses.echo()
+    curses.nocbreak()
+    curses.endwin()
+    sys.exit()
+    
 njobfiles=0
 
 job_summary=[]
 
 tmpqueue=queue
-for s in sample:
+for nsample in range(0, len(sample)):
+    
+    s=sample[nsample]
+    sample_islongjob= islongjob[nsample]
+    if "SKTreeMaker" in cycle:
+        sample_islongjob=True
+
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
     if rundebug:
         file_debug = open("debug.txt","a")
@@ -1434,6 +1476,10 @@ for s in sample:
     queue=tmpqueue
     printedqueue=tmpqueue
     
+    if sample_islongjob:
+        printedqueue="longq"
+        queue="longq"
+
     ### FreeSpaceInQueue returns number of places in queue requested by user/default
     nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
     if rundebug:
@@ -1459,7 +1505,7 @@ for s in sample:
             queue="fastq"
             printedqueue="fastq"
             nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
-    elif queue == "longq" and nfreeqall < 5:
+    elif queue == "longq" and nfreeqall < 5 and not sample_islongjob:
         if rundebug:
             file_debug.write("longq is busy \n")
         queue="fastq"
@@ -1487,8 +1533,14 @@ for s in sample:
 
         printedqueue=newqueue
         queue=newqueue
+    
+        ### If job is known to last longer than 30000 (if n=1 in submittion) seconds then send job to longq
+        if sample_islongjob:
+            printedqueue="longq"
+            queue="longq"
 
-        
+
+    
         #if os.path.exists("debug.txt"):
         #os.system(" rm debug.txt")
         

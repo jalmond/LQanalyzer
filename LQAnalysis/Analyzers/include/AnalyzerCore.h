@@ -47,6 +47,7 @@ class AnalyzerCore : public LQCycleBase {
   virtual void WriteHistograms()throw( LQError );
 
 
+  void setTDRStyle();
   TString GetStringID(BaseSelection::ID id);
   std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KFatJet>  GetFatJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);

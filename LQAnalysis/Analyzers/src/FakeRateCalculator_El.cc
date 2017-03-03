@@ -69,7 +69,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   numberVertices = eventbase->GetEvent().nVertices();   
 
   /// These run on double electron dataset
-  if(k_channel == "DoubleEG" || !isData){
+  if((isData&&k_channel == "DoubleEG") || !isData){
 
     // GetFakeRateAndPromptRates fills fake rate + prompt rate plots
     // hist names are tagged with second argu
@@ -82,9 +82,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     /// use dxy method for systematic
     GetFakeRateAndPromptRates("ELECTRON_HN_HIGHDXY_FAKELOOSE","dxy", "ELECTRON_HN_HIGHDXY_TIGHT",weight, true,false);
     /// GetFakeRateAndPromptRatesPerPeriod fills same fake rate plots as GetFakeRateAndPromptRates but splits MC into 7 data periods
-    if(!isData) GetFakeRateAndPromptRatesPerPeriod("ELECTRON16_HN_FAKELOOSE_NOD0","dijet_nod0", "ELECTRON16_HN_TIGHT",weight, true,false);
+    GetFakeRateAndPromptRatesPerPeriod("ELECTRON16_HN_FAKELOOSE_NOD0","dijet_nod0", "ELECTRON16_HN_TIGHT",weight, true,false);
   }
-  if(k_channel == "SingleElectron"|| !isData){
+  if((isData&&k_channel == "SingleElectron") || !isData){
     // MakeSingleElectronCRPlots makes single electron CR plots
     MakeSingleElectronCRPlots("ELECTRON16_HN_FAKELOOSE_NOD0","dijet_nod0",  "ELECTRON16_HN_TIGHT",weight,true); 
   }
@@ -136,7 +136,7 @@ void FakeRateCalculator_El::MakeSingleElectronCRPlots(TString looseid, TString e
 
 void FakeRateCalculator_El::GetFakeRateAndPromptRatesPerPeriod(TString looseid, TString eltag, TString tightid, float w, bool usepujetid, bool runall){
 
-  int iperiod = GetMCPeriod();
+  int iperiod = GetPeriod();
   TString speriod="";
   if (iperiod == 1)     speriod="B";
   if (iperiod == 2)     speriod="C";
@@ -160,7 +160,7 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
   // PileUpWeight is period dependant 
   // MC events are split into 7 data periods and 
   if (!k_isdata) {
-    w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetMCPeriod());
+    w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetPeriod());
   }
 
   /// Four single electron triggers
