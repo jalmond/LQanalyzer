@@ -125,19 +125,20 @@ for line in file_job:
         memoryusage_v=splitline[1]
     if "201" in line:
         if "time" not in line:
-            entries = line.split()
-            if len(entries) == 5:
-                month=entries[1]
-                day=entries[0]
-                date=entries[2]
-                ptime=entries[3] 
-                year=entries[4]
-            else:
-                month=entries[1]
-                day=entries[0]
-                date=entries[2]
-                ptime=entries[3]
-                year=entries[5]
+            if "-c" not in line:
+                entries = line.split()
+                if len(entries) == 5:
+                    month=entries[1]
+                    day=entries[0]
+                    date=entries[2]
+                    ptime=entries[3] 
+                    year=entries[4]
+                else:
+                    month=entries[1]
+                    day=entries[0]
+                    date=entries[2]
+                    ptime=entries[3]
+                    year=entries[5]
 file_job.close()
 
 if jobcrash =="":
