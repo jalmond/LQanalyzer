@@ -190,7 +190,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
       jpx +=  jets_px;
       jpy +=  jets_py;
       
-      if(isData){
+      if(!isData){
 	sjpx +=  jets_smearedRes->at(ij) *jets_px;
 	sjpy +=  jets_smearedRes->at(ij) *jets_py;
       }
