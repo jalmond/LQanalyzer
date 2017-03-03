@@ -222,11 +222,13 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
     tmpday=int(checkdate.strftime("%d"))
     diff = datetime.timedelta(days=(tmpday+1))
     checkdate=checkdate+diff
-    gettime_nfiles=0
-    gettime_njobs=0
-    gettime_jobtime=0
     
     while avg_time < 0:
+        
+        gettime_nfiles=0
+        gettime_njobs=0
+        gettime_jobtime=0
+
         if nit < 0:
             return 100000
         nit =nit-1
@@ -245,7 +247,12 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
             return 100000
 
         read_file_jobsummary = open(file_jobsummary,"r")
+        nfound=0.
         for line in read_file_jobsummary:
+            tmpgettime_nfiles=0
+            tmpgettime_njobs=0
+            tmpgettime_jobtime=0
+            
             if not "True" in line:
                 continue
             if os.getenv("USER") in line:
@@ -258,17 +265,30 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
                     if len(splitline) < 38:
                         continue
                     for s in splitline:
-                        if nthsplit==10:
-                            gettime_njobs=float(s)
-                        if nthsplit==12:
-                            gettime_nfiles=float(s)
                         if nthsplit==24:
                             if float(s) < 0:
-                                gettime_jobtime=0
-                            gettime_jobtime=float(s)
+                                tmpgettime_jobtime=0.
+                            else:
+                                tmpgettime_jobtime+=float(s)
+                        if nthsplit==10:
+                            tmpgettime_njobs+=float(s)
+                        if nthsplit==12:
+                            tmpgettime_nfiles+=float(s)
 
                         nthsplit=nthsplit+1
+                    if tmpgettime_jobtime > 0.:
+                        gettime_nfiles+=tmpgettime_nfiles
+                        gettime_njobs+=tmpgettime_njobs
+                        gettime_jobtime+=tmpgettime_jobtime
+                        nfound=nfound+1.
+                                                        
         read_file_jobsummary.close()
+        
+        if nfound > 0.:
+            gettime_nfiles=float(gettime_nfiles)/float(nfound)
+            gettime_njobs = float(gettime_njobs) / float(nfound)
+            gettime_jobtime = float(gettime_jobtime)/  float(nfound)
+        
         if gettime_jobtime < 1.:
             continue
         if gettime_nfiles < 1:
@@ -573,7 +593,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
 
     ### expectedjobtime = time per file if ran 1 job in bacth queue
-    expectedjobtime=GetAverageTime(False,deftagger, defsample, defcycle,defskim,rundebug)
+    expectedjobtime=tmplongestjobtime
 
     if rundebug:
         file_debug.write("expectedjobtime = " + str(expectedjobtime) + "\n")
@@ -584,7 +604,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
         return 200
 
     ## now this is total time expcected to run for all files
-    expectedjobtime = expectedjobtime* expectedjobnfiles
+    #expectedjobtime = expectedjobtime* expectedjobnfiles
     if rundebug:
         file_debug.write("enfiles*xpectedjobtime = " + str(expectedjobtime) + "\n")
 
