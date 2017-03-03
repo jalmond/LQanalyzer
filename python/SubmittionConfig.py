@@ -249,9 +249,9 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         read_file_jobsummary = open(file_jobsummary,"r")
         nfound=0.
         for line in read_file_jobsummary:
-            tmpgettime_nfiles=0
-            tmpgettime_njobs=0
-            tmpgettime_jobtime=0
+            tmpgettime_nfiles=-999.
+            tmpgettime_njobs=-999.
+            tmpgettime_jobtime=-999.
             
             if not "True" in line:
                 continue
@@ -269,11 +269,11 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
                             if float(s) < 0:
                                 tmpgettime_jobtime=0.
                             else:
-                                tmpgettime_jobtime+=float(s)
+                                tmpgettime_jobtime=float(s)
                         if nthsplit==10:
-                            tmpgettime_njobs+=float(s)
+                            tmpgettime_njobs=float(s)
                         if nthsplit==12:
-                            tmpgettime_nfiles+=float(s)
+                            tmpgettime_nfiles=float(s)
 
                         nthsplit=nthsplit+1
                     if tmpgettime_jobtime > 0.:
