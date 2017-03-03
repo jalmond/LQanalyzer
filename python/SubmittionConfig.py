@@ -521,7 +521,32 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
             else:
                 return njobs_long
 
+
+    elif longestjobtime >2000:
+
+        njobs_long=15 +isbusy_addon
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            if njobs_long > nfreeqall and nfreeqall > 5:
+                return nfreeqall
+            else:
+                return njobs_long
+
+
+
     elif longestjobtime >1000:
+
+        njobs_long=10 +isbusy_addon
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            if njobs_long > nfreeqall and nfreeqall > 5:
+                return nfreeqall
+            else:
+                return njobs_long
+
+
+
+    elif longestjobtime >500:
 
         njobs_long=5 +isbusy_addon
         longestjobtime= longestjobtime/float(njobs_long)
@@ -1524,6 +1549,10 @@ for nsample in range(0, len(sample)):
     if rundebug:            
         file_debug.close()
     njobs_for_submittion=DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles, rundebug)
+
+    if setnumber_of_cores and submit_allfiles:
+        njobs_for_submittion=number_of_cores
+
     if not QueueForced:
         newqueue = ChangeQueue(job_summary,printedqueue, njobs_for_submittion, tagger,rundebug)
         if rundebug:
