@@ -213,7 +213,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
 def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundebug):
 
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 1.
+        return 1000.
     
 
     nit=2
@@ -230,7 +230,7 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         gettime_jobtime=0
 
         if nit < 0:
-            return 1.
+            return 1000.
         nit =nit-1
         #### get previous month
         checkdate=checkdate-diff
@@ -244,7 +244,7 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         if rundebug:
             file_debug.write(file_jobsummary+"\n")
         if not os.path.exists(file_jobsummary):
-            return 1.
+            return 1000.
 
         read_file_jobsummary = open(file_jobsummary,"r")
         nfound=0.
