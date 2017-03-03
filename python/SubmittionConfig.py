@@ -1544,7 +1544,7 @@ for nsample in range(0, len(sample)):
             file_debug.write("longq: nfreeqall = " + str(nfreeqall) +"\n")
         
         ### check that second queue is almost not full. If so move back to default queue 
-        if queue == "longq" and nfreeqall < 5:
+        if queue == "longq" and nfreeqall < 50:
             if rundebug:
                 file_debug.write("longq is busy \n")
             queue="fastq"
