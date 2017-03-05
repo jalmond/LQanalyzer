@@ -113,15 +113,23 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   float Btag_SF;
 
   float ThisJetPt = JetPt;
-  if (abs(JetFlavor)==4 || abs(JetFlavor)==5) {
-    if (JetPt>599.99) ThisJetPt = 599.99;
-    if (JetPt < 30.) return 1.;
-  } else {
-    if (JetPt>999.99) ThisJetPt = 999.99;
-    if (JetPt < 20.) return 1.; 
+  if(TaggerName.Contains("cMVAv2")){
+    if(abs(JetFlavor)==4 || abs(JetFlavor)==5){
+      if     (JetPt > 599.99)             ThisJetPt = 599.99;
+      else if(JetPt < 30. && JetPt > 20.) ThisJetPt = 30.01;
+      else                                return 1.;
+    }
+    else{
+      if     (JetPt > 999.99) ThisJetPt = 999.99;
+      else if(JetPt < 20.)    return 1.; 
+    }
   }
-  
-  
+  else if(TaggerName.Contains("CSVv2")){
+    if     (JetPt > 999.99) ThisJetPt = 999.99;
+    else if(JetPt < 20.   ) return 1.; 
+  }
+  else return 1.; //For safety.
+
 
   if (abs(JetFlavor)==5) 
     Btag_SF = reader_bc->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
