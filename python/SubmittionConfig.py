@@ -449,7 +449,7 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
 
     return jobqueue
             
-def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall, submitall, rundebug):
+def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger,defsample,defcycle,defskim, defqueue, nfreeqall, submitall, rundebug, njobs_expectedtorun, jobsleft):
 
     if rundebug:
         file_debug = open("debug.txt","a")
@@ -488,21 +488,45 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
         file_debug.write("FreeSpaceInQueue: number of free cores = " + str(nfreeqall) +"\n" )
 
 
+
     #### longestjobtime is time[s] to run 1 job on batch system
-    ### for now set addon to 0
+
+    ### for jobs that take longer than 5000/n s
     isbusy_addon=0
-        
+    
+    if njobs_expectedtorun > 0:
+        if tmplongestjobtime < 60000 and tmplongestjobtime > 5000:
+            file_debug.write("njobs_expectedtorun = " + str(njobs_expectedtorun) + "\n")
+            if float(nfreeqall)  - float(njobs_expectedtorun) > 20:
+                nleftover = float(nfreeqall)  - float(njobs_expectedtorun) - 20.
+                file_debug.write("nleftover= " +str(nleftover) + "\n")
+                while  nleftover%float(jobsleft):
+                    nleftover=nleftover+1
+                file_debug.write("correctednleftover= " +str(nleftover) + "\n")
+                isbusy_addon = float(nleftover)/float(jobsleft)
+
+                file_debug.write("isbusy_addon = " + str(isbusy_addon) + "\n")
+
     njobs_long=0            
-    if longestjobtime > 90000:
-        njobs_long=75 + isbusy_addon
+
+    if longestjobtime > 150000:
+        njobs_long=75 
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
             if njobs_long > nfreeqall and nfreeqall > 50:
                 return nfreeqall
             else:
                 return njobs_long
-    elif longestjobtime > 50000:
-        njobs_long=50 +isbusy_addon
+    elif longestjobtime > 100000:
+        njobs_long=60 
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            if njobs_long > nfreeqall and nfreeqall > 50:
+                return nfreeqall
+            else:
+                return njobs_long
+    elif longestjobtime > 60000:
+        njobs_long=50 
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
             if njobs_long > nfreeqall and nfreeqall > 35:
@@ -511,7 +535,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
                 return njobs_long
 
     elif longestjobtime >20000:
-        njobs_long=35 +isbusy_addon
+        njobs_long=35 
         
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
@@ -520,23 +544,34 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
             else:
                 return njobs_long
             
-    elif longestjobtime >4000:
-        njobs_long=25 +isbusy_addon
+    elif longestjobtime >10000:
+        njobs_long=25 
         
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 5:
+            if njobs_long > nfreeqall and nfreeqall > 15:
+                return nfreeqall
+            else:
+                return njobs_long
+
+    elif longestjobtime >5000:
+        njobs_long=15 
+
+        longestjobtime= longestjobtime/float(njobs_long)
+        if isLongestJob:
+            if njobs_long > nfreeqall and nfreeqall > 12:
                 return nfreeqall
             else:
                 return njobs_long
 
 
+
     elif longestjobtime >2000:
 
-        njobs_long=15 +isbusy_addon
+        njobs_long=10 
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
-            if njobs_long > nfreeqall and nfreeqall > 5:
+            if njobs_long > nfreeqall and nfreeqall > 10:
                 return nfreeqall
             else:
                 return njobs_long
@@ -545,7 +580,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
     elif longestjobtime >1000:
 
-        njobs_long=10 +isbusy_addon
+        njobs_long=10 
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
             if njobs_long > nfreeqall and nfreeqall > 5:
@@ -555,9 +590,9 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
 
 
-    elif longestjobtime >500:
+    elif longestjobtime >600:
 
-        njobs_long=5 +isbusy_addon
+        njobs_long=5 
         longestjobtime= longestjobtime/float(njobs_long)
         if isLongestJob:
             if njobs_long > nfreeqall and nfreeqall > 2:
@@ -575,10 +610,11 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
 
     if rundebug:
         file_debug.write("longestjobtime = " + str(longestjobtime)  +"\n" )
-    if longestjobtime < 0.:
-        if rundebug:
-            file_debug.close()
-        return 10
+    if not longestjobtime == -499.5:        
+        if longestjobtime < 0.:
+            if rundebug:
+                file_debug.close()
+            return 10
 
 
     ### expectedjobtime = time per file if ran 1 job in bacth queue
@@ -605,14 +641,14 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
                 if float(expectedjobtime) < (float(ix)*float(longestjobtime)):
                     if rundebug:
                         file_debug.close()
-                    return ix
+                    return ix+isbusy_addon
             if rundebug:
                 file_debug.close()
-            return 25
+            return 25+isbusy_addon
         else:
             if rundebug:
                 file_debug.close()
-            return 50
+            return 50+isbusy_addon
 
     
 
@@ -626,7 +662,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
                     file_debug.write(str((float(expectedjobtime) / float(ix)))+"\n")
                     file_debug.write("ix = " + str(ix) +"\n")
                     file_debug.close()
-                return ix
+                return ix+isbusy_addon
 
     if rundebug:
         file_debug.write("After expectedtime \n")
@@ -1098,6 +1134,71 @@ def RoundMemory(mem):
     
     rounded_float= str(round(float(float_only_mem),2)) + unit_only_mem
     return rounded_float
+
+def GetRunning(tagger, rsample):
+
+    jobid_exists=True
+    while jobid_exists:
+        path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
+        if  os.path.exists(path_job_check):
+            jobid_exists=False
+
+
+    file_job_check=open(path_job_check ,"r")
+    jobid1=0
+    jobid2=0
+    
+    njobs_finished=0.
+    nrunning=0.
+    nqueue=0.
+    njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                                                                                   
+    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust.txt"
+    os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
+    ijob=0
+    
+    for sline in file_job_check:
+        ssline = sline.split()
+        if len(ssline) < 1:
+            continue
+        line=ssline[0]
+        if jobid1 == 0:
+            jobid1=line
+        jobid2=line
+        ijob=ijob+1.
+        njobs_in_total=njobs_in_total+1.
+        file_clust_check=open(path_clust_check,"r")
+        job_inqueue=False
+        for cline in file_clust_check:
+            splitline  = cline.split()
+            if len(splitline) < 6:
+                continue
+            if not os.getenv("USER")  in cline:
+                continue
+            if line == splitline[0]:
+                job_inqueue=True
+                if splitline[4] == "r":
+                    nrunning = nrunning + 1.
+                else:
+                    nqueue = nqueue + 1.
+        if not job_inqueue:
+            njobs_finished=njobs_finished+1.
+        file_clust_check.close()
+    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust.txt"
+    os.system("rm " + path_clust_check)
+
+    if njobs_in_total == 0:
+        return 0.
+    file_job_check.close()
+
+    if njobs_finished == njobs_in_total:
+        samples_complete.append(rsample)
+        
+    nrunning = nrunning + njobs_finished
+    nrun_per = round( (nrunning/float(njobs_in_total)), 2)
+    
+    return nrun_per
+                
+
     
 
 #Import parser to get options                                                                                                                                                 
@@ -1404,16 +1505,18 @@ nlongestjobfiles=0.
 nlongjobfiles=0.
 reodered_samplelist=[]
 sample_times=[]
-
+tmpnjobs_for_submittion=0
 
 ### rundebug=True will not submit any jobs and debug.txt file will be produced in ./
-rundebug=False
+rundebug=True
 if rundebug:
     file_debug = open("debug.txt","w")
     file_debug.write("DEBUG \n")
     file_debug.close()
 
 islongjob = []
+isvfastjob = []
+queuelist = []
 for s in sample:
     
     stime=GetAverageTime(True, tagger, s, cycle,useskim,rundebug)
@@ -1424,8 +1527,8 @@ for s in sample:
     s_nfile=GetNFiles(tagger, s, cycle,useskim)
     njobfiles+=s_nfile
 
-    ### 60000 is 20 minutes for 25 job
-    ### time of previous job is > 30000 then this job is sent to longq
+    ### 90000 is 20 minutes for 25 job
+    ### time of previous job is > 90000 then this job is sent to longq
     ### if jobs is > 10000 then number of jobs sent to batch queue is > 10, and chosen so that the time is similar to longest expected job
     if stime > 60000.:
         nlongjobfiles=nlongjobfiles+GetNFiles(tagger, s, cycle,useskim)
@@ -1433,12 +1536,40 @@ for s in sample:
         islongjob.append(True)
     else:
         islongjob.append(False)
-                         
+    if stime < 5000:
+        isvfastjob.append(True)
+    else:
+        isvfastjob.append(False)
+        
     sample_times.append(stime)        
     
     if stime > longestjob:
         nlongestjobfiles=s_nfile
         longestjob=stime
+
+expected_jobs_to_submit=[]
+nmediumjobs=0
+job_summary=[]
+
+for nsample in range(0, len(sample)):
+
+    s=sample[nsample]
+    if not islongjob[nsample]:
+        nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
+        dnjobs=int(DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles, rundebug , -999, -999))
+        expected_jobs_to_submit.append(dnjobs)
+        if rundebug:
+            file_debug = open("debug.txt","a")
+            file_debug.write("dnjobs = " + str(dnjobs)+"\n")
+            file_debug.close()
+
+        tmpnjobs_for_submittion+=dnjobs
+        if not isvfastjob[nsample]:
+            nmediumjobs+=1
+    else:
+        expected_jobs_to_submit.append(0.)
+
+
 
 sort_bytime=False
 if sort_bytime:
@@ -1485,20 +1616,26 @@ if rundebug:
         file_debug.write(s + " run on fastq\n" )
     file_debug.close()
                                 
-    curses.echo()
-    curses.nocbreak()
-    curses.endwin()
-    sys.exit()
+    #curses.echo()
+    #curses.nocbreak()
+    #curses.endwin()
+    #sys.exit()
     
-njobfiles=0
 
+### reset jobsummary
 job_summary=[]
 
 tmpqueue=queue
+## log what jobs are running                                                                                                                                                                                                                                        
+jobs_running =[]
+for nsample in range(0, len(sample)):
+    jobs_running.append(0.)
+
 for nsample in range(0, len(sample)):
     
     s=sample[nsample]
     sample_islongjob= islongjob[nsample]
+    sample_isfastjob= isvfastjob[nsample]
     if "SKTreeMaker" in cycle:
         sample_islongjob=True
 
@@ -1557,7 +1694,30 @@ for nsample in range(0, len(sample)):
             
     if rundebug:            
         file_debug.close()
-    njobs_for_submittion=DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles, rundebug)
+        
+
+    correctedtmpnjobs_for_submittion = tmpnjobs_for_submittion
+    for ijobcheck in range(0, len(jobs_running)):
+        for bs in samples_inbackground:
+            if bs == sample[ijobcheck]:
+                correctedtmpnjobs_for_submittion -= expected_jobs_to_submit[ijobcheck]*GetRunning(tagger,sample[ijobcheck])
+        
+    njobs_for_submittion=int(DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles, rundebug,correctedtmpnjobs_for_submittion, nmediumjobs))
+
+    
+    if rundebug:
+        file_debug = open("debug.txt","a")
+        file_debug.write("njobs = " + str(njobs_for_submittion) + "\n")
+        file_debug.close()
+        #curses.echo()
+        # curses.nocbreak()
+        # curses.endwin()
+        # sys.exit()
+
+    if not sample_islongjob:
+        if not sample_isfastjob:
+            nmediumjobs = nmediumjobs-1
+
 
     if setnumber_of_cores and submit_allfiles:
         njobs_for_submittion=number_of_cores
@@ -1572,7 +1732,7 @@ for nsample in range(0, len(sample)):
         printedqueue=newqueue
         queue=newqueue
     
-        ### If job is known to last longer than 60000 (if n=1 in submittion) seconds then send job to longq
+        ### If job is known to last longer than 90000 (if n=1 in submittion) seconds then send job to longq
         if sample_islongjob:
             printedqueue="longq"
             queue="longq"
@@ -1583,7 +1743,7 @@ for nsample in range(0, len(sample)):
         #os.system(" rm debug.txt")
         
     isample=isample+1
-
+    queuelist.append(printedqueue)
     ## set MC bool from the sample length. This is the letter of the data period for data
     isMC = len(s) > 1
     if s == "H_v2" or s == "H_v3":
@@ -1697,6 +1857,8 @@ for nsample in range(0, len(sample)):
             nrunning = nrunning + njobs_finished    
             nrun_per = round( (nrunning/float(njobs_in_total)), 2)
             nfin_per = round( (njobs_finished/float(njobs_in_total)), 2)
+            if nrunning > 0:
+                jobs_running[x] = nrun_per
 
             nscreen_run= "["
             nscreen_fin= "["
@@ -1745,10 +1907,10 @@ for nsample in range(0, len(sample)):
                 if not jobid1 == 0:
                     nblanks=2*(8-len(str(jobid2)))
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2) + " "*nblanks +   "| " + str(1+int(jobid2)-int(jobid1)) , curses.A_BOLD)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue  , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x]  , curses.A_BOLD)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_BOLD)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue  , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x]  , curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
                 stdscr.addstr(int(x)+istatus_message, summary_block7 ,"|    ",curses.A_BOLD)    
                 stdscr.refresh()
@@ -1771,7 +1933,7 @@ for nsample in range(0, len(sample)):
                 if not jobid1 == 0:    
                     nblanks=2*(8-len(str(jobid2)))
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + " "*nblanks +   "| " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " +queuelist[x] , curses.A_BOLD)
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block6,"| "  , curses.A_DIM)
  
@@ -2077,11 +2239,11 @@ for nsample in range(0, len(sample)):
                     if not jobid1 == 0:
                         nblanks=2*(8-len(str(jobid2)))
                         stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2) +  " "*nblanks +   "| " + str(1+int(jobid2)-int(jobid1)) , curses.A_BOLD)
-                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue , curses.A_BOLD)
+                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x] , curses.A_BOLD)
                                             
                     else:
                         stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_BOLD)
-                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue  , curses.A_BOLD)
+                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x]  , curses.A_BOLD)
 
                     stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
                     stdscr.addstr(int(x)+istatus_message, summary_block7 ,"|    ",curses.A_BOLD)
@@ -2104,7 +2266,7 @@ for nsample in range(0, len(sample)):
                     if not jobid1 == 0:
                         nblanks=2*(8-len(str(jobid2)))
                         stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + " "*nblanks +   "| " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
-                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue  , curses.A_DIM)
+                        stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x]  , curses.A_DIM)
 
                     else:
                         stdscr.addstr(int(x)+istatus_message, summary_block6,"| "  , curses.A_DIM)
@@ -2291,11 +2453,11 @@ while StillRunning:
                 if not jobid1 == 0:
                     nblanks=2*(8-len(str(jobid2)))
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + " "*nblanks +   "| " + str(1+int(jobid2)-int(jobid1)), curses.A_BOLD)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue  , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x]  , curses.A_BOLD)
 
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|" , curses.A_BOLD)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue  , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x]  , curses.A_BOLD)
 
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_BOLD)
                 
@@ -2320,11 +2482,11 @@ while StillRunning:
                 if not jobid1 == 0:
                     nblanks=2*(8-len(str(jobid2)))
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"| " + str(jobid1) + "-" + str(jobid2)  + " "*nblanks +   "| " + str(1+int(jobid2)-int(jobid1)), curses.A_DIM)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue, curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x], curses.A_BOLD)
 
                 else:
                     stdscr.addstr(int(x)+istatus_message, summary_block4,"|" + " "*18 + "|"  , curses.A_DIM)
-                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + printedqueue , curses.A_BOLD)
+                    stdscr.addstr(int(x)+istatus_message, summary_block5,"| " + queuelist[x] , curses.A_BOLD)
 
                 stdscr.addstr(int(x)+istatus_message, summary_block6,  "| Running   " + nscreen_run + " " + str(100*nrun_per)+ "%  Complete" + nscreen_fin + " " + str(100*nfin_per) + "%",curses.A_DIM)
                 stdscr.addstr(int(x)+istatus_message, summary_block7 ,"|    ",curses.A_DIM)

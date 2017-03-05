@@ -38,11 +38,12 @@ if not LQANALYZER_DIR == "None" :
 	if os.path.exists(os.getenv("LQANALYZER_DIR")+ "/nohup.out"):
 		os.system("rm " +os.getenv("LQANALYZER_DIR")+ "/nohup.out")
 
-	CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+
         CleanUpLogs(path_jobpre+"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"+ getpass.getuser()+ "/")
         CleanUpJobLogs(LQANALYZER_LOG)
 	if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
-            CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            #CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs(EightTeVdataOne)
             CleanUpLogs(EightTeVdataTwo)
         else:

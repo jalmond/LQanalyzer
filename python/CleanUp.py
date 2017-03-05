@@ -95,7 +95,7 @@ def CleanUpLogs(path):
                                 
                         if n_previous_jobs == 0:
                             os.system("qstat -u " + getpass.getuser()+ " > " +   logspace1 + "/qsub_del")
-                            qsub_all_filename = logspace1 +'qsub_del'
+                            qsub_all_filename = logspace1 +'/qsub_del'
                             n_qsub_jobs=0
                             for qsub_all_line in open(qsub_all_filename, 'r'):
                                 if getpass.getuser() in qsub_all_line:
