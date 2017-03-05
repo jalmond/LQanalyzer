@@ -10,7 +10,8 @@ declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
-declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
+#declare -a queueoptions=("allq" "fastq" "longq" "node1" "node2" "node3" "node4" "node5" "node6" "None")
+declare -a queueoptions=("allq" "fastq" "longq"  "None")  
 
 python $LQANALYZER_DIR/python/CheckSelection.py
 if [[ ! -d  /data2/CAT_SKTreeOutput/${USER}/GoodSelection/ ]]; then
@@ -33,6 +34,7 @@ runSinglePhoton=false
 ## RUN PARAMETERS
 
 job_data_lumi="ALL"   ### ALL = "BtoG"  ###  "C" = period C only   "ALL"  = period C+D
+job_submitallfiles="false"
 job_logstep=1000
 job_loglevel="INFO"
 job_njobs=2
@@ -675,7 +677,7 @@ if [[ $submit_analyzer_name == "SKTreeMaker" ]];
     job_skim="FLATCAT"
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
-	job_njobs=200
+	job_njobs=1000
     else 
 	job_njobs=1
     fi
@@ -697,9 +699,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
     
     if [[ $set_sktreemaker_debug == "false" ]];
         then
-	job_njobs=200
+	job_njobs=1000
     else
-	job_njobs=-311
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
         then
@@ -721,9 +723,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
     job_skim="SKTree_LeptonSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
 	then
-        job_njobs=200
+        job_njobs=1000
     else
-	job_njobs=-311
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -745,9 +747,9 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     job_skim="SKTree_DiLepSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
         then
-        job_njobs=200
+        job_njobs=1000
     else
-	job_njobs=-311
+	job_njobs=1
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -1141,6 +1143,12 @@ if [[ $job_loglevel != "ERROR" ]]
 fi
 
 
+CATDEBUG="False"
+if [[ $job_loglevel ==  "DEBUG" ]]
+then
+    CATDEBUG="True"
+fi
+
 #njobs_output_message="LQanalyzer::sktree :: INFO :: Number of subjobs = "${job_njobs}" (Default)"
 
 if [[ $changed_job_njobs == "true" ]];
@@ -1155,7 +1163,7 @@ if [[ $changed_job_njobs == "true" ]];
 	    then
 	    if [ $HOSTNAME != "cmscluster.snu.ac.kr" ];
 	    then
-		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (0-5)"
+		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (> 200)"
 		job_njobs=200
 	    fi
 	fi
@@ -1467,7 +1475,9 @@ if [[ $runDATA  == "true" ]];
       logstep=$job_logstep
       stream=${istream}
       drawhists=${submit_draw}
-      
+      setnjobs=${changed_job_njobs}
+      submitallfiles=${job_submitallfiles}
+
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1567,6 +1577,7 @@ if [[ $runMC  == "true" ]];
     skinput=${submit_skinput}
     useskim=${job_skim}
     njobs=$job_njobs
+    setnjobs=${changed_job_njobs}
     skflag=${submit_skflag}
     data_lumi=$job_data_lumi
     loglevel=$job_loglevel
@@ -1578,7 +1589,8 @@ if [[ $runMC  == "true" ]];
     runnp=${job_run_fake}
     runcf=${job_run_flip}
     drawhists=${submit_draw}
-
+    submitallfiles=${job_submitallfiles}
+      
 
 
     if [[ $submit_file_tag  != ""  ]];

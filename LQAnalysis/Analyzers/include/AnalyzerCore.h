@@ -47,14 +47,18 @@ class AnalyzerCore : public LQCycleBase {
   virtual void WriteHistograms()throw( LQError );
 
 
+  void setTDRStyle();
   TString GetStringID(BaseSelection::ID id);
   std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KFatJet>  GetFatJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
-
+  void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
+  Int_t GetDataPeriod();  
+  int GetPeriod();
+
   bool IsDiEl();
 
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
@@ -88,6 +92,7 @@ class AnalyzerCore : public LQCycleBase {
   int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium, int mcperiod=-1);
 
   bool IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1);
+  float BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1);
 
   int AssignnNumberOfTruth();
   bool IsSignal();
@@ -151,8 +156,8 @@ class AnalyzerCore : public LQCycleBase {
   
   /// Pileup Reweighting class
   static const Bool_t MC_pu = true;
-  Reweight *reweightPU;
 
+  bool k_debugmode;
   MCDataCorrections* mcdata_correction;
   DataDrivenBackgrounds* m_datadriven_bkg;
 

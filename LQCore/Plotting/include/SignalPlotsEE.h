@@ -17,6 +17,8 @@
 #include "KElectron.h"
 #include "KEvent.h"
 
+
+
 using namespace snu;
 
 class SignalPlotsEE : public StdPlots{
@@ -35,11 +37,15 @@ class SignalPlotsEE : public StdPlots{
   // Destructor
   ~SignalPlotsEE();
 
+
+
   /// Get Map
   inline std::map<TString, TH1*> GetMap() const{return map_sig;}
   inline std::map<TString, TH2*> GetMap2() const{return map_sig2;}
   inline std::map<TString, TH3*> GetMap3() const{return map_sig3;}
 
+
+  TH1D* SetupHist(TString hname, TString alabel, int nbin, double xmin, double xmax, TString xtitle="" );
   /// copy constructor
   SignalPlotsEE(const SignalPlotsEE& sp);  ///Copy constructor
   /// assigment operator
@@ -50,8 +56,8 @@ class SignalPlotsEE : public StdPlots{
   void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
 
 
-  void Fill(TString name, double value, double weight);
-  void Fill(TString name, double value, double value2, double weight);
+  void Fill(TString name, double value, double weight, TString xlabel="");
+  void Fill(TString name, double value, double value2, double weight,TString xlabel="",TString ylabel="" );
   void Fill(TString name, double value, double value2, double value3, double weight);
 
   /// function to write out hists

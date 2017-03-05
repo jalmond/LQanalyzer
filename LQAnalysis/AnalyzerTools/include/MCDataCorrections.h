@@ -41,7 +41,7 @@ class MCDataCorrections{
   MCDataCorrections(bool isdata);
   ~MCDataCorrections();
 
-  void SetMCPeriod(int mcperiod);
+  void SetPeriod(int period);
   void SetIsData(bool isdata);
   void PrintSummary();
 
@@ -81,7 +81,7 @@ class MCDataCorrections{
  private:
   
   bool corr_isdata;
-  double k_mcperiod;
+  double k_period;
 
   std::map<TString, TH2F*>  CorrectionMap;
   std::map<TString, TGraphAsymmErrors*>  CorrectionMapGraph;

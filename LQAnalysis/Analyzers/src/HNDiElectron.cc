@@ -98,7 +98,9 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    /// only available in v7-6-X branch and newer
    }
    MakeCleverHistograms(sighist_ee, "SIGNALVALIDATION_EE");
+   MakeCleverHistograms(sighist_ee, "SIGNALVALIDATION_EE_PRESEL");
    MakeCleverHistograms(sighist_mm, "SIGNALVALIDATION_MM");
+   MakeCleverHistograms(sighist_mm, "SIGNALVALIDATION_MM_PRESEL");
    return;
 }
 
@@ -108,9 +110,11 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-  FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
-
   if(!isData)weight*= MCweight;
+
+  FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
+  FillHist("NoCut_w" , 1., weight,  0. , 2., 2);
+
   
   if(IsSignal()){
     
@@ -118,7 +122,19 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
     
     FillCLHist(sighist_ee, "SIGNALVALIDATION_EE", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
     FillCLHist(sighist_mm, "SIGNALVALIDATION_MM", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
-    
+
+    if(GetJets("JET_HN").size() > 1){
+      if(GetElectrons("ELECTRON_POG_TIGHT").size() == 2){
+
+	FillCLHist(sighist_ee, "SIGNALVALIDATION_EE_PRESEL", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_POG_TIGHT"),GetJets("JET_HN"), weight);
+	
+      }
+      if(GetMuons("MUON_POG_TIGHT").size() == 2){
+	FillCLHist(sighist_mm, "SIGNALVALIDATION_MM_PRESEL", eventbase->GetEvent(),  GetMuons("MUON_POG_TIGHT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
+	
+      }
+      
+    }
     
 
     //ListTriggersAvailable();
@@ -388,7 +404,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 		for(unsigned int ij = 0 ; ij < jetColl_hn.size(); ij++){
 		  if(jetColl_hn.at(ij).Eta() > 1.5) has_forward_jet=true;
 		  if(jetColl_hn.at(ij).Eta() < -1.5) has_back_jet=true;
-		  cout << "Passes selection ll jjjj " << endl;
 		  for(unsigned int ij1=0; ij1 < jetColl_hn.size(); ij1++){
 		    cout << jetColl_hn.at(ij1).Eta() << endl;
 		  }

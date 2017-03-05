@@ -76,6 +76,9 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
     
     bool use_sum_genweight(false);
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
+    if(mit->first.Contains("_Schannel_")){
+      if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
+    }
     else use_sum_genweight=false;
     
     system(dir.Data());

@@ -23,11 +23,11 @@
 
 //ROOT includes
 #include <TFile.h>
-
+#include "TStyle.h"
 
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1) {
 
-  bool debug(false);
+  k_debugmode=false;
   
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
@@ -61,6 +61,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   vtaggers.push_back("cMVAv2Moriond17_2017_1_26_GtoH");
   /// Will add DeepCSV in 805
 
+  if( getenv("CATDEBUG") == "True") k_debugmode=true;
   cout << "Setting up 2016 selection " << endl;
   SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
   SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
@@ -71,7 +72,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
   
-  if(debug){
+  if(k_debugmode){
     for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
       cout << it->first << endl;
       for (unsigned int i=0 ; i < it->second.size(); i++){
@@ -122,7 +123,8 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
       if(trigname=="run" ){
 	is >> run;
 	is >> trig_lumi;
-	cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
+	if(k_debugmode)
+	  cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
 	
 	mapLumi2016[run] = trig_lumi;
 	continue;
@@ -130,7 +132,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
       if(trigname=="block" ){
 	is >> run;
 	is >> trig_lumi;
-	cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+	if(k_debugmode)cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
 	
 	mapLumiPerBlock2016[run] = trig_lumi;
 	ostringstream ss;
@@ -146,42 +148,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   
   cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-  cout << "Reading Luminosity File" << endl;
+  if(k_debugmode)cout << "Reading Luminosity File" << endl;
 
-  if(1){
-    ifstream triglumi2016((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt").c_str());
-    if(!triglumi2016) {
-      cerr << "Did not find "+lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
-      exit(EXIT_FAILURE);
-    }
-    string sline2016;
-    
-    cout << "Trigname : Lumi pb-1" << endl;
-    while(getline(triglumi2016,sline2016) ){
-      std::istringstream is( sline2016 );
-      
-      string trigname;
-      float trig_lumi;
-      is >> trigname;
-      if(trigname=="###" ) continue;
-
-      
-      if(trigname=="END") break;
-      if(!TString(trigname).Contains("Lumi")){
-	is >> trig_lumi;
-	cout << trigname << " " << trig_lumi << endl;
-      }
-      else{
-	string tmp;
-	is >> tmp;
-	is >> trig_lumi;
-	cout << trigname << " " << trig_lumi << endl;
-      }
-      trigger_lumi_map_cat2016[TString(trigname)] = trig_lumi;
-      continue;
-    }
-    triglumi2016.close();
-  }
+  SetupLuminosityMap(true);
+  
 
   //==== HN Gen Matching Class
   m_HNgenmatch = new HNGenMatching();
@@ -190,6 +160,177 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
 }
 
+
+void AnalyzerCore::setTDRStyle() {
+  TStyle *tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
+
+  // For the canvas:
+  tdrStyle->SetCanvasBorderMode(0);
+  tdrStyle->SetCanvasColor(kWhite);
+  tdrStyle->SetCanvasDefH(600); //Height of canvas
+  tdrStyle->SetCanvasDefW(600); //Width of canvas
+  tdrStyle->SetCanvasDefX(0);   //POsition on screen
+  tdrStyle->SetCanvasDefY(0);
+
+  // For the Pad:
+  tdrStyle->SetPadBorderMode(0);
+  tdrStyle->SetPadColor(kWhite);
+  tdrStyle->SetPadGridX(false);
+  tdrStyle->SetPadGridY(false);
+  tdrStyle->SetGridColor(0);
+  tdrStyle->SetGridStyle(3);
+  tdrStyle->SetGridWidth(1);
+
+  // For the frame:
+  tdrStyle->SetFrameBorderMode(0);
+  tdrStyle->SetFrameBorderSize(1);
+  tdrStyle->SetFrameFillColor(0);
+  tdrStyle->SetFrameFillStyle(0);
+  tdrStyle->SetFrameLineColor(1);
+  tdrStyle->SetFrameLineStyle(1);
+  tdrStyle->SetFrameLineWidth(1);
+
+  // For the histo:
+  tdrStyle->SetHistLineColor(1);
+  tdrStyle->SetHistLineStyle(0);
+  tdrStyle->SetHistLineWidth(1);
+
+  tdrStyle->SetEndErrorSize(2);
+  tdrStyle->SetMarkerStyle(20);
+
+  //For the fit/function:
+  tdrStyle->SetOptFit(1);
+  tdrStyle->SetFitFormat("5.4g");
+  tdrStyle->SetFuncColor(2);
+  tdrStyle->SetFuncStyle(1);
+  tdrStyle->SetFuncWidth(1);
+
+  //For the date:
+  tdrStyle->SetOptDate(0);
+
+  // For the statistics box:
+  tdrStyle->SetOptFile(0);
+  tdrStyle->SetOptStat(0); // To display the mean and RMS:   SetOptStat("mr");
+  tdrStyle->SetStatColor(kWhite);
+  tdrStyle->SetStatFont(42);
+  tdrStyle->SetStatFontSize(0.025);
+  tdrStyle->SetStatTextColor(1);
+  tdrStyle->SetStatFormat("6.4g");
+  tdrStyle->SetStatBorderSize(1);
+  tdrStyle->SetStatH(0.1);
+  tdrStyle->SetStatW(0.15);
+
+  // Margins:
+  tdrStyle->SetPadTopMargin(0.05);
+  tdrStyle->SetPadBottomMargin(0.1);
+  tdrStyle->SetPadLeftMargin(0.16);
+  tdrStyle->SetPadRightMargin(0.02);
+
+  // For the Global title:
+
+  tdrStyle->SetOptTitle(0);
+  tdrStyle->SetTitleFont(42);
+  tdrStyle->SetTitleColor(1);
+  tdrStyle->SetTitleTextColor(1);
+  tdrStyle->SetTitleFillColor(10);
+  tdrStyle->SetTitleFontSize(0.05);
+
+  // For the axis titles:
+  tdrStyle->SetTitleColor(1, "XYZ");
+  tdrStyle->SetTitleFont(42, "XYZ");
+  tdrStyle->SetTitleSize(0.07, "XYZ");
+  tdrStyle->SetTitleXOffset(0.9);
+  tdrStyle->SetTitleYOffset(1.25);
+
+  // For the axis labels:
+  tdrStyle->SetLabelColor(1, "XYZ");
+  tdrStyle->SetLabelFont(42, "XYZ");
+  tdrStyle->SetLabelOffset(0.007, "XYZ");
+  tdrStyle->SetLabelSize(0.05, "XYZ");
+
+  // For the axis:
+  tdrStyle->SetAxisColor(1, "XYZ");
+  tdrStyle->SetStripDecimals(kTRUE);
+  tdrStyle->SetTickLength(0.03, "XYZ");
+  tdrStyle->SetNdivisions(510, "XYZ");
+  tdrStyle->SetPadTickX(1);  // To get tick marks on the opposite side of the frame
+  tdrStyle->SetPadTickY(1);
+
+  // Change for log plots:
+  tdrStyle->SetOptLogx(0);
+  tdrStyle->SetOptLogy(0);
+  tdrStyle->SetOptLogz(0);
+
+  // Postscript options:
+  tdrStyle->SetPaperSize(20.,20.);
+  
+  tdrStyle->SetHatchesLineWidth(5);
+  tdrStyle->SetHatchesSpacing(0.05);
+
+  tdrStyle->cd();
+
+  
+
+}
+
+void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
+
+  TString lumitriggerpath="";
+  TString singleperiod = getenv("CATAnalyzerPeriod");
+  
+  if(!initialsetup) {
+    singleperiod=forceperiod;
+    trigger_lumi_map_cat2016.clear();
+  }
+  string lqdir = getenv("LQANALYZER_DIR");
+  if(singleperiod.Contains("None")){
+    lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
+  }
+  else{
+    if(singleperiod== "B")   lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_272007_275376.txt";
+    else if(singleperiod=="C")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_275657_276283.txt";
+    else if(singleperiod=="D")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
+    else if(singleperiod=="E")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
+    else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
+    else if(singleperiod=="G")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
+    else if(singleperiod=="H")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
+    else {  cerr << "Wrong period setting in SetupLuminosityMap"<< endl;  exit(EXIT_FAILURE);}
+  }
+  ifstream triglumi2016(lumitriggerpath.Data());
+  if(!triglumi2016) {
+    cerr << "Did not find period  "+ lumitriggerpath + " exiting ..." << endl;
+    exit(EXIT_FAILURE);
+  }
+  
+  string sline2016;
+  
+
+  if(k_debugmode)cout << "Trigname : Lumi pb-1" << endl;
+  while(getline(triglumi2016,sline2016) ){
+    std::istringstream is( sline2016 );
+    
+    string trigname;
+    float trig_lumi;
+    is >> trigname;
+    if(trigname=="###" ) continue;
+    
+    
+    if(trigname=="END") break;
+    if(!TString(trigname).Contains("Lumi")){
+      is >> trig_lumi;
+      if(k_debugmode)cout << trigname << " " << trig_lumi << endl;
+    }
+    else{
+      string tmp;
+      is >> tmp;
+      is >> trig_lumi;
+      if(k_debugmode)cout << trigname << " " << trig_lumi << endl;
+    }
+    trigger_lumi_map_cat2016[TString(trigname)] = trig_lumi;
+    continue;
+  }
+  triglumi2016.close();
+}
 
 
 
@@ -206,7 +347,6 @@ float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
       
       px_orig+= muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi());
       py_orig+= muall.at(im).MiniAODPt()*TMath::Sin(muall.at(im).Phi());
-      cout << muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi()) << " " << muall.at(im).Px() << endl;
       px_corrected += muall.at(im).Px();
       py_corrected += muall.at(im).Py();
       
@@ -325,6 +465,29 @@ void AnalyzerCore::GetJetTaggerEfficiences(TString taggerWP, KJet::Tagger tag,  
       if( j.IsBTagged( tag, wp) )         FillHist("h2_BTaggingEff_"+taggerWP+"_Num_udsg" , j.Pt(),  j.Eta(), weight, ptbins, 6 , etabins, 4);
     }
   }
+}
+
+
+int AnalyzerCore::GetDataPeriod(){
+  
+  /// returns 1 for peiord B.... 7 for period H
+  if(eventbase->GetEvent().RunNumber() < 272007) return -1;
+  else  if(eventbase->GetEvent().RunNumber() <= 275376) return 1; 
+  else  if(eventbase->GetEvent().RunNumber() <= 276283) return 2; 
+  else  if(eventbase->GetEvent().RunNumber() <= 276811) return 3; 
+  else  if(eventbase->GetEvent().RunNumber() <= 277420) return 4; 
+  else  if(eventbase->GetEvent().RunNumber() <= 278808) return 5; 
+  else  if(eventbase->GetEvent().RunNumber() <= 280385) return 6; 
+  else  if(eventbase->GetEvent().RunNumber() <= 280385) return 7; 
+  else  if(eventbase->GetEvent().RunNumber() <= 284044) return 7; 
+  else return -1;
+}
+
+int AnalyzerCore::GetPeriod(){
+
+  if(isData) return GetDataPeriod();
+  else return GetMCPeriod();
+
 }
 
 int AnalyzerCore::GetMCPeriod(){
@@ -949,7 +1112,7 @@ bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKI
 
   if(period < 0) {
     Message("period not set in AnalyzerCore::HasCloseBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
-    period=GetMCPeriod();
+    period=GetPeriod();
   }
 
   bool cl = false;
@@ -1097,6 +1260,8 @@ AnalyzerCore::~AnalyzerCore(){
   
 
   Message("In AnalyzerCore Destructor" , INFO);
+
+  trigger_lumi_map_cat2016.clear();
 
   for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
     delete it->second;
@@ -1253,7 +1418,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   /// Setup correction class
   k_reset_period=true;
   
-  mcdata_correction->SetMCPeriod(GetMCPeriod());
+  mcdata_correction->SetPeriod(GetPeriod());
   mcdata_correction->SetIsData(isData);
 
   
@@ -2058,8 +2223,6 @@ void AnalyzerCore::FillCutFlow(TString cut, float weight){
 
 
 
-
-
 ////############################################################################################### 
 /// @@@@@@@@@@@@@@@@@@@@@@@@@ CUTS   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
 
@@ -2167,7 +2330,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 
   if(period < 0) {
     Message("period not set in AnalyzerCore::NBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
-    period=GetMCPeriod();
+    period=GetPeriod();
   }
 
   TString btag_key_lf("") , btag_key_hf("");
@@ -2231,7 +2394,7 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
 
   if(mcperiod < 0) {
     Message("mcperiod not set in AnalyzerCore::IsBTagged. Will assign mcperiod for you but this may not give correct behaviour", WARNING);      
-    mcperiod=GetMCPeriod();
+    mcperiod=GetPeriod();
   }
 
   TString btag_key_lf("") , btag_key_hf("");
@@ -2254,7 +2417,7 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
     if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";
 
 
-
+  /// Data applied no correction. So only mcperiod is set
 
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
@@ -2284,6 +2447,74 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
   
   return isBtag;
 }
+
+
+float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod){
+
+  //BTag SF from 1a method.
+  //This is coded for H+->WA analysis. I'm fine with anybody else using this function, but be aware that HN analyses decided to use 2a method.
+  //And I currently have no plan to use multiple WP. so I just coded to work only for single WP regime.
+
+  if(isData) return 1.;
+
+  if(mcperiod < 0) {
+    Message("FYI : mcperiod not set in AnalyzerCore::BTagScaleFactor_1a: meaning auto-set", DEBUG);
+    mcperiod=GetPeriod();
+  }
+
+  TString btag_key_lf(""), btag_key_hf("");
+  TString wp_string="";
+  if(wp == snu::KJet::Loose)  wp_string = "Loose";
+  if(wp == snu::KJet::Medium) wp_string = "Medium";
+  if(wp == snu::KJet::Tight)  wp_string = "Tight";
+
+  TString tag_string="";
+  if(mcperiod < 6){ if(tag== snu::KJet::CSVv2)  tag_string ="CSVv2Moriond17_2017_1_26_BtoF";}
+  else            { if(tag== snu::KJet::CSVv2)  tag_string ="CSVv2Moriond17_2017_1_26_GtoH";}
+
+  if(mcperiod < 6){ if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_BtoF";}
+  else            { if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";}
+
+  btag_key_lf = tag_string+"_"+wp_string+"_lf";
+  btag_key_hf = tag_string+"_"+wp_string+"_hf";
+  std::map<TString,BTagSFUtil*>::iterator it_lf = MapBTagSF.find(btag_key_lf);
+  std::map<TString,BTagSFUtil*>::iterator it_hf = MapBTagSF.find(btag_key_hf);
+
+  if(it_lf == MapBTagSF.end()){   Message("Combination of btagger and working point is not allowed. Check configation of MapBTagSF", ERROR);  exit(EXIT_FAILURE);}
+  if(it_hf == MapBTagSF.end()){   Message("Combination of btagger and working point is not allowed. Check configation of MapBTagSF", ERROR);  exit(EXIT_FAILURE);}
+
+  if ( tag == snu::KJet::JETPROB) return -999;
+
+  float BTagSF=1.;
+  for(unsigned int i=0; i<jetColl.size(); i++){
+    if(jetColl.at(i).IsBTagged(tag, wp)){
+      if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
+        BTagSF *= it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+      else{
+        BTagSF *= it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+    }
+    else{
+      float SFj=1., Effj=1.;
+      if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
+        SFj  = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        Effj = it_hf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+      else{
+        SFj  = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        Effj = it_lf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+
+      if( (1.-Effj)==0. ) return 0.;
+      BTagSF *= (1.-SFj*Effj)/(1.-Effj);
+    }
+  }
+
+  return BTagSF;
+
+}
+
 
 double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
   

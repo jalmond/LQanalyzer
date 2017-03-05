@@ -44,6 +44,7 @@ parser.add_option("-q", "--queue", dest="queue", default="", help="Which queue t
 parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
+parser.add_option("-J", "--setnjobs", dest="setnjobs", default="False", help="user sets njobs?")
 
 
 ###################################################
@@ -51,6 +52,11 @@ parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help=
 ###################################################
 (options, args) = parser.parse_args()
 number_of_cores = int(options.jobs)
+setjobs = options.setnjobs
+setnumber_of_cores=False
+if setjobs== "true":
+    setnumber_of_cores=True
+
 sample = options.period
 channel = options.stream
 cycle = options.cycle
@@ -1069,7 +1075,7 @@ while not JobSuccess:
         if running_batch:
             ### print jobs running/in queue .... once all running print % completeion
             for i in range(1,number_of_cores+1):
-                if number_of_cores == 1 and not "SKTreeMaker" in cycle:
+                if number_of_cores == 1 and setnumber_of_cores:
                     check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".log"
                 else:
                     check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
@@ -1414,7 +1420,7 @@ else:
         
         if not mc:
             outfile = cycle + "_" + outsamplename + ".root"
-        if number_of_cores == 1 and not "SKTreeMaker" in cycle:
+        if number_of_cores == 1 and setnumber_of_cores:
             os.system("mv " + outputdir + outsamplename + "_1.root " + Finaloutputdir + outfile )
             
             os.system("ls -lh " + Finaloutputdir +   outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize" + tagger+".txt")

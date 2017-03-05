@@ -29,6 +29,8 @@ catversion="NULL"
 usebatch="NULL"
 run_in_bkg="False"
 drawhists="False"
+setnjobs="False"
+submitallfiles="False"
 function makeParseVariable() {
     if ! [ -z ${2} ] 
         then

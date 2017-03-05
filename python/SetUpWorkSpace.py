@@ -52,7 +52,7 @@ if not LQANALYZER_DIR == "None" :
 	txtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/"
 	cltxtfiledir = os.getenv("LQANALYZER_DIR")+ "/LQRun/txt/Cluster/"
 	seldir =os.getenv("LQANALYZER_DIR")+  "/CATConfig/SelectionConfig/"
-	os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
+	os.system("cp " + localfiledir + "/Luminosity/triggers_catversion_"+str(os.getenv("CATVERSION"))+"* "  + lumifiledir)
 	os.system("cp " + localfiledir + "/Luminosity/lumi_catversion_"+str(os.getenv("CATVERSION"))+".txt "  + lumifiledir)
 	os.system("cp " + datasetfiledir + "/list_all_mc_"+str(os.getenv("CATVERSION"))+".sh " + txtfiledir)
         if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
