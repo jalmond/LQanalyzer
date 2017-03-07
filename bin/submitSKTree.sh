@@ -43,6 +43,7 @@ changed_skim=false
 job_output_dir=""
 
 make_sktrees="False"
+GetOutPutDir="False"
 run_validation="False"
 idname=""
 queuename="None"
@@ -1365,6 +1366,32 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     rm edit.sh
     rm sktree_logger.txt
     rm sktree_logger_tmp.txt
+fi
+
+if [[ $GetOutPutDir == "True" ]];
+then
+    if [[ $submit_analyzer_name ==  "" ]];
+    then
+	echo "No analyzer set: set with -a"
+	echo "List of Classes are:"
+    while read line
+    do
+	if [[ $line == *"C++ class"* ]];
+        then
+            if [[ $line != *"AnalyzerCore"* ]];
+            then
+		sline=$(echo $line | head -n1 | awk '{print $5}')
+		suffix="+;"
+		sline=${sline%$suffix}
+		echo $sline
+            fi
+	fi
+    done < ${LQANALYZER_DIR}/$linkdef_filepath
+    exit 1
+    fi
+    
+    echo "Outputdir for "${submit_analyzer_name}" is "$outputdir
+    exit 1
 fi
 
 #iddir=/data2/CAT_SKTreeOutput/$USER/JobID/ >> declared in catconf now

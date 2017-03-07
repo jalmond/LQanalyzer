@@ -1308,6 +1308,12 @@ while [ "$1" != "" ]; do
 				changed_job_output_dir=true
                                 ;;
 
+        -G | --getoutputdir)       shift
+                                GetOutPutDir="True"
+                                submit_analyzer_name=$1
+				submit_file_tag="WW"
+				set_submit_file_tag=true
+                                ;;
 
 	-g | --file_tag_groups) shift
                                 submit_searchlist=$1
@@ -1410,6 +1416,7 @@ while [ "$1" != "" ]; do
 				    echo "         |                                                    |                     | Only available from v7-6-4          |"
 
 				    echo "-D       | any allowed  CATVERSION                            | default = $CATVERSION    | returns Info on Catuple production.|"
+				    echo "-G       | any allowed  Analyzer                              | default = ''        | returns drfault outputdir.|"
 				    echo "-printID | any allowed  ID name  (i.e., MUON_POG_TIGHT)       | default = ''        | returns Info on object id.|"
 				    echo "-userflag| Get user flag   flag1,flag2                        | default = ''        |  pass in string                     |"
 				    

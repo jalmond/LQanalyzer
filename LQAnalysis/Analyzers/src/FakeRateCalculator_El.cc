@@ -81,6 +81,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     GetFakeRateAndPromptRates("ELECTRON_POG_FAKELOOSE","dijet_pog", "ELECTRON_POG_TIGHT",weight, true,false);
     /// use dxy method for systematic
     GetFakeRateAndPromptRates("ELECTRON_HN_HIGHDXY_FAKELOOSE","dxy", "ELECTRON_HN_HIGHDXY_TIGHT",weight, true,false);
+    if(!isData)GetFakeRateAndPromptRates("ELECTRON_HN_LOWDXY_FAKELOOSE","dxy", "ELECTRON_HN_LOWDXY_TIGHT",weight, true,false);
     /// GetFakeRateAndPromptRatesPerPeriod fills same fake rate plots as GetFakeRateAndPromptRates but splits MC into 7 data periods
     GetFakeRateAndPromptRatesPerPeriod("ELECTRON16_HN_FAKELOOSE_NOD0","dijet_nod0", "ELECTRON16_HN_TIGHT",weight, true,false);
   }
@@ -504,6 +505,10 @@ void FakeRateCalculator_El::MakeDXYFakeRatePlots(TString label, TString eltag,  
 
   if(electrons.size()==1 && truth_match)GetFakeRates(electrons, electrons_tight, label, jets, alljets,  label+"_eldxy", (prescale_w * w),true);
   if(electrons.size()==2 && truth_match)GetFakeRates(electrons, electrons_tight, label, jets, alljets,  label+"_dieldxy", (prescale_dielw * w),true);
+
+  if(electrons.size()==1 )GetFakeRates(electrons, electrons_tight, label, jets, alljets,  label+"_eldxy_notm", (prescale_w * w),true);
+  if(electrons.size()==2 )GetFakeRates(electrons, electrons_tight, label, jets, alljets,  label+"_dieldxy_notm", (prescale_dielw * w),true);
+
   
 }
 
