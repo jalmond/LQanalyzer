@@ -47,7 +47,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   CheckFile(file_fake);
   
   /// ELECTRON FILES  (many rates for optimising cuts)                                                                                                                                                          
-  TFile* file_fakeopt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016_opt.root").c_str());
+  TFile* file_fakeopt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016v3.root").c_str());
   CheckFile(file_fakeopt);
 
 
@@ -71,9 +71,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap["fake_Eff_muon_hn"] = dynamic_cast<TH2F*>((file_fake_muon_hn->Get("h_FOrate3"))->Clone());
 
   std::vector <TString> region;
-  region.push_back("looseregion1");
+  region.push_back("looseregion1"); /// this relaxes d0
+  region.push_back("looseregion2"); /// this does not d0 
 
   std::vector <TString> datajetcut;
+  datajetcut.push_back("20");
+  datajetcut.push_back("30");
   datajetcut.push_back("40");
   
   std::vector <TString> cut;
@@ -157,22 +160,33 @@ void HNCommonLeptonFakes::InitialiseFake(){
   opt.push_back("dxy_b008_e020");
   opt.push_back("dxy_b008_e015");
 
+  vector <TString> elID;
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
+  //elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
   
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
-      _2DEfficiencyMap["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2F*>((file_fake->Get("FakeRate_" + datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+      for(unsigned int iid = 0; iid < elID.size() ; iid++){
+      _2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + elID[iid]] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_" + elID[iid] +  datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+      }
     }
   }
-
+  //pt_eta_40_ELECTRON16_HN_TIGHT_dijet_nod0
+  
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       for(unsigned int fl = 0; fl < opt.size() ; fl++){
-	_2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_" + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
+	_2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_HNTight_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
 
       }
     }
   }
+  
 
+
+  
+  
 
 
   
@@ -263,7 +277,7 @@ HNCommonLeptonFakes::~HNCommonLeptonFakes() {
 
 
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight ){ 
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString eltightid, TString ellooseid, float awayjetpt ){ 
 
 
   // geterr = true : function returns error not event weight
@@ -305,10 +319,21 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<
   r1=1.;
   r2=1.;
   
+  TString sjpt="";
+  if(awayjetpt == 20. ) sjpt="20";
+  if(awayjetpt == 40. ) sjpt="30";
+  if(awayjetpt == 20. ) sjpt="40";
 
-  /// Currenty  using pt/eta dependant rates, using 40 GeV away jet and looseregion 1 means relaxing dxy
-  TString cut  = "pt_eta_40_looseregion1";
-
+  TString cut = "pt_eta_"+sjpt+"_" + eltightid;
+  if(awayjetpt > 0.) {cut += "_dijet";
+    if(ellooseid.Contains("_NOD0")) cut += "_nod0";
+    else cut += "_d0";
+  }
+  else{
+    /// This is for dxy method TO BE FILLED
+  }
+  if(!cut.Contains("pt_eta")) cut  = "pt_eta_40_ELECTRON16_HN_TIGHT_dijet_nod0";
+  
 
   fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
   fr2=  getFakeRate_electronEta(0,_el2_pt, _el2_eta,cut);

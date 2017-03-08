@@ -2323,6 +2323,19 @@ bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runnin
   return false;
 }
 
+bool AnalyzerCore::OppositeCharge(std::vector<snu::KElectron> electrons, bool runningcf){
+
+  if(electrons.size()!=2) return false;
+
+  if(!runningcf){
+    if(electrons.at(0).Charge() != electrons.at(1).Charge()) return true;
+  }
+  else     if(electrons.at(0).Charge() == electrons.at(1).Charge()) return true;
+
+  return false;
+}
+
+
 
 int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WORKING_POINT wp, int period){
 

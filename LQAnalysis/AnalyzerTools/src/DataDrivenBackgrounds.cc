@@ -445,7 +445,11 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
     bool is_el1_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDe);
     bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDe);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight,is_el2_tight);
+
+    //float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString eltightid, TString elloosid, float awayjetpt ){
+
+    /// "" loose ID needs filling here
+    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight,is_el2_tight, "", IDe, 40);
 
   }
   return ee_weight;

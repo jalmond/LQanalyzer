@@ -2,8 +2,67 @@ import os,sys, filecmp
 
 from EmailNewEffLumiList import *
 
+def CheckForDuplicates(printDuplicates):
 
-def UpdateLumiFile(modlistpath, catversion,isNewSample):
+    samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
+    
+    copy_samplelist=[]
+    file_samplelist = open(samplelist,"r")
+    for line in file_samplelist:
+        copy_samplelist.append(line)
+    file_samplelist.close()
+    
+    listsamples=[]
+    duplicates=[]
+    xsec_duplicates=[]
+    rd_samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"_removeduplicates.txt"
+    file_rd_samplelist= open(rd_samplelist,"w")
+    for xline in copy_samplelist:
+        split_current_line=xline.split()
+        if len(split_current_line) == 6:
+            for x in listsamples:
+                if x == split_current_line[0]:
+                    duplicates.append(x)
+                    xsec_duplicates.append(split_current_line[3])
+                    if printDuplicates==1:
+                        print "Sample " + x + " is duplicated..... Fixing --> " + rd_samplelist
+                    if printDuplicates==2:
+                        print "Sample " + x + " is duplicated but xsec is different..... Please Fix by hand"
+
+            listsamples.append(split_current_line[0])
+        
+    copied_duplicates=[]
+    copied_xsecduplicates=[]
+    for cl in copy_samplelist:
+        split_current_line=cl.split()
+        AddToFile=True
+        csamples=""
+        xseccsamples=""
+        if len(split_current_line) == 6:
+            csamples=split_current_line[0]
+            xseccsamples=split_current_line[3]
+            for x in duplicates:
+                if x in cl:
+                    if float(xseccsamples) == 1.:
+                        AddToFile=False
+            for c in range(0,len(copied_duplicates)):
+                if copied_duplicates[c] == csamples and float(copied_xsecduplicates[c]) == float(xseccsamples):
+                    AddToFile=False
+        if AddToFile:
+            file_rd_samplelist.write(cl)
+            if csamples:
+                copied_duplicates.append(csamples)
+                copied_xsecduplicates.append(xseccsamples)
+            
+    file_rd_samplelist.close()
+    
+    if printDuplicates==1:
+        print "Replacing " + samplelist + " with " + rd_samplelist
+        os.system("mv " + rd_samplelist + " " + samplelist)
+    else:
+        os.system("rm " + rd_samplelist)
+
+def UpdateLumiFile(modlistpath, catversion,NewSampleList):
 
     ### xseclist should contain lines that are updated in xsec
     ### samplelist should contain lines for new samples
@@ -11,7 +70,7 @@ def UpdateLumiFile(modlistpath, catversion,isNewSample):
     newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"                                                               
     #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
     #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
-     
+    
     ### Make a copy of the original dataset list
     copy_samplelist=[]
     file_samplelist = open(samplelist,"r")
@@ -19,7 +78,7 @@ def UpdateLumiFile(modlistpath, catversion,isNewSample):
         copy_samplelist.append(line)
     file_samplelist.close()
 
-    if not isNewSample:
+    if True:
         file_samplelist = open(newsamplelist,"w")
         ### Make a new tmp list
         for xline in copy_samplelist:
@@ -45,31 +104,57 @@ def UpdateLumiFile(modlistpath, catversion,isNewSample):
                 modlist.close()
         file_samplelist.close()    
 
-    else:
+    if True:
         file_samplelist = open(newsamplelist,"w")
         for xline in copy_samplelist:
+            isNewSample=False
             if "#### CATTuples" in xline:
                 file_samplelist.write(xline)
                 modlist=open(modlistpath,"r")
                 for line in modlist:
+                    isNewSample=False
+
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        for xn in NewSampleList:
+                            if (split_modline[0] + " ")  in xn or split_modline[1] in xn:
+                                isNewSample=True
                     if not "SKTree" in line:
-                        file_samplelist.write(line)
+                        if isNewSample:
+                            file_samplelist.write(line)
                 modlist.close()
             elif "#### Single" in xline:
                 file_samplelist.write(xline)
                 modlist=open(modlistpath,"r")
                 for line in modlist:
+                    isNewSample=False
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        for xn in NewSampleList:
+                            if (split_modline[0] + " ")  in xn or split_modline[1] in xn:
+                                isNewSample=True
+
                         if "SKTree" in line:
                             if not "MCDiLep" in line:
-                                file_samplelist.write(line)
+                                if isNewSample:
+                                    file_samplelist.write(line)
                 modlist.close()
             elif "#### Di" in xline:
                 file_samplelist.write(xline)
                 modlist=open(modlistpath,"r")
                 for line in modlist:
+                    isNewSample=False
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        for xn in NewSampleList:
+                            if (split_modline[0] + " ")  in xn or split_modline[1] in xn:
+                                isNewSample=True
+
+
                         if "SKTree" in line:
                             if "MCDiLep" in line:
-                                file_samplelist.write(line)
+                                if isNewSample:
+                                    file_samplelist.write(line)
                 modlist.close()
             else:
                 file_samplelist.write(xline)
@@ -137,6 +222,7 @@ if os.path.exists(path_full_sample_list):
     if filecmp.cmp(path_full_sample_list,path_full_sample_list_user):
         print "List of files in /data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/datasets_"+catversion + " is unchanged. No update needed"
         os.system("rm " + path_full_sample_list_user)
+        CheckForDuplicates(1)
         sys.exit()
     else:
         
@@ -233,10 +319,26 @@ if os.path.exists(path_full_sample_list):
                 if sample1 == sample2:
                     line_exists=True
             file_cat.close()
+
+            file_mc = open(os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt","r") 
+            inMCfile=False
+            for cline in file_mc:
+                splitcline=cline.split()
+                if len(splitcline) > 1:
+                    if sample1 == splitcline[0]:
+                        inMCfile=True
+            file_mc.close()
+
+            if not inMCfile:
+                line_exists=False
+
             if not line_exists:
                 new_sample=True
                 newsample_list.append(line)
         file_user.close()
+
+        #### check also datasetmc file and add missed samples to newsample list
+        
 
         
         if not os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/log"):
@@ -277,7 +379,7 @@ if os.path.exists(path_full_sample_list):
             ### update lumifile:
             isnewsample= len(newsample_list) > 0
             
-            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, isnewsample)
+            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, newsample_list)
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
             newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"
@@ -288,9 +390,12 @@ if os.path.exists(path_full_sample_list):
             print "\n"
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
             if input == "Y":
+                print "replacing " + samplelist + " with  " + newsamplelist
                 os.system("cp " + newsamplelist + " " + samplelist)
                 if os.getenv("USER") == "jalmond":
+                    print "changing permission of " + samplelist
                     os.system("chmod 777 " + samplelist)
+                print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
             else:
@@ -298,8 +403,11 @@ if os.path.exists(path_full_sample_list):
                 os.system("rm " + newsamplelist)
                 sys.exit()
             os.system("rm " + newsamplelist)    
-
+        print "Running runInputListMaker.sh: Note this may take several minutes..."    
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+        ##### now check file has no duplicates
+        CheckForDuplicates(1)
+        CheckForDuplicates(2)
 
         list_new=[]
         if len(newsample_list) > 0:
@@ -312,19 +420,24 @@ if os.path.exists(path_full_sample_list):
             os.system("cp " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh")
             file_userlist = open(os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh","a")
             addstring = "declare -a new_list=("
-
+            runSKTreemaker=False
             for l in list_new:
-                if os.path.exists("/data2/CatNtuples/"+os.getenv("CATVESION")+"/SKTrees/MC/"+l):
+                if os.path.exists("/data2/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+str(l)):
                     print "Not remaking sktree as this already exists (name must have been deleted from list by  hand to recalculate lumi"
-                    continue
-                addstring+="'"+l+"' "
+                else:
+                    print "Sample " + str(l) + " is new. Making SKtree"
+                    addstring+="'"+l+"' "
+                    runSKTreemaker=True
             addstring+")\n"
+            #print "Adding list "
+            #print str(addstring)
             file_userlist.write(addstring)
             file_userlist.close()
-            os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
-            
+            if runSKTreemaker:
+                os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
+                
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
-            
+
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:

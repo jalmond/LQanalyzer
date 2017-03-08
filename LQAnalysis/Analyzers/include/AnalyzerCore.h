@@ -122,6 +122,7 @@ class AnalyzerCore : public LQCycleBase {
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KMuon> muons);
   bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
+  bool OppositeCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   
   float CorrectedMETRochester(TString id, bool updatemet);
   float CorrectedMETElectron(TString elid_formet, int syst=0);

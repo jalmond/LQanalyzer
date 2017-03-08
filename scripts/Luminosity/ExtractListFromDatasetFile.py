@@ -107,7 +107,10 @@ for x in datasetlist:
                 sys.exit()
         cdatasetlist.append(part_datasetname)
         cnamelist.append(name)
-        file_full_sample_list.write(name + " " + part_datasetname + " " + str(xsec)+ " " + orig_datasetname+"\n")
+        if not os.path.exists("/data2/DATA/cattoflat/MC/" + str(os.getenv("CATVERSION")) + "/"+part_datasetname):
+            print "skipping " + "/data2/DATA/cattoflat/MC/" + str(os.getenv("CATVERSION")) + "/" +str(part_datasetname)
+        else:
+            file_full_sample_list.write(name + " " + part_datasetname + " " + str(xsec)+ " " + orig_datasetname+"\n")
     #else:
         #file_full_sample_list.write(name + " " + part_datasetname + " " + datasetname + "\n")
 
