@@ -454,7 +454,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if rundebug:
         file_debug = open("debug.txt","a")
 
-    tmplongestjobtime=GetAverageTime(True,deftagger, defsample, defcycle,defskim,rundebug)
+    tmplongestjobtime=float(GetAverageTime(True,deftagger, defsample, defcycle,defskim,rundebug))
     isLongestJob=False
     if tmplongestjobtime == longestjobtime:
         isLongestJob=True
@@ -623,6 +623,12 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if rundebug:
         file_debug.write("expectedjobtime = " + str(expectedjobtime) + "\n")
     if expectedjobtime  < 0:
+        print "current job has not been processed before. Setting number of of jobs to 20 as default."
+        if rundebug:
+            file_debug.close()
+        return 10
+
+    if expectedjobtime  == 1000.:
         print "current job has not been processed before. Setting number of of jobs to 20 as default."
         if rundebug:
             file_debug.close()
@@ -1519,7 +1525,7 @@ isvfastjob = []
 queuelist = []
 for s in sample:
     
-    stime=GetAverageTime(True, tagger, s, cycle,useskim,rundebug)
+    stime=float(GetAverageTime(True, tagger, s, cycle,useskim,rundebug))
     if rundebug:
         file_debug = open("debug.txt","a")
         file_debug.write(s + " " + str(stime) + "\n")
