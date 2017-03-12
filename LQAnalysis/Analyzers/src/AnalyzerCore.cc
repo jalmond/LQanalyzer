@@ -2515,6 +2515,131 @@ float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tag
 
 }
 
+float AnalyzerCore::BTagScaleFactor_1a_Weighted(std::vector<snu::KJet> jetColl, KJet::Tagger tag, KJet::WORKING_POINT wp){
+
+  //BTag SF from 1a method.
+  //This is coded for H+->WA analysis. I'm fine with anybody else using this function, but be aware that HN analyses decided to use 2a method.
+  //And I currently have no plan to use multiple WP. so I just coded to work only for single WP regime.
+
+  if(isData) return 1.;
+  if(tag == snu::KJet::JETPROB) return -999;
+
+  //==================
+  //==== Lumi weight
+  //==================
+
+  double lumi_periodB = 5.929001722;
+  double lumi_periodC = 2.645968083;
+  double lumi_periodD = 4.35344881;
+  double lumi_periodE = 4.049732039;
+  double lumi_periodF = 3.157020934;
+  double lumi_periodG = 7.549615806;
+  double lumi_periodH = 8.545039549 + 0.216782873;
+  double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+  double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+  double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+
+  //==================
+  //==== Prepare tag
+  //==================
+
+  TString btag_key_lf(""), btag_key_hf("");
+  TString wp_string="";
+  if(wp == snu::KJet::Loose)  wp_string = "Loose";
+  if(wp == snu::KJet::Medium) wp_string = "Medium";
+  if(wp == snu::KJet::Tight)  wp_string = "Tight";
+
+  TString tag_string="";
+  if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_";
+  if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_";
+
+  //=============
+  //==== Get SF
+  //=============
+
+  float BTagSF=1.;
+  for(unsigned int i=0; i<jetColl.size(); i++){
+
+    //===========
+    //==== BtoF
+    //===========
+
+    btag_key_lf = tag_string+"BtoF_"+wp_string+"_lf";
+    btag_key_hf = tag_string+"BtoF_"+wp_string+"_hf";
+    std::map<TString,BTagSFUtil*>::iterator it_lf = MapBTagSF.find(btag_key_lf);
+    std::map<TString,BTagSFUtil*>::iterator it_hf = MapBTagSF.find(btag_key_hf);
+    if(it_lf == MapBTagSF.end()){   Message("Combination of btagger and working point is not allowed. Check configation of MapBTagSF", ERROR);  exit(EXIT_FAILURE);}
+    if(it_hf == MapBTagSF.end()){   Message("Combination of btagger and working point is not allowed. Check configation of MapBTagSF", ERROR);  exit(EXIT_FAILURE);}
+
+    float BTagSF_BtoF(1.);
+    if(jetColl.at(i).IsBTagged(tag, wp)){
+      if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
+        BTagSF_BtoF = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+      else{
+        BTagSF_BtoF = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+    }
+    else{
+      float SFj=1., Effj=1.;
+      if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
+        SFj  = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        Effj = it_hf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+      else{
+        SFj  = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        Effj = it_lf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+
+      if( (1.-Effj)==0. ) return 0.;
+      BTagSF_BtoF = (1.-SFj*Effj)/(1.-Effj);
+    }
+
+    //===========
+    //==== GtoH
+    //===========
+
+    btag_key_lf = tag_string+"GtoH_"+wp_string+"_lf";
+    btag_key_hf = tag_string+"GtoH_"+wp_string+"_hf";
+    it_lf = MapBTagSF.find(btag_key_lf);
+    it_hf = MapBTagSF.find(btag_key_hf);
+    if(it_lf == MapBTagSF.end()){   Message("Combination of btagger and working point is not allowed. Check configation of MapBTagSF", ERROR);  exit(EXIT_FAILURE);}
+    if(it_hf == MapBTagSF.end()){   Message("Combination of btagger and working point is not allowed. Check configation of MapBTagSF", ERROR);  exit(EXIT_FAILURE);}
+
+    float BTagSF_GtoH(1.);
+    if(jetColl.at(i).IsBTagged(tag, wp)){
+      if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
+        BTagSF_GtoH = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+      else{
+        BTagSF_GtoH = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+    }
+    else{
+      float SFj=1., Effj=1.;
+      if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
+        SFj  = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        Effj = it_hf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+      else{
+        SFj  = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        Effj = it_lf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+      }
+
+      if( (1.-Effj)==0. ) return 0.;
+      BTagSF_GtoH = (1.-SFj*Effj)/(1.-Effj);
+    }
+
+    //==== Weigthed mean
+    BTagSF *= (BTagSF_BtoF*WeightBtoF + BTagSF_GtoH*WeightGtoH);
+
+  }
+
+  return BTagSF;
+
+}
+
 
 double AnalyzerCore::MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w){
   

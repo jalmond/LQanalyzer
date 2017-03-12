@@ -93,6 +93,7 @@ class AnalyzerCore : public LQCycleBase {
 
   bool IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1);
   float BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1);
+  float BTagScaleFactor_1a_Weighted(std::vector<snu::KJet> jetColl, snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp);
 
   int AssignnNumberOfTruth();
   bool IsSignal();
