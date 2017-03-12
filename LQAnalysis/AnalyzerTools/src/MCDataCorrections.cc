@@ -168,6 +168,40 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
   float sf= 1.;
   float sferr=1.;
   if(corr_isdata) return 1.;
+  
+  // ref https://indico.cern.ch/event/595070/contributions/2405095/attachments/1388822/2114847/MC_12_12_2016.pdf
+
+  TString tag = "";
+  if(k_period < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+  double min_pt = 20., max_pt = 120.;
+  if(muid=="MUON_HN_TRI_TIGHT"){
+    min_pt = 5.;
+    max_pt = 200.;
+  }
+  
+  if(mu.size() == 0) return 1.;
+  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
+    float mupt=itmu->MiniAODPt();
+
+    if(itmu->MiniAODPt() < min_pt) mupt = min_pt+1.;
+    if(itmu->MiniAODPt() >= max_pt) mupt = max_pt-1.;
+
+    if(CheckCorrectionHist("ID" +tag+ "_"+ muid)){
+      sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
+      
+      sf*=  (1. + sferr)* GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
+    }
+  }
+
+  return sf;
+}
+
+double MCDataCorrections::MuonScaleFactor_Weighted(TString muid, vector<snu::KMuon> mu,int sys){
+  float sf= 1.;
+  float sferr=1.;
+  if(corr_isdata) return 1.;
   if(mu.size() == 0) return 1.;
   
   // ref https://indico.cern.ch/event/595070/contributions/2405095/attachments/1388822/2114847/MC_12_12_2016.pdf
