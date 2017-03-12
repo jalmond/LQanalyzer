@@ -471,14 +471,14 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
   if(pt >= 60.) pt = 59.;
   if(fabs(eta) >= 2.5) eta = 2.4;
 
-  map<TString,TH2F*>::const_iterator mapit;
+  map<TString,TH2D*>::const_iterator mapit;
 
   TString hist = "fake_eff_";
   hist += cut;
   
   //cout << hist << endl;
-  mapit = _2DEfficiencyMap.find(hist.Data());
-  if(mapit!=_2DEfficiencyMap.end()){
+  mapit = _2DEfficiencyMap_Double.find(hist.Data());
+  if(mapit!=_2DEfficiencyMap_Double.end()){
 
     int binx =  mapit->second->FindBin(pt,fabs(eta));
     //cout << "el pt = " << pt << ", eta = " << eta << endl;
@@ -547,12 +547,16 @@ void HNCommonLeptonFakes::NoHist(TString hist, TString function){
   for(map<TString, TH1*>::iterator mit = _EfficiencyMap.begin(); mit != _EfficiencyMap.end(); mit++){
     cout << mit->first << endl;  
   }
-  
 
   cout << "Possible _2DEfficiencyMap hists are : " << endl;
   for(map<TString, TH2F*>::iterator mit = _2DEfficiencyMap.begin(); mit != _2DEfficiencyMap.end(); mit++){
     cout << mit->first <<" " << mit->second << endl;    
-  }  
+  }
+
+  cout << "Possible _2DEfficiencyMap_Double hists are : " << endl;
+  for(map<TString, TH2D*>::iterator mit = _2DEfficiencyMap_Double.begin(); mit != _2DEfficiencyMap_Double.end(); mit++){
+    cout << mit->first <<" " << mit->second << endl;
+  }
   
   cout << "Possible _EfficiencyMapHST hists are : " << endl;
   for(map<TString, TH1*>::iterator mit = _EfficiencyMapHST.begin(); mit != _EfficiencyMapHST.end(); mit++){
