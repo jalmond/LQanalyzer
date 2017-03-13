@@ -42,14 +42,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/Total_FRcorr40_2.root").c_str());
   CheckFile(file_fake_muon_hn);
 
-  /// ELECRON FILES  (POG)
-  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV.root").c_str());
+  /// ELECRON FILES  (POG) + (many rates for optimising cuts)  
+  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016_Mar9.root").c_str());
   CheckFile(file_fake);
-  
-  /// ELECTRON FILES  (many rates for optimising cuts)                                                                                                                                                          
-  TFile* file_fakeopt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016v3.root").c_str());
-  CheckFile(file_fakeopt);
 
+  TFile* file_prompt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/PromptRate13TeV_2016_opt.root").c_str());
+  CheckFile(file_prompt);
 
   //==== Trilep
   //==== Using Large dXYSig muons
@@ -78,6 +76,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   datajetcut.push_back("20");
   datajetcut.push_back("30");
   datajetcut.push_back("40");
+  datajetcut.push_back("60");
   
   std::vector <TString> cut;
   cut.push_back("pt_eta");
@@ -162,34 +161,47 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
   vector <TString> elID;
   elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
-  //elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
   elID.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
+  elID.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_nod0_dxysig");
+  elID.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_d0");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_iso04");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_iso06");
+  elID.push_back("ELECTRON16_POG_MEDIUM_dijet_pog");
+  elID.push_back("ELECTRON16_POG_TIGHT_dijet_pog");
   
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       for(unsigned int iid = 0; iid < elID.size() ; iid++){
-      _2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + elID[iid]] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_" + elID[iid] +  datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	_2DEfficiencyMap_Double["fake_el_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + elID[iid]] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_" + elID[iid] +  datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
       }
     }
   }
-  //pt_eta_40_ELECTRON16_HN_TIGHT_dijet_nod0
+
+  for(unsigned int fl = 0; fl < opt.size() ; fl++){
+    for(unsigned int fk = 0; fk < cut.size() ; fk++){
+      _2DEfficiencyMap_Double["prompt_el_eff_" + cut.at(fk) +"_" + opt[fl]] = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_HNTight_" + opt[fl] +  "_" + cut.at(fk)))->Clone());
+      _2DEfficiencyMap_Double["prompt_el_eff_dxysig_" + cut.at(fk) +"_" + opt[fl]] = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_HNTight_dxysig_" + opt[fl] +  "_" + cut.at(fk)))->Clone());
+    }
+  }
+  
+  for(unsigned int iid = 0; iid < elID.size() ; iid++){
+    _2DEfficiencyMap_Double["prompt_el_eff_" +  elID[iid]]  = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_" +  elID[iid] +  "_pt_eta"))->Clone());
+  }
+
   
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       for(unsigned int fl = 0; fl < opt.size() ; fl++){
-	_2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_HNTight_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
-
+	_2DEfficiencyMap_Double["fake_el_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj)] =  dynamic_cast<TH2D*>((file_fake->Get("FakeRate_HNTight_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
+	_2DEfficiencyMap_Double["fake_el_eff_dxysig_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj)] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_HNTight_dxysig_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
       }
     }
   }
   
-
-
-  
+  _2DEfficiencyMap_Double["fake_el_eff_ELECTRON_HN_HIGHDXY_TIGHT_dxy"] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_ELECTRON_HN_HIGHDXY_TIGHT_eldxy")));
   
 
-
-  
+    
   //==== Trilep
   //==== Using Large dXYSig muons
 

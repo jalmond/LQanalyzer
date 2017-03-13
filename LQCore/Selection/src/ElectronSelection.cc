@@ -195,6 +195,10 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   bool checkisveto = (CheckCutString("IsVeto(POG)",id));
   bool checkismedium = (CheckCutString("IsMedium(POG)",id));
   bool checkistight  = (CheckCutString("IsTight(POG)",id));
+  bool checkUseMiniIso  = (CheckCutString("UseMiniIso",id));
+  bool checkisMVAmedium = (CheckCutString("IsMedium(MVA)",id));
+  bool checkisMVAtight  = (CheckCutString("IsTight(MVA)",id));
+
 
   bool checkchargeconsy = (CheckCutString("GsfCtfScPix",id));
   bool convveto = (CheckCutString("convveto",id));
@@ -202,8 +206,12 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   bool checkdxysigmax  = CheckCutFloat("|dxysigmax|",id);
   
 
-
+  
   LeptonRelIso = el.PFRelIso(0.3);
+
+  if(checkUseMiniIso){
+    LeptonRelIso = el.PFRelMiniIso();
+  }
   bool pass_selection=true;
 
   int snuid = el.SNUID();
@@ -234,6 +242,12 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(checkisloose && !pass_loose_noiso)  {pass_selection = false;if(debug){ cout << "Failloose " << endl;}}
   if(checkismedium && !pass_medium_noiso)  {pass_selection = false;if(debug){ cout << "Fail medium" << endl;}}
   if(checkistight && !pass_tight_noiso)  {pass_selection = false;if(debug){ cout << "Fail tight" << endl;}}
+
+  if(checkisMVAtight && !el.IsTrigMVAValid())  {pass_selection = false;if(debug){ cout << "Fail MVA tight" << endl;}}
+  if(checkisMVAtight && !el.PassTrigMVATight()){pass_selection = false;if(debug){ cout << "Fail MVA tight" << endl;}}
+  if(checkisMVAmedium && !el.IsTrigMVAValid())  {pass_selection = false;if(debug){ cout << "Fail MVA medium" << endl;}}
+  if(checkisMVAmedium && !el.PassTrigMVAMedium()){pass_selection = false;if(debug){ cout << "Fail MVA medium" << endl;}}
+
   
   if(convveto&& (!el.PassesConvVeto()) ){pass_selection = false;if(debug){ cout << "Fail convveto" << endl;}}
   if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) {pass_selection = false;if(debug){ cout << "Fail charge" << endl;}}

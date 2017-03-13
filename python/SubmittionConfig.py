@@ -191,6 +191,8 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         for line in read_file_jobsummary:
             if os.getenv("USER") in line:
                 tmpsample=defsample
+                if not "True" in line:
+                    continue
                 if len(defsample) == 1:
                     tmpsample="_"+tmpsample+" "
                 if tmpsample in line and defskim in line and defcycle in line:
@@ -471,7 +473,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if submitall:
         return 1000
 
-    expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)                                                                                              
+    expectedjobnfiles=int(GetNFiles(deftagger, defsample, defcycle,defskim))                                                                                             
     if "SKTreeMaker" in defcycle:
         return expectedjobnfiles
 
@@ -1530,14 +1532,14 @@ for s in sample:
         file_debug = open("debug.txt","a")
         file_debug.write(s + " " + str(stime) + "\n")
         file_debug.close()
-    s_nfile=GetNFiles(tagger, s, cycle,useskim)
+    s_nfile=int(GetNFiles(tagger, s, cycle,useskim))
     njobfiles+=s_nfile
 
     ### 90000 is 20 minutes for 25 job
     ### time of previous job is > 90000 then this job is sent to longq
     ### if jobs is > 10000 then number of jobs sent to batch queue is > 10, and chosen so that the time is similar to longest expected job
     if stime > 60000.:
-        nlongjobfiles=nlongjobfiles+GetNFiles(tagger, s, cycle,useskim)
+        nlongjobfiles=nlongjobfiles+int(GetNFiles(tagger, s, cycle,useskim))
         ### will be true if 25 jobs take > 20 minutes OR the job is a new job
         islongjob.append(True)
     else:

@@ -128,7 +128,9 @@ void MakeFRRootFile(){
 
   std::vector<TString> fakes;
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
+  fakes.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_d0");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
+  fakes.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_nod0_dxysig");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_B");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_C");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_D");
@@ -138,10 +140,12 @@ void MakeFRRootFile(){
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_H");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_iso04");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_iso06");
-  fakes.push_back("ELECTRON_POG_TIGHT_dijet_pog");
+  fakes.push_back("ELECTRON16_POG_TIGHT_dijet_pog");
+  fakes.push_back("ELECTRON16_POG_MEDIUM_dijet_pog");
 
   std::vector<TString> fakes_opt;
   fakes_opt.push_back("HNTight_");
+  fakes_opt.push_back("HNTight_dxysig_");
   
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
@@ -231,6 +235,10 @@ void MakeFRRootFile(){
         if(!CheckFile(fmc))return;
         TString denom ="LooseEl" + *it + *it3 +"_dijet_nod0_"+ *it2;
         TString num ="TightEl" + *it +  *it3 +"_dijet_nod0_"+ *it2;
+	if(it->Contains("dxy")){
+	  denom ="LooseEl" + *it + *it3 +"_dijet_nod0_dxysig_"+ *it2;
+	  num ="TightEl" + *it +  *it3 +"_dijet_nod0_dxysig_"+ *it2;
+	}
         //if (!denom.Contains("0")){
         //  denom ="LooseEl" + *it+ *it2;
         //  num ="TightEl" + *it +  *it2;

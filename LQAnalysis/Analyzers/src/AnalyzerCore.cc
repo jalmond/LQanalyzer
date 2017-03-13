@@ -72,6 +72,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
   
+  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/fatjets.sel");
+  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/user_fatjets.sel");
+
+
   if(k_debugmode){
     for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
       cout << it->first << endl;
@@ -794,6 +798,10 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
 	else  if (x > 26 && x < 30){
+          is >> tmp;
+          string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
+        }
+	else  if (x > 34 && x < 40){
           is >> tmp;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }

@@ -82,12 +82,12 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std
   for (UInt_t ijet = 0; ijet < prejetColl.size(); ijet++) {
     jetIsOK = true;
     for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
-      if (muonColl[ilep].DeltaR( prejetColl[ijet] ) < 0.4) {
+      if (muonColl[ilep].DeltaR( prejetColl[ijet] ) < 1.) {
 	jetIsOK = false;  ilep = muonColl.size();
       }
     }/// End of muon loop
     for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
-      if (electronColl[ilep].DeltaR( prejetColl[ijet] ) < 0.4 ) {
+      if (electronColl[ilep].DeltaR( prejetColl[ijet] ) < 1. ) {
 	jetIsOK = false;  ilep = electronColl.size();
       }
     }/// End of electron loop
@@ -148,7 +148,7 @@ void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<K
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
     jetIsOK = true;
     for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
-      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4) {
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 1.) {
         jetIsOK = false;
 	//cout << "Muon eta/phi = " << muonColl[ilep].Eta() << " " << muonColl[ilep].Phi() << endl;
         //cout << "FatJet eta/phi = " <<  pre_jetColl[ijet].Eta() << " " <<  pre_jetColl[ijet].Phi() << endl;
@@ -157,7 +157,7 @@ void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<K
       }
     }/// End of muon loop
     for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
-      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4 ) {
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 1. ) {
         jetIsOK = false;
         ilep = electronColl.size();
       }

@@ -67,6 +67,7 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
 
   map_sig["h_LeptonDZ"]               = SetupHist("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
   map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
+  map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -10. , 10.);
   
   
   /// Lepton/Jet/Lepton dR
@@ -352,6 +353,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPhi",elit->Phi(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
     Fill("h_LeptonDXY", elit->dxy(),weight);
+    Fill("h_LeptonDXYSig", elit->dxySig() ,weight);
     Fill("h_LeptonDZ", elit->dz(),weight);
      
     float el_reliso_03 =  elit->PFRelIso(0.3);
