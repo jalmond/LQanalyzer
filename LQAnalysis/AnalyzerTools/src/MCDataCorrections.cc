@@ -177,7 +177,7 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
 
   double min_pt = 20., max_pt = 120.;
   if(muid=="MUON_HN_TRI_TIGHT"){
-    min_pt = 5.;
+    min_pt = 20.;
     max_pt = 200.;
   }
   
@@ -208,7 +208,7 @@ double MCDataCorrections::MuonScaleFactor_Weighted(TString muid, vector<snu::KMu
 
   double min_pt = 20., max_pt = 120.;
   if(muid=="MUON_HN_TRI_TIGHT"){
-    min_pt = 5.;
+    min_pt = 20.;
     max_pt = 200.;
   }
 
