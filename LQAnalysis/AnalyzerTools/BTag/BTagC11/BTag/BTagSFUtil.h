@@ -10,17 +10,19 @@ class BTagSFUtil{
 
  public:
     
-  BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString OperatingPoint, int SystematicIndex = 0, TString FastSimDataset = "", int Seed = 0);
+  BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, string BTagAlgorithmGH, TString OperatingPoint, int SystematicIndex = 0, TString FastSimDataset = "", int Seed = 0);
   ~BTagSFUtil();
 
-  float GetJetSF(int JetFlavor, float JetPt, float JetEta);
+  float GetJetSF(int JetFlavor, float JetPt, float JetEta, int iperiod);
+  float GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, int iperiod);
   float JetTagEfficiency(int JetFlavor, float JetPt, float JetEta);
 
-  bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta);
+  bool IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int iperiod);
 
  private:
 
-  BTagCalibrationReader *reader_bc, *reader_l;
+  BTagCalibrationReader *reader_bf_bc, *reader_bf_l;
+  BTagCalibrationReader *reader_gh_bc, *reader_gh_l;
 
   void GetBTagPayload(TString BTagAlgorithm, TString DataPeriod);
   void GetFastSimPayload(TString BTagAlgorithm, TString FastSimDataset);

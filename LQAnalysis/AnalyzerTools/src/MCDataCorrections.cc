@@ -134,17 +134,41 @@ double MCDataCorrections::MuonTrackingEffScaleFactor(vector<snu::KMuon> mu){
 }
 
 double MCDataCorrections::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
+
+  if(k_period < 0) {
+    /// If k_period < 0 then using ALL data periods and use weighted SF
+    
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+    double SF_bf= MuonISOScaleFactorPeriodDependant(muid,mu, 1, sys);
+    double SF_gh= MuonISOScaleFactorPeriodDependant(muid,mu, 7, sys);
+    
+    double SF_weight = WeightBtoF*SF_bf + WeightGtoH*SF_gh;
+    return SF_weight;
+  }
+  return MuonISOScaleFactorPeriodDependant(muid, mu, k_period, sys);
+
+}
+
+double MCDataCorrections::MuonISOScaleFactorPeriodDependant(TString muid, vector<snu::KMuon> mu , int cat_period, int sys){
   float sf= 1.;
   float sferr=1.;
   if(corr_isdata) return 1.;
 
-
   // ref https://indico.cern.ch/event/595070/contributions/2405098/attachments/1388788/2114715/TnPIso12Dic2016.pdf 
 
   TString tag = "";
-  if(k_period < 6) tag = "_BCDEF";
+  if(cat_period < 6) tag = "_BCDEF";
   else tag = "_GH";
-
 
 
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
@@ -164,7 +188,37 @@ double MCDataCorrections::MuonISOScaleFactor(TString muid, vector<snu::KMuon> mu
   return sf;
 }
 
+
+
+
 double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,int sys){
+
+  if(k_period < 0) {
+    /// If k_period < 0 then using ALL data periods and use weighted SF                                                                                                                                                                                                        
+
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+    double SF_bf= MuonScaleFactorPeriodDependant(muid,mu, 1, sys);
+    double SF_gh= MuonScaleFactorPeriodDependant(muid,mu, 7, sys);
+
+    double SF_weight = WeightBtoF*SF_bf + WeightGtoH*SF_gh;
+    return SF_weight;
+  }
+  return MuonScaleFactorPeriodDependant(muid, mu, k_period, sys);
+
+}
+
+
+double MCDataCorrections::MuonScaleFactorPeriodDependant(TString muid, vector<snu::KMuon> mu,int cat_period, int sys){
   float sf= 1.;
   float sferr=1.;
   if(corr_isdata) return 1.;
@@ -172,7 +226,7 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
   // ref https://indico.cern.ch/event/595070/contributions/2405095/attachments/1388822/2114847/MC_12_12_2016.pdf
 
   TString tag = "";
-  if(k_period < 6) tag = "_BCDEF";
+  if(cat_period < 6) tag = "_BCDEF";
   else tag = "_GH";
 
   double min_pt = 20., max_pt = 120.;
@@ -199,8 +253,37 @@ double MCDataCorrections::MuonScaleFactor(TString muid, vector<snu::KMuon> mu,in
 }
 
 
-
 double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname, int direction){
+
+
+  if(k_period < 0) {
+    /// If k_period < 0 then using ALL data periods and use weighted SF                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+    double SF_bf= TriggerScaleFactorPeriodDependant(el, mu, trigname, direction, 1);
+    double SF_gh= TriggerScaleFactorPeriodDependant(el, mu, trigname, direction, 7);
+
+
+    double SF_weight = WeightBtoF*SF_bf + WeightGtoH*SF_gh;
+    return SF_weight;
+  }
+  return TriggerScaleFactorPeriodDependant(el, mu, trigname, direction,k_period);
+
+}
+
+
+
+double MCDataCorrections::TriggerScaleFactorPeriodDependant( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname, int cat_period, int direction){
 
   /// Currently only muon scale factors (single) are added by pog
   

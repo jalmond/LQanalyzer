@@ -55,10 +55,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
   /// List of taggers
   std::vector<TString> vtaggers;
-  vtaggers.push_back("CSVv2Moriond17_2017_1_26_BtoF");
-  vtaggers.push_back("CSVv2Moriond17_2017_1_26_GtoH");
-  vtaggers.push_back("cMVAv2Moriond17_2017_1_26_BtoF");
-  vtaggers.push_back("cMVAv2Moriond17_2017_1_26_GtoH");
+  vtaggers.push_back("CSVv2Moriond17_2017_1_26");
+  //vtaggers.push_back("CSVv2Moriond17_2017_1_26_GtoH");
+  vtaggers.push_back("cMVAv2Moriond17_2017_1_26");
+  //vtaggers.push_back("cMVAv2Moriond17_2017_1_26_GtoH");
   /// Will add DeepCSV in 805
 
   if( getenv("CATDEBUG") == "True") k_debugmode=true;
@@ -503,15 +503,16 @@ int AnalyzerCore::GetMCPeriod(){
   k_reset_period=false;
   
 
-  if(k_mcperiod > 0) {
-    a_mcperiod = k_mcperiod;
-    return a_mcperiod;
-  }
+
+  a_mcperiod = k_mcperiod;
+  return a_mcperiod;
+  
     
 
   //  double r = ((double) rand() / (RAND_MAX));
+  gRandom->SetSeed(65539);
   double r =gRandom->Rndm(); /// random number between 0 and 1
-  
+
   
   /// values obtained from cattuple googledoc
   // https://docs.google.com/spreadsheets/d/1rWM3AlFKO8IJVaeoQkWZYWwSvicQ1QCXYSzH74QyZqE/edit?alt=json#gid=1689385956
@@ -835,14 +836,15 @@ std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> ta
   for(std::vector<TString>::const_iterator it = taggers.begin(); it != taggers.end(); it++){
     for(std::vector<TString>::const_iterator it2 = wps.begin(); it2 != wps.end(); it2++){
       if (it->Contains("CSVv2")){
-	tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", it->Data(), it2->Data());
-	tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("mujets", it->Data(), it2->Data());
+	tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", (*it + "_BtoF").Data(), (*it + "_GtoH").Data(),  it2->Data());
+	tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("mujets", (*it + "_BtoF").Data(),  (*it + "_GtoH").Data(), it2->Data());
 	// tmpmap[*it +  "_" + *it2 + "_hfcomb"]= new BTagSFUtil("comb", it->Data(), it2->Data());                /// SWITCH ON IF USER NEEDS THIS METHOD  
 	// tmpmap[*it +  "_" + *it2 + "iterativefit"]= new BTagSFUtil("iterativefit", it->Data(), it2->Data());   /// SWITCH ON IF USER NEEDS THIS METHOD
       }
       if (it->Contains("cMVA")){
-	tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", it->Data(), it2->Data());
-	tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("ttbar", it->Data(), it2->Data());
+	tmpmap[*it  + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", (*it + "_BtoF").Data(),  (*it + "_GtoH").Data(), it2->Data());
+	tmpmap[*it  +  "_" + *it2 + "_hf"]= new BTagSFUtil("ttbar", (*it + "_BtoF").Data(),  (*it + "_GtoH").Data(), it2->Data());
+
 	// tmpmap[*it +  "_" + *it2 + "iterativefit"]= new BTagSFUtil("iterativefit", it->Data(), it2->Data());   /// SWITCH ON IF USER NEEDS THIS METHOD       
       }
       if (it->Contains("DeepCVS")){
@@ -2344,7 +2346,6 @@ bool AnalyzerCore::OppositeCharge(std::vector<snu::KElectron> electrons, bool ru
 }
 
 
-
 int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WORKING_POINT wp, int period){
 
   int nbjet=0;
@@ -2362,18 +2363,9 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 
   TString tag_string="";
 
-  if(period < 6){
-    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_BtoF";
-  }
-  else
-    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_GtoH";
-
-  if(period < 6){
-    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_BtoF";
-  }
-  else
-    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";
-
+  if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26";
+  
+  if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26";
    
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
@@ -2393,15 +2385,15 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
     bool isBtag=false;
     if (isData) {
 
-      if (it_lf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  -999999, jets.at(ij).Pt(), jets.at(ij).Eta()))
+      if (it_lf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  -999999, jets.at(ij).Pt(), jets.at(ij).Eta(),period))
 	isBtag=true;
     }
     else if (jets.at(ij).HadronFlavour() > 1){
-      if (it_hf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  jets.at(ij).HadronFlavour(),jets.at(ij).Pt(), jets.at(ij).Eta()))
+      if (it_hf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  jets.at(ij).HadronFlavour(),jets.at(ij).Pt(), jets.at(ij).Eta(),period))
         isBtag=true;
     }
     else{
-      if (it_lf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  jets.at(ij).HadronFlavour(),jets.at(ij).Pt(), jets.at(ij).Eta()))
+      if (it_lf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  jets.at(ij).HadronFlavour(),jets.at(ij).Pt(), jets.at(ij).Eta(),period))
 	isBtag=true;
     }
     
@@ -2425,17 +2417,9 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
   if(wp == snu::KJet::Tight)wp_string = "Tight";
 
   TString tag_string="";
-  if(mcperiod < 6){
-    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_BtoF";
-  }
-  else
-    if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26_GtoH";
+  if(tag== snu::KJet::CSVv2) tag_string ="CSVv2Moriond17_2017_1_26";
+  if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26";
 
-  if(mcperiod < 6){
-    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_BtoF";
-  }
-  else
-    if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";
 
 
   /// Data applied no correction. So only mcperiod is set
@@ -2454,15 +2438,15 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
   bool isBtag=false;
   if (isData) {
     
-    if (it_lf->second->IsTagged(jet.BJetTaggerValue(tag),  -999999, jet.Pt(), jet.Eta()))
+    if (it_lf->second->IsTagged(jet.BJetTaggerValue(tag),  -999999, jet.Pt(), jet.Eta(), mcperiod))
       isBtag=true;
   }
     else if (jet.HadronFlavour() > 1){
-      if (it_hf->second->IsTagged(jet.BJetTaggerValue(tag),  jet.HadronFlavour(),jet.Pt(), jet.Eta()))
+      if (it_hf->second->IsTagged(jet.BJetTaggerValue(tag),  jet.HadronFlavour(),jet.Pt(), jet.Eta(),mcperiod))
         isBtag=true;
     }
     else{
-      if (it_lf->second->IsTagged(jet.BJetTaggerValue(tag),  jet.HadronFlavour(),jet.Pt(), jet.Eta()))
+      if (it_lf->second->IsTagged(jet.BJetTaggerValue(tag),  jet.HadronFlavour(),jet.Pt(), jet.Eta(),mcperiod))
         isBtag=true;
     }
   
@@ -2490,11 +2474,8 @@ float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tag
   if(wp == snu::KJet::Tight)  wp_string = "Tight";
 
   TString tag_string="";
-  if(mcperiod < 6){ if(tag== snu::KJet::CSVv2)  tag_string ="CSVv2Moriond17_2017_1_26_BtoF";}
-  else            { if(tag== snu::KJet::CSVv2)  tag_string ="CSVv2Moriond17_2017_1_26_GtoH";}
-
-  if(mcperiod < 6){ if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_BtoF";}
-  else            { if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26_GtoH";}
+  if(tag== snu::KJet::CSVv2)  tag_string ="CSVv2Moriond17_2017_1_26";
+  if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26";
 
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
@@ -2510,20 +2491,20 @@ float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tag
   for(unsigned int i=0; i<jetColl.size(); i++){
     if(jetColl.at(i).IsBTagged(tag, wp)){
       if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
-        BTagSF *= it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        BTagSF *= it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta(),mcperiod);
       }
       else{
-        BTagSF *= it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        BTagSF *= it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta(),mcperiod);
       }
     }
     else{
       float SFj=1., Effj=1.;
       if(jetColl.at(i).HadronFlavour()==5 || jetColl.at(i).HadronFlavour()==4){
-        SFj  = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        SFj  = it_hf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta(),mcperiod);
         Effj = it_hf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
       }
       else{
-        SFj  = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
+        SFj  = it_lf->second->GetJetSF(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta(),mcperiod);
         Effj = it_lf->second->JetTagEfficiency(jetColl.at(i).HadronFlavour(), jetColl.at(i).Pt(), jetColl.at(i).Eta());
       }
 
