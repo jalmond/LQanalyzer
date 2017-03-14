@@ -746,7 +746,7 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
 
 float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float eta){
 
-  if(pt < 5.) pt = 6.;
+  if(pt < 20.) pt = 21.;
   if(pt >= 200.) pt = 199.;
   if(fabs(eta) >= 2.5) eta = 2.4;
   
