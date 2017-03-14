@@ -92,7 +92,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(!isData)weight*= MCweight;
 
-  
+  return;
   
   /// make plots of POG + AN ID Efficiency
   GetSSSignalEfficiency(weight);
