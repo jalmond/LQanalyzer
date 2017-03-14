@@ -87,23 +87,25 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
+  return;
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
   if(!isData)weight*= MCweight;
 
-  return;
   
   /// make plots of POG + AN ID Efficiency
-  GetSSSignalEfficiency(weight);
-  GetOSSignalEfficiency(weight);
-
-  /// Validation of signal MC
-  if(IsSignal()) SignalValidation();
+  if(IsSignal()) {
+    GetSSSignalEfficiency(weight);
+    GetOSSignalEfficiency(weight);
+    /// Validation of signal MC
+    SignalValidation();
+  }
   
   /// Get Efficiency of signal + Bkg using multiple triggers
   GetTriggEfficiency();
 
+  return;
   std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
 
@@ -803,17 +805,20 @@ void HNDiElectron::GetTriggEfficiency(){
   for(unsigned int i=0; i < lists_triggers.size(); i++){
     FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator_nojet", lists_triggers );
   }
-  if(GetJets("JET_HN").size() > 1){
+
+  std::vector<snu::KJet> jets=GetJets("JET_HN");
+  std::vector<snu::KElectron> electrons= GetElectrons("ELECTRON_POG_TIGHT");
+  if(jets.size() > 1){
     for(unsigned int i=0; i < lists_triggers.size(); i++){
       TString trig=lists_triggers.at(i);
       FillTriggerEfficiency(lists_triggers.at(i), weight, "denominator", lists_triggers );
       if(PassTrigger(trig))  {
 	FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator",lists_triggers );
 	
-	if(GetElectrons("ELECTRON_POG_TIGHT").size() ==2) {
+	if(electrons.size() ==2) {
 	  
 	  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon",lists_triggers );
-	  if(GetElectrons("ELECTRON_POG_TIGHT").at(0).Pt() > pt1.at(i) && GetElectrons("ELECTRON_POG_TIGHT").at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt",lists_triggers );
+	  if(electrons.at(0).Pt() > pt1.at(i) && electrons.at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt",lists_triggers );
 	}
       }
     }
