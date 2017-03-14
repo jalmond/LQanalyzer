@@ -816,7 +816,7 @@ void SKTreeValidation::MakeDiElectronValidationPlots(TString elid, float w, floa
   }
   if(k_running_nonprompt){
     ev_weight=1.; /// In case... should not be needed
-    ev_weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electrons,elid, "dijet");
+    ev_weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electrons);
   }
   weight              *=  m_datadriven_bkg->WeightCFEvent(electrons, k_running_chargeflip);    
   if(!trig_pass) return;

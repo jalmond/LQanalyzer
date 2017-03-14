@@ -62,6 +62,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
     if defuseskim == "SKTree_DiLepSkim" :
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+    if defuseskim == "SKTree_TriLepSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+    if defuseskim == "SKTree_NoSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion
 
     if defrunnp == "True":
         defoutput_file_skim_tag=defchannel
@@ -75,7 +79,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defuseskim == "SKTree_DiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
             foutname="SK"+foutname+"_dilep_cat_"+defcatversion
-        
+        if defuseskim == "SKTree_TriLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
+
             
         defFinaloutputdirMC=""
 
@@ -90,15 +97,33 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
 
 
     elif defruncf == "True":
-        print ""
+        defoutput_file_skim_tag=defchannel
+        foutname="chargeflip"
+        if defuseskim == "FLATCAT":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+            foutname=foutname+"_cat_"+defcatversion
+        if defuseskim == "SKTree_LeptonSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+            foutname="SK"+foutname+"_cat_"+defcatversion
+        if defuseskim == "SKTree_DiLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
+        if defuseskim == "SKTree_TriLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
+
     else:
         defoutput_file_skim_tag=defchannel
         if defuseskim == "FLATCAT":
             defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+        if defuseskim == "SKTree_NoSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion            
         if defuseskim == "SKTree_LeptonSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
         if defuseskim == "SKTree_DiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+        if defuseskim == "SKTree_TriLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion            
 
         defFinaloutputdirMC=""
 
@@ -730,8 +755,10 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
         defsample +="_lepton"
     if "SKTree_DiLepSkim"in defskim:
         defsample +="_dilepton"
-
-
+    if "SKTree_TriLepSkim"in defskim:
+        defsample +="_trilepton"    
+    if "SKTree_NoSkim" in defskim:
+        defsample +="_nocut"    
     
     jobline=""
     list_tags=GetList()
@@ -957,6 +984,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "TriLep":
             skimtag= "_trilep"
+        elif defskim == "NoCut":
+            skimtag= "_nocut"
         outsamplename=  defcycle + "_" + defchannel + "_SKnonprompt"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
         if not mergedname:
             outsamplename=  defcycle + tmpname + ".root"
@@ -968,6 +997,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "TriLep":
             skimtag= "_trilep"
+        elif defskim == "NoCut":
+            skimtag= "_nocut"
         outsamplename=  defcycle + "_" + defchannel + "SKchargeflip_"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
         if not mergedname:
             outsamplename=  defcycle + tmpname + ".root"
@@ -982,11 +1013,14 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     if "SKTreeMaker" in defcycle:
         if ismc:
             if defskim == "DiLep":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
-            elif defskim == "TriLep":
                 return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
+            elif defskim == "Lepton":
+                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
             else:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
+                if defcycle == "SKTreeMakerNoCut":
+                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
+                else:
+                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
                                                     
     return outsamplename    
 
@@ -1350,7 +1384,8 @@ elif useskim == "SKTree_DiLepSkim":
     skim_print="DiLep. "
 elif useskim == "SKTree_TriLepSkim":
     skim_print="TriLep. "
-
+elif useskim == "SKTree_NoSkim":
+    skim_print="NoCut  "
 
 sample = sample.replace(":", " ")
 sample = sample.replace("!!", " ")

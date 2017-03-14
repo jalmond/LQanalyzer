@@ -507,55 +507,6 @@ int AnalyzerCore::GetMCPeriod(){
   a_mcperiod = k_mcperiod;
   return a_mcperiod;
   
-    
-
-  //  double r = ((double) rand() / (RAND_MAX));
-  gRandom->SetSeed(65539);
-  double r =gRandom->Rndm(); /// random number between 0 and 1
-
-  
-  /// values obtained from cattuple googledoc
-  // https://docs.google.com/spreadsheets/d/1rWM3AlFKO8IJVaeoQkWZYWwSvicQ1QCXYSzH74QyZqE/edit?alt=json#gid=1689385956
-  // using single muon luminosities (luminosities differ slightky for each dataset but difference is neglibable)
-  double lumi_periodB = 5.929001722;
-  double lumi_periodC = 2.645968083;
-  double lumi_periodD = 4.35344881;
-  double lumi_periodE = 4.049732039;
-  double lumi_periodF = 3.157020934;
-  double lumi_periodG = 7.549615806;
-  double lumi_periodH = 8.545039549 + 0.216782873;
-  double total_lumi = (lumi_periodB+lumi_periodC + lumi_periodD + lumi_periodE + lumi_periodF + lumi_periodG + lumi_periodH) ;
-  
-  vector<double> cum_lumi;
-  cum_lumi.push_back(lumi_periodB/total_lumi); 
-  cum_lumi.push_back((lumi_periodB+lumi_periodC)/total_lumi); 
-  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD)/total_lumi); 
-  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE)/total_lumi); 
-  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi); 
-  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG)/total_lumi); 
-  cum_lumi.push_back((lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH)/total_lumi); 
-  
-  /// returns an int
-
-  /// r = 1       |  period B
-  /// r = 2       |  period C
-  /// r = 3       |  period D
-  /// r = 4       |  period E
-  /// r = 5       |  period F
-  /// r = 6       |  period G
-  /// r = 7       |  period H
-
-  for(unsigned int i=0; i < cum_lumi.size(); i++){
-    if ( r < cum_lumi.at(i)) {
-      a_mcperiod =  (i+1);
-      return a_mcperiod;
-    }
-  }
-
-  /// return period H is for some reason r > cum_lumi.at(max) 'should not happen'
-  return  cum_lumi.size();
-    
-
 }
 
 
@@ -1120,7 +1071,7 @@ bool AnalyzerCore::HasCloseBJet(snu::KElectron el, KJet::Tagger tag, KJet::WORKI
 
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO");
 
-  if(period < 0) {
+  if(period == 0) {
     Message("period not set in AnalyzerCore::HasCloseBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
     period=GetPeriod();
   }
@@ -2350,7 +2301,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 
   int nbjet=0;
 
-  if(period < 0) {
+  if(period == 0) {
     Message("period not set in AnalyzerCore::NBJet. Will assign mcperiod for you but this may not give correct behaviour", WARNING);
     period=GetPeriod();
   }
@@ -2405,7 +2356,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 
 bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod){
 
-  if(mcperiod < 0) {
+  if(mcperiod == 0) {
     Message("mcperiod not set in AnalyzerCore::IsBTagged. Will assign mcperiod for you but this may not give correct behaviour", WARNING);      
     mcperiod=GetPeriod();
   }
@@ -2462,7 +2413,7 @@ float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tag
 
   if(isData) return 1.;
 
-  if(mcperiod < 0) {
+  if(mcperiod == 0) {
     Message("FYI : mcperiod not set in AnalyzerCore::BTagScaleFactor_1a: meaning auto-set", DEBUG);
     mcperiod=GetPeriod();
   }
