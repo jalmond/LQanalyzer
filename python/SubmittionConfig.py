@@ -1551,7 +1551,7 @@ sample_times=[]
 tmpnjobs_for_submittion=0
 
 ### rundebug=True will not submit any jobs and debug.txt file will be produced in ./
-rundebug=True
+rundebug=False
 if rundebug:
     file_debug = open("debug.txt","w")
     file_debug.write("DEBUG \n")
