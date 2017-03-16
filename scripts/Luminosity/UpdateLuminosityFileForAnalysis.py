@@ -392,9 +392,7 @@ if os.path.exists(path_full_sample_list):
             if input == "Y":
                 print "replacing " + samplelist + " with  " + newsamplelist
                 os.system("cp " + newsamplelist + " " + samplelist)
-                if os.getenv("USER") == "jalmond":
-                    print "changing permission of " + samplelist
-                    os.system("chmod 777 " + samplelist)
+                os.system("chmod 777 " + samplelist)
                 print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
@@ -428,7 +426,7 @@ if os.path.exists(path_full_sample_list):
                     print "Sample " + str(l) + " is new. Making SKtree"
                     addstring+="'"+l+"' "
                     runSKTreemaker=True
-            addstring+")\n"
+            addstring+=")\n"
             #print "Adding list "
             #print str(addstring)
             file_userlist.write(addstring)
