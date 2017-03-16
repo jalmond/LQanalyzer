@@ -265,10 +265,9 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
         day=checkdate.strftime("%d")
         year=checkdate.strftime("%y")
 
-        if rundebug:        
-            file_debug = open("debug.txt","a")
         file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
         if rundebug:
+            file_debug = open("debug.txt","a")
             file_debug.write(file_jobsummary+"\n")
         if not os.path.exists(file_jobsummary):
             return 1000.
@@ -523,16 +522,19 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     
     if njobs_expectedtorun > 0:
         if tmplongestjobtime < 60000 and tmplongestjobtime > 5000:
-            file_debug.write("njobs_expectedtorun = " + str(njobs_expectedtorun) + "\n")
+            if rundebug:
+                file_debug.write("njobs_expectedtorun = " + str(njobs_expectedtorun) + "\n")
             if float(nfreeqall)  - float(njobs_expectedtorun) > 20:
                 nleftover = float(nfreeqall)  - float(njobs_expectedtorun) - 20.
-                file_debug.write("nleftover= " +str(nleftover) + "\n")
+                if rundebug:
+                    file_debug.write("nleftover= " +str(nleftover) + "\n")
                 while  nleftover%float(jobsleft):
                     nleftover=nleftover+1
-                file_debug.write("correctednleftover= " +str(nleftover) + "\n")
+                    if rundebug:
+                        file_debug.write("correctednleftover= " +str(nleftover) + "\n")
                 isbusy_addon = float(nleftover)/float(jobsleft)
-
-                file_debug.write("isbusy_addon = " + str(isbusy_addon) + "\n")
+                if rundebug:
+                    file_debug.write("isbusy_addon = " + str(isbusy_addon) + "\n")
 
     njobs_long=0            
 

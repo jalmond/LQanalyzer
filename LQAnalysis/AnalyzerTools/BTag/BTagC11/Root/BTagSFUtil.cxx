@@ -144,7 +144,7 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta, int iperiod
     return Btag_SF;
   }
   else{
-    return GetJetSF(JetFlavor, JetPt, JetEta, iperiod);
+    return GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, iperiod);
   }
   return Btag_SF;
 }
