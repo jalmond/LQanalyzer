@@ -581,8 +581,8 @@ void FakeRateCalculator_El::MakeFakeRatePlots(TString label, TString eltag,  std
       float pr_weight= WeightByTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi);
       FillHist(("Prompt_LooseEl_" + label  + "_" + eltag+ "_pt_eta").Data(), electrons[0].Pt(), fabs(electrons[0].Eta()),  weight*pr_weight, ptbins, 9 , etabins, 4);
       FillHist(("Prompt_LooseEl_" + label  + "_" + eltag+ "_pt_eta").Data(), electrons[1].Pt(), fabs(electrons[1].Eta()),  weight*pr_weight, ptbins, 9 , etabins, 4);
-      if(eventbase->GetElectronSel()->ElectronPass(electrons[0],label ))       FillHist(("Prompt_TightEl_" + label + "_" + eltag+ "_pt_eta").Data(), electrons[0].Pt(), fabs(electrons[0].Eta()),  weight*pr_weight, ptbins, 9 , etabins, 4);
-      if(eventbase->GetElectronSel()->ElectronPass(electrons[1],label ))       FillHist(("Prompt_TightEl_" +label  + "_" + eltag+ "_pt_eta").Data(), electrons[1].Pt(), fabs(electrons[1].Eta()),  weight*pr_weight, ptbins, 9 , etabins, 4);
+      if(PassID(electrons[0],label ))       FillHist(("Prompt_TightEl_" + label + "_" + eltag+ "_pt_eta").Data(), electrons[0].Pt(), fabs(electrons[0].Eta()),  weight*pr_weight, ptbins, 9 , etabins, 4);
+      if(PassID(electrons[1],label ))       FillHist(("Prompt_TightEl_" +label  + "_" + eltag+ "_pt_eta").Data(), electrons[1].Pt(), fabs(electrons[1].Eta()),  weight*pr_weight, ptbins, 9 , etabins, 4);
       
     }
   }
@@ -675,17 +675,16 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
       FillHist(("LooseEl" + tag + "_pt_eta").Data(), el1_pt, fabs(loose_el.at(0).Eta()),  w, ptbins, 9 , etabins2, 4);
       FillHist(("LooseEl" + tag + "_pt_eta").Data(), el2_pt, fabs(loose_el.at(1).Eta()),  w, ptbins, 9 , etabins2, 4);
 
-      if(eventbase->GetElectronSel()->ElectronPass(loose_el[0], tightlabel)){
+      if(PassID(loose_el[0], tightlabel)){
 	FillHist(("TightEl" + tag + "_pt_eta").Data(), el1_pt, fabs(loose_el.at(0).Eta()),  w, ptbins, 9 , etabins2, 4);
       }
-      if(eventbase->GetElectronSel()->ElectronPass(loose_el[1], tightlabel)){
-        FillHist(("TightEl" + tag + "_pt_eta").Data(), el2_pt, fabs(loose_el.at(1).Eta()),  w, ptbins, 9 , etabins2, 4);
+      if(PassID(loose_el[1], tightlabel)){
+	FillHist(("TightEl" + tag + "_pt_eta").Data(), el2_pt, fabs(loose_el.at(1).Eta()),  w, ptbins, 9 , etabins2, 4);
       }
     }
-           
     return;
   }
-
+  
   int nbjet(0);
   float tmp_deltaR=1000.;
   for(unsigned int ij =0 ; ij < jets.size() ; ij++){

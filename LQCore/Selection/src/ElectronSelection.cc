@@ -50,7 +50,9 @@ void ElectronSelection::SkimSelection(std::vector<KElectron>& leptonColl, bool m
 
 
 
-bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, float ptcut, float etacut){
+bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, double ptcut, double etacut){
+
+  //// This is not used now by GetElectron function in AnalyzerCore. Only used by DataDriven class which has no access to selection map
 
   bool pass_selection = true;
 
@@ -67,22 +69,88 @@ bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, float ptcu
   return pass_selection;
 }
 
-void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID elid, float ptcut, float etacut){
-  return SelectElectrons(leptonColl,GetString(elid), ptcut,etacut);
+
+bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
+
+  //// This is not used by any code but can be used by user IF they prefer
+  /// This is Ferdinando style
+
+  bool pass_selection = true;
+  if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;;
+
+  ElectronID = PassUserID(el ,elid, el_id, check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin);
+  if(!ElectronID)  pass_selection = false;
+
+  if(!(fabs(el.SCEta()) < etacut)) pass_selection = false;
+  if((el.Pt() < ptcut))   pass_selection = false;
+
+  return pass_selection;
+}
+
+
+bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, double ptcut, double etacut){
+
+  //// This is new function that inputs vector instead of searching in map
+  ///  This saves time vs previous functions
+  int icut(0);
+  /// in case user has overwridden pt/eta cuts
+  if (ptcut == -999. || etacut == -999.){
+    for(unsigned int iv=0; iv < vidf.size(); iv++){
+      if(!Check(vidf[iv].second)) continue;
+      if (vidf[iv].first =="ptmin") { icut++; if(ptcut == -999.)ptcut=vidf[iv].second;}
+      if (vidf[iv].first =="|etamax|") {icut++;  if (etacut == -999.)etacut=vidf[iv].second;}
+      if(icut ==2) break;
+    }
+  }
+
+  bool pass_selection = true;
+  if ( fabs(el.SCEta())>1.4442 && fabs(el.SCEta())<1.566 ) return false;;
+
+  ElectronID = PassUserID(elid, el ,vids, vidf);
+  if(!ElectronID)  pass_selection = false;
+
+  if(!(fabs(el.SCEta()) < etacut)) pass_selection = false;
+  if((el.Pt() < ptcut))   pass_selection = false;
+
+  return pass_selection;
+}
+
+
+
+
+void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, ID elid,TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
+  return SelectElectrons(leptonColl,GetString(elid),  el_id,check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut,etacut);
 }
   
-void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, float ptcut, float etacut){
+void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid, TString el_id,bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b,double dzmax_e, double dxysigmax,double dxysigmin,double ptcut, double etacut){
   std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
     
-    if(ElectronPass(*el, elid, ptcut,etacut)) leptonColl.push_back(*el);
+    if(ElectronPass(*el, elid, el_id,check_cc,check_cv, isomax_b,isomax03_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut,etacut) ) leptonColl.push_back(*el);
 
 
   }// end of el loop
 
   return;
 }
+
+
+void ElectronSelection::SelectElectrons(std::vector<KElectron>& leptonColl, TString elid,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, double ptcut, double etacut){
+  
+  std::vector<KElectron> allelectrons = k_lqevent.GetElectrons();
+  
+  for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
+    
+    if(ElectronPass(*el, elid, vids,vidf, ptcut, etacut)) leptonColl.push_back(*el);
+
+  }// end of el loop                                                                                                                                                                                                                                     
+
+  return;
+}
+
+
+
 
 void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_debug) {
 
@@ -96,7 +164,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     /// ID cut : need to optimise cuts
     if(apply_ID){
       if(GetString(k_id).Contains("POG")) ElectronID = PassID(*el, k_id);
-      else ElectronID = PassUserID(k_id, *el);
+      else ElectronID = PassUserID( *el,GetString(k_id) , GetString(k_id), apply_chargeconst, apply_convcut,relIsoBarrel_max,relIsoEndcap_max,dxyBarrel_max,dxyEndcap_max,dzBarrel_max,dzEndcap_max, 999.,999.);
 
       if(!ElectronID) {
         pass_selection = false;
@@ -178,6 +246,117 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
 
 
+
+bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TString, TString> > vids , vector<pair<TString, float> > vidf ) {
+  
+  /// New function in 806 to check if electron passes ID. 
+  /// now input vector of pairs
+
+  int snuid = el.SNUID();
+  bool pass_veto_noiso = false;
+  bool pass_loose_noiso = false;
+  bool pass_medium_noiso = false;
+  bool pass_tight_noiso = false;
+  if(snuid >= 1000){
+    pass_tight_noiso = true;
+    snuid = snuid - 1000;
+  }
+  if(snuid >= 100){
+    pass_medium_noiso= true;
+    snuid = snuid-100;
+  }
+  if(snuid >= 10){
+    pass_loose_noiso=true;
+    snuid = snuid-10;
+  }
+  if(snuid >= 1){
+    pass_veto_noiso=true;
+  }
+  bool debug=false;
+  for(unsigned int idel =0; idel < vids.size(); idel++){
+    /// all cuts are not "false"
+    if(vids[idel].second == "false") continue;
+
+    if(vids[idel].first == "IsTight(POG)")  { 
+      if(!pass_tight_noiso) {if(debug){ cout << "Fail tight" << endl;} return false;}
+    }
+    if(vids[idel].first == "IsMedium(POG)"){
+      if(!pass_medium_noiso)  {if(debug){ cout << "Fail medium" << endl;} return false;}
+    }
+    if(vids[idel].first == "IsLoose(POG)"){
+      if(!pass_loose_noiso) {if(debug){ cout << "Fail loose" << endl;} return false;}
+    }
+    if(vids[idel].first == "IsVeto(POG)"){
+      if(!pass_veto_noiso)   {if(debug){ cout << "Fail veto" << endl;} return false;}
+    }
+    if(vids[idel].first == "GsfCtfScPix") {
+      if( !el.GsfCtfScPixChargeConsistency()) {if(debug){ cout << "Fail charge" << endl;}  return false;}
+    }
+    if(vids[idel].first == "convveto")  {
+      if(!el.PassesConvVeto()) {if(debug){ cout << "Fail convveto" << endl;}  return false;}
+    }
+    if(vids[idel].first == "IsTight(MVA)"){
+      if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA tight" << endl;} return false;}
+      if(!el.PassTrigMVATight()){if(debug){ cout << "Fail MVA tight" << endl;} return false;}
+    }
+    if(vids[idel].first == "IsMedium(MVA)"){
+      if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
+      if(!el.PassTrigMVAMedium()) {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
+    }
+  }
+
+
+  LeptonRelIso = el.PFRelIso(0.3);
+
+  bool checkUseMiniIso=false;
+  if(id.Contains("miniiso")) checkUseMiniIso=true;
+  if(checkUseMiniIso){
+    LeptonRelIso = el.PFRelMiniIso();
+  }
+
+  for(unsigned int idel =0; idel < vidf.size(); idel++){
+    if(!Check(vidf[idel].second)) continue;
+    if(vidf[idel].first == "isomax03_b") {
+      if(fabs(el.SCEta())<1.479 ){
+	if((LeptonRelIso > vidf[idel].second))  {if(debug){ cout << "Fail iso: " << LeptonRelIso << " " << vidf[idel].second << endl;} return false;}
+      }
+    }
+    if(vidf[idel].first == "isomax03_e") {
+      if(fabs(el.SCEta())>=1.479 ){
+	if((LeptonRelIso > vidf[idel].second))  {if(debug){ cout << "Fail iso" << LeptonRelIso << " " << vidf[idel].second << endl;}  return false;}
+      }
+    }
+    if(vidf[idel].first == "|dxymax_b|") {
+      if(fabs(el.SCEta())<1.479 ){
+	if(fabs(el.dxy()) > vidf[idel].second) {if(debug){ cout << "Faildxy " << endl;} return false;}	
+      }
+    }
+    if(vidf[idel].first == "|dxymax_e|") {
+      if(fabs(el.SCEta())>=1.479 ){
+	if(fabs(el.dxy()) > vidf[idel].second) {if(debug){ cout << "Fail dxy" << endl;} return false;}
+      }
+    }
+    if(vidf[idel].first == "|dzmax_b|") {
+      if(fabs(el.SCEta())<1.479 ){
+	if(fabs(el.dz()) > vidf[idel].second) {if(debug){ cout << "Fail dz" << endl;} return false;}
+      }
+    }
+    if(vidf[idel].first == "|dzmax_e|") {
+      if(fabs(el.SCEta())>=1.479 ){
+	if(fabs(el.dz()) > vidf[idel].second) {if(debug){ cout << "Fail dz" << endl;} return false;}
+      }
+    }
+    if(vidf[idel].first == "|dxysigmin|") {
+      if(fabs(el.dxySig()) < vidf[idel].second) { if(debug){ cout << "Fail dsximin"  << endl;} return false;}
+    }
+    if(vidf[idel].first == "|dxysigmax|") {
+      if(fabs(el.dxySig()) >   vidf[idel].second) { if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
+    }
+  }
+  return true;
+}
+
+
 bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
 
 
@@ -195,7 +374,6 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   bool checkisveto = (CheckCutString("IsVeto(POG)",id));
   bool checkismedium = (CheckCutString("IsMedium(POG)",id));
   bool checkistight  = (CheckCutString("IsTight(POG)",id));
-  bool checkUseMiniIso  = (CheckCutString("UseMiniIso",id));
   bool checkisMVAmedium = (CheckCutString("IsMedium(MVA)",id));
   bool checkisMVAtight  = (CheckCutString("IsTight(MVA)",id));
 
@@ -205,9 +383,9 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   bool checkdxysigmin  = CheckCutFloat("|dxysigmin|",id);
   bool checkdxysigmax  = CheckCutFloat("|dxysigmax|",id);
   
-
-  
   LeptonRelIso = el.PFRelIso(0.3);
+  bool checkUseMiniIso=false;
+  if(id.Contains("miniiso")) checkUseMiniIso=true;
 
   if(checkUseMiniIso){
     LeptonRelIso = el.PFRelMiniIso();
@@ -237,7 +415,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
 
 
   bool debug=false;
-  //  if(id.Contains("VETO")) debug=true;
+
   if(checkisveto && !pass_veto_noiso)  {pass_selection = false;if(debug){ cout << "Failveto " << endl;}}
   if(checkisloose && !pass_loose_noiso)  {pass_selection = false;if(debug){ cout << "Failloose " << endl;}}
   if(checkismedium && !pass_medium_noiso)  {pass_selection = false;if(debug){ cout << "Fail medium" << endl;}}
@@ -247,7 +425,6 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
   if(checkisMVAtight && !el.PassTrigMVATight()){pass_selection = false;if(debug){ cout << "Fail MVA tight" << endl;}}
   if(checkisMVAmedium && !el.IsTrigMVAValid())  {pass_selection = false;if(debug){ cout << "Fail MVA medium" << endl;}}
   if(checkisMVAmedium && !el.PassTrigMVAMedium()){pass_selection = false;if(debug){ cout << "Fail MVA medium" << endl;}}
-
   
   if(convveto&& (!el.PassesConvVeto()) ){pass_selection = false;if(debug){ cout << "Fail convveto" << endl;}}
   if(checkchargeconsy &&  !el.GsfCtfScPixChargeConsistency()) {pass_selection = false;if(debug){ cout << "Fail charge" << endl;}}
@@ -267,7 +444,97 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el){
     if(fabs(el.dz()) > dzmax_e) {pass_selection = false;if(debug){ cout << "Fail dz" << endl;}}
   }
   
+
+
+
+  vector<pair<TString, TString> > vids =GetStringList(id);
+  vector<pair<TString, float> > vidf = GetFloatList(id);
+  bool check2 = PassUserID(id, el, vids, vidf);
+  
+  if(check2 != pass_selection) cout << "EL  IDs are not the same" << endl;
+
   return pass_selection;
+}
+
+bool ElectronSelection::PassUserID(snu::KElectron el, TString id, TString el_id, bool check_cc,bool check_cv,double  isomax_b,double isomax03_e,double dxymax_b,double dxymax_e,double dzmax_b, double dzmax_e, double dxysigmax,double dxysigmin){
+
+  int snuid = el.SNUID();
+  bool pass_veto_noiso = false;
+  bool pass_loose_noiso = false;
+  bool pass_medium_noiso = false;
+  bool pass_tight_noiso = false;
+  if(snuid >= 1000){
+    pass_tight_noiso = true;
+    snuid = snuid - 1000;
+  }
+  if(snuid >= 100){
+    pass_medium_noiso= true;
+    snuid = snuid-100;
+  }
+  if(snuid >= 10){
+    pass_loose_noiso=true;
+    snuid = snuid-10;
+  }
+  if(snuid >= 1){
+    pass_veto_noiso=true;
+  }
+
+
+  bool debug=false;
+  
+  if((el_id ==	"IsTight(POG)") &&  !pass_tight_noiso)  {if(debug){ cout << "Fail tight" << endl;}return false;}
+  if((el_id ==	"IsMedium(POG)") && !pass_medium_noiso)  {if(debug){ cout << "Fail medium" << endl;}return false;}
+  if((el_id ==	"IsLoose(POG)") && !pass_loose_noiso)  {if(debug){ cout << "Failloose " << endl;}return false;}
+  if((el_id ==	"IsVeto(POG)") && !pass_veto_noiso)  {if(debug){ cout << "Failveto " << endl;}return false;}
+  if((el_id ==	"IsMedium(MVA)")){
+    if(!el.IsTrigMVAValid())  {if(debug){cout << "Fail MVA medium" << endl;} return false;}
+    if(!el.PassTrigMVAMedium()) {if(debug){cout << "Fail MVA medium" << endl;} return false;}
+  }
+  if(el_id == "IsTight(MVA)") {
+    if(!el.IsTrigMVAValid())  {if(debug){cout << "Fail MVA tight" << endl;} return false;}
+    if(!el.PassTrigMVATight()) {if(debug){cout << "Fail MVA tight" << endl;} return false;}
+  }
+  if( check_cc &&  !el.GsfCtfScPixChargeConsistency()) { if(debug){ cout << "Fail charge" << endl;} return false;}
+  if( check_cv &&  (!el.PassesConvVeto()) ){ if(debug){ cout << "Fail convveto" << endl;}return false;}
+
+  
+  LeptonRelIso = el.PFRelIso(0.3);
+  
+  if(id.Contains("miniaod")){
+    LeptonRelIso = el.PFRelMiniIso();
+  }
+  
+  
+  if(fabs(el.SCEta())<1.479 ){
+    if(Check(isomax_b)){
+      if((LeptonRelIso > isomax_b))  {if(debug){ cout << "Fail iso: " << LeptonRelIso << " " << isomax_b << endl;} return false;}
+    }
+    if(Check(dxymax_b)){
+      if(fabs(el.dxy()) > dxymax_b) {if(debug){ cout << "Faildxy " << endl;}return false;}
+    }
+    if(Check(dzmax_b)){
+      if(fabs(el.dz()) > dzmax_b) {if(debug){ cout << "Fail dz" << endl;}return false;}    
+    }
+  }
+  else{
+    if(Check(isomax03_e)){
+      if((LeptonRelIso > isomax03_e))  {if(debug){ cout << "Fail iso" << LeptonRelIso << " " << isomax03_e << endl;} return false;}
+    }
+    if(Check(dxymax_e)){
+      if(fabs(el.dxy()) > dxymax_e) {if(debug){ cout << "Fail dxy" << endl;}return false;}
+    }
+    if(Check(dzmax_e)){
+      if(fabs(el.dz()) > dzmax_e) {if(debug){ cout << "Fail dz" << endl;}return false;}
+    }
+  }
+  if(Check(dxysigmax)){
+    if((fabs(el.dxySig()) > dxysigmax)) { if(debug){ cout << "Fail dsigmax"  << endl;}return false;}     
+  }
+  if(Check(dxysigmin)){
+    if((fabs(el.dxySig()) < dxysigmin)) { if(debug){ cout << "Fail dsximin"  << endl;}return false;}
+  }
+
+  return true;
 }
 
 

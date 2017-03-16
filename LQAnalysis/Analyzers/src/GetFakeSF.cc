@@ -88,7 +88,7 @@ void GetFakeSF::ExecuteEvents()throw( LQError ){
     FillHist(("LooseEl_lowdxy_pt"), electronLooose_lowdxy[iel].Pt(),  weight, ptbins, 9 );
     FillHist(("LooseEl_lowdxy_eta"), fabs(electronLooose_lowdxy[iel].Eta()),  weight, etabins, 4);
 
-    if(eventbase->GetElectronSel()->ElectronPass(electronLooose_lowdxy[iel], "ELECTRON_HN_LOWDXY_TIGHT")){
+    if(PassID(electronLooose_lowdxy[iel], "ELECTRON_HN_LOWDXY_TIGHT")){
       FillHist(("TightEl_lowdxy_pt_eta"), electronLooose_lowdxy[iel].Pt(), fabs(electronLooose_lowdxy[iel].Eta()),  weight, ptbins, 9 , etabins, 4);
       FillHist(("TightEl_lowdxy_pt"), electronLooose_lowdxy[iel].Pt(),  weight, ptbins, 9 );
       FillHist(("TightEl_lowdxy_eta"), fabs(electronLooose_lowdxy[iel].Eta()),  weight, etabins, 4);
@@ -100,7 +100,7 @@ void GetFakeSF::ExecuteEvents()throw( LQError ){
     FillHist(("LooseEl_highdxy_pt"), electronLooose_highdxy[iel].Pt(),  weight, ptbins, 9 );
     FillHist(("LooseEl_highdxy_eta"), fabs(electronLooose_highdxy[iel].Eta()),  weight, etabins, 4);
 
-    if(eventbase->GetElectronSel()->ElectronPass(electronLooose_highdxy[iel], "ELECTRON_HN_HIGHDXY_TIGHT")){
+    if(PassID(electronLooose_highdxy[iel], "ELECTRON_HN_HIGHDXY_TIGHT")){
       FillHist(("TightEl_highdxy_pt_eta"), electronLooose_highdxy[iel].Pt(), fabs(electronLooose_highdxy[iel].Eta()),  weight, ptbins, 9 , etabins, 4);
       FillHist(("TightEl_highdxy_pt"), electronLooose_highdxy[iel].Pt(),  weight, ptbins, 9 );
       FillHist(("TightEl_highdxy_eta"), fabs(electronLooose_highdxy[iel].Eta()),  weight, etabins, 4);
@@ -114,7 +114,7 @@ void GetFakeSF::ExecuteEvents()throw( LQError ){
       FillHist(("LooseEl_lowdxy_pt_noweight"), electronLooose_lowdxy[iel].Pt(),  1., ptbins, 9 );
       FillHist(("LooseEl_lowdxy_eta_noweight"), fabs(electronLooose_lowdxy[iel].Eta()),  1., etabins, 4);
 
-      if(eventbase->GetElectronSel()->ElectronPass(electronLooose_lowdxy[iel], "ELECTRON_HN_LOWDXY_TIGHT")){
+      if(PassID(electronLooose_lowdxy[iel], "ELECTRON_HN_LOWDXY_TIGHT")){
 	FillHist(("TightEl_lowdxy_pt_eta_noweight"), electronLooose_lowdxy[iel].Pt(), fabs(electronLooose_lowdxy[iel].Eta()),  1., ptbins, 9 , etabins, 4);
 	FillHist(("TightEl_lowdxy_pt_noweight"), electronLooose_lowdxy[iel].Pt(),  1., ptbins, 9 );
 	FillHist(("TightEl_lowdxy_eta_noweight"), fabs(electronLooose_lowdxy[iel].Eta()),  1., etabins, 4);
@@ -126,7 +126,7 @@ void GetFakeSF::ExecuteEvents()throw( LQError ){
       FillHist(("LooseEl_highdxy_pt_noweight"), electronLooose_highdxy[iel].Pt(),  1., ptbins, 9 );
       FillHist(("LooseEl_highdxy_eta_noweight"), fabs(electronLooose_highdxy[iel].Eta()),  1., etabins, 4);
 
-      if(eventbase->GetElectronSel()->ElectronPass(electronLooose_highdxy[iel], "ELECTRON_HN_HIGHDXY_TIGHT")){
+      if(PassID(electronLooose_highdxy[iel], "ELECTRON_HN_HIGHDXY_TIGHT")){
 	FillHist(("TightEl_highdxy_pt_eta_noweight"), electronLooose_highdxy[iel].Pt(), fabs(electronLooose_highdxy[iel].Eta()),  1., ptbins, 9 , etabins, 4);
 	FillHist(("TightEl_highdxy_pt_noweight"), electronLooose_highdxy[iel].Pt(),  1., ptbins, 9 );
 	FillHist(("TightEl_highdxy_eta_noweight"), fabs(electronLooose_highdxy[iel].Eta()),  1., etabins, 4);

@@ -363,7 +363,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::
     }
   }
   for(unsigned int i=0; i<k_electrons.size(); i++){
-    if( dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(i), elid) ){
+    if(dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(i), elid)){
       isT.push_back(true);
     }
     else{
@@ -447,7 +447,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
   float ee_weight = 0.;
   if(k_electrons.size()==2){
 
-    bool is_el1_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDtight);
+    bool is_el1_tight    =  dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDtight);
     bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDloose);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
 

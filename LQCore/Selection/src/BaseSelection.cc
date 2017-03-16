@@ -52,6 +52,13 @@ BaseSelection::BaseSelection() {
 ////////// PREDEFINED MUON SELECTIONS                                                                                                        
 
 
+bool  BaseSelection::Check(float val){
+
+  if(abs(val) == 999.) return false;
+  
+  return true;
+}
+
 TString BaseSelection::GetString(ID id){
   if ( id == MUON_HN_VETO) return "MUON_HN_VETO";
   if ( id == MUON_HN_FAKELOOSE) return "MUON_HN_FAKELOOSE";
@@ -113,6 +120,29 @@ void BaseSelection::PrintFIDMap(){
     cout << it->first << " : " << it->second.size() << endl;
   }
   return;
+}
+
+
+vector<pair<TString,TString> > BaseSelection::GetStringList(TString id){
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = k_stringmap.find(id);
+  if(it == k_stringmap.end()){
+    cerr << "Did not find string " + id +". Please check string in GetBases"<< endl;
+    exit(EXIT_FAILURE);
+  }
+  
+  return it->second;
+
+}
+
+vector<pair<TString,float> > BaseSelection::GetFloatList(TString id){
+  std::map<TString, vector<pair<TString,float> > >::iterator it = k_floatmap.find(id);
+  if(it == k_floatmap.end()){
+    cerr << "Did not find string " + id +". Please check string in GetBases"<< endl;
+    exit(EXIT_FAILURE);
+  }
+
+  return it->second;
+
 }
 
 TString BaseSelection::AccessStringMap(TString label, TString id){

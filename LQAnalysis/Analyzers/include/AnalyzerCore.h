@@ -59,7 +59,12 @@ class AnalyzerCore : public LQCycleBase {
   Int_t GetDataPeriod();  
   int GetPeriod();
 
+  void  SetupID();
+  void  SetupDDBkg();
+
   bool IsDiEl();
+
+  bool  Check(float val);
 
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
@@ -113,7 +118,9 @@ class AnalyzerCore : public LQCycleBase {
   float SumPt( std::vector<snu::KFatJet> particles);
   bool isPrompt(long pdgid);
   void TruthPrintOut();
-  bool IsTight(snu::KElectron electron);
+  bool PassID(snu::KElectron electron, TString id);
+  bool PassID(snu::KMuon mu, TString muid);
+
   bool IsTight(snu::KMuon muon);
   std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
@@ -124,9 +131,10 @@ class AnalyzerCore : public LQCycleBase {
   bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   bool OppositeCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   
-  float CorrectedMETRochester(TString id, bool updatemet);
-  float CorrectedMETElectron(TString elid_formet, int syst=0);
-  float CorrectedMETMuon(TString muid_formet, int syst=0);
+  float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
+  float CorrectedMETElectron(std::vector<snu::KElectron> electrons,  int syst=0);
+  float CorrectedMETMuon(std::vector<snu::KMuon> muons ,int syst=0);
+
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   void SetCorrectedMomentum(vector<snu::KMuon>& k_muons);
@@ -231,8 +239,9 @@ class AnalyzerCore : public LQCycleBase {
   
   bool  k_reset_period;
   int a_mcperiod;
+  bool IDSetup;
+  bool setupDDBkg;
 
-  
   std::vector<TString> triggerlist;
 
   //// Making cleaver hist maps

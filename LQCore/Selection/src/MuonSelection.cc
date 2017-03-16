@@ -152,6 +152,8 @@ void MuonSelection::Selection( std::vector<KMuon>& leptonColl, bool applyrochest
 
 
 bool MuonSelection::MuonPass(snu::KMuon muon, TString muid, float ptcut, float etacut){
+
+  /// Method used by DD class
   if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",muid);
   if (etacut == -999.) etacut = AccessFloatMap("|etamax|",muid);
   bool pass_selection(true);
@@ -168,21 +170,51 @@ bool MuonSelection::MuonPass(snu::KMuon muon, TString muid, float ptcut, float e
 }
 
 
-void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, float ptcut, float etacut){
+bool MuonSelection::MuonPass(snu::KMuon muon, TString muid, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,  float ptcut, float etacut){
+
+  int icut(0);
+  if (ptcut == -999. || etacut == -999.){
+    for(unsigned int iv=0; iv < vidf.size(); iv++){
+      if(!Check(vidf[iv].second)) continue;
+      if (vidf[iv].first =="ptmin") { icut++; if(ptcut == -999.)ptcut=vidf[iv].second;}
+      if (vidf[iv].first =="|etamax|") {icut++;  if (etacut == -999.)etacut=vidf[iv].second;}
+      if(icut ==2) break;
+    }
+  }
   
-  return SelectMuons(leptonColl, GetString(muid), ptcut, etacut);
+  bool pass_selection(true);
+  if(muon.Pt() == 0.)  return  false;
+
+  MuonID = PassUserID(muid, muon, vids, vidf);
+  if(!MuonID)  pass_selection = false;
+
+
+  if(( muon.Pt() < ptcut )) pass_selection = false;
+  if(!(fabs(muon.Eta()) < etacut)) pass_selection = false;
+
+  return pass_selection;
 }
 
-void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid,float ptcut, float etacut){
+
+void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, ID muid, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,float ptcut, float etacut){
+  
+  return SelectMuons(leptonColl, GetString(muid), vids, vidf, ptcut, etacut);
+}
+
+void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, float ptcut, float etacut){
 
   std::vector<KMuon> allmuons = k_lqevent.GetMuons();
   
+  
+  bool applyrochester(true);
+  
+  for(unsigned int iv=0; iv < vids.size(); iv++){
+    if(vids[iv].first == "ApplyRoch") {
+      applyrochester=vids[iv].second;
+      break;
+    }
+  }
 
-  if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",muid);
-  if (etacut == -999.) etacut = AccessFloatMap("|etamax|",muid);
-  
-  bool applyrochester = CheckCutString("ApplyRoch",muid);
-  
   for (std::vector<KMuon>::iterator muit = allmuons.begin(); muit!=allmuons.end(); muit++){
     if(applyrochester&&! muit->IsRochesterCorrected()) {
       float origpt = muit->Pt();
@@ -194,38 +226,98 @@ void MuonSelection::SelectMuons(std::vector<KMuon>& leptonColl, TString muid,flo
       muit->SetIsRochesterCorrected(true);
     }
     
-    if(MuonPass(*muit, muid, ptcut, etacut)) leptonColl.push_back(*muit);
+    if(MuonPass(*muit, muid,vids, vidf,  ptcut, etacut)) leptonColl.push_back(*muit);
   }
   return;
 }
 
 
+
+bool MuonSelection::PassUserID(TString id, snu::KMuon mu, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf){
+
+  if(mu.Pt() == 0.) return false;
+  
+  float dxymax(0.);
+  float dzmax(0.);
+  float chi2max(0.);
+
+  bool checkdxymax(false);
+  bool checkdzmax (false);
+  bool checkchi2max(false);
+  bool checkisloose (false);
+  bool checkismedium (false);
+  bool checkistight (false);
+
+  for(unsigned int iel =0; iel < vids.size(); iel++){
+    if(vids[iel].second == "false") continue;
+    if(vids[iel].first == "IsTight(POG)") checkistight=true;
+    if(vids[iel].first == "IsMedium(POG)") checkismedium=true;
+    if(vids[iel].first == "IsLoose(POG)") checkisloose=true;
+  }
+  bool debug=false;
+  if(debug) cout << "PassUserID(TString id, snu::KMuon mu, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf" << endl;
+  LeptonRelIso = (mu.RelIso04());
+  if(id.Contains("miniiso")) LeptonRelIso= mu.RelMiniIso();
+  
+  for(unsigned int idel =0; idel < vidf.size(); idel++){
+    if(!Check( vidf[idel].second)) continue;
+    if(vidf[idel].first == "isomax04") {
+      if(LeptonRelIso > vidf[idel].second) {if(debug){ cout << "Fail iso"  << endl; } return false;}
+    }
+    if(vidf[idel].first == "|dxymax|") {
+      checkdxymax=true;
+      dxymax=vidf[idel].second;
+    }
+    if(vidf[idel].first == "|dxysigmax|") {
+      if(fabs(mu.dXYSig()) > vidf[idel].second) {if(debug){ cout << "Fail dsigmax"  << endl;} return false;}
+    }
+    if(vidf[idel].first == "|dxysigmin|") {
+      if(fabs(mu.dXYSig()) < vidf[idel].second) {if(debug){ cout << "Fail dsigmin"  << endl;} return false;}
+    }
+    if(vidf[idel].first == "chi2max") {
+      checkchi2max=true;
+      chi2max=vidf[idel].second;
+    }
+    if(vidf[idel].first == "|dzmax|") {
+      checkdzmax=true;
+      dzmax=vidf[idel].second;
+    }
+  }
+
+
+  if(checkdxymax || checkchi2max || checkdzmax) {
+    if(checkistight && ! PassID("MUON_POG_TIGHT",mu, !checkdxymax,!checkdzmax,!checkchi2max)) {if(debug){ cout << "Fail pogtight"  << endl;} return false;}
+    if(checkdxymax && (fabs(mu.dXY()) > dxymax)){ if(debug){ cout << "Fail dxy "  << endl;} return false;}
+    if(checkdzmax && (fabs(mu.dZ()) > dzmax)){ if(debug){ cout << "Fail dZ"  << endl;}return false;}
+    if(checkchi2max && (fabs(mu.GlobalChi2()) > chi2max)){ if(debug){ cout << "Fail GlobalChi2"  << endl;} return false;}
+  }
+  else  if(checkistight &&  ! mu.IsTight ()) { if(debug){ cout << "Fail tight"  << endl;} return false;}
+
+  if(checkisloose && ! mu.IsLoose ()) { if(debug){ cout << "Fail isloose" << endl;} return false;}
+
+  if(checkismedium && ! mu.IsMedium ()) {if(debug){ cout << "Fail ismedium"  << endl;} return false;}
+  
+  
+  return true;
+}
 bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
 
   if(mu.Pt() == 0.) return false;
 
   float isomax = AccessFloatMap("isomax04",id);
-  //float isomin = AccessFloatMap("isomin04",id);
   float dxymax = AccessFloatMap("|dxymax|",id);
-  //float dxymin = AccessFloatMap("|dxymin|",id);
   float dxysigmax = AccessFloatMap("|dxysigmax|",id);
   float dxysigmin = AccessFloatMap("|dxysigmin|",id);
 
   float dzmax = AccessFloatMap("|dzmax|",id);
-  //float dzmin = AccessFloatMap("|dzmin|",id);
   float chi2max = AccessFloatMap("chi2max",id);
-  //float chi2min = AccessFloatMap("chi2min",id);
 
   bool checkisomax     = CheckCutFloat("isomax04",id);
-  //bool checkisomin     = CheckCutFloat("isomin04",id);
   bool checkdxymax      = CheckCutFloat("|dxymax|",id);
-  //bool checkdxymin      = CheckCutFloat("|dxymin|",id);
   bool checkdzmax       = CheckCutFloat("|dzmax|",id);
   bool checkdxysigmin  = CheckCutFloat("|dxysigmin|",id);
   bool checkdxysigmax  = CheckCutFloat("|dxysigmax|",id);
-  //bool checkdzmin       = CheckCutFloat("|dzmin|",id);
   bool checkchi2max     = CheckCutFloat("chi2max",id);
-  //bool checkchi2min     = CheckCutFloat("chi2min",id);
   bool checkisloose  = (CheckCutString("IsLoose(POG)",id));
   bool checkismedium = (CheckCutString("IsMedium(POG)",id));
   bool checkistight  = (CheckCutString("IsTight(POG)",id));
@@ -234,11 +326,13 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
   bool debug=false;
   //if(id.Contains("VETO")) debug=true;
   LeptonRelIso = (mu.RelIso04());
+  if(id.Contains("miniiso")) LeptonRelIso= mu.RelMiniIso();
 
   bool pass_selection=true;
   if(checkisloose && ! mu.IsLoose ()) { pass_selection = false;if(debug){ cout << "Fail isloose" << endl;}}
   
   if(checkismedium && ! mu.IsMedium ()) { pass_selection = false;if(debug){ cout << "Fail ismedium"  << endl;}}
+
   if(checkdxymax || checkchi2max || checkdzmax) {
     if(checkistight && ! PassID("MUON_POG_TIGHT",mu, !checkdxymax,!checkdzmax,!checkchi2max)) { pass_selection = false;if(debug){ cout << "Fail pogtight"  << endl;}}
     if(checkdxymax && (fabs(mu.dXY()) > dxymax)){ pass_selection = false;if(debug){ cout << "Fail dxy "  << endl;}}
@@ -249,16 +343,19 @@ bool MuonSelection::PassUserID(TString id, snu::KMuon mu){
 
 
   if(checkisomax && (LeptonRelIso > isomax)) { pass_selection = false;if(debug){ cout << "Fail iso"  << endl;}}
-  //if(checkisomin && (LeptonRelIso < isomin)) { pass_selection = false;if(debug){ cout << "Fail "  << endl;}}
 
   if(checkdxysigmin &&(fabs(mu.dXYSig()) < dxysigmin)) { pass_selection = false;if(debug){ cout << "Fail dsximin"  << endl;}}
   if(checkdxysigmax &&(fabs(mu.dXYSig()) > dxysigmax)) { pass_selection = false;if(debug){ cout << "Fail dsigmax"  << endl;}}
-  //if(checkdxymin && (fabs(mu.dXY()) < dxymin)){ pass_selection = false;if(debug){ cout << "Fail "  << endl;}}
 
-  //if(checkdzmin && (fabs(mu.dZ()) < dzmin)){ pass_selection = false;if(debug){ cout << "Fail "  << endl;}}
+  
+  vector<pair<TString, TString> > vids =GetStringList(id);
+  vector<pair<TString, float> > vidf = GetFloatList(id);
+  bool check2 = PassUserID(id, mu, vids, vidf);
+
+  if(check2 != pass_selection) cout << "IDS ARE NOT SAME" << endl;
 
   return pass_selection;
-  
+    
 }
 
 

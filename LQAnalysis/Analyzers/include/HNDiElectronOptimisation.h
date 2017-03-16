@@ -1,14 +1,14 @@
-#ifndef HNDiElectron_h
-#define HNDiElectron_h
+#ifndef HNDiElectronOptimisation_h
+#define HNDiElectronOptimisation_h
 
 #include "AnalyzerCore.h"
 
-class HNDiElectron : public AnalyzerCore {
+class HNDiElectronOptimisation : public AnalyzerCore {
 
  public:
   //// constructors                                                                                                                                                             
-  HNDiElectron();
-  ~HNDiElectron();
+  HNDiElectronOptimisation();
+  ~HNDiElectronOptimisation();
 
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
@@ -47,11 +47,7 @@ class HNDiElectron : public AnalyzerCore {
   void OptimiseID(bool isss);
   
 
-  void counter(TString cut, float w);
-
  private:
-
-  std::map<TString, float> mapcounter;
   
   //
   // The output variables 
@@ -61,6 +57,6 @@ class HNDiElectron : public AnalyzerCore {
   std::vector<snu::KElectron> out_electrons;
  
 
-  ClassDef ( HNDiElectron, 1);
+  ClassDef ( HNDiElectronOptimisation, 1);
 };
 #endif

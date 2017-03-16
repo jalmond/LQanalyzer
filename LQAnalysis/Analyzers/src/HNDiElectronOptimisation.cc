@@ -1,6 +1,6 @@
 // $Id: ExampleAnalyzer.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
- * @Project: LQHNDiElectron Frame - ROOT-based analysis framework for Korea SNU
+ * @Project: LQHNDiElectronOptimisation Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
@@ -8,28 +8,27 @@
  ***************************************************************************/
 
 /// Local includes
-#include "HNDiElectron.h"
+#include "HNDiElectronOptimisation.h"
 
 //Core includes
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (HNDiElectron);
+ClassImp (HNDiElectronOptimisation);
 
 
 /**
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
+HNDiElectronOptimisation::HNDiElectronOptimisation() :  AnalyzerCore(),  out_electrons(0) {
 
-  mapcounter.clear();
 
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("HNDiElectron");
+  SetLogName("HNDiElectronOptimisation");
 
-  Message("In HNDiElectron constructor", INFO);
+  Message("In HNDiElectronOptimisation constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
@@ -37,7 +36,7 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
 }
 
 
-void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
+void HNDiElectronOptimisation::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
   MakeHistograms();  
@@ -86,29 +85,27 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void HNDiElectron::ExecuteEvents()throw( LQError ){
+void HNDiElectronOptimisation::ExecuteEvents()throw( LQError ){
   
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
-
-  if(!isData)weight*= MCweight;
   
-  std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
+  return;
+  if(!isData)weight*= MCweight;
 
   
   /// make plots of POG + AN ID Efficiency
-
-  GetSSSignalEfficiency(weight);
-  GetOSSignalEfficiency(weight);
+  if(IsSignal()) {
+    GetSSSignalEfficiency(weight);
+    GetOSSignalEfficiency(weight);
     /// Validation of signal MC
-  if(IsSignal()) {  
     SignalValidation();
   }
   
   /// Get Efficiency of signal + Bkg using multiple triggers
   GetTriggEfficiency();
 
-
+  std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
 
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;
@@ -133,7 +130,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 }
 
 
-void HNDiElectron::CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets){
+void HNDiElectronOptimisation::CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets){
 
   if(electrons.size() == 2) {
     if(SameCharge(electrons)) {
@@ -154,7 +151,7 @@ void HNDiElectron::CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons
 }
 
 
-void HNDiElectron::OptimiseID(bool isss){
+void HNDiElectronOptimisation::OptimiseID(bool isss){
   
   std::vector<snu::KElectron> electronLooseColl_tight = GetElectrons("ELECTRON16_POG_FAKELOOSE_CC");
   std::vector<snu::KElectron> electronLooseColl_medium = GetElectrons("ELECTRON16_POG_MEDIUM_FAKELOOSE_CC");
@@ -271,16 +268,16 @@ void HNDiElectron::OptimiseID(bool isss){
   
 }
 
-float  HNDiElectron::GetTightWeight(){
+float  HNDiElectronOptimisation::GetTightWeight(){
   return 1.;
 }
 
-float HNDiElectron::GetMediumWeight(){
+float HNDiElectronOptimisation::GetMediumWeight(){
   
   return 1.;
 }
 
-void HNDiElectron::GetSSSignalEfficiency(float w){
+void HNDiElectronOptimisation::GetSSSignalEfficiency(float w){
   
   // w = lumi weight * MC gen weight
   
@@ -332,7 +329,7 @@ void HNDiElectron::GetSSSignalEfficiency(float w){
   
 }
 
-void HNDiElectron::GetOSSignalEfficiency(float w){
+void HNDiElectronOptimisation::GetOSSignalEfficiency(float w){
   
   // w = lumi weight * MC gen weight                                                                                                                                                                                                                                            
   //// Check efficiency of Selecting two same sign electrons                                                                                                                                                                                                                    
@@ -386,7 +383,7 @@ void HNDiElectron::GetOSSignalEfficiency(float w){
 
 
 
-void HNDiElectron::RunAnalysis(TString plottag, TString tightelid, TString vetoelid, TString looseelid){
+void HNDiElectronOptimisation::RunAnalysis(TString plottag, TString tightelid, TString vetoelid, TString looseelid){
 
   
   FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
@@ -736,7 +733,7 @@ void HNDiElectron::RunAnalysis(TString plottag, TString tightelid, TString vetoe
 }// End of execute event loop
   
 
-void HNDiElectron::SignalValidation(){
+void HNDiElectronOptimisation::SignalValidation(){
   
   // Check jet properties                                                                                                                                                                                                                                                                                                                                                         
   FillCLHist(sighist_ee, "SIGNALVALIDATION_EE", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
@@ -755,7 +752,7 @@ void HNDiElectron::SignalValidation(){
 }
  
 
-void HNDiElectron::GetTriggEfficiency(){
+void HNDiElectronOptimisation::GetTriggEfficiency(){
   //ListTriggersAvailable();                                                                                                                                                                                                                                                                                                                                                      
   vector<int> pt1;
   pt1.push_back(18);
@@ -827,7 +824,7 @@ void HNDiElectron::GetTriggEfficiency(){
   }
 }
 
-void HNDiElectron::FillTriggerEfficiency(TString cut, float weight, TString label, std::vector<TString> list){
+void HNDiElectronOptimisation::FillTriggerEfficiency(TString cut, float weight, TString label, std::vector<TString> list){
 
   if(GetHist("TriggerEfficiency_" + label)) {
     GetHist("TriggerEfficiency_"+label)->Fill(cut,weight);
@@ -845,7 +842,7 @@ void HNDiElectron::FillTriggerEfficiency(TString cut, float weight, TString labe
 }
 
 
-bool HNDiElectron::CheckSignalRegion( bool isss,  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
+bool HNDiElectronOptimisation::CheckSignalRegion( bool isss,  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
 
   if(electrons.size() != 2 ) return false ;
   // Set by trigger
@@ -886,12 +883,12 @@ bool HNDiElectron::CheckSignalRegion( bool isss,  std::vector<snu::KElectron> el
 
 
 
-bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, float evmet, bool runchargeflip , std::vector<float> cuts , TString additional_option){
+bool HNDiElectronOptimisation::OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, float evmet, bool runchargeflip , std::vector<float> cuts , TString additional_option){
   
   return OptMassCheckSignalRegion(electrons, jets, 1, evmet, runchargeflip, cuts, additional_option);
 }
 
-bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, int btagwp,  float evmet, bool runchargeflip , std::vector<float> cuts, TString additional_option){
+bool HNDiElectronOptimisation::OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, int btagwp,  float evmet, bool runchargeflip , std::vector<float> cuts, TString additional_option){
   
   if(additional_option.Contains("btag_t")) btagwp = 2; 
   if(additional_option.Contains("btag_l")) btagwp = 0; 
@@ -1037,7 +1034,7 @@ bool HNDiElectron::OptMassCheckSignalRegion(std::vector<snu::KElectron> electron
 }
 
 
-bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
+bool HNDiElectronOptimisation::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
   if(electrons.size() != 2 ) return false;
   if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
@@ -1080,7 +1077,7 @@ bool HNDiElectron::LowMassCheckSignalRegion(  std::vector<snu::KElectron> electr
   
 }
 
-bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
+bool HNDiElectronOptimisation::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
   
   if(electrons.size() != 2 ) return false;
   if(electrons.at(0).Pt() < 20.) return false;
@@ -1129,7 +1126,7 @@ bool HNDiElectron::MidMassCheckSignalRegion(  std::vector<snu::KElectron> electr
 	
 	
 
-bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
+bool HNDiElectronOptimisation::HighMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runchargeflip){
   if(electrons.size() != 2 ) return false;
   if(electrons.at(0).Pt() < 20.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
@@ -1173,33 +1170,16 @@ bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> elect
 
 
 
-void HNDiElectron::counter(TString cut, float w){
-  w=1.;
-  map<TString,float>::iterator itmapcounter = mapcounter.find(cut) ;
-  if (itmapcounter == mapcounter.end()){
-    mapcounter[cut] = w;
-  }
-  else{
-    float sum = itmapcounter->second;
-    mapcounter[cut] = sum+w;
-  }
 
-}
-
-
-void HNDiElectron::EndCycle()throw( LQError ){
+void HNDiElectronOptimisation::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
   m_logger << DEBUG << "END OF CYCLE: isdata=" << isData <<  LQLogger::endmsg;
 
-  for ( map<TString,float>::iterator itmapcounter = mapcounter.begin(); itmapcounter != mapcounter.end(); itmapcounter++){
-    cout << itmapcounter->first << " has count "<< itmapcounter->second << endl;
-  }
-
 }
 
 
-void HNDiElectron::BeginCycle() throw( LQError ){
+void HNDiElectronOptimisation::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
@@ -1217,15 +1197,15 @@ void HNDiElectron::BeginCycle() throw( LQError ){
   
 }
 
-HNDiElectron::~HNDiElectron() {
+HNDiElectronOptimisation::~HNDiElectronOptimisation() {
   
-  Message("In HNDiElectron Destructor" , INFO);
+  Message("In HNDiElectronOptimisation Destructor" , INFO);
   
 }
 
 
 
-void HNDiElectron::BeginEvent( )throw( LQError ){
+void HNDiElectronOptimisation::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -1235,20 +1215,20 @@ void HNDiElectron::BeginEvent( )throw( LQError ){
 
 ///############### THESE ARE FUNCTIONS SPECIFIC TO THIS CYCLE
 
-void HNDiElectron::MakeHistograms(){
+void HNDiElectronOptimisation::MakeHistograms(){
   //// Additional plots to make
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
   Message("Made histograms", INFO);
   /**
-   *  Remove//Overide this HNDiElectronCore::MakeHistograms() to make new hists for your analysis
+   *  Remove//Overide this HNDiElectronOptimisationCore::MakeHistograms() to make new hists for your analysis
    **/
   
 }
 
 
-void HNDiElectron::ClearOutputVectors() throw(LQError) {
+void HNDiElectronOptimisation::ClearOutputVectors() throw(LQError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

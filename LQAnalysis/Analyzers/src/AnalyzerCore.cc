@@ -28,7 +28,10 @@
 AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1) {
 
   k_debugmode=false;
-  
+
+  IDSetup=false;  
+  setupDDBkg=false;
+
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
@@ -47,45 +50,18 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
   mcdata_correction = new MCDataCorrections();
   
-  string lqdir = getenv("LQANALYZER_DIR");
+  string lqdir =  getenv("LQANALYZER_DIR");
 
+  string username = getenv("USER");
   /// DataDrivenBackgrounds class is used to get data driven fake + charge flip backgrounds
-  m_datadriven_bkg = new DataDrivenBackgrounds();
 
   /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
   /// List of taggers
   std::vector<TString> vtaggers;
   vtaggers.push_back("CSVv2Moriond17_2017_1_26");
-  //vtaggers.push_back("CSVv2Moriond17_2017_1_26_GtoH");
   vtaggers.push_back("cMVAv2Moriond17_2017_1_26");
-  //vtaggers.push_back("cMVAv2Moriond17_2017_1_26_GtoH");
   /// Will add DeepCSV in 805
-
-  if( getenv("CATDEBUG") == "True") k_debugmode=true;
-  cout << "Setting up 2016 selection " << endl;
-  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
-  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
-  
-  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
-  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
-  
-  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
-  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
-  
-  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/fatjets.sel");
-  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/user_fatjets.sel");
-
-
-  if(k_debugmode){
-    for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
-      cout << it->first << endl;
-      for (unsigned int i=0 ; i < it->second.size(); i++){
-	cout << it->second.at(i).first << " " << it->second.at(i).second << endl;
-      }
-    }
-  }
-  Message("SetupSelection DONE", DEBUG); 
-
+  if( TString(getenv("CATDEBUG")) == "True") k_debugmode=true;
   
   // List of working points
   std::vector<TString> v_wps;
@@ -337,14 +313,21 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
 }
 
 
+bool  AnalyzerCore::Check(float val){
 
-float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
+  if(abs(val) == 999.) return false;
+
+  return true;
+}
+
+
+
+float AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall,bool update_met){
 
   /// function returns corrected met + can be used to set event met to corrected met
 
   float met_x =eventbase->GetEvent().PFMETx(); 
   float met_y =eventbase->GetEvent().PFMETy();
-  std::vector<snu::KMuon> muall = GetMuons(muid_formet);
   
   float px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
   for(unsigned int im=0; im < muall.size() ; im++){
@@ -375,11 +358,10 @@ float AnalyzerCore::CorrectedMETRochester(TString muid_formet, bool update_met){
 
 
 
-float AnalyzerCore::CorrectedMETElectron(TString elid_formet, int sys){
+float AnalyzerCore::CorrectedMETElectron(std::vector<snu::KElectron> elall, int sys){
 
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
-  std::vector<snu::KElectron> elall = GetElectrons(elid_formet);
 
   float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
   for(unsigned int iel=0; iel < elall.size() ; iel++){
@@ -404,11 +386,10 @@ float AnalyzerCore::CorrectedMETElectron(TString elid_formet, int sys){
 
 }
 
-float AnalyzerCore::CorrectedMETMuon(TString muid_formet, int sys){
+float AnalyzerCore::CorrectedMETMuon( std::vector<snu::KMuon> muall, int sys){
   
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
-  std::vector<snu::KMuon> muall = GetMuons(muid_formet);
   
   float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
   for(unsigned int imu=0; imu < muall.size() ; imu++){
@@ -960,6 +941,7 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,float ptcut, float et
   std::vector<snu::KJet> jetColl;
   
   std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsJet.find(jetid);
+  std::map<TString, vector<pair<TString,float > > >::iterator fit = selectionIDMapfJet.find(jetid);
   if(it== selectionIDMapsJet.end()){
     cerr << "Jet ID ["+jetid+"] not found" << endl; exit(EXIT_FAILURE);
   }
@@ -971,14 +953,16 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,float ptcut, float et
       if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
     }
     
-    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(jetColl,jetid, ptcut,etacut);
+    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(jetColl, it->second, fit->second, ptcut,etacut);
     else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
-    else eventbase->GetJetSel()->SelectJets(jetColl, GetMuons(muontag), GetElectrons(eltag) ,jetid, ptcut,etacut);
+    else eventbase->GetJetSel()->SelectJets(jetColl, GetMuons(muontag), GetElectrons(eltag) , it->second, fit->second, ptcut,etacut);
   }
-
   return jetColl;
   
 }
+
+
+
 
 
 std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid, float ptcut, float etacut){
@@ -986,6 +970,7 @@ std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid, float ptcut
   std::vector<snu::KFatJet> fatjetColl;
 
   std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsFatJet.find(fatjetid);
+  std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfFatJet.find(fatjetid);
   if(it== selectionIDMapsFatJet.end()){
     cerr << "FatJet ID ["+fatjetid+"] not found" << endl; exit(EXIT_FAILURE);
   }
@@ -996,9 +981,9 @@ std::vector<snu::KFatJet> AnalyzerCore::GetFatJets(TString fatjetid, float ptcut
       if ( it->second.at(i).first == "remove_near_muonID") muontag =  it->second.at(i).second;
       if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
     }
-    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(fatjetColl,fatjetid, ptcut,etacut);
+    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetFatJetSel()->SelectFatJets(fatjetColl, it->second, fit->second, ptcut,etacut);
     else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
-    else eventbase->GetFatJetSel()->SelectFatJets(fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,fatjetid, ptcut,etacut);
+    else eventbase->GetFatJetSel()->SelectFatJets(fatjetColl, GetMuons(muontag), GetElectrons(eltag) ,  it->second, fit->second, ptcut,etacut);
     
   }
 
@@ -1015,16 +1000,24 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString muid, bool keepfakes, flo
   std::vector<snu::KMuon> muonColl;
   
   if(muid.Contains("NONE")) return muonColl;
+
   std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsMuon.find(muid);
-  if(it== selectionIDMapsMuon.end()){
-    cerr << "Muon ID ["+muid+"] not found" << endl; exit(EXIT_FAILURE);
+  std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfMuon.find(muid);
+  
+  if(1){
+    //// This method was 10% faster in processing 40K MC events accessing 1000 vectors                                                                                          
+    if(it== selectionIDMapsMuon.end()){
+      cerr << "Muon ID ["+muid+"] not found" << endl; exit(EXIT_FAILURE);
+    }
+    if(fit== selectionIDMapfMuon.end()){
+      cerr << "Muon ID ["+muid+"] not found" << endl; exit(EXIT_FAILURE);
+    }
+
+    if (ptcut == -999.)  eventbase->GetMuonSel()->SelectMuons(muonColl ,muid, it->second, fit->second);
+    else eventbase->GetMuonSel()->SelectMuons(muonColl ,muid, it->second, fit->second, ptcut, etacut);
+    return  GetTruePrompt(muonColl, keepfakes);
+    
   }
-  else {
-    if (ptcut == -999.)  eventbase->GetMuonSel()->SelectMuons(muonColl,muid);
-    else eventbase->GetMuonSel()->SelectMuons(muonColl,muid, ptcut, etacut);
-  }
-  //if(k_running_nonprompt) eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_FAKELOOSE, 15., 2.4);
-  //else eventbase->GetMuonSel()->SelectMuons(muonColl, BaseSelection::MUON_HN_TIGHT, 15., 2.4);
   
   return  GetTruePrompt(muonColl, keepfakes);
   
@@ -1041,14 +1034,76 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfak
   
   if(elid.Contains("NONE")) return electronColl;
 
-
+  
   std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsElectron.find(elid);
-  if(it== selectionIDMapsElectron.end()){
-    cerr << "Electron ID ["+elid+"] not found" << endl; exit(EXIT_FAILURE);
+  std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfElectron.find(elid);
+  
+  if(1){
+    //// This method was 10% faster in processing 40K MC events accessing 1000 vectors
+    if(it== selectionIDMapsElectron.end()){
+      cerr << "Electron ID ["+elid+"] not found" << endl; exit(EXIT_FAILURE);
+    }
+    if(fit== selectionIDMapfElectron.end()){
+      cerr << "Electron ID ["+elid+"] not found" << endl; exit(EXIT_FAILURE);
+    }
+    
+    if(ptcut == -999.)eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, it->second, fit->second);
+    else eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, it->second, fit->second,ptcut, etacut);
+    
+    return  GetTruePrompt(electronColl, keepcf, keepfake);
   }
-  else {
-    if (ptcut == -999.)  eventbase->GetElectronSel()->SelectElectrons(electronColl,elid);
-    else eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, ptcut, etacut);
+
+  else{
+    if(it== selectionIDMapsElectron.end()){
+      cerr << "Electron ID ["+elid+"] not found" << endl; exit(EXIT_FAILURE);
+    }
+    else {
+      
+      bool check_cc(false);
+      bool check_cv(false);
+      TString el_id="";
+      vector<pair<TString,TString> > v_string =  it->second;
+      for(unsigned int iv=0; iv < v_string.size(); iv++){
+	if(v_string[iv].second == "false") continue;
+	if(v_string[iv].first.Contains("(POG)")) el_id=v_string[iv].first;
+	if(v_string[iv].first.Contains("(MVA)") ) el_id=v_string[iv].first;
+	if(v_string[iv].first == "GsfCtfScPix") check_cc=true;
+	if(v_string[iv].first == "convveto") check_cv=true;
+      }
+      
+      
+      vector<pair<TString,float> > v_float =  fit->second;
+      float isomax_b(-999.); 
+      float isomax_e (-999.);
+      float dxymax_b (-999.);
+      float dxymax_e (-999.);
+      float dzmax_b (-999.);
+      float dzmax_e (-999.);
+      
+      float dxysigmax(-999.);
+      float dxysigmin(-999.);
+      
+      for(unsigned int iv=0; iv < v_float.size(); iv++){
+	if(!Check(v_float[iv].second)) continue;
+	if(v_float[iv].first == "ptmin") {
+	  if (ptcut == -999.) ptcut =v_float[iv].second;
+	}
+	if(v_float[iv].first == "|etamax|"){
+	  if (etacut == -999.) etacut = v_float[iv].second;
+	}
+	if(v_float[iv].first == "isomax03_b")isomax_b =v_float[iv].second;
+	if(v_float[iv].first == "isomax03_e") isomax_e=v_float[iv].second;
+	if(v_float[iv].first == "|dxymax_b|") dxymax_b=v_float[iv].second;
+	if(v_float[iv].first == "|dxymax_e|") dxymax_e=v_float[iv].second;
+	if(v_float[iv].first == "|dzmax_b|") dzmax_b=v_float[iv].second;
+	if(v_float[iv].first == "|dzmax_e|") dzmax_e=v_float[iv].second;
+	if(v_float[iv].first == "|dxysigmax|") dxysigmax=v_float[iv].second;
+	if(v_float[iv].first == "|dxysigmin|") dxysigmin=v_float[iv].second;
+      }
+      
+      
+      eventbase->GetElectronSel()->SelectElectrons(electronColl,elid, el_id,check_cc,check_cv, isomax_b,isomax_e,dxymax_b,dxymax_e,dzmax_b,dzmax_e, dxysigmax,dxysigmin, ptcut, etacut);
+    }
   }
   
   //if(elid == "ELECTRON_HN_TIGHT"){
@@ -1308,7 +1363,50 @@ AnalyzerCore::~AnalyzerCore(){
 //###   IMPORTANT BASE FUNCTION: SETS UP EVENT FOR ALL CYCLES
 //###
 
+void AnalyzerCore::SetupID(){
+
+  if(IDSetup) return;
+
+  string lqdir =  getenv("LQANALYZER_DIR");
+
+  string username = getenv("USER");
+
+  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/muons.sel");
+  SetupSelectionMuon(lqdir + "/CATConfig/SelectionConfig/user_muons.sel");
+
+  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
+  SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
+  if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+
+  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
+  SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
+
+  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/fatjets.sel");
+  SetupSelectionFatJet(lqdir + "/CATConfig/SelectionConfig/user_fatjets.sel");
+
+  IDSetup=true;
+  if(k_debugmode){
+    for( map<TString,vector<pair<TString,float> > >::iterator it=  selectionIDMapfMuon.begin() ; it !=  selectionIDMapfMuon.end(); it++){
+      cout << it->first << endl;
+      for (unsigned int i=0 ; i < it->second.size(); i++){
+        cout << it->second.at(i).first << " " << it->second.at(i).second << endl;
+      }
+    }
+  }
+  Message("SetupSelection DONE", DEBUG);
+
+}
+
+void AnalyzerCore::SetupDDBkg(){
+  if(k_running_nonprompt || k_running_chargeflip)m_datadriven_bkg = new DataDrivenBackgrounds();
+  setupDDBkg=true;
+}
+
 void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
+  
+
+  if(!IDSetup)   SetupID();
+  if(!setupDDBkg)SetupDDBkg();
   
   Message("In SetUpEvent(Long64_t entry) " , DEBUG);
   m_logger << DEBUG << "This is entry " << entry << LQLogger::endmsg;
@@ -1357,17 +1455,22 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   //
   
   eventbase = new EventBase(lqevent);
-
-  eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron);
-  eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);
-  eventbase->GetMuonSel()->SetIDSMap(selectionIDMapsMuon);
-  eventbase->GetMuonSel()->SetIDFMap(selectionIDMapfMuon);
+  
+  /*eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron);
+    eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);*/
   eventbase->GetJetSel()->SetIDSMap(selectionIDMapsJet);
   eventbase->GetJetSel()->SetIDFMap(selectionIDMapfJet);
   eventbase->GetFatJetSel()->SetIDSMap(selectionIDMapsFatJet);
   eventbase->GetFatJetSel()->SetIDFMap(selectionIDMapfFatJet);
 
-  m_datadriven_bkg->SetEventBase(eventbase);
+  if(k_running_nonprompt || k_running_chargeflip){
+    //m_datadriven_bkg needs ID maps to get isTight for IDs 
+    eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron); 
+    eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);
+    eventbase->GetMuonSel()->SetIDSMap(selectionIDMapsMuon);
+    eventbase->GetMuonSel()->SetIDFMap(selectionIDMapfMuon);
+    m_datadriven_bkg->SetEventBase(eventbase);
+  }
   
   if(!k_isdata){
     if(!changed_target_lumi){
@@ -2492,13 +2595,37 @@ bool AnalyzerCore::IsTight(snu::KMuon muon){
   return true;
 }
 
+bool AnalyzerCore::PassID(snu::KMuon mu, TString muid){
 
-bool AnalyzerCore::IsTight(snu::KElectron el){
-  
-  return eventbase->GetElectronSel()->PassUserID("ELECTRON_HN_TIGHT",el);
 
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsMuon.find(muid);
+  std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfMuon.find(muid);
+  if(it== selectionIDMapsMuon.end()){
+    cerr << "Muon ID ["+muid+"] not found" << endl; exit(EXIT_FAILURE);
+  }
+  else {
+
+    return eventbase->GetMuonSel()->PassUserID(muid,mu, it->second,fit->second);
+  }
+  return true;
 }
+
+
+bool AnalyzerCore::PassID(snu::KElectron el, TString elid){
   
+
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsElectron.find(elid);
+  std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfElectron.find(elid);
+  if(it== selectionIDMapsElectron.end()){
+    cerr << "Electron ID ["+elid+"] not found" << endl; exit(EXIT_FAILURE);
+  }
+  else {
+
+    return eventbase->GetElectronSel()->PassUserID(elid,el, it->second, fit->second);
+  }
+  return true;
+}
+
 bool AnalyzerCore::IsCF(snu::KElectron el){
   vector<snu::KTruth> truth =  eventbase->GetTruth();
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){

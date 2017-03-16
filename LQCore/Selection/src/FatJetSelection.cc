@@ -106,43 +106,55 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std
   
 }
 
-void FatJetSelection::SelectFatJets( std::vector<KFatJet>& jetColl,  TString ID ,  float ptcut, float etacut ) {
+void FatJetSelection::SelectFatJets( std::vector<KFatJet>& jetColl,  vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,  float ptcut, float etacut ) {
 
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
   
-  if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
-  if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
-  
+  int icut(0);
+  if (ptcut == -999. || etacut == -999.){
+    for(unsigned int iv=0; iv < vidf.size(); iv++){
+      if(!Check(vidf[iv].second)) continue;
+      if (vidf[iv].first =="ptmin") { icut++; if(ptcut == -999.)ptcut=vidf[iv].second;}
+      if (vidf[iv].first =="|etamax|") {icut++;  if (etacut == -999.)etacut=vidf[iv].second;}
+      if(icut ==2) break;
+    }
+  }
 
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-    
+
     bool pass_selection=true;
-    if (!PassUserID(*jit,ID)) pass_selection=false;
+    if (!PassUserID(*jit, vids)) pass_selection=false;
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  jetColl.push_back(*jit);
   }
-  
-  
-} 
 
-void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, TString ID ,  float ptcut , float etacut ) {
+  
+  
+}
+
+void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<KMuon> muonColl, std::vector<KElectron> electronColl, vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,  float ptcut , float etacut ) {
   
   std::vector<KFatJet> pre_jetColl; 
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
 
-  
-  if (ptcut == -999.) ptcut = AccessFloatMap("ptmin",ID);
-  if (etacut == -999.) etacut = AccessFloatMap("|etamax|",ID);
+
+  int icut(0);
+  if (ptcut == -999. || etacut == -999.){
+    for(unsigned int iv=0; iv < vidf.size(); iv++){
+      if(!Check(vidf[iv].second)) continue;
+      if (vidf[iv].first =="ptmin") { icut++; if(ptcut == -999.)ptcut=vidf[iv].second;}
+      if (vidf[iv].first =="|etamax|") {icut++;  if (etacut == -999.)etacut=vidf[iv].second;}
+      if(icut ==2) break;
+    }
+  }
+
 
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-    
+
     bool pass_selection=true;
-    if (!PassUserID(*jit,ID)) pass_selection=false;
+    if (!PassUserID(*jit, vids)) pass_selection=false;
+
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
   }
-  //cout << "Number of loose jets = " << pre_jetColl.size() << endl;
-  //cout << "Number of electrons = " << electronColl.size() << endl;
-  //cout << "Number of muons = " << muonColl.size() << endl;
-
 
 
   for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
@@ -165,9 +177,6 @@ void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<K
     
     if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
   }/// End of FatJet loop
-
-
-
   
 }
 
@@ -180,23 +189,25 @@ bool FatJetSelection::PassUserID (ID id, snu::KFatJet jet){
 }
 
 
-bool FatJetSelection::PassUserID (snu::KFatJet jet, TString id){ 
+bool FatJetSelection::PassUserID (snu::KFatJet jet,vector<pair<TString, TString> > vids ){ 
 
-  
-  bool checkpileupcut  = (CheckCutString("pileup",id));
-  bool checkloosecut = (CheckCutString("LooseID",id));
-  bool checktightid =  (CheckCutString("TightID",id));
-  bool checktightlvid =  (CheckCutString("TightIDLepVeto",id));
-  
-  bool pass_selection=true;
-  if (checkpileupcut && !jet.PileupJetIDLoose()) pass_selection=false;
-  if(checkloosecut && !jet.PassLooseID()) pass_selection=false;
-  if(checktightid&&!jet.PassTightID()) pass_selection=false;
-  if(checktightlvid&&!jet.PassTightLepVetoID()) pass_selection=false;
+  for(unsigned int idel =0; idel < vids.size(); idel++){
+    if(vids[idel].second == "false") continue;
 
-  return pass_selection;
+    if(vids[idel].first == "LooseID") {
+      if(!jet.PassLooseID()) return false;
+    }
+    if(vids[idel].first == "TightID") {
+      if(!jet.PassTightID())  return false;
+    }
+    if(vids[idel].first == "TightIDLepVeto"){
+      if(!jet.PassTightLepVetoID()) return false;
+    }
+  }
 
+  return true;
 }
+
 
 
 bool FatJetSelection::PassUserID_PFFatJetLoose ( snu::KFatJet jet){

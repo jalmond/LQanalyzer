@@ -100,6 +100,8 @@ class BaseSelection {
   TString GetCutString(TString label, TString id);
   TString GetString(ID id);
 
+  vector<pair<TString,TString> > GetStringList(TString id);
+  vector<pair<TString,float> > GetFloatList(TString id);
 
   map<TString,vector<pair<TString,TString> > > k_stringmap;
   map<TString,vector<pair<TString,float> > > k_floatmap;
@@ -107,6 +109,7 @@ class BaseSelection {
   void SetIDSMap(std::map<TString, vector<pair<TString,TString> > > smap);
   void SetIDFMap(std::map<TString, vector<pair<TString,float> > > smap);
 
+  bool Check(float val);
   void PrintSIDMap();
   void PrintFIDMap();
 

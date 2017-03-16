@@ -28,14 +28,15 @@ class FatJetSelection : public BaseSelection {
   void BasicSelection (std::vector<snu::KFatJet>& jetColl);
   
   bool PassUserID (ID id, snu::KFatJet jet);
-  bool PassUserID (snu::KFatJet jet, TString ID);
+  bool PassUserID (snu::KFatJet jet , vector<pair<TString, TString> >  vids);
   bool PassUserID_PFFatJetLoose( snu::KFatJet jet);
   bool PassUserID_PFFatJetMedium( snu::KFatJet jet);
   bool PassUserID_PFFatJetTight( snu::KFatJet jet);
   
 
-  void SelectFatJets(std::vector<snu::KFatJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl, TString ID,float ptcut=-999., float etacut=-999.);
-  void SelectFatJets(std::vector<snu::KFatJet>& jetColl, TString ID,float ptcut=-999., float etacut=-999.);
+  void SelectFatJets(std::vector<snu::KFatJet>& jetColl,   std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl,  vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, float ptcut=-999., float etacut=-999.);
+  void SelectFatJets(std::vector<snu::KFatJet>& jetColl,  vector<pair<TString, TString> >  vids, vector<pair<TString, float> > vidf,float ptcut=-999., float etacut=-999.);
+
 
 
 
