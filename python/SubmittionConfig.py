@@ -1180,7 +1180,6 @@ def RoundMemory(mem):
     return rounded_float
 
 def GetRunning(tagger, rsample):
-
     jobid_exists=True
     while jobid_exists:
         path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "jobid.txt"
@@ -1196,7 +1195,7 @@ def GetRunning(tagger, rsample):
     nrunning=0.
     nqueue=0.
     njobs_in_total=0.  ### should equal three above                                                                                                                                                                                                                                                                   
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust.txt"
+    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
     os.system("qstat -u " + os.getenv("USER") + " > " +  path_clust_check)
     ijob=0
     
@@ -1227,16 +1226,13 @@ def GetRunning(tagger, rsample):
         if not job_inqueue:
             njobs_finished=njobs_finished+1.
         file_clust_check.close()
-    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust.txt"
+    path_clust_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + rsample + "clust_gr.txt"
     os.system("rm " + path_clust_check)
 
     if njobs_in_total == 0:
         return 0.
     file_job_check.close()
 
-    if njobs_finished == njobs_in_total:
-        samples_complete.append(rsample)
-        
     nrunning = nrunning + njobs_finished
     nrun_per = round( (nrunning/float(njobs_in_total)), 2)
     
