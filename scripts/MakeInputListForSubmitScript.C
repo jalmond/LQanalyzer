@@ -46,6 +46,7 @@ void MakeInputListForSubmitScript(){
     float number_events_passed(0.);
     while ( fin >> word ) {
       number_events_processed+= GetEventsProcessed(word);
+      if(number_events_processed !=0 ) break;
       number_events_passed+= GetEventsPassed(word);
     }
     if(number_events_processed !=0 ) lqmap[mit->first] = mit->second;

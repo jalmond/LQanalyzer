@@ -131,13 +131,15 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
                     split_modline=line.split()
                     if len(split_modline) == 6:
                         for xn in NewSampleList:
-                            if (split_modline[0] + " ")  in xn or split_modline[1] in xn:
-                                isNewSample=True
+                            xnsplit = xn.split()
+                            if len(xnsplit) == 4:
+                                if (xnsplit[0] + " ")  in line or xnsplit[1] in line:
+                                    isNewSample=True
 
-                        if "SKTree" in line:
-                            if not "MCDiLep" in line:
-                                if isNewSample:
-                                    file_samplelist.write(line)
+                    if "SKTree" in line:
+                        if not "MCDiLep" in line:
+                            if isNewSample:
+                                file_samplelist.write(line)
                 modlist.close()
             elif "#### Di" in xline:
                 file_samplelist.write(xline)
@@ -147,14 +149,17 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
                     split_modline=line.split()
                     if len(split_modline) == 6:
                         for xn in NewSampleList:
-                            if (split_modline[0] + " ")  in xn or split_modline[1] in xn:
-                                isNewSample=True
+                            xnsplit = xn.split()
+                            if len(xnsplit) == 4:
+                                if (xnsplit[0] + " ")  in line or xnsplit[1] in line:
+                                    isNewSample=True
+                                                                        
+                                    
 
-
-                        if "SKTree" in line:
-                            if "MCDiLep" in line:
-                                if isNewSample:
-                                    file_samplelist.write(line)
+                    if "SKTree" in line:
+                        if "MCDiLep" in line:
+                            if isNewSample:
+                                file_samplelist.write(line)
                 modlist.close()
             else:
                 file_samplelist.write(xline)
@@ -475,5 +480,5 @@ else:
     os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
-    
+
     EmailNewList(catversion)    

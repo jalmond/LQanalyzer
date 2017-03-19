@@ -313,6 +313,9 @@ public :
    std::vector<double>  *met_phi;
    std::vector<double>  *met_pt;
    std::vector<double>  *met_sumet;
+   std::vector<double>  *met_xyshift_px;
+   std::vector<double>  *met_xyshift_py;
+   std::vector<double>  *met_xyshift_sumet;
    Double_t        met_muonEn_Px_up;
    Double_t        met_muonEn_Py_up;
    Double_t        met_muonEn_Px_down;
@@ -634,6 +637,10 @@ public :
    TBranch        *b_met_phi;   //!                                                                                                                                                                                                                                          
    TBranch        *b_met_pt;   //!                                                                                                                                                                                                                                           
    TBranch        *b_met_sumet;   //!                                                                                                                                                                                                                                        
+   TBranch        *b_met_xyshift_px;
+   TBranch        *b_met_xyshift_py;
+   TBranch        *b_met_xyshift_sumet;
+   
    TBranch        *b_metNoHF_phi;   //!                                                                                                                                                                                                                                      
    TBranch        *b_metNoHF_pt;   //!                                                                                                                                                                                                                                       
    TBranch        *b_metNoHF_sumet;   //!                                                                                                                                                                                                                                    

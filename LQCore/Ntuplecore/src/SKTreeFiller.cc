@@ -130,10 +130,33 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
   // New variable to set catversion. Add this to flat ntuples for next iteration
   kevent.SetCatVersion(CatVersion);
 
-  if(isData)  {
-    kevent.SetMET(snu::KEvent::pfmet,  met_pt->at(0), met_phi->at(0),  met_sumet->at(0));
-    kevent.SetPFMETx(met_jetRes_Px_up->at(0));
-    kevent.SetPFMETy(met_jetRes_Py_up->at(0));
+  if(k_cat_version > 7)  {
+    
+    /// type 1
+    double met_type1 =  sqrt(met_jetRes_Px_up->at(0)*met_jetRes_Px_up->at(0) + met_jetRes_Py_up->at(0)*met_jetRes_Py_up->at(0));
+    double phi_type1 =  TMath::ATan2(met_jetRes_Py_up->at(0),met_jetRes_Px_up->at(0)); 
+    // type 1 + ohi corrections
+    double met_type1xy = sqrt(met_xyshift_px->at(0)*met_xyshift_px->at(0) + met_xyshift_py->at(0)*met_xyshift_py->at(0));
+    double phi_type1xy =  TMath::ATan2(met_xyshift_py->at(0), met_xyshift_px->at(0));
+
+
+    /// Default MET is now xy shifted typ1
+    if(isData)  {
+      kevent.SetMET(snu::KEvent::pfmet, met_type1xy, phi_type1xy, met_xyshift_sumet->at(0));
+      kevent.SetPFMETx(met_xyshift_px->at(0));
+      kevent.SetPFMETy(met_xyshift_py->at(0));
+      
+      /// Also for completness store type1 without phi corrections
+      kevent.SetPFMETType1x(met_jetRes_Px_up->at(0));
+      kevent.SetPFMETType1y(met_jetRes_Py_up->at(0));
+      kevent.SetPFMETType1SumEt(met_sumet->at(0));
+    }
+    /// set unsmeared met variables
+    kevent.SetPFMETType1Unsmearedx(met_jetRes_Px_up->at(0));
+    kevent.SetPFMETType1Unsmearedy(met_jetRes_Py_up->at(0));
+    kevent.SetPFMETType1xyUnsmearedx(met_xyshift_px->at(0));
+    kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
+    
   }
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
@@ -156,7 +179,7 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   
 
-  if(1){
+  if(!isData){
     float jpx(0.), jpy(0.), sjpx(0.), sjpy(0.), sjpxup(0.), sjpxdown(0.),sjpyup(0.), sjpydown(0.) ;
 
     /// only smear jets not close to leptons (use top projection id)
@@ -207,23 +230,38 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     }
 
     // met_jetRes_Px_up ==met_Px since no smearing is applied in miniaods -> cattools
-    float met_x  = met_jetRes_Px_up->at(0)  +  jpx - sjpx;
-    float met_y  = met_jetRes_Py_up->at(0)  +  jpy - sjpy;
+    float met_x  = met_xyshift_px->at(0)  +  jpx - sjpx;
+    float met_y  = met_xyshift_py->at(0)  +  jpy - sjpy;
     float met_newpt = sqrt(met_x*met_x+ met_y*met_y);
-    kevent.SetMET(snu::KEvent::pfmet,  met_newpt, met_phi->at(0),  met_sumet->at(0));
+    float met_newphi = TMath::ATan2(met_y,met_x);
+    
+    //cout << met_newphi << "  phi " << met_xyshift_phi->(0) << endl;
+    kevent.SetMET(snu::KEvent::pfmet,  met_newpt,met_newphi,  met_xyshift_sumet->at(0));  
     kevent.SetPFMETx(met_x);
     kevent.SetPFMETy(met_y);
 
-    float met_x_jer_up  = met_jetRes_Px_up->at(0)  +  jpx - sjpxup;
-    float met_y_jer_up   = met_jetRes_Py_up->at(0)  +  jpy - sjpyup;
+    /// correct MET for jets smearing
+    float type1_met_x  = met_jetRes_Px_up->at(0)  +  jpx - sjpx;
+    float type1_met_y  = met_jetRes_Py_up->at(0)  +  jpy - sjpy;
+    float type1_met_newpt = sqrt(type1_met_x*type1_met_x+ type1_met_y*type1_met_y);
+    float type1_met_newphi = TMath::ATan2(type1_met_y,type1_met_x);
+    
+    kevent.SetPFMETType1x(type1_met_x);
+    kevent.SetPFMETType1y(type1_met_y);		  
+    kevent.SetPFMETType1SumEt(met_sumet->at(0));           
+
+    /// Fix met phi 
+    float met_x_jer_up  = met_xyshift_px->at(0) +  jpx - sjpxup;
+    float met_y_jer_up   = met_xyshift_py->at(0)  +  jpy - sjpyup;
     float met_newpt_jerup = sqrt(met_x_jer_up*met_x_jer_up+ met_y_jer_up*met_y_jer_up);
-    float met_x_jer_down   = met_jetRes_Px_up->at(0)  +  jpx - sjpxdown;
-    float met_y_jer_down  = met_jetRes_Py_up->at(0)  +  jpy -sjpydown;
+    float met_x_jer_down   = met_xyshift_px->at(0)  +  jpx - sjpxdown;
+    float met_y_jer_down  = met_xyshift_py->at(0)  +  jpy -sjpydown;
     float met_newpt_jerdown = sqrt(met_x_jer_down*met_x_jer_down+ met_y_jer_down*met_y_jer_down);
 
       
     kevent.SetPFMETShift  (snu::KEvent::up,     snu::KEvent::JetRes,     met_newpt_jerup);
     kevent.SetPFMETShift  (snu::KEvent::down,   snu::KEvent::JetRes,     met_newpt_jerdown);
+    
 
   }
   

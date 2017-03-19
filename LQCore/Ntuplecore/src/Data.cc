@@ -386,6 +386,9 @@ void Data::Reset(){
   met_phi = 0;
   met_pt = 0;
   met_sumet = 0;
+  met_xyshift_px = 0;
+  met_xyshift_py = 0;
+  met_xyshift_sumet = 0;
   //met_unclusteredEn_Phi_down = 0;
   //met_unclusteredEn_Phi_up = 0;
   met_unclusteredEn_Px_down = 0;
@@ -871,6 +874,9 @@ void Data::ConnectMET(){
   ConnectVariable("met_phi",met_phi , b_met_phi);
   ConnectVariable("met_pt", met_pt , b_met_pt);
   ConnectVariable("met_sumet", met_sumet , b_met_sumet);
+  ConnectVariable("met_xyshift_px", met_xyshift_px,b_met_xyshift_px);
+  ConnectVariable("met_xyshift_py", met_xyshift_py,b_met_xyshift_py);
+  ConnectVariable("met_xyshift_sumet", met_xyshift_sumet,b_met_xyshift_sumet);
 
   //ConnectVariable("metPuppi_pt",metPuppi_pt , b_metPuppi_pt);
   //ConnectVariable("metPuppi_phi",metPuppi_phi , b_metPuppi_phi);

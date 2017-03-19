@@ -53,7 +53,16 @@ namespace snu {
 
     void SetPFMETx(double metx);
     void SetPFMETy(double mety);
+
+    void SetPFMETType1x(double mett1x);
+    void SetPFMETType1y(double mett1y);
+    void SetPFMETType1SumEt(double mett1sumet);
     
+    void SetPFMETType1Unsmearedx(double mett1);
+    void SetPFMETType1Unsmearedy(double mett1);
+    void SetPFMETType1xyUnsmearedx(double mett1);
+    void SetPFMETType1xyUnsmearedy(double mett1);
+
     void SetPropagatedRochesterToMET(bool setpr);
     /// PDF
     void SetPDFWeights(std::vector<float> pdfw);
@@ -120,6 +129,23 @@ namespace snu {
     inline Double_t PFMETUnSmeared() const {return k_PF_MET_JetRes_up;}
     inline Double_t PFMETx() const {return k_PF_METx;}
     inline Double_t PFMETy() const {return k_PF_METy;}
+
+    inline Double_t PFMETType1() const {return k_PF_MET_Type1;}
+    inline Double_t PFMETType1x() const {return k_PF_MET_Type1x;}
+    inline Double_t PFMETType1y() const {return k_PF_MET_Type1y;}
+    inline Double_t PFMETType1Phi() const {return TMath::ATan2(k_PF_MET_Type1y,k_PF_MET_Type1x);}
+    inline Double_t PFMETType1SumEt() const {return k_PF_MET_Type1sumet;}
+
+    inline Double_t PFMETUnSmearedType1Phi() const {return TMath::ATan2(k_PF_MET_UnSmearedType1y,k_PF_MET_UnSmearedType1x); }
+    inline Double_t PFMETUnSmearedType1Pt() const {return sqrt(pow(k_PF_MET_UnSmearedType1x,2.) + pow(k_PF_MET_UnSmearedType1y,2.));}
+    inline Double_t PFMETUnSmearedType1Px() const {return k_PF_MET_UnSmearedType1x;}
+    inline Double_t PFMETUnSmearedType1Py() const {return k_PF_MET_UnSmearedType1y;}
+    inline Double_t PFMETUnSmearedType1xyPhi() const {return TMath::ATan2(k_PF_MET_UnSmearedType1XYy,k_PF_MET_UnSmearedType1XYx);}
+    inline Double_t PFMETUnSmearedType1xyPt() const {return  sqrt(pow(k_PF_MET_UnSmearedType1XYx,2.) + pow(k_PF_MET_UnSmearedType1XYy,2.));}
+    inline Double_t PFMETUnSmearedType1xyPx() const {return k_PF_MET_UnSmearedType1XYx;}
+    inline Double_t PFMETUnSmearedType1xyPy() const {return k_PF_MET_UnSmearedType1XYy;}
+
+
     //// Functions to call in analysis code/selection code
 
     
@@ -215,12 +241,16 @@ namespace snu {
 
     Double_t k_PF_MET, k_PF_METphi, k_PF_SumET ;
     Double_t k_PF_METx,k_PF_METy;
-    Double_t k_NoHF_MET, k_NoHF_METphi, k_NoHF_SumET ;
+
     Double_t k_PF_MET_MuonEn_up,k_PF_MET_MuonEn_down; 
     Double_t k_PF_MET_ElectronEn_up,k_PF_MET_ElectronEn_down; 
     Double_t k_PF_MET_JetEn_up,k_PF_MET_JetEn_down, k_PF_SumET_JetEn_up, k_PF_SumET_JetEn_down; 
     Double_t k_PF_MET_JetRes_up,k_PF_MET_JetRes_down, k_PF_SumET_JetRes_up, k_PF_SumET_JetRes_down; 
     Double_t k_PF_MET_unclusteredEn_up,k_PF_MET_unclusteredEn_down, k_PF_SumET_unclusteredEn_up, k_PF_SumET_unclusteredEn_down; 
+
+    Double_t k_PF_MET_Type1, k_PF_MET_Type1x, k_PF_MET_Type1y,  k_PF_MET_Type1sumet;
+    Double_t k_PF_MET_UnSmearedType1x, k_PF_MET_UnSmearedType1y, k_PF_MET_UnSmearedType1XYx, k_PF_MET_UnSmearedType1XYy;
+
 
     Bool_t k_isData, k_isgoodevent;
 
@@ -235,7 +265,7 @@ namespace snu {
 
 
 
-    ClassDef(KEvent,30);
+    ClassDef(KEvent,31);
   }; 
   
 }//namespace snu

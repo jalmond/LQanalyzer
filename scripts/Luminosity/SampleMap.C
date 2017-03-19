@@ -559,11 +559,10 @@ map<TString, TString>  GetMissingMap(TString cversion, TString listpath){
       if(TString(datasetname).Contains(mit->first)) inlqmap=true;
     }
     if(TString(input_datasetlist.at(i)).Contains("json")) inlqmap=true;    
-
+    if(TString(input_datasetlist.at(i)).Contains("DYJets_MG")) inlqmap=true;
     if(!inlqmap) {
       cout << "LQMap (GetMissingMap) not complete" << endl;
       cout <<  input_datasetlist.at(i) << endl;
-      exit(1);
     }
     if(missing){
       for(std::map<TString, TString>::iterator mit =mapdir.begin(); mit != mapdir.end();++mit){

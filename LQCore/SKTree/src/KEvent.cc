@@ -37,9 +37,6 @@ KEvent::KEvent() :
   k_PF_METy(-999.), 
   k_PF_METphi(-999.),
   k_PF_SumET(-999.), 
-  k_NoHF_MET(-999.),
-  k_NoHF_METphi(-999.),
-  k_NoHF_SumET(-999.),
   k_PF_MET_MuonEn_up(-999.),
   k_PF_MET_MuonEn_down(-999.),
   k_PF_MET_ElectronEn_up(-999.),
@@ -56,6 +53,15 @@ KEvent::KEvent() :
   k_PF_MET_unclusteredEn_down(-999.),
   k_PF_SumET_unclusteredEn_up(-999.),
   k_PF_SumET_unclusteredEn_down(-999.),
+
+  k_PF_MET_Type1x(-999.), 
+  k_PF_MET_Type1y(-999.), 
+  k_PF_MET_Type1sumet(-999.),
+  k_PF_MET_UnSmearedType1x(-999.),
+  k_PF_MET_UnSmearedType1y(-999.),
+  k_PF_MET_UnSmearedType1XYx(-999.), 
+  k_PF_MET_UnSmearedType1XYy(-999.),
+
 
   k_isData(false), 
   k_isgoodevent(false),
@@ -121,9 +127,6 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_METy(ev.k_PF_METy),
   k_PF_METphi(ev.k_PF_METphi),
   k_PF_SumET(ev.k_PF_SumET),
-  k_NoHF_MET(ev.k_NoHF_MET),
-  k_NoHF_METphi(ev.k_NoHF_METphi),
-  k_NoHF_SumET(ev.k_NoHF_SumET),
   k_PF_MET_MuonEn_up(ev.k_PF_MET_MuonEn_up),
   k_PF_MET_MuonEn_down(ev.k_PF_MET_MuonEn_down),
   k_PF_MET_ElectronEn_up(ev.k_PF_MET_ElectronEn_up),
@@ -140,6 +143,16 @@ KEvent::KEvent(const KEvent& ev) :
   k_PF_MET_unclusteredEn_down(ev.k_PF_MET_unclusteredEn_down),
   k_PF_SumET_unclusteredEn_up(ev.k_PF_SumET_unclusteredEn_up),
   k_PF_SumET_unclusteredEn_down(ev.k_PF_SumET_unclusteredEn_down),
+
+  k_PF_MET_Type1x(ev.k_PF_MET_Type1x),
+  k_PF_MET_Type1y(ev.k_PF_MET_Type1y),
+  k_PF_MET_Type1sumet(ev.k_PF_MET_Type1sumet),
+  k_PF_MET_UnSmearedType1x(ev.k_PF_MET_UnSmearedType1x),
+  k_PF_MET_UnSmearedType1y(ev.k_PF_MET_UnSmearedType1y),
+  k_PF_MET_UnSmearedType1XYx(ev.k_PF_MET_UnSmearedType1XYx),
+  k_PF_MET_UnSmearedType1XYy(ev.k_PF_MET_UnSmearedType1XYy),
+
+
   k_isData(ev.k_isData),
   k_isgoodevent(ev.k_isgoodevent),
   k_passBadEESupercrystalFilter(ev.k_passBadEESupercrystalFilter),
@@ -208,9 +221,6 @@ void KEvent::Reset()
   k_PF_METy= -999.;
   k_PF_SumET= -999.;
   k_PF_METphi= -999.;
-  k_NoHF_MET= -999;
-  k_NoHF_METphi= -999;
-  k_NoHF_SumET= -999;
   k_PF_MET_MuonEn_up = -999.;
   k_PF_MET_MuonEn_down = -999.;
   k_PF_MET_ElectronEn_up = -999.;
@@ -228,6 +238,16 @@ void KEvent::Reset()
   k_PF_SumET_unclusteredEn_up = -999.;
   k_PF_SumET_unclusteredEn_down = -999.;
   
+  k_PF_MET_Type1x = -999.;
+  k_PF_MET_Type1y = -999.;
+  k_PF_MET_Type1sumet = -999.;
+  k_PF_MET_UnSmearedType1x = -999.;
+  k_PF_MET_UnSmearedType1y = -999.;
+  k_PF_MET_UnSmearedType1XYx = -999.;
+  k_PF_MET_UnSmearedType1XYy = -999.;
+
+
+
   k_isData= false;
   k_isgoodevent = false;
   k_passBadEESupercrystalFilter= false;
@@ -295,9 +315,6 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_PF_METy= p.PFMETy();
       k_PF_METphi= p.METPhi(pfmet);
       k_PF_SumET = p.SumET(pfmet);
-      k_NoHF_MET= p.MET(nohf);
-      k_NoHF_METphi= p.METPhi(nohf);
-      k_NoHF_SumET = p.SumET(nohf);
       k_PF_MET_MuonEn_up = p.PFMETShifted(MuonEn,up);
       k_PF_MET_MuonEn_down = p.PFMETShifted(MuonEn,down);
       k_PF_MET_ElectronEn_up = p.PFMETShifted(ElectronEn,up);
@@ -314,6 +331,14 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_PF_MET_unclusteredEn_down = p.PFMETShifted(Unclustered,down);
       k_PF_SumET_unclusteredEn_up = p.PFSumETShifted(Unclustered,up);
       k_PF_SumET_unclusteredEn_down = p.PFSumETShifted(Unclustered,down);
+      
+      k_PF_MET_Type1x = p.PFMETType1x();
+      k_PF_MET_Type1y = p.PFMETType1y();
+      k_PF_MET_Type1sumet = p.PFMETType1SumEt();
+      k_PF_MET_UnSmearedType1x = p.PFMETUnSmearedType1Px();
+      k_PF_MET_UnSmearedType1y = p.PFMETUnSmearedType1Py();
+      k_PF_MET_UnSmearedType1XYx = p.PFMETUnSmearedType1xyPx();
+      k_PF_MET_UnSmearedType1XYy = p.PFMETUnSmearedType1xyPy();
 
       k_isData=p.IsData();
       k_isgoodevent= p.HasGoodPrimaryVertex();
@@ -471,11 +496,6 @@ void KEvent::SetMET(met_type type, double met, double metphi, double sumet){
     k_PF_SumET =sumet;
   }
 
-  else if(type== nohf){
-    k_NoHF_MET = met;
-    k_NoHF_METphi = metphi;
-    k_NoHF_SumET =sumet;
-  }
 
   else {cout << "Problem setting MET" << endl; exit(0) ;}
 }
@@ -526,6 +546,33 @@ void KEvent::SetPFSumETShift(syst_dir dir, met_syst type, double val){
 }
 
 
+void KEvent::SetPFMETType1x(double mett1x){
+  k_PF_MET_Type1x = mett1x;
+}
+
+void KEvent::SetPFMETType1y(double mett1y){
+  k_PF_MET_Type1y = mett1y;
+}
+
+
+void KEvent::SetPFMETType1SumEt(double mett1sumet){
+  k_PF_MET_Type1sumet = mett1sumet;
+}
+
+void KEvent::SetPFMETType1Unsmearedx(double mett1){
+  k_PF_MET_UnSmearedType1x = mett1;
+}
+
+void KEvent::SetPFMETType1Unsmearedy(double mett1){
+  k_PF_MET_UnSmearedType1y = mett1;
+}
+
+void KEvent::SetPFMETType1xyUnsmearedx(double mett1){
+  k_PF_MET_UnSmearedType1XYx = mett1;
+}
+void KEvent::SetPFMETType1xyUnsmearedy(double mett1){
+  k_PF_MET_UnSmearedType1XYy= mett1;
+}
 
 
 /// Settizang Vertex Variables
@@ -605,7 +652,6 @@ Double_t KEvent::MET(met_type type) const{
   
 
   if (type == pfmet) return k_PF_MET;
-  else if(type == nohf) return k_NoHF_MET;
   
   return -999.;
 }
@@ -614,7 +660,6 @@ Double_t KEvent::METPhi(met_type type) const{
   
 
   if (type == pfmet) return k_PF_METphi;
-  else if(type == nohf) return k_NoHF_METphi;
 
   return -999.;
 }
@@ -623,7 +668,6 @@ Double_t KEvent::SumET(met_type type) const{
   
  
   if (type == pfmet) return k_PF_SumET;
-  else if(type == nohf) return k_NoHF_SumET;
   return -999.;
 }
 
