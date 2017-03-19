@@ -387,6 +387,14 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 
       lumi_file <<  "SK" << mit2->second << "_dilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCDiLep/" <<  mit2->second << "/" <<endl;
     }
+    for(std::map<TString, Double_t>::iterator mit =map_lumi.begin(); mit != map_lumi.end();++mit){
+      std::map<TString, TString>::iterator mit2 = lqmap.find(mit->first);
+      std::map<TString, Double_t>::iterator mit3 = dirmap.find(mit->first);
+      std::map<TString, Double_t>::iterator mit4 = neventmap.find(mit->first);
+      std::map<TString, Double_t>::iterator mit5 = n_w_eventmap.find(mit->first);
+
+      lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
+    }
 
   }
   string lqdir = getenv("LQANALYZER_DIR");

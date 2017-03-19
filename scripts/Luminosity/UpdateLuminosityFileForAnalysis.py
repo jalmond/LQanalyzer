@@ -151,16 +151,37 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
                         for xn in NewSampleList:
                             xnsplit = xn.split()
                             if len(xnsplit) == 4:
-                                if (xnsplit[0] + " ")  in line or xnsplit[1] in line:
+                                if (xnsplit[0] + "_dilep")  in line or xnsplit[1] in line:
                                     isNewSample=True
                                                                         
                                     
+                                    
+                    if "SKTree" in line:
+                        if "MCDiLep" in line:
+                            if isNewSample:
+                                file_samplelist.write(line)
+                modlist.close()
+            elif "#### Tri" in xline:
+                file_samplelist.write(xline)
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                    isNewSample=False
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        for xn in NewSampleList:
+                            xnsplit = xn.split()
+                            if len(xnsplit) == 4:
+                                if (xnsplit[0] + "_trilep")  in line or xnsplit[1] in line:
+                                    isNewSample=True
+
+
 
                     if "SKTree" in line:
                         if "MCDiLep" in line:
                             if isNewSample:
                                 file_samplelist.write(line)
                 modlist.close()
+
             else:
                 file_samplelist.write(xline)
 
@@ -385,7 +406,7 @@ if os.path.exists(path_full_sample_list):
             isnewsample= len(newsample_list) > 0
             
             UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, newsample_list)
-            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
+            #os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
             newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"
             print "Is the following list of differences correct:"
@@ -440,7 +461,7 @@ if os.path.exists(path_full_sample_list):
                 os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
                 
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
-
+        sys.exit()    
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
