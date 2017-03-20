@@ -58,7 +58,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    
    for(unsigned int il = 0; il < labels.size(); il++){
      TString label = labels.at(il);
-
+     continue;
      MakeCleverHistograms(sighist_ee,label + "_SSee_1jet");
      MakeCleverHistograms(sighist_ee,label + "_SSee_DiJet");
      MakeCleverHistograms(sighist_ee,label + "_SSPreselection");
@@ -87,11 +87,13 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiElectron::ExecuteEvents()throw( LQError ){
   
-  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
   if(!isData)weight*= MCweight;
 
+  return;
+  
   /// make plots of POG + AN ID Efficiency
   GetSSSignalEfficiency(weight);
   GetOSSignalEfficiency(weight);
@@ -107,8 +109,18 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;
   
+  CheckJetsCloseToLeptons(GetElectrons("ELECTRON_HN_VETO"), GetJets("JET_NOLEPTONVETO"));
+  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
+  std::vector<snu::KJet> jets = GetJets("JET_HN");
+  FillHist("NFatJets", fatjetcoll.size(), weight, 0., 10., 10);
+  FillHist("2DJets", fatjetcoll.size(), jets.size(),  weight, 0., 10., 10,  0., 10., 10);
+  for(unsigned int ifjet=0; ifjet < fatjetcoll.size(); ifjet++){
+    FillHist(("tau21"), fatjetcoll[ifjet].Tau2()/fatjetcoll[ifjet].Tau1(), weight, 0., 1., 100);
+    FillHist(("PrunedMass"), fatjetcoll[ifjet].PrunedMass(),  weight, 0., 200., 100);
+    FillHist(("SoftDropMass"), fatjetcoll[ifjet].SoftDropMass(),  weight, 0., 200., 100);
+  }
   
-  //OptimiseLowMass();
+  OptimiseID(true);
 
   //RunAnalysis("hn", "ELECTRON_HN_TIGHT","ELECTRON_HN_VETO","ELECTRON_HN_FAKELOOSE_NOD0");
   //RunAnalysis("pog_medium","ELECTRON_POG_MEDIUM","ELECTRON_POG_VETO","ELECTRON_POG_FAKELOOSE");
@@ -116,32 +128,143 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 }
 
+
+void HNDiElectron::CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets){
+
+  if(electrons.size() == 2) {
+    if(SameCharge(electrons)) {
+      snu::KParticle looseee = electrons.at(0) + electrons.at(1);
+      if(fabs(looseee.M() - 90.) > 20. ){
+	for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+	  for(unsigned int iel=0; iel < electrons.size(); iel++){
+	    if( electrons[iel].DeltaR(jets.at(ijet)) < 0.4){
+	      /// Jet usually vetoe
+	      FillHist(("ptratio_jetel"), electrons[iel].Pt()/jets[ijet].Pt(), weight, 0., 1., 100);
+	    }
+	  }
+	}
+      }
+    }
+  }
+  return;
+}
+
+
 void HNDiElectron::OptimiseID(bool isss){
   
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons("ELECTRON_HN_FAKELOOSE_NOD0");
-  std::vector<snu::KElectron> electronLooseColl_medium = GetElectrons("ELECTRON_POG_MEDIUM_FAKELOOSE");
+  std::vector<snu::KElectron> electronLooseColl_tight = GetElectrons("ELECTRON16_POG_FAKELOOSE_CC");
+  std::vector<snu::KElectron> electronLooseColl_medium = GetElectrons("ELECTRON16_POG_MEDIUM_FAKELOOSE_CC");
   
-  std::vector<snu::KElectron> electronMedium_chargeconst  = GetElectrons("ELECTRON16_POG_MEDIUM_CHARGECONS");
-  std::vector<snu::KElectron> electronTight_chargeconst  = GetElectrons("ELECTRON16_POG_TIGHT_CHARGECONS");
+  std::vector<snu::KElectron> electronMedium_chargeconst  = GetElectrons("ELECTRON16_FR_POG_MEDIUM_CC");
+  std::vector<snu::KElectron> electronTight_chargeconst  = GetElectrons("ELECTRON16_FR_POG_TIGHT_CC");
   std::vector<snu::KJet> jets = GetJets("JET_HN");
 
   if(!k_running_nonprompt){
-    if(CheckSignalRegion(isss,electronLooseColl, jets,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDREF",0.  , weight, 0.,1.,1);
+    
+    if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDREF",0.  , weight, 0.,1.,1);
     if(CheckSignalRegion(isss,electronMedium_chargeconst, jets,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight, 0.,2.,2);
     if(CheckSignalRegion(isss,electronTight_chargeconst, jets,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight, 0.,2.,2);
   }
   else{
-    float ee_weight_medium = 1.;//Get_DataDrivenWeight_EE(electronLooseColl_medium, 0.01, 0.1, 0.1,  false, "medium");
-    float ee_weight_tight = 1.;//Get_DataDrivenWeight_EE(electronLooseColl,   0.01, 0.1, 0.1,  true, "tight");
-    
+    float ee_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE_CC","ELECTRON16_FR_POG_MEDIUM_CC","dijet_ajet40");
+    float ee_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE_CC","ELECTRON16_POG_FAKELOOSE_CC","dijet_ajet40");
     if(CheckSignalRegion(isss, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow",0.  , weight*ee_weight_medium, 0.,2.,2);
-    if(CheckSignalRegion(isss,electronLooseColl, jets,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight*ee_weight_tight, 0.,2.,2);
-    
-    if(CheckSignalRegion(isss,electronLooseColl_medium, jets,"Signal_Mediumlooseiso_d0", weight)) FillHist("IDcutflow_samefakerate",0.  , weight*ee_weight_tight, 0.,2.,2);
-    if(CheckSignalRegion(isss,electronLooseColl, jets,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow_samefakerate",1.  , weight*ee_weight_tight, 0.,2.,2);
-
+    if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Tightlooseiso_d0", weight))   FillHist("IDcutflow",1.  , weight*ee_weight_tight, 0.,2.,2);
   }
+  
+  if(CheckSignalRegion(isss, GetElectrons("HNTight_isoref"),jets,"", weight)) FillHist("ISOREF", 0., weight, 0.,1.,1);
+  
+  if(!k_running_nonprompt){
+    std::vector <TString> isocuts;
+    isocuts.push_back("045");
+    isocuts.push_back("050");
+    isocuts.push_back("055");
+    isocuts.push_back("060");
+    isocuts.push_back("065");
+    isocuts.push_back("075");
+    isocuts.push_back("100");
+    isocuts.push_back("125");
+    int iisocut(0);
+    for(unsigned int iiso = 0 ; iiso < isocuts.size(); iiso++){
+      for(unsigned int iiso2 = 0 ; iiso2 < isocuts.size(); iiso2++, iisocut++){
+	if(CheckSignalRegion(isss, GetElectrons(("HNTight_b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data()),jets,"", weight)) FillHist("ISOcutflow", iisocut , weight,0., 64., 64);
+	
+      }
+    }
+  }
+  else{
 
+    std::vector <TString> isocuts;
+    isocuts.push_back("045");
+    isocuts.push_back("050");
+    isocuts.push_back("055");
+    isocuts.push_back("060");
+    isocuts.push_back("065");
+    isocuts.push_back("075");
+    isocuts.push_back("100");
+    isocuts.push_back("125");
+
+    int iisocut(0);
+    for(unsigned int iiso = 0 ; iiso < isocuts.size(); iiso++){
+      for(unsigned int iiso2 = 0 ; iiso2 < isocuts.size(); iiso2++, iisocut++){
+	std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data());
+	std::vector<snu::KElectron>  elloose=  GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
+        float evweight = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data(), "opt_dijet_ajet40");
+	if(CheckSignalRegion(isss, eltight,jets,"", weight)) FillHist("ISOcutflow", iisocut , evweight,0., 64., 64);
+      }
+    }
+  }
+  
+
+  if(CheckSignalRegion(isss,GetElectrons("HNTight_dxy_ref"),jets,"", weight)) FillHist("d0cutflow", 0., weight, 0.,20.,20);
+  
+  if(!k_running_nonprompt){
+    
+    std::vector<TString> dxyb;
+    dxyb.push_back("050");
+    dxyb.push_back("025");
+    dxyb.push_back("015");
+    dxyb.push_back("010");
+    std::vector<TString> dxye;
+    dxye.push_back("100");
+    dxye.push_back("050");
+    dxye.push_back("040");
+    dxye.push_back("025");
+    dxye.push_back("020");
+
+    int idxy(1);
+    for(unsigned int ib=0; ib <dxyb.size(); ib++){
+      for(unsigned int ie=0; ie <dxye.size(); ie++, idxy++){
+	if(CheckSignalRegion(isss, GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", weight)) FillHist("d0cutflow", idxy, weight,  0.,20.,20);
+	
+      }
+    }
+  }
+  else{
+    std::vector<TString> dxyb;
+    dxyb.push_back("050");
+    dxyb.push_back("025");
+    dxyb.push_back("015");
+    dxyb.push_back("010");
+    std::vector<TString> dxye;
+    dxye.push_back("100");
+    dxye.push_back("050");
+    dxye.push_back("040");
+    dxye.push_back("025");
+    dxye.push_back("020");
+
+    int idxy(1);
+    for(unsigned int ib=0; ib <dxyb.size(); ib++){
+      for(unsigned int ie=0; ie <dxye.size(); ie++, idxy++){
+	std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data());
+	std::vector<snu::KElectron>  elloose  =GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
+	float evweight = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40");
+	FillHist("d0cutflow", idxy, evweight,  0.,20.,20);
+      }
+    }
+  }
+  
+  
 }
 
 float  HNDiElectron::GetTightWeight(){
@@ -161,7 +284,7 @@ void HNDiElectron::GetSSSignalEfficiency(float w){
   if(SameCharge(GetElectrons("ELECTRON_NOCUT")))   FillCutFlow("SS_NoCut",w);
   if(SameCharge(GetElectrons("ELECTRON_PTETA")))   FillCutFlow("SS_PtEta",w);
   // TIGHT POG
-  if(SameCharge(GetElectrons("ELECTRON16_POG_TIGHT")))    FillCutFlow("SS_Tight",w*GetTightWeight());
+  if(SameCharge(GetElectrons("ELECTRON16_POG_TIGHT_SC")))    FillCutFlow("SS_Tight",w*GetTightWeight());
   if(SameCharge(GetElectrons("ELECTRON16_POG_TIGHT_D0"))) FillCutFlow("SS_Tight_d0veto",w*GetTightWeight());
   if(SameCharge(GetElectrons("ELECTRON16_POG_TIGHT_RELISO")))     FillCutFlow("SS_Tight_reliso", w*GetTightWeight());  
   if(SameCharge(GetElectrons("ELECTRON16_POG_TIGHT_CHARGECONS"))) FillCutFlow("SS_Tight_chargeconst", w*GetTightWeight());
@@ -213,7 +336,7 @@ void HNDiElectron::GetOSSignalEfficiency(float w){
   if(OppositeCharge(GetElectrons("ELECTRON_NOCUT")))   FillCutFlow("OS_NoCut",w);
   if(OppositeCharge(GetElectrons("ELECTRON_PTETA")))   FillCutFlow("OS_PtEta",w);
   // TIGHT POG                                                                                                                                                                                                                                                                  
-  if(OppositeCharge(GetElectrons("ELECTRON16_POG_TIGHT")))    FillCutFlow("OS_Tight",w*GetTightWeight());
+  if(OppositeCharge(GetElectrons("ELECTRON16_POG_TIGHT_SC")))    FillCutFlow("OS_Tight",w*GetTightWeight());
   if(OppositeCharge(GetElectrons("ELECTRON16_POG_TIGHT_D0"))) FillCutFlow("OS_Tight_d0veto",w*GetTightWeight());
   if(OppositeCharge(GetElectrons("ELECTRON16_POG_TIGHT_RELISO")))     FillCutFlow("OS_Tight_reliso", w*GetTightWeight());
   if(OppositeCharge(GetElectrons("ELECTRON16_POG_TIGHT_CHARGECONS"))) FillCutFlow("OS_Tight_chargeconst", w*GetTightWeight());
@@ -422,7 +545,7 @@ void HNDiElectron::RunAnalysis(TString plottag, TString tightelid, TString vetoe
 
   if(k_running_nonprompt){
     weight=1.; /// In case... should not be needed
-    weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronColl,"ELECTRON_POG_TIGHT", "dijet");
+    //weight      *=  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronColl,"ELECTRON_POG_TIGHT", "dijet");
   } 
 
   int nbjet = NBJet(jetColl_hn, snu::KJet::CSVv2, snu::KJet::Medium);
@@ -613,6 +736,7 @@ void HNDiElectron::SignalValidation(){
   
   // Check jet properties                                                                                                                                                                                                                                                                                                                                                         
   FillCLHist(sighist_ee, "SIGNALVALIDATION_EE", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
+  FillCLHist(sighist_ee, "SIGNALVALIDATION_TIGHT_EE", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_POG_TIGHT"),GetJets("JET_HN"), weight);
   FillCLHist(sighist_mm, "SIGNALVALIDATION_MM", eventbase->GetEvent(),  GetMuons("MUON_NOCUT"), GetElectrons("ELECTRON_NOCUT"),GetJets("JET_HN"), weight);
   if(GetJets("JET_HN").size() > 1){
     if(GetElectrons("ELECTRON_POG_TIGHT").size() == 2){
@@ -630,6 +754,7 @@ void HNDiElectron::SignalValidation(){
 void HNDiElectron::GetTriggEfficiency(){
   //ListTriggersAvailable();                                                                                                                                                                                                                                                                                                                                                      
   vector<int> pt1;
+  pt1.push_back(18);
   pt1.push_back(35);
   pt1.push_back(25);
   pt1.push_back(25);
@@ -642,22 +767,26 @@ void HNDiElectron::GetTriggEfficiency(){
   pt1.push_back(120);
   pt1.push_back(20);
   pt1.push_back(25);
+  pt1.push_back(25);
   vector<int>pt2;
+  pt2.push_back(10);
   pt2.push_back(35);
   pt2.push_back(25);
   pt2.push_back(10);
   pt2.push_back(10);
   pt2.push_back(10);
+  pt2.push_back(10);
   pt2.push_back(15);
   pt2.push_back(15);
   pt2.push_back(10);
   pt2.push_back(10);
-  pt2.push_back(10);
+  pt2.push_back(15);
   pt2.push_back(15);
   pt2.push_back(15);
 
 
   std::vector<TString> lists_triggers;
+  lists_triggers.push_back("HLT_Ele15_IsoVVVL_PFHT600_v");
   lists_triggers.push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v");
   lists_triggers.push_back("HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v");
   lists_triggers.push_back("HLT_Ele22_eta2p1_WPLoose_Gsf_v");
@@ -711,11 +840,13 @@ void HNDiElectron::FillTriggerEfficiency(TString cut, float weight, TString labe
 
 bool HNDiElectron::CheckSignalRegion( bool isss,  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
 
-  if(name.Contains("testetst")) w=0.;
   if(electrons.size() != 2 ) return false ;
+  // Set by trigger
   if(electrons.at(0).Pt() < 25.) return false;
   if(electrons.at(1).Pt() < 15.) return false;
   if(isss&&!SameCharge(electrons)) return false;
+
+  return true;
   if(!isss&&SameCharge(electrons)) return false;
   if(jets.size() < 2) return false;
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
@@ -729,13 +860,18 @@ bool HNDiElectron::CheckSignalRegion( bool isss,  std::vector<snu::KElectron> el
   if(eventbase->GetEvent().SumET() < 200.) return false;;
 
   if((ee.M() > 80.) && (ee.M() < 100.) ) return false;
-  if(eventbase->GetEvent().PFMET() > 35.) return false;
+  float ST = electrons[0].Pt() + electrons[1].Pt();
+  for(unsigned int ij=0; ij <jets.size(); ij++){
+    ST+= jets[ij].Pt();
+  }
+  if((eventbase->GetEvent().PFMET()/pow(2., ST))  > 20.) return false;
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
     if(IsBTagged(jets.at(ij), snu::KJet::CSVv2, snu::KJet::Medium, GetPeriod())) nbjet++;
   }
   if(nbjet > 0) return false;
+  
   
   return true;
 

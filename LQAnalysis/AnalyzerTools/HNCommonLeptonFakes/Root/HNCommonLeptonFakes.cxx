@@ -42,14 +42,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/Total_FRcorr40_2.root").c_str());
   CheckFile(file_fake_muon_hn);
 
-  /// ELECRON FILES  (POG)
-  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV.root").c_str());
+  /// ELECRON FILES  (POG) + (many rates for optimising cuts)  
+  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016_Mar9.root").c_str());
   CheckFile(file_fake);
-  
-  /// ELECTRON FILES  (many rates for optimising cuts)                                                                                                                                                          
-  TFile* file_fakeopt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016v3.root").c_str());
-  CheckFile(file_fakeopt);
 
+  TFile* file_prompt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/PromptRate13TeV_2016_opt.root").c_str());
+  CheckFile(file_prompt);
 
   //==== Trilep
   //==== Using Large dXYSig muons
@@ -78,118 +76,100 @@ void HNCommonLeptonFakes::InitialiseFake(){
   datajetcut.push_back("20");
   datajetcut.push_back("30");
   datajetcut.push_back("40");
+  datajetcut.push_back("60");
   
   std::vector <TString> cut;
   cut.push_back("pt_eta");
 
+  std::vector <TString> isocuts;
+  isocuts.push_back("045");
+  isocuts.push_back("050");
+  isocuts.push_back("055");
+  isocuts.push_back("060");
+  isocuts.push_back("065");
+  isocuts.push_back("075");
+  isocuts.push_back("100");
+  isocuts.push_back("125");
   std::vector <TString> opt;
-  opt.push_back("b035_e035");
-  opt.push_back("b035_e040");
-  opt.push_back("b035_e045");
-  opt.push_back("b035_e050");
-  opt.push_back("b035_e055");
-  opt.push_back("b035_e060");
+  for(unsigned int iiso = 0 ; iiso < isocuts.size(); iiso++){
+    for(unsigned int iiso2 = 0 ; iiso2 < isocuts.size(); iiso2++){
+      opt.push_back("b"+isocuts[iiso]+"_e"+isocuts[iiso2]);
+    }
+  }
   
-  opt.push_back("b040_e035");
-  opt.push_back("b040_e040");
-  opt.push_back("b040_e045");
-  opt.push_back("b040_e050");
-  opt.push_back("b040_e055");
-  opt.push_back("b040_e060");
-
-  opt.push_back("b060_e035");
-  opt.push_back("b060_e040");
-  opt.push_back("b060_e045");
-  opt.push_back("b060_e050");
-  opt.push_back("b060_e055");
-  opt.push_back("b060_e060");
-
-  opt.push_back("b045_e035");
-  opt.push_back("b045_e040");
-  opt.push_back("b045_e045");
-  opt.push_back("b045_e050");
-  opt.push_back("b045_e055");
-  opt.push_back("b045_e060");
-
-  opt.push_back("b050_e035");
-  opt.push_back("b050_e040");
-  opt.push_back("b050_e045");
-  opt.push_back("b050_e050");
-  opt.push_back("b050_e055");
-  opt.push_back("b050_e060");
-
-  opt.push_back("b055_e035");
-  opt.push_back("b055_e040");
-  opt.push_back("b055_e045");
-  opt.push_back("b055_e050");
-  opt.push_back("b055_e055");
-  opt.push_back("b055_e060");
-
   opt.push_back("dxy_b050_e100");
   opt.push_back("dxy_b050_e050");
   opt.push_back("dxy_b050_e040");
   opt.push_back("dxy_b050_e025");
   opt.push_back("dxy_b050_e020");
-  opt.push_back("dxy_b050_e015");
   
   opt.push_back("dxy_b025_e100");
   opt.push_back("dxy_b025_e050");
   opt.push_back("dxy_b025_e040");
   opt.push_back("dxy_b025_e025");
   opt.push_back("dxy_b025_e020");
-  opt.push_back("dxy_b025_e015");
 
   opt.push_back("dxy_b015_e100");
   opt.push_back("dxy_b015_e050");
   opt.push_back("dxy_b015_e040");
   opt.push_back("dxy_b015_e025");
   opt.push_back("dxy_b015_e020");
-  opt.push_back("dxy_b015_e015");
 
   opt.push_back("dxy_b010_e100");
   opt.push_back("dxy_b010_e050");
   opt.push_back("dxy_b010_e040");
   opt.push_back("dxy_b010_e025");
   opt.push_back("dxy_b010_e020");
-  opt.push_back("dxy_b010_e015");
 
-  opt.push_back("dxy_b008_e100");
-  opt.push_back("dxy_b008_e050");
-  opt.push_back("dxy_b008_e040");
-  opt.push_back("dxy_b008_e025");
-  opt.push_back("dxy_b008_e020");
-  opt.push_back("dxy_b008_e015");
 
   vector <TString> elID;
   elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
-  //elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
   elID.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
-  
+  elID.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_nod0_dxysig");
+  elID.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_d0_dxysig");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_iso04");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_iso06");
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog");
+  elID.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva");
+
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       for(unsigned int iid = 0; iid < elID.size() ; iid++){
-      _2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + elID[iid]] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_" + elID[iid] +  datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+	_2DEfficiencyMap_Double["fake_el_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + elID[iid]] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_" + elID[iid] +  datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
       }
     }
   }
-  //pt_eta_40_ELECTRON16_HN_TIGHT_dijet_nod0
+
+  for(unsigned int fl = 0; fl < opt.size() ; fl++){
+    for(unsigned int fk = 0; fk < cut.size() ; fk++){
+      _2DEfficiencyMap_Double["prompt_el_eff_" + cut.at(fk) +"_" + opt[fl]] = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_HNTight_" + opt[fl] +  "_" + cut.at(fk)))->Clone());
+      _2DEfficiencyMap_Double["prompt_el_eff_dxysig_" + cut.at(fk) +"_" + opt[fl]] = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_HNTight_dxysig_" + opt[fl] +  "_" + cut.at(fk)))->Clone());
+      if(!opt[fl].Contains("dxy"))   _2DEfficiencyMap_Double["prompt_el_eff_miniiso_dxysig_" + cut.at(fk) +"_" + opt[fl]] = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_HNTight_miniiso_dxysig_" + opt[fl] +  "_" + cut.at(fk)))->Clone());
+    }
+  }
+  
+  for(unsigned int iid = 0; iid < elID.size() ; iid++){
+    _2DEfficiencyMap_Double["prompt_el_eff_" +  elID[iid]]  = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_" +  elID[iid] +  "_pt_eta"))->Clone());
+  }
+
   
   for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
     for(unsigned int fk = 0; fk < cut.size() ; fk++){
       for(unsigned int fl = 0; fl < opt.size() ; fl++){
-	_2DEfficiencyMap_Double["fake_eff_" + cut.at(fk) +"_" + opt.at(fl) +"_" + datajetcut.at(fj) +"_" + region.at(0)] = dynamic_cast<TH2D*>((file_fakeopt->Get("FakeRate_HNTight_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
-
+	_2DEfficiencyMap_Double["fake_el_eff_" + cut.at(fk) +"_HNTight_" + opt.at(fl) +"_" + datajetcut.at(fj)] =  dynamic_cast<TH2D*>((file_fake->Get("FakeRate_HNTight_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
+	_2DEfficiencyMap_Double["fake_el_eff_dxysig_" + cut.at(fk) +"_HNTight_" + opt.at(fl) +"_" + datajetcut.at(fj)] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_HNTight_dxysig_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
+	if(!opt[fl].Contains("dxy")) _2DEfficiencyMap_Double["fake_el_eff_miniiso_dxysig_" + cut.at(fk) +"_HNTight_" + opt.at(fl) +"_" + datajetcut.at(fj)] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_HNTight_miniiso_dxysig_"  + datajetcut.at(fj) + "_" + cut.at(fk) + opt.at(fl)))->Clone());
       }
     }
   }
   
-
-
-  
+  _2DEfficiencyMap_Double["fake_el_eff_ELECTRON_HN_HIGHDXY_TIGHT_dxy"] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_ELECTRON_HN_HIGHDXY_TIGHT_eldxy")));
   
 
-
-  
+    
   //==== Trilep
   //==== Using Large dXYSig muons
 
@@ -293,7 +273,7 @@ HNCommonLeptonFakes::~HNCommonLeptonFakes() {
 
 
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString eltightid, TString ellooseid, float awayjetpt ){ 
+float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut){
 
 
   // geterr = true : function returns error not event weight
@@ -334,21 +314,6 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<
   // Need to create this function in HNCommonFakes
   r1=1.;
   r2=1.;
-  
-  TString sjpt="";
-  if(awayjetpt == 20. ) sjpt="20";
-  if(awayjetpt == 40. ) sjpt="30";
-  if(awayjetpt == 20. ) sjpt="40";
-
-  TString cut = "pt_eta_"+sjpt+"_" + eltightid;
-  if(awayjetpt > 0.) {cut += "_dijet";
-    if(ellooseid.Contains("_NOD0")) cut += "_nod0";
-    else cut += "_d0";
-  }
-  else{
-    /// This is for dxy method TO BE FILLED
-  }
-  if(!cut.Contains("pt_eta")) cut  = "pt_eta_40_ELECTRON16_HN_TIGHT_dijet_nod0";
   
 
   fr1=  getFakeRate_electronEta(0,_el1_pt, _el1_eta,cut);
@@ -473,7 +438,7 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
 
   map<TString,TH2D*>::const_iterator mapit;
 
-  TString hist = "fake_eff_";
+  TString hist = "fake_el_eff_";
   hist += cut;
   
   //cout << hist << endl;
@@ -483,6 +448,7 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
     int binx =  mapit->second->FindBin(pt,fabs(eta));
     //cout << "el pt = " << pt << ", eta = " << eta << endl;
     //cout << "Bin = " << binx  << endl;
+
     eff_fake =  mapit->second->GetBinContent(binx);
     //cout << "eff_fake = " << eff_fake << endl;
     if(sys != 0) return mapit->second->GetBinError(binx); 
@@ -847,7 +813,7 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
 
 float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float eta){
 
-  if(pt < 5.) pt = 6.;
+  if(pt < 20.) pt = 21.;
   if(pt >= 200.) pt = 199.;
   if(fabs(eta) >= 2.5) eta = 2.4;
   

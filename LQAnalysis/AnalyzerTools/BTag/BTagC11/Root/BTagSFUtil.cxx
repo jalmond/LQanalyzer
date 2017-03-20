@@ -4,13 +4,15 @@
 #include "BTagEfficienciesTTbarMoriond17.C" // Change this to your sample efficiency  
 #include "FastSimCorrectionFactorsSummer12.C" // Change this to your sample efficiency NOT UPDATED
 
-BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString OperatingPoint, int SystematicIndex, TString FastSimDataset, int Seed) {
+BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithmBF, string BTagAlgorithmGH, TString OperatingPoint, int SystematicIndex, TString FastSimDataset, int Seed) {
 
   rand_ = new TRandom3(Seed);
   string lqdir = getenv("LQANALYZER_DIR");
   
-  string CSVFileName = (lqdir + "/data/BTag/"+getenv("yeartag") + "/"+ BTagAlgorithm + ".csv").c_str();
-  BTagCalibration calib(BTagAlgorithm, CSVFileName);
+  string CSVFileNameBF = (lqdir + "/data/BTag/"+getenv("yeartag") + "/"+ BTagAlgorithmBF + ".csv").c_str();
+  string CSVFileNameGH = (lqdir + "/data/BTag/"+getenv("yeartag") + "/"+ BTagAlgorithmGH + ".csv").c_str();
+  BTagCalibration calibBF(BTagAlgorithmBF, CSVFileNameBF);
+  BTagCalibration calibGH(BTagAlgorithmGH, CSVFileNameGH);
 
   string SystematicFlagBC = "central";
   string SystematicFlagL  = "central";
@@ -22,8 +24,8 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString Ope
   }
 
   TaggerCut = -1;
-  if (TString(BTagAlgorithm).Contains("CSVv2")) TaggerName="CSVv2";
-  if (TString(BTagAlgorithm).Contains("cMVAv2")) TaggerName="cMVAv2";
+  if (TString(BTagAlgorithmBF).Contains("CSVv2")) TaggerName="CSVv2";
+  if (TString(BTagAlgorithmBF).Contains("cMVAv2")) TaggerName="cMVAv2";
   
   TaggerOP = TaggerName;
 
@@ -31,20 +33,29 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString Ope
     TaggerOP += "L";
     if (TaggerName=="CSVv2") TaggerCut = 0.5426;
     if (TaggerName=="cMVAv2") TaggerCut =-0.5884;
-    reader_bc = new BTagCalibrationReader(&calib, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagBC);
-    reader_l  = new BTagCalibrationReader(&calib, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagL);
+    reader_bf_bc = new BTagCalibrationReader(&calibBF, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagBC);
+    reader_bf_l  = new BTagCalibrationReader(&calibBF, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagL);
+    reader_gh_bc = new BTagCalibrationReader(&calibGH, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagBC);
+    reader_gh_l  = new BTagCalibrationReader(&calibGH, BTagEntry::OP_LOOSE, MeasurementType, SystematicFlagL);
+
   } else if (OperatingPoint=="Medium") {
     TaggerOP += "M";
     if (TaggerName=="CSVv2") TaggerCut = 0.8484;
     if (TaggerName=="cMVAv2") TaggerCut =0.4432;
-    reader_bc = new BTagCalibrationReader(&calib, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagBC);
-    reader_l  = new BTagCalibrationReader(&calib, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagL);
+    reader_bf_bc = new BTagCalibrationReader(&calibBF, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagBC);
+    reader_bf_l  = new BTagCalibrationReader(&calibBF, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagL);
+    reader_gh_bc = new BTagCalibrationReader(&calibGH, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagBC);
+    reader_gh_l  = new BTagCalibrationReader(&calibGH, BTagEntry::OP_MEDIUM, MeasurementType, SystematicFlagL);
+
   } else if (OperatingPoint=="Tight") {
     TaggerOP += "T";
     if (TaggerName=="CSVv2") TaggerCut = 0.9535;
     if (TaggerName=="cMVAv2") TaggerCut =0.9432;
-    reader_bc = new BTagCalibrationReader(&calib, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagBC);
-    reader_l  = new BTagCalibrationReader(&calib, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagL);
+    reader_bf_bc = new BTagCalibrationReader(&calibBF, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagBC);
+    reader_bf_l  = new BTagCalibrationReader(&calibBF, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagL);
+    reader_gh_bc = new BTagCalibrationReader(&calibGH, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagBC);
+    reader_gh_l  = new BTagCalibrationReader(&calibGH, BTagEntry::OP_TIGHT, MeasurementType, SystematicFlagL);
+
   } 
 
   if (TaggerCut==-1) 
@@ -52,10 +63,10 @@ BTagSFUtil::BTagSFUtil(string MeasurementType, string BTagAlgorithm, TString Ope
 
   FastSimSystematic = 0;
   if (abs(SystematicIndex)>10) FastSimSystematic = SystematicIndex%10;
-  GetFastSimPayload(BTagAlgorithm, FastSimDataset);
+  GetFastSimPayload(BTagAlgorithmBF, FastSimDataset);
 
   if (TaggerCut==-1) 
-    cout << "BTagSFUtil: " << BTagAlgorithm << " not a supported b-tagging algorithm" << endl;
+    cout << "BTagSFUtil: " << BTagAlgorithmBF << " not a supported b-tagging algorithm" << endl;
 
 }
 
@@ -66,7 +77,11 @@ BTagSFUtil::~BTagSFUtil() {
 }
 
 float BTagSFUtil::FastSimCorrectionFactor(int JetFlavor, float JetPt, float JetEta) {
-
+  
+  ///// THIS IS NOT UPDATED
+  
+  return 1.;
+  
   float CF = 1.;
  
   if (JetPt<FastSimPtBinEdge[0]) { cout << "CF is not available for jet pt<" << FastSimPtBinEdge[0] << " GeV" << endl; return -1.; }
@@ -106,7 +121,36 @@ float BTagSFUtil::JetTagEfficiency(int JetFlavor, float JetPt, float JetEta) {
 
 }
 
-float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
+
+
+float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta, int iperiod) {
+  float Btag_SF(-999.);
+  if(iperiod < 0)  {
+    float Btag_SF_BF = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, 1);
+    float Btag_SF_GH = GetJetSFPeriodDependant(JetFlavor, JetPt, JetEta, 7);
+    
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+    Btag_SF = Btag_SF_BF*WeightBtoF + Btag_SF_GH*WeightGtoH;
+    return Btag_SF;
+  }
+  else{
+    return GetJetSF(JetFlavor, JetPt, JetEta, iperiod);
+  }
+  return Btag_SF;
+}
+
+float BTagSFUtil::GetJetSFPeriodDependant(int JetFlavor, float JetPt, float JetEta, int period) {
+
 
 
   /// https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco for pt range and systematic correlations
@@ -131,11 +175,19 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
   else return 1.; //For safety.
 
 
-  if (abs(JetFlavor)==5) 
-    Btag_SF = reader_bc->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
-  else if (abs(JetFlavor)==4) 
-    Btag_SF = reader_bc->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt);
-  else Btag_SF = reader_l->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
+  if (abs(JetFlavor)==5) {
+    if(period < 6) Btag_SF = reader_bf_bc->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
+    else Btag_SF = reader_gh_bc->eval(BTagEntry::FLAV_B, JetEta, ThisJetPt);
+    
+  }
+  else if (abs(JetFlavor)==4){ 
+    if(period < 6) Btag_SF = reader_bf_bc->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt);
+    else Btag_SF = reader_gh_bc->eval(BTagEntry::FLAV_C, JetEta, ThisJetPt);
+  }
+  else {
+    if(period < 6) Btag_SF = reader_bf_l->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
+    else Btag_SF = reader_gh_l->eval(BTagEntry::FLAV_UDSG, JetEta, ThisJetPt);
+  }
   
   if (IsFastSimDataset)
     Btag_SF *= FastSimCorrectionFactor(JetFlavor, JetPt, JetEta);
@@ -144,7 +196,7 @@ float BTagSFUtil::GetJetSF(int JetFlavor, float JetPt, float JetEta) {
 
 }
 
-bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta) {
+bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, float JetEta, int iperiod) {
   
   bool isBTagged = JetDiscriminant>TaggerCut;
 
@@ -152,7 +204,8 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
 
   bool newBTag = isBTagged;
 
-  float Btag_SF = GetJetSF(JetFlavor, JetPt, JetEta);
+  float Btag_SF = GetJetSF(JetFlavor, JetPt, JetEta, iperiod);
+  
   
   if (Btag_SF == 1) return newBTag; //no correction needed 
 

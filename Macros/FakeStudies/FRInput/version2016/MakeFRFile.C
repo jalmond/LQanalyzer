@@ -48,87 +48,104 @@ void MakeFRRootFile(){
   isocut.push_back("dxy_b050_e040");
   isocut.push_back("dxy_b050_e025");
   isocut.push_back("dxy_b050_e020");
-  isocut.push_back("dxy_b050_e015");
 
   isocut.push_back("dxy_b025_e100");
   isocut.push_back("dxy_b025_e050");
   isocut.push_back("dxy_b025_e040");
   isocut.push_back("dxy_b025_e025");
   isocut.push_back("dxy_b025_e020");
-  isocut.push_back("dxy_b025_e015");
 
   isocut.push_back("dxy_b015_e100");
   isocut.push_back("dxy_b015_e050");
   isocut.push_back("dxy_b015_e040");
   isocut.push_back("dxy_b015_e025");
   isocut.push_back("dxy_b015_e020");
-  isocut.push_back("dxy_b015_e015");
 
   isocut.push_back("dxy_b010_e100");
   isocut.push_back("dxy_b010_e050");
   isocut.push_back("dxy_b010_e040");
   isocut.push_back("dxy_b010_e025");
   isocut.push_back("dxy_b010_e020");
-  isocut.push_back("dxy_b010_e015");
 
 
-  isocut.push_back("dxy_b008_e100");
-  isocut.push_back("dxy_b008_e050");
-  isocut.push_back("dxy_b008_e040");
-  isocut.push_back("dxy_b008_e025");
-  isocut.push_back("dxy_b008_e020");
-  isocut.push_back("dxy_b008_e015");
-
-
-
-  isocut.push_back("b035_e035");
-  isocut.push_back("b035_e040");
-  isocut.push_back("b035_e045");
-  isocut.push_back("b035_e050");
-  isocut.push_back("b035_e055");
-  isocut.push_back("b035_e060");
-  
-  isocut.push_back("b040_e035");
-  isocut.push_back("b040_e040");
-  isocut.push_back("b040_e045");
-  isocut.push_back("b040_e050");
-  isocut.push_back("b040_e055");
-  isocut.push_back("b040_e060");
-
-  isocut.push_back("b045_e035");
-  isocut.push_back("b045_e040");
   isocut.push_back("b045_e045");
   isocut.push_back("b045_e050");
   isocut.push_back("b045_e055");
   isocut.push_back("b045_e060");
+  isocut.push_back("b045_e065");
+  isocut.push_back("b045_e075");
+  isocut.push_back("b045_e100");
+  isocut.push_back("b045_e125");
 
-  isocut.push_back("b050_e035");
-  isocut.push_back("b050_e040");
   isocut.push_back("b050_e045");
   isocut.push_back("b050_e050");
   isocut.push_back("b050_e055");
   isocut.push_back("b050_e060");
+  isocut.push_back("b050_e065");
+  isocut.push_back("b050_e075");
+  isocut.push_back("b050_e100");
+  isocut.push_back("b050_e125");
 
-
-  isocut.push_back("b055_e035");
-  isocut.push_back("b055_e040");
   isocut.push_back("b055_e045");
   isocut.push_back("b055_e050");
   isocut.push_back("b055_e055");
   isocut.push_back("b055_e060");
+  isocut.push_back("b055_e065");
+  isocut.push_back("b055_e075");
+  isocut.push_back("b055_e100");
+  isocut.push_back("b055_e125");
 
+  isocut.push_back("b065_e045");
+  isocut.push_back("b065_e050");
+  isocut.push_back("b065_e055");
+  isocut.push_back("b065_e060");
+  isocut.push_back("b065_e065");
+  isocut.push_back("b065_e075");
+  isocut.push_back("b065_e100");
+  isocut.push_back("b065_e125");
 
-  isocut.push_back("b060_e035");
-  isocut.push_back("b060_e040");
   isocut.push_back("b060_e045");
   isocut.push_back("b060_e050");
   isocut.push_back("b060_e055");
   isocut.push_back("b060_e060");
+  isocut.push_back("b060_e065");
+  isocut.push_back("b060_e075");
+  isocut.push_back("b060_e100");
+  isocut.push_back("b060_e125");
+
+  isocut.push_back("b075_e045");
+  isocut.push_back("b075_e050");
+  isocut.push_back("b075_e055");
+  isocut.push_back("b075_e060");
+  isocut.push_back("b075_e065");
+  isocut.push_back("b075_e075");
+  isocut.push_back("b075_e100");
+  isocut.push_back("b075_e125");
+
+  isocut.push_back("b100_e045");
+  isocut.push_back("b100_e050");
+  isocut.push_back("b100_e055");
+  isocut.push_back("b100_e060");
+  isocut.push_back("b100_e065");
+  isocut.push_back("b100_e075");
+  isocut.push_back("b100_e100");
+  isocut.push_back("b100_e125");
+
+  isocut.push_back("b125_e045");
+  isocut.push_back("b125_e050");
+  isocut.push_back("b125_e055");
+  isocut.push_back("b125_e060");
+  isocut.push_back("b125_e065");
+  isocut.push_back("b125_e075");
+  isocut.push_back("b125_e100");
+  isocut.push_back("b125_e125");
 
 
   std::vector<TString> fakes;
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
+  fakes.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_d0_dxysig");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
+  fakes.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_nod0_dxysig");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_B");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_C");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_D");
@@ -138,16 +155,23 @@ void MakeFRRootFile(){
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_H");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_iso04");
   fakes.push_back("ELECTRON16_HN_TIGHT_dijet_iso06");
-  fakes.push_back("ELECTRON_POG_TIGHT_dijet_pog");
+  fakes.push_back("ELECTRON16_FR_POG_TIGHT_dijet_pog");
+  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_dijet_pog");
+  fakes.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog");
+  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog");
+  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva");
 
   std::vector<TString> fakes_opt;
   fakes_opt.push_back("HNTight_");
+  fakes_opt.push_back("HNTight_dxysig_");
+  fakes_opt.push_back("HNTight_miniiso_dxysig_");
   
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
       cout << *it2 << endl;
       if(!CheckFile(fdata))return;
       if(!CheckFile(fmc))return;
+
       TString denom ="LooseEl" + *it + "_"+ *it2;
       TString num ="TightEl" + *it +  "_"+ *it2;
       //if (!denom.Contains("0")){
@@ -226,16 +250,23 @@ void MakeFRRootFile(){
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
       for(vector<TString>::iterator it = fakes_opt.begin(); it!=fakes_opt.end(); ++it){
-        cout << *it2 << endl;
+
+	if(it3->Contains("dxy") && it->Contains("mini")) continue;
+
         if(!CheckFile(fdata))return;
         if(!CheckFile(fmc))return;
         TString denom ="LooseEl" + *it + *it3 +"_dijet_nod0_"+ *it2;
         TString num ="TightEl" + *it +  *it3 +"_dijet_nod0_"+ *it2;
-        //if (!denom.Contains("0")){
-        //  denom ="LooseEl" + *it+ *it2;
-        //  num ="TightEl" + *it +  *it2;
-	//
-        //}
+	if(it->Contains("dxy")){
+	  denom ="LooseEl" + *it + *it3 +"_dijet_nod0_dxysig_"+ *it2;
+	  num ="TightEl" + *it +  *it3 +"_dijet_nod0_dxysig_"+ *it2;
+	}
+	if(it->Contains("miniiso")){
+          denom ="LooseEl" + *it + *it3+ "_dijet_nod0_dxysig_miniiso_"+ *it2;
+          num ="TightEl" + *it + *it3+  "_dijet_nod0_dxysig_miniiso_"+ *it2;
+        }
+
+
         TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
         TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
 

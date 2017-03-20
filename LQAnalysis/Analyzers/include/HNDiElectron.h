@@ -35,6 +35,7 @@ class HNDiElectron : public AnalyzerCore {
   bool CheckSignalRegion( bool isss,  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
 
   void FillTriggerEfficiency(TString cut, float w, TString label,  std::vector<TString> list);
+  void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets);
 
   float GetTightWeight();
   float  GetMediumWeight();

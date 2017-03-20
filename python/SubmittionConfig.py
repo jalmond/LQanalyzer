@@ -62,6 +62,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
     if defuseskim == "SKTree_DiLepSkim" :
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+    if defuseskim == "SKTree_TriLepSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+    if defuseskim == "SKTree_NoSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion
 
     if defrunnp == "True":
         defoutput_file_skim_tag=defchannel
@@ -75,7 +79,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defuseskim == "SKTree_DiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
             foutname="SK"+foutname+"_dilep_cat_"+defcatversion
-        
+        if defuseskim == "SKTree_TriLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
+
             
         defFinaloutputdirMC=""
 
@@ -90,15 +97,33 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
 
 
     elif defruncf == "True":
-        print ""
+        defoutput_file_skim_tag=defchannel
+        foutname="chargeflip"
+        if defuseskim == "FLATCAT":
+            defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+            foutname=foutname+"_cat_"+defcatversion
+        if defuseskim == "SKTree_LeptonSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
+            foutname="SK"+foutname+"_cat_"+defcatversion
+        if defuseskim == "SKTree_DiLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_dilep_cat_"+defcatversion
+        if defuseskim == "SKTree_TriLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
+            foutname="SK"+foutname+"_trilep_cat_"+defcatversion
+
     else:
         defoutput_file_skim_tag=defchannel
         if defuseskim == "FLATCAT":
             defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
+        if defuseskim == "SKTree_NoSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_nocut_cat_"+defcatversion            
         if defuseskim == "SKTree_LeptonSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_cat_"+defcatversion
         if defuseskim == "SKTree_DiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
+        if defuseskim == "SKTree_TriLepSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion            
 
         defFinaloutputdirMC=""
 
@@ -191,6 +216,8 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         for line in read_file_jobsummary:
             if os.getenv("USER") in line:
                 tmpsample=defsample
+                if not "True" in line:
+                    continue
                 if len(defsample) == 1:
                     tmpsample="_"+tmpsample+" "
                 if tmpsample in line and defskim in line and defcycle in line:
@@ -471,7 +498,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if submitall:
         return 1000
 
-    expectedjobnfiles=GetNFiles(deftagger, defsample, defcycle,defskim)                                                                                              
+    expectedjobnfiles=int(GetNFiles(deftagger, defsample, defcycle,defskim))                                                                                             
     if "SKTreeMaker" in defcycle:
         return expectedjobnfiles
 
@@ -728,8 +755,10 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
         defsample +="_lepton"
     if "SKTree_DiLepSkim"in defskim:
         defsample +="_dilepton"
-
-
+    if "SKTree_TriLepSkim"in defskim:
+        defsample +="_trilepton"    
+    if "SKTree_NoSkim" in defskim:
+        defsample +="_nocut"    
     
     jobline=""
     list_tags=GetList()
@@ -955,6 +984,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "TriLep":
             skimtag= "_trilep"
+        elif defskim == "NoCut":
+            skimtag= "_nocut"
         outsamplename=  defcycle + "_" + defchannel + "_SKnonprompt"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
         if not mergedname:
             outsamplename=  defcycle + tmpname + ".root"
@@ -966,6 +997,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "TriLep":
             skimtag= "_trilep"
+        elif defskim == "NoCut":
+            skimtag= "_nocut"
         outsamplename=  defcycle + "_" + defchannel + "SKchargeflip_"+skimtag+ "_cat_" +  str(output_catversion)+ ".root"
         if not mergedname:
             outsamplename=  defcycle + tmpname + ".root"
@@ -980,11 +1013,14 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
     if "SKTreeMaker" in defcycle:
         if ismc:
             if defskim == "DiLep":
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
-            elif defskim == "TriLep":
                 return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
+            elif defskim == "Lepton":
+                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
             else:
-                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
+                if defcycle == "SKTreeMakerNoCut":
+                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCNoCut/"+defsample+"/"
+                else:
+                    return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+defsample+"/"
                                                     
     return outsamplename    
 
@@ -1348,7 +1384,8 @@ elif useskim == "SKTree_DiLepSkim":
     skim_print="DiLep. "
 elif useskim == "SKTree_TriLepSkim":
     skim_print="TriLep. "
-
+elif useskim == "SKTree_NoSkim":
+    skim_print="NoCut  "
 
 sample = sample.replace(":", " ")
 sample = sample.replace("!!", " ")
@@ -1514,7 +1551,7 @@ sample_times=[]
 tmpnjobs_for_submittion=0
 
 ### rundebug=True will not submit any jobs and debug.txt file will be produced in ./
-rundebug=True
+rundebug=False
 if rundebug:
     file_debug = open("debug.txt","w")
     file_debug.write("DEBUG \n")
@@ -1530,14 +1567,14 @@ for s in sample:
         file_debug = open("debug.txt","a")
         file_debug.write(s + " " + str(stime) + "\n")
         file_debug.close()
-    s_nfile=GetNFiles(tagger, s, cycle,useskim)
+    s_nfile=int(GetNFiles(tagger, s, cycle,useskim))
     njobfiles+=s_nfile
 
     ### 90000 is 20 minutes for 25 job
     ### time of previous job is > 90000 then this job is sent to longq
     ### if jobs is > 10000 then number of jobs sent to batch queue is > 10, and chosen so that the time is similar to longest expected job
     if stime > 60000.:
-        nlongjobfiles=nlongjobfiles+GetNFiles(tagger, s, cycle,useskim)
+        nlongjobfiles=nlongjobfiles+int(GetNFiles(tagger, s, cycle,useskim))
         ### will be true if 25 jobs take > 20 minutes OR the job is a new job
         islongjob.append(True)
     else:

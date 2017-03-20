@@ -67,6 +67,7 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
 
   map_sig["h_LeptonDZ"]               = SetupHist("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
   map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
+  map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -10. , 10.);
   
   
   /// Lepton/Jet/Lepton dR
@@ -105,6 +106,7 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   
   /// MET plots
   map_sig["h_PFMET"]                  = SetupHist("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
+  map_sig["h_PFMET_ST2"]                  = SetupHist("h_PFMET_ST2_"               + name,"Missing Et",100,0.0,200.0, "E_{T}/S^{2}_{T}");
   map_sig["h_PFMET_phi"]              = SetupHist("h_PFMET_phi_"           + name,"Missing Et",100,-3.2,3.2);
 
 
@@ -352,6 +354,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPhi",elit->Phi(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
     Fill("h_LeptonDXY", elit->dxy(),weight);
+    Fill("h_LeptonDXYSig", elit->dxySig() ,weight);
     Fill("h_LeptonDZ", elit->dz(),weight);
      
     float el_reliso_03 =  elit->PFRelIso(0.3);
@@ -429,6 +432,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   Fill("h_HT", ht,weight);
   Fill("h_ST", st,weight);
+  Fill("h_PFMET_ST2",ev.PFMET()/pow(2., st), weight);
   Fill("h_Nbjets",nbjet, weight);
   Fill("h_Njets",jets.size(), weight);
   

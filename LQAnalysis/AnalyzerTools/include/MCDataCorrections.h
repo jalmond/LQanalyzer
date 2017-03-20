@@ -60,12 +60,18 @@ class MCDataCorrections{
   double ElectronScaleFactor( TString  elid, std::vector<snu::KElectron> el, int sys=0);
   double ElectronRecoScaleFactor(std::vector<snu::KElectron> el);
   double MuonScaleFactor(TString  muid, std::vector<snu::KMuon> mu, int sys=0);
+  double MuonScaleFactor_Weighted(TString  muid, std::vector<snu::KMuon> mu, int sys=0);
   double MuonISOScaleFactor(TString muid, std::vector<snu::KMuon> mu,int sys=0);
   double MuonTrackingEffScaleFactor(std::vector<snu::KMuon> mu);  
 
+  double MuonISOScaleFactorPeriodDependant(TString muid, std::vector<snu::KMuon> mu , int cat_period, int sys=0);
+  double MuonScaleFactorPeriodDependant(TString  muid, std::vector<snu::KMuon> mu, int cat_period,int sys=0);
+  
   /// Trigger 
   double TriggerScaleFactor( std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, TString trigname, int direction=0);
-
+  double TriggerScaleFactorPeriodDependant( std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, TString trigname, int catperiod, int direction=0);
+  
+  
 
   /// Other corrections
   float PileupWeightByPeriod(snu::KEvent ev);
