@@ -76,7 +76,7 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
     
     bool use_sum_genweight(false);
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
-    if(mit->first.Contains("_Schannel_")){
+    else if(mit->first.Contains("_Schannel_")){
       if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
     }
     else use_sum_genweight=false;
@@ -395,7 +395,6 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 
       lumi_file <<  "SK" << mit2->second << "_trilep  " << mit4->second << " " << mit5->second << " " <<  mit3->second <<" "  << mit->second << " /data2/CatNtuples/" + string(version.Data()) +"/SKTrees/MCTriLep/" <<  mit2->second << "/" <<endl;
     }
-
   }
   string lqdir = getenv("LQANALYZER_DIR");
   string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";

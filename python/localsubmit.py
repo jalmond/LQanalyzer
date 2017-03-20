@@ -358,6 +358,7 @@ if cycle == "SKTreeMakerTriLep":
 singlejob = number_of_cores==1            
 if "SKTreeMaker" in cycle:
     singlejob=False
+    running_batch=True
 
 #### determine if input is data/mc
 mc = len(sample)>1
@@ -586,6 +587,10 @@ os.system("ls " + InputDir + "/*.root > " + local_sub_dir + "/inputlist.txt")
 isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
+
+if number_of_files == 1 and not setnumber_of_cores:
+    singlejob=False
+    running_batch=True
 
 if DEBUG == "True":
     print "Job has " + str(number_of_files) + " files to process:"
@@ -919,6 +924,9 @@ if running_batch:
     print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     print "In case user wants to kill job do : source " + output+ "JobKill.sh"
     print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+
+
 
 ##########################################################
 ## wait and do merging (also remove old log file/rootfiles

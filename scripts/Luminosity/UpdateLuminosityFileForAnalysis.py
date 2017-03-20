@@ -177,10 +177,32 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
 
 
                     if "SKTree" in line:
-                        if "MCDiLep" in line:
+                        if "MCTriLep" in line:
                             if isNewSample:
                                 file_samplelist.write(line)
                 modlist.close()
+
+            elif "#### NoCut" in xline:
+                file_samplelist.write(xline)
+                modlist=open(modlistpath,"r")
+                for line in modlist:
+                    isNewSample=False
+                    split_modline=line.split()
+                    if len(split_modline) == 6:
+                        for xn in NewSampleList:
+                            xnsplit = xn.split()
+                            if len(xnsplit) == 4:
+                                if (xnsplit[0] + "_nocut")  in line or xnsplit[1] in line:
+                                    isNewSample=True
+
+
+
+                    if "SKTree" in line:
+                        if "MCNoCut" in line:
+                            if isNewSample:
+                                file_samplelist.write(line)
+                modlist.close()
+
 
             else:
                 file_samplelist.write(xline)

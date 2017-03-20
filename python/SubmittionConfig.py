@@ -185,11 +185,11 @@ def NewForat(ct):
 def GetNFiles( deftagger,defsample,defcycle,defskim):
 
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return -999
+        return 1000.
 
 
     nit=2
-    avg_time=-999
+    avg_time=1000.
     checkdate = datetime.datetime.now()
     tmpday=int(checkdate.strftime("%d"))
     diff = datetime.timedelta(days=(tmpday+1))
@@ -197,7 +197,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
     get_nfiles=0
     while avg_time < 0:
         if nit < 0:
-            return -999
+            return 1000.
         nit =nit-1
         #### get previous month                                                                                                                                                 
         checkdate=checkdate-diff
@@ -208,7 +208,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         file_jobsummary="/data1//LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/JobSummary"+str(GetMonth(int(month)))+"_20"+year+".txt"
 
         if not os.path.exists(file_jobsummary):
-            return -999
+            return 1000.
 
         read_file_jobsummary = open(file_jobsummary,"r")
     
@@ -234,7 +234,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         else:
             return get_nfiles
 
-    return -999
+    return 1000.
 
 
 def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundebug):
@@ -244,7 +244,7 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
     
 
     nit=2
-    avg_time=-999
+    avg_time=1000.
     checkdate = datetime.datetime.now()
     tmpday=int(checkdate.strftime("%d"))
     diff = datetime.timedelta(days=(tmpday+1))
@@ -488,7 +488,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if rundebug:
         file_debug.write("deftagger " + deftagger + " defsample = " + defsample + " defskim = " + defskim + " defqueue = " + defqueue + "\n")
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
-        return 10
+        return 20
    
        
     if ncores_job == 1:
@@ -506,7 +506,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     
     if expectedjobnfiles < 0:
         jobsummary.append( "current sample/skim has not been processed before. Setting number of of jobs to 20 as default.")
-        return 10
+        return 20
 
 
     if rundebug:
@@ -643,7 +643,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
         if longestjobtime < 0.:
             if rundebug:
                 file_debug.close()
-            return 10
+            return 20
 
 
     ### expectedjobtime = time per file if ran 1 job in bacth queue
@@ -655,13 +655,13 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
         print "current job has not been processed before. Setting number of of jobs to 20 as default."
         if rundebug:
             file_debug.close()
-        return 10
+        return 20
 
     if expectedjobtime  == 1000.:
         print "current job has not been processed before. Setting number of of jobs to 20 as default."
         if rundebug:
             file_debug.close()
-        return 10
+        return 20
 
     ## now this is total time expcected to run for all files
     #expectedjobtime = expectedjobtime* expectedjobnfiles

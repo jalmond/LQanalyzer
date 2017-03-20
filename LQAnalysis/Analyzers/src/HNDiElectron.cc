@@ -26,6 +26,9 @@ HNDiElectron::HNDiElectron() :  AnalyzerCore(),  out_electrons(0) {
 
   mapcounter.clear();
 
+  functionality = HNDiElectron::VALIDATION;
+
+
   // To have the correct name in the log:                                                                                                                            
   SetLogName("HNDiElectron");
 
@@ -51,29 +54,35 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
 
-
-   vector<TString> labels;
-   labels.push_back("hn"); 
-   //labels.push_back("medium");   // pog numbers
-   labels.push_back("tight");    // pog numbers 
    
-   for(unsigned int il = 0; il < labels.size(); il++){
-     TString label = labels.at(il);
-     continue;
-     MakeCleverHistograms(sighist_ee,label + "_SSee_1jet");
-     MakeCleverHistograms(sighist_ee,label + "_SSee_DiJet");
-     MakeCleverHistograms(sighist_ee,label + "_SSPreselection");
-     MakeCleverHistograms(sighist_ee,label + "_OSee_1jet");
-     MakeCleverHistograms(sighist_ee,label + "_OSee_DiJet");
-     MakeCleverHistograms(sighist_ee,label + "_OSPreselection");
-     MakeCleverHistograms(sighist_ee,label + "_LowMass");
-     MakeCleverHistograms(sighist_ee,label + "_MediumMass");
-     MakeCleverHistograms(sighist_ee,label + "_HighMass");
-     MakeCleverHistograms(sighist_ee,label + "_LowMassCR");
-     MakeCleverHistograms(sighist_ee,label + "_MediumMassCR");
-     MakeCleverHistograms(sighist_ee,label + "_HighMassCR");
+   if(functionality == HNDiElectron::ANALYSIS){
+     vector<TString> labels;
+     labels.push_back("hn"); 
+     //labels.push_back("medium");   // pog numbers
+     labels.push_back("tight");    // pog numbers 
+     
+     for(unsigned int il = 0; il < labels.size(); il++){
+       TString label = labels.at(il);
+       continue;
+       MakeCleverHistograms(sighist_ee,label + "_SSee_1jet");
+       MakeCleverHistograms(sighist_ee,label + "_SSee_DiJet");
+       MakeCleverHistograms(sighist_ee,label + "_SSPreselection");
+       MakeCleverHistograms(sighist_ee,label + "_OSee_1jet");
+       MakeCleverHistograms(sighist_ee,label + "_OSee_DiJet");
+       MakeCleverHistograms(sighist_ee,label + "_OSPreselection");
+       MakeCleverHistograms(sighist_ee,label + "_LowMass");
+       MakeCleverHistograms(sighist_ee,label + "_MediumMass");
+       MakeCleverHistograms(sighist_ee,label + "_HighMass");
+       MakeCleverHistograms(sighist_ee,label + "_LowMassCR");
+       MakeCleverHistograms(sighist_ee,label + "_MediumMassCR");
+       MakeCleverHistograms(sighist_ee,label + "_HighMassCR");
+     }
    }
-   
+   else if(functionality == HNDiElectron::VALIDATION){
+     MakeCleverHistograms(sighist_ee,"OSDiElectron");
+     MakeCleverHistograms(sighist_ee,"SSDiElectron");
+     MakeCleverHistograms(sighist_ee,"SingleElectron_Wregion");
+   }
    
 
    /// Validation signalplots
@@ -93,11 +102,131 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   if(!isData)weight*= MCweight;
   
-  std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
+  if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
+  if(!PassMETFilter()) return;     /// Initial event cuts :                                                                                                                                                                                                                 
 
+
+  std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
+  std::vector<snu::KElectron> electronTightColl=GetElectrons(TString("ELECTRON_POG_TIGHT"),15., 2.5);
+  std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
+  std::vector<snu::KJet> jets =  GetJets("JET_HN");
+
+  if(functionality == HNDiElectron::VALIDATION){
+
+    /// make validation plots for dielectron events
+
+    float trigger_sf(1.);
+    float id_iso_sf(1.);
+    float trigger_ps(1.);
+    float reco_weight=1.;
+    float puweight(1.);
+    float ev_weight(1.);
+    
+    bool _diel =   isData ?  (k_channel.Contains("DoubleEG")) : true ;
+    bool _singleel =   isData ?  (k_channel.Contains("SingleElectron")) : true ;
+    
+    if(_diel){
+      /// e+e-
+      TString analysis_trigger="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+      /// Trigger List (unprescaled)
+      
+      
+      std::vector<TString> triggerslist;
+      triggerslist.push_back(analysis_trigger);
+      
+      if(PassTrigger(analysis_trigger)){
+	counter("Trigger_diel",weight);
+	puweight=mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent());
+	
+	if(electronTightColl.size() == 2){
+	  counter("pog_diel",weight);
+	  
+	  if(!(muonVetoColl.size() > 0 && electronVetoColl.size() > 2)){
+	    counter("vetolepton_diel",weight);
+	    
+	    if(!isData){
+	      id_iso_sf=   mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT", electronTightColl,0);
+	      trigger_ps= WeightByTrigger(analysis_trigger, TargetLumi)  ;
+	      reco_weight = mcdata_correction->ElectronRecoScaleFactor(electronTightColl);
+	      ev_weight = weight * trigger_sf * id_iso_sf * reco_weight * puweight*trigger_ps;
+	      
+	    }
+	    
+	    if(OppositeCharge(electronTightColl)){
+	      counter("os_diel",weight);
+	      
+	      if(electronTightColl.at(0).Pt() > 25.){
+		if(GetDiLepMass(electronTightColl) < 120. && GetDiLepMass(electronTightColl)  > 60. ){
+		  
+		  FillHist("zpeak_ee_nopurw", GetDiLepMass(electronTightColl), weight*id_iso_sf*trigger_sf, 0., 200.,400);
+		  FillHist("zpeak_ee_purw", GetDiLepMass(electronTightColl),    weight*id_iso_sf*trigger_sf*puweight, 0., 200.,400);
+		  
+		  
+		}
+		FillCLHist(sighist_ee, "OSDiElectron", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+		
+	      } // pt cuts
+	    }// e+e-
+	    else{
+	      counter("ss_diel",weight);
+	      
+	      FillCLHist(sighist_ee, "SSDiElectron", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+	    }
+	  } // veto leptons 
+	}// 2 el
+      } /// DiEl Trigger
+      return;
+    }
+    
+    if(_singleel){
+      /// e+e-                                                                                                                                                                                                                                                               
+      TString analysis_trigger="HLT_Ele27_WPTight_Gsf_v";
+      /// Trigger List (unprescaled)                                                                                                                                                                                                                                         
+      
+
+      std::vector<TString> triggerslist;
+      triggerslist.push_back(analysis_trigger);
+
+      if(PassTrigger(analysis_trigger)){
+        counter("Trigger_singleel",weight);
+	puweight=mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent());
+	
+        if(electronTightColl.size() == 1){
+          counter("pog_singleel",weight);
+	  
+          if(!(muonVetoColl.size() > 0 && electronVetoColl.size() > 1)){
+            counter("vetolepton_singleel",weight);
+	    
+            if(!isData){
+              id_iso_sf=   mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT", electronTightColl,0);
+              trigger_ps= WeightByTrigger(analysis_trigger, TargetLumi)  ;
+              reco_weight = mcdata_correction->ElectronRecoScaleFactor(electronTightColl);
+              ev_weight = weight * trigger_sf * id_iso_sf * reco_weight * puweight*trigger_ps;
+	      
+            }
+	    
+	    if(electronTightColl.at(0).Pt() > 30.){
+	      
+	      float METdphi = TVector2::Phi_mpi_pi(electronTightColl.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
+	      float MT=(2.* electronTightColl.at(0).Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
+	      
+	      if(MT > 40. && eventbase->GetEvent().MET(snu::KEvent::pfmet) > 30.) FillCLHist(sighist_ee, "SingleElectron_Wregion", eventbase->GetEvent(),  muonVetoColl,electronTightColl,jets, ev_weight);
+	      
+	    } // pt cuts                                                                                                                                                                                                                                                   
+	  } // veto leptons                                                                                                                                                                                                                                                  
+	}// 2 el                                                                                                                                                                                                                                                             
+      } /// El Trigger                                                                                                                                                                                                                                                     
+    }
+  
+  
+    
+      
+    return;
+  }
+  
   
   /// make plots of POG + AN ID Efficiency
-
+  
   GetSSSignalEfficiency(weight);
   GetOSSignalEfficiency(weight);
     /// Validation of signal MC
@@ -109,13 +238,12 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   GetTriggEfficiency();
 
 
-  std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
 
   if ((electronVetoColl.size() + muonVetoColl.size()) >2) return;
   
   CheckJetsCloseToLeptons(GetElectrons("ELECTRON_HN_VETO"), GetJets("JET_NOLEPTONVETO"));
   std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
-  std::vector<snu::KJet> jets = GetJets("JET_HN");
+
   FillHist("NFatJets", fatjetcoll.size(), weight, 0., 10., 10);
   FillHist("2DJets", fatjetcoll.size(), jets.size(),  weight, 0., 10., 10,  0., 10., 10);
   for(unsigned int ifjet=0; ifjet < fatjetcoll.size(); ifjet++){

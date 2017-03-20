@@ -580,37 +580,28 @@ map<TString, TString>  GetMissingMap(TString cversion, TString listpath){
 
 
 map<TString, TString>  GetTriLepMap2016(TString listpath){
+
+
   map<TString, TString> trimap;
 
+  ifstream datasetname_file(datasetfile.Data());
+  if(!datasetname_file){
+    cerr << "Did not find " + datasetfile + ", exiting ..." << endl;
+    return trimap;
+  }
+  while(!datasetname_file.eof()) {
+    string samplealias;
+    string datasetname;
+    double xsec;
+    string fullname;
+    datasetname_file>> samplealias;
+    datasetname_file >> datasetname;
+    datasetname_file >> xsec;
+    datasetname_file >>fullname;
 
-  trimap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY50plus_MCatNLO";
-  trimap["DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] = "DY10to50_MCatNLO";
-  trimap["DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY50plus_madgraph";
-  trimap["DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8"] = "DY5to50_madgraph";
-
-  trimap["ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbar_Powheg";
-  trimap["ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_t_Powheg";
-  trimap["ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tbarW_Powheg";
-  trimap["ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1"] ="singletop_tW_Powheg";
-  trimap["ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1"] = "singletop_s_MCatNLO";
-  trimap["TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="TT_MCatNLO";
-
-  trimap["WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"] ="WJets_MCatNLO";
-  trimap["WW_TuneCUETP8M1_13TeV-pythia8"] ="WW_pythia8";
-  trimap["WZ_TuneCUETP8M1_13TeV-pythia8"] ="WZ_pythia8";
-  trimap["ZZ_TuneCUETP8M1_13TeV-pythia8"] ="ZZ_pythia8";
-
-  trimap["WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WZZ_MCatNLO";
-  trimap["ZZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "ZZZ_MCatNLO";
-  trimap["WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8"] = "WWZ_MCatNLO";
-
-  trimap["WWW_4F_TuneCUETP8M1_13TeV-amcatnlo-pythia8"]="WWW_MCatNLO";;
-
-  trimap["ttWJets_13TeV_madgraphMLM"]="ttWJets";
-  trimap["ttZJets_13TeV_madgraphMLM"]="ttZJets";
-  trimap["ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]="singletop_tW_nofullhad_Powheg";
-  trimap["ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1"]="singletop_tbarW_nofullhad_Powheg";
-
+    if(samplealias=="END") break;
+    if (! datasetname.empty()) trimap[TString(datasetname)] = samplealias;
+  }
 
   return trimap;
 }

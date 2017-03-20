@@ -10,6 +10,12 @@ class HNDiElectron : public AnalyzerCore {
   HNDiElectron();
   ~HNDiElectron();
 
+  enum FUNC {
+    VALIDATION=0,
+    ANALYSIS=1, 
+    OPT=2
+  };
+
   /// Functions from core
   virtual void BeginCycle() throw( LQError );
   virtual void BeginEvent()throw( LQError );
@@ -50,6 +56,9 @@ class HNDiElectron : public AnalyzerCore {
   void counter(TString cut, float w);
 
  private:
+
+  FUNC functionality ;
+
 
   std::map<TString, float> mapcounter;
   
