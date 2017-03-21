@@ -584,9 +584,9 @@ map<TString, TString>  GetTriLepMap2016(TString listpath){
 
   map<TString, TString> trimap;
 
-  ifstream datasetname_file(datasetfile.Data());
+  ifstream datasetname_file(listpath.Data());
   if(!datasetname_file){
-    cerr << "Did not find " + datasetfile + ", exiting ..." << endl;
+    cerr << "Did not find " + listpath + ", exiting ..." << endl;
     return trimap;
   }
   while(!datasetname_file.eof()) {

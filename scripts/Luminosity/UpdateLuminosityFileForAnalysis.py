@@ -443,6 +443,7 @@ if os.path.exists(path_full_sample_list):
                 os.system("chmod 777 " + samplelist)
                 print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
+                os.system("chmod 777 " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
             else:
                 print "You ignored changes. The sample list will not be updated"
@@ -483,7 +484,7 @@ if os.path.exists(path_full_sample_list):
                 os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
                 
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
-        sys.exit()    
+
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
@@ -520,6 +521,7 @@ else:
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
     
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
+    sys.exit()
     os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
