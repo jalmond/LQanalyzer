@@ -230,10 +230,6 @@ double MCDataCorrections::MuonScaleFactorPeriodDependant(TString muid, vector<sn
   else tag = "_GH";
 
   double min_pt = 20., max_pt = 120.;
-  if(muid=="MUON_HN_TRI_TIGHT"){
-    min_pt = 20.;
-    max_pt = 200.;
-  }
   
   if(mu.size() == 0) return 1.;
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
@@ -251,63 +247,6 @@ double MCDataCorrections::MuonScaleFactorPeriodDependant(TString muid, vector<sn
 
   return sf;
 }
-
-double MCDataCorrections::MuonScaleFactor_Weighted(TString muid, vector<snu::KMuon> mu,int sys){
-  float sf= 1.;
-  float sferr=1.;
-  if(corr_isdata) return 1.;
-  if(mu.size() == 0) return 1.;
-  
-  // ref https://indico.cern.ch/event/595070/contributions/2405095/attachments/1388822/2114847/MC_12_12_2016.pdf
-
-  double min_pt = 20., max_pt = 120.;
-  if(muid=="MUON_HN_TRI_TIGHT"){
-    min_pt = 20.;
-    max_pt = 200.;
-  }
-
-  double lumi_periodB = 5.929001722;
-  double lumi_periodC = 2.645968083;
-  double lumi_periodD = 4.35344881;
-  double lumi_periodE = 4.049732039;
-  double lumi_periodF = 3.157020934;
-  double lumi_periodG = 7.549615806;
-  double lumi_periodH = 8.545039549 + 0.216782873;
-  double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
-
-  double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
-  double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
-
-  TString tag = "";
-
-  for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
-    float mupt=itmu->MiniAODPt();
-
-    if(itmu->MiniAODPt() < min_pt) mupt = min_pt+1.;
-    if(itmu->MiniAODPt() >= max_pt) mupt = max_pt-1.;
-
-    //==== BtoF
-    double SF_BtoF(1.);
-    tag = "_BCDEF";
-    if(CheckCorrectionHist("ID" +tag+ "_"+ muid)){
-      sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
-      SF_BtoF = (1. + sferr) * GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-    //==== GtoH
-    double SF_GtoH(1.);
-    tag = "_GH";
-    if(CheckCorrectionHist("ID" +tag+ "_"+ muid)){
-      sferr = double(sys)*GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinError( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
-      SF_GtoH = (1. + sferr) * GetCorrectionHist("ID" +tag+ "_"+ muid)->GetBinContent( GetCorrectionHist("ID" +tag+ "_"+ muid)->FindBin( fabs(itmu->Eta()), mupt) );
-    }
-
-    sf *= (WeightBtoF*SF_BtoF + WeightGtoH*SF_GtoH);
-
-  }
-
-  return sf;
-}
-
 
 double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<snu::KMuon> mu,  TString trigname, int direction){
 
