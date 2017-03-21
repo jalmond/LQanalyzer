@@ -60,7 +60,6 @@ class MCDataCorrections{
   double ElectronScaleFactor( TString  elid, std::vector<snu::KElectron> el, int sys=0);
   double ElectronRecoScaleFactor(std::vector<snu::KElectron> el);
   double MuonScaleFactor(TString  muid, std::vector<snu::KMuon> mu, int sys=0);
-  double MuonScaleFactor_Weighted(TString  muid, std::vector<snu::KMuon> mu, int sys=0);
   double MuonISOScaleFactor(TString muid, std::vector<snu::KMuon> mu,int sys=0);
   double MuonTrackingEffScaleFactor(std::vector<snu::KMuon> mu);  
 
