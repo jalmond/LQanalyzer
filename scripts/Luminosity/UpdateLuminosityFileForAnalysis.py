@@ -439,6 +439,7 @@ if os.path.exists(path_full_sample_list):
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
             if input == "Y":
                 print "replacing " + samplelist + " with  " + newsamplelist
+                os.system("chmod 777 " + newsamplelist)
                 os.system("cp " + newsamplelist + " " + samplelist)
                 os.system("chmod 777 " + samplelist)
                 print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user

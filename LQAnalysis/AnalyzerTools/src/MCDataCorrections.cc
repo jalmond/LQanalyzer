@@ -30,7 +30,7 @@ MCDataCorrections::MCDataCorrections() {
   string pileupdir = getenv("PILEUPFILEDIR");
 
   FillCorrectionHists();
-  //reweightPU = new Reweight((pileupdir + "/" + getenv("PUFILE")).c_str());       
+  reweightPU = new Reweight((pileupdir + "/DataPileUp_2016_Moriond.root").c_str());       
 
 }
 
@@ -43,7 +43,7 @@ MCDataCorrections::MCDataCorrections(bool isdata) {
 
 MCDataCorrections::~MCDataCorrections(){
   delete rc;
-  ///  delete reweightPU;
+  delete reweightPU;
   CorrectionMap.clear();
   CorrectionMapGraph.clear();
 }
@@ -252,8 +252,8 @@ double MCDataCorrections::TriggerScaleFactor( vector<snu::KElectron> el, vector<
 
 
   if(k_period < 0) {
-    /// If k_period < 0 then using ALL data periods and use weighted SF                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-
+    /// If k_period < 0 then using ALL data periods and use weighted SF                                                                                                        
+    
     double lumi_periodB = 5.929001722;
     double lumi_periodC = 2.645968083;
     double lumi_periodD = 4.35344881;
@@ -443,13 +443,13 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el){
 float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
   
   if(corr_isdata) return 1.;
-  return 1.;
-  //return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
+  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
 }
 
 
 float MCDataCorrections::PileupWeightByPeriod(snu::KEvent ev){
-
+  
+  if(k_period < 0) return CatPileupWeight(ev,0);
   return ev.PeriodPileUpWeight(k_period);
   
 }
