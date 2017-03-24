@@ -121,11 +121,15 @@ void PileupValidation::ExecuteEvents()throw( LQError ){
     TString analysis_trigger="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
     std::vector<TString> triggerslist;
     triggerslist.push_back(analysis_trigger);
-    if(PassTrigger(analysis_trigger)){
+
+
+    if(!isData ||  (isData&&PassTrigger(analysis_trigger))  ){
+
       std::vector<snu::KElectron> electronTightColl=GetElectrons(TString("ELECTRON_POG_TIGHT"),15., 2.5);
-          
+      
+      if(!isData) weight*=  mcdata_correction->GetDoubleEGTriggerEff(electronTightColl);
       if(OppositeCharge(electronTightColl)){
-	if(electronTightColl.at(0).Pt() > 30. && electronTightColl.at(1).Pt() > 20.){
+	if(electronTightColl.at(0).Pt() > 26. && electronTightColl.at(1).Pt() > 22.){
 	  if(GetDiLepMass(electronTightColl) < 120. && GetDiLepMass(electronTightColl)  > 60. ){
 	    if(isData) FillHist("Nvtx_nocut_data",  eventbase->GetEvent().nVertices() ,weight, 0. , 75., 75);
 	    else  FillHist("Nvtx_nocut_mc",  eventbase->GetEvent().nVertices() ,weight, 0. , 75., 75);
@@ -140,11 +144,14 @@ void PileupValidation::ExecuteEvents()throw( LQError ){
     TString analysis_trigger="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
     std::vector<TString> triggerslist;
     triggerslist.push_back(analysis_trigger);
-    if(PassTrigger(analysis_trigger)){
-      std::vector<snu::KElectron> electronTightColl=GetElectrons(TString("ELECTRON_POG_TIGHT"),15., 2.5);
 
+    if(!isData ||  (isData&&PassTrigger(analysis_trigger))  ){
+      std::vector<snu::KElectron> electronTightColl=GetElectrons(TString("ELECTRON_POG_TIGHT"),15., 2.5);
+      
+      if(!isData) weight*=  mcdata_correction->GetDoubleEGTriggerEff(electronTightColl);
+      
       if(OppositeCharge(electronTightColl)){
-        if(electronTightColl.at(0).Pt() > 30. && electronTightColl.at(1).Pt() > 20.){
+        if(electronTightColl.at(0).Pt() > 26. && electronTightColl.at(1).Pt() > 22.){
 	  
 	  float mc_corr(1.);
 	  float weight2(1.);
@@ -153,7 +160,6 @@ void PileupValidation::ExecuteEvents()throw( LQError ){
 	  float weight4(1.);
 	  float weight5(1.);
 	  
-	  float trigger_sf(0.98);
 	  float id_iso_sf(1.);
 	  float trigger_ps(1.);
 	  float reco_weight=1.;
@@ -163,6 +169,7 @@ void PileupValidation::ExecuteEvents()throw( LQError ){
 	  if(!isData){
 	    id_iso_sf=   mcdata_correction->ElectronScaleFactor("ELECTRON_POG_TIGHT", electronTightColl,0);
 	    trigger_ps= WeightByTrigger(analysis_trigger, TargetLumi)  ;
+	    weight*= trigger_ps;
 	    reco_weight = mcdata_correction->ElectronRecoScaleFactor(electronTightColl);
 	    /// standard CMS pu weight
 	    weight2 = weight * eventbase->GetEvent().PileUpWeight();
@@ -171,10 +178,12 @@ void PileupValidation::ExecuteEvents()throw( LQError ){
 	    weight3 = weight * mcdata_correction->UserPileupWeight(eventbase->GetEvent());
 	    /// standard CMS pu weight but different if -p X is set in submittion                                                                                                                                                                                                                                       
 	    weight4 = weight * mcdata_correction->PileupWeightByPeriod(eventbase->GetEvent());
-	    mc_corr =  trigger_sf * id_iso_sf * reco_weight * puweight;
-	    weight*= trigger_ps;
+	    mc_corr =  id_iso_sf * reco_weight * puweight;
+
+	    /// need to ad dZ on POG https://indico.cern.ch/event/604947/contributions/2467335/attachments/1409577/2158348/EleIDSFs_IPCuts_Update.pdf
 	  }
-	  weight5 = weight * mc_corr;
+	  
+	  weight5 = weight3 * mc_corr;
 	  weight2 = weight2 *  mc_corr;
 	  weight2d = weight2d *  mc_corr;
 	  

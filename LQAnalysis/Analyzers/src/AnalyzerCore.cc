@@ -138,7 +138,9 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
+
 }
+
 
 
 void AnalyzerCore::setTDRStyle() {
@@ -1265,6 +1267,7 @@ float AnalyzerCore::WeightByTrigger(TString triggername, float tlumi){
 
   return 1.;
 }
+
 
 
 void AnalyzerCore::AddTriggerToList(TString triggername){
