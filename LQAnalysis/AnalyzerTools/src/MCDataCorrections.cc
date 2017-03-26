@@ -202,12 +202,32 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
   CheckFile(infile_sf);
   TDirectory* tempDir = getTemporaryDirectory();
   tempDir->cd();
-  TH2F* tmp =  dynamic_cast<TH2F*> (( infile_sf->Get(histsname.c_str()))->Clone());
-  CorrectionMap[label] = tmp;
-  cout << "CorrectionMap["<<label <<"] = " << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+
+  //==== for leg-by-leg strategy, we should get efficiencies, not scale factors
+  TString tmp_histsname = histsname;
+  TString tmp_filename = filename;
+  if(tmp_filename.Contains("MuonTriggerEfficiency")){
+    cout << "[MuonTriggerEfficiency]" << endl;
+    TString tmp_label = label;
+    cout << "label = "  << label << endl;
+    //==== Data
+    TH2F* tmp_Data =  dynamic_cast<TH2F*> (( infile_sf->Get((histsname+"_Data").c_str()))->Clone());
+    CorrectionMap[label+"_Data"] = tmp_Data;
+    cout << "CorrectionMap["<<label+"_Data" <<"] = " << histsname+"_Data" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+    //==== MC
+    TH2F* tmp_MC =  dynamic_cast<TH2F*> (( infile_sf->Get((histsname+"_MC").c_str()))->Clone());
+    CorrectionMap[label+"_MC"] = tmp_MC;
+    cout << "CorrectionMap["<<label+"_MC" <<"] = " << histsname+"_MC" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+  }
+  else{
+    TH2F* tmp =  dynamic_cast<TH2F*> (( infile_sf->Get(histsname.c_str()))->Clone());
+    CorrectionMap[label] = tmp;
+    cout << "CorrectionMap["<<label <<"] = " << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+  }
   infile_sf->Close();
   delete infile_sf;
   origDir->cd();
+
 }
 
 
@@ -605,7 +625,127 @@ double MCDataCorrections::GetEffDEG2(snu::KElectron el){
   return 1.;
 }
 
+//==== Trigger Scale Factor, by "leg-by-leg" strategy
 
+double MCDataCorrections::TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, int TriggerCategory, int DataOrMC, int direction){
+
+  if(k_period < 0) {
+    /// If k_period < 0 then using ALL data periods and use weighted SF                                                                                                        
+
+    double lumi_periodB = 5.929001722;
+    double lumi_periodC = 2.645968083;
+    double lumi_periodD = 4.35344881;
+    double lumi_periodE = 4.049732039;
+    double lumi_periodF = 3.157020934;
+    double lumi_periodG = 7.549615806;
+    double lumi_periodH = 8.545039549 + 0.216782873;
+    double total_lumi = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF+lumi_periodG+lumi_periodH);
+
+    double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
+    double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
+    double Eff_bf = TriggerEfficiencyLegByLegPeriodDependant(el, mu, TriggerCategory, 1, DataOrMC, direction);
+    double Eff_gh = TriggerEfficiencyLegByLegPeriodDependant(el, mu, TriggerCategory, 7, DataOrMC, direction);
+
+    double Eff_weight = WeightBtoF*Eff_bf + WeightGtoH*Eff_gh;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLeg] WeightBtoF = " << WeightBtoF << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLeg] WeightGtoH = " << WeightGtoH << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLeg] Eff_bf = " << Eff_bf << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiencyLegByLeg] Eff_gh = " << Eff_gh << endl;
+
+    return Eff_weight;
+  }
+  return TriggerEfficiencyLegByLegPeriodDependant(el, mu, TriggerCategory, k_period, DataOrMC, direction);
+
+}
+
+double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, int TriggerCategory, int catperiod, int DataOrMC, int direction){
+
+  //==== Now, only for tri MUON case..
+  //==== 1) TriggerCategory = 0
+  //==== - HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v
+  //==== - HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v
+  //==== ==> Leg1 : Mu17_TrkIsoVVL
+  //====     Leg2 : Mu8_TrkIsoVVL or TkMu8_TrkIsoVVL
+
+  if(TriggerCategory==0){
+
+    if(mu.size()<2) return 1.;
+
+    TString leg1 = "MU17";
+    TString leg2 = "MU8_OR_TKMU8";
+
+    double faileff(1.);
+
+    for(unsigned int i=0; i<mu.size()-1; i++){
+      snu::KMuon mu1 = mu.at(i);
+      for(unsigned j=i+1; j<mu.size(); j++){
+        snu::KMuon mu2 = mu.at(j);
+        double dimueff = TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(mu1, mu2, "MU17", "MU8_OR_TKMU8", DataOrMC, catperiod);
+        //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] dimueff = " << dimueff << endl;
+        
+        faileff *= (1.-dimueff);
+      }
+    }
+
+    return 1.-faileff;
+
+  }
+  else{
+    return 1.;
+  }
+
+}
+
+double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, int DataOrMC, int catperiod){
+
+  TString tag = "";
+  if(catperiod < 6) tag = "_BCDEF";
+  else tag = "_GH";
+
+  TString sample="";
+  if(DataOrMC==0) sample = "_Data";
+  else sample = "_MC";
+
+  double eta1 = abs(mu1.Eta());
+  double pt1 = mu1.Pt();
+  if(pt1>=120.) pt1 = 119.;
+  double eta2 = abs(mu2.Eta());
+  double pt2 = mu2.Pt();
+  if(pt2>120.) pt2 = 119.;
+
+  //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] tag = " << tag << ", sample = " << sample << endl;
+
+  if( (leg1=="MU17" && leg2=="MU8_OR_TKMU8") || (leg2=="MU17" && leg1=="MU8_OR_TKMU8") ){
+
+    TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+sample);
+    TH2F *hist_leg2 = GetCorrectionHist("MUON_"+leg2+"_TRIGGER"+tag+sample);
+
+    int bin_mu1 = hist_leg1->FindBin(eta1,pt1);
+    int bin_mu2 = hist_leg1->FindBin(eta2,pt2);
+
+    double eff_mu1leg1 = hist_leg1->GetBinContent(bin_mu1);
+    double eff_mu2leg2 = hist_leg2->GetBinContent(bin_mu2);
+
+    double eff_mu1leg2 = hist_leg2->GetBinContent(bin_mu1);
+    double eff_mu2leg1 = hist_leg1->GetBinContent(bin_mu2);
+
+    //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] pt1 = " << pt1 << ", eta1 = " << eta1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] => " << leg1 << " : " << eff_mu1leg1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] => " << leg2 << " : " << eff_mu1leg2 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] pt2 = " << pt2 << ", eta2 = " << eta2 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] => " << leg1 << " : " << eff_mu2leg1 << endl;
+    //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] => " << leg2 << " : " << eff_mu2leg2 << endl;
+
+    double eff = 1.-(1.-eff_mu1leg1*eff_mu2leg2)*(1.-eff_mu1leg2*eff_mu2leg1); 
+
+    return eff;
+        
+
+  } 
+  else{
+    return 1.;
+  }
+}
 
 
 

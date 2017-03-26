@@ -76,6 +76,10 @@ class MCDataCorrections{
   /// Trigger 
   double TriggerScaleFactor( std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, TString trigname, int direction=0);
   double TriggerScaleFactorPeriodDependant( std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, TString trigname, int catperiod, int direction=0);
+
+  double TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, int TriggerCategory, int DataOrMC, int direction=0);
+  double TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, int TriggerCategory, int catperiod, int DataOrMC, int direction=0);
+  double TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, int DataOrMC, int catperiod);
   
   
 
