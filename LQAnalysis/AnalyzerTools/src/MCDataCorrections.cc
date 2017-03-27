@@ -725,11 +725,11 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu
     int bin_mu1 = hist_leg1->FindBin(eta1,pt1);
     int bin_mu2 = hist_leg1->FindBin(eta2,pt2);
 
-    double eff_mu1leg1 = hist_leg1->GetBinContent(bin_mu1);
-    double eff_mu2leg2 = hist_leg2->GetBinContent(bin_mu2);
+    double eff_mu1leg1 = hist_leg1->GetBinContent( hist_leg1->FindBin(eta1,pt1) );
+    double eff_mu2leg2 = hist_leg2->GetBinContent( hist_leg2->FindBin(eta2,pt2) );
 
-    double eff_mu1leg2 = hist_leg2->GetBinContent(bin_mu1);
-    double eff_mu2leg1 = hist_leg1->GetBinContent(bin_mu2);
+    double eff_mu1leg2 = hist_leg2->GetBinContent( hist_leg2->FindBin(eta1,pt1) );
+    double eff_mu2leg1 = hist_leg1->GetBinContent( hist_leg1->FindBin(eta2,pt2) );
 
     //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] pt1 = " << pt1 << ", eta1 = " << eta1 << endl;
     //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] => " << leg1 << " : " << eff_mu1leg1 << endl;
