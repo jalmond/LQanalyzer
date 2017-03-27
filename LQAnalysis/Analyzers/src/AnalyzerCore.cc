@@ -325,6 +325,37 @@ bool  AnalyzerCore::Check(float val){
 
 
 
+float AnalyzerCore::GetKFactor(){
+  
+  if(k_sample_name.Contains("ZZTo4L_powheg")) {
+    // http://arxiv.org/abs/1405.2219
+    //  1.16[3] brings pp->ZZ from NLO to NNLO
+    return 1.16;
+  }
+  if(k_sample_name.Contains("ZZTo2L2Nu_Powheg")) {
+    // http://arxiv.org/abs/1405.2219                                                                                     
+    //  1.16[3] brings pp->ZZ from NLO to NNLO                                                                            
+    return 1.16;
+  }
+  if(k_sample_name.Contains("ZZTo2L2Q_Powheg")) {
+    // http://arxiv.org/abs/1405.2219                                                                                        //  1.16[3] brings pp->ZZ from NLO to NNLO 
+    
+    return 1.16;
+  }
+
+  if(k_sample_name.Contains("ggZZto")){
+    //  1.67 brings gg->ZZ from LO to NLO (http://arxiv.org/abs/1509.06734)
+    return 1.67;
+  }
+  if(k_sample_name.Contains("ggHtoZZ")){
+    return 1.67;
+    //AN2016_359
+  }
+
+  return 1.;
+    
+}
+
 float AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall,bool update_met){
 
   /// function returns corrected met + can be used to set event met to corrected met

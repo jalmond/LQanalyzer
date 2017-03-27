@@ -65,7 +65,7 @@ class MCDataCorrections{
 
   /// Lepton Scale Factors
   double ElectronScaleFactor( TString  elid, std::vector<snu::KElectron> el, int sys=0);
-  double ElectronRecoScaleFactor(std::vector<snu::KElectron> el);
+  double ElectronRecoScaleFactor(std::vector<snu::KElectron> el, int sys=0);
   double MuonScaleFactor(TString  muid, std::vector<snu::KMuon> mu, int sys=0);
   double MuonISOScaleFactor(TString muid, std::vector<snu::KMuon> mu,int sys=0);
   double MuonTrackingEffScaleFactor(std::vector<snu::KMuon> mu);  
@@ -81,7 +81,7 @@ class MCDataCorrections{
 
   /// Other corrections
   float PileupWeightByPeriod(snu::KEvent ev);
-  float UserPileupWeight(snu::KEvent ev);
+  float UserPileupWeight(snu::KEvent ev, int nj = -999);
   float CatPileupWeight(snu::KEvent ev, int syst=0);
   void CorrectMuonMomentum(std::vector<snu::KMuon>& k_muons, std::vector<snu::KTruth> truth);
   float GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<snu::KTruth> truth);

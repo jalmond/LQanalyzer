@@ -54,6 +54,8 @@ class AnalyzerCore : public LQCycleBase {
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
+  float GetKFactor();
+
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
   Int_t GetDataPeriod();  

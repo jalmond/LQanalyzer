@@ -575,6 +575,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     else if(k_period == "F") cycle->SetMCPeriod(5); 
     else if(k_period == "G") cycle->SetMCPeriod(6); 
     else if(k_period == "H") cycle->SetMCPeriod(7); 
+    else if(k_period == "GH") cycle->SetMCPeriod(7); 
     else cycle->SetMCPeriod(-1); 
     
     /// Check the current branch is upto date wrt the catuples

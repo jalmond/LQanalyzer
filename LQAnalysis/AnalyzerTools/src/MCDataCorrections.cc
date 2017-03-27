@@ -493,7 +493,6 @@ double  MCDataCorrections::GetDoubleEGTriggerEff(vector<snu::KElectron> el){
   if(corr_isdata) return 1.;
   
 
-
   // https://twiki.cern.ch/twiki/pub/CMS/HWW2016TriggerAndIdIsoScaleFactorsResults/AN-16-172_temp.pdf
   if(el.size() <  2.) return 0.;
   if(el.size() == 2.){
@@ -503,7 +502,14 @@ double  MCDataCorrections::GetDoubleEGTriggerEff(vector<snu::KElectron> el){
     double evt_eff = eff_tl + (1. - eff_lt) * eff_tl;
     return evt_eff;
   }
-  
+  /// This is approx correct to set nel > 2 as same form for nel=2 (Fix for correct form. when time permitss)
+  double eff_tl = GetEffDEG1(el[0]) * GetEffDEG2(el[1]);
+  double eff_lt = GetEffDEG2(el[0]) * GetEffDEG1(el[1]);
+
+  double evt_eff = eff_tl + (1. - eff_lt) * eff_tl;
+  return evt_eff;
+
+
   return 1.;
 }
 
@@ -511,7 +517,7 @@ double  MCDataCorrections::GetDoubleEGTriggerEff(vector<snu::KElectron> el){
 double MCDataCorrections::GetEffDEG1(snu::KElectron el){
   float el_eta = el.Eta();
   float el_pt = el.Pt();
-  if(el_pt < 10.) return 0.;
+  if(el_pt < 0.) return 0.;
   if(el_pt >= 100.) el_pt = 99.;
 
   if(fabs(el_eta ) > 2.5) return 0.;
@@ -540,7 +546,7 @@ double MCDataCorrections::GetEffDEG1(snu::KElectron el){
   ptbins.push_back(50.);
   ptbins.push_back(100.);
 
-  for(int i = 0 ; i <  etabins.size(); i++){
+  for(unsigned int i = 0 ; i <  etabins.size(); i++){
     if(el_eta  > etabins[i]) {
       std::map<float, std::vector<float>* >::iterator it = deg_etaptmap_leg1.find(etabins[i]);
 
@@ -561,7 +567,7 @@ double MCDataCorrections::GetEffDEG1(snu::KElectron el){
 double MCDataCorrections::GetEffDEG2(snu::KElectron el){
   float el_eta = el.Eta();
   float el_pt = el.Pt();
-  if(el_pt < 10.) return 0.;
+  if(el_pt < 0.) return 0.;
   if(el_pt >= 100.) el_pt = 99.;
 
   if(fabs(el_eta ) > 2.5) return 0.;
@@ -577,20 +583,22 @@ double MCDataCorrections::GetEffDEG2(snu::KElectron el){
   etabins.push_back(-1.6);
   etabins.push_back(-2.1);
   etabins.push_back(-2.5);
-
+  // low pt leg
   vector<float> ptbins;
-  ptbins.push_back(23.);
-  ptbins.push_back(24.);
-  ptbins.push_back(25.);
-  ptbins.push_back(26.);
+  ptbins.push_back(12.);
+  ptbins.push_back(13.);
+  ptbins.push_back(15.);
+  ptbins.push_back(18.);
+  ptbins.push_back(22.);
   ptbins.push_back(30.);
   ptbins.push_back(35.);
   ptbins.push_back(40.);
-  ptbins.push_back(45.);
   ptbins.push_back(50.);
   ptbins.push_back(100.);
 
-  for(int i = 0 ; i <  etabins.size(); i++){
+
+
+  for(unsigned int i = 0 ; i <  etabins.size(); i++){
     if(el_eta > etabins[i]) {
       std::map<float, std::vector<float>* >::iterator it = deg_etaptmap_leg2.find(etabins[i]);
       if(it == deg_etaptmap_leg2.end()){
@@ -613,15 +621,14 @@ double MCDataCorrections::GetEffDEG2(snu::KElectron el){
 double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectron> el, int sys){
   float sf= 1.;
   if(corr_isdata) return 1.;
-  
-  /// http://fcouderc.web.cern.ch/fcouderc/EGamma/scaleFactors/Moriond17/approval/RECO/passingRECO/egammaEffi.txt_egammaPlots.pdf
 
+  //http://fcouderc.web.cern.ch/fcouderc/EGamma/scaleFactors/Moriond17/approval/EleID/passingVeto80X/egammaEffi.txt_egammaPlots.pdf
   std::string sid= "";
   
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     float elpt=itel->Pt();
     if(elpt > 500.) elpt= 499.;
-    if(elpt < 25.) elpt= 25;
+    if(elpt < 10.) elpt= 11;
     
     if(CheckCorrectionHist("ID_" + elid)){
       int bin =  GetCorrectionHist("ID_" + elid)->FindBin(fabs(itel->SCEta()), elpt);
@@ -633,7 +640,7 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
   return sf;
 }
 
-double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el){
+double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el, int sys){
   
   // https://indico.cern.ch/event/604907/contributions/2452907/attachments/1401460/2139067/RecoSF_ApprovalMoriond17_25Jan2017.pdf
 
@@ -641,11 +648,20 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el){
   float sf= 1.;
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     float elpt= itel->Pt() ;
+    float unc = 0.;
+    if(elpt < 20.) unc=0.01;
+    if(elpt >  80.) unc=0.01;
     if(itel->Pt() > 500.) elpt=499.;
     if(itel->Pt() < 25.) elpt=25.;
     if(CheckCorrectionHist("EL_RECO")){
       int bin =  GetCorrectionHist("EL_RECO")->FindBin(fabs(itel->SCEta()), elpt);
       sf *= GetCorrectionHist("EL_RECO")->GetBinContent(bin);
+      if(fabs(sys) == 1){
+	float err =  GetCorrectionHist("EL_RECO")->GetBinError(bin);
+	err = sqrt (pow(err, 2.) + pow(unc, 2.));
+	if(sys == 1)sf *= (1. + err);
+	if(sys == -1)sf *= (1. - err);
+      }
     }
   }
   
@@ -653,10 +669,10 @@ double MCDataCorrections::ElectronRecoScaleFactor(vector<snu::KElectron> el){
 }
 
 
-float MCDataCorrections::UserPileupWeight(snu::KEvent ev){
+float MCDataCorrections::UserPileupWeight(snu::KEvent ev, int nj){
   
   if(corr_isdata) return 1.;
-  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")));
+  return reweightPU->GetWeight(ev.nVertices(),TString(getenv("CATVERSION")), nj);
 }
 
 

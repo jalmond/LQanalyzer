@@ -274,7 +274,7 @@ HNCommonLeptonFakes::~HNCommonLeptonFakes() {
 
 
 float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut){
-
+  
 
   // geterr = true : function returns error not event weight
   // electrons are loose electrons defined in analysis code
@@ -1077,7 +1077,7 @@ TDirectory* HNCommonLeptonFakes::getTemporaryDirectory(void) const
   return tempDir;
 }
 
-float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVector> muons, TString muid, std::vector<TLorentzVector> electrons, TString elid, std::vector<bool> isT){
+float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVector> muons, TString muid, std::vector<TLorentzVector> electrons, TString elcut, std::vector<bool> isT){
 
   unsigned int n_leptons = isT.size();
 
@@ -1116,9 +1116,9 @@ float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVect
     }
     //==== If not, it's an electron
     else{
-      fr.push_back( getFakeRate_electronEta(0, lep_pt.at(i), lep_eta.at(i), "dxysig_pt_eta_HNTight_b050_e100_40") );
+      fr.push_back( getFakeRate_electronEta(0, lep_pt.at(i), lep_eta.at(i), elcut));
       pr.push_back( getEfficiency_electron(0, lep_pt.at(i), lep_eta.at(i)) );
-      fr_err.push_back( getFakeRate_electronEta(1, lep_pt.at(i), lep_eta.at(i), "dxysig_pt_eta_HNTight_b050_e100_40") );
+      fr_err.push_back( getFakeRate_electronEta(1, lep_pt.at(i), lep_eta.at(i),  elcut));
       pr_err.push_back( getEfficiency_electron(1, lep_pt.at(i), lep_eta.at(i)) );
     }
   }

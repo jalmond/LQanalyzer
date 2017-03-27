@@ -20,10 +20,16 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   map_sig["h_jjmass"]                 = SetupHist("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_leadjetmass"]            = SetupHist("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.,"M_{j1j2} GeV");
   map_sig["h_osllmass"]               = SetupHist("h_osllmass_"          + name,"Invariant mass of the two leading os electrons",100,0,500,"M_{ll} GeV");
+  map_sig["h_osll_closestZ_mass"]       =SetupHist("h_osll_closestZ_mass_"          + name,"Invariant mass of the two leading os electrons",100,0,500,"M_{ll} GeV");
+  map_sig["h_zzmass"]               = SetupHist("h_zzmass_"          + name,"Invariant mass of the os pairs" ,50,100,150,"M_{ll} GeV");
   map_sig["h_l1jjmass"]               = SetupHist("h_l1jjmass_"          + name,"Invariant mass of the two leading jets and leading electron",100,0,1000,"M_{l1jj} GeV");
   map_sig["h_l2jjmass"]               = SetupHist("h_l2jjmass_"          + name,"Invariant mass of the two leading jets and second electron",100,0,1000,"M_{l2jj} GeV");
   map_sig["h_llmass"]                 = SetupHist("h_llmass_"           + name,"Invariant mass of the two leading electrons",1000,0,1000,"M_{ll} GeV");
+  map_sig["h_lllmass"]                 = SetupHist("h_lllmass_"           + name,"Invariant mass of the two leading electrons",1000,0,1000,"M_{lll} GeV");
+  map_sig["h_llllmass"]                 = SetupHist("h_llllmass_"           + name,"Invariant mass of the two leading electrons",1000,0,1000,"M_{llll} GeV");
   map_sig["h_llpt"]                 = SetupHist("h_llpt_"           + name,"Invariant pt of the two leading electrons",500,0,1000,"P_T (ll) GeV");
+  map_sig["h_lllpt"]                 = SetupHist("h_lllpt_"           + name,"Invariant pt of the two leading electrons",500,0,1000,"P_T (lll) GeV");
+  map_sig["h_llllpt"]                 = SetupHist("h_llllpt_"           + name,"Invariant pt of the two leading electrons",500,0,1000,"P_T (llll) GeV");
   map_sig["h_lljjmass"]               = SetupHist("h_lljjmass_"         + name,"Invariant mass of the four particles",200,0,2000,"M_{lljj} GeV");
   map_sig["h_lljjjj_mass"]             = SetupHist("h_lljjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{lljjjj} GeV");
   map_sig["h_l1jjjj_mass"]             = SetupHist("h_l1jjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{l1jjjj} GeV");
@@ -107,7 +113,7 @@ SignalPlotsEE::SignalPlotsEE(TString name): StdPlots(name){
   /// MET plots
   map_sig["h_PFMET"]                  = SetupHist("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
   map_sig["h_PFMET_t1"]                  = SetupHist("h_PFMET_t1_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_PFMET_ST2"]                  = SetupHist("h_PFMET_ST2_"               + name,"Missing Et",100,0.0,200.0, "E_{T}/S^{2}_{T}");
+  map_sig["h_PFMET2_ST"]                  = SetupHist("h_PFMET2_ST_"               + name,"Missing Et",200,0.0,100.0, "E_{T}/S^{2}_{T}");
   map_sig["h_PFMET_phi"]              = SetupHist("h_PFMET_phi_"           + name,"Missing Et",100,-3.2,3.2);
   map_sig["h_PFMET_phi_t1"]              = SetupHist("h_PFMET_phi_t1_"           + name,"Missing Et",100,-3.2,3.2);
 
@@ -333,6 +339,8 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       Fill("h_lljjmass", (electrons[0] +electrons[1] + jets[m] + jets[n]).M(),weight);
     }
   }
+  
+
 
   
   if(leadjetmass != 0.)Fill("h_leadjetmass", leadjetmass,weight);
@@ -342,11 +350,69 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
    int sum_charge(0);
    
 
+   float osmass_closeZ(100000.);
+   int nos(0.);
+   if(electrons.size()>=2){
+     for(unsigned int iel1 = 0 ; iel1< electrons.size()-1; iel1++){
+       for(unsigned int iel2 = iel1+1 ; iel2< electrons.size(); iel2++){
+	 if(electrons[iel1].Charge() != electrons[iel2].Charge())  {
+	   nos++;
+	   if( fabs( (electrons[iel1]+electrons[iel2]).M() - 91.1) < fabs(osmass_closeZ - 91.1) ){
+	     osmass_closeZ = (electrons[iel1]+electrons[iel2]).M();
+	   }
+	   Fill("h_osllmass", (electrons[iel1]+electrons[iel2]).M(),weight);
+	 }
+       }
+     }
+     
+     Fill("h_osll_closestZ_mass",osmass_closeZ ,weight);
+     
+     if(electrons.size()==3){
+       snu::KParticle eee= electrons[0] + electrons[1]+ electrons[2];
+       
+       Fill("h_lllmass",  eee.M(), weight);
+       Fill("h_lllpt",  eee.Pt(), weight);
+     }
+     
+     if(electrons.size() == 4){
+       
+       snu::KParticle eeee= electrons[0] + electrons[1]+ electrons[2]+electrons[3];
+       
+       Fill("h_llllmass",  eeee.M(), weight);
+       Fill("h_llllpt",  eeee.Pt(), weight);
 
-  if(electrons.size()>=2){
-      if(electrons[0].Charge() != electrons[1].Charge())   Fill("h_osllmass", (electrons[0]+electrons[1]).M(),weight);
-      Fill("h_sumcharge", (electrons[0] +electrons[1]).Charge(), weight);
-  }
+       std::vector<int> vplus;
+       std::vector<int> vminus;
+       for(unsigned int iel1 = 0 ; iel1< electrons.size(); iel1++){
+	 if(electrons[iel1].Charge() < 0 ) vplus.push_back(iel1);
+	 else vminus.push_back(iel1);
+       }
+       if ( (vplus.size() == 2) || (vminus.size() == 2) ) {
+	 
+	 if(1){
+	   snu::KParticle Z1= electrons[vplus[0]] + electrons[vminus[0]];
+	   snu::KParticle Z2= electrons[vplus[1]] + electrons[vminus[1]];
+	   if(fabs(Z1.M() - 91.19) <10.) {
+	     if(fabs(Z2.M() - 91.19) <10.) {
+	       Fill("h_zzmass", Z1.M(),weight);
+	       Fill("h_zzmass", Z2.M(),weight);
+	     }
+	   }
+	 }
+	 if(1){
+	   snu::KParticle Z1= electrons[vplus[0]] + electrons[vminus[1]];
+	   snu::KParticle Z2= electrons[vplus[1]] + electrons[vminus[0]];
+	   if(fabs(Z1.M() - 91.19) <10.) {
+	     if(fabs(Z2.M() - 91.19) <10.) {
+	       Fill("h_zzmass", Z1.M(),weight);
+	       Fill("h_zzmass", Z2.M(),weight);
+	     }
+	   }
+	 }
+       }
+     }
+     Fill("h_sumcharge", (electrons[0] +electrons[1]).Charge(), weight);
+   }
   
   int iel(0);
  
@@ -436,7 +502,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   Fill("h_HT", ht,weight);
   Fill("h_ST", st,weight);
-  Fill("h_PFMET_ST2",ev.PFMET()/pow(2., st), weight);
+  Fill("h_PFMET2_ST",pow(ev.PFMET(),2.)/ st, weight);
   Fill("h_Nbjets",nbjet, weight);
   Fill("h_Njets",jets.size(), weight);
   

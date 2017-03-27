@@ -341,7 +341,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MMM(bool geterr, vector<snu::K
   return mmm_weight;
 }
 
-float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::KMuon> k_muons, TString muid, int n_muons, std::vector<snu::KElectron> k_electrons, TString elid, int n_electrons){
+float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::KMuon> k_muons, TString muid, int n_muons, std::vector<snu::KElectron> k_electrons, TString elid, int n_electrons, TString elidloose, TString elmethod){
 
   float this_weight = 0.;
 
@@ -379,8 +379,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::
 
   std::vector<TLorentzVector> muons=MakeTLorentz(k_muons);
   std::vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-
-  this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons, elid, isT);
+  TString elkey = GetElFRKey(elidloose, elid, elmethod);
+  this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons, elkey , isT);
 
   return this_weight;
 }
@@ -448,42 +448,47 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
   if(k_electrons.size()==2){
 
     bool is_el1_tight    =  dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDtight);
-    bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDloose);
+    bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDtight);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
 
     //float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString eltightid, TString elloosid, float awayjetpt ){
 
     /// "" loose ID needs filling here
+  }
+  return 1.;
+}
+
+TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TString method){
+
+  TString cut = "pt_eta_";
+
+  if(method.Contains("opt_dijet")){
+      
+    TString sjpt="";
+    if(method.Contains("ajet20"))sjpt="20";
+    if(method.Contains("ajet30"))sjpt="30";
+    if(method.Contains("ajet40"))sjpt="40";
+    if(method.Contains("ajet60"))sjpt="60";
+    else sjpt="40";
     
-    TString cut = "pt_eta_";
-
-    if(method.Contains("opt_dijet")){
-      
-      TString sjpt="";
-      if(method.Contains("ajet20"))sjpt="20";
-      if(method.Contains("ajet30"))sjpt="30";
-      if(method.Contains("ajet40"))sjpt="40";
-      if(method.Contains("ajet60"))sjpt="60";
-      else sjpt="40";
-
-      if(IDtight.Contains("HNTight_b") || IDtight.Contains("HNTight_e")){
-	if(method.Contains("dxysig")) {
-	  if(method.Contains("miniiso"))  cut+="miniiso_dxysig_";
-	  else cut+="dxysig_";
-	}
-	cut+=IDtight+"_"+sjpt;
+    if(IDtight.Contains("HNTight_b") || IDtight.Contains("HNTight_e")){
+      if(method.Contains("dxysig")) {
+	if(method.Contains("miniiso"))  cut+="miniiso_dxysig_";
+	else cut+="dxysig_";
       }
-      else{
-	if(method.Contains("dxysig")) cut+="dxysig_";
-	cut+=IDtight+"_"+sjpt;
-      }
-      
-      return m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight,is_el2_tight, cut);
-
+      cut+=IDtight+"_"+sjpt;
+    }
+    else{
+      if(method.Contains("dxysig")) cut+="dxysig_";
+      cut+=IDtight+"_"+sjpt;
     }
     
-    else if(method.Contains("dijet")){
-      TString sjpt="";
+    return cut;
+    
+  }
+
+  else if(method.Contains("dijet")){
+    TString sjpt="";
       if(method.Contains("ajet20"))sjpt="20_";
       if(method.Contains("ajet30"))sjpt="30_";
       if(method.Contains("ajet40"))sjpt="40_";
@@ -506,14 +511,11 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
       if(IDtight == "ELECTRON16_FR_POG_MEDIUM_CC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
       if(IDtight == "ELECTRON16_FR_MVA_TIGHT_CC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_mva";
 
-      return m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight,is_el2_tight, cut);
+      return cut;
       
-    }
-
-    ee_weight =m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight,is_el2_tight, "");
-
   }
-  return ee_weight;
+
+  return "";
 
 }
 
