@@ -709,9 +709,11 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu
   double eta1 = abs(mu1.Eta());
   double pt1 = mu1.Pt();
   if(pt1>=120.) pt1 = 119.;
+  if(pt1<10.) pt1 = 10.1;
   double eta2 = abs(mu2.Eta());
   double pt2 = mu2.Pt();
   if(pt2>120.) pt2 = 119.;
+  if(pt2<10.) pt2 = 10.1;
 
   //cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] tag = " << tag << ", sample = " << sample << endl;
 
