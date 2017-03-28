@@ -515,9 +515,10 @@ double  MCDataCorrections::GetDoubleEGTriggerEff(vector<snu::KElectron> el){
 
 
 double MCDataCorrections::GetEffDEG1(snu::KElectron el){
+
   float el_eta = el.Eta();
   float el_pt = el.Pt();
-  if(el_pt < 0.) return 0.;
+  if(el_pt < 10.) return 0.;
   if(el_pt >= 100.) el_pt = 99.;
 
   if(fabs(el_eta ) > 2.5) return 0.;
@@ -567,7 +568,7 @@ double MCDataCorrections::GetEffDEG1(snu::KElectron el){
 double MCDataCorrections::GetEffDEG2(snu::KElectron el){
   float el_eta = el.Eta();
   float el_pt = el.Pt();
-  if(el_pt < 0.) return 0.;
+  if(el_pt < 10.) return 0.;
   if(el_pt >= 100.) el_pt = 99.;
 
   if(fabs(el_eta ) > 2.5) return 0.;
@@ -583,6 +584,7 @@ double MCDataCorrections::GetEffDEG2(snu::KElectron el){
   etabins.push_back(-1.6);
   etabins.push_back(-2.1);
   etabins.push_back(-2.5);
+  
   // low pt leg
   vector<float> ptbins;
   ptbins.push_back(12.);
@@ -595,8 +597,6 @@ double MCDataCorrections::GetEffDEG2(snu::KElectron el){
   ptbins.push_back(40.);
   ptbins.push_back(50.);
   ptbins.push_back(100.);
-
-
 
   for(unsigned int i = 0 ; i <  etabins.size(); i++){
     if(el_eta > etabins[i]) {

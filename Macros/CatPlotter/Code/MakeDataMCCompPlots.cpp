@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus018.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -309,7 +309,9 @@ void MakeCutFlow(string type){
       
       if(sample.Contains("Z#gamma")) sample = "Z$\\gamma$";
       if(sample.Contains("W#gamma")) sample = "W$\\gamma$";
-      if(sample.Contains("DY #rightarrow ll")) sample = "DY$\\rightarrow$ ll";
+      if(sample.Contains("DY #rightarrow ee (m < 50)    ")) sample = "DY $\\rightarrow$ ll (m < 50)    ";
+      if(sample.Contains("DY #rightarrow ee")) sample = "DY$\\rightarrow$ ee";
+      if(sample.Contains("DY #rightarrow #tau#tau")) sample = "DY$\\rightarrow$ $\\tau\\tau$";
       cout << sample << " background = " << mapit->second<< " +- " << mapit_stat->second << " + " << mapit_up->second << " - " << mapit_down->second <<  endl;      
    
       
@@ -382,7 +384,9 @@ void MakeCutFlow(string type){
 
       if(sample.Contains("Z#gamma")) sample = "Z$\\gamma$";
       if(sample.Contains("W#gamma")) sample = "W$\\gamma$";
-      if(sample.Contains("DY #rightarrow ll")) sample = "DY$\\rightarrow$ ll";
+      if(sample.Contains("DY #rightarrow ll (m < 50)    ")) sample = "DY $\\rightarrow$ ll (m < 50)    ";
+      if(sample.Contains("DY #rightarrow ee")) sample = "DY$\\rightarrow$ ee";
+      if(sample.Contains("DY #rightarrow #tau#tau")) sample = "DY$\\rightarrow$ $\\tau\\tau$";
 
       if(mapit->second!=0.0){
 	ofile << sample + "&" <<  mapit->second << "& $\\pm$& "  << mapit_stat->second <<  "&$^{+" <<  mapit_up->second << "}_{-" <<  mapit_down->second  << "}$" ; 

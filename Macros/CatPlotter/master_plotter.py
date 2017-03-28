@@ -123,7 +123,7 @@ for line in input_configfile:
 
         if not os.path.exists("~/CATAnalyzerPlots/"):
             os.system("mkdir ~/CATAnalyzerPlots/")
-        outputlist.append("https://jalmond.web.cern.ch/jalmond/SNU/CATAnalyzerPlots/HN13TeV_" + analyzer+"_"+os.getenv("CATVERSION")+"_"+periodtag+"_"+cut+"/histograms/CAT2016_"+os.getenv("CATVERSION")+"/indexCMS.html")
+        outputlist.append("https://jalmond.web.cern.ch/jalmond/SNU/CATAnalyzerPlots/HN13TeV_" + analyzer+"_"+os.getenv("CATVERSION")+"_"+periodtag+"_"+cut+"/histograms/CAT2016_"+os.getenv("CATVERSION")+plottag+"/indexCMS.html")
 
     
         os.system('python  ' + os.getenv("LQANALYZER_DIR") + '/Macros/CatPlotter/setupplotter.py -i ' + inputfile + ' -d ' + inputdir + ' -x ' + jobdir + ' -s ' + stream + ' -a ' + analyzer + ' -S ' + skim + ' -p ' + periodtag + ' -C ' + cutlist[0] + ' -M ' + configinputfile + ' -c ' + plottag)

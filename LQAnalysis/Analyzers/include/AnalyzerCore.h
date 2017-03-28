@@ -60,6 +60,7 @@ class AnalyzerCore : public LQCycleBase {
   Int_t GetMCPeriod();
   Int_t GetDataPeriod();  
   int GetPeriod();
+  int GetMCPeriodRandom();
 
   void  SetupID();
   void  SetupDDBkg();
@@ -69,13 +70,15 @@ class AnalyzerCore : public LQCycleBase {
   bool  Check(float val);
 
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, bool keepconv, bool keeptau,  BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake,   BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
   std::vector<snu::KJet>  GetJets(TString jetid,  float ptcut=-999., float etacut = -999.);
   std::vector<snu::KFatJet>  GetFatJets(TString jetid,  float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(TString muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(TString muid, bool keepfakes, float ptcut=-999., float etacut = -999.);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, TString elid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, bool keepconv, bool keeptau,  TString elid, float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake,   TString elid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( TString elid , float ptcut=-999., float etacut = -999.);
 
   bool Is2015Analysis();
@@ -124,7 +127,7 @@ class AnalyzerCore : public LQCycleBase {
   bool PassID(snu::KMuon mu, TString muid);
 
   bool IsTight(snu::KMuon muon);
-  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
+  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake, bool keepconv, bool keeptau);
   std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
 
   bool Zcandidate(vector<snu::KMuon> muons, float interval, bool require_os=true);
@@ -151,7 +154,7 @@ class AnalyzerCore : public LQCycleBase {
   double MuonDYMassCorrection(std::vector<snu::KMuon> mu, double w);
 
   // enum for plotting functions/classes
-  enum histtype {muhist, elhist, jethist, sighist_ee, sighist_mm, sighist_em, trilephist, hnpairmm, hntrilephist};
+  enum histtype {muhist, elhist, jethist, sighist_e,sighist_ee,sighist_eee,sighist_eeee, sighist_mm, sighist_em, trilephist, hnpairmm, hntrilephist};
   
   
   //
@@ -239,6 +242,7 @@ class AnalyzerCore : public LQCycleBase {
 
   // used to get trigger prescale
   
+  bool k_onlyfromtaus;
   bool  k_reset_period;
   int a_mcperiod;
   bool IDSetup;

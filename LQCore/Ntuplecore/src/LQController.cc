@@ -29,7 +29,7 @@
 
 
 
-LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
+LQController::LQController():inputType(NOTSET), outputLevelString("INFO"), CycleName("Analyzer"), jobName("Test"), treeName("rootTupleTree/tree"),filelist(""), fullfilelist(""), completename(""),runnp(false), runcf(false), runtau(false), m_logger( "LQCycleController") , target_luminosity(1.),  sample_crosssection(-999.), effective_luminosity(1.), n_total_event(-1.),  nevents_to_process(-1), m_isInitialized( kFALSE ), n_ev_to_skip(0), v_libnames(0),v_user_flags(0), list_to_run(0),single_ev(0), run_single_event(false), total_events_beforeskim(0), total_events_afterskim(0),output_step(10000), channel(""), k_period("NOTSET"), kLQInput(true) {
   
   catversion_lq = none;
   chain = NULL;
@@ -140,6 +140,13 @@ void LQController::SetDataType(TString settype){
   
 }
 
+void LQController::RunTauMode(TString runt){
+  if(runt.Contains("True")) runtau= true;
+  else runtau=false;
+  if(runt.Contains("True"))m_logger << INFO << "Running tau->e background estimate" << LQLogger::endmsg;
+
+
+}
 void LQController::RunNonPrompt(TString np){
 
   if(np.Contains("True")) runnp = true;
@@ -558,6 +565,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
 
     cycle->SetNPStatus(runnp);
+    cycle->SetTauStatus(runtau);
     cycle->SetCFStatus(runcf);
     cycle->SetSampleName(jobName);
     

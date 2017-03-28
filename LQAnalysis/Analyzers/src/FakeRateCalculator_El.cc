@@ -117,8 +117,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
 }
 void FakeRateCalculator_El::MakeSingleElectronCRPlots(TString looseid, TString eltag, TString tightid, float w, bool usepujetid){
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true, looseid);
-  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true, tightid);
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true,  looseid);
+  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true,  tightid);
   
   if (!k_isdata) {
     w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetMCPeriod());
@@ -201,7 +201,7 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
   
   /// GetElectrons returns vector of muons. 
   /// false, true arguments means means chargeflip electrons 
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true, looseid);
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true,looseid);
   std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true, tightid);
 
   float id_weight=1.;
@@ -572,7 +572,7 @@ void FakeRateCalculator_El::MakeDXYFakeRatePlots(TString label, TString eltag,  
 void FakeRateCalculator_El::MakeFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float w, bool makebasicplots){
   
 
-  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,true,label);
+  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,true, label);
 
   if(electrons.size() ==2){
     if(Zcandidate(electrons, 10., true)){

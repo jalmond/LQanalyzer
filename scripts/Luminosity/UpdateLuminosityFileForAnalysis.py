@@ -1,5 +1,11 @@
 import os,sys, filecmp
 
+tmpcatversion=str(os.getenv("CATVERSION"))
+
+newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+tmpcatversion+"new.txt"
+if(os.path.exists(newsamplelist)):
+    os.system("rm " + newsamplelist)
+
 from EmailNewEffLumiList import *
 
 def CheckForDuplicates(printDuplicates):
@@ -91,6 +97,7 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
                     if len(split_modline) == 6:
                         if split_modline[0] == split_current_line[0]:
                             replace_line=True
+                            print "replace line : " + xline
                 modlist.close()
             if not replace_line:
                 file_samplelist.write(xline)
@@ -101,10 +108,19 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
                     if len(split_modline) == 6:
                         if split_modline[0] == split_current_line[0]:
                             file_samplelist.write(line)
+                            print "with " + line
                 modlist.close()
         file_samplelist.close()    
 
-    if True:
+   ### Make a copy of the original dataset list                                                                                                                                                                                                                                
+    copy_samplelist=[]
+    file_samplelist = open(samplelist,"r")
+    for line in file_samplelist:
+        copy_samplelist.append(line)
+    file_samplelist.close()
+
+
+    if len(NewSampleList)>0 :
         file_samplelist = open(newsamplelist,"w")
         for xline in copy_samplelist:
             isNewSample=False
@@ -208,6 +224,7 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
                 file_samplelist.write(xline)
 
         file_samplelist.close()
+
 
 def CheckFileFormat(filepath):
 
@@ -428,6 +445,7 @@ if os.path.exists(path_full_sample_list):
             isnewsample= len(newsample_list) > 0
             
             UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, newsample_list)
+
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
             newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"
@@ -488,7 +506,7 @@ if os.path.exists(path_full_sample_list):
 
         perm_samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
         os.chmod(perm_samplelist, 0777)
-
+        
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
