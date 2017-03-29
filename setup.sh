@@ -192,13 +192,13 @@ export yeartag="80X/"
 
 
 
-alias sktree="bash submitSKTree.sh"
-alias sktreemaker="bash submitSKTree.sh -M True "
-alias sktree_val="bash submitSKTree.sh -V True "
-alias sktree_bkg="nohup bash submitSKTree.sh -b True "
+alias sktree="bash "$LQANALYZER_DIR"/submitSKTree.sh"
+alias sktreemaker="bash "$LQANALYZER_DIR"/submitSKTree.sh -M True "
+alias sktree_val="bash "$LQANALYZER_DIR"/submitSKTree.sh -V True "
+alias sktree_bkg="nohup bash "$LQANALYZER_DIR"/submitSKTree.sh -b True "
 alias new_git_tag="bash "$LQANALYZER_DIR"/scripts/setup/git_newtag.sh"
-alias git_commit_lq="bash scripts/setup/git_commit.sh"
-alias sktree_bkg_log="python python/PrintBkgJob.py"
+alias git_commit_lq="bash "$LQANALYZER_DIR"/scripts/setup/git_commit.sh"
+alias sktree_bkg_log="python "$LQANALYZER_DIR"/python/PrintBkgJob.py"
 
 export LQANALYZER_FILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/"
 export LQANALYZER_DATASETFILE_DIR="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/"
