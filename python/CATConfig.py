@@ -50,6 +50,7 @@ parser.add_option("-q", "--queue", dest="queue", default="queue", help="what que
 parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help="What cat version?")
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
+parser.add_option("-F","--submitallfiles",dest="submitallfiles",default="False", help="force n=1000")
 
 
 ###################################################                                                                                                                            

@@ -87,6 +87,8 @@ class AnalyzerCore : public LQCycleBase {
   void SetupSelectionFatJet(std::string path_sel);
   void SetupSelectionElectron(std::string path_sel);
 
+  
+
   void MakeBTagEfficiencyPlots();
   void GetJetTaggerEfficiences(TString taggerWP, snu::KJet::Tagger tag,  snu::KJet::WORKING_POINT wp);
 

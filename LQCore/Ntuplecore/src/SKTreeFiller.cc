@@ -563,15 +563,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	/// Match required to status 1 electron
 	if(gen_status->at(it) != 1) continue;
 	if(fabs(gen_pdgid->at(it)) != 11) continue;
-	
+	if(gen_pt->at(it) < 5.) continue;
+
 	/// Check status 1 electron is not matched already to areco electron
 	bool already_matched=false;
-	for(unsigned int im=0; im > matched_truth.size();im++){
+	for(unsigned int im=0; im < matched_truth.size();im++){
           if(it == unsigned(matched_truth.at(im))) already_matched=true;
         }
         if(already_matched) continue;
-	
-
+	  
 	if(matched_in_Dr){
 	  /// This is for multiple matched status 1 el.
 	  /// In case multiple status 1 electrons are matched with same mother check pt
@@ -739,7 +739,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
 	  
 	    bool already_matched=false;
-	    for(unsigned int im=0; im > matched_truth.size();im++){
+	    for(unsigned int im=0; im < matched_truth.size();im++){
 	      if(it == unsigned(matched_truth.at(im))) already_matched=true;
 	    }
 	    
@@ -765,23 +765,24 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      mc_pdgid= int(gen_pdgid->at(it));
 	      if(fabs(pdgid) == 22) {
 		
-		el.SetIsPhotonConversion(true);
+		//// This case is not a conversion
+		//el.SetIsPhotonConversion(true);
 		
 		if(gen_pdgid->at(gen_motherindex->at(it)) * electrons_q->at(iel) > 0 )     el.SetIsChargeFlip(true);
 		else     el.SetIsChargeFlip(false);
 		
 		from_tau=false;
 		break;
-	    }
+	      }
 	      if(fabs(pdgid) == 15)from_tau=true;
 	    }// dr req
 	  }// loop over gen vector
 	}// require gen info
       }// no status 1 match
-    }/// END OF TRUTH MATCHING
-    
-    matched_truth.push_back(matched_index);
-    ///matched_index is index which matches reco muon with smallest dR
+      }/// END OF TRUTH MATCHING
+      
+      matched_truth.push_back(matched_index);
+      ///matched_index is index which matches reco muon with smallest dR
     ///- If multiple status 1 muons are matched look at closest in pt
     ///- In no status 1 is matched set as not prompt butlook for closest particle in dR
     /// - In noparticles within dR < 0.1 matched_in_Dr= false
@@ -1178,6 +1179,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
         if(gen_pt->at(it) < 0.1) continue;
 	
+	if(gen_pt->at(it) < 5.) continue;
+
 	double match_eta =muon_eta->at(ilep);
 	double match_phi =muon_phi->at(ilep);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
@@ -1186,7 +1189,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         ///
 
 	bool already_matched=false;
-	for(unsigned int im=0; im > matched_truth.size();im++){
+	for(unsigned int im=0; im < matched_truth.size();im++){
 	  if(it == unsigned(matched_truth.at(im))) already_matched=true;
 	}
 	if(already_matched) continue;
@@ -1319,7 +1322,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             if(gen_pt->at(it) < 0.1) continue;
 
 	    bool already_matched=false;
-	    for(unsigned int im=0; im > matched_truth.size();im++){
+	    for(unsigned int im=0; im < matched_truth.size();im++){
 	      if(it == unsigned(matched_truth.at(im))) already_matched=true;
 	    }
 	    if(already_matched) continue;

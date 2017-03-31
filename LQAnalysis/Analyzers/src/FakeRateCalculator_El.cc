@@ -103,6 +103,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     GetFakeRateAndPromptRates("ELECTRON16_POG_MEDIUM_FAKELOOSE_CC","dijet_pog", "ELECTRON16_FR_POG_MEDIUM_CC",weight, true,false);
     GetFakeRateAndPromptRates("ELECTRON16_MVA_FAKELOOSE_CC","dijet_mva", "ELECTRON16_FR_MVA_TIGHT_CC",weight, true,false);
 
+    GetFakeRateAndPromptRates("ELECTRON16_POG_FAKELOOSE_CC","dijet_pog", "ELECTRON16_FR_POG_TIGHT_DXYCC",weight, true,false);
+    GetFakeRateAndPromptRates("ELECTRON16_POG_MEDIUM_FAKELOOSE_CC","dijet_pog", "ELECTRON16_FR_POG_MEDIUM_DXYCC",weight, true,false);
+    GetFakeRateAndPromptRates("ELECTRON16_MVA_FAKELOOSE_CC","dijet_mva", "ELECTRON16_FR_MVA_TIGHT_DXYCC",weight, true,false);
     
 
     /// use dxy method for systematic
@@ -117,11 +120,11 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
   }
 }
 void FakeRateCalculator_El::MakeSingleElectronCRPlots(TString looseid, TString eltag, TString tightid, float w, bool usepujetid){
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true,  looseid);
-  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true,  tightid);
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,false,  looseid);
+  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,false,  tightid);
   
   if (!k_isdata) {
-    w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetMCPeriod());
+    w = w * MCweight * eventbase->GetEvent().PileUpWeight();
     
   }
 
@@ -163,7 +166,7 @@ void FakeRateCalculator_El::MakeSingleElectronCRPlots(TString looseid, TString e
 
 void FakeRateCalculator_El::GetFakeRateAndPromptRatesPerPeriod(TString looseid, TString eltag, TString tightid, float w, bool usepujetid, bool runall){
 
-  int iperiod = GetPeriod();
+  int iperiod = GetMCPeriodRandom();
   TString speriod="";
   if (iperiod == 1)     speriod="B";
   if (iperiod == 2)     speriod="C";
@@ -187,7 +190,7 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
   // PileUpWeight is period dependant 
   // MC events are split into 7 data periods and 
   if (!k_isdata) {
-    w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetPeriod());
+    w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetMCPeriodRandom());
   }
 
   /// Four single electron triggers
@@ -201,8 +204,8 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
   
   /// GetElectrons returns vector of muons. 
   /// false, true arguments means means chargeflip electrons 
-  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,true,looseid);
-  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,true, tightid);
+  std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,false,looseid);
+  std::vector<snu::KElectron> electronTightColl = GetElectrons(false,false, tightid);
 
   float id_weight=1.;
   float reco_weight=1.;
@@ -271,36 +274,89 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b050_e040", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);    
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b050_e025", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);    
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b050_e020", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);    
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b050_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);        
     
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b025_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b025_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b025_e040", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b025_e025", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b025_e020", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b025_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);        
+
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e040", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e025", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e020", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);        
+
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e040", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e025", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e020", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);    
     
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e075", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b045_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b017_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b015_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b014_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b013_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b012_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b011_e010", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+    
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e017", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e015", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e014", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e013", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e012", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag + "_dxy_b010_e011", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
@@ -308,8 +364,18 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b050_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
 
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e075", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b0525_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
+
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
@@ -317,8 +383,9 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b055_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
 
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
@@ -326,8 +393,8 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b060_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
 
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
@@ -335,8 +402,8 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b065_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
 
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
@@ -344,8 +411,8 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b075_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
 
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
@@ -353,19 +420,16 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(TString looseid, TString e
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b100_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
 
-    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e045", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e050", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
+    MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e0525", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e055", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e060", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e065", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e075", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e100", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
     MakeFakeRatePlots("HNTight" + dxysigtag_iso + "_b125_e125", eltag, electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w,true);
-
-
-
+    
   }
-
 
 
   if(electronLooseColl.size()!= 1) return;
@@ -540,7 +604,7 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 
 void FakeRateCalculator_El::MakeDXYFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float prescale_dielw, float w){
 
-  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,true,label);
+  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,false,label);
   
   bool truth_match= false;
   /// FOR FAKE RATE SUBTRACTION NEED ONLY PROMPT ELECTRONS                                                                                                                      
@@ -572,7 +636,7 @@ void FakeRateCalculator_El::MakeDXYFakeRatePlots(TString label, TString eltag,  
 void FakeRateCalculator_El::MakeFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float w, bool makebasicplots){
   
 
-  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,true, label);
+  std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,false ,label);
 
   if(electrons.size() ==2){
     if(Zcandidate(electrons, 10., true)){

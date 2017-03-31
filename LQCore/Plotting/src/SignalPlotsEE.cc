@@ -104,6 +104,8 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
   map_sig["h_leadingLeptonRelIso"]    = SetupHist("h_leadingLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
   map_sig["h_leadingLeptonMiniRelIso"]    = SetupHist("h_leadingLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
   map_sig["h_LeptonDZ"]               = SetupHist("h_LeptonDZ_"          + name," leading lepton DZ", 400, -0.5 , 0.5);
+  map_sig["h_LeptonDXY_EC"]              = SetupHist("h_LeptonDXY_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25);
+  map_sig["h_LeptonDXY_B"]              = SetupHist("h_LeptonDXY_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25);
   map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -0.25 , 0.25);
   map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -10. , 10.);
   
@@ -492,6 +494,13 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     Fill("h_LeptonPt", elit->Pt(),weight);
     Fill("h_LeptonPhi",elit->Phi(),weight);
     Fill("h_LeptonEta",elit->Eta(),weight);
+
+    if(fabs(elit->Eta()) > 1.5) {
+      Fill("h_LeptonDXY_EC", elit->dxy(),weight);
+    }    
+    else{
+      Fill("h_LeptonDXY_B", elit->dxy(),weight);
+    }
     Fill("h_LeptonDXY", elit->dxy(),weight);
     Fill("h_LeptonDXYSig", elit->dxySig() ,weight);
     Fill("h_LeptonDZ", elit->dz(),weight);

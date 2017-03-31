@@ -967,7 +967,7 @@ std::vector<snu::KElectron> AnalyzerCore::GetElectrons(BaseSelection::ID electro
 
 
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake,  BaseSelection::ID electronid, float ptcut, float etacut){
-  return GetElectrons(keepcf, keepfake, true, true,  GetStringID(electronid), ptcut, etacut);
+  return GetElectrons(keepcf, keepfake, false, false,  GetStringID(electronid), ptcut, etacut);
   
 }
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, bool keepconv, bool keepfromtau,  BaseSelection::ID electronid, float ptcut, float etacut){
@@ -1109,11 +1109,22 @@ std::vector<snu::KMuon> AnalyzerCore::GetMuons(TString muid, bool keepfakes, flo
 
 
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(TString elid,float ptcut, float etacut){
-  return GetElectrons( true, true,  true, true, elid, ptcut, etacut);
+
+  if(k_classname.Contains("HNDiElectronOpt")){
+    if(k_running_chargeflip)  return GetElectrons( true, false,  true, true, elid, ptcut, etacut);
+    return GetElectrons(false, false, false, false,elid, ptcut, etacut);
+  }
+  /// if cf flag set and MC keep CF and conversion electrons
+  if(k_running_chargeflip)  return GetElectrons( true, false,  true, true, elid, ptcut, etacut);
+  
+  
+  //// by default keep all electrons
+  return GetElectrons(true, true, true, true ,elid, ptcut, etacut);
+
 }
 
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake,  TString elid,float ptcut, float etacut){
-  return GetElectrons( keepcf, keepfake, true, true,   elid,ptcut, etacut);
+  return GetElectrons( keepcf, keepfake, false, false,   elid,ptcut, etacut);
 }
 std::vector<snu::KElectron> AnalyzerCore::GetElectrons(bool keepcf, bool keepfake, bool keepconv, bool keepfromtau , TString elid,float ptcut, float etacut){
 
@@ -1465,7 +1476,7 @@ void AnalyzerCore::SetupID(){
   SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
   SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
   if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
-
+  if(k_classname.Contains("FakeRateCalculator_El")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
 
@@ -1598,7 +1609,7 @@ int AnalyzerCore::AssignnNumberOfTruth(){
   int np = 1000;
   if(k_classname.Contains("SKTreeMaker")) np = 1000;
   if(k_classname.Contains("SKTreeMakerDiLep")) np = 0;
-  if(k_classname.Contains("SKTreeMakerTriLep")) np = 0;
+  if(k_classname.Contains("SKTreeMakerTriLep")) np = 1000;
 
   if(k_classname.Contains("SKTreeMaker")){
     if(k_sample_name.Contains("QCD") && !k_sample_name.Contains("mad")) np = 0;
@@ -2775,7 +2786,7 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
 	bool ismatched = electrons.at(i).MCMatched();
 
 	if(keep_tau_daughter) ismatched = (electrons.at(i).MCMatched() || electrons.at(i).MCFromTau()); 
-	else if(electrons.at(i).MCFromTau()) ismatched=false;
+	//else if(electrons.at(i).MCFromTau()) ismatched=false;
 	
 	if (!ismatched && keepconversions) ismatched= electrons.at(i).MCIsFromConversion();
 

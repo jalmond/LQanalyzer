@@ -751,7 +751,7 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
 	double u1 = gRandom->Rndm();
 	double u2 = gRandom->Rndm();
 
-	int mu_index = it->MCTruthIndex();
+	unsigned int mu_index = it->MCTruthIndex();
 	float genpt(-999.);
 	if(mu_index > 0 && mu_index < truth.size()) {
 	  if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();

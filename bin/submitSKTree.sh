@@ -104,6 +104,7 @@ source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
 
+
 linkdef_filepath=/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h
 
 if [[ $make_sktrees == "True" ]];
@@ -755,7 +756,7 @@ fi
 if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     then
     submit_skinput=true
-    job_skim="SKTree_DiLepSkim"
+    job_skim="SKTree_LeptonSkim"
     if [[ $set_sktreemaker_debug == "false" ]];
         then
         job_njobs=1000

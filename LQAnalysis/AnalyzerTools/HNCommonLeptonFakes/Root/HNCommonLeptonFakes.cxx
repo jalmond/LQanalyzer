@@ -446,8 +446,6 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
   if(mapit!=_2DEfficiencyMap_Double.end()){
 
     int binx =  mapit->second->FindBin(pt,fabs(eta));
-    //cout << "el pt = " << pt << ", eta = " << eta << endl;
-    //cout << "Bin = " << binx  << endl;
 
     eff_fake =  mapit->second->GetBinContent(binx);
     //cout << "eff_fake = " << eff_fake << endl;

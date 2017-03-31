@@ -46,6 +46,7 @@ parser.add_option("-v", "--catversion", dest="catversion", default="NULL", help=
 parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add input flag?")
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-J", "--setnjobs", dest="setnjobs", default="False", help="user sets njobs?")
+parser.add_option("-F","--submitallfiles",dest="submitallfiles",default="False", help="force n=1000")
 
 
 ###################################################
@@ -89,6 +90,13 @@ DEBUG = options.debug
 useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
+
+tmpsubmit_allfiles=options.submitallfiles
+submit_allfiles=False
+if tmpsubmit_allfiles == "true":
+    submit_allfiles=True
+
+
 
 
 ###### New for 801.7 tag  
@@ -593,6 +601,11 @@ number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir
 if number_of_files == 1 and not setnumber_of_cores:
     singlejob=False
     running_batch=True
+if number_of_files == 1 and submit_allfiles:
+    singlejob=False
+    running_batch=True
+
+
 
 if DEBUG == "True":
     print "Job has " + str(number_of_files) + " files to process:"
