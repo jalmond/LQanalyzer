@@ -56,6 +56,12 @@ class AnalyzerCore : public LQCycleBase {
 
   float GetKFactor();
 
+  bool ISCF(snu::KElectron el);
+  bool TruthMacthed(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
+
+  float GetVirtualMassConv(int cmindex,int nconvindx);
+  float GetVirtualMass(bool inph=false);
+
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
   Int_t GetDataPeriod();  

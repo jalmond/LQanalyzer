@@ -14,4 +14,6 @@
 #pragma link C++ class HNEMu+;
 #pragma link C++ class GetFakeSF+;
 #pragma link C++ class PileupValidation+;
+#pragma link C++ class ElectronTypes+;
+
 #endif // __CINT__

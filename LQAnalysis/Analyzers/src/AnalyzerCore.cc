@@ -1477,6 +1477,7 @@ void AnalyzerCore::SetupID(){
   SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
   if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
   if(k_classname.Contains("FakeRateCalculator_El")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  if(k_classname.Contains("ElectronTypes")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
 
@@ -1563,7 +1564,10 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   eventbase->GetFatJetSel()->SetIDSMap(selectionIDMapsFatJet);
   eventbase->GetFatJetSel()->SetIDFMap(selectionIDMapfFatJet);
 
-  if(k_running_nonprompt || k_running_chargeflip){
+  bool setupFullIDinSelection=false;
+  /// setting this to true makes the code run slower
+
+  if(k_running_nonprompt || k_running_chargeflip || setupFullIDinSelection){
     //m_datadriven_bkg needs ID maps to get isTight for IDs 
     eventbase->GetElectronSel()->SetIDSMap(selectionIDMapsElectron); 
     eventbase->GetElectronSel()->SetIDFMap(selectionIDMapfElectron);
@@ -1682,18 +1686,145 @@ bool AnalyzerCore::IsDiEl(){
   if(iel >1) return true;
   else return false;
 }
+
+bool AnalyzerCore::ISCF(snu::KElectron el){
+  
+  if(el.GetType() == 4) return true;
+  if(el.GetType() == 5)return true;
+  if(el.GetType() == 6)return true;
+  if(el.GetType() == 19)return true;
+  if(el.GetType() == 20)return true;
+  if(el.GetType() == 21)return true;
+  return false;
+}
+
+bool AnalyzerCore::TruthMacthed(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF){
+  
+  bool pass=true;
+  for(unsigned int iel=0; iel <  el.size(); iel++){
+    if((allowCF && !ISCF(el[iel])) || !allowCF) {
+      if(el[iel].GetType() ==0) pass=false;
+      if(el[iel].GetType() == 7) pass=false;
+      if(el[iel].GetType() == 12) pass=false;
+      if(el[iel].GetType() == 16) pass=false; //?
+      if(el[iel].GetType() == 22) pass=false; // ?
+      if(el[iel].GetType() > 23) pass=false;
+      if(tightdxy){
+	if(el[iel].GetType() == 5) pass=false;/// ?
+	if(el[iel].GetType() == 6) pass=false;
+	if(el[iel].GetType() == 13) pass=false;
+	if(el[iel].GetType() == 21) pass=false;
+	if(el[iel].GetType() == 22) pass=false; // ?                                                                                                                               
+	if(el[iel].GetType() == 23) pass=false;//// ?
+      }
+    }
+  }
+  
+  return pass;
+}
+
+float AnalyzerCore::GetVirtualMass(bool includeph){
+  if(isData) return -999.;
+  vector<KTruth> es1;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+    
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+        es1.push_back(eventbase->GetTruth().at(ig));
+      }
+    }
+    else if(includeph){
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+	es1.push_back(eventbase->GetTruth().at(ig));
+      }
+    }
+  }
+  if(!includeph){
+    if(es1.size()==2){
+      snu::KParticle ll = es1[0]  + es1[1];
+      return ll.M();
+    }
+  }
+  else{
+    snu::KParticle ll;
+    for(unsigned int iel=0; iel < es1.size(); iel++){
+      ll+= es1[iel];
+    }
+    return ll.M();
+  }
+  
+  return -999.;
+
+}
+float AnalyzerCore::GetVirtualMassConv(int cmindex,int nconvindx){
+
+  if(isData) return -999.;
+  cout << "cmindex = " << cmindex << endl;
+  vector<KTruth> es1;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+    
+    if(eventbase->GetTruth().at(ig).IndexMother() == eventbase->GetTruth().at(cmindex).IndexMother()){
+      if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
+	if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+	  es1.push_back(eventbase->GetTruth().at(ig));
+	}
+      }
+    }
+  }
+  
+  if(es1.size()==3){
+    if(nconvindx==0){
+      snu::KParticle ll = es1[0]  + es1[1];
+      return ll.M();
+    }
+    if(nconvindx==1){
+      snu::KParticle ll = es1[0]  + es1[2];
+      return ll.M();
+    }
+    if(nconvindx==2){
+      snu::KParticle ll = es1[1]  + es1[2];
+      return ll.M();
+    }
+  }
+  return -999.;
+}
+
+
+
 void AnalyzerCore::TruthPrintOut(){
   if(isData) return;
   m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+  
+  vector<KTruth> es1;
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
-    
+
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
-    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |        |         |" << endl;
+    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
 
-    cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi() << " |   " << eventbase->GetTruth().at(ig).IndexMother()  << endl;
+    cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << endl; 
+																			      
+      
+
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == 11){
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+	es1.push_back(eventbase->GetTruth().at(ig));
+      }
+    }
   }
+
+  if(es1.size()==2){
+    snu::KParticle ll = es1[0]  + es1[1];
+    cout << "ll mass = " << ll.M() << endl;
+  }
+
 }
 
 
@@ -2490,17 +2621,7 @@ bool AnalyzerCore::Zcandidate(std::vector<snu::KElectron> electrons, float inter
 }
 
 bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runningcf){
-  
-  if(electrons.size() > 2){
-    int p_charge=0;
-    int m_charge=0;
-    for(unsigned int iel = 0 ; iel < electrons.size() ; iel++){
-      if(electrons.at(iel).Charge() < 0 ) m_charge++;
-      if(electrons.at(iel).Charge() > 0 ) p_charge++;
-    }
-    if(p_charge > 1) return true;
-    if(m_charge > 1) return true;
-  }
+
   if(electrons.size()!=2) return false;
 
 
