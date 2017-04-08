@@ -1668,9 +1668,6 @@ float AnalyzerCore::SumPt( std::vector<snu::KFatJet> particles){
 }
 
   
-
-
-
 bool AnalyzerCore::IsDiEl(){
   if(isData) return false;
   int iel(0);
@@ -1686,14 +1683,27 @@ void AnalyzerCore::TruthPrintOut(){
   if(isData) return;
   m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+
+  vector<KParticle> es1;
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
     
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
     if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |        |         |" << endl;
-
+    
     cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi() << " |   " << eventbase->GetTruth().at(ig).IndexMother()  << endl;
+    
+    if(fabs(eventbase->GetTruth().at(ig).PdgId() == 11)){
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+	es1.push_back(eventbase->GetTruth().at(ig));
+      }
+    }
   }
+  if(es1.size()==2){
+    snu::KParticle ll = es1[0]  + es1[1];
+    cout << "ll mass = " << ll.M() << endl;
+  }
+  
 }
 
 
@@ -2510,6 +2520,16 @@ bool AnalyzerCore::SameCharge(std::vector<snu::KElectron> electrons, bool runnin
   else     if(electrons.at(0).Charge() != electrons.at(1).Charge()) return true;
 
   return false;
+}
+
+
+bool AnalyzerCore::OppositeCharge(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons){
+  
+  if(electrons.size() != 1) return false;
+  if(muons.size() != 1) return false;
+  
+  if(electrons[0].Charge() == muons[0].Charge()) return false;
+  return true;
 }
 
 bool AnalyzerCore::OppositeCharge(std::vector<snu::KElectron> electrons, bool runningcf){

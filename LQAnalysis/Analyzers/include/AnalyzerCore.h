@@ -137,7 +137,8 @@ class AnalyzerCore : public LQCycleBase {
   bool SameCharge(std::vector<snu::KMuon> muons);
   bool SameCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
   bool OppositeCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
-  
+
+  bool OppositeCharge(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons);  
   float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
   float CorrectedMETElectron(std::vector<snu::KElectron> electrons,  int syst=0);
   float CorrectedMETMuon(std::vector<snu::KMuon> muons ,int syst=0);

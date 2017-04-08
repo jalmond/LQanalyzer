@@ -261,8 +261,8 @@ void MakeFRRootFile(){
       TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
       cout << "tets" << endl;
       TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
-      //eff_rate->Add(h_mcpt_num,-1.);
-      //hratedenom->Add(h_mcpt_denom, -1.);
+      eff_rate->Add(h_mcpt_num,-1.);
+      hratedenom->Add(h_mcpt_denom, -1.);
       eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
       eff_rate->Write();
       
