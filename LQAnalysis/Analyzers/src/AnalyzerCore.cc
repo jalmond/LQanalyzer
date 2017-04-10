@@ -3001,6 +3001,26 @@ TNtupleD* AnalyzerCore::GetNtp(TString hname){
   return n;
 }
 
+std::vector<snu::KMuon> AnalyzerCore::sort_muons_ptorder(std::vector<snu::KMuon> muons){
+
+  std::vector<snu::KMuon> outmuon;
+  while(outmuon.size() != muons.size()){
+    double this_maxpt = 0.;
+    int index(0);
+    for(unsigned int i=0; i<muons.size(); i++){
+      bool isthisused = std::find( outmuon.begin(), outmuon.end(), muons.at(i) ) != outmuon.end();
+      if(isthisused) continue;
+      if( muons.at(i).Pt() > this_maxpt ){
+        index = i;
+        this_maxpt = muons.at(i).Pt();
+      }
+    }
+    outmuon.push_back( muons.at(index) );
+  }
+  return outmuon;
+ 
+
+}
 
 
 
