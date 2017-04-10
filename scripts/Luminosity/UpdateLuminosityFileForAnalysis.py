@@ -520,6 +520,7 @@ else:
     #path_full_sample_list_user=os.getenv("LQANALYZER_DATASET_DIR")+"/"+ os.getenv("USER")  +"/cattuplist_"+catversion+ os.getenv("USER")+".txt"
     
     
+    print "NEW SAMPLES"
     
     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
     os.system("chmod 777 " + path_full_sample_list)
@@ -543,7 +544,7 @@ else:
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
     
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
-    sys.exit()
+
     os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')

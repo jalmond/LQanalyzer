@@ -499,7 +499,8 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
       if(method.Contains("dxysig")) cut="dxysig_"+cut;
       cut+=IDtightmod+"_"+sjpt;
     }
-    
+
+    if(method.Contains("_d0")) cut+="_d0";
     return cut;
     
   }
@@ -519,7 +520,10 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
       else if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0")  cut+=sjpt+IDtight + "_dijet_nod0_dxysig";
       
       if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_d0";
-      if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_d0_dxysig";
+      if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE"&& (method.Contains("miniiso")))  cut+=sjpt+IDtight + "_dijet_d0_dxysig_miniiso";
+      else if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_d0_dxysig";
+
+
       if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE_ISO04")  cut+=sjpt+IDtight + "_dijet_iso04";
       if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE_ISO06")  cut+=sjpt+IDtight + "_dijet_iso06";
       if(IDtight == "ELECTRON16_FR_POG_TIGHT" && IDloose=="ELECTRON16_POG_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_pog";
@@ -530,6 +534,14 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
       if(IDtight == "ELECTRON16_FR_POG_TIGHT_DXYCC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
       if(IDtight == "ELECTRON16_FR_POG_MEDIUM_DXYCC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
       if(IDtight == "ELECTRON16_FR_MVA_TIGHT_DXYCC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_mva";
+
+      if(IDtight == "ELECTRON16_FR_POG_TIGHT_CC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
+      if(IDtight == "ELECTRON16_FR_POG_MEDIUM_CC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
+      if(IDtight == "ELECTRON16_FR_MVA_TIGHT_CC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_mva_d0";
+      if(IDtight == "ELECTRON16_FR_POG_TIGHT_DXYCC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
+      if(IDtight == "ELECTRON16_FR_POG_MEDIUM_DXYCC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
+      if(IDtight == "ELECTRON16_FR_MVA_TIGHT_DXYCC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_mva_d0";
+
 
       return cut;
       

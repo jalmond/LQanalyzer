@@ -786,7 +786,8 @@ bool LQController::CheckBranch(std::string ntuple_version, std::string version_e
   TString ntuple_path(ntuple_version);
   TString env_path(version_env);
 
-  if(ntuple_path.Contains("v8-0-3")) return true; ///// REMOVE LINE FOR 805
+  return true;
+  if(ntuple_path.Contains("v8-0-4")) return true; ///// REMOVE LINE FOR 805
   if(!ntuple_path.Contains(env_path)) return false;
 
   return true;

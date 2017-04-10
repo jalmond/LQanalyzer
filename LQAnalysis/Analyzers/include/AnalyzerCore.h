@@ -49,12 +49,22 @@ class AnalyzerCore : public LQCycleBase {
 
   void setTDRStyle();
   TString GetStringID(BaseSelection::ID id);
+  double GetIsoCut(snu::KElectron el, TString curlable);
+  double GetDXYCut(snu::KElectron el, TString curlable);
+
   std::vector<snu::KJet>  GetJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KFatJet>  GetFatJets(BaseSelection::ID jetid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
   float GetKFactor();
+
+  bool ISCF(snu::KElectron el);
+  bool TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
+  bool TruthMatched(snu::KElectron el, bool keepcf);
+  
+  float GetVirtualMassConv(int cmindex,int nconvindx);
+  float GetVirtualMass(bool inph=false);
 
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
@@ -70,14 +80,12 @@ class AnalyzerCore : public LQCycleBase {
   bool  Check(float val);
 
   std::vector<snu::KMuon> GetMuons(BaseSelection::ID muid,bool keepfakes, float ptcut=-999., float etacut = -999.);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, bool keepconv, bool keeptau,  BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake,   BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
+  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, BaseSelection::ID elid , float ptcut=-999., float etacut = -999.);
 
   std::vector<snu::KJet>  GetJets(TString jetid,  float ptcut=-999., float etacut = -999.);
   std::vector<snu::KFatJet>  GetFatJets(TString jetid,  float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(TString muid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KMuon> GetMuons(TString muid, bool keepfakes, float ptcut=-999., float etacut = -999.);
-  std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake, bool keepconv, bool keeptau,  TString elid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons(bool keepcf, bool keepfake,   TString elid, float ptcut=-999., float etacut = -999.);
   std::vector<snu::KElectron> GetElectrons( TString elid , float ptcut=-999., float etacut = -999.);
 
@@ -129,9 +137,10 @@ class AnalyzerCore : public LQCycleBase {
   bool PassID(snu::KMuon mu, TString muid);
 
   bool IsTight(snu::KMuon muon);
-  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake, bool keepconv, bool keeptau);
+  std::vector<snu::KElectron> GetTruePrompt(vector<snu::KElectron> electrons,  bool keep_chargeflip, bool keepfake);
   std::vector<snu::KMuon> GetTruePrompt(vector<snu::KMuon> muons,   bool keepfake);
 
+  bool  MCIsCF(snu::KElectron el);
   bool Zcandidate(vector<snu::KMuon> muons, float interval, bool require_os=true);
   bool Zcandidate(vector<snu::KElectron> electrons, float interval, bool require_os=true);
   bool SameCharge(std::vector<snu::KMuon> muons);

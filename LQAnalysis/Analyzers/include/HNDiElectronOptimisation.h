@@ -45,7 +45,7 @@ class HNDiElectronOptimisation : public AnalyzerCore {
   void GetTriggEfficiency();
   void SignalValidation();
   void RunAnalysis();
-  void OptimiseID(bool isss,bool dilep, float w);
+  void OptimiseID(bool isss,bool dilep, bool removed0,float w);
   
 
  private:

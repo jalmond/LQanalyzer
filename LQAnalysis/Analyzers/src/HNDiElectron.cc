@@ -153,19 +153,17 @@ void HNDiElectron::MakeValidationPlots(float w){
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                           
   bool keepcf=true;
   bool keepnp=true;
-  bool keepconv=true;
-  bool keeptau=true;
   
   TString pog_veto_elid = "ELECTRON_PTETA"; // POG ID + loose dxy/dz cuts  (no cc or dxysig)          
   TString pog_tight_elid = "ELECTRON_POG_TIGHT"; // POG ID + loose dxy/dz cuts  (no cc or dxysig)          
-  std::vector<snu::KElectron> electronVetoColl=GetElectrons(keepcf, keepnp, keepconv, keeptau, pog_veto_elid,15., 2.5);  /// IF k_running_nonprompt loose id                       
-  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp, keepconv, keeptau, pog_tight_elid,15., 2.5);  /// IF k_running_nonprompt loose id                       
-  std::vector<snu::KElectron> electronTightColl_all=GetElectrons(true, true,true, true, pog_tight_elid,15., 2.5);
+  std::vector<snu::KElectron> electronVetoColl=GetElectrons(keepcf, keepnp,  pog_veto_elid,15., 2.5);  /// IF k_running_nonprompt loose id                       
+  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp, pog_tight_elid,15., 2.5);  /// IF k_running_nonprompt loose id                       
+  std::vector<snu::KElectron> electronTightColl_all=GetElectrons(true, true, pog_tight_elid,15., 2.5);
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
   std::vector<snu::KJet> jets =  GetJets("JET_HN");
   std::vector<snu::KJet> jets_pu =  GetJets("JET_HN_PU");
 
-  std::vector<snu::KElectron> electronColl=GetElectrons(keepcf, keepnp, keepconv, keeptau, "ELECTRON_PTETA", 5., 2.5);  /// IF k_running_nonprompt loose id                                                                                  
+  std::vector<snu::KElectron> electronColl=GetElectrons(keepcf, keepnp, "ELECTRON_PTETA", 5., 2.5);  /// IF k_running_nonprompt loose id                                                                                  
 
   
   float tempweight =  w*WeightByTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi);
@@ -600,19 +598,15 @@ void HNDiElectron::MakeControlPlots(int method, TString methodtag, float w)throw
   /// This is for CR / checks
   
   
-  std::vector<snu::KElectron> electronVetoColl=GetElectrons(true, false, true, true,  "ELECTRON_HN_VETO", 10., 2.5);
+  std::vector<snu::KElectron> electronVetoColl=GetElectrons(true, false,   "ELECTRON_HN_VETO", 10., 2.5);
 
   TString pog_elid = "ELECTRON_POG_TIGHT"; // POG ID + loose dxy/dz cuts  (no cc or dxysig)
   if(k_running_nonprompt) pog_elid = "ELECTRON16_POG_FAKELOOSE"; // POG ID -> relaxed iso + dxy cuts
   bool keepcf=true;
   bool keepnp=false;
-  bool keepconv=false;
-  bool keeptau=true;
   if(method==1){
     keepcf=true;
     keepnp=true;
-    keepconv=true;
-    keeptau=true;
   }
   else if(method==2){
     // if sample is QCD sample then no events with have prompt electrons so always keep fakes in this case
@@ -624,26 +618,24 @@ void HNDiElectron::MakeControlPlots(int method, TString methodtag, float w)throw
     // if sample is QCD sample then no events with have prompt electrons so always keep fakes in this case                                                                   
     if(k_sample_name.Contains("QCD")) keepnp=true;
     if(k_sample_name.Contains("qcd")) keepnp=true;
-    if(k_sample_name.Contains("DYJet")) keeptau=false;
-    if(k_sample_name.Contains("DYJets_10to50")) keeptau=true;
     /// electronTightColl = POG ID unless k_running_nonprompt is true                                                                                                      
   }
 
-  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp, keepconv, keeptau, pog_elid,15., 2.5);  /// IF k_running_nonprompt loose id
+  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  pog_elid,15., 2.5);  /// IF k_running_nonprompt loose id
 
   
-  std::vector<snu::KElectron> electronTightColl_all=GetElectrons(true, true,true, true, pog_elid,15., 2.5);  
+  std::vector<snu::KElectron> electronTightColl_all=GetElectrons(true, true, pog_elid,15., 2.5);  
   
   
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats
-  std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp,keepconv,keeptau, pog_elid,7., 2.5);  /// IF k_running_nonprompt loose id
+  std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, pog_elid,7., 2.5);  /// IF k_running_nonprompt loose id
 
  
 
   /// HN analysis objects
   TString hn_elid = "ELECTRON_HN_TIGHT";
   if(k_running_nonprompt) hn_elid = "ELECTRON16_HN_FAKELOOSE";
-  std::vector<snu::KElectron> electronHNTightColl=GetElectrons(keepcf,keepnp ,keepconv, keeptau, hn_elid);
+  std::vector<snu::KElectron> electronHNTightColl=GetElectrons(keepcf,keepnp , hn_elid);
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
   
   /// Simply fill nymber of leptons in samples
@@ -1474,7 +1466,7 @@ void HNDiElectron::RunAnalysis(TString plottag, TString tightelid, TString vetoe
   TString elid = "ELECTRON_POG_TIGHT";
   if(k_running_nonprompt) elid="ELECTRON_HN_FAKELOOSE_NOD0";
 
-  std::vector<snu::KElectron> electronColl             = GetElectrons(true, false,true, true, elid);
+  std::vector<snu::KElectron> electronColl             = GetElectrons(true, false, elid);
   
   float weight_trigger_sf =  mcdata_correction->TriggerScaleFactor(electronColl, muonColl, analysis_trigger);
   FillHist("TriggerSFWeight" , weight_trigger_sf, 1., 0. , 2., 200);

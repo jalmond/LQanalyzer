@@ -116,14 +116,15 @@ void HNDiElectronOptimisation::ExecuteEvents()throw( LQError ){
   triggerlist.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
 
   float trigger_ps_weight= WeightByTrigger(triggerlist, TargetLumi);
-  if(PassTriggerOR(triggerlist))   OptimiseID(true, false, weight*trigger_ps_weight);
+  if(PassTriggerOR(triggerlist))   OptimiseID(true, false, true, weight*trigger_ps_weight);
 
 
   TString analysis_trigger="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
   if(!PassTrigger(analysis_trigger))   return;
   
-  OptimiseID(true, true,  weight);
+  OptimiseID(true, true,  true, weight);
+  if(k_running_nonprompt)OptimiseID(true, true,false,  weight);
 
 
   std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
@@ -168,7 +169,7 @@ void HNDiElectronOptimisation::CheckJetsCloseToLeptons(std::vector<snu::KElectro
 
 
 
-void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
+void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, float w){
   
   bool getpogid(true);
   bool getpogidcc(true);
@@ -238,42 +239,64 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
       
     }
     else{
-
-      float ee_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE_CC","ELECTRON16_FR_POG_MEDIUM_CC","dijet_ajet40");
-      float ee_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE_CC","ELECTRON16_FR_POG_TIGHT_CC","dijet_ajet40");
-      float ee_weight_mva =  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_mva, "ELECTRON16_MVA_FAKELOOSE_CC", "ELECTRON16_FR_MVA_TIGHT_CC","dijet_ajet40");
       
-      float ee_weight_medium_dxy = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE_CC","ELECTRON16_FR_POG_MEDIUM_DXYCC","dijet_ajet40");
-      float ee_weight_tight_dxy =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE_CC","ELECTRON16_FR_POG_TIGHT_DXYCC","dijet_ajet40");
-      float ee_weight_mva_dxy =  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_mva, "ELECTRON16_MVA_FAKELOOSE_CC", "ELECTRON16_FR_MVA_TIGHT_DXYCC","dijet_ajet40");
-
-      
-      float mme_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE_CC",1,"ELECTRON16_FR_POG_MEDIUM_CC","dijet_ajet40");
-      float mme_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight(false,trilepmuons, "MUON_HN_TRI_TIGHT", 2, electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE_CC",1,"ELECTRON16_FR_POG_TIGHT_CC","dijet_ajet40");
-      float mme_weight_mva =  m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_mva, "ELECTRON16_MVA_FAKELOOSE_CC", 1,"ELECTRON16_FR_MVA_TIGHT_CC","dijet_ajet40");
-
-      float mme_weight_medium_dxy = m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE_CC",1,"ELECTRON16_FR_POG_MEDIUM_DXYCC","dijet_ajet40");
-      float mme_weight_tight_dxy =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE_CC",1,"ELECTRON16_FR_POG_TIGHT_DXYCC","dijet_ajet40");
-      float mme_weight_mva_dxy =  m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_mva, "ELECTRON16_MVA_FAKELOOSE_CC", 1,"ELECTRON16_FR_MVA_TIGHT_DXYCC","dijet_ajet40");
-
+      TString idtag="";
       
       if(dilep){
-	if(CheckSignalRegion(isss, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow",0.  , ee_weight_medium, 0.,7.,7);
-	if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow",1.  , ee_weight_tight, 0.,7.,7);
-	if(CheckSignalRegion(isss,electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow",2.  , ee_weight_mva, 0.,7.,7);
+	TString medium_looselabel="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC";
+	TString tight_looselabel="ELECTRON16_POG_FAKELOOSE_CC";
+	TString mva_looselabel="ELECTRON16_MVA_FAKELOOSE_CC";
+	if(!removed0){
+	  idtag="_d0";
+	  medium_looselabel="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0";
+	  tight_looselabel="ELECTRON16_POG_FAKELOOSE_CC_d0";
+	  mva_looselabel="ELECTRON16_MVA_FAKELOOSE_CC_d0";
+	}
+
+
+	float ee_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,medium_looselabel,"ELECTRON16_FR_POG_MEDIUM_CC","dijet_ajet40"+idtag);
+	float ee_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,tight_looselabel,"ELECTRON16_FR_POG_TIGHT_CC","dijet_ajet40"+idtag);
+	float ee_weight_mva =  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_mva, mva_looselabel, "ELECTRON16_FR_MVA_TIGHT_CC","dijet_ajet40"+idtag);
 	
-	if(CheckSignalRegion(isss, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow",3.  , ee_weight_medium_dxy, 0.,7.,7);
-	if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow",4.  , ee_weight_tight_dxy, 0.,7.,7);
-	if(CheckSignalRegion(isss,electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow",5.  , ee_weight_mva_dxy, 0.,7.,7);
+	float ee_weight_medium_dxy = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,medium_looselabel,"ELECTRON16_FR_POG_MEDIUM_DXYCC","dijet_ajet40"+idtag);
+	float ee_weight_tight_dxy =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,medium_looselabel,"ELECTRON16_FR_POG_TIGHT_DXYCC","dijet_ajet40"+idtag);
+	float ee_weight_mva_dxy =  m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_mva, mva_looselabel, "ELECTRON16_FR_MVA_TIGHT_DXYCC","dijet_ajet40"+idtag);
+	
+	if(CheckSignalRegion(isss, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow"+idtag,0.  , ee_weight_medium, 0.,7.,7);
+	if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow"+idtag,1.  , ee_weight_tight, 0.,7.,7);
+	if(CheckSignalRegion(isss,electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow"+idtag,2.  , ee_weight_mva, 0.,7.,7);
+	
+	if(CheckSignalRegion(isss, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow"+idtag,3.  , ee_weight_medium_dxy, 0.,7.,7);
+	if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow"+idtag,4.  , ee_weight_tight_dxy, 0.,7.,7);
+	if(CheckSignalRegion(isss,electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow"+idtag,5.  , ee_weight_mva_dxy, 0.,7.,7);
       }
       else{
-	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow_trilep",0.  , mme_weight_medium, 0.,7.,7);
-        if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow_trilep",1.  , mme_weight_tight, 0.,7.,7);
-        if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow_trilep",2.  , mme_weight_mva, 0.,7.,7);
 	
-        if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow_trilep",3.  , mme_weight_medium_dxy, 0.,7.,7);
-        if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow_trilep",4.  , mme_weight_tight_dxy, 0.,7.,7);
-        if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow_trilep",5.  , mme_weight_mva_dxy, 0.,7.,7);
+	TString medium_looselabel="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC";
+	TString tight_looselabel="ELECTRON16_POG_FAKELOOSE_CC";
+	TString mva_looselabel="ELECTRON16_MVA_FAKELOOSE_CC";
+	if(!removed0){
+	  idtag="_d0";
+	  medium_looselabel="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0";
+	  tight_looselabel="ELECTRON16_POG_FAKELOOSE_CC_d0";
+	  mva_looselabel="ELECTRON16_MVA_FAKELOOSE_CC_d0";
+	}
+	
+	float mme_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_medium,medium_looselabel,1,"ELECTRON16_FR_POG_MEDIUM_CC","dijet_ajet40"+idtag);
+	float mme_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight(false,trilepmuons, "MUON_HN_TRI_TIGHT", 2, electronLooseColl_tight,tight_looselabel,1,"ELECTRON16_FR_POG_TIGHT_CC","dijet_ajet40"+idtag);
+	float mme_weight_mva =  m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_mva, mva_looselabel, 1,"ELECTRON16_FR_MVA_TIGHT_CC","dijet_ajet40"+idtag);
+	
+	float mme_weight_medium_dxy = m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_medium,medium_looselabel,1,"ELECTRON16_FR_POG_MEDIUM_DXYCC","dijet_ajet40"+idtag);
+	float mme_weight_tight_dxy =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_tight,tight_looselabel,1,"ELECTRON16_FR_POG_TIGHT_DXYCC","dijet_ajet40"+idtag);
+	float mme_weight_mva_dxy =  m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_mva, mva_looselabel, 1,"ELECTRON16_FR_MVA_TIGHT_DXYCC","dijet_ajet40"+idtag);
+	
+	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow_trilep"+idtag,0.  , mme_weight_medium, 0.,7.,7);
+	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow_trilep"+idtag,1.  , mme_weight_tight, 0.,7.,7);
+	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow_trilep"+idtag,2.  , mme_weight_mva, 0.,7.,7);
+	
+	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_nod0", w)) FillHist("IDcutflow_trilep"+idtag,3.  , mme_weight_medium_dxy, 0.,7.,7);
+	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_tight, jets,"Signal_Tightlooseiso_nod0", w))   FillHist("IDcutflow_trilep"+idtag,4.  , mme_weight_tight_dxy, 0.,7.,7);
+	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_mva, jets,"Signal_MVAlooseiso_nod0", w))   FillHist("IDcutflow_trilep"+idtag,5.  , mme_weight_mva_dxy, 0.,7.,7);
 	
       }
     }
@@ -305,25 +328,25 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
 
     }
     else{
-      std::vector<snu::KMuon> muonVetoColl;
-      float ee_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE","ELECTRON16_FR_POG_MEDIUM","dijet_ajet40");
-      float ee_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE","ELECTRON16_FR_POG_TIGHT","dijet_ajet40");
-
-
-      float mme_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE",1,"ELECTRON16_FR_POG_MEDIUM","dijet_ajet40");
-      float mme_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE",1,"ELECTRON16_FR_POG_TIGHT","dijet_ajet40");
 
       if(dilep){
+
+	float ee_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE","ELECTRON16_FR_POG_MEDIUM","dijet_ajet40");
+	float ee_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE","ELECTRON16_FR_POG_TIGHT","dijet_ajet40");
+
 	if(CheckSignalRegion(isss, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_d0", w)) FillHist("IDcutflow_nocc",0.  , ee_weight_medium, 0.,2.,2);
 	if(CheckSignalRegion(isss,electronLooseColl_tight, jets,"Signal_Tightlooseiso_d0", w))   FillHist("IDcutflow_nocc",1.  , ee_weight_tight, 0.,2.,2);
       }
       else{
+
+	float mme_weight_medium = m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, electronLooseColl_medium,"ELECTRON16_POG_MEDIUM_FAKELOOSE",1,"ELECTRON16_FR_POG_MEDIUM","dijet_ajet40");
+	float mme_weight_tight =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2,electronLooseColl_tight,"ELECTRON16_POG_FAKELOOSE",1,"ELECTRON16_FR_POG_TIGHT","dijet_ajet40");
+
 	if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_medium, jets,"Signal_Mediumlooseiso_d0", w)) FillHist("IDcutflow_nocc_trilep",0.  , mme_weight_medium, 0.,2.,2);
         if(CheckSignalRegionTriLep( trilepmuons, electronLooseColl_tight, jets,"Signal_Tightlooseiso_d0", w))   FillHist("IDcutflow_nocc_trilep",1.  , mme_weight_tight, 0.,2.,2);
 
       }
     }
-  
   }
   
   std::vector<TString> isotag;
@@ -378,18 +401,26 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
       for(unsigned int iiso = 0 ; iiso < isocuts.size(); iiso++){
 	for(unsigned int iiso2 = 0 ; iiso2 < isocuts.size(); iiso2++, iisocut++){
 	  std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_"+itag+"b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data());
-	  std::vector<snu::KElectron>  elloose=  GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
-	  float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_"+itag+"b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data(), "opt_dijet_ajet40");
 
-	  float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",1,("HNTight_"+itag+"b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data(), "opt_dijet_ajet40");
-
-
+	  TString idtag="";
+	  TString looseid="ELECTRON16_HN_FAKELOOSE_NOD0";
+	  if(!removed0){
+	    looseid="ELECTRON16_HN_FAKELOOSE";
+	    idtag="_d0";
+	  }
+	  std::vector<snu::KElectron>  elloose=  GetElectrons(looseid);
+	  
 
 	  if(dilep)  {
-	    if(CheckSignalRegion(isss, elloose,jets,"", w)) FillHist("ISOcutflow"+itag, iisocut , evw,0., 64., 64);
+
+	    float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_"+itag+"b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data(), "opt_dijet_ajet40"+idtag);
+	    
+	    if(CheckSignalRegion(isss, elloose,jets,"", w)) FillHist("ISOcutflow"+itag+idtag, iisocut , evw,0., 64., 64);
 	  }
 	  else {
-	    if(CheckSignalRegionTriLep(trilepmuons, elloose,jets,"", w)) FillHist("ISOcutflow"+itag+"_tchan", iisocut , mme_evw,0., 64., 64);
+
+	    float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, looseid,1,("HNTight_"+itag+"b"+isocuts[iiso]+"_e"+isocuts[iiso2]).Data(), "opt_dijet_ajet40"+idtag);
+	    if(CheckSignalRegionTriLep(trilepmuons, elloose,jets,"", w)) FillHist("ISOcutflow"+itag+"_trilep"+idtag, iisocut , mme_evw,0., 64., 64);
 	  }
 	}
       }
@@ -399,7 +430,7 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
   if(dilep){
     if(CheckSignalRegion(isss,GetElectrons("HNTight_dxy_ref"),jets,"", w)) FillHist("d0cutflow", 0., w, 0.,30.,30);
   }
-  else     if(CheckSignalRegionTriLep( trilepmuons, GetElectrons("HNTight_dxy_ref"),jets,"", w)) FillHist("d0cutflow_tchan", 0., w, 0.,30.,30);
+  else     if(CheckSignalRegionTriLep( trilepmuons, GetElectrons("HNTight_dxy_ref"),jets,"", w)) FillHist("d0cutflow_trilep", 0., w, 0.,30.,30);
 
   if(!k_running_nonprompt){
 
@@ -442,8 +473,8 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
 	    if(CheckSignalRegion(isss, GetElectrons(("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data()) ,jets,"", w)) FillHist("d0cutflowzoomed_now", idxy2, 1.,  0.,55.,55);
 	  }
 	  else{
-	    if(CheckSignalRegionTriLep(trilepmuons,  GetElectrons(("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data()) ,jets,"", w)) FillHist("d0cutflowzoomed_tchan", idxy2, w,  0.,55.,55);
-            if(CheckSignalRegionTriLep(trilepmuons,  GetElectrons(("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data()) ,jets,"", w)) FillHist("d0cutflowzoomed_now_tchan", idxy2, 1.,  0.,55.,55);
+	    if(CheckSignalRegionTriLep(trilepmuons,  GetElectrons(("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data()) ,jets,"", w)) FillHist("d0cutflowzoomed_trilep", idxy2, w,  0.,55.,55);
+            if(CheckSignalRegionTriLep(trilepmuons,  GetElectrons(("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data()) ,jets,"", w)) FillHist("d0cutflowzoomed_now_trilep", idxy2, 1.,  0.,55.,55);
 	  }
 	}
       }
@@ -458,8 +489,8 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
 	  if(CheckSignalRegion(isss, GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0cutflow_now", idxy, 1.,  0.,30.,30);
 	}
 	else{
-	  if(CheckSignalRegionTriLep(trilepmuons,  GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0cutflow_tchan", idxy, w,  0.,30.,30);
-          if(CheckSignalRegionTriLep(trilepmuons, GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0cutflow_now_tchan", idxy, 1.,  0.,30.,30);
+	  if(CheckSignalRegionTriLep(trilepmuons,  GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0cutflow_trilep", idxy, w,  0.,30.,30);
+          if(CheckSignalRegionTriLep(trilepmuons, GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0cutflow_now_trilep", idxy, 1.,  0.,30.,30);
 	}
       }
     }
@@ -501,17 +532,27 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
         for(unsigned int ie=0; ie <dxye2.size(); ie++, idxy2++){
 	  
 	  std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data());
-	  std::vector<snu::KElectron>  elloose  =GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
-	  float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40");
-	  float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",1,("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40");
 
+	  TString idtag="";
+	  TString looseid="ELECTRON16_HN_FAKELOOSE_NOD0";
+	  if(!removed0){
+	    looseid="ELECTRON16_HN_FAKELOOSE";
+	    idtag="_d0";
+	  }
+	  std::vector<snu::KElectron>  elloose  =GetElectrons(looseid);
+	  
 	  if(dilep){
-	    if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", evw)) FillHist("d0cutflowzoomed", idxy2, evw,  0.,55.,55);
-	    if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0")  ,jets,"", evw)) FillHist("d0cutflowzoomed_now", idxy2, 1.,  0.,55.,55);
+	    
+	    float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	    
+	    if(CheckSignalRegion(isss, elloose ,jets,"", evw)) FillHist("d0cutflowzoomed"+idtag, idxy2, evw,  0.,55.,55);
+	    if(CheckSignalRegion(isss, elloose  ,jets,"", evw)) FillHist("d0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
 	  }
 	  else{
-	    if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", evw)) FillHist("d0cutflowzoomed_tchan", idxy2, mme_evw,  0.,55.,55);
-            if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0")  ,jets,"", evw)) FillHist("d0cutflowzoomed_now_tchan", idxy2, 1.,  0.,55.,55);
+
+	    float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, looseid,1,("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	    if(CheckSignalRegionTriLep(trilepmuons, elloose ,jets,"", mme_evw)) FillHist("d0cutflowzoomed_trilep"+idtag, idxy2, mme_evw,  0.,55.,55);
+            if(CheckSignalRegionTriLep(trilepmuons, elloose  ,jets,"", mme_evw)) FillHist("d0cutflowzoomed_now_trilep"+idtag, idxy2, 1.,  0.,55.,55);
 
 	  }
 	}
@@ -523,17 +564,25 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
     for(unsigned int ib=0; ib <dxyb.size(); ib++){
       for(unsigned int ie=0; ie <dxye.size(); ie++, idxy++){
 	std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data());
-	std::vector<snu::KElectron>  elloose  =GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
-        float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40");
-	float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",1,("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40");
 
+	TString idtag="";
+	TString looseid="ELECTRON16_HN_FAKELOOSE_NOD0";
+	if(!removed0){
+	  looseid="ELECTRON16_HN_FAKELOOSE";
+	  idtag="_d0";
+	}
+	std::vector<snu::KElectron>  elloose=  GetElectrons(looseid);
+	
 	if(dilep){
-	  if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", evw)) FillHist("d0cutflow", idxy, evw,  0.,30.,30);
-	  if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0")  ,jets,"", evw)) FillHist("d0cutflow_now", idxy, 1.,  0.,30.,30);
+	  float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	  
+	  if(CheckSignalRegion(isss, elloose ,jets,"", evw)) FillHist("d0cutflow"+idtag, idxy, evw,  0.,30.,30);
+	  if(CheckSignalRegion(isss, elloose  ,jets,"", evw)) FillHist("d0cutflow_now"+idtag, idxy, 1.,  0.,30.,30);
 	}
 	else{
-	  if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", evw)) FillHist("d0cutflow_tchan", idxy, mme_evw,  0.,30.,30);
-          if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0")  ,jets,"", evw)) FillHist("d0cutflow_now_tchan", idxy, 1.,  0.,30.,30);
+	  float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose,looseid,1,("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	  if(CheckSignalRegionTriLep(trilepmuons, elloose ,jets,"", mme_evw)) FillHist("d0cutflow_trilep"+idtag, idxy, mme_evw,  0.,30.,30);
+          if(CheckSignalRegionTriLep(trilepmuons, elloose  ,jets,"", mme_evw)) FillHist("d0cutflow_now_trilep"+idtag, idxy, 1.,  0.,30.,30);
 	}
       }
     }
@@ -544,7 +593,7 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
     if(CheckSignalRegion(isss,GetElectrons("HNTight_dxy_ref"),jets,"", w)) FillHist("d0sigcutflow", 0., w, 0.,30.,30);
   }
   else{
-    if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("HNTight_dxy_ref"),jets,"", w)) FillHist("d0sigcutflow_tchan", 0., w, 0.,30.,30);
+    if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("HNTight_dxy_ref"),jets,"", w)) FillHist("d0sigcutflow_trilep", 0., w, 0.,30.,30);
   }
   
   if(!k_running_nonprompt){
@@ -609,8 +658,8 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
 	  if(CheckSignalRegion(isss, GetElectrons(("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0sigcutflow_now", idxy, 1.,  0.,30.,30);
 	}
 	else{
-	  if(CheckSignalRegionTriLep(trilepmuons, GetElectrons(("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0sigcutflow_tchan", idxy, w,  0.,30.,30);
-          if(CheckSignalRegionTriLep(trilepmuons, GetElectrons(("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0sigcutflow_now_tchan", idxy, 1.,  0.,30.,30);
+	  if(CheckSignalRegionTriLep(trilepmuons, GetElectrons(("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0sigcutflow_trilep", idxy, w,  0.,30.,30);
+          if(CheckSignalRegionTriLep(trilepmuons, GetElectrons(("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0sigcutflow_now_trilep", idxy, 1.,  0.,30.,30);
 
 	}
       }
@@ -653,17 +702,27 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
         for(unsigned int ie=0; ie <dxye2.size(); ie++, idxy2++){
 
 	  std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data());
-	  std::vector<snu::KElectron>  elloose  =GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
-	  float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40");
-	  float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",1,("HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40");
 
+	  TString idtag="";
+	  TString looseid="ELECTRON16_HN_FAKELOOSE_NOD0";
+	  if(!removed0){
+	    looseid="ELECTRON16_HN_FAKELOOSE";
+	    idtag="_d0";
+	  }
+	  std::vector<snu::KElectron>  elloose  =GetElectrons(looseid);
+	  
+	  
+	  
 	  if(dilep){
-	    if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", evw)) FillHist("d0sigcutflowzoomed", idxy2, evw,  0.,55.,55);
-	    if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0")  ,jets,"", evw)) FillHist("d0sigcutflowzoomed_now", idxy2, 1.,  0.,55.,55);
+	    float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	    
+	    if(CheckSignalRegion(isss, elloose ,jets,"", evw)) FillHist("d0sigcutflowzoomed"+idtag, idxy2, evw,  0.,55.,55);
+	    if(CheckSignalRegion(isss, elloose  ,jets,"", evw)) FillHist("d0sigcutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
 	  }
 	  else{
-	    if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", evw)) FillHist("d0sigcutflowzoomed_tchan", idxy2, mme_evw,  0.,55.,55);
-            if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0")  ,jets,"", evw)) FillHist("d0sigcutflowzoomed_now_tchan", idxy2, 1.,  0.,55.,55);
+	    float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, looseid,1,("HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	    if(CheckSignalRegionTriLep(trilepmuons, elloose ,jets,"", mme_evw)) FillHist("d0sigcutflowzoomed_trilep"+idtag, idxy2, mme_evw,  0.,55.,55);
+            if(CheckSignalRegionTriLep(trilepmuons, elloose ,jets,"", mme_evw)) FillHist("d0sigcutflowzoomed_now_trilep"+idtag, idxy2, 1.,  0.,55.,55);
 
 	  }
         }
@@ -675,17 +734,27 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep,  float w){
     for(unsigned int ib=0; ib <dxyb.size(); ib++){
       for(unsigned int ie=0; ie <dxye.size(); ie++, idxy++){
 	std::vector<snu::KElectron>  eltight = GetElectrons(("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data());
-	std::vector<snu::KElectron>  elloose  =GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0");
-	float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40");
-	float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, "ELECTRON16_HN_FAKELOOSE_NOD0",1,("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40");
+
+	TString idtag="";
+	TString looseid="ELECTRON16_HN_FAKELOOSE_NOD0";
+	if(!removed0){
+	  looseid="ELECTRON16_HN_FAKELOOSE";
+	  idtag="_d0";
+	}
+	std::vector<snu::KElectron>  elloose  =GetElectrons(looseid);
+
+	
 								 
 	if(dilep){
-	  if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", w))FillHist("d0sigcutflow", idxy, evw,  0.,30.,30);
-	  if(CheckSignalRegion(isss, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", w))FillHist("d0sigcutflow_now", idxy, 1.,  0.,30.,30);
+	  float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40"+idtag);
+
+	  if(CheckSignalRegion(isss, elloose ,jets,"", w))FillHist("d0sigcutflow"+idtag, idxy, evw,  0.,30.,30);
+	  if(CheckSignalRegion(isss, elloose ,jets,"", w))FillHist("d0sigcutflow_now"+idtag, idxy, 1.,  0.,30.,30);
 	}
 	else{
-	  if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", w))FillHist("d0sigcutflow_tchan", idxy, mme_evw,  0.,30.,30);
-          if(CheckSignalRegionTriLep(trilepmuons, GetElectrons("ELECTRON16_HN_FAKELOOSE_NOD0") ,jets,"", w))FillHist("d0sigcutflow_now_tchan", idxy, 1.,  0.,30.,30);
+	  float mme_evw =   m_datadriven_bkg->Get_DataDrivenWeight(false, trilepmuons, "MUON_HN_TRI_TIGHT", 2, elloose, looseid,1,("HNTight_dxysig_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data(), "opt_dijet_ajet40"+idtag);
+	  if(CheckSignalRegionTriLep(trilepmuons, elloose ,jets,"", w))FillHist("d0sigcutflow_trilep"+idtag, idxy, mme_evw,  0.,30.,30);
+          if(CheckSignalRegionTriLep(trilepmuons, elloose ,jets,"", w))FillHist("d0sigcutflow_now_trilep"+idtag, idxy, 1.,  0.,30.,30);
 
 	}
       }

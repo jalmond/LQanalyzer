@@ -223,6 +223,14 @@ void MakeFRRootFile(){
   fakes.push_back("ELECTRON16_FR_POG_MEDIUM_DXYCC_dijet_pog");
   fakes.push_back("ELECTRON16_FR_MVA_TIGHT_DXYCC_dijet_mva");
 
+  fakes.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog_d0");
+  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog_d0");
+  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva_d0");
+  fakes.push_back("ELECTRON16_FR_POG_TIGHT_DXYCC_dijet_pog_d0");
+  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_DXYCC_dijet_pog_d0");
+  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_DXYCC_dijet_mva_d0");
+
+
   std::vector<TString> fakes_opt;
   fakes_opt.push_back("HNTight_");
   //fakes_opt.push_back("HNTight_miniiso_");
@@ -233,7 +241,7 @@ void MakeFRRootFile(){
     for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
       cout << *it2 << endl;
       if(!CheckFile(fdata))return;
-      if(!CheckFile(fmc))return;
+     if(!CheckFile(fmc))return;
 
       TString denom ="LooseEl" + *it + "_"+ *it2;
       TString num ="TightEl" + *it +  "_"+ *it2;
@@ -329,6 +337,49 @@ void MakeFRRootFile(){
           num ="TightEl" + *it + *it3+  "_dijet_nod0_dxysig_miniiso_"+ *it2;
         }
 
+        TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
+        TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
+
+        cout << h_pt_num << " " << h_pt_denom << endl;
+        cout << num << " " << denom << endl;
+        CheckHist(h_pt_denom);
+        CheckHist(h_pt_num);
+        TH2D* h_mcpt_num= (TH2D*)fmc->Get(num.Data());
+        TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
+        CheckHist(h_mcpt_denom);
+        CheckHist(h_mcpt_num);
+
+        TString name = *it +*it2 + *it3;
+
+        TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
+        TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
+        eff_rate->Add(h_mcpt_num,-1.);
+        hratedenom->Add(h_mcpt_denom, -1.);
+        eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
+        eff_rate->Write();
+      }
+    }
+  }
+
+
+  for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
+    for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
+      for(vector<TString>::iterator it = fakes_opt.begin(); it!=fakes_opt.end(); ++it){
+
+        if(it3->Contains("dxy") && it->Contains("mini")) continue;
+
+        if(!CheckFile(fdata))return;
+        if(!CheckFile(fmc))return;
+        TString denom ="LooseEl" + *it + *it3 +"_dijet_d0_"+ *it2;
+        TString num ="TightEl" + *it +  *it3 +"_dijet_d0_"+ *it2;
+        if(it->Contains("dxy")){
+          denom ="LooseEl" + *it + *it3 +"_dijet_d0_dxysig_"+ *it2;
+          num ="TightEl" + *it +  *it3 +"_dijet_d0_dxysig_"+ *it2;
+        }
+        if(it->Contains("miniiso")){
+          denom ="LooseEl" + *it + *it3+ "_dijet_d0_dxysig_miniiso_"+ *it2;
+          num ="TightEl" + *it + *it3+  "_dijet_d0_dxysig_miniiso_"+ *it2;
+        }
 
         TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
         TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
@@ -341,24 +392,19 @@ void MakeFRRootFile(){
         TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
         CheckHist(h_mcpt_denom);
         CheckHist(h_mcpt_num);
-        cout << "tets" << endl;
 
-        TString name = *it +*it2 + *it3;
+        TString name = *it +*it2 + *it3+"_d0";
 
         TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
-        cout << "tets" << endl;
         TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
         eff_rate->Add(h_mcpt_num,-1.);
         hratedenom->Add(h_mcpt_denom, -1.);
         eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
         eff_rate->Write();
-
-        //TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);                                                                                                                                                                                                       
-        //eff_rate->Draw("colz textE");                                                                                                                                                                                                                                  
-	//c1->SaveAs(("/home/jalmond/WebPlots/13TeV/Fakes/2D_ps_hntight_aj40.pdf"));                                                                                                                                                                                         
       }
     }
   }
+
 
 
   return;
