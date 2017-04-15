@@ -206,7 +206,7 @@ bool BTagSFUtil::IsTagged(float JetDiscriminant, int JetFlavor, float JetPt, flo
 
   float Btag_SF = GetJetSF(JetFlavor, JetPt, JetEta, iperiod);
   
-  
+  //cout << "Btag_SF = " << Btag_SF << endl;
   if (Btag_SF == 1) return newBTag; //no correction needed 
 
   //throw die

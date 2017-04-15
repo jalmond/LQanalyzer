@@ -177,8 +177,6 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, 
   bool getpogidcc(true);
   
 
-
-
   /// Correct MC for pileup                                                                                                                                                                                                                                                     
   if (!isData) {
     w*= eventbase->GetEvent().PileUpWeight();
@@ -538,9 +536,9 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, 
       }
     }
     
-
     int idxy(1);
     for(unsigned int ib=0; ib <dxyb.size(); ib++){
+      bool passlast=true;
       for(unsigned int ie=0; ie <dxye.size(); ie++, idxy++){
 	if(dilep){
 	  if(CheckSignalRegion(isss, GetElectrons(("HNTight_dxy_b"+dxyb[ib]+"_e"+dxye[ie]).Data()) ,jets,"", w)) FillHist("d0cutflow", idxy, w,  0.,30.,30);
@@ -616,8 +614,16 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, 
 	    
 	    float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40"+idtag);
 	    
+	    
 	    if(CheckSignalRegion(isss, elloose ,jets,"", evw)) FillHist("d0cutflowzoomed"+idtag, idxy2, evw,  0.,55.,55);
-	    if(CheckSignalRegion(isss, elloose  ,jets,"", evw)) FillHist("d0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
+	    if(CheckSignalRegion(isss, elloose  ,jets,"", evw)){
+	      FillHist("d0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
+	      if(PassID(elloose[0], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie])  &&PassID(elloose[1], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]) )               FillHist("TTd0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
+	      if(PassID(elloose[0], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie])  &&!PassID(elloose[1], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]) )               FillHist("TLd0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
+	      if(!PassID(elloose[0], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie])  &&PassID(elloose[1], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]) )               FillHist("LTd0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
+	      if(!PassID(elloose[0], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie])  &&!PassID(elloose[1], "HNTight_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]) )               FillHist("LLd0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
+	      
+	    }
 	    if(CheckSignalRegionNN(isss, elloose ,jets,"", evw)) FillHist("NNd0cutflowzoomed"+idtag, idxy2, evw,  0.,55.,55);
             if(CheckSignalRegionNN(isss, elloose  ,jets,"", evw)) FillHist("NNd0cutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
 
@@ -821,7 +827,6 @@ void HNDiElectronOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, 
 	  if(dilep){
 	    float evw = m_datadriven_bkg->Get_DataDrivenWeight_EE(false,  elloose, looseid,("HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie]).Data(), "opt_dijet_ajet40"+idtag);
 	    
-	    if(CheckSignalRegion(isss, elloose ,jets,"", evw)) cout << "HNTight_dxysig_dxy_b"+dxyb2[ib]+"_e"+dxye2[ie] << " " << evw << endl;
 	    if(CheckSignalRegion(isss, elloose ,jets,"", evw)) FillHist("d0sigcutflowzoomed"+idtag, idxy2, evw,  0.,55.,55);
 	    if(CheckSignalRegion(isss, elloose  ,jets,"", evw)) FillHist("d0sigcutflowzoomed_now"+idtag, idxy2, 1.,  0.,55.,55);
 	    if(CheckSignalRegionNN(isss, elloose ,jets,"", evw)) FillHist("NNd0sigcutflowzoomed"+idtag, idxy2, evw,  0.,55.,55);
@@ -1143,10 +1148,11 @@ void HNDiElectronOptimisation::FillTriggerEfficiency(TString cut, float weight, 
 
 bool HNDiElectronOptimisation::CheckSignalRegionTriLep(  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
   
+  
   if(electrons.size() != 1 ) return false ;
   if(muons.size() != 2 ) return false ;
   // Set by trigger                                                                                                                                                                                                                        
-  if(electrons.at(0).Pt() < 20.) return false;
+  if(electrons.at(0).Pt() < 20.)  {cout << "Faile " << endl; return false;}
   if(muons.at(0).Pt() < 20.) return false;
   if(muons.at(1).Pt() < 15.) return false;
 
@@ -1177,11 +1183,11 @@ bool HNDiElectronOptimisation::CheckSignalRegionTriLep(  std::vector<snu::KMuon>
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), snu::KJet::CSVv2, snu::KJet::Medium, GetPeriod())) nbjet++;
+    
+    if( jets[ij].IsBTagged(  snu::KJet::CSVv2, snu::KJet::Medium))  nbjet++;
   }
   if(nbjet > 0) return false;
-
-
+  
   return true;
 
 }
@@ -1189,36 +1195,39 @@ bool HNDiElectronOptimisation::CheckSignalRegionTriLep(  std::vector<snu::KMuon>
 
 bool HNDiElectronOptimisation::CheckSignalRegion( bool isss,  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w){
 
-  if(electrons.size() != 2 ) return false ;
+  bool debug=false;
+  if(electrons.size() != 2 ) {if(debug)cout << "Fail el size" << endl; return false ;}
   // Set by trigger
-  if(electrons.at(0).Pt() < 25.) return false;
-  if(electrons.at(1).Pt() < 15.) return false;
-  if(isss&&!SameCharge(electrons)) return false;
+  if(electrons.at(0).Pt() < 25.) {if(debug)cout << "Fail pt1 " << endl; return false;}
+  if(electrons.at(1).Pt() < 15.)  {if(debug)cout << "Fail pt2  " << endl; return false;}
 
-  if(!isss&&SameCharge(electrons)) return false;
-  if(jets.size() < 2) return false;
+  if(isss&&!SameCharge(electrons)) {if(debug)cout << "Fail ss " << endl; return false;}
+
+  if(!isss&&SameCharge(electrons)) {if(debug)cout << "Fail os  " << endl; return false;}
+  if(jets.size() < 2) {if(debug)cout << "Fail jets " << endl; return false;}
   snu::KParticle ee = electrons.at(0) + electrons.at(1);
-  if(ee.M()  < 10.) return false;
+  if(ee.M()  < 10.) {if(debug)cout << "Fail mee  " << endl; return false;}
 
   snu::KParticle jj = jets.at(0) + jets.at(1) ;
-  if(jj.M() > 120.) return false;
+  if(jj.M() > 120.) {if(debug)cout << "Fail mjj  " << endl; return false;}
 
-  if(electrons.at(0).DeltaR(electrons.at(1)) > 3.5) return false;
-  //if(eventbase->GetEvent().SumET() < 200.) return false;;
+  if(electrons.at(0).DeltaR(electrons.at(1)) > 3.5) {if(debug)cout << "Fail dr  " << endl; return false;}
+  //if(eventbase->GetEvent().SumET() < 200.) {if(debug)cout << "Fail  " << endl; return false;};
 
-  if((ee.M() > 80.) && (ee.M() < 100.) ) return false;
+  if((ee.M() > 80.) && (ee.M() < 100.) ) {if(debug)cout << "Fail mZ  " << endl; return false;}
   float ST = electrons[0].Pt() + electrons[1].Pt();
   for(unsigned int ij=0; ij <jets.size(); ij++){
     ST+= jets[ij].Pt();
   }
-  if(eventbase->GetEvent().PFMET() >  40.) return false;
+  if(eventbase->GetEvent().PFMET() >  40.) {if(debug)cout << "Fail met  " << endl; return false;}
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), snu::KJet::CSVv2, snu::KJet::Medium, GetPeriod())) nbjet++;
+    if( jets[ij].IsBTagged(  snu::KJet::CSVv2, snu::KJet::Medium))  nbjet++;
   }
-  if(nbjet > 0) return false;
-   
+  if(nbjet > 0) {if(debug)cout << "Fail nbjet  " << endl; return false;}
+  
+  if(debug)cout << "PASSES ID" << endl;
   return true;
 
 }
@@ -1240,7 +1249,8 @@ bool HNDiElectronOptimisation::CheckSignalRegionNN( bool isss,  std::vector<snu:
 
   int nbjet=0;
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    if(IsBTagged(jets.at(ij), snu::KJet::CSVv2, snu::KJet::Medium, GetPeriod())) nbjet++;
+    if( jets[ij].IsBTagged(  snu::KJet::CSVv2, snu::KJet::Medium))  nbjet++;
+
   }
   if(nbjet > 0) return false;
 
