@@ -402,6 +402,7 @@ public :
    std::vector<bool>    *electrons_electronID_loose;
    std::vector<bool>    *electrons_electronID_medium;
    std::vector<bool>    *electrons_electronID_tight;
+   std::vector<bool>    *electrons_electronID_hlt;
    std::vector<bool>    *electrons_electronID_veto;
    std::vector<bool>    *electrons_isPF;
    std::vector<bool>    *electrons_isTrigMVAValid;
@@ -410,6 +411,7 @@ public :
    std::vector<bool>    *electrons_electronID_heep;
    std::vector<bool>    *electrons_electronID_mva_medium;
    std::vector<bool>    *electrons_electronID_mva_tight;
+   std::vector<bool>    *electrons_electronID_mva_zz;
    std::vector<bool>    *electrons_electronID_mva_trig_medium;
    std::vector<bool>    *electrons_electronID_mva_trig_tight;
    std::vector<bool>    *jets_isLoose;
@@ -741,6 +743,7 @@ public :
    TBranch        *b_electrons_electronID_loose;   //!                                                                                                                                                                                                                       
    TBranch        *b_electrons_electronID_medium;   //!          
    TBranch        *b_electrons_electronID_tight;   //!                                                                                                                                                                                                                       
+   TBranch        *b_electrons_electronID_hlt;   //!                                                                                                                                                                                                                       
    TBranch        *b_electrons_electronID_veto;   //!                                                                                                                                                                                                                        
    TBranch        *b_electrons_isPF;   //!                                                                                                                                                                                                                                   
    TBranch        *b_electrons_isTrigMVAValid;   //!                                                                                                                                                                                                                                   
@@ -750,6 +753,7 @@ public :
    
    TBranch        *b_electrons_electronID_mva_medium;   //!
    TBranch        *b_electrons_electronID_mva_tight;   //!
+   TBranch        *b_electrons_electronID_mva_zz;   //!
    TBranch        *b_electrons_electronID_mva_trig_medium;   //!
    TBranch        *b_electrons_electronID_mva_trig_tight;   //!
 

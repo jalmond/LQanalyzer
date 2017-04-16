@@ -37,11 +37,13 @@ KParticle()
   pass_loose=false;
   pass_medium=false;
   pass_tight=false;
+  pass_hltid=false;
   pass_heep=false;
   pass_trigmva_medium=false;
   pass_trigmva_tight=false;
   pass_notrigmva_medium=false;
   pass_notrigmva_tight=false;
+  pass_notrigmva_zz=false;
   k_mc_matched=false;
   k_is_cf=false;
   k_is_conv=false;
@@ -91,11 +93,13 @@ KElectron::KElectron(const KElectron& el) :
   pass_loose=el.PassLoose();
   pass_medium=el.PassMedium();
   pass_tight=el.PassTight();
+  pass_hltid=el.PassHLTID();
   pass_heep=el.PassHEEP();
   pass_trigmva_medium=el.PassTrigMVAMedium();
   pass_trigmva_tight=el.PassTrigMVATight(); 
   pass_notrigmva_medium=el.PassNotrigMVAMedium();
   pass_notrigmva_tight=el.PassNotrigMVATight();
+  pass_notrigmva_zz=el.PassMVAZZ();
   k_mc_matched=el.MCMatched();
   k_is_cf=el.MCIsCF();
   k_is_conv=el.MCIsFromConversion();
@@ -144,11 +148,13 @@ void KElectron::Reset()
   pass_loose=false;
   pass_medium=false;
   pass_tight=false;
+  pass_hltid=false;
   pass_heep=false;
   pass_trigmva_medium=false;
   pass_trigmva_tight=false;
   pass_notrigmva_medium=false;
   pass_notrigmva_tight=false;
+  pass_notrigmva_zz=false;
   k_mc_matched=false;
   k_is_cf=false;
   k_is_conv=false;
@@ -198,11 +204,13 @@ KElectron& KElectron::operator= (const KElectron& p)
     pass_loose=p.PassLoose();
     pass_medium=p.PassMedium();
     pass_tight=p.PassTight();
+    pass_hltid=p.PassHLTID();
     pass_heep=p.PassHEEP();
     pass_trigmva_medium=p.PassTrigMVAMedium();
     pass_trigmva_tight=p.PassTrigMVATight();
     pass_notrigmva_medium=p.PassNotrigMVAMedium();
     pass_notrigmva_tight=p.PassNotrigMVATight();
+    pass_notrigmva_zz=p.PassMVAZZ();
     k_mc_matched=p.MCMatched();
     k_is_cf =p.MCIsCF();
     k_is_conv =p.MCIsFromConversion();
@@ -508,6 +516,11 @@ void KElectron::SetPassMedium(Bool_t medium){
 void KElectron::SetPassTight(Bool_t tight){
   pass_tight= tight;
 }
+void KElectron::SetPassHLT(Bool_t hlt){
+  pass_hltid= hlt;
+}
+
+
 
 void KElectron::SetPassHEEP(Bool_t pass){
   pass_heep= pass;
@@ -527,6 +540,10 @@ void KElectron::SetPassMVANoTrigMedium(Bool_t pass){
 
 void KElectron::SetPassMVANoTrigTight(Bool_t pass){
   pass_notrigmva_tight= pass;
+}
+
+void KElectron::SetPassMVAZZ(Bool_t pass){
+  pass_notrigmva_zz= pass;
 }
 
 

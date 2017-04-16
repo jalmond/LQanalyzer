@@ -302,6 +302,11 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
       if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
       if(!el.PassTrigMVAMedium()) {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
     }
+
+    if(vids[idel].first == "IsZZ(MVA)"){
+      //if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
+      if(!el.PassMVAZZ()) {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
+    }
     
   }
   

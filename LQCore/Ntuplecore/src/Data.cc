@@ -209,9 +209,11 @@ void Data::Reset(){
   electrons_electronID_loose = 0;
   electrons_electronID_medium = 0;
   electrons_electronID_tight = 0;
+  electrons_electronID_hlt = 0;
   electrons_electronID_veto = 0;
   electrons_electronID_mva_medium = 0;
   electrons_electronID_mva_tight = 0;
+  electrons_electronID_mva_zz = 0;
   electrons_electronID_mva_trig_medium = 0;
   electrons_electronID_mva_trig_tight = 0;
   electrons_electronID_heep = 0;
@@ -724,10 +726,12 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_electronID_medium", electrons_electronID_medium, b_electrons_electronID_medium);
   ConnectVariable("electrons_electronID_veto", electrons_electronID_veto, b_electrons_electronID_veto);
   ConnectVariable("electrons_electronID_tight", electrons_electronID_tight, b_electrons_electronID_tight);
+  ConnectVariable("electrons_electron_hlt", electrons_electronID_hlt, b_electrons_electronID_hlt);
   ConnectVariable("electrons_electronID_snu", electrons_electronID_snu, b_electrons_electronID_snu);
   ConnectVariable("electrons_electronID_heep", electrons_electronID_heep ,b_electrons_electronID_heep);
   ConnectVariable("electrons_electronID_mva_medium",electrons_electronID_mva_medium,b_electrons_electronID_mva_medium);
   ConnectVariable("electrons_electronID_mva_tight",electrons_electronID_mva_tight,b_electrons_electronID_mva_tight);
+  ConnectVariable("electrons_electronID_mva_zz",electrons_electronID_mva_zz,b_electrons_electronID_mva_zz);
   ConnectVariable("electrons_electronID_mva_trig_medium",electrons_electronID_mva_trig_medium,b_electrons_electronID_mva_trig_medium);
   ConnectVariable("electrons_electronID_mva_trig_tight",electrons_electronID_mva_trig_tight,b_electrons_electronID_mva_trig_tight);
   ConnectVariable("electrons_energy", electrons_energy, b_electrons_energy);

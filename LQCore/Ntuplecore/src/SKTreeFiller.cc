@@ -506,7 +506,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassLoose(electrons_electronID_loose->at(iel));
     el.SetPassMedium(electrons_electronID_medium->at(iel));
     el.SetPassTight(electrons_electronID_tight->at(iel));
-    
+    if(electrons_electronID_hlt)el.SetPassHLT(electrons_electronID_hlt->at(iel));
     /// HEEP
     //el.SetPassHEEP(electrons_electronID_heep->at(iel));
 
@@ -515,6 +515,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     el.SetPassMVATrigTight(electrons_electronID_mva_trig_tight->at(iel));
     el.SetPassMVANoTrigMedium(electrons_electronID_mva_medium->at(iel));
     el.SetPassMVANoTrigTight(electrons_electronID_mva_tight->at(iel));
+    if(electrons_electronID_mva_zz)el.SetPassMVAZZ(electrons_electronID_mva_zz->at(iel));
 
     el.SetIsPF(electrons_isPF->at(iel));
     if(electrons_isTrigMVAValid) el.SetIsTrigMVAValid(electrons_isTrigMVAValid->at(iel));

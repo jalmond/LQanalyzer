@@ -1121,7 +1121,8 @@ void HNDiElectronOptimisation::GetTriggEfficiency(){
 	  if(electrons.size() ==2) {
 	    
 	    FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_"+lists_triggerORs.at(itor),lists_triggers );
-	    if(electrons.at(0).Pt() > pt1.at(i) && electrons.at(1).Pt() > pt2.at(i))  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt_"+lists_triggerORs.at(itor),lists_triggers );
+	    if(electrons.at(0).Pt() > pt1.at(i) && electrons.at(1).Pt() > 5.)  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt5_"+lists_triggerORs.at(itor),lists_triggers );
+	    if(electrons.at(0).Pt() > pt1.at(i) && electrons.at(1).Pt() > 10.)  FillTriggerEfficiency(lists_triggers.at(i), weight, "numerator_dimuon_pt10_"+lists_triggerORs.at(itor),lists_triggers );
 	  }
 	}
       }

@@ -6,7 +6,7 @@
 
 void triggerEfficiency(){
 
-  TString path = "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiElectron/periodCtoD/HNDiElectron_HN_EE_M";
+  TString path = "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiElectronOptimisation/periodBtoH/HNDiElectronOptimisation_HNEmEm_";
   std::vector<TString> masses;
   masses.push_back("40");
   masses.push_back("100");
@@ -18,15 +18,25 @@ void triggerEfficiency(){
 
   TLegend* legendH = new TLegend(0.2, 0.7, 0.4, 0.9);
   std::vector<TH1F*> hists;
+  std::vector<TH1F*> hists2;
   for(int i=0; i < masses.size(); i++){
-    TFile * file = new TFile(path + masses[i] + "_cat_v7-6-3.root");
+    TFile * file = new TFile(path + masses[i] + "_cat_v8-0-6.root");
 
     TH1F* h_den= (TH1F*)file->Get(("TriggerEfficiency_denominator"));
-    TH1F* h_num= (TH1F*)file->Get(("TriggerEfficiency_numerator"));
-    
+    TH1F* h_num= (TH1F*)file->Get(("TriggerEfficiency_numerator_dimuon"));
+    TH1F* h_num2= (TH1F*)file->Get(("TriggerEfficiency_numerator_dimuon_pt5_HLT_Ele32_eta2p1_WPTight_Gsf"));
+
+
+
     h_num->Divide(h_den);
+    h_num2->Divide(h_den);
     h_num->SetMarkerSize(2.);
+    h_num2->SetMarkerSize(2.);
+    h_num2->SetLineStyle(2.);
+
     hists.push_back(h_num);
+    hists2.push_back(h_num2);
+
     legendH->AddEntry(h_num, "m_{N}="+masses[i]+ " GeV" , "p");
   }
   
@@ -49,6 +59,37 @@ void triggerEfficiency(){
   hists.at(3)->SetLineColor(kCyan);
   hists.at(3)->SetMarkerColor(kCyan);
   hists.at(3)->SetMarkerStyle(22.);
+  
+  /////
+  hists2.at(0)->SetLineColor(kRed);
+  hists2.at(0)->SetMarkerColor(kRed);
+  hists2.at(0)->SetMarkerStyle(20.);
+
+  hists2.at(1)->SetLineColor(kBlue);
+  hists2.at(1)->SetMarkerColor(kBlue);
+  hists2.at(1)->SetMarkerStyle(21.);
+
+  hists2.at(2)->SetLineColor(kGreen);
+  hists2.at(2)->SetMarkerColor(kGreen);
+  hists2.at(2)->SetMarkerStyle(22.);
+
+  hists2.at(3)->SetLineColor(kCyan);
+  hists2.at(3)->SetMarkerColor(kCyan);
+  hists2.at(3)->SetMarkerStyle(22.);
+  ////
+  hists2.at(0)->SetLineStyle(2.);
+  hists2.at(0)->SetLineStyle(2.);
+  hists2.at(0)->SetLineStyle(2.);
+  hists2.at(1)->SetLineStyle(2.);
+  hists2.at(1)->SetLineStyle(2.);
+  hists2.at(1)->SetLineStyle(2.);
+  hists2.at(2)->SetLineStyle(2.);
+  hists2.at(2)->SetLineStyle(2.);
+  hists2.at(2)->SetLineStyle(2.);
+  hists2.at(3)->SetLineStyle(2.);
+  hists2.at(3)->SetLineStyle(2.);
+  hists2.at(3)->SetLineStyle(2.);
+
   TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
   
   hists.at(0)->GetYaxis()->SetRangeUser(0., 1.5);
@@ -56,6 +97,11 @@ void triggerEfficiency(){
   hists.at(1)->Draw("lpsame");
   hists.at(2)->Draw("lpsame");
   hists.at(3)->Draw("lpsame");
+
+  hists2.at(0)->Draw("lpsame");
+  hists2.at(1)->Draw("lpsame");
+  hists2.at(2)->Draw("lpsame");
+  hists2.at(3)->Draw("lpsame");
 
   
   legendH->Draw();
