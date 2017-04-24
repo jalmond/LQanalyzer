@@ -819,16 +819,15 @@ if [[ $runDATA == "true" ]];
     ARGDATASKIM=$submit_sampletag
     eval out_streams_skimcheck=(\${$ARGDATASKIM[@]})
     if [[ $job_skim == *"DiLep"* ]];
-	then
+    then
 	for stream_check in ${out_streams_skimcheck[@]};
-	  do
-	      if [[ $stream_check == *"Single"* ]];
-		        then
-		        echo "LQanalyzer::sktree :: ERROR :: There are no DiLepton skims for "$stream_check" in catversion "$submit_version_tag
-			      
-			      exit 1
-			        fi
-	      done
+	do
+	    if [[ $stream_check == *"Single"* ]];
+	    then
+		echo "LQanalyzer::sktree :: WARNING :: There are only SPECIAL DiLepton skims for "$stream_check" in catversion "$submit_version_tag
+		#exit 1
+	    fi
+	done
     fi
     if [[ $job_skim == *"TriLep"* ]];
         then
@@ -836,9 +835,9 @@ if [[ $runDATA == "true" ]];
           do
           if [[ $stream_check == *"Single"* ]];
               then
-              echo "LQanalyzer::sktree :: ERROR :: There are no TriLepton skims for "$stream_check" in catversion "$submit_version_tag
+              echo "LQanalyzer::sktree :: WARNING :: There are only special TriLepton skims for "$stream_check" in catversion "$submit_version_tag
 
-              exit 1
+              #exit 1
           fi
         done
     fi

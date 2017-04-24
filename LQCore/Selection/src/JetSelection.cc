@@ -178,9 +178,62 @@ void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<KMuon> muo
     if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
   }/// End of Jet loop
 
+}
 
 
+
+void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<snu::KFatJet> fatjets , std::vector<KMuon> muonColl, std::vector<KElectron> electronColl,vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf,  float ptcut, float etacut) {
+
+  std::vector<KJet> pre_jetColl;
+  std::vector<KJet> alljets = k_lqevent.GetJets();
+
+  int icut(0);
+  if (ptcut == -999. || etacut == -999.){
+    for(unsigned int iv=0; iv < vidf.size(); iv++){
+      if(!Check(vidf[iv].second)) continue;
+      if (vidf[iv].first =="ptmin") { icut++; if(ptcut == -999.)ptcut=vidf[iv].second;}
+      if (vidf[iv].first =="|etamax|") {icut++;  if (etacut == -999.)etacut=vidf[iv].second;}
+      if(icut ==2) break;
+    }
+  }
+
+  ///https://indico.cern.ch/event/613931/contributions/2476973/attachments/1413452/2181248/update_WTagging_JMAR15022017_Simone.pdf
+  /// see slides for delat R cuts between objetst
+  for (std::vector<KJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+
+    bool pass_selection=true;
+    if (!PassUserID(*jit, vids)) pass_selection=false;
+
+    if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
+  }
+
+  for (UInt_t ijet = 0; ijet < pre_jetColl.size(); ijet++) {
+    jetIsOK = true;
   
+    for (UInt_t ifjet = 0; ifjet < fatjets.size(); ifjet++) {
+      if (fatjets[ifjet].DeltaR( pre_jetColl[ijet] ) < 0.8) {
+        jetIsOK = false;
+
+        ifjet = fatjets.size();
+      }
+    }/// End of fatjet loop     
+    
+    for (UInt_t ilep = 0; ilep < muonColl.size(); ilep++) {
+      if (muonColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.3) {
+        jetIsOK = false;
+
+        ilep = muonColl.size();
+      }
+    }/// End of muon loop                                                                                                                                                    
+    for (UInt_t ilep = 0; ilep < electronColl.size(); ilep++) {
+      if (electronColl[ilep].DeltaR( pre_jetColl[ijet] ) < 0.4 ) {
+        jetIsOK = false;
+        ilep = electronColl.size();
+      }
+    }/// End of electron loop                                                                                                                                                
+
+    if (jetIsOK) jetColl.push_back( pre_jetColl[ijet] );
+  }/// End of Jet loop                                                                                                                                                       
 }
 
 

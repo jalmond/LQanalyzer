@@ -35,6 +35,7 @@ class JetSelection : public BaseSelection {
   
 
   void SelectJets(std::vector<snu::KJet>& jetColl, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl,  vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, float ptcut=-999., float etacut=-999.);
+  void SelectJets(std::vector<snu::KJet>& jetColl, std::vector<snu::KFatJet> fatjets, std::vector<snu::KMuon> muonColl, std::vector<snu::KElectron> electronColl,  vector<pair<TString, TString> > vids, vector<pair<TString, float> > vidf, float ptcut=-999., float etacut=-999.);
   void SelectJets(std::vector<snu::KJet>& jetColl,  vector<pair<TString, TString> >  vids, vector<pair<TString, float> > vidf,float ptcut=-999., float etacut=-999.);
 
 };

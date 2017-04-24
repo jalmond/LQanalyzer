@@ -14,6 +14,7 @@
 #include "StdPlots.h"
 #include "KMuon.h"
 #include "KJet.h"
+#include "KFatJet.h"
 #include "KElectron.h"
 #include "KEvent.h"
 
@@ -54,6 +55,7 @@ class SignalPlotsEE : public StdPlots{
 
   /// fill functions
   void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
+  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, std::vector<snu::KFatJet>& fatjets, Double_t weight);
 
 
   void Fill(TString name, double value, double weight, TString xlabel="");

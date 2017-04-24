@@ -62,7 +62,7 @@ bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, double ptc
 
   ElectronID = PassUserID(elid, el);
   if(!ElectronID)  pass_selection = false;
-
+  
   if(!(fabs(el.SCEta()) < etacut)) pass_selection = false;
   if((el.Pt() < ptcut))   pass_selection = false;
 
@@ -110,8 +110,9 @@ bool ElectronSelection::ElectronPass(snu::KElectron el, TString elid, vector<pai
   if(!ElectronID)  pass_selection = false;
 
   if(!(fabs(el.SCEta()) < etacut)) pass_selection = false;
-  if((el.Pt() < ptcut))   pass_selection = false;
 
+  if((el.Pt() < ptcut))   pass_selection = false;
+  
   return pass_selection;
 }
 
@@ -295,11 +296,16 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
       if(!el.PassesConvVeto()) {if(debug){ cout << "Fail convveto" << endl;}  return false;}
     }
     if(vids[idel].first == "IsTight(MVA)"){
-      if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA tight" << endl;} return false;}
+      if(el.Pt() > 15.){
+	if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA tight" << endl;} return false;}
+      }
       if(!el.PassTrigMVATight()){if(debug){ cout << "Fail MVA tight" << endl;} return false;}
+      
     }
     if(vids[idel].first == "IsMedium(MVA)"){
-      if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
+      if(el.Pt() > 15.){
+	if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
+      }
       if(!el.PassTrigMVAMedium()) {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
     }
 

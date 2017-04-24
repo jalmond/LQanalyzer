@@ -141,6 +141,31 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 }
 
 
+vector<TString >  AnalyzerCore::GetHNDiLepElTriggers(){
+
+  vector<TString> triglist;
+  if(isData){
+    if(k_channel.Contains("SingleElectron"))triglist.push_back("HLT_Ele32_eta2p1_WPTight_Gsf_v");
+    if(k_channel.Contains("DoubleEG")) triglist.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+  }
+  else{
+    triglist.push_back("HLT_Ele32_eta2p1_WPTight_Gsf_v");
+    triglist.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+  }
+  return triglist;
+
+}
+bool AnalyzerCore::FailHNDataSetCheck(){
+
+  bool _singleEG =(k_channel.Contains("SingleElectron"));
+  bool _singleMuon =(k_channel.Contains("SingleMuon"));
+  TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+  TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
+  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) return false;
+  if(isData && _singleMuon && PassTrigger(analysis_trigger_muon)) return false;
+
+  return true;
+}
 
 void AnalyzerCore::setTDRStyle() {
   TStyle *tdrStyle = new TStyle("tdrStyle","Style for P-TDR");
@@ -447,6 +472,147 @@ float AnalyzerCore::CorrectedMETMuon( std::vector<snu::KMuon> muall, int sys){
 
 
 
+float AnalyzerCore::GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets){
+
+  if(jets.size() == 0) return -999.;
+  if(electron.Pt() < 25.) return -999.;
+  snu::KParticle closejet;
+  float mindR=0.7;
+
+  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+    if( electron.DeltaR(jets.at(ijet)) < mindR){
+      closejet= jets.at(ijet);
+      mindR=electron.DeltaR(jets.at(ijet));
+    }
+  }
+
+  if(mindR==0.7) return 0.;
+
+  FillHist(("ptrel_dr"),mindR, weight, 0., 4., 100);
+
+  TVector3 el3=  electron.Vect();
+  TVector3 jet3= closejet.Vect();
+  TVector3 lepjetrel = jet3-el3;
+  FillHist(("ptrel_lepjetmag"),lepjetrel.Mag(), weight, 0., 100., 100);
+  FillHist(("ptrel_crosslepjetmag"), (lepjetrel.Cross(el3)).Mag(), weight, 0., 100., 100);
+  float ptrel = (lepjetrel.Cross(el3)).Mag()/ lepjetrel.Mag();
+
+  return ptrel;
+}
+
+
+float AnalyzerCore::GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets){
+
+  if(jets.size() == 0) return -999.;
+  if(muon.Pt() < 25.) return -999.;
+  snu::KParticle closejet;
+  float mindR=0.7;
+
+  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+    if( muon.DeltaR(jets.at(ijet)) < mindR){
+      closejet= jets.at(ijet);
+      mindR=muon.DeltaR(jets.at(ijet));
+    }
+  }
+
+  if(mindR==0.7) return 0.;
+
+  FillHist(("ptrel_dr"),mindR, weight, 0., 4., 100);
+
+  TVector3 el3=  muon.Vect();
+  TVector3 jet3= closejet.Vect();
+  TVector3 lepjetrel = jet3-el3;
+  FillHist(("ptrel_lepjetmag"),lepjetrel.Mag(), weight, 0., 100., 100);
+  FillHist(("ptrel_crosslepjetmag"), (lepjetrel.Cross(el3)).Mag(), weight, 0., 100., 100);
+  float ptrel = (lepjetrel.Cross(el3)).Mag()/ lepjetrel.Mag();
+
+  return ptrel;
+}
+
+
+float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets){
+
+  float mindR=.7;
+  float jetpT=-999.;
+
+  if(electron.Pt() < 20.) return 0.;
+
+  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+    if( electron.DeltaR(jets.at(ijet)) < mindR){
+      mindR=electron.DeltaR(jets.at(ijet));
+      jetpT=jets.at(ijet).Pt();
+    }
+  }
+
+  return jetpT;
+}
+
+
+
+float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets){
+  float mindR=.7;
+  float jetpT=-999.;
+
+  if(muon.Pt() < 20.) return 0.;
+
+  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+    if( muon.DeltaR(jets.at(ijet)) < mindR){
+      mindR=muon.DeltaR(jets.at(ijet));
+      jetpT=jets.at(ijet).Pt();
+    }
+  }
+  return jetpT;
+}
+
+
+
+
+
+float AnalyzerCore::MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets){
+  if(jets.size() == 0) return -999.;
+  snu::KParticle closejet;
+  float mindR=0.7;
+  if(electron.Pt() < 20.) return -999.;
+
+  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+    if( electron.DeltaR(jets.at(ijet)) < mindR){
+      closejet= jets.at(ijet);
+      mindR=mindR;
+    }
+  }
+
+  if(mindR >= 0.7)  return -999.;
+
+  snu::KParticle lj = closejet+electron;
+
+  return (lj.M() - closejet.M());
+
+
+}
+
+float AnalyzerCore::MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets){
+  if(jets.size() == 0) return -999.;
+  snu::KParticle closejet;
+  float mindR=.7;
+
+  if(muon.Pt() < 60.) return -999.;
+  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
+    if( muon.DeltaR(jets.at(ijet)) < mindR){
+      closejet= jets.at(ijet);
+      mindR=mindR;
+    }
+  }
+  if(mindR >= 0.7)  return -999.;
+
+  snu::KParticle lj = closejet+muon;
+
+  return (lj.M() - closejet.M());
+
+
+}
+
+
+
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ///// FUNCTION USED TO CREATE BTAG EFFICIENCIES USED BY BTAGSF.cxx CLass
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -682,12 +848,15 @@ void AnalyzerCore::SetupSelectionJet(std::string path_sel){
         if (x > 6 && x < 18){
           is >> tmp;
           string_jetsel.push_back(make_pair(cutnames.at(x),tmp) );
+          cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
 
         }
-        else if ( x ==1) {is >> idlabel;}
+        else if ( x ==1) {is >> idlabel; cout << "idlabel=" << idlabel << endl;}
         else {
           is >> tmpf;
           float_jetsel.push_back(make_pair(cutnames.at(x),tmpf));
+          cout << "Setup: float " << cutnames.at(x) << " = " <<tmpf << endl;
+
         }
       }
     }
@@ -740,15 +909,18 @@ void AnalyzerCore::SetupSelectionFatJet(std::string path_sel){
           continue;
         }
 
-        if (x > 6 && x < 18){
+        if (x > 8 && x < 20){
           is >> tmp;
           string_jetsel.push_back(make_pair(cutnames.at(x),tmp) );
+          cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
 
         }
-        else if ( x ==1) {is >> idlabel;}
+        else if ( x ==1) {is >> idlabel;cout << "idlabel=" << idlabel << endl;}
         else {
           is >> tmpf;
           float_jetsel.push_back(make_pair(cutnames.at(x),tmpf));
+          cout << "Setup: float " << cutnames.at(x) << " = " <<tmpf << endl;
+	  
         }
       }
     }
@@ -803,16 +975,21 @@ void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
 	if (x > 10 && x < 16){
 	  is >> tmp;
 	  string_muonsel.push_back(make_pair(cutnames.at(x),tmp) );
+          cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
 
 	}
-	else if ( x ==1) {is >> idlabel;}
+	else if ( x ==1) {is >> idlabel;cout << "idlabel=" << idlabel << endl;}
 	else if (x > 26 && x < 28){
           is >> tmp;
           string_muonsel.push_back(make_pair(cutnames.at(x),tmp) );
+          cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
+
         }
 	else {
 	  is >> tmpf;
 	  float_muonsel.push_back(make_pair(cutnames.at(x),tmpf));
+          cout << "Setup: float " << cutnames.at(x) << " = " <<tmpf << endl;
+
 	}
       }
     }
@@ -873,19 +1050,25 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
 
         if (x > 10 && x < 18){
           is >> tmp;
+	  cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
+
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
 	else  if (x > 26 && x < 30){
           is >> tmp;
+          cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 34 && x < 40){
+	else  if (x > 34 && x < 42){
           is >> tmp;
+          cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-        else if ( x ==1) {is >> idlabel;}
+        else if ( x ==1) {is >> idlabel;cout << "idlabel=" << idlabel << endl;}
         else {
           is >> tmpf;
+          cout << "Setup: float " << cutnames.at(x) << " = " <<tmpf << endl;
+
           float_elsel.push_back(make_pair(cutnames.at(x),tmpf));
         }
       }
@@ -1109,6 +1292,32 @@ std::vector<snu::KJet> AnalyzerCore::GetJets(TString jetid,float ptcut, float et
   
 }
 
+std::vector<snu::KJet> AnalyzerCore::GetJetsWFT(TString jetid,TString fatjetid,float ptcut, float etacut){
+
+  std::vector<snu::KJet> jetColl;
+
+  std::vector<snu::KFatJet> fatjetColl = GetFatJets(fatjetid);
+  
+  std::map<TString, vector<pair<TString,TString> > >::iterator it = selectionIDMapsJet.find(jetid);
+  std::map<TString, vector<pair<TString,float > > >::iterator fit = selectionIDMapfJet.find(jetid);
+  if(it== selectionIDMapsJet.end()){
+    cerr << "Jet ID ["+jetid+"] not found" << endl; exit(EXIT_FAILURE);
+  }
+  else {
+    TString muontag="";
+    TString eltag="";
+    for (unsigned int i=0; i  < it->second.size(); i++){
+      if ( it->second.at(i).first == "remove_near_muonID") muontag =  it->second.at(i).second;
+      if ( it->second.at(i).first == "remove_near_electronID") eltag =  it->second.at(i).second;
+    }
+
+    if (muontag.Contains("NONE") && eltag.Contains("NONE"))  eventbase->GetJetSel()->SelectJets(jetColl, it->second, fit->second, ptcut,etacut);
+    else if (muontag.Contains("NONE") || eltag.Contains("NONE")) {    cerr << "cannot choose to remove jets near only one lepton" << endl; exit(EXIT_FAILURE);}
+    else eventbase->GetJetSel()->SelectJets(jetColl, fatjetColl,GetMuons(muontag), GetElectrons(eltag) , it->second, fit->second, ptcut,etacut);
+  }
+  return jetColl;
+
+}
 
 
 
@@ -1323,7 +1532,7 @@ bool AnalyzerCore::Is2015Analysis(){
 
 
 float AnalyzerCore::WeightByTrigger(vector<TString> triggernames, float tlumi){
-
+  
   if(isData){
     for(unsigned int i=0; i < triggernames.size() ; i++){
       //// code here sets weight to -99999. if user tries to use incorrect dataset in data 
@@ -1922,6 +2131,12 @@ void AnalyzerCore::ListTriggersAvailable(){
 }
 
 
+bool AnalyzerCore::PassJets(std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets ){
+
+  if(jets.size() < 2 && fatjets.size() == 0) return false;
+  
+}
+
 //################################################################################################
 //@@@@@@@@@@@@@@@@@@@  TRIGGER @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
      
@@ -2114,7 +2329,10 @@ void AnalyzerCore::MakeCleverHistograms(histtype type, TString clhistname ){
   if(type==sighist_ee)  mapCLhistSigEE[clhistname] = new SignalPlotsEE(clhistname, 2);
   if(type==sighist_eee)  mapCLhistSigEE[clhistname] = new SignalPlotsEE(clhistname, 3);
   if(type==sighist_eeee)  mapCLhistSigEE[clhistname] = new SignalPlotsEE(clhistname,4);
-  if(type==sighist_mm)  mapCLhistSigMM[clhistname] = new SignalPlotsMM(clhistname);
+  if(type==sighist_m)  mapCLhistSigMM[clhistname] = new SignalPlotsMM(clhistname,1);
+  if(type==sighist_mm)  mapCLhistSigMM[clhistname] = new SignalPlotsMM(clhistname,2);
+  if(type==sighist_mmm)  mapCLhistSigMM[clhistname] = new SignalPlotsMM(clhistname,3);
+  if(type==sighist_mmmm)  mapCLhistSigMM[clhistname] = new SignalPlotsMM(clhistname,4);
   if(type==sighist_em)  mapCLhistSigEM[clhistname] = new SignalPlotsEM(clhistname);
 
   if(type==trilephist)  mapCLhistTriLep[clhistname] = new TriLeptonPlots(clhistname);
@@ -2331,7 +2549,15 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
     }
   }
 }
+
+
 void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double w){
+  
+  vector<snu::KFatJet> fatjets;
+  FillCLHist(type, hist, ev, muons,electrons ,jets, fatjets,w);
+}
+
+void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,double w){
 
   if(type==trilephist){
 
@@ -2357,45 +2583,79 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
   else if(type==sighist_ee){
 
     map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
-    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets,w);
+    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     else {
       mapCLhistSigEE[hist] = new SignalPlotsEE(hist,2);
       sigpit_ee = mapCLhistSigEE.find(hist);
-      sigpit_ee->second->Fill(ev, muons, electrons, jets,w);
+      sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     }
   }
   else if(type==sighist_eee){
 
     map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
-    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets,w);
+    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     else {
       mapCLhistSigEE[hist] = new SignalPlotsEE(hist, 3);
       sigpit_ee = mapCLhistSigEE.find(hist);
-      sigpit_ee->second->Fill(ev, muons, electrons, jets,w);
+      sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     }
   }
   else if(type==sighist_eeee){
 
     map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
-    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets,w);
+    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     else {
       mapCLhistSigEE[hist] = new SignalPlotsEE(hist,4);
       sigpit_ee = mapCLhistSigEE.find(hist);
-      sigpit_ee->second->Fill(ev, muons, electrons, jets,w);
+      sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     }
   }
 
+  else if(type==sighist_m){
 
+    map<TString, SignalPlotsMM*>::iterator sigpit_mm = mapCLhistSigMM.find(hist);
+    if(sigpit_mm !=mapCLhistSigMM.end())  sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+    else {
+      mapCLhistSigMM[hist] = new SignalPlotsMM(hist,1);
+      sigpit_mm = mapCLhistSigMM.find(hist);
+      sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+
+    }
+  }
   else if(type==sighist_mm){
 
     map<TString, SignalPlotsMM*>::iterator sigpit_mm = mapCLhistSigMM.find(hist);
-    if(sigpit_mm !=mapCLhistSigMM.end()) sigpit_mm->second->Fill(ev, muons, electrons, jets,w);
+    if(sigpit_mm !=mapCLhistSigMM.end())  sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
     else {
-      mapCLhistSigMM[hist] = new SignalPlotsMM(hist);
+      mapCLhistSigMM[hist] = new SignalPlotsMM(hist,2);
       sigpit_mm = mapCLhistSigMM.find(hist);
-      sigpit_mm->second->Fill(ev, muons, electrons, jets,w);
+      sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+      
     }
   }
+  else if(type==sighist_mmm){
+
+    map<TString, SignalPlotsMM*>::iterator sigpit_mm = mapCLhistSigMM.find(hist);
+    if(sigpit_mm !=mapCLhistSigMM.end())  sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+    else {
+      mapCLhistSigMM[hist] = new SignalPlotsMM(hist,3);
+      sigpit_mm = mapCLhistSigMM.find(hist);
+      sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+      
+    }
+  }
+  else if(type==sighist_mmmm){
+
+    map<TString, SignalPlotsMM*>::iterator sigpit_mm = mapCLhistSigMM.find(hist);
+    if(sigpit_mm !=mapCLhistSigMM.end())  sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+    else {
+      mapCLhistSigMM[hist] = new SignalPlotsMM(hist,4);
+      sigpit_mm = mapCLhistSigMM.find(hist);
+      sigpit_mm->second->Fill(ev, muons, electrons, jets, fatjets,w);
+      
+    }
+  }
+
   else if(type==sighist_em){
 
     map<TString, SignalPlotsEM*>::iterator sigpit_em = mapCLhistSigEM.find(hist);

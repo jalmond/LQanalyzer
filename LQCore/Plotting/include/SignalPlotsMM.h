@@ -14,6 +14,7 @@
 #include "StdPlots.h"
 #include "KMuon.h"
 #include "KJet.h"
+#include "KFatJet.h"
 #include "KElectron.h"
 #include "KEvent.h"
 
@@ -30,7 +31,7 @@ class SignalPlotsMM : public StdPlots{
   SignalPlotsMM();
   
   // Main constructor
-  SignalPlotsMM(TString name);
+  SignalPlotsMM(TString name, int nmu);
   
   // Destructor
   ~SignalPlotsMM();
@@ -46,8 +47,11 @@ class SignalPlotsMM : public StdPlots{
   SignalPlotsMM& operator=(const SignalPlotsMM& obj);
   float GetElectronISOEA(float eta);
 
-  /// fill functions
+  /// fill functions                                                                                                                                                                                                                                                                                                                          
   void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, Double_t weight);
+  void Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons,std::vector<snu::KElectron>& electrons, std::vector<snu::KJet>& jets, std::vector<snu::KFatJet>& fatjets, Double_t weight);
+
+  TH1D* SetupHist(TString hname, TString alabel, int nbin, double xmin, double xmax, TString xtitle="" );
 
 
   void Fill(TString name, double value, double weight);

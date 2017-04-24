@@ -40,6 +40,12 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
   //////////// Select objetcs
   //////////////////////////////////////////////////////   
   
+  bool _singleEG =(k_channel.Contains("SingleElectron"));
+  bool _singleMuon =(k_channel.Contains("SingleMuon"));
+  TString analysis_trigger_eg="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
+  TString analysis_trigger_muon="HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v";
+  if(isData && _singleEG && PassTrigger(analysis_trigger_eg)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+  if(isData && _singleMuon && PassTrigger(analysis_trigger_muon)) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
 
   //######   MUON SELECTION ###############
   Message("Selecting Muons", DEBUG);
@@ -66,7 +72,7 @@ void SKTreeMakerDiLep::ExecuteEvents()throw( LQError ){
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(15);
+  eventbase->GetJetSel()->SetPt(10);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   

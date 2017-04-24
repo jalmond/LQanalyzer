@@ -1,4 +1,3 @@
 ncuts 8
 webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
 | ID                 |  ptmin  | |etamax| | pileup | LooseId  | TightID | TightIDLepVeto | remove_near_muonID   | remove_near_electronID   |
-| JET_NOCUT          | 20.     | 2.5      | false  | true     |  false  |  false         | NONE                 | NONE                     |
