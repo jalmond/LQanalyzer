@@ -122,7 +122,7 @@ class HNCommonLeptonFakes {
   void SetNJet(int nj);
   void SetNBJet(int nbj);
   //==== get PR/FR
-  float getTrilepFakeRate_muon(bool geterr, float pt,  float eta, bool applysf=true);
+  float getTrilepFakeRate_muon(bool geterr, float pt,  float eta);
   float getTrilepPromptRate_muon(bool geterr, float pt, float eta);
   //==== get weight
   float get_dilepton_mm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2);

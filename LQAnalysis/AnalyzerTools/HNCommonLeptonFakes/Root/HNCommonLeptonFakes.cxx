@@ -239,9 +239,8 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
         TString this_njet = FRnjets.at(k);
 
-        _2DEfficiencyMap_Double["MUON_FR_"+this_wp+"_"+this_njet] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR_"+this_njet))->Clone());
+        _2DEfficiencyMap_Double["MUON_FR_"+this_wp+"_"+this_njet] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR_"+this_njet+"_sfed"))->Clone());
         _2DEfficiencyMap_Double["MUON_FR_QCD_"+this_wp+"_"+this_njet] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FR_QCD_"+this_njet))->Clone());
-        _2DEfficiencyMap_Double["MUON_FRSF_"+this_wp+"_"+this_njet] = dynamic_cast<TH2D*>((file_trilep_fake->Get(this_wp+"_FRSF_QCD_"+this_njet))->Clone());
 
       }
     }
@@ -758,8 +757,11 @@ void HNCommonLeptonFakes::SetNBJet(int nbj){
 }
 
 
-float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float eta, bool applysf){
+float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float eta){
   
+  //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] pt = " << pt << endl;
+  //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] eta = " << eta << endl;
+
   if(pt < 10.) pt = 11.;
   if(pt >= 60.) pt = 59.;
   if(fabs(eta) >= 2.5) eta = 2.4;
@@ -806,7 +808,6 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
 
   //==== Get FR
   map<TString,TH2D*>::const_iterator mapit_FR = _2DEfficiencyMap_Double.find("MUON_FR_"+wp);
-  map<TString,TH2D*>::const_iterator mapit_FRSF = _2DEfficiencyMap_Double.find("MUON_FRSF_"+wp);
 
   if(UseQCDFake){
     if( mapit_FR==_2DEfficiencyMap_Double.end()){
@@ -828,9 +829,8 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
     }
   }
   else{
-    if( mapit_FR==_2DEfficiencyMap_Double.end() || mapit_FRSF==_2DEfficiencyMap_Double.end() ){
+    if( mapit_FR==_2DEfficiencyMap_Double.end() ){
       NoHist("MUON_FR_"+DoubleToTString(Current_dXYSig, Current_RelIso));
-      NoHist("MUON_FRSF_"+DoubleToTString(Current_dXYSig, Current_RelIso));
       return 0.;
     }
     else{
@@ -839,11 +839,13 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
       TDirectory* tempDir = getTemporaryDirectory();
       tempDir->cd();
       TH2D *hist_FR = (TH2D*)mapit_FR->second->Clone();
-      if(applysf) hist_FR->Multiply(mapit_FRSF->second);
 
       origDir->cd();
 
       int binx = hist_FR->FindBin(pt, abs(eta));
+
+      //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] FR = " << hist_FR->GetBinContent(binx) << endl;
+      //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] FRerr = " << hist_FR->GetBinError(binx) << endl;
 
       if(geterr) return hist_FR->GetBinError(binx);
       else return hist_FR->GetBinContent(binx);
@@ -926,9 +928,9 @@ float HNCommonLeptonFakes::get_trilepton_mmm_eventweight(bool geterr, std::vecto
   r1 = getTrilepPromptRate_muon(false, _mu1_pt, _mu1_eta);
   r2 = getTrilepPromptRate_muon(false, _mu2_pt, _mu2_eta);
   r3 = getTrilepPromptRate_muon(false, _mu3_pt, _mu3_eta);
-  fr1 = getTrilepFakeRate_muon(false, _mu1_pt, _mu1_eta, true);
-  fr2 = getTrilepFakeRate_muon(false, _mu2_pt, _mu2_eta, true);
-  fr3 = getTrilepFakeRate_muon(false, _mu3_pt, _mu3_eta, true);
+  fr1 = getTrilepFakeRate_muon(false, _mu1_pt, _mu1_eta);
+  fr2 = getTrilepFakeRate_muon(false, _mu2_pt, _mu2_eta);
+  fr3 = getTrilepFakeRate_muon(false, _mu3_pt, _mu3_eta);
 
   //==== let a == f/(1-f)
 
@@ -970,9 +972,9 @@ float HNCommonLeptonFakes::get_trilepton_mmm_eventweight(bool geterr, std::vecto
   r1_err = getTrilepPromptRate_muon(true, _mu1_pt, _mu1_eta);
   r2_err = getTrilepPromptRate_muon(true, _mu2_pt, _mu2_eta);
   r3_err = getTrilepPromptRate_muon(true, _mu3_pt, _mu3_eta);
-  fr1_err = getTrilepFakeRate_muon(true, _mu1_pt, _mu1_eta, true);
-  fr2_err = getTrilepFakeRate_muon(true, _mu2_pt, _mu2_eta, true);
-  fr3_err = getTrilepFakeRate_muon(true, _mu3_pt, _mu3_eta, true);
+  fr1_err = getTrilepFakeRate_muon(true, _mu1_pt, _mu1_eta);
+  fr2_err = getTrilepFakeRate_muon(true, _mu2_pt, _mu2_eta);
+  fr3_err = getTrilepFakeRate_muon(true, _mu3_pt, _mu3_eta);
 
   //==== d(a)/a = d(f)/f(1-f)
   //==== so, if w = a1*a2,
@@ -1026,8 +1028,8 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
   if(fakerates == "dxy"){
     r1 = getTrilepPromptRate_muon(false, _mu1_pt, _mu1_eta);
     r2 = getTrilepPromptRate_muon(false, _mu2_pt, _mu2_eta);
-    fr1 = getTrilepFakeRate_muon(false, _mu1_pt, _mu1_eta, true);
-    fr2 = getTrilepFakeRate_muon(false, _mu2_pt, _mu2_eta, true);
+    fr1 = getTrilepFakeRate_muon(false, _mu1_pt, _mu1_eta);
+    fr2 = getTrilepFakeRate_muon(false, _mu2_pt, _mu2_eta);
   }
   else {
     r1 = getEfficiency_muon(0,_mu1_pt, _mu1_eta);
@@ -1074,8 +1076,8 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
 
   r1_err = getTrilepPromptRate_muon(true, _mu1_pt, _mu1_eta);
   r2_err = getTrilepPromptRate_muon(true, _mu2_pt, _mu2_eta);
-  fr1_err = getTrilepFakeRate_muon(true, _mu1_pt, _mu1_eta, true);
-  fr2_err = getTrilepFakeRate_muon(true, _mu2_pt, _mu2_eta, true);
+  fr1_err = getTrilepFakeRate_muon(true, _mu1_pt, _mu1_eta);
+  fr2_err = getTrilepFakeRate_muon(true, _mu2_pt, _mu2_eta);
 
   //==== d(a)/a = d(f)/f(1-f)
   //==== so, if w = a1*a2,
@@ -1144,9 +1146,9 @@ float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVect
     if(ismuon.at(i)){
       //==== Large dXYSig Method
       if(muid == "MUON_HN_TRI_TIGHT"){
-        fr.push_back( getTrilepFakeRate_muon(false, lep_pt.at(i), lep_eta.at(i), true) );
+        fr.push_back( getTrilepFakeRate_muon(false, lep_pt.at(i), lep_eta.at(i)) );
         pr.push_back( getTrilepPromptRate_muon(false, lep_pt.at(i), lep_eta.at(i))  );
-        fr_err.push_back( getTrilepFakeRate_muon(true, lep_pt.at(i), lep_eta.at(i), true) );
+        fr_err.push_back( getTrilepFakeRate_muon(true, lep_pt.at(i), lep_eta.at(i)) );
         pr_err.push_back( getTrilepPromptRate_muon(true, lep_pt.at(i), lep_eta.at(i))  );
       }
       //==== Dijet topology Method
