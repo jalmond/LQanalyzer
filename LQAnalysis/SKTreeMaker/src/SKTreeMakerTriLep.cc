@@ -67,7 +67,7 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(20);
+  eventbase->GetJetSel()->SetPt(10);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   
@@ -106,10 +106,10 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
   bool pass15gev=false;
   
   if(skim_electrons.size() >0 ) {
-    if(skim_electrons.at(0).Pt() > 12.) pass15gev= true;
+    if(skim_electrons.at(0).Pt() > 14.) pass15gev= true;
   }
   if(skim_muons.size() > 0){
-    if(skim_muons.at(0).Pt() > 12.)  pass15gev= true;
+    if(skim_muons.at(0).Pt() > 14.)  pass15gev= true;
   }
   if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 

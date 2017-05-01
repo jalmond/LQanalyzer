@@ -92,6 +92,7 @@ KEvent::KEvent() :
   k_pu_gold_weightG(-999.),
   k_pu_gold_weightH(-999.),
   k_catversion(""),
+  k_rho(-999.),
   prop_metrc(false)
 {
 
@@ -279,6 +280,8 @@ void KEvent::Reset()
   k_pu_gold_weightH = -999;
 
   k_catversion="";
+  k_rho= -999.;
+
   prop_metrc=false;
 }
 
@@ -374,7 +377,10 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_pu_gold_weightH = p.PeriodPileUpWeight(7);
 
       k_catversion = p.CatVersion();
+      k_rho= p.Rho();
+	
       prop_metrc = p.PropagatedRochesterToMET();
+      
     }
     
     return *this;
@@ -383,6 +389,10 @@ KEvent& KEvent::operator= (const KEvent& p)
 //// SET CLASS VARIBALES
 void KEvent::SetCatVersion(std::string cat){
   k_catversion = cat;
+}
+
+void KEvent::SetRho(double rho){
+  k_rho=rho;
 }
 
 void KEvent::SetPropagatedRochesterToMET(bool hasprop){

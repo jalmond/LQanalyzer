@@ -98,7 +98,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   if(skim_muons.size() > 0){
     float mupt = skim_muons.at(0).Pt();
     if(skim_muons.at(0).RochPt() < skim_muons.at(0).Pt()) mupt=skim_muons.at(0).RochPt();
-    if(mupt  > 10. ) pass15gevlep = true;
+    if(mupt  > 5. ) pass15gevlep = true;
   }
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15
   if(! ((nlep > 1) || ( nlep ==1 && pass15gevlep))) {

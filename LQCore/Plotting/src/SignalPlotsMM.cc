@@ -82,7 +82,8 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   /// ALL Lepton plots                                                                                                                                                                                                                                                                                                                        
   map_sig["h_LeptonEta"]              = SetupHist("h_LeptonEta_"         + name,"leading lepton eta",60,-3.,3., "#eta_{l}");
   map_sig["h_LeptonPhi"]              = SetupHist("h_LeptonPhi_"         + name,"leading lepton phi",64,-3.2,3.2);
-  map_sig["h_LeptonPt"]               = SetupHist("h_LeptonPt_"          + name,"lepton pt",100,0,500);
+  map_sig["h_LeptonPt"]               = SetupHist("h_LeptonPt_"          + name,"lepton pt",250,0,500);
+  map_sig["h_LeptonE"]               = SetupHist("h_LeptonE_"          + name,"lepton e",500,0,500);
   map_sig["h_leadingLeptonPt"]        = SetupHist("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
   if(nmu > 1 ) {
     map_sig["h_secondLeptonPt"]         = SetupHist("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
@@ -497,6 +498,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++, iel++){
   
     Fill("h_LeptonPt", muit->Pt(),weight);
+    Fill("h_LeptonE", muit->Energy(),weight);
     Fill("h_LeptonPhi",muit->Phi(),weight);
     Fill("h_LeptonEta",muit->Eta(),weight);
     Fill("h_LeptonDXY", muit->dXY(),weight);

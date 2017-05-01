@@ -691,7 +691,7 @@ if [[ $submit_analyzer_name == "SKTreeMaker" ]];
 	then
 	job_njobs=1000
     else 
-	job_njobs=1
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
 	then 
@@ -713,7 +713,7 @@ if [[ $submit_analyzer_name == "SKTreeMakerNoCut" ]];
         then
 	job_njobs=1000
     else
-	job_njobs=1
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
         then
@@ -737,7 +737,7 @@ if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
 	then
         job_njobs=1000
     else
-	job_njobs=1
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -761,7 +761,7 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
         then
         job_njobs=1000
     else
-	job_njobs=1
+	job_njobs=-311
     fi
     if [[ $submit_version_tag == "" ]];
 	then
@@ -1191,7 +1191,7 @@ if [[ $changed_job_njobs == "true" ]];
 	    if [ $HOSTNAME != "cmscluster.snu.ac.kr" ];
 	    then
 		echo "LQanalyzer::sktree :: WARNING :: njobs set set out of range (> 200)"
-		job_njobs=200
+		job_njobs=300
 	    fi
 	fi
     fi

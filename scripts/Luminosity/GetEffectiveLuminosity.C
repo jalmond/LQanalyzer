@@ -28,17 +28,24 @@ map<TString, Double_t> neventmap;
 map<TString, Double_t> n_w_eventmap;
 void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version="") {
   
-  bool debug = false;
+  bool debug = true;
   map_lumi.clear();
   neventmap.clear();
   n_w_eventmap.clear();
   std::vector<TString> missing_samples;
   std::vector<TString> missing_samples2;
 
+  cout << "path_of_list = " << path_of_list << endl;
+  cout << "tag =  " << tag << endl;
+  cout << "version = " << version << endl;
+  
   //TString path_of_list="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/cattuplist_"+TString(getenv("CATVERSION"))+".txt";
   
   bool NewList(true);
   if (path_of_list.Contains(string(getenv("LQANALYZER_DATASET_DIR")) +"/ca")) NewList=false;
+
+  if (NewList) cout << "New list " << endl;
+  else cout <<"Not new list" << endl;
 
   if(CheckMaps(path_of_list)) return;
   TString def_version = TString(getenv("CATVERSION"));
@@ -75,15 +82,22 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
     if(cluster) dir = "ls /data4/DATA/FlatCatuples/MC/" + version + "/"+ mit->first + "/*.root > inputlist_efflumi.txt";
     
     bool use_sum_genweight(false);
+    cout << "Checking " << mit->first << endl;
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
     else if(mit->first.Contains("_Schannel_")){
       if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
     }
-    else use_sum_genweight=false;
+    else if(mit->first.Contains("eavyNeutrino_trilepton")){
+      use_sum_genweight=true;
+    }
+      else use_sum_genweight=false;
     
+    
+    cout << "Running " << dir << endl;
     system(dir.Data());
     
-    
+    cout << "Finished Running " << dir << endl;
+
     std::ifstream fin("inputlist_efflumi.txt");
     std::string word;
     
@@ -120,9 +134,13 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
       TString command1 = "rm -r /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/" + mit->first;
       TString command2 = "mkdir /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first;
       TString command2b = "mkdir /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+ mit->first + "/output/";
-
+      
+      cout << "Running " << command1.Data() << endl;
       system(command1.Data());
+      cout << "Running " << command2.Data() << endl;
+
       system(command2.Data());
+      cout << "Running " << command2b.Data() << endl;
       system(command2b.Data());
       
       for(unsigned int i=0; i < filelist.size(); i++){
@@ -166,9 +184,13 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 
 	system(("rm  Run_" + strI + ".sh").c_str());
       }
-	  
-          
+      
+      system("qstat");
+      system("qstat > logqstat");
+
+      cout << "Checking if job is complete...." << endl;
       bool jobComplete=false;
+      int nsubmits=0;
       while (!jobComplete){
 	jobComplete=true;
 	for(unsigned int i=0; i < filelist.size(); i++){
@@ -180,13 +202,18 @@ void GetEffectiveLuminosity(TString path_of_list, TString tag,TString version=""
 	  std::ifstream infile("/data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root");
 	  if(!infile.good()) {
 	      jobComplete=false;
-	      //cout << "File /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
+	      if(nsubmits>200){
+		cout << "File /data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first +"/output/hist" + TString(istr) +".root does not exist" << endl;  
+		
+		system("root -l -b -q \'CountGenWeights.C(\"/data2/LQ_SKTreeOutput/Lumi/" + TString(getenv("USER")) + "/"+mit->first+ "\",\""+filelist.at(i)+"\",\""+ "hist" + TString(istr) +".root\")\'");
+	      }
 	      sleep(5);
+	      nsubmits++;
 	      break;
-	    }
+	  }
 	}
       }
-      
+      cout << "Job complete" << endl;
 
       
       TString command4 = "rm log/checkoutput.txt";

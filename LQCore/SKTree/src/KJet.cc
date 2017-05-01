@@ -43,6 +43,12 @@ KParticle()
   k_jet_passpileup_tight=false;
   k_jet_pileup_mva=-999.;
   k_ismcsmeared=false;
+  k_l1jetcorr=-999.;
+  k_l2jetcorr=-999.;
+  k_l3jetcorr=-999.;
+  k_l2l3resjetcorr=-999.;
+  k_jetarea=-999.;
+
 }
 
 /**
@@ -82,6 +88,12 @@ KJet::KJet(const KJet& jet) :
   k_jet_passpileup_tight=jet.PileupJetIDTight();
   k_jet_pileup_mva= jet.PileupJetIDMVA();
   k_ismcsmeared=jet.IsMCSmeared();
+
+  k_l1jetcorr=jet.L1JetCorr();
+  k_l2jetcorr=jet.L2JetCorr();
+  k_l3jetcorr=jet.L3JetCorr();
+  k_l2l3resjetcorr=jet.L2L3ResJetCorr();
+  k_jetarea=jet.JetArea();
 }
 
 
@@ -123,6 +135,13 @@ void KJet::Reset()
     k_jet_passpileup_tight=false;
     k_jet_pileup_mva=-999.;
     k_ismcsmeared=false;
+    k_l1jetcorr=-999.;
+    k_l2jetcorr=-999.;
+    k_l3jetcorr=-999.;
+    k_l2l3resjetcorr=-999.;
+    k_jetarea=-999.;
+
+
 }
 
 
@@ -162,6 +181,11 @@ KJet& KJet::operator= (const KJet& p)
       k_jet_passpileup_tight=p.PileupJetIDTight();
       k_jet_pileup_mva= p.PileupJetIDMVA();
       k_ismcsmeared=p.IsMCSmeared();
+      k_l1jetcorr=p.L1JetCorr();
+      k_l2jetcorr=p.L2JetCorr();
+      k_l3jetcorr=p.L3JetCorr();
+      k_l2l3resjetcorr=p.L2L3ResJetCorr();
+      k_jetarea=p.JetArea();
     }
 
     return *this;
@@ -302,6 +326,25 @@ double KJet::BJetTaggerValue(Tagger tag) const{
 }
 
 //// POG ID CUTS
+
+void KJet::SetL1JetCorr(double corr){
+  k_l1jetcorr=corr;
+}
+
+void KJet::SetL2JetCorr(double corr){
+  k_l2jetcorr=corr;
+}
+void KJet::SetL3JetCorr(double corr){
+  k_l3jetcorr=corr;
+}
+void KJet::SetL2L3ResJetCorr(double corr){
+  k_l2l3resjetcorr=corr;
+}
+
+void KJet::SetJetArea(double area){
+  k_jetarea=area;
+}
+
 
 void KJet::SetIsMCSmeared(bool issmeared){
   k_ismcsmeared = issmeared;

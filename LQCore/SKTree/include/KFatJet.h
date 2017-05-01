@@ -46,7 +46,20 @@ namespace snu {
     void SetJetPileupIDTightWP(bool pass);
     void SetJetPileupIDMVA(double mva);
     
-    
+    void SetL1JetCorr(double jec);
+    void SetL2JetCorr(double jec);
+    void SetL3JetCorr(double jec);
+    void SetL2L3ResJetCorr(double jec);
+
+    void SetJetArea(double area);
+
+    inline Double_t L1JetCorr() const{return k_fatl1jetcorr;}
+    inline Double_t L2JetCorr() const{return k_fatl2jetcorr;}
+    inline Double_t L3JetCorr() const{return k_fatl3jetcorr;}
+    inline Double_t L2L3ResJetCorr() const{return k_fatl2l3resjetcorr;}
+
+    inline Double_t JetArea() const{return k_fatjetarea;}
+
     //Multiplicities
     //// Pileup MVA to be added
     
@@ -186,7 +199,9 @@ namespace snu {
    
     Double_t k_fatjet_tau1, k_fatjet_tau2,k_fatjet_tau3, k_fatjet_prunedmass, k_fatjet_softdropmass, k_fatjet_puppi_tau1, k_fatjet_puppi_tau2, k_fatjet_puppi_tau3, k_fatjet_puppi_pt, k_fatjet_puppi_eta, k_fatjet_puppi_phi, k_fatjet_puppi_m;
 
-    ClassDef(KFatJet,1)
+    Double_t k_fatl1jetcorr, k_fatl2jetcorr,k_fatl3jetcorr,k_fatl2l3resjetcorr,k_fatjetarea;
+
+    ClassDef(KFatJet,2)
   }; 
   
 

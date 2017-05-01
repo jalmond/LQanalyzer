@@ -86,9 +86,6 @@ void  MCDataCorrections::SetupDoubleEGTriggerSF(int ileg, string sleg){
   string file = analysisdir + sleg;
   ifstream trigsf_file(file.c_str());
 
-  bool found_unc(false);
-  int nline(0);
-
   string sline;
   float etaboundary(-999.);
   while(getline(trigsf_file,sline) ){
@@ -400,7 +397,7 @@ double MCDataCorrections::TriggerScaleFactorPeriodDependant( vector<snu::KElectr
 
   
   TString tag = "";
-  if(k_period < 6) tag = "_BCDEF";
+  if(cat_period < 6) tag = "_BCDEF";
   else tag = "_GH";
   
 
@@ -476,20 +473,20 @@ double MCDataCorrections::TriggerScaleFactorPeriodDependant( vector<snu::KElectr
       if( !( CheckCorrectionHist(DataEffSrcName) && CheckCorrectionHist(MCEffSrcName) ) ) return 0.;
 
       std::vector<float> muptColl;
-        for(int i=0; i<mu.size(); i++){
+        for(unsigned int i=0; i<mu.size(); i++){
           float mupt=mu.at(i).MiniAODPt();
           if     (mupt>f2_ptthreshold){ muptColl.push_back(f2_ptthreshold - 1.); }
           else if(mupt<f1_ptthreshold){ muptColl.push_back(f1_ptthreshold - 1.); }
           else                          muptColl.push_back(mupt);
         }
       std::vector<float> muetaColl;
-        for(int i=0; i<mu.size(); i++){ muetaColl.push_back(mu.at(i).Eta()); };
+      for(unsigned int i=0; i<mu.size(); i++){ muetaColl.push_back(mu.at(i).Eta()); };
 
       std::vector<float> dataeffColl;
-        for(int i=0; i<mu.size(); i++){ dataeffColl.push_back( GetCorrectionHist(DataEffSrcName)->GetBinContent( GetCorrectionHist(DataEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+      for(unsigned int i=0; i<mu.size(); i++){ dataeffColl.push_back( GetCorrectionHist(DataEffSrcName)->GetBinContent( GetCorrectionHist(DataEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
 
       std::vector<float> mceffColl;
-        for(int i=0; i<mu.size(); i++){ mceffColl.push_back( GetCorrectionHist(MCEffSrcName)->GetBinContent( GetCorrectionHist(MCEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
+      for(unsigned int i=0; i<mu.size(); i++){ mceffColl.push_back( GetCorrectionHist(MCEffSrcName)->GetBinContent( GetCorrectionHist(MCEffSrcName)->FindBin(muptColl.at(i), fabs(muetaColl.at(i))) ) ); };
         
       float DataFailProb =1.; for(int i=0; i<mu.size(); i++){ DataFailProb *= (1.-dataeffColl.at(i)); };
       float MCFailProb   =1.; for(int i=0; i<mu.size(); i++){ MCFailProb   *= (1.-mceffColl.at(i));   };
@@ -666,7 +663,7 @@ double MCDataCorrections::TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> 
 
 }
 
-double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, int TriggerCategory, int catperiod, int DataOrMC, int direction){
+double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el,std::vector<snu::KMuon> mu, int TriggerCategory, int catperiod, int DataOrMC, int direction){
 
   //==== Now, only for tri MUON case..
   //==== 1) TriggerCategory = 0
@@ -694,7 +691,9 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
         faileff *= (1.-dimueff);
       }
     }
-
+    bool debug(false);
+    if(debug){cout << "Direction = " << direction << "n_el " << el.size() << endl;
+}
     return 1.-faileff;
 
   }
@@ -729,9 +728,6 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu
 
     TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+sample);
     TH2F *hist_leg2 = GetCorrectionHist("MUON_"+leg2+"_TRIGGER"+tag+sample);
-
-    int bin_mu1 = hist_leg1->FindBin(eta1,pt1);
-    int bin_mu2 = hist_leg1->FindBin(eta2,pt2);
 
     double eff_mu1leg1 = hist_leg1->GetBinContent( hist_leg1->FindBin(eta1,pt1) );
     double eff_mu2leg2 = hist_leg2->GetBinContent( hist_leg2->FindBin(eta2,pt2) );
@@ -773,10 +769,15 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
     float elpt=itel->Pt();
     if(elpt > 500.) elpt= 499.;
     if(elpt < 10.) elpt= 11;
+    float unc = 0.02; //// Check this
     
     if(CheckCorrectionHist("ID_" + elid)){
       int bin =  GetCorrectionHist("ID_" + elid)->FindBin(fabs(itel->SCEta()), elpt);
       sf *= GetCorrectionHist("ID_" + elid)->GetBinContent(bin);
+      float err =  GetCorrectionHist("EL_RECO")->GetBinError(bin);
+      err = sqrt (pow(err, 2.) + pow(unc, 2.));
+      if(sys == 1)sf *= (1. + err);
+      if(sys == -1)sf *= (1. - err);
     }
   }
 

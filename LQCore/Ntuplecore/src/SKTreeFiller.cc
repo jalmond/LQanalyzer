@@ -77,7 +77,7 @@ snu::KTrigger SKTreeFiller::GetTriggerInfo(std::vector<TString> trignames){
   for (UInt_t i=0 ; i< vtrignames->size(); i++) {
     // trignames is vector of trigger names that we want to store in SKTrees
     // trigname contains names substrings X (where X is for example "HLT_mu") and we store all triggers that start with X
-    
+
     
     std::string tgname = vtrignames->at(i);
     if(TString(CatVersion).Contains("v7-6-2")) {
@@ -157,6 +157,11 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETType1xyUnsmearedx(met_xyshift_px->at(0));
     kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
     
+  }
+
+  if(jets_rho){
+    if(jets_rho->size() > 0)kevent.SetRho(jets_rho->at(0));
+    else kevent.SetRho(-999.);
   }
   m_logger << DEBUG << "Filling Event Info [2]" << LQLogger::endmsg;
   /// Since some versions of catuples have no metNoHF due to bug in met code 
@@ -460,11 +465,16 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     /// Kinematic Variables
     el.SetPtEtaPhiE(electrons_pt->at(iel),electrons_eta->at(iel), electrons_phi->at(iel),electrons_energy->at(iel));
 
+    if(electrons_smearedScale)el.SetSmearFactor(electrons_smearedScale->at(iel));
     el.SetTrigMatch(electron_trigmatch->at(iel));
     el.SetSCEta(electrons_scEta->at(iel));
    
     el.Setdz( electrons_dz->at(iel));
     el.Setdxy(electrons_dxy->at(iel) );
+    if(electrons_mva){
+      el.SetMVA(electrons_mva->at(iel) );
+      el.SetZZMVA(electrons_zzmva->at(iel) );
+    }
     if(electrons_sigdxy){
       if(electrons_sigdxy->size() > 0 )el.Setdxy_sig(electrons_sigdxy->at(iel) );
     }
@@ -501,6 +511,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetShiftedEDown(electrons_shiftedEnDown->at(iel));
     }
 
+    if(electrons_missinghits)el.SetMissingHits(electrons_missinghits->at(iel));
     el.SetSNUID(electrons_electronID_snu->at(iel));
     el.SetPassVeto(electrons_electronID_veto->at(iel));
     el.SetPassLoose(electrons_electronID_loose->at(iel));
@@ -749,8 +760,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      else     el.SetIsChargeFlip(false);
 	    }
 	    
-	   
-	    
 	  }/// end of status 2 check
 	  else {
 	    /// using new method for matching: These events are set as prompt 
@@ -816,10 +825,14 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    }
 	    else     el.SetIsChargeFlip(false);
 	    
+	    /// speacial treatment for signal 
+
+	    if( fabs(gen_pdgid->at(mindex))>= 9900012 &&  fabs(gen_pdgid->at(mindex)) < 9900025 )mother_pdgid= gen_pdgid->at(mindex);
+	    	    
 	    
-	  }  
-	}
-      }      /// In case no status 1 electron is found : classify electron fake
+	  }  // not gen status 2
+	} // not Z/W daughter
+      }  /// In case no status 1 electron is found : classify electron fake
       else{
 	if(gen_pt){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
@@ -894,7 +907,19 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      else if(fabs(pdgid) == 21){
                 eltype=31;
               }
-	      else eltype=32;
+	      else if(fabs(pdgid) == 211){
+		eltype=32;
+              }
+	      else if(fabs(pdgid) == 310){
+		eltype=33;
+              }
+	      else if(fabs(pdgid) == 431){
+		eltype=34;
+              }
+	      else if(fabs(pdgid) == 13){
+		eltype=35;
+              }
+	      else eltype=36;
 	      
 	    }// dr req
 	  }// loop over gen vector
@@ -1083,6 +1108,16 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     jet.SetSmearedResUp(jets_smearedResUp->at(ijet));
     jet.SetSmearedRes(jets_smearedRes->at(ijet));
     
+    if(jets_l1jetcorr){
+      jet.SetJetRawPt(jets_rawpt->at(ijet));
+      jet.SetJetRawEnergy(jets_rawenergy->at(ijet));
+      jet.SetL1JetCorr(jets_l1jetcorr->at(ijet));
+      jet.SetL2JetCorr(jets_l2jetcorr->at(ijet));
+      jet.SetL3JetCorr(jets_l3jetcorr->at(ijet));
+      jet.SetL2L3ResJetCorr(jets_l2l3resjetcorr->at(ijet));
+      jet.SetJetArea(jets_area->at(ijet));
+    }
+
     jets.push_back(jet);
   }// end of jet 
   
@@ -1184,7 +1219,13 @@ std::vector<KFatJet> SKTreeFiller::GetAllFatJets(){
     jet.SetPuppiEta(fatjets_puppi_eta->at(ijet));
     jet.SetPuppiPhi(fatjets_puppi_phi->at(ijet));
     jet.SetPuppiM(fatjets_puppi_m->at(ijet));
-    
+    if(fatjets_l1jetcorr){
+      jet.SetL1JetCorr(fatjets_l1jetcorr->at(ijet));
+      jet.SetL2JetCorr(fatjets_l2jetcorr->at(ijet));
+      jet.SetL3JetCorr(fatjets_l3jetcorr->at(ijet));
+      jet.SetL2L3ResJetCorr(fatjets_l2l3resjetcorr->at(ijet));
+      jet.SetJetArea(fatjets_area->at(ijet));
+    }
       
     fatjets.push_back(jet);
   }// end of jet                                                   
@@ -1292,6 +1333,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     int mc_pdgid=-1;
     bool matched_in_Dr=false;
     
+    int          mutype=0;
+
     if(k_cat_version > 3){
 
     if(gen_pt){
@@ -1369,6 +1412,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 
         if( (fabs(gen_pdgid->at(mindex)) == 23) || (fabs(gen_pdgid->at(mindex)) == 24)) {
 	  /// Check if it is a chargeflip.
+          mutype=1;
+	  
           if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
           else     muon.SetIsChargeFlip(false);
 
@@ -1388,12 +1433,25 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
         }/// end of Z/W
         else {
           if(gen_status->at(mindex) == 2){
-            if(fabs(gen_pdgid->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;}
-	    else isprompt=true;
+            if(fabs(gen_pdgid->at(mindex)) > 50) {isprompt=false; mother_pdgid=gen_pdgid->at(mindex); mother_index=mindex; from_tau=false;
+	      mutype=2;
+	    }
+	    else {
+	      isprompt=true;
+	      mutype=3;
+
+	      if(fabs(gen_pdgid->at(mindex)) == 22){
+		if(fabs(gen_pdgid->at(gen_motherindex->at(mindex))) > 50){
+                  mutype=4;
+                }
+		else                   mutype=5;
+              } 
+	    }
+	    
             if(fabs(gen_pdgid->at(mindex)) == 15){
               isprompt=true; mother_pdgid=gen_pdgid->at(mindex);  mother_index=mindex; from_tau=true;
               // Check if el from tau  is CF
-
+	      mutype=6;
 	      if(pdgid * muon_q->at(ilep) > 0 )     muon.SetIsChargeFlip(true);
               else     muon.SetIsChargeFlip(false);
 
@@ -1407,25 +1465,61 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 		}
 	      }
 	      if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
-
+	     
+	      if(fabs(gen_pdgid->at(gen_motherindex->at(mother_index))) > 50) {isprompt=false; mutype=7;}
             }
           }/// end of status 2 check
           else {
             /// using new method for matching: These events are set as prompt
             isprompt=true;mother_pdgid=-99999; mother_index=mindex; from_tau=false;
-
+	    mutype=8;
             if(pdgid * muon_q->at(ilep) > 0 )    muon.SetIsChargeFlip(true);
             else     muon.SetIsChargeFlip(false);
 	    int n_mu_from_mother=0;
+            vector<KTruth> vmu_tmp;
+            bool neutrino_invertex(false);
+
 	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 	      if(gen_motherindex->at(itx) <= 0)continue;
 	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
 	      if(gen_pt->at(itx) < 0.1) continue;
 	      if(fabs(gen_pdgid->at(itx)) ==13) {
 		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
+		if(gen_status->at(itx) ==1){
+		  KTruth truthmu;
+		  truthmu.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_energy->at(itx));
+		  vmu_tmp.push_back(truthmu);
+		}
 	      }
+	      if(fabs(gen_pdgid->at(itx)) ==14) {
+		
+		int index_mother_nu=gen_motherindex->at(itx);
+		while (fabs(index_mother_nu) ==14){
+		  index_mother_nu=gen_motherindex->at(index_mother_nu);
+		}
+		
+		if(index_mother_nu == mindex) {
+		  neutrino_invertex=true;
+		}
+	      }
+	    } // end of truth loop to check Conv                                                                                                                                                                                                  
+	    
+	    if(neutrino_invertex) mutype=9;
+	    
+	    if(vmu_tmp.size() ==2) {
+	      KParticle ll = vmu_tmp[0] + vmu_tmp[1];
+	      if(fabs(ll.M()) < 5.) mutype=10;
 	    }
+	    
+	    
+	    
 	    if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+
+	    /// speacial treatment for signal                                                                                                                                                                                                                                   
+
+            if( fabs(gen_pdgid->at(mindex))>= 9900012 &&  fabs(gen_pdgid->at(mindex) < 9900025 ))mother_pdgid= gen_pdgid->at(mindex);
+
+
           }
         }
       }      /// In case no status 1 muon is found : classify muon fake
@@ -1437,7 +1531,6 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
             if(gen_pt->at(itxx) < 0.1) continue;
 	    //cout << itxx << " " << gen_pdgid->at(itxx) << " " << gen_pdgid->at(gen_motherindex->at(itxx)) << " " << gen_eta->at(itxx) << " " << gen_phi->at(itxx) << endl;
 	  }
-
 	}
         if(gen_pt){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
@@ -1472,12 +1565,19 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
               matched_index = it;
 	      mc_pdgid= int(pdgid);
               if(fabs(pdgid) == 22) {
-                from_tau=false;
+		if(fabs(mother_pdgid) > 50) mutype=11;
+                else mutype=12;
+		
+		from_tau=false;
                 break;
               }
-              if(fabs(pdgid) == 15)from_tau=true;
-	      
+              if(fabs(pdgid) == 15){
+		from_tau=true;
+		if(fabs(mother_pdgid) > 50) mutype=12;
+		else mutype=13;
+	      }
 	      if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 13){
+		mutype=14;
 		int n_mu_from_mother=0;
 		for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 		  if(gen_motherindex->at(itx) <= 0)continue;
@@ -1491,6 +1591,40 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	      }else{
 		muon.SetIsPhotonConversion(false);
 	      }
+	      
+	      if(fabs(pdgid) == 1){
+                mutype=15;
+              }
+              else if(fabs(pdgid) == 2){
+                mutype=16;
+              }
+              else if(fabs(pdgid) == 3){
+               mutype=17;
+              }
+              else if(fabs(pdgid) == 4){
+                mutype=18;
+              }
+              else if(fabs(pdgid) == 5){
+                mutype=19;
+              }
+              else if(fabs(pdgid) == 21){
+                mutype=20;
+              }
+	      
+	      else if(fabs(pdgid) == 211){
+		mutype=21;
+	      }
+	      else if(fabs(pdgid) == 310){
+		mutype=22;
+	      }
+	      else if(fabs(pdgid) == 431){
+		mutype=23;
+	    }
+	      else if(fabs(pdgid) == 13){
+		mutype=24;
+	      }
+	      else mutype=25;
+
 	    }// dr req
           }// loop over gen vector
         }// require gen info
@@ -1502,6 +1636,9 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     /// - In no status 1 is matched set as not prompt but look for closest particle in dR 
     /// - In no particles within dR < 0.1 matched_in_Dr = false
     matched_truth.push_back(matched_index);
+
+
+    muon.SetType(mutype);
 
     if(!matched_in_Dr){
       muon.SetMCMatched(false);

@@ -45,11 +45,18 @@ namespace snu {
     // set kinematic variables
     void SetSCEta(Double_t sceta);
     
+
+    void SetSmearFactor(Double_t smear);
+
+    
     //##### NOTE charge/pt/eta/phi use tlv class
     
     /// Trigger matching
     
-    
+    /// MVA
+    void SetMVA(double mva);
+    void SetZZMVA(double zzmva);
+
     //// set   vertex variables
     void SetType(int eltype);
     void Setdxy(Double_t d_xy);
@@ -94,12 +101,11 @@ namespace snu {
 
     
     // set charge variables
-    
     void SetGsfCtfScPixCharge(bool gsfctfscpix_ch);
     
     /// set conversion variables
     void SetHasMatchedConvPhot(Bool_t hasmatchConvPhot);
-
+    void SetMissingHits(Int_t mhits);
     
     void SetShiftedEUp(Double_t Eup);
     void SetShiftedEDown(Double_t Edown);
@@ -126,6 +132,10 @@ namespace snu {
 	return 36;
       }
     }
+    inline Double_t MVA() const {return k_mva;}
+    inline Double_t ZZMVA() const {return k_zzmva;}
+
+    inline Double_t SmearFactor() const {return k_smearfactor;}
 
     inline Bool_t  IsEBFiducial() {return bool (fabs(SCEta()) < 1.442);}
     inline Bool_t  IsEEFiducial() {return bool (fabs(SCEta()) > 1.560 && fabs(SCEta()) < 2.50);}
@@ -134,6 +144,8 @@ namespace snu {
     inline Double_t  SCEta() const {return k_sceta;}
     
     
+    inline Int_t MissingHits() const {return k_missing_hits;}
+
     inline Double_t PtShiftedUp() const{ return k_pt_shifted_up;}
     inline Double_t PtShiftedDown() const{ return k_pt_shifted_down;}
 
@@ -262,8 +274,12 @@ namespace snu {
     Int_t snu_id,k_mother_pdgid, k_mc_pdgid,k_mother_index, k_mc_index;
     TString k_trig_match;
     Int_t k_eltype;
+    
+    Double_t k_mva, k_zzmva;
+    Int_t k_missing_hits;
+    Double_t k_smearfactor;
 
-    ClassDef(KElectron,26);
+    ClassDef(KElectron,29);
   }; 
   
 }//namespace snu

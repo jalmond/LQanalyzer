@@ -189,26 +189,20 @@ float DataDrivenBackgrounds::CFRate(snu::KElectron el){
 float DataDrivenBackgrounds::CFRate_Run2(snu::KElectron el, TString el_id){
   if(el.Pt() < 20.) return 0.;
 
-  Double_t p_B1_1[2] = {0.};
-  Double_t p_B2_1[2] = {0.};
-  Double_t p_E_1[2] = {0.};
+  bool debug(false);
 
-  Double_t p_B1_2[2] = {0.};
-  Double_t p_B2_2[2] = {0.};
-  Double_t p_E_2[2] = {0.};
+
+  Double_t p_B1_1[2]  = {0.0001261, -0.005951};
+  Double_t p_B2_1[2] =  {0.00063, -0.01965};
+  Double_t p_E_1[2] = {0.006827, -0.2198};
+
+  Double_t p_B1_2[2] = {1.584e-05, 5.337e-05};
+  Double_t p_B2_2[2] = {3.946e-05, 0.0008439};
+  Double_t p_E_2[2] =  {0.003153, -0.003891};
 
   Double_t scale_factor_EE = 1. ;
   Double_t scale_factor_BB = 1. ;
 
-  if(el_id == "ELECTRON_HN_TIGHT"){
-    p_B1_1 = {0.0001261, -0.005951};
-    p_B2_1 = {0.00063, -0.01965};
-    p_E_1 = {0.006827, -0.2198};
-
-    p_B1_2 = {1.584e-05, 5.337e-05};
-    p_B2_2 = {3.946e-05, 0.0008439};
-    p_E_2 = {0.003153, -0.003891};
-  }
 
   Double_t frac = 0. ;
   float pt_inv = 1. / el.Pt();
@@ -242,10 +236,11 @@ float DataDrivenBackgrounds::CFRate_Run2(snu::KElectron el, TString el_id){
     frac *= scale_factor_EE ;
   }
 
+  if(debug){cout << "ID = " << el_id << " CF rate = " << endl;}
   return float(frac) ;
   return 1. ;
-
-}
+  
+  }
 
 
 
@@ -258,10 +253,10 @@ float DataDrivenBackgrounds::CFRate_Run2(snu::KElectron el, TString el_id){
 @  Get_TempDataDrivenWeightX will return the weight for functions testing/optimising for dilepton
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-
+  
 
 float DataDrivenBackgrounds::Get_DataDrivenWeight_EM(bool geterr, vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString IDmu, TString IDel, TString method){
-
+  
   // geterr = true : function returns error not event weight  
   // k_electrons are loose electrons defined in analysis code 
   // k_muons are loose muons defined in analysis code 
@@ -345,7 +340,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::
 
   float this_weight = 0.;
 
-  if( k_muons.size() != n_muons || k_electrons.size() != n_electrons ){
+  if( int(k_muons.size()) != n_muons || int(k_electrons.size()) != n_electrons ){
     //Message("[Get_DataDrivenWeight] number of lepton is wrong..", ERROR);
     return 0.;
   }
@@ -407,6 +402,9 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_M(bool geterr, vector<snu::KMu
   float f=  m_fakeobj->getFakeRate_muon(geterr,fabs(k_muons.at(0).Eta()), k_muons.at(0).Pt(), s_id);
   float r=  1.;//m_fakeobj->getPromptRate_muon(geterr,fabs(k_muons.at(0).Eta()), k_muons.at(0).Pt(), s_id);
 
+  bool debug(false);
+  if(debug) cout << "Metho = " << method <<  endl;
+
   float w = m_fakeobj->lepton_weight(!is_mu1_tight, r,f);
   return w;
 
@@ -422,6 +420,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_E(bool geterr,vector<snu::KEle
 
   float f=  m_fakeobj->getFakeRate_electronEta(0,k_electrons.at(0).Pt(),fabs(k_electrons.at(0).Eta()),"pt_eta_40_looseregion1");
   float r=  1.;//m_fakeobj->getPromptRate_electron 
+  
+  if(geterr) return m_fakeobj->getFakeRate_electronEta(1,k_electrons.at(0).Pt(),fabs(k_electrons.at(0).Eta()),"pt_eta_40_looseregion1");
 
   float w = m_fakeobj->lepton_weight(!is_el1_tight, r,f);
   return w;

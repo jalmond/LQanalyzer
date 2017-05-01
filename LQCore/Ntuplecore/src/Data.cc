@@ -244,6 +244,7 @@ void Data::Reset(){
   muon_q = 0;
   electrons_electronID_snu = 0;
   electrons_q = 0;
+  electrons_missinghits = 0;
   jets_partonFlavour = 0;
   jets_hadronFlavour = 0;
   jets_partonPdgId = 0;
@@ -307,6 +308,9 @@ void Data::Reset(){
   electrons_isGsfCtfScPixChargeConsistent = 0;
   electrons_puChIso03 = 0;
   electrons_puChIso04 = 0;
+  electrons_mva=0;
+  electrons_zzmva=0;
+  electrons_smearedScale=0;
   jets_pt = 0;
   jets_eta = 0;
   jets_phi = 0;
@@ -328,6 +332,17 @@ void Data::Reset(){
   jets_smearedResDown = 0;
   jets_smearedResUp = 0;
   jets_PileupJetId = 0;
+  jets_rho = 0;
+  jets_rawpt= 0;
+  jets_rawenergy= 0;
+
+  jets_l1jetcorr = 0;
+  jets_l2jetcorr = 0;
+  jets_l3jetcorr = 0;
+  jets_l2l3resjetcorr = 0;
+  jets_area = 0;
+
+
   fatjets_pt = 0;
   fatjets_eta = 0;
   fatjets_phi = 0;
@@ -361,6 +376,15 @@ void Data::Reset(){
   fatjets_puppi_eta=0;
   fatjets_puppi_phi=0;
   fatjets_puppi_m=0;
+  fatjets_rho = 0;
+  fatjets_rawpt= 0;
+  fatjets_rawenergy= 0;
+  fatjets_l1jetcorr = 0;
+  fatjets_l2jetcorr = 0;
+  fatjets_l3jetcorr = 0;
+  fatjets_l2l3resjetcorr = 0;
+  fatjets_area = 0;
+
   gen_pt = 0;
   gen_eta = 0;
   gen_phi = 0;
@@ -734,6 +758,9 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_electronID_mva_zz",electrons_electronID_mva_zz,b_electrons_electronID_mva_zz);
   ConnectVariable("electrons_electronID_mva_trig_medium",electrons_electronID_mva_trig_medium,b_electrons_electronID_mva_trig_medium);
   ConnectVariable("electrons_electronID_mva_trig_tight",electrons_electronID_mva_trig_tight,b_electrons_electronID_mva_trig_tight);
+  ConnectVariable("electrons_mva", electrons_mva, b_electrons_mva);
+  ConnectVariable("electrons_zzmva", electrons_zzmva, b_electrons_zzmva);
+  ConnectVariable("electrons_smearedScale",electrons_smearedScale,b_electrons_smearedScale);
   ConnectVariable("electrons_energy", electrons_energy, b_electrons_energy);
   ConnectVariable("electrons_eta", electrons_eta, b_electrons_eta);
   ConnectVariable("electrons_isPF", electrons_isPF, b_electrons_isPF);
@@ -750,6 +777,7 @@ void Data::ConnectElectrons(){
   ConnectVariable("electrons_puChIso03", electrons_puChIso03, b_electrons_puChIso03);
   ConnectVariable("electrons_puChIso04", electrons_puChIso04, b_electrons_puChIso04);
   ConnectVariable("electrons_q", electrons_q, b_electrons_q);
+  ConnectVariable("electrons_missinghits", electrons_missinghits, b_electrons_missinghits);
   ConnectVariable("electrons_relIso03", electrons_relIso03, b_electrons_relIso03);
   ConnectVariable("electrons_relIso04", electrons_relIso04, b_electrons_relIso04);
   ConnectVariable("electrons_minirelIso", electrons_minirelIso, b_electrons_minirelIso);
@@ -800,6 +828,8 @@ void Data::ConnectPFJets(){
   ConnectVariable("jets_partonPdgId",jets_partonPdgId,b_jets_partonPdgId);
   ConnectVariable("jets_phi",jets_phi,b_jets_phi);
   ConnectVariable("jets_pt",jets_pt,b_jets_pt);
+  ConnectVariable("jets_rawpt",jets_rawpt,b_jets_rawpt);
+  ConnectVariable("jets_rawenergy",jets_rawenergy,b_jets_rawenergy);
   ConnectVariable("jets_shiftedEnDown",jets_shiftedEnDown,b_jets_shiftedEnDown);
   ConnectVariable("jets_shiftedEnUp",jets_shiftedEnUp,b_jets_shiftedEnUp);
   ConnectVariable("jets_smearedRes",jets_smearedRes,b_jets_smearedRes);
@@ -809,6 +839,12 @@ void Data::ConnectPFJets(){
   ConnectVariable("jets_vtx3DVal", jets_vtx3DVal, b_jets_vtx3DVal);
   ConnectVariable("jets_vtx3DSig", jets_vtx3DSig, b_jets_vtx3DSig);
   ConnectVariable("jets_vtxNtracks", jets_vtxNtracks, b_jets_vtxNtracks);
+  ConnectVariable("jets_Rho",jets_rho,b_jets_rho);
+  ConnectVariable("jets_L1fastjetJEC",jets_l1jetcorr,b_jets_l1jetcorr);
+  ConnectVariable("jets_L2relJEC",jets_l2jetcorr,b_jets_l2jetcorr);
+  ConnectVariable("jets_L3absJEC",jets_l3jetcorr, b_jets_l3jetcorr);
+  ConnectVariable("jets_L2L3resJEC",jets_l2l3resjetcorr, b_jets_l2l3resjetcorr);
+  ConnectVariable("jets_JetArea", jets_area, b_jets_area);
   return;
 }
 
@@ -824,6 +860,8 @@ void Data::ConnectPFFatJets(){
 
   if(k_cat_version <  7) return;
   
+  ConnectVariable("fatjets_rawpt",fatjets_rawpt,b_fatjets_rawpt);
+  ConnectVariable("fatjets_rawenergy",fatjets_rawenergy,b_fatjets_rawenergy);
   ConnectVariable("fatjets_CSVInclV2", fatjets_CSVInclV2, b_fatjets_CSVInclV2);
   ConnectVariable("fatjets_CMVAV2", fatjets_CMVAV2, b_fatjets_CMVAV2);
   ConnectVariable("fatjets_JetProbBJet", fatjets_JetProbBJet, b_fatjets_JetProbBJet);
@@ -866,7 +904,13 @@ void Data::ConnectPFFatJets(){
   ConnectVariable("fatjets_puppi_phi",fatjets_puppi_phi,b_fatjets_puppi_phi);
   ConnectVariable("fatjets_puppi_pt",fatjets_puppi_pt,b_fatjets_puppi_pt);
 
-  
+  ConnectVariable("fatjets_Rho",fatjets_rho,b_fatjets_rho);
+  ConnectVariable("fatjets_L1fastjetJEC",fatjets_l1jetcorr,b_fatjets_l1jetcorr);
+  ConnectVariable("fatjets_L2relJEC",fatjets_l2jetcorr,b_fatjets_l2jetcorr);
+  ConnectVariable("fatjets_L3absJEC",fatjets_l3jetcorr, b_fatjets_l3jetcorr);
+  ConnectVariable("fatjets_L2L3resJEC",fatjets_l2l3resjetcorr, b_fatjets_l2l3resjetcorr);
+  ConnectVariable("fatjets_JetArea", fatjets_area, b_fatjets_area);
+
   return;
 }
 

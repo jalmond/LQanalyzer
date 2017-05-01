@@ -58,6 +58,9 @@ if [[ $njobs == "-j 1" ]]; then
     runcommand="running single job"
 fi
 
+if [[ $njobs == "-j -311" ]]; then
+    runcommand="running single job"
+fi
 
 sample_list_string=""
 for i in ${input_samples[@]}

@@ -233,6 +233,11 @@ public :
    std::vector<double>  *electrons_x;
    std::vector<double>  *electrons_y;
    std::vector<double>  *electrons_z;
+
+   std::vector<double>  *electrons_mva;
+   std::vector<double>  *electrons_zzmva;
+   std::vector<double>  *electrons_smearedScale;
+
    std::vector<double>  *photons_chargedHadronIso;
    std::vector<double>  *photons_chargedHadronIsoWithEA;
    std::vector<double>  *photons_energy;
@@ -255,10 +260,12 @@ public :
    std::vector<double>  *jets_CSVInclV2;
    std::vector<double>  *jets_JetProbBJet;
    std::vector<double>  *jets_CMVAV2;
-    std::vector<double>        *jets_iCSVCvsL;   
-    std::vector<double>        *jets_CCvsLT;   
-    std::vector<double>        *jets_CCvsBT;
-      std::vector<double>  *jets_chargedEmEnergyFraction;
+   std::vector<double>        *jets_iCSVCvsL;   
+   std::vector<double>        *jets_CCvsLT;   
+   std::vector<double>        *jets_CCvsBT;
+   std::vector<double>        *jets_rawpt;
+   std::vector<double>        *jets_rawenergy;
+   std::vector<double>  *jets_chargedEmEnergyFraction;
    std::vector<double>  *jets_energy;
    std::vector<double>  *jets_eta;
    std::vector<double>  *jets_PileupJetId;
@@ -273,6 +280,14 @@ public :
    std::vector<double>  *jets_vtx3DSig;
    std::vector<double>  *jets_vtx3DVal;
    std::vector<double>  *jets_vtxMass;
+   std::vector<double>  *jets_rho;
+   
+   std::vector<double>  *jets_l1jetcorr;
+   std::vector<double>  *jets_l2jetcorr;
+   std::vector<double>  *jets_l3jetcorr;
+   std::vector<double>  *jets_l2l3resjetcorr;
+   std::vector<double>  *jets_area;
+
 
    std::vector<double>  *fatjets_CSVInclV2;
    std::vector<double>  *fatjets_JetProbBJet;
@@ -287,6 +302,8 @@ public :
    std::vector<double>  *fatjets_m;
    std::vector<double>  *fatjets_phi;
    std::vector<double>  *fatjets_pt;
+   std::vector<double>        *fatjets_rawpt;
+   std::vector<double>        *fatjets_rawenergy;
    std::vector<double>  *fatjets_shiftedEnDown;
    std::vector<double>  *fatjets_shiftedEnUp;
    std::vector<double>  *fatjets_smearedRes;
@@ -308,6 +325,13 @@ public :
    std::vector<double>  *fatjets_puppi_tau1;
    std::vector<double>  *fatjets_puppi_tau2;
    std::vector<double>  *fatjets_puppi_tau3;;
+   std::vector<double>  *fatjets_rho;
+
+   std::vector<double>  *fatjets_l1jetcorr;
+   std::vector<double>  *fatjets_l2jetcorr;
+   std::vector<double>  *fatjets_l3jetcorr;
+   std::vector<double>  *fatjets_l2l3resjetcorr;
+   std::vector<double>  *fatjets_area;
 
 
    std::vector<double>  *met_phi;
@@ -387,6 +411,8 @@ public :
    
 
    std::vector<int>  *electrons_q;
+   std::vector<int>  *electrons_missinghits;
+   
    std::vector<int>  *muon_q;
 
    
@@ -554,7 +580,9 @@ public :
    TBranch        *b_electrons_pt;   //!                                                                                                                                                                                                                                     
    TBranch        *b_electrons_puChIso03;   //!                                                                                                                                                                                                                              
    TBranch        *b_electrons_puChIso04;   //!                                                                                                                                                                                                                              
-   TBranch        *b_electrons_q;   //!                                                                                                                                                                                                                                      
+   TBranch        *b_electrons_q;   //!                                                                                                                                                                                                                             
+   TBranch        *b_electrons_missinghits;   //!                                                                                                                                                                                                                             
+         
    TBranch        *b_electrons_relIso03;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_relIso04;   //!                                                                                                                                                                                                                               
    TBranch        *b_electrons_minirelIso;   //!                                                                                                                                                                                                                               
@@ -564,6 +592,18 @@ public :
    TBranch        *b_electrons_x;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_y;   //!                                                                                                                                                                                                                                      
    TBranch        *b_electrons_z;   //!                                                                                                                                                                                                                                      
+   TBranch        *b_electrons_mva;   //! 
+   TBranch        *b_electrons_zzmva;   //! 
+   TBranch        *b_electrons_smearedScale;//!    
+
+   TBranch        *b_jets_rho;   //!                                                                                                          
+   TBranch        *b_jets_l1jetcorr;
+   TBranch        *b_jets_l2jetcorr;
+   TBranch        *b_jets_l3jetcorr;
+   TBranch        *b_jets_l2l3resjetcorr;
+   TBranch        *b_jets_area;
+
+                                                                                                                         
    TBranch        *b_jets_CSVInclV2;   //!                                                                                                                                                                                                                                   
    TBranch        *b_jets_JetProbBJet; //!
    TBranch        *b_jets_CMVAV2; //!
@@ -576,6 +616,8 @@ public :
    TBranch        *b_jets_energy;   //!                                                                                                                                                                                                                                      
    TBranch        *b_jets_eta;   //!                                                                                                                                                                                                                                         
    TBranch        *b_jets_PileupJetId;   //!                                                                                                                                                                                                                                      
+   TBranch        *b_jets_rawpt;
+   TBranch        *b_jets_rawenergy;
    TBranch        *b_jets_m;   //!                                                                                                                                                                                                                                           
    TBranch        *b_jets_phi;   //!                                                                                                                                                                                                                                         
    TBranch        *b_jets_pt;   //!                                                                                                                                                                                                                                          
@@ -587,6 +629,8 @@ public :
    TBranch        *b_jets_vtx3DSig;   //! 
    TBranch        *b_jets_vtx3DVal;   //! 
    TBranch        *b_jets_vtxMass;   //!                                                                                                                                                                                                               
+   TBranch        *b_fatjets_rho;   //!                                                                                                                                          
+
    TBranch        *b_fatjets_CSVInclV2;   //!  
                                                                                                                                                                                
    TBranch        *b_fatjets_JetProbBJet; //!                                                                                                                                     
@@ -605,7 +649,10 @@ public :
                                                                                                                                                                             
    TBranch        *b_fatjets_m;   //!                                                                                                                                          
                                                                                                                                                                                
-   TBranch        *b_fatjets_phi;   //!                                                                                                                                         
+   TBranch        *b_fatjets_phi;   //!                                                                                                                                        
+
+   TBranch        *b_fatjets_rawpt;
+   TBranch        *b_fatjets_rawenergy; 
                                                                                                                                                                                
    TBranch        *b_fatjets_pt;   //!                                                                                                                                          
                                                                                                                                                                                
@@ -635,6 +682,13 @@ public :
    TBranch        *b_fatjets_puppi_tau1;
    TBranch        *b_fatjets_puppi_tau2;
    TBranch        *b_fatjets_puppi_tau3;
+
+   TBranch        *b_fatjets_l1jetcorr;
+   TBranch        *b_fatjets_l2jetcorr;
+   TBranch        *b_fatjets_l3jetcorr;
+   TBranch        *b_fatjets_l2l3resjetcorr;
+   TBranch        *b_fatjets_area;
+
 
    TBranch        *b_met_phi;   //!                                                                                                                                                                                                                                          
    TBranch        *b_met_pt;   //!                                                                                                                                                                                                                                           

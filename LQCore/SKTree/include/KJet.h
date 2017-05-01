@@ -109,6 +109,21 @@ namespace snu {
     void SetSmearedRes(double jetsmearresup);
     
     
+    void SetL1JetCorr(double jec);
+    void SetL2JetCorr(double jec);
+    void SetL3JetCorr(double jec);
+    void SetL2L3ResJetCorr(double jec);
+    void SetJetArea(double area);
+    
+    /// JEC
+    inline Double_t L1JetCorr() const{return k_l1jetcorr;}
+    inline Double_t L2JetCorr() const{return k_l2jetcorr;}
+    inline Double_t L3JetCorr() const{return k_l3jetcorr;}
+    inline Double_t L2L3ResJetCorr() const{return k_l2l3resjetcorr;}
+
+    inline Double_t JetArea() const{return k_jetarea;}
+
+
     /// ID
     inline Int_t PassLooseID() const {return k_jet_passLooseID;}
     inline Int_t PassTightID() const {return k_jet_passTightID;}
@@ -206,7 +221,9 @@ namespace snu {
     Double_t k_jet_pileup_mva;
     Bool_t k_ismcsmeared;
 
-    ClassDef(KJet,14)
+    Double_t k_l1jetcorr, k_l2jetcorr,k_l3jetcorr,k_l2l3resjetcorr,k_jetarea;
+
+    ClassDef(KJet,15)
   }; 
   
 

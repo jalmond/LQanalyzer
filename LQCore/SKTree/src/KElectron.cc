@@ -61,6 +61,10 @@ KParticle()
   k_gsf_ctscpix_charge=false;
   k_trig_match="";
   k_eltype=-999;
+  k_mva=-999;
+  k_zzmva=-999;
+  k_missing_hits=-999;
+  k_smearfactor=-999.;
 }
 
 /**
@@ -117,8 +121,13 @@ KElectron::KElectron(const KElectron& el) :
   k_gsf_ctscpix_charge= el.GsfCtfScPixChargeConsistency();
   k_trig_match= el.TrigMatch();
   k_eltype=el.GetType();
+  k_mva=el.MVA();
+  k_zzmva=el.ZZMVA();
+  k_missing_hits=el.MissingHits();
+  k_smearfactor=el.SmearFactor();
 
 }
+
 
 
 KElectron::~KElectron()
@@ -174,7 +183,11 @@ void KElectron::Reset()
   k_gsf_ctscpix_charge=false;
   k_trig_match="";
   k_eltype=-999;
- 
+  k_mva=-999;
+  k_zzmva=-999;
+  k_missing_hits=-999;
+  k_smearfactor=-999.;
+
 }
 
 
@@ -229,12 +242,33 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_abs_iso04=p.PFAbsIso(0.4);
     k_trig_match= p.TrigMatch();
     k_eltype=p.GetType();
+    k_mva=p.MVA();
+    k_zzmva=p.ZZMVA();
+    k_missing_hits=p.MissingHits();
+    k_smearfactor=p.SmearFactor();
 
   }
   
   return *this;
 }
 
+void KElectron::SetSmearFactor(double smeare){
+  
+  k_smearfactor=smeare;
+
+}
+
+void KElectron::SetMissingHits(int mhits){
+  k_missing_hits=mhits;
+}
+
+void KElectron::SetMVA(double mva){
+  k_mva=mva;
+}
+
+void KElectron::SetZZMVA(double zzmva){
+  k_mva=zzmva;
+}
 
 
 void  KElectron::SetType(int type){

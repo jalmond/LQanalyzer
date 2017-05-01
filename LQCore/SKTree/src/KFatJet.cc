@@ -55,6 +55,11 @@ KParticle()
   k_fatjet_puppi_eta=-999.;
   k_fatjet_puppi_phi=-999.;
   k_fatjet_puppi_m=-999.;
+  k_fatl1jetcorr=-999.;
+  k_fatl2jetcorr=-999.;
+  k_fatl3jetcorr=-999.;
+  k_fatl2l3resjetcorr=-999.;
+  k_fatjetarea=-999.;
 
 }
 
@@ -108,7 +113,11 @@ KFatJet::KFatJet(const KFatJet& jet) :
   k_fatjet_puppi_phi=jet.PuppiPhi();
   k_fatjet_puppi_m=jet.PuppiM();
 
-
+  k_fatl1jetcorr=jet.L1JetCorr();
+  k_fatl2jetcorr=jet.L2JetCorr();
+  k_fatl3jetcorr=jet.L3JetCorr();
+  k_fatl2l3resjetcorr=jet.L2L3ResJetCorr();
+  k_fatjetarea=jet.JetArea();
 }
 
 
@@ -162,6 +171,11 @@ void KFatJet::Reset()
     k_fatjet_puppi_eta=-999.;
     k_fatjet_puppi_phi=-999.;
     k_fatjet_puppi_m=-999.;
+    k_fatl1jetcorr=-999.;
+    k_fatl2jetcorr=-999.;
+    k_fatl3jetcorr=-999.;
+    k_fatl2l3resjetcorr=-999.;
+    k_fatjetarea=-999.;
 
 }
 
@@ -213,6 +227,11 @@ KFatJet& KFatJet::operator= (const KFatJet& p)
       k_fatjet_puppi_eta=p.PuppiEta();
       k_fatjet_puppi_phi=p.PuppiPhi();
       k_fatjet_puppi_m=p.PuppiM();
+      k_fatl1jetcorr=p.L1JetCorr();
+      k_fatl2jetcorr=p.L2JetCorr();
+      k_fatl3jetcorr=p.L3JetCorr();
+      k_fatl2l3resjetcorr=p.L2L3ResJetCorr();
+      k_fatjetarea=p.JetArea();
 
     }
 
@@ -231,6 +250,25 @@ double KFatJet::BJetTaggerValue(Tagger tag) const{
 }
 
 //// POG ID CUTS
+
+void KFatJet::SetL1JetCorr(double corr){
+  k_fatl1jetcorr=corr;
+}
+
+void KFatJet::SetL2JetCorr(double corr){
+  k_fatl2jetcorr=corr;
+}
+void KFatJet::SetL3JetCorr(double corr){
+  k_fatl3jetcorr=corr;
+}
+void KFatJet::SetL2L3ResJetCorr(double corr){
+  k_fatl2l3resjetcorr=corr;
+}
+
+void KFatJet::SetJetArea(double area){
+  k_fatjetarea=area;
+}
+
 
 void KFatJet::SetJetPassLooseID(int looseID){
 

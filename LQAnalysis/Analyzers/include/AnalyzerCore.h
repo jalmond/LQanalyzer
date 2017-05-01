@@ -63,6 +63,11 @@ class AnalyzerCore : public LQCycleBase {
   bool ISCF(snu::KElectron el);
   bool TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
   bool TruthMatched(snu::KElectron el, bool keepcf);
+
+
+
+  snu::KTruth GetTruthMatchedParticle(snu::KElectron el);
+  
   
   float GetVirtualMassConv(int cmindex,int nconvindx);
   float GetVirtualMass(bool inph=false);

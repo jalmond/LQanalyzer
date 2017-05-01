@@ -194,6 +194,9 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
     diff = datetime.timedelta(days=(tmpday+1))
     checkdate=checkdate+diff
     get_nfiles=0
+    if "SKTreeMaker" in defcycle:
+        nit=0
+
     while avg_time < 0:
         if nit < 0:
             return 1000.
@@ -506,7 +509,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     expectedjobnfiles=int(GetNFiles(deftagger, defsample, defcycle,defskim))                                                                                             
     if "SKTreeMaker" in defcycle:
         return expectedjobnfiles
-
+       
     if rundebug:
         file_debug.write("number of files = " + str(expectedjobnfiles)+"\n")
     
@@ -1574,7 +1577,7 @@ sample_times=[]
 tmpnjobs_for_submittion=0
 
 ### rundebug=True will not submit any jobs and debug.txt file will be produced in ./
-rundebug=True
+rundebug=False
 if rundebug:
     file_debug = open("debug.txt","w")
     file_debug.write("DEBUG \n")
@@ -1596,7 +1599,7 @@ for s in sample:
     ### 90000 is 20 minutes for 25 job
     ### time of previous job is > 90000 then this job is sent to longq
     ### if jobs is > 10000 then number of jobs sent to batch queue is > 10, and chosen so that the time is similar to longest expected job
-    if stime > 60000.:
+    if stime > 900000.:
         nlongjobfiles=nlongjobfiles+int(GetNFiles(tagger, s, cycle,useskim))
         ### will be true if 25 jobs take > 20 minutes OR the job is a new job
         islongjob.append(True)
@@ -1702,8 +1705,8 @@ for nsample in range(0, len(sample)):
     s=sample[nsample]
     sample_islongjob= islongjob[nsample]
     sample_isfastjob= isvfastjob[nsample]
-    if "SKTreeMaker" in cycle:
-        sample_islongjob=True
+    #if "SKTreeMaker" in cycle:
+        #sample_islongjob=True
 
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
     if rundebug:
@@ -1770,7 +1773,8 @@ for nsample in range(0, len(sample)):
         
     njobs_for_submittion=int(DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles, rundebug,correctedtmpnjobs_for_submittion, nmediumjobs))
 
-    
+
+
     if rundebug:
         file_debug = open("debug.txt","a")
         file_debug.write("njobs = " + str(njobs_for_submittion) + "\n")
@@ -1788,6 +1792,8 @@ for nsample in range(0, len(sample)):
     if setnumber_of_cores and submit_allfiles:
         njobs_for_submittion=number_of_cores
 
+    if number_of_cores == -311:
+        njobs_for_submittion=-311
     if not QueueForced:
         newqueue = ChangeQueue(job_summary,printedqueue, njobs_for_submittion, tagger,rundebug)
         if rundebug:

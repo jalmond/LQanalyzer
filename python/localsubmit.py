@@ -352,23 +352,35 @@ BusyMachine=False
 username = str(os.getenv("USER"))
 
 nj_def=1000    
-if cycle == "SKTreeMaker":
-    number_of_cores=nj_def
-if cycle == "SKTreeMakerNoCut":
-    number_of_cores=nj_def
-if cycle == "SKTreeMakerDiLep":
-    number_of_cores=nj_def
-if cycle == "SKTreeMakerTriLep":
-    number_of_cores=nj_def
+debug_sktree = False
+if number_of_cores > 0:
+    print "Setting ncores to max if sktreemaker"
+    if cycle == "SKTreeMaker":
+        number_of_cores=nj_def
+    if cycle == "SKTreeMakerNoCut":
+        number_of_cores=nj_def
+    if cycle == "SKTreeMakerDiLep":
+        number_of_cores=nj_def
+    if cycle == "SKTreeMakerTriLep":
+        number_of_cores=nj_def
+    print "number_of_cores  = " + str(number_of_cores)
+else:
+    debug_sktree=True
+    number_of_cores=1
 
 
 ##################################################################################################################            
 ##### FINISHED CONFIGURATION
 ##################################################################################################################
 singlejob = number_of_cores==1            
+
 if "SKTreeMaker" in cycle:
-    singlejob=False
-    running_batch=True
+    if debug_sktree:
+        singlejob=True
+        running_batch=False
+    else:
+        singlejob=False
+        running_batch=True
 
 #### determine if input is data/mc
 mc = len(sample)>1
@@ -598,6 +610,7 @@ isfile = os.path.isfile
 join = os.path.join
 number_of_files = sum(1 for item in os.listdir(InputDir) if isfile(join(InputDir, item)))
 
+print "number_of_files = " + str(number_of_files)
 if number_of_files == 1 and not setnumber_of_cores:
     singlejob=False
     running_batch=True
@@ -620,8 +633,9 @@ if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
         number_of_cores = 1
         print "Can only run 1 job when running on " +  str(os.getenv("HOSTNAME"))
 
-if ncore_def == 1:
-    number_of_cores = 1
+if not "SKTreeMaker" in cycle: 
+    if ncore_def == 1:
+        number_of_cores = 1
 ############################################################
 ### Correct user if ncores is > nfiles
 ############################################################

@@ -109,6 +109,8 @@ namespace snu {
 
     void SetCatVersion(std::string cat);
     
+    void SetRho(double rho);
+
     /// New for CAT v7-4-6 (silver/gold json files)
     Bool_t LumiMask();
     Double_t PileUpWeight(syst_dir dir=central);
@@ -120,9 +122,10 @@ namespace snu {
     Double_t MET(met_type type=pfmet) const;
     Double_t METPhi(met_type type=pfmet) const;
     Double_t SumET(met_type type=pfmet) const;
-
+    
     inline Bool_t PropagatedRochesterToMET() const {return prop_metrc;}
-
+    
+    inline Double_t Rho() const {return k_rho;}
     // To make backward compatible
     inline Double_t PFMET() const {return MET(pfmet);}
     ///k_PF_MET_JetRes_up is same as MET in miniaod
@@ -262,10 +265,10 @@ namespace snu {
     Bool_t prop_metrc;
 
     std::string k_catversion;
+    Double_t k_rho;
 
 
-
-    ClassDef(KEvent,31);
+    ClassDef(KEvent,32);
   }; 
   
 }//namespace snu

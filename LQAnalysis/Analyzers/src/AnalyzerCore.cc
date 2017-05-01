@@ -595,7 +595,7 @@ float AnalyzerCore::MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets){
   snu::KParticle closejet;
   float mindR=.7;
 
-  if(muon.Pt() < 60.) return -999.;
+  if(muon.Pt() < 20.) return -999.;
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( muon.DeltaR(jets.at(ijet)) < mindR){
       closejet= jets.at(ijet);
@@ -1881,6 +1881,17 @@ int AnalyzerCore::VersionStamp(TString cversion){
  
 }
 
+
+snu::KTruth AnalyzerCore::GetTruthMatchedParticle(snu::KElectron el){
+  
+  if(el.MCTruthIndex() >  eventbase->GetTruth().size()){
+    snu::KTruth tr;
+    return tr;
+  }
+  return   eventbase->GetTruth()[el.MCTruthIndex()];
+}
+
+
 int AnalyzerCore::AssignnNumberOfTruth(){
   int np = 1000;
   if(k_classname.Contains("SKTreeMaker")) np = 1000;
@@ -2135,6 +2146,7 @@ bool AnalyzerCore::PassJets(std::vector<snu::KJet> jets, std::vector<snu::KFatJe
 
   if(jets.size() < 2 && fatjets.size() == 0) return false;
   
+  return true;
 }
 
 //################################################################################################

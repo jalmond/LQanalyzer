@@ -1,4 +1,3 @@
-
 #ifndef _SKTree_KMuon_H__
 #define _SKTree_KMuon_H__
 
@@ -48,6 +47,7 @@ namespace snu {
     void SetIsRochesterCorrected(bool corr);
     void SetMCMatched(bool matched);
 
+    void SetType(int mutype);
     void SetRochPt(double pt);
     void SetRochEta(double eta);
     void SetRochPhi(double phi);
@@ -123,7 +123,6 @@ namespace snu {
     inline Int_t MotherTruthIndex() const{return k_mother_index;} 
     inline Int_t MCTruthIndex() const{return k_mc_index;}
 
-
     inline Double_t RelIso03()  const {return k_muon_reliso03;}
     inline Double_t RelIso04()  const {return k_muon_reliso04;}
     inline Double_t RelMiniAODIso03()  const {return k_muon_maod_reliso03;}
@@ -159,6 +158,7 @@ namespace snu {
       return  KMuon::pion;
 
     }
+    inline Int_t GetType() const {return k_mctype;}
 
   protected:
     /// Reset function.                                                                  
@@ -180,8 +180,9 @@ namespace snu {
 
     TString k_trig_match;
     Bool_t k_corrected_rc;
-
-    ClassDef(KMuon,21)
+    
+    Int_t k_mctype;
+    ClassDef(KMuon,22)
   };   
 }//namespace snu
 

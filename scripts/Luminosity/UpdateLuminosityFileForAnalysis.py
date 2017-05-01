@@ -455,19 +455,31 @@ if os.path.exists(path_full_sample_list):
             os.system("diff " + samplelist + " " + newsamplelist)
             print "\n"
             input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
-            if input == "Y":
+            if not os.getenv("USER") =="jalmond":
+                if input == "Y":
+                    print "replacing " + samplelist + " with  " + newsamplelist
+                    os.chmod(newsamplelist, 777)
+                    os.system("cp " + newsamplelist + " " + samplelist)
+                    os.chmod(samplelist, 777)
+                    print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
+                    os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
+                    os.system("chmod 777 " + path_full_sample_list)
+                    os.system("rm " + path_full_sample_list_user)
+                else:
+                    print "You ignored changes. The sample list will not be updated"
+                    os.system("rm " + newsamplelist)
+                    sys.exit()
+                    
+            else:
                 print "replacing " + samplelist + " with  " + newsamplelist
-                os.chmod(newsamplelist, 0777)
+                os.chmod(newsamplelist, 777)
                 os.system("cp " + newsamplelist + " " + samplelist)
-                os.chmod(samplelist, 0777)
+                os.chmod(samplelist, 777)
                 print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                 os.system("chmod 777 " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
-            else:
-                print "You ignored changes. The sample list will not be updated"
-                os.system("rm " + newsamplelist)
-                sys.exit()
+                    
             os.system("rm " + newsamplelist)    
         print "Running runInputListMaker.sh: Note this may take several minutes..."    
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
@@ -495,8 +507,8 @@ if os.path.exists(path_full_sample_list):
                     addstring+="'"+l+"' "
                     runSKTreemaker=True
             addstring+=")\n"
-            #print "Adding list "
-            #print str(addstring)
+            print "Adding list "
+            print str(addstring)
             file_userlist.write(addstring)
             file_userlist.close()
             if runSKTreemaker:
@@ -506,7 +518,7 @@ if os.path.exists(path_full_sample_list):
 
         perm_samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
         os.chmod(perm_samplelist, 0777)
-        
+        sys.exit()
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
@@ -537,9 +549,11 @@ else:
     ### It collects samples at SNU and counts events to calculate effective luminosity of each sample
     os.system("source " + lqdir+"/scripts/Luminosity/runGetEffLumi.sh " + os.getenv("LQANALYZER_DATASET_DIR")+"/cattuplist_"+str(os.getenv('CATVERSION'))+".txt")
 
+    print "Finished GetEff"
     if os.path.exists(lqdir+"/scripts/Luminosity/log"):
         os.system("rm -r "+lqdir+"/scripts/Luminosity/log")
-            
+
+    print "Running scripts/runInputListMaker.sh"
     if os.path.exists(lqdir+"/scripts/Luminosity/inputlist_efflumi.txt"):
         os.system("rm " + lqdir+"/scripts/Luminosity/inputlist_efflumi.txt")
     

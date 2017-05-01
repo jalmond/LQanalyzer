@@ -56,7 +56,8 @@ KMuon::KMuon() :
   k_mc_index(-1),
   
   k_trig_match(""),
-  k_corrected_rc(false)
+  k_corrected_rc(false),
+  k_mctype(-999)
 
 {
   //Reset();
@@ -115,8 +116,8 @@ KMuon::KMuon(const KMuon& muon) :
   k_mc_index(muon.k_mc_index),
 
   k_trig_match(muon.k_trig_match),
-  k_corrected_rc(muon.k_corrected_rc)
-
+  k_corrected_rc(muon.k_corrected_rc),
+  k_mctype(muon.k_mctype)
 {
 }
   
@@ -179,6 +180,7 @@ void KMuon::Reset()
 
   k_trig_match= "";
   k_corrected_rc=false;
+  k_mctype=-999;
 }
 
 
@@ -235,6 +237,7 @@ KMuon& KMuon::operator= (const KMuon& p)
 	k_muonVtz=p.muonVtz();
 	k_trig_match= p.TrigMatch();
 	k_corrected_rc=p.IsRochesterCorrected();
+	k_mctype = p.GetType();
     }
     
     return *this;
@@ -255,6 +258,9 @@ bool KMuon::TriggerMatched(TString path){
   return false;
 }
 
+void KMuon::SetType(int type){
+  k_mctype= type;
+}
 void KMuon::SetIsFromTau(bool istau){
   k_is_fromtau=istau;
 }
