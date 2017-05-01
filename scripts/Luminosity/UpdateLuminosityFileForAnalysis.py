@@ -4,6 +4,7 @@ tmpcatversion=str(os.getenv("CATVERSION"))
 
 newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+tmpcatversion+"new.txt"
 if(os.path.exists(newsamplelist)):
+    os.system("chmod 777 " + newsamplelist)
     os.system("rm " + newsamplelist)
 
 from EmailNewEffLumiList import *
@@ -11,7 +12,7 @@ from EmailNewEffLumiList import *
 def CheckForDuplicates(printDuplicates):
 
     samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
-    
+    os.system("chmod 777 " + samplelist)
     copy_samplelist=[]
     file_samplelist = open(samplelist,"r")
     for line in file_samplelist:
@@ -64,8 +65,10 @@ def CheckForDuplicates(printDuplicates):
     
     if printDuplicates==1:
         print "Replacing " + samplelist + " with " + rd_samplelist
+        os.system("rm " + samplelist)
         os.system("mv " + rd_samplelist + " " + samplelist)
     else:
+        os.system("chmod 777 " + rd_samplelist)
         os.system("rm " + rd_samplelist)
 
 def UpdateLumiFile(modlistpath, catversion,NewSampleList):
@@ -73,6 +76,7 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList):
     ### xseclist should contain lines that are updated in xsec
     ### samplelist should contain lines for new samples
     samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
+    os.system("chmod 777 "  + samplelist)
     newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"                                                               
     #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
     #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
@@ -448,14 +452,15 @@ if os.path.exists(path_full_sample_list):
 
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
+            os.system("chmod 777 " + samplelist)
             newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"
             print "Is the following list of differences correct:"
             print "\n"
             print "diff " + samplelist + " " + newsamplelist
             os.system("diff " + samplelist + " " + newsamplelist)
             print "\n"
-            input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
             if not os.getenv("USER") =="jalmond":
+                input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
                 if input == "Y":
                     print "replacing " + samplelist + " with  " + newsamplelist
                     os.chmod(newsamplelist, 777)
@@ -467,12 +472,16 @@ if os.path.exists(path_full_sample_list):
                     os.system("rm " + path_full_sample_list_user)
                 else:
                     print "You ignored changes. The sample list will not be updated"
+                    os.system("chmod 777 " + newsamplelist)
                     os.system("rm " + newsamplelist)
                     sys.exit()
                     
             else:
                 print "replacing " + samplelist + " with  " + newsamplelist
                 os.chmod(newsamplelist, 777)
+                print  "removing " + samplelist
+                os.system("rm " + samplelist)
+                print "replacing " + samplelist + " with " + newsamplelist
                 os.system("cp " + newsamplelist + " " + samplelist)
                 os.chmod(samplelist, 777)
                 print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
@@ -480,6 +489,7 @@ if os.path.exists(path_full_sample_list):
                 os.system("chmod 777 " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
                     
+            os.system("chmod 777 " + newsamplelist)
             os.system("rm " + newsamplelist)    
         print "Running runInputListMaker.sh: Note this may take several minutes..."    
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
@@ -517,7 +527,7 @@ if os.path.exists(path_full_sample_list):
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
 
         perm_samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
-        os.chmod(perm_samplelist, 0777)
+        os.chmod(perm_samplelist, 777)
         sys.exit()
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
