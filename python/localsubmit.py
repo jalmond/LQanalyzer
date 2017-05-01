@@ -1112,10 +1112,7 @@ while not JobSuccess:
         if running_batch:
             ### print jobs running/in queue .... once all running print % completeion
             for i in range(1,number_of_cores+1):
-                if number_of_cores == 1 and setnumber_of_cores:
-                    check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".log"
-                else:
-                    check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
+                check_outfile = output + "/Job" +  "_" +  str(i) + "/" + outsamplename + "_Job_"+ str(i) +".o"+array_batchjobs[i-1]
                     
                 if start_running_time == 0.:    
                     if i == 1:

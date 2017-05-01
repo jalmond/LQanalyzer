@@ -188,15 +188,14 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
         return 1000.
 
     nit=2
+    if "SKTreeMaker" in defcycle:
+        nit=0
     avg_time=-999.
     checkdate = datetime.datetime.now()
     tmpday=int(checkdate.strftime("%d"))
     diff = datetime.timedelta(days=(tmpday+1))
     checkdate=checkdate+diff
     get_nfiles=0
-    if "SKTreeMaker" in defcycle:
-        nit=0
-
     while avg_time < 0:
         if nit < 0:
             return 1000.
@@ -222,7 +221,7 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
                     continue
                 if len(defsample) == 1:
                     tmpsample="_"+tmpsample+" "
-                if tmpsample in line and defskim in line and defcycle in line:
+                if tmpsample in line and defskim in line and defcycle in line and os.getenv("CATVERSION") in line:
                     splitline = line.split()
                     nthsplit=0
                     for s in splitline:
@@ -509,7 +508,7 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     expectedjobnfiles=int(GetNFiles(deftagger, defsample, defcycle,defskim))                                                                                             
     if "SKTreeMaker" in defcycle:
         return expectedjobnfiles
-       
+
     if rundebug:
         file_debug.write("number of files = " + str(expectedjobnfiles)+"\n")
     
@@ -1577,7 +1576,7 @@ sample_times=[]
 tmpnjobs_for_submittion=0
 
 ### rundebug=True will not submit any jobs and debug.txt file will be produced in ./
-rundebug=False
+rundebug=True
 if rundebug:
     file_debug = open("debug.txt","w")
     file_debug.write("DEBUG \n")
@@ -1705,8 +1704,8 @@ for nsample in range(0, len(sample)):
     s=sample[nsample]
     sample_islongjob= islongjob[nsample]
     sample_isfastjob= isvfastjob[nsample]
-    #if "SKTreeMaker" in cycle:
-        #sample_islongjob=True
+    if "SKTreeMaker" in cycle:
+        sample_islongjob=True
 
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
     if rundebug:
@@ -1721,6 +1720,10 @@ for nsample in range(0, len(sample)):
         queue="longq"
 
     ### FreeSpaceInQueue returns number of places in queue requested by user/default
+        
+    if rundebug:
+        file_debug.write("Checking number of free spaces in queue\n")
+
     nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
     if rundebug:
         file_debug.write("sample: "+ s + "\n")
@@ -1734,6 +1737,8 @@ for nsample in range(0, len(sample)):
             file_debug.write("fastq is busy \n")
         queue="longq"
         printedqueue="longq"
+        if rundebug:
+            file_debug.write("Checking number of free spaces in long queue\n")
         nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
         if rundebug:
             file_debug.write("longq: nfreeqall = " + str(nfreeqall) +"\n")
@@ -1744,12 +1749,17 @@ for nsample in range(0, len(sample)):
                 file_debug.write("longq is busy \n")
             queue="fastq"
             printedqueue="fastq"
+            if rundebug:
+                file_debug.write("Checking number of free spaces in fast  queue\n")
+
             nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
     elif queue == "longq" and nfreeqall < 5 and not sample_islongjob:
         if rundebug:
             file_debug.write("longq is busy \n")
         queue="fastq"
         printedqueue="fastq"
+        if rundebug:
+            file_debug.write("Checking number of free spaces in fast queue\n")
         nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
         if rundebug:
             file_debug.write("fastq: nfreeqall = " + str(nfreeqall) +"\n")
@@ -1759,6 +1769,8 @@ for nsample in range(0, len(sample)):
                 file_debug.write("fastq is busy \n")
             queue="longq"
             printedqueue="long"
+            if rundebug:
+                file_debug.write("Checking number of free spaces in long queue\n")
             nfreeqall=FreeSpaceInQueue(printedqueue,  tagger)
             
     if rundebug:            
@@ -1773,8 +1785,7 @@ for nsample in range(0, len(sample)):
         
     njobs_for_submittion=int(DetermineNjobs(job_summary,njobfiles,longestjob,number_of_cores, tagger, s, cycle,useskim, printedqueue, nfreeqall, submit_allfiles, rundebug,correctedtmpnjobs_for_submittion, nmediumjobs))
 
-
-
+    
     if rundebug:
         file_debug = open("debug.txt","a")
         file_debug.write("njobs = " + str(njobs_for_submittion) + "\n")
@@ -1868,11 +1879,17 @@ for nsample in range(0, len(sample)):
             #### in case the job id file is not yet filled add while condition
             jobid_exists=True
             while jobid_exists:        
+                if rundebug:
+                    file_debug = open("debug.txt","a")
+                    file_debug.write("Checking " +  an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt\n")
+                    file_debug.close()
                 path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"  
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
-                    
-
+            file_debug = open("debug.txt","a")
+            file_debug.write(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt exists\n")
+            file_debug.close()
+        
 
             #CheckRunningStatus(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
 
@@ -2016,6 +2033,9 @@ for nsample in range(0, len(sample)):
                 path_job=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
+                    file_debug = open("debug.txt","a")
+                    file_debug.write("Checking for " + path_job + " \n")
+                    file_debug.close()
                     if ismerging:
                         stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                         stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
