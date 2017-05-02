@@ -528,8 +528,8 @@ if os.path.exists(path_full_sample_list):
                 
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
 
-        os.system("ll -rth " + samplelist + " testperm")
-        checkperm  = open("testperm")
+        os.system("ls -l " + samplelist + " > testperm")
+        checkperm  = open("testperm","r")
         permok=False
         for line in checkperm:
            if "-rwxrwxrwx" in line:
@@ -545,7 +545,6 @@ if os.path.exists(path_full_sample_list):
             print "----"*100
             print "####"*100
             
-
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
