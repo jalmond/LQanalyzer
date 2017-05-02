@@ -1710,9 +1710,9 @@ for nsample in range(0, len(sample)):
     s=sample[nsample]
     sample_islongjob= islongjob[nsample]
     sample_isfastjob= isvfastjob[nsample]
-    if "SKTreeMaker" in cycle:
-        sample_islongjob=True
-
+    #if "SKTreeMaker" in cycle:
+        #sample_islongjob=True
+        
     #### Get number of subjobs from DetermineNjobs function. Unless number_of_cores is set to 1 this will check the processing time of the cycle and batch queue to determin the number of jobs to run
     if rundebug:
         file_debug = open("debug.txt","a")

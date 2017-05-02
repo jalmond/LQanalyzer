@@ -1277,7 +1277,6 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
     
     muon.SetPtEtaPhiE(muon_pt->at(ilep), muon_eta->at(ilep),muon_phi->at(ilep), muon_energy->at(ilep));
     if(k_cat_version > 4){
-      muon.SetRochPt(muon_pt->at(ilep));
       muon.SetRochEta(muon_roch_eta->at(ilep));
       muon.SetRochPhi(muon_roch_phi->at(ilep));
       muon.SetRochE(muon_roch_energy->at(ilep));
