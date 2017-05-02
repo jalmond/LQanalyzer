@@ -463,9 +463,9 @@ if os.path.exists(path_full_sample_list):
                 input = raw_input("If Yes : Type Y and Enter. (not typing Y will not update the file: ")
                 if input == "Y":
                     print "replacing " + samplelist + " with  " + newsamplelist
-                    os.chmod(newsamplelist, 777)
+                    os.chmod(newsamplelist, 0777)
                     os.system("cp " + newsamplelist + " " + samplelist)
-                    os.chmod(samplelist, 777)
+                    os.chmod(samplelist, 0777)
                     print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                     os.system("chmod 777 " + path_full_sample_list)
@@ -478,19 +478,21 @@ if os.path.exists(path_full_sample_list):
                     
             else:
                 print "replacing " + samplelist + " with  " + newsamplelist
-                os.chmod(newsamplelist, 777)
+                os.chmod(newsamplelist, 0777)
                 print  "removing " + samplelist
                 os.system("rm " + samplelist)
                 print "replacing " + samplelist + " with " + newsamplelist
                 os.system("cp " + newsamplelist + " " + samplelist)
-                os.chmod(samplelist, 777)
+                os.chmod(samplelist, 0777)
                 print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                 os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                 os.system("chmod 777 " + path_full_sample_list)
                 os.system("rm " + path_full_sample_list_user)
                     
+            os.system("chmod 777 " + samplelist)
             os.system("chmod 777 " + newsamplelist)
-            os.system("rm " + newsamplelist)    
+            os.system("rm " + newsamplelist)   
+        
         print "Running runInputListMaker.sh: Note this may take several minutes..."    
         os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
         ##### now check file has no duplicates
@@ -526,9 +528,22 @@ if os.path.exists(path_full_sample_list):
                 
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
 
-        perm_samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
-        os.chmod(perm_samplelist, 777)
-        sys.exit()
+        os.system("ll -rth " + samplelist + " testperm")
+        checkperm  = open("testperm")
+        permok=False
+        for line in checkperm:
+           if "-rwxrwxrwx" in line:
+               permok=True
+        checkperm.close()
+        if not permok:
+            print "####"*100
+            print "----"*100
+            print "Error in permission file: please type :  chmod 777 " + samplelist + " in terminal"
+            print "Check permission is -rwxrwxrwx using ll -rth " + samplelist
+            print "If permission is not changed please make this known"
+            print "----"*100
+            print "####"*100
+
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:

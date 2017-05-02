@@ -65,20 +65,21 @@ class AnalyzerCore : public LQCycleBase {
   bool TruthMatched(snu::KElectron el, bool keepcf);
 
 
-
+  snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
+  snu::KJet GetCorrectedJetCloseToLepton(snu::KMuon lep, snu::KJet jet);
   snu::KTruth GetTruthMatchedParticle(snu::KElectron el);
   
   
   float GetVirtualMassConv(int cmindex,int nconvindx);
   float GetVirtualMass(bool inph=false);
 
-  float MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets);
-  float MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets);
+  float MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
+  float MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
 
-  float GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets);
-  float GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets);
-  float GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets);
-  float GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets);
+  float GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
+  float GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
+  float GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
+  float GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
 
 
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");

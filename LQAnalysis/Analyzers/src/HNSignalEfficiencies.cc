@@ -90,9 +90,7 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
-  TruthPrintOut();
-  return;
-  
+  //  TruthPrintOut();
   
   counter("All",1.);
   //if(FailHNDataSetCheck()) return;
@@ -136,6 +134,7 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
 
   
   std::vector<snu::KJet> jets_nc = GetJets("JET_HN");  
+
   GetTriggEfficiency();
 
   std::vector<snu::KElectron>  hn_electrons=GetElectrons(false,false,"ELECTRON_HN_TIGHT");

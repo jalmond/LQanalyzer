@@ -469,19 +469,65 @@ float AnalyzerCore::CorrectedMETMuon( std::vector<snu::KMuon> muall, int sys){
   
 }
 
+snu::KJet AnalyzerCore::GetCorrectedJetCloseToLepton(snu::KElectron el, snu::KJet jet, bool usem){
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton
+  
+  float rawpt= jet.RawPt();  
+  float rawe= jet.RawE();
+  float L1corr = jet.L1JetCorr();
+  float l2l3res = jet.L2L3ResJetCorr();
+  float leppt = el.Pt();
+  float lepe = el.E();
+  float corr_pt = (rawpt*L1corr - leppt)*l2l3res + leppt;
+  float corr_e = (rawe*L1corr - lepe)*l2l3res + lepe;
+  
+  snu::KJet jet_corr(jet);
+  
+  if(usem){
+    TLorentzVector v;
+    v.SetPtEtaPhiM(jet.Pt(), jet.Eta(), jet.Phi(), jet.M());
+    v=v*(corr_pt/jet.Pt());
+    jet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
+    return jet_corr;
+  }
+  else jet_corr.SetPtEtaPhiE(corr_pt, jet.Eta(), jet.Phi(),corr_e);
+
+  return jet_corr;
+}
+
+snu::KJet AnalyzerCore::GetCorrectedJetCloseToLepton(snu::KMuon mu, snu::KJet jet){
+
+  //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton                                                                                                          
+  
+  float rawpt= jet.RawPt();
+  float rawe= jet.RawE();
+  float L1corr = jet.L1JetCorr();
+  float l2l3res = jet.L2L3ResJetCorr();
+  float leppt = mu.Pt();
+  float lepe = mu.E();
+  float corr_pt = (rawpt*L1corr - leppt)*l2l3res + leppt;
+  float corr_e = (rawe*L1corr - lepe)*l2l3res + lepe;
+
+  snu::KJet jet_corr(jet);
+  TLorentzVector v;
+  v.SetPtEtaPhiM(jet.Pt(), jet.Eta(), jet.Phi(), jet.M());
+  v=v*(corr_pt/jet.Pt());
+  jet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
+  return jet_corr;
+}
 
 
-
-float AnalyzerCore::GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets){
+float AnalyzerCore::GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets, bool usecorrectedpt){
 
   if(jets.size() == 0) return -999.;
-  if(electron.Pt() < 25.) return -999.;
+  if(electron.Pt() < 10.) return -999.;
   snu::KParticle closejet;
   float mindR=0.7;
 
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( electron.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
+      if(usecorrectedpt)closejet= GetCorrectedJetCloseToLepton(electron,jets.at(ijet));
+      closejet=jets.at(ijet);
       mindR=electron.DeltaR(jets.at(ijet));
     }
   }
@@ -501,16 +547,17 @@ float AnalyzerCore::GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJ
 }
 
 
-float AnalyzerCore::GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets){
+float AnalyzerCore::GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets,bool usecorrectedpt){
 
   if(jets.size() == 0) return -999.;
-  if(muon.Pt() < 25.) return -999.;
+  if(muon.Pt() < 10.) return -999.;
   snu::KParticle closejet;
   float mindR=0.7;
 
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( muon.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
+      if(usecorrectedpt)closejet= GetCorrectedJetCloseToLepton(muon,jets.at(ijet));
+      else closejet = jets.at(ijet);
       mindR=muon.DeltaR(jets.at(ijet));
     }
   }
@@ -530,17 +577,18 @@ float AnalyzerCore::GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets
 }
 
 
-float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets){
+float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets,bool usecorrectedpt){
 
-  float mindR=.7;
+  float mindR=.4;
   float jetpT=-999.;
 
-  if(electron.Pt() < 20.) return 0.;
+  if(electron.Pt() < 10.) return 0.;
 
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( electron.DeltaR(jets.at(ijet)) < mindR){
       mindR=electron.DeltaR(jets.at(ijet));
-      jetpT=jets.at(ijet).Pt();
+      if(usecorrectedpt)      jetpT=GetCorrectedJetCloseToLepton(electron,jets.at(ijet)).Pt();
+      else jetpT=jets.at(ijet).Pt();
     }
   }
 
@@ -549,16 +597,17 @@ float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<
 
 
 
-float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets){
-  float mindR=.7;
+float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets,bool usecorrectedpt){
+  float mindR=.4;
   float jetpT=-999.;
 
-  if(muon.Pt() < 20.) return 0.;
+  if(muon.Pt() < 10.) return 0.;
 
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( muon.DeltaR(jets.at(ijet)) < mindR){
       mindR=muon.DeltaR(jets.at(ijet));
-      jetpT=jets.at(ijet).Pt();
+      if(usecorrectedpt)jetpT=GetCorrectedJetCloseToLepton(muon,jets.at(ijet)).Pt();
+      else jetpT=jets.at(ijet).Pt();
     }
   }
   return jetpT;
@@ -568,15 +617,17 @@ float AnalyzerCore::GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJe
 
 
 
-float AnalyzerCore::MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets){
+float AnalyzerCore::MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets,bool usecorrectedpt){
   if(jets.size() == 0) return -999.;
   snu::KParticle closejet;
   float mindR=0.7;
-  if(electron.Pt() < 20.) return -999.;
+  if(electron.Pt() < 10.) return -999.;
 
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( electron.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
+      if(usecorrectedpt)closejet= GetCorrectedJetCloseToLepton(electron,jets.at(ijet));
+      else  closejet= jets.at(ijet);
+      
       mindR=mindR;
     }
   }
@@ -590,15 +641,16 @@ float AnalyzerCore::MassDrop(snu::KElectron electron, std::vector<snu::KJet> jet
 
 }
 
-float AnalyzerCore::MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets){
+float AnalyzerCore::MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets,bool usecorrectedpt){
   if(jets.size() == 0) return -999.;
   snu::KParticle closejet;
   float mindR=.7;
 
-  if(muon.Pt() < 20.) return -999.;
+  if(muon.Pt() < 10.) return -999.;
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( muon.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
+      if(usecorrectedpt)closejet= GetCorrectedJetCloseToLepton(muon,jets.at(ijet));
+      else  closejet= jets.at(ijet);
       mindR=mindR;
     }
   }
