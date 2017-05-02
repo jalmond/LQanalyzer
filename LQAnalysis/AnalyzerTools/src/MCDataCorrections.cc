@@ -893,6 +893,7 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
     if(it->IsRochesterCorrected()) return;
     if (corr_isdata) scalefactor = rc->kScaleDT(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(),0,0);
     else {
+      //gRandom->SetSeed(1111.);
 	double u1 = gRandom->Rndm();
 	double u2 = gRandom->Rndm();
 
@@ -936,6 +937,7 @@ float MCDataCorrections::GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<s
   double scalefactor = 1.;
   if (corr_isdata) scalefactor = rc->kScaleDT(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(),0,0);
   else {
+    //gRandom->SetSeed(1111);
     double u1 = gRandom->Rndm();
     double u2 = gRandom->Rndm();
 
@@ -945,7 +947,7 @@ float MCDataCorrections::GetCorrectedMuonMomentum(snu::KMuon muon, std::vector<s
     if(mu_index > 0&& mu_index < truth.size()) {
       if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
     }
-
+    
     if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(), muon.ActiveLayer(), genpt, u1,0, 0);
     else scalefactor = rc->kScaleAndSmearMC(float(muon.Charge()), muon.Pt(), muon.Eta(), muon.Phi(), muon.ActiveLayer(), u1, u2, 0,0);
   }

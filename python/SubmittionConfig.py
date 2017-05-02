@@ -221,6 +221,9 @@ def GetNFiles( deftagger,defsample,defcycle,defskim):
                     continue
                 if len(defsample) == 1:
                     tmpsample="_"+tmpsample+" "
+                elif "H_" in defsample:
+                    tmpsample="_"+tmpsample+" "
+                                    
                 if tmpsample in line and defskim in line and defcycle in line and os.getenv("CATVERSION") in line:
                     splitline = line.split()
                     nthsplit=0
@@ -283,6 +286,9 @@ def GetAverageTime( gettinglongest, deftagger,defsample,defcycle,defskim, rundeb
                 tmpsample=defsample+" skim"
                 if len(defsample) == 1:
                     tmpsample="_"+tmpsample+" "
+                elif "H_" in defsample:
+                    tmpsample="_"+tmpsample+" "
+
                 if tmpsample in line and defskim in line and defcycle in line:
                     splitline = line.split()
                     nthsplit=0

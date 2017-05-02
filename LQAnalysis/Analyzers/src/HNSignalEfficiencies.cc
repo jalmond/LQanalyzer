@@ -90,8 +90,17 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
+
   //  TruthPrintOut();
   
+  
+  //if(! ((eventbase->GetEvent().RunNumber()==284037  && eventbase->GetEvent().EventNumber()==285700675) || (eventbase->GetEvent().EventNumber() == 71878 )|| (eventbase->GetEvent().EventNumber() == 681649))) return;
+  
+  if(!((eventbase->GetEvent().EventNumber() == 71878 )||  (eventbase->GetEvent().EventNumber() == 681649))) return;
+
+  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+
+
   counter("All",1.);
   //if(FailHNDataSetCheck()) return;
 
@@ -126,10 +135,13 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   if(electrons_tm_nc.size() >=2)counter("NCDiEl",1.);
 
 
-  //for(unsigned int i=0;i < muons_nc.size(); i++){
-  //cout << "mu " << i+1 << muons_nc[i].Pt() << " " << muons_nc[i].Eta() << " " << muons_nc[i].Phi() << " " << muons_nc[i].MCMatched() << endl;
-  //}
+  for(unsigned int i=0;i < muons_nc.size(); i++){
+    cout << "mu uncorr pt=" << muons_nc[i].MiniAODPt() << " " << i+1 << muons_nc[i].Pt() << " " << muons_nc[i].Eta() << " " << muons_nc[i].Phi() << " " << muons_nc[i].MCMatched() << endl;
+    cout << "RochPt = " << muons_nc[i].RochPt() << endl;
+    cout << "corr =" << mcdata_correction->GetCorrectedMuonMomentum(muons_nc[i], eventbase->GetTruth()) << endl;
+  }
 
+  return;
   TruthPrintOut();
 
   
@@ -310,171 +322,6 @@ void HNSignalEfficiencies::counter(TString cut, float w){
 
   FillCutFlow(cut,w);
 }
-
-
-float HNSignalEfficiencies::MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets){
-  if(jets.size() == 0) return -999.;
-  snu::KParticle closejet;
-  float mindR=0.7;
-  if(electron.Pt() < 20.) return -999.;
-
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( electron.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
-      mindR=mindR;
-    }
-  }
-
-  if(mindR >= 0.7)  return -999.;
-
-  snu::KParticle lj = closejet+electron;
-  
-  return (lj.M() - closejet.M());
-  
-
-}
-
-float HNSignalEfficiencies::MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets){
-  if(jets.size() == 0) return -999.;
-  snu::KParticle closejet;
-  float mindR=.7;
-  
-  if(muon.Pt() < 60.) return -999.;
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( muon.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
-      mindR=mindR;
-    }
-  }
-  if(mindR >= 0.7)  return -999.;
-  
-  snu::KParticle lj = closejet+muon;
-
-  return (lj.M() - closejet.M());
-
-
-}
-
-
-float HNSignalEfficiencies::GetPtRelLepTJetDot(snu::KElectron electron, std::vector<snu::KJet> jets){
-
-  if(jets.size() == 0) return -999.;
-
-  snu::KParticle closejet;
-  float mindR=0.7;
-
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( electron.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
-      mindR=mindR;
-    }
-  }
-
-  TVector3 el3=  electron.Vect();
-  TVector3 jet3= closejet.Vect();
-  TVector3 lepjetrel = jet3-el3;
-
-  
-  float ptrel = (lepjetrel.Dot(el3))/ lepjetrel.Mag();
-
-  return ptrel;
-}
-
-
-
-float HNSignalEfficiencies::GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets){
-
-  if(jets.size() == 0) return -999.;
-  if(electron.Pt() < 25.) return -999.;
-  snu::KParticle closejet;
-  float mindR=0.7;
-
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( electron.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
-      mindR=electron.DeltaR(jets.at(ijet));
-    }
-  }
-
-  if(mindR==0.7) return 0.;
-
-  FillHist(("ptrel_dr"),mindR, weight, 0., 4., 100);
-
-  TVector3 el3=  electron.Vect();
-  TVector3 jet3= closejet.Vect();
-  TVector3 lepjetrel = jet3-el3;
-  FillHist(("ptrel_lepjetmag"),lepjetrel.Mag(), weight, 0., 100., 100);
-  FillHist(("ptrel_crosslepjetmag"), (lepjetrel.Cross(el3)).Mag(), weight, 0., 100., 100);
-  float ptrel = (lepjetrel.Cross(el3)).Mag()/ lepjetrel.Mag();
-
-  return ptrel;
-}
-
-
-float HNSignalEfficiencies::GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets){
-  
-  if(jets.size() == 0) return -999.;
-  if(muon.Pt() < 25.) return -999.;
-  snu::KParticle closejet;
-  float mindR=0.7;
-
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( muon.DeltaR(jets.at(ijet)) < mindR){
-      closejet= jets.at(ijet);
-      mindR=muon.DeltaR(jets.at(ijet));
-    }
-  }
-  
-  if(mindR==0.7) return 0.;
-  
-  FillHist(("ptrel_dr"),mindR, weight, 0., 4., 100);
-  
-  TVector3 el3=  muon.Vect();
-  TVector3 jet3= closejet.Vect();
-  TVector3 lepjetrel = jet3-el3;
-  FillHist(("ptrel_lepjetmag"),lepjetrel.Mag(), weight, 0., 100., 100);
-  FillHist(("ptrel_crosslepjetmag"), (lepjetrel.Cross(el3)).Mag(), weight, 0., 100., 100);
-  float ptrel = (lepjetrel.Cross(el3)).Mag()/ lepjetrel.Mag();
-  
-  return ptrel;
-}
-
-float HNSignalEfficiencies::GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets){
-
-  float mindR=.7;
-  float jetpT=-999.;
-
-  if(electron.Pt() < 20.) return 0.;
-  
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( electron.DeltaR(jets.at(ijet)) < mindR){
-      mindR=electron.DeltaR(jets.at(ijet));
-      jetpT=jets.at(ijet).Pt();
-    }
-  }
-
-  return jetpT;
-}
-
-
-
-float HNSignalEfficiencies::GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets){
-  float mindR=.7;
-  float jetpT=-999.;
-  
-  if(muon.Pt() < 20.) return 0.;
-
-  for(unsigned int ijet=0; ijet < jets.size(); ijet++){
-    if( muon.DeltaR(jets.at(ijet)) < mindR){
-      mindR=muon.DeltaR(jets.at(ijet));
-      jetpT=jets.at(ijet).Pt();
-    }
-  }
-  return jetpT;
-}
-
-
- 
 
 void HNSignalEfficiencies::GetTriggEfficiency(){
   //ListTriggersAvailable();                                                                                                                                                                                                                                                                                                                                                      

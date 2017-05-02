@@ -141,6 +141,13 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 }
 
 
+void AnalyzerCore::FillEventComparisonFile(TString label){
+  
+  
+
+
+}
+
 vector<TString >  AnalyzerCore::GetHNDiLepElTriggers(){
 
   vector<TString> triglist;
@@ -289,6 +296,8 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
     trigger_lumi_map_cat2016.clear();
   }
   string lqdir = getenv("LQANALYZER_DIR");
+
+  cout << "CATAnalyzerPeriod = " << singleperiod << endl;
   if(singleperiod.Contains("None")){
     lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
   }
@@ -299,7 +308,7 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
     else if(singleperiod=="E")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
     else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
     else if(singleperiod=="G")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
-    else if(singleperiod=="H")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
+    else if(singleperiod.Contains("H"))lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
     else if(singleperiod=="GH")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_280385.txt";
     else {  cerr << "Wrong period setting in SetupLuminosityMap"<< endl;  exit(EXIT_FAILURE);}
   }
@@ -3364,7 +3373,9 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
 void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
   
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
-    it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));
+    if(it->RochPt() > 0.){
+      it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));
+    }
   }
   
 }

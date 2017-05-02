@@ -117,6 +117,7 @@ class AnalyzerCore : public LQCycleBase {
   void GetJetTaggerEfficiences(TString taggerWP, snu::KJet::Tagger tag,  snu::KJet::WORKING_POINT wp);
 
   vector<TString >  GetHNDiLepElTriggers();
+  void FillEventComparisonFile(TString label);
   void FillCutFlow(TString cut, float weight);
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
 

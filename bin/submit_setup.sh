@@ -1576,6 +1576,21 @@ if [[ $job_data_lumi == "H" ]];
     export catdatatag="H"
 	
 fi
+if [[ $job_data_lumi == "H_v3" ]];
+    then
+    declare -a data_periods=( "H_v3")
+    export CATAnalyzerPeriod="H"
+    export catdatatag="H"
+
+fi
+
+if [[ $job_data_lumi == "H_v2" ]];
+    then
+    declare -a data_periods=("H_v2")
+    export CATAnalyzerPeriod="H"
+    export catdatatag="H"
+fi
+
 if [[ $job_data_lumi == "GH" ]];
     then
     declare -a data_periods=("G" "H_v2" "H_v3")

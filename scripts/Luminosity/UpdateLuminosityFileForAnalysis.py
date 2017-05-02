@@ -535,6 +535,7 @@ if os.path.exists(path_full_sample_list):
            if "-rwxrwxrwx" in line:
                permok=True
         checkperm.close()
+        os.system("rm testperm")
         if not permok:
             print "####"*100
             print "----"*100
@@ -543,6 +544,7 @@ if os.path.exists(path_full_sample_list):
             print "If permission is not changed please make this known"
             print "----"*100
             print "####"*100
+            
 
         if len(newxsec_list) > 0:
             EmailNewXsecList(catversion,path_newfile2)
