@@ -267,7 +267,7 @@ void KElectron::SetMVA(double mva){
 }
 
 void KElectron::SetZZMVA(double zzmva){
-  k_mva=zzmva;
+  k_zzmva=zzmva;
 }
 
 

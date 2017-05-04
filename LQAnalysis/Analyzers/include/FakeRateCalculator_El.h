@@ -30,17 +30,20 @@ class FakeRateCalculator_El : public AnalyzerCore {
 
   
   void MakeMCPlots(TString label, snu::KElectron electron, std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, double w);
-  float GetPrescale( std::vector<snu::KElectron> electrons,  bool passlow, bool passhigh, bool highest, bool passshighest, float fake_total_lum);
+  float GetPrescale( std::vector<snu::KElectron> electrons, bool passlowest, bool passlow, bool passhigh, bool highest, bool passshighest, float fake_total_lum);
   bool  UseEvent(std::vector<snu::KElectron> electrons,  vector<snu::KJet> jets, float pcut,float precale_weight, float w);
   bool  UseEventAllMT(std::vector<snu::KElectron> electrons,  vector<snu::KJet> jets, float pcut,float precale_weight, float w);
 
-  void MakeFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,   std::vector <snu::KJet> jets, std::vector<snu::KJet> alljets,  float precale_w, float w, bool makebasicplots);
+
+
+  void MakeFakeRatePlots(TString label, TString eltag,   std::vector<snu::KElectron> tightelectrons,std::vector<snu::KElectron> electrons,   std::vector <snu::KJet> jets, std::vector<snu::KJet> alljets,  float precale_w, float w, bool makebasicplots);
   void MakeDXYFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,   std::vector <snu::KJet> jets, std::vector<snu::KJet> alljets,  float precale_w, float prescale_diel, float w);
 
 
 
   void MakeSingleElectronCRPlots(TString looseid, TString eltag, TString tightid, float w, bool usepujetid);
-  void GetFakeRateAndPromptRates(TString looseid, TString eltag, TString tightid, float w, bool usepujetid, bool runall);
+
+  void GetFakeRateAndPromptRates(std::vector<snu::KElectron> electrons, TString eltag, std::vector<snu::KElectron> tightelectrons, float w, bool usepujetid, bool runall);
 
   void GetFakeRateAndPromptRatesPerPeriod(TString looseid, TString eltag, TString tightid, float w, bool usepujetid, bool runall);
 private:

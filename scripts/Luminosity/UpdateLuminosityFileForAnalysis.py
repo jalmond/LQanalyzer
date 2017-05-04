@@ -465,7 +465,8 @@ if os.path.exists(path_full_sample_list):
                     print "replacing " + samplelist + " with  " + newsamplelist
                     os.chmod(newsamplelist, 0777)
                     os.system("cp " + newsamplelist + " " + samplelist)
-                    os.chmod(samplelist, 0777)
+                    os.system("chmod  -R 777 " + os.getenv("LQANALYZER_DATASETFILE_DIR") )
+                    #os.chmod(samplelist, 0777)
                     print "replacing " + path_full_sample_list + " with " + path_full_sample_list_user
                     os.system("cp " + path_full_sample_list_user + " " + path_full_sample_list)
                     os.system("chmod 777 " + path_full_sample_list)

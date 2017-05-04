@@ -26,8 +26,6 @@ class HNSignalEfficiencies : public AnalyzerCore {
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);  
   float IsDiLep(std::vector<snu::KElectron> electrons);
-  float MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets);
-  float MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets);
 
   bool LowMassCheckSignalRegion(  std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, bool runcf);
   bool OptMassCheckSignalRegion(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, float evmet, bool runchargeflip , std::vector<float> cuts, TString opt);
@@ -40,17 +38,10 @@ class HNSignalEfficiencies : public AnalyzerCore {
   bool CheckSignalRegionTriLep(  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets, TString name, float w);
 
   void FillTriggerEfficiency(TString cut, float w, TString label,  std::vector<TString> list);
-  float GetJetsCloseToLeptonPt(snu::KElectron electron, std::vector<snu::KJet> jets);
-  float GetJetsCloseToLeptonPt(snu::KMuon muon, std::vector<snu::KJet> jets);
-  void CheckJetsCloseToLeptons(std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets);
 
   float GetTightWeight();
   float  GetMediumWeight();
  
- float GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJet> jets);
- float GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets);
- float GetPtRelLepTJetDot(snu::KElectron electron, std::vector<snu::KJet> jets);
-
   void GetTriggEfficiency();
   void SignalValidation();
   void RunAnalysis();

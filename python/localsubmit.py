@@ -1468,7 +1468,7 @@ else:
         else:
             os.system("rm " + Finaloutputdir + "/*.root")
             os.system("mv " + outputdir + "*.root " + Finaloutputdir )
-            
+            os.system("chmod -R 777 " + Finaloutputdir )
             os.system("ls -lh " + Finaloutputdir +  outsamplename + "_1.root > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger+".txt")
             f = ROOT.TFile(Finaloutputdir +  outsamplename + "_1.root")
             t = f.Get("CycleInfo/CycleVirtualMemoryUsage")

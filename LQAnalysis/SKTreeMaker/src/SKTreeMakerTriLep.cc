@@ -109,7 +109,10 @@ void SKTreeMakerTriLep::ExecuteEvents()throw( LQError ){
     if(skim_electrons.at(0).Pt() > 14.) pass15gev= true;
   }
   if(skim_muons.size() > 0){
-    if(skim_muons.at(0).Pt() > 14.)  pass15gev= true;
+    float mupt=skim_muons.at(0).Pt();
+    if(skim_muons.at(0).RochPt() < skim_muons.at(0).Pt()) mupt=skim_muons.at(0).RochPt();
+    if(skim_muons.at(0).RochPt() < 0.) mupt=skim_muons.at(0).Pt();
+    if(mupt > 14.)  pass15gev= true;
   }
   if(!pass15gev) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 

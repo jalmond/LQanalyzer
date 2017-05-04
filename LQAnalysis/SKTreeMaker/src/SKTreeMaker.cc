@@ -56,6 +56,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   eventbase->GetMuonSel()->SetPt(8.);
   eventbase->GetMuonSel()->SetEta(2.5);
   eventbase->GetMuonSel()->SkimSelection(skim_muons, false);
+  SetCorrectedMomentum(skim_muons);
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);  eventbase->GetJetSel()->SetPt(20);
@@ -98,6 +99,7 @@ void SKTreeMaker::ExecuteEvents()throw( LQError ){
   if(skim_muons.size() > 0){
     float mupt = skim_muons.at(0).Pt();
     if(skim_muons.at(0).RochPt() < skim_muons.at(0).Pt()) mupt=skim_muons.at(0).RochPt();
+    if(skim_muons.at(0).RochPt() < 0.) mupt=skim_muons.at(0).Pt();
     if(mupt  > 5. ) pass15gevlep = true;
   }
   /// select events with either 1 lepton with pt > 15  gev or 2 leptons with pt > 15

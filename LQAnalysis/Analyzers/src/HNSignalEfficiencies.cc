@@ -91,16 +91,6 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
 
-  //  TruthPrintOut();
-  
-  
-  //if(! ((eventbase->GetEvent().RunNumber()==284037  && eventbase->GetEvent().EventNumber()==285700675) || (eventbase->GetEvent().EventNumber() == 71878 )|| (eventbase->GetEvent().EventNumber() == 681649))) return;
-  
-  if(!((eventbase->GetEvent().EventNumber() == 71878 )||  (eventbase->GetEvent().EventNumber() == 681649))) return;
-
-  m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
-
-
   counter("All",1.);
   //if(FailHNDataSetCheck()) return;
 
@@ -128,26 +118,23 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electrons_tm_nc=GetElectrons(false,false,"ELECTRON_NOCUT");
   std::vector<snu::KMuon> muons_tm_nc=GetMuons("MUON_NOCUT",false);
 
+  if((muons_tm_nc.size() + electrons_tm_nc.size()) > 1)  counter("SkimReq",1.);
+  if((muons_tm_nc.size() + electrons_tm_nc.size())== 1){
+    if(muons_tm_nc.size()  > 0 ){
+      if(muons_tm_nc[0].Pt() > 5.)  counter("SkimReq",1.);
+    }
+  }
+
   for(unsigned int i=0; i < electrons_nc.size(); i++){
     //  cout << "el " << i+1 << electrons_nc[i].Pt() << " " << electrons_nc[i].Eta() << " " << electrons_nc[i].Phi() << " " << electrons_nc[i].MCMatched() << endl;
   }
   
   if(electrons_tm_nc.size() >=2)counter("NCDiEl",1.);
 
-
-  for(unsigned int i=0;i < muons_nc.size(); i++){
-    cout << "mu uncorr pt=" << muons_nc[i].MiniAODPt() << " " << i+1 << muons_nc[i].Pt() << " " << muons_nc[i].Eta() << " " << muons_nc[i].Phi() << " " << muons_nc[i].MCMatched() << endl;
-    cout << "RochPt = " << muons_nc[i].RochPt() << endl;
-    cout << "corr =" << mcdata_correction->GetCorrectedMuonMomentum(muons_nc[i], eventbase->GetTruth()) << endl;
-  }
-
-  return;
-  TruthPrintOut();
-
   
   std::vector<snu::KJet> jets_nc = GetJets("JET_HN");  
 
-  GetTriggEfficiency();
+  if(!isData)GetTriggEfficiency();
 
   std::vector<snu::KElectron>  hn_electrons=GetElectrons(false,false,"ELECTRON_HN_TIGHT");
   std::vector<snu::KElectron>  pog_electrons=GetElectrons(false,false,"ELECTRON_POG_TIGHT");
@@ -164,7 +151,8 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
 
 
   FillCLHist(sighist_ee, "NoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, fatjetcoll,weight);
-  
+  if(SameCharge(electrons_tm_nc))   FillCLHist(sighist_ee, "SSNoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, fatjetcoll,weight);
+
   
 
   if(hn_electrons.size() == 2){

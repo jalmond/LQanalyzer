@@ -45,6 +45,7 @@ class SignalPlotsEE : public StdPlots{
   inline std::map<TString, TH2*> GetMap2() const{return map_sig2;}
   inline std::map<TString, TH3*> GetMap3() const{return map_sig3;}
 
+  TH2D* SetupHist2(TString hname, TString alabel, int nbinx, double xmin, double xmax, int nbiny, double ymin, double ymax, TString xtitle="" , TString ytitle="");
 
   TH1D* SetupHist(TString hname, TString alabel, int nbin, double xmin, double xmax, TString xtitle="" );
   /// copy constructor

@@ -117,6 +117,8 @@ class AnalyzerCore : public LQCycleBase {
   void GetJetTaggerEfficiences(TString taggerWP, snu::KJet::Tagger tag,  snu::KJet::WORKING_POINT wp);
 
   vector<TString >  GetHNDiLepElTriggers();
+
+  bool CheckEventComparison(TString user, TString label);
   void FillEventComparisonFile(TString label);
   void FillCutFlow(TString cut, float weight);
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
@@ -218,7 +220,7 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   map<TString, TNtupleD*> mapntp;
-
+  map<int,int> compmap;
 
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 

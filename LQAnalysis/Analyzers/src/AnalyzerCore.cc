@@ -82,6 +82,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   cout << "                                                  " << endl;
 
   cout << "##################################################" << endl;
+  compmap.clear();
   if(1){
     ifstream runlumi((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt").c_str());
     if(!runlumi) {
@@ -141,10 +142,51 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 }
 
 
+bool AnalyzerCore::CheckEventComparison(TString user, TString label){
+  
+  if(compmap.size() ==0){
+    ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
+    if(!comp) {
+      exit(EXIT_FAILURE);
+    }
+    
+    string lline;
+    int x=1;
+    while(getline(comp,lline) ){
+      std::istringstream is( lline );
+      TString blank;
+      int run;
+      TString tmp;
+      int ev;
+      is >>blank;
+      is >> run;
+      is >> tmp;
+      is >> ev;
+      if(blank!=user) break;
+      
+      compmap[ev] = run;
+      continue;
+    }
+  }
+  
+  for(map<int,int>::iterator mit = compmap.begin(); mit != compmap.end(); mit++){
+    if(mit->first == eventbase->GetEvent().RunNumber() && mit->second == eventbase->GetEvent().EventNumber() ) return true;
+  }
+  
+  return false;
+}
 void AnalyzerCore::FillEventComparisonFile(TString label){
   
-  
+  //// Make TEX file                                                                                                                                                        
+  ofstream ofile_tex;
+  string lqdir = getenv("LQANALYZER_DIR");
 
+  string compfile = "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  string(getenv("USER")) + "/"+string(label)+ ".txt";     
+
+  ofile_tex.open(compfile.c_str());
+  ofile_tex.setf(ios::fixed,ios::floatfield);
+  
+  ofile_tex <<getenv("USER") << " " << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << endl;
 
 }
 
@@ -1710,7 +1752,7 @@ AnalyzerCore::~AnalyzerCore(){
   Message("In AnalyzerCore Destructor" , INFO);
 
   trigger_lumi_map_cat2016.clear();
-
+  compmap.clear();
   for(map<TString, TH1*>::iterator it = maphist.begin(); it!= maphist.end(); it++){
     delete it->second;
   }

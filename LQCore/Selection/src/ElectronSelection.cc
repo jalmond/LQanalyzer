@@ -273,20 +273,37 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
     pass_veto_noiso=true;
   }
   bool debug=false;
+  
+  bool pass_trigger_emulation=true;
+  if(el.Pt() < 15.){
+    /// special case that mva id not used as 15 GeV cut
+    /// use single electron HLT cuts which are tighter than mva for 10-15 GeV bin
+    if(!el.PassHLTID()) pass_trigger_emulation=false;
+  }
+  else {
+    /// safe for DoubleEG triggers with CaloIdL_TrackIdL_IsoVL
+    //https://twiki.cern.ch/twiki/bin/view/CMS/ChangesEGMHLTAlgo2014
+    if(!el.IsTrigMVAValid()) pass_trigger_emulation=false;
+  }
+
   for(unsigned int idel =0; idel < vids.size(); idel++){
     /// all cuts are not "false"
     if(vids[idel].second == "false") continue;
 
     if(vids[idel].first == "IsTight(POG)")  { 
+      if(!pass_trigger_emulation) {if(debug){ cout << "Fail HLT" << endl;} return false;}
       if(!pass_tight_noiso) {if(debug){ cout << "Fail tight" << endl;} return false;}
     }
     if(vids[idel].first == "IsMedium(POG)"){
+      if(!pass_trigger_emulation) {if(debug){ cout << "Fail HLT" << endl;} return false;}
       if(!pass_medium_noiso)  {if(debug){ cout << "Fail medium" << endl;} return false;}
     }
     if(vids[idel].first == "IsLoose(POG)"){
+      if(!pass_trigger_emulation) {if(debug){ cout << "Fail HLT" << endl;} return false;}
       if(!pass_loose_noiso) {if(debug){ cout << "Fail loose" << endl;} return false;}
     }
     if(vids[idel].first == "IsVeto(POG)"){
+      if(!pass_trigger_emulation) {if(debug){ cout << "Fail HLT" << endl;} return false;}
       if(!pass_veto_noiso)   {if(debug){ cout << "Fail veto" << endl;} return false;}
     }
     if(vids[idel].first == "GsfCtfScPix") {
@@ -296,19 +313,15 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
       if(!el.PassesConvVeto()) {if(debug){ cout << "Fail convveto" << endl;}  return false;}
     }
     if(vids[idel].first == "IsTight(MVA)"){
-      if(el.Pt() > 15.){
-	if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA tight" << endl;} return false;}
-      }
+      if(!pass_trigger_emulation)  {if(debug){ cout << "Fail MVA tight" << endl;} return false;}
       if(!el.PassTrigMVATight()){if(debug){ cout << "Fail MVA tight" << endl;} return false;}
       
     }
     if(vids[idel].first == "IsMedium(MVA)"){
-      if(el.Pt() > 15.){
-	if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
-      }
+      if(!pass_trigger_emulation)  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
       if(!el.PassTrigMVAMedium()) {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
     }
-
+    
     if(vids[idel].first == "IsZZ(MVA)"){
       //if(!el.IsTrigMVAValid())  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
       if(!el.PassMVAZZ()) {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
