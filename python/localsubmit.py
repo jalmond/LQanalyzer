@@ -887,7 +887,6 @@ for i in range(1,number_of_cores+1):
     log = output+ "Job_" + str(i) + "/runJob_" + str(i) +".log"
     logbatch="Job_" + str(i) + "/"+outsamplename+ "_Job_" + str(i)+".o[batchID]"  
 
-    #runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     runcommand = "nohup root.exe -l -q -b " +  script + "&>" + log + "&"
     if running_batch:
         if queue == "":

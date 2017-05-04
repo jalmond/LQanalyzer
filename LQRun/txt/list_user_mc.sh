@@ -3,6 +3,7 @@
 ########################
 ### SAMPLE LIST ########## 
 #######################
+declare -a hnfail=('HNMumEp_50' 'HNMumEp_500' 'HNMumEp_60' 'HNMumMum_100' 'HNMumMum_1100' 'HNMumMum_1500' 'HNMumMum_200' 'HNMumMum_40' 'HNMumMum_50' 'HNMumMum_500' 'HNMumMum_60' 'HNMoriondLL_Tchannel_MumMum_100' 'HNMoriondLL_Tchannel_MumMum_1100' 'HNMoriondLL_Tchannel_MumMum_200' 'HNMoriondLL_Tchannel_MumMum_500' 'HNMumMup_100' 'HNMumMup_1100' 'HNMumMup_1500' 'HNMumMup_200' 'HNMumMup_40' 'HNMumMup_50' 'HNMumMup_500' 'HNMumMup_60' 'HNMupEm_100' 'HNMupEm_1100' 'HNMupEm_1500' 'HNMupEm_200' 'HNMupEm_40' 'HNMupEm_50' 'HNMupEm_500' 'HNMupEm_60' 'HNMupEp_100')
 
 declare -a hn_mme=('HN_SSSF_MuMuE_1000' 'HN_SSSF_MuMuE_100' 'HN_SSSF_MuMuE_10' 'HN_SSSF_MuMuE_150' 'HN_SSSF_MuMuE_200' 'HN_SSSF_MuMuE_20' 'HN_SSSF_MuMuE_300' 'HN_SSSF_MuMuE_30' 'HN_SSSF_MuMuE_400' 'HN_SSSF_MuMuE_40' 'HN_SSSF_MuMuE_500' 'HN_SSSF_MuMuE_50' 'HN_SSSF_MuMuE_5' 'HN_SSSF_MuMuE_60' 'HN_SSSF_MuMuE_700' 'HN_SSSF_MuMuE_70' 'HN_SSSF_MuMuE_90')
 

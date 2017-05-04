@@ -12,7 +12,11 @@
 #pragma link C++ class HNDiElectron+;
 #pragma link C++ class HNDiLepton+;
 #pragma link C++ class HNDiElectronOptimisation+;
+#pragma link C++ class HNDiMuonOptimisation+;
+#pragma link C++ class FakeRateCalculator_FinalEl+;
 #pragma link C++ class FakeRateCalculator_El+;
+#pragma link C++ class FakeRateCalculator_Mu+;
+#pragma link C++ class FakeRateCalculator_FinalMu+;
 #pragma link C++ class HNEMu+;
 #pragma link C++ class GetFakeSF+;
 #pragma link C++ class PileupValidation+;

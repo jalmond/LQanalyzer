@@ -183,7 +183,9 @@ def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, neve
     config+='   analysis.Initialize();\n'
     config+='   analysis.ExecuteCycle();\n'
 
+    #config+='   cout << "Moving " ' + output_tmp + sample + '_' + str(ver) + '.root ' + output + '" << endl;\n'
     config+='   gSystem->Exec("mv ' + output_tmp + sample + '_' + str(ver) + '.root ' + output + '");\n'
+    #config+='    gSystem->Exec("ls ' + output + '"));\n'
     config+='  \n}'
 
     return config

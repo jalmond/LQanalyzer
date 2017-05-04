@@ -1,7 +1,22 @@
 def CleanUpJobLogs(path):
     import os, getpass,sys
     print "Cleaning up " + path
+    
+
     logspace1 = path
+    if (os.path.exists(logspace1)):
+        os.system("qstat -u " + getpass.getuser()+ " > " +   logspace1 + "/qsub_del")
+        qsub_all_filename = logspace1 +'/qsub_del'
+        n_qsub_jobs=0
+        for qsub_all_line in open(qsub_all_filename, 'r'):
+            if getpass.getuser() in qsub_all_line:
+                n_qsub_jobs=n_qsub_jobs+1
+                
+        os.system("rm "+logspace1 + "/qsub_del")
+        if n_qsub_jobs != 0:
+            print "Not cleaning up since user has jobs are running in batch"
+            return
+    
     if (os.path.exists(logspace1)):
         os.system("date > " + logspace1 + "/last_login_date.txt")
         month=""
@@ -66,7 +81,20 @@ def CleanUpLogs(path):
     import os, getpass,sys
     print "Cleaning up " + path 
     logspace1 = path 
+
     if (os.path.exists(logspace1)):
+
+        os.system("qstat -u " + getpass.getuser()+ " > " +   logspace1 + "/qsub_del")
+        qsub_all_filename = logspace1 +'/qsub_del'
+        n_qsub_jobs=0
+        for qsub_all_line in open(qsub_all_filename, 'r'):
+            if getpass.getuser() in qsub_all_line:
+            n_qsub_jobs=n_qsub_jobs+1
+            
+        os.system("rm "+logspace1 + "/qsub_del")
+        if n_qsub_jobs != 0:
+            print "Not cleaning up since jobs are running in batch"
+            return
         os.system("date > " + logspace1 + "/last_login_date.txt")
         month=""
         date=""

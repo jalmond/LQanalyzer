@@ -78,15 +78,13 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     // dijet method
 
     
-    //// SIGNAL  ID 
-    /// ELECTRON16_HN_FAKELOOSE_NOD0 = 0.5 reliso cut
-    ///                                dxy / dxysig = N/A
-    /// ELECTRON16_HN_TIGHT            iso = Tight iso of POG (checking opt.)
-    ///                                dxy cut = safe cuts from https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
-
+    /// ELECTRON_HN_FAKELOOSEST has no ID cuts
+    /// only pt/eta/chargeconst/looseIP/
 
     std::vector<snu::KElectron> tmploose_el = GetElectrons(false,false,"ELECTRON_HN_FAKELOOSEST");
     
+
+    ///// Setup cuts to optimise
     vector<float> vcut_mva;
     vector<TString> vcut_mva_s;
     for(unsigned int imva=0; imva < 98; imva++){
@@ -129,6 +127,8 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
       ss <<cut_iso_b;
       vcut_iso_b_s.push_back(TString(ss.str()));
     }
+
+    //// Loop over cuts and fill loose and tight el and get fake rates for ID
     for(unsigned int imva=0; imva < vcut_mva.size(); imva++){
       for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b.size(); dxy_b++){
 	for(unsigned int dz_b=0; dz_b < vcut_dz_b.size(); dz_b++){
@@ -157,8 +157,15 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	      else {
 		if(tmploose_el[iel].MVA() < -0.52) continue;
 	      }
-		
+	      
+	      /// loose id has
+	      // - trigger emulation
+	      // - loose mva (taken sae as gent group
+	      // - dxy/dz cuts applied
 	      loose_el.push_back(tmploose_el[iel]);
+	      //// tight - loose + 
+	      //// tighter mva
+	      ///  reliso tightened
 	      if(tmploose_el[iel].MVA() < vcut_mva[imva]) continue;
 	      if(reliso > vcut_iso_b[iso_b]) continue;
 	      tight_el.push_back(tmploose_el[iel]);
@@ -334,13 +341,12 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(std::vector<snu::KElectron
   /// Loose ID has emul. tighter than CaloIdL_TrackIdL_IsoVL for all pt range
   // 10-15 has WPLoose https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#HLT_safe_selection_for_2016_data
   // 15-inf has CaloIdL_TrackIdL_IsoVL_ID  https://twiki.cern.ch/twiki/bin/view/CMS/ChangesEGMHLTAlgo2014
-  TString triggerslist_8="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+  TString triggerslist_8="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v";   /// -> tighter cut in lepton ID form tighter trigger emulation cut
   TString triggerslist_12="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
   TString triggerslist_18="HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
   TString triggerslist_23="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
-  TString triggerslist_33="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
+  TString triggerslist_33="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"; /// --> no 33 trigger
 
-  // analysis trigger / diel trigger                                                                                                                                                                                                                                                               
   TString triggerslist="HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v";
   
   /// GetElectrons returns vector of muons. 
@@ -690,7 +696,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
     
     if(loose_el.size() == 1 && jets.size() >= 1){
       float el_pt = loose_el.at(0).Pt();
-      float el_pt_corr = loose_el.at(0).Pt()*(1+max(0.,(loose_el.at(0).PFRelIso(0.3)-0.5))) ;
+      float el_pt_corr = loose_el.at(0).Pt()*(1+max(0.,(loose_el.at(0).PFRelIso(0.3)-0.5))) ; /// will need changing for systematics
       
       FillHist(("LooseEl" + tag + "_pt_eta").Data(), el_pt, fabs(loose_el.at(0).Eta()),  w, ptbins, 9 , etabins2, 4);
       FillHist(("LooseEl" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(loose_el.at(0).Eta()),  w, ptbins, 9 , etabins2, 4);
