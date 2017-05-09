@@ -64,7 +64,14 @@ if not os.path.exists(tag_dir):
         os.system("rm -r " + libpath)
         os.system("mkdir  " +libpath)
     os.system("mkdir " + tag_dir)
+    if not os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")):
+        os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH"))
 
+    if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
+        os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+    if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER")):
+        os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/" + os.getenv("USER"))
+        
     print "Copying all latest rootfiles for use in analysis"
 
     if not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/80X/") or not os.path.exists(os.getenv("LQANALYZER_DIR")+ "/data/Luminosity/76X/"):

@@ -2189,6 +2189,7 @@ for nsample in range(0, len(sample)):
     ##### New Code looks at submittnig jobs to batch queue        
     logfile=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
+        print "Making [SubmittionConfig.py] " + path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)
         os.system("mkdir " + path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
 
     filestatlog=open(logfile,"w")
@@ -2843,6 +2844,7 @@ for i in range(0, winx-remove_from_end):
         job_summary.append("_"*40+"\n")
 
 
+time.sleep(10.)
 path_stat_dir=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()  + "/" + str(tagger)+ "/"
 os.system("rm -r " + path_stat_dir)
 

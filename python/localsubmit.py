@@ -1539,6 +1539,7 @@ statfile_time_complete=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyz
 if not os.path.exists(path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() ):
     os.system("mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser())
 if not os.path.exists(path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)):
+    print "mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger)
     os.system("mkdir " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser()+ "/" + str(tagger))
 
 statwrite = open(statfile, 'r')
@@ -1591,6 +1592,7 @@ else:
 
 statwrite_time.close()
 print "mv " + statfile_time + " " + statfile_time_complete
+
 os.system("mv " + statfile_time + " " + statfile_time_complete)
 
 GeneralStatFile = os.getenv("LQANALYZER_DIR")+ "/python/StatFile.py"
@@ -1604,6 +1606,8 @@ if skipev > 0:
 if JobCrash:
     number_of_jobs_for_statfile = 1
 
+
+print "python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample + " -n " + str(number_of_jobs_for_statfile)
 
 os.system("python " + GeneralStatFile + " -x " + tagger + " -s " + original_sample + " -n " + str(number_of_jobs_for_statfile))
 

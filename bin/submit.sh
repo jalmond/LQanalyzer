@@ -75,9 +75,10 @@ then
     tagger=$1
     statdir="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/"$USER
     if [[ ! -d "${statdir}" ]]; then
+	echo "Making "${statdir}
         mkdir ${statdir}
     fi
-    
+    echo "Running ${LQANALYZER_DIR}/python/SubmittionConfig.py"
     python   ${LQANALYZER_DIR}/python/SubmittionConfig.py  -p ${samplelist} ${stream} ${njobs} ${cycle} ${logstep} ${data_lumi} ${outputdir} ${remove} ${loglevel} ${skipevent} ${nevents} ${totalev} ${xsec} ${targetlumi} ${efflumi}  ${skinput} ${runevent} ${useCATv742ntuples} ${LibList} ${DEBUG} ${useskim} ${runnp} ${runcf} ${catversion} ${skflag} ${usebatch} -X ${tagger} -u $cat_email -B ${run_in_bkg} ${drawhists} ${queue} ${setnjobs} ${submitallfiles} ${runtau}
 else 
     for i in ${input_samples[@]}
