@@ -232,9 +232,12 @@ then
     if [[ $LIBTAG == *"v"* ]]; then
 	export OBJ=obj/cms21$LIBTAG
 	export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21$LIBTAG/
+        export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
+	
     else 
 	export OBJ=obj/cms21
         export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21/
+	export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
     fi
 elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then

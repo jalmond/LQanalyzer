@@ -139,6 +139,11 @@ def CleanUpLogs(path):
                                 os.system(" rm -r " + logspace1 + "/" + entries[8])
                                 print "Deleting directory "  + logspace1 + "/" + entries[8] +" since this is made on " + os.getenv("HOSTNAME") + " but no jobs running on this machine."
                                 is_deleted=True
+                                if "CLUSTERLOG" in entries[8]:
+                                    getjobid=entries[8]
+                                    getjobid=getjobid.replace("CLUSTERLOG","")
+                                    if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid):
+                                        os.system("rm -r " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid)
 
                     nfiles=0
                     if (os.path.exists(logspace1 + "/" + entries[8] +"/output/")):
@@ -166,8 +171,19 @@ def CleanUpLogs(path):
                             if not is_deleted:
                                 print "Log file older than one week: Removing " + logspace1 + entries[8]
                                 os.system(" rm -r " + logspace1 + "/" + entries[8])
+                                if "CLUSTERLOG"in entries[8]:
+                                    getjobid=entries[8]
+                                    getjobid=getjobid.replace("CLUSTERLOG","")
+                                    if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid):
+                                        os.system("rm -r "+ os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid)
+
                     elif int(date_file) < (int(date)-int(days_to_keep)):
                         if not is_deleted:
                             print "Log file older than one week: Removing " + logspace1 + entries[8]   
                             os.system(" rm -r " + logspace1 + "/" + entries[8])        
-
+                            if "CLUSTERLOG"in entries[8]:
+                                getjobid=entries[8]
+                                getjobid=getjobid.replace("CLUSTERLOG","")
+                                if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid):
+                                    os.system("rm -r "+ os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+getjobid)
+                                        

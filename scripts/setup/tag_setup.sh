@@ -232,9 +232,12 @@ then
     if [[ $LIBTAG == *"v"* ]]; then
 	export OBJ=obj/cms21$LIBTAG
 	export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21$LIBTAG/
+        export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
+	
     else 
 	export OBJ=obj/cms21
         export LQANALYZER_LIB_PATH=${LQANALYZER_DIR}/LQLib/cms21/
+	export LQANALYZER_BATCHLIB_PATH=${LQANALYZER_DIR}/LQLib/batch/
     fi
 elif [ $HOSTNAME == "tamsa2.snu.ac.kr" ];
 then
@@ -344,7 +347,7 @@ else
     if [ ! $LD_LIBRARY_PATH ]; then
         echo "Warning: so far you haven't setup your ROOT enviroment properly (no LD_LIBRARY_PATH): FrameWork will not work"
     fi
-    
+    export LD_TMP_LIBRARY_PATH=${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${LQANALYZER_LIB_PATH}:${LD_LIBRARY_PATH}
 
 fi

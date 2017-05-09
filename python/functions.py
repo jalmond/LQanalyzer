@@ -114,28 +114,33 @@ def make_batch_script(workdir, jname, lqdir, macroname, cluster):
     return config
 
 
-def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, runtau, skflag):
+def makeConfigFile(log,sample, input, tree, cycle, ver, output_tmp, output, nevents, outstep, skipev, datatype, channel, period, totalmcevents, xsec, tar_lumi, eff_lumi, useSKinput, runevent, libraries, runnp, runcf, runtau, skflag,tmplibdir):
 
+    if not os.path.exists(os.getenv("LQANALYZER_LIB_PATH")+"/"+tmplibdir):
+        os.system("mkdir " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir)
+        os.system("cp " + os.getenv("LQANALYZER_BATCHLIB_PATH") + "/*.so  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+        os.system("cp " + os.getenv("LQANALYZER_BATCHLIB_PATH") + "/*.rootmap  " + os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tmplibdir+"/")
+        
     config='{\n'
     config+='    gEnv->SetValue("TFile.AsyncPrefetching", 1);\n'
 
     config+='   //### Load Libraries\n'
-    config+='   gSystem->Load("libSKTree.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libSKTree.so");\n'
     config+='   gSystem->Load("libHist.so");\n'
-    config+='   gSystem->Load("libAnalysisCore.so");\n'
-    config+='   gSystem->Load("libNtuplecore.so");\n'
-    config+='   gSystem->Load("libSelection.so");\n'
-    config+='   gSystem->Load("libPlotting.so");\n'
-    config+='   gSystem->Load("libHNCommonLeptonFakes.so");\n'
-    config+='   gSystem->Load("librochcor2016");\n'
-    config+='   gSystem->Load("libBTagSFUtil.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libAnalysisCore.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libNtuplecore.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libSelection.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libPlotting.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libHNCommonLeptonFakes.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/librochcor2016");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libBTagSFUtil.so");\n'
     for lib in libraries:
-        config+='   gSystem->Load("' + lib + ' + .so");\n'
+        config+='   gSystem->Load("'+tmplibdir+'/' + lib + ' + .so");\n'
         
-    config+='   gSystem->Load("libAnalyzerTools.so");\n'
-    config+='   gSystem->Load("libLQAnalysis.so");\n'
-    config+='   gSystem->Load("libSKTreeMaker.so");\n'
-    config+='   gSystem->Load("libValidation.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libAnalyzerTools.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libLQAnalysis.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libSKTreeMaker.so");\n'
+    config+='   gSystem->Load("'+tmplibdir+'/libValidation.so");\n'
     
     config+='   gSystem->Load("libPyROOT.so");\n'
     config+='   \n'

@@ -2940,6 +2940,11 @@ if len(crash_output) > 0:
 if DoSendEmail:
     SendEmail(job_summary,tagger,email_subject,useremail,quickdraw, listofplots)
 
+    
+if os.path.exists(os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tagger) :
+    print "Removing tmp library directory for job ["+os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tagger+"]"
+    os.system("rm -r "+ os.getenv("LQANALYZER_BATCHLIB_PATH")+"/"+tagger)
+        
 
 
 ##### CODE WRITEEN TO REMOVE DIRECTORY... THIS WILL BE KEPT UNLESS USER WISHES TO SET RDIR+TRUE
