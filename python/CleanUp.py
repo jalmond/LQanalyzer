@@ -89,7 +89,7 @@ def CleanUpLogs(path):
         n_qsub_jobs=0
         for qsub_all_line in open(qsub_all_filename, 'r'):
             if getpass.getuser() in qsub_all_line:
-            n_qsub_jobs=n_qsub_jobs+1
+                n_qsub_jobs=n_qsub_jobs+1
             
         os.system("rm "+logspace1 + "/qsub_del")
         if n_qsub_jobs != 0:
@@ -120,7 +120,14 @@ def CleanUpLogs(path):
                         for psline in open(filename, 'r'):
                             if not "grep" in psline:
                                 n_previous_jobs+=1
-                                
+                               
+                        os.system("ps ux | grep 'hadd' &> " + logspace1 + "/psloghadd")
+                        filenamehadd = logspace1 + "/psloghadd"
+
+                        for psline in open(filenamehadd, 'r'):
+                            if not "grep" in psline:
+                                n_previous_jobs+=1
+
                         if n_previous_jobs == 0:
                             os.system("qstat -u " + getpass.getuser()+ " > " +   logspace1 + "/qsub_del")
                             qsub_all_filename = logspace1 +'/qsub_del'

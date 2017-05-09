@@ -31,6 +31,12 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   IDSetup=false;  
   setupDDBkg=false;
 
+  //// set rare collections to false. Can be set truth in analysis code
+  k_usegenjet=true;
+  k_usetruth=true;
+  k_usephotons=true;
+  k_usefatjet=true;
+
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
@@ -46,28 +52,16 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   //////////////////////////////////////////////////////////////////////  
   //// MC Data corrections
   //////////////////////////////////////////////////////////////////////                                                                                                   
-
-  mcdata_correction = new MCDataCorrections();
+  
+  //mcdata_correction = new MCDataCorrections();
   
   string lqdir =  getenv("LQANALYZER_DIR");
 
   string username = getenv("USER");
-  /// DataDrivenBackgrounds class is used to get data driven fake + charge flip backgrounds
 
-  /// Currently only have csvv2 or cMVAv2 btaggers: In HN we use csvv2 
-  /// List of taggers
-  std::vector<TString> vtaggers;
-  vtaggers.push_back("CSVv2Moriond17_2017_1_26");
-  vtaggers.push_back("cMVAv2Moriond17_2017_1_26");
-  /// Will add DeepCSV in 805
   if( TString(getenv("CATDEBUG")) == "True") k_debugmode=true;
+
   
-  // List of working points
-  std::vector<TString> v_wps;
-  v_wps.push_back("Loose");
-  v_wps.push_back("Medium");
-  v_wps.push_back("Tight");
-  MapBTagSF = SetupBTagger(vtaggers,v_wps);
   cout << "                                                  " << endl;
   cout << "   ########    ###       ###   ###  ###           " << endl;
   cout << "   ########    ####      ###   ###  ###           " << endl;
@@ -83,59 +77,12 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
   cout << "##################################################" << endl;
   compmap.clear();
-  if(1){
-    ifstream runlumi((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt").c_str());
-    if(!runlumi) {
-      cerr << "Did not find "+lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
-      exit(EXIT_FAILURE);
-    }
-    string lline;
-    int x=1;
-    while(getline(runlumi,lline) ){
-      std::istringstream is( lline );
-      
-      string trigname;
-      float trig_lumi;
-      int run;
-      is >> trigname;
-      if(trigname=="###" ) continue;
-      if(trigname=="END") break;
-      if(trigname=="run" ){
-	is >> run;
-	is >> trig_lumi;
-	if(k_debugmode)
-	  cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
-	
-	mapLumi2016[run] = trig_lumi;
-	continue;
-      }
-      if(trigname=="block" ){
-	is >> run;
-	is >> trig_lumi;
-	if(k_debugmode)cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
-	
-	mapLumiPerBlock2016[run] = trig_lumi;
-	ostringstream ss;
-	ss << x;
-	mapLumiNamePerBlock2016[run]="Lumi"+ss.str();
-	x++;
-	continue;
-      }
-
-    }
-    runlumi.close();
+  
+  if((TString(getenv("USER")) == "jskim" || TString(getenv("USER")) =="shjeon")){
+    //==== HN Gen Matching Class
+    m_HNgenmatch = new HNGenMatching();
   }
-  
-  cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-  if(k_debugmode)cout << "Reading Luminosity File" << endl;
-
-  SetupLuminosityMap(true);
-  
-
-  //==== HN Gen Matching Class
-  m_HNgenmatch = new HNGenMatching();
-  
   cout <<  "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
 
@@ -151,7 +98,6 @@ bool AnalyzerCore::CheckEventComparison(TString user, TString label){
     }
     
     string lline;
-    int x=1;
     while(getline(comp,lline) ){
       std::istringstream is( lline );
       TString blank;
@@ -911,6 +857,10 @@ void AnalyzerCore::SetupSelectionJet(std::string path_sel){
   if(!jetselconfig) {
     cerr << "Did not find "+ path_sel+", exiting ..." << endl;
     exit(EXIT_FAILURE);
+  }
+  else{
+    cout << "Found " + path_sel << endl;
+   
   }
   string jetline;
   int ncuts=0;
@@ -1814,10 +1764,12 @@ AnalyzerCore::~AnalyzerCore(){
   mapntp.clear();
 
 
-  for(std::map<TString,BTagSFUtil*>::iterator it = MapBTagSF.begin(); it!= MapBTagSF.end(); it++){
-    delete it->second;
+  if(!k_classname.Contains("SKTreeMaker")){
+    for(std::map<TString,BTagSFUtil*>::iterator it = MapBTagSF.begin(); it!= MapBTagSF.end(); it++){
+      delete it->second;
+    }
+    MapBTagSF.clear();
   }
-  MapBTagSF.clear();
 
   for(map<TString, HNTriLeptonPlots*>::iterator it = mapCLhistHNTriLep.begin(); it != mapCLhistHNTriLep.end(); it++){
     delete it->second;
@@ -1825,12 +1777,17 @@ AnalyzerCore::~AnalyzerCore(){
   mapCLhistHNTriLep.clear();
 
   //// New class functions for databkg+corrections
-  delete mcdata_correction;
-  delete m_datadriven_bkg;
+  if(k_classname == "SKTreeMaker")   delete mcdata_correction;
+  if(!k_classname.Contains("SKTreeMaker")){
+    delete mcdata_correction;
+  }
+
+  if(k_running_nonprompt || k_running_chargeflip)  delete m_datadriven_bkg;
 
   //==== HN Gen Matching
-  delete m_HNgenmatch;
-
+  if((TString(getenv("USER")) == "jskim" || TString(getenv("USER")) =="shjeon")){
+    delete m_HNgenmatch;
+  }
 }
 
 //###
@@ -1840,6 +1797,11 @@ AnalyzerCore::~AnalyzerCore(){
 void AnalyzerCore::SetupID(){
 
   if(IDSetup) return;
+
+  if(k_classname.Contains("SKTreeMaker")){
+    IDSetup=true;
+    return;
+  }
 
   string lqdir =  getenv("LQANALYZER_DIR");
 
@@ -1875,6 +1837,84 @@ void AnalyzerCore::SetupID(){
 void AnalyzerCore::SetupDDBkg(){
   if(k_running_nonprompt || k_running_chargeflip)m_datadriven_bkg = new DataDrivenBackgrounds();
   setupDDBkg=true;
+  
+  /// setup correction class at teh same time
+  
+  /// not needed for sktreemaker
+  // save time as code does not need to setup and save files
+  
+  string lqdir =  getenv("LQANALYZER_DIR");
+
+  // List of working points                                                                                                                                                                                                                                                  
+
+  if(k_classname == "SKTreeMaker")  mcdata_correction = new MCDataCorrections();
+
+  if(!k_classname.Contains("SKTreeMaker")){
+
+    mcdata_correction = new MCDataCorrections();
+    
+    std::vector<TString> vtaggers;
+    vtaggers.push_back("CSVv2Moriond17_2017_1_26");
+    vtaggers.push_back("cMVAv2Moriond17_2017_1_26");
+
+    std::vector<TString> v_wps;
+    v_wps.push_back("Loose");
+    v_wps.push_back("Medium");
+    v_wps.push_back("Tight");
+    MapBTagSF = SetupBTagger(vtaggers,v_wps);
+    
+    if(1){
+      ifstream runlumi((lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt").c_str());
+      if(!runlumi) {
+	cerr << "Did not find "+lqdir + "/data/Luminosity/"+getenv("yeartag")+"/lumi_catversion_" + getenv("CATVERSION")+".txt'), exiting ..." << endl;
+	exit(EXIT_FAILURE);
+      }
+      string lline;
+      int x=1;
+      while(getline(runlumi,lline) ){
+	std::istringstream is( lline );
+
+	string trigname;
+	float trig_lumi;
+	int run;
+	is >> trigname;
+	if(trigname=="###" ) continue;
+	if(trigname=="END") break;
+	if(trigname=="run" ){
+	  is >> run;
+	  is >> trig_lumi;
+	  if(k_debugmode)
+	    cout << "Run number "<< run <<" ; Muon trigger (unprescaled) luminosity  " << trig_lumi << ";" << endl;
+
+	  mapLumi2016[run] = trig_lumi;
+	  continue;
+	}
+	if(trigname=="block" ){
+	  is >> run;
+	  is >> trig_lumi;
+	  if(k_debugmode)cout << "mapLumi[" << run <<" ] = " << trig_lumi << ";" << endl;
+
+	  mapLumiPerBlock2016[run] = trig_lumi;
+	  ostringstream ss;
+	  ss << x;
+	  mapLumiNamePerBlock2016[run]="Lumi"+ss.str();
+	  x++;
+	  continue;
+	}
+
+      }
+      runlumi.close();
+    }
+
+    cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+    
+    if(k_debugmode)cout << "Reading Luminosity File" << endl;
+
+    SetupLuminosityMap(true);
+
+
+  }
+
 }
 
 void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
@@ -1918,14 +1958,22 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   snu::KTrigger triggerinfo = GetTriggerInfo(triggerlist);
     
   std::vector<snu::KJet> skjets= GetAllJets();
-  std::vector<snu::KFatJet> skfatjets= GetAllFatJets();
-  std::vector<snu::KGenJet> skgenjets=GetAllGenJets();
-  
-   
+  std::vector<snu::KFatJet> skfatjets;
+  std::vector<snu::KGenJet> skgenjets;
+  if(k_usegenjet) skgenjets=GetAllGenJets();
+  if(k_usefatjet) skfatjets= GetAllFatJets();
+
   /// np == numberof particles you want to store at truth info. 30 is default unless running nocut sktree OR signal
   int np =  AssignnNumberOfTruth();
   
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets,skfatjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
+  //// Tmp vect to speed jobs when not used
+  
+  vector<snu::KPhoton> photons ;
+  if(k_usephotons) photons =  GetAllPhotons();
+  vector<snu::KTruth> gen;
+  if(k_usetruth) gen=GetTruthParticles(np);
+  
+  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), photons, skjets,skfatjets, skgenjets, gen, triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
@@ -1961,9 +2009,16 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   /// Setup correction class
   k_reset_period=true;
   
-  mcdata_correction->SetPeriod(GetPeriod());
-  mcdata_correction->SetIsData(isData);
 
+  if(!k_classname.Contains("SKTreeMaker")){
+    mcdata_correction->SetPeriod(GetPeriod());
+    mcdata_correction->SetIsData(isData);
+  }
+  if (k_classname == "SKTreeMaker"){
+    mcdata_correction->SetPeriod(GetPeriod());
+    mcdata_correction->SetIsData(isData);
+    
+  }
   
   
 }
@@ -2905,8 +2960,9 @@ void AnalyzerCore::WriteHists(){
   }
 
   //==== HN Gen Matching
-  m_HNgenmatch->WriteHNGenHists();
-
+  if((TString(getenv("USER")) == "jskim" || TString(getenv("USER")) =="shjeon")){
+    m_HNgenmatch->WriteHNGenHists();
+  }
   return;
 }
 
@@ -3416,6 +3472,13 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
   
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
     if(k_classname=="SKTreeMaker" && (it->RochPt() >0.)) exit(EXIT_FAILURE);
+    if(k_classname!="SKTreeMaker" && k_classname.Contains("SKTreeMaker")){
+      
+      if(it->RochPt() < 0.) {
+	cerr << "Roch Pt wrongly set in dilep skim" << endl;
+	exit(EXIT_FAILURE);
+      }
+    }
     
     if(it->RochPt() < 0.){
       it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));

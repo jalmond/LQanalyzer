@@ -846,10 +846,13 @@ if [[ $runDATA == "true" ]];
    
 fi
 
+workdirtag="/data2/"
 if [[ $job_output_dir == "" ]]
     then
     if [[ $runDATA  == "true" ]];
 	then
+	workdirtag="/data7/DATA/"
+
 	job_output_dir=$outputdir_data
     fi
     if [[ $runMC  == "true" ]];
@@ -1553,13 +1556,13 @@ if [[ $runDATA  == "true" ]];
       echo "LQanalyzer::sktree :: INFO :: JOB ID["$tagger"]"
       if [[ ${run_in_bkg} == "True" ]];
 	  then
-	  echo "Job sent to /data2/CAT_SKTreeOutput/"$USER"/CLUSTERLOG"$tagger"/"${tagger}
+	  echo "Job sent to $workdirtag/CAT_SKTreeOutput/"$USER"/CLUSTERLOG"$tagger"/"${tagger}
 	  echo "Job summary will be sent via email when complete:"
-	  logdir=/data2/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/
+	  logdir=$workdirtag/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/
 	  if [[ ! -d "${logdir}" ]]; then
 	      mkdir $logdir
 	  fi
-	  joblogdir=/data2/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/${tagger}/
+	  joblogdir=$workdirtag/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/${tagger}/
 	  if [[ ! -d "${joblogdir}" ]]; then
 	      mkdir $joblogdir
 	  fi
@@ -1659,13 +1662,13 @@ if [[ $runMC  == "true" ]];
 
 	if [[ ${run_in_bkg} == "True" ]];
         then
-	    echo "Job sent to /data2/CAT_SKTreeOutput/"$USER"/CLUSTERLOG"$tagger"/"${tagger}
+	    echo "Job sent to $workdirtag/CAT_SKTreeOutput/"$USER"/CLUSTERLOG"$tagger"/"${tagger}
             echo "Job summary will be sent via email when complete:"
-	    logdir=/data2/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/
+	    logdir=$workdirtag/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/
             if [[ ! -d "${logdir}" ]]; then
 		mkdir $logdir
 	    fi
-            joblogdir=/data2/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/${tagger}/
+            joblogdir=$workdirtag/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/${tagger}/
             if [[ ! -d "${joblogdir}" ]]; then
 		mkdir $joblogdir
             fi
@@ -1685,13 +1688,13 @@ if [[ $runMC  == "true" ]];
 
 	if [[ ${run_in_bkg} == "True" ]];
         then
-            echo "Job sent to /data2/CAT_SKTreeOutput/"$USER"/CLUSTERLOG"$tagger"/"${tagger}
+            echo "Job sent to $workdirtag/CAT_SKTreeOutput/"$USER"/CLUSTERLOG"$tagger"/"${tagger}
             echo "Job summary will be sent via email when complete:"
-	    logdir=/data2/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/
+	    logdir=$workdirtag/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/
             if [[ ! -d "${logdir}" ]]; then
 		mkdir $logdir
 	    fi
-            joblogdir=/data2/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/${tagger}/
+            joblogdir=$workdirtag/CAT_SKTreeOutput/$USER/CLUSTERLOG$tagger/${tagger}/
             if [[ ! -d "${joblogdir}" ]]; then
 		mkdir $joblogdir
             fi

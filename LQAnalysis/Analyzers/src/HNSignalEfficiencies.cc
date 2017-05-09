@@ -152,8 +152,16 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
 
   FillCLHist(sighist_ee, "NoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, fatjetcoll,weight);
   if(SameCharge(electrons_tm_nc))   FillCLHist(sighist_ee, "SSNoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, fatjetcoll,weight);
-
-  
+  if(SameCharge(electrons_nc)) {
+    if(electrons_nc[1].Pt() > 10){
+      if(electrons_nc[0].MCMatched()&&!electrons_nc[1].MCMatched())FillHist("El_typePF", electrons_nc[1].GetType(),weight, 0., 40., 40);
+      else if(!electrons_nc[0].MCMatched()&&electrons_nc[1].MCMatched())FillHist("El_typeFP", electrons_nc[0].GetType(),weight, 0., 40., 40);
+      else if(!electrons_nc[0].MCMatched()&&!electrons_nc[1].MCMatched()){
+	FillHist("El_typeFF", electrons_nc[0].GetType(),weight, 0., 40., 40);
+	FillHist("El_typeFF", electrons_nc[1].GetType(),weight, 0., 40., 40);
+      }
+    }
+  }
 
   if(hn_electrons.size() == 2){
     counter("DiEl",1.);

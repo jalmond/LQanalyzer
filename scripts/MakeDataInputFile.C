@@ -67,7 +67,7 @@ void MakeDataInputFile(TString version=""){
   periods.push_back("H_v2");
   periods.push_back("H_v3");
   
-  TString output="/data2/DATA/cattoflat/Data/" + version + "/";
+  TString output="/data7/DATA/cattoflat/Data/" + version + "/";
 
   if(cluster) output="/data4/DATA/FlatCatuples/Data/" + version + "/";
 
@@ -80,7 +80,7 @@ void MakeDataInputFile(TString version=""){
   }
 
   
-  TString SKTreeOutput="/data2/CatNtuples/"+ version + "/SKTrees/Data/";
+  TString SKTreeOutput="/data7/DATA/CatNtuples/"+ version + "/SKTrees/Data/";
   if(cluster) SKTreeOutput="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/Data/";
 
   lumi_file << ""<< endl;
@@ -98,7 +98,7 @@ void MakeDataInputFile(TString version=""){
   lumi_file << ""<< endl;
   
 
-  TString SKTreeOutputDiLep="/data2/CatNtuples/"+ version + "/SKTrees/DataDiLep/";
+  TString SKTreeOutputDiLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataDiLep/";
   if(cluster) SKTreeOutputDiLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataDiLep/";
 
   
@@ -109,7 +109,7 @@ void MakeDataInputFile(TString version=""){
     //lumi_file << ""<< endl;
   }
   
-  TString SKTreeOutputTriLep="/data2/CatNtuples/"+ version + "/SKTrees/DataTriLep/";
+  TString SKTreeOutputTriLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataTriLep/";
   if(cluster) SKTreeOutputTriLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataTriLep/";
 
   for(unsigned int i = 0 ; i < samples.size() ; i++){

@@ -14,6 +14,8 @@
 
 #include "TString.h"
 
+#include <sstream>      // std::stringstream
+
 void setTDRStyle();
 bool CheckFile(TFile* f);
 bool CheckHist(TH2* h);
@@ -23,9 +25,9 @@ void MakeFRRootFile(){
   
   TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoH/";
 
-  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-6.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-6.root");
-  cout << path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-6.root" << endl;
+  TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-7.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_El_mc_v8-0-7.root");
+  cout << path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-7.root" << endl;
   if(!fdata)cout << "No Data" << endl;
   if (!fmc) cout << "No MC" << endl;
   /// Set Plotting style
@@ -37,228 +39,76 @@ void MakeFRRootFile(){
   fout->cd();
 
   std::vector<TString> fakes40;
-  fakes40.push_back("20_pt_eta");
-  fakes40.push_back("60_pt_eta");
   fakes40.push_back("40_pt_eta");
-  fakes40.push_back("30_pt_eta");
-
+  //fakes40.push_back("60_pt_eta");
+  //fakes40.push_back("40_pt_eta");
+  //fakes40.push_back("30_pt_eta");
+  //
   std::vector<TString> isocut;
-  isocut.push_back("dxy_b050_e100");
-  isocut.push_back("dxy_b050_e050");
-  isocut.push_back("dxy_b050_e040");
-  isocut.push_back("dxy_b050_e025");
-  isocut.push_back("dxy_b050_e020");
-  isocut.push_back("dxy_b050_e010");
-
-  isocut.push_back("dxy_b025_e100");
-  isocut.push_back("dxy_b025_e050");
-  isocut.push_back("dxy_b025_e040");
-  isocut.push_back("dxy_b025_e025");
-  isocut.push_back("dxy_b025_e020");
-  isocut.push_back("dxy_b025_e010");
-
-  isocut.push_back("dxy_b015_e100");
-  isocut.push_back("dxy_b015_e050");
-  isocut.push_back("dxy_b015_e040");
-  isocut.push_back("dxy_b015_e025");
-  isocut.push_back("dxy_b015_e020");
-  isocut.push_back("dxy_b015_e010");
-
-  isocut.push_back("dxy_b010_e100");
-  isocut.push_back("dxy_b010_e050");
-  isocut.push_back("dxy_b010_e040");
-  isocut.push_back("dxy_b010_e025");
-  isocut.push_back("dxy_b010_e020");
-  isocut.push_back("dxy_b010_e010");
-  
-  isocut.push_back("dxy_b017_e017");
-  isocut.push_back("dxy_b017_e015");
-  isocut.push_back("dxy_b017_e014");
-  isocut.push_back("dxy_b017_e013");
-  isocut.push_back("dxy_b017_e012");
-  isocut.push_back("dxy_b017_e011");
-  isocut.push_back("dxy_b017_e010");
-
-  isocut.push_back("dxy_b015_e017");
-  isocut.push_back("dxy_b015_e015");
-  isocut.push_back("dxy_b015_e014");
-  isocut.push_back("dxy_b015_e013");
-  isocut.push_back("dxy_b015_e012");
-  isocut.push_back("dxy_b015_e011");
-  isocut.push_back("dxy_b015_e010");
-
-  isocut.push_back("dxy_b014_e017");
-  isocut.push_back("dxy_b014_e015");
-  isocut.push_back("dxy_b014_e014");
-  isocut.push_back("dxy_b014_e013");
-  isocut.push_back("dxy_b014_e012");
-  isocut.push_back("dxy_b014_e011");
-  isocut.push_back("dxy_b014_e010");
-
-  isocut.push_back("dxy_b013_e017");
-  isocut.push_back("dxy_b013_e015");
-  isocut.push_back("dxy_b013_e014");
-  isocut.push_back("dxy_b013_e013");
-  isocut.push_back("dxy_b013_e012");
-  isocut.push_back("dxy_b013_e011");
-  isocut.push_back("dxy_b013_e010");
-
-  isocut.push_back("dxy_b012_e017");
-  isocut.push_back("dxy_b012_e015");
-  isocut.push_back("dxy_b012_e014");
-  isocut.push_back("dxy_b012_e013");
-  isocut.push_back("dxy_b012_e012");
-  isocut.push_back("dxy_b012_e011");
-  isocut.push_back("dxy_b012_e010");
-
-  isocut.push_back("dxy_b011_e017");
-  isocut.push_back("dxy_b011_e015");
-  isocut.push_back("dxy_b011_e014");
-  isocut.push_back("dxy_b011_e013");
-  isocut.push_back("dxy_b011_e012");
-  isocut.push_back("dxy_b011_e011");
-  isocut.push_back("dxy_b011_e010");
-
-  isocut.push_back("dxy_b010_e017");
-  isocut.push_back("dxy_b010_e015");
-  isocut.push_back("dxy_b010_e014");
-  isocut.push_back("dxy_b010_e013");
-  isocut.push_back("dxy_b010_e012");
-  isocut.push_back("dxy_b010_e011");
 
 
-  isocut.push_back("b050_e050");
-  isocut.push_back("b050_e0525");
-  isocut.push_back("b050_e055");
-  isocut.push_back("b050_e060");
-  isocut.push_back("b050_e065");
-  isocut.push_back("b050_e075");
-  isocut.push_back("b050_e100");
-  isocut.push_back("b050_e125");
+  int nmva=98;
+  int ndxy=5;
+  int ndz=3;
+  int niso=5;
+  vector<TString> vcut_mva_s;
 
-  isocut.push_back("b0525_e050");
-  isocut.push_back("b0525_e0525");
-  isocut.push_back("b0525_e055");
-  isocut.push_back("b0525_e060");
-  isocut.push_back("b0525_e065");
-  isocut.push_back("b0525_e075");
-  isocut.push_back("b0525_e100");
-  isocut.push_back("b0525_e125");
+  for(unsigned int imva=0; imva < nmva; imva++){
+    float cut_dmva = float(imva)*0.01 -0.01;
+    stringstream ss;
+    ss << cut_dmva;
+    vcut_mva_s.push_back(TString(ss.str()));
+  }
+  vector<TString> vcut_dxy_b_s;
 
-  isocut.push_back("b055_e050");
-  isocut.push_back("b055_e0525");
-  isocut.push_back("b055_e055");
-  isocut.push_back("b055_e060");
-  isocut.push_back("b055_e065");
-  isocut.push_back("b055_e075");
-  isocut.push_back("b055_e100");
-  isocut.push_back("b055_e125");
+  for(unsigned int dxy_b=0;dxy_b < ndxy; dxy_b++){
+    float cut_dxy_b =  float(dxy_b)*0.01 + 0.01;
+    stringstream ss;
+    ss <<cut_dxy_b;
+    vcut_dxy_b_s.push_back(TString(ss.str()));
+  }
+  vector<TString> vcut_dz_b_s;
 
-  isocut.push_back("b065_e050");
-  isocut.push_back("b065_e0525");
-  isocut.push_back("b065_e055");
-  isocut.push_back("b065_e060");
-  isocut.push_back("b065_e065");
-  isocut.push_back("b065_e075");
-  isocut.push_back("b065_e100");
-  isocut.push_back("b065_e125");
-
-  isocut.push_back("b060_e050");
-  isocut.push_back("b060_e0525");
-  isocut.push_back("b060_e055");
-  isocut.push_back("b060_e060");
-  isocut.push_back("b060_e065");
-  isocut.push_back("b060_e075");
-  isocut.push_back("b060_e100");
-  isocut.push_back("b060_e125");
-
-  isocut.push_back("b075_e050");
-  isocut.push_back("b075_e0525");
-  isocut.push_back("b075_e055");
-  isocut.push_back("b075_e060");
-  isocut.push_back("b075_e065");
-  isocut.push_back("b075_e075");
-  isocut.push_back("b075_e100");
-  isocut.push_back("b075_e125");
-
-  isocut.push_back("b100_e050");
-  isocut.push_back("b100_e0525");
-  isocut.push_back("b100_e055");
-  isocut.push_back("b100_e060");
-  isocut.push_back("b100_e065");
-  isocut.push_back("b100_e075");
-  isocut.push_back("b100_e100");
-  isocut.push_back("b100_e125");
-
-  isocut.push_back("b125_e050");
-  isocut.push_back("b125_e0525");
-  isocut.push_back("b125_e055");
-  isocut.push_back("b125_e060");
-  isocut.push_back("b125_e065");
-  isocut.push_back("b125_e075");
-  isocut.push_back("b125_e100");
-  isocut.push_back("b125_e125");
+  for(unsigned int dz_b=0;dz_b < ndz; dz_b++){
+    float cut_dz_b =  float(dz_b)*0.02 + 0.04;
+    stringstream ss;
+    ss <<cut_dz_b;
+    vcut_dz_b_s.push_back(TString(ss.str()));
+  }
 
 
-  std::vector<TString> fakes;
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
-  fakes.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_d0_dxysig");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
-  fakes.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_nod0_dxysig");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_B");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_C");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_D");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_E");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_F");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_G");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_nod0_H");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_iso04");
-  fakes.push_back("ELECTRON16_HN_TIGHT_dijet_iso06");
-  fakes.push_back("ELECTRON16_FR_POG_TIGHT_dijet_pog");
-  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_dijet_pog");
-  fakes.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog");
-  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog");
-  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva");
-  fakes.push_back("ELECTRON16_FR_POG_TIGHT_DXYCC_dijet_pog");
-  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_DXYCC_dijet_pog");
-  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_DXYCC_dijet_mva");
+  vector<TString> vcut_iso_b_s;
+  for(unsigned int iso_b=0;iso_b < niso; iso_b++){
+    float cut_iso_b = float(iso_b)*0.01 + 0.05;
+    stringstream ss;
+    ss <<cut_iso_b;
+    vcut_iso_b_s.push_back(TString(ss.str()));
+  }
 
-  fakes.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog_d0");
-  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog_d0");
-  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva_d0");
-  fakes.push_back("ELECTRON16_FR_POG_TIGHT_DXYCC_dijet_pog_d0");
-  fakes.push_back("ELECTRON16_FR_POG_MEDIUM_DXYCC_dijet_pog_d0");
-  fakes.push_back("ELECTRON16_FR_MVA_TIGHT_DXYCC_dijet_mva_d0");
-
-
-  std::vector<TString> fakes_opt;
-  fakes_opt.push_back("HNTight_");
-  //fakes_opt.push_back("HNTight_miniiso_");
-  fakes_opt.push_back("HNTight_dxysig_");
-  fakes_opt.push_back("HNTight_miniiso_dxysig_");
-  
-  std::vector<TString> fakes_optd0;
-  fakes_optd0.push_back("HNTight_");
-  fakes_optd0.push_back("HNTight_dxysig_");
-  fakes_optd0.push_back("HNTight_miniiso_dxysig_");
+  //// Loop over cuts and fill loose and tight el and get fake rates for ID                                                                                                   
+  for(unsigned int imva=0; imva < vcut_mva_s.size(); imva++){
+    for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b_s.size(); dxy_b++){
+      for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
+	for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
+	  
+	  isocut.push_back("dijet_mva"+vcut_mva_s[imva]+"_iso"+vcut_iso_b_s[iso_b]+"_dxy"+vcut_dxy_b_s[dxy_b]+"_dz"+vcut_dz_b_s[dz_b]);
+	}
+      }
+    }
+  }
 
 
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    for(vector<TString>::iterator it = fakes.begin(); it!=fakes.end(); ++it){
-      cout << *it2 << endl;
-      if(!CheckFile(fdata))return;
-     if(!CheckFile(fmc))return;
-
-      TString denom ="LooseEl" + *it + "_"+ *it2;
-      TString num ="TightEl" + *it +  "_"+ *it2;
-      //if (!denom.Contains("0")){
-      //denom ="LooseEl" + *it+ *it2;
-      //num ="TightEl" + *it +  *it2;
+    for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
       
-      //}
+      if(!CheckFile(fdata))return;
+      if(!CheckFile(fmc))return;
+      TString denom ="LooseEl"  + *it3 +"_"+ *it2;
+      TString num ="TightEl"  +  *it3 + "_"+*it2;
+      
+      
       TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
       TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
-      
       
       cout << h_pt_num << " " << h_pt_denom << endl;
       cout << num << " " << denom << endl;
@@ -268,152 +118,20 @@ void MakeFRRootFile(){
       TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
       CheckHist(h_mcpt_denom);
       CheckHist(h_mcpt_num);
-      cout << "tets" << endl;
       
-      TString name = *it+ *it2 ;
+      TString name =*it2 + *it3;
       
       TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
-      cout << "tets" << endl;
       TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
       eff_rate->Add(h_mcpt_num,-1.);
       hratedenom->Add(h_mcpt_denom, -1.);
       eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
       eff_rate->Write();
-      
-      //TCanvas* c1 = new TCanvas(("Plot"), "Plot", 1600, 1200);
-      //eff_rate->Draw("colz textE");
-      //c1->SaveAs(("/home/jalmond/WebPlots/13TeV/Fakes/2D_ps_hntight_aj40.pdf"));
     }
-  }
-
-
-
-  std::vector<TString> fakesdxy;
-  fakesdxy.push_back("ELECTRON_HN_HIGHDXY_TIGHT_eldxy");
-
-  
-  for(vector<TString>::iterator it = fakesdxy.begin(); it!=fakesdxy.end(); ++it){
-    if(!CheckFile(fdata))return;
-    if(!CheckFile(fmc))return;
-    TString denom ="LooseEl" + *it  +"_pt_eta";
-    TString num ="TightEl" + *it  +"_pt_eta";
-    TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
-    TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
     
-    cout << h_pt_num << " " << h_pt_denom << endl;
-    cout << num << " " << denom << endl;
-    CheckHist(h_pt_denom);
-    CheckHist(h_pt_num);
-    TH2D* h_mcpt_num= (TH2D*)fmc->Get(num.Data());
-    TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
-    CheckHist(h_mcpt_denom);
-    CheckHist(h_mcpt_num);
-    cout << "tets" << endl;
-    
-    TString name = *it ;
-    
-    TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
-    TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
-    eff_rate->Add(h_mcpt_num,-1.);
-    hratedenom->Add(h_mcpt_denom, -1.);
-    eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-    eff_rate->Write();
   }
   
-
-
   
-
-  for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
-      for(vector<TString>::iterator it = fakes_opt.begin(); it!=fakes_opt.end(); ++it){
-
-	if(it3->Contains("dxy") && it->Contains("mini")) continue;
-
-        if(!CheckFile(fdata))return;
-        if(!CheckFile(fmc))return;
-        TString denom ="LooseEl" + *it + *it3 +"_dijet_nod0_"+ *it2;
-        TString num ="TightEl" + *it +  *it3 +"_dijet_nod0_"+ *it2;
-	if(it->Contains("dxy")){
-	  denom ="LooseEl" + *it + *it3 +"_dijet_nod0_dxysig_"+ *it2;
-	  num ="TightEl" + *it +  *it3 +"_dijet_nod0_dxysig_"+ *it2;
-	}
-	if(it->Contains("miniiso")){
-          denom ="LooseEl" + *it + *it3+ "_dijet_nod0_dxysig_miniiso_"+ *it2;
-          num ="TightEl" + *it + *it3+  "_dijet_nod0_dxysig_miniiso_"+ *it2;
-        }
-
-        TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
-        TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
-
-        cout << h_pt_num << " " << h_pt_denom << endl;
-        cout << num << " " << denom << endl;
-        CheckHist(h_pt_denom);
-        CheckHist(h_pt_num);
-        TH2D* h_mcpt_num= (TH2D*)fmc->Get(num.Data());
-        TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
-        CheckHist(h_mcpt_denom);
-        CheckHist(h_mcpt_num);
-
-        TString name = *it +*it2 + *it3;
-
-        TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
-        TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
-        eff_rate->Add(h_mcpt_num,-1.);
-        hratedenom->Add(h_mcpt_denom, -1.);
-        eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-        eff_rate->Write();
-      }
-    }
-  }
-
-
-  for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
-    for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
-      for(vector<TString>::iterator it = fakes_optd0.begin(); it!=fakes_optd0.end(); ++it){
-
-        if(it3->Contains("dxy") && it->Contains("mini")) continue;
-
-        if(!CheckFile(fdata))return;
-        if(!CheckFile(fmc))return;
-        TString denom ="LooseEl" + *it + *it3 +"_dijet_d0_"+ *it2;
-        TString num ="TightEl" + *it +  *it3 +"_dijet_d0_"+ *it2;
-        if(it->Contains("dxy")){
-          denom ="LooseEl" + *it + *it3 +"_dijet_d0_dxysig_"+ *it2;
-          num ="TightEl" + *it +  *it3 +"_dijet_d0_dxysig_"+ *it2;
-        }
-        if(it->Contains("miniiso")){
-          denom ="LooseEl" + *it + *it3+ "_dijet_d0_dxysig_miniiso_"+ *it2;
-          num ="TightEl" + *it + *it3+  "_dijet_d0_dxysig_miniiso_"+ *it2;
-        }
-
-
-        TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
-        TH2D* h_pt_denom= (TH2D*)fdata->Get(denom.Data());
-
-        cout << h_pt_num << " " << h_pt_denom << endl;
-        cout << num << " " << denom << endl;
-        CheckHist(h_pt_denom);
-        CheckHist(h_pt_num);
-        TH2D* h_mcpt_num= (TH2D*)fmc->Get(num.Data());
-        TH2D* h_mcpt_denom= (TH2D*)fmc->Get(denom.Data());
-        CheckHist(h_mcpt_denom);
-        CheckHist(h_mcpt_num);
-
-        TString name = *it +*it2 + *it3+"_d0";
-
-        TH2D* eff_rate = (TH2D*)h_pt_num->Clone(("FakeRate_" + name).Data());
-        TH2D* hratedenom = (TH2D*)h_pt_denom->Clone((name +"_denom").Data());
-        eff_rate->Add(h_mcpt_num,-1.);
-        hratedenom->Add(h_mcpt_denom, -1.);
-        eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
-        eff_rate->Write();
-      }
-    }
-  }
-
-
-
   return;
 
 }

@@ -344,7 +344,7 @@ else
     if [ ! $LD_LIBRARY_PATH ]; then
         echo "Warning: so far you haven't setup your ROOT enviroment properly (no LD_LIBRARY_PATH): FrameWork will not work"
     fi
-    
+    export LD_TMP_LIBRARY_PATH=${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${LQANALYZER_LIB_PATH}:${LD_LIBRARY_PATH}
 
 fi

@@ -115,6 +115,13 @@ if not os.path.exists(tag_dir):
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)
 
+    if not "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
+        if not os.path.exists("/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
+            os.system("mkdir " + "/data7/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
+        if not os.path.exists("/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER")):
+            os.system("mkdir " + "/data8/DATA/CAT_SKTreeOutput/"+os.getenv("USER"))
+
+
     new_out=mount_name+"/CAT_SKTreeOutput/JobOutPut/"+os.getenv("USER")+"/LQanalyzer/"
     if not os.path.exists(new_out):
         os.system("mkdir " + new_out)

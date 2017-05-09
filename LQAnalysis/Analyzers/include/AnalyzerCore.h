@@ -216,6 +216,11 @@ class AnalyzerCore : public LQCycleBase {
   UInt_t numberVertices;
   Bool_t *goodVerticiesB;
 
+  bool k_usegenjet;
+  bool k_usetruth;
+  bool k_usephotons;
+  bool k_usefatjet;
+
   TDirectory *Dir;
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;

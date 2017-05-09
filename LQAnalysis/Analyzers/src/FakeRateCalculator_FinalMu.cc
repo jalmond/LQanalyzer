@@ -1,6 +1,6 @@
 /***************************************************************************
- * @Project: LQFakeRateCalculator_El Frame - ROOT-based analysis framework for Korea SNU
- * @Package: LQCycles
+ * @Project: LQFakeRateCalculator_FinalMu Frame - ROOT-based analysis framework for Korea SNU
+OB * @Package: LQCycles
  *
  * @author John Almond       <jalmond@cern.ch>           - SNU
  *
@@ -8,27 +8,27 @@
 
 
 /// Local includes
-#include "FakeRateCalculator_El.h"
+#include "FakeRateCalculator_FinalMu.h"
 
 //Core includes
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (FakeRateCalculator_El);
+ClassImp (FakeRateCalculator_FinalMu);
 
 
 /**
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-FakeRateCalculator_El::FakeRateCalculator_El() :  AnalyzerCore(),  out_electrons(0) {
+FakeRateCalculator_FinalMu::FakeRateCalculator_FinalMu() :  AnalyzerCore(),  out_electrons(0) {
 
 
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("FakeRateCalculator_El");
+  SetLogName("FakeRateCalculator_FinalMu");
 
-  Message("In FakeRateCalculator_El constructor", INFO);
+  Message("In FakeRateCalculator_FinalMu constructor", INFO);
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   InitialiseAnalysis();
@@ -36,7 +36,7 @@ FakeRateCalculator_El::FakeRateCalculator_El() :  AnalyzerCore(),  out_electrons
 }
 
 
-void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
+void FakeRateCalculator_FinalMu::InitialiseAnalysis() throw( LQError ) {
   
   /// Initialise histograms
   MakeHistograms();  
@@ -44,7 +44,7 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
   // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
   // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
   //
-  return;
+  
   MakeCleverHistograms(sighist_ee, "SingleLooseElJet");
   MakeCleverHistograms(sighist_ee, "SingleTightElJet");
 
@@ -60,24 +60,15 @@ void FakeRateCalculator_El::InitialiseAnalysis() throw( LQError ) {
 }
 
 
-void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
+void FakeRateCalculator_FinalMu::ExecuteEvents()throw( LQError ){
     
-
-  Message("In ExecuteEvents() " , DEBUG);
-
   //// Initial event cuts
   /// MET FIleters 
   if(!PassMETFilter()) return;     
   
-  if (eventbase->GetEvent().MET(snu::KEvent::pfmet) > 20) return;
-
-  Message("PASS MET FILTER " , DEBUG);
-
   /// Require good promary vertex 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return; //// Make cut on event wrt vertex  
   numberVertices = eventbase->GetEvent().nVertices();   
-
-  Message("PASS VERTEX " , DEBUG);
 
   /// These run on double electron dataset
   if((isData&&k_channel == "DoubleEG") || !isData){
@@ -91,62 +82,12 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     /// only pt/eta/chargeconst/looseIP/
 
     std::vector<snu::KElectron> tmploose_el = GetElectrons(false,false,"ELECTRON_HN_FAKELOOSEST");
-    TString triggerslist_8="HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v";   /// -> tighter cut in lepton ID form tighter trigger emulation cut                                      
-    TString triggerslist_12="HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
-    TString triggerslist_18="HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
-    TString triggerslist_23="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v";
-    TString triggerslist_33="HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v"; /// 
-
     
-    if(tmploose_el.size() < 1) return;
-
-    std::vector<snu::KElectron> vetoloose_el;
-    for(unsigned int iel=0; iel<tmploose_el.size(); iel++){
-      float reliso = tmploose_el[iel].PFRelIso(0.3);
-      bool pass_trigger_emulation=true;
-      if(tmploose_el[iel].Pt() < 15.){
-	if(!tmploose_el[iel].PassHLTID()) pass_trigger_emulation=false;
-      }
-      else{
-	if(!tmploose_el[iel].IsTrigMVAValid()) pass_trigger_emulation=false;
-      }
-      if(!pass_trigger_emulation) continue;
-
-      if(fabs(tmploose_el[iel].SCEta())<0.8 ){
-	if(tmploose_el[iel].MVA() < -0.02) continue;
-      }
-      else  if(fabs(tmploose_el[iel].SCEta())<1.479 ){
-	if(tmploose_el[iel].MVA() < -0.52) continue;
-      }
-      else {
-	if(tmploose_el[iel].MVA() < -0.52) continue;
-      }
-      
-      /// loose id has                                                                                                                                                  
-      // - trigger emulation                                                                                                                                            
-      // - loose mva (taken sae as gent group                                                                                                                           
-      // - dxy/dz cuts applied                                                                                                                                          
-      vetoloose_el.push_back(tmploose_el[iel]);
-    }
-    if(vetoloose_el.size() != 1) return;
-
-    Double_t METdphi = TVector2::Phi_mpi_pi(vetoloose_el.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
-    Double_t MT=sqrt(2.* vetoloose_el.at(0).Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
-    if(MT > 25.) return;
-
-    float prescale_trigger =  GetPrescale(vetoloose_el,  PassTrigger(triggerslist_8), PassTrigger(triggerslist_12), PassTrigger(triggerslist_18), PassTrigger( triggerslist_23), PassTrigger(triggerslist_33), TargetLumi);
-    if(prescale_trigger==0.) return;
 
     ///// Setup cuts to optimise
     vector<float> vcut_mva;
     vector<TString> vcut_mva_s;
-    
-    int nmva=98;
-    int ndxy=5;
-    int ndz=3;
-    int niso=5;
-
-    for(unsigned int imva=0; imva < nmva; imva++){
+    for(unsigned int imva=0; imva < 98; imva++){
       float cut_dmva = float(imva)*0.01 -0.01;
       vcut_mva.push_back(cut_dmva);
       stringstream ss;
@@ -156,19 +97,19 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     vector<float> vcut_dxy_b;
     vector<TString> vcut_dxy_b_s;
     
-    for(unsigned int dxy_b=0;dxy_b < ndxy; dxy_b++){
-      float cut_dxy_b =  float(dxy_b)*0.01 + 0.01;
+    for(unsigned int dxy_b=0;dxy_b < 10; dxy_b++){
+      float cut_dxy_b =  float(dxy_b)*0.005 + 0.01;
       vcut_dxy_b.push_back(cut_dxy_b);
       stringstream ss;
       ss <<cut_dxy_b;
       vcut_dxy_b_s.push_back(TString(ss.str()));
     }
-    
+
     vector<float> vcut_dz_b;
     vector<TString> vcut_dz_b_s;
     
-    for(unsigned int dz_b=0;dz_b < ndz; dz_b++){
-      float cut_dz_b =  float(dz_b)*0.02 + 0.04;
+    for(unsigned int dz_b=0;dz_b < 10; dz_b++){
+      float cut_dz_b =  float(dz_b)*0.02 + 0.02;
       vcut_dz_b.push_back(cut_dz_b);
       stringstream ss;
       ss <<cut_dz_b;
@@ -179,14 +120,14 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
     vector<float> vcut_iso_b;
     vector<TString> vcut_iso_b_s;
-    for(unsigned int iso_b=0;iso_b < niso; iso_b++){
-      float cut_iso_b = float(iso_b)*0.01 + 0.05;
+    for(unsigned int iso_b=0;iso_b < 10; iso_b++){
+      float cut_iso_b = float(iso_b)*0.005 + 0.05;
       vcut_iso_b.push_back(cut_iso_b);
       stringstream ss;
       ss <<cut_iso_b;
       vcut_iso_b_s.push_back(TString(ss.str()));
     }
-    
+
     //// Loop over cuts and fill loose and tight el and get fake rates for ID
     for(unsigned int imva=0; imva < vcut_mva.size(); imva++){
       for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b.size(); dxy_b++){
@@ -229,7 +170,9 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 	      if(reliso > vcut_iso_b[iso_b]) continue;
 	      tight_el.push_back(tmploose_el[iel]);
 	    }
-	    GetFakeRateAndPromptRates(loose_el,"dijet_mva"+vcut_mva_s[imva]+"_iso"+vcut_iso_b_s[iso_b]+"_dxy"+vcut_dxy_b_s[dxy_b]+"_dz"+vcut_dz_b_s[dz_b],tight_el,weight,true,  false);
+	    cout << "dijet_"+vcut_mva_s[imva]+"_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dz_b_s[dz_b] << endl;
+	    GetFakeRateAndPromptRates(loose_el,"dijet_"+vcut_mva_s[imva]+"_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dz_b_s[dz_b],tight_el,weight,true,  false);
+
 	  }//iso
 	}//dz
       }//dxy
@@ -294,7 +237,7 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
     //MakeSingleElectronCRPlots("ELECTRON_HN_FAKELOOSE","dijet_d0",  "ELECTRON_HN_TIGHT",weight,true); 
   }
 }
-void FakeRateCalculator_El::MakeSingleElectronCRPlots(TString looseid, TString eltag, TString tightid, float w, bool usepujetid){
+void FakeRateCalculator_FinalMu::MakeSingleElectronCRPlots(TString looseid, TString eltag, TString tightid, float w, bool usepujetid){
   std::vector<snu::KElectron> electronLooseColl = GetElectrons(false,false,  looseid);
   std::vector<snu::KElectron> electronTightColl = GetElectrons(false,false,  tightid);
   
@@ -362,7 +305,7 @@ void FakeRateCalculator_El::MakeSingleElectronCRPlots(TString looseid, TString e
 }
 
 
-void FakeRateCalculator_El::GetFakeRateAndPromptRatesPerPeriod(TString looseid, TString eltag, TString tightid, float w, bool usepujetid, bool runall){
+void FakeRateCalculator_FinalMu::GetFakeRateAndPromptRatesPerPeriod(TString looseid, TString eltag, TString tightid, float w, bool usepujetid, bool runall){
 
 
   int iperiod = GetMCPeriodRandom();
@@ -385,14 +328,14 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRatesPerPeriod(TString looseid, 
   
 }
 
-void FakeRateCalculator_El::GetFakeRateAndPromptRates(std::vector<snu::KElectron> electronLooseColl, TString eltag, std::vector<snu::KElectron> electronTightColl, float w, bool usepujetid, bool runall){
+void FakeRateCalculator_FinalMu::GetFakeRateAndPromptRates(std::vector<snu::KElectron> electronLooseColl, TString eltag, std::vector<snu::KElectron> electronTightColl, float w, bool usepujetid, bool runall){
 
   // PileUpWeight is period dependant 
   // MC events are split into 7 data periods and 
   if (!k_isdata) {
     w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetMCPeriodRandom());
   }
-  
+
   /// Four single electron triggers
 
   /// Loose ID has emul. tighter than CaloIdL_TrackIdL_IsoVL for all pt range
@@ -436,18 +379,10 @@ void FakeRateCalculator_El::GetFakeRateAndPromptRates(std::vector<snu::KElectron
   if(muonColl.size() > 0) return;
   
    /// Get prescale for single el event. Returns 1. or 0. for data
-
-  if(electronLooseColl.size()!=1) return;
-
-
   float prescale_trigger =  GetPrescale(electronLooseColl,  PassTrigger(triggerslist_8), PassTrigger(triggerslist_12), PassTrigger(triggerslist_18), PassTrigger( triggerslist_23), PassTrigger(triggerslist_33), TargetLumi); 
-
   
-bool useevent40 = UseEvent(electronLooseColl , jetColl, 40., prescale_trigger, w);
- if(!useevent40) return;
- 
-  /// Make standard plots for loose and tight collection dijet                                                                                                                  
-  if(electronLooseColl.size()==1)MakeFakeRatePlots("", eltag, electronTightColl,electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w, true);
+  /// Make standard plots for loose and tight collection dijet                                                                                                                   
+  if(electronLooseColl.size()==1)MakeFakeRatePlots("", eltag, electronTightColl,electronLooseColl,  jetCollTight, jetColl,  prescale_trigger, w, false);
   
   if(!runall) return;
 
@@ -551,7 +486,7 @@ bool useevent40 = UseEvent(electronLooseColl , jetColl, 40., prescale_trigger, w
 }// End of execute event loop
 
 
-float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,bool pass5,  bool pass4, bool pass3, bool pass2, bool pass1, float fake_total_lum ){
+float FakeRateCalculator_FinalMu::GetPrescale( std::vector<snu::KElectron> electrons,bool pass5,  bool pass4, bool pass3, bool pass2, bool pass1, float fake_total_lum ){
   
   float prescale_trigger= 1.;
   if(electrons.size() ==1){
@@ -633,7 +568,7 @@ float FakeRateCalculator_El::GetPrescale( std::vector<snu::KElectron> electrons,
 }
 
 
-void FakeRateCalculator_El::MakeDXYFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float prescale_dielw, float w){
+void FakeRateCalculator_FinalMu::MakeDXYFakeRatePlots(TString label, TString eltag,  std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float prescale_dielw, float w){
 
   std::vector<snu::KElectron> electrons_tight =   GetElectrons(false,false,label);
   
@@ -666,7 +601,7 @@ void FakeRateCalculator_El::MakeDXYFakeRatePlots(TString label, TString eltag,  
 
 
 
-void FakeRateCalculator_El::MakeFakeRatePlots(TString label, TString eltag,   std::vector<snu::KElectron> electrons_tight, std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float w, bool makebasicplots){
+void FakeRateCalculator_FinalMu::MakeFakeRatePlots(TString label, TString eltag,   std::vector<snu::KElectron> electrons_tight, std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float w, bool makebasicplots){
   
 
   if(electrons.size() ==2){
@@ -703,10 +638,10 @@ void FakeRateCalculator_El::MakeFakeRatePlots(TString label, TString eltag,   st
   else truth_match=true;
   
   label= eltag;
+
   if(truth_match){
     if(jets.size() >= 1){
       if(makebasicplots){
-
 	if(useevent40)GetFakeRates(electrons, electrons_tight,label, jets, alljets,  label+"_40", (prescale_w * w),makebasicplots);
       }
       else{
@@ -719,7 +654,7 @@ void FakeRateCalculator_El::MakeFakeRatePlots(TString label, TString eltag,   st
   }
 }
 
-bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std::vector< snu::KJet> jets, float awayjetcut, float precale_weight, float wt){
+bool FakeRateCalculator_FinalMu::UseEvent(std::vector<snu::KElectron> electrons,  std::vector< snu::KJet> jets, float awayjetcut, float precale_weight, float wt){
   
   bool useevent = false;
   if(electrons.size() != 1) return false;
@@ -747,8 +682,9 @@ bool FakeRateCalculator_El::UseEvent(std::vector<snu::KElectron> electrons,  std
   return useevent;
 }
 
-void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, TString tightlabel,  std::vector<snu::KJet> jets,  std::vector<snu::KJet> alljets, TString tag, double w, bool basicplots){
+void FakeRateCalculator_FinalMu::GetFakeRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, TString tightlabel,  std::vector<snu::KJet> jets,  std::vector<snu::KJet> alljets, TString tag, double w, bool basicplots){
   
+   
   Float_t ptbins[10] = { 10., 15.,20.,25.,30.,35.,45.,60.,100., 200.};
   Float_t ptbinsb[8] = { 10., 15.,20.,30.,45.,60.,100., 200.};
   Float_t etabin[2] = { 0.,  2.5};
@@ -847,7 +783,7 @@ void FakeRateCalculator_El::GetFakeRates(std::vector<snu::KElectron> loose_el, s
 
 
 
-void FakeRateCalculator_El::GetHSTRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets, TString tag){
+void FakeRateCalculator_FinalMu::GetHSTRates(std::vector<snu::KElectron> loose_el, std::vector<snu::KElectron> tight_el, std::vector<snu::KJet> jets, TString tag){
 
   Float_t htbins[14] = { 20.,22.5, 25.,27.5, 30.,35.,40.,45.,50.,60.,80.,100.,200., 1000.};
 
@@ -881,7 +817,7 @@ void FakeRateCalculator_El::GetHSTRates(std::vector<snu::KElectron> loose_el, st
 
 
 
-void FakeRateCalculator_El::EndCycle()throw( LQError ){
+void FakeRateCalculator_FinalMu::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
   m_logger<< INFO << "Number of events that pass 1 7GeV trigger = " << n_17_pass  << LQLogger::endmsg;
@@ -890,7 +826,7 @@ void FakeRateCalculator_El::EndCycle()throw( LQError ){
 
 }
 
-void FakeRateCalculator_El::BeginCycle() throw( LQError ){
+void FakeRateCalculator_FinalMu::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
@@ -910,15 +846,15 @@ void FakeRateCalculator_El::BeginCycle() throw( LQError ){
   
 }
 
-FakeRateCalculator_El::~FakeRateCalculator_El() {
+FakeRateCalculator_FinalMu::~FakeRateCalculator_FinalMu() {
   
-  Message("In FakeRateCalculator_El Destructor" , INFO);
+  Message("In FakeRateCalculator_FinalMu Destructor" , INFO);
   
 }
 
 
 
-void FakeRateCalculator_El::BeginEvent( )throw( LQError ){
+void FakeRateCalculator_FinalMu::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -928,20 +864,20 @@ void FakeRateCalculator_El::BeginEvent( )throw( LQError ){
 
 ///############### THESE ARE FUNCTIONS SPECIFIC TO THIS CYCLE
 
-void FakeRateCalculator_El::MakeHistograms(){
+void FakeRateCalculator_FinalMu::MakeHistograms(){
   //// Additional plots to make
     
   maphist.clear();
   AnalyzerCore::MakeHistograms();
   Message("Made histograms", INFO);
   /**
-   *  Remove//Overide this FakeRateCalculator_ElCore::MakeHistograms() to make new hists for your analysis
+   *  Remove//Overide this FakeRateCalculator_FinalMuCore::MakeHistograms() to make new hists for your analysis
    **/
   
 }
 
 
-void FakeRateCalculator_El::ClearOutputVectors() throw(LQError) {
+void FakeRateCalculator_FinalMu::ClearOutputVectors() throw(LQError) {
 
   // This function is called before every execute event (NO need to call this yourself.
   

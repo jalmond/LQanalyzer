@@ -305,6 +305,14 @@ if not cycle == "SKTreeMaker":
 
 
 output_mounted="/data2"
+workoutput_mounted="/data2"
+merge_mounted="/data8/DATA"
+if len(sample)>1:
+    if  sample == "H_v2" or sample == "H_v3":
+        workoutput_mounted="/data7/DATA"
+
+
+
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data5"
 
@@ -313,9 +321,15 @@ if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
 ### Make tmp directory for job
 ############################################################
 
-tmpwork = output_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
+tmpwork = workoutput_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
+mergetmpwork = merge_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
+
+if not (os.path.exists(mergetmpwork)):
+    os.system("mkdir " + mergetmpwork)
+
+
 
 timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")+"_"+os.getenv("CATVERSION")
 #timestamp_dir=tmpwork + "/" + cycle + "_joboutput_" +now() +"_" +os.getenv("HOSTNAME")    
@@ -685,7 +699,7 @@ check_array = []
 ###################################################
 
     
-workspace = output_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
+workspace = workoutput_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() +"/"
 
 if not (os.path.exists(workspace)):
         os.system("mkdir " + workspace)
@@ -693,14 +707,19 @@ out_end=sample
 
 
 output=workspace + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
+mergeoutputdir = mergetmpwork + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
 if not mc:
     output=workspace + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/" 
+    mergeoutputdir = mergetmpwork + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/"
 
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"
 if not (os.path.exists(output)):
     os.system("mkdir " + output)
     print "Making tmp working directory to run Job  : " + output
+if not (os.path.exists(mergeoutputdir)):
+    os.system("mkdir " + mergeoutputdir)
+    print "Making tmp merge dir " + mergeoutputdir
 
 if(os.path.exists(outputdir)):
     number_of_outputfiles = sum(1 for item in os.listdir(outputdir) if isfile(join(outputdir, item)))
@@ -937,12 +956,12 @@ for i in range(1,number_of_cores+1):
 
 if running_batch: 
     
-    if not os.path.exists(output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
-        os.system("mkdir " + output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    if not os.path.exists(workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
     
 
     print "@@@@@@@@@@@@@@@@@@@@@@@@@"
-    path_jobids = output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
+    path_jobids = workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample + "jobid.txt"
 
     file_jobids = open(path_jobids,"w")
     for ijob in array_batchjobs:
@@ -1269,16 +1288,15 @@ else:
         if DEBUG == "True":
             print line
 
-
-    SKTreeOutput_pre = output_mounted+"/CatNtuples/" + sample_catversion
+    SKTreeOutput_pre = workoutput_mounted+"/CatNtuples/" + sample_catversion
     if not os.path.exists(SKTreeOutput_pre):
         os.system("mkdir " + SKTreeOutput_pre)
 
-    SKTreeOutput_pre2 = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
+    SKTreeOutput_pre2 = workoutput_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"
     if not os.path.exists(SKTreeOutput_pre2):
         os.system("mkdir " + SKTreeOutput_pre2)
                     
-    SKTreeOutput = output_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
+    SKTreeOutput = workoutput_mounted+"/CatNtuples/" + sample_catversion + "/SKTrees/"        
     
     #do not merge the output when using tree maker code
     if cycle == "SKTreeMaker":
@@ -1439,7 +1457,9 @@ else:
             outfile = cycle + "_" + outsamplename + ".root"
         if os.path.exists(Finaloutputdir + outfile):
             os.system("rm  "  +  Finaloutputdir   + outfile)
-        os.system("hadd " + Finaloutputdir +  outfile  + " "+ outputdir + "*.root")
+        os.system("mv " +outputdir + "*.root" + " " + mergeoutputdir)
+        os.system("hadd " + mergeoutputdir +  outfile  + " "+ mergeoutputdir + "*.root")
+        os.system("mv " + mergeoutputdir +  outfile + " "  + Finaloutputdir)
         os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
         f = ROOT.TFile(Finaloutputdir +  outfile)
         t = f.Get("CycleInfo/CycleVirtualMemoryUsage")
@@ -1556,10 +1576,10 @@ statwrite_time.write("memoryusage_v " + str(memoryusage_v/1000)  + "MB \n")
 statwrite_time.write("memoryusage_p " + str(memoryusage_p/1000)  + "MB \n") 
 if JobCrash:
     statwrite_time.write("Success= False \n")
-    if not os.path.exists(output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
-        os.system("mkdir " + output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
-    os.system("mkdir " + output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
-    crash_log= output_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
+    if not os.path.exists(workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/"):
+        os.system("mkdir " + workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/")
+    os.system("mkdir " + workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash")
+    crash_log= workoutput_mounted+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + original_sample+"_crash/crashlog.txt"
     writecrashlog = open(crash_log,"w")
     writecrashlog.write("###########################################################################################################")
     writecrashlog.write("Check crash by running root -q -b " + failed_macro)

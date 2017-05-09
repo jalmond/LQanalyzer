@@ -44,6 +44,8 @@ if not LQANALYZER_DIR == "None" :
 	if os.getenv("HOSTNAME") == "cms.snu.ac.kr":
             CleanUpLogs(path_jobpre+"CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs("/data2/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data7/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
+            CleanUpLogs("/data8/CAT_SKTreeOutput/" + getpass.getuser()+ "/")
             CleanUpLogs(EightTeVdataOne)
             CleanUpLogs(EightTeVdataTwo)
         else:
