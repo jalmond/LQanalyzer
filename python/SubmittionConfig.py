@@ -1337,7 +1337,7 @@ if setjobs== "true":
 sample = options.period
 channel = options.stream
 cycle = options.cycle
-logstep = 10#int(options.logstep)
+logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
 runtau = options.runtau
@@ -2189,7 +2189,6 @@ for nsample in range(0, len(sample)):
     ##### New Code looks at submittnig jobs to batch queue        
     logfile=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)+ "/statlog_"+ s + tagger + ".txt"
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)):
-        print "Making [SubmittionConfig.py] " + path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger)
         os.system("mkdir " + path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + os.getenv("USER") + "/" + str(tagger))
 
     filestatlog=open(logfile,"w")

@@ -62,7 +62,7 @@ if setjobs== "true":
 sample = options.period
 channel = options.stream
 cycle = options.cycle
-logstep = 10#int(options.logstep)
+logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
 runtau = options.runtau
