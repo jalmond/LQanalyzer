@@ -3,7 +3,7 @@ import os,sys,getpass,datetime
 master_an_jonpre="/data2/"
 master_an_jonpre2="/data7/DATA/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
-    an_jonpre="/data4/"
+    master_an_jonpre="/data4/"
 
 def GetList(an_jonpre):
     if os.path.exists( an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/check"):
@@ -114,11 +114,11 @@ if outinfo == "False":
 else:
     output_jobinfo_only=True
 
-bkg_job_file_path=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
-finished_path=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
+bkg_job_file_path=master_an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
+finished_path=master_an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
 if isdata:
-    bkg_job_file_path=an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
-    finished_path=an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
+    bkg_job_file_path=master_an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
+    finished_path=master_an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
 
 
 if not os.path.exists(bkg_job_file_path):
