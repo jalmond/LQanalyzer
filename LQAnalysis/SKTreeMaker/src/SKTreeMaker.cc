@@ -174,6 +174,7 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
     AddTriggerToList("HLT_Mu8");
     AddTriggerToList("HLT_Mu1");
     AddTriggerToList("HLT_Mu2");
+    AddTriggerToList("HLT_Mu3");
     AddTriggerToList("HLT_DoubleEle2");
     AddTriggerToList("HLT_DoubleEle8");
     AddTriggerToList("HLT_DoubleEle3");

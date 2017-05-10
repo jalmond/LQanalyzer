@@ -1,10 +1,11 @@
 import os,sys,getpass,datetime
 
-an_jonpre="/data2/"
+master_an_jonpre="/data2/"
+master_an_jonpre2="/data7/DATA/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     an_jonpre="/data4/"
 
-def GetList():
+def GetList(an_jonpre):
     if os.path.exists( an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/check"):
         os.system("rm " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG* >  " + an_jonpre + "CAT_SKTreeOutput/"+getpass.getuser() +"/check")    
 
@@ -92,16 +93,20 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-j", "--job", dest="j", default="123",help="tag")
 parser.add_option("-o", "--output", dest="o", default="False",help="tag")
+parser.add_option("-d", "--isdata", dest="d", default=False,help="tag")
 
 
 (options, args) = parser.parse_args()
 jobid=options.j
 outinfo=options.o
-
+isdata=options.d
 
 if jobid == "123":
     print "use sktree_bkg_log -j <jobid>"
-    GetList()
+    if isdata:
+        GetList(master_an_jonpre2)
+    else:
+        GetList(master_an_jonpre2)
     sys.exit()
 
 if outinfo == "False":
@@ -111,6 +116,10 @@ else:
 
 bkg_job_file_path=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
 finished_path=an_jonpre+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
+if isdata:
+    bkg_job_file_path=an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_bkg.txt"
+    finished_path=an_jonpre2+"/CAT_SKTreeOutput/"+getpass.getuser() +"/CLUSTERLOG" + jobid + "/output_finished.txt"
+
 
 if not os.path.exists(bkg_job_file_path):
     if not os.path.exists(finished_path):

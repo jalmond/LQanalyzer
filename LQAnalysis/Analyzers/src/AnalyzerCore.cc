@@ -1712,7 +1712,11 @@ AnalyzerCore::~AnalyzerCore(){
     delete it->second;
   }
   maphist2D.clear();
-
+  
+  for(map<TString, TH3*>::iterator it = maphist3D.begin(); it!= maphist3D.end(); it++){
+    delete it->second;
+  }
+  maphist3D.clear();
 
 
   for(map<TString, MuonPlots*>::iterator it = mapCLhistMu.begin(); it != mapCLhistMu.end(); it++){
@@ -2516,6 +2520,7 @@ void AnalyzerCore::MakeHistograms(){
   //// Additional plots to make                                                                                
   maphist.clear();
   maphist2D.clear();
+  maphist3D.clear();
 
     
 }
@@ -2532,10 +2537,18 @@ void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xm
   maphist[hname]->GetXaxis()->SetTitle(label);
 }
 
+
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
   maphist2D[hname]->GetXaxis()->SetTitle(label);
+}
+
+
+void AnalyzerCore::MakeHistograms3D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, int nbinsz, float zmin, float zmax, TString label) {
+  
+  maphist3D[hname] =  new TH3D(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax, nbinsz, zmin, zmax);
+  maphist3D[hname]->GetXaxis()->SetTitle(label);
 }
 
 void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[], TString label) {
@@ -2661,6 +2674,23 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
 
 }
 
+
+void AnalyzerCore::FillHist(TString histname, float value1, float value2,float value3, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , float zmin, float zmax, int nbinxz, TString label){
+
+  m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
+  if(GetHist3D(histname)) GetHist3D(histname)->Fill(value1,value2,value3, w);
+  else{
+    if (nbinsx < 0) {
+      m_logger << ERROR << histname << " was NOT found. Nbins was not set also... please configure histogram maker correctly" << LQLogger::endmsg;
+      exit(0);
+    }
+    m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
+    MakeHistograms3D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , nbinxz, zmin, zmax,label);
+    if(GetHist3D(histname)) GetHist3D(histname)->GetXaxis()->SetTitle(label);
+    if(GetHist3D(histname)) GetHist3D(histname)->Fill(value1,value2,value3, w);
+  }
+
+}
 
 
 void AnalyzerCore::FillHist(TString histname, float value, float w , TString label){
@@ -2958,6 +2988,9 @@ void AnalyzerCore::WriteHists(){
   for(map<TString, TH2*>::iterator mapit = maphist2D.begin(); mapit != maphist2D.end(); mapit++){
     mapit->second->Write();
   }
+  for(map<TString, TH3*>::iterator mapit = maphist3D.begin(); mapit != maphist3D.end(); mapit++){
+    mapit->second->Write();
+  }
 
   //==== HN Gen Matching
   if((TString(getenv("USER")) == "jskim" || TString(getenv("USER")) =="shjeon")){
@@ -2983,6 +3016,17 @@ TH2* AnalyzerCore::GetHist2D(TString hname){
   TH2* h = NULL;
   std::map<TString, TH2*>::iterator mapit = maphist2D.find(hname);
   if(mapit != maphist2D.end()) return mapit->second;
+  else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
+
+  return h;
+}
+
+
+TH3* AnalyzerCore::GetHist3D(TString hname){
+
+  TH3* h = NULL;
+  std::map<TString, TH3*>::iterator mapit = maphist3D.find(hname);
+  if(mapit != maphist3D.end()) return mapit->second;
   else m_logger << DEBUG  << hname << " was not found in map" << LQLogger::endmsg;
 
   return h;

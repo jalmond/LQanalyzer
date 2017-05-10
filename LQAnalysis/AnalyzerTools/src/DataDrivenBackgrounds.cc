@@ -444,6 +444,23 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
 
   return Get_DataDrivenWeight_EE( geterr,k_electrons, "ELECTRON16_HN_FAKELOOSE_NOD0","ELECTRON16_HN_TIGHT","dijet_ajet40");
 }
+
+
+float DataDrivenBackgrounds::Get_DataDrivenWeight_EEmva(bool geterr,vector<snu::KElectron> k_electrons, bool is_el1_tight, bool is_el2_tight, TString elkey1, TString elkey2 ){
+
+
+  if(k_electrons.size()==0) return 0.;
+
+  if(k_electrons.size()==2){
+
+    vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+
+    return  m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight, is_el2_tight, elkey1,elkey2 );
+
+    /// "" loose ID needs filling here                                                                                                                              
+  }
+  return 1.;
+}
 float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KElectron> k_electrons,   TString IDloose,TString IDtight, TString method){
 
 
