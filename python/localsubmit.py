@@ -116,12 +116,6 @@ path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
     
-if len(sample)==1:
-    path_jobpre="/data7/DATA/"
-    
-if sample == "H_v2" or sample == "H_v3":
-    path_jobpre="/data7/DATA/"
-
     
     
 queuepath=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
