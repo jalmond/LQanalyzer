@@ -115,7 +115,14 @@ original_channel = new_channel
 path_jobpre="/data1/"
 if "tamsa2.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     path_jobpre="/data2/"
+    
+if len(sample)==1:
+    path_jobpre="/data7/DATA/"
+    
+if sample == "H_v2" or sample == "H_v3":
+    path_jobpre="/data7/DATA/"
 
+    
     
 queuepath=path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CattupleConfig/QUEUE/ForceQueue.txt"
 file_queuepath = open(queuepath,"r")
@@ -311,6 +318,8 @@ if len(sample)>1:
     if  sample == "H_v2" or sample == "H_v3":
         workoutput_mounted="/data7/DATA"
 
+else:
+    workoutput_mounted="/data7/DATA"
 
 
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):

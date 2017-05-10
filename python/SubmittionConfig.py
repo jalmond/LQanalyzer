@@ -1706,6 +1706,16 @@ for nsample in range(0, len(sample)):
     jobs_running.append(0.)
 
 for nsample in range(0, len(sample)):
+    s=sample[nsample]
+    isMC = len(s) > 1
+    if s == "H_v2" or s == "H_v3":
+        isMC= False
+    if not isMC:
+        an_jonpre="/data7/DATA/"
+
+
+
+for nsample in range(0, len(sample)):
     
     s=sample[nsample]
     sample_islongjob= islongjob[nsample]
