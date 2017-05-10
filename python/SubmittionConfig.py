@@ -1504,6 +1504,14 @@ stdscr.addstr(list3, box_shift,  "Job Terminal Output: (will be deleted "+ futur
 stdscr.addstr(list3b, box_shift,  "Log Files: (will be deleted "+ future_week +")" ,curses.A_UNDERLINE)
 stdscr.addstr(list3c, box_shift,  "Output Files:" ,curses.A_UNDERLINE)
 
+for nsample in range(0, len(sample)):
+    s=sample[nsample]
+    isMC = len(s) > 1
+    if s == "H_v2" or s == "H_v3":
+        isMC= False
+    if not isMC:
+        an_jonpre="/data7/DATA/"
+
 #### make working directorr
 if not os.path.exists(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)):
     os.system("mkdir " + an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  +"/CLUSTERLOG" +str(tagger))
@@ -1704,15 +1712,6 @@ tmpqueue=queue
 jobs_running =[]
 for nsample in range(0, len(sample)):
     jobs_running.append(0.)
-
-for nsample in range(0, len(sample)):
-    s=sample[nsample]
-    isMC = len(s) > 1
-    if s == "H_v2" or s == "H_v3":
-        isMC= False
-    if not isMC:
-        an_jonpre="/data7/DATA/"
-
 
 
 for nsample in range(0, len(sample)):

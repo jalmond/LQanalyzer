@@ -171,6 +171,11 @@ if not cycle == "SKTreeMaker":
 output_mounted="/data2"
 if "cmscluster.snu.ac.kr" in str(os.getenv("HOSTNAME")):
     output_mounted="/data4"
+mc = len(sample)>1
+if sample == "H_v2" or sample == "H_v3":
+    mc= False
+if not mc:
+    output_mounted="/data7/DATA"
 
 ##########################################################                                                                                                                     
 ### Make tmp directory for job                                                                                                                                                 
@@ -180,9 +185,6 @@ tmpwork = output_mounted+"/CAT_SKTreeOutput/"+ getpass.getuser() + "/"
 if not (os.path.exists(tmpwork)):
     os.system("mkdir " + tmpwork)
 
-mc = len(sample)>1
-if sample == "H_v2" or sample == "H_v3":
-    mc= False
 
 if mc:
     datatype="mc"
