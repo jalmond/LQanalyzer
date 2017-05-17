@@ -109,6 +109,18 @@ void MakeDataInputFile(TString version=""){
     //lumi_file << ""<< endl;
   }
   
+  TString SKTreeOutputHNDiLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataHNDiLep/";
+
+
+  for(unsigned int i = 0 ; i < samples.size() ; i++){
+    for(unsigned int j = 0 ; j < periods.size() ; j++){
+      lumi_file << "SK" << samples.at(i) << "_hndilep"  << samples_space.at(i) <<"            " << periods.at(j) <<   "        " <<  SKTreeOutputHNDiLep +  samples.at(i) << "/period\
+" <<  periods.at(j)<< "/" << endl;
+    }
+    //lumi_file << ""<< endl;                                                                                                                                                     
+  }
+
+  
   TString SKTreeOutputTriLep="/data7/DATA/CatNtuples/"+ version + "/SKTrees/DataTriLep/";
   if(cluster) SKTreeOutputTriLep="/data4/LocalNtuples/SKTrees13TeV/"+ version + "/SKTrees/DataTriLep/";
 

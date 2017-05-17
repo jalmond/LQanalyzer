@@ -913,6 +913,14 @@ void AnalyzerCore::SetupSelectionJet(std::string path_sel){
         }
       }
     }
+    std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfJet.find(idlabel);
+
+    if(fit != selectionIDMapfJet.end()){
+      cerr << "Repeated ID " <<idlabel<< endl;
+      exit(EXIT_FAILURE);
+
+    }
+
     selectionIDMapsJet[idlabel] = string_jetsel;
     selectionIDMapfJet[idlabel] = float_jetsel;
   }
@@ -977,6 +985,15 @@ void AnalyzerCore::SetupSelectionFatJet(std::string path_sel){
         }
       }
     }
+
+    std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfFatJet.find(idlabel);
+
+    if(fit != selectionIDMapfFatJet.end()){
+      cerr << "Repeated ID " <<idlabel<< endl;
+      exit(EXIT_FAILURE);
+
+    }
+
     selectionIDMapsFatJet[idlabel] = string_jetsel;
     selectionIDMapfFatJet[idlabel] = float_jetsel;
   }
@@ -1046,6 +1063,13 @@ void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
 	}
       }
     }
+
+    std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfMuon.find(idlabel);
+    if(fit != selectionIDMapfMuon.end()){
+      cerr << "Repeated ID " << idlabel << endl;
+      exit(EXIT_FAILURE);
+
+    }
     selectionIDMapsMuon[idlabel] = string_muonsel;
     selectionIDMapfMuon[idlabel] = float_muonsel;
   }
@@ -1112,7 +1136,7 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 34 && x < 42){
+	else  if (x > 34 && x < 44){
           is >> tmp;
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
@@ -1126,6 +1150,15 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
         }
       }
     }
+
+    std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfElectron.find(idlabel);
+
+    if(fit != selectionIDMapfElectron.end()){
+      cerr << "Repeated ID " <<idlabel<< endl;
+      exit(EXIT_FAILURE);
+
+    }
+    
     selectionIDMapsElectron[idlabel] = string_elsel;
     selectionIDMapfElectron[idlabel] = float_elsel;
   }
@@ -2810,6 +2843,17 @@ void AnalyzerCore::FillCLHist(histtype type, TString hist, snu::KEvent ev,vector
       sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
     }
   }
+  else if(type==sighist_e){
+
+    map<TString, SignalPlotsEE*>::iterator sigpit_ee = mapCLhistSigEE.find(hist);
+    if(sigpit_ee !=mapCLhistSigEE.end()) sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
+    else {
+      mapCLhistSigEE[hist] = new SignalPlotsEE(hist,1);
+      sigpit_ee = mapCLhistSigEE.find(hist);
+      sigpit_ee->second->Fill(ev, muons, electrons, jets, fatjets,w);
+    }
+  }
+
 
   else if(type==sighist_m){
 

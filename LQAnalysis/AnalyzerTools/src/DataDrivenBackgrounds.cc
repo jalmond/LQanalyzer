@@ -374,8 +374,20 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::
 
   std::vector<TLorentzVector> muons=MakeTLorentz(k_muons);
   std::vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
-  TString elkey = GetElFRKey(elidloose, elid, elmethod);
-  this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons, elkey , isT);
+  std::vector<TString> vkeys;
+  for(unsigned int ikey=0; ikey < electrons.size(); ikey++){
+    TString regel1="reg1";
+    if(k_electrons.at(ikey).Pt() > 50.) {
+    if(k_electrons.at(ikey).IsEB1()) regel1="reg2";
+    if(k_electrons.at(ikey).IsEB2()) regel1="reg3";
+    if(k_electrons.at(ikey).IsEE()) regel1="reg4";
+    }
+    vkeys.push_back(regel1);
+  }
+  
+  
+  std::vector<TString> elkeys = GetElFRKey(elidloose, elid, elmethod, vkeys);
+  this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons,  elkeys , isT);
 
   return this_weight;
 }
@@ -479,13 +491,55 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
     bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDtight);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
 
-    TString elkey = GetElFRKey(IDloose, IDtight,  method);
 
-    return  m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight, is_el2_tight, elkey );
+
+    std::vector<TString> vkeys;
+    for(unsigned int ikey=0; ikey < electrons.size(); ikey++){
+      TString regel1="reg1";
+      if(k_electrons.at(ikey).Pt() > 50.) {
+	if(k_electrons.at(ikey).IsEB1()) regel1="reg2";
+	if(k_electrons.at(ikey).IsEB2()) regel1="reg3";
+	if(k_electrons.at(ikey).IsEE()) regel1="reg4";
+      }
+      vkeys.push_back(regel1);
+    }
+
+
+    std::vector<TString> elkeys = GetElFRKey(IDloose, IDtight, method, vkeys);
+
+    return  m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight, is_el2_tight, elkeys);
       
     /// "" loose ID needs filling here
   }
   return 1.;
+}
+
+vector<TString> DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TString method, std::vector<TString> regs1){
+
+  if(!method.Contains("mva")) {
+    vector<TString> tmpkeys;
+    tmpkeys.push_back( GetElFRKey(IDloose, IDtight, method));
+    return tmpkeys;
+  }
+
+  vector<TString> keys_forfakes;
+  TString cut = "";
+
+  for(unsigned int i=0; i < regs1.size(); i++){
+    int reg=0;
+    if(regs1[i].Contains("reg1"))reg=1;
+    if(regs1[i].Contains("reg2"))reg=2;
+    if(regs1[i].Contains("reg3"))reg=3;
+    if(regs1[i].Contains("reg4"))reg=4;
+
+    if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==1) cut="0.95_iso0.05_dxy0.01_dz0.04";
+    if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==2) cut="0.76_iso0.05_dxy0.01_dz0.04";
+    if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==3) cut="0.72_iso0.05_dxy0.01_dz0.04";
+    if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==4) cut="0.7_iso0.05_dxy0.01_dz0.04";
+  
+    keys_forfakes.push_back(cut);
+  }
+  return keys_forfakes;
 }
 
 TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TString method){
@@ -543,6 +597,18 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
       
       TString tag="";
 
+      int reg=0;
+      if(method.Contains("reg1"))reg=1;
+      if(method.Contains("reg2"))reg=2;
+      if(method.Contains("reg3"))reg=3;
+      if(method.Contains("reg4"))reg=4;
+
+      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==1) cut="0.95_iso0.05_dxy0.01_dz0.04";
+      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==2) cut="0.76_iso0.05_dxy0.01_dz0.04";
+      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==3) cut="0.72_iso0.05_dxy0.01_dz0.04";
+      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==4) cut="0.7_iso0.05_dxy0.01_dz0.04";
+
+      
       if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0")  cut+=sjpt+IDtight + "_dijet_nod0";
       if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0"&& (method.Contains("miniiso")))  cut+=sjpt+IDtight + "_dijet_nod0_dxysig_miniiso";
       else if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0")  cut+=sjpt+IDtight + "_dijet_nod0_dxysig";
@@ -564,11 +630,15 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
       if(IDtight == "ELECTRON16_FR_MVA_TIGHT_DXYCC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_mva";
 
       if(IDtight == "ELECTRON16_FR_POG_TIGHT_CC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
+      if(IDtight == "ELECTRON_POG_TIGHT" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+"ELECTRON16_FR_POG_TIGHT_CC" + "_dijet_pog_d0"; /// NEW from .10 tag POG Tight ID == 
+
       if(IDtight == "ELECTRON16_FR_POG_MEDIUM_CC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
       if(IDtight == "ELECTRON16_FR_MVA_TIGHT_CC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_mva_d0";
       if(IDtight == "ELECTRON16_FR_POG_TIGHT_DXYCC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
       if(IDtight == "ELECTRON16_FR_POG_MEDIUM_DXYCC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
       if(IDtight == "ELECTRON16_FR_MVA_TIGHT_DXYCC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_mva_d0";
+
+      if(IDtight == "ELECTRON_MVA_TIGHT" && IDloose=="ELECTRON_MVA_FAKELOOSE")  cut+="ELECTRON16_MVA_FAKELOOSE_CC_d0"+"ELECTRON16_FR_MVA_TIGHT_CC" + "_dijet_mva_d0";
 
 
       return cut;

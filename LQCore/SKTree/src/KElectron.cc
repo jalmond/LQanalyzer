@@ -282,6 +282,28 @@ bool KElectron::TriggerMatched(TString path){
 }
 
 
+Bool_t KElectron::PassTrigMVAHNTight() const{
+  if(this->Pt() < 50.) {
+    if(k_mva > 0.95) return true;
+  }
+  else {
+    if((fabs(this->SCEta()) < 0.8) && k_mva > 0.76) return true;
+    if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > 0.72) return true;
+    if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > 0.70) return true;
+  }
+  return false;
+
+}
+Bool_t KElectron::PassTrigMVAHNLoose() const{
+  if((fabs(this->SCEta()) < 0.8) && k_mva > -0.02) return true;
+  if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > -0.52) return true;
+  if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > -0.52) return true;
+  
+  return false;
+}
+
+
+
 float KElectron::ScaleFactor(const std::string& name, int sign) const {
   
   float fsign =1.;

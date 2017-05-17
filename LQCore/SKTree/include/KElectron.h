@@ -40,6 +40,8 @@ namespace snu {
     
     
     float ScaleFactor(const std::string& name, int sign) const ;
+    Bool_t PassTrigMVAHNLoose() const ;
+    Bool_t PassTrigMVAHNTight() const ;
 
 
     // set kinematic variables
@@ -138,6 +140,9 @@ namespace snu {
     inline Double_t SmearFactor() const {return k_smearfactor;}
 
     inline Bool_t  IsEBFiducial() {return bool (fabs(SCEta()) < 1.442);}
+    inline Bool_t  IsEB1() {return bool (fabs(SCEta()) < 0.8);}
+    inline Bool_t  IsEB2() {return bool (fabs(SCEta()) < 1.479);}
+    inline Bool_t  IsEE() {return bool (fabs(SCEta()) > 1.479 && fabs(SCEta()) < 2.50);}
     inline Bool_t  IsEEFiducial() {return bool (fabs(SCEta()) > 1.560 && fabs(SCEta()) < 2.50);}
       
     /// // Kinematic variables
@@ -167,7 +172,7 @@ namespace snu {
     inline Bool_t PassNotrigMVAMedium() const{return pass_notrigmva_medium;}
     inline Bool_t PassNotrigMVATight() const{return pass_notrigmva_tight;}
     inline Bool_t PassMVAZZ() const{return pass_notrigmva_zz;}
-    
+
     
     inline Bool_t MCMatched() const{return k_mc_matched;}
     inline Bool_t IsPF() const{return k_isPF;}

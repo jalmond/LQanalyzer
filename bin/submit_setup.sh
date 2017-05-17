@@ -778,6 +778,7 @@ function runlist
     isNoCut=false
     isLepton=false
     isDiLep=false
+    isHNDiLep=false
     isTriLep=false
     if [[ $submit_skim  == "SKTree_NoSkim" ]]; then 
 	isNoCut=true 
@@ -797,6 +798,10 @@ function runlist
     if [[ $submit_skim  == "SKTree_DiLepSkim" ]];
         then
 	isDiLep=true
+    fi
+    if [[ $submit_skim  == "SKTree_HNDiLepSkim" ]];
+        then
+	isHNDiLep=true
     fi
     if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
         then
@@ -827,6 +832,15 @@ function runlist
 	    check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MCDiLep"
 	fi
     fi
+    if [[ $isHNDiLep  == "true" ]];
+     then
+        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCHNDiLep"
+        if [[ ${submit_catvlist} == *"v7-4-4"* ]];
+            then
+            check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/Sep15/MCHNDiLep"
+        fi
+    fi
+
     if [[ $isTriLep  == "true" ]];
         then
         check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCTriLep"
@@ -862,6 +876,7 @@ function runlist
 	      then
 	      prefix="SK"
 	      suffix="_dilep"
+	      suffixhn="_hndilep"
               suffix2="_trilep"
 
 	      if [[ $sline == *${prefix}* ]];
@@ -875,6 +890,10 @@ function runlist
 	      if [[ $sline == *${suffix2}* ]];
                   then
                   sline=${sline%$suffix2}
+              fi
+	      if [[ $sline == *${suffixhn}* ]];
+                  then
+                  sline=${sline%$suffixhn}
               fi
 	      if [[ ! -d "${sline2}" ]]; then
 		  UNPROCESSED+=(${sline})
@@ -892,6 +911,7 @@ function runlist
 		  then 
 		  prefix="SK"
 		  suffix="_dilep"
+		  suffixhn="_hndilep"
 		  suffix2="_trilep"
 		  if [[ $sline == *${prefix}* ]];
 		      then
@@ -905,6 +925,10 @@ function runlist
                       then
                       sline=${sline%$suffix2}
                   fi
+		  if [[ $sline == *${suffixhn}* ]];
+                  then
+                      sline=${sline%$suffixhn}
+		  fi
 
 		  if [[ ! -d "${sline2}" ]]; then
 		      UNPROCESSED+=(${sline})
@@ -987,6 +1011,28 @@ function runlist
 		echo ""
 	    fi
     fi
+    if [[ $isHNDiLep  == "true" ]];
+        then
+        counter=${#UNPROCESSED[@]}
+            if [[ $counter -ne 0 ]];
+                then
+                echo "Samples that have local flat catuples but no dilepton skim are:"
+            else   echo -e $missing_comment
+
+            fi
+            for il in  ${UNPROCESSED[@]};
+              do
+              echo samplename = $il
+
+            done
+            echo ""
+            if [[ $counter -ne 0 ]];
+                then
+                echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
+                echo ""
+            fi
+    fi
+
     
     if [[ $isTriLep  == "true" ]];
         then
@@ -1040,6 +1086,10 @@ function runlist
 	      then
 	      check_path=$SKTREE_MC${ic}"/SKTrees/MCDiLep"
 	  fi
+	  if [[ $submit_skim  == "SKTree_HNDiLepSkim" ]];
+              then
+              check_path=$SKTREE_MC${ic}"/SKTrees/MCHNDiLep"
+          fi
 	  if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
               then
               check_path=$SKTREE_MC${ic}"/SKTrees/MCTriLep"
@@ -1067,6 +1117,7 @@ function runlist
 			then
 			prefix="SK"
 			suffix="_dilep"
+			suffixhn="_hndilep"
 			suffix2="_trilep"
 			if [[ $sline == *${prefix}* ]];
 			    then
@@ -1080,6 +1131,10 @@ function runlist
                             then
                             sline=${sline%$suffix2}
                         fi
+			if [[ $sline == *${suffixhn}* ]];
+			then
+			    sline=${sline%$suffixhn}
+			fi
 			if [[ -d "${sline2}" ]]; then
 			    if test "$(ls -A "$sline2")"; then
 				echo ${sline}
@@ -1104,6 +1159,7 @@ function runlist
 			    then
 			    prefix="SK"
 			    suffix="_dilep"
+			    suffixhn="_hndilep"
 			    suffix2="_trilep"
 			    if [[ $sline == *${prefix}* ]];
 				then
@@ -1117,6 +1173,10 @@ function runlist
                                 then
                                 sline=${sline%$suffix2}
                             fi
+			    if [[ $sline == *${suffixhn}* ]];
+			    then
+				sline=${sline%$suffixhn}
+			    fi
 			    if [[  -d "${sline2}" ]]; then
 				
 				if test "$(ls -A "$sline2")"; then
@@ -1649,6 +1709,12 @@ if [[ $submit_sampletag  == "DATADILEP" ]];
     runDATA=true
 fi
 
+declare -a  DATAHNDILEP=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
+if [[ $submit_sampletag  == "DATAHNDILEP" ]];
+    then
+    runDATA=true
+fi
+
 
 
 declare -a DoubleEG=("DoubleEG")
@@ -1719,6 +1785,7 @@ declare -a FULLLISTOFSAMPLES=()
 declare -a FULLLISTOFSAMPLESNOCUT=()
 declare -a FULLLISTOFSAMPLESLEPTON=()
 declare -a FULLLISTOFSAMPLESDILEP=()
+declare -a FULLLISTOFSAMPLESHNDILEP=()
 declare -a FULLLISTOFSAMPLESTRILEP=()
 
 
@@ -1768,6 +1835,10 @@ if [[ $submit_analyzer_name == *"SKTreeMaker"* ]];
     if [[ $submit_analyzer_name == "SKTreeMakerDiLep" ]];
 	then
 	job_skim=SKTree_LeptonSkim
+    fi
+    if [[ $submit_analyzer_name == "SKTreeMakerHNDiLep" ]];
+     then
+        job_skim=SKTree_DiLepSkim
     fi
     if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
         then
@@ -1948,6 +2019,50 @@ if [[ $MakeFullLists == "true" ]];
 		fi
 	    fi
 	fi    
+        if [[ $job_skim == "SKTree_HNDiLepSkim" ]];
+            then
+            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNDiLep"
+            if [[ ${iclist} == *"v7-4-4"* ]];
+                then
+                checkline=$SKTREE_MC${iclist}"/SKTrees/Sep15/MCDiLep"
+            fi
+
+
+            if [[ $line == *$checkline* ]];
+                then
+                sline=$(echo $line | head -n1 | awk '{print $1}')
+                sline2=$(echo $line | head -n1 | awk '{print $6}')
+
+                prefix="SK"
+                suffixhn="_hndilep"
+                if [[ $sline == *${prefix}* ]];
+                    then
+                    sline=${sline:2}
+                fi
+                if [[ $sline == *${suffixhn}* ]];
+                    then
+                    sline=${sline%$suffixhn}
+                fi
+
+                isDuplicate=false
+                for il in  ${FULLLISTOFSAMPLESHNDILEP[@]};
+                do
+                  if [[ $sline == $il ]];
+                      then
+                      isDuplicate=true
+                  fi
+                done
+                if [[ $isDuplicate == "false" ]];
+                    then
+                    if [[ -d "${sline2}" ]]; then
+                        if test "$(ls -A "$sline2")"; then
+                            FULLLISTOFSAMPLESHNDILEP+=(${sline})
+                        fi
+                    fi
+                fi
+            fi
+        fi
+
 	if [[ $job_skim == "SKTree_TriLepSkim" ]];
 	    then
 	    checkline=$SKTREE_MC${iclist}"/SKTrees/MCTriLep"
