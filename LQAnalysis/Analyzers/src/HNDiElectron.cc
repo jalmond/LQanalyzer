@@ -609,6 +609,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
   TString elid_veto="";
   TString elid_tight="";
+  TString elid_tight_fixed="";
   TString elid_loose="";
   methodtag+=ID;
 
@@ -617,7 +618,8 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
   if(ID.Contains("POG")){
     elid_veto="ELECTRON_POG_VETO";
     elid_tight="ELECTRON_POG_TIGHT";
-    elid_loose="ELECTRON16_POG_FAKELOOSE_CC_d0";
+    elid_tight_fixed="ELECTRON_POG_TIGHT";
+    elid_loose="ELECTRON_POG_FAKELOOSE";
 
     id=1;
     method_fake="dijet_ajet40";
@@ -625,6 +627,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
   if(ID.Contains("MVA")){
     elid_veto="ELECTRON_POG_VETO";
     elid_tight="ELECTRON_MVA_TIGHT";
+    elid_tight_fixed="ELECTRON_MVA_TIGHT";
     elid_loose="ELECTRON_MVA_FAKELOOSE";
     method_fake="dijet_ajet40";
     id=2;
@@ -632,6 +635,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
   if(ID.Contains("HN")){
     elid_veto="ELECTRON_HN_VETO";
     elid_tight="ELECTRON_HN_TIGHT";
+    elid_tight_fixed="ELECTRON_HN_TIGHT";
     elid_loose="ELECTRON_HN_FAKELOOSE";
     method_fake="mva";
     id=3;
@@ -759,7 +763,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
       
       //// set ev_weight OF running fake bkg prediction
       if(k_running_nonprompt){
-	ev_weight     = m_datadriven_bkg->Get_DataDrivenWeight(false, muonVetoColl, "MUON_HN_TRI_TIGHT", muonVetoColl.size(), electronZZColl, el_elid, electronZZColl.size(), elid_loose, method_fake);
+	ev_weight     = m_datadriven_bkg->Get_DataDrivenWeight(false, muonVetoColl, "MUON_HN_TRI_TIGHT", muonVetoColl.size(), electronZZColl, elid_tight_fixed, electronZZColl.size(), elid_loose, method_fake);
       }
       
       
@@ -903,7 +907,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
       
       // pt el 1 and 2 are set earlier to comply with trigger (25,12)
       if(k_running_nonprompt){
-	ev_weight     = m_datadriven_bkg->Get_DataDrivenWeight(false, muonVetoColl, "MUON_HN_TRI_TIGHT", muonVetoColl.size(), electronTightColl, el_elid, electronTightColl.size(),elid_loose, method_fake);
+	ev_weight     = m_datadriven_bkg->Get_DataDrivenWeight(false, muonVetoColl, "MUON_HN_TRI_TIGHT", muonVetoColl.size(), electronTightColl,elid_tight_fixed, electronTightColl.size(),elid_loose, method_fake);
 	
       }
       if(!(muonVetoColl.size() > 0 ||  electronVetoColl.size() > 3)){
@@ -1010,7 +1014,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	
 	if(k_running_nonprompt){
 	  //ev_weight =  m_datadriven_bkg->Get_DataDrivenWeight_EE( false,electronTightColl, "ELECTRON16_POG_FAKELOOSE","ELECTRON16_FR_POG_TIGHT","dijet_ajet40");     
-	  ev_weight     = m_datadriven_bkg->Get_DataDrivenWeight(false, muonVetoColl, "MUON_HN_TRI_TIGHT", muonVetoColl.size(), electronTightColl, el_elid, electronTightColl.size(),elid_loose, method_fake);
+	  ev_weight     = m_datadriven_bkg->Get_DataDrivenWeight(false, muonVetoColl, "MUON_HN_TRI_TIGHT", muonVetoColl.size(), electronTightColl,elid_tight_fixed, electronTightColl.size(),elid_loose, method_fake);
 	
 	  ev_weight2 = ev_weight;
 	  ev_weight3 = ev_weight;

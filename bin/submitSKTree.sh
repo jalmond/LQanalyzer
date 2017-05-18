@@ -6,7 +6,7 @@ cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 
-declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
+declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
@@ -259,6 +259,10 @@ function mergeoutput
                 then
                 output_file_skim_tag="SK"$output_file_skim_tag"_hndilep_cat_"$submit_version_tag
             fi
+	    if [ $job_skim == "SKTree_HNFakeSkim" ] || [ $job_skim == "HNFake" ];
+		then
+                output_file_skim_tag="SK"$output_file_skim_tag"_hnfake_cat_"$submit_version_tag
+            fi
 	    if [[ $job_skim == "SKTree_TriLepSkim" ]] ;
 		then
 		output_file_skim_tag="SK"$output_file_skim_tag"_trilep_cat_"$submit_version_tag
@@ -318,6 +322,12 @@ function mergefake
                 output_file_skim_tag="SK"$output_file_skim_tag"_hndilep_cat_"$submit_version_tag
                 outname="SK"$outname"_hndilep_cat_"$submit_version_tag
 
+            fi
+	    if [ $job_skim == "SKTree_HNFakeSkim" ] || [ $job_skim == "HNFake" ];
+	    then
+                output_file_skim_tag="SK"$output_file_skim_tag"_hnfake_cat_"$submit_version_tag
+                outname="SK"$outname"_hnfake_cat_"$submit_version_tag
+		
             fi
 
             if [[ $job_skim == "SKTree_TriLepSkim" ]] ;
@@ -384,6 +394,9 @@ if [[ $submit_file_tag  != ""  ]];
     fi
     if [[ $job_skim == "SKTree_HNDiLepSkim" ]];then
         ARG_SINGLE_FILE="FULLLISTOFSAMPLESHNDILEP"
+    fi
+    if [[ $job_skim == "SKTree_HNFakeSkim" ]];then
+        ARG_SINGLE_FILE="FULLLISTOFSAMPLESHNFAKE"
     fi
     if [[ $job_skim == "SKTree_TriLepSkim" ]];then
         ARG_SINGLE_FILE="FULLLISTOFSAMPLESTRILEP"
@@ -577,6 +590,9 @@ if [[ $submit_file_list  != ""  ]];
 	    fi
 	    if [[ $job_skim == "SKTree_HNDiLepSkim" ]];then
                 ARG_SINGLE_FILE="FULLLISTOFSAMPLESHNDILEP"
+            fi
+	    if [[ $job_skim == "SKTree_HNFakeSkim" ]];then
+                ARG_SINGLE_FILE="FULLLISTOFSAMPLESHNFAKE"
             fi
 	    if [[ $job_skim == "SKTree_TriLepSkim" ]];then
                 ARG_SINGLE_FILE="FULLLISTOFSAMPLESTRILEP"
@@ -792,6 +808,30 @@ if [[ $submit_analyzer_name == "SKTreeMakerHNDiLep" ]];
     fi
 
 fi
+if [[ $submit_analyzer_name == "SKTreeMakerFakeHN" ]];
+    then
+    submit_skinput=true
+    job_skim="SKTree_LeptonSkim"
+    if [[ $set_sktreemaker_debug == "false" ]];
+        then
+        job_njobs=1000
+    else
+        job_njobs=-311
+    fi
+    if [[ $submit_version_tag == "" ]];
+        then
+        echo "When running SKTreeMaker you need to specify the catversion: -c "
+        echo "Options are: "
+        for ic in  ${list_of_catversions[@]};
+          do
+              echo $ic
+        done
+
+        exit 1
+    fi
+
+fi
+
 
 
 
@@ -1076,6 +1116,16 @@ elif [[ $job_skim == "SKTree_HNDiLepSkim" ]]
         echo "Fix submission"
         exit 1
     fi
+elif [[ $job_skim == "SKTree_HNFakeSkim" ]]
+    then
+    echo $skim_output_message
+    if [[ $submit_skinput == "false" ]];
+        then
+        echo "LQanalyzer::sktree :: ERROR :: skim set  to SKTree_DiLepSkim: Yet you set -sktree <false>"
+        echo "Fix submission"
+        exit 1
+    fi
+
 elif [[ $job_skim == "SKTree_TriLepSkim" ]]
     then
     echo $skim_output_message

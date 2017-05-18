@@ -597,50 +597,14 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
       
       TString tag="";
 
-      int reg=0;
-      if(method.Contains("reg1"))reg=1;
-      if(method.Contains("reg2"))reg=2;
-      if(method.Contains("reg3"))reg=3;
-      if(method.Contains("reg4"))reg=4;
-
-      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==1) cut="0.95_iso0.05_dxy0.01_dz0.04";
-      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==2) cut="0.76_iso0.05_dxy0.01_dz0.04";
-      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==3) cut="0.72_iso0.05_dxy0.01_dz0.04";
-      if(IDtight == "ELECTRON_HN_TIGHT" &&  IDloose=="ELECTRON_HN_FAKELOOSE"&&reg==4) cut="0.7_iso0.05_dxy0.01_dz0.04";
-
       
-      if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0")  cut+=sjpt+IDtight + "_dijet_nod0";
-      if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0"&& (method.Contains("miniiso")))  cut+=sjpt+IDtight + "_dijet_nod0_dxysig_miniiso";
-      else if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE_NOD0")  cut+=sjpt+IDtight + "_dijet_nod0_dxysig";
+      /// tmp
+      if(IDtight == "ELECTRON_POG_TIGHT" && IDloose=="ELECTRON_POG_FAKELOOSE")  cut+="ELECTRON16_POG_FAKELOOSE_CC_d0ELECTRON16_FR_POG_TIGHT_CC_dijet_pog_d0"; /// NEW from .10 tag POG Tight ID == 
+
+      if(IDtight == "ELECTRON_MVA_TIGHT" && IDloose=="ELECTRON_MVA_FAKELOOSE")  cut+="ELECTRON16_MVA_FAKELOOSE_CC_d0ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva_d0";
       
-      if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_d0";
-      if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE"&& (method.Contains("miniiso")))  cut+=sjpt+IDtight + "_dijet_d0_dxysig_miniiso";
-      else if(IDtight == "ELECTRON16_HN_TIGHT_DXYSIG" && IDloose=="ELECTRON16_HN_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_d0_dxysig";
-
-
-      if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE_ISO04")  cut+=sjpt+IDtight + "_dijet_iso04";
-      if(IDtight == "ELECTRON16_HN_TIGHT" && IDloose=="ELECTRON16_HN_FAKELOOSE_ISO06")  cut+=sjpt+IDtight + "_dijet_iso06";
-      if(IDtight == "ELECTRON16_FR_POG_TIGHT" && IDloose=="ELECTRON16_POG_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_pog";
-      if(IDtight == "ELECTRON16_FR_POG_MEDIUM" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE")  cut+=sjpt+IDtight + "_dijet_pog";
-      if(IDtight == "ELECTRON16_FR_POG_TIGHT_CC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
-      if(IDtight == "ELECTRON16_FR_POG_MEDIUM_CC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
-      if(IDtight == "ELECTRON16_FR_MVA_TIGHT_CC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_mva";
-      if(IDtight == "ELECTRON16_FR_POG_TIGHT_DXYCC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
-      if(IDtight == "ELECTRON16_FR_POG_MEDIUM_DXYCC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_pog";
-      if(IDtight == "ELECTRON16_FR_MVA_TIGHT_DXYCC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC")  cut+=sjpt+IDtight + "_dijet_mva";
-
-      if(IDtight == "ELECTRON16_FR_POG_TIGHT_CC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
-      if(IDtight == "ELECTRON_POG_TIGHT" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+"ELECTRON16_FR_POG_TIGHT_CC" + "_dijet_pog_d0"; /// NEW from .10 tag POG Tight ID == 
-
-      if(IDtight == "ELECTRON16_FR_POG_MEDIUM_CC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
-      if(IDtight == "ELECTRON16_FR_MVA_TIGHT_CC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_mva_d0";
-      if(IDtight == "ELECTRON16_FR_POG_TIGHT_DXYCC" && IDloose=="ELECTRON16_POG_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
-      if(IDtight == "ELECTRON16_FR_POG_MEDIUM_DXYCC" && IDloose=="ELECTRON16_POG_MEDIUM_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_pog_d0";
-      if(IDtight == "ELECTRON16_FR_MVA_TIGHT_DXYCC" && IDloose=="ELECTRON16_MVA_FAKELOOSE_CC_d0")  cut+=sjpt+IDtight + "_dijet_mva_d0";
-
-      if(IDtight == "ELECTRON_MVA_TIGHT" && IDloose=="ELECTRON_MVA_FAKELOOSE")  cut+="ELECTRON16_MVA_FAKELOOSE_CC_d0"+"ELECTRON16_FR_MVA_TIGHT_CC" + "_dijet_mva_d0";
-
-
+      cout << IDtight << " " << IDloose << " " << cut << endl;
+      
       return cut;
       
   }

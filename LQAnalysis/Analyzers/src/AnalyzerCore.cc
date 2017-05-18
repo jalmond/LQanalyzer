@@ -275,6 +275,7 @@ void AnalyzerCore::setTDRStyle() {
 }
 
 void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
+  if(isData) return ;
 
   TString lumitriggerpath="";
   TString singleperiod = getenv("CATAnalyzerPeriod");
@@ -284,7 +285,7 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
     trigger_lumi_map_cat2016.clear();
   }
   string lqdir = getenv("LQANALYZER_DIR");
-
+  
   cout << "CATAnalyzerPeriod = " << singleperiod << endl;
   if(singleperiod.Contains("None")){
     lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
@@ -915,10 +916,13 @@ void AnalyzerCore::SetupSelectionJet(std::string path_sel){
     }
     std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfJet.find(idlabel);
 
-    if(fit != selectionIDMapfJet.end()){
-      cerr << "Repeated ID " <<idlabel<< endl;
-      exit(EXIT_FAILURE);
-
+    if(idlabel!=""){
+      
+      if(fit != selectionIDMapfJet.end()){
+	cerr << "Repeated ID " <<idlabel<< endl;
+	exit(EXIT_FAILURE);
+	
+      }
     }
 
     selectionIDMapsJet[idlabel] = string_jetsel;
@@ -988,10 +992,12 @@ void AnalyzerCore::SetupSelectionFatJet(std::string path_sel){
 
     std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfFatJet.find(idlabel);
 
-    if(fit != selectionIDMapfFatJet.end()){
-      cerr << "Repeated ID " <<idlabel<< endl;
-      exit(EXIT_FAILURE);
-
+    if(idlabel!=""){
+      if(fit != selectionIDMapfFatJet.end()){
+	cerr << "Repeated ID " <<idlabel<< endl;
+	exit(EXIT_FAILURE);
+	
+      }
     }
 
     selectionIDMapsFatJet[idlabel] = string_jetsel;
@@ -1063,12 +1069,15 @@ void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
 	}
       }
     }
-
+    
     std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfMuon.find(idlabel);
-    if(fit != selectionIDMapfMuon.end()){
-      cerr << "Repeated ID " << idlabel << endl;
-      exit(EXIT_FAILURE);
 
+    if(idlabel!=""){
+      if(fit != selectionIDMapfMuon.end()){
+	cerr << "Repeated ID " << idlabel << endl;
+	exit(EXIT_FAILURE);
+	
+      }
     }
     selectionIDMapsMuon[idlabel] = string_muonsel;
     selectionIDMapfMuon[idlabel] = float_muonsel;
@@ -1153,12 +1162,13 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
 
     std::map<TString, vector<pair<TString,float> > >::iterator fit = selectionIDMapfElectron.find(idlabel);
 
-    if(fit != selectionIDMapfElectron.end()){
-      cerr << "Repeated ID " <<idlabel<< endl;
-      exit(EXIT_FAILURE);
-
+    if(idlabel!=""){
+      if(fit != selectionIDMapfElectron.end()){
+	cerr << "Repeated ID " <<idlabel<< endl;
+	exit(EXIT_FAILURE);
+	
+      }
     }
-    
     selectionIDMapsElectron[idlabel] = string_elsel;
     selectionIDMapfElectron[idlabel] = float_elsel;
   }
@@ -1835,9 +1845,12 @@ void AnalyzerCore::SetupID(){
 
   if(IDSetup) return;
 
-  if(k_classname.Contains("SKTreeMaker")){
-    IDSetup=true;
+  // IF STANDARD SKTREE CODE NO NEED FOR ID
+  if(!k_classname.Contains("HN")){
+    if(k_classname.Contains("SKTreeMaker")){
+      IDSetup=true;
     return;
+    }
   }
 
   string lqdir =  getenv("LQANALYZER_DIR");

@@ -64,6 +64,9 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
     if defuseskim == "SKTree_HNDiLepSkim" :
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
+    if defuseskim == "SKTree_HNFakeSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+
     if defuseskim == "SKTree_TriLepSkim" :
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
     if defuseskim == "SKTree_NoSkim" :
@@ -84,6 +87,9 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defuseskim == "SKTree_HNDiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
             foutname="SK"+foutname+"_hndilep_cat_"+defcatversion
+        if defuseskim == "SKTree_HNFakeSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+            foutname="SK"+foutname+"_hnfake_cat_"+defcatversion
 
         if defuseskim == "SKTree_TriLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
@@ -117,7 +123,9 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defuseskim == "SKTree_HNDiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
             foutname="SK"+foutname+"_hndilep_cat_"+defcatversion
-            
+        if defuseskim == "SKTree_HNFakeSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+            foutname="SK"+foutname+"_hnfake_cat_"+defcatversion            
         if defuseskim == "SKTree_TriLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
             foutname="SK"+foutname+"_trilep_cat_"+defcatversion
@@ -134,7 +142,8 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_dilep_cat_"+defcatversion
         if defuseskim == "SKTree_HNDiLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
-
+        if defuseskim == "SKTree_HNFakeSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
         if defuseskim == "SKTree_TriLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion            
 
@@ -802,6 +811,8 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
         defsample +="_dilepton"
     if "SKTree_HNDiLepSkim"in defskim:
         defsample +="_hndilepton"
+    if "SKTree_HNFakeSkim"in defskim:
+        defsample +="_hnfake"
     if "SKTree_TriLepSkim"in defskim:
         defsample +="_trilepton"    
     if "SKTree_NoSkim" in defskim:
@@ -964,6 +975,8 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
         defskim="DiLep"
     elif defskim == "SKTree_HNDiLepSkim":
         defskim="HNDiLep"
+    elif defskim == "SKTree_HNFakeSkim":
+        defskim="HNFake"
     elif defskim == "SKTree_TriLepSkim":
         defskim="TriLep"
     
@@ -981,10 +994,12 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
                 else:
                     if defskim == "HNDiLep":
                         defchannel="SK" + defchannel + "_hndilep"
-
                     else:
-                        if defskim == "TriLep":
-                            defchannel="SK" + defchannel + "_trilep"
+                        if defskim == "HNFake":
+                            defchannel="SK" + defchannel + "_hnfake"
+                        else:
+                            if defskim == "TriLep":
+                                defchannel="SK" + defchannel + "_trilep"
     else:
         if defskim == "Lepton":
             defsample="SK" + defsample
@@ -999,8 +1014,12 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
                         defsample="SK" + defsample + "_hndilep"
 
                     else:
-                        if defskim == "TriLep":
-                            defsample="SK" + defsample + "_trilep"
+                        if defskim == "HNFake":
+                            defsample="SK" + defsample + "_hnfake"
+
+                        else:
+                            if defskim == "TriLep":
+                                defsample="SK" + defsample + "_trilep"
 
     outsamplename=""                        
     if ismc:
@@ -1041,6 +1060,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "HNDiLep":
             skimtag= "_hndilep"
+        elif defskim == "HNFake":
+            skimtag= "_hnfake"
         elif defskim == "TriLep":
             skimtag= "_trilep"
         elif defskim == "NoCut":
@@ -1056,6 +1077,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_dilep"
         elif defskim == "HNDiLep":
             skimtag= "_hndilep"
+        elif defskim == "HNFake":
+            skimtag= "_hnfake"
         elif defskim == "TriLep":
             skimtag= "_trilep"
         elif defskim == "NoCut":
@@ -1075,6 +1098,9 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
         if ismc:
             if defskim == "DiLep":
                 return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
+                            
+            elif "Fake" in defcycle:
+                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"                
 
             elif defskim == "Lepton":
                 return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCDiLep/"+defsample+"/"
@@ -1444,6 +1470,8 @@ elif useskim == "SKTree_DiLepSkim":
     skim_print="DiLep. "
 elif useskim == "SKTree_HNDiLepSkim":
     skim_print="HNDiLep. "
+elif useskim == "SKTree_HNFake":
+    skim_print="HNFake. "
 elif useskim == "SKTree_TriLepSkim":
     skim_print="TriLep. "
 elif useskim == "SKTree_NoSkim":

@@ -213,6 +213,8 @@ elif useskim == "SKTree_DiLepSkim":
     useskim="DiLep"
 elif useskim == "SKTree_HNDiLepSkim":
     useskim="HNDiLep"
+elif useskim == "SKTree_HNFakeSkim":
+    useskim="HNFake"
 elif useskim == "SKTree_TriLepSkim":
     useskim="TriLep"
         
@@ -302,10 +304,11 @@ else:
 if not cycle == "SKTreeMaker":
     if not cycle == "SKTreeMakerNoCut":
         if not cycle == "SKTreeMakerDiLep":
-            if not cycle == "SKTreeMakerHNDiLep":
-                if not useskinput == "True":
-                    if not useskinput == "true":
-                        print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
+            if not cycle == "SKTreeMakerFake":
+                if not cycle == "SKTreeMakerHNDiLep":
+                    if not useskinput == "True":
+                        if not useskinput == "true":
+                            print "You are running on FlatCATntuples. This will be more cpu extensive. This is only advisable if you are testing some new branches NOT in SKTrees."
                         
 
 output_mounted="/data2"
@@ -383,6 +386,9 @@ if number_of_cores > 0:
         number_of_cores=nj_def
     if cycle == "SKTreeMakerHNDiLep":
         number_of_cores=nj_def
+    if cycle == "SKTreeMakerFakeHN":
+        number_of_cores=nj_def
+
     if cycle == "SKTreeMakerTriLep":
         number_of_cores=nj_def
     print "number_of_cores  = " + str(number_of_cores)
@@ -448,9 +454,13 @@ if useskinput == "true":
                     if useskim == "HNDiLep":
                         new_channel="SK" + new_channel + "_hndilep"
                     else:
-                        if useskim == "TriLep":
-                            new_channel="SK" + new_channel + "_trilep"
-                                            
+                        if useskim == "HNFake":
+                            new_channel="SK" + new_channel + "_hnfake"
+                            
+                        else:
+                            if useskim == "TriLep":
+                                new_channel="SK" + new_channel + "_trilep"
+                                
 
     else:
         if useskim == "Lepton":
@@ -465,8 +475,11 @@ if useskinput == "true":
                     if useskim == "HNDiLep":
                         sample="SK" + sample + "_hndilep"
                     else:
-                        if useskim == "TriLep":
-                            sample="SK" + sample + "_trilep"
+                        if useskim == "HNFake":
+                            sample="SK" + sample + "_hnfake"
+                        else:
+                            if useskim == "TriLep":
+                                sample="SK" + sample + "_trilep"
                             
 elif useskinput == "True":
 
@@ -482,10 +495,12 @@ elif useskinput == "True":
                 else:
                     if useskim == "HNDiLep":
                         new_channel="SK" + new_channel + "_hndilep"
-                        
                     else:
-                        if useskim == "TriLep":
-                            new_channel="SK" + new_channel + "_trilep"
+                        if useskim == "HNFake":
+                            new_channel="SK" + new_channel + "_hnfake"
+                        else:
+                            if useskim == "TriLep":
+                                new_channel="SK" + new_channel + "_trilep"
                             
     else:
         if useskim == "Lepton":
@@ -500,8 +515,11 @@ elif useskinput == "True":
                     if useskim == "HNDiLep":
                         sample="SK" + sample + "_hndilep"
                     else:
-                        if useskim == "TriLep":
-                            sample="SK" + sample + "_trilep"
+                        if useskim == "HNFake":
+                            sample="SK" + sample + "_hnfake"
+                        else:
+                            if useskim == "TriLep":
+                                sample="SK" + sample + "_trilep"
                             
                 
 print "Input sample = " + sample
@@ -1479,6 +1497,44 @@ else:
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
 
+    if cycle == "SKTreeMakerFakeHN":
+        doMerge=False
+        if not os.path.exists(SKTreeOutput):
+            os.system("mkdir " + SKTreeOutput)
+        if not mc:
+            Finaloutputdir = SKTreeOutput + "DataHNFake/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            if original_channel =="DoubleEG":
+                Finaloutputdir += "DoubleEG/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="DoubleMuon":
+                Finaloutputdir += "DoubleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
+            if original_channel =="SingleMuon":
+                Finaloutputdir += "SingleMuon/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+            if original_channel =="SingleElectron":
+                Finaloutputdir += "SingleElectron/"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
+
+            Finaloutputdir += "period" + original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+        else:
+            Finaloutputdir = SKTreeOutput + "MCHNFake/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir +=  original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+                os.system("chmod 777 -R " +  Finaloutputdir)
+                
 
     if cycle == "SKTreeMakerTriLep":
         doMerge=False

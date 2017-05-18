@@ -84,8 +84,6 @@ void FakeRateCalculator_El::ExecuteEvents()throw( LQError ){
 
   Message("PASS VERTEX " , DEBUG);
 
-  TString triggerslist_8m="HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v";   /// -> tighter cut in lepton ID form tighter trigger emulation cut                                                                                                                
-
   /// These run on double electron dataset
   if((isData&&k_channel == "DoubleEG") || !isData){
 
