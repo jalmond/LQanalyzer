@@ -2023,8 +2023,16 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   vector<snu::KTruth> gen;
   if(k_usetruth) gen=GetTruthParticles(np);
   
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), photons, skjets,skfatjets, skgenjets, gen, triggerinfo,eventinfo);
+  vector<snu::KMuon>  muons = GetAllMuons();
+
+  if(!k_classname.Contains("SKTreeMaker")){
+    if(k_skim="FLATCAT"){
+      SetCorrectedMomentum(muons, gen);
+    }
+  }
+  LQEvent lqevent(muons, GetAllElectrons(), photons, skjets,skfatjets, skgenjets, gen, triggerinfo,eventinfo);
   
+
   //  eventbase is master class to use in analysis 
   //
   
@@ -3514,7 +3522,8 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
       }
       else{
 	
-	bool ismatched =  TruthMatched(electrons.at(i),  keep_chargeflip);
+	bool ismatched = electrons.at(i).MCMatched();                                                                                                                                                                         
+// TruthMatched(electrons.at(i),  keep_chargeflip);
 	//electrons.at(i).MCMatched();
 	
 	if(keepfake&&keep_chargeflip) prompt_electrons.push_back(electrons.at(i));
@@ -3568,19 +3577,34 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
     
 }
 
+void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons, vector<snu::KTruth> truth){
+
+  for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
+
+    if(it->RochPt() < 0.){
+      it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, truth));
+    }
+  }
+
+}
+
 
 void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
   
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
-    if(k_classname=="SKTreeMaker" && (it->RochPt() >0.)) exit(EXIT_FAILURE);
+    //if(k_classname=="SKTreeMaker" && (it->RochPt() >0.)) exit(EXIT_FAILURE);
     if(k_classname!="SKTreeMaker" && k_classname.Contains("SKTreeMaker")){
       
-      if(it->RochPt() < 0.) {
+    if(it->RochPt() < 0.) {
 	cerr << "Roch Pt wrongly set in dilep skim" << endl;
 	exit(EXIT_FAILURE);
       }
     }
     
+    cout << it->RochPt()  << endl;
+    cout << mcdata_correction << endl;
+
+    cout << mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()) << endl;
     if(it->RochPt() < 0.){
       it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));
     }    

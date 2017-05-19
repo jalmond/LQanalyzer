@@ -34,7 +34,7 @@
 ## h_l2jjmass         2 50. 400. "l_{2}jj invariant mass (GeV/c^{2})"
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
-
+END
 #**************************************************************************************
 # cut SSDiElJet
 # samples HNDiElectron/hndiel_os_config_allmc.txt

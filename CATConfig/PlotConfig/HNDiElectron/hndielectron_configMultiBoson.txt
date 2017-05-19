@@ -6,7 +6,7 @@
 ###      MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
 #######################################################################################
 #**************************************************************************************
-# cut ZZElectron1
+# cut MVATIGHTZZElectron1
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -34,7 +34,7 @@
 ## h_dijetsmass       5 0. 200.  "m(j_{1}j_{2}) (GeV)"
 #######################################################################################
 #**************************************************************************************
-# cut ZZElectron2
+# cut MVATIGHTZZElectron2
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -62,7 +62,7 @@
 ## h_dijetsmass       5 0. 200.  "m(j_{1}j_{2}) (GeV)"
 #######################################################################################
 #**************************************************************************************
-# cut ZZElectron3
+# cut MVATIGHTZZElectron3
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -91,7 +91,7 @@
 
 #######################################################################################
 #**************************************************************************************
-# cut WZElectron
+# cut MVATIGHTWZElectron
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -106,7 +106,7 @@
 ## h_leadingLeptonPt  2 10. 200. "Leading lepton p_{T} (GeV)"
 ## h_secondLeptonPt   2 10. 200. "Second lepton p_{T} (GeV)"
 ## h_LeptonEta        2 -2.5 2.5 "Lepton  #eta"
-## h_MTlepton	      2 0 300.   "m_{T}(W) (GeV)"
+## h_MTlepton_EB1	      2 0 300.   "m_{T}(W) (GeV)"
 ## h_Njets            1 0 6      "Number of jets"
 ## h_PFMET            2 0. 300.  "E^{miss}_{T} (GeV)"
 ## h_lllmass          5 0 400.    "m_{3e} (GeV)" 
@@ -119,7 +119,7 @@
 ## h_dijetsmass       5 0. 200.  "m(j_{1}j_{2}) (GeV)"
 #######################################################################################
 #**************************************************************************************
-# cut WZElectron_pu
+# cut MVATIGHTWZElectron_pu
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -134,7 +134,7 @@
 ## h_leadingLeptonPt  2 10. 200. "Leading lepton p_{T} (GeV)"
 ## h_secondLeptonPt   2 10. 200. "Second lepton p_{T} (GeV)"
 ## h_LeptonEta        2 -2.5 2.5 "Lepton  #eta"
-## h_MTlepton         2 0 300.   "m_{T}(W) (GeV)"
+## h_MTlepton_EB1         2 0 300.   "m_{T}(W) (GeV)"
 ## h_Njets            1 0 6      "Number of jets"
 ## h_PFMET            2 0. 300.  "E^{miss}_{T} (GeV)"
 ## h_lllmass          5 0 400.    "m_{3e} (GeV)"
@@ -148,7 +148,7 @@
 
 #######################################################################################
 #**************************************************************************************
-# cut ZgElectron
+# cut MVATIGHTZgElectron
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -159,7 +159,7 @@
 #
 #  histname          rebin minx maxx xtitle
 #____________________________________________________________________
-## h_osllmass           5 20. 400. "ll invariant mass (GeV)"
+## h_osllmass           2 20. 400. "ll invariant mass (GeV)"
 ## h_leadingLeptonPt  2 10. 200. "Leading lepton p_{T} (GeV)"
 ## h_secondLeptonPt   2 10. 200. "Second lepton p_{T} (GeV)"
 ## h_LeptonEta        2 -2.5 2.5 "Lepton  #eta"
@@ -175,7 +175,7 @@
 ## h_dijetsmass       5 0. 200.  "m(j_{1}j_{2}) (GeV)"
 #######################################################################################
 #**************************************************************************************
-# cut ZgElectron2
+# cut MVATIGHTZgElectron2
 # samples HNDiElectron/hndiel_os_config_vv.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
@@ -201,6 +201,4 @@
 ## h_jets_pt          2 0. 105.  "Jet p_{T} (GeV)"
 ## h_dijetsmass       5 0. 200.  "m(j_{1}j_{2}) (GeV)"
 #######################################################################################
-
-
 END

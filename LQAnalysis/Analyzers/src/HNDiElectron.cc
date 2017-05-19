@@ -137,9 +137,14 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   
   /// Interested to see effect of MET filters on tail of met
   if(isData) FillHist("MET_PFMet_uncleaned" , eventbase->GetEvent().PFMET(), weight,  0. , 10000., 1000);
-  
+  counter("NoCut",weight);
+
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
+  counter("Vertex",weight);
+
   if(!PassMETFilter()) return;     /// Initial event cuts :                                 
+  counter("METFiltert",weight);
+
   if(isData) FillHist("MET_PFMet_cleaned" , eventbase->GetEvent().PFMET(), weight,  0. , 10000., 1000);                                                                                                                                                                          
   //MakeValidationPlots(weight);
   
@@ -599,8 +604,8 @@ void HNDiElectron::MakeControlPlots(int method, TString methodtag, float w)throw
   
   /// e+e-                                                                                                                                                     
   FillByTriggerTrigger(2, "POGTIGHT", method,methodtag,w);
-  FillByTriggerTrigger(2, "MVATIGHT", method,methodtag,w);
-  FillByTriggerTrigger(2, "HNTIGHT", method,methodtag,w);
+  //FillByTriggerTrigger(2, "MVATIGHT", method,methodtag,w);
+  //FillByTriggerTrigger(2, "HNTIGHT", method,methodtag,w);
   //if(PassTrigger("HLT_Ele27_WPTight_Gsf_v")) FillByTriggerTrigger(1,method,methodtag,w);
   
 }
@@ -644,16 +649,16 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
   
 
 
-  std::vector<snu::KElectron> electronVetoColl=GetElectrons(true, false,   elid_veto, 10., 2.5);
-
+  std::vector<snu::KElectron> electronVetoColl=GetElectrons(true, true,   elid_veto, 10., 2.5);
+  
   TString el_elid = elid_tight;
 
   if(k_running_nonprompt) el_elid =elid_loose;
   bool keepcf=true;
   bool keepnp=false;
   if(method==1){
-    keepcf=true;
-    keepnp=true;
+    keepcf=false;
+    keepnp=false;
   }
   else if(method==2){
     // if sample is QCD sample then no events with have prompt electrons so always keep fakes in this case                                                                                                                                                                                                                                                                  
@@ -667,19 +672,19 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
     if(k_sample_name.Contains("qcd")) keepnp=true;
     /// electronTightColl = POG ID unless k_running_nonprompt is true                                                                                                                                                                                                                                                                                                       
   }
-  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  el_elid,10., 2.5);  /// IF k_running_nonprompt loose id                                          
 
-  if(electronTightColl.size() > 1){
-    if(electronTightColl[0].MVA()  < -0.6&& id==3){
-      cout << el_elid << " id = " << id << endl;
-      cout << electronTightColl[0].Eta()  << " " << electronTightColl[0].MVA() << endl;
-    }
-  }
+  
+  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  el_elid,10., 2.5);  /// IF k_running_nonprompt loose id                                          
+  
   std::vector<snu::KElectron> electronTightColl_all=GetElectrons(true, true, el_elid,10., 2.5);
   
   
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                                                                                                                                                                                                                       
-  std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, el_elid,7., 2.5);  /// IF k_running_nonprompt loose id                                                                                                                                                                                                                                            
+
+  std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, el_elid,7., 2.5);  /// IF k_running_nonprompt loose id                                                                                                                                            
+
+  std::vector<snu::KElectron> electronNCColl=GetElectrons(keepcf, keepnp, "ELECTRON_NOCUT",0., 2.5);                                                                                                  
+
 
   /// GetKFactor returns k factor for any sample. If no k-fact is found returns 1. IF data event returns 1.;                                                                                                                                                                                                                                                                
   evw *= GetKFactor();
@@ -710,6 +715,10 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
 
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
+  counter("Control",weight);
+
+  if(muonVetoColl.size() > 0) return;
+  counter("MuonVeto",weight);
 
   /// Simply fill nymber of leptons in samples                                                                                                                                                                                                                                                                                                                              
   FillHist(methodtag+"_nelectron_v", electronVetoColl.size() , evw*WeightByTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", TargetLumi),0., 5.,5);
@@ -724,6 +733,8 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
   
   if(electronTightColl.size() < 2 ) return;
+  counter("2Tight",weight);
+
   /// make it safer for trigger turn on
   if(iel_trig==2){
     if(electronTightColl[0].Pt() < 25) return;
@@ -733,7 +744,8 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
     if(electronTightColl[0].Pt() < 30) return;
     if(electronTightColl[1].Pt() < 10) return;
   }
-  
+  counter("2TightPt",weight);
+
   if(!isData ||  (isData&&PassTrigger(analysis_trigger))  ){
   
     /// apply trigger eff to MC instead of trigger bit * SF
@@ -1058,7 +1070,11 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	    
 	    if(electronTightColl[1].Pt() > 30.)FillCLHist(sighist_ee,methodtag+ "OSDiElectronw0", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, 1.);
 	    
-	    
+	    counter("os_dielw1",ev_weight);
+	    //m_logger << INFO << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+	    //cout << electronTightColl[0].Pt() << " " << electronTightColl[1].Pt() << endl;
+	    //cout << electronTightColl[0].Pt()*electronTightColl[0].SmearFactor() << " " << electronTightColl[1].Pt()*electronTightColl[0].SmearFactor() << endl;
+
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw1", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw2", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight2);
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw3", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight3);
@@ -1085,6 +1101,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	  }
 	  FillCLHist(sighist_ee, methodtag+"SSDiElectron", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 	  
+
 	  if(jets.size() > 1)FillCLHist(sighist_ee, methodtag+"SSDiElJet", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 	  if(jets.size()== 1 && GetDiLepMass(electronTightColl) > 100.)FillCLHist(sighist_ee, methodtag+"SS1Jet", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 	}
@@ -2185,7 +2202,8 @@ bool HNDiElectron::HighMassCheckSignalRegion(  std::vector<snu::KElectron> elect
 
 
 void HNDiElectron::counter(TString cut, float w){
-  w=1.;
+
+  w=1;
   map<TString,float>::iterator itmapcounter = mapcounter.find(cut) ;
   if (itmapcounter == mapcounter.end()){
     mapcounter[cut] = w;

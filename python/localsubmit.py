@@ -819,7 +819,7 @@ for line in fr:
             filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
             fwrite = open(filelist, 'w')
             configfile=open(runscript,'w')
-            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger)) #job, input, sample, ver, output
+            configfile.write(makeConfigFile(loglevel, outsamplename, filelist, tree, cycle, count, outputdir_tmp, outputdir, number_of_events_per_job, logstep, skipev, datatype, original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent, list_of_extra_lib, runnp,runcf,runtau, skflag,tagger,useskim)) #job, input, sample, ver, output
             configfile.close()
             if DEBUG == "True":
                 print "Making file : " + printedrunscript
@@ -844,7 +844,7 @@ for line in fr:
                 filelist = output+ "Job_" + str(count) + "/" + sample + "_%s" % (count) + ".txt"
                 fwrite = open(filelist, 'w')
                 configfile=open(runscript,'w')
-                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf,runtau, skflag,tagger))
+                configfile.write(makeConfigFile(loglevel,outsamplename, filelist, tree, cycle, count, outputdir_tmp,outputdir, number_of_events_per_job, logstep, skipev, datatype , original_channel, data_lumi, totalev, xsec, tar_lumi, eff_lumi, useskinput, runevent,list_of_extra_lib, runnp, runcf,runtau, skflag,tagger,useskim))
                 configfile.close()
                 fwrite.write(line)
                 filesprocessed+=1
@@ -1314,6 +1314,8 @@ if not JobOutput:
         os.system("mv "+ output + "/*/*.e* " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename)    
     print "###########################################################################################################"
     print "Check crash by running root -q -b " + failed_macro 
+    print "after typing: export cat_version=$CATVERSION"
+    print 'export CATAnalyzerPeriod="B"'
     print "Logfile of failed job is can be found at " + os.getenv("LQANALYZER_LOG_PATH") + "/" + outsamplename   + failed_log 
     print "###########################################################################################################"
     JobCrash=True

@@ -6,13 +6,13 @@
 ###      MakeCleverHistograms(sighist_mm, "DiMuon_SSPreselection"+dimuonIDs.at(i));
 #######################################################################################
 #**************************************************************************************
-# cut OSNoZDiElectron
+# cut POGTIGHTOSNoZDiElectron
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with two opposite sign electrons (POG tight) with Z peak removed...
 #
 #  histname          rebin minx maxx xtitle
@@ -35,13 +35,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronw1
+# cut POGTIGHTOSDiElectronw1
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -65,13 +65,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronw2
+# cut POGTIGHTOSDiElectronw2
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -95,13 +95,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronw3
+# cut POGTIGHTOSDiElectronw3
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -125,13 +125,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronw4
+# cut POGTIGHTOSDiElectronw4
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -155,13 +155,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectron_pujets
+# cut POGTIGHTOSDiElectron_pujets
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -185,13 +185,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSHNDiElectron
+# cut POGTIGHTOSHNDiElectron
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -215,13 +215,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronDiJet
+# cut POGTIGHTOSDiElectronDiJet
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -245,13 +245,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronDiJet1bw1
+# cut POGTIGHTOSDiElectronDiJet1bw1
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -275,13 +275,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronDiJet1bw2
+# cut POGTIGHTOSDiElectronDiJet1bw2
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -305,13 +305,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronDiJet1bw4
+# cut POGTIGHTOSDiElectronDiJet1bw4
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -335,13 +335,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronDiJet1bw3
+# cut POGTIGHTOSDiElectronDiJet1bw3
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newID
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #
@@ -365,13 +365,13 @@
 ## h_lljjmass         2 50. 500. "l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})"
 #######################################################################################
 #**************************************************************************************
-# cut OSDiElectronDiJet2b
+# cut POGTIGHTOSDiElectronDiJet2b
 # samples HNDiElectron/hndiel_os_config_allmc.txt
 # skim SKTree_DiLepSkim
 # stream DoubleEG
 # analyzer HNDiElectron
 # periodtag periodBtoH
-# plottag mar28
+# plottag newIDy
 # caption Number of events with	two opposite sign electrons (POG tight)	with Z peak removed...
 #
 #

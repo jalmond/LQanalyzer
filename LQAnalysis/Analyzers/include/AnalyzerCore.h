@@ -178,6 +178,7 @@ class AnalyzerCore : public LQCycleBase {
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   void SetCorrectedMomentum(vector<snu::KMuon>& k_muons);
+  void SetCorrectedMomentum(vector<snu::KMuon>& k_muons, vector<snu::KTruth> truth);
 
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KElectron> el);
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KMuon> mu);

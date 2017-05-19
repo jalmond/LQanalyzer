@@ -515,7 +515,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
 }
 
 vector<TString> DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TString method, std::vector<TString> regs1){
-
+  
   if(!method.Contains("mva")) {
     vector<TString> tmpkeys;
     tmpkeys.push_back( GetElFRKey(IDloose, IDtight, method));
@@ -599,11 +599,9 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
 
       
       /// tmp
-      if(IDtight == "ELECTRON_POG_TIGHT" && IDloose=="ELECTRON_POG_FAKELOOSE")  cut+="ELECTRON16_POG_FAKELOOSE_CC_d0ELECTRON16_FR_POG_TIGHT_CC_dijet_pog_d0"; /// NEW from .10 tag POG Tight ID == 
+      if(IDtight == "ELECTRON_POG_TIGHT" && IDloose=="ELECTRON_POG_FAKELOOSE")  cut+=sjpt+"ELECTRON16_FR_POG_TIGHT_CC_dijet_pog_d0"; /// NEW from .10 tag POG Tight ID == 
 
-      if(IDtight == "ELECTRON_MVA_TIGHT" && IDloose=="ELECTRON_MVA_FAKELOOSE")  cut+="ELECTRON16_MVA_FAKELOOSE_CC_d0ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva_d0";
-      
-      cout << IDtight << " " << IDloose << " " << cut << endl;
+      if(IDtight == "ELECTRON_MVA_TIGHT" && IDloose=="ELECTRON_MVA_FAKELOOSE")  cut+=sjpt+"ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva_d0";
       
       return cut;
       

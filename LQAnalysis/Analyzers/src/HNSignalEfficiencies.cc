@@ -113,13 +113,14 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   if(isData)mutag="MUON_HN_TRI_HIGHDXY_LOOSE";
 
   std::vector<snu::KElectron> electrons_nc=GetElectrons(eltag);
-
+  if(electrons_nc.size() > 0) cout << electrons_nc[0].Pt() << " " << electrons_nc[0].Eta() << endl;
 
 
   
 
   std::vector<snu::KMuon> muons_nc=GetMuons(mutag);
   
+
   std::vector<snu::KElectron> electrons_tm_nc;
 
   std::vector<snu::KElectron> looseveto = GetElectrons(false,false,"ELECTRON_HN_FAKELOOSEST");

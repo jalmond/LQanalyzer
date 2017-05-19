@@ -1267,6 +1267,7 @@ float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVect
     lep_pt.push_back(electrons.at(i).Pt());
     lep_eta.push_back(electrons.at(i).Eta());
     ismuon.push_back(false);
+
   }
 
   vector<float> fr, pr, fr_err, pr_err;
@@ -1295,7 +1296,7 @@ float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVect
       else fr.push_back( getFakeRate_electronEta(0, lep_pt.at(i), lep_eta.at(i), elcut[0]));
       pr.push_back( getEfficiency_electron(0, lep_pt.at(i), lep_eta.at(i)) );
       if(elcut.size()==1)        fr_err.push_back( getFakeRate_electronEta(1, lep_pt.at(i), lep_eta.at(i),  elcut[0]));
-      else   fr_err.push_back( getFakeRate_electronEta(1, lep_pt.at(i), lep_eta.at(i),  elcut[i]));
+      else   fr_err.push_back( getFakeRate_electronEta(1, lep_pt.at(i), lep_eta.at(i),  elcut[1]));
       pr_err.push_back( getEfficiency_electron(1, lep_pt.at(i), lep_eta.at(i)) );
     }
   }
