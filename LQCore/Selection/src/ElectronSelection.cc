@@ -159,12 +159,12 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
 
   for (std::vector<KElectron>::iterator el = allelectrons.begin(); el!=allelectrons.end(); el++){
 
-    /// DEFAULT cuts
     bool pass_selection = true;
 
-    /// ID cut : need to optimise cuts
+    // ID cut
     if(apply_ID){
-      if(GetString(k_id).Contains("POG")) ElectronID = PassID(*el, k_id);
+      if     (GetString(k_id).Contains("POG"))             ElectronID = PassID(*el, k_id);
+      else if(GetString(k_id).Contains("ELECTRON_HN_MVA")) ElectronID = PassID(*el, k_id);
       else ElectronID = PassUserID( *el,GetString(k_id) , GetString(k_id), apply_chargeconst, apply_convcut,relIsoBarrel_max,relIsoEndcap_max,dxyBarrel_max,dxyEndcap_max,dzBarrel_max,dzEndcap_max, 999.,999.);
 
       if(!ElectronID) {
@@ -173,7 +173,13 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
       }
     }
 
-    //SetRelIso. Default: PFRelIso03
+    // HLT Emulation Cuts 
+    if(apply_HLTSafeCut){
+      if     ( HLTSafeLevel.Contains("CaloIdL_TrackIdL_IsoVL") && (!el->IsTrigMVAValid()) ) pass_selection=false;
+      else if( HLTSafeLevel.Contains("WPLoose")                && (!el->PassHLTID())      ) pass_selection=false;
+    }
+
+    // SetRelIso. Default: PFRelIso03
     float reliso(0.);
     if     (apply_relisocut && RelIsoType.Contains("Default"))    reliso=el->PFRelIso(0.3); 
     else if(apply_relisocut && RelIsoType.Contains("PFRelIso04")) reliso=el->PFRelIso(0.4); 
@@ -192,17 +198,21 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl , bool m_de
     if(!apply_BETrRegIncl){
       if(fabs(el->SCEta())>1.4442 && fabs(el->SCEta())<1.566) pass_selection = false;
     }
-    //// Check charge consistancy between different detectors
+    // Check charge consistancy between different detectors
     if(apply_chargeconst && !el->GsfCtfScPixChargeConsistency()){
       pass_selection = false;
       if(m_debug)cout << "Selection: Fail charge Cut" << endl;
     }
-    /// extra cut to reduce conversions
-    /// https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
+    // extra cut to reduce conversions
+    // https://twiki.cern.ch/twiki/bin/view/CMS/ConversionTools
     if(apply_convcut && (!el->PassesConvVeto()) ) {
       pass_selection = false;
       if(m_debug)cout << "Selection: Fail Conversion Cut" << endl;
     }
+
+    //d0 Significance
+    if(apply_dxysigmin && !(fabs(el->dxySig()) >= dxySig_min)) pass_selection = false;
+    if(apply_dxysigmax && !(fabs(el->dxySig()) <  dxySig_max)) pass_selection = false;
 
 
     if(apply_BESepCut){
@@ -631,22 +641,17 @@ bool ElectronSelection::PassID(snu::KElectron el, ID id){
 
   bool pass_selection=true;  bool debug=false;
 
-  int  snuid = el.SNUID();
-  bool pass_tight_noiso  = false;
-  bool pass_medium_noiso = false;
-  bool pass_loose_noiso  = false;
-  bool pass_veto_noiso   = false;
+  //SNUID : CutbasedPOGID without Isolation requirements
 
-  if(snuid >= 1000) pass_tight_noiso  = true;
-  if(snuid >= 100 ) pass_medium_noiso = true;
-  if(snuid >= 10  ) pass_loose_noiso  = true;
-  if(snuid >= 1   ) pass_veto_noiso   = true;
-
-
-  if(id == ELECTRON_POG_VETO   && !pass_veto_noiso)   {pass_selection = false; if(debug){ cout << "Failveto " << endl;}}
-  if(id == ELECTRON_POG_LOOSE  && !pass_loose_noiso)  {pass_selection = false; if(debug){ cout << "Failloose " << endl;}}
-  if(id == ELECTRON_POG_MEDIUM && !pass_medium_noiso) {pass_selection = false; if(debug){ cout << "Fail medium" << endl;}}
-  if(id == ELECTRON_POG_TIGHT  && !pass_tight_noiso)  {pass_selection = false; if(debug){ cout << "Fail tight" << endl;}}
+  if     ( id == ELECTRON_POG_VETO   && el.SNUID()<1    ){pass_selection = false; if(debug){ cout << "Failveto "  << endl;}}
+  else if( id == ELECTRON_POG_LOOSE  && el.SNUID()<10   ){pass_selection = false; if(debug){ cout << "Failloose " << endl;}}
+  else if( id == ELECTRON_POG_MEDIUM && el.SNUID()<100  ){pass_selection = false; if(debug){ cout << "Fail medium"<< endl;}}
+  else if( id == ELECTRON_POG_TIGHT  && el.SNUID()<1000 ){pass_selection = false; if(debug){ cout << "Fail tight" << endl;}}
+  else if( id == ELECTRON_POG_MVA_WP90 && (!el.PassNotrigMVAMedium()) ){ pass_selection = false; }
+  else if( id == ELECTRON_POG_MVA_WP80 && (!el.PassNotrigMVATight())  ){ pass_selection = false; }
+  else if( id == ELECTRON_HN_MVA_LOOSE && (!el.PassTrigMVAHNLoose())  ){ pass_selection = false; }
+  else if( id == ELECTRON_HN_MVA_TIGHT && (!el.PassTrigMVAHNTight())  ){ pass_selection = false; }
 
   return pass_selection;
+
 }
