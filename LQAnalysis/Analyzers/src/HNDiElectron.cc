@@ -677,12 +677,67 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
   
   std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  el_elid,10., 2.5);  /// IF k_running_nonprompt loose id                                          
-  
+  if(electronTightColl.size() > 1){
+    for(int ix=0; ix < 3; ix++){
+      
+      float val=0.;
+      TString labelval="";
+      if(ix==0){
+	val=GetDiLepMass(electronTightColl);
+	labelval="llmass";
+      }
+      if(ix>1){
+	val=electronTightColl[1].Pt();
+	labelval="l2pt";
+      }
+
+      
+      int pass1=false;
+      int pass2=false;
+      if(PassID(electronTightColl[0],"ELECTRON_POG_TIGHT")) pass1=true;
+      if(PassID(electronTightColl[1],"ELECTRON_POG_TIGHT")) pass2=true;
+      if(ix==2&&!pass1&&!pass2) continue;
+      if(electronTightColl[0].GetType() >  22  || electronTightColl[1].GetType() >  22) FillHist(labelval+"_check1",val,1.,0, 200., 100);
+      else{
+	
+	if(electronTightColl[0].GetType()  < 6  && electronTightColl[1].GetType()  < 6  ){
+	  FillHist(labelval+"_check2",val,1.,0, 200., 100);
+	}
+	else{
+	  
+	  FillHist("pt1_isloose",electronTightColl[0].GetType(),1., 0, 30., 30.);
+	  FillHist("pt2_isloose",electronTightColl[1].GetType(),1., 0,30., 30.);
+	  if(pass1)FillHist("pt1_isltight",electronTightColl[0].GetType(),1., 0,30., 30.);
+	  if(pass2)FillHist("pt2_isltight",electronTightColl[1].GetType(),1., 0,30., 30.);
+	  
+	  if(electronTightColl[0].GetType() == 7 || electronTightColl[1].GetType() == 7 )                FillHist(labelval+"_check3",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 8 || electronTightColl[1].GetType() == 8 )                FillHist(labelval+"_check4",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 9 || electronTightColl[1].GetType() == 9 )                FillHist(labelval+"_check5",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 10 || electronTightColl[1].GetType() == 10 )                FillHist(labelval+"_check6",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 11 || electronTightColl[1].GetType() == 11 )                FillHist(labelval+"_check7",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 12 || electronTightColl[1].GetType() == 12 )                FillHist(labelval+"_check8",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 13 || electronTightColl[1].GetType() == 13 )                FillHist(labelval+"_check9",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 14 || electronTightColl[1].GetType() == 14 )                FillHist(labelval+"_check10",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 15 || electronTightColl[1].GetType() ==15)                FillHist(labelval+"_check11",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 16 || electronTightColl[1].GetType() == 16 )                FillHist(labelval+"_check12",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 17 || electronTightColl[1].GetType() == 17 )                FillHist(labelval+"_check13",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 18 || electronTightColl[1].GetType() == 18 )                FillHist(labelval+"_check14",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 19 || electronTightColl[1].GetType() == 19 )                FillHist(labelval+"_check15",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 20 || electronTightColl[1].GetType() == 20 )                FillHist(labelval+"_check16",val,1.,0, 200., 100);
+	  if(electronTightColl[0].GetType() == 21 || electronTightColl[1].GetType() == 21 )                FillHist(labelval+"_check17",val,1.,0, 200., 100);
+	}
+      }
+    }
+  }
+
+
 
   std::vector<snu::KElectron> electronTightColl_all=GetElectrons(false, false, "ELECTRON_POG_TIGHT",10., 2.5);
   if(electronTightColl_all.size() != 1) return;
 
-  
+  if(electronTightColl.size() > 1)
+    cout<< electronTightColl[0].PFRelIso(0.3) << endl;
+
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                                                                                                                                                                                                                       
 
   std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, el_elid,7., 2.5);  /// IF k_running_nonprompt loose id                                                                                                                                            
@@ -756,7 +811,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
     if(!isData) evw*=  mcdata_correction->GetDoubleEGTriggerEff(electronTightColl);
 
-    cout << evw << " " << electronTightColl[1].Pt()  << " " << mcdata_correction->GetDoubleEGTriggerEff(electronTightColl) << endl;
+
     
     counter("Trigger_diel",evw);
     
@@ -1085,47 +1140,6 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw1", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 	    FillHist("llmass_check",GetDiLepMass(electronTightColl),ev_weight,0, 200., 100);
 
-	    for(int ix=0; ix < 2; ix++){
-	    
-	      float val=0.;
-	      TString labelval="";
-	      if(ix==0){
-		val=GetDiLepMass(electronTightColl);
-		labelval="llmass";
-	      }
-	      if(ix==1){
-		val=electronTightColl[1].Pt();
-		labelval="l2pt";
-	      }
-	      
-	      cout << electronTightColl[0].GetType() << " " << electronTightColl[1].GetType() << endl;
-	      if(electronTightColl[0].GetType() >  22  || electronTightColl[1].GetType() >  22) FillHist(labelval+"_check1",val,ev_weight,0, 200., 100);
-	      else{
-		
-		if(electronTightColl[0].GetType()  < 6  && electronTightColl[1].GetType()  < 6  ){
-		  FillHist(labelval+"_check2",val,ev_weight,0, 200., 100);
-		}
-		else{
-		}
-		if(electronTightColl[0].GetType() == 7 || electronTightColl[1].GetType() == 7 )                FillHist(labelval+"_check3",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 8 || electronTightColl[1].GetType() == 8 )                FillHist(labelval+"_check4",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 9 || electronTightColl[1].GetType() == 9 )                FillHist(labelval+"_check5",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 10 || electronTightColl[1].GetType() == 10 )                FillHist(labelval+"_check6",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 11 || electronTightColl[1].GetType() == 11 )                FillHist(labelval+"_check7",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 12 || electronTightColl[1].GetType() == 12 )                FillHist(labelval+"_check8",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 13 || electronTightColl[1].GetType() == 13 )                FillHist(labelval+"_check9",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 14 || electronTightColl[1].GetType() == 14 )                FillHist(labelval+"_check10",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 15 || electronTightColl[1].GetType() ==15)                FillHist(labelval+"_check11",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 16 || electronTightColl[1].GetType() == 16 )                FillHist(labelval+"_check12",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 17 || electronTightColl[1].GetType() == 17 )                FillHist(labelval+"_check13",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 18 || electronTightColl[1].GetType() == 18 )                FillHist(labelval+"_check14",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 19 || electronTightColl[1].GetType() == 19 )                FillHist(labelval+"_check15",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 20 || electronTightColl[1].GetType() == 20 )                FillHist(labelval+"_check16",val,ev_weight,0, 200., 100);
-		if(electronTightColl[0].GetType() == 21 || electronTightColl[1].GetType() == 21 )                FillHist(labelval+"_check17",val,ev_weight,0, 200., 100);
-		
-	      }
-	    }
-	      
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw2", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight2);
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw3", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight3);
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw4", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight4);
