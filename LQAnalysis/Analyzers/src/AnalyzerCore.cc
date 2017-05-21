@@ -3675,4 +3675,20 @@ std::vector<snu::KMuon> AnalyzerCore::sort_muons_ptorder(std::vector<snu::KMuon>
 }
 
 
+double AnalyzerCore::TopPTReweight(std::vector<snu::KTruth> TruthColl){
+  //Reference: https://twiki.cern.ch/twiki/bin/view/CMS/TopPtReweighting
+  //Caution : This can be used for SM ttbar samples only. Though top pt disagreement is obseved in several generators,
+  //          but the SF are derived from Powheg+Pythia sample(Run2). So it is safe to use this only for Powheg ttbar.
+  //          And this MUST NOT be applied to single top sample and tops produced from BSM mechanism
+  //Current normalisation factor version : v8-0-7
 
+  double weight=1.;
+
+  for(std::vector<snu::KTruth>::iterator it_truth= TruthColl.begin(); it_truth!=TruthColl.end(); it_truth++){
+    if(fabs(it_truth->PdgId())==6 && fabs(it_truth->GenStatus())<30 && fabs(it_truth->GenStatus())>20){
+      weight*=exp(0.0615-0.0005*it_truth->Pt());
+    }
+  }
+  return sqrt(weight)*1.;
+
+}

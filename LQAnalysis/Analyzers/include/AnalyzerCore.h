@@ -393,6 +393,8 @@ class AnalyzerCore : public LQCycleBase {
   void PrintTruth();
   std::vector<snu::KMuon> sort_muons_ptorder(std::vector<snu::KMuon> muons);
 
+
+  double TopPTReweight(std::vector<snu::KTruth> TruthColl);
   
 };
 #endif
