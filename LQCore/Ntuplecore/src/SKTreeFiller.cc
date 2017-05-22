@@ -158,6 +158,15 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
     
   }
+  double topreweight=1.;
+  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+    if(fabs(gen_pdgid->at(itx))==6 && fabs(gen_status->at(itx))<30 && fabs(gen_status->at(itx))>20){
+      topreweight*=exp(0.0615-0.0005*gen_pt->at(itx));
+    }
+  }
+
+
+  kevent.SetTopPtReweight(topreweight);
 
   if(jets_rho){
     if(jets_rho->size() > 0)kevent.SetRho(jets_rho->at(0));
