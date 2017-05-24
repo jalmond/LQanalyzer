@@ -69,6 +69,8 @@ class DataDrivenBackgrounds{
   float Get_DataDrivenWeight_MM(bool geterr, std::vector<snu::KMuon> k_muons,  TString ID, TString method);
   float Get_DataDrivenWeight_EM(bool geterr,std::vector<snu::KMuon> k_muons, std::vector<snu::KElectron> k_electrons,  TString IDe, TString IDm,  TString method);
 
+  float GetFakeRateEl(float pt, float eta, TString cut);
+
   /// ===  trilepton
   float Get_DataDrivenWeight_MMM(bool geterr, std::vector<snu::KMuon> k_muons);
 

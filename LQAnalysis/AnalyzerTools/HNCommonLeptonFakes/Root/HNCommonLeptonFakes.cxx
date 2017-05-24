@@ -47,7 +47,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   CheckFile(file_fake);
   TFile* file_fake_mva  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016_mva.root").c_str());
   CheckFile(file_fake_mva);
-
+  
 
   TFile* file_prompt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/PromptRate13TeV_2016_opt.root").c_str());
   CheckFile(file_prompt);
@@ -231,8 +231,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap_Double["fake_el_eff_0.76_iso0.05_dxy0.01_dz0.04"] = dynamic_cast<TH2D*>((file_fake_mva->Get("FakeRate_40_pt_etadijet_mva0.76_iso0.05_dxy0.01_dz0.04"))->Clone());                           
   _2DEfficiencyMap_Double["fake_el_eff_0.72_iso0.05_dxy0.01_dz0.04"] = dynamic_cast<TH2D*>((file_fake_mva->Get("FakeRate_40_pt_etadijet_mva0.72_iso0.05_dxy0.01_dz0.04"))->Clone());                           
   _2DEfficiencyMap_Double["fake_el_eff_0.7_iso0.05_dxy0.01_dz0.04"] = dynamic_cast<TH2D*>((file_fake_mva->Get("FakeRate_40_pt_etadijet_mva0.7_iso0.05_dxy0.01_dz0.04"))->Clone());                           
-  
-  
+
 
 
 
@@ -333,6 +332,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   
   file_fake_mva->Close();
   delete file_fake_mva;
+
 
   file_fake_muon->Close();
   delete file_fake_muon;
@@ -615,12 +615,19 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
   TString hist = "fake_el_eff_";
   hist += cut;
   
+  cout << hist << endl;
+
+  for(map<TString, TH2D*>::iterator mit = _2DEfficiencyMap_Double.begin(); mit != _2DEfficiencyMap_Double.end(); mit++){
+    cout << mit->first <<" " << mit->second << endl;
+  }
+
   //cout << hist << endl;
   mapit = _2DEfficiencyMap_Double.find(hist.Data());
   if(mapit!=_2DEfficiencyMap_Double.end()){
-
+    cout << mapit->second << endl;
+    
     int binx =  mapit->second->FindBin(pt,fabs(eta));
-
+    cout << binx << endl;
     eff_fake =  mapit->second->GetBinContent(binx);
     //cout << "eff_fake = " << eff_fake << endl;
     if(sys != 0) return mapit->second->GetBinError(binx); 

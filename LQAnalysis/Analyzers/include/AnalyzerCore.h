@@ -64,6 +64,7 @@ class AnalyzerCore : public LQCycleBase {
   bool TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
   bool TruthMatched(snu::KElectron el, bool keepcf);
 
+  bool TruthMatched(snu::KMuon mu);
 
   snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KMuon lep, snu::KJet jet);

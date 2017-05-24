@@ -19,12 +19,17 @@ class FakeRateMC : public AnalyzerCore {
   virtual void ClearOutputVectors()throw( LQError );
   
 
-  void ExecuteEventsMuon();
-  void ExecuteEventsElectron();
+  void ExecuteEventsMuon(TString idloose, TString idtight, TString tag, float iso);
+  void ExecuteEventsElectron(TString idloose, TString idtight, TString tag, float iso);
 
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
 
+  TDirectory* getTemporaryDirectory(void) const;
+
+
+  float GetPrescaleMu( std::vector<snu::KMuon> muons,bool pass3, bool pass2, bool pass1, float fake_total_lum );
+  float GetPrescaleEl( std::vector<snu::KElectron> electrons,bool pass5,  bool pass4, bool pass3, bool pass2, bool pass1, float fake_total_lum );
 
   void GetFakeRates(std::vector<snu::KMuon> loose_el, std::vector<snu::KMuon> tight_el,TString tightlabel,  std::vector<snu::KJet> jets,std::vector<snu::KJet> alljets, TString tag, double w, float isocut,bool makebasicplots);
   
@@ -62,6 +67,21 @@ private:
   int n_17_pass;
   int n_17_17_jet_pass;
   int n_17_jet_pass;
+
+  TH2D* MuonFR;
+  TH2D* MuonFRcorr;
+  TH2D*   MuonFRcbj;
+  TH2D* MuonFRcbjcorr;
+  TH2D*   MuonFRncbj;
+  TH2D* MuonFRncbjcorr;
+
+  TH2D* ElFR;
+  TH2D* ElFRcorr;
+  TH2D* ElFRcbj;
+  TH2D* ElFRcbjcorr;
+  TH2D* ElFRncbj;
+  TH2D* ElFRncbjcorr;
+
   
   ClassDef ( FakeRateMC, 1);
 };

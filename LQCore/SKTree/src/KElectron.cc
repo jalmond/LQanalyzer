@@ -65,6 +65,9 @@ KParticle()
   k_zzmva=-999;
   k_missing_hits=-999;
   k_smearfactor=-999.;
+  k_in_conv=false;
+  k_isprompt=false;
+  
 }
 
 /**
@@ -125,6 +128,8 @@ KElectron::KElectron(const KElectron& el) :
   k_zzmva=el.ZZMVA();
   k_missing_hits=el.MissingHits();
   k_smearfactor=el.SmearFactor();
+  k_in_conv=el.MCIsExternalConversion();
+  k_isprompt=el.IsPromptFlag();
 
 }
 
@@ -187,7 +192,9 @@ void KElectron::Reset()
   k_zzmva=-999;
   k_missing_hits=-999;
   k_smearfactor=-999.;
-
+  k_in_conv=false;
+  k_isprompt=false;
+  
 }
 
 
@@ -246,10 +253,21 @@ KElectron& KElectron::operator= (const KElectron& p)
     k_zzmva=p.ZZMVA();
     k_missing_hits=p.MissingHits();
     k_smearfactor=p.SmearFactor();
-
+    k_in_conv=p.MCIsExternalConversion();
+    k_isprompt=p.IsPromptFlag();
   }
   
   return *this;
+}
+
+
+void KElectron::SetIsMCExternalConversion(bool isconv){
+  k_in_conv=isconv;
+}
+
+
+void KElectron::SetIsPromptFlag(bool ispromptflag){
+  k_isprompt=ispromptflag;
 }
 
 void KElectron::SetSmearFactor(double smeare){
@@ -294,6 +312,24 @@ Bool_t KElectron::PassTrigMVAHNTight() const{
   return false;
 
 }
+
+
+Bool_t KElectron::PassTrigMVAGENTTight() const{
+  if(this->Pt() < 15.) {
+    if((fabs(this->SCEta()) < 0.8) && k_mva > 0.77) return true;
+    if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > 0.56) return true;
+    if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > 0.48) return true;
+
+  }
+  else {
+    if((fabs(this->SCEta()) < 0.8) && k_mva > 0.52) return true;
+    if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > 0.11) return true;
+    if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > -0.01) return true;
+  }
+  return false;
+
+}
+
 Bool_t KElectron::PassTrigMVAHNLoose() const{
   if((fabs(this->SCEta()) < 0.8) && k_mva > -0.02) return true;
   if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > -0.52) return true;

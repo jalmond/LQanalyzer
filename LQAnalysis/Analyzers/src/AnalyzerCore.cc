@@ -1145,7 +1145,7 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 34 && x < 44){
+	else  if (x > 34 && x < 46){
           is >> tmp;
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
@@ -1862,9 +1862,9 @@ void AnalyzerCore::SetupID(){
 
   SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/electrons.sel");
   SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/user_electrons.sel");
-  if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
-  if(k_classname.Contains("FakeRateCalculator_El")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
-  if(k_classname.Contains("ElectronTypes")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  //if(k_classname.Contains("HNDiElectron"))SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  //if(k_classname.Contains("FakeRateCalculator_El")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
+  //if(k_classname.Contains("ElectronTypes")) SetupSelectionElectron(lqdir + "/CATConfig/SelectionConfig/"+username+"_electrons.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/jets.sel");
   SetupSelectionJet(lqdir + "/CATConfig/SelectionConfig/user_jets.sel");
 
@@ -2225,15 +2225,25 @@ bool AnalyzerCore::TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, b
       if(el[iel].GetType() == 22) pass=false; // ?
       if(el[iel].GetType() == 24) pass=false;
       if(el[iel].GetType() > 25) pass=false;
-      if(tightdxy){
-	if(el[iel].GetType() == 6) pass=false;
-	if(el[iel].GetType() == 13) pass=false;
-	if(el[iel].GetType() == 20) pass=false;
-	if(el[iel].GetType() == 21) pass=false;
-	if(el[iel].GetType() == 23) pass=false;
-      }
     }
   }
+  
+  return pass;
+}
+
+bool AnalyzerCore::TruthMatched(snu::KMuon mu){
+
+  bool pass=false;
+  
+  if(mu.GetType() ==0) pass=true;
+  if(mu.GetType() ==1) pass=true;
+  if(mu.GetType() ==3) pass=true;
+  if(mu.GetType() ==6) pass=true;
+  if(mu.GetType() ==8) pass=true;
+  if(mu.GetType() ==9) pass=true;
+  if(mu.GetType() ==12) pass=true;
+  if(mu.GetType() ==24) pass=true;
+  if(mu.GetType() ==21) pass=true;
   
   return pass;
 }
@@ -2325,7 +2335,7 @@ void AnalyzerCore::TruthPrintOut(){
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
     if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
 
-    cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << endl; 
+    cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl; 
     
   }
 
@@ -3602,10 +3612,6 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
       }
     }
     
-    cout << it->RochPt()  << endl;
-    cout << mcdata_correction << endl;
-
-    cout << mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()) << endl;
     if(it->RochPt() < 0.){
       it->SetRochPt(mcdata_correction->GetCorrectedMuonMomentum(*it, eventbase->GetTruth()));
     }    

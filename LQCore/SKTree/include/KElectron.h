@@ -42,11 +42,11 @@ namespace snu {
     float ScaleFactor(const std::string& name, int sign) const ;
     Bool_t PassTrigMVAHNLoose() const ;
     Bool_t PassTrigMVAHNTight() const ;
+    Bool_t PassTrigMVAGENTTight() const ;
 
 
     // set kinematic variables
     void SetSCEta(Double_t sceta);
-    
 
     void SetSmearFactor(Double_t smear);
 
@@ -72,7 +72,7 @@ namespace snu {
     void SetPassTight(Bool_t pass);
     void SetPassHLT(Bool_t pass);
     void SetPassHEEP(Bool_t pass);
-
+    
     
 
     void SetPassMVATrigMedium(Bool_t pass);
@@ -104,8 +104,9 @@ namespace snu {
     
     // set charge variables
     void SetGsfCtfScPixCharge(bool gsfctfscpix_ch);
-    
+
     /// set conversion variables
+    void SetIsMCExternalConversion(Bool_t isconv);
     void SetHasMatchedConvPhot(Bool_t hasmatchConvPhot);
     void SetMissingHits(Int_t mhits);
     
@@ -119,6 +120,8 @@ namespace snu {
     void SetTrigMatch(TString match);
     void SetIsTrigMVAValid(bool b);
     //void SetIsTrigCUTValid(bool b);
+
+    void SetIsPromptFlag(bool pflag);
 
     bool TriggerMatched(TString path);
 
@@ -134,6 +137,7 @@ namespace snu {
 	return 36;
       }
     }
+    inline Bool_t IsPromptFlag() const {return k_isprompt;}
     inline Double_t MVA() const {return k_mva;}
     inline Double_t ZZMVA() const {return k_zzmva;}
 
@@ -179,6 +183,7 @@ namespace snu {
     inline Bool_t MCIsPrompt() const{return k_mc_matched;}
     inline Bool_t MCIsCF() const{return k_is_cf;}
     inline Bool_t MCIsFromConversion() const{return k_is_conv;}
+    inline Bool_t MCIsExternalConversion() const{return k_in_conv;}
     inline Bool_t MCFromTau() const{return k_is_fromtau;}
     inline Int_t MCMatchedPdgId() const{return k_mc_pdgid;}
     inline Int_t MotherPdgId() const{return k_mother_pdgid;}
@@ -283,8 +288,11 @@ namespace snu {
     Double_t k_mva, k_zzmva;
     Int_t k_missing_hits;
     Double_t k_smearfactor;
+    Bool_t k_in_conv;
+    Bool_t k_isprompt;
 
-    ClassDef(KElectron,29);
+
+    ClassDef(KElectron,31);
   }; 
   
 }//namespace snu

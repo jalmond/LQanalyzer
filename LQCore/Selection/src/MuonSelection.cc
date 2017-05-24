@@ -439,6 +439,8 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool cutondxy, bool cutond
     }
   }
 
+  else if (id == "MUON_POG_MEDIUM") {
+  }
 
   else if (id == "MUON_POG_TIGHT") {
     if(!(mu.IsPF() == 1        )){

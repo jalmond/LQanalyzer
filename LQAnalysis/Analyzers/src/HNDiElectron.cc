@@ -674,9 +674,10 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
     if(k_sample_name.Contains("qcd")) keepnp=true;
     /// electronTightColl = POG ID unless k_running_nonprompt is true                                                                                                                                                                                                                                                                                                       
   }
-
   
-  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  el_elid,10., 2.5);  /// IF k_running_nonprompt loose id                                          
+  
+  std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  el_elid,10., 2.5);  /// IF k_running_nonprompt loose id                                    
+      
   if(electronTightColl.size() > 1){
     for(int ix=0; ix < 3; ix++){
       
@@ -733,9 +734,9 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
 
   std::vector<snu::KElectron> electronTightColl_all=GetElectrons(false, false, "ELECTRON_POG_TIGHT",10., 2.5);
-  if(electronTightColl_all.size() != 1) return;
-
-  if(electronTightColl.size() > 1)
+ 
+  if
+    (electronTightColl.size() > 1)
     cout<< electronTightColl[0].PFRelIso(0.3) << endl;
 
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                                                                                                                                                                                                                       
@@ -1062,7 +1063,11 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
       }
     }
     
-    
+    bool externconv=false;
+    for(unsigned int x=0; x <  electronVetoColl.size(); x++){
+      if( electronVetoColl[x].MCIsExternalConversion())externconv=true;
+    }
+
     if(electronTightColl.size() == 2){
       
       snu::KParticle Zpart = electronTightColl[0] + electronTightColl[1];
@@ -1143,8 +1148,10 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw2", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight2);
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw3", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight3);
 	    FillCLHist(sighist_ee, methodtag+"OSDiElectronw4", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight4);
-	    if(electronTightColl[1].Pt() > 25.)             FillCLHist(sighist_ee, methodtag+"OSDiElectronw5", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
-
+	    if(electronTightColl[0].GetType() ==1 && electronTightColl[1].GetType()==1){
+	      FillCLHist(sighist_ee, methodtag+"OSDiElectronw5", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+	      if(!externconv)FillCLHist(sighist_ee, methodtag+"OSDiElectronw6", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+	    }
 	    if(jets.size() > 1) {
 	      FillCLHist(sighist_ee, methodtag+"OSDiElectronDiJet", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 	      if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 70.){

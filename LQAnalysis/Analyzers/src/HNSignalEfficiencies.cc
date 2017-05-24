@@ -113,10 +113,20 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   if(isData)mutag="MUON_HN_TRI_HIGHDXY_LOOSE";
 
   std::vector<snu::KElectron> electrons_nc=GetElectrons(eltag);
-  if(electrons_nc.size() > 0) cout << electrons_nc[0].Pt() << " " << electrons_nc[0].Eta() << endl;
+  //if(electrons_nc.size() > 0) cout << electrons_nc[0].Pt() << " " << electrons_nc[0].Eta() << endl;
 
-
-  
+  if(SameCharge(electrons_nc)){
+    TruthPrintOut();
+    for(unsigned int iel =0 ; iel < electrons_nc.size(); iel++){
+      if(electrons_nc[iel].Pt() < 10.) continue;
+      cout << "El pt = " << electrons_nc[iel].Pt() << " eta ="  << electrons_nc[iel].Eta() << " " << electrons_nc[iel].Phi() << endl;
+      cout << "type      :  Mother pdgid    :   Isprompt(SK)    :  prompt flag  "<<  endl;
+      cout << electrons_nc[iel].GetType() << " " << electrons_nc[iel].MotherPdgId() << " " << electrons_nc[iel].MCIsPrompt() << " " << electrons_nc[iel].IsPromptFlag() << endl;
+      cout << "Ext conv     : sk conv" << endl;
+      cout << electrons_nc[iel].MCIsExternalConversion() << "  " << electrons_nc[iel].MCIsFromConversion() << endl;
+    }
+  }
+  else return;
 
   std::vector<snu::KMuon> muons_nc=GetMuons(mutag);
   
