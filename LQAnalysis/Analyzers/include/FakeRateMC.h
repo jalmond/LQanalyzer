@@ -19,8 +19,8 @@ class FakeRateMC : public AnalyzerCore {
   virtual void ClearOutputVectors()throw( LQError );
   
 
-  void ExecuteEventsMuon(TString idloose, TString idtight, TString tag, float iso);
-  void ExecuteEventsElectron(TString idloose, TString idtight, TString tag, float iso);
+  void ExecuteEventsMuon(TString idloose, TString idtight, TString tag, float iso, double w);
+  void ExecuteEventsElectron(TString idloose, TString idtight, TString tag, float iso, double w);
 
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();

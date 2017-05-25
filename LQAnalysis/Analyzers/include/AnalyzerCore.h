@@ -69,7 +69,8 @@ class AnalyzerCore : public LQCycleBase {
   snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KMuon lep, snu::KJet jet);
   snu::KTruth GetTruthMatchedParticle(snu::KElectron el);
-  
+  bool NonPrompt(snu::KElectron el);
+  bool NonPrompt(snu::KMuon mu);
   
   float GetVirtualMassConv(int cmindex,int nconvindx);
   float GetVirtualMass(bool inph=false);

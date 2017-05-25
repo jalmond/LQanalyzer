@@ -593,14 +593,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if(gen_pt->at(it) > 10.){	
 	    if(dr < 0.3){
 	      if(gen_isprompt->at(it) && gen_status->at(it) ==1) {
+		conv_veto=true;
 		for (UInt_t it_ph=0; it_ph< gen_pt->size(); it_ph++ ){
 		  if(it==it_ph) continue;
-		  
+
 		  // check ph is matched to q or g from matrix element (st 23)
 		  if(gen_status->at(it_ph) ==23){
 		    if(fabs(gen_pdgid->at(it_ph)) < 7 || fabs(gen_pdgid->at(it_ph))==21){
 		      double drph = sqrt( pow(fabs(gen_eta->at(it_ph) - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( gen_phi->at(it_ph) - gen_phi->at(it))),2.0));
-		      if(drph > 0.05) conv_veto=true;
+		      if(drph < 0.05) conv_veto=false;
 		    }
 		  }
 		}
@@ -609,7 +610,6 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  }
 	}
 
-	
 	/// Matching using instructions on
 	/// https://indico.cern.ch/event/292928/contributions/1650088/attachments/547844/755123/talk_electron_contribution.pdf
 	/// 
@@ -659,8 +659,9 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  }
 	}
       }// end of gen loop to find status 1 electron
-
-
+	
+	//cout << iel << " " << electrons_pt->at(iel) << " " << electrons_eta->at(iel) << " " << electrons_phi->at(iel) << " " << conv_veto << endl;
+	
       ///// treat case where there is a matched status 1 electron:
       //// classify into prompt:Fake:FromTau
 
@@ -1023,7 +1024,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetMotherTruthIndex(mother_index);
       el.SetMCTruthIndex(matched_index);
       if(gen_status->at(matched_index)==1)el.SetIsPromptFlag(gen_isprompt->at(matched_index));
-      
+      if(conv_veto)el.SetType(40);
+
     }
     }
     electrons.push_back(el);

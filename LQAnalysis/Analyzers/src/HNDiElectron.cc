@@ -90,6 +90,7 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
        TString label = labels.at(il);
 
        MakeCleverHistograms(sighist_ee,label+"OSNoZDiElectron");
+       MakeCleverHistograms(sighist_ee,label+"OSZDiElectron");
        MakeCleverHistograms(sighist_ee,label+"OSDiElectronw1");
        MakeCleverHistograms(sighist_ee,label+"OSDiElectronw2");
        MakeCleverHistograms(sighist_ee,label+"OSDiElectronw3");
@@ -651,7 +652,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
   
 
 
-  std::vector<snu::KElectron> electronVetoColl=GetElectrons(true, true,   elid_veto, 10., 2.5);
+  std::vector<snu::KElectron> electronVetoColl=GetElectrons(true, false,   elid_veto, 10., 2.5);
   
   TString el_elid = elid_tight;
 
@@ -1121,6 +1122,8 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	    }
 	    
 	    if(GetDiLepMass(electronTightColl) < 101. && GetDiLepMass(electronTightColl)  > 81.){
+	      FillCLHist(sighist_ee, methodtag+"OSZDiElectron", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+
 	      if((nbjet==0)){
 		FillHist(methodtag+"_zpeak_ee_w1", GetDiLepMass(electronTightColl), evw*trigger_ps, 0., 200.,400);
 		FillHist(methodtag+"_zpeak_ee_w2", GetDiLepMass(electronTightColl), evw*trigger_sf*trigger_ps, 0., 200.,400);

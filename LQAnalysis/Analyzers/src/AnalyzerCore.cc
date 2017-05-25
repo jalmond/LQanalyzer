@@ -2188,7 +2188,7 @@ bool AnalyzerCore::ISCF(snu::KElectron el){
   if(el.GetType() == 4) return true;
   if(el.GetType() == 5)return true;
   if(el.GetType() == 6)return true;
-  if(el.GetType() == 13)return true;
+  if(el.GetType() == 13&&el.MCMatched())return true;
   if(el.GetType() == 19)return true;
   if(el.GetType() == 20)return true;
   if(el.GetType() == 21)return true;
@@ -2196,37 +2196,44 @@ bool AnalyzerCore::ISCF(snu::KElectron el){
 }
 
 bool AnalyzerCore::TruthMatched(snu::KElectron el, bool keepCF){
-  bool pass=true;
+  bool pass=false;
   if(!keepCF && ISCF(el)) return false;
+  if(keepCF && ISCF(el)) return true;
   if((keepCF && !ISCF(el)) || !keepCF) {
-    if(el.GetType() ==0) pass=false;
-    if(el.GetType() == 7) pass=false;
-    if(el.GetType() == 12) pass=false;
-    if(el.GetType() == 16) pass=false;                                                                                                                           
-    if(el.GetType() == 22) pass=false;                                                                                                                          
-    if(el.GetType() == 24) pass=false;
-    if(el.GetType() > 25) pass=false;
+    
+    if(el.GetType() ==1)   pass=true; /// Z/W
+    if(el.GetType() ==2)   pass=true; /// Z/W
+    if(el.GetType() ==3)   pass=true; /// Z/W 
+    if(el.GetType() == 11) pass=true; /// Tau
+    if(el.GetType() == 14) pass=true; /// Z*
+    if(el.GetType() == 15) pass=true; /// W*
+    if(el.GetType() == 17) pass=true; /// * CF
+    if(el.GetType() == 18) pass=true; /// * CF  
+    //if(el.GetType() == 23) pass=true;
+    if(el.GetType() == 35) pass=true;
   }
 
   return pass;
 }
 
+bool AnalyzerCore::NonPrompt(snu::KElectron el){
+  
+  if(el.GetType() == 7) return true;
+  return false;
+
+}
+bool AnalyzerCore::NonPrompt(snu::KMuon mu){
+
+  if(mu.GetType() == 2) return true;
+  return false;
+
+}
+
+
 
 bool AnalyzerCore::TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF){
   
-  bool pass=true;
-  for(unsigned int iel=0; iel <  el.size(); iel++){
-
-    if((allowCF && !ISCF(el[iel])) || !allowCF) {
-      if(el[iel].GetType() ==0) pass=false;
-      if(el[iel].GetType() == 7) pass=false;
-      if(el[iel].GetType() == 12) pass=false;
-      if(el[iel].GetType() == 16) pass=false; //?
-      if(el[iel].GetType() == 22) pass=false; // ?
-      if(el[iel].GetType() == 24) pass=false;
-      if(el[iel].GetType() > 25) pass=false;
-    }
-  }
+  bool pass=false;
   
   return pass;
 }
@@ -2235,16 +2242,14 @@ bool AnalyzerCore::TruthMatched(snu::KMuon mu){
 
   bool pass=false;
   
-  if(mu.GetType() ==0) pass=true;
   if(mu.GetType() ==1) pass=true;
-  if(mu.GetType() ==3) pass=true;
   if(mu.GetType() ==6) pass=true;
   if(mu.GetType() ==8) pass=true;
   if(mu.GetType() ==9) pass=true;
   if(mu.GetType() ==12) pass=true;
-  if(mu.GetType() ==24) pass=true;
-  if(mu.GetType() ==21) pass=true;
-  
+  if(mu.GetType() ==24) pass=true;  //// CHANGE ONCE SKTREES ARE REMADE
+  //if(mu.GetType() ==28) pass=true;
+  // 23>?? 28?? sshould these be included?
   return pass;
 }
 
@@ -3534,7 +3539,7 @@ vector<snu::KElectron> AnalyzerCore::GetTruePrompt(vector<snu::KElectron> electr
 	
 	bool ismatched = TruthMatched(electrons.at(i),  keep_chargeflip);                                                                                                                            
 	//electrons.at(i).MCMatched();                                                                                                                                                                         
-	// TruthMatched(electrons.at(i),  keep_chargeflip);
+	//TruthMatched(electrons.at(i),  keep_chargeflip);
 	//electrons.at(i).MCMatched();
 	if(electrons.at(i).MCFromTau()) ismatched=false;
 	if(keepfake&&keep_chargeflip) prompt_electrons.push_back(electrons.at(i));
@@ -3569,14 +3574,15 @@ vector<snu::KMuon> AnalyzerCore::GetTruePrompt(vector<snu::KMuon> muons, bool ke
 
   for(unsigned int i = 0; i < muons.size(); i++){
     if(!k_isdata){
-
+      
       if(keepfake) prompt_muons.push_back(muons.at(i));
-      else if(muons.at(i).MCMatched()) prompt_muons.push_back(muons.at(i));
-    }// Data
+      else if(TruthMatched(muons.at(i))) prompt_muons.push_back(muons.at(i));
+    }
+    // Data
     else prompt_muons.push_back(muons.at(i));
   }/// loop
   return prompt_muons;
-
+  
 }
 
 
