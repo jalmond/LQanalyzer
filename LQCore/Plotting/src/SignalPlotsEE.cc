@@ -94,7 +94,7 @@ SignalPlotsEE::SignalPlotsEE(TString name, int nel): StdPlots(name){
   map_sig["h_ht_central"]          = SetupHist("h_ht_central_"       + name,"ST central jets", 100, 0., 1000.,"HT_{cj} GeV");
   map_sig["h_ht_fc_ratio"]          = SetupHist("h_ht_fc_ratio_"       + name,"ST ratio", 100, 0., 1.,"HT (ratio)");
 
-
+  map_sig["h_eltype" ]          = SetupHist("h_eltype_"       + name,"Type", 45, 0., 45.,"El Type");
   map_sig["h_lt" ]          = SetupHist("h_lt_"       + name,"LT", 100., 0., 500.,"LT");
   map_sig["h_lt_ht" ]          = SetupHist("h_lt_ht_"       + name,"LT", 100., 0., 5.,"LT");
   map_sig["h_lt_forward" ]          = SetupHist("h_lt_forward_"       + name,"LT", 100., 0., 500.,"LT");
@@ -839,6 +839,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   //// Fillplots
   for(unsigned int i=0 ; i < electrons.size(); i++){
+    Fill("h_eltype",electrons.at(i).GetType(),weight);
     float dphi = fabs(TVector2::Phi_mpi_pi(electrons.at(i).Phi()- ev.METPhi(snu::KEvent::pfmet)));
     float MT = sqrt(2.* electrons.at(i).Et()*ev.PFMET() * (1 - cos( dphi)));
     if(i==0)     Fill("h_leadMTlepton",MT, weight);
@@ -961,6 +962,7 @@ void SignalPlotsEE::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   int eta2=0.;
   float sumeta=0.;
   for(unsigned int iel2=0 ; iel2 < electrons.size(); iel2++){
+    
     sumeta=sumeta+electrons[iel2].Eta();
     int etareg=0.;
     if(electrons[iel2].Eta() < -2.1){

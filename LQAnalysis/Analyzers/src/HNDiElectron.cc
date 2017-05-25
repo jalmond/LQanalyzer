@@ -148,7 +148,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   counter("METFiltert",weight);
 
   if(isData) FillHist("MET_PFMet_cleaned" , eventbase->GetEvent().PFMET(), weight,  0. , 10000., 1000);                                                                                                                                                                          
-  //MakeValidationPlots(weight);
+  MakeValidationPlots(weight);
   
   if(functionality == HNDiElectron::VALIDATION) {
     MakeControlPlots(1,"",weight); /// Uses all MC events (no truth matching)
@@ -158,6 +158,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 }
 
 void HNDiElectron::MakeValidationPlots(float w){
+  
+  std::vector<snu::KElectron> electrons=GetElectrons(true,true,"ELECTRON_NOCUT");
+  std::vector<snu::KElectron> electrons_nofake=GetElectrons(true,false,"ELECTRON_NOCUT");
+  std::vector<snu::KMuon> muons=GetMuons("MUON_NOCUT");
+  std::vector<snu::KJet> jets =  GetJets("JET_HN");
+  FillCLHist(sighist_ee,"All", eventbase->GetEvent(),muons,electrons,  jets, w);
+  FillCLHist(sighist_ee,"All_noFake", eventbase->GetEvent(),muons,electrons_nofake,  jets, w);
   
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                           
   bool keepcf=true;
@@ -169,7 +176,6 @@ void HNDiElectron::MakeValidationPlots(float w){
   std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp, pog_tight_elid,15., 2.5);  /// IF k_running_nonprompt loose id                       
   std::vector<snu::KElectron> electronTightColl_all=GetElectrons(true, true, pog_tight_elid,15., 2.5);
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
-  std::vector<snu::KJet> jets =  GetJets("JET_HN");
   std::vector<snu::KJet> jets_pu =  GetJets("JET_HN_PU");
 
   std::vector<snu::KElectron> electronColl=GetElectrons(keepcf, keepnp, "ELECTRON_PTETA", 5., 2.5);  /// IF k_running_nonprompt loose id                                                                                  
@@ -736,10 +742,6 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 
   std::vector<snu::KElectron> electronTightColl_all=GetElectrons(false, false, "ELECTRON_POG_TIGHT",10., 2.5);
  
-  if
-    (electronTightColl.size() > 1)
-    cout<< electronTightColl[0].PFRelIso(0.3) << endl;
-
   /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                                                                                                                                                                                                                       
 
   std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, el_elid,7., 2.5);  /// IF k_running_nonprompt loose id                                                                                                                                            
@@ -2287,6 +2289,8 @@ void HNDiElectron::counter(TString cut, float w){
     float sum = itmapcounter->second;
     mapcounter[cut] = sum+w;
   }
+
+  FillCutFlow(cut,w);
 
 }
 
