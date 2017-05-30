@@ -88,6 +88,10 @@ class DataDrivenBackgrounds{
 
   // Class object to get event weights for Fakes
 
+  //==== Use pt-cone-corrected
+  void SetUsePtCone(bool b);
+  double MuonConePt(snu::KMuon muon, double tightiso);
+
   /// GENERAL FUNCTIONS
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KElectron> el);
   std::vector<TLorentzVector> MakeTLorentz( std::vector<snu::KMuon> mu);
@@ -105,6 +109,7 @@ class DataDrivenBackgrounds{
 
   HNCommonLeptonFakes* m_fakeobj;
   EventBase* dd_eventbase;
+  bool UsePtCone;
 
 
 

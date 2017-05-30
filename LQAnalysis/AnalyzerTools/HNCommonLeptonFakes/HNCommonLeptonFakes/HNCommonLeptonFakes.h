@@ -137,6 +137,8 @@ class HNCommonLeptonFakes {
   //==== After runing get_eventweight, we have # of Loose but not Tight
   int GetNLooseNotTight();
 
+  void SetUsePtCone(bool b);
+
  private:
   /// vector for storing FakeCR strings
   std::vector<TString> regions;
@@ -181,6 +183,7 @@ class HNCommonLeptonFakes {
   int n_jet, n_bjet;
   std::vector<double> dXYMins, RelIsoMaxs;
   int n_Loose_not_Tight;
+  bool UsePtCone;
 
 };
 #endif

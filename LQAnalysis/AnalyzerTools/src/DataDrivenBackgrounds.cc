@@ -24,6 +24,7 @@
    string lqdir = getenv("LQANALYZER_DIR");
    m_fakeobj = new HNCommonLeptonFakes(lqdir+"/LQAnalysis/src/HNCommonLeptonFakes/share/");
    dd_eventbase= 0;
+   UsePtCone=false;
 
 
  }
@@ -372,6 +373,8 @@
      return 0.;
    }
 
+   m_fakeobj->SetUsePtCone(UsePtCone);
+
    std::vector<TLorentzVector> muons=MakeTLorentz(k_muons);
    std::vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
    std::vector<TString> vkeys;
@@ -619,6 +622,20 @@ TString DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TStr
 
 /// MISC FUNCTIONS
 
+void DataDrivenBackgrounds::SetUsePtCone(bool b){
+
+  UsePtCone = b;
+
+}
+
+double DataDrivenBackgrounds::MuonConePt(snu::KMuon muon, double tightiso){
+
+  double mu_pt_corr = muon.Pt()*(1+max(0.,(muon.RelIso04()-tightiso))) ;
+
+  return mu_pt_corr;
+
+}
+
 vector<TLorentzVector> DataDrivenBackgrounds::MakeTLorentz(vector<snu::KElectron> el){
 
   vector<TLorentzVector> tl_el;
@@ -635,7 +652,13 @@ vector<TLorentzVector> DataDrivenBackgrounds::MakeTLorentz(vector<snu::KMuon> mu
   vector<TLorentzVector> tl_mu;
   for(vector<KMuon>::iterator itmu=mu.begin(); itmu!=mu.end(); ++itmu) {
     TLorentzVector tmp_mu;
-    tmp_mu.SetPtEtaPhiM((*itmu).Pt(),(*itmu).Eta(),(*itmu).Phi(),(*itmu).M());
+    double this_pt = (*itmu).Pt();
+
+    if(UsePtCone){
+      this_pt = MuonConePt((*itmu), 0.1);
+    }
+
+    tmp_mu.SetPtEtaPhiM(this_pt,(*itmu).Eta(),(*itmu).Phi(),(*itmu).M());
     tl_mu.push_back(tmp_mu);
   }
   return tl_mu;
