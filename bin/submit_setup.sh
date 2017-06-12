@@ -2142,7 +2142,7 @@ if [[ $MakeFullLists == "true" ]];
                 sline2=$(echo $line | head -n1 | awk '{print $6}')
 
                 prefix="SK"
-                suffixhn="_hndilep"
+                suffixhnfake="_hnfake"
                 if [[ $sline == *${prefix}* ]];
                     then
                     sline=${sline:2}

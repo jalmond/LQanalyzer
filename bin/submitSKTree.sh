@@ -409,11 +409,12 @@ if [[ $submit_file_tag  != ""  ]];
     file_tag_exists=false
     for all_files in ${test_single_file[@]};
       do
-      if [[ $all_files == $submit_file_tag ]];
-	  then
-	  file_tag_exists=true
-      fi
-      done
+	echo $all_files " " $submit_file_tag
+	if [[ $all_files == $submit_file_tag ]];
+	then
+	    file_tag_exists=true
+	fi
+    done
     if [[ $file_tag_exists == "false" ]];
 	then
 	echo "LQanalyzer::sktree :: ERROR :: 'sktree -i <samplename>'"
@@ -606,10 +607,11 @@ if [[ $submit_file_list  != ""  ]];
 	    file_tag_exists=false
 	    for all_files in ${test_single_file[@]};
 	      do
-	      if [[ $all_files == $part_of_list ]];
-		  then
-		  file_tag_exists=true
-	      fi
+		echo $all_files" "$part_of_list
+		if [[ $all_files == $part_of_list ]];
+		then
+		    file_tag_exists=true
+		fi
 	    done
 	    if [[ $file_tag_exists == "false" ]];
 		then

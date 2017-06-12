@@ -71,9 +71,12 @@ class AnalyzerCore : public LQCycleBase {
   snu::KTruth GetTruthMatchedParticle(snu::KElectron el);
   bool NonPrompt(snu::KElectron el);
   bool NonPrompt(snu::KMuon mu);
+
+  int IsFakeEvent(vector<snu::KMuon> mus );
+  int IsFakeEvent(vector<snu::KElectron> els );
   
   float GetVirtualMassConv(int cmindex,int nconvindx);
-  float GetVirtualMass(bool inph=false);
+  float GetVirtualMass(int pdg=11, bool includenu=false, bool inph=false);
 
   float MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
   float MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);

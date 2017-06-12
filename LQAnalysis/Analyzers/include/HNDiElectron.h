@@ -28,7 +28,9 @@ class HNDiElectron : public AnalyzerCore {
   void FillEventCutFlow(TString cut, TString label , float weight);
 
   void MakeControlPlots(int method, TString methodtag, float w)throw( LQError );
+  void MakeMMControlPlots(int method, TString methodtag, float w)throw( LQError );
   void FillByTriggerTrigger(int iel_trig, TString tag, int method, TString methodtag, double evw);
+  void FillByMMTriggerTrigger(int iel_trig, TString tag, int method, TString methodtag, double evw);
   void MakeValidationPlots(float w);
 
   void RunAnalysis(TString plottag, TString tightelid, TString vetoelid, TString looseelid);

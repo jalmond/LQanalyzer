@@ -535,10 +535,10 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   vector<TString> legorder;
 
 legorder.push_back("Top");
-legorder.push_back("Diboson");
-legorder.push_back("Triboson");
 legorder.push_back("W+Jets");
-legorder.push_back("DY #rightarrow ee");
+legorder.push_back("DY");
+legorder.push_back("QCD");
+legorder.push_back("qcdbc");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -609,17 +609,22 @@ vector<pair<TString,float> >  InitSample (TString sample){
   vector<pair<TString,float> > list;  
 
 if(sample.Contains("top")){    list.push_back(make_pair("TT_powheg",0.2));
-}if(sample.Contains("diboson")){    list.push_back(make_pair("WZto2L2Q_amcatnlo",0.20));
-    list.push_back(make_pair("ZZTo2L2Nu_Powheg",0.20));
-    list.push_back(make_pair("ZZTo2L2Q_Powheg",0.20));
-    list.push_back(make_pair("ZZTo4L_powheg",0.20));
-}if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.3));
-    list.push_back(make_pair("ZZZ",0.3));
-    list.push_back(make_pair("WZZ",0.3));
-    list.push_back(make_pair("WWG",0.3));
-    list.push_back(make_pair("WZG",0.3));
-}if(sample.Contains("wjet")){    list.push_back(make_pair("WJets",0.3));
+}if(sample.Contains("wjet")){    list.push_back(make_pair("WJets",0.2));
 }if(sample.Contains("DY")){    list.push_back(make_pair("DYJets",0.15));
+}if(sample.Contains("QCD")){    list.push_back(make_pair("QCD_DoubleEMEnriched_30-40_mgg80toinf",0.4));
+    list.push_back(make_pair("QCD_DoubleEMEnriched_30-inf_mgg40to80",0.4));
+    list.push_back(make_pair("QCD_Pt-20to30_EMEnriched",0.4));
+    list.push_back(make_pair("QCD_Pt-30to50_EMEnriched",0.4));
+    list.push_back(make_pair("QCD_Pt-50to80_EMEnriched",0.4));
+    list.push_back(make_pair("QCD_Pt-80to120_EMEnriched",0.4));
+    list.push_back(make_pair("QCD_Pt-120to170_EMEnriched",0.4));
+    list.push_back(make_pair("QCD_Pt-170to300_EMEnriched",0.4));
+}if(sample.Contains("qcdbc")){    list.push_back(make_pair("qcd_15to20_bctoe",0.4));
+    list.push_back(make_pair("qcd_20to30_bctoe",0.4));
+    list.push_back(make_pair("qcd_30to80_bctoe",0.4));
+    list.push_back(make_pair("qcd_80to170_bctoe",0.4));
+    list.push_back(make_pair("qcd_170to250_bctoe",0.4));
+    list.push_back(make_pair("qcd_250toinf_bctoe",0.4));
 }  
 
 
@@ -875,22 +880,6 @@ if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
 if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
 if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
 if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
 
 
 
@@ -1298,18 +1287,18 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
   
   /// Setup list of samples: grouped into different processes 
 vector<pair<TString,float> >  top = InitSample(" top"); 
-vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
-vector<pair<TString,float> >  triv = InitSample(" triv"); 
 vector<pair<TString,float> >  wjet = InitSample(" wjet"); 
 vector<pair<TString,float> >  DY = InitSample(" DY"); 
+vector<pair<TString,float> >  QCD = InitSample(" QCD"); 
+vector<pair<TString,float> >  qcdbc = InitSample(" qcdbc"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kYellow),"Top"));
-   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,kGreen),"Diboson"));
-   if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring+2),"Triboson"));
-   if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(wjet,kRed-3),"W+Jets"));
-   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kCyan),"DY #rightarrow ee"));
+   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
+   if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(wjet,kGreen),"W+Jets"));
+   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kYellow),"DY"));
+   if(listofsamples.at(i) =="QCD")samples.push_back(make_pair(make_pair(QCD,kCyan),"QCD"));
+   if(listofsamples.at(i) =="qcdbc")samples.push_back(make_pair(make_pair(qcdbc,-2),"qcdbc"));
 
   }
 

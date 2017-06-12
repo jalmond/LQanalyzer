@@ -25,6 +25,7 @@ declare -a tmplist=('WpWp_qcd_madgraph' 'ZG_llG_MCatNLO' 'ZZ_llnunu_powheg' 'ZZ_
 declare -a tmpall_mc=('TTJets_aMC' 'WJets' 'WW'  'WZ' 'ZZ' 'DYJets' 'DYJets_10to50' )
 
 declare -a hn=('DYJets_10to50'  'DYJets' 'TT_powheg' 'WJets' 'WGtoLNuG'  'ZGto2LG' 'qcd_15to20_bctoe' 'QCD_Pt-20to30_EMEnriched' 'QCD_Pt-20to30_MuEnriched')
+declare -a hn_fake=('DYJets' 'TT_powheg' 'WJets' 'qcd_15to20_bctoe' 'QCD_Pt-20to30_EMEnriched' 'QCD_Pt-20to30_MuEnriched' 'QCD_DoubleEMEnriched_30-40_mgg80toinf' 'QCD_DoubleEMEnriched_30-inf_mgg40to80' 'QCD_DoubleEMEnriched_40-inf_mgg80toinf')
 
 declare -a pu_dilepton_list=('DYJets_10to50' 'DYJets' 'WJets' 'TT_powheg'  'SingleTop_s' 'SingleTbar_t' 'SingleTop_t'  'SingleTbar_tW' 'SingleTop_tW' 'WGtoLNuG'  'ZGto2LG' 'WZTo3LNu_powheg' 'ZZTo4L_powheg' 'DYJets_MG_10to50' 'DYJets_MG' 'TTJets_aMC' )
 
