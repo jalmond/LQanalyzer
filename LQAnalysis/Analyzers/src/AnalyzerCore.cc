@@ -131,7 +131,6 @@ void AnalyzerCore::FillEventComparisonFile(TString label){
 
   ofile_tex.open(compfile.c_str());
   ofile_tex.setf(ios::fixed,ios::floatfield);
-  
   ofile_tex <<getenv("USER") << " " << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << endl;
 
 }
@@ -2211,6 +2210,8 @@ bool AnalyzerCore::TruthMatched(snu::KElectron el, bool keepCF){
     if(el.GetType() == 18) pass=true; /// * CF  
     //if(el.GetType() == 23) pass=true;
     if(el.GetType() == 35) pass=true;
+    if(el.GetType() == 40) pass=true;
+    if(el.GetType() == 16) pass=true;
   }
 
   return pass;

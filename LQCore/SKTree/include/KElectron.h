@@ -128,14 +128,7 @@ namespace snu {
     ///// Functions to call class variables
     
     inline Int_t GetType()  const {
-      if(k_eltype < 32) return k_eltype;
-      else {
-	if(fabs(k_mc_pdgid) == 211) return 32;
-	if(fabs(k_mc_pdgid) == 310) return 33;
-	if(fabs(k_mc_pdgid) == 431) return 34;
-	if(fabs(k_mc_pdgid) == 13) return 35;
-	return 36;
-      }
+      return k_eltype;
     }
     inline Bool_t IsPromptFlag() const {return k_isprompt;}
     inline Double_t MVA() const {return k_mva;}
