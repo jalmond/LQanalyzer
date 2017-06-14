@@ -60,7 +60,6 @@ void FakeRateCalculator_Mu::ExecuteEvents()throw( LQError ){
 }
 
 void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
-
   
   //// Initial event cuts
   /// MET FIleters 
@@ -147,11 +146,9 @@ void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
 	    
 	    if(vcut_iso_b_s[iso_b] == "0.05" && vcut_dxy_b_s[dxy_b] == "0.01" && vcut_dxysig_b_s[dxysig_b] == "3" && vcut_dz_b_s[dz_b] == "0.04"){
 	      
-	      
-	      
+	            
 	      if(singlemu)GetFakeRateAndPromptRates(loose_mu,tag+"isodijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b],tight_mu,weight, vcut_iso_b[iso_b],true, true);
 	      if(doublemu)GetFakeRateAndPromptRates(loose_mu,tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b],tight_mu,weight, vcut_iso_b[iso_b],true,  true);
-	      
 	      
 	      std::vector<snu::KJet> jetCollTight = GetJets("JET_HN");
 	      std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");  // loose selection                                                                                                                                         
@@ -167,6 +164,7 @@ void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
 		      TString triggerslist_3="HLT_Mu3_PFJet40_v";
 		      TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
 		      TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
+		      
 		      float prescale_trigger =  GetPrescale(loose_mu,   PassTrigger(triggerslist_3),PassTrigger(triggerslist_8), PassTrigger(triggerslist_17),TargetLumi);
 		      if(eventbase->GetEvent().MET(snu::KEvent::pfmet)> 40 && (60. < TMT)  &&(TMT < 100.) &&(loose_mu[0].MCMatched() || isData)){
 			FillCLHist(sighist_m, tag+"SingleMuonSNU_loose_prompt", eventbase->GetEvent(), loose_mu, elColl,jetCollTight, weight*prescale_trigger);
@@ -244,7 +242,7 @@ void FakeRateCalculator_Mu::GetFakeRateAndPromptRates(std::vector<snu::KMuon> mu
   if (!k_isdata) {
     w = w * MCweight * eventbase->GetEvent().PeriodPileUpWeight(GetMCPeriodRandom());
   }
-
+  
   TString triggerslist_3="HLT_Mu3_PFJet40_v";
   TString triggerslist_8="HLT_Mu8_TrkIsoVVL_v";
   TString triggerslist_17="HLT_Mu17_TrkIsoVVL_v";
@@ -277,7 +275,6 @@ void FakeRateCalculator_Mu::GetFakeRateAndPromptRates(std::vector<snu::KMuon> mu
 	  else prescale_trigger  = WeightByTrigger(analysis_trigger_muon, TargetLumi);
 	}
       }
-      else prescale_trigger=0.;
     }
   }
   
@@ -325,7 +322,7 @@ float FakeRateCalculator_Mu::GetPrescale( std::vector<snu::KMuon> muons,bool pas
       }
     }
     else  if(muons.at(0).Pt() >= 5.){
-      if((isData&&k_channel != "SingleMuon")) return 0.;
+      if((isData&&k_channel != "DoubleMuon")) return 0.;
       if(pass3){
         if(isData) return 1.;
         prescale_trigger =  WeightByTrigger("HLT_Mu3_PFJet40_v", fake_total_lum) ; //// 20 + GeV bins                                                                         

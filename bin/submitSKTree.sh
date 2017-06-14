@@ -607,7 +607,6 @@ if [[ $submit_file_list  != ""  ]];
 	    file_tag_exists=false
 	    for all_files in ${test_single_file[@]};
 	      do
-		echo $all_files" "$part_of_list
 		if [[ $all_files == $part_of_list ]];
 		then
 		    file_tag_exists=true

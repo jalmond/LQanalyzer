@@ -163,12 +163,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   counter("METFiltert",weight);
 
   if(isData) FillHist("MET_PFMet_cleaned" , eventbase->GetEvent().PFMET(), weight,  0. , 10000., 1000);                                                                                                                                                                          
-  MakeValidationPlots(weight);
+  // MakeValidationPlots(weight);
   
   if(functionality == HNDiElectron::VALIDATION) {
     MakeControlPlots(1,"",weight); /// Uses all MC events (no truth matching)
-    //MakeControlPlots(2,"truthmatched_",weight); //// removes fake leptons but keeps
+    MakeControlPlots(2,"truthmatched_",weight); //// removes fake leptons but keeps
     MakeMMControlPlots(1,"",weight); 
+    MakeMMControlPlots(2,"truthmatched_",weight); 
   }
 }
 
@@ -628,24 +629,37 @@ void HNDiElectron::MakeValidationPlots(float w){
 void HNDiElectron::MakeMMControlPlots(int method, TString methodtag, float w)throw( LQError ){
   
   FillByMMTriggerTrigger(2, "MMHNTIGHT", method,methodtag,w);
+  FillByMMTriggerTrigger(2, "MMGENT", method,methodtag,w);
   
 }
 
 void HNDiElectron::FillByMMTriggerTrigger(int iel_trig, TString ID,int method, TString methodtag, double evw){
-
+  
   TString muid_veto="MUON_HN_VETO";
   TString muid_tight="MUON_HN_TIGHT";
-  if(k_running_nonprompt)muid_tight=muid_tight="MUON_HN_LOOSE";
+  if(k_running_nonprompt)muid_tight="MUON_HN_LOOSE";
   TString muid_tight_fixed="MUON_HN_TIGHT";
   TString muid_loose="MUON_HN_LOOSE";
   methodtag+=ID;
   TString elid_loose="ELECTRON_POG_FAKELOOSE";
   
-
+  if(ID == "MMGENT"){
+    muid_veto="MUON_HNGENT_LOOSE";
+    muid_tight="MUON_HNGENT_TIGHT";
+    if(k_running_nonprompt)muid_tight="MUON_HNGENT_LOOSE";
+    muid_loose="MUON_HNGENT_LOOSE";
+    
+  }
+  
   std::vector<snu::KJet> jets =  GetJets("JET_HN");
   int njets = jets.size();
   std::vector<snu::KElectron> electronLoose=GetElectrons(true, true,   elid_loose, 15., 2.5);
-  std::vector<snu::KMuon> muonLoose=GetMuons(muid_loose,true);
+  std::vector<snu::KMuon> muonLoose=GetMuons(muid_loose,false);
+  
+  if(!methodtag.Contains("truth")){
+    muonLoose=GetMuons(muid_loose,true);
+  }
+
 
   Float_t motherbins[18] = { 0., 1., 7.,8., 12., 13., 16., 17., 22., 23., 24., 25., 100., 200., 300., 400., 500., 1000};
   Float_t jetbins[8] = { 0., 1.,2.,3.,4.,5.,6., 7.};
@@ -667,18 +681,6 @@ void HNDiElectron::FillByMMTriggerTrigger(int iel_trig, TString ID,int method, T
 	
 	if(muonLoose[imu].Pt() < 10) continue;
 	
-	if(muonLoose[imu].Pt() > 20) {
-	  if(muonLoose[imu].GetType() == 0){
-	    cout << "Type 0" << endl;
-	    cout << "Muon pt =" << muonLoose[imu].Pt() << " eta=" << muonLoose[imu].Eta() << "  muon phi = " << muonLoose[imu].Phi() << endl;
-	    TruthPrintOut();
-	    for(unsigned int iallmu=0; iallmu < GetMuons("MUON_NOCUT").size() ; iallmu ++){
-	      cout << "All Muon pt =" << GetMuons("MUON_NOCUT")[iallmu].Pt() << " eta=" << GetMuons("MUON_NOCUT")[iallmu].Eta() << "  muon phi = " << GetMuons("MUON_NOCUT")[iallmu].Phi() << endl;
-
-	    }
-	  }
-	}
-
 	if(muonLoose[imu].GetType() == i){
 	  stringstream ss;
 	  ss << i;
@@ -767,6 +769,22 @@ void HNDiElectron::FillByMMTriggerTrigger(int iel_trig, TString ID,int method, T
   }
 
 
+  TString muid_veto="MUON_HN_VETO";
+  TString muid_tight="MUON_HN_TIGHT";
+  if(k_running_nonprompt)muid_tight="MUON_HN_LOOSE";
+  TString muid_tight_fixed="MUON_HN_TIGHT";
+  TString muid_loose="MUON_HN_LOOSE";
+  methodtag+=ID;
+  TString elid_loose="ELECTRON_POG_FAKELOOSE";
+
+
+  std::vector<snu::KMuon> muonZZColl=GetMuons(mu_id,keepnp);  /// IF k_running_nonprompt loose id                                                                                                                                             
+  
+  FillCLHist(sighist_mm, methodtag+"SSDiMuon", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+
+
+
+
 }
 
 void HNDiElectron::MakeControlPlots(int method, TString methodtag, float w)throw( LQError ){
@@ -845,9 +863,10 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
     /// electronTightColl = POG ID unless k_running_nonprompt is true                                                                                                                                                                                                                                                                                                       
   }
   
-  keepcf=true;
-  keepnp=true;
-  
+  if(!methodtag.Contains("truth")){
+    keepcf=true;
+    keepnp=true;
+  }
   std::vector<snu::KElectron> electronTightColl=GetElectrons(keepcf, keepnp,  el_elid,10., 2.5);  /// IF k_running_nonprompt loose id                                    
       
   std::vector<snu::KJet> jets =  GetJets("JET_HN");
@@ -1004,22 +1023,15 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
     }
   }
 
-  return;
   std::vector<snu::KElectron> electronTightColl_all=GetElectrons(false, false, "ELECTRON_POG_TIGHT",10., 2.5);
  
-  /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                                                                                                                                                                                                                                                       
-
-  std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, el_elid,7., 2.5);  /// IF k_running_nonprompt loose id                                                                                                                                            
-
-  std::vector<snu::KElectron> electronNCColl=GetElectrons(keepcf, keepnp, "ELECTRON_NOCUT",0., 2.5);                                                                                                  
-
-
+  /// Drop the pt of the lepton to 7 GeV so that ZZ CR has more stats                                                                        
+  std::vector<snu::KElectron> electronZZColl=GetElectrons(keepcf, keepnp, el_elid,7., 2.5);  /// IF k_running_nonprompt loose id                                
+  std::vector<snu::KElectron> electronNCColl=GetElectrons(keepcf, keepnp, "ELECTRON_NOCUT",0., 2.5);                                                            
   /// GetKFactor returns k factor for any sample. If no k-fact is found returns 1. IF data event returns 1.;                                                                                                                                                                                                                                                                
   evw *= GetKFactor();
   
-  /// Function NBJet returns #jets tagged with csv medium wp tagger with SF applied per jet                                                                                                                                                                                                                                                                                
-
-
+  /// Function NBJet returns #jets tagged with csv medium wp tagger with SF applied per jet                                                                                                                                                                                                                                                                               
   /// make validation plots for dielectron events + WZ/ZZ CRs                                                                                                                                                                                                                                                                                                               
   
   float trigger_sf(1.);
