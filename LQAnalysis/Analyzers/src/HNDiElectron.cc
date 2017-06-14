@@ -635,6 +635,7 @@ void HNDiElectron::MakeMMControlPlots(int method, TString methodtag, float w)thr
 
 void HNDiElectron::FillByMMTriggerTrigger(int iel_trig, TString ID,int method, TString methodtag, double evw){
   
+  
   TString muid_veto="MUON_HN_VETO";
   TString muid_tight="MUON_HN_TIGHT";
   if(k_running_nonprompt)muid_tight="MUON_HN_LOOSE";
@@ -768,7 +769,7 @@ void HNDiElectron::FillByMMTriggerTrigger(int iel_trig, TString ID,int method, T
 
   }
 
-
+  /*
   TString muid_veto="MUON_HN_VETO";
   TString muid_tight="MUON_HN_TIGHT";
   if(k_running_nonprompt)muid_tight="MUON_HN_LOOSE";
@@ -776,11 +777,11 @@ void HNDiElectron::FillByMMTriggerTrigger(int iel_trig, TString ID,int method, T
   TString muid_loose="MUON_HN_LOOSE";
   methodtag+=ID;
   TString elid_loose="ELECTRON_POG_FAKELOOSE";
+  */
 
-
-  std::vector<snu::KMuon> muonZZColl=GetMuons(mu_id,keepnp);  /// IF k_running_nonprompt loose id                                                                                                                                             
+  //std::vector<snu::KMuon> muonZZColl=GetMuons(mu_id,keepnp);  /// IF k_running_nonprompt loose id                                                                                                                                             
   
-  FillCLHist(sighist_mm, methodtag+"SSDiMuon", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+  //FillCLHist(sighist_mm, methodtag+"SSDiMuon", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
 
 
 
