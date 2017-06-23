@@ -409,7 +409,6 @@ if [[ $submit_file_tag  != ""  ]];
     file_tag_exists=false
     for all_files in ${test_single_file[@]};
       do
-	echo $all_files " " $submit_file_tag
 	if [[ $all_files == $submit_file_tag ]];
 	then
 	    file_tag_exists=true

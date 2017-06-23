@@ -61,13 +61,14 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(elColl.size() > 1 || elCollpog.size() > 1) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     if(elColl.size() < 1 && elCollpog.size() < 1) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     
+    int pass(0);
     if(elColl.size()==1){
       float METdphi = TVector2::Phi_mpi_pi(elColl[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
       float MT = sqrt(2.* elColl[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
       bool keep_ev=false;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-      if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(!keep_ev) pass++;
     }
     if(elCollpog.size()==1){
       float METdphi = TVector2::Phi_mpi_pi(elCollpog[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
@@ -75,9 +76,11 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
       bool keep_ev=false;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-      if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(!keep_ev) pass++;
     }  
     
+    if(pass==2) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+
     std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO");  // loose selection                                                                                                                                                               
     if(muonColl.size() > 0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     
@@ -97,27 +100,27 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(mucoll.size() > 1 || mucollgent.size()  > 1) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     if(mucoll.size() < 1 && mucollgent.size() < 1) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
 
+    int pass(0);
+
     if(mucoll.size() >= 1){
-      if(mucoll[0].Pt() < 25) {
-        float METdphi = TVector2::Phi_mpi_pi(mucoll[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
-        float MT = sqrt(2.* mucoll[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
-        bool keep_ev=false;
-        if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
-        if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-        if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-	
-      }
+      float METdphi = TVector2::Phi_mpi_pi(mucoll[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
+      float MT = sqrt(2.* mucoll[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
+      bool keep_ev=false;
+      if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
+      if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
+      if(!keep_ev) pass++;
     }
     
     if(mucollgent.size() >= 1){
-      if(mucollgent[0].Pt() < 25)  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
       float METdphi = TVector2::Phi_mpi_pi(mucollgent[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
       float MT = sqrt(2.* mucollgent[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
       bool keep_ev=false;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-      if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(!keep_ev) pass++;
     }
+
+    if(pass==2)throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
 
   }
   else if(_singleMuon){
@@ -136,28 +139,35 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(mucoll.size() > 1 || mucollgent.size()  > 1) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     if(mucoll.size() < 1 && mucollgent.size() < 1) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     
-
+    int ptcut(0);
+    int pass(0);
     if(mucoll.size() >= 1){
-      if(mucoll[0].Pt() < 25) {
+      if(mucoll[0].Pt() > 25) {
 	float METdphi = TVector2::Phi_mpi_pi(mucoll[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
 	float MT = sqrt(2.* mucoll[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
 	bool keep_ev=false;
 	if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
 	if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-	if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-
+	if(!keep_ev)pass++;
+	
       }
+      else ptcut++;
     }
     
     if(mucollgent.size() >= 1){
-      if(mucollgent[0].Pt() < 25)  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
-      float METdphi = TVector2::Phi_mpi_pi(mucollgent[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
-      float MT = sqrt(2.* mucollgent[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
-      bool keep_ev=false;
-      if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
-      if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-      if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(mucollgent[0].Pt() > 25){
+	float METdphi = TVector2::Phi_mpi_pi(mucollgent[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
+	float MT = sqrt(2.* mucollgent[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
+	bool keep_ev=false;
+	if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
+	if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
+	if(!keep_ev) pass++;
+      }
+      else ptcut++;
     }
+    
+    if(pass==2) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(ptcut==2) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     
   }
   else if(_singleEG){
@@ -171,15 +181,18 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
     if(elColl.size() >1 || elCollpog.size() > 1 ) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
     
     if(elColl.size() < 1 && elCollpog.size() < 1 ) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+
+    int ptcut=0;
+    int pass=0;
     if(elColl.size() >= 1){
       float METdphi = TVector2::Phi_mpi_pi(elColl[0].Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet));
       float MT = sqrt(2.* elColl[0].Et()*eventbase->GetEvent().MET(snu::KEvent::pfmet) * (1 - cos( METdphi)));
       bool keep_ev=false;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-      if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(!keep_ev) pass++;
 
-      if(elColl[0].Pt() < 25)  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(elColl[0].Pt() < 25) ptcut++;
     }
 
     if(elCollpog.size() >= 1){
@@ -188,11 +201,13 @@ void SKTreeMakerFakeHN::ExecuteEvents()throw( LQError ){
       bool keep_ev=false;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) < 20 && MT < 25) keep_ev=true;
       if(eventbase->GetEvent().MET(snu::KEvent::pfmet) > 40 && (MT > 60) && (MT < 100 )) keep_ev=true;
-      if(!keep_ev) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(!keep_ev) pass++;
 
-      if(elCollpog[0].Pt() < 25)  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+      if(elCollpog[0].Pt() < 25)  ptcut++;
     }
-    
+    if(pass==2) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+    if(ptcut==2)  throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
+
     std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO");  // loose selection                                                        
     if(muonColl.size() > 0) throw LQError( "REMOVE TRIGGERED EVENTS for OR",  LQError::SkipEvent );
   }

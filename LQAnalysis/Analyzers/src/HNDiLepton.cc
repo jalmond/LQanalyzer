@@ -713,7 +713,7 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
   
   
   bool passtightiso=false;
-  FillCLHist(sighist_mm, "SSMMloose", eventbase->GetEvent(), muons_loose,electrons_veto,hnjets, fatjetcoll,w);
+  FillCLHist(sighist_mm, "SSMMloose", eventbase->GetEvent(), muons_loose,electrons_veto,hnjets, alljets, fatjetcoll,w);
   if(!isData){
     FillHist("SSMMloose_mumother1", muons_loose[0].MotherPdgId(), 1., -100., 100., 200);
     FillHist("SSMMloose_mumother2", muons_loose[1].MotherPdgId(), 1., -100., 100., 200);
@@ -741,7 +741,7 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
 	  if(SameCharge(muons_loose)) counter ("SSMM_tightmdiso4",1);
 	  FillEventCutFlow(0,"SSMMTight",w);
 
-	  FillCLHist(sighist_mm, "SSMMTight", eventbase->GetEvent(), muons_loose,electrons_veto,hnjets, fatjetcoll,w);
+	  FillCLHist(sighist_mm, "SSMMTight", eventbase->GetEvent(), muons_loose,electrons_veto,hnjets, alljets,fatjetcoll,w);
 	}
       }
     }

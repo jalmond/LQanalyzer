@@ -288,31 +288,20 @@
    return em_weight;
  }
 
- float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons,   TString IDmu, TString method){
-   if(method == "dxy" && IDmu == "MUON_HN_TRI_TIGHT") return Get_DataDrivenWeight_MM(geterr, k_muons);
 
-   float mm_weight = 0.;
-
-   if(k_muons.size()!=2) return 0.;
-   bool is_mu1_tight=dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),IDmu);
-   bool is_mu2_tight=dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(1),IDmu);
-   vector<TLorentzVector> muons=MakeTLorentz(k_muons);
-   mm_weight =m_fakeobj->get_dilepton_mm_eventweight("dijet",geterr, muons, is_mu1_tight,is_mu2_tight,IDmu);
-
-   return 1.;
- }
-
- float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons){
-
-   float mm_weight = 0.;
-
+float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons, bool tight1, bool tight2, TString ID, bool cl1, bool cl2, TString method,float iso, bool useclosej){
+  
+  float mm_weight = 0.;
+  
    if(k_muons.size()==2){
-     bool is_mu1_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(0),"MUON_HN_TRI_TIGHT");
-     bool is_mu2_tight = dd_eventbase->GetMuonSel()->MuonPass(k_muons.at(1),"MUON_HN_TRI_TIGHT");
+     bool is_mu1_tight = tight1;
+     bool is_mu2_tight = tight2;
 
      vector<TLorentzVector> muons=MakeTLorentz(k_muons);
 
-     mm_weight =m_fakeobj->get_dilepton_mm_eventweight(geterr, muons, is_mu1_tight,is_mu2_tight);
+     float pt_corr1 = muons.at(0).Pt()*(1+max(0.,(k_muons.at(0).RelIso04()-iso))) ; /// will need changing for systematics                                                                                                                
+     float pt_corr2 = muons.at(1).Pt()*(1+max(0.,(k_muons.at(1).RelIso04()-iso))) ; /// will need changing for systematics                                                                                                                    
+     mm_weight =m_fakeobj->get_dilepton_mm_eventweight("dijet",geterr, muons, is_mu1_tight,is_mu2_tight, ID, cl1, cl2,method,  pt_corr1,pt_corr2,useclosej);
 
    }
    return mm_weight;
@@ -337,7 +326,7 @@
    return mmm_weight;
  }
 
- float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::KMuon> k_muons, TString muid, int n_muons, std::vector<snu::KElectron> k_electrons, TString elid, int n_electrons, TString elidloose, TString elmethod, int HalfSampleErrorDir){
+ float DataDrivenBackgrounds::Get_DataDrivenWeight(bool geterr, std::vector<snu::KMuon> k_muons, TString muid,  int n_muons, std::vector<snu::KElectron> k_electrons, TString elid, int n_electrons, TString elidloose, TString method, int HalfSampleErrorDir){
 
    float this_weight = 0.;
 
@@ -388,9 +377,9 @@
      vkeys.push_back(regel1);
    }
 
+   std::vector<TString> keys = GetElFRKey(elidloose, elid, method, vkeys);
 
-   std::vector<TString> elkeys = GetElFRKey(elidloose, elid, elmethod, vkeys);
-   this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons,  elkeys , isT, HalfSampleErrorDir);
+   this_weight =m_fakeobj->get_eventweight(geterr, muons, muid, electrons,  keys , isT, HalfSampleErrorDir);
 
    return this_weight;
  }
@@ -520,6 +509,7 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
   }
   return 1.;
 }
+
 
 vector<TString> DataDrivenBackgrounds::GetElFRKey( TString IDloose,TString IDtight, TString method, std::vector<TString> regs1){
   

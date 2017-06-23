@@ -253,8 +253,8 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
   
 
 
-  FillCLHist(sighist_ee, "NoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, fatjetcoll,weight);
-  if(SameCharge(electrons_tm_nc))   FillCLHist(sighist_ee, "SSNoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, fatjetcoll,weight);
+  FillCLHist(sighist_ee, "NoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, jets,fatjetcoll,weight);
+  if(SameCharge(electrons_tm_nc))   FillCLHist(sighist_ee, "SSNoCut", eventbase->GetEvent(), muons_tm_nc,electrons_tm_nc,jets_nc, jets,fatjetcoll,weight);
   if(SameCharge(electrons_nc)) {
     if(electrons_nc[1].Pt() > 10){
       if(electrons_nc[0].MCMatched()&&!electrons_nc[1].MCMatched()){
@@ -404,20 +404,20 @@ void HNSignalEfficiencies::ExecuteEvents()throw( LQError ){
 
   if(SameCharge(hn_electrons)) { 
     counter("SSHNee",1);
-    FillCLHist(sighist_ee, "SSHNee", eventbase->GetEvent(), hn_muons,hn_electrons,hn04jets, fatjetcoll,weight);
+    FillCLHist(sighist_ee, "SSHNee", eventbase->GetEvent(), hn_muons,hn_electrons,hn04jets, jets,fatjetcoll,weight);
   }
   if(SameCharge(pog_electrons)) {
     counter("SSPOGee",1);
-    FillCLHist(sighist_ee, "SSPOGee", eventbase->GetEvent(), pog_muons,pog_electrons,hn04jets, fatjetcoll,weight);
+    FillCLHist(sighist_ee, "SSPOGee", eventbase->GetEvent(), pog_muons,pog_electrons,hn04jets, jets,fatjetcoll,weight);
   }
  
   if(SameCharge(hn_muons)) {
     counter("SSHNmm",1);
-    FillCLHist(sighist_mm, "SSHNmm", eventbase->GetEvent(), hn_muons,hn_electrons,hn04jets, fatjetcoll,weight);
+    FillCLHist(sighist_mm, "SSHNmm", eventbase->GetEvent(), hn_muons,hn_electrons,hn04jets, jets,fatjetcoll,weight);
   }
   if(SameCharge(pog_muons)) {
     counter("SSPOGmm",1);
-    FillCLHist(sighist_mm, "SSPOGmm", eventbase->GetEvent(), pog_muons,pog_electrons,hn04jets, fatjetcoll,weight);
+    FillCLHist(sighist_mm, "SSPOGmm", eventbase->GetEvent(), pog_muons,pog_electrons,hn04jets, jets,fatjetcoll,weight);
   }
  
 }

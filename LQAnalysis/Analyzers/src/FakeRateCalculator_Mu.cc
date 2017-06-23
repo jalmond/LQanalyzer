@@ -54,7 +54,10 @@ void FakeRateCalculator_Mu::InitialiseAnalysis() throw( LQError ) {
 
 void FakeRateCalculator_Mu::ExecuteEvents()throw( LQError ){
   
-  RunFakes("SNU","MUON_HN_Tight_FAKELOOSEST");
+  RunFakes("SNUTight","MUON_HN_Tight_FAKELOOSEST");
+  RunFakes("SNUMedium","MUON_HN_Medium_FAKELOOSEST");
+  RunFakes("POGTIGHT","MUON_POG_FAKETIGHT");
+  RunFakes("POGMEDIUM","MUON_POG_FAKEMEDIUM");
   RunFakes("GENT","MUON_HNGENT_LOOSE");
 
 }
@@ -81,12 +84,14 @@ void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
   
   if(tmploose_mu.size() != 1) return;
   
-  if(tag=="SNU"){
+
+
+  if(tag.Contains("SNU")){
     vector<float> vcut_dxy_b;
     vector<TString> vcut_dxy_b_s;
     
     for(unsigned int dxy_b=0;dxy_b < 10; dxy_b++){
-      float cut_dxy_b =  float(dxy_b)*0.005 + 0.01;
+      float cut_dxy_b =  float(dxy_b)*0.005 + 0.005;
       vcut_dxy_b.push_back(cut_dxy_b);
       stringstream ss;
       ss <<cut_dxy_b;
@@ -104,7 +109,7 @@ void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
     vector<TString> vcut_dz_b_s;
     
     for(unsigned int dz_b=0;dz_b < 4; dz_b++){
-      float cut_dz_b =  float(dz_b)*0.02 + 0.04;
+      float cut_dz_b =  float(dz_b)*0.02 + 0.02;
       vcut_dz_b.push_back(cut_dz_b);
       stringstream ss;
       ss <<cut_dz_b;
@@ -191,6 +196,21 @@ void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
     }//dz
   }
   
+  else if (tag=="POGTIGHT"){
+    std::vector<snu::KMuon> loose_mu = GetMuons("MUON_POG_FAKETIGHT",false);
+    std::vector<snu::KMuon> tight_mu = GetMuons("MUON_POG_TIGHT",false);
+    
+    if(singlemu)GetFakeRateAndPromptRates(loose_mu,tag+"isodijet_pogtight",tight_mu,weight, 0.15, true, false);
+    if(doublemu)GetFakeRateAndPromptRates(loose_mu,tag+"dijet_pogtight",tight_mu,weight, 0.15, true, false);
+    
+  }
+  else if (tag=="POGMEDIUM"){
+    std::vector<snu::KMuon> loose_mu = GetMuons("MUON_POG_FAKEMEDIUM",false);
+    std::vector<snu::KMuon> tight_mu = GetMuons("MUON_POG_MEDIUM",false);
+
+    if(singlemu)GetFakeRateAndPromptRates(loose_mu,tag+"isodijet_pogmedium",tight_mu,weight, 0.25, true, false);
+    if(doublemu)GetFakeRateAndPromptRates(loose_mu,tag+"dijet_pogmedium",tight_mu,weight, 0.25, true, false);
+  }
   
   else{
     
@@ -230,7 +250,6 @@ void FakeRateCalculator_Mu::RunFakes(TString tag, TString ID){
       }
     }
   }
-  
   
   
 }
@@ -297,7 +316,7 @@ float FakeRateCalculator_Mu::GetPrescale( std::vector<snu::KMuon> muons,bool pas
     /// 10 - 20  HLT_Mu7
     /// 20 - INF  HLT_Mu17
     
-    if(muons.at(0).Pt() >= 20.){
+    if(muons.at(0).Pt() >= 25.){
       if((isData&&k_channel != "DoubleMuon")) return 0.;
 
       if(pass1){
@@ -309,7 +328,7 @@ float FakeRateCalculator_Mu::GetPrescale( std::vector<snu::KMuon> muons,bool pas
 	return 0;
       }
     }
-    else  if(muons.at(0).Pt() >= 10.){
+    else  if(muons.at(0).Pt() >= 12.){
       if((isData&&k_channel != "DoubleMuon")) return 0.;
 
       if(pass2){
@@ -419,8 +438,8 @@ bool FakeRateCalculator_Mu::UseEvent(std::vector<snu::KMuon> muons,  std::vector
 
 void FakeRateCalculator_Mu::GetFakeRates(std::vector<snu::KMuon> loose_mu, std::vector<snu::KMuon> tight_mu, TString tightlabel,  std::vector<snu::KJet> jets,  std::vector<snu::KJet> alljets, TString tag, double w, float isocut, bool basicplots){
 
-  Float_t ptbins[11] = { 5.,10., 15.,20.,25.,30.,35.,45.,60.,100., 200.};
-  Float_t ptbinsb[9] = { 5., 10., 15.,20.,30.,45.,60.,100., 200.};
+  Float_t ptbins[11] = { 5.,12., 15.,20.,25.,30.,35.,45.,60.,100., 200.};
+  Float_t ptbinsb[9] = { 5., 12., 15.,20.,30.,45.,60.,100., 200.};
   Float_t etabin[2] = { 0.,  2.5};
   Float_t etabins[4] = { 0., 0.8,1.479,  2.5};
   Float_t etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
@@ -436,12 +455,13 @@ void FakeRateCalculator_Mu::GetFakeRates(std::vector<snu::KMuon> loose_mu, std::
       if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) closebjet_m = true;                                                                                                                                       
       if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Tight)) closebjet_t = true;                                                                                                                                       
     }                                                                                                                                                                                                                           
-  }                                                                                                                                                                                                                             
+  }                                                                                                                                                                                                                    
   
   if(loose_mu.size() == 1 && jets.size() >= 1){
     float el_pt = loose_mu.at(0).Pt();
     float el_pt_corr = loose_mu.at(0).Pt()*(1+max(0.,(loose_mu.at(0).RelIso04()-isocut))) ; /// will need changing for systematics
     
+    cout << el_pt << endl;
     FillHist(("LooseMu" + tag + "_pt_eta").Data(), el_pt, fabs(loose_mu.at(0).Eta()),  w, ptbins, 10 , etabins2, 4);
     FillHist(("LooseMu" + tag + "_ptcorr_eta").Data(), el_pt_corr, fabs(loose_mu.at(0).Eta()),  w, ptbins, 10 , etabins2, 4);
     
