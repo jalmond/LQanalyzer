@@ -1133,18 +1133,18 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
           continue;
         }
 
-        if (x > 10 && x < 18){
+        if (x > 12 && x < 20){
           is >> tmp;
 	  cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
 
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 26 && x < 30){
+	else  if (x > 28 && x < 32){
           is >> tmp;
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 34 && x < 46){
+	else  if (x > 38 && x < 50){
           is >> tmp;
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );

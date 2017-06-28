@@ -25,25 +25,25 @@ bool CheckHist(TH2* h);
 void MakeFRRootFile(TString file, TString tag);
 
 void MakeFRRootFile(){
-  //MakeFRRootFile("SingleMuon","iso");
+  MakeFRRootFile("SingleMuon","iso");
   MakeFRRootFile("DoubleMuon","");
 }
 
 
 void MakeFRRootFile(TString file, TString tag){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/FakeRateCalculator_Mu/periodBtoH/";
+  TString path= "/afs/cern.ch/work/j/jalmond/CAT/FakeRateCalculator_Mu/periodBtoH/";
   
-  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_snu.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7_snu.root");
+  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7.root");
   
   if(!fdata)cout << "No Data" << endl;
   if (!fmc) cout << "No MC" << endl;
-  cout << "Data File = : " << path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_snu.root" << endl;
+  cout << "Data File = : " << path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root" << endl;
 
   cout << "List of keys in file:" << endl;
 
-  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_snu.root");
+  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
   
   /// Set Plotting style
   setTDRStyle();
@@ -56,19 +56,18 @@ void MakeFRRootFile(TString file, TString tag){
   std::vector<TString> fakes40;
   fakes40.push_back("40_pt_eta");
   fakes40.push_back("40_ptcorr_eta");
-  fakes40.push_back("40_pt_eta_cb_l");
-  fakes40.push_back("40_ptcorr_eta_cb_l");
-  fakes40.push_back("40_pt_eta_cb_m");
-  fakes40.push_back("40_ptcorr_eta_cb_m");
-  fakes40.push_back("40_pt_eta_cb_t");
-  fakes40.push_back("40_ptcorr_eta_cb_t");
-  fakes40.push_back("40_pt_eta_ncb_l");
-  fakes40.push_back("40_ptcorr_eta_ncb_l");
-  fakes40.push_back("40_pt_eta_ncb_m");
-  fakes40.push_back("40_ptcorr_eta_ncb_m");
-  fakes40.push_back("40_pt_eta_ncb_t");
-  fakes40.push_back("40_ptcorr_eta_ncb_t");
-
+  //fakes40.push_back("40_pt_eta_cb_l");
+  //fakes40.push_back("40_ptcorr_eta_cb_l");
+  //fakes40.push_back("40_pt_eta_cb_m");
+  //fakes40.push_back("40_ptcorr_eta_cb_m");
+  //fakes40.push_back("40_pt_eta_cb_t");
+  //fakes40.push_back("40_ptcorr_eta_cb_t");
+  //fakes40.push_back("40_pt_eta_ncb_l");
+  //fakes40.push_back("40_ptcorr_eta_ncb_l");
+  //fakes40.push_back("40_pt_eta_ncb_m");
+  //fakes40.push_back("40_ptcorr_eta_ncb_m");
+  //fakes40.push_back("40_pt_eta_ncb_t");
+  //fakes40.push_back("40_ptcorr_eta_ncb_t");
 
 
   std::vector<TString> isocut;
@@ -118,7 +117,8 @@ void MakeFRRootFile(TString file, TString tag){
     for(unsigned int dxysig_b=0; dxysig_b < vcut_dxysig_b_s.size(); dxysig_b++){
       for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
         for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
-	  isocut.push_back(tag+"SNUdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
+	  isocut.push_back("SNUTight"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
+	  isocut.push_back("SNUMedium"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
 	  //isocut.push_back(tag+"Gentdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
 	}
       }
@@ -131,8 +131,8 @@ void MakeFRRootFile(TString file, TString tag){
       
       if(!CheckFile(fdata))return;
       if(!CheckFile(fmc))return;
-      TString denom ="LooseMu"  + *it3 +"_"+ *it2;
-      TString num ="TightMu"  +  *it3 + "_"+*it2;
+      TString denom ="LooseMu"+ *it3 +"_"+ *it2;
+      TString num ="TightMu" + *it3 + "_"+*it2;
       
       
       TH2D* h_pt_num= (TH2D*)fdata->Get(num.Data());
@@ -191,6 +191,8 @@ void MakeFRRootFile(TString file, TString tag){
       eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
       eff_rate->Write();
       
+      continue;
+
       bool drawall(false);
       
       

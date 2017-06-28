@@ -25,25 +25,24 @@ bool CheckHist(TH2* h);
 void MakeFRRootFile(TString file, TString tag);
 
 void MakeFRRootFile(){
-  //MakeFRRootFile("SingleMuon","iso");
+  MakeFRRootFile("SingleMuon","iso");
   MakeFRRootFile("DoubleMuon","");
 }
 
 
 void MakeFRRootFile(TString file, TString tag){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/FakeRateCalculator_Mu/periodBtoH/";
+  TString path= "/afs/cern.ch/work/j/jalmond/CAT/FakeRateCalculator_Mu/periodBtoH/";
   
-  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_snu.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7_snu.root");
+  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7.root");
   
   if(!fdata)cout << "No Data" << endl;
   if (!fmc) cout << "No MC" << endl;
-  cout << "Data File = : " << path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_snu.root" << endl;
 
   cout << "List of keys in file:" << endl;
 
-  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_snu.root");
+  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
   
   /// Set Plotting style
   setTDRStyle();
@@ -56,23 +55,11 @@ void MakeFRRootFile(TString file, TString tag){
   std::vector<TString> fakes40;
   fakes40.push_back("40_pt_eta");
   fakes40.push_back("40_ptcorr_eta");
-  fakes40.push_back("40_pt_eta_cb_l");
-  fakes40.push_back("40_ptcorr_eta_cb_l");
-  fakes40.push_back("40_pt_eta_cb_m");
-  fakes40.push_back("40_ptcorr_eta_cb_m");
-  fakes40.push_back("40_pt_eta_cb_t");
-  fakes40.push_back("40_ptcorr_eta_cb_t");
-  fakes40.push_back("40_pt_eta_ncb_l");
-  fakes40.push_back("40_ptcorr_eta_ncb_l");
-  fakes40.push_back("40_pt_eta_ncb_m");
-  fakes40.push_back("40_ptcorr_eta_ncb_m");
-  fakes40.push_back("40_pt_eta_ncb_t");
-  fakes40.push_back("40_ptcorr_eta_ncb_t");
 
 
 
   std::vector<TString> isocut;
-  isocut.push_back(tag+"GENTdijet_gent");
+  isocut.push_back("GENT"+tag+"dijet_gent");
 
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
