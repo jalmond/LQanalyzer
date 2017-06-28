@@ -204,6 +204,27 @@ void HNDiElectron::MakeValidationPlots(float w){
   std::vector<snu::KMuon> hntight  = GetMuons("MUON_HN_TIGHT",false);
   std::vector<snu::KMuon> pogmedium_tight  = GetMuons("MUON_POG_MEDIUM",false);
   
+  std::vector<snu::KMuon> hntight_fake  = GetMuons("MUON_HN_Tight_FAKELOOSEST",false);
+  std::vector<snu::KMuon> hnmedium_fake  = GetMuons("MUON_HN_Medium_FAKELOOSEST",false);
+
+  std::vector<snu::KMuon> pogtight_fake  = GetMuons("MUON_POG_FAKETIGHT",false);
+  std::vector<snu::KMuon> pogmedium_fake  = GetMuons("MUON_POG_FAKEMEDIUM",false);
+
+  std::vector<snu::KMuon> pogtight  = GetMuons("MUON_POG_TIGHT",false);
+  std::vector<snu::KMuon> pogmedium  = GetMuons("MUON_POG_MEDIUM",false);
+
+
+  FillHist("nmuons_fake_tight", hntight_fake.size(),1., 0., 5., 5.);
+  FillHist("nmuons_fake_medium",  hnmedium_fake.size(), 1., 0., 5., 5.);
+  
+  FillHist("nmuons_pfake_tight", pogtight_fake.size(), 1., 0., 5., 5.);
+  FillHist("nmuons_pfake_medium", pogmedium_fake.size(), 1., 0., 5., 5.);
+  
+  FillHist("nmuons_p_tight", pogtight.size(),1.,  0., 5., 5.);
+  FillHist("nmuons_p_medium", pogmedium.size(), 1., 0., 5., 5.);
+  
+
+  
   std::vector<snu::KMuon> pogmedium_tight_hn;
   if(NBJet(alljets, snu::KJet::CSVv2, snu::KJet::Medium) ==0){
     if(electrons.size() ==0)
@@ -236,11 +257,11 @@ void HNDiElectron::MakeValidationPlots(float w){
       gent=  GetMuons("MUON_HNGENT_LOOSE",false);
       pogtight_tight = GetMuons("MUON_HN_LOOSE",false);
       pogmedium_tight = GetMuons("MUON_HN_LOOSE",false);
-      if(SameCharge(gent))wg = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent, PassID(gent[0],"MUON_HNGENT_TIGHT"),  PassID(gent[1],"MUON_HNGENT_TIGHT"), "gent",false, false, "ptcorr_eta",0.1,false);
+      if(SameCharge(gent))wg = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent, PassID(gent[0],"MUON_HNGENT_TIGHT"),  PassID(gent[1],"MUON_HNGENT_TIGHT"), "gent","gent",false, false, "ptcorr_eta",0.1,false, false);
       else wg=0.;
-      if(SameCharge(pogmedium_tight))wm = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_tight, PassID(pogmedium_tight[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_tight[1],"MUON_POG_MEDIUM"), "pogmedium", false, false ,"ptcorr_eta",0.25,false);
+      if(SameCharge(pogmedium_tight))wm = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_tight, PassID(pogmedium_tight[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_tight[1],"MUON_POG_MEDIUM"),"pogmedium",  "pogmedium", false, false ,"ptcorr_eta",0.25,false,false);
       else wm = 0.;
-      if(SameCharge(pogtight_tight)) wt = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_tight, PassID(pogtight_tight[0],"MUON_POG_TIGHT"),  PassID(pogtight_tight[1],"MUON_POG_TIGHT"), "pogtight", false, false, "ptcorr_eta",0.15,false);
+      if(SameCharge(pogtight_tight)) wt = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_tight, PassID(pogtight_tight[0],"MUON_POG_TIGHT"),  PassID(pogtight_tight[1],"MUON_POG_TIGHT"), "pogtight","pogtight", false, false, "ptcorr_eta",0.15,false,false);
       else wt=0.;
       
       

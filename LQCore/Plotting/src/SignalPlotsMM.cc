@@ -87,11 +87,11 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
 
   map_sig["h_st_forward"]          = SetupHist("h_st_forward_"       + name,"ST foward jets", 100, 0., 1000.,"ST_{fj} GeV");
   map_sig["h_st_central"]          = SetupHist("h_st_central_"       + name,"ST central jets", 100, 0., 1000.,"ST_{cj} GeV");
-  map_sig["h_st_fc_ratio"]          = SetupHist("h_st_fc_ratio_"       + name,"ST ratio", 100, 0., 1.,"ST (ratio)");
+  map_sig["h_st_fc_ratio"]          = SetupHist("h_st_fc_ratio_"       + name,"ST ratio", 100, 0., 2.,"ST (ratio)");
 
   map_sig["h_ht_forward"]          = SetupHist("h_ht_forward_"       + name,"ST foward jets", 100, 0., 1000.,"HT_{fj} GeV");
   map_sig["h_ht_central"]          = SetupHist("h_ht_central_"       + name,"ST central jets", 100, 0., 1000.,"HT_{cj} GeV");
-  map_sig["h_ht_fc_ratio"]          = SetupHist("h_ht_fc_ratio_"       + name,"ST ratio", 100, 0., 1.,"HT (ratio)");
+  map_sig["h_ht_fc_ratio"]          = SetupHist("h_ht_fc_ratio_"       + name,"ST ratio", 1000, 0., 10.,"HT (ratio)");
 
 
   map_sig["h_eltype" ]          = SetupHist("h_eltype_"       + name,"Type", 45, 0., 45.,"El Type");
@@ -120,10 +120,11 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_LeptonE"]               = SetupHist("h_LeptonE_"          + name,"lepton e",500,0,500);
   map_sig["h_leadingLeptonPt"]        = SetupHist("h_leadingLeptonPt_"   + name,"leading lepton pt",100,0,500);
 
-  map_sig2["h_lt_jjdr"]  = SetupHist2("h_lt_jjdr_"  + name,"eta " , 10., 0.,2000., 3.,0., 4.5);
-  map_sig2["h_lt_CM"]   = SetupHist2("h_lt_CM_"  + name,"eta " , 10., 0.,2000., 10, 0., 1000.);
-  map_sig2["h_lt_lljjmass"]   = SetupHist2("h_lt_lljjmass_"  + name,"eta " , 10., 0.,2000., 10, 0.,2000.);
-  map_sig2["h_lt_lmeanjjmass"]   = SetupHist2("h_lt_lmeanjjmass_" + name,"eta " , 10., 0.,2000., 10, 0.,1000.);
+  map_sig2["h_lt_jjdr"]  = SetupHist2("h_lt_jjdr_"  + name,"eta " , 100., 0.,2000., 30.,0., 4.5);
+  map_sig2["h_lt_CM"]   = SetupHist2("h_lt_CM_"  + name,"eta " , 100., 0.,2000., 100, 0., 1000.);
+  map_sig2["h_lt_lljjmass"]   = SetupHist2("h_lt_lljjmass_"  + name,"eta " , 100., 0.,2000., 100, 0.,2000.);
+  map_sig2["h_lt_lmeanjjmass"]   = SetupHist2("h_lt_lmeanjjmass_" + name,"eta " , 100., 0.,2000., 100, 0.,1000.);
+  map_sig2["h_lt_ldiffmeanjjmass"]   = SetupHist2("h_lt_ldiffmeanjjmass_" + name,"eta " , 100., 0.,2000., 100, 0.,1000.);
 
 
   map_sig2["EtaRegion"]           = SetupHist2("EtaRegion_el_"  + name,"eta " , 8, 0., 8., 8, 0.,8.);
@@ -171,6 +172,7 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_leadLeptonAwayJetRatio"]        = SetupHist("h_leadLeptonAwayJetRatio_"   + name, "away jet / lepton", 100,0,5);
   map_sig["h_secondLeptonAwayJetRatio"]        = SetupHist("h_secondLeptonAwayJetRatio_"   + name, "away jet / lepton", 100,0,5);
   map_sig["h_leadLeptondR"]           = SetupHist("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5);
+  map_sig["h_leadLeptonstarjetdR"]           = SetupHist("h_leadLeptonstarjetdR_"      + name,"leading lepton dR",500,0,25);
   map_sig["h_leadLeptondPhi"]         = SetupHist("h_leadLeptondPhi_"    + name,"leading lepton dPhi",50,-5,5);
   map_sig["h_leadJetdR"]                = SetupHist("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
   map_sig["h_leadJetdPhi"]              = SetupHist("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
@@ -187,8 +189,8 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_leadingJetPt"]           = SetupHist("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
   map_sig["h_secondJetPt"]            = SetupHist("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
   map_sig["h_HT"]                     = SetupHist("h_HT_"                + name,"sum jet pt",50,0,1000);
-  map_sig["h_ST"]                     = SetupHist("h_ST_"                + name,"sum event pt",50,0,1000);
-  map_sig["h_STall"]                     = SetupHist("h_STall_"                + name,"sum event pt",50,0,1000);
+  map_sig["h_ST"]                     = SetupHist("h_ST_"                + name,"sum event pt",50,0,1500);
+  map_sig["h_STall"]                     = SetupHist("h_STall_"                + name,"sum event pt",50,0,1500);
   map_sig["h_jets_pt"]                = SetupHist("h_jets_pt_"           + name,"jet pt",60,0,300);
   map_sig["h_jets_eta"]               = SetupHist("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
   map_sig["h_jets_phi"]               = SetupHist("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
@@ -309,7 +311,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
     }
   }
 
-  
+
+  if(muons.size()!=0)Fill("h_leadLeptonstarjetdR",min_jj_Dr*min_ll_Dr,weight);
   if(muons.size()!=0)Fill("h_leadLeptondR",min_ll_Dr,weight);
   if(muons.size()!=0)Fill("h_leadLeptondPhi",min_ll_DPhi,weight);
 
@@ -547,6 +550,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   float lljjmass=0.;
   float lmeanjjmass=0.;
+  float ldiffmeanjjmass=0.;
 
   if(muons.size() ==2 ){
     Fill("h_llmass", (muons[0]+muons[1]).M(),weight);
@@ -558,6 +562,9 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       
       float l1_l2=fabs( (muons[0] + jets[m] + jets[n]).M() -  (muons[1] + jets[m] + jets[n]).M());
       Fill("h_l1_l2jjmass",  l1_l2, weight);
+      lljjmass = (muons[0] +muons[1] + jets[m] + jets[n]).M();
+      lmeanjjmass = ((muons[0] + jets[m] + jets[n]).M() +  (muons[1] + jets[m] + jets[n]).M()) / 2.;
+      ldiffmeanjjmass = ((muons[0] + jets[m] + jets[n]).M() -  (muons[1] + jets[m] + jets[n]).M()) / 2.;
       Fill("h_lljjmass", (muons[0] +muons[1] + jets[m] + jets[n]).M(),weight);
     }
     if(fatjets.size() > 0){
@@ -686,7 +693,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
    
   if(muons.size()>=2){
     
-    if( jets.size()==1) Fill("h_lljmass", (muons[0] + muons[1]+jets[0]).M(),weight);
+    if( jets.size()>=1) Fill("h_lljmass", (muons[0] + muons[1]+jets[0]).M(),weight);
     if(jets.size()>1){
       Fill("h_l2jjmass", (muons[1]+jets[m]+jets[n]).M(),weight);
       Fill("h_lljjmass", (muons[0] + muons[1]+jets[m]+jets[n]).M(),weight);
@@ -927,6 +934,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   Fill("h_lt_CM",lt,contramass, weight);
   Fill("h_lt_lljjmass",lt,lljjmass,weight);
   Fill("h_lt_lmeanjjmass",lt,lmeanjjmass,weight);
+  Fill("h_lt_ldiffmeanjjmass",lt,ldiffmeanjjmass,weight);
   Fill("h_sumeta",sumeta,weight);
 
   if(st_foward>0.)Fill("h_st_forward",st_foward,weight);
@@ -944,8 +952,6 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
 
   if(muons.size() ==2)
     {
-      cj=cj+muons[0]+muons[1];
-      fj=fj+muons[0]+muons[1];
       fjets=fjets+muons[0]+muons[1];
       Fill("h_llcj_mass",cj.M(), weight);
       Fill("h_llfj_mass",fj.M(), weight);

@@ -369,7 +369,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
   }
   else{
 
-    TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_muon_DoubleMuon_2016_opt_snu.root").c_str());
+    TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_muon_2016_opt_all.root").c_str());
     CheckFile(file_fake_muon_hn);
 
     ////// MAKE HISTS IN MAP                                                                                                                                                                             
@@ -423,16 +423,23 @@ void HNCommonLeptonFakes::InitialiseFake(){
 	for(unsigned int dxysig_b=0; dxysig_b < vcut_dxysig_b_s.size(); dxysig_b++){
 	  for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
 	    for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
-	      cout << "FakeRate_40_"+ptcor[iptcor]+"SNUdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b] << endl;
-	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());  
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUdijet_Tight"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUTightdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());  
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUdijet_Medium"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUMediumdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());  
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUisodijet_Tight"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUTightisodijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());
+			      
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUisodijet_Medium"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUMediumisodijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());
 	    }
 	  }
 	}
       }
       
-      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogmedium"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGMEDIUMdijet_pogmedium"))->Clone());
-      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogtight"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGTIGHTdijet_pogtight"))->Clone());
-      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_gent"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"GENTdijet_gent"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogmedium_dijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGMEDIUMdijet_pogmedium"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogtight_dijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGTIGHTdijet_pogtight"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogmedium_isodijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGMEDIUMisodijet_pogmedium"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogtight_isodijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGTIGHTisodijet_pogtight"))->Clone());
+
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_gent_dijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"GENTdijet_gent"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_gent_isodijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"GENTisodijet_gent"))->Clone());
     }
   
     file_fake_muon_hn->Close();
@@ -769,6 +776,11 @@ float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta , TStrin
   if(mapit!=_2DEfficiencyMap_Double.end()){
     int binx =  mapit->second->FindBin(pt, fabs(eta));
     eff_fake =  float(mapit->second->GetBinContent(binx));
+    while(eff_fake <0.){
+      pt = pt -5.;
+      binx =  mapit->second->FindBin(pt, fabs(eta));
+      eff_fake =  float(mapit->second->GetBinContent(binx));
+    }
   }
   else NoHist((label.Data()));
 
@@ -1256,7 +1268,7 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(bool geterr, std::vector<
   return get_dilepton_mm_eventweight("dxy", geterr,  muons, isT1,isT2,"");
 }
 
-float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, TString ID, bool c1, bool c2, TString method, float ptcorr1, float ptcorr2,bool checkcj){
+float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, TString ID1,TString ID2, bool c1, bool c2, TString method, float ptcorr1, float ptcorr2,bool checkcj){
 
 
   if(muons.size()!=2) {
@@ -1264,23 +1276,23 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
     return (0.);
   }
   
-  TString ID1("");
-  TString ID2("");
+  TString iID1("");
+  TString iID2("");
   float _mu1_pt(0.);
   float _mu2_pt(0.);
 
-  if(ID.Contains("pog")){
-    ID1 =  "_muon_"+method + "_" + ID;
-    ID2 =  "_muon_"+method + "_" + ID;
+  if(ID1.Contains("pog")){
+    iID1 =  "_muon_"+method + "_" + ID1+"_"+fakerates;
+    iID2 =  "_muon_"+method + "_" + ID2+"_"+fakerates;
   }
-  else  if(ID.Contains("gent")){
-    ID1 =  "_muon_"+method + "_" + ID;
-    ID2 =  "_muon_"+method + "_" + ID;
+  else  if(ID1.Contains("gent")){
+    iID1 =  "_muon_"+method + "_" + ID1+"_"+fakerates;
+    iID2 =  "_muon_"+method + "_" + ID2+"_"+fakerates;
   }
 
   else{
-    ID1 =  "_muon_"+method + "_SNUdijet_" + ID;
-    ID2 =  "_muon_"+method + "_SNUdijet_" + ID;
+    iID1 =  "_muon_"+method + "_SNU"+fakerates+"_" + ID1;
+    iID2 =  "_muon_"+method + "_SNU"+fakerates+"_" + ID2;
 
   }
 
@@ -1310,12 +1322,9 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
     r1 = 1.;
     r2 =1.;
     
-    fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, ID1);
-    fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, ID2);
+    fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, iID1);
+    fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, iID2);
   
-    cout << ID1 << " " <<  _mu1_pt <<  " eta= "  << _mu1_eta << " f= " << fr1 << endl; 
-    cout << ID2 << " " <<  _mu2_pt <<  " eta= "  << _mu2_eta << " f= " << fr2 << endl; 
-
     float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isT1,isT2);
     
     return ev_weight;

@@ -80,12 +80,24 @@ void HNDiMuonOptimisation::ExecuteEvents()throw( LQError ){
   triggerlist.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
   triggerlist.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
 
+  std::vector<TString> triggerlist_single;
+  triggerlist_single.push_back("HLT_IsoMu24_v");
+  triggerlist_single.push_back("HLT_IsoTkMu24_v");
+  
   float trigger_ps_weight= WeightByTrigger(triggerlist, TargetLumi);
   
   bool _dimu =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
+  bool _singlemu =   isData ?  (k_channel.Contains("SingleMuon")) : true ;
   
-  if(PassTrigger(triggerlist[0]) || PassTrigger(triggerlist[1])) OptimiseID(true, true,  true, weight);
-  
+  if(_dimu){
+    if(PassTrigger(triggerlist[0]) || PassTrigger(triggerlist[1])) OptimiseID(true, true,  true, weight);
+  }
+  if(_singlemu){
+    if (!(PassTrigger(triggerlist[0]) || PassTrigger(triggerlist[1]))){
+      if(PassTrigger(triggerlist_single[0]) || PassTrigger(triggerlist_single[1])) OptimiseID(true, true,  false, weight);
+    }
+  }
+
   std::vector<snu::KElectron> electronVetoColl=GetElectrons("ELECTRON_HN_VETO");
   std::vector<snu::KMuon> muonVetoColl=GetMuons("MUON_HN_VETO");
 
@@ -104,22 +116,40 @@ void HNDiMuonOptimisation::ExecuteEvents()throw( LQError ){
 
 }
 
-void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, float w){
+void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool isdileptrig, float w){
   
+
+  std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");
+  std::vector<snu::KMuon> muonColl = GetMuons("MUON_HN_VETO");
+  std::vector<snu::KJet> jets           = GetJets("JET_HN");
+  std::vector<snu::KJet> alljets           = GetJets("JET_NOLEPTONVETO");  
+
+  if(muonColl.size() > 2) return;
+
   if (!isData) {
     w*= eventbase->GetEvent().PileUpWeight();
   }
   
-  if(1){  
-    std::vector<snu::KMuon> snu_loose  = GetMuons("MUON_HN_Tight_FAKELOOSEST",false);
+  for (int nLoops = 0 ; nLoops < 2; nLoops++){
+    std::vector<snu::KMuon> snu_loose ;
+    TString muonTag;
+    if(nLoops ==0) {
+      snu_loose  = GetMuons("MUON_HN_Tight_FAKELOOSEST",false);
+      muonTag="Tight";
+    }
+    if(nLoops ==1) {
+      snu_loose = GetMuons("MUON_HN_Medium_FAKELOOSEST",false);
+      muonTag="Medium";
+    }
+
+
     std::vector<snu::KElectron> el = GetElectrons("ELECTRON_HN_VETO");
-
-
+    
     vector<float> vcut_dxy_b;
     vector<TString> vcut_dxy_b_s;
 
-    for(unsigned int dxy_b=0;dxy_b < 10; dxy_b++){
-      float cut_dxy_b =  float(dxy_b)*0.005 + 0.01;
+    for(unsigned int dxy_b=0;dxy_b < 1; dxy_b++){
+      float cut_dxy_b =  float(dxy_b)*0.005 + 0.005;
       vcut_dxy_b.push_back(cut_dxy_b);
       stringstream ss;
       ss <<cut_dxy_b;
@@ -136,7 +166,7 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, floa
     vector<TString> vcut_dz_b_s;
 
     for(unsigned int dz_b=0;dz_b < 4; dz_b++){
-      float cut_dz_b =  float(dz_b)*0.02 + 0.04;
+      float cut_dz_b =  float(dz_b)*0.02 + 0.02;
       vcut_dz_b.push_back(cut_dz_b);
       stringstream ss;
       ss <<cut_dz_b;
@@ -158,70 +188,146 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, floa
     for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b.size(); dxy_b++){
       for(unsigned int dxysig_b=0; dxysig_b < vcut_dxysig_b.size(); dxysig_b++){
         for(unsigned int dz_b=0; dz_b < vcut_dz_b.size(); dz_b++){
-          for(unsigned int iso_b=0; iso_b < vcut_iso_b.size(); iso_b++, ncut++){
-
-	    std::vector<snu::KMuon> loose_mu;
-	    std::vector<snu::KMuon> tight_mu;
-	    bool tight1=false;
-	    bool tight2=false;
-	      
-            for(unsigned int imu=0; imu<snu_loose.size(); imu++){
-              float reliso = snu_loose[imu].RelIso04();
-
-              if(fabs(snu_loose[imu].dZ()) > vcut_dz_b[dz_b]) continue;
-
-              loose_mu.push_back(snu_loose[imu]);
-              if(fabs(snu_loose[imu].dXYSig()) > vcut_dxysig_b[dxysig_b]) continue;
-              if(snu_loose[imu].GlobalChi2()  > 10.) continue;
-              if(fabs(snu_loose[imu].dXY()) > vcut_dxy_b[dxy_b]) continue;
-              if(reliso > vcut_iso_b[iso_b]) continue;
-	      if(imu==0) tight1=true;
-	      if(imu==1) tight2=true;
-              tight_mu.push_back(snu_loose[imu]);
-            }
-	    
-	    bool cb_1(false);
-	    bool cb_2(false);
-	    std::vector<snu::KJet> alljets           = GetJets("JET_NOLEPTONVETO");
-	    std::vector<snu::KJet> jets           = GetJets("JET_HN");
-
-	    
-	    if(loose_mu.size()==2){
-	      for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
-		if(loose_mu.at(0).DeltaR(alljets.at(ij)) < 0.5) {
-		  if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_1=true;
+          for(unsigned int iso_b=0; iso_b < vcut_iso_b.size(); iso_b++){
+	    for(unsigned int dz_e=0; dz_e < vcut_dz_b.size(); dz_e++){
+	      for(unsigned int iso_e=0; iso_e < vcut_iso_b.size(); iso_e++, ncut++){
+		
+		
+		std::vector<snu::KMuon> loose_mu;
+		std::vector<snu::KMuon> tight_mu;
+		bool tight1=false;
+		bool tight2=false;
+		
+		TString fake_tag1("");
+		TString fake_tag2("");
+		int imupass=0;
+		for(unsigned int imu=0; imu<snu_loose.size(); imu++){
+		  float reliso = snu_loose[imu].RelIso04();
+		  
+		  if(fabs(snu_loose[imu].Eta()) < 1.5) {
+		    if(fabs(snu_loose[imu].dZ()) > vcut_dz_b[dz_b]) continue;
+		    
+		    if(imupass==0) fake_tag1=vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b];
+		    if(imupass==1) fake_tag2=vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b];
+		    //cout << imu << " B " << vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b] << endl;
+		    imupass++;
+		    loose_mu.push_back(snu_loose[imu]);
+		    if(fabs(snu_loose[imu].dXYSig()) > vcut_dxysig_b[dxysig_b]) continue;
+		    if(snu_loose[imu].GlobalChi2()  > 10.) continue;
+		    if(fabs(snu_loose[imu].dXY()) > vcut_dxy_b[dxy_b]) continue;
+		    if(reliso > vcut_iso_b[iso_b]) continue;
+		    if(imupass==0) tight1=true;
+		    if(imupass==1) tight2=true;
+		    tight_mu.push_back(snu_loose[imu]);
+		  }
+		  else{
+		    if(fabs(snu_loose[imu].dZ()) > vcut_dz_b[dz_e]) continue;
+		    
+		    if(imupass==0) fake_tag1=vcut_iso_b_s[iso_e]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_e];
+		    if(imupass==1) fake_tag2=vcut_iso_b_s[iso_e]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_e];
+		    
+		    loose_mu.push_back(snu_loose[imu]);
+		    imupass++;
+		    if(fabs(snu_loose[imu].dXYSig()) > vcut_dxysig_b[dxysig_b]) continue;
+		    if(snu_loose[imu].GlobalChi2()  > 10.) continue;
+		    if(fabs(snu_loose[imu].dXY()) > vcut_dxy_b[dxy_b]) continue;
+		    if(reliso > vcut_iso_b[iso_e]) continue;
+		    if(imupass==0) tight1=true;
+		    if(imupass==1) tight2=true;
+		    
+		    tight_mu.push_back(snu_loose[imu]);
+		    
+		  }
 		}
-		if(loose_mu.at(1).DeltaR(alljets.at(ij)) < 0.5) {
-                  if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_1=true;
-                }
-	      }
-	    }
+		
+		bool cb_1(false);
+		bool cb_2(false);
+		
+		
+		if(loose_mu.size()==2){
+		  for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
+		    if(loose_mu.at(0).DeltaR(alljets.at(ij)) < 0.5) {
+		      if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_1=true;
+		    }
+		    if(loose_mu.at(1).DeltaR(alljets.at(ij)) < 0.5) {
+		      if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_1=true;
+		    }
+		  }
+		}
+		    
+		
+		bool passtrigcuts_double=false;
+		bool passtrigcuts_single=false;
+		
+		if(loose_mu.size() ==2){
+		  if(isdileptrig){
+		    if(loose_mu[0].Pt() > 20){
+		      if(loose_mu[1].Pt() > 10){
+			    passtrigcuts_double=true;
+		      }
+		    }
+		  }
+		  else{
+		    if(loose_mu[0].Pt() > 25){
+		      if(loose_mu[1].Pt() > 5){
+			passtrigcuts_single=true;
+		      }
+		    }
+		  }
+		}
+		
+		if(passtrigcuts_single){
+		  if(!k_running_nonprompt){
+		    
+		    if(ncut==0)FillHist("IDREFSNU_single" ,1,w, 0.,2., 2);
+		    if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"Low", w))FillHist(("LowIDREFSNU"+muonTag+"_single") ,ncut,w, 0.,1000., 1000);
+		    if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"", w))FillHist(("MediumIDREFSNU"+muonTag+"_single") ,ncut,w, 0.,1000., 1000);
+		    if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"High", w))FillHist(("HighIDREFSNU"+muonTag+"_single"),ncut,w, 0.,1000., 1000);
+		    
+		  }
+		  else{
+		    if(loose_mu.size() ==2){
+		      float ev_weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, loose_mu, tight1, tight2,muonTag+fake_tag1, muonTag+fake_tag2,cb_1,cb_2 ,"ptcorr_eta", vcut_iso_b[iso_b],false, true);
+		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"Low", ev_weight))FillHist(("LowIDREFSNU"+muonTag+"_single"),ncut,ev_weight, 0.,1000., 1000);
+		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"", ev_weight))FillHist(("MediumIDREFSNU"+muonTag+"_single") ,ncut,ev_weight, 0.,1000., 1000);
+		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"High", ev_weight))FillHist(("HighIDREFSNU"+muonTag+"_single"),ncut,ev_weight, 0.,1000., 1000);
 
-
-	    if(!k_running_nonprompt){
-	      FillHist("IDREFSNU" ,1,w, 0.,2., 2);
-	      if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"Low", w))FillHist(("LowIDREFSNU") ,ncut,w, 0., 500., 500);
-	      if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"", w))FillHist(("MediumIDREFSNU") ,ncut,w, 0., 500., 500);
-	      if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"High", w))FillHist(("HighIDREFSNU"),ncut ,w, 0., 500., 500);
-	    }
-	    else{
-	      float ev_weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, loose_mu, tight1, tight2,vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b],cb_1,cb_2 ,"ptcorr_eta", vcut_iso_b[iso_b],false);
-	      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"Low", ev_weight))FillHist(("LowIDREFSNU"),ncut ,ev_weight, 0., 500., 500);
-	      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"", ev_weight))FillHist(("MediumIDREFSNU") ,ncut,ev_weight, 0., 500., 500);
-	      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"High", ev_weight))FillHist(("HighIDREFSNU"),ncut ,ev_weight, 0., 500., 500);
-
+		    }
+		  }
+		}
+		if(passtrigcuts_double){
+		  if(!k_running_nonprompt){
+		    
+		    if(ncut==0)FillHist("IDREFSNU_double" ,1,w, 0.,2., 2);
+		    if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"Low", w))FillHist(("LowIDREFSNU"+muonTag+"_double") ,ncut,w, 0.,1000., 1000);
+		    if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"", w))FillHist(("MediumIDREFSNU"+muonTag+"_double") ,ncut,w, 0.,1000., 1000);
+		    if(CheckSignalRegion(true,tight_mu,el, jets,alljets,"High", w))FillHist(("HighIDREFSNU"+muonTag+"_double"),ncut,w, 0.,1000., 1000);
+		  }
+		  else{
+		    if(loose_mu.size()==2){
+		      float ev_weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, loose_mu, tight1, tight2,muonTag+fake_tag1, muonTag+fake_tag2 , cb_1, cb_2,"ptcorr_eta", vcut_iso_b[iso_b],false, false);
+		      
+		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"Low", ev_weight))FillHist(("LowIDREFSNU"+muonTag+"_double"), ncut,ev_weight, 0.,1000., 1000);
+		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"", ev_weight))FillHist(("MediumIDREFSNU"+muonTag+"_double") ,ncut,ev_weight, 0.,1000., 1000);
+		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"High", ev_weight))FillHist(("HighIDREFSNU"+muonTag+"_double"),ncut,ev_weight, 0.,1000., 1000);
+		    }
+		  }
+		      
+		}
+	      } 
 	    }
 	  }
 	}
-      } 
+      }
     }
   }
   if(1){
     std::vector<snu::KJet> jets           = GetJets("JET_HN");
     std::vector<snu::KJet> alljets           = GetJets("JET_NOLEPTONVETO");
-
-
-    std::vector<snu::KMuon> pogmedium_loose  = GetMuons("MUON_HN_LOOSE",false);
+    
+    
+    std::vector<snu::KMuon> pogmedium_loose  = GetMuons("MUON_POG_FAKEMEDIUM",false);
+    std::vector<snu::KMuon> pogtight_loose  = GetMuons("MUON_POG_FAKETIGHT",false);
     std::vector<snu::KElectron> el = GetElectrons("ELECTRON_HN_VETO");
     std::vector<snu::KMuon> pogmedium_tight  = GetMuons("MUON_POG_MEDIUM",false);
     std::vector<snu::KMuon> pogtight_tight  = GetMuons("MUON_POG_TIGHT",false);
@@ -229,80 +335,287 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool removed0, floa
     std::vector<snu::KMuon> gent_loose =  GetMuons("MUON_HNGENT_LOOSE",false);
     std::vector<snu::KMuon> gent_tight= GetMuons("MUON_HNGENT_TIGHT",false);
     
-    cout << "gent_loose = " << gent_loose.size() << " " << " pogmedium_loose= " << pogmedium_loose.size() <<  endl;
+    std::vector<snu::KMuon>  hn_loose =  GetMuons("MUON_HN_LOOSE",false);
+    std::vector<snu::KMuon>  hn_tight =  GetMuons("MUON_HN_TIGHT",false);
     
+
+
+    bool passtrigcuts_double_pogm=false;
+    bool passtrigcuts_single_pogm=false;
     
-    FillHist("POGIDREFSNU", 1,w, 0.,2., 2);
+    if(pogmedium_loose.size() ==2){
+      if(isdileptrig){
+	if(pogmedium_loose[0].Pt() > 20){
+	  if(pogmedium_loose[1].Pt() > 10){
+	    passtrigcuts_double_pogm=true;
+	  }
+	}
+      }
+      else{
+	if(pogmedium_loose[0].Pt() > 25){
+	  if(pogmedium_loose[1].Pt() > 5){
+	    passtrigcuts_single_pogm=true;
+	  }
+	}
+      }
+    }
+    
+
+    bool passtrigcuts_double_pogt=false;
+    bool passtrigcuts_single_pogt=false;
+
+    if(pogtight_loose.size() ==2){
+      if(isdileptrig){
+        if(pogtight_loose[0].Pt() > 20){
+          if(pogtight_loose[1].Pt() > 10){
+            passtrigcuts_double_pogt=true;
+          }
+        }
+      }
+      else{
+        if(pogtight_loose[0].Pt() > 25){
+          if(pogtight_loose[1].Pt() > 5){
+            passtrigcuts_single_pogt=true;
+          }
+        }
+      }
+    }
+    
+
+    bool passtrigcuts_double_gent=false;
+    bool passtrigcuts_single_gent=false;
+
+    if(gent_loose.size() ==2){
+      if(isdileptrig){
+        if(gent_loose[0].Pt() > 20){
+          if(gent_loose[1].Pt() > 10){
+            passtrigcuts_double_gent=true;
+          }
+        }
+      }
+      else{
+        if(gent_loose[0].Pt() > 25){
+          if(gent_loose[1].Pt() > 5){
+            passtrigcuts_single_gent=true;
+          }
+        }
+      }
+    }
+
+    bool passtrigcuts_double_hn=false;
+    bool passtrigcuts_single_hn=false;
+
+    if(hn_loose.size() ==2){
+      if(isdileptrig){
+	if(hn_loose[0].Pt() > 20){
+          if(hn_loose[1].Pt() > 10){
+            passtrigcuts_double_hn=true;
+          }
+        }
+      }
+      else{
+	if(hn_loose[0].Pt() > 25){
+          if(hn_loose[1].Pt() > 5){
+            passtrigcuts_single_hn=true;
+          }
+        }
+      }
+    }
+
+
+
+
+    if(!isdileptrig)    FillHist("POGIDREFSNU_single", 1,w, 0.,2., 2);
+    else FillHist("POGIDREFSNU_double", 1,w, 0.,2., 2);
 
     if(!k_running_nonprompt){
-      if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFPOGMEDIUM") ,0,w, 0., 3., 3);
-      if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFPOGMEDIUM") ,0,w, 0.,3., 3);
-      if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFPOGMEDIUM") ,0,w, 0., 3.,3);
-      if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFPOGTIGHT") ,1,w, 0., 3., 3);
-      if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFPOGTIGHT") ,1,w, 0.,3., 3);
-      if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFPOGTIGHT") ,1,w, 0., 3.,3);
-      if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFPOGTIGHT") ,2,w, 0., 3., 3);
-      if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFPOGTIGHT") ,2,w, 0.,3., 3);
-      if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFPOGTIGHT") ,2,w, 0., 3.,3);
-
-
-    }
-    else{
       
-      if(pogmedium_loose.size()==2){
-	bool cb_1(false);
-	bool cb_2(false);
+      if(passtrigcuts_single_pogm){
+	if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle") ,0,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle") ,0,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,0,w, 0.,4., 4);
+      }
+      if(passtrigcuts_single_pogt){
+        if(SameCharge(pogtight_tight)&&elColl.size()==0 &&  muonColl.size() == 2 && jets.size() > 1) FillCLHist(sighist_mm, "passtrigcuts_single_pogt", eventbase->GetEvent(),  pogtight_tight, elColl,jets, alljets, w);
 
-	for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
-	  if(pogmedium_loose.at(0).DeltaR(alljets.at(ij)) < 0.5) {
-	    if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_1=true;
-	    }
-	    if(pogmedium_loose.at(1).DeltaR(alljets.at(ij)) < 0.5) {
-	      if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_2=true;
-	    }
-	}
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle") ,1,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle") ,1,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,1,w, 0.,4., 4);
+      }
+      if(passtrigcuts_single_gent){
 	
-	float ev_weight_med=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_loose, PassID(pogmedium_loose[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_loose[1],"MUON_POG_MEDIUM"), "pogmedium", cb_1, cb_2,"ptcorr_eta",0.25,false);
-	float ev_weight_tight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_loose, PassID(pogmedium_loose[0],"MUON_POG_TIGHT"),  PassID(pogmedium_loose[1],"MUON_POG_TIGHT"), "pogtight",cb_1, cb_2, "ptcorr_eta",0.15,false);
+	if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle") ,2,w, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle") ,2,w, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,2,w, 0.,4., 4);
+      }
+      if(passtrigcuts_single_hn){
 
-	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFPOGMEDIUM"),0 ,ev_weight_med, 0., 3., 3);
-	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFPOGMEDIUM"),0 ,ev_weight_med, 0.,3., 3);
-	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFPOGMEDIUM") ,0,ev_weight_med, 0., 3.,3);
-	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFPOGTIGHT"),1 ,ev_weight_tight, 0., 3., 3);
-	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFPOGTIGHT"),1 ,ev_weight_tight, 0.,3., 3);
-	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFPOGTIGHT") ,1,ev_weight_tight, 0., 3.,3);
+        if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle") ,3,w, 0.,4., 4);
+	if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle") ,3,w, 0.,4., 4);
+        if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,3,w, 0.,4., 4);
       }
 
-      if(gent_loose.size()==2){
+      if(passtrigcuts_double_pogm){ 
+	if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,0,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,0,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,0,w, 0.,4., 4);
+      }
+      if(passtrigcuts_double_pogt){ 
+	if(SameCharge(pogtight_tight)&&elColl.size()==0 && muonColl.size() == 2 && jets.size() > 1) FillCLHist(sighist_mm, "passtrigcuts_double_pogt", eventbase->GetEvent(),  pogtight_tight, elColl,jets, alljets,w);
+	
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"Low", w)){
+	  FillCLHist(sighist_mm, "passtrigcuts_double_pogt_lowmass", eventbase->GetEvent(), pogtight_tight, elColl,jets, alljets,w);
+	  snu::KParticle Z = pogtight_tight[0]+pogtight_tight[1];
+          bool pass1=false;
+          bool pass2=false;
+          bool pass3=false;
+          float ct_lt(0.);
+          if(fabs(pogtight_tight[0].Eta()) < 1.5) ct_lt+= pogtight_tight[0].Pt();
+          if(fabs(pogtight_tight[1].Eta()) < 1.5) ct_lt+= pogtight_tight[1].Pt();
+	  
+          if((Z.Pt() > 5. && Z.Pt() < 25.)) pass1=true;
+          if(pogtight_tight[0].DeltaR(pogtight_tight[1]) > 2.) pass2=true;
+          if(ct_lt < 25) pass3=true;
+          if(pass1&&pass2&&pass3)           FillCLHist(sighist_mm, "passtrigcuts_double_pogt_pa3", eventbase->GetEvent(),  pogtight_tight, elColl,jets, alljets, w);
+          if(pass1||pass2||pass3)           FillCLHist(sighist_mm, "passtrigcuts_double_pogt_po3", eventbase->GetEvent(),  pogtight_tight, elColl,jets, alljets, w);
+	}
+										       
 
-	bool cb_1(false);
-        bool cb_2(false);
-	std::vector<snu::KJet> alljets           = GetJets("JET_NOLEPTONVETO");
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,1,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,1,w, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,1,w, 0.,4., 4);
+      }
+      if(passtrigcuts_double_gent){ 
+	if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,2,w, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,2,w, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,2,w, 0.,4., 4);
+      }
+      if(passtrigcuts_double_hn){
+	if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,3,w, 0.,4., 4);
+        if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,3,w, 0.,4., 4);
+	if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,3,w, 0.,4., 4);
+	if(CheckSignalRegion(true,hn_tight,el, jets,alljets,"Low", w))FillCLHist(sighist_mm, "passtrigcuts_double_hn_lowmass", eventbase->GetEvent(), hn_tight, elColl,jets, alljets,w);
+	
+      }
+    }
+    else{
+ 
+      bool cb_1(false);
+      bool cb_2(false);
+      
+      if(passtrigcuts_single_pogm){
+	float ev_weight_med=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_loose, PassID(pogmedium_loose[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_loose[1],"MUON_POG_MEDIUM"), "pogmedium","pogmedium", cb_1, cb_2,"ptcorr_eta",0.25,false,true);
+	
+	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle"),0 ,ev_weight_med, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle"),0 ,ev_weight_med, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,0,ev_weight_med, 0.,4., 4);
+	
+      }
+      if(passtrigcuts_single_pogt){
+	
+	float ev_weight_tight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_loose, PassID(pogtight_loose[0],"MUON_POG_TIGHT"),  PassID(pogtight_loose[1],"MUON_POG_TIGHT"), "pogtight","pogtight",cb_1, cb_2, "ptcorr_eta",0.15,false,true);
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle"),1 ,ev_weight_tight, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle"),1 ,ev_weight_tight, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,1,ev_weight_tight, 0.,4., 4);
+	if(SameCharge(pogtight_loose)&&elColl.size() == 0 && muonColl.size() == 2&& jets.size() > 1){
+	  FillCLHist(sighist_mm, "pastrigcuts_single_pogt", eventbase->GetEvent(),  pogtight_loose, elColl,jets, alljets, ev_weight_tight);
+	}
+      }
+      if(passtrigcuts_single_gent){
+	
+	float ev_weight_gent=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent_loose, PassID(gent_loose[0],"MUON_HNGENT_TIGHT"),  PassID(gent_loose[1],"MUON_HNGENT_TIGHT"), "gent","gent",cb_1, cb_2, "ptcorr_eta",0.1,false,true);  
+	
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle") ,2,ev_weight_gent, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle") ,2,ev_weight_gent, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,2,ev_weight_gent, 0.,4., 4);
+      }
+      if(passtrigcuts_single_hn){
 
-        for(unsigned int ij =0 ; ij < alljets.size() ; ij++){
-          if(gent_loose.at(0).DeltaR(alljets.at(ij)) < 0.5) {
-            if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_1=true;
-	  }
-	  if(gent_loose.at(1).DeltaR(alljets.at(ij)) < 0.5) {
-	    if(alljets.at(ij).IsBTagged(snu::KJet::CSVv2, snu::KJet::Medium)) cb_2=true;
-	  }
-        }
+        float ev_weight_hn=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_loose, PassID(hn_loose[0],"MUON_HN_TIGHT"),  PassID(hn_loose[1],"MUON_HN_TIGHT"), "Tight0.09_0.005_3_0.04","Tight0.09_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.1,false,true);
+
+        if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFsingle") ,3,ev_weight_hn, 0.,4., 4);
+        if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFsingle") ,3,ev_weight_hn, 0.,4., 4);
+        if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFsingle") ,3,ev_weight_hn, 0.,4., 4);
+      }
+      
+      
+      if(passtrigcuts_double_pogm){
+	float ev_weight_med=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_loose, PassID(pogmedium_loose[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_loose[1],"MUON_POG_MEDIUM"), "pogmedium","pogmedium", cb_1, cb_2,"ptcorr_eta",0.25,false,false);
+	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble"),0 ,ev_weight_med, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble"),0 ,ev_weight_med, 0.,4., 4);
+	if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,0,ev_weight_med, 0.,4., 4);
+
+        if(CheckSignalRegion(true,pogmedium_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdoublenoW"),0 ,1., 0.,4., 4);
+	
+      }
+
+      if(passtrigcuts_double_pogt){
+	
+
+	
+	float ev_weight_tight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_loose, PassID(pogtight_loose[0],"MUON_POG_TIGHT"),  PassID(pogtight_loose[1],"MUON_POG_TIGHT"), "pogtight","pogtight",cb_1, cb_2, "ptcorr_eta",0.15,false,false);
+
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble"),1 ,ev_weight_tight, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble"),1 ,ev_weight_tight, 0.,4., 4);
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,1,ev_weight_tight, 0.,4., 4);
+	
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdoublenoW"),1 ,1., 0.,4., 4);
 
 
-	float ev_weight_gent=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent_loose, PassID(gent_loose[0],"MUON_HNGENT_TIGHT"),  PassID(gent_loose[1],"MUON_HNGENT_TIGHT"), "gent",cb_1, cb_2, "ptcorr_eta",0.1,false);  
-	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFPOGTIGHT") ,2,ev_weight_gent, 0., 3., 3);
-        if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFPOGTIGHT") ,2,ev_weight_gent, 0.,3., 3);
-        if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFPOGTIGHT") ,2,ev_weight_gent, 0., 3.,3);
+	if(SameCharge(pogtight_loose) && elColl.size() == 0 &&muonColl.size() == 2&& jets.size() > 1)FillCLHist(sighist_mm, "passtrigcuts_double_pogt", eventbase->GetEvent(),  pogtight_loose, elColl,jets, alljets, ev_weight_tight);
+	if(CheckSignalRegion(true,pogtight_loose,el, jets,alljets,"Low", w)){
+	  FillCLHist(sighist_mm, "passtrigcuts_double_pogt_lowmass", eventbase->GetEvent(), pogtight_loose, elColl,jets, alljets, ev_weight_tight);
+	  snu::KParticle Z = pogtight_loose[0]+pogtight_loose[1];
+          bool pass1=false;
+          bool pass2=false;
+          bool pass3=false;
+          float ct_lt(0.);
+          if(fabs(pogtight_loose[0].Eta()) < 1.5) ct_lt+= pogtight_loose[0].Pt();
+          if(fabs(pogtight_loose[1].Eta()) < 1.5) ct_lt+= pogtight_loose[1].Pt();
 
+          if((Z.Pt() > 5. && Z.Pt() < 25.)) pass1=true;
+          if(pogtight_loose[0].DeltaR(pogtight_loose[1]) > 2.) pass2=true;
+          if(ct_lt < 25) pass3=true;
+          if(pass1&&pass2&&pass3)           FillCLHist(sighist_mm, "passtrigcuts_double_pogt_pa3", eventbase->GetEvent(),  pogtight_loose, elColl,jets, alljets, ev_weight_tight);
+          if(pass1||pass2||pass3)           FillCLHist(sighist_mm, "passtrigcuts_double_pogt_po3", eventbase->GetEvent(),  pogtight_loose, elColl,jets, alljets, ev_weight_tight);
+
+
+	}
+										       
+
+      }
+
+      if(passtrigcuts_double_gent){
+	
+	float ev_weight_gent=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent_loose, PassID(gent_loose[0],"MUON_HNGENT_TIGHT"),  PassID(gent_loose[1],"MUON_HNGENT_TIGHT"), "gent","gent",cb_1, cb_2, "ptcorr_eta",0.1,false,false);
+	
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,2,ev_weight_gent, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,2,ev_weight_gent, 0.,4., 4);
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,2,ev_weight_gent, 0.,4., 4);
+	
+	if(CheckSignalRegion(true,gent_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdoublenoW") ,2,1., 0.,4., 4);
+
+      }
+      if(passtrigcuts_double_hn){
+	
+	if(hn_loose.size() ==2){
+	  float ev_weight_hn=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_loose, PassID(hn_loose[0],"MUON_HN_TIGHT"),  PassID(hn_loose[1],"MUON_HN_TIGHT"), "Tight0.09_0.005_3_0.04","Tight0.09_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.1,false,false);
+	  
+	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,3,ev_weight_hn, 0.,4., 4);
+	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,3,ev_weight_hn, 0.,4., 4);
+	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"High", w))FillHist(("HighIDREFdouble") ,3,ev_weight_hn, 0.,4., 4);
+
+	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdoublenoW") ,3,1., 0.,4., 4);
+	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"Low", w))FillCLHist(sighist_mm, "passtrigcuts_double_hn_lowmass", eventbase->GetEvent(), hn_loose, elColl,jets, alljets,ev_weight_hn);
+	}
       }
     }
   }
-  
-
+      
 
   
 }
-
+	
 
 void HNDiMuonOptimisation::GetTriggEfficiency(){
   //ListTriggersAvailable();                                                                                                                                                                                                                                                                                                                                                      
@@ -344,12 +657,14 @@ void HNDiMuonOptimisation::FillTriggerEfficiency(TString cut, float weight, TStr
 bool HNDiMuonOptimisation::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el,  std::vector<snu::KJet> jets,  std::vector<snu::KJet> alljets, TString name, float w){
 
   bool debug=false;
+  
+  
   if(el.size() > 0) return false ;
   if(muons.size() != 2 ) {if(debug)cout << "Fail el size" << endl; return false ;}
   // Set by trigger
   if(muons.at(0).Pt() < 20.) {if(debug)cout << "Fail pt1 " << endl; return false;}
   if(muons.at(1).Pt() < 10.)  {if(debug)cout << "Fail pt2  " << endl; return false;}
-
+  
   if(isss&&!SameCharge(muons)) {if(debug)cout << "Fail ss " << endl; return false;}
 
   if(!isss&&SameCharge(muons)) {if(debug)cout << "Fail os  " << endl; return false;}
@@ -378,78 +693,108 @@ bool HNDiMuonOptimisation::CheckSignalRegion( bool isss,  std::vector<snu::KMuon
     }
   }
   snu::KParticle jj = jets.at(m) + jets.at(n) ;
-
-  if(name.Contains("Low")){
-    if(jj.M() > 150.) {if(debug)cout << "Fail mjj  " << endl; return false;}
-  }
   
+  float dPhi = fabs(TVector2::Phi_mpi_pi(jets[m].Phi() - jets[n].Phi()));
+  float contramass=2*jets[m].Pt()*jets[n].Pt()*(1+cos(dPhi));
+  contramass=sqrt(contramass);
+  
+  if(name.Contains("Low")){
+    if(contramass > 100) return false;
+    if((jets[0]+jets[1]).M() > 200.) return false;
+    if((jets[0] + muons[0] + muons[1]).M() > 250.)  return false;
+  }
   else{
     if(jj.M() > 120.) {if(debug)cout << "Fail mjj  " << endl; return false;}
     if(jj.M() < 50.) {if(debug)cout << "Fail mjj  " << endl; return false;}
-
+    
   }
   
   if(name.Contains("Low")){
     if(muons.at(0).DeltaR(muons.at(1)) > 3.5) {if(debug)cout << "Fail dr  " << endl; return false;}
   }
-
+  
   float ST = muons[0].Pt() + muons[1].Pt();
   float looseST = muons[0].Pt() + muons[1].Pt();
 
   std::vector<snu::KJet> loosejets=GetJets("JET_NOCUT");
   
-
+  
   float HT=0.;
+  for(unsigned int ij=0; ij <alljets.size(); ij++){
+    ST+= alljets[ij].Pt();
+
+  }
   for(unsigned int ij=0; ij <jets.size(); ij++){
-    ST+= jets[ij].Pt();
+
     HT+= jets[ij].Pt();
-
-  }
-  for(unsigned int ij=0; ij <loosejets.size(); ij++){
-    looseST+= loosejets[ij].Pt();
-  }
-
-  if(!name.Contains("Low")){
     
-    if((pow(eventbase->GetEvent().PFMET(),2.)/ looseST) > 10.) {if(debug)cout << "Fail met  " << endl; return false;}
+  }
+
+  float LT = muons[0].Pt() + muons[1].Pt();
+  if(name.Contains("Low")){
+    
+    if((pow(eventbase->GetEvent().PFMET(),2.)/ ST) > 15.) {if(debug)cout << "Fail met  " << endl; return false;}
+    if(eventbase->GetEvent().PFMET() > 80) return false;
+  }
+  else if(name.Contains("High")){
+    if((pow(eventbase->GetEvent().PFMET(),2.)/ ST) > 8.) {if(debug)cout << "Fail met  " << endl; return false;}
   }
   else{
-    if(eventbase->GetEvent().PFMET() > 60) return false;
-  }
+    if((pow(eventbase->GetEvent().PFMET(),2.)/ ST) > 12.5) {if(debug)cout << "Fail met  " << endl; return false;}
+    if(eventbase->GetEvent().PFMET() > 80) return false;
 
-  if(name.Contains("Low")){
-    if(HT >  200.) return false;
   }
+  
+
   float dphi_1 = fabs(TVector2::Phi_mpi_pi(muons.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet)));
   float MT_1 = sqrt(2.* muons.at(0).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi_1)));
-
+  
   float dphi_2 = fabs(TVector2::Phi_mpi_pi(muons.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet)));
   float MT_2 = sqrt(2.* muons.at(1).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi_2)));
-
+  
   if(name.Contains("Low")){
     if(MT_1 > 100.) return false;
-    if(MT_2 > 80.) return false;
-    if(ST > 350.)  return false;
+    if(MT_2 > 100.) return false;
+    if(ST > 450.)  return false;
     snu::KParticle lljj = jets.at(m) + jets.at(n) + muons.at(0) + muons.at(1);
-    if(lljj.M() > 300.) return false;
-
+    //if(lljj.M() > 300.) return false;
+    
   }
-  else{
+  else   if(name.Contains("High")){
     snu::KParticle lljj = jets.at(m) + jets.at(n) + muons.at(0) + muons.at(1);
-    if(jets.size() > 3){
-      snu::KParticle lljjjj = jets.at(0) + jets.at(1) + jets.at(2)+jets.at(3) + muons.at(0) + muons.at(1);
-      if (lljjjj.M() > 1000.) return false;
-    }
-    if(ST < 200.)  return false;
+
+    if(ST < 400.)  return false;
     if(lljj.M() < 200.) return false;
     if(muons.at(0).Pt() < 50.) return false;
     if(muons.at(1).Pt() < 25.) return false;
-    if((muons.at(0).Pt() + muons.at(1).Pt() ) < 100.) return false;
-
   }
+  else{
+    
+    if(LT/HT < 0.2)  return false;
+    if(LT < 35)  return false;
+    if(HT < 35)  return false;
 
+    float dRmj=-999.;
+    float ratiomj=0.;
+    for(unsigned int im=0; im <muons.size(); im++){
+      for(unsigned int ij2=0; ij2 <jets.size(); ij2++){
+        if(muons.at(im).DeltaR(jets.at(ij2)) >  0.5){
+	  if(muons.at(im).DeltaR(jets.at(ij2)) > dRmj){
+	    dRmj=muons.at(im).DeltaR(jets.at(ij2)) ;
+	    if(im==0) ratiomj = jets.at(ij2).Pt() / muons[im].Pt();
+	  }
+	}
+      }
+    }
+    if(ratiomj > 3.) return false;
+    if(dRmj > 4.5) return false;
+    
+    if(muons[0].DeltaR(muons[1]) > 4.) return false;
+    
+  }
+  
   if(name.Contains("High")){
-    if((muons.at(0).Pt() + muons.at(1).Pt() ) < 150.) return false;
+    if((muons.at(0).Pt() + muons.at(1).Pt() ) < 50.) return false;
     if (ST < 400. ) return false;
 
     float mindRjj=999.;
@@ -469,7 +814,6 @@ bool HNDiMuonOptimisation::CheckSignalRegion( bool isss,  std::vector<snu::KMuon
   
   if(debug)cout << "PASSES ID" << endl;
   return true;
-
 }
 
 bool HNDiMuonOptimisation::CheckSignalRegionNN( bool isss,  std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, TString name, float w){
