@@ -25,25 +25,25 @@ bool CheckHist(TH2* h);
 void MakeFRRootFile(TString file, TString tag);
 
 void MakeFRRootFile(){
-  //MakeFRRootFile("SingleMuon","iso");
+  MakeFRRootFile("SingleMuon","iso");
   MakeFRRootFile("DoubleMuon","");
 }
 
 
 void MakeFRRootFile(TString file, TString tag){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/FakeRateCalculator_Mu/periodBtoH/";
+  TString path= "/afs/cern.ch/work/j/jalmond/CAT/FakeRateCalculator_Mu/periodBtoH/";
   
-  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_pog.root");
-  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7_pog.root");
+  TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
+  TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7.root");
   
   if(!fdata)cout << "No Data" << endl;
   if (!fmc) cout << "No MC" << endl;
-  cout << "Data File = : " << path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_pog.root" << endl;
+  cout << "Data File = : " << path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root" << endl;
 
   cout << "List of keys in file:" << endl;
 
-  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7_pog.root");
+  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
   
   /// Set Plotting style
   setTDRStyle();
@@ -70,8 +70,8 @@ void MakeFRRootFile(TString file, TString tag){
   fakes40.push_back("40_ptcorr_eta_ncb_t");
 
   std::vector<TString> isocut;
-  isocut.push_back(tag+"POGMEDIUMdijet_pogmedium");
-  isocut.push_back(tag+"POGTIGHTdijet_pogtight");
+  isocut.push_back("POGMEDIUM"+tag+"dijet_pogmedium");
+  isocut.push_back("POGTIGHT"+tag+"dijet_pogtight");
     
 
 
