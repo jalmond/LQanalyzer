@@ -691,7 +691,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
    
 
    
-  if(muons.size()>=2){
+  if(muons.size()==2){
     
     if( jets.size()>=1) Fill("h_lljmass", (muons[0] + muons[1]+jets[0]).M(),weight);
     if(jets.size()>1){

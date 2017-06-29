@@ -1572,7 +1572,7 @@ done
 
 #declare -a streams=("")
 declare -a data_periods=("")
-declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon")
+declare -a ALL=("DoubleMuon" "DoubleEG" "MuonEG" "SinglePhoton" "SingleElectron" "SingleMuon" "DoubleMuon_CF")
 
 
 if [[ $job_data_lumi == "ALL" ]];
@@ -1791,6 +1791,13 @@ if [[ $submit_sampletag  == "DoubleMuon" ]];
     then
     runDATA=true
 fi
+
+declare -a DoubleMuon_CF=("DoubleMuon_CF")
+if [[ $submit_sampletag  == "DoubleMuon_CF" ]];
+    then
+    runDATA=true
+fi
+
 
 declare -a MuonEG=("MuonEG")
 if [[ $submit_sampletag  == "MuonEG" ]];
