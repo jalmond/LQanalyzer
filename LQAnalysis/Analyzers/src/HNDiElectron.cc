@@ -173,7 +173,6 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   if(isData) FillHist("MET_PFMet_cleaned" , eventbase->GetEvent().PFMET(), weight,  0. , 10000., 1000);                                                                                                                                                                          
   MakeValidationPlots(weight);
   
-  return;
   if(functionality == HNDiElectron::VALIDATION) {
     MakeControlPlots(1,"",weight); /// Uses all MC events (no truth matching)
     MakeControlPlots(2,"truthmatched_",weight); //// removes fake leptons but keeps
@@ -257,11 +256,11 @@ void HNDiElectron::MakeValidationPlots(float w){
       gent=  GetMuons("MUON_HNGENT_LOOSE",false);
       pogtight_tight = GetMuons("MUON_HN_LOOSE",false);
       pogmedium_tight = GetMuons("MUON_HN_LOOSE",false);
-      if(SameCharge(gent))wg = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent, PassID(gent[0],"MUON_HNGENT_TIGHT"),  PassID(gent[1],"MUON_HNGENT_TIGHT"), "gent","gent",false, false, "ptcorr_eta",0.1,false, false);
+      if(SameCharge(gent))wg = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent, PassID(gent[0],"MUON_HNGENT_TIGHT"),  PassID(gent[1],"MUON_HNGENT_TIGHT"), "gent","gent",false, false, "ptcorr_eta",0.1,0.1,false, false);
       else wg=0.;
-      if(SameCharge(pogmedium_tight))wm = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_tight, PassID(pogmedium_tight[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_tight[1],"MUON_POG_MEDIUM"),"pogmedium",  "pogmedium", false, false ,"ptcorr_eta",0.25,false,false);
+      if(SameCharge(pogmedium_tight))wm = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_tight, PassID(pogmedium_tight[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_tight[1],"MUON_POG_MEDIUM"),"pogmedium",  "pogmedium", false, false ,"ptcorr_eta",0.25,0.25,false,false);
       else wm = 0.;
-      if(SameCharge(pogtight_tight)) wt = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_tight, PassID(pogtight_tight[0],"MUON_POG_TIGHT"),  PassID(pogtight_tight[1],"MUON_POG_TIGHT"), "pogtight","pogtight", false, false, "ptcorr_eta",0.15,false,false);
+      if(SameCharge(pogtight_tight)) wt = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_tight, PassID(pogtight_tight[0],"MUON_POG_TIGHT"),  PassID(pogtight_tight[1],"MUON_POG_TIGHT"), "pogtight","pogtight", false, false, "ptcorr_eta",0.15,0.15,false,false);
       else wt=0.;
       
       
@@ -1613,6 +1612,7 @@ void HNDiElectron::FillByTriggerTrigger(int iel_trig, TString ID,int method, TSt
 	    
 	  }
 	  FillCLHist(sighist_ee, methodtag+"SSDiElectron", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);
+	  FillCLHist(sighist_ee, methodtag+"SSDiElectron_noW", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, 1.);
 	  
 
 	  if(jets.size() > 1)FillCLHist(sighist_ee, methodtag+"SSDiElJet", eventbase->GetEvent(), muonVetoColl,electronTightColl,jets, ev_weight);

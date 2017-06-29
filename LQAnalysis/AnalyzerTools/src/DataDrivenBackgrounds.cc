@@ -289,7 +289,7 @@
  }
 
 
-float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons, bool tight1, bool tight2, TString ID1,TString ID2, bool cl1, bool cl2, TString method,float iso, bool useclosej, bool singletrig){
+float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KMuon> k_muons, bool tight1, bool tight2, TString ID1,TString ID2, bool cl1, bool cl2, TString method,float iso1, float iso2, bool useclosej, bool singletrig){
   
   float mm_weight = 0.;
   
@@ -299,8 +299,8 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_MM(bool geterr, vector<snu::KM
 
      vector<TLorentzVector> muons=MakeTLorentz(k_muons);
 
-     float pt_corr1 = muons.at(0).Pt()*(1+max(0.,(k_muons.at(0).RelIso04()-iso))) ; /// will need changing for systematics                                                                                                                
-     float pt_corr2 = muons.at(1).Pt()*(1+max(0.,(k_muons.at(1).RelIso04()-iso))) ; /// will need changing for systematics                                                                                                       
+     float pt_corr1 = muons.at(0).Pt()*(1+max(0.,(k_muons.at(0).RelIso04()-iso1))) ; /// will need changing for systematics                                                                                                                
+     float pt_corr2 = muons.at(1).Pt()*(1+max(0.,(k_muons.at(1).RelIso04()-iso2))) ; /// will need changing for systematics                                                                                                       
      if(!singletrig)mm_weight =m_fakeobj->get_dilepton_mm_eventweight("dijet",geterr, muons, is_mu1_tight,is_mu2_tight, ID1,ID2, cl1, cl2,method,  pt_corr1,pt_corr2,useclosej);
      else mm_weight =m_fakeobj->get_dilepton_mm_eventweight("isodijet",geterr, muons, is_mu1_tight,is_mu2_tight, ID1,ID2, cl1, cl2,method,  pt_corr1,pt_corr2,useclosej);
 

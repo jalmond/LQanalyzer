@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus066.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus080.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -534,11 +534,10 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   legendH->SetTextSize(0.02);
   vector<TString> legorder;
 
-legorder.push_back("Top");
-legorder.push_back("W+Jets");
-legorder.push_back("DY");
-legorder.push_back("QCD");
-legorder.push_back("qcdbc");
+legorder.push_back("Misid. Lepton Background");
+legorder.push_back("Higgs");
+legorder.push_back("Diboson");
+legorder.push_back("Triboson");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -608,23 +607,20 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
 
-if(sample.Contains("top")){    list.push_back(make_pair("TT_powheg",0.2));
-}if(sample.Contains("wjet")){    list.push_back(make_pair("WJets",0.2));
-}if(sample.Contains("DY")){    list.push_back(make_pair("DYJets",0.15));
-}if(sample.Contains("QCD")){    list.push_back(make_pair("QCD_DoubleEMEnriched_30-40_mgg80toinf",0.4));
-    list.push_back(make_pair("QCD_DoubleEMEnriched_30-inf_mgg40to80",0.4));
-    list.push_back(make_pair("QCD_Pt-20to30_EMEnriched",0.4));
-    list.push_back(make_pair("QCD_Pt-30to50_EMEnriched",0.4));
-    list.push_back(make_pair("QCD_Pt-50to80_EMEnriched",0.4));
-    list.push_back(make_pair("QCD_Pt-80to120_EMEnriched",0.4));
-    list.push_back(make_pair("QCD_Pt-120to170_EMEnriched",0.4));
-    list.push_back(make_pair("QCD_Pt-170to300_EMEnriched",0.4));
-}if(sample.Contains("qcdbc")){    list.push_back(make_pair("qcd_15to20_bctoe",0.4));
-    list.push_back(make_pair("qcd_20to30_bctoe",0.4));
-    list.push_back(make_pair("qcd_30to80_bctoe",0.4));
-    list.push_back(make_pair("qcd_80to170_bctoe",0.4));
-    list.push_back(make_pair("qcd_170to250_bctoe",0.4));
-    list.push_back(make_pair("qcd_250toinf_bctoe",0.4));
+if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("DoubleMuon_SKnonprompt",0.3));
+}if(sample.Contains("Higgs")){    list.push_back(make_pair("ggHtoZZ",0.2));
+}if(sample.Contains("diboson")){    list.push_back(make_pair("ZZTo4L_powheg",0.20));
+    list.push_back(make_pair("WZTo3LNu_powheg",0.20));
+    list.push_back(make_pair("ggZZto4mu",0.20));
+    list.push_back(make_pair("WpWpQCD",0.15));
+    list.push_back(make_pair("WpWpEWK",0.15));
+    list.push_back(make_pair("ww_ds",0.15));
+    list.push_back(make_pair("ZGto2LG",0.15));
+    list.push_back(make_pair("WGtoLNuG",0.15));
+}if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.3));
+    list.push_back(make_pair("ZZZ",0.3));
+    list.push_back(make_pair("WWZ",0.3));
+    list.push_back(make_pair("WZZ",0.3));
 }  
 
 
@@ -665,7 +661,7 @@ THStack* MakeStack(vector<pair<pair<vector<pair<TString,float> >, int >, TString
     if(type.Contains("Nominal")) fileloc = mcloc;
         
     if(!type.Contains("Nominal")) {
-      if(it->first.first.at(0).first.Contains("DoubleEG_SKnonprompt"))fileloc=mcloc;
+      if(it->first.first.at(0).first.Contains("DoubleMuon_SKnonprompt"))fileloc=mcloc;
     }    
     
     CheckSamples( it->first.first.size() );
@@ -833,6 +829,25 @@ TH1* MakeSumHist(THStack* thestack){
   return hsum;
 }
 
+TH1* MakeSumHist3(THStack* thestack){
+
+  TH1* hsum=0;
+  TList* list = thestack->GetHists();
+  TIter it(list, true);
+  TObject* obj=0;
+  while( (obj = it.Next()) ) {
+    TH1* h = dynamic_cast<TH1*>(obj);
+
+    if(!hsum) hsum = (TH1*)h->Clone( (string(h->GetName()) + "_bind").c_str() );
+    else {
+      hsum->Add(h, 1.0);
+    }
+  }//hist loop                                                                                                                                                                                                                                              
+
+  return hsum;
+}
+
+
 
 void SetErrors(TH1* hist, float normerr, bool includestaterr ){
 
@@ -880,6 +895,40 @@ if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
 if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
 if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
 if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
+if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
+if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
+if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
+if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV/c^{2})";
+if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})";
+if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
+if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
+if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
+if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
+if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
+if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
+if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
+if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
+if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
+if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
+if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
+if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV/c^{2})";
+if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})";
+if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
+if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
+if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
+if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
+if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
+if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
+if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
+if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
+if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
+if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
+if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
+if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV/c^{2})";
+if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV/c^{2})";
+if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})";
 
 
 
@@ -949,7 +998,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax, fl
     }
   }
   
-  if(name.find("llmass")!=string::npos) yscale*=1.3;
+  if(name.find("llmass")!=string::npos) yscale*=0.2;
   
   if(ylog){
     float scale_for_log=1.;
@@ -990,7 +1039,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax, fl
   if(name.find("bTag")!=string::npos) yscale*=2.5;
   if(name.find("emujj")!=string::npos) yscale*=1.3;
   if(name.find("dijetmass")!=string::npos) yscale*=1.5;
-  if(name.find("LeptonPt")!=string::npos) yscale*=0.7;
+  if(name.find("LeptonPt")!=string::npos) yscale*=0.2;
   if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
   
   
@@ -1194,7 +1243,7 @@ float GetSyst(TString cut, TString syst, pair<vector<pair<TString,float> >,TStri
 
 float Calculate(TString cut, TString variance, pair<vector<pair<TString,float> >,TString > samples ){
   
-  if(samples.second.Contains("DoubleEG_SKnonprompt")){
+  if(samples.second.Contains("DoubleMuon_SKnonprompt")){
     if(variance.Contains("Normal"))  return GetTotal(cut,samples.first) ;  
     if(variance.Contains("StatErr")) return GetStatError(cut,samples.first) ;  
   }
@@ -1286,24 +1335,24 @@ void SetUpMasterConfig(string name){
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label){
   
   /// Setup list of samples: grouped into different processes 
-vector<pair<TString,float> >  top = InitSample(" top"); 
-vector<pair<TString,float> >  wjet = InitSample(" wjet"); 
-vector<pair<TString,float> >  DY = InitSample(" DY"); 
-vector<pair<TString,float> >  QCD = InitSample(" QCD"); 
-vector<pair<TString,float> >  qcdbc = InitSample(" qcdbc"); 
+/// NP is nonprompt 
+vector<pair<TString,float> > np;
+np.push_back(make_pair("DoubleMuon_SKnonprompt",0.34));
+vector<pair<TString,float> >  Higgs = InitSample(" Higgs"); 
+vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
+vector<pair<TString,float> >  triv = InitSample(" triv"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
-   if(listofsamples.at(i) =="wjet")samples.push_back(make_pair(make_pair(wjet,kGreen),"W+Jets"));
-   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kYellow),"DY"));
-   if(listofsamples.at(i) =="QCD")samples.push_back(make_pair(make_pair(QCD,kCyan),"QCD"));
-   if(listofsamples.at(i) =="qcdbc")samples.push_back(make_pair(make_pair(qcdbc,-2),"qcdbc"));
+   if(listofsamples.at(i) =="DoubleMuon_SKnonprompt")samples.push_back(make_pair(make_pair(np,870),"Misid. Lepton Background"));
+   if(listofsamples.at(i) =="Higgs")samples.push_back(make_pair(make_pair(Higgs,kPink),"Higgs"));
+   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,kGreen),"Diboson"));
+   if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring+2),"Triboson"));
 
   }
 
   ///// Fix cut flow code
-caption=" Number of events with two opposite sign electrons (POG tight) with Z peak removed.";
+caption=" Number of events with two opposite sign muons.";
 
   hist = "/h_Nelectrons";
   columnname="";
@@ -1359,8 +1408,8 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   if(!TString(hname).Contains("Tri")) {
     //if(!TString(hname).Contains("SSE")) {
       
-    if(TString(hname).Contains("llmass") && ! TString(hname).Contains("lllmass") ){canvas_log->SetLogy();canvas->SetLogy();}
-      if(TString(hname).Contains("LeptonPt")){canvas_log->SetLogy();canvas->SetLogy();}
+    //if(TString(hname).Contains("llmass") && ! TString(hname).Contains("lllmass") ){canvas_log->SetLogy();canvas->SetLogy();}
+    //if(TString(hname).Contains("LeptonPt")){canvas_log->SetLogy();canvas->SetLogy();}
       //}
   }
   
@@ -1378,7 +1427,9 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   
   // draw data hist to get axis settings
   hdata->GetYaxis()->SetTitleOffset(1.4);
+  if(!showdata)hdata = h_nominal;
   hdata->Draw("p9hist");
+
   TLatex label;
   label.SetTextSize(0.04);
   label.SetTextColor(2);
@@ -1783,8 +1834,8 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
   latex.SetTextSize(lumiTextSize*t);
   latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
 
-  if(iPosX==2)  latex.DrawLatex(1-r-0.22,1-t+lumiTextOffset*t, "ee ch.,");
-  else  latex.DrawLatex(1-r-0.4,1-t+lumiTextOffset*t, "ee ch.,");
+  if(iPosX==2)  latex.DrawLatex(1-r-0.22,1-t+lumiTextOffset*t, "#mu#mu ch.,");
+  else  latex.DrawLatex(1-r-0.4,1-t+lumiTextOffset*t, "#mu#mu ch.,");
 
   
 

@@ -1047,14 +1047,14 @@ void AnalyzerCore::SetupSelectionMuon(std::string path_sel){
 	  continue;
 	}
 
-	if (x > 10 && x < 16){
+	if (x > 12 && x < 18){
 	  is >> tmp;
 	  string_muonsel.push_back(make_pair(cutnames.at(x),tmp) );
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
 
 	}
 	else if ( x ==1) {is >> idlabel;cout << "idlabel=" << idlabel << endl;}
-	else if (x > 26 && x < 28){
+	else if (x > 30 && x < 32){
           is >> tmp;
           string_muonsel.push_back(make_pair(cutnames.at(x),tmp) );
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
@@ -1133,18 +1133,18 @@ void AnalyzerCore::SetupSelectionElectron(std::string path_sel){
           continue;
         }
 
-        if (x > 12 && x < 20){
+        if (x > 10 && x < 18){
           is >> tmp;
 	  cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
 
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 28 && x < 32){
+	else  if (x > 26 && x < 30){
           is >> tmp;
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );
         }
-	else  if (x > 38 && x < 50){
+	else  if (x > 34 && x < 46){
           is >> tmp;
           cout << "Setup: string " << cutnames.at(x) << " = " <<tmp << endl;
           string_elsel.push_back(make_pair(cutnames.at(x),tmp) );

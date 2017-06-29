@@ -198,13 +198,13 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_bTag"]                   = SetupHist("h_bTag_"              + name,"bTag discrimant",100,-1,3);
   map_sig["h_Njets"]                  = SetupHist("h_Njets_"             + name,"number of jets",10,0,10);
   map_sig["h_Nfatjets"]                  = SetupHist("h_Nfatjets_"             + name,"number of jets",10,0,10);
-  map_sig["h_Nbjets_l"]                 = SetupHist("h_Nbjets_l"            + name,"number of b jets",5,0,5);
-  map_sig["h_Nbjets_m"]                 = SetupHist("h_Nbjets_m"            + name,"number of b jets",5,0,5);
-  map_sig["h_Nbjets_t"]                 = SetupHist("h_Nbjets_t"            + name,"number of b jets",5,0,5);
+  map_sig["h_Nbjets_l"]                 = SetupHist("h_Nbjets_l_"            + name,"number of b jets",5,0,5);
+  map_sig["h_Nbjets_m"]                 = SetupHist("h_Nbjets_m_"            + name,"number of b jets",5,0,5);
+  map_sig["h_Nbjets_t"]                 = SetupHist("h_Nbjets_t_"            + name,"number of b jets",5,0,5);
 
-  map_sig["h_Nbjets_all_l"]                 = SetupHist("h_Nbjets_all_l"            + name,"number of b jets",5,0,5);
-  map_sig["h_Nbjets_all_m"]                 = SetupHist("h_Nbjets_all_m"            + name,"number of b jets",5,0,5);
-  map_sig["h_Nbjets_all_t"]                 = SetupHist("h_Nbjets_all_t"            + name,"number of b jets",5,0,5);
+  map_sig["h_Nbjets_all_l"]                 = SetupHist("h_Nbjets_all_l_"            + name,"number of b jets",5,0,5);
+  map_sig["h_Nbjets_all_m"]                 = SetupHist("h_Nbjets_all_m_"            + name,"number of b jets",5,0,5);
+  map_sig["h_Nbjets_all_t"]                 = SetupHist("h_Nbjets_all_t_"            + name,"number of b jets",5,0,5);
 
   map_sig["h_lep_jet_dphi"]           =      SetupHist("h_lep_jet_dphi_"            + name,"dphi lepton jets", 50, 0., 5.);
   map_sig["h_leading_jets_eta"]               = SetupHist("h_leading_jets_eta_"          + name,"#eta distribution of the two leading_jets",120,-5,5);

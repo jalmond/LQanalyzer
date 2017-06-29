@@ -1,2 +1,2 @@
-POGTIGHT_LT
+SSMM_HighMass
 END

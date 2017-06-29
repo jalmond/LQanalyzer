@@ -1300,6 +1300,8 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
     _mu1_pt=ptcorr1;
     _mu2_pt=ptcorr2;
     
+    if(_mu1_pt < 15.) _mu1_pt = 10.;
+    if(_mu2_pt < 15.) _mu2_pt = 10.;
   }
   else{
     _mu1_pt=muons.at(0).Pt();
@@ -1324,7 +1326,8 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
     
     fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, iID1);
     fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, iID2);
-  
+    
+   
     float ev_weight = CalculateDiLepMMWeight(r1,fr1,r2,fr2, isT1,isT2);
     
     return ev_weight;
@@ -1441,6 +1444,8 @@ float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVect
       }
       //==== Dijet topology Method
       else{
+	if(fabs(lep_eta.at(i)) < 1.5) muid = "_muon_ptcorr_eta_SNUdijet_Tight0.07_0.005_3_0.04";
+	else muid="_muon_ptcorr_eta_SNUdijet_Tight0.06_0.005_3_0.06";
         fr.push_back( getFakeRate_muon(0, lep_pt.at(i), lep_eta.at(i), muid) );
         pr.push_back( getEfficiency_muon(0, lep_pt.at(i), lep_eta.at(i)) );
         fr_err.push_back( getFakeRate_muon(1, lep_pt.at(i), lep_eta.at(i), muid) );
