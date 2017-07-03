@@ -58,19 +58,13 @@ void HNDiElectron::InitialiseAnalysis() throw( LQError ) {
    MakeCleverHistograms(sighist_ee, "LowMassEE_HNV1");
    MakeCleverHistograms(sighist_ee, "LowMassEE_HN");
    MakeCleverHistograms(sighist_ee, "LowMassEE_HN2");
-   MakeCleverHistograms(sighist_ee, "LowMassEE_HN3");
-   MakeCleverHistograms(sighist_ee, "LowMassEE_HN4");
-   MakeCleverHistograms(sighist_ee, "LowMassEE_HN5");
    MakeCleverHistograms(sighist_ee, "LowMassEE_GENT");
    MakeCleverHistograms(sighist_ee, "LowMassEE_HN_LT");
    MakeCleverHistograms(sighist_ee, "LowMassEE_MVA");
    MakeCleverHistograms(sighist_ee, "HighMassEE_HNV1");
    MakeCleverHistograms(sighist_ee, "HighMassEE_HN");
    MakeCleverHistograms(sighist_ee, "HighMassEE_HN2");
-   MakeCleverHistograms(sighist_ee, "HighMassEE_HN3");
-   MakeCleverHistograms(sighist_ee, "HighMassEE_HN4");
-   MakeCleverHistograms(sighist_ee, "HighMassEE_HN5");
-   MakeCleverHistograms(sighist_ee, "HighMassEE_HN_LT");
+
    MakeCleverHistograms(sighist_ee, "HighMassEE_GENT");
    MakeCleverHistograms(sighist_ee, "HighMassEE_MVA");
 
@@ -195,7 +189,8 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",false);
   std::vector<snu::KElectron> electrons_veto = GetElectrons(true,true,"ELECTRON_HN_VETO");
 
-  std::vector<snu::KElectron> electrons_hn=GetElectrons(true,true,"ELECTRON_HN_TIGHT");
+  std::vector<snu::KElectron> electrons_hn1=GetElectrons(true,true,"ELECTRON_HN_TIGHT");
+  std::vector<snu::KElectron> electrons_hn2=GetElectrons(true,true,"ELECTRON_HN_TIGHTv4");
   std::vector<snu::KElectron> electrons_gent=GetElectrons(true,true,"ELECTRON_GENT_TIGHT");
   std::vector<snu::KElectron> electrons_mva=GetElectrons(true,true,"ELECTRON_MVA_TIGHT");
   std::vector<snu::KJet> jets =  GetJets("JET_HN");
@@ -203,235 +198,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KFatJet> fatjets = GetFatJets("FATJET_HN");
   std::vector<snu::KJet> hnjets = GetJetsWFT("JET_HN","FATJET_HN");             
 
-  std::vector<snu::KElectron> electrons_hn1;
-  std::vector<snu::KElectron> electrons_hn2;
-  std::vector<snu::KElectron> electrons_hn3;
-  std::vector<snu::KElectron> electrons_hn4;
-  std::vector<snu::KElectron> electrons_hn5;
-  std::vector<snu::KElectron> electrons_hn6;
-  std::vector<snu::KElectron> electrons_hn7;
-  std::vector<snu::KElectron> electrons_hn8;
-  std::vector<snu::KElectron> electrons_hn9;
-  std::vector<snu::KElectron> electrons_hn10;
-  std::vector<snu::KElectron> electrons_hn11;
-  std::vector<snu::KElectron> electrons_hn12;
-    std::vector<snu::KElectron> electrons_hn13;
-  std::vector<snu::KElectron> electrons_hn14;
-  std::vector<snu::KElectron> electrons_hn15;
-  std::vector<snu::KElectron> electrons_hn16;
-  std::vector<snu::KElectron> electrons_hn17;
-  std::vector<snu::KElectron> electrons_hn18;
-  std::vector<snu::KElectron> electrons_hn19;
-  std::vector<snu::KElectron> electrons_hn20;
-  std::vector<snu::KElectron> electrons_hn21;
-  std::vector<snu::KElectron> electrons_hn22;
-  std::vector<snu::KElectron> electrons_hn23;
-  std::vector<snu::KElectron> electrons_hn24;
-  std::vector<snu::KElectron> electrons_hn25;
-  std::vector<snu::KElectron> electrons_hn26;
-  std::vector<snu::KElectron> electrons_hn27;
-  std::vector<snu::KElectron> electrons_hn28;
-  std::vector<snu::KElectron> electrons_hn29;;
-  std::vector<snu::KElectron> electrons_hn30;;
-  std::vector<snu::KElectron> electrons_hn31;;
-  std::vector<snu::KElectron> electrons_hn32;;
-  std::vector<snu::KElectron> electrons_hn33;;
-
-
-  for(unsigned int iel=0; iel < electrons_hn.size(); iel++){
-    if(fabs(electrons_hn[iel].dxy()) < 0.01){
-      if(fabs(electrons_hn[iel].dz()) < 0.04) {
-	float reliso =  electrons_hn[iel].PFRelIso(0.3);
-	
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){ 
-	  if(reliso < 0.08)             electrons_hn2.push_back(electrons_hn[iel]); 
-	  if(reliso < 0.07)             electrons_hn3.push_back(electrons_hn[iel]); 
-	  if(reliso < 0.06)             electrons_hn4.push_back(electrons_hn[iel]); 
-	  if(reliso < 0.05)             electrons_hn5.push_back(electrons_hn[iel]); 
-	}
-	else {
-	  electrons_hn2.push_back(electrons_hn[iel]);
-	  electrons_hn3.push_back(electrons_hn[iel]);
-	  electrons_hn4.push_back(electrons_hn[iel]);
-	  electrons_hn5.push_back(electrons_hn[iel]);
-	}
-	
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){
-          if(reliso < 0.08)             electrons_hn6.push_back(electrons_hn[iel]);
-          if(reliso < 0.07)             electrons_hn7.push_back(electrons_hn[iel]);
-          if(reliso < 0.06)             electrons_hn8.push_back(electrons_hn[iel]);
-          if(reliso < 0.05)             electrons_hn9.push_back(electrons_hn[iel]);
-        }
-	else {
-          if(reliso < 0.09) {
-	    electrons_hn6.push_back(electrons_hn[iel]);
-	    electrons_hn7.push_back(electrons_hn[iel]);
-	    electrons_hn8.push_back(electrons_hn[iel]);
-	    electrons_hn9.push_back(electrons_hn[iel]);
-	  }
-	}
-	
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){
-          if(reliso < 0.08)             electrons_hn10.push_back(electrons_hn[iel]);
-          if(reliso < 0.07)             electrons_hn11.push_back(electrons_hn[iel]);
-          if(reliso < 0.06)             electrons_hn12.push_back(electrons_hn[iel]);
-          if(reliso < 0.05)             electrons_hn13.push_back(electrons_hn[iel]);
-        }
-        else {
-          if(reliso < 0.08) {
-            electrons_hn10.push_back(electrons_hn[iel]);
-            electrons_hn11.push_back(electrons_hn[iel]);
-            electrons_hn12.push_back(electrons_hn[iel]);
-            electrons_hn13.push_back(electrons_hn[iel]);
-          }
-	}
-	
-
-
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){
-          if(reliso < 0.08)             electrons_hn14.push_back(electrons_hn[iel]);
-          if(reliso < 0.07)             electrons_hn15.push_back(electrons_hn[iel]);
-          if(reliso < 0.06)             electrons_hn16.push_back(electrons_hn[iel]);
-          if(reliso < 0.05)             electrons_hn17.push_back(electrons_hn[iel]);
-        }
-        else {
-          if(reliso < 0.07) {
-            electrons_hn14.push_back(electrons_hn[iel]);
-            electrons_hn15.push_back(electrons_hn[iel]);
-            electrons_hn16.push_back(electrons_hn[iel]);
-            electrons_hn17.push_back(electrons_hn[iel]);
-          }
-	}
-	
-
-
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){
-          if(reliso < 0.08)             electrons_hn18.push_back(electrons_hn[iel]);
-          if(reliso < 0.07)             electrons_hn19.push_back(electrons_hn[iel]);
-          if(reliso < 0.06)             electrons_hn20.push_back(electrons_hn[iel]);
-          if(reliso < 0.05)             electrons_hn21.push_back(electrons_hn[iel]);
-        }
-        else {
-          if(reliso < 0.06) {
-            electrons_hn18.push_back(electrons_hn[iel]);
-            electrons_hn19.push_back(electrons_hn[iel]);
-            electrons_hn20.push_back(electrons_hn[iel]);
-            electrons_hn21.push_back(electrons_hn[iel]);
-          }
-	}
-	
-
-
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){
-          if(reliso < 0.08)             electrons_hn22.push_back(electrons_hn[iel]);
-          if(reliso < 0.07)             electrons_hn23.push_back(electrons_hn[iel]);
-          if(reliso < 0.06)             electrons_hn24.push_back(electrons_hn[iel]);
-          if(reliso < 0.05)             electrons_hn25.push_back(electrons_hn[iel]);
-        }
-        else {
-          if(reliso < 0.05) {
-            electrons_hn22.push_back(electrons_hn[iel]);
-            electrons_hn23.push_back(electrons_hn[iel]);
-            electrons_hn24.push_back(electrons_hn[iel]);
-            electrons_hn25.push_back(electrons_hn[iel]);
-          }
-	}
-	
-
-
-
-	
-	/// TIGHT MVA                                                                                                                                                                                                                                                   
-	// mvaCategoriesMapName = mvaCategoriesMapName, # map with category index for all particles                                                                                                                                                                     
-	//cutCategory0 =  0.940962684155, # EB1	
-	//cutCategory1 =  0.899208843708, # EB2
-	//cutCategory2 =  0.758484721184, # EE	                                                                                                                                                                                                                                                                    
-
-	/*
-	if(fabs(electrons_hn[iel].SCEta()) > 1.5){
-
-	  if(electrons_hn[iel].MVA() > 0.93){ 
-	    electrons_hn2.push_back(electrons_hn[iel]);
-	    electrons_hn3.push_back(electrons_hn[iel]);
-	    electrons_hn4.push_back(electrons_hn[iel]);
-	    electrons_hn5.push_back(electrons_hn[iel]);
-	    electrons_hn6.push_back(electrons_hn[iel]);
-	    electrons_hn7.push_back(electrons_hn[iel]);
-	    electrons_hn8.push_back(electrons_hn[iel]);
-	    electrons_hn9.push_back(electrons_hn[iel]);
-	    electrons_hn10.push_back(electrons_hn[iel]);
-	    electrons_hn11.push_back(electrons_hn[iel]);
-	    electrons_hn12.push_back(electrons_hn[iel]);
-	    electrons_hn13.push_back(electrons_hn[iel]);
-	    electrons_hn14.push_back(electrons_hn[iel]);
-	    electrons_hn15.push_back(electrons_hn[iel]);
-	    electrons_hn16.push_back(electrons_hn[iel]);
-	    electrons_hn17.push_back(electrons_hn[iel]);
-	    electrons_hn18.push_back(electrons_hn[iel]);
-	    electrons_hn19.push_back(electrons_hn[iel]);
-	    electrons_hn20.push_back(electrons_hn[iel]);
-	    electrons_hn21.push_back(electrons_hn[iel]);
-	    electrons_hn22.push_back(electrons_hn[iel]);
-	    electrons_hn23.push_back(electrons_hn[iel]);
-	  }
-	}
-	else  if(fabs(electrons_hn[iel].SCEta()) > 0.825){
-	  
-	  electrons_hn2.push_back(electrons_hn[iel]);
-	  electrons_hn3.push_back(electrons_hn[iel]);
-	  electrons_hn4.push_back(electrons_hn[iel]);
-	  electrons_hn5.push_back(electrons_hn[iel]);
-	  electrons_hn6.push_back(electrons_hn[iel]);
-	  electrons_hn7.push_back(electrons_hn[iel]);
-	  electrons_hn8.push_back(electrons_hn[iel]);
-	  electrons_hn9.push_back(electrons_hn[iel]);
-	  electrons_hn10.push_back(electrons_hn[iel]);
-	  electrons_hn11.push_back(electrons_hn[iel]);
-	  electrons_hn12.push_back(electrons_hn[iel]);
-	  electrons_hn13.push_back(electrons_hn[iel]);
-	  electrons_hn14.push_back(electrons_hn[iel]);
-	  electrons_hn15.push_back(electrons_hn[iel]);
-	  electrons_hn16.push_back(electrons_hn[iel]);
-	  electrons_hn17.push_back(electrons_hn[iel]);
-	  electrons_hn18.push_back(electrons_hn[iel]);
-	  electrons_hn19.push_back(electrons_hn[iel]);
-	  electrons_hn20.push_back(electrons_hn[iel]);
-	  electrons_hn21.push_back(electrons_hn[iel]);
-	  electrons_hn22.push_back(electrons_hn[iel]);
-	  electrons_hn23.push_back(electrons_hn[iel]);
-
-	  
-	}
-	else {
-	  
-	  if(electrons_hn[iel].MVA() > 0.5)           electrons_hn2.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.6)           electrons_hn3.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.7)           electrons_hn4.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.725)           electrons_hn5.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.75)           electrons_hn6.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.775)           electrons_hn7.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.8)           electrons_hn8.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.825)           electrons_hn9.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.85)           electrons_hn10.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.88)           electrons_hn11.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.89)           electrons_hn12.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.9)           electrons_hn13.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.91)           electrons_hn14.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.92)           electrons_hn15.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.925)           electrons_hn16.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.93)           electrons_hn17.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.935)           electrons_hn18.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.94)           electrons_hn19.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.9425)           electrons_hn20.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.945)           electrons_hn21.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.9475)           electrons_hn22.push_back(electrons_hn[iel]);
-          if(electrons_hn[iel].MVA() > 0.95)           electrons_hn23.push_back(electrons_hn[iel]);
-	  
-	}
-	*/
-      }
-    }
-  }
+  
 
 
 
@@ -597,51 +364,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
       if(CheckSignalRegion(true,electrons_hn1 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN", weight);
       if(CheckSignalRegion(true,electrons_hn2 , jets, alljets,"Low", weight))	FillEventCutFlow(2+itrig, "LowMassEE_HN2", weight);
       if(CheckSignalRegion(true,electrons_hn2 , jets, alljets,"High", weight))	FillEventCutFlow(4+itrig, "HighMassEE_HN2", weight);
-      if(CheckSignalRegion(true,electrons_hn3 , jets, alljets,"Low", weight))	FillEventCutFlow(2+itrig, "LowMassEE_HN3", weight);
-      if(CheckSignalRegion(true,electrons_hn3 , jets, alljets,"High", weight))	FillEventCutFlow(4+itrig, "HighMassEE_HN3", weight);
-      if(CheckSignalRegion(true,electrons_hn4 , jets, alljets,"Low", weight))	FillEventCutFlow(2+itrig, "LowMassEE_HN4", weight);
-      if(CheckSignalRegion(true,electrons_hn4 , jets, alljets,"High", weight))	FillEventCutFlow(4+itrig, "HighMassEE_HN4", weight);
-      if(CheckSignalRegion(true,electrons_hn5 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN5", weight);
-      if(CheckSignalRegion(true,electrons_hn5 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN5", weight);
-      if(CheckSignalRegion(true,electrons_hn6 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN6", weight);
-      if(CheckSignalRegion(true,electrons_hn6 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN6", weight);
-      if(CheckSignalRegion(true,electrons_hn7 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN7", weight);
-      if(CheckSignalRegion(true,electrons_hn7 , jets, alljets,"High", weight))       FillEventCutFlow(4+itrig, "HighMassEE_HN7", weight);
-      if(CheckSignalRegion(true,electrons_hn8 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN8", weight);
-      if(CheckSignalRegion(true,electrons_hn8 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN8", weight);
-      if(CheckSignalRegion(true,electrons_hn9 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN9", weight);
-      if(CheckSignalRegion(true,electrons_hn9 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN9", weight);
-      if(CheckSignalRegion(true,electrons_hn10 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN10", weight);
-      if(CheckSignalRegion(true,electrons_hn10 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN10", weight);
-      if(CheckSignalRegion(true,electrons_hn11 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN11", weight);
-      if(CheckSignalRegion(true,electrons_hn11 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN11", weight);
-      if(CheckSignalRegion(true,electrons_hn12 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN12", weight);
-      if(CheckSignalRegion(true,electrons_hn13 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN13", weight);
-      if(CheckSignalRegion(true,electrons_hn13 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN13", weight);
-      if(CheckSignalRegion(true,electrons_hn14 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN14", weight);
-      if(CheckSignalRegion(true,electrons_hn14 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN14", weight);
-      if(CheckSignalRegion(true,electrons_hn15 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN15", weight);
-      if(CheckSignalRegion(true,electrons_hn15 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN15", weight);
-      if(CheckSignalRegion(true,electrons_hn16 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN16", weight);
-      if(CheckSignalRegion(true,electrons_hn16 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN16", weight);
-      if(CheckSignalRegion(true,electrons_hn17 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN17", weight);
-      if(CheckSignalRegion(true,electrons_hn17 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN17", weight);
-      if(CheckSignalRegion(true,electrons_hn18 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN18", weight);
-      if(CheckSignalRegion(true,electrons_hn18 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN18", weight);
-      if(CheckSignalRegion(true,electrons_hn19 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN19", weight);
-      if(CheckSignalRegion(true,electrons_hn19 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN19", weight);
-      if(CheckSignalRegion(true,electrons_hn20 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN20", weight);
-      if(CheckSignalRegion(true,electrons_hn20 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN20", weight);
-      if(CheckSignalRegion(true,electrons_hn21 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN21", weight);
-      if(CheckSignalRegion(true,electrons_hn21 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN21", weight);
-      if(CheckSignalRegion(true,electrons_hn22 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN22", weight);
-      if(CheckSignalRegion(true,electrons_hn22 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN22", weight);
-      if(CheckSignalRegion(true,electrons_hn23 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN23", weight);
-      if(CheckSignalRegion(true,electrons_hn23 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN23", weight);
-      if(CheckSignalRegion(true,electrons_hn24 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN24", weight);
-      if(CheckSignalRegion(true,electrons_hn24 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN24", weight);
-      if(CheckSignalRegion(true,electrons_hn25 , jets, alljets,"High", weight))        FillEventCutFlow(4+itrig, "HighMassEE_HN25", weight);
-      if(CheckSignalRegion(true,electrons_hn25 , jets, alljets,"Low", weight))        FillEventCutFlow(2+itrig, "LowMassEE_HN25", weight);
+
 
       
       
@@ -765,29 +488,6 @@ void HNDiElectron::FillEventCutFlow(int cf,TString cut,  float weight){
       vector<TString> IDs;
       IDs.push_back("LowMassEE_HN");
       IDs.push_back("LowMassEE_HN2");
-      IDs.push_back("LowMassEE_HN3");
-      IDs.push_back("LowMassEE_HN4");
-      IDs.push_back("LowMassEE_HN5");
-      IDs.push_back("LowMassEE_HN6");
-      IDs.push_back("LowMassEE_HN7");
-      IDs.push_back("LowMassEE_HN8");
-      IDs.push_back("LowMassEE_HN9");
-      IDs.push_back("LowMassEE_HN10");
-      IDs.push_back("LowMassEE_HN11");
-      IDs.push_back("LowMassEE_HN12");
-      IDs.push_back("LowMassEE_HN13");
-      IDs.push_back("LowMassEE_HN14");
-      IDs.push_back("LowMassEE_HN15");
-      IDs.push_back("LowMassEE_HN16");
-      IDs.push_back("LowMassEE_HN17");
-      IDs.push_back("LowMassEE_HN18");
-      IDs.push_back("LowMassEE_HN19");
-      IDs.push_back("LowMassEE_HN20");
-      IDs.push_back("LowMassEE_HN21");
-      IDs.push_back("LowMassEE_HN22");
-      IDs.push_back("LowMassEE_HN23");
-      IDs.push_back("LowMassEE_HN24");
-      IDs.push_back("LowMassEE_HN25");
       IDs.push_back("LowMassEE_MVA");
       IDs.push_back("LowMassEE_GENT");
       AnalyzerCore::MakeHistograms( "mm_eventcutflow_LowMass_DoubleEG",IDs.size(),0.,float(IDs.size()));
@@ -812,30 +512,6 @@ void HNDiElectron::FillEventCutFlow(int cf,TString cut,  float weight){
       vector<TString> IDs;
       IDs.push_back("LowMassEE_HN");
       IDs.push_back("LowMassEE_HN2");
-      IDs.push_back("LowMassEE_HN3");
-      IDs.push_back("LowMassEE_HN4");
-      IDs.push_back("LowMassEE_HN5");
-      IDs.push_back("LowMassEE_HN6");
-      IDs.push_back("LowMassEE_HN7");
-      IDs.push_back("LowMassEE_HN8");
-      IDs.push_back("LowMassEE_HN9");
-      IDs.push_back("LowMassEE_HN10");
-      IDs.push_back("LowMassEE_HN11");
-      IDs.push_back("LowMassEE_HN12");
-      IDs.push_back("LowMassEE_HN13");
-      IDs.push_back("LowMassEE_HN14");
-      IDs.push_back("LowMassEE_HN15");
-      IDs.push_back("LowMassEE_HN16");
-      IDs.push_back("LowMassEE_HN17");
-      IDs.push_back("LowMassEE_HN18");
-      IDs.push_back("LowMassEE_HN19");
-      IDs.push_back("LowMassEE_HN20");
-      IDs.push_back("LowMassEE_HN21");
-      IDs.push_back("LowMassEE_HN22");
-      IDs.push_back("LowMassEE_HN23");
-      IDs.push_back("LowMassEE_HN24");
-      IDs.push_back("LowMassEE_HN25");
-
       IDs.push_back("LowMassEE_MVA");
       IDs.push_back("LowMassEE_GENT");
       AnalyzerCore::MakeHistograms( "mm_eventcutflow_LowMass_SingleElectron",IDs.size(),0.,float(IDs.size()));
@@ -860,32 +536,6 @@ void HNDiElectron::FillEventCutFlow(int cf,TString cut,  float weight){
       vector<TString> IDs;
       IDs.push_back("HighMassEE_HN");
       IDs.push_back("HighMassEE_HN2");
-      IDs.push_back("HighMassEE_HN3");
-      IDs.push_back("HighMassEE_HN4");
-      IDs.push_back("HighMassEE_HN5");
-      IDs.push_back("HighMassEE_HN6");
-      IDs.push_back("HighMassEE_HN7");
-      IDs.push_back("HighMassEE_HN8");
-      IDs.push_back("HighMassEE_HN9");
-      IDs.push_back("HighMassEE_HN10");
-      IDs.push_back("HighMassEE_HN11");
-      IDs.push_back("HighMassEE_HN12");
-      IDs.push_back("HighMassEE_HN13");
-      IDs.push_back("HighMassEE_HN14");
-      IDs.push_back("HighMassEE_HN15");
-      IDs.push_back("HighMassEE_HN16");
-      IDs.push_back("HighMassEE_HN17");
-      IDs.push_back("HighMassEE_HN18");
-      IDs.push_back("HighMassEE_HN19");
-      IDs.push_back("HighMassEE_HN20");
-      IDs.push_back("HighMassEE_HN21");
-      IDs.push_back("HighMassEE_HN22");
-      IDs.push_back("HighMassEE_HN23");
-      IDs.push_back("HighMassEE_HN24");
-      IDs.push_back("HighMassEE_HN25");
-
-
-
       IDs.push_back("HighMassEE_MVA");
       IDs.push_back("HighMassEE_GENT");
       AnalyzerCore::MakeHistograms( "mm_eventcutflow_HighMass_DoubleEG",IDs.size(),0.,float(IDs.size()));
