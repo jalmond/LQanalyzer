@@ -1,2 +1,2 @@
-SSMM_HighMass
+OSMM_HighMass
 END

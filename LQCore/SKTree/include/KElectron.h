@@ -42,6 +42,9 @@ namespace snu {
     float ScaleFactor(const std::string& name, int sign) const ;
     Bool_t PassTrigMVAHNLoose() const ;
     Bool_t PassTrigMVAHNTight() const ;
+    Bool_t PassTrigMVAHNTightv2(float pt1, float pt2, float mvacut, float mvacut_ec) const ;
+    Bool_t PassTrigMVAHNTightv3() const ;
+    Bool_t PassTrigMVAHNTightv4() const ;
     Bool_t PassTrigMVAGENTTight() const ;
 
 

@@ -54,25 +54,33 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
 
    Message("Making clever hists for Z ->ll test code", INFO);
 
-   MakeCleverHistograms(sighist_mmm,"WZMuon");
-   MakeCleverHistograms(sighist_mmm,"ZZMuon1");
-   MakeCleverHistograms(sighist_mmm,"ZZMuon2");
-   MakeCleverHistograms(sighist_mm, "SSMMloose");
-   MakeCleverHistograms(sighist_mm, "SSMM_1Jet");
-   MakeCleverHistograms(sighist_mm, "SSMM_DiJet");
-   MakeCleverHistograms(sighist_mm, "SSMM_CR");
-   MakeCleverHistograms(sighist_mm, "SSMM_LowMass");
-   MakeCleverHistograms(sighist_mm, "SSMM_MidMass");
-   MakeCleverHistograms(sighist_mm, "SSMM_HighMass");
+   vector<TString> labels;
+   labels.push_back("");
+   labels.push_back("NoTrigger");
+   labels.push_back("Nontruthmatched");
 
-   MakeCleverHistograms(sighist_mm, "OSMMloose");
-   MakeCleverHistograms(sighist_mm, "OSMM_1Jet");
-   MakeCleverHistograms(sighist_mm, "OSMM_DiJet");
-   MakeCleverHistograms(sighist_mm, "OSMM_CR");
-   MakeCleverHistograms(sighist_mm, "OSMM_LowMass");
-   MakeCleverHistograms(sighist_mm, "OSMM_MidMass");
-   MakeCleverHistograms(sighist_mm, "OSMM_HighMass");
-
+   for(unsigned int il = 0; il < labels.size(); il++){
+     TString label = labels.at(il);
+     MakeCleverHistograms(sighist_mmm,label+"WZMuon");
+     MakeCleverHistograms(sighist_mmm,label+"ZZMuon1");
+     MakeCleverHistograms(sighist_mmm,label+"ZZMuon2");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_Preselection");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_1Jet");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_CR");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_LowMass");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_MidMass");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_HighMass");
+     
+     
+     MakeCleverHistograms(sighist_mm, label+"OSMM_Preselection");
+     MakeCleverHistograms(sighist_mm, label+"OSMM_1Jet");
+     MakeCleverHistograms(sighist_mm, label+"OSMM_DiJet");
+     MakeCleverHistograms(sighist_mm, label+"OSMM_CR");
+     MakeCleverHistograms(sighist_mm, label+"OSMM_LowMass");
+     MakeCleverHistograms(sighist_mm, label+"OSMM_MidMass");
+     MakeCleverHistograms(sighist_mm, label+"OSMM_HighMass");
+   }
    return;
 }
 
@@ -83,15 +91,88 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
   if(!isData)weight*= MCweight;
-
+  
+  float cf_weight = weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi) ;
+  if(!isData) cf_weight *= eventbase->GetEvent().PileUpWeight();
+  
+  FillEventCutFlow(1, "NoCut", cf_weight);
   _mm_channel =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
   if(!PassMETFilter()) return;     /// Initial event cuts :                                                                                                                                
   
-  if((PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") || PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))  MakeControlPlots(1,"",weight);
   
+  MakeControlPlots(0,"NoTrigger",weight);
+  if(isData){
+    if((PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") || PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))  MakeControlPlots(1,"",weight);
+    if((PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") || PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))  MakeControlPlots(2,"Nontruthmatched",weight);
+  }
+  else {
+    MakeControlPlots(1,"",weight);
+    MakeControlPlots(2,"Nontruthmatched",weight);
+  }  
   
+  if((PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") || PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))){
+    
+    FillEventCutFlow(1, "EventClean", cf_weight);
+    std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT",true);
+    if(muons.size() ==2){
+      if(muons[0].Pt() > 20){
+	if(muons[1].Pt() > 10){
+	  FillEventCutFlow(1, "DiMu", cf_weight);
+	  std::vector<snu::KMuon> muons_veto         = GetMuons("MUON_HN_VETO");
+	  std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
+	  
+	  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
+	  std::vector<snu::KJet> jets = GetJets("JET_HN");
+	  
+	  if(muons_veto.size() ==2){
+	    FillEventCutFlow(1, "MuVeto", cf_weight);
+	    if(electrons_veto.size() ==0){
+	      FillEventCutFlow(1, "ElVeto", cf_weight);
+	      if(jets.size() > 1){
+
+		FillEventCutFlow(1, "DiJet", cf_weight);
+		int nbjet = NBJet(jets);
+		if(nbjet ==0){
+		  FillEventCutFlow(1, "bjetv1", cf_weight);
+		  int nbjetv2 = NBJet(alljets);
+		  if(nbjetv2 ==0){
+		    FillEventCutFlow(1, "bjetv2", cf_weight);
+		    if(eventbase->GetEvent().PFMET()  < 50.){
+		      FillEventCutFlow(1, "MET", cf_weight);
+		      float dijetmass_tmp=999.;
+		      float dijetmass=9990000.;
+		      int m=-999;
+		      int n=-999;
+		      for(UInt_t emme=0; emme<jets.size(); emme++){
+			for(UInt_t enne=1; enne<jets.size(); enne++) {
+			  if(emme == enne) continue;
+			  dijetmass_tmp = (jets[emme]+jets[enne]).M();
+			  if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
+			    dijetmass = dijetmass_tmp;
+			    m = emme;
+			    n = enne;
+			  }
+			}
+		      }
+		      snu::KParticle jj = jets.at(m) + jets.at(n) ;
+		      if(jj.M() < 200)                       FillEventCutFlow(1, "mjj", cf_weight);
+
+		      
+		    }
+		  }
+		}
+
+	      }
+	    }
+	  }
+	  
+	}
+
+      }
+    }
+  }
   
 }
 
@@ -120,16 +201,37 @@ void HNDiLepton::FillEventCutFlow(int cf,TString cut,  float weight){
       GetHist( "mm_eventcutflow")->GetXaxis()->SetBinLabel(13,"DiJet");
       GetHist( "mm_eventcutflow")->GetXaxis()->SetBinLabel(14,"DiNewJet");
       GetHist( "mm_eventcutflow")->GetXaxis()->SetBinLabel(15,"SSMMTight");
+      GetHist( "mm_eventcutflow")->Fill(cut,weight);
+
+    }
+  }
+  if(cf==1){
+    if(GetHist( "cutflow_challenge")) {
+      GetHist( "cutflow_challenge")->Fill(cut,weight);
       
     }
+    else{
+      AnalyzerCore::MakeHistograms( "cutflow_challenge",10,0.,10.);
 
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(1,"NoCut");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(2,"EventClean");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(3,"DiMu");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(4,"MuVeto");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(5,"ElVeto");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(6,"DiJet");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(7,"bjetv1");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(8,"bjetv2");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(9,"MET");
+      GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(10,"mjj");
+
+
+    }
   }
-  
+
 
 }
 
 void HNDiLepton::FillEventCutFlow(TString cut, TString label, float weight){
-
 
   if(GetHist(label + "_eventcutflow")) {
     GetHist(label + "_eventcutflow")->Fill(cut,weight);
@@ -163,7 +265,7 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
   std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
   
   std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
-  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO");
+  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
   std::vector<snu::KJet> hnjets = GetJets("JET_HN");
   //std::vector<snu::KJet> hnjets =  hn04jets;
   //GetJetsWFT("JET_HN","FATJET_HN");
@@ -175,9 +277,16 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
     
     
     w      *= puweight;
-    w      *= WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi)  ;
+    if(!methodtag.Contains("Trigger")) w      *= WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi)  ;
     w      *= mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, muons_veto,  0 , isData, 0);
     
+    w      *= mcdata_correction->MuonTrackingEffScaleFactor(muons_veto);
+    w      *=   mcdata_correction->MuonScaleFactor("MUON_HN_TRI_TIGHT", muons_veto, 0);
+    FillHist("EffPUweight", puweight, w, -1., 5., 600);
+    FillHist("EffLumi", WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi)  , w, 0., 50000., 50000);
+    FillHist("EffTrigger", mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, muons_veto,  0 , isData, 0),  w, 0., 2., 200);
+    FillHist("EffTrk",mcdata_correction->MuonTrackingEffScaleFactor(muons_veto) , w, 0., 2., 200);
+    FillHist("EffID", mcdata_correction->MuonScaleFactor("MUON_HN_TRI_TIGHT", muons_veto, 0), w, 0., 2., 200);
   }
   
   FillEventCutFlow(0,"NoCut",w);
@@ -210,13 +319,18 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
   if(SameCharge(muons_veto)) counter ("SSMM_loose",1);
   if(SameCharge(muons_veto))FillEventCutFlow(0,"SSMMLoose",w);
   
-  
-  std::vector<snu::KMuon>  hn_medium = GetMuons("MUON_HN_MEDIUM",false);
 
-  std::vector<snu::KMuon>  hn_loose =  GetMuons("MUON_HN_LOOSE",false);
+  bool keep_fake=false;
+  if(method==2) keep_fake=true;
+    
+
+  std::vector<snu::KMuon>  hn_medium = GetMuons("MUON_HN_MEDIUM",keep_fake);
+
+  std::vector<snu::KMuon>  hn_loose =  GetMuons("MUON_HN_LOOSE",keep_fake);
   std::vector<snu::KMuon>  hn_tight;
-  if(k_running_nonprompt) hn_tight = GetMuons("MUON_HN_LOOSE",false);
-  else hn_tight = GetMuons("MUON_HN_TIGHT",false);
+  if(k_running_nonprompt) hn_tight = GetMuons("MUON_HN_LOOSE",keep_fake);
+  else hn_tight = GetMuons("MUON_HN_TIGHT",keep_fake);
+
 
 
   int nbjet = NBJet(hnjets);
@@ -256,12 +370,14 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
 	    w=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_tight, PassID(hn_tight[0],"MUON_HN_TIGHT"), PassID(hn_tight[1],"MUON_HN_TIGHT"), tag1, tag2,  cb_1, cb_2,"ptcorr_eta", iso1,iso2,false, false);
 	    
 	  }
-	  if(hnjets.size()==1) FillCLHist(sighist_mm, "SSMM_1Jet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets, fatjetcoll,  w);
-	  if(hnjets.size() > 1)FillCLHist(sighist_mm, "SSMM_DiJet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-	  if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"Low", w))FillCLHist(sighist_mm, "SSMM_LowMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-	  if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"", w))FillCLHist(sighist_mm, "SSMM_MidMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-	  if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"High", w))FillCLHist(sighist_mm, "SSMM_HighMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-	  if(eventbase->GetEvent().PFMET() > 50 || NBJet(hnjets) > 0) FillCLHist(sighist_mm, "SSMM_CR", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+	  
+	  FillCLHist(sighist_mm, methodtag+"SSMM_Preselection", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets, fatjetcoll,  w);
+	  if(hnjets.size()==1) FillCLHist(sighist_mm, methodtag+"SSMM_1Jet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets, fatjetcoll,  w);
+	  if(hnjets.size() > 1)FillCLHist(sighist_mm, methodtag+"SSMM_DiJet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+	  if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"Low", w))FillCLHist(sighist_mm, methodtag+"SSMM_LowMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+	  if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"", w))FillCLHist(sighist_mm, methodtag+"SSMM_MidMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+	  if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"High", w))FillCLHist(sighist_mm, methodtag+"SSMM_HighMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+	  if(eventbase->GetEvent().PFMET() > 50 || NBJet(hnjets) > 0) FillCLHist(sighist_mm, methodtag+"SSMM_CR", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
 	}
 	
       }
@@ -292,12 +408,13 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
             w=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_tight, PassID(hn_tight[0],"MUON_HN_TIGHT"), PassID(hn_tight[1],"MUON_HN_TIGHT"), tag1, tag2,  cb_1, cb_2,"ptcorr_eta", iso1,iso2,false, false);
 
           }
-	  if(hnjets.size()==1) FillCLHist(sighist_mm, "OSMM_1Jet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets, fatjetcoll,  w);
-          if(hnjets.size() > 1)FillCLHist(sighist_mm, "OSMM_DiJet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-          if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"Low", w))FillCLHist(sighist_mm, "OSMM_LowMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-          if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"", w))FillCLHist(sighist_mm, "OSMM_MidMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-          if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"High", w))FillCLHist(sighist_mm, "OSMM_HighMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
-          if(eventbase->GetEvent().PFMET() > 50 || NBJet(hnjets) > 0) FillCLHist(sighist_mm, "OSMM_CR", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+	  FillCLHist(sighist_mm, methodtag+"OSMM_Preselection", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets, fatjetcoll,  w);
+	  if(hnjets.size()==1) FillCLHist(sighist_mm, methodtag+"OSMM_1Jet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets, fatjetcoll,  w);
+          if(hnjets.size() > 1)FillCLHist(sighist_mm, methodtag+"OSMM_DiJet", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+          if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"Low", w))FillCLHist(sighist_mm, methodtag+"OSMM_LowMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+          if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"", w))FillCLHist(sighist_mm, methodtag+"OSMM_MidMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+          if(CheckSignalRegion(true,hn_tight,electrons_veto , hnjets, alljets,"High", w))FillCLHist(sighist_mm, methodtag+"OSMM_HighMass", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+          if(eventbase->GetEvent().PFMET() > 50 || NBJet(hnjets) > 0) FillCLHist(sighist_mm, methodtag+"OSMM_CR", eventbase->GetEvent(), hn_tight, electrons_veto,hnjets, alljets,  fatjetcoll,w);
 
 	}
       }
@@ -305,7 +422,7 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
   }
 
   if(SameCharge(hn_medium)){
-    if(hnjets.size() > 1)FillCLHist(sighist_mm, "SSMM_med_DiJet", eventbase->GetEvent(), hn_medium, electrons_veto,hnjets, alljets,  fatjetcoll,w);
+    if(hnjets.size() > 1)FillCLHist(sighist_mm, methodtag+"SSMM_med_DiJet", eventbase->GetEvent(), hn_medium, electrons_veto,hnjets, alljets,  fatjetcoll,w);
     
   }
   

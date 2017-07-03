@@ -50,7 +50,7 @@ def  MakeConfFile(inputdir,jobname,datastream,analyzer,tag,tag2,catversion,perio
 from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-x", "--x", dest="x", default="TEST",help="tag")
-parser.add_option("-b", "--b", dest="b", default=False,help="tag")
+parser.add_option("-b", "--b", dest="b", default="false",help="tag")
 parser.add_option("-i", "--i", dest="i", default="123",help="tag")
 parser.add_option("-d", "--d", dest="d", default="",help="tag")
 parser.add_option("-s", "--s",  dest="s", default="",help="tag")
@@ -202,7 +202,7 @@ for i in empty_list_alias:
 
     
 
-plot_comfig_dir = str(os.getenv("LQANALYZER_DIR")) + "CATConfig/PlotConfig/"
+plot_comfig_dir = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"
 
 path_macroC_file = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir+"/MakeDataMCCompPlots.cpp" ;
 path_macroH_file = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/"+jobdir+"/MakeDataMCCompPlots.h" ;

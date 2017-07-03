@@ -333,7 +333,7 @@ bool ElectronSelection::PassUserID(TString id, snu::KElectron el, vector<pair<TS
     }
     if(vids[idel].first == "IsHNTight(MVA)"){
       if(!pass_trigger_emulation)  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}
-      if(!el.PassTrigMVAHNTight()){if(debug){ cout << "Fail MVA tight" << endl;} return false;}
+      if(!el.PassTrigMVAHNTightv4()){if(debug){ cout << "Fail MVA tight" << endl;} return false;}
     }
     if(vids[idel].first == "IsGENTTight"){
       if(!pass_trigger_emulation)  {if(debug){ cout << "Fail MVA medium" << endl;} return false;}

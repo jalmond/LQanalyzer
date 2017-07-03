@@ -73,7 +73,7 @@ skim=""
 periodtag=""
 analyzer=""
 stream=""
-isblind="true"
+isblind="false"
 plottag="Default"
 outputlist=[]
 input_configfile = open(configinputfile,"r")
@@ -86,11 +86,11 @@ for line in input_configfile:
         cutlist.append(cut)
     elif "blinded" in line and "# " in line:
         sline = line.split()
-        if sline[2] == "false":
-            isblind="false"
+        if sline[2] == "true":
+            isblind="true"
     elif "samples" in line and "# " in line:
         sline = line.split()
-        inputfile = str(os.getenv("LQANALYZER_DIR")) + "/CATConfig/PlotConfig/"+sline[2]
+        inputfile = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"+sline[2]
     elif "skim" in line and "# " in line:
         sline = line.split()
         skim  = sline[2]

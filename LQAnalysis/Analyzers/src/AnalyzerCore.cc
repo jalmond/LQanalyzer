@@ -524,7 +524,7 @@ float AnalyzerCore::GetPtRelLepTJet(snu::KElectron electron, std::vector<snu::KJ
   for(unsigned int ijet=0; ijet < jets.size(); ijet++){
     if( electron.DeltaR(jets.at(ijet)) < mindR){
       if(usecorrectedpt)closejet= GetCorrectedJetCloseToLepton(electron,jets.at(ijet));
-      closejet=jets.at(ijet);
+      else closejet=jets.at(ijet);
       mindR=electron.DeltaR(jets.at(ijet));
     }
   }
@@ -558,18 +558,18 @@ float AnalyzerCore::GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets
       mindR=muon.DeltaR(jets.at(ijet));
     }
   }
-
+  
   if(mindR==0.7) return 0.;
-
+  
   FillHist(("ptrel_dr"),mindR, weight, 0., 4., 100);
-
+  
   TVector3 el3=  muon.Vect();
   TVector3 jet3= closejet.Vect();
   TVector3 lepjetrel = jet3-el3;
   FillHist(("ptrel_lepjetmag"),lepjetrel.Mag(), weight, 0., 100., 100);
   FillHist(("ptrel_crosslepjetmag"), (lepjetrel.Cross(el3)).Mag(), weight, 0., 100., 100);
   float ptrel = (lepjetrel.Cross(el3)).Mag()/ lepjetrel.Mag();
-
+  
   return ptrel;
 }
 

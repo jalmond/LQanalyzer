@@ -211,7 +211,7 @@ int MakePlots(string hist) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void MakeCutFlow(string type){
-
+  return;
   
   vector<string> cut_label;  
   vector<pair<pair<vector<pair<TString,float> >, int >, TString > > cfsamples;  
@@ -309,8 +309,8 @@ void MakeCutFlow(string type){
       
       if(sample.Contains("Z#gamma")) sample = "Z$\\gamma$";
       if(sample.Contains("W#gamma")) sample = "W$\\gamma$";
-      if(sample.Contains("DY #rightarrow ee (m < 50)    ")) sample = "DY $\\rightarrow$ ll (m < 50)    ";
-      if(sample.Contains("DY #rightarrow ee")) sample = "DY$\\rightarrow$ ee";
+      if(sample.Contains("DY #rightarrow ll (m < 50)    ")) sample = "DY $\\rightarrow$ ll (m < 50)    ";
+      if(sample.Contains("DY #rightarrow ll")) sample = "DY$\\rightarrow$ ee";
       if(sample.Contains("DY #rightarrow #tau#tau")) sample = "DY$\\rightarrow$ $\\tau\\tau$";
       cout << sample << " background = " << mapit->second<< " +- " << mapit_stat->second << " + " << mapit_up->second << " - " << mapit_down->second <<  endl;      
    
@@ -385,7 +385,7 @@ void MakeCutFlow(string type){
       if(sample.Contains("Z#gamma")) sample = "Z$\\gamma$";
       if(sample.Contains("W#gamma")) sample = "W$\\gamma$";
       if(sample.Contains("DY #rightarrow ll (m < 50)    ")) sample = "DY $\\rightarrow$ ll (m < 50)    ";
-      if(sample.Contains("DY #rightarrow ee")) sample = "DY$\\rightarrow$ ee";
+      if(sample.Contains("DY #rightarrow ll")) sample = "DY$\\rightarrow$ ee";
       if(sample.Contains("DY #rightarrow #tau#tau")) sample = "DY$\\rightarrow$ $\\tau\\tau$";
 
       if(mapit->second!=0.0){
