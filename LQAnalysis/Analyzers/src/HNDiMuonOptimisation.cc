@@ -602,7 +602,7 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool isdileptrig, f
       if(passtrigcuts_double_hn){
 	
 	if(hn_loose.size() ==2){
-	  float ev_weight_hn=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_loose, PassID(hn_loose[0],"MUON_HN_TIGHT"),  PassID(hn_loose[1],"MUON_HN_TIGHT"), "Tight0.09_0.005_3_0.04","Tight0.09_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.1,0.1,false,false);
+	  float ev_weight_hn=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_loose, PassID(hn_loose[0],"MUON_HN_TIGHT"),  PassID(hn_loose[1],"MUON_HN_TIGHT"), "Tight0.07_0.005_3_0.04","Tight0.07_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.07,0.07,false,false);
 	  
 	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"Low", w))FillHist(("LowIDREFdouble") ,3,ev_weight_hn, 0.,4., 4);
 	  if(CheckSignalRegion(true,hn_loose,el, jets,alljets,"", w))FillHist(("MediumIDREFdouble") ,3,ev_weight_hn, 0.,4., 4);

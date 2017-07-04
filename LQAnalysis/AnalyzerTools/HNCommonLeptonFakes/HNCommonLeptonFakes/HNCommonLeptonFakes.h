@@ -54,6 +54,7 @@ class HNCommonLeptonFakes {
 
   float getFakeRate_electron(int sys, float pt,  float eta);
   float getEfficiency_electron(int sys,float pt, float eta);
+  float getPromptRate_electron(int sys,float pt, float eta, TString cut);
 
   float getFakeRate_mc_muon(TString tag, float pt, float eta);
 

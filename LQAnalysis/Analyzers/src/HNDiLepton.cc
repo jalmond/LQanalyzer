@@ -116,15 +116,63 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     
     FillEventCutFlow(1, "EventClean", cf_weight);
     std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT",true);
+
+    std::vector<snu::KMuon> muon_07dz04;
+    std::vector<snu::KMuon> muon_06;
+    std::vector<snu::KMuon> muon_06dz04;
+    std::vector<snu::KMuon> muon_0706;
+    std::vector<snu::KMuon> muon_0706dz04;
+
+    std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
+    std::vector<snu::KJet> jets = GetJets("JET_HN");
+
+    std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
+    if(CheckSignalRegion(true,muons, electrons_veto , jets, alljets,"Low", weight))        FillEventCutFlow(2, "LowMassMM_HNTIGHT", weight);
+    if(CheckSignalRegion(true,muons, electrons_veto , jets, alljets,"High", weight))        FillEventCutFlow(3, "HighMassMM_HNTIGHT", weight);
+    for(unsigned int im = 0 ; im < muons.size(); im++){
+      if(fabs(muons[im].dZ()) < 0.04)           muon_07dz04.push_back(muons[im]);
+
+      if(muons[im].RelIso04() < 0.06){
+	muon_06.push_back(muons[im]);
+	if(fabs(muons[im].dZ()) < 0.04)           muon_06dz04.push_back(muons[im]);
+      }
+
+
+
+
+      if(fabs(muons[im].Eta()) > 1.5){
+	if(muons[im].RelIso04() < 0.06){
+	  muon_0706.push_back(muons[im]);
+	  if(fabs(muons[im].dZ()) < 0.04)           muon_0706dz04.push_back(muons[im]);
+	}
+      }
+      else{
+	muon_0706.push_back(muons[im]);
+	muon_0706dz04.push_back(muons[im]);
+      }
+    }
+    
+    if(CheckSignalRegion(true,muon_07dz04, electrons_veto , jets, alljets,"Low", weight))        FillEventCutFlow(2, "LowMassMM_HNTIGHT2", weight);
+    if(CheckSignalRegion(true,muon_06, electrons_veto , jets, alljets,"Low", weight))        FillEventCutFlow(2, "LowMassMM_HNTIGHT3", weight);
+    if(CheckSignalRegion(true,muon_06dz04, electrons_veto , jets, alljets,"Low", weight))        FillEventCutFlow(2, "LowMassMM_HNTIGHT4", weight);
+    if(CheckSignalRegion(true,muon_0706, electrons_veto , jets, alljets,"Low", weight))        FillEventCutFlow(2, "LowMassMM_HNTIGHT5", weight);
+    if(CheckSignalRegion(true,muon_0706dz04, electrons_veto , jets, alljets,"Low", weight))        FillEventCutFlow(2, "LowMassMM_HNTIGHT6", weight);
+
+
+    if(CheckSignalRegion(true,muon_07dz04, electrons_veto , jets, alljets,"high", weight))        FillEventCutFlow(3, "highMassMM_HNTIGHT2", weight);
+    if(CheckSignalRegion(true,muon_06, electrons_veto , jets, alljets,"high", weight))        FillEventCutFlow(3, "highMassMM_HNTIGHT3", weight);
+    if(CheckSignalRegion(true,muon_06dz04, electrons_veto , jets, alljets,"high", weight))        FillEventCutFlow(3, "highMassMM_HNTIGHT4", weight);
+    if(CheckSignalRegion(true,muon_0706, electrons_veto , jets, alljets,"high", weight))        FillEventCutFlow(3, "highMassMM_HNTIGHT5", weight);
+    if(CheckSignalRegion(true,muon_0706dz04, electrons_veto , jets, alljets,"high", weight))        FillEventCutFlow(3, "highMassMM_HNTIGHT6", weight);
+
+    
+
     if(muons.size() ==2){
       if(muons[0].Pt() > 20){
 	if(muons[1].Pt() > 10){
 	  FillEventCutFlow(1, "DiMu", cf_weight);
 	  std::vector<snu::KMuon> muons_veto         = GetMuons("MUON_HN_VETO");
-	  std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
-	  
-	  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
-	  std::vector<snu::KJet> jets = GetJets("JET_HN");
+
 	  
 	  if(muons_veto.size() ==2){
 	    FillEventCutFlow(1, "MuVeto", cf_weight);
@@ -224,6 +272,58 @@ void HNDiLepton::FillEventCutFlow(int cf,TString cut,  float weight){
       GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(9,"MET");
       GetHist( "cutflow_challenge")->GetXaxis()->SetBinLabel(10,"mjj");
 
+
+    }
+  }
+
+  if(cf==2){
+    if(GetHist( "mm_eventcutflow_LowMassDoubleMuon")) {
+      GetHist( "mm_eventcutflow_LowMassDoubleMuon")->Fill(cut,weight);
+
+    }
+    else{
+
+      vector<TString> IDs;
+      IDs.push_back("LowMassMM_HNTIGHT");
+      IDs.push_back("LowMassMM_HNTIGHT2");
+      IDs.push_back("LowMassMM_HNTIGHT3");
+      IDs.push_back("LowMassMM_HNTIGHT4");
+      IDs.push_back("LowMassMM_HNTIGHT5");
+      IDs.push_back("LowMassMM_HNTIGHT6");
+      AnalyzerCore::MakeHistograms( "mm_eventcutflow_LowMassDoubleMuon",IDs.size(),0.,float(IDs.size()));
+
+      for(unsigned int iid=0; iid < IDs.size(); iid++){
+
+        TString elid = IDs[iid];
+        GetHist( "mm_eventcutflow_LowMassDoubleMuon")->GetXaxis()->SetBinLabel(1+iid,elid);
+      }
+      GetHist( "mm_eventcutflow_LowMassDoubleMuon")->Fill(cut,weight);
+
+    }
+  }
+  
+  if(cf==3){
+    if(GetHist( "mm_eventcutflow_HighMassDoubleMuon")) {
+      GetHist( "mm_eventcutflow_HighMassDoubleMuon")->Fill(cut,weight);
+
+    }
+    else{
+
+      vector<TString> IDs;
+      IDs.push_back("HighMassMM_HNTIGHT");
+      IDs.push_back("HighMassMM_HNTIGHT2");
+      IDs.push_back("HighMassMM_HNTIGHT3");
+      IDs.push_back("HighMassMM_HNTIGHT4");
+      IDs.push_back("HighMassMM_HNTIGHT5");
+      IDs.push_back("HighMassMM_HNTIGHT6");
+      AnalyzerCore::MakeHistograms( "mm_eventcutflow_HighMassDoubleMuon",IDs.size(),0.,float(IDs.size()));
+
+      for(unsigned int iid=0; iid < IDs.size(); iid++){
+
+	TString elid = IDs[iid];
+	GetHist( "mm_eventcutflow_HighMassDoubleMuon")->GetXaxis()->SetBinLabel(1+iid,elid);
+      }
+      GetHist( "mm_eventcutflow_HighMassDoubleMuon")->Fill(cut,weight);
 
     }
   }

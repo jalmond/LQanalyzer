@@ -198,9 +198,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KFatJet> fatjets = GetFatJets("FATJET_HN");
   std::vector<snu::KJet> hnjets = GetJetsWFT("JET_HN","FATJET_HN");             
 
-  
+  std::vector<snu::KElectron> electrons_loose=GetElectrons(true,true , "ELECTRON_HN_FAKELOOSE");
+  float wtest = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electrons_loose, "ELECTRON_HN_FAKELOOSE","ELECTRON_HN_TIGHTv4","40",true);
 
-
+  cout << "wtest = " << wtest << endl;
 
 
   

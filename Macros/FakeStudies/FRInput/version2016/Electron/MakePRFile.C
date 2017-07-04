@@ -21,7 +21,7 @@ bool CheckHist(TH2* h);
 
 void MakePRRootFile(){
   
-  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_El/periodBtoH/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/FakeRateCalculator_FinalEl/periodBtoH/";
 
   TFile * fdata = new TFile(path + "FakeRateCalculator_El_data_DoubleEG_cat_v8-0-6.root");
 
@@ -30,7 +30,7 @@ void MakePRRootFile(){
   setTDRStyle();
   gStyle->SetPalette(1);
     
-  TString outfile = "PromptRate13TeV_2016_opt.root";
+  TString outfile = "PromptRate13TeV_2016_hnid.root";
   TFile* fout = new TFile(outfile.Data(),"RECREATE");
   fout->cd();
 

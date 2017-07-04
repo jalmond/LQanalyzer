@@ -64,7 +64,7 @@ class DataDrivenBackgrounds{
   /// == Dilepton
   float Get_DataDrivenWeight_EE(bool geterr, std::vector<snu::KElectron> k_electrons);
   float Get_DataDrivenWeight_EEmva(bool geterr,std::vector<snu::KElectron> k_electrons, bool tight1, bool tight2, TString key1, TString key2);
-  float Get_DataDrivenWeight_EE(bool geterr, std::vector<snu::KElectron> k_electrons, TString IDloose,TString IDtight, TString method);
+  float Get_DataDrivenWeight_EE(bool geterr, std::vector<snu::KElectron> k_electrons, TString IDloose,TString IDtight, TString method, bool isedileptrig=true);
   float Get_DataDrivenWeight_MM(bool geterr, std::vector<snu::KMuon> k_muons);
   float Get_DataDrivenWeight_MM(bool geterr, std::vector<snu::KMuon> k_muons,  bool tight1, bool tight2, TString ID1,TString ID2, bool cl1, bool cl2, TString method, float isocut1, float isocut2, bool useclosej, bool singletrig);
 

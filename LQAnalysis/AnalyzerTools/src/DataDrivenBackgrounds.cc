@@ -451,7 +451,7 @@ void  DataDrivenBackgrounds::Test(){
 }
 float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KElectron> k_electrons){
 
-  return Get_DataDrivenWeight_EE( geterr,k_electrons, "ELECTRON16_HN_FAKELOOSE_NOD0","ELECTRON16_HN_TIGHT","dijet_ajet40");
+  return Get_DataDrivenWeight_EE( geterr,k_electrons, "ELECTRON_HN_FAKELOOSE", "ELECTRON_HN_TIGHTv4", "40",true);
 }
 
 
@@ -468,9 +468,10 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EEmva(bool geterr,vector<snu::
 
     /// "" loose ID needs filling here                                                                                                                              
   }
-  return 1.;
+  return 0.;
 }
-float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KElectron> k_electrons,   TString IDloose,TString IDtight, TString method){
+
+float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KElectron> k_electrons,   TString IDloose,TString IDtight, TString awayjetpt, bool isDoubleTrig){
 
 
 
@@ -487,24 +488,25 @@ float DataDrivenBackgrounds::Get_DataDrivenWeight_EE(bool geterr,vector<snu::KEl
     bool is_el1_tight    =  dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(0),IDtight);
     bool is_el2_tight    = dd_eventbase->GetElectronSel()->ElectronPass(k_electrons.at(1),IDtight);
     vector<TLorentzVector> electrons=MakeTLorentz(k_electrons);
+    
+    vector<TString> vkeys;
+    if(isDoubleTrig){
+      vkeys.push_back(IDtight+"_"+awayjetpt+"_ptcorr_eta");
+      vkeys.push_back(IDtight+"_"+awayjetpt+"_ptcorr_eta");
+      if(k_electrons.at(0).Pt() < 25.) return -999.;
+      if(k_electrons.at(1).Pt() < 10.) return -999.;
+    }
+    else{
+      if(k_electrons.at(0).Pt() < 30.) return -999.;
+      if(k_electrons.at(1).Pt() < 5.) return -999.;
 
+      vkeys.push_back("SingleElTrig_" + IDtight+"_"+awayjetpt+"_ptcorr_eta");
+      vkeys.push_back(IDtight+"_"+awayjetpt+"_ptcorr_eta");
 
-
-    std::vector<TString> vkeys;
-    for(unsigned int ikey=0; ikey < electrons.size(); ikey++){
-      TString regel1="reg1";
-      if(k_electrons.at(ikey).Pt() > 50.) {
-	if(k_electrons.at(ikey).IsEB1()) regel1="reg2";
-	if(k_electrons.at(ikey).IsEB2()) regel1="reg3";
-	if(k_electrons.at(ikey).IsEE()) regel1="reg4";
-      }
-      vkeys.push_back(regel1);
     }
 
 
-    std::vector<TString> elkeys = GetElFRKey(IDloose, IDtight, method, vkeys);
-
-    return  m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight, is_el2_tight, elkeys);
+    return  m_fakeobj->get_dilepton_ee_eventweight(geterr,electrons, is_el1_tight, is_el2_tight, vkeys);
       
     /// "" loose ID needs filling here
   }
