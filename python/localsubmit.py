@@ -1582,6 +1582,23 @@ else:
             os.system("rm  "  +  Finaloutputdir   + outfile)
         os.system("mv " +outputdir + "*.root" + " " + mergeoutputdir)
         os.system("hadd " + mergeoutputdir +  outfile  + " "+ mergeoutputdir + "*.root")
+        
+        if os.getenv("USER") == "jalmond":
+
+            transout=Finaloutputdir.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
+            
+            catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
+            readcatpath=open(catpath,"r")
+            lxmachine=""
+            for rline in readcatpath:
+                if "localcpu" in rline:
+                    srline = rline.split()
+                    lxmachine=srline[2]
+            readcatpath.close()
+            
+            os.system("scp -r "+mergeoutputdir +  outfile + " jalmond@"+lxmachine+".cern.ch:"+transout)
+            
+
         os.system("mv " + mergeoutputdir +  outfile + " "  + Finaloutputdir)
         os.system("ls -lh " + Finaloutputdir +  outfile + " > " + path_jobpre +"LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/filesize_" + original_sample+ tagger +".txt")
         f = ROOT.TFile(Finaloutputdir +  outfile)

@@ -158,6 +158,23 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
     kevent.SetPFMETType1xyUnsmearedy(met_xyshift_py->at(0));
     
   }
+  double topreweight=1.;
+  bool settopweight=false;
+  if(k_sample_name.Contains("TTLL_powheg"))settopweight=true;
+  if(k_sample_name.Contains("TTLJ_powheg"))settopweight=true;
+  if(k_sample_name.Contains("TT_powheg"))settopweight=true;
+  if(k_sample_name.Contains("TTJets_aMC"))settopweight=true;
+
+  
+  if(settopweight){
+    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
+      if(fabs(gen_pdgid->at(itx))==6 && fabs(gen_status->at(itx))<30 && fabs(gen_status->at(itx))>20){
+	topreweight*=exp(0.0615-0.0005*gen_pt->at(itx));
+      }
+    }
+  }
+
+  kevent.SetTopPtReweight(topreweight);
 
   if(jets_rho){
     if(jets_rho->size() > 0)kevent.SetRho(jets_rho->at(0));
@@ -549,7 +566,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
     bool matched_in_Dr=false;
 
     int           eltype=0;
-    
+    bool conv_veto=false;
     if(k_cat_version  > 3){
       
       if(gen_pt){
@@ -562,17 +579,42 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  /// Requirements to make sure no crash or warnings with pt=0
 	if(gen_motherindex->at(it) <= 0)continue;
 	if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-	if(gen_pt->at(it) < 0.1) continue;
+	if(gen_pt->at(it) < 0.001) continue;
 	
-	
+
 	double match_eta =electrons_eta->at(iel);
+	double match_pt =electrons_pt->at(iel);
 	double match_phi =electrons_phi->at(iel);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
+
 	
+	
+	/// check for photon conversion veto in DY/ZG                                                                                                                               
+	if(fabs(gen_pdgid->at(it)) ==22){
+	  if(gen_pt->at(it) > 10.){	
+	    if(dr < 0.3){
+	      if(gen_isprompt->at(it) && gen_status->at(it) ==1) {
+		conv_veto=true;
+		for (UInt_t it_ph=0; it_ph< gen_pt->size(); it_ph++ ){
+		  if(it==it_ph) continue;
+
+		  // check ph is matched to q or g from matrix element (st 23)
+		  if(gen_status->at(it_ph) ==23){
+		    if(fabs(gen_pdgid->at(it_ph)) < 7 || fabs(gen_pdgid->at(it_ph))==21){
+		      double drph = sqrt( pow(fabs(gen_eta->at(it_ph) - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( gen_phi->at(it_ph) - gen_phi->at(it))),2.0));
+		      if(drph < 0.05) conv_veto=false;
+		    }
+		  }
+		}
+	      }	      
+	    }
+	  }
+	}
+
 	/// Matching using instructions on
 	/// https://indico.cern.ch/event/292928/contributions/1650088/attachments/547844/755123/talk_electron_contribution.pdf
 	/// 
-	
+
 	/// Match required to status 1 electron
 	if(gen_status->at(it) != 1) continue;
 	if(fabs(gen_pdgid->at(it)) != 11) continue;
@@ -583,7 +625,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	for(unsigned int im=0; im < matched_truth.size();im++){
           if(it == unsigned(matched_truth.at(im))) already_matched=true;
         }
-        if(already_matched) continue;
+        //if(already_matched) continue;
 	  
 	if(matched_in_Dr){
 	  /// This is for multiple matched status 1 el.
@@ -597,29 +639,34 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  else if ((dr < min_Dr) ){
 	    
 	    /// find closest match in dR to status 1
-	    matched_in_Dr=true;
-	    min_Dr= dr;
-	    
-	    /// set index of matched status 1 electron
-	    matched_index=it;
+            if( (fabs(match_pt - gen_pt->at(it))/gen_pt->at(it)) < 2.) {
+	      
+	      matched_in_Dr=true;
+	      min_Dr= dr;
+	      
+	      /// set index of matched status 1 electron
+	      matched_index=it;
+	    }
 	  }
 	}
 	else{
 	  /// first match status 1 electron
 	  if ((dr < min_Dr) ){
-	    
-	    /// find closest match in dR to status 1
-	    matched_in_Dr=true;
-	    min_Dr= dr;
-	    
-	    /// set index of matched status 1 electron
-	    matched_index=it;
-	    
+	    if( (fabs(match_pt - gen_pt->at(it))/gen_pt->at(it)) < 2.) {
+	      
+	      /// find closest match in dR to status 1
+	      matched_in_Dr=true;
+	      min_Dr= dr;
+	      
+	      /// set index of matched status 1 electron
+	      matched_index=it;
+	    }
 	  }
 	}
       }// end of gen loop to find status 1 electron
-
-
+	
+	//cout << iel << " " << electrons_pt->at(iel) << " " << electrons_eta->at(iel) << " " << electrons_phi->at(iel) << " " << conv_veto << endl;
+	
       ///// treat case where there is a matched status 1 electron:
       //// classify into prompt:Fake:FromTau
 
@@ -653,12 +700,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 	    if(gen_motherindex->at(itx) <= 0)continue;
 	    if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-	    if(gen_pt->at(itx) < 0.1) continue;
+	    if(gen_pt->at(itx) < 0.001) continue;
 	    if(fabs(gen_pdgid->at(itx)) ==11) {
 	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { 
 		charge_sum+= gen_pdgid->at(itx); n_el_from_el++;
 		if(n_el_from_el==3){
 		  if(itx == matched_index) isthirdel_fromconv=true;
+		}
+		if(n_el_from_el==5){
+                  if(itx == matched_index) isthirdel_fromconv=true;
 		}
 	      }
 
@@ -672,12 +722,15 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  {el.SetIsPhotonConversion(true);           eltype=2;} 
 	  else  el.SetIsPhotonConversion(false);
 	  
+	  
 	  if(!isthirdel_fromconv){
 	    if(n_el_from_el ==3&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true); }
+	    if(n_el_from_el ==5&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true); }
 	  }
 	  else{
 	    if(pdgid * electrons_q->at(iel) > 0 )  {
 	      if(n_el_from_el ==3&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true);}
+	      if(n_el_from_el ==5&& (fabs(charge_sum) == 11)) { eltype=3; el.SetIsPhotonConversion(true);}
 	    }
 	  }
 
@@ -744,7 +797,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		if(itx == matched_index) continue;
 		if(gen_motherindex->at(itx) <= 0)continue;
 		if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-		if(gen_pt->at(itx) < 0.1) continue;
+		if(gen_pt->at(itx) < 0.001) continue;
 		if(fabs(gen_pdgid->at(itx)) ==11) {
 		  if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) { charge_sum+= gen_pdgid->at(itx); n_el_from_el++;
 		  }
@@ -753,6 +806,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      if((gen_pdgid->at(matched_index)  * pdgid) < 0 )  el.SetIsPhotonConversion(true);
 	      else  el.SetIsPhotonConversion(false);
 	      if(n_el_from_el ==3&& (fabs(charge_sum) == 11))  el.SetIsPhotonConversion(true);
+	      if(n_el_from_el ==5&& (fabs(charge_sum) == 11))  el.SetIsPhotonConversion(true);
 
 	      if(fabs(gen_pdgid->at(gen_motherindex->at(mother_index))) > 50) {isprompt=false; eltype=12;}
 	      
@@ -772,10 +826,11 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 	      if(gen_motherindex->at(itx) <= 0)continue;
 	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-	      if(gen_pt->at(itx) < 0.1) continue;
+	      if(gen_pt->at(itx) < 0.001) continue;
 	      if(fabs(gen_pdgid->at(itx)) ==11) {
 		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) {  n_el_from_eg++;
 		  if(n_el_from_eg==3){isthirdel_fromconv=true; }
+		  if(n_el_from_eg==5){isthirdel_fromconv=true; }
 		  if(gen_status->at(itx) ==1){
 		    KTruth truthe;
 		    truthe.SetPtEtaPhiE(gen_pt->at(itx), gen_eta->at(itx), gen_phi->at(itx), gen_energy->at(itx));
@@ -815,6 +870,13 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		eltype=18;
 	      }
 	    }
+	    if(isthirdel_fromconv&&n_el_from_eg ==5){
+              if(pdgid * electrons_q->at(iel) > 0 )   {
+                el.SetIsPhotonConversion(true);
+                eltype=18;
+              }
+            }
+
 	    if(pdgid * electrons_q->at(iel) > 0 )  {
 	      el.SetIsChargeFlip(true);
 	      if(eltype==17  || eltype == 18){
@@ -838,7 +900,7 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
 	    if(gen_motherindex->at(it) <= 0)continue;
 	    if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-	    if(gen_pt->at(it) < 0.1) continue;
+	    if(gen_pt->at(it) < 0.001) continue;
 	    
 	    double match_eta =electrons_eta->at(iel);
 	    double match_phi =electrons_phi->at(iel);
@@ -865,6 +927,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      // isprompt = false since it failed status 1 matching
 	      isprompt=false;
 	      /// mother index of first non electron
+	      int grandmother =0;
+	      if(gen_motherindex->at(mindex) > 0)grandmother=gen_pdgid->at(gen_motherindex->at(mindex));
 	      mother_pdgid=gen_pdgid->at(mindex);
 	      mother_index=mindex;
 	      matched_index = it;
@@ -888,6 +952,10 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 		from_tau=true;
 		if(fabs(mother_pdgid) > 50) eltype=24;
 		else eltype=25;
+		if(fabs(mother_pdgid)==15){
+		  if(fabs(grandmother) > 50) eltype=-24;
+		  else eltype=-25;
+		}
 	      }
 	      else if(fabs(pdgid) == 1){
 		eltype=26;
@@ -919,7 +987,13 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
 	      else if(fabs(pdgid) == 13){
 		eltype=35;
               }
-	      else eltype=36;
+	      else if(fabs(pdgid) == 311){
+                eltype=36;
+              }
+	      else if(fabs(pdgid) > 500 && fabs(pdgid) < 600){
+                eltype=37;
+              }
+	      else eltype=38;
 	      
 	    }// dr req
 	  }// loop over gen vector
@@ -941,6 +1015,8 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       el.SetMotherPdgId(0);
       el.SetMotherTruthIndex(-1);
       el.SetMCTruthIndex(-1);
+      el.SetIsMCExternalConversion(conv_veto);
+      if(conv_veto)el.SetType(40);
     }
     else{
       
@@ -965,12 +1041,16 @@ std::vector<KElectron> SKTreeFiller::GetAllElectrons(){
       }
       
       //if(gen_isprompt->at(matched_index) 
+      el.SetIsMCExternalConversion(conv_veto);
       el.SetIsMCMatched(isprompt);
       el.SetIsFromTau(from_tau);
       el.SetMotherPdgId(mother_pdgid);
       el.SetMCMatchedPdgId(mc_pdgid);
       el.SetMotherTruthIndex(mother_index);
       el.SetMCTruthIndex(matched_index);
+      if(gen_status->at(matched_index)==1)el.SetIsPromptFlag(gen_isprompt->at(matched_index));
+      if(conv_veto)el.SetType(40);
+
     }
     }
     electrons.push_back(el);
@@ -1342,10 +1422,10 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       for (UInt_t it=0; it< gen_pt->size(); it++ ){
         if(gen_motherindex->at(it) <= 0)continue;
         if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-        if(gen_pt->at(it) < 0.1) continue;
 	
 	if(gen_pt->at(it) < 5.) continue;
 
+	double match_pt =muon_pt->at(ilep);
 	double match_eta =muon_eta->at(ilep);
 	double match_phi =muon_phi->at(ilep);
 	double dr = sqrt( pow(fabs( match_eta - gen_eta->at(it)),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( match_phi - gen_phi->at(it))),2.0));
@@ -1357,7 +1437,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	for(unsigned int im=0; im < matched_truth.size();im++){
 	  if(it == unsigned(matched_truth.at(im))) already_matched=true;
 	}
-	if(already_matched) continue;
+
+	///	if(already_matched) continue;
 
         /// Match requires to status 1 muon
         if(gen_status->at(it) != 1) continue;
@@ -1372,20 +1453,24 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  }
 	  else   if (dr < min_Dr){
 	    /// find closest match in dR to status 1
+	    if( (fabs(match_pt - gen_pt->at(it))/gen_pt->at(it)) < 2.) {
+	      matched_in_Dr=true;
+	      min_Dr= dr;
+	      /// set index of matched status 1 muon
+	      matched_index=it;
+	    }
+	  }
+	}
+	else if (dr < min_Dr){
+	  if( (fabs(match_pt - gen_pt->at(it))/gen_pt->at(it)) < 2.) {
+	    /// find closest match in dR to status 1
 	    matched_in_Dr=true;
 	    min_Dr= dr;
+	    
 	    /// set index of matched status 1 muon
 	    matched_index=it;
 	  }
 	}
-	else if (dr < min_Dr){
-          /// find closest match in dR to status 1
-          matched_in_Dr=true;
-          min_Dr= dr;
-	  
-	  /// set index of matched status 1 muon
-          matched_index=it;
-        }
       }// end of gen loop to find status 1 muon
 
       ///// treat case where there is a matched status 1 muon:
@@ -1420,12 +1505,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 	    if(gen_motherindex->at(itx) <= 0)continue;
 	    if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-	    if(gen_pt->at(itx) < 0.1) continue;
+	    if(gen_pt->at(itx) < 0.001) continue;
 	    if(fabs(gen_pdgid->at(itx)) ==13) {
 	      if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
 	    }
 	  }
 	  if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+	  if(n_mu_from_mother == 5)  muon.SetIsPhotonConversion(true);
           mother_index=mindex;
           mother_pdgid=gen_pdgid->at(mindex);
           isprompt=true; /// means is prompt
@@ -1458,12 +1544,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	      for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 		if(gen_motherindex->at(itx) <= 0)continue;
 		if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-		if(gen_pt->at(itx) < 0.1) continue;
+		if(gen_pt->at(itx) < 0.001) continue;
 		if(fabs(gen_pdgid->at(itx)) ==13) {
 		  if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
 		}
 	      }
 	      if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+	      if(n_mu_from_mother == 5)  muon.SetIsPhotonConversion(true);
 	     
 	      if(fabs(gen_pdgid->at(gen_motherindex->at(mother_index))) > 50) {isprompt=false; mutype=7;}
             }
@@ -1481,7 +1568,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	    for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 	      if(gen_motherindex->at(itx) <= 0)continue;
 	      if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-	      if(gen_pt->at(itx) < 0.1) continue;
+	      if(gen_pt->at(itx) < 0.001) continue;
 	      if(fabs(gen_pdgid->at(itx)) ==13) {
 		if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
 		if(gen_status->at(itx) ==1){
@@ -1513,6 +1600,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	    
 	    
 	    if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+	    if(n_mu_from_mother == 5)  muon.SetIsPhotonConversion(true);
 
 	    /// speacial treatment for signal                                                                                                                                                                                                                                   
 
@@ -1527,7 +1615,7 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  for (UInt_t itxx=0; itxx< gen_pt->size(); itxx++ ){
             if(gen_motherindex->at(itxx) <= 0)continue;
             if(gen_motherindex->at(itxx) >= int(gen_pt->size()))continue;
-            if(gen_pt->at(itxx) < 0.1) continue;
+            if(gen_pt->at(itxx) < 0.001) continue;
 	    //cout << itxx << " " << gen_pdgid->at(itxx) << " " << gen_pdgid->at(gen_motherindex->at(itxx)) << " " << gen_eta->at(itxx) << " " << gen_phi->at(itxx) << endl;
 	  }
 	}
@@ -1535,13 +1623,13 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 	  for (UInt_t it=0; it< gen_pt->size(); it++ ){
             if(gen_motherindex->at(it) <= 0)continue;
             if(gen_motherindex->at(it) >= int(gen_pt->size()))continue;
-            if(gen_pt->at(it) < 0.1) continue;
+            if(gen_pt->at(it) < 0.001) continue;
 
 	    bool already_matched=false;
 	    for(unsigned int im=0; im < matched_truth.size();im++){
 	      if(it == unsigned(matched_truth.at(im))) already_matched=true;
 	    }
-	    if(already_matched) continue;
+	    //if(already_matched) continue;
 
             double match_eta =muon_eta->at(ilep);
             double match_phi =muon_phi->at(ilep);
@@ -1570,59 +1658,75 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
 		from_tau=false;
                 break;
               }
+
+              int grandmother =0;
+              if(gen_motherindex->at(mindex) > 0)grandmother=gen_pdgid->at(gen_motherindex->at(mindex));
+
               if(fabs(pdgid) == 15){
 		from_tau=true;
-		if(fabs(mother_pdgid) > 50) mutype=12;
-		else mutype=13;
+		if(fabs(mother_pdgid) > 50) mutype=13;
+		else mutype=14;
+		if(fabs(mother_pdgid) ==15){
+		  if(fabs(grandmother) > 50) mutype=-13;
+		  else mutype=-14;
+
+		}
 	      }
 	      if(fabs(gen_pdgid->at(gen_motherindex->at(it))) == 13){
-		mutype=14;
+		mutype=15;
 		int n_mu_from_mother=0;
 		for (UInt_t itx=0; itx< gen_pt->size(); itx++ ){
 		  if(gen_motherindex->at(itx) <= 0)continue;
 		  if(gen_motherindex->at(itx) >= int(gen_pt->size()))continue;
-		  if(gen_pt->at(itx) < 0.1) continue;
+		  if(gen_pt->at(itx) < 0.001) continue;
 		  if(fabs(gen_pdgid->at(itx)) ==13) {
 		    if(gen_motherindex->at(itx) == gen_motherindex->at(matched_index)) n_mu_from_mother++;
 		  }
 		}
 		if(n_mu_from_mother == 3)  muon.SetIsPhotonConversion(true);
+		if(n_mu_from_mother == 5)  muon.SetIsPhotonConversion(true);
 	      }else{
 		muon.SetIsPhotonConversion(false);
 	      }
 	      
 	      if(fabs(pdgid) == 1){
-                mutype=15;
-              }
-              else if(fabs(pdgid) == 2){
                 mutype=16;
               }
+              else if(fabs(pdgid) == 2){
+                mutype=17;
+              }
               else if(fabs(pdgid) == 3){
-               mutype=17;
+               mutype=18;
               }
               else if(fabs(pdgid) == 4){
-                mutype=18;
-              }
-              else if(fabs(pdgid) == 5){
                 mutype=19;
               }
-              else if(fabs(pdgid) == 21){
+              else if(fabs(pdgid) == 5){
                 mutype=20;
+              }
+              else if(fabs(pdgid) == 21){
+                mutype=21;
               }
 	      
 	      else if(fabs(pdgid) == 211){
-		mutype=21;
-	      }
-	      else if(fabs(pdgid) == 310){
 		mutype=22;
 	      }
-	      else if(fabs(pdgid) == 431){
+	      else if(fabs(pdgid) == 310){
 		mutype=23;
+	      }
+	      else if(fabs(pdgid) == 431){
+		mutype=24;
 	    }
 	      else if(fabs(pdgid) == 13){
-		mutype=24;
+		mutype=25;
 	      }
-	      else mutype=25;
+	      else if(fabs(pdgid) == 311){
+                mutype=26;
+              }
+	      else if(fabs(pdgid) > 500 && fabs(pdgid) < 600){
+                mutype=27;
+              }
+	      else mutype=28;
 
 	    }// dr req
           }// loop over gen vector
@@ -1655,6 +1759,8 @@ std::vector<KMuon> SKTreeFiller::GetAllMuons(){
       muon.SetMCMatchedPdgId(mc_pdgid);
       muon.SetMotherTruthIndex(mother_index);
       muon.SetMCTruthIndex(matched_index);
+      if(gen_status->at(matched_index)==1)muon.SetIsPromptFlag(gen_isprompt->at(matched_index));
+
     }
     }
 
