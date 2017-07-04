@@ -14,10 +14,8 @@
 echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
 setupok=False
+alias killbkg="python python/killbkg.py "$1
 
-function killbkg {
-    python $LQANALYSER_DIR/python/killbkg.py -i $1
-}
 
 while read line
   do
@@ -143,7 +141,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE Tag
+source $CHECKTAGFILE branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -188,7 +186,7 @@ if [[ $1 != "" ]];then
         return 1
     fi
     
-    source $CHECKTAGFILE Tag
+    source $CHECKTAGFILE branch
     export LIBTAG=$CATVERSION
 fi
 

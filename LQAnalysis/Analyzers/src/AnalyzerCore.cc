@@ -3337,6 +3337,104 @@ bool AnalyzerCore::OppositeCharge(std::vector<snu::KElectron> electrons, bool ru
   return false;
 }
 
+float AnalyzerCore::GetCFweight(std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID){
+
+  if(el_ID != "ELECTRON_HN_TIGHTv4") return 0.;
+  if(electrons.size() != 2) return 0.;
+
+  snu::KElectron lep[2];
+  lep[0] = electrons.at(0);
+  lep[1] = electrons.at(1);
+
+  if(lep[0].Charge() == lep[1].Charge()) return 0.;
+
+  double CFrate[2] = {0.,}, CFweight[2] = {0.,};
+  CFrate[0] = GetCFRates(lep[0].Pt(), lep[0].SCEta(), el_ID);
+  CFrate[1] = GetCFRates(lep[1].Pt(), lep[1].SCEta(), el_ID);
+
+  CFweight[0] = CFrate[0] / (1-CFrate[0]);
+  CFweight[1] = CFrate[1] / (1-CFrate[1]);
+
+  double sf[2] = {1., 1.};
+  int sys == 0;  // temporary
+
+  if(apply_sf){
+    if(sys == 0){//Z mass window 15 GeV (76 ~ 106 GeV)
+      for(int i=0; i<2; i++){
+        if (fabs(lep[i].SCEta()) < 1.4442) sf[i] = 0.759713941;
+        else sf[i] = 0.784052036;
+      }
+    }
+    else if(sys == 1){//Z mass window 20 GeV
+      for(int i=0; i<2; i++){
+        if (fabs(lep[i].SCEta()) < 1.4442) sf[i] = 0.723099195;
+        else sf[i] = 0.757193848;
+      }
+    }
+    else if(sys == -1){//Z mass window 10 GeV
+      for(int i=0; i<2; i++){
+        if (fabs(lep[i].SCEta()) < 1.4442) sf[i] = 0.75362822;
+        else sf[i] = 0.821682654;
+      }
+    }
+  }
+
+  return (CFweight[0]*sf[0] + CFweight[1]*sf[1]);
+}
+
+float AnalyzerCore::GetCFRates(double el_pt, double el_eta, TString el_ID){
+  if(el_ID != "ELECTRON_HN_TIGHTv4") return 0.;
+
+  el_eta = fabs(el_eta);
+  if(el_eta > 1.4442 && el_eta < 1.556) return 0.;
+
+  double invPt = 1./el_pt;
+  double a = 999., b= 999.;
+  if(el_eta < 0.9){
+    if(invPt< 0.023){
+      a=(-0.00138635);
+      b=(4.35054e-05);
+    }
+    else{
+      a=(0.00114356);
+      b=(-1.55941e-05);
+    }
+  }
+  else if(el_eta < 1.4442){
+    if(invPt < 0.016){
+      a=(-0.0369937);
+      b=(0.000797434);
+    }
+    else if(invPt < 0.024){
+      a=(-0.0159017);
+      b=(0.00046038);
+    }
+    else{
+      a=(-0.00214657);
+      b=(0.000147245);
+    }
+  }
+  else{
+    if(invPt< 0.012){
+      a=(-0.4293);
+      b=(0.00641511);
+    }
+    else if(invPt< 0.020){
+      a=(-0.104796);
+      b=(0.00256146);
+    }
+    else{
+      a=(-0.0161499);
+      b=(0.00076872);
+    }
+  }
+
+  double rate = (a)*invPt + (b);
+  if(rate < 0) rate = 0.;
+  return rate;
+
+}
+
 
 int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WORKING_POINT wp, int period){
 

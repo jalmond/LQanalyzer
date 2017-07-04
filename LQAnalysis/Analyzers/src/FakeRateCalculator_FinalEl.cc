@@ -102,26 +102,32 @@ void FakeRateCalculator_FinalEl::ExecuteEvents()throw( LQError ){
     std::vector<snu::KJet> jetColl           = GetJets("JET_NOLEPTONVETO");
     
     std::vector<snu::KElectron> loose_el_hn = GetElectrons(false,false,"ELECTRON_HN_FAKELOOSE");
-    if(loose_el_hn.size() == 0 ) return;
     std::vector<snu::KElectron> tight_el_hn = GetElectrons(false,false,"ELECTRON_HN_TIGHTv4");
-    
     GetFakeRateAndPromptRates(loose_el_hn,"HN_TIGHT", tight_el_hn,0.08,weight,true, true);
+    
+    std::vector<snu::KElectron> loose_el_mva = GetElectrons(false,false,"ELECTRON_MVA_FAKELOOSE");
+    std::vector<snu::KElectron> tight_el_mva = GetElectrons(false,false,"ELECTRON_MVA_TIGHT");
+    GetFakeRateAndPromptRates(loose_el_mva,"MVA_TIGHT", tight_el_mva,0.05,weight,true, true);
 
+    
+    
   }
   
 
   if((isData&&k_channel == "SingleElectron") || !isData){
 
     std::vector<snu::KElectron> loose_el_hn = GetElectrons(false,false,"ELECTRON_HN_FAKELOOSE");
-    if(loose_el_hn.size() == 0 ) return;
     std::vector<snu::KElectron> tight_el_hn = GetElectrons(false,false,"ELECTRON_HN_TIGHTv4");
 
     TString triggerslist="HLT_Ele27_WPTight_Gsf_v";
 
     bool passtrig =  PassTrigger(triggerslist);
     if(!passtrig) return;
-    GetFakeRateAndPromptRates(loose_el_hn,"singleel_HN_TIGHT",tight_el_hn,0.1,weight,true, true);
-
+    GetFakeRateAndPromptRates(loose_el_hn,"singleel_HN_TIGHT",tight_el_hn,0.08,weight,true, true);
+    std::vector<snu::KElectron> loose_el_mva = GetElectrons(false,false,"ELECTRON_MVA_FAKELOOSE");
+    std::vector<snu::KElectron> tight_el_mva = GetElectrons(false,false,"ELECTRON_MVA_TIGHT");
+    GetFakeRateAndPromptRates(loose_el_mva,"singleel_MVA_TIGHT", tight_el_mva,0.05,weight,true, true);
+    
 
   }
 }
