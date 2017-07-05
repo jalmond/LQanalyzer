@@ -81,6 +81,26 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
      MakeCleverHistograms(sighist_mm, label+"OSMM_MidMass");
      MakeCleverHistograms(sighist_mm, label+"OSMM_HighMass");
    }
+
+   MakeCleverHistograms(sighist_mm, "TriggerTop");
+   MakeCleverHistograms(sighist_mm, "TriggerOSZMM");
+   MakeCleverHistograms(sighist_mm, "DiMuTriggerTop");
+   MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM");
+
+   MakeCleverHistograms(sighist_mm, "TriggerTop_p1");
+   MakeCleverHistograms(sighist_mm, "TriggerOSZMM_p1");
+   MakeCleverHistograms(sighist_mm, "DiMuTriggerTop_p1");
+   MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM_p1");
+
+   MakeCleverHistograms(sighist_mm, "TriggerTop_p2");
+   MakeCleverHistograms(sighist_mm, "TriggerOSZMM_p2");
+   MakeCleverHistograms(sighist_mm, "DiMuTriggerTop_p2");
+   MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM_p2");
+
+
+   MakeCleverHistograms(sighist_mm, "OSZMM");
+
+
    return;
 }
 
@@ -115,20 +135,41 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 	if(!isData) w*= mcdata_correction->MuonTrackingEffScaleFactor(muons_test);
 	if(!isData) w*= mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", muons_test, 0);
 	if(!isData) w*= mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT", muons_test, 0);
-	if(!isData) w*= eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
+	float puweight=1.;
+	if(GetMCPeriodRandom() < 6) puweight=eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
+	else puweight= mcdata_correction->UserPileupWeight(eventbase->GetEvent(), jets.size());
+
+	if(!isData){
+	  
+	  double trigger_eff_Data = mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, muons_test, 0, 0, 0);
+	  double trigger_eff_MC = mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, muons_test, 0, 1, 0);
+	  float trigger_sf = trigger_eff_Data/trigger_eff_MC;
+	  w*= trigger_sf;
+
+	}
+	if(!isData) w*= puweight;// eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
 	
 	if(GetDiLepMass(muons_test)< 100. && GetDiLepMass(muons_test) > 80.) {
 	  FillCLHist(sighist_mm, "OSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  w);
 	  TString analysis_trigger_muon="HLT_IsoMu24_v";
 	  TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
 	  if((PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon))){
-	    float trigw=0.;
+	    float trigw=1.;
 	    if(!isData) trigw= mcdata_correction->TriggerScaleFactor(electrons_veto, muons_test, "HLT_IsoMu24_v", 0);
-	    if(_m_channel)FillCLHist(sighist_mm,"TriggerOSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	    if(_m_channel){
+	      FillCLHist(sighist_mm,"TriggerOSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	      if(AllPrompt(muons_test,0))FillCLHist(sighist_mm,"TriggerOSZMM_p1", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	      if(AllPrompt(muons_test,1))FillCLHist(sighist_mm,"TriggerOSZMM_p2", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	    }
 	  }
 	  if(PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) {
-            if(_mm_channel)FillCLHist(sighist_mm,"DiMuTriggerOSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
-          }
+            if(_mm_channel){
+	      FillCLHist(sighist_mm,"DiMuTriggerOSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+	      if(AllPrompt(muons_test,0)) FillCLHist(sighist_mm,"DiMuTriggerOSZMM_p1", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+	      if(AllPrompt(muons_test,1)) FillCLHist(sighist_mm,"DiMuTriggerOSZMM_p2", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+	    }	    
+	      
+	  }
 	}
 	
 	if(jets.size() > 3){
@@ -137,23 +178,35 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 	    TString analysis_trigger_muon="HLT_IsoMu24_v";
 	    TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
 	    if((PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon))){
-	      float trigw=0.;
+	      float trigw=1.;
 	      if(!isData) trigw = mcdata_correction->TriggerScaleFactor(electrons_veto, muons_test, "HLT_IsoMu24_v", 0);
-	      if(_m_channel)FillCLHist(sighist_mm, "TriggerTop", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	      if(_m_channel){
+		FillCLHist(sighist_mm, "TriggerTop", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+		if(AllPrompt(muons_test,0) )                 FillCLHist(sighist_mm, "TriggerTop_p1", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+		if(AllPrompt(muons_test,1))                  FillCLHist(sighist_mm, "TriggerTop_p2", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+		
+	      }
 	    }
 	    if(PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) {
-	      if(_mm_channel)FillCLHist(sighist_mm, "DiMuTriggerTop", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
-	      
+	      if(_mm_channel){
+		if(muons_test[1].Pt() > 20 && muons_test[0].Pt() > 40 ){
+		  
+		FillCLHist(sighist_mm, "DiMuTriggerTop", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+		if(AllPrompt(muons_test,0)) 		FillCLHist(sighist_mm, "DiMuTriggerTop_p1", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+		if(AllPrompt(muons_test,1) )		FillCLHist(sighist_mm, "DiMuTriggerTop_p2", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+		}
+	      }
 	    }
 	  }
 	}
       }
     }
   }
-
+  
+  
   FillEventCutFlow(1, "NoCut", cf_weight);
   _mm_channel =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
-
+  
 
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
@@ -280,7 +333,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     }
   }
   
-}
+  }
 
 void HNDiLepton::FillEventCutFlow(int cf,TString cut,  float weight){
 

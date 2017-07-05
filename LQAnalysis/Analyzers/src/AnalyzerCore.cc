@@ -2096,6 +2096,7 @@ int AnalyzerCore::VersionStamp(TString cversion){
 }
 
 
+
 snu::KTruth AnalyzerCore::GetTruthMatchedParticle(snu::KElectron el){
   
   if(el.MCTruthIndex() >  eventbase->GetTruth().size()){
@@ -2258,6 +2259,21 @@ bool AnalyzerCore::NonPrompt(snu::KMuon mu){
 }
 
 
+bool AnalyzerCore::AllPrompt(std::vector<snu::KMuon> muons, int method){
+  
+  if(isData) return true;
+  bool allprompt=true;
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+
+  for(unsigned int im = 0; im < muons.size(); im++){
+    if(method==0 && !(TruthMatched(muons[im]) && muons[im].MCMatched())) allprompt=false;
+    int LepType=GetLeptonType(muons[im],truthColl);
+    if(method==1 && (LepType<=0)) allprompt=false;
+  }
+  return allprompt;
+}
+  
 
 bool AnalyzerCore::TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF){
   
