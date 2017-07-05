@@ -1,2 +1,2 @@
-OSMM_HighMass
+TriggerTop
 END

@@ -46,7 +46,7 @@ namespace snu {
     Bool_t PassTrigMVAHNTightv3() const ;
     Bool_t PassTrigMVAHNTightv4() const ;
     Bool_t PassTrigMVAGENTTight() const ;
-
+    Bool_t PassTrigMVAGENTLoose() const;
 
     // set kinematic variables
     void SetSCEta(Double_t sceta);

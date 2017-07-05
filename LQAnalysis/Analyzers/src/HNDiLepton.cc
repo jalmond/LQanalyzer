@@ -95,8 +95,66 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   float cf_weight = weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi) ;
   if(!isData) cf_weight *= eventbase->GetEvent().PileUpWeight();
   
+  _mm_channel =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
+  bool _m_channel =   isData ?  (k_channel.Contains("SingleMuon")) : true ;
+
+
+  if(1){
+    std::vector<snu::KMuon> muons_test = GetMuons("MUON_POG_TIGHT",true);
+    std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
+    std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
+    std::vector<snu::KJet> jets = GetJets("JET_HN");
+    std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
+
+    if(muons_test.size()==2){
+      if(muons_test[1].Pt() > 20 && muons_test[0].Pt() > 25 ){
+	
+	float w= weight;
+	if(!isData) w*= WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi) ;
+	
+	if(!isData) w*= mcdata_correction->MuonTrackingEffScaleFactor(muons_test);
+	if(!isData) w*= mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", muons_test, 0);
+	if(!isData) w*= mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT", muons_test, 0);
+	if(!isData) w*= eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
+	
+	if(GetDiLepMass(muons_test)< 100. && GetDiLepMass(muons_test) > 80.) {
+	  FillCLHist(sighist_mm, "OSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  w);
+	  TString analysis_trigger_muon="HLT_IsoMu24_v";
+	  TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
+	  if((PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon))){
+	    float trigw=0.;
+	    if(!isData) trigw= mcdata_correction->TriggerScaleFactor(electrons_veto, muons_test, "HLT_IsoMu24_v", 0);
+	    if(_m_channel)FillCLHist(sighist_mm,"TriggerOSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	  }
+	  if(PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) {
+            if(_mm_channel)FillCLHist(sighist_mm,"DiMuTriggerOSZMM", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+          }
+	}
+	
+	if(jets.size() > 3){
+	  if(NBJet(jets) > 1){
+	    
+	    TString analysis_trigger_muon="HLT_IsoMu24_v";
+	    TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
+	    if((PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon))){
+	      float trigw=0.;
+	      if(!isData) trigw = mcdata_correction->TriggerScaleFactor(electrons_veto, muons_test, "HLT_IsoMu24_v", 0);
+	      if(_m_channel)FillCLHist(sighist_mm, "TriggerTop", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  trigw*w);
+	    }
+	    if(PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")) {
+	      if(_mm_channel)FillCLHist(sighist_mm, "DiMuTriggerTop", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll, w);
+	      
+	    }
+	  }
+	}
+      }
+    }
+  }
+
   FillEventCutFlow(1, "NoCut", cf_weight);
   _mm_channel =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
+
+
 
   if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
   if(!PassMETFilter()) return;     /// Initial event cuts :                                                                                                                                
