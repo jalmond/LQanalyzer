@@ -108,7 +108,7 @@ void FakeRateCalculator_FinalEl::ExecuteEvents()throw( LQError ){
     GetFakeRateAndPromptRates(loose_el_hn,"HN_TIGHT", tight_el_hn,0.08,0.08,weight,"ELECTRON_HN_TIGHTv4",false, true);
 
     GetFakeRateAndPromptRatesPerPeriod(loose_el_hn,"HN_TIGHT", tight_el_hn,0.08,0.08,weight,"ELECTRON_HN_TIGHTv4",false, false);
-
+    //
     GetFakeRateAndPromptRates(loose_el_hn_iso04,"HN_TIGHTISO04", tight_el_hn,0.08,0.08,weight,"ELECTRON_HN_TIGHTv4",false, false);
     GetFakeRateAndPromptRates(loose_el_hn_iso08,"HN_TIGHTISO08", tight_el_hn,0.08,0.08,weight,"ELECTRON_HN_TIGHTv4",false, false);
     GetFakeRateAndPromptRates(loose_el_hn,"HN_TIGHTPUJet", tight_el_hn,0.08,0.08,weight,"ELECTRON_HN_TIGHTv4",true, false);
@@ -557,6 +557,7 @@ void FakeRateCalculator_FinalEl::MakeDXYFakeRatePlots(TString label, TString elt
 void FakeRateCalculator_FinalEl::MakeFakeRatePlots(TString label, TString eltag,   std::vector<snu::KElectron> electrons_tight, std::vector<snu::KElectron> electrons,  std::vector<snu::KJet> jets, std::vector<snu::KJet> alljets, float prescale_w, float isocutb, float isocute ,float w, bool makebasicplots){
   
 
+
   if(electrons.size() ==2){
     if(Zcandidate(electrons, 10., true)){
       Float_t ptbins[11] = { 10., 15.,20.,25.,30.,40.,45., 50.,70.,100., 200.};
@@ -575,6 +576,7 @@ void FakeRateCalculator_FinalEl::MakeFakeRatePlots(TString label, TString eltag,
   
   if(prescale_w==0.) return;
   
+
   bool useevent20 = UseEvent(electrons , jets, 20., prescale_w, w); 
   bool useevent30 = UseEvent(electrons , jets, 30., prescale_w, w); 
   bool useevent40 = UseEvent(electrons , jets, 40., prescale_w, w); 
@@ -684,6 +686,7 @@ void FakeRateCalculator_FinalEl::GetFakeRates(std::vector<snu::KElectron> loose_
   
   if(basicplots) return;
   
+
   int nbjet(0);
   float tmp_deltaR=1000.;
   for(unsigned int ij =0 ; ij < jets.size() ; ij++){
@@ -709,7 +712,7 @@ void FakeRateCalculator_FinalEl::GetFakeRates(std::vector<snu::KElectron> loose_
     else FillHist(("TightEl" + tag + "_pt_endcap").Data(),el_pt, w,  ptbins, 10);
 
     if(fabs(tight_el.at(0).Eta()) < 1.5)     FillHist(("TightEl" + tag + "_ptcorr_barrel").Data(),el_pt_corr, w,  ptbins, 10);
-    else FillHist(("TightEl" + tag + "_ptcorr_endcap").Data(),el_pt, w, el_pt_corr, 10);
+    else FillHist(("TightEl" + tag + "_ptcorr_endcap").Data(),el_pt_corr ,w,  ptbins,10);
 
 
     FillHist(("TightEl" + tag + "_njets").Data(), jets.size(), w, 0.,5.,5);
@@ -743,11 +746,11 @@ void FakeRateCalculator_FinalEl::GetFakeRates(std::vector<snu::KElectron> loose_
     FillHist(("LooseEl" + tag + "_nbjet").Data(), nbjet, w, 0., 4.,4);
     FillHist(("LooseEl" + tag + "_ht").Data(), SumPt(jets), w, htbins, 6);
 
-    if(fabs(tight_el.at(0).Eta()) < 1.5)     FillHist(("LooseEl" + tag + "_pt_barrel").Data(),el_pt, w,  ptbins, 10);
+    if(fabs(loose_el.at(0).Eta()) < 1.5)     FillHist(("LooseEl" + tag + "_pt_barrel").Data(),el_pt, w,  ptbins, 10);
     else FillHist(("LooseEl" + tag + "_pt_endcap").Data(),el_pt, w,  ptbins, 10);
 
-    if(fabs(tight_el.at(0).Eta()) < 1.5)     FillHist(("LooseEl" + tag + "_ptcorr_barrel").Data(),el_pt_corr, w,  ptbins, 10);
-    else FillHist(("LooseEl" + tag + "_ptcorr_endcap").Data(),el_pt, w, el_pt_corr, 10);
+    if(fabs(loose_el.at(0).Eta()) < 1.5)     FillHist(("LooseEl" + tag + "_ptcorr_barrel").Data(),el_pt_corr, w,  ptbins, 10);
+    else FillHist(("LooseEl" + tag + "_ptcorr_endcap").Data(),el_pt_corr, w,ptbins, 10);
 
 
 

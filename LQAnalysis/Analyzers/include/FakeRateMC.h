@@ -35,6 +35,7 @@ class FakeRateMC : public AnalyzerCore {
   
 
   int CloseJetType(snu::KElectron el, std::vector<snu::KJet> jets);
+  int CloseJetTypeHAD(snu::KElectron el, std::vector<snu::KJet> jets);
   int AwayJetType(snu::KElectron el, std::vector<snu::KJet> jets);
 
 

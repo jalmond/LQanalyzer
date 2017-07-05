@@ -285,7 +285,6 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
   }
   string lqdir = getenv("LQANALYZER_DIR");
   
-  cout << "CATAnalyzerPeriod = " << singleperiod << endl;
   if(singleperiod.Contains("None")){
     lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+".txt";
   }
@@ -3357,7 +3356,7 @@ float AnalyzerCore::GetCFweight(std::vector<snu::KElectron> electrons, bool appl
   CFweight[1] = CFrate[1] / (1-CFrate[1]);
 
   double sf[2] = {1., 1.};
-  int sys == 0;  // temporary
+  int sys = 0;  // temporary
 
   if(apply_sf){
     if(sys == 0){//Z mass window 15 GeV (76 ~ 106 GeV)
