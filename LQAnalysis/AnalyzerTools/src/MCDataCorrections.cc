@@ -632,7 +632,7 @@ double MCDataCorrections::GetEffDEG2(snu::KElectron el){
 
 //==== Trigger Scale Factor, by "leg-by-leg" strategy
 
-double MCDataCorrections::TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> el, std::vector<snu::KMuon> mu, int TriggerCategory, int DataOrMC, int direction){
+double MCDataCorrections::TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> el, TString elid, std::vector<snu::KMuon> mu, TString muid, int TriggerCategory, int DataOrMC, int direction){
 
   if(k_period < 0) {
     /// If k_period < 0 then using ALL data periods and use weighted SF                                                                                                        
@@ -648,8 +648,8 @@ double MCDataCorrections::TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> 
 
     double WeightBtoF = (lumi_periodB+lumi_periodC+lumi_periodD+lumi_periodE+lumi_periodF)/total_lumi;
     double WeightGtoH = (lumi_periodG+lumi_periodH)/total_lumi;
-    double Eff_bf = TriggerEfficiencyLegByLegPeriodDependant(el, mu, TriggerCategory, 1, DataOrMC, direction);
-    double Eff_gh = TriggerEfficiencyLegByLegPeriodDependant(el, mu, TriggerCategory, 7, DataOrMC, direction);
+    double Eff_bf = TriggerEfficiencyLegByLegPeriodDependant(el, elid, mu, muid, TriggerCategory, 1, DataOrMC, direction);
+    double Eff_gh = TriggerEfficiencyLegByLegPeriodDependant(el, elid, mu, muid, TriggerCategory, 7, DataOrMC, direction);
 
     double Eff_weight = WeightBtoF*Eff_bf + WeightGtoH*Eff_gh;
     //cout << "[MCDataCorrections::TriggerEfficiencyLegByLeg] WeightBtoF = " << WeightBtoF << endl;
@@ -659,11 +659,11 @@ double MCDataCorrections::TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> 
 
     return Eff_weight;
   }
-  return TriggerEfficiencyLegByLegPeriodDependant(el, mu, TriggerCategory, k_period, DataOrMC, direction);
+  return TriggerEfficiencyLegByLegPeriodDependant(el, elid, mu, muid, TriggerCategory, k_period, DataOrMC, direction);
 
 }
 
-double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el,std::vector<snu::KMuon> mu, int TriggerCategory, int catperiod, int DataOrMC, int direction){
+double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el, TString elid, std::vector<snu::KMuon> mu, TString muid, int TriggerCategory, int catperiod, int DataOrMC, int direction){
 
   //==== Now, only for tri MUON case..
   //==== 1) TriggerCategory = 0
@@ -685,7 +685,7 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
       snu::KMuon mu1 = mu.at(i);
       for(unsigned j=i+1; j<mu.size(); j++){
         snu::KMuon mu2 = mu.at(j);
-        double dimueff = TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(mu1, mu2, "MU17", "MU8_OR_TKMU8", DataOrMC, catperiod);
+        double dimueff = TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(mu1, mu2, "MU17", "MU8_OR_TKMU8", muid, DataOrMC, catperiod);
         //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] dimueff = " << dimueff << endl;
         
         faileff *= (1.-dimueff);
@@ -703,7 +703,19 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
 
 }
 
-double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, int DataOrMC, int catperiod){
+double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString muid, int DataOrMC, int catperiod){
+
+  TString labelkey = "";
+  if(muid=="MUON_HN_TIGHT"){
+    labelkey = "HNDILEP";
+  }
+  else if(muid=="MUON_HN_TRI_TIGHT"){
+    labelkey = "HNTRILEP";
+  }
+  else{
+    cout << "[MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger] muid should be DILEP or TRILEP (or you should add them)" << endl;
+    return 0.;
+  }
 
   TString tag = "";
   if(catperiod < 6) tag = "_BCDEF";
@@ -726,8 +738,8 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu
 
   if( (leg1=="MU17" && leg2=="MU8_OR_TKMU8") || (leg2=="MU17" && leg1=="MU8_OR_TKMU8") ){
 
-    TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+sample);
-    TH2F *hist_leg2 = GetCorrectionHist("MUON_"+leg2+"_TRIGGER"+tag+sample);
+    TH2F *hist_leg1 = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample);
+    TH2F *hist_leg2 = GetCorrectionHist("MUON_"+leg2+"_TRIGGER"+tag+"_"+labelkey+sample);
 
     double eff_mu1leg1 = hist_leg1->GetBinContent( hist_leg1->FindBin(eta1,pt1) );
     double eff_mu2leg2 = hist_leg2->GetBinContent( hist_leg2->FindBin(eta2,pt2) );

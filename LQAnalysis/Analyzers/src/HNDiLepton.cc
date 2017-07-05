@@ -378,13 +378,13 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
     
     w      *= puweight;
     if(!methodtag.Contains("Trigger")) w      *= WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi)  ;
-    w      *= mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, muons_veto,  0 , isData, 0);
+    w      *= mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, "ELECTRON_HN_TIGHTv4", muons_veto,  "MUON_HN_TIGHT", 0 , isData, 0);
     
     w      *= mcdata_correction->MuonTrackingEffScaleFactor(muons_veto);
     w      *=   mcdata_correction->MuonScaleFactor("MUON_HN_TRI_TIGHT", muons_veto, 0);
     FillHist("EffPUweight", puweight, w, -1., 5., 600);
     FillHist("EffLumi", WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi)  , w, 0., 50000., 50000);
-    FillHist("EffTrigger", mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, muons_veto,  0 , isData, 0),  w, 0., 2., 200);
+    FillHist("EffTrigger", mcdata_correction->TriggerEfficiencyLegByLeg(electrons_veto, "ELECTRON_HN_TIGHTv4", muons_veto, "MUON_HN_TIGHT", 0 , isData, 0),  w, 0., 2., 200);
     FillHist("EffTrk",mcdata_correction->MuonTrackingEffScaleFactor(muons_veto) , w, 0., 2., 200);
     FillHist("EffID", mcdata_correction->MuonScaleFactor("MUON_HN_TRI_TIGHT", muons_veto, 0), w, 0., 2., 200);
   }
