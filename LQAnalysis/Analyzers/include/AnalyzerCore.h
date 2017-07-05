@@ -176,6 +176,9 @@ class AnalyzerCore : public LQCycleBase {
   bool OppositeCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
 
   bool OppositeCharge(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons);  
+  float GetCFweight(std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID);
+  float GetCFRates(double el_pt, double el_eta, TString el_ID);
+
   float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
   float CorrectedMETElectron(std::vector<snu::KElectron> electrons,  int syst=0);
   float CorrectedMETMuon(std::vector<snu::KMuon> muons ,int syst=0);
@@ -400,6 +403,20 @@ class AnalyzerCore : public LQCycleBase {
   void PrintTruth();
   std::vector<snu::KMuon> sort_muons_ptorder(std::vector<snu::KMuon> muons);
 
+
+  //==== (Trilepton) H+->WA stuffs
+  int  GenMatchedIdx(snu::KElectron El, std::vector<snu::KTruth>& truthColl);
+  int  GenMatchedIdx(snu::KMuon Mu, std::vector<snu::KTruth>& truthColl);
+  int  GetNearPhotonIdx(snu::KElectron Ele, std::vector<snu::KTruth>& TruthColl, TString Option="AllPhoton");
+  int  GetNearPhotonIdx(snu::KMuon Mu, std::vector<snu::KTruth>& TruthColl, TString Option="AllPhoton");
+  int  FirstNonSelfMotherIdx(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  int  LastSelfMotherIdx(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  bool HasHadronicAncestor(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  bool IsFinalPhotonSt23(std::vector<snu::KTruth> TruthColl);
+  int  GetLeptonType(int TruthIdx, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetLeptonType(snu::KElectron El, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetLeptonType(snu::KMuon Mu, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetPhotonType(int PhotonIdx, std::vector<snu::KTruth> TruthColl);
   
 };
 #endif
