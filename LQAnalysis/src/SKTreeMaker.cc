@@ -130,7 +130,6 @@ void SKTreeMaker::BeginCycle() throw( LQError ){
   triggerlist.clear();
 
   if(k_isdata){
-    cout << " k_channel = " << k_channel << endl;
 
     if(k_channel.Contains("DoubleMuon")){
       AddTriggerToList("HLT_IsoMu");

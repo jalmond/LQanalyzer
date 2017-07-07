@@ -16,7 +16,7 @@
 
 ClassImp( LQCycleBaseNTuple);
 
-LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false), k_sample_name(""), k_classname(""), sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
+LQCycleBaseNTuple::LQCycleBaseNTuple() : LQCycleBaseBase(), m_outputFile(0),m_outputTrees(),m_outputVarPointers(), k_isdata(false) ,k_running_nonprompt(false), k_running_chargeflip(false), k_sample_name(""), k_classname(""), k_skim(""),sample_entries(-999), output_interval(10000), events_to_process(-1), k_mcperiod(0) {
 
 
  
@@ -83,6 +83,10 @@ void LQCycleBaseNTuple::SetOutPutStep(int step){
 void LQCycleBaseNTuple::SetNEventsToProcess(int nentries){
   events_to_process = nentries;
 }
+void LQCycleBaseNTuple::SetSkimName( TString skim){
+  k_skim= skim;
+}
+
 
 
 void LQCycleBaseNTuple::SetDataType( bool type){  

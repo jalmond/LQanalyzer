@@ -108,7 +108,7 @@ class AnalyzerCore : public LQCycleBase {
   float Get_DataDrivenWeight_EM(vector<snu::KMuon> k_muons, vector<snu::KElectron> k_electrons, TString cut="HN");
  
 
-  float CorrectedMETRochester(BaseSelection::ID id, bool updatemet);
+  float CorrectedMETRochester(BaseSelection::ID muid_formet, bool updatemet);
   float CorrectedMETElectron(BaseSelection::ID elid_formet, int syst=0);
   float CorrectedMETMuon(BaseSelection::ID muid_formet, int syst=0);
   float CorrectedMETJER(BaseSelection::ID jet_format, int sys);

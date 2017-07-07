@@ -1037,7 +1037,15 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight, TString per) thro
   /// np == numberof particles you want to store at truth info. 30 is default unless running nocut sktree OR signal
   int np =  AssignnNumberOfTruth();
   
-  LQEvent lqevent(GetAllMuons(), GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
+  vector<snu::KMuon>  muons = GetAllMuons();
+
+  if(!k_classname.Contains("SKTreeMaker")){
+    if(k_skim=="FLATCAT"){
+      SetCorrectedMomentum(muons);
+    }
+  }
+
+  LQEvent lqevent(muons, GetAllElectrons(), GetAllPhotons(), skjets, skgenjets,GetTruthParticles(np), triggerinfo,eventinfo);
   
   //  eventbase is master class to use in analysis 
   //
@@ -1966,15 +1974,34 @@ void AnalyzerCore::CorrectMuonMomentum(vector<snu::KMuon>& k_muons){
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty
     if(it->IsRochesterCorrected()) return;
-
+    
     double scalefactor = 1.;
+    
+    if(it->RochPt() < 0.){
+      if(it->IsPF() && (it->IsGlobal()==1 || it->IsTracker() == 1)&& it->Pt() > 5. && fabs(it->Eta()) < 2.5){
+	if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
+	else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
+      }
+      scalefactor = tlv_muons[imu].Pt() / it->MiniAODPt();
+      it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
+      it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+      it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
+      it->SetIsRochesterCorrected(true);
 
-    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
-    else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
-    scalefactor = tlv_muons[imu].Pt() / it->Pt();
-    it->SetPtEtaPhiM(tlv_muons[imu].Pt(),tlv_muons[imu].Eta(), tlv_muons[imu].Phi(), tlv_muons[imu].M());
-    it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
-    it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
+      it->SetRochPt(tlv_muons[imu].Pt());
+
+
+    }
+    else{
+      scalefactor = it->RochPt() / it->MiniAODPt();
+      it->SetPtEtaPhiM( it->RochPt() , it->Eta(), it->Phi(), it->M());
+      it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+      it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
+      it->SetIsRochesterCorrected(true);
+
+      
+    }
+    
   }
   
   //it->SetPtEtaPhiM(tlv_muons[imu].Pt(), it->Eta(), it->Phi() , it->M());
@@ -1989,13 +2016,16 @@ void AnalyzerCore::SetCorrectedMomentum(vector<snu::KMuon>& k_muons){
   int imu(0);
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++, imu++){
     float qter =1.; /// uncertainty                                                                                                                                             
-    if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
-    else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
-    
-    it->SetRochPt(tlv_muons[imu].Pt());
-    it->SetRochEta(tlv_muons[imu].Eta());
-    it->SetRochPhi(tlv_muons[imu].Phi());
-    it->SetRochM(tlv_muons[imu].M());
+    if(it->RochPt() < 0.){
+      if(it->IsPF() && (it->IsGlobal()==1 || it->IsTracker() == 1)&& it->Pt() > 5. && fabs(it->Eta()) < 2.5){
+	if(k_isdata)rmcor->momcor_data(tlv_muons[imu], float(it->Charge()), eventbase->GetEvent().RunNumber(), qter);
+	else rmcor->momcor_mc(tlv_muons[imu], float(it->Charge()), it->ActiveLayer(), qter);
+      }
+      it->SetRochPt(tlv_muons[imu].Pt());
+      it->SetRochEta(tlv_muons[imu].Eta());
+      it->SetRochPhi(tlv_muons[imu].Phi());
+      it->SetRochM(tlv_muons[imu].M());
+    }
   }
 }
 
@@ -2007,7 +2037,9 @@ float AnalyzerCore::CorrectedMETRochester(BaseSelection::ID muid_formet, bool up
 
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
+
   std::vector<snu::KMuon> muall = GetMuons(muid_formet);
+
 
   float px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
   for(unsigned int im=0; im < muall.size() ; im++){

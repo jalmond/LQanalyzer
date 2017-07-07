@@ -40,6 +40,7 @@ public:
   void DeleteInputVariables();
   void CloseFiles();
   void SetDataType(bool type);
+  void SetSkimName( TString sample);
   void SetMCPeriod(int period);
   void SetNPStatus( bool type);
   void SetCFStatus( bool type);
@@ -60,6 +61,7 @@ public:
   TString k_sample_name;
   TString k_channel;
   TString k_classname;
+  TString k_skim;
   TString muscale_fitParametersFile;
   
   // How many entries in the fullsample

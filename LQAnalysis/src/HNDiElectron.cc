@@ -115,10 +115,17 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
 
-
+  vector<snu::KMuon> muon = GetMuons(BaseSelection::MUON_HN_VETO);
+  if(muon.size() ==0) return;
+  cout << "AOD pt = " << muon[0].MiniAODPt() << endl;
+  cout << "pt = " << muon[0].Pt() << endl;
+  cout << "roch pt = " << muon[0].RochPt() << endl;
   cout << "MET default = " << eventbase->GetEvent().PFMET() << endl;
   CorrectedMETRochester(BaseSelection::MUON_HN_VETO, false);
+  cout << "MET update(false) roch. = " <<eventbase->GetEvent().PFMET() << endl;
+  CorrectedMETRochester(BaseSelection::MUON_HN_VETO, true);
   cout << "MET update roch. = " <<eventbase->GetEvent().PFMET() << endl;
+
   cout << "MET muonE+ = " << CorrectedMETMuon(BaseSelection::MUON_HN_VETO,1) << endl;
   cout << "MET muonE- = " << CorrectedMETMuon(BaseSelection::MUON_HN_VETO,-1) << endl;
   cout << "MET electronE+ = " << CorrectedMETElectron(BaseSelection::ELECTRON_HN_VETO,1) << endl;
@@ -129,6 +136,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   cout << "MET JER- = " << CorrectedMETJER(BaseSelection::JET_HN,-1) << endl;
 
 
+  return;
   ///// SIGNAL PLOTS
   FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
 
