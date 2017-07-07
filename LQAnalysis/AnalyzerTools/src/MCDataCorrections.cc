@@ -904,28 +904,42 @@ void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<
   for(std::vector<snu::KMuon>::iterator it = k_muons.begin(); it != k_muons.end(); it++){
     double scalefactor = 1.;
     if(it->IsRochesterCorrected()) return;
-    if (corr_isdata) scalefactor = rc->kScaleDT(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(),0,0);
-    else {
-      //gRandom->SetSeed(1111.);
-	double u1 = gRandom->Rndm();
-	double u2 = gRandom->Rndm();
-
-	unsigned int mu_index = it->MCTruthIndex();
-	float genpt(-999.);
-	if(mu_index > 0 && mu_index < truth.size()) {
-	  if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
+    if(it->RochPt() < 0.){
+      if(it->IsPF() && (it->IsGlobal()==1 || it->IsTracker() == 1)&& it->Pt() > 5. && fabs(it->Eta()) < 2.5){
+	if (corr_isdata) scalefactor = rc->kScaleDT(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(),0,0);
+	else {
+	  //gRandom->SetSeed(1111.);
+	  double u1 = gRandom->Rndm();
+	  double u2 = gRandom->Rndm();
+	  
+	  unsigned int mu_index = it->MCTruthIndex();
+	  float genpt(-999.);
+	  if(mu_index > 0 && mu_index < truth.size()) {
+	    if(fabs(truth.at(mu_index).PdgId() ) == 13) genpt = truth.at(mu_index).Pt();
+	  }
+	  
+	  
+	  if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), genpt, u1,0, 0);
+	  else scalefactor = rc->kScaleAndSmearMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), u1, u2, 0,0);
 	}
-	
-
-	if ( genpt> 0.)  scalefactor = rc->kScaleFromGenMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), genpt, u1,0, 0);
-	else scalefactor = rc->kScaleAndSmearMC(float(it->Charge()), it->Pt(), it->Eta(), it->Phi(), it->ActiveLayer(), u1, u2, 0,0);
+      }
+      it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+      it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
+      it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
+      it->SetIsRochesterCorrected(true);
     }
-    it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
-    it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
-    it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
-  }  
-  
-  
+    else{
+      scalefactor = it->RochPt() / it->Pt();
+      it->SetRelIso(0.3,it->RelMiniAODIso03()/scalefactor);
+      it->SetRelIso(0.4,it->RelMiniAODIso04()/scalefactor);
+      it->SetPtEtaPhiM( (scalefactor*it->Pt() ), it->Eta(), it->Phi(), it->M());
+      it->SetIsRochesterCorrected(true);
+      
+    }
+
+
+  }
+    
   /*
     
     -------------------------------------------------------------------------------------

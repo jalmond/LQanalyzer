@@ -220,7 +220,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   IDs.push_back("ELECTRON_HN_EFF_dxysig");
   IDs.push_back("ELECTRON_HN_EFF_iso");
   IDs.push_back("ELECTRON_HN_EFF_gentmva");
-  IDs.push_back("ELECTRON_HN_TIGHT");
+  IDs.push_back("ELECTRON_HN_TIGHTv4");
 
   bool _diel =   isData ?  (k_channel.Contains("DoubleEG")) : true ;
   bool _singleel =   isData ?  (k_channel.Contains("SingleElectron")) : true ;

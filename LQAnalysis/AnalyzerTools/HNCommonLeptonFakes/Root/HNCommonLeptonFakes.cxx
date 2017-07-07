@@ -1287,9 +1287,9 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
     fr2 = getTrilepFakeRate_muon(false, _mu2_pt, _mu2_eta);
   }
   else {
-    r1 = 0.9;
+    r1 = 1.;
 
-    r2 =0.9;
+    r2 =1.;
     
     fr1= getFakeRate_muon(0,_mu1_pt, _mu1_eta, iID1);
     fr2= getFakeRate_muon(0,_mu2_pt, _mu2_eta, iID2);

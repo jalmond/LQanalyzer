@@ -23,6 +23,8 @@ class HNDiLepton : public AnalyzerCore {
   virtual void EndCycle()throw( LQError );
   virtual void ClearOutputVectors()throw( LQError );
   
+  void DoCutFlow(float w);
+
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillEventCutFlow(int cf,TString cut,  float weight);

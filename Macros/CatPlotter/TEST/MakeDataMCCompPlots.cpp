@@ -534,13 +534,11 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   legendH->SetTextSize(0.02);
   vector<TString> legorder;
 
-legorder.push_back("Top");
-legorder.push_back("Higgs");
-legorder.push_back("Triboson");
-legorder.push_back("Diboson");
-legorder.push_back("DY #rightarrow ll (m < 50)");
-legorder.push_back("DY #rightarrow ll");
 legorder.push_back("Misid. Lepton Background");
+legorder.push_back("Higgs");
+legorder.push_back("Diboson");
+legorder.push_back("Top");
+legorder.push_back("Triboson");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -610,36 +608,33 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
 
-if(sample.Contains("top")){    list.push_back(make_pair("SingleTbar_t",0.2));
-    list.push_back(make_pair("SingleTop_t",0.2));
-    list.push_back(make_pair("SingleTbar_tW",0.2));
-    list.push_back(make_pair("SingleTop_tW",0.2));
-    list.push_back(make_pair("TT_powheg",0.2));
-    list.push_back(make_pair("TG",0.2));
-    list.push_back(make_pair("TTG",0.2));
-    list.push_back(make_pair("ttH_nonbb",0.2));
-    list.push_back(make_pair("ttH_bb",0.2));
-    list.push_back(make_pair("ttW",0.2));
-    list.push_back(make_pair("ttZ",0.2));
-    list.push_back(make_pair("tZq",0.2));
-}if(sample.Contains("higgs")){    list.push_back(make_pair("VBF_HToMuMu",0.2));
+if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("DoubleMuon_SKnonprompt",0.3));
+}if(sample.Contains("Higgs")){    list.push_back(make_pair("ggHtoZZ",0.2));
+    list.push_back(make_pair("VBF_HToMuMu",0.2));
     list.push_back(make_pair("ggHtoWW",0.2));
     list.push_back(make_pair("ggHtoZZ",0.2));
-}if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.2));
-    list.push_back(make_pair("ZZZ",0.2));
-    list.push_back(make_pair("WZZ",0.2));
 }if(sample.Contains("diboson")){    list.push_back(make_pair("ZZTo4L_powheg",0.20));
     list.push_back(make_pair("WZTo3LNu_powheg",0.20));
     list.push_back(make_pair("ggZZto4mu",0.20));
-    list.push_back(make_pair("WpWpQCD",0.2));
-    list.push_back(make_pair("WpWpEWK",0.2));
+    list.push_back(make_pair("WpWpQCD",0.15));
+    list.push_back(make_pair("WpWpEWK",0.15));
+    list.push_back(make_pair("ww_ds",0.15));
+    list.push_back(make_pair("ZGto2LG",0.15));
+    list.push_back(make_pair("WGtoLNuG",0.15));
     list.push_back(make_pair("ZGto2LG",0.2));
     list.push_back(make_pair("WGtoLNuG",0.2));
-    list.push_back(make_pair("ww_ds",0.2));
-}if(sample.Contains("DYlow")){    list.push_back(make_pair("DYJets_10to50",0.15));
-}if(sample.Contains("DY")){    list.push_back(make_pair("DYJets_10to50",0.15));
-    list.push_back(make_pair("DYJets",0.15));
-}if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("DoubleMuon_SKnonprompt",0.3));
+}if(sample.Contains("top")){    list.push_back(make_pair("ttZToLL_M-10",0.2));
+    list.push_back(make_pair("tZq",0.2));
+    list.push_back(make_pair("TTG",0.2));
+    list.push_back(make_pair("ttWToLNu",0.2));
+    list.push_back(make_pair("ttZToLL_M-1to10",0.2));
+    list.push_back(make_pair("ttH_bb",0.2));
+    list.push_back(make_pair("ttH_nonbb",0.2));
+}if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.3));
+    list.push_back(make_pair("ZZZ",0.3));
+    list.push_back(make_pair("WZZ",0.3));
+    list.push_back(make_pair("WWG",0.3));
+    list.push_back(make_pair("WZG",0.3));
 }  
 
 
@@ -957,48 +952,6 @@ if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV
 if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
 if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
 if(name.find("h_Nbjets_m")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
-if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
-if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
-if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
-if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
-if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV/c^{2})";
-if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV/c^{2})";
-if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
-if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
-if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
-if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
-if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
-if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
-if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV/c^{2})";
-if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV/c^{2})";
-if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
-if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
-if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
-if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
-if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
-if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV/c^{2})";
-if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV/c^{2})";
-if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV/c^{2})";
-if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV/c^{2})";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV/c^{2})";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV/c)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV/c)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
 if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
 if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
 if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
@@ -1442,25 +1395,21 @@ void SetUpMasterConfig(string name){
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label){
   
   /// Setup list of samples: grouped into different processes 
-vector<pair<TString,float> >  top = InitSample(" top"); 
-vector<pair<TString,float> >  higgs = InitSample(" higgs"); 
-vector<pair<TString,float> >  triv = InitSample(" triv"); 
-vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
-vector<pair<TString,float> >  DYlow = InitSample(" DYlow"); 
-vector<pair<TString,float> >  DY = InitSample(" DY"); 
 /// NP is nonprompt 
 vector<pair<TString,float> > np;
 np.push_back(make_pair("DoubleMuon_SKnonprompt",0.34));
+vector<pair<TString,float> >  Higgs = InitSample(" Higgs"); 
+vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
+vector<pair<TString,float> >  top = InitSample(" top"); 
+vector<pair<TString,float> >  triv = InitSample(" triv"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
-   if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,800),"Higgs"));
-   if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring-1),"Triboson"));
-   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,74),"Diboson"));
-   if(listofsamples.at(i) =="DYlow")samples.push_back(make_pair(make_pair(DYlow,kYellow+4),"DY #rightarrow ll (m < 50)"));
-   if(listofsamples.at(i) =="DY")samples.push_back(make_pair(make_pair(DY,kYellow),"DY #rightarrow ll"));
    if(listofsamples.at(i) =="DoubleMuon_SKnonprompt")samples.push_back(make_pair(make_pair(np,870),"Misid. Lepton Background"));
+   if(listofsamples.at(i) =="Higgs")samples.push_back(make_pair(make_pair(Higgs,800),"Higgs"));
+   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,74),"Diboson"));
+   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
+   if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring+2),"Triboson"));
 
   }
 

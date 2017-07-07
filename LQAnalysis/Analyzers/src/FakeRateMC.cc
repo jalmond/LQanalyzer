@@ -134,7 +134,7 @@ void FakeRateMC::ExecuteEventsMuon(TString looseid, TString tightid, TString tag
   std::vector<snu::KMuon> loosemuons = GetMuons(looseid,true);
   Float_t ptbins[11] = { 5., 10., 15.,20.,25.,30.,35.,45.,60.,100., 200.};
   Float_t etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
-  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO");
+  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 10., 2.5);
   std::vector<snu::KJet> jets = GetJets("JET_HN");
 
   if(SameCharge(loosemuons)){
@@ -604,7 +604,7 @@ void FakeRateMC::ExecuteEventsElectron(TString looseid, TString tightid, TString
   Float_t etabins2[5] = { 0.,0.8,  1.479, 2.,  2.5};
 
 
-  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO");
+  std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 10., 2.5);
   std::vector<snu::KJet> jets = GetJets("JET_HN");
   
 
@@ -924,7 +924,7 @@ void FakeRateMC::MakeMCFakes(std::vector<snu::KElectron> fake_electrons, TString
     }
   
 
-    if((k_sample_name.Contains("QCD") ||  k_sample_name.Contains("qcd"))&& !useevent) return;
+    if( (k_sample_name.Contains("QCD") ||  k_sample_name.Contains("qcd"))&& !useevent) return;
     
     if(fabs(fake_electrons.at(iel).SCEta()) < 0.8){
       FillHist(tag+"_Loose_el_eb1_pt1D",el_pt, wel_fake, ptbins,10);

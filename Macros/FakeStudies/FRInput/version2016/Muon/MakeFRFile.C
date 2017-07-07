@@ -25,14 +25,14 @@ bool CheckHist(TH2* h);
 void MakeFRRootFile(TString file, TString tag);
 
 void MakeFRRootFile(){
-  MakeFRRootFile("SingleMuon","iso");
+  //MakeFRRootFile("SingleMuon","iso");
   MakeFRRootFile("DoubleMuon","");
 }
 
 
 void MakeFRRootFile(TString file, TString tag){
   
-  TString path= "/afs/cern.ch/work/j/jalmond/CAT/FakeRateCalculator_Mu/periodBtoH/";
+  TString path= "/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/FakeRateCalculator_Mu/periodBtoH/";
   
   TFile * fdata = new TFile(path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
   TFile * fmc = new TFile(path + "FakeRateCalculator_Mu_mc_v8-0-7.root");
@@ -43,7 +43,7 @@ void MakeFRRootFile(TString file, TString tag){
 
   cout << "List of keys in file:" << endl;
 
-  gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
+  //gSystem->Exec("python ~/scripts/listkeys.py -f " + path + "FakeRateCalculator_Mu_data_"+file+"_cat_v8-0-7.root");
   
   /// Set Plotting style
   setTDRStyle();
@@ -111,20 +111,21 @@ void MakeFRRootFile(TString file, TString tag){
     ss <<cut_iso_b;
     vcut_iso_b_s.push_back(TString(ss.str()));
   }
-
-
+  
+  
   for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b_s.size(); dxy_b++){
     for(unsigned int dxysig_b=0; dxysig_b < vcut_dxysig_b_s.size(); dxysig_b++){
       for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
         for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
-	  isocut.push_back("SNUTight"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
-	  isocut.push_back("SNUMedium"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
+	  //isocut.push_back("SNUTight"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
+	  //isocut.push_back("SNUMedium"+tag+"dijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
 	  //isocut.push_back(tag+"Gentdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]);
 	}
       }
     }
   }
-
+  
+  isocut.push_back("SNUTightdijet_0.07_0.005_3_0.04_40_ptcorr_eta");
 
   for(vector<TString>::iterator it2 = fakes40.begin(); it2!=fakes40.end(); ++it2){
     for(vector<TString>::iterator it3 = isocut.begin(); it3!=isocut.end(); ++it3){
@@ -191,7 +192,6 @@ void MakeFRRootFile(TString file, TString tag){
       eff_rate->Divide(eff_rate,hratedenom,1.,1.,"cl=0.683 b(1,1) mode");
       eff_rate->Write();
       
-      continue;
 
       bool drawall(false);
       

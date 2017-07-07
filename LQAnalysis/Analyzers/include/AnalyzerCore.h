@@ -183,6 +183,8 @@ class AnalyzerCore : public LQCycleBase {
   float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
   float CorrectedMETElectron(std::vector<snu::KElectron> electrons,  int syst=0);
   float CorrectedMETMuon(std::vector<snu::KMuon> muons ,int syst=0);
+  float CorrectedMETJES(std::vector<snu::KJet> jets ,int syst=0);
+  float CorrectedMETJER(std::vector<snu::KJet> jets ,int syst=0);
 
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
