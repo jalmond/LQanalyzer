@@ -16,16 +16,16 @@
 #include "TEfficiency.h"
 
 /// local includes
-#include "HNCommonLeptonFakes/HNCommonLeptonFakes.h"
+#include "HNCommonLeptonFakesOpt/HNCommonLeptonFakesOpt.h"
 
 using namespace std;
 
 
-void HNCommonLeptonFakes::InitialiseFake(){
+void HNCommonLeptonFakesOpt::InitialiseFake(){
   
   bool failedinitialisation=false;
 
-  cout << "HNCommonLeptonFakes : Initializing" << endl;
+  cout << "HNCommonLeptonFakesOpt : Initializing" << endl;
 
   // Remember which TDirectory the system is in at the beginning of the method:                                                                                                      
   TDirectory* origDir = gDirectory;
@@ -38,11 +38,14 @@ void HNCommonLeptonFakes::InitialiseFake(){
   
   
   /// ELECRON FILES  (POG) + (many rates for optimising cuts)  
+  TFile* file_fake  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016April9.root").c_str());
+  CheckFile(file_fake);
   TFile* file_fake_elhn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_2016_hnid.root").c_str());
   CheckFile(file_fake_elhn);
   
-  TFile* file_prompt_elhn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/PromptRate13TeV_2016_hnid.root").c_str());
-  CheckFile(file_prompt_elhn);
+  
+  TFile* file_prompt  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/PromptRate13TeV_2016_hnid.root").c_str());
+  CheckFile(file_prompt);
   
   //==== Trilep
   //==== Using Large dXYSig muons
@@ -59,7 +62,162 @@ void HNCommonLeptonFakes::InitialiseFake(){
   TDirectory* tempDir1 = getTemporaryDirectory();
   tempDir1->cd();
   
+  std::vector <TString> region;
+  region.push_back("looseregion1"); /// this relaxes d0
+  region.push_back("looseregion2"); /// this does not d0 
+  
+  std::vector <TString> datajetcut;
+  datajetcut.push_back("20");
+  datajetcut.push_back("30");
+  datajetcut.push_back("40");
+  datajetcut.push_back("60");
+  
+  std::vector <TString> cut;
+  cut.push_back("pt_eta");
+  
+  std::vector <TString> isocuts;
+  isocuts.push_back("050");
+  isocuts.push_back("0525");
+  isocuts.push_back("055");
+  isocuts.push_back("060");
+  isocuts.push_back("065");
+  isocuts.push_back("075");
+  isocuts.push_back("100");
+  isocuts.push_back("125");
+  std::vector <TString> opt;
+  for(unsigned int iiso = 0 ; iiso < isocuts.size(); iiso++){
+    for(unsigned int iiso2 = 0 ; iiso2 < isocuts.size(); iiso2++){
+      opt.push_back("b"+isocuts[iiso]+"_e"+isocuts[iiso2]);
+    }
+  }
+  
+  opt.push_back("dxy_b050_e100");
+  opt.push_back("dxy_b050_e050");
+  opt.push_back("dxy_b050_e040");
+  opt.push_back("dxy_b050_e025");
+  opt.push_back("dxy_b050_e020");
+  opt.push_back("dxy_b050_e010");
+  
+  opt.push_back("dxy_b025_e100");
+  opt.push_back("dxy_b025_e050");
+  opt.push_back("dxy_b025_e040");
+  opt.push_back("dxy_b025_e025");
+  opt.push_back("dxy_b025_e020");
+  opt.push_back("dxy_b025_e010");
+  
+  opt.push_back("dxy_b015_e100");
+  opt.push_back("dxy_b015_e050");
+  opt.push_back("dxy_b015_e040");
+  opt.push_back("dxy_b015_e025");
+  opt.push_back("dxy_b015_e020");
+  opt.push_back("dxy_b015_e010");
+  
+  opt.push_back("dxy_b010_e100");
+  opt.push_back("dxy_b010_e050");
+  opt.push_back("dxy_b010_e040");
+  opt.push_back("dxy_b010_e025");
+  opt.push_back("dxy_b010_e020");
+  
+  std::vector <TString> dxycuts;
+  dxycuts.push_back("017");
+  dxycuts.push_back("015");
+  dxycuts.push_back("014");
+  dxycuts.push_back("013");
+  dxycuts.push_back("012");
+  dxycuts.push_back("011");
+  dxycuts.push_back("010");
+  std::vector <TString> optdxy;
+  for(unsigned int idxy = 0 ; idxy < dxycuts.size(); idxy++){
+    for(unsigned int idxy2 = 0 ; idxy2 < dxycuts.size(); idxy2++){
+      opt.push_back("dxy_b"+dxycuts[idxy]+"_e"+dxycuts[idxy2]);
+    }
+  }
+  
+  
+  vector <TString> elID;
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_nod0");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_d0");
+  elID.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_nod0_dxysig");
+  elID.push_back("ELECTRON16_HN_TIGHT_DXYSIG_dijet_d0_dxysig");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_iso04");
+  elID.push_back("ELECTRON16_HN_TIGHT_dijet_iso06");
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog");
+  elID.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva");
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_DXYCC_dijet_pog");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_DXYCC_dijet_pog");
+  elID.push_back("ELECTRON16_FR_MVA_TIGHT_DXYCC_dijet_mva");
+  
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_CC_dijet_pog_d0");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_CC_dijet_pog_d0");
+  elID.push_back("ELECTRON16_FR_MVA_TIGHT_CC_dijet_mva_d0");
+  elID.push_back("ELECTRON16_FR_POG_MEDIUM_DXYCC_dijet_pog_d0");
+  elID.push_back("ELECTRON16_FR_POG_TIGHT_DXYCC_dijet_pog_d0");
+  elID.push_back("ELECTRON16_FR_MVA_TIGHT_DXYCC_dijet_mva_d0");
+  
+  
+  for(unsigned int fj = 0; fj < datajetcut.size() ; fj++){
+    for(unsigned int fk = 0; fk < cut.size() ; fk++){
+      for(unsigned int iid = 0; iid < elID.size() ; iid++){
+	_2DEfficiencyMap_Double["fake_el_eff_" + cut.at(fk) +"_" + datajetcut.at(fj) +"_" + elID[iid]] = dynamic_cast<TH2D*>((file_fake->Get("FakeRate_" + elID[iid] +  datajetcut.at(fj) + "_" + cut.at(fk)))->Clone());
+      }
+    }
+  }
+  
+  
+    /*  int nmva=98
+	int ndxy=5;
+	int ndz=3;
+	int niso=5;
+	vector<TString> vcut_mva_s;
+	
+	for(unsigned int imva=0; imva < nmva; imva++){
+	float cut_dmva = float(imva)*0.01 -0.01;
+	stringstream ss;
+	ss << cut_dmva;
+	vcut_mva_s.push_back(TString(ss.str()));
+	}
+	vector<TString> vcut_dxy_b_s;
+	
+	for(unsigned int dxy_b=0;dxy_b < ndxy; dxy_b++){
+	float cut_dxy_b =  float(dxy_b)*0.01 + 0.01;
+	stringstream ss;
+	ss <<cut_dxy_b;
+	vcut_dxy_b_s.push_back(TString(ss.str()));
+	}
+	vector<TString> vcut_dz_b_s;
+	
+	for(unsigned int dz_b=0;dz_b < ndz; dz_b++){
+	float cut_dz_b =  float(dz_b)*0.02 + 0.04;
+	stringstream ss;
+	ss <<cut_dz_b;
+	vcut_dz_b_s.push_back(TString(ss.str()));
+	}
+	
+	vector<TString> vcut_iso_b_s;
+	for(unsigned int iso_b=0;iso_b < niso; iso_b++){
+	float cut_iso_b = float(iso_b)*0.01 + 0.05;
+	stringstream ss;
+	ss <<cut_iso_b;
+	vcut_iso_b_s.push_back(TString(ss.str()));
+	}
+	
+	//// Loop over cuts and fill loose and tight el and get fake rates for ID
+	
+	for(unsigned int imva=0; imva < vcut_mva_s.size(); imva++){
+	for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b_s.size(); dxy_b++){
+	for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
+        for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
+	_2DEfficiencyMap_Double["fake_el_eff_" + vcut_mva_s[imva]+"_iso"+vcut_iso_b_s[iso_b]+"_dxy"+vcut_dxy_b_s[dxy_b]+"_dz"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_elhn->Get("FakeRate_40_pt_etadijet_mva"+vcut_mva_s[imva]+"_iso"+vcut_iso_b_s[iso_b]+"_dxy"+vcut_dxy_b_s[dxy_b]+"_dz"+vcut_dz_b_s[dz_b]))->Clone());  
+	}
+	}
+	}
+	}
+	
 
+    */
   _2DEfficiencyMap_Double["fake_el_eff_ELECTRON_HN_TIGHTv4_20_ptcorr_eta"] = dynamic_cast<TH2D*>((file_fake_elhn->Get("FakeRate_ptcorr_eta20"))->Clone());
   _2DEfficiencyMap_Double["fake_el_eff_ELECTRON_HN_TIGHTv4_30_ptcorr_eta"] = dynamic_cast<TH2D*>((file_fake_elhn->Get("FakeRate_ptcorr_eta30"))->Clone());
   _2DEfficiencyMap_Double["fake_el_eff_ELECTRON_HN_TIGHTv4_40_ptcorr_eta"] = dynamic_cast<TH2D*>((file_fake_elhn->Get("FakeRate_ptcorr_eta40"))->Clone());
@@ -70,9 +228,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
   _2DEfficiencyMap_Double["fake_el_eff_SingleElTrig_ELECTRON_HN_TIGHTv4_40_ptcorr_eta"] = dynamic_cast<TH2D*>((file_fake_elhn->Get("FakeRate_SingleElTrigger_ptcorr_eta40"))->Clone());
   _2DEfficiencyMap_Double["fake_el_eff_SingleElTrig_ELECTRON_HN_TIGHTv4_60_ptcorr_eta"] = dynamic_cast<TH2D*>((file_fake_elhn->Get("FakeRate_SingleElTrigger_ptcorr_eta60"))->Clone());
   
-  cout << "TEST " << endl;
+
   
-  //_2DEfficiencyMap_Double["prompt_el_eff_ELECTRON_HN_TIGHTv4"] = dynamic_cast<TH2D*>((file_prompt_elhn->Get("PromptRate_ELECTRON_HN_TIGHTv4"))->Clone());
+  
+  
+  
+  _2DEfficiencyMap_Double["prompt_el_eff_ELECTRON_HN_TIGHTv4"] = dynamic_cast<TH2D*>((file_prompt->Get("PromptRate_ELECTRON_HN_TIGHTv4"))->Clone());
   
   
   //==== Trilep
@@ -113,9 +274,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
       }
     }
   }
-
-  cout << "TEST2 " << endl;
-
   _2DEfficiencyMap["MUON_PR_HN_TRI_TIGHT_BCDEF"] = dynamic_cast<TH2F*>((file_trilep_prompt_BCDEF->Get("PR_pt_abseta"))->Clone());
   _2DEfficiencyMap["MUON_PR_HN_TRI_TIGHT_GH"] = dynamic_cast<TH2F*>((file_trilep_prompt_GH->Get("PR_pt_abseta"))->Clone());
   
@@ -130,16 +288,18 @@ void HNCommonLeptonFakes::InitialiseFake(){
   }
   else {
     
-    cout << "WRHNCommonLeptonFakes : Initialsation was successful " << endl;
-      cout << "WRHNCommonLeptonFakes : Default setting in MeV" <<  endl;
-      cout << "WRHNCommonLeptonFakes : To Use GeV set third argument of constructor true" << endl;
+    cout << "WRHNCommonLeptonFakesOpt : Initialsation was successful " << endl;
+      cout << "WRHNCommonLeptonFakesOpt : Default setting in MeV" <<  endl;
+      cout << "WRHNCommonLeptonFakesOpt : To Use GeV set third argument of constructor true" << endl;
     }
     
+    file_fake->Close();
+    delete file_fake;
     
     file_fake_elhn->Close();
     delete file_fake_elhn;
     
-    cout << "TEST3 " << endl;
+    
     /// Trilepton files
     file_trilep_fake->Close();
     delete file_trilep_fake;
@@ -150,32 +310,89 @@ void HNCommonLeptonFakes::InitialiseFake(){
     file_trilep_prompt_GH->Close();
     delete file_trilep_prompt_GH;
     
-    file_prompt_elhn->Close();
-    delete file_prompt_elhn;
-
     // Now we can close the file:   
     origDir->cd();
     
-    cout << "TEST4 " << endl;
+    
     
     TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_muon_2016_opt_all.root").c_str());
     CheckFile(file_fake_muon_hn);
 
     ////// MAKE HISTS IN MAP                                                                                                                                                                             
     tempDir1->cd();
-
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUdijet_Tight0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUTightdijet_0.08_0.01_4_0.04"))->Clone());  
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUdijet_Medium0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUMediumdijet_0.08_0.01_4_0.04"))->Clone());  
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUisodijet_Tight0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUTightisodijet_0.08_0.01_4_0.04"))->Clone());
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUisodijet_Medium0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUMediumisodijet_0.08_0.01_4_0.04"))->Clone());
     
-    cout << "TES62 " << endl;
+    
+    vector<TString> vcut_dxy_b_s;
+    for(unsigned int dxy_b=0;dxy_b < 10; dxy_b++){
+      float cut_dxy_b =  float(dxy_b)*0.005 + 0.005;
+      stringstream ss;
+      ss <<cut_dxy_b;
+      vcut_dxy_b_s.push_back(TString(ss.str()));
+    }
+    vector<TString> vcut_dxysig_b_s;
+    vcut_dxysig_b_s.push_back("3");
+    vcut_dxysig_b_s.push_back("4");
+    vector<TString> vcut_dz_b_s;
+    
+    for(unsigned int dz_b=0;dz_b < 4; dz_b++){
+      float cut_dz_b =  float(dz_b)*0.02 + 0.02;
+      stringstream ss;
+      ss <<cut_dz_b;
+      vcut_dz_b_s.push_back(TString(ss.str()));
+   }
+    vector<TString> vcut_iso_b_s;
+    for(unsigned int iso_b=0;iso_b < 5; iso_b++){
+      float cut_iso_b = float(iso_b)*0.01 + 0.05;
+      stringstream ss;
+      ss <<cut_iso_b;
+      vcut_iso_b_s.push_back(TString(ss.str()));
+    }
+    vector<TString> ptcor;
+    ptcor.push_back("pt_eta");
+    ptcor.push_back("ptcorr_eta");
+    /*ptcor.push_back("pt_eta_cb_l");
+    ptcor.push_back("ptcorr_eta_cb_l");
+    ptcor.push_back("pt_eta_cb_m");
+    ptcor.push_back("ptcorr_eta_cb_m");
+    ptcor.push_back("pt_eta_cb_t");
+    ptcor.push_back("ptcorr_eta_cb_t");
+    ptcor.push_back("pt_eta_ncb_l");
+    ptcor.push_back("ptcorr_eta_ncb_l");
+    ptcor.push_back("pt_eta_ncb_m");
+    ptcor.push_back("ptcorr_eta_ncb_m");
+    ptcor.push_back("pt_eta_ncb_t");
+    ptcor.push_back("ptcorr_eta_ncb_t");*/
+
+    for(unsigned int iptcor=0; iptcor < ptcor.size(); iptcor++){
+      for(unsigned int dxy_b=0; dxy_b < vcut_dxy_b_s.size(); dxy_b++){
+	for(unsigned int dxysig_b=0; dxysig_b < vcut_dxysig_b_s.size(); dxysig_b++){
+	  for(unsigned int dz_b=0; dz_b < vcut_dz_b_s.size(); dz_b++){
+	    for(unsigned int iso_b=0; iso_b < vcut_iso_b_s.size(); iso_b++){
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUdijet_Tight"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUTightdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());  
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUdijet_Medium"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUMediumdijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());  
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUisodijet_Tight"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUTightisodijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());
+			      
+	      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_SNUisodijet_Medium"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+vcut_dz_b_s[dz_b]] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"SNUMediumisodijet_"+vcut_iso_b_s[iso_b]+"_"+vcut_dxy_b_s[dxy_b]+"_"+vcut_dxysig_b_s[dxysig_b]+"_"+ vcut_dz_b_s[dz_b]))->Clone());
+	    }
+	  }
+	}
+      }
+      
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogmedium_dijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGMEDIUMdijet_pogmedium"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogtight_dijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGTIGHTdijet_pogtight"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogmedium_isodijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGMEDIUMisodijet_pogmedium"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_pogtight_isodijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"POGTIGHTisodijet_pogtight"))->Clone());
+
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_gent_dijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"GENTdijet_gent"))->Clone());
+      _2DEfficiencyMap_Double["fake_Eff_muon_"+ptcor[iptcor]+"_gent_isodijet"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_"+ptcor[iptcor]+"GENTisodijet_gent"))->Clone());
+    }
+  
     file_fake_muon_hn->Close();
     delete file_fake_muon_hn;
     
     origDir->cd();
     
-    cout << "TEST7 " << endl;
+    
     return;
 }
 
@@ -183,7 +400,7 @@ void HNCommonLeptonFakes::InitialiseFake(){
 
 
 /// Constructor
-HNCommonLeptonFakes::HNCommonLeptonFakes(std::string path,bool usegev){
+HNCommonLeptonFakesOpt::HNCommonLeptonFakesOpt(std::string path,bool usegev){
 
   path_to_root_files = path;
   useGeV = usegev;
@@ -201,21 +418,21 @@ HNCommonLeptonFakes::HNCommonLeptonFakes(std::string path,bool usegev){
 
 
 /// Destructor
-HNCommonLeptonFakes::~HNCommonLeptonFakes() {
+HNCommonLeptonFakesOpt::~HNCommonLeptonFakesOpt() {
   closefile();   
   CutHists.clear();
 }
 
 
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, vector<TString> cut){
+float HNCommonLeptonFakesOpt::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, vector<TString> cut){
   if(electrons.size() != 2) return 0.;
   if(cut.size() ==1) return get_dilepton_ee_eventweight(geterr, electrons, isel1tight, isel2tight, cut[0]);
   return get_dilepton_ee_eventweight(geterr, electrons, isel1tight, isel2tight, cut[0], cut[1]);
 }
 
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut1, TString cut2){
+float HNCommonLeptonFakesOpt::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut1, TString cut2){
   if(electrons.size()!=2) {
     cout << "DiLepton event weight requires 2 muons." << endl;
     return (0.);
@@ -233,7 +450,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<
   float _el2_eta=fabs(electrons.at(1).Eta());
 
   if(m_debug){
-    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "HNCommonLeptonFakesOpt::Event Summary (ee) " << endl;
     cout << "el1 pT = " << _el1_pt << endl;
     cout << "el2 pT = " << _el2_pt << endl;
   }
@@ -273,7 +490,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<
 }
 
 
-float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut){
+float HNCommonLeptonFakesOpt::get_dilepton_ee_eventweight(bool geterr, std::vector<TLorentzVector> electrons, bool isel1tight, bool isel2tight, TString cut){
   
 
   // geterr = true : function returns error not event weight
@@ -300,7 +517,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<
   float _el2_eta=fabs(electrons.at(1).Eta());
 
   if(m_debug){
-    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "HNCommonLeptonFakesOpt::Event Summary (ee) " << endl;
     cout << "el1 pT = " << _el1_pt << endl;
     cout << "el2 pT = " << _el2_pt << endl;
   }
@@ -338,7 +555,7 @@ float HNCommonLeptonFakes::get_dilepton_ee_eventweight(bool geterr, std::vector<
 
  
 
-float  HNCommonLeptonFakes::get_dilepton_em_eventweight(bool geterr, std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool isel1tight, bool ismu1tight ){
+float  HNCommonLeptonFakesOpt::get_dilepton_em_eventweight(bool geterr, std::vector<TLorentzVector> muons, std::vector<TLorentzVector> electrons, bool isel1tight, bool ismu1tight ){
 
   // geterr = true : function returns error not event weight                                                                                                                      
   // electrons are loose electrons defined in analysis code                                                                                                                       
@@ -361,7 +578,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(bool geterr, std::vector
   float _mu1_eta=fabs(muons.at(0).Eta());
 
   if(m_debug){
-    cout << "HNCommonLeptonFakes::Event Summary (ee) " << endl;
+    cout << "HNCommonLeptonFakesOpt::Event Summary (ee) " << endl;
     cout << "el1 pT = " << _el1_pt << endl;
     cout << "mu1 pT = " << _mu1_pt << endl;
   }
@@ -394,7 +611,7 @@ float  HNCommonLeptonFakes::get_dilepton_em_eventweight(bool geterr, std::vector
 }
 
 
-float HNCommonLeptonFakes::getEfficiency_electron(int sys, float pt, float eta){
+float HNCommonLeptonFakesOpt::getEfficiency_electron(int sys, float pt, float eta){
 
   float eff_real(1.);
 
@@ -413,7 +630,7 @@ float HNCommonLeptonFakes::getEfficiency_electron(int sys, float pt, float eta){
  
  
  
-float HNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta){
+float HNCommonLeptonFakesOpt::getEfficiency_muon(int sys, float pt, float eta){
   
   float eff_real(1.);
   /// Will update with eta dependance
@@ -425,7 +642,7 @@ float HNCommonLeptonFakes::getEfficiency_muon(int sys, float pt, float eta){
   return eff_real;
 }
 
-float HNCommonLeptonFakes::getPromptRate_electron(int sys,float pt, float eta, TString cut){
+float HNCommonLeptonFakesOpt::getPromptRate_electron(int sys,float pt, float eta, TString cut){
   float eff_prompt=1.;
   if(pt < 15.) pt = 16.;
   if(pt >= 200.) pt = 199.;
@@ -447,7 +664,7 @@ float HNCommonLeptonFakes::getPromptRate_electron(int sys,float pt, float eta, T
   return eff_prompt;
 }
 
-float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, TString cut){
+float HNCommonLeptonFakesOpt::getFakeRate_electronEta(int sys,float pt, float eta, TString cut){
   
   float eff_fake(0.);
 
@@ -486,7 +703,7 @@ float HNCommonLeptonFakes::getFakeRate_electronEta(int sys,float pt, float eta, 
 
 
 
-float HNCommonLeptonFakes::getFakeRate_electron(int sys,float pt, float eta ){
+float HNCommonLeptonFakesOpt::getFakeRate_electron(int sys,float pt, float eta ){
   float eff_fake=0.;
 
   if(fabs(eta) > 2.5) return -9999999.;
@@ -504,7 +721,7 @@ float HNCommonLeptonFakes::getFakeRate_electron(int sys,float pt, float eta ){
   return eff_fake;
 }
 
-float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta , TString ID){
+float HNCommonLeptonFakesOpt::getFakeRate_muon(int sys,float pt, float eta , TString ID){
 
   float eff_fake=0.;
   
@@ -541,7 +758,7 @@ float HNCommonLeptonFakes::getFakeRate_muon(int sys,float pt, float eta , TStrin
 
 
 
-void HNCommonLeptonFakes::NoHist(TString hist, TString function){
+void HNCommonLeptonFakesOpt::NoHist(TString hist, TString function){
   
   cout << function << ": No Histogram found for string " << hist << endl;
 
@@ -573,17 +790,17 @@ void HNCommonLeptonFakes::NoHist(TString hist, TString function){
   exit(1);
 }
 
-void HNCommonLeptonFakes::NullTotals(){
+void HNCommonLeptonFakesOpt::NullTotals(){
   fsys=0;
   rsys=0;
   
 }
 
 
-void HNCommonLeptonFakes::CheckFile(TFile* file){
+void HNCommonLeptonFakesOpt::CheckFile(TFile* file){
 
-  if(file) cout << "HNCommonLeptonFakes: File " << file->GetName() << " was found." << endl;
-  else cout << "HNCommonLeptonFakes  " << file->GetName()  << "  : ERROR Rootfile failed to open." << endl;
+  if(file) cout << "HNCommonLeptonFakesOpt: File " << file->GetName() << " was found." << endl;
+  else cout << "HNCommonLeptonFakesOpt  " << file->GetName()  << "  : ERROR Rootfile failed to open." << endl;
   
   if(!file) exit(0);
   return;
@@ -591,7 +808,7 @@ void HNCommonLeptonFakes::CheckFile(TFile* file){
 
 
 
-float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight){
+float HNCommonLeptonFakesOpt::CalculateDiLepMMWeight(float r1, float fr1, float r2, float fr2, bool mu1Tight, bool mu2Tight){
 
   
   // Function calculates event weight given r/f of two muons in the event
@@ -631,7 +848,7 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float r1, float fr1, float r2,
 }
 
 
-float HNCommonLeptonFakes::CalculateDiLepMMWeight(float fr1_err, float fr1, float fr2_err, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
+float HNCommonLeptonFakesOpt::CalculateDiLepMMWeight(float fr1_err, float fr1, float fr2_err, float fr2, bool mu1Tight, bool mu2Tight, int eventtype){
 
 
   // Function calculates event weight given r/f of two muons in the event
@@ -695,7 +912,7 @@ float HNCommonLeptonFakes::CalculateDiLepMMWeight(float fr1_err, float fr1, floa
 
 
 
-double HNCommonLeptonFakes::lepton_weight(bool loose, double r, double f) {
+double HNCommonLeptonFakesOpt::lepton_weight(bool loose, double r, double f) {
   // Function to get event weight for a single muon event
   double nl=loose ? 1 :0;
   double nt=!loose ? 1 :0;
@@ -708,11 +925,11 @@ double HNCommonLeptonFakes::lepton_weight(bool loose, double r, double f) {
 
 
 /// ====== START TRIMUON FUNCTIONALITY
-void HNCommonLeptonFakes::APPLY_scalefactor(bool applysf) {
+void HNCommonLeptonFakesOpt::APPLY_scalefactor(bool applysf) {
   apply_scalefactor = applysf;
 }
 
-TString HNCommonLeptonFakes::DoubleToTString(double this_dXYSig, double this_RelIso){
+TString HNCommonLeptonFakesOpt::DoubleToTString(double this_dXYSig, double this_RelIso){
   
   int dXY_Digit1 = int(this_dXYSig);
   int dXY_Digit0p1 = 10*this_dXYSig-10*dXY_Digit1;
@@ -727,34 +944,34 @@ TString HNCommonLeptonFakes::DoubleToTString(double this_dXYSig, double this_Rel
 }
 
 
-void HNCommonLeptonFakes::SetTrilepWP(double this_dXYSig, double this_RelIso){
+void HNCommonLeptonFakesOpt::SetTrilepWP(double this_dXYSig, double this_RelIso){
   
   Current_dXYSig = this_dXYSig;
   Current_RelIso = this_RelIso;
   
 }
 
-void HNCommonLeptonFakes::SetUseQCDFake(bool useit){
+void HNCommonLeptonFakesOpt::SetUseQCDFake(bool useit){
   UseQCDFake = useit;
 }
 
-void HNCommonLeptonFakes::SetDataPeriod(TString period){
+void HNCommonLeptonFakesOpt::SetDataPeriod(TString period){
   DataPeriod = period;
 }
 
-void HNCommonLeptonFakes::SetNJet(int nj){
+void HNCommonLeptonFakesOpt::SetNJet(int nj){
   n_jet = nj;
 }
 
-void HNCommonLeptonFakes::SetNBJet(int nbj){
+void HNCommonLeptonFakesOpt::SetNBJet(int nbj){
   n_bjet = nbj;
 }
 
 
-float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float eta){
+float HNCommonLeptonFakesOpt::getTrilepFakeRate_muon(bool geterr, float pt,  float eta){
   
-  //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] pt = " << pt << endl;
-  //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] eta = " << eta << endl;
+  //cout << "[HNCommonLeptonFakesOpt::getTrilepFakeRate_muon] pt = " << pt << endl;
+  //cout << "[HNCommonLeptonFakesOpt::getTrilepFakeRate_muon] eta = " << eta << endl;
 
   if(pt < 10.) pt = 11.;
   if(pt >= 60.) pt = 59.;
@@ -770,7 +987,7 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
   if(n_bjet>=0) UseBjetConf = true;
 
   if(UseJetConf && UseBjetConf){
-    cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] UseJetConf == true && UseBjetConf == true. Using alljet config.." << endl;
+    cout << "[HNCommonLeptonFakesOpt::getTrilepFakeRate_muon] UseJetConf == true && UseBjetConf == true. Using alljet config.." << endl;
     wp = wp+"_alljet";
   }
   else if(UseJetConf && !UseBjetConf){
@@ -793,7 +1010,7 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
     wp = wp+"_alljet";
   }
   else{
-    cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] ??" << endl;
+    cout << "[HNCommonLeptonFakesOpt::getTrilepFakeRate_muon] ??" << endl;
   }
 
   if(UsePtCone){
@@ -845,8 +1062,8 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
 
       int binx = hist_FR->FindBin(pt, abs(eta));
 
-      //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] FR = " << hist_FR->GetBinContent(binx) << endl;
-      //cout << "[HNCommonLeptonFakes::getTrilepFakeRate_muon] FRerr = " << hist_FR->GetBinError(binx) << endl;
+      //cout << "[HNCommonLeptonFakesOpt::getTrilepFakeRate_muon] FR = " << hist_FR->GetBinContent(binx) << endl;
+      //cout << "[HNCommonLeptonFakesOpt::getTrilepFakeRate_muon] FRerr = " << hist_FR->GetBinError(binx) << endl;
 
       if(geterr) return hist_FR->GetBinError(binx);
       else return hist_FR->GetBinContent(binx);
@@ -857,7 +1074,7 @@ float HNCommonLeptonFakes::getTrilepFakeRate_muon(bool geterr, float pt,  float 
 
 }
 
-float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float eta){
+float HNCommonLeptonFakesOpt::getTrilepPromptRate_muon(bool geterr, float pt, float eta){
 
   if(pt < 20.) pt = 21.;
   if(pt >= 200.) pt = 199.;
@@ -871,8 +1088,8 @@ float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float
     mapit = _2DEfficiencyMap.find("MUON_PR_HN_TRI_TIGHT_GH");
   }
   else{
-    cout << "[HNCommonLeptonFakes::getTrilepPromptRate_muon] DataPeriod is not correct" << endl;
-    cout << "[HNCommonLeptonFakes::getTrilepPromptRate_muon] Using BCDEF PromptRate" << endl;
+    cout << "[HNCommonLeptonFakesOpt::getTrilepPromptRate_muon] DataPeriod is not correct" << endl;
+    cout << "[HNCommonLeptonFakesOpt::getTrilepPromptRate_muon] Using BCDEF PromptRate" << endl;
     mapit = _2DEfficiencyMap.find("MUON_PR_HN_TRI_TIGHT_BCDEF");
   }
 
@@ -889,21 +1106,21 @@ float HNCommonLeptonFakes::getTrilepPromptRate_muon(bool geterr, float pt, float
   return 0.;
 }
 
-std::vector<double> HNCommonLeptonFakes::GetdXYMins(){
+std::vector<double> HNCommonLeptonFakesOpt::GetdXYMins(){
   return dXYMins;
 }
 
-std::vector<double> HNCommonLeptonFakes::GetRelIsoMaxs(){
+std::vector<double> HNCommonLeptonFakesOpt::GetRelIsoMaxs(){
   return RelIsoMaxs;
 }
 
-int HNCommonLeptonFakes::GetNLooseNotTight(){
+int HNCommonLeptonFakesOpt::GetNLooseNotTight(){
 
   return n_Loose_not_Tight;
 
 }
 
-void HNCommonLeptonFakes::SetUsePtCone(bool b){
+void HNCommonLeptonFakesOpt::SetUsePtCone(bool b){
 
   UsePtCone = b;
 
@@ -915,7 +1132,7 @@ void HNCommonLeptonFakes::SetUsePtCone(bool b){
 ##      TRIMUON FAKE FUNCTIONS 
 ############################################################### */
 
-float HNCommonLeptonFakes::get_trilepton_mmm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, bool isT3){
+float HNCommonLeptonFakesOpt::get_trilepton_mmm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, bool isT3){
 
   if(muons.size()!=3) {
     cout << "TriLepton event weight requires 3 muons." << endl;
@@ -1013,11 +1230,11 @@ float HNCommonLeptonFakes::get_trilepton_mmm_eventweight(bool geterr, std::vecto
 ################################################################ */
                                                                                                                  
 
-float HNCommonLeptonFakes::get_dilepton_mm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2){
+float HNCommonLeptonFakesOpt::get_dilepton_mm_eventweight(bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2){
   return get_dilepton_mm_eventweight("dxy", geterr,  muons, isT1,isT2,"");
 }
 
-float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, TString ID1,TString ID2, bool c1, bool c2, TString method, float ptcorr1, float ptcorr2,bool checkcj){
+float HNCommonLeptonFakesOpt::get_dilepton_mm_eventweight(TString fakerates, bool geterr, std::vector<TLorentzVector> muons, bool isT1, bool isT2, TString ID1,TString ID2, bool c1, bool c2, TString method, float ptcorr1, float ptcorr2,bool checkcj){
 
 
   if(muons.size()!=2) {
@@ -1137,7 +1354,7 @@ float HNCommonLeptonFakes::get_dilepton_mm_eventweight(TString fakerates, bool g
 }
 
 
-TDirectory* HNCommonLeptonFakes::getTemporaryDirectory(void) const
+TDirectory* HNCommonLeptonFakesOpt::getTemporaryDirectory(void) const
 {
   //                                                                                                                                                                                
   // Create a unique directory in memory to hold the histograms:                                                                                                                    
@@ -1148,7 +1365,7 @@ TDirectory* HNCommonLeptonFakes::getTemporaryDirectory(void) const
   while (not tempDir) {
     // First, let's find a directory name that doesn't exist yet:                                                                                                                    
     std::stringstream dirname;
-    dirname << "HNCommonLeptonFakes_%i" << counter;
+    dirname << "HNCommonLeptonFakesOpt_%i" << counter;
     if (gROOT->GetDirectory((dirname.str()).c_str())) {
       ++counter;
       continue;
@@ -1161,7 +1378,7 @@ TDirectory* HNCommonLeptonFakes::getTemporaryDirectory(void) const
   return tempDir;
 }
 
-float HNCommonLeptonFakes::get_eventweight(bool geterr, std::vector<TLorentzVector> muons, TString muid, std::vector<TLorentzVector> electrons, vector<TString> elcut, std::vector<bool> isT, int HalfSampleErrorDir){
+float HNCommonLeptonFakesOpt::get_eventweight(bool geterr, std::vector<TLorentzVector> muons, TString muid, std::vector<TLorentzVector> electrons, vector<TString> elcut, std::vector<bool> isT, int HalfSampleErrorDir){
 
   unsigned int n_leptons = isT.size();
 
