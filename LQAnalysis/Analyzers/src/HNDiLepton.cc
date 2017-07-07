@@ -121,12 +121,19 @@ void HNDiLepton::DoCutFlow(float w){
   if(!PassMETFilter()) return;     /// Initial event cuts :                                                                                                                                                                                                                    
   if((PassTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v") || PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))){
     counter( "2_EventClean", w);
+
     if(muons.size()==2){
       if(muons[1].Pt() > 10){
 	if(muons[0].Pt() > 20){
 	  counter( "3_DiMu", w);
 
 	  std::vector<snu::KMuon> muons_veto         = GetMuons("MUON_HN_VETO",false);
+	  if(muons_veto.size()!=2) {
+
+	    m_logger << INFO  << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+	    cout << muons_veto.size() <<endl;
+	  }
+	    
           if(muons_veto.size() ==2){
             counter("4_MuVeto", w);
             if(electrons_veto.size() ==0){

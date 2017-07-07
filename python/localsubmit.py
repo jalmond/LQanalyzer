@@ -746,10 +746,25 @@ out_end=sample
 
 
 output=workspace + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
+output_tag=2
+while os.path.exists(output):
+    output=workspace + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "v" +str(output_tag) +"/"
+    output_tag=output_tag+1
+
 mergeoutputdir = mergetmpwork + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  + "/"
+merge_tags=2
+while os.path.exists(mergeoutputdir):
+    mergeoutputdir=mergetmpwork + sample + "_" + now() + "_" + os.getenv("HOSTNAME")  +"v" +str(merge_tags)+"/"
+    merge_tags=merge_tags+1
+
+
 if not mc:
     output=workspace + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/" 
     mergeoutputdir = mergetmpwork + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "/"
+    merge_tags=2
+    while os.path.exists(mergeoutputdir):
+        mergeoutputdir = mergetmpwork + new_channel+ "_"+ sample + "_" + now() + "_" + os.getenv("HOSTNAME") + "v" +str(merge_tags)+"/"
+
 
 outputdir= output+ "output/"
 outputdir_tmp= output+ "output_tmp/"
@@ -759,6 +774,7 @@ if not (os.path.exists(output)):
 if not (os.path.exists(mergeoutputdir)):
     os.system("mkdir " + mergeoutputdir)
     print "Making tmp merge dir " + mergeoutputdir
+
 
 if(os.path.exists(outputdir)):
     number_of_outputfiles = sum(1 for item in os.listdir(outputdir) if isfile(join(outputdir, item)))
