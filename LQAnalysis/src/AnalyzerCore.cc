@@ -1748,7 +1748,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
   for(unsigned int ij=0; ij <jets.size(); ij++){
     bool isBtag=false;
     if (isData) {
-
+    
       if (it_lf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  -999999, jets.at(ij).Pt(), jets.at(ij).Eta()))
 	isBtag=true;
     }
@@ -1757,6 +1757,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
         isBtag=true;
     }
     else{
+      cout << it_lf->second->GetJetSF( jets.at(ij).HadronFlavour(), jets.at(ij).Pt(), jets.at(ij).Eta()) << endl;
       if (it_lf->second->IsTagged(jets.at(ij).BJetTaggerValue(tag),  jets.at(ij).HadronFlavour(),jets.at(ij).Pt(), jets.at(ij).Eta()))
 	isBtag=true;
     }
@@ -2013,7 +2014,7 @@ float AnalyzerCore::CorrectedMETRochester(BaseSelection::ID muid_formet, bool up
 
     px_orig+= muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi());
     py_orig+= muall.at(im).MiniAODPt()*TMath::Sin(muall.at(im).Phi());
-    cout << muall.at(im).MiniAODPt()*TMath::Cos(muall.at(im).Phi()) << " " << muall.at(im).Px() << endl;
+
     px_corrected += muall.at(im).Px();
     py_corrected += muall.at(im).Py();
 
@@ -2035,6 +2036,73 @@ float AnalyzerCore::CorrectedMETRochester(BaseSelection::ID muid_formet, bool up
 }
 
 
+float AnalyzerCore::CorrectedMETJES(BaseSelection::ID jet_format, int sys){
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+  std::vector<snu::KJet> jetall = GetJets(jet_format);
+
+  float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
+  for(unsigned int ij=0; ij < jetall.size() ; ij++){
+
+
+    px_orig+= jetall.at(ij).Px();
+    py_orig+= jetall.at(ij).Py();
+    if(sys==1){
+
+      px_shifted += jetall.at(ij).Px()*jetall.at(ij).ScaledUpEnergy();
+      py_shifted += jetall.at(ij).Py()*jetall.at(ij).ScaledUpEnergy();
+
+    }
+    if(sys==-1){
+      px_shifted += jetall.at(ij).Px()*jetall.at(ij).ScaledDownEnergy();
+      py_shifted += jetall.at(ij).Py()*jetall.at(ij).ScaledDownEnergy();
+
+    }
+    
+  }
+  met_x = met_x + px_orig - px_shifted;
+  met_y = met_y + py_orig - py_shifted;
+
+
+  return sqrt(met_x*met_x + met_y*met_y);
+
+}
+
+float AnalyzerCore::CorrectedMETJER(BaseSelection::ID jet_format, int sys){
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+  std::vector<snu::KJet> jetall = GetJets(jet_format);
+
+  
+  float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
+  for(unsigned int ij=0; ij < jetall.size() ; ij++){
+
+
+    px_orig+= jetall.at(ij).Px();
+    py_orig+= jetall.at(ij).Py();
+    if(sys==1){
+      px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedUpEnergy();
+      py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedUpEnergy();
+
+    }
+    if(sys==-1){
+      px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedDownEnergy();
+      py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedDownEnergy();
+
+    }
+
+  }
+  met_x = met_x + px_orig - px_shifted;
+  met_y = met_y + py_orig - py_shifted;
+
+
+  return sqrt(met_x*met_x + met_y*met_y);
+
+}
+
+
 
 float AnalyzerCore::CorrectedMETElectron(BaseSelection::ID elid_formet, int sys){
 
@@ -2050,9 +2118,11 @@ float AnalyzerCore::CorrectedMETElectron(BaseSelection::ID elid_formet, int sys)
     py_orig+= elall.at(iel).Py();
     if(sys==1){
       px_shifted += elall.at(iel).Px()*elall.at(iel).PtShiftedUp();
+      py_shifted += elall.at(iel).Py()*elall.at(iel).PtShiftedUp();
     }
     if(sys==-1){
       px_shifted += elall.at(iel).Px()*elall.at(iel).PtShiftedDown();
+      py_shifted += elall.at(iel).Py()*elall.at(iel).PtShiftedDown();
     }
 
 
@@ -2078,9 +2148,11 @@ float AnalyzerCore::CorrectedMETMuon(BaseSelection::ID muid_formet, int sys){
     py_orig+= muall.at(imu).Py();
     if(sys==1){
       px_shifted += muall.at(imu).Px()*muall.at(imu).PtShiftedUp();
+      py_shifted += muall.at(imu).Py()*muall.at(imu).PtShiftedUp();
     }
     if(sys==-1){
       px_shifted += muall.at(imu).Px()*muall.at(imu).PtShiftedDown();
+      py_shifted += muall.at(imu).Py()*muall.at(imu).PtShiftedDown();
     }
   }
   met_x = met_x + px_orig - px_shifted;

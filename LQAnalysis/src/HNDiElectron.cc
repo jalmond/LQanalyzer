@@ -115,11 +115,34 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
 
 
+
+  cout << "MET default = " << eventbase->GetEvent().PFMET() << endl;
+  CorrectedMETRochester(BaseSelection::MUON_HN_VETO, false);
+  cout << "MET update roch. = " <<eventbase->GetEvent().PFMET() << endl;
+  cout << "MET muonE+ = " << CorrectedMETMuon(BaseSelection::MUON_HN_VETO,1) << endl;
+  cout << "MET muonE- = " << CorrectedMETMuon(BaseSelection::MUON_HN_VETO,-1) << endl;
+  cout << "MET electronE+ = " << CorrectedMETElectron(BaseSelection::ELECTRON_HN_VETO,1) << endl;
+  cout << "MET electronE- = " << CorrectedMETElectron(BaseSelection::ELECTRON_HN_VETO,-1) << endl;
+  cout << "MET JES+ = " << CorrectedMETJES(BaseSelection::JET_HN,1) << endl;
+  cout << "MET JES- = " << CorrectedMETJES(BaseSelection::JET_HN,-1) << endl;
+  cout << "MET JER+ = " << CorrectedMETJER(BaseSelection::JET_HN, 1) << endl;
+  cout << "MET JER- = " << CorrectedMETJER(BaseSelection::JET_HN,-1) << endl;
+
+
   ///// SIGNAL PLOTS
   FillHist("NoCut" , 1., MCweight,  0. , 2., 2);
 
   if(!isData)weight*= MCweight;
+
+
+  if(GetJets(BaseSelection::JET_HN).size() > 0){
+    int nbjet = NBJet(GetJets(BaseSelection::JET_HN), snu::KJet::CSVv2, snu::KJet::Medium);
+    cout << nbjet << endl;
+  }
   
+  
+  return;
+
   /// Apply json file if gold json is used. if lumimask == silver this does nothing  
   if(isData&& (! eventbase->GetEvent().LumiMask(lumimask))) return;
 
@@ -204,7 +227,20 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KMuon> muonColl = GetMuons(BaseSelection::MUON_HN_VETO); // loose selection                                                                                                                                                                              
 
-  
+
+  cout << "MET default = " << eventbase->GetEvent().PFMET() << endl;
+  CorrectedMETRochester(BaseSelection::MUON_HN_VETO, false);
+  cout << "MET update roch. = " <<eventbase->GetEvent().PFMET() << endl;
+  cout << "MET muonE+ = " << CorrectedMETMuon(BaseSelection::MUON_HN_VETO,1) << endl;
+  cout << "MET muonE- = " << CorrectedMETMuon(BaseSelection::MUON_HN_VETO,-1) << endl;
+  cout << "MET electronE+ = " << CorrectedMETElectron(BaseSelection::ELECTRON_HN_VETO,1) << endl;
+  cout << "MET electronE- = " << CorrectedMETElectron(BaseSelection::ELECTRON_HN_VETO,-1) << endl;
+  cout << "MET JES+ = " << CorrectedMETJES(BaseSelection::JET_HN,1) << endl;
+  cout << "MET JES- = " << CorrectedMETJES(BaseSelection::JET_HN,-1) << endl;
+  cout << "MET JER+ = " << CorrectedMETJER(BaseSelection::JET_HN, 1) << endl;
+  cout << "MET JER- = " << CorrectedMETJER(BaseSelection::JET_HN,-1) << endl;
+
+
   if(muonColl.size() == 3){
     if(muonColl.at(0).Pt() > 20){
       if(muonColl.at(1).Pt() > 10){

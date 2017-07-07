@@ -111,6 +111,8 @@ class AnalyzerCore : public LQCycleBase {
   float CorrectedMETRochester(BaseSelection::ID id, bool updatemet);
   float CorrectedMETElectron(BaseSelection::ID elid_formet, int syst=0);
   float CorrectedMETMuon(BaseSelection::ID muid_formet, int syst=0);
+  float CorrectedMETJER(BaseSelection::ID jet_format, int sys);
+  float CorrectedMETJES(BaseSelection::ID jet_format, int sys);
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
   void SetCorrectedMomentum(vector<snu::KMuon>& k_muons);
