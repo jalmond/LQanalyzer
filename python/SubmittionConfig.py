@@ -405,6 +405,10 @@ def FreeSpaceInQueue(jobqueue, deftagger):
     for cline in file_clust_check_njobs:
         if "fastq" in cline:
             splitline = cline.split()
+            if len(splitline) ==6 and ".local" in cline:
+                if splitline[5] == "a":
+                    return 0
+                            
             if len(splitline) ==5:
                 qjobinfo=splitline[2]
                 qjobinfo=qjobinfo.replace("/"," ")
@@ -413,6 +417,10 @@ def FreeSpaceInQueue(jobqueue, deftagger):
                 fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
         if "longq" in cline:
             splitline = cline.split()
+            if len(splitline) ==6 and ".local" in cline:
+                if splitline[5] == "a":
+                    return 0
+
             if len(splitline) ==5:
                 qjobinfo=splitline[2]
                 qjobinfo=qjobinfo.replace("/"," ")
@@ -447,6 +455,9 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
     fastq_nallowedinqueue=0.
     longq_ninqueue=0.
     longq_nallowedinqueue=0.
+    alarm_fast=False
+    alarm_long=False
+        
     for cline in file_clust_check_njobs:
         if "fastq" in cline:
             splitline = cline.split()
@@ -456,6 +467,17 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
                 splitqjobinfo=qjobinfo.split()
                 fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
                 fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
+            elif len(splitline) ==6 and ".local" in cline:
+                if splitline[5] == "a":
+                    alarm_fast=True
+                else:
+                    qjobinfo=splitline[2]
+                    qjobinfo=qjobinfo.replace("/"," ")
+                    splitqjobinfo=qjobinfo.split()
+                    fastq_ninqueue=fastq_ninqueue+float(splitqjobinfo[1])
+                    fastq_nallowedinqueue=fastq_nallowedinqueue+float(splitqjobinfo[2])
+                    
+
         if "longq" in cline:
             splitline = cline.split()
             if len(splitline) ==5:
@@ -464,7 +486,26 @@ def ChangeQueue(jobsummary, jobqueue, ncores_job, deftagger, rundebug):
                 splitqjobinfo=qjobinfo.split()
                 longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
                 longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
-        
+            elif len(splitline) ==6 and ".local" in cline:
+                if splitline[5] == "a":
+                    alarm_long=True
+                else:
+                    qjobinfo=splitline[2]
+                    qjobinfo=qjobinfo.replace("/"," ")
+                    splitqjobinfo=qjobinfo.split()
+                    longq_ninqueue=longq_ninqueue+float(splitqjobinfo[1])
+                    longq_nallowedinqueue=longq_nallowedinqueue+float(splitqjobinfo[2])
+        if alarm_long and alarm_fast:
+            curses.echo()
+            curses.nocbreak()
+            curses.endwin()
+            print "Exiting since fast and long queues are in alarm state"
+            sys.exit()
+        elif alarm_long:
+            return "fastq"
+        elif alarm_fast:
+            return "longq"
+                
     file_clust_check_njobs.close()
     if rundebug:
         file_debug.write("queue fast: fastq_ninqueue=" + str(fastq_ninqueue) + " fastq_nallowedinqueue = " + str(fastq_nallowedinqueue)+ " \n")
