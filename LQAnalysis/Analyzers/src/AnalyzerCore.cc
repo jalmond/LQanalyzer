@@ -3426,50 +3426,80 @@ bool AnalyzerCore::OppositeCharge(std::vector<snu::KElectron> electrons, bool ru
   return false;
 }
 
+std::vector<snu::KElectron> AnalyzerCore::ShiftElectronEnergy(std::vector<snu::KElectron> beforeshift, TString el_ID, bool applyshift){
+
+  if(el_ID != "ELECTRON_HN_TIGHTv4") return beforeshift;
+  if(!applyshift) return beforeshift;
+
+  std::vector<snu::KElectron> aftershift;
+  double shiftrate = -999.;
+  if(beforeshift.size() == 1) shiftrate = (1-0.024);
+  if(beforeshift.size() == 2) shiftrate = (1-0.011);
+  if(beforeshift.size() > 2) shiftrate = (-999.);
+   
+
+   for(unsigned int i=0; i < beforeshift.size(); i++){
+     beforeshift.at(i).SetPtEtaPhiM(beforeshift.at(i).Pt()*shiftrate, beforeshift.at(i).Eta(), beforeshift.at(i).Phi(), 0.511e-3);
+     aftershift.push_back(beforeshift.at(i));
+   }
+   return aftershift;
+ }
+
 float AnalyzerCore::GetCFweight(std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID){
 
   if(el_ID != "ELECTRON_HN_TIGHTv4") return 0.;
-  if(electrons.size() != 2) return 0.;
+  if(electrons.size() > 2) return 0.;
 
-  snu::KElectron lep[2];
-  lep[0] = electrons.at(0);
-  lep[1] = electrons.at(1);
+  std::vector<snu::KElectron> lep;
+  for(int i=0; i<electrons.size(); i++){
+    lep.push_back(electrons.at(i));
+  }
 
-  if(lep[0].Charge() == lep[1].Charge()) return 0.;
+  if(lep.size()==2){
+    if(lep.at(0).Charge() == lep.at(1).Charge()) return 0.;
+  }
 
-  double CFrate[2] = {0.,}, CFweight[2] = {0.,};
-  CFrate[0] = GetCFRates(lep[0].Pt(), lep[0].SCEta(), el_ID);
-  CFrate[1] = GetCFRates(lep[1].Pt(), lep[1].SCEta(), el_ID);
+  std::vector<double> CFrate, CFweight, sf;
+  for(int i=0; i<lep.size(); i++){
+    CFrate.push_back(GetCFRates(lep.at(i).Pt(), lep.at(i).SCEta(), el_ID));
+    CFweight.push_back( (CFrate.at(i)/(1-CFrate.at(i))) );
+  }
 
-  CFweight[0] = CFrate[0] / (1-CFrate[0]);
-  CFweight[1] = CFrate[1] / (1-CFrate[1]);
-
-  double sf[2] = {1., 1.};
   int sys = 0;  // temporary
 
   if(apply_sf){
-    if(sys == 0){//Z mass window 15 GeV (76 ~ 106 GeV)
-      for(int i=0; i<2; i++){
-        if (fabs(lep[i].SCEta()) < 1.4442) sf[i] = 0.759713941;
-        else sf[i] = 0.784052036;
+    if(sys == 0){//Z mass window 15 GeV (76 ~ 106 GeV) //Use This Value as central value
+      for(int i=0; i<lep.size(); i++){
+        if (fabs(lep.at(i).SCEta()) < 1.4442) sf.push_back( 0.759713941 );
+        else sf.push_back( 0.784052036 );
       }
     }
     else if(sys == 1){//Z mass window 20 GeV
-      for(int i=0; i<2; i++){
-        if (fabs(lep[i].SCEta()) < 1.4442) sf[i] = 0.723099195;
-        else sf[i] = 0.757193848;
+      for(int i=0; i<lep.size(); i++){
+        if (fabs(lep.at(i).SCEta()) < 1.4442) sf.push_back( 0.723099195 );
+        else sf.push_back( 0.757193848 );
       }
     }
     else if(sys == -1){//Z mass window 10 GeV
-      for(int i=0; i<2; i++){
-        if (fabs(lep[i].SCEta()) < 1.4442) sf[i] = 0.75362822;
-        else sf[i] = 0.821682654;
+      for(int i=0; i<lep.size(); i++){
+        if (fabs(lep.at(i).SCEta()) < 1.4442) sf.push_back( 0.75362822 );
+        else sf.push_back( 0.821682654 );
       }
     }
   }
+  else{
+    for(int i=0; i<lep.size(); i++){
+      sf.push_back( 1 );
+    }
+  }
 
-  return (CFweight[0]*sf[0] + CFweight[1]*sf[1]);
+  double cfweight = 0.;
+  for(int i=0; i<lep.size(); i++){
+    cfweight += (sf.at(i)) * (CFweight.at(i));
+  }
+  return cfweight;
 }
+
 
 float AnalyzerCore::GetCFRates(double el_pt, double el_eta, TString el_ID){
   if(el_ID != "ELECTRON_HN_TIGHTv4") return 0.;
