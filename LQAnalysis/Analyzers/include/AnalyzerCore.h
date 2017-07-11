@@ -64,6 +64,7 @@ class AnalyzerCore : public LQCycleBase {
   bool TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
   bool TruthMatched(snu::KElectron el, bool keepcf);
 
+  bool AllPrompt(std::vector<snu::KMuon> muons, int method);
   bool TruthMatched(snu::KMuon mu);
 
   snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
@@ -183,6 +184,8 @@ class AnalyzerCore : public LQCycleBase {
   float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
   float CorrectedMETElectron(std::vector<snu::KElectron> electrons,  int syst=0);
   float CorrectedMETMuon(std::vector<snu::KMuon> muons ,int syst=0);
+  float CorrectedMETJES(std::vector<snu::KJet> jets ,int syst=0);
+  float CorrectedMETJER(std::vector<snu::KJet> jets ,int syst=0);
 
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
@@ -404,6 +407,20 @@ class AnalyzerCore : public LQCycleBase {
   void PrintTruth();
   std::vector<snu::KMuon> sort_muons_ptorder(std::vector<snu::KMuon> muons);
 
+
+  //==== (Trilepton) H+->WA stuffs
+  int  GenMatchedIdx(snu::KElectron El, std::vector<snu::KTruth>& truthColl);
+  int  GenMatchedIdx(snu::KMuon Mu, std::vector<snu::KTruth>& truthColl);
+  int  GetNearPhotonIdx(snu::KElectron Ele, std::vector<snu::KTruth>& TruthColl, TString Option="AllPhoton");
+  int  GetNearPhotonIdx(snu::KMuon Mu, std::vector<snu::KTruth>& TruthColl, TString Option="AllPhoton");
+  int  FirstNonSelfMotherIdx(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  int  LastSelfMotherIdx(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  bool HasHadronicAncestor(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  bool IsFinalPhotonSt23(std::vector<snu::KTruth> TruthColl);
+  int  GetLeptonType(int TruthIdx, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetLeptonType(snu::KElectron El, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetLeptonType(snu::KMuon Mu, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetPhotonType(int PhotonIdx, std::vector<snu::KTruth> TruthColl);
   
 };
 #endif

@@ -413,6 +413,15 @@ Bool_t KElectron::PassTrigMVAHNLoose() const{
   return false;
 }
 
+Bool_t KElectron::PassTrigMVAGENTLoose() const{
+  if((fabs(this->SCEta()) < 0.8) && k_mva > -0.02) return true;
+  if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > -0.52) return true;
+  if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > -0.52) return true;
+
+  return false;
+}
+
+
 
 
 float KElectron::ScaleFactor(const std::string& name, int sign) const {

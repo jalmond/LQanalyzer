@@ -315,7 +315,6 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool isdileptrig, f
 		      if(CheckSignalRegion(true,loose_mu,el, jets,alljets,"High", ev_weight))FillHist(("HighIDREFSNU"+muonTag+"_double"),ncut,ev_weight, 0.,1000., 1000);
 		    }
 		  }
-		      
 		}
 	      } 
 	    }
@@ -341,6 +340,8 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool isdileptrig, f
     std::vector<snu::KMuon>  hn_loose =  GetMuons("MUON_HN_LOOSE",false);
     std::vector<snu::KMuon>  hn_tight =  GetMuons("MUON_HN_TIGHT",false);
     
+    
+
 
 
     bool passtrigcuts_double_pogm=false;
@@ -430,6 +431,7 @@ void HNDiMuonOptimisation::OptimiseID(bool isss, bool dilep, bool isdileptrig, f
 
     if(!isdileptrig)    FillHist("POGIDREFSNU_single", 1,w, 0.,2., 2);
     else FillHist("POGIDREFSNU_double", 1,w, 0.,2., 2);
+    
 
     if(!k_running_nonprompt){
       

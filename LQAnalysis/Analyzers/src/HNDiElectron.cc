@@ -191,6 +191,13 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> electrons_hn1=GetElectrons(true,true,"ELECTRON_HN_TIGHT");
   std::vector<snu::KElectron> electrons_hn2=GetElectrons(true,true,"ELECTRON_HN_TIGHTv4");
+
+  if(electrons_hn2.size() ==2){
+   
+    std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+    int LepType=GetLeptonType(electrons_hn2[0],truthColl);
+    cout << electrons_hn2[0].GetType() << " LepType="  << LepType <<endl;
+  }
   std::vector<snu::KElectron> electrons_gent=GetElectrons(true,true,"ELECTRON_GENT_TIGHT");
   std::vector<snu::KElectron> electrons_mva=GetElectrons(true,true,"ELECTRON_MVA_TIGHT");
   std::vector<snu::KJet> jets =  GetJets("JET_HN");
@@ -198,13 +205,10 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   std::vector<snu::KFatJet> fatjets = GetFatJets("FATJET_HN");
   std::vector<snu::KJet> hnjets = GetJetsWFT("JET_HN","FATJET_HN");             
 
+ 
+
   std::vector<snu::KElectron> electrons_loose=GetElectrons(true,true , "ELECTRON_HN_FAKELOOSE");
-  float wtest = m_datadriven_bkg->Get_DataDrivenWeight_EE(false, electrons_loose, "ELECTRON_HN_FAKELOOSE","ELECTRON_HN_TIGHTv4","40",true);
 
-  cout << "wtest = " << wtest << endl;
-
-
-  
   vector<TString> IDs;
   IDs.push_back("ELECTRON_HN_EFF_PT");
   IDs.push_back("ELECTRON_HN_EFF_DXY");
@@ -216,7 +220,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   IDs.push_back("ELECTRON_HN_EFF_dxysig");
   IDs.push_back("ELECTRON_HN_EFF_iso");
   IDs.push_back("ELECTRON_HN_EFF_gentmva");
-  IDs.push_back("ELECTRON_HN_TIGHT");
+  IDs.push_back("ELECTRON_HN_TIGHTv4");
 
   bool _diel =   isData ?  (k_channel.Contains("DoubleEG")) : true ;
   bool _singleel =   isData ?  (k_channel.Contains("SingleElectron")) : true ;
@@ -633,6 +637,7 @@ void HNDiElectron::MakeValidationPlots(float w){
       pogmedium_tight = GetMuons("MUON_HN_LOOSE",false);
       if(SameCharge(gent))wg = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent, PassID(gent[0],"MUON_HNGENT_TIGHT"),  PassID(gent[1],"MUON_HNGENT_TIGHT"), "gent","gent",false, false, "ptcorr_eta",0.1,0.1,false, false);
       else wg=0.;
+      cout << "wg  = " << wg << endl;
       if(SameCharge(pogmedium_tight))wm = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium_tight, PassID(pogmedium_tight[0],"MUON_POG_MEDIUM"),  PassID(pogmedium_tight[1],"MUON_POG_MEDIUM"),"pogmedium",  "pogmedium", false, false ,"ptcorr_eta",0.25,0.25,false,false);
       else wm = 0.;
       if(SameCharge(pogtight_tight)) wt = m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight_tight, PassID(pogtight_tight[0],"MUON_POG_TIGHT"),  PassID(pogtight_tight[1],"MUON_POG_TIGHT"), "pogtight","pogtight", false, false, "ptcorr_eta",0.15,0.15,false,false);
