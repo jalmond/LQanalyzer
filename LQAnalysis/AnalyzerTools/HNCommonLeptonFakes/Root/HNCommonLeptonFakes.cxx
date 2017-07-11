@@ -114,7 +114,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
     }
   }
 
-  cout << "TEST2 " << endl;
 
   _2DEfficiencyMap["MUON_PR_HN_TRI_TIGHT_BCDEF"] = dynamic_cast<TH2F*>((file_trilep_prompt_BCDEF->Get("PR_pt_abseta"))->Clone());
   _2DEfficiencyMap["MUON_PR_HN_TRI_TIGHT_GH"] = dynamic_cast<TH2F*>((file_trilep_prompt_GH->Get("PR_pt_abseta"))->Clone());
@@ -139,7 +138,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
     file_fake_elhn->Close();
     delete file_fake_elhn;
     
-    cout << "TEST3 " << endl;
     /// Trilepton files
     file_trilep_fake->Close();
     delete file_trilep_fake;
@@ -156,7 +154,6 @@ void HNCommonLeptonFakes::InitialiseFake(){
     // Now we can close the file:   
     origDir->cd();
     
-    cout << "TEST4 " << endl;
     
     TFile* file_fake_muon_hn  = TFile::Open( (lqdir + "/data/Fake/"+getenv("yeartag")+"/FakeRate13TeV_muon_2016_opt_all.root").c_str());
     CheckFile(file_fake_muon_hn);
@@ -164,12 +161,12 @@ void HNCommonLeptonFakes::InitialiseFake(){
     ////// MAKE HISTS IN MAP                                                                                                                                                                             
     tempDir1->cd();
 
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUdijet_Tight0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUTightdijet_0.08_0.01_4_0.04"))->Clone());  
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUdijet_Medium0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUMediumdijet_0.08_0.01_4_0.04"))->Clone());  
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUisodijet_Tight0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUTightisodijet_0.08_0.01_4_0.04"))->Clone());
-    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUisodijet_Medium0.08_0.01_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUMediumisodijet_0.08_0.01_4_0.04"))->Clone());
+    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUdijet_Tight0.07_0.005_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUTightdijet_0.07_0.005_3_0.04"))->Clone());  
+    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUdijet_Medium0.07_0.005_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUMediumdijet_0.07_0.005_3_0.04"))->Clone());  
+    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUisodijet_Tight0.07_0.005_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUTightisodijet_0.07_0.005_3_0.04"))->Clone());
+    _2DEfficiencyMap_Double["fake_Eff_muon_ptcorr_eta_SNUisodijet_Medium0.07_0.005_4_0.04"] = dynamic_cast<TH2D*>((file_fake_muon_hn->Get("FakeRate_40_ptcorr_etaSNUMediumisodijet_0.07_0.005_3_0.04"))->Clone());
     
-    cout << "TES62 " << endl;
+
     file_fake_muon_hn->Close();
     delete file_fake_muon_hn;
     
