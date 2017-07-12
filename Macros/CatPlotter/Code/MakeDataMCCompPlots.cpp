@@ -158,15 +158,6 @@ int MakePlots(string hist) {
 	
 	cout << "Final Background Integral = " <<  MakeSumHist(mstack)->Integral() << " : Up = " << hup->Integral() << " : Down= " << hdown->Integral() << endl;
 	
-	/// Make data histogram
-	ylog=false;
-	if(TString(name).Contains("llmass")){ylog=true;}
-	if(TString(name).Contains("lllmass")){ylog=false;}
-	
-	if(TString(name).Contains("LeptonPt")){ylog=true;}
-	
-	if(TString(name).Contains("Tri")) {ylog=false;}
-        //if(TString(name).Contains("SSE")) {ylog=false;}
 
 	TH1* hdata = MakeDataHist(name, xmin, xmax, hup, ylog, rebin);
 	CheckHist(hdata);	
@@ -177,6 +168,8 @@ int MakePlots(string hist) {
 	if(showdata)cout << "Total data = " <<  hdata->Integral() << endl;
 	scale = 1.;
 
+
+	/// SIGNAL 
 
 	unsigned int outputWidth = 1200;
 	unsigned int outputHeight = 1200;
@@ -189,7 +182,7 @@ int MakePlots(string hist) {
 	vstack.push_back(mstack_nostat);   	
 
 	
-	TCanvas* c = CompDataMC(hdata,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	TCanvas* c = CompDataMC(hdata,hsig1,hsig2,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 
 	string canvasname = c->GetName();
 	canvasname.erase(0,4);
@@ -211,7 +204,6 @@ int MakePlots(string hist) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void MakeCutFlow(string type){
-  return;
   
   vector<string> cut_label;  
   vector<pair<pair<vector<pair<TString,float> >, int >, TString > > cfsamples;  
@@ -935,20 +927,7 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax, fl
     }
   }
   
-  if(name.find("llmass")!=string::npos) yscale*=0.2;
   
-  if(ylog){
-    float scale_for_log=1.;
-    if(h_data->GetMaximum() > 100000) scale_for_log = 10;
-    else if(h_data->GetMaximum() > 10000) scale_for_log = 10;
-    else if(h_data->GetMaximum() > 1000) scale_for_log = 10;
-    yscale*=scale_for_log;
-    if(scale_up) yscale*= 10;
-  }
-  else{
-
-    yscale=1.2;
-  }
 
   if(name.find("Tri")!=string::npos) {
     yscale*=1.5;
@@ -962,24 +941,6 @@ float  GetMaximum(TH1* h_data, TH1* h_up, bool ylog, string name, float xmax, fl
   if(max_data > max_bkg) return max_data;
   else return max_bkg;
 
-  
-  if(name.find("eemass")!=string::npos) yscale*=1.3;
-  if(name.find("eta")!=string::npos) yscale*=2.5;
-  if(name.find("Eta")!=string::npos) yscale*=1.75;
-  if(name.find("nVert")!=string::npos) yscale*=1.75;
-  if(name.find("MET")!=string::npos) yscale*=1.2;
-  if(name.find("e1jj")!=string::npos) yscale*=1.2;
-  if(name.find("Nje")!=string::npos) yscale*=1.2;
-  if(name.find("l2jj")!=string::npos) yscale*=1.3;
-  if(name.find("charge")!=string::npos) yscale*=1.5;
-  if(name.find("deltaR")!=string::npos) yscale*=1.5;
-  if(name.find("bTag")!=string::npos) yscale*=2.5;
-  if(name.find("emujj")!=string::npos) yscale*=1.3;
-  if(name.find("dijetmass")!=string::npos) yscale*=1.5;
-  if(name.find("LeptonPt")!=string::npos) yscale*=0.2;
-  if(name.find("secondElectronPt")!=string::npos) yscale*=1.2;
-  
-  
   return -1000.;
 }
 
@@ -1288,7 +1249,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 }
 
 
-TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
   ymax = GetMaximum(hdata, hup, ylog, hname, xmax, xmin);
   
@@ -1372,6 +1333,19 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   hdata->Draw("axis same");
   errorband->Draw("E2same");  
 
+
+  bool drawsig="";
+  if(!hsig1) drawsig=false;
+  if(!hsig2) drawsig=false;
+  if(drawsig){
+    /// Draw sig                                                                                                                                                                     
+    hsig1->Draw("hist9same");
+    hsig2->Draw("hist9same");
+
+  }
+
+
+
   vector<float> err_up_tmp;
   vector<float> err_down_tmp;
 
@@ -1434,17 +1408,23 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   gPad->SetLogz(1);
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
-  float scale_for_log = 1.;
-  if(!ylog){
-    ymax = GetMaximum(hdata, hup, !ylog, hname, xmax,xmin);
-    hdata->GetYaxis()->SetRangeUser(2., ymax*scale_for_log);
-  }
+  float scale_for_log = 1000.;
+  ymax = GetMaximum(hdata, hup, !ylog, hname, xmax,xmin);
+  hdata->GetYaxis()->SetRangeUser(0.1, ymax*scale_for_log);
+
   hdata->GetYaxis()->SetTitleOffset(1.5);
   hdata->Draw("p9hist");
   
   mcstack.at(0)->Draw("9HIST same");
 
   hdata->Draw("9samep9hist");
+
+  if(drawsig){
+    /// Draw sig
+    hsig1->Draw("hist9same");
+    hsig2->Draw("hist9same");
+  }
+
   hdata->Draw("axis same");
   errorband->Draw("E2same");
 
@@ -1452,8 +1432,13 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
 
 
   g->Draw(" p0" );
-
   
+  if(drawsig){
+    /// Draw(2) sig                                                                                                                                                                     
+
+    hsig1->Draw("hist9same");
+    hsig2->Draw("hist9same");
+  }
   legend->Draw();
   
   /// Make significance hist
@@ -1550,7 +1535,7 @@ TCanvas* CompDataMC(TH1* hdata, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH
   hdev->GetYaxis()->SetTitleSize(0.035);
   hdev->GetYaxis()->SetTitleOffset(1.3);
 
-  hdev->GetYaxis()->SetTitle( "Data / #Sigma MC" );
+  hdev->GetYaxis()->SetTitle( "Data / #Sigma Bkg" );
   hdev->GetYaxis()->SetRangeUser(0.25,+1.75);
   hdev->GetYaxis()->SetNdivisions(3);
   hdev->GetXaxis()->SetNdivisions(5);

@@ -6,7 +6,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -34,7 +34,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -62,7 +62,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -90,7 +90,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -118,7 +118,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -145,7 +145,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -172,7 +172,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -199,7 +199,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #
@@ -226,7 +226,7 @@
 # skim SKTree_DiLepSkim
 # stream DoubleMuon
 # analyzer HNDiLepton
-# periodtag periodBtoH
+# periodtag periodBtoH/2017-07-12
 # plottag newID
 # caption Number of events with two opposite sign muons...
 #

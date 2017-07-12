@@ -202,7 +202,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   bool _m_channel =   isData ?  (k_channel.Contains("SingleMuon")) : true ;
 
 
-  bool docf=true;
+  bool docf=false;
   if(docf){DoCutFlow(1.); return;}
 
   if(1){
@@ -218,38 +218,6 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
     std::vector<snu::KJet> jets = GetJets("JET_HN");
     std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
-
-    
-    TString pogid = "MUON_POG_TIGHT";
-    if(k_running_nonprompt)pogid="MUON_POG_LOOSE";
-    
-    std::vector<snu::KMuon> pogmuons_test = GetMuons(pogid,true);
-
-    if(SameCharge(pogmuons_test)){
-      if(pogmuons_test[1].Pt() > 10 && pogmuons_test[0].Pt() > 20 ){
-        if(!PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))  return;
-	float pogw=weight;
-	if(!isData) pogw*= WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi) ;
-
-        if(!isData) pogw*= mcdata_correction->MuonTrackingEffScaleFactor(pogmuons_test);
-        if(!isData) pogw*= mcdata_correction->MuonISOScaleFactor("MUON_POG_TIGHT", pogmuons_test, 0);                                                                                                                                  
-        if(!isData) pogw*= mcdata_correction->MuonScaleFactor("MUON_POG_TIGHT", pogmuons_test, 0);                                                                                                                                     
-        float puweight=1.;
-        if(GetMCPeriodRandom() < 6) puweight=eventbase->GetEvent().PileUpWeight(snu::KEvent::down);
-        else puweight= mcdata_correction->UserPileupWeight(eventbase->GetEvent(), jets.size());
-	
-	
-	if(!isData)pogw*= puweight;
-	
-
-
-	bool cb_1=false;
-	bool cb_2=false;
-	if(k_running_nonprompt)pogw =m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmuons_test,  PassID(pogmuons_test[0],"MUON_POG_TIGHT"),  PassID(pogmuons_test[1],"MUON_POG_TIGHT"), "pogtight","pogtight",cb_1, cb_2, "ptcorr_eta",0.15,0.15,false,true);
-	
-	FillCLHist(sighist_mm, "SSPOGMM_Preselection", eventbase->GetEvent(), pogmuons_test, electrons_veto,jets, alljets, fatjetcoll,  pogw);
-      }
-    }
 
 
     if(muons_test.size()==2){
@@ -311,13 +279,16 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
 		  bool cb_1=false;
 		  bool cb_2=false;
-		  w=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, PassID(muons_test[0],"MUON_HN_TIGHT"), PassID(muons_test[1],"MUON_HN_TIGHT"), tag1, tag2,  cb_1, cb_2,"ptcorr_eta", iso1,iso2,false, false);
-		  
+		  weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, PassID(muons_test[0],"MUON_HN_TIGHT"), PassID(muons_test[1],"MUON_HN_TIGHT"), tag1, tag2,  cb_1, cb_2,"ptcorr_eta", iso1,iso2,false, false);
+
 		}
 
 		FillCLHist(sighist_mm, "SSMM_Preselection", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
 		if(jets.size()==1) FillCLHist(sighist_mm, "SSMM_1Jet", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
-		if(jets.size() > 1)FillCLHist(sighist_mm, "SSMM_DiJet", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+		if(jets.size() > 1){
+		  FillCLHist(sighist_mm, "SSMM_DiJet", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+		}
+		
 		if(tchanjets.size()> 1)FillCLHist(sighist_mm, "SSMM_DiTJet", eventbase->GetEvent(), muons_test, electrons_veto,tchanjets, alljets,  fatjetcoll,weight);
 
 		if(CheckSignalRegion(true,muons_test,electrons_veto , jets, alljets,"Low", weight))FillCLHist(sighist_mm, "SSMM_LowMass", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
@@ -398,7 +369,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     }
   }
   
-  
+  return;
 
   _mm_channel =   isData ?  (k_channel.Contains("DoubleMuon")) : true ;
 
@@ -1024,9 +995,10 @@ bool HNDiLepton::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons, s
   snu::KParticle mm = muons.at(0) + muons.at(1);
   if(mm.M()  < 10.) {if(debug)cout << "Fail mee  " << endl; return false;}
 
-  if(name.Contains("Low")){
-    if(mm.M()  > 70.) {if(debug)cout << "Fail mee  " << endl; return false;}
-  }
+  // 80 GeV ??? 
+  //if(name.Contains("Low")){
+  //if(mm.M()  > 70.) {if(debug)cout << "Fail mee  " << endl; return false;}
+  //}
   
   float dijetmass_tmp=999.;
   float dijetmass=9990000.;
@@ -1035,7 +1007,9 @@ bool HNDiLepton::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons, s
   for(UInt_t emme=0; emme<jets.size(); emme++){
     for(UInt_t enne=1; enne<jets.size(); enne++) {
       if(emme == enne) continue;
-      dijetmass_tmp = (jets[emme]+jets[enne]).M();
+      if(name.Contains("Low")){
+	dijetmass_tmp = (jets[emme]+jets[enne]+muons[0] + muons[1]).M();
+      }
       if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
         dijetmass = dijetmass_tmp;
         m = emme;
@@ -1043,6 +1017,8 @@ bool HNDiLepton::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons, s
       }
     }
   }
+  
+
   snu::KParticle jj = jets.at(m) + jets.at(n) ;
 
   float dPhi = fabs(TVector2::Phi_mpi_pi(jets[m].Phi() - jets[n].Phi()));
@@ -1051,7 +1027,7 @@ bool HNDiLepton::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons, s
 
   if(name.Contains("Low")){
     if(contramass > 100) return false;
-    if((jets[0]+jets[1]).M() > 200.) return false;
+    if((jets[0]+jets[1]).M() > 250.) return false;
     if((jets[0] + muons[0] + muons[1]).M() > 250.)  return false;
   }
   else{

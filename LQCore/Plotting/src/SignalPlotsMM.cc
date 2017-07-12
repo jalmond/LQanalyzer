@@ -56,6 +56,7 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
 
  
   map_sig["h_jjmass"]                 = SetupHist("h_dijetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
+  map_sig["h_jjmass_lm"]                 = SetupHist("h_dijetsmass_lowmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_fjmass"]                 = SetupHist("h_fatjetsmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_fjprunedmass"]                 = SetupHist("h_fatjetprunedmass_"        + name,"Invariant mass of the two leading jets",500,0.,500.,"M_{jj} GeV");
   map_sig["h_leadjetmass"]            = SetupHist("h_leadjetsmass_"      + name,"Invariant mass of the two leading jets",150,0.,750.,"M_{j1j2} GeV");
@@ -264,6 +265,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
 
   //// Jet mass variables
   dijetmass_tmp=dijetmass=9999.9;
+  float lldijetmass_tmp=-999.;
   UInt_t m(0),n(0);
   float leadawayjetratio = -999.;
   float secondawayjetratio = -999.;
@@ -360,13 +362,23 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   float contramass(-999.);
   int jet_eta1=0;
   int jet_eta2=0;
-
+  float lldijetmass=-999.;
+  int mlm(-99);
+  int nlm(-99);
   for(UInt_t emme=0; emme<jets.size(); emme++){
     
     for(UInt_t enne=1; enne<jets.size(); enne++) {
       if(emme == enne) continue;
       dijetmass_tmp = (jets[emme]+jets[enne]).M();
       if(emme==0 && enne == 1) leadjetmass = dijetmass_tmp;
+      if(muons.size() ==2){
+	lldijetmass_tmp= (jets[emme]+jets[enne]+muons[0]+muons[1]).M();
+	if ( fabs(lldijetmass_tmp-80.4) < fabs(lldijetmass-80.4) ) {
+	  lldijetmass = lldijetmass_tmp;
+	  mlm = emme;
+	  nlm = enne;
+	}
+      }
       if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
 	dijetmass = dijetmass_tmp;
 	m = emme;
@@ -423,9 +435,9 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
         contramass=sqrt(contramass);
 
       }
+      }
     }
-  }
-  if(jets.size() > 1)  Fill("h_contraMTlepton",contramass, weight);
+    if(jets.size() > 1)  Fill("h_contraMTlepton",contramass, weight);
   float fmass = 9999.;
   int ifn=-999;
   for(UInt_t ifj =0; ifj < fatjets.size(); ifj++){
@@ -795,6 +807,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   //// Mass plots
   if(jets.size()>1){
     Fill("h_jjmass", (jets[m]+jets[n]).M(),weight); 
+    Fill("h_jjmass_lm", (jets[mlm]+jets[nlm]).M(),weight); 
   }
 
   if(fatjets.size()> 0){
@@ -814,7 +827,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       ht+= fatjets[j].Pt();
     }
   }
-
+  
   vector<snu::KJet> central_jets;
   vector<snu::KJet> forward_jets;
 
@@ -948,8 +961,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   Fill("h_centralNJets",central_jets.size(), weight);
   Fill("h_forwardNJets",forward_jets.size(), weight);
   Fill("h_max_deta",max_deta,weight);
-
-
+  
+  
   if(muons.size() ==2)
     {
       fjets=fjets+muons[0]+muons[1];
@@ -984,8 +997,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   
   if(debug)cout<< "Plotting [6] " << endl;
   return;
-}/// End of Fill
-
+  }/// End of Fill
+  
 
 
 void SignalPlotsMM::Write() {
