@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus080.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus002.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -179,7 +179,7 @@ FixOverUnderFlows(hsig1, xmax);
 ymax = GetMaximum(hsig1, hsig1, ylog, name, xmax, xmin); 
 float int_bkg = hup->Integral()/2.; 
 hsig1->SetLineColor(kRed); 
-hsig1->SetLineWidth(2.); 
+hsig1->SetLineWidth(3.); 
 hsig1->GetXaxis()->SetRangeUser(xmin,xmax); 
 hsig1->GetYaxis()->SetRangeUser(ymin,ymax); 
 TFile* file_sig2 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_80_cat_v8-0-7.root")); 
@@ -188,7 +188,7 @@ hsig2->Rebin(rebin);
 FixOverUnderFlows(hsig2, xmax); 
 hsig2->Scale(0.3); 
 hsig2->SetLineColor(kBlue); 
-hsig2->SetLineWidth(2.); 
+hsig2->SetLineWidth(3.); 
 
 	unsigned int outputWidth = 1200;
 	unsigned int outputHeight = 1200;
@@ -501,6 +501,26 @@ TLegend* MakeRatioLegend( TH1* h1, TH1* h2){
   
   return legendH;
 }
+
+/*TLegend* MakePunziLegend( TGraphAsymmErrors* h1, TGraphAsymmErrors* h2){
+  double x1 = 0.7;
+  double y1 = 0.21;
+  double x2 = 0.95;
+  double y2 = 0.24;
+
+  TLegend* legendH = new TLegend(x1,y1,x2,y2);
+  legendH->SetFillColor(kWhite);
+  legendH->SetTextFont(42);
+
+  legendH->SetBorderSize(0);
+  legendH->SetTextSize(0.02);
+  legendH->SetNColumns(2);
+
+  return legendH;
+
+
+}
+*/
 TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy, float ymax, float xmax){
   
   double x1 = 0.5;
@@ -909,120 +929,9 @@ void SetTitles(TH1* hist, string name){
   }
   //// SET TITLES
 
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV)";
-if(name.find("h_lljmass")!=string::npos) xtitle="jll invariant mass (GeV)";
-if(name.find("h_llpt")!=string::npos) xtitle="p_{T} (l^{#pm}l^{#pm}) GeV ";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
-if(name.find("h_Nbjets_l")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_m")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_t")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_all_l")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_all_m")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_all_t")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
-if(name.find("h_PFMET2_STall")!=string::npos) xtitle="E^{miss}_{T}/ST(alljets)";
-if(name.find("h_PFMET2_ST")!=string::npos) xtitle="E^{miss}_{T}/ST";
-if(name.find("h_LeptonJetdR")!=string::npos) xtitle="#Delta R(l,j)";
-if(name.find("h_LeptonAwayJetdR")!=string::npos) xtitle="#Delta R(l,aj)";
-if(name.find("h_leadLeptonAwayJetRatio")!=string::npos) xtitle="l/j";
-if(name.find("h_secondLeptonAwayJetRatio")!=string::npos) xtitle="l/j";
-if(name.find("h_leadLeptondR")!=string::npos) xtitle="#Delta R(l,l)";
-if(name.find("h_leadJetdR")!=string::npos) xtitle="#Delta R(j,j)";
-if(name.find("h_LeptonDXY")!=string::npos) xtitle="D_{XY}";
-if(name.find("h_LeptonDZ_B")!=string::npos) xtitle="D_{Z}";
-if(name.find("h_LeptonDZ_EC")!=string::npos) xtitle="D_{Z}";
-if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
-if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
-if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
-if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV)";
-if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV)";
-if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV)";
-if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV)";
-if(name.find("h_forward_jet_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_central_jet_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_forward_jet_eta")!=string::npos) xtitle="Jet #eta";
-if(name.find("h_central_jet_eta")!=string::npos) xtitle="Jet #eta";
-if(name.find("h_ST")!=string::npos) xtitle="ST GeV";
-if(name.find("h_STall")!=string::npos) xtitle="ST(alljets) GeV";
-if(name.find("h_HT")!=string::npos) xtitle="HT GeV";
-if(name.find("h_st_forward")!=string::npos) xtitle="ST GeV";
-if(name.find("h_st_central")!=string::npos) xtitle="ST GeV";
-if(name.find("h_st_fc_ratio")!=string::npos) xtitle="ST_{f}/ST_{c}";
-if(name.find("h_ht_forward")!=string::npos) xtitle="HT GeV";
-if(name.find("h_ht_central")!=string::npos) xtitle="HT GeV";
-if(name.find("h_ht_fc_ratio")!=string::npos) xtitle="HT_{f}/HT_{c}";
-if(name.find("h_lt")!=string::npos) xtitle="LT GeV";
-if(name.find("h_lt_ht")!=string::npos) xtitle="LT_{f}/HT_{c}";
-if(name.find("h_mass_forward")!=string::npos) xtitle="m(EC) GeV";
-if(name.find("h_mass_central")!=string::npos) xtitle="m(B) GeV";
-if(name.find("h_centralNJets")!=string::npos) xtitle="Number of central jets";
-if(name.find("h_forwardNJets")!=string::npos) xtitle="Number of foward jets";
-if(name.find("h_lep_jet_dphi")!=string::npos) xtitle="#Delta #Phi(l,j)";
-if(name.find("h_MTlepton")!=string::npos) xtitle="MT (lep,MT) GeV";
-if(name.find("h_contraMTlepton")!=string::npos) xtitle="MT (j,j) GeV";
-if(name.find("h_llmass")!=string::npos) xtitle="ll invariant mass (GeV)";
-if(name.find("h_lljmass")!=string::npos) xtitle="jll invariant mass (GeV)";
-if(name.find("h_llpt")!=string::npos) xtitle="p_{T} (l^{#pm}l^{#pm}) GeV ";
-if(name.find("h_leadingLeptonPt")!=string::npos) xtitle="Leading lepton p_{T} (GeV)";
-if(name.find("h_secondLeptonPt")!=string::npos) xtitle="Second lepton p_{T} (GeV)";
-if(name.find("h_LeptonEta")!=string::npos) xtitle="Lepton #eta";
-if(name.find("h_Njets")!=string::npos) xtitle="Number of jets";
-if(name.find("h_Nbjets_l")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_m")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_t")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_all_l")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_all_m")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_Nbjets_all_t")!=string::npos) xtitle="Number of b-jets";
-if(name.find("h_PFMET")!=string::npos) xtitle="E^{miss}_{T} (GeV)";
-if(name.find("h_PFMET2_STall")!=string::npos) xtitle="E^{miss}_{T}/ST(alljets)";
-if(name.find("h_PFMET2_ST")!=string::npos) xtitle="E^{miss}_{T}/ST";
-if(name.find("h_LeptonJetdR")!=string::npos) xtitle="#Delta R(l,j)";
-if(name.find("h_LeptonAwayJetdR")!=string::npos) xtitle="#Delta R(l,aj)";
-if(name.find("h_leadLeptonAwayJetRatio")!=string::npos) xtitle="l/j";
-if(name.find("h_secondLeptonAwayJetRatio")!=string::npos) xtitle="l/j";
-if(name.find("h_leadLeptondR")!=string::npos) xtitle="#Delta R(l,l)";
-if(name.find("h_leadJetdR")!=string::npos) xtitle="#Delta R(j,j)";
-if(name.find("h_LeptonDXY")!=string::npos) xtitle="D_{XY}";
-if(name.find("h_LeptonDZ_B")!=string::npos) xtitle="D_{Z}";
-if(name.find("h_LeptonDZ_EC")!=string::npos) xtitle="D_{Z}";
-if(name.find("h_nVertices")!=string::npos) xtitle="Number of vertices";
-if(name.find("h_Nelectrons")!=string::npos) xtitle="Number of electrons";
-if(name.find("h_bTag")!=string::npos) xtitle="CSVInclV2";
-if(name.find("h_jets_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_dijetsmass")!=string::npos) xtitle="m(j_{1}j_{2}) (GeV)";
-if(name.find("h_l1jjmass")!=string::npos) xtitle="l_{1}jj invariant mass (GeV)";
-if(name.find("h_l2jjmass")!=string::npos) xtitle="l_{2}jj invariant mass (GeV)";
-if(name.find("h_lljjmass")!=string::npos) xtitle="l^{#pm}l^{#pm}jj invariant mass (GeV)";
-if(name.find("h_forward_jet_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_central_jet_pt")!=string::npos) xtitle="Jet p_{T} (GeV)";
-if(name.find("h_forward_jet_eta")!=string::npos) xtitle="Jet #eta";
-if(name.find("h_central_jet_eta")!=string::npos) xtitle="Jet #eta";
-if(name.find("h_ST")!=string::npos) xtitle="ST GeV";
-if(name.find("h_STall")!=string::npos) xtitle="ST(alljets) GeV";
-if(name.find("h_HT")!=string::npos) xtitle="HT GeV";
-if(name.find("h_st_forward")!=string::npos) xtitle="ST GeV";
-if(name.find("h_st_central")!=string::npos) xtitle="ST GeV";
-if(name.find("h_st_fc_ratio")!=string::npos) xtitle="ST_{f}/ST_{c}";
-if(name.find("h_ht_forward")!=string::npos) xtitle="HT GeV";
-if(name.find("h_ht_central")!=string::npos) xtitle="HT GeV";
-if(name.find("h_ht_fc_ratio")!=string::npos) xtitle="HT_{f}/HT_{c}";
-if(name.find("h_lt")!=string::npos) xtitle="LT GeV";
-if(name.find("h_lt_ht")!=string::npos) xtitle="LT_{f}/HT_{c}";
-if(name.find("h_mass_forward")!=string::npos) xtitle="m(EC) GeV";
-if(name.find("h_mass_central")!=string::npos) xtitle="m(B) GeV";
-if(name.find("h_centralNJets")!=string::npos) xtitle="Number of central jets";
-if(name.find("h_forwardNJets")!=string::npos) xtitle="Number of foward jets";
-if(name.find("h_lep_jet_dphi")!=string::npos) xtitle="#Delta #Phi(l,j)";
-if(name.find("h_MTlepton")!=string::npos) xtitle="MT (lep,MT) GeV";
-if(name.find("h_contraMTlepton")!=string::npos) xtitle="MT (j,j) GeV";
 
 
-
-  hist->GetXaxis()->SetTitle(xtitle.c_str());
+  if(TString(xtitle) != "")  hist->GetXaxis()->SetTitle(xtitle.c_str());
   hist->GetYaxis()->SetTitle(ytitle.c_str());
 
   hist->GetXaxis()->SetTitleSize(0.04);
@@ -1488,9 +1397,24 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
   
   // draw data hist to get axis settings
   hdata->GetYaxis()->SetTitleOffset(1.4);
-  if(!showdata)hdata = h_nominal;
-  hdata->Draw("p9hist");
+ 
+  showdata=true;
 
+hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));;
+hdata->GetXaxis()->SetRangeUser(xmin, xmax);;
+hdata->GetYaxis()->SetRangeUser(ymin, ymax);;
+SetTitles(hdata, hname);
+showdata=false;
+
+  //hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));
+
+
+ 
+  if(!showdata) hdata->GetYaxis()->SetTitleOffset(2.);
+  else hdata->GetYaxis()->SetTitleOffset(1.5); 
+  hdata->Draw("p9hist");
+  
+  
   TLatex label;
   label.SetTextSize(0.04);
   label.SetTextColor(2);
@@ -1515,9 +1439,9 @@ bool drawsig=true;
     /// Draw sig                                                                                                                                                                     
 
 hsig1->Draw("hist9same"); 
-legend->AddEntry(hsig1, "|m_{N}=40GeV,|V_{#muN}|^{2}=5#times10^{-2}","l");
+legend->AddEntry(hsig1, "m_{N} = 40 GeV, |V_{#muN}|^{2} = 5 #times 10^{-2} ","l");
 hsig2->Draw("hist9same"); 
-legend->AddEntry(hsig2, "|m_{N}=80GeV,|V_{#muN}|^{2}=3#times10^{-1}","l");
+legend->AddEntry(hsig2, "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-1} ","l");
     hsig1->Draw("hist9same");
     hsig2->Draw("hist9same");
 
@@ -1585,13 +1509,20 @@ legend->AddEntry(hsig2, "|m_{N}=80GeV,|V_{#muN}|^{2}=3#times10^{-1}","l");
   canvas_log->SetLogy();     
   
   gPad->SetLogz(1);
+  
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
   float scale_for_log = 1000.;
   ymax = GetMaximum(hdata, hup, !ylog, hname, xmax,xmin);
   hdata->GetYaxis()->SetRangeUser(0.1, ymax*scale_for_log);
 
-  hdata->GetYaxis()->SetTitleOffset(1.5);
+
+  hdata->GetYaxis()->SetLabelSize(0.035);
+  hdata->GetYaxis()->SetTitleSize(0.035);
+  if(!showdata) hdata->GetYaxis()->SetTitleOffset(2.);
+  else hdata->GetYaxis()->SetTitleOffset(1.5);
+
+  //  if(!showdata) hdata->SetMarkerSize(0.);
   hdata->Draw("p9hist");
   
   mcstack.at(0)->Draw("9HIST same");
@@ -1599,12 +1530,7 @@ legend->AddEntry(hsig2, "|m_{N}=80GeV,|V_{#muN}|^{2}=3#times10^{-1}","l");
   hdata->Draw("9samep9hist");
 
   if(drawsig){
-    /// Draw sig
-
-hsig1->Draw("hist9same"); 
-legend->AddEntry(hsig1, "|m_{N}=40GeV,|V_{#muN}|^{2}=5#times10^{-2}","l");
-hsig2->Draw("hist9same"); 
-legend->AddEntry(hsig2, "|m_{N}=80GeV,|V_{#muN}|^{2}=3#times10^{-1}","l");
+    /// Draw(1) sig
     hsig1->Draw("hist9same");
     hsig2->Draw("hist9same");
   }
@@ -1683,79 +1609,176 @@ hsig2->Draw("hist9same");
     }
   } 
   
-  
-  for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
-    if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
-      hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
-      //hdev->SetBinContent(i, h_nominal->GetBinContent(i)/ h_nominal->GetBinContent(i));
-      hdev->SetBinError(i, 0.01);
-    }
-    else {
-      hdev->SetBinContent(i, -99);
-      hdev->SetBinError(i, 0.);
+  float maxSB(0.);
+  float minSB(9999.);
+  if(showdata){
+    for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+      if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
+	hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	hdev->SetBinError(i, 0.01);
+      }
+      else {
+	hdev->SetBinContent(i, -99);
+	hdev->SetBinError(i, 0.);
+      }
     }
   }
+  else{
+    
+    for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+      /*float punzi = 0.;
+      float sig(0.);
+      float bkg(0.);
+      float fake(0.);
+      for (Int_t j=1;j<=i;j++) {
+	  sig+= hsig1->GetBinContent(j);
+	  bkg+=h_nominal->GetBinContent(j);
+	  fake+=h_nominal->GetBinContent(j)*0.3*0.6;
+      }
+      if( (bkg + fake*fake) <=5.) punzi =0.00001; /// require 5 events ....
+      else if((sig / hsig1->Integral() )  < 0.5) punzi =0.00001;
+      else punzi = sig/(1+sqrt(bkg + fake*fake));
+      //cout << i << " " << bkg << " " << fake << " " << sig << endl;
+      
+      hdev->SetBinContent(i, punzi);
+      cout << " maxSB = " << maxSB << "  punzi ="<< punzi << endl;
+      
+      if(punzi  > maxSB)maxSB=  punzi;
+      if(punzi  < minSB)minSB=  punzi;*/
+      float binc(0.);
+      float sigc(0.);
+      if(hsig1->GetBinContent(i)<=0)sigc=0.0001;
+      else sigc=hsig1->GetBinContent(i);
+      sigc=sigc/hsig1->Integral();
+      if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
+      else binc=sigc/1.8;
+      hdev->SetBinError(i,0.);
+      hdev->SetBinContent(i, binc);
+      if(binc > maxSB)maxSB=binc;
+      if(binc < minSB)minSB=binc;
+    }
+    
+    for (Int_t i=1;i<=hdev_err->GetNbinsX()+1;i++) {
+      float binc(0.);
+      float sigc(0.);
+      if(hsig2->GetBinContent(i)==0)sigc=0.0001;
+      else sigc=hsig2->GetBinContent(i);
+      sigc=sigc/hsig2->Integral();
+
+      if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
+      else binc=sigc/1.8;
+      hdev_err->SetBinError(i,0.);
+
+      hdev_err->SetBinContent(i, binc);
+      if(binc > maxSB)maxSB=binc;
+      if(binc < minSB)minSB=binc;
+
+    }
+    
+  }
   
+
   /// set errors for datamc plot
   TGraphAsymmErrors * gratio = new TGraphAsymmErrors(hdev);
 
-  for (int i = 0; i < gratio->GetN(); ++i) {
-    
-    if(err_down_tmp.at(i)  !=0.) {
-      gratio->SetPointEYlow(i, err_down_tmp.at(i) / h_nominal->GetBinContent(i+1) );
-      gratio->SetPointEXlow(i, 0);
-      gratio->SetPointEYhigh(i, err_up_tmp.at(i) /h_nominal->GetBinContent(i+1));
-      gratio->SetPointEXhigh(i, 0);
-    }
-    else{
-      gratio->SetPointEYlow(i, 0);
-      gratio->SetPointEXlow(i, 0);
-      gratio->SetPointEYhigh(i, 1.8 / h_nominal->GetBinContent(i+1));
-      gratio->SetPointEXhigh(i, 0);
+  if(showdata){
+    for (int i = 0; i < gratio->GetN(); ++i) {
+      
+      if(err_down_tmp.at(i)  !=0.) {
+	gratio->SetPointEYlow(i, err_down_tmp.at(i) / h_nominal->GetBinContent(i+1) );
+	gratio->SetPointEXlow(i, 0);
+	gratio->SetPointEYhigh(i, err_up_tmp.at(i) /h_nominal->GetBinContent(i+1));
+	gratio->SetPointEXhigh(i, 0);
+      }
+      else{
+	gratio->SetPointEYlow(i, 0);
+	gratio->SetPointEXlow(i, 0);
+	gratio->SetPointEYhigh(i, 1.8 / h_nominal->GetBinContent(i+1));
+	gratio->SetPointEXhigh(i, 0);
+      }
     }
   }
-  
+  else{
+    for (int i = 0; i < gratio->GetN(); ++i) {
+      
+      if(err_down_tmp.at(i)  !=0.) {
+	
+	
+      }
+      else{
+        gratio->SetPointEYlow(i, 0);
+        gratio->SetPointEXlow(i, 0);
+        gratio->SetPointEYhigh(i, 1.8 / h_nominal->GetBinContent(i+1));
+        gratio->SetPointEXhigh(i, 0);
+      }
+    }
+
+
+  }
   
   //////////// Plot all
   
   hdev->GetYaxis()->SetLabelSize(0.035);
   hdev->GetYaxis()->SetTitleSize(0.035);
-  hdev->GetYaxis()->SetTitleOffset(1.3);
+  if(!showdata) hdev->GetYaxis()->SetTitleOffset(1.4);
+  else hdev->GetYaxis()->SetTitleOffset(1.3);
 
-  hdev->GetYaxis()->SetTitle( "Data / #Sigma Bkg" );
-  hdev->GetYaxis()->SetRangeUser(0.25,+1.75);
+  if(showdata){
+    hdev->GetYaxis()->SetTitle( "Data / #Sigma Bkg" );
+    hdev->GetYaxis()->SetRangeUser(0.25,+1.75);
+  }
+  else  {
+    hdev->GetYaxis()->SetTitle( "Bin_{S/B}");
+    gPad->SetLogy();
+    cout << "Set maxSB to " << maxSB << endl;
+    hdev->GetYaxis()->SetRangeUser(0.0001, maxSB*2.);
+  }
+
   hdev->GetYaxis()->SetNdivisions(3);
   hdev->GetXaxis()->SetNdivisions(5);
-
-  hdev->SetMarkerStyle(20);
-  //hdev->SetMarkerSize(2.3);
-  hdev_err_stat->SetMarkerSize(0.);
-  hdev_err->SetMarkerSize(0.);
-  hdev->SetLineColor(kBlack);
-  hdev_err->SetFillColor(kRed);
-  hdev_err->SetLineColor(kRed);
-  hdev_err->SetFillStyle(3444);
-  hdev_err_stat->SetFillColor(kOrange-9);
-  hdev_err_stat->SetLineColor(kOrange-9);
-  hdev->Draw("phist");
   
-  hdev_err_stat->Draw("sameE4");
-  hdev_err->Draw("sameE4");
-  gratio->SetLineWidth(2.0);
-  gratio->SetMarkerSize(0.);
-  gratio->Draw(" p0" );
-  hdev->Draw("same p hist");
-      
+  if(showdata){
+    hdev->SetMarkerStyle(20);
+    //hdev->SetMarkerSize(2.3);
+    hdev_err_stat->SetMarkerSize(0.);
+    hdev_err->SetMarkerSize(0.);
+    hdev->SetLineColor(kBlack);
+    hdev_err->SetFillColor(kRed);
+    hdev_err->SetLineColor(kRed);
+    hdev_err->SetFillStyle(3444);
+    hdev_err_stat->SetFillColor(kOrange-9);
+    hdev_err_stat->SetLineColor(kOrange-9);
+  }
+  
+  if(!showdata){
+    hdev->SetMarkerColor(kRed);
+    hdev->Draw("p");
+    
+    hdev_err->SetMarkerColor(kBlue);
+    hdev_err->Draw("psame");
+  }
+  
+  if(showdata){
+    hdev->Draw("hist");
+
+    hdev_err_stat->Draw("sameE4");
+    hdev_err->Draw("sameE4");
+    gratio->SetLineWidth(2.0);
+    gratio->SetMarkerSize(0.);
+    gratio->Draw(" p0" );
+    hdev->Draw("same p hist");
+  }
+  
     
   TLine *devz = new TLine(hdev->GetBinLowEdge(hdev->GetXaxis()->GetFirst()),1.0,hdev->GetBinLowEdge(hdev->GetXaxis()->GetLast()+1),1.0  );
   devz->SetLineWidth(1);
   devz->SetLineStyle(1);
-  devz->Draw("SAME");
+  if(showdata)  devz->Draw("SAME");
   
   
   TLegend* legendr = MakeRatioLegend(hdev_err,hdev_err_stat);
-  legendr->Draw();
-    
+  if(showdata)legendr->Draw();
+  
 
   CMS_lumi( canvas_log, 4, 2 );
   canvas_log->Update();
@@ -1932,8 +1955,8 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
   latex.SetTextSize(lumiTextSize*t);
   latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
 
-  if(iPosX==2)  latex.DrawLatex(1-r-0.22,1-t+lumiTextOffset*t, "#mu#mu ch.,");
-  else  latex.DrawLatex(1-r-0.4,1-t+lumiTextOffset*t, "#mu#mu ch.,");
+  if(iPosX==2)  latex.DrawLatex(1-r-0.22,1-t+lumiTextOffset*t, "#mu^{#pm}#mu^{#pm} channel,");
+  else  latex.DrawLatex(1-r-0.4,1-t+lumiTextOffset*t, "#mu^{#pm}#mu^{#pm} channel,");
 
   
 

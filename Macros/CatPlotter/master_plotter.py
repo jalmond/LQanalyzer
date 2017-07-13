@@ -78,7 +78,9 @@ isblind="false"
 plottag="Default"
 outputlist=[]
 sigfile=""
+histfile=""
 input_configfile = open(configinputfile,"r")
+
 for line in input_configfile:
     if "*********************" in line:
         continue
@@ -90,6 +92,10 @@ for line in input_configfile:
         sline = line.split()
         if sline[2] == "true":
             isblind="true"
+    elif "hists:" in line:
+        sline = line.split()
+        histfile=sline[2]
+            
     elif "samples" in line and "# " in line:
         sline = line.split()
         inputfile = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"+sline[2]
@@ -121,18 +127,26 @@ for line in input_configfile:
         cap= open("caption.txt","w")
         cap.write(sline)
         cap.close()
-    elif "## h" in line:
-        sline = line.split()
-        histlist.append(sline[1])
-        binlist.append(sline[2])
-        xminlist.append(sline[3])
-        xmaxlist.append(sline[4])
 
     elif "#################" in line:
         if len(cutlist) == 0:
             continue
         inputdir="/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/"+ analyzer +"/"+periodtag+"/"+datetag
+
+        readhists=open(str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"+histfile,"r")
+        for rline in readhists:
+            if "END" in rline:
+                break
+            if "##" in rline:
+                sline = rline.split()
+                histlist.append(sline[1])
+                binlist.append(sline[2])
+                xminlist.append(sline[3])
+                xmaxlist.append(sline[4])
+        readhists.close()
+
         MakeHistFile(histlist, binlist,xminlist, xmaxlist,jobdir)
+
 
         if not os.path.exists("~/CATAnalyzerPlots/"):
             os.system("mkdir ~/CATAnalyzerPlots/")

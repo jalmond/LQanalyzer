@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus080.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus002.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -482,6 +482,26 @@ TLegend* MakeRatioLegend( TH1* h1, TH1* h2){
   
   return legendH;
 }
+
+/*TLegend* MakePunziLegend( TGraphAsymmErrors* h1, TGraphAsymmErrors* h2){
+  double x1 = 0.7;
+  double y1 = 0.21;
+  double x2 = 0.95;
+  double y2 = 0.24;
+
+  TLegend* legendH = new TLegend(x1,y1,x2,y2);
+  legendH->SetFillColor(kWhite);
+  legendH->SetTextFont(42);
+
+  legendH->SetBorderSize(0);
+  legendH->SetTextSize(0.02);
+  legendH->SetNColumns(2);
+
+  return legendH;
+
+
+}
+*/
 TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata , bool logy, float ymax, float xmax){
   
   double x1 = 0.5;
@@ -860,8 +880,7 @@ void SetTitles(TH1* hist, string name){
   //// SET TITLES
 
 
-
-  hist->GetXaxis()->SetTitle(xtitle.c_str());
+  if(TString(xtitle) != "")  hist->GetXaxis()->SetTitle(xtitle.c_str());
   hist->GetYaxis()->SetTitle(ytitle.c_str());
 
   hist->GetXaxis()->SetTitleSize(0.04);
@@ -1314,9 +1333,20 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
   
   // draw data hist to get axis settings
   hdata->GetYaxis()->SetTitleOffset(1.4);
-  if(!showdata)hdata = h_nominal;
-  hdata->Draw("p9hist");
+ 
+  showdata=true;
 
+  //removedata
+
+  //hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));
+
+
+ 
+  if(!showdata) hdata->GetYaxis()->SetTitleOffset(2.);
+  else hdata->GetYaxis()->SetTitleOffset(1.5); 
+  hdata->Draw("p9hist");
+  
+  
   TLatex label;
   label.SetTextSize(0.04);
   label.SetTextColor(2);
@@ -1406,13 +1436,20 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
   canvas_log->SetLogy();     
   
   gPad->SetLogz(1);
+  
   //// %%%%%%%%%% TOP HALF OF PLOT %%%%%%%%%%%%%%%%%%
   
   float scale_for_log = 1000.;
   ymax = GetMaximum(hdata, hup, !ylog, hname, xmax,xmin);
   hdata->GetYaxis()->SetRangeUser(0.1, ymax*scale_for_log);
 
-  hdata->GetYaxis()->SetTitleOffset(1.5);
+
+  hdata->GetYaxis()->SetLabelSize(0.035);
+  hdata->GetYaxis()->SetTitleSize(0.035);
+  if(!showdata) hdata->GetYaxis()->SetTitleOffset(2.);
+  else hdata->GetYaxis()->SetTitleOffset(1.5);
+
+  //  if(!showdata) hdata->SetMarkerSize(0.);
   hdata->Draw("p9hist");
   
   mcstack.at(0)->Draw("9HIST same");
@@ -1420,7 +1457,7 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
   hdata->Draw("9samep9hist");
 
   if(drawsig){
-    /// Draw sig
+    /// Draw(1) sig
     hsig1->Draw("hist9same");
     hsig2->Draw("hist9same");
   }
@@ -1496,79 +1533,176 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
     }
   } 
   
-  
-  for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
-    if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
-      hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
-      //hdev->SetBinContent(i, h_nominal->GetBinContent(i)/ h_nominal->GetBinContent(i));
-      hdev->SetBinError(i, 0.01);
-    }
-    else {
-      hdev->SetBinContent(i, -99);
-      hdev->SetBinError(i, 0.);
+  float maxSB(0.);
+  float minSB(9999.);
+  if(showdata){
+    for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+      if(h_nominal->GetBinContent(i) > 0 &&  hdev->GetBinContent(i) > 0){
+	hdev->SetBinContent(i, hdev->GetBinContent(i)/ h_nominal->GetBinContent(i));
+	hdev->SetBinError(i, 0.01);
+      }
+      else {
+	hdev->SetBinContent(i, -99);
+	hdev->SetBinError(i, 0.);
+      }
     }
   }
+  else{
+    
+    for (Int_t i=1;i<=hdev->GetNbinsX()+1;i++) {
+      /*float punzi = 0.;
+      float sig(0.);
+      float bkg(0.);
+      float fake(0.);
+      for (Int_t j=1;j<=i;j++) {
+	  sig+= hsig1->GetBinContent(j);
+	  bkg+=h_nominal->GetBinContent(j);
+	  fake+=h_nominal->GetBinContent(j)*0.3*0.6;
+      }
+      if( (bkg + fake*fake) <=5.) punzi =0.00001; /// require 5 events ....
+      else if((sig / hsig1->Integral() )  < 0.5) punzi =0.00001;
+      else punzi = sig/(1+sqrt(bkg + fake*fake));
+      //cout << i << " " << bkg << " " << fake << " " << sig << endl;
+      
+      hdev->SetBinContent(i, punzi);
+      cout << " maxSB = " << maxSB << "  punzi ="<< punzi << endl;
+      
+      if(punzi  > maxSB)maxSB=  punzi;
+      if(punzi  < minSB)minSB=  punzi;*/
+      float binc(0.);
+      float sigc(0.);
+      if(hsig1->GetBinContent(i)<=0)sigc=0.0001;
+      else sigc=hsig1->GetBinContent(i);
+      sigc=sigc/hsig1->Integral();
+      if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
+      else binc=sigc/1.8;
+      hdev->SetBinError(i,0.);
+      hdev->SetBinContent(i, binc);
+      if(binc > maxSB)maxSB=binc;
+      if(binc < minSB)minSB=binc;
+    }
+    
+    for (Int_t i=1;i<=hdev_err->GetNbinsX()+1;i++) {
+      float binc(0.);
+      float sigc(0.);
+      if(hsig2->GetBinContent(i)==0)sigc=0.0001;
+      else sigc=hsig2->GetBinContent(i);
+      sigc=sigc/hsig2->Integral();
+
+      if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
+      else binc=sigc/1.8;
+      hdev_err->SetBinError(i,0.);
+
+      hdev_err->SetBinContent(i, binc);
+      if(binc > maxSB)maxSB=binc;
+      if(binc < minSB)minSB=binc;
+
+    }
+    
+  }
   
+
   /// set errors for datamc plot
   TGraphAsymmErrors * gratio = new TGraphAsymmErrors(hdev);
 
-  for (int i = 0; i < gratio->GetN(); ++i) {
-    
-    if(err_down_tmp.at(i)  !=0.) {
-      gratio->SetPointEYlow(i, err_down_tmp.at(i) / h_nominal->GetBinContent(i+1) );
-      gratio->SetPointEXlow(i, 0);
-      gratio->SetPointEYhigh(i, err_up_tmp.at(i) /h_nominal->GetBinContent(i+1));
-      gratio->SetPointEXhigh(i, 0);
-    }
-    else{
-      gratio->SetPointEYlow(i, 0);
-      gratio->SetPointEXlow(i, 0);
-      gratio->SetPointEYhigh(i, 1.8 / h_nominal->GetBinContent(i+1));
-      gratio->SetPointEXhigh(i, 0);
+  if(showdata){
+    for (int i = 0; i < gratio->GetN(); ++i) {
+      
+      if(err_down_tmp.at(i)  !=0.) {
+	gratio->SetPointEYlow(i, err_down_tmp.at(i) / h_nominal->GetBinContent(i+1) );
+	gratio->SetPointEXlow(i, 0);
+	gratio->SetPointEYhigh(i, err_up_tmp.at(i) /h_nominal->GetBinContent(i+1));
+	gratio->SetPointEXhigh(i, 0);
+      }
+      else{
+	gratio->SetPointEYlow(i, 0);
+	gratio->SetPointEXlow(i, 0);
+	gratio->SetPointEYhigh(i, 1.8 / h_nominal->GetBinContent(i+1));
+	gratio->SetPointEXhigh(i, 0);
+      }
     }
   }
-  
+  else{
+    for (int i = 0; i < gratio->GetN(); ++i) {
+      
+      if(err_down_tmp.at(i)  !=0.) {
+	
+	
+      }
+      else{
+        gratio->SetPointEYlow(i, 0);
+        gratio->SetPointEXlow(i, 0);
+        gratio->SetPointEYhigh(i, 1.8 / h_nominal->GetBinContent(i+1));
+        gratio->SetPointEXhigh(i, 0);
+      }
+    }
+
+
+  }
   
   //////////// Plot all
   
   hdev->GetYaxis()->SetLabelSize(0.035);
   hdev->GetYaxis()->SetTitleSize(0.035);
-  hdev->GetYaxis()->SetTitleOffset(1.3);
+  if(!showdata) hdev->GetYaxis()->SetTitleOffset(1.4);
+  else hdev->GetYaxis()->SetTitleOffset(1.3);
 
-  hdev->GetYaxis()->SetTitle( "Data / #Sigma Bkg" );
-  hdev->GetYaxis()->SetRangeUser(0.25,+1.75);
+  if(showdata){
+    hdev->GetYaxis()->SetTitle( "Data / #Sigma Bkg" );
+    hdev->GetYaxis()->SetRangeUser(0.25,+1.75);
+  }
+  else  {
+    hdev->GetYaxis()->SetTitle( "Bin_{S/B}");
+    gPad->SetLogy();
+    cout << "Set maxSB to " << maxSB << endl;
+    hdev->GetYaxis()->SetRangeUser(0.0001, maxSB*2.);
+  }
+
   hdev->GetYaxis()->SetNdivisions(3);
   hdev->GetXaxis()->SetNdivisions(5);
-
-  hdev->SetMarkerStyle(20);
-  //hdev->SetMarkerSize(2.3);
-  hdev_err_stat->SetMarkerSize(0.);
-  hdev_err->SetMarkerSize(0.);
-  hdev->SetLineColor(kBlack);
-  hdev_err->SetFillColor(kRed);
-  hdev_err->SetLineColor(kRed);
-  hdev_err->SetFillStyle(3444);
-  hdev_err_stat->SetFillColor(kOrange-9);
-  hdev_err_stat->SetLineColor(kOrange-9);
-  hdev->Draw("phist");
   
-  hdev_err_stat->Draw("sameE4");
-  hdev_err->Draw("sameE4");
-  gratio->SetLineWidth(2.0);
-  gratio->SetMarkerSize(0.);
-  gratio->Draw(" p0" );
-  hdev->Draw("same p hist");
-      
+  if(showdata){
+    hdev->SetMarkerStyle(20);
+    //hdev->SetMarkerSize(2.3);
+    hdev_err_stat->SetMarkerSize(0.);
+    hdev_err->SetMarkerSize(0.);
+    hdev->SetLineColor(kBlack);
+    hdev_err->SetFillColor(kRed);
+    hdev_err->SetLineColor(kRed);
+    hdev_err->SetFillStyle(3444);
+    hdev_err_stat->SetFillColor(kOrange-9);
+    hdev_err_stat->SetLineColor(kOrange-9);
+  }
+  
+  if(!showdata){
+    hdev->SetMarkerColor(kRed);
+    hdev->Draw("p");
+    
+    hdev_err->SetMarkerColor(kBlue);
+    hdev_err->Draw("psame");
+  }
+  
+  if(showdata){
+    hdev->Draw("hist");
+
+    hdev_err_stat->Draw("sameE4");
+    hdev_err->Draw("sameE4");
+    gratio->SetLineWidth(2.0);
+    gratio->SetMarkerSize(0.);
+    gratio->Draw(" p0" );
+    hdev->Draw("same p hist");
+  }
+  
     
   TLine *devz = new TLine(hdev->GetBinLowEdge(hdev->GetXaxis()->GetFirst()),1.0,hdev->GetBinLowEdge(hdev->GetXaxis()->GetLast()+1),1.0  );
   devz->SetLineWidth(1);
   devz->SetLineStyle(1);
-  devz->Draw("SAME");
+  if(showdata)  devz->Draw("SAME");
   
   
   TLegend* legendr = MakeRatioLegend(hdev_err,hdev_err_stat);
-  legendr->Draw();
-    
+  if(showdata)legendr->Draw();
+  
 
   CMS_lumi( canvas_log, 4, 2 );
   canvas_log->Update();
@@ -1745,8 +1879,8 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX )
   latex.SetTextSize(lumiTextSize*t);
   latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
 
-  if(iPosX==2)  latex.DrawLatex(1-r-0.22,1-t+lumiTextOffset*t, "#mu#mu ch.,");
-  else  latex.DrawLatex(1-r-0.4,1-t+lumiTextOffset*t, "#mu#mu ch.,");
+  if(iPosX==2)  latex.DrawLatex(1-r-0.22,1-t+lumiTextOffset*t, "#mu^{#pm}#mu^{#pm} channel,");
+  else  latex.DrawLatex(1-r-0.4,1-t+lumiTextOffset*t, "#mu^{#pm}#mu^{#pm} channel,");
 
   
 

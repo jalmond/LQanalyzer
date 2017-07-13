@@ -157,6 +157,7 @@ class AnalyzerCore : public LQCycleBase {
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);
   float SumPt( std::vector<snu::KFatJet> particles);
+  float GetLT(std::vector<snu::KMuon> muons);
   bool isPrompt(long pdgid);
   void TruthPrintOut();
 

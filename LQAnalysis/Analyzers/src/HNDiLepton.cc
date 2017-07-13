@@ -67,13 +67,24 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
      MakeCleverHistograms(sighist_mm, label+"SSMM_Preselection");
      MakeCleverHistograms(sighist_mm, label+"SSPOGMM_Preselection");
      MakeCleverHistograms(sighist_mm, label+"SSMM_1Jet");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_1JetOpt");
      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet");
      MakeCleverHistograms(sighist_mm, label+"SSMM_DiTJet");
      MakeCleverHistograms(sighist_mm, label+"SSMM_CR");
      MakeCleverHistograms(sighist_mm, label+"SSMM_LowMass");
      MakeCleverHistograms(sighist_mm, label+"SSMM_MidMass");
      MakeCleverHistograms(sighist_mm, label+"SSMM_HighMass");
-     
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_noB");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_FailnoB");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMET");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMETST");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passHT");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passDR");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passDR2");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMT");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passLJ");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passLTHT");
+     MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passmll");
      
      MakeCleverHistograms(sighist_mm, label+"OSMM_Preselection");
      MakeCleverHistograms(sighist_mm, label+"OSMM_1Jet");
@@ -205,6 +216,8 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   bool docf=false;
   if(docf){DoCutFlow(1.); return;}
 
+  FillEventCutFlow(0,"NoCut",weight);
+
   if(1){
     TString id="MUON_HN_TIGHT";
     if(k_running_nonprompt) id="MUON_HN_LOOSE";
@@ -282,15 +295,134 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 		  weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, PassID(muons_test[0],"MUON_HN_TIGHT"), PassID(muons_test[1],"MUON_HN_TIGHT"), tag1, tag2,  cb_1, cb_2,"ptcorr_eta", iso1,iso2,false, false);
 
 		}
-
+	      
 		FillCLHist(sighist_mm, "SSMM_Preselection", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
-		if(jets.size()==1) FillCLHist(sighist_mm, "SSMM_1Jet", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
+		if(jets.size()==1) {
+		  FillCLHist(sighist_mm, "SSMM_1Jet", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
+		  FillEventCutFlow(4,"SSMM_1Jet",weight);
+		  if(GetDiLepMass(muons_test) < 110){
+		    if(GetDiLepMass(muons_test) > 15){
+		      if(eventbase->GetEvent().PFMET() < 60.) {
+			if(NBJet(alljets) ==0){
+			  if(muons_test[0].DeltaR(muons_test[1])  < 3.4) {
+			    if( (GetLT(muons_test)/(SumPt(jets)+SumPt(fatjetcoll)) ) > 0.8){
+			      FillEventCutFlow(4,"SSMM_1JetOpt",weight);
+			      FillCLHist(sighist_mm, "SSMM_1JetOpt", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
+			      if(GetDiLepMass(muons_test) < 60)FillCLHist(sighist_mm, "SSMM_1JetOpt2", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets, fatjetcoll,  weight);
+			      
+			    }
+			  }
+			}
+		      }
+		    }
+		  }
+		}
 		if(jets.size() > 1){
 		  FillCLHist(sighist_mm, "SSMM_DiJet", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+		  FillEventCutFlow(4,"SSMM_DiJet",weight);
+		  
+		  if(NBJet(alljets) ==0)                   FillCLHist(sighist_mm, "SSMM_DiJet_noB", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+		  else FillCLHist(sighist_mm, "SSMM_DiJet_FailnoB", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+		  if(NBJet(alljets) ==0)   {
+		    FillEventCutFlow(4,"SSMM_DiJet_noB",weight);
+		    if(eventbase->GetEvent().PFMET() < 60.) {
+		      FillCLHist(sighist_mm, "SSMM_DiJet_passMET", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+
+		    }
+		    
+		    
+		    float ST = muons_test[0].Pt() + muons_test[1].Pt();
+		    float HT=0.;
+		    for(unsigned int ij=0; ij <alljets.size(); ij++){
+		      ST+= alljets[ij].Pt();
+		      
+		    }
+		    
+		    for(unsigned int ij=0; ij <jets.size(); ij++){
+                      HT+= jets[ij].Pt();
+		      
+                    }
+		    for(unsigned int ij=0; ij < fatjetcoll.size(); ij++){
+		      HT+= fatjetcoll[ij].Pt();
+		    }
+		    ST+=eventbase->GetEvent().PFMET();
+
+		    if((eventbase->GetEvent().PFMET() < 50.)) 		    FillEventCutFlow(4,"SSMM_DiJet_passMET50",weight);
+		    if((eventbase->GetEvent().PFMET() < 55.)) 		    FillEventCutFlow(4,"SSMM_DiJet_passMET55",weight);
+		    if((eventbase->GetEvent().PFMET() < 60)) 		    FillEventCutFlow(4,"SSMM_DiJet_passMET60",weight);
+		    if((eventbase->GetEvent().PFMET() < 65.)) 		    FillEventCutFlow(4,"SSMM_DiJet_passMET65",weight);
+		    if((eventbase->GetEvent().PFMET() < 70.)) 		    FillEventCutFlow(4,"SSMM_DiJet_passMET70",weight);
+		    if((eventbase->GetEvent().PFMET() < 80.)) 		    FillEventCutFlow(4,"SSMM_DiJet_passMET80",weight);
+		    if(eventbase->GetEvent().PFMET()/ST < 20.) FillEventCutFlow(4,"SSMM_DiJet_passMETST20",weight);
+		    if(eventbase->GetEvent().PFMET()/ST < 15.) FillEventCutFlow(4,"SSMM_DiJet_passMETST15",weight);
+		    if(eventbase->GetEvent().PFMET()/ST < 12.5) FillEventCutFlow(4,"SSMM_DiJet_passMETST12_5",weight);
+		    if(eventbase->GetEvent().PFMET()/ST < 17.5) FillEventCutFlow(4,"SSMM_DiJet_passMETST17_5",weight);
+		    if(eventbase->GetEvent().PFMET()/ST < 15. && (eventbase->GetEvent().PFMET() < 60.)) {
+		      FillCLHist(sighist_mm, "SSMM_DiJet_passMETST", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+		      if(HT < 300){
+			if(HT < 280)FillEventCutFlow(4,"SSMM_DiJet_passHT280",weight);
+			if(HT < 260)FillEventCutFlow(4,"SSMM_DiJet_passHT260",weight);
+			if(HT < 240)FillEventCutFlow(4,"SSMM_DiJet_passHT240",weight);
+			FillEventCutFlow(4,"SSMM_DiJet_passHT300",weight);
+			FillCLHist(sighist_mm, "SSMM_DiJet_passHT300", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+			bool closejet=false;
+			bool closejet2=false;
+			float mindR=9999.;
+			for(unsigned int im=0; im <muons_test.size(); im++){
+			  for(unsigned int ij2=0; ij2 <jets.size(); ij2++){
+			    if(muons_test.at(im).DeltaR(jets.at(ij2)) <  0.5) closejet=true;
+			    if(muons_test.at(im).DeltaR(jets.at(ij2)) <  mindR){
+			      mindR = muons_test.at(im).DeltaR(jets.at(ij2));
+			    }
+			  }
+			}
+			if(mindR > 3.5) closejet2=true;
+			if(!closejet){
+			  
+			  if(muons_test[0].DeltaR(muons_test[1])  < 4.) FillCLHist(sighist_mm, "SSMM_DiJet_passDR", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+			  if(muons_test[0].DeltaR(muons_test[1])  < 3.4) {
+			    FillEventCutFlow(4,"SSMM_DiJet_passDR2",weight);
+
+			    FillCLHist(sighist_mm, "SSMM_DiJet_passDR2", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+
+			    float dphi_1 = fabs(TVector2::Phi_mpi_pi(muons_test.at(0).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet)));
+			    float MT_1 = sqrt(2.* muons_test.at(0).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi_1)));
+
+			    float dphi_2 = fabs(TVector2::Phi_mpi_pi(muons_test.at(1).Phi()- eventbase->GetEvent().METPhi(snu::KEvent::pfmet)));
+			    float MT_2 = sqrt(2.* muons_test.at(1).Et()*eventbase->GetEvent().PFMET() * (1 - cos( dphi_2)));
+			    
+			    //if( ( (muons_test[0].Pt() + muons_test[1].Pt()) / HT ) > 0.25){
+			    //FillCLHist(sighist_mm, "SSMM_DiJet_passLTHT", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+			      
+			    if(!closejet2){
+			      FillEventCutFlow(4,"SSMM_DiJet_passLJ",weight);
+
+			      FillCLHist(sighist_mm, "SSMM_DiJet_passLJ", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+			      if(MT_1 < 100 && MT_2 < 100)                                 FillEventCutFlow(4,"SSMM_DiJet_passMT100",weight);
+			      if(MT_1 < 90 && MT_2 < 90)                                 FillEventCutFlow(4,"SSMM_DiJet_passMT90",weight);
+			      
+			      if(MT_1 < 80 && MT_2 < 80){
+				FillEventCutFlow(4,"SSMM_DiJet_passMT80",weight);
+
+				FillCLHist(sighist_mm, "SSMM_DiJet_passMT", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
+				if(GetDiLepMass(muons_test) < 70){
+				  FillEventCutFlow(4,"SSMM_DiJet_passmll",weight);
+
+				  FillCLHist(sighist_mm, "SSMM_DiJet_passmll", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);   
+				}
+			      }
+			    }
+			    //}
+			  }
+			}
+		      }
+		    }
+		    
+		  }
 		}
 		
 		if(tchanjets.size()> 1)FillCLHist(sighist_mm, "SSMM_DiTJet", eventbase->GetEvent(), muons_test, electrons_veto,tchanjets, alljets,  fatjetcoll,weight);
-
+		
 		if(CheckSignalRegion(true,muons_test,electrons_veto , jets, alljets,"Low", weight))FillCLHist(sighist_mm, "SSMM_LowMass", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
 		if(CheckSignalRegion(true,muons_test,electrons_veto , jets, alljets,"", weight))FillCLHist(sighist_mm, "SSMM_MidMass", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
 		if(CheckSignalRegion(true,muons_test,electrons_veto , jets, alljets,"High", weight))FillCLHist(sighist_mm, "SSMM_HighMass", eventbase->GetEvent(), muons_test, electrons_veto,jets, alljets,  fatjetcoll,weight);
@@ -570,6 +702,52 @@ void HNDiLepton::FillEventCutFlow(int cf,TString cut,  float weight){
 
     }
   }
+  if(cf==4){
+    if(GetHist( "mm_lowmassopt")) {
+      GetHist( "mm_lowmassopt")->Fill(cut,weight);
+
+    }
+    else{
+
+      vector<TString> IDs;
+      IDs.push_back("SSMM_1Jet");
+      IDs.push_back("SSMM_1JetOpt");
+      IDs.push_back("SSMM_DiJet");      
+      IDs.push_back("SSMM_DiJet_passMET50");
+      IDs.push_back("SSMM_DiJet_passMET55");
+      IDs.push_back("SSMM_DiJet_passMET60");
+      IDs.push_back("SSMM_DiJet_passMET65");
+      IDs.push_back("SSMM_DiJet_passMET70");
+      IDs.push_back("SSMM_DiJet_passMET80");
+      IDs.push_back("SSMM_DiJet_passMETST12_5");
+      IDs.push_back("SSMM_DiJet_passMETST15");
+      IDs.push_back("SSMM_DiJet_passMETST17_5");
+      IDs.push_back("SSMM_DiJet_passMETST20");
+      IDs.push_back("SSMM_DiJet_passHT240");
+      IDs.push_back("SSMM_DiJet_passHT260");
+      IDs.push_back("SSMM_DiJet_passHT280");
+      IDs.push_back("SSMM_DiJet_passHT300");
+      IDs.push_back("SSMM_DiJet_passDR2");
+      IDs.push_back("SSMM_DiJet_passMT80");
+      IDs.push_back("SSMM_DiJet_passMT90");
+      IDs.push_back("SSMM_DiJet_passMT100");
+      IDs.push_back("SSMM_DiJet_passLJ");
+      IDs.push_back("SSMM_DiJet_passmll");
+
+
+      AnalyzerCore::MakeHistograms( "mm_lowmassopt",IDs.size(),0.,float(IDs.size()));
+
+      for(unsigned int iid=0; iid < IDs.size(); iid++){
+
+        TString elid = IDs[iid];
+        GetHist( "mm_lowmassopt")->GetXaxis()->SetBinLabel(1+iid,elid);
+      }
+      GetHist( "mm_lowmassopt")->Fill(cut,weight);
+
+    }
+  }
+
+
 
 
 }

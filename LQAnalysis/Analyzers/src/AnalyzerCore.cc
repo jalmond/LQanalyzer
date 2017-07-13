@@ -2244,6 +2244,16 @@ float AnalyzerCore::SumPt( std::vector<snu::KFatJet> particles){
 }
 
   
+float AnalyzerCore::GetLT(std::vector<snu::KMuon> muons){
+  float lt=0.;
+  for(unsigned int i = 0; i < muons.size(); i++){
+    lt+= muons[i].Pt();
+  }
+  
+  return lt;
+}
+
+
 bool AnalyzerCore::IsDiEl(){
   if(isData) return false;
   int iel(0);

@@ -80,6 +80,11 @@ configinputfile=options.M
 isblind=options.b
 siginputfile=options.t
 
+nodata=False
+if isblind =="true":
+    nodata=True
+
+
 cap_file = open("caption.txt","r")
 text_caption=""
 for ca in cap_file:
@@ -248,10 +253,13 @@ if siginputfile!="":
                 if ns==2:
                     sig2scale=s
             if nss==2:
-                if ns==1:
-                    legsig1=legsig1+s
-                if ns==2:
-                    legsig2=legsig2+s
+                if s != "|":
+                    if ns==1:
+                        legsig1=legsig1+s
+                        legsig1=legsig1+" "    
+                    if ns==2:
+                        legsig2=legsig2+s
+                        legsig2=legsig2+" "    
     siginput_config.close()
 
 plot_comfig_dir = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"
@@ -287,6 +295,16 @@ for line in skeleton_macroC:
         new_macroC.write(line+"\n")
         for i in list_of_legends:
             new_macroC.write('legorder.push_back("' + i + '");\n')
+
+    elif "  //removedata" in line:
+        if nodata:
+            new_macroC.write('hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));;\n')
+            new_macroC.write('hdata->GetXaxis()->SetRangeUser(xmin, xmax);;\n')
+            new_macroC.write('hdata->GetYaxis()->SetRangeUser(ymin, ymax);;\n')
+            new_macroC.write('SetTitles(hdata, hname);\n')
+            new_macroC.write('showdata=false;\n')
+              
+              
     elif "//// SET TITLES" in line:
         new_macroC.write(line+"\n")
         for x in range(0,len(xtitlelist)):
@@ -307,7 +325,7 @@ for line in skeleton_macroC:
             new_macroC.write('float int_bkg = hup->Integral()/2.; \n')
             
             new_macroC.write('hsig1->SetLineColor(kRed); \n')
-            new_macroC.write('hsig1->SetLineWidth(2.); \n')
+            new_macroC.write('hsig1->SetLineWidth(3.); \n')
             new_macroC.write('hsig1->GetXaxis()->SetRangeUser(xmin,xmax); \n')
             new_macroC.write('hsig1->GetYaxis()->SetRangeUser(ymin,ymax); \n')
         else:
@@ -319,7 +337,7 @@ for line in skeleton_macroC:
             new_macroC.write('FixOverUnderFlows(hsig2, xmax); \n')
             new_macroC.write('hsig2->Scale('+sig2scale+'); \n')
             new_macroC.write('hsig2->SetLineColor(kBlue); \n')
-            new_macroC.write('hsig2->SetLineWidth(2.); \n')
+            new_macroC.write('hsig2->SetLineWidth(3.); \n')
         else:
             new_macroC.write('TH1* hsig2;\n');
 
@@ -339,6 +357,15 @@ for line in skeleton_macroC:
             new_macroC.write('legend->AddEntry(hsig1, "'+legsig1+'","l");\n')
             new_macroC.write('hsig2->Draw("hist9same"); \n')
             new_macroC.write('legend->AddEntry(hsig2, "'+legsig2+'","l");\n')
+            
+    elif "/// Draw sig(1)" in line:
+        new_macroC.write(line+"\n")
+        if nsig1 and not nsig2:
+             new_macroC.write('hsig1->Draw("hist9same"); \n')
+
+        if nsig2:
+            new_macroC.write('hsig1->Draw("hist9same"); \n')
+            new_macroC.write('hsig2->Draw("hist9same"); \n')
 
     elif "/// Draw(2) sig"in line:
         new_macroC.write(line+"\n")

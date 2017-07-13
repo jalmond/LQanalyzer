@@ -60,6 +60,7 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
   if(!isData){
     std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
     //TruthPrintOut();
+    vector<int> i_jets;
     
     for(unsigned int i = 0; i < truthColl.size(); i++){
     if(fabs(eventbase->GetTruth().at(i).PdgId()) == 11) {
@@ -109,10 +110,57 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
       if(fabs(eventbase->GetTruth().at(mother_i).PdgId()) == 9900012){
 	FillHist("Jets_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
 	FillHist("Jets_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -5., 5., 100);
+
+	i_jets.push_back(i);
+      }
+    }
+    }
+
+    if(i_jets.size() ==2){
+      snu::KParticle W = eventbase->GetTruth().at(i_jets[0])+  eventbase->GetTruth().at(i_jets[1]);
+      FillHist("Truth_mjj", W.M(),  1., 0., 125., 250);
+      //FillHist("Truth_mjjll", W.M(),  1., 0., 125., 250);
+      std::vector<snu::KJet> jets = GetJets("JET_HN");
+      std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT");
+      if(jets.size()>=2 && muons.size()==2){
+	
+	float dijetmass_tmp=999.;
+	float dijetmass=9990000.;
+	int m=-999;
+	int n=-999;
+	for(UInt_t emme=0; emme<jets.size(); emme++){
+	  for(UInt_t enne=1; enne<jets.size(); enne++) {
+	    if(emme == enne) continue;
+	    dijetmass_tmp = (jets[emme]+jets[enne] + muons[0] + muons[1]).M();
+	    if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
+	      
+	      dijetmass = dijetmass_tmp;
+	      m = emme;
+	      n = enne;
+	    }
+	  }
+	}
+	
+	bool match=false;
+	
+	if(jets[m].DeltaR(muons[0]) < 0.5){
+	  if(jets[n].DeltaR(muons[1]) < 0.5){
+	    match=true;
+	  }
+	}
+	if(jets[m].DeltaR(muons[1]) < 0.5){
+	  if(jets[n].DeltaR(muons[0]) < 0.5){
+	    match=true;
+
+	  }
+	}
+	FillHist("Reco_mjj", (jets[m]+jets[n]).M(),  1., 0., 125., 250);
+	if(match)  FillHist("Matched_JJ_truth_lowmass", 1, 1., 0., 2., 2);
+	else  FillHist("Matched_JJ_truth_lowmass",0, 1., 0., 2., 2);
       }
     }
   }
-  }
+  
   vector<TString> muonIDs;
   muonIDs.push_back("MUON_HN_EFF_PT");
   muonIDs.push_back("MUON_HN_EFF_POG");

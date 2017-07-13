@@ -54,7 +54,7 @@ submit_draw="False"
 submit_sk_message=""
 submit_skflag=""
 submit_skinput=true
-submit_dir_tag=""
+submit_dir_tag="NULL"
 changed_skinput=false
 changed_submit_version_tag=false
 changed_job_output_dir=false
@@ -903,7 +903,7 @@ if [[ $USER == "jalmond" ]];
 	fi
     fi
     DATE=`date +%Y-%m-%d`
-    if [[ submit_dir_tag != "" ]]; then
+    if [[ $submit_dir_tag != "NULL" ]]; then
 	dir_tag=${dir_tag}$submit_dir_tag"/"
     else
 	dir_tag=${dir_tag}${DATE}"/"
