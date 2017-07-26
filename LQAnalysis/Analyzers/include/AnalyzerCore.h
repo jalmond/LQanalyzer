@@ -64,14 +64,20 @@ class AnalyzerCore : public LQCycleBase {
   bool TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
   bool TruthMatched(snu::KElectron el, bool keepcf);
 
+  bool AllPrompt(std::vector<snu::KMuon> muons, int method);
+  bool TruthMatched(snu::KMuon mu);
 
   snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KMuon lep, snu::KJet jet);
   snu::KTruth GetTruthMatchedParticle(snu::KElectron el);
-  
+  bool NonPrompt(snu::KElectron el);
+  bool NonPrompt(snu::KMuon mu);
+
+  int IsFakeEvent(vector<snu::KMuon> mus );
+  int IsFakeEvent(vector<snu::KElectron> els );
   
   float GetVirtualMassConv(int cmindex,int nconvindx);
-  float GetVirtualMass(bool inph=false);
+  float GetVirtualMass(int pdg=11, bool includenu=false, bool inph=false);
 
   float MassDrop(snu::KElectron electron, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
   float MassDrop(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
@@ -171,9 +177,14 @@ class AnalyzerCore : public LQCycleBase {
   bool OppositeCharge(std::vector<snu::KElectron> electrons, bool runcf=false);
 
   bool OppositeCharge(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons);  
+  float GetCFweight(std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID);
+  float GetCFRates(double el_pt, double el_eta, TString el_ID);
+
   float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
   float CorrectedMETElectron(std::vector<snu::KElectron> electrons,  int syst=0);
   float CorrectedMETMuon(std::vector<snu::KMuon> muons ,int syst=0);
+  float CorrectedMETJES(std::vector<snu::KJet> jets ,int syst=0);
+  float CorrectedMETJER(std::vector<snu::KJet> jets ,int syst=0);
 
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);
@@ -346,7 +357,9 @@ class AnalyzerCore : public LQCycleBase {
 
   /// Fills clever hists
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight);
-  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets, vector<snu::KFatJet> fjets,double weight);
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,vector<snu::KJet> alljets,double weight);
+
+  void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets, vector<snu::KJet> alljets, vector<snu::KFatJet> fjets,double weight);
   void FillCLHist(histtype type, TString hist, snu::KEvent ev,vector<snu::KMuon> muons, vector<snu::KElectron> electrons, vector<snu::KJet> jets,double weight,int nbjet);
 
   void FillCLHist(histtype type, TString hist, vector<snu::KMuon> muons , double weight);
@@ -393,6 +406,20 @@ class AnalyzerCore : public LQCycleBase {
   void PrintTruth();
   std::vector<snu::KMuon> sort_muons_ptorder(std::vector<snu::KMuon> muons);
 
+
+  //==== (Trilepton) H+->WA stuffs
+  int  GenMatchedIdx(snu::KElectron El, std::vector<snu::KTruth>& truthColl);
+  int  GenMatchedIdx(snu::KMuon Mu, std::vector<snu::KTruth>& truthColl);
+  int  GetNearPhotonIdx(snu::KElectron Ele, std::vector<snu::KTruth>& TruthColl, TString Option="AllPhoton");
+  int  GetNearPhotonIdx(snu::KMuon Mu, std::vector<snu::KTruth>& TruthColl, TString Option="AllPhoton");
+  int  FirstNonSelfMotherIdx(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  int  LastSelfMotherIdx(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  bool HasHadronicAncestor(int TruthIdx, std::vector<snu::KTruth>& TruthColl);
+  bool IsFinalPhotonSt23(std::vector<snu::KTruth> TruthColl);
+  int  GetLeptonType(int TruthIdx, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetLeptonType(snu::KElectron El, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetLeptonType(snu::KMuon Mu, std::vector<snu::KTruth>& TruthColl, TString Option="");
+  int  GetPhotonType(int PhotonIdx, std::vector<snu::KTruth> TruthColl);
   
 };
 #endif

@@ -134,7 +134,7 @@ namespace snu {
     inline Double_t PFMETx() const {return k_PF_METx;}
     inline Double_t PFMETy() const {return k_PF_METy;}
 
-    inline Double_t TopReweight() const{return k_top_reweight;}
+    inline Double_t TopReweight() const{return sqrt(k_top_reweight);}
 
     inline Double_t PFMETType1() const {return sqrt(pow(k_PF_MET_Type1x,2.) + pow(k_PF_MET_Type1y,2.));}
     inline Double_t PFMETType1x() const {return k_PF_MET_Type1x;}

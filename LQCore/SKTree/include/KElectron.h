@@ -42,11 +42,14 @@ namespace snu {
     float ScaleFactor(const std::string& name, int sign) const ;
     Bool_t PassTrigMVAHNLoose() const ;
     Bool_t PassTrigMVAHNTight() const ;
-
+    Bool_t PassTrigMVAHNTightv2(float pt1, float pt2, float mvacut, float mvacut_ec) const ;
+    Bool_t PassTrigMVAHNTightv3() const ;
+    Bool_t PassTrigMVAHNTightv4() const ;
+    Bool_t PassTrigMVAGENTTight() const ;
+    Bool_t PassTrigMVAGENTLoose() const;
 
     // set kinematic variables
     void SetSCEta(Double_t sceta);
-    
 
     void SetSmearFactor(Double_t smear);
 
@@ -72,7 +75,7 @@ namespace snu {
     void SetPassTight(Bool_t pass);
     void SetPassHLT(Bool_t pass);
     void SetPassHEEP(Bool_t pass);
-
+    
     
 
     void SetPassMVATrigMedium(Bool_t pass);
@@ -104,8 +107,9 @@ namespace snu {
     
     // set charge variables
     void SetGsfCtfScPixCharge(bool gsfctfscpix_ch);
-    
+
     /// set conversion variables
+    void SetIsMCExternalConversion(Bool_t isconv);
     void SetHasMatchedConvPhot(Bool_t hasmatchConvPhot);
     void SetMissingHits(Int_t mhits);
     
@@ -120,20 +124,16 @@ namespace snu {
     void SetIsTrigMVAValid(bool b);
     //void SetIsTrigCUTValid(bool b);
 
+    void SetIsPromptFlag(bool pflag);
+
     bool TriggerMatched(TString path);
 
     ///// Functions to call class variables
     
     inline Int_t GetType()  const {
-      if(k_eltype < 32) return k_eltype;
-      else {
-	if(fabs(k_mc_pdgid) == 211) return 32;
-	if(fabs(k_mc_pdgid) == 310) return 33;
-	if(fabs(k_mc_pdgid) == 431) return 34;
-	if(fabs(k_mc_pdgid) == 13) return 35;
-	return 36;
-      }
+      return k_eltype;
     }
+    inline Bool_t IsPromptFlag() const {return k_isprompt;}
     inline Double_t MVA() const {return k_mva;}
     inline Double_t ZZMVA() const {return k_zzmva;}
 
@@ -179,6 +179,7 @@ namespace snu {
     inline Bool_t MCIsPrompt() const{return k_mc_matched;}
     inline Bool_t MCIsCF() const{return k_is_cf;}
     inline Bool_t MCIsFromConversion() const{return k_is_conv;}
+    inline Bool_t MCIsExternalConversion() const{return k_in_conv;}
     inline Bool_t MCFromTau() const{return k_is_fromtau;}
     inline Int_t MCMatchedPdgId() const{return k_mc_pdgid;}
     inline Int_t MotherPdgId() const{return k_mother_pdgid;}
@@ -283,8 +284,11 @@ namespace snu {
     Double_t k_mva, k_zzmva;
     Int_t k_missing_hits;
     Double_t k_smearfactor;
+    Bool_t k_in_conv;
+    Bool_t k_isprompt;
 
-    ClassDef(KElectron,29);
+
+    ClassDef(KElectron,31);
   }; 
   
 }//namespace snu
