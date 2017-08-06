@@ -32,6 +32,7 @@ public:
   inline Double_t dXYSig() const {return k_dxy_sig;}
   inline Double_t RelIso() const {return k_reliso;}
   inline Int_t GetType() const {return k_leptype;}
+  inline bool MCIsCF() const {return k_mciscf;}
   inline const snu::KMuon* GetMuonPtr() const {return MuonPtr;}
   inline const snu::KElectron* GetElectronPtr() const {return ElectronPtr;}
     
@@ -48,6 +49,7 @@ private:
   Flavour k_flavour;
   Double_t k_dz, k_dxy, k_dxy_sig, k_reliso;
   Int_t k_leptype;
+  bool k_mciscf;
   const snu::KMuon* MuonPtr;
   const snu::KElectron* ElectronPtr;
 

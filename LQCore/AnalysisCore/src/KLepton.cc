@@ -14,6 +14,7 @@ KLepton::KLepton() :
   k_dxy_sig(-999),
   k_reliso(-999),
   k_leptype(-999),
+  k_mciscf(false),
   MuonPtr(NULL),
   ElectronPtr(NULL)
 {
@@ -27,7 +28,8 @@ KLepton::KLepton(const KLepton& lep) :
   k_dxy(lep.dXY()),
   k_dxy_sig(lep.dXYSig()),
   k_reliso(lep.RelIso()),
-  k_leptype(lep.GetType())
+  k_leptype(lep.GetType()),
+  k_mciscf(lep.MCIsCF())
 {
   if(k_flavour==KLepton::MUON) MuonPtr = lep.MuonPtr;
   if(k_flavour==KLepton::ELECTRON) ElectronPtr = lep.ElectronPtr;
@@ -41,6 +43,7 @@ KLepton::KLepton(const snu::KMuon& muon) :
   k_dxy_sig(muon.dXYSig()),
   k_reliso(muon.RelIso04()),
   k_leptype(muon.GetType()),
+  k_mciscf(muon.MCIsCF()),
   MuonPtr(&muon),
   ElectronPtr(NULL)
 {
@@ -55,6 +58,7 @@ KLepton::KLepton(const snu::KElectron& electron) :
   k_dxy_sig(electron.dxySig()),
   k_reliso(electron.PFRelIso(0.3)),
   k_leptype(electron.GetType()),
+  k_mciscf(electron.MCIsCF()),
   MuonPtr(NULL),
   ElectronPtr(&electron)
 {
@@ -75,6 +79,7 @@ KLepton& KLepton::operator= (const KLepton& lep){
     k_dxy_sig = lep.k_dxy_sig;
     k_reliso = lep.k_reliso;
     k_leptype = lep.k_leptype;
+    k_mciscf = lep.k_mciscf;
     MuonPtr = lep.MuonPtr;
     ElectronPtr = lep.ElectronPtr;
   }  
@@ -92,6 +97,7 @@ KLepton& KLepton::operator= (const snu::KMuon& muon){
   k_dxy_sig = muon.dXYSig();
   k_reliso = muon.RelIso04();
   k_leptype = muon.GetType();
+  k_mciscf = muon.MCIsCF();
   MuonPtr = &muon;
   ElectronPtr = NULL;
 
@@ -108,6 +114,7 @@ KLepton& KLepton::operator= (const snu::KElectron& electron){
   k_dxy_sig = electron.dxySig();
   k_reliso = electron.PFRelIso(0.3);
   k_leptype = electron.GetType();
+  k_mciscf = electron.MCIsCF();
   MuonPtr = NULL;
   ElectronPtr = &electron;
 
