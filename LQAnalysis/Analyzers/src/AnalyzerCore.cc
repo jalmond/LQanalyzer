@@ -2363,6 +2363,7 @@ bool AnalyzerCore::TruthMatched(snu::KMuon mu){
   if(mu.GetType() ==6) pass=true;
   if(mu.GetType() ==8) pass=true;
   if(mu.GetType() ==9) pass=true;
+  if(mu.GetType() ==10) pass=true; // Virtual photon(m<5) to dimuon. FR > 0.4
   if(mu.GetType() ==12) pass=true;
   if(mu.GetType() ==25) pass=true;  //// HAS CHANGED AFTER SKTREE were remade
   //if(mu.GetType() ==28) pass=true;
