@@ -210,57 +210,54 @@ for i in empty_list_alias:
     list_of_legends_alias.remove(i)
 
     
-
-sig1scale=0.
-sig2scale=0.
-nsig1=False
-nsig2=False
-sig1path=""
-sig2path=""
-legsig1=""
-legsig2=""
-ns=0
+sigscales=[]
+#sig1scale=0.
+#sig2scale=0.
+nsig=[]
+#sig1=False
+#sig2=False
+sigpaths=[]
+#sig1path=""
+#sig2path=""
+siglegsig=[]
+#legsig1=""
+#legsig2=""
+ns=-1
 drawsig=False
 print "siginputfile = " + siginputfile
+
+siginputfile="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/Macros/CatPlotter/PlotConfig/"+siginputfile
+siginput_configtmp = open(siginputfile,"r")
+
 if siginputfile!="":
     drawsig=True
-    siginputfile="/home/jalmond/HeavyNeutrino/13TeV/LQAnalyzer_cat/LQanalyzer/Macros/CatPlotter/PlotConfig/"+siginputfile
     siginput_config = open(siginputfile,"r")
     for line in siginput_config:
         if "END" in line:
             break
         if "###" in line :
             continue
-
+        legsig=""
         ns=ns+1
-        if ns==1:
-            nsig1=True
-        if ns==2:
-            nsig2=True
+        nsig.append(True)
         sline = line.split()
         nss=0
         for s in sline:
             if "|" == s:
                 nss=nss+1
+                continue
             if nss==0:
-                if ns==1:
-                    sig1path = s
-                if ns==2:
-                    sig2path = s
+                sigpaths.append(s)
             if nss==1:
-                if ns==1:
-                    sig1scale= s
-                if ns==2:
-                    sig2scale=s
+                sigscales.append(s)
             if nss==2:
                 if s != "|":
-                    if ns==1:
-                        legsig1=legsig1+s
-                        legsig1=legsig1+" "    
-                    if ns==2:
-                        legsig2=legsig2+s
-                        legsig2=legsig2+" "    
-    siginput_config.close()
+                    legsig = legsig + s
+                    legsig = legsig + " "
+                    
+        print legsig
+        siglegsig.append(legsig)
+
 
 plot_comfig_dir = str(os.getenv("LQANALYZER_DIR")) + "/Macros/CatPlotter/PlotConfig/"
 
@@ -315,32 +312,27 @@ for line in skeleton_macroC:
         new_macroC.write(line+"\n")
         new_macroC.write('')
         
-        if nsig1:
-            new_macroC.write('TFile* file_sig1 =  TFile::Open(("'+sig1path+'")); \n')
-            new_macroC.write('TH1* hsig1 = dynamic_cast<TH1*> ((file_sig1->Get(name.c_str()))->Clone()); \n')
-            new_macroC.write('hsig1->Rebin(rebin); \n')
-            new_macroC.write('hsig1->Scale('+sig1scale+'); \n')
-            new_macroC.write('FixOverUnderFlows(hsig1, xmax); \n')
-            new_macroC.write('ymax = GetMaximum(hsig1, hsig1, ylog, name, xmax, xmin); \n')
-            new_macroC.write('float int_bkg = hup->Integral()/2.; \n')
-            
-            new_macroC.write('hsig1->SetLineColor(kRed); \n')
-            new_macroC.write('hsig1->SetLineWidth(3.); \n')
-            new_macroC.write('hsig1->GetXaxis()->SetRangeUser(xmin,xmax); \n')
-            new_macroC.write('hsig1->GetYaxis()->SetRangeUser(ymin,ymax); \n')
-        else:
-             new_macroC.write('TH1* hsig1;\n');
-        if nsig2:
-            new_macroC.write('TFile* file_sig2 =  TFile::Open(("'+sig2path+'")); \n')
-            new_macroC.write('TH1* hsig2 = dynamic_cast<TH1*> ((file_sig2->Get(name.c_str()))->Clone()); \n')
-            new_macroC.write('hsig2->Rebin(rebin); \n')
-            new_macroC.write('FixOverUnderFlows(hsig2, xmax); \n')
-            new_macroC.write('hsig2->Scale('+sig2scale+'); \n')
-            new_macroC.write('hsig2->SetLineColor(kBlue); \n')
-            new_macroC.write('hsig2->SetLineWidth(3.); \n')
-        else:
-            new_macroC.write('TH1* hsig2;\n');
+        new_macroC.write('vector<TH1*> hsig ;\n' )   
+        new_macroC.write('float int_bkg = hup->Integral()/2.; \n')
+        for x in range (0, len(nsig)):
+            if nsig[x]:
+                new_macroC.write('TFile* file_sig'+str(x)+' =  TFile::Open(("'+sigpaths[x]+'")); \n')
+                new_macroC.write('TH1* hsig'+str(x)+' = dynamic_cast<TH1*> ((file_sig'+str(x)+'->Get(name.c_str()))->Clone()); \n')
+                new_macroC.write('hsig'+str(x)+'->Rebin(rebin); \n')
+                new_macroC.write('hsig'+str(x)+'->Scale('+sigscales[x]+'); \n')
+                new_macroC.write('FixOverUnderFlows(hsig'+str(x)+', xmax); \n')
+                new_macroC.write('ymax = GetMaximum(hsig'+str(x)+', hsig'+str(x)+', ylog, name, xmax, xmin); \n')
 
+                new_macroC.write('hsig'+str(x)+'->SetLineColor('+str(x+2)+'); \n')
+
+                new_macroC.write('hsig'+str(x)+'->SetLineWidth(3.); \n')
+                new_macroC.write('hsig'+str(x)+'->GetXaxis()->SetRangeUser(xmin,xmax); \n')
+                new_macroC.write('hsig'+str(x)+'->GetYaxis()->SetRangeUser(ymin,ymax); \n')
+            else:
+                new_macroC.write('TH1* hsig1;\n');
+
+            new_macroC.write('hsig.push_back(hsig'+str(x)+');\n')
+            
     elif "bool drawsig" in line:
         if drawsig:
              new_macroC.write('bool drawsig=true;\n')
@@ -348,31 +340,21 @@ for line in skeleton_macroC:
             new_macroC.write('bool drawsig=false;\n')
     elif "/// Draw sig" in line:
         new_macroC.write(line+"\n")
-        if nsig1 and not nsig2:
-             new_macroC.write('hsig1->Draw("hist9same"); \n')
-             new_macroC.write('legend->AddEntry(hsig1, "'+legsig1+'","l");\n')
-
-        if nsig2:
-            new_macroC.write('hsig1->Draw("hist9same"); \n')
-            new_macroC.write('legend->AddEntry(hsig1, "'+legsig1+'","l");\n')
-            new_macroC.write('hsig2->Draw("hist9same"); \n')
-            new_macroC.write('legend->AddEntry(hsig2, "'+legsig2+'","l");\n')
+        for x in range (0, len(nsig)):
+            new_macroC.write('hsigs['+str(x)+']->Draw("hist9same"); \n')
+            new_macroC.write('legend->AddEntry(hsigs['+str(x)+'], "'+siglegsig[x]+'","l");\n')
+            
             
     elif "/// Draw sig(1)" in line:
         new_macroC.write(line+"\n")
-        if nsig1 and not nsig2:
-             new_macroC.write('hsig1->Draw("hist9same"); \n')
-
-        if nsig2:
-            new_macroC.write('hsig1->Draw("hist9same"); \n')
-            new_macroC.write('hsig2->Draw("hist9same"); \n')
+        for x in range (0, len(nsig)):
+            new_macroC.write('hsigs['+str(x)+']->Draw("hist9same"); \n')
 
     elif "/// Draw(2) sig"in line:
         new_macroC.write(line+"\n")
-        if nsig1:
-            new_macroC.write('hsig1->Draw("hist9same"); \n')
-        if nsig2:
-            new_macroC.write('hsig2->Draw("hist9same"); \n')
+        for x in range (0, len(nsig)):
+            new_macroC.write('hsigs['+str(x)+']->Draw("hist9same"); \n')
+
                          
     elif "caption=" in line:
         new_macroC.write('caption="' + text_caption + '\n')

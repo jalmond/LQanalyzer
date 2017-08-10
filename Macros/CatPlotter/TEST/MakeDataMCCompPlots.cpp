@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus002.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus003.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -171,24 +171,41 @@ int MakePlots(string hist) {
 
 	/// SIGNAL 
 
+vector<TH1*> hsig ;
+float int_bkg = hup->Integral()/2.; 
+TFile* file_sig0 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_40_cat_v8-0-7.root")); 
+TH1* hsig0 = dynamic_cast<TH1*> ((file_sig0->Get(name.c_str()))->Clone()); 
+hsig0->Rebin(rebin); 
+hsig0->Scale(0.01); 
+FixOverUnderFlows(hsig0, xmax); 
+ymax = GetMaximum(hsig0, hsig0, ylog, name, xmax, xmin); 
+hsig0->SetLineColor(2); 
+hsig0->SetLineWidth(3.); 
+hsig0->GetXaxis()->SetRangeUser(xmin,xmax); 
+hsig0->GetYaxis()->SetRangeUser(ymin,ymax); 
+hsig.push_back(hsig0);
 TFile* file_sig1 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_40_cat_v8-0-7.root")); 
 TH1* hsig1 = dynamic_cast<TH1*> ((file_sig1->Get(name.c_str()))->Clone()); 
 hsig1->Rebin(rebin); 
 hsig1->Scale(0.05); 
 FixOverUnderFlows(hsig1, xmax); 
 ymax = GetMaximum(hsig1, hsig1, ylog, name, xmax, xmin); 
-float int_bkg = hup->Integral()/2.; 
-hsig1->SetLineColor(kRed); 
+hsig1->SetLineColor(3); 
 hsig1->SetLineWidth(3.); 
 hsig1->GetXaxis()->SetRangeUser(xmin,xmax); 
 hsig1->GetYaxis()->SetRangeUser(ymin,ymax); 
+hsig.push_back(hsig1);
 TFile* file_sig2 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_80_cat_v8-0-7.root")); 
 TH1* hsig2 = dynamic_cast<TH1*> ((file_sig2->Get(name.c_str()))->Clone()); 
 hsig2->Rebin(rebin); 
-FixOverUnderFlows(hsig2, xmax); 
 hsig2->Scale(0.3); 
-hsig2->SetLineColor(kBlue); 
+FixOverUnderFlows(hsig2, xmax); 
+ymax = GetMaximum(hsig2, hsig2, ylog, name, xmax, xmin); 
+hsig2->SetLineColor(4); 
 hsig2->SetLineWidth(3.); 
+hsig2->GetXaxis()->SetRangeUser(xmin,xmax); 
+hsig2->GetYaxis()->SetRangeUser(ymin,ymax); 
+hsig.push_back(hsig2);
 
 	unsigned int outputWidth = 1200;
 	unsigned int outputHeight = 1200;
@@ -201,7 +218,7 @@ hsig2->SetLineWidth(3.);
 	vstack.push_back(mstack_nostat);   	
 
 	
-	TCanvas* c = CompDataMC(hdata,hsig1,hsig2,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	TCanvas* c = CompDataMC(hdata,hsig,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 
 	string canvasname = c->GetName();
 	canvasname.erase(0,4);
@@ -646,8 +663,6 @@ if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("Doub
     list.push_back(make_pair("WpWpQCD",0.15));
     list.push_back(make_pair("WpWpEWK",0.15));
     list.push_back(make_pair("ww_ds",0.15));
-    list.push_back(make_pair("ZGto2LG",0.15));
-    list.push_back(make_pair("WGtoLNuG",0.15));
 }if(sample.Contains("top")){    list.push_back(make_pair("ttZToLL_M-10",0.2));
     list.push_back(make_pair("tZq",0.2));
     list.push_back(make_pair("TTG",0.2));
@@ -1322,7 +1337,7 @@ vector<pair<TString,float> >  higgs = InitSample(" higgs");
   }
 
   ///// Fix cut flow code
-caption=" Number of events with two same-sign muon.";
+caption=" Number of events with two same-sign muon and two jets.";
 
   hist = "/h_Nelectrons";
   columnname="";
@@ -1332,7 +1347,7 @@ caption=" Number of events with two same-sign muon.";
 }
 
 
-TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata,  vector<TH1*> hsigs ,vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
   ymax = GetMaximum(hdata, hup, ylog, hname, xmax, xmin);
   
@@ -1433,21 +1448,21 @@ showdata=false;
 
 
 bool drawsig=true;
-  if(!hsig1) drawsig=false;
-  if(!hsig2) drawsig=false;
+  
+  if(!hsigs[0]) drawsig=false;
+  if(!hsigs[1]) drawsig=false;
   if(drawsig){
     /// Draw sig                                                                                                                                                                     
 
-hsig1->Draw("hist9same"); 
-legend->AddEntry(hsig1, "m_{N} = 40 GeV, |V_{#muN}|^{2} = 5 #times 10^{-2} ","l");
-hsig2->Draw("hist9same"); 
-legend->AddEntry(hsig2, "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-1} ","l");
-    hsig1->Draw("hist9same");
-    hsig2->Draw("hist9same");
+hsigs[0]->Draw("hist9same"); 
+legend->AddEntry(hsigs[0], "m_{N} = 40 GeV, |V_{#muN}|^{2} = 5 #times 10^{-4} ","l");
+hsigs[1]->Draw("hist9same"); 
+legend->AddEntry(hsigs[1], "m_{N} = 60 GeV, |V_{#muN}|^{2} = 1 #times 10^{-3} ","l");
+hsigs[2]->Draw("hist9same"); 
+legend->AddEntry(hsigs[2], "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-3} ","l");
 
   }
-
-
+  
 
   vector<float> err_up_tmp;
   vector<float> err_down_tmp;
@@ -1531,10 +1546,11 @@ legend->AddEntry(hsig2, "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-1} ","l"
 
   if(drawsig){
     /// Draw(1) sig
-    hsig1->Draw("hist9same");
-    hsig2->Draw("hist9same");
+    //for(int i =0; i < hsigs.size();i++){
+    //hsig[i]->Draw("hist9same");
+    //}
   }
-
+  
   hdata->Draw("axis same");
   errorband->Draw("E2same");
 
@@ -1546,11 +1562,12 @@ legend->AddEntry(hsig2, "m_{N} = 80 GeV, |V_{#muN}|^{2} = 3 #times 10^{-1} ","l"
   if(drawsig){
     /// Draw(2) sig                                                                                                                                                                     
 
-hsig1->Draw("hist9same"); 
-hsig2->Draw("hist9same"); 
-
-    hsig1->Draw("hist9same");
-    hsig2->Draw("hist9same");
+hsigs[0]->Draw("hist9same"); 
+hsigs[1]->Draw("hist9same"); 
+hsigs[2]->Draw("hist9same"); 
+    //for(int i =0; i < hsigs.size();i++){
+    //hsig[i]->Draw("hist9same");
+    //}
   }
   legend->Draw();
   
@@ -1647,9 +1664,9 @@ hsig2->Draw("hist9same");
       if(punzi  < minSB)minSB=  punzi;*/
       float binc(0.);
       float sigc(0.);
-      if(hsig1->GetBinContent(i)<=0)sigc=0.0001;
-      else sigc=hsig1->GetBinContent(i);
-      sigc=sigc/hsig1->Integral();
+      if(hsigs[0]->GetBinContent(i)<=0)sigc=0.0001;
+      else sigc=hsigs[0]->GetBinContent(i);
+      sigc=sigc/hsigs[0]->Integral();
       if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
       else binc=sigc/1.8;
       hdev->SetBinError(i,0.);
@@ -1661,9 +1678,9 @@ hsig2->Draw("hist9same");
     for (Int_t i=1;i<=hdev_err->GetNbinsX()+1;i++) {
       float binc(0.);
       float sigc(0.);
-      if(hsig2->GetBinContent(i)==0)sigc=0.0001;
-      else sigc=hsig2->GetBinContent(i);
-      sigc=sigc/hsig2->Integral();
+      if(hsigs[1]->GetBinContent(i)==0)sigc=0.0001;
+      else sigc=hsigs[1]->GetBinContent(i);
+      sigc=sigc/hsigs[1]->Integral();
 
       if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
       else binc=sigc/1.8;

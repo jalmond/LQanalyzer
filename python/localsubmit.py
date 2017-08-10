@@ -1589,6 +1589,8 @@ else:
                 
     if not os.path.exists(Finaloutputdir):
         os.system("mkdir " + Finaloutputdir)
+
+
     outfile = cycle + "_" + filechannel + outsamplename + ".root"
     if doMerge:
         print "doing merge"
@@ -1611,7 +1613,12 @@ else:
                     srline = rline.split()
                     lxmachine=srline[2]
             readcatpath.close()
-            
+            if not "OPT/" in Finaloutputdir:
+                os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
+                if "OPT" in skflag:
+                    transout = transout+"/OPT/"
+
+            os.system("ssh  jalmond@"+lxmachine+".cern.ch  mkdir " + transout )
             os.system("scp -r "+mergeoutputdir +  outfile + " jalmond@"+lxmachine+".cern.ch:"+transout)
             
 

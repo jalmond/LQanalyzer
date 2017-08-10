@@ -393,7 +393,10 @@ void FakeRateCalculator_Mu::MakeFakeRatePlots(TString label, TString mutag,   st
   if(truth_match){
     if(jets.size() >= 1){
       if(makebasicplots){
-	if(useevent40)GetFakeRates(muons, muons_tight,label, jets, alljets,  label+"_40", (prescale_w * w),isocut,makebasicplots);
+	if(useevent20)GetFakeRates(muons, muons_tight,label, jets, alljets,  label+"_20", (prescale_w * w),isocut,makebasicplots);
+	if(useevent30)GetFakeRates(muons, muons_tight,label, jets, alljets,  label+"_30", (prescale_w * w),isocut,makebasicplots);
+        if(useevent40)GetFakeRates(muons, muons_tight,label, jets, alljets,  label+"_40", (prescale_w * w),isocut,makebasicplots);
+        if(useevent60)GetFakeRates(muons, muons_tight, label,jets, alljets,  label+"_60", (prescale_w * w),isocut,makebasicplots);
       }
       else{
 	if(useevent20)GetFakeRates(muons, muons_tight,label, jets, alljets,  label+"_20", (prescale_w * w),isocut,makebasicplots);

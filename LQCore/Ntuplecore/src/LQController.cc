@@ -464,6 +464,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
       else if(inputType == mc) cycle->SetDataType(false);
       else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
     }
+    cycle->SetFlags(v_user_flags);
     cycle->BeginCycle();
 
     cycle->ClearOutputVectors();
@@ -533,7 +534,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
 
     cycle->SetTargetLumi(target_luminosity);
 
-   cycle->SetFlags(v_user_flags);
+
     //// Connect chain to Data class                                                                                                                                        
     if(inputType!=NOTSET) {
       if(inputType == data) cycle->SetLQNtupleInputType(1 );

@@ -16,7 +16,7 @@ declare -a hn_ll_ee2=('HN_t_ch_EmEm_100_official' 'HN_t_ch_EmEm_1100_official' '
 
 declare -a hn_ll_ee1=( 'HNEmEm_100' 'HNEmEm_1100' 'HNEmEm_1500' 'HNEmEm_200' 'HNEmEm_40' 'HNEmEm_50' 'HNEmEm_500' 'HNEmEm_60' 'HNEmEm_70' 'HNEmEm_80' 'HNEmEm_90' 'HNEmEm_125' 'HNEmEm_150' 'HNEmEm_300' 'HNEmEm_400' 'HNEmEm_600')
 
-declare -a hn_ll_mm_1=( 'HNMumMum_100' 'HNMumMum_1000' 'HNMumMum_1100' 'HNMumMum_1200' 'HNMumMum_125' 'HNMumMum_1300' 'HNMumMum_1400' 'HNMumMum_150' 'HNMumMum_1500' 'HNMumMum_200' 'HNMumMum_250' 'HNMumMum_300' 'HNMumMum_40' 'HNMumMum_400' 'HNMumMum_50' 'HNMumMum_500' 'HNMumMum_60' 'HNMumMum_600' 'HNMumMum_70' 'HNMumMum_700' 'HNMumMum_80' 'HNMumMum_800' 'HNMumMum_90' 'HNMumMum_900' 'HNMumMum_Tchannel_1000' 'HNMoriondLL_Tchannel_MumMum_100' 'HNMoriondLL_Tchannel_MumMum_1100' 'HNMumMum_Tchannel_1200' 'HNMumMum_Tchannel_1300' 'HNMumMum_Tchannel_1400' 'HNMumMum_Tchannel_1500' 'HNMoriondLL_Tchannel_MumMum_200' 'HNMumMum_Tchannel_300' 'HNMumMum_Tchannel_400' 'HNMoriondLL_Tchannel_MumMum_500' 'HNMumMum_Tchannel_600' 'HNMumMum_Tchannel_700' 'HNMumMum_Tchannel_800' 'HNMumMum_Tchannel_900' )
+declare -a hn_ll_mm_1=( 'HNMumMum_100' 'HNMumMum_1000' 'HNMumMum_1100' 'HNMumMum_1200' 'HNMumMum_125' 'HNMumMum_1300' 'HNMumMum_1400' 'HNMumMum_150' 'HNMumMum_1500' 'HNMumMum_200' 'HNMumMum_250' 'HNMumMum_300' 'HNMumMum_40' 'HNMumMum_400' 'HNMumMum_50' 'HNMumMum_500' 'HNMumMum_60' 'HNMumMum_600' 'HNMumMum_70' 'HNMumMum_700' 'HNMumMum_80' 'HNMumMum_800' 'HNMumMum_90' 'HNMumMum_900' 'HNMumMum_Tchannel_1000' 'HNMoriondLL_Tchannel_MumMum_100' 'HNMoriondLL_Tchannel_MumMum_1100' 'HNMumMum_Tchannel_1200' 'HNMumMum_Tchannel_1300' 'HNMumMum_Tchannel_1400' 'HNMumMum_Tchannel_1500' 'HNMoriondLL_Tchannel_MumMum_200' 'HNMumMum_Tchannel_300' 'HNMumMum_Tchannel_400' 'HNMoriondLL_Tchannel_MumMum_500' 'HNMumMum_Tchannel_600' 'HNMumMum_Tchannel_700' 'HNMumMum_Tchannel_800' 'HNMumMum_Tchannel_900'  'HNMupMup_100' 'HNMupMup_1000' 'HNMupMup_1100' 'HNMupMup_1200' 'HNMupMup_125' 'HNMupMup_1300' 'HNMupMup_1400' 'HNMupMup_150' 'HNMupMup_1500' 'HNMupMup_200' 'HNMupMup_250' 'HNMupMup_300' 'HNMupMup_40' 'HNMupMup_400' 'HNMupMup_50' 'HNMupMup_500' 'HNMupMup_60' 'HNMupMup_600' 'HNMupMup_70' 'HNMupMup_700' 'HNMupMup_80' 'HNMupMup_800' 'HNMupMup_90' 'HNMupMup_900' 'HNMupMup_Tchannel_1000' 'HNMoriondLL_Tchannel_MupMup_100' 'HNMoriondLL_Tchannel_MupMup_1100' 'HNMupMup_Tchannel_1200' 'HNMupMup_Tchannel_1300' 'HNMupMup_Tchannel_1400' 'HNMupMup_Tchannel_1500' 'HNMoriondLL_Tchannel_MupMup_200' 'HNMupMup_Tchannel_300' 'HNMupMup_Tchannel_400' 'HNMoriondLL_Tchannel_MupMup_500' 'HNMupMup_Tchannel_600' 'HNMupMup_Tchannel_700' 'HNMupMup_Tchannel_800' 'HNMupMup_Tchannel_900' )
 
 
 
@@ -32,7 +32,7 @@ declare -a example=("WW" "WZ" "HNMupMup_100" "DYJets")
 
 declare -a tmplist=('ggZZto4e' 'ttZToLL_M-1to10' 'ttWToLNu' 'ttZToLL_M-10' 'WZG' 'WWG')
 
-declare -a tmpall_mc=('TTJets_aMC' 'WJets' 'WW'  'WZ' 'ZZ' 'DYJets' 'DYJets_10to50' )
+declare -a tmpall_mc=('TTJets_aMC' 'LowStat_WJets' 'WW'  'WZ' 'ZZ' 'LowStat_DYJets' 'DYJets_10to50' )
 
 declare -a hn=('DYJets_10to50'  'DYJets' 'TT_powheg' 'WJets' 'WGtoLNuG'  'ZGto2LG' 'qcd_15to20_bctoe' 'QCD_Pt-20to30_EMEnriched' 'QCD_Pt-20to30_MuEnriched')
 declare -a hn_fake=('DYJets' 'TT_powheg' 'WJets' 'qcd_15to20_bctoe' 'QCD_Pt-20to30_EMEnriched' 'QCD_Pt-20to30_MuEnriched' 'QCD_DoubleEMEnriched_30-40_mgg80toinf' 'QCD_DoubleEMEnriched_30-inf_mgg40to80' 'QCD_DoubleEMEnriched_40-inf_mgg80toinf')
@@ -83,3 +83,4 @@ declare -a tmp2=(
 'HN_MuMuMu_20'
 'HN_MuMuMu_200'
  )
+declare -a new_list=('DYJets' 'LowStatDYJets' )

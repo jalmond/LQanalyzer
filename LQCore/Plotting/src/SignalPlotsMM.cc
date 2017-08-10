@@ -35,13 +35,13 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
     map_sig["h_lljjjj_ss_mass"]          = SetupHist("h_lljjjj_ss_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{lljjjj} (ss) GeV");
     map_sig["h_lljjjj_mass"]             = SetupHist("h_lljjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{lljjjj} GeV");
     map_sig["h_lljmass"]                = SetupHist("h_lljmass_"         + name,"Invariant mass of the four particles",200,0,2000,"M_{llj} GeV");
-    map_sig["h_l1jj_central_mass"]               = SetupHist("h_l1jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000);
-    map_sig["h_l2jj_central_mass"]               = SetupHist("h_l2jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000);
-    map_sig["h_lljj_central_mass"]               = SetupHist("h_lljj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000);
+    map_sig["h_l1jj_central_mass"]               = SetupHist("h_l1jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000, "M_{l1jj} (GeV)");
+    map_sig["h_l2jj_central_mass"]               = SetupHist("h_l2jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000, "M_{l2jj} (GeV)");
+    map_sig["h_lljj_central_mass"]               = SetupHist("h_lljj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000, "M_{lljj} (GeV)");
 
 
-    map_sig2["h_l1l2jjmass"] = SetupHist2("h_l1l2jjmass_" +  name , "", 100,0,1000,100,0,1000);
-    map_sig["h_l1_l2jjmass"] = SetupHist("h_l1_l2jjmass_"       + name,"Invariant mass of the two leading jets and leading muectron",200,0,10);
+    map_sig2["h_l1l2jjmass"] = SetupHist2("h_l1l2jjmass_" +  name , "", 100,0,1000,100,0,1000, "M_{l1jj} (GeV)",  "M_{l2jj} (GeV)");
+    map_sig["h_l1_l2jjmass"] = SetupHist("h_l1_l2jjmass_"       + name,"Invariant mass of the two leading jets and leading muectron",200,0,10, "M_{l1/l2jj} (GeV)");
     map_sig["h_forward_jet_pt"]             = SetupHist("h_forward_jet_pt_"                + name,"h_forward_jet_pt",60,0,300);
     map_sig["h_central_jet_pt"]             = SetupHist("h_central_jet_pt_"                + name,"h_central_jet_pt",60,0,300);
     map_sig["h_forward_jet_eta"]             = SetupHist("h_forward_jet_eta_"                + name,"h_forward_jet_eta",50,-2.5,2.5);
@@ -135,16 +135,16 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig2["JetEtaRegion"]           = SetupHist2("JetEtaRegion_el_"  + name,"eta " , 8, 0., 8., 8, 0.,8.);
 
   if(nmu > 1 || nmu < 0) {
-    map_sig["h_secondLeptonPt"]         = SetupHist("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300);
-    map_sig["h_secondLeptonEta"]        = SetupHist("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3.);
-    map_sig["h_secondLeptonRelIso_B"]     = SetupHist("h_secondLeptonRelIso_B"      + name,"leading lepton relIso",100,0,1.);
-    map_sig["h_secondLeptonRelIso_EC"]     = SetupHist("h_secondLeptonRelIso_EC"      + name,"leading lepton relIso",100,0,1.);
-    map_sig["h_secondLeptonRelIso"]     = SetupHist("h_secondLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
+    map_sig["h_secondLeptonPt"]         = SetupHist("h_secondLeptonPt_"    + name,"secondary lepton pt",60,0,300, "lep_{2} P_{T} (GeV)");
+    map_sig["h_secondLeptonEta"]        = SetupHist("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3., "lep_{2} #eta");
+    map_sig["h_secondLeptonRelIso_B"]     = SetupHist("h_secondLeptonRelIso_B"      + name,"leading lepton relIso",100,0,1.,"Iso_{B} (GeV) ");
+    map_sig["h_secondLeptonRelIso_EC"]     = SetupHist("h_secondLeptonRelIso_EC"      + name,"leading lepton relIso",100,0,1., "Iso_{EC} (GeV)");
+    map_sig["h_secondLeptonRelIso"]     = SetupHist("h_secondLeptonRelIso_"      + name,"leading lepton relIso",100,0,1., "Iso (GeV");
     map_sig["h_secondLeptonMiniRelIso"]     = SetupHist("h_secondLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
     if(nmu > 2|| nmu < 0 ) {
-      map_sig["h_thirdLeptonPt"]         = SetupHist("h_thirdLeptonPt_"    + name,"thirdary lepton pt",60,0,300);
-      map_sig["h_thirdLeptonEta"]        = SetupHist("h_thirdLeptonEta_"   + name,"third lepton eta",60,-3.,3.);
-      map_sig["h_thirdLeptonRelIso"]     = SetupHist("h_thirdLeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
+      map_sig["h_thirdLeptonPt"]         = SetupHist("h_thirdLeptonPt_"    + name,"thirdary lepton pt",60,0,300,"lep_{3} P_{T} (GeV)");
+      map_sig["h_thirdLeptonEta"]        = SetupHist("h_thirdLeptonEta_"   + name,"third lepton eta",60,-3.,3. ,"lep_{3} #eta");
+      map_sig["h_thirdLeptonRelIso"]     = SetupHist("h_thirdLeptonRelIso_"      + name,"leading lepton relIso",100,0,1., "Iso (GeV");
       map_sig["h_thirdLeptonMiniRelIso"]     = SetupHist("h_thirdLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
       if(nmu > 3 || nmu < 0) {
         map_sig["h_fourthLeptonPt"]         = SetupHist("h_fourthLeptonPt_"    + name,"fourthary lepton pt",60,0,300);
@@ -155,48 +155,48 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
     }
 
   }
-  map_sig["h_leadingLeptonEta"]       = SetupHist("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.);
+  map_sig["h_leadingLeptonEta"]       = SetupHist("h_leadingLeptonEta_"  + name,"leading lepton eta",60,-3.,3.,  "lep_{1} #eta");
 
-  map_sig["h_LeptonIso"]              = SetupHist("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10.);
-  map_sig["h_LeptonRelIso"]           = SetupHist("h_LeptonRelIso_"      + name,"leading lepton relIso",100,0,1.);
-  map_sig["h_leadingLeptonRelIso_B"]    = SetupHist("h_leadingLeptonRelIso_B"      + name,"leading lepton relIso",100,0,1.);
-  map_sig["h_leadingLeptonRelIso_EC"]    = SetupHist("h_leadingLeptonRelIso_EC"      + name,"leading lepton relIso",100,0,1.);
+  map_sig["h_LeptonIso"]              = SetupHist("h_LeptonIso_"         + name,"leading lepton relIso",50,0,10., "Iso (GeV");
+  map_sig["h_LeptonRelIso"]           = SetupHist("h_LeptonRelIso_"      + name,"leading lepton relIso",100,0,1., "Iso (GeV");
+  map_sig["h_leadingLeptonRelIso_B"]    = SetupHist("h_leadingLeptonRelIso_B"      + name,"leading lepton relIso",100,0,1., "Iso_{B} (GeV");
+  map_sig["h_leadingLeptonRelIso_EC"]    = SetupHist("h_leadingLeptonRelIso_EC"      + name,"leading lepton relIso",100,0,1. ,"Iso_{EC} (GeV");
   map_sig["h_leadingLeptonMiniRelIso"]    = SetupHist("h_leadingLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
-  map_sig["h_LeptonDZ_EC"]               = SetupHist("h_LeptonDZ_EC_"          + name," leading lepton DZ", 1000, -10. , 10.);
-  map_sig["h_LeptonDZ_B"]               = SetupHist("h_LeptonDZ_B_"          + name," leading lepton DZ", 1000, -10. , 10.);
-  map_sig["h_LeptonDXY_EC"]              = SetupHist("h_LeptonDXY_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY_B"]              = SetupHist("h_LeptonDXY_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25);
-  map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -1. , 1.25);
-  map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -50. , 50.);
+  map_sig["h_LeptonDZ_EC"]               = SetupHist("h_LeptonDZ_EC_"          + name," leading lepton DZ", 1000, -10. , 10., "d_{Z} (EC)");
+  map_sig["h_LeptonDZ_B"]               = SetupHist("h_LeptonDZ_B_"          + name," leading lepton DZ", 1000, -10. , 10.,"d_{Z} (B)");
+  map_sig["h_LeptonDXY_EC"]              = SetupHist("h_LeptonDXY_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25, "d_{XY} (EC)");
+  map_sig["h_LeptonDXY_B"]              = SetupHist("h_LeptonDXY_B_"         + name," lepton DXY_{b}", 1000, -0.25 , 0.25,"d_{XY} (B)");
+  map_sig["h_LeptonDXY"]              = SetupHist("h_LeptonDXY_"         + name," leading lepton DXY", 1000, -1. , 1.25,"d_{XY}");
+  map_sig["h_LeptonDXYSig"]              = SetupHist("h_LeptonDXYSig_"         + name," leading lepton DXYSig", 1000, -50. , 50.,"SIP");
 
 
   /// Lepton/Jet/Lepton dR                                                                                                                                                                                                                                                                                                                    
-  map_sig["h_LeptonJetdR"]            = SetupHist("h_LeptonJetdR_"       + name,"lepton jet dR",50,0,5);
-  map_sig["h_LeptonAwayJetdR"]        = SetupHist("h_LeptonAwayJetdR_"   + name, "away jet dr", 50,0,5);
-  map_sig["h_leadLeptonAwayJetRatio"]        = SetupHist("h_leadLeptonAwayJetRatio_"   + name, "away jet / lepton", 100,0,5);
-  map_sig["h_secondLeptonAwayJetRatio"]        = SetupHist("h_secondLeptonAwayJetRatio_"   + name, "away jet / lepton", 100,0,5);
-  map_sig["h_leadLeptondR"]           = SetupHist("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5);
+  map_sig["h_LeptonJetdR"]            = SetupHist("h_LeptonJetdR_"       + name,"lepton jet dR",50,0,5, "#Delta R(l,j)");
+  map_sig["h_LeptonAwayJetdR"]        = SetupHist("h_LeptonAwayJetdR_"   + name, "away jet dr", 50,0,5,"#Delta R(l,away(j))");
+  map_sig["h_leadLeptonAwayJetRatio"]        = SetupHist("h_leadLeptonAwayJetRatio_"   + name, "away jet / lepton", 100,0,5,"P_{T}(J)/P_{T}(l)");
+  map_sig["h_secondLeptonAwayJetRatio"]        = SetupHist("h_secondLeptonAwayJetRatio_"   + name, "away jet / lepton", 100,0,5,"P_{T}(J)/P_{T}(l)");
+  map_sig["h_leadLeptondR"]           = SetupHist("h_leadLeptondR_"      + name,"leading lepton dR",50,0,5, "#Delta R(l,l)");
   map_sig["h_leadLeptonstarjetdR"]           = SetupHist("h_leadLeptonstarjetdR_"      + name,"leading lepton dR",500,0,25);
   map_sig["h_leadLeptondPhi"]         = SetupHist("h_leadLeptondPhi_"    + name,"leading lepton dPhi",50,-5,5);
-  map_sig["h_leadJetdR"]                = SetupHist("h_leadJetdR_"         + name,"leading jet dR",50,0,5);
-  map_sig["h_leadJetdPhi"]              = SetupHist("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
+  map_sig["h_leadJetdR"]                = SetupHist("h_leadJetdR_"         + name,"leading jet dR",50,0,5, "#Delta R(j,j)");
+  map_sig["h_leadJetdPhi"]              = SetupHist("h_leadJetdPhi_"       + name,"leading jet dPhi",50,-5,5, "#Delta R(fj,fj)");
   map_sig["h_leadJetFatJetdR"]                = SetupHist("h_leadJetFatJetdR_"         + name,"leading jet dR",50,0,5);
   map_sig["h_leadJetFatJetdPhi"]              = SetupHist("h_leadJetFatJetdPhi_"       + name,"leading jet dPhi",50,-5,5);
 
 
   //// Jet Plots                                                                                                                                                                
 
-  map_sig["h_FatJetPt"]             = SetupHist("h_FatJetPt_"      + name,"leading jet pt",100,0,1000);
-  map_sig["h_FatJetEta"]            = SetupHist("h_FatJetEta_"      + name,"leading jet pt",120,-5,5);
+  map_sig["h_FatJetPt"]             = SetupHist("h_FatJetPt_"      + name,"leading jet pt",100,0,1000,"FatJet P_{T} (GeV)");
+  map_sig["h_FatJetEta"]            = SetupHist("h_FatJetEta_"      + name,"leading jet pt",120,-5,5,"FatJet #eta");
   map_sig["h_FatJetPhi"]            = SetupHist("h_FatJetPhi_"      + name,"leading jet pt",64,-3.2,3.2);
 
-  map_sig["h_leadingJetPt"]           = SetupHist("h_leadingJetPt_"      + name,"leading jet pt",60,0,300);
-  map_sig["h_secondJetPt"]            = SetupHist("h_secondJetPt_"       + name,"secondary jet pt",60,0,300);
-  map_sig["h_HT"]                     = SetupHist("h_HT_"                + name,"sum jet pt",50,0,1000);
-  map_sig["h_ST"]                     = SetupHist("h_ST_"                + name,"sum event pt",50,0,1500);
-  map_sig["h_STall"]                     = SetupHist("h_STall_"                + name,"sum event pt",50,0,1500);
-  map_sig["h_jets_pt"]                = SetupHist("h_jets_pt_"           + name,"jet pt",60,0,300);
-  map_sig["h_jets_eta"]               = SetupHist("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3);
+  map_sig["h_leadingJetPt"]           = SetupHist("h_leadingJetPt_"      + name,"leading jet pt",60,0,300,"j_{1} P_{T} (GeV)");
+  map_sig["h_secondJetPt"]            = SetupHist("h_secondJetPt_"       + name,"secondary jet pt",60,0,300,"j_{2} P_{T} (GeV)");
+  map_sig["h_HT"]                     = SetupHist("h_HT_"                + name,"sum jet pt",50,0,1000, "H_{T} (GeV)");
+  map_sig["h_ST"]                     = SetupHist("h_ST_"                + name,"sum event pt",50,0,1500,"S_{T} (GeV)");
+  map_sig["h_STall"]                     = SetupHist("h_STall_"                + name,"sum event pt",50,0,1500,"S_{T} (GeV) AllJets");
+  map_sig["h_jets_pt"]                = SetupHist("h_jets_pt_"           + name,"jet pt",60,0,300,"Jet P_{T} (GeV)");
+  map_sig["h_jets_eta"]               = SetupHist("h_jets_eta_"          + name,"#eta distribution of the two jets",120,-3,3,"jet #eta" );
   map_sig["h_jets_phi"]               = SetupHist("h_jets_phi_"          + name,"#phi distribution of the two jets",140,-3.5,3.5);
   map_sig["h_PileupJetIDMVA"]         = SetupHist("h_pileupJetIDMVA_"    + name, "" ,100, -1.,1.);
   map_sig["h_bTag"]                   = SetupHist("h_bTag_"              + name,"bTag discrimant",100,-1,3);
@@ -218,16 +218,16 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_rest_jets_eta"]               = SetupHist("h_rest_jets_eta_"          + name,"#eta distribution of the two rest_jets",120,-5,5);
 
   /// dPhi/MT                                                                                                                                                                                                                                                                                                                                 
-  map_sig["h_MTlepton"]               = SetupHist("h_MTlepton_"        + name,"Mt",100,0.0,500.0);
+  map_sig["h_MTlepton"]               = SetupHist("h_MTlepton_"        + name,"Mt",100,0.0,500.0, "M_{T} (GeV)");
   map_sig["h_dphi_METlepton"]         = SetupHist("h_dphi_METlepton_"  + name , "METlepdphi", 50, -5., 5.);
 
   map_sig["h_contraMTlepton"]               = SetupHist("h_contraMTlepton_"        + name,"Mt",100,0.0,500.0);
 
   /// MET plots                                                                                                                                                                                                                                                                                                                               
-  map_sig["h_PFMET"]                  = SetupHist("h_PFMET_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_PFMET_t1"]                  = SetupHist("h_PFMET_t1_"               + name,"Missing Et",100,0.0,500.0);
-  map_sig["h_PFMET2_ST"]                  = SetupHist("h_PFMET2_ST_"               + name,"Missing Et",200,0.0,100.0, "E_{T}/S^{2}_{T}");
-  map_sig["h_PFMET2_STall"]                  = SetupHist("h_PFMET2_STall_"               + name,"Missing Et",200,0.0,100.0, "E_{T}/S^{2}_{T}");
+  map_sig["h_PFMET"]                  = SetupHist("h_PFMET_"               + name,"Missing Et",100,0.0,500.0,"slash{E}_{T}^{miss} (GeV)");
+  map_sig["h_PFMET_t1"]                  = SetupHist("h_PFMET_t1_"               + name,"Missing Et",100,0.0,500.0,"slash{E}_{T}^{miss} (GeV)");
+  map_sig["h_PFMET2_ST"]                  = SetupHist("h_PFMET2_ST_"               + name,"Missing Et",200,0.0,100.0, "slash{E}_{T}^{miss}/S^{2}_{T}");
+  map_sig["h_PFMET2_STall"]                  = SetupHist("h_PFMET2_STall_"               + name,"Missing Et",200,0.0,100.0, "slash{E}_{T}^{miss}/S^{2}_{T}");
   map_sig["h_PFMET_phi"]              = SetupHist("h_PFMET_phi_"           + name,"Missing Et",100,-3.2,3.2);
   map_sig["h_PFMET_phi_t1"]              = SetupHist("h_PFMET_phi_t1_"           + name,"Missing Et",100,-3.2,3.2);
 

@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus002.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus003.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -182,7 +182,7 @@ int MakePlots(string hist) {
 	vstack.push_back(mstack_nostat);   	
 
 	
-	TCanvas* c = CompDataMC(hdata,hsig1,hsig2,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
+	TCanvas* c = CompDataMC(hdata,hsig,vstack,hup,hdown, hup_nostat, legend,name,rebin,xmin,xmax, ymin,ymax, path, histdir,ylog, showdata, channel);      	
 
 	string canvasname = c->GetName();
 	canvasname.erase(0,4);
@@ -1268,7 +1268,7 @@ void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString 
 }
 
 
-TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
+TCanvas* CompDataMC(TH1* hdata,  vector<TH1*> hsigs ,vector<THStack*> mcstack,TH1* hup, TH1* hdown,TH1* hup_nostat,TLegend* legend, const string hname, const  int rebin, double xmin, double xmax,double ymin, double ymax,string path , string folder, bool logy, bool usedata, TString channel) {
   
   ymax = GetMaximum(hdata, hup, ylog, hname, xmax, xmin);
   
@@ -1365,16 +1365,14 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
 
 
   bool drawsig="";
-  if(!hsig1) drawsig=false;
-  if(!hsig2) drawsig=false;
+  
+  if(!hsigs[0]) drawsig=false;
+  if(!hsigs[1]) drawsig=false;
   if(drawsig){
     /// Draw sig                                                                                                                                                                     
-    hsig1->Draw("hist9same");
-    hsig2->Draw("hist9same");
 
   }
-
-
+  
 
   vector<float> err_up_tmp;
   vector<float> err_down_tmp;
@@ -1458,10 +1456,11 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
 
   if(drawsig){
     /// Draw(1) sig
-    hsig1->Draw("hist9same");
-    hsig2->Draw("hist9same");
+    //for(int i =0; i < hsigs.size();i++){
+    //hsig[i]->Draw("hist9same");
+    //}
   }
-
+  
   hdata->Draw("axis same");
   errorband->Draw("E2same");
 
@@ -1472,9 +1471,9 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
   
   if(drawsig){
     /// Draw(2) sig                                                                                                                                                                     
-
-    hsig1->Draw("hist9same");
-    hsig2->Draw("hist9same");
+    //for(int i =0; i < hsigs.size();i++){
+    //hsig[i]->Draw("hist9same");
+    //}
   }
   legend->Draw();
   
@@ -1571,9 +1570,9 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
       if(punzi  < minSB)minSB=  punzi;*/
       float binc(0.);
       float sigc(0.);
-      if(hsig1->GetBinContent(i)<=0)sigc=0.0001;
-      else sigc=hsig1->GetBinContent(i);
-      sigc=sigc/hsig1->Integral();
+      if(hsigs[0]->GetBinContent(i)<=0)sigc=0.0001;
+      else sigc=hsigs[0]->GetBinContent(i);
+      sigc=sigc/hsigs[0]->Integral();
       if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
       else binc=sigc/1.8;
       hdev->SetBinError(i,0.);
@@ -1585,9 +1584,9 @@ TCanvas* CompDataMC(TH1* hdata,  TH1* hsig1, TH1* hsig2, vector<THStack*> mcstac
     for (Int_t i=1;i<=hdev_err->GetNbinsX()+1;i++) {
       float binc(0.);
       float sigc(0.);
-      if(hsig2->GetBinContent(i)==0)sigc=0.0001;
-      else sigc=hsig2->GetBinContent(i);
-      sigc=sigc/hsig2->Integral();
+      if(hsigs[1]->GetBinContent(i)==0)sigc=0.0001;
+      else sigc=hsigs[1]->GetBinContent(i);
+      sigc=sigc/hsigs[1]->Integral();
 
       if(h_nominal->GetBinContent(i)>0.)binc = sigc/h_nominal->GetBinContent(i);
       else binc=sigc/1.8;
