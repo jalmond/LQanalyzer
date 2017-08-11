@@ -885,8 +885,6 @@ std::vector<KJet> SKTreeFiller::GetAllJets(){
     /// JEC and uncertainties
     jet.SetJetScaledDownEnergy(jets_shiftedEnDown->at(ijet));
     jet.SetJetScaledUpEnergy(jets_shiftedEnUp->at(ijet));
-    cout << "jets_smearedResUp->at(ijet) = " << jets_smearedResUp->at(ijet) << endl;
-    cout << jets_smearedResDown << endl;
     jet.SetJetSmearedDownEnergy(jets_smearedResDown->at(ijet));
     jet.SetJetSmearedUpEnergy(jets_smearedResUp->at(ijet));
     jet.SetJetSmearedEnergy(jets_smearedRes->at(ijet));
