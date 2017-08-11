@@ -116,7 +116,9 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 
 
   vector<snu::KMuon> muon = GetMuons(BaseSelection::MUON_HN_VETO);
+  vector<snu::KJet> jets = GetJets(BaseSelection::JET_HN);
   if(muon.size() ==0) return;
+  if(jets.size() ==0 ) return;
   cout << "AOD pt = " << muon[0].MiniAODPt() << endl;
   cout << "pt = " << muon[0].Pt() << endl;
   cout << "roch pt = " << muon[0].RochPt() << endl;
@@ -134,7 +136,12 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   cout << "MET JES- = " << CorrectedMETJES(BaseSelection::JET_HN,-1) << endl;
   cout << "MET JER+ = " << CorrectedMETJER(BaseSelection::JET_HN, 1) << endl;
   cout << "MET JER- = " << CorrectedMETJER(BaseSelection::JET_HN,-1) << endl;
+  cout << "PFMETShifted JER = " << eventbase->GetEvent().PFMETShifted(snu::KEvent::JetRes,snu::KEvent::up) << endl;
 
+
+  FillHist("MET" , eventbase->GetEvent().PFMET(), MCweight,  0. , 100.,100);
+  FillHist("METJER+" , CorrectedMETJER(BaseSelection::JET_HN, 1) , MCweight,  0. , 100.,100);
+  FillHist("METJER-" , CorrectedMETJER(BaseSelection::JET_HN, -1) , MCweight,  0. , 100.,100);
 
   return;
   ///// SIGNAL PLOTS

@@ -2086,10 +2086,14 @@ float AnalyzerCore::CorrectedMETJES(BaseSelection::ID jet_format, int sys){
       py_shifted += jetall.at(ij).Py()*jetall.at(ij).ScaledUpEnergy();
 
     }
-    if(sys==-1){
+    else if(sys==-1){
       px_shifted += jetall.at(ij).Px()*jetall.at(ij).ScaledDownEnergy();
       py_shifted += jetall.at(ij).Py()*jetall.at(ij).ScaledDownEnergy();
 
+    }
+    else{
+      px_shifted += jetall.at(ij).Px();
+      py_shifted += jetall.at(ij).Py();
     }
     
   }
@@ -2114,18 +2118,49 @@ float AnalyzerCore::CorrectedMETJER(BaseSelection::ID jet_format, int sys){
 
     px_orig+= jetall.at(ij).Px();
     py_orig+= jetall.at(ij).Py();
-    if(sys==1){
-      px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedUpEnergy();
-      py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedUpEnergy();
+    if(!isData){
+      if(sys==1){
+	if(jetall.at(ij).IsMCSmeared()){
+	  
+	  px_shifted += jetall.at(ij).Px() *(jetall.at(ij).SmearedUpEnergy()/ jetall.at(ij).SmearedEnergy());
+	  py_shifted += jetall.at(ij).Py() * (jetall.at(ij).SmearedUpEnergy()/ jetall.at(ij).SmearedEnergy());
+	}
+	else{
+	  px_shifted += jetall.at(ij).Px()* jetall.at(ij).SmearedUpEnergy();
+          py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedUpEnergy();
 
+	}
+      }
+      else if(sys==-1){
+	if(jetall.at(ij).IsMCSmeared()){
+
+	  px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedDownEnergy();
+	  py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedDownEnergy();
+	}
+	else{
+	  px_shifted += jetall.at(ij).Px()*(jetall.at(ij).SmearedDownEnergy()/ jetall.at(ij).SmearedEnergy());
+	  py_shifted += jetall.at(ij).Py()*(jetall.at(ij).SmearedDownEnergy()/ jetall.at(ij).SmearedEnergy());
+	}
+
+      }
+      else{
+	if(jetall.at(ij).IsMCSmeared()){
+	  px_shifted += jetall.at(ij).Px();
+	  py_shifted += jetall.at(ij).Py();
+	}
+	else{
+	  px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedEnergy();
+          py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedEnergy();
+
+	}
+      }
     }
-    if(sys==-1){
-      px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedDownEnergy();
-      py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedDownEnergy();
-
+    else{
+      px_shifted = px_orig;
+      py_shifted = py_orig;
     }
-
   }
+
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;
 
@@ -2152,9 +2187,13 @@ float AnalyzerCore::CorrectedMETElectron(BaseSelection::ID elid_formet, int sys)
       px_shifted += elall.at(iel).Px()*elall.at(iel).PtShiftedUp();
       py_shifted += elall.at(iel).Py()*elall.at(iel).PtShiftedUp();
     }
-    if(sys==-1){
+    else if(sys==-1){
       px_shifted += elall.at(iel).Px()*elall.at(iel).PtShiftedDown();
       py_shifted += elall.at(iel).Py()*elall.at(iel).PtShiftedDown();
+    }
+    else{
+      px_shifted += elall.at(iel).Px();
+      py_shifted += elall.at(iel).Py();
     }
 
 
@@ -2182,9 +2221,13 @@ float AnalyzerCore::CorrectedMETMuon(BaseSelection::ID muid_formet, int sys){
       px_shifted += muall.at(imu).Px()*muall.at(imu).PtShiftedUp();
       py_shifted += muall.at(imu).Py()*muall.at(imu).PtShiftedUp();
     }
-    if(sys==-1){
+    else if(sys==-1){
       px_shifted += muall.at(imu).Px()*muall.at(imu).PtShiftedDown();
       py_shifted += muall.at(imu).Py()*muall.at(imu).PtShiftedDown();
+    }
+    else{
+      px_shifted +=  muall.at(imu).Px();
+      py_shifted +=  muall.at(imu).Py();
     }
   }
   met_x = met_x + px_orig - px_shifted;
