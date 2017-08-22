@@ -3510,7 +3510,7 @@ std::vector<snu::KElectron> AnalyzerCore::ShiftElectronEnergy(std::vector<snu::K
   std::vector<snu::KElectron> aftershift;
   double shiftrate = -999.;
   if(beforeshift.size() == 1) shiftrate = (1-0.024);
-  if(beforeshift.size() == 2) shiftrate = (1-0.011);
+  if(beforeshift.size() == 2) shiftrate = (1-0.015);
   if(beforeshift.size() > 2) shiftrate = (-999.);
    
 
@@ -3521,7 +3521,7 @@ std::vector<snu::KElectron> AnalyzerCore::ShiftElectronEnergy(std::vector<snu::K
    return aftershift;
  }
 
-float AnalyzerCore::GetCFweight(std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID){
+float AnalyzerCore::GetCFweight(int syst, std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID){
 
   if(el_ID != "ELECTRON_HN_TIGHTv4") return 0.;
   if(electrons.size() > 2) return 0.;
@@ -3541,30 +3541,16 @@ float AnalyzerCore::GetCFweight(std::vector<snu::KElectron> electrons, bool appl
     CFweight.push_back( (CFrate.at(i)/(1-CFrate.at(i))) );
   }
 
-  int sys = 0;  // temporary
-
-  if(apply_sf){
-    if(sys == 0){//Z mass window 15 GeV (76 ~ 106 GeV) //Use This Value as central value
-      for(int i=0; i<lep.size(); i++){
-        if (fabs(lep.at(i).SCEta()) < 1.4442) sf.push_back( 0.759713941 );
-        else sf.push_back( 0.784052036 );
+  for(int i=0; i<lep.size(); i++){
+    if(apply_sf){
+      if(fabs(lep.at(i).SCEta()) < 1.4442){
+        sf.push_back(0.691722 + (syst*0.691722*0.13));
+      }
+      else{
+        sf.push_back(0.68301 + (syst*0.68301*0.09));
       }
     }
-    else if(sys == 1){//Z mass window 20 GeV
-      for(int i=0; i<lep.size(); i++){
-        if (fabs(lep.at(i).SCEta()) < 1.4442) sf.push_back( 0.723099195 );
-        else sf.push_back( 0.757193848 );
-      }
-    }
-    else if(sys == -1){//Z mass window 10 GeV
-      for(int i=0; i<lep.size(); i++){
-        if (fabs(lep.at(i).SCEta()) < 1.4442) sf.push_back( 0.75362822 );
-        else sf.push_back( 0.821682654 );
-      }
-    }
-  }
-  else{
-    for(int i=0; i<lep.size(); i++){
+    else{
       sf.push_back( 1 );
     }
   }
@@ -3586,42 +3572,18 @@ float AnalyzerCore::GetCFRates(double el_pt, double el_eta, TString el_ID){
   double invPt = 1./el_pt;
   double a = 999., b= 999.;
   if(el_eta < 0.9){
-    if(invPt< 0.023){
-      a=(-0.00138635);
-      b=(4.35054e-05);
-    }
-    else{
-      a=(0.00114356);
-      b=(-1.55941e-05);
-    }
+    if(invPt< 0.023){a=(-0.00138148); b=(4.33442e-05);}
+    else{a=(0.00101034); b=(-1.14551e-05);}
   }
   else if(el_eta < 1.4442){
-    if(invPt < 0.016){
-      a=(-0.0369937);
-      b=(0.000797434);
-    }
-    else if(invPt < 0.024){
-      a=(-0.0159017);
-      b=(0.00046038);
-    }
-    else{
-      a=(-0.00214657);
-      b=(0.000147245);
-    }
+    if(invPt< 0.015){a=(-0.042964); b=(0.000866971);}
+    else if(invPt< 0.023){a=(-0.0152852); b=(0.000452217);}
+    else{a=(-0.00154575); b=(0.000127211);}
   }
   else{
-    if(invPt< 0.012){
-      a=(-0.4293);
-      b=(0.00641511);
-    }
-    else if(invPt< 0.020){
-      a=(-0.104796);
-      b=(0.00256146);
-    }
-    else{
-      a=(-0.0161499);
-      b=(0.00076872);
-    }
+    if(invPt< 0.012){a=(-0.423831); b=(0.00636555);}
+    else if(invPt< 0.020){a=(-0.103982); b=(0.00254955);}
+    else{a=(-0.0160296); b=(0.000767227);}
   }
 
   double rate = (a)*invPt + (b);
