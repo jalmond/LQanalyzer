@@ -519,16 +519,16 @@ float AnalyzerCore::CorrectedMETJER(vector<snu::KJet> jetall, int sys){
     px_orig+= jetall.at(ij).Px();
     py_orig+= jetall.at(ij).Py();
     if(sys==1){
-      px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedResUp();
-      py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedResUp();
-
+      px_shifted += jetall.at(ij).Px()*(jetall.at(ij).SmearedResUp() / jetall.at(ij).SmearedRes()  );
+      py_shifted += jetall.at(ij).Py()*(jetall.at(ij).SmearedResUp() / jetall.at(ij).SmearedRes() );
+      
     }
     if(sys==-1){
-      px_shifted += jetall.at(ij).Px()*jetall.at(ij).SmearedResDown();
-      py_shifted += jetall.at(ij).Py()*jetall.at(ij).SmearedResDown();
-
+      px_shifted += jetall.at(ij).Px()*(jetall.at(ij).SmearedResDown()/jetall.at(ij).SmearedRes() );
+      py_shifted += jetall.at(ij).Py()*(jetall.at(ij).SmearedResDown()/jetall.at(ij).SmearedRes()) ;
+      
     }
-
+    
   }
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;

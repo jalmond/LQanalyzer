@@ -23,7 +23,7 @@ ClassImp (HNDiLepton);
  *
  */
 HNDiLepton::HNDiLepton() :  AnalyzerCore(),  out_electrons(0) {
-
+  
   mapcounter.clear();
 
   _mm_channel=false;
@@ -37,7 +37,6 @@ HNDiLepton::HNDiLepton() :  AnalyzerCore(),  out_electrons(0) {
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   //InitialiseAnalysis();
-
   
   
   k_met=0., k_met_st=0, k_mumumass=0., k_lljj_lowmass=0., k_l1jj_lowmass=0., k_l2jj_lowmass=0., k_llj_lowmass=0., k_jj_lowmass=0., k_lljj_highmass=0., k_l1jj_highmass=0., k_l2jj_highmass=0.,k_llj_highmass=0., k_jj_highmass=0.;
@@ -55,7 +54,7 @@ HNDiLepton::HNDiLepton() :  AnalyzerCore(),  out_electrons(0) {
   k_nbjet_m=0;
   k_nbjet_t=0;
   k_nfatjets=0;
-
+  
 }
 
 
@@ -72,6 +71,7 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
   if(  functionality == HNDiLepton::ANALYSIS){
     /// Initialise histograms
     MakeHistograms();  
+
     //
     // You can out put messages simply with Message function. Message( "comment", output_level)   output_level can be VERBOSE/INFO/DEBUG/WARNING 
     // You can also use m_logger << level << "comment" << int/double  << LQLogger::endmsg;
@@ -79,69 +79,69 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
     
     Message("Making clever hists for Z ->ll test code", INFO);
     
-     vector<TString> labels;
-     labels.push_back("");
-       
-     for(unsigned int il = 0; il < labels.size(); il++){
-       TString label = labels.at(il);
-       MakeCleverHistograms(sighist_mmm,label+"WZMuon");
-       MakeCleverHistograms(sighist_mmm,label+"ZZMuon1");
-       MakeCleverHistograms(sighist_mmm,label+"ZZMuon2");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_Preselection");
-       MakeCleverHistograms(sighist_mm, label+"SSPOGMM_Preselection");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_1Jet");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_1JetOpt");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiTJet");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_CR");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_LowMass");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_MidMass");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_HighMass");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_noB");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_FailnoB");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMET");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMETST");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passHT");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passDR");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passDR2");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMT");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passLJ");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passLTHT");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passmll");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passpt2");
-       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passpt2mll");
-       
-       MakeCleverHistograms(sighist_mm, label+"OSMM_Preselection");
-       MakeCleverHistograms(sighist_mm, label+"OSMM_1Jet");
-       MakeCleverHistograms(sighist_mm, label+"OSMM_DiJet");
-       MakeCleverHistograms(sighist_mm, label+"OSMM_CR");
-       MakeCleverHistograms(sighist_mm, label+"OSMM_LowMass");
-       MakeCleverHistograms(sighist_mm, label+"OSMM_MidMass");
-       MakeCleverHistograms(sighist_mm, label+"OSMM_HighMass");
-     }
-     
-     MakeCleverHistograms(sighist_mm, "TriggerTop");
-     MakeCleverHistograms(sighist_mm, "TriggerOSZMM");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerTop");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerOSMM");
-     MakeCleverHistograms(sighist_mm, "DiJetTriggerOSMM");
-     
-     MakeCleverHistograms(sighist_mm, "TriggerTop_p1");
-     MakeCleverHistograms(sighist_mm, "TriggerOSZMM_p1");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerTop_p1");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM_p1");
-     
-     MakeCleverHistograms(sighist_mm, "TriggerTop_p2");
-     MakeCleverHistograms(sighist_mm, "TriggerOSZMM_p2");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerTop_p2");
-     MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM_p2");
-     
-     
-     MakeCleverHistograms(sighist_mm, "OSZMM");
-     
-   }
-   return;
+    vector<TString> labels;
+    labels.push_back("");
+    
+    for(unsigned int il = 0; il < labels.size(); il++){
+      TString label = labels.at(il);
+      MakeCleverHistograms(sighist_mmm,label+"WZMuon");
+      MakeCleverHistograms(sighist_mmm,label+"ZZMuon1");
+      MakeCleverHistograms(sighist_mmm,label+"ZZMuon2");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_Preselection");
+      MakeCleverHistograms(sighist_mm, label+"SSPOGMM_Preselection");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_1Jet");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_1JetOpt");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiTJet");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_CR");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_LowMass");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_MidMass");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_HighMass");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_noB");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_FailnoB");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMET");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMETST");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passHT");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passDR");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passDR2");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passMT");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passLJ");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passLTHT");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passmll");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passpt2");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_passpt2mll");
+      
+      MakeCleverHistograms(sighist_mm, label+"OSMM_Preselection");
+      MakeCleverHistograms(sighist_mm, label+"OSMM_1Jet");
+      MakeCleverHistograms(sighist_mm, label+"OSMM_DiJet");
+      MakeCleverHistograms(sighist_mm, label+"OSMM_CR");
+      MakeCleverHistograms(sighist_mm, label+"OSMM_LowMass");
+      MakeCleverHistograms(sighist_mm, label+"OSMM_MidMass");
+      MakeCleverHistograms(sighist_mm, label+"OSMM_HighMass");
+    }
+    
+    MakeCleverHistograms(sighist_mm, "TriggerTop");
+    MakeCleverHistograms(sighist_mm, "TriggerOSZMM");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerTop");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerOSMM");
+    MakeCleverHistograms(sighist_mm, "DiJetTriggerOSMM");
+    
+    MakeCleverHistograms(sighist_mm, "TriggerTop_p1");
+    MakeCleverHistograms(sighist_mm, "TriggerOSZMM_p1");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerTop_p1");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM_p1");
+    
+    MakeCleverHistograms(sighist_mm, "TriggerTop_p2");
+    MakeCleverHistograms(sighist_mm, "TriggerOSZMM_p2");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerTop_p2");
+    MakeCleverHistograms(sighist_mm, "DiMuTriggerOSZMM_p2");
+    
+    MakeCleverHistograms(sighist_mm, "OSZMM");
+    
+  }
+  
+  return;
 }
 
 void HNDiLepton::DoCutFlow(float w){

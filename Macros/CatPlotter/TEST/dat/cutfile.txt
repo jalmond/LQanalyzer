@@ -1,2 +1,2 @@
-SSMM_DiJet_passMT
+SSMM_1Jet
 END
