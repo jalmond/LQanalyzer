@@ -1277,6 +1277,10 @@ while not JobSuccess:
                             num = entries[7]
                             s = num.replace("/", " ")
                             event_split = s.split()
+                            if len(event_split) < 2:
+                                print "Error [2002] " + event_split 
+                                print line
+                                os.system("cp " + local_sub_dir + '/outlog.txt ~/error_log_'+str(array_batchjobs[i-1]))
                             nevent_processed_i = float(event_split[0])
                             nevents_total_i= float(event_split[1])
             nevent_processed+=nevent_processed_i                

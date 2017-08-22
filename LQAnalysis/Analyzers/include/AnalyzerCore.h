@@ -181,7 +181,7 @@ class AnalyzerCore : public LQCycleBase {
 
   bool OppositeCharge(std::vector<snu::KElectron> electrons, std::vector<snu::KMuon> muons);  
   std::vector<snu::KElectron> ShiftElectronEnergy(std::vector<snu::KElectron> beforeshift, TString el_ID, bool applyshift);
-  float GetCFweight(std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID);
+  float GetCFweight(int syst, std::vector<snu::KElectron> electrons, bool apply_sf, TString el_ID);
   float GetCFRates(double el_pt, double el_eta, TString el_ID);
 
   float CorrectedMETRochester(std::vector<snu::KMuon> muons , bool updatemet);
