@@ -220,6 +220,7 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
   IDs.push_back("ELECTRON_HN_EFF_dxysig");
   IDs.push_back("ELECTRON_HN_EFF_iso");
   IDs.push_back("ELECTRON_HN_EFF_gentmva");
+  IDs.push_back("ELECTRON_HN_TIGHT");
   IDs.push_back("ELECTRON_HN_TIGHTv4");
 
   bool _diel =   isData ?  (k_channel.Contains("DoubleEG")) : true ;
@@ -283,6 +284,26 @@ void HNDiElectron::ExecuteEvents()throw( LQError ){
 	    if(jets.size() > 1) FillEventCutFlow(itrig, "DiJet", weight);
 	    if((jets.size() + fatjets.size()) > 1 )  FillEventCutFlow(itrig, "NewDiJet", weight);
 	  }
+	}
+	else if(electrons_eff.size()==2){
+	  TString dataset="";
+
+          if(itrig==0 && !_diel) continue;
+          if(itrig==1 && !_singleel) continue;
+          if(itrig==0){
+            dataset="DoubleEG";
+            if(!PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) continue;
+            if(electrons_eff[0].Pt() < 25 || electrons_eff[1].Pt() < 15) continue;
+          }
+          if(itrig==1){
+            dataset="SingleElectron";
+            if(PassTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")) continue;
+            if(!PassTrigger("HLT_Ele27_WPTight_Gsf_v"))  continue;
+            if(electrons_eff[0].Pt() < 30 || electrons_eff[1].Pt() < 10) continue;
+          }
+
+          FillCLHist(sighist_ee, dataset+"OS"+elid, eventbase->GetEvent(), muons_veto, electrons_eff,jets, alljets,weight);
+	  
 	}
 	
 	if(IDs[iid] == "ELECTRON_HN_TIGHT"){

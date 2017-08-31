@@ -13,7 +13,8 @@ class HNDiLepton : public AnalyzerCore {
   enum FUNC {
     VALIDATION=0,
     ANALYSIS=1, 
-    OPT=2
+    OPT=2,
+    CUTFLOW=3
   };
 
   /// Functions from core
@@ -68,6 +69,39 @@ class HNDiLepton : public AnalyzerCore {
   FUNC functionality ;
   bool _ee_channel;
   bool _mm_channel;
+
+
+  float k_met;
+  float k_met_st;
+  float k_mumumass;
+  float k_lljj_lowmass;
+  float k_l1jj_lowmass;
+  float k_l2jj_lowmass;
+  float k_llj_lowmass;
+  float k_jj_lowmass;
+  float k_lljj_highmass;
+  float k_l1jj_highmass;
+  float k_l2jj_highmass;
+  float k_llj_highmass;
+  float k_jj_highmass;
+  float k_st;
+  float k_ht;
+  float k_weight;
+  float k_mu1pt;
+  float k_mu2pt;
+  float k_j1pt;
+  float k_contramass_lowmass;
+  float k_contramass_highmass;
+  float k_lldr ;
+  float k_minljdR;
+  float k_awayjetminDR;
+  float k_mindRjj;
+  int k_njets;
+  int k_nfatjets;
+  int k_nbjet_l;
+  int k_nbjet_m;
+  int k_nbjet_t;
+
 
   std::map<TString, float> mapcounter;
   
