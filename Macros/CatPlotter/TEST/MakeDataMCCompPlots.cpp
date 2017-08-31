@@ -184,7 +184,7 @@ hsig0->SetLineWidth(3.);
 hsig0->GetXaxis()->SetRangeUser(xmin,xmax); 
 hsig0->GetYaxis()->SetRangeUser(ymin,ymax); 
 hsig.push_back(hsig0);
-TFile* file_sig1 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_40_cat_v8-0-7.root")); 
+TFile* file_sig1 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_60_cat_v8-0-7.root")); 
 TH1* hsig1 = dynamic_cast<TH1*> ((file_sig1->Get(name.c_str()))->Clone()); 
 hsig1->Rebin(rebin); 
 hsig1->Scale(0.05); 
@@ -663,6 +663,8 @@ if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("Doub
     list.push_back(make_pair("WpWpQCD",0.15));
     list.push_back(make_pair("WpWpEWK",0.15));
     list.push_back(make_pair("ww_ds",0.15));
+    list.push_back(make_pair("ZGto2LG",0.15));
+    list.push_back(make_pair("WGtoLNuG",0.15));
 }if(sample.Contains("top")){    list.push_back(make_pair("ttZToLL_M-10",0.2));
     list.push_back(make_pair("tZq",0.2));
     list.push_back(make_pair("TTG",0.2));
@@ -1415,11 +1417,6 @@ TCanvas* CompDataMC(TH1* hdata,  vector<TH1*> hsigs ,vector<THStack*> mcstack,TH
  
   showdata=true;
 
-hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));;
-hdata->GetXaxis()->SetRangeUser(xmin, xmax);;
-hdata->GetYaxis()->SetRangeUser(ymin, ymax);;
-SetTitles(hdata, hname);
-showdata=false;
 
   //hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));
 
