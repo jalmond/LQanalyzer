@@ -2549,6 +2549,56 @@ void AnalyzerCore::TruthPrintOut(){
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
 
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;                                                                                                                                                                              
+    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size())){
+      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  ---  |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()	   << " |  --- |" << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+
+    }
+    else{
+      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+    }
+  }
+
+}
+
+void AnalyzerCore::TruthPrintOut(snu::KMuon muon){
+  if(isData) return;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+
+
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;                                                                                                                                                                              
+    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
+    double dr = sqrt( pow(fabs(  muon.Eta() - eventbase->GetTruth().at(ig).Eta()),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( muon.Phi() - eventbase->GetTruth().at(ig).Phi())),2.0));											
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size())){
+
+      
+      if(dr < 0.4)  cout << "MATCHE TO MUON: " << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  ---  |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()	   << " |  --- |" << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+      else cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  ---  |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()	   << " |  --- |" << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl; 
+      
+    }
+    else{
+      if(dr < 0.4)  cout << "MATCHE TO MUON: " << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+      else cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+    }
+  }
+}
+
+void AnalyzerCore::TruthPrintOut(snu::KElectron electron){
+  if(isData) return;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+
+
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
     if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size())){

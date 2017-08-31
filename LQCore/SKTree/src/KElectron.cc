@@ -416,9 +416,17 @@ Bool_t KElectron::PassTrigMVAHNLoose() const{
   //==== ELECTRON_HN_FAKELOOSEv2
   //==== Iso 0.4 Opti, but Ghent pt binning
   //==== Based on light-haevy min diff
-  if((fabs(this->SCEta()) < 0.8) && k_mva > 0.50) return true; // 0.2 is the optmized one, but let's try 0.50
-  if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > 0.13) return true;
-  if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > 0.64) return true;
+  //if((fabs(this->SCEta()) < 0.8) && k_mva > 0.) return true; // 0.2 is the optmized one, but let's try 0.50
+  //if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > 0.13) return true;
+  //if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > 0.64) return true;
+
+
+  //==== ELECTRON_HN_FAKELOOSEv1 opti
+  //==== Iso 0.6 Opti
+  //==== Based on light-haevy min diff
+  if((fabs(this->SCEta()) < 0.8) && k_mva > -0.35) return true;
+  if((fabs(this->SCEta())  > 0.8) &&(fabs(this->SCEta())  < 1.479)  && k_mva > -0.36) return true;
+  if((fabs(this->SCEta())  < 2.5) &&(fabs(this->SCEta())  > 1.479) && k_mva > 0.37) return true;
 
   return false;
 }
@@ -430,8 +438,6 @@ Bool_t KElectron::PassTrigMVAGENTLoose() const{
 
   return false;
 }
-
-
 
 
 float KElectron::ScaleFactor(const std::string& name, int sign) const {
