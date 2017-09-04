@@ -98,6 +98,9 @@ class AnalyzerCore : public LQCycleBase {
   void  SetupID();
   void  SetupDDBkg();
 
+  bool ConfigureFakeHists(TString path, std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > > fake_hists);
+  void ConfigureFake();
+
   bool IsDiEl();
 
   bool  Check(float val);
@@ -238,6 +241,11 @@ class AnalyzerCore : public LQCycleBase {
   bool k_usetruth;
   bool k_usephotons;
   bool k_usefatjet;
+  bool configure_fakes;
+
+  TString fake_path;
+  bool fake_configured;
+  bool self_configured;
 
   TDirectory *Dir;
   map<TString, TH1*> maphist;
@@ -266,6 +274,8 @@ class AnalyzerCore : public LQCycleBase {
   map<int, float> mapLumiPerBlock2016;
   map<int, TString> mapLumiNamePerBlock2016;
   map<TString,float> trigger_lumi_map_cat2016;
+
+  map<TString, pair<pair<TString,TString>, pair<float,TString> >  > fake_hists;
 
   std::vector<TString> cutflow_list;
 

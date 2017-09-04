@@ -37,6 +37,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   k_usephotons=true;
   k_usefatjet=true;
 
+  fake_path="";
+  fake_configured=true;
+  self_configured=false;
+
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
   triggerlist.clear();
@@ -2020,12 +2024,40 @@ void AnalyzerCore::SetupID(){
 
 }
 
+void AnalyzerCore::ConfigureFake(){
+  
+  /// switch
+  self_configured=true;
+  fake_configured = false;
+}
+
+
+bool AnalyzerCore::ConfigureFakeHists(TString path, std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > > fake_hists){
+
+  if(!k_running_nonprompt) return false;
+  if(fake_configured) return false;
+
+  fake_configured=true;
+  fake_path=path;
+
+  bool setupok= m_datadriven_bkg->SetupFake(path, fake_hists);
+  if(setupok) return true;
+  else{
+    cerr << "Trying to configure fakes using ConfigureFakeHists, but fake code is already setup" << endl;
+    exit(EXIT_FAILURE);
+
+  }
+  return true;
+}
+
+
 void AnalyzerCore::SetupDDBkg(){
-  if(k_running_nonprompt || k_running_chargeflip)m_datadriven_bkg = new DataDrivenBackgrounds();
+
+  if(k_running_nonprompt || k_running_chargeflip)m_datadriven_bkg = new DataDrivenBackgrounds(self_configured);
+
   setupDDBkg=true;
   
   /// setup correction class at teh same time
-  
   /// not needed for sktreemaker
   // save time as code does not need to setup and save files
   
@@ -2105,9 +2137,9 @@ void AnalyzerCore::SetupDDBkg(){
 
 void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
   
-
   if(!IDSetup)   SetupID();
   if(!setupDDBkg)SetupDDBkg();
+  if(fake_configured &&!self_configured){m_datadriven_bkg->SetupFake();self_configured=true; }
 
 
 
@@ -2216,6 +2248,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   }
   
   
+
 }
 
 
@@ -2625,6 +2658,11 @@ bool AnalyzerCore::isPrompt(long pdgid) {
 
 void AnalyzerCore::EndEvent()throw( LQError ){
   
+  if(self_configured && !fake_configured) {
+    cerr << "Setting up own fake files but no hists given" << endl;
+    exit(EXIT_FAILURE);
+  }
+
   delete eventbase;                                                                                                            
 
 }

@@ -104,7 +104,7 @@ class HNDiLepton : public AnalyzerCore {
 
 
   std::map<TString, float> mapcounter;
-  
+  map<TString, pair<pair<TString,TString>, pair<float,TString> >  > fake_hists;
   //
   // The output variables 
   //

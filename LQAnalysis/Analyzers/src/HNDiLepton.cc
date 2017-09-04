@@ -10,6 +10,7 @@
 /// Local includes
 #include "HNDiLepton.h"
 
+
 //Core includes
 #include "EventBase.h"                                                                                                                           
 #include "BaseSelection.h"
@@ -30,6 +31,8 @@ HNDiLepton::HNDiLepton() :  AnalyzerCore(),  out_electrons(0) {
   _ee_channel=false;
 
 
+  configure_fakes=true;
+
   // To have the correct name in the log:                                                                                                                            
   SetLogName("HNDiLepton");
 
@@ -37,23 +40,6 @@ HNDiLepton::HNDiLepton() :  AnalyzerCore(),  out_electrons(0) {
   //
   // This function sets up Root files and histograms Needed in ExecuteEvents
   //InitialiseAnalysis();
-  
-  
-  k_met=0., k_met_st=0, k_mumumass=0., k_lljj_lowmass=0., k_l1jj_lowmass=0., k_l2jj_lowmass=0., k_llj_lowmass=0., k_jj_lowmass=0., k_lljj_highmass=0., k_l1jj_highmass=0., k_l2jj_highmass=0.,k_llj_highmass=0., k_jj_highmass=0.;
-  k_st=0., k_ht=0.;
-  k_weight=0.;
-  k_mu1pt=0., k_mu2pt=0., k_j1pt=0.;
-  k_contramass_lowmass=0., k_contramass_highmass=0.;
-  k_lldr =0.;
-  k_minljdR=0.;
-  k_awayjetminDR=0.;
-  k_mindRjj=0.;
-  k_weight=0.;
-  k_njets=0;
-  k_nbjet_l=0;
-  k_nbjet_m=0;
-  k_nbjet_t=0;
-  k_nfatjets=0;
   
 }
 
@@ -225,6 +211,20 @@ void HNDiLepton::DoCutFlow(float w){
 
 void HNDiLepton::ExecuteEvents()throw( LQError ){
   
+  while(!fake_configured){
+    /// SET UP OWN FAKES HISTS --> KEY ////                                                                                                                                                                                                                                    
+    std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > >fake_hists;
+    /// ONLY double (TH2D*) are configured at the minute
+    fake_hists["fr_muon_central"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet40"), std::make_pair(70., "TH2D"));
+    fake_hists["fr_muon_awayjet20"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet20"), std::make_pair(70., "TH2D"));
+    fake_hists["fr_muon_awayjet30"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet30"), std::make_pair(70., "TH2D"));
+    fake_hists["fr_muon_awayjet60"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet60"), std::make_pair(70., "TH2D"));
+    fake_hists["fr_electron_central"] = std::make_pair(std::make_pair("Electron_Data_v7_FR.root","Electron_Data_v7_FR_Awayjet40") , std::make_pair(70., "TH2D"));
+    /// END SET UP OWN FAKE HISTS ////                                                                                                                                                                                                                                           
+    ConfigureFakeHists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Fake/DiLep/", fake_hists);
+  }
+
+
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
   m_logger << DEBUG << "isData = " << isData << LQLogger::endmsg;
@@ -239,26 +239,6 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     if(k_flags[0] == "CutFlow")  functionality = HNDiLepton::CUTFLOW;
     else if(k_flags[0] == "OPT")  functionality = HNDiLepton::OPT;
     else functionality = HNDiLepton::ANALYSIS;
-  }
-
-    
-  if(functionality==HNDiLepton::OPT){
-    k_met=0., k_met_st=0, k_mumumass=0., k_lljj_lowmass=0., k_l1jj_lowmass=0., k_l2jj_lowmass=0., k_llj_lowmass=0., k_jj_lowmass=0., k_lljj_highmass=0., k_l1jj_highmass=0., k_l2jj_highmass=0.,k_llj_highmass=0., k_jj_highmass=0.;
-    k_st=0., k_ht=0.;
-    k_weight=0.;
-    k_mu1pt=0., k_mu2pt=0., k_j1pt=0.;
-    k_contramass_lowmass=0., k_contramass_highmass=0.;
-    k_lldr =0.;
-    k_minljdR=0.;
-    k_awayjetminDR=0.;
-    k_mindRjj=0.;
-    k_weight=0.;
-    k_njets=0;
-    k_nbjet_l=0;
-    k_nbjet_m=0;
-    k_nbjet_t=0;
-    k_nfatjets=0;
-
   }
 
   
@@ -352,6 +332,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     bool closejet2=false;
     float mindR=9999.;
     for(unsigned int im=0; im <muons_test.size(); im++){
+
       for(unsigned int ij2=0; ij2 <jets.size(); ij2++){
 	if(muons_test.at(im).DeltaR(jets.at(ij2)) <  0.5) closejet=true;
 	if(muons_test.at(im).DeltaR(jets.at(ij2)) <  mindR){
@@ -405,7 +386,6 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     k_jj_highmass=GetMasses("jj", muons_test, jets, ijets,false) ;
     k_contramass_highmass=GetMasses("contMT", muons_test, jets,ijets, false) ;
 
-
     
     k_st=ST;
     k_met_st= pow(eventbase->GetEvent().PFMET(),2)/ ST;
@@ -427,7 +407,10 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
 
   if(functionality==HNDiLepton::ANALYSIS){
-
+  
+    //
+    //cout << "PT cone " << muons_test[0].PTCone(0.4,eventbase->GetMuonSel()->IsoCutValue(muons_test[0],"MUON_HN_TIGHT")) << " " << muons_test.at(0).Pt()*(1+max(0.,(muons_test.at(0).RelIso04()-0.07))) << endl;
+																				      
     
     FillEventCutFlow(0,"NoCut",weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi) );
     FillEventCutFlow(4,"NoCut",weight*WeightByTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", TargetLumi) );
@@ -550,14 +533,11 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
 
 		if(k_running_nonprompt){
-		  float iso1=0.07;
-		  float iso2=0.07;
-		  TString tag1 = "Tight0.07_0.005_3_0.04";
-		  TString tag2 = "Tight0.07_0.005_3_0.04";
-
-		  bool cb_1=false;
-		  bool cb_2=false;
-		  weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, PassID(muons_test[0],"MUON_HN_TIGHT"), PassID(muons_test[1],"MUON_HN_TIGHT"), tag1, tag2,  cb_1, cb_2,"ptcorr_eta", iso1,iso2,false, false);
+		  weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",0);
+		  cout << "RF +FF = " << m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central")<<endl;
+		  cout << "RF +FF = " << m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",0)<<endl;
+		  cout << "RF  = " << m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",1)<<endl;
+		  cout << "FF = " << m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",2)<<endl;
 
 		}
 
@@ -1251,16 +1231,14 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
       if(k_running_nonprompt){
 	float iso1=0.07;
 	float iso2=0.07;
-	if(fabs(hn_tight[0].Eta()) > 1.5)iso1=0.06;
-	if(fabs(hn_tight[1].Eta()) > 1.5)iso2=0.06;
 	
 	TString tag1 = "Tight0.07_0.005_3_0.04";
 	TString tag2 = "Tight0.07_0.005_3_0.04";
 	
 	bool cb_1=false;
 	bool cb_2=false;
-	w     = m_datadriven_bkg->Get_DataDrivenWeight(false,hn_tight, "MUON_HN_TIGHT", hn_tight.size(), electrons_veto,"", 0, "", "");
-	
+	w =m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_tight, "MUON_HN_TIGHT", "ptcone", "fr_muon_central");
+
       }
       if(!(muons_veto.size() > 3 ||  electrons_veto.size() > 0)){
 	snu::KParticle Z1 = hn_tight[0] + hn_tight[1];
@@ -1335,7 +1313,8 @@ void HNDiLepton::MakeControlPlotsMM(int method, TString methodtag, float w)throw
       
       bool cb_1=false;
       bool cb_2=false;
-      w     = m_datadriven_bkg->Get_DataDrivenWeight(false,hn_tight, "MUON_HN_TIGHT", hn_tight.size(), electrons_veto,"", 0, "", "");
+      w =m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_muonZZ, "MUON_HN_TIGHT", "ptcone", "fr_muon_central");
+
 
 						  
     }
@@ -1808,48 +1787,20 @@ void HNDiLepton::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
   
-  InitialiseAnalysis();
 
-  //
+  InitialiseAnalysis();
+  
+  /// If ConfigureFake is used then no fake histograms are setup in HNCommonFake code so you MUST setup in your anlayis code if you wish to use this code
+
+  if(configure_fakes)ConfigureFake();
+
+
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
   //DeclareVariable(obj, label, treename );
   //DeclareVariable(obj, label ); //-> will use default treename: LQTree
   //  DeclareVariable(out_electrons, "Signal_Electrons", "LQTree");
   //  DeclareVariable(out_muons, "Signal_Muons");
-  
-  if(functionality==HNDiLepton::OPT){
-    DeclareVariable(k_met , "k_met");
-    DeclareVariable(k_met_st,"k_met_st");
-    DeclareVariable(k_mumumass,"k_mumumass");
-    DeclareVariable(k_lljj_lowmass,"k_lljj_lowmass");
-    DeclareVariable(k_l1jj_lowmass,"k_l1jj_lowmass");
-    DeclareVariable(k_l2jj_lowmass,"k_l2jj_lowmass");
-    DeclareVariable(k_llj_lowmass,"k_llj_lowmass");
-    DeclareVariable(k_jj_lowmass,"k_jj_lowmass");
-    DeclareVariable(k_lljj_highmass,"k_lljj_highmass"); 
-    DeclareVariable(k_l1jj_highmass,"k_l1jj_highmass");
-    DeclareVariable(k_l2jj_highmass,"k_l2jj_highmass");
-    DeclareVariable(k_llj_highmass,"k_llj_highmass");
-    DeclareVariable(k_jj_highmass,"k_jj_highmass");
-    DeclareVariable(k_st,"k_st");
-    DeclareVariable(k_ht,"k_ht");;
-    DeclareVariable(k_weight,"k_weight");
-    DeclareVariable(k_mu1pt,"k_mu1pt"); 
-    DeclareVariable(k_mu2pt,"k_mu2pt");
-    DeclareVariable(k_j1pt,"k_j1pt");
-    DeclareVariable(k_contramass_lowmass,"k_contramass_lowmass");
-    DeclareVariable(k_contramass_highmass,"k_contramass_highmass");;
-    DeclareVariable(k_lldr ,"k_lldr");
-    DeclareVariable(k_minljdR,"k_minljdR");
-    DeclareVariable(k_awayjetminDR,"k_awayjetminDR");
-    DeclareVariable(k_mindRjj,"k_mindRjj");
-    DeclareVariable(k_njets,"k_njets");
-    DeclareVariable(k_nbjet_l,"k_nbjet_l");
-    DeclareVariable(k_nbjet_m,"k_nbjet_m");
-    DeclareVariable(k_nbjet_t,"k_nbjet_t");
-    DeclareVariable(k_nfatjets,"k_nfatjets");
-  }
   
   return;
   
