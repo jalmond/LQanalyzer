@@ -210,16 +210,19 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
     //==== Data
     TH2F* tmp_Data =  dynamic_cast<TH2F*> (( infile_sf->Get((histsname+"_Data").c_str()))->Clone());
     CorrectionMap[label+"_Data"] = tmp_Data;
-    cout << "CorrectionMap["<<label+"_Data" <<"] = " << histsname+"_Data" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+    cout << "CorrectionMap["<<label+"_Data" <<"] = "<< endl;
+    cout << histsname+"_Data" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
     //==== MC
     TH2F* tmp_MC =  dynamic_cast<TH2F*> (( infile_sf->Get((histsname+"_MC").c_str()))->Clone());
     CorrectionMap[label+"_MC"] = tmp_MC;
-    cout << "CorrectionMap["<<label+"_MC" <<"] = " << histsname+"_MC" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+    cout << "CorrectionMap["<<label+"_MC" <<"] = " << endl;
+    cout << histsname+"_MC" << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
   }
   else{
     TH2F* tmp =  dynamic_cast<TH2F*> (( infile_sf->Get(histsname.c_str()))->Clone());
     CorrectionMap[label] = tmp;
-    cout << "CorrectionMap["<<label <<"] = " << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
+    cout << "CorrectionMap["<<label <<"] = " << endl;
+    cout << histsname << " (from " << getenv(dirname.c_str())<< "/" << filename<<")" << endl;
   }
   infile_sf->Close();
   delete infile_sf;

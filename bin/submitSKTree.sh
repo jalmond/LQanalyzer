@@ -1656,7 +1656,6 @@ if [[ $runDATA  == "true" ]];
           tagger=$RANDOM
       fi
       
-
       
       ### set all inputs to default in functions.sh
       source functions.sh

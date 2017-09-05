@@ -89,6 +89,9 @@ class AnalyzerCore : public LQCycleBase {
   float GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
 
 
+  float MC_CR_Correction(TString ID);
+  float GetTriggerPrescaleCorrection(TString triggername);
+
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
   Int_t GetDataPeriod();  
@@ -128,7 +131,8 @@ class AnalyzerCore : public LQCycleBase {
 
   vector<TString >  GetHNDiLepElTriggers();
 
-  bool CheckEventComparison(TString user, TString label);
+  bool CheckEventComparison(TString user, TString label, TString user2, TString label2, bool switchorder);
+  map<int, int> CheckEventComparisonList(TString user, TString label, TString user2, TString label2);
   void FillEventComparisonFile(TString label);
   void FillCutFlow(TString cut, float weight);
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
@@ -252,7 +256,8 @@ class AnalyzerCore : public LQCycleBase {
   map<TString, TH2*> maphist2D;
   map<TString, TH3*> maphist3D;
   map<TString, TNtupleD*> mapntp;
-  map<int,int> compmap;
+  map<int, int> compmap;
+  map<int, int> compmap2;
 
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 
@@ -316,6 +321,7 @@ class AnalyzerCore : public LQCycleBase {
   int a_mcperiod;
   bool IDSetup;
   bool setupDDBkg;
+  bool comp_file_firstev;
 
   std::vector<TString> triggerlist;
 

@@ -28,7 +28,6 @@ webpage https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationR
 ### Charged Higgs(H+>WA) ID (Loose WP MVA defined else where)
 | ELECTRON_HctoWA_TIGHT         | 10.   | 2.5      |  0.06      | 0.06       | false         | false        |  false       | false       | 0.025      | 0.025      | 0.05      | 0.05      | false       | true     | 999.        | 4.          | false      |    false     | true          | false          | false          | false       |
 | ELECTRON_HctoWA_LOOSE         | 10.   | 2.5      |  0.4       | 0.4        | false         | false        |  false       | false       | 0.025      | 0.025      | 0.05      | 0.05      | false       | true     | 999.        | 4.          | false      |    false     | false         | false          | false          | false       |
-=======
 ### GENERIC ID
 | ELECTRON_PTETA                | 5.     | 2.5     |  1000.     | 1000.      | false         | false        |  false       | false       | 10000.     | 10000.     | 1000.     | 1000.     | false       | true     | 999.        | 999.        | false      |    false     | false         | false          | false          | false       |
 | ELECTRON_NOCUT                | 10.    | 5.      |  1000.     | 1000.      | false         | false        |  false       | false       | 10000.     | 10000.     | 1000.     | 1000.     | false       | true     | 999.        | 999.        | false      |    false     | false         | false          | false          | false       |

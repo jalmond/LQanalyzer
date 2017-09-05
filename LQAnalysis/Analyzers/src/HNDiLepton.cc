@@ -211,19 +211,22 @@ void HNDiLepton::DoCutFlow(float w){
 
 void HNDiLepton::ExecuteEvents()throw( LQError ){
   
-  while(!fake_configured){
-    /// SET UP OWN FAKES HISTS --> KEY ////                                                                                                                                                                                                                                    
-    std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > >fake_hists;
-    /// ONLY double (TH2D*) are configured at the minute
-    fake_hists["fr_muon_central"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet40"), std::make_pair(70., "TH2D"));
-    fake_hists["fr_muon_awayjet20"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet20"), std::make_pair(70., "TH2D"));
-    fake_hists["fr_muon_awayjet30"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet30"), std::make_pair(70., "TH2D"));
-    fake_hists["fr_muon_awayjet60"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet60"), std::make_pair(70., "TH2D"));
-    fake_hists["fr_electron_central"] = std::make_pair(std::make_pair("Electron_Data_v7_FR.root","Electron_Data_v7_FR_Awayjet40") , std::make_pair(70., "TH2D"));
-    /// END SET UP OWN FAKE HISTS ////                                                                                                                                                                                                                                           
-    ConfigureFakeHists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Fake/DiLep/", fake_hists);
-  }
 
+
+  if(k_running_nonprompt){
+    while(!fake_configured){
+      /// SET UP OWN FAKES HISTS --> KEY ////                                                                                                                                                                                                                                    
+      std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > >fake_hists;
+      /// ONLY double (TH2D*) are configured at the minute
+      fake_hists["fr_muon_central"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet40"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_awayjet20"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet20"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_awayjet30"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet30"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_awayjet60"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet60"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_electron_central"] = std::make_pair(std::make_pair("Electron_Data_v7_FR.root","Electron_Data_v7_FR_Awayjet40") , std::make_pair(70., "TH2D"));
+      /// END SET UP OWN FAKE HISTS ////                                                                                                                                                                                                                                           
+      ConfigureFakeHists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Fake/DiLep/", fake_hists);
+    }
+  }
 
 
   m_logger << DEBUG << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
@@ -306,6 +309,8 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     if(electrons_veto.size()>0) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
     if(eventbase->GetEvent().PFMET() > 80) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
     
+
+
 
     /// define event variables                                                                                                                                                                                                                              
     snu::KParticle mm = muons_test[0] + muons_test[1];
@@ -513,15 +518,18 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 	
 	//// weight is now corrected for trigger and ID
 	
+	if(CheckEventComparison("jalmond","test19581_periodB_SKDoubleMuon_dilep_cat_v8-0-7_HNDiLepton","jalmond", "test19581_periodB_SKDoubleMuon_dilep_cat_v8-0-7_HNDiLepton2",false)){
+	  cout << "TEST" << endl;
+	}
 
 	if(SameCharge(muons_test)){
-
 	  
 	  FillEventCutFlow(4,"SSMMLoose",weight);
 	  
 	  if((muons_test[0] + muons_test[1]).M()  > 10.) {
+	    
 	    FillEventCutFlow(4,"MLL",weight);
-
+	    
 	    if((muons_test[0].DeltaR(muons_test[1])) > 0.4){
 	      FillEventCutFlow(4,"mmdR",weight);
 
@@ -531,7 +539,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 		//if((hn04jets.size() + fatjetcoll.size()) < 2) return;                                                                                                                                                                                                               
 		FillEventCutFlow(4,"LepVeto",weight);
 
-
+		FillEventComparisonFile("test");
 		if(k_running_nonprompt){
 		  weight=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",0);
 		  cout << "RF +FF = " << m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons_test, "MUON_HN_TIGHT", "ptcone", "fr_muon_central")<<endl;
@@ -1793,7 +1801,7 @@ void HNDiLepton::BeginCycle() throw( LQError ){
   /// If ConfigureFake is used then no fake histograms are setup in HNCommonFake code so you MUST setup in your anlayis code if you wish to use this code
 
   if(configure_fakes)ConfigureFake();
-
+  
 
   //If you wish to output variables to output file use DeclareVariable
   // clear these variables in ::ClearOutputVectors function
