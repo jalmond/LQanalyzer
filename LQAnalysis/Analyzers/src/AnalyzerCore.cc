@@ -3453,30 +3453,57 @@ void AnalyzerCore::WriteHists(){
 
   for(map<TString, TH1*>::iterator mapit = maphist.begin(); mapit != maphist.end(); mapit++){
     
-    
-    
-    if(mapit->first.Contains("closejet")){
-      if(!m_outputFile->GetDirectory( "closejet" )){
-	Dir = m_outputFile->mkdir("closejet");
-	m_outputFile->cd( Dir->GetName() );
+    if(mapit->first.Contains("cutflow")){
+      mapit->second->Write();
+    }
+    else{
+      TDirectory *dir = m_outputFile->GetDirectory("Hists");
+   
+      if (dir) {
+	m_outputFile->cd("Hists");
+	mapit->second->Write();
+	m_outputFile->cd();
       }
-      else  m_outputFile->cd("closejet");
+      else{
+	Dir = m_outputFile->mkdir("Hists");
+	m_outputFile->cd( Dir->GetName() );
+	mapit->second->Write();
+	m_outputFile->cd();
+      }
+    }
+  }
+  for(map<TString, TH2*>::iterator mapit = maphist2D.begin(); mapit != maphist2D.end(); mapit++){
+    
+    TDirectory *dir = m_outputFile->GetDirectory("Hists2D");
+
+    if (dir) {
+      m_outputFile->cd("Hists2D");
+      mapit->second->Write();
+      m_outputFile->cd();
+    }
+    else{
+      Dir = m_outputFile->mkdir("Hists2D");
+      m_outputFile->cd( Dir->GetName() );
+      mapit->second->Write();
+      m_outputFile->cd();
+    }
+  }
+  
+  for(map<TString, TH3*>::iterator mapit = maphist3D.begin(); mapit != maphist3D.end(); mapit++){
+    TDirectory *dir = m_outputFile->GetDirectory("Hists3D");
+
+    if (dir) {
+      m_outputFile->cd("Hists3D");
+      mapit->second->Write();
+      m_outputFile->cd();
+    }
+    else{
+      Dir = m_outputFile->mkdir("Hists3D");
+      m_outputFile->cd( Dir->GetName() );
       mapit->second->Write();
       m_outputFile->cd();
     }
 
-    
-    
-    else {
-      mapit->second->Write();
-    }
-  }
-  
-  for(map<TString, TH2*>::iterator mapit = maphist2D.begin(); mapit != maphist2D.end(); mapit++){
-    mapit->second->Write();
-  }
-  for(map<TString, TH3*>::iterator mapit = maphist3D.begin(); mapit != maphist3D.end(); mapit++){
-    mapit->second->Write();
   }
 
   //==== HN Gen Matching

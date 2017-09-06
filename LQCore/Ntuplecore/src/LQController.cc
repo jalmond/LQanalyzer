@@ -749,7 +749,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     //timer.Start();
     m_logger << INFO << "Execute time = " << timer.RealTime() << " s" << LQLogger::endmsg;
     FillMemoryHists("FullExecute");
-
+    
     cycle->SaveOutputTrees(cycle->GetOutputFile());
     cycle->EndCycle();
     cycle->WriteHistograms();/// writes all histograms declared in the cycle to the output file
