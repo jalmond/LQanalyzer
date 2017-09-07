@@ -2119,8 +2119,8 @@ void AnalyzerCore::SetupID(){
 
 void AnalyzerCore::ConfigureFake(){
   
-  if(!k_running_nonprompt) return;
   /// switch
+  if(!k_running_nonprompt) return;
   self_configured=true;
   fake_configured = false;
 }
@@ -2234,7 +2234,9 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   if(!IDSetup)   SetupID();
   if(!setupDDBkg)SetupDDBkg();
   
-  if(k_running_nonprompt&&fake_configured &&!self_configured){m_datadriven_bkg->SetupFake();self_configured=true; }
+  if(k_running_nonprompt&&fake_configured &&!self_configured){
+    cout << "Setting up fakes(Def)" << endl;
+    m_datadriven_bkg->SetupFake();self_configured=true; }
 
 
 
