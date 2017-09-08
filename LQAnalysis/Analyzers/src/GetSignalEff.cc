@@ -294,23 +294,6 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
 
 
   if(k_running_nonprompt){
-
-    if(SameCharge(pogmedium))weight_pm=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogmedium, PassID(pogmedium[0],"MUON_POG_MEDIUM"),  PassID(pogmedium[1],"MUON_POG_MEDIUM"), "pogmedium","pogmedium", cb_1, cb_2,"ptcorr_eta",0.25,0.25,false,true);
-
-    
-    if(SameCharge(pogtight))weight_pt =m_datadriven_bkg->Get_DataDrivenWeight_MM(false, pogtight, PassID(pogtight[0],"MUON_POG_TIGHT"),  PassID(pogtight[1],"MUON_POG_TIGHT"), "pogtight","pogtight",cb_1, cb_2, "ptcorr_eta",0.15,0.15,false,true);
-
-    
-    if(SameCharge(gent))weight_g=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, gent, PassID(gent[0],"MUON_HNGENT_TIGHT"),  PassID(gent[1],"MUON_HNGENT_TIGHT"),"gent","gent",cb_1, cb_2, "ptcorr_eta",0.1,0.1,false,true);
-     
-    if(SameCharge(hn))weight_hn=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn, PassID(hn[0],"MUON_HN_TIGHT"),  PassID(hn[1],"MUON_HN_TIGHT"), "Tight0.07_0.005_3_0.04","Tight0.07_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.07,0.07,false,true);
-
-    if(SameCharge(hn_med))weight_hnm=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_med, PassID(hn_med[0],"MUON_HN_MEDIUM"),  PassID(hn_med[1],"MUON_HN_MEDIUM"), "Medium0.07_0.005_3_0.04","Medium0.07_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.07,0.07,false,true);
-
-    if(SameCharge(hn_iso))weight_hniso=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_iso, PassID(hn_iso[0],"MUON_HN_TIGHT_iso"),  PassID(hn_iso[1],"MUON_HN_TIGHT_iso"), "Tight0.09_0.005_3_0.04","Tight0.09_0.005_3_0.04",cb_1, cb_2, "ptcorr_eta",0.09,0.09,false,true);
-
-    if(SameCharge(hn_dxy))weight_hndxy=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, hn_dxy, PassID(hn_dxy[0],"MUON_HN_TIGHT_dxy"),  PassID(hn_dxy[1],"MUON_HN_TIGHT_dxy"), "Tight0.07_0.05_3_0.04","Tight0.07_0.05_3_0.04",cb_1, cb_2, "ptcorr_eta",0.07,0.07,false,true);
-     
   }
   
   
@@ -331,7 +314,7 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
   if(CheckSignalRegion(true,hn_dxy,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_HN_DXY", weight_hndxy);
   
   
-
+  
 
   return;
 }// End of execute event loop

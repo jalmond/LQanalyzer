@@ -89,6 +89,9 @@ class AnalyzerCore : public LQCycleBase {
   float GetPtRelLepTJet(snu::KMuon muon, std::vector<snu::KJet> jets, bool usecorrectedpt=true);
 
 
+  float MC_CR_Correction(TString ID);
+  float GetTriggerPrescaleCorrection(TString triggername);
+
   void SetupLuminosityMap(bool initialsetup, TString forceperiod="");
   Int_t GetMCPeriod();
   Int_t GetDataPeriod();  
@@ -97,6 +100,9 @@ class AnalyzerCore : public LQCycleBase {
 
   void  SetupID();
   void  SetupDDBkg();
+
+  bool ConfigureFakeHists(TString path, std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > > fake_hists);
+  void ConfigureFake();
 
   bool IsDiEl();
 
@@ -125,7 +131,8 @@ class AnalyzerCore : public LQCycleBase {
 
   vector<TString >  GetHNDiLepElTriggers();
 
-  bool CheckEventComparison(TString user, TString label);
+  bool CheckEventComparison(TString user, TString label, TString user2, TString label2, bool switchorder);
+  map<int, int> CheckEventComparisonList(TString user, TString label, TString user2, TString label2);
   void FillEventComparisonFile(TString label);
   void FillCutFlow(TString cut, float weight);
   bool TriggerMatch(TString trigname, vector<snu::KMuon> mu);
@@ -162,6 +169,8 @@ class AnalyzerCore : public LQCycleBase {
   float GetLT(std::vector<snu::KMuon> muons);
   bool isPrompt(long pdgid);
   void TruthPrintOut();
+  void TruthPrintOut(snu::KMuon muon);
+  void TruthPrintOut(snu::KElectron el);
 
   bool FailHNDataSetCheck();
   bool PassJets(std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets );
@@ -236,13 +245,19 @@ class AnalyzerCore : public LQCycleBase {
   bool k_usetruth;
   bool k_usephotons;
   bool k_usefatjet;
+  bool configure_fakes;
+
+  TString fake_path;
+  bool fake_configured;
+  bool self_configured;
 
   TDirectory *Dir;
   map<TString, TH1*> maphist;
   map<TString, TH2*> maphist2D;
   map<TString, TH3*> maphist3D;
   map<TString, TNtupleD*> mapntp;
-  map<int,int> compmap;
+  map<int, int> compmap;
+  map<int, int> compmap2;
 
   map<int, float> mapLumi; 
   map<int, float> mapBadLumi; 
@@ -264,6 +279,8 @@ class AnalyzerCore : public LQCycleBase {
   map<int, float> mapLumiPerBlock2016;
   map<int, TString> mapLumiNamePerBlock2016;
   map<TString,float> trigger_lumi_map_cat2016;
+
+  map<TString, pair<pair<TString,TString>, pair<float,TString> >  > fake_hists;
 
   std::vector<TString> cutflow_list;
 
@@ -304,6 +321,7 @@ class AnalyzerCore : public LQCycleBase {
   int a_mcperiod;
   bool IDSetup;
   bool setupDDBkg;
+  bool comp_file_firstev;
 
   std::vector<TString> triggerlist;
 

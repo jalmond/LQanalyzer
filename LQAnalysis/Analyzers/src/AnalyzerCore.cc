@@ -25,7 +25,7 @@
 #include <TFile.h>
 #include "TStyle.h"
 
-AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1) {
+AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),reset_lumi_mask(false),changed_target_lumi(false), k_reset_period(false), a_mcperiod(-1),comp_file_firstev(true) {
 
   k_debugmode=false;
   IDSetup=false;  
@@ -36,6 +36,10 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
   k_usetruth=true;
   k_usephotons=true;
   k_usefatjet=true;
+
+  fake_path="";
+  fake_configured=true;
+  self_configured=false;
 
   TH1::SetDefaultSumw2(true);  
   /// clear list of triggers stored in KTrigger
@@ -77,6 +81,7 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
   cout << "##################################################" << endl;
   compmap.clear();
+  compmap2.clear();
   
   if((TString(getenv("USER")) == "jskim" || TString(getenv("USER")) =="shjeon")){
     //==== HN Gen Matching Class
@@ -88,51 +93,124 @@ AnalyzerCore::AnalyzerCore() : LQCycleBase(), n_cutflowcuts(0), MCweight(-999.),
 
 }
 
-
-bool AnalyzerCore::CheckEventComparison(TString user, TString label){
+bool AnalyzerCore::CheckEventComparison(TString user, TString label, TString user2, TString label2, bool switchorder){
   
-  if(compmap.size() ==0){
-    ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
-    if(!comp) {
-      exit(EXIT_FAILURE);
-    }
-    
-    string lline;
-    while(getline(comp,lline) ){
-      std::istringstream is( lline );
-      TString blank;
-      int run;
-      TString tmp;
-      int ev;
-      is >>blank;
-      is >> run;
-      is >> tmp;
-      is >> ev;
-      if(blank!=user) break;
-      
-      compmap[ev] = run;
-      continue;
+  if(!switchorder){
+    if(compmap.size() ==0) compmap=CheckEventComparisonList(user, label, user2, label2);
+  }
+  else  if(compmap2.size() ==0) compmap2=CheckEventComparisonList(user2, label2, user, label);
+
+  if(!switchorder){
+    for(map<int,int>::iterator mit = compmap.begin(); mit != compmap.end(); mit++){
+      if(mit->second == eventbase->GetEvent().RunNumber() && mit->first == eventbase->GetEvent().EventNumber() ) return true;
     }
   }
-  
-  for(map<int,int>::iterator mit = compmap.begin(); mit != compmap.end(); mit++){
-    if(mit->first == eventbase->GetEvent().RunNumber() && mit->second == eventbase->GetEvent().EventNumber() ) return true;
+  else{
+    for(map<int,int>::iterator mit = compmap2.begin(); mit != compmap2.end(); mit++){
+      if(mit->second == eventbase->GetEvent().RunNumber() && mit->first == eventbase->GetEvent().EventNumber() ) return true;
+    }
+
   }
   
   return false;
 }
+
+map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label, TString user2, TString label2){
+
+    map<int, int> diffmap;
+    map<int, int> list1;
+    map<int, int> list2;
+
+    if(1){
+      ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
+      if(!comp) {
+	cout << "file " << "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt not found" << endl;
+	exit(EXIT_FAILURE);
+      }
+      
+      string lline;
+      while(getline(comp,lline) ){
+	std::istringstream is( lline );
+	TString blank1;
+	TString blank2;
+	int run;
+	TString tmp;
+	int ev;
+	float met;
+	is >>blank1;
+	is >>blank2;
+	is >> run;
+	is >> tmp;
+	is >> ev;
+	is >> met;
+	is >> tmp;
+	if(blank2!=user) break;
+	
+	list1[ev] =run;
+	continue;
+      }
+    }
+    if(1){
+      ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user2+"/" + label2 + ".txt"));
+      if(!comp) {
+	cout << "file " << "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user2+"/" + label2 + ".txt not found" << endl;
+	exit(EXIT_FAILURE);
+      }
+      
+      string lline;
+      while(getline(comp,lline) ){
+	std::istringstream is( lline );
+	TString blank1;
+	TString blank2;
+	int run;
+	TString tmp;
+	int ev;
+	float met;
+	is >>blank1;
+	is >>blank2;
+	is >> run;
+	is >> tmp;
+	is >> ev;
+	is >> met;
+	is >> tmp;
+	if(blank2!=user) break;
+	
+	list2[ev] =run;
+	continue;
+      }
+    }
+    
+    for(map<int,int>::iterator mit = list1.begin(); mit != list1.end(); mit++){
+      bool found=false;
+      for(map<int,int>::iterator mit2 = list2.begin(); mit2 != list2.end(); mit2++){
+	if(mit2->first == mit->first && mit2->second==mit2->second) found=true;
+      }
+      if(found) diffmap[mit->first] = mit->second;
+    }
+
+
+    return diffmap;
+}
+
 void AnalyzerCore::FillEventComparisonFile(TString label){
   
   //// Make TEX file                                                                                                                                                        
   ofstream ofile_tex;
   string lqdir = getenv("LQANALYZER_DIR");
 
+  label = label + k_tag_name +"_" +k_sample_name;
+  //label = label + k_sample_name;
   string compfile = "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  string(getenv("USER")) + "/"+string(label)+ ".txt";     
 
-  ofile_tex.open(compfile.c_str());
-  ofile_tex.setf(ios::fixed,ios::floatfield);
-  ofile_tex <<getenv("USER") << " " << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << endl;
+  //if(comp_file_firstev)    ofile_tex.open(compfile.c_str());
+  // else
+  ofile_tex.open(compfile.c_str(),ios::out | ios::app);
 
+  ofile_tex.setf(ios::fixed,ios::floatfield);
+  ofile_tex << "[ "<<getenv("USER") << " " << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << " " <<  eventbase->GetEvent().MET()<<" ]"<< endl;
+  ofile_tex.close();
+  comp_file_firstev=false;
+  
 }
 
 vector<TString >  AnalyzerCore::GetHNDiLepElTriggers(){
@@ -343,6 +421,23 @@ bool  AnalyzerCore::Check(float val){
   return true;
 }
 
+float AnalyzerCore::MC_CR_Correction(TString ID){
+  if(ID == "MUON_HN_TIGHT"){
+    if(k_sample_name.Contains("")) return 1.;
+  }
+  if(ID== "ELECTRON_HN_TIGHTv5"){
+    if(k_sample_name.Contains("")) return 1.;
+  }
+  //...... This function needs filling 
+  return 1.;
+}
+
+float AnalyzerCore::GetTriggerPrescaleCorrection(TString triggername){
+  float corr_trig=1.;
+  if(triggername== "HLT_Mu3_PFJet40") corr_trig = 0.728;
+  if(triggername== "HLT_Mu8_TrkIsoVVL") corr_trig = 1.399;
+  return corr_trig;
+}
 
 
 float AnalyzerCore::GetKFactor(){
@@ -1363,6 +1458,7 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, 
     return contramass;
   }
   
+  return 0.;
 }
 
 
@@ -1861,7 +1957,8 @@ float AnalyzerCore::WeightByTrigger(TString triggername, float tlumi){
   /// In v766 path lumi is corrected for removal of bad beamspot LS
   // https://github.com/vallot/CATTools/commit/aae3e60b194b1bacf2595a33c8fa27f411dac16b
   for(map<TString, float>::iterator mit = trigger_lumi_map_cat2016.begin(); mit != trigger_lumi_map_cat2016.end(); mit++){
-    if(triggername.Contains(mit->first)) return (mit->second / tlumi);
+    float corr_trig = GetTriggerPrescaleCorrection(triggername);
+    if(triggername.Contains(mit->first)) return (corr_trig*mit->second / tlumi);
   }
   m_logger << ERROR << "Error in getting weight for trigger  " << triggername << "  prescale. Trigname is not correct or not in map"  << LQLogger::endmsg; exit(0);
 
@@ -2020,12 +2117,41 @@ void AnalyzerCore::SetupID(){
 
 }
 
+void AnalyzerCore::ConfigureFake(){
+  
+  if(!k_running_nonprompt) return;
+  /// switch
+  self_configured=true;
+  fake_configured = false;
+}
+
+
+bool AnalyzerCore::ConfigureFakeHists(TString path, std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > > fake_hists){
+
+  if(!k_running_nonprompt) return false;
+  if(fake_configured) return false;
+
+  fake_configured=true;
+  fake_path=path;
+
+  bool setupok= m_datadriven_bkg->SetupFake(path, fake_hists);
+  if(setupok) return true;
+  else{
+    cerr << "Trying to configure fakes using ConfigureFakeHists, but fake code is already setup" << endl;
+    exit(EXIT_FAILURE);
+
+  }
+  return true;
+}
+
+
 void AnalyzerCore::SetupDDBkg(){
-  if(k_running_nonprompt || k_running_chargeflip)m_datadriven_bkg = new DataDrivenBackgrounds();
+
+  if(k_running_nonprompt || k_running_chargeflip)m_datadriven_bkg = new DataDrivenBackgrounds(self_configured);
+
   setupDDBkg=true;
   
   /// setup correction class at teh same time
-  
   /// not needed for sktreemaker
   // save time as code does not need to setup and save files
   
@@ -2105,9 +2231,10 @@ void AnalyzerCore::SetupDDBkg(){
 
 void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) {
   
-
   if(!IDSetup)   SetupID();
   if(!setupDDBkg)SetupDDBkg();
+  
+  if(k_running_nonprompt&&fake_configured &&!self_configured){m_datadriven_bkg->SetupFake();self_configured=true; }
 
 
 
@@ -2216,6 +2343,7 @@ void AnalyzerCore::SetUpEvent(Long64_t entry, float ev_weight) throw( LQError ) 
   }
   
   
+
 }
 
 
@@ -2549,6 +2677,56 @@ void AnalyzerCore::TruthPrintOut(){
   for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
 
     if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;                                                                                                                                                                              
+    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size())){
+      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  ---  |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()	   << " |  --- |" << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+
+    }
+    else{
+      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+    }
+  }
+
+}
+
+void AnalyzerCore::TruthPrintOut(snu::KMuon muon){
+  if(isData) return;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+
+
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;                                                                                                                                                                              
+    if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
+    double dr = sqrt( pow(fabs(  muon.Eta() - eventbase->GetTruth().at(ig).Eta()),2.0) +  pow( fabs(TVector2::Phi_mpi_pi( muon.Phi() - eventbase->GetTruth().at(ig).Phi())),2.0));											
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size())){
+
+      
+      if(dr < 0.4)  cout << "MATCHE TO MUON: " << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  ---  |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()	   << " |  --- |" << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+      else cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  ---  |   " << eventbase->GetTruth().at(ig).Eta() << " | " << eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()	   << " |  --- |" << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl; 
+      
+    }
+    else{
+      if(dr < 0.4)  cout << "MATCHE TO MUON: " << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+      else cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+    }
+  }
+}
+
+void AnalyzerCore::TruthPrintOut(snu::KElectron electron){
+  if(isData) return;
+  m_logger << INFO<< "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
+  cout << "Particle Index |  PdgId  | GenStatus   | Mother PdgId |  Part_Eta | Part_Pt | Part_Phi | Mother Index |   " << endl;
+
+
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
     //if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
     if (eventbase->GetTruth().at(ig).PdgId() == 2212)  cout << ig << " | " << eventbase->GetTruth().at(ig).PdgId() << "  |               |         |        |         |       |         |" << endl;
     if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size())){
@@ -2575,6 +2753,11 @@ bool AnalyzerCore::isPrompt(long pdgid) {
 
 void AnalyzerCore::EndEvent()throw( LQError ){
   
+  if(self_configured && !fake_configured) {
+    cerr << "Setting up own fake files but no hists given" << endl;
+    exit(EXIT_FAILURE);
+  }
+
   delete eventbase;                                                                                                            
 
 }
