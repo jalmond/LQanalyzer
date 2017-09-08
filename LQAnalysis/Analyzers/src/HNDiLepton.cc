@@ -423,7 +423,7 @@ void HNDiLepton::RunMM(TString label, vector<snu::KMuon> muons, vector<snu::KMuo
   
   if(muons.size()==2){
     if(muons[1].Pt() > pt2 && muons[0].Pt() > pt1 ){
-
+      
       if(!PassTriggerOR(mm_trig)) return;
       mm_weight*= WeightByTrigger(mm_trig[0], TargetLumi) ;
 
@@ -475,6 +475,8 @@ void HNDiLepton::RunMM(TString label, vector<snu::KMuon> muons, vector<snu::KMuo
 		  mm_weight_sf=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",1);
 		  mm_weight_df=m_datadriven_bkg->Get_DataDrivenWeight_MM(false, muons, "MUON_HN_TIGHT", "ptcone", "fr_muon_central",2);
 		}
+		
+		cout << PassID(muons[0], "MUON_HN_TIGHT")  << " " << PassID(muons[1] , "MUON_HN_TIGHT")  << mm_weight << endl;
 
 		FillCLHist(sighist_mm, "SSMM_Preselection", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets,  mm_weight);
 		FillCLHist(sighist_mm, "SSMM_Preselection_aj60", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets,  mm_weight_awayjet60);
