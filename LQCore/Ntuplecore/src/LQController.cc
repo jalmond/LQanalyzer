@@ -470,6 +470,14 @@ void LQController::ExecuteCycle() throw( LQError ) {
       else throw LQError( "InputType is wrongly configured",LQError::SkipCycle);
     }
     cycle->SetFlags(v_user_flags);
+
+    cycle->SetNPStatus(runnp);
+    cycle->SetTauStatus(runtau);
+    cycle->SetCFStatus(runcf);
+    cycle->SetSampleName(jobName);
+    cycle->SetTagName(tagName);
+
+
     cycle->BeginCycle();
 
     cycle->ClearOutputVectors();
@@ -576,13 +584,6 @@ void LQController::ExecuteCycle() throw( LQError ) {
       GetMemoryConsumption("Accessed branch to specify isData");
     }
 
-
-    cycle->SetNPStatus(runnp);
-    cycle->SetTauStatus(runtau);
-    cycle->SetCFStatus(runcf);
-    cycle->SetSampleName(jobName);
-    cycle->SetTagName(tagName);
-    
     Long64_t nentries = cycle->GetNEntries(); /// This is total number of events in Input list    
     if(n_ev_to_skip > nentries) n_ev_to_skip =0;
     
@@ -749,7 +750,7 @@ void LQController::ExecuteCycle() throw( LQError ) {
     //timer.Start();
     m_logger << INFO << "Execute time = " << timer.RealTime() << " s" << LQLogger::endmsg;
     FillMemoryHists("FullExecute");
-
+    
     cycle->SaveOutputTrees(cycle->GetOutputFile());
     cycle->EndCycle();
     cycle->WriteHistograms();/// writes all histograms declared in the cycle to the output file

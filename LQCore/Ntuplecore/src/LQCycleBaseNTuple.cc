@@ -183,7 +183,6 @@ void  LQCycleBaseNTuple::CloseFiles(){
   
   m_logger << INFO << "Closing output file  " << m_outputFile->GetName() << LQLogger::endmsg;
   m_outputFile->SaveSelf( kTRUE ); /// is this needed 
-  m_outputFile->Write();
   m_outputFile->Close();
   delete m_outputFile;
   m_outputFile = 0;
