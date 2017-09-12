@@ -694,7 +694,6 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
   //==== ==> Leg1 : Ele23_CaloIdL_TrackIdL_IsoVL
   //====     Leg2 : Ele12_CaloIdL_TrackIdL_IsoVL
 
-
   if(TriggerCategory==0){
 
     if(mu.size()<2) return 1.;
@@ -831,13 +830,17 @@ double MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTri
   else sample = "MC";
 
   double eta1 = el1.SCEta();
+  if(eta1<-2.5) eta1 = -2.4;
+  if(eta1>=2.5) eta1 = 2.4;
   double pt1 = el1.Pt();
-  //if(pt1>=120.) pt1 = 119.;
-  if(pt1<10.) pt1 = 10.1;
+  if(pt1>=500.) pt1 = 499.;
+  if(pt1 <10.) pt1 = 10.1;
   double eta2 = el2.SCEta();
+  if(eta2<-2.5) eta2 = -2.4;
+  if(eta2>=2.5) eta2 = 2.4;
   double pt2 = el2.Pt();
-  //if(pt2>120.) pt2 = 119.;
-  if(pt2<10.) pt2 = 10.1;
+  if(pt2>=500.) pt2 = 499.;
+  if(pt2 <10.) pt2 = 10.1;
 
   //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] tag = " << tag << ", sample = " << sample << endl;
   //cout << "[MCDataCorrections::TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger] leg1 = " << leg1 << ", leg2 = " << leg2 << endl;
@@ -889,8 +892,11 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
 
   for(vector<KElectron>::iterator itel=el.begin(); itel!=el.end(); ++itel) {
     float elpt=itel->Pt();
-    if(elpt > 500.) elpt= 499.;
-    if(elpt < 10.) elpt= 11;
+    float eleta = itel->SCEta();
+    if(eleta<-2.5) eleta = -2.4;
+    if(eleta>=2.5) eleta = 2.4;
+    if(elpt>=500.) elpt= 499.;
+    if(elpt <10.) elpt= 11;
     float unc = 0.02; //// Check this
     
     if(CheckCorrectionHist("ID_" + elid)){
