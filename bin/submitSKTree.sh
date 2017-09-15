@@ -41,6 +41,7 @@ job_njobs=2
 job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
+job_tmp_filename="None"
 
 make_sktrees="False"
 GetOutPutDir="False"
@@ -1759,7 +1760,7 @@ if [[ $runDATA  == "true" ]];
       drawhists=${submit_draw}
       setnjobs=${changed_job_njobs}
       submitallfiles=${job_submitallfiles}
-
+      tmpfilename=${job_tmp_filename}
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1873,7 +1874,8 @@ if [[ $runMC  == "true" ]];
     runcf=${job_run_flip}
     drawhists=${submit_draw}
     submitallfiles=${job_submitallfiles}
-      
+    tmpfilename=${job_tmp_filename}
+
 
 
     if [[ $submit_file_tag  != ""  ]];

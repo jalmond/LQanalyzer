@@ -47,6 +47,7 @@ parser.add_option("-f", "--skflag", dest="skflag", default="NULL", help="add inp
 parser.add_option("-b", "--usebatch", dest="usebatch", default="usebatch", help="Run in batch queue?")
 parser.add_option("-J", "--setnjobs", dest="setnjobs", default="False", help="user sets njobs?")
 parser.add_option("-F","--submitallfiles",dest="submitallfiles",default="False", help="force n=1000")
+parser.add_option("-g","--tmpfilename",dest="tmpfilename",default="", help="tmpname")
 
 
 ###################################################
@@ -90,6 +91,11 @@ DEBUG = options.debug
 useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
+
+tmp_filename=options.tmpfilename
+if tmp_filename == "None":
+    tmp_filename=""
+    
 
 tmpsubmit_allfiles=options.submitallfiles
 submit_allfiles=False
@@ -825,6 +831,9 @@ else:
 if  "SKTreeMaker" in cycle:            
     outsamplename = outsamplename +  os.getenv("CATTAG")
 
+if tmp_filename != "":
+    outsamplename = outsamplename +"_"+tmp_filename
+
 ### specify the location of the macro for the subjob     
 printedrunscript = output+ "Job_[1-" + str(number_of_cores)  + "]/runJob_[1-" + str(number_of_cores)  + "].C"
 
@@ -1514,11 +1523,23 @@ else:
                 Finaloutputdir += "SingleElectron/"
                 if not os.path.exists(Finaloutputdir):
                     os.system("mkdir " + Finaloutputdir)
+            if original_channel =="MuonEG":
+                Finaloutputdir += "MuonEG"
+                if not os.path.exists(Finaloutputdir):
+                    os.system("mkdir " + Finaloutputdir)
 
             Finaloutputdir += "period" + original_sample + "/"
             if not os.path.exists(Finaloutputdir):
                 os.system("mkdir " + Finaloutputdir)
 
+        else:
+            Finaloutputdir = SKTreeOutput + "MCHNDiLep/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+            Finaloutputdir +=  original_sample + "/"
+            if not os.path.exists(Finaloutputdir):
+                os.system("mkdir " + Finaloutputdir)
+                os.system("chmod 777 -R " +  Finaloutputdir)
     if cycle == "SKTreeMakerFakeHN":
         doMerge=False
         if not os.path.exists(SKTreeOutput):

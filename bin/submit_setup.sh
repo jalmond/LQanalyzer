@@ -12,7 +12,7 @@ function usage
     echo "              [-h (more/debug)][-l <args> ][-g <args>] [-A <args>]"
     echo "              [-D <catversion>] [-miniaod input_file ] [-xsec input_file] [-efflumi input_file] [-userflag flag]"
     echo "              [-tagdiff <tagname>  -sktreelog  -printID IDNAME -updateselection <object>]   "
- 
+    echo "              [-filename xxx]"
 }
 
 
@@ -1448,6 +1448,9 @@ while [ "$1" != "" ]; do
 				idname2=$2
 				printid
 				exit 1
+				;;
+	-filename )             shift
+	                        job_tmp_filename=$1
 				;;
 	-D | --GetProductionInfo)  shift
                                 submit_catvlist=$1

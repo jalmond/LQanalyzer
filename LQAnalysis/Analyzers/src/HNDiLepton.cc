@@ -41,7 +41,7 @@ HNDiLepton::HNDiLepton() :  AnalyzerCore(),  out_electrons(0) {
 
   _m_tightid = "MUON_HN_TIGHT";
   _e_tightid = "ELECTRON_HN_TIGHTv4";
-  _m_looseid = "MUON_HN_LOOSEv5";
+  _m_looseid = "MUON_HN_LOOSEv7_SIP3";
   _e_looseid = "ELECTRON_HN_FAKELOOSEv7";
 
 
@@ -232,10 +232,10 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
       /// SET UP OWN FAKES HISTS --> KEY ////                                                                                                                                                                                                                                    
       std::map<TString, std::pair<std::pair<TString,TString>  ,std::pair<float,TString> > >fake_hists;
       /// ONLY double (TH2D*) are configured at the minute
-      fake_hists["fr_muon_central"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet40"), std::make_pair(70., "TH2D"));
-      fake_hists["fr_muon_awayjet20"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet20"), std::make_pair(70., "TH2D"));
-      fake_hists["fr_muon_awayjet30"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet30"), std::make_pair(70., "TH2D"));
-      fake_hists["fr_muon_awayjet60"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3p5_FR.root","Muon_Data_v7_SIP3p5_FR_Awayjet60"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_central"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3_FR.root","Muon_Data_v7_SIP3_FR_Awayjet40"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_awayjet20"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3_FR.root","Muon_Data_v7_SIP3_FR_Awayjet20"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_awayjet30"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3_FR.root","Muon_Data_v7_SIP3_FR_Awayjet30"), std::make_pair(70., "TH2D"));
+      fake_hists["fr_muon_awayjet60"] = std::make_pair(std::make_pair("Muon_Data_v7_SIP3_FR.root","Muon_Data_v7_SIP3_FR_Awayjet60"), std::make_pair(70., "TH2D"));
       fake_hists["fr_electron_central"] = std::make_pair(std::make_pair("Electron_Data_v7_FR.root","Electron_Data_v7_FR_Awayjet40") , std::make_pair(70., "TH2D"));
       /// END SET UP OWN FAKE HISTS ////                                                                                                                                                                                                                                           
       ConfigureFakeHists("/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/Fake/DiLep/", fake_hists);
@@ -462,7 +462,7 @@ void HNDiLepton::RunMM(TString label, vector<snu::KMuon> muons, vector<snu::KMuo
 
 		FillEventCutFlow(4,"LepVeto",mm_weight);
 
-		//FillEventComparisonFile("test");
+		FillEventComparisonFile("test");
 		
 		float mm_weight_sf=mm_weight;
 		float mm_weight_df=mm_weight;

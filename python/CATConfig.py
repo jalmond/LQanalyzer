@@ -44,6 +44,7 @@ parser.add_option("-L", "--LibList", dest="LibList", default="NULL", help="Add e
 parser.add_option("-D", "--debug", dest="debug", default=False, help="Run submit script in debug mode?")
 parser.add_option("-m", "--useskim", dest="useskim", default="Lepton", help="Run submit script in debug mode?")
 parser.add_option("-G", "--runtau", dest="runtau", default="runtau", help="Run fake mode for np bkg?")
+parser.add_option("-g", "--tmpfilename", dest="tmpfilename", default="", help="Run fake mode for np bkg?")
 parser.add_option("-P", "--runnp", dest="runnp", default="runnp", help="Run fake mode for np bkg?")
 parser.add_option("-Q", "--runcf", dest="runcf", default="runcf", help="Run fake mode for np bkg?")
 parser.add_option("-q", "--queue", dest="queue", default="queue", help="what queue")
@@ -87,6 +88,8 @@ DEBUG = options.debug
 useskim = options.useskim
 skflag = options.skflag
 usebatch =options.usebatch
+
+tmp_filename=options.tmpfilename
 
 new_channel = channel.replace(":", "")
 original_channel = new_channel
