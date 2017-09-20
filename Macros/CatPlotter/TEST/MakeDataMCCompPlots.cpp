@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus003.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus039.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -173,7 +173,7 @@ int MakePlots(string hist) {
 
 vector<TH1*> hsig ;
 float int_bkg = hup->Integral()/2.; 
-TFile* file_sig0 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_40_cat_v8-0-7.root")); 
+TFile* file_sig0 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-09-18/HNDiLepton_HNMumMum_40_cat_v8-0-7.root")); 
 TH1* hsig0 = dynamic_cast<TH1*> ((file_sig0->Get(name.c_str()))->Clone()); 
 hsig0->Rebin(rebin); 
 hsig0->Scale(0.01); 
@@ -184,7 +184,7 @@ hsig0->SetLineWidth(3.);
 hsig0->GetXaxis()->SetRangeUser(xmin,xmax); 
 hsig0->GetYaxis()->SetRangeUser(ymin,ymax); 
 hsig.push_back(hsig0);
-TFile* file_sig1 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_60_cat_v8-0-7.root")); 
+TFile* file_sig1 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-09-18/HNDiLepton_HNMumMum_60_cat_v8-0-7.root")); 
 TH1* hsig1 = dynamic_cast<TH1*> ((file_sig1->Get(name.c_str()))->Clone()); 
 hsig1->Rebin(rebin); 
 hsig1->Scale(0.05); 
@@ -195,7 +195,7 @@ hsig1->SetLineWidth(3.);
 hsig1->GetXaxis()->SetRangeUser(xmin,xmax); 
 hsig1->GetYaxis()->SetRangeUser(ymin,ymax); 
 hsig.push_back(hsig1);
-TFile* file_sig2 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/HNDiLepton_HNMumMum_80_cat_v8-0-7.root")); 
+TFile* file_sig2 =  TFile::Open(("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/2017-09-18/HNDiLepton_HNMumMum_80_cat_v8-0-7.root")); 
 TH1* hsig2 = dynamic_cast<TH1*> ((file_sig2->Get(name.c_str()))->Clone()); 
 hsig2->Rebin(rebin); 
 hsig2->Scale(0.3); 

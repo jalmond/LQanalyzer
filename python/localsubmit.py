@@ -581,6 +581,12 @@ output_catversion=os.getenv("CATVERSION")
 
 #### Check latest tag/version for DS.
 iversion=0
+
+if "HN" in  sample or "CHT" in sample:
+    datasetfile="datasets_snu_sig_CAT_mc_"
+else:
+    datasetfile="datasets_snu_nonsig_CAT_mc_"
+
 while inDS == "":
     if platform.system() == "Linux":
         version="_CAT"
@@ -593,7 +599,7 @@ while inDS == "":
 
         print "Using CAT " +sample_catversion + " ntuples"
         if mc:
-            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_mc_' +sample_catversion +  '.txt'
+            filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/'+datasetfile +sample_catversion +  '.txt'
 
         else:
             filename = os.getenv("LQANALYZER_RUN_PATH") + '/txt/datasets_snu_CAT_data_'  +sample_catversion +'.txt'

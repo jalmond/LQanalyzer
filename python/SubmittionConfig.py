@@ -108,8 +108,8 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
                 os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
                 if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
                     os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/Hist.txt"   )
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/CutFlow.txt"   )
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
                 
                 if os.getenv("USER") == "jalmond":
                     transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
@@ -183,8 +183,8 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
 
                 if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
                     os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/Hist.txt"   )   
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/CutFlow.txt"   )
+                os.system("source "+str(os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )   
+                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
 
                 if os.getenv("USER") == "jalmond":
                     transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
