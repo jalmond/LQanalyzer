@@ -127,7 +127,7 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
   std::vector<snu::KMuon> muColl = GetMuons("MUON_HN_VETO");
 
 
-  if((muColl.size() + elColl.size()) != 2) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+  //if((muColl.size() + elColl.size()) != 2) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   if(muColl.size()==2) {
     if(!SameCharge(muColl)) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   }
@@ -135,7 +135,9 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
     if(!SameCharge(elColl)) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
   }
   else{
-    if(elColl[0].Charge() != muColl[0].Charge()) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+    if(muColl.size()==1 && elColl.size()==1 ) {
+      if(elColl[0].Charge() != muColl[0].Charge()) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
+    }
   }
 
 

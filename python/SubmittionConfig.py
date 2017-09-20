@@ -1,6 +1,6 @@
 ############################################################    
 ### configure submisstion of CATANALYZER Jobs                                                                                                        #################################################################    
-import os, getpass, sys,ROOT,time,curses,datetime
+import os, getpass, sys,ROOT,time,curses,datetime,math
 from functions import *
 from datetime import timedelta
 from optparse import OptionParser
@@ -53,7 +53,7 @@ def   GetMonth(imonth):
     else:
         return "Dec"
 
-def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversion, defuseskim, defcycle, defchannel, skflag):
+def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversion, defuseskim, defcycle, defchannel, deftmp_filename,deftagger,skflag):
 
     defoutput_file_skim_tag=defchannel
     if defuseskim == "FLATCAT":
@@ -105,7 +105,12 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defdata_lumi == "ALL" or defdata_lumi==os.getenv("catdatatag"):
             if not  "SKTreeMaker" in cycle:
                 os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_"+defoutput_file_skim_tag+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-                os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+".root")
+                os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
+                if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
+                    os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/Hist.txt"   )
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/CutFlow.txt"   )
+                
                 if os.getenv("USER") == "jalmond":
                     transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
                     catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
@@ -116,7 +121,7 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
                             srline = rline.split()
                             lxmachine=srline[2]
                     readcatpath.close()
-                    os.system("scp -r "+ defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+".root" + " jalmond@"+lxmachine+".cern.ch:"+transout)
+                    os.system("scp -r "+ defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root" + " jalmond@"+lxmachine+".cern.ch:"+transout)
                 
 
 
@@ -173,8 +178,14 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             if not "SKTreeMaker" in cycle:
 
                 os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+".root")
+                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root")
                 
+
+                if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
+                    os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/Hist.txt"   )   
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger + "/CutFlow.txt"   )
+
                 if os.getenv("USER") == "jalmond":
                     transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
                     catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
@@ -1433,6 +1444,7 @@ parser.add_option("-u", "--useremail", dest="useremail", default="", help="Set u
 parser.add_option("-B", "--bkg", dest="bkg", default="False", help="run in bkg")
 parser.add_option("-A","--drawhists",dest="drawhists",default="False", help="draw nothing")
 parser.add_option("-F","--submitallfiles",dest="submitallfiles",default="False", help="force n=1000")
+parser.add_option("-H","--sendmail",dest="sendmail",default="False", help="force n=1000")
  
 
 #curses.resizeterm
@@ -1464,6 +1476,8 @@ if tmp_filename =="":
 sample = options.period
 channel = options.stream
 cycle = options.cycle
+sendmail=options.sendmail
+
 logstep = int(options.logstep)
 loglevel = options.loglevel
 runnp = options.runnp
@@ -1594,6 +1608,8 @@ if printedqueue == "None":
     queue = "fastq"
 
 DoSendEmail=False
+if sendmail=="True":
+    DoSendEmail=True
 run_in_bkg=False
 if runinbkg == "True":
     run_in_bkg=True
@@ -2103,9 +2119,10 @@ for nsample in range(0, len(sample)):
                 path_job_check=an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt"  
                 if  os.path.exists(path_job_check):
                     jobid_exists=False
-            file_debug = open("debug.txt","a")
-            file_debug.write(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt exists\n")
-            file_debug.close()
+            if rundebug:
+                file_debug = open("debug.txt","a")
+                file_debug.write(an_jonpre+"/CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/" + sample[x] + "jobid.txt exists\n")
+                file_debug.close()
         
 
             #CheckRunningStatus(an_jonpre+"/CAT_SKTreeOutput/"+os.getenv("USER")+"/CLUSTERLOG" + str(tagger) +"/" + tagger + "/" + sample[x] +".txt")
@@ -2250,9 +2267,10 @@ for nsample in range(0, len(sample)):
                 path_job=path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/" + getpass.getuser() + "/" + str(tagger)+ "/statlog_time_"+sample[x] + tagger + ".txt"
                 ismerging=True
                 while not os.path.exists(path_job):
-                    file_debug = open("debug.txt","a")
-                    file_debug.write("Checking for " + path_job + " \n")
-                    file_debug.close()
+                    if rundebug:
+                        file_debug = open("debug.txt","a")
+                        file_debug.write("Checking for " + path_job + " \n")
+                        file_debug.close()
                     if ismerging:
                         stdscr.addstr(2+list2+int(x), box_shift , str(int(x+1)),curses.A_DIM)
                         stdscr.addstr(2+list2+int(x), summary2_block1 ,"| MERGING OUTPUT ", curses.A_BLINK)
@@ -3069,7 +3087,10 @@ if end_job_time > email_time_limit:
 if run_in_bkg:
     os.system("mv "+an_jonpre+"CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_bkg.txt "+an_jonpre+"CAT_SKTreeOutput/" + os.getenv("USER")  + "/CLUSTERLOG" + str(tagger)+ "/output_finished.txt")
 if runningData:
-    MergeData(runnp,runcf,data_lumi, Finaloutputdir, catversion, useskim, cycle, channel, skflag)
+    if tmp_filename == "None":
+        MergeData(runnp,runcf,data_lumi, Finaloutputdir, catversion, useskim, cycle, channel, "",tagger,skflag)
+    else:
+        MergeData(runnp,runcf,data_lumi, Finaloutputdir, catversion, useskim, cycle, channel, tmp_filename,tagger,skflag)
 
 if len(output_warning) > 0:
     print "\n"
@@ -3081,6 +3102,118 @@ if len(output_warning) > 0:
     for s in output_warning:
         print s
         job_summary.append(s + "\n")
+
+if runningData:
+
+    file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
+    nhists=0
+    for rc_line in file_read_counter:
+
+        if  "=" in rc_line or "Path" in rc_line:
+            if nhists==0:
+                print "#"*40
+                print rc_line
+            
+                print "List of cuts : Integral counter = "
+                job_summary.append("List of cuts  : Integral counter = \n")
+            else:
+                job_summary.append("#"*40+ "\n")
+                job_summary.append(rc_line+"\n")
+                
+
+            nhists=nhists+1
+        print rc_line
+        job_summary.append(rc_line + "\n")
+
+    file_read_counter.close()    
+    if nhists> 0:
+        print "#"*40
+        job_summary.append("#"*40+ "\n")
+
+
+    cffile_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/CutFlow.txt","r")
+    cfnhists=0
+    for rc_line in cffile_read_counter:
+
+        if  "Path" in rc_line:
+            print rc_line
+            job_summary.append(rc_line+"\n")
+
+        if cfnhists==0:
+            print "#"*40
+            print "List of histograms/cutflow : Integral counter = "
+            job_summary.append("#"*40+ "\n")
+            job_summary.append("List of histograms/cutflow : Integral counter = \n")    
+        cfnhists=cfnhists+1
+        print rc_line
+        job_summary.append(rc_line + "\n")
+        
+    cffile_read_counter.close()
+    #if cfnhists> 0:
+    #    print "#"*40
+    #    job_summary.append("#"*40+ "\n")
+
+
+else:
+
+    cuts =[]
+    print " "
+    print "%%%%%%%%%%%%%%"*4
+    file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+sample[0]+"Hist.txt","r")
+    for rc_line in file_read_counter:
+        src_line = rc_line.split()
+        if  "=" in rc_line :
+            for sl in range(0,len(src_line)):
+                if sl == 0:
+                    cuts.append(src_line[sl])
+    file_read_counter.close()
+
+    for c in cuts:
+        print "Cut : " + str(c)
+        job_summary.append("Cut : " + str(c)+"\n")
+        samplename=[]
+        sample_sum=[]
+        sample_err=[]
+        for hs in sample:
+            
+            samplename.append(hs + ((40 - len(hs))*" ") )
+            
+            file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
+            for rc_line in file_read_counter:
+                cut_line=False
+                src_line = rc_line.split()
+                if  "=" in rc_line :
+                    for sl in range(0,len(src_line)):
+                        if sl == 0:
+                            if src_line[sl] == c:
+                                cut_line=True
+                        if cut_line:
+                            if sl == 2:
+                                sample_sum.append(float(src_line[sl]))
+                            if sl == 3:
+                                sample_err.append(float(src_line[sl]))
+                    
+        file_read_counter.close()
+
+        print "#"*50
+        job_summary.append("#"*50)
+        total_sum=0.
+        total_err=0.;
+        for sn in range(0,len(samplename)):
+            print samplename[sn] +  str(sample_sum[sn])
+            job_summary.append(samplename[sn] +  str(sample_sum[sn]))
+            total_sum=total_sum+float(sample_sum[sn])
+            total_err = total_err + float(sample_err[sn])*float(sample_err[sn])
+        if total_err > 0:
+            total_err = math.sqrt(total_err)
+        print "-"*50    
+        print "Total = " +(31)*" " +  str(total_sum) + "+/-" + str(total_err)
+        print "-"*50    
+        job_summary.append("-"*50+ "\n")
+        job_summary.append("Total = "  +(31 *len("Total = "))*" " +  str(total_sum)+ "+/-$" + str(total_err)+"\n")
+        job_summary.append("-"*50+ "\n")
+
+
 
 
 crashlog_printout=[]

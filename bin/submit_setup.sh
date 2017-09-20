@@ -1344,7 +1344,11 @@ while [ "$1" != "" ]; do
                                 ;;
         -F | --submitall)       shift
                                 job_submitallfiles="true"
-                                ;;
+				;;
+        -SIG | --submitall)     shift
+                                RUNSIG="true"
+				TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_sig_"
+				;;
 #	-sktree | --usesktrees )shift
 #                                submit_skinput="$1"
 #				changed_skinput=true
