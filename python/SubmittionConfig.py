@@ -54,7 +54,7 @@ def   GetMonth(imonth):
         return "Dec"
 
 def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversion, defuseskim, defcycle, defchannel, deftmp_filename,deftagger,skflag):
-
+    
     defoutput_file_skim_tag=defchannel
     if defuseskim == "FLATCAT":
         defoutput_file_skim_tag=defoutput_file_skim_tag+"_cat_"+defcatversion
@@ -108,9 +108,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
                 os.system("mv "  + defFinaloutputdir+ "/"+ defcycle+"_"+defoutput_file_skim_tag+".root " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root")
                 if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
                     os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
-                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+"_"+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )
+                os.system("source "+os.getenv("LQANALYZER_DIR")+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ "_"+defchannel+"_"+foutname+deftmp_filename+".root > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
                 
+
                 if os.getenv("USER") == "jalmond":
                     transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
                     catpath=os.getenv("LQANALYZER_DIR")+"/bin/catconfig"
@@ -178,13 +179,13 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             if not "SKTreeMaker" in cycle:
 
                 os.system("source hadd.sh " + defFinaloutputdir + " "+defcycle+"_data_cat_"+defcatversion+".root "+defFinaloutputdir+"/"+defcycle+"'*'"+defoutput_file_skim_tag+"'*'")
-                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root")
+                os.system("mv "  + defFinaloutputdir+ "/"+defcycle+"_data_cat_"+defcatversion+".root  " + defFinaloutputdirMC+ "/"+defcycle+"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root")
                 
 
                 if not os.path.exists( "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger ):
                     os.system("mkdir " +  "/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + deftagger)
-                os.system("source "+str(os.getenv("LQANALYZER_DIR")+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt"   )   
-                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle+ +"_data_" + defchannel+"_cat_"+defcatversion+"-"+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
+                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/Counter.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/Hist.txt" )  
+                os.system("source "+str(os.getenv("LQANALYZER_DIR"))+"/scripts/CutFlow.sh " + defFinaloutputdirMC+ "/"+defcycle +"_data_" + defchannel+"_cat_"+defcatversion+deftmp_filename+".root  > /data2/CAT_SKTreeOutput/"+str(os.getenv("USER"))+"/Histdir" + str(deftagger) + "/CutFlow.txt"   )
 
                 if os.getenv("USER") == "jalmond":
                     transout=defFinaloutputdirMC.replace("/data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/","/afs/cern.ch/work/j/jalmond/CAT/")
@@ -3155,7 +3156,7 @@ if runningData:
 
 
 else:
-
+                              
     cuts =[]
     print " "
     print "%%%%%%%%%%%%%%"*4
@@ -3167,7 +3168,7 @@ else:
                 if sl == 0:
                     cuts.append(src_line[sl])
     file_read_counter.close()
-
+                          
     for c in cuts:
         print "Cut : " + str(c)
         job_summary.append("Cut : " + str(c)+"\n")
@@ -3175,7 +3176,7 @@ else:
         sample_sum=[]
         sample_err=[]
         for hs in sample:
-            
+            print "test  " + hs
             samplename.append(hs + ((40 - len(hs))*" ") )
             
             file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
@@ -3189,8 +3190,10 @@ else:
                                 cut_line=True
                         if cut_line:
                             if sl == 2:
+                                print src_line[sl]
                                 sample_sum.append(float(src_line[sl]))
                             if sl == 3:
+                                print src_line[sl] + "err"
                                 sample_err.append(float(src_line[sl]))
                     
         file_read_counter.close()
@@ -3199,19 +3202,22 @@ else:
         job_summary.append("#"*50)
         total_sum=0.
         total_err=0.;
-        for sn in range(0,len(samplename)):
-            print samplename[sn] +  str(sample_sum[sn])
-            job_summary.append(samplename[sn] +  str(sample_sum[sn]))
-            total_sum=total_sum+float(sample_sum[sn])
-            total_err = total_err + float(sample_err[sn])*float(sample_err[sn])
-        if total_err > 0:
-            total_err = math.sqrt(total_err)
-        print "-"*50    
-        print "Total = " +(31)*" " +  str(total_sum) + "+/-" + str(total_err)
-        print "-"*50    
-        job_summary.append("-"*50+ "\n")
-        job_summary.append("Total = "  +(31 *len("Total = "))*" " +  str(total_sum)+ "+/-$" + str(total_err)+"\n")
-        job_summary.append("-"*50+ "\n")
+
+        print len(samplename) + " : " + len(sample_sum) + " : " + len(sample_err)
+        if len(samplename) == len(sample_sum):
+            for sn in range(0,len(samplename)):
+                print samplename[sn] +  str(sample_sum[sn])
+                job_summary.append(samplename[sn] +  str(sample_sum[sn]))
+                total_sum=total_sum+float(sample_sum[sn])
+                total_err = total_err + float(sample_err[sn])*float(sample_err[sn])
+                if total_err > 0:
+                    total_err = math.sqrt(total_err)
+            print "-"*50    
+            print "Total = " +(31)*" " +  str(total_sum) + "+/-" + str(total_err)
+            print "-"*50    
+            job_summary.append("-"*50+ "\n")
+            job_summary.append("Total = "  +(31 *len("Total = "))*" " +  str(total_sum)+ "+/-$" + str(total_err)+"\n")
+            job_summary.append("-"*50+ "\n")
 
 
 

@@ -97,6 +97,7 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
       MakeCleverHistograms(sighist_mm, label+"SSMM_1JetCR");
       MakeCleverHistograms(sighist_mm, label+"SSMM_1JetOpt");
       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_noW");
       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_xc");
       MakeCleverHistograms(sighist_mm, label+"SSMM_DiJet_xc2");
       MakeCleverHistograms(sighist_mm, label+"SSMM_0Jet");
@@ -107,6 +108,10 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
       MakeCleverHistograms(sighist_mm, label+"SSMM_0Jet_xc");
       MakeCleverHistograms(sighist_mm, label+"SSMM_1Jet_xc");
       MakeCleverHistograms(sighist_mm, label+"SSMM_2Jet_xc");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_2Jet_xc_lt");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_2Jet_xc_met");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_2Jet_xc_minus");
+      MakeCleverHistograms(sighist_mm, label+"SSMM_2Jet_xc_plus");
 
       MakeCleverHistograms(sighist_mm, label+"SSMM_DiTJet");
       MakeCleverHistograms(sighist_mm, label+"SSMM_CR");
@@ -263,7 +268,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   
   //// Set weight for MC (nevents / xsec (ish))
-  if(!isData)weight*= MCweight;
+  //if(!isData)weight*= MCweight;
   if(!isData)weight*= GetKFactor();
   if(!isData)weight*= MC_CR_Correction(0);
   
@@ -550,18 +555,47 @@ void HNDiLepton::RunMM(TString label, vector<snu::KMuon> muons, vector<snu::KMuo
 		if(jets.size() == 3)                   FillCLHist(sighist_mm, "SSMM_3Jet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
 		if(jets.size() >= 4)                   FillCLHist(sighist_mm, "SSMM_4Jet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
 		
-		if(muons[1].Pt() > 30){
+		if(muons[1].Pt() > 35){
 		  if(NBJet(alljets)==0){
-		    if(jets.size() == 0)                   FillCLHist(sighist_mm, "SSMM_0Jet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
-		    if(jets.size() == 1)                   FillCLHist(sighist_mm, "SSMM_1Jet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
-		    if(jets.size() >= 2)                   FillCLHist(sighist_mm, "SSMM_2Jet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+                    if(eventbase->GetEvent().PFMET() < 60.) {
+		      if(eventbase->GetEvent().PFMET() > 20.) {
+			
+			if(jets.size() == 0)                   FillCLHist(sighist_mm, "SSMM_0Jet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+			if(jets.size() == 1)                   FillCLHist(sighist_mm, "SSMM_1Jet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+			if(jets.size() >= 2) {
+			  FillCLHist(sighist_mm, "SSMM_2Jet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+			  if(k_running_nonprompt){
+			    if(PassID(muons[0], "MUON_HN_TIGHT") && !PassID(muons[1] , "MUON_HN_TIGHT")) FillCLHist(sighist_mm, "SSMM_2Jet_TL_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,1.);
+			    if(!PassID(muons[0], "MUON_HN_TIGHT") && PassID(muons[1] , "MUON_HN_TIGHT")) FillCLHist(sighist_mm, "SSMM_2Jet_LT_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,1.);
+			  }
+			  
+			  if(muons[0].Charge() < 0)                           FillCLHist(sighist_mm, "SSMM_2Jet_xc_minus", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+			  if(muons[0].Charge() > 0)                           FillCLHist(sighist_mm, "SSMM_2Jet_xc_plus", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+			  if(eventbase->GetEvent().PFMET() < 60.) {
+			    if(eventbase->GetEvent().PFMET() > 20.) {
+			      FillCLHist(sighist_mm, "SSMM_2Jet_xc_met", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
 
+			    }
+			  }
+			  if((muons[0].Pt() + muons[1].Pt()) > 125){
+
+			    FillCLHist(sighist_mm, "SSMM_2Jet_xc_lt", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+
+			  }
+
+
+			}
+
+
+		      }
+		    }
 		  }
 		}
 
 		vector<int> ijets;  
 		if(jets.size() > 1){
 		  FillCLHist(sighist_mm, "SSMM_DiJet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
+		  FillCLHist(sighist_mm, "SSMM_DiJet_noW", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,WeightByTrigger(mm_trig[0],TargetLumi)* GetKFactor()*weight);
 		  FillEventCutFlow(4,"SSMM_DiJet",mm_weight);
 
 		  if((muons[0].DeltaR(muons[1])) <  1.)                   FillCLHist(sighist_mm, "SSMM_DiJet_xc", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,mm_weight);
