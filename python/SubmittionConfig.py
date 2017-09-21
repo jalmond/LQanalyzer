@@ -3176,9 +3176,6 @@ else:
         sample_sum=[]
         sample_err=[]
         for hs in sample:
-            print "test  " + hs
-            samplename.append(hs + ((40 - len(hs))*" ") )
-            
             file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/"+hs+"Hist.txt","r")
             for rc_line in file_read_counter:
                 cut_line=False
@@ -3191,6 +3188,7 @@ else:
                         if cut_line:
                             if sl == 2:
                                 print src_line[sl]
+                                samplename.append(hs + ((40 - len(hs))*" ") )
                                 sample_sum.append(float(src_line[sl]))
                             if sl == 3:
                                 print src_line[sl] + "err"
