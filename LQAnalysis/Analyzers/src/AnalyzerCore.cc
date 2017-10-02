@@ -427,18 +427,20 @@ float AnalyzerCore::MC_CR_Correction(int syst){
   if(syst==1) fsyst=1.;
   if(syst==-1) fsyst=-1.;
 
-  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.995791 + fsyst*0.0631857;
-  if(k_sample_name.Contains("ZGto2LG")) return  0.830936+ fsyst*0.11205;
-  if(k_sample_name.Contains("WGtoLNuG")) return 0.830936  + fsyst*0.11205;
-  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto4e")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto4mu")) return 0.922903  + fsyst*0.0829533;
-  if(k_sample_name.Contains("ggZZto4tau")) return 0.922903  + fsyst*0.0829533;
+  ///  updated 2 Oct
+
+  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.974439  + fsyst*0.061763;
+  if(k_sample_name.Contains("ZGto2LG")) return  0.822969 + fsyst*0.141269;
+  if(k_sample_name.Contains("WGtoLNuG")) return 1.;
+  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4e")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4mu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4tau")) return 0.922148 + fsyst*0.0859548;
   
   return 1.;
 }
@@ -509,7 +511,7 @@ float AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall,bool up
   if(update_met){
     if(!eventbase->GetEvent().PropagatedRochesterToMET()){
       snu::KEvent tempev = eventbase->GetEvent();
-      tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), eventbase->GetEvent().METPhi(), eventbase->GetEvent().SumET());
+      tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), TMath::ATan2(met_y,met_x), eventbase->GetEvent().SumET());
       tempev.SetPFMETx(met_x);
       tempev.SetPFMETy(met_y);
       tempev.SetPropagatedRochesterToMET(true);

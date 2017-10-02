@@ -697,7 +697,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       }
 
     }
-    Fill("h_sumcharge", (muons[0] +muons[1]).Charge(), weight);
+    //Fill("h_sumcharge", (muons[0] +muons[1]).Charge(), weight);
   }
 
   int imu(0);
