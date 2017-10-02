@@ -427,18 +427,20 @@ float AnalyzerCore::MC_CR_Correction(int syst){
   if(syst==1) fsyst=1.;
   if(syst==-1) fsyst=-1.;
 
-  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.974879 + fsyst*0.0634085;
-  if(k_sample_name.Contains("ZGto2LG")) return  0.821743 + fsyst*0.138617;
+  ///  updated 2 Oct
+
+  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.974439  + fsyst*0.061763;
+  if(k_sample_name.Contains("ZGto2LG")) return  0.822969 + fsyst*0.141269;
   if(k_sample_name.Contains("WGtoLNuG")) return 1.;
-  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto4e")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto4mu")) return 0.92183 + fsyst*0.0859849;
-  if(k_sample_name.Contains("ggZZto4tau")) return 0.92183 + fsyst*0.0859849;
+  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4e")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4mu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4tau")) return 0.922148 + fsyst*0.0859548;
   
   return 1.;
 }
