@@ -660,7 +660,6 @@ vector<pair<TString,float> >  InitSample (TString sample){
 if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("DoubleMuon_SKnonprompt",0.3));
 }if(sample.Contains("diboson")){    list.push_back(make_pair("ZZTo4L_powheg",0.20));
     list.push_back(make_pair("WZTo3LNu_powheg",0.20));
-    list.push_back(make_pair("ggZZto4mu",0.20));
     list.push_back(make_pair("WpWpQCD",0.15));
     list.push_back(make_pair("WpWpEWK",0.15));
     list.push_back(make_pair("ww_ds",0.15));
@@ -675,12 +674,14 @@ if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("Doub
     list.push_back(make_pair("ttH_nonbb",0.2));
 }if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.3));
     list.push_back(make_pair("ZZZ",0.3));
+    list.push_back(make_pair("WWZ",0.3));
     list.push_back(make_pair("WZZ",0.3));
     list.push_back(make_pair("WWG",0.3));
     list.push_back(make_pair("WZG",0.3));
 }if(sample.Contains("higgs")){    list.push_back(make_pair("VBF_HToMuMu",0.2));
     list.push_back(make_pair("ggHtoWW",0.2));
     list.push_back(make_pair("ggHtoZZ",0.2));
+    list.push_back(make_pair("vbfHtoWW",0.2));
 }  
 
 
@@ -1334,7 +1335,7 @@ vector<pair<TString,float> >  higgs = InitSample(" higgs");
   for( unsigned int i = 0; i < listofsamples.size(); i++){
    if(listofsamples.at(i) =="DoubleMuon_SKnonprompt")samples.push_back(make_pair(make_pair(np,870),"Misid. Lepton Background"));
    if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,kGreen),"Diboson"));
-   if(listofsamples.at(i) =="zg")samples.push_back(make_pair(make_pair(zg,kRed),"Xg"));
+   if(listofsamples.at(i) =="zg")samples.push_back(make_pair(make_pair(zg,kOrange),"Xg"));
    if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
    if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring+2),"Triboson"));
    if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,800),"Higgs"));
