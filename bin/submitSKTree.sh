@@ -6,7 +6,7 @@ cp $LQANALYZER_DATASETFILE_DIR/datasets_snu* $LQANALYZER_DIR/LQRun/txt/
 cp $LQANALYZER_DATASETFILE_DIR/list_all_mc*  $LQANALYZER_DIR/LQRun/txt/
 
 
-declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_TriLepSkim" "NoCut" "Lepton" "DiLep")
+declare -a list_of_skims=("FLATCAT" "SKTree_NoSkim" "SKTree_LeptonSkim" "SKTree_DiLepSkim"  "SKTree_HNDiLepSkim" "SKTree_HNFakeSkim" "SKTree_TriLepSkim" "SKTree_SSLepSkim" "NoCut" "Lepton" "DiLep")
 declare -a list_of_sampletags=("ALL" "DATA" "MC" "DoubleEG" "DoubleMuon" "MuonEG" "SingleMuon" "SinglePhoton" "SingleElectron" "SingleLepton" "DoubleMuon_CF")
 declare -a  oldcat=("v7-4-4" "v7-4-5")
 
@@ -54,6 +54,7 @@ submit_draw="False"
 submit_sk_message=""
 submit_skflag=""
 submit_skinput=true
+submit_dir_tag="NULL"
 changed_skinput=false
 changed_submit_version_tag=false
 changed_job_output_dir=false
@@ -96,13 +97,18 @@ then
     SKTREE_MC="/data4/LocalNtuples/SKTrees13TeV/"
 fi
 
-
-
+is_mc=""
 
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
 source submit_setup.sh
+
+if [[ $submit_sampletag  == "" ]];
+then
+    is_mc="true"
+fi
+
 
 
 linkdef_filepath=/LQAnalysis/Analyzers/include/LQAnalysis_LinkDef.h
@@ -267,7 +273,10 @@ function mergeoutput
 		then
 		output_file_skim_tag="SK"$output_file_skim_tag"_trilep_cat_"$submit_version_tag
             fi
-
+	    if [[ $job_skim == "SKTree_SSLepSkim" ]] ;
+	    then
+                output_file_skim_tag="SK"$output_file_skim_tag"_sslep_cat_"$submit_version_tag
+            fi
 	    
 	    echo "############################################################################################################################################################"
 
@@ -336,6 +345,12 @@ function mergefake
 		outname="SK"$outname"_trilep_cat_"$submit_version_tag
 
             fi
+	    if [[ $job_skim == "SKTree_SSLepSkim" ]] ;
+                then
+                output_file_skim_tag="SK"$output_file_skim_tag"_sslep_cat_"$submit_version_tag
+                outname="SK"$outname"_sslep_cat_"$submit_version_tag
+
+            fi
 
 	    #echo hadd.sh ${outputdir_np} ${job_cycle}_${output_file_skim_tag}.root ${outputdir_np}${job_cycle}'*'${output_file_skim_tag}'*'
 	    if [[ $job_data_lumi  == "ALL" ]];
@@ -401,6 +416,10 @@ if [[ $submit_file_tag  != ""  ]];
     if [[ $job_skim == "SKTree_TriLepSkim" ]];then
         ARG_SINGLE_FILE="FULLLISTOFSAMPLESTRILEP"
     fi
+    if [[ $job_skim == "SKTree_SSLepSkim" ]];then
+        ARG_SINGLE_FILE="FULLLISTOFSAMPLESSS"
+    fi
+
     if [[ $job_skim == "DiLep" ]];then
 	ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
     fi
@@ -597,6 +616,9 @@ if [[ $submit_file_list  != ""  ]];
 	    if [[ $job_skim == "SKTree_TriLepSkim" ]];then
                 ARG_SINGLE_FILE="FULLLISTOFSAMPLESTRILEP"
             fi
+	    if [[ $job_skim == "SKTree_SSLepSkim" ]];then
+                ARG_SINGLE_FILE="FULLLISTOFSAMPLESSS"
+            fi
 	    if [[ $job_skim == "DiLep" ]];then
 		ARG_SINGLE_FILE="FULLLISTOFSAMPLESDILEP"
 	    fi
@@ -789,6 +811,10 @@ if [[ $submit_analyzer_name == "SKTreeMakerHNDiLep" ]];
     then
     submit_skinput=true
     job_skim="SKTree_DiLepSkim"
+    if [[ $is_mc == "true" ]];
+    then
+	job_skim="SKTree_LeptonSkim"
+    fi
     if [[ $set_sktreemaker_debug == "false" ]];
         then
         job_njobs=1000
@@ -858,6 +884,30 @@ if [[ $submit_analyzer_name == "SKTreeMakerTriLep" ]];
     fi
 
 fi
+if [[ $submit_analyzer_name == "SKTreeMakerSS" ]];
+    then
+    submit_skinput=true
+    job_skim="SKTree_LeptonSkim"
+    if [[ $set_sktreemaker_debug == "false" ]];
+        then
+        job_njobs=1000
+    else
+        job_njobs=-311
+    fi
+    if [[ $submit_version_tag == "" ]];
+	then
+        echo "When running SKTreeMaker you need to specify the catversion: -c "
+        echo "Options are: "
+        for ic in  ${list_of_catversions[@]};
+          do
+          echo $ic
+        done
+
+	exit 1
+    fi
+
+fi
+
 
 outdir="/data2/CAT_SKTreeOutput/JobOutPut/"$USER"/LQanalyzer/"
 if [[ ! -d "${outdir}" ]]; then
@@ -888,6 +938,49 @@ if [[  $job_cycle != "SKTreeMaker"* ]];
 fi
 
 outputdir_mc=${outputdir_analyzer}"/"${dir_tag}
+
+
+if [[ $USER == "jalmond" ]];
+    then
+    
+    if [[  $job_cycle != "SKTreeMaker"* ]];
+    then
+	
+	if [[ ! -d "${outputdir_mc}" ]]; then
+            mkdir ${outputdir_mc}
+            echo "Making " + ${outputdir_mc}
+	fi
+    fi
+    DATE=`date +%Y-%m-%d`
+    if [[ $submit_dir_tag != "NULL" ]]; then
+	dir_tag=${dir_tag}$submit_dir_tag"/"
+    else
+	dir_tag=${dir_tag}${DATE}"/"
+    fi
+    outputdir_mc=${outputdir_analyzer}"/"${dir_tag}
+
+
+    if [[  $job_cycle != "SKTreeMaker"* ]];
+    then
+	
+        if [[ ! -d "${outputdir_mc}" ]]; then
+            mkdir ${outputdir_mc}
+            echo "Making " + ${outputdir_mc}
+        fi
+    fi
+ 
+    if [[  $job_cycle != "SKTreeMaker"* ]];
+    then
+
+        if [[ ! -d "${outputdir_mc}" ]]; then
+            mkdir ${outputdir_mc}
+            echo "Making " + ${outputdir_mc}
+        fi
+	echo "Copying "
+	cp -r $LQANALYZER_DIR/LQAnalysis/ $outputdir_mc
+    fi
+fi
+
 outputdir_data=${outputdir_mc}"Data/"
 outputdir_np=${outputdir_mc}"Fake/"
 
@@ -923,6 +1016,19 @@ if [[ $runDATA == "true" ]];
           fi
         done
     fi
+    if [[ $job_skim == *"SS"* ]];
+    then
+        for stream_check in ${out_streams_skimcheck[@]};
+          do
+          if [[ $stream_check == *"Single"* ]];
+              then
+              echo "LQanalyzer::sktree :: WARNING :: There are only special SSepton skims for "$stream_check" in catversion "$submit_version_tag
+
+              #exit 1                                                                                                                                                                
+          fi
+	  done
+    fi
+
 
     logger+=${out_streams_skimcheck[*]}":"
    
@@ -1134,6 +1240,15 @@ elif [[ $job_skim == "SKTree_TriLepSkim" ]]
         echo "LQanalyzer::sktree :: ERROR :: skim set  to SKTree_TriLepSkim: Yet you set -sktree <false>"
 	echo "Fix submission"
         exit 1
+    fi
+elif [[ $job_skim == "SKTree_SSLepSkim" ]]
+    then
+    echo $skim_output_message
+    if [[ $submit_skinput == "false" ]];
+        then
+        echo "LQanalyzer::sktree :: ERROR :: skim set  to SKTree_SSLepSkim: Yet you set -sktree <false>"
+        echo "Fix submission"
+	exit 1
     fi
 
 
@@ -1612,7 +1727,6 @@ if [[ $runDATA  == "true" ]];
           tagger=$RANDOM
       fi
       
-
       
       ### set all inputs to default in functions.sh
       source functions.sh
