@@ -186,6 +186,7 @@ void ElectronSelection::Selection(std::vector<KElectron>& leptonColl, TString Op
     // ID cut
     if(apply_ID){
       if     (GetString(k_id).Contains("POG"))             ElectronID = PassID(*el, k_id);
+      else if(GetString(k_id).Contains("HctoWA"))          ElectronID = PassID(*el, k_id);
       else if(GetString(k_id).Contains("ELECTRON_HN_MVA")) ElectronID = PassID(*el, k_id);
       else ElectronID = PassUserID( *el,GetString(k_id) , GetString(k_id), apply_chargeconst, apply_convcut,relIsoBarrel_max,relIsoEndcap_max,dxyBarrel_max,dxyEndcap_max,dzBarrel_max,dzEndcap_max, 999.,999.);
 
@@ -686,9 +687,9 @@ bool ElectronSelection::PassID(snu::KElectron el, ID id){
   else if( id == ELECTRON_HN_MVA_LOOSE && (!el.PassTrigMVAHNLoose())  ){ pass_selection = false; }
   else if( id == ELECTRON_HN_MVA_TIGHT && (!el.PassTrigMVAHNTightv4())  ){ pass_selection = false; }
   else if( id == ELECTRON_HctoWA_FAKELOOSE ){
-    if     ( fabs(el.Eta())<0.8   ){ if( el.MVA()<-0.7 ) pass_selection=false; }
-    else if( fabs(el.Eta())<1.479 ){ if( el.MVA()<-0.5 ) pass_selection=false; }
-    else if( fabs(el.Eta())<2.5   ){ if( el.MVA()<-0.6 ) pass_selection=false; }
+    if     ( fabs(el.Eta())<0.8   ){ if( el.MVA()<-0.92 ) pass_selection=false; }
+    else if( fabs(el.Eta())<1.479 ){ if( el.MVA()<-0.85 ) pass_selection=false; }
+    else if( fabs(el.Eta())<2.5   ){ if( el.MVA()<-0.76 ) pass_selection=false; }
   }
 
   return pass_selection;
