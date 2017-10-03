@@ -496,6 +496,7 @@ bool MuonSelection::PassID(TString id, snu::KMuon mu, bool cutondxy, bool cutond
   }
 
   else if (id == "MUON_POG_MEDIUM") {
+    if(!(mu.IsMedium())) passID=false;//IF ID var for med. is saved this could be changed.
   }
 
   else if (id == "MUON_POG_TIGHT") {
