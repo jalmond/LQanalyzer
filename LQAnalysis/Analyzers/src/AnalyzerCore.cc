@@ -1359,8 +1359,12 @@ std::map<TString,BTagSFUtil*> AnalyzerCore::SetupBTagger(std::vector<TString> ta
   for(std::vector<TString>::const_iterator it = taggers.begin(); it != taggers.end(); it++){
     for(std::vector<TString>::const_iterator it2 = wps.begin(); it2 != wps.end(); it2++){
       if (it->Contains("CSVv2")){
-	tmpmap[*it + "_" + *it2 + "_lf"]= new BTagSFUtil("incl", (*it + "_BtoF").Data(), (*it + "_GtoH").Data(),  it2->Data());
-	tmpmap[*it +  "_" + *it2 + "_hf"]= new BTagSFUtil("mujets", (*it + "_BtoF").Data(),  (*it + "_GtoH").Data(), it2->Data());
+        tmpmap[*it + "_" + *it2 + "_lf"]          = new BTagSFUtil("incl"  , (*it + "_BtoF").Data(), (*it + "_GtoH").Data(), it2->Data());
+        tmpmap[*it + "_" + *it2 + "_hf"]          = new BTagSFUtil("mujets", (*it + "_BtoF").Data(), (*it + "_GtoH").Data(), it2->Data());
+        tmpmap[*it + "_" + *it2 + "_lf_systup"]   = new BTagSFUtil("incl"  , (*it + "_BtoF").Data(), (*it + "_GtoH").Data(), it2->Data(),  3);  
+        tmpmap[*it + "_" + *it2 + "_hf_systup"]   = new BTagSFUtil("mujets", (*it + "_BtoF").Data(), (*it + "_GtoH").Data(), it2->Data(),  1);  
+        tmpmap[*it + "_" + *it2 + "_lf_systdown"] = new BTagSFUtil("incl"  , (*it + "_BtoF").Data(), (*it + "_GtoH").Data(), it2->Data(), -3); 
+        tmpmap[*it + "_" + *it2 + "_hf_systdown"] = new BTagSFUtil("mujets", (*it + "_BtoF").Data(), (*it + "_GtoH").Data(), it2->Data(), -1);
 	// tmpmap[*it +  "_" + *it2 + "_hfcomb"]= new BTagSFUtil("comb", it->Data(), it2->Data());                /// SWITCH ON IF USER NEEDS THIS METHOD  
 	// tmpmap[*it +  "_" + *it2 + "iterativefit"]= new BTagSFUtil("iterativefit", it->Data(), it2->Data());   /// SWITCH ON IF USER NEEDS THIS METHOD
       }
@@ -3913,7 +3917,7 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
 }
 
 
-float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod){
+float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod, TString Option){
 
   //BTag SF from 1a method.
   //This is coded for H+->WA analysis. I'm fine with anybody else using this function, but be aware that HN analyses decided to use 2a method.
@@ -3936,8 +3940,20 @@ float AnalyzerCore::BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, KJet::Tag
   if(tag== snu::KJet::CSVv2)  tag_string ="CSVv2Moriond17_2017_1_26";
   if(tag== snu::KJet::cMVAv2) tag_string ="cMVAv2Moriond17_2017_1_26";
 
-  btag_key_lf = tag_string+"_"+wp_string+"_lf";
-  btag_key_hf = tag_string+"_"+wp_string+"_hf";
+  TString Str_SystDir_L="", Str_SystDir_BC="";
+  if(Option.Contains("Syst")){
+    if(Option.Contains("Up")){
+      if     (Option.Contains("LTag"))  Str_SystDir_L ="_systup";
+      else if(Option.Contains("BCTag")) Str_SystDir_BC="_systup";
+    }
+    else if(Option.Contains("Down")){
+      if     (Option.Contains("LTag"))  Str_SystDir_L ="_systdown";
+      else if(Option.Contains("BCTag")) Str_SystDir_BC="_systdown";
+    }
+  }
+
+  btag_key_lf = tag_string+"_"+wp_string+"_lf"+Str_SystDir_L;
+  btag_key_hf = tag_string+"_"+wp_string+"_hf"+Str_SystDir_BC;
   std::map<TString,BTagSFUtil*>::iterator it_lf = MapBTagSF.find(btag_key_lf);
   std::map<TString,BTagSFUtil*>::iterator it_hf = MapBTagSF.find(btag_key_hf);
 
