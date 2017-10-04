@@ -1,2 +1,2 @@
-DiMuonSSMM_DiJet_veto
+DiMuonSSMM_FatJet
 END
