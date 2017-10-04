@@ -31,7 +31,7 @@ class HNDiLepton : public AnalyzerCore {
 
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
-  void FillEventCutFlow(int cf,TString cut,  float weight);
+  void FillEventCutFlow(int cf,TString cut,  float weight, TString label);
   void FillEventCutFlow(TString cut, TString label , float weight);
 
   float WeightCFEvent(std::vector<snu::KElectron> electrons, bool runchargeflip);  
