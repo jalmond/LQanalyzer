@@ -589,9 +589,6 @@ void  AnalyzerCore::CorrectedMETMuon( int sys, std::vector<snu::KMuon> muall,   
   
   OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
   OriginalMETPhi = TMath::ATan2(met_y,met_x);
-  float TOriginalMETPhi = TMath::ATan2(met_x,met_y);
-  cout << "phi " <<  OriginalMETPhi << " " << TOriginalMETPhi << endl;
-  
 }
 
 
