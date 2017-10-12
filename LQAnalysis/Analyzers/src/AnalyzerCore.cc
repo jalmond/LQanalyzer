@@ -3897,7 +3897,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 }
 
 
-bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod){
+bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod, int syst){
 
   if(mcperiod == 0) {
     Message("mcperiod not set in AnalyzerCore::IsBTagged. Will assign mcperiod for you but this may not give correct behaviour", WARNING);      
@@ -3920,6 +3920,30 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
 
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
+
+  if(syst==0){
+
+  }
+  //==== Heavy (Eff) Up
+  else if(syst==1){
+    btag_key_hf += "_systup";
+  }
+  //==== Heavy (Eff) Down
+  else if(syst==-1){
+    btag_key_hf += "_systdown";
+  }
+  //==== Light (Miss) Up
+  else if(syst==3){
+    btag_key_lf += "_systup";
+  }
+  //==== Light (Miss) Down
+  else if(syst==-3){
+    btag_key_lf += "_systdown";
+  }
+  else{
+    // wrong syst?
+  }
+
   std::map<TString,BTagSFUtil*>::iterator it_lf = MapBTagSF.find(btag_key_lf);
   std::map<TString,BTagSFUtil*>::iterator it_hf = MapBTagSF.find(btag_key_hf);
 
