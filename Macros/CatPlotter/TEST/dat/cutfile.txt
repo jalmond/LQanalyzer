@@ -1,2 +1,2 @@
-DiMuonSSMM_FatJet
+DiMuon_lowjetptSSLL_LowMass_SR2
 END

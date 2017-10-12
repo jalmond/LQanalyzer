@@ -79,7 +79,7 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
 
   //###### JET SELECTION  ################
   Message("Selecting jets", DEBUG);
-  eventbase->GetJetSel()->SetPt(20);
+  eventbase->GetJetSel()->SetPt(10);
   eventbase->GetJetSel()->SetEta(5.);
   eventbase->GetJetSel()->BasicSelection(out_jets);
   

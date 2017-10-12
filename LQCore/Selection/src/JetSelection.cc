@@ -164,7 +164,6 @@ void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<KMuon> muo
     
     bool pass_selection=true;
     if (!PassUserID(*jit, vids)) pass_selection=false;
-
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
   }
 

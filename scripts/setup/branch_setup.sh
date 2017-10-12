@@ -14,7 +14,10 @@
 echo "Setting up environment for compiling/running CATAnalzer with SKTree"
 
 setupok=False
-alias killbkg="python python/killbkg.py "$1
+
+function killbkg {
+    python $LQANALYSER_DIR/python/killbkg.py -i $1
+}
 
 
 while read line
@@ -32,6 +35,20 @@ if [[ $setupok == "False" ]]; then
     return 1
 fi
 
+if [[ $USER == "jalmond" ]]; then
+    alias cat_path_analysis_ls='ll -rth /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/ '
+    if [ $LQANALYZER_DIR ]; then
+	echo "Running on batch"
+    else
+	source python/jalmondsetup.sh
+    fi
+    function cat_path_analysis_ls {
+        ll -rth  /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
+    }
+    function cat_path_analysis {
+	cd /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
+    }
+fi
 
 
 
@@ -59,6 +76,8 @@ fi
 
 
 
+
+
 ## variables that are specific to your machine: Change if noy listed
 if [ "$HOSTNAME" = "cms2.snu.ac.kr" ] || [ "$HOSTNAME" = "cms1.snu.ac.kr" ]; then    
     source /share/apps/root_v5-34-32/root/bin/thisroot.sh 
@@ -72,6 +91,13 @@ fi
 
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
+
+
+
+if [[ $USER == "jalmond" ]]; then
+    python python/setupAN.py
+fi
+
 
 
 if [[ $1 == *"v7"* ]]; then
@@ -194,6 +220,8 @@ export yeartag="80X/"
 
 
 
+alias cathistcounter="source scripts/Counter.sh "
+alias catcutflowcounter="source scripts/CutFlow.sh "
 alias sktree="bash submitSKTree.sh"
 alias sktreemaker="bash submitSKTree.sh -M True "
 alias sktree_val="bash submitSKTree.sh -V True "

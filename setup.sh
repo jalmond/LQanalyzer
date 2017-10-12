@@ -19,6 +19,7 @@ function killbkg {
     python $LQANALYSER_DIR/python/killbkg.py -i $1
 }
 
+
 while read line
   do
   if [[ $line == *"LANG"* ]]; then
@@ -35,8 +36,18 @@ if [[ $setupok == "False" ]]; then
 fi
 
 if [[ $USER == "jalmond" ]]; then
-    
-    source python/jalmondsetup.sh
+    alias cat_path_analysis_ls='ll -rth /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/ '
+    if [ $LQANALYZER_DIR ]; then
+	echo "Running on batch"
+    else
+	source python/jalmondsetup.sh
+    fi
+    function cat_path_analysis_ls {
+        ll -rth  /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
+    }
+    function cat_path_analysis {
+	cd /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer/data/output/CAT/HNDiLepton/periodBtoH/${1}
+    }
 fi
 
 
@@ -80,6 +91,14 @@ fi
 
 # speficy the LQANALYZER_DIR base directory, i.e., the directory in which this file lives
 export LQANALYZER_DIR=${PWD}
+
+
+
+if [[ $USER == "jalmond" ]]; then
+    python python/setupAN.py
+fi
+
+
 
 if [[ $1 == *"v7"* ]]; then
     echo "Setting up tag "$1
@@ -148,7 +167,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE Tag
+source $CHECKTAGFILE branch
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -193,11 +212,12 @@ if [[ $1 != "" ]];then
         return 1
     fi
     
-    source $CHECKTAGFILE Tag
+    source $CHECKTAGFILE branch
     export LIBTAG=$CATVERSION
 fi
 
 export yeartag="80X/"
+
 
 
 alias cathistcounter="source scripts/Counter.sh "
