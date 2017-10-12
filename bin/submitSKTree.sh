@@ -41,7 +41,9 @@ job_njobs=2
 job_skim="SKTree_LeptonSkim"
 changed_skim=false
 job_output_dir=""
+job_tmp_filename="None"
 
+RUNSIG="false"
 make_sktrees="False"
 GetOutPutDir="False"
 run_validation="False"
@@ -87,7 +89,7 @@ set_submit_sampletag=false
 set_sktreemaker_debug=false
 
 
-TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+
 FLATCAT_MC="/data2/DATA/cattoflat/MC/"
 SKTREE_MC="/data2/CatNtuples/"
 if [ $HOSTNAME == "cmscluster.snu.ac.kr" ];
@@ -102,7 +104,11 @@ is_mc=""
 ### Get predefined lists
 source ${LQANALYZER_DIR}/LQRun/txt/list_all_mc_${submit_version_tag}.sh
 ### setup list of samples and other useful functions
+TXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_nonsig_"
 source submit_setup.sh
+
+OLDTXTPATH=${LQANALYZER_RUN_PATH}"/txt/datasets_snu_"
+
 
 if [[ $submit_sampletag  == "" ]];
 then
@@ -454,7 +460,7 @@ if [[ $submit_file_tag  != ""  ]];
 			isoldname=true;
 		    fi
 		fi
-	      done < ${TXTPATH}"CAT_mc_${oclist}.txt"
+	      done < ${OLDTXTPATH}"CAT_mc_${oclist}.txt"
 
 	    done
 	    
@@ -951,7 +957,8 @@ if [[ $USER == "jalmond" ]];
             echo "Making " + ${outputdir_mc}
 	fi
     fi
-    DATE=`date +%Y-%m-%d`
+    DATE=`date -dlast-monday +%Y-%m-%d`
+
     if [[ $submit_dir_tag != "NULL" ]]; then
 	dir_tag=${dir_tag}$submit_dir_tag"/"
     else
@@ -1737,8 +1744,9 @@ if [[ $runDATA  == "true" ]];
       if [[ $runboth  == "false" ]];
       then
 	  run_in_bkg=${job_run_bkg}
+	  
       else
-	  run_in_bkg="True"
+	  sendemail="True"
       fi
       echo "LQanalyzer::sktree :: INFO :: queue ="$queuename
       queue=${queuename}
@@ -1759,7 +1767,7 @@ if [[ $runDATA  == "true" ]];
       drawhists=${submit_draw}
       setnjobs=${changed_job_njobs}
       submitallfiles=${job_submitallfiles}
-
+      tmpfilename=${job_tmp_filename}
       if [[ $changed_job_output_dir == "true" ]];
 	  then
 	  outputdir=${job_output_dir}
@@ -1851,6 +1859,14 @@ if [[ $runMC  == "true" ]];
     ### set all inputs to default in functions.sh
     source functions.sh
     
+    if [[ $runboth  == "false" ]];
+      then
+        run_in_bkg=${job_run_bkg}
+      else
+        sendemail="True"
+    fi
+
+
     #### change input to those specified in sktree command
     run_in_bkg=${job_run_bkg}
     cycle=${job_cycle}
@@ -1873,7 +1889,8 @@ if [[ $runMC  == "true" ]];
     runcf=${job_run_flip}
     drawhists=${submit_draw}
     submitallfiles=${job_submitallfiles}
-      
+    tmpfilename=${job_tmp_filename}
+
 
 
     if [[ $submit_file_tag  != ""  ]];

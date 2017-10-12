@@ -369,9 +369,9 @@ void AnalyzerCore::SetupLuminosityMap(bool initialsetup, TString forceperiod){
   else{
     if(singleperiod== "B")   lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_272007_275376.txt";
     else if(singleperiod=="C")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_275657_276283.txt";
-    else if(singleperiod=="D")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
+    else if(singleperiod=="D")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
     else if(singleperiod=="E")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276831_277420.txt";
-    else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_276315_276811.txt";
+    else if(singleperiod=="F")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_277772_278808.txt";
     else if(singleperiod=="G")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_284044.txt";
     else if(singleperiod.Contains("H"))lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_278820_280385.txt";
     else if(singleperiod=="GH")lumitriggerpath=lqdir + "/data/Luminosity/"+getenv("yeartag")+"/triggers_catversion_" + getenv("CATVERSION")+"_280919_280385.txt";
@@ -421,22 +421,37 @@ bool  AnalyzerCore::Check(float val){
   return true;
 }
 
-float AnalyzerCore::MC_CR_Correction(TString ID){
-  if(ID == "MUON_HN_TIGHT"){
-    if(k_sample_name.Contains("")) return 1.;
-  }
-  if(ID== "ELECTRON_HN_TIGHTv5"){
-    if(k_sample_name.Contains("")) return 1.;
-  }
-  //...... This function needs filling 
+float AnalyzerCore::MC_CR_Correction(int syst){
+  
+  float fsyst = 0.;
+  if(syst==1) fsyst=1.;
+  if(syst==-1) fsyst=-1.;
+
+  ///  updated 2 Oct
+
+  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.974439  + fsyst*0.061763;
+  if(k_sample_name.Contains("ZGto2LG")) return  0.822969 + fsyst*0.141269;
+  if(k_sample_name.Contains("WGtoLNuG")) return 1.;
+  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4e")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4mu")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ggZZto4tau")) return 0.922148 + fsyst*0.0859548;
+  
   return 1.;
 }
 
 float AnalyzerCore::GetTriggerPrescaleCorrection(TString triggername){
   float corr_trig=1.;
-  if(triggername== "HLT_Mu3_PFJet40") corr_trig = 0.728;
-  if(triggername== "HLT_Mu8_TrkIsoVVL") corr_trig = 1.399;
+
+  if(triggername.Contains( "HLT_Mu3_PFJet40_v")) corr_trig = 0.728;
+  if(triggername.Contains("HLT_Mu8_TrkIsoVVL_v")) corr_trig = 1.399;
   return corr_trig;
+
 }
 
 
@@ -471,7 +486,7 @@ float AnalyzerCore::GetKFactor(){
     
 }
 
-float AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall,bool update_met){
+void  AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall){
 
   /// function returns corrected met + can be used to set event met to corrected met
 
@@ -493,24 +508,25 @@ float AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall,bool up
     met_y = met_y + py_orig - py_corrected;	
   }
   
-  if(update_met){
-    if(!eventbase->GetEvent().PropagatedRochesterToMET()){
-      snu::KEvent tempev = eventbase->GetEvent();
-      tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), eventbase->GetEvent().METPhi(), eventbase->GetEvent().SumET());
-      tempev.SetPFMETx(met_x);
-      tempev.SetPFMETy(met_y);
-      tempev.SetPropagatedRochesterToMET(true);
-      eventbase->SetEventBase(tempev);
-    }
+  if(!eventbase->GetEvent().PropagatedRochesterToMET()){
+    snu::KEvent tempev = eventbase->GetEvent();
+    tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), TMath::ATan2(met_y,met_x), eventbase->GetEvent().SumET());
+    tempev.SetPFMETx(met_x);
+    tempev.SetPFMETy(met_y);
+    tempev.SetPropagatedRochesterToMET(true);
+    eventbase->SetEventBase(tempev);
   }
-  return sqrt(met_x*met_x + met_y*met_y);
+
+  return;
 }   
 
 
 
 
 
-float AnalyzerCore::CorrectedMETElectron(std::vector<snu::KElectron> elall, int sys){
+void  AnalyzerCore::CorrectedMETElectron(int sys, std::vector<snu::KElectron> elall,  double& OrignialMET, double& OriginalMETPhi){
+
+  if(sys==0) return;
 
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
@@ -534,17 +550,26 @@ float AnalyzerCore::CorrectedMETElectron(std::vector<snu::KElectron> elall, int 
   }
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;
-
-
-  return sqrt(met_x*met_x + met_y*met_y);
+  OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
+  OriginalMETPhi = TMath::ATan2(met_y,met_x);
+  
 
 }
 
-float AnalyzerCore::CorrectedMETMuon( std::vector<snu::KMuon> muall, int sys){
+void  AnalyzerCore::CorrectedMETMuon( int sys, std::vector<snu::KMuon> muall,   double& OrignialMET, double& OriginalMETPhi){
   
+  if(sys==0) return;
+  
+  float met_x1 = OrignialMET*TMath::Cos(OriginalMETPhi);
+  float met_y1 = OrignialMET*TMath::Sin(OriginalMETPhi);
+
+  cout << "MET " << OrignialMET << " " << eventbase->GetEvent().PFMET() << endl;
+
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
   
+  cout << met_x1 << " " << met_x << endl;
+
   float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
   for(unsigned int imu=0; imu < muall.size() ; imu++){
     
@@ -562,14 +587,16 @@ float AnalyzerCore::CorrectedMETMuon( std::vector<snu::KMuon> muall, int sys){
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;
   
-  
-  return sqrt(met_x*met_x + met_y*met_y);
-  
+  OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
+  OriginalMETPhi = TMath::ATan2(met_y,met_x);
 }
 
 
 
-float AnalyzerCore::CorrectedMETJES(vector<snu::KJet> jetall, int sys){
+void  AnalyzerCore::CorrectedMETJES(int sys, vector<snu::KJet> jetall, double& OrignialMET, double& OriginalMETPhi){
+
+
+  if(sys==0) return;
 
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
@@ -596,13 +623,15 @@ float AnalyzerCore::CorrectedMETJES(vector<snu::KJet> jetall, int sys){
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;
 
+  OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
+  OriginalMETPhi = TMath::ATan2(met_y,met_x);
 
-  return sqrt(met_x*met_x + met_y*met_y);
 
 }
 
 
-float AnalyzerCore::CorrectedMETJER(vector<snu::KJet> jetall, int sys){
+void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, double& OrignialMET, double& OriginalMETPhi){
+
 
   float met_x =eventbase->GetEvent().PFMETx();
   float met_y =eventbase->GetEvent().PFMETy();
@@ -629,7 +658,9 @@ float AnalyzerCore::CorrectedMETJER(vector<snu::KJet> jetall, int sys){
   met_y = met_y + py_orig - py_shifted;
 
 
-  return sqrt(met_x*met_x + met_y*met_y);
+  OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
+  OriginalMETPhi = TMath::ATan2(met_y,met_x);
+
 
 }
 
@@ -3866,7 +3897,7 @@ int AnalyzerCore::NBJet(std::vector<snu::KJet> jets,  KJet::Tagger tag, KJet::WO
 }
 
 
-bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod){
+bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POINT wp, int mcperiod, int syst){
 
   if(mcperiod == 0) {
     Message("mcperiod not set in AnalyzerCore::IsBTagged. Will assign mcperiod for you but this may not give correct behaviour", WARNING);      
@@ -3889,6 +3920,30 @@ bool AnalyzerCore::IsBTagged(snu::KJet jet,  KJet::Tagger tag, KJet::WORKING_POI
 
   btag_key_lf = tag_string+"_"+wp_string+"_lf";
   btag_key_hf = tag_string+"_"+wp_string+"_hf";
+
+  if(syst==0){
+
+  }
+  //==== Heavy (Eff) Up
+  else if(syst==1){
+    btag_key_hf += "_systup";
+  }
+  //==== Heavy (Eff) Down
+  else if(syst==-1){
+    btag_key_hf += "_systdown";
+  }
+  //==== Light (Miss) Up
+  else if(syst==3){
+    btag_key_lf += "_systup";
+  }
+  //==== Light (Miss) Down
+  else if(syst==-3){
+    btag_key_lf += "_systdown";
+  }
+  else{
+    // wrong syst?
+  }
+
   std::map<TString,BTagSFUtil*>::iterator it_lf = MapBTagSF.find(btag_key_lf);
   std::map<TString,BTagSFUtil*>::iterator it_hf = MapBTagSF.find(btag_key_hf);
 

@@ -5,7 +5,9 @@ fi
 cd $LQANALYZER_DIR/scripts/Luminosity/
 root -b -l <<EOF
 .L GetEffectiveLuminosity.C+g
-GetEffectiveLuminosity("$1","$2","$3");
+GetEffectiveLuminosity("$1",0, "$2","$3");
+GetEffectiveLuminosity("$1",1,"$2","$3");
+GetEffectiveLuminosity("$1",2,"$2","$3");
 .q;
 EOF
 #bash cleanup.sh
