@@ -456,6 +456,8 @@ void MakeCutFlow(string type){
     histpage << "<a href=\"" << cut_label.at(i_cut)  << ".pdf\">";
     histpage << "Cutflow: " + cut_label.at(i_cut)  + ".pdf</p>";
     histpage << "</td>" << endl;
+    histpage <<  "<embed src=\""  + cut_label.at(i_cut)  + ".pdf width=\"500px\" height=\"300px\" />" << endl ;
+
   }
 
   return;
