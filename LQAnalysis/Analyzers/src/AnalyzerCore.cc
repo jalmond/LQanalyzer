@@ -3544,10 +3544,10 @@ float AnalyzerCore::GetCFweight(int syst, std::vector<snu::KElectron> electrons,
   for(int i=0; i<lep.size(); i++){
     if(apply_sf){
       if(fabs(lep.at(i).SCEta()) < 1.4442){
-        sf.push_back(0.693589 + (syst*0.693589*0.13));
+        sf.push_back(0.693589 + (syst*0.693589*0.11));
       }
       else{
-        sf.push_back(0.684761 + (syst*0.684761*0.09));
+        sf.push_back(0.684761 + (syst*0.684761*0.08));
       }
     }
     else{
