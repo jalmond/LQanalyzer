@@ -80,7 +80,7 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std
 
     if(!Syst_JER){
       *jit *= jit->SmearedRes();
-      cout << "jit->PrunedMass() = " << jit->PrunedMass() << endl;
+      //cout << "jit->PrunedMass() = " << jit->PrunedMass() << endl;
       jit->SetPrunedMass(jit->PrunedMass()* jit->SmearedRes());
     }
     if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledUpEnergy());}
