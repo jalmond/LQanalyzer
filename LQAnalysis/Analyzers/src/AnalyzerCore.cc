@@ -145,7 +145,7 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
 	is >> ev;
 	is >> met;
 	is >> tmp;
-	//if(blank2!=user) break;
+	if(blank2!=user) break;
 	list1[ev] =run;
 	continue;
       }
@@ -173,7 +173,7 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
 	is >> ev;
 	is >> met;
 	is >> tmp;
-	//if(blank2!=user) break;
+	if(blank2!=user) break;
 	list2[ev] =run;
 	continue;
       }
