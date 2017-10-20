@@ -65,7 +65,7 @@ KParticle()
   k_fatl3jetcorr=-999.;
   k_fatl2l3resjetcorr=-999.;
   k_fatjetarea=-999.;
-
+  k_fatjet_miniaodpt=-999;
 }
 
 /**
@@ -123,6 +123,7 @@ KFatJet::KFatJet(const KFatJet& jet) :
   k_fatl3jetcorr=jet.L3JetCorr();
   k_fatl2l3resjetcorr=jet.L2L3ResJetCorr();
   k_fatjetarea=jet.JetArea();
+  k_fatjet_miniaodpt= jet.MiniAODPt();
 }
 
 
@@ -181,7 +182,7 @@ void KFatJet::Reset()
     k_fatl3jetcorr=-999.;
     k_fatl2l3resjetcorr=-999.;
     k_fatjetarea=-999.;
-
+    k_fatjet_miniaodpt=-999;
 }
 
 
@@ -237,11 +238,12 @@ KFatJet& KFatJet::operator= (const KFatJet& p)
       k_fatl3jetcorr=p.L3JetCorr();
       k_fatl2l3resjetcorr=p.L2L3ResJetCorr();
       k_fatjetarea=p.JetArea();
-
+      k_fatjet_miniaodpt= p.MiniAODPt();
     }
 
     return *this;
 }
+
 
 
 
@@ -278,6 +280,9 @@ float KFatJet::GetSmearedMassRes(int sys) const {
 
 }
 
+void KFatJet::SetMiniAODPt(double fpt){
+  k_fatjet_miniaodpt= fpt;
+}
 void KFatJet::SetL1JetCorr(double corr){
   k_fatl1jetcorr=corr;
 }

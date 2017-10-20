@@ -94,6 +94,7 @@ KEvent::KEvent() :
   k_catversion(""),
   k_rho(-999.),
   prop_metrc(false),
+  prop_metjmr(false),
   k_top_reweight(1.)
 {
 
@@ -186,7 +187,8 @@ KEvent::KEvent(const KEvent& ev) :
   k_pu_gold_weightH(ev.k_pu_gold_weightH),
 
   k_catversion(ev.k_catversion),
-  prop_metrc(ev.prop_metrc)
+  prop_metrc(ev.prop_metrc),
+  prop_metjmr(ev.prop_metjmr)
 
 {
 }
@@ -284,6 +286,7 @@ void KEvent::Reset()
   k_rho= -999.;
 
   prop_metrc=false;
+  prop_metjmr=false;
   k_top_reweight=1.;
 }
 
@@ -382,6 +385,7 @@ KEvent& KEvent::operator= (const KEvent& p)
       k_rho= p.Rho();
 	
       prop_metrc = p.PropagatedRochesterToMET();
+      prop_metjmr = p.PropagatedJMRToMET();
       k_top_reweight=p.TopReweight();
     }
     
@@ -403,6 +407,10 @@ void KEvent::SetTopPtReweight(double topw){
 void KEvent::SetPropagatedRochesterToMET(bool hasprop){
   prop_metrc = hasprop;
 }
+void KEvent::SetPropagatedJMRToMET(bool hasprop){
+  prop_metjmr = hasprop;
+}
+
 
 void KEvent::SetPassCSCHaloFilterTight(bool pass){
   k_passCSCHaloFilterTight = pass;

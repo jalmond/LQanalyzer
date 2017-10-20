@@ -60,6 +60,7 @@ namespace snu {
 
     inline Double_t JetArea() const{return k_fatjetarea;}
 
+    inline Double_t  MiniAODPt() const{return k_fatjet_miniaodpt;}
     //Multiplicities
     //// Pileup MVA to be added
     
@@ -91,7 +92,7 @@ namespace snu {
     void SetSmearedResUp(double jetsmearresup);
     void SetSmearedRes(double jetsmearresup);
     
-    
+    void SetMiniAODPt(double pt);
     void SetTau1(double tau1);
     void SetTau2(double tau2);
     void SetTau3(double tau3);
@@ -209,7 +210,9 @@ namespace snu {
 
     Double_t k_fatl1jetcorr, k_fatl2jetcorr,k_fatl3jetcorr,k_fatl2l3resjetcorr,k_fatjetarea;
 
-    ClassDef(KFatJet,2)
+    Double_t k_fatjet_miniaodpt;
+
+    ClassDef(KFatJet,3)
   }; 
   
 

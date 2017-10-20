@@ -362,14 +362,28 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet>  jets_all20 =  GetJets("JET_HN", 20., 2.5);
   std::vector<snu::KJet>  jets_10 = GetJetsWFT("JET_HN", "FATJET_HN_tau06",10., 2.7);
   std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN_tau06");
-  if(fatjetcoll.size() > 0)       cout << "jit->PrunedMass() = " << fatjetcoll[0].PrunedMass() << endl;
 
+  /// correct L1 JEC and apply JMR
+  std::vector<snu::KFatJet> fatjetcoll_updated = GetCorrectedFatJet(fatjetcoll);
+  CorrectedMETJMR(fatjetcoll_updated);
+
+  if(fatjetcoll.size() > 0)       {
+    
+    fatjetcoll[0] *= fatjetcoll[0].SmearedRes();
+    fatjetcoll[0].SetPrunedMass(fatjetcoll[0].PrunedMass()*fatjetcoll[0].SmearedRes());
+    snu::KFatJet  fj(fatjetcoll[0]);
+    cout << "HN2 jit->PrunedMass() = " << fj.PrunedMass() << " " << fatjetcoll[0].PrunedMass()<< " "<< fatjetcoll[0].Pt() << " " << fj.Pt() <<endl;
+    
+    std::vector<snu::KFatJet> fatjetcoll_updated = GetCorrectedFatJet(fatjetcoll);
+    cout << "HN3 jit->PrunedMass() = " << fatjetcoll_updated[0].PrunedMass() << " " << fatjetcoll_updated[0].Pt() << endl;
+  }
+  cout << "TEST" << endl;
   std::vector<snu::KFatJet> fatjetcoll2 = GetFatJets("FATJET_HN_tau045");
   
   vector<int> ijets;  
-
   
-
+  
+  
   if(functionality==HNDiLepton::OPT){
     return;
   }
@@ -441,7 +455,10 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
     
     //if(_mm_channel)RunMM("DiMuon_tightveto",      muons,muons,electrons,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon           ,20., 10.);
+
+    cout << "TEST 2" << endl;
     if(_mm_channel)RunMM("DiMuon",      muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
+    return;
     if(_mm_channel)RunMM("DiMuon_all",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
     if(fatjetcoll.size() ==0) {
       if(_mm_channel)RunMM("DiMuon_NoFAT",      muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
@@ -550,6 +567,8 @@ void HNDiLepton::RunEE(TString label, vector<snu::KElectron> electrons, vector<s
 
 void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KElectron> electrons_veto, vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, vector<snu::KJet> tjets,float ll_weight ,vector<TString> ll_trig, float pt1, float pt2){
   
+  cout << label << endl;
+
   int ichannel = 0;
   if (channel=="EE") ichannel=1;
   if (channel=="EMU") ichannel=2;
