@@ -605,6 +605,9 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 20
        
+    if ncores_job == 0:
+         return 1
+
     if ncores_job == 1:
         return 1
 

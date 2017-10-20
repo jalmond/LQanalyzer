@@ -135,8 +135,6 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
       MakeCleverHistograms(llhist, label+"SSLL_HighMass_SR5");
       MakeCleverHistograms(llhist, label+"SSLL_HighMass_CR");
       MakeCleverHistograms(llhist, label+"SSLL_DiJet_noB");
-      MakeCleverHistograms(llhist, label+"SSLL_DiJet_fj2");
-      MakeCleverHistograms(llhist, label+"SSLL_DiJet_fj3");
       MakeCleverHistograms(llhist, label+"SSLL_DiJet_j27");
       MakeCleverHistograms(llhist, label+"SSLL_DiJet_pujet");
       MakeCleverHistograms(llhist, label+"SSLL_DiJet_tightjet");
@@ -200,7 +198,7 @@ void HNDiLepton::InitialiseAnalysis() throw( LQError ) {
 
 void HNDiLepton::DoCutFlow(float w){
 
-  std::vector<snu::KElectron> electrons_veto = GetElectrons(false,false,"ELECTRON_HN_VETO");
+  std::vector<snu::KElectron> electrons_veto = GetElectrons(true,true,"ELECTRON_HN_VETO");
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 0., 2.5);
   std::vector<snu::KJet> jets = GetJets("JET_HN");
 
@@ -217,7 +215,7 @@ void HNDiLepton::DoCutFlow(float w){
 	if(muons[0].Pt() > 20){
 	  counter( "3_DiMu", w);
 
-	  std::vector<snu::KMuon> muons_veto         = GetMuons("MUON_HN_VETO",false);
+	  std::vector<snu::KMuon> muons_veto         = GetMuons("MUON_HN_VETO",true);
 	  if(muons_veto.size()!=2) {
 
 	    m_logger << INFO  << "RunNumber/Event Number = "  << eventbase->GetEvent().RunNumber() << " : " << eventbase->GetEvent().EventNumber() << LQLogger::endmsg;
@@ -279,11 +277,11 @@ void HNDiLepton::DoCutFlow(float w){
 
 void HNDiLepton::ExecuteEvents()throw( LQError ){
   
-  cout << eventbase->GetEvent().PdfWeights().size() << endl;
+  /*
   for(unsigned int ipdf=0; ipdf < eventbase->GetEvent().PdfWeights().size() ; ipdf++){
     cout << ipdf << " " << eventbase->GetEvent().PdfWeights().at(ipdf) << " " <<   eventbase->GetEvent().LHEWeight()<< " "<< eventbase->GetEvent().MCWeight() <<  endl;
     
-  }
+    }*/
   
   
   
@@ -354,18 +352,23 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   /// Set up electrons                                                                                                                                        
   std::vector<snu::KElectron> electrons = GetElectrons(elid);
-  std::vector<snu::KElectron> electrons_veto = GetElectrons("ELECTRON_HN_VETO");
+  std::vector<snu::KElectron> electrons_veto = GetElectrons(true, true,"ELECTRON_HN_VETO");
 
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
-  std::vector<snu::KJet> alljets_10 = GetJetsWFT("JET_NOLEPTONVETO", "FATJET_HN_noM",10., 2.5);
-  std::vector<snu::KJet> tchanjets = GetJetsWFT("JET_HN_TChannel","FATJET_HN_noM",20., 5.);
+  std::vector<snu::KJet> alljets_10 = GetJetsWFT("JET_NOLEPTONVETO", "FATJET_HN_tau06",10., 2.5);
+  std::vector<snu::KJet> tchanjets = GetJetsWFT("JET_HN_TChannel","FATJET_HN_tau06",20., 5.);
   
-  std::vector<snu::KJet>  jets_20 = GetJetsWFT("JET_HN", "FATJET_HN_noM",20., 2.5);
-  std::vector<snu::KJet>  jets_10 = GetJetsWFT("JET_HN", "FATJET_HN_noM",10., 2.7);
-  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN_noM");
-  std::vector<snu::KFatJet> fatjetcoll2 = GetFatJets("FATJET_HN_noM_tau04");
+  std::vector<snu::KJet>  jets_20 = GetJetsWFT("JET_HN", "FATJET_HN_tau06",20., 2.5);
+  std::vector<snu::KJet>  jets_all20 =  GetJets("JET_HN", 20., 2.5);
+  std::vector<snu::KJet>  jets_10 = GetJetsWFT("JET_HN", "FATJET_HN_tau06",10., 2.7);
+  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN_tau06");
+  if(fatjetcoll.size() > 0)       cout << "jit->PrunedMass() = " << fatjetcoll[0].PrunedMass() << endl;
+
+  std::vector<snu::KFatJet> fatjetcoll2 = GetFatJets("FATJET_HN_tau045");
   
   vector<int> ijets;  
+
+  
 
   if(functionality==HNDiLepton::OPT){
     return;
@@ -415,12 +418,31 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     if (!eventbase->GetEvent().HasGoodPrimaryVertex()) return;
     if(!PassMETFilter()) return;     /// Initial event cuts :                                                                                                                                                                                                                    
     
+    /*for(unsigned int ifj=0; ifj <fatjetcoll.size(); ifj++){
+      cout << fatjetcoll[ifj].Pt() << " " << fatjetcoll[ifj].L1JetCorr() 
+	   << " " << fatjetcoll[ifj].L2JetCorr()
+	   << " " <<fatjetcoll[ifj].L3JetCorr()
+	   << " " <<fatjetcoll[ifj].L2L3ResJetCorr() 
+	   << " " <<fatjetcoll[ifj].JetArea()
+	   << " " <<fatjetcoll[ifj].JECUncertainty()
+	   << " " <<fatjetcoll[ifj].ScaledDownEnergy()
+	   << " " <<fatjetcoll[ifj].ScaledUpEnergy()
+	   << " " <<fatjetcoll[ifj].SmearedResDown()	
+	   << " " <<fatjetcoll[ifj].SmearedResUp()
+	   << " " <<fatjetcoll[ifj].SmearedRes()
+	   << " " <<fatjetcoll[ifj].RawPt()
+	   << " " <<fatjetcoll[ifj].RawE()  << endl;
+	
+
+	   }*/
+    
     // if(_m_channel) RunMM("DiMuon_isomu", muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon_singleLep      ,25., 5.);
     //if(_mm_channel)RunMM("DiMuon_isomu", muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon      ,20., 10.);
 
     
     //if(_mm_channel)RunMM("DiMuon_tightveto",      muons,muons,electrons,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon           ,20., 10.);
     if(_mm_channel)RunMM("DiMuon",      muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
+    if(_mm_channel)RunMM("DiMuon_all",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
     if(fatjetcoll.size() ==0) {
       if(_mm_channel)RunMM("DiMuon_NoFAT",      muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
     }
@@ -655,7 +677,7 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
     TString elid=_e_tightid;
     if(k_running_nonprompt) elid=_e_looseid;
 
-
+    
     /// weight CF events 
 
     if(ichannel == 0) ll_weight *= MMWeight(muons,muid);
@@ -796,7 +818,8 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	}
 	
 	FillHist("Nveto_5",(muons_veto.size() +electrons_veto.size()), ll_weight, 0., 5., 5);
-	
+
+		
 	if(jets.size()==1) {
 	  if( ( ichannel==0 && GetDiLepMass(muons) > 110) || (ichannel==1 && GetDiLepMass(electrons) > 110)){
 	    FillCLHist(llhist, label+"SSLL_1JetCR", eventbase->GetEvent(), muons, electrons,jets, alljets, fatjets,  ll_weight);
@@ -879,6 +902,7 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	  }
 	  
 	}
+
 	if(jets.size() == 0)                   FillCLHist(llhist, label+"SSLL_0Jet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);
 	if(jets.size() == 1)                   FillCLHist(llhist, label+"SSLL_1Jet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);
 	if(jets.size() == 2)                   FillCLHist(llhist, label+"SSLL_2Jet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);
@@ -888,11 +912,10 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	
 	float jetpt=20.;
 	if(label.Contains("lowjetp")) jetpt=10.;
-	std::vector<snu::KJet>  jets_2p7 = GetJetsWFT("JET_HN", "FATJET_HN_noM",jetpt, 2.7);
-	std::vector<snu::KJet>  jets_pu = GetJetsWFT("JET_HN_PU", "FATJET_HN_noM",jetpt, 2.5);
-	std::vector<snu::KJet>  jets_tight = GetJetsWFT("JET_HN_TIGHT", "FATJET_HN_noM",jetpt, 2.5);
-	std::vector<snu::KJet>  jets_tightlv = GetJetsWFT("JET_HN_TIGHTLV", "FATJET_HN_noM",jetpt, 2.5);
-	std::vector<snu::KFatJet> fatjetcolltau04 = GetFatJets("FATJET_HN_noM_tau04");
+	std::vector<snu::KJet>  jets_2p7 = GetJetsWFT("JET_HN", "FATJET_HN_tau06",jetpt, 2.7);
+	std::vector<snu::KJet>  jets_pu = GetJetsWFT("JET_HN_PU", "FATJET_HN_tau06",jetpt, 2.5);
+	std::vector<snu::KJet>  jets_tight = GetJetsWFT("JET_HN_TIGHT", "FATJET_HN_tau06",jetpt, 2.5);
+	std::vector<snu::KJet>  jets_tightlv = GetJetsWFT("JET_HN_TIGHTLV", "FATJET_HN_tau06",jetpt, 2.5);
 	std::vector<snu::KFatJet> fatjetcoll_all = GetFatJets("FATJET_NOCUT");
 	
 	
@@ -902,11 +925,8 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	if(jets_tightlv.size() >1 )FillCLHist(llhist, label+"SSLL_DiJet_tightjetlv",  eventbase->GetEvent(), muons, electrons,jets_tightlv, alljets, fatjets,ll_weight);
 	  
 
-	if(jets.size() > 1 && fatjets.size()==0){
+	if(jets.size() > 1){
 	  FillHist("Nveto_6",(muons_veto.size() +electrons_veto.size()), ll_weight, 0., 5., 5);
-	  FillCLHist(llhist, label+"SSLL_DiJet_fj2", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjetcolltau04,ll_weight);
-	  FillCLHist(llhist, label+"SSLL_DiJet_fj3", eventbase->GetEvent(), muons, electrons,jets, alljets,fatjetcoll_all,ll_weight);
-
 
 	  FillEventCutFlow(4,"SSLL_DiJet",ll_weight,label);
 	  FillCLHist(llhist, label+"SSLL_DiJet", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);
@@ -1118,8 +1138,8 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 			      }
 			    }
 			  }
-			  
-			  if(GetDiLepMass(muons) < 70){
+			
+			  if(ichannel==1 && GetDiLepMass(muons) < 70){
 			    FillEventCutFlow(4,"SSLL_DiJet_passmll",ll_weight,label);
 			    
 			    if(muons[1].Pt() < 40. && muons[0].Pt() < 60. )FillCLHist(llhist, label+"SSLL_DiJet_passmll", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);   
@@ -1139,7 +1159,7 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	  }
 	}
       
-	
+
 	
 	int nf(0);
 	if(jets.size() > 2){
@@ -1150,8 +1170,8 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	  if(nf>0)FillCLHist(llhist, label+"SSLL_DiTJet", eventbase->GetEvent(), muons, electrons,tjets, alljets,  fatjets,ll_weight);
 	}
 	  
-	
 
+	
 	if( (ichannel==0 && CheckSignalRegion(true,muons,electrons_veto , jets, alljets,"LowMM", ll_weight)) || (ichannel==1 && CheckSignalRegion(true,muons_veto,electrons , jets, alljets,"LowEE", ll_weight))){
 	  if(nbjet_m==0){
 	    if(met < 80){
@@ -1199,7 +1219,7 @@ void HNDiLepton::RunLL(TString channel , TString label, vector<snu::KMuon> muons
 	  if(met > 100 || nbjet_m > 0)FillCLHist(llhist, label+"SSLL_LowMass_CR", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);
 	}
 	
-	if((ichannel==0 && CheckSignalRegion(true,muons,electrons_veto , jets, alljets,"HighMM", ll_weight)) || (ichannel==1 && CheckSignalRegion(true,muons_veto,electrons , jets, alljets,"HighEE", ll_weight) )){
+	if((ichannel==0 && CheckSignalRegion(true,muons,electrons_veto , jets, alljets,"HighMM", ll_weight)) ){
 	  if(nbjet_m==0){
 	    if(met2_st < 15) FillCLHist(llhist, label+"SSLL_HighMass_SR", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);
 	    if(met2_st < 10&& muons[1].Pt() > 20&&jets[0].Pt() > 25.) FillCLHist(llhist, label+"SSLL_HighMass_SR2", eventbase->GetEvent(), muons, electrons,jets, alljets,  fatjets,ll_weight);

@@ -629,7 +629,6 @@ void  AnalyzerCore::CorrectedMETJES(int sys, vector<snu::KJet> jetall, double& O
 
 }
 
-
 void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, double& OrignialMET, double& OriginalMETPhi){
 
 
@@ -664,6 +663,38 @@ void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, double& Or
 
 }
 
+float AnalyzerCore::GetFatJetSF(snu::KFatJet fjet, float tau21cut, int sys){
+  
+  float fsys = -1;
+  if(sys > 0) fsys =1;
+  if(sys==0) fsys=0.;
+  if(tau21cut == 0.45){
+    if((fjet.Tau2()/fjet.Tau1())  < 0.45)     return 0.88 + fsys*0.1;
+    else return 1.;
+  }
+  if(tau21cut == 0.6){
+    if((fjet.Tau2()/fjet.Tau1()) < 0.6)     return 1.11 + fsys*0.08;
+    else return 1.;
+  }
+  else return 1.;
+  
+}
+
+
+snu::KFatJet  AnalyzerCore::GetCorrectedFatJet(snu::KFatJet fjet){
+
+  float L1corr = fjet.L1JetCorr();
+  
+  TLorentzVector v;
+  v.SetPtEtaPhiM(fjet.Pt(), fjet.Eta(), fjet.Phi(), fjet.M());
+  v=v* (1./L1corr);
+  
+  snu::KFatJet fjet_corr(fjet);
+  
+  fjet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
+
+  return fjet_corr;
+}
 
 snu::KJet AnalyzerCore::GetCorrectedJetCloseToLepton(snu::KElectron el, snu::KJet jet, bool usem){
   //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton

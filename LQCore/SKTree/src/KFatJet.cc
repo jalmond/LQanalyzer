@@ -3,6 +3,11 @@
 #include <iomanip>
 #include <iostream>
 
+#include <map>
+#include <cmath>
+
+
+
 using namespace std;
 using namespace snu;
 
@@ -251,6 +256,28 @@ double KFatJet::BJetTaggerValue(Tagger tag) const{
 
 //// POG ID CUTS
 
+float KFatJet::GetSmearedMassRes(int sys) const {
+  //const double smear = CLHEP::RandGaussQ::shoot(rng_);
+  float jet_resolution = 8.01;
+  float fsys = 1.;
+  if(sys==0) fsys=0.;
+  if(sys < 0) fsys=-1;
+
+  float jer_sf = 1.23 + fsys*0.18;
+  double sigma = jet_resolution * std::sqrt(jer_sf * jer_sf - 1);
+
+  double twopi = 8.0 * atan(1.0); // preferable to using M_PI
+  double x =   rand()%10 , mu = 0.;
+  double y = (1.0 / (sigma * sqrt(twopi))) *
+    exp(-(x - mu)*(x - mu) / (2.0 * sigma * sigma));
+
+  //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#Smearing_procedures
+  //https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/interface/SmearedJetProducerT.h#L250
+
+  return 1.+ y;
+
+}
+
 void KFatJet::SetL1JetCorr(double corr){
   k_fatl1jetcorr=corr;
 }
@@ -349,6 +376,8 @@ void KFatJet::SetJetRawEnergy(double rawe){
 void KFatJet::SetJetJECUnc(double jecunc){
   k_jet_error_jec=jecunc;
 }
+
+
 void KFatJet::SetJetScaledDownEnergy(double jetscaleEdown){
   k_jet_scaled_down_energy=jetscaleEdown;
 }

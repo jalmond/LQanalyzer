@@ -68,6 +68,9 @@ class AnalyzerCore : public LQCycleBase {
   bool AllPrompt(std::vector<snu::KMuon> muons, int method);
   bool TruthMatched(snu::KMuon mu);
 
+  float GetFatJetSF(snu::KFatJet fjet,float tau21cut, int sys);
+
+  snu::KFatJet GetCorrectedFatJet(snu::KFatJet fjet);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KMuon lep, snu::KJet jet);
   snu::KTruth GetTruthMatchedParticle(snu::KElectron el);

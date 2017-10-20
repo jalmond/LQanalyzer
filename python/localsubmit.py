@@ -1631,6 +1631,7 @@ else:
         if os.path.exists(Finaloutputdir + outfile):
             os.system("rm  "  +  Finaloutputdir   + outfile)
         os.system("mv " +outputdir + "*.root" + " " + mergeoutputdir)
+
         os.system("hadd " + mergeoutputdir +  outfile  + " "+ mergeoutputdir + "*.root")
         
         if mc:
