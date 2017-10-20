@@ -121,6 +121,7 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
     map<int, int> list1;
     map<int, int> list2;
 
+    cout << "CheckEventComparisonList " <<  "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt" << endl;
     if(1){
       ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
       if(!comp) {
@@ -144,8 +145,7 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
 	is >> ev;
 	is >> met;
 	is >> tmp;
-	if(blank2!=user) break;
-	
+	//if(blank2!=user) break;
 	list1[ev] =run;
 	continue;
       }
@@ -173,8 +173,7 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
 	is >> ev;
 	is >> met;
 	is >> tmp;
-	if(blank2!=user) break;
-	
+	//if(blank2!=user) break;
 	list2[ev] =run;
 	continue;
       }
@@ -185,7 +184,10 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
       for(map<int,int>::iterator mit2 = list2.begin(); mit2 != list2.end(); mit2++){
 	if(mit2->first == mit->first && mit2->second==mit2->second) found=true;
       }
-      if(found) diffmap[mit->first] = mit->second;
+      if(!found) {
+
+	diffmap[mit->first] = mit->second;
+      }
     }
 
 
