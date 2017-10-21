@@ -278,9 +278,8 @@ void HNDiLepton::DoCutFlow(float w){
 void HNDiLepton::ExecuteEvents()throw( LQError ){
   
 
-  bool SBt_JSf = CheckEventComparison("jalmond","SB_fake_mu22107_periodC_SKDoubleMuon_hnfake_cat_v8-0-7_FR_syst_cal_fix","jalmond","JS_fake_mu22108_periodC_SKDoubleMuon_hnfake_cat_v8-0-7_FRCalculator_Mu_dxysig_DILEP_fix",false);
+  //bool SBt_JSf = CheckEventComparison("jalmond","SB_fake_mu22107_periodC_SKDoubleMuon_hnfake_cat_v8-0-7_FR_syst_cal_fix","jalmond","JS_fake_mu22108_periodC_SKDoubleMuon_hnfake_cat_v8-0-7_FRCalculator_Mu_dxysig_DILEP_fix",false);
 
-  if(!SBt_JSf) cout << "AAHAHAHAH " << endl;
 
   /*
   for(unsigned int ipdf=0; ipdf < eventbase->GetEvent().PdfWeights().size() ; ipdf++){
@@ -373,7 +372,8 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   CorrectedMETJMR(fatjetcoll_updated, jets_20);
 
   if(fatjetcoll.size() > 0)       {
-    
+    cout << "L1JetCorr() = " << fatjetcoll[0].L1JetCorr() << endl;
+    cout << "L2JetCorr() = " << fatjetcoll[0].L2JetCorr() << endl;
     fatjetcoll[0] *= fatjetcoll[0].SmearedRes();
     fatjetcoll[0].SetPrunedMass(fatjetcoll[0].PrunedMass()*fatjetcoll[0].SmearedRes());
     snu::KFatJet  fj(fatjetcoll[0]);
@@ -382,7 +382,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     std::vector<snu::KFatJet> fatjetcoll_updated = GetCorrectedFatJet(fatjetcoll);
     cout << "HN3 jit->PrunedMass() = " << fatjetcoll_updated[0].PrunedMass() << " " << fatjetcoll_updated[0].Pt() << endl;
   }
-  cout << "TEST" << endl;
+
   std::vector<snu::KFatJet> fatjetcoll2 = GetFatJets("FATJET_HN_tau045");
   
   vector<int> ijets;  
@@ -461,7 +461,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     
     //if(_mm_channel)RunMM("DiMuon_tightveto",      muons,muons,electrons,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon           ,20., 10.);
 
-    cout << "TEST 2" << endl;
+
     if(_mm_channel)RunMM("DiMuon",      muons,muons_veto,electrons_veto,alljets,   jets_20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);
     return;
     if(_mm_channel)RunMM("DiMuon_all",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);

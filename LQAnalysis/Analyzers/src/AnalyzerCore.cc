@@ -851,6 +851,7 @@ vector<snu::KFatJet>  AnalyzerCore::GetCorrectedFatJet(vector<snu::KFatJet>   fj
     TLorentzVector v;
     v.SetPtEtaPhiM(fjet.Pt(), fjet.Eta(), fjet.Phi(), fjet.M());
     
+    if(L1corr==0.) L1corr = 0.95;
     /// remove L1 correction (only L2L3 used)
     v=v* (1./L1corr);
     
