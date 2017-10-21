@@ -521,7 +521,7 @@ void  AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall){
 
   return;
 }   
-void  AnalyzerCore::CorrectedMETJMR( std::vector<snu::KFatJet>  fjetall){
+void  AnalyzerCore::CorrectedMETJMR( std::vector<snu::KFatJet>  fjetall, std::vector<snu::KJet>  jetall){
 
   /// function returns corrected met + can be used to set event met to corrected met                                                                                                                                          
 
@@ -529,6 +529,7 @@ void  AnalyzerCore::CorrectedMETJMR( std::vector<snu::KFatJet>  fjetall){
   float met_y =eventbase->GetEvent().PFMETy();
 
   float px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  float px_orig_ak4(0.), py_orig_ak4(0.),px_corrected_ak4(0.), py_corrected_ak4(0.);
   for(unsigned int ij=0; ij < fjetall.size() ; ij++){
 
     px_orig+=  fjetall.at(ij).MiniAODPt()*TMath::Cos( fjetall.at(ij).Phi());
@@ -538,9 +539,20 @@ void  AnalyzerCore::CorrectedMETJMR( std::vector<snu::KFatJet>  fjetall){
     
   }
   
+  for(unsigned int ij=0; ij < jetall.size() ; ij++){
+    for(unsigned int fij=0; fij < fjetall.size() ; fij++){
+      if (jetall[ij].DeltaR(fjetall[fij]) < 0.8){
+	px_orig_ak4+=  fjetall.at(ij).MiniAODPt()*TMath::Cos( fjetall.at(ij).Phi());
+	py_orig_ak4+=  fjetall.at(ij).MiniAODPt()*TMath::Sin( fjetall.at(ij).Phi());
+	px_corrected_ak4 += fjetall.at(ij).Px();
+	py_corrected_ak4 += fjetall.at(ij).Py();
+      }
+    }
+  }
+
   if(!eventbase->GetEvent().PropagatedJMRToMET()){
-    met_x = met_x + px_orig - px_corrected;
-    met_y = met_y + py_orig - py_corrected;
+    met_x = met_x + px_orig - px_corrected - px_orig_ak4 + px_corrected_ak4;
+    met_y = met_y + py_orig - py_corrected - py_orig_ak4 + py_corrected_ak4;
   }
   
   

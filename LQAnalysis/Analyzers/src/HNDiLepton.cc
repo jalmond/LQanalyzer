@@ -370,7 +370,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
   /// correct L1 JEC and apply JMR
   std::vector<snu::KFatJet> fatjetcoll_updated = GetCorrectedFatJet(fatjetcoll);
-  CorrectedMETJMR(fatjetcoll_updated);
+  CorrectedMETJMR(fatjetcoll_updated, jets_20);
 
   if(fatjetcoll.size() > 0)       {
     
