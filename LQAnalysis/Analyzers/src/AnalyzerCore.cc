@@ -843,8 +843,8 @@ vector<snu::KFatJet>  AnalyzerCore::GetCorrectedFatJet(vector<snu::KFatJet>   fj
     v=v* (1./L1corr);
     
     /// smear mass with JMR central
-    v=v*fjet.SmearedRes();
-    fjet.SetPrunedMass(fjet.PrunedMass()* fjet.SmearedRes());
+    v=v*fjet.SmearedMassRes();
+    fjet.SetPrunedMass(fjet.PrunedMass()* fjet.SmearedMassRes());
     snu::KFatJet fjet_corr(fjet);
     if(fjet_corr.MiniAODPt() <0)fjet_corr.SetMiniAODPt(fjet_corr.Pt());
     fjet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
