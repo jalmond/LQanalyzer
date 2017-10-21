@@ -167,7 +167,7 @@ fi
 
 ##### Check that this is not the branch and a tag was checked out
 export CHECKTAGFILE=$LQANALYZER_DIR/scripts/setup/SetBrachAndTag.sh
-source $CHECKTAGFILE branch
+source $CHECKTAGFILE Tag
 
 source $LQANALYZER_DIR/bin/CheckTag.sh
 
@@ -212,7 +212,7 @@ if [[ $1 != "" ]];then
         return 1
     fi
     
-    source $CHECKTAGFILE branch
+    source $CHECKTAGFILE Tag
     export LIBTAG=$CATVERSION
 fi
 

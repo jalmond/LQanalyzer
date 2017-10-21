@@ -55,14 +55,45 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl){
 
 }  
 
-void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl) {
+void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl,TString Option) {
   
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
   
   std::vector<KFatJet> prejetColl; 
+
+  int  SystDir=0;
+  bool Syst_JES=false, Syst_JER=false;
+  bool Syst_JMS=false, Syst_JMR=false;
   
+  
+  if(Option.Contains("Syst")){
+    if     (Option.Contains("Up"))   SystDir= 1;
+    else if(Option.Contains("Down")) SystDir=-1;
+    if     (Option.Contains("JES"))  Syst_JES=true;
+    if     (Option.Contains("JER"))  Syst_JER=true;
+    if     (Option.Contains("JMS"))  Syst_JMS=true;
+    if     (Option.Contains("JMR"))  Syst_JMR=true;
+  }
+  
+
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+
+    if(!Syst_JER){
+      *jit *= jit->SmearedRes();
+      cout << "jit->PrunedMass() = " << jit->PrunedMass() << endl;
+      jit->SetPrunedMass(jit->PrunedMass()* jit->SmearedRes());
+    }
+    if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledUpEnergy());}
+    else if(Syst_JES && SystDir<0) {*jit *= jit->ScaledDownEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledDownEnergy());}
+    else if(Syst_JER && SystDir>0) {*jit *= jit->SmearedResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResUp());}
+    else if(Syst_JER && SystDir<0) {*jit *= jit->SmearedResDown();   jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResDown());}
+    else if(Syst_JMR && SystDir>0) {*jit *= jit->SmearedMassResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMR && SystDir<0) {*jit *= jit->SmearedMassResDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMS && SystDir>0) {*jit *= jit->ScaledMassUp(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassUp());}
+    else if(Syst_JMS && SystDir<0) {*jit *= jit->ScaledMassDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassDown());}
+
     
+  
     bool pileupjet=false;
     if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
 

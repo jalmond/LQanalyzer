@@ -121,6 +121,7 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
     map<int, int> list1;
     map<int, int> list2;
 
+    cout << "CheckEventComparisonList " <<  "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt" << endl;
     if(1){
       ifstream comp(( "/data1/LQAnalyzer_rootfiles_for_analysis/EventComparisons/"+  user+"/" + label + ".txt"));
       if(!comp) {
@@ -145,7 +146,6 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
 	is >> met;
 	is >> tmp;
 	if(blank2!=user) break;
-	
 	list1[ev] =run;
 	continue;
       }
@@ -174,7 +174,6 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
 	is >> met;
 	is >> tmp;
 	if(blank2!=user) break;
-	
 	list2[ev] =run;
 	continue;
       }
@@ -185,7 +184,10 @@ map<int, int> AnalyzerCore::CheckEventComparisonList(TString user, TString label
       for(map<int,int>::iterator mit2 = list2.begin(); mit2 != list2.end(); mit2++){
 	if(mit2->first == mit->first && mit2->second==mit2->second) found=true;
       }
-      if(found) diffmap[mit->first] = mit->second;
+      if(!found) {
+
+	diffmap[mit->first] = mit->second;
+      }
     }
 
 
@@ -519,6 +521,40 @@ void  AnalyzerCore::CorrectedMETRochester( std::vector<snu::KMuon> muall){
 
   return;
 }   
+void  AnalyzerCore::CorrectedMETJMR( std::vector<snu::KFatJet>  fjetall){
+
+  /// function returns corrected met + can be used to set event met to corrected met                                                                                                                                          
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+
+  float px_orig(0.), py_orig(0.),px_corrected(0.), py_corrected(0.);
+  for(unsigned int ij=0; ij < fjetall.size() ; ij++){
+
+    px_orig+=  fjetall.at(ij).MiniAODPt()*TMath::Cos( fjetall.at(ij).Phi());
+    py_orig+=  fjetall.at(ij).MiniAODPt()*TMath::Sin( fjetall.at(ij).Phi());
+    px_corrected += fjetall.at(ij).Px();
+    py_corrected += fjetall.at(ij).Py();
+    
+  }
+  
+  if(!eventbase->GetEvent().PropagatedJMRToMET()){
+    met_x = met_x + px_orig - px_corrected;
+    met_y = met_y + py_orig - py_corrected;
+  }
+  
+  
+  if(!eventbase->GetEvent().PropagatedRochesterToMET()){
+  snu::KEvent tempev = eventbase->GetEvent();
+    tempev.SetMET(snu::KEvent::pfmet,  sqrt(met_x*met_x + met_y*met_y), TMath::ATan2(met_y,met_x), eventbase->GetEvent().SumET());
+    tempev.SetPFMETx(met_x);
+    tempev.SetPFMETy(met_y);
+    tempev.SetPropagatedJMRToMET(true);
+    eventbase->SetEventBase(tempev);
+  }
+
+  return;
+}
 
 
 
@@ -593,8 +629,7 @@ void  AnalyzerCore::CorrectedMETMuon( int sys, std::vector<snu::KMuon> muall,   
 
 
 
-void  AnalyzerCore::CorrectedMETJES(int sys, vector<snu::KJet> jetall, double& OrignialMET, double& OriginalMETPhi){
-
+void  AnalyzerCore::CorrectedMETJES(int sys, vector<snu::KJet> jetall, vector<snu::KFatJet> fjetall,  double& OrignialMET, double& OriginalMETPhi){
 
   if(sys==0) return;
 
@@ -620,6 +655,25 @@ void  AnalyzerCore::CorrectedMETJES(int sys, vector<snu::KJet> jetall, double& O
     }
 
   }
+  for(unsigned int ij=0; ij < fjetall.size() ; ij++){
+
+
+    px_orig+= fjetall.at(ij).Px();
+    py_orig+= fjetall.at(ij).Py();
+    if(sys==1){
+
+      px_shifted += fjetall.at(ij).Px()*fjetall.at(ij).ScaledUpEnergy();
+      py_shifted += fjetall.at(ij).Py()*fjetall.at(ij).ScaledUpEnergy();
+
+    }
+    if(sys==-1){
+      px_shifted += jetall.at(ij).Px()*fjetall.at(ij).ScaledDownEnergy();
+      py_shifted += jetall.at(ij).Py()*fjetall.at(ij).ScaledDownEnergy();
+
+    }
+
+  }
+
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;
 
@@ -630,7 +684,46 @@ void  AnalyzerCore::CorrectedMETJES(int sys, vector<snu::KJet> jetall, double& O
 }
 
 
-void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, double& OrignialMET, double& OriginalMETPhi){
+
+void  AnalyzerCore::CorrectedMETJMS(int sys, vector<snu::KFatJet> fjetall,  double& OrignialMET, double& OriginalMETPhi){
+
+  if(sys==0) return;
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+
+  float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
+  for(unsigned int ij=0; ij < fjetall.size() ; ij++){
+
+
+    px_orig+= fjetall.at(ij).Px();
+    py_orig+= fjetall.at(ij).Py();
+    if(sys==1){
+
+      px_shifted += fjetall.at(ij).Px()*fjetall.at(ij).ScaledMassUp();
+      py_shifted += fjetall.at(ij).Py()*fjetall.at(ij).ScaledMassUp();
+
+    }
+    if(sys==-1){
+      px_shifted += fjetall.at(ij).Px()*fjetall.at(ij).ScaledMassDown();
+      py_shifted += fjetall.at(ij).Py()*fjetall.at(ij).ScaledMassDown();
+
+    }
+
+  }
+
+  met_x = met_x + px_orig - px_shifted;
+  met_y = met_y + py_orig - py_shifted;
+
+  OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
+  OriginalMETPhi = TMath::ATan2(met_y,met_x);
+
+
+}
+
+
+
+void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, vector<snu::KFatJet> fjetall,   double& OrignialMET, double& OriginalMETPhi){
 
 
   float met_x =eventbase->GetEvent().PFMETx();
@@ -654,6 +747,22 @@ void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, double& Or
     }
     
   }
+  for(unsigned int ij=0; ij < fjetall.size() ; ij++){
+
+
+    px_orig+= fjetall.at(ij).Px();
+    py_orig+= fjetall.at(ij).Py();
+    if(sys==1){
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResUp());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResUp());
+    }
+    if(sys==-1){
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResDown());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResDown());
+    }
+  }
+
+
   met_x = met_x + px_orig - px_shifted;
   met_y = met_y + py_orig - py_shifted;
 
@@ -664,6 +773,87 @@ void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, double& Or
 
 }
 
+
+void AnalyzerCore::CorrectedMETJMR(int sys, vector<snu::KFatJet> fjetall,   double& OrignialMET, double& OriginalMETPhi){
+
+
+  float met_x =eventbase->GetEvent().PFMETx();
+  float met_y =eventbase->GetEvent().PFMETy();
+
+  float px_orig(0.), py_orig(0.),px_shifted(0.), py_shifted(0.);
+  for(unsigned int ij=0; ij < fjetall.size() ; ij++){
+
+
+    px_orig+= fjetall.at(ij).Px();
+    py_orig+= fjetall.at(ij).Py();
+    if(sys==1){
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResUp()/fjetall.at(ij).SmearedMassRes());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResUp()/fjetall.at(ij).SmearedMassRes());
+    }
+    if(sys==-1){
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResDown()/fjetall.at(ij).SmearedMassRes());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResDown()/fjetall.at(ij).SmearedMassRes());
+    }
+  }
+  
+  
+  met_x = met_x + px_orig - px_shifted;
+  met_y = met_y + py_orig - py_shifted;
+
+
+  OrignialMET =  sqrt(met_x*met_x + met_y*met_y);
+  OriginalMETPhi = TMath::ATan2(met_y,met_x);
+
+
+}
+
+
+
+
+float AnalyzerCore::GetFatJetSF(snu::KFatJet fjet, float tau21cut, int sys){
+  
+  float fsys = -1;
+  if(sys > 0) fsys =1;
+  if(sys==0) fsys=0.;
+  if(tau21cut == 0.45){
+    if((fjet.Tau2()/fjet.Tau1())  < 0.45)     return 0.88 + fsys*0.1;
+    else return 1.;
+  }
+  if(tau21cut == 0.6){
+    if((fjet.Tau2()/fjet.Tau1()) < 0.6)     return 1.11 + fsys*0.08;
+    else return 1.;
+  }
+  else return 1.;
+  
+}
+
+
+vector<snu::KFatJet>  AnalyzerCore::GetCorrectedFatJet(vector<snu::KFatJet>   fjets){
+
+  vector<snu::KFatJet>  corr_fatjets;
+  
+  for(unsigned int ifj=0; ifj < fjets.size(); ifj++){
+    snu::KFatJet fjet = fjets[ifj];
+    float L1corr = fjet.L1JetCorr();
+    
+    TLorentzVector v;
+    v.SetPtEtaPhiM(fjet.Pt(), fjet.Eta(), fjet.Phi(), fjet.M());
+    
+    /// remove L1 correction (only L2L3 used)
+    v=v* (1./L1corr);
+    
+    /// smear mass with JMR central
+    v=v*fjet.SmearedMassRes();
+    fjet.SetPrunedMass(fjet.PrunedMass()* fjet.SmearedMassRes());
+    snu::KFatJet fjet_corr(fjet);
+    if(fjet_corr.MiniAODPt() <0)fjet_corr.SetMiniAODPt(fjet_corr.Pt());
+    fjet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
+    
+    corr_fatjets.push_back(fjet_corr);
+  }
+
+  return corr_fatjets;
+}
 
 snu::KJet AnalyzerCore::GetCorrectedJetCloseToLepton(snu::KElectron el, snu::KJet jet, bool usem){
   //jet_LepAwareJECv2 = (raw_jet * L1 - lepton) * L2L3Res + lepton
