@@ -542,10 +542,10 @@ void  AnalyzerCore::CorrectedMETJMR( std::vector<snu::KFatJet>  fjetall, std::ve
   for(unsigned int ij=0; ij < jetall.size() ; ij++){
     for(unsigned int fij=0; fij < fjetall.size() ; fij++){
       if (jetall[ij].DeltaR(fjetall[fij]) < 0.8){
-	px_orig_ak4+=  fjetall.at(ij).MiniAODPt()*TMath::Cos( fjetall.at(ij).Phi());
-	py_orig_ak4+=  fjetall.at(ij).MiniAODPt()*TMath::Sin( fjetall.at(ij).Phi());
-	px_corrected_ak4 += fjetall.at(ij).Px();
-	py_corrected_ak4 += fjetall.at(ij).Py();
+	px_orig_ak4+=  jetall.at(ij).MiniAODPt()*TMath::Cos( fjetall.at(ij).Phi());
+	py_orig_ak4+=  jetall.at(ij).MiniAODPt()*TMath::Sin( fjetall.at(ij).Phi());
+	px_corrected_ak4 += jetall.at(ij).Px();
+	py_corrected_ak4 += jetall.at(ij).Py();
       }
     }
   }
