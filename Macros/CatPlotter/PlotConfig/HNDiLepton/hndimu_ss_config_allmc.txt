@@ -5,8 +5,6 @@ WZTo3LNu_powheg		  |  Diboson                                                |  
 WpWpQCD                   |    Diboson                                                |  diboson             |  kGreen     |     0.15     |
 WpWpEWK                   |    Diboson                                                |  diboson             |  kGreen     |     0.15     |
 ww_ds                     |   Diboson                                           |  diboson               |  kGreen    | 0.15     |
-ZGto2LG                   |   Xg                                          |  zg               |  kOrange     | 0.15     |
-WGtoLNuG                  |   Xg                                           |  wg               |  kOrange     | 0.15     |
 ttZToLL_M-10		  |   Top						|  top			| kRed | 0.2 | 
 tZq			  |   Top                                               |  top                  | kRed | 0.2 |
 TTG                       |   Top             |  top              |  kRed     |       0.2     |
@@ -14,6 +12,8 @@ ttWToLNu		  |   Top             |  top              |  kRed     |       0.2     
 ttZToLL_M-1to10		  |   Top             |  top              |  kRed     |       0.2     |
 ttH_bb			  |   Top             |  top              |  kRed     |       0.2     |
 ttH_nonbb                 |   Top           |  top              |  kRed     |   0.2     |
+ZGto2LG                          |  XG                                          |  XG               |  74     | 0.2     |
+WGtoLNuG                 |  XG                                         |  XG               |  74     | 0.2     |
 WWW                       |   Triboson                                          |  triv              |  kSpring+2    |      0.3     |
 ZZZ                       |   Triboson                                          |  triv              |  kSpring+2   |      0.3     |
 WWZ                       |   Triboson                                         |  triv              |  kSpring+2    |      0.3     |

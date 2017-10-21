@@ -55,14 +55,45 @@ void FatJetSelection::Selection(std::vector<KFatJet>& jetColl){
 
 }  
 
-void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl) {
+void FatJetSelection::Selection(std::vector<KFatJet>& jetColl, bool LepVeto, std::vector<KMuon>& muonColl, std::vector<KElectron>& electronColl,TString Option) {
   
   std::vector<KFatJet> alljets = k_lqevent.GetFatJets();
   
   std::vector<KFatJet> prejetColl; 
+
+  int  SystDir=0;
+  bool Syst_JES=false, Syst_JER=false;
+  bool Syst_JMS=false, Syst_JMR=false;
   
+  
+  if(Option.Contains("Syst")){
+    if     (Option.Contains("Up"))   SystDir= 1;
+    else if(Option.Contains("Down")) SystDir=-1;
+    if     (Option.Contains("JES"))  Syst_JES=true;
+    if     (Option.Contains("JER"))  Syst_JER=true;
+    if     (Option.Contains("JMS"))  Syst_JMS=true;
+    if     (Option.Contains("JMR"))  Syst_JMR=true;
+  }
+  
+
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
+
+    if(!Syst_JER){
+      *jit *= jit->SmearedRes();
+      cout << "jit->PrunedMass() = " << jit->PrunedMass() << endl;
+      jit->SetPrunedMass(jit->PrunedMass()* jit->SmearedRes());
+    }
+    if     (Syst_JES && SystDir>0) {*jit *= jit->ScaledUpEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledUpEnergy());}
+    else if(Syst_JES && SystDir<0) {*jit *= jit->ScaledDownEnergy(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledDownEnergy());}
+    else if(Syst_JER && SystDir>0) {*jit *= jit->SmearedResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResUp());}
+    else if(Syst_JER && SystDir<0) {*jit *= jit->SmearedResDown();   jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedResDown());}
+    else if(Syst_JMR && SystDir>0) {*jit *= jit->SmearedMassResUp();  jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMR && SystDir<0) {*jit *= jit->SmearedMassResDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->SmearedMassResUp());}
+    else if(Syst_JMS && SystDir>0) {*jit *= jit->ScaledMassUp(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassUp());}
+    else if(Syst_JMS && SystDir<0) {*jit *= jit->ScaledMassDown(); jit->SetPrunedMass(jit->PrunedMass()*jit->ScaledMassDown());}
+
     
+  
     bool pileupjet=false;
     if(applypileuptool) pileupjet =  ( !jit->PileupJetIDLoose());  ///---> CHECK THIS
 
@@ -138,31 +169,32 @@ void FatJetSelection::SelectFatJets(std::vector<KFatJet>& jetColl, std::vector<K
 
 
   int icut(0);
-  float tau21cut(-999.);
-  float masscut_min(-999.);
-  float masscut_max(-999.);
+  float tau21cut(100.);
+  float masscut_min(0.);
+  float masscut_max(10000.);
   if (ptcut == -999. || etacut == -999.){
     for(unsigned int iv=0; iv < vidf.size(); iv++){
       if(!Check(vidf[iv].second)) continue;
       if (vidf[iv].first =="ptmin") { icut++; if(ptcut == -999.)ptcut=vidf[iv].second;}
       if (vidf[iv].first =="|etamax|") {icut++;  if (etacut == -999.)etacut=vidf[iv].second;}
-      if (vidf[iv].first =="tau21") {icut++;  tau21cut=vidf[iv].second;}
-      if (vidf[iv].first =="mass_min") {icut++;  masscut_min=vidf[iv].second;}
-      if (vidf[iv].first =="mass_max") {icut++;  masscut_max=vidf[iv].second;}
-      if(icut ==3) break;
     }
+  }
+  for(unsigned int iv=0; iv < vidf.size(); iv++){
+    if(!Check(vidf[iv].second)) continue;
+    if (vidf[iv].first =="tau21") {icut++;  tau21cut=vidf[iv].second;}
+    if (vidf[iv].first =="mass_min") {icut++;  masscut_min=vidf[iv].second;}
+    if (vidf[iv].first =="mass_max") {icut++;  masscut_max=vidf[iv].second;}
   }
   
 
   for (std::vector<KFatJet>::iterator jit = alljets.begin(); jit!=alljets.end(); jit++){
-    
+
     bool pass_selection=true;
     if (!PassUserID(*jit, vids)) pass_selection=false;
-
     if(jit->Tau2()/jit->Tau1() > tau21cut) pass_selection=false;
-    if(jit->PrunedMass() > masscut_min)  pass_selection=false;
-    if(jit->PrunedMass() < masscut_max)  pass_selection=false;
-    //cout << jit->Pt() << " " << jit->Eta() << " " << jit->PrunedMass() << " " << jit->Tau2()/jit->Tau1() << endl;
+
+    if(jit->PrunedMass() < masscut_min)  pass_selection=false;
+    if(jit->PrunedMass() > masscut_max)  pass_selection=false;
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
 
   }

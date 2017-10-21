@@ -68,6 +68,9 @@ class AnalyzerCore : public LQCycleBase {
   bool AllPrompt(std::vector<snu::KMuon> muons, int method);
   bool TruthMatched(snu::KMuon mu);
 
+  float GetFatJetSF(snu::KFatJet fjet,float tau21cut, int sys);
+
+  std::vector<snu::KFatJet>   GetCorrectedFatJet( std::vector<snu::KFatJet> fjets);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KElectron lep,snu::KJet jet, bool usem=true);
   snu::KJet GetCorrectedJetCloseToLepton(snu::KMuon lep, snu::KJet jet);
   snu::KTruth GetTruthMatchedParticle(snu::KElectron el);
@@ -145,7 +148,7 @@ class AnalyzerCore : public LQCycleBase {
   bool HasCloseBJet(snu::KElectron el, snu::KJet::Tagger tag=snu::KJet::CSVv2 , snu::KJet::WORKING_POINT wp= snu::KJet::Medium, int mcperiod=-1);
   int NBJet(std::vector<snu::KJet> jets,  snu::KJet::Tagger tag=snu::KJet::CSVv2, snu::KJet::WORKING_POINT wp = snu::KJet::Medium, int mcperiod=-1);
 
-  bool IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1);
+  bool IsBTagged(snu::KJet jet,  snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1, int syst=0);
   float BTagScaleFactor_1a(std::vector<snu::KJet> jetColl, snu::KJet::Tagger tag, snu::KJet::WORKING_POINT wp, int mcperiod=-1, TString Option="");
 
   int AssignnNumberOfTruth();
@@ -167,6 +170,7 @@ class AnalyzerCore : public LQCycleBase {
   float SumPt( std::vector<snu::KJet> particles);
   float SumPt( std::vector<snu::KFatJet> particles);
   float GetLT(std::vector<snu::KMuon> muons);
+  float GetLT(std::vector<snu::KElectron> electrons);
   bool isPrompt(long pdgid);
   void TruthPrintOut();
   void TruthPrintOut(snu::KMuon muon);
@@ -194,10 +198,13 @@ class AnalyzerCore : public LQCycleBase {
   float GetCFRates(double el_pt, double el_eta, TString el_ID);
 
   void CorrectedMETRochester(std::vector<snu::KMuon> muons);
+  void CorrectedMETJMR(std::vector<snu::KFatJet> fjets, std::vector<snu::KJet> jets);
   void CorrectedMETElectron(int syst,std::vector<snu::KElectron> electrons, double& OrignialMET, double& OriginalMETPhi);
   void CorrectedMETMuon(int syst,std::vector<snu::KMuon> muons, double& OrignialMET, double& OriginalMETPhi) ;
-  void CorrectedMETJES(int syst,std::vector<snu::KJet> jets , double& OrignialMET, double& OriginalMETPhi);
-  void CorrectedMETJER(int syst,std::vector<snu::KJet> jets , double& OrignialMET, double& OriginalMETPhi);
+  void CorrectedMETJES(int syst,std::vector<snu::KJet> jets , std::vector<snu::KFatJet> fjets ,double& OrignialMET, double& OriginalMETPhi);
+  void CorrectedMETJMS(int syst,std::vector<snu::KFatJet> jets , double& OrignialMET, double& OriginalMETPhi);
+  void CorrectedMETJER(int syst,std::vector<snu::KJet> jets ,std::vector<snu::KFatJet> fjets , double& OrignialMET, double& OriginalMETPhi);
+  void CorrectedMETJMR(int syst,std::vector<snu::KFatJet> jets , double& OrignialMET, double& OriginalMETPhi);
 
 
   void CorrectMuonMomentum(vector<snu::KMuon>& k_muons);

@@ -782,6 +782,7 @@ function runlist
     isDiLep=false
     isHNDiLep=false
     isHNFake=false
+    isHNFatJet=false
     isTriLep=false
     isSSLep=false
     if [[ $submit_skim  == "SKTree_NoSkim" ]]; then 
@@ -811,6 +812,11 @@ function runlist
     then
         isHNFake=true
     fi
+    if [[ $submit_skim  == "SKTree_HNFatJetSkim" ]];
+    then
+        isHNFatJet=true
+    fi
+
     if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
         then
         isTriLep=true
@@ -854,6 +860,12 @@ function runlist
     if [[ $isHNFake  == "true" ]];
      then
         check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCHNFake"
+
+    fi
+
+    if [[ $isHNFatJet  == "true" ]];
+     then
+        check_path=$SKTREE_MC${submit_catvlist}"/SKTrees/MCHNFatJet"
 
     fi
 
@@ -901,6 +913,7 @@ function runlist
 	      suffix="_dilep"
 	      suffixhn="_hndilep"
 	      suffixhnfake="_hnfake"
+	      suffixhnfatjet="_hnfatjet"
               suffix2="_trilep"
               suffixss="_sslep"
 
@@ -928,6 +941,11 @@ function runlist
                   then
                   sline=${sline%$suffixhnfake}
               fi
+	      if [[ $sline == *${suffixhnfatjet}* ]];
+              then
+                  sline=${sline%$suffixhnfatjet}
+              fi
+
 	      if [[ ! -d "${sline2}" ]]; then
 		  UNPROCESSED+=(${sline})
 	      elif test "$(ls -A "$sline2")"; then
@@ -946,6 +964,7 @@ function runlist
 		  suffix="_dilep"
 		  suffixhn="_hndilep"
 		  suffixhnfake="_hnfake"
+		  suffixhnfatjet="_hnfatjet"
 		  suffix2="_trilep"
 		  suffixss="_sslep"
 		  if [[ $sline == *${prefix}* ]];
@@ -968,10 +987,15 @@ function runlist
                   then
                       sline=${sline%$suffixhn}
 		  fi
-		  if [[ $sline == *${suffixfakehn}* ]];
+		  if [[ $sline == *${suffixhnfake}* ]];
                   then
                       sline=${sline%$suffixhnfake}
                   fi
+		  if [[ $sline == *${suffixhnfatjet}* ]];
+		  then
+                      sline=${sline%$suffixhnfatjet}
+                  fi
+
 		  if [[ ! -d "${sline2}" ]]; then
 		      UNPROCESSED+=(${sline})
 		  elif test "$(ls -A "$sline2")"; then
@@ -1097,6 +1121,30 @@ function runlist
             fi
     fi
 
+
+    if [[ $isHNFatJet  == "true" ]];
+        then
+        counter=${#UNPROCESSED[@]}
+            if [[ $counter -ne 0 ]];
+                then
+                echo "Samples that have local flat catuples but no dilepton skim are:"
+            else   echo -e $missing_comment
+
+            fi
+            for il in  ${UNPROCESSED[@]};
+              do
+              echo samplename = $il
+
+            done
+            echo ""
+            if [[ $counter -ne 0 ]];
+                then
+                echo "If you want this sktree run 'sktree -a SKTreeMakerDiLep -i <samplename> -c "$submit_catvlist"'"
+                echo ""
+            fi
+    fi
+
+
     
     if [[ $isTriLep  == "true" ]];
         then
@@ -1180,6 +1228,11 @@ function runlist
               then
               check_path=$SKTREE_MC${ic}"/SKTrees/MCHNFake"
           fi
+	  if [[ $submit_skim  == "SKTree_HNFatJetSkim" ]];
+          then
+	      check_path=$SKTREE_MC${ic}"/SKTrees/MCHNFatJet"
+          fi
+
 
 	  if [[ $submit_skim  == "SKTree_TriLepSkim" ]];
               then
@@ -1214,6 +1267,7 @@ function runlist
 			suffix="_dilep"
 			suffixhn="_hndilep"
 			suffixhnfake="_hnfake"
+			suffixhnfatjet="_hnfatjet"
 			suffix2="_trilep"
 			suffixss="_sslep"
 			if [[ $sline == *${prefix}* ]];
@@ -1241,6 +1295,11 @@ function runlist
                         then
                             sline=${sline%$suffixhnfake}
                         fi
+			if [[ $sline == *${suffixhnfatjet}* ]];
+                        then
+			    sline=${sline%$suffixhnfatjet}
+                        fi
+
 			if [[ -d "${sline2}" ]]; then
 			    if test "$(ls -A "$sline2")"; then
 				echo ${sline}
@@ -1267,6 +1326,7 @@ function runlist
 			    suffix="_dilep"
 			    suffixhn="_hndilep"
 			    suffixhnfake="_hnfake"
+			    suffixhnfatjet="_hnfatjet"
 			    suffix2="_trilep"
 			    suffixss="_sslep"
 			    if [[ $sline == *${prefix}* ]];
@@ -1294,6 +1354,11 @@ function runlist
                             then
                                 sline=${sline%$suffixhnfake}
                             fi
+			    if [[ $sline == *${suffixhnfatjet}* ]];
+			    then
+                                sline=${sline%$suffixhnfatjet}
+                            fi
+
 			    if [[  -d "${sline2}" ]]; then
 				
 				if test "$(ls -A "$sline2")"; then
@@ -1850,6 +1915,12 @@ if [[ $submit_sampletag  == "DATAHNFAKE" ]];
     runDATA=true
 fi
 
+declare -a  DATAHNFATJET=("DoubleMuon" "DoubleEG" "SingleElectron" "SingleMuon")
+if [[ $submit_sampletag  == "DATAHNFATJET" ]];
+    then
+    runDATA=true
+fi
+
 
 declare -a DoubleEG=("DoubleEG")
 
@@ -1928,6 +1999,7 @@ declare -a FULLLISTOFSAMPLESLEPTON=()
 declare -a FULLLISTOFSAMPLESDILEP=()
 declare -a FULLLISTOFSAMPLESHNDILEP=()
 declare -a FULLLISTOFSAMPLESHNFAKE=()
+declare -a FULLLISTOFSAMPLESHNFATJET=()
 declare -a FULLLISTOFSAMPLESTRILEP=()
 declare -a FULLLISTOFSAMPLESTSSLEP=()
 
@@ -2255,6 +2327,46 @@ if [[ $MakeFullLists == "true" ]];
             fi
         fi
 
+        if [[ $job_skim == "SKTree_HNFatJetSkim" ]];
+        then
+            checkline=$SKTREE_MC${iclist}"/SKTrees/MCHNFatJet/"
+
+
+
+            if [[ $line == *$checkline* ]];
+                then
+                sline=$(echo $line | head -n1 | awk '{print $1}')
+                sline2=$(echo $line | head -n1 | awk '{print $6}')
+
+                prefix="SK"
+                suffixhnfatjet="_hnfatjet"
+                if [[ $sline == *${prefix}* ]];
+                    then
+                    sline=${sline:2}
+                fi
+                if [[ $sline == *${suffixhnfatjet}* ]];
+                    then
+                    sline=${sline%$suffixhnfatjet}
+                fi
+
+                isDuplicate=false
+                for il in  ${FULLLISTOFSAMPLESHNFATJET[@]};
+                do
+                  if [[ $sline == $il ]];
+                      then
+                      isDuplicate=true
+                  fi
+                done
+                if [[ $isDuplicate == "false" ]];
+                    then
+                    if [[ -d "${sline2}" ]]; then
+                        if test "$(ls -A "$sline2")"; then
+                            FULLLISTOFSAMPLESHNFATJET+=(${sline})
+                        fi
+                    fi
+                fi
+            fi
+        fi
 
 	if [[ $job_skim == "SKTree_TriLepSkim" ]];
 	    then

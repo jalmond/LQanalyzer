@@ -300,7 +300,7 @@ for line in skeleton_macroC:
         if nodata:
             new_macroC.write('hdata= dynamic_cast<TH1*>((h_nominal)->Clone((string(h_nominal->GetName())+"data").c_str()));;\n')
             new_macroC.write('hdata->GetXaxis()->SetRangeUser(xmin, xmax);;\n')
-            new_macroC.write('hdata->GetYaxis()->SetRangeUser(ymin, ymax);;\n')
+            new_macroC.write('hdata->GetYaxis()->SetRangeUser(0.01, ymax);;\n')
             new_macroC.write('SetTitles(hdata, hname);\n')
             new_macroC.write('showdata=false;\n')
               
@@ -330,7 +330,7 @@ for line in skeleton_macroC:
 
                 new_macroC.write('hsig'+str(x)+'->SetLineWidth(3.); \n')
                 new_macroC.write('hsig'+str(x)+'->GetXaxis()->SetRangeUser(xmin,xmax); \n')
-                new_macroC.write('hsig'+str(x)+'->GetYaxis()->SetRangeUser(ymin,ymax); \n')
+                new_macroC.write('hsig'+str(x)+'->GetYaxis()->SetRangeUser(0.01,ymax); \n')
             else:
                 new_macroC.write('TH1* hsig1;\n');
 

@@ -60,6 +60,7 @@ namespace snu {
 
     inline Double_t JetArea() const{return k_fatjetarea;}
 
+    inline Double_t  MiniAODPt() const{return k_fatjet_miniaodpt;}
     //Multiplicities
     //// Pileup MVA to be added
     
@@ -91,7 +92,7 @@ namespace snu {
     void SetSmearedResUp(double jetsmearresup);
     void SetSmearedRes(double jetsmearresup);
     
-    
+    void SetMiniAODPt(double pt);
     void SetTau1(double tau1);
     void SetTau2(double tau2);
     void SetTau3(double tau3);
@@ -145,6 +146,14 @@ namespace snu {
     inline Double_t SmearedResDown() const {return k_jet_smeared_down_energy;}
     inline Double_t SmearedResUp() const {return k_jet_smeared_up_energy;}
     inline Double_t SmearedRes() const {return k_jet_smeared_energy;}
+
+    inline Double_t ScaledMassDown() const {return 1.- 0.023;}
+    inline Double_t ScaledMassUp() const {return  1. + 0.023;}
+    inline Double_t SmearedMassResDown() const {return  GetSmearedMassRes(-1);}
+    inline Double_t SmearedMassResUp() const {return  GetSmearedMassRes(+1);}
+    inline Double_t SmearedMassRes() const {return GetSmearedMassRes(0);}
+    
+    float GetSmearedMassRes(int sys) const;
 
     inline Double_t RawPt() const {return k_jet_pt_raw;}
     inline Double_t RawE() const {return k_jet_energy_raw;}
@@ -201,7 +210,9 @@ namespace snu {
 
     Double_t k_fatl1jetcorr, k_fatl2jetcorr,k_fatl3jetcorr,k_fatl2l3resjetcorr,k_fatjetarea;
 
-    ClassDef(KFatJet,2)
+    Double_t k_fatjet_miniaodpt;
+
+    ClassDef(KFatJet,3)
   }; 
   
 

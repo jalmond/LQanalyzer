@@ -65,6 +65,7 @@ namespace snu {
     void SetPFMETType1xyUnsmearedy(double mett1);
 
     void SetPropagatedRochesterToMET(bool setpr);
+    void SetPropagatedJMRToMET(bool setpr);
     /// PDF
     void SetPDFWeights(std::vector<float> pdfw);
     void SetScaleWeights(std::vector<float> pdfw);
@@ -125,6 +126,7 @@ namespace snu {
     Double_t SumET() const;
     
     inline Bool_t PropagatedRochesterToMET() const {return prop_metrc;}
+    inline Bool_t PropagatedJMRToMET() const {return prop_metjmr;}
     
     inline Double_t Rho() const {return k_rho;}
     // To make backward compatible
@@ -268,12 +270,13 @@ namespace snu {
     Double_t  k_PileUpInteractionsTrue, k_pu_gold_weight, k_pu_gold_p_weight, k_pu_gold_m_weight, k_pu_gold_xs71000_weight, k_pu_gold_xs71000_p_weight, k_pu_gold_xs71000_m_weight;
     Double_t k_pu_gold_weightB, k_pu_gold_weightC, k_pu_gold_weightD,k_pu_gold_weightE,k_pu_gold_weightF,k_pu_gold_weightG,k_pu_gold_weightH;
     Bool_t prop_metrc;
+    Bool_t prop_metjmr;
 
     std::string k_catversion;
     Double_t k_rho;
     Double_t k_top_reweight;
 
-    ClassDef(KEvent,33);
+    ClassDef(KEvent,34);
   }; 
   
 }//namespace snu

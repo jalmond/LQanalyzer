@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int a =MakeCutFlow_Plots(configfile);
   }
   
-  system(("scp -r " + output_path + " jalmond@lxplus033.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
+  system(("scp -r " + output_path + " jalmond@lxplus074.cern.ch:~/www/SNU/CATAnalyzerPlots/").c_str());
 
   cout << "Open plots in " << output_index_path << endl;
   cout << "Local directory = ~/CATAnalyzerPlots/" + path +  "/histograms/" + histdir  << endl;
@@ -420,6 +420,8 @@ void MakeCutFlow(string type){
     histpage << "<a href=\"" << cut_label.at(i_cut)  << ".pdf\">";
     histpage << "Cutflow: " + cut_label.at(i_cut)  + ".pdf</p>";
     histpage << "</td>" << endl;
+    histpage <<  "<embed src=\""  + cut_label.at(i_cut)  + ".pdf width=\"500px\" height=\"300px\" />" << endl ;
+
   }
 
   return;
@@ -582,7 +584,7 @@ TH1* MakeDataHist(string name, double xmin, double xmax, TH1* hup, bool ylog, in
   
   hdata->Rebin(rebin);
 
-  float ymin (2.), ymax( 1000.);
+  float ymin (0.01), ymax( 1000.);
   ymax = GetMaximum(hdata, hup, ylog, name, xmax, xmin);
   
 

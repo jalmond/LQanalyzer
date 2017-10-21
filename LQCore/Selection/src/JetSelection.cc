@@ -75,9 +75,15 @@ void JetSelection::Selection(std::vector<KJet>& jetColl, bool LepVeto, std::vect
 
     if     (Syst_JES && SystDir>0) *jit *= jit->ScaledUpEnergy();
     else if(Syst_JES && SystDir<0) *jit *= jit->ScaledDownEnergy();
-    else if(Syst_JER && SystDir>0) *jit *= jit->SmearedResUp();
-    else if(Syst_JER && SystDir<0) *jit *= jit->SmearedResDown();
-    
+    if(jit->IsMCSmeared()){
+      if(Syst_JER && SystDir>0) *jit *= (jit->SmearedResUp() /jit->SmearedRes());
+      else if(Syst_JER && SystDir<0) *jit *= (jit->SmearedResDown()/jit->SmearedRes());
+    }
+    else{
+      if(Syst_JER && SystDir>0) *jit *= jit->SmearedResUp();
+      else if(Syst_JER && SystDir<0) *jit *= jit->SmearedResDown();
+
+    }
     bool IsNotPileUpJet = true;
     if(applypileuptool) IsNotPileUpJet = jit->PassPileUpMVA(PUJetIDWP);
     if(apply_ID) {
@@ -164,7 +170,6 @@ void JetSelection::SelectJets(std::vector<KJet>& jetColl, std::vector<KMuon> muo
     
     bool pass_selection=true;
     if (!PassUserID(*jit, vids)) pass_selection=false;
-
     if ( (jit->Pt() >= ptcut)  && fabs(jit->Eta()) < etacut && pass_selection )  pre_jetColl.push_back(*jit);
   }
 

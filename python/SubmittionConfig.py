@@ -66,6 +66,9 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
     if defuseskim == "SKTree_HNFakeSkim" :
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+    if defuseskim == "SKTree_HNFatJetSkim" :
+        defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
+
 
     if defuseskim == "SKTree_TriLepSkim" :
         defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
@@ -90,6 +93,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defuseskim == "SKTree_HNFakeSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
             foutname="SK"+foutname+"_hnfake_cat_"+defcatversion
+        if defuseskim == "SKTree_HNFatJetSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
+            foutname="SK"+foutname+"_hnfatjet_cat_"+defcatversion
+
 
         if defuseskim == "SKTree_TriLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
@@ -144,6 +151,10 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
         if defuseskim == "SKTree_HNFakeSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
             foutname="SK"+foutname+"_hnfake_cat_"+defcatversion            
+        if defuseskim == "SKTree_HNFatJetSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
+            foutname="SK"+foutname+"_hnfatjet_cat_"+defcatversion
+
         if defuseskim == "SKTree_TriLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion
             foutname="SK"+foutname+"_trilep_cat_"+defcatversion
@@ -162,6 +173,9 @@ def   MergeData(defrunnp,defruncf,defdata_lumi, defFinaloutputdir,  defcatversio
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hndilep_cat_"+defcatversion
         if defuseskim == "SKTree_HNFakeSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfake_cat_"+defcatversion
+        if defuseskim == "SKTree_HNFatJetSkim" :
+            defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_hnfatjet_cat_"+defcatversion
+
         if defuseskim == "SKTree_TriLepSkim" :
             defoutput_file_skim_tag="SK"+defoutput_file_skim_tag+"_trilep_cat_"+defcatversion            
 
@@ -605,6 +619,9 @@ def DetermineNjobs(jobsummary, nfiles_job, longestjobtime, ncores_job, deftagger
     if not os.path.exists(path_jobpre+"/LQAnalyzer_rootfiles_for_analysis/CATAnalyzerStatistics/MasterFile_"+ os.getenv("CATVERSION")+".txt"):
         return 20
        
+    if ncores_job == 0:
+         return 1
+
     if ncores_job == 1:
         return 1
 
@@ -891,6 +908,9 @@ def CheckJobHistory(info_type, defsample, defcycle, tagger,defskim):
         defsample +="_hndilepton"
     if "SKTree_HNFakeSkim"in defskim:
         defsample +="_hnfake"
+    if "SKTree_HNFatJetSkim"in defskim:
+        defsample +="_hnfatjet"
+
     if "SKTree_TriLepSkim"in defskim:
         defsample +="_trilepton"    
     if "SKTree_NoSkim" in defskim:
@@ -1055,6 +1075,9 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
         defskim="HNDiLep"
     elif defskim == "SKTree_HNFakeSkim":
         defskim="HNFake"
+    elif defskim == "SKTree_HNFatJetSkim":
+        defskim="HNFatJet"
+
     elif defskim == "SKTree_TriLepSkim":
         defskim="TriLep"
     
@@ -1076,8 +1099,11 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
                         if defskim == "HNFake":
                             defchannel="SK" + defchannel + "_hnfake"
                         else:
-                            if defskim == "TriLep":
-                                defchannel="SK" + defchannel + "_trilep"
+                            if defskim == "HNFatJet":
+                                defchannel="SK" + defchannel + "_hnfatjet"
+                            else:
+                                if defskim == "TriLep":
+                                    defchannel="SK" + defchannel + "_trilep"
     else:
         if defskim == "Lepton":
             defsample="SK" + defsample
@@ -1094,10 +1120,12 @@ def GetPartualName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
                     else:
                         if defskim == "HNFake":
                             defsample="SK" + defsample + "_hnfake"
-
                         else:
-                            if defskim == "TriLep":
-                                defsample="SK" + defsample + "_trilep"
+                            if defskim == "HNFatJet":
+                                defsample="SK" + defsample + "_hnfatjet"
+                            else:
+                                if defskim == "TriLep":
+                                    defsample="SK" + defsample + "_trilep"
 
     outsamplename=""                        
     if ismc:
@@ -1140,6 +1168,9 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_hndilep"
         elif defskim == "HNFake":
             skimtag= "_hnfake"
+        elif defskim == "HNFatJet":
+            skimtag= "_hnfatjet"
+
         elif defskim == "TriLep":
             skimtag= "_trilep"
         elif defskim == "NoCut":
@@ -1157,6 +1188,8 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             skimtag= "_hndilep"
         elif defskim == "HNFake":
             skimtag= "_hnfake"
+        elif defskim == "HNFatJet":
+            skimtag= "_hnfatjet"
         elif defskim == "TriLep":
             skimtag= "_trilep"
         elif defskim == "NoCut":
@@ -1177,6 +1210,9 @@ def GetOutFileName(defskim, ismc , defsample, defrunnp, defruncf, defchannel ,de
             if defskim == "DiLep":
                 return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCTriLep/"+defsample+"/"
                             
+            elif "FatJet" in defcycle:
+                return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFatJet/"+defsample+"/"
+
             elif "Fake" in defcycle:
                 return an_jonpre+"/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MCHNFake/"+defsample+"/"                
 
@@ -1631,6 +1667,9 @@ elif useskim == "SKTree_HNDiLepSkim":
     skim_print="HNDiLep. "
 elif useskim == "SKTree_HNFake":
     skim_print="HNFake. "
+elif useskim == "SKTree_HNFatJet":
+    skim_print="HNFatJet. "
+
 elif useskim == "SKTree_TriLepSkim":
     skim_print="TriLep. "
 elif useskim == "SKTree_NoSkim":
@@ -3104,7 +3143,7 @@ if len(output_warning) > 0:
         print s
         job_summary.append(s + "\n")
 
-if runningData:
+if runningData and  not "SKTreeMaker" in cycle:
 
     file_read_counter = open("/data2/CAT_SKTreeOutput/"+os.getenv("USER")+"/Histdir" + tagger + "/Hist.txt","r")
     nhists=0
@@ -3155,7 +3194,7 @@ if runningData:
     #    job_summary.append("#"*40+ "\n")
 
 
-else:
+elif  not "SKTreeMaker" in cycle:
                               
     cuts =[]
     print " "

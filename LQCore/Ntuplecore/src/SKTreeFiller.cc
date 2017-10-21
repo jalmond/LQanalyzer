@@ -186,7 +186,9 @@ snu::KEvent SKTreeFiller::GetEventInfo(){
 
   if(k_cat_version > 3){
     /// k_cat_version > 3 == v765+
+    cout << "PDFWeights : " << PDFWeights << endl;
     if(PDFWeights){
+      cout << "PDFWeights->size()  = " << PDFWeights->size() <<endl;
       if(PDFWeights->size() > 0){
 	kevent.SetPDFWeights(*PDFWeights);
       }

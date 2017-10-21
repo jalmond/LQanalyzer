@@ -23,6 +23,7 @@ class GetSignalEff : public AnalyzerCore {
 
 
   bool CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons, std::vector<snu::KElectron> el,  std::vector<snu::KJet> jets,  std::vector<snu::KJet> alljets, TString name, float w);
+  void MatchedJets(std::vector<snu::KJet> jets, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, std::vector<int> ijets ,TString label);
 				      
   
  private:

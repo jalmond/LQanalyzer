@@ -50,6 +50,16 @@ void GetSignalEff::InitialiseAnalysis() throw( LQError ) {
    //// Initialise Plotting class functions
    /// MakeCleverHistograms ( type, "label")  type can be muhist/elhist/jethist/sighist
 
+   FillHist("Truth_Jets_FromW_LowMass_Pt", -1., 1., 0., 1000., 250, "Truth j_{W} lowmass P_{T} GeV");
+   FillHist("Truth_Jets_FromW_LowMass_Eta",-1.,  1., -5., 5., 100,"Truth j_{W} lowmass #eta");
+   FillHist("Truth_FowardJets_Pt",  -1.,  1., 0., 500., 250,"Truth j_{forward} P_{T} GeV");
+   FillHist("Truth_FowardJets_Eta",  -1., 1., -5., 5., 50,"Truth j_{forward}  #eta");
+   FillHist("Truth_Lepton_FromW_HighMass_Pt", -1., 1., 0., 500., 250,"Truth #ell_{W} high mass P_{T}");
+   FillHist("Truth_Lepton_FromW_HighMass_Pt_lowpt", -1., 1., 0., 100., 100, "Truth #ell_{W} high mass P_{T}");
+   FillHist("Truth_Lepton_FromW_HighMass_Eta", -1., 1., -3., 3., 60,"Truth #ell_{W} high mass #eta");
+   FillHist("Truth_RecoMatched_FowardJets_Pt",  -1., 1., 0., 500., 250,"Truth (reco matched) j_{forward} P_{T} GeV");
+   FillHist("Truth_RecoMatched_FowardJets_Eta", -1., 1., -5., 5., 50,"Truth (reco matched) j_{forward} #eta");
+
 
    return;
 }
@@ -57,49 +67,112 @@ void GetSignalEff::InitialiseAnalysis() throw( LQError ) {
 
 void GetSignalEff::ExecuteEvents()throw( LQError ){
   
-  if(!isData){
-    std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
-    //TruthPrintOut();
-    vector<int> i_jets;
-    
-    for(unsigned int i = 0; i < truthColl.size(); i++){
-    if(fabs(eventbase->GetTruth().at(i).PdgId()) == 11) {
-      
-      if(eventbase->GetTruth().at(i).GenStatus() ==23){
-	if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) != 9900012){
-	  FillHist("Electron_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
-	  FillHist("Electron_FromW_LowMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100);
-	  FillHist("Electron_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60);
-	}	  
-      }
-      
-      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) ==24) {
-	FillHist("Electron_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
-	FillHist("Electron_FromW_LowMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100);
-	FillHist("Electron_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60);
 
-      }
-      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) == 9900012){
-	FillHist("Electron_FromN_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
-        FillHist("Electron_FromN_LowMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100);
-	FillHist("Electron_FromN_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60);
-      }
-      
-      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) == 9900012){
-        FillHist("Electron_FromN_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
-        FillHist("Electron_FromN_LowMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100);
-        FillHist("Electron_FromN_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60);
-      }
+  std::vector<snu::KJet> ALLjets =  GetJets("JET_NOCUT",0., 5.);
+  std::vector<snu::KJet> HNjets10 =  GetJets("JET_HN",10., 2.5);
+  std::vector<snu::KJet> HNjets20 =  GetJets("JET_HN",20., 2.5);
+  
+  std::vector<snu::KMuon> muons_all = GetMuons("MUON_PTETA", false, 0., 5.);
+  std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT", false, 10., 2.5);
+  std::vector<snu::KElectron> electrons_all = GetElectrons(false,false, "ELECTRON_NOCUT",0., 5.);
+  std::vector<snu::KElectron> electrons = GetElectrons(false,false, "ELECTRON_HN_TIGHT",15., 2.5);
 
-      
-      if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) ==24) {
-        FillHist("Electron_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
-        FillHist("Electron_FromW_LowMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100);
-        FillHist("Electron_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60);
+  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
 
+  
+  FillHist("Reco_nmuon_nocut", muons_all.size(), weight, 0., 5., 5,"N_{#mu}");
+  FillHist("Reco_nmuon_tight", muons.size(), weight, 0., 5., 5,"N_{#mu} (TIGHT)");
+  FillHist("Reco_nelectron_nocut", muons_all.size(), weight, 0., 5., 5,"N_{#mu}");
+  FillHist("Reco_nelectron_tight", muons.size(), weight, 0., 5., 5,"N_{#mu} (TIGHT)");
+
+  FillHist("Reco_njets", ALLjets.size(), weight, 0., 10., 10,"N_{j}");
+  FillHist("Reco_njets_10", HNjets10.size(), weight, 0., 10., 10,"N_{j} (pt> 10 GeV)");
+  FillHist("Reco_njets_20", HNjets20.size(), weight, 0., 10., 10,"N_{j} (pt> 20 GeV)");
+  
+  FillHist("Reco_nfatjet", fatjetcoll.size(), weight, 0., 10., 10,"N_{fat_j}");
+
+  int nfowardj(0);
+  for(unsigned int ij2=0; ij2 <ALLjets.size(); ij2++){
+    if(fabs(ALLjets[ij2].Eta()) > 2.5) nfowardj++;
+  }
+  FillHist("Reco_nfowardjet", nfowardj, weight, 0., 10., 10,"N_{foward_j}");
+  // RECO PLOTS
+  float ST=0.;
+  for(int ij = 0 ; ij < muons_all.size() ; ij++){
+    ST+= muons_all[ij].Pt();
+    if(ij==0) FillHist(("Reco_muon_1_pt") , muons_all[ij].Pt(),weight, 0., 1000., 100,"#mu_{1} P_{t} GeV");
+    if(ij==0) FillHist(("Reco_muon_1_eta") , muons_all[ij].Eta(),weight, -5., 5., 100,"#mu_{1} #eta");
+    if(ij==1) FillHist(("Reco_muon_2_pt") , muons_all[ij].Pt(),weight, 0., 1000., 100,"#mu_{2} P_{t} GeV");
+    if(ij==1) FillHist(("Reco_muon_2_eta"),  muons_all[ij].Eta(),weight, -5., 5., 100,"#mu_{2} #eta");
+  }
+  if( muons_all.size()==2) {
+    FillHist(("Reco_mm_dR") , muons_all[0].DeltaR(muons_all[1]),weight, 0., 10., 100,"#DeltaR(#mu#mu)");
+  }
+  if( electrons_all.size()==2) {
+    FillHist(("Reco_ee_dR") , electrons_all[0].DeltaR(electrons_all[1]),weight, 0., 10., 100,"#DeltaR(ee)");
+  }
+  
+  float MuJmindR=9999.;
+  for(unsigned int im=0; im <muons.size(); im++){
+    for(unsigned int ij2=0; ij2 <HNjets20.size(); ij2++){
+      if(muons.at(im).DeltaR(HNjets20.at(ij2)) <  MuJmindR){
+	MuJmindR = muons.at(im).DeltaR(HNjets20.at(ij2));
       }
-      
     }
+  }
+  FillHist(("Reco_muJ_dR") , MuJmindR, weight, 0., 10., 100,"#DeltaR(#muJ)");
+
+  float EJmindR=9999.;
+  for(unsigned int im=0; im <electrons.size(); im++){
+    for(unsigned int ij2=0; ij2 <HNjets20.size(); ij2++){
+      if(electrons.at(im).DeltaR(HNjets20.at(ij2)) <  EJmindR){
+        EJmindR = electrons.at(im).DeltaR(HNjets20.at(ij2));
+      }
+    }
+  }
+  FillHist(("Reco_eJ_dR") , EJmindR, weight, 0., 10., 100,"#DeltaR(eJ)");
+
+  for(int ij = 0 ; ij < electrons_all.size() ; ij++){
+    ST+= electrons_all[ij].Pt();
+    if(ij==0) FillHist(("Reco_electron_1_pt") ,  electrons_all[ij].Pt(),weight, 0., 1000., 100,"e_{1} P_{t} GeV");
+    if(ij==0) FillHist(("Reco_electron_1_eta") , electrons_all[ij].Eta(), weight, -5., 5., 100,"e_{1} #eta");
+    if(ij==1) FillHist(("Reco_electron_2_pt") ,  electrons_all[ij].Pt(),weight, 0., 1000., 100,"e_{2} P_{t} GeV");
+    if(ij==1) FillHist(("Reco_electron_2_eta"),   electrons_all[ij].Eta(),weight, -5., 5., 100,"e_{2} #eta");
+  }
+  
+
+  for(int ij = 0 ; ij < HNjets20.size() ; ij++){
+    ST+= HNjets20[ij].Pt();
+  }
+  FillHist(("Reco_met") ,  eventbase->GetEvent().PFMET(),  weight, 0., 500., 100,"slash{E}_{T}^{miss} (GeV)");
+  FillHist(("Reco_met2_st"), pow(eventbase->GetEvent().PFMET(),2.)/ ST,  weight, 0., 20., 100,"slash{E}^{2}_{T}^{miss}/S_{T}");
+
+  for(int ij = 0 ; ij < ALLjets.size() ; ij++){
+    
+    if(ij==0){
+      FillHist(("Reco_jet_1_pt"),  ALLjets[ij].Pt(), weight, 0., 400., 100,"Jet1_pt");
+      FillHist(("Reco_jet_1_eta"),  ALLjets[ij].Eta(), weight, -5., 5., 100,"Jet1_eta");
+    }
+    if(ij==1){
+      FillHist(("Reco_jet_2_pt"),  ALLjets[ij].Pt(), weight, 0., 400., 100,"Jet2_pt");
+      FillHist(("Reco_jet_2_eta"),  ALLjets[ij].Eta(), weight, -5., 5., 100,"Jet2_eta");
+    }
+    if(ij==2){
+      FillHist(("Reco_jet_3_pt"),  ALLjets[ij].Pt(), weight, 0., 400., 100,"Jet3_pt");
+      FillHist(("Reco_jet_3_eta"),  ALLjets[ij].Eta(), weight, -5., 5., 100,"Jet3_eta");
+    }
+    if(ij==3){
+      FillHist(("Reco_jet_4_pt"),  ALLjets[ij].Pt(), weight, 0., 400., 100,"Jet4_pt");
+      FillHist(("Reco_jet_4_eta"),  ALLjets[ij].Eta(), weight, -5., 5., 100,"Jet4_eta");
+    }
+    if(fabs(ALLjets[ij].Eta()) < 2.5)       FillHist(("Reco_centraljet_pt"),  ALLjets[ij].Pt(), weight, 0., 400., 100,"Jet(#eta < 2.5) pt");
+    else FillHist(("Reco_fowardjet_pt"),  ALLjets[ij].Pt(), weight, 0., 400., 100,"Jet(#eta > 2.5) pt");
+  }
+
+  vector<int> i_jets;
+  //TruthPrintOut();            
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();                                                                                                                                                                                                                    
+  for(unsigned int i = 0; i < truthColl.size(); i++){
     if(fabs(eventbase->GetTruth().at(i).PdgId()) < 6) {
       
       int mother_i = eventbase->GetTruth().at(i).IndexMother();
@@ -108,59 +181,174 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
 	mother_i = eventbase->GetTruth().at(mother_i).IndexMother();
       }
       if(fabs(eventbase->GetTruth().at(mother_i).PdgId()) == 9900012){
-	FillHist("Jets_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250);
-	FillHist("Jets_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -5., 5., 100);
+	FillHist("Truth_Jets_FromW_HighMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 1000., 250,"Truth j_{W} highmass P_{T} GeV");
+	FillHist("Truth_Jets_FromW_HighMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -5., 5., 100, "Truth j_{W} highmass  #eta");
+	
+	
+
+	snu::KParticle jtmp=eventbase->GetTruth().at(i);
+        for(int ij = 0 ; ij < ALLjets.size() ; ij++){
+          if(jtmp.DeltaR(ALLjets[ij]) < 0.1){
+            FillHist("TruthvsReco_Jets_FromW_PtR_ptT", eventbase->GetTruth().at(i).Pt(), ALLjets[ij].Pt() / eventbase->GetTruth().at(i).Pt(), 1., 0., 200., 100, 0., 10., 100);
+	    FillHist("TruthvsReco_Jets_FromW_ratioPtR_ptT", eventbase->GetTruth().at(i).Pt(), ALLjets[ij].Pt() / eventbase->GetTruth().at(i).Pt(), 1., 0., 200., 100, 0., 10., 100);
+
+          }
+        }
 
 	i_jets.push_back(i);
       }
-    }
-    }
+      if(fabs(eventbase->GetTruth().at(i).PdgId()) == 9900012){
+	FillHist("Truth_Jets_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 1000., 250, "Truth j_{W} lowmass P_{T} GeV");
+        FillHist("Truth_Jets_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -5., 5., 100,"Truth j_{W} lowmass #eta");
 
-    if(i_jets.size() ==2){
-      snu::KParticle W = eventbase->GetTruth().at(i_jets[0])+  eventbase->GetTruth().at(i_jets[1]);
-      FillHist("Truth_mjj", W.M(),  1., 0., 125., 250);
-      //FillHist("Truth_mjjll", W.M(),  1., 0., 125., 250);
-      std::vector<snu::KJet> jets = GetJets("JET_HN");
-      std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT");
-      if(jets.size()>=2 && muons.size()==2){
 	
-	float dijetmass_tmp=999.;
-	float dijetmass=9990000.;
-	int m=-999;
-	int n=-999;
-	for(UInt_t emme=0; emme<jets.size(); emme++){
-	  for(UInt_t enne=1; enne<jets.size(); enne++) {
-	    if(emme == enne) continue;
-	    dijetmass_tmp = (jets[emme]+jets[enne] + muons[0] + muons[1]).M();
-	    if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
-	      
-	      dijetmass = dijetmass_tmp;
-	      m = emme;
-	      n = enne;
-	    }
-	  }
-	}
-	
-	bool match=false;
-	
-	if(jets[m].DeltaR(muons[0]) < 0.5){
-	  if(jets[n].DeltaR(muons[1]) < 0.5){
-	    match=true;
-	  }
-	}
-	if(jets[m].DeltaR(muons[1]) < 0.5){
-	  if(jets[n].DeltaR(muons[0]) < 0.5){
-	    match=true;
+	snu::KParticle jtmp=eventbase->GetTruth().at(i);
+        for(int ij = 0 ; ij < ALLjets.size() ; ij++){
+          if(jtmp.DeltaR(ALLjets[ij]) < 0.1){
+            FillHist("TruthvsReco_Jets_FromW_ratioPtR_ptT", eventbase->GetTruth().at(i).Pt(), ALLjets[ij].Pt() / eventbase->GetTruth().at(i).Pt(), 1., 0., 200., 100, 0., 10., 100);
+	    FillHist("TruthvsReco_Jets_FromW_PtR_ptT", eventbase->GetTruth().at(i).Pt(), ALLjets[ij].Pt(), 1., 0., 200., 100, 0., 200., 100);
+          }
+        }
 
-	  }
-	}
-	FillHist("Reco_mjj", (jets[m]+jets[n]).M(),  1., 0., 125., 250);
-	if(match)  FillHist("Matched_JJ_truth_lowmass", 1, 1., 0., 2., 2);
-	else  FillHist("Matched_JJ_truth_lowmass",0, 1., 0., 2., 2);
+        i_jets.push_back(i);
+
       }
     }
   }
-  
+
+  for(unsigned int i = 0; i < truthColl.size(); i++){
+    if(fabs(eventbase->GetTruth().at(i).PdgId()) < 6) {
+
+      int mother_i = eventbase->GetTruth().at(i).IndexMother();
+      
+      bool Wjet=false;
+      for(unsigned int ijet=0; ijet < i_jets.size(); ijet++){
+	if(i_jets[ijet] ==  i) Wjet=true;
+      }
+      if(Wjet) continue;
+
+      if(eventbase->GetTruth().at(i).GenStatus() == 23) {
+	
+	FillHist("Truth_FowardJets_Pt",  eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250,"Truth j_{forward} P_{T} GeV");
+	FillHist("Truth_FowardJets_Eta",  eventbase->GetTruth().at(i).Eta(), 1., -5., 5., 50,"Truth j_{forward}  #eta");
+
+	snu::KParticle jtmp=eventbase->GetTruth().at(i);
+	for(int ij = 0 ; ij < ALLjets.size() ; ij++){
+	  if(jtmp.DeltaR(ALLjets[ij]) < 0.1){
+
+	    FillHist("Truth_RecoMatched_FowardJets_Pt",  eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250,"Truth (reco matched) j_{forward} P_{T} GeV");
+	    FillHist("Truth_RecoMatched_FowardJets_Eta",  eventbase->GetTruth().at(i).Eta(), 1., -5., 5., 50,"Truth (reco matched) j_{forward} #eta");
+	    
+	    FillHist("TruthResponnse_RecoMatched_FowardJets_Pt",   eventbase->GetTruth().at(i).Pt(), ALLjets[ij].Pt() / eventbase->GetTruth().at(i).Pt(), 1., 0., 200., 100, 0., 200., 400);
+	  }
+	  
+	  //    cout << "non W jet " <<  fabs(eventbase->GetTruth().at(i).PdgId()) << " mother: " << eventbase->GetTruth().at(mother_i).PdgId() <<  " " << eventbase->GetTruth().at(i).Pt() << " " << eventbase->GetTruth().at(i).Eta() << " " <<  eventbase->GetTruth().at(i).Phi() << endl;
+	  //	    cout << "Jet matched to non W q: " << ALLjets[ij].Pt() << " " << ALLjets[ij].Eta() << " " << ALLjets[ij].Phi() << endl;
+	}
+      }
+    }
+  }
+  // i_jets = truth indices of quarks in W->qq'
+      
+  if(!isData){
+    
+    for(unsigned int i = 0; i < truthColl.size(); i++){
+      if(fabs(eventbase->GetTruth().at(i).PdgId()) == 11 || fabs(eventbase->GetTruth().at(i).PdgId()) == 13 ) {
+	
+	if(eventbase->GetTruth().at(i).GenStatus() ==23){
+	  if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) != 9900012){
+	    FillHist("Truth_Lepton_FromW_HighMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250,"Truth #ell_{W} high mass P_{T}");
+	    FillHist("Truth_Lepton_FromW_HighMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100, "Truth #ell_{W} high mass P_{T}");
+	    FillHist("Truth_Lepton_FromW_HighMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60,"Truth #ell_{W} high mass #eta");
+	    
+	    int i_N(0);
+	    for(unsigned int i2 = 0; i2 < truthColl.size(); i2++){
+	      if(fabs(eventbase->GetTruth().at(i2).PdgId()) == 9900012 ) {i_N=i2; break;}
+	    }
+	    int i_l2(0);
+            for(unsigned int i2 = 0; i2 < truthColl.size(); i2++){
+	      if(fabs(eventbase->GetTruth().at(i2).PdgId()) == 11 || fabs(eventbase->GetTruth().at(i2).PdgId()) == 13 ) {
+		if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i2).IndexMother()).PdgId()) == 9900012 ) {i_l2=i2; break;}
+	      }
+	    }
+
+	    float dRl1N = sqrt (pow(fabs(eventbase->GetTruth().at(i).Eta() - eventbase->GetTruth().at(i_N).Eta()),2.) + pow( fabs(eventbase->GetTruth().at(i).Phi() - eventbase->GetTruth().at(i_N).Phi()),2.));
+	    FillHist("Truth_Lepton_FromW_dRN", dRl1N,   1., 0., 5., 25, "Truth #Delta R(#ell_{W},N)");
+
+	    float dRl1l2 = sqrt (pow(fabs(eventbase->GetTruth().at(i).Eta() - eventbase->GetTruth().at(i_l2).Eta()),2.) + pow( fabs(eventbase->GetTruth().at(i).Phi() - eventbase->GetTruth().at(i_l2).Phi()),2.));
+															       
+            FillHist("Truth_Lepton_FromW_dR_lep2", dRl1l2, 1., 0., 5., 25,"Truth #Delta R(#ell_{W},#ell_{N})");
+	    
+	  }	  
+	}
+	
+	if(eventbase->GetTruth().at(i).GenStatus() ==1){
+	  if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) ==24) {
+	    FillHist("Truth_Lepton_FromW_LowMass_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250,"Truth #ell_{W} P_{T}");
+	    FillHist("Truth_Lepton_FromW_LowMass_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100, "Truth #ell_{W} P_{T}");
+	    FillHist("Truth_Lepton_FromW_LowMass_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60,"Truth #ell_{W} #eta");
+	    int i_N(0);
+            for(unsigned int i2 = 0; i2 < truthColl.size(); i2++){
+              if(fabs(eventbase->GetTruth().at(i2).PdgId()) == 9900012 ) {i_N=i2; break;}
+            }
+            int i_l2(0);
+            for(unsigned int i2 = 0; i2 < truthColl.size(); i2++){
+	      if(fabs(eventbase->GetTruth().at(i2).PdgId()) == 11 || fabs(eventbase->GetTruth().at(i2).PdgId()) == 13 ) {
+                if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i2).IndexMother()).PdgId()) == 9900012 ) {i_l2=i2; break;}
+              }
+            }
+
+            float dRl1N = sqrt (pow(fabs(eventbase->GetTruth().at(i).Eta() - eventbase->GetTruth().at(i_N).Eta()),2.) + pow( fabs(eventbase->GetTruth().at(i).Phi() - eventbase->GetTruth().at(i_N).Phi()),2.));
+															      
+            FillHist("Truth_Lepton_FromW_dRN", dRl1N, 1., 0., 5., 25, "Truth #Delta R(#ell_{W},N)");
+
+            float dRl1l2 = sqrt (pow(fabs(eventbase->GetTruth().at(i).Eta() - eventbase->GetTruth().at(i_l2).Eta()),2.) + pow( fabs(eventbase->GetTruth().at(i).Phi() - eventbase->GetTruth().at(i_l2).Phi()),2.));
+																 
+
+            FillHist("Truth_Lepton_FromW_dR_lep2", dRl1l2, 1., 0., 5., 25, "Truth #Delta R(#ell_{W},#ell_{2})");
+
+	  }
+	  
+	  if(fabs(eventbase->GetTruth().at(eventbase->GetTruth().at(i).IndexMother()).PdgId()) == 9900012){
+	    FillHist("Truth_Lepton_FromN_Pt", eventbase->GetTruth().at(i).Pt(), 1., 0., 500., 250,"Truth #ell_{N} P_{T} (GeV) ");
+	    FillHist("Truth_Lepton_FromN_Pt_lowpt", eventbase->GetTruth().at(i).Pt(), 1., 0., 100., 100,"Truth #ell_{N} P_{T} (GeV) ");
+	    FillHist("Truth_Lepton_FromN_Eta", eventbase->GetTruth().at(i).Eta(), 1., -3., 3., 60,"Truth #ell_{N} #eta ");
+	    
+	    
+	    float dRl2j1 = sqrt (pow(fabs(eventbase->GetTruth().at(i).Eta() - eventbase->GetTruth().at(i_jets[0]).Eta()),2.) + pow( fabs(eventbase->GetTruth().at(i).Phi() - eventbase->GetTruth().at(i_jets[0]).Phi()),2.));
+	    float dRl2j2 = sqrt (pow(fabs(eventbase->GetTruth().at(i).Eta() - eventbase->GetTruth().at(i_jets[1]).Eta()),2.) + pow( fabs(eventbase->GetTruth().at(i).Phi() - eventbase->GetTruth().at(i_jets[1]).Phi()),2.));
+	    
+
+	    if(dRl2j1 < dRl2j2) FillHist("Truth_Lepton_FromN_dR_closest_q", dRl2j1, 1., 0., 5., 25,"Truth #DeltaR(#ell_{N},q) ");
+	    if(dRl2j1 > dRl2j2) FillHist("Truth_Lepton_FromN_dR_closest_q", dRl2j2, 1., 0., 5., 25,"Truth #DeltaR(#ell_{N},q) ");
+
+	    
+	  }
+	}
+	
+      } // lepton loop
+    }
+    
+    
+    if(i_jets.size() ==2){
+      snu::KParticle W = eventbase->GetTruth().at(i_jets[0])+  eventbase->GetTruth().at(i_jets[1]);
+      FillHist("Truth_mjj", W.M(),  1., 0., 125., 250,"Truth M_{jj} GeV");
+      //FillHist("Truth_mjjll", W.M(),  1., 0., 125., 250);
+      std::vector<snu::KJet> jets = GetJets("JET_HN");
+      std::vector<snu::KJet> HNjets10 =  GetJets("JET_HN",10., 2.5);
+      std::vector<snu::KJet> HNjets10e27 =  GetJets("JET_HN",10., 2.7);
+      std::vector<snu::KJet> HNjets20e27 =  GetJets("JET_HN",20., 2.7);
+
+      std::vector<snu::KMuon> muons = GetMuons("MUON_HN_TIGHT");
+      
+      MatchedJets(jets, muons, electrons, i_jets, "");
+      MatchedJets(HNjets10, muons, electrons,  i_jets,"pt10");
+      MatchedJets(HNjets20e27, muons, electrons,i_jets, "pt20e27");
+      MatchedJets(HNjets10e27, muons, electrons, i_jets,"pt10e27");
+    }
+  }
+
+
   vector<TString> muonIDs;
   muonIDs.push_back("MUON_HN_EFF_PT");
   muonIDs.push_back("MUON_HN_EFF_POG");
@@ -181,38 +369,46 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
   std::vector<snu::KJet> jets = GetJets("JET_HN");
   std::vector<snu::KJet> hnjets = GetJetsWFT("JET_HN","FATJET_HN");
 
-  FillHist("hnjets", hnjets.size(), weight, 0., 10., 10);
-  FillHist("NFatJets", fatjets.size(), weight, 0., 10., 10);
   FillHist("2DJets", fatjets.size(), jets.size(),  weight, 0., 10., 10,  0., 10., 10);
   for(unsigned int ifjet=0; ifjet < fatjets.size(); ifjet++){
-    FillHist(("tau21"), fatjets[ifjet].Tau2()/fatjets[ifjet].Tau1(), weight, 0., 1., 100);
-    FillHist(("PrunedMass"), fatjets[ifjet].PrunedMass(),  weight, 0., 200., 100);
-    FillHist(("SoftDropMass"), fatjets[ifjet].SoftDropMass(),  weight, 0., 200., 100);
+    FillHist(("tau21"), fatjets[ifjet].Tau2()/fatjets[ifjet].Tau1(), weight, 0., 1., 100,"tau21");
+    FillHist(("PrunedMass"), fatjets[ifjet].PrunedMass(),  weight, 0., 200., 100,"M_{pruned} GeV");
+    FillHist(("SoftDropMass"), fatjets[ifjet].SoftDropMass(),  weight, 0., 200., 100,"Soft Mass");
   }
 
-  
+
+  if(muons.size() !=2) return;
+  bool passtrig(false);
   if(PassTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"))   {
-    FillEventCutFlow(0, "HLT_Mu17_",weight);
+    if(muons[0].Pt() > 20 && muons[1].Pt() > 10){
+      FillEventCutFlow(0, "HLT_Mu17_",weight);
+      passtrig=true;
+    }
     TString analysis_trigger_muon="HLT_IsoMu24_v";
     TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
     if((PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon))){
-      FillEventCutFlow(0, "HLT_IsoMu24",weight);
+      if(muons[0].Pt() > 25 && muons[1].Pt() > 5) {
+	FillEventCutFlow(0, "HLT_IsoMu24",weight);
+	passtrig=true;
+      }
     }
   }
   else {
     TString analysis_trigger_muon="HLT_IsoMu24_v";
     TString analysis_trigger_tkmuon="HLT_IsoTkMu24_v";
     if((PassTrigger(analysis_trigger_muon) || PassTrigger(analysis_trigger_tkmuon))){
-      FillEventCutFlow(0, "HLT_IsoMu24",weight);
+      if(muons[0].Pt() > 25 && muons[1].Pt() > 5) {
+	FillEventCutFlow(0, "HLT_IsoMu24",weight);
+	passtrig=true;
+      }
     }
     else return;
   }
-  
+  if(!passtrig) return;
 
   std::vector<snu::KJet> alljets =  GetJets("JET_NOLEPTONVETO");
 
-  
-
+ 
   std::vector<snu::KMuon> muons_veto = GetMuons("MUON_HN_VETO",false);
   std::vector<snu::KElectron> electrons_veto = GetElectrons(true,true,"ELECTRON_HN_VETO");
 
@@ -241,8 +437,7 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
 	if(muonIDs[iid] == "MUON_HN_TIGHT"){
 	  
 	  if(jets.size() > 1) FillEventCutFlow(0, "DiJet", weight);
-	  if((jets.size() + fatjets.size()) > 1 )  FillEventCutFlow(0, "NewDiJet", weight);
-	  
+	  if((jets.size() > 1)|| (fatjets.size() > 0) )  FillEventCutFlow(0, "NewDiJet", weight);
 	  
           if(CheckSignalRegion(true,muons_eff, electrons_veto,jets, alljets,"Low", weight)) FillEventCutFlow(0, "LowMass", weight);
           if(CheckSignalRegion(true,muons_eff,electrons_veto, jets, alljets,"", weight)) FillEventCutFlow(0, "MidMass", weight);
@@ -254,66 +449,6 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
     
   }
   
-  TString pogt="MUON_POG_TIGHT";
-  TString pogm="MUON_POG_MEDIUM";
-  TString gentid="MUON_HNGENT_TIGHT";
-  TString hnid = "MUON_HN_TIGHT";
-  TString hnid_iso = "MUON_HN_TIGHT_iso";
-  TString hnid_dxy = "MUON_HN_TIGHT_dxy";
-  TString hnidm = "MUON_HN_MEDIUM";
-
-  if(k_running_nonprompt){
-    pogt="MUON_POG_FAKETIGHT";
-    pogm="MUON_POG_FAKEMEDIUM";
-    gentid="MUON_HNGENT_LOOSE";
-    hnid="MUON_HN_LOOSE";
-    hnid_iso="MUON_HN_LOOSE";
-    hnid_dxy="MUON_HN_LOOSE_dxy";
-    hnidm="MUON_HN_LOOSEMEDIUM";
-  }
-  bool cb_1=false;
-  bool cb_2=false;
- 
-   
-  std::vector<snu::KMuon> pogmedium  = GetMuons(pogm,false);
-  std::vector<snu::KMuon> pogtight  = GetMuons(pogt,false);
-  std::vector<snu::KMuon> gent= GetMuons(gentid,false);
-  std::vector<snu::KMuon>  hn=  GetMuons(hnid,false);
-  std::vector<snu::KMuon>  hn_med=  GetMuons(hnidm,false);
-  std::vector<snu::KMuon>  hn_iso=  GetMuons(hnid_iso,false);
-  std::vector<snu::KMuon>  hn_dxy=  GetMuons(hnid_dxy,false);
-
-  
-  float weight_pm=weight;
-  float weight_pt=weight;
-  float weight_g=weight;
-  float weight_hn=weight;
-  float weight_hnm=weight;
-  float weight_hniso=weight;
-  float weight_hndxy=weight;
-
-
-  if(k_running_nonprompt){
-  }
-  
-  
-  if(CheckSignalRegion(true,pogmedium,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_POGMEDIUM", weight_pm);
-  if(CheckSignalRegion(true,pogtight,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_POGTIGHT", weight_pt);
-  if(CheckSignalRegion(true,gent,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_GENT", weight_g);
-  if(CheckSignalRegion(true,hn,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_HN", weight_hn);
-  if(CheckSignalRegion(true,hn_med,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_HN_MEDIUM", weight_hnm);
-  if(CheckSignalRegion(true,hn_iso,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_HN_ISO", weight_hniso);
-  if(CheckSignalRegion(true,hn_dxy,electrons_veto, jets, alljets,"Low", weight)) FillEventCutFlow(2, "LowMass_HN_DXY", weight_hndxy);
-  
-  if(CheckSignalRegion(true,pogmedium,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_POGMEDIUM", weight_pm);
-  if(CheckSignalRegion(true,pogtight,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_POGTIGHT", weight_pt);
-  if(CheckSignalRegion(true,gent,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_GENT", weight_g);
-  if(CheckSignalRegion(true,hn,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_HN", weight_hn);
-  if(CheckSignalRegion(true,hn_med,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_HN_MEDIUM", weight_hnm);
-  if(CheckSignalRegion(true,hn_iso,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_HN_ISO", weight_hniso);
-  if(CheckSignalRegion(true,hn_dxy,electrons_veto, jets, alljets,"High", weight)) FillEventCutFlow(4, "HighMass_HN_DXY", weight_hndxy);
-  
-  
   
 
   return;
@@ -321,6 +456,87 @@ void GetSignalEff::ExecuteEvents()throw( LQError ){
   
 
 
+
+void GetSignalEff::MatchedJets(std::vector<snu::KJet> jets, std::vector<snu::KMuon> muons, std::vector<snu::KElectron> electrons, vector<int> i_jets, TString label){
+
+  if(jets.size()>=2 && (electrons.size() == 2 || muons.size()==2)){
+    
+    float dijetmass_tmp=999.;
+    float dijetmass_tmpHigh=999.;
+    float dijetmass=9990000.;
+    float dijetmasshigh=9990000.;
+    int m=-999;
+    int n=-999;
+    int mH=-999;
+    int nH=-999;
+    for(UInt_t emme=0; emme<jets.size(); emme++){
+      for(UInt_t enne=1; enne<jets.size(); enne++) {
+	if(emme == enne) continue;
+	if(muons.size() ==2)dijetmass_tmp = (jets[emme]+jets[enne] + muons[0] + muons[1]).M();
+	if(electrons.size() ==2)dijetmass_tmp = (jets[emme]+jets[enne] + electrons[0] + electrons[1]).M();
+	if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
+
+	  dijetmass = dijetmass_tmp;
+	  m = emme;
+	  n = enne;
+	}
+      }
+    }
+    for(UInt_t emme=0; emme<jets.size(); emme++){
+      for(UInt_t enne=1; enne<jets.size(); enne++) {
+	if(emme == enne) continue;
+	dijetmass_tmpHigh = (jets[emme]+jets[enne]).M();
+	if ( fabs(dijetmass_tmpHigh-80.4) < fabs(dijetmasshigh-80.4) ) {
+
+	  dijetmasshigh = dijetmass_tmpHigh;
+	  mH = emme;
+	  nH = enne;
+	}
+      }
+    }
+
+
+    bool match=false;
+    snu::KParticle j1= eventbase->GetTruth().at(i_jets[0]);
+    snu::KParticle j2= eventbase->GetTruth().at(i_jets[1]);
+    if(jets[m].DeltaR(j1) < 0.5){
+      if(jets[n].DeltaR(j2) < 0.5){
+	match=true;
+      }
+    }
+    if(jets[m].DeltaR(j2) < 0.5){
+      if(jets[n].DeltaR(j1) < 0.5){
+	match=true;
+
+      }
+    }
+    bool matchH=false;
+    if(jets[mH].DeltaR(j1) < 0.5){
+      if(jets[nH].DeltaR(j2) < 0.5){
+	matchH=true;
+      }
+    }
+    if(jets[mH].DeltaR(j2) < 0.5){
+      if(jets[nH].DeltaR(j1) < 0.5){
+	matchH=true;
+
+      }
+    }
+
+
+    FillHist("Reco_mjj_Low"+label, (jets[m]+jets[n]).M(),  1., 0., 125., 250, "Reco M_{jj} low mass");
+    FillHist("Reco_mjj_High"+label, (jets[mH]+jets[nH]).M(),  1., 0., 125., 250,"Reco M_{jj} high mass");
+    if(match)  FillHist("Matched_JJ_truth_lowmass"+label, 1, 1., 0., 2., 2,"Is W*->qq reco/truth matched");
+    else  FillHist("Matched_JJ_truth_lowmass"+label,0, 1., 0., 2., 2,"Is W*->qq reco/truth matched");
+
+    if(matchH)  FillHist("Matched_JJ_truth_highmass"+label, 1, 1., 0., 2., 2,"Is W->qq reco/truth matched");
+    else  FillHist("Matched_JJ_truth_highmass"+label,0, 1., 0., 2., 2,"Is W->qq reco/truth matched");
+
+
+
+  }
+
+}
 
 void GetSignalEff::EndCycle()throw( LQError ){
   
@@ -361,7 +577,7 @@ bool GetSignalEff::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons,
   if(muons.size() != 2 ) {if(debug)cout << "Fail el size" << endl; return false ;}
                                                                                                                                                                                  
   if(muons.at(0).Pt() < 20.) {if(debug)cout << "Fail pt1 " << endl; return false;}
-  if(muons.at(1).Pt() < 10.)  {if(debug)cout << "Fail pt2  " << endl; return false;}
+  if(muons.at(1).Pt() < 5.)  {if(debug)cout << "Fail pt2  " << endl; return false;}
 
   if(isss&&!SameCharge(muons)) {if(debug)cout << "Fail ss " << endl; return false;}
 
@@ -397,7 +613,6 @@ bool GetSignalEff::CheckSignalRegion( bool isss,  std::vector<snu::KMuon> muons,
   contramass=sqrt(contramass);
 
   if(name.Contains("Low")){
-    if(contramass > 100) return false;
     if((jets[0]+jets[1]).M() > 200.) return false;
     if((jets[0] + muons[0] + muons[1]).M() > 250.)  return false;
   }

@@ -24,7 +24,7 @@ class FatJetSelection : public BaseSelection {
 
  
   void Selection (std::vector<snu::KFatJet>& jetColl);
-  void Selection (std::vector<snu::KFatJet>& jetColl, bool LepVeto, std::vector<snu::KMuon>& muonColl, std::vector<snu::KElectron>& electronColl);
+  void Selection (std::vector<snu::KFatJet>& jetColl, bool LepVeto, std::vector<snu::KMuon>& muonColl, std::vector<snu::KElectron>& electronColl, TString Option="");
   void BasicSelection (std::vector<snu::KFatJet>& jetColl);
   
   bool PassUserID (ID id, snu::KFatJet jet);

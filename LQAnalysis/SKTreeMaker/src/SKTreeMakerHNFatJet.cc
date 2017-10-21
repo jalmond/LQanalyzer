@@ -1,5 +1,5 @@
 
-// $Id: SKTreeMakerHNDiLep.cc 1 2013-11-26 10:23:10Z jalmond $
+// $Id: SKTreeMakerHNFatJet.cc 1 2013-11-26 10:23:10Z jalmond $
 /***************************************************************************
  * @Project: LQAnalyzer Frame - ROOT-based analysis framework for Korea SNU
  * @Package: LQCycles
@@ -9,31 +9,31 @@
  ***************************************************************************/
 
 /// Local includes
-#include "SKTreeMakerHNDiLep.h"
+#include "SKTreeMakerHNFatJet.h"
 
 //Core includes
 #include "EventBase.h"                                                                                                                           
 
 
 //// Needed to allow inheritance for use in LQCore/core classes
-ClassImp (SKTreeMakerHNDiLep);
+ClassImp (SKTreeMakerHNFatJet);
 
 
 /**
  *   This is an Example Cycle. It inherits from AnalyzerCore. The code contains all the base class functions to run the analysis.
  *
  */
-SKTreeMakerHNDiLep::SKTreeMakerHNDiLep() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_fatjets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
+SKTreeMakerHNFatJet::SKTreeMakerHNFatJet() :  AnalyzerCore(), out_muons(0), out_electrons(0),out_photons(0), out_jets(0), out_fatjets(0), out_genjets(0), out_truth(0), nevents(0),pass_eventcut(0), pass_vertexcut(0) {
 
   // To have the correct name in the log:                                                                                                                            
-  SetLogName("SKTreeMakerHNDiLep");
+  SetLogName("SKTreeMakerHNFatJet");
   
   
   
   
 }
 
-void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
+void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
   
 
   bool _singleEG =(k_channel.Contains("SingleElectron"));
@@ -125,20 +125,12 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
 
   std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");
   std::vector<snu::KMuon> muColl = GetMuons("MUON_HN_VETO");
+  
+  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_NOCUT");
 
+  if(fatjetcoll.size() ==0) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 
-  //if((muColl.size() + elColl.size()) != 2) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  if(muColl.size()==2) {
-    if(!SameCharge(muColl)) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  }
-  else if(elColl.size()==2) {
-    if(!SameCharge(elColl)) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-  }
-  else{
-    if(muColl.size()==1 && elColl.size()==1 ) {
-      if(elColl[0].Charge() != muColl[0].Charge()) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
-    }
-  }
+  if((muColl.size() + elColl.size()) != 2) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 
 
   FillCutFlow("TriLep", 1);
@@ -152,13 +144,13 @@ void SKTreeMakerHNDiLep::ExecuteEvents()throw( LQError ){
 
 
 
-void SKTreeMakerHNDiLep::EndCycle()throw( LQError ){
+void SKTreeMakerHNFatJet::EndCycle()throw( LQError ){
   
   Message("In EndCycle" , INFO);
 }
 
 
-void SKTreeMakerHNDiLep::BeginCycle() throw( LQError ){
+void SKTreeMakerHNFatJet::BeginCycle() throw( LQError ){
   
   Message("In begin Cycle", INFO);
 
@@ -237,14 +229,14 @@ void SKTreeMakerHNDiLep::BeginCycle() throw( LQError ){
   
 }
 
-SKTreeMakerHNDiLep::~SKTreeMakerHNDiLep() {
+SKTreeMakerHNFatJet::~SKTreeMakerHNFatJet() {
   
   Message("In Analyzer Destructor" , INFO);
 
 }
 
 
-void SKTreeMakerHNDiLep::FillCutFlow(TString cut, float weight){
+void SKTreeMakerHNFatJet::FillCutFlow(TString cut, float weight){
 
 
   if(GetHist("cutflow")) {
@@ -263,7 +255,7 @@ void SKTreeMakerHNDiLep::FillCutFlow(TString cut, float weight){
 
 
 
-void SKTreeMakerHNDiLep::BeginEvent( )throw( LQError ){
+void SKTreeMakerHNFatJet::BeginEvent( )throw( LQError ){
 
   Message("In BeginEvent() " , DEBUG);
 
@@ -271,7 +263,7 @@ void SKTreeMakerHNDiLep::BeginEvent( )throw( LQError ){
 }
 
 
-void SKTreeMakerHNDiLep::ClearOutputVectors() throw (LQError){
+void SKTreeMakerHNFatJet::ClearOutputVectors() throw (LQError){
   //
   // Reset all variables declared in Declare Variable
   //
