@@ -59,7 +59,7 @@ if [[ $njobs == "-j 1" ]]; then
     runcommand="running single job"
 fi
 if [[ $njobs == "-j 0" ]]; then
-    njobs = "-j 1"
+    njobs= "-j 1"
 fi
 
 if [[ $njobs == "-j -311" ]]; then
