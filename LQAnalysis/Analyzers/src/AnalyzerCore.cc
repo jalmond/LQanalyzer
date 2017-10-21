@@ -765,12 +765,12 @@ void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, vector<snu
     px_orig+= fjetall.at(ij).Px();
     py_orig+= fjetall.at(ij).Py();
     if(sys==1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResUp());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResUp());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResUp()/ fjetall.at(ij).SmearedRes());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResUp()/fjetall.at(ij).SmearedRes());
     }
     if(sys==-1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResDown());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResDown());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResDown()/fjetall.at(ij).SmearedRes());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResDown()/fjetall.at(ij).SmearedRes());
     }
   }
 
@@ -799,12 +799,12 @@ void AnalyzerCore::CorrectedMETJMR(int sys, vector<snu::KFatJet> fjetall,   doub
     px_orig+= fjetall.at(ij).Px();
     py_orig+= fjetall.at(ij).Py();
     if(sys==1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResUp()/fjetall.at(ij).SmearedMassRes());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResUp()/fjetall.at(ij).SmearedMassRes());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResUp());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResUp());
     }
     if(sys==-1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResDown()/fjetall.at(ij).SmearedMassRes());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResDown()/fjetall.at(ij).SmearedMassRes());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResDown());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResDown());
     }
   }
   
@@ -855,8 +855,8 @@ vector<snu::KFatJet>  AnalyzerCore::GetCorrectedFatJet(vector<snu::KFatJet>   fj
     v=v* (1./L1corr);
     
     /// smear mass with JMR central
-    v=v*fjet.SmearedMassRes();
-    fjet.SetPrunedMass(fjet.PrunedMass()* fjet.SmearedMassRes());
+    v=v*fjet.SmearedRes();
+    fjet.SetPrunedMass(fjet.PrunedMass() * fjet.SmearedMassRes());
     snu::KFatJet fjet_corr(fjet);
     if(fjet_corr.MiniAODPt() <0)fjet_corr.SetMiniAODPt(fjet_corr.Pt());
     fjet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
