@@ -126,7 +126,7 @@ void SKTreeMakerHNFatJet::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> elColl = GetElectrons("ELECTRON_HN_VETO");
   std::vector<snu::KMuon> muColl = GetMuons("MUON_HN_VETO");
   
-  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_HN");
+  std::vector<snu::KFatJet> fatjetcoll = GetFatJets("FATJET_NOCUT");
 
   if(fatjetcoll.size() ==0) throw LQError( "Not Lepton Event",  LQError::SkipEvent );
 

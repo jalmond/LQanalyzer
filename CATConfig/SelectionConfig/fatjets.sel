@@ -7,4 +7,4 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
 | FATJET_HN             | 20.     | 2.5     | 999.  | false  | true     |  false  |  false         | MUON_HN_VETO         | ELECTRON_HN_VETO        |  40.        |  130.     |
 | FATJET_HN_tau06             | 20.     | 2.5     | 0.6  | false  | true     |  false  |  false         | MUON_HN_VETO         | ELECTRON_HN_VETO        |  40.        |  130.     |
 | FATJET_HN_tau045             | 20.     | 2.5     | 0.45  | false  | true     |  false  |  false         | MUON_HN_VETO         | ELECTRON_HN_VETO        |  40.        |  130.     |
-| FATJET_NOCUT          | 20.     | 2.5     | 999.  | false  | true     |  false  |  false          |  MUON_HN_VETO               | ELECTRON_HN_VETO  | 999.       | 999.     |
+| FATJET_NOCUT          | 20.     | 2.5     | 999.  | false  | true     |  false  |  false          |  MUON_HN_VETO               | ELECTRON_HN_VETO  | 0.       | 2000.     |
