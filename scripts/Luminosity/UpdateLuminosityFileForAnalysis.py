@@ -71,15 +71,16 @@ def CheckForDuplicates(printDuplicates):
         os.system("chmod 777 " + rd_samplelist)
         os.system("rm " + rd_samplelist)
 
-def UpdateLumiFile(modlistpath, catversion,NewSampleList,whichfile):
+def UpdateLumiFile(modlistpath, catversion, NewSampleList):
 
     ### xseclist should contain lines that are updated in xsec
     ### samplelist should contain lines for new samples
-    samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu"+whichfile+"_CAT_mc_"+catversion+".txt"
+    samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
     os.system("chmod 777 "  + samplelist)
-    newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu"+whichfile+"_CAT_mc_"+catversion+"new.txt"                                                               
+    newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+"new.txt"                                                               
 
-    print "UpdateLumiFile  " + samplelist + " : " + newsamplelist
+
+    #print "UpdateLumiFile  " + samplelist + " : " + newsamplelist
     #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
     #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
     
@@ -443,14 +444,8 @@ if os.path.exists(path_full_sample_list):
         print "source " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh " + path_newfile + " new "
         print "\n"
         
-        file_exists=False
-        if   os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_nonsig_CAT_mc_" + catversion + "new.txt"):
-            file_exists=True
-        if   os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_sig_CAT_mc_" + catversion + "new.txt"):
-            file_exists=True
+        if not  os.path.exists(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"):
 
-
-        if not  file_exists:
             print  os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/runGetEffLumi.sh was meant to produce file "+ os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt"
             print "This file does not exists: exiting...."
             sys.exit()
@@ -458,12 +453,9 @@ if os.path.exists(path_full_sample_list):
             ### update lumifile:
             isnewsample= len(newsample_list) > 0
             
-            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_nonsig_CAT_mc_" + catversion + "new.txt", catversion, newsample_list,"_nonsig")
-            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_sig_CAT_mc_" + catversion + "new.txt", catversion, newsample_list,"_sig")
-            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, newsample_list,"")
+             
+            UpdateLumiFile(os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt", catversion, newsample_list)
 
-            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_nonsig_CAT_mc_" + catversion + "new.txt")
-            os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_sig_CAT_mc_" + catversion + "new.txt")
             os.system("rm " + os.getenv("LQANALYZER_DIR")+"/scripts/Luminosity/datasets_snu_CAT_mc_" + catversion + "new.txt")
             samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_"+catversion+".txt"
             os.system("chmod 777 " + samplelist)
@@ -525,12 +517,16 @@ if os.path.exists(path_full_sample_list):
             os.system("cp " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh")
             file_userlist = open(os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh","a")
             addstring = "declare -a new_list=("
+            isSIG=False
             runSKTreemaker=False
             for l in list_new:
                 if os.path.exists("/data2/CatNtuples/"+str(os.getenv("CATVERSION"))+"/SKTrees/MC/"+str(l)):
                     print "Not remaking sktree as this already exists (name must have been deleted from list by  hand to recalculate lumi"
                 else:
                     print "Sample " + str(l) + " is new. Making SKtree"
+
+                    if "HN" in l or  "TTTo" in l or "CHToCB" in l:
+                        isSIG=True
                     addstring+="'"+l+"' "
                     runSKTreemaker=True
             addstring+=")\n"
@@ -538,9 +534,15 @@ if os.path.exists(path_full_sample_list):
             print str(addstring)
             file_userlist.write(addstring)
             file_userlist.close()
+
+            os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")             
+            
             if runSKTreemaker:
-                os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
-                
+                if isSIG:
+                    os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion' -SIG")
+                else:
+                    os.system("bash " + os.getenv("LQANALYZER_DIR")+"/bin/submitSKTree.sh -M True -a SKTreeMaker -list new_list -c " + catversion + " -m ' first time sample is made in current catversion'")
+                    
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
 
         os.system("ls -l " + samplelist + " > testperm")
@@ -566,6 +568,9 @@ if os.path.exists(path_full_sample_list):
             EmailNewXsecList(catversion,path_newfile2)
         if len(newsample_list) > 0:
             EmailNewSampleList(catversion,path_newfile3)                
+
+
+        
 else:
 
     
@@ -602,8 +607,13 @@ else:
     
     os.system("source " + os.getenv("LQANALYZER_DIR")+"/scripts/runInputListMaker.sh")
 
+    os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")        
+
+    
     os.system('bash ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMaker -list all_mc  -c '+catversion+' -m "First set of cuts with '+catversion+'cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerDiLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
     os.system('bash  ' + os.getenv('LQANALYZER_DIR')+'/bin/submitSKTree.sh -M True -a  SKTreeMakerTriLep -list all_mc  -c '+catversion+'  -m "First set of cuts with '+catversion+' cattuples"')
 
     EmailNewList(catversion)    
+
+

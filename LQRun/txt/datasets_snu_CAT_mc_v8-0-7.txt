@@ -9,6 +9,7 @@
 
 
 #### CATTuples
+HNDilepton_EMu_Tchannel_M300  96000.00000 43842.00000 0.00016 266920592.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EMu_Tchannel_M300/
 HNDilepton_EMu_Tchannel_M1000  98000.00000 44768.00000 0.00000 10598735872.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EMu_Tchannel_M1000/
 HNDilepton_EE_Tchannel_M1000  98000.00000 44768.00000 0.00001 5304265216.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EE_Tchannel_M1000/
 HNDilepton_EE_Tchannel_M1200  98000.00000 44768.00000 0.00001 8847430656.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EE_Tchannel_M1200/
@@ -16,7 +17,6 @@ HNDilepton_EE_Tchannel_M300  98000.00000 44768.00000 0.00009 491956032.00000  /d
 HNDilepton_EE_Tchannel_M600  98000.00000 44768.00000 0.00003 1627927296.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EE_Tchannel_M600/
 HNDilepton_EE_Tchannel_M800  98000.00000 44768.00000 0.00000 3066301440.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EE_Tchannel_M800/
 HNDilepton_EMu_Tchannel_M1200  98000.00000 44768.00000 0.00000 17691365376.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EMu_Tchannel_M1200/
-HNDilepton_EMu_Tchannel_M300  98000.00000 44768.00000 0.00005 983726144.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EMu_Tchannel_M300/
 HNDilepton_EMu_Tchannel_M600  98000.00000 44768.00000 0.00001 3253180928.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EMu_Tchannel_M600/
 HNDilepton_EMu_Tchannel_M800  98000.00000 44768.00000 0.00001 6094864896.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_EMu_Tchannel_M800/
 HNDilepton_MuE_Tchannel_M1000  98000.00000 44768.00000 0.00000 10598735872.00000  /data2/DATA/cattoflat/MC/v8-0-7/HNDilepton_MuE_Tchannel_M1000/
@@ -1162,6 +1162,10 @@ ttZ  10882500.00000 10882500.00000 0.78000 13951923.00000  /data2/DATA/cattoflat
 
 
 #### Single_lepton_skims:_SKTrees
+SKHNDilepton_EMu_Tchannel_M300  96000.00000 43842.00000 0.00016 266920592.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EMu_Tchannel_M300/
+SKHNDilepton_EMu_Tchannel_M300_trilep  96000.00000 43842.00000 0.00016 266920592.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCTriLep/HNDilepton_EMu_Tchannel_M300/
+SKHNDilepton_EMu_Tchannel_M300_hndilep  96000.00000 43842.00000 0.00016 266920592.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EMu_Tchannel_M300/
+SKHNDilepton_EMu_Tchannel_M300_hnfake  96000.00000 43842.00000 0.00016 266920592.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EMu_Tchannel_M300/
 SKHNDilepton_EMu_Tchannel_M1000  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EMu_Tchannel_M1000/
 SKHNDilepton_EMu_Tchannel_M1000_hndilep  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EMu_Tchannel_M1000/
 SKHNDilepton_EMu_Tchannel_M1000_hnfake  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EMu_Tchannel_M1000/
@@ -1171,7 +1175,6 @@ SKHNDilepton_EE_Tchannel_M300  98000.00000 44768.00000 0.00009 491956032.00000 /
 SKHNDilepton_EE_Tchannel_M600  98000.00000 44768.00000 0.00003 1627927296.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EE_Tchannel_M600/
 SKHNDilepton_EE_Tchannel_M800  98000.00000 44768.00000 0.00000 3066301440.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EE_Tchannel_M800/
 SKHNDilepton_EMu_Tchannel_M1200  98000.00000 44768.00000 0.00000 17691365376.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EMu_Tchannel_M1200/
-SKHNDilepton_EMu_Tchannel_M300  98000.00000 44768.00000 0.00005 983726144.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EMu_Tchannel_M300/
 SKHNDilepton_EMu_Tchannel_M600  98000.00000 44768.00000 0.00001 3253180928.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EMu_Tchannel_M600/
 SKHNDilepton_EMu_Tchannel_M800  98000.00000 44768.00000 0.00001 6094864896.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_EMu_Tchannel_M800/
 SKHNDilepton_MuE_Tchannel_M1000  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MC/HNDilepton_MuE_Tchannel_M1000/
@@ -1190,7 +1193,6 @@ SKHNDilepton_EE_Tchannel_M300_hndilep  98000.00000 44768.00000 0.00009 491956032
 SKHNDilepton_EE_Tchannel_M600_hndilep  98000.00000 44768.00000 0.00003 1627927296.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EE_Tchannel_M600/
 SKHNDilepton_EE_Tchannel_M800_hndilep  98000.00000 44768.00000 0.00000 3066301440.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EE_Tchannel_M800/
 SKHNDilepton_EMu_Tchannel_M1200_hndilep  98000.00000 44768.00000 0.00000 17691365376.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EMu_Tchannel_M1200/
-SKHNDilepton_EMu_Tchannel_M300_hndilep  98000.00000 44768.00000 0.00005 983726144.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EMu_Tchannel_M300/
 SKHNDilepton_EMu_Tchannel_M600_hndilep  98000.00000 44768.00000 0.00001 3253180928.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EMu_Tchannel_M600/
 SKHNDilepton_EMu_Tchannel_M800_hndilep  98000.00000 44768.00000 0.00001 6094864896.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_EMu_Tchannel_M800/
 SKHNDilepton_MuE_Tchannel_M1000_hndilep  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNDiLep/HNDilepton_MuE_Tchannel_M1000/
@@ -1209,7 +1211,6 @@ SKHNDilepton_EE_Tchannel_M300_hnfake  98000.00000 44768.00000 0.00009 491956032.
 SKHNDilepton_EE_Tchannel_M600_hnfake  98000.00000 44768.00000 0.00003 1627927296.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EE_Tchannel_M600/
 SKHNDilepton_EE_Tchannel_M800_hnfake  98000.00000 44768.00000 0.00000 3066301440.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EE_Tchannel_M800/
 SKHNDilepton_EMu_Tchannel_M1200_hnfake  98000.00000 44768.00000 0.00000 17691365376.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EMu_Tchannel_M1200/
-SKHNDilepton_EMu_Tchannel_M300_hnfake  98000.00000 44768.00000 0.00005 983726144.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EMu_Tchannel_M300/
 SKHNDilepton_EMu_Tchannel_M600_hnfake  98000.00000 44768.00000 0.00001 3253180928.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EMu_Tchannel_M600/
 SKHNDilepton_EMu_Tchannel_M800_hnfake  98000.00000 44768.00000 0.00001 6094864896.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_EMu_Tchannel_M800/
 SKHNDilepton_MuE_Tchannel_M1000_hnfake  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCHNFake/HNDilepton_MuE_Tchannel_M1000/
@@ -2493,6 +2494,7 @@ SKttZ  10882500.00000 10882500.00000 0.78000 13951923.00000 /data2/CatNtuples/v8
 
 
 #### Dilepton_skims:_SKTrees
+SKHNDilepton_EMu_Tchannel_M300_dilep  96000.00000 43842.00000 0.00016 266920592.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EMu_Tchannel_M300/
 SKHNDilepton_EMu_Tchannel_M1000_dilep  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EMu_Tchannel_M1000/
 SKHNDilepton_EE_Tchannel_M1000_dilep  98000.00000 44768.00000 0.00001 5304265216.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EE_Tchannel_M1000/
 SKHNDilepton_EE_Tchannel_M1200_dilep  98000.00000 44768.00000 0.00001 8847430656.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EE_Tchannel_M1200/
@@ -2500,7 +2502,6 @@ SKHNDilepton_EE_Tchannel_M300_dilep  98000.00000 44768.00000 0.00009 491956032.0
 SKHNDilepton_EE_Tchannel_M600_dilep  98000.00000 44768.00000 0.00003 1627927296.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EE_Tchannel_M600/
 SKHNDilepton_EE_Tchannel_M800_dilep  98000.00000 44768.00000 0.00000 3066301440.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EE_Tchannel_M800/
 SKHNDilepton_EMu_Tchannel_M1200_dilep  98000.00000 44768.00000 0.00000 17691365376.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EMu_Tchannel_M1200/
-SKHNDilepton_EMu_Tchannel_M300_dilep  98000.00000 44768.00000 0.00005 983726144.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EMu_Tchannel_M300/
 SKHNDilepton_EMu_Tchannel_M600_dilep  98000.00000 44768.00000 0.00001 3253180928.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EMu_Tchannel_M600/
 SKHNDilepton_EMu_Tchannel_M800_dilep  98000.00000 44768.00000 0.00001 6094864896.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_EMu_Tchannel_M800/
 SKHNDilepton_MuE_Tchannel_M1000_dilep  98000.00000 44768.00000 0.00000 10598735872.00000 /data2/CatNtuples/v8-0-7/SKTrees/MCDiLep/HNDilepton_MuE_Tchannel_M1000/

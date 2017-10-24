@@ -26,7 +26,7 @@ float GetSumWeights(std::string filename);
 map<TString, Double_t> map_lumi;
 map<TString, Double_t> neventmap;
 map<TString, Double_t> n_w_eventmap;
-void GetEffectiveLuminosity(TString path_of_list, int sig,  TString tag,TString version="") {
+void GetEffectiveLuminosity(TString path_of_list,  TString tag,TString version="") {
   
   bool debug = true;
   map_lumi.clear();
@@ -47,24 +47,24 @@ void GetEffectiveLuminosity(TString path_of_list, int sig,  TString tag,TString 
   if (NewList) cout << "New list " << endl;
   else cout <<"Not new list" << endl;
 
-  if(CheckMaps(path_of_list, sig)) return;
+  if(CheckMaps(path_of_list)) return;
   TString def_version = TString(getenv("CATVERSION"));
   if(!version.Contains("v8") ) version = def_version;
 
   map<TString, TString> missing_map;
   vector<TString> vec_available ;
   if(!NewList){
-    missing_map= GetMissingMap(version,path_of_list, sig);
-    vec_available = GetAvailableMap(version,path_of_list, sig);
+    missing_map= GetMissingMap(version,path_of_list);
+    vec_available = GetAvailableMap(version,path_of_list);
   }
 
   cout << "GetEffectiveLuminosity: Using file: " << path_of_list << " @ " << endl;
-  map<TString, TString> datasets =  GetDatasetNames(version,path_of_list, sig);
+  map<TString, TString> datasets =  GetDatasetNames(version,path_of_list);
   
   
-  map<TString, Double_t> dirmap = GetXSecMap2016(path_of_list, sig); 
-  map<TString, TString> lqmap = GetLQMap2016(path_of_list, sig);
-  map<TString, TString> trilepmap = GetTriLepMap2016(path_of_list, sig);
+  map<TString, Double_t> dirmap = GetXSecMap2016(path_of_list); 
+  map<TString, TString> lqmap = GetLQMap2016(path_of_list);
+  map<TString, TString> trilepmap = GetTriLepMap2016(path_of_list);
   
   TString analysisdir = TString(getenv("HOSTNAME"));
   bool cluster = false;
@@ -280,9 +280,7 @@ void GetEffectiveLuminosity(TString path_of_list, int sig,  TString tag,TString 
 
   
   ofstream lumi_file;
-  string lfile =  "datasets_snu_nonsig_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
-  if(sig==1) lfile =  "datasets_snu_sig_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
-  if(sig==0) lfile =  "datasets_snu_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
+  string lfile =  "datasets_snu_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
   
   cout << "Updating " << lfile << endl;
   if(cluster) lfile =  "datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
@@ -476,9 +474,8 @@ void GetEffectiveLuminosity(TString path_of_list, int sig,  TString tag,TString 
 
 
   string lqdir = getenv("LQANALYZER_DIR");
-  string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_nonsig_CAT_mc_" + string(version.Data()) + ".txt";
-  if(sig==1) lfile2 =  lqdir + "/LQRun/txt/datasets_snu_sig_CAT_mc_" + string(version.Data()) + ".txt";
-  if(sig==0) lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
+  string lfile2 =  lqdir + "/LQRun/txt/datasets_snu_CAT_mc_" + string(version.Data()) + ".txt";
+
 
   if(cluster) lfile2 =  lqdir + "/LQRun/txt/Cluster/datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
 
