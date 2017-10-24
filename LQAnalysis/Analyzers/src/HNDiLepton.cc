@@ -671,13 +671,36 @@ void HNDiLepton::RunEE(TString label, vector<snu::KElectron> electrons, vector<s
 
 
   //if(muons.size()  > 2 && muons[2].Pt() > 10.) return;
- 
+  
+  std::vector<snu::KElectron> electrons_tight= GetElectrons("ELECTRON_HN_TIGHTv4");
+
+  if(muons.size() == 2 && electrons_tight.size() ==1){
+    if(!SameCharge(muons)){
+      if(met > 50){
+	if(nbjet_m==0){
+	  snu::KParticle m3 = muons[0]+muons[1]+electrons_tight[0];
+	  if(fabs(m3.M()-90.1) > 15){
+	    if(muons_veto.size() ==2){
+	      if(electrons_veto.size() ==1){
+		snu::KParticle m2 = muons[0]+muons[1];
+		if(fabs(m2.M()-10.)< 15.){
+		  FillHist("Truth_WZ_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+
+
+		}
+	      }
+	    }
+	  }
+	}
+      }}
+  }
+
   if(cut1_dilep){
 
     TString elid=_e_tightid;
     if(k_running_nonprompt) elid=_e_looseid;
 
-    
+   
     /// weight CF events 
 
     if(ichannel == 0) ll_weight *= MMWeight(muons,muid,cut2_trig);
@@ -791,6 +814,8 @@ void HNDiLepton::RunEE(TString label, vector<snu::KElectron> electrons, vector<s
 	if(ichannel == 0) cut6_lepveto = (muons_veto.size()>2);
 
 	if(cut6_lepveto) return;
+
+	FillHist("Truth_WZ_SS_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
 
 
 	if(ichannel==1){

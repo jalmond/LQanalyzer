@@ -152,9 +152,10 @@ for s in missing_nonsig:
 for sa in arr_nonsig:
     if "#" in sa:
         r_newlist_nonsig.write(sa)
-    if "###CATTuples" in sa:
+    if "CATTuples" in sa:
         for sf in arrns_flat:
-            r_newlist_nonsig.write(sf)
+            if "/data" in sf:
+                r_newlist_nonsig.write(sf)
     if "### Single_lepton_skims:_SKTrees" in sa:
         for sf in arrns_lep:
             r_newlist_nonsig.write(sf)
@@ -175,6 +176,8 @@ for sa in arr_nonsig:
 
 r_newlist_nonsig.close()
 
+for s in arrns_flat:
+    print s
 
 
 mainlist_sig="/data1/LQAnalyzer_rootfiles_for_analysis/DataSetLists/AnalysisFiles/datasets_snu_sig_CAT_mc_v8-0-7.txt"
