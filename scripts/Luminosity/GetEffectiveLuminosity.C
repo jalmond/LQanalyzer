@@ -87,6 +87,9 @@ void GetEffectiveLuminosity(TString path_of_list, int sig,  TString tag,TString 
     else if(mit->first.Contains("_Schannel_")){
       if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
     }
+    else if(mit->first.Contains("_Tchannel_")){
+      if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
+    }
     else if(mit->first.Contains("eavyNeutrino_trilepton")){
       use_sum_genweight=true;
     }
@@ -280,7 +283,8 @@ void GetEffectiveLuminosity(TString path_of_list, int sig,  TString tag,TString 
   string lfile =  "datasets_snu_nonsig_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
   if(sig==1) lfile =  "datasets_snu_sig_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
   if(sig==0) lfile =  "datasets_snu_CAT_mc_" + string(version.Data()) + string(tag)+".txt";
-
+  
+  cout << "Updating " << lfile << endl;
   if(cluster) lfile =  "datasets_snu_cluster_CAT_mc_" + string(version.Data()) + ".txt";
 
   lumi_file.open(lfile.c_str());

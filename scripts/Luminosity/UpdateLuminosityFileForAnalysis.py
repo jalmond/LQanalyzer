@@ -78,6 +78,8 @@ def UpdateLumiFile(modlistpath, catversion,NewSampleList,whichfile):
     samplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu"+whichfile+"_CAT_mc_"+catversion+".txt"
     os.system("chmod 777 "  + samplelist)
     newsamplelist=os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu"+whichfile+"_CAT_mc_"+catversion+"new.txt"                                                               
+
+    print "UpdateLumiFile  " + samplelist + " : " + newsamplelist
     #samplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+".txt"
     #newsamplelist="/data1/LQAnalyzer_rootfiles_for_analysis/CATAnalysis2016/datasets_snu_CAT_mc_"+catversion+"tmp.txt"
     
