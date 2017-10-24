@@ -545,6 +545,11 @@ if os.path.exists(path_full_sample_list):
                     
             os.system("mv " +  os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mctmp.sh " + os.getenv("LQANALYZER_DIR")+"/LQRun/txt/list_user_mc.sh")
 
+        else:
+            os.system("python UpdateSIGFormat.py -x " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_CAT_mc_" + catversion + ".txt -y " +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_sig_CAT_mc_" + catversion + ".txt -z "  +os.getenv("LQANALYZER_DATASETFILE_DIR") +"/datasets_snu_nonsig_CAT_mc_" + catversion + ".txt")
+                        
+
+
         os.system("ls -l " + samplelist + " > testperm")
         checkperm  = open("testperm","r")
         permok=False

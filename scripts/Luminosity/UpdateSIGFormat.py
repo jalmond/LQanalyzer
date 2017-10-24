@@ -61,9 +61,6 @@ for r in arr_master:
                 continue
             if len(r2split) == 0:
                 continue
-
-            if rsplit[0] == r2split[0]:
-                found=True
     else:
         for r3 in arr_nonsig:
             r3split = r3.split()
@@ -71,9 +68,6 @@ for r in arr_master:
                 continue
             if len(r3split) == 0:
                 continue
-
-            if rsplit[0] == r3split[0]:
-                found=True
 
     if not found:                
         if sig:
@@ -97,7 +91,6 @@ arr_hnfake=[]
 arr_hndilep=[]
 for s in missing_sig:
     if not "SK" in s:
-        print s + " flat"
         arr_flat.append(s)
     elif "_dilep" in s:
         arr_dilep.append(s)
@@ -112,9 +105,9 @@ for s in missing_sig:
 
 
 for sa in arr_sig:
-    r_newlist_sig.write(sa)
+    if "#" in sa:
+        r_newlist_sig.write(sa)
     if "CATTuples" in sa:
-        print sa
         for sf in arr_flat:
             r_newlist_sig.write(sf)
     if "### Single_lepton_skims:_SKTrees" in sa:
@@ -157,7 +150,8 @@ for s in missing_nonsig:
         arrns_lep.append(s)
 
 for sa in arr_nonsig:
-    r_newlist_nonsig.write(sa)
+    if "#" in sa:
+        r_newlist_nonsig.write(sa)
     if "###CATTuples" in sa:
         for sf in arrns_flat:
             r_newlist_nonsig.write(sf)
