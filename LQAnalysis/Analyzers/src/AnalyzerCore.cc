@@ -2834,7 +2834,14 @@ float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
     
     if(fabs(eventbase->GetTruth().at(ig).PdgId()) == pdg){
       if(eventbase->GetTruth().at(ig).GenStatus() ==1){
-        es1.push_back(eventbase->GetTruth().at(ig));
+	int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+	while(fabs(eventbase->GetTruth().at(index_m).PdgId()) == pdg){
+	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
+
+	}
+	if(eventbase->GetTruth().at(index_m).PdgId() == 23 || eventbase->GetTruth().at(index_m).PdgId() ==22){
+	  es1.push_back(eventbase->GetTruth().at(ig));
+	}
       }
     }
     else   if(includenu){

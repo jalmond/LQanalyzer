@@ -683,8 +683,8 @@ void HNDiLepton::RunEE(TString label, vector<snu::KElectron> electrons, vector<s
 	    if(muons_veto.size() ==2){
 	      if(electrons_veto.size() ==1){
 		snu::KParticle m2 = muons[0]+muons[1];
-		if(fabs(m2.M()-10.)< 15.){
-		  FillHist("Truth_WZ_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+		if(fabs(m2.M()-90.)< 15.){
+		  FillHist(label+"Truth_WZ_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
 
 
 		}
@@ -815,7 +815,7 @@ void HNDiLepton::RunEE(TString label, vector<snu::KElectron> electrons, vector<s
 
 	if(cut6_lepveto) return;
 
-	FillHist("Truth_WZ_SS_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+	FillHist(label+"Truth_WZ_SS_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
 
 
 	if(ichannel==1){
