@@ -431,18 +431,18 @@ float AnalyzerCore::MC_CR_Correction(int syst){
 
   ///  updated 2 Oct
 
-  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.974439  + fsyst*0.061763;
-  if(k_sample_name.Contains("ZGto2LG")) return  0.822969 + fsyst*0.141269;
+  if(k_sample_name.Contains("WZTo3LNu_powheg")) return 0.988021 +  fsyst*0.0652167;
+  if(k_sample_name.Contains("ZGto2LG")) return  0.83069 + fsyst*0.174719;
   if(k_sample_name.Contains("WGtoLNuG")) return 1.;
-  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto4e")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto4mu")) return 0.922148 + fsyst*0.0859548;
-  if(k_sample_name.Contains("ggZZto4tau")) return 0.922148 + fsyst*0.0859548;
+  if(k_sample_name.Contains("ZZTo4L_powheg")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2e2mu")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2e2nu")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2e2tau")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2mu2nu")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto2mu2tau")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto4e")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto4mu")) return 0.94117 + fsyst*0.105665;
+  if(k_sample_name.Contains("ggZZto4tau")) return 0.94117 + fsyst*0.105665;
   
   return 1.;
 }
@@ -765,12 +765,12 @@ void AnalyzerCore::CorrectedMETJER(int sys, vector<snu::KJet> jetall, vector<snu
     px_orig+= fjetall.at(ij).Px();
     py_orig+= fjetall.at(ij).Py();
     if(sys==1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResUp());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResUp());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResUp()/ fjetall.at(ij).SmearedRes());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResUp()/fjetall.at(ij).SmearedRes());
     }
     if(sys==-1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResDown());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResDown());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedResDown()/fjetall.at(ij).SmearedRes());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedResDown()/fjetall.at(ij).SmearedRes());
     }
   }
 
@@ -799,12 +799,12 @@ void AnalyzerCore::CorrectedMETJMR(int sys, vector<snu::KFatJet> fjetall,   doub
     px_orig+= fjetall.at(ij).Px();
     py_orig+= fjetall.at(ij).Py();
     if(sys==1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResUp()/fjetall.at(ij).SmearedMassRes());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResUp()/fjetall.at(ij).SmearedMassRes());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResUp());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResUp());
     }
     if(sys==-1){
-      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResDown()/fjetall.at(ij).SmearedMassRes());
-      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResDown()/fjetall.at(ij).SmearedMassRes());
+      px_shifted += fjetall.at(ij).Px()*(fjetall.at(ij).SmearedMassResDown());
+      py_shifted += fjetall.at(ij).Py()*(fjetall.at(ij).SmearedMassResDown());
     }
   }
   
@@ -851,12 +851,13 @@ vector<snu::KFatJet>  AnalyzerCore::GetCorrectedFatJet(vector<snu::KFatJet>   fj
     TLorentzVector v;
     v.SetPtEtaPhiM(fjet.Pt(), fjet.Eta(), fjet.Phi(), fjet.M());
     
+    if(L1corr==0.) L1corr = 0.95;
     /// remove L1 correction (only L2L3 used)
     v=v* (1./L1corr);
     
     /// smear mass with JMR central
-    v=v*fjet.SmearedMassRes();
-    fjet.SetPrunedMass(fjet.PrunedMass()* fjet.SmearedMassRes());
+    v=v*fjet.SmearedRes();
+    fjet.SetPrunedMass(fjet.PrunedMass() * fjet.SmearedMassRes()/L1corr);
     snu::KFatJet fjet_corr(fjet);
     if(fjet_corr.MiniAODPt() <0)fjet_corr.SetMiniAODPt(fjet_corr.Pt());
     fjet_corr.SetPtEtaPhiM(v.Pt(), v.Eta(), v.Phi(), v.M());
@@ -2833,7 +2834,14 @@ float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
     
     if(fabs(eventbase->GetTruth().at(ig).PdgId()) == pdg){
       if(eventbase->GetTruth().at(ig).GenStatus() ==1){
-        es1.push_back(eventbase->GetTruth().at(ig));
+	int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+	while(fabs(eventbase->GetTruth().at(index_m).PdgId()) == pdg){
+	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
+
+	}
+	if(eventbase->GetTruth().at(index_m).PdgId() == 23 || eventbase->GetTruth().at(index_m).PdgId() ==22){
+	  es1.push_back(eventbase->GetTruth().at(ig));
+	}
       }
     }
     else   if(includenu){

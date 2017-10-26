@@ -245,6 +245,21 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
 
 }
 
+double MCDataCorrections::GetMETReweight(TString trigname, double imet){
+  
+  if(corr_isdata) return 1.;
+  if(trigname.Contains("HLT_Mu3")) {
+    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+  }
+  if(trigname.Contains("HLT_Mu8")) {
+    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+  }
+  if(trigname.Contains("HLT_Mu17")) {
+    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+  }
+
+  return 1.;
+}
 
 double MCDataCorrections::MuonTrackingEffScaleFactor(vector<snu::KMuon> mu){
   float sf= 1.;

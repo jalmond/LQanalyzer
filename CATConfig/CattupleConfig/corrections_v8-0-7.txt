@@ -48,4 +48,7 @@
 ### ELECTRON_ELE12_TRIGGER_BCDEF TRIGGERFILEDIR ElectronTriggerEfficiency_Ele12_CaloIdL_TrackIdL_IsoVL.root EGamma_Eff TH2F
 ### ELECTRON_ELE23_TRIGGER_GH TRIGGERFILEDIR ElectronTriggerEfficiency_Ele23_CaloIdL_TrackIdL_IsoVL.root EGamma_Eff TH2F
 ### ELECTRON_ELE12_TRIGGER_GH TRIGGERFILEDIR ElectronTriggerEfficiency_Ele12_CaloIdL_TrackIdL_IsoVL.root EGamma_Eff TH2F
+### MUON_Mu3_METREWEIGHT  PILEUPFILEDIR MET_reweight_single_muon.root HLT_Mu3_PFJet40_v_ZPeak_PFMET_data TH1D
+### MUON_Mu8_METREWEIGHT  PILEUPFILEDIR MET_reweight_single_muon.root HLT_Mu8_TrkIsoVVL_v_ZPeak_PFMET_data TH1D
+### MUON_Mu17_METREWEIGHT  PILEUPFILEDIR MET_reweight_single_muon.root  HLT_Mu17_TrkIsoVVL_v_ZPeak_PFMET_data  TH1D
 #END

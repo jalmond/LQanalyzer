@@ -46,6 +46,8 @@ class MCDataCorrections{
   void PrintSummary();
 
 
+  double GetMETReweight(TString trigname, double met);
+
   TH2F* GetCorrectionHist(TString label);
   bool CheckCorrectionHist(TString label);
   TGraphAsymmErrors* GetCorrectionGraph(TString label);

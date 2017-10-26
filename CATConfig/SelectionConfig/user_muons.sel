@@ -1,4 +1,4 @@
-1;95;0cncuts 15
+ncuts 15
 webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
 | ID                            |  ptmin  | |etamax| |  isomin04   | isomax04_b | isomax04_ec | IsTight(POG)  | IsMedium(POG)  | IsLoose(POG)   | |dxymax|  |  |dzmax_b| |  |dzmax_ec|  | chi2max | |dxysigmin|  |  |dxysigmax| |  ApplyRoch |
 | MUON_NOCUT      | 0.      | 8.       |   0.        | 1000.    | 1000.  | false         | false          |  false         | 999.   | 999.       | 999.      | 999.    | 999.         | 999.         | false |
@@ -10,4 +10,4 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
 | MUON_HN_EFF_DZ      | 5.      | 2.4       |   0.        | 1000.    | 1000.  | true         | false          |  false         | 0.005   | 0.04       | 0.04      | 10.    | 999.      | 999.         | true |
 | MUON_HN_EFF_dxysig      | 5.      | 2.4       |   0.        | 1000.    | 1000.  | true         | false          |  false         | 0.005  | 0.04       | 0.04      | 10.    | 999.      | 3.         | true |
 | MUON_HN_EFF_iso      | 5.      | 2.4       |   0.        | 0.07    | 0.07  | true         | false          |  false         | 0.005  | 0.04       | 0.04      | 10.    | 999.      | 3.         | true |
-
+| MUON_HN_TIGHT_8TeV  | 5.      | 2.4       |   0.        | 0.05    | 0.05  | true         | false          |  false         | 0.005   | 0.1       | 0.1      | 10.    | 999.  | 999.    | true |
