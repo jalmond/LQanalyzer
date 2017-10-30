@@ -1635,7 +1635,7 @@ float AnalyzerCore::GetDiLepMass(std::vector<snu::KMuon> muons){
   return p.M();
 }
 
-float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, vector<int> ijets, bool lowmass){
+float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets, vector<int> ijets, bool lowmass){
   
   if(muons.size() != 2) return 0.;
   if(jets.size() == 0) return 0.;
@@ -1654,11 +1654,30 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, 
   else if(svariable == "llj") variable = 4;
   else if(svariable == "jj") variable = 5;
   else if(svariable == "contMT") variable = 6;
+  else if(svariable == "llfj") variable = -1;
+  else if(svariable == "l1fj") variable = -2;
+  else if(svariable == "l2fj") variable = -3;
+  else if(svariable == "fj") variable = -4;
   else return -999.;
 
   if(variable==4) return (muons[0] + muons[1] + jets[0]).M();
 
   if(jets.size() < 2) return -999.;
+
+  snu::KFatJet fatjet;
+  float dMFatJet=9999.;
+  for(UInt_t emme=0; emme<fatjets.size(); emme++){
+    if(fabs(fatjets[emme].PrunedMass() -  80.4) < dMFatJet){
+      dMFatJet=fatjets[emme].PrunedMass();
+      fatjet=fatjets[emme];
+    }
+  }
+  if(variable==-1) return (muons[0] + muons[1] + fatjet).M();
+  if(variable==-2) return (muons[0] + fatjet).M();
+  if(variable==-3) return (muons[1] + fatjet).M();
+  if(variable==-4) return fatjet.PrunedMass();
+
+  
 
 
   float dijetmass_tmp=999.;

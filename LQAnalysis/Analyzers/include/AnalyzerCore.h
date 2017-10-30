@@ -164,7 +164,7 @@ class AnalyzerCore : public LQCycleBase {
   float GetDiLepMass(std::vector<snu::KMuon> muons);
   float GetDiLepMass(std::vector<snu::KElectron> electrons);
 
-  float GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, vector<int> ijets, bool lowmass);
+  float GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjet,vector<int> ijets, bool lowmass);
 
   float  JetResCorr(snu::KJet jet, std::vector<snu::KGenJet> genjets);
   float SumPt( std::vector<snu::KJet> particles);

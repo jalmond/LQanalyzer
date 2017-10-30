@@ -1,2 +1,2 @@
-DiMuonSSLL_LowMass_SR2
+DiMuonSSLL_WG
 END
