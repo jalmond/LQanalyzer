@@ -93,9 +93,9 @@ void GetEffectiveLuminosity(TString path_of_list,  TString tag,TString version="
     else if(mit->first.Contains("eavyNeutrino_trilepton")){
       use_sum_genweight=true;
     }
-      else use_sum_genweight=false;
+    else use_sum_genweight=false;
     
-    
+    if(use_sum_genweight) cout << "use_sum_genweight = true" << endl;
     cout << "Running " << dir << endl;
     system(dir.Data());
     

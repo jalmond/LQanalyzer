@@ -358,8 +358,8 @@ class AnalyzerCore : public LQCycleBase {
   void MakeHistograms();
   void MakeHistograms(TString hname, int nbins, float xmin, float xmax, TString label="");
   void MakeHistograms(TString hname, int nbins, float xbins[], TString label="");
-  void MakeHistograms2D(TString hname, int nbinsx, float xbins[], int nbinsy, float ybins[], TString label="");
-  void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label="");
+  void MakeHistograms2D(TString hname, int nbinsx, float xbins[], int nbinsy, float ybins[], TString label="", TString labely="");
+  void MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label="",TString labely="");
   void MakeHistograms3D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, int nbinsz, float zmin, float zmax,TString label="");
     //
     // Makes temporary dir
@@ -380,8 +380,8 @@ class AnalyzerCore : public LQCycleBase {
   void FillHist(TString histname, float value, float w , TString label="");
   void FillHist(TString histname, float value, float w , float xmin, float xmax, int nbins=0 , TString label="");
   void FillHist(TString histname, float value, float w , float xmin[], int nbins=0 , TString label="");
-  void FillHist(TString histname, float value1, float value2, float w , float x[], int nbinsx, float y[], int nbinsy , TString label="");
-  void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy , TString label="");
+  void FillHist(TString histname, float value1, float value2, float w , float x[], int nbinsx, float y[], int nbinsy , TString label="",TString labely="");
+  void FillHist(TString histname, float value1,  float value2, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy , TString label="",TString labely="");
   void FillHist(TString histname, float value1,  float value2, float value3, float w , float xmin, float xmax, int nbinsx,  float ymin, float ymax, int nbinsy , float zmin, float zmax, int nbinz,TString label="");
 
   /// Fills clever hists

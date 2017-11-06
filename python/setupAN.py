@@ -1,10 +1,18 @@
 import os,time,sys
+from optparse import OptionParser
+
+
+parser = OptionParser()
+parser.add_option("-x", "--x", dest="x", default="123",help="tag")
+(options, args) = parser.parse_args()
+filetag=options.x
 
 date_tag=time.strftime("%d-%m-%Y")
 
 if  os.path.exists("/data7/Users/jalmond/HNDileptonAN/2016_DiLep/BackUp/"+date_tag):
     print "AN copied previously...."
-    sys.exit()
+    if filetag == "123":
+        sys.exit()
 
 version = "Version1"
 os.chdir("/data7/Users/jalmond/HNDileptonAN/2016_DiLep/myDir/")

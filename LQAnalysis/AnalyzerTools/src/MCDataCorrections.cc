@@ -28,6 +28,7 @@ MCDataCorrections::MCDataCorrections() {
 
 
   CorrectionMap.clear();
+  CorrectionMap1D.clear();
   CorrectionMapGraph.clear();
   
   string pileupdir = getenv("PILEUPFILEDIR");
@@ -194,6 +195,21 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
     origDir->cd();
   }
 
+
+  if(TString(histtype).Contains("TH1")) {
+    //cout << "[MET reweight]" << endl;
+    //cout << "TH1 if in" << endl;
+    TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
+    CheckFile(infile_sf);
+    TDirectory* tempDir = getTemporaryDirectory();
+    tempDir->cd();
+    TH1D* tmp = (TH1D*)infile_sf->Get(histsname.c_str())->Clone();
+    CorrectionMap1D[label] = tmp;
+    infile_sf->Close();
+    delete infile_sf;
+    origDir->cd();
+  }
+
   if(!TString(histtype).Contains("TH2")) return;
   TFile *infile_sf = TFile::Open((string(getenv(dirname.c_str()))+ "/" + filename).c_str());
   CheckFile(infile_sf);
@@ -245,21 +261,91 @@ void MCDataCorrections::FillCorrectionHist(string label, string dirname, string 
 
 }
 
+
 double MCDataCorrections::GetMETReweight(TString trigname, double imet){
-  
+  //cout << "trigname : " << trigname << ", corr_isdata : " << corr_isdata << endl;
   if(corr_isdata) return 1.;
   if(trigname.Contains("HLT_Mu3")) {
-    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+      return GetCorrectionHist1D("MUON_Mu3_METREWEIGHT")->GetBinContent(bin);
+    }
   }
   if(trigname.Contains("HLT_Mu8")) {
-    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+    if(CheckCorrectionHist("MUON_Mu8_METREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu8_METREWEIGHT")->FindBin(imet);
+      return GetCorrectionHist1D("MUON_Mu8_METREWEIGHT")->GetBinContent(bin);
+    }
   }
   if(trigname.Contains("HLT_Mu17")) {
-    if(CheckCorrectionHist("MUON_Mu3_METREWEIGHT"))  return GetCorrectionHist("MUON_Mu3_METREWEIGHT")->FindBin(imet);
+    if(CheckCorrectionHist("MUON_Mu17_METREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu17_METREWEIGHT")->FindBin(imet);
+      return GetCorrectionHist1D("MUON_Mu17_METREWEIGHT")->GetBinContent(bin);
+    }
   }
 
   return 1.;
 }
+
+double MCDataCorrections::GetVtxReweight(TString trigname, int Nvtx){
+  //cout << "trigname : " << trigname << ", corr_isdata : " << corr_isdata << endl;
+  if(corr_isdata) return 1.;
+  //for muon
+  if(trigname.Contains("HLT_Mu3")) {
+    if(CheckCorrectionHist("MUON_Mu3_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu3_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("MUON_Mu3_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("MUON_Mu3_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Mu8")) {
+    if(CheckCorrectionHist("MUON_Mu8_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu8_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx >50) bin= GetCorrectionHist1D("MUON_Mu8_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("MUON_Mu8_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Mu17")) {
+    if(CheckCorrectionHist("MUON_Mu17_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("MUON_Mu17_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx >50) bin= GetCorrectionHist1D("MUON_Mu17_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("MUON_Mu17_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  //for electron
+  if(trigname.Contains("HLT_Ele23")) {
+    if(CheckCorrectionHist("ELECTRON_El23_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El23_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El23_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El23_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Ele17")) {
+    if(CheckCorrectionHist("ELECTRON_El17_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El17_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El17_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El17_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Ele12")) {
+    if(CheckCorrectionHist("ELECTRON_El12_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El12_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El12_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El12_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+  if(trigname.Contains("HLT_Ele8")) {
+    if(CheckCorrectionHist("ELECTRON_El8_VTXREWEIGHT")){
+      int bin = GetCorrectionHist1D("ELECTRON_El8_VTXREWEIGHT")->FindBin(Nvtx + 0.5);
+      if(Nvtx > 50) bin = GetCorrectionHist1D("ELECTRON_El8_VTXREWEIGHT")->FindBin(40);
+      return GetCorrectionHist1D("ELECTRON_El8_VTXREWEIGHT")->GetBinContent(bin);
+    }
+  }
+
+  //no histograms found
+  return 1.;
+}
+
 
 double MCDataCorrections::MuonTrackingEffScaleFactor(vector<snu::KMuon> mu){
   float sf= 1.;
@@ -1020,7 +1106,11 @@ void MCDataCorrections::CheckFile(TFile* file){
 
 bool MCDataCorrections::CheckCorrectionHist(TString label){
   map<TString, TH2F*>::iterator  mapit = CorrectionMap.find(label);
+  map<TString, TH1D*>::iterator  mapit1D = CorrectionMap1D.find(label);
   if (mapit!= CorrectionMap.end()){
+    return true;
+  }
+  else if (mapit1D!= CorrectionMap1D.end()){
     return true;
   }
   else return false;
@@ -1054,6 +1144,15 @@ TH2F* MCDataCorrections::GetCorrectionHist(TString label){
 }
 
 
+TH1D* MCDataCorrections::GetCorrectionHist1D(TString label){
+  map<TString, TH1D*>::iterator mapit = CorrectionMap1D.find(label);
+  if (mapit!= CorrectionMap1D.end()){
+    return mapit->second;
+  }
+  else{
+    exit(0);
+  }
+}
 
 void MCDataCorrections::CorrectMuonMomentum(vector<snu::KMuon>& k_muons, vector<snu::KTruth> truth){
   

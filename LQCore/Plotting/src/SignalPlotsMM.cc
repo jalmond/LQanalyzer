@@ -34,7 +34,12 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
     map_sig["h_llfjmass"]               = SetupHist("h_llfjmass_"         + name,"Invariant mass of the four particles",200,0,2000,"M_{lljj} GeV");
     map_sig["h_lljjjj_ss_mass"]          = SetupHist("h_lljjjj_ss_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{lljjjj} (ss) GeV");
     map_sig["h_lljjjj_mass"]             = SetupHist("h_lljjjj_mass_"       + name,"Invariant mass of the four particles",200,0,2000,"M_{lljjjj} GeV");
+
+
     map_sig["h_lljmass"]                = SetupHist("h_lljmass_"         + name,"Invariant mass of the four particles",200,0,2000,"M_{llj} GeV");
+    map_sig["h_l1jmass"]                = SetupHist("h_l1jmass_"         + name,"Invariant mass of the four particles",200,0,2000,"M_{llj} GeV");
+    map_sig["h_l2jmass"]                = SetupHist("h_l2jmass_"         + name,"Invariant mass of the four particles",200,0,2000,"M_{llj} GeV");
+
     map_sig["h_l1jj_central_mass"]               = SetupHist("h_l1jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000, "M_{l1jj} (GeV)");
     map_sig["h_l2jj_central_mass"]               = SetupHist("h_l2jj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000, "M_{l2jj} (GeV)");
     map_sig["h_lljj_central_mass"]               = SetupHist("h_lljj_centralmass_"          + name,"Invariant mass of the two leading jets and leading muectron",100,0,1000, "M_{lljj} (GeV)");
@@ -100,7 +105,7 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_ht_fc_ratio"]          = SetupHist("h_ht_fc_ratio_"       + name,"ST ratio", 1000, 0., 10.,"HT (ratio)");
 
 
-  map_sig["h_eltype" ]          = SetupHist("h_eltype_"       + name,"Type", 45, 0., 45.,"El Type");
+  map_sig["h_LeptonType" ]          = SetupHist("h_leptype_"       + name,"Type", 45, 0., 45.,"El Type");
   map_sig["h_lt" ]          = SetupHist("h_lt_"       + name,"LT", 100., 0., 500.,"LT");
   map_sig["h_lt_ht" ]          = SetupHist("h_lt_ht_"       + name,"LT", 100., 0., 5.,"LT");
   map_sig["h_lt_forward" ]          = SetupHist("h_lt_forward_"       + name,"LT", 100., 0., 500.,"LT");
@@ -474,7 +479,7 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
       }
       }
     }
-    if(jets.size() > 1)  Fill("h_contraMTlepton",contramass, weight);
+  if(jets.size() > 1)  Fill("h_contraMTlepton",contramass, weight);
   float fmass = 9999.;
   int ifn=-999;
   for(UInt_t ifj =0; ifj < fatjets.size(); ifj++){
@@ -772,6 +777,8 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   if(muons.size()==2){
     
     if( jets.size()>=1) Fill("h_lljmass", (muons[0] + muons[1]+jets[0]).M(),weight);
+    if( jets.size()>=1) Fill("h_l1jmass", (muons[0]+jets[0]).M(),weight);
+    if( jets.size()>=1) Fill("h_l2jmass", ( muons[1]+jets[0]).M(),weight);
     if(jets.size()>1){
       Fill("h_l2jjmass", (muons[1]+jets[m]+jets[n]).M(),weight);
       Fill("h_lljjmass", (muons[0] + muons[1]+jets[m]+jets[n]).M(),weight);
@@ -791,7 +798,9 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
   int iel(0);
   
   for(std::vector<snu::KMuon>::iterator muit = muons.begin(); muit != muons.end(); muit++, iel++){
-  
+    
+    
+    Fill("h_LeptonType", muit->GetType(),weight);
     Fill("h_LeptonPt", muit->Pt(),weight);
     Fill("h_LeptonE", muit->Energy(),weight);
     Fill("h_LeptonPhi",muit->Phi(),weight);

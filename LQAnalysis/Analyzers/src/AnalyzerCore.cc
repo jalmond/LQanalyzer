@@ -1638,7 +1638,7 @@ float AnalyzerCore::GetDiLepMass(std::vector<snu::KMuon> muons){
 float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets, vector<int> ijets, bool lowmass){
   
   if(muons.size() != 2) return 0.;
-  if(jets.size() == 0) return 0.;
+
 
   // variable 1 = lljj
   // variable 2 = l1jj
@@ -1652,6 +1652,8 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, 
   else if(svariable == "l1jj") variable = 2;
   else if(svariable == "l2jj") variable = 3;
   else if(svariable == "llj") variable = 4;
+  else if(svariable == "l1j") variable = 7;
+  else if(svariable == "l2j") variable = 8;
   else if(svariable == "jj") variable = 5;
   else if(svariable == "contMT") variable = 6;
   else if(svariable == "llfj") variable = -1;
@@ -1659,10 +1661,6 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, 
   else if(svariable == "l2fj") variable = -3;
   else if(svariable == "fj") variable = -4;
   else return -999.;
-
-  if(variable==4) return (muons[0] + muons[1] + jets[0]).M();
-
-  if(jets.size() < 2) return -999.;
 
   snu::KFatJet fatjet;
   float dMFatJet=9999.;
@@ -1672,12 +1670,19 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, 
       fatjet=fatjets[emme];
     }
   }
+
   if(variable==-1) return (muons[0] + muons[1] + fatjet).M();
   if(variable==-2) return (muons[0] + fatjet).M();
   if(variable==-3) return (muons[1] + fatjet).M();
   if(variable==-4) return fatjet.PrunedMass();
 
-  
+  if(jets.size() == 1){
+    if(variable==4) return (muons[0] + muons[1] + jets[0]).M();
+    if(variable==7) return (muons[0]  + jets[0]).M();
+    if(variable==8) return (muons[1] + jets[0]).M();
+    
+  }
+  if(jets.size() < 2) return -999.;
 
 
   float dijetmass_tmp=999.;
@@ -2654,9 +2659,14 @@ int AnalyzerCore::AssignnNumberOfTruth(){
 
 
 bool AnalyzerCore::IsSignal(){
-  
+
+  if(isData) return false;
   if(k_sample_name.Contains("Majornana")) return true;
-  if(k_sample_name.Contains("HN")) return true;
+  if(k_sample_name.Contains("HNDilepton_"))  return true;
+  if(k_sample_name.Contains("HNE")) return true;
+  if(k_sample_name.Contains("HNM")) return true;
+  if(k_sample_name.Contains("MM")) return true;
+  
   return false;
 }
 
@@ -3292,10 +3302,11 @@ void AnalyzerCore::MakeHistograms(TString hname, int nbins, float xmin, float xm
 }
 
 
-void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label) {
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx, float xmin, float xmax, int nbinsy, float ymin, float ymax, TString label, TString labely) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx,xmin,xmax, nbinsy,ymin,ymax);
   maphist2D[hname]->GetXaxis()->SetTitle(label);
+  maphist2D[hname]->GetYaxis()->SetTitle(labely);
 }
 
 
@@ -3305,10 +3316,11 @@ void AnalyzerCore::MakeHistograms3D(TString hname, int nbinsx, float xmin, float
   maphist3D[hname]->GetXaxis()->SetTitle(label);
 }
 
-void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[], TString label) {
+void AnalyzerCore::MakeHistograms2D(TString hname, int nbinsx,  float xbins[], int nbinsy,  float ybins[], TString label, TString labely) {
 
   maphist2D[hname] =  new TH2D(hname.Data(),hname.Data(),nbinsx , xbins, nbinsy,ybins);
   maphist2D[hname]->GetXaxis()->SetTitle(label);
+  maphist2D[hname]->GetYaxis()->SetTitle(labely);
 }
 
 
@@ -3393,7 +3405,7 @@ void AnalyzerCore::FillHist(TString histname, float value, float w, float xmin, 
   
 }
 
-void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , TString label){
+void AnalyzerCore::FillHist(TString histname, float value1, float value2, float w, float xmin, float xmax, int nbinsx, float ymin, float ymax, int nbinsy , TString label, TString labely){
 
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
@@ -3403,14 +3415,15 @@ void AnalyzerCore::FillHist(TString histname, float value1, float value2, float 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , label);
+    MakeHistograms2D(histname, nbinsx, xmin, xmax,nbinsy, ymin, ymax , label, labely);
     if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
+    if(GetHist2D(histname)) GetHist2D(histname)->GetYaxis()->SetTitle(labely);
     if(GetHist2D(histname)) GetHist2D(histname)->Fill(value1,value2, w);
   }
 
 }
 
-void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins , TString label){
+void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float w, float xbins[], int nxbins, float ybins[], int nybins , TString label, TString labely){
   m_logger << DEBUG << "FillHist : " << histname << LQLogger::endmsg;
   if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex,valuey, w);
 
@@ -3420,7 +3433,7 @@ void AnalyzerCore::FillHist(TString histname, float valuex, float valuey, float 
       exit(0);
     }
     m_logger << DEBUG << "Making the histogram" << LQLogger::endmsg;
-    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins , label);
+    MakeHistograms2D(histname, nxbins, xbins, nybins, ybins , label,labely);
     if(GetHist2D(histname)) GetHist2D(histname)->GetXaxis()->SetTitle(label);
     
     if(GetHist2D(histname)) GetHist2D(histname)->Fill(valuex, valuey, w);

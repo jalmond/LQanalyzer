@@ -47,7 +47,10 @@ class MCDataCorrections{
 
 
   double GetMETReweight(TString trigname, double met);
+  double GetVtxReweight(TString trigname, int Nvtx);
 
+
+  TH1D* GetCorrectionHist1D(TString label);
   TH2F* GetCorrectionHist(TString label);
   bool CheckCorrectionHist(TString label);
   TGraphAsymmErrors* GetCorrectionGraph(TString label);
@@ -103,6 +106,8 @@ class MCDataCorrections{
   double k_period;
 
   std::map<TString, TH2F*>  CorrectionMap;
+  std::map<TString, TH1D*>  CorrectionMap1D;
+
   std::map<TString, TGraphAsymmErrors*>  CorrectionMapGraph;
   std::map<float, std::vector<float>* > deg_etaptmap_leg1;
   std::map<float, std::vector<float>* > deg_etaptmap_leg2;
