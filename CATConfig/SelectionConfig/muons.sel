@@ -36,3 +36,6 @@ webpage https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2
 | MUON_HN_Loose_HighdXY           | 10.     | 2.4      |   0.        | 0.40        | 0.40        | true          | false          |  false        | 1.0      | 0.04      | 0.04       | 10.     | 4.         | 999.         |  true      |
 | MUON_HN_Loose_HighdXY_Small     | 10.     | 2.4      |   0.        | 0.40        | 0.40        | true          | false          |  false        | 0.005      | 0.04      | 0.04       | 10.     | 999.         | 3.         |  true      |
 | MUON_HN_Loose_HighdXY_Small_loosest     | 5.     | 2.4      |   0.        | 1.0        | 1.0        | true          | false          |  false        | 0.005      | 0.04      | 0.04       | 10.     | 999.         | 3.         |  true      |
+### Charged Higgs(H+>WA) ID
+| MUON_HctoWA_TIGHT             | 10.     | 2.4      |   0.        | 0.2        | 0.2         | true          | false          |  false         | 0.01      | 0.05       | 0.05         | 4.      | 999.         |   4.         |  true      |
+| MUON_HctoWA_LOOSE             | 10.     | 2.4      |   0.        | 0.4        | 0.4         | false         | false          |  true          | 0.5       | 0.1        | 0.1          | 100.    | 999.         |   999.       |  true      |

@@ -14,7 +14,7 @@ if  os.path.exists("/data7/Users/jalmond/HNDileptonAN/2016_DiLep/BackUp/"+date_t
     if filetag == "123":
         sys.exit()
 
-version = "Version1"
+version = "Version2"
 os.chdir("/data7/Users/jalmond/HNDileptonAN/2016_DiLep/myDir/")
 os.system("bash setup.sh")
 

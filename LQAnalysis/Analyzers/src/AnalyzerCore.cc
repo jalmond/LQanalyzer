@@ -1635,6 +1635,98 @@ float AnalyzerCore::GetDiLepMass(std::vector<snu::KMuon> muons){
   return p.M();
 }
 
+
+
+float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KElectron> electrons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets, vector<int> ijets, bool lowmass){
+  if(electrons.size() != 2) return 0.;
+
+
+  // variable 1 = lljj                                                                                                                                                               
+  // variable 2 = l1jj                                                                                                                                                               
+  // variable 3 = l2jj                                                                                                                                                               
+  // variable 4 = llj                                                                                                                                                                
+  // variable 5 = jj                                                                                                                                                                 
+  // variable 6 = contra JJ mass                                                                                                                                                     
+
+  int variable (-1);
+  if(svariable == "lljj") variable = 1;
+  else if(svariable == "l1jj") variable = 2;
+  else if(svariable == "l2jj") variable = 3;
+  else if(svariable == "llj") variable = 4;
+  else if(svariable == "l1j") variable = 7;
+  else if(svariable == "l2j") variable = 8;
+  else if(svariable == "jj") variable = 5;
+  else if(svariable == "contMT") variable = 6;
+  else if(svariable == "llfj") variable = -1;
+  else if(svariable == "l1fj") variable = -2;
+  else if(svariable == "l2fj") variable = -3;
+  else if(svariable == "fj") variable = -4;
+  else return -999.;
+
+  snu::KFatJet fatjet;
+  float dMFatJet=9999.;
+  for(UInt_t emme=0; emme<fatjets.size(); emme++){
+    if(fabs(fatjets[emme].PrunedMass() -  80.4) < dMFatJet){
+      dMFatJet=fatjets[emme].PrunedMass();
+      fatjet=fatjets[emme];
+    }
+  }
+
+  if(variable==-1) return (electrons[0] + electrons[1] + fatjet).M();
+  if(variable==-2) return (electrons[0] + fatjet).M();
+  if(variable==-3) return (electrons[1] + fatjet).M();
+  if(variable==-4) return fatjet.PrunedMass();
+
+  if(jets.size() == 1){
+    if(variable==4) return (electrons[0] + electrons[1] + jets[0]).M();
+    if(variable==7) return (electrons[0]  + jets[0]).M();
+    if(variable==8) return (electrons[1] + jets[0]).M();
+
+  }
+  if(jets.size() < 2) return -999.;
+
+
+  float dijetmass_tmp=999.;
+  float dijetmass=9990000.;
+  int m=-999;
+  int n=-999;
+  for(UInt_t emme=0; emme<jets.size(); emme++){
+    for(UInt_t enne=1; enne<jets.size(); enne++) {
+      if(emme == enne) continue;
+      if(lowmass)   dijetmass_tmp = (jets[emme]+jets[enne]+electrons[0] + electrons[1]).M();
+      else dijetmass_tmp = (jets[emme]+jets[enne]).M();
+      if ( fabs(dijetmass_tmp-80.4) < fabs(dijetmass-80.4) ) {
+        dijetmass = dijetmass_tmp;
+        m = emme;
+        n = enne;
+      }
+    }
+  }
+
+  if(ijets.size() ==2){
+    if(ijets[0] != 0){
+      ijets.push_back(m);
+      ijets.push_back(n);
+    }
+  }
+
+  if(variable==1) return (electrons[0] + electrons[1] + jets[m]+jets[n]).M();
+  if(variable==2) return (electrons[0]  + jets[m]+jets[n]).M();
+  if(variable==3) return (electrons[1] + jets[m]+jets[n]).M();
+  if(variable==5) return (jets[m]+jets[n]).M();
+  if(variable==6) {
+    float dPhi = fabs(TVector2::Phi_mpi_pi(jets[m].Phi() - jets[n].Phi()));
+    float contramass=2*jets[m].Pt()*jets[n].Pt()*(1+cos(dPhi));
+    contramass=sqrt(contramass);
+    return contramass;
+  }
+
+  return 0.;
+
+
+
+}
+
 float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KMuon> muons, std::vector<snu::KJet> jets,  std::vector<snu::KFatJet> fatjets, vector<int> ijets, bool lowmass){
   
   if(muons.size() != 2) return 0.;
@@ -2662,9 +2754,9 @@ bool AnalyzerCore::IsSignal(){
 
   if(isData) return false;
   if(k_sample_name.Contains("Majornana")) return true;
-  if(k_sample_name.Contains("HNDilepton_"))  return true;
   if(k_sample_name.Contains("HNE")) return true;
   if(k_sample_name.Contains("HNM")) return true;
+  if(k_sample_name.Contains("HNDilepton"))  return false;
   if(k_sample_name.Contains("MM")) return true;
   
   return false;
