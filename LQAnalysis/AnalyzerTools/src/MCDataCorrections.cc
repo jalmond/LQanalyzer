@@ -975,7 +975,7 @@ double MCDataCorrections::TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTri
 
   /// single mu  trigger  //// FIX "MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample
 
-  TH2F *hist_Iso = GetCorrectionHist("MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey+sample);
+  TH2F *hist_Iso = GetCorrectionHist("MUON_"+leg3+"_TRIGGER"+tag+"_"+labelkey+sample);
   int bin_iso_1 = hist_Iso->FindBin(eta1,pt1);
   int bin_iso_2 = hist_Iso->FindBin(eta2,pt2);
 
