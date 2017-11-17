@@ -84,11 +84,12 @@ class MCDataCorrections{
 
   double TriggerEfficiencyLegByLeg(std::vector<snu::KElectron> el, TString elid, std::vector<snu::KMuon> mu, TString muid, int TriggerCategory, int DataOrMC, int direction=0);
   double TriggerEfficiencyLegByLegPeriodDependant(std::vector<snu::KElectron> el, TString elid, std::vector<snu::KMuon> mu, TString muid, int TriggerCategory, int catperiod, int DataOrMC, int direction=0);
-  double TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction);
+  double TriggerEfficiency_DiMuon_passing_DoubleMuonOrSingleTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction=0);
+  double TriggerEfficiency_DiElectron_passing_DoubleElectronOrSingleTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction=0);
 
-  double TriggerEfficiency_DiElectron_passing_DoubleElectronOrSingleTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString leg3, TString muid, int DataOrMC, int catperiod, int direction);
   double TriggerEfficiency_DiMuon_passing_DoubleMuonTrigger(snu::KMuon mu1, snu::KMuon mu2, TString leg1, TString leg2, TString muid, int DataOrMC, int catperiod, int direction=0);
   double TriggerEfficiency_DiElectron_passing_DoubleElectronTrigger(snu::KElectron el1, snu::KElectron el2, TString leg1, TString leg2, TString elid, int DataOrMC, int catperiod, int direction=0);
+  double TriggerEfficiency_EMu_passing_EMuTrigger(snu::KMuon mu1, snu::KElectron el1, TString leg1, TString leg2, TString muid, TString elid, int DataOrMC, int catperiod, int direction=0);
   
   
 
