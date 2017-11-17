@@ -151,7 +151,6 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
     map_sig["h_secondLeptonEta"]        = SetupHist("h_secondLeptonEta_"   + name,"second lepton eta",60,-3.,3., "lep_{2} #eta");
     map_sig["h_secondLeptonRelIso_B"]     = SetupHist("h_secondLeptonRelIso_B"      + name,"leading lepton relIso",100,-1.,1.,"Iso_{B} (GeV) ");
     map_sig["h_secondLeptonRelIso_EC"]     = SetupHist("h_secondLeptonRelIso_EC"      + name,"leading lepton relIso",100,-1.,1., "Iso_{EC} (GeV)");
-    map_sig["h_secondLeptonRelIso"]     = SetupHist("h_secondLeptonRelIso_"      + name,"leading lepton relIso",100,-1.,1., "Iso (GeV");
     map_sig["h_secondLeptonMiniRelIso"]     = SetupHist("h_secondLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
     if(nmu > 2|| nmu < 0 ) {
       map_sig["h_thirdLeptonPt"]         = SetupHist("h_thirdLeptonPt_"    + name,"thirdary lepton pt",60,0,300,"lep_{3} P_{T} (GeV)");
@@ -174,7 +173,6 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
 
   map_sig["h_leadingLeptonRelIso_B"]    = SetupHist("h_leadingLeptonRelIso_B"      + name,"leading lepton relIso",100,-1.,1., "Iso_{B} (GeV");
   map_sig["h_leadingLeptonRelIso_EC"]    = SetupHist("h_leadingLeptonRelIso_EC"      + name,"leading lepton relIso",100,-1.,1. ,"Iso_{EC} (GeV");
-  map_sig["h_leadingLeptonMiniRelIso"]    = SetupHist("h_leadingLeptonMiniRelIso_"      + name,"leading lepton mini relIso",100,0,1.);
   map_sig["h_LeptonDZ_EC"]               = SetupHist("h_LeptonDZ_EC_"          + name," leading lepton DZ", 1000, -10. , 10., "d_{Z} (EC)");
   map_sig["h_LeptonDZ_B"]               = SetupHist("h_LeptonDZ_B_"          + name," leading lepton DZ", 1000, -10. , 10.,"d_{Z} (B)");
   map_sig["h_LeptonDXY_EC"]              = SetupHist("h_LeptonDXY_EC_"         + name," lepton DXY_{ec}", 1000, -0.25 , 0.25, "d_{XY} (EC)");

@@ -28,7 +28,7 @@ class HNDiLepton : public AnalyzerCore {
 
   int MatchedLeptonJets(std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, std::vector<snu::KMuon> muons, TString label , std::vector<int> ijets );
   vector<int>   FillTruthPlots(std::vector<snu::KJet> jets, std::vector<snu::KMuon> muons, TString label);
-  vector<int>  GetTruthJets();
+  vector<int>  GetTruthJets(bool tchan);
   void FillEfficiency(TString label, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, float w);
 
   void RunMM(int mode,TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, std::vector<snu::KJet> tjets,float mm_weight ,std::vector<TString> mm_trig, float pt1, float pt2);
