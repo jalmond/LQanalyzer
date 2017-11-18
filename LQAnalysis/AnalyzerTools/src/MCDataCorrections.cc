@@ -862,7 +862,7 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
     snu::KElectron el1 = el.at(0);
 
     double mu23ele8eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU23", "ELE8", muid, elid, DataOrMC, catperiod, direction);
-    double mu8ele23eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU8_OR_TKMU8", "ELE23", muid, elid, DataOrMC, catperiod, direction);
+    double mu8ele23eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU8", "ELE23", muid, elid, DataOrMC, catperiod, direction);
 
     //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu23ele8eff = " << mu23ele8eff << endl;
     //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu8ele23eff = " << mu8ele23eff << endl;
@@ -943,7 +943,7 @@ double MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant(std::vector<s
     snu::KElectron el1 = el.at(0);
 
     double mu23ele8eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU23", "ELE8", muid, elid, DataOrMC, catperiod, direction);
-    double mu8ele23eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU8_OR_TKMU8", "ELE23", muid, elid, DataOrMC, catperiod, direction);
+    double mu8ele23eff = TriggerEfficiency_EMu_passing_EMuTrigger(mu1, el1, "MU8", "ELE23", muid, elid, DataOrMC, catperiod, direction);
     double isomu24ORele27_eff = TriggerEfficiency_EMu_passing_SingleLeptonTrigger(mu1, el1, "ISOMU24", "ELE23", muid, elid, DataOrMC, catperiod, direction); //FIXME change ELE23 to ELE27
 
     //cout << "[MCDataCorrections::TriggerEfficiencyLegByLegPeriodDependant] mu23ele8eff = " << mu23ele8eff << endl;
@@ -1357,7 +1357,7 @@ double MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger(snu::KMuon mu
 
   if(leg2=="ELE8") leg2 = "ELE12"; //FIXME ELE12 to ELE8
 
-  if( (leg1=="MU23" && leg2=="ELE12") || (leg1=="MU8_OR_TKMU8" && leg2=="ELE23") ){ //FIXME ELE12 to ELE8
+  if( (leg1=="MU23" && leg2=="ELE12") || (leg1=="MU8" && leg2=="ELE23") ){ //FIXME ELE12 to ELE8
 
     //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] MUON_"+leg1+"_TRIGGER"+tag+"_"+labelkey_mu+"_"+sample << endl;
     //cout << "[MCDataCorrections::TriggerEfficiency_EMu_passing_EMuTrigger] ELECTRON_"+leg2+"_TRIGGER"+tag+"_"+labelkey_el+sample << endl;
