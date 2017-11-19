@@ -442,7 +442,9 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
     ///  No ak8 jet splitting       :   ak4 jets , pt > 20 , eta < 2.5  
     if(_mm_channel)RunMM(0,"DiMuon_inclusive",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll_updated     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);    
 
-    ///  No ak8 jet splitting       :   ak4 jets , pt > 20 , eta < 5.
+    return;
+
+///  No ak8 jet splitting       :   ak4 jets , pt > 20 , eta < 5.
     if(_mm_channel)RunMM(0,"DiMuon_jets_eta5",      muons,muons_veto,electrons_veto,alljets,   jets_all20_eta5, fatjetcoll_updated     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);    
     ///  No ak8 jet splitting       :   ak4 jets , pt > 15 , eta < 5.
     if(_mm_channel)RunMM(0,"DiMuon_jets_pt15_eta5",      muons,muons_veto,electrons_veto,alljets,   jets_all15_eta5, fatjetcoll_updated     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);    
@@ -688,39 +690,196 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
       }
     }
   }
+
+ 
+  if(k_sample_name.Contains("ZG") || k_sample_name.Contains("DY")){
+    std::vector<snu::KMuon>  muons_nocut =GetMuons("MUON_NOCUT",false, 5., 2.5);     
+
+    if(SameCharge(muons)){
+      std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+      bool conv=false;
+      if(GetLeptonType(muons[0],truthColl )== 4 ||  GetLeptonType(muons[0],truthColl )==  5) {
+	int tr_index= muons[0].MCTruthIndex();
+	while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+	  tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+	}
+	if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23) conv=true;
+      }
+      if(GetLeptonType(muons[1],truthColl )== 4 ||  GetLeptonType(muons[1],truthColl )==  5) {
+        int tr_index= muons[1].MCTruthIndex();
+        while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+          tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+	}
+        if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23) conv=true;
+      }
+      if(conv)              FillHist(label+"SS_ZG_conv_mass",GetDiLepMass(muons), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);   
+      else FillHist(label+"SS_ZG_noconv_mass",GetDiLepMass(muons), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+    }
+    if(muons_nocut.size() == 4){
+
+      //TruthPrintOut();
+
+      if(nbjet_m==0&&cut2_trig){
+	std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+	vector<int> Zindex = GetVirtualMassIndex(1,13);
+	vector<int> Gindex = GetVirtualMassIndex(2,13);
+	cout << "ZG 4 muon check " << Zindex.size() << " " << Gindex.size() <<endl;
+	if(Zindex.size() ==2 && Gindex.size() ==2){
+	  cout << "list of index: " << Zindex[0] << " " << Zindex[1] << " non Z: " << Gindex[0] << " " << Gindex[1] << endl;
+
+	  int ph_index=(0); 
+	  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+	    if(fabs(eventbase->GetTruth().at(ig).PdgId()) != 13){
+	      int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+	      if(index_m == eventbase->GetTruth().at(Zindex[0]).IndexMother())ph_index= ig;
+	    }
+	  }
+
+	  if(Gindex[0] < eventbase->GetTruth().size() && Gindex[0] > 0 && Gindex[1] < eventbase->GetTruth().size() && Gindex[1] > 0 ){
+	    cout << "Type " << muons_nocut[0].GetType() << " : " << muons_nocut[1].GetType() <<  " : " <<  muons_nocut[2].GetType() <<  " : " <<  muons_nocut[3].GetType() << endl;
+	    cout << "Type2 " <<  GetLeptonType(muons_nocut[0],truthColl) << " : " <<  GetLeptonType(muons_nocut[1],truthColl)  << " : " <<  GetLeptonType(muons_nocut[2],truthColl) << " : " <<  GetLeptonType(muons_nocut[3],truthColl) << endl;
+	    cout << "Mass of Z = " << (eventbase->GetTruth().at(Zindex[0]) + eventbase->GetTruth().at(Zindex[1])).M() << endl;
+	    cout << "Mass of llph = " << (eventbase->GetTruth().at(Zindex[0]) + eventbase->GetTruth().at(Zindex[1]) + eventbase->GetTruth().at(ph_index)).M() << endl;
+	    cout << "Mass of G = " << (eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M() << endl;
+	    cout << "Mass of Zll = " <<  (eventbase->GetTruth().at(Zindex[0]) + eventbase->GetTruth().at(Zindex[1])+ eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M() << endl;
+	    
+	    cout << "G mothers = " << eventbase->GetTruth().at(eventbase->GetTruth().at(Gindex[0]).IndexMother()).PdgId()   << " : " << eventbase->GetTruth().at(eventbase->GetTruth().at(Gindex[1]).IndexMother()).PdgId() << endl;
+	    cout << "G Gmother = " << eventbase->GetTruth().at(eventbase->GetTruth().at(eventbase->GetTruth().at(Gindex[0]).IndexMother()).IndexMother()).PdgId()   << " : " << eventbase->GetTruth().at(eventbase->GetTruth().at(eventbase->GetTruth().at(Gindex[1]).IndexMother()).IndexMother()).PdgId() << endl;
+							      
+	    
+	    bool conv=false;
+	    if(GetLeptonType(muons_nocut[0],truthColl )== 4 ||  GetLeptonType(muons_nocut[0],truthColl )==  5) {
+	      int tr_index= muons_nocut[0].MCTruthIndex();
+	      while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+		tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+	      }
+	      if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23) conv=true;
+	    }
+	    if(GetLeptonType(muons_nocut[1],truthColl )== 4 ||  GetLeptonType(muons_nocut[1],truthColl )==  5) {
+	      int tr_index= muons_nocut[1].MCTruthIndex();
+	      while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+		tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+	      }
+	      if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23) conv=true;
+	    }
+	    if(GetLeptonType(muons_nocut[2],truthColl )== 4 ||  GetLeptonType(muons_nocut[2],truthColl )==  5) {
+              int tr_index= muons_nocut[2].MCTruthIndex();
+              while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+                tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+              }
+              if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23) conv=true;
+            }
+	    if(GetLeptonType(muons_nocut[3],truthColl )== 4 ||  GetLeptonType(muons_nocut[3],truthColl )==  5) {
+              int tr_index= muons_nocut[3].MCTruthIndex();
+              while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+                tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+              }
+              if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23) conv=true;
+            }
+	  
+	    if(conv){
+	      FillHist(label+"Truth_ZG_conv_Gmass",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+	      FillHist(label+"Truth_ZG_conv_G_pt",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).Pt(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+	    }
+	    else {
+	      FillHist(label+"Truth_ZG_nonconv_Gmass",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+	      FillHist(label+"Truth_ZG_nonconv_G_pt",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).Pt(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+	    }
+	    
+	    
+	    FillHist(label+"Truth_ZG_Zmass",(eventbase->GetTruth().at(Zindex[0]) + eventbase->GetTruth().at(Zindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150); 
+	    FillHist(label+"Truth_ZG_Gmass",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150); 
+	    FillHist(label+"Truth_Z_lep1_pt",eventbase->GetTruth().at(Zindex[0]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50); 
+	    FillHist(label+"Truth_Z_lep2_pt",eventbase->GetTruth().at(Zindex[1]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50); 
+	    FillHist(label+"Truth_G_lep1_pt",eventbase->GetTruth().at(Gindex[0]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+	    FillHist(label+"Truth_G_lep2_pt",eventbase->GetTruth().at(Gindex[1]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+	    if(SameCharge(muons)){
+	      FillHist(label+"Truth_SS_ZG_Zmass",(eventbase->GetTruth().at(Zindex[0]) + eventbase->GetTruth().at(Zindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+	      FillHist(label+"Truth_SS_ZG_Gmass",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi) , 0., 150., 150);
+	      FillHist(label+"Truth_SS_Z_lep1_pt",eventbase->GetTruth().at(Zindex[0]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+	      FillHist(label+"Truth_SS_Z_lep2_pt",eventbase->GetTruth().at(Zindex[1]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+	      FillHist(label+"Truth_SS_G_lep1_pt",eventbase->GetTruth().at(Gindex[0]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+	      FillHist(label+"Truth_SS_G_lep2_pt",eventbase->GetTruth().at(Gindex[1]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+	    }
+	    
+	    if(muons.size() == 3){
+	      if(met < 60){
+		snu::KParticle m3 = muons.at(0) + muons.at(1)+muons.at(2);
+		
+		if(fabs(m3.M()-90.1) < 15){
+		  FillHist(label+"Truth_lll_ZG_Zmass",(eventbase->GetTruth().at(Zindex[0]) + eventbase->GetTruth().at(Zindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150);
+		  
+		  
+		  FillHist(label+"Truth_lll_ZG_Gmass",(eventbase->GetTruth().at(Gindex[0]) + eventbase->GetTruth().at(Gindex[1])).M(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi) , 0., 150., 150);
+		  
+		  FillHist(label+"Truth_lll_Z_lep1_pt",eventbase->GetTruth().at(Zindex[0]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+		  FillHist(label+"Truth_lll_Z_lep2_pt",eventbase->GetTruth().at(Zindex[1]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+		  FillHist(label+"Truth_lll_G_lep1_pt",eventbase->GetTruth().at(Gindex[0]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+		  FillHist(label+"Truth_lll_G_lep2_pt",eventbase->GetTruth().at(Gindex[1]).Pt() ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 100., 50);
+		}
+	      }
+	    }
+	  }
+	}
+	else {
+	  cout << "No Z " << endl;
+	  TruthPrintOut();
+
+	}
+      }
+    }
+  }
   
+
   if(label == ("DiMuon_inclusive")) {
     std::vector<snu::KMuon> muons_loose= GetMuons(_m_looseid,true);
     std::vector<snu::KMuon>  muons_nocut =GetMuons("MUON_NOCUT",true, 10., 2.5);
+    std::vector<snu::KMuon>  muons_pog =GetMuons("MUON_POG_TIGHT",true, 10., 2.5);
+
+    //if(muons_loose.size() == 4)  TruthPrintOut();
 
     if(muons_nocut.size() == 2 &&FillAll)FillCLHist(sighist_mm, label+"SSLL_NoCut", eventbase->GetEvent(),muons_nocut , electrons,jets, alljets, fatjets,  ll_weight);
     if(muons_nocut.size() == 3 &&FillAll)FillCLHist(sighist_mmm, label+"SSLLL_NoCut", eventbase->GetEvent(),muons_nocut , electrons,jets, alljets, fatjets,  ll_weight);
     std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
-  
+ 
+    for(unsigned int i=0 ;i < muons_pog.size() ; i++){
+      FillHist("MC_pog_FR_type_mu_loose_"+label,  muons_pog.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
+      FillHist("MC_pog_FR_type2_mu_loose_"+label,  GetLeptonType(muons_pog[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
+      FillHist("MC_pog_FR_2Dtype_mu_loose_"+label,  GetLeptonType(muons_pog[i],truthColl) ,  muons_pog.at(i).GetType(),   ll_weight*WeightByTrigger(ll_trig[0], TargetLumi),-10., 10.,20 , 0., 50.,50);
+      if(muons_pog[i].MCIsFromConversion()) {
+	FillHist("MC_pog_conv_FR_type_mu_loose_"+label,  muons_pog.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
+	FillHist("MC_pog_conv_FR_type2_mu_loose_"+label,  GetLeptonType(muons_pog[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
+      }
+      else{
+	FillHist("MC_pog_nonconv_FR_type_mu_loose_"+label,  muons_pog.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
+	FillHist("MC_pog_nonconv_FR_type2_mu_loose_"+label,  GetLeptonType(muons_pog[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
+      }
+      if(SameCharge(muons_pog)){
+	FillHist("MC_SSpog_FR_type_mu_loose_"+label,  muons_pog.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
+	FillHist("MC_SSpog_FR_type2_mu_loose_"+label,  GetLeptonType(muons_pog[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
+	FillHist("MC_SSpog_FR_2Dtype_mu_loose_"+label,  GetLeptonType(muons_pog[i],truthColl) ,  muons_pog.at(i).GetType(),ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20 ,0., 50.,50);
+      }
+    }
+    
     for(unsigned int i=0 ;i < muons_loose.size() ; i++){
-
+      
       FillHist("MC_FR_type_mu_loose_"+label,  muons_loose.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
       FillHist("MC_FR_type2_mu_loose_"+label,  GetLeptonType(muons_loose[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
-
       FillHist("MC_dxy_mutype_"+label,fabs(muons_loose.at(i).dxy())  , muons_loose.at(i).GetType()  ,ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 0.5, 200., 0., 50., 50);
       FillHist("MC_dxy_mutype2_"+label,fabs(muons_loose.at(i).dxy())  , GetLeptonType(muons_loose[i],truthColl)  , ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 0.5, 200., 0., 50., 50);
-
+      
       if(fabs(muons_loose.at(i).dXYSig()) < 3.) {
 	FillHist("MC_lowdxy_iso_mutype_"+label, muons_loose.at(i).RelIso04(), muons_loose.at(i).GetType()  ,  ll_weight*WeightByTrigger(ll_trig[0], TargetLumi),  0., 0.5, 100., 0., 50., 50);
 	FillHist("MC_lowdxy_iso_mutype2_"+label, muons_loose.at(i).RelIso04(), GetLeptonType(muons_loose[i],truthColl) ,  ll_weight*WeightByTrigger(ll_trig[0], TargetLumi),  0., 0.5, 100., -10., 10., 20);
-
       }
       else{
 	FillHist("MC_highdxy_iso_mutype_"+label,muons_loose.at(i).RelIso04(), muons_loose.at(i).GetType()  ,  ll_weight*WeightByTrigger(ll_trig[0], TargetLumi),  0., 0.5, 100., 0., 50., 50);
 	FillHist("MC_highdxy_iso_mutype2_"+label,muons_loose.at(i).RelIso04(), GetLeptonType(muons_loose[i],truthColl) ,  ll_weight*WeightByTrigger(ll_trig[0], TargetLumi),  0., 0.5, 100., -10., 10., 20);
-	
       }
-
-
       if(jets.size()>1){
 	FillHist("MC_Jet_FR_type_mu_loose_"+label,  muons_loose.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
 	FillHist("MC_Jet_FR_type2_mu_loose_"+label,  GetLeptonType(muons_loose[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
-	
       }
       if(PassID(muons_loose[i], _m_tightid)) {
 	FillHist("MC_FR_type_mu_tight_"+label,  muons_loose.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
@@ -735,6 +894,8 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
     if(SameCharge(muons_loose)){
       
       for(unsigned int i=0 ;i < muons_loose.size() ; i++){
+        FillHist("MC_SS_FR_2Dtype_mu_loose_"+label,  GetLeptonType(muons_loose[i],truthColl) ,  muons_loose.at(i).GetType(),ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20 ,0., 50.,50);
+
 	FillHist("SSMC_FR_type_mu_loose_"+label,  muons_loose.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
 	FillHist("SSMC_FR_type2_mu_loose_"+label,  GetLeptonType(muons_loose[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
 	if(jets.size()>1){
@@ -744,12 +905,12 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 	  
 	} 
 	if(PassID(muons_loose[i], _m_tightid)) {
+	  FillHist("MC_SS_FR_2Dtype_mu_tight_"+label,  GetLeptonType(muons_loose[i],truthColl) ,  muons_loose.at(i).GetType(),ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20 ,0., 50.,50);
 	  FillHist("SSMC_FR_type_mu_tight_"+label,  muons_loose.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50,50.);
 	  FillHist("SSMC_FR_type2_mu_tight_"+label,  GetLeptonType(muons_loose[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
 	  if(jets.size()>1){
 	    FillHist("SSMC_Jet_FR_type_mu_tight_"+label,  muons_loose.at(i).GetType(), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 50.,50);
 	    FillHist("SSMC_Jet_FR_type2_mu_tight_"+label,  GetLeptonType(muons_loose[i],truthColl), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), -10., 10.,20);
-	    
 	    
 	  }
 	}
@@ -996,7 +1157,10 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 	
 	
 	bool cut6_lepveto = (muons_veto.size()>2);
-      
+	
+	//std::vector<snu::KTruth> truthColl2= eventbase->GetTruth();
+	//cout << "Type " <<  muons[0].GetType() << " " <<  muons[1].GetType() <<  " mass = " << GetVirtualMass(13,false,false) <<  " " <<   GetLeptonType(muons_veto[0],truthColl2) << " " << GetLeptonType(muons_veto[1],truthColl2)  <<endl;
+																									    
 	FillHist(label+"Truth_WZ_SS_Zmass",GetVirtualMass(13,false,false), ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0., 150., 150, "m_{llj} (GeV)");
 
 	for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
@@ -1408,7 +1572,7 @@ void HNDiLepton::CheckJetIDs(TString label, float ll_weight, float jetpt, TStrin
    vector<int>  i_jets =          GetTruthJets(false);
    vector<int>  i_jets_t =          GetTruthJets(true);
    if(i_jets.size() != 2) {
-     TruthPrintOut();
+     if(IsSignal())TruthPrintOut();
    }
    if(1){
      FillHist(label+"_Njet", jets_nocut.size(), ll_weight*WeightByTrigger(trig, TargetLumi), 0., 10., 10);

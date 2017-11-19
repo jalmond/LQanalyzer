@@ -2945,6 +2945,83 @@ bool AnalyzerCore::TruthMatched(snu::KMuon mu){
   return pass;
 }
 
+vector<int> AnalyzerCore::GetVirtualMassIndex(int mode, int pdgid){
+  
+  vector<int> indexZ;
+  vector<int> indexG;
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+    if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+    if(indexZ.size()==2&&mode==1) return indexZ;
+    if(indexZ.size()>1) continue;
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == pdgid){
+      int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1  || eventbase->GetTruth().at(ig).GenStatus() ==23 ){
+	int daughter=ig;
+	while(fabs(eventbase->GetTruth().at(index_m).PdgId()) == pdgid){
+	  daughter=index_m;
+	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
+	}
+	if(eventbase->GetTruth().at(index_m).PdgId() == 23 || fabs(eventbase->GetTruth().at(index_m).PdgId()) < 6 ){
+	  cout << "daughter = " << daughter << endl;
+	  indexZ.push_back(daughter);
+	  for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
+	    if(eventbase->GetTruth().at(ig2).IndexMother() <= 0)continue;
+	    if(ig2 == daughter) continue;
+	    if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == pdgid){
+	      cout << eventbase->GetTruth().at(ig2).IndexMother() << " ind " << index_m << endl;
+	      if(eventbase->GetTruth().at(ig2).IndexMother()==index_m)           indexZ.push_back(ig2);
+	    }
+	  }
+	}
+      }
+    }
+  }
+  if(mode==1) return indexZ;
+  if(indexZ.size()!=2) return indexG;
+
+  for(unsigned int ig=0; ig < eventbase->GetTruth().size(); ig++){
+  
+  if(eventbase->GetTruth().at(ig).IndexMother() <= 0)continue;
+    if(eventbase->GetTruth().at(ig).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+
+    if(fabs(eventbase->GetTruth().at(ig).PdgId()) == pdgid){
+      if(indexZ[0] == ig || indexZ[1] == ig ) continue;
+      
+      if(eventbase->GetTruth().at(ig).GenStatus() ==1){
+
+	int index_m=eventbase->GetTruth().at(ig).IndexMother() ;
+	
+	while(fabs(eventbase->GetTruth().at(index_m).PdgId()) == pdgid){
+	  index_m=eventbase->GetTruth().at(index_m).IndexMother();
+	}
+	
+	for(unsigned int ig2=0; ig2 < eventbase->GetTruth().size(); ig2++){
+	  
+	  if(eventbase->GetTruth().at(ig2).IndexMother() <= 0)continue;
+	  if(eventbase->GetTruth().at(ig2).IndexMother() >= int(eventbase->GetTruth().size()))continue;
+	  if(fabs(eventbase->GetTruth().at(ig2).PdgId()) == pdgid){
+	    if(indexZ[0] == ig2 || indexZ[1] == ig2 ) continue;
+	    if(ig==ig2) continue;
+	    if(eventbase->GetTruth().at(ig2).GenStatus() ==1){
+	      int index_m2=eventbase->GetTruth().at(ig2).IndexMother() ;
+	      while(fabs(eventbase->GetTruth().at(index_m2).PdgId()) == pdgid){
+		index_m2=eventbase->GetTruth().at(index_m2).IndexMother();
+	      }
+	      if(index_m2 == index_m){
+		indexG.push_back(ig);
+		indexG.push_back(ig2);
+		return indexG;
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+   
+
+}
 float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
   if(isData) return -999.;
   vector<KTruth> es1;
@@ -2983,6 +3060,8 @@ float AnalyzerCore::GetVirtualMass(int pdg, bool includenu, bool includeph){
   if(!includeph){
     if(!includenu){
       if(es1.size()==2){
+	cout << "Mother = " << eventbase->GetTruth().at(es1[0].IndexMother()).PdgId() << endl;
+
 	snu::KParticle ll = es1[0]  + es1[1];
 	return ll.M();
       }
@@ -3062,7 +3141,7 @@ void AnalyzerCore::TruthPrintOut(){
 
     }
     else{
-      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  endl;
+      cout << ig << " |  " <<  eventbase->GetTruth().at(ig).PdgId() << " |  " << eventbase->GetTruth().at(ig).GenStatus() << " |  " << eventbase->GetTruth().at(eventbase->GetTruth().at(ig).IndexMother()).PdgId()<< " |   " << eventbase->GetTruth().at(ig).Eta() << " | " <<	eventbase->GetTruth().at(ig).Pt() << " | " << eventbase->GetTruth().at(ig).Phi()<< " |   " << eventbase->GetTruth().at(ig).IndexMother()  << " " << eventbase->GetTruth().at(ig).ReadStatusFlag(7) <<  " " <<  eventbase->GetTruth().at(ig).M() <<endl;
     }
   }
 

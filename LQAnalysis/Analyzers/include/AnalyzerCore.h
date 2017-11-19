@@ -80,6 +80,7 @@ class AnalyzerCore : public LQCycleBase {
   int IsFakeEvent(vector<snu::KMuon> mus );
   int IsFakeEvent(vector<snu::KElectron> els );
   
+  vector<int> GetVirtualMassIndex(int mode, int pdgid);
   float GetVirtualMassConv(int cmindex,int nconvindx);
   float GetVirtualMass(int pdg=11, bool includenu=false, bool inph=false);
 

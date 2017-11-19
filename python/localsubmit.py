@@ -1309,14 +1309,18 @@ while not JobSuccess:
                         entries = line.split()
                         if len(entries)> 6:                        
                             num = entries[7]
+                            lineok=False
+                            if "/" in s:
+                                lineok=True
                             s = num.replace("/", " ")
                             event_split = s.split()
                             if len(event_split) < 2:
-                                print "Error [2002] " + event_split 
+                                print "Warning [2002] " + s
                                 print line
                                 os.system("cp " + local_sub_dir + '/outlog.txt ~/error_log_'+str(array_batchjobs[i-1]))
-                            nevent_processed_i = float(event_split[0])
-                            nevents_total_i= float(event_split[1])
+                            if lineok:
+                                nevent_processed_i = float(event_split[0])
+                                nevents_total_i= float(event_split[1])
             nevent_processed+=nevent_processed_i                
             nevents_total+=nevents_total_i
 
