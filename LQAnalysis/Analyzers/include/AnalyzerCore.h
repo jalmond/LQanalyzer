@@ -61,6 +61,10 @@ class AnalyzerCore : public LQCycleBase {
 
   float GetKFactor();
 
+  bool IsInternalConversion(snu::KElectron el);
+  bool IsInternalConversion(snu::KMuon mu);
+  bool IsExternalConversion(snu::KElectron el);
+
   bool ISCF(snu::KElectron el);
   bool TruthMatched(std::vector<snu::KElectron> el, bool tightdxy, bool allowCF);
   bool TruthMatched(snu::KElectron el, bool keepcf);

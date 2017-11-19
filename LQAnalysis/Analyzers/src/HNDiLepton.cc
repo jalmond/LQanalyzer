@@ -371,6 +371,17 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electrons = GetElectrons(elid);
   std::vector<snu::KElectron> electrons_veto = GetElectrons(true, true,"ELECTRON_HN_VETO");
 
+  if(SameCharge(electrons)){
+    std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+    if(IsExternalConversion(electrons[0]) || IsExternalConversion(electrons[1]) ){
+      cout << "Electron : " <<  GetLeptonType(electrons[0], truthColl )  << " " <<  GetLeptonType(electrons[1], truthColl ) << endl;
+      cout << "Electron : " << electrons[0].GetType() << " " << electrons[1].GetType() << endl;
+
+      TruthPrintOut();                                                                  
+    }                                                                                       
+  }
+
+
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
   std::vector<snu::KJet> alljets_10 = GetJetsWFT("JET_NOLEPTONVETO", "FATJET_HN_tau06",10., 2.5);
   std::vector<snu::KJet> alljets_10_eta5 = GetJetsWFT("JET_NOLEPTONVETO", "FATJET_HN_tau06",10., 5.);

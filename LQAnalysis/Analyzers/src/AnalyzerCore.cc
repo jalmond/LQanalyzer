@@ -2842,6 +2842,60 @@ bool AnalyzerCore::ISCF(snu::KElectron el){
   return false;
 }
 
+bool AnalyzerCore::IsInternalConversion(snu::KMuon mu){
+
+  if(isData) return false;
+
+  bool conv=false;
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  if(GetLeptonType(mu,truthColl )== 4 ||  GetLeptonType(mu,truthColl )==  5) {
+    int tr_index= mu.MCTruthIndex();
+    while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 13 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+      tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+    }
+    if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 24 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 15) conv=true;
+  }
+  
+  return conv;
+
+}
+
+bool AnalyzerCore::IsInternalConversion(snu::KElectron el){
+
+  if(isData) return false;
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  bool conv=false;
+  if(GetLeptonType(el,truthColl )== 4 ||  GetLeptonType(el,truthColl )==  5) {
+    int tr_index= el.MCTruthIndex();
+    while(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 11 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 22){
+      tr_index = eventbase->GetTruth().at(tr_index).IndexMother();
+    }
+    if(fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 23 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 24 || fabs(eventbase->GetTruth().at(tr_index).PdgId()) == 15) conv=true;
+  }
+
+  return conv;
+
+}
+
+bool AnalyzerCore::IsExternalConversion(snu::KElectron el){
+
+  if(isData) return false;
+
+  std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
+
+  bool conv=false;
+  if(GetLeptonType(el,truthColl )== -5 ||  GetLeptonType(el,truthColl )==  -6) {
+    conv=true;
+  }
+  if(el.GetType()==40) conv=true;
+  return conv;
+
+}
+
+
+
 bool AnalyzerCore::TruthMatched(snu::KElectron el, bool keepCF){
   bool pass=false;
   if(!keepCF && ISCF(el)) return false;
