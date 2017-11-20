@@ -427,6 +427,8 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
     triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
     triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
+    triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v");
+    triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v");
 
     triggerlist_DiMuon_singleLep.push_back("HLT_IsoMu24_v");
     triggerlist_DiMuon_singleLep.push_back("HLT_IsoTkMu24_v");
