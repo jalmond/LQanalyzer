@@ -1310,7 +1310,7 @@ while not JobSuccess:
                         if len(entries)> 6:                        
                             num = entries[7]
                             lineok=False
-                            if "/" in s:
+                            if "/" in num:
                                 lineok=True
                             s = num.replace("/", " ")
                             event_split = s.split()

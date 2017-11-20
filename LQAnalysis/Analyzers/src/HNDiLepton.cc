@@ -288,10 +288,9 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   
   TString elid=_e_tightid;
   if(k_running_nonprompt) elid=_e_looseid;
-
   
   std::vector<snu::KMuon> muons_fake = GetMuons(muid,true);
-  std::vector<snu::KMuon> muons = GetMuons(muid,false);
+  std::vector<snu::KMuon> muons = GetMuons(muid,true);
 
   TString muid_sip=_m_tightid;
   if(k_running_nonprompt) muid_sip="MUON_HN_Loose_HighdXY_Small";
@@ -371,7 +370,7 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
   std::vector<snu::KElectron> electrons = GetElectrons(elid);
   std::vector<snu::KElectron> electrons_veto = GetElectrons(true, true,"ELECTRON_HN_VETO");
 
-  if(SameCharge(electrons)){
+  /*if(SameCharge(electrons)){
     std::vector<snu::KTruth> truthColl= eventbase->GetTruth();
     if(IsExternalConversion(electrons[0]) || IsExternalConversion(electrons[1]) ){
       cout << "Electron : " <<  GetLeptonType(electrons[0], truthColl )  << " " <<  GetLeptonType(electrons[1], truthColl ) << endl;
@@ -380,7 +379,8 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
       TruthPrintOut();                                                                  
     }                                                                                       
   }
-
+  return;
+  */
 
   std::vector<snu::KJet> alljets = GetJets("JET_NOLEPTONVETO", 20., 2.5);
   std::vector<snu::KJet> alljets_10 = GetJetsWFT("JET_NOLEPTONVETO", "FATJET_HN_tau06",10., 2.5);
@@ -452,6 +452,11 @@ void HNDiLepton::ExecuteEvents()throw( LQError ){
 
     ///  No ak8 jet splitting       :   ak4 jets , pt > 20 , eta < 2.5  
     if(_mm_channel)RunMM(0,"DiMuon_inclusive",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll_updated     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,20.      , 10.);    
+
+    if(_m_channel) RunMM(0,"DiMuon_inclusive_OR",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll_updated     ,  tchanjets,  mm_weight, triggerlist_DiMuon_singleLep ,26.      , 10.);
+    if(_mm_channel) RunMM(0,"DiMuon_inclusive_OR",      muons,muons_veto,electrons_veto,alljets,   jets_all20, fatjetcoll_updated     ,  tchanjets,  mm_weight, triggerlist_DiMuon ,-999.      , -999.);
+			 
+
 
     return;
 
@@ -669,7 +674,7 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
   if( pt1 < 0 ){
     ORtrigger=true;
     pt1=20;
-    pt2=5;
+    pt2=10;
   }
   bool cut1_dilep =  (muons.size()==2 && (muons[1].Pt() > pt2 && muons[0].Pt() > pt1 ));
   if(k_running_nonprompt)cut1_dilep =  (muons.size()==2 && (muons[1].PTCone(0.4,0.07) > pt2 && muons[0].PTCone(0.4,0.07) > pt1 ));
@@ -967,6 +972,7 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
       std::vector<TString> triggerlist_DiMuon;
       triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
       triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
+      
 
       std::vector<TString> triggerlist_DiMuon_singleLep;
       triggerlist_DiMuon_singleLep.push_back("HLT_IsoMu24_v");
@@ -985,13 +991,13 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 	  if(muons[0].Pt() < 20 || muons[1].Pt() < 10) return;
 	}
 	else if(PassTriggerOR(triggerlist_DiMuon_singleLep)){
-	  if(muons[0].Pt() < 26 || muons[1].Pt() < 5) return;
+	  if(muons[0].Pt() < 26 || muons[1].Pt() < 10) return;
 	}
 	else return;
       }
     }
     else {
-      
+
       ///  No OR
 
       /// If SingleMuon check !pass double and then pass single
@@ -1000,13 +1006,31 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 	triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
 	triggerlist_DiMuon.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
 	if(PassTriggerOR(triggerlist_DiMuon)) return;
-	
+      }
+
+      FillHist(label+"_pass_HLTnoDZ_failDZ",0. , ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0.,4,4, "dilep trigger result");
+      if(cut2_trig)       FillHist(label+"_pass_HLTnoDZ_failDZ",1. , ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0.,4,4, "dilep trigger result");
+      else{
+	std::vector<TString> triggerlist_DiMuonnoDZ;
+	triggerlist_DiMuonnoDZ.push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v");
+	triggerlist_DiMuonnoDZ.push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v");
+
+	if(PassTriggerOR(triggerlist_DiMuonnoDZ)) {
+	  FillHist(label+"_pass_HLTnoDZ_failDZ",2. , ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0.,4,4, "dilep trigger result");
+	  cout << "Pass noDZ trigger (fails DZ) " <<  endl;
+	  for(unsigned int i=0; i < muons_veto.size(); i++){
+	    cout << "Muon " << i << " pt = " << muons_veto[i].Pt() << " eta = " << muons_veto[i].Eta() << " dz=" << muons_veto[i].dz() << endl;
+	  }
+	  if(muons_veto.size()== 2)           FillHist(label+"_pass_HLTnoDZ_failDZ",3. , ll_weight*WeightByTrigger(ll_trig[0], TargetLumi), 0.,4,4, "dilep trigger result");
+
+
+	}
       }
 
       if(!cut2_trig) return;
 
     }
-    
+  
 
     //// correct weight to include trigger lumi
     if(!isData)  ll_weight*= WeightByTrigger(ll_trig[0], TargetLumi) ;
@@ -1021,6 +1045,7 @@ void HNDiLepton::RunLL(int mode,TString channel , TString label, vector<snu::KMu
 	
     counter("Trigger",ll_weight);
     
+
     bool cut3_lepveto = (electrons_veto.size()>0);
     
     if(cut3_lepveto) return;
