@@ -1488,15 +1488,14 @@ double MCDataCorrections::ElectronScaleFactor( TString elid, vector<snu::KElectr
     if(eleta>=2.5) eleta = 2.4;
     if(elpt>=500.) elpt= 499.;
     if(elpt <10.) elpt= 11;
-    float unc = 0.02; //// Check this
     
     if(CheckCorrectionHist("ID_" + elid)){
-      int bin =  GetCorrectionHist("ID_" + elid)->FindBin(itel->SCEta(), elpt);
-      sf *= GetCorrectionHist("ID_" + elid)->GetBinContent(bin);
-      float err =  GetCorrectionHist("EL_RECO")->GetBinError(bin);
-      err = sqrt (pow(err, 2.) + pow(unc, 2.));
-      if(sys == 1)sf *= (1. + err);
-      if(sys == -1)sf *= (1. - err);
+      TH2F *this_hist = GetCorrectionHist("ID_" + elid);
+      int this_bin = this_hist->FindBin(eleta, elpt);
+      double this_sf = this_hist->GetBinContent(bin);
+      double this_sf_err = this_hist->GetBinError(bin);
+
+     	sf *= ( this_sf + double(sys)*this_sf_err );
     }
   }
 
