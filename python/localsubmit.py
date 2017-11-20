@@ -1307,7 +1307,7 @@ while not JobSuccess:
                 if "Processing entry" in line:
                     if "LQCycleController" not in line:
                         entries = line.split()
-                        if len(entries)> 6:                        
+                        if len(entries)> 7:                        
                             num = entries[7]
                             lineok=False
                             if "/" in num:
