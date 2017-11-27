@@ -1671,7 +1671,7 @@ float AnalyzerCore::GetMasses(TString svariable, std::vector<snu::KElectron> ele
       fatjet=fatjets[emme];
     }
   }
-
+  fatjet.SetPtEtaPhiM(fatjet.Pt(), fatjet.E(), fatjet.Phi(), fatjet.PrunedMass());
   if(variable==-1) return (electrons[0] + electrons[1] + fatjet).M();
   if(variable==-2) return (electrons[0] + fatjet).M();
   if(variable==-3) return (electrons[1] + fatjet).M();
@@ -2754,6 +2754,7 @@ bool AnalyzerCore::IsSignal(){
 
   if(isData) return false;
   if(k_sample_name.Contains("Majornana")) return true;
+  if(k_sample_name.Contains("Tchannel")) return true;
   if(k_sample_name.Contains("HNE")) return true;
   if(k_sample_name.Contains("HNM")) return true;
   if(k_sample_name.Contains("HNDilepton"))  return false;

@@ -26,22 +26,33 @@ class HNDiLepton : public AnalyzerCore {
   
   void DoCutFlow(float w);
 
+  void GetOptimisationID( std::vector<snu::KMuon> muons_veto, std::vector<snu::KElectron> electrons,std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, std::vector<TString> trig,  float pt1, float pt2);
+  void FillMCFakes(TString label,vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,   std::vector<TString> trig, float ll_weight);
+
+  void FillPreselection(int nfake, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  float ll_weight, std::vector<TString> trig,  float pt1, float pt2);
+  
+  void FillEventCutFlowByID(TString label, TString tightID,std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, float mm_weight ,std::vector<TString> ll_trig, float pt1, float pt2, int nbjet);
+					
+
+  bool Preselection(TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto, std::vector<snu::KElectron> electrons,std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, float ll_weight, std::vector<TString> trigs, float pt1, float pt2);
+  float PreselWeight(float mmweight, std::vector<snu::KMuon> muons, TString id, bool passtrig);				
+  
   int MatchedLeptonJets(std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, std::vector<snu::KMuon> muons, TString label , std::vector<int> ijets );
   vector<int>   FillTruthPlots(std::vector<snu::KJet> jets, std::vector<snu::KMuon> muons, TString label);
   vector<int>  GetTruthJets(bool tchan);
   void FillEfficiency(TString label, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, float w);
 
-  void RunMM(int mode,TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, std::vector<snu::KJet> tjets,float mm_weight ,std::vector<TString> mm_trig, float pt1, float pt2);
-  void RunEE(TString label, std::vector<snu::KElectron> electrons, std::vector<snu::KElectron> electrons_veto,std::vector<snu::KMuon> mu, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, std::vector<snu::KJet> tjets,float ee_weight ,std::vector<TString> ee_trig, float pt1, float pt2);
-  void RunLL(int mode,TString channel, TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KElectron> el_veto, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets, std::vector<snu::KJet> tjets,float ll_weight ,std::vector<TString> ll_trig, float pt1, float pt2);
+  void RunMM(int mode,TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets,float mm_weight ,std::vector<TString> mm_trig, float pt1, float pt2);
+  void RunLL(int mode,TString channel, TString label, std::vector<snu::KMuon> muons, std::vector<snu::KMuon> muons_veto,std::vector<snu::KElectron> el, std::vector<snu::KElectron> el_veto, std::vector<snu::KJet> alljets, std::vector<snu::KJet> jets, std::vector<snu::KFatJet> fatjets,float ll_weight ,std::vector<TString> ll_trig, float pt1, float pt2);
 	
-  void FillLowMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, TString trig);		 
-  void FillHighMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m,float met2_st,float ll_weight, TString trig);		 
+  void FillLowMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m, float ll_weight, std::vector<TString> trig , float pt1, float pt2);		 
 
-  void FillLowMassBins(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  int nbjet_m, float ll_weight);
-  void FillHighMassBins(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  int nbjet_m, float met2st, float ll_weight);
+  void FillHighMass(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets, int nbjet_m,float ll_weight, std::vector<TString> trig,float pt1, float pt2);		 
 
-  void CheckJetIDs(TString label, float ll_weight, float ptcut, TString trig);
+  void FillLowMassBins(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  int nbjet_m, float ll_weight , std::vector<TString> trig,float pt1, float pt2);
+  void FillHighMassBins(bool fill, int mode, TString label, vector<snu::KMuon> muons, vector<snu::KMuon> muons_veto, vector<snu::KElectron> electrons,vector<snu::KJet> alljets, vector<snu::KJet> jets, vector<snu::KFatJet> fatjets,  int nbjet_m,  float ll_weight, std::vector<TString> trig,float pt1, float pt2);
+
+  void CheckJetIDs(TString label, float ll_weight, float ptcut, TString trig, std::vector<snu::KMuon> muons, vector<snu::KFatJet> fatjets, int nbjet_m);
   void InitialiseAnalysis() throw( LQError );
   void MakeHistograms();
   void FillEventCutFlow(int cf,TString cut,  float weight, TString label);
