@@ -525,7 +525,7 @@ if os.path.exists(path_full_sample_list):
                 else:
                     print "Sample " + str(l) + " is new. Making SKtree"
 
-                    if "HN" in l or  "TTTo" in l or "CHToCB" in l:
+                    if "Heavy" in l or  "HN" in l or  "TTTo" in l or "CHToCB" in l:
                         isSIG=True
                     addstring+="'"+l+"' "
                     runSKTreemaker=True

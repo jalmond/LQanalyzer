@@ -584,12 +584,6 @@ TLegend* MakeLegend( map<TString, TH1*> map_legend,TH1* hlegdata,  bool rundata 
   legendH->SetTextSize(0.02);
   vector<TString> legorder;
 
-legorder.push_back("Misid. Lepton Background");
-legorder.push_back("Diboson");
-legorder.push_back("Top");
-legorder.push_back("XG");
-legorder.push_back("Triboson");
-legorder.push_back("Higgs");
   map<double, TString> order_hists;
   for(map<TString, TH1*>::iterator it = map_legend.begin(); it!= map_legend.end(); it++){
     order_hists[it->second->Integral()] = it->first;
@@ -659,30 +653,7 @@ vector<pair<TString,float> >  InitSample (TString sample){
   
   vector<pair<TString,float> > list;  
 
-if(sample.Contains("DoubleMuon_SKnonprompt")){    list.push_back(make_pair("DoubleMuon_SKnonprompt",0.3));
-}if(sample.Contains("diboson")){    list.push_back(make_pair("ZZTo4L_powheg",0.20));
-    list.push_back(make_pair("WpWpQCD",0.15));
-    list.push_back(make_pair("WpWpEWK",0.15));
-    list.push_back(make_pair("ww_ds",0.15));
-}if(sample.Contains("top")){    list.push_back(make_pair("ttZToLL_M-10",0.2));
-    list.push_back(make_pair("tZq",0.2));
-    list.push_back(make_pair("TTG",0.2));
-    list.push_back(make_pair("ttWToLNu",0.2));
-    list.push_back(make_pair("ttZToLL_M-1to10",0.2));
-    list.push_back(make_pair("ttH_bb",0.2));
-    list.push_back(make_pair("ttH_nonbb",0.2));
-}if(sample.Contains("XG")){    list.push_back(make_pair("ZGto2LG",0.2));
-}if(sample.Contains("triv")){    list.push_back(make_pair("WWW",0.3));
-    list.push_back(make_pair("ZZZ",0.3));
-    list.push_back(make_pair("WWZ",0.3));
-    list.push_back(make_pair("WZZ",0.3));
-    list.push_back(make_pair("WWG",0.3));
-    list.push_back(make_pair("WZG",0.3));
-}if(sample.Contains("higgs")){    list.push_back(make_pair("VBF_HToMuMu",0.2));
-    list.push_back(make_pair("ggHtoWW",0.2));
-    list.push_back(make_pair("ggHtoZZ",0.2));
-    list.push_back(make_pair("vbfHtoWW",0.2));
-}  
+  
 
 
   if(list.size()==0) cout << "Error in making lists" << endl;
@@ -1322,23 +1293,9 @@ void SetUpMasterConfig(string name){
 void  SetUpConfig(vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples, vector<pair<pair<vector<pair<TString,float> >, int >, TString > >& samples_ss, vector<string>& cut_label){
   
   /// Setup list of samples: grouped into different processes 
-/// NP is nonprompt 
-vector<pair<TString,float> > np;
-np.push_back(make_pair("DoubleMuon_SKnonprompt",0.34));
-vector<pair<TString,float> >  diboson = InitSample(" diboson"); 
-vector<pair<TString,float> >  top = InitSample(" top"); 
-vector<pair<TString,float> >  XG = InitSample(" XG"); 
-vector<pair<TString,float> >  triv = InitSample(" triv"); 
-vector<pair<TString,float> >  higgs = InitSample(" higgs"); 
 
 
   for( unsigned int i = 0; i < listofsamples.size(); i++){
-   if(listofsamples.at(i) =="DoubleMuon_SKnonprompt")samples.push_back(make_pair(make_pair(np,870),"Misid. Lepton Background"));
-   if(listofsamples.at(i) =="diboson")samples.push_back(make_pair(make_pair(diboson,kGreen),"Diboson"));
-   if(listofsamples.at(i) =="top")samples.push_back(make_pair(make_pair(top,kRed),"Top"));
-   if(listofsamples.at(i) =="XG")samples.push_back(make_pair(make_pair(XG,74),"XG"));
-   if(listofsamples.at(i) =="triv")samples.push_back(make_pair(make_pair(triv,kSpring+2),"Triboson"));
-   if(listofsamples.at(i) =="higgs")samples.push_back(make_pair(make_pair(higgs,800),"Higgs"));
 
   }
 

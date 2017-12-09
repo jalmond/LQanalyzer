@@ -4,6 +4,7 @@
 ### SAMPLE LIST ########## 
 #######################
 declare -a tchannel_hn=('HNMoriondLL_Tchannel_EpEp_100' 'HNMoriondLL_Tchannel_EpEp_200' 'HNMoriondLL_Tchannel_EpEp_500' 'HNMoriondLL_Tchannel_EpEp_1100' 'HNMoriondLL_Tchannel_MupMup_100' 'HNMoriondLL_Tchannel_MupMup_200' 'HNMoriondLL_Tchannel_MupMup_500' 'HNMoriondLL_Tchannel_MupMup_1100' 'HNMumMum_40' 'HNMumMum_50' 'HNMumMum_200' 'HNMumMum_500' 'HNMumMum_1500'  'HNEmEm_40' 'HNEmEm_50' 'HNEmEm_200' 'HNEmEm_500' 'HNEmEm_1500'  'HNMupMup_40' 'HNMupMup_50' 'HNMupMup_200' 'HNMupMup_500' 'HNMupMup_1500' 'HNMupMup_100' 'HNMupMup_700' 'HNMupMup_1000' )
+declare -a  mc_conv=('ZGto2LG' 'WGtoLNuG' 'TG' 'TTG' 'WZG' 'WWG' )
 
 declare -a trilep_fake_bkg_short=(
 'DYJets_10to50'

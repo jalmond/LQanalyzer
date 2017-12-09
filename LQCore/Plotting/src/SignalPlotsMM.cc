@@ -265,6 +265,16 @@ SignalPlotsMM::SignalPlotsMM(TString name, int nmu): StdPlots(name){
   map_sig["h_Nvtx"]                   = SetupHist("h_Nvtx_"            + name,"number of vertices",40,0,40.);
 
 
+  
+  map_sig["h_dR_mu1_wj"]  = SetupHist("h_dR_mu1_wj"           + name,"",20 ,0,5., "");
+  map_sig["h_dR_mu2_wj"] = SetupHist("h_dR_mu2_wj"           + name,"",20 ,0,5., "");
+  map_sig["h_dPhi_mu1_wj"]= SetupHist("h_dPhi_mu1_wj"           + name,"",  100.,-5., 5, "");
+  map_sig["h_dPhi_mu2_wj"]= SetupHist("h_dPhi_mu2_wj"           + name,"", 100.,-5., 5, "");
+  map_sig["h_dPhi_met_wj"]= SetupHist("h_dPhi_met_wj"           + name,"", 100.,-5., 5, "");
+  map_sig["h_dPhi_met_mu1"]= SetupHist("h_dPhi_met_mu1"           + name,"", 100.,-5., 5, "");
+  map_sig["h_dPhi_met_mu2"]= SetupHist("h_dPhi_met_mu2"           + name,"", 100.,-5., 5, "");
+
+
 
 
 }
@@ -740,9 +750,26 @@ void SignalPlotsMM::Fill(snu::KEvent ev, std::vector<snu::KMuon>& muons, std::ve
    
    
 
-   
-  if(muons.size()==2){
+  
+  if(muons.size()==2&& jets.size() > 1){
+    float dRmu1wj = muons[0].DeltaR(jets[nlm]+jets[mlm]);
+    float dRmu2wj = muons[1].DeltaR(jets[mlm]+jets[nlm]);
+    float dphimu1wj =fabs(TVector2::Phi_mpi_pi( muons[0].Phi() - (jets[nlm]+jets[mlm]).Phi()));
+    float dphimu2wj =fabs(TVector2::Phi_mpi_pi( muons[1].Phi() - (jets[nlm]+jets[mlm]).Phi()));
+    float dphimetwj =fabs(TVector2::Phi_mpi_pi( ev.METPhi(snu::KEvent::pfmet) - (jets[nlm]+jets[mlm]).Phi()));
+    float dphimetmu1 =fabs(TVector2::Phi_mpi_pi( ev.METPhi(snu::KEvent::pfmet) - (muons[0]).Phi()));
+    float dphimetmu2 =fabs(TVector2::Phi_mpi_pi( ev.METPhi(snu::KEvent::pfmet) - (muons[1]).Phi()));
     
+
+    Fill("h_dR_mu1_wj", dRmu1wj, weight);
+    Fill("h_dR_mu2_wj", dRmu1wj, weight);
+    Fill("h_dPhi_mu1_wj", dphimu1wj, weight);
+    Fill("h_dPhi_mu2_wj", dphimu2wj, weight);
+    Fill("h_dPhi_met_wj", dphimetwj, weight);
+    Fill("h_dPhi_met_mu1", dphimetmu1, weight);
+    Fill("h_dPhi_met_mu2", dphimetmu2, weight);
+
+
     if( jets.size()>=1) Fill("h_llj1mass", (muons[0] + muons[1]+jets[0]).M(),weight);
     if( jets.size()>=1) Fill("h_llj2mass", (muons[0] + muons[1]+jets[1]).M(),weight);
     if( jets.size()>=1) Fill("h_l1jmass", (muons[0]+jets[0]).M(),weight);

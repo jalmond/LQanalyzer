@@ -1,7 +1,7 @@
 # Specify_location_of_data/mc
-mcpath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/
-datapath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/HNDiLepton_data_DoubleMuon_cat_v8-0-7.root
-datadrivenpath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiLepton/periodBtoH/2017-11-13/
+mcpath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiLepton/periodBtoH/2017-11-20/
+datapath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiLepton/periodBtoH/2017-11-20/HNDiLepton_data_DoubleMuon_cat_v8-0-7.root
+datadrivenpath          /data2/CAT_SKTreeOutput/JobOutPut/jalmond/LQanalyzer//data/output/CAT/HNDiLepton/periodBtoH/2017-11-20/
 # Specify_the_list_of_hists_to_plot 
 plottingpath    dat/histfile.txt 
 cutpath         dat/cutfile.txt
@@ -9,17 +9,11 @@ cutpath         dat/cutfile.txt
 prefix          HNDiLepton_SK
 postfix           _dilep_cat_v8-0-7.root
 # NAME_THE_OUTPUT_DIR
-outputdir  HN13TeV_HNDiLepton_v8-0-7_periodBtoH_2017-11-13_DiMuon_inclusiveSSLL_LowMass_SR1b
+outputdir  HN13TeV_HNDiLepton_v8-0-7_periodBtoH_2017-11-20_DiMuon_inclusiveSSLL_LowMass_SR1b
 histdir    CAT2016_v8-0-7nov_dilep
 # CONFIGURE_HISTOGRAMS
 showdata   false 
 usenp      false 
 ylog       true 
 # List_the_samples_to_be_includedv
-samples    DoubleMuon_SKnonprompt
-samples    diboson
-samples    top
-samples    XG
-samples    triv
-samples    higgs
 END

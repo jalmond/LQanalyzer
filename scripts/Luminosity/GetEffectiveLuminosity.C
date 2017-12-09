@@ -85,12 +85,15 @@ void GetEffectiveLuminosity(TString path_of_list,  TString tag,TString version="
     cout << "Checking " << mit->first << endl;
     if(mit->first.Contains("amcatnlo")) use_sum_genweight=true;
     else if(mit->first.Contains("_Schannel_")){
-      if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
+      if(mit->first.Contains("HN")|| mit->first.Contains("HeavyNeutrino") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
     }
     else if(mit->first.Contains("_Tchannel_")){
       if(mit->first.Contains("HN") || mit->first.Contains("Majorana") )  use_sum_genweight=true;
     }
     else if(mit->first.Contains("eavyNeutrino_trilepton")){
+      use_sum_genweight=true;
+    }
+    else if (mit->first.Contains("HeavyNeutrino")){
       use_sum_genweight=true;
     }
     else use_sum_genweight=false;
